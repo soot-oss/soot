@@ -196,7 +196,7 @@ public class JavaAttribute {
                     startPrintValBoxAttr();
                     printSourcePositionAttr(attr.javaStartPos(), attr.javaEndPos());
                     printJimplePositionAttr(attr.jimpleStartPos(), attr.jimpleEndPos());
-                    printColorAttr(attr.color().red(), attr.color().green(), attr.color().blue(), attr.color().fg());
+                    //printColorAttr(attr.color().red(), attr.color().green(), attr.color().blue(), attr.color().fg());
                     endPrintValBoxAttr();
                 }
             }

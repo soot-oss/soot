@@ -23,7 +23,7 @@ import java.util.*;
 
 public class SootAttributesHandler {
 
-	private Vector attrList;
+	private ArrayList attrList;
 	//private HashMap fileList;
 	private String fileName;
 	private HashMap projList;
@@ -34,9 +34,9 @@ public class SootAttributesHandler {
 				
 	}
 	
-	public void setAttrList(Vector attrList) {
+	public void setAttrList(ArrayList attrList) {
 		if (this.attrList == null){
-			this.attrList = new Vector();
+			this.attrList = new ArrayList();
 		}
 		this.attrList.addAll(attrList);
 	}
@@ -101,6 +101,7 @@ public class SootAttributesHandler {
 		return list;
 	}
 
+
 	/**
 	 * Returns the projList.
 	 * @return HashMap
@@ -121,7 +122,7 @@ public class SootAttributesHandler {
 	 * Returns the attrList.
 	 * @return Vector
 	 */
-	public Vector getAttrList() {
+	public ArrayList getAttrList() {
 		return attrList;
 	}
 

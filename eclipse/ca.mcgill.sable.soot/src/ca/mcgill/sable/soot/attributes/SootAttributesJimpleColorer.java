@@ -47,13 +47,13 @@ public class SootAttributesJimpleColorer {
 		while (it.hasNext()) {
 			// sets colors for stmts
 			SootAttribute sa = (SootAttribute)it.next();
-			if ((sa.getRed() == 0) && (sa.getGreen() == 0) && (sa.getBlue() == 0)){
+			if (sa.getColor() == null){
 			}
 			else {
-				setAttributeTextColor(sa.getJimpleStartLn(), sa.getJimpleEndLn(), sa.getJimpleOffsetStart()+1, sa.getJimpleOffsetEnd()+1, sa.getRGBColor());//, tp);
+				setAttributeTextColor(sa.getJimpleStartLn(), sa.getJimpleEndLn(), sa.getJimpleStartPos()+1, sa.getJimpleEndPos()+1, sa.getRGBColor());//, tp);
 			}
 			// sets colors for valueboxes
-			if (sa.getValueAttrs() != null){
+			/*if (sa.getValueAttrs() != null){
 				Iterator valIt = sa.getValueAttrs().iterator();
 				while (valIt.hasNext()){
 					PosColAttribute vba = (PosColAttribute)valIt.next();
@@ -63,7 +63,7 @@ public class SootAttributesJimpleColorer {
 						setAttributeTextColor(sa.getJimpleStartLn(), sa.getJimpleEndLn(), vba.getStartOffset()+1, vba.getEndOffset()+1, vba.getRGBColor());//, tp);
 					}
 				}
-			}
+			}*/
 		}
 		//return tp;
 					

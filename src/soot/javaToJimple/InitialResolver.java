@@ -605,8 +605,9 @@ public class InitialResolver {
                         soot.javaToJimple.jj.DPosition bodyDpos = (soot.javaToJimple.jj.DPosition)procedure.body().position();
                         //System.out.println("body: "+bodyDpos);
                         
-                        Util.addMethodPosTag(sootMethod, dpos.column(), bodyDpos.endCol());
-                        Util.addMethodLineTag(sootMethod, dpos.line(), bodyDpos.endLine());
+                        //Util.addMethodPosTag(sootMethod, dpos.column(), bodyDpos.endCol());
+                        //Util.addMethodLineTag(sootMethod, dpos.line(), bodyDpos.endLine());
+                        Util.addLnPosTags(sootMethod, dpos.line(), bodyDpos.endLine(), dpos.column(), bodyDpos.endCol());
                         }
                     }
                 }
@@ -699,8 +700,8 @@ public class InitialResolver {
                 fieldInits.add(field);
             }
         }
-        Util.addLineTag(sootField, field);
-        Util.addPosTag(sootField, field.position());
+        //Util.addLineTag(sootField, field);
+        Util.addLnPosTags(sootField, field.position());
 	}
 
     /**

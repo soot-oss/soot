@@ -7,13 +7,18 @@ public class ColorAttribute{
     private int red;
     private int green;
     private int blue;
-    private boolean fg;
+    private int fg;
 
     public ColorAttribute(int red, int green, int blue, boolean fg){
         this.red = red;
         this.green = green;
         this.blue = blue;
-        this.fg = fg;
+        if (fg){
+            this.fg = 1;
+        }
+        else {
+            this.fg = 0;
+        }
     }
 
     public int red(){
@@ -28,7 +33,7 @@ public class ColorAttribute{
         return blue;
     }
 
-    public boolean fg(){
+    public int fg(){
         return fg;
     }
 

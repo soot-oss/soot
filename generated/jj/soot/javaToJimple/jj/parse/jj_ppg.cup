@@ -1450,7 +1450,7 @@ conditional_or_expression ::=
 conditional_expression ::=
     conditional_or_expression:a {:  RESULT = a;  :}
  |  conditional_or_expression:a QUESTION expression:b COLON conditional_expression:c {:
-                                                                                     RESULT = parser.nf.Conditional(parser.pos(a, b), a, 
+                                                                                     RESULT = parser.nf.Conditional(parser.pos(a, c), a, 
                 b, c); 
                                                                                      :};
 

@@ -417,6 +417,8 @@ public class PackManager {
                 throw new RuntimeException();
         }
 
+        soot.xml.TagCollector tc = new soot.xml.TagCollector();
+        
         boolean wholeShimple = Options.v().whole_shimple();
         if( Options.v().via_shimple() ) produceShimple = true;
 
@@ -456,8 +458,12 @@ public class PackManager {
                 PackManager.v().getPack("jtp").apply(body);
                 PackManager.v().getPack("jop").apply(body);
                 PackManager.v().getPack("jap").apply(body);
+                if (Options.v().xml_attributes() && Options.v().output_format() != Options.output_format_jimple) {
+                    System.out.println("collecting body tags");
+                    tc.collectBodyTags(body);
+                }
             }
-
+             
             if (produceGrimp) {
                 m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
                 PackManager.v().getPack("gop").apply(m.getActiveBody());
@@ -467,6 +473,11 @@ public class PackManager {
                 PackManager.v().getPack("bop").apply(m.getActiveBody());
                 PackManager.v().getPack("tag").apply(m.getActiveBody());
             }
+        }
+            
+        if (Options.v().xml_attributes() && Options.v().output_format() != Options.output_format_jimple) {
+            processXMLForClass(c, tc);
+            System.out.println("processed xml for class");
         }
 
         if (produceDava) {
@@ -552,15 +563,28 @@ public class PackManager {
     }
 
     private void postProcessXML( Iterator classes ) {
-        final int format = Options.v().output_format();
         if (!Options.v().xml_attributes()) return;
+        if (Options.v().output_format() != Options.output_format_jimple) return;
         while( classes.hasNext() ) {
             SootClass c = (SootClass) classes.next();
-            String fileName = SourceLocator.v().getFileNameFor(c, format);
-            XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName,
-                    SourceLocator.v().getOutputDir());
-            xap.printAttrs(c);
+            processXMLForClass(c);
         }
+    }
+
+    private void processXMLForClass(SootClass c, TagCollector tc){
+        final int format = Options.v().output_format();
+        String fileName = SourceLocator.v().getFileNameFor(c, format);
+        XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName,
+               SourceLocator.v().getOutputDir());
+        xap.printAttrs(c, tc);
+    }
+    
+    private void processXMLForClass(SootClass c){
+        final int format = Options.v().output_format();
+        String fileName = SourceLocator.v().getFileNameFor(c, format);
+        XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName,
+               SourceLocator.v().getOutputDir());
+        xap.printAttrs(c);
     }
 
     private void releaseBodies( SootClass cl ) {

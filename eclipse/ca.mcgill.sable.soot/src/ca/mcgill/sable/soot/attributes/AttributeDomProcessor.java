@@ -25,28 +25,10 @@ import java.util.*;
 import org.w3c.dom.*;
 //import org.xml.sax.*;
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 public class AttributeDomProcessor {
 
 	Document domDoc;
-	Vector attributes;
+	ArrayList attributes;
 	private SootAttribute current;
 	
 	
@@ -66,48 +48,14 @@ public class AttributeDomProcessor {
 				
 	}
 	
-	/*
-	 * processes nodes expecting the following layout:
-	 * <attributes>
-	 * <attribute>
-	 * <java_ln>INT</java_ln>
-	 * <jimple_ln>INT</jimple_ln>
-	 * 
-	 * <text>STRING</text>
-	 * 	... (multiple <text> possible)
-	 * 
-	 * <link_attribute>
-	 * 	<link_label>STRING</link_label>
-	 * 	<link>STRING</link>
-	 * </link_attribute>
-	 * 	... (multipl <link_attribute> possible)
-	 * 
-	 * <value_box_attribute>
-	 * 	<startOffset>INT</startOffset>
-	 * 	<endOffset>INT</endOffset>
-	 * 	<red>INT</red>
-	 * 	<green>INT</green>
-	 * 	<blue>INT</blue>
-	 * </value_box_attribute>
-	 * 	... (multiple <value_box_attribute> possible)
-	 * 
-	 * <jimpleOffsetStart>INT</jimpleOffsetStart>
-	 * <jimpleOffsetEnd>INT</jimpleOffsetEnd>
-	 * <red>INT</red>
-	 * <green>INT</green>
-	 * <blue>INT</blue>
-	 * </attribute>
-	 * 	... (multiple <attribute> possible)
-	 * 
-	 * </attributes>
-	 */
+
 	private void processNode(Node node) {
 
 		System.out.println("Start Processing: "+System.currentTimeMillis());
 		if (node.getNodeType() == Node.DOCUMENT_NODE) {
 			NodeList children = node.getChildNodes();
 			if (children != null) {
-				setAttributes(new Vector());
+				setAttributes(new ArrayList());
 				for (int i = 0; i < children.getLength(); i++) {
 					processNode(children.item(i));
 				}			
@@ -146,22 +94,68 @@ public class AttributeDomProcessor {
 	
 	private void processAttributeNode(SootAttribute current, Node node) {
 
+		System.out.println("node type: "+node.getNodeType());
 		if (node.getNodeType() == Node.ELEMENT_NODE) {
-			if (node.getNodeName().equals("value_box_attribute")){
+			/*if (node.getNodeName().equals("value_box_attribute")){
 				NodeList children = node.getChildNodes();
 				PosColAttribute vbAttr = new PosColAttribute();
 				for (int i = 0; i < children.getLength(); i++) {
 					processVBNode(vbAttr, children.item(i));
 				}
 				current.addValueAttr(vbAttr);
-			}
-			else if (node.getNodeName().equals("link_attribute")){
-				NodeList children = node.getChildNodes();
+			}*/
+			if (node.getNodeName().equals("link")){
+				NamedNodeMap map = node.getAttributes();
+				//NodeList children = node.getChildNodes();
 				LinkAttribute la = new LinkAttribute();
-				for (int i = 0; i < children.getLength(); i++){
-					processLinkNode(la, children.item(i));	
-				}
+				
+				la.setLabel(map.getNamedItem("label").getNodeValue());
+				la.setJavaLink((new Integer(map.getNamedItem("srcLink").getNodeValue()).intValue()));
+				la.setJimpleLink((new Integer(map.getNamedItem("jmpLink").getNodeValue()).intValue()));
+				la.setClassName(map.getNamedItem("clssNm").getNodeValue());
+				
+				
+				/*for (int i = 0; i < children.getLength(); i++){
+					processLinkNode(la,children.item(i));	
+				}*/
 				current.addLinkAttr(la);
+			}
+			else if (node.getNodeName().equals("color")){
+				NamedNodeMap map = node.getAttributes();
+				int r = (new Integer(map.getNamedItem("r").getNodeValue())).intValue();
+				int g = (new Integer(map.getNamedItem("g").getNodeValue())).intValue();
+				int b = (new Integer(map.getNamedItem("b").getNodeValue())).intValue();
+				int fgInt = (new Integer(map.getNamedItem("fg").getNodeValue())).intValue();
+				boolean fg = false;
+				if (fgInt == 1){
+					fg = true;
+				}
+				ColorAttribute ca = new ColorAttribute(r, g, b, fg);
+				current.setColor(ca);
+			}
+			else if (node.getNodeName().equals("srcPos")){
+				NamedNodeMap map = node.getAttributes();
+				int sline = (new Integer(map.getNamedItem("sline").getNodeValue())).intValue();
+				int eline = (new Integer(map.getNamedItem("eline").getNodeValue())).intValue();
+				int spos = (new Integer(map.getNamedItem("spos").getNodeValue())).intValue();
+				int epos = (new Integer(map.getNamedItem("epos").getNodeValue())).intValue();
+				
+				current.setJavaStartLn(sline);
+				current.setJavaEndLn(eline);
+				current.setJavaStartPos(spos);
+				current.setJavaEndPos(epos);
+			}
+			else if (node.getNodeName().equals("jmpPos")){
+				NamedNodeMap map = node.getAttributes();
+				int sline = (new Integer(map.getNamedItem("sline").getNodeValue())).intValue();
+				int eline = (new Integer(map.getNamedItem("eline").getNodeValue())).intValue();
+				int spos = (new Integer(map.getNamedItem("spos").getNodeValue())).intValue();
+				int epos = (new Integer(map.getNamedItem("epos").getNodeValue())).intValue();
+	
+				current.setJimpleStartLn(sline);
+				current.setJimpleEndLn(eline);
+				current.setJimpleStartPos(spos);
+				current.setJimpleEndPos(epos);
 			}
 			else {
 				NodeList children = node.getChildNodes();
@@ -173,51 +167,15 @@ public class AttributeDomProcessor {
 		else if (node.getNodeType() == Node.TEXT_NODE){
 			String type = node.getParentNode().getNodeName();
 			
-			if (type.equals("javaStartLn")){			
-				current.setJavaStartLn((new Integer(node.getNodeValue())).intValue());
-			}
-			else if (type.equals("javaEndLn")){			
-				current.setJavaEndLn((new Integer(node.getNodeValue())).intValue());
-			}
-			else if (type.equals("jimpleStartLn")) {
-				current.setJimpleStartLn((new Integer(node.getNodeValue())).intValue());
-			}
-			else if (type.equals("jimpleEndLn")){
-				current.setJimpleEndLn((new Integer(node.getNodeValue())).intValue());
-			}
-			else if (type.equals("jimpleStartPos")){
-				current.setJimpleOffsetStart((new Integer(node.getNodeValue()).intValue()));
-			}
-			else if (type.equals("jimpleEndPos")){ 
-				current.setJimpleOffsetEnd((new Integer(node.getNodeValue()).intValue()));
-			}
-            else if (type.equals("javaStartPos")){
-                 current.setJavaOffsetStart((new Integer(node.getNodeValue()).intValue()));
-                 //System.out.println("java start offset: "+current.getJavaOffsetStart());
-            }
-            else if (type.equals("javaEndPos")){ 
-                 current.setJavaOffsetEnd((new Integer(node.getNodeValue()).intValue()));
-                 //System.out.println("java end offset: "+current.getJavaOffsetEnd());
-            }
-			else if (type.equals("red")) {
-				current.setRed((new Integer(node.getNodeValue()).intValue()));
-			}
-			else if (type.equals("green")) {
-				current.setGreen((new Integer(node.getNodeValue()).intValue()));
-			}
-			else if (type.equals("blue")){
-				current.setBlue((new Integer(node.getNodeValue()).intValue()));
-			}
-			else if (type.equals("fg")){
-				current.setFg((new Integer(node.getNodeValue()).intValue()));
-			}
-			else if (type.equals("text")) {
+
+			if (type.equals("text")) {
+				System.out.println("reading text node");
 				current.addTextAttr(node.getNodeValue());
 			}
 		}
 	}
 	
-	private void processVBNode(PosColAttribute vbAttr, Node node){
+	/*private void processVBNode(PosColAttribute vbAttr, Node node){
 		if (node.getNodeType() == Node.ELEMENT_NODE){
 			NodeList children = node.getChildNodes();
 			for (int i = 0; i < children.getLength(); i++) {
@@ -282,7 +240,7 @@ public class AttributeDomProcessor {
 				la.setClassName(node.getNodeValue());
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * Returns the domDoc.
@@ -304,7 +262,7 @@ public class AttributeDomProcessor {
 	 * Returns the attributes.
 	 * @return Vector
 	 */
-	public Vector getAttributes() {
+	public ArrayList getAttributes() {
 		return attributes;
 	}
 
@@ -320,7 +278,7 @@ public class AttributeDomProcessor {
 	 * Sets the attributes.
 	 * @param attributes The attributes to set
 	 */
-	public void setAttributes(Vector attributes) {
+	public void setAttributes(ArrayList attributes) {
 		this.attributes = attributes;
 	}
 

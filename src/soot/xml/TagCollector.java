@@ -7,170 +7,102 @@ import java.io.*;
 
 public class TagCollector {
 
-    private HashMap javaTags;
+    private ArrayList attributes;
     
     public TagCollector(){
-        javaTags = new HashMap();
+        attributes = new ArrayList();
     }
 
     public void collectTags(SootClass sc){
 	
-        int javaLn = 0;
         
         // tag fields
         Iterator fit = sc.getFields().iterator();
 		while (fit.hasNext()){
             SootField sf = (SootField)fit.next();
-            Iterator fTags = sf.getTags().iterator();
-            javaLn = getJavaLnOfHost(sf);
-            JavaAttribute ja;
-            if (javaTags.containsKey(new Integer(javaLn))){
-                ja = (JavaAttribute)javaTags.get(new Integer(javaLn));
-            }
-            else {
-                ja = new JavaAttribute();
-            }
-            while (fTags.hasNext()){
-                Tag t = (Tag)fTags.next();
-                ja.addTag(t);
-            }
-            javaTags.put(new Integer(javaLn), ja);
+            collectFieldTags(sf);
         }
         
         // tag methods
         Iterator it = sc.getMethods().iterator();
 		while (it.hasNext()) {
 			SootMethod sm = (SootMethod)it.next();
-			if (!sm.hasActiveBody()) {
-				continue;
-			}
-			if (!sm.getTags().isEmpty()){
-				Iterator mTags = sm.getTags().iterator();
-                javaLn = getJavaLnOfHost(sm);
-                JavaAttribute ja;
-                if (javaTags.containsKey(new Integer(javaLn))){
-                    ja = (JavaAttribute)javaTags.get(new Integer(javaLn));
-                }
-                else {
-                    ja = new JavaAttribute();
-                }
-				while (mTags.hasNext()){
-					Tag t = (Tag)mTags.next();
-					ja.addTag(t);
-				}
-                javaTags.put(new Integer(javaLn), ja);
-			}
+			collectMethodTags(sm);
 			
 			Body b = sm.getActiveBody();
-			Iterator itUnits = b.getUnits().iterator();
-			while (itUnits.hasNext()) {
-				Unit u = (Unit)itUnits.next();
-				Iterator itTags = u.getTags().iterator();
-                javaLn = getJavaLnOfHost(u);
-                JavaAttribute ja;
-                if (javaTags.containsKey(new Integer(javaLn))){
-                    ja = (JavaAttribute)javaTags.get(new Integer(javaLn));
+            collectBodyTags(b);
+        }
+    }
+
+    public void collectFieldTags(SootField sf){
+        Iterator fTags = sf.getTags().iterator();
+        Attribute fa = new Attribute();
+        while (fTags.hasNext()){
+            Tag t = (Tag)fTags.next();
+            fa.addTag(t);
+        }
+        attributes.add(fa);
+    }
+
+    public void collectMethodTags(SootMethod sm){
+	    if (!sm.hasActiveBody()) {
+		    return;
+	    }
+		if (!sm.getTags().isEmpty()){
+			Iterator mTags = sm.getTags().iterator();
+            Attribute ma = new Attribute();
+		    while (mTags.hasNext()){
+			    Tag t = (Tag)mTags.next();
+			    ma.addTag(t);
+			}
+            attributes.add(ma);
+		}
+			
+    }
+    
+    public void collectBodyTags(Body b){
+		Iterator itUnits = b.getUnits().iterator();
+		while (itUnits.hasNext()) {
+			Unit u = (Unit)itUnits.next();
+			Iterator itTags = u.getTags().iterator();
+            Attribute ua = new Attribute();
+            JimpleLineNumberTag jlnt = null;
+	    	while (itTags.hasNext()) {
+	   		    Tag t = (Tag)itTags.next();
+                ua.addTag(t);
+                if (t instanceof JimpleLineNumberTag){
+                    jlnt = (JimpleLineNumberTag)t;
                 }
-                else {
-                    ja = new JavaAttribute();
-                }
-				while (itTags.hasNext()) {
-			   		Tag t = (Tag)itTags.next();
-				    ja.addTag(t);
-                }
-                javaTags.put(new Integer(javaLn), ja);
-				Iterator valBoxIt = u.getUseAndDefBoxes().iterator();
-				while (valBoxIt.hasNext()){
-					ValueBox vb = (ValueBox)valBoxIt.next();
-                    PosColorAttribute attr = new PosColorAttribute();
-					if (!vb.getTags().isEmpty()){
-						Iterator tagsIt = vb.getTags().iterator(); 
-                        javaLn = getJavaLnOfHost(u);
-                        JavaAttribute vja;
-                        if (javaTags.containsKey(new Integer(javaLn))){
-                            vja = (JavaAttribute)javaTags.get(new Integer(javaLn));
+            }
+            attributes.add(ua);
+			Iterator valBoxIt = u.getUseAndDefBoxes().iterator();
+			while (valBoxIt.hasNext()){
+				ValueBox vb = (ValueBox)valBoxIt.next();
+                //PosColorAttribute attr = new PosColorAttribute();
+				if (!vb.getTags().isEmpty()){
+			    	Iterator tagsIt = vb.getTags().iterator(); 
+                    Attribute va = new Attribute();
+			    	while (tagsIt.hasNext()) {
+						Tag t = (Tag)tagsIt.next();
+                        System.out.println("adding vb tag: "+t);
+					    va.addTag(t);
+                        if (jlnt != null) {
+                            va.addTag(jlnt);
                         }
-                        else {
-                            vja = new JavaAttribute();
-                        }
-						while (tagsIt.hasNext()) {
-							Tag t = (Tag)tagsIt.next();
-						    handleVbTag(attr, t);
-                        }
-                        vja.addVbAttr(attr);
-                        javaTags.put(new Integer(javaLn), vja);
                     }
-                    
+                    // also here add line tags of the unit
+                    attributes.add(va);
                 }
             }
         }
     }
-
-    private void handleVbTag(PosColorAttribute attr, Tag t){
-		if (t instanceof LineNumberTag) {
-            int lnNum = (new Integer(((LineNumberTag)t).toString())).intValue();
-            attr.javaStartLn(lnNum);
-            attr.javaEndLn(lnNum);
-		}
-		else if (t instanceof JimpleLineNumberTag) {
-            JimpleLineNumberTag jlnTag = (JimpleLineNumberTag)t;
-		    attr.jimpleStartLn(jlnTag.getStartLineNumber());
-            attr.jimpleEndLn(jlnTag.getEndLineNumber());
-		}
-		else if (t instanceof SourceLineNumberTag) {
-            SourceLineNumberTag jlnTag = (SourceLineNumberTag)t; 
-			attr.javaStartLn(jlnTag.getStartLineNumber());
-            attr.javaEndLn(jlnTag.getEndLineNumber());
-		}
-		else if (t instanceof SourcePositionTag){
-			SourcePositionTag pt = (SourcePositionTag)t;
-            attr.javaStartPos(pt.getStartOffset());
-            attr.javaEndPos(pt.getEndOffset());
-		}
-        else if (t instanceof PositionTag){
-			PositionTag pt = (PositionTag)t;
-            attr.jimpleStartPos(pt.getStartOffset());
-            attr.jimpleEndPos(pt.getEndOffset());
-		}
-		else if (t instanceof ColorTag){
-			ColorTag ct = (ColorTag)t;
-            ColorAttribute ca = new ColorAttribute(ct.getRed(), ct.getGreen(), ct.getBlue(), ct.isForeground());
-            attr.color(ca);
-		}
-								
-	}
-	
-    private int getJavaLnOfHost(Host h){
-		Iterator it = h.getTags().iterator();
-		while (it.hasNext()){
-			Tag t = (Tag)it.next();
-			if (t instanceof SourceLineNumberTag) {
-				return ((SourceLineNumberTag)t).getStartLineNumber();
-			}
-            else if (t instanceof LineNumberTag){
-                return (new Integer(((LineNumberTag)t).toString())).intValue();
-            }
-		}
-		return 0;
-	}
-
+    
     public void printTags(PrintWriter writerOut){
-        Iterator keysIt = javaTags.keySet().iterator();
-        while (keysIt.hasNext()){
-            JavaAttribute ja = (JavaAttribute)javaTags.get(keysIt.next());
-            if (ja.hasColorTag()) {
-                writerOut.println("<attribute>");
-                ja.printAllTags(writerOut);
-                writerOut.println("</attribute>");
-            }
-            else if (ja.hasInfoTag()){
-                writerOut.println("<attribute>");
-                ja.printInfoTags(writerOut);
-                writerOut.println("</attribute>");
-            }
-            else {
-                // don't print anything!
-            }
+        
+        Iterator it = attributes.iterator();
+        while (it.hasNext()){
+            Attribute a = (Attribute)it.next();
+            a.print(writerOut);
         }
     }
 }

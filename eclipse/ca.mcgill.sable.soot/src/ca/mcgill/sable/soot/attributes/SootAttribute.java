@@ -30,23 +30,25 @@ public class SootAttribute {
 	private int javaStartLn;
 	private int jimpleEndLn;
 	private int jimpleStartLn;
-	private int jimpleOffsetStart;
-	private int jimpleOffsetEnd;
-    private int javaOffsetStart;
-    private int javaOffsetEnd;
-	private int colorKey;
-	private String text;
+	private int jimpleStartPos;
+	private int jimpleEndPos;
+    private int javaStartPos;
+    private int javaEndPos;
+	private ColorAttribute color;
+	//private String text;
 	private ArrayList textList;
-	private ArrayList valueAttrs;
-	private String filename;
-	private int red;
-	private int green;
-	private int blue;
-	private int fg;
+	//private ArrayList valueAttrs;
+	//private String filename;
+	//private int red;
+	//private int green;
+	//private int blue;
+	//private int fg;
 	private ArrayList linkList;
-
 	
-	public String toString(){
+	private int jimpleLength;
+	private int javaLength;
+	
+	/*public String toString(){
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n");
 		sb.append("Java Line: "+javaEndLn+"\n");
@@ -63,16 +65,16 @@ public class SootAttribute {
 		}
 		
 		return sb.toString();
-	}
+	}*/
 	
 	private static final String NEWLINE = "\n";
 		
-	public void addValueAttr(PosColAttribute valAttr){
+	/*public void addValueAttr(PosColAttribute valAttr){
 		if (getValueAttrs() == null){
 			setValueAttrs(new ArrayList());
 		}
 		getValueAttrs().add(valAttr);
-	}
+	}*/
 	
 	public void addLinkAttr(LinkAttribute link){
 		if (getLinkList() == null){
@@ -125,7 +127,7 @@ public class SootAttribute {
 	public RGB getRGBColor(){
 
 		//System.out.println("RGB Color: "+getRed()+" "+getGreen()+" "+getBlue());
-		return new RGB(getRed(), getGreen(), getBlue());
+		return new RGB(color.red(), color.green(), color.blue());
 	}
 
 	// these two are maybe not accurate maybe
@@ -149,26 +151,26 @@ public class SootAttribute {
 	 * Returns the filename.
 	 * @return String
 	 */
-	public String getFilename() {
+	/*public String getFilename() {
 		return filename;
-	}
+	}*/
 
 
 	/**
 	 * Returns the text.
 	 * @return String
 	 */
-	public String getText() {
+	/*public String getText() {
 		return text;
-	}
+	}*/
 
 	/**
 	 * Sets the filename.
 	 * @param filename The filename to set
 	 */
-	public void setFilename(String filename) {
+	/*public void setFilename(String filename) {
 		this.filename = filename;
-	}
+	}*/
 
 
 
@@ -177,50 +179,50 @@ public class SootAttribute {
 	 * Sets the text.
 	 * @param text The text to set
 	 */
-	public void setText(String text) {
+	/*public void setText(String text) {
 		this.text = text;
+	}*/
+
+	/**
+	 * @return
+	 */
+	public ColorAttribute getColor() {
+		return color;
 	}
 
 	/**
 	 * @return
 	 */
-	public int getColorKey() {
-		return colorKey;
+	public int getJimpleEndPos() {
+		return jimpleEndPos;
 	}
 
 	/**
 	 * @return
 	 */
-	public int getJimpleOffsetEnd() {
-		return jimpleOffsetEnd;
-	}
-
-	/**
-	 * @return
-	 */
-	public int getJimpleOffsetStart() {
-		return jimpleOffsetStart;
+	public int getJimpleStartPos() {
+		return jimpleStartPos;
 	}
 
 	/**
 	 * @param i
 	 */
-	public void setColorKey(int i) {
-		colorKey = i;
+	public void setColor(ColorAttribute i) {
+		color = i;
 	}
 
 	/**
 	 * @param i
 	 */
-	public void setJimpleOffsetEnd(int i) {
-		jimpleOffsetEnd = i;
+	public void setJimpleEndPos(int i) {
+		jimpleEndPos = i;
 	}
 
 	/**
 	 * @param i
 	 */
-	public void setJimpleOffsetStart(int i) {
-		jimpleOffsetStart = i;
+	public void setJimpleStartPos(int i) {
+		jimpleStartPos = i;
 	}
 
 	/**
@@ -240,62 +242,62 @@ public class SootAttribute {
 	/**
 	 * @return
 	 */
-	public ArrayList getValueAttrs() {
+	/*public ArrayList getValueAttrs() {
 		return valueAttrs;
-	}
+	}*/
 
 	/**
 	 * @param list
 	 */
-	public void setValueAttrs(ArrayList list) {
+	/*public void setValueAttrs(ArrayList list) {
 		valueAttrs = list;
-	}
+	}*/
 
 	/**
 	 * @return
 	 */
-	public int getBlue() {
+	/*public int getBlue() {
 		return blue;
-	}
+	}*/
 
 	/**
 	 * @return
 	 */
-	public int getGreen() {
+	/*public int getGreen() {
 		return green;
-	}
+	}*/
 
 
 
 	/**
 	 * @return
 	 */
-	public int getRed() {
+	/*public int getRed() {
 		return red;
-	}
+	}*/
 
 	/**
 	 * @param i
 	 */
-	public void setBlue(int i) {
+	/*public void setBlue(int i) {
 		blue = i;
-	}
+	}*/
 
 	/**
 	 * @param i
 	 */
-	public void setGreen(int i) {
+	/*public void setGreen(int i) {
 		green = i;
-	}
+	}*/
 
 	
 
 	/**
 	 * @param i
 	 */
-	public void setRed(int i) {
+	/*public void setRed(int i) {
 		red = i;
-	}
+	}*/
 
 	/**
 	 * @return
@@ -314,44 +316,44 @@ public class SootAttribute {
     /**
      * @return
      */
-    public int getJavaOffsetEnd() {
-        return javaOffsetEnd;
+    public int getJavaEndPos() {
+        return javaEndPos;
     }
 
     /**
      * @return
      */
-    public int getJavaOffsetStart() {
-        return javaOffsetStart;
+    public int getJavaStartPos() {
+        return javaStartPos;
     }
 
     /**
      * @param i
      */
-    public void setJavaOffsetEnd(int i) {
-        javaOffsetEnd = i;
+    public void setJavaEndPos(int i) {
+        javaEndPos = i;
     }
 
     /**
      * @param i
      */
-    public void setJavaOffsetStart(int i) {
-        javaOffsetStart = i;
+    public void setJavaStartPos(int i) {
+        javaStartPos = i;
     }
 
 	/**
 	 * @return
 	 */
-	public int getFg() {
+	/*public int getFg() {
 		return fg;
-	}
+	}*/
 
 	/**
 	 * @param b
 	 */
-	public void setFg(int b) {
+	/*public void setFg(int b) {
 		fg = b;
-	}
+	}*/
 
 	/**
 	 * @return
@@ -407,6 +409,35 @@ public class SootAttribute {
 	 */
 	public void setJimpleStartLn(int i) {
 		jimpleStartLn = i;
+	}
+
+
+	/**
+	 * @return
+	 */
+	public int getJavaLength() {
+		return javaLength;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getJimpleLength() {
+		return jimpleLength;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setJavaLength(int i) {
+		javaLength = i;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setJimpleLength(int i) {
+		jimpleLength = i;
 	}
 
 }

@@ -51,7 +51,8 @@ public class SootAttributesJavaColorer {
 		setDisplay(getEditorPart().getSite().getShell().getDisplay());
 		
 		if ((handler == null) || (handler.getAttrList() == null)) return;
-		Iterator it = handler.getAttrList().iterator();
+		ArrayList sortedAttrs = sortAttrsByLength(handler.getAttrList());
+		Iterator it = sortedAttrs.iterator();
 		TextPresentation tp = new TextPresentation();
 		
 		styleList = new ArrayList();
@@ -90,25 +91,25 @@ public class SootAttributesJavaColorer {
 			if ((sa.getJavaStartLn() == 0 && sa.getJavaEndLn() == 0)){
 			}
 			else {
-				if (sa.getJavaOffsetStart() == 0 && sa.getJavaOffsetEnd() == 0){
+				if (sa.getJavaStartPos() == 0 && sa.getJavaEndPos() == 0){
 				}
 				else {			
-					if ((sa.getRed() == 0) && (sa.getGreen() == 0) && (sa.getBlue() == 0)){
+					if (sa.getColor() == null){
 					}
 					else {
 						//System.out.println("java line: "+sa.getJava_ln()+" start: "+sa.getJavaOffsetStart()+1+" end: "+ sa.getJavaOffsetEnd()+1);
 							
                 		boolean fg = false;
-                		if (sa.getFg() == 1){
+                		if (sa.getColor().fg() == 1){
                     		fg = true;
                 		}
                 
-						setAttributeTextColor(tp, sa.getJavaStartLn(), sa.getJavaEndLn(), sa.getJavaOffsetStart()+1, sa.getJavaOffsetEnd()+1, sa.getRGBColor(), fg);//, tp);
+						setAttributeTextColor(tp, sa.getJavaStartLn(), sa.getJavaEndLn(), sa.getJavaStartPos()+1, sa.getJavaEndPos()+1, sa.getRGBColor(), fg);//, tp);
 					}
 				}
 			}
 			// sets colors for valueboxes
-			if (sa.getValueAttrs() != null){
+			/*if (sa.getValueAttrs() != null){
 				Iterator valIt = sa.getValueAttrs().iterator();
 				while (valIt.hasNext()){
 					PosColAttribute vba = (PosColAttribute)valIt.next();
@@ -131,7 +132,7 @@ public class SootAttributesJavaColorer {
 						}
 					}
 				}
-			}
+			}*/
 		}
 		/*Iterator tempIt = temp.iterator();
 				while (tempIt.hasNext()){
@@ -174,13 +175,33 @@ public class SootAttributesJavaColorer {
 		ColorManager colorManager = new ColorManager();
 		int sLineOffset = 0;
 		int eLineOffset = 0;
+		int [] offsets = new int[eline-sline+1];
+		int [] starts = new int[eline-sline+1];
+		int [] lengths = new int[eline-sline+1];
+		int unColLen = start < end ? start-1 : end-2;
+                	
 		try {
+			int j = 0;
+			for (int i = sline; i <= eline; i++){
+				offsets[j] = getViewer().getDocument().getLineOffset((i-1));
+				System.out.println("offset at "+j+" is: "+offsets[j]);
+				starts[j] = offsets[j] + unColLen;
+				lengths[j] = getViewer().getDocument().getLineOffset((i)) - 1 - starts[j];
+				j++;
+			}
 			sLineOffset = getViewer().getDocument().getLineOffset((sline-1));
 			eLineOffset = getViewer().getDocument().getLineOffset((eline-1));
 			//System.out.println("slineOffset: "+sLineOffset);
 		}
 		catch(Exception e){	
 			return;
+		}
+		
+		int longest = 0;
+		for (int i = 0; i < lengths.length; i++){
+			if (lengths[i] >longest){
+				longest = lengths[i];
+			}
 		}
 		//System.out.println("style range: ");
         //System.out.println("start: "+start);
@@ -208,18 +229,43 @@ public class SootAttributesJavaColorer {
                 StyleRange sr;
                 //System.out.println("line: "+sline+" start: "+s+" length: "+l);
                 if (l > 0){
-                
-                if (foreground){
-				    sr = new StyleRange(s, l, ck, getBgColor());
+                if (sline == eline){
+                	//System.out.println("start: "+start+" end: "+end);
+                	if (foreground){
+				    	sr = new StyleRange(s, l, ck, getBgColor());
+                	}
+                	else {
+                    	sr = new StyleRange(s, l, oldBgC, ck);
+                	}
+				
+					styleList.add(sr);
                 }
                 else {
-                    sr = new StyleRange(s, l, oldBgC, ck);
+                	for (int i = 0; i < starts.length; i++){
+                		
+                		if (foreground){
+							sr = new StyleRange(starts[i], lengths[i], ck, getBgColor());
+                	
+                		}
+                		else {
+							sr = new StyleRange(starts[i], lengths[i], oldBgC, ck);
+                	
+                		}
+						styleList.add(sr);	
+                	}
+					
                 }
+                
+                /*for (int j = 1; j < offsets.length; j++){
+                	
+                	StyleRange lineBegin = new StyleRange(offsets[j], unColLen, oldBgC, getBgColor());
+                	styleList.add(lineBegin);
+                }*/
                 //if (count == 0 | count == 1){
         		//getViewer().getTextWidget().replaceStyleRanges(s, l, sr);        
 				//	tp.addStyleRange(sr);
 					//tp.addStyleRange(tp.getDefaultStyleRange());			
-                styleList.add(sr);
+                //styleList.add(sr);
                 }
             //}
 				//count++;
@@ -237,6 +283,47 @@ public class SootAttributesJavaColorer {
 		//tp.clear();
 			
 		
+	}
+	private ArrayList sortAttrsByLength(ArrayList attrs){
+		
+		Iterator it = attrs.iterator();
+		while(it.hasNext()){
+			SootAttribute sa = (SootAttribute)it.next();
+			int sLineOffset = 0;
+			int eLineOffset = 0;
+			try {
+				sLineOffset = getViewer().getDocument().getLineOffset((sa.getJavaStartLn()-1));
+				eLineOffset = getViewer().getDocument().getLineOffset((sa.getJavaEndLn()-1));
+			}
+			catch(Exception e){	
+			
+			}
+			
+			int sOffset = sLineOffset + sa.getJavaStartPos() - 1;
+			int eOffset = eLineOffset + sa.getJavaEndPos() - 1;
+			int length = sOffset - eOffset;
+			sa.setJavaLength(length);
+			
+		}
+		
+		SootAttribute [] sorted = new SootAttribute[attrs.size()];
+		attrs.toArray(sorted);
+		for (int i = 0; i< sorted.length; i++){
+			for (int j = i; j < sorted.length; j++){
+				if (sorted[j].getJavaLength() > sorted[i].getJavaLength()){
+					SootAttribute temp = sorted[i];
+					sorted[i] = sorted[j];
+					sorted[j] = temp;
+				}
+			}
+		}
+		
+		ArrayList sortedArray = new ArrayList();
+		for (int i = sorted.length - 1; i >= 0; i--){
+			sortedArray.add(sorted[i]);
+		}
+		
+		return sortedArray;
 	}
     
     private void changeTextPres(TextPresentation tp) {

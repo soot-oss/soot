@@ -3372,7 +3372,7 @@ class CUP$Grm$actions {
 		int cright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
 		Expr c = (Expr)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                                                                                     RESULT = parser.nf.Conditional(parser.pos(a, b), a, 
+                                                                                     RESULT = parser.nf.Conditional(parser.pos(a, c), a, 
                 b, c); 
                                                                                      
               CUP$Grm$result = new java_cup.runtime.Symbol(146/*conditional_expression*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-4)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
