@@ -806,7 +806,7 @@ public class JimpleBodyBuilder {
                 if (next instanceof polyglot.ast.Case) {
                     if (!((polyglot.ast.Case)next).isDefault()){
                         long temp = ((polyglot.ast.Case)next).value();
-                        System.out.println("temp: "+temp);
+                        //System.out.println("temp: "+temp);
                         if (unknown){
                             highVal = temp;
                             lowVal = temp;
@@ -3313,7 +3313,7 @@ public class JimpleBodyBuilder {
 			name = nextLongName();
 		}
         else if (type instanceof soot.RefLikeType) {
-            System.out.println("is ref like type");
+            //System.out.println("is ref like type");
             name = nextRefLikeTypeName();
         }
         else {

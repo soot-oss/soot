@@ -110,7 +110,7 @@ public class PolyglotMethodSource implements MethodSource {
 
     public void addAssertInits(soot.Body body){
     
-        System.out.println("needed assert method");
+        //System.out.println("needed assert method");
         // field ref
         soot.SootField field = body.getMethod().getDeclaringClass().getField("class$"+body.getMethod().getDeclaringClass().getName(), soot.RefType.v("java.lang.Class"));
 

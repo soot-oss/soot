@@ -40,7 +40,7 @@ public class AnonClassChecker extends polyglot.visit.NodeVisitor {
                 }
 
                 if (((polyglot.ast.New)n).body() != null){
-                    System.out.println("anon class name: "+anonClassName);
+                    //System.out.println("anon class name: "+anonClassName);
                     bodyNameMap.put(((polyglot.ast.New)n).body(), anonClassName);
                 }
             }

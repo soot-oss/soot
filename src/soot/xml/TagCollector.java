@@ -8,9 +8,11 @@ import java.io.*;
 public class TagCollector {
 
     private ArrayList attributes;
+    private ArrayList keys;
     
     public TagCollector(){
         attributes = new ArrayList();
+        keys = new ArrayList();
     }
 
     public void collectTags(SootClass sc){

@@ -90,7 +90,7 @@ public class InitialResolver {
             if (!className.equals("java.lang.String[]")) {
                     
                 resolver.assertResolvedClass(className);
-                System.out.println("Soot resolved className: "+className);
+                //System.out.println("Soot resolved className: "+className);
             }
             
         }

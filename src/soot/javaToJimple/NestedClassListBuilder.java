@@ -29,7 +29,7 @@ public class NestedClassListBuilder extends polyglot.visit.NodeVisitor {
         if (n instanceof polyglot.ast.ClassDecl) {
 
             if (((polyglot.types.ClassType)((polyglot.ast.ClassDecl)n).type()).isNested()){
-                System.out.println("Adding to Inner class list: "+n);
+                //System.out.println("Adding to Inner class list: "+n);
                 classDeclsList.add(n);
             }
             /*if (((polyglot.types.ClassType)((polyglot.ast.ClassDecl)n).type()).isInnerClass()){

@@ -85,24 +85,39 @@ public class ParityTagger extends BodyTransformer
 				}
 			}
         }
+
+        // add key to class
+        Iterator keyIt = b.getMethod().getDeclaringClass().getTags().iterator();
+        boolean keysAdded = false;
+        while (keyIt.hasNext()){
+            if (keyIt.next() instanceof KeyTag){
+                keysAdded = true;
+            }
+        }
+        if (!keysAdded){
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(255,0,0, "Parity: Top"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(45,255,84, "Parity: Bottom"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(255,248,35, "Parity: Even"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(174,210,255, "Parity: Odd"));
+        }
     }
 
 	private void addColorTag(ValueBox vb, String type) {
 		if (type.equals("bottom")){
-			//yellow
-			vb.addTag(new ColorTag(255,248,35));
+			//green
+			vb.addTag(new ColorTag(ColorTag.GREEN));
 		}
 		else if (type.equals("top")){
 			//red
-			vb.addTag(new ColorTag(255,0,0));
+			vb.addTag(new ColorTag(ColorTag.RED));
 		}
 		else if (type.equals("even")){
-			//green
-			vb.addTag(new ColorTag(255,248,35));
+			//yellow
+			vb.addTag(new ColorTag(ColorTag.YELLOW));
 		}
 		else if (type.equals("odd")){
 			//blue
-			vb.addTag(new ColorTag(174,210,255));
+			vb.addTag(new ColorTag(ColorTag.BLUE));
 		}
 	}
 }

@@ -461,7 +461,7 @@ public class PackManager {
                 PackManager.v().getPack("jop").apply(body);
                 PackManager.v().getPack("jap").apply(body);
                 if (Options.v().xml_attributes() && Options.v().output_format() != Options.output_format_jimple) {
-                    System.out.println("collecting body tags");
+                    //System.out.println("collecting body tags");
                     tc.collectBodyTags(body);
                 }
             }
@@ -479,7 +479,7 @@ public class PackManager {
             
         if (Options.v().xml_attributes() && Options.v().output_format() != Options.output_format_jimple) {
             processXMLForClass(c, tc);
-            System.out.println("processed xml for class");
+            //System.out.println("processed xml for class");
         }
 
         if (produceDava) {
