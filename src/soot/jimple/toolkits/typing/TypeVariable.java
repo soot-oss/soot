@@ -743,7 +743,7 @@ class TypeVariable implements Comparable
 	  {
 	    if(var.type() == null) {
 	      // hack for J2ME library, reported by Stephen Cheng
-	      if (!soot.Main.v().isJ2ME) {
+	      if (!G.v().isJ2ME) {
 		var.addChild(resolver.typeVariable(resolver.hierarchy().CLONEABLE));
 		var.addChild(resolver.typeVariable(resolver.hierarchy().SERIALIZABLE));
 	      }
@@ -753,7 +753,7 @@ class TypeVariable implements Comparable
 	  {
 	    if(var.type() == null) {
 	      // hack for J2ME library, reported by Stephen Cheng
-	      if (!soot.Main.v().isJ2ME) {
+	      if (!G.v().isJ2ME) {
 		var.addChild(resolver.typeVariable(ArrayType.v(RefType.v("java.lang.Cloneable"), var.depth())));
 		var.addChild(resolver.typeVariable(ArrayType.v(RefType.v("java.io.Serializable"), var.depth())));
 	      }

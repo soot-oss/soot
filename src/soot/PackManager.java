@@ -19,6 +19,12 @@
 
 package soot;
 import java.util.*;
+import java.io.*;
+import soot.util.*;
+import soot.util.queue.*;
+import soot.jimple.*;
+import soot.grimp.*;
+import soot.baf.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.base.*;
 import soot.grimp.toolkits.base.*;
@@ -38,6 +44,9 @@ import soot.toolkits.scalar.*;
 import soot.jimple.spark.SparkTransformer;
 import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.jimple.spark.fieldrw.*;
+import soot.dava.*;
+import soot.dava.toolkits.base.misc.*;
+import soot.xml.*;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
@@ -370,5 +379,280 @@ public class PackManager {
 
     public Collection allPacks() {
         return Collections.unmodifiableList( packList );
+    }
+
+    public void runPacks() {
+        if (Options.v().whole_program()) {
+            runWholeProgramPacks();
+        }
+        preProcessDAVA();
+        runBodyPacks( reachableClasses() );
+        postProcessDAVA();
+    }
+
+    private void runWholeProgramPacks() {
+        getPack("cg").apply();
+        if (Options.v().via_shimple()) {
+            getPack("wstp").apply();
+            getPack("wsop").apply();
+        } else {
+            getPack("wjtp").apply();
+            getPack("wjop").apply();
+            getPack("wjap").apply();
+        }
+    }
+
+    /* preprocess classes for DAVA */
+    private void preProcessDAVA() {
+        if (Options.v().output_format() == Options.output_format_dava) {
+            ThrowFinder.v().find();
+            PackageNamer.v().fixNames();
+
+            G.v().out.println();
+        }
+    }
+
+    /* process classes in whole-program mode */
+    private void runBodyPacks( Iterator classes ) {
+        while( classes.hasNext() ) {
+            SootClass cl = (SootClass) classes.next();
+            runBodyPacks( cl );
+            writeClass( cl );
+            releaseBodies( cl );
+        }
+    }
+
+    private Iterator reachableClasses() {
+        if( Options.v().whole_program() ) {
+            QueueReader methods = Scene.v().getReachableMethods().listener();
+            HashSet reachableClasses = new HashSet();
+            
+            while(true) {
+                    SootMethod m = (SootMethod) methods.next();
+                    if(m == null) break;
+                    SootClass c = m.getDeclaringClass();
+                    if( !c.isApplicationClass() ) continue;
+                    reachableClasses.add( c );
+            }
+            return reachableClasses.iterator();
+        } else {
+            return Scene.v().getApplicationClasses().iterator();
+        }
+    }
+
+    /* post process for DAVA */
+    private void postProcessDAVA() {
+        if (Options.v().output_format() == Options.output_format_dava) {
+
+            G.v().out.println();
+
+            Iterator classIt = Scene.v().getApplicationClasses().iterator();
+            while (classIt.hasNext()) {
+                SootClass s = (SootClass) classIt.next();
+
+                FileOutputStream streamOut = null;
+                PrintWriter writerOut = null;
+                String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
+
+                try {
+                    streamOut = new FileOutputStream(fileName);
+                    writerOut =
+                        new PrintWriter(new OutputStreamWriter(streamOut));
+                } catch (IOException e) {
+                    G.v().out.println("Cannot output file " + fileName);
+                }
+
+                G.v().out.print("Generating " + fileName + "... ");
+                G.v().out.flush();
+
+                DavaPrinter.v().printTo(s, writerOut);
+
+                G.v().out.println();
+                G.v().out.flush();
+
+                {
+                    try {
+                        writerOut.flush();
+                        streamOut.close();
+                    } catch (IOException e) {
+                        G.v().out.println(
+                            "Cannot close output file " + fileName);
+                    }
+                }
+
+                {
+                    Iterator methodIt = s.methodIterator();
+
+                    while (methodIt.hasNext()) {
+                        SootMethod m = (SootMethod) methodIt.next();
+
+                        if (m.hasActiveBody())
+                            m.releaseActiveBody();
+                    }
+                }
+            }
+            G.v().out.println();
+        }
+    }
+
+    private void runBodyPacks(SootClass c) {
+        if (Options.v().output_format() == Options.output_format_dava) {
+            G.v().out.print("Decompiling ");
+        } else {
+            G.v().out.print("Transforming ");
+        }
+        G.v().out.println(c.getName() + "... ");
+
+        boolean produceBaf = false, produceGrimp = false, produceDava = false;
+
+        switch (Options.v().output_format()) {
+            case Options.output_format_none :
+            case Options.output_format_xml :
+            case Options.output_format_jimple :
+            case Options.output_format_jimp :
+                break;
+            case Options.output_format_dava :
+                produceDava = true;
+                // FALL THROUGH
+            case Options.output_format_grimp :
+            case Options.output_format_grimple :
+                produceGrimp = true;
+                break;
+            case Options.output_format_baf :
+            case Options.output_format_b :
+                produceBaf = true;
+                break;
+            case Options.output_format_jasmin :
+            case Options.output_format_class :
+                produceGrimp = Options.v().via_grimp();
+                produceBaf = !produceGrimp;
+                break;
+            default :
+                throw new RuntimeException();
+        }
+
+        Iterator methodIt = c.methodIterator();
+        while (methodIt.hasNext()) {
+            SootMethod m = (SootMethod) methodIt.next();
+
+            if (!m.isConcrete()) continue;
+
+            JimpleBody body = (JimpleBody) m.retrieveActiveBody();
+
+            if (Options.v().via_shimple()) {
+                PackManager.v().getPack("stp").apply(body);
+                PackManager.v().getPack("sop").apply(body);
+            }
+            PackManager.v().getPack("jtp").apply(body);
+            PackManager.v().getPack("jop").apply(body);
+            PackManager.v().getPack("jap").apply(body);
+
+            if (produceGrimp) {
+                m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
+                PackManager.v().getPack("gop").apply(m.getActiveBody());
+            } else if (produceBaf) {
+                m.setActiveBody(
+                    Baf.v().newBody((JimpleBody) m.getActiveBody()));
+                PackManager.v().getPack("bop").apply(m.getActiveBody());
+                PackManager.v().getPack("tag").apply(m.getActiveBody());
+            }
+        }
+
+        if (produceDava) {
+            methodIt = c.methodIterator();
+            while (methodIt.hasNext()) {
+                SootMethod m = (SootMethod) methodIt.next();
+
+                if (!m.isConcrete()) continue;
+
+                m.setActiveBody(Dava.v().newBody(m.getActiveBody()));
+            }
+        }
+    }
+
+    private void writeClass(SootClass c) {
+        final int format = Options.v().output_format();
+        if( format == Options.output_format_none ) return;
+        if( format == Options.output_format_dava ) return;
+
+        FileOutputStream streamOut = null;
+        PrintWriter writerOut = null;
+        boolean noOutputFile = false;
+
+        String fileName = SourceLocator.v().getFileNameFor(c, format);
+
+        if (format != Options.output_format_class) {
+            try {
+                streamOut = new FileOutputStream(fileName);
+                writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+                G.v().out.println( "Writing to "+fileName );
+            } catch (IOException e) {
+                G.v().out.println("Cannot output file " + fileName);
+            }
+        }
+
+        if (Options.v().xml_attributes()) {
+            Printer.v().setOption(Printer.ADD_JIMPLE_LN);
+        }
+        switch (format) {
+            case Options.output_format_jasmin :
+                if (c.containsBafBody())
+                    new soot.baf.JasminClass(c).print(writerOut);
+                else
+                    new soot.jimple.JasminClass(c).print(writerOut);
+                break;
+            case Options.output_format_jimp :
+            case Options.output_format_b :
+            case Options.output_format_grimp :
+                Printer.v().setOption(Printer.USE_ABBREVIATIONS);
+                Printer.v().printTo(c, writerOut);
+                break;
+            case Options.output_format_baf :
+            case Options.output_format_jimple :
+            case Options.output_format_grimple :
+                writerOut =
+                    new PrintWriter(
+                        new EscapedWriter(new OutputStreamWriter(streamOut)));
+                Printer.v().printTo(c, writerOut);
+                break;
+            case Options.output_format_class :
+                Printer.v().write(c, SourceLocator.v().getOutputDir());
+                break;
+            case Options.output_format_xml :
+                writerOut =
+                    new PrintWriter(
+                        new EscapedWriter(new OutputStreamWriter(streamOut)));
+                XMLPrinter.v().printJimpleStyleTo(c, writerOut);
+                break;
+            default :
+                throw new RuntimeException();
+        }
+
+        if (format != Options.output_format_class) {
+            try {
+                writerOut.flush();
+                streamOut.close();
+            } catch (IOException e) {
+                G.v().out.println("Cannot close output file " + fileName);
+            }
+        }
+
+        if (Options.v().xml_attributes()) {
+            XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName,
+                    SourceLocator.v().getOutputDir());
+            xap.printAttrs(c);
+        }
+    }
+
+    private void releaseBodies( SootClass cl ) {
+        if( Options.v().output_format() != Options.output_format_dava ) {
+            Iterator methodIt = cl.methodIterator();
+            while (methodIt.hasNext()) {
+                SootMethod m = (SootMethod) methodIt.next();
+
+                if (m.hasActiveBody())
+                    m.releaseActiveBody();
+            }
+        }
     }
 }

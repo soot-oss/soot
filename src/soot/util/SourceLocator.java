@@ -63,8 +63,7 @@ public class SourceLocator
 
     private Map nameToZipFile = new HashMap();
     private List previousLocations = null;
-    private String previousCP = null;
-    private int previousCPHashCode = 0;
+    private String previousCP = "<impossible-class-path>";
     private boolean isRunningUnderBraindeadOS = System.getProperty("os.name").startsWith("Windows");
 
     private int  count = 0;
@@ -74,7 +73,7 @@ public class SourceLocator
         List locations = null;
 
         // Either object equality or string equality will do.
-        if (classPath.hashCode() == previousCPHashCode && (classPath == previousCP || classPath.equals(previousCP)))
+        if ( classPath == previousCP || previousCP.equals(classPath) )
         {
             locations = previousLocations;	   
         }
@@ -82,14 +81,13 @@ public class SourceLocator
         // Split up the class path into locations
         {
             // Store the classpath and its hash.
-            previousCPHashCode = classPath.hashCode();
             previousCP = classPath;
 
             locations = new ArrayList();
             int sepIndex;
             boolean absolutePath;
 
-            if(classPath.equals("<external-class-path>")) {
+            if(classPath == null) {
                 classPath = System.getProperty("java.class.path")+
                     pathSeparator+System.getProperty("java.home")+fileSeparator+
                     "lib"+fileSeparator+"rt.jar";
@@ -236,7 +234,7 @@ public class SourceLocator
                         return inputRep.createInputStream(bugFreeInputStream);
                     } catch(IOException e) {
                         G.v().out.println("error reading file:" + zip.getName() + e.toString());
-                        throw new CompilationDeathException(Main.COMPILATION_ABORTED);
+                        throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
                     }
                 }
             }
@@ -284,5 +282,166 @@ public class SourceLocator
 	return  new ByteArrayInputStream(buf);		
     }
 
+    public List getClassesUnder(String aPath) {
+        File file = new File(aPath);
+        List fileNames = new ArrayList();
+
+        File[] files = file.listFiles();
+        if (files == null) {
+            files = new File[1];
+            files[0] = file;
+        }
+
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isDirectory()) {
+                List l =
+                    getClassesUnder(
+                        aPath + fileSeparator + files[i].getName());
+                Iterator it = l.iterator();
+                while (it.hasNext()) {
+                    String s = (String) it.next();
+                    fileNames.add(files[i].getName() + "." + s);
+                }
+            } else {
+                String fileName = files[i].getName();
+
+                if (fileName.endsWith(".class")) {
+                    int index = fileName.lastIndexOf(".class");
+                    fileNames.add(fileName.substring(0, index));
+                }
+
+                if (fileName.endsWith(".jimple")) {
+                    int index = fileName.lastIndexOf(".jimple");
+                    fileNames.add(fileName.substring(0, index));
+                }
+            }
+        }
+        return fileNames;
+    }
+
+    public String getFileNameFor(SootClass c, int rep) {
+        if (rep == Options.output_format_none)
+            return null;
+
+        StringBuffer b = new StringBuffer();
+
+        b.append(getOutputDir());
+
+        if ((b.length() > 0) && (b.charAt(b.length() - 1) != fileSeparator))
+            b.append(fileSeparator);
+
+        if (rep != Options.output_format_dava) {
+            b.append(c.getName());
+            b.append(getExtensionFor(rep));
+
+            return b.toString();
+        }
+
+        b.append("dava");
+        b.append(fileSeparator);
+        {
+            String classPath = b.toString() + "classes";
+            File dir = new File(classPath);
+
+            if (!dir.exists())
+                try {
+                    dir.mkdirs();
+                } catch (SecurityException se) {
+                    G.v().out.println("Unable to create " + classPath);
+                    throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+                }
+        }
+
+        b.append("src");
+        b.append(fileSeparator);
+
+        String fixedPackageName = c.getJavaPackageName();
+        if (fixedPackageName.equals("") == false) {
+            b.append(fixedPackageName.replace('.', fileSeparator));
+            b.append(fileSeparator);
+        }
+
+        {
+            String path = b.toString();
+            File dir = new File(path);
+
+            if (!dir.exists())
+                try {
+                    dir.mkdirs();
+                } catch (SecurityException se) {
+                    G.v().out.println("Unable to create " + path);
+                    throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+                }
+        }
+
+        b.append(c.getShortJavaStyleName());
+        b.append(".java");
+
+        return b.toString();
+    }
+
+    /* This is called after sootClassPath has been defined. */
+    public Set classesInDynamicPackage(String str) {
+        HashSet set = new HashSet(0);
+        StringTokenizer strtok = new StringTokenizer(
+                Scene.v().getSootClassPath(), String.valueOf(pathSeparator));
+        while (strtok.hasMoreTokens()) {
+            String path = strtok.nextToken();
+
+            // For jimple files
+            List l = getClassesUnder(path);
+            for( Iterator filenameIt = l.iterator(); filenameIt.hasNext(); ) {
+                final String filename = (String) filenameIt.next();
+                if (filename.startsWith(str))
+                    set.add(filename);
+            }
+
+            // For class files;
+            path = path + pathSeparator;
+            StringTokenizer tokenizer = new StringTokenizer(str, ".");
+            while (tokenizer.hasMoreTokens()) {
+                path = path + tokenizer.nextToken();
+                if (tokenizer.hasMoreTokens())
+                    path = path + pathSeparator;
+            }
+            l = getClassesUnder(path);
+            for (Iterator it = l.iterator(); it.hasNext();)
+                set.add(str + "." + ((String) it.next()));
+        }
+        return set;
+    }
+
+    public String getExtensionFor(int rep) {
+        switch (rep) {
+            case Options.output_format_baf:      return ".baf";
+            case Options.output_format_b:        return ".b";
+            case Options.output_format_jimple:   return ".jimple";
+            case Options.output_format_jimp:     return ".jimp";
+            case Options.output_format_grimp:    return ".grimp";
+            case Options.output_format_grimple:  return ".grimple";
+            case Options.output_format_class:    return ".class";
+            case Options.output_format_dava:     return ".java";
+            case Options.output_format_jasmin:   return ".jasmin";
+            case Options.output_format_xml:      return ".xml";
+            default:
+                throw new RuntimeException();
+        }
+    }
+
+    public String getOutputDir() {
+        String ret = Options.v().output_dir();
+        if( ret.length() == 0 ) ret = "sootOutput";
+        File dir = new File(ret);
+
+        if (!dir.exists()) {
+            try {
+                dir.mkdirs();
+            } catch (SecurityException se) {
+                G.v().out.println("Unable to create " + ret);
+                throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+            }
+        }
+        return ret;
+    }
 }
 

@@ -44,7 +44,7 @@ public class RadioScenePack extends ScenePack
         if( enableds.size() == 0 ) {
             G.v().out.println( "Exactly one phase in the pack "+getPhaseName()+
                     " must be enabled. Currently, none of them are." );
-            throw new CompilationDeathException( Main.COMPILATION_ABORTED );
+            throw new CompilationDeathException( CompilationDeathException.COMPILATION_ABORTED );
         }
         if( enableds.size() > 1 ) {
             G.v().out.println( "Only one phase in the pack "+getPhaseName()+
@@ -53,7 +53,7 @@ public class RadioScenePack extends ScenePack
                 final Transform t = (Transform) tIt.next();
                 G.v().out.println( "  "+t.getPhaseName() );
             }
-            throw new CompilationDeathException( Main.COMPILATION_ABORTED );
+            throw new CompilationDeathException( CompilationDeathException.COMPILATION_ABORTED );
         }
         for( Iterator tIt = enableds.iterator(); tIt.hasNext(); ) {
             final Transform t = (Transform) tIt.next();

@@ -183,21 +183,13 @@ public class ClassFile {
 
 	Timers.v().locatorTimer.start();
       
-	try
-	{   
-	    if(!soot.Scene.v().getSootClassPath().
-	       equals("<external-class-path>"))
-	    {   
-		classFileStream = SourceLocator.v().
-		    getInputStreamOf(soot.Scene.v().getSootClassPath(), fn);
-	    }
+	try {   
+            String cp = soot.Scene.v().getSootClassPath();
+	    if(cp != null)
+		classFileStream = SourceLocator.v().getInputStreamOf(cp, fn);
 	    else
-	    {   
 		classFileStream = SourceLocator.v().getInputStreamOf(fn);
-	    }
-	}
-	catch(ClassNotFoundException e)
-	{   
+	} catch(ClassNotFoundException e) {   
 	    Timers.v().locatorTimer.end();
 	    return false;      
 	}

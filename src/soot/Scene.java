@@ -72,10 +72,9 @@ public class Scene  //extends AbstractHost
     private List entryPoints;
     
     boolean allowsPhantomRefs = false;
-    private boolean allowsLazyResolving = false;
 
     SootClass mainClass;
-    String sootClassPath = "<external-class-path>";
+    String sootClassPath = null;
 
     public void setMainClass(SootClass m)
     {
@@ -121,6 +120,11 @@ public class Scene  //extends AbstractHost
     
     public String getSootClassPath()
     {
+        if( sootClassPath == null ) {
+            String optionscp = Options.v().soot_classpath();
+            if( optionscp.length() > 0 )
+                sootClassPath = optionscp;
+        }
         return sootClassPath;
     }
 
@@ -554,19 +558,9 @@ public class Scene  //extends AbstractHost
         allowsPhantomRefs = value;
     }
     
-    public void setLazyResolving(boolean value) 
-    {
-        allowsLazyResolving = value;
-    }
-
-
     public boolean allowsPhantomRefs()
     {
         return getPhantomRefs();
-    }
-    public boolean allowsLazyResolving() 
-    {
-        return allowsLazyResolving;
     }
     public Numberer getTypeNumberer() { return typeNumberer; }
     public Numberer getMethodNumberer() { return methodNumberer; }
@@ -636,5 +630,96 @@ public class Scene  //extends AbstractHost
 	rn.add("to");
     }
 
+    public void loadNecessaryClasses() {
+        Iterator it = Options.v().classes().iterator();
 
+        while (it.hasNext()) {
+            String name = (String) it.next();
+            SootClass c;
+
+            c = Scene.v().loadClassAndSupport(name);
+
+            if (mainClass == null) {
+                mainClass = c;
+                Scene.v().setMainClass(c);
+            }
+            c.setApplicationClass();
+        }
+
+        HashSet dynClasses = new HashSet();
+        dynClasses.addAll(Options.v().dynamic_classes());
+
+        for( Iterator pathIt = Options.v().dynamic_path().iterator(); pathIt.hasNext(); ) {
+
+            final String path = (String) pathIt.next();
+            dynClasses.addAll(SourceLocator.v().getClassesUnder(path));
+        }
+
+        for( Iterator pkgIt = Options.v().dynamic_package().iterator(); pkgIt.hasNext(); ) {
+
+            final String pkg = (String) pkgIt.next();
+            dynClasses.addAll(SourceLocator.v().classesInDynamicPackage(pkg));
+        }
+
+        for( Iterator classNameIt = dynClasses.iterator(); classNameIt.hasNext(); ) {
+
+            final String className = (String) classNameIt.next();
+            Scene.v().loadClassAndSupport(className);
+        }
+
+        for( Iterator pathIt = Options.v().process_path().iterator(); pathIt.hasNext(); ) {
+
+            final String path = (String) pathIt.next();
+            for( Iterator clIt = SourceLocator.v().getClassesUnder(path).iterator(); clIt.hasNext(); ) {
+                final String cl = (String) clIt.next();
+                Scene.v().loadClassAndSupport(cl).setApplicationClass();
+            }
+        }
+
+        prepareClasses();
+    }
+
+    /* Generate classes to process, adding or removing package marked by
+     * command line options.
+     */
+    private void prepareClasses() {
+
+        LinkedList excludedPackages = new LinkedList();
+        if (Options.v().exclude() != null)
+            excludedPackages.addAll(Options.v().exclude());
+
+        excludedPackages.add("java.");
+        excludedPackages.add("sun.");
+        excludedPackages.add("javax.");
+        excludedPackages.add("com.sun.");
+        excludedPackages.add("com.ibm.");
+        excludedPackages.add("org.xml.");
+        excludedPackages.add("org.w3c.");
+        excludedPackages.add("org.apache.");
+
+        // Remove/add all classes from packageInclusionMask as per -i option
+        for( Iterator sIt = Scene.v().getClasses().iterator(); sIt.hasNext(); ) {
+            final SootClass s = (SootClass) sIt.next();
+            if( s.isPhantom() ) continue;
+            if(Options.v().app()) {
+                s.setApplicationClass();
+            }
+            if (Options.v().classes().contains(s.getName())) {
+                s.setApplicationClass();
+                continue;
+            }
+            for( Iterator pkgIt = excludedPackages.iterator(); pkgIt.hasNext(); ) {
+                final String pkg = (String) pkgIt.next();
+                if (s.isApplicationClass()
+                && s.getPackageName().startsWith(pkg)) {
+                        s.setLibraryClass();
+                }
+            }
+            for( Iterator pkgIt = Options.v().include().iterator(); pkgIt.hasNext(); ) {
+                final String pkg = (String) pkgIt.next();
+                if (s.getPackageName().startsWith(pkg))
+                    s.setApplicationClass();
+            }
+        }
+    }
 }

@@ -68,5 +68,15 @@ public class G extends Singletons
     public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
     public int Timer_count;
     public final Map ClassHierarchy_classHierarchyMap = new HashMap();
+
+    // hack for J2ME, patch provided by Stephen Chen
+    // by default, this is set as false, to use SOOT with J2ME library
+    // flag isJ2ME true. Type system works around Clonable, Serializeable.
+    // see changes in: 
+    //           soot/jimple/toolkits/typing/ClassHierarchy.java
+    //           soot/jimple/toolkits/typing/TypeResolver.java
+    //           soot/jimple/toolkits/typing/TypeVariable.java
+    //           soot/jimple/toolkits/typing/TypeNode.java
+    public final boolean isJ2ME = false;
 }
 
