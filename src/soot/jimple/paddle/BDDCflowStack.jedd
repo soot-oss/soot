@@ -33,7 +33,7 @@ public class BDDCflowStack
     List/*Shadow*/ shadows;
     BDDCflow cflow;
 
-    BDDCflowStack( BDDCflow cflow, List/*Shadow*/ shadows ) {
+    public BDDCflowStack( BDDCflow cflow, List/*Shadow*/ shadows ) {
         this.shadows = shadows;
         this.cflow = cflow;
     }
@@ -66,8 +66,7 @@ public class BDDCflowStack
         }
         while(true) {
             <method> targets = targetsOf(ret);
-            if( targets == 0B ) break;
-            ret |= stmtsIn(targets);
+            if( ret == (ret |= stmtsIn(targets)) ) break;
         }
         return ret;
     }
@@ -82,8 +81,7 @@ public class BDDCflowStack
         }
         while(true) {
             <method> methods = targetsOf(ret) - targetsOf(1B - ret);
-            if( methods == 0B ) break;
-            ret |= stmtsIn(methods);
+            if( ret == (ret |= stmtsIn(methods)) ) break;
         }
         return ret;
     }
@@ -94,7 +92,7 @@ public class BDDCflowStack
     /** Returns true if the call to isValid() in statement s always returns
      * false.
      */
-    public boolean mayNotBeValid( Stmt s ) {
+    public boolean neverValid( Stmt s ) {
         if( mayCflow == 1B ) mayCflow = mayCflow();
         return new{s=>stmt}{stmt} >< mayCflow{stmt} == 0B;
     }
@@ -102,7 +100,7 @@ public class BDDCflowStack
     /** Returns true if the call to isValid() in statement s always returns
      * true.
      */
-    public boolean mustBeValid( Stmt s ) {
+    public boolean alwaysValid( Stmt s ) {
         if( mustCflow == 1B ) mustCflow = mustCflow();
         return new{s=>stmt}{stmt} >< mustCflow{stmt} != 0B;
     }

@@ -29,7 +29,7 @@ import java.util.*;
  */
 public class BDDCflow
 { 
-    BDDCflow() {
+    public BDDCflow() {
         stmtMethod = 0B;
         for( Iterator scIt = Scene.v().getApplicationClasses().iterator(); scIt.hasNext(); ) {
             final SootClass sc = (SootClass) scIt.next();
@@ -38,6 +38,7 @@ public class BDDCflow
                 if( m.hasActiveBody() ) {
                     for( Iterator sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
                         final Stmt s = (Stmt) sIt.next();
+                        Scene.v().getUnitNumberer().add(s);
                         stmtMethod |= new{s=>stmt, m=>method};
                     }
                 }
