@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.grimp.internal;
 
 import soot.*;
@@ -38,7 +34,7 @@ import soot.jimple.*;
 import soot.jimple.internal.*;
 
 abstract public class AbstractGrimpIntBinopExpr
-    extends AbstractIntBinopExpr
+    extends AbstractIntBinopExpr implements Precedence
 {
     AbstractGrimpIntBinopExpr(Value op1, Value op2)
     {
@@ -51,4 +47,37 @@ abstract public class AbstractGrimpIntBinopExpr
         this.op1Box = op1Box;
         this.op2Box = op2Box;
     }
+
+    abstract public int getPrecedence();
+
+    private String toString(Value op1, Value op2, 
+                            String leftOp, String rightOp)
+    {
+        if (op1 instanceof Precedence && 
+            ((Precedence)op1).getPrecedence() < getPrecedence()) 
+            leftOp = "(" + leftOp + ")";
+
+        if (op2 instanceof Precedence &&
+            ((Precedence)op2).getPrecedence() < getPrecedence())
+            rightOp = "(" + rightOp + ")";
+
+        return leftOp + getSymbol() + rightOp;
+    }
+
+    public String toString()
+    {
+        Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
+        String leftOp = op1.toString(), rightOp = op2.toString();
+
+        return toString(op1, op2, leftOp, rightOp);
+    }
+
+    public String toBriefString()
+    {
+        Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
+        String leftOp = ((ToBriefString)op1).toBriefString(), 
+            rightOp = ((ToBriefString)op2).toBriefString();
+
+        return toString(op1, op2, leftOp, rightOp);
+    }    
 }
