@@ -82,7 +82,7 @@ belonging to the various Packs of Soot.
 <xsl:template name="phase_section">
 <xsl:value-of select="long_desc|short_desc"/>
 
-\paragraph{Recognized options} 
+\paragraph{Options} 
 
 \begin{description}
 <xsl:apply-templates mode="opt" select="boolopt|multiopt|intopt|flopt|stropt"/>
