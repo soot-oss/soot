@@ -112,6 +112,7 @@ public class SideEffectTagger extends BodyTransformer
 		}
 	    }
 	}
+        body.getMethod().addTag( graph );
 	for( Iterator stmtIt = body.getUnits().iterator(); stmtIt.hasNext(); ) {
 	    final Stmt stmt = (Stmt) stmtIt.next();
 	    Object key;
@@ -133,8 +134,10 @@ public class SideEffectTagger extends BodyTransformer
 		}
 		tag.setRead( sets.indexOf( read ) );
 		tag.setWrite( sets.indexOf( write ) );
+                stmt.addTag( tag );
 
-		// The loop below is just fro calculating stats.
+		// The loop below is just for calculating stats.
+                /*
 		if( !justDoTotallyConservativeThing ) {
 		    for( Iterator innerIt = body.getUnits().iterator(); innerIt.hasNext(); ) {
 		        final Stmt inner = (Stmt) innerIt.next();
@@ -157,6 +160,7 @@ public class SideEffectTagger extends BodyTransformer
 				    sets.indexOf( innerRead ) ) ) numRRs++;
 		    }
 		}
+                */
 	    }
 	}
     }

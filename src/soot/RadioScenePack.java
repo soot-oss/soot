@@ -32,10 +32,6 @@ public class RadioScenePack extends ScenePack
 
     protected void internalApply()
     {
-        for( Iterator tIt = this.iterator(); tIt.hasNext(); ) {
-            final Transform t = (Transform) tIt.next();
-            t.apply();
-        }
         LinkedList enableds = new LinkedList();
 
         for( Iterator tIt = this.iterator(); tIt.hasNext(); ) {

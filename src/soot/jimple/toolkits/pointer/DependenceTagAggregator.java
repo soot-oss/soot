@@ -15,6 +15,10 @@ public class DependenceTagAggregator extends TagAggregator
      *  Return the tag to be attached to this unit, or null if nothing should
      *  be attached. */
     public Tag wantTag( Tag t, Unit u ) {
+        if( tags.size() > 0 && tags.getLast() == t ) {
+            units.removeLast();
+            tags.removeLast();
+        }
         if( t instanceof DependenceTag ) return t;
         return null;
     }

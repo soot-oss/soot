@@ -117,5 +117,9 @@ public class SideEffectAnalysis {
 	}
 	return ret;
     }
+
+    public String toString() {
+        return "SideEffectAnalysis: PA="+pa+" IG="+ig;
+    }
 }
 
