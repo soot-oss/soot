@@ -82,11 +82,14 @@ public class CFG {
 	m.instructions.prev = this.sentinel;
 
 	eliminateJsrRets();
-	
+
+	// printInstructions();
+
 	buildBBCFG();
 
-	//	printBBCFGSucc();
-	//	printBBs();
+	// printBBs();
+
+	// printBBCFGSucc();
 
 	cfg.beginCode = true;
 
@@ -171,7 +174,7 @@ public class CFG {
 	Instruction insn = method.instructions;
 	while (insn != null)
 	{
-	    System.out.println(insn + "\t <- "+ insn.prev + "\t -> "+insn.next);
+	    System.out.println(insn);
 	    insn = insn.next;
 	}
     }
@@ -256,7 +259,7 @@ public class CFG {
 		} 
 		else
 		{
-		    branches = insn.branchpoints(insn.next);              
+		    branches = insn.branchpoints(insn.next);          
 		}
 
 		if (branches != null)
@@ -2548,9 +2551,11 @@ public class CFG {
                     else
                         ((GotoStmt)s).setTarget(((BasicBlock) b.succ.firstElement()).getHeadJStmt());	
 		    */
-		    System.err.println(b.head +" has "+b.succ.size()+" successors.");
+		    System.err.println("Error :");
 		    for (int i=0; i<b.statements.size(); i++)
-			System.out.println(b.statements.get(i));
+			System.err.println(b.statements.get(i));
+		    
+		    throw new RuntimeException(b +" has "+b.succ.size()+" successors.");		    
                 }
             }
             else if (s instanceof IfStmt)

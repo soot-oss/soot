@@ -2078,11 +2078,12 @@ public class JasminClass
           Inst nInst = (Inst) it.next();
           
           blockHeight -= nInst.getInMachineCount();
+	  
           if(blockHeight < 0 ){            
-            throw new RuntimeException("Negative Stack height has been attained\n:" +
-                                       "StackHeight: " + blockHeight + 
-                                       "\nAt instruction:" + nInst +
-                                       "\nBlock:\n" + aBlock +
+	      throw new RuntimeException("Negative Stack height has been attained: \n" +
+                                       "StackHeight: " + blockHeight + "\n" +
+                                       "At instruction:" + nInst + "\n" +
+                                       "Block:\n" + aBlock +
                                        "\n\nMethod: " + aBlock.getBody().getMethod().getName() 
                                        + "\n" +  aBlock.getBody().getMethod()                                       
                                        );
@@ -2122,16 +2123,17 @@ public class JasminClass
             Inst nInst = (Inst) it.next();
           
             blockHeight -= nInst.getInCount();
+
             if(blockHeight < 0 ){            
-                throw new RuntimeException("Negative Stack Logical height has been attained\n:" +
+                throw new RuntimeException("Negative Stack Logical height has been attained: \n" +
                                            "StackHeight: " + blockHeight + 
                                            "\nAt instruction:" + nInst +
                                            "\nBlock:\n" + aBlock +
                                            "\n\nMethod: " + aBlock.getBody().getMethod().getName() 
                                            + "\n" +  aBlock.getBody().getMethod()                                       
                                            );
-            }
-          
+            }          
+
             blockHeight += nInst.getOutCount();
             
             //System.out.println(">>> " + nInst + " " + blockHeight);            

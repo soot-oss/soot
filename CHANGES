@@ -1,7 +1,15 @@
-Improvements in version 1.2.2
+
+Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 
 1. added \t case for soot.util.StringTools.getQuotedStringOf.
     (reported by Thomas VanDrunen)
+2. CFG.java is improved to handle nested JSR/RETs
+3. improved some exception message reported by Olivier Zendra.
+4. The Jasmin package is also updated to 1.06-s10, the bug in grammer
+   for attributes is fixed.
+5. replaced 'getNodes().contains()' by 'containsNode()' in 
+   "jimple/toolkits/invoke/MethodCallGraph.java", which speeds up
+   the call graph construction significantly ( by John Jorgensen. )
 
 Improvements in version 1.2.1 (Fri Jan 12 15:22:59 EST 2001)
 
