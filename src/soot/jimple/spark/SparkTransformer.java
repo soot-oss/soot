@@ -81,10 +81,16 @@ public class SparkTransformer extends SceneTransformer
 
         // Simplify pag
         Date startSimplify = new Date();
-        if( opts.simplify_sccs() || opts.vta() ) {
-            new SCCCollapser( pag, opts.ignore_types_for_sccs() ).collapse();
+
+        // We only simplify if on_fly_cg is false. But, if vta is true, it
+        // overrides on_fly_cg, so we can still simplify. Something to handle
+        // these option interdependencies more cleanly would be nice...
+        if( ( opts.simplify_sccs() && !opts.on_fly_cg() ) || opts.vta() ) {
+                new SCCCollapser( pag, opts.ignore_types_for_sccs() ).collapse();
         }
-        if( opts.simplify_offline() ) new EBBCollapser( pag ).collapse();
+        if( opts.simplify_offline() && !opts.on_fly_cg() ) {
+            new EBBCollapser( pag ).collapse();
+        }
         if( true || opts.simplify_sccs() || opts.vta() || opts.simplify_offline() ) {
             pag.cleanUpMerges();
         }
