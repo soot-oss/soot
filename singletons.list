@@ -34,11 +34,10 @@ CopyPropagator
 CriticalEdgeRemover
 CycleFinder
 Dava
-DavaLocalPrinter
-DavaStmtPrinter
+DavaPrinter
+XMLPrinter
+Printer
 DeadAssignmentEliminator
-DefaultLocalPrinter
-DefaultStmtPrinter
 DependenceTagAggregator
 Double2ndHalfType
 DoubleType
@@ -140,4 +139,3 @@ UselessTryRemover
 VoidType
 VTATestingFramework
 WordType
-XMLStmtPrinter

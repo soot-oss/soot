@@ -84,12 +84,6 @@ public class Singletons {
     }
     private Global g = new Global();
 
-    private Printer instancePrinter;
-    public Printer Printer() {
-        if( instancePrinter == null ) instancePrinter = new Printer( g );
-        return instancePrinter;
-    }
-
     private SlowPseudoTopologicalOrderer instanceSlowPseudoTopologicalOrderer;
     public SlowPseudoTopologicalOrderer SlowPseudoTopologicalOrderer() {
         if( instanceSlowPseudoTopologicalOrderer == null ) instanceSlowPseudoTopologicalOrderer = new SlowPseudoTopologicalOrderer( g );
@@ -306,34 +300,28 @@ public class Singletons {
         return instanceDava;
     }
 
-    private DavaLocalPrinter instanceDavaLocalPrinter;
-    public DavaLocalPrinter DavaLocalPrinter() {
-        if( instanceDavaLocalPrinter == null ) instanceDavaLocalPrinter = new DavaLocalPrinter( g );
-        return instanceDavaLocalPrinter;
+    private DavaPrinter instanceDavaPrinter;
+    public DavaPrinter DavaPrinter() {
+        if( instanceDavaPrinter == null ) instanceDavaPrinter = new DavaPrinter( g );
+        return instanceDavaPrinter;
     }
 
-    private DavaStmtPrinter instanceDavaStmtPrinter;
-    public DavaStmtPrinter DavaStmtPrinter() {
-        if( instanceDavaStmtPrinter == null ) instanceDavaStmtPrinter = new DavaStmtPrinter( g );
-        return instanceDavaStmtPrinter;
+    private XMLPrinter instanceXMLPrinter;
+    public XMLPrinter XMLPrinter() {
+        if( instanceXMLPrinter == null ) instanceXMLPrinter = new XMLPrinter( g );
+        return instanceXMLPrinter;
+    }
+
+    private Printer instancePrinter;
+    public Printer Printer() {
+        if( instancePrinter == null ) instancePrinter = new Printer( g );
+        return instancePrinter;
     }
 
     private DeadAssignmentEliminator instanceDeadAssignmentEliminator;
     public DeadAssignmentEliminator DeadAssignmentEliminator() {
         if( instanceDeadAssignmentEliminator == null ) instanceDeadAssignmentEliminator = new DeadAssignmentEliminator( g );
         return instanceDeadAssignmentEliminator;
-    }
-
-    private DefaultLocalPrinter instanceDefaultLocalPrinter;
-    public DefaultLocalPrinter DefaultLocalPrinter() {
-        if( instanceDefaultLocalPrinter == null ) instanceDefaultLocalPrinter = new DefaultLocalPrinter( g );
-        return instanceDefaultLocalPrinter;
-    }
-
-    private DefaultStmtPrinter instanceDefaultStmtPrinter;
-    public DefaultStmtPrinter DefaultStmtPrinter() {
-        if( instanceDefaultStmtPrinter == null ) instanceDefaultStmtPrinter = new DefaultStmtPrinter( g );
-        return instanceDefaultStmtPrinter;
     }
 
     private DependenceTagAggregator instanceDependenceTagAggregator;
@@ -940,12 +928,6 @@ public class Singletons {
     public WordType WordType() {
         if( instanceWordType == null ) instanceWordType = new WordType( g );
         return instanceWordType;
-    }
-
-    private XMLStmtPrinter instanceXMLStmtPrinter;
-    public XMLStmtPrinter XMLStmtPrinter() {
-        if( instanceXMLStmtPrinter == null ) instanceXMLStmtPrinter = new XMLStmtPrinter( g );
-        return instanceXMLStmtPrinter;
     }
 
 }

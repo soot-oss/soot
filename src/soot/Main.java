@@ -568,7 +568,7 @@ public class Main
 	G.v().out.print( "Generating " + fileName + "... ");
 	G.v().out.flush();
 
-        Printer.v().printTo(s, writerOut, Printer.USE_ABBREVIATIONS);
+        DavaPrinter.v().printTo(s, writerOut, Printer.USE_ABBREVIATIONS);
 
 	G.v().out.println();
 	G.v().out.flush();
@@ -826,11 +826,7 @@ public class Main
 	new soot.jimple.JasminClass(c).print(writerOut);
       break;
     case Options.output_format_jimp:            
-      Printer.v().printTo(c, writerOut, Printer.USE_ABBREVIATIONS);
-      break;
     case Options.output_format_b:
-      Printer.v().printTo(c, writerOut, Printer.USE_ABBREVIATIONS);
-      break;
     case Options.output_format_grimp:
       Printer.v().printTo(c, writerOut, Printer.USE_ABBREVIATIONS);
       break;
@@ -854,7 +850,7 @@ public class Main
     case Options.output_format_xml:
       writerOut = 
 	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
-      Printer.v().printJimpleStyleTo(c, writerOut, Printer.XML_OUTPUT);
+      XMLPrinter.v().printJimpleStyleTo(c, writerOut, Printer.XML_OUTPUT);
       break;
     default:
       throw new RuntimeException();

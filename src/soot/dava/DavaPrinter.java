@@ -1,54 +1,146 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with cl library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
+package soot.dava;
 
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
+import soot.dava.internal.AST.*;
 
-
-
-
-
-package soot;
-
-import java.io.*;
-import soot.xml.*;
-import soot.dava.*;
-import soot.tagkit.*;
 import soot.*;
 import java.util.*;
 import soot.util.*;
 import soot.jimple.*;
+import soot.tagkit.*;
 import soot.toolkits.graph.*;
+import java.io.*;
+import java.util.*;
+
+import soot.util.*;
+import soot.xml.*;
+import soot.dava.*;
+import soot.tagkit.*;
 
 
-
-
-/**
-* Prints out a class and all its methods.
-*/
-public class Printer
+public class DavaPrinter
 {
-	public Printer( Singletons.Global g ) {}
-	public static Printer v() { return G.v().Printer(); }
+    public DavaPrinter( Singletons.Global g ) {}
+    public static DavaPrinter v() { return G.v().DavaPrinter(); }
+
+    /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
+    public void printLocalsInBody(Body body, java.io.PrintWriter out, boolean isPrecise)
+    {
+	if ((body instanceof DavaBody) == false)
+	    throw new RuntimeException( "Only DavaBodies should use the DavaLocalPrinter");
+
+	DavaBody davaBody = (DavaBody) body;
+	
+        // Print out local variables
+        {
+            Map typeToLocals = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
+
+	    HashSet params = new HashSet();
+	    params.addAll( davaBody.get_ParamMap().values());
+	    params.addAll( davaBody.get_CaughtRefs());
+	    HashSet thisLocals = davaBody.get_ThisLocals();
+	    
+
+            // Collect locals
+            {
+                Iterator localIt = body.getLocals().iterator();
+
+                while(localIt.hasNext())
+                {
+                    Local local = (Local) localIt.next();
+
+		    if (params.contains( local) || thisLocals.contains( local))
+			continue;
+
+                    List localList;
+ 
+                    String typeName;
+                    Type t = local.getType();
+
+                    typeName = (isPrecise) ?  t.toString() :  t.toBriefString();
+
+                    if(typeToLocals.containsKey(typeName))
+                        localList = (List) typeToLocals.get(typeName);
+                    else
+                    {
+                        localList = new ArrayList();
+                        typeToLocals.put(typeName, localList);
+                    }
+
+                    localList.add(local);
+                }
+            }
+
+	    InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr(); 
+	    if (constructorExpr != null) {
+
+		if (davaBody.getMethod().getDeclaringClass().getName().equals( constructorExpr.getMethod().getDeclaringClass().toString()))
+		    out.print("        this(");
+		else
+		    out.print("        super(");
+
+		Iterator ait = constructorExpr.getArgs().iterator();
+		while (ait.hasNext()) {
+		    out.print( ait.next().toString());
+		    
+		    if (ait.hasNext())
+			out.print( ", ");
+		}
+		
+		out.print( ");\n\n");
+	    }
+
+
+            // Print locals
+            {
+                Iterator typeIt = typeToLocals.keySet().iterator();
+
+                while(typeIt.hasNext())
+                {
+                    String type = (String) typeIt.next();
+
+                    List localList = (List) typeToLocals.get(type);
+                    Object[] locals = localList.toArray();
+                    out.print("        ");
+		    if (type.equals( "null_type"))
+			out.print( "Object");
+		    else 
+			out.print(type);
+		    out.print( " ");
+                    
+                    for(int k = 0; k < locals.length; k++)
+                    {
+                        if(k != 0)
+                            out.print(", ");
+
+                        out.print(((Local) locals[k]).getName());
+                    }
+
+                    out.println(";");
+                }
+            }
+
+
+            if(!typeToLocals.isEmpty())
+                out.println();
+        }
+    }
+
+    public DavaStmtPrinter( Singletons.Global g ) {}
+    public static DavaStmtPrinter v() { return G.v().DavaStmtPrinter(); }
+
+    public void printStatementsInBody(Body body, java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
+    {
+	Chain units = ((DavaBody) body).getUnits();
+
+	if (units.size() != 1)
+	    throw new RuntimeException( "DavaBody AST doesn't have single root.");
+	
+	out.print( ((ASTNode) units.getFirst()).toString( null, "        "));
+    }
+
+    public void printDebugStatementsInBody(Body b, java.io.PrintWriter out, boolean isPrecise)
+    {
+    }
 
     final private static char fileSeparator = System.getProperty("file.separator").charAt(0);
     
@@ -736,9 +828,9 @@ public class Printer
 		// Print out statements
 		// Use an external class so that it can be overridden.
 		if(debug) {
-			printDebugStatementsInBody(b, out, isPrecise);
+			Scene.v().getJimpleStmtPrinter().printDebugStatementsInBody(b, out, isPrecise);
 		} else {
-			printStatementsInBody(b, out, isPrecise, isNumbered);
+			Scene.v().getJimpleStmtPrinter().printStatementsInBody(b, out, isPrecise, isNumbered);
 		}
         
 		if(!xmlOutput) {
@@ -750,318 +842,5 @@ public class Printer
 	}
 	}
     
-
-    /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
-    public void printStatementsInBody(Body body, java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
-    {
-
-	
-        Chain units = body.getUnits();
-
-        Map stmtToName = new HashMap(units.size() * 2 + 1, 0.7f);
-        UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph(body);
-
-        // Create statement name table
-        {
-            Iterator boxIt = body.getUnitBoxes().iterator();
-
-            Set labelStmts = new HashSet();
-
-            // Build labelStmts
-            {
-                if(!isNumbered)
-                    while(boxIt.hasNext())
-                    {
-                        UnitBox box = (UnitBox) boxIt.next();
-                        Unit stmt = (Unit) box.getUnit();
-    
-                        labelStmts.add(stmt);
-                    }
-                else
-                    labelStmts.addAll(units);
-
-            }
-
-            // Traverse the stmts and assign a label if necessary
-            {
-                int labelCount = 0;
-
-                Iterator stmtIt = units.iterator();
-                
-                
-                while(stmtIt.hasNext())
-                {
-                    Unit s = (Unit) stmtIt.next();
-
-                    if(labelStmts.contains(s))
-                    {
-                        if(isNumbered)
-                            stmtToName.put(s, new Integer(labelCount++).toString());
-                        else
-                            stmtToName.put(s, "label" + (labelCount++));
-                    }
-                }
-            }
-        }        
-
-
-        
-        Iterator unitIt = units.iterator();
-        Unit currentStmt = null, previousStmt;
-        String indent = (isNumbered) ? "    " : "        ";
-        
-	
-        while(unitIt.hasNext()) {
-            
-            previousStmt = currentStmt;
-            currentStmt = (Unit) unitIt.next();
-            
-            // Print appropriate header.
-                if(isNumbered)
-                    out.print("  " + stmtToName.get(currentStmt) + ":");
-                else            
-                {
-                    // Put an empty line if the previous node was a branch node, the current node is a join node
-                    //   or the previous statement does not have body statement as a successor, or if
-                    //   body statement has a label on it
-
-                    if(currentStmt != units.getFirst()) 
-                        {       
-                            if(unitGraph.getSuccsOf(previousStmt).size() != 1 ||
-                               unitGraph.getPredsOf(currentStmt).size() != 1 ||
-                               stmtToName.containsKey(currentStmt)) {
-                                out.println();
-				if (Printer.v().isAddJimpleLn()) {
-                            		Printer.v().incJimpleLnNum();
-				}
-			    }
-                            else {
-                                // Or if the previous node does not have body statement as a successor.
-                                
-                                List succs = unitGraph.getSuccsOf(previousStmt);
-                                
-                                if(succs.get(0) != currentStmt) {
-                                    out.println();
-				    if (Printer.v().isAddJimpleLn()) {
-					Printer.v().incJimpleLnNum();
-				    }
-				    
-				}
-                            }
-                        }
-                    
-                     if(stmtToName.containsKey(currentStmt)) {
-                         out.println("     " + stmtToName.get(currentStmt) + ":");
-			 if (Printer.v().isAddJimpleLn()) {
-				Printer.v().incJimpleLnNum();
-			 }
-			 
-		     }
-		     
-                }
-                   
-
-                if(isPrecise)
-                    out.print(currentStmt.toString(stmtToName, indent));
-                else
-                    out.print(currentStmt.toBriefString(stmtToName, indent));
-	
-		out.print(";"); 
-		out.println();
-		if (Printer.v().isAddJimpleLn()) { 
-			Printer.v().setJimpleLnNum(addJimpleLnTags(Printer.v().getJimpleLnNum(), currentStmt));
-	        }
-		
-		// only print them if not generating attributes files 
-		// because they mess up line number
-		if (!Printer.v().isAddJimpleLn()){
-		Iterator tagIterator = currentStmt.getTags().iterator();
-		while(tagIterator.hasNext()) {
-		    Tag t = (Tag) tagIterator.next();		   		    
-		    out.println(t);
-		}		 
-        }
-        }
-
-        // Print out exceptions
-        {
-            Iterator trapIt = body.getTraps().iterator();
-
-            if(trapIt.hasNext()) {
-                out.println();
-		if (Printer.v().isAddJimpleLn()) {
-	  		Printer.v().incJimpleLnNum();
-		}
-	    }
-
-            while(trapIt.hasNext())
-            {
-                Trap trap = (Trap) trapIt.next();
-
-                out.println("        catch " + Scene.v().quotedNameOf(trap.getException().getName()) + " from " +
-                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
-                    " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
-		
-		if (Printer.v().isAddJimpleLn()) {
-			Printer.v().incJimpleLnNum();
-		}
-						
-            }
-        }
-
-    }
-
-    private int addJimpleLnTags(int lnNum, Unit stmt) {
-	stmt.addTag(new JimpleLineNumberTag(lnNum));
-	lnNum++;
-	return lnNum;
-    }
-    
-    // moved here from body ; should be factorized with the above
-    public void printDebugStatementsInBody(Body b, java.io.PrintWriter out, boolean isPrecise)
-    {
-        Map stmtToName = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
-
-        // Create statement name table
-        {
-            Iterator boxIt = b.getUnitBoxes().iterator();
-
-            Set labelStmts = new HashSet();
-
-            // Build labelStmts
-            {
-                while(boxIt.hasNext())
-                {
-                    UnitBox box = (UnitBox) boxIt.next();
-                    Unit stmt = (Unit) box.getUnit();
-
-                    labelStmts.add(stmt);
-                }
-            }
-
-            // Traverse the stmts and assign a label if necessary
-            {
-                int labelCount = 0;
-
-                Iterator stmtIt = b.getUnits().iterator();
-
-                while(stmtIt.hasNext())
-                {
-                    Unit s = (Unit) stmtIt.next();
-
-                    if(labelStmts.contains(s))
-                        stmtToName.put(s, "label" + (labelCount++));
-                }
-            }
-        }
-
-        
-        Iterator unitIt = b.getUnits().iterator();
-        Unit currentStmt = null, previousStmt;
-
-        while(unitIt.hasNext()) {
-            
-            previousStmt = currentStmt;
-            currentStmt = (Unit) unitIt.next();
-            
-            if(stmtToName.containsKey(currentStmt))
-                out.println("     " + stmtToName.get(currentStmt) + ":");
-
-            if(isPrecise)
-                out.print(currentStmt.toString(stmtToName, "        "));
-            else
-                out.print(currentStmt.toBriefString(stmtToName, "        "));
-
-            out.print(";"); 
-            out.println();
-        }
-
-        // Print out exceptions
-        {
-            Iterator trapIt = b.getTraps().iterator();
-
-            if(trapIt.hasNext())
-                out.println();
-
-            while(trapIt.hasNext())
-            {
-                Trap trap = (Trap) trapIt.next();
-
-                out.println("        catch " + trap.getException().getName() + " from " +
-                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
-                    " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
-            }
-        }
-    }
-
-    /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
-    public void printLocalsInBody(Body body, java.io.PrintWriter out, boolean isPrecise)
-    {
-        // Print out local variables
-        {
-            Map typeToLocals = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
-
-            // Collect locals
-            {
-                Iterator localIt = body.getLocals().iterator();
-
-                while(localIt.hasNext())
-                {
-                    Local local = (Local) localIt.next();
-
-                    List localList;
- 
-                    String typeName;
-                    Type t = local.getType();
-
-                    typeName = (isPrecise) ?  t.toString() :  t.toBriefString();
-
-                    if(typeToLocals.containsKey(typeName))
-                        localList = (List) typeToLocals.get(typeName);
-                    else
-                    {
-                        localList = new ArrayList();
-                        typeToLocals.put(typeName, localList);
-                    }
-
-                    localList.add(local);
-                }
-            }
-
-            // Print locals
-            {
-                Iterator typeIt = typeToLocals.keySet().iterator();
-
-                while(typeIt.hasNext())
-                {
-                    String type = (String) typeIt.next();
-
-                    List localList = (List) typeToLocals.get(type);
-                    Object[] locals = localList.toArray();
-                    out.print("        "  + type + " ");
-                    
-                    for(int k = 0; k < locals.length; k++)
-                    {
-                        if(k != 0)
-                            out.print(", ");
-
-                        out.print(((Local) locals[k]).getName());
-                    }
-
-                    out.println(";");
-		    if (Printer.v().isAddJimpleLn()) {
-		    	Printer.v().incJimpleLnNum();
-		    }
-                }
-            }
-
-
-            if(!typeToLocals.isEmpty()){
-                out.println();
-		if (Printer.v().isAddJimpleLn()) {
-	        	Printer.v().incJimpleLnNum();
-		}				    
-	    }
-        }
-    }
 }
+

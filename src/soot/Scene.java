@@ -75,9 +75,6 @@ public class Scene  //extends AbstractHost
     SootClass mainClass;
     String sootClassPath = "<external-class-path>";
 
-    StmtPrinter jimpleStmtPrinter = soot.DefaultStmtPrinter.v();
-    LocalPrinter localPrinter = soot.DefaultLocalPrinter.v();
-
     public void setMainClass(SootClass m)
     {
         mainClass = m;
@@ -133,28 +130,6 @@ public class Scene  //extends AbstractHost
         activeFastHierarchy = null;
         activeSideEffectAnalysis = null;
         activePointsToAnalysis = null;
-    }
-
-    /** Returns the current StmtPrinter class for Jimple. */
-    public StmtPrinter getJimpleStmtPrinter()
-    {
-        return jimpleStmtPrinter;
-    }
-
-    public LocalPrinter getLocalPrinter()
-    {
-	return localPrinter;
-    }
-
-    /** Sets the current StmtPrinter class for Jimple. */
-    public void setJimpleStmtPrinter(StmtPrinter jsp)
-    {
-        this.jimpleStmtPrinter = jsp;
-    }
-
-    public void setLocalPrinter( LocalPrinter lp)
-    {
-	this.localPrinter = lp;
     }
 
     public void addClass(SootClass c) 
