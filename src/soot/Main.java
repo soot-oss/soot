@@ -141,15 +141,6 @@ public class Main {
                 CompilationDeathException.COMPILATION_ABORTED,
                 "No main class specified!");
         }
-        // Command line classes
-        if (Options.v().app() && Options.v().classes().size() > 1) {
-
-            throw new CompilationDeathException(
-                CompilationDeathException.COMPILATION_ABORTED,
-                "Can only specify one class in application mode!\n"
-                    + "The transitive closure of the specified class gets loaded.\n"
-                    + "(Did you mean to use single-file mode?)");
-        }
     }
 
     public String[] cmdLineArgs;
