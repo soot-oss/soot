@@ -238,7 +238,7 @@ public class TypeResolver
 
   private void resolve_step_1() throws TypeException
   {
-    remove_spurious_locals();
+    //    remove_spurious_locals();
 
     collect_constraints_1_2();
     debug_vars("constraints");
@@ -1024,6 +1024,7 @@ public class TypeResolver
       }
   }
 
+  /*
   private void remove_spurious_locals()
   {
     boolean repeat;
@@ -1085,6 +1086,7 @@ public class TypeResolver
       }
     while(repeat);
   }
+  */
 
   private void split_new()
   {

@@ -97,6 +97,17 @@ public class JimpleBody extends StmtBody
 
             if(!noTyping)
             {
+	        if(aggregateAllLocals)
+		{
+		    Aggregator.v().transform(this, "jb.a");
+		    UnusedLocalEliminator.v().transform(this, "jb.ule");
+		}
+		else if (!noAggregating)
+		{
+		    Aggregator.v().transform(this, "jb.asv", "only-stack-locals");
+		    UnusedLocalEliminator.v().transform(this, "jb.ule");
+		}
+
                 if(Main.isProfilingOptimization)
                     Main.assignTimer.start();
 
