@@ -1369,6 +1369,8 @@ public class Walker extends DepthFirstAdapter
     public void outASigFieldRef(ASigFieldRef node)
     {
 	SootFieldRef field = (SootFieldRef) mProductions.removeLast();
+        field = Scene.v().makeFieldRef(field.declaringClass(), field.name(),
+                field.type(), true);
 	mProductions.addLast(Jimple.v().newStaticFieldRef(field));  
     }
 
@@ -1388,7 +1390,7 @@ public class Walker extends DepthFirstAdapter
 	className  = (String) mProductions.removeLast();      
 
         SootClass cl = mResolver.makeClassRef(className);
-        SootFieldRef field = Scene.v().makeFieldRef(cl, fieldName, t);
+        SootFieldRef field = Scene.v().makeFieldRef(cl, fieldName, t, false);
         
 	mProductions.addLast(field);
     }
@@ -1505,6 +1507,9 @@ public class Walker extends DepthFirstAdapter
             args = new ArrayList();
         
 	SootMethodRef method = (SootMethodRef) mProductions.removeLast();
+        method = Scene.v().makeMethodRef(method.declaringClass(),
+                method.name(), method.parameterTypes(), method.returnType(),
+                true);
         
 	mProductions.addLast(Jimple.v().newStaticInvokeExpr(method, args));   
     }
@@ -1527,7 +1532,7 @@ public class Walker extends DepthFirstAdapter
 	className = (String) mProductions.removeLast();
 
         SootClass sootClass =  mResolver.makeClassRef(className);
-        SootMethodRef sootMethod = Scene.v().makeMethodRef(sootClass, methodName, parameterList, type);
+        SootMethodRef sootMethod = Scene.v().makeMethodRef(sootClass, methodName, parameterList, type, false);
 
 	mProductions.addLast(sootMethod);
     }

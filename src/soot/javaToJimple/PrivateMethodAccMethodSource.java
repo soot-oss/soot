@@ -78,7 +78,7 @@ public class PrivateMethodAccMethodSource implements soot.MethodSource {
         }
 
         // assign local to meth
-        soot.SootMethodRef meth = soot.Scene.v().makeMethodRef(((soot.RefType)Util.getSootType(methodInst.container())).getSootClass(), methodInst.name(), methParamsTypes, Util.getSootType(methodInst.returnType()));
+        soot.SootMethodRef meth = soot.Scene.v().makeMethodRef(((soot.RefType)Util.getSootType(methodInst.container())).getSootClass(), methodInst.name(), methParamsTypes, Util.getSootType(methodInst.returnType()), methodInst.flags().isStatic());
 
         soot.jimple.InvokeExpr invoke = null;
         if (methodInst.flags().isStatic()) {

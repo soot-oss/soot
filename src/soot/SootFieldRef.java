@@ -31,6 +31,7 @@ public interface SootFieldRef {
     public SootClass declaringClass();
     public String name();
     public Type type();
+    public boolean isStatic();
 
     public String getSignature();
 

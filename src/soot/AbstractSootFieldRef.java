@@ -31,10 +31,12 @@ class AbstractSootFieldRef implements SootFieldRef {
     public AbstractSootFieldRef( 
             SootClass declaringClass,
             String name,
-            Type type ) {
+            Type type,
+            boolean isStatic) {
         this.declaringClass = declaringClass;
         this.name = name;
         this.type = type;
+        this.isStatic = isStatic;
         if( declaringClass == null ) throw new RuntimeException( "Attempt to create SootFieldRef with null class" );
         if( name == null ) throw new RuntimeException( "Attempt to create SootFieldRef with null name" );
         if( type == null ) throw new RuntimeException( "Attempt to create SootFieldRef with null type" );
@@ -43,10 +45,12 @@ class AbstractSootFieldRef implements SootFieldRef {
     private final SootClass declaringClass;
     private final String name;
     private final Type type;
+    private final boolean isStatic;
 
     public SootClass declaringClass() { return declaringClass; }
     public String name() { return name; }
     public Type type() { return type; }
+    public boolean isStatic() { return isStatic; }
 
     public String getSignature() {
         return SootField.getSignature(declaringClass, name, type);
@@ -69,6 +73,12 @@ class AbstractSootFieldRef implements SootFieldRef {
     public SootField resolve() {
         return resolve(null);
     }
+    private SootField checkStatic(SootField ret) {
+        if( ret.isStatic() != isStatic()) {
+            throw new ResolutionFailedException( "Resolved "+this+" to "+ret+" which has wrong static-ness" );
+        }
+        return ret;
+    }
     private SootField resolve(StringBuffer trace) {
         SootField ret = null;
         SootClass cl = declaringClass;
@@ -76,12 +86,12 @@ class AbstractSootFieldRef implements SootFieldRef {
             if(trace != null) trace.append(
                     "Looking in "+cl+" which has fields "+cl.getFields()+"\n" );
             if( cl.declaresField(name, type) ) {
-                return cl.getField(name, type);
+                return checkStatic(cl.getField(name, type));
             }
 
             if(Scene.v().allowsPhantomRefs() && cl.isPhantom())
             {
-                SootField f = new SootField(name, type);
+                SootField f = new SootField(name, type, isStatic()?Modifier.STATIC:0);
                 f.setPhantom(true);
                 cl.addField(f);
                 return f;
@@ -93,7 +103,7 @@ class AbstractSootFieldRef implements SootFieldRef {
                     if(trace != null) trace.append(
                             "Looking in "+iface+" which has fields "+iface.getFields()+"\n" );
                     if( iface.declaresField(name, type) ) {
-                        return iface.getField( name, type );
+                        return checkStatic(iface.getField( name, type ));
                     }
                     queue.addAll( iface.getInterfaces() );
                 }

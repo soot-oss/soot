@@ -32,12 +32,14 @@ class AbstractSootMethodRef implements SootMethodRef {
             SootClass declaringClass,
             String name,
             List parameterTypes,
-            Type returnType ) {
+            Type returnType,
+            boolean isStatic) {
         this.declaringClass = declaringClass;
         this.name = name;
         this.parameterTypes = new ArrayList();
         this.parameterTypes.addAll(parameterTypes);
         this.returnType = returnType;
+        this.isStatic = isStatic;
         if( declaringClass == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null class" );
         if( name == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null name" );
         if( parameterTypes == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null parameterTypes" );
@@ -48,6 +50,7 @@ class AbstractSootMethodRef implements SootMethodRef {
     private final String name;
     private final List parameterTypes;
     private final Type returnType;
+    private final boolean isStatic;
 
     private NumberedString subsig;
 
@@ -55,6 +58,7 @@ class AbstractSootMethodRef implements SootMethodRef {
     public String name() { return name; }
     public List parameterTypes() { return parameterTypes; }
     public Type returnType() { return returnType; }
+    public boolean isStatic() { return isStatic; }
 
     public NumberedString getSubSignature() {
         if( subsig == null ) {
@@ -89,6 +93,12 @@ class AbstractSootMethodRef implements SootMethodRef {
     public SootMethod resolve() {
         return resolve(null);
     }
+    private SootMethod checkStatic(SootMethod ret) {
+        if( ret.isStatic() != isStatic()) {
+            throw new ResolutionFailedException( "Resolved "+this+" to "+ret+" which has wrong static-ness" );
+        }
+        return ret;
+    }
     private SootMethod resolve(StringBuffer trace) {
         SootMethod ret = null;
         SootClass cl = declaringClass;
@@ -96,13 +106,13 @@ class AbstractSootMethodRef implements SootMethodRef {
             if(trace != null) trace.append(
                     "Looking in "+cl+" which has methods "+cl.getMethods()+"\n" );
             if( cl.declaresMethod( getSubSignature() ) )
-                return cl.getMethod( getSubSignature() );
+                return checkStatic(cl.getMethod( getSubSignature() ));
             if(Scene.v().allowsPhantomRefs() && cl.isPhantom())
             {
-                SootMethod m = new SootMethod(name, parameterTypes, returnType);
+                SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic()?Modifier.STATIC:0);
                 m.setPhantom(true);
                 cl.addMethod(m);
-                return m;
+                return checkStatic(m);
             }
             if( cl.hasSuperclass() ) cl = cl.getSuperclass();
             else break;
@@ -116,7 +126,7 @@ class AbstractSootMethodRef implements SootMethodRef {
                 if(trace != null) trace.append(
                         "Looking in "+iface+" which has methods "+iface.getMethods()+"\n" );
                 if( iface.declaresMethod( getSubSignature() ) )
-                    return iface.getMethod( getSubSignature() );
+                    return checkStatic(iface.getMethod( getSubSignature() ));
                 queue.addAll( iface.getInterfaces() );
             }
             if( cl.hasSuperclass() ) cl = cl.getSuperclass();

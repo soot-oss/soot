@@ -4295,7 +4295,7 @@ public class CFG {
                 
             SootClass bclass = cm.getSootClass(className);
 
-            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType);
+            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType, false);
 
             InstanceFieldRef fr =
                 Jimple.v().newInstanceFieldRef(Util.v().getLocalForStackOp(listBody,
@@ -4333,7 +4333,7 @@ public class CFG {
 
             
             Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
-            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType);
+            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType, false);
 
             fr = Jimple.v().newInstanceFieldRef(Util.v().getLocalForStackOp(listBody, typeStack,
                 typeStack.topIndex()), fieldRef);
@@ -4367,7 +4367,7 @@ public class CFG {
             Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
             
             SootClass bclass = cm.getSootClass(className);
-            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType);
+            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType, true);
 
             fr = Jimple.v().newStaticFieldRef(fieldRef);
 
@@ -4399,7 +4399,7 @@ public class CFG {
             Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
             
             SootClass bclass = cm.getSootClass(className);
-            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType);
+            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType, true);
 
             fr = Jimple.v().newStaticFieldRef(fieldRef);
 
@@ -4455,7 +4455,7 @@ public class CFG {
                 returnType = types[types.length - 1];
             }
 
-            methodRef = Scene.v().makeMethodRef(bclass, methodName, parameterTypes, returnType);
+            methodRef = Scene.v().makeMethodRef(bclass, methodName, parameterTypes, returnType, false);
 
             // build array of parameters
                 params = new Value[args];
@@ -4528,7 +4528,7 @@ public class CFG {
                     returnType = types[types.length - 1];
                 }
 
-                methodRef = Scene.v().makeMethodRef( bclass, methodName, parameterTypes, returnType);
+                methodRef = Scene.v().makeMethodRef( bclass, methodName, parameterTypes, returnType, false);
 
             // build array of parameters
                 params = new Value[args];
@@ -4604,7 +4604,7 @@ public class CFG {
                     returnType = types[types.length - 1];
                 }
 
-                methodRef = Scene.v().makeMethodRef(bclass, methodName, parameterTypes, returnType);
+                methodRef = Scene.v().makeMethodRef(bclass, methodName, parameterTypes, returnType, true);
 
             // build Vector of parameters
                    params = new Value[args];
@@ -4687,7 +4687,7 @@ public class CFG {
                     returnType = types[types.length - 1];
                 }
 
-                methodRef = Scene.v().makeMethodRef(bclass, methodName, parameterTypes, returnType);
+                methodRef = Scene.v().makeMethodRef(bclass, methodName, parameterTypes, returnType, false);
 
             // build Vector of parameters
                 params = new Value[args];

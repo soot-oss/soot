@@ -32,6 +32,7 @@ public interface SootMethodRef {
     public String name();
     public List parameterTypes();
     public Type returnType();
+    public boolean isStatic();
 
     public NumberedString getSubSignature();
 

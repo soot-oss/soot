@@ -701,6 +701,6 @@ public class SootMethod
     public SootMethod method() { return this; }
     public Context context() { return null; }
     public SootMethodRef makeRef() {
-        return Scene.v().makeMethodRef( declaringClass, name, parameterTypes, returnType );
+        return Scene.v().makeMethodRef( declaringClass, name, parameterTypes, returnType, isStatic() );
     }
 }

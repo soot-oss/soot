@@ -967,17 +967,18 @@ public class Scene  //extends AbstractHost
             SootClass declaringClass,
             String name,
             List/*Type*/ parameterTypes,
-            Type returnType ) {
+            Type returnType,
+            boolean isStatic ) {
         return new AbstractSootMethodRef(declaringClass, name, parameterTypes,
-                returnType);
+                returnType, isStatic);
     }
 
     /** Create an unresolved reference to a constructor. */
     public SootMethodRef makeConstructorRef( 
             SootClass declaringClass,
             List/*Type*/ parameterTypes) {
-        return new AbstractSootMethodRef(declaringClass, SootMethod.constructorName, 
-                                         parameterTypes, VoidType.v());
+        return makeMethodRef(declaringClass, SootMethod.constructorName, 
+                                         parameterTypes, VoidType.v(), false );
     }
 
 
@@ -985,8 +986,9 @@ public class Scene  //extends AbstractHost
     public SootFieldRef makeFieldRef( 
             SootClass declaringClass,
             String name,
-            Type type ) {
-        return new AbstractSootFieldRef(declaringClass, name, type);
+            Type type,
+            boolean isStatic) {
+        return new AbstractSootFieldRef(declaringClass, name, type, isStatic);
     }
     /** Returns the list of SootClasses that have been resolved at least to 
      * the level specified. */
