@@ -38,7 +38,7 @@ newInitialFlow()}
 \begin{slide}{HOWTO: Soot Flow Analysis II}
 Soot rewards you with:
 \begin{itemize}
-\item a flow analysis; e.g. 
+\item a flow analysis; namely,
 \item {\tt doAnalysis()} methods to carry out flow analysis
 \item several impls of abstraction domains (flow sets).
 \end{itemize}
@@ -52,7 +52,7 @@ Will describe how to implement a flow analysis in Soot and present examples:
 \end{itemize}
 \end{slide}
 
-\begin{slide}{Running Example: Live Variables}
+\begin{slide}{Running Example 1: Live Variables}
 \vspace*{-0.2in} 
 A local variable {\tt v} is {\red live} at $s$ if there exists some
 statement $s'$ using {\tt v} and a control-flow path from $s$ to $s'$.
@@ -392,6 +392,203 @@ Read the JavaDoc!
 \end{slide}
 
 % branching flow analysis
+
+\begin{slide}{Running Example 2: Branched Nullness}
+\vspace*{-0.2in} 
+A local variable {\tt v} is {\red non-null} at $s$ if all
+control-flow paths reaching $s$ result in {\tt v} being
+assigned a value different from {\tt null}.
+
+\begin{center}
+\input{br-example.eepic}
+\end{center}
+\end{slide}
+
+\begin{slide}{Step 1: Abstraction domain}
+\vspace*{-0.2in}
+
+Domain: sets of {\tt Local}s known to be non-null\\
+Partial order is subset inclusion.
+
+\quad
+
+(More complicated abstractions possible for this problem; e.g. 
+$\perp, \top, \mbox{\tt null}, \mbox{non-{\tt null}}$ per-local.)
+
+\quad
+
+Again, use {\tt ArraySparseSet}, which we use to implement:
+{\small 
+\[ \mbox{\tt \begin{tabular}{r@{}l}
+                 void merge(&Object in1, Object in2,\\
+                            &Object out);\\
+                 void copy(&Object src, Object dest);
+\end{tabular}}\]
+}
+\end{slide}
+
+\begin{slide}{Step 1: {\tt copy()} for nullness}
+\begin{verbatim}
+protected void copy(Object src, 
+                    Object dest) {
+  FlowSet sourceSet = (FlowSet)src,
+      destSet = (FlowSet) dest;
+
+\end{verbatim}    
+{\red\verb+  sourceSet.copy(destSet);+}
+\begin{verbatim}
+}
+\end{verbatim}
+
+\qquad
+
+Use {\tt FlowSet}'s implementation of {\tt copy()}.
+
+\qquad
+
+We'll do {\tt merge()} later.
+\end{slide}
+
+\begin{slide}{Step 2: Branched Nullness Problem Stmt}
+
+A local variable {\tt v} is {\red non-null} at $s$ if all control-flow
+paths from a method's start node to $s$ result in {\tt v} being
+assigned a value different from {\tt null} at $s$.
+
+\begin{center}
+\input{lv-example-specific.eepic}
+\end{center}
+
+\end{slide}
+
+\begin{slide}{Step 3: Forward or Backward?}
+
+Nullness is a branched forward flow analysis, since flow
+f$^{\mbox{\scriptsize n}}$ computes {\sf OUT} sets from {\sf IN} sets.
+
+\qquad
+
+In Soot, we subclass {\tt \red BranchedForwardFlowAnalysis}.
+
+\qquad
+
+{\small \red \tt class NullnessAnalysis \\ 
+           \qquad extends BranchedForwardFlowAnalysis \{ }
+\end{slide}
+
+\begin{slide}{Step 4: Join operator}
+In branched nullness, a variable {\tt v} is non-null if it is non-null
+on all paths from {\tt start} to {\tt s}, so we use intersection.
+
+\qquad
+
+Like {\tt copy()}, use {\tt FlowSet}'s {\tt intersection}:
+
+\vspace*{0.05in}
+
+\begin{verbatim}
+  void merge(...) {
+    // [cast Objects to FlowSets]
+\end{verbatim}
+{\red\verb+    inSet1.intersection(inSet2,+\\
+     \verb+                        outSet);+}\\
+\verb+  }+
+
+\end{slide}
+
+
+\begin{slide}{Step 5: Flow equations}
+\vspace*{-0.1in}
+
+\end{slide}
+
+%% Goal: At a stmt like {\tt x = y + z}, remove def {\tt x} from the
+%% flow set and add uses {\tt y} and {\tt z}.
+
+%% \vspace*{0.1in}
+
+%% Must implement this method:
+%% \begin{verbatim}
+%%     protected void flowThrough
+%%                  (Object inValue, 
+%%                   Object u, 
+%%                   Object outValue)
+%% \end{verbatim}
+
+%% We start by:
+%% \begin{itemize}
+%% \item casting {\tt inValue}, {\tt outValue} to {\tt FlowSet}.
+
+%% \item casting {\tt u} to {\tt Unit}.
+%% \end{itemize}
+%% \end{slide}
+
+%% \begin{slide}{Step 5: Implementing {\tt flowThrough}: removing kills}
+%% \begin{verbatim}
+%% // Take out kill set
+%% Iterator boxIt = s.getDefBoxes()
+%%                      .iterator();
+%% while( boxIt.hasNext() ) 
+%% {
+%%     ValueBox box = 
+%%          (ValueBox) boxIt.next();
+%%     Value value = box.getValue();
+%%     if( value instanceof Local )
+%%         in.remove( value );
+%% }
+%% \end{verbatim}
+%% \end{slide}
+
+%% \begin{slide}{Step 5: Implementing {\tt flowThrough}: adding gens}
+%% \begin{verbatim}
+%% // Add gen set
+%% boxIt = s.getUseBoxes().iterator();
+%% while( boxIt.hasNext() ) 
+%% {
+%%     ValueBox box = 
+%%          (ValueBox) boxIt.next();
+%%     Value value = box.getValue();
+%%     if( value instanceof Local )
+%%         in.add( value );
+%% }
+%% \end{verbatim}
+%% \end{slide}
+
+%% \begin{slide}{Step 6: Initial values}
+
+%% In constructor, we precompute full set (all locals):
+
+%% {\small \tt 
+%% \qquad fullSet = emptySet.clone();\\
+%% \qquad Iterator it = ((UnitGraph)g).\\
+%% \qquad \qquad    getBody().getLocals().iterator(); \\
+%% \qquad while (it.hasNext()) \{ \\
+%% \qquad \qquad Local v = (Local)it.next();\\
+%% \qquad \qquad if (v.getType() instanceof RefType)\\
+%% \qquad \qquad \qquad fullSet.add(v);\\
+%% \qquad \qquad \} \\
+%% \qquad \} }
+
+%% \end{slide}
+
+
+\begin{slide}{Step 6: Initial values}
+\vspace*{-0.1in}
+Initialize IN, OUT sets.
+\begin{itemize}
+
+\item Create initial sets ($\top$ from constr.)\\
+{\tt void newInitialFlow() \{\\
+\qquad \tt \{ return fullSet.clone(); \} }
+
+\vspace*{0.1in}
+
+\item Create entry sets ({\tt emptySet} from constr.)\\
+{\tt void entryInitialFlow()}\\
+\qquad {\tt \{ return emptySet.clone(); \} }
+\end{itemize}
+\end{slide}
+
 
 % do we really need 'copy'?  I wonder how much time is spent on that.
 % if our flow set implementation has immutability, then 'copy' can be
