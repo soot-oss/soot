@@ -93,6 +93,15 @@
         </delete>
     </target>
     <target name="veryclean-jedd">
+        <input
+            message="This will delete files that require JEDD to be installed to regenerate. Are you sure?"
+            validargs="y,n"
+            addproperty="do.jedd.delete"
+        />
+        <condition property="do.jedd.abort">
+            <equals arg1="n" arg2="${do.jedd.delete}"/>
+        </condition>
+        <fail if="do.jedd.abort">Build aborted by user.</fail>
         <delete quiet="true">
             <fileset dir="generated/jedd" includes="**/*" />
         </delete>
@@ -103,6 +112,15 @@
         </delete>
     </target>
     <target name="veryclean-sablecc">
+        <input
+            message="This will delete files that require SABLECC to be installed to regenerate. Are you sure?"
+            validargs="y,n"
+            addproperty="do.sablecc.delete"
+        />
+        <condition property="do.sablecc.abort">
+            <equals arg1="n" arg2="${do.sablecc.delete}"/>
+        </condition>
+        <fail if="do.sablecc.abort">Build aborted by user.</fail>
         <delete quiet="true">
             <fileset dir="generated/sablecc" includes="**/*" />
         </delete>
