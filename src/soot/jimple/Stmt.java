@@ -48,5 +48,13 @@ public interface Stmt extends Unit
     public boolean containsInvokeExpr();
     public Value getInvokeExpr();
     public ValueBox getInvokeExprBox();
+
+    public boolean containsArrayRef();
+    public Value getArrayRef();
+    public ValueBox getArrayRefBox();
+
+    public boolean containsFieldRef();
+    public Value getFieldRef();
+    public ValueBox getFieldRefBox();
 }
 

@@ -40,7 +40,7 @@ public class InvokeGraph
     HashMap methodToContainedSites = new HashMap();
     HashMap targetToCallingSites = new HashMap();
 
-    MethodCallGraph mcg;
+    public MethodCallGraph mcg;
 
     /** Rebuilds the call graph to include only reachable methods. */
     public void refreshReachableMethods() {

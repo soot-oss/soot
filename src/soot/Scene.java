@@ -134,7 +134,7 @@ public class Scene  //extends AbstractHost
         // Jimple optimization pack (-O)
         packNameToPack.put("jop", p = new Pack());
         {
-            p.add(new Transform("jop.cse",  CommonSubexpressionEliminator.v()));
+	  //            p.add(new Transform("jop.cse",  CommonSubexpressionEliminator.v()));
             p.add(new Transform("jop.cp",   CopyPropagator.v()));
             p.add(new Transform("jop.cpf",  ConstantPropagatorAndFolder.v()));
             p.add(new Transform("jop.cbf",  ConditionalBranchFolder.v()));
@@ -157,6 +157,10 @@ public class Scene  //extends AbstractHost
             p.add(new Transform("wjop.si", StaticInliner.v(), "disabled"));
         }
 
+	// Give another chance to do Whole-Jimple transformation
+	// The RectangularArrayFinder will be put into this package.
+	packNameToPack.put("wjtp2", p = new Pack());	
+		
         // Baf optimization pack
         packNameToPack.put("bop", p = new Pack());
 

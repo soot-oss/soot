@@ -36,7 +36,7 @@
 */
 
 
-package soot.jimple.toolkits.annotation.nullcheck;
+package soot.toolkits.scalar;
 
 import soot.*;
 import soot.toolkits.graph.*;

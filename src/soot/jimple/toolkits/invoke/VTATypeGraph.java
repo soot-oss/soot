@@ -111,7 +111,7 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                         continue;
 
                     // Get the body & add the locals.
-                    Body b = m.getActiveBody();
+		    Body b = m.retrieveActiveBody();
 
                     Iterator localIt = b.getLocals().iterator();
                     while (localIt.hasNext())
@@ -186,7 +186,7 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                         continue;
 
                     // Get the body & add the locals.
-                    Body b = m.getActiveBody();
+		    Body b = m.retrieveActiveBody();
 
                     Iterator localIt = b.getLocals().iterator();
                     while (localIt.hasNext())
@@ -321,7 +321,7 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                     }
 
                     String methodSig = m.getSignature();
-                    JimpleBody b = (JimpleBody)m.getActiveBody();
+                    JimpleBody b = (JimpleBody)m.retrieveActiveBody();
 
                     // Look for assignStmts and method calls.
                     Iterator unitsIt = b.getUnits().iterator();

@@ -32,7 +32,7 @@ import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
-
+import soot.jimple.*;
 
 /**
  *  Implements a CFG for a Body instance where the nodes are Block
@@ -41,6 +41,7 @@ import soot.util.*;
  *   @see BriefBlockGraph
  *   @see CompleteBlockGraph
  *   @see ZonedBlockGraph
+ *   @see ArrayRefBlockGraph
  */
 
 public class BlockGraph implements DirectedGraph 
@@ -55,6 +56,8 @@ public class BlockGraph implements DirectedGraph
     static final int BRIEF = 1;
     static final int ZONED = 2;
 
+    static final int ARRAYREF = 99;
+
     private Map blockToSuccs;
     private Map blockToPreds;
    
@@ -66,7 +69,8 @@ public class BlockGraph implements DirectedGraph
      *                 This can be  BRIEF, ZONED or COMPLETE.
      *   @see CompleteBlockGraph
      *   @see BriefBlockGraph
-     *   @see ZonedBlockGraph 
+     *   @see ZonedBlockGraph
+     *   @see ArrayRefBlockGraph 
      */
     BlockGraph(Body aBody, int type) 
     {
@@ -226,7 +230,24 @@ public class BlockGraph implements DirectedGraph
 
                 }
 
+   		// For array reference graph only:
+		if (type == ARRAYREF)
+		{
+		    Stmt stmt = (Stmt)nextUnit;
+
+		    if ((nextUnit != null) &&(stmt.containsArrayRef()))
+		    {
+			if (!leaders.containsKey(nextUnit))
+		        {
+			    List predicessors = new LinkedList();
+			    predicessors.add(currentUnit);
+
+			    leaders.put(nextUnit, predicessors);
+			}
+		    }
+		}
                 
+             
                 // For complete graphs only:
                 if(type ==COMPLETE) {
                     if(trapsInScope.size() != 0 ){

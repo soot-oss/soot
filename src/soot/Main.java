@@ -39,9 +39,15 @@ import soot.baf.toolkits.base.*;
 import soot.toolkits.scalar.*;
 import soot.dava.*;
 
+import soot.jimple.toolkits.annotation.arraycheck.*;
+import soot.jimple.toolkits.annotation.nullcheck.*;
+import soot.jimple.toolkits.annotation.profiling.*;
+import soot.tagkit.*;
+
 import java.io.*;
 
 import java.text.*;
+
 
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main implements Runnable, ICompilationListener
@@ -158,6 +164,9 @@ public class Main implements Runnable, ICompilationListener
 
     static public int totalFlowNodes,
            totalFlowComputations;
+
+    static boolean doArrayBoundsCheck = false;
+    static boolean doNullPointerCheck = false;
            
     static public Timer copiesTimer = new Timer("copies"),
         defsTimer = new Timer("defs"),
@@ -496,10 +505,48 @@ public class Main implements Runnable, ICompilationListener
         return isSubtractingGC;
     }
 
+    public static void setAnnotationPhases(String opt)
+    {
+	if (opt.equals("both"))
+	{
+	    doNullPointerCheck = true;
+	    doArrayBoundsCheck = true;
+	}
+	else
+        if (opt.equals("arraybounds"))
+	{
+	    doArrayBoundsCheck = true;
+	}
+	else
+	if (opt.equals("nullpointer"))
+	{
+	    doNullPointerCheck = true;
+	}
+	else
+	    System.out.println("Annotation phase \""+opt+"\" is not valid.");
+
+	// put null pointer check before bounds check for profiling purpose
+	if (doNullPointerCheck)
+	{
+	    Scene.v().getPack("jtp").add(new Transform("jtp.npc", NullPointerChecker.v()));
+	}
+
+	if (doArrayBoundsCheck)
+	{
+	    Scene.v().getPack("wjtp2").add(new Transform("wjtp2.ra", RectangularArrayFinder.v()));
+	    Scene.v().getPack("jtp").add(new Transform("jtp.abc", ArrayBoundsChecker.v()));
+	}
+
+	if (doNullPointerCheck || doArrayBoundsCheck)
+	{
+	    Scene.v().getPack("jtp").add(new Transform("jtp.profiling", ProfilingGenerator.v()));
+	}
+    }
+
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version 1.0.0 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.38)");
+            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.39)");
             System.out.println("Copyright (C) 1997-2000 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -557,6 +604,10 @@ public class Main implements Runnable, ICompilationListener
             System.out.println("  -p, --phase-option PHASE-NAME KEY[:VALUE]");
             System.out.println("                               set run-time option KEY to VALUE for PHASE-NAME");
             System.out.println("                               (default for VALUE is true)");
+	    System.out.println("  -A  --annotation [both|nullpointer|arraybounds]");
+	    System.out.println("                               turn on the annotation for null pointer and/or ");
+	    System.out.println("                               array bounds check. ");
+	    System.out.println("                               more options are in the document. ");
             System.out.println("");
             System.out.println("Examples:");
             System.out.println("");
@@ -683,6 +734,11 @@ public class Main implements Runnable, ICompilationListener
 		if(++i < args.length)
 		    sTagFileList.add(args[i]);
 	    }
+	     else if(arg.equals("-A") || arg.equals("--annotation"))
+	     {
+		 if (++i < args.length)
+		     setAnnotationPhases(args[i]);
+	     }
              else if(arg.startsWith("-"))
              {
                  System.out.println("Unrecognized option: " + arg);
@@ -1029,6 +1085,10 @@ public class Main implements Runnable, ICompilationListener
         Scene.v().getPack("wjtp").apply();
         if(isOptimizingWhole)
             Scene.v().getPack("wjop").apply();
+
+    // Give one more chance
+    	Scene.v().getPack("wjtp2").apply();
+	
         System.gc();
 
     // Handle each class individually
@@ -1036,31 +1096,32 @@ public class Main implements Runnable, ICompilationListener
         Iterator classIt = Scene.v().getApplicationClasses().iterator();
 
         while(classIt.hasNext())
-            {
+        {
             SootClass s = (SootClass) classIt.next();
                 
             System.out.print("Transforming " + s.getName() + "... " );
             System.out.flush();
             
             if(!isInDebugMode)
-                 {
-                    try 
-                    {
-                        handleClass(s);
-                    }
-                    catch(RuntimeException e)
-                    {
-                        System.out.println("failed due to: " + e);
-                    }
-                }
-                else {
-                    handleClass(s);
-                }
+            {
+		try 
+                {
+		    handleClass(s);
+		}
+		catch(RuntimeException e)
+                {
+		    e.printStackTrace();
+		}
+	    }
+	    else {
+		handleClass(s);
+	    }
                 
-                System.out.println();
-            }
+	    System.out.println();
+	}
     }
-        totalTimer.end();            
+    
+    totalTimer.end();            
 
         // Print out time stats.
 

@@ -40,6 +40,9 @@ public abstract class JasminAttribute implements Attribute
 {
     public static byte[] decode(String attr, Hashtable labelToPc)
     {
+	if (soot.Main.isVerbose)
+	    System.out.println("[] JasminAttribute decode...");
+
 	List attributeHunks = new LinkedList();
 	int attributeSize = 0;
 
@@ -53,11 +56,13 @@ public abstract class JasminAttribute implements Attribute
 	    String token = st.nextToken();
 	    if(isLabel) {		
 		Integer pc = (Integer) labelToPc.get(token);
+
 		if(pc == null)
-		    throw new RuntimeException();
+		    throw new RuntimeException("PC is null, the token is "+token);
+
 		int pcvalue = pc.intValue();
 		if(pcvalue > 65535) 
-		    throw new RuntimeException();
+		    throw new RuntimeException("PC great than 65535, the token is "+token+" : " +pcvalue);
 
 		pcArray = new byte[2];
 
@@ -80,7 +85,6 @@ public abstract class JasminAttribute implements Attribute
 	int index = 0;
 	byte[] attributeValue = new byte[attributeSize];
 
-
 	Iterator it = attributeHunks.iterator();
 	while(it.hasNext()) {
 	    byte[] hunk = (byte[]) it.next();
@@ -90,11 +94,13 @@ public abstract class JasminAttribute implements Attribute
 	}
 
 	if(index != (attributeSize))
-	    throw new RuntimeException();
+	    throw new RuntimeException("Index does not euqal to attrubute size :"+index+" -- "+attributeSize);
+
+	if (soot.Main.isVerbose)
+	    System.out.println("[] Jasmin.decode finished...");
 
 	return attributeValue;
     }
-
     
     abstract public String getJasminValue(Map instToLabel);
 }

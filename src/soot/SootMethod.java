@@ -253,8 +253,10 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
      
     public Body retrieveActiveBody()
     {
-        if (declaringClass.isContextClass() || declaringClass.isPhantomClass())
-            throw new RuntimeException("cannot get resident body for context or phantom class!");
+        if (declaringClass.isContextClass())
+	    throw new RuntimeException("cannot get resident body for context class : " + getSignature());
+	if (declaringClass.isPhantomClass())
+            throw new RuntimeException("cannot get resident body for phantom class : " + getSignature());
 
         if(!hasActiveBody())
             setActiveBody(this.getBodyFromMethodSource("jb"));

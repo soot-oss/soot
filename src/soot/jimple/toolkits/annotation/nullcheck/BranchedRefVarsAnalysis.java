@@ -75,18 +75,18 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 
     // we don't want the analysis to be conservative?
     // i.e. we don't want it to only care for locals
-    private static final boolean isNotConservative = false;
+    private static boolean isNotConservative = true;
     
     // do we want the analysis to handle if statements?
-    private static final boolean isBranched = true;
+    private static boolean isBranched = true;
     
     // do we want the analysis to care that f and g 
     // could be the same reference?
-    private static final boolean careForAliases = true;
+    private static boolean careForAliases = false;
     
     // do we want the analysis to care that a method 
     // call could have side effects?
-    private static final boolean careForMethodCalls = true;
+    private static boolean careForMethodCalls = false;
 
     // **** END OF COMPILATION OPTIONS *****
 
@@ -387,7 +387,6 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 	// perform static preservation and generation
 	initUnitSets();
 
-
         doAnalysis();
 
     } // end constructor
@@ -678,6 +677,10 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 		    } else if (boxValue instanceof LengthExpr) {
 			base = ((LengthExpr) boxValue).getOp();
 			lengthExprChecksSet.add(base);
+		    } else if (s instanceof ThrowStmt) {
+			base = ((ThrowStmt)s).getOp();
+		    } else if (s instanceof MonitorStmt) {
+			base = ((MonitorStmt)s).getOp();
 		    }
 		    
 		    if (base != null && isAnalyzedRef(base)) { 

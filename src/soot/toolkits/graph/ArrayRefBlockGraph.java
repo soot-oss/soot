@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 1999 Patrice Pominville, Raja Vallee-Rai
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,49 +24,29 @@
  */
 
 
+package soot.toolkits.graph;
 
-
-
-package soot;
-
-import soot.util.*;
 import java.util.*;
+import java.io.*;
+import soot.*;
+
 
 /**
- *   Soot representation of the Java built-in type 'char'. Implemented as
- *   a singleton.
+ *  Represents a CFG for a Body instance where the nodes are Block 
+ *  instances, and where control flow associated with exceptions is ignored.
+ *  Hence the graph will in fact be a forest where each exception handler will
+ *  constitute a disjoint subgraph.
  */
-public class CharType extends BaseType implements IntegerType
+public class ArrayRefBlockGraph extends BlockGraph 
 {
-    private static CharType constant = new CharType();
-
-    private CharType()
+    /**
+     *  Constructs a BriefBlockGraph from a given Body instance.
+     *  @param the Body instance from which the graph is built.
+     */
+    public  ArrayRefBlockGraph(Body body)
     {
-    }
-
-    /** @return this class's singleton object */
-    public static CharType v()
-    {
-        return constant;
-    }
-
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
-
-    public String toString()
-    {
-        return "char";
-    }
-
-    public int hashCode()
-    {
-        return 0x739EA474;
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((TypeSwitch) sw).caseCharType(this);	
+        super(body, ARRAYREF);
     }
 }
+
+

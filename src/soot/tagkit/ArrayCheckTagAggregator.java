@@ -8,15 +8,18 @@ import java.util.*;
 
 public class ArrayCheckTagAggregator implements TagAggregator
 {    
-
+    private boolean status = false;
     private List tags = new LinkedList();
     private List units = new LinkedList();
 
-    private boolean active = true;
-
-    public ArrayCheckTagAggregator(boolean status)
+    public ArrayCheckTagAggregator(boolean active)
     {
-	this.active = status;
+	this.status = active;
+    }
+
+    public boolean isActive()
+    {
+	return this.status;
     }
 
     public void aggregateTag(Tag t, Unit u)
@@ -33,10 +36,5 @@ public class ArrayCheckTagAggregator implements TagAggregator
 	    return null;
 	else
 	    return new CodeAttribute("ArrayCheckAttribute", units, tags);
-    }
-
-    public boolean isActive()
-    {
-	return active;
     }
 }

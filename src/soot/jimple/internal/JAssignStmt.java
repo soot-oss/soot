@@ -130,6 +130,61 @@ public class JAssignStmt extends AbstractDefinitionStmt
         return rightBox;
     }
 
+    /* added by Feng */
+    public boolean containsArrayRef()
+    {
+	return ((leftBox.getValue() instanceof ArrayRef) || (rightBox.getValue() instanceof ArrayRef));
+    }
+
+    public Value getArrayRef()
+    {
+	if (!containsArrayRef())
+	    throw new RuntimeException("getArrayRef() called with no ArrayRef present!");
+
+	if (leftBox.getValue() instanceof ArrayRef)
+	    return leftBox.getValue();
+	else
+	    return rightBox.getValue();
+    }
+
+    public ValueBox getArrayRefBox()
+    {
+	if (!containsArrayRef())
+	    throw new RuntimeException("getArrayRefBox() called with no ArrayRef present!");
+	
+	if (leftBox.getValue() instanceof ArrayRef)
+	    return leftBox;
+	else
+	    return rightBox;
+    }
+
+    public boolean containsFieldRef()
+    {
+	return ((leftBox.getValue() instanceof FieldRef) || (rightBox.getValue() instanceof FieldRef));
+    }
+
+    public Value getFieldRef()
+    {
+	if (!containsFieldRef())
+	    throw new RuntimeException("getFieldRef() called with no FieldRef present!");
+	
+	if (leftBox.getValue() instanceof FieldRef)
+	    return leftBox.getValue();
+	else
+	    return rightBox.getValue();
+    }
+
+    public ValueBox getFieldRefBox()
+    {
+	if (!containsFieldRef())
+	    throw new RuntimeException("getFieldRefBox() called with no FieldRef present!");
+	
+	if (leftBox.getValue() instanceof FieldRef)
+	    return leftBox;
+	else
+	    return rightBox;
+    }
+	  
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)

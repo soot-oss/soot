@@ -58,4 +58,45 @@ public abstract class AbstractStmt extends AbstractUnit implements Stmt, Convert
     {
         throw new RuntimeException("getInvokeExprBox() called with no invokeExpr present!");
     }
+
+    public boolean containsArrayRef()
+    {
+	return false;
+    }
+
+    public Value getArrayRef()
+    {
+	throw new RuntimeException("getArrayRef() called with no ArrayRef present!");
+    }
+
+    public ValueBox getArrayRefBox()
+    {
+	throw new RuntimeException("getArrayRefBox() called with no ArrayRef present!");
+    }
+
+    public boolean containsFieldRef()
+    {
+	return false;
+    }
+
+    public Value getFieldRef()
+    {
+	throw new RuntimeException("getFieldRef() called with no FieldRef present!");
+    }
+
+    public ValueBox getFieldRefBox()
+    {
+	throw new RuntimeException("getFieldRefBox() called with no FieldRef present!");
+    }
+
 }
+
+
+
+
+
+
+
+
+
+

@@ -50,9 +50,21 @@ public class TypeAssigner extends BodyTransformer
 	throw new NullPointerException();
       }
 
-    //System.out.println("typing started");
+    Date start = new Date();
+    
+    if (soot.Main.isVerbose)
+      System.out.println("[TypeAssigner] typing system started on "+start);
+
     TypeResolver.resolve((JimpleBody)b, Scene.v());
-    //System.out.println("typing done");
+
+    Date finish = new Date();
+    if (soot.Main.isVerbose)
+      {
+	long runtime = finish.getTime()-start.getTime();
+	long mins = runtime/60000;
+	long secs = (runtime%60000)/1000;
+	System.out.println("[TypeAssigner] typing system ended. It took "+mins+" mins and "+secs+" secs.");
+      }
   }
 }
 

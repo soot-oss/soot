@@ -71,7 +71,8 @@ public  class AbstractHost implements Host
             return (Tag) mTagList.get(tagIndex);
         }
         
-        throw new RuntimeException("Host doesn't have tag named:" + aName);
+//        throw new RuntimeException("Host doesn't have tag named:" + aName);
+	return null;
     }
 
     public boolean hasTag(String aName)

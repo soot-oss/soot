@@ -93,6 +93,7 @@ public class SimpleLocalDefs implements LocalDefs
                                     if(!localUnitPairToDefs.containsKey(pair))
                                         {
                                             IntPair intPair = (IntPair) analysis.localToIntPair.get(l);
+					    
                                             BoundedFlowSet value = (BoundedFlowSet) analysis.getFlowBefore(s);
 
                                             List unitLocalDefs = value.toList(intPair.op1, intPair.op2);
@@ -109,6 +110,10 @@ public class SimpleLocalDefs implements LocalDefs
                 
         if(Main.isProfilingOptimization)
             Main.defsTimer.end();
+
+	if(Main.isVerbose)
+	    System.out.println("[" + g.getBody().getMethod().getName() +
+                               "]     SimpleLocalDefs finished.");
     }
 
     public List getDefsOfAt(Local l, Unit s)
