@@ -41,122 +41,129 @@ public class UnreachableCodeEliminator extends BodyTransformer
     public UnreachableCodeEliminator( Singletons.Global g ) {}
     public static UnreachableCodeEliminator v() { return G.v().soot_jimple_toolkits_scalar_UnreachableCodeEliminator(); }
 
-    ExceptionalUnitGraph stmtGraph;
-    HashSet visited;
-    int numPruned;
-
     protected void internalTransform(Body b, String phaseName, Map options) 
     {
-        StmtBody body = (StmtBody)b;
-        
-        if (Options.v().verbose()) 
-            G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
+        new Instance().internalTransform(b, phaseName, options);
+    }
 
-        numPruned = 0;
+    class Instance {
+        ExceptionalUnitGraph stmtGraph;
+        HashSet visited;
+        int numPruned;
 
-	if (PhaseOptions.getBoolean(options, "remove-unreachable-traps")) {
-	    stmtGraph = new ExceptionalUnitGraph(body);
-	} else {
-	    // Force a conservative ExceptionalUnitGraph() which
-	    // necessarily includes an edge from every trapped Unit to
-	    // its handler, so that we retain Traps in the case where
-	    // trapped units remain, but the default ThrowAnalysis
-	    // says that none of them can throw the caught exception.
-	    stmtGraph = new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v(),
-						 false);
-	}
-	visited = new HashSet();
-
-	// We need a map from Units that handle Traps, to a Set of their
-	// Traps, so we can remove the Traps should we remove the handler.
-	Map handlerToTraps = new HashMap();
-	for (Iterator it = body.getTraps().iterator(); it.hasNext(); ) {
-	    Trap trap = (Trap) it.next();
-	    Unit handler = trap.getHandlerUnit();
-	    Set handlersTraps = (Set) handlerToTraps.get(handler);
-	    if (handlersTraps == null) {
-		handlersTraps = new ArraySet(3);
-		handlerToTraps.put(handler, handlersTraps);
-	    }
-	    handlersTraps.add(trap);
-	}
-
-        // Used to be: "mark first statement and all its successors, recursively"
-        // Bad idea! Some methods are extremely long. It broke because the recursion reached the
-        // 3799th level.
-
-        if (!body.getUnits().isEmpty()) {
-	    LinkedList startPoints = new LinkedList();
-	    startPoints.addLast(body.getUnits().getFirst());
-
-            visitStmts(startPoints);
-	}
-
-        Iterator stmtIt = body.getUnits().snapshotIterator();
-        while (stmtIt.hasNext()) 
+        protected void internalTransform(Body b, String phaseName, Map options) 
         {
-            // find unmarked nodes
-            Stmt stmt = (Stmt)stmtIt.next();
+            StmtBody body = (StmtBody)b;
             
-            if (!visited.contains(stmt)) 
-            {
-                body.getUnits().remove(stmt);
-		Set traps = (Set) handlerToTraps.get(stmt);
-		if (traps != null) {
-		    for (Iterator it = traps.iterator(); it.hasNext(); ) {
-			Trap trap = (Trap) it.next();
-			body.getTraps().remove(trap);
-		    }
-		}
-                numPruned++;
+            if (Options.v().verbose()) 
+                G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
+
+            numPruned = 0;
+
+            if (PhaseOptions.getBoolean(options, "remove-unreachable-traps")) {
+                stmtGraph = new ExceptionalUnitGraph(body);
+            } else {
+                // Force a conservative ExceptionalUnitGraph() which
+                // necessarily includes an edge from every trapped Unit to
+                // its handler, so that we retain Traps in the case where
+                // trapped units remain, but the default ThrowAnalysis
+                // says that none of them can throw the caught exception.
+                stmtGraph = new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v(),
+                                                    false);
             }
-        }
-        if (Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() + "]     Removed " + numPruned + " statements...");
-            
-        // Now eliminate empty traps. 
-	//
-	// For the most part, this is an atavism, an an artifact of
-        // pre-ExceptionalUnitGraph code, when the only way for a trap to 
-	// become unreachable was if all its trapped units were removed, and
-	// the stmtIt loop did not remove Traps as it removed handler units.
-	// We've left this separate test for empty traps here, even though 
-	// most such traps would already have been eliminated by the preceding
-	// loop, because in arbitrary bytecode you could have
-	// handler unit that was still reachable by normal control flow, even
-	// though it no longer trapped any units (though such code is unlikely
-	// to occur in practice, and certainly no in code generated from Java
-	// source.
-        {
-            Iterator trapIt = b.getTraps().iterator();
-            
-            while(trapIt.hasNext())
+            visited = new HashSet();
+
+            // We need a map from Units that handle Traps, to a Set of their
+            // Traps, so we can remove the Traps should we remove the handler.
+            Map handlerToTraps = new HashMap();
+            for( Iterator trapIt = body.getTraps().iterator(); trapIt.hasNext(); ) {
+                final Trap trap = (Trap) trapIt.next();
+                Unit handler = trap.getHandlerUnit();
+                Set handlersTraps = (Set) handlerToTraps.get(handler);
+                if (handlersTraps == null) {
+                    handlersTraps = new ArraySet(3);
+                    handlerToTraps.put(handler, handlersTraps);
+                }
+                handlersTraps.add(trap);
+            }
+
+            // Used to be: "mark first statement and all its successors, recursively"
+            // Bad idea! Some methods are extremely long. It broke because the recursion reached the
+            // 3799th level.
+
+            if (!body.getUnits().isEmpty()) {
+                LinkedList startPoints = new LinkedList();
+                startPoints.addLast(body.getUnits().getFirst());
+
+                visitStmts(startPoints);
+            }
+
+            Iterator stmtIt = body.getUnits().snapshotIterator();
+            while (stmtIt.hasNext()) 
             {
-                Trap t = (Trap) trapIt.next();
+                // find unmarked nodes
+                Stmt stmt = (Stmt)stmtIt.next();
                 
-                if(t.getBeginUnit() == t.getEndUnit())
-                    trapIt.remove();
-            }
-        }
-        
-  } // pruneUnreachables
-
-    private void visitStmts(LinkedList st) {
-
-        // Do DFS of the unit graph, starting from the passed nodes.
-
-        while (!st.isEmpty()) {
-            Object stmt = st.removeLast();
-            if (!visited.contains(stmt)) {
-                visited.add(stmt);
-                Iterator succIt = stmtGraph.getSuccsOf(stmt).iterator();
-                while (succIt.hasNext()) {
-                    Object o = succIt.next();
-                    if (!visited.contains(o))
-                        st.addLast(o);
+                if (!visited.contains(stmt)) 
+                {
+                    body.getUnits().remove(stmt);
+                    Set traps = (Set) handlerToTraps.get(stmt);
+                    if (traps != null) {
+                        for( Iterator trapIt = traps.iterator(); trapIt.hasNext(); ) {
+                            final Trap trap = (Trap) trapIt.next();
+                            body.getTraps().remove(trap);
+                        }
+                    }
+                    numPruned++;
                 }
             }
-        }
-    } // visitStmts
+            if (Options.v().verbose())
+                G.v().out.println("[" + body.getMethod().getName() + "]     Removed " + numPruned + " statements...");
+                
+            // Now eliminate empty traps. 
+            //
+            // For the most part, this is an atavism, an an artifact of
+            // pre-ExceptionalUnitGraph code, when the only way for a trap to 
+            // become unreachable was if all its trapped units were removed, and
+            // the stmtIt loop did not remove Traps as it removed handler units.
+            // We've left this separate test for empty traps here, even though 
+            // most such traps would already have been eliminated by the preceding
+            // loop, because in arbitrary bytecode you could have
+            // handler unit that was still reachable by normal control flow, even
+            // though it no longer trapped any units (though such code is unlikely
+            // to occur in practice, and certainly no in code generated from Java
+            // source.
+            {
+                Iterator trapIt = b.getTraps().iterator();
+                
+                while(trapIt.hasNext())
+                {
+                    Trap t = (Trap) trapIt.next();
+                    
+                    if(t.getBeginUnit() == t.getEndUnit())
+                        trapIt.remove();
+                }
+            }
+            
+    } // pruneUnreachables
 
+        private void visitStmts(LinkedList st) {
+
+            // Do DFS of the unit graph, starting from the passed nodes.
+
+            while (!st.isEmpty()) {
+                Object stmt = st.removeLast();
+                if (!visited.contains(stmt)) {
+                    visited.add(stmt);
+                    Iterator succIt = stmtGraph.getSuccsOf(stmt).iterator();
+                    while (succIt.hasNext()) {
+                        Object o = succIt.next();
+                        if (!visited.contains(o))
+                            st.addLast(o);
+                    }
+                }
+            }
+        } // visitStmts
+
+    }
 } // UnreachablePruner
