@@ -52,6 +52,7 @@ public abstract class AbstractValueBox extends AbstractHost implements ValueBox
         value.toString(up);
         up.endValueBox(this);
     }
+    public String toString() { return "VB("+value+")"; }
 }
 
 

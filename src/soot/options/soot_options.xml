@@ -344,6 +344,19 @@ referenced by that class. This may cause Soot to produce
 incorrect results.
 </long_desc>
 		</boolopt>
+		<stropt>
+			<name>Main Class</name>
+			<alias>main-class</alias>
+			<set_arg_label>class</set_arg_label>
+			<short_desc>Sets the main class for whole-program.</short_desc>
+			<long_desc>
+<p>
+By default, the first class mentioned on the command-line is treated
+as the main class (entry point) in whole-program analysis. This option
+overrides this default.
+</p>
+</long_desc>
+		</stropt>
 	</section>
 	<section>
 		<name>Output Options</name>

@@ -38,6 +38,7 @@ import soot.util.*;
 import java.util.*;
 import java.io.*;
 import soot.toolkits.scalar.*;
+import soot.toolkits.exceptions.*;
 import soot.options.*;
 
 
@@ -200,8 +201,30 @@ public abstract class Body extends AbstractHost implements Serializable
         validateLocals();
         validateTraps();
         validateUnitBoxes();
+        validateValueBoxes();
         if (Options.v().debug())
             validateUses();
+    }
+
+    /** Verifies that a ValueBox is not used in more than one place. */
+    public void validateValueBoxes()
+    {
+        List l = getUseAndDefBoxes();
+        for( int i = 0; i < l.size(); i++ ) {
+            for( int j = 0; j < l.size(); j++ ) {
+                if( i == j ) continue;
+                if( l.get(i) == l.get(j) ) {
+                    System.err.println("Aliased value box : "+l.get(i)+" in "+getMethod());
+                    for( Iterator uIt = getUnits().iterator(); uIt.hasNext(); ) {
+                        final Unit u = (Unit) uIt.next();
+                        System.err.println(""+u);
+                    }
+                    soot.Printer.v().setOption(Printer.USE_ABBREVIATIONS);
+                    soot.Printer.v().printTo(this, new PrintWriter(System.err));
+                    throw new RuntimeException("Aliased value box : "+l.get(i)+" in "+getMethod());
+                }
+            }
+        }
     }
 
     /** Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain. */
@@ -222,7 +245,7 @@ public abstract class Body extends AbstractHost implements Serializable
         if( (value = vb.getValue()) instanceof Local) {
             //System.out.println("localChain: "+localChain);
             if(!localChain.contains(value))
-                throw new RuntimeException("Local not in chain : "+value);
+                throw new RuntimeException("Local not in chain : "+value+" in "+getMethod());
         }
     }
 
@@ -234,13 +257,13 @@ public abstract class Body extends AbstractHost implements Serializable
         {
             Trap t = (Trap)it.next();
             if (!unitChain.contains(t.getBeginUnit()))
-                throw new RuntimeException("begin not in chain");
+                throw new RuntimeException("begin not in chain"+" in "+getMethod());
 
             if (!unitChain.contains(t.getEndUnit()))
-                throw new RuntimeException("end not in chain");
+                throw new RuntimeException("end not in chain"+" in "+getMethod());
 
             if (!unitChain.contains(t.getHandlerUnit()))
-                throw new RuntimeException("handler not in chain");
+                throw new RuntimeException("handler not in chain"+" in "+getMethod());
         }
     }
 
@@ -253,7 +276,7 @@ public abstract class Body extends AbstractHost implements Serializable
             UnitBox ub = (UnitBox)it.next();
             if (!unitChain.contains(ub.getUnit()))
                 throw new RuntimeException
-                    ("Unitbox points outside unitChain! to unit : "+ub.getUnit());
+                    ("Unitbox points outside unitChain! to unit : "+ub.getUnit()+" in "+getMethod());
         }
     }
 
@@ -276,7 +299,7 @@ public abstract class Body extends AbstractHost implements Serializable
                     // no def already; we check anyhow.
                     List l = ld.getDefsOfAt((Local)v, u);
                     if (l.size() == 0)
-                        throw new RuntimeException("no defs for value!");
+                        throw new RuntimeException("no defs for value!"+" in "+getMethod());
                 }
             }
         }
@@ -301,7 +324,7 @@ public abstract class Body extends AbstractHost implements Serializable
                 return (Local)(((IdentityStmt)s).getLeftOp());
         }
 
-        throw new RuntimeException("couldn't find identityref!");
+        throw new RuntimeException("couldn't find identityref!"+" in "+getMethod());
     }
 
     /** Return LHS of the first identity stmt assigning from \@parameter i. **/
@@ -321,7 +344,7 @@ public abstract class Body extends AbstractHost implements Serializable
             }
         }
 
-        throw new RuntimeException("couldn't find parameterref!");
+        throw new RuntimeException("couldn't find parameterref!"+" in "+getMethod());
     }
 
     /**
@@ -522,8 +545,132 @@ public abstract class Body extends AbstractHost implements Serializable
         return useAndDefBoxList;
     }
 
+    private void checkLocals() {
+	Chain locals=getLocals();
 
+	Iterator it=locals.iterator();
+	while(it.hasNext()) {
+	    Local l=(Local) it.next();
+	    if(l.getType() instanceof VoidType) 
+		throw new RuntimeException("Local "+l+" in "+method+" defined with void type");
+	}
+    }
 
+    private void checkTypes() {
+	Chain units=getUnits();
+
+	Iterator it=units.iterator();
+	while(it.hasNext()) {
+	    Stmt stmt=(Stmt) (it.next());
+	    InvokeExpr iexpr=null;
+
+	    String errorSuffix=" at "+stmt+" in "+getMethod();
+
+	    if(stmt instanceof AssignStmt) {
+		AssignStmt astmt=(AssignStmt) stmt;
+		Type leftType=Type.toMachineType(astmt.getLeftOp().getType());
+		Type rightType=Type.toMachineType(astmt.getRightOp().getType());
+
+		checkCopy(leftType,rightType,errorSuffix);
+		if(astmt.getRightOp() instanceof InvokeExpr) 
+		    iexpr=(InvokeExpr) (astmt.getRightOp());
+	    }
+
+	    if(stmt instanceof InvokeStmt) iexpr=((InvokeStmt) stmt).getInvokeExpr();
+
+	    if(iexpr!=null) {
+		SootMethodRef called=iexpr.getMethodRef();
+
+		if(iexpr instanceof InstanceInvokeExpr) {
+		    InstanceInvokeExpr iiexpr=(InstanceInvokeExpr) iexpr;
+		    checkCopy(called.declaringClass().getType(),
+			      iiexpr.getBase().getType(),
+			      " in receiver of call"+errorSuffix);
+		}
+
+		if(called.parameterTypes().size() != iexpr.getArgCount())
+		    throw new RuntimeException("Warning: Argument count doesn't match up with signature in call"+errorSuffix+" in "+getMethod());
+		else 
+		    for(int i=0;i<iexpr.getArgCount();i++)
+			checkCopy(Type.toMachineType(called.parameterType(i)),
+				  Type.toMachineType(iexpr.getArg(i).getType()),
+				  " in argument "+i+" of call"+errorSuffix);
+	    }
+	}
+    }
+
+    private void checkCopy(Type leftType,Type rightType,String errorSuffix) {
+	if(leftType instanceof PrimType || rightType instanceof PrimType) {
+	    if(leftType instanceof IntType && rightType instanceof IntType) return;
+	    if(leftType instanceof LongType && rightType instanceof LongType) return;
+	    if(leftType instanceof FloatType && rightType instanceof FloatType) return;
+	    if(leftType instanceof DoubleType && rightType instanceof DoubleType) return;
+	    throw new RuntimeException("Warning: Bad use of primitive type"+errorSuffix+" in "+getMethod());
+	}
+
+	if(rightType instanceof NullType) return;
+	if(leftType instanceof RefType &&
+	   ((RefType) leftType).getClassName().equals("java.lang.Object")) return;
+	
+	if(leftType instanceof ArrayType || rightType instanceof ArrayType) {
+	    if(leftType instanceof ArrayType && rightType instanceof ArrayType) return;
+
+	    throw new RuntimeException("Warning: Bad use of array type"+errorSuffix+" in "+getMethod());
+	}
+
+	if(leftType instanceof RefType && rightType instanceof RefType) {
+	    SootClass leftClass=((RefType) leftType).getSootClass();
+	    SootClass rightClass=((RefType) rightType).getSootClass();
+	    
+	    if(leftClass.isInterface()) {
+		if(rightClass.isInterface()) {
+		    if(!(leftClass.getName().equals(rightClass.getName()) || 
+			 Scene.v().getActiveHierarchy().isInterfaceSubinterfaceOf(rightClass,leftClass)))
+			throw new RuntimeException("Warning: Bad use of interface type"+errorSuffix+" in "+getMethod());
+		} else {
+		    // No quick way to check this for now.
+		}
+	    } else {
+		if(rightClass.isInterface()) {
+		    throw new RuntimeException("Warning: trying to use interface type where non-Object class expected"
+				       +errorSuffix+" in "+getMethod());
+		} else {
+		    if(!Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(rightClass,leftClass))
+			throw new RuntimeException("Warning: Bad use of class type"+errorSuffix+" in "+getMethod());
+		}
+	    }
+	    return;
+	}
+	throw new RuntimeException("Warning: Bad types"+errorSuffix+" in "+getMethod());
+    }
+
+    public void checkInit() {
+	Chain units=getUnits();
+        ExceptionalUnitGraph g = new ExceptionalUnitGraph
+	    (this, PedanticThrowAnalysis.v(), false);
+
+	// FIXME: Work around for bug in soot
+	Scene.v().releaseActiveHierarchy();
+
+        InitAnalysis analysis=new InitAnalysis(g);
+	Iterator it=units.iterator();
+	while(it.hasNext()) {
+	    Stmt s=(Stmt) (it.next());
+	    FlowSet init=(FlowSet) analysis.getFlowBefore(s);
+	    List uses=s.getUseBoxes();
+	    Iterator usesIt=uses.iterator();
+	    while(usesIt.hasNext()) {
+		Value v=((ValueBox) (usesIt.next())).getValue();
+		if(v instanceof Local) {
+		    Local l=(Local) v;
+		    if(!init.contains(l))
+			throw new RuntimeException("Warning: Local variable "+l
+					   +" not definitely defined at "+s
+					   +" in "+method);
+		}
+	    }
+	}
+    }
 }
 
 

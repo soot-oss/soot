@@ -196,6 +196,11 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-allow-phantom-refs");
         }
   
+        public void setmain_class(String arg) {
+            addArg("-main-class");
+            addArg(arg);
+        }
+  
         public void setoutput_dir(String arg) {
             addArg("-output-dir");
             addArg(arg);

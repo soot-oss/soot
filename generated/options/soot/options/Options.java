@@ -251,6 +251,23 @@ public class Options extends OptionsBase {
                 allow_phantom_refs = true;
   
             else if( false
+            || option.equals( "main-class" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( main_class.length() == 0 )
+                    main_class = value;
+                else {
+                    G.v().out.println( "Duplicate values "+main_class+" and "+value+" for option -"+option );
+                    return false;
+                }
+            }
+  
+            else if( false
             || option.equals( "d" )
             || option.equals( "output-dir" )
             ) {
@@ -885,6 +902,9 @@ public class Options extends OptionsBase {
     private boolean allow_phantom_refs = false;
     public void set_allow_phantom_refs( boolean setting ) { allow_phantom_refs = setting; }
   
+    public String main_class() { return main_class; }
+    public void set_main_class( String setting ) { main_class = setting; }
+    private String main_class = "";
     public String output_dir() { return output_dir; }
     public void set_output_dir( String setting ) { output_dir = setting; }
     private String output_dir = "";
@@ -1043,6 +1063,7 @@ public class Options extends OptionsBase {
 +padVal(" java", "Favour Java files as Soot source" )
 +padOpt(" -full-resolver", "Force transitive resolving of referenced classes" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
++padOpt(" -main-class CLASS", "Sets the main class for whole-program." )
 +"\nOutput Options:\n"
       
 +padOpt(" -d DIR -output-dir DIR", "Store output files in DIR" )
