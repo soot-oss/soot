@@ -198,10 +198,10 @@ public class PackManager {
         }
 
         // CFG Viewer 
-        addPack(p = new BodyPack("cfg"));
+        /*addPack(p = new BodyPack("cfg"));
         {
             p.add(new Transform("cfg.output", CFGPrinter.v()));
-        }
+        }*/
         
         // Grimp body creation
         addPack(p = new BodyPack("gb"));
