@@ -465,8 +465,8 @@ public class JimpleBodyBuilder {
         // add line and pos tags
         //Util.addLineTag(ifStmt, ifExpr);
         Util.addLnPosTags(ifStmt.getConditionBox(), condition.position());
-
-        if (ifExpr.position() instanceof soot.javaToJimple.jj.DPosition){
+        Util.addLnPosTags(ifStmt, condition.position());
+        /*if (ifExpr.position() instanceof soot.javaToJimple.jj.DPosition){
         
             soot.javaToJimple.jj.DPosition sPos = (soot.javaToJimple.jj.DPosition)ifExpr.position();
 
@@ -490,7 +490,7 @@ public class JimpleBodyBuilder {
                 }
             }
         
-        }
+        }*/
     }
     
     /**
@@ -536,10 +536,11 @@ public class JimpleBodyBuilder {
         //Util.addPosTag(ifStmt.getConditionBox(), condition.position());
         Util.addLnPosTags(ifStmt.getConditionBox(), condition.position());
         
-        soot.javaToJimple.jj.DPosition spos = (soot.javaToJimple.jj.DPosition)whileStmt.position();
-        soot.javaToJimple.jj.DPosition epos = (soot.javaToJimple.jj.DPosition)whileStmt.body().position();
+        //soot.javaToJimple.jj.DPosition spos = (soot.javaToJimple.jj.DPosition)whileStmt.position();
+        //soot.javaToJimple.jj.DPosition epos = (soot.javaToJimple.jj.DPosition)whileStmt.body().position();
         
-        Util.addLnPosTags(ifStmt, spos.line(), epos.endLine(), spos.column(), epos.endCol());
+        //Util.addLnPosTags(ifStmt, spos.line(), epos.endLine(), spos.column(), epos.endCol());
+        Util.addLnPosTags(ifStmt, condition.position());
     }
     
     /**
@@ -577,7 +578,8 @@ public class JimpleBodyBuilder {
         //Util.addLineTag(ifStmt, doStmt.cond());    
         //Util.addPosTag(ifStmt.getConditionBox(), condition.position());
         Util.addPosTag(ifStmt.getConditionBox(), condition.position());
-        Util.addLnPosTags(ifStmt, doStmt.position());
+        //Util.addLnPosTags(ifStmt, doStmt.position());
+        Util.addLnPosTags(ifStmt, condition.position());
     }
     
     /**
@@ -633,10 +635,11 @@ public class JimpleBodyBuilder {
             //Util.addPosLnTags(ifStmt, forStmt.cond());
             Util.addLnPosTags(ifStmt.getConditionBox(), condition.position());
         
-            soot.javaToJimple.jj.DPosition spos = (soot.javaToJimple.jj.DPosition)forStmt.position();
-            soot.javaToJimple.jj.DPosition epos = (soot.javaToJimple.jj.DPosition)forStmt.body().position();
+            //soot.javaToJimple.jj.DPosition spos = (soot.javaToJimple.jj.DPosition)forStmt.position();
+            //soot.javaToJimple.jj.DPosition epos = (soot.javaToJimple.jj.DPosition)forStmt.body().position();
         
-            Util.addLnPosTags(ifStmt, spos.line(), epos.endLine(), spos.column(), epos.endCol());
+            //Util.addLnPosTags(ifStmt, spos.line(), epos.endLine(), spos.column(), epos.endCol());
+            Util.addLnPosTags(ifStmt, condition.position());
             
         }
         else {
@@ -1056,7 +1059,7 @@ public class JimpleBodyBuilder {
         soot.jimple.EnterMonitorStmt enterMon = soot.jimple.Jimple.v().newEnterMonitorStmt(sootExpr);
         body.getUnits().add(enterMon);
         Util.addLnPosTags(enterMon.getOpBox(), synchStmt.expr().position());
-        Util.addLnPosTags(enterMon, synchStmt.position());
+        Util.addLnPosTags(enterMon, synchStmt.expr().position());
         
         soot.jimple.Stmt startNoop = soot.jimple.Jimple.v().newNopStmt();
         body.getUnits().add(startNoop);
@@ -1066,7 +1069,7 @@ public class JimpleBodyBuilder {
         soot.jimple.ExitMonitorStmt exitMon = soot.jimple.Jimple.v().newExitMonitorStmt(sootExpr);
         body.getUnits().add(exitMon);
         Util.addLnPosTags(exitMon.getOpBox(), synchStmt.expr().position());
-        Util.addLnPosTags(exitMon, synchStmt.position());
+        Util.addLnPosTags(exitMon, synchStmt.expr().position());
         
         soot.jimple.Stmt endSynchNoop = soot.jimple.Jimple.v().newNopStmt();
         soot.jimple.Stmt gotoEnd = soot.jimple.Jimple.v().newGotoStmt(endSynchNoop);

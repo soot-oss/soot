@@ -34,7 +34,7 @@ public class DavaDecompileAppFromJavaFileLauncher extends SootFileLauncher {
 		super.run(action);
         super.setIsSrcPrec(true);
         super.setSrcPrec(LaunchCommands.JAVA_IN);
-        super.handleFiles();
+        super.handleMultipleFiles();
 
 		if (isDoNotContinue()) return;
 		setCmd();
@@ -51,7 +51,7 @@ public class DavaDecompileAppFromJavaFileLauncher extends SootFileLauncher {
 		
 		ArrayList commands = new ArrayList();
 		commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
-		commands.add(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
+		commands.add(getClasspathAppend());
 		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
 			
 		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
@@ -83,7 +83,11 @@ public class DavaDecompileAppFromJavaFileLauncher extends SootFileLauncher {
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.APP);
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.DAVA);
 		
-		commands.add(getToProcess());
+		Iterator it = getToProcessList().iterator();
+		while (it.hasNext()){
+			commands.add((String)it.next());
+		}
+		//commands.add(getToProcess());
 		//getSootCommandList().addSingleOpt(getToProcess());
 		getSootCommandList().addSingleOpt(commands);
 	  	//return cmd.toString();*/

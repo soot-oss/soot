@@ -20,6 +20,7 @@
 package ca.mcgill.sable.soot.launching;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.eclipse.jface.action.IAction;
 import ca.mcgill.sable.soot.*;
@@ -36,7 +37,7 @@ public class SootConfigFileLauncher extends SootFileLauncher {
 	public void run(IAction action) {
 		
 		super.run(action);
-        super.handleFiles();
+        super.handleMultipleFiles();
         
         System.out.println("do not continue: "+isDoNotContinue());
 		if (isDoNotContinue()) return;
@@ -63,7 +64,11 @@ public class SootConfigFileLauncher extends SootFileLauncher {
 		
 		getSootCommandList().addSingleOpt(ssc.toRunArray());
 		
-		getSootCommandList().addSingleOpt(getToProcess());
+		Iterator it = getToProcessList().iterator();
+		while (it.hasNext()){
+			getSootCommandList().addSingleOpt((String)it.next());
+		}
+		//getSootCommandList().addSingleOpt(getToProcess());
 		
 		getSootCommandList().printList();
 		

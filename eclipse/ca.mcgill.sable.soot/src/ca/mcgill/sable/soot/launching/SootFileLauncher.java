@@ -40,7 +40,8 @@ import ca.mcgill.sable.soot.SootPlugin;
 public class SootFileLauncher extends SootLauncher {
 
 	private String classpathAppend;
-	private String toProcess;
+	//private String toProcess;
+	private ArrayList toProcessList;
 	//private String OutputLocation;
 	private String extraCmd;
 	private boolean isExtraCmd;
@@ -48,12 +49,13 @@ public class SootFileLauncher extends SootLauncher {
 	private boolean isSrcPrec;
 	private boolean doNotContinue = false;
 	
-    public void handleMultipleFiles(IAction action) {
-        super.run(action);
-        setDoNotContinue(false);
-        
+    public void handleMultipleFiles() {
+        //super.run(action);
+        //setDoNotContinue(false);
+        setToProcessList(new ArrayList());
         Iterator it = getSootSelection().getFileList().iterator();
         while (it.hasNext()){
+        	handleFiles(it.next());
             // must set multiple toProcess but also classpaths and 
             // ouptut directories
         }
@@ -65,50 +67,38 @@ public class SootFileLauncher extends SootLauncher {
 		//handleFiles();
     }
     
-    /*private void addJars(){
-    	try {
-    	
-    		IPackageFragmentRoot [] roots = getSootSelection().getJavaProject().getAllPackageFragmentRoots();
-    		for (int i = 0; i < roots.length; i++){
-    			if (roots[i].isArchive()){
-    				System.out.println("Jar File: "+roots[i].getPath().toOSString());
-    				if (roots[i].getRawClasspathEntry().getEntryKind() == IClasspathEntry.CPE_LIBRARY){
-						setClasspathAppend(platform_location+roots[i].getPath().toOSString());
-    				}
-    			}
-    		}
-    	}
-    	catch (JavaModelException e){
-    	}
-    }*/
-    
-    public void handleFiles(){
+    public void handleFiles(Object toProcess){
         
-		//super.resetSootOutputFolder();
-		//setOutputLocation(platform_location+getSootOutputFolder().getFullPath().toOSString());
 		setDoNotContinue(false);
-		if (getSootSelection().getType() == SootSelection.CLASSFILE_SELECTED_TYPE) {
-			IClassFile cf = getSootSelection().getClassFile();
+		if (toProcess instanceof IClassFile){
+		//if (getSootSelection().getType() == SootSelection.CLASSFILE_SELECTED_TYPE) {
+			IClassFile cf = (IClassFile)toProcess;
+			//IClassFile cf = getSootSelection().getClassFile();
 			//handleClassFile(cf);
 			IPackageFragmentRoot pfr = (IPackageFragmentRoot) cf.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 			IPackageFragment pf = (IPackageFragment) cf.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
 			setClasspathAppend(platform_location+pfr.getPath().toOSString());
 			addJars();
 			if (pf.isDefaultPackage()) {
-				setToProcess(removeFileExt(cf.getElementName()));
+				//setToProcess(removeFileExt(cf.getElementName()));
+				getToProcessList().add(removeFileExt(cf.getElementName()));
 			}
 			else {
-				setToProcess(pf.getElementName()+"."+removeFileExt(cf.getElementName()));
+				//setToProcess(pf.getElementName()+"."+removeFileExt(cf.getElementName()));
+				getToProcessList().add(pf.getElementName()+"."+removeFileExt(cf.getElementName()));
 			}
 		}
-		else if (getSootSelection().getType() == SootSelection.FILE_SELECTED_TYPE) {
-			IFile file = getSootSelection().getFile();
+		else if (toProcess instanceof IFile){
+		//else if (getSootSelection().getType() == SootSelection.FILE_SELECTED_TYPE) {
+			IFile file = (IFile)toProcess;
+			//IFile file = getSootSelection().getFile();
 			if (file.getFileExtension().compareTo("jimple") == 0) {
 				setClasspathAppend(platform_location+file.getParent().getFullPath().toOSString());	
 				addJars();
 				setIsSrcPrec(true);
 				setSrcPrec(LaunchCommands.JIMPLE_IN);
-				setToProcess(removeFileExt(file.getName()));
+				//setToProcess(removeFileExt(file.getName()));
+				getToProcessList().add(removeFileExt(file.getName()));
 			}
             else if (file.getFileExtension().equals("java")){
                 try {
@@ -132,8 +122,10 @@ public class SootFileLauncher extends SootLauncher {
 			}
 						
 		}
-		else if (getSootSelection().getType() == SootSelection.CU_SELECTED_TYPE) {
-			ICompilationUnit cu = getSootSelection().getJavaFile();
+		else if (toProcess instanceof ICompilationUnit){
+		//else if (getSootSelection().getType() == SootSelection.CU_SELECTED_TYPE) {
+			ICompilationUnit cu = (ICompilationUnit)toProcess;
+			//ICompilationUnit cu = getSootSelection().getJavaFile();
             handleSourceFile(cu);
 			
 		}
@@ -145,57 +137,54 @@ public class SootFileLauncher extends SootLauncher {
     }
    
     private void handleSourceFile(ICompilationUnit cu){
-			IPackageFragmentRoot pfr = (IPackageFragmentRoot) cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
-			IPackageFragment pf = (IPackageFragment) cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
-            addJars();
-            if (isSrcPrec() && getSrcPrec().equals("java")){
-                setClasspathAppend(platform_location+pfr.getPath().toOSString());    
-            }
-            else{
-            
-    			try {
-    				IProject proj = cu.getJavaProject().getProject();
-    				
-    				IFolder output = proj.getFolder(cu.getJavaProject().getOutputLocation().lastSegment());
-    				//System.out.println("Project Output Folder Location: "+output.getLocation().toOSString());
-    				IPackageFragment pkf = (IPackageFragment)cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
-    				IFile exists = null;
-    				if (pkf.isDefaultPackage()) {
-    					//if (cu.getPackageDeclarations())
-    					exists = output.getFile(removeFileExt(cu.getElementName())+".class");
-    					//System.out.println("output: "+output);
-    					//System.out.println(removeFileExt(cu.getElementName())+".class");
-    					//IFile exists = output.getFile(output.getLocation().toOSString()+removeFileExt(cu.getElementName())+".class");
-    					System.out.println("No Pck: "+exists.getLocation().toOSString());
-    				}
-    				else {
-    					IFolder pkg = output.getFolder(dotsToSlashes(pf.getElementName()));
-    					System.out.println("pkg folder: "+pkg.getLocation().toOSString());
-                        System.out.println("pf path: "+pf.getPath().toOSString());
-                        if (pkg.exists()){
-                            System.out.println("pkg exists");
-                        }
-                        exists = pkg.getFile(removeFileExt(cu.getElementName())+".class");
-    					System.out.println("Pck: "+exists.getLocation().toOSString());
-    				}
-    				if (!exists.exists()){
-    					//System.out.println("underlying class file cannot be found.");
-    					window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-    					MessageDialog noClassFound = new MessageDialog(window.getShell(), "Soot Information", null, "No underlying class file was found, maybe build project.", 0, new String [] {"OK"}, 0);
-    					noClassFound.open();
-    					setDoNotContinue(true);	
-    				}
-    			    setClasspathAppend(platform_location+cu.getJavaProject().getOutputLocation().toOSString());
-    			}
-    			catch (CoreException e){
-    			}
-            }
-			if (pf.isDefaultPackage()) {
-				setToProcess(removeFileExt(cu.getElementName()));
+		IPackageFragmentRoot pfr = (IPackageFragmentRoot) cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+		IPackageFragment pf = (IPackageFragment) cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+        addJars();
+        if (isSrcPrec() && getSrcPrec().equals("java")){
+            setClasspathAppend(platform_location+pfr.getPath().toOSString());    
+        }
+        else{
+        
+			try {
+				IProject proj = cu.getJavaProject().getProject();
+				
+				IFolder output = proj.getFolder(cu.getJavaProject().getOutputLocation().lastSegment());
+				IPackageFragment pkf = (IPackageFragment)cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+				IFile exists = null;
+				if (pkf.isDefaultPackage()) {
+					exists = output.getFile(removeFileExt(cu.getElementName())+".class");
+					System.out.println("No Pck: "+exists.getLocation().toOSString());
+				}
+				else {
+					IFolder pkg = output.getFolder(dotsToSlashes(pf.getElementName()));
+					System.out.println("pkg folder: "+pkg.getLocation().toOSString());
+                    System.out.println("pf path: "+pf.getPath().toOSString());
+                    if (pkg.exists()){
+                        System.out.println("pkg exists");
+                    }
+                    exists = pkg.getFile(removeFileExt(cu.getElementName())+".class");
+					System.out.println("Pck: "+exists.getLocation().toOSString());
+				}
+				if (!exists.exists()){
+					//System.out.println("underlying class file cannot be found.");
+					window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+					MessageDialog noClassFound = new MessageDialog(window.getShell(), "Soot Information", null, "No underlying class file was found, maybe build project.", 0, new String [] {"OK"}, 0);
+					noClassFound.open();
+					setDoNotContinue(true);	
+				}
+			    setClasspathAppend(platform_location+cu.getJavaProject().getOutputLocation().toOSString());
 			}
-			else {
-				setToProcess(pf.getElementName()+"."+removeFileExt(cu.getElementName()));
+			catch (CoreException e){
 			}
+        }
+		if (pf.isDefaultPackage()) {
+			//setToProcess(removeFileExt(cu.getElementName()));
+			getToProcessList().add(removeFileExt(cu.getElementName()));
+		}
+		else {
+			//setToProcess(pf.getElementName()+"."+removeFileExt(cu.getElementName()));
+			getToProcessList().add(pf.getElementName()+"."+removeFileExt(cu.getElementName()));
+		}
     
     }
     
@@ -217,26 +206,18 @@ public class SootFileLauncher extends SootLauncher {
 			setDoNotContinue(true);	
 		}
 		
-		//System.out.println( cf.getClass().toString()+" "+cf.toString() );
 		
-		setToProcess(replaceWithDot(cf.toString()));
-		
-		//System.out.println("to process: "+getToProcess());
-		//		System.out.println("classpath append: "+getClasspathAppend());
-		//setToProcess(cf.toString().substring(cf.toString().lastIndexOf(".")));
+		//setToProcess(replaceWithDot(cf.toString()));
+		getToProcessList().add(replaceWithDot(cf.toString()));
 		addJars();
 		System.out.println("cf: "+cf.toString());
 		setClasspathAppend(file.getLocation().toOSString().substring(0, file.getLocation().toOSString().indexOf(cf.toString())));
 		
-		//System.out.println("to process: "+getToProcess());
-		//System.out.println("classpath append: "+getClasspathAppend());
 	}
 	
 	private String replaceWithDot(String in){
 		String separator = System.getProperty("file.separator");
-		//System.out.println(separator);
 		in = in.replaceAll(separator, ".");
-		//System.out.println(in);
 		return in;
 	}
 	private String removeFileExt(String filename) {
@@ -257,9 +238,9 @@ public class SootFileLauncher extends SootLauncher {
 	 * Returns the toProcess.
 	 * @return String
 	 */
-	public String getToProcess() {
+	/*public String getToProcess() {
 		return toProcess;
-	}
+	}*/
 
 	/**
 	 * Sets the classpathAppend.
@@ -267,11 +248,16 @@ public class SootFileLauncher extends SootLauncher {
 	 */
 	public void setClasspathAppend(String ca) {
 		System.out.println("Before adding claspath is: "+classpathAppend);
-		if (this.classpathAppend == null){
+		System.out.println("ca is: "+ca);
+		
+		if ((this.classpathAppend == null) || (this.classpathAppend.equals(""))){
+			System.out.println("classpathAppend found to be null");
 			this.classpathAppend = ca;
 		}
 		else {
-			this.classpathAppend = this.classpathAppend+getSootClasspath().getSeparator()+ca;
+			if (this.classpathAppend.indexOf(ca) == -1){
+				this.classpathAppend = this.classpathAppend+getSootClasspath().getSeparator()+ca;
+			}
 		}
 		System.out.println("classpathAppend: "+this.classpathAppend);
 	}
@@ -280,25 +266,9 @@ public class SootFileLauncher extends SootLauncher {
 	 * Sets the toProcess.
 	 * @param toProcess The toProcess to set
 	 */
-	public void setToProcess(String toProcess) {
+	/*public void setToProcess(String toProcess) {
 		this.toProcess = toProcess;
-	}
-
-	/**
-	 * Returns the outputLocation.
-	 * @return String
-	 */
-	/*public String getOutputLocation() {
-		return OutputLocation;
-	}
-
-	/**
-	 * Sets the outputLocation.
-	 * @param outputLocation The outputLocation to set
-	 */
-	/*public void setOutputLocation(String outputLocation) {
-		OutputLocation = outputLocation;
-	}
+	}*/
 
 	/**
 	 * Returns the extraCmd.
@@ -376,6 +346,20 @@ public class SootFileLauncher extends SootLauncher {
 	 */
 	public void setDoNotContinue(boolean b) {
 		doNotContinue = b;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getToProcessList() {
+		return toProcessList;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setToProcessList(ArrayList list) {
+		toProcessList = list;
 	}
 
 }

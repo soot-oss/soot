@@ -203,7 +203,7 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 		//removeOldMarkers();
 		
 		if (getAttrsHandler() == null)return;
-		
+		if (getAttrsHandler().getAttrList() == null) return;
 		Iterator it = getAttrsHandler().getAttrList().iterator();
 		HashMap markerAttr = new HashMap();
 		

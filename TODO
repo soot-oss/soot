@@ -32,7 +32,7 @@ MEDIUM - implement the Java to Jimple translations for assert and anon inner cla
 
 MEDIUM - implement analyses 
 
-MEDIUM - fix selection process so if multiple selections are made in package explorer/ navigator - have Soot run with list of classes selected (not just first one as currently happens)
+MEDIUM - fix selection process so if multiple selections are made in package explorer/ navigator - have Soot run with list of classes selected (not just first one as currently happens) - done
 
 MEDIUM - implement a view with the key for colors when displaying color attributes
 

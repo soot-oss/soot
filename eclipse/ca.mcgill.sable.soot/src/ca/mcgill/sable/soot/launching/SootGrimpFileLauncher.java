@@ -20,6 +20,7 @@
 package ca.mcgill.sable.soot.launching;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.jface.action.IAction;
 
@@ -30,7 +31,7 @@ public class SootGrimpFileLauncher extends SootFileLauncher {
 	
 	public void run(IAction action) {
 		super.run(action);
-        super.handleFiles();
+        super.handleMultipleFiles();
         
 		if (isDoNotContinue()) return;
 		setCmd();
@@ -46,7 +47,7 @@ public class SootGrimpFileLauncher extends SootFileLauncher {
 	  	
 	  	ArrayList commands = new ArrayList();
 	  	commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
-	  	commands.add(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
+	  	commands.add(getClasspathAppend());
 	  	
 		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
 		commands.add("--"+LaunchCommands.OUTPUT_DIR);
@@ -64,7 +65,11 @@ public class SootGrimpFileLauncher extends SootFileLauncher {
             getSootCommandList().addDoubleOpt("--"+LaunchCommands.SRC_PREC, getSrcPrec());
         }
         //getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT, LaunchCommands.JIMPLE_OUT);
-		commands.add(getToProcess());
+		Iterator it = getToProcessList().iterator();
+		while (it.hasNext()){
+			commands.add((String)it.next());
+		}
+		//commands.add(getToProcess());
 		//getSootCommandList().addSingleOpt(getToProcess());
 		getSootCommandList().addSingleOpt(commands);
 		//return cmd.toString();

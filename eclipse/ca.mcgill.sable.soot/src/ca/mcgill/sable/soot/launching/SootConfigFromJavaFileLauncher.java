@@ -20,6 +20,7 @@
 package ca.mcgill.sable.soot.launching;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.eclipse.jface.action.IAction;
 import ca.mcgill.sable.soot.*;
@@ -38,7 +39,7 @@ public class SootConfigFromJavaFileLauncher extends SootFileLauncher {
 		super.run(action);
         super.setIsSrcPrec(true);
         super.setSrcPrec(LaunchCommands.JAVA_IN);
-        super.handleFiles();
+        super.handleMultipleFiles();
         
 		if (isDoNotContinue()) return;
 		window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
@@ -62,8 +63,11 @@ public class SootConfigFromJavaFileLauncher extends SootFileLauncher {
 		ssc.setEclipseDefs(setEclipseDefs());
 		
 		getSootCommandList().addSingleOpt(ssc.toRunArray());
-		
-		getSootCommandList().addSingleOpt(getToProcess());
+		Iterator it = getToProcessList().iterator();
+		while (it.hasNext()){
+			getSootCommandList().addSingleOpt((String)it.next());
+		}
+		//getSootCommandList().addSingleOpt(getToProcess());
 		
 		if ((mainClass == null) || (mainClass.length() == 0)){
 			runSootDirectly();

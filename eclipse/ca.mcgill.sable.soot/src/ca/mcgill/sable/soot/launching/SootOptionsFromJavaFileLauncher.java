@@ -20,6 +20,7 @@
 package ca.mcgill.sable.soot.launching;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.*;
@@ -37,7 +38,7 @@ public class SootOptionsFromJavaFileLauncher extends SootFileLauncher {
 		super.run(action);
         super.setIsSrcPrec(true);
         super.setSrcPrec(LaunchCommands.JAVA_IN);
-        super.handleFiles();
+        super.handleMultipleFiles();
 		
 		if (isDoNotContinue()) return;
 		// sometimes window needs to be reset (not sure why)
@@ -88,7 +89,7 @@ public class SootOptionsFromJavaFileLauncher extends SootFileLauncher {
 	
 	private void presetDialog() {
 		getSdc().setOutputDir(getOutputLocation());
-		getSdc().setSootClassPath(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
+		getSdc().setSootClassPath(getClasspathAppend());
 		if (isSrcPrec()) {
 			getSdc().setSrcPrec(getSrcPrec());
 		}
@@ -100,14 +101,22 @@ public class SootOptionsFromJavaFileLauncher extends SootFileLauncher {
 	// TODO use this instead of String one
 	private void setCmd(ArrayList user_cmd){
 		getSootCommandList().addSingleOpt(user_cmd);
-		getSootCommandList().addSingleOpt(getToProcess());
+		Iterator it = getToProcessList().iterator();
+		while (it.hasNext()){
+			getSootCommandList().addSingleOpt((String)it.next());
+		}
+		//getSootCommandList().addSingleOpt(getToProcess());
 	}
 	private void setCmd(String user_cmd) {
 		
 		
 		getSootCommandList().addSingleOpt(user_cmd);
 		ArrayList commands = new ArrayList();
-		commands.add(getToProcess());
+		Iterator it = getToProcessList().iterator();
+		while (it.hasNext()){
+			commands.add((String)it.next());
+		}
+		//commands.add(getToProcess());
 		//getSootCommandList().addSingleOpt(getToProcess());
 		getSootCommandList().addSingleOpt(commands);
 	  	//return cmd.toString();
