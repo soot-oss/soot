@@ -14,12 +14,15 @@ SOOT_DIR=/home/research/ccl/jlhotak/mirrored/soot/classes
 # the OSTYPE
 # this only needs to be set for windows; 
 # unix (default) and cygwin should work fine without setting this
+# MacOSX works as default, although it is BSD-based rather than GNU-based
+# for example, BSD-find is slightly different than GNU-find, but that 
+# is handled transparently below
 #OSTYPE=windows
 #OSTYPE=cygwin
 #OSTYPE=linux
 
 # the eclipse version
-V=_2.1.0
+V=_2.1*
 
 
 
@@ -27,14 +30,41 @@ V=_2.1.0
 ### classpath variables and file lists
 #######################################################################
 
+# command for finding the appropriate version of a package
+FIND=find $(ECLIPSE_HOME) -type d -maxdepth 1 -name 
+
+# see http://www.geocrawler.com/archives/3/380/1998/8/0/2093924/
+NOTHING :=
+SPACE := $(NOTHING) # this variable contains exactly one space
+
+
 # classpath for SWT 
-SWT_GTK=$(ECLIPSE_HOME)/org.eclipse.swt.gtk$(V)/ws/gtk/swt.jar
-SWT_MOTIF=$(ECLIPSE_HOME)/org.eclipse.swt.motif$(V)/ws/motif/swt.jar
-SWT_WINDOWS=$(ECLIPSE_HOME)/org.eclipse.swt.win32$(V)/ws/win32/swt.jar
-SWT_CLASSPATH=$(SWT_GTK):$(SWT_MOTIF):$(SWT_WINDOWS)
+SWT_GTK := $(shell $(FIND) "org.eclipse.swt.gtk$(V)")/ws/gtk/swt.jar
+SWT_MOTIF := $(shell $(FIND) "org.eclipse.swt.motif$(V)")/ws/motif/swt.jar
+SWT_WINDOWS := $(shell $(FIND) "org.eclipse.swt.win32$(V)")/ws/win32/swt.jar
+SWT_CARBON := $(shell $(FIND) "org.eclipse.swt.carbon$(V)")/ws/carbon/swt.jar
+SWT_CLASSPATH := $(SWT_GTK):$(SWT_MOTIF):$(SWT_WINDOWS):$(SWT_CARBON)
 
 # the main classpath
-MAIN_CLASSPATH=$(ECLIPSE_HOME)/org.eclipse.jface.text$(V)/jfacetext.jar:$(ECLIPSE_HOME)/org.eclipse.jface$(V)/jface.jar:$(ECLIPSE_HOME)/org.eclipse.ui.workbench$(V)/workbench.jar:$(ECLIPSE_HOME)/org.eclipse.ui$(V)/ui.jar:$(ECLIPSE_HOME)/org.eclipse.ui.views$(V)/views.jar:$(ECLIPSE_HOME)/org.eclipse.ui.editors$(V)/editors.jar:$(ECLIPSE_HOME)/org.eclipse.ui.workbench.texteditor$(V)/texteditor.jar:$(ECLIPSE_HOME)/org.eclipse.text$(V)/text.jar:$(ECLIPSE_HOME)/org.eclipse.core.boot$(V)/boot.jar:$(ECLIPSE_HOME)/org.eclipse.jdt.ui$(V)/jdt.jar:$(ECLIPSE_HOME)/org.eclipse.jdt.core$(V)/jdtcore.jar:$(ECLIPSE_HOME)/org.eclipse.core.resources$(V)/resources.jar:$(ECLIPSE_HOME)/org.eclipse.core.runtime$(V)/runtime.jar:$(SWT_CLASSPATH):$(SOOT_DIR):. 
+P01 := $(shell $(FIND) "org.eclipse.jface.text$(V)")/jfacetext.jar
+P02 := $(shell $(FIND) "org.eclipse.jface$(V)")/jface.jar
+P03 := $(shell $(FIND) "org.eclipse.ui.workbench$(V)")/workbench.jar
+P04 := $(shell $(FIND) "org.eclipse.ui$(V)")/ui.jar
+P05 := $(shell $(FIND) "org.eclipse.ui.views$(V)")/views.jar
+P06 := $(shell $(FIND) "org.eclipse.ui.editors$(V)")/editors.jar
+P07 := $(shell $(FIND) "org.eclipse.ui.workbench.texteditor$(V)")/texteditor.jar
+P08 := $(shell $(FIND) "org.eclipse.text$(V)")/text.jar
+P09 := $(shell $(FIND) "org.eclipse.core.boot$(V)")/boot.jar
+P10 := $(shell $(FIND) "org.eclipse.jdt.ui$(V)")/jdt.jar
+P11 := $(shell $(FIND) "org.eclipse.jdt.core$(V)")/jdtcore.jar
+P12 := $(shell $(FIND) "org.eclipse.core.resources$(V)")/resources.jar
+P13 := $(shell $(FIND) "org.eclipse.core.runtime$(V)")/runtime.jar
+MAIN_CLASSPATH := $(P01):$(P02):$(P03):$(P04):$(P05):$(P06):$(P07):$(P08):$(P09):$(P10):$(P11):$(P12):$(P13):$(SWT_CLASSPATH):$(SOOT_DIR):. 
+# replace double slashes with single slashes and spaces with colons
+# BSD find sometimes returns erroneous double slashes
+# if find has multiple results, there will be a space between them
+MAIN_CLASSPATH := $(subst //,/,$(subst $(SPACE),:,$(MAIN_CLASSPATH)))
+
 
 # some lists of files to make things more readable
 JAR_ICONS=icons/*.jpg icons/*.gif icons/*.png 
@@ -62,19 +92,19 @@ OSTYPE := $(subst Windows,windows,$(OSTYPE))
 
 #cygwin
 ifeq (cygwin, $(findstring cygwin,$(OSTYPE)))
-	CP=`cygpath -w -p $(MAIN_CLASSPATH)`
+	CP:=`cygpath -w -p $(MAIN_CLASSPATH)`
 endif
 
 #windows
 # nb: this has not been tested
 ifeq (windows ,$(findstring windows,$(OSTYPE)))
-	CP=$(subst :,;,$(MAIN_CLASSPATH))
+	CP:=$(subst :,;,$(MAIN_CLASSPATH))
 endif
 
 # see if the classpath is defined yet
 # if not, then the default (unix)
 ifndef CP
-	CP=$(MAIN_CLASSPATH)
+	CP:=$(MAIN_CLASSPATH)
 endif
 
 
