@@ -1817,7 +1817,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
     
      currmethod = tempMN.getMethod();
    
-     if ( currmethod.getSignature().equals ( "<'java.awt.Toolkit':'getDefaultToolkit':():java.awt.Toolkit>") )
+     if ( currmethod.getSignature().equals ( "<java.awt.Toolkit: java.awt.Toolkit getDefaultToolkit()>") )
      {
 
       if ( clgb.getNode ( "java.awt.Toolkit" ) != null )
@@ -1834,7 +1834,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.beans.Beans':'instantiate':(java.lang.ClassLoader,java.lang.String):java.lang.Object>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.beans.Beans: java.lang.Object instantiate(java.lang.ClassLoader,java.lang.String)>" ) )
      {
 
       if ( clgb.getNode ( "java.applet.Applet" ) != null )
@@ -1851,7 +1851,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.beans.Introspector':'findInformant':(java.lang.Class):java.beans.BeanInfo>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.beans.Introspector: java.beans.BeanInfo findInformant(java.lang.Class)>" ) )
      {
 
       if ( clgb.getNode ( "java.beans.BeanInfo" ) != null )
@@ -1868,7 +1868,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.beans.PropertyEditorManager':'findEditor':(java.lang.Class):java.beans.PropertyEditor>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.beans.PropertyEditorManager: java.beans.PropertyEditor findEditor(java.lang.Class)>" ) )
      {
 
       if ( clgb.getNode ( "java.beans.PropertyEditor" ) != null )
@@ -1885,7 +1885,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.beans.PropertyEditorManager':'instantiate':(java.lang.Class,java.lang.String):java.beans.PropertyEditor>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.beans.PropertyEditorManager: java.beans.PropertyEditor instantiate(java.lang.Class,java.lang.String)>" ) )
      {
 
       if ( clgb.getNode ( "java.beans.PropertyEditor" ) != null )
@@ -1903,7 +1903,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.net.DatagramSocket':'create':(int,java.net.InetAddress):void>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.net.DatagramSocket: void create(int,java.net.InetAddress)>" ) )
      {
 
       if ( clgb.getNode ( "java.net.DatagramSocketImpl" ) != null )
@@ -1920,7 +1920,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.net.InetAddress':'<clinit>':():void>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.net.InetAddress: <clinit>':():void>" ) )
      {
 
       if ( clgb.getNode ( "java.net.InetAddressImpl" ) != null )
@@ -1937,7 +1937,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.net.MulticastSocket':'create':(int,java.net.InetAddress):void>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.net.MulticastSocket: void create(int,java.net.InetAddress)>" ) )
      {
 
       if ( clgb.getNode ( "java.net.DatagramSocketImpl" ) != null )
@@ -1955,7 +1955,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
      }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.net.URL':'getURLStreamHandler':(java.lang.String):java.net.URLStreamHandler>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.net.URL: java.net.URLStreamHandler getURLStreamHandler(java.lang.String)>" ) )
      {
 
       if ( clgb.getNode ( "java.net.URLStreamHandler" ) != null )
@@ -1972,7 +1972,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.net.URLConnection':'lookupContentHandlerClassFor':(java.lang.String):java.net.ContentHandler>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.net.URLConnection: java.net.ContentHandler lookupContentHandlerClassFor(java.lang.String)>" ) )
      {
 
       if ( clgb.getNode ( "java.net.ContentHandler" ) != null )
@@ -1989,7 +1989,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.security.Provider':'loadProvider':(java.lang.String):java.security.Provider>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.security.Provider: java.security.Provider loadProvider(java.lang.String)>" ) )
      {
 
       if ( clgb.getNode ( "java.security.Provider" ) != null )
@@ -2006,7 +2006,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.security.Security':'getImpl':(java.lang.String,java.lang.String,java.lang.String):java.lang.Object>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.security.Security: java.lang.Object getImpl(java.lang.String,java.lang.String,java.lang.String)>" ) )
      {
 
       if ( clgb.getNode ( "java.security.KeyPairGenerator" ) != null )
@@ -2049,7 +2049,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.util.ResourceBundle':'findBundle':(java.lang.String,java.lang.StringBuffer,java.lang.ClassLoader,boolean):java.util.ResourceBundle>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.util.ResourceBundle: java.util.ResourceBundle findBundle(java.lang.String,java.lang.StringBuffer,java.lang.ClassLoader,boolean)>" ) )
      {
 
       if ( clgb.getNode ( "java.util.ResourceBundle" ) != null )
@@ -2066,7 +2066,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
      }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.rmi.registry.LocateRegistry':'createRegistry':(int):java.rmi.registry.Registry>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.rmi.registry.LocateRegistry: java.rmi.registry.Registry createRegistry(int)>" ) )
      {
 
       if ( clgb.getNode ( "java.rmi.registry.RegistryHandler" ) != null )
@@ -2083,7 +2083,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.rmi.server.RMIClassLoader':'getHandler':():java.rmi.server.LoaderHandler>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.rmi.server.RMIClassLoader: java.rmi.server.LoaderHandler getHandler()>" ) )
      {
 
       if ( clgb.getNode ( "java.rmi.server.LoaderHandler" ) != null )
@@ -2100,7 +2100,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ("<'java.rmi.server.RemoteObject':'readObject':(java.io.ObjectInputStream):void>" ) )
+     else if ( currmethod.getSignature().equals ("<java.rmi.server.RemoteObject: void readObject(java.io.ObjectInputStream)>" ) )
      {
 
       if ( clgb.getNode ( "java.rmi.server.RemoteRef" ) != null )
@@ -2117,7 +2117,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.rmi.server.RemoteServer':'getClientHost':():java.lang.String>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.rmi.server.RemoteServer: java.lang.String getClientHost()>" ) )
      {
 
       if ( clgb.getNode ( "java.rmi.server.ServerRef" ) != null )
@@ -2134,7 +2134,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
       
      }
-     else if ( currmethod.getSignature().equals ( "<'java.rmi.server.UnicastRemoteObject':'exportObject':(java.rmi.Remote):java.rmi.server.RemoteStub>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.rmi.server.UnicastRemoteObject: java.rmi.server.RemoteStub exportObject(java.rmi.Remote)>" ) )
      {
 
       if ( clgb.getNode ( "java.rmi.server.ServerRef" ) != null )
@@ -2154,7 +2154,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
      
 /* NEXT CATEGORY */
 
-     else if ( currmethod.getSignature().equals ( "<'java.lang.Object':'getClass':():java.lang.Class>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.Object: java.lang.Class getClass()>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.Class" ) != null )
@@ -2170,7 +2170,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       
      }
 
-    else if ( currmethod.getSignature().equals ( "<'java.lang.Class':'forName':(java.lang.String):java.lang.Class>" ) )
+    else if ( currmethod.getSignature().equals ( "<java.lang.Class: java.lang.Class forName(java.lang.String)>" ) )
     {
  
       if ( clgb.getNode ( "java.lang.Class" ) != null )
@@ -2186,7 +2186,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
        
      }
 
-    else if ( currmethod.getSignature().equals ( "<'java.lang.Class':'getClassLoader':():java.lang.ClassLoader>" ) )   
+    else if ( currmethod.getSignature().equals ( "<java.lang.Class: java.lang.ClassLoader getClassLoader()>" ) )   
     {
 
       if ( clgb.getNode ( "java.lang.ClassLoader" ) != null ) 
@@ -2201,7 +2201,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
     
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.Class':'getSuperclass':():java.lang.Class>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.Class: java.lang.Class getSuperclass()>" ) )
      {
 
          
@@ -2217,7 +2217,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
       
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.Class':'getInterfaces':():java.lang.Class[]>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.Class: java.lang.Class[] getInterfaces()>" ) )
      {
           
       if ( clgb.getNode ( "java.lang.Class" ) != null )
@@ -2232,7 +2232,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
      
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.Class':'getComponentType':():java.lang.Class>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.Class: java.lang.Class getComponentType()>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.Class" ) != null )
@@ -2247,7 +2247,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.Class':'getPrimitiveClass':(java.lang.String):java.lang.Class>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.Class: java.lang.Class getPrimitiveClass(java.lang.String)>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.Class" ) != null )
@@ -2262,7 +2262,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
     
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.Class':'getFields0':(int):java.lang.reflect.Field[]>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.Class: java.lang.reflect.Field[] getFields0(int)>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.reflect.Field" ) != null )
@@ -2277,7 +2277,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
       
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.Class':'getMethod0':(java.lang.String,java.lang.Class[],int):java.lang.reflect.Method>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.Class: java.lang.reflect.Method getMethod0(java.lang.String,java.lang.Class[],int)>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.reflect.Method" ) != null )
@@ -2292,7 +2292,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
        
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.Class':'getConstructor0':(java.lang.Class[],int):java.lang.reflect.Constructor>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.Class: java.lang.reflect.Constructor getConstructor0(java.lang.Class[],int)>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.reflect.Constructor" ) != null )
@@ -2307,7 +2307,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
        
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.System':'initProperties':(java.util.Properties):java.util.Properties>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.System: java.util.Properties initProperties(java.util.Properties)>" ) )
      {
 
       if ( clgb.getNode ( "java.util.Properties" ) != null )
@@ -2322,7 +2322,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.Thread':'currentThread':():java.lang.Thread>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.Thread: java.lang.Thread currentThread()>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.Thread" ) != null )
@@ -2337,7 +2337,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
 
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.ClassLoader':'defineClass0':(java.lang.String,byte[],int,int):java.lang.Class>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.ClassLoader: java.lang.Class defineClass0(java.lang.String,byte[],int,int)>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.Class" ) != null )
@@ -2352,7 +2352,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
        
      } 
-     else if ( currmethod.getSignature().equals ( "<'java.lang.ClassLoader':'findSystemClass0':(java.lang.String):java.lang.Class>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.ClassLoader: java.lang.Class findSystemClass0(java.lang.String)>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.Class" ) != null )
@@ -2367,7 +2367,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
       
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.ClassLoader':'getSystemResourceAsStream0':(java.lang.String):java.io.InputStream>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.ClassLoader: java.io.InputStream getSystemResourceAsStream0(java.lang.String)>" ) )
      {
 
       if ( clgb.getNode ( "java.io.InputStream" ) != null )
@@ -2382,7 +2382,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
     
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.SecurityManager':'getClassContext':():java.lang.Class[]>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.SecurityManager: java.lang.Class[] getClassContext()>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.Class" ) != null )
@@ -2398,7 +2398,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       
      }
 
-     else if ( currmethod.getSignature().equals ( "<'java.lang.SecurityManager':'currentClassLoader':():java.lang.ClassLoader>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.SecurityManager: java.lang.ClassLoader currentClassLoader()>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.ClassLoader" ) != null )
@@ -2413,7 +2413,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
     
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.SecurityManager':'currentLoadedClass0':():java.lang.Class>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.SecurityManager: java.lang.Class currentLoadedClass0()>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.Class" ) != null )
@@ -2428,7 +2428,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
       
      }
-     else if ( currmethod.getSignature().equals ( "<'java.io.ObjectInputStream':'loadClass0':(java.lang.Class,java.lang.String):java.lang.Class>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.io.ObjectInputStream: java.lang.Class loadClass0(java.lang.Class,java.lang.String)>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.Class" ) != null )
@@ -2443,7 +2443,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
     
      }
-     else if ( currmethod.getSignature().equals ( "<'java.lang.Runtime':'execInternal':(java.lang.String[],java.lang.String[]):java.lang.Processjava.lang.Runtime.execInternal(java.lang.String[],java.lang.String[]):java.lang.Process>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.lang.Runtime: java.lang.Processjava.lang.Runtime.execInternal(java.lang.String[],java.lang.String[]) execInternal(java.lang.String[],java.lang.String[])>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.Process" ) != null )
@@ -2458,7 +2458,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
       
      }
-     else if ( currmethod.getSignature().equals ( "<'java.io.FileDescriptor':'initSystemFD':(java.io.FileDescriptor,int):java.io.FileDescriptor>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.io.FileDescriptor: java.io.FileDescriptor initSystemFD(java.io.FileDescriptor,int)>" ) )
      {
 
       if ( clgb.getNode ( "java.io.FileDescriptor" ) != null )
@@ -2473,7 +2473,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
       
      }
-     else if ( currmethod.getSignature().equals ( "<'java.util.ResourceBundle':'getClassContext':():java.lang.Class[]>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.util.ResourceBundle: java.lang.Class[] getClassContext()>" ) )
      {
 
       if ( clgb.getNode ( "java.lang.Class" ) != null )
@@ -2488,7 +2488,7 @@ csHT.put(currmethod.getSignature()+cs.getInvokeExpr().toString(),filteredMethodN
       }
        
      } 
-     else if ( currmethod.getSignature().equals ( "<'java.io.ObjectStreamClass':'getFields0':(java.lang.Class):java.io.ObjectStreamField[]>" ) )
+     else if ( currmethod.getSignature().equals ( "<java.io.ObjectStreamClass: java.io.ObjectStreamField[] getFields0(java.lang.Class)>" ) )
      {
 
       if ( clgb.getNode ( "java.io.ObjectStreamField" ) != null )

@@ -702,13 +702,13 @@ public class SootClass
                 classPrefix = classPrefix.trim();
             }
 
-            out.print(classPrefix + " '" + this.getName() + "'");
+            out.print(classPrefix + " " + this.getName() + "");
         }
 
         // Print extension
         {
             if(this.hasSuperClass())
-                out.print(" extends '" + this.getSuperClass().getName() + "'");
+                out.print(" extends " + this.getSuperClass().getName() + "");
         }
 
         // Print interfaces
@@ -719,12 +719,12 @@ public class SootClass
             {
                 out.print(" implements ");
 
-                out.print("'" + ((SootClass) interfaceIt.next()).getName() + "'");
+                out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
 
                 while(interfaceIt.hasNext())
                 {
                     out.print(",");
-                    out.print(" '" + ((SootClass) interfaceIt.next()).getName() + "'");
+                    out.print(" " + ((SootClass) interfaceIt.next()).getName() + "");
                 }
             }
         }
