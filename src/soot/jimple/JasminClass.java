@@ -24,9 +24,6 @@
  */
 
 
-
-
-
 package soot.jimple;
 
 import soot.*;
@@ -38,6 +35,7 @@ import java.util.*;
 import java.io.*;
 import soot.grimp.*;
 
+/** Methods for producing Jasmin code from Jimple. */
 public class JasminClass
 {
     Map stmtToLabel;

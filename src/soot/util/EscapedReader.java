@@ -28,8 +28,11 @@ package soot.util;
 
 import java.io.*;
 
+/** A FilterReader which catches escaped characters (<code>\\unnnn</code>) in the
+ * input and de-escapes them.  Used in the Jimple Parser. */
 public class EscapedReader extends FilterReader
 {
+    /** Constructs an EscapedReader around the given Reader. */
     public EscapedReader(Reader fos)
     {
         super(fos);
@@ -40,10 +43,10 @@ public class EscapedReader extends FilterReader
     boolean nextF;
     int nextch = 0;
 
+    /** Reads a character from the input. */
     public int read() throws IOException
     {
-
-      /* if you already read the char , just return it */
+        /* if you already read the char, just return it */
         if (nextF)
         {
             nextF = false;
@@ -51,12 +54,9 @@ public class EscapedReader extends FilterReader
         }
 
         int ch = super.read();
-
-
 	
         if (ch != '\\')
             return ch;
-
 
 	/* we may have an escape sequence here ..*/
         mini = new StringBuffer();

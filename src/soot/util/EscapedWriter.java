@@ -28,12 +28,16 @@ package soot.util;
 
 import java.io.*;
 
+/** A FilterWriter which catches to-be-escaped characters (<code>\\unnnn</code>) in the
+ * input and substitutes their escaped representation.  Used for Soot output. */
 public class EscapedWriter extends FilterWriter
 {
+    /** Convenience field containing the system's line separator. */
     public final static String lineSeparator = System.getProperty("line.separator");
     private final static int cr = lineSeparator.charAt(0);
     private final static int lf = (lineSeparator.length() == 2) ? lineSeparator.charAt(1) : -1;
 
+    /** Constructs an EscapedWriter around the given Writer. */
     public EscapedWriter(Writer fos)
     {
         super(fos);
@@ -44,18 +48,21 @@ public class EscapedWriter extends FilterWriter
         protected Object initialValue() { return new StringBuffer(); }
     };
 
+    /** Print a single character (unsupported). */
     public void print(int ch) throws IOException
     {
 	write(ch);
 	throw new RuntimeException();
     }
   
+    /** Write a segment of the given String. */
     public void write(String s, int off, int len) throws IOException
     {
         for(int i = off; i < off + len; i++)
             write(s.charAt(i));
     }
   
+    /** Write a single character. */
     public void write(int ch) throws IOException
     {
         if (ch >= 32 && ch <= 126 || ch == cr || ch == lf || ch == ' ')

@@ -36,6 +36,7 @@ import java.util.*;
 import soot.baf.*;
 import java.io.*;
 
+/** Implementation of the Body class for the Jimple IR. */
 public class JimpleBody extends StmtBody
 {
     /**

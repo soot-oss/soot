@@ -28,8 +28,10 @@ package soot.util;
 import java.io.*;
 import java.util.*;
 
+/** InputStream for getting data via the Baf Parser. */
 public class BafInputStream extends SootInputStream
 {
+    /** Constructs a BafInputStream from the given stream. */
     public BafInputStream(InputStream istream)
     {
 	super(istream);

@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.grimp;
 
 import soot.*;
@@ -41,6 +37,7 @@ import java.util.*;
 import soot.baf.*;
 import java.io.*;
 
+/** Implementation of the Body class for the Grimp IR. */
 public class GrimpBody extends StmtBody
 {
     /**

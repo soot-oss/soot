@@ -29,35 +29,54 @@ package soot.util;
 import java.io.*;
 import java.util.*;
 
-
-
-abstract public  class SootInputStream extends InputStream
+/** Abstract class underlying all instances of InputStreams.
+ * 
+ * SootInputStreams are used to fetch data from some external
+ * source, like class files or jimple files. */
+abstract public class SootInputStream extends InputStream
 {
     private InputStream mStream;
 
+    /** Constructs a SootInputStream from the given InputStream. */
     public SootInputStream(InputStream istream)
     {
 	mStream = istream;
     }
 
-    // delegate all invocations
-    public int available()throws IOException {return mStream.available();}
+    // delegate all invocations.
 
-    public void close() throws IOException {mStream.close();}
+    /** Returns the number of bytes that can be read (or skipped over)
+        from this input stream without blocking by the next caller of
+        a method for this input stream. 
+    */
+    public int available() throws IOException { return mStream.available();}
 
-    public void mark(int readlimit) {mStream.mark(readlimit);} 
+    /** Closes this input stream and releases any system resources
+        associated with the stream. */
+    public void close() throws IOException { mStream.close();}
 
-    public boolean markSupported() {return mStream.markSupported();}
+    /** Marks the current position in this input stream. */
+    public void mark(int readlimit) { mStream.mark(readlimit);} 
 
-    public int read() throws IOException {return mStream.read();}
+    /** Tests if this input stream supports the <code>mark</code> and <code>reset</code> methods. */
+    public boolean markSupported() { return mStream.markSupported();}
+
+    /** Reads the next byte of data from the input stream. */
+    public int read() throws IOException { return mStream.read();}
     
-    public int read(byte[] b) throws IOException {return mStream.read(b);}
+    /** Reads some number of bytes from the input stream and stores them into the buffer array <code>b</code>. */
+    public int read(byte[] b) throws IOException { return mStream.read(b);}
 
-    public int read(byte[] b, int off, int len) throws IOException {return mStream.read(b, off, len);}
+    /** Reads up to <code>len</code> bytes of data from the input stream into an array of bytes. */
+    public int read(byte[] b, int off, int len) throws IOException { return mStream.read(b, off, len);}
 
-    public void reset() throws IOException {mStream.reset();}
+    /** Repositions this stream to the position at the time the
+        <code>mark</code> method was last called on this input
+        stream. */
+    public void reset() throws IOException { mStream.reset();}
 
-    public long skip(long n) throws IOException {return mStream.skip(n);}
+    /** Skips over and discards n bytes of data from this input stream. */
+    public long skip(long n) throws IOException { return mStream.skip(n);}
 }
 
 

@@ -71,10 +71,19 @@ public class SootResolver
 	    SootClass sc = (SootClass) classesToResolve.removeFirst();
 	    className = sc.getName();
 	    
-	    try {
+	    try 
+            {
 		is = SourceLocator.getInputStreamOf(className);
-	    } catch(ClassNotFoundException e) {
-		throw new RuntimeException("couldn't find type: " + className + " (is your soot-class-path set properly?)");
+	    } catch(ClassNotFoundException e) 
+            {
+                if(!Scene.v().allowsPhantomRefs())
+                    throw new RuntimeException("couldn't find type: " + className + " (is your soot-class-path set properly?)");
+                else 
+                {
+                    System.out.println("Warning: " + className + " is a phantom class!");
+                    sc.setPhantom(true);
+                    continue;
+                }
 	    }
 		
 	    Set s = null;

@@ -29,20 +29,28 @@ package soot.util;
 import soot.util.*;
 import java.util.*;
 
+/** Implementation of HashMap which guarantees a stable
+ * (between executions) order for its elements upon iteration.
+ *
+ * This is quite useful for maps of Locals, to avoid nondeterministic
+ * local-name drift. */
 public class DeterministicHashMap extends HashMap
 {
     Set keys = new TrustingMonotonicArraySet();
     
+    /** Constructs a DeterministicHashMap with the given initial capacity. */
     public DeterministicHashMap(int initialCapacity)
     {
         super(initialCapacity);
     }
 
+    /** Constructs a DeterministicHashMap with the given initial capacity and load factor. */
     public DeterministicHashMap(int initialCapacity, float loadFactor)
     {
         super(initialCapacity, loadFactor);    
     }
     
+    /** Inserts a mapping in this HashMap from <code>key</code> to <code>value</code>. */
     public Object put(Object key, Object value)
     {
         if(!containsKey(key))
@@ -51,16 +59,19 @@ public class DeterministicHashMap extends HashMap
         return super.put(key, value);    
     }   
 
+    /** Returns a backed list of entries for this HashMap (unsupported). */
     public Collection entries()
     {
         throw new UnsupportedOperationException();
     }    
     
+    /** Removes the given object from this HashMap (unsupported). */
     public Object remove(Object obj)
     {
         throw new UnsupportedOperationException();
     }
     
+    /** Returns a backed list of keys for this HashMap (unsupported). */
     public Set keySet()
     {
         return keys;

@@ -29,8 +29,10 @@ package soot.util;
 import java.io.*;
 import java.util.*;
 
+/** InputStream for getting data directly from a classfile (via Coffi). */
 public class ClassInputStream extends SootInputStream
 {
+    /** Constructs a ClassInputStream from the given stream. */
     public ClassInputStream(InputStream istream)
     {
 	super(istream);

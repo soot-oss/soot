@@ -29,6 +29,7 @@ package soot.util;
 import java.util.*;
 import soot.*;
 
+/** Reference implementation of the Chain interface, using a HashMap as the underlying structure. */
 public class HashChain extends AbstractCollection
     implements Chain 
 {
@@ -36,11 +37,9 @@ public class HashChain extends AbstractCollection
     private HashMap map = new HashMap(); 
     private Object firstItem;
     private Object lastItem;
-    private long stateCount = 0;
+    private long stateCount = 0;  
 
-  
-
-    // temporary conversion methods
+    /** Converts the given List to a freshly-generated HashChain. */
     public static Chain listToHashChain(List l)
     {
         Iterator it = l.iterator();
@@ -58,6 +57,7 @@ public class HashChain extends AbstractCollection
         return chain;
     }
 
+    /** Erases the contents of the current HashChain. */
     public void clear() 
     {
         stateCount++;
@@ -71,13 +71,15 @@ public class HashChain extends AbstractCollection
         remove(out);
     }
     
+    /** Adds the given object to this HashChain. */
     public boolean add(Object item) 
     {
         stateCount++;
         addLast(item);
         return true;
     }
-    
+
+    /** Returns an unbacked list containing the contents of the given Chain. */
     public static List toList(Chain c)
     {
         Iterator it = c.iterator();
@@ -90,8 +92,7 @@ public class HashChain extends AbstractCollection
         return list;
     }
 
-
-
+    /** Constructs an empty HashChain. */
     public HashChain()
     { 
         firstItem = lastItem = null;
@@ -296,7 +297,7 @@ public class HashChain extends AbstractCollection
 
     public int size(){ return map.size(); }               
 
-
+    /** Returns a textual representation of the contents of this Chain. */
     public String toString() 
     {
         StringBuffer strBuf = new StringBuffer();

@@ -28,14 +28,14 @@ package soot.util;
 
 import java.text.*;
 
-
+/** Utility methods for string manipulations commonly used in Soot. */
 public class StringTools
 {
     static StringBuffer whole = new StringBuffer();
     static StringBuffer mini = new StringBuffer();
 
-
- /* This is used by sootClass to generate output. */
+    /** Returns fromString, but with non-isalpha() characters printed as
+     * <code>'\\unnnn'</code>.  Used by SootClass to generate output. */
     public static java.lang.String getEscapedStringOf(String fromString)
     {
        char[] fromStringArray;
@@ -73,11 +73,14 @@ public class StringTools
        }
 
        return whole.toString();
-   }
+    }
 
-   public final static String lineSeparator = System.getProperty("line.separator");;
+    /** Convenience field storing the system line separator. */
+    public final static String lineSeparator = System.getProperty("line.separator");;
 
-    /* Used by StringConstant.toString() */
+    /** Returns fromString, but with certain characters printed as
+     * if they were in a Java string literal.  
+     * Used by StringConstant.toString() */
     public static java.lang.String getQuotedStringOf(String fromString)
     {
         StringBuffer toStringBuffer;
@@ -111,100 +114,98 @@ public class StringTools
         return toStringBuffer.toString();
     }
 
-
-  public static String  getUnicodeStringFromChar(char ch)
-  {
-    String s = Integer.toHexString( (int) ch);
-    String padding = null;
-
-    switch(s.length()) {
-    case 1:
-      padding = "000";
-      break;
-    case 2:
-      padding = "00";
-      break;
-    case 3:
-      padding = "0";
-      break;
-    case 4:
-      padding = "";
-      break;
-    }   
-    
-    return "\\u" + padding + s;
-  }
+    /** Returns a String containing the escaped <code>\\unnnn</code>
+     * representation for <code>ch</code>. */
+    public static String getUnicodeStringFromChar(char ch)
+    {
+        String s = Integer.toHexString((int) ch);
+        String padding = null;
+        
+        switch(s.length()) {
+        case 1:
+            padding = "000";
+            break;
+        case 2:
+            padding = "00";
+            break;
+        case 3:
+            padding = "0";
+            break;
+        case 4:
+            padding = "";
+            break;
+        }   
+        
+        return "\\u" + padding + s;
+    }
   
-  public static String getUnEscapedStringOf(String str) 
-  {
-    StringBuffer buf = new StringBuffer();
-    CharacterIterator iter = new StringCharacterIterator(str);
+    /** Returns a String de-escaping the <code>\\unnnn</code>
+     * representation for any escaped characters in the string. */
+    public static String getUnEscapedStringOf(String str) 
+    {
+        StringBuffer buf = new StringBuffer();
+        CharacterIterator iter = new StringCharacterIterator(str);
+        
+        for(char ch = iter.first(); ch != CharacterIterator.DONE; ch = iter.next()) 
+        {
+            if (ch != '\\') 
+                buf.append(ch);
+            else 
+            {  // enter escaped mode
+                ch = iter.next();
+                char format;
 
-    
-    for(char ch = iter.first(); ch != CharacterIterator.DONE; ch = iter.next()) {
-
-    if (ch != '\\') {
-      buf.append(ch);
-    } else {  // enter escaped mode
-      
-      ch = iter.next();
-      char format;
-
-      if(ch == '\\') {
-	buf.append(ch);
-      } else if ( (format = getCFormatChar(ch)) != '\0') {
-	buf.append(format);
-      } else if(ch == 'u') {  //enter unicode mode
-
-	StringBuffer mini = new StringBuffer(4);
-	for(int i = 0; i <4; i++)
-	  mini.append(iter.next());
-	
-	ch =  (char) Integer.parseInt(mini.toString(), 16);
-	buf.append(ch); 
-	
-      } else {
-	throw new RuntimeException("Unexpected char: " + ch);
-      }      
+                if(ch == '\\') 
+                    buf.append(ch);
+                else if ( (format = getCFormatChar(ch)) != '\0') 
+                    buf.append(format);
+                else if(ch == 'u') 
+                {  //enter unicode mode
+                    StringBuffer mini = new StringBuffer(4);
+                    for(int i = 0; i <4; i++)
+                        mini.append(iter.next());
+                    
+                    ch = (char) Integer.parseInt(mini.toString(), 16);
+                    buf.append(ch); 
+                } else {
+                    throw new RuntimeException("Unexpected char: " + ch);
+                }
+            }
+        }
+        return buf.toString();
     }
 
+    /** Returns the canonical C-string representation of c. */
+    public static char getCFormatChar(char c)
+    {
+        char res;
+
+        switch(c) {
+        case 'n':
+            res = '\n';
+            break;
+        case 't':
+            res = '\t';
+            break;
+        case 'r':
+            res = '\r';
+            break;
+        case 'b':
+            res = '\b';
+            break;
+        case '\"':
+            res = '\"';
+            break;
+        case '\'':
+            res = '\'';
+            break;
+            
+        default:
+            res = '\0';
+            break;
+        } 
+        return res;
     }
-    return buf.toString();
-  }
-
-
- 	
-  public static char getCFormatChar(char c)
-  {
-    char res;
-
-    switch(c) {
-    case 'n':
-      res = '\n';
-      break;
-    case 't':
-      res = '\t';
-      break;
-    case 'r':
-      res = '\r';
-      break;
-    case 'b':
-      res = '\b';
-      break;
-    case '\"':
-      res = '\"';
-      break;
-    case '\'':
-      res = '\'';
-      break;
-      
-      
-    default:
-      res = '\0';
-      break;
-    } 
-    return res;
-  }
 }
 
 

@@ -31,13 +31,17 @@ import soot.util.*;
 import java.util.*;
 import java.io.*;
 
+/** Abstract base class for Body's on Stmts (Jimple and Grimp). */
 abstract public class StmtBody extends Body
 {
+    /** Creates a StmtBody associated with the given method. */
     protected StmtBody(SootMethod m)
     {
         super(m);
     }
-    protected StmtBody(){}
+
+    /** Creates an empty StmtBody. */
+    protected StmtBody() {}
 }
 
 

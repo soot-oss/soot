@@ -79,6 +79,7 @@ public class SourceLocator
 
     private static Map nameToZipFile = new HashMap();
     private static List previousLocations = null;
+    private static String previousCP = null;
     private static int previousCPHashCode = 0;
     
     /** Given a class name and class-path, returns an input stream for the given class. */
@@ -86,13 +87,18 @@ public class SourceLocator
     {
         List locations = null;
 
-        if (classPath.hashCode() == previousCPHashCode)
+        // Either object equality or string equality will do.
+        if (classPath.hashCode() == previousCPHashCode && (classPath == previousCP || classPath.equals(previousCP)))
         {
             locations = previousLocations;
         }
         else
         // Split up the class path into locations
         {
+            // Store the classpath and its hash.
+            previousCPHashCode = classPath.hashCode();
+            previousCP = classPath;
+
             locations = new ArrayList();
             int sepIndex;
 	    boolean absolutePath;
@@ -101,9 +107,8 @@ public class SourceLocator
                 classPath = System.getProperty("java.class.path");
 
 	    String userDir = System.getProperty("user.dir");
-            for(;;)
+            for(boolean done = false; !done;)
             {
-		// temporary fix xxxxx fixme .
 		if(classPath.indexOf(fileSeparator) != 0)
 		    absolutePath = false;
 		else
@@ -111,22 +116,33 @@ public class SourceLocator
 		
                 sepIndex = classPath.indexOf(pathSeparator);
 		
+                String candidate = null;
+
                 if(sepIndex == -1)
-		{
-		    if(absolutePath)
-			locations.add(classPath);
-		    else
-			locations.add(userDir + fileSeparator + classPath);
-                    break;
+                {
+                    candidate = classPath;
+                    done = true;
                 }
-		if(absolutePath)
-		    locations.add(classPath.substring(0, sepIndex));
-		else
-		    locations.add(userDir + fileSeparator + classPath.substring(0, sepIndex));
-		
+                else
+                    candidate = classPath.substring(0, sepIndex);
+                
+                // Attempt to provide rudimentary tilde expansion.
+                if (candidate.startsWith("~"))
+                {
+                    if (candidate.startsWith("~"+System.getProperty("user.name")+fileSeparator))
+                        candidate = "~"+fileSeparator+candidate.substring(candidate.indexOf(fileSeparator));
+                    if (!candidate.startsWith("~"+fileSeparator))
+                        throw new RuntimeException
+                            ("can't handle tilde expansion of a username; please provide fully-qualified path.");
+                    candidate = System.getProperty("user.home")+fileSeparator+candidate.substring(2);
+                }
+                else if(!absolutePath)
+                    candidate = userDir + fileSeparator + candidate;
+
+                locations.add(candidate);
+
                 classPath = classPath.substring(sepIndex + 1);
             }
-            previousCPHashCode = classPath.hashCode();
             previousLocations = locations;
         }
 
@@ -153,9 +169,8 @@ public class SourceLocator
 		    return res;
 
 	    } else
-		throw new RuntimeException("IMPOSSIBLE");
+		throw new RuntimeException("Other source precedences are not currently supported.");
 	    throw new ClassNotFoundException();
-	
 	}
 	
     }

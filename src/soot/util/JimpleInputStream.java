@@ -28,6 +28,7 @@ package soot.util;
 import java.io.*;
 import java.util.*;
 
+/** InputStream for getting data via the Jimple Parser. */
 public class JimpleInputStream extends SootInputStream
 {
     public JimpleInputStream(InputStream istream)
