@@ -6,7 +6,7 @@ maintain interoperability as a library and with GUIs, the following
 coding rules have been imposed. A checker has been included which points
 out potential violations of these rules. To run it, enter:
 
-make badfields
+ant badfields
 
 Rules:
 
@@ -31,8 +31,6 @@ Rules:
 
 5) Singletons should be implemented as follows:
    - add the name of the singleton to soot/src/singletons.list
-   - make sure that the package that the singleton is in is listed in
-     soot/src/package.list
    - run soot/src/make_singletons > soot/src/soot/Singletons.java
    - in your singleton, include the following two methods following
      the model in soot.jimple.toolkits.base.Aggregator:
@@ -49,7 +47,7 @@ Rules:
      its own instance, meaning that all global variables and singletons
      can be reset by resetting that one single instance.
 
-6) "make badfields" should be run periodically to check that these rules
+6) "ant badfields" should be run periodically to check that these rules
    are being followed. It will report most violations. Unfortunately,
    it also reports some false positives that must be checked by hand.
    Many of these are final static arrays, whose elements are never
