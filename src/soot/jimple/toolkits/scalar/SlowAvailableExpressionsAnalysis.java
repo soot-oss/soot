@@ -86,7 +86,7 @@ class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 
                 Chain sibList = null;
                 if (equivValToSiblingList.get(ev) == null)
-                    { sibList = new ArrayChain(); equivValToSiblingList.put(ev, sibList); }
+                    { sibList = new HashChain(); equivValToSiblingList.put(ev, sibList); }
                 else
                     sibList = (Chain)equivValToSiblingList.get(ev);
                 
@@ -112,7 +112,7 @@ class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                         }
 
                         if (equivValToSiblingList.get(eo) == null)
-                            { sibList = new ArrayChain(); equivValToSiblingList.put(eo, sibList); }
+                            { sibList = new HashChain(); equivValToSiblingList.put(eo, sibList); }
                         else
                             sibList = (Chain)equivValToSiblingList.get(eo);
                         if (!sibList.contains(o)) sibList.add(o);
@@ -122,7 +122,7 @@ class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                             l = (HashChain)containingExprs.get(eo);
                         else
                         {
-                            l = new ArrayChain();
+                            l = new HashChain();
                             containingExprs.put(eo, l);
                         }
 

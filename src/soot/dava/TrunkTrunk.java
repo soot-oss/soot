@@ -15,7 +15,7 @@ public class TrunkTrunk extends AbstractTrunk
         this.t1 = t1;
         this.t2 = t2;
 	Removed = false;
-	contents = new ArrayChain();
+	contents = new HashChain();
 	contents.add( t1);
 	contents.add( t2);
 	Branches = false;

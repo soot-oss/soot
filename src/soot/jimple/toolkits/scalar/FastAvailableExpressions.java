@@ -69,8 +69,8 @@ public class FastAvailableExpressions implements AvailableExpressions
                 List pairsBefore = new ArrayList();
                 List pairsAfter = new ArrayList();
 
-                Chain equivsBefore = new ArrayChain();
-                Chain equivsAfter = new ArrayChain();
+                Chain equivsBefore = new HashChain();
+                Chain equivsAfter = new HashChain();
 
                 if (set instanceof ToppedSet &&
                             ((ToppedSet)set).isTop())

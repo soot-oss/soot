@@ -18,7 +18,7 @@ public class WhileTrunk extends AbstractTrunk
 	Removed = false;
 	successors = new ArrayList();
 	predecessors = new ArrayList();
-	contents = new ArrayChain();
+	contents = new HashChain();
 	contents.add( wTrunk);
 	Branches = false;
 
