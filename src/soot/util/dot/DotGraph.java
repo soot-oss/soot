@@ -86,9 +86,6 @@ public class DotGraph implements Renderable{
 							  
       render(out, 0);
       out.close();
-
-      G.v().out.println("Generate dot file in "+filename);
-
     } catch (IOException ioe) {
     }
   }

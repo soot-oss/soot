@@ -47,6 +47,8 @@ public class CFGToDotGraph {
   private DotGraphAttribute unexceptionalControlFlowAttr;
   private DotGraphAttribute exceptionalControlFlowAttr;
   private DotGraphAttribute exceptionEdgeAttr;
+  private DotGraphAttribute headAttr;
+  private DotGraphAttribute tailAttr;
     
   /**
    * <p>Returns a CFGToDotGraph converter which will draw the graph
@@ -56,7 +58,8 @@ public class CFGToDotGraph {
    * converter will identify the exceptions that will be thrown. By
    * default, it will distinguish different edges by coloring regular
    * control flow edges black, exceptional control flow edges red, and
-   * thrown exception edges light gray.</p>
+   * thrown exception edges light gray. Head and tail nodes are filled
+   * in, head nodes with gray, and tail nodes with light gray.</p>
    */
   public CFGToDotGraph() {
     setOnePage(true);
@@ -65,6 +68,8 @@ public class CFGToDotGraph {
     setUnexceptionalControlFlowAttr("color", "black");
     setExceptionalControlFlowAttr("color", "red");
     setExceptionEdgeAttr("color", "lightgray");
+    setHeadAttr("fillcolor", "gray");
+    setTailAttr("fillcolor", "lightgray");
   }
 
 
@@ -160,6 +165,112 @@ public class CFGToDotGraph {
 
 
   /**
+   * Specify the dot graph attribute to use for head nodes (in addition
+   * to filling in the nodes).
+   *
+   * @param id The attribute name, for example "fillcolor".
+   *
+   * @param value The attribute value, for example "gray".
+   *
+   * @see <a href="http://www.research.att.com/sw/tools/graphviz/dotguide.pdf">"Drawing graphs with dot"</a>
+   */
+  public void setHeadAttr(String id, String value) {
+    headAttr = new DotGraphAttribute(id, value);
+  }
+
+
+  /**
+   * Specify the dot graph attribute to use for tail nodes (in addition 
+   * to filling in the nodes).
+   *
+   * @param id The attribute name, for example "fillcolor".
+   *
+   * @param value The attribute value, for example "lightgray".
+   *
+   * @see <a href="http://www.research.att.com/sw/tools/graphviz/dotguide.pdf">"Drawing graphs with dot"</a>
+   */
+  public void setTailAttr(String id, String value) {
+    tailAttr = new DotGraphAttribute(id, value);
+  }
+
+
+  /**
+   * Returns an {@link Iterator} over a {@link Collection} which
+   * iterates over its elements in a specified order.  Used to order
+   * lists of destination nodes consistently before adding the
+   * corresponding edges to the graph. (Maintaining a consistent
+   * ordering of edges makes it easier to diff the dot files output
+   * for different graphs of a given method.)
+   *
+   * @param coll The collection to iterator over.
+   *
+   * @param comp The comparator for the ordering.
+   *
+   * @return An iterator which presents the elements of <code>coll</code> 
+   * in the order specified by <code>comp</code>.
+   */
+  private static Iterator sortedIterator(Collection coll, Comparator comp) {
+    if (coll.size() <= 1) {
+      return coll.iterator();
+    } else {
+      Object array[] = coll.toArray();
+      Arrays.sort(array, comp);
+      return Arrays.asList(array).iterator();
+    }
+  }
+
+  /**
+   * Comparator used to order a list of nodes by the order in 
+   * which they were labeled.
+   */
+  private static class NodeComparator implements java.util.Comparator {
+    private DotNamer namer;
+
+    NodeComparator(DotNamer namer) {
+      this.namer = namer;
+    }
+
+    public int compare(Object o1, Object o2) {
+      return (namer.getNumber(o1) - namer.getNumber(o2));
+    }
+
+    public boolean equal(Object o1, Object o2) {
+      return (namer.getNumber(o1) == namer.getNumber(o2));
+    }
+  }
+
+
+  /**
+   * Comparator used to order a list of ExceptionDests by the order in
+   * which their handler nodes were labeled.
+   */
+  private static class ExceptionDestComparator implements java.util.Comparator {
+    private DotNamer namer;
+
+    ExceptionDestComparator(DotNamer namer) {
+      this.namer = namer;
+    }
+
+    private int getValue(Object o) {
+      Object handler = ((ExceptionalGraph.ExceptionDest) o).getHandlerNode();
+      if (handler == null) {
+	return Integer.MAX_VALUE;
+      } else {
+	return namer.getNumber(handler);
+      }
+    }
+
+    public int compare(Object o1, Object o2) {
+      return (getValue(o1) - getValue(o2));
+    }
+
+    public boolean equal(Object o1, Object o2) {
+      return (getValue(o1) == getValue(o2));
+    }
+  }
+
+
+  /**
    * Create a <code>DotGraph</code> whose nodes and edges depict 
    * a control flow graph without distinguished
    * exceptional edges.
@@ -177,20 +288,30 @@ public class CFGToDotGraph {
   public DotGraph drawCFG(DirectedGraph graph, Body body) {
     DotGraph canvas = initDotGraph(body);
     DotNamer namer = new DotNamer((int)(graph.size()/0.7f), 0.7f);
+    NodeComparator comparator = new NodeComparator(namer);
+
+    // To facilitate comparisons between different graphs of the same
+    // method, prelabel the nodes in the order they appear
+    // in the iterator, rather than the order that they appear in the
+    // graph traversal (so that corresponding nodes are more likely
+    // to have the same label in different graphs of a given method).
+    for (Iterator nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
+      String junk = namer.getName(nodesIt.next());
+    }
 
     for (Iterator nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
       Object node = nodesIt.next();
       canvas.drawNode(namer.getName(node));
-      for (Iterator succsIt = graph.getSuccsOf(node).iterator(); 
+      for (Iterator succsIt = sortedIterator(graph.getSuccsOf(node), comparator);
 	   succsIt.hasNext(); ) {
-        Object succ = succsIt.next();	
-        canvas.drawEdge(namer.getName(node), namer.getName(succ));
+	Object succ = succsIt.next();
+	canvas.drawEdge(namer.getName(node), namer.getName(succ));
       }
     }
-    setStyle(graph.getHeads(), canvas, namer, 
-	     DotGraphConstants.NODE_STYLE_FILLED);
+    setStyle(graph.getHeads(), canvas, namer,
+	     DotGraphConstants.NODE_STYLE_FILLED, headAttr);
     setStyle(graph.getTails(), canvas, namer, 
-	     DotGraphConstants.NODE_STYLE_FILLED);
+	     DotGraphConstants.NODE_STYLE_FILLED, tailAttr);
     if (! isBrief) {
       formatNodeText(body, canvas, namer);
     }
@@ -212,21 +333,30 @@ public class CFGToDotGraph {
     Body body = graph.getBody();
     DotGraph canvas = initDotGraph(body);
     DotNamer namer = new DotNamer((int)(graph.size()/0.7f), 0.7f);
+    NodeComparator nodeComparator = new NodeComparator(namer);
+
+    // Prelabel nodes in iterator order, to facilitate
+    // comparisons between graphs of a given method.
+    for (Iterator nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
+      String junk = namer.getName(nodesIt.next());
+    }
 
     for (Iterator nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
 	Object node = nodesIt.next();
 
       canvas.drawNode(namer.getName(node));
 
-      for (Iterator succsIt = graph.getUnexceptionalSuccsOf(node).iterator();
+      for (Iterator succsIt = sortedIterator(graph.getUnexceptionalSuccsOf(node),
+					     nodeComparator); 
 	   succsIt.hasNext(); ) {
-        Object succ = succsIt.next();	
+        Object succ = succsIt.next();
         DotGraphEdge edge = canvas.drawEdge(namer.getName(node), 
 					    namer.getName(succ));
 	edge.setAttribute(unexceptionalControlFlowAttr);
       }
 
-      for (Iterator succsIt = graph.getExceptionalSuccsOf(node).iterator();
+      for (Iterator succsIt = sortedIterator(graph.getExceptionalSuccsOf(node),
+					     nodeComparator); 
 	   succsIt.hasNext(); ) {
 	Object succ = succsIt.next();
 	DotGraphEdge edge = canvas.drawEdge(namer.getName(node),
@@ -235,10 +365,11 @@ public class CFGToDotGraph {
       }
 
       if (showExceptions) {
-	for (Iterator destsIt = graph.getExceptionDests(node).iterator();
+	for (Iterator destsIt = sortedIterator(graph.getExceptionDests(node),
+					       new ExceptionDestComparator(namer));
 	     destsIt.hasNext(); ) {
-	  ExceptionalGraph.ExceptionDest dest = 
-	    (ExceptionalGraph.ExceptionDest) destsIt.next();
+	  ExceptionalGraph.ExceptionDest dest
+	    = (ExceptionalGraph.ExceptionDest) destsIt.next();
 	  Object handlerStart = dest.getHandlerNode();
 	  if (handlerStart == null) {
 	    // Giving each escaping exception its own, invisible
@@ -261,9 +392,9 @@ public class CFGToDotGraph {
       }
     }
     setStyle(graph.getHeads(), canvas, namer,
-	     DotGraphConstants.NODE_STYLE_FILLED);
+	     DotGraphConstants.NODE_STYLE_FILLED, headAttr);
     setStyle(graph.getTails(), canvas, namer, 
-	     DotGraphConstants.NODE_STYLE_FILLED);
+	     DotGraphConstants.NODE_STYLE_FILLED, tailAttr);
     if (! isBrief) {
       formatNodeText(graph.getBody(), canvas, namer);
     }
@@ -324,6 +455,15 @@ public class CFGToDotGraph {
 	this.put(node, index);
       }
       return index.toString();
+    }
+
+    int getNumber(Object node) {
+      Integer index = (Integer)this.get(node);
+      if (index == null) {
+	index = new Integer(nodecount++);
+	this.put(node, index);
+      }
+      return index.intValue();
     }
   }
 
@@ -402,14 +542,18 @@ public class CFGToDotGraph {
    * @param namer maps from {@link Object} to the strings used
    *        to identify corresponding {@link DotGraphNode}s.
    * @param style the style to set for each of the nodes.
+   * @param attrib if non-null, an additional attribute to associate
+   *        with each of the nodes.
    */
   private void setStyle(Collection objects, DotGraph canvas, 
-			DotNamer namer, String style) {
+			DotNamer namer, String style,
+			DotGraphAttribute attrib) {
     // Fill the entry and exit nodes.
     for (Iterator it = objects.iterator(); it.hasNext(); ) {
       Object object = it.next();
       DotGraphNode objectNode = canvas.getNode(namer.getName(object));
       objectNode.setStyle(style);
+      objectNode.setAttribute(attrib);
     }
   }
 

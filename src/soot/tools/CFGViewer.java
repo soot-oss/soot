@@ -262,7 +262,8 @@ CFGIntermediateRep.help(0, 70,
     filename = filename + 
       methodname.replace(java.io.File.separatorChar, '.') + 
       DotGraph.DOT_EXTENSION;
-
+    
+    G.v().out.println("Generate dot file in "+filename);
     canvas.plot(filename);
   }
 }
