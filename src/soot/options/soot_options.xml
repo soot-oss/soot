@@ -465,6 +465,7 @@ initializer could be executed. This may make the call graph very large.
 When this option is set to false, any calls to Class.forName() for which
 the class cannot be determined statically are not assumed to call any
 static initializers.
+</long_desc>
                                 </boolopt>
                                 <boolopt>
                                         <name>Verbose</name>
@@ -498,7 +499,7 @@ static initializers.
 					<class>SparkOptions</class>
 					<alias>cg.spark</alias>
                                         <short_desc>Spark points-to analysis framework</short_desc>
-                                        <long_desc>Spark is a flexible points-to analysis framework. Aside from building a call graph, it also generates information about the targets of pointers. For details about Spark, please see <a href="http://www.sable.mcgill.ca/publications/thesis/#olhotakMastersThesis">Ondrej Lhotak's M.Sc. thesis</a>.</long_desc>
+                                        <long_desc>Spark is a flexible points-to analysis framework. Aside from building a call graph, it also generates information about the targets of pointers. For details about Spark, please see <a href="http://www.sable.mcgill.ca/publications/thesis/">Ondrej Lhotak's M.Sc. thesis</a>.</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -521,7 +522,7 @@ When this option is set to true, Spark prints detailed information about its exe
 							<name>Ignore Types Entirely</name>
 							<alias>ignore-types</alias>
 							<default>false</default>
-                                                        <short_desc>Make Spark completely ignore declared types of variables<short_desc>
+                                                        <short_desc>Make Spark completely ignore declared types of variables</short_desc>
 							<long_desc>
 When this option is set to true, all parts of Spark completely ignore
 declared types of variables and casts.
@@ -531,7 +532,7 @@ declared types of variables and casts.
 							<name>Force Garbages Collections</name>
 							<alias>force-gc</alias>
 							<default>false</default>
-                                                        <short_desc>Force garbage collection for measuring memory usage<short_desc>
+                                                        <short_desc>Force garbage collection for measuring memory usage</short_desc>
 							<long_desc>
 When this option is set to true, calls to System.gc() will be made at
 various points to allow memory usage to be measured.
@@ -541,7 +542,7 @@ various points to allow memory usage to be measured.
 							<name>Pre Jimplify</name>
 							<alias>pre-jimplify</alias>
 							<default>false</default>
-                                                        <short_desc>Jimplify all methods before starting Spark<short_desc>
+                                                        <short_desc>Jimplify all methods before starting Spark</short_desc>
 							<long_desc>
 When this option is set to true, Spark converts all available methods to Jimple
 before starting the points-to analysis. This allows the Jimplification
@@ -561,7 +562,7 @@ rather than only those deemed reachable by the points-to analysis.
 							<long_desc>
 Setting VTA to true has the effect of setting ignoreBaseObjects,
 typesForSites, and simplifySCCs to true to simulate Variable Type
-Analysis, described in <a href="http://www.sable.mcgill.ca/publications/papers/#oopsla2000">our OOPSLA 2000 paper</a>. Note that the
+Analysis, described in <a href="http://www.sable.mcgill.ca/publications/papers/">our OOPSLA 2000 paper</a>. Note that the
 algorithm differs from the original VTA in that it handles array
 elements more precisely.
         </long_desc>
@@ -754,7 +755,7 @@ field reference (red) nodes. This algorithm is not yet finished.
 Alias is an alias-edge based algorithm. This algorithm tends to take
 the least memory for very large problems, because it does not represent
 explicitly points-to sets of fields of heap objects.
-<long_desc>
+</long_desc>
 
 							</value>
 							<value>
