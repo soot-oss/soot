@@ -690,8 +690,8 @@ public class Main implements Runnable
 
     private static void printVersion()
     {
-	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.69)");
+	// $Format: "            System.out.println(\"Soot version 1.2.3 (build $ProjectVersion$)\");"$
+            System.out.println("Soot version 1.2.3 (build 1.2.3.dev.1)");
 	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
