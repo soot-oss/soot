@@ -53,7 +53,7 @@ Soot Command Line Options
 <h1>Phases and phase options</h1>
 <ul>
 <xsl:for-each select="options/section/phaseopt/phase|options/section/phaseopt/radio_phase">
-<li/><xsl:value-of select="alias|alias"/>
+<li><b><xsl:value-of select="alias|alias"/></b>: <xsl:value-of select="long_desc"/></li>
 <ul>
 <ul>
 <xsl:apply-templates mode="opt" select="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt"/>
@@ -61,7 +61,8 @@ Soot Command Line Options
 </ul>
 <ul>
 <xsl:for-each select="sub_phase">
-<li/><xsl:value-of select="alias|alias"/>
+<li><b><xsl:value-of select="alias|alias"/></b>: <xsl:value-of select="long_desc
+"/></li>
 <ul>
 <xsl:apply-templates mode="opt" select="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt"/>
 </ul>
@@ -73,7 +74,7 @@ Soot Command Line Options
 </xsl:template>
 
 <xsl:template mode="opt" match="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt">
-<li/>
+<li>
 <tt><xsl:value-of select="alias"/>
 <xsl:choose>
 <xsl:when test="default">
@@ -87,6 +88,7 @@ Soot Command Line Options
 </xsl:otherwise>
 </xsl:choose>
 </tt>
+</li>
 </xsl:template>
 
 <xsl:template match="use_arg_label">
