@@ -30,10 +30,10 @@ Rules:
    not call any methods, except trivial ones known to have no side-effects.
 
 5) Singletons should be implemented as follows:
-   - add the name of the singleton to soot/singletons.list
+   - add the name of the singleton to soot/src/singletons.list
    - make sure that the package that the singleton is in is listed in
-     soot/package.list
-   - run soot/make_singletons > soot/src/soot/Singletons.java
+     soot/src/package.list
+   - run soot/src/make_singletons > soot/src/soot/Singletons.java
    - in your singleton, include the following two methods following
      the model in soot.jimple.toolkits.base.Aggregator:
 
