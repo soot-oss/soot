@@ -851,7 +851,6 @@ public class Scene  //extends AbstractHost
      *  classes soot should use.
      */
     public void loadNecessaryClasses() {
-        dynamicClasses = new ArrayList();
 	loadBasicClasses();
 
         Iterator it = Options.v().classes().iterator();
@@ -869,6 +868,23 @@ public class Scene  //extends AbstractHost
             c.setApplicationClass();
         }
 
+        loadDynamicClasses();
+
+        for( Iterator pathIt = Options.v().process_dir().iterator(); pathIt.hasNext(); ) {
+
+            final String path = (String) pathIt.next();
+            for( Iterator clIt = SourceLocator.v().getClassesUnder(path).iterator(); clIt.hasNext(); ) {
+                final String cl = (String) clIt.next();
+                Scene.v().loadClassAndSupport(cl).setApplicationClass();
+            }
+        }
+
+        prepareClasses();
+        setDoneResolving();
+    }
+
+    public void loadDynamicClasses() {
+        dynamicClasses = new ArrayList();
         HashSet dynClasses = new HashSet();
         dynClasses.addAll(Options.v().dynamic_class());
 
@@ -889,19 +905,8 @@ public class Scene  //extends AbstractHost
             final String className = (String) classNameIt.next();
             dynamicClasses.add( Scene.v().loadClassAndSupport(className) );
         }
-
-        for( Iterator pathIt = Options.v().process_dir().iterator(); pathIt.hasNext(); ) {
-
-            final String path = (String) pathIt.next();
-            for( Iterator clIt = SourceLocator.v().getClassesUnder(path).iterator(); clIt.hasNext(); ) {
-                final String cl = (String) clIt.next();
-                Scene.v().loadClassAndSupport(cl).setApplicationClass();
-            }
-        }
-
-        prepareClasses();
-        setDoneResolving();
     }
+
 
     /* Generate classes to process, adding or removing package marked by
      * command line options. 
