@@ -36,12 +36,12 @@ public class Timer
     private long duration;
     private long startTime;
     private boolean hasStarted;
-
+		
     private String name;
-
+		
     private static List outstandingTimers = new ArrayList();
     private static boolean isGarbageCollecting;
-
+		
     /** Timer for garbage collection. */
     public static Timer forcedGarbageCollectionTimer = new Timer("gc");
     private static boolean isSubtractingGC;
@@ -71,7 +71,7 @@ public class Timer
     public void start()
     {
         // Subtract garbage collection time
-            if(!isGarbageCollecting && isSubtractingGC && ((count++ % 4) == 0))
+				if(!isGarbageCollecting && isSubtractingGC && ((count++ % 4) == 0))
             {
                 // garbage collects only every 4 calls to avoid round off errors
                 

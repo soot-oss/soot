@@ -147,24 +147,25 @@ public class Main implements Runnable
 
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
 
-    static boolean naiveJimplification;
-    static boolean onlyJimpleOutput;
-    public static boolean isVerbose;
-    static boolean onlyJasminOutput;
-    static public boolean isProfilingOptimization;
+		//FD: Unused variables.
+		//  static boolean naiveJimplification;
+    //  static boolean onlyJimpleOutput;
+    //  static boolean onlyJasminOutput;
+		//  static public boolean oldTyping;
+    //  static public boolean usePackedLive;
+    //  static public boolean usePackedDefs = true;
+    //  static boolean isTestingPerformance;
+
+		public static boolean isVerbose;
+    public static boolean isProfilingOptimization;
+		public static boolean isInDebugMode;
     static boolean isSubtractingGC;
-    static public boolean oldTyping;
-    static public boolean isInDebugMode;
-    static public boolean usePackedLive;
-    static public boolean usePackedDefs = true;
-    static boolean isTestingPerformance;
-    
+   
     static private int targetExtension = CLASS;
     static private String xmlInputFile = null;
     static private boolean produceXmlOutput = false;
 
-    static public int totalFlowNodes,
-           totalFlowComputations;
+    static public int totalFlowNodes, totalFlowComputations;
 
     static boolean doArrayBoundsCheck = false;
     static boolean doNullPointerCheck = false;
@@ -177,7 +178,7 @@ public class Main implements Runnable
         packTimer = new Timer("pack"),
         cleanup1Timer = new Timer("cleanup1"),
         cleanup2Timer = new Timer("cleanup2"),
-        conversionTimer = new Timer("conversionm"),
+        conversionTimer = new Timer("conversion"),
         cleanupAlgorithmTimer = new Timer("cleanupAlgorithm"),
         graphTimer = new Timer("graphTimer"),
         assignTimer = new Timer("assignTimer"),
@@ -286,6 +287,7 @@ public class Main implements Runnable
     {
         isOptimizing = val;
     }
+
     public static  boolean isOptimizing()
     {
         return isOptimizing;
@@ -456,10 +458,11 @@ public class Main implements Runnable
             SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_JIMPLE);
         else if(prec.equals("class"))
             SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_CLASS);
-        else {                    
-            
-            throw new CompilationDeathException(COMPILATION_ABORTED,"Illegal --src-prec arg: " + prec +
-                            ". Valid args are: \"jimple\" or \"class\"");           
+        else {                                
+            throw new CompilationDeathException(COMPILATION_ABORTED,
+																								"Illegal --src-prec arg: " 
+																								+ prec + ". Valid args are:"
+																								+ " \"jimple\" or \"class\"");
         }
     }
 
@@ -485,16 +488,15 @@ public class Main implements Runnable
     }
 
 
-
     public static void setAnalyzingLibraries(boolean val)
     {
         isAnalyzingLibraries = val;
     }
+
     public static boolean isAnalyzingLibraries()
     {
         return isAnalyzingLibraries;
     }
-
 
 
     public static void setSubstractingGC(boolean val)
@@ -509,54 +511,50 @@ public class Main implements Runnable
 
     public static void setAnnotationPhases(String opt)
     {
-	if (opt.equals("both"))
-	{
-	    doNullPointerCheck = true;
-	    doArrayBoundsCheck = true;
-	}
-	else
-        if (opt.equals("arraybounds"))
-	{
-	    doArrayBoundsCheck = true;
-	}
-	else
-	if (opt.equals("nullpointer"))
-	{
-	    doNullPointerCheck = true;
-	}
-	else
-	if (opt.equals("LineNumber"))
-	{
-		soot.Main.keepLineNumberAttribute = true;
-		CodeAttributeGenerator.v().registerAggregator(new LineNumberTagAggregator(true));
-	}
-	else
-	    System.out.println("Annotation phase \"" + opt + "\" is not valid.");
-
-	// put null pointer check before bounds check for profiling purpose
-	if (doNullPointerCheck)
-	{
-	    Scene.v().getPack("jtp").add(new Transform("jtp.npc", NullPointerChecker.v()));
-	}
-
-	if (doArrayBoundsCheck)
-	{
-	    Scene.v().getPack("wjtp2").add(new Transform("wjtp2.ra", RectangularArrayFinder.v()));
-	    Scene.v().getPack("jtp").add(new Transform("jtp.abc", ArrayBoundsChecker.v()));
-	}
-
-	if (doNullPointerCheck || doArrayBoundsCheck)
-	{
-	    Scene.v().getPack("jtp").add(new Transform("jtp.profiling", ProfilingGenerator.v()));
-	    // turn on the tag aggregator
-	    CodeAttributeGenerator.v().registerAggregator(new ArrayNullTagAggregator(true));
-	}
+				if (opt.equals("both")) 
+						{
+								doNullPointerCheck = true;
+								doArrayBoundsCheck = true;
+						} 
+				else if (opt.equals("arraybounds"))
+						{
+								doArrayBoundsCheck = true;
+						}
+				else if (opt.equals("nullpointer"))
+						{
+								doNullPointerCheck = true;
+						}
+				else if (opt.equals("LineNumber"))
+						{
+								soot.Main.keepLineNumberAttribute = true;
+								CodeAttributeGenerator.v().registerAggregator(new LineNumberTagAggregator(true));
+						}
+				else
+						System.out.println("Annotation phase \"" + opt + "\" is not valid.");
+				
+				// put null pointer check before bounds check for profiling purpose
+				if (doNullPointerCheck)
+						{
+								Scene.v().getPack("jtp").add(new Transform("jtp.npc", NullPointerChecker.v()));
+						}
+				
+				if (doArrayBoundsCheck)
+						{
+								Scene.v().getPack("wjtp2").add(new Transform("wjtp2.ra", RectangularArrayFinder.v()));
+								Scene.v().getPack("jtp").add(new Transform("jtp.abc", ArrayBoundsChecker.v()));
+						}
+	
+				if (doNullPointerCheck || doArrayBoundsCheck) {
+						Scene.v().getPack("jtp").add(new Transform("jtp.profiling", ProfilingGenerator.v()));
+						// turn on the tag aggregator
+						CodeAttributeGenerator.v().registerAggregator(new ArrayNullTagAggregator(true));
+				}
     }
 
     private static void printVersion()
     {
          // $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.12)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.13)");
             System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -622,10 +620,10 @@ public class Main implements Runnable
             System.out.println("  -p, --phase-option PHASE-NAME KEY1[:VALUE1],KEY2[:VALUE2],...,KEYn[:VALUEn]");
             System.out.println("                               set run-time option KEY to VALUE for PHASE-NAME");
             System.out.println("                               (default for VALUE is true)");
-			System.out.println("  -A  --annotation [both|nullpointer|arraybounds]");
-			System.out.println("                               turn on the annotation for null pointer and/or ");
-			System.out.println("                               array bounds check. ");
-			System.out.println("                               more options are in the document. ");
+						System.out.println("  -A  --annotation [both|nullpointer|arraybounds]");
+						System.out.println("                               turn on the annotation for null pointer and/or ");
+						System.out.println("                               array bounds check. ");
+						System.out.println("                               more options are in the document. ");
             System.out.println("");
             System.out.println("Examples:");
             System.out.println("");
@@ -638,192 +636,192 @@ public class Main implements Runnable
     private static void processCmdLine(String[] args)
         throws CompilationDeathException
     {
-		// check --new-cmdline-parser option 
+				// check --new-cmdline-parser option 
         for(int i = 0; i < args.length; i++) {
             String arg = args[i];
             if(arg.equals("--use-CommandLine")) {
-				processCmdLine_CommandLine(args);
-				return;
+								processCmdLine_CommandLine(args);
+								return;
             }
             if(arg.equals("--use-Getopt")) {
-				processCmdLine_Getopt(args);
-				return;
+								processCmdLine_Getopt(args);
+								return;
             }
+				}
+				processCmdLine_classic(args);
 		}
-		processCmdLine_classic(args);
-	}
 
     private static void processCmdLine_CommandLine(String[] args)
         throws CompilationDeathException
     {
         if(args.length == 0) {
-			printHelp();
-			throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
-		}
-		
-		CommandLine cl = new CommandLine(args);
+						printHelp();
+						throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
+				}
+				
+				CommandLine cl = new CommandLine(args);
+				
+				// handle --app option first
+				while (cl.contains("app")) {
+						setAppMode(true);
+				}
+				
+				// Handle all the options
+				while (cl.contains("j") || cl.contains("jimp"))
+						setTargetRep(JIMP);
+				
+				while (cl.contains("njimple"))
+						setTargetRep(NJIMPLE);
+				
+				while (cl.contains("s") || cl.contains("jasmin"))
+						setTargetRep(JASMIN);
 
-		// handle --app option first
-		while (cl.contains("app")) {
-			setAppMode(true);
-		}
-		
-		// Handle all the options
-		while (cl.contains("j") || cl.contains("jimp"))
-			setTargetRep(JIMP);
-		
-	    while (cl.contains("njimple"))
-		   setTargetRep(NJIMPLE);
-
-	    while (cl.contains("s") || cl.contains("jasmin"))
-		    setTargetRep(JASMIN);
-
-		while (cl.contains("J") || cl.contains("jimple"))
-		    setTargetRep(JIMPLE);
-
-		while (cl.contains("B") || cl.contains("baf"))
-			setTargetRep(BAF);
-		
-		while (cl.contains("b"))
-		    setTargetRep(B);
-
-		while (cl.contains("g") || cl.contains("grimp"))
-		    setTargetRep(GRIMP);
-
-		while (cl.contains("G") || cl.contains("grimple"))
-		    setTargetRep(GRIMPLE);
-
-		while (cl.contains("c") || cl.contains("class"))
-		    setTargetRep(CLASS);
-
-		while (cl.contains("dava"))
-		    setTargetRep(DAVA);
-
-		while (cl.contains("X") || cl.contains("xml"))
-		    produceXmlOutput = true;
-
-		while (cl.contains("O") || cl.contains("optimize"))
-		    setOptimizing(true);
-
-		while (cl.contains("W") || cl.contains("whole-optimize"))
-		    setOptimizingWhole(true);
-
-		while (cl.contains("t") || cl.contains("time"))
-			setProfiling(true);
-		
-		while (cl.contains("subtract-gc"))
-			setSubstractingGC(true);
-
-		while (cl.contains("v") || cl.contains("verbose"))
-		    setVerbose(true);
-		
-		while (cl.contains("soot-class-path") 
-			   || cl.contains("soot-classpath")) {
-			Scene.v().setSootClassPath(cl.getValue());
-		}
-
-		while (cl.contains("d")) {
-			String s = cl.getValueOf("d");
-			 if (s.equals("")) {
-				 System.err.println ("Warning: -d option used without argument");
-				 System.err.println ("         Using default output directory");
-			 }
-			 outputDir = s;
-		}
-		
-		while (cl.contains("x") || cl.contains("exclude")) {
-			String s = cl.getValue();
-			if (s.equals("")) {
-				System.err.println ("Warning: exclude-package option used without argument");
-			} else {
-				addExclude(s);
-			}
-		}
-		
-		while (cl.contains("i") || cl.contains("include")) {
-			String s = cl.getValue();
-			if (s.equals("")) {
-				System.err.println ("Warning: include-package option used without argument");
-			} else {
+				while (cl.contains("J") || cl.contains("jimple"))
+						setTargetRep(JIMPLE);
+				
+				while (cl.contains("B") || cl.contains("baf"))
+						setTargetRep(BAF);
+				
+				while (cl.contains("b"))
+						setTargetRep(B);
+				
+				while (cl.contains("g") || cl.contains("grimp"))
+						setTargetRep(GRIMP);
+				
+				while (cl.contains("G") || cl.contains("grimple"))
+						setTargetRep(GRIMPLE);
+				
+				while (cl.contains("c") || cl.contains("class"))
+						setTargetRep(CLASS);
+				
+				while (cl.contains("dava"))
+						setTargetRep(DAVA);
+				
+				while (cl.contains("X") || cl.contains("xml"))
+						produceXmlOutput = true;
+				
+				while (cl.contains("O") || cl.contains("optimize"))
+						setOptimizing(true);
+				
+				while (cl.contains("W") || cl.contains("whole-optimize"))
+						setOptimizingWhole(true);
+				
+				while (cl.contains("t") || cl.contains("time"))
+						setProfiling(true);
+				
+				while (cl.contains("subtract-gc"))
+						setSubstractingGC(true);
+				
+				while (cl.contains("v") || cl.contains("verbose"))
+						setVerbose(true);
+				
+				while (cl.contains("soot-class-path") 
+							 || cl.contains("soot-classpath")) {
+						Scene.v().setSootClassPath(cl.getValue());
+				}
+				
+				while (cl.contains("d")) {
+						String s = cl.getValueOf("d");
+						if (s.equals("")) {
+								System.err.println ("Warning: -d option used without argument");
+								System.err.println ("         Using default output directory");
+						}
+						outputDir = s;
+				}
+				
+				while (cl.contains("x") || cl.contains("exclude")) {
+						String s = cl.getValue();
+						if (s.equals("")) {
+								System.err.println ("Warning: exclude-package option used without argument");
+						} else {
+								addExclude(s);
+						}
+				}
+				
+				while (cl.contains("i") || cl.contains("include")) {
+						String s = cl.getValue();
+						if (s.equals("")) {
+								System.err.println ("Warning: include-package option used without argument");
+						} else {
 				addInclude(s);
-			}
-		}
-
-		while (cl.contains("a") || cl.contains("analyze-context")) {
-		    setAnalyzingLibraries(true);
-		}
-
-	    while (cl.contains("final-rep")) {
-			String s = cl.getValueOf("final-rep");
-			if (s.equals("")) {
-				throw new CompilationDeathException(COMPILATION_ABORTED,
-													"final-rep requires an argument\n"
-													+ "valid args are: [baf|grimp|jimple]");
-			} else {
-				setFinalRep(s);
-			}
-		}
-
-	    while (cl.contains("p") || cl.contains("phase-option")) {
-			String s = cl.getValue();
-			if (s.equals("")) {
-				 System.err.println ("Warning: phase-option option used without argument");
-			} else {
-				processPhaseOptions(s);
-			}
-		}
-
-		while (cl.contains("debug"))
-		    setDebug(true);
-
-		while (cl.contains("dynamic-path")) {
-			addDynamicPath(cl.getValueOf("dynamic-path"));
-		}
-
-		while (cl.contains("dynamic-packages")) {
-			addDynamicPackage(cl.getValueOf("dynamic-packages"));
-		}
-		
-		while (cl.contains("process-path")) {
-			addProcessPath(cl.getValueOf("process-path"));                    
-		}
-
-		while (cl.contains("src-prec")) {
-			setSrcPrecedence(cl.getValueOf("src-prec"));
-		}
-
-		while (cl.contains("tag-file")) {
-			sTagFileList.add(cl.getValueOf("tag-file"));
-		}
-
-		while (cl.contains("A") || cl.contains("annotation")) {
-			setAnnotationPhases(cl.getValue());
-		}
-
-		while (cl.contains("version")) {
-		    printVersion();
-		    throw new CompilationDeathException(COMPILATION_SUCCEDED);
-		}
-		
-		while (cl.contains("h") || cl.contains("help")) {
-		    printHelp();
-		    throw new CompilationDeathException(COMPILATION_SUCCEDED);
-		}
-
-		while (cl.contains("use-Getopt") || cl.contains("use-CommandLine")
-			   || cl.contains("classic")) {
-			// already handled: ignore
-		}
-
-		cl.completeOptionsCheck();
-		
-		Iterator argIt = cl.getNonOptionArguments().iterator();
-		while (argIt.hasNext())
-			cmdLineClasses.add((String)argIt.next());
-		
+						}
+				}
+				
+				while (cl.contains("a") || cl.contains("analyze-context")) {
+						setAnalyzingLibraries(true);
+				}
+				
+				while (cl.contains("final-rep")) {
+						String s = cl.getValueOf("final-rep");
+						if (s.equals("")) {
+								throw new CompilationDeathException(COMPILATION_ABORTED,
+																										"final-rep requires an argument\n"
+																										+ "valid args are: [baf|grimp|jimple]");
+						} else {
+								setFinalRep(s);
+						}
+				}
+				
+				while (cl.contains("p") || cl.contains("phase-option")) {
+						String s = cl.getValue();
+						if (s.equals("")) {
+								System.err.println ("Warning: phase-option option used without argument");
+						} else {
+								processPhaseOptions(s);
+						}
+				}
+				
+				while (cl.contains("debug"))
+						setDebug(true);
+				
+				while (cl.contains("dynamic-path")) {
+						addDynamicPath(cl.getValueOf("dynamic-path"));
+				}
+				
+				while (cl.contains("dynamic-packages")) {
+						addDynamicPackage(cl.getValueOf("dynamic-packages"));
+				}
+				
+				while (cl.contains("process-path")) {
+						addProcessPath(cl.getValueOf("process-path"));                    
+				}
+				
+				while (cl.contains("src-prec")) {
+						setSrcPrecedence(cl.getValueOf("src-prec"));
+				}
+				
+				while (cl.contains("tag-file")) {
+						sTagFileList.add(cl.getValueOf("tag-file"));
+				}
+				
+				while (cl.contains("A") || cl.contains("annotation")) {
+						setAnnotationPhases(cl.getValue());
+				}
+				
+				while (cl.contains("version")) {
+						printVersion();
+						throw new CompilationDeathException(COMPILATION_SUCCEDED);
+				}
+				
+				while (cl.contains("h") || cl.contains("help")) {
+						printHelp();
+						throw new CompilationDeathException(COMPILATION_SUCCEDED);
+				}
+				
+				while (cl.contains("use-Getopt") || cl.contains("use-CommandLine")
+							 || cl.contains("classic")) {
+						// already handled: ignore
+				}
+				
+				cl.completeOptionsCheck();
+				
+				Iterator argIt = cl.getNonOptionArguments().iterator();
+				while (argIt.hasNext())
+						cmdLineClasses.add((String)argIt.next());
+				
         postCmdLineCheck();
     }
-
+		
 
     private static void processCmdLine_Getopt(String[] args)
         throws CompilationDeathException
@@ -1220,43 +1218,43 @@ public class Main implements Runnable
 
     private static void exitCompilation(int status, String msg)
     {
-	Scene.v().reset();
+				Scene.v().reset();
         Iterator it = compilationListeners.iterator();
-	while(it.hasNext()) 
-	    ((ICompilationListener)it.next()).compilationTerminated(status, msg);
-	    
-	    
+				while(it.hasNext()) 
+						((ICompilationListener)it.next()).compilationTerminated(status, msg);
+				
+				
     }
 
-	// called by the new command-line parser
-	private static void processPhaseOptions(String phaseOptions) {
-		int idx = phaseOptions.indexOf(':');
-		if (idx == -1) {
-			throw new CompilationDeathException(COMPILATION_ABORTED,
-												"Invalid phase option: " 
-												+ phaseOptions);
+		// called by the new command-line parser
+		private static void processPhaseOptions(String phaseOptions) {
+				int idx = phaseOptions.indexOf(':');
+				if (idx == -1) {
+						throw new CompilationDeathException(COMPILATION_ABORTED,
+																								"Invalid phase option: " 
+																								+ phaseOptions);
+				}
+				String phaseName = phaseOptions.substring(0, idx);		
+				StringTokenizer st = new StringTokenizer(phaseOptions.substring(idx+1), ",");
+				while (st.hasMoreTokens()) {
+						processPhaseOption(phaseName, st.nextToken(), '=');
+				}
 		}
-		String phaseName = phaseOptions.substring(0, idx);		
-		StringTokenizer st = new StringTokenizer(phaseOptions.substring(idx+1), ",");
-		while (st.hasMoreTokens()) {
-			processPhaseOption(phaseName, st.nextToken(), '=');
-		}
-    }
 	
-	// called by the "classic" command-line parser
+		// called by the "classic" command-line parser
     private static void processPhaseOptions(String phaseName, String option) {
-		StringTokenizer st = new StringTokenizer(option, ",");
-		while (st.hasMoreTokens()) {
-			processPhaseOption(phaseName, st.nextToken(), ':');
-		}
+				StringTokenizer st = new StringTokenizer(option, ",");
+				while (st.hasMoreTokens()) {
+						processPhaseOption(phaseName, st.nextToken(), ':');
+				}
     }
-
+		
     private static void processPhaseOption(String phaseName, String option,
-										   char delimiter)
+																					 char delimiter)
     {
         int delimLoc = option.indexOf(delimiter);
         String key = null, value = null;
-	
+				
         if (delimLoc == -1)
             {
                 key = option;
@@ -1364,7 +1362,7 @@ public class Main implements Runnable
         rn.add("synchronized");
         rn.add("transient");
         rn.add("volatile");
-	rn.add("interface");
+				rn.add("interface");
         rn.add("void");
         rn.add("short");
         rn.add("int");
@@ -1383,7 +1381,7 @@ public class Main implements Runnable
         rn.add("throws");
         rn.add("null");
         rn.add("from");
-	    rn.add("to");
+				rn.add("to");
     }
 
     /** 
@@ -1398,6 +1396,7 @@ public class Main implements Runnable
         start = new Date();
 
         try {
+
         totalTimer.start();
         cmdLineClasses = new HashChain();
         initApp();
@@ -1413,7 +1412,7 @@ public class Main implements Runnable
                 String name = (String) it.next();
                 SootClass c;
                             
-                c = Scene.v().loadClassAndSupport(name);                                                  
+                c = Scene.v().loadClassAndSupport(name);
                 
                 if(mainClass == null)
                 {
@@ -1432,8 +1431,7 @@ public class Main implements Runnable
             it = dynamicClasses.iterator();
                 
             while(it.hasNext())
-                Scene.v().loadClassAndSupport((String) it.next());                 
-
+                Scene.v().loadClassAndSupport((String) it.next());
             it = processClasses.iterator();
             
             while(it.hasNext())
@@ -1500,95 +1498,95 @@ public class Main implements Runnable
 
 
 
-	// read in the tag files
-	Iterator it = sTagFileList.iterator();
-	while(it.hasNext()) { 
-	    try {
-		File f = new File((String)it.next());
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-		
-		for(String line = reader.readLine(); line  !=  null;  line = reader.readLine()) {
-		    if(line.startsWith("<") ) {
-			String signature = line.substring(0,line.indexOf('+'));
-			int offset = Integer.parseInt(line.substring(line.indexOf('+') + 1, line.indexOf('/')));
-		
-			String name = line.substring(line.indexOf('/')+1, line.lastIndexOf(':'));
-			String value = line.substring(line.lastIndexOf(':')+1);
-	       
-			//System.out.println(signature + "+" + offset + "/" + name + ":" + value);		       
-			SootMethod m = Scene.v().getMethod(signature);
-			
-			JimpleBody body = (JimpleBody) m.retrieveActiveBody();
-			List unitList = new ArrayList(body.getUnits());
-			Unit u = (Unit) unitList.get(offset);
+				// read in the tag files
+				Iterator it = sTagFileList.iterator();
+				while(it.hasNext()) { 
+						try {
+								File f = new File((String)it.next());
+								BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+								
+								for(String line = reader.readLine(); line  !=  null;  line = reader.readLine()) {
+										if(line.startsWith("<") ) {
+												String signature = line.substring(0,line.indexOf('+'));
+												int offset = Integer.parseInt(line.substring(line.indexOf('+') + 1, line.indexOf('/')));
+												
+												String name = line.substring(line.indexOf('/')+1, line.lastIndexOf(':'));
+												String value = line.substring(line.lastIndexOf(':')+1);
+												
+												//System.out.println(signature + "+" + offset + "/" + name + ":" + value);		       
+												SootMethod m = Scene.v().getMethod(signature);
+												
+												JimpleBody body = (JimpleBody) m.retrieveActiveBody();
+												List unitList = new ArrayList(body.getUnits());
+												Unit u = (Unit) unitList.get(offset);
+												
+												
+												if(Long.valueOf(value) == null)
+														System.out.println(value);
+												
+												
+										}
+								}				
+						} catch (IOException e) {
+								
+						}
+				}
+				
+				
 
-			
-			if(Long.valueOf(value) == null)
-			    System.out.println(value);
-
-			
-		    }
-		}				
-	    } catch (IOException e) {
-		
-	    }
-	}
-
-
-
-    // Run the whole-program packs.
+				// Run the whole-program packs.
         Scene.v().getPack("wjtp").apply();
         if(isOptimizingWhole)
             Scene.v().getPack("wjop").apply();
+				
+				// Give one more chance
+				Scene.v().getPack("wjtp2").apply();
+				
+				// System.gc();
 
-    // Give one more chance
-    	Scene.v().getPack("wjtp2").apply();
-	
-    // System.gc();
-
-    // Handle each class individually
-    {
-        Iterator classIt = Scene.v().getApplicationClasses().iterator();
-
-        while(classIt.hasNext())
-        {
-            SootClass s = (SootClass) classIt.next();
-                
-            System.out.print("Transforming " + s.getName() + "... " );
-            System.out.flush();
-            
-            if(!isInDebugMode)
-            {
-		try 
-                {
-		    handleClass(s);
-		}
-		catch(RuntimeException e)
-                {
-		    e.printStackTrace();
-		}
-	    }
-	    else {
-		handleClass(s);
-	    }
-                
-	    System.out.println();
-	}
-    }
-    
-    totalTimer.end();            
-
-    // Print out time stats.
-
-    if(isProfilingOptimization)
-        printProfilingInformation();
+				// Handle each class individually
+				{
+						Iterator classIt = Scene.v().getApplicationClasses().iterator();
+						
+						while(classIt.hasNext())
+								{
+										SootClass s = (SootClass) classIt.next();
+										
+										System.out.print("Transforming " + s.getName() + "... " );
+										System.out.flush();
+										
+										if(!isInDebugMode)
+												{
+														try 
+																{
+																		handleClass(s);
+																}
+														catch(RuntimeException e)
+																{
+																		e.printStackTrace();
+																}
+												}
+										else {
+												handleClass(s);
+										}
+										
+										System.out.println();
+								}
+				}
+				
+				totalTimer.end();            
+				
+				// Print out time stats.
+				
+				if(isProfilingOptimization)
+						printProfilingInformation();
         
-    } catch (CompilationDeathException e) {
+				} catch (CompilationDeathException e) {
             totalTimer.end();            
             exitCompilation(e.getStatus(), e.getMessage());
             return;
         }   
-
+				
         finish = new Date();
         System.out.println("Soot finished on "+finish);
         long runtime = finish.getTime() - start.getTime();

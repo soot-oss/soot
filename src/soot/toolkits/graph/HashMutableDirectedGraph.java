@@ -38,33 +38,14 @@ import soot.util.*;
  *   HashMap based implementation of a MutableBlockGraph.
  */
 
-public class HashMutableDirectedGraph implements MutableDirectedGraph
-{
-    class NodePair
-    {
-        Object car, cdr;
+public class HashMutableDirectedGraph implements MutableDirectedGraph {
+		
 
-        NodePair(Object car, Object cdr) { this.car = car; this.cdr = cdr; }
-        public int hashCode() { return car.hashCode() * 101 + cdr.hashCode() + 17; }
-        public boolean equals(Object o)
-        {
-            if (!(o instanceof NodePair))
-                return false;
+    protected HashMap nodeToPreds = new HashMap();
+    protected HashMap nodeToSuccs = new HashMap();
 
-            NodePair n = (NodePair)o;
-            if (n.car.equals(car) && n.cdr.equals(cdr))
-                return true;
-            return false;
-        }
-    }
-
-    private HashMap nodeToPreds = new HashMap();
-    private HashMap nodeToSuccs = new HashMap();
-    private HashSet edgePairs = new HashSet();
-    private Chain nodes = new HashChain();
-
-    private Chain heads = new HashChain();
-    private Chain tails = new HashChain();
+    protected Chain heads = new HashChain();
+    protected Chain tails = new HashChain();
 
     public HashMutableDirectedGraph()
     {
@@ -74,8 +55,6 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
     public void clearAll() {
         nodeToPreds = new HashMap();
         nodeToSuccs = new HashMap();
-        edgePairs = new HashSet();
-        nodes = new HashChain();
         heads = new HashChain();
         tails = new HashChain();
     }
@@ -84,8 +63,6 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
         HashMutableDirectedGraph g = new HashMutableDirectedGraph();
         g.nodeToPreds = (HashMap)nodeToPreds.clone();
         g.nodeToSuccs = (HashMap)nodeToSuccs.clone();
-        g.edgePairs = new HashSet(edgePairs);
-        g.nodes = HashChain.listToHashChain(HashChain.toList(nodes));
         g.heads = HashChain.listToHashChain(HashChain.toList(heads));
         g.tails = HashChain.listToHashChain(HashChain.toList(tails));
         return g;
@@ -125,18 +102,18 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
 
     public int size()
     {
-        return nodes.size();
+        return nodeToPreds.keySet().size();
     }
 
     public Iterator iterator()
     {
-        return nodes.iterator();
+        return nodeToPreds.keySet().iterator();
     }
 
     public void addEdge(Object from, Object to)
     {
         if (from == null || to == null)
-	    throw new RuntimeException("edge from or to null");
+						throw new RuntimeException("edge from or to null");
 
         if (containsEdge(from, to))
             return;
@@ -157,8 +134,6 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
 
         succsList.add(to);
         predsList.add(from);
-
-        edgePairs.add(new NodePair(from, to));
     }
 
     public void removeEdge(Object from, Object to)
@@ -182,32 +157,35 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
 
         if (predsList.isEmpty())
             heads.add(to);
-
-        edgePairs.remove(new NodePair(from, to));
     }
 
     public boolean containsEdge(Object from, Object to)
     {
-        return edgePairs.contains(new NodePair(from, to));
+				List succs = (List)nodeToSuccs.get(from);
+				if (succs == null)
+						return false;
+        return succs.contains(to);
     }
 
     public boolean containsNode(Object node)
     {
-        return nodes.contains(node);
+        return nodeToPreds.keySet().contains(node);
     }
 
     public List getNodes()
     {
-        ArrayList l = new ArrayList(); l.addAll(nodes);
-        return Collections.unmodifiableList(l);        
+        return Arrays.asList(nodeToPreds.keySet().toArray());
     }
 
     public void addNode(Object node)
     {
-        nodes.add(node);
-        nodeToSuccs.put(node, new ArrayList());
+				if (containsNode(node))
+						throw new RuntimeException("Node already in graph");
+				
+				nodeToSuccs.put(node, new ArrayList());
         nodeToPreds.put(node, new ArrayList());
-        heads.add(node); tails.add(node);
+        heads.add(node); 
+				tails.add(node);
     }
 
     public void removeNode(Object node)
@@ -216,11 +194,11 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
         for (Iterator succsIt = succs.iterator(); succsIt.hasNext(); )
             removeEdge(node, succsIt.next());
         nodeToSuccs.remove(node);
+
         List preds = (List)((ArrayList)nodeToPreds.get(node)).clone();
         for (Iterator predsIt = preds.iterator(); predsIt.hasNext(); )
             removeEdge(predsIt.next(), node);
         nodeToPreds.remove(node);
-        nodes.remove(node);
 
         if (heads.contains(node))
             heads.remove(node); 
