@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
+ * Copyright (C) 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,37 +44,37 @@ public class TransitiveTargets
         if( filter != null ) it = filter.wrap( it );
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
-            methods.add( e.tgt() );
+            methods.add( e.getTgt() );
         }
         return iterator( methods.iterator() );
     }
-    public Iterator iterator( SootMethod method ) {
+    public Iterator iterator( MethodOrMethodContext momc ) {
         ArrayList methods = new ArrayList();
-        Iterator it = cg.edgesOutOf( method );
+        Iterator it = cg.edgesOutOf( momc );
         if( filter != null ) it = filter.wrap( it );
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
-            methods.add( e.tgt() );
+            methods.add( e.getTgt() );
         }
         return iterator( methods.iterator() );
     }
     public Iterator iterator( Iterator methods ) {
-        NumberedSet s = new NumberedSet( Scene.v().getMethodNumberer() );
+        Set s = new HashSet();
         ArrayList worklist = new ArrayList();
         while( methods.hasNext() ) {
-            SootMethod method = (SootMethod) methods.next();
+            MethodOrMethodContext method = (MethodOrMethodContext) methods.next();
             if( s.add( method ) ) worklist.add( method );
         }
         return iterator( s, worklist );
     }
-    private Iterator iterator( NumberedSet s, ArrayList worklist ) {
+    private Iterator iterator( Set s, ArrayList worklist ) {
         for( int i = 0; i < worklist.size(); i++ ) {
-            SootMethod method = (SootMethod) worklist.get(i);
+            MethodOrMethodContext method = (MethodOrMethodContext) worklist.get(i);
             Iterator it = cg.edgesOutOf( method );
             if( filter != null ) it = filter.wrap( it );
             while( it.hasNext() ) {
                 Edge e = (Edge) it.next();
-                if( s.add( e.tgt() ) ) worklist.add( e.tgt() );
+                if( s.add( e.getTgt() ) ) worklist.add( e.getTgt() );
             }
         }
         return worklist.iterator();
