@@ -984,6 +984,12 @@ public class AntTask extends MatchingTask {
             addArg("trim-clinit:"+(arg?"true":"false"));
           }
       
+          public void setjdkver(String arg) {
+            addArg("-p");
+            addArg("cg");
+            addArg("jdkver:"+arg);
+          }
+      
           public void setcontext(String arg) {
             addArg("-p");
             addArg("cg");

@@ -20,45 +20,67 @@
 package soot.jimple.toolkits.pointer.representations;
 
 import soot.*;
+import soot.options.*;
 import soot.jimple.*;
 
 public class TypeConstants {
-    public TypeConstants( Singletons.Global g ) {}
     public static TypeConstants v() { return G.v().soot_jimple_toolkits_pointer_representations_TypeConstants(); }
   
-  public Type OBJECTCLASS = 
-    RefType.v("java.lang.Object");
+  public Type OBJECTCLASS; 
+  public Type STRINGCLASS;
+  public Type CLASSLOADERCLASS;
+  public Type PROCESSCLASS;
+  public Type THREADCLASS;
+  public Type CLASSCLASS;
+  public Type LEASTCLASS;
+  public Type FIELDCLASS; 
+  public Type METHODCLASS;
+  public Type CONSTRUCTORCLASS;
+  public Type FILESYSTEMCLASS;
+  public Type PRIVILEGEDACTIONEXCEPTION;
 
-  public Type STRINGCLASS =
-    RefType.v("java.lang.String");
+    public TypeConstants( Singletons.Global g ) {
+        int jdkver = 
+            new CGOptions(PhaseOptions.v().getPhaseOptions("cg")).jdkver();
 
-  public Type CLASSLOADERCLASS =
-    AnySubType.v( RefType.v("java.lang.ClassLoader") );
-  
-  public Type PROCESSCLASS =
-    AnySubType.v( RefType.v("java.lang.Process") );
+        OBJECTCLASS = 
+        RefType.v("java.lang.Object");
 
-  public Type THREADCLASS =
-    AnySubType.v( RefType.v( "java.lang.Thread"));
+        STRINGCLASS =
+        RefType.v("java.lang.String");
 
-  public Type CLASSCLASS =
-    RefType.v("java.lang.Class");
+        CLASSLOADERCLASS =
+        AnySubType.v( RefType.v("java.lang.ClassLoader") );
 
-  public Type LEASTCLASS =
-    AnySubType.v( RefType.v( "java.lang.Object" ) );
-  
-  public Type FIELDCLASS = 
-    RefType.v("java.lang.reflect.Field");
+        PROCESSCLASS =
+        AnySubType.v( RefType.v("java.lang.Process") );
 
-  public Type METHODCLASS =
-    RefType.v("java.lang.reflect.Method");
-  
-  public Type CONSTRUCTORCLASS =
-    RefType.v("java.lang.reflect.Constructor");
+        THREADCLASS =
+        AnySubType.v( RefType.v( "java.lang.Thread"));
 
-  public Type FILESYSTEMCLASS =
-    AnySubType.v( RefType.v("java.io.FileSystem") );
+        CLASSCLASS =
+        RefType.v("java.lang.Class");
 
-  public Type PRIVILEGEDACTIONEXCEPTION =
-    AnySubType.v( RefType.v("java.security.PrivilegedActionException") );
+        LEASTCLASS =
+        AnySubType.v( RefType.v( "java.lang.Object" ) );
+
+        FIELDCLASS = 
+        RefType.v("java.lang.reflect.Field");
+
+        METHODCLASS =
+        RefType.v("java.lang.reflect.Method");
+
+        CONSTRUCTORCLASS =
+        RefType.v("java.lang.reflect.Constructor");
+
+        if(jdkver >= 2) {
+            FILESYSTEMCLASS =
+            AnySubType.v( RefType.v("java.io.FileSystem") );
+        }
+
+        if(jdkver >= 2) {
+            PRIVILEGEDACTIONEXCEPTION =
+            AnySubType.v( RefType.v("java.security.PrivilegedActionException") );
+        }
+    }
 }

@@ -129,6 +129,19 @@ public class CGOptions
         return soot.PhaseOptions.getBoolean( options, "trim-clinit" );
     }
     
+    /** JDK version --
+    
+     * JDK version for native methods.
+    
+     * This option sets the JDK version of the standard library being 
+     * analyzed so that Soot can simulate the native methods in the 
+     * specific version of the library. The default, 3, refers to Java 
+     * 1.3.x.
+     */
+    public int jdkver() {
+        return soot.PhaseOptions.getInt( options, "jdkver" );
+    }
+    
     /** Context length (k) --
     
      * .

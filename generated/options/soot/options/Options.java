@@ -1436,6 +1436,7 @@ public class Options extends OptionsBase {
                 +padOpt( "safe-forname (false)", "Handle Class.forName() calls conservatively" )
                 +padOpt( "safe-newinstance (false)", "Handle Class.newInstance() calls conservatively" )
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" )
+                +padOpt( "jdkver (3)", "JDK version for native methods" )
                 +padOpt( "all-reachable (false)", "Assume all methods of application classes are reachable." )
                 +padOpt( "trim-clinit (true)", "Removes redundant static initializer calls" )
                 +padOpt( "context", "Select context-sensitivity level" )
@@ -2240,6 +2241,7 @@ public class Options extends OptionsBase {
                 +"safe-forname "
                 +"safe-newinstance "
                 +"verbose "
+                +"jdkver "
                 +"all-reachable "
                 +"trim-clinit "
                 +"context "
@@ -2768,6 +2770,7 @@ public class Options extends OptionsBase {
               +"safe-forname:false "
               +"safe-newinstance:false "
               +"verbose:false "
+              +"jdkver:3 "
               +"all-reachable:false "
               +"trim-clinit:true "
               +"context:insens "

@@ -1387,6 +1387,13 @@ are assumed not to call the constructor of the created object.
                                         <long_desc>Due to the effects of native methods and reflection, it may not always be possible to construct a fully conservative call graph. Setting this option to true causes Soot to point out the parts of the call graph that may be incomplete, so that they can be checked by hand.
                                         </long_desc>
                                 </boolopt>
+                                <intopt>
+                                    <name>JDK version</name>
+                                    <alias>jdkver</alias>
+                                    <default>3</default>
+                                    <short_desc>JDK version for native methods</short_desc>
+                                    <long_desc>This option sets the JDK version of the standard library being analyzed so that Soot can simulate the native methods in the specific version of the library. The default, 3, refers to Java 1.3.x.</long_desc>
+                                </intopt>
                                 <boolopt>
                                         <name>All Application Class Methods Reachable</name>
                                         <alias>all-reachable</alias>
