@@ -24,7 +24,7 @@
  */
 
 
-package soot.jimple;
+package soot;
 
 import soot.tagkit.*;
 import soot.*;
@@ -124,8 +124,8 @@ public class DefaultStmtPrinter implements StmtPrinter
                                unitGraph.getPredsOf(currentStmt).size() != 1 ||
                                stmtToName.containsKey(currentStmt)) {
                                 out.println();
-				if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
-                            		body.getMethod().getDeclaringClass().incJimpleLnNum();
+				if (Printer.v().isAddJimpleLn()) {
+                            		Printer.v().incJimpleLnNum();
 				}
 			    }
                             else {
@@ -135,8 +135,8 @@ public class DefaultStmtPrinter implements StmtPrinter
                                 
                                 if(succs.get(0) != currentStmt) {
                                     out.println();
-				    if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
-					body.getMethod().getDeclaringClass().incJimpleLnNum();
+				    if (Printer.v().isAddJimpleLn()) {
+					Printer.v().incJimpleLnNum();
 				    }
 				    
 				}
@@ -145,8 +145,8 @@ public class DefaultStmtPrinter implements StmtPrinter
                     
                      if(stmtToName.containsKey(currentStmt)) {
                          out.println("     " + stmtToName.get(currentStmt) + ":");
-			 if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
-				body.getMethod().getDeclaringClass().incJimpleLnNum();
+			 if (Printer.v().isAddJimpleLn()) {
+				Printer.v().incJimpleLnNum();
 			 }
 			 
 		     }
@@ -161,13 +161,13 @@ public class DefaultStmtPrinter implements StmtPrinter
 	
 		out.print(";"); 
 		out.println();
-		if (body.getMethod().getDeclaringClass().isAddJimpleLn()) { 
-			body.getMethod().getDeclaringClass().setJimpleLnNum(addJimpleLnTags(body.getMethod().getDeclaringClass().getJimpleLnNum(), currentStmt));
+		if (Printer.v().isAddJimpleLn()) { 
+			Printer.v().setJimpleLnNum(addJimpleLnTags(Printer.v().getJimpleLnNum(), currentStmt));
 	        }
 		
 		// only print them if not generating attributes files 
 		// because they mess up line number
-		if (!body.getMethod().getDeclaringClass().isAddJimpleLn()){
+		if (!Printer.v().isAddJimpleLn()){
 		Iterator tagIterator = currentStmt.getTags().iterator();
 		while(tagIterator.hasNext()) {
 		    Tag t = (Tag) tagIterator.next();		   		    
@@ -182,8 +182,8 @@ public class DefaultStmtPrinter implements StmtPrinter
 
             if(trapIt.hasNext()) {
                 out.println();
-		if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
-	  		body.getMethod().getDeclaringClass().incJimpleLnNum();
+		if (Printer.v().isAddJimpleLn()) {
+	  		Printer.v().incJimpleLnNum();
 		}
 	    }
 
@@ -195,8 +195,8 @@ public class DefaultStmtPrinter implements StmtPrinter
                     stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
                     " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
 		
-		if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
-			body.getMethod().getDeclaringClass().incJimpleLnNum();
+		if (Printer.v().isAddJimpleLn()) {
+			Printer.v().incJimpleLnNum();
 		}
 						
             }

@@ -23,7 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple;
+package soot;
 
 import soot.tagkit.*;
 import soot.*;
@@ -92,8 +92,8 @@ public class DefaultLocalPrinter implements LocalPrinter
                     }
 
                     out.println(";");
-		    if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
-		    	body.getMethod().getDeclaringClass().incJimpleLnNum();
+		    if (Printer.v().isAddJimpleLn()) {
+		    	Printer.v().incJimpleLnNum();
 		    }
                 }
             }
@@ -101,8 +101,8 @@ public class DefaultLocalPrinter implements LocalPrinter
 
             if(!typeToLocals.isEmpty()){
                 out.println();
-		if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
-	        	body.getMethod().getDeclaringClass().incJimpleLnNum();
+		if (Printer.v().isAddJimpleLn()) {
+	        	Printer.v().incJimpleLnNum();
 		}				    
 	    }
         }

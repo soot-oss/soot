@@ -25,6 +25,7 @@
 
 package soot;
 import soot.jimple.toolkits.typing.TypeAssigner;
+import soot.xml.*;
 import soot.baf.*;
 import soot.baf.internal.*;
 import soot.baf.toolkits.base.*;
@@ -82,6 +83,12 @@ public class Singletons {
         private Global() {}
     }
     private Global g = new Global();
+
+    private Printer instancePrinter;
+    public Printer Printer() {
+        if( instancePrinter == null ) instancePrinter = new Printer( g );
+        return instancePrinter;
+    }
 
     private SlowPseudoTopologicalOrderer instanceSlowPseudoTopologicalOrderer;
     public SlowPseudoTopologicalOrderer SlowPseudoTopologicalOrderer() {

@@ -135,7 +135,6 @@ public class LoadStoreOptimizer extends BodyTransformer
             G.v().out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
 
         if(debug) { G.v().out.println("\n\nOptimizing Method: " + body.getMethod().getName());}
-        if(debug) { mBody.printTo(new java.io.PrintWriter(G.v().out, true), 0);}
         
         if(!mUnits.isEmpty()) {                    
             buildUnitToBlockMap();

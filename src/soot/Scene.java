@@ -75,8 +75,8 @@ public class Scene  //extends AbstractHost
     SootClass mainClass;
     String sootClassPath = "<external-class-path>";
 
-    StmtPrinter jimpleStmtPrinter = soot.jimple.DefaultStmtPrinter.v();
-    LocalPrinter localPrinter = soot.jimple.DefaultLocalPrinter.v();
+    StmtPrinter jimpleStmtPrinter = soot.DefaultStmtPrinter.v();
+    LocalPrinter localPrinter = soot.DefaultLocalPrinter.v();
 
     public void setMainClass(SootClass m)
     {

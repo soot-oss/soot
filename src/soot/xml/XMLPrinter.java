@@ -24,29 +24,29 @@
  */
 
 
-package soot.util;
+package soot.xml;
 
 
-/** XML helper */
-public class XMLRoot
+/** XML printing routines all XML output comes through here */
+public class XMLPrinter
 {
-	public String name = "";				// <NAME attr1="val1" attr2="val2"...>val</NAME>
-	public String value = "";				// <name attr1="val1" attr2="val2"...>VAL</name>
-	public String[] attributes = { "" };	// <name ATTR1="val1" ATTR2="val2"...>val</name>
-	public String[] values = { "" };		// <name attr1="VAL1" attr2="VAL2"...>val</name>
+	// xml and dtd header
+	public static final String xmlHeader = "<?xml version=\"1.0\" ?>\n";
+	public static final String dtdHeader = "<!DOCTYPE jil SYSTEM \"http://www.sable.mcgill.ca/~flynn/jil/jil10.dtd\">\n";
 
-	protected XMLNode child = null;			// -> to child node
+	// xml tree
+	public XMLRoot root = new XMLRoot();
 
-	XMLRoot()
-	{
-	}
-
+	// returns the buffer - this is the XML output
 	public String toString()
 	{
-		return XMLPrinter.xmlHeader + XMLPrinter.dtdHeader + this.child.toPostString();
+		if( root != null )
+			return root.toString();
+		else
+			throw new RuntimeException("Error generating XML!");
 	}
 
-	// add element to end of tree
+	// add single element <...>...</...>
 	public XMLNode addElement( String name ) 
 	{
 		return addElement( name, "", "", "" );
@@ -59,35 +59,13 @@ public class XMLRoot
 	{
 		return addElement( name, value, attributes, null );
 	}
-	public XMLNode addElement( String name, String[] attributes, String[] values )
-	{
-		return addElement( name, "", attributes, values );
-	}
 	public XMLNode addElement( String name, String value, String attribute, String attributeValue )
 	{
 		return addElement( name, value, new String[] { attribute}, new String[] { attributeValue} );
 	}
 	public XMLNode addElement( String name, String value, String[] attributes, String[] values )
 	{
-		XMLNode current= null;
-		XMLNode newnode = new XMLNode( name, value, attributes, values );
-		newnode.root = this;
-
-		if( this.child == null )
-		{
-			this.child = newnode;
-			newnode.parent = null; // root's children have NO PARENTS :(
-		}
-		else
-		{
-			current = this.child;
-			while( current.next != null )
-			{
-				current = current.next;
-			}           
-			current.next = newnode;     
-			newnode.prev = current;
-		}
-		return newnode;
-	}   
+		return root.addElement( name, value, attributes, values );
+	}                                           
 }
+

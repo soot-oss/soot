@@ -27,7 +27,7 @@
 
 
 
-package soot.jimple;
+package soot.xml;
 
 import soot.tagkit.*;
 import soot.*;
@@ -35,6 +35,10 @@ import java.util.*;
 import soot.util.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
+import soot.jimple.InvokeExpr;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.StaticInvokeExpr;
+import soot.jimple.Stmt;
 import soot.jimple.toolkits.invoke.*;
 
 /** This class implements the <code>printStatementsInBody</code> method,

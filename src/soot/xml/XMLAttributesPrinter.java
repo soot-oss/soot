@@ -1,4 +1,4 @@
-package soot;
+package soot.xml;
 import soot.*;
 
 import soot.tagkit.*;

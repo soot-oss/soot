@@ -24,9 +24,10 @@
  */
 
 package soot;
-import soot.*;
 
 import soot.util.*;
+import soot.xml.*;
+
 import java.util.*;
 import soot.jimple.*;
 import soot.grimp.*;
@@ -567,7 +568,7 @@ public class Main
 	G.v().out.print( "Generating " + fileName + "... ");
 	G.v().out.flush();
 
-        s.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+        Printer.v().printTo(s, writerOut, Printer.USE_ABBREVIATIONS);
 
 	G.v().out.println();
 	G.v().out.flush();
@@ -825,13 +826,13 @@ public class Main
 	new soot.jimple.JasminClass(c).print(writerOut);
       break;
     case Options.output_format_jimp:            
-      c.printTo(writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
+      Printer.v().printTo(c, writerOut, Printer.USE_ABBREVIATIONS);
       break;
     case Options.output_format_b:
-      c.printTo(writerOut, soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
+      Printer.v().printTo(c, writerOut, Printer.USE_ABBREVIATIONS);
       break;
     case Options.output_format_grimp:
-      c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+      Printer.v().printTo(c, writerOut, Printer.USE_ABBREVIATIONS);
       break;
     case Options.output_format_baf:
     case Options.output_format_jimple:
@@ -839,21 +840,21 @@ public class Main
       writerOut = 
 	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
       if (opts.xml_attributes()) {
-	c.printJimpleStyleTo(writerOut, PrintJimpleBodyOption.ADD_JIMPLE_LN);
+	Printer.v().printJimpleStyleTo(c, writerOut, Printer.ADD_JIMPLE_LN);
       }
       else {
-      c.printJimpleStyleTo(writerOut, 0);
+      Printer.v().printJimpleStyleTo(c, writerOut, 0);
       }
       break;
     case Options.output_format_dava:
       break;
     case Options.output_format_class:
-      c.write(opts.output_dir());
+      Printer.v().write(c, opts.output_dir());
       break;    
     case Options.output_format_xml:
       writerOut = 
 	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
-      c.printJimpleStyleTo(writerOut, PrintJimpleBodyOption.XML_OUTPUT);
+      Printer.v().printJimpleStyleTo(c, writerOut, Printer.XML_OUTPUT);
       break;
     default:
       throw new RuntimeException();

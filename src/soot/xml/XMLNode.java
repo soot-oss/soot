@@ -24,7 +24,7 @@
  */
 
 
-package soot.util;
+package soot.xml;
 
 
 /** XML helper */
