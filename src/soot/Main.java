@@ -59,7 +59,8 @@ public class Main
     static boolean isTestingPerformance;
 
     static private String targetExtension = ".class";
-    static private String xmlFile = null;
+    static private String xmlInputFile = null;
+    static private boolean produceXmlOutput = false;
 
     static public int totalFlowNodes,
            totalFlowComputations;
@@ -181,7 +182,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.61");
+            System.out.println("Soot version 1.beta.5.dev.62");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -275,7 +276,7 @@ public class Main
                     Scene.v().setLazyResolving(true);
 		else if(arg.equals("-h")) {
 		    Scene.v().setLazyResolving(true);
-		    xmlFile = args[++i];
+		    xmlInputFile = args[++i];
 		}
 		    
 		
@@ -289,7 +290,7 @@ public class Main
                 else if(arg.equals("-c") || arg.equals("--class"))
                     targetExtension = ".class";
                 else if(arg.equals("-X") || arg.equals("--xml"))
-                    targetExtension = ".xml";
+                    produceXmlOutput = true;
                 else if(arg.equals("--dava"))
                     targetExtension = ".dava";
                 else if(arg.equals("-O") || arg.equals("--optimize"))
@@ -467,10 +468,10 @@ public class Main
                     System.exit(1);
                 }
      
-		if(xmlFile != null) {
+		if(xmlInputFile != null) {
 		    try {
 			XMLParser p = new XMLParser();
-			String file = "file:///auto/gloom/export/acaps/u0/patrice/testarea/" + xmlFile;
+			String file = "file://" + new File(xmlInputFile).getCanonicalPath();
 		   
 			p.parseJimple(file);
 		    
@@ -487,7 +488,7 @@ public class Main
 			SootClass c;
 			    
 			if(!Scene.v().allowsLazyResolving()) {
-			    System.out.println("doing batch resolution");
+			    System.out.println("Doing batch resolution...");
 			    c = Scene.v().loadClassAndSupport(name);						  
 			} else { 
 			    c  = Scene.v().getSootClass(name);
@@ -580,14 +581,14 @@ public class Main
         // If creating xml file, first remove old file.
         String fileName = null;
 
-        if (targetExtension.equals(".xml")) {
+        if (produceXmlOutput) {
 
             if(!outputDir.equals(""))
                 fileName = outputDir + fileSeparator;
             else
                 fileName = "";
             
-            fileName = mainClass.getName() + targetExtension;
+            fileName = mainClass.getName() + ".xml";
 
             try {
 		
@@ -615,7 +616,7 @@ public class Main
             }
             catch (IOException e) {
 		
-                System.out.println("Couldn't write output file!");
+                System.out.println("Couldn't write XML output file!");
                 System.exit(1);
 	    }
         }
@@ -770,18 +771,12 @@ public class Main
         else
             fileName = "";
         
-        if(targetExtension.equals(".xml"))
-            fileName = mainClass.getName() + targetExtension;
-        else
-            fileName += c.getName() + targetExtension;
+        fileName += c.getName() + targetExtension;
         
         if(!targetExtension.equals(".class"))
         {   
             try {
-                if (targetExtension.equals(".xml"))
-                    streamOut = new FileOutputStream(fileName, true);
-                else
-                    streamOut = new FileOutputStream(fileName);
+                streamOut = new FileOutputStream(fileName);
                 writerOut = new EscapedPrintWriter(streamOut);
             }
             catch (IOException e)
@@ -790,7 +785,6 @@ public class Main
             }
         }
 
-        boolean produceXml = false;
         boolean produceJimple = false;
         boolean produceBaf = false;
         boolean produceGrimp = false;
@@ -809,8 +803,6 @@ public class Main
                 endResult = "dava";
             else if(targetExtension.startsWith(".baf"))
                 endResult = "baf";
-            else if(targetExtension.startsWith(".xml"))
-                endResult = "xml";
             else
                 endResult = finalRep;
         
@@ -833,10 +825,6 @@ public class Main
                 produceGrimp = true;
                 produceDava = true;
             }
-            else if (endResult.equals("xml"))
-            {
-                produceXml = true;
-            }
         }
 
         // Build all necessary bodies
@@ -854,8 +842,7 @@ public class Main
                 if(produceJimple)
                 {		
                     if(!m.hasActiveBody()) {
-			//                        m.setActiveBody(Jimple.v().newBody(m.getInputBody(), "jb"));
-			m.getInputBody(); // options jb????
+                        m.getBodyFromMethodSource("jb");
 		    }
 		    
 

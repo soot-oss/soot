@@ -52,9 +52,11 @@ public class SootMethod extends AbstractHost implements ClassMember
 
     /** Tells this method how to find out where its body lives. */
     protected MethodSource ms;
-    public Body getInputBody() 
+
+    /** uses methodSource to load the method body in question */
+    public void getBodyFromMethodSource(String phaseName)
     {
-        return ms.getInputBody(this);
+        ms.getBody(this, Scene.v().getPhaseOptions(phaseName));
     }
 
     public void setSource(MethodSource ms)
@@ -142,7 +144,7 @@ public class SootMethod extends AbstractHost implements ClassMember
     public void setPhantom(boolean value)
     {
 	System.out.println("setting is phantom" );
-	//	Thread.dumpStack();
+	//	ThreaddumpStack();
         isPhantom = value;
     }
     

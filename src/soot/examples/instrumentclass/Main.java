@@ -76,39 +76,39 @@ public class Main
             {
                 SootMethod m = (SootMethod) methodIt.next();
                 
-                JimpleBody body = Jimple.v().newBody(new ClassFileBody(m));
+//                  JimpleBody body = Jimple.v().newBody(new ClassFileBody(m));
 
-                m.setActiveBody(body);
+//                  m.setActiveBody(body);
                                                 
-                Local tmpLocal = Jimple.v().newLocal("tmp", LongType.v());
-                body.getLocals().add(tmpLocal);
+//                  Local tmpLocal = Jimple.v().newLocal("tmp", LongType.v());
+//                  body.getLocals().add(tmpLocal);
                 
-                Chain units = body.getUnits();
+//                  Chain units = body.getUnits();
 
-                List l = new ArrayList();
-                l.addAll(units);
+//                  List l = new ArrayList();
+//                  l.addAll(units);
 
-                Iterator stmtIt = l.iterator();
+//                  Iterator stmtIt = l.iterator();
                 
-                while(stmtIt.hasNext())
-                {
-                    Stmt s = (Stmt) stmtIt.next();
+//                  while(stmtIt.hasNext())
+//                  {
+//                      Stmt s = (Stmt) stmtIt.next();
                     
-                    if(s instanceof GotoStmt)
-                    {
-                        AssignStmt toAdd1 = Jimple.v().newAssignStmt(tmpLocal, 
-                                Jimple.v().newStaticFieldRef(gotoCounter));
-                        AssignStmt toAdd2 = Jimple.v().newAssignStmt(
-                                Jimple.v().newStaticFieldRef(gotoCounter), 
-                                Jimple.v().newAddExpr(tmpLocal, LongConstant.v(1L)));
+//                      if(s instanceof GotoStmt)
+//                      {
+//                          AssignStmt toAdd1 = Jimple.v().newAssignStmt(tmpLocal, 
+//                                  Jimple.v().newStaticFieldRef(gotoCounter));
+//                          AssignStmt toAdd2 = Jimple.v().newAssignStmt(
+//                                  Jimple.v().newStaticFieldRef(gotoCounter), 
+//                                  Jimple.v().newAddExpr(tmpLocal, LongConstant.v(1L)));
 
-                        // insert "tmpLocal = gotoCounter;"
-                            units.insertBefore(toAdd1, s);
+//                          // insert "tmpLocal = gotoCounter;"
+//                              units.insertBefore(toAdd1, s);
                         
-                        // insert "gotoCounter = tmpLocal + 1L;" 
-                            units.insertBefore(toAdd2, s);
-                    }
-                }
+//                          // insert "gotoCounter = tmpLocal + 1L;" 
+//                              units.insertBefore(toAdd2, s);
+//                      }
+//                  }
             }
         
         // Add code at the end of the main method to print out the 

@@ -32,6 +32,7 @@ public class StringTools
     static StringBuffer whole = new StringBuffer();
     static StringBuffer mini = new StringBuffer();
 
+    /* This is used by sootClass to generate output. */
     public static java.lang.String getEscapedStringOf(String fromString)
     {
         char[] fromStringArray;
@@ -71,6 +72,7 @@ public class StringTools
         return whole.toString();
     }
 
+    /* This one is used by StringConstant.toString() */
     public static java.lang.String getQuotedStringOf(String fromString)
     {
         StringBuffer toStringBuffer;
@@ -92,6 +94,9 @@ public class StringTools
 
             if (ch == '\"')
                 { toStringBuffer.append("\\\""); continue; }
+
+            if (ch == '\n')
+                { toStringBuffer.append("\\n"); continue; }
 
             toStringBuffer.append(ch);
         }

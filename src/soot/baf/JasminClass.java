@@ -683,9 +683,9 @@ public class JasminClass
                 emit ("monitorenter"); 
             }
             
-            public void casePopInst(PopInst inst) 
+            public void casePopInst(PopInst i) 
                 {
-                    if(inst.getWordCount() == 2) {
+                    if(i.getWordCount() == 2) {
                         emit("pop2");
                     }
                     else

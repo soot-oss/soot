@@ -26,7 +26,9 @@
 
 package soot;
 
+import java.util.*;
+
 public interface MethodSource
 {
-    public Body getInputBody(SootMethod m);
+    public void getBody(SootMethod m, Map options);
 }

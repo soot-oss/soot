@@ -434,7 +434,7 @@ public class Walker extends DepthFirstAdapter
     public void outAFullMethodBody(AFullMethodBody node)
     {
 	Object catchClause = null;
-	JimpleBody jBody = new JimpleBody();
+	JimpleBody jBody = Jimple.v().newBody();
 		
 	if(node.getCatchClause() != null) {
 	    int size = node.getCatchClause().size();

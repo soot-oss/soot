@@ -814,25 +814,28 @@ public class Jimple
         return new JimpleBody(m);
     }
 
-    /** Returns a JimpleBody constructed from b. */
-    public JimpleBody newBody(Body b)
+    /** Returns an empty JimpleBody with no associated method. */
+    public JimpleBody newBody()
     {
-        return new JimpleBody(b, new HashMap());
+        return new JimpleBody();
     }
 
-
-
+    /** Returns a JimpleBody constructed from b. */
+//      public JimpleBody newBody(Body b)
+//      {
+//          return new JimpleBody(b, new HashMap());
+//      }
 
     /** Returns a JimpleBody constructed from b. */
-    public JimpleBody newBody(Body b, String phase)
-    {
-        Map options = Scene.v().computePhaseOptions(phase, "");
-	if(b instanceof JimpleBody) {
-	    ((JimpleBody)b).applyPhaseOptions(options);
-	    return (JimpleBody) b;
-	}
-        return new JimpleBody(b, options);
-    }
+//      public JimpleBody newBody(Body b, String phase)
+//      {
+//          Map options = Scene.v().computePhaseOptions(phase, "");
+//  	if(b instanceof JimpleBody) {
+//  	    ((JimpleBody)b).applyPhaseOptions(options);
+//  	    return (JimpleBody) b;
+//  	}
+//          return new JimpleBody(b, options);
+//      }
 
     /*
      public JimpleBody newBody(JimpleBody b, String phase)
@@ -846,9 +849,9 @@ public class Jimple
    
 
     /** Returns a JimpleBody constructed from b. */
-    public JimpleBody newBody(Body b, String phase, String optionsString)
-    {
-        Map options = Scene.v().computePhaseOptions(phase, optionsString);
-        return new JimpleBody(b, options);
-    }
+//      public JimpleBody newBody(Body b, String phase, String optionsString)
+//      {
+//          Map options = Scene.v().computePhaseOptions(phase, optionsString);
+//          return new JimpleBody(b, options);
+//      }
 }

@@ -164,7 +164,7 @@ public class Aggregator extends BodyTransformer
           boolean propagatingInvokeExpr = false;
           boolean propagatingFieldRef = false;
           boolean propagatingArrayRef = false;
-          FieldRef fieldRef = null;
+          ArrayList fieldRefList = new ArrayList();
       
           Value rhs = ((AssignStmt)s).getRightOp();
           LinkedList localsUsed = new LinkedList();
@@ -181,7 +181,7 @@ public class Aggregator extends BodyTransformer
                 else if(v instanceof FieldRef)
                 {
                     propagatingFieldRef = true;
-                    fieldRef = (FieldRef) v;
+                    fieldRefList.add(v);
                 }
             }
           
@@ -230,12 +230,17 @@ public class Aggregator extends BodyTransformer
                               {
                                   // Can't aggregate a field access if passing a definition of a field 
                                   // with the same name, because they might be aliased
-                            
-                                  if(((FieldRef) v).getField() == fieldRef.getField())
+
+                                  Iterator frIt = fieldRefList.iterator();
+                                  while (frIt.hasNext())
                                   {
-                                      cantAggr = true;
-                                      break;
-                                  } 
+                                      FieldRef fieldRef = (FieldRef) frIt.next();
+                                      if(((FieldRef) v).getField() == fieldRef.getField())
+                                      {
+                                          cantAggr = true;
+                                          break;
+                                      } 
+                                  }
                               } 
                            }
                            else if(v instanceof ArrayRef)

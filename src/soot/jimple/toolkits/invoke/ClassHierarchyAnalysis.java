@@ -62,7 +62,7 @@ public class ClassHierarchyAnalysis
                     continue;
                     
                 if (!m.hasActiveBody())
-                    m.setActiveBody(Jimple.v().newBody(new ClassFileBody(m), "cha.jb"));
+                    m.getBodyFromMethodSource("cha.jb");
 
                 Iterator unitsIt = m.getActiveBody().getUnits().iterator();
                 while (unitsIt.hasNext())

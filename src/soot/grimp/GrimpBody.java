@@ -75,12 +75,10 @@ public class GrimpBody extends StmtBody
         
         JimpleBody jBody = null;
 
-        if(body instanceof ClassFileBody)
-            jBody = Jimple.v().newBody(body, "gb.jb");
-        else if (body instanceof JimpleBody)
+        if (body instanceof JimpleBody)
             jBody = (JimpleBody)body;
         else
-            throw new RuntimeException("Can only construct GrimpBody's from ClassFileBody's or JimpleBody's (for now)");
+            throw new RuntimeException("Can only construct GrimpBody's from JimpleBody's (for now)");
 
         Iterator it = jBody.getLocals().iterator();
         while (it.hasNext())

@@ -27,6 +27,7 @@
 package soot;
 import soot.coffi.*;
 import soot.util.*;
+import java.util.*;
 import java.io.*;
 import soot.jimple.parser.*;
 
@@ -37,19 +38,24 @@ public class JimpleMethodSource implements MethodSource
     {
     }
 
-    public Body getInputBody(SootMethod m)
+    public void getBody(SootMethod m, Map options)
     {  
+        // we ignore options here.
+        // actually we should have default option verbatim,
+        // and apply phase options.
+        // in fact we probably want to allow different
+        // phase options depending on app vs. lib.
+
 	InputStream classFileStream;
 
 	try {
-	    classFileStream = SourceLocator.getInputStreamOf(m.getDeclaringClass().toString());
+	    classFileStream = SourceLocator.getInputStreamOf(Scene.v().getSootClassPath(), m.getDeclaringClass().toString());
 	} 
 	catch(ClassNotFoundException e) {
 	    throw new RuntimeException("Can't find jimple file: " + e);		    
 	}
 		
-	Parse.parse(classFileStream,  m.getDeclaringClass());		
-	return m.getActiveBody();	
+	Parse.parse(classFileStream,  m.getDeclaringClass());
     }
 }
 

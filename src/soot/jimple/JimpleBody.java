@@ -42,13 +42,29 @@ public class JimpleBody extends StmtBody
         Construct an empty JimpleBody 
      **/
     
-    public JimpleBody(SootMethod m)
+    JimpleBody(SootMethod m)
     {
         super(m);
     }
-    public JimpleBody() 
+
+    /**
+       Construct an extremely empty JimpleBody, for parsing into.
+    **/
+
+    JimpleBody() 
     {
     }
+
+    /**
+        Constructs a JimpleBody from the given Body.
+     */  
+    
+//      public JimpleBody(Body body, Map options)
+//      {
+//          super(body.getMethod());
+
+//          applyPhaseOptions(options);
+//      }
 
     /** Clones the current body, making deep copies of the contents. */
 
@@ -59,13 +75,6 @@ public class JimpleBody extends StmtBody
         return b;
     }
 
-    /**
-        Constructs a JimpleBody from the given Body.
-     */
-
-
-  
-    
     public void applyPhaseOptions(Map options) 
     { 
 	boolean noSplitting = Options.getBoolean(options, "no-splitting");
@@ -77,7 +86,11 @@ public class JimpleBody extends StmtBody
         boolean noCopyPropagating = Options.getBoolean(options, "no-cp");
         
         boolean noNopElimination = Options.getBoolean(options, "no-nop-elimination");
-        
+
+        boolean verbatim = Options.getBoolean(options, "verbatim");
+
+        if (verbatim)
+            return;
 
 	if(!noSplitting)
         {
@@ -153,78 +166,6 @@ public class JimpleBody extends StmtBody
         if(soot.Main.isProfilingOptimization)
             soot.Main.stmtCount += getUnits().size();
     }
-
-
-    public JimpleBody(Body body, Map options)
-    {
-        super(body.getMethod());
-
-        ClassFileBody fileBody;
-	
-	boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
-
-        if(useOriginalNames)
-            soot.coffi.Util.setFaithfulNaming(true);
-            
-        if(body instanceof ClassFileBody)
-            fileBody = (ClassFileBody) body;
-        else
-            throw new RuntimeException("Can only construct JimpleBody's directly from ClassFileBody's (for now)");
-
-        soot.coffi.ClassFile coffiClass = fileBody.coffiClass;
-        soot.coffi.method_info coffiMethod = fileBody.coffiMethod;
-
-        /*
-            I need to set these to null to free Coffi structures.
-        fileBody.coffiClass = null;
-        bafBody.coffiMethod = null;
-
-        */
-        if(Main.isVerbose)
-            System.out.println("[" + getMethod().getName() + "] Constructing JimpleBody...");
-
-        if(getMethod().isAbstract() || getMethod().isNative() || getMethod().isPhantom())
-            return;
-            
-        if(Main.isProfilingOptimization)
-            Main.conversionTimer.start();
-
-        if (coffiMethod == null)
-            System.out.println(body.getMethod());
-        if(coffiMethod.instructions == null)
-        {
-            if(Main.isVerbose)
-                System.out.println("[" + getMethod().getName() +
-                    "]     Parsing Coffi instructions...");
-
-             coffiClass.parseMethod(coffiMethod);
-        }
-                
-        if(coffiMethod.cfg == null)
-        {
-            if(Main.isVerbose)
-                System.out.println("[" + getMethod().getName() +
-                    "]     Building Coffi CFG...");
-
-             new soot.coffi.CFG(coffiMethod);
-
-         }
-
-         if(Main.isVerbose)
-             System.out.println("[" + getMethod().getName() +
-                    "]     Producing naive Jimple...");
-                    
-         Scene.v().setPhantomRefs(true);
-         coffiMethod.cfg.jimplify(coffiClass.constant_pool,
-             coffiClass.this_class, this);
-         Scene.v().setPhantomRefs(false);
-
-         coffiMethod.instructions = null;
-         coffiMethod.cfg = null;	
-	 
-	 applyPhaseOptions(options);
-    }
-
 
 
     /** Make sure that the JimpleBody is well formed.  If not, throw an exception.

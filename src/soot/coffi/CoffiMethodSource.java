@@ -27,6 +27,8 @@
 package soot.coffi;
 
 import soot.*;
+import java.util.*;
+import soot.jimple.*;
 
 public class CoffiMethodSource implements MethodSource
 {
@@ -39,8 +41,66 @@ public class CoffiMethodSource implements MethodSource
         this.coffiMethod = coffiMethod;
     }
 
-    public Body getInputBody(SootMethod m)
+    public void getBody(SootMethod m, Map options)
     {
-        return new ClassFileBody(m);
+        ClassFileBody fileBody = new ClassFileBody(m);
+        JimpleBody jb = Jimple.v().newBody(m);
+	
+	boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
+
+        if(useOriginalNames)
+            soot.coffi.Util.setFaithfulNaming(true);
+
+        /*
+            I need to set these to null to free Coffi structures.
+        fileBody.coffiClass = null;
+        bafBody.coffiMethod = null;
+
+        */
+        if(soot.Main.isVerbose)
+            System.out.println("[" + m.getName() + "] Constructing JimpleBody...");
+
+        if(m.isAbstract() || m.isNative() || m.isPhantom())
+            return;
+            
+        if(soot.Main.isProfilingOptimization)
+            soot.Main.conversionTimer.start();
+
+        if (coffiMethod == null)
+            System.out.println(m);
+        if(coffiMethod.instructions == null)
+        {
+            if(soot.Main.isVerbose)
+                System.out.println("[" + m.getName() +
+                    "]     Parsing Coffi instructions...");
+
+             coffiClass.parseMethod(coffiMethod);
+        }
+                
+        if(coffiMethod.cfg == null)
+        {
+            if(soot.Main.isVerbose)
+                System.out.println("[" + m.getName() +
+                    "]     Building Coffi CFG...");
+
+             new soot.coffi.CFG(coffiMethod);
+
+         }
+
+         if(soot.Main.isVerbose)
+             System.out.println("[" + m.getName() +
+                    "]     Producing naive Jimple...");
+                    
+         Scene.v().setPhantomRefs(true);
+         coffiMethod.cfg.jimplify(coffiClass.constant_pool,
+             coffiClass.this_class, jb);
+         Scene.v().setPhantomRefs(false);
+
+         coffiMethod.instructions = null;
+         coffiMethod.cfg = null;
+	 
+         m.setActiveBody(jb);
+
+         jb.applyPhaseOptions(options);
     }
 }

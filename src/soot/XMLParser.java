@@ -73,15 +73,15 @@ public class XMLParser {
 	
 	setXMLParsingEnv();
 	if(Main.isVerbose) 
-	    System.err.print("Parsing XML file: " + file + "... ");
+	    System.out.print("[xml] Parsing XML file: " + file + "... ");
 
 	try{
 	    parser.parse(file);
 	} catch (SAXParseException e) { 
-	    System.err.println(e.getMessage()+" Id: " + e.getSystemId() +  " "+ e.getLineNumber() + ":" + e.getColumnNumber());
+	    System.out.println(e.getMessage()+" Id: " + e.getSystemId() +  " "+ e.getLineNumber() + ":" + e.getColumnNumber());
 	}
 	if(Main.isVerbose)
-	    System.err.println("Done");
+	    System.out.println("[xml] Parsing: Done.");
 
 	restoreEnv();
 	return currentClass;
@@ -162,9 +162,9 @@ public class XMLParser {
 	public void endDocument() 
 	{
 	    if(Main.isVerbose) {
-		System.err.println("Parsed " + classCount + "classes.");
-		System.err.println("Parsed " + fieldCount + "fields.");
-		System.err.println("Parsed " + methodCnt + "methods.");
+		System.out.println("\n[xml] Parsed " + classCount + " classes.");
+		System.out.println("[xml] Parsed " + fieldCount + " fields.");
+		System.out.println("[xml] Parsed " + methodCnt + " methods.");
 	    }	
 	}
 
