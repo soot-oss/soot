@@ -715,8 +715,8 @@ public class ClassResolver {
             /*System.out.println("source: "+source);
             System.out.println("source.source(): "+source.source());
             System.out.println("source path: "+source.source().path());
-            System.out.println("source name: "+source.source().name());
-            t.setAbsolutePath(source.source().path());*/
+            System.out.println("source name: "+source.source().name());*/
+            t.setAbsolutePath(source.source().path());
             sootClass.addTag(t);
         }
         
