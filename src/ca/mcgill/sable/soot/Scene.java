@@ -81,7 +81,7 @@ import ca.mcgill.sable.soot.jimple.toolkit.invoke.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class Scene
+public class Scene extends AbstractHost
 {
     private static Scene constant = new Scene();
     

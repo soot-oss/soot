@@ -108,7 +108,7 @@ import java.io.*;
 
 */
 
-public class SootClass
+public class SootClass extends AbstractHost
 {
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
 

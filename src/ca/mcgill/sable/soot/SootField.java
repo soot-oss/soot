@@ -71,7 +71,7 @@
 
 package ca.mcgill.sable.soot;
 
-public class SootField
+public class SootField extends AbstractHost
 {
     String name;
     Type type;
