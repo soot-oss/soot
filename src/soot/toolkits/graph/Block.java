@@ -206,7 +206,7 @@ public class Block
         //strBuf.append("     block" + mIndexInMethod + ":\n");
 
         Chain methodUnits = mBody.getUnits();
-        Iterator basicBlockIt = methodUnits.iterator(mHead);
+        Iterator basicBlockIt = methodUnits.iterator(mHead, mTail);
         
         if(basicBlockIt.hasNext()) {
             Unit someUnit = (Unit) basicBlockIt.next();

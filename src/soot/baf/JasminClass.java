@@ -1969,7 +1969,7 @@ public class JasminClass
             Integer i = (Integer) blockToStackHeight.get(b);
             if(i != null) {
                 if(i.intValue() != blockHeight) {
-                    new RuntimeException("incoherent stack height at block merge point " + b + aBlock);
+                    throw new RuntimeException("incoherent stack height at block merge point " + b + aBlock);
                 }
                 
             } else {
