@@ -86,7 +86,7 @@ public class Evaluator {
             return op;
         else if (op instanceof UnopExpr) {
             Value c = getConstantValueOf(((UnopExpr)op).getOp());
-            if (c instanceof NegExpr)
+            if (op instanceof NegExpr)
                 return ((NumericConstant)c).negate();
         }
         else if (op instanceof BinopExpr) {
@@ -162,6 +162,12 @@ public class Evaluator {
             else if ((op instanceof CmpgExpr) || (op instanceof CmplExpr)) {
                 if ((c1 instanceof RealConstant) &&
                     (c2 instanceof RealConstant)) {
+                    
+                    if(op instanceof CmpgExpr)
+                        return ((RealConstant) c1).cmpg((RealConstant) c2);
+                    else if(op instanceof CmplExpr)
+                        return ((RealConstant) c1).cmpl((RealConstant) c2);
+                        
                 }
                 else throw new IllegalArgumentException(
                                   "CmpExpr: RealConstant(s) expected");
@@ -170,7 +176,7 @@ public class Evaluator {
                 throw new RuntimeException("unknown binop: " + op);
         }
 
-        throw new RuntimeException("couldn't getConstantValueOf");
+        throw new RuntimeException("couldn't getConstantValueOf of: " + op);
     } // getConstantValueOf
 
 } // Evaluator

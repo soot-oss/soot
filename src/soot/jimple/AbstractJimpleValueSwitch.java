@@ -192,11 +192,6 @@ public abstract class AbstractJimpleValueSwitch implements JimpleValueSwitch
         defaultCase(v);
     }
 
-    public void caseNewInvokeExpr(NewInvokeExpr v)
-    {
-        defaultCase(v);
-    }
-
     public void caseCastExpr(CastExpr v)
     {
         defaultCase(v);

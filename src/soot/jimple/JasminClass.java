@@ -36,6 +36,7 @@ import soot.toolkits.scalar.*;
 import soot.util.*;
 import java.util.*;
 import java.io.*;
+import soot.grimp.*;
 
 public class JasminClass
 {
@@ -1805,7 +1806,7 @@ public class JasminClass
 
     void emitValue(Value value)
     {
-        value.apply(new AbstractJimpleValueSwitch()
+        value.apply(new AbstractGrimpValueSwitch()
         {
             public void caseAddExpr(AddExpr v)
             {

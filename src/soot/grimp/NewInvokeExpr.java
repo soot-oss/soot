@@ -24,14 +24,12 @@
  */
 
 
-
-
-
-package soot.jimple;
+package soot.grimp;
 
 import soot.*;
 import soot.util.*;
 import java.util.*;
+import soot.jimple.*;
 
 public interface NewInvokeExpr extends StaticInvokeExpr
 {

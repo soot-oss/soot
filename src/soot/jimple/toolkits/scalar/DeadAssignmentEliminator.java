@@ -121,12 +121,14 @@ public class DeadAssignmentEliminator extends BodyTransformer
                 }                     
             }
         }
+
+        CompleteUnitGraph graph = new CompleteUnitGraph(body);
+        LocalDefs defs = new SimpleLocalDefs(graph);
+        LocalUses uses = new SimpleLocalUses(graph, defs);
         
         // Add all the statements which are used to compute values
         // for the essential statements, recursively
         {
-            CompleteUnitGraph graph = new CompleteUnitGraph(body);
-            LocalDefs defs = new SimpleLocalDefs(graph);
             
             while(!toVisit.isEmpty())
             {
@@ -159,7 +161,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
             }
         }
         
-        // Remove some dead statements
+        // Remove the dead statements
         {
             Iterator stmtIt = units.iterator();
             
@@ -170,14 +172,58 @@ public class DeadAssignmentEliminator extends BodyTransformer
                 if(!essentialStmts.contains(s))
                     stmtIt.remove();
                 else if(s instanceof AssignStmt &&
-                    ((AssignStmt) s).getLeftOp() == 
-                    ((AssignStmt) s).getRightOp() &&
+                    ((AssignStmt) s).getLeftOp() == ((AssignStmt) s).getRightOp() &&
                     ((AssignStmt) s).getLeftOp() instanceof Local)
                 {
                     // Stmt is of the form a = a which is useless
                     
                     stmtIt.remove();
                 }   
+            }
+        }
+        
+        // Eliminate dead assignments from invokes such as x = f(), where
+        //    x is no longer used
+        {
+            Iterator stmtIt = units.snapshotIterator();
+            
+            while(stmtIt.hasNext())
+            {
+                Stmt s = (Stmt) stmtIt.next();
+                
+                if(s instanceof AssignStmt &&
+                    s.containsInvokeExpr())
+                {
+                    Local l = (Local) ((AssignStmt) s).getLeftOp();
+                    InvokeExpr e = (InvokeExpr) s.getInvokeExpr();
+                    
+                    // Just find one use of l which is essential 
+                    {   
+                        Iterator useIt = uses.getUsesOf(s).iterator();
+                        boolean isEssential = false;
+                        
+                        while(useIt.hasNext())
+                        {   
+                            UnitValueBoxPair pair = (UnitValueBoxPair)
+                                useIt.next();
+                                
+                            if(essentialStmts.contains(pair.unit))
+                            {
+                                isEssential = true;
+                                break;
+                            }
+                        }
+                        
+                        if(!isEssential)
+                        {
+                            // Transform it into a simple invoke.
+                 
+                            Stmt newInvoke = Jimple.v().newInvokeStmt(e);
+                            
+                            units.swapWith(s, newInvoke);
+                        }
+                    }                                        
+                }
             }
         }
         

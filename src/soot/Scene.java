@@ -26,11 +26,12 @@
 
 package soot;
 
-import soot.jimple.toolkits.invoke.*;
+
 import soot.util.*;
 import java.util.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.scalar.*;
+import soot.toolkits.scalar.*;
 
 public class Scene extends AbstractHost
 {
@@ -93,13 +94,14 @@ public class Scene extends AbstractHost
 
         packNameToPack.put("jop", p = new Pack());
         {
-            p.add(new Transform("jop.cp", CopyPropagator.v(), "ignore-stack-locals"));
-            p.add(new Transform("jop.cpf", ConstantPropagatorAndFolder.v(), "disabled"));
-            p.add(new Transform("jop.cbf", ConditionalBranchFolder.v(), "disabled"));
-            p.add(new Transform("jop.dae", DeadAssignmentEliminator.v()));
+            p.add(new Transform("jop.cp",  CopyPropagator.v(), "ignore-stack-locals"));
+            p.add(new Transform("jop.cpf",  ConstantPropagatorAndFolder.v(), "disabled"));
+            p.add(new Transform("jop.cbf",  ConditionalBranchFolder.v(), "disabled"));
+            p.add(new Transform("jop.dae",  DeadAssignmentEliminator.v()));
             p.add(new Transform("jop.uce1", UnreachableCodeEliminator.v(), "disabled"));
-            p.add(new Transform("jop.ubf", UnconditionalBranchFolder.v(), "disabled"));
+            p.add(new Transform("jop.ubf",  UnconditionalBranchFolder.v(), "disabled"));
             p.add(new Transform("jop.uce2", UnreachableCodeEliminator.v(), "disabled"));
+            p.add(new Transform("jop.ule",  UnusedLocalEliminator.v()));
         }
 
         packNameToPack.put("wjtp", p = new Pack());

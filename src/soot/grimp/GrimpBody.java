@@ -150,10 +150,7 @@ public class GrimpBody extends StmtBody
                 {
                     newStmtBox.setUnit(Grimp.v().newNopStmt(s));
                 }
-                public void caseRetStmt(RetStmt s)
-                {
-                    newStmtBox.setUnit(Grimp.v().newRetStmt(s));
-                }
+
                 public void caseReturnStmt(ReturnStmt s)
                 {
                     newStmtBox.setUnit(Grimp.v().newReturnStmt(s));

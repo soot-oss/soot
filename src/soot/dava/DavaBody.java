@@ -59,8 +59,6 @@ public class DavaBody extends Body
             // Clone units in body's statement list 
             while(it.hasNext()) {
                 Unit original = (Unit) it.next();
-                System.out.println("original: " + original);
-                System.out.println("clone: " + original.clone()); 
                                 
                 Unit copy = (Unit) original.clone();
                 

@@ -70,7 +70,8 @@ public class JimpleBody extends StmtBody
         boolean noAggregating = Options.getBoolean(options, "no-aggregating");
         boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
         boolean usePacking = Options.getBoolean(options, "pack-locals");
-
+        boolean noNopElimination = Options.getBoolean(options, "no-nop-elimination");
+        
         ClassFileBody fileBody;
 
         if(useOriginalNames)
@@ -196,6 +197,10 @@ public class JimpleBody extends StmtBody
             LocalPacker.v().transform(this, "jb.lp");
         }
 
+
+        if(!noNopElimination)
+            NopEliminator.v().transform(this, "jb.ne");
+                    
         if(soot.Main.isProfilingOptimization)
             soot.Main.stmtCount += getUnits().size();
     }

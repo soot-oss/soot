@@ -134,7 +134,7 @@ public class GNewInvokeExpr extends AbstractStaticInvokeExpr
 
     public void apply(Switch sw)
     {
-        ((ExprSwitch) sw).caseNewInvokeExpr(this);
+        ((GrimpValueSwitch) sw).caseNewInvokeExpr(this);
     }
     
     public Object clone() 
