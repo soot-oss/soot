@@ -36,7 +36,7 @@ import java.util.*;
  *   Soot representation of the Java built-in type 'char'. Implemented as
  *   a singleton.
  */
-public class CharType extends BaseType
+public class CharType extends BaseType implements IntegerType
 {
     private static CharType constant = new CharType();
 

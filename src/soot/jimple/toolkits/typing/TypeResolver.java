@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Etienne Gagnon
+ * Copyright (C) 1997-2000 Etienne Gagnon.  All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,2467 +24,1060 @@
  */
 
 
-
-
-
-
 package soot.jimple.toolkits.typing;
 
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
-import java.util.*;
+import soot.toolkits.graph.*;
+import soot.toolkits.scalar.*;
 
 /**
  * This class resolves the type of local variables.
  **/
-public class TypeResolver
+class TypeResolver
 {
-    static boolean firstTime = true;
+  /** Reference to the class hierarchy **/
+  private ClassHierarchy hierarchy;
 
-    private static final boolean DEBUG = false;
+  /** All type variable instances **/
+  private final List typeVariableList = new ArrayList();
 
-    /** Reference to the class hierarchy **/
-    ClassHierarchy classHierarchy;
+  /** Hashtable: [TypeNode or Local] -> TypeVariable **/
+  private final Map typeVariableMap = new HashMap();
 
-    /** Reference to the current method **/
-    SootMethod currentMethod;
+  private final JimpleBody stmtBody;
 
-    static String lastClass;
-    /** All type variable instances **/
-    Vector typeVariableInstances = new Vector();
+  final TypeNode NULL;
+  private final TypeNode OBJECT;
 
-    /** Hashtable: [TypeNode or Local] -> TypeVariable **/
-    private Hashtable typeVariableHashtable = new Hashtable();
+  private static final boolean DEBUG = false;
 
-    /** Hashtable: TypeVariable -> String **/
-    private Hashtable typeVariableStringHashtable = new Hashtable();
+  // categories for type variables (solved = hard, unsolved = soft)
+  private List unsolved;
+  private List solved;
 
-    /** Used to collect type constraints **/
-    private ConstraintCollector constraintCollector = new ConstraintCollector();
+  // parent categories for unsolved type variables
+  private List single_soft_parent;
+  private List single_hard_parent;
+  private List multiple_parents;
 
-    /** Type variables left to resolve **/
-    IntSet unresolvedTypeVariables = new IntSet();
+  // child categories for unsolved type variables
+  private List single_child_not_null;
+  private List single_null_child;
+  private List multiple_children;
 
-    private JimpleBody stmtBody;
+  public ClassHierarchy hierarchy()
+  {
+    return hierarchy;
+  }
 
-    private void debug_locals()
-    {
-      for(Iterator i = stmtBody.getLocals().iterator(); i.hasNext(); )
+  public TypeNode typeNode(Type type)
+  {
+    return hierarchy.typeNode(type);
+  }
+
+  /** Get type variable for the given local. **/
+  TypeVariable typeVariable(Local local)
+  {
+    TypeVariable result = (TypeVariable) typeVariableMap.get(local);
+
+    if(result == null)
       {
-        Local local = (Local) i.next();
+	int id = typeVariableList.size();
+	typeVariableList.add(null);
 
-        System.out.print(local + ": ");
+	result = new TypeVariable(id, this);
 
-        TypeVariable var = getTypeVariable(local).ecr();
-        if(var == null)
-        {
-          System.out.println("null");
-        }
-        else
-        {
-          System.out.println(var.getEcrId());
-        }
+	typeVariableList.set(id, result);
+	typeVariableMap.put(local, result);
+	
+	if(DEBUG)
+	  {
+	    System.out.println("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
+	  }
       }
-    }
+    
+    return result;
+  }
 
-    private void debug()
-    {
-      System.out.println("*** DEBUG ***");
-      debug_locals();
-      int size = typeVariableInstances.size();
-      for(int i = 0; i < size; i++)
+  /** Get type variable for the given type node. **/
+  public TypeVariable typeVariable(TypeNode typeNode)
+  {
+    TypeVariable result = (TypeVariable) typeVariableMap.get(typeNode);
+
+    if(result == null)
       {
-        TypeVariable a = (TypeVariable) typeVariableInstances.elementAt(i);
+	int id = typeVariableList.size();
+	typeVariableList.add(null);
 
-        if(a == a.ecr())
-        {
-          System.out.print(i + ":");
+	result = new TypeVariable(id, this, typeNode);
 
-          ClassHierarchy.TypeNode node = a.getEcrTypeNode();
-          if(node != null)
-          {
-            System.out.print(" " + node.getType());
-          }
-          System.out.println();
-
-          TypeVariable[] parents = a.getEcrParents();
-          if(parents.length != 0)
-          {
-            System.out.print("  Parents:");
-
-            for(int j = 0; j < parents.length; j++)
-            {
-              System.out.print(" " + parents[j].getEcrId());
-            }
-
-            System.out.println();
-          }
-
-          TypeVariable[] children = a.getEcrChildren();
-          if(children.length != 0)
-          {
-            System.out.print("  Children:");
-
-            for(int j = 0; j < children.length; j++)
-            {
-              System.out.print(" " + children[j].getEcrId());
-            }
-
-            System.out.println();
-          }
-
-          if(a.isArrayOf != null)
-          {
-            System.out.println("  Array of: " + a.isArrayOf.getEcrId());
-          }
-
-          System.out.println("  Array depth: " + a.arrayDepth);
-        }
+	typeVariableList.set(id, result);
+	typeVariableMap.put(typeNode, result);
       }
-    }
 
-    /** This constructor triggers the type resolution of
-        local variables of the given statement list body. **/
-    TypeResolver(final JimpleBody stmtBody)
-    {
-        try 
-        {
-            this.stmtBody = stmtBody;
+    return result;
+  }
 
-            currentMethod = stmtBody.getMethod();
+  /** Get type variable for the given soot class. **/
+  public TypeVariable typeVariable(SootClass sootClass)
+  {
+    return typeVariable(hierarchy.typeNode(sootClass.getType()));
+  }
 
-            classHierarchy = ClassHierarchy.getClassHierarchy(Scene.v());
-            
-            // Collect constraints
-            for(Iterator i = stmtBody.getUnits().iterator(); i.hasNext();)
-            {
-                Stmt stmt = (Stmt) i.next();
-                stmt.apply(constraintCollector);
-            }
+  /** Get type variable for the given type. **/
+  public TypeVariable typeVariable(Type type)
+  {
+    return typeVariable(hierarchy.typeNode(type));
+  }
 
-            // Let's make sure a type variable is created
-            // for each of these.
-            getTypeVariable(RefType.v("java.lang.Object"));
-            getTypeVariable(RefType.v("java.lang.Cloneable"));
-            getTypeVariable(RefType.v("java.io.Serializable"));
-            getTypeVariable(NullType.v());
-            
-            // Compute array depths
-            computeArrayDepths();
-            
-            // Propagate array contraints to depth 0
-            propagateArrayConstraints();
-            
-            // From now on, we ignore depth >= 1
-            
-            // Add relations between hard nodes
-            addRelationsBetweenHardNodes();
-            
-            // Merge basic types
-            mergeAll(getTypeVariable(IntType.v()));
-            mergeAll(getTypeVariable(LongType.v()));
-            mergeAll(getTypeVariable(FloatType.v()));
-            mergeAll(getTypeVariable(DoubleType.v()));
-            mergeAll(getTypeVariable(StmtAddressType.v()));
-            
-            // Merge strongly connected components
-            mergeStronglyConnectedComponents();
-            
-            // Remove transitive constraints.
-            removeTransitiveRelations();
-            
-            // Merge single constraints
-            resolveSingleRelations();
-            
-            // Do the exponential exhaustive search
-            resolveComplexRelations();            
-            
-            // Propagate basic array types
-            propagateBasicArrayTypes();
-        } 
-        catch(Exception e)
-        {
-            if(!firstTime)
-            {
-                System.out.println();
-                System.out.println("-*- Type Error in method " +
-                    currentMethod.getName() + " of class " +
-                    currentMethod.getDeclaringClass().getName() +
-                    " -*-");
-                System.out.println();
-            }
-        }
-
-
-        for(Iterator i = stmtBody.getLocals().iterator(); i.hasNext(); )
-        {
-            Local local = (Local) i.next();
-
-            TypeVariable var = getTypeVariable(local).ecr();
-            if(var == null)
-            {
-                local.setType(UnknownType.v());
-            }
-            else if (var.arrayDepth == 0)
-            {
-                if(var.getEcrTypeNode() == null)
-                {
-                    local.setType(UnknownType.v());
-                }
-                else
-                {
-                    local.setType(var.getEcrTypeNode().getType());
-                }
-            }
-            else
-            {
-                if/*(*/(var.getEcrTypeNode() != null) /*&&
-                    (!(var.base.getEcrTypeNode().getType() instanceof RefType)))*/
-                {
-                    local.setType(var.getEcrTypeNode().getType());
-                }
-                else if(var.base.getEcrTypeNode() == null)
-                {
-                    local.setType(UnknownType.v());
-                }
-                else if(var.base.getEcrTypeNode().getType() instanceof ErroneousType)
-                {
-                    local.setType(ErroneousType.v());
-                }
-                else if(var.base.getEcrTypeNode().getType() instanceof NullType)
-                {
-                    local.setType(NullType.v());
-                }
-                else
-                {
-                    local.setType(ArrayType.v(
-                        (BaseType) var.base.getEcrTypeNode().getType(),
-                        var.arrayDepth));
-                }
-            }
-        }
-    }
-
-    private void removeRelationsBetweenNonEcrs()
-    {
-        for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
-        {
-            TypeVariable var = (TypeVariable) e.nextElement();
-
-            if((var != var.ecr()) ||
-                (var.arrayDepth != 0))
-            {
-                var.parents = new IntSet();
-                var.children = new IntSet();
-            }
-        }
-    }
-
-    private void addRelationsBetweenHardNodes()
-    {
-        LinkedList workList = new LinkedList();
-
-        for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
-        {
-            TypeVariable var = (TypeVariable) e.nextElement();
-
-            if((var == var.ecr()) &&
-                (var.getEcrTypeNode() != null) &&
-                (!(var.getEcrTypeNode().getType() instanceof ArrayType)))
-            {
-                workList.add(var);
-            }
-        }
-
-        while(workList.size() > 0)
-        {
-            TypeVariable var = (TypeVariable) workList.removeFirst();
-
-            TypeVariable[] elements = new TypeVariable[workList.size()];
-            workList.toArray(elements);
-
-            for(int i = 0; i < elements.length; i++)
-            {
-                TypeVariable other = elements[i];
-
-                if(var.getEcrTypeNode().hasAncestor(other.getEcrTypeNode()))
-                {
-                    var.ecrAddParent(other);
-                }
-                else if(var.getEcrTypeNode().hasDescendant(other.getEcrTypeNode()))
-                {
-                    var.ecrAddChild(other);
-                }
-            }
-
-        }
-    }
-
-    /** Get type variable for the given local. **/
-    TypeVariable getTypeVariable(Local local)
-    {
-        TypeVariable result = (TypeVariable) typeVariableHashtable.get(local);
-
-        if(result == null)
-        {
-            result = new TypeVariable(local);
-//            System.out.println(local + ": " + result.getEcrId());
-        }
-
-        return result;
-    }
-
-    /** Get type variable for the given type node. **/
-    TypeVariable getTypeVariable(ClassHierarchy.TypeNode typeNode)
-    {
-        TypeVariable result = (TypeVariable) typeVariableHashtable.get(typeNode);
-
-        if(result == null)
-        {
-            result = new TypeVariable(typeNode);
-        }
-
-        return result;
-    }
-
-    /** Get type variable for the given  SootClass. **/
-    TypeVariable getTypeVariable(SootClass sClass)
-    {
-        return getTypeVariable(classHierarchy.getTypeNode(RefType.v(sClass.getName())));
-    }
-
-    /** Get type variable for the given type. **/
-    TypeVariable getTypeVariable(Type type)
-    {
-        return getTypeVariable(classHierarchy.getTypeNode(type));
-    }
-
-    /** Merge together variables involved in a dependence cycle.
-        Use the set of all type variables **/
-    private void mergeStronglyConnectedComponents()
-    {
-        new SCC(typeVariableInstances);
-    }
-
-    /** Merge the given type variable with all its ancestors and descentants. **/
-    private boolean mergeAll(TypeVariable var)
-    {
-        TypeVariable[] parents = var.getEcrParents();
-        TypeVariable[] children = var.getEcrChildren();
-        boolean changed = true;
-        boolean modif = false;
-
-        while(changed)
-        {
-            changed = false;
-
-            for(int i = 0; i < parents.length; i++)
-            {
-                if(parents[i].ecr().arrayDepth == var.ecr().arrayDepth)
-                {
-                    modif = true;
-                    changed = true;
-                    var.ecrUnion(parents[i]);
-                }
-            }
-
-            for(int i = 0; i < children.length; i++)
-            {
-                if(children[i].ecr().arrayDepth == var.ecr().arrayDepth)
-                {
-                    modif = true;
-                    changed = true;
-                    var.ecrUnion(children[i]);
-                }
-            }
-
-            parents = var.getEcrParents();
-            children = var.getEcrChildren();
-        }
-
-        return modif;
-    }
-
-    private void propagateBasicArrayTypes()
-    {
-        boolean changed;
-
-        do
-        {
-            changed = false;
-
-            for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
-            {
-                TypeVariable var = (TypeVariable) e.nextElement();
-
-                if((var == var.ecr()) &&
-                    (var.getEcrTypeNode() != null) &&
-                    (var.getEcrTypeNode().getType() instanceof ArrayType))
-                {
-                    ArrayType type = (ArrayType) var.getEcrTypeNode().getType();
-
-                    if(!(type.baseType instanceof RefType))
-                    {
-                        ClassHierarchy.TypeNode node = 
-                            classHierarchy.getTypeNode(
-                            ArrayType.v(type.baseType, type.numDimensions - 1));
-                        
-                        if((var.isArrayOf != null) &&
-                            (var.isArrayOf.arrayDepth != 0) &&
-                            (var.isArrayOf.getEcrTypeNode() == null))
-                        {
-                            changed = true;
-                            var.isArrayOf.ecr().typeNode = node;
-                        }
-                    
-                        TypeVariable[] parents = var.getEcrParents();
-                        TypeVariable[] children = var.getEcrChildren();
-                    
-                        for(int i = 0; i < parents.length; i++)
-                        {
-                            if((parents[i].arrayDepth == var.arrayDepth) &&
-                                (parents[i].getEcrTypeNode() == null))
-                            {
-                                changed = true;
-                                parents[i].typeNode = var.getEcrTypeNode();
-                            }
-                        }
-
-                        for(int i = 0; i < children.length; i++)
-                        {
-                            if((children[i].arrayDepth == var.arrayDepth) &&
-                                (children[i].getEcrTypeNode() == null))
-                            {
-                                changed = true;
-                                children[i].typeNode = var.getEcrTypeNode();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        while(changed);
-    }
-
-    private void propagateArrayConstraints()
-    {
-        LinkedList workList = new LinkedList();
-        
-        // Initialize work list
-        for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
-        {
-            TypeVariable var = (TypeVariable) e.nextElement();
-
-            if(var.arrayDepth == 0) // already base
-            {
-                var.base = var;
-            }
-            else if(var.isArrayOf == null) // create new base
-            {
-                var.base = new TypeVariable();
-                var.base.base = var.base;
-            }
-            else if(var.arrayDepth != -1) // add to work list
-            {
-                workList.add(var);
-            }
-            else // infinite depth => Null
-            {
-                var.ecrUnion(getTypeVariable(NullType.v()));
-            }
-        }
-        
-        // Propagate "base" (depth 0) node
-        while(workList.size() != 0)
-        {
-            TypeVariable var = (TypeVariable) workList.removeFirst();
-            
-            if(var.isArrayOf.base != null)
-            {
-                var.base = var.isArrayOf.base;
-            }
-            else
-            {
-                workList.add(var);
-            }
-        }
-
-        // Propagate constraints
-        for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
-        {
-            TypeVariable var = (TypeVariable) e.nextElement();
-
-            if(var == var.ecr())
-            {
-                int[] elements = var.parents.elements();
-                for(int i = 0; i < elements.length; i++)
-                {
-                    TypeVariable parent =
-                        (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-
-                    if(var.arrayDepth == -1)
-                    {
-                        continue;
-                    }
-
-                    if(parent.arrayDepth == var.arrayDepth)
-                    {
-                        var.base.ecrAddParent(parent.base);
-                    }
-                    else
-                    {
-                        parent.base.ecrAddChild(getTypeVariable(
-                            RefType.v("java.lang.Cloneable")));
-                        parent.base.ecrAddChild(getTypeVariable(
-                            RefType.v("java.io.Serializable")));
-                    }
-                }
-
-                if(var.arrayDepth != 0)
-                {
-                    unresolvedTypeVariables.clear(var.id);
-                }
-            }
-        }
-    }
-
-    private void computeArrayDepths()
-    {
-        // Initialize array depths
-        for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
-        {
-            TypeVariable var = (TypeVariable) e.nextElement();
-
-            if(var.typeNode != null)
-            {
-                if(var.typeNode.getType() instanceof ArrayType)
-                {
-                    ArrayType type = (ArrayType) var.typeNode.getType();
-                    
-                    var.arrayDepth = type.numDimensions;
-                }
-                else
-                {
-                    var.arrayDepth = 0;
-                }
-            }
-            else
-            {
-                var.arrayDepth = -1;  // -1 stands for "infinite"
-            }
-        }
-
-        // Propagate minimum-value depth up, left, and right (until fixed point)
-        boolean changed;
-        do
-        {
-            changed = false;
-            
-            for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
-            {
-                TypeVariable var = (TypeVariable) e.nextElement();
-                
-                // Left and right propagation
-                if((var.typeNode == null) && (var.isArrayOf != null))
-                {
-                    if(var.arrayDepth > 0)
-                    {
-                        if((var.isArrayOf.arrayDepth == -1) ||
-                            (var.isArrayOf.arrayDepth >= var.arrayDepth))
-                        {
-                            changed = true;
-                            var.isArrayOf.arrayDepth = var.arrayDepth - 1;
-                        }
-                        else if(var.isArrayOf.arrayDepth + 1 < var.arrayDepth)
-                        {
-                            changed = true;
-                            var.arrayDepth = var.isArrayOf.arrayDepth + 1;
-                        }
-                    }
-                    else if((var.arrayDepth == -1) && 
-                        (var.isArrayOf.arrayDepth != -1))
-                    {
-                        changed = true;
-                        var.arrayDepth = var.isArrayOf.arrayDepth + 1;
-                    }
-                }
-                
-                if(var.arrayDepth == -1)
-                {
-                    continue;
-                }
-                
-                // Up propagation
-                int[] elements = var.parents.elements();
-                for(int i = 0; i < elements.length; i++)
-                {
-                    TypeVariable parent =
-                        (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-                        
-                    if((parent.typeNode == null) && ((parent.arrayDepth == -1) || 
-                        (parent.arrayDepth > var.arrayDepth)))
-                    {
-                        changed = true;
-                        parent.arrayDepth = var.arrayDepth;
-                    }
-                }
-            }
-        }
-        while(changed);
-    }
-
-    /** Resolve single relations.
-        <P> <UL> <LI> No Parent -> "java.lang.Object"
-        <LI> No Child -> "*null*"
-        <LI> One parent -> merge with parent
-        <LI> One child -> merge with child
-        <UL> **/
-    private void resolveSingleRelations()
-    {
-        boolean changed;
-
-        // Merge down 
-        do
-        {
-            changed = false;
-
-            int[] elements = unresolvedTypeVariables.elements();
-            for(int i = 0; i < elements.length; i++)
-            {
-                TypeVariable var = 
-                    (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-
-                if((var == var.ecr()) && (var.getEcrTypeNode() == null))
-                {
-                    TypeVariable[] children = var.getEcrChildren();
-
-                    if(children.length == 1)
-                    {
-                        changed = true;
-                        var.ecrUnion(children[0]);
-                    }
-                    else if(children.length == 0)
-                    {
-                        changed = true;
-                        var.ecrUnion(getTypeVariable(NullType.v()));
-                    }
-                }
-            }
-        }
-        while(changed);
-
-        // Merge soft nodes up 
-        do
-        {
-            changed = false;
-
-            int[] elements = unresolvedTypeVariables.elements();
-            for(int i = 0; i < elements.length; i++)
-            {
-                TypeVariable var = 
-                    (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-
-                if((var == var.ecr()) && (var.getEcrTypeNode() == null))
-                {
-                    TypeVariable[] parents = var.getEcrParents();
-
-                    if((parents.length == 1) && 
-                        (parents[0].getEcrTypeNode() == null))
-                    {
-                        changed = true;
-                        var.ecrUnion(parents[0]);
-                    }
-                }
-            }
-        }
-        while(changed);
-
-        // Merge nodes up 
-        do
-        {
-            changed = false;
-
-            int[] elements = unresolvedTypeVariables.elements();
-            for(int i = 0; i < elements.length; i++)
-            {
-                TypeVariable var = 
-                    (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-
-                if((var == var.ecr()) && (var.getEcrTypeNode() == null))
-                {
-                    TypeVariable[] parents = var.getEcrParents();
-                    TypeVariable[] children = var.getEcrChildren();
-
-                    if((parents.length < 2) &&
-                       ((parents.length != 1) || isClass(parents[0])))
-                    {
-                        TypeVariable lca = null;
-                        for(int j = 0; j < children.length; j++)
-                        {
-                            if(isClass(children[j]))
-                            {
-                                if(lca == null)
-                                {
-                                    lca = children[j];
-                                }
-                                else
-                                {
-                                    lca = getLCA(lca, children[j]);
-                                }
-                            }
-                            else
-                            {
-                                lca = null;
-                                break;
-                            }
-                        }
-                        
-                        if(lca != null)
-                        {
-                            changed = true;
-                            var.ecrUnion(lca);
-                        }
-                        else if(parents.length == 1)
-                        {
-                            changed = true;
-                            var.ecrUnion(parents[0]);
-                        }
-                        else
-                        {
-                            changed = true;
-                            var.ecrUnion(
-                                getTypeVariable(RefType.v("java.lang.Object")));
-                        }
-                    }
-                }
-            }
-        }
-        while(changed);
-    }
-
-    private boolean isClass(TypeVariable var)
-    {
-        // Get the assigned type node
-        ClassHierarchy.TypeNode node = var.getEcrTypeNode();
-        if(node == null)
-        {
-            return false;
-        }
-        
-        // get the type
-        Type type = node.getType();
-        if(!(type instanceof RefType))
-        {
-            return false;
-        }
-        
-        SootClass sClass = classHierarchy.scene.getSootClass(
-            ((RefType) type).className);
-            
-        if(Modifier.isInterface(sClass.getModifiers()))
-        {
-            return false;
-        }
-        
-        return true;
-    }
+  /** Get new type variable **/
+  public TypeVariable typeVariable()
+  {
+    int id = typeVariableList.size();
+    typeVariableList.add(null);
     
-    private TypeVariable superClass(TypeVariable var)
-    {
-        // Get the assigned type node
-        ClassHierarchy.TypeNode node = var.getEcrTypeNode();
-        Type type = node.getType();
-        SootClass sClass = classHierarchy.scene.getSootClass(
-            ((RefType) type).className);
-        if(sClass.hasSuperclass())
-        {
-            return getTypeVariable(sClass.getSuperclass()).ecr();
-        }
-        
-        return null;    
-    }
- 
-    private TypeVariable getLCA(TypeVariable var1, TypeVariable var2)
-    {
-        var1 = var1.ecr();
-        var2 = var2.ecr();
-
-        if(!(isClass(var1) && isClass(var2)))
-        {
-            throw new RuntimeException("BUG: LCA expects 2 classes.");
-        }
-        
-        Stack s1 = new Stack();
-        Stack s2 = new Stack();
-        
-        s1.push(var1.ecr());
-        while((var1 = superClass(var1)) != null)
-        {
-            s1.push(var1.ecr());
-        }
-        
-        s2.push(var2.ecr());
-        while((var2 = superClass(var2)) != null)
-        {
-            s2.push(var2.ecr());
-        }
-        
-        TypeVariable result = null;
-        while((!s1.empty()) && (!s2.empty()) &&
-            (s1.peek() == s2.peek()))
-        {
-            result = (TypeVariable) s1.pop();
-            s2.pop();
-        }
-        
-        if(result == null)
-        {
-            throw new RuntimeException("BUG: Class Hierarchy error!");
-        }
-
-        return result;
-    }
+    TypeVariable result = new TypeVariable(id, this);
     
-    /** Remove a parent if it is an ancestor of another parent. **/
-    private void removeTransitiveRelations()
-    {
-        LinkedList workList = new LinkedList();
-        workList.addLast(getTypeVariable(RefType.v("java.lang.Object")));
-        IntSet processed = new IntSet();
-
-        while(workList.size() != 0)
-        {
-            TypeVariable var = (TypeVariable) workList.removeFirst();
-
-            var.removeEcrIndirectRelations();
-            processed.set(var.getEcrId());
-
-            TypeVariable[] children = var.getEcrChildren();
-            for(int i = 0; i < children.length; i++)
-            {
-                IntSet temp = children[i].getEcrParentIds();
-                temp.and(processed);
-                
-                // Don't process a child before all its parents are processed
-                if(temp.equals(children[i].getEcrParentIds()))
-                {
-                    workList.addLast(children[i]);
-                }
-            }
-        }
-    }
-
-    /** Do the exponential search of a solution. This is an NP-Complete problem. **/
-    private boolean resolveComplexRelations()
-    {
-        if(unresolvedTypeVariables.size() == 0)
-        {
-            return true;
-        }
-
-        final TypeVariable[] ecrInstances;
-        {
-            Vector ecrs = new Vector();
-            TypeVariable nullVar = null;
-            for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
-            {
-                TypeVariable var = (TypeVariable) e.nextElement();
-                if((var.ecr() == var) && (var.getEcrTypeNode() != null))
-                {
-                    if(var.getEcrTypeNode().getType().equals(NullType.v()))
-                    {
-                        nullVar = var;
-                    }
-                    else
-                    {
-                        ecrs.addElement(var);
-                    }
-                }
-            }
-
-            // Make sure that *null* is tried last.
-            if(nullVar != null)
-            {
-                ecrs.addElement(nullVar);
-            }
-
-            ecrInstances = new TypeVariable[ecrs.size()];
-            int index = 0;
-            for(Enumeration e = ecrs.elements(); e.hasMoreElements();)
-            {
-                TypeVariable var = (TypeVariable) e.nextElement();
-                ecrInstances[index++] = var;
-            }
-        }
-
-        final int[] elements;
-        {
-            IntSet processed = new IntSet();
-            LinkedList processedList = new LinkedList();
-
-            while(!processed.equals(unresolvedTypeVariables))
-            {
-                IntSet unprocessed = (IntSet) unresolvedTypeVariables.clone();
-                unprocessed.xor(processed);
-                int[] unprocessedElements = unprocessed.elements();
-
-                for(int i = 0; i < unprocessedElements.length; i++)
-                {
-                    TypeVariable var =
-                        (TypeVariable) typeVariableInstances.elementAt(unprocessedElements[i]);
-
-                    if((!var.isEcrArray()) ||
-                        processed.get(var.getEcrIsArrayOf().getEcrId()) ||
-                        (!unresolvedTypeVariables.get(var.getEcrIsArrayOf().getEcrId())))
-                    {
-                        processed.set(var.getEcrId());
-                        processedList.add(var);
-                    }
-                }
-            }
-
-            elements = new int[processedList.size()];
-            int index = 0;
-            for(Iterator i = processedList.iterator(); i.hasNext();)
-            {
-                elements[index++] = ((TypeVariable) i.next()).getEcrId();
-            }
-        }
-
-        class RecursiveFunction
-        {
-            int index = 0;
-
-            public boolean resolve()
-            {
-                if(index == elements.length)
-                {
-                    return true;
-                }
-
-                TypeVariable var =
-                    (TypeVariable) typeVariableInstances.elementAt(elements[index++]);
-
-                for(int i = 0; i < ecrInstances.length; i++)
-                {
-                    if(var.setEcrTypeNode(ecrInstances[i].getEcrTypeNode()))
-                    {
-                        if(resolve())
-                        {
-                            return true;
-                        }
-                        var.unsetEcrTypeNode();
-                    }
-                }
-                index--;
-
-                return false;
-            }
-        }
-
-        return new RecursiveFunction().resolve();
-    }
-
-    /** Represents a type variable. **/
-    class TypeVariable
-    {
-        /** Unique id **/
-        private int id;
-
-        IntSet parents = new IntSet();
-        IntSet children = new IntSet();
-
-        private ClassHierarchy.TypeNode typeNode;
-
-        private boolean cannotBeInt;
-        private boolean cannotBeLong;
-        private boolean cannotBeFloat;
-        private boolean cannotBeDouble;
-        private boolean cannotBeAddress;
-        private boolean cannotBeRef;
-
-        TypeVariable isArrayOf;
-        int arrayDepth;
-        TypeVariable base;
-        int count;
-
-        private TypeVariable rep = this;
-        private int rank = 0;
-
-        private BitSet ancestors = new BitSet();
-
-        TypeVariable()
-        {
-            id = typeVariableInstances.size();
-            typeVariableInstances.addElement(this);
-            unresolvedTypeVariables.set(id);
-        }
-
-        TypeVariable(Local local)
-        {
-            this();
-            typeVariableHashtable.put(local, this);
-            typeVariableStringHashtable.put(this, local.toString());
-        }
-
-        TypeVariable(ClassHierarchy.TypeNode typeNode)
-        {
-            this();
-            typeVariableHashtable.put(typeNode, this);
-            typeVariableStringHashtable.put(this, typeNode.toString());
-            this.typeNode = typeNode;
-            unresolvedTypeVariables.clear(id);
-
-            if(typeNode.getType() instanceof ArrayType)
-            {
-                ArrayType type = (ArrayType) typeNode.getType();
-
-                if(type.numDimensions > 1)
-                {
-                    isArrayOf = getTypeVariable(
-                        ArrayType.v(type.baseType, type.numDimensions - 1));
-                }
-                else
-                {
-                    isArrayOf = getTypeVariable(type.baseType);
-                }
-            }
-        }
-
-        TypeVariable ecr()
-        {
-            if(rep != this)
-            {
-                rep = rep.ecr();
-            }
-
-            return rep;
-        }
-
-        TypeVariable ecrUnion(TypeVariable var)
-        {
-            TypeVariable x = ecr();
-            TypeVariable y = var.ecr();
-
-            if(x == y)
-            {
-                return x;
-            }
-
-            if(x.rank > y.rank)
-            {
-                x.merge(y);
-
-                y.rep = x;
-                return x;
-            }
-
-            y.merge(x);
-
-            x.rep = y;
-
-            if(y.rank == x.rank)
-            {
-                y.rank++;
-            }
-
-            return y;
-        }
-
-        private void merge(TypeVariable var)
-        {
-            // Merge types
-            if(typeNode == null)
-            {
-                typeNode = var.typeNode;
-            }
-            else if(var.typeNode != null)
-            {
-                var.typeNode = typeNode = classHierarchy.getTypeNode(ErroneousType.v());
-                error("Type Error(1): Attempt to merge incompatible types.");
-            }
-
-            unresolvedTypeVariables.clear(var.id);
-
-            if(typeNode != null)
-            {
-                unresolvedTypeVariables.clear(id);
-            }
-
-            // Merge properties
-            cannotBeInt |= var.cannotBeInt;
-            cannotBeLong |= var.cannotBeLong;
-            cannotBeFloat |= var.cannotBeFloat;
-            cannotBeDouble |= var.cannotBeDouble;
-            cannotBeAddress |= var.cannotBeAddress;
-            cannotBeRef |= var.cannotBeRef;
-
-            // Merge parents
-            parents.or(var.parents);
-            int[] elements = var.parents.elements();
-            for(int i = 0; i < elements.length; i++)
-            {
-                TypeVariable parent =
-                    (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-                parent.children.clear(var.id);
-                parent.children.set(id);
-            }
-
-            // Merge children
-            children.or(var.children);
-            elements = var.children.elements();
-            for(int i = 0; i < elements.length; i++)
-            {
-                TypeVariable child =
-                    (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-                child.parents.clear(var.id);
-                child.parents.set(id);
-            }
-            parents.clear(id);
-            children.clear(id);
-            parents.clear(var.id);
-            children.clear(var.id);
-
-            // Verify "concrete" relations.
-            if(typeNode != null)
-            {
-                if(cannotBeInt && (typeNode.getType() instanceof IntType))
-                {
-                    typeNode = classHierarchy.getTypeNode(ErroneousType.v());
-                    error("Type Error(2): Should not be an IntType.");
-                }
-
-                if(cannotBeLong && (typeNode.getType() instanceof LongType))
-                {
-                    typeNode = classHierarchy.getTypeNode(ErroneousType.v());
-                    error("Type Error(3): Should not be a LongType.");
-                }
-
-                if(cannotBeFloat && (typeNode.getType() instanceof FloatType))
-                {
-                    typeNode = classHierarchy.getTypeNode(ErroneousType.v());
-                    error("Type Error(4): Should not be a FloatType.");
-                }
-
-                if(cannotBeDouble && (typeNode.getType() instanceof DoubleType))
-                {
-                    typeNode = classHierarchy.getTypeNode(ErroneousType.v());
-                    error("Type Error(5): Should not be a DoubleType.");
-                }
-
-                if(cannotBeAddress && (typeNode.getType() instanceof StmtAddressType))
-                {
-                    typeNode = classHierarchy.getTypeNode(ErroneousType.v());
-                    error("Type Error(6): Should not be a StmtAddressType.");
-                }
-
-                if(cannotBeRef &&
-                    ((typeNode.getType() instanceof RefType) ||
-                    (typeNode.getType() instanceof ArrayType)))
-                {
-                    typeNode = classHierarchy.getTypeNode(ErroneousType.v());
-                    error("Type Error(7): Should not be a RefType nor an ArrayType.");
-                }
-
-                elements = parents.elements();
-                for(int i = 0; i < elements.length; i++)
-                {
-                    TypeVariable parent =
-                        (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-                    if(parent.typeNode != null)
-                    {
-                        if(!typeNode.hasAncestor(parent.typeNode))
-                        {
-//                            System.out.println(typeNode.getType() + 
-//                                " can't have " + parent.typeNode.getType() +
-//                                " as parent");
-                            parent.typeNode = typeNode =
-                                classHierarchy.getTypeNode(ErroneousType.v());
-                            error("Type Error(8): Parent type is not a valid ancestor.");
-                        }
-                    }
-                }
-
-                elements = children.elements();
-                for(int i = 0; i < elements.length; i++)
-                {
-                    TypeVariable child =
-                        (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-                    if(child.typeNode != null)
-                    {
-                        if(!typeNode.hasDescendant(child.typeNode))
-                        {
-//                            System.out.println(typeNode.getType() + 
-//                                " can't have " + child.typeNode.getType() +
-//                                " as child");
-                            child.typeNode = typeNode =
-                                classHierarchy.getTypeNode(ErroneousType.v());
-                            error("Type Error(9): Child type is not a valid descendant.");
-                        }
-                    }
-                }
-            }
-
-            var.parents = new IntSet();
-            var.children = new IntSet();
-            var.isArrayOf = null;
-        }
-
-        void removeEcrIndirectRelations()
-        {
-            TypeVariable x = ecr();
-            x.ancestors = new BitSet();
-
-            TypeVariable[] parents = getEcrParents();
-            for(int i = 0; i < parents.length; i++)
-            {
-                x.ancestors.or(parents[i].ancestors);
-            }
-            for(int i = 0; i < parents.length; i++)
-            {
-                if(x.ancestors.get(parents[i].id))
-                {
-                    x.parents.clear(parents[i].id);
-                    parents[i].children.clear(x.id);
-                }
-                else
-                {
-                    x.ancestors.set(parents[i].id);
-                }
-            }
-        }
-
-        void ecrAddParent(TypeVariable variable)
-        {
-            if(ecr() != variable.ecr())
-            {
-                if(DEBUG)
-                {
-                    System.out.println(typeVariableStringHashtable.get(variable.ecr()) + " < " +
-                        typeVariableStringHashtable.get(ecr()));
-                }
-
-                ecr().parents.set(variable.ecr().id);
-                variable.ecr().children.set(ecr().id);
-            }
-        }
-
-        void ecrAddChild(TypeVariable variable)
-        {
-            if(ecr() != variable.ecr())
-            {
-                if(DEBUG)
-                {
-                    System.out.println(typeVariableStringHashtable.get(ecr()) + " < " +
-                        typeVariableStringHashtable.get(variable.ecr()));
-                }
-
-                ecr().children.set(variable.ecr().id);
-                variable.ecr().parents.set(ecr().id);
-            }
-        }
-
-        void ecrCannotBeInt()
-        {
-            ecr().cannotBeInt = true;
-        }
-
-        void ecrCannotBeLong()
-        {
-            ecr().cannotBeLong = true;
-        }
-
-        void ecrCannotBeFloat()
-        {
-            ecr().cannotBeFloat = true;
-        }
-
-        void ecrCannotBeDouble()
-        {
-            ecr().cannotBeDouble = true;
-        }
-
-        void ecrCannotBeAddress()
-        {
-            ecr().cannotBeAddress = true;
-        }
-
-        void ecrCannotBeRef()
-        {
-            ecr().cannotBeRef = true;
-        }
-
-        int getEcrId()
-        {
-            return ecr().id;
-        }
-
-        boolean isEcrArray()
-        {
-            return ecr().isArrayOf != null;
-        }
-
-        int ecrArrayDepth()
-        {
-            return ecr().arrayDepth;
-        }
-
-        TypeVariable getEcrIsArrayOf()
-        {
-            TypeVariable x = ecr();
-
-            if(x.isArrayOf == null)
-            {
-                x.isArrayOf = new TypeVariable();
-            }
-
-            return x.isArrayOf;
-        }
-
-        IntSet getEcrParentIds()
-        {
-            return (IntSet) ecr().parents.clone();
-        }
-
-        TypeVariable[] getEcrParents()
-        {
-            TypeVariable x = ecr();
-            int[] elements = x.parents.elements();
-            TypeVariable[] result = new TypeVariable[elements.length];
-
-            for(int i = 0; i < elements.length; i++)
-            {
-                result[i] = (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-            }
-
-            return result;
-        }
-
-        TypeVariable[] getEcrChildren()
-        {
-            TypeVariable x = ecr();
-            int[] elements = x.children.elements();
-            TypeVariable[] result = new TypeVariable[elements.length];
-
-            for(int i = 0; i < elements.length; i++)
-            {
-                result[i] = (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-            }
-
-            return result;
-        }
-
-        ClassHierarchy.TypeNode getEcrTypeNode()
-        {
-            return ecr().typeNode;
-        }
-
-        boolean setEcrTypeNode(ClassHierarchy.TypeNode typeNode)
-        {
-            TypeVariable[] elements = getEcrParents();
-            for(int i = 0; i < elements.length; i++)
-            {
-                if(elements[i].typeNode != null)
-                {
-                    if((!typeNode.hasAncestor(elements[i].typeNode)) &&
-                        (typeNode != elements[i].typeNode))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            elements = getEcrChildren();
-            for(int i = 0; i < elements.length; i++)
-            {
-                if(elements[i].typeNode != null)
-                {
-                    if((!typeNode.hasDescendant(elements[i].typeNode)) &&
-                        (typeNode != elements[i].typeNode))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            if(isEcrArray())
-            {
-                if(!(typeNode.getType() instanceof ArrayType))
-                {
-                    return false;
-                }
-                else
-                {
-                    ArrayType at = (ArrayType) typeNode.getType();
-                    ClassHierarchy.TypeNode tn = (at.numDimensions > 1) ?
-                        classHierarchy.getTypeNode(
-                        ArrayType.v(at.baseType, at.numDimensions - 1)) :
-                        classHierarchy.getTypeNode(at.baseType);
-
-                    if(!tn.hasDescendant(getEcrIsArrayOf().getEcrTypeNode()))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            ecr().typeNode = typeNode;
-            return true;
-        }
-
-        void unsetEcrTypeNode()
-        {
-           ecr().typeNode = null;
-        }
-    }
-
-    private class ConstraintCollector extends AbstractStmtSwitch
-    {
-        private void handleInvokeExpr(InvokeExpr ie)
-        {
-            if(ie instanceof InterfaceInvokeExpr)
-            {
-                InterfaceInvokeExpr invoke = (InterfaceInvokeExpr) ie;
-
-                SootMethod method = invoke.getMethod();
-                Value base = invoke.getBase();
-
-                if(base instanceof Local)
-                {
-                    Local local = (Local) base;
-
-                    TypeVariable localType = getTypeVariable(local);
-
-                    localType.ecrAddParent(getTypeVariable(method.getDeclaringClass()));
-                }
-
-                int count = invoke.getArgCount();
-
-                for(int i = 0; i < count; i++)
-                {
-                    if(invoke.getArg(i) instanceof Local)
-                    {
-                        Local local = (Local) invoke.getArg(i);
-
-                        TypeVariable localType = getTypeVariable(local);
-
-                        localType.ecrAddParent(getTypeVariable(method.getParameterType(i)));
-                    }
-                }
-            }
-            else if(ie instanceof SpecialInvokeExpr)
-            {
-                SpecialInvokeExpr invoke = (SpecialInvokeExpr) ie;
-
-                SootMethod method = invoke.getMethod();
-                Value base = invoke.getBase();
-
-                if(base instanceof Local)
-                {
-                    Local local = (Local) base;
-
-                    TypeVariable localType = getTypeVariable(local);
-
-                    localType.ecrAddParent(getTypeVariable(method.getDeclaringClass()));
-                }
-
-                int count = invoke.getArgCount();
-
-                for(int i = 0; i < count; i++)
-                {
-                    if(invoke.getArg(i) instanceof Local)
-                    {
-                        Local local = (Local) invoke.getArg(i);
-
-                        TypeVariable localType = getTypeVariable(local);
-
-                        localType.ecrAddParent(getTypeVariable(method.getParameterType(i)));
-                    }
-                }
-            }
-            else if(ie instanceof VirtualInvokeExpr)
-            {
-                VirtualInvokeExpr invoke = (VirtualInvokeExpr) ie;
-
-                SootMethod method = invoke.getMethod();
-                Value base = invoke.getBase();
-
-                if(base instanceof Local)
-                {
-                    Local local = (Local) base;
-
-                    TypeVariable localType = getTypeVariable(local);
-
-                    localType.ecrAddParent(getTypeVariable(method.getDeclaringClass()));
-                }
-
-                int count = invoke.getArgCount();
-
-                for(int i = 0; i < count; i++)
-                {
-                    if(invoke.getArg(i) instanceof Local)
-                    {
-                        Local local = (Local) invoke.getArg(i);
-
-                        TypeVariable localType = getTypeVariable(local);
-
-                        localType.ecrAddParent(getTypeVariable(method.getParameterType(i)));
-                    }
-                }
-            }
-            else if(ie instanceof StaticInvokeExpr)
-            {
-                StaticInvokeExpr invoke = (StaticInvokeExpr) ie;
-
-                SootMethod method = invoke.getMethod();
-
-                int count = invoke.getArgCount();
-
-                for(int i = 0; i < count; i++)
-                {
-                    if(invoke.getArg(i) instanceof Local)
-                    {
-                        Local local = (Local) invoke.getArg(i);
-
-                        TypeVariable localType = getTypeVariable(local);
-
-                        localType.ecrAddParent(getTypeVariable(method.getParameterType(i)));
-                    }
-                }
-            }
-            else
-            {
-                throw new RuntimeException("Unhandled invoke expression type: " + ie.getClass());
-            }
-        }
-
-        public void caseBreakpointStmt(BreakpointStmt stmt)
-        {
-            // Do nothing
-        }
-
-        public void caseInvokeStmt(InvokeStmt stmt)
-        {
-            handleInvokeExpr((InvokeExpr) stmt.getInvokeExpr());
-        }
-
-        public void caseAssignStmt(AssignStmt stmt)
-        {
-            Value l = stmt.getLeftOp();
-            Value r = stmt.getRightOp();
-
-//            System.out.println(l + " = " + r);
-
-            TypeVariable left = null;
-            TypeVariable right = null;
-
-            if(l instanceof ArrayRef)
-            {
-                ArrayRef ref = (ArrayRef) l;
-                Value base = ref.getBase();
-                Value index = ref.getIndex();
-
-                TypeVariable baseType = getTypeVariable((Local) base);
-                left = baseType.getEcrIsArrayOf();
-
-                if(index instanceof Local)
-                {
-                    getTypeVariable((Local) index).ecrCannotBeLong();
-                    getTypeVariable((Local) index).ecrCannotBeFloat();
-                    getTypeVariable((Local) index).ecrCannotBeDouble();
-                    getTypeVariable((Local) index).ecrCannotBeAddress();
-                    getTypeVariable((Local) index).ecrCannotBeRef();
-                }
-            }
-            else if(l instanceof Local)
-            {
-                left = getTypeVariable((Local) l);
-            }
-            else if(l instanceof InstanceFieldRef)
-            {
-                InstanceFieldRef ref = (InstanceFieldRef) l;
-
-                TypeVariable baseType = getTypeVariable((Local) ref.getBase());
-                baseType.ecrAddParent(getTypeVariable(ref.getField().getDeclaringClass()));
-                left = getTypeVariable(ref.getField().getType());
-            }
-            else if(l instanceof StaticFieldRef)
-            {
-                StaticFieldRef ref = (StaticFieldRef) l;
-
-                left = getTypeVariable(ref.getField().getType());
-            }
-            else
-            {
-                throw new RuntimeException("Unhandled variable type: " + l.getClass());
-            }
-
-            if(r instanceof ArrayRef)
-            {
-                ArrayRef ref = (ArrayRef) r;
-                Value base = ref.getBase();
-                Value index = ref.getIndex();
-
-                TypeVariable baseType = getTypeVariable((Local) base);
-                right = baseType.getEcrIsArrayOf();
-
-                if(index instanceof Local)
-                {
-                    getTypeVariable((Local) index).ecrCannotBeLong();
-                    getTypeVariable((Local) index).ecrCannotBeFloat();
-                    getTypeVariable((Local) index).ecrCannotBeDouble();
-                    getTypeVariable((Local) index).ecrCannotBeAddress();
-                    getTypeVariable((Local) index).ecrCannotBeRef();
-                }
-            }
-            else if(r instanceof DoubleConstant)
-            {
-                right = getTypeVariable(DoubleType.v());
-            }
-            else if(r instanceof FloatConstant)
-            {
-                right = getTypeVariable(FloatType.v());
-            }
-            else if(r instanceof IntConstant)
-            {
-                right = getTypeVariable(IntType.v());
-            }
-            else if(r instanceof LongConstant)
-            {
-                right = getTypeVariable(LongType.v());
-            }
-            else if(r instanceof NullConstant)
-            {
-                right = null; // getTypeVariable(NullType.v());
-            }
-            else if(r instanceof StringConstant)
-            {
-                right = getTypeVariable(RefType.v("java.lang.String"));
-            }
-            else if(r instanceof BinopExpr)
-            {
-                BinopExpr be = (BinopExpr) r;
-
-                if(be.getOp1() instanceof Local)
-                {
-                    TypeVariable var  = getTypeVariable((Local) be.getOp1());
-
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr))
-                    {
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                        var.ecrAddParent(left);
-                    }
-                    else if((r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr) ||
-                        (r instanceof ShlExpr) ||
-                        (r instanceof ShrExpr) ||
-                        (r instanceof UshrExpr))
-                    {
-                        var.ecrCannotBeFloat();
-                        var.ecrCannotBeDouble();
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                        var.ecrAddParent(left);
-                        right = var;
-                    }
-                    else if(r instanceof CmpExpr)
-                    {
-                        var.ecrCannotBeInt();
-                        var.ecrCannotBeFloat();
-                        var.ecrCannotBeDouble();
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                    }
-                    else if((r instanceof CmpgExpr) ||
-                        (r instanceof CmplExpr))
-                    {
-                        var.ecrCannotBeInt();
-                        var.ecrCannotBeLong();
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                    }
-                    else if((r instanceof EqExpr) ||
-                        (r instanceof NeExpr))
-                    {
-                        var.ecrCannotBeLong();
-                        var.ecrCannotBeFloat();
-                        var.ecrCannotBeDouble();
-                        var.ecrCannotBeAddress();
-                    }
-                    else if((r instanceof GeExpr) ||
-                        (r instanceof GtExpr) ||
-                        (r instanceof LeExpr) ||
-                        (r instanceof LtExpr))
-                    {
-                        var.ecrCannotBeLong();
-                        var.ecrCannotBeFloat();
-                        var.ecrCannotBeDouble();
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                    }
-                }
-                else if(be.getOp1() instanceof DoubleConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr) ||
-                        (r instanceof ShlExpr) ||
-                        (r instanceof ShrExpr) ||
-                        (r instanceof UshrExpr))
-                    {
-                        getTypeVariable(DoubleType.v()).ecrAddParent(left);
-                        right = getTypeVariable(DoubleType.v());
-                    }
-                }
-                else if(be.getOp1() instanceof FloatConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr) ||
-                        (r instanceof ShlExpr) ||
-                        (r instanceof ShrExpr) ||
-                        (r instanceof UshrExpr))
-                    {
-                        getTypeVariable(FloatType.v()).ecrAddParent(left);
-                        right = getTypeVariable(FloatType.v());
-                    }
-                }
-                else if(be.getOp1() instanceof IntConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr) ||
-                        (r instanceof ShlExpr) ||
-                        (r instanceof ShrExpr) ||
-                        (r instanceof UshrExpr))
-                    {
-                        getTypeVariable(IntType.v()).ecrAddParent(left);
-                        right = getTypeVariable(IntType.v());
-                    }
-                }
-                else if(be.getOp1() instanceof LongConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr) ||
-                        (r instanceof ShlExpr) ||
-                        (r instanceof ShrExpr) ||
-                        (r instanceof UshrExpr))
-                    {
-                        getTypeVariable(LongType.v()).ecrAddParent(left);
-                        right = getTypeVariable(LongType.v());
-                    }
-                }
-                else if(be.getOp1() instanceof NullConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr) ||
-                        (r instanceof ShlExpr) ||
-                        (r instanceof ShrExpr) ||
-                        (r instanceof UshrExpr))
-                    {
-                        // getTypeVariable(NullType.v()).ecrAddParent(left);
-                        right = null; // getTypeVariable(NullType.v());
-                    }
-                }
-                else if(be.getOp1() instanceof StringConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr) ||
-                        (r instanceof ShlExpr) ||
-                        (r instanceof ShrExpr) ||
-                        (r instanceof UshrExpr))
-                    {
-                        getTypeVariable(RefType.v("java.lang.String")).ecrAddParent(left);
-                        right = getTypeVariable(RefType.v("java.lang.String"));
-                    }
-                }
-
-                if(be.getOp2() instanceof Local)
-                {
-                    TypeVariable var  = getTypeVariable((Local) be.getOp2());
-
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr))
-                    {
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                        right = var;
-                    }
-                    else if((r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr))
-                    {
-                        var.ecrCannotBeFloat();
-                        var.ecrCannotBeDouble();
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                        right = var;
-                    }
-                    else if((r instanceof ShlExpr) ||
-                        (r instanceof ShrExpr) ||
-                        (r instanceof UshrExpr))
-                    {
-                        var.ecrCannotBeLong();
-                        var.ecrCannotBeFloat();
-                        var.ecrCannotBeDouble();
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                    }
-                    else if(r instanceof CmpExpr)
-                    {
-                        var.ecrCannotBeInt();
-                        var.ecrCannotBeFloat();
-                        var.ecrCannotBeDouble();
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                        right = getTypeVariable(IntType.v());
-                    }
-                    else if((r instanceof CmpgExpr) ||
-                        (r instanceof CmplExpr))
-                    {
-                        var.ecrCannotBeInt();
-                        var.ecrCannotBeLong();
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                        right = getTypeVariable(IntType.v());
-                    }
-                    else if((r instanceof EqExpr) ||
-                        (r instanceof NeExpr))
-                    {
-                        var.ecrCannotBeLong();
-                        var.ecrCannotBeFloat();
-                        var.ecrCannotBeDouble();
-                        var.ecrCannotBeAddress();
-                        right = getTypeVariable(IntType.v());
-                    }
-                    else if((r instanceof GeExpr) ||
-                        (r instanceof GtExpr) ||
-                        (r instanceof LeExpr) ||
-                        (r instanceof LtExpr))
-                    {
-                        var.ecrCannotBeLong();
-                        var.ecrCannotBeFloat();
-                        var.ecrCannotBeDouble();
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                        right = getTypeVariable(IntType.v());
-                    }
-                }
-                else if(be.getOp2() instanceof DoubleConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr))
-                    {
-                        right = getTypeVariable(DoubleType.v());
-                    }
-                    else
-                    {
-                        right = getTypeVariable(IntType.v());
-                    }
-                }
-                else if(be.getOp2() instanceof FloatConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr))
-                    {
-                        right = getTypeVariable(FloatType.v());
-                    }
-                    else
-                    {
-                        right = getTypeVariable(IntType.v());
-                    }
-                }
-                else if(be.getOp2() instanceof IntConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr))
-                    {
-                        right = getTypeVariable(IntType.v());
-                    }
-                    else if(!((r instanceof ShlExpr) ||
-                        (r instanceof UshrExpr) ||
-                        (r instanceof ShrExpr)))
-                    {
-                        right = getTypeVariable(IntType.v());
-                    }
-                }
-                else if(be.getOp2() instanceof LongConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr))
-                    {
-                        right = getTypeVariable(LongType.v());
-                    }
-                    else
-                    {
-                        right = getTypeVariable(IntType.v());
-                    }
-                }
-                else if(be.getOp2() instanceof NullConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr))
-                    {
-                        right = null; // getTypeVariable(NullType.v());
-                    }
-                    else
-                    {
-                        right = getTypeVariable(IntType.v());
-                    }
-                }
-                else if(be.getOp2() instanceof StringConstant)
-                {
-                    if((r instanceof AddExpr) ||
-                        (r instanceof SubExpr) ||
-                        (r instanceof MulExpr) ||
-                        (r instanceof DivExpr) ||
-                        (r instanceof RemExpr) ||
-                        (r instanceof AndExpr) ||
-                        (r instanceof OrExpr) ||
-                        (r instanceof XorExpr))
-                    {
-                        right = getTypeVariable(RefType.v("java.lang.String"));
-                    }
-                    else
-                    {
-                        right = getTypeVariable(IntType.v());
-                    }
-                }
-            }
-            else if(r instanceof CastExpr)
-            {
-                CastExpr ce = (CastExpr) r;
-
-                right = getTypeVariable(ce.getCastType());
-            }
-            else if(r instanceof InstanceOfExpr)
-            {
-                InstanceOfExpr ioe = (InstanceOfExpr) r;
-
-                TypeVariable var = getTypeVariable((Local) ioe.getOp());
-
-                var.ecrCannotBeInt();
-                var.ecrCannotBeLong();
-                var.ecrCannotBeFloat();
-                var.ecrCannotBeDouble();
-                var.ecrCannotBeAddress();
-
-                right = getTypeVariable(IntType.v());
-            }
-            else if(r instanceof InvokeExpr)
-            {
-                InvokeExpr ie = (InvokeExpr) r;
-
-                handleInvokeExpr(ie);
-
-                right = getTypeVariable(ie.getMethod().getReturnType());
-            }
-            else if(r instanceof NewArrayExpr)
-            {
-                NewArrayExpr nae = (NewArrayExpr) r;
-
-                Type baseType = nae.getBaseType();
-
-                if(baseType instanceof ArrayType)
-                {
-                    right = getTypeVariable(ArrayType.v(((ArrayType) baseType).
-                        baseType, ((ArrayType) baseType).numDimensions + 1));
-                }
-                else
-                    right = getTypeVariable(ArrayType.v((BaseType) baseType, 1));
-
-                Value size = nae.getSize();
-                if(size instanceof Local)
-                {
-                    TypeVariable var = getTypeVariable((Local) size);
-                    var.ecrCannotBeLong();
-                    var.ecrCannotBeFloat();
-                    var.ecrCannotBeDouble();
-                    var.ecrCannotBeAddress();
-                    var.ecrCannotBeRef();
-                }
-            }
-            else if(r instanceof NewExpr)
-            {
-                NewExpr na = (NewExpr) r;
-
-                right = getTypeVariable(na.getBaseType());
-            }
-            else if(r instanceof NewMultiArrayExpr)
-            {
-                NewMultiArrayExpr nmae = (NewMultiArrayExpr) r;
-
-                right = getTypeVariable(nmae.getBaseType());
-
-                for(int i = 0; i < nmae.getSizeCount(); i++)
-                {
-                    Value size = nmae.getSize(i);
-                    if(size instanceof Local)
-                    {
-                        TypeVariable var = getTypeVariable((Local) size);
-                        var.ecrCannotBeLong();
-                        var.ecrCannotBeFloat();
-                        var.ecrCannotBeDouble();
-                        var.ecrCannotBeAddress();
-                        var.ecrCannotBeRef();
-                    }
-                }
-            }
-            else if(r instanceof LengthExpr)
-            {
-                LengthExpr le = (LengthExpr) r;
-
-                if(le.getOp() instanceof Local)
-                {
-                    getTypeVariable((Local) le.getOp()).getEcrIsArrayOf();
-                }
-
-                right = getTypeVariable(IntType.v());
-            }
-            else if(r instanceof NegExpr)
-            {
-                NegExpr ne = (NegExpr) r;
-
-                if(ne.getOp() instanceof Local)
-                {
-                    right = getTypeVariable((Local) ne.getOp());
-
-                    right.ecrCannotBeAddress();
-                    right.ecrCannotBeRef();
-                }
-                else if(ne.getOp() instanceof DoubleConstant)
-                {
-                    right = getTypeVariable(DoubleType.v());
-                }
-                else if(ne.getOp() instanceof FloatConstant)
-                {
-                    right = getTypeVariable(FloatType.v());
-                }
-                else if(ne.getOp() instanceof IntConstant)
-                {
-                    right = getTypeVariable(IntType.v());
-                }
-                else if(ne.getOp() instanceof LongConstant)
-                {
-                    right = getTypeVariable(LongType.v());
-                }
-            }
-            else if(r instanceof Local)
-            {
-                right = getTypeVariable((Local) r);
-            }
-            else if(r instanceof InstanceFieldRef)
-            {
-                InstanceFieldRef ref = (InstanceFieldRef) r;
-
-                TypeVariable baseType = getTypeVariable((Local) ref.getBase());
-                baseType.ecrAddParent(getTypeVariable(ref.getField().getDeclaringClass()));
-                right = getTypeVariable(ref.getField().getType());
-            }
-            else if(r instanceof StaticFieldRef)
-            {
-                StaticFieldRef ref = (StaticFieldRef) r;
-
-                right = getTypeVariable(ref.getField().getType());
-            }
-            else if(r instanceof NextNextStmtRef)
-            {
-                right = getTypeVariable(StmtAddressType.v());
-            }
-            else
-            {
-                throw new RuntimeException("Unhandled variable type: " + r.getClass());
-            }
-
-            if(right != null)
-            {
-                right.ecrAddParent(left);
-            }
-        }
-
-        public void caseIdentityStmt(IdentityStmt stmt)
-        {
-            Value l = stmt.getLeftOp();
-            Value r = stmt.getRightOp();
-
-            if(l instanceof Local)
-            {
-                TypeVariable left = getTypeVariable((Local) l);
-
-                if(!(r instanceof CaughtExceptionRef))
-                {
-                    TypeVariable right = getTypeVariable(r.getType());
-                    right.ecrAddParent(left);
-                }
-                else
-                {
-                    List exceptionTypes = TrapManager.getExceptionTypesOf(stmt, stmtBody);
-                    Iterator typeIt = exceptionTypes.iterator();
-
-                    while(typeIt.hasNext())
-                    {
-                        Type t = (Type) typeIt.next();
-
-                        left.ecrAddChild(getTypeVariable(t));
-                    }
-
-                    left.ecrAddParent(getTypeVariable(RefType.v("java.lang.Throwable")));
-                }
-            }
-        }
-
-        public void caseEnterMonitorStmt(EnterMonitorStmt stmt)
-        {
-            if(stmt.getOp() instanceof Local)
-            {
-                TypeVariable op = getTypeVariable((Local) stmt.getOp());
-
-                op.ecrAddParent(getTypeVariable(RefType.v("java.lang.Object")));
-            }
-        }
-
-        public void caseExitMonitorStmt(ExitMonitorStmt stmt)
-        {
-            if(stmt.getOp() instanceof Local)
-            {
-                TypeVariable op = getTypeVariable((Local) stmt.getOp());
-
-                op.ecrAddParent(getTypeVariable(RefType.v("java.lang.Object")));
-            }
-        }
-
-        public void caseGotoStmt(GotoStmt stmt)
-        {
-        }
-
-        public void caseIfStmt(IfStmt stmt)
-        {
-            ConditionExpr cond = (ConditionExpr) stmt.getCondition();
-
-            BinopExpr expr = (BinopExpr) cond;
-            Value l = expr.getOp1();
-            Value r = expr.getOp2();
-
-            if(l instanceof Local)
-            {
-                TypeVariable var = getTypeVariable((Local) l);
-
-                if((cond instanceof EqExpr) ||
-                    (cond instanceof NeExpr))
-                {
-                    var.ecrCannotBeLong();
-                    var.ecrCannotBeFloat();
-                    var.ecrCannotBeDouble();
-                    var.ecrCannotBeAddress();
-                }
-                else if((cond instanceof GeExpr) ||
-                    (cond instanceof GtExpr) ||
-                    (cond instanceof LeExpr) ||
-                    (cond instanceof LtExpr))
-                {
-                    var.ecrCannotBeLong();
-                    var.ecrCannotBeFloat();
-                    var.ecrCannotBeDouble();
-                    var.ecrCannotBeAddress();
-                    var.ecrCannotBeRef();
-                }
-            }
-
-            if(r instanceof Local)
-            {
-                TypeVariable var = getTypeVariable((Local) r);
-
-                if((cond instanceof EqExpr) ||
-                    (cond instanceof NeExpr))
-                {
-                    var.ecrCannotBeLong();
-                    var.ecrCannotBeFloat();
-                    var.ecrCannotBeDouble();
-                    var.ecrCannotBeAddress();
-                }
-                else if((cond instanceof GeExpr) ||
-                    (cond instanceof GtExpr) ||
-                    (cond instanceof LeExpr) ||
-                    (cond instanceof LtExpr))
-                {
-                    var.ecrCannotBeLong();
-                    var.ecrCannotBeFloat();
-                    var.ecrCannotBeDouble();
-                    var.ecrCannotBeAddress();
-                    var.ecrCannotBeRef();
-                }
-            }
-        }
-
-        public void caseLookupSwitchStmt(LookupSwitchStmt stmt)
-        {
-            Value key = stmt.getKey();
-
-            if(key instanceof Local)
-            {
-                getTypeVariable((Local) key).ecrCannotBeLong();
-                getTypeVariable((Local) key).ecrCannotBeFloat();
-                getTypeVariable((Local) key).ecrCannotBeDouble();
-                getTypeVariable((Local) key).ecrCannotBeAddress();
-                getTypeVariable((Local) key).ecrCannotBeRef();
-            }
-        }
-
-        public void caseNopStmt(NopStmt stmt)
-        {
-        }
-
-        public void caseRetStmt(RetStmt stmt)
-        {
-            getTypeVariable((Local) stmt.getStmtAddress()).
-                ecrAddParent(getTypeVariable(StmtAddressType.v()));
-        }
-
-        public void caseReturnStmt(ReturnStmt stmt)
-        {
-            if(stmt.getOp() instanceof Local)
-            {
-                getTypeVariable((Local) stmt.getOp()).ecrAddParent(
-                    getTypeVariable(currentMethod.getReturnType()));
-            }
-        }
-
-        public void caseReturnVoidStmt(ReturnVoidStmt stmt)
-        {
-        }
-
-        public void caseTableSwitchStmt(TableSwitchStmt stmt)
-        {
-            Value key = stmt.getKey();
-
-            if(key instanceof Local)
-            {
-                getTypeVariable((Local) key).ecrCannotBeLong();
-                getTypeVariable((Local) key).ecrCannotBeFloat();
-                getTypeVariable((Local) key).ecrCannotBeDouble();
-                getTypeVariable((Local) key).ecrCannotBeAddress();
-                getTypeVariable((Local) key).ecrCannotBeRef();
-            }
-        }
-
-        public void caseThrowStmt(ThrowStmt stmt)
-        {
-            if(stmt.getOp() instanceof Local)
-            {
-                TypeVariable op = getTypeVariable((Local) stmt.getOp());
-
-                op.ecrAddParent(getTypeVariable(RefType.v("java.lang.Throwable")));
-            }
-        }
-
-        public void defaultCase(Stmt stmt)
-        {
-            throw new RuntimeException("Unhandled statement type: " + stmt.getClass());
-        }
-    }
-
-    private static class SCC
-    {
-        TypeVariable[] variables;
-        boolean[] black;
-        TypeVariable[] finished;
-        int time;
-
-        LinkedList forest = new LinkedList();
-        LinkedList current_tree;
-
-        SCC(Vector typeVariableInstances)
-        {
-            variables = new TypeVariable[typeVariableInstances.size()];
-
-            int counter = 0;
-            for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
-            {
-                variables[counter++] = (TypeVariable) e.nextElement();
-            }
-
-            black = new boolean[variables.length];
-            finished = new TypeVariable[variables.length];
-
-            for(int i = 0; i < variables.length; i++)
-            {
-                if((variables[i] == variables[i].ecr()) &&
-                    (variables[i].arrayDepth == 0))
-                {
-                    if(!black[variables[i].id])
-                    {
-                        black[variables[i].id] = true;
-                        dfsg_visit(variables[i]);
-                    }
-                }
-            }
-
-            black = new boolean[variables.length];
-
-            for(int i = variables.length - 1; i >= 0; i--)
-            {
-                if(finished[i] == null)
-                {
-                    continue;
-                }
-
-                if((finished[i] == finished[i].ecr()) &&
-                    (finished[i].arrayDepth == 0))
-                {
-                    if(!black[finished[i].id])
-                    {
-                        current_tree = new LinkedList();
-                        forest.add(current_tree);
-
-                        black[finished[i].id] = true;
-                        dfsgt_visit(finished[i]);
-                    }
-                }
-            }
-
-            for(Iterator i = forest.iterator(); i.hasNext();)
-            {
-                LinkedList list = (LinkedList) i.next();
-                TypeVariable previous = null;
-
-                for(Iterator j = list.iterator(); j.hasNext();)
-                {
-                    TypeVariable current = (TypeVariable) j.next();
-
-                    if(previous == null)
-                    {
-                        previous = current;
-                    }
-                    else
-                    {
-                        previous.ecrUnion(current);
-                    }
-                }
-            }
-        }
-
-        void dfsg_visit(TypeVariable var)
-        {
-            TypeVariable[] parents = var.getEcrParents();
-
-            for(int i = 0; i < parents.length; i++)
-            {
-                if(!black[parents[i].id])
-                {
-                    black[parents[i].id] = true;
-                    dfsg_visit(parents[i]);
-                }
-            }
-
-            finished[time++] = var;
-        }
-
-        void dfsgt_visit(TypeVariable var)
-        {
-            current_tree.add(var);
-
-            TypeVariable[] children = var.getEcrChildren();
-
-            for(int i = 0; i < children.length; i++)
-            {
-                if(!black[children[i].id])
-                {
-                    if(children[i].arrayDepth == 0)
-                    {
-                        black[children[i].id] = true;
-                        dfsgt_visit(children[i]);
-                    }
-                }
-            }
-        }
-    }
-
-    private static class TypeException extends RuntimeException
-    {
-    }
-
-    private static void error(String message)
-    {
-        if(DEBUG)
-        {
-          System.out.println(message);
-        }
-
-        throw new TypeException();
-    }
+    typeVariableList.set(id, result);
+    
+    return result;
+  }
+
+  private TypeResolver(JimpleBody stmtBody, Scene scene)
+  {
+    this.stmtBody = stmtBody;
+    hierarchy = ClassHierarchy.classHierarchy(scene);
+
+    OBJECT = hierarchy.OBJECT;
+    NULL = hierarchy.NULL;
+    typeVariable(OBJECT);
+    typeVariable(NULL);
+    typeVariable(hierarchy.CLONEABLE);
+    typeVariable(hierarchy.SERIALIZABLE);
+  }
+
+  public static void resolve(JimpleBody stmtBody, Scene scene)
+  {
+    if(DEBUG)
+      {
+	System.out.println(stmtBody.getMethod());
+      }
+
+    try
+      {
+	TypeResolver resolver = new TypeResolver(stmtBody, scene);
+	resolver.resolve_step_1();
+      }
+    catch(TypeException e1)
+      {
+	if(DEBUG)
+	  {
+	    System.out.println("Step 1 Exception-->" + e1.getMessage());
+	  }
+	
+	try
+	  {
+	    TypeResolver resolver = new TypeResolver(stmtBody, scene);
+	    resolver.resolve_step_2();
+	  }
+	catch(TypeException e2)
+	  {
+	    if(DEBUG)
+	      {
+		e2.printStackTrace();
+		System.out.println("Step 2 Exception-->" + e2.getMessage());
+	      }
+	
+	    try
+	    {
+	      TypeResolver resolver = new TypeResolver(stmtBody, scene);
+	      resolver.resolve_step_3();
+	    }
+	    catch(TypeException e3)
+	    {
+	      throw new RuntimeException(e3.getMessage());
+	    }
+	  }
+      }
+
+    soot.jimple.toolkits.typing.integer.TypeResolver.resolve(stmtBody);
+  }
+  
+  private void debug_vars(String message)
+  {
+    if(DEBUG)
+      {
+	int count = 0;
+	System.out.println("**** START:" + message);
+	for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
+	  {
+	    TypeVariable var = (TypeVariable) i.next();
+	    System.out.println(count++ + " " + var);
+	  }
+	System.out.println("**** END:" + message);
+      }
+  }
+
+  private void debug_body()
+  {
+    if(DEBUG)
+      {
+	System.out.println("-- Body Start --");
+	for(Iterator i = stmtBody.getUnits().iterator(); i.hasNext();)
+	  {
+	    Stmt stmt = (Stmt) i.next();
+	    System.out.println(stmt);
+	  }
+	System.out.println("-- Body End --");
+      }
+  }
+
+  private void resolve_step_1() throws TypeException
+  {
+    collect_constraints_1_2();
+    debug_vars("constraints");
+
+    compute_array_depth();
+    propagate_array_constraints();
+    debug_vars("arrays");
+
+    merge_primitive_types();
+    debug_vars("primitive");
+
+    merge_connected_components();
+    debug_vars("components");
+
+    remove_transitive_constraints();
+    debug_vars("transitive");
+
+    merge_single_constraints();
+    debug_vars("single");
+
+    assign_types_1_2();
+    debug_vars("assign");
+
+    check_constraints();
+  }
+
+  private void resolve_step_2() throws TypeException
+  {
+    debug_body();
+    split_new();
+    debug_body();
+
+    collect_constraints_1_2();
+    debug_vars("constraints");
+
+    compute_array_depth();
+    propagate_array_constraints();
+    debug_vars("arrays");
+
+    merge_primitive_types();
+    debug_vars("primitive");
+
+    merge_connected_components();
+    debug_vars("components");
+
+    remove_transitive_constraints();
+    debug_vars("transitive");
+
+    merge_single_constraints();
+    debug_vars("single");
+
+    assign_types_1_2();
+    debug_vars("assign");
+
+    check_constraints();
+  }
+
+  private void resolve_step_3() throws TypeException
+  {
+    collect_constraints_3();
+    compute_approximate_types();
+    assign_types_3();
+    check_and_fix_constraints();
+  }
+
+  private void collect_constraints_1_2()
+  {
+    ConstraintCollector collector = new ConstraintCollector(this, true);
+
+    for(Iterator i = stmtBody.getUnits().iterator(); i.hasNext();)
+      {
+	Stmt stmt = (Stmt) i.next();
+	if(DEBUG)
+	  {
+	    System.out.print("stmt: ");
+	  }
+	collector.collect(stmt, stmtBody);
+	if(DEBUG)
+	  {
+	    System.out.println(stmt);
+	  }
+      }
+  }
+
+  private void collect_constraints_3()
+  {
+    ConstraintCollector collector = new ConstraintCollector(this, false);
+
+    for(Iterator i = stmtBody.getUnits().iterator(); i.hasNext();)
+      {
+	Stmt stmt = (Stmt) i.next();
+	if(DEBUG)
+	  {
+	    System.out.print("stmt: ");
+	  }
+	collector.collect(stmt, stmtBody);
+	if(DEBUG)
+	  {
+	    System.out.println(stmt);
+	  }
+      }
+  }
+
+  private void compute_array_depth() throws TypeException
+  {
+    compute_approximate_types();
+
+    TypeVariable[] vars = new TypeVariable[typeVariableList.size()];
+    vars = (TypeVariable[]) typeVariableList.toArray(vars);
+
+    for(int i = 0; i < vars.length; i++)
+      {
+	vars[i].fixDepth();
+      }
+  }
+
+  private void propagate_array_constraints()
+  {
+    // find max depth
+    int max = 0;
+    for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
+      {
+	TypeVariable var = (TypeVariable) i.next();
+	int depth = var.depth();
+
+	if(depth > max)
+	  {
+	    max = depth;
+	  }
+      }
+
+    if(max > 1)
+      {
+	typeVariable(ArrayType.v(RefType.v("java.lang.Cloneable"), max - 1));
+	typeVariable(ArrayType.v(RefType.v("java.io.Serializable"), max - 1));
+      }
+
+    // create lists for each array depth
+    LinkedList[] lists = new LinkedList[max + 1];
+    for(int i = 0; i <= max; i++)
+      {
+	lists[i] = new LinkedList();
+      }
+
+    // initialize lists
+    for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
+      {
+	TypeVariable var = (TypeVariable) i.next();
+	int depth = var.depth();
+	
+	lists[depth].add(var);
+      }
+
+    // propagate constraints, starting with highest depth
+    for(int i = max; i >= 0; i--)
+      {
+	for(Iterator j = typeVariableList.iterator(); j.hasNext(); )
+	  {
+	    TypeVariable var = (TypeVariable) j.next();
+
+	    var.propagate();
+	  }
+      }
+  }
+
+  private void merge_primitive_types() throws TypeException
+  {
+    // merge primitive types with all parents/children
+    compute_solved();
+
+    for(Iterator i = solved.iterator(); i.hasNext();)
+      {
+	TypeVariable var = (TypeVariable) i.next();
+
+	if(var.type().type() instanceof IntType ||
+	   var.type().type() instanceof LongType ||
+	   var.type().type() instanceof FloatType ||
+	   var.type().type() instanceof DoubleType)
+	  {
+	    List parents;
+	    List children;
+	    boolean finished;
+
+	    do
+	      {
+		finished = true;
+
+		parents = var.parents();
+		if(parents.size() != 0)
+		  {
+		    finished = false;
+		    for(Iterator j = parents.iterator(); j.hasNext(); )
+		      {
+			if(DEBUG)
+			  {
+			    System.out.print(".");
+			  }
+	
+			TypeVariable parent = (TypeVariable) j.next();
+
+			var = var.union(parent);
+		      }
+		  }
+		
+		children = var.children();
+		if(children.size() != 0)
+		  {
+		    finished = false;
+		    for(Iterator j = children.iterator(); j.hasNext(); )
+		      {
+			if(DEBUG)
+			  {
+			    System.out.print(".");
+			  }
+	
+			TypeVariable child = (TypeVariable) j.next();
+
+			var = var.union(child);
+		      }
+		  }
+	      }
+	    while(!finished);
+	  }
+      }
+  }
+
+  private void merge_connected_components() throws TypeException
+  {
+    refresh_solved();
+    List list = new LinkedList();
+    list.addAll(solved);
+    list.addAll(unsolved);
+    
+    StronglyConnectedComponents.merge(list);
+  }
+  
+  private void remove_transitive_constraints() throws TypeException
+  {
+    refresh_solved();
+    List list = new LinkedList();
+    list.addAll(solved);
+    list.addAll(unsolved);
+
+    for(Iterator i = list.iterator(); i.hasNext(); )
+      {
+	TypeVariable var = (TypeVariable) i.next();
+	
+	var.removeIndirectRelations();
+      }
+  }
+
+  private void merge_single_constraints() throws TypeException
+  {
+    boolean finished = false;
+    boolean modified = false;
+    while(true)
+      {
+	categorize();
+	
+	if(single_child_not_null.size() != 0)
+	  {
+	    finished = false;
+	    modified = true;
+	    
+	    for(Iterator i = single_child_not_null.iterator(); i.hasNext(); )
+	      {
+		TypeVariable var = (TypeVariable) i.next();
+
+		if(single_child_not_null.contains(var))
+		  {
+		    TypeVariable child = (TypeVariable) var.children().get(0);
+		
+		    var = var.union(child);
+		  }
+	      }
+	  }
+
+	if(finished)
+	  {
+	    if(single_soft_parent.size() != 0)
+	      {
+		finished = false;
+		modified = true;
+		
+		for(Iterator i = single_soft_parent.iterator(); i.hasNext(); )
+		  {
+		    TypeVariable var = (TypeVariable) i.next();
+		    
+		    if(single_soft_parent.contains(var))
+		      {
+			TypeVariable parent = (TypeVariable) var.parents().get(0);
+			
+			var = var.union(parent);
+		      }
+		  }
+	      }
+	    
+	    if(single_hard_parent.size() != 0)
+	      {
+		finished = false;
+		modified = true;
+		
+		for(Iterator i = single_hard_parent.iterator(); i.hasNext(); )
+		  {
+		    TypeVariable var = (TypeVariable) i.next();
+		    
+		    if(single_hard_parent.contains(var))
+		      {
+			TypeVariable parent = (TypeVariable) var.parents().get(0);
+			
+			debug_vars("union single parent\n " + var + "\n " + parent);
+			var = var.union(parent);
+		      }
+		  }
+	      }
+
+	    if(single_null_child.size() != 0)
+	      {
+		finished = false;
+		modified = true;
+		
+		for(Iterator i = single_null_child.iterator(); i.hasNext(); )
+		  {
+		    TypeVariable var = (TypeVariable) i.next();
+		    
+		    if(single_null_child.contains(var))
+		      {
+			TypeVariable child = (TypeVariable) var.children().get(0);
+			
+			var = var.union(child);
+		      }
+		  }
+	      }
+	    
+	    if(finished)
+	      {
+		break;
+	      }
+	    
+	    continue;
+	  }
+	
+	if(modified)
+	  {
+	    modified = false;
+	    continue;
+	  }
+
+	finished = true;
+	
+      multiple_children:
+	for(Iterator i = multiple_children.iterator(); i.hasNext(); )
+	  {
+	    TypeVariable var = (TypeVariable) i.next();
+	    TypeNode lca = null;
+	    List children_to_remove = new LinkedList();
+	    
+	    var.fixChildren();
+	    
+	    for(Iterator j = var.children().iterator(); j.hasNext(); )
+	      {
+		TypeVariable child = (TypeVariable) j.next();
+		TypeNode type = child.type();
+
+		if(type != null && type.isNull())
+		  {
+		    var.removeChild(child);
+		  }
+		else if(type != null && type.isClass())
+		  {
+		    children_to_remove.add(child);
+		    
+		    if(lca == null)
+		      {
+			lca = type;
+		      }
+		    else
+		      {
+			lca = lca.lcaIfUnique(type);
+
+			if(lca == null)
+			  {
+			    if(DEBUG)
+			      {
+				System.out.println
+				  ("==++==" +
+				   stmtBody.getMethod().getDeclaringClass().getName() + "." + 
+				   stmtBody.getMethod().getName());
+			      }
+			    
+			    continue multiple_children;
+			  }
+		      }
+		  }
+	      }
+	    
+	    if(lca != null)
+	      {
+		for(Iterator j = children_to_remove.iterator(); j.hasNext();)
+		  {
+		    TypeVariable child = (TypeVariable) j.next();
+		    var.removeChild(child);
+		  }
+
+		var.addChild(typeVariable(lca));
+	      }
+	  }
+	
+	for(Iterator i = multiple_parents.iterator(); i.hasNext(); )
+	  {
+	    TypeVariable var = (TypeVariable) i.next();
+	    LinkedList hp = new LinkedList(); // hard parents
+	    
+	    var.fixParents();
+	    
+	    for(Iterator j = var.parents().iterator(); j.hasNext(); )
+	      {
+		TypeVariable parent = (TypeVariable) j.next();
+		TypeNode type = parent.type();
+		
+		if(type != null)
+		  {
+		    for(Iterator k = hp.iterator(); k.hasNext();)
+		      {
+			TypeVariable otherparent = (TypeVariable) k.next();
+			TypeNode othertype = otherparent.type();
+			
+			if(type.hasDescendant(othertype))
+			  {
+			    var.removeParent(parent);
+			    type = null;
+			    break;
+			  }
+			
+			if(type.hasAncestor(othertype))
+			  {
+			    var.removeParent(otherparent);
+			    k.remove();
+			  }
+		      }
+		    
+		    if(type != null)
+		      {
+			hp.add(parent);
+		      }
+		  }
+	      }
+	  }
+      }
+  }
+
+  private void assign_types_1_2() throws TypeException
+  {
+    for(Iterator i = stmtBody.getLocals().iterator(); i.hasNext(); )
+      {
+	Local local = (Local) i.next();
+	TypeVariable var = typeVariable(local);
+	
+	if(var == null)
+	  {
+	    local.setType(RefType.v("java.lang.Object"));
+	  }
+	else if (var.depth() == 0)
+	  {
+	    if(var.type() == null)
+	      {
+		TypeVariable.error("Type Error(5):  Variable without type");
+	      }
+	    else
+	      {
+		local.setType(var.type().type());
+	      }
+	  }
+	else
+	  {
+	    TypeVariable element = var.element();
+	    
+	    for(int j = 1; j < var.depth(); j++)
+	      {
+		element = element.element();
+	      }
+
+	    if(element.type() == null)
+	      {
+		TypeVariable.error("Type Error(6):  Array variable without base type");
+	      }
+	    else if(element.type().type() instanceof NullType)
+	      {
+		local.setType(NullType.v());
+	      }
+	    else
+	      {
+		BaseType t = (BaseType) element.type().type();
+		if(t instanceof IntType)
+		  {
+		    local.setType(var.approx().type());
+		  }
+		else
+		  {
+		    local.setType(ArrayType.v(t, var.depth()));
+		  }
+	      }
+	  }
+	
+	if(DEBUG)
+	  {
+	    if((var != null) &&
+	       (var.approx() != null) &&
+	       (var.approx().type() != null) &&
+	       (local != null) &&
+	       (local.getType() != null) &&
+	       !local.getType().equals(var.approx().type()))
+	      {
+		System.out.println("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
+	      }
+	  }
+      }
+  }
+
+  private void assign_types_3() throws TypeException
+  {
+    for(Iterator i = stmtBody.getLocals().iterator(); i.hasNext(); )
+      {
+	Local local = (Local) i.next();
+	TypeVariable var = typeVariable(local);
+	
+	if(var == null ||
+	   var.approx() == null ||
+	   var.approx().type() == null)
+	  {
+	    local.setType(RefType.v("java.lang.Object"));
+	  }
+	else
+	  {
+	    local.setType(var.approx().type());
+	  }
+      }
+  }
+
+  private void check_constraints() throws TypeException
+  {
+    ConstraintChecker checker = new ConstraintChecker(this, false);
+    StringBuffer s = null;
+
+    if(DEBUG)
+      {
+	s = new StringBuffer("Checking:\n");
+      }
+
+    for(Iterator i = stmtBody.getUnits().iterator(); i.hasNext();)
+      {
+	Stmt stmt = (Stmt) i.next();
+	if(DEBUG)
+	  {
+	    s.append(" " + stmt + "\n");
+	  }
+	try
+	  {
+	    checker.check(stmt, stmtBody);
+	  }
+	catch(TypeException e)
+	  {
+	    if(DEBUG)
+	      {
+		System.out.println(s);
+	      }
+	    throw e;
+	  }
+      }
+  }
+
+  private void check_and_fix_constraints() throws TypeException
+  {
+    ConstraintChecker checker = new ConstraintChecker(this, true);
+    StringBuffer s = null;
+    PatchingChain units = stmtBody.getUnits();
+    Stmt[] stmts = new Stmt[units.size()];
+    units.toArray(stmts);
+
+    if(DEBUG)
+      {
+	s = new StringBuffer("Checking:\n");
+      }
+
+    for(int i = 0; i < stmts.length; i++)
+      {
+	Stmt stmt = stmts[i];
+
+	if(DEBUG)
+	  {
+	    s.append(" " + stmt + "\n");
+	  }
+	try
+	  {
+	    checker.check(stmt, stmtBody);
+	  }
+	catch(TypeException e)
+	  {
+	    if(DEBUG)
+	      {
+		System.out.println(s);
+	      }
+	    throw e;
+	  }
+      }
+  }
+
+  private void compute_approximate_types() throws TypeException
+  {
+    TreeSet workList = new TreeSet();
+
+    for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
+      {
+	TypeVariable var = (TypeVariable) i.next();
+
+	if(var.type() != null)
+	  {
+	    workList.add(var);
+	  }
+      }
+
+    TypeVariable.computeApprox(workList);
+
+    for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
+      {
+	TypeVariable var = (TypeVariable) i.next();
+
+	if(var.approx() == NULL)
+	  {
+	    var.union(typeVariable(NULL));
+	  }
+	else if (var.approx() == null)
+	  {
+	    var.union(typeVariable(NULL));
+	  }
+      }
+  }
+  
+  private void compute_solved()
+  {
+    Set unsolved_set = new TreeSet();
+    Set solved_set = new TreeSet();
+    
+    for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
+      {
+	TypeVariable var = (TypeVariable) i.next();
+	
+	if(var.depth() == 0)
+	  {
+	    if(var.type() == null)
+	      {
+		unsolved_set.add(var);
+	      }
+	    else
+	      {
+		solved_set.add(var);
+	      }
+	  }
+      }
+
+    solved = new LinkedList(solved_set);
+    unsolved = new LinkedList(unsolved_set);
+  }
+
+  private void refresh_solved() throws TypeException
+  {
+    Set unsolved_set = new TreeSet();
+    Set solved_set = new TreeSet(solved);
+    
+    for(Iterator i = unsolved.iterator(); i.hasNext(); )
+      {
+	TypeVariable var = (TypeVariable) i.next();
+	
+	if(var.depth() == 0)
+	  {
+	    if(var.type() == null)
+	      {
+		unsolved_set.add(var);
+	      }
+	    else
+	      {
+		solved_set.add(var);
+	      }
+	  }
+      }
+
+    solved = new LinkedList(solved_set);
+    unsolved = new LinkedList(unsolved_set);
+    
+    // validate();
+  }
+
+  private void categorize() throws TypeException
+  {
+    refresh_solved();
+   
+    single_soft_parent = new LinkedList();
+    single_hard_parent = new LinkedList();
+    multiple_parents = new LinkedList();
+    single_child_not_null = new LinkedList();
+    single_null_child = new LinkedList();
+    multiple_children = new LinkedList();
+    
+    for(Iterator i = unsolved.iterator(); i .hasNext(); )
+      {
+	TypeVariable var = (TypeVariable) i.next();
+	
+	// parent category
+	{
+	  List parents = var.parents();
+	  int size = parents.size();
+	  
+	  if(size == 0)
+	    {
+	      var.addParent(typeVariable(OBJECT));
+	      single_soft_parent.add(var);
+	    }
+	  else if(size == 1)
+	    {
+	      TypeVariable parent = (TypeVariable) parents.get(0);
+	      
+	      if(parent.type() == null)
+		{
+		  single_soft_parent.add(var);
+		}
+	      else
+		{
+		  single_hard_parent.add(var);
+		}
+	    }
+	  else
+	    {
+	      multiple_parents.add(var);
+	    }
+	}
+	
+	// child category
+	{
+	  List children = var.children();
+	  int size = children.size();
+	  
+	  if(size == 0)
+	    {
+	      var.addChild(typeVariable(NULL));
+	      single_null_child.add(var);
+	    }
+	  else if(size == 1)
+	    {
+	      TypeVariable child = (TypeVariable) children.get(0);
+	      
+	      if(child.type() == NULL)
+		{
+		  single_null_child.add(var);
+		}
+	      else
+		{
+		  single_child_not_null.add(var);
+		}
+	    }
+	  else
+	    {
+	      multiple_children.add(var);
+	    }
+	}
+      }
+  }
+
+  private void validate() throws TypeException
+  {
+    for(Iterator i = solved.iterator(); i.hasNext(); )
+      {
+	TypeVariable var = (TypeVariable) i.next();
+	
+	try
+	  {
+	    var.validate();
+	  }
+	catch(TypeException e)
+	  {
+	    debug_vars("Error while validating");
+	    throw(e);
+	  }
+      }
+  }
+
+  private void split_new()
+  {
+    CompleteUnitGraph graph = new CompleteUnitGraph(stmtBody);
+    SimpleLocalDefs defs = new SimpleLocalDefs(graph);
+    SimpleLocalUses uses = new SimpleLocalUses(graph, defs);
+    PatchingChain units = stmtBody.getUnits();
+    Stmt[] stmts = new Stmt[units.size()];
+
+    stmtBody.getUnits().toArray(stmts);
+    
+    for(int i = 0; i < stmts.length; i++)
+      {
+	Stmt stmt = stmts[i];
+
+	if(stmt instanceof InvokeStmt)
+	  {
+	    InvokeStmt invoke = (InvokeStmt) stmt;
+	    
+	    if(invoke.getInvokeExpr() instanceof SpecialInvokeExpr)
+	      {
+		SpecialInvokeExpr special = (SpecialInvokeExpr) invoke.getInvokeExpr();
+		
+		if(special.getMethod().getName().equals("<init>"))
+		  {
+		    List deflist = defs.getDefsOfAt((Local) special.getBase(), invoke);
+		    
+		    while(deflist.size() == 1)
+		      {
+			Stmt stmt2 = (Stmt) deflist.get(0);
+			
+			if(stmt2 instanceof AssignStmt)
+			  {
+			    AssignStmt assign = (AssignStmt) stmt2;
+			    
+			    if(assign.getRightOp() instanceof Local)
+			      {
+				deflist = defs.getDefsOfAt((Local) assign.getRightOp(), assign);
+				continue;
+			      }
+			    else if(assign.getRightOp() instanceof NewExpr)
+			      {			
+				// We split the local.
+				
+				Local newlocal = Jimple.v().newLocal("tmp", null);
+				stmtBody.getLocals().add(newlocal);
+				
+				special.setBase(newlocal);
+				
+				units.insertAfter(Jimple.v().newAssignStmt(assign.getLeftOp(), newlocal), assign);
+				assign.setLeftOp(newlocal);
+			      }
+			  }
+			break;
+		      }
+		  }
+	      }
+	  }
+      }
+  }
 }
-

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2000 Etienne M. Gagnon <egagnon@j-meg.com>.  All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,50 +24,15 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.util.*;
 import java.util.*;
 
-
 /**
- *   Soot representation of the Java built-in type 'byte'. Implemented as
- *   a singleton.
+ * Soot interface implemented by all classes representing
+ * integer types [boolean, byte, short, char, and int].
  */
-public class ByteType extends BaseType implements IntegerType
+public interface IntegerType
 {
-    private static final ByteType constant = new ByteType();
-
-    private ByteType()
-    {
-    }
-
-    /** @return this class's singleton object */
-    public static ByteType v()
-    {
-        return constant;
-    }
-
-    public int hashCode()
-    {
-        return 0x813D1329;
-    }
-    
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
-
-    public String toString()
-    {
-        return "byte";
-    }
-
-    public void apply(Switch sw)
-    {
-        ((TypeSwitch) sw).caseByteType(this);
-    }
 }

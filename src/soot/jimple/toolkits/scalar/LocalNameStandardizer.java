@@ -74,8 +74,16 @@ public class LocalNameStandardizer extends BodyTransformer
                         continue;
                 }
                     
-                if(l.getType().equals(IntType.v()))
-                    l.setName(prefix + "i" + intCount++);
+                if(l.getType().equals(BooleanType.v()))
+                    l.setName(prefix + "z" + intCount++);
+                else if(l.getType().equals(ByteType.v()))
+                    l.setName(prefix + "b" + longCount++);
+                else if(l.getType().equals(ShortType.v()))
+                    l.setName(prefix + "s" + longCount++);
+                else if(l.getType().equals(CharType.v()))
+                    l.setName(prefix + "c" + longCount++);
+                else if(l.getType().equals(IntType.v()))
+                    l.setName(prefix + "i" + longCount++);
                 else if(l.getType().equals(LongType.v()))
                     l.setName(prefix + "l" + longCount++);
                 else if(l.getType().equals(DoubleType.v()))

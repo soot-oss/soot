@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 1997-2000 Etienne Gagnon.  All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,50 +24,22 @@
  */
 
 
+package soot.jimple.toolkits.typing;
 
-
-
-package soot;
-
+import soot.*;
+import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
-
-/**
- *   Soot representation of the Java built-in type 'byte'. Implemented as
- *   a singleton.
- */
-public class ByteType extends BaseType implements IntegerType
+public class TypeException extends Exception
 {
-    private static final ByteType constant = new ByteType();
+  public TypeException(String message)
+  {
+    super(message);
 
-    private ByteType()
-    {
-    }
-
-    /** @return this class's singleton object */
-    public static ByteType v()
-    {
-        return constant;
-    }
-
-    public int hashCode()
-    {
-        return 0x813D1329;
-    }
-    
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
-
-    public String toString()
-    {
-        return "byte";
-    }
-
-    public void apply(Switch sw)
-    {
-        ((TypeSwitch) sw).caseByteType(this);
-    }
+    if(message == null)
+      {
+	throw new InternalTypingException();
+      }
+  }
 }

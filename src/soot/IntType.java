@@ -36,7 +36,7 @@ import java.util.*;
  *   Soot representation of the Java built-in type 'int'. Implemented as
  *   a singleton.
  */
-public class IntType extends BaseType
+public class IntType extends BaseType implements IntegerType
 {
     private static final IntType constant = new IntType();
 
