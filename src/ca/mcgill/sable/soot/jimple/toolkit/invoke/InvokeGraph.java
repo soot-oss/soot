@@ -189,9 +189,69 @@ public class InvokeGraph {
 
 
 
-
+  /*
 
   
+  public List getReachableMethods() { 
+
+   List reachablemethods = new ArrayList();
+
+   Iterator callgraphit = cha.getCallGraphBuilder().getCallGraph().iterator();
+    
+   while ( callgraphit.hasNext() )
+   {
+
+     MethodNode mn = (MethodNode) callgraphit.next();
+
+     SootMethod method = mn.getMethod(); 
+
+     if ( mn.incomingedges < 1 )
+     // reachablemethods.add ( method );
+     // else
+     {
+
+      if ( ( ( ( method.getName().equals("<clinit>") || method.getName().equals("finalize") ) || ( getEntryMethods().contains(method) ) ) || method.getName().equals("initializeSystemClass") ) || method.getName().equals("main") )
+      {
+       reachablemethods.add ( method );
+      }
+      else
+      removeMethod ( method ); 
+
+     }
+
+    }
+
+
+   callgraphit = cha.getCallGraphBuilder().getCallGraph().iterator();
+    
+    while ( callgraphit.hasNext() )
+    {
+
+     MethodNode mn = (MethodNode) callgraphit.next();
+
+     SootMethod method = mn.getMethod(); 
+
+     if ( mn.incomingedges > 0 )
+     reachablemethods.add ( method );
+
+    }
+
+
+    return reachablemethods;
+
+   }
+
+
+   */
+
+
+
+
+
+
+  /*
+
+
   public List getReachableMethods() { 
 
    List reachablemethods = new ArrayList();
@@ -222,6 +282,49 @@ public class InvokeGraph {
     return reachablemethods;
 
    }
+
+
+   */
+
+
+
+  public List getReachableMethods() { 
+
+   List reachablemethods = new ArrayList();
+
+   Iterator entrymthdsit = getEntryMethods().iterator();
+
+   while ( entrymthdsit.hasNext() )
+   {
+
+    SootMethod m = (SootMethod) entrymthdsit.next(); 
+
+    if ( ! reachablemethods.contains(m) ) 
+    reachablemethods.add(m);
+    
+    List reachablefrom = getReachableMethodsFrom(m); 
+
+    Iterator reachablefromit = reachablefrom.iterator();
+
+    while ( reachablefromit.hasNext() ) 
+    {
+
+      SootMethod meth = (SootMethod) reachablefromit.next();
+
+      if ( ! reachablemethods.contains(meth ) ) 
+      reachablemethods.add(meth);
+    } 
+   
+   }
+
+   return reachablemethods;
+
+  }
+
+
+
+
+
 
 
 
@@ -290,7 +393,7 @@ public class InvokeGraph {
 
 
 
-  public List getInvokeExprsIn(SootMethod m) {
+  public List getInvokeExprsOf(SootMethod m) {
           
    CallGraphBuilder cagb = cha.getCallGraphBuilder();   
    MethodNode mn = cagb.getNode(m);
@@ -319,7 +422,7 @@ public class InvokeGraph {
 
 
 
-  public List getMethodsInvokedFrom(SootMethod m) {
+  public List getTargetsOf(SootMethod m) {
 
    List methodsinvoked = new ArrayList();
   
@@ -365,6 +468,9 @@ public class InvokeGraph {
 
    CallGraphBuilder cagb = cha.getCallGraphBuilder();   
    MethodNode mn = cagb.getNode(m);
+
+   if ( ( mn.incomingedges < 1 ) && ( ! isEntryMethod(m) ) )
+   return listSoFar;
    
    Iterator allpossmethodsit = mn.getAllPossibleMethods().iterator();
 
@@ -494,11 +600,11 @@ public class InvokeGraph {
 
 
 
-  public List getInvokerMethodsOf(SootMethod m) {
+  public List getMethodsTargeting(SootMethod m) {
 
    List invokermethods = new ArrayList();
 
-   Iterator invokinginvokesit = getInvokersOf(m).iterator();
+   Iterator invokinginvokesit = getInvokeExprsTargeting(m).iterator();
 
    while ( invokinginvokesit.hasNext() )
    {
@@ -522,9 +628,9 @@ public class InvokeGraph {
 
 
 
-  public int getInvokerMethodCountOf(SootMethod m) {
+  public int getMethodsTargetingCountOf(SootMethod m) {
 
-   return ( getInvokerMethodsOf(m).size() );
+   return ( getMethodsTargeting(m).size() );
 
   }
 
@@ -759,6 +865,32 @@ public class InvokeGraph {
    CallGraphBuilder cagb = cha.getCallGraphBuilder(); 
    MethodNode mn = cagb.getNode(method);
 
+    Iterator callsitesit = mn.getCallSites().iterator();
+
+    while ( callsitesit.hasNext() )
+    {
+
+     CallSite cs = (CallSite) callsitesit.next();
+
+     {
+
+      Iterator methit = cs.getMethods().iterator(); 
+      while ( methit.hasNext() )
+      {
+
+       MethodNode targetmn = (MethodNode) methit.next();
+       targetmn.incomingedges--;
+       targetmn.removeInvokingSite(cs);
+      }
+
+      cs.setMethods(null);
+
+      mn.removeCallSite(cs);
+      mn.removeInvokeExpr( cs.getInvokeExpr() );
+      } 
+
+    }
+
    List invokers = new ArrayList();
 
    Iterator csiter = mn.getInvokingSites().iterator();
@@ -963,7 +1095,7 @@ public class InvokeGraph {
 
 
 
-  public List getInvokersOf(SootMethod m) {
+  public List getInvokeExprsTargeting(SootMethod m) {
       
    CallGraphBuilder cagb = cha.getCallGraphBuilder();   
    MethodNode mn = cagb.getNode(m);
@@ -986,7 +1118,7 @@ public class InvokeGraph {
 
 
 
-  public int getInvokerCountOf(SootMethod m) {
+  public int getInvokeExprsTargetingCountOf(SootMethod m) {
       
    CallGraphBuilder cagb = cha.getCallGraphBuilder();   
    MethodNode mn = cagb.getNode(m);
@@ -1019,6 +1151,375 @@ public class InvokeGraph {
   */
 
 
+
+
+
+  private InvokeExpr currInvokeExpr;
+
+
+
+
+
+
+  public void printInvokeGraph() {
+
+    InvokeGraph lazycallgraph = this;
+
+    int nodes = 0, edges = 0;
+
+    int benchnodes = 0, benchedges = 0;
+
+    int mono = 0, benchmono = 0, poly = 0, benchpoly = 0;
+
+    int monoedges = 0, polyedges = 0, benchmonoedges = 0, benchpolyedges = 0; 
+
+    int numstubnodes = 0, numstubbenchnodes = 0; 
+
+    Iterator reachablemethodsit = lazycallgraph.getReachableMethods().iterator();
+ 
+    System.out.println();
+    System.out.println ("-----------------------------------------------------------------------------------"); 
+
+    // System.out.println( "Number of reachable methods = "+lazycallgraph.getReachableMethods().size());
+
+    boolean counting = false;
+
+     while ( reachablemethodsit.hasNext() )
+     {
+
+       counting = false;
+
+       SootMethod m = ( SootMethod ) reachablemethodsit.next();
+
+       if ( ! m.hasActiveBody() )
+       numstubnodes++;  
+
+       if ( ! ( m.getDeclaringClass().getName().startsWith("java.") ||  m.getDeclaringClass().getName().startsWith("sun.")
+            ||  m.getDeclaringClass().getName().startsWith("sunw.") ||  m.getDeclaringClass().getName().startsWith("javax.")
+            ||  m.getDeclaringClass().getName().startsWith("com.") || m.getDeclaringClass().getName().startsWith("org.") ) )
+
+       counting = true;
+
+       if ( counting ) 
+       {
+        benchnodes++;
+        if ( ! m.hasActiveBody() )
+        numstubbenchnodes++;
+       }
+
+       nodes++;
+
+       // if ( counting ) 
+       // {
+       System.out.println(); 
+       System.out.println ( "In the method : "+m.getSignature() );
+       // }
+
+       List invokeExprs = lazycallgraph.getInvokeExprsOf(m);
+
+       Iterator ieit = invokeExprs.iterator();
+
+       while ( ieit.hasNext() ) 
+       {
+
+          currInvokeExpr = (InvokeExpr) ieit.next(); 
+
+          boolean single = false;
+
+          // if ( counting )  
+          // {
+            System.out.println(); 
+            System.out.println ( "Invoke Expr : "+currInvokeExpr ); 
+          // }
+
+          Iterator targetsit = lazycallgraph.getTargetsOf(currInvokeExpr).iterator(); 
+
+          if ( lazycallgraph.getTargetsOf(currInvokeExpr).size() == 1 ) 
+          {
+
+           single = true; 
+ 
+           if (counting) 
+           benchmono++;
+         
+           mono++;
+
+          }
+          else if ( lazycallgraph.getTargetsOf(currInvokeExpr).size() == 0 ) 
+          {
+
+           if (counting) 
+           benchmono++;
+         
+           mono++;
+
+          }
+          else
+          { 
+
+           if (counting)
+           benchpoly++; 
+
+           poly++;
+ 
+          }
+
+          // System.out.println("CAUTION : CALLSITE "+currInvokeExpr+" WITH NO TARGET");
+
+
+          while ( targetsit.hasNext() )
+          {
+
+            if ( counting )
+            { 
+             benchedges++;
+
+             if (single)
+             benchmonoedges++; 
+             else
+             benchpolyedges++;
+
+            }
+
+            edges++;
+
+            if (single)
+            monoedges++;             
+            else
+            polyedges++; 
+
+            SootMethod target = ( SootMethod ) targetsit.next();
+     
+            // if ( counting )
+            System.out.println ( " might invoke method "+target.getSignature() );
+            
+          }
+
+       }
+
+     } 
+
+     System.out.println();
+     System.out.println("NUMBER OF NODES = "+nodes+" ( "+numstubnodes+" stubs ) ");
+     System.out.println("NUMBER OF SITES = "+(mono+poly));
+     System.out.println("NUMBER OF RESOLVED SITES = "+mono);
+     System.out.println("NUMBER OF UNRESOLVED SITES = "+poly);
+     System.out.println("NUMBER OF EDGES = "+edges);
+     System.out.println("NUMBER OF RESOLVED EDGES = "+monoedges);
+     System.out.println("NUMBER OF UNRESOLVED EDGES = "+polyedges);
+     System.out.println();     
+     System.out.println("NUMBER OF BENCHMARK NODES = "+benchnodes+" ( "+numstubbenchnodes+" stubs ) ");
+     System.out.println("NUMBER OF BENCHMARK SITES = "+(benchmono+benchpoly));
+     System.out.println("NUMBER OF RESOLVED BENCHMARK SITES = "+benchmono);
+     System.out.println("NUMBER OF UNRESOLVED BENCHMARK SITES = "+benchpoly);
+     System.out.println("NUMBER OF BENCHMARK EDGES = "+benchedges);
+     System.out.println("NUMBER OF RESOLVED BENCHMARK EDGES = "+benchmonoedges);
+     System.out.println("NUMBER OF UNRESOLVED BENCHMARK EDGES = "+benchpolyedges);
+     System.out.println();
+
+  }
+
+
+
+
+
+
+
+
+
+
+  public void printInvokeGraphStatistics() {
+
+    InvokeGraph lazycallgraph = this;
+
+    int nodes = 0, edges = 0;
+
+    int benchnodes = 0, benchedges = 0;
+
+    int mono = 0, benchmono = 0, poly = 0, benchpoly = 0;
+
+    int monoedges = 0, polyedges = 0, benchmonoedges = 0, benchpolyedges = 0; 
+
+    int numstubnodes = 0, numstubbenchnodes = 0; 
+
+
+    Iterator reachablemethodsit = lazycallgraph.getReachableMethods().iterator();
+ 
+    System.out.println();
+    // System.out.println ("-----------------------------------------------------------------------------------"); 
+
+    // System.out.println( "Number of reachable methods = "+lazycallgraph.getReachableMethods().size());
+
+    boolean counting = false;
+
+     while ( reachablemethodsit.hasNext() )
+     {
+
+       counting = false;
+
+       SootMethod m = ( SootMethod ) reachablemethodsit.next();
+
+       if ( ! m.hasActiveBody() )
+       numstubnodes++;  
+
+       if ( ! ( m.getDeclaringClass().getName().startsWith("java.") ||  m.getDeclaringClass().getName().startsWith("sun.")
+            ||  m.getDeclaringClass().getName().startsWith("sunw.") ||  m.getDeclaringClass().getName().startsWith("javax.")
+            ||  m.getDeclaringClass().getName().startsWith("com.") || m.getDeclaringClass().getName().startsWith("org.") ) ) 
+       counting = true;
+
+
+       if ( counting ) 
+       {
+        benchnodes++;
+        if ( ! m.hasActiveBody() )
+        numstubbenchnodes++;
+       }
+
+
+
+
+       nodes++;
+
+       // if ( counting ) 
+       // {
+       // System.out.println(); 
+       // System.out.println ( "In the method : "+m.getSignature() );
+       // }
+
+       List invokeExprs = lazycallgraph.getInvokeExprsOf(m);
+
+       Iterator ieit = invokeExprs.iterator();
+
+       while ( ieit.hasNext() ) 
+       {
+
+          currInvokeExpr = (InvokeExpr) ieit.next(); 
+
+          boolean single = false;
+
+          // if ( counting )  
+          // {
+          //  System.out.println(); 
+          //  System.out.println ( "Invoke Expr : "+currInvokeExpr ); 
+          // }
+
+          Iterator targetsit = lazycallgraph.getTargetsOf(currInvokeExpr).iterator(); 
+
+          if ( lazycallgraph.getTargetsOf(currInvokeExpr).size() == 1 ) 
+          {
+
+           single = true; 
+ 
+           if (counting) 
+           benchmono++;
+         
+           mono++;
+
+          }
+          else if ( lazycallgraph.getTargetsOf(currInvokeExpr).size() == 0 ) 
+          {
+
+           if (counting) 
+           benchmono++;
+         
+           mono++;
+
+          }
+          else
+          { 
+
+           if (counting)
+           benchpoly++; 
+
+           poly++;
+ 
+          }
+
+          // System.out.println("CAUTION : CALLSITE "+currInvokeExpr+" WITH NO TARGET");
+
+
+          while ( targetsit.hasNext() )
+          {
+
+            if ( counting )
+            { 
+             benchedges++;
+
+             if (single)
+             benchmonoedges++; 
+             else
+             benchpolyedges++;
+
+            }
+
+            edges++;
+
+            if (single)
+            monoedges++;             
+            else
+            polyedges++; 
+
+            SootMethod target = ( SootMethod ) targetsit.next();
+     
+            // if ( counting )
+            // System.out.println ( " might invoke method "+target.getSignature() );
+            
+          }
+
+       }
+
+     } 
+
+     System.out.println();
+     System.out.println("NUMBER OF NODES = "+nodes+" ( "+numstubnodes+" stubs ) ");
+     System.out.println("NUMBER OF SITES = "+(mono+poly));
+     System.out.println("NUMBER OF RESOLVED SITES = "+mono);
+     System.out.println("NUMBER OF UNRESOLVED SITES = "+poly);
+     System.out.println("NUMBER OF EDGES = "+edges);
+     System.out.println("NUMBER OF RESOLVED EDGES = "+monoedges);
+     System.out.println("NUMBER OF UNRESOLVED EDGES = "+polyedges);
+     System.out.println();     
+     System.out.println("NUMBER OF BENCHMARK NODES = "+benchnodes+" ( "+numstubbenchnodes+" stubs ) ");
+     System.out.println("NUMBER OF BENCHMARK SITES = "+(benchmono+benchpoly));
+     System.out.println("NUMBER OF RESOLVED BENCHMARK SITES = "+benchmono);
+     System.out.println("NUMBER OF UNRESOLVED BENCHMARK SITES = "+benchpoly);
+     System.out.println("NUMBER OF BENCHMARK EDGES = "+benchedges);
+     System.out.println("NUMBER OF RESOLVED BENCHMARK EDGES = "+benchmonoedges);
+     System.out.println("NUMBER OF UNRESOLVED BENCHMARK EDGES = "+benchpolyedges);
+     System.out.println();
+
+
+  }
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   CHA getCHA() { return cha; }  
 
   void setCHA( CHA cha ) { this.cha = cha; }  
@@ -1036,6 +1537,22 @@ public class InvokeGraph {
   void setVTA( VTA vta ) { this.vta = vta; }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -2,225 +2,149 @@
 // package ca.mcgill.sable.soot.virtualCalls; 
 
 package ca.mcgill.sable.soot.jimple.toolkit.invoke;
-
 import java.io.*;
 // import java.util.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
+class Main {
+   Main(String s){
+      controller(s);
+   }
 
-public class Main {
 
-  public Main(String s){
+   Main() {}
 
-	controller(s);
-  }
 
+   static boolean NOPRINT = true;
+   private void controller(String s){
+      ca.mcgill.sable.soot.Main.sootClassPath = "/home/profs/hendren/JavaBench/EiffelSuite/benchmarks/illness/classes:/home/acaps/u2/vijay/PIZZA/pizza/classes:/home/profs/hendren/JavaBench/AdaSuite/kalman/classes:/home/profs/hendren/JavaBench/MLSuite/benchmarks/nucleic/classes:/home/profs/hendren/JavaBench/AdaSuite/rudstone/classes:/home/profs/hendren/JavaBench/MLSuite/benchmarks/nucleic/classes:home/profs/hendren/JavaBench/SchemeSuite:/tmp/sablecc-2.9:/home/profs/hendren/JavaBench/FromML/boyer/Classes:/home/acaps/u2/vijay/local/ADABENCH/Dhrystone:/home/acaps/u2/vijay/local/ADALIB:/home/profs/hendren/JavaBench/EiffelSuite/benchmarks/compile_to_c/classes:/home/acaps/u2/vijay/JDKCLASSES:/home/acaps/u2/vijay/local/PUZZLE/puzzle/classes:/home/acaps/u2/vijay/BENCH/BENCH/jvm98:/home/acaps/u2/vijay:/home/acaps/u2/vijay/LATESTUTIL/sableUtil-1.11/classes:/home/acaps/u2/vijay/SOOT2/src:/home/acaps/u2/vijay/local";
+      try {
+         //	ca.mcgill.sable.soot.Main.isVerbose = true;
 
-  public Main() {}
+         // ca.mcgill.sable.soot.jimple.Main.usePackedLive = true;
 
+         SootClassFinder bclassfinder = new SootClassFinder();
+         ArrayList bclasses = bclassfinder.getSootClasses(s);
+         AllClassFinder allclassfinder = new AllClassFinder();
+         allclassfinder.includeAllClasses(bclasses);
+         Map allclassesHT = allclassfinder.getAllClassesHT();
+         CHA cha = new CHA();
+         cha.buildConservativeCallGraph ( s, allclassfinder );
+         RTA rta = new RTA();
+         rta.constructBitMap( allclassesHT );
+         Map instancetypesHT = rta.getInstanceTypes(cha);
+         // Collection RTAcallgraph = rta.getCallGraph();
 
-  public static boolean NOPRINT = true;
-  
+         Collection RTAcallgraph = rta.getCallGraphBuilder().getCallGraph();
+         // Collection RTAfinalcallgraph = rta.getFinalCallGraph();
 
- private void controller(String s){
+         /*
 
+                 for ( int i = 0; i < 30; i++ )
+                 {
 
-	ca.mcgill.sable.soot.Main.sootClassPath = "/home/profs/hendren/JavaBench/EiffelSuite/benchmarks/illness/classes:/home/acaps/u2/vijay/PIZZA/pizza/classes:/home/profs/hendren/JavaBench/AdaSuite/kalman/classes:/home/profs/hendren/JavaBench/MLSuite/benchmarks/nucleic/classes:/home/profs/hendren/JavaBench/AdaSuite/rudstone/classes:/home/profs/hendren/JavaBench/MLSuite/benchmarks/nucleic/classes:home/profs/hendren/JavaBench/SchemeSuite:/tmp/sablecc-2.9:/home/profs/hendren/JavaBench/FromML/boyer/Classes:/home/acaps/u2/vijay/local/ADABENCH/Dhrystone:/home/acaps/u2/vijay/local/ADALIB:/home/profs/hendren/JavaBench/EiffelSuite/benchmarks/compile_to_c/classes:/home/acaps/u2/vijay/JDKCLASSES:/home/acaps/u2/vijay/local/PUZZLE/puzzle/classes:/home/acaps/u2/vijay/BENCH/BENCH/jvm98:/home/acaps/u2/vijay:/home/acaps/u2/vijay/LATESTUTIL/sableUtil-1.11/classes:/home/acaps/u2/vijay/SOOT2/src:/home/acaps/u2/vijay/local";
+                  System.out.println ( " GARBAGE COLLECTION ... " );
 
-try {
-  //	ca.mcgill.sable.soot.Main.isVerbose = true;
+                  System.gc();
 
-        // ca.mcgill.sable.soot.jimple.Main.usePackedLive = true;
+                 }
 
-	SootClassFinder bclassfinder = new SootClassFinder();
-	
-	ArrayList bclasses = bclassfinder.getSootClasses(s);
+         */
+         /*
 
-	AllClassFinder allclassfinder = new AllClassFinder();
+                 Resolver resolver = new Resolver( rta.getClassGraphBuilder() ); 
 
-	allclassfinder.includeAllClasses(bclasses);
+                 resolver.resolveMethods( RTAfinalcallgraph );
 
-	Map allclassesHT = allclassfinder.getAllClassesHT();
+         	Inliner inliner = new Inliner( rta.getCallGraphBuilder() );
 
-    CHA cha = new CHA();
+         //	inliner.examineMethods( RTAfinalcallgraph, resolver );
+            
+                 inliner.examineMethodsToFixCallSites( RTAfinalcallgraph, resolver );
 
-    cha.buildConservativeCallGraph ( s, allclassfinder );
+                 */
+         /*
 
-	RTA rta = new RTA();
+         	DTA dta = new DTA();
 
-    rta.constructBitMap( allclassesHT );
+                 dta.constructBitMap(allclassesHT);
 
-	Map instancetypesHT = rta.getInstanceTypes(cha); 
+         	dta.initializeConstraintGraph(rta);
 
-    // Collection RTAcallgraph = rta.getCallGraph();
+         	dta.analyseStatements();
 
-              Collection RTAcallgraph = rta.getCallGraphBuilder().getCallGraph();
+         	dta.solveConstraints(allclassesHT);
 
-              // Collection RTAfinalcallgraph = rta.getFinalCallGraph();
+         	dta.setRTAred(rta);
 
-/*
+         	Collection DTAcallgraph = dta.getCallGraph();
 
-        for ( int i = 0; i < 30; i++ )
-        {
+                 Collection DTAfinalcallgraph = dta.getFinalCallGraph();
 
-         System.out.println ( " GARBAGE COLLECTION ... " );
+         */
+         VTA vta = new VTA();
+         Collection VTAcallgraph = null;
+         Collection VTAfinalcallgraph = null;
+         /*
+                 vta.constructBitMap(allclassesHT);
 
-         System.gc();
+         	vta.initializeConstraintGraph(rta);
+         	
+         	vta.analyseStatements();
 
-        }
+                 vta.solveConstraintsForArrayFlags();
 
-*/
+                 vta.prepass = false;
+         */
+         for ( int i =0; i < 2; i++ )
+         {
+            vta.constructBitMap(allclassesHT);
+            vta.initializeConstraintGraph(rta);
+            vta.analyseStatements();
+            vta.solveConstraints(allclassesHT);
+            vta.setRTAred(rta);
+            VTAcallgraph = vta.getCallGraph();
+            VTAfinalcallgraph = vta.getFinalCallGraph();
+         }
 
-              /*
+         /*
 
-        Resolver resolver = new Resolver( rta.getClassGraphBuilder() ); 
+                 Resolver resolver = new Resolver( rta.getClassGraphBuilder() );
 
-        resolver.resolveMethods( RTAfinalcallgraph );
+                 resolver.resolveMethods( VTAfinalcallgraph );
 
-	Inliner inliner = new Inliner( rta.getCallGraphBuilder() );
 
-//	inliner.examineMethods( RTAfinalcallgraph, resolver );
-   
-        inliner.examineMethodsToFixCallSites( RTAfinalcallgraph, resolver );
 
-        */
 
+                 Inliner inliner = new Inliner( rta.getCallGraphBuilder() );
 
-/*
+                 inliner.setImprovedCallSites ( vta.ImprovedCallSites ); 
 
-	DTA dta = new DTA();
+                 inliner.examineMethodsToFixCallSites( VTAfinalcallgraph, resolver );
 
-        dta.constructBitMap(allclassesHT);
+         //        inliner.examineMethods( VTAfinalcallgraph, resolver );
 
-	dta.initializeConstraintGraph(rta);
 
-	dta.analyseStatements();
+         */
+         /*
 
-	dta.solveConstraints(allclassesHT);
+                 Optimizer optimizer = new Optimizer( rta.getCallGraphBuilder() );
+           
+                 optimizer.examineMethods( VTAfinalcallgraph, resolver );
+         */
+      }
+      catch ( java.lang.RuntimeException e ) { e.printStackTrace( System.out ); }
 
-	dta.setRTAred(rta);
+   }
 
-	Collection DTAcallgraph = dta.getCallGraph();
 
-        Collection DTAfinalcallgraph = dta.getFinalCallGraph();
+   static void main(String[] args){
+      Main p;
+      p = new Main(args[0]);
+   }
 
-*/
 
-
-
-	VTA vta = new VTA();
-
-        Collection VTAcallgraph = null;
-
-        Collection VTAfinalcallgraph = null;
-
-
-
-/*
-        vta.constructBitMap(allclassesHT);
-
-	vta.initializeConstraintGraph(rta);
-	
-	vta.analyseStatements();
-
-        vta.solveConstraintsForArrayFlags();
-
-        vta.prepass = false;
-*/
-
-        
-       for ( int i =0; i < 2; i++ )
-       {
-
-
-        vta.constructBitMap(allclassesHT);
-
-	vta.initializeConstraintGraph(rta);
-	
-	vta.analyseStatements();
-
-	vta.solveConstraints(allclassesHT);
-
-	vta.setRTAred(rta);
-
-	VTAcallgraph = vta.getCallGraph();
-
-	VTAfinalcallgraph = vta.getFinalCallGraph();
-
-
-       }
-
-
-       
-        /*
-
-        Resolver resolver = new Resolver( rta.getClassGraphBuilder() );
-
-        resolver.resolveMethods( VTAfinalcallgraph );
-
-
-
-
-        Inliner inliner = new Inliner( rta.getCallGraphBuilder() );
-
-        inliner.setImprovedCallSites ( vta.ImprovedCallSites ); 
-
-        inliner.examineMethodsToFixCallSites( VTAfinalcallgraph, resolver );
-
-//        inliner.examineMethods( VTAfinalcallgraph, resolver );
-
-
-*/
-
-/*
-
-        Optimizer optimizer = new Optimizer( rta.getCallGraphBuilder() );
-  
-        optimizer.examineMethods( VTAfinalcallgraph, resolver );
-*/
-
-    } catch ( java.lang.RuntimeException e ) { e.printStackTrace( System.out ); } 
-
-
-
- }
-
-
-
-  public static void main(String[] args){
-
-   Main p;
-
-   p = new Main(args[0]);
-
-  }
-  
- }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 

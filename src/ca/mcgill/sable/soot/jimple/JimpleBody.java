@@ -644,9 +644,9 @@ public class JimpleBody extends AbstractBody implements StmtBody
         StmtBody stmtBody = this; 
         StmtList stmtList = stmtBody.getStmtList();
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
-        CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
+        //CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
         
-        LocalDefs localDefs = new SimpleLocalDefs(stmtGraph);
+        //LocalDefs localDefs = new SimpleLocalDefs(stmtGraph);
 
         System.out.println("debug output for " + getMethod().getSignature());
         /*

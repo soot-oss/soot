@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on June 18, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Add some checks for methods which fall through the end of their body.
+   
  - Modified on March 24, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Add some edges to the flow graph regarding exceptions.
  
@@ -119,7 +122,12 @@ public class StmtGraph
     {
         this.stmtList = stmtList;
         this.method = getBody().getMethod();
-        
+
+        /*
+        if(getBody() instanceof JimpleBody)
+            ((JimpleBody) getBody()).printDebugTo(new java.io.PrintWriter(System.out, true));
+          */
+                
         if(Main.isVerbose)
             System.out.println("[" + method.getName() + 
             "]     Constructing StmtGraph...");
@@ -234,7 +242,13 @@ public class StmtGraph
                     // Put the next statement as the successor
                         if(addNext)
                         {
-                            successors.add(stmtList.get(stmtIt.nextIndex()));
+                            if(stmtIt.hasNext())
+                            {
+                                // Theoretically methods should not fall through, but if they do
+                                // handle it gracefully.
+                                
+                                successors.add(stmtList.get(stmtIt.nextIndex()));
+                            }
                         }
 
 

@@ -1,37 +1,36 @@
 package ca.mcgill.sable.soot.jimple.toolkit.invoke;
-
 // package ca.mcgill.sable.soot.sideEffect;
 
 import ca.mcgill.sable.util.*;
 import java.util.*;
+abstract class DfsNode implements GraphNode{
+   // time of the node discovery
+   int number = 0;
+   // used by the SCCDetector. 
+   int lowLink = 0;
+   int getNumber() {
+      return number;
+   }
 
-public abstract class DfsNode implements GraphNode{
 
-  // time of the node discovery
-  int number = 0;
-
-  // used by the SCCDetector. 
-  int lowLink = 0;
+   void setNumber( int i ){
+      number = i;
+   }
 
 
-  public int getNumber() { 
-    return number; 
-  }
+   int getLowLink(){
+      return lowLink;
+   }
 
-  public void setNumber( int i ){ 
-    number = i; 
-  }
 
-  public int getLowLink(){
-    return lowLink;
-  }
+   void setLowLink( int i ){
+      lowLink = i;
+   }
 
-  public void setLowLink( int i ){
-    lowLink = i;
-  }
-  
-  //public abstract List getAdjacentNodes();
+
+   //public abstract List getAdjacentNodes();
 }
+
 
 
 

@@ -215,14 +215,14 @@ public class Main
     
         boolean isRecursing = false;
         List excludingPackages = new ArrayList();
-        List classesToProcess;
+        List classesToTransform;
         totalTimer.start();
 
 
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.56");
+            System.out.println("Soot version 1.beta.4.dev.57");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -310,6 +310,7 @@ public class Main
                     isOptimizingWhole = true;
                     isOptimizing = true;
                 }
+                /*
                 else if(arg.equals("--use-vta"))
                 {
                     isUsingVTA = true;
@@ -319,7 +320,8 @@ public class Main
                 {
                     isUsingRTA = true;
                     Jimplifier.NOLIB = false;
-                }
+                } */
+                
                 else if(arg.equals("--no-typing"))
                     buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_TYPING;
                 else if(arg.equals("--no-jimple-aggregating"))
@@ -388,7 +390,7 @@ public class Main
         
         // Generate classes to process
         {
-            classesToProcess = new LinkedList();
+            classesToTransform = new LinkedList();
             
             for(int i = firstNonOption; i < args.length; i++)
             {
@@ -397,18 +399,18 @@ public class Main
                 if(mainClass == null)
                     mainClass = c;
                     
-                classesToProcess.add(c);
+                classesToTransform.add(c);
             }
             
             if(isRecursing)
             {
-                classesToProcess = new LinkedList();
-                classesToProcess.addAll(cm.getClasses());
+                classesToTransform = new LinkedList();
+                classesToTransform.addAll(cm.getClasses());
              }   
                          
             // Remove all classes from excludingPackages
             {
-                Iterator classIt = classesToProcess.iterator();
+                Iterator classIt = classesToTransform.iterator();
                 
                 while(classIt.hasNext())
                 {
@@ -431,8 +433,9 @@ public class Main
         {
             System.out.print("Building InvokeGraph...");
             System.out.flush();
-            InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph(mainClass); 
             
+            InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph(mainClass, classesToTransform); 
+             
             if(isUsingVTA)
             {
                 VariableTypeAnalysis.pruneInvokeGraph(invokeGraph);
@@ -445,13 +448,13 @@ public class Main
             
             System.out.print("Inlining invokes...");
             System.out.flush();
-            GlobalInvokeInliner.inlineInvokes(invokeGraph, classesToProcess);
+            GlobalInvokeInliner.inlineInvokes(invokeGraph, classesToTransform);
             System.out.println();
         }
         
         // Handle each class individually
         {
-            Iterator classIt = classesToProcess.iterator();
+            Iterator classIt = classesToTransform.iterator();
             
             while(classIt.hasNext())
             {

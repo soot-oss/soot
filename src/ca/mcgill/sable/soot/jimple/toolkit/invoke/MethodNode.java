@@ -1,420 +1,315 @@
 // package ca.mcgill.sable.soot.sideEffect;
 
 package ca.mcgill.sable.soot.jimple.toolkit.invoke;
-
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
- 
 // OLD version with the old SCCDetector
 //public class MethodNode implements GraphNode{
 
-public class MethodNode extends DfsNode{
+class MethodNode extends DfsNode{
+   HashSet ImportantInvokeExprs = new HashSet();
+   List invokeExprs = new ArrayList();
+   int code;
+   int incomingedges = 0;
+   int numloops = 0;
+   boolean alreadyInlined = false;
+   boolean isRedundant = false;
+   SootMethod method;
+   //List CallSites = new ArrayList();
 
-  public HashSet ImportantInvokeExprs = new HashSet();
-
-  public List invokeExprs = new ArrayList();
-
-  public int code;
-
-  public int incomingedges = 0;
-
-  public int numloops = 0;
-
-  public boolean alreadyInlined = false;
-
-  public boolean isRedundant = false;
-
-  SootMethod method;
-
-  //List CallSites = new ArrayList();
-
-  Map CallSites = new HashMap();
-
-  Map CallSitesHT = new HashMap();
-
-  /**
+   Map CallSites = new HashMap();
+   Map CallSitesHT = new HashMap();
+   /**
    * all methodNodes pointing to this methodNode
    */
-  Set CalledBy = new HashSet();
-
-  /**
-   * either points to the 'CalledBy' List when the callgraph is "transposed" 
+   Set CalledBy = new HashSet();
+   /**
+   * either points to the 'CalledBy' List when the callgraph is "transposed"
    * or a list of methodNodes pointed to by ALL callSites.
    * By default points to CallSites.
    */
-  Set AdjacentNodes;
-
-  List Invokers = new ArrayList();
-
-
-
+   Set AdjacentNodes;
+   List Invokers = new ArrayList();
+   MethodNode(){
+   }
 
 
-  public MethodNode(){
-  }
-
-
-  // the method signature
-  String name ;
-
-  String className;
-  String methodName;
-  List params;
-  Type returnType;
-
-
-
-
-  public MethodNode( SootMethod method ){
-//    if( Main.SPEED )
+   // the method signature
+   String name ;
+   String className;
+   String methodName;
+   List params;
+   Type returnType;
+   MethodNode( SootMethod method ){
+      //    if( Main.SPEED )
 
       this.method = method;
+      // to speed up things by avoid reloading method each time we need
+      // the following info
+      className = method.getDeclaringClass().getName();
+      methodName = method.getName();
+      params = method.getParameterTypes();
+      returnType = method.getReturnType();
+      name = method.getSignature();
+   }
 
-    // to speed up things by avoid reloading method each time we need
-    // the following info
-    className = method.getDeclaringClass().getName();
-    methodName = method.getName();
-    params = method.getParameterTypes();
-    returnType = method.getReturnType();
 
-    name = method.getSignature();
-  }
-  
-
-  /**
+   /**
    * name is the method signature
    */
-  public String getName(){
-    //return getMethod().getSignature();    
-    return name;
-  }
+   String getName(){
+      //return getMethod().getSignature();    
+      return name;
+   }
 
 
-  public String getClassName(){
-    return className;
-  }
+   String getClassName(){
+      return className;
+   }
 
 
-  public String getMethodName(){
-    return methodName;
-  }
+   String getMethodName(){
+      return methodName;
+   }
 
 
-  public Type getReturnType(){
-    return returnType;
-  }
+   Type getReturnType(){
+      return returnType;
+   }
 
 
-  public Collection getCallSites(){
-    return CallSites.values();
-  }
-  
+   Collection getCallSites(){
+      return CallSites.values();
+   }
 
-  public SootMethod getMethod(){
-//    if( method != null )
+
+   SootMethod getMethod(){
+      //    if( method != null )
 
       return method;
-    
-//    return new SootClassManager().getClass( className ).
-//      getMethod( methodName, params );
-    
-    /*if( method == null ){
-      method = new SootClassManager().getClass( className ).
-	getMethod( methodName, params );
-    }
-    
-    return method;
-    */
-  }
+      //    return new SootClassManager().getClass( className ).
+      //      getMethod( methodName, params );
+
+      /*if( method == null ){
+         method = new SootClassManager().getClass( className ).
+         getMethod( methodName, params );
+      }
+
+      return method;
+      */
+   }
 
 
-  //DEBUG
-  public void setMethodToNull(){
-    method = null;
-  }
+   //DEBUG
+   void setMethodToNull(){
+      method = null;
+   }
 
 
-  public void setInvokeExprs(List invokeExprs) {
-
-   this.invokeExprs = invokeExprs;
-
-  }
+   void setInvokeExprs(List invokeExprs) {
+      this.invokeExprs = invokeExprs;
+   }
 
 
-  public void addInvokeExpr( InvokeExpr ie ) {
- 
-   invokeExprs.add(ie);
-
-  }
-
-  public void removeInvokeExpr( InvokeExpr ie ) {
-
-   invokeExprs.remove(ie);
-
-  }   
+   void addInvokeExpr( InvokeExpr ie ) {
+      invokeExprs.add(ie);
+   }
 
 
-  public List getInvokeExprs() {
-
-   return invokeExprs;
-
-  }
+   void removeInvokeExpr( InvokeExpr ie ) {
+      invokeExprs.remove(ie);
+   }
 
 
+   List getInvokeExprs() {
+      return invokeExprs;
+   }
 
 
-  
-  public void addCallSite( CallSite cs, Integer integer ){
-    // VIJAY ON MARCH 1 CallSites.put( cs.getInvokeExprId() , cs );
-    CallSites.put ( cs.getInvokeExpr(), cs );
-
-    CallSitesHT.put ( integer, cs );
-
-    cs.setInteger(integer);
-
-  }
+   void addCallSite( CallSite cs, Integer integer ){
+      // VIJAY ON MARCH 1 CallSites.put( cs.getInvokeExprId() , cs );
+      CallSites.put ( cs.getInvokeExpr(), cs );
+      CallSitesHT.put ( integer, cs );
+      cs.setInteger(integer);
+   }
 
 
+   void removeCallSite( CallSite cs ) {
+      CallSites.remove ( cs.getInvokeExpr() );
+      CallSitesHT.remove ( cs.getInteger() );
+   }
 
 
-  public void removeCallSite( CallSite cs ) {
-   
-   CallSites.remove ( cs.getInvokeExpr() );
-
-   CallSitesHT.remove ( cs.getInteger() );
-
-  }
-
-
+   CallSite getCallSite( String invokeExprId ){
+      CallSite callSite = (CallSite)CallSites.get( invokeExprId );
+      if( callSite == null )
+      throw new NoSuchCallSiteException( "The invoke expression "+invokeExprId + " was not found in the method " +
+      this.getName()+" in the invoke graph" );
+      return callSite;
+   }
 
 
-
-  
-  public CallSite getCallSite( String invokeExprId ){
-    CallSite callSite = (CallSite)CallSites.get( invokeExprId );
-    
-    if( callSite == null )
-      throw new NoSuchCallSiteException( "The invoke expression "+invokeExprId  + " was not found in the method " +
-					 this.getName()+" in the invoke graph" );
-    return callSite;
-  }
+   CallSite getCallSite ( InvokeExpr invokeexpr ) {
+      CallSite callSite = (CallSite) CallSites.get( invokeexpr );
+      if( callSite == null )
+      throw new NoSuchCallSiteException( "The invoke expression "+invokeexpr + " was not found in the method " +
+      this.getName()+" in the invoke graph" );
+      return callSite;
+   }
 
 
-  public CallSite getCallSite ( InvokeExpr invokeexpr ) {
-
-    CallSite callSite = (CallSite) CallSites.get( invokeexpr );
-
-   if( callSite == null )
-   throw new NoSuchCallSiteException( "The invoke expression "+invokeexpr  + " was not found in the method " +
-					 this.getName()+" in the invoke graph" );
-
-    return callSite;
-  }
+   CallSite getCallSite ( Integer integer ) {
+      CallSite callSite = (CallSite) CallSitesHT.get( integer );
+      if( callSite == null )
+      throw new NoSuchCallSiteException( "The "+integer+"th invoke expression was not found in the method " +
+      this.getName()+" in the invoke graph" );
+      return callSite;
+   }
 
 
-   public CallSite getCallSite ( Integer integer ) {
+   //public void setCallSite( InvokeExpr invokeExpr , CallSite csite ){
+   // CallSites.put( invokeExpr , csite );
+   //}
 
-    CallSite callSite = (CallSite) CallSitesHT.get( integer );
-
-     if( callSite == null )
-     throw new NoSuchCallSiteException( "The "+integer+"th invoke expression was not found in the method " +
-					 this.getName()+" in the invoke graph" );
-
-    return callSite;
-  }
+   void addInvokingSite( CallSite cs ) {
+      Invokers.add ( cs );
+   }
 
 
+   void removeInvokingSite( CallSite cs ) {
+      if( Invokers.contains(cs) )
+      Invokers.remove( cs );
+   }
 
 
-  //public void setCallSite( InvokeExpr invokeExpr , CallSite csite ){
-  // CallSites.put( invokeExpr , csite );
-  //}
+   List getInvokingSites() {
+      return Invokers;
+   }
 
 
-
-  public void addInvokingSite( CallSite cs ) {
-   Invokers.add ( cs );
-  }
-
-  public void removeInvokingSite( CallSite cs ) {
-   if( Invokers.contains(cs) )
-    Invokers.remove( cs );
-  }
+   void addCaller( MethodNode caller ){
+      CalledBy.add( caller );
+   }
 
 
-  public List getInvokingSites() {
-   return Invokers;
-  }
-
-
-
-  public void addCaller( MethodNode caller ){
-    CalledBy.add( caller );
-  }
-
-  public void removeCaller( MethodNode caller ){
-    if( CalledBy.contains(caller) )
+   void removeCaller( MethodNode caller ){
+      if( CalledBy.contains(caller) )
       CalledBy.remove( caller );
-  }
-
-  public Set getCallers(){
-    return CalledBy;
-  }
+   }
 
 
-  public void setCallers( Set callers ){
-    CalledBy = callers;
-  }
+   Set getCallers(){
+      return CalledBy;
+   }
 
-  
-  /**
+
+   void setCallers( Set callers ){
+      CalledBy = callers;
+   }
+
+
+   /**
    * used to transpose the callgraph. ( needed for str. conn. comp.)
    */
-  //public void transposeNode( boolean bool ){
-  //if ( bool == true )
-  //  AdjacentNodes = CalledBy;
-  //else
-  //  setAdjNodesToCallSites();      
-  //}
+   //public void transposeNode( boolean bool ){
+   //if ( bool == true )
+   //  AdjacentNodes = CalledBy;
+   //else
+   //  setAdjNodesToCallSites();      
+   //}
+
+   private void setAdjNodesToCallSites(){
+      AdjacentNodes = new HashSet();
+      Iterator iter = CallSites.values().iterator();
+      while( iter.hasNext() ){
+         CallSite callSite = (CallSite)iter.next();
+         // methods here are MethodNodes
+         Object[] methods = callSite.getMethods().toArray();
+         for ( int m = 0 ; m < methods.length ; m++ )
+         AdjacentNodes.add( methods[m] );
+      }
+
+   }
 
 
-  private void setAdjNodesToCallSites(){    
-    AdjacentNodes = new HashSet();
-
-    Iterator iter = CallSites.values().iterator();
-    while( iter.hasNext() ){
-      CallSite callSite = (CallSite)iter.next();
-      // methods here are MethodNodes
-      Object[] methods = callSite.getMethods().toArray();
-      for ( int m = 0 ; m < methods.length ; m++ )
-	AdjacentNodes.add( methods[m] );
-    }
-  }
-
-
-  // for GraphNode Interface
-  public List getAdjacentNodes(){
-    if ( AdjacentNodes == null )
+   // for GraphNode Interface
+   public List getAdjacentNodes(){
+      if ( AdjacentNodes == null )
       setAdjNodesToCallSites();
+      ArrayList al = new ArrayList();
+      al.addAll ( AdjacentNodes );
+      return al;
+   }
 
-       ArrayList al = new ArrayList();
 
-       al.addAll ( AdjacentNodes );
-
-    return al;
-  }
-
-  /**
+   /**
    * for all callSites collect all methods possibly reached
    */
-  public Set getAllPossibleMethods(){
-    Set allMethods = new HashSet();
+   Set getAllPossibleMethods(){
+      Set allMethods = new HashSet();
+      // for all callSites collect all methods possibly reached
+      //Object[] keys = CallSites.keySet().toArray();
+      //for ( int i = 0 ; i < keys.length ; i++ ){
+      // CallSite callSite = (CallSite)CallSites.get( keys[i] );
 
-    // for all callSites collect all methods possibly reached
-    //Object[] keys = CallSites.keySet().toArray();
-    //for ( int i = 0 ; i < keys.length ; i++ ){
-    // CallSite callSite = (CallSite)CallSites.get( keys[i] );
-    
-    // Iterator iter = CallSites.values().iterator();
+      // Iterator iter = CallSites.values().iterator();
 
-    Iterator iter = getInvokeExprs().iterator();
+      Iterator iter = getInvokeExprs().iterator();
+      while( iter.hasNext() ){
+         CallSite callSite = getCallSite ( (InvokeExpr)iter.next());
+         Object[] callSMethods = callSite.getMethodsAsList().toArray();
+         for ( int c = 0 ; c < callSMethods.length ; c++ )
+         allMethods.add( callSMethods[c] );
+      }
 
-
-    while( iter.hasNext() ){
-      CallSite callSite = getCallSite ( (InvokeExpr)iter.next());
-      Object[] callSMethods = callSite.getMethodsAsList().toArray();
-      for ( int c = 0 ; c < callSMethods.length ; c++ )
-	allMethods.add( callSMethods[c] );
-    }
-
-    return allMethods;
-  }
+      return allMethods;
+   }
 
 
-
-  public List getAllPossibleMethodsAsList() {
-
-   List sortedmethods = new /* Array */ LinkedList();
-
-   Object[] methodsarray = getAllPossibleMethods().toArray();
-
-   Arrays.sort ( methodsarray, new StringComparator() );
-
-   for (int i=0;i<methodsarray.length;i++)
-   sortedmethods.add ( (MethodNode) methodsarray[i] );
-
-   return sortedmethods;
-
-  }
+   List getAllPossibleMethodsAsList() {
+      List sortedmethods = new /* Array */ LinkedList();
+      Object[] methodsarray = getAllPossibleMethods().toArray();
+      Arrays.sort ( methodsarray, new StringComparator() );
+      for (int i=0;i<methodsarray.length;i++)
+      sortedmethods.add ( (MethodNode) methodsarray[i] );
+      return sortedmethods;
+   }
 
 
+   /**
+   *
+   */
+   void prepareForGC(){
+      if( CallSites != null ){
+         //CallSite callSite;
+
+         //	    Object[] keys = CallSites.keySet().toArray();
+         //for ( int i = 0 ; i < keys.length ; i++ ){
+         //callSite = (CallSite)CallSites.get( keys[i] );
+
+         Iterator iter = CallSites.values().iterator();
+         while( iter.hasNext() ){
+            CallSite callSite = (CallSite)iter.next();
+            callSite.prepareForGC();
+         }
+
+      }
+
+      CalledBy = null;
+      method = null;
+   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     *
-     */
-    public void prepareForGC(){
-
-	if( CallSites != null ){
-	  //CallSite callSite;
-
-	    //	    Object[] keys = CallSites.keySet().toArray();
-	    //for ( int i = 0 ; i < keys.length ; i++ ){
-	    //callSite = (CallSite)CallSites.get( keys[i] );
-
-	    Iterator iter = CallSites.values().iterator();
-	    while( iter.hasNext() ){
-	      CallSite callSite = (CallSite)iter.next();
-	      callSite.prepareForGC();
-	    }
-	}
-
-	CalledBy = null;
-	method = null;
-    }
-
-
-
-    protected void finalize() throws Throwable {
+   protected void finalize() throws Throwable {
       //    System.out.println( "GC:  MethodNode " + getName() );
 
-  }
-
-
-
-
-
-
+   }
 
 
 }
-
-
-
-
-
-
-
 
 
 

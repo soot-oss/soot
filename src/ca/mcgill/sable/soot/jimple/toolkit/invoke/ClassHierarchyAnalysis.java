@@ -29,5 +29,26 @@ public class ClassHierarchyAnalysis {
  }
 
 
+ public static InvokeGraph newInvokeGraph(SootClass initialClass, List classesToAnalyze )
+ {
+
+  List classnames = new ArrayList(); 
+
+  Iterator classesToAnalyzeIt = classesToAnalyze.iterator();
+  while (classesToAnalyzeIt.hasNext() )
+  {
+
+   SootClass classToAnalyze = (SootClass) classesToAnalyzeIt.next();
+   classnames.add(classToAnalyze.getName());
+
+  }
+
+  Jimplifier.classesToAnalyze = classnames;
+  Resolver.classesToAnalyze = classnames;
+  Inliner.classesToAnalyze = classnames;
+
+  return ( new InvokeGraph(initialClass, true) );
+  
+ }
 
 }
