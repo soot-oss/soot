@@ -32,11 +32,17 @@ import java.util.*;
  */
 public class FastHierarchy
 {
+    private static void put( Map m, Object key, Object value ) {
+        List l = (List) m.get( key );
+        if( l == null ) m.put( key, l = new ArrayList() );
+        l.add( value );
+    }
+    
     /** This map holds all key,value pairs such that 
      * value.getSuperclass() == key. This is one of the three maps that hold
      * the inverse of the relationships given by the getSuperclass and
      * getInterfaces methods of SootClass. */
-    protected MultiMap classToSubclasses = new HashMultiMap();
+    protected Map classToSubclasses = new HashMap();
 
     /** This map holds all key,value pairs such that value is an interface 
      * and key is in value.getInterfaces(). This is one of the three maps 
@@ -82,13 +88,16 @@ public class FastHierarchy
     protected int dfsVisit( int start, SootClass c ) {
         Interval r = new Interval();
         r.lower = start++;
-        Iterator it = classToSubclasses.get( c ).iterator();
-        while( it.hasNext() ) {
-	    SootClass sc = (SootClass) it.next();
-	    // For some awful reason, Soot thinks interface are subclasses
-	    // of java.lang.Object
-	    if( sc.isInterface() ) continue;
-            start = dfsVisit( start, sc );
+        Collection col = (Collection) classToSubclasses.get(c);
+        if( col != null ) {
+            Iterator it = col.iterator();
+            while( it.hasNext() ) {
+                SootClass sc = (SootClass) it.next();
+                // For some awful reason, Soot thinks interface are subclasses
+                // of java.lang.Object
+                if( sc.isInterface() ) continue;
+                start = dfsVisit( start, sc );
+            }
         }
         r.upper = start++;
 	if( c.isInterface() ) {
@@ -107,7 +116,7 @@ public class FastHierarchy
 	for( Iterator clIt = sc.getClasses().iterator(); clIt.hasNext(); ) {
 	    final SootClass cl = (SootClass) clIt.next();
 	    if( !cl.isInterface() && cl.hasSuperclass() ) {
-		classToSubclasses.put( cl.getSuperclass(), cl );
+		put( classToSubclasses, cl.getSuperclass(), cl );
 	    }
 	    for( Iterator superclIt = cl.getInterfaces().iterator(); superclIt.hasNext(); ) {
 	        final SootClass supercl = (SootClass) superclIt.next();
@@ -290,7 +299,7 @@ public class FastHierarchy
                             ret.add( concreteM );
 		    }
 		    if( classToSubclasses.containsKey( c ) ) {
-			s.addAll( classToSubclasses.get( c ) );
+			s.addAll( (Collection) classToSubclasses.get( c ) );
 		    }
 		    if( interfaceToSubinterfaces.containsKey( c ) ) {
 			s.addAll( interfaceToSubinterfaces.get( c ) );
@@ -347,7 +356,7 @@ public class FastHierarchy
                             ret.add( concreteM );
 		    }
 		    if( classToSubclasses.containsKey( c ) ) {
-			s.addAll( classToSubclasses.get( c ) );
+			s.addAll( (Collection) classToSubclasses.get( c ) );
 		    }
 		    if( interfaceToSubinterfaces.containsKey( c ) ) {
 			s.addAll( interfaceToSubinterfaces.get( c ) );
@@ -407,7 +416,8 @@ public class FastHierarchy
                 worklist.addAll( getAllImplementersOfInterface( concreteType ) );
                 continue;
             }
-            worklist.addAll( classToSubclasses.get( concreteType ) );
+            Collection c = (Collection) classToSubclasses.get( concreteType );
+            if( c != null ) worklist.addAll( c );
             if( !concreteType.isAbstract() ) {
                 while( true ) {
                     if( resolved.contains( concreteType ) ) break;
@@ -472,7 +482,9 @@ public class FastHierarchy
             return target;
     }
 
-    public Set getSubclassesOf( SootClass c ) {
-        return classToSubclasses.get( c );
+    public Collection getSubclassesOf( SootClass c ) {
+        Collection ret = (Collection) classToSubclasses.get(c);
+        if( ret == null ) return Collections.EMPTY_LIST;
+        return ret;
     }
 }
