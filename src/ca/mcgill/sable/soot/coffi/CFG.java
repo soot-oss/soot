@@ -6,6 +6,9 @@
  * Modifications by Patrick Lam (gagnon@sable.mcgill.ca) are         *
  * Copyright (C) 1998 Patrick Lam.  All rights reserved.             *
  *                                                                   *
+ * Modifications by Vijay Sundaresan (vijay@sable.mcgill.ca) are     *
+ * Copyright (C) 1999 Vijay Sundaresan.  All rights reserved.        *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -98,6 +101,9 @@
 
  B) Changes:
 
+ - Modified on February 19, 1999 by Vijay Sundaresan (vijay@sable.mcgill.ca) (*)
+   Implemented a JSR eliminator/handler code duplicator.
+   
  - Modified on January 18, 1998 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Fixed a bug in interpreting the SWAP bytecode.
 
@@ -205,7 +211,27 @@ public class CFG {
             h.put(i,bb);
             i = head;
          }
+
          buildCFG();
+
+         endofBBList = getEndOfBBList();
+
+         // Vijay's JSR eliminator
+
+
+         {
+
+            buildJsrRetPairs();
+        
+             fixupJsrRets();
+    
+             JsrEliminate();
+    
+             adjustExceptionTable();    
+         }
+  
+
+             
          cfg.beginCode = true;
       }
       m.cfg = this;
@@ -228,10 +254,15 @@ public class CFG {
 
                 while(ins != null)
                 {
+                    
                     if(ins.next != null)
                         instructionToNext.put(ins, ins.next);
                     else if(b.next != null)
+                       {
+
                         instructionToNext.put(ins, b.next.head);
+
+                       }
 
                     ins = ins.next;
                 }
@@ -241,6 +272,711 @@ public class CFG {
         }
 
    }
+
+
+
+   HashMap RetToJsr = new HashMap();
+
+   HashMap RetToJsrBB = new HashMap();
+
+   HashMap RetToOrigJsr = new HashMap();
+
+   HashMap RetToOrigJsrBB = new HashMap();
+
+   HashMap RetToOrigRetBB = new HashMap(); 
+
+   HashMap RetToRetBB = new HashMap();
+
+   HashMap RetToJsrSucc = new HashMap();
+
+   HashMap RetToOrigJsrSucc = new HashMap();
+
+   BasicBlock endofBBList;
+
+   BasicBlock highestBlock;
+
+
+
+
+
+
+
+  private BasicBlock getEndOfBBList() {
+   
+    BasicBlock b = cfg;
+
+    BasicBlock prev = cfg;
+
+    while ( b != null )
+    {
+
+     prev = b;
+
+     b = b.next;
+
+    }
+
+    return prev;
+
+  }
+
+
+
+
+ private void adjustExceptionTable() {
+
+   Code_attribute codeAttribute = method.locate_code_attribute();
+
+   for(int i = 0; i < codeAttribute.exception_table_length; i++)
+   {
+    Instruction startIns = codeAttribute.exception_table[i].start_inst;
+
+    if ( ( ( Instruction ) replacedinstructionHT.get ( startIns ) ) != null ) 
+    codeAttribute.exception_table[i].start_inst = ( Instruction ) replacedinstructionHT.get ( startIns );
+
+    Instruction endIns = codeAttribute.exception_table[i].end_inst;
+
+    if ( ( ( Instruction ) replacedinstructionHT.get ( endIns ) ) != null ) 
+    codeAttribute.exception_table[i].end_inst = ( Instruction ) replacedinstructionHT.get ( endIns );
+
+    Instruction targetIns = codeAttribute.exception_table[i].handler_inst;
+
+    if ( ( ( Instruction ) replacedinstructionHT.get ( targetIns ) ) != null ) 
+ codeAttribute.exception_table[i].handler_inst = ( Instruction ) replacedinstructionHT.get ( targetIns );
+
+   }
+
+ }
+
+
+
+
+
+ private void buildJsrRetPairs() {
+     
+  BasicBlock b = cfg;
+
+  Instruction i = null;
+
+  while ( b != null )
+  {
+
+   i = b.tail;
+
+   if ( i instanceof Instruction_Jsr)
+   {                 
+
+    boolean retNotFound = true;
+
+    Set successors = new VectorSet();
+
+    java.util.Vector succ = b.succ;
+
+    for(int k = 0; k < succ.size(); k++)
+    successors.add((BasicBlock) succ.elementAt(k));
+
+    Iterator succIt = successors.iterator();
+
+    while ( retNotFound && succIt.hasNext() )
+    {
+
+     BasicBlock succBB = (BasicBlock) succIt.next();
+
+     Instruction BBtail = succBB.tail;
+
+     if ( BBtail instanceof Instruction_Ret )
+     {
+
+      retNotFound = false;
+
+      if ( ( ( Instruction ) RetToJsr.get ( BBtail ) ) == null )
+      {
+
+        RetToJsr.put ( BBtail, i );
+        RetToJsrBB.put ( BBtail, b );
+        RetToJsrSucc.put ( BBtail, b.succ.elementAt(0) );
+        RetToRetBB.put ( BBtail, succBB );
+        RetToOrigJsrSucc.put ( BBtail, b.succ.elementAt(0) );
+        RetToOrigJsr.put ( BBtail, i );
+        RetToOrigJsrBB.put ( BBtail, b );
+        RetToOrigRetBB.put ( BBtail, succBB );
+   
+       }
+       else       
+       {
+
+         try {
+
+//          System.out.println ( "Ret with 2 possible Jsr's" );
+
+          setHighestBlock ( ( BasicBlock ) b.succ.elementAt(0) );
+
+          highestBlock.next = endofBBList.next;
+
+          endofBBList.next = highestBlock;    
+
+          BasicBlock clonedjsrtargetBB = cloneJsrTargetBB( succBB, ( BasicBlock ) b.succ.elementAt(0) );
+      
+          RetToOrigJsr.put ( clonedjsrtargetBB.tail, ( Instruction ) RetToJsr.get ( BBtail ) );
+          
+          RetToOrigJsrBB.put ( clonedjsrtargetBB.tail, ( BasicBlock ) RetToJsrBB.get ( BBtail ) );
+
+          RetToOrigRetBB.put ( clonedjsrtargetBB.tail, succBB );
+
+          RetToJsr.put ( clonedjsrtargetBB.tail, i );
+
+          RetToJsrBB.put ( clonedjsrtargetBB.tail, b );
+
+          RetToRetBB.put ( clonedjsrtargetBB.tail, clonedjsrtargetBB );
+
+          RetToJsrSucc.put ( clonedjsrtargetBB.tail, highestBlock ); 
+
+          RetToOrigJsrSucc.put ( clonedjsrtargetBB.tail, b.succ.elementAt(0) );
+
+         } catch (  java.lang.CloneNotSupportedException e ) {
+
+              System.out.println ( "CLONE UNSUCCESSFUL" ); }
+       }
+
+     }
+     else  // LAST STMT OF BB WAS NOT A RET 
+     {
+
+       java.util.Vector succsuccBB = succBB.succ; 
+
+       for(int n = 0; n < succsuccBB.size(); n++)
+       {
+
+        BasicBlock BBnext = (BasicBlock) succsuccBB.elementAt(n);
+
+        successors.add( BBnext );
+
+      }
+
+     }
+
+    } // WHILE 
+
+   }
+
+   b = b.next;
+
+  }
+
+ }
+
+
+
+
+
+
+
+  private void setHighestBlock ( BasicBlock highestBB ) throws java.lang.CloneNotSupportedException {
+
+   // CLONE THE HIGHEST BB ( IMMEDIATE SUCC OF JSRBB ) TO BE CLONED FIRST 
+
+   clonedHT = new HashMap();
+
+   Instruction prev = highestBB.head;
+
+   Instruction clonedprev = ( Instruction ) prev.clone();
+
+   Instruction clonedhead = clonedprev;
+
+   method.instructionList.add ( clonedhead );
+
+   Instruction clonedcurrent = null;
+
+   while ( prev != highestBB.tail )
+   {
+
+    Instruction current = prev.next;
+   
+    clonedcurrent = ( Instruction ) current.clone();
+
+    // System.out.println ( "CLONED "+ clonedcurrent );
+
+    method.instructionList.add ( clonedcurrent );
+
+    clonedprev.next = clonedcurrent;
+
+    prev = current;
+
+    clonedprev = clonedcurrent;
+
+   }
+
+   buildBasicBlock( clonedhead );
+   
+   highestBlock = new BasicBlock(clonedhead);
+
+   h.put ( clonedhead, highestBlock );
+
+   clonedHT.put ( highestBB, highestBlock );
+
+  }
+
+
+
+
+
+
+
+
+  Map clonedHT = new HashMap(); 
+
+
+
+
+
+
+
+
+
+  
+  private BasicBlock cloneJsrTargetBB( BasicBlock lowestBB, BasicBlock highestBB ) throws java.lang.CloneNotSupportedException { 
+
+  BasicBlock clonedBB = null;
+
+  if ( lowestBB == highestBB )
+  return highestBlock;
+  else
+  {
+
+   if ( ( ( BasicBlock ) clonedHT.get ( lowestBB ) == null ) )
+   {
+
+    // NOT YET CLONED EVERYTHING, SO CLONE THIS BB
+
+    Instruction prev = lowestBB.head;
+
+    Instruction clonedprev = ( Instruction ) prev.clone();
+
+    Instruction clonedhead = clonedprev;
+
+    // System.out.println ( "CLONED "+ clonedhead );
+
+    method.instructionList.add ( clonedhead );
+
+    Instruction clonedcurrent = null;
+
+    while ( prev != lowestBB.tail )
+    {
+
+     Instruction current = prev.next;
+   
+     clonedcurrent = ( Instruction ) current.clone();
+
+     method.instructionList.add ( clonedcurrent );
+
+     clonedprev.next = clonedcurrent;
+
+     prev = current;
+
+     clonedprev = clonedcurrent;
+
+    }
+
+    buildBasicBlock( clonedhead );
+   
+    clonedBB = new BasicBlock(clonedhead);
+
+    h.put ( clonedhead, clonedBB );
+
+    clonedBB.next = highestBlock.next;
+
+    highestBlock.next = clonedBB;
+   
+    clonedHT.put ( lowestBB, clonedBB );
+
+    java.util.Vector lowestpreds = lowestBB.pred; 
+
+    for(int n = 0; n < lowestpreds.size(); n++)
+    {
+
+     BasicBlock BBnext = (BasicBlock) lowestpreds.elementAt(n);
+
+     if ( lowestBB != BBnext )
+     {
+
+      // CLONE ALL THE PRED BBs TILL HIGHEST BB IS REACHED 
+      // RECURSION
+
+      BasicBlock clonedJsrTargetBB = cloneJsrTargetBB ( BBnext, highestBB );
+
+      clonedBB.pred.addElement ( clonedJsrTargetBB );
+
+      clonedJsrTargetBB.succ.addElement ( clonedBB );
+
+     }
+
+    }
+
+   }
+   else  // ALREADY BEEN CLONED BEFORE
+   clonedBB = ( BasicBlock ) clonedHT.get ( lowestBB );
+
+  }
+
+  return clonedBB;
+
+ }
+
+
+
+
+
+
+
+ 
+ private void JsrEliminate() {
+
+  BasicBlock b = cfg;
+
+  Instruction i = null;
+
+  while ( b != null )
+  {
+
+   i = b.tail;
+ 
+   if ( i instanceof Instruction_Ret )
+   {
+
+    Instruction originstruction = null;
+
+    BasicBlock matchingjsrBB = ( BasicBlock ) RetToJsrBB.get ( i );
+
+
+
+    ListIterator instructionIt = method.instructionList.listIterator();
+
+    while ( instructionIt.hasNext() )
+    {
+
+     if ( instructionIt.next() == matchingjsrBB.tail )
+     break;
+
+    }
+
+    ListIterator succIt = method.instructionList.listIterator( instructionIt.nextIndex());
+
+    BasicBlock matchingjsrnextBB = null;
+
+    if(succIt.hasNext())
+    {
+
+     matchingjsrnextBB = ( BasicBlock) h.get ( (Instruction ) succIt.next() );
+
+    }
+
+    //System.out.println ( "SUCC SIZE = "+b.succ.size() );
+    
+    // for ( int k=0; k < b.succ.size(); k++ ) 
+    // { 
+
+   //  BasicBlock tempBB = ( BasicBlock ) b.succ.elementAt ( k );
+
+   //  if ( tempBB.tail instanceof Instruction_Jsr )
+     b.succ.removeAllElements();
+
+    // } 
+    
+    //System.out.println ( "SUCC SIZE = "+b.succ.size() );
+    
+    //System.out.println ( "ADDING "+matchingjsrnextBB.head );
+
+    b.succ.addElement ( matchingjsrnextBB );
+
+    //System.out.println ( "SUCC SIZE = "+b.succ.size() );
+
+    //System.out.println ( "PRED SIZE = "+matchingjsrnextBB.pred.size() );
+
+    for ( int k= matchingjsrnextBB.pred.size() - 1; k > -1;k-- ) 
+    { 
+
+     BasicBlock tempBB = ( BasicBlock ) matchingjsrnextBB.pred.elementAt ( k );
+
+     if ( tempBB.tail instanceof Instruction_Ret )
+     matchingjsrnextBB.pred.removeElement ( tempBB );
+
+    } 
+
+
+    //System.out.println ( "PRED SIZE = "+matchingjsrnextBB.pred.size() );
+    
+    //System.out.println ( "ADDING "+b.head );
+
+    matchingjsrnextBB.pred.addElement ( b );
+
+    //System.out.println ( "PRED SIZE = "+matchingjsrnextBB.pred.size() );
+    
+    BasicBlock matchingjsrsuccBB = ( BasicBlock ) RetToJsrSucc.get( i );
+
+    Instruction temp = b.head;
+
+    if ( b.head == b.tail )  // 1 INSTRUCTION IN BB
+    {
+
+     originstruction = b.tail;
+ 
+     b.head = new Instruction_Goto();
+
+     replacedinstructionHT.put ( originstruction, b.head ); 
+
+     method.instructionList.add ( b.head );
+
+     h.put ( b.head, b );
+
+     b.tail = b.head;
+
+    }
+    else
+    { 
+
+     originstruction = b.tail;
+
+     while ( temp.next != b.tail )
+     {
+
+      temp = temp.next;
+
+     }
+
+     temp.next = new Instruction_Goto();
+
+     replacedinstructionHT.put ( originstruction, temp.next );
+
+     method.instructionList.add ( temp.next );
+
+     b.tail = temp.next;
+
+    }
+
+    b.tail.next = null;
+
+    method.instructionList.remove ( originstruction );
+
+    temp = matchingjsrBB.head;
+
+    if ( matchingjsrBB.head == matchingjsrBB.tail )
+    {
+
+     originstruction = matchingjsrBB.tail;
+
+     matchingjsrBB.head = new Instruction_Goto();
+
+     replacedinstructionHT.put ( originstruction, matchingjsrBB.head );
+
+     method.instructionList.add ( matchingjsrBB.head );
+
+     h.put ( matchingjsrBB.head, matchingjsrBB );
+
+     matchingjsrBB.tail = matchingjsrBB.head;
+
+    }
+    else
+    { 
+
+     originstruction = matchingjsrBB.tail;
+
+     while ( temp.next != matchingjsrBB.tail )
+     {
+
+      temp = temp.next;
+
+     }
+
+     temp.next = new Instruction_Goto();
+
+     replacedinstructionHT.put ( originstruction, temp.next );
+
+     method.instructionList.add ( temp.next );
+
+     matchingjsrBB.tail = temp.next;
+
+    }
+
+    matchingjsrBB.tail.next = null;
+
+    method.instructionList.remove ( originstruction );
+
+    temp = matchingjsrsuccBB.head;
+
+    replacedinstructionHT.put ( temp, temp.next );
+
+    matchingjsrsuccBB.head = temp.next; 
+
+    h.put ( temp.next, matchingjsrsuccBB );
+
+    method.instructionList.remove ( temp );
+
+   }
+
+   b = b.next;
+
+  }
+
+ }
+
+
+
+
+
+ private HashMap replacedinstructionHT = new HashMap(6, 0.7f);
+ 
+
+
+
+
+
+
+
+ private void fixupJsrRets() {
+
+ //System.out.println ( " REACHED FIXUPJSRETS" );
+ 
+  BasicBlock b = cfg;
+
+  Instruction i = null;
+
+  while ( b != null )
+  {
+
+   //System.out.println ( "ENTERING LOOP" );
+  
+   i = b.tail;
+ 
+   if ( i instanceof Instruction_Ret )
+   {
+
+    //System.out.println ( "ENTERING RET IF" );
+   
+    Instruction_Jsr matchingjsr = ( Instruction_Jsr) RetToJsr.get ( i );
+    
+    BasicBlock matchingjsrBB = ( BasicBlock ) RetToJsrBB.get ( i );
+
+    java.util.Vector succOfmatchingjsr = matchingjsrBB.succ; 
+
+    BasicBlock WrongsuccBB = null;
+
+    BasicBlock OrigsuccBB = (BasicBlock) succOfmatchingjsr.elementAt(0);
+
+    BasicBlock NewsuccBB = ( BasicBlock ) RetToJsrSucc.get ( i );
+
+    if ( OrigsuccBB != NewsuccBB )
+    WrongsuccBB = OrigsuccBB;
+
+    if ( WrongsuccBB != null )
+    {
+
+     BasicBlock OrigretBB = ( BasicBlock ) RetToOrigRetBB.get ( i );
+
+     BasicBlock OrigjsrBB = ( BasicBlock ) RetToOrigJsrBB.get ( i );
+
+     ListIterator instructionIt = method.instructionList.listIterator();
+
+     while ( instructionIt.hasNext() )
+     {
+
+//      if ( instructionIt.next() == OrigjsrBB.head )
+
+      if ( instructionIt.next() == OrigjsrBB.tail )
+      break;
+
+     }
+
+    ListIterator succIt = method.instructionList.listIterator( instructionIt.nextIndex());
+
+    BasicBlock OrigjsrnextBB = null;
+
+    if(succIt.hasNext())
+    {
+
+     OrigjsrnextBB = ( BasicBlock) h.get ( (Instruction ) succIt.next() );
+
+    }
+
+
+    instructionIt = method.instructionList.listIterator();
+
+    while ( instructionIt.hasNext() )
+    {
+
+     if ( instructionIt.next() == matchingjsr )
+     break;
+
+    }
+
+    succIt = method.instructionList.listIterator( instructionIt.nextIndex());
+
+    BasicBlock matchingjsrnextBB = null;
+
+    if(succIt.hasNext())
+    {
+
+     matchingjsrnextBB = ( BasicBlock) h.get ( (Instruction ) succIt.next() );
+
+    }
+
+    OrigsuccBB.pred.removeElement ( matchingjsrBB );
+    
+    OrigretBB.succ.removeElement ( matchingjsrnextBB );
+
+    matchingjsrBB.succ.addElement ( NewsuccBB );
+
+    matchingjsrBB.succ.removeElement ( OrigsuccBB );
+
+    matchingjsrnextBB.pred.addElement ( b );
+
+    matchingjsrnextBB.pred.removeElement ( OrigretBB );
+
+    for ( int k=NewsuccBB.pred.size() -1; k > -1;k-- ) 
+    { 
+
+     BasicBlock tempBB = ( BasicBlock ) NewsuccBB.pred.elementAt ( k );
+
+     if ( tempBB.tail instanceof Instruction_Jsr )
+     NewsuccBB.pred.removeElement ( tempBB );
+
+    }
+
+    NewsuccBB.pred.addElement ( matchingjsrBB );
+
+    b.succ.removeAllElements();
+
+/*
+    for ( int k=0; k < b.succ.size(); k++ ) 
+    { 
+
+     BasicBlock tempBB = ( BasicBlock ) b.succ.elementAt ( k );
+
+   //  if ( tempBB.tail instanceof Instruction_Jsr )
+     b.succ.removeElement ( tempBB );
+
+    } 
+*/
+    
+    //System.out.println ( "SUCC SIZE = "+b.succ.size() );
+    
+    //System.out.println ( "ADDING "+matchingjsrnextBB.head );
+
+    b.succ.addElement ( matchingjsrnextBB );
+
+    //System.out.println ( "SUCC SIZE = "+b.succ.size() );
+    
+   }
+
+  }
+
+  b = b.next;
+
+ }
+
+}
+
+
+
 
    // Constructs the actual control flow graph. Assumes the hash table
    // currently associates leaders with BasicBlocks, this function
@@ -536,6 +1272,13 @@ public class CFG {
 
                     while(ins != null)
                     {
+                        //System.out.println("ins:" + ins.toString());
+                        
+                        //if(ins instanceof Instruction_Goto)
+                        //{
+                        //    System.out.println("targets: ");
+                        //}
+                        
                         if(ins.next != null)
                         {
                             Set successors = new VectorSet();
@@ -552,8 +1295,12 @@ public class CFG {
                             java.util.Vector succ = b.succ;
 
                             for(int i = 0; i < succ.size(); i++)
-                                successors.add(((BasicBlock) succ.elementAt(i)).head);
+                            {
+                                 successors.add(((BasicBlock) succ.elementAt(i)).head);
 
+                                 //System.out.println ( "HEAD "+( ( BasicBlock ) succ.elementAt(i) ).head );
+                                 
+                             }    
                             instructionToSuccessors.put(ins, successors);
                         }
 
@@ -605,14 +1352,20 @@ public class CFG {
 
                     for(;;)
                     {
+
+                  
                         Set successors = (Set) instructionToSuccessors.get(ins);
 
                         successors.add(handlerIns);
 
                         ins = (Instruction) instructionToNext.get(ins);
 
-                        if(ins == endIns)
+                        if ( (ins == endIns ) ) 
+                        {
+
                             break;
+                        }
+          
                     }
                 }
             }
@@ -659,13 +1412,13 @@ public class CFG {
                         TypeStack typeStack = (TypeStack) instructionToTypeStack.get(ins);
                         typeStack.print(System.out);
 
-                        System.out.println("[BeforeLocalArray]");
-                        TypeArray localArray = (TypeArray) instructionToLocalArray.get(ins);
+                        //System.out.println("[BeforeLocalArray]");
+                        //TypeArray localArray = (TypeArray) instructionToLocalArray.get(ins);
 
-                        localArray.print(System.out);
+                        //localArray.print(System.out);
                     }
                     */
-
+                    
                     changedInstructions.remove(0);
 
                     // System.out.println(ins);
@@ -748,18 +1501,17 @@ public class CFG {
             }
         }
 
-        /*
         // Print out instructions + their localArray + typeStack
         {
             Instruction ins = firstInstruction;
 
-            System.out.println();
+     //       System.out.println();
 
             while(ins != null)
             {
                 TypeStack typeStack = (TypeStack) instructionToTypeStack.get(ins);
-                TypeArray typeArray = (TypeArray) instructionToLocalArray.get(ins);
-
+                // TypeArray typeArray = (TypeArray) instructionToLocalArray.get(ins);
+/*
                 System.out.println("[TypeArray]");
                 typeArray.print(System.out);
                 System.out.println();
@@ -769,14 +1521,18 @@ public class CFG {
                 System.out.println();
 
                 System.out.println(ins.toString());
+*/
 
                 ins = (Instruction) instructionToNext.get(ins);
+/*
+
                 System.out.println();
                 System.out.println();
+*/
+
             }
         }
 
-*/
 
         // System.out.println("Producing Jimple code...");
 

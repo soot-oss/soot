@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Vijay Sundaresan (vijay@sable.mcgill.ca) are     *
+ * Copyright (C) 1999 Vijay Sundaresan.  All rights reserved.        *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -95,6 +98,9 @@
 
  B) Changes:
 
+ - Modified on February 19, 1999 by Vijay Sundaresan (vijay@sable.mcgill.ca) (*)
+   Made Instruction implement Cloneable.
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -137,7 +143,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
- abstract class Instruction {
+ abstract class Instruction implements Cloneable {
 
    /** String used to separate arguments in printing. */
    public static final String argsep = " ";
@@ -179,6 +185,13 @@ import java.io.*;
       calls = false;
       returns = false;
    }
+
+   protected Object clone() throws CloneNotSupportedException {
+
+    return super.clone();
+
+   }
+
 
    public String toString()
    {
