@@ -342,140 +342,142 @@ public class ClassResolver {
         InitialResolver.v().finalLocalInfo().put(new polyglot.util.IdentityKey(nodeKeyType), info);
         return finalFields;
     }
-        /**
-         * creates the Jimple for an anon class - in the AST there is no class 
-         * decl for anon classes - the revelant fields and methods are 
-         * created 
-         */
-        private void createAnonClassDecl(polyglot.ast.New aNew) {
-            
-            SootClass outerClass = ((soot.RefType)Util.getSootType(aNew.anonType().outer())).getSootClass();
-            if (InitialResolver.v().getInnerClassInfoMap() == null){
-                InitialResolver.v().setInnerClassInfoMap(new HashMap());
-            }
-            InitialResolver.v().getInnerClassInfoMap().put(sootClass, new InnerClassInfo(outerClass, "0", InnerClassInfo.ANON));
-            sootClass.setOuterClass(outerClass);
+    /**
+     * creates the Jimple for an anon class - in the AST there is no class 
+     * decl for anon classes - the revelant fields and methods are 
+     * created 
+     */
+    private void createAnonClassDecl(polyglot.ast.New aNew) {
         
-            soot.SootClass typeClass = ((soot.RefType)Util.getSootType(aNew.objectType().type())).getSootClass();
-           
-            // set superclass
-            if (((polyglot.types.ClassType)aNew.objectType().type()).flags().isInterface()){
-                sootClass.addInterface(typeClass);
-                sootClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
-            }
-            else {
-                sootClass.setSuperclass(typeClass);
-                if (((polyglot.types.ClassType)aNew.objectType().type()).isNested()){
-                    polyglot.types.ClassType superType = (polyglot.types.ClassType)aNew.objectType().type();
-                    // add inner clas tag
-                    Util.addInnerClassTag(sootClass, typeClass.getName(), ((soot.RefType)Util.getSootType(superType.outer())).toString(), superType.name(), Util.getModifier(superType.flags()));
+        SootClass outerClass = ((soot.RefType)Util.getSootType(aNew.anonType().outer())).getSootClass();
+        if (InitialResolver.v().getInnerClassInfoMap() == null){
+            InitialResolver.v().setInnerClassInfoMap(new HashMap());
+        }
+        InitialResolver.v().getInnerClassInfoMap().put(sootClass, new InnerClassInfo(outerClass, "0", InnerClassInfo.ANON));
+        sootClass.setOuterClass(outerClass);
     
-                }
-            }
-    
-            // needs to be done for local also
-            ArrayList params = new ArrayList();
-                
-            soot.SootMethod method;
-            // if interface there are no extra params
-            if (((polyglot.types.ClassType)aNew.objectType().type()).flags().isInterface()){
-                method = new soot.SootMethod("<init>", params, soot.VoidType.v());
-            }
-            else {
-                Iterator aIt = aNew.arguments().iterator();
-                while (aIt.hasNext()){
-                    polyglot.types.Type pType = ((polyglot.ast.Expr)aIt.next()).type();
-                    params.add(Util.getSootType(pType));
-                }
-                method = new soot.SootMethod("<init>", params, soot.VoidType.v());
-            }
-            
-            AnonClassInitMethodSource src = new AnonClassInitMethodSource();
-            method.setSource(src);
-            sootClass.addMethod(method);
+        soot.SootClass typeClass = ((soot.RefType)Util.getSootType(aNew.objectType().type())).getSootClass();
        
-            AnonLocalClassInfo info = (AnonLocalClassInfo)InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(aNew.anonType()));
-          
-            if (aNew.qualifier() != null) {
-                // add qualifier ref - do this first to get right order
-                addQualifierRefToInit(aNew.qualifier().type());
-                src.hasQualifier(true);
+        // set superclass
+        if (((polyglot.types.ClassType)aNew.objectType().type()).flags().isInterface()){
+            sootClass.addInterface(typeClass);
+            sootClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
+        }
+        else {
+            sootClass.setSuperclass(typeClass);
+            if (((polyglot.types.ClassType)aNew.objectType().type()).isNested()){
+                polyglot.types.ClassType superType = (polyglot.types.ClassType)aNew.objectType().type();
+                // add inner clas tag
+                Util.addInnerClassTag(sootClass, typeClass.getName(), ((soot.RefType)Util.getSootType(superType.outer())).toString(), superType.name(), Util.getModifier(superType.flags()));
+
             }
-            if (info != null && !info.inStaticMethod()){
+        }
+
+        // needs to be done for local also
+        ArrayList params = new ArrayList();
+            
+        soot.SootMethod method;
+        // if interface there are no extra params
+        if (((polyglot.types.ClassType)aNew.objectType().type()).flags().isInterface()){
+            method = new soot.SootMethod("<init>", params, soot.VoidType.v());
+        }
+        else {
+            Iterator aIt = aNew.arguments().iterator();
+            while (aIt.hasNext()){
+                polyglot.types.Type pType = ((polyglot.ast.Expr)aIt.next()).type();
+                params.add(Util.getSootType(pType));
+            }
+            method = new soot.SootMethod("<init>", params, soot.VoidType.v());
+        }
+        
+        AnonClassInitMethodSource src = new AnonClassInitMethodSource();
+        method.setSource(src);
+        sootClass.addMethod(method);
+   
+        AnonLocalClassInfo info = (AnonLocalClassInfo)InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(aNew.anonType()));
+      
+        if (aNew.qualifier() != null) {
+            // add qualifier ref - do this first to get right order
+            addQualifierRefToInit(aNew.qualifier().type());
+            src.hasQualifier(true);
+        }
+        if (info != null && !info.inStaticMethod()){
+            if (!InitialResolver.v().isAnonInCCall(aNew.anonType())){
                 addOuterClassThisRefToInit(aNew.anonType().outer());
                 addOuterClassThisRefField(aNew.anonType().outer());
                 src.thisOuterType(Util.getSootType(aNew.anonType().outer()));
                 src.hasOuterRef(true);
             }
-            src.polyglotType((polyglot.types.ClassType)aNew.anonType().superType());
-            
-            src.inStaticMethod(info.inStaticMethod());
-            if (info != null){
-                src.setFinalsList(addFinalLocals(aNew.body(), info.finalLocalsAvail(), (polyglot.types.ClassType)aNew.anonType(), info));
-            }
-            src.outerClassType(Util.getSootType(aNew.anonType().outer()));
-            if (((polyglot.types.ClassType)aNew.objectType().type()).isNested()){
-                src.superOuterType(Util.getSootType(((polyglot.types.ClassType)aNew.objectType().type()).outer()));
-                src.isSubType(Util.isSubType(aNew.anonType().outer(), ((polyglot.types.ClassType)aNew.objectType().type()).outer())); 
-            }
-            
-            Util.addLnPosTags(sootClass, aNew.position().line(), aNew.body().position().endLine(), aNew.position().column(), aNew.body().position().endColumn());
         }
+        src.polyglotType((polyglot.types.ClassType)aNew.anonType().superType());
+        src.anonType((polyglot.types.ClassType)aNew.anonType()); 
+        src.inStaticMethod(info.inStaticMethod());
+        if (info != null){
+            src.setFinalsList(addFinalLocals(aNew.body(), info.finalLocalsAvail(), (polyglot.types.ClassType)aNew.anonType(), info));
+        }
+        src.outerClassType(Util.getSootType(aNew.anonType().outer()));
+        if (((polyglot.types.ClassType)aNew.objectType().type()).isNested()){
+            src.superOuterType(Util.getSootType(((polyglot.types.ClassType)aNew.objectType().type()).outer()));
+            src.isSubType(Util.isSubType(aNew.anonType().outer(), ((polyglot.types.ClassType)aNew.objectType().type()).outer())); 
+        }
+        
+        Util.addLnPosTags(sootClass, aNew.position().line(), aNew.body().position().endLine(), aNew.position().column(), aNew.body().position().endColumn());
+    }
 
-        /**
-         * adds modifiers
-         */
-        private void addModifiers(polyglot.types.Flags flags, polyglot.ast.ClassDecl cDecl){
-            int modifiers = 0;
-            if (cDecl.type().isNested()){
-                if (flags.isPublic() || flags.isProtected() || flags.isPrivate()){
-                    modifiers = soot.Modifier.PUBLIC;
-                }
-                if (flags.isInterface()){
-                    modifiers = modifiers | soot.Modifier.INTERFACE;
-                }
-                if (flags.isAbstract()){
-                    modifiers = modifiers | soot.Modifier.ABSTRACT;
-                }
-                // if inner classes are declared in an interface they need to be
-                // given public access but I have no idea why
-                // if inner classes are declared in an interface the are 
-                // implicitly static and public (jls9.5)
-                if (cDecl.type().outer().flags().isInterface()){
-                    modifiers = modifiers | soot.Modifier.PUBLIC;
-                }
+    /**
+     * adds modifiers
+     */
+    private void addModifiers(polyglot.types.Flags flags, polyglot.ast.ClassDecl cDecl){
+        int modifiers = 0;
+        if (cDecl.type().isNested()){
+            if (flags.isPublic() || flags.isProtected() || flags.isPrivate()){
+                modifiers = soot.Modifier.PUBLIC;
             }
-            else {
-                modifiers = Util.getModifier(flags);
+            if (flags.isInterface()){
+                modifiers = modifiers | soot.Modifier.INTERFACE;
             }
-            sootClass.setModifiers(modifiers);
+            if (flags.isAbstract()){
+                modifiers = modifiers | soot.Modifier.ABSTRACT;
+            }
+            // if inner classes are declared in an interface they need to be
+            // given public access but I have no idea why
+            // if inner classes are declared in an interface the are 
+            // implicitly static and public (jls9.5)
+            if (cDecl.type().outer().flags().isInterface()){
+                modifiers = modifiers | soot.Modifier.PUBLIC;
+            }
         }
+        else {
+            modifiers = Util.getModifier(flags);
+        }
+        sootClass.setModifiers(modifiers);
+    }
 
-        private soot.SootClass getSpecialInterfaceAnonClass(soot.SootClass addToClass){
-            // check to see if there is already a special anon class for this
-            // interface
-            if ((InitialResolver.v().specialAnonMap() != null) && (InitialResolver.v().specialAnonMap().containsKey(addToClass))){
-                return (soot.SootClass)InitialResolver.v().specialAnonMap().get(addToClass);
-            }
-            else {
-                String specialClassName = addToClass.getName()+"$"+InitialResolver.v().getNextAnonNum();
-                // add class to scene and other maps and lists as needed
-                soot.SootClass specialClass = new soot.SootClass(specialClassName);
-                soot.Scene.v().addClass(specialClass);
-                specialClass.setApplicationClass();
-                specialClass.addTag(new soot.tagkit.SyntheticTag());
-                specialClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
-                Util.addInnerClassTag(addToClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
-                Util.addInnerClassTag(specialClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
-                InitialResolver.v().addNameToAST(specialClassName);
-                references.add(specialClassName);    
-                if (InitialResolver.v().specialAnonMap() == null){
-                    InitialResolver.v().setSpecialAnonMap(new HashMap());
-                }
-                InitialResolver.v().specialAnonMap().put(addToClass, specialClass);
-                return specialClass;
-            }
+    private soot.SootClass getSpecialInterfaceAnonClass(soot.SootClass addToClass){
+        // check to see if there is already a special anon class for this
+        // interface
+        if ((InitialResolver.v().specialAnonMap() != null) && (InitialResolver.v().specialAnonMap().containsKey(addToClass))){
+            return (soot.SootClass)InitialResolver.v().specialAnonMap().get(addToClass);
         }
+        else {
+            String specialClassName = addToClass.getName()+"$"+InitialResolver.v().getNextAnonNum();
+            // add class to scene and other maps and lists as needed
+            soot.SootClass specialClass = new soot.SootClass(specialClassName);
+            soot.Scene.v().addClass(specialClass);
+            specialClass.setApplicationClass();
+            specialClass.addTag(new soot.tagkit.SyntheticTag());
+            specialClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
+            Util.addInnerClassTag(addToClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
+            Util.addInnerClassTag(specialClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
+            InitialResolver.v().addNameToAST(specialClassName);
+            references.add(specialClassName);    
+            if (InitialResolver.v().specialAnonMap() == null){
+                InitialResolver.v().setSpecialAnonMap(new HashMap());
+            }
+            InitialResolver.v().specialAnonMap().put(addToClass, specialClass);
+            return specialClass;
+        }
+    }
         
     /**
      * Handling for assert stmts - extra fields and methods are needed

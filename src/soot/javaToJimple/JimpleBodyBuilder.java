@@ -3602,6 +3602,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     protected boolean needsOuterClassRef(polyglot.types.ClassType typeToInvoke){
         // anon and local
         AnonLocalClassInfo info = (AnonLocalClassInfo)InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(typeToInvoke));
+        
+        if (InitialResolver.v().isAnonInCCall(typeToInvoke)) return false;
+        
         if ((info != null) && (!info.inStaticMethod())){
             return true;
         }

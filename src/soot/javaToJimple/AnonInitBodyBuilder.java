@@ -39,6 +39,7 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         ArrayList fieldInits = acims.getFieldInits();
         soot.Type outerClassType = acims.outerClassType();
         polyglot.types.ClassType polyglotType = acims.polyglotType();
+        polyglot.types.ClassType anonType = acims.anonType();
         
         boolean hasOuterRef = ((AnonClassInitMethodSource)body.getMethod().getSource()).hasOuterRef();
         boolean hasQualifier = ((AnonClassInitMethodSource)body.getMethod().getSource()).hasQualifier();
@@ -128,9 +129,11 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
 
         soot.jimple.Stmt invokeStmt = soot.jimple.Jimple.v().newInvokeStmt(invoke);
         body.getUnits().add(invokeStmt);
+       
+        //System.out.println("polyglotType: "+polyglotType+" needs ref: "+needsOuterClassRef(polyglotType));
         
         // field assign
-        if (!inStaticMethod){
+        if (!inStaticMethod && needsOuterClassRef(anonType)){
             soot.SootFieldRef field = Scene.v().makeFieldRef( sootMethod.getDeclaringClass(), "this$0", outerClassType, false);
             soot.jimple.InstanceFieldRef ref = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, field);
             soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(ref, outerLocal);
