@@ -161,12 +161,12 @@ public class Main
         
         totalTimer.start();
         
-        ClassManager cm = new ClassManager();
+        SootClassManager cm = new SootClassManager();
         
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version dev0pt0.2");
+            System.out.println("Jimple version dev0pt0.3");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");  
             System.out.println("All rights reserved.");
             System.out.println("");

@@ -85,11 +85,11 @@ import java.util.*;
  **/
 class ClassHierarchy 
 {
-    /** Hashtable: ClassManager -> ClassHierarchy **/
+    /** Hashtable: SootClassManager -> ClassHierarchy **/
     private static Hashtable classHierarchyHashtable = new Hashtable();
 
     /** The class manager **/
-    private ClassManager classManager;
+    private SootClassManager classManager;
 
     /** All type node instances **/
     private Vector typeNodeInstances = new Vector();
@@ -103,7 +103,7 @@ class ClassHierarchy
     /** Used to create TypeNode instances **/
     private ConstructorChooser make = new ConstructorChooser();
 
-    private ClassHierarchy(ClassManager classManager)
+    private ClassHierarchy(SootClassManager classManager)
     {
         if(classManager == null)
         {
@@ -115,7 +115,7 @@ class ClassHierarchy
     }
 
     /** Get the class hierarchy for the given class manager. **/
-    public static ClassHierarchy getClassHierarchy(ClassManager classManager)
+    public static ClassHierarchy getClassHierarchy(SootClassManager classManager)
     {
         ClassHierarchy classHierarchy = 
             (ClassHierarchy) classHierarchyHashtable.get(classManager);

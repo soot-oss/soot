@@ -90,7 +90,7 @@ public class SootClass
     List methods = new ArrayList();
     List interfaces = new ArrayList();
 
-    ClassManager manager;
+    SootClassManager manager;
     boolean isManaged;
     
     SootClass superClass;
@@ -167,7 +167,7 @@ public class SootClass
         return isManaged;
     }
 
-    public ClassManager getManager() throws NotManagedException
+    public SootClassManager getManager() throws NotManagedException
     {
         return manager;
     }
@@ -191,7 +191,7 @@ public class SootClass
     }
     */
     
-    public void addField(Field f) throws AlreadyDeclaredException, DuplicateNameException
+    public void addField(SootField f) throws AlreadyDeclaredException, DuplicateNameException
     {
         resolveIfNecessary();
 
@@ -207,7 +207,7 @@ public class SootClass
         f.declaringClass = this;
     }
 
-    public void removeField(Field f) throws IncorrectDeclarerException
+    public void removeField(SootField f) throws IncorrectDeclarerException
     {
         resolveIfNecessary();
 
@@ -218,7 +218,7 @@ public class SootClass
         f.isDeclared = false;
     }
     
-    public Field getField(String name) throws ca.mcgill.sable.soot.NoSuchFieldException
+    public SootField getField(String name) throws ca.mcgill.sable.soot.NoSuchFieldException
     {
         resolveIfNecessary();
 
@@ -226,7 +226,7 @@ public class SootClass
         
         while(fieldIt.hasNext())
         {
-            Field field = (Field) fieldIt.next();
+            SootField field = (SootField) fieldIt.next();
             
             if(field.name.equals(name))
                 return field;
@@ -243,7 +243,7 @@ public class SootClass
         
         while(fieldIt.hasNext())
         {
-            Field field = (Field) fieldIt.next();
+            SootField field = (SootField) fieldIt.next();
             
             if(field.name.equals(name))
                 return true;

@@ -85,7 +85,7 @@ public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchab
             return t;
     }
     
-    public Type merge(Type other, ClassManager cm)
+    public Type merge(Type other, SootClassManager cm)
     {
         if(this.equals(UnknownType.v()))
             return other;

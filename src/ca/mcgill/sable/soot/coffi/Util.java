@@ -111,9 +111,9 @@ public class Util
 {
     static Map classNameToAbbreviation;
     
-    static ClassManager classManager;
+    static SootClassManager classManager;
     
-    static void setActiveClassManager(ClassManager manager)
+    static void setActiveClassManager(SootClassManager manager)
     {
         classManager = manager;
     }
@@ -123,7 +123,7 @@ public class Util
         if(ca.mcgill.sable.soot.jimple.Main.isVerbose)
             System.out.println("Resolving " + bclass.getName() + "...");
         
-        ClassManager cm = bclass.getManager();
+        SootClassManager cm = bclass.getManager();
         
         ClassFile coffiClass = new ClassFile(bclass.getName());
         
@@ -198,13 +198,13 @@ public class Util
                 
                 if(bclass.declaresField(fieldName))
                 {
-                    Field field = bclass.getField(fieldName);
+                    SootField field = bclass.getField(fieldName);
                     
                     field.setType(jimpleTypeOfFieldDescriptor(cm, fieldDescriptor));
                     field.setModifiers(modifiers);
                 }
                 else {
-                    bclass.addField(new Field(fieldName, 
+                    bclass.addField(new SootField(fieldName, 
                         jimpleTypeOfFieldDescriptor(cm, fieldDescriptor), modifiers));
                 } 
             } 
@@ -286,7 +286,7 @@ public class Util
             }            
     }
            
-    static Type jimpleReturnTypeOfMethodDescriptor(ClassManager cm, 
+    static Type jimpleReturnTypeOfMethodDescriptor(SootClassManager cm, 
         String descriptor)
     {
         Type[] types = jimpleTypesOfFieldOrMethodDescriptor(cm, descriptor);
@@ -294,7 +294,7 @@ public class Util
         return types[types.length - 1];
     }
     
-    static Type[] jimpleTypesOfFieldOrMethodDescriptor(ClassManager cm, 
+    static Type[] jimpleTypesOfFieldOrMethodDescriptor(SootClassManager cm, 
         String descriptor)
     {
         java.util.Vector types = new java.util.Vector();
@@ -403,7 +403,7 @@ public class Util
         }
     }
         
-    static Type jimpleTypeOfFieldDescriptor(ClassManager cm, 
+    static Type jimpleTypeOfFieldDescriptor(SootClassManager cm, 
         String descriptor)
     {
         boolean isArray = false;

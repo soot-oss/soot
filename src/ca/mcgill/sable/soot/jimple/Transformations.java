@@ -112,7 +112,7 @@ class Transformations
         // Perform iterations on code, changing the types of the locals.
         {   
             boolean hasChanged = true;
-            ClassManager cm = listBody.getMethod().getDeclaringClass().getManager();
+            SootClassManager cm = listBody.getMethod().getDeclaringClass().getManager();
             
             while(hasChanged)
             {

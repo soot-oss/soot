@@ -73,9 +73,9 @@ import ca.mcgill.sable.util.*;
 
 public class StaticFieldRef implements RValue, Variable
 {
-    Field field;
+    SootField field;
     
-    public StaticFieldRef(Field field)
+    public StaticFieldRef(SootField field)
     {
         this.field = field;
     }
@@ -85,12 +85,12 @@ public class StaticFieldRef implements RValue, Variable
         return "[" + field.getSignature() + "]";
     }
     
-    public Field getField()
+    public SootField getField()
     {
         return field;
     }
     
-    public void setField(Field field)
+    public void setField(SootField field)
     {
         this.field = field;
     }

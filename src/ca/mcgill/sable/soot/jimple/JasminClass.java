@@ -310,7 +310,7 @@ class JasminClass
             
             while(fieldIt.hasNext())
             {
-                Field field = (Field) fieldIt.next();
+                SootField field = (SootField) fieldIt.next();
                 
                 emit(".field " + Modifier.toString(field.getModifiers()) + " " + 
                      "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType()));
@@ -709,7 +709,7 @@ class JasminClass
             
             public void caseStaticFieldRef(StaticFieldRef v)
             {
-                Field field = v.getField();
+                SootField field = v.getField();
                 
                 emitValue(rvalue);
                 emit("putstatic " + slashify(field.getDeclaringClass().getName()) + "/" + 

@@ -76,11 +76,11 @@ import ca.mcgill.sable.util.*;
 
 public class InstanceFieldRef implements RValue, Variable
 {
-    Field field;
+    SootField field;
     LocalBox baseBox;
     List useBoxes;
         
-    public InstanceFieldRef(Local base, Field field)
+    public InstanceFieldRef(Local base, SootField field)
     {
         this.baseBox = new LocalBox(base);
         this.field = field;
@@ -110,12 +110,12 @@ public class InstanceFieldRef implements RValue, Variable
         baseBox.setValue(base);
     }
     
-    public Field getField()
+    public SootField getField()
     {
         return field;
     }
     
-    public void setField(Field field)
+    public void setField(SootField field)
     {
         this.field = field;
     }

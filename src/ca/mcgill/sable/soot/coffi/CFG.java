@@ -152,7 +152,7 @@ public class CFG {
    Map instructionToFirstStmt;
    Map instructionToLastStmt;
    SootMethod jmethod;
-   ClassManager cm;
+   SootClassManager cm;
 
    Map instructionToNext;
    Instruction firstInstruction;
@@ -1885,7 +1885,7 @@ public class CFG {
          return new OutFlow(typeStack);
     }
 
-    private Type jimpleTypeOfFieldInFieldRef(ClassManager cm, 
+    private Type jimpleTypeOfFieldInFieldRef(SootClassManager cm, 
         cp_info[] constant_pool, int index)
     {
         CONSTANT_Fieldref_info fr = (CONSTANT_Fieldref_info) 
@@ -1900,7 +1900,7 @@ public class CFG {
         return Util.jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
     }
 
-    private Type jimpleReturnTypeOfMethodRef(ClassManager cm, 
+    private Type jimpleReturnTypeOfMethodRef(SootClassManager cm, 
         cp_info[] constant_pool, int index)
     {
         CONSTANT_Methodref_info mr = (CONSTANT_Methodref_info) 
@@ -1915,7 +1915,7 @@ public class CFG {
         return Util.jimpleReturnTypeOfMethodDescriptor(cm, methodDescriptor);
     }
     
-    private Type jimpleReturnTypeOfInterfaceMethodRef(ClassManager cm, 
+    private Type jimpleReturnTypeOfInterfaceMethodRef(SootClassManager cm, 
         cp_info[] constant_pool, int index)
     {
         CONSTANT_InterfaceMethodref_info mr = (CONSTANT_InterfaceMethodref_info) 
@@ -3521,7 +3521,7 @@ public class CFG {
                 
             SootClass bclass = cm.getClass(className);
 
-            Field field = bclass.getField(fieldName);
+            SootField field = bclass.getField(fieldName);
                 
             InstanceFieldRef fr =   
                 new InstanceFieldRef(Util.getLocalForStackOp(listBody, 
@@ -3554,7 +3554,7 @@ public class CFG {
                 
             SootClass bclass = cm.getClass(className);
                 
-            Field field = bclass.getField(fieldName);
+            SootField field = bclass.getField(fieldName);
             
             fr = new InstanceFieldRef(Util.getLocalForStackOp(listBody, typeStack, 
                 typeStack.topIndex()), field);
@@ -3586,7 +3586,7 @@ public class CFG {
                 convert();
             
             SootClass bclass = cm.getClass(className);
-            Field field = bclass.getField(fieldName);
+            SootField field = bclass.getField(fieldName);
                 
             fr = new StaticFieldRef(field);
             
@@ -3616,7 +3616,7 @@ public class CFG {
                 convert();
                 
             SootClass bclass = cm.getClass(className);            
-            Field field = bclass.getField(fieldName);
+            SootField field = bclass.getField(fieldName);
 
             fr = new StaticFieldRef(field);
                

@@ -68,97 +68,91 @@
  
 package ca.mcgill.sable.soot;
 
-public class Field  
-{
-    String name;
-    Type type;
-    int modifiers;
-    
-    boolean isDeclared = false;
-    SootClass declaringClass;
-    
-    public Field(String name, Type type, int modifiers)
-    {
-        this.name = name;
-        this.type = type;
-        this.modifiers = modifiers;
-    }
-    
-    public Field(String name, Type type)
-    {
-        this.name = name;
-        this.type = type;
-        this.modifiers = 0;
-    }
- 
-    public String getName()
-    {
-        return name;
-    }
-    
-    public String getSignature()
-    {
-        StringBuffer buffer = new StringBuffer();
-        
-        buffer.append(getDeclaringClass().getName());
-        buffer.append("." + getName());
-        buffer.append(":" + getType());
-        
-        return buffer.toString();
-        
-    }
-    public SootClass getDeclaringClass() throws NotDeclaredException
-    {
-        if(!isDeclared)
-            throw new NotDeclaredException();
-            
-        return declaringClass;
-    }
+import ca.mcgill.sable.util.*;
 
-    public boolean isDeclared()
+/**
+ * The SootClassManager is an object which keeps track of classes which have been
+ * transformed to their Baf form.  Classes are sometimes automatically loaded
+ * because they are referred to by another class which has been loaded.
+ * Please note that referring to a class as a type will not cause the
+ * class to be loaded.
+ */
+ 
+public class SootClassManager
+{
+    List classes = new ArrayList(); 
+    
+    public SootClassManager()
     {
-        return isDeclared;
     }
+    
+    public void addClass(SootClass c) throws AlreadyManagedException, DuplicateNameException
+    {
+        if(c.isManaged())
+            throw new AlreadyManagedException(c.getName());
         
-    public void setName(String name) 
-    {
-        this.name = name;
+        if(managesClass(c.getName()))
+            throw new DuplicateNameException(c.getName());
+            
+        classes.add(c);
+        c.isManaged = true;
+        c.manager = this;
     }
     
-    public Type getType()
+    public void removeClass(SootClass c) throws IncorrectManagerException
     {
-        return type;
-    }
-    
-    public void setType(Type t) 
-    {
-        this.type = t;
-    }
-       
-    public void setModifiers(int modifiers) 
-    {
-        this.modifiers = modifiers;
-    }
-    
-    public int getModifiers() 
-    {
-        return modifiers;
-    }
-    
-    public String toString()
-    {
-        String qualifiers = Modifier.toString(modifiers) + " " + type.toString();
-        qualifiers = qualifiers.trim();
+        if(!c.isManaged() || c.getManager() != this)
+            throw new IncorrectManagerException(c.getName());
         
-        if(qualifiers.equals(""))
-            return name;
-        else
-            return qualifiers + " " + name;
+        classes.remove(c);
+        c.isManaged = false;
+    }
+    
+    public boolean managesClass(String className)
+    {
+        Object[] elements = classes.toArray();
+        
+        for(int i = 0; i < elements.length; i++)
+        {
+            SootClass c = (SootClass) elements[i];
+            
+            if(c.getName().equals(className))
+                return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Returns the SootClass with the given className.  Loads it if it is not present.
+     */
+     
+    public SootClass getClass(String className) throws ClassFileNotFoundException, 
+                                             CorruptClassFileException,
+                                             DuplicateNameException
+    {
+        Object[] elements = classes.toArray();
+        
+        for(int i = 0; i < elements.length; i++)
+        {
+            SootClass c = (SootClass) elements[i];
+            
+            if(c.getName().equals(className))
+                return c;
+        }
+
+        // Not there, create an unresolved class.
+        {
+            SootClass SootClass = new SootClass(className);
+            
+            addClass(SootClass);
+            
+            return SootClass;
+        }
+    }
+    
+    public List getClasses()
+    {
+        return Collections.unmodifiableList(classes);
     }
 }
-
-
-
-
-
-

@@ -119,7 +119,7 @@ import ca.mcgill.sable.soot.*;
  
 class TypeStack implements ca.mcgill.sable.util.ValueObject
 {
-    private static ClassManager cm;
+    private static SootClassManager cm;
     
     private Type[] types;
     
@@ -128,7 +128,7 @@ class TypeStack implements ca.mcgill.sable.util.ValueObject
         // no constructor
     }  
     
-    public static void setClassManager(ClassManager cm)
+    public static void setClassManager(SootClassManager cm)
     {
         TypeStack.cm = cm;
     }
