@@ -85,8 +85,10 @@ public class PatchingChain extends AbstractCollection implements Chain
     {
         Unit unit = (Unit) point;
 
-        // update any pointers from Phi nodes, only if the unit
-        // being inserted does not change control flow
+        // update any pointers from Phi nodes only if the unit
+        // being inserted is in the same basic block as point, since
+	// the default assumption is that we are tracking control
+	// flow predecessors.
         patchpointers:
         {
             if(unit.branches())
