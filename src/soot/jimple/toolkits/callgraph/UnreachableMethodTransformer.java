@@ -36,7 +36,7 @@ public class UnreachableMethodTransformer extends BodyTransformer
 
         JimpleBody body = (JimpleBody) method.getActiveBody();
 
-        Chain units = body.getUnits();
+        PatchingChain units = (PatchingChain) body.getUnits();
         List list = new Vector();
 
         Local tmpRef = Jimple.v().newLocal( "tmpRef", RefType.v( "java.io.PrintStream" ) );
@@ -56,24 +56,28 @@ public class UnreachableMethodTransformer extends BodyTransformer
         toCall = Scene.v().getMethod( "<java.lang.System: void exit(int)>" );
         list.add( Jimple.v().newInvokeStmt( Jimple.v().newStaticInvokeExpr( toCall.makeRef(), IntConstant.v( 1 ) ) ) );
 
+        /*
+        Stmt r;
         if( method.getReturnType() instanceof VoidType ) {
-            list.add( Jimple.v().newReturnVoidStmt() );
+            list.add( r=Jimple.v().newReturnVoidStmt() );
         } else if( method.getReturnType() instanceof RefLikeType ) {
-            list.add( Jimple.v().newReturnStmt( NullConstant.v() ) );
+            list.add( r=Jimple.v().newReturnStmt( NullConstant.v() ) );
         } else if( method.getReturnType() instanceof PrimType ) {
             if( method.getReturnType() instanceof DoubleType ) {
-                list.add( Jimple.v().newReturnStmt( DoubleConstant.v( 0 ) ) );
+                list.add( r=Jimple.v().newReturnStmt( DoubleConstant.v( 0 ) ) );
             } else if( method.getReturnType() instanceof LongType ) {
-                list.add( Jimple.v().newReturnStmt( LongConstant.v( 0 ) ) );
+                list.add( r=Jimple.v().newReturnStmt( LongConstant.v( 0 ) ) );
             } else if( method.getReturnType() instanceof FloatType ) {
-                list.add( Jimple.v().newReturnStmt( FloatConstant.v( 0 ) ) );
+                list.add( r=Jimple.v().newReturnStmt( FloatConstant.v( 0 ) ) );
             } else {
-                list.add( Jimple.v().newReturnStmt( IntConstant.v( 0 ) ) );
+                list.add( r=Jimple.v().newReturnStmt( IntConstant.v( 0 ) ) );
             }
         } else {
-            System.out.println( "Wrong return method type: " + method.getReturnType() );
+            throw new RuntimeException( "Wrong return method type: " + method.getReturnType() );
         }
+        */
 
+        /*
         if( method.getName().equals( "<init>" ) || method.getName().equals( "<clinit>" ) ) {
 
             Object o = units.getFirst();
@@ -88,6 +92,7 @@ public class UnreachableMethodTransformer extends BodyTransformer
                 if( o instanceof JInvokeStmt ) {
                     JInvokeStmt stmt = (JInvokeStmt) o;
                     if( (stmt.getInvokeExpr() instanceof SpecialInvokeExpr) ) {
+                        SootMethodRef 
                         break;
                     }
                 }
@@ -99,7 +104,22 @@ public class UnreachableMethodTransformer extends BodyTransformer
                 units.insertAfter( list, o ) ;
             }
         } else {
+            */
+        {
             units.insertBefore( list, units.getFirst() );
         }
+        /*
+        ArrayList toRemove = new ArrayList();
+        for( Iterator sIt = units.iterator(r); sIt.hasNext(); ) {
+            final Stmt s = (Stmt) sIt.next();
+            if(s == r) continue;
+            toRemove.add(s);
+        }
+        for( Iterator sIt = toRemove.iterator(); sIt.hasNext(); ) {
+            final Stmt s = (Stmt) sIt.next();
+            units.getNonPatchingChain().remove(s);
+        }
+        body.getTraps().clear();
+        */
     }
 }
