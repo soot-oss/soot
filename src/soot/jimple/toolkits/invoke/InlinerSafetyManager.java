@@ -128,22 +128,16 @@ public class InlinerSafetyManager
         // If all of the conditions are true, a lookup is performed.
         SootMethod m = ie.getMethod();
 
-System.out.println("?!?");
-        System.out.println(m.getDeclaringClass());
-        System.out.println(containerClass);
-System.out.println("!?!");
 
         if (m.getName().equals("<init>"))
-            {
-System.out.println("init!");
+        {
             return false;
-            }
+        }
 
         if (m.isPrivate())
-            {
-System.out.println("private");
+        {
             return false;
-            }
+        }
 
         Hierarchy h = Scene.v().getActiveHierarchy();
 

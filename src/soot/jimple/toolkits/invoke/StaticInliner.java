@@ -47,8 +47,11 @@ public class StaticInliner extends SceneTransformer
     
     protected void internalTransform(String phaseName, Map options)
     {
-        InvokeGraphBuilder.v().transform(phaseName + ".igb");
+        if(Main.isVerbose)
+            System.out.println("<> Inlining methods...");
 
+        InvokeGraphBuilder.v().transform(phaseName + ".igb");
+        
         boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
         String modifierOptions = Options.getString(options, "allowed-modifier-changes");
@@ -90,6 +93,7 @@ public class StaticInliner extends SceneTransformer
                 
                 InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
 
+                
                 List targets = graph.getTargetsOf(ie);
 
                 if (targets.size() != 1)
@@ -97,6 +101,8 @@ public class StaticInliner extends SceneTransformer
 
                 SootMethod target = (SootMethod)targets.get(0);
 
+                // System.out.println("Considering inlining the call: " + container + "/" + ie + " with " + target);
+                
                 if (!InlinerSafetyManager.canSafelyInlineInto(target, s, container, graph))
                     continue;
 
@@ -106,9 +112,12 @@ public class StaticInliner extends SceneTransformer
                 if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete())
                     continue;
 
-                // check method & field accesses
+                // Check the body of the method to inline for specialinvoke's or
+                //   method or field access restrictions
                 {
-                    Iterator unitsIt = b.getUnits().iterator();
+                    Body inlineeBody = (JimpleBody) target.getActiveBody();
+                    
+                    Iterator unitsIt = inlineeBody.getUnits().iterator();
                     while (unitsIt.hasNext())
                     {
                         Stmt st = (Stmt)unitsIt.next();
@@ -117,16 +126,21 @@ public class StaticInliner extends SceneTransformer
                             InvokeExpr ie1 = (InvokeExpr)st.getInvokeExpr();
                             if (!AccessManager.ensureAccess(container, ie1.getMethod(), modifierOptions))
                                 continue nextSite;
-if (ie1 instanceof SpecialInvokeExpr) {System.out.println("!!!"); 
-                            System.out.println(InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, container.getDeclaringClass()));
-                            System.out.println(InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, target.getDeclaringClass()));}
-                            if ((ie1 instanceof SpecialInvokeExpr) && 
-                                  (InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, container.getDeclaringClass()) ||
+                            
+                            if (ie1 instanceof SpecialInvokeExpr) 
+                            {
+                                //System.out.println("Considering effect of: " + ie1 + "in: " + container + " and in: " + target);
+
+                                if((InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, container.getDeclaringClass()) ||
                                   InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, target.getDeclaringClass())))
                                 {
-System.out.println("skip!");
-                                continue nextSite;
+                                    //System.out.println("   Performs a lookup!");
+                                    
+                                    continue nextSite;
                                 }
+                                
+                                //System.out.println("   Does not perform a lookup!");
+                            }
                         }
 
                         if (st instanceof AssignStmt)
@@ -149,6 +163,9 @@ System.out.println("skip!");
 
                 List l = new ArrayList();
                 l.add(target); l.add(s); l.add(container);
+                
+                //System.out.println("Recorded: inlining the call: " + container + "/" + ie + " with " + target);
+
                 sitesToInline.add(l);
             }
         }
@@ -166,9 +183,12 @@ System.out.println("skip!");
                 Stmt toInline = (Stmt)l.get(1);
                 SootMethod container = (SootMethod)l.get(2);
                 int containerSize = ((JimpleBody)(container.getActiveBody())).getUnits().size();
+                
+                System.out.println("inlinee size: " + inlineeSize + "   avgSize: " + avgSize);
 
-                if (inlineeSize > avgSize * inlineeFactor)
-                    continue;
+//
+//                if (inlineeSize > avgSize * inlineeFactor)
+//                    continue;
 
                 if (inlineeSize + containerSize > maxContainerSize)
                     continue;
