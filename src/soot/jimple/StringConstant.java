@@ -47,14 +47,20 @@ public class StringConstant extends Constant implements Switchable, ToBriefStrin
         return new StringConstant(value);
     }
 
+    // In this case, equals should be structural equality.
     public boolean equals(Object c)
     {
         return (c instanceof StringConstant && ((StringConstant) c).value.equals(this.value));
     }
 
+    public boolean equivTo(Object c)
+    {
+        return equals(c);
+    }
+
     public String toString()
     {
-      return StringTools.getQuotedStringOf(value);
+        return StringTools.getQuotedStringOf(value);
     }
 
     public String toBriefString()

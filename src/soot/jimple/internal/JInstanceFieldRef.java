@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
@@ -42,7 +38,6 @@ public class JInstanceFieldRef extends AbstractInstanceFieldRef
     {
         super(Jimple.v().newLocalBox(base), field);
     }
-
    
     public Object  clone() 
     {

@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
@@ -38,6 +34,16 @@ import java.util.*;
 public abstract class AbstractNewExpr implements NewExpr
 {
     RefType type;
+
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof AbstractNewExpr)
+        {
+            AbstractNewExpr ae = (AbstractNewExpr)o;
+            return type.equals(ae.type);
+        }
+        return false;
+    }
 
     public abstract Object clone(); 
 

@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
@@ -37,7 +33,7 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
-public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf
+public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf, EquivTo
 {
     SootField field;
     ValueBox baseBox;
@@ -105,15 +101,15 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
         ((RefSwitch) sw).caseInstanceFieldRef(this);
     }
     
-    public boolean equals(Object o)
+    public boolean equivTo(Object o)
     {
-            if (o instanceof AbstractInstanceFieldRef)
-            {
-                    AbstractInstanceFieldRef fr = (AbstractInstanceFieldRef)o;
-                    return fr.field.equals(field) &&
-                        fr.baseBox.getValue().equals(baseBox.getValue());
-            }
-            return false;
+        if (o instanceof AbstractInstanceFieldRef)
+        {
+            AbstractInstanceFieldRef fr = (AbstractInstanceFieldRef)o;
+            return fr.field.equivTo(field) &&
+                fr.baseBox.getValue().equivTo(baseBox.getValue());
+        }
+        return false;
     }
 
     public void convertToBaf(JimpleToBafContext context, List out)

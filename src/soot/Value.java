@@ -33,7 +33,7 @@ import soot.util.*;
 import java.util.*;
 import soot.*;
 
-public interface Value extends Switchable
+public interface Value extends Switchable, EquivTo
 {
     public List getUseBoxes();
     public Type getType();

@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
@@ -82,6 +78,19 @@ public abstract class AbstractBinopExpr implements Expr, ToBriefString
         return list;
     }
 
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof AbstractBinopExpr)
+        {
+            AbstractBinopExpr abe = (AbstractBinopExpr)o;
+            return op1Box.getValue().equivTo(abe.op1Box.getValue()) &&
+                op2Box.getValue().equivTo(abe.op2Box.getValue()) &&
+                getSymbol().equals(abe.getSymbol());
+        }
+        return false;
+    }
+
+    /** Returns the unique symbol for an operator. */
     abstract protected String getSymbol();
     abstract public Object clone();
 

@@ -24,9 +24,6 @@
  */
 
 
-
-
-
 package soot.jimple.toolkits.base;
 
 import soot.*;
@@ -46,7 +43,8 @@ public class Aggregator extends BodyTransformer
     public static int nodeCount = 0;
     public static int aggrCount = 0;
 
-    public String getDeclaredOptions() { return super.getDeclaredOptions() + " only-stack-locals"; }
+    public String getDeclaredOptions() 
+    { return super.getDeclaredOptions() + " only-stack-locals"; }
 
     /** Traverse the statements in the given body, looking for
       *  aggregation possibilities; that is, given a def d and a use u,

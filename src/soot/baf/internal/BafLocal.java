@@ -44,6 +44,17 @@ public class BafLocal implements Local
         this.type = t;
     }
 
+    /* JimpleLocals are *NOT* equivalent to Baf Locals! */
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof BafLocal)
+        {
+            return name.equals(((BafLocal)o).name) &&
+                type.equals(((BafLocal)o).type);
+        }
+        return false;
+    }
+
     public Object clone()
     {
         return new BafLocal(name, type);

@@ -33,22 +33,40 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
+/** <code>ParameterRef</code> objects are used by <code>Body</code>
+ * objects to refer to the parameter slots on method entry. <br>
+ *
+ * For instance, in an instance method, the first statement will
+ * often be <code> this := @parameter0; </code> */
 public class ParameterRef implements IdentityRef, Switchable, ToBriefString
 {
     int n;
     Type paramType;
 
+    /** Constructs a ParameterRef object of the specified type, representing the specified parameter number. */
     public ParameterRef(Type paramType, int number)
     {
         this.n = number;
         this.paramType = paramType;
     }
+
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof ParameterRef)
+        {
+            return n == ((ParameterRef)o).n &&
+                paramType.equals(((ParameterRef)o).paramType);
+        }
+        return false;
+    }
     
+    /** Create a new ParameterRef object with the same paramType and number. */
     public Object clone() 
     {
         return new ParameterRef(paramType, n);
     }
     
+    /** Converts the given ParameterRef into a String i.e. <code>@parameter0: .int</code>. */
     public String toString()
     {
       if(Jimple.isJavaKeywordType(paramType))
@@ -58,16 +76,19 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
 							   
     }
 
+    /** Converts the given ParameterRef into a brief String i.e. <code>@paraemter0</code>. */
     public String toBriefString()
     {
         return "@parameter" + n;
     }
     
+    /** Returns the index of this ParameterRef. */
     public int getIndex()
     {
         return n;
     }
 
+    /** Sets the index of this ParameterRef. */
     public void setIndex(int index)
     {
         n = index;
@@ -78,11 +99,13 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
         return AbstractUnit.emptyList;
     }
 
+    /** Returns the type of this ParameterRef. */
     public Type getType()
     {
         return paramType;
     }
 
+    /** Used with RefSwitch. */
     public void apply(Switch sw)
     {
         ((RefSwitch) sw).caseParameterRef(this);

@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
@@ -45,6 +41,17 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
     protected AbstractNewArrayExpr(Type type, ValueBox sizeBox)
     {
       this.baseType = type; this.sizeBox = sizeBox;
+    }
+
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof AbstractNewArrayExpr)
+        {
+            AbstractNewArrayExpr ae = (AbstractNewArrayExpr)o;
+            return sizeBox.getValue().equivTo(ae.sizeBox.getValue()) &&
+                baseType.equals(ae.baseType);
+        }
+        return false;
     }
 
     public abstract Object clone();
@@ -71,13 +78,13 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
     }
 
   
-  private  String getBaseTypeString()
-  {
-    if(Jimple.isJavaKeywordType(baseType))
-      return "." + baseType;
-    else
-      return baseType.toString();
-  }
+    private String getBaseTypeString()
+    {
+        if(Jimple.isJavaKeywordType(baseType))
+            return "." + baseType;
+        else
+            return baseType.toString();
+    }
 
     public Type getBaseType()
     {

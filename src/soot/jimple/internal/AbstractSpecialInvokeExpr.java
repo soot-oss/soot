@@ -47,6 +47,22 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
         this.argBoxes = argBoxes;
     }
 
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof AbstractSpecialInvokeExpr)
+        {
+            AbstractSpecialInvokeExpr ie = (AbstractSpecialInvokeExpr)o;
+            if (!(baseBox.getValue().equivTo(ie.baseBox.getValue()) &&
+                    method.equivTo(ie.method) && 
+                    argBoxes.length == ie.argBoxes.length))
+                return false;
+            for (int i = 0; i < argBoxes.length; i++)
+                if (!(argBoxes[i].getValue().equivTo(ie.argBoxes[i].getValue())))
+                    return false;
+            return true;
+        }
+        return false;
+    }
 
     public abstract Object clone();
 
@@ -63,8 +79,6 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
                 buffer.append(", ");
 
             buffer.append(argBoxes[i].getValue().toString());
-	   
-	    
         }
 
         buffer.append(")");

@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
@@ -38,6 +34,15 @@ import java.util.*;
 public abstract class AbstractLengthExpr extends AbstractUnopExpr implements LengthExpr
 {
     protected AbstractLengthExpr(ValueBox opBox) { super(opBox); }
+
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof AbstractLengthExpr)
+        {
+            return opBox.getValue().equivTo(((AbstractLengthExpr)o).opBox.getValue());
+        }
+        return false;
+    }
 
     public abstract Object clone();
 

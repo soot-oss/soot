@@ -42,6 +42,15 @@ public class ThisRef implements IdentityRef, ToBriefString
         this.thisType = thisType;
     }
 
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof ThisRef)
+        {
+            return thisType.equals(((ThisRef)o).thisType);
+        }
+        return false;
+    }
+    
     public String toString()
     {
         return "@this: "+thisType;

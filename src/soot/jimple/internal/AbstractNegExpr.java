@@ -39,6 +39,16 @@ public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExp
 {
     protected AbstractNegExpr(ValueBox opBox) { super(opBox); }
 
+    /** Compares the specified object with this one for structural equality. */
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof AbstractNegExpr)
+        {
+            return opBox.getValue().equivTo(((AbstractNegExpr)o).opBox.getValue());
+        }
+        return false;
+    }
+
     public abstract Object clone();
 
     public String toString()

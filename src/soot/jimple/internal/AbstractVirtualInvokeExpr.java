@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
@@ -47,8 +43,24 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
         this.argBoxes = argBoxes;
     }
 
-    public abstract Object clone();
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof AbstractVirtualInvokeExpr)
+        {
+            AbstractVirtualInvokeExpr ie = (AbstractVirtualInvokeExpr)o;
+            if (!(baseBox.getValue().equivTo(ie.baseBox.getValue()) &&
+                    method.equivTo(ie.method) && 
+                    argBoxes.length == ie.argBoxes.length))
+                return false;
+            for (int i = 0; i < argBoxes.length; i++)
+                if (!(argBoxes[i].getValue().equivTo(ie.argBoxes[i].getValue())))
+                    return false;
+            return true;
+        }
+        return false;
+    }
 
+    public abstract Object clone();
 
     public void apply(Switch sw)
     {

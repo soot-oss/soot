@@ -34,7 +34,7 @@ import soot.baf.*;
 import soot.util.*;
 import java.util.*;
 
-public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf
+public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf, EquivTo
 {
     SootField field;
 
@@ -83,18 +83,13 @@ public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf
         ((RefSwitch) sw).caseStaticFieldRef(this);
     }
     
-    public boolean equals(Object o)
+    public boolean equivTo(Object o)
     {
-            if (o instanceof StaticFieldRef)
-            {
-            StaticFieldRef fr = (StaticFieldRef) o;
-            
-            return fr.field.equals(field);
-            }
+        if (o instanceof StaticFieldRef)
+            return ((StaticFieldRef)o).field.equivTo(field);
         
-            return false;
+        return false;
     }
-
 
     public void convertToBaf(JimpleToBafContext context, List out)
     {

@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
@@ -42,7 +38,6 @@ abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
     ValueBox opBox;
     Type type;
 
-
     AbstractCastExpr(Value op, Type type)
     {
         this(Jimple.v().newImmediateBox(op), type);
@@ -53,6 +48,17 @@ abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
     protected AbstractCastExpr(ValueBox opBox, Type type)
     {
         this.opBox = opBox; this.type = type;
+    }
+
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof AbstractCastExpr)
+        {
+            AbstractCastExpr ace = (AbstractCastExpr)o;
+            return opBox.getValue().equivTo(ace.opBox.getValue()) &&
+                type.equals(ace.type);
+        }
+        return false;
     }
 
     public String toString()

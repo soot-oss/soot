@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
@@ -48,6 +44,16 @@ public class JimpleLocal implements Local, ConvertToBaf
     {
         this.name = name;
         this.type = t;
+    }
+
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof JimpleLocal)
+        {
+            return name.equals(((JimpleLocal)o).name) &&
+                type.equals(((JimpleLocal)o).type);
+        }
+        return false;
     }
 
     public Object clone()

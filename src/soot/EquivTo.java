@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 1997-1999 Raja Vallee-Rai
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,52 +24,13 @@
  */
 
 
-package soot.jimple.internal;
+package soot;
 
-import soot.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
+import soot.*;
 
-public class JCaughtExceptionRef implements CaughtExceptionRef
+public interface EquivTo
 {
-    public JCaughtExceptionRef()
-    {
-    }
-    
-    public boolean equivTo(Object c)
-    {
-        return c instanceof CaughtExceptionRef;
-    }
-
-    public Object clone() 
-    {
-        return new JCaughtExceptionRef();
-    }
-
-
-    public String toString()
-    {
-        return "@caughtexception";
-    }
-
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
-    public List getUseBoxes()
-    {
-        return AbstractUnit.emptyList;
-    }
-
-    public Type getType()
-    {
-        return RefType.v("java.lang.Throwable");
-    }
-
-    public void apply(Switch sw)
-    {
-        ((RefSwitch) sw).caseCaughtExceptionRef(this);
-    }
+    public boolean equivTo(Object o);
 }

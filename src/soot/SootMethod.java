@@ -36,11 +36,20 @@ import soot.jimple.*;
 
 public class SootMethod extends AbstractHost implements ClassMember
 {
+    /** Name of the current method. */
     String name;
+
+    /** A list of parameter types taken by this <code>SootMethod</code> object, 
+      * in declaration order. */
     List parameterTypes;
+
+    /** The return type of this object. */
     Type returnType;
 
+    /** True when some <code>SootClass</code> object declares this <code>SootMethod</code> object. */
     boolean isDeclared;
+
+    /** Holds the class which declares this <code>SootClass</code> method. */
     SootClass declaringClass;
 
     int modifiers;
@@ -49,28 +58,44 @@ public class SootMethod extends AbstractHost implements ClassMember
     List exceptions = new ArrayList();
 
     Body activeBody;
-    
-
 
     /** Tells this method how to find out where its body lives. */
     protected MethodSource ms;
 
-    /** uses methodSource to load the method body in question */
+    /** Uses methodSource to load the method body in question. */
     public void getBodyFromMethodSource(String phaseName)
     {
         ms.getBody(this, Scene.v().getPhaseOptions(phaseName));
     }
 
+    /** Sets the MethodSource of the current SootMethod. */
     public void setSource(MethodSource ms)
     {	
         this.ms = ms;
     }
+
+    /** Returns the MethodSource of the current SootMethod. */
     public MethodSource getSource() 
     {
 	return ms;
     }
 
+    /** Compares the specified object with this one for structural equality.  Does <i>not</i> 
+     * consider method bodies. */
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof SootMethod)
+        {
+            SootMethod sf = (SootMethod)o;
+            /* relies on the fact that equals is the same as equivTo for parameterTypes and thrown exceptions */
+            return returnType.equals(sf.returnType) && modifiers == sf.modifiers &&
+                parameterTypes.equals(sf.parameterTypes) && exceptions.equals(sf.exceptions) 
+                && name.equals(sf.name);
+        }
+        return false;
+    }
 
+    /** Constructs a SootMethod with the given name, parameter types and return type. */
     public SootMethod(String name, List parameterTypes, Type returnType)
     {
         this.name = name;
@@ -79,6 +104,7 @@ public class SootMethod extends AbstractHost implements ClassMember
         this.returnType = returnType;
     }
 
+    /** Constructs a SootMethod with the given name, parameter types, return type and modifiers. */
     public SootMethod(String name, List parameterTypes, Type returnType, int modifiers)
     {
         this.name = name;
@@ -89,6 +115,8 @@ public class SootMethod extends AbstractHost implements ClassMember
         this.modifiers = modifiers;	
     }
 
+    /** Constructs a SootMethod with the given name, parameter types, return type, 
+      * and list of thrown exceptions. */
     public SootMethod(String name, List parameterTypes, Type returnType, int modifiers,
                       List thrownExceptions)
     {
@@ -100,22 +128,15 @@ public class SootMethod extends AbstractHost implements ClassMember
         this.modifiers = modifiers;
 
         this.exceptions.addAll(thrownExceptions);
-    }
-    /*
-    public void setSource(soot.coffi.ClassFile coffiClass,
-        soot.coffi.method_info coffiMethod)
-    {
-        this.coffiClass = coffiClass;
-        this.coffiMethod = coffiMethod;
-    }
-    */
-   
+    }   
 
+    /** Returns the name of the current method. */
     public String getName()
     {
         return name;
     }
 
+    /** Returns the class which declares the current <code>SootMethod</code>. */
     public SootClass getDeclaringClass() throws NotDeclaredException
     {
         if(!isDeclared)

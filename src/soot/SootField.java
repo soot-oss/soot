@@ -32,7 +32,7 @@ package soot;
 import soot.jimple.*;
 import java.util.*;
 
-public class SootField extends AbstractHost implements ClassMember
+public class SootField extends AbstractHost implements ClassMember, EquivTo
 {
     String name;
     Type type;
@@ -54,6 +54,17 @@ public class SootField extends AbstractHost implements ClassMember
         this.name = name;
         this.type = type;
         this.modifiers = 0;
+    }
+
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof SootField)
+        {
+            SootField sf = (SootField)o;
+            return type.equals(sf.type) && modifiers == sf.modifiers &&
+                name.equals(sf.name);
+        }
+        return false;
     }
 
     public String getName()

@@ -49,6 +49,22 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
         this.baseType = type; this.sizeBoxes = sizeBoxes;
     }
 
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof AbstractNewMultiArrayExpr)
+        {
+            AbstractNewMultiArrayExpr ae = (AbstractNewMultiArrayExpr)o;
+            if (!baseType.equals(ae.baseType) || 
+                    sizeBoxes.length != ae.sizeBoxes.length)
+                return false;
+            for (int i = 0; i < sizeBoxes.length; i++)
+                if (sizeBoxes[i] != ae.sizeBoxes[i])
+                    return false;
+            return true;
+        }
+        return false;
+    }
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();

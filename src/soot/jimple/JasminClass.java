@@ -667,11 +667,11 @@ public class JasminClass
                     // case a is emitted when rvalue is a local;
                     // case b when rvalue is, eg. a field ref.
 
-                    // we need some notion of equals 
+                    // we use structural equality 
                     // for rvalue & nextStmt.getLeftOp().
 
                     if (!(lvalue instanceof Local)
-                        || !nextStmt.getLeftOp().equals(rvalue)
+                        || !nextStmt.getLeftOp().equivTo(rvalue)
                         || !(nextStmt.getRightOp() instanceof AddExpr))
                       break;
 
@@ -714,7 +714,7 @@ public class JasminClass
                         {
                             ValueBox box = (ValueBox) boxIt.next();
                             
-                            if(box.getValue().equals(rvalue))
+                            if(box.getValue().equivTo(rvalue))
                             {
                                 found = true;
                             }
@@ -725,7 +725,7 @@ public class JasminClass
                     }                    
 
                     AddExpr addexp = (AddExpr)nextStmt.getRightOp();
-                    if (!addexp.getOp1().equals(lvalue) && !addexp.getOp1().equals(rvalue))
+                    if (!addexp.getOp1().equivTo(lvalue) && !addexp.getOp1().equivTo(rvalue))
                       break;
 
                     Value added /* tax? */ = addexp.getOp2();
@@ -738,7 +738,7 @@ public class JasminClass
                     /* uses live precisely in nextStmt and nextNextStmt */
                     /* LocalDefs tells us this: if there was no use, */
                     /* there would be no corresponding def. */
-                    if (addexp.getOp1().equals(lvalue))
+                    if (addexp.getOp1().equivTo(lvalue))
                     {
                         if (lu.getUsesOf(stmt).size() != 2 ||
                             ld.getDefsOfAt((Local)lvalue, nextStmt).size() != 1 ||

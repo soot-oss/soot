@@ -37,11 +37,10 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
-public class JArrayRef implements ArrayRef, ConvertToBaf
+public class JArrayRef implements ArrayRef, ConvertToBaf, EquivTo
 {
     ValueBox baseBox;
     ValueBox indexBox;
-
 
     public JArrayRef(Value base, Value index)
     {
@@ -61,12 +60,12 @@ public class JArrayRef implements ArrayRef, ConvertToBaf
     }
 
 
-    public boolean equals(Object o)
+    public boolean equivTo(Object o)
     {
         if (o instanceof ArrayRef)
           {
-            return (getBase().equals(((ArrayRef)o).getBase())
-                    && getIndex().equals(((ArrayRef)o).getIndex()));
+            return (getBase().equivTo(((ArrayRef)o).getBase())
+                    && getIndex().equivTo(((ArrayRef)o).getIndex()));
           }
         return false;
     }

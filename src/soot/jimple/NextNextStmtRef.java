@@ -39,6 +39,11 @@ public class NextNextStmtRef implements ConcreteRef, ToBriefString
     {
     }
 
+    public boolean equivTo(Object c)
+    {
+        return c instanceof NextNextStmtRef;
+    }
+
     public Object clone() 
     {
         return new NextNextStmtRef();

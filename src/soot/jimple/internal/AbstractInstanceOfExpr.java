@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
@@ -45,6 +41,17 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr
         this.opBox = opBox; this.checkType = checkType;
     }
     
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof AbstractInstanceOfExpr)
+        {
+            AbstractInstanceOfExpr aie = (AbstractInstanceOfExpr)o;
+            return opBox.getValue().equivTo(aie.opBox.getValue()) &&
+                checkType.equals(aie.checkType);
+        }
+        return false;
+    }
+
     public abstract Object clone();
     
     public String toString()

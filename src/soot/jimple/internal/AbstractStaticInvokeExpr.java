@@ -46,6 +46,23 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
     }
+
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof AbstractStaticInvokeExpr)
+        {
+            AbstractStaticInvokeExpr ie = (AbstractStaticInvokeExpr)o;
+            if (!(method.equivTo(ie.method) && 
+                  argBoxes.length == ie.argBoxes.length))
+                return false;
+            for (int i = 0; i < argBoxes.length; i++)
+                if (!(argBoxes[i].getValue().equivTo(ie.argBoxes[i].getValue())))
+                    return false;
+            return true;
+        }
+        return false;
+    }
+
     public abstract Object clone();
     
     protected AbstractStaticInvokeExpr(SootMethod method, ValueBox[] argBoxes)
