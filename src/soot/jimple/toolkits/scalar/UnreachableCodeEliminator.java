@@ -34,6 +34,7 @@ import soot.jimple.*;
 import java.io.*;
 import java.util.*;
 import soot.toolkits.graph.*;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
 
 public class UnreachableCodeEliminator extends BodyTransformer
 {
@@ -52,43 +53,41 @@ public class UnreachableCodeEliminator extends BodyTransformer
             G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
 
         numPruned = 0;
-        stmtGraph = new ExceptionalUnitGraph(body);
-        visited = new HashSet();
+
+	if (PhaseOptions.getBoolean(options, "remove-unreachable-traps")) {
+	    stmtGraph = new ExceptionalUnitGraph(body);
+	} else {
+	    // Force a conservative ExceptionalUnitGraph() which
+	    // necessarily includes an edge from every trapped Unit to
+	    // its handler, so that we retain Traps in the case where
+	    // trapped units remain, but the default ThrowAnalysis
+	    // says that none of them can throw the caught exception.
+	    stmtGraph = new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v(),
+						 false);
+	}
+	visited = new HashSet();
+
+	// We need a map from Units that handle Traps, to a Set of their
+	// Traps, so we can remove the Traps should we remove the handler.
+	Map handlerToTraps = new HashMap();
+	for (Iterator it = body.getTraps().iterator(); it.hasNext(); ) {
+	    Trap trap = (Trap) it.next();
+	    Unit handler = trap.getHandlerUnit();
+	    Set handlersTraps = (Set) handlerToTraps.get(handler);
+	    if (handlersTraps == null) {
+		handlersTraps = new ArraySet(3);
+		handlerToTraps.put(handler, handlersTraps);
+	    }
+	    handlersTraps.add(trap);
+	}
 
         // Used to be: "mark first statement and all its successors, recursively"
         // Bad idea! Some methods are extremely long. It broke because the recursion reached the
         // 3799th level.
 
-	// We need a map from Units that handle Traps, to a Set of their
-	// Traps, so we can remove the Traps should we remove the handler.
-	Map handlerToTraps = new HashMap();
-
         if (!body.getUnits().isEmpty()) {
 	    LinkedList startPoints = new LinkedList();
 	    startPoints.addLast(body.getUnits().getFirst());
-
-	    // Add trap handlers to startPoints unless we are removing
-	    // unreachable traps.
-	    boolean addHandlersToStart = 
-		(! PhaseOptions.getBoolean(options, "remove-unreachable-traps"));
-
-	    for (Iterator it = body.getTraps().iterator(); it.hasNext(); ) {
-		Trap trap = (Trap) it.next();
-		Unit handler = trap.getHandlerUnit();
-		if (addHandlersToStart) {
-		    // Don't add handlers for empty traps to the starting
-		    // points, since we're about to remove those traps anyway.
-		    if (trap.getBeginUnit() != trap.getEndUnit()) {
-			startPoints.addLast(handler);
-		    }
-		}
-		Set handlersTraps = (Set) handlerToTraps.get(handler);
-		if (handlersTraps == null) {
-		    handlersTraps = new ArraySet(3);
-		    handlerToTraps.put(handler, handlersTraps);
-		}
-		handlersTraps.add(trap);
-	    }
 
             visitStmts(startPoints);
 	}
@@ -115,7 +114,19 @@ public class UnreachableCodeEliminator extends BodyTransformer
         if (Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "]     Removed " + numPruned + " statements...");
             
-        // Now eliminate empty traps.
+        // Now eliminate empty traps. 
+	//
+	// For the most part, this is an atavism, an an artifact of
+        // pre-ExceptionalUnitGraph code, when the only way for a trap to 
+	// become unreachable was if all its trapped units were removed, and
+	// the stmtIt loop did not remove Traps as it removed handler units.
+	// We've left this separate test for empty traps here, even though 
+	// most such traps would already have been eliminated by the preceding
+	// loop, because in arbitrary bytecode you could have
+	// handler unit that was still reachable by normal control flow, even
+	// though it no longer trapped any units (though such code is unlikely
+	// to occur in practice, and certainly no in code generated from Java
+	// source.
         {
             Iterator trapIt = b.getTraps().iterator();
             
