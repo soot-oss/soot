@@ -24,15 +24,15 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.util.*;
 import java.util.*;
 import soot.*;
 
+/** Describes a class which can print itself briefly.
+ *
+ * This is used by Soot to produce .jimp output, for instance. */
 public interface ToBriefString
 {
     public abstract String toBriefString();

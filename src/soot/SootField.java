@@ -30,7 +30,7 @@ import soot.jimple.*;
 import java.util.*;
 
 /**
-    Represents a Java field.  Can be declared to belong to a SootClass.
+    Represents a Java field in Soot.  Can be declared to belong to a SootClass.
 */
 public class SootField extends AbstractHost implements ClassMember, EquivTo
 {
@@ -41,7 +41,8 @@ public class SootField extends AbstractHost implements ClassMember, EquivTo
     boolean isDeclared = false;
     SootClass declaringClass;
     boolean isPhantom = false;
-    
+
+    /** Constructs a Soot field with the given name, type and modifiers. */
     public SootField(String name, Type type, int modifiers)
     {
         this.name = name;
@@ -49,6 +50,7 @@ public class SootField extends AbstractHost implements ClassMember, EquivTo
         this.modifiers = modifiers;
     }
 
+    /** Constructs a Soot field with the given name, type and no modifiers. */
     public SootField(String name, Type type)
     {
         this.name = name;

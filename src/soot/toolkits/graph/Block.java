@@ -85,7 +85,7 @@ public class Block implements Directed
      *  Returns the Block's enclosing Body instance.
      *
      *  @return      The block's chain of instructions.
-     *  @see         JimpleBody
+     *  @see         soot.jimple.JimpleBody
      *  @see         BafBody 
      *  @see         Body
      */

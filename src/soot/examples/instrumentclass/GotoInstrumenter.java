@@ -83,33 +83,38 @@ public class GotoInstrumenter extends BodyTransformer
                 // Add code to main to print out the counter.
                 SootMethod m = Scene.v().getMainClass().getMethod(".void main(java.lang.String[])");
                 
-                body = (JimpleBody) m.getActiveBody();
-                Chain units = body.getUnits();
-                
-                Local tmpRef = Jimple.v().newLocal("tmpRef", RefType.v("java.io.PrintStream"));
-                body.getLocals().add(tmpRef);
-                
-                Local tmpLong = Jimple.v().newLocal("tmpLong", LongType.v()); 
-                body.getLocals().add(tmpLong);
-                
-                Unit ret = (Unit) units.getLast();
-                units.removeLast();
-                
-                // insert "tmpRef = java.lang.System.out;"
-                units.addLast(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
-                                          Scene.v().getField("<java.lang.System: java.io.PrintStream out>"))));
-            
-                // insert "tmpLong = gotoCounter;"
-                units.addLast(Jimple.v().newAssignStmt(tmpLong, Jimple.v().newStaticFieldRef(
-                                          gotoCounter)));
-                
-                // insert "tmpRef.println(tmpLong);"
+                // (that is, if it has an active body.  Hopefully it'll get one, 
+                // sooner or later.)
+                if (m.hasActiveBody())
                 {
-                    SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: .void println(.long)>");                    
-                    units.addLast(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, tmpLong)));
-                }
+                    body = (JimpleBody) m.getActiveBody();
+                    Chain units = body.getUnits();
                 
-                units.addLast(ret);
+                    Local tmpRef = Jimple.v().newLocal("tmpRef", RefType.v("java.io.PrintStream"));
+                    body.getLocals().add(tmpRef);
+                    
+                    Local tmpLong = Jimple.v().newLocal("tmpLong", LongType.v()); 
+                    body.getLocals().add(tmpLong);
+                    
+                    Unit ret = (Unit) units.getLast();
+                    units.removeLast();
+                    
+                    // insert "tmpRef = java.lang.System.out;"
+                    units.addLast(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
+                                    Scene.v().getField("<java.lang.System: java.io.PrintStream out>"))));
+            
+                    // insert "tmpLong = gotoCounter;"
+                    units.addLast(Jimple.v().newAssignStmt(tmpLong, Jimple.v().newStaticFieldRef(
+                                    gotoCounter)));
+                
+                    // insert "tmpRef.println(tmpLong);"
+                    {
+                        SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: .void println(.long)>");                    
+                        units.addLast(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, tmpLong)));
+                    }
+                
+                    units.addLast(ret);
+                }
             }
         }
             

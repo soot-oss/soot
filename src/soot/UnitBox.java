@@ -31,10 +31,18 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+/** Defines a box which can contain units. 
+ *
+ * @see Unit
+ */
 public interface UnitBox
 {
+    /** Sets this box to contain the given unit. */
     public void setUnit(Unit u);
+
+    /** Returns the unit contained within this box. */
     public Unit getUnit();
-    public boolean canContainUnit(Unit u);
-    
+
+    /** Returns true if this box can contain the given Unit. */
+    public boolean canContainUnit(Unit u);    
 }

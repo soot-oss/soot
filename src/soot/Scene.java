@@ -246,8 +246,7 @@ public class Scene extends AbstractHost
         classes.add(c);
 
         nameToClass.put(c.getName(), c);
-        c.isInScene = true;
-        c.scene = this;
+        c.setInScene(true);
         this.stateCount++;
     }
 
@@ -258,7 +257,7 @@ public class Scene extends AbstractHost
 
         classes.remove(c);
         nameToClass.remove(c.getName());
-        c.isInScene = false;
+        c.setInScene(false);
         this.stateCount++;
     }
 

@@ -46,10 +46,15 @@ import soot.*;
  * one by one.  If you establish a Dictionary of Name->Field, you will need to add a
  * notifyOfNameChange() method, and register fields which belong to classes, because the hashtable
  * will need to be updated.  I will do this later. - kor  16-Sep-97
+ *
+ * 2. Note 1 is kept for historical (i.e. amusement) reasons.  In fact, there is no longer a list of fields;
+ * these are kept in a Chain now.  But that's ok; there is no longer a getFieldOf() method,
+ * either.  There still is no efficient way to get a field by name, although one could establish
+ * a Chain of EquivalentValue-like objects and do an O(1) search on that.  - plam 2-24-00
  */
 
 /**
-    Represents a Java class.  They are usually created by a Scene,
+    Represents a Java class in Soot.  They are usually created by a Scene,
     but can also be constructed manually through the given constructors.
 */
 public class SootClass extends AbstractHost
@@ -62,10 +67,7 @@ public class SootClass extends AbstractHost
     Chain methods = new HashChain();
     Chain interfaces = new HashChain();
 
-    Scene scene = Scene.v(); /// added -patrice 
     boolean isInScene;
-
-
     SootClass superClass;
 
     boolean isPhantom;
@@ -92,7 +94,8 @@ public class SootClass extends AbstractHost
     }
 
     /**
-        Is this class being managed by a Scene? A class may be unmanaged  while it is being constructed.
+        Returns true if this class is being managed by a Scene. 
+        A class may be unmanaged while it is being constructed.
     */
 
     public boolean isInScene()
@@ -100,6 +103,11 @@ public class SootClass extends AbstractHost
         return isInScene;
     }
 
+    /** Tells this class if it is being managed by a Scene. */
+    public void setInScene(boolean isInScene)
+    {
+        this.isInScene = isInScene;
+    }
 
     /**
         Returns the number of fields in this class.
@@ -135,7 +143,7 @@ public class SootClass extends AbstractHost
         if(f.isDeclared())
             throw new AlreadyDeclaredException(f.getName());
 
-            /*
+            /* Removed for efficiency reasons.
         if(declaresField(f.getName()))
             throw new DuplicateNameException(f.getName());
  */
@@ -145,7 +153,7 @@ public class SootClass extends AbstractHost
         f.isDeclared = true;
         f.declaringClass = this;
         
-        scene.fieldSignatureToField.put(f.getSignature(), f);        
+        Scene.v().fieldSignatureToField.put(f.getSignature(), f);        
     }
 
     /**
@@ -229,7 +237,7 @@ public class SootClass extends AbstractHost
 
     public SootField getField(String subsignature) throws soot.NoSuchFieldException
     {
-        SootField toReturn = (SootField) scene.fieldSignatureToField.get("<" + getName() + ": " + subsignature + ">");
+        SootField toReturn = (SootField) Scene.v().fieldSignatureToField.get("<" + getName() + ": " + subsignature + ">");
         
         if(toReturn == null)
             throw new soot.NoSuchFieldException("No field " + name + " in class " + getName());
@@ -244,7 +252,7 @@ public class SootClass extends AbstractHost
 
     public boolean declaresField(String subsignature)
     {
-        return scene.fieldSignatureToField.containsKey("<" + getName() + ": " + subsignature + ">");
+        return Scene.v().fieldSignatureToField.containsKey("<" + getName() + ": " + subsignature + ">");
     }
 
     
@@ -254,7 +262,7 @@ public class SootClass extends AbstractHost
 
     public SootMethod getMethod(String subsignature) throws soot.NoSuchMethodException
     {
-        SootMethod toReturn = (SootMethod) scene.methodSignatureToMethod.get("<" + getName() + ": " + subsignature + ">");
+        SootMethod toReturn = (SootMethod) Scene.v().methodSignatureToMethod.get("<" + getName() + ": " + subsignature + ">");
         if(toReturn == null)
             throw new soot.NoSuchMethodException("No method " + subsignature + " in class " + getName());
         else
@@ -267,7 +275,7 @@ public class SootClass extends AbstractHost
 
     public boolean declaresMethod(String subsignature)
     {
-        return scene.methodSignatureToMethod.containsKey("<" + getName() + ": " + subsignature + ">");
+        return Scene.v().methodSignatureToMethod.containsKey("<" + getName() + ": " + subsignature + ">");
     }
     
     
@@ -524,11 +532,7 @@ public class SootClass extends AbstractHost
         m.isDeclared = true;
         m.declaringClass = this;
         
-	if(scene == null) {
-	    System.out.println("sootclass::addMethod   -- fix me"); //xxx
-	    scene = Scene.v();
-	}
-        scene.methodSignatureToMethod.put(m.getSignature(), m);        
+        Scene.v().methodSignatureToMethod.put(m.getSignature(), m);        
     }
 
     /**
@@ -697,257 +701,244 @@ public class SootClass extends AbstractHost
         this.name = name;
     }
 
+    /** Convenience method; returns true if this class is an interface. */
     public boolean isInterface()
     {
         return Modifier.isInterface(this.getModifiers());
     }
 
+    /** Convenience method; returns true if this class is public. */
     public boolean isPublic()
     {
         return Modifier.isPublic(this.getModifiers());
     }
 
+    /** Prints this SootClass to the given PrintWriter, including active bodies of methods. */
     public void printTo(PrintWriter out)
     {
         printTo(out, 0);
     }
 
+    public void printJimpleStyleTo(PrintWriter out, int printBodyOptions)
+    {
+        // Print class name + modifiers
+        {
+            StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
+            while(st.hasMoreTokens())
+                out.print("." + st.nextToken() + " ");
+
+            String classPrefix = "";
+
+            if(!isInterface())
+             {
+                 classPrefix = classPrefix + " .class";
+                 classPrefix = classPrefix.trim();
+             }
+
+            out.print(classPrefix + " " + this.getName() + "");
+        }
+
+        // Print extension
+        {
+            if(this.hasSuperclass())
+                out.print(" .extends " + this.getSuperclass().getName() + "");
+        }
+
+        // Print interfaces
+        {
+            Iterator interfaceIt = this.getInterfaces().iterator();
+            
+            if(interfaceIt.hasNext())
+            {
+                out.print(" .implements ");
+                    
+                out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
+                
+                while(interfaceIt.hasNext())
+                {
+                    out.print(",");
+                    out.print(" " + ((SootClass) interfaceIt.next()).getName() + "");
+                }
+            }
+        }
+        
+        out.println();
+        out.println("{");
+        
+        // Print fields
+        {
+            Iterator fieldIt = this.getFields().iterator();
+            
+            if(fieldIt.hasNext())
+            {
+                while(fieldIt.hasNext())
+                {
+                    SootField f = (SootField) fieldIt.next();
+                    
+                    if(f.isPhantom())
+                        continue;
+                    
+                    out.println("    " + f.getDeclaration() + ";");
+                }
+            }
+        }
+        
+        // Print methods
+        {
+            Iterator methodIt = this.getMethods().iterator();
+
+            if(methodIt.hasNext())
+            {
+                if(this.getMethods().size() != 0)
+                    out.println();
+                
+                while(methodIt.hasNext())
+                {
+                    SootMethod method = (SootMethod) methodIt.next();
+
+                    if(method.isPhantom())
+                        continue;
+		    
+                    if(!Modifier.isAbstract(method.getModifiers()) &&
+                       !Modifier.isNative(method.getModifiers()))
+                    {
+                        if(!method.hasActiveBody())
+                            throw new RuntimeException("method " + method.getName() + " has no active body!");
+                        else
+                            method.getActiveBody().printTo(out, printBodyOptions);
+
+                        if(methodIt.hasNext())
+                            out.println();
+                    }
+                    else 
+                    {
+                        out.print("    ");
+                        out.print(method.getDeclaration());
+                        out.println(";");
+                        
+                        if(methodIt.hasNext())
+                            out.println();
+                    }
+                }
+            }
+        }
+        out.println("}");
+    }
     
-
-  public void printJimpleStyleTo(PrintWriter out, int printBodyOptions)
-  {
-    // Print class name + modifiers
+    public void printTo(PrintWriter out, int printBodyOptions)
     {
+        // Print class name + modifiers
+        {
+            String classPrefix = "";
+            
+            classPrefix = classPrefix + " " + Modifier.toString(this.getModifiers());
+            classPrefix = classPrefix.trim();
 
-      StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
-      while(st.hasMoreTokens())
-	out.print("." + st.nextToken() + " ");
-	  
-      String classPrefix = "";
+            if(!isInterface())
+            {
+                classPrefix = classPrefix + " class";
+                classPrefix = classPrefix.trim();
+            }
 
+            out.print(classPrefix + " " + this.getName() + "");
+        }
 
+        // Print extension
+        {
+            if(this.hasSuperclass())
+                out.print(" extends " + this.getSuperclass().getName() + "");
+        }
 
-      if(!isInterface())
-	{
-	  classPrefix = classPrefix + " .class";
-	  classPrefix = classPrefix.trim();
-	}
-
-      out.print(classPrefix + " " + this.getName() + "");
-    }
-
-    // Print extension
-    {
-      if(this.hasSuperclass())
-	out.print(" .extends " + this.getSuperclass().getName() + "");
-    }
-
-    // Print interfaces
-    {
-      Iterator interfaceIt = this.getInterfaces().iterator();
-
-      if(interfaceIt.hasNext())
-	{
-	  out.print(" .implements ");
-
-	  out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
-
-	  while(interfaceIt.hasNext())
-	    {
-	      out.print(",");
-	      out.print(" " + ((SootClass) interfaceIt.next()).getName() + "");
-	    }
-	}
-    }
-
-    out.println();
-    out.println("{");
-
-    // Print fields
-    {
-      Iterator fieldIt = this.getFields().iterator();
-
-      if(fieldIt.hasNext())
-	{
-	  while(fieldIt.hasNext())
-	    {
-	      SootField f = (SootField) fieldIt.next();
+        // Print interfaces
+        {
+            Iterator interfaceIt = this.getInterfaces().iterator();
+            
+            if(interfaceIt.hasNext())
+            {
+                out.print(" implements ");
+                
+                out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
+                
+                while(interfaceIt.hasNext())
+                {
+                    out.print(",");
+                    out.print(" " + ((SootClass) interfaceIt.next()).getName() + "");
+                }
+            }
+        }
+        
+        out.println();
+        out.println("{");
+        
+        // Print fields
+        {
+            Iterator fieldIt = this.getFields().iterator();
+            
+            if(fieldIt.hasNext())
+            {
+                while(fieldIt.hasNext())
+                {
+                    SootField f = (SootField) fieldIt.next();
                     
-	      if(f.isPhantom())
-		continue;
+                    if(f.isPhantom())
+                        continue;
                         
-	      out.println("    " + f.getDeclaration() + ";");
-	    }
-	}
-    }
+                    out.println("    " + f.getDeclaration() + ";");
+                }
+            }
+        }
 
-    // Print methods
-    {
-      Iterator methodIt = this.getMethods().iterator();
-
-      if(methodIt.hasNext())
-	{
-	  if(this.getMethods().size() != 0)
-	    out.println();
-
-	  while(methodIt.hasNext())
-	    {
-	      SootMethod method = (SootMethod) methodIt.next();
-
-	      if(method.isPhantom())
-		continue;
-		    
-	      if(!Modifier.isAbstract(method.getModifiers()) &&
-		 !Modifier.isNative(method.getModifiers()))								       
-		{
-			    
-		  if(!method.hasActiveBody())
-		    throw new RuntimeException("method " + method.getName() + " has no active body!");
-		  else
-		    method.getActiveBody().printTo(out, printBodyOptions);
-		  // ((soot.jimple.GrimpBody) method.getActiveBody()).printDebugTo(out);
-			    
-                            
-
-		  if(methodIt.hasNext())
-		    out.println();
-		}
-	      else {
-		out.print("    ");
-		out.print(method.getDeclaration());
-		out.println(";");
-
-		if(methodIt.hasNext())
-		  out.println();
-	      }
-	    }
-	}
-    }
-    out.println("}");
-  }
-
-
-
-  public void printTo(PrintWriter out, int printBodyOptions)
-  {
-    // Print class name + modifiers
-    {
-      String classPrefix = "";
-
-      classPrefix = classPrefix + " " + Modifier.toString(this.getModifiers());
-      classPrefix = classPrefix.trim();
-
-      if(!isInterface())
-	{
-	  classPrefix = classPrefix + " class";
-	  classPrefix = classPrefix.trim();
-	}
-
-      out.print(classPrefix + " " + this.getName() + "");
-    }
-
-    // Print extension
-    {
-      if(this.hasSuperclass())
-	out.print(" extends " + this.getSuperclass().getName() + "");
-    }
-
-    // Print interfaces
-    {
-      Iterator interfaceIt = this.getInterfaces().iterator();
-
-      if(interfaceIt.hasNext())
-	{
-	  out.print(" implements ");
-
-	  out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
-
-	  while(interfaceIt.hasNext())
-	    {
-	      out.print(",");
-	      out.print(" " + ((SootClass) interfaceIt.next()).getName() + "");
-	    }
-	}
-    }
-
-    out.println();
-    out.println("{");
-
-    // Print fields
-    {
-      Iterator fieldIt = this.getFields().iterator();
-
-      if(fieldIt.hasNext())
-	{
-	  while(fieldIt.hasNext())
-	    {
-	      SootField f = (SootField) fieldIt.next();
+        // Print methods
+        {
+            Iterator methodIt = this.getMethods().iterator();
+            
+            if(methodIt.hasNext())
+            {
+                if(this.getMethods().size() != 0)
+                    out.println();
+                
+                while(methodIt.hasNext())
+                {
+                    SootMethod method = (SootMethod) methodIt.next();
                     
-	      if(f.isPhantom())
-		continue;
-                        
-	      out.println("    " + f.getDeclaration() + ";");
-	    }
-	}
-    }
-
-    // Print methods
-    {
-      Iterator methodIt = this.getMethods().iterator();
-
-      if(methodIt.hasNext())
-	{
-	  if(this.getMethods().size() != 0)
-	    out.println();
-
-	  while(methodIt.hasNext())
-	    {
-	      SootMethod method = (SootMethod) methodIt.next();
-
-	      if(method.isPhantom())
-		continue;
+                    if(method.isPhantom())
+                        continue;
 		    
-	      if(!Modifier.isAbstract(method.getModifiers()) &&
-		 !Modifier.isNative(method.getModifiers()))								       
-		{
-			    
-		  if(!method.hasActiveBody())
-		    throw new RuntimeException("method " + method.getName() + " has no active body!");
-		  else
-		    method.getActiveBody().printTo(out, printBodyOptions);
-
-			    
+                    if(!Modifier.isAbstract(method.getModifiers()) &&
+                       !Modifier.isNative(method.getModifiers()))
+                    {
+                        if(!method.hasActiveBody())
+                            throw new RuntimeException("method " + method.getName() + " has no active body!");
+                        else
+                            method.getActiveBody().printTo(out, printBodyOptions);
                             
-		  if(methodIt.hasNext())
-		    out.println();
-		}
-	      else {
-		out.print("    ");
-		out.print(method.getDeclaration());
-		out.println(";");
-
-		if(methodIt.hasNext())
-		  out.println();
-	      }
-	    }
-	}
+                        if(methodIt.hasNext())
+                            out.println();
+                    }
+                    else 
+                    {
+                        out.print("    ");
+                        out.print(method.getDeclaration());
+                        out.println(";");
+                        
+                        if(methodIt.hasNext())
+                            out.println();
+                    }
+                }
+            }
+        }
+        out.println("}");
     }
-    out.println("}");
 
-  }
-
-
-   
     /**
         Writes the class out to a file.
      */
-
-
     public void write()
     {
         write("");
     }
 
+    /** Returns true if some method in this class has an active Baf body. */
     boolean containsBafBody()
     {
         Iterator methodIt = getMethods().iterator();
@@ -969,7 +960,6 @@ public class SootClass extends AbstractHost
     /**
         Writes the class out to a file.
      */
-
     public void write(String outputDir)
     {
         String outputDirWithSep = "";
@@ -1015,20 +1005,6 @@ public class SootClass extends AbstractHost
                 
                 jasmin.Main.main(args);
             }
-                /*        
-            Process p;
-            
-            if(outputDir.equals(""))
-                p = Runtime.getRuntime().exec("java jasmin.Main " + this.getName() + ".jasmin");
-            else 
-                p = Runtime.getRuntime().exec("java jasmin.Main -d " + outputDir + " " + outputDirWithSep + this.getName() + ".jasmin");
-            
-            try {
-                p.waitFor();
-            } catch(InterruptedException e)
-            {
-            }
-            */
             
             tempFile.delete();
             
@@ -1041,17 +1017,19 @@ public class SootClass extends AbstractHost
         }        
     }
 
+    /** Returns the RefType corresponding to this class. */
     public RefType getType()
     {
         return RefType.v(getName());
     }
 
+    /** Returns the name of this class. */
     public String toString()
     {
         return getName();
     }
 
-    // gives numeric names to private fields and methods.
+    /* Renames private fields and methods with numeric names. */
     public void renameFieldsAndMethods(boolean privateOnly)
     {
         // Rename fields.  Ignore collisions for now.
@@ -1093,11 +1071,15 @@ public class SootClass extends AbstractHost
         }
     }
 
+    /** Convenience method returning true if this class is an application class. 
+     *
+     * @see Scene.getApplicationClasses() */
     public boolean isApplicationClass()
     {
         return Scene.v().getApplicationClasses().contains(this);
     }
 
+    /** Makes this class an application class. */
     public void setApplicationClass()
     {
         Chain c = Scene.v().getContainingChain(this);
@@ -1106,11 +1088,15 @@ public class SootClass extends AbstractHost
         Scene.v().getApplicationClasses().add(this);
     }
 
+    /** Convenience method returning true if this class is a library class.
+     *
+     * @see Scene.getLibraryClasses() */
     public boolean isLibraryClass()
     {
         return Scene.v().getLibraryClasses().contains(this);
     }
 
+    /** Makes this class a library class. */
     public void setLibraryClass()
     {
         Chain c = Scene.v().getContainingChain(this);
@@ -1119,11 +1105,15 @@ public class SootClass extends AbstractHost
         Scene.v().getLibraryClasses().add(this);
     }
 
+    /** Convenience method returning true if this class is a context class.
+     *
+     * @see Scene.getContextClasses() */
     public boolean isContextClass()
     {
         return Scene.v().getContextClasses().contains(this);
     }
 
+    /** Makes this class a context class. */
     public void setContextClass()
     {
         Chain c = Scene.v().getContainingChain(this);
@@ -1132,11 +1122,15 @@ public class SootClass extends AbstractHost
         Scene.v().getContextClasses().add(this);
     }
 
+    /** Convenience method returning true if this class is a phantom class.
+     *
+     * @see Scene.getPhantomClasses() */
     public boolean isPhantomClass()
     {
         return Scene.v().getPhantomClasses().contains(this);
     }
 
+    /** Makes this class a phantom class. */
     public void setPhantomClass()
     {
         Chain c = Scene.v().getContainingChain(this);
@@ -1145,12 +1139,13 @@ public class SootClass extends AbstractHost
         Scene.v().getPhantomClasses().add(this);
     }
     
-    
+    /** Convenience method returning true if this class is phantom. */
     public boolean isPhantom()
     {
         return isPhantom();
     }
     
+    /** Marks this class as phantom, without notifying the Scene. */
     public void setPhantom(boolean value)
     {
         isPhantom = value;

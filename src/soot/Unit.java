@@ -31,7 +31,8 @@ import java.util.*;
 
 /** The Unit interface describes a code fragment (Stmt or Inst), used within Body
  * classes.  Intermediate representations must use an implementation
- * of Unit for their code.
+ * of Unit for their code.  In general, a unit denotes
+ * some sort of unit for execution.
  */
 public interface Unit extends Switchable, Directed
 {

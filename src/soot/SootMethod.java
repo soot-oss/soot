@@ -35,7 +35,7 @@ import soot.baf.*;
 import soot.jimple.*;
 
 /**
-    Represents a Java method.  Can be declared to belong to a SootClass. 
+    Represents a Java method in Soot.  Can be declared to belong to a SootClass. 
     Does not contain the actual code, which belongs to a Body.
     The getActiveBody() method points to the currently-active body.
 */

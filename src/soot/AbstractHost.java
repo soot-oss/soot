@@ -27,14 +27,15 @@ package soot;
 
 import java.util.*;
 
-// extend by SootClass, SootField, SootMethod, Scene
+// extended by SootClass, SootField, SootMethod, Scene
 
+/** This class is the reference implementation for
+ * the Host interface, which allows arbitrary taggable
+ * data to be stored with Soot objects. */
 public abstract class AbstractHost implements Host 
 {
-
     List mTagList = new ArrayList(1);
     
-
     public List getTags()
     {
 	return mTagList;
@@ -81,13 +82,10 @@ public abstract class AbstractHost implements Host
 	return getTag(aName).getValue();       
     }
 
-
     public void setTagValue(String aName, Object v)
     {
 	getTag(aName).setValue(v);
     }
-
-
 
     public void incTagValue(String aName)
     {

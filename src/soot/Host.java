@@ -29,23 +29,47 @@ import java.util.*;
 
 // implemented by SootClass, SootField, SootMethod, Scene
 
+/** This interface defines the notion of a "taggable" object.
+ * Implementations can have arbitrary labelled data attached to them.
+ * 
+ * Currently, only classes, fields, methods and the Scene are Hosts.
+ *
+ * One example of a tag would be to store Boolean values, associated with
+ * array accesses, indicating whether bounds checks can be omitted.
+ */
 public interface Host
 {
+    /** Get a list of tags associated with the current object. */
     public List getTags();
 
+    /** Remove the tag with the given name. */
     public void destroyTag(String name);
 
+    /** Returns the value attached to the given tag. */
     public Object getTagValue(String name);
+
+    /** Sets the value associated with the given tag. */
     public void setTagValue(String name, Object v); 
+
+    /** Increments the given tag, if it is either Long or Double. */
     public void incTagValue(String name);
+
+    /** Increments the given tag by the given amount. */
     public void incTagValue(String name, long inc);
+
+    /** Increments the given tag by the given amount. */
     public void incTagValue(String name, double inc);
 
-    
+    /** Creates a new Tag object with given initial value, attaches it to the tags list, and returns it. */
     public Tag newTag(String name, Object v);
+
+    /** Creates a new Tag object, attaches it to the tags list, and returns it. */
     public Tag newTag(String name);
 
+    /** Returns the tag with the given name. */
     public Tag getTag(String aName);
+
+    /** Returns true if this host has a tag with the given name. */
     public boolean hasTag(String aName);
 
 }
