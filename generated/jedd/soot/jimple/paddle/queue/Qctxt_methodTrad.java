@@ -23,9 +23,9 @@ public class Qctxt_methodTrad extends Qctxt_method {
         Iterator it =
           new jedd.internal.RelationContainer(new Attribute[] { method.v(), ctxt.v() },
                                               new PhysicalDomain[] { MS.v(), C1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk2/src/soot/jimple/paddle/queue/Qctxt_methodT" +
-                                               "rad.jedd:38,22-24"),
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
+                                               "runk/src/soot/jimple/paddle/queue/Qctxt_methodTrad.jedd:38,2" +
+                                               "2-24"),
                                               in).iterator(new Attribute[] { ctxt.v(), method.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

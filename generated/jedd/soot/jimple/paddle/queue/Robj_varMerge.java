@@ -42,9 +42,8 @@ public final class Robj_varMerge extends Robj_var {
         return new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
                                                    new PhysicalDomain[] { V1.v(), H1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /home/research/ccl/olhota/soo" +
-                                                    "t-trunk2/src/soot/jimple/paddle/queue/Robj_varMerge.jedd:52," +
-                                                    "8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk/src/" +
+                                                    "soot/jimple/paddle/queue/Robj_varMerge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

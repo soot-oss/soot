@@ -24,9 +24,9 @@ public class Qvar_method_typeTrad extends Qvar_method_type {
         Iterator it =
           new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v(), method.v() },
                                               new PhysicalDomain[] { V1.v(), T1.v(), MS.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk2/src/soot/jimple/paddle/queue/Qvar_method_t" +
-                                               "ypeTrad.jedd:39,22-24"),
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
+                                               "runk/src/soot/jimple/paddle/queue/Qvar_method_typeTrad.jedd:" +
+                                               "39,22-24"),
                                               in).iterator(new Attribute[] { var.v(), method.v(), type.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

@@ -37,8 +37,8 @@ public class Robj_typeIter extends Robj_type {
                                               ("<soot.jimple.paddle.bdddomains.obj:soot.jimple.paddle.bdddom" +
                                                "ains.H1, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
                                                "le.bdddomains.T1> ret = jedd.internal.Jedd.v().falseBDD(); a" +
-                                               "t /home/research/ccl/olhota/soot-trunk2/src/soot/jimple/padd" +
-                                               "le/queue/Robj_typeIter.jedd:46,26-29"),
+                                               "t /home/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Robj" +
+                                               "_typeIter.jedd:46,26-29"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next() },
@@ -47,8 +47,8 @@ public class Robj_typeIter extends Robj_type {
         }
         return new jedd.internal.RelationContainer(new Attribute[] { type.v(), obj.v() },
                                                    new PhysicalDomain[] { T1.v(), H1.v() },
-                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk2/src/soo" +
-                                                    "t/jimple/paddle/queue/Robj_typeIter.jedd:50,8-14"),
+                                                   ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
+                                                    "le/queue/Robj_typeIter.jedd:50,8-14"),
                                                    ret);
     }
     

@@ -19,8 +19,8 @@ public final class Qvar_method_typeBDD extends Qvar_method_type {
                                                 new PhysicalDomain[] { V1.v(), MS.v(), T1.v() },
                                                 ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
                                                  ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
-                                                 " /home/research/ccl/olhota/soot-trunk2/src/soot/jimple/paddl" +
-                                                 "e/queue/Qvar_method_typeBDD.jedd:34,8-11"),
+                                                 " /home/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Qvar_" +
+                                                 "method_typeBDD.jedd:34,8-11"),
                                                 jedd.internal.Jedd.v().literal(new Object[] { _var, _method, _type },
                                                                                new Attribute[] { var.v(), method.v(), type.v() },
                                                                                new PhysicalDomain[] { V1.v(), MS.v(), T1.v() })));
@@ -31,8 +31,8 @@ public final class Qvar_method_typeBDD extends Qvar_method_type {
             Rvar_method_typeBDD reader = (Rvar_method_typeBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v(), method.v() },
                                                            new PhysicalDomain[] { V1.v(), T1.v(), MS.v() },
-                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk2/src/" +
-                                                            "soot/jimple/paddle/queue/Qvar_method_typeBDD.jedd:39,12-18"),
+                                                           ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
+                                                            "addle/queue/Qvar_method_typeBDD.jedd:39,12-18"),
                                                            in));
         }
     }
