@@ -123,8 +123,13 @@ public class DavaPrinter {
     private void printStatementsInBody(Body body, java.io.PrintWriter out) {
         Chain units = ((DavaBody) body).getUnits();
 
-        if (units.size() != 1)
+        if (units.size() != 1) {
+            for( Iterator uIt = body.getUnits().iterator(); uIt.hasNext(); ) {
+                final Unit u = (Unit) uIt.next();
+                System.out.println( ""+u );
+            }
             throw new RuntimeException("DavaBody AST doesn't have single root.");
+        }
 
         out.print(((ASTNode) units.getFirst()).toString(null, "        "));
     }
@@ -337,9 +342,7 @@ public class DavaPrinter {
 
         {
             out.println("    " + decl);
-            for (Iterator tIt = b.getMethod().getTags().iterator();
-                tIt.hasNext();
-                ) {
+            for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
                 final Tag t = (Tag) tIt.next();
                 out.println(t);
 

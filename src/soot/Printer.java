@@ -74,7 +74,7 @@ public class Printer {
         jimpleLnNum++;
     }
 
-    public void printJimpleStyleTo(SootClass cl, PrintWriter out) {
+    public void printTo(SootClass cl, PrintWriter out) {
         // add jimple line number tags
         incJimpleLnNum();
 
@@ -82,8 +82,11 @@ public class Printer {
         {
             StringTokenizer st =
                 new StringTokenizer(Modifier.toString(cl.getModifiers()));
-            while (st.hasMoreTokens())
-                out.print(st.nextToken() + " ");
+            while (st.hasMoreTokens()) {
+                String tok = (String) st.nextToken();
+                if( cl.isInterface() && tok.equals("abstract") ) continue;
+                out.print(tok + " ");
+            }
 
             String classPrefix = "";
 
@@ -196,101 +199,6 @@ public class Printer {
         }
         out.println("}");
         incJimpleLnNum();
-    }
-
-    public void printTo(SootClass cl, PrintWriter out) {
-        // Print class name + modifiers
-        {
-            String classPrefix = "";
-
-            classPrefix =
-                classPrefix + " " + Modifier.toString(cl.getModifiers());
-            classPrefix = classPrefix.trim();
-
-            if (!cl.isInterface()) {
-                classPrefix = classPrefix + " class";
-                classPrefix = classPrefix.trim();
-            }
-
-            out.print(classPrefix + " " + cl.getName());
-        }
-
-        // Print extension
-        if (cl.hasSuperclass())
-            out.print(" extends " + cl.getSuperclass().getName() + "");
-
-        // Print interfaces
-        {
-            Iterator interfaceIt = cl.getInterfaces().iterator();
-
-            if (interfaceIt.hasNext()) {
-                out.print(" implements ");
-
-                out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
-
-                while (interfaceIt.hasNext())
-                    out.print(
-                        ", " + ((SootClass) interfaceIt.next()).getName() + "");
-            }
-        }
-
-        out.println();
-        out.println("{");
-
-        // Print fields
-        {
-            Iterator fieldIt = cl.getFields().iterator();
-
-            if (fieldIt.hasNext()) {
-                while (fieldIt.hasNext()) {
-                    SootField f = (SootField) fieldIt.next();
-
-                    if (f.isPhantom())
-                        continue;
-
-                    out.println("    " + f.getDeclaration() + ";");
-                }
-            }
-        }
-
-        // Print methods
-        {
-            Iterator methodIt = cl.methodIterator();
-
-            if (methodIt.hasNext()) {
-                if (cl.getMethodCount() != 0)
-                    out.println();
-
-                while (methodIt.hasNext()) {
-                    SootMethod method = (SootMethod) methodIt.next();
-
-                    if (method.isPhantom())
-                        continue;
-
-                    if (!Modifier.isAbstract(method.getModifiers())
-                        && !Modifier.isNative(method.getModifiers())) {
-                        if (!method.hasActiveBody())
-                            throw new RuntimeException(
-                                "method "
-                                    + method.getName()
-                                    + " has no active body!");
-                        else
-                            printTo(method.getActiveBody(), out);
-
-                        if (methodIt.hasNext())
-                            out.println();
-                    } else {
-                        out.print("    ");
-                        out.print(method.getDeclaration());
-                        out.println(";");
-
-                        if (methodIt.hasNext())
-                            out.println();
-                    }
-                }
-            }
-        }
-        out.println("}");
     }
 
     /**

@@ -124,7 +124,7 @@ public class DavaBody extends Body
      * Constructs a DavaBody from the given Body.
      */
     
-    DavaBody(Body body, Map options)
+    DavaBody(Body body)
     {
         this( body.getMethod());
 

@@ -44,10 +44,9 @@ public class Dava
     }
 
     /** Returns a DavaBody constructed from the given body b. */
-    public DavaBody newBody(Body b, String phase)
+    public DavaBody newBody(Body b)
     {
-        Map options = PackManager.v().getPhaseOptions(phase);
-        return new DavaBody(b, options);
+        return new DavaBody(b);
     }
     
     public Local newLocal(String name, Type t)
