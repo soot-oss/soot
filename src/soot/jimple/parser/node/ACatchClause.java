@@ -1,13 +1,12 @@
 package soot.jimple.parser.node;
 
 import ca.mcgill.sable.util.*;
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 public final class ACatchClause extends PCatchClause
 {
     private TCatch _catch_;
-    private PName _name_;
+    private PClassName _name_;
     private TFrom _from_;
     private PLabelName _fromLabel_;
     private TTo _to_;
@@ -22,7 +21,7 @@ public final class ACatchClause extends PCatchClause
 
     public ACatchClause(
         TCatch _catch_,
-        PName _name_,
+        PClassName _name_,
         TFrom _from_,
         PLabelName _fromLabel_,
         TTo _to_,
@@ -54,7 +53,7 @@ public final class ACatchClause extends PCatchClause
     {
         return new ACatchClause(
             (TCatch) cloneNode(_catch_),
-            (PName) cloneNode(_name_),
+            (PClassName) cloneNode(_name_),
             (TFrom) cloneNode(_from_),
             (PLabelName) cloneNode(_fromLabel_),
             (TTo) cloneNode(_to_),
@@ -94,12 +93,12 @@ public final class ACatchClause extends PCatchClause
         _catch_ = node;
     }
 
-    public PName getName()
+    public PClassName getName()
     {
         return _name_;
     }
 
-    public void setName(PName node)
+    public void setName(PClassName node)
     {
         if(_name_ != null)
         {
@@ -376,7 +375,7 @@ public final class ACatchClause extends PCatchClause
 
         if(_name_ == oldChild)
         {
-            setName((PName) newChild);
+            setName((PClassName) newChild);
             return;
         }
 

@@ -1,14 +1,13 @@
 package soot.jimple.parser.node;
 
 import ca.mcgill.sable.util.*;
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 public final class AFile extends PFile
 {
     private final LinkedList _modifier_ = new TypedLinkedList(new Modifier_Cast());
     private PFileType _fileType_;
-    private PName _name_;
+    private PClassName _className_;
     private PExtendsClause _extendsClause_;
     private PImplementsClause _implementsClause_;
     private PFileBody _fileBody_;
@@ -20,7 +19,7 @@ public final class AFile extends PFile
     public AFile(
         List _modifier_,
         PFileType _fileType_,
-        PName _name_,
+        PClassName _className_,
         PExtendsClause _extendsClause_,
         PImplementsClause _implementsClause_,
         PFileBody _fileBody_)
@@ -35,7 +34,7 @@ public final class AFile extends PFile
 
         setFileType(_fileType_);
 
-        setName(_name_);
+        setClassName(_className_);
 
         setExtendsClause(_extendsClause_);
 
@@ -48,7 +47,7 @@ public final class AFile extends PFile
     public AFile(
         XPModifier _modifier_,
         PFileType _fileType_,
-        PName _name_,
+        PClassName _className_,
         PExtendsClause _extendsClause_,
         PImplementsClause _implementsClause_,
         PFileBody _fileBody_)
@@ -65,7 +64,7 @@ public final class AFile extends PFile
 
         setFileType(_fileType_);
 
-        setName(_name_);
+        setClassName(_className_);
 
         setExtendsClause(_extendsClause_);
 
@@ -79,7 +78,7 @@ public final class AFile extends PFile
         return new AFile(
             cloneList(_modifier_),
             (PFileType) cloneNode(_fileType_),
-            (PName) cloneNode(_name_),
+            (PClassName) cloneNode(_className_),
             (PExtendsClause) cloneNode(_extendsClause_),
             (PImplementsClause) cloneNode(_implementsClause_),
             (PFileBody) cloneNode(_fileBody_));
@@ -129,16 +128,16 @@ public final class AFile extends PFile
         _fileType_ = node;
     }
 
-    public PName getName()
+    public PClassName getClassName()
     {
-        return _name_;
+        return _className_;
     }
 
-    public void setName(PName node)
+    public void setClassName(PClassName node)
     {
-        if(_name_ != null)
+        if(_className_ != null)
         {
-            _name_.parent(null);
+            _className_.parent(null);
         }
 
         if(node != null)
@@ -151,7 +150,7 @@ public final class AFile extends PFile
             node.parent(this);
         }
 
-        _name_ = node;
+        _className_ = node;
     }
 
     public PExtendsClause getExtendsClause()
@@ -234,7 +233,7 @@ public final class AFile extends PFile
         return ""
             + toString(_modifier_)
             + toString(_fileType_)
-            + toString(_name_)
+            + toString(_className_)
             + toString(_extendsClause_)
             + toString(_implementsClause_)
             + toString(_fileBody_);
@@ -253,9 +252,9 @@ public final class AFile extends PFile
             return;
         }
 
-        if(_name_ == child)
+        if(_className_ == child)
         {
-            _name_ = null;
+            _className_ = null;
             return;
         }
 
@@ -304,9 +303,9 @@ public final class AFile extends PFile
             return;
         }
 
-        if(_name_ == oldChild)
+        if(_className_ == oldChild)
         {
-            setName((PName) newChild);
+            setClassName((PClassName) newChild);
             return;
         }
 

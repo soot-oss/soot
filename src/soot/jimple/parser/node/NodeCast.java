@@ -1,7 +1,6 @@
 package soot.jimple.parser.node;
 
 import ca.mcgill.sable.util.*;
-import java.util.*;
 
 public class NodeCast implements Cast
 {

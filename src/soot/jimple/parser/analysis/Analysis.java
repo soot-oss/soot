@@ -1,7 +1,6 @@
 package soot.jimple.parser.analysis;
 
 import ca.mcgill.sable.util.*;
-import java.util.*;
 import soot.jimple.parser.node.*;
 
 public interface Analysis extends Switch
@@ -30,6 +29,8 @@ public interface Analysis extends Switch
     void caseAFileBody(AFileBody node);
     void caseASingleNameList(ASingleNameList node);
     void caseAMultiNameList(AMultiNameList node);
+    void caseAClassNameSingleClassNameList(AClassNameSingleClassNameList node);
+    void caseAClassNameMultiClassNameList(AClassNameMultiClassNameList node);
     void caseAFieldMember(AFieldMember node);
     void caseAMethodMember(AMethodMember node);
     void caseAVoidType(AVoidType node);
@@ -54,10 +55,11 @@ public interface Analysis extends Switch
     void caseALongBaseType(ALongBaseType node);
     void caseAFloatBaseType(AFloatBaseType node);
     void caseADoubleBaseType(ADoubleBaseType node);
-    void caseANameBaseType(ANameBaseType node);
+    void caseAClassNameBaseType(AClassNameBaseType node);
     void caseABaseNonvoidType(ABaseNonvoidType node);
     void caseAQuotedNonvoidType(AQuotedNonvoidType node);
     void caseAIdentNonvoidType(AIdentNonvoidType node);
+    void caseAFullIdentNonvoidType(AFullIdentNonvoidType node);
     void caseAArrayBrackets(AArrayBrackets node);
     void caseAEmptyMethodBody(AEmptyMethodBody node);
     void caseAFullMethodBody(AFullMethodBody node);
@@ -73,6 +75,7 @@ public interface Analysis extends Switch
     void caseAExitmonitorStatement(AExitmonitorStatement node);
     void caseASwitchStatement(ASwitchStatement node);
     void caseAIdentityStatement(AIdentityStatement node);
+    void caseAIdentityNoTypeStatement(AIdentityNoTypeStatement node);
     void caseAAssignStatement(AAssignStatement node);
     void caseAIfStatement(AIfStatement node);
     void caseAGotoStatement(AGotoStatement node);
@@ -127,6 +130,8 @@ public interface Analysis extends Switch
     void caseAIntegerConstant(AIntegerConstant node);
     void caseAFloatConstant(AFloatConstant node);
     void caseAStringConstant(AStringConstant node);
+    void caseAFloatCstFloatExt(AFloatCstFloatExt node);
+    void caseAFloatDegenerateFloatExt(AFloatDegenerateFloatExt node);
     void caseAAndBinop(AAndBinop node);
     void caseAOrBinop(AOrBinop node);
     void caseAXorBinop(AXorBinop node);
@@ -149,6 +154,9 @@ public interface Analysis extends Switch
     void caseADivBinop(ADivBinop node);
     void caseALengthofUnop(ALengthofUnop node);
     void caseANegUnop(ANegUnop node);
+    void caseAQuotedClassName(AQuotedClassName node);
+    void caseAIdentClassName(AIdentClassName node);
+    void caseAFullIdentClassName(AFullIdentClassName node);
     void caseAQuotedName(AQuotedName node);
     void caseAIdentName(AIdentName node);
 
@@ -237,8 +245,10 @@ public interface Analysis extends Switch
     void caseTMinus(TMinus node);
     void caseTMult(TMult node);
     void caseTDiv(TDiv node);
+    void caseTFloatDegenerate(TFloatDegenerate node);
     void caseTQuotedName(TQuotedName node);
     void caseTIdentifier(TIdentifier node);
+    void caseTFullIdentifier(TFullIdentifier node);
     void caseTAtIdentifier(TAtIdentifier node);
     void caseTBoolConstant(TBoolConstant node);
     void caseTIntegerConstant(TIntegerConstant node);

@@ -1,21 +1,18 @@
 package soot.jimple.parser.node;
 
 import ca.mcgill.sable.util.*;
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 public final class AMethodSignature extends PMethodSignature
 {
     private TCmplt _cmplt_;
-    private PName _className_;
+    private PClassName _className_;
     private TColon _first_;
+    private PType _type_;
     private PName _methodName_;
-    private TColon _second_;
     private TLParen _lParen_;
     private PParameterList _parameterList_;
     private TRParen _rParen_;
-    private TColon _third_;
-    private PType _type_;
     private TCmpgt _cmpgt_;
 
     public AMethodSignature()
@@ -24,15 +21,13 @@ public final class AMethodSignature extends PMethodSignature
 
     public AMethodSignature(
         TCmplt _cmplt_,
-        PName _className_,
+        PClassName _className_,
         TColon _first_,
+        PType _type_,
         PName _methodName_,
-        TColon _second_,
         TLParen _lParen_,
         PParameterList _parameterList_,
         TRParen _rParen_,
-        TColon _third_,
-        PType _type_,
         TCmpgt _cmpgt_)
     {
         setCmplt(_cmplt_);
@@ -41,19 +36,15 @@ public final class AMethodSignature extends PMethodSignature
 
         setFirst(_first_);
 
-        setMethodName(_methodName_);
+        setType(_type_);
 
-        setSecond(_second_);
+        setMethodName(_methodName_);
 
         setLParen(_lParen_);
 
         setParameterList(_parameterList_);
 
         setRParen(_rParen_);
-
-        setThird(_third_);
-
-        setType(_type_);
 
         setCmpgt(_cmpgt_);
 
@@ -62,15 +53,13 @@ public final class AMethodSignature extends PMethodSignature
     {
         return new AMethodSignature(
             (TCmplt) cloneNode(_cmplt_),
-            (PName) cloneNode(_className_),
+            (PClassName) cloneNode(_className_),
             (TColon) cloneNode(_first_),
+            (PType) cloneNode(_type_),
             (PName) cloneNode(_methodName_),
-            (TColon) cloneNode(_second_),
             (TLParen) cloneNode(_lParen_),
             (PParameterList) cloneNode(_parameterList_),
             (TRParen) cloneNode(_rParen_),
-            (TColon) cloneNode(_third_),
-            (PType) cloneNode(_type_),
             (TCmpgt) cloneNode(_cmpgt_));
     }
 
@@ -104,12 +93,12 @@ public final class AMethodSignature extends PMethodSignature
         _cmplt_ = node;
     }
 
-    public PName getClassName()
+    public PClassName getClassName()
     {
         return _className_;
     }
 
-    public void setClassName(PName node)
+    public void setClassName(PClassName node)
     {
         if(_className_ != null)
         {
@@ -154,6 +143,31 @@ public final class AMethodSignature extends PMethodSignature
         _first_ = node;
     }
 
+    public PType getType()
+    {
+        return _type_;
+    }
+
+    public void setType(PType node)
+    {
+        if(_type_ != null)
+        {
+            _type_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        _type_ = node;
+    }
+
     public PName getMethodName()
     {
         return _methodName_;
@@ -177,31 +191,6 @@ public final class AMethodSignature extends PMethodSignature
         }
 
         _methodName_ = node;
-    }
-
-    public TColon getSecond()
-    {
-        return _second_;
-    }
-
-    public void setSecond(TColon node)
-    {
-        if(_second_ != null)
-        {
-            _second_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        _second_ = node;
     }
 
     public TLParen getLParen()
@@ -279,56 +268,6 @@ public final class AMethodSignature extends PMethodSignature
         _rParen_ = node;
     }
 
-    public TColon getThird()
-    {
-        return _third_;
-    }
-
-    public void setThird(TColon node)
-    {
-        if(_third_ != null)
-        {
-            _third_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        _third_ = node;
-    }
-
-    public PType getType()
-    {
-        return _type_;
-    }
-
-    public void setType(PType node)
-    {
-        if(_type_ != null)
-        {
-            _type_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        _type_ = node;
-    }
-
     public TCmpgt getCmpgt()
     {
         return _cmpgt_;
@@ -360,13 +299,11 @@ public final class AMethodSignature extends PMethodSignature
             + toString(_cmplt_)
             + toString(_className_)
             + toString(_first_)
+            + toString(_type_)
             + toString(_methodName_)
-            + toString(_second_)
             + toString(_lParen_)
             + toString(_parameterList_)
             + toString(_rParen_)
-            + toString(_third_)
-            + toString(_type_)
             + toString(_cmpgt_);
     }
 
@@ -390,15 +327,15 @@ public final class AMethodSignature extends PMethodSignature
             return;
         }
 
-        if(_methodName_ == child)
+        if(_type_ == child)
         {
-            _methodName_ = null;
+            _type_ = null;
             return;
         }
 
-        if(_second_ == child)
+        if(_methodName_ == child)
         {
-            _second_ = null;
+            _methodName_ = null;
             return;
         }
 
@@ -420,18 +357,6 @@ public final class AMethodSignature extends PMethodSignature
             return;
         }
 
-        if(_third_ == child)
-        {
-            _third_ = null;
-            return;
-        }
-
-        if(_type_ == child)
-        {
-            _type_ = null;
-            return;
-        }
-
         if(_cmpgt_ == child)
         {
             _cmpgt_ = null;
@@ -450,7 +375,7 @@ public final class AMethodSignature extends PMethodSignature
 
         if(_className_ == oldChild)
         {
-            setClassName((PName) newChild);
+            setClassName((PClassName) newChild);
             return;
         }
 
@@ -460,15 +385,15 @@ public final class AMethodSignature extends PMethodSignature
             return;
         }
 
-        if(_methodName_ == oldChild)
+        if(_type_ == oldChild)
         {
-            setMethodName((PName) newChild);
+            setType((PType) newChild);
             return;
         }
 
-        if(_second_ == oldChild)
+        if(_methodName_ == oldChild)
         {
-            setSecond((TColon) newChild);
+            setMethodName((PName) newChild);
             return;
         }
 
@@ -487,18 +412,6 @@ public final class AMethodSignature extends PMethodSignature
         if(_rParen_ == oldChild)
         {
             setRParen((TRParen) newChild);
-            return;
-        }
-
-        if(_third_ == oldChild)
-        {
-            setThird((TColon) newChild);
-            return;
-        }
-
-        if(_type_ == oldChild)
-        {
-            setType((PType) newChild);
             return;
         }
 

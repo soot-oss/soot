@@ -1,17 +1,15 @@
 package soot.jimple.parser.node;
 
 import ca.mcgill.sable.util.*;
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 public final class AFieldSignature extends PFieldSignature
 {
     private TCmplt _cmplt_;
-    private PName _className_;
+    private PClassName _className_;
     private TColon _first_;
-    private PName _fieldName_;
-    private TColon _second_;
     private PType _type_;
+    private PName _fieldName_;
     private TCmpgt _cmpgt_;
 
     public AFieldSignature()
@@ -20,11 +18,10 @@ public final class AFieldSignature extends PFieldSignature
 
     public AFieldSignature(
         TCmplt _cmplt_,
-        PName _className_,
+        PClassName _className_,
         TColon _first_,
-        PName _fieldName_,
-        TColon _second_,
         PType _type_,
+        PName _fieldName_,
         TCmpgt _cmpgt_)
     {
         setCmplt(_cmplt_);
@@ -33,11 +30,9 @@ public final class AFieldSignature extends PFieldSignature
 
         setFirst(_first_);
 
-        setFieldName(_fieldName_);
-
-        setSecond(_second_);
-
         setType(_type_);
+
+        setFieldName(_fieldName_);
 
         setCmpgt(_cmpgt_);
 
@@ -46,11 +41,10 @@ public final class AFieldSignature extends PFieldSignature
     {
         return new AFieldSignature(
             (TCmplt) cloneNode(_cmplt_),
-            (PName) cloneNode(_className_),
+            (PClassName) cloneNode(_className_),
             (TColon) cloneNode(_first_),
-            (PName) cloneNode(_fieldName_),
-            (TColon) cloneNode(_second_),
             (PType) cloneNode(_type_),
+            (PName) cloneNode(_fieldName_),
             (TCmpgt) cloneNode(_cmpgt_));
     }
 
@@ -84,12 +78,12 @@ public final class AFieldSignature extends PFieldSignature
         _cmplt_ = node;
     }
 
-    public PName getClassName()
+    public PClassName getClassName()
     {
         return _className_;
     }
 
-    public void setClassName(PName node)
+    public void setClassName(PClassName node)
     {
         if(_className_ != null)
         {
@@ -134,56 +128,6 @@ public final class AFieldSignature extends PFieldSignature
         _first_ = node;
     }
 
-    public PName getFieldName()
-    {
-        return _fieldName_;
-    }
-
-    public void setFieldName(PName node)
-    {
-        if(_fieldName_ != null)
-        {
-            _fieldName_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        _fieldName_ = node;
-    }
-
-    public TColon getSecond()
-    {
-        return _second_;
-    }
-
-    public void setSecond(TColon node)
-    {
-        if(_second_ != null)
-        {
-            _second_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        _second_ = node;
-    }
-
     public PType getType()
     {
         return _type_;
@@ -207,6 +151,31 @@ public final class AFieldSignature extends PFieldSignature
         }
 
         _type_ = node;
+    }
+
+    public PName getFieldName()
+    {
+        return _fieldName_;
+    }
+
+    public void setFieldName(PName node)
+    {
+        if(_fieldName_ != null)
+        {
+            _fieldName_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        _fieldName_ = node;
     }
 
     public TCmpgt getCmpgt()
@@ -240,9 +209,8 @@ public final class AFieldSignature extends PFieldSignature
             + toString(_cmplt_)
             + toString(_className_)
             + toString(_first_)
-            + toString(_fieldName_)
-            + toString(_second_)
             + toString(_type_)
+            + toString(_fieldName_)
             + toString(_cmpgt_);
     }
 
@@ -266,21 +234,15 @@ public final class AFieldSignature extends PFieldSignature
             return;
         }
 
-        if(_fieldName_ == child)
-        {
-            _fieldName_ = null;
-            return;
-        }
-
-        if(_second_ == child)
-        {
-            _second_ = null;
-            return;
-        }
-
         if(_type_ == child)
         {
             _type_ = null;
+            return;
+        }
+
+        if(_fieldName_ == child)
+        {
+            _fieldName_ = null;
             return;
         }
 
@@ -302,7 +264,7 @@ public final class AFieldSignature extends PFieldSignature
 
         if(_className_ == oldChild)
         {
-            setClassName((PName) newChild);
+            setClassName((PClassName) newChild);
             return;
         }
 
@@ -312,21 +274,15 @@ public final class AFieldSignature extends PFieldSignature
             return;
         }
 
-        if(_fieldName_ == oldChild)
-        {
-            setFieldName((PName) newChild);
-            return;
-        }
-
-        if(_second_ == oldChild)
-        {
-            setSecond((TColon) newChild);
-            return;
-        }
-
         if(_type_ == oldChild)
         {
             setType((PType) newChild);
+            return;
+        }
+
+        if(_fieldName_ == oldChild)
+        {
+            setFieldName((PName) newChild);
             return;
         }
 

@@ -432,43 +432,53 @@ class TokenIndex extends AnalysisAdapter
         index = 84;
     }
 
-    public void caseTQuotedName(TQuotedName node)
+    public void caseTFloatDegenerate(TFloatDegenerate node)
     {
         index = 85;
     }
 
-    public void caseTIdentifier(TIdentifier node)
+    public void caseTQuotedName(TQuotedName node)
     {
         index = 86;
     }
 
-    public void caseTAtIdentifier(TAtIdentifier node)
+    public void caseTIdentifier(TIdentifier node)
     {
         index = 87;
     }
 
-    public void caseTBoolConstant(TBoolConstant node)
+    public void caseTFullIdentifier(TFullIdentifier node)
     {
         index = 88;
     }
 
-    public void caseTIntegerConstant(TIntegerConstant node)
+    public void caseTAtIdentifier(TAtIdentifier node)
     {
         index = 89;
     }
 
-    public void caseTFloatConstant(TFloatConstant node)
+    public void caseTBoolConstant(TBoolConstant node)
     {
         index = 90;
     }
 
-    public void caseTStringConstant(TStringConstant node)
+    public void caseTIntegerConstant(TIntegerConstant node)
     {
         index = 91;
     }
 
-    public void caseEOF(EOF node)
+    public void caseTFloatConstant(TFloatConstant node)
     {
         index = 92;
+    }
+
+    public void caseTStringConstant(TStringConstant node)
+    {
+        index = 93;
+    }
+
+    public void caseEOF(EOF node)
+    {
+        index = 94;
     }
 }

@@ -1,13 +1,12 @@
 package soot.jimple.parser.node;
 
 import ca.mcgill.sable.util.*;
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 public final class AExtendsClause extends PExtendsClause
 {
     private TExtends _extends_;
-    private PName _name_;
+    private PClassName _className_;
 
     public AExtendsClause()
     {
@@ -15,18 +14,18 @@ public final class AExtendsClause extends PExtendsClause
 
     public AExtendsClause(
         TExtends _extends_,
-        PName _name_)
+        PClassName _className_)
     {
         setExtends(_extends_);
 
-        setName(_name_);
+        setClassName(_className_);
 
     }
     public Object clone()
     {
         return new AExtendsClause(
             (TExtends) cloneNode(_extends_),
-            (PName) cloneNode(_name_));
+            (PClassName) cloneNode(_className_));
     }
 
     public void apply(Switch sw)
@@ -59,16 +58,16 @@ public final class AExtendsClause extends PExtendsClause
         _extends_ = node;
     }
 
-    public PName getName()
+    public PClassName getClassName()
     {
-        return _name_;
+        return _className_;
     }
 
-    public void setName(PName node)
+    public void setClassName(PClassName node)
     {
-        if(_name_ != null)
+        if(_className_ != null)
         {
-            _name_.parent(null);
+            _className_.parent(null);
         }
 
         if(node != null)
@@ -81,14 +80,14 @@ public final class AExtendsClause extends PExtendsClause
             node.parent(this);
         }
 
-        _name_ = node;
+        _className_ = node;
     }
 
     public String toString()
     {
         return ""
             + toString(_extends_)
-            + toString(_name_);
+            + toString(_className_);
     }
 
     void removeChild(Node child)
@@ -99,9 +98,9 @@ public final class AExtendsClause extends PExtendsClause
             return;
         }
 
-        if(_name_ == child)
+        if(_className_ == child)
         {
-            _name_ = null;
+            _className_ = null;
             return;
         }
 
@@ -115,9 +114,9 @@ public final class AExtendsClause extends PExtendsClause
             return;
         }
 
-        if(_name_ == oldChild)
+        if(_className_ == oldChild)
         {
-            setName((PName) newChild);
+            setClassName((PClassName) newChild);
             return;
         }
 

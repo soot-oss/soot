@@ -157,6 +157,16 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseAClassNameSingleClassNameList(AClassNameSingleClassNameList node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAClassNameMultiClassNameList(AClassNameMultiClassNameList node)
+    {
+        defaultCase(node);
+    }
+
     public void caseAFieldMember(AFieldMember node)
     {
         defaultCase(node);
@@ -277,7 +287,7 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseANameBaseType(ANameBaseType node)
+    public void caseAClassNameBaseType(AClassNameBaseType node)
     {
         defaultCase(node);
     }
@@ -293,6 +303,11 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseAIdentNonvoidType(AIdentNonvoidType node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAFullIdentNonvoidType(AFullIdentNonvoidType node)
     {
         defaultCase(node);
     }
@@ -368,6 +383,11 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseAIdentityStatement(AIdentityStatement node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAIdentityNoTypeStatement(AIdentityNoTypeStatement node)
     {
         defaultCase(node);
     }
@@ -642,6 +662,16 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseAFloatCstFloatExt(AFloatCstFloatExt node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAFloatDegenerateFloatExt(AFloatDegenerateFloatExt node)
+    {
+        defaultCase(node);
+    }
+
     public void caseAAndBinop(AAndBinop node)
     {
         defaultCase(node);
@@ -748,6 +778,21 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseANegUnop(ANegUnop node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAQuotedClassName(AQuotedClassName node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAIdentClassName(AIdentClassName node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAFullIdentClassName(AFullIdentClassName node)
     {
         defaultCase(node);
     }
@@ -1187,12 +1232,22 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseTFloatDegenerate(TFloatDegenerate node)
+    {
+        defaultCase(node);
+    }
+
     public void caseTQuotedName(TQuotedName node)
     {
         defaultCase(node);
     }
 
     public void caseTIdentifier(TIdentifier node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTFullIdentifier(TFullIdentifier node)
     {
         defaultCase(node);
     }

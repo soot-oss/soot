@@ -1,13 +1,12 @@
 package soot.jimple.parser.node;
 
 import ca.mcgill.sable.util.*;
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 public final class AFloatConstant extends PConstant
 {
     private TMinus _minus_;
-    private TFloatConstant _floatConstant_;
+    private PFloatExt _floatExt_;
 
     public AFloatConstant()
     {
@@ -15,18 +14,18 @@ public final class AFloatConstant extends PConstant
 
     public AFloatConstant(
         TMinus _minus_,
-        TFloatConstant _floatConstant_)
+        PFloatExt _floatExt_)
     {
         setMinus(_minus_);
 
-        setFloatConstant(_floatConstant_);
+        setFloatExt(_floatExt_);
 
     }
     public Object clone()
     {
         return new AFloatConstant(
             (TMinus) cloneNode(_minus_),
-            (TFloatConstant) cloneNode(_floatConstant_));
+            (PFloatExt) cloneNode(_floatExt_));
     }
 
     public void apply(Switch sw)
@@ -59,16 +58,16 @@ public final class AFloatConstant extends PConstant
         _minus_ = node;
     }
 
-    public TFloatConstant getFloatConstant()
+    public PFloatExt getFloatExt()
     {
-        return _floatConstant_;
+        return _floatExt_;
     }
 
-    public void setFloatConstant(TFloatConstant node)
+    public void setFloatExt(PFloatExt node)
     {
-        if(_floatConstant_ != null)
+        if(_floatExt_ != null)
         {
-            _floatConstant_.parent(null);
+            _floatExt_.parent(null);
         }
 
         if(node != null)
@@ -81,14 +80,14 @@ public final class AFloatConstant extends PConstant
             node.parent(this);
         }
 
-        _floatConstant_ = node;
+        _floatExt_ = node;
     }
 
     public String toString()
     {
         return ""
             + toString(_minus_)
-            + toString(_floatConstant_);
+            + toString(_floatExt_);
     }
 
     void removeChild(Node child)
@@ -99,9 +98,9 @@ public final class AFloatConstant extends PConstant
             return;
         }
 
-        if(_floatConstant_ == child)
+        if(_floatExt_ == child)
         {
-            _floatConstant_ = null;
+            _floatExt_ = null;
             return;
         }
 
@@ -115,9 +114,9 @@ public final class AFloatConstant extends PConstant
             return;
         }
 
-        if(_floatConstant_ == oldChild)
+        if(_floatExt_ == oldChild)
         {
-            setFloatConstant((TFloatConstant) newChild);
+            setFloatExt((PFloatExt) newChild);
             return;
         }
 

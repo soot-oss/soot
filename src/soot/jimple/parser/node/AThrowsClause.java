@@ -1,13 +1,12 @@
 package soot.jimple.parser.node;
 
 import ca.mcgill.sable.util.*;
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 public final class AThrowsClause extends PThrowsClause
 {
     private TThrows _throws_;
-    private PNameList _nameList_;
+    private PClassNameList _classNameList_;
 
     public AThrowsClause()
     {
@@ -15,18 +14,18 @@ public final class AThrowsClause extends PThrowsClause
 
     public AThrowsClause(
         TThrows _throws_,
-        PNameList _nameList_)
+        PClassNameList _classNameList_)
     {
         setThrows(_throws_);
 
-        setNameList(_nameList_);
+        setClassNameList(_classNameList_);
 
     }
     public Object clone()
     {
         return new AThrowsClause(
             (TThrows) cloneNode(_throws_),
-            (PNameList) cloneNode(_nameList_));
+            (PClassNameList) cloneNode(_classNameList_));
     }
 
     public void apply(Switch sw)
@@ -59,16 +58,16 @@ public final class AThrowsClause extends PThrowsClause
         _throws_ = node;
     }
 
-    public PNameList getNameList()
+    public PClassNameList getClassNameList()
     {
-        return _nameList_;
+        return _classNameList_;
     }
 
-    public void setNameList(PNameList node)
+    public void setClassNameList(PClassNameList node)
     {
-        if(_nameList_ != null)
+        if(_classNameList_ != null)
         {
-            _nameList_.parent(null);
+            _classNameList_.parent(null);
         }
 
         if(node != null)
@@ -81,14 +80,14 @@ public final class AThrowsClause extends PThrowsClause
             node.parent(this);
         }
 
-        _nameList_ = node;
+        _classNameList_ = node;
     }
 
     public String toString()
     {
         return ""
             + toString(_throws_)
-            + toString(_nameList_);
+            + toString(_classNameList_);
     }
 
     void removeChild(Node child)
@@ -99,9 +98,9 @@ public final class AThrowsClause extends PThrowsClause
             return;
         }
 
-        if(_nameList_ == child)
+        if(_classNameList_ == child)
         {
-            _nameList_ = null;
+            _classNameList_ = null;
             return;
         }
 
@@ -115,9 +114,9 @@ public final class AThrowsClause extends PThrowsClause
             return;
         }
 
-        if(_nameList_ == oldChild)
+        if(_classNameList_ == oldChild)
         {
-            setNameList((PNameList) newChild);
+            setClassNameList((PClassNameList) newChild);
             return;
         }
 

@@ -1,7 +1,6 @@
 package soot.jimple.parser.node;
 
 import ca.mcgill.sable.util.*;
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 public final class AIdentityStatement extends PStatement
@@ -9,6 +8,7 @@ public final class AIdentityStatement extends PStatement
     private PLocalName _localName_;
     private TColonEquals _colonEquals_;
     private TAtIdentifier _atIdentifier_;
+    private PType _type_;
     private TSemicolon _semicolon_;
 
     public AIdentityStatement()
@@ -19,6 +19,7 @@ public final class AIdentityStatement extends PStatement
         PLocalName _localName_,
         TColonEquals _colonEquals_,
         TAtIdentifier _atIdentifier_,
+        PType _type_,
         TSemicolon _semicolon_)
     {
         setLocalName(_localName_);
@@ -26,6 +27,8 @@ public final class AIdentityStatement extends PStatement
         setColonEquals(_colonEquals_);
 
         setAtIdentifier(_atIdentifier_);
+
+        setType(_type_);
 
         setSemicolon(_semicolon_);
 
@@ -36,6 +39,7 @@ public final class AIdentityStatement extends PStatement
             (PLocalName) cloneNode(_localName_),
             (TColonEquals) cloneNode(_colonEquals_),
             (TAtIdentifier) cloneNode(_atIdentifier_),
+            (PType) cloneNode(_type_),
             (TSemicolon) cloneNode(_semicolon_));
     }
 
@@ -119,6 +123,31 @@ public final class AIdentityStatement extends PStatement
         _atIdentifier_ = node;
     }
 
+    public PType getType()
+    {
+        return _type_;
+    }
+
+    public void setType(PType node)
+    {
+        if(_type_ != null)
+        {
+            _type_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        _type_ = node;
+    }
+
     public TSemicolon getSemicolon()
     {
         return _semicolon_;
@@ -150,6 +179,7 @@ public final class AIdentityStatement extends PStatement
             + toString(_localName_)
             + toString(_colonEquals_)
             + toString(_atIdentifier_)
+            + toString(_type_)
             + toString(_semicolon_);
     }
 
@@ -170,6 +200,12 @@ public final class AIdentityStatement extends PStatement
         if(_atIdentifier_ == child)
         {
             _atIdentifier_ = null;
+            return;
+        }
+
+        if(_type_ == child)
+        {
+            _type_ = null;
             return;
         }
 
@@ -198,6 +234,12 @@ public final class AIdentityStatement extends PStatement
         if(_atIdentifier_ == oldChild)
         {
             setAtIdentifier((TAtIdentifier) newChild);
+            return;
+        }
+
+        if(_type_ == oldChild)
+        {
+            setType((PType) newChild);
             return;
         }
 
