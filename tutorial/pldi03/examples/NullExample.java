@@ -8,6 +8,7 @@ public class NullExample
         }
         int i = 2;
         i += p.length();
+        System.out.println(p);
         return 4;
     }
 }
