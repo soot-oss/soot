@@ -16,17 +16,6 @@
 \end{itemize}
 \end{slide}
 
-\comment{
-\begin{slide}{Updating Call Graph}
-\begin{itemize}
-\item {\tt addEdge( Edge )}
-\item {\tt removeEdge( Edge )}
-\item Call graph queries always give up-to-date information
-\end{itemize}
-\end{slide}
-}
-
-
 \begin{slide}{Call Graph Edge}
 \begin{itemize}
 \vspace*{-5mm}
@@ -65,36 +54,39 @@ source m. & source stmt. & target m. & kind\\
 \end{slide}
 
 \begin{slide}{Edge Kinds}
+\vspace*{-6mm}
 {
 \tiny\bf
 \begin{verbatim}
-// Due to explicit invokestatic instruction.
+/** Due to explicit invokestatic instruction. */
 public static final int STATIC = 1;
-// Due to explicit invokevirtual instruction.
+/** Due to explicit invokevirtual instruction. */
 public static final int VIRTUAL = 2;
-// Due to explicit invokeinterface instruction.
+/** Due to explicit invokeinterface instruction. */
 public static final int INTERFACE = 3;
-// Due to explicit invokespecial instruction.
+/** Due to explicit invokespecial instruction. */
 public static final int SPECIAL = 4;
-// Implicit call to static initializer.
+/** Implicit call to static initializer. */
 public static final int CLINIT = 5;
-// Implicit call to Thread.run() due to Thread.start() call.
+/** Implicit call to Thread.run() due to Thread.start() call. */
 public static final int THREAD = 6;
-// Implicit call to Thread.exit().
+/** Implicit call to Thread.exit(). */
 public static final int EXIT = 7;
-// Implicit call to non-trivial finalizer from constructor.
+/** Implicit call to non-trivial finalizer from constructor. */
 public static final int FINALIZE = 8;
-// Implicit call to run() through AccessController.doPrivileged().
+/** Implicit call to run() through AccessController.doPrivileged(). */
 public static final int PRIVILEGED = 9;
+/** Implicit call to constructor from java.lang.Class.newInstance(). */
+public static final int NEWINSTANCE = 10;
 \end{verbatim}
 }
 \end{slide}
 
 \begin{slide}{Querying Call Graph}
 \begin{description}
-\item[\tt targetsOf(SootMethod)] iterator over edges with given source method
-\item[\tt targetsOf(Unit)] iterator over edges with given source statement
-\item[\tt callersOf(SootMethod)] iterator over edges with given target method
+\item[\texttt{targetsOf(SootMethod)}] iterator over edges with given source method
+\item[\texttt{targetsOf(Unit)}] iterator over edges with given source statement
+\item[\texttt{callersOf(SootMethod)}] iterator over edges with given target method
 \begin{tabular}{|c|c|c|c|}\hline {\red src}&o.foo();&foo()&VIRTUAL\\\hline\end{tabular}
 \begin{tabular}{|c|c|c|c|}\hline {\red src}&o.goo();&goo()&VIRTUAL\\\hline\end{tabular}
 \begin{tabular}{|c|c|c|c|}\hline {\red src}&o.hoo();&hoo()&VIRTUAL\\\hline\end{tabular}
@@ -104,9 +96,9 @@ public static final int PRIVILEGED = 9;
 
 \begin{slide}{Querying Call Graph}
 \begin{description}
-\item[\tt targetsOf(SootMethod)] iterator over edges with given source method
-\item[\tt targetsOf(Unit)] iterator over edges with given source statement
-\item[\tt callersOf(SootMethod)] iterator over edges with given target method
+\item[\texttt{targetsOf(SootMethod)}] iterator over edges with given source method
+\item[\texttt{targetsOf(Unit)}] iterator over edges with given source statement
+\item[\texttt{callersOf(SootMethod)}] iterator over edges with given target method
 \begin{tabular}{|c|c|c|c|}\hline src&o.foo();&{\red foo()}&VIRTUAL\\\hline\end{tabular}
 {\gray \begin{tabular}{|c|c|c|c|}\hline src&o.goo();&goo()&VIRTUAL\\\hline\end{tabular}}
 {\gray \begin{tabular}{|c|c|c|c|}\hline src&o.hoo();&hoo()&VIRTUAL\\\hline\end{tabular}}
@@ -118,9 +110,9 @@ public static final int PRIVILEGED = 9;
 \begin{itemize}
 \item Adapters make an iterator over edges into an iterator over
 \begin{description}
-\item[{\tt Sources}] source methods
-\item[{\tt Units}] source statements
-\item[{\tt Targets}] target methods
+\item[{\texttt{Sources}}] source methods
+\item[{\texttt{Units}}] source statements
+\item[{\texttt{Targets}}] target methods
 \end{description}
 \end{itemize}
 \newcommand{\src}[1]{\begin{tabular}{|c|}\hline {\red $src_#1$}\\\hline\end{tabular}}
@@ -138,9 +130,11 @@ public static final int PRIVILEGED = 9;
 \end{slide}
 
 \begin{slide}{Code Example}
+\vspace*{-5mm}
 \begin{verbatim}
-void mayCall( SootMethod src,
-        CallGraph cg ) {
+void mayCall( SootMethod src ) {
+   CallGraph cg =
+            Scene.v().getCallGraph();
    Iterator edges = cg.targetsOf(src);
    Iterator targets =
                   new Targets(edges);
@@ -154,39 +148,53 @@ void mayCall( SootMethod src,
 \end{verbatim}
 \end{slide}
 
+\begin{slide}{Reachable Methods}
+\begin{itemize}
+\item \texttt{ReachableMethods} object keeps track of which methods are
+reachable from entry points
+\end{itemize}
+\begin{description}
+\item [\texttt{contains(SootMethod)}] tests whether method is reachable
+\item [\texttt{listener()}] returns an iterator over reachable methods
+\end{description}
+\end{slide}
+
+\begin{slide}{Code Example}
+\begin{verbatim}
+ReachableMethods rm =
+      Scene.v().getReachableMethods();
+
+if( rm.contains( myMethod ) ) 
+    // myMethod is reachable
+
+Iterator it = rm.listener();
+while( it.hasNext() ) {
+    SootMethod method = 
+        (SootMethod) it.next();
+    // method is reachable
+}
+\end{verbatim}
+\end{slide}
+
 \begin{slide}{Transitive Targets}
 \begin{itemize}
 \item {\tt TransitiveTargets} class takes a {\tt CallGraph} and
 optional {\tt Filter} to select edges
 \end{itemize}
 \begin{description}
-\item {\tt iterator(SootMethod)} iterator over methods transitively
+\item [\texttt{iterator(SootMethod)}] iterator over methods transitively
 called from given method
-\item {\tt iterator(Unit)} iterator over methods transitively
+\item [\texttt{iterator(Unit)}] iterator over methods transitively
 called from targets of given statement
 \end{description}
 \end{slide}
-
-\comment{
-\begin{slide}{Entry Points}
-\begin{itemize}
-\item Kept separate from call graph edges
-\item {\tt EntryPoints} class returns default entry points
-\begin{description}
-\item[\tt application()] main method and main class static initializer
-\item[\tt implicit()] methods implicitly called by VM
-\item[\tt all()] all of the above
-\end{description}
-\end{itemize}
-\end{slide}
-}
 
 \begin{slide}{Implementation Big Picture}
 \newcommand{\cls}[2]{\rnode{#2}{\psframebox{\begin{tabular}{c}#1\end{tabular}}}}
 \vspace*{-5mm}
 \begin{psmatrix}[colsep=.2,rowsep=.4]
 \cls{Entry Points}{ep}\\
-&\cls{Scene}{scene}\\\ \\
+&\cls{Scene}{scene}&\cls{Call Graph}{cg}\\\ \\
 \cls{Reachable\\Methods}{rm}&\cls{Call Graph\\Builder}{cgb}&\cls{Points-to}{pt}\\
 \ \\
 &&\cls{Naive}{naive} \cls{Spark}{spark}
@@ -197,6 +205,7 @@ called from targets of given statement
 \nccurve[angleA=270,angleB=265]{->}{rm}{cgb}\mput*{\tiny methods}
 \nccurve[angleA=90,angleB=80]{->}{cgb}{rm}\mput*{\tiny edges}
 \nccurve[angleA=90,angleB=135]{->}{cgb}{pt}\mput*{\tiny edges}
+\nccurve[angleA=90,angleB=225]{->}{cgb}{cg}\mput*{\tiny edges}
 \nccurve[angleA=225,angleB=275]{->}{pt}{cgb}\mput*{\tiny receiver types}
 \ncangles[angleA=90,angleB=270,arrowinset=0]{->}{naive}{pt}
 \ncangles[angleA=90,angleB=270,arrowinset=0]{->}{spark}{pt}

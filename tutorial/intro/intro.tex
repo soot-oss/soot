@@ -167,15 +167,7 @@ specified in the {\tt CLASSPATH} for the Java Virtual Machine to
 operate.  Soot requires them to be specified either on the {\tt
 CLASSPATH} or in the soot-classpath command line option.
 Theoretically, this means adding the path to a {\tt "rt.jar"} file to the
-{\tt CLASSPATH} or the soot-classpath.  This usually does not solve the
-problem because of a JDK bug concerning jar files, so in practice one
-must unjar this file.  So there are two steps for getting Soot to work
-with the standard Java Development Kit class libraries.
-
-\paragraph{Important note for the release 1.2.1} Note that as of release 1.2.1,
-Soot fixed the jar problem, it can accept `rt.jar' now. You can use either the 
-old way to unjar the `rt.jar' file, or supply it to soot-classpath command line 
-option.
+{\tt CLASSPATH} or the soot-classpath.
 
 \subsection{Locating the {\tt rt.jar} file}
 
@@ -190,34 +182,6 @@ can not find it, you can attempt a find command such as:
 which may be able to locate it for you.  Otherwise your best bet is to contact
 your system administrator.
 
-\subsection{Unjarring the {\tt rt.jar} file}
-
-After having located the {\tt rt.jar file}, you must unjar it.  If you
-have access to the directory where it is located then you can simply
-issue:
-
-\begin{verbatim}
-> cd $root/jdk1.2.2/jre/lib
-> mkdir rt
-> cd rt
-> jar xvf ../rt.jar
-\end{verbatim}
-and add it to your classpath:
-\begin{verbatim}
-> export CLASSPATH=$CLASSPATH:$root/jdk1.2.2/jre/lib/rt
-\end{verbatim}
-
-Otherwise you will need to unjar it in a separate location and then add it to
-your CLASSPATH.  The rt.jar file must not appear in your CLASSPATH prior
-to the unjarred copy of the library.
-
-\begin{verbatim}
-> cd $HOME
-> mkdir rt
-> cd rt
-> jar xvf $root/jdk1.2.2/jre/lib/rt.jar
-\end{verbatim}
-
 \paragraph{Important note for Windows users} Note that as of release 1,
 Soot will treat drive letters correctly, but under Windows the path
 separator {\em must} be a backslash ($\backslash$), not a forward slash.
@@ -225,13 +189,13 @@ separator {\em must} be a backslash ($\backslash$), not a forward slash.
 Summing up, you must issue a command of the form:
 
 \begin{verbatim}
-> export CLASSPATH=.:/usr/local/pkgs/jdk1.2.2/jre/lib/rt
+> export CLASSPATH=.:/usr/local/pkgs/jdk1.2.2/jre/lib/rt.jar
 \end{verbatim}
 
 or if you use the soot-classpath option which is more cumbersome:
 
 \begin{verbatim}
-> java soot.Main --jimple --soot-classpath .:/usr/local/pkgs/jdk1.2.2/jre/lib/rt Hello
+> java soot.Main --jimple --soot-classpath .:/usr/local/pkgs/jdk1.2.2/jre/lib/rt.jar Hello
 \end{verbatim}
 
 

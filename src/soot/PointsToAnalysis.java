@@ -24,6 +24,20 @@ package soot;
  */
 
 public interface PointsToAnalysis {
+    /** Returns the set of objects pointed to by variable l. */
+    public PointsToSet reachingObjects( Local l );
+
+    /** Returns the set of objects pointed to by static field f. */
+    public PointsToSet reachingObjects( SootField f );
+
+    /** Returns the set of objects pointed to by instance field f
+     * of the objects in the PointsToSet s. */
+    public PointsToSet reachingObjects( PointsToSet s, SootField f );
+
+    /** Returns the set of objects pointed to by instance field f
+     * of the objects pointed to by l. */
+    public PointsToSet reachingObjects( Local l, SootField f );
+
     public static final Integer THIS_NODE = new Integer( -1 );
     public static final int RETURN_NODE = -2;
     public static final Integer THROW_NODE = new Integer( -3 );
@@ -43,20 +57,6 @@ public interface PointsToAnalysis {
     public static final Integer MAIN_CLASS_NAME_STRING_LOCAL = new Integer( -17 );
     public static final Integer DEFAULT_CLASS_LOADER = new Integer( -18 );
     public static final Integer DEFAULT_CLASS_LOADER_LOCAL = new Integer( -19 );
-
-    /** Returns the set of objects pointed to by variable l. */
-    public PointsToSet reachingObjects( Local l );
-
-    /** Returns the set of objects pointed to by static field f. */
-    public PointsToSet reachingObjects( SootField f );
-
-    /** Returns the set of objects pointed to by instance field f
-     * of the objects in the PointsToSet s. */
-    public PointsToSet reachingObjects( PointsToSet s, SootField f );
-
-    /** Returns the set of objects pointed to by instance field f
-     * of the objects pointed to by l. */
-    public PointsToSet reachingObjects( Local l, SootField f );
 
 }
 

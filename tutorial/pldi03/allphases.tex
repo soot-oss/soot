@@ -1,7 +1,45 @@
-\begin{slide}{Soot Phases Naming Scheme}
+\begin{slide}{Adding transformations to Soot (easy way)}
+\begin{enumerate}
+\item Implement a \texttt{BodyTransformer} or a \texttt{SceneTransformer}
+\begin{itemize}
+\item \texttt{internalTransform} method does the transformation
+\end{itemize}
+\item Choose a pack for your transformation (usually \texttt{jtp})
+\item Write a \texttt{main} method that adds the phase to the pack, then
+runs Soot's main
+\item (Optional) If your transformation needs command-line options,
+call \texttt{setDeclaredOptions()}
+\end{enumerate}
+\end{slide}
+
+\begin{slide}{Extending Soot (hard way)}
+\begin{itemize}
+\item Some people don't like calling \texttt{soot.Main.main()}
+\item What does \texttt{main()} do?
+\begin{enumerate}
+\item \texttt{processCmdLine()}
+\item \texttt{Scene.v().loadNecessaryClasses()}
+\item \texttt{PackManager.v().runPacks()}
+\item \texttt{PackManager.v().writeOutput()}
+\end{enumerate}
+\item You can do any or of these yourself
+\item \texttt{Options.v()} has setter methods for all options
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Running Soot more than once}
+\begin{itemize}
+\item All Soot global variables are stored in \texttt{G.v()}
+\item \texttt{G.reset()} re-initializes all of Soot
+\end{itemize}
+\end{slide}
+
+\input{intraprocphases}
+
+\begin{slide}{Soot Pack Naming Scheme}
 \begin{itemize}
 \item w $\Rightarrow$ Whole-program phase
-\item j, s, b, g $\Rightarrow$ Jimple, SSA, Baf, Grimp
+\item j, s, b, g $\Rightarrow$ Jimple, Shimple, Baf, Grimp
 \item b, t, o, a $\Rightarrow$
 \begin{itemize}
 \item (b) Body creation
@@ -12,26 +50,11 @@
 \end{itemize}
 \end{slide}
 
+
 \begin{slide}{Soot Phases (Jimple Body)}
 \begin{description}
 \item[jb] converts naive Jimple generated from bytecode into
 typed Jimple with split variables
-\end{description}
-\end{slide}
-
-\begin{slide}{Soot Phases (Whole Program)}
-\begin{description}
-\item[cg] generates a call graph using CHA or more precise methods
-\item[wjtp] performs user-defined whole-program transformations
-\item[wjop] performs whole-program optimizations
-\begin{itemize}
-\item static inlining
-\item static method binding
-\end{itemize}
-\item[wjap] generates annotations using whole-program analyses
-\begin{itemize}
-\item rectangular array analysis
-\end{itemize}
 \end{description}
 \end{slide}
 
@@ -65,5 +88,22 @@ typed Jimple with split variables
 \end{description}
 \end{slide}
 
+
+\begin{slide}{Soot Phases (Whole Program)}
+\begin{description}
+\item[cg] generates a call graph using CHA or more precise methods
+\item[wjtp] performs user-defined whole-program transformations
+\item[wjop] performs whole-program optimizations
+\begin{itemize}
+\item static inlining
+\item static method binding
+\end{itemize}
+\item[wjap] generates annotations using whole-program analyses
+\begin{itemize}
+\item rectangular array analysis
+\end{itemize}
+\end{description}
+\end{slide}
+
 \input{phase}
-\input{intraprocphases}
+
