@@ -94,12 +94,12 @@ public class BFieldGetInst extends AbstractInst implements FieldGetInst
 
     public int getInCount()
     {
-        return 0;
+        return 1;
     }
 
     public int getInMachineCount()
     {
-        return 0;
+        return 1;
     }
     
     public int getOutCount()
@@ -109,7 +109,7 @@ public class BFieldGetInst extends AbstractInst implements FieldGetInst
 
     public int getOutMachineCount()
     {
-        return 1;
+        return JasminClass.sizeOfType(field.getType());
     }
     
 

@@ -1746,7 +1746,7 @@ public class JasminClass
 
             public void casePrimitiveCastInst(PrimitiveCastInst i)
             {
-                emit(i.toString(), i.getOutCount() - i.getInCount());
+                emit(i.toString(), i.getOutMachineCount() - i.getInMachineCount());
             }
 
             public void caseStaticInvokeInst(StaticInvokeInst i)
@@ -1817,7 +1817,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("i"+s, i.getOutCount() - i.getInCount());
+                        emit("i"+s, i.getOutMachineCount() - i.getInMachineCount());
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -1828,17 +1828,17 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("l"+s, i.getOutCount() - i.getInCount());
+                        emit("l"+s, i.getOutMachineCount() - i.getInMachineCount());
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("d"+s, i.getOutCount() - i.getInCount());
+                        emit("d"+s, i.getOutMachineCount() - i.getInMachineCount());
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("f"+s, i.getOutCount() - i.getInCount());
+                        emit("f"+s, i.getOutMachineCount() - i.getInMachineCount());
                     }
 
                     public void defaultCase(Type t)

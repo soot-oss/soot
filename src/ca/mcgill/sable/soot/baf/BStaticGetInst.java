@@ -109,7 +109,7 @@ public class BStaticGetInst extends AbstractInst implements StaticGetInst
 
     public int getOutMachineCount()
     {
-        return 1;
+        return JasminClass.sizeOfType(field.getType());
     }
 
     final String getName() { return "staticget"; }

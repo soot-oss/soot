@@ -99,7 +99,7 @@ public class BStaticPutInst extends AbstractInst implements StaticPutInst
 
     public int getInMachineCount()
     {
-        return 1;
+        return JasminClass.sizeOfType(field.getType());
     }
     
     public int getOutCount()
