@@ -55,7 +55,7 @@ public class ExceptionChecker extends BodyTransformer{
         }
     }
 
-    private void checkThrow(Body b, ThrowStmt ts){
+    protected void checkThrow(Body b, ThrowStmt ts){
         if (isThrowDeclared(b, ((RefType)ts.getOp().getType()).getSootClass()) || isThrowFromCompiler(ts) || isExceptionCaught(b, ts, (RefType)ts.getOp().getType())) return;
         if (reporter != null){
             reporter.reportError(new ExceptionCheckerError(b.getMethod(), ((RefType)ts.getOp().getType()).getSootClass(), ts, (SourceLnPosTag)ts.getOpBox().getTag("SourceLnPosTag")));
@@ -65,7 +65,7 @@ public class ExceptionChecker extends BodyTransformer{
     // does the method declare the throw if its a throw that needs declaring
     // RuntimeException and subclasses do not need to be declared
     // Error and subclasses do not need to be declared
-    private boolean isThrowDeclared(Body b, SootClass throwClass){
+    protected boolean isThrowDeclared(Body b, SootClass throwClass){
         if (hierarchy == null){
             hierarchy = new FastHierarchy();
         }
@@ -88,13 +88,13 @@ public class ExceptionChecker extends BodyTransformer{
     }
 
     // is the throw created by the compiler
-    private boolean isThrowFromCompiler(ThrowStmt ts){
+    protected boolean isThrowFromCompiler(ThrowStmt ts){
         if (ts.hasTag("ThrowCreatedByCompilerTag")) return true;
         return false;
     }
 
     // is the throw caught inside the method
-    private boolean isExceptionCaught(Body b, Stmt s, RefType throwType){
+    protected boolean isExceptionCaught(Body b, Stmt s, RefType throwType){
         if (hierarchy == null){
             hierarchy = new FastHierarchy();
         }
@@ -108,7 +108,7 @@ public class ExceptionChecker extends BodyTransformer{
         return false;
     }
 
-    private boolean isThrowInStmtRange(Body b, Stmt begin, Stmt end, Stmt s){
+    protected boolean isThrowInStmtRange(Body b, Stmt begin, Stmt end, Stmt s){
         Iterator it = b.getUnits().iterator(begin, end);
         while (it.hasNext()){
             if (it.next().equals(s)) return true;
@@ -116,11 +116,11 @@ public class ExceptionChecker extends BodyTransformer{
         return false;
     }
 
-    private void checkInvoke(Body b, InvokeStmt is){
+    protected void checkInvoke(Body b, InvokeStmt is){
         checkInvokeExpr(b, is.getInvokeExpr(), is);
     }
 
-    private void checkInvokeExpr(Body b, InvokeExpr ie, Stmt s){
+    protected void checkInvokeExpr(Body b, InvokeExpr ie, Stmt s){
 	if(ie instanceof InstanceInvokeExpr &&
 	   ((InstanceInvokeExpr) ie).getBase().getType() instanceof ArrayType &&
 	   ie.getMethodRef().name().equals("clone") && 
