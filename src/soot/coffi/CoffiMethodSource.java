@@ -98,6 +98,9 @@ public class CoffiMethodSource implements MethodSource
              coffiClass.this_class, jb);
          Scene.v().setPhantomRefs(oldPhantomValue);
 
+        if(soot.Main.isProfilingOptimization)
+            soot.Main.conversionTimer.end();
+
          coffiMethod.instructions = null;
          coffiMethod.cfg = null;
          

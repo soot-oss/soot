@@ -95,6 +95,9 @@ public class JimpleBody extends StmtBody
 
             LocalSplitter.v().transform(this, "jb.ls");
 
+            if(Main.isProfilingOptimization)
+                Main.splitTimer.end();
+
             if(!noTyping)
             {
 	        if(aggregateAllLocals)
@@ -113,6 +116,9 @@ public class JimpleBody extends StmtBody
 
                 TypeAssigner.v().transform(this, "jb.tr");
 		
+                if(Main.isProfilingOptimization)
+                    Main.assignTimer.end();
+
 		if(typingFailed())
 		  throw new RuntimeException("type inference failed!");
             }

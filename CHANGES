@@ -24,6 +24,11 @@ Improvements in current version
      to make DeadAssignmentEliminator more aggressive: we no longer declare
      InstanceFieldRefs which read from 'this' in a non-static method to be
      'isEssential'. (plam)
+10. Added some Timer.end() calls to JimpleBody.java
+    and CoffiMethodSource.java, so that the '--time' option no
+    longer causes runtime exceptions.  While this lets you
+    specify '--time' without crashing soot, the accuracy of the
+    reported times remains questionable. (jjorge1)
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 
