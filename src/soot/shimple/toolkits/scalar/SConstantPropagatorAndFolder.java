@@ -192,8 +192,10 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
             return;
         }
 
+        boolean conservative = true;
         boolean fall = false;
         boolean branch = false;
+        FlowSet oneBranch = null;
         
         IFSTMT:
         {
@@ -210,6 +212,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
             if(constant instanceof TopConstant)
                 return;
 
+            conservative = false;
+
             Constant trueC = IntConstant.v(1);
             Constant falseC = IntConstant.v(0);
 
@@ -218,14 +222,88 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
 
             if(constant.equals(falseC))
                 fall = true;
-            
-            if(fall == branch)
-                throw new RuntimeException("Assertion failed.");
         }
         } // end IFSTMT
 
+        TABLESWITCHSTMT:
+        {
+        if(s instanceof TableSwitchStmt){
+            TableSwitchStmt table = (TableSwitchStmt) s;
+            Value keyV = table.getKey();
+            Constant keyC =
+                SEvaluator.getFuzzyConstantValueOf(keyV, localToConstant);
+
+            // flow all branches
+            if(keyC instanceof BottomConstant)
+                break TABLESWITCHSTMT;
+
+            // no flow
+            if(keyC instanceof TopConstant)
+                return;
+
+            // flow all branches
+            if(!(keyC instanceof IntConstant))
+                break TABLESWITCHSTMT;
+
+            conservative = false;
+            
+            int key = ((IntConstant)keyC).value;
+            int low = table.getLowIndex();
+            int high = table.getHighIndex();
+            int index = key - low;
+
+            UnitBox branchBox = null;
+            if(index < 0 || index > high)
+                branchBox = table.getDefaultTargetBox();
+            else
+                branchBox = table.getTargetBox(index);
+
+            List unitBoxes = table.getUnitBoxes();
+            int setIndex = unitBoxes.indexOf(branchBox);
+            
+            oneBranch = (FlowSet) branchOuts.get(setIndex);
+        }
+        } // end TABLESWITCHSTMT
+
+        LOOKUPSWITCHSTMT:
+        {
+        if(s instanceof LookupSwitchStmt){
+            LookupSwitchStmt lookup = (LookupSwitchStmt) s;
+            Value keyV = lookup.getKey();
+            Constant keyC =
+                SEvaluator.getFuzzyConstantValueOf(keyV, localToConstant);
+
+            // flow all branches
+            if(keyC instanceof BottomConstant)
+                break LOOKUPSWITCHSTMT;
+
+            // no flow
+            if(keyC instanceof TopConstant)
+                return;
+
+            // flow all branches
+            if(!(keyC instanceof IntConstant))
+                break LOOKUPSWITCHSTMT;
+
+            conservative = false;
+            
+            int index = lookup.getLookupValues().indexOf(keyC);
+
+            UnitBox branchBox = null;
+            if(index == -1)
+                branchBox = lookup.getDefaultTargetBox();
+            else
+                branchBox = lookup.getTargetBox(index);
+                    
+            List unitBoxes = lookup.getUnitBoxes();
+            int setIndex = unitBoxes.indexOf(branchBox);
+            
+            oneBranch = (FlowSet) branchOuts.get(setIndex);
+        }
+        } // end LOOKUPSWITCHSTMT
+        
         // conservative control flow estimates
-        if(fall == branch){
+        if(conservative){
             fall = s.fallsThrough();
             branch = s.branches();
         }
@@ -244,6 +322,10 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
                 FlowSet branchSet = (FlowSet) branchOutsIt.next();
                 branchSet.union(fin);
             }
+        }
+
+        if(oneBranch != null){
+            oneBranch.union(fin);
         }
     }
 
