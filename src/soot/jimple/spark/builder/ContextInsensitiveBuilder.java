@@ -38,14 +38,21 @@ import soot.options.*;
  */
 public class ContextInsensitiveBuilder {
     public void preJimplify() {
-        for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
-            final SootClass c = (SootClass) cIt.next();
-            for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
-                final SootMethod m = (SootMethod) mIt.next();
-                if( !m.isConcrete() ) continue;
-                if( m.isNative() ) continue;
-                if( m.isPhantom() ) continue;
-                m.retrieveActiveBody();
+        boolean change = true;
+        while( change ) {
+            change = false;
+            for( Iterator cIt = new ArrayList(Scene.v().getClasses()).iterator(); cIt.hasNext(); ) {
+                final SootClass c = (SootClass) cIt.next();
+                for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
+                    final SootMethod m = (SootMethod) mIt.next();
+                    if( !m.isConcrete() ) continue;
+                    if( m.isNative() ) continue;
+                    if( m.isPhantom() ) continue;
+                    if( !m.hasActiveBody() ) {
+                        change = true;
+                        m.retrieveActiveBody();
+                    }
+                }
             }
         }
     }
