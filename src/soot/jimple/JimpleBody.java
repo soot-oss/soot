@@ -292,7 +292,7 @@ public class JimpleBody extends StmtBody
              Local l = Jimple.v().newLocal("this", 
                                            RefType.v(getMethod().getDeclaringClass()));
              getLocals().add(l);
-             getUnits().add(Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType())));
+             getUnits().addFirst(Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType())));
          }
 
         Iterator parIt = getMethod().getParameterTypes().iterator();
@@ -301,7 +301,7 @@ public class JimpleBody extends StmtBody
             Type t = (Type)parIt.next();
             Local l = Jimple.v().newLocal("parameter"+i, t);
             getLocals().add(l);
-            getUnits().add(Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i)));
+            getUnits().addFirst(Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i)));
             i++;
         }
     }

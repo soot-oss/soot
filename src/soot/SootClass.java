@@ -144,10 +144,8 @@ public class SootClass extends AbstractHost
         if(f.isDeclared())
             throw new RuntimeException("already declared: "+f.getName());
 
-            /* Removed for efficiency reasons.
-        if(declaresField(f.getName()))
-            throw new RuntimeException(f.getName());
- */
+	if(declaresField(f.getName()))
+            throw new RuntimeException("Field already exists : "+f.getName());
  
         fields.add(f);
         

@@ -65,7 +65,12 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return indentation + Jimple.v().GOTO + " " + (String) stmtToName.get(getTarget());
+	String label = (String) stmtToName.get(getTarget());
+	if ("<unnamed>".equals(label))
+	    // crappy, because the actual map API is crappy too
+	    return indentation + Jimple.v().GOTO + " [?= " + getTarget() + "]";
+	else
+	    return indentation + Jimple.v().GOTO + " " + (String)stmtToName.get(getTarget());
     }
     
     public Unit getTarget()

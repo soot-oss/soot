@@ -85,8 +85,8 @@ public class JIfStmt extends AbstractStmt implements IfStmt
     
     public String toString()
     {
-        return Jimple.v().IF + " "  + conditionBox.getValue().toString() + " " + Jimple.v().GOTO + " ?";
-    }
+	return Jimple.v().IF + " "  + conditionBox.getValue().toString() + "[?= "+ getTarget() + "]";
+     }
 
     public Value getCondition()
     {

@@ -90,7 +90,7 @@ public class SootField extends AbstractHost implements ClassMember
     public SootClass getDeclaringClass() 
     {
         if(!isDeclared)
-            throw new RuntimeException("not declared: "+getSignature());
+            throw new RuntimeException("not declared: "+getName()+" "+getType());
 
         return declaringClass;
     }

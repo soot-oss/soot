@@ -201,8 +201,7 @@ public abstract class Body extends AbstractHost
             Value value;
             if( (value = vb.getValue()) instanceof Local) {
                 if(!localChain.contains(value))
-                    throw new RuntimeException("not in chain");
-                
+                    throw new RuntimeException("Local not in chain : "+value);                
             }
         }
     }
@@ -234,7 +233,7 @@ public abstract class Body extends AbstractHost
             UnitBox ub = (UnitBox)it.next();
             if (!unitChain.contains(ub.getUnit()))
                 throw new RuntimeException
-                    ("unitbox points outside unitChain!");
+                    ("Unitbox points outside unitChain! to unit : "+ub.getUnit());
         }
     }
 

@@ -65,7 +65,9 @@ public abstract class FlowAnalysis
     protected abstract void flowThrough(Object in, Object d, Object out);
 
     /** Compute the merge of the <code>in1</code> and <code>in2</code> sets, putting the result into <code>out</code>. 
-      * Used by the doAnalysis method. */
+     * The behavior of this function depends on the implementation ( it may be necessary to check whether
+     * <code>in1</code> and <code>in2</code> are equal or aliased ). 
+     * Used by the doAnalysis method. */
     protected abstract void merge(Object in1, Object in2, Object out);
 
     /** Creates a copy of the <code>source</code> flow object in <code>dest</code>. */
