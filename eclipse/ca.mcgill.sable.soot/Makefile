@@ -1,8 +1,8 @@
-ECLIPSE_HOME=/home/jeshaw/eclipse/plugins/
-SOOT_DIR=/home/jeshaw/soot/classes
+ECLIPSE_HOME=/home/research/ccl/jlhotak/eclipseR2/eclipse/plugins/
+SOOT_DIR=/home/research/ccl/jlhotak/soot/classes
 
 all:
-	javac -d classes -classpath $(ECLIPSE_HOME)org.eclipse.ui_2.0.2/workbench.jar:$(ECLIPSE_HOME)org.eclipse.core.boot_2.0.2/boot.jar:$(ECLIPSE_HOME)org.eclipse.jdt.ui_2.0.2/jdt.jar:$(ECLIPSE_HOME)org.eclipse.jdt.core_2.0.2/jdtcore.jar:$(ECLIPSE_HOME)org.eclipse.core.resources_2.0.1/resources.jar:$(ECLIPSE_HOME)org.eclipse.core.runtime_2.0.2/runtime.jar:$(ECLIPSE_HOME)org.eclipse.swt.motif_2.0.2/ws/motif/swt.jar:$(SOOT_DIR):. src/ca/mcgill/sable/soot/*.java src/ca/mcgill/sable/soot/*/*.java
+	javac -d classes -classpath $(ECLIPSE_HOME)org.eclipse.jface.text_2.1.0/jfacetext.jar:$(ECLIPSE_HOME)org.eclipse.jface_2.1.0/jface.jar:$(ECLIPSE_HOME)org.eclipse.ui.workbench_2.1.0/workbench.jar:$(ECLIPSE_HOME)org.eclipse.ui_2.1.0/ui.jar:$(ECLIPSE_HOME)org.eclipse.ui.views_2.1.0/views.jar:$(ECLIPSE_HOME)org.eclipse.ui.editors_2.1.0/editors.jar:$(ECLIPSE_HOME)org.eclipse.ui.workbench.texteditor_2.1.0/texteditor.jar:$(ECLIPSE_HOME)org.eclipse.text_2.1.0/text.jar:$(ECLIPSE_HOME)org.eclipse.core.boot_2.1.0/boot.jar:$(ECLIPSE_HOME)org.eclipse.jdt.ui_2.1.0/jdt.jar:$(ECLIPSE_HOME)org.eclipse.jdt.core_2.1.0/jdtcore.jar:$(ECLIPSE_HOME)org.eclipse.core.resources_2.1.0/resources.jar:$(ECLIPSE_HOME)org.eclipse.core.runtime_2.1.0/runtime.jar:$(ECLIPSE_HOME)org.eclipse.swt.motif_2.1.0/ws/motif/swt.jar:$(SOOT_DIR):. src/ca/mcgill/sable/soot/*.java src/ca/mcgill/sable/soot/*/*.java src/ca/mcgill/sable/soot/*/*/*.java
 
 	jar -cf soot-plugin.jar icons/*.jpg icons/*.gif build.properties .project .classpath plugin.properties plugin.xml
 

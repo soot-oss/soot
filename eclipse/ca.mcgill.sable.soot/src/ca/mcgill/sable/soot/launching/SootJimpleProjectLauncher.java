@@ -16,14 +16,32 @@ public class SootJimpleProjectLauncher extends SootProjectLauncher {
 	public void run(IAction action) {
 		
 		super.run(action);
-		String cmd = getCmd();
-		//runSootDirectly();
+		setCmd();
+		runSootDirectly();
 		runFinish();
 	}
 	
-	private String getCmd() {
+	private void setCmd() {
+		getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
+						/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
+				classpath.append(getSootClasspath().getSootClasspath());
+				classpath.append(getSootClasspath().getSeparator());
+				classpath.append(getProcessPath());
+
 		
-		StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
+				String output_path = LaunchCommands.OUTPUT_DIR + getOutputLocation();
+				
+				StringBuffer cmd = new StringBuffer();
+				cmd.append(classpath+" ");
+				cmd.append(output_path+" ");*/
+				getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
+				getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
+				getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
+		
+				getSootCommandList().addDoubleOpt("--"+LaunchCommands.PROCESS_PATH, getProcess_path());
+				getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT, LaunchCommands.JIMPLE_OUT);
+		
+		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
 		classpath.append(getSootClasspath().getSootClasspath());
 		classpath.append(getSootClasspath().getSeparator());
 		classpath.append(getProcess_path());
@@ -37,7 +55,7 @@ public class SootJimpleProjectLauncher extends SootProjectLauncher {
 		cmd.append(LaunchCommands.PROCESS_PATH+getProcess_path()+" ");
 		cmd.append(LaunchCommands.JIMPLE_OUT);
 		
-	  	return cmd.toString();
+	  	return cmd.toString();*/
 	}
 
 }

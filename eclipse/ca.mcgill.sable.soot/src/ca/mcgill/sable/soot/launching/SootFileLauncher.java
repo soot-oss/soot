@@ -28,20 +28,20 @@ public class SootFileLauncher extends SootLauncher {
 		//super.resetSootOutputFolder();
 		//setOutputLocation(platform_location+getSootOutputFolder().getFullPath().toOSString());
 		
-		if (getSootSelection().getType() == getSootSelection().CLASSFILE_SELECTED_TYPE) {
+		if (getSootSelection().getType() == SootSelection.CLASSFILE_SELECTED_TYPE) {
 			IClassFile cf = getSootSelection().getClassFile();
-			handleClassFile(cf);
-			/*IPackageFragmentRoot pfr = (IPackageFragmentRoot) cf.getAncestor(cf.PACKAGE_FRAGMENT_ROOT);
-			IPackageFragment pf = (IPackageFragment) cf.getAncestor(cf.PACKAGE_FRAGMENT);
+			//handleClassFile(cf);
+			IPackageFragmentRoot pfr = (IPackageFragmentRoot) cf.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			IPackageFragment pf = (IPackageFragment) cf.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
 			setClasspathAppend(platform_location+pfr.getPath().toOSString());
 			if (pf.isDefaultPackage()) {
 				setToProcess(removeFileExt(cf.getElementName()));
 			}
 			else {
 				setToProcess(pf.getElementName()+"."+removeFileExt(cf.getElementName()));
-			}*/
+			}
 		}
-		else if (getSootSelection().getType() == getSootSelection().FILE_SELECTED_TYPE) {
+		else if (getSootSelection().getType() == SootSelection.FILE_SELECTED_TYPE) {
 			IFile file = getSootSelection().getFile();
 			if (file.getFileExtension().compareTo("jimple") == 0) {
 				setClasspathAppend(platform_location+file.getParent().getFullPath().toOSString());	
@@ -82,10 +82,10 @@ public class SootFileLauncher extends SootLauncher {
 		}
 		
 		// first condition incorrect pfr - pf workaround - temporary
-		if (pfr.getPath().toOSString().equals(pf.getPath().toOSString())) {
+		/*if (pfr.getPath().toOSString().equals(pf.getPath().toOSString())) {
 			setToProcess(pf.getElementName()+"."+removeFileExt(cf.getElementName()));
-		}
-		else if (pf.isDefaultPackage()) {
+		}*/
+		if (pf.isDefaultPackage()) {
 			setToProcess(removeFileExt(cf.getElementName()));
 		}
 		else {

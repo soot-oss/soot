@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
-import soot.*;
+//import soot.*;
 import ca.mcgill.sable.soot.util.*;
 
 /**

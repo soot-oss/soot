@@ -3,9 +3,9 @@ package ca.mcgill.sable.soot.ui;
 import org.eclipse.swt.widgets.*;
 //import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.*;
-import org.eclipse.swt.layout.*;
+//import org.eclipse.swt.layout.*;
 
-import ca.mcgill.sable.soot.SootPlugin;
+//import ca.mcgill.sable.soot.SootPlugin;
 
 /**
  * @author jlhotak

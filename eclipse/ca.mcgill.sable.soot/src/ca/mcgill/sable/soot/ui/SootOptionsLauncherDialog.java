@@ -4,7 +4,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.model.*;
+//import org.eclipse.ui.model.*;
 import org.eclipse.swt.*;
 import ca.mcgill.sable.soot.*;
 

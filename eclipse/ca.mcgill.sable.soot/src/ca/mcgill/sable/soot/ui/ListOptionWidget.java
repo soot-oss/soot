@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.*;
 //import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.*;
 
-import ca.mcgill.sable.soot.SootPlugin;
+//import ca.mcgill.sable.soot.SootPlugin;
 
 
 /**

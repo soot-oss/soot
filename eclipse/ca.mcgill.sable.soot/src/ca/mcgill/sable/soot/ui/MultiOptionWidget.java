@@ -2,7 +2,7 @@ package ca.mcgill.sable.soot.ui;
 
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.*;
-import org.eclipse.swt.graphics.Rectangle;
+//import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.*;
 
 

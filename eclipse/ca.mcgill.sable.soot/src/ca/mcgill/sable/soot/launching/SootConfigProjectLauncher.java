@@ -7,8 +7,8 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.ui.SootConfigManagerDialog;
 
 import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+//import org.eclipse.jface.viewers.LabelProvider;
+//import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 /**
  * @author jlhotak

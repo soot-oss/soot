@@ -4,7 +4,7 @@ import java.util.*;
 
 
 //import org.eclipse.jdt.core.dom.ThisExpression;
-import org.eclipse.jface.dialogs.IDialogConstants;
+//import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;

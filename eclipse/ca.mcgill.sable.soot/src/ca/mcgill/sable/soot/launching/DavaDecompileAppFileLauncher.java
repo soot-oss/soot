@@ -1,7 +1,7 @@
 package ca.mcgill.sable.soot.launching;
 
 import org.eclipse.jface.action.IAction;
-import ca.mcgill.sable.soot.util.*;
+//import ca.mcgill.sable.soot.util.*;
 /**
  * @author jlhotak
  *
@@ -40,7 +40,7 @@ public class DavaDecompileAppFileLauncher extends SootFileLauncher {
 	 */
 	private void setCmd() {
 		
-		getSootCommandList().addDoubleOpt(LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
+		getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
 			
 		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
 		classpath.append(getSootClasspath().getSootClasspath());
@@ -55,10 +55,10 @@ public class DavaDecompileAppFileLauncher extends SootFileLauncher {
 		cmd.append(output_path+" ");
 		cmd.append(getToProcess()+" ");*/
 		if (isExtraCmd()) {
-			getSootCommandList().addSingleOpt(getExtraCmd());
+			getSootCommandList().addSingleOpt("--"+getExtraCmd());
 		}
-		getSootCommandList().addSingleOpt(LaunchCommands.APP);
-		getSootCommandList().addSingleOpt(LaunchCommands.DAVA);
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.APP);
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.DAVA);
 		
 		getSootCommandList().addSingleOpt(getToProcess());
 	  	//return cmd.toString();*/

@@ -1,7 +1,7 @@
 package ca.mcgill.sable.soot.attributes;
 
 
-import java.util.*;
+//import java.util.*;
 
 /**
  * @author jlhotak

@@ -1,23 +1,23 @@
 package ca.mcgill.sable.soot.ui;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+//import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.graphics.Image;
+//import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+//import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.*;
-import org.eclipse.jface.dialogs.Dialog;
-import ca.mcgill.sable.soot.*;
+//import org.eclipse.jface.dialogs.Dialog;
+//import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.launching.SavedConfigManager;
-import ca.mcgill.sable.soot.launching.SootConfigNameInputValidator;
+//import ca.mcgill.sable.soot.launching.SootConfigNameInputValidator;
 import ca.mcgill.sable.soot.launching.SootSavedConfiguration;
 import ca.mcgill.sable.soot.testing.SootOption;
 import ca.mcgill.sable.soot.testing.SootOptionsContentProvider;

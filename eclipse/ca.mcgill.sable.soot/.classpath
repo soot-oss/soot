@@ -1,15 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
     <classpathentry kind="src" path="src/"/>
-    <classpathentry kind="lib" path="soot/classes/"/>
+    <classpathentry kind="lib" path="soot/classes"/>
     <classpathentry kind="lib" path="jasminclasses-sable-1.2.jar"/>
     <classpathentry kind="src" path="/org.eclipse.core.resources"/>
     <classpathentry kind="src" path="/org.eclipse.ui"/>
     <classpathentry kind="src" path="/org.eclipse.jdt.core"/>
-    <classpathentry kind="src" path="/org.eclipse.jdt"/>
     <classpathentry kind="src" path="/org.eclipse.jdt.ui"/>
-    <classpathentry kind="src" path="/org.eclipse.core.runtime"/>
     <classpathentry kind="src" path="/org.eclipse.core.boot"/>
+    <classpathentry kind="src" path="/org.eclipse.core.runtime"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="src" path="/org.apache.ant"/>
+    <classpathentry kind="src" path="/org.apache.lucene"/>
+    <classpathentry kind="src" path="/org.apache.xerces"/>
+    <classpathentry kind="src" path="/org.eclipse.ant.core"/>
+    <classpathentry kind="src" path="/org.eclipse.compare"/>
+    <classpathentry kind="src" path="/org.eclipse.debug.core"/>
+    <classpathentry kind="src" path="/org.eclipse.debug.ui"/>
+    <classpathentry kind="src" path="/org.eclipse.help"/>
+    <classpathentry kind="src" path="/org.eclipse.help.appserver"/>
+    <classpathentry kind="src" path="/org.eclipse.help.ui"/>
+    <classpathentry kind="src" path="/org.eclipse.help.webapp"/>
+    <classpathentry kind="src" path="/org.eclipse.jdt.debug"/>
+    <classpathentry kind="src" path="/org.eclipse.jdt.debug.ui"/>
+    <classpathentry kind="src" path="/org.eclipse.jdt.junit"/>
+    <classpathentry kind="src" path="/org.eclipse.jdt.launching"/>
+    <classpathentry kind="src" path="/org.eclipse.jface"/>
+    <classpathentry kind="src" path="/org.eclipse.jface.text"/>
+    <classpathentry kind="src" path="/org.eclipse.pde"/>
+    <classpathentry kind="src" path="/org.eclipse.pde.build"/>
+    <classpathentry kind="src" path="/org.eclipse.pde.core"/>
+    <classpathentry kind="src" path="/org.eclipse.pde.runtime"/>
+    <classpathentry kind="src" path="/org.eclipse.pde.ui"/>
+    <classpathentry kind="src" path="/org.eclipse.platform"/>
+    <classpathentry kind="src" path="/org.eclipse.platform.doc.isv"/>
+    <classpathentry kind="src" path="/org.eclipse.search"/>
+    <classpathentry kind="src" path="/org.eclipse.swt"/>
+    <classpathentry kind="src" path="/org.eclipse.team.core"/>
+    <classpathentry kind="src" path="/org.eclipse.team.cvs.core"/>
+    <classpathentry kind="src" path="/org.eclipse.team.cvs.ssh"/>
+    <classpathentry kind="src" path="/org.eclipse.team.cvs.ui"/>
+    <classpathentry kind="src" path="/org.eclipse.team.ui"/>
+    <classpathentry kind="src" path="/org.eclipse.text"/>
+    <classpathentry kind="src" path="/org.eclipse.tomcat"/>
+    <classpathentry kind="src" path="/org.eclipse.ui.editors"/>
+    <classpathentry kind="src" path="/org.eclipse.ui.externaltools"/>
+    <classpathentry kind="src" path="/org.eclipse.ui.views"/>
+    <classpathentry kind="src" path="/org.eclipse.ui.workbench"/>
+    <classpathentry kind="src" path="/org.eclipse.ui.workbench.texteditor"/>
+    <classpathentry kind="src" path="/org.eclipse.update.core"/>
+    <classpathentry kind="src" path="/org.eclipse.update.ui"/>
+    <classpathentry kind="src" path="/org.eclipse.update.ui.forms"/>
+    <classpathentry kind="src" path="/org.junit"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

@@ -2,17 +2,20 @@ package ca.mcgill.sable.soot.attributes;
 
 
 import org.eclipse.jface.text.*;
-import org.eclipse.swt.graphics.Point;
+//import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.*;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
+//import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 
 
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jdt.ui.text.java.hover.*;
-import org.eclipse.jdt.core.*;
-import ca.mcgill.sable.soot.*;
+import org.eclipse.core.runtime.CoreException;
+
+import ca.mcgill.sable.soot.SootPlugin;
+//import org.eclipse.core.runtime.IAdaptable;
+//import org.eclipse.jdt.ui.text.java.hover.*;
+//import org.eclipse.jdt.core.*;
+//import ca.mcgill.sable.soot.*;
 
 /**
  * @author jlhotak
@@ -58,6 +61,8 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	private String packFileName;
 	private boolean editorHasChanged;
 	private String selectedProj;
+	private SootAttributesHandler attrsHandler;
+	private IResource rec;
 	
 	
 	/**
@@ -67,6 +72,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	public void setEditor(IEditorPart ed) {
 		editor = ed;
 	}
+	
 	
 	/**
 	 * Method getAttributes.
@@ -96,9 +102,9 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 					
 		getHoverRegion(textViewer, hoverRegion.getOffset());
 		String attr = null;
-		if (SootPlugin.getDefault().getSootAttributesHandler() != null) {
+		if (getAttrsHandler() != null) {
 			//if (SootPlugin.getDefault().getSootAttributesHandler().attrExistsForFile(getPackFileName())) {
-				attr = getAttributes();
+			attr = getAttributes();
 			//}
 		}
 		return attr;
@@ -110,7 +116,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	 */
 	public org.eclipse.jface.text.IRegion getHoverRegion(ITextViewer textViewer, int offset) {
 	    try {
-			setLineNum(textViewer.getDocument().getLineOfOffset(offset));
+			setLineNum(textViewer.getDocument().getLineOfOffset(offset)+1);
 			System.out.println(getLineNum());
 			return textViewer.getDocument().getLineInformationOfOffset(offset);
 		} catch (BadLocationException e) {
@@ -119,6 +125,17 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 
 	}
 
+	protected void removeOldMarkers() {
+		try {
+			//SootPlugin.getWorkspace().getRoot().deleteMarkers("ca.mgill.sable.soot.sootattributemarker", false, IResource.DEPTH_INFINITE);
+			SootPlugin.getWorkspace().getRoot().deleteMarkers(null, true, IResource.DEPTH_INFINITE);
+			//SootPlugin.getWorkspace().getRoot().deleteMarkers("org.eclipse.core.resource.textmarker", true, IResource.DEPTH_INFINITE);
+			System.out.println("removed old markers");
+		}
+		catch(CoreException e) {
+		}
+	}
+	
 	/**
 	 * Returns the lineNum.
 	 * @return int
@@ -197,6 +214,46 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	 */
 	public void setSelectedProj(String selectedProj) {
 		this.selectedProj = selectedProj;
+	}
+
+	/**
+	 * Returns the attrsHandler.
+	 * @return SootAttributesHandler
+	 */
+	public SootAttributesHandler getAttrsHandler() {
+		return attrsHandler;
+	}
+
+	/**
+	 * Sets the attrsHandler.
+	 * @param attrsHandler The attrsHandler to set
+	 */
+	public void setAttrsHandler(SootAttributesHandler attrsHandler) {
+		this.attrsHandler = attrsHandler;
+	}
+
+	/**
+	 * Returns the editor.
+	 * @return IEditorPart
+	 */
+	public IEditorPart getEditor() {
+		return editor;
+	}
+
+	/**
+	 * Returns the rec.
+	 * @return IResource
+	 */
+	public IResource getRec() {
+		return rec;
+	}
+
+	/**
+	 * Sets the rec.
+	 * @param rec The rec to set
+	 */
+	public void setRec(IResource rec) {
+		this.rec = rec;
 	}
 
 }

@@ -1,7 +1,7 @@
 package ca.mcgill.sable.soot.ui;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
+//import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 import ca.mcgill.sable.soot.launching.SootConfiguration;

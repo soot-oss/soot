@@ -32,6 +32,26 @@ public class SootAttributeFilesReader {
 	public SootAttributeFilesReader() {
 	}
 
+	public AttributeDomProcessor readFile(String full_filename) {
+		AttributeFileReader afr = new AttributeFileReader(full_filename);
+		String file = afr.readFile();
+		if ((file == null) || (file.length() == 0)) return null;
+		//System.out.println();
+		System.out.println(file);
+		file = file.replaceAll("\"", "\\\"");
+		//System.out.println(file);
+		StringToDom domMaker = new StringToDom();
+		domMaker.getDocFromString(file);
+		Document domDoc = domMaker.getDomDoc();
+		//System.out.println(domDoc.getNodeType());
+		//System.out.println(domDoc.getNodeName());
+		AttributeDomProcessor adp = new AttributeDomProcessor(domDoc);
+		adp.processAttributesDom();
+		//SootPlugin.getDefault().getSootAttributesHandler().setAttrListForFilename(adp.getAttributes(), fileToNoExt(full_filename));
+		return adp;
+					
+	}
+	
 	/**
 	 * Method readFiles.
 	 * @param selectedProj
@@ -41,7 +61,7 @@ public class SootAttributeFilesReader {
 		
 		// get all projects but only read files in proj 
 		// where something just changed
-		IProject [] projects = SootPlugin.getDefault().getWorkspace().getRoot().getProjects();
+		IProject [] projects = SootPlugin.getWorkspace().getRoot().getProjects();
 		for (int j = 0; j < projects.length; j++ ) {
 			
 			if (projects[j].getName().equals(selectedProj)) {

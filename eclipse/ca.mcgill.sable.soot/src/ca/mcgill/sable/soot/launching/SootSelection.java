@@ -41,7 +41,7 @@ public class SootSelection {
 		if (temp instanceof IResource) {
 			setResource((IResource)temp);
 			setProject(getResource().getProject());
-			setJavaProject(JavaCore.getJavaCore().create(getProject()));
+			setJavaProject(JavaCore.create(getProject()));
 		}
 		else if (temp instanceof IJavaElement) {
 			IJavaElement jElem = (IJavaElement)temp;

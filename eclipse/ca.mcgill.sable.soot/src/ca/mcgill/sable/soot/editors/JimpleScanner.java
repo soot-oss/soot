@@ -3,7 +3,7 @@ package ca.mcgill.sable.soot.editors;
 import java.util.*;
 import org.eclipse.jface.text.rules.*;
 import org.eclipse.jface.text.*;
-import org.eclipse.jface.preference.*;
+//import org.eclipse.jface.preference.*;
 
 
 

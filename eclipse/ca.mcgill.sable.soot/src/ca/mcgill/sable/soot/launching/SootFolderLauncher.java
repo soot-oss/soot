@@ -21,7 +21,7 @@ public class SootFolderLauncher extends SootLauncher {
 		//super.resetSootOutputFolder();
 		//setOutputLocation(platform_location+getSootOutputFolder().getFullPath().toOSString());
 		
-		if (getSootSelection().getType() == getSootSelection().PACKAGEROOT_SELECTED_TYPE){
+		if (getSootSelection().getType() == SootSelection.PACKAGEROOT_SELECTED_TYPE){
 			setProcessPath(platform_location+getSootSelection().getPackageFragmentRoot().getPath().toOSString());
 		}
 	}

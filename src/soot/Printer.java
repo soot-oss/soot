@@ -72,11 +72,12 @@ public class Printer {
     }
     public void incJimpleLnNum() {
         jimpleLnNum++;
+	//G.v().out.println("jimple Ln Num: "+jimpleLnNum);
     }
 
     public void printTo(SootClass cl, PrintWriter out) {
         // add jimple line number tags
-        incJimpleLnNum();
+        setJimpleLnNum(0);
 
         // Print class name + modifiers
         {

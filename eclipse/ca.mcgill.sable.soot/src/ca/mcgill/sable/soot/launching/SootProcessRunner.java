@@ -6,8 +6,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.*;
 
-import ca.mcgill.sable.soot.util.*;
-import ca.mcgill.sable.soot.*;
+//import ca.mcgill.sable.soot.util.*;
+//import ca.mcgill.sable.soot.*;
 
 /**
  * @author jlhotak

@@ -34,11 +34,11 @@
 
 package ca.mcgill.sable.soot.testing;
 
-import org.eclipse.jface.dialogs.IDialogSettings;
+//import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.swt.*;
-import org.eclipse.swt.layout.*;
-import ca.mcgill.sable.soot.SootPlugin;
+//import org.eclipse.swt.*;
+//import org.eclipse.swt.layout.*;
+//import ca.mcgill.sable.soot.SootPlugin;
 
 
 public class OptionsDialog {//extends AbstractOptionsDialog {

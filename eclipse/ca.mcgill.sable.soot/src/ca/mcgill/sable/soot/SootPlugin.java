@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
 import java.util.*;
 
-import ca.mcgill.sable.soot.attributes.SootAttributeFilesReader;
+//import ca.mcgill.sable.soot.attributes.SootAttributeFilesReader;
 import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
 import ca.mcgill.sable.soot.launching.*;
 

@@ -3,8 +3,8 @@ package ca.mcgill.sable.soot.testing;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.*;
-import org.eclipse.jface.dialogs.*;
-import ca.mcgill.sable.soot.*;
+//import org.eclipse.jface.dialogs.*;
+//import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.ui.*;
 
 /**

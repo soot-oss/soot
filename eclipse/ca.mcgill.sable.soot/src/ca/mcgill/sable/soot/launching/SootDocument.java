@@ -52,6 +52,7 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 			//showSootOutputView();
 			viewShown = true;
 		}
+		//showSootOutputView();
 	}
 	
 	private void notifySootOutputView() {
@@ -92,6 +93,7 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 		set(new String());
 		setNewStreamWriteEnd(0);
 		setOldStreamWriteEnd(0);
+		showSootOutputView();
 	}
 	
 	private void appendText(final String text) {

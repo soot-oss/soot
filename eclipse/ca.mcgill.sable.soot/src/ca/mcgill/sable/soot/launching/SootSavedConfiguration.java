@@ -1,7 +1,7 @@
 package ca.mcgill.sable.soot.launching;
 
 import java.util.*;
-import ca.mcgill.sable.soot.util.*;
+//import ca.mcgill.sable.soot.util.*;
 
 /**
  * @author jlhotak

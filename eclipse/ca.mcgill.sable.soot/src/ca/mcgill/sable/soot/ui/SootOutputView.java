@@ -1,7 +1,7 @@
 package ca.mcgill.sable.soot.ui;
 
 
-import org.eclipse.jface.viewers.*;
+//import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.action.*;
 import org.eclipse.swt.widgets.*;
@@ -9,7 +9,7 @@ import org.eclipse.ui.part.*;
 import org.eclipse.swt.*;
 import org.eclipse.ui.*;
 
-import ca.mcgill.sable.soot.launching.SootDocument;
+//import ca.mcgill.sable.soot.launching.SootDocument;
 
 /**
  * @author jlhotak
@@ -36,10 +36,33 @@ public class SootOutputView extends ViewPart implements ITextListener, IDocument
 		getTextViewer().setEditable(false);
 		//viewer.addTextListener(this);
 		setControl(parent);
+		createActions();
 		createContextMenu();
 		hookGlobalActions();
 	}
 	
+	private void createActions() {
+		selectAllAction = new Action("selectAll"){
+			public void run() {
+				selectAll();
+			}
+		};
+		copyAction = new Action("copy"){
+			public void run() {
+				copy();
+			}
+		};
+	}
+	
+	private void selectAll() {
+		getTextViewer().setSelection(new TextSelection(getTextViewer().getTopIndexStartOffset(), getTextViewer().getDocument().getLength()));
+	}
+	
+	private void copy() {
+		getTextViewer().doOperation(ITextOperationTarget.COPY);
+	}
+	
+
 	private void createContextMenu() {
     	// Create menu manager.
         MenuManager menuMgr = new MenuManager();
@@ -59,25 +82,22 @@ public class SootOutputView extends ViewPart implements ITextListener, IDocument
     }
     
     private void fillContextMenu(IMenuManager mgr) {
-    	mgr.add(copyAction);
+    	mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+        mgr.add(new Separator());
+        mgr.add(copyAction);
         mgr.add(selectAllAction);
+        mgr.add(new Separator());
+
     }
     
     private void hookGlobalActions() {
     	IActionBars bars = getViewSite().getActionBars();
         bars.setGlobalActionHandler(IWorkbenchActionConstants.COPY, copyAction);
         bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllAction);
-        /*getViewer().getControl().addKeyListener(new KeyAdapter() {
-                        public void keyPressed(KeyEvent event) {
-                                if (event.character == SWT.DEL && 
-                                        event.stateMask == 0 && 
-                                        deleteItemAction.isEnabled()) 
-                                {
-                                        deleteItemAction.run();
-                                }
-                        }
-                });*/
+        
     }
+    
+
     
 	private static int getSWTStyles() {
 		int styles= SWT.H_SCROLL | SWT.V_SCROLL;

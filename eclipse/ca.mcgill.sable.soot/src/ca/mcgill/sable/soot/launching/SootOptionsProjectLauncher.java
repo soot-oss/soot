@@ -1,10 +1,10 @@
 package ca.mcgill.sable.soot.launching;
 
-import java.util.HashMap;
+//import java.util.HashMap;
 
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.*;
-import ca.mcgill.sable.soot.SootPlugin;
+//import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.testing.*;
 /**
  * @author jlhotak

@@ -1,10 +1,10 @@
 package ca.mcgill.sable.soot.testing;
 
 import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.preference.PreferenceManager;
+//import org.eclipse.jface.dialogs.*;
+//import org.eclipse.jface.preference.PreferenceManager;
 
-import ca.mcgill.sable.soot.SootPlugin;
+//import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.launching.SootLauncher;
 /**
  * @author jlhotak

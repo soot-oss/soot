@@ -3,7 +3,7 @@ package ca.mcgill.sable.soot.editors;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.text.IDocument;
+//import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.*;
 
 public class JimplePartitionScanner extends RuleBasedPartitionScanner {

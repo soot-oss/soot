@@ -1,8 +1,8 @@
 package ca.mcgill.sable.soot.launching;
 
 import org.eclipse.jface.action.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.CoreException;
+///import org.eclipse.core.resources.*;
+//import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author jlhotak

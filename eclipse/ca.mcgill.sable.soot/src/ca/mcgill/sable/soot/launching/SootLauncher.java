@@ -6,17 +6,17 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.action.*;
-import org.eclipse.core.resources.*;
+//import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
-import org.eclipse.jdt.core.*;
-import java.io.*;
+//import org.eclipse.jdt.core.*;
+//import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 
-import soot.*;
+//import soot.*;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.attributes.SootAttributeFilesReader;
 import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
-import ca.mcgill.sable.soot.util.*;
+//import ca.mcgill.sable.soot.util.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -187,11 +187,11 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	public void runFinish() {
 		getFileHandler().refreshFolder();
 		//getFileHandler().handleFilesChanged();
-		SootAttributesHandler temp = new SootAttributesHandler();
+		/*SootAttributesHandler temp = new SootAttributesHandler();
 		SootPlugin.getDefault().setSootAttributesHandler(temp); 	
 		SootAttributeFilesReader safr = new SootAttributeFilesReader();
 		safr.readFiles(getSootSelection().getProject().getName());
-      
+      */
 	}
 	
 

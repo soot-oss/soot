@@ -1,10 +1,10 @@
 package ca.mcgill.sable.soot.testing;
 
-import org.eclipse.core.runtime.*;
+//import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.preference.PreferenceDialog;
-import org.eclipse.jface.preference.PreferenceManager;
+//import org.eclipse.jface.dialogs.IDialogSettings;
+//import org.eclipse.jface.preference.PreferenceDialog;
+//import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.custom.SashForm;

@@ -1,10 +1,10 @@
 package ca.mcgill.sable.soot.attributes;
 
 import java.util.*;
-import javax.xml.parsers.*;
+//import javax.xml.parsers.*;
 
 import org.w3c.dom.*;
-import org.xml.sax.*;
+//import org.xml.sax.*;
 
 /**
  * @author jlhotak
@@ -43,6 +43,15 @@ public class AttributeDomProcessor {
 	 */
 	public void processAttributesDom() {
 		processNode(getDomDoc());
+		Iterator it = getAttributes().iterator();
+		while (it.hasNext()) {
+			SootAttribute sa = (SootAttribute)it.next();
+			System.out.println("New Attribute");
+			System.out.println("Java Line: "+sa.getJava_ln());
+			System.out.println("Jimple Line: "+sa.getJimple_ln());
+			System.out.println("Text: "+sa.getText());
+			System.out.println();
+		}
 	}
 	
 	/*
@@ -58,7 +67,7 @@ public class AttributeDomProcessor {
 	 */
 	private void processNode(Node node) {
 		System.out.println(node.getNodeName()+node.getNodeType());
-		if (node.getNodeType() == node.DOCUMENT_NODE) {
+		if (node.getNodeType() == Node.DOCUMENT_NODE) {
 			NodeList children = node.getChildNodes();
 			if (children != null) {
 				setAttributes(new Vector());
@@ -70,7 +79,7 @@ public class AttributeDomProcessor {
 				System.out.println("children are null");
 			}
 		}
-		else if (node.getNodeType() == node.ELEMENT_NODE) {
+		else if (node.getNodeType() == Node.ELEMENT_NODE) {
 			if ( node.getNodeName().compareTo("attribute") == 0) {
 				if (current != null) {
 					//getAttributes().add(current);
@@ -88,7 +97,7 @@ public class AttributeDomProcessor {
 				}
 			}
 		}
-		else if (node.getNodeType() == node.TEXT_NODE) {
+		else if (node.getNodeType() == Node.TEXT_NODE) {
 			System.out.println(node.getParentNode().getNodeName()+" "+node.getNodeValue());
 			if (node.getParentNode().getNodeName().compareTo("java_ln") == 0 ) {
 			System.out.println(node.getNodeValue());
@@ -103,7 +112,7 @@ public class AttributeDomProcessor {
 				current.setText(node.getNodeValue());
 				System.out.println("just before add "+current.java_ln+" "+current.jimple_ln+" "+current.text);
 				getAttributes().add(current);
-				System.out.println("in attrList "+getAttributes().capacity());
+				System.out.println("in attrList "+getAttributes().capacity()+"size: "+getAttributes().size());
 			}
 		}	
 		else {

@@ -23,16 +23,21 @@ import java.util.*;
 
 public class SootAttributesHandler {
 
-	//private Vector attrList;
+	private Vector attrList;
 	//private HashMap fileList;
-	//private String fileName;
+	private String fileName;
 	private HashMap projList;
 
 	private static final String NEWLINE = "\r\n";
 	
 	public SootAttributesHandler() {
 		//setFileList(new HashMap());
-		setProjList(new HashMap());
+		//setProjList(new HashMap());
+		//setAttrList(new Vector());		
+	}
+	
+	public void setAttrList(Vector attrList) {
+		this.attrList = attrList;
 	}
 	
 	public void setAttrListForFilename(Vector attrList, String filename, String project) {
@@ -75,6 +80,20 @@ public class SootAttributesHandler {
 	//	System.out.println("AttributeHandler "+filename+attrList.toString());
 	}
 
+	public void printAttrs() {
+		System.out.println(getAttrList());
+		if (getAttrList() == null) return;
+		
+		Iterator it = getAttrList().iterator();
+		while (it.hasNext()) {
+			SootAttribute sa = (SootAttribute)it.next();
+			System.out.println("New Attribute");
+			System.out.println("Java Line: "+sa.getJava_ln());
+			System.out.println("Jimple Line: "+sa.getJimple_ln());
+			System.out.println("Text: "+sa.getText());
+			System.out.println();
+		}
+	}
 	 
 	public void printAttributes() {
 		Set s = getProjList().keySet();
@@ -110,6 +129,21 @@ public class SootAttributesHandler {
 		}
 	}
 	
+	public String getJimpleAttributes(int lnNum) {
+		Iterator it = getAttrList().iterator();
+		StringBuffer sb = new StringBuffer();
+		while (it.hasNext()) {
+			SootAttribute sa = (SootAttribute)it.next();
+			if (sa.attrForJimpleLn(lnNum)) {
+				sb.append(sa.getText());
+				sb.append(NEWLINE);
+			}
+		}	
+		String result = sb.toString();
+		result = result.trim();
+		return result;
+	}
+	
 	public String getJimpleAttributes(String proj, String filename, int lineNum) {
 		
 		System.out.println("Project: "+proj+" Filename: "+filename);
@@ -133,6 +167,21 @@ public class SootAttributesHandler {
 			return sb.toString();
 		}
 	}
+	
+	public String getJavaAttribute(int lnNum) {
+		Iterator it = getAttrList().iterator();
+		StringBuffer sb = new StringBuffer();
+		while (it.hasNext()) {
+			SootAttribute sa = (SootAttribute)it.next();
+			if (sa.attrForJavaLn(lnNum)) {
+				sb.append(sa.getText());
+				sb.append(NEWLINE);
+			}
+		}	
+		return sb.toString();
+	}
+
+	
 	public String getJavaAttribute(String proj, String filename, int lineNum) {
 		System.out.println("Project: "+proj+" Filename: "+filename);
 		if (getProjList().get(proj) == null) {
@@ -193,6 +242,30 @@ public class SootAttributesHandler {
 	 */
 	public void setProjList(HashMap projList) {
 		this.projList = projList;
+	}
+
+	/**
+	 * Returns the attrList.
+	 * @return Vector
+	 */
+	public Vector getAttrList() {
+		return attrList;
+	}
+
+	/**
+	 * Returns the fileName.
+	 * @return String
+	 */
+	public String getFileName() {
+		return fileName;
+	}
+
+	/**
+	 * Sets the fileName.
+	 * @param fileName The fileName to set
+	 */
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 }

@@ -1,7 +1,7 @@
 package ca.mcgill.sable.soot.util;
 
 import java.io.*;
-import java.util.*;
+//import java.util.*;
 
 import org.eclipse.swt.widgets.Display;
 

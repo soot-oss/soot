@@ -3,13 +3,54 @@
 	<name>ca.mcgill.sable.soot</name>
 	<comment></comment>
 	<projects>
+		<project>org.apache.ant</project>
+		<project>org.apache.lucene</project>
+		<project>org.apache.xerces</project>
+		<project>org.eclipse.ant.core</project>
+		<project>org.eclipse.compare</project>
 		<project>org.eclipse.core.boot</project>
 		<project>org.eclipse.core.resources</project>
 		<project>org.eclipse.core.runtime</project>
-		<project>org.eclipse.jdt</project>
+		<project>org.eclipse.debug.core</project>
+		<project>org.eclipse.debug.ui</project>
+		<project>org.eclipse.help</project>
+		<project>org.eclipse.help.appserver</project>
+		<project>org.eclipse.help.ui</project>
+		<project>org.eclipse.help.webapp</project>
 		<project>org.eclipse.jdt.core</project>
+		<project>org.eclipse.jdt.debug</project>
+		<project>org.eclipse.jdt.debug.ui</project>
+		<project>org.eclipse.jdt.junit</project>
+		<project>org.eclipse.jdt.launching</project>
 		<project>org.eclipse.jdt.ui</project>
+		<project>org.eclipse.jface</project>
+		<project>org.eclipse.jface.text</project>
+		<project>org.eclipse.pde</project>
+		<project>org.eclipse.pde.build</project>
+		<project>org.eclipse.pde.core</project>
+		<project>org.eclipse.pde.runtime</project>
+		<project>org.eclipse.pde.ui</project>
+		<project>org.eclipse.platform</project>
+		<project>org.eclipse.platform.doc.isv</project>
+		<project>org.eclipse.search</project>
+		<project>org.eclipse.swt</project>
+		<project>org.eclipse.team.core</project>
+		<project>org.eclipse.team.cvs.core</project>
+		<project>org.eclipse.team.cvs.ssh</project>
+		<project>org.eclipse.team.cvs.ui</project>
+		<project>org.eclipse.team.ui</project>
+		<project>org.eclipse.text</project>
+		<project>org.eclipse.tomcat</project>
 		<project>org.eclipse.ui</project>
+		<project>org.eclipse.ui.editors</project>
+		<project>org.eclipse.ui.externaltools</project>
+		<project>org.eclipse.ui.views</project>
+		<project>org.eclipse.ui.workbench</project>
+		<project>org.eclipse.ui.workbench.texteditor</project>
+		<project>org.eclipse.update.core</project>
+		<project>org.eclipse.update.ui</project>
+		<project>org.eclipse.update.ui.forms</project>
+		<project>org.junit</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
