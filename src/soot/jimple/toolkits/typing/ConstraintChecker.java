@@ -591,7 +591,7 @@ class ConstraintChecker extends AbstractStmtSwitch
       {
 	InstanceOfExpr ioe = (InstanceOfExpr) r;
 	TypeNode type = hierarchy.typeNode(ioe.getCheckType());
-	TypeNode op = hierarchy.typeNode(((Local) ioe.getOp()).getType());
+	TypeNode op = hierarchy.typeNode(ioe.getOp().getType());
 	
 	try
 	  {

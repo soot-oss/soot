@@ -65,6 +65,8 @@ public class BPrimitiveCastInst extends AbstractInst
     public BPrimitiveCastInst(Type fromType, Type toType) 
     { 
         
+        if( fromType instanceof NullType )
+            throw new RuntimeException("invalid fromType " + fromType);
         this.fromType = fromType;
         this.toType = toType;
     }
