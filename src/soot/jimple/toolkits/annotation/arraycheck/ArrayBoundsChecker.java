@@ -45,7 +45,8 @@ public class ArrayBoundsChecker extends BodyTransformer
     protected boolean takeArrayRef = false;
     protected boolean takeCSE = false;
     protected boolean takeRectArray = false;
-
+    protected boolean addColorTags = false;
+    
     protected void internalTransform(Body body, String phaseName, Map opts)
     {
         ABCOptions options = new ABCOptions( opts );
@@ -65,6 +66,8 @@ public class ArrayBoundsChecker extends BodyTransformer
             takeCSE = options.with_cse();
             takeRectArray = options.with_rectarray();
         }
+
+        addColorTags = options.add_color_tags();
 
         {
             SootMethod m = body.getMethod();
@@ -116,7 +119,45 @@ public class ArrayBoundsChecker extends BodyTransformer
                     {
                         WeightedDirectedSparseGraph vgraph = 
                             (WeightedDirectedSparseGraph)analysis.getFlowBefore(stmt);
+            
+                        int res = interpretGraph(vgraph, aref, stmt, zero);
                         
+                        boolean lowercheck = true;
+                        boolean uppercheck = true;
+                        
+                        if (res == 0) {
+                            lowercheck = true;
+                            uppercheck = true;
+                        }
+                        else if (res == 1) {
+                            lowercheck = true;
+                            uppercheck = false;
+                        }
+                        else if (res == 2) {
+                            lowercheck = false;
+                            uppercheck = true;
+                        }
+                        else if (res == 3) {
+                            lowercheck = false;
+                            uppercheck = false;
+                        }
+               
+                        if (addColorTags){
+                            if (res == 0) {
+                                aref.getIndexBox().addTag(new ColorTag(255, 0, 0, false));
+                            }
+                            else if (res == 1) {
+                                aref.getIndexBox().addTag(new ColorTag(255, 248, 35, false));
+                            }
+                            else if (res == 2) {
+                                aref.getIndexBox().addTag(new ColorTag(255, 163, 0, false));
+                            }
+                            else if (res == 3) {
+                                aref.getIndexBox().addTag(new ColorTag(45, 255, 84, false));
+                            }
+                        }
+
+                        /*
                         boolean lowercheck = true;
                         boolean uppercheck = true;
                         
@@ -165,7 +206,7 @@ public class ArrayBoundsChecker extends BodyTransformer
                                         lowercheck = false;
                                 }
                             }
-                        }
+                        }*/
                         
                         if (options.profiling())
                         {
@@ -233,5 +274,64 @@ public class ArrayBoundsChecker extends BodyTransformer
         }
         
         return false;
+    }
+
+    protected int interpretGraph(WeightedDirectedSparseGraph vgraph, ArrayRef aref, Stmt stmt, IntContainer zero){
+    
+        boolean lowercheck = true;
+        boolean uppercheck = true;
+                        
+        {
+            if (Options.v().debug())
+            {
+                if (!vgraph.makeShortestPathGraph())
+                {
+                    G.v().out.println(stmt+" :");
+                    G.v().out.println(vgraph);
+                }
+            }
+                            
+            Value base = aref.getBase();
+            Value index = aref.getIndex();
+                            
+            if (index instanceof IntConstant)
+            {
+                int indexv = ((IntConstant)index).value;
+                        
+                if (vgraph.hasEdge(base, zero))
+                {
+                    int alength = vgraph.edgeWeight(base, zero);
+                                    
+                    if (-alength > indexv)
+                        uppercheck = false;
+                }
+                                
+                if (indexv >= 0)
+                    lowercheck = false;			
+            }
+            else
+            {
+                if (vgraph.hasEdge(base, index))
+                {
+                    int upperdistance = vgraph.edgeWeight(base, index);
+                    if (upperdistance < 0)
+                        uppercheck = false;
+                }
+                                
+                if (vgraph.hasEdge(index, zero))
+                {
+                    int lowerdistance = vgraph.edgeWeight(index, zero);
+
+                    if (lowerdistance <= 0)
+                        lowercheck = false;
+                }
+            }
+        }
+                        
+        
+        if (lowercheck && uppercheck) return 0;
+        else if (lowercheck && !uppercheck) return 1;
+        else if (!lowercheck && uppercheck) return 2;
+        else return 3;
     }
 }

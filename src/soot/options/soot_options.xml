@@ -2987,6 +2987,13 @@ class implementing the methods invoked. For details, see the
 <tt>ArrayBoundsChecker</tt> source code.</p>
 </long_desc>
 					</boolopt>
+                    <boolopt>
+                        <name>Add Color Tags</name>
+                        <alias>add-color-tags</alias>
+                        <default>false</default>
+                        <short_desc>Add color tags to results of array bound check analysis.</short_desc>
+                        <long_desc>Add color tags to the results of the array bounds check analysis.</long_desc>
+                    </boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Profiling Generator</name>

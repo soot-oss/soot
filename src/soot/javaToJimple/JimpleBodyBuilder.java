@@ -1433,6 +1433,7 @@ public class JimpleBodyBuilder {
         if (!(left instanceof soot.Local)) {
             stmt = soot.jimple.Jimple.v().newAssignStmt(left, leftLocal);
             body.getUnits().add(stmt);
+            Util.addLineTag(stmt, assign);
         }
         
         return leftLocal;

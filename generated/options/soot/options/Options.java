@@ -1443,7 +1443,8 @@ public class Options extends OptionsBase {
                 +padOpt( "with-fieldref (false)", "" )
                 +padOpt( "with-classfield (false)", "" )
                 +padOpt( "with-rectarray (false)", "" )
-                +padOpt( "profiling (false)", "Profile the results of array bounds check analysis." );
+                +padOpt( "profiling (false)", "Profile the results of array bounds check analysis." )
+                +padOpt( "add-color-tags (false)", "Add color tags to results of array bound check analysis." );
     
         if( phaseName.equals( "jap.profiling" ) )
             return "Phase "+phaseName+":\n"+
@@ -1890,7 +1891,8 @@ public class Options extends OptionsBase {
                 +"with-fieldref "
                 +"with-classfield "
                 +"with-rectarray "
-                +"profiling ";
+                +"profiling "
+                +"add-color-tags ";
     
         if( phaseName.equals( "jap.profiling" ) )
             return ""
@@ -2293,7 +2295,8 @@ public class Options extends OptionsBase {
               +"with-fieldref:false "
               +"with-classfield:false "
               +"with-rectarray:false "
-              +"profiling:false ";
+              +"profiling:false "
+              +"add-color-tags:false ";
     
         if( phaseName.equals( "jap.profiling" ) )
             return ""
