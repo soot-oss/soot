@@ -62,7 +62,7 @@ public class JimpleField {
 	
 	public void findImageType(){
 		if (getModifiers() == null){
-			setImageType(JimpleOutlineObject.NONE);
+			setImageType(JimpleOutlineObject.NONE_FIELD);
 			return;
 		}
 		if (getModifiers().contains("public")) {
@@ -75,7 +75,7 @@ public class JimpleField {
 			setImageType(JimpleOutlineObject.PRIVATE_FIELD);
 		}
 		else {
-			setImageType(JimpleOutlineObject.NONE);
+			setImageType(JimpleOutlineObject.NONE_FIELD);
 		}
 	}
 	

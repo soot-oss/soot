@@ -36,10 +36,12 @@ public class JimpleOutlineObject {
 	public static final int PUBLIC_METHOD = 2;
 	public static final int PRIVATE_METHOD = 3;
 	public static final int PROTECTED_METHOD = 4;
+	public static final int NONE_METHOD = 30;
 	public static final int FIELD = 5;
 	public static final int PUBLIC_FIELD = 6;
 	public static final int PRIVATE_FIELD = 7;
 	public static final int PROTECTED_FIELD = 8;
+	public static final int NONE_FIELD = 31;
 	
 	public static final int FINAL_DEC = 20;
 	public static final int STATIC_DEC = 21;

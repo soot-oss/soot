@@ -76,6 +76,11 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 					//System.out.println("found descriptor for method image");
 					break;
 				}
+				case JimpleOutlineObject.NONE_METHOD: {
+					descriptor = SootPlugin.getImageDescriptor("default_co.gif");
+					//System.out.println("found descriptor for method image");
+					break;
+				}
 				case JimpleOutlineObject.PUBLIC_FIELD: {
 					//System.out.println("is field type");
 					descriptor = SootPlugin.getImageDescriptor("field_public_obj.gif");
@@ -89,6 +94,11 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 				case JimpleOutlineObject.PRIVATE_FIELD: {
 					//System.out.println("is field type");
 					descriptor = SootPlugin.getImageDescriptor("field_private_obj.gif");
+					break;
+				}	
+				case JimpleOutlineObject.NONE_FIELD: {
+					//System.out.println("is field type");
+					descriptor = SootPlugin.getImageDescriptor("field_default_obj.gif");
 					break;
 				}				
 				default:{

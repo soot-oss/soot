@@ -69,7 +69,7 @@ public class JimpleMethod {
 	
 	public void findImageType(){
 		if (getModifiers() == null){
-			setImageType(JimpleOutlineObject.NONE);
+			setImageType(JimpleOutlineObject.NONE_METHOD);
 			return;
 		}
 		if (getModifiers().contains("public")) {
@@ -82,7 +82,7 @@ public class JimpleMethod {
 			setImageType(JimpleOutlineObject.PRIVATE_METHOD);
 		}
 		else {
-			setImageType(JimpleOutlineObject.NONE);
+			setImageType(JimpleOutlineObject.NONE_METHOD);
 		}
 	}
 	
