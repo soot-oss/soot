@@ -324,7 +324,7 @@ public class Options extends OptionsBase {
   <xsl:template mode="usage" match="multiopt">
 +padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/><xsl:text> </xsl:text><xsl:call-template name="arg-label"/></xsl:for-each>", "<xsl:apply-templates select="short_desc"/>" )<!---->
     <xsl:for-each select="value">
-+padVal("<xsl:for-each select="alias"><xsl:value-of select="string(' ')"/><xsl:value-of select="."/></xsl:for-each>", "<xsl:value-of select="value"/>" )<!---->
++padVal("<xsl:for-each select="alias"><xsl:value-of select="string(' ')"/><xsl:value-of select="."/></xsl:for-each><xsl:if test="default"> (default)</xsl:if>", "<xsl:value-of select="translate(short_desc,'&#10;',' ')"/>" )<!---->
       </xsl:for-each>
   </xsl:template>
 
@@ -609,7 +609,7 @@ public class <xsl:copy-of select="$filename"/>
     <xsl:call-template name="arg-label"/>
   </xsl:template>
 
-  <!-- Factored out for so it can be used to print the argument labels in
+  <!-- Factored out so it can be used to print the argument labels in
        the option summary, e.g. "-src-prec format", 
        as well as argument labels in short_desc and long_desc. -->
   <xsl:template name="arg-label">
@@ -619,7 +619,7 @@ public class <xsl:copy-of select="$filename"/>
                             'abcdefghijklmnopqrstuvwxyz',
                             'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/>
     </xsl:when>
-    <xsl:otherwise>arg</xsl:otherwise>
+    <xsl:otherwise>ARG</xsl:otherwise>
   </xsl:choose>
   </xsl:template>
 
