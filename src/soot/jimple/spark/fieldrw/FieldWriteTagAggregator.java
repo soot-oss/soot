@@ -24,19 +24,15 @@ import java.util.*;
 
 import soot.tagkit.*;
 
-public class FieldWriteTagAggregator extends TagAggregator
+public class FieldWriteTagAggregator extends ImportantTagAggregator
 {    
     public FieldWriteTagAggregator( Singletons.Global g ) {}
     public static FieldWriteTagAggregator v() { return G.v().FieldWriteTagAggregator(); }
 
     /** Decide whether this tag should be aggregated by this aggregator. */
-    public void wantTag(Tag t, Unit u)
+    public boolean wantTag(Tag t)
     {
-	if(t instanceof FieldWriteTag) 
-	{
-            units.add(u);
-            tags.add(t);
-	}
+	return (t instanceof FieldWriteTag);
     }
     
     public String aggregatedName()

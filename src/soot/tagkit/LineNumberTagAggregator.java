@@ -32,30 +32,15 @@ import soot.*;
 import java.util.*;
 
 /** The aggregator for LineNumberTable attribute. */
-public class LineNumberTagAggregator extends TagAggregator
+public class LineNumberTagAggregator extends FirstTagAggregator
 {    
     public LineNumberTagAggregator( Singletons.Global g ) {}
     public static LineNumberTagAggregator v() { return G.v().LineNumberTagAggregator(); }
 
-    private Tag lastTag = null;
-
-    public void internalTransform( Body b, String phaseName, Map options ) {
-        lastTag = null;
-        super.internalTransform( b, phaseName, options );
-    }
-
     /** Decide whether this tag should be aggregated by this aggregator. */
-    public void wantTag(Tag t, Unit u)
+    public boolean wantTag(Tag t)
     {
-	if(t instanceof LineNumberTag) 
-	{
-	    if (t != lastTag)
-	    {
-		lastTag = t;
-                units.add(u);
-                tags.add(t);
-	    }
-	}
+	return (t instanceof LineNumberTag);
     }
     
     public String aggregatedName()

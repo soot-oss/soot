@@ -35,7 +35,12 @@ public class FieldTagAggregator extends TagAggregator
     }
 
     /** Decide whether this tag should be aggregated by this aggregator. */
-    public void wantTag(Tag t, Unit u)
+    public boolean wantTag(Tag t)
+    {
+        throw new RuntimeException();
+    }
+
+    public void considerTag(Tag t, Unit u)
     {
         throw new RuntimeException();
     }

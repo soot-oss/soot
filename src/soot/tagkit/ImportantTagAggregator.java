@@ -17,27 +17,42 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.jimple.spark.fieldrw;
+/*
+ * Modified by the Sable Research Group and others 1997-1999.  
+ * See the 'credits' file distributed with Soot for the complete list of
+ * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ */
+
+
+
+package soot.tagkit;
+
 
 import soot.*;
 import java.util.*;
+import soot.baf.*;
 
-import soot.tagkit.*;
-
-public class FieldReadTagAggregator extends ImportantTagAggregator
+/** A tag aggregator that associates a tag with the <b>most important</b>
+ * instruction that is tagged with it. An instruction is important if
+ * it contains a field or array reference, or a method invocation.
+ */
+public abstract class ImportantTagAggregator extends TagAggregator
 {    
-    public FieldReadTagAggregator( Singletons.Global g ) {}
-    public static FieldReadTagAggregator v() { return G.v().FieldReadTagAggregator(); }
-
     /** Decide whether this tag should be aggregated by this aggregator. */
-    public boolean wantTag(Tag t)
+    public void considerTag(Tag t, Unit u)
     {
-	return (t instanceof FieldReadTag);
-    }
-    
-    public String aggregatedName()
-    {
-        return "FieldRead";
+        Inst i = (Inst) u;
+        if(! ( i.containsInvokeExpr()
+            || i.containsFieldRef()
+            || i.containsArrayRef() ) ) return;
+        units.add(u);
+        tags.add(t);
     }
 }
+
+
+
+
+
+
 

@@ -35,7 +35,9 @@ public abstract class TagAggregator extends BodyTransformer {
     protected LinkedList units = new LinkedList();
 
     /** Decide whether this tag should be aggregated by this aggregator. */
-    public abstract void wantTag( Tag t, Unit u );
+    public abstract boolean wantTag( Tag t );
+    /** Aggregate the given tag assigned to the given unit */
+    public abstract void considerTag( Tag t, Unit u );
 
     /** Return name of the resulting aggregated tag. */
     public abstract String aggregatedName();
@@ -53,7 +55,7 @@ public abstract class TagAggregator extends BodyTransformer {
             final Unit unit = (Unit) unitIt.next();
             for( Iterator tagIt = unit.getTags().iterator(); tagIt.hasNext(); ) {
                 final Tag tag = (Tag) tagIt.next();
-                wantTag( tag, unit );
+                if( wantTag( tag ) ) considerTag( tag, unit );
 	    }         
         }        
 
