@@ -30,7 +30,7 @@ If set to true, return values from methods are represented as fields
 represented as variable (Green) nodes.
 END
 
-BOPT collapseObjects
+BOPT ignoreBaseObjects
 false
 If set to true, fields are represented by variable (Green) nodes, and
 the object that the field belongs to is ignored (all fields are lumped
@@ -71,13 +71,13 @@ END
 SECTION Pointer assignment graph simplification options
 #######################################################
 
-BOPT collapseEBBs
+BOPT simplifyOffline
 true
 If set to true, variable (Green) nodes which are connected by simple paths
 (so they must have the same points-to set) are merged together.
 END
 
-BOPT collapseSCCs
+BOPT simplifySCCs
 true
 If set to true, variable (Green) nodes which are form strongly-connected
 components (so they must have the same points-to set) are merged
@@ -120,7 +120,7 @@ None means that propagation is not done; the graph is only built and
 simplified.
 END
 
-MOPT setImpl hash bit hybrid fasttype array double
+MOPT setImpl hash bit hybrid array double
 double
 Selects an implementation of a points-to set that Spark should use.
 
@@ -146,7 +146,7 @@ that have not yet been propagated, while the second set stores old
 pointed-to objects that have been propagated and need not be reconsidered.
 END
 
-MOPT doubleSetOld hash bit hybrid fasttype array
+MOPT doubleSetOld hash bit hybrid array
 hybrid
 Selects an implementation for the sets of old objects in the double
 points-to set implementation.
@@ -154,7 +154,7 @@ points-to set implementation.
 This option has no effect if setImpl is not set to double.
 END
 
-MOPT doubleSetNew hash bit hybrid fasttype array
+MOPT doubleSetNew hash bit hybrid array
 hybrid
 Selects an implementation for the sets of new objects in the double
 points-to set implementation.

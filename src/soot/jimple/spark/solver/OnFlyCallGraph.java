@@ -38,8 +38,8 @@ public class OnFlyCallGraph {
         this.fh = fh;
         this.ig = ig;
         this.parms = parms;
-        for( Iterator it = ig.getAllSites().iterator(); it.hasNext(); ) {
-            Stmt site = (Stmt) it.next();
+        for( Iterator siteIt = ig.getAllSites().iterator(); siteIt.hasNext(); ) {
+            final Stmt site = (Stmt) siteIt.next();
             InvokeExpr ie = (InvokeExpr) site.getInvokeExpr();
             if( ie instanceof VirtualInvokeExpr 
             || ie instanceof InterfaceInvokeExpr ) {
@@ -56,12 +56,11 @@ public class OnFlyCallGraph {
         return receiverToSite.put( pag.findVarNode( iie.getBase() ), site );
     }
 
-    public boolean addReachingType( VarNode receiver, Type type, Collection touchedNodes ) {
+    public boolean addReachingType( VarNode receiver, Type type, Collection addedEdges ) {
         boolean ret = false;
         if( receiverToType.put( receiver, type ) ) {
-            for( Iterator it = receiverToSite.get( receiver ).iterator();
-                    it.hasNext(); ) {
-                Stmt site = (Stmt) it.next();
+            for( Iterator siteIt = receiverToSite.get( receiver ).iterator(); siteIt.hasNext(); ) {
+                final Stmt site = (Stmt) siteIt.next();
                 InstanceInvokeExpr ie = (InstanceInvokeExpr) site.getInvokeExpr();
                 Type baseType = ie.getBase().getType();
                 RefType declaredTypeOfBase = null;
@@ -84,9 +83,9 @@ public class OnFlyCallGraph {
                     targets = Collections.EMPTY_SET;
                 }
                 for( Iterator targetIt = targets.iterator(); targetIt.hasNext(); ) {
-                    SootMethod target = (SootMethod) targetIt.next();
+                    final SootMethod target = (SootMethod) targetIt.next();
                     if( ig.addTarget( site, target ) ) {
-                        parms.addCallTarget( site, target, touchedNodes );
+                        parms.addCallTarget( site, target, addedEdges );
                         ret = true;
                     }
                 }

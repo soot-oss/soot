@@ -48,9 +48,33 @@ public final class PropWorklist extends Propagator {
                         " nodes." );
             }
             while( !varNodeWorkList.isEmpty() ) {
-                VarNode src = (VarNode) varNodeWorkList.iterator().next();
-                varNodeWorkList.remove( src );
-		handleVarNode( src );
+                while( !varNodeWorkList.isEmpty() ) {
+                    VarNode src = (VarNode) varNodeWorkList.iterator().next();
+                    varNodeWorkList.remove( src );
+                    handleVarNode( src );
+                }
+                if( ofcg != null ) {
+                    final LinkedList addedEdges = new LinkedList();
+                    for( Iterator recIt = ofcg.allReceivers().iterator(); recIt.hasNext(); ) {
+                        final VarNode rec = (VarNode) recIt.next();
+                        PointsToSetInternal recSet = rec.getP2Set();
+                        if( recSet != null ) {
+                            rec.getP2Set().forall( new P2SetVisitor() {
+                            public final void visit( Node n ) {
+                                    returnValue = ofcg.addReachingType(
+                                        rec, n.getType(), addedEdges ) | returnValue;
+                                }
+                            } );
+                        }
+                    }
+                    for( Iterator nIt = addedEdges.iterator(); nIt.hasNext(); ) {
+                        final Node[] n = (Node[]) nIt.next();
+                        VarNode src = (VarNode) n[0].getReplacement();
+                        VarNode tgt = (VarNode) n[1].getReplacement();
+                        if( tgt.makeP2Set().addAll( src.getP2Set(), null ) )
+                            addToWorklist( tgt );
+                    }
+                }
             }
             if( verbose ) {
                 System.out.println( "Now handling field references" );
@@ -74,11 +98,11 @@ public final class PropWorklist extends Propagator {
                 handleFieldRefNode( (FieldRefNode) it.next(), edgesToPropagate );
 	    }
             HashSet nodesToFlush = new HashSet();
-            for( Iterator pIt = edgesToPropagate.iterator(); pIt.hasNext(); ) {
-                final Pair p = (Pair) pIt.next();
-                PointsToSetInternal nDotF = (PointsToSetInternal) p.getO1();
+            for( Iterator pairIt = edgesToPropagate.iterator(); pairIt.hasNext(); ) {
+                final Object[] pair = (Object[]) pairIt.next();
+                PointsToSetInternal nDotF = (PointsToSetInternal) pair[0];
 		PointsToSetInternal newP2Set = nDotF.getNewSet();
-                VarNode loadTarget = (VarNode) p.getO2();
+                VarNode loadTarget = (VarNode) pair[1];
                 if( loadTarget.makeP2Set().addAll( newP2Set, null ) ) {
                     addToWorklist( loadTarget );
                 }
@@ -87,35 +111,6 @@ public final class PropWorklist extends Propagator {
             for( Iterator nDotFIt = nodesToFlush.iterator(); nDotFIt.hasNext(); ) {
                 final PointsToSetInternal nDotF = (PointsToSetInternal) nDotFIt.next();
                 nDotF.flushNew();
-            }
-            if( ofcg != null ) {
-                final LinkedList touchedNodes = new LinkedList();
-                for( Iterator recIt = ofcg.allReceivers().iterator(); recIt.hasNext(); ) {
-                    final VarNode rec = (VarNode) recIt.next();
-                    PointsToSetInternal recSet = rec.getP2Set();
-                    if( recSet != null ) {
-                        rec.getP2Set().forall( new P2SetVisitor() {
-                        public final void visit( Node n ) {
-                                returnValue = ofcg.addReachingType(
-                                    rec, n.getType(), touchedNodes ) | returnValue;
-                            }
-                        } );
-                    }
-                }
-                for( Iterator nIt = touchedNodes.iterator(); nIt.hasNext(); ) {
-                    final Node n = (Node) nIt.next();
-                    VarNode nodeToAdd = null;
-                    if( n instanceof VarNode ) {
-                        nodeToAdd = (VarNode) n.getReplacement();
-                    } else if( n instanceof FieldRefNode ) {
-                        nodeToAdd = (VarNode) ((FieldRefNode) n).getBase().getReplacement();
-                    } else {
-                        throw new RuntimeException( "Unhandled node type\n"+n );
-                    }
-                    PointsToSetInternal p2set = nodeToAdd.getP2Set();
-                    if( p2set != null ) p2set.unFlushNew();
-                    addToWorklist( nodeToAdd );
-                }
             }
 	} while( !varNodeWorkList.isEmpty() );
     }
@@ -183,8 +178,9 @@ public final class PropWorklist extends Propagator {
                         AllocDotField nDotF = pag.makeAllocDotField(
                             (AllocNode) n, field );
                         for( int i = 0; i < storeSources.length; i++ ) {
-                            storesToPropagate.add( new Pair( storeSources[i],
-                                    nDotF.getReplacement() ) );
+                            Node[] pair = { storeSources[i],
+                                nDotF.getReplacement() };
+                            storesToPropagate.add( pair );
                         }
                     }
                 } );
@@ -198,8 +194,9 @@ public final class PropWorklist extends Propagator {
                             (AllocNode) n, field );
                         if( nDotF != null ) {
                             for( int i = 0; i < loadTargets.length; i++ ) {
-                                loadsToPropagate.add( new Pair(
-                                        nDotF.getReplacement(), loadTargets[i] ) );
+                                Node[] pair = { nDotF.getReplacement(),
+                                    loadTargets[i] };
+                                loadsToPropagate.add( pair );
                             }
                         }
                     }
@@ -208,17 +205,17 @@ public final class PropWorklist extends Propagator {
 	}
 	src.getP2Set().flushNew();
         for( Iterator pIt = storesToPropagate.iterator(); pIt.hasNext(); ) {
-            final Pair p = (Pair) pIt.next();
-            VarNode storeSource = (VarNode) p.getO1();
-            AllocDotField nDotF = (AllocDotField) p.getO2();
+            final Node[] p = (Node[]) pIt.next();
+            VarNode storeSource = (VarNode) p[0];
+            AllocDotField nDotF = (AllocDotField) p[1];
             if( nDotF.makeP2Set().addAll( storeSource.getP2Set(), null ) ) {
                 ret = true;
             }
         }
         for( Iterator pIt = loadsToPropagate.iterator(); pIt.hasNext(); ) {
-            final Pair p = (Pair) pIt.next();
-            AllocDotField nDotF = (AllocDotField) p.getO1();
-            VarNode loadTarget = (VarNode) p.getO2();
+            final Node[] p = (Node[]) pIt.next();
+            AllocDotField nDotF = (AllocDotField) p[0];
+            VarNode loadTarget = (VarNode) p[1];
             if( loadTarget.makeP2Set().
                 addAll( nDotF.getP2Set(), null ) ) {
                 addToWorklist( loadTarget );
@@ -245,8 +242,8 @@ public final class PropWorklist extends Propagator {
                     PointsToSetInternal p2Set = nDotF.getP2Set();
                     if( !p2Set.getNewSet().isEmpty() ) {
                         for( int i = 0; i < loadTargets.length; i++ ) {
-                            edgesToPropagate.add( new Pair( p2Set,
-                                    loadTargets[i] ) );
+                            Object[] pair = { p2Set, loadTargets[i] };
+                            edgesToPropagate.add( pair );
                         }
                     }
                 }

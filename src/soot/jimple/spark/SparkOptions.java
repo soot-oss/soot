@@ -87,8 +87,8 @@ public class SparkOptions {
      * nodes, and the objects that they belong to are distinguished.
      * Default value is false
      */
-    public boolean collapseObjects() {
-        return Options.getBoolean( options, "collapseObjects" );
+    public boolean ignoreBaseObjects() {
+        return Options.getBoolean( options, "ignoreBaseObjects" );
     }
 
     /**
@@ -146,8 +146,8 @@ public class SparkOptions {
      * (so they must have the same points-to set) are merged together.
      * Default value is true
      */
-    public boolean collapseEBBs() {
-        return Options.getBoolean( options, "collapseEBBs" );
+    public boolean simplifyOffline() {
+        return Options.getBoolean( options, "simplifyOffline" );
     }
 
     /**
@@ -156,8 +156,8 @@ public class SparkOptions {
      * together.
      * Default value is true
      */
-    public boolean collapseSCCs() {
-        return Options.getBoolean( options, "collapseSCCs" );
+    public boolean simplifySCCs() {
+        return Options.getBoolean( options, "simplifySCCs" );
     }
 
     /**
@@ -246,21 +246,19 @@ public class SparkOptions {
     public void setImpl( Switch_setImpl sw ) {
         String s = Options.getString( options, "setImpl" );
         if( false );
-        else if( s.equalsIgnoreCase("double") ) sw.case_double();
         else if( s.equalsIgnoreCase("hash") ) sw.case_hash();
         else if( s.equalsIgnoreCase("bit") ) sw.case_bit();
         else if( s.equalsIgnoreCase("hybrid") ) sw.case_hybrid();
-        else if( s.equalsIgnoreCase("fasttype") ) sw.case_fasttype();
         else if( s.equalsIgnoreCase("array") ) sw.case_array();
+        else if( s.equalsIgnoreCase("double") ) sw.case_double();
         else throw new RuntimeException( "Invalid value \""+s+"\" of option setImpl" );
     }
     public static abstract class Switch_setImpl {
-        public abstract void case_double();
         public abstract void case_hash();
         public abstract void case_bit();
         public abstract void case_hybrid();
-        public abstract void case_fasttype();
         public abstract void case_array();
+        public abstract void case_double();
     }
 
     /**
@@ -276,7 +274,6 @@ public class SparkOptions {
         else if( s.equalsIgnoreCase("hash") ) sw.case_hash();
         else if( s.equalsIgnoreCase("bit") ) sw.case_bit();
         else if( s.equalsIgnoreCase("hybrid") ) sw.case_hybrid();
-        else if( s.equalsIgnoreCase("fasttype") ) sw.case_fasttype();
         else if( s.equalsIgnoreCase("array") ) sw.case_array();
         else throw new RuntimeException( "Invalid value \""+s+"\" of option doubleSetOld" );
     }
@@ -284,7 +281,6 @@ public class SparkOptions {
         public abstract void case_hash();
         public abstract void case_bit();
         public abstract void case_hybrid();
-        public abstract void case_fasttype();
         public abstract void case_array();
     }
 
@@ -298,19 +294,17 @@ public class SparkOptions {
     public void doubleSetNew( Switch_doubleSetNew sw ) {
         String s = Options.getString( options, "doubleSetNew" );
         if( false );
-        else if( s.equalsIgnoreCase("array") ) sw.case_array();
         else if( s.equalsIgnoreCase("hash") ) sw.case_hash();
         else if( s.equalsIgnoreCase("bit") ) sw.case_bit();
         else if( s.equalsIgnoreCase("hybrid") ) sw.case_hybrid();
-        else if( s.equalsIgnoreCase("fasttype") ) sw.case_fasttype();
+        else if( s.equalsIgnoreCase("array") ) sw.case_array();
         else throw new RuntimeException( "Invalid value \""+s+"\" of option doubleSetNew" );
     }
     public static abstract class Switch_doubleSetNew {
-        public abstract void case_array();
         public abstract void case_hash();
         public abstract void case_bit();
         public abstract void case_hybrid();
-        public abstract void case_fasttype();
+        public abstract void case_array();
     }
 
 
@@ -382,11 +376,11 @@ public class SparkOptions {
 
     public static String getDeclaredOptions() {
         return
-        " verbose ignoreTypesEntirely parmsAsFields returnsAsFields collapseObjects typesForSites mergeStringBuffer simulateNatives simpleEdgesBidirectional onFlyCallGraph collapseEBBs collapseSCCs ignoreTypesForSCCs propagator setImpl doubleSetOld doubleSetNew dumpHTML dumpPAG dumpSolution topoSort dumpTypes dumpAnswer";
+        " verbose ignoreTypesEntirely parmsAsFields returnsAsFields ignoreBaseObjects typesForSites mergeStringBuffer simulateNatives simpleEdgesBidirectional onFlyCallGraph simplifyOffline simplifySCCs ignoreTypesForSCCs propagator setImpl doubleSetOld doubleSetNew dumpHTML dumpPAG dumpSolution topoSort dumpTypes dumpAnswer";
     }
     public static String getDefaultOptions() {
         return
-        " verbose:false ignoreTypesEntirely:false parmsAsFields:false returnsAsFields:false collapseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false collapseEBBs:true collapseSCCs:true ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true dumpAnswer:false";
+        " verbose:false ignoreTypesEntirely:false parmsAsFields:false returnsAsFields:false ignoreBaseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false simplifyOffline:true simplifySCCs:true ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true dumpAnswer:false";
     }
 
     protected Map options;

@@ -63,7 +63,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
      * TouchedNodes is an out parameter that is filled in with all the
      * nodes to which edges were added by adding the target. It may be
      * null if the caller does not need this information. */
-    public void addCallTarget( Stmt s, SootMethod target, Collection touchedNodes ) {
+    public void addCallTarget( Stmt s, SootMethod target, Collection addedEdges ) {
         InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
         int numArgs = ie.getArgCount();
         for( int i = 0; i < numArgs; i++ ) {
@@ -76,8 +76,9 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             if( target != null ) {
                 Node parm = caseParm( target, i ).getReplacement();
                 addEdge( argNode, parm );
-                if( touchedNodes != null ) {
-                    touchedNodes.add( argNode );
+                if( addedEdges != null ) {
+                    Node[] edge = { argNode, parm };
+                    addedEdges.add( edge );
                 }
             }
         }
@@ -88,8 +89,9 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             if( target != null ) {
                 Node thisRef = caseThis( target ).getReplacement();
                 addEdge( baseNode, thisRef );
-                if( touchedNodes != null ) {
-                    touchedNodes.add( baseNode );
+                if( addedEdges != null ) {
+                    Node[] edge = { baseNode, thisRef };
+                    addedEdges.add( edge );
                 }
             }
         }
@@ -104,8 +106,9 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
                 if( target != null ) {
                     Node retNode = caseRet( target ).getReplacement();
                     addEdge( retNode, destNode );
-                    if( touchedNodes != null ) {
-                        touchedNodes.add( retNode );
+                    if( addedEdges != null ) {
+                        Node[] edge = { retNode, destNode };
+                        addedEdges.add( edge );
                     }
                 }
             }
@@ -121,7 +124,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 
                 addCallTarget( s,
                     target.getDeclaringClass().getMethod( "void run()" ),
-                    touchedNodes );
+                    addedEdges );
             }
         }
     }
@@ -265,7 +268,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	setResult( caseThrow() );
     }
     public void caseInstanceFieldRef( InstanceFieldRef ifr ) {
-	if( pag.getOpts().collapseObjects() ) {
+	if( pag.getOpts().ignoreBaseObjects() ) {
 	    setResult( pag.makeVarNode( 
 			ifr.getField(), 
 			ifr.getField().getType(), currentMethod ) );

@@ -24,6 +24,7 @@ import soot.jimple.spark.*;
 import soot.*;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.solver.OnFlyCallGraph;
+import soot.jimple.spark.internal.*;
 
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
@@ -187,13 +188,12 @@ public class PAG implements PointsToAnalysis {
             PointsToSetInternal.setFastHierarchy(
                     Scene.v().getOrMakeFastHierarchy() );
         }
+        typeManager = new TypeManager();
         opts.setImpl( new SparkOptions.Switch_setImpl() {
             public void case_hash() 
             { setFactory = HashPointsToSet.getFactory(); }
             public void case_hybrid() 
             { setFactory = HybridPointsToSet.getFactory(); }
-            public void case_fasttype() 
-            { setFactory = FastTypePointsToSet.getFactory(); }
             public void case_array() 
             { setFactory = SortedArraySet.getFactory(); }
             public void case_bit() 
@@ -206,8 +206,6 @@ public class PAG implements PointsToAnalysis {
                     { oldF[0] = HashPointsToSet.getFactory(); }
                     public void case_hybrid() 
                     { oldF[0] = HybridPointsToSet.getFactory(); }
-                    public void case_fasttype() 
-                    { oldF[0] = FastTypePointsToSet.getFactory(); }
                     public void case_array() 
                     { oldF[0] = SortedArraySet.getFactory(); }
                     public void case_bit() 
@@ -218,8 +216,6 @@ public class PAG implements PointsToAnalysis {
                     { newF[0] = HashPointsToSet.getFactory(); }
                     public void case_hybrid() 
                     { newF[0] = HybridPointsToSet.getFactory(); }
-                    public void case_fasttype() 
-                    { newF[0] = FastTypePointsToSet.getFactory(); }
                     public void case_array() 
                     { newF[0] = SortedArraySet.getFactory(); }
                     public void case_bit() 
@@ -231,6 +227,9 @@ public class PAG implements PointsToAnalysis {
     }
     public int getNumAllocNodes() {
         return (-nextAllocNodeId)-1;
+    }
+    public TypeManager getTypeManager() {
+        return typeManager;
     }
 
     public void setOnFlyCallGraph( OnFlyCallGraph ofcg ) { this.ofcg = ofcg; }
@@ -391,5 +390,6 @@ public class PAG implements PointsToAnalysis {
     protected OnFlyCallGraph ofcg;
     protected static boolean somethingMerged = false;
     protected LinkedList dereferences = new LinkedList();
+    protected TypeManager typeManager;
 }
 

@@ -21,6 +21,7 @@ package soot.jimple.spark.sets;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.internal.*;
 import java.util.*;
 import soot.Type;
 
@@ -30,6 +31,7 @@ import soot.Type;
 public final class BitPointsToSet extends PointsToSetInternal {
     public BitPointsToSet( Type type, PAG pag ) {
         super( type );
+        this.pag = pag;
         if( nodes == null ) {
             SIZE = pag.getNumAllocNodes()/64+2;
             nodes = new Node[ SIZE * 64 ];
@@ -45,65 +47,94 @@ public final class BitPointsToSet extends PointsToSetInternal {
     public final boolean addAll( final PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
         boolean ret = false;
+        long[] mask = null;
         if( other instanceof BitPointsToSet ) {
             BitPointsToSet o = (BitPointsToSet) other;
             if( exclude == null || exclude.isEmpty() ) {
-                if( PointsToSetInternal.castNeverFails(
+                if( !PointsToSetInternal.castNeverFails( 
                             other.getType(), this.getType() ) ) {
+                    mask = pag.getTypeManager().get( type );
+                }
+                if( mask == null ) {
                     for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i]; 
-                        if( l != 0 ) {
+                        long l = o.bits[i] & ~bits[i];
+                        if( l != 0L ) {
                             ret = true;
-                            empty = false;
                             bits[i] |= l;
                         }
                     }
                 } else {
                     for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i];
-                        if( l != 0 ) {
-                            for( int j=0; j<64; j++ ) {
-                                if( ( l & (1L<<j) ) != 0  ) {
-                                    ret = add( nodes[i*64+j] ) | ret;
-                                }
-                            }
+                        long l = o.bits[i] & ~bits[i] & mask[i];
+                        if( l != 0L ) {
+                            ret = true;
+                            bits[i] |= l;
                         }
                     }
                 }
                 return ret;
             } else if( exclude instanceof BitPointsToSet ) {
                 BitPointsToSet e = (BitPointsToSet) exclude;
-                if( PointsToSetInternal.castNeverFails(
+                if( !PointsToSetInternal.castNeverFails( 
                             other.getType(), this.getType() ) ) {
+                    mask = pag.getTypeManager().get( type );
+                }
+                if( mask == null ) {
                     for( int i=0; i < SIZE; i++ ) {
                         long l = o.bits[i] & ~bits[i] & ~e.bits[i];
-                        if( l != 0 ) {
+                        if( l != 0L ) {
                             ret = true;
-                            empty = false;
                             bits[i] |= l;
                         }
                     }
                 } else {
                     for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i] & ~e.bits[i];
-                        if( l != 0 ) {
-                            for( int j=0; j<64; j++ ) {
-                                if( ( l & (1L<<j) ) != 0  ) {
-                                    ret = add( nodes[i*64+j] ) | ret;
-                                }
-                            }
+                        long l = o.bits[i] & ~bits[i] & ~e.bits[i] & mask[i];
+                        if( l != 0L ) {
+                            ret = true;
+                            bits[i] |= l;
                         }
                     }
                 }
                 return ret;
             } else {
-                for( int i=0; i < SIZE; i++ ) {
-                    long l = o.bits[i] & ~bits[i];
-                    if( l != 0 ) for( int j=0; j<64; j++ ) {
-                        if( ( l & (1L<<j) ) != 0  ) {
-                            Node n = nodes[i*64+j];
-                            if( !exclude.contains( n ) ) {
-                                ret = add( n ) | ret;
+                if( !PointsToSetInternal.castNeverFails( 
+                            other.getType(), this.getType() ) ) {
+                    mask = pag.getTypeManager().get( type );
+                }
+                if( mask == null ) {
+                    for( int i=0; i < SIZE; i++ ) {
+                        long l = o.bits[i] & ~bits[i];
+                        if( l != 0L ) {
+                            for( int j=0; j<64; j++ ) {
+                                if( ( l & (1L<<j) ) != 0  ) {
+                                    Node n = nodes[i*64+j];
+                                    if( exclude.contains( n ) ) {
+                                        l &= ~(1L<<j);
+                                    }
+                                }
+                            }
+                            if( l != 0L ) {
+                                ret = true;
+                                bits[i] |= l;
+                            }
+                        }
+                    }
+                } else {
+                    for( int i=0; i < SIZE; i++ ) {
+                        long l = o.bits[i] & ~bits[i] & mask[i];
+                        if( l != 0L ) {
+                            for( int j=0; j<64; j++ ) {
+                                if( ( l & (1L<<j) ) != 0  ) {
+                                    Node n = nodes[i*64+j];
+                                    if( exclude.contains( n ) ) {
+                                        l &= ~(1L<<j);
+                                    }
+                                }
+                            }
+                            if( l != 0L ) {
+                                ret = true;
+                                bits[i] |= l;
                             }
                         }
                     }
@@ -165,5 +196,6 @@ public final class BitPointsToSet extends PointsToSetInternal {
     private static Node[] nodes = null;
     private long[] bits = null;
     private boolean empty = true;
+    private PAG pag = null;
 }
 

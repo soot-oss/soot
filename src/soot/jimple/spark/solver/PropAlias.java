@@ -61,10 +61,34 @@ public final class PropAlias extends Propagator {
             }
             aliasWorkList = new HashSet();
             while( !varNodeWorkList.isEmpty() ) {
-                VarNode src = (VarNode) varNodeWorkList.iterator().next();
-                varNodeWorkList.remove( src );
-                aliasWorkList.add( src );
-		handleVarNode( src );
+                while( !varNodeWorkList.isEmpty() ) {
+                    VarNode src = (VarNode) varNodeWorkList.iterator().next();
+                    varNodeWorkList.remove( src );
+                    aliasWorkList.add( src );
+                    handleVarNode( src );
+                }
+                if( ofcg != null ) {
+                    final LinkedList addedEdges = new LinkedList();
+                    for( Iterator recIt = ofcg.allReceivers().iterator(); recIt.hasNext(); ) {
+                        final VarNode rec = (VarNode) recIt.next();
+                        PointsToSetInternal recSet = rec.getP2Set();
+                        if( recSet != null ) {
+                            rec.getP2Set().forall( new P2SetVisitor() {
+                            public final void visit( Node n ) {
+                                    returnValue = ofcg.addReachingType(
+                                        rec, n.getType(), addedEdges ) | returnValue;
+                                }
+                            } );
+                        }
+                    }
+                    for( Iterator nIt = addedEdges.iterator(); nIt.hasNext(); ) {
+                        final Node[] n = (Node[]) nIt.next();
+                        VarNode src = (VarNode) n[0].getReplacement();
+                        VarNode tgt = (VarNode) n[1].getReplacement();
+                        if( tgt.makeP2Set().addAll( src.getP2Set(), null ) )
+                            addToWorklist( tgt );
+                    }
+                }
             }
             if( verbose ) {
                 System.out.println( "Now handling field references" );
@@ -140,35 +164,6 @@ public final class PropAlias extends Propagator {
                     }
                 }
                 getP2Set( src ).flushNew();
-            }
-            if( ofcg != null ) {
-                final LinkedList touchedNodes = new LinkedList();
-                for( Iterator recIt = ofcg.allReceivers().iterator(); recIt.hasNext(); ) {
-                    final VarNode rec = (VarNode) recIt.next();
-                    PointsToSetInternal recSet = rec.getP2Set();
-                    if( recSet != null ) {
-                        rec.getP2Set().forall( new P2SetVisitor() {
-                        public final void visit( Node n ) {
-                                returnValue = ofcg.addReachingType(
-                                    rec, n.getType(), touchedNodes ) | returnValue;
-                            }
-                        } );
-                    }
-                }
-                for( Iterator nIt = touchedNodes.iterator(); nIt.hasNext(); ) {
-                    final Node n = (Node) nIt.next();
-                    VarNode nodeToAdd = null;
-                    if( n instanceof VarNode ) {
-                        nodeToAdd = (VarNode) n.getReplacement();
-                    } else if( n instanceof FieldRefNode ) {
-                        nodeToAdd = (VarNode) ((FieldRefNode) n).getBase().getReplacement();
-                    } else {
-                        throw new RuntimeException( "Unhandled node type\n"+n );
-                    }
-                    PointsToSetInternal p2set = nodeToAdd.getP2Set();
-                    if( p2set != null ) p2set.unFlushNew();
-                    addToWorklist( nodeToAdd );
-                }
             }
 	} while( !varNodeWorkList.isEmpty() );
     }

@@ -21,6 +21,7 @@ package soot.jimple.spark.sets;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.internal.*;
 import java.util.*;
 import soot.Type;
 
@@ -30,6 +31,7 @@ import soot.Type;
 public final class SortedArraySet extends PointsToSetInternal {
     public SortedArraySet( Type type, PAG pag ) {
         super( type );
+        this.pag = pag;
     }
     /** Returns true if this set contains no run-time objects. */
     public final boolean isEmpty() {
@@ -40,6 +42,7 @@ public final class SortedArraySet extends PointsToSetInternal {
     public final boolean addAll( final PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
         boolean ret = false;
+        long[] typeMask = pag.getTypeManager().get( type );
         if( other instanceof SortedArraySet ) {
             SortedArraySet o = (SortedArraySet) other;
             Node[] mya = nodes;
@@ -57,8 +60,8 @@ public final class SortedArraySet extends PointsToSetInternal {
                         if( myhc < ohc ) {
                             newa[ newi++ ] = mya[ myi++ ];
                         } else if( myhc > ohc ) {
-                            if( fh == null || type == null ||
-                                fh.canStoreType( oa[ oi ].getType(), type ) ) {
+                            if( fh == null || type == null || typeMask == null ||
+                              (0 != (typeMask[-ohc%64] & (1L<<((-ohc)%64)))) ) {
                                 newa[ newi++ ] = oa[ oi ];
                                 ret = true;
                             }
@@ -72,8 +75,9 @@ public final class SortedArraySet extends PointsToSetInternal {
                     }
                 } else { // myi >= size
                     if( oi < osize ) {
-                        if( fh == null || type == null ||
-                            fh.canStoreType( oa[ oi ].getType(), type ) ) {
+                            int ohc = oa[oi].getId();
+                            if( fh == null || type == null || typeMask == null ||
+                              (0 != (typeMask[-ohc%64] & (1L<<((-ohc)%64)))) ) {
                             newa[ newi++ ] = oa[ oi ];
                             ret = true;
                         }
@@ -158,5 +162,6 @@ public final class SortedArraySet extends PointsToSetInternal {
 
     private Node[] nodes = null;
     private int size = 0;
+    private PAG pag = null;
 }
 
