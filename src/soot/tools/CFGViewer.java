@@ -88,7 +88,7 @@ public class CFGViewer extends BodyTransformer {
 
   public static void main(String[] args) {
     CFGViewer viewer = new CFGViewer();
-    Transform printTransform = new Transform("jtp." + phaseSubname, viewer);
+    Transform printTransform = new Transform(phaseFullname, viewer);
     printTransform.setDeclaredOptions("enabled " + 
 				      altClassPathOptionName + ' ' +
 				      graphTypeOptionName + ' ' +
@@ -106,7 +106,6 @@ public class CFGViewer extends BodyTransformer {
     if (args.length == 0) {
       usage();
     } else {
-for (int i = 0; i < args.length; i++) G.v().out.print(args[i] + ' ');
       soot.Main.main(args);
     }
   }
