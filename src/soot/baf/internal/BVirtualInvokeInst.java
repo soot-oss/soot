@@ -33,7 +33,10 @@ import java.util.*;
 
 public class BVirtualInvokeInst extends AbstractInvokeInst implements VirtualInvokeInst
 {
-    public BVirtualInvokeInst(SootMethodRef methodRef) { this.methodRef = methodRef; }
+    public BVirtualInvokeInst(SootMethodRef methodRef) {
+        if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
+        this.methodRef = methodRef;
+    }
   
     public int getInMachineCount()
     {

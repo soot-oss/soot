@@ -42,6 +42,7 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst
 
     public BFieldPutInst(SootFieldRef fieldRef)
     {
+        if( fieldRef.isStatic() ) throw new RuntimeException("wrong static-ness");
         this.fieldRef = fieldRef;
     }
     

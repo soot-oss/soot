@@ -39,26 +39,26 @@ public class BDDKObjSensVirtualContextManager extends AbsVirtualContextManager {
                                                "ges = jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v()." +
                                                "project(in.get(), new jedd.PhysicalDomain[...]), new jedd.Ph" +
                                                "ysicalDomain[...], new jedd.PhysicalDomain[...]); at /home/r" +
-                                               "esearch/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDKObj" +
-                                               "SensVirtualContextManager.jedd:49,51-59"),
+                                               "esearch/ccl/olhota/soot-trunk2/src/soot/jimple/paddle/BDDKOb" +
+                                               "jSensVirtualContextManager.jedd:49,51-59"),
                                               jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(in.get(),
                                                                                                             new PhysicalDomain[] { V1.v() }),
                                                                              new PhysicalDomain[] { C2.v(), H1.v() },
                                                                              new PhysicalDomain[] { C1.v(), C2.v() }));
         newEdges.eq(jedd.internal.Jedd.v().cast((jedd.internal.RelationContainer)
-                                                  new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), stmt.v(), srcm.v(), srcc.v(), tgtc.v(), kind.v() },
-                                                                                      new PhysicalDomain[] { MT.v(), ST.v(), MS.v(), C1.v(), C2.v(), KD.v() },
+                                                  new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), tgtm.v(), srcm.v(), tgtc.v(), kind.v(), srcc.v() },
+                                                                                      new PhysicalDomain[] { ST.v(), MT.v(), MS.v(), C2.v(), KD.v(), C1.v() },
                                                                                       ("newEdges.applyShifter(shifter) at /home/research/ccl/olhota/" +
-                                                                                       "soot-trunk/src/soot/jimple/paddle/BDDKObjSensVirtualContextM" +
-                                                                                       "anager.jedd:52,12-20"),
+                                                                                       "soot-trunk2/src/soot/jimple/paddle/BDDKObjSensVirtualContext" +
+                                                                                       "Manager.jedd:52,12-20"),
                                                                                       newEdges).applyShifter(shifter),
                                                 new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() },
                                                 new PhysicalDomain[] { C1.v(), MS.v(), ST.v(), KD.v(), C2.v(), MT.v() }));
-        out.add(new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), stmt.v(), srcm.v(), srcc.v(), tgtc.v(), kind.v() },
-                                                    new PhysicalDomain[] { MT.v(), ST.v(), MS.v(), C1.v(), C2.v(), KD.v() },
-                                                    ("out.add(newEdges) at /home/research/ccl/olhota/soot-trunk/sr" +
-                                                     "c/soot/jimple/paddle/BDDKObjSensVirtualContextManager.jedd:5" +
-                                                     "3,8-11"),
+        out.add(new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), tgtm.v(), srcm.v(), tgtc.v(), kind.v(), srcc.v() },
+                                                    new PhysicalDomain[] { ST.v(), MT.v(), MS.v(), C2.v(), KD.v(), C1.v() },
+                                                    ("out.add(newEdges) at /home/research/ccl/olhota/soot-trunk2/s" +
+                                                     "rc/soot/jimple/paddle/BDDKObjSensVirtualContextManager.jedd:" +
+                                                     "53,8-11"),
                                                     newEdges));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newEdges), jedd.internal.Jedd.v().falseBDD());
     }

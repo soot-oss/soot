@@ -43,6 +43,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
 
     protected AbstractInstanceFieldRef(ValueBox baseBox, SootFieldRef fieldRef)
     {
+        if( fieldRef.isStatic() ) throw new RuntimeException("wrong static-ness");
         this.baseBox = baseBox;
         this.fieldRef = fieldRef;
     }

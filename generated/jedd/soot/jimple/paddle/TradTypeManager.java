@@ -76,15 +76,19 @@ public class TradTypeManager extends AbsTypeManager {
             return new jedd.internal.RelationContainer(new jedd.Attribute[] {  },
                                                        new jedd.PhysicalDomain[] {  },
                                                        ("return jedd.internal.Jedd.v().trueBDD(); at /home/research/c" +
-                                                        "cl/olhota/soot-trunk/src/soot/jimple/paddle/TradTypeManager." +
-                                                        "jedd:87,25-31"),
+                                                        "cl/olhota/soot-trunk2/src/soot/jimple/paddle/TradTypeManager" +
+                                                        ".jedd:87,25-31"),
                                                        jedd.internal.Jedd.v().trueBDD());
         if (bddGetter == null) bddGetter = this.new BDDGetter();
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), obj.v() },
-                                                   new jedd.PhysicalDomain[] { V1.v(), H1.v() },
-                                                   ("return bddGetter.get(); at /home/research/ccl/olhota/soot-tr" +
-                                                    "unk/src/soot/jimple/paddle/TradTypeManager.jedd:89,8-14"),
-                                                   bddGetter.get());
+                                                   new jedd.PhysicalDomain[] { V2.v(), H1.v() },
+                                                   ("return jedd.internal.Jedd.v().replace(bddGetter.get(), new j" +
+                                                    "edd.PhysicalDomain[...], new jedd.PhysicalDomain[...]); at /" +
+                                                    "home/research/ccl/olhota/soot-trunk2/src/soot/jimple/paddle/" +
+                                                    "TradTypeManager.jedd:89,8-14"),
+                                                   jedd.internal.Jedd.v().replace(bddGetter.get(),
+                                                                                  new jedd.PhysicalDomain[] { V1.v() },
+                                                                                  new jedd.PhysicalDomain[] { V2.v() }));
     }
     
     class BDDGetter {
@@ -94,8 +98,8 @@ public class TradTypeManager extends AbsTypeManager {
                                               ("private <soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
                                                "le.bdddomains.T1, soot.jimple.paddle.bdddomains.obj> cachedT" +
                                                "ypeMasks = jedd.internal.Jedd.v().falseBDD() at /home/resear" +
-                                               "ch/ccl/olhota/soot-trunk/src/soot/jimple/paddle/TradTypeMana" +
-                                               "ger.jedd:92,16-30"),
+                                               "ch/ccl/olhota/soot-trunk2/src/soot/jimple/paddle/TradTypeMan" +
+                                               "ager.jedd:92,16-30"),
                                               jedd.internal.Jedd.v().falseBDD());
         
         private final jedd.internal.RelationContainer cachedVarNodes =
@@ -103,8 +107,8 @@ public class TradTypeManager extends AbsTypeManager {
                                               new jedd.PhysicalDomain[] { V1.v(), T1.v() },
                                               ("private <soot.jimple.paddle.bdddomains.var, soot.jimple.padd" +
                                                "le.bdddomains.type> cachedVarNodes = jedd.internal.Jedd.v()." +
-                                               "falseBDD() at /home/research/ccl/olhota/soot-trunk/src/soot/" +
-                                               "jimple/paddle/TradTypeManager.jedd:93,16-27"),
+                                               "falseBDD() at /home/research/ccl/olhota/soot-trunk2/src/soot" +
+                                               "/jimple/paddle/TradTypeManager.jedd:93,16-27"),
                                               jedd.internal.Jedd.v().falseBDD());
         
         private final jedd.internal.RelationContainer cachedVarObj =
@@ -112,8 +116,8 @@ public class TradTypeManager extends AbsTypeManager {
                                               new jedd.PhysicalDomain[] { V1.v(), H1.v() },
                                               ("private <soot.jimple.paddle.bdddomains.var, soot.jimple.padd" +
                                                "le.bdddomains.obj> cachedVarObj = jedd.internal.Jedd.v().fal" +
-                                               "seBDD() at /home/research/ccl/olhota/soot-trunk/src/soot/jim" +
-                                               "ple/paddle/TradTypeManager.jedd:94,16-26"),
+                                               "seBDD() at /home/research/ccl/olhota/soot-trunk2/src/soot/ji" +
+                                               "mple/paddle/TradTypeManager.jedd:94,16-26"),
                                               jedd.internal.Jedd.v().falseBDD());
         
         public jedd.internal.RelationContainer get() {
@@ -143,8 +147,8 @@ public class TradTypeManager extends AbsTypeManager {
                                                   ("<soot.jimple.paddle.bdddomains.var:soot.jimple.paddle.bdddom" +
                                                    "ains.V1, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
                                                    "le.bdddomains.T1> varNodes = jedd.internal.Jedd.v().falseBDD" +
-                                                   "(); at /home/research/ccl/olhota/soot-trunk/src/soot/jimple/" +
-                                                   "paddle/TradTypeManager.jedd:113,24-32"),
+                                                   "(); at /home/research/ccl/olhota/soot-trunk2/src/soot/jimple" +
+                                                   "/paddle/TradTypeManager.jedd:113,24-32"),
                                                   jedd.internal.Jedd.v().falseBDD());
             while (newVarNodes.hasNext()) {
                 VarNode vn = (VarNode) newVarNodes.next();
@@ -159,7 +163,7 @@ public class TradTypeManager extends AbsTypeManager {
             return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), obj.v() },
                                                        new jedd.PhysicalDomain[] { V1.v(), H1.v() },
                                                        ("return cachedVarObj; at /home/research/ccl/olhota/soot-trunk" +
-                                                        "/src/soot/jimple/paddle/TradTypeManager.jedd:120,12-18"),
+                                                        "2/src/soot/jimple/paddle/TradTypeManager.jedd:120,12-18"),
                                                        cachedVarObj);
         }
         

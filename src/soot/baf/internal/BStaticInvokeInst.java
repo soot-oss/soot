@@ -33,7 +33,10 @@ import java.util.*;
 
 public class BStaticInvokeInst extends AbstractInvokeInst implements StaticInvokeInst
 {
-    public BStaticInvokeInst(SootMethodRef methodRef) { this.methodRef = methodRef; }
+    public BStaticInvokeInst(SootMethodRef methodRef) { 
+        if( !methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
+        this.methodRef = methodRef;
+    }
 
 
     public int getInCount()

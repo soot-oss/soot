@@ -135,4 +135,7 @@ class AbstractSootMethodRef implements SootMethodRef {
         if( trace == null )throw new ClassResolutionFailedException();
         return null;
     }
+    public String toString() {
+        return getSignature();
+    }
 }

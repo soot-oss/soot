@@ -12,8 +12,8 @@ public class BDDEdgeContextStripper extends AbsEdgeContextStripper {
                                           ("private <soot.jimple.paddle.bdddomains.srcm, soot.jimple.pad" +
                                            "dle.bdddomains.stmt, soot.jimple.paddle.bdddomains.kind, soo" +
                                            "t.jimple.paddle.bdddomains.tgtm> seen = jedd.internal.Jedd.v" +
-                                           "().falseBDD() at /home/research/ccl/olhota/soot-trunk/src/so" +
-                                           "ot/jimple/paddle/BDDEdgeContextStripper.jedd:33,12-36"),
+                                           "().falseBDD() at /home/research/ccl/olhota/soot-trunk2/src/s" +
+                                           "oot/jimple/paddle/BDDEdgeContextStripper.jedd:33,12-36"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     boolean update() {
@@ -26,20 +26,20 @@ public class BDDEdgeContextStripper extends AbsEdgeContextStripper {
                                                "imple.paddle.bdddomains.KD, soot.jimple.paddle.bdddomains.tg" +
                                                "tm:soot.jimple.paddle.bdddomains.MT> newEdges = jedd.interna" +
                                                "l.Jedd.v().project(in.get(), new jedd.PhysicalDomain[...]); " +
-                                               "at /home/research/ccl/olhota/soot-trunk/src/soot/jimple/padd" +
-                                               "le/BDDEdgeContextStripper.jedd:35,33-41"),
+                                               "at /home/research/ccl/olhota/soot-trunk2/src/soot/jimple/pad" +
+                                               "dle/BDDEdgeContextStripper.jedd:35,33-41"),
                                               jedd.internal.Jedd.v().project(in.get(),
-                                                                             new jedd.PhysicalDomain[] { C1.v(), C2.v() }));
+                                                                             new jedd.PhysicalDomain[] { C2.v(), C1.v() }));
         newEdges.eqMinus(seen);
         seen.eqUnion(newEdges);
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), stmt.v(), srcm.v(), kind.v(), srcc.v(), tgtc.v() },
-                                                    new jedd.PhysicalDomain[] { MT.v(), ST.v(), MS.v(), KD.v(), C1.v(), C2.v() },
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), tgtm.v(), srcm.v(), kind.v(), tgtc.v(), srcc.v() },
+                                                    new jedd.PhysicalDomain[] { ST.v(), MT.v(), MS.v(), KD.v(), C2.v(), C1.v() },
                                                     ("out.add(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().r" +
                                                      "ead(newEdges), jedd.internal.Jedd.v().literal(new java.lang." +
                                                      "Object[...], new jedd.Attribute[...], new jedd.PhysicalDomai" +
                                                      "n[...]), new jedd.PhysicalDomain[...])) at /home/research/cc" +
-                                                     "l/olhota/soot-trunk/src/soot/jimple/paddle/BDDEdgeContextStr" +
-                                                     "ipper.jedd:38,8-11"),
+                                                     "l/olhota/soot-trunk2/src/soot/jimple/paddle/BDDEdgeContextSt" +
+                                                     "ripper.jedd:38,8-11"),
                                                     jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newEdges),
                                                                                 jedd.internal.Jedd.v().literal(new Object[] { null, null },
                                                                                                                new jedd.Attribute[] { srcc.v(), tgtc.v() },

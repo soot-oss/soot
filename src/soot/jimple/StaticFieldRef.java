@@ -43,6 +43,7 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf
 
     protected StaticFieldRef(SootFieldRef fieldRef)
     {
+        if( !fieldRef.isStatic() ) throw new RuntimeException("wrong static-ness");
         this.fieldRef = fieldRef;
     }
 

@@ -19,8 +19,8 @@ public final class Qsrc_dstBDD extends Qsrc_dst {
                                                      new PhysicalDomain[] { V1.v(), V2.v() },
                                                      ("this.add(jedd.internal.Jedd.v().literal(new java.lang.Object" +
                                                       "[...], new jedd.Attribute[...], new jedd.PhysicalDomain[...]" +
-                                                      ")) at /home/research/ccl/olhota/soot-trunk/src/soot/jimple/p" +
-                                                      "addle/queue/Qsrc_dstBDD.jedd:34,8-11"),
+                                                      ")) at /home/research/ccl/olhota/soot-trunk2/src/soot/jimple/" +
+                                                      "paddle/queue/Qsrc_dstBDD.jedd:34,8-11"),
                                                      jedd.internal.Jedd.v().literal(new Object[] { _src, _dst },
                                                                                     new Attribute[] { src.v(), dst.v() },
                                                                                     new PhysicalDomain[] { V1.v(), V2.v() })));
@@ -31,8 +31,8 @@ public final class Qsrc_dstBDD extends Qsrc_dst {
             Rsrc_dstBDD reader = (Rsrc_dstBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { src.v(), dst.v() },
                                                            new PhysicalDomain[] { V1.v(), V2.v() },
-                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
-                                                            "oot/jimple/paddle/queue/Qsrc_dstBDD.jedd:39,12-18"),
+                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk2/src/" +
+                                                            "soot/jimple/paddle/queue/Qsrc_dstBDD.jedd:39,12-18"),
                                                            in));
         }
     }

@@ -41,6 +41,7 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
     protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethodRef methodRef,
                                 ValueBox[] argBoxes)
     {
+        if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
         this.baseBox = baseBox; this.methodRef = methodRef;
         this.argBoxes = argBoxes;
     }

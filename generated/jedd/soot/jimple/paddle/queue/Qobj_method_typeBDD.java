@@ -19,8 +19,8 @@ public final class Qobj_method_typeBDD extends Qobj_method_type {
                                                      new PhysicalDomain[] { H1.v(), MS.v(), T1.v() },
                                                      ("this.add(jedd.internal.Jedd.v().literal(new java.lang.Object" +
                                                       "[...], new jedd.Attribute[...], new jedd.PhysicalDomain[...]" +
-                                                      ")) at /home/research/ccl/olhota/soot-trunk/src/soot/jimple/p" +
-                                                      "addle/queue/Qobj_method_typeBDD.jedd:34,8-11"),
+                                                      ")) at /home/research/ccl/olhota/soot-trunk2/src/soot/jimple/" +
+                                                      "paddle/queue/Qobj_method_typeBDD.jedd:34,8-11"),
                                                      jedd.internal.Jedd.v().literal(new Object[] { _obj, _method, _type },
                                                                                     new Attribute[] { obj.v(), method.v(), type.v() },
                                                                                     new PhysicalDomain[] { H1.v(), MS.v(), T1.v() })));
@@ -31,8 +31,8 @@ public final class Qobj_method_typeBDD extends Qobj_method_type {
             Robj_method_typeBDD reader = (Robj_method_typeBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { type.v(), method.v(), obj.v() },
                                                            new PhysicalDomain[] { T1.v(), MS.v(), H1.v() },
-                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
-                                                            "oot/jimple/paddle/queue/Qobj_method_typeBDD.jedd:39,12-18"),
+                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk2/src/" +
+                                                            "soot/jimple/paddle/queue/Qobj_method_typeBDD.jedd:39,12-18"),
                                                            in));
         }
     }

@@ -73,6 +73,7 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
     
     protected AbstractStaticInvokeExpr(SootMethodRef methodRef, ValueBox[] argBoxes)
     {
+        if( !methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
         this.methodRef = methodRef; this.argBoxes = argBoxes;
     }
 

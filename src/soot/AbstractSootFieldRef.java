@@ -114,4 +114,7 @@ class AbstractSootFieldRef implements SootFieldRef {
         if( trace == null ) throw new FieldResolutionFailedException();
         return null;
     }
+    public String toString() {
+        return getSignature();
+    }
 }

@@ -49,7 +49,10 @@ public class BInterfaceInvokeInst extends AbstractInvokeInst
     
 
     public BInterfaceInvokeInst(SootMethodRef methodRef, int argCount) 
-        { this.methodRef = methodRef; this.argCount = argCount; }
+        {
+            if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
+            this.methodRef = methodRef; this.argCount = argCount;
+        }
 
 
     public Object clone() 

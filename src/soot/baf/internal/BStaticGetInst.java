@@ -41,6 +41,7 @@ public class BStaticGetInst extends AbstractInst implements StaticGetInst
 
     public BStaticGetInst(SootFieldRef fieldRef)
     {
+        if( !fieldRef.isStatic() ) throw new RuntimeException("wrong static-ness");
         this.fieldRef = fieldRef;
     }
     
