@@ -484,7 +484,7 @@ public class Main {
             } else {
                 PackManager.v().getPack("wjtp").apply();
                 PackManager.v().getPack("wjop").apply();
-                PackManager.v().getPack("wjtp2").apply();
+                PackManager.v().getPack("wjap").apply();
             }
             preProcessDAVA();
             wholeProcessClasses();
