@@ -1945,6 +1945,9 @@ public class JasminClass
 
             public void caseIncInst(IncInst i)
             {
+                if(((ValueBox) i.getUseBoxes().get(0)).getValue() != ((ValueBox) i.getDefBoxes().get(0)).getValue())
+                    throw new RuntimeException("iinc def and use boxes don't match");
+                    
                 emit("iinc " + ((Integer) localToSlot.get(i.getLocal())) + " " + i.getConstant());
             }
 

@@ -19,7 +19,7 @@ public class LoadStoreOptimizer
     final static protected int SPECIAL_SUCCESS = 4;
     final static protected int HAS_CHANGED = 5;
 
-  final static  boolean debug = true;
+  final static  boolean debug = false;
     
     Unit global = null;
     private static LoadStoreOptimizer mSingleton = new LoadStoreOptimizer();
@@ -526,8 +526,8 @@ public class LoadStoreOptimizer
         
         boolean hasChanged = true;
 
-        if(debug) { System.out.println("Stack height= " + stackHeight + "minattained: " + minStackHeightAttained + "from succ: " + block.getSuccOf(from));}
-        System.out .println(mUnitToBlockMap.get(from));
+        if(debug) { System.out.println("Stack height= " + stackHeight + "minattained: " + minStackHeightAttained + "from succ: " + block.getSuccOf(from));
+	System.out .println(mUnitToBlockMap.get(from));}
         while(hasChanged) {
             hasChanged = false;
 

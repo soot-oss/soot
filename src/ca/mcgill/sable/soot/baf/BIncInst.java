@@ -105,10 +105,22 @@ public class BIncInst extends AbstractInst implements IncInst
             this.otherBox = otherBox; 
         }
 
+        public Value getValue()
+        {
+            Value toReturn = super.getValue();
+            
+            return toReturn;
+        }
+        
         public void setValue(Value v)
         {
+            super.setValue(v);
+            
             if(otherBox != null)
-                otherBox.setValue(v);
+            {
+                if(otherBox.getValue() != v)
+                    otherBox.setValue(v);
+            }
         }
     }
        
@@ -116,16 +128,16 @@ public class BIncInst extends AbstractInst implements IncInst
     {
       mConstant = constant;
       
-      localBox = new LinkedBafLocalBox(local);
+      localBox = new BafLocalBox(local);
       
       useBoxes = new ArrayList();
       useBoxes.add(localBox);
       useBoxes = Collections.unmodifiableList(useBoxes);
 
-      defLocalBox = new LinkedBafLocalBox(local);
+      defLocalBox = new BafLocalBox(local);
       
-      ((LinkedBafLocalBox) defLocalBox).setOtherBox(localBox);
-      ((LinkedBafLocalBox) localBox).setOtherBox(defLocalBox);
+      //((LinkedBafLocalBox) defLocalBox).setOtherBox(localBox);
+      //((LinkedBafLocalBox) localBox).setOtherBox(defLocalBox);
 
       mDefBoxes = new ArrayList();
       mDefBoxes.add(defLocalBox);
