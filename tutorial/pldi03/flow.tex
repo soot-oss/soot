@@ -50,7 +50,7 @@ CFG using a worklist algorithm.
 
 \begin{slide}{Flow Analysis Hierarchy}
 \Tree [.AbstractFlowAnalysis [.FlowAnalysis Forward- Backward- ] [.BranchedFlowAnalysis Forward- ] ]
-
+\sablefootnote{soot.toolkits.scalar}
 \end{slide}
 
 \begin{slide}{Soot Flow Analyses}
@@ -62,6 +62,7 @@ CFG using a worklist algorithm.
 ]
 }
 \end{center}
+\sablefootnote{soot.toolkits.scalar}
 \end{slide}
 
 
@@ -107,6 +108,7 @@ f$^{\mbox{\scriptsize n}}$ computes {\sf IN} sets from {\sf OUT} sets.
 \qquad
 
 In Soot, we subclass {\tt \red BackwardFlowAnalysis}.
+\sablefootnote{soot.toolkits.scalar.BackwardFlowAnalysis}
 
 \qquad
 
@@ -148,6 +150,8 @@ Domain for Live Variables: sets of {\tt Local}s
 
 In Soot, we use the provided {\tt ArraySparseSet} implementation of {\tt
 FlowSet}.
+\sablefootnote{soot.toolkits.scalar.FlowSet}
+\sablefootnote{soot.toolkits.scalar.ArraySparseSet}
 \end{slide}
 
 \begin{slide}{Implementing an Abstraction}
@@ -212,7 +216,7 @@ d.add(v);
 
 \quad
 
-\sablefootnote{www.sable.mcgill.ca/soot/doc/soot/toolkits/scalar/FlowSet.html}
+\sablefootnote{soot.toolkits.scalar.FlowSet}
 
 % why flow universes?
 %  * efficient encoding 
@@ -222,6 +226,7 @@ d.add(v);
 \begin{slide}{Digression: types of {\tt FlowSet}s}
 \vspace*{-0.1in}
 Which {\tt FlowSet} do you want?
+\sablefootnote{soot.toolkits.scalar.*Set}
 \begin{itemize}
 %\item {\tt ArraySparseSet}: represents as simple array; 
 %can't be complemented, needs no initial universe
@@ -435,7 +440,6 @@ LiveVariablesAnalysis(UnitGraph g)
     super(g);
 
     doAnalysis();
-    
 }
 \end{verbatim}
 Causes the flow sets to be computed, using Soot's flow
@@ -444,6 +448,20 @@ analysis engine.
 \quad
 
 In other analyses, we precompute values.
+\end{slide}
+
+\begin{slide}{Enjoy: Flow Analysis Results}
+You can instantiate an analysis and collect
+results:
+\begin{verbatim}
+  LiveVariablesAnalysis lv = 
+      new LiveVariablesAnalysis(g);
+
+// return SparseArraySets
+// of live variables:
+  lv.getFlowBefore(s);
+  lv.getFlowAfter(s);
+\end{verbatim}
 \end{slide}
 
 % branching flow analysis
@@ -455,7 +473,7 @@ control-flow paths reaching $s$ result in {\tt v} being
 assigned a value different from {\tt null}.
 
 \begin{center}
-\input{br-example.eepic}
+\scalebox{0.95}{\input{br-example.eepic}}
 \end{center}
 \end{slide}
 
@@ -479,7 +497,7 @@ sensitive to branches
 
 \qquad
 
-In Soot, we subclass {\tt \red ForwardBranchedFlowAnalysis}.
+Now subclass {\small \tt \red ForwardBranchedFlowAnalysis}\sablefootnote{soot.toolkits.scalar.ForwardBranchedFlowAnalysis}.
 
 \qquad
 
@@ -511,7 +529,7 @@ Again use {\tt ArraySparseSet} to implement:
 \end{tabular}}\]
 }
 
-\sablefootnote{$^*$ BranchedRefVarsAnalysis}
+\sablefootnote{$^*$ see soot.jimple.toolkits.annotation.nullcheck.BranchedRefVarsAnalysis}
 \end{slide}
 
 \begin{slide}{Implementing an Abstraction}
@@ -613,25 +631,24 @@ Create auxiliary objects.
 \begin{verbatim}
 public NullnessAnalysis(UnitGraph g)
 {
-   super(g);
+  super(g);
 
-   unitToGenerateSet = new HashMap();
-   Body b = g.getBody();
-   List refLocals = new LinkedList();
+  unitToGenerateSet = new HashMap();
+  Body b = g.getBody();
+  List refLocals = new LinkedList();
 \end{verbatim}
 \end{slide}
 
 \begin{slide}{Step 5: Constructor: Finding All Locals}
-\vspace*{-0.2in}
 Create flowsets, finding all locals in body:
 
-\vspace*{-0.05in}
 \begin{verbatim}
 emptySet = new ArraySparseSet();
 fullSet = new ArraySparseSet();
 
 for (Local l : b.getLocals()) {
-  if (isRefOrArrayType(l.getType()))
+  if (l.getType() 
+          instanceof RefLikeType)
     fullSet.add(l);
 }
 \end{verbatim}
@@ -661,6 +678,25 @@ Don't forget to call {\tt doAnalysis()}!
 }
 \end{verbatim}
 \end{slide}
+
+\begin{slide}{Enjoy: Branched Flow Analysis Results}
+\vspace*{-0.2in}
+To instantiate a branched analysis \& collect results:
+{\small
+\begin{verbatim}
+NullnessAnalysis na=new NullnessAnalysis(b);
+
+// a SparseArraySet of non-null variables.
+na.getFlowBefore(s);  
+
+// another SparseArraySet
+if (s.fallsThrough()) na.getFallFlowAfter(s);
+
+// a List of SparseArraySets
+if (s.branches()) na.getBranchFlowAfter(s);
+\end{verbatim}}
+\end{slide}
+
 
 % do we really need 'copy'?  I wonder how much time is spent on that.
 % if our flow set implementation has immutability, then 'copy' can be

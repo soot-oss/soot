@@ -49,7 +49,7 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
             ValueBox box = (ValueBox) boxIt.next();
             Value value = box.getValue();
             if (value instanceof Local && 
-                    isRefOrArrayType(value.getType()))
+                    value.getType() instanceof RefLikeType)
                 dest.remove(value);
         }
 
@@ -197,7 +197,7 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
         while (localIt.hasNext())
         {
             Local l = (Local)localIt.next();
-            if (isRefOrArrayType(l.getType()))
+            if (l.getType() instanceof RefLikeType)
                 fullSet.add(l);
         }
 
@@ -212,7 +212,7 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
             {
                 Value lo = ((DefinitionStmt)u).getLeftOp();
                 if (lo instanceof Local && 
-                       isRefOrArrayType(lo.getType()))
+                       lo.getType() instanceof RefLikeType)
                     addGensFor((DefinitionStmt)u);
             }
 
@@ -238,18 +238,13 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
 
                 if (base != null && 
                       base instanceof Local && 
-                      isRefOrArrayType(base.getType()))
+                      base.getType() instanceof RefLikeType)
                     addGen(u, base);
             }
         }
 
         // Call superclass method to do work.
         doAnalysis();
-    }
-
-    private boolean isRefOrArrayType(Type t)
-    {
-        return t instanceof RefType || t instanceof ArrayType;
     }
 }
 

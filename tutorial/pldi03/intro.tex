@@ -188,7 +188,7 @@ Jimple rep of {\tt IdentityStmt}s:
 \end{verbatim}
 \end{slide}
 
-\begin{slide}{Context: other Jimple {\tt Stmts}}
+\begin{slide}{Context: other Jimple {\tt Stmt}s}
 \vspace*{-0.15in}
 {\small
 \begin{verbatim}
@@ -316,7 +316,8 @@ in {\tt ut}, a {\tt Unit}.
 \vspace*{0.05in}
 {\tt getUseBoxes(ut) = \{{\blue \fbox{y}}, {\blue \fbox{z}}, {\blue \fbox{\fbox{y} op \fbox{z}}}\}}\\
 \qquad \qquad \begin{minipage}{0.8\textwidth} 
-({\tt List} containing two {\tt ValueBox}es, each containing a {\tt Local})
+({\tt List} containing 3 {\tt ValueBox}es, 2 containing {\tt Local}s \& 1
+{\tt Expr})
 \end{minipage}
 
 \end{slide}

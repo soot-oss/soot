@@ -1,9 +1,9 @@
 \begin{slide}{Adding transformations to Soot (easy way)}
 \vspace*{-0.1in}
 \begin{enumerate}
-\item Implement a \texttt{BodyTransformer} or a \texttt{SceneTransformer}
+\item Implement a \texttt{BodyTransformer} or\\ a \texttt{SceneTransformer}
 \begin{itemize}
-\item \texttt{internalTransform} method does the transformation
+\item \texttt{internalTransform} method \\does the transformation
 \end{itemize}
 \item Choose a pack for your transformation (usually \texttt{jtp})
 \item Write a \texttt{main} method that adds the phase to the pack, then
@@ -13,18 +13,37 @@ call \texttt{setDeclaredOptions()}
 \end{enumerate}
 \end{slide}
 
+\begin{slide}{On {\tt Pack}s}
+\vspace*{-0.2in}
+Want to run a set of {\tt Transformer} objects with one method call.\\
+$\qquad \Rightarrow$ Group them in a {\tt Pack}.
+
+\vspace{0.1in}
+Soot defines default {\tt Pack}s which are run automatically.
+To add a {\tt Transformer} to the {\tt jtp} {\tt Pack}:
+\begin{verbatim}
+  Pack jtp = G.v().PackManager().
+                     getPack("jtp");
+  jtp.add(new Transform("jtp", 
+            new NullTransformer()));
+\end{verbatim}
+
+On {\tt Pack}, also have {\tt insertBefore()}, {\tt insertAfter()},
+{\tt iterator()}, {\tt apply()}.
+\end{slide}
+
 \begin{slide}{Extending Soot (hard way)}
-\begin{itemize}
-\item Some people don't like calling \texttt{soot.Main.main()}
-\item What does \texttt{main()} do?
+Some don't like calling {\texttt{soot.Main.main()}}.\\
+What does \texttt{main()} do?
 \begin{enumerate}
 \item \texttt{processCmdLine()}
 \item \texttt{Scene.v().loadNecessaryClasses()}
 \item \texttt{PackManager.v().runPacks()}
 \item \texttt{PackManager.v().writeOutput()}
 \end{enumerate}
-\item You can do any or all of these yourself
-\item \texttt{Options.v()} has setter methods for all options
+You can do any or all of these yourself:
+\begin{itemize}
+\item \texttt{Options.v()} contains setter methods for all options
 \end{itemize}
 \end{slide}
 
@@ -38,6 +57,8 @@ call \texttt{setDeclaredOptions()}
 \input{intraprocphases}
 
 \begin{slide}{Soot Pack Naming Scheme}
+\[ w^? (j|s|b|g) (b|t|o|a)p \]
+
 \begin{itemize}
 \item w $\Rightarrow$ Whole-program phase
 \item j, s, b, g $\Rightarrow$ Jimple, Shimple, Baf, Grimp
@@ -85,7 +106,7 @@ typed Jimple with split variables
 \item[gop] performs user-defined Grimp optimizations
 \end{description}
 \begin{description}
-\item[tag] aggregates annotations into bytecode attributes
+\item[tag] aggregates annotations into \\bytecode attributes
 \end{description}
 \end{slide}
 
