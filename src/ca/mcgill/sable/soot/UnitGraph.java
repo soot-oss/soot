@@ -128,7 +128,7 @@ public class UnitGraph implements DirectedGraph
         
         if(Main.isVerbose)
             System.out.println("[" + method.getName() + 
-                               "]     Constructing StmtGraph...");
+                               "]     Constructing UnitGraph...");
       
         if(Main.isProfilingOptimization)
             Main.graphTimer.start();
@@ -161,7 +161,8 @@ public class UnitGraph implements DirectedGraph
                         if(nextUnit != null)
                             successors.add(nextUnit);
                         else
-                            throw new RuntimeException("last unit of a method should not fall through");
+                            throw new RuntimeException("last unit of a method should not fall through: " + currentUnit + 
+                                " " + body.getMethod().getSignature());
                     }
                         
                     if( currentUnit.branches() ) {
