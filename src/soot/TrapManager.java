@@ -1,4 +1,3 @@
-/* -*- mode:Java; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-  */
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
  *
