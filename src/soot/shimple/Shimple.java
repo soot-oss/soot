@@ -48,7 +48,7 @@ import java.io.*;
 public class Shimple
 {
     public static final String PHI = "Phi";
-    public static final String PHASE = "sb";
+    public static final String PHASE = "shimple";
     
     public Shimple(Singletons.Global g) {}
 
