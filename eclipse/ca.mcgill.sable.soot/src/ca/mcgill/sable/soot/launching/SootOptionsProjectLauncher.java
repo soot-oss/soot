@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.*;
 //import ca.mcgill.sable.soot.SootPlugin;
-import ca.mcgill.sable.soot.testing.*;
+import ca.mcgill.sable.soot.ui.*;
 /**
  * Displays the Soot Options dialog and launches Soot with
  * selected options on all class files in output dir of 

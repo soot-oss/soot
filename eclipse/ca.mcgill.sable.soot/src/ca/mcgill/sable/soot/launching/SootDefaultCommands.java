@@ -21,7 +21,7 @@ package ca.mcgill.sable.soot.launching;
 
 import java.util.ArrayList;
 
-import ca.mcgill.sable.soot.testing.PhaseOptionsDialog;
+import ca.mcgill.sable.soot.ui.PhaseOptionsDialog;
 
 /**
  * Sets Soot commands needed by Eclipse in Options Dialog

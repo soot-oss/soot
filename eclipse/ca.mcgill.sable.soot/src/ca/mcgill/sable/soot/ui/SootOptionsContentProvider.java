@@ -17,7 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package ca.mcgill.sable.soot.testing;
+package ca.mcgill.sable.soot.ui;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 //import org.eclipse.jface.viewers.TreeViewer;

@@ -193,7 +193,7 @@
         <xslt
             style="src/soot/options/phase_options_dialog.xsl"
             in="src/soot/options/soot_options.xml"
-            out="eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/testing/PhaseOptionsDialog.java"
+            out="eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/PhaseOptionsDialog.java"
         />
         <javac
             destdir="eclipse/ca.mcgill.sable.soot/classes"

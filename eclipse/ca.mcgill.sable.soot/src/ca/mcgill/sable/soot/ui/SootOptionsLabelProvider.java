@@ -17,12 +17,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package ca.mcgill.sable.soot.testing;
+package ca.mcgill.sable.soot.ui;
 
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.part.ViewPart;
-//import org.eclipse.ui.views.*;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author jlhotak
@@ -42,51 +41,52 @@ import org.eclipse.ui.part.ViewPart;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-public class OptionsTree extends ViewPart {
-	private TreeViewer viewer;
-	
-	public OptionsTree() {
+public class SootOptionsLabelProvider implements ILabelProvider {
+
+	/**
+	 * Constructor for OptionsTreeLabelProvider.
+	 */
+	public SootOptionsLabelProvider() {
 		super();
 	}
 
-	public void createPartControl(Composite parent) {
-		viewer = new TreeViewer(parent);
-		viewer.setContentProvider(new SootOptionsContentProvider());
-		viewer.setLabelProvider(new SootOptionsLabelProvider());
-		viewer.setInput(getInitialInput());
-		viewer.expandAll();
-
-	}
-	
-	private SootOption getInitialInput(){
-		//SootOption root = new SootOption("");
-		
-		//SootOption page1 = new SootOption("Output");
-		//root.addChild(page1);
-		//SootOption page2 = new SootOption("Input");
-		//root.addChild(page2);
-		
+	/**
+	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(Object)
+	 */
+	public Image getImage(Object element) {
 		return null;
 	}
-	
-	public void setFocus() {
-		viewer.getControl().setFocus();
-	}
-	
+
 	/**
-	 * Returns the viewer.
-	 * @return TreeViewer
+	 * @see org.eclipse.jface.viewers.ILabelProvider#getText(Object)
 	 */
-	public TreeViewer getViewer() {
-		return viewer;
+	public String getText(Object element) {
+		return ((SootOption)element).getLabel();
 	}
 
 	/**
-	 * Sets the viewer.
-	 * @param viewer The viewer to set
+	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(ILabelProviderListener)
 	 */
-	public void setViewer(TreeViewer viewer) {
-		this.viewer = viewer;
+	public void addListener(ILabelProviderListener listener) {
+	}
+
+	/**
+	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
+	 */
+	public void dispose() {
+	}
+
+	/**
+	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(Object, String)
+	 */
+	public boolean isLabelProperty(Object element, String property) {
+		return false;
+	}
+
+	/**
+	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(ILabelProviderListener)
+	 */
+	public void removeListener(ILabelProviderListener listener) {
 	}
 
 }

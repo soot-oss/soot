@@ -25,7 +25,7 @@ import java.util.Iterator;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.*;
 import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.soot.testing.PhaseOptionsDialog;
+import ca.mcgill.sable.soot.ui.PhaseOptionsDialog;
 
 /**
  * Displays the Soot Options dialog and launches Soot with

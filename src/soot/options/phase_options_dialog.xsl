@@ -37,7 +37,7 @@
  *
  */
 
-package ca.mcgill.sable.soot.testing;
+package ca.mcgill.sable.soot.ui;
 
 //import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.widgets.*;

@@ -77,11 +77,17 @@ public class CallGraphNodeEditPart extends SimpleNodeEditPart {
 		mLabel.getInsets().left = 1;
 		mLabel.getInsets().right = 1;
 		
+		
 		rect.add(mLabel);
 		
 		return rect;
 	}
-
+	
+	Image publicImage = null;
+	Image privateImage = null;
+	Image protectedImage = null;
+	
+	
 	protected void refreshVisuals(){
 		Label cLabel = (Label)getFigure().getChildren().get(0);
 		Label mLabel = (Label)getFigure().getChildren().get(1);

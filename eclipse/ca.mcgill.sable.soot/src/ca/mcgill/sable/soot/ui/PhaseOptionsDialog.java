@@ -1,22 +1,3 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Jennifer Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 
 
 /*
@@ -51,7 +32,7 @@
  *
  */
 
-package ca.mcgill.sable.soot.testing;
+package ca.mcgill.sable.soot.ui;
 
 //import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.widgets.*;
@@ -1693,6 +1674,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getGeneral_Optionsdebug_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getGeneral_Optionsdebug_resolver_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionsdebug_resolver_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		stringRes = getGeneral_Optionsphase_help_widget().getText().getText();
 		
 		defStringRes = "";
@@ -1700,6 +1691,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getGeneral_Optionsphase_help_widget().getAlias(), stringRes);
+		}
+		
+		boolRes = getInput_Optionsfull_resolver_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsfull_resolver_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getInput_Optionsallow_phantom_refs_widget().getButton().getSelection();
@@ -1788,6 +1789,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Optionsshow_exception_dests_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getOutput_Optionsgzip_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getOutput_Optionsgzip_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getOutput_Optionsoutput_dir_widget().getText().getText();
@@ -5375,6 +5386,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return General_Optionsdebug_widget;
 	}	
 	
+	private BooleanOptionWidget General_Optionsdebug_resolver_widget;
+	
+	private void setGeneral_Optionsdebug_resolver_widget(BooleanOptionWidget widget) {
+		General_Optionsdebug_resolver_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionsdebug_resolver_widget() {
+		return General_Optionsdebug_resolver_widget;
+	}	
+	
 
 	private ListOptionWidget General_Optionsphase_help_widget;
 	
@@ -5386,6 +5407,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return General_Optionsphase_help_widget;
 	}	
 	
+	
+	private BooleanOptionWidget Input_Optionsfull_resolver_widget;
+	
+	private void setInput_Optionsfull_resolver_widget(BooleanOptionWidget widget) {
+		Input_Optionsfull_resolver_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsfull_resolver_widget() {
+		return Input_Optionsfull_resolver_widget;
+	}	
 	
 	private BooleanOptionWidget Input_Optionsallow_phantom_refs_widget;
 	
@@ -5481,6 +5512,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getOutput_Optionsshow_exception_dests_widget() {
 		return Output_Optionsshow_exception_dests_widget;
+	}	
+	
+	private BooleanOptionWidget Output_Optionsgzip_widget;
+	
+	private void setOutput_Optionsgzip_widget(BooleanOptionWidget widget) {
+		Output_Optionsgzip_widget = widget;
+	}
+	
+	public BooleanOptionWidget getOutput_Optionsgzip_widget() {
+		return Output_Optionsgzip_widget;
 	}	
 	
 
@@ -8249,6 +8290,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		setGeneral_Optionsdebug_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug", "", "","debug", "\nPrint various debugging information as Soot runs, particularly \nfrom the Baf Body Phase and the Jimple Annotation Pack Phase. ", defaultBool)));
 		
 		
+		
+		defKey = ""+" "+""+" "+"debug-resolver";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionsdebug_resolver_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug Resolver", "", "","debug-resolver", "\nPrint debugging information about class resolving. ", defaultBool)));
+		
+		
 
 		defKey = ""+" "+""+" "+"ph";
 		defKey = defKey.trim();
@@ -8292,6 +8349,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
+		
+		
+		
+		defKey = ""+" "+""+" "+"full-resolver";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionsfull_resolver_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force complete resolver", "", "","full-resolver", "\nNormally, Soot resolves only that application classes and any \nclasses that they refer to, along with any classes it needs for \nthe Jimple typing, but it does not transitively resolve \nreferences in these additional classes that were resolved only \nbecause they were referenced. This switch forces full transitive \nresolution of all references found in all classes that are \nresolved, regardless of why they were resolved. In \nwhole-program mode, class resolution is always fully transitive. \nTherefore, in whole-program mode, this switch has no effect, and \nclass resolution is always performed as if it were turned on. ", defaultBool)));
 		
 		
 		
@@ -8484,6 +8557,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setOutput_Optionsshow_exception_dests_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Show Exception Destinations", "", "","show-exception-dests", "\nIndicate whether to show exception destination edges as well as \ncontrol flow edges in dumps of exceptional control flow graphs. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"gzip";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setOutput_Optionsgzip_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("GZipped IR output", "", "","gzip", "\nThis option causes Soot to compress output files of \nintermediate representations with GZip. It does not apply to \nclass files output by Soot. ", defaultBool)));
 		
 		
 		

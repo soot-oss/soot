@@ -45,7 +45,7 @@ import org.eclipse.swt.*;
 
 import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.launching.*;
-import ca.mcgill.sable.soot.testing.PhaseOptionsDialog;
+import ca.mcgill.sable.soot.ui.PhaseOptionsDialog;
 
 /**
  * @author jlhotak
