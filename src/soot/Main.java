@@ -450,12 +450,12 @@ public class Main implements Runnable, ICompilationListener
 
     private static void printHelp()
     {
-         // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.63");
-            System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
+         // $Format: "            System.out.println(\"Soot version 1.0.0 (build $ProjectVersion$)\");"$
+            System.out.println("Soot version 1.0.0 (build 1.beta.6.dev.64)");
+            System.out.println("Copyright (C) 1997-2000 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
-            System.out.println("Contributions are copyright (C) 1997-1999 by their respective contributors.");
+            System.out.println("Contributions are copyright (C) 1997-2000 by their respective contributors.");
             System.out.println("See individual source files for details.");
             System.out.println("");
             System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
