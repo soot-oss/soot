@@ -69,8 +69,8 @@ public class CommonSubexpressionEliminator extends BodyTransformer
             System.out.println("[" + b.getMethod().getName() +
                 "]     Eliminating common subexpressions (naively)...");
 
-        AvailableExpressions ae = new SlowAvailableExpressions(b);
-	  //   new FastAvailableExpressions(b);
+        AvailableExpressions ae = // new SlowAvailableExpressions(b);
+	     new FastAvailableExpressions(b);
 
         Chain units = b.getUnits();
         Iterator unitsIt = units.snapshotIterator();
