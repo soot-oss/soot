@@ -29,8 +29,8 @@ public final class Qvar_srcm_stmt_signature_kindBDD extends Qvar_srcm_stmt_signa
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_srcm_stmt_signature_kindBDD reader = (Rvar_srcm_stmt_signature_kindBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), stmt.v(), srcm.v(), kind.v(), signature.v() },
-                                                           new PhysicalDomain[] { V1.v(), ST.v(), T1.v(), FD.v(), H2.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), srcm.v(), kind.v(), stmt.v(), signature.v() },
+                                                           new PhysicalDomain[] { V1.v(), T1.v(), FD.v(), ST.v(), H2.v() },
                                                            ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
                                                             "addle/queue/Qvar_srcm_stmt_signature_kindBDD.jedd:39,12-18"),
                                                            in));

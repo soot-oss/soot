@@ -56,7 +56,7 @@ public class PaddleTransformer extends SceneTransformer
                 Scene.v().setContextNumberer( new ContextStringNumberer(Scene.v().getUnitNumberer(), cgoptions.k()) );
                 break;
             case CGOptions.context_kobjsens:
-                Scene.v().setContextNumberer( new ContextStringNumberer(PaddleNumberers.v().contextAllocNodeNumberer(), cgoptions.k()) );
+                Scene.v().setContextNumberer( new ContextStringNumberer(PaddleNumberers.v().allocNodeNumberer(), cgoptions.k()) );
                 break;
             default:
                 throw new RuntimeException( "Unhandled kind of context" );
@@ -232,56 +232,52 @@ public class PaddleTransformer extends SceneTransformer
         h.addTag( t );
     }
     private void addTags() {
-        throw new RuntimeException( "NYI" );
-        /*
         final NodeManager nm = PaddleScene.v().nodeManager();
         final AbsPAG pag = PaddleScene.v().pag;
 
         final Map nodeToTag = new HashMap();
 
-        for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
-
-            final SootClass c = (SootClass) cIt.next();
-            for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
-                SootMethod m = (SootMethod) mIt.next();
-                if( !m.isConcrete() ) continue;
-                if( !m.hasActiveBody() ) continue;
-                for( Iterator sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
-                    final Stmt s = (Stmt) sIt.next();
-                    if( s instanceof DefinitionStmt ) {
-                        Value lhs = ((DefinitionStmt) s).getLeftOp();
-                        VarNode v = null;
-                        if( lhs instanceof Local ) {
-                            v = nm.findLocalVarNode( (Local) lhs );
-                        } else if( lhs instanceof FieldRef ) {
-                            v = nm.findGlobalVarNode( ((FieldRef) lhs).field() );
+        Iterator mIt = Scene.v().getReachableMethods().listener();
+        while( mIt.hasNext() ) {
+            MethodOrMethodContext momc = (MethodOrMethodContext) mIt.next();
+            SootMethod m = momc.method();
+            if( !m.isConcrete() ) continue;
+            if( !m.hasActiveBody() ) continue;
+            for( Iterator sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
+                final Stmt s = (Stmt) sIt.next();
+                if( s instanceof DefinitionStmt ) {
+                    Value lhs = ((DefinitionStmt) s).getLeftOp();
+                    VarNode v = null;
+                    if( lhs instanceof Local ) {
+                        v = nm.findLocalVarNode( (Local) lhs );
+                    } else if( lhs instanceof FieldRef ) {
+                        v = nm.findGlobalVarNode( ((FieldRef) lhs).getField() );
+                    }
+                    if( v != null ) {
+                        ContextVarNode cvn = ContextVarNode.make(momc.context(), v);
+                        PointsToSetReadOnly p2set = 
+                            PaddleScene.v().p2sets.get(cvn);
+                        p2set.forall( new P2SetVisitor() {
+                        public final void visit( ContextAllocNode n ) {
+                            addTag( s, n, nodeToTag );
+                        }} );
+                        Iterator it;
+                        it = pag.simpleInvLookup(cvn);
+                        while( it.hasNext() ) {
+                            addTag( s, (Node) it.next(), nodeToTag );
                         }
-                        if( v != null ) {
-                            PointsToSetReadOnly p2set = 
-                                PaddleScene.v().p2sets.get(v);
-                            p2set.forall( new P2SetVisitor() {
-                            public final void visit( Node n ) {
-                                addTag( s, n, nodeToTag );
-                            }} );
-                            Iterator it;
-                            it = pag.simpleInvLookup(v);
-                            while( it.hasNext() ) {
-                                addTag( s, (Node) it.next(), nodeToTag );
-                            }
-                            it = pag.allocInvLookup(v);
-                            while( it.hasNext() ) {
-                                addTag( s, (Node) it.next(), nodeToTag );
-                            }
-                            it = pag.loadInvLookup(v);
-                            while( it.hasNext() ) {
-                                addTag( s, (Node) it.next(), nodeToTag );
-                            }
+                        it = pag.allocInvLookup(cvn);
+                        while( it.hasNext() ) {
+                            addTag( s, (Node) it.next(), nodeToTag );
+                        }
+                        it = pag.loadInvLookup(cvn);
+                        while( it.hasNext() ) {
+                            addTag( s, (Node) it.next(), nodeToTag );
                         }
                     }
                 }
             }
         }
-        */
     }
     private void preJimplify() {
         boolean change = true;

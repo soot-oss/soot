@@ -23,8 +23,8 @@ public class Qsrcc_src_dstc_dstTrad extends Qsrcc_src_dstc_dst {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v(), dstc.v(), srcc.v() },
-                                              new PhysicalDomain[] { V2.v(), V1.v(), C2.v(), C1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { dstc.v(), srcc.v(), dst.v(), src.v() },
+                                              new PhysicalDomain[] { C2.v(), C1.v(), V2.v(), V1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/queue/Qsrcc_src_dstc_dstTrad.jed" +
                                                "d:40,22-24"),

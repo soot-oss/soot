@@ -23,8 +23,8 @@ public class Qvarc_var_objc_objDebug extends Qvarc_var_objc_obj {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { var.v(), objc.v(), obj.v(), varc.v() },
-                                              new PhysicalDomain[] { V1.v(), C2.v(), H1.v(), C1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v(), objc.v(), varc.v() },
+                                              new PhysicalDomain[] { V1.v(), H1.v(), C2.v(), C1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/queue/Qvarc_var_objc_objDebug.je" +
                                                "dd:39,22-24"),

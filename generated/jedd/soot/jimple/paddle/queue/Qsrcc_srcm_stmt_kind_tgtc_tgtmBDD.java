@@ -29,8 +29,8 @@ public final class Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD extends Qsrcc_srcm_stmt_kin
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD reader = (Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), tgtc.v(), stmt.v(), srcm.v(), kind.v(), srcc.v() },
-                                                           new PhysicalDomain[] { T2.v(), V2.v(), ST.v(), T1.v(), FD.v(), V1.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), kind.v(), stmt.v(), srcc.v(), tgtm.v(), tgtc.v() },
+                                                           new PhysicalDomain[] { T1.v(), FD.v(), ST.v(), V1.v(), T2.v(), V2.v() },
                                                            ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
                                                             "addle/queue/Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD.jedd:39,12-18"),
                                                            in));

@@ -53,7 +53,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls
     private int lastAllocNode = 1;
     private <var:V1, type> varNodes;
     private <obj, type> allocNodes;
-    private <kind> virtual = new{Kind.VIRTUAL=>kind} | new{Kind.INTERFACE=>kind};
+    private <kind> virtual = new{Kind.VIRTUAL=>kind} | new{Kind.INTERFACE=>kind} | new{Kind.PRIVILEGED=>kind};
     private <type> threads = 0B;
     private void updateNodes() {
         // update varnodes
@@ -159,21 +159,32 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         if( newSpecials != 0B ) change = true;
     }
 
+    private <var, srcm, stmt, signature, kind> allVirtRcv = 0B;
+    private <var, srcm, stmt, signature, kind> allThreadRcv = 0B;
+
     private void updateVirtuals() {
-        <var, srcm, stmt, signature, kind> rcv =
-            allRcv{kind} >< virtual{kind};
-        
-        <var, srcm, stmt, signature, kind> threadRcv =
-            allRcv{kind} >< new{Kind.THREAD=>kind}{kind};
+        <var, srcm, stmt, signature, kind> newVirtRcv = 
+            newRcv{kind} >< virtual{kind};
+        allVirtRcv |= newVirtRcv;
+
+        <var, srcm, stmt, signature, kind> newThreadRcv = 
+            newRcv{kind} >< new{Kind.THREAD=>kind}{kind};
+        allThreadRcv |= newThreadRcv;
+
+        <var, srcm, stmt, type, kind, tgtm> callSiteTargets =
+            (newVirtRcv|newThreadRcv){signature} 
+            <> (method=>tgtm) targets{signature};
+
+        <type, signature, method> newTargets = 0B;
 
         // resolve new points-to sets
         <var, type> ptTypes = allocNodes{obj} <> (ctxt=>) newPt{obj}; 
 
         <type, signature> newTypes = ptTypes{var} 
-                <> (stmt=>,srcm=>,kind=>)rcv{var};
+                <> (stmt=>,srcm=>,kind=>)newVirtRcv{var};
 
         newTypes |= (ptTypes{type} >< threads{type}) {var}
-                  <> (stmt=>,srcm=>,kind=>)threadRcv {var};
+                  <> (stmt=>,srcm=>,kind=>)newThreadRcv {var};
 
         // close under AnySubType; that is, if the receiver is AnySubType(t),
         // replace it with all subtypes of t
@@ -196,11 +207,15 @@ public class BDDVirtualCalls extends AbsVirtualCalls
             toResolve -= (method=>) resolved;
 
             // add resolved ones to targets
-            targets |= (subt=>type, supt=>) resolved;
+            newTargets |= (subt=>type, supt=>) resolved;
 
             // move one step up the hierarchy for the other receiver types
-            toResolve = toResolve {supt} <> (supt=>T3) hier.extend() {subt};
+            toResolve =                          toResolve {supt} 
+                <> (supt=>T3) (hier.extend()|hier.array()) {subt};
         } while( toResolve != 0B );
+
+        newTargets -= targets;
+        targets |= newTargets;
 
         <var, obj, type, ctxt> typedPt = allocNodes{obj}><newPt{obj};
 
@@ -216,8 +231,8 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         varCtxtPt =     varCtxtPt{type, supt} 
             >< hier.subtypeRelation(){subt, supt};
 
-        <var, srcm, stmt, type, kind, tgtm> callSiteTargets =
-            (rcv|threadRcv){signature} <> (method=>tgtm) targets{signature};
+        callSiteTargets |= (allVirtRcv|allThreadRcv){signature} 
+                        <> (method=>tgtm) newTargets{signature};
 
         <ctxt, var, obj, srcm, stmt, kind, tgtm> newVirtuals =
             (type=>) (

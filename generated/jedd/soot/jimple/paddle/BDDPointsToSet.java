@@ -32,8 +32,8 @@ public class BDDPointsToSet extends PointsToSetReadOnly {
     
     public boolean forall(P2SetVisitor v) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v() },
-                                              new PhysicalDomain[] { C2.v(), H1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v() },
+                                              new PhysicalDomain[] { H1.v(), C2.v() },
                                               ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
                                                "trunk/src/soot/jimple/paddle/BDDPointsToSet.jedd:44,22-25"),
                                               bdd).iterator(new Attribute[] { objc.v(), obj.v() });

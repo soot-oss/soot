@@ -29,8 +29,8 @@ public final class Qobj_typeBDD extends Qobj_type {
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Robj_typeBDD reader = (Robj_typeBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { type.v(), obj.v() },
-                                                           new PhysicalDomain[] { T2.v(), H1.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
+                                                           new PhysicalDomain[] { H1.v(), T2.v() },
                                                            ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
                                                             "addle/queue/Qobj_typeBDD.jedd:39,12-18"),
                                                            in));

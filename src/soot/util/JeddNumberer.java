@@ -32,9 +32,9 @@ public final class JeddNumberer implements jedd.Numberer {
     /** Should return the number that was assigned to object o that was
      * previously passed as an argument to add().
      */
-    public int get( Object o ) { return n.get(o); }
+    public long get( Object o ) { return n.get(o); }
     /** Should return the object that was assigned the number number. */
-    public Object get( int number ) { return n.get(number); }
+    public Object get( long number ) { return n.get(number); }
     /** Should return the number of objects that have been assigned numbers. */
     public int size() { return n.size(); }
 }

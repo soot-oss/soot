@@ -12,10 +12,10 @@ public class MapNumberer implements Numberer {
             nextIndex++;
         }
     }
-    public Object get( int number ) {
-        return al.get(number);
+    public Object get( long number ) {
+        return al.get((int) number);
     }
-    public int get( Object o ) {
+    public long get( Object o ) {
         if( o == null ) return 0;
         Integer i = (Integer) map.get(o);
         if( i == null ) throw new RuntimeException( "couldn't find "+o );

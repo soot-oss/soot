@@ -40,7 +40,7 @@ public class TradContextCallGraphBuilder extends AbsContextCallGraphBuilder
         for( Iterator eIt = edgesIn.iterator(); eIt.hasNext(); ) {
             final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple e = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) eIt.next();
             for( Iterator mcIt = m2c.get(e.srcm()).iterator(); mcIt.hasNext(); ) {
-                final MethodContext mc = (MethodContext) mcIt.next();
+                final MethodOrMethodContext mc = (MethodOrMethodContext) mcIt.next();
                 out.add( mc.context(), mc.method(), e.stmt(), e.kind(),
                         e.tgtc(), e.tgtm() );
                 change = true;

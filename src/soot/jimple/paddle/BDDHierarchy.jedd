@@ -70,6 +70,7 @@ public final class BDDHierarchy {
      *  The direct supertype of Object[] is Object.
      */
     private <subt:T1, supt:T2> array = 0B;
+    public <subt, supt> array() { return array; }
 
     /** If s is AnySubType(t), and u is a subtype of t, contains the pair
      *  s:anyst, u:type.

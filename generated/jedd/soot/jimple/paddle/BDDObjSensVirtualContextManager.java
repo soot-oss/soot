@@ -25,15 +25,15 @@ public class BDDObjSensVirtualContextManager extends AbsVirtualContextManager {
                                                "paddle/BDDObjSensVirtualContextManager.jedd:35,45-51"),
                                               jedd.internal.Jedd.v().project(in.get(),
                                                                              new jedd.PhysicalDomain[] { V1.v() }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtc.v(), tgtm.v(), stmt.v(), srcm.v(), kind.v(), srcc.v() },
-                                                    new jedd.PhysicalDomain[] { V2.v(), T2.v(), ST.v(), T1.v(), FD.v(), V1.v() },
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { srcm.v(), kind.v(), stmt.v(), srcc.v(), tgtm.v(), tgtc.v() },
+                                                    new jedd.PhysicalDomain[] { T1.v(), FD.v(), ST.v(), V1.v(), T2.v(), V2.v() },
                                                     ("out.add(jedd.internal.Jedd.v().replace(newOut, new jedd.Phys" +
                                                      "icalDomain[...], new jedd.PhysicalDomain[...])) at /home/olh" +
                                                      "otak/soot-trunk/src/soot/jimple/paddle/BDDObjSensVirtualCont" +
                                                      "extManager.jedd:37,8-11"),
                                                     jedd.internal.Jedd.v().replace(newOut,
-                                                                                   new jedd.PhysicalDomain[] { H1.v(), V2.v() },
-                                                                                   new jedd.PhysicalDomain[] { V2.v(), V1.v() })));
+                                                                                   new jedd.PhysicalDomain[] { V2.v(), H1.v() },
+                                                                                   new jedd.PhysicalDomain[] { V1.v(), V2.v() })));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newOut), jedd.internal.Jedd.v().falseBDD());
     }
 }

@@ -23,8 +23,8 @@ public class Qvar_method_typeDebug extends Qvar_method_type {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { type.v(), var.v(), method.v() },
-                                              new PhysicalDomain[] { T2.v(), V1.v(), T1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { var.v(), method.v(), type.v() },
+                                              new PhysicalDomain[] { V1.v(), T1.v(), T2.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/queue/Qvar_method_typeDebug.jedd" +
                                                ":39,22-24"),

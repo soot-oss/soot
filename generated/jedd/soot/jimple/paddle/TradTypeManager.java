@@ -82,10 +82,14 @@ public class TradTypeManager extends AbsTypeManager {
                                                        jedd.internal.Jedd.v().trueBDD());
         if (bddGetter == null) bddGetter = this.new BDDGetter();
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), obj.v() },
-                                                   new jedd.PhysicalDomain[] { V1.v(), H1.v() },
-                                                   ("return bddGetter.get(); at /home/olhotak/soot-trunk/src/soot" +
-                                                    "/jimple/paddle/TradTypeManager.jedd:90,8-14"),
-                                                   bddGetter.get());
+                                                   new jedd.PhysicalDomain[] { V2.v(), H1.v() },
+                                                   ("return jedd.internal.Jedd.v().replace(bddGetter.get(), new j" +
+                                                    "edd.PhysicalDomain[...], new jedd.PhysicalDomain[...]); at /" +
+                                                    "home/olhotak/soot-trunk/src/soot/jimple/paddle/TradTypeManag" +
+                                                    "er.jedd:90,8-14"),
+                                                   jedd.internal.Jedd.v().replace(bddGetter.get(),
+                                                                                  new jedd.PhysicalDomain[] { V1.v() },
+                                                                                  new jedd.PhysicalDomain[] { V2.v() }));
     }
     
     class BDDGetter {

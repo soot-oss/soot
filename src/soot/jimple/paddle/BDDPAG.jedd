@@ -66,24 +66,27 @@ public class BDDPAG extends AbsPAG
     }
     
     public Iterator simpleLookup( Context ctxt, VarNode key ) {
-        return (simpleBDD{srcc, src} 
-            <> new{ctxt=>srcc, key=>src}{srcc, src}).iterator();
+        return new ContextVarNodeIterator(
+                    (dstc=>varc, dst=>var)simpleBDD{srcc, src} 
+                       <> new{ctxt=>srcc, key=>src}{srcc, src});
     }
     public Iterator loadLookup( Context ctxt, FieldRefNode key ) {
-        return (loadBDD{srcc, src, fld} <>
-            new{ctxt=>srcc, key.base()=>src, key.field()=>fld}{srcc, src, fld}).iterator();
+        return new ContextVarNodeIterator((dstc=>varc, dst=>var)
+                                                          loadBDD{srcc, src, fld}
+            <> new{ctxt=>srcc, key.base()=>src, key.field()=>fld}{srcc, src, fld});
     }
     public Iterator storeLookup( Context ctxt, VarNode key ) {
         return new FieldRefIterator((dstc=>varc, dst=>var)
             (storeBDD{srcc, src} <> new{ctxt=>srcc, key=>src}{srcc, src}));
     }
     public Iterator allocLookup( Context ctxt, AllocNode key ) {
-        return (allocBDD{objc, obj} 
-            <> new{ctxt=>objc, key=>obj}{objc, obj}).iterator();
+        return new ContextVarNodeIterator(allocBDD{objc, obj} 
+                      <> new{ctxt=>objc, key=>obj}{objc, obj});
     }
     public Iterator simpleInvLookup( Context ctxt, VarNode key ) {
-        return (simpleBDD{dstc, dst}
-            <> new{ctxt=>dstc, key=>dst}{dstc, dst}).iterator();
+        return new ContextVarNodeIterator((srcc=>varc, src=>var)
+                               simpleBDD{dstc, dst}
+            <> new{ctxt=>dstc, key=>dst}{dstc, dst});
     }
     public Iterator loadInvLookup( Context ctxt, VarNode key ) {
         return new FieldRefIterator((srcc=>varc, src=>var)
@@ -91,13 +94,13 @@ public class BDDPAG extends AbsPAG
             <> new{ctxt=>dstc, key=>dst}{dstc, dst}));
     }
     public Iterator storeInvLookup( Context ctxt, FieldRefNode key ) {
-        return (storeBDD{dstc, dst, fld} 
-            <> new{ctxt=>dstc, key.base()=>dst, key.field()=>fld}
-                        {dstc, dst, fld}).iterator();
+        return new ContextVarNodeIterator((srcc=>varc, src=>var)
+                                                         storeBDD{dstc, dst, fld} 
+            <> new{ctxt=>dstc, key.base()=>dst, key.field()=>fld}{dstc, dst, fld});
     }
     public Iterator allocInvLookup( Context ctxt, VarNode key ) {
-        return (allocBDD{varc, var} 
-            <> new{ctxt=>varc, key=>var}{varc, var}).iterator();
+        return new ContextAllocNodeIterator(allocBDD{varc, var} 
+                        <> new{ctxt=>varc, key=>var}{varc, var});
     }
 
     public Rsrcc_src_dstc_dst allSimple() { return new Rsrcc_src_dstc_dstBDD(simpleBDD, "allsimple"); }
@@ -107,7 +110,7 @@ public class BDDPAG extends AbsPAG
 
     private static class FieldRefIterator implements Iterator {
         FieldRefIterator( <varc, var, fld> bdd ) {
-            this.it = bdd.iterator( new Attribute[] { ctxt.v(), var.v(), fld.v() } );
+            this.it = bdd.iterator( new Attribute[] { varc.v(), var.v(), fld.v() } );
         }
         private Iterator it;
         public boolean hasNext() { return it.hasNext(); }

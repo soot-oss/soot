@@ -362,12 +362,12 @@ public class PaddleScene
                 vcm = new BDDObjSensVirtualContextManager( virtualcalls.reader("vcm"), vcmout );
                 break;
             case CGOptions.context_kcfa:
-                scm = new TradKCFAStaticContextManager( staticcalls.reader("scm"), scmout, cgoptions.k() );
-                vcm = new TradKCFAVirtualContextManager( virtualcalls.reader("vcm"), vcmout, cgoptions.k() );
+                scm = new BDDKCFAStaticContextManager( staticcalls.reader("scm"), scmout, cgoptions.k() );
+                vcm = new BDDKCFAVirtualContextManager( virtualcalls.reader("vcm"), vcmout, cgoptions.k() );
                 break;
             case CGOptions.context_kobjsens:
-                scm = new TradKObjSensStaticContextManager( staticcalls.reader("scm"), scmout, cgoptions.k() );
-                vcm = new TradKObjSensVirtualContextManager( virtualcalls.reader("vcm"), vcmout, cgoptions.k() );
+                scm = new BDDKObjSensStaticContextManager( staticcalls.reader("scm"), scmout, cgoptions.k() );
+                vcm = new BDDKObjSensVirtualContextManager( virtualcalls.reader("vcm"), vcmout, cgoptions.k() );
                 break;
             default:
                 throw new RuntimeException( "Unhandled kind of context-sensitivity" );

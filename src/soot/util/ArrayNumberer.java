@@ -42,7 +42,7 @@ public class ArrayNumberer implements Numberer {
         o.setNumber( lastNumber );
     }
 
-    public int get( Object oo ) {
+    public long get( Object oo ) {
         if( oo == null ) return 0;
         Numberable o = (Numberable) oo;
         int ret = o.getNumber();
@@ -50,9 +50,9 @@ public class ArrayNumberer implements Numberer {
         return ret;
     }
 
-    public Object get( int number ) {
+    public Object get( long number ) {
         if( number == 0 ) return null;
-        Object ret = numberToObj[number];
+        Object ret = numberToObj[(int) number];
         if( ret == null ) throw new RuntimeException( "no object with number "+number );
         return ret;
     }
