@@ -129,7 +129,7 @@ public class SparkTransformer extends SceneTransformer
         if( opts.force_gc() ) doGC();
         reportTime( "Solution found", startSimplify, endProp );
         
-        if( !opts.on_fly_cg() ) {
+        if( !opts.on_fly_cg() || opts.vta() ) {
             CallGraphBuilder cgb = new CallGraphBuilder( pag );
             cgb.build();
         }

@@ -56,7 +56,7 @@ public class ContextInsensitiveBuilder implements Builder {
             NativeHelper.register( new SparkNativeHelper( pag ) );
         }
 	parms = new StandardParms( pag, null );
-        if( opts.on_fly_cg() ) {
+        if( opts.on_fly_cg() && !opts.vta() ) {
             OnFlyCallGraph ofcg = new OnFlyCallGraph( pag,
                         Scene.v().getOrMakeFastHierarchy(), parms );
             pag.setOnFlyCallGraph( ofcg );

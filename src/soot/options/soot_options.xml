@@ -924,7 +924,8 @@ rather than only those deemed reachable by the points-to analysis.
                                                         <short_desc>Emulate Variable Type Analysis</short_desc>
 							<long_desc>
 Setting VTA to true has the effect of setting field-based,
-types-for-sites, and simplify-sccs to true to simulate Variable Type
+types-for-sites, and simplify-sccs to true, and on-fly-cg to false,
+to simulate Variable Type
 Analysis, described in <a href="http://www.sable.mcgill.ca/publications/papers/#oopsla2000">our OOPSLA 2000 paper</a>. Note that the
 algorithm differs from the original VTA in that it handles array
 elements more precisely.

@@ -18,6 +18,7 @@
  */
 
 package soot.jimple.spark.pag;
+import soot.*;
 import soot.jimple.spark.*;
 import soot.util.*;
 import soot.Type;

@@ -296,8 +296,15 @@ public class PAG implements PointsToAnalysis {
     public boolean addEdge( Node from, Node to ) {
         FastHierarchy fh = typeManager.getFastHierarchy();
 	boolean ret = false;
-        if( from.getReplacement() != from || to.getReplacement() != to )
+        /*
+        if( from.getReplacement() != from || to.getReplacement() != to ) {
+            G.v().out.println( "from    is "+from );
+            G.v().out.println( "fromrep is "+from.getReplacement() );
+            G.v().out.println( "to      is "+to );
+            G.v().out.println( "torep   is "+to.getReplacement() );
             throw new RuntimeException( "Edge between merged nodes" );
+        }
+        */
 	if( from instanceof VarNode ) {
 	    if( to instanceof VarNode ) {
 		boolean ret1 = addToMap( simple, from, to );

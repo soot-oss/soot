@@ -75,6 +75,19 @@ public class VarNode extends ValNode implements Comparable {
         return interProcTarget;
     }
 
+    /** Designates this node as the potential source of a interprocedural 
+     * assignment edge which may be added during on-the-fly call graph 
+     * updating. */
+    public void setInterProcSource() {
+        interProcSource = true;
+    }
+    /** Returns true if this node is the potential source of a interprocedural 
+     * assignment edge which may be added during on-the-fly call graph 
+     * updating. */
+    public boolean isInterProcSource() {
+        return interProcSource;
+    }
+
     /* End of public methods. */
 
     VarNode( PAG pag, Object variable, Type t, SootMethod m ) {
@@ -100,6 +113,7 @@ public class VarNode extends ValNode implements Comparable {
     protected int finishingNumber = 0;
     protected SootMethod method;
     protected boolean interProcTarget = false;
+    protected boolean interProcSource = false;
     protected int numDerefs = 0;
 }
 

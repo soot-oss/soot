@@ -152,9 +152,6 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             if( dest.getType() instanceof RefLikeType ) {
                 dest.apply( this );
                 Node destNode = getNode().getReplacement();
-                if( destNode instanceof VarNode ) {
-                    ((VarNode) destNode).setInterProcTarget();
-                }
                 if( target != null ) {
                     Node retNode = caseRet( target ).getReplacement();
                     retNode = mpag.parameterize( retNode, varNodeParameter );
@@ -304,9 +301,11 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 
     final public Node caseRet( SootMethod m ) {
 	if( m.isStatic() || !pag.getOpts().returns_as_fields() ) {
-	    return pag.makeVarNode(
+	    VarNode ret = pag.makeVarNode(
 			Parm.v( m, PointsToAnalysis.RETURN_NODE ),
 			m.getReturnType(), m );
+            ret.setInterProcSource();
+            return ret;
 	} else { 
 	    return pag.makeFieldRefNode(
 			new Pair( m, PointsToAnalysis.THIS_NODE ),
@@ -418,8 +417,11 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	throw new RuntimeException( "failed to handle "+v );
     }
     protected Node caseThrow() {
-	return pag.makeVarNode( PointsToAnalysis.EXCEPTION_NODE,
+	VarNode ret = pag.makeVarNode( PointsToAnalysis.EXCEPTION_NODE,
 		    RefType.v("java.lang.Throwable"), null );
+        ret.setInterProcTarget();
+        ret.setInterProcSource();
+        return ret;
     }
     protected PAG pag;
     protected MethodPAG mpag;

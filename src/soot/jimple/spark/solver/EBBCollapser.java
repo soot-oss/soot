@@ -93,7 +93,8 @@ public class EBBCollapser {
                     if( pag.allocInvLookup( succ ).length > 0 ) continue;
                     if( pag.loadInvLookup( succ ).length > 0 ) continue;
                     if( pag.simpleInvLookup( succ ).length > 1 ) continue;
-                    if( ofcg && succ.isInterProcTarget() ) continue;
+                    if( ofcg 
+                    && ( succ.isInterProcTarget() || n.isInterProcSource() ) ) continue;
                     n.mergeWith( succ );
                     change = true;
                     numCollapsed++;

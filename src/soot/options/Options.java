@@ -803,14 +803,14 @@ public class Options extends OptionsBase {
       
 +padOpt(" -cp ARG -soot-class-path ARG -soot-classpath ARG", "Use  as the classpath for finding classes." )
 +padOpt(" -process-dir ARG", "Process all classes found in " )
-+padOpt(" -src-precARG", "Sets source precedence for soot" )
++padOpt(" -src-prec ARG", "Sets source precedence for soot" )
 +padVal(" c class", "" )
 +padVal(" J jimple", "" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
 +"\nOutput Options:\n"
       
 +padOpt(" -d ARG -output-dir ARG", "Store output files in " )
-+padOpt(" -fFORMAT -output-formatFORMAT", "Set output format for Soot" )
++padOpt(" -f ARG -output-format ARG", "Set output format for Soot" )
 +padVal(" J jimple", "" )
 +padVal(" j jimp", "" )
 +padVal(" S shimple", "" )
