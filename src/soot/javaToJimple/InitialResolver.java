@@ -547,6 +547,8 @@ public class InitialResolver {
                     polyglot.ast.New aNew = (polyglot.ast.New)anonClassMap.getKey(simpleName);
                     createAnonClassDecl(aNew);
                     createClassBody(aNew.body());
+                    handleFieldInits();
+
                 }                    
                     
             }
@@ -640,7 +642,7 @@ public class InitialResolver {
         //System.out.println("creating anon info: "+info);
         if (info != null){
             //System.out.println("want to add finals for : "+Util.getSootType(aNew.anonType()));
-            src.setFieldList(addFinalLocals(aNew.body(), info.finalLocals(), (polyglot.types.ClassType)aNew.anonType(), info));
+            src.setFinalsList(addFinalLocals(aNew.body(), info.finalLocals(), (polyglot.types.ClassType)aNew.anonType(), info));
         }
         src.outerClassType(Util.getSootType(aNew.anonType().outer()));
         if (((polyglot.types.ClassType)aNew.objectType().type()).isNested()){
@@ -722,17 +724,7 @@ public class InitialResolver {
         // handle initialization of fields 
         // static fields init in clinit
         // other fields init in init
-        if ((fieldInits != null) || (initializerBlocks != null)) {
-            Iterator methodsIt = sootClass.getMethods().iterator();
-            while (methodsIt.hasNext()) {
-                soot.SootMethod next = (soot.SootMethod)methodsIt.next();
-                if (next.getName().equals("<init>")){
-                
-                    ((soot.javaToJimple.PolyglotMethodSource)next.getSource()).setInitializerBlocks(initializerBlocks);
-                    ((soot.javaToJimple.PolyglotMethodSource)next.getSource()).setFieldInits(fieldInits);
-                }
-            }
-        }
+        handleFieldInits();
         
         if ((staticFieldInits != null) || (staticInitializerBlocks != null)) {
             soot.SootMethod clinitMethod;
@@ -781,7 +773,31 @@ public class InitialResolver {
         
         Util.addLineTag(sootClass, cDecl);
 	}
-   
+
+    private void handleFieldInits(){
+        if ((fieldInits != null) || (initializerBlocks != null)) {
+            Iterator methodsIt = sootClass.getMethods().iterator();
+            while (methodsIt.hasNext()) {
+                soot.SootMethod next = (soot.SootMethod)methodsIt.next();
+                if (next.getName().equals("<init>")){
+               
+                    //if (next.getSource() instanceof soot.javaToJimple.PolyglotMethodSource){
+                        soot.javaToJimple.PolyglotMethodSource src = (soot.javaToJimple.PolyglotMethodSource)next.getSource();
+                        src.setInitializerBlocks(initializerBlocks);
+                        src.setFieldInits(fieldInits);
+          
+                    //}
+                    /*else if (next.getSource() instanceof soot.javaToJimple.AnonClassInitMethodSource){
+                        soot.javaToJimple.AnonClassInitMethodSource src = (soot.javaToJimple.AnonClassInitMethodSource)next.getSource();
+                        src.initBlocks(initializerBlocks);
+                        src.fieldInits(fieldInits);
+                    }*/       
+                }
+            }
+        }
+        
+    }
+    
     private void addOuterClassThisRefToInit(polyglot.types.Type outerType){
         soot.Type outerSootType = Util.getSootType(outerType);
         Iterator it = sootClass.getMethods().iterator();

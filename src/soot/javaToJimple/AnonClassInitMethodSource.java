@@ -3,23 +3,32 @@ package soot.javaToJimple;
 import java.util.*;
 import soot.*;
 
-public class AnonClassInitMethodSource implements soot.MethodSource {
+public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodSource {//implements soot.MethodSource {
 
-    private ArrayList fields;
-   
+    //private ArrayList fields;
+    //public ArrayList fields(){
+    //    return fields;
+    //}
+    
     private boolean inStaticMethod;
 
     public void inStaticMethod(boolean b){
         inStaticMethod = b;
     }
-    
-    public void setFieldList(ArrayList list){
-        fields = list;
+    public boolean inStaticMethod(){
+        return inStaticMethod;
     }
+    
+    //public void setFieldList(ArrayList list){
+    //    fields = list;
+    //}
 
     private boolean isSubType = false;
     public void isSubType(boolean b){
         isSubType = b;
+    }
+    public boolean isSubType(){
+        return isSubType;
     }
     
     private soot.Type superOuterType = null;
@@ -28,20 +37,42 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
     public void superOuterType(soot.Type t){
         superOuterType = t;
     }
+    public soot.Type superOuterType(){
+        return superOuterType;
+    }
 
     public void thisOuterType(soot.Type t){
         thisOuterType = t;
     }
+    public soot.Type thisOuterType(){
+        return thisOuterType;
+    }
 
-    public void fieldInits(ArrayList list){
-        fieldInits = list;
+    
+    //public void fieldInits(ArrayList list){
+    //    fieldInits = list;
+    //}
+    /*public ArrayList fieldInits(){
+        return fieldInits;
     }
     
     private ArrayList fieldInits;
+
+    public void initBlocks(ArrayList list){
+        initBlocks = list;
+    }
+
+    public ArrayList initBlocks(){
+        return initBlocks;
+    }
+
+    private ArrayList initBlocks;*/
     
     public soot.Body getBody(soot.SootMethod sootMethod, String phaseName){
         //System.out.println("getting method: "+sootMethod.getName()+" for class: "+sootMethod.getDeclaringClass());            
-        soot.Body body = soot.jimple.Jimple.v().newBody(sootMethod);
+        AnonInitBodyBuilder aibb = new AnonInitBodyBuilder();
+        soot.jimple.JimpleBody body = aibb.createBody(sootMethod);
+        /*soot.Body body = soot.jimple.Jimple.v().newBody(sootMethod);
 
         // this formal needed
         soot.RefType type = sootMethod.getDeclaringClass().getType();
@@ -108,7 +139,7 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
         //System.out.println("super class of anon: "+sootMethod.getDeclaringClass().getSuperclass());
         //System.out.println("super class of anon meths: "+sootMethod.getDeclaringClass().getSuperclass().getMethods());
         //System.out.println("invoke type list: "+invokeTypeList);
-        SootClass superClass = sootMethod.getDeclaringClass().getSuperclass();
+        /*SootClass superClass = sootMethod.getDeclaringClass().getSuperclass();
         ArrayList needsRef = soot.javaToJimple.InitialResolver.v().getHasOuterRefInInit();
         //if ((superClass.getName().indexOf("$") != -1) && !soot.Modifier.isStatic(superClass.getModifiers())){
         if ((needsRef != null) && (needsRef.contains(superClass.getType()))){
@@ -166,8 +197,8 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
         }*/
         
         // return
-        soot.jimple.ReturnVoidStmt retStmt = soot.jimple.Jimple.v().newReturnVoidStmt();
-        body.getUnits().add(retStmt);
+        //soot.jimple.ReturnVoidStmt retStmt = soot.jimple.Jimple.v().newReturnVoidStmt();
+        //body.getUnits().add(retStmt);
         //PackManager.v().getTransform("jb.ne").apply(body);
         
         PackManager.v().getPack("jj").apply(body);

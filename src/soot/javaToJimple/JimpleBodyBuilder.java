@@ -6,24 +6,24 @@ import java.util.*;
 
 public class JimpleBodyBuilder {
     
-    soot.jimple.JimpleBody body;
-    ArrayList exceptionTable;
-    Stack endControlNoop = new Stack();
-    Stack condControlNoop = new Stack();
-    Stack monitorStack;
+    soot.jimple.JimpleBody body;    // body of the method being created
+    ArrayList exceptionTable;       // list of exceptions
+    Stack endControlNoop = new Stack();     // for break
+    Stack condControlNoop = new Stack();    // continue
+    Stack monitorStack;     // for synchronized blocks
     
-    HashMap labelBreakMap; 
-    HashMap labelContinueMap; 
-    HashMap localsMap = new HashMap();    
+    HashMap labelBreakMap; // for break label --> nop to jump to
+    HashMap labelContinueMap; // for continue label --> nop to jump to
+    HashMap localsMap = new HashMap();    // localInst --> soot local 
 
     HashMap getThisMap = new HashMap(); // type --> local to ret
-    soot.Local specialThisLocal;
-    soot.Local outerClassParamLocal;
+    soot.Local specialThisLocal;    // === body.getThisLocal();
+    soot.Local outerClassParamLocal;    // outer class this
    
-    HashMap realLocalClassNameMap;
-    private int paramRefCount = 0;
+    //HashMap realLocalClassNameMap;
+    private int paramRefCount = 0;  // counter for param ref stmts
     
-    private LocalGenerator lg;
+    LocalGenerator lg;  // for generated locals not in orig src
     
     /**
      * Jimple Body Creation
@@ -149,48 +149,50 @@ public class JimpleBodyBuilder {
             
         ArrayList fieldInits = ((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).getFieldInits();
         if (fieldInits != null) {
-            Iterator fieldInitsIt = fieldInits.iterator();
-            while (fieldInitsIt.hasNext()) {
-                polyglot.ast.FieldDecl field = (polyglot.ast.FieldDecl)fieldInitsIt.next();
-                String fieldName = field.name();
-                polyglot.ast.Expr initExpr = field.init();
-                soot.SootClass currentClass = body.getMethod().getDeclaringClass();
-                soot.SootField sootField = currentClass.getField(fieldName, Util.getSootType(field.type().type()));
-                
-                soot.Local base = specialThisLocal;
-                    
-                soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(base, sootField);
-                
-                soot.Value sootExpr;
-                if (initExpr instanceof polyglot.ast.ArrayInit) {
-                    sootExpr = getArrayInitLocal((polyglot.ast.ArrayInit)initExpr, field.type().type());
-                }
-                else {
-                    sootExpr = createExpr(initExpr);
-                }
-                //System.out.println("sootExpr: "+sootExpr+" is: "+sootExpr.getClass());
-                if (sootExpr instanceof soot.jimple.ConditionExpr) {
-                    sootExpr = handleCondBinExpr((soot.jimple.ConditionExpr)sootExpr); 
-                }
-                
-                soot.jimple.AssignStmt assign;
-                if (sootExpr instanceof soot.Local){
-                    assign = soot.jimple.Jimple.v().newAssignStmt(fieldRef, (soot.Local)sootExpr);
-                }
-                else if (sootExpr instanceof soot.jimple.Constant){
-                    assign = soot.jimple.Jimple.v().newAssignStmt(fieldRef, (soot.jimple.Constant)sootExpr);
-                }
-                else {
-                    throw new RuntimeException("fields must assign to local or constant only");
-                }
-                body.getUnits().add(assign);
-                Util.addLnPosTags(assign, initExpr.position());
-                Util.addLnPosTags(assign.getRightOpBox(), initExpr.position());
-
-            }
+            handleFieldInits(fieldInits);
         }
-        
     }
+
+    protected void handleFieldInits(ArrayList fieldInits){
+        Iterator fieldInitsIt = fieldInits.iterator();
+        while (fieldInitsIt.hasNext()) {
+            polyglot.ast.FieldDecl field = (polyglot.ast.FieldDecl)fieldInitsIt.next();
+            String fieldName = field.name();
+            polyglot.ast.Expr initExpr = field.init();
+            soot.SootClass currentClass = body.getMethod().getDeclaringClass();
+            soot.SootField sootField = currentClass.getField(fieldName, Util.getSootType(field.type().type()));
+                
+            soot.Local base = specialThisLocal;
+                   
+            soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(base, sootField);
+                
+            soot.Value sootExpr;
+            if (initExpr instanceof polyglot.ast.ArrayInit) {
+                sootExpr = getArrayInitLocal((polyglot.ast.ArrayInit)initExpr, field.type().type());
+            }
+            else {
+                sootExpr = createExpr(initExpr);
+            }
+            if (sootExpr instanceof soot.jimple.ConditionExpr) {
+                sootExpr = handleCondBinExpr((soot.jimple.ConditionExpr)sootExpr); 
+            }
+                
+            soot.jimple.AssignStmt assign;
+            if (sootExpr instanceof soot.Local){
+                assign = soot.jimple.Jimple.v().newAssignStmt(fieldRef, (soot.Local)sootExpr);
+            }
+            else if (sootExpr instanceof soot.jimple.Constant){
+                assign = soot.jimple.Jimple.v().newAssignStmt(fieldRef, (soot.jimple.Constant)sootExpr);
+            }
+            else {
+                throw new RuntimeException("fields must assign to local or constant only");
+            }
+            body.getUnits().add(assign);
+            Util.addLnPosTags(assign, initExpr.position());
+            Util.addLnPosTags(assign.getRightOpBox(), initExpr.position());
+        }
+    }
+        
 
     /**
      * adds this field for the outer class 
@@ -251,11 +253,15 @@ public class JimpleBodyBuilder {
         ArrayList initializerBlocks = ((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).getInitializerBlocks();
 
         if (initializerBlocks != null) {
-        
-            Iterator initBlocksIt = initializerBlocks.iterator();
-            while (initBlocksIt.hasNext()) {
-                createBlock((polyglot.ast.Block)initBlocksIt.next());
-            }
+            
+            handleStaticBlocks(initializerBlocks);
+        }
+    }
+
+    protected void handleStaticBlocks(ArrayList initializerBlocks){
+        Iterator initBlocksIt = initializerBlocks.iterator();
+        while (initBlocksIt.hasNext()) {
+            createBlock((polyglot.ast.Block)initBlocksIt.next());
         }
     }
     
@@ -1851,6 +1857,7 @@ public class JimpleBodyBuilder {
         else {
 
             soot.jimple.FieldRef fieldRef = getFieldRef(field);
+            //System.out.println("field: "+field+" type: "+field.type());
             soot.Local baseLocal = generateLocal(field.type());
             soot.jimple.AssignStmt fieldAssignStmt = soot.jimple.Jimple.v().newAssignStmt(baseLocal, fieldRef);
             
@@ -3105,9 +3112,9 @@ public class JimpleBodyBuilder {
      */
     private void createLocalClassDecl(polyglot.ast.LocalClassDecl cDecl) {
         
-        if (realLocalClassNameMap == null){
+        /*if (realLocalClassNameMap == null){
             realLocalClassNameMap = new HashMap();
-        }
+        }*/
 
         BiMap lcMap = InitialResolver.v().getLocalClassMap();
 
