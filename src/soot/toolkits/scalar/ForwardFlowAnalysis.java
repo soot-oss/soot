@@ -135,14 +135,37 @@ next());
                     afterFlow = unitToAfterFlow.get(s);
                     if (Options.v().interactive_mode()){
                         Object savedInfo = newInitialFlow();
-                        copy(beforeFlow, savedInfo);
+                        if (filterUnitToBeforeFlow != null){
+                            //System.out.println("unit: "+s);
+                            savedInfo = filterUnitToBeforeFlow.get(s);
+                            //System.out.println("copying filtered: "+filterUnitToBeforeFlow.get(s));
+                            copy(filterUnitToBeforeFlow.get(s), savedInfo);
+                        }
+                        else {
+                            //System.out.println("copying unfiltered");
+                            copy(beforeFlow, savedInfo);
+                        }
+                        //System.out.println("beforeFlow: "+beforeFlow);
+                        //System.out.println("unitToBeforeFlow: "+unitToBeforeFlow.get(s));
+                        //System.out.println("flow before: "+getFlowBefore(s));
+                        if (filterUnitToBeforeFlow != null){
+                            //System.out.println("filtered info before: "+filterUnitToBeforeFlow);
+                        }
+                        //System.out.println("saved info: "+savedInfo);
                         FlowInfo fi = new FlowInfo(savedInfo, s, true);
                         InteractionHandler.v().handleBeforeAnalysisEvent(fi);
                     }
                     flowThrough(beforeFlow, s, afterFlow);
                     if (Options.v().interactive_mode()){
                         Object aSavedInfo = newInitialFlow();
-                        copy(afterFlow, aSavedInfo);
+                        if (filterUnitToAfterFlow != null){
+                            //System.out.println("getting filter info for: "+s);
+                            aSavedInfo = filterUnitToAfterFlow.get(s);
+                            copy(filterUnitToAfterFlow.get(s), aSavedInfo);
+                        }
+                        else {
+                            copy(afterFlow, aSavedInfo);
+                        }
                         FlowInfo fi = new FlowInfo(aSavedInfo, s, false);
                         InteractionHandler.v().handleAfterAnalysisEvent(fi);
                     }

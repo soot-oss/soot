@@ -492,6 +492,17 @@ which can display the annotations together with the program
 source, to aid program understanding.
 </long_desc>
 		</boolopt>
+		<boolopt>
+			<name>Print Tags in Output</name>
+			<alias>print-tags-in-output</alias>
+			<short_desc>Print tags in output files after stmt</short_desc>
+			<long_desc>
+Print in output files (either in Jimple or Dave) a variety of tags which
+Soot has attached to
+its internal representations of the application classes. The tags will
+be printed on the line succeeding the stmt that they are attached to.
+</long_desc>
+		</boolopt>
 	<listopt>
 	  <name>Body Dumping Phases</name>
 	  <alias>dump-body</alias>

@@ -69,9 +69,11 @@ public class InteractionHandler {
     }
    
     public void handleCallGraphNextMethod(){
-        getGrapher().setNextMethod(getNextMethod());
-        System.out.println("about to handle next method: "+getNextMethod());
-        getGrapher().handleNextMethod();
+        if (!cgDone()){
+            getGrapher().setNextMethod(getNextMethod());
+            System.out.println("about to handle next method: "+getNextMethod());
+            getGrapher().handleNextMethod();
+        }
     }
 
     public void handleCallGraphPart(Object info){
@@ -149,6 +151,14 @@ public class InteractionHandler {
     }
     public boolean currentPhaseEnabled(){
         return currentPhaseEnabled;
+    }
+
+    private boolean cgDone = false;
+    public void cgDone(boolean b){
+        cgDone = b;
+    }
+    public boolean cgDone(){
+        return cgDone;
     }
 
     private boolean doneCurrent;

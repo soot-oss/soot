@@ -385,7 +385,8 @@ public class Printer {
 
             // only print them if not generating attributes files 
             // because they mess up line number
-            if (!addJimpleLn()) {
+            //if (!addJimpleLn()) {
+            if (Options.v().print_tags_in_output()){
                 Iterator tagIterator = currentStmt.getTags().iterator();
                 while (tagIterator.hasNext()) {
                     Tag t = (Tag) tagIterator.next();

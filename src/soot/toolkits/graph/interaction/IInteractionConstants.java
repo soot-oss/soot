@@ -19,5 +19,5 @@ public interface IInteractionConstants{
     public static final int CALL_GRAPH_START = 50;
     public static final int CALL_GRAPH_NEXT_METHOD = 51;
     public static final int CALL_GRAPH_PART = 52;
-    
+    public static final int CALL_GRAPH_DONE = 53;    
 }

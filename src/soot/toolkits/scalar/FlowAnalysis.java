@@ -40,6 +40,9 @@ public abstract class FlowAnalysis extends AbstractFlowAnalysis
     /** Maps graph nodes to OUT sets. */
     protected Map unitToAfterFlow;
 
+    /** Filtered: Maps graph nodes to OUT sets. */
+    protected Map filterUnitToAfterFlow;
+
     /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
     public FlowAnalysis(DirectedGraph graph)
     {

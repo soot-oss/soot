@@ -19,10 +19,12 @@ public class InitialResolver {
     private HashMap privateAccessMap;
     private HashMap finalsMap;
     private HashMap newToOuterMap;    
+   
     
-    public InitialResolver(){
-    }
+    public  InitialResolver(){}
+    
 
+    
     /**
      * Invokes polyglot and gets the AST for the source given in fullPath
      */
@@ -33,6 +35,7 @@ public class InitialResolver {
         polyglot.frontend.ExtensionInfo extInfo = jtj.initExtInfo(fullPath, locations);
         // only have one compiler - for memory issues
         if (compiler == null) {
+            //System.out.println("make new polyglot compiler");
 		    compiler = new polyglot.frontend.Compiler(extInfo);
         }
         // build ast
@@ -275,6 +278,7 @@ public class InitialResolver {
     private void createSource(polyglot.ast.SourceFile source){
         
         String simpleName = sootClass.getName();
+        //System.out.println("trying to create source for: "+simpleName);
         if (sootClass.getPackageName() != null) {
             simpleName = simpleName.substring(simpleName.lastIndexOf(".")+1, simpleName.length());
         }
@@ -294,8 +298,9 @@ public class InitialResolver {
                 }
                 else {
                     // if not already there put cdecl name in class to source file map
-                    //System.out.println("class to src map: "+((polyglot.ast.ClassDecl)next).name()+" and "+sootClass.getName());
-                    addToClassToSourceMap(((polyglot.ast.ClassDecl)next).name(), sootClass.getName());                
+                    //System.out.println("class to src map: "+((polyglot.ast.ClassDecl)next).name()+" and "+sootClass.getName()+" reversed");
+                    // its actually a map from class names to the corresponding source file
+                    addToClassToSourceMap(sootClass.getName(), ((polyglot.ast.ClassDecl)next).name());                
                 }
 		    }
 		}
@@ -337,7 +342,7 @@ public class InitialResolver {
 
             if (!found) {
                 // assume its anon class (only option left) 
-                //System.out.println("sootClass name: "+sootClass.getName());
+                //System.out.println("assuming anon inner sootClass name: "+sootClass.getName());
                 int index = sootClass.getName().indexOf("$");
                 int length = sootClass.getName().length();
                 int count = (new Integer(sootClass.getName().substring(index+1, length))).intValue();
@@ -376,6 +381,7 @@ public class InitialResolver {
         }
             
         if (!soot.util.SourceLocator.v().getSourceToClassMap().containsKey(className)) {
+            //System.out.println("adding to classSource map className: "+className+" and source: "+sourceName);
             soot.util.SourceLocator.v().addToSourceToClassMap(className, sourceName);
         }
     }

@@ -170,7 +170,7 @@ public class Attribute {
         else if (t instanceof SourceLineNumberTag){
         }
 		else {
-            System.out.println("t is: "+t.getClass());
+            //System.out.println("t is: "+t.getClass());
             StringAttribute sa = new StringAttribute(t.toString(), t.getName());
             addText(sa);
 		}

@@ -25,7 +25,7 @@ import java.util.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
-
+import soot.options.*;
 
 // STEP 1: What are we computing?
 // SETS OF PAIRS of form (X, T) => Use ArraySparseSet.
@@ -46,14 +46,50 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
     private final static String EVEN = "even";
     private final static String ODD = "odd";
 
+    private SimpleLiveLocals filter;
     
-    public ParityAnalysis(UnitGraph g)
+    public ParityAnalysis(UnitGraph g, SimpleLiveLocals filter)
     {
         super(g);
         this.g = g;
 
+        this.filter = filter;
+        
+        filterUnitToBeforeFlow = new HashMap();
+        buildBeforeFilterMap();
+        
+        filterUnitToAfterFlow = new HashMap();
+        
         doAnalysis();
         
+    }
+
+    public ParityAnalysis(UnitGraph g){
+        super(g);
+        this.g = g;
+
+        doAnalysis();
+    }
+    
+    private void buildBeforeFilterMap(){
+        
+        Iterator it = g.getBody().getUnits().iterator();
+        while (it.hasNext()){
+            Stmt s = (Stmt)it.next();
+            //if (!(s instanceof DefinitionStmt)) continue;
+            //Value left = ((DefinitionStmt)s).getLeftOp();
+            //if (!(left instanceof Local)) continue;
+        
+            //if (!((left.getType() instanceof IntegerType) || (left.getType() instanceof LongType))) continue;
+            List list = filter.getLiveLocalsBefore(s);
+            HashMap map = new HashMap(); 
+            Iterator listIt = list.iterator();
+            while (listIt.hasNext()){
+                map.put(listIt.next(), BOTTOM);
+            }
+            filterUnitToBeforeFlow.put(s, map);
+        } 
+        //System.out.println("init filtBeforeMap: "+filterUnitToBeforeFlow);           
     }
 
 // STEP 4: Is the merge operator union or intersection?
@@ -212,10 +248,13 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
         // for each stmt where leftOp is defintionStmt find the parity
 	    // of rightOp and update parity to EVEN, ODD or TOP
 
+        //boolean useS = false;
+        
 	    if (s instanceof DefinitionStmt) {
 	        Value left = ((DefinitionStmt)s).getLeftOp();
 	        if (left instanceof Local) {
                 if ((left.getType() instanceof IntegerType) || (left.getType() instanceof LongType)){
+                    //useS = true;
 	  	            Value right = ((DefinitionStmt)s).getRightOp();
 		            out.put(left, getParity(out, right));
                 }
@@ -234,7 +273,27 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
                 //System.out.println("out map: "+out);
             }
         }
+        
+        //if (useS){
+        if (Options.v().interactive_mode()){
+            buildAfterFilterMap(s);
+            updateAfterFilterMap(s);
+        }
+        //}
     }
+    
+    private void buildAfterFilterMap(Stmt s){
+        
+        List list = filter.getLiveLocalsAfter(s);
+        HashMap map = new HashMap(); 
+        Iterator listIt = list.iterator();
+        while (listIt.hasNext()){
+            map.put(listIt.next(), BOTTOM);
+        }
+        filterUnitToAfterFlow.put(s, map);
+        //System.out.println("built afterflow filter map: "+filterUnitToAfterFlow);
+    }
+
 
 // STEP 6: Determine value for start/end node, and
 // initial approximation.
@@ -251,9 +310,57 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 	  initMap.put(it.next(), BOTTOM);
 	}
         return initMap;*/
+
         return newInitialFlow();
     }
+
+    private void updateBeforeFilterMap(){
+    
+        Iterator filterIt = filterUnitToBeforeFlow.keySet().iterator();
+        while (filterIt.hasNext()){
+            Stmt s = (Stmt)filterIt.next();
+            HashMap allData = (HashMap)unitToBeforeFlow.get(s);
+            
+            HashMap filterData = (HashMap)filterUnitToBeforeFlow.get(s);
+
+            filterUnitToBeforeFlow.put(s, updateFilter(allData, filterData));
+            
+        }
+    }
         
+    private void updateAfterFilterMap(Stmt s){
+    
+        HashMap allData = (HashMap)unitToAfterFlow.get(s);
+            
+        HashMap filterData = (HashMap)filterUnitToAfterFlow.get(s);
+
+        filterUnitToAfterFlow.put(s, updateFilter(allData, filterData));
+            
+    }
+        
+    private HashMap updateFilter(HashMap allData, HashMap filterData){
+
+        if (allData == null) return filterData;
+        Iterator filterVarsIt = filterData.keySet().iterator();
+        ArrayList toRemove = new ArrayList();
+        while (filterVarsIt.hasNext()){
+            Value v = (Value)filterVarsIt.next();
+            if (allData.get(v) == null){
+                toRemove.add(v);
+                //filterData.put(v, new HashMap());
+            }
+            else {
+                filterData.put(v, allData.get(v));
+            }
+        }
+        Iterator removeIt = toRemove.iterator();
+        while (removeIt.hasNext()){
+            filterData.remove(removeIt.next());
+        }
+
+        return filterData;
+    }
+
     protected Object newInitialFlow()
     {
 	    HashMap initMap = new HashMap();
@@ -262,7 +369,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 	    Iterator it = locals.iterator();
 	    while (it.hasNext()) {
             Local next = (Local)it.next();
-            System.out.println("next local: "+next);
+            //System.out.println("next local: "+next);
             if ((next.getType() instanceof IntegerType) || (next.getType() instanceof LongType)){
 	            initMap.put(next, BOTTOM);
             }
@@ -275,6 +382,11 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
                 initMap.put(val, getParity(initMap, val));
             }
         }
+
+        if (Options.v().interactive_mode()){
+            updateBeforeFilterMap();
+        }
+        
         return initMap;
 
     }

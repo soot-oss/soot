@@ -262,7 +262,8 @@ public class Scene  //extends AbstractHost
         */
         
         Scene.v().setPhantomRefs(true);
-        SootResolver resolver = new SootResolver();
+        //SootResolver resolver = new SootResolver();
+        SootResolver resolver = SootResolver.v();
         SootClass toReturn = resolver.resolveClassAndSupportClasses(className);
         Scene.v().setPhantomRefs(false);
 

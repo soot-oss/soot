@@ -143,7 +143,7 @@ public class Timers
 	public Timer readTimer = new soot.Timer();
 
 
-     void printProfilingInformation()
+    public void printProfilingInformation()
     {                                                   
         long totalTime = totalTimer.getTime();
                 

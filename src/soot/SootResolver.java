@@ -38,15 +38,19 @@ import soot.javaToJimple.*;
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver 
 {
+    public SootResolver (Singletons.Global g) {}
+
+    public static SootResolver v() { return G.v().SootResolver();}
+    
     private Set markedClasses = new HashSet();
     private LinkedList classesToResolve = new LinkedList();
     private boolean mIsResolving = false;
     private InitialResolver initSourceResolver;
 
     /** Creates a new SootResolver. */
-    public SootResolver()
-    {
-    }
+    //public SootResolver()
+    //{
+    //}
 
     /** Returns a SootClass object for the given className. 
      * Creates a new context class if needed. */

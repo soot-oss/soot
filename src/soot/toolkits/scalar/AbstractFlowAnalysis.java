@@ -42,6 +42,9 @@ public abstract class AbstractFlowAnalysis
     /** Maps graph nodes to IN sets. */
     protected Map unitToBeforeFlow;
 
+    /** Filtered: Maps graph nodes to IN sets. */
+    protected Map filterUnitToBeforeFlow;
+
     /** The graph being analysed. */
     protected DirectedGraph graph;
 

@@ -168,3 +168,4 @@ UnitThrowAnalysis
 PedanticThrowAnalysis
 TrapTightener
 CallGraphGrapher
+SootResolver
