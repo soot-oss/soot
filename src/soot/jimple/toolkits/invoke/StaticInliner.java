@@ -97,6 +97,7 @@ public class StaticInliner extends SceneTransformer
             while (it.hasNext())
             {
                 SootMethod container = (SootMethod)it.next();
+                if( methodToOriginalSize.get(container) == null ) continue;
     
                 if (!container.isConcrete())
                     continue;
