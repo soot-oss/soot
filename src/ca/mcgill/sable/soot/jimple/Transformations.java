@@ -68,6 +68,9 @@
 
  B) Changes:
 
+ - Modified on March 5, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Changed aggregate to be iterative.  No longer returns a value.
+   
  - Modified on March 3, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Fixed a bug with dead-code elimination concerning field/array references.  
    (they can throw null-pointer exceptions so they should not be eliminated) 
@@ -780,8 +783,22 @@ public class Transformations
   /** Traverse the statements in the given body, looking for
    *  aggregation possibilities; that is, given a def d and a use u,
    *  d has no other uses, u has no other defs, collapse d and u. */
-  /** @returns true iff aggregation was done on body */
-  public static boolean aggregate(StmtBody body)
+   
+    public static void aggregate(StmtBody body)
+    {
+        int aggregateCount = 0;
+        
+        while(internalAggregate(body))
+        {
+            aggregateCount++;
+        }
+        
+        if(Main.isVerbose)
+            System.out.println(aggregateCount + " aggregation(s) performed.");
+            
+    }
+  
+  private static boolean internalAggregate(StmtBody body)
     {
       Iterator stmtIt;
       LocalUses localUses;

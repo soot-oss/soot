@@ -69,7 +69,11 @@
 
  B) Changes:
 
- - Modified on February 15, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+ - Modified on March 4, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added peephole optimizations for the code generation of ++ like structures.
+   
+   
+ - Modified on February 19, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Uses bipush & sipush instead of ldc
    More efficient branch generation.
    Uses the iinc bytecode instruction to generate more efficient code.
@@ -450,6 +454,31 @@ public class JasminClass
         StmtBody body = (StmtBody) bodyExpr.resolveFor(method);
         StmtList stmtList = body.getStmtList();
 
+        // let's create a u-d web for the ++ peephole optimization.
+        if(Main.isProfilingOptimization)
+            Main.graphTimer.start();
+
+        CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
+
+        if(Main.isProfilingOptimization)
+            Main.graphTimer.end();
+
+        if(Main.isProfilingOptimization)
+            Main.defsTimer.start();
+
+	LocalDefs ld = new SimpleLocalDefs(stmtGraph);
+
+        if(Main.isProfilingOptimization)
+	    Main.defsTimer.end();
+
+        if(Main.isProfilingOptimization)
+	    Main.usesTimer.start();
+
+	LocalUses lu = new SimpleLocalUses(stmtGraph, ld);
+
+	if (Main.isProfilingOptimization)
+	    Main.usesTimer.end();
+	
         int stackLimitIndex;
         
         // Emit prologue
@@ -633,7 +662,112 @@ public class JasminClass
 
                     //emit("astore " + ( ( Integer ) subroutineToReturnAddressSlot.get( s ) ).intValue() );
 
-                }   
+                }
+
+
+                // Test for postincrement operators ++ and --
+                // We can optimize them further.
+
+		boolean contFlag = false;
+                // this is a fake do, to give us break;
+                do
+                  {
+                    if (!(s instanceof AssignStmt))
+                      break;
+
+                    AssignStmt stmt = (AssignStmt)s;
+
+                    // sanityCheck: see that we have another statement after s.
+                    if (!codeIt.hasNext())
+                      break;
+
+                    Stmt ns = (Stmt)(stmtGraph.getSuccsOf(stmt).get(0));
+                    if (!(ns instanceof AssignStmt))
+                      break;
+                    AssignStmt nextStmt = (AssignStmt)ns;
+
+                    List l = stmtGraph.getSuccsOf(nextStmt);
+                    if (l.size() != 1)
+                      break;
+
+                    Stmt nextNextStmt = (Stmt)(l.get(0));
+
+                    final Value lvalue = stmt.getLeftOp();
+                    final Value rvalue = stmt.getRightOp();
+
+                    if (!(lvalue instanceof Local))
+                      break;
+
+                    // we're looking for this pattern: 
+                    // local = <lvalue>; <lvalue> = local +/- 1; use(local);
+
+                    // we need some notion of equals 
+                    // for rvalue & nextStmt.getLeftOp().
+
+                    if (!(lvalue instanceof Local)
+                        || !nextStmt.getLeftOp().equals(rvalue)
+                        || !(nextStmt.getRightOp() instanceof AddExpr))
+                      break;
+
+                    AddExpr addexp = (AddExpr)nextStmt.getRightOp();
+                    if (!addexp.getOp1().equals(lvalue))
+                      break;
+
+                    Value added /* tax? */ = addexp.getOp2();
+                        
+                    if (!(added instanceof IntConstant)
+                        || ((IntConstant)(added)).value != 1)
+                      break;
+
+		    /* check that we have two uses and that these */
+		    /* uses live precisely in nextStmt and nextNextStmt */
+		    /* LocalDefs tells us this: if there was no use, */
+		    /* there would be no corresponding def. */
+                    if (lu.getUsesOf(stmt).size() != 2 ||
+			ld.getDefsOfAt((Local)lvalue, nextStmt).size() != 1 ||
+			ld.getDefsOfAt((Local)lvalue, nextNextStmt).size() !=1)
+                      break;
+
+		    /* emit dup slot */
+
+                    System.out.println("found ++ instance:");
+                    System.out.println(s); System.out.println(nextStmt);
+                    System.out.println(nextNextStmt);
+
+		    /* this should be redundant, but we do it */
+		    /* just in case. */
+		    if (lvalue.getType() != IntType.v())
+			break;
+
+		    /* our strategy is as follows: eat the */
+		    /* two incrementing statements, push the lvalue to */
+		    /* be incremented & its holding local on a */
+		    /* plusPlusStack and deal with it in */
+		    /* emitLocal. */
+		       
+		    currentStackHeight = 0;
+
+		    /* emit statements as before */
+		    plusPlusValue = rvalue;
+		    plusPlusHolder = (Local)lvalue;
+		    plusPlusIncrementer = nextStmt;
+		    plusPlusState = 0;
+
+		    /* emit new statement with quickness */
+		    emitStmt(nextNextStmt);
+
+		    /* hm.  we didn't use local.  emit incrementage */
+		    if (plusPlusHolder != null)
+			{ emitStmt(stmt); emitStmt(nextStmt); }
+
+                    if(currentStackHeight != 0)
+                        throw new RuntimeException("Stack has height " + currentStackHeight + " after execution of stmt: " + s);
+		    contFlag = true;
+		    codeIt.next(); codeIt.next();
+                  }
+                while(false);
+		if (contFlag) 
+		    continue;
 
                 // emit this statement
                 {
@@ -703,197 +837,197 @@ public class JasminClass
                     }        
                 }
             }
-            
-        lvalue.apply(new AbstractJimpleValueSwitch()
-        {
-            public void caseArrayRef(ArrayRef v)
-            {
-                emitValue(v.getBase());
-                emitValue(v.getIndex());
-                emitValue(rvalue);
 
-                v.getType().apply(new TypeSwitch()
-                {
-                    public void caseArrayType(ArrayType t)
-                    {
-                        emit("aastore", -3);
-                    }
+	    lvalue.apply(new AbstractJimpleValueSwitch()
+	    {
+		public void caseArrayRef(ArrayRef v)
+		{
+		    emitValue(v.getBase());
+		    emitValue(v.getIndex());
+		    emitValue(rvalue);
+		    
+		    v.getType().apply(new TypeSwitch()
+		    {
+			public void caseArrayType(ArrayType t)
+			{
+			    emit("aastore", -3);
+			}
 
-                    public void caseDoubleType(DoubleType t)
-                    {
-                        emit("dastore", -4);
-                    }
+			public void caseDoubleType(DoubleType t)
+			{
+			    emit("dastore", -4);
+			}
 
-                    public void caseFloatType(FloatType t)
-                    {
-                        emit("fastore", -3);
-                    }
+			public void caseFloatType(FloatType t)
+                        {
+			    emit("fastore", -3);
+			}
 
-                    public void caseIntType(IntType t)
-                    {
-                        emit("iastore", -3);
-                    }
+			public void caseIntType(IntType t)
+                        {
+			    emit("iastore", -3);
+			}
 
-                    public void caseLongType(LongType t)
-                    {
-                        emit("lastore", -4);
-                    }
+			public void caseLongType(LongType t)
+                        {
+			    emit("lastore", -4);
+			}
 
-                    public void caseRefType(RefType t)
-                    {
-                        emit("aastore", -3);
-                    }
+			public void caseRefType(RefType t)
+                        {
+			    emit("aastore", -3);
+			}
 
-                    public void caseByteType(ByteType t)
-                    {
-                        emit("bastore", -3);
-                    }
+			public void caseByteType(ByteType t)
+                        {
+			    emit("bastore", -3);
+			}
 
-                    public void caseBooleanType(BooleanType t)
-                    {
-                        emit("bastore", -3);
-                    }
+			public void caseBooleanType(BooleanType t)
+                        {
+			    emit("bastore", -3);
+			}
 
-                    public void caseCharType(CharType t)
-                    {
-                        emit("castore", -3);
-                    }
+			public void caseCharType(CharType t)
+                        {
+			    emit("castore", -3);
+			}
 
-                    public void caseShortType(ShortType t)
-                    {
-                        emit("sastore", -3);
-                    }
+			public void caseShortType(ShortType t)
+                        {
+			    emit("sastore", -3);
+			}
 
-                    public void defaultCase(Type t)
-                    {
-                        throw new RuntimeException("Invalid type: " + t);
-                    }
-                });
-            }
+			public void defaultCase(Type t)
+                        {
+			    throw new RuntimeException("Invalid type: " + t);
+			}
+		    });
+		}
+		
+		public void defaultCase(Value v)
+		    {
+			throw new RuntimeException("Can't store in value " + v);
+		    }
+		
+		public void caseInstanceFieldRef(InstanceFieldRef v)
+		    {
+			emitValue(v.getBase());
+			emitValue(rvalue);
+			
+			emit("putfield " + slashify(v.getField().getDeclaringClass().getName()) + "/" +
+			     v.getField().getName() + " " + jasminDescriptorOf(v.getField().getType()), 
+			     -1 + -sizeOfType(v.getField().getType()));
+		    }
+		
+		public void caseLocal(final Local v)
+		{
+		    final int slot = ((Integer) localToSlot.get(v)).intValue();
+			
+		    v.getType().apply(new TypeSwitch()
+		    {
+			public void caseArrayType(ArrayType t)
+			{
+			    emitValue(rvalue);
 
-            public void defaultCase(Value v)
-            {
-                throw new RuntimeException("Can't store in value " + v);
-            }
+			    if(slot >= 0 && slot <= 3)
+				emit("astore_" + slot, -1);
+			    else
+				emit("astore " + slot, -1);
+			}
 
-            public void caseInstanceFieldRef(InstanceFieldRef v)
-            {
-                emitValue(v.getBase());
-                emitValue(rvalue);
+			public void caseDoubleType(DoubleType t)
+			{
+			    emitValue(rvalue);
 
-                emit("putfield " + slashify(v.getField().getDeclaringClass().getName()) + "/" +
-                    v.getField().getName() + " " + jasminDescriptorOf(v.getField().getType()), 
-                    -1 + -sizeOfType(v.getField().getType()));
-            }
+			    if(slot >= 0 && slot <= 3)
+				emit("dstore_" + slot, -2);
+			    else
+				emit("dstore " + slot, -2);
+			}
+			
+			public void caseFloatType(FloatType t)
+			{
+			    emitValue(rvalue);
+			    
+			    if(slot >= 0 && slot <= 3)
+				emit("fstore_" + slot, -1);
+			    else
+				emit("fstore " + slot, -1);
+			}
 
-            public void caseLocal(final Local v)
-            {
-                final int slot = ((Integer) localToSlot.get(v)).intValue();
+			public void caseIntType(IntType t)
+			    {
+				emitValue(rvalue);
+				
+				if(slot >= 0 && slot <= 3)
+				    emit("istore_" + slot, -1);
+				else
+				    emit("istore " + slot, -1);
+			    }
 
-                v.getType().apply(new TypeSwitch()
-                {
-                    public void caseArrayType(ArrayType t)
-                    {
-                        emitValue(rvalue);
+			public void caseLongType(LongType t)
+			    {
+				emitValue(rvalue);
+				
+				if(slot >= 0 && slot <= 3)
+				    emit("lstore_" + slot, -2);
+				else
+				    emit("lstore " + slot, -2);
+			    }
+			
+			public void caseRefType(RefType t)
+			    {
+				emitValue(rvalue);
+				
+				if(slot >= 0 && slot <= 3)
+				    emit("astore_" + slot, -1);
+				else
+				    emit("astore " + slot, -1);
+			    }
 
-                        if(slot >= 0 && slot <= 3)
-                            emit("astore_" + slot, -1);
-                        else
-                            emit("astore " + slot, -1);
-                    }
-
-                    public void caseDoubleType(DoubleType t)
-                    {
-                        emitValue(rvalue);
-
-                        if(slot >= 0 && slot <= 3)
-                            emit("dstore_" + slot, -2);
-                        else
-                            emit("dstore " + slot, -2);
-                    }
-
-                    public void caseFloatType(FloatType t)
-                    {
-                        emitValue(rvalue);
-
-                        if(slot >= 0 && slot <= 3)
-                            emit("fstore_" + slot, -1);
-                        else
-                            emit("fstore " + slot, -1);
-                    }
-
-                    public void caseIntType(IntType t)
-                    {
-                        emitValue(rvalue);
-
-                        if(slot >= 0 && slot <= 3)
-                            emit("istore_" + slot, -1);
-                        else
-                            emit("istore " + slot, -1);
-                    }
-
-                    public void caseLongType(LongType t)
-                    {
-                        emitValue(rvalue);
-
-                        if(slot >= 0 && slot <= 3)
-                            emit("lstore_" + slot, -2);
-                        else
-                            emit("lstore " + slot, -2);
-                    }
-
-                    public void caseRefType(RefType t)
-                    {
-                        emitValue(rvalue);
-
-                        if(slot >= 0 && slot <= 3)
-                            emit("astore_" + slot, -1);
-                        else
-                            emit("astore " + slot, -1);
-                    }
-
-                    public void caseStmtAddressType(StmtAddressType t)
-                    {
-                        isNextGotoAJsr = true;
-                        returnAddressSlot = slot;
-
-/*
-                        if ( slot >= 0 && slot <= 3)
-                             emit("astore_" + slot,  );
-                        else
-                             emit("astore " + slot,  );
-
-*/
-                         
-                    }
-
-                    public void caseNullType(NullType t)
-                    {
-                        emitValue(rvalue);
-
-                        if(slot >= 0 && slot <= 3)
-                            emit("astore_" + slot, -1);
-                        else
-                            emit("astore " + slot, -1);
-                    }
-
-                    public void defaultCase(Type t)
-                    {
-                        throw new RuntimeException("Invalid local type: " + t);
-                    }
-                });
-            }
-
-            public void caseStaticFieldRef(StaticFieldRef v)
-            {
-                SootField field = v.getField();
-
-                emitValue(rvalue);
-                emit("putstatic " + slashify(field.getDeclaringClass().getName()) + "/" +
-                    field.getName() + " " + jasminDescriptorOf(field.getType()),
-                    -sizeOfType(v.getField().getType()));
-            }
-        });
+			public void caseStmtAddressType(StmtAddressType t)
+			    {
+				isNextGotoAJsr = true;
+				returnAddressSlot = slot;
+				
+				/*
+				  if ( slot >= 0 && slot <= 3)
+				  emit("astore_" + slot,  );
+				  else
+				  emit("astore " + slot,  );
+				  
+				*/
+				
+			    }
+			
+			public void caseNullType(NullType t)
+			    {
+				emitValue(rvalue);
+				
+				if(slot >= 0 && slot <= 3)
+				    emit("astore_" + slot, -1);
+				else
+				    emit("astore " + slot, -1);
+			    }
+			
+			public void defaultCase(Type t)
+			    {
+				throw new RuntimeException("Invalid local type: " + t);
+			    }
+		    });
+		}
+		
+		public void caseStaticFieldRef(StaticFieldRef v)
+		    {
+			SootField field = v.getField();
+			
+			emitValue(rvalue);
+			emit("putstatic " + slashify(field.getDeclaringClass().getName()) + "/" +
+			     field.getName() + " " + jasminDescriptorOf(field.getType()),
+			     -sizeOfType(v.getField().getType()));
+		    }
+	    });
     }
 
     void emitIfStmt(IfStmt stmt)
@@ -1582,6 +1716,113 @@ public class JasminClass
         });
     }
 
+    /* try to pre-duplicate a local and fix-up its dup_xn parameter. */
+    /* if we find that we're unable to proceed, we swap the dup_xn */
+    /* for a store pl, load pl combination */
+    Value plusPlusValue;
+    Local plusPlusHolder;
+    int plusPlusState;
+    Stmt plusPlusIncrementer;
+
+    void emitLocal(Local v)
+    {
+	final int slot = ((Integer) localToSlot.get(v)).intValue();
+	final Local vAlias = v;
+
+	v.getType().apply(new TypeSwitch()
+        {
+	    public void caseArrayType(ArrayType t)
+	    {
+		if(slot >= 0 && slot <= 3)
+		    emit("aload_" + slot, 1);
+		else
+		    emit("aload " + slot, 1);
+	    }
+	    
+	    public void defaultCase(Type t)
+	    {
+		throw new RuntimeException("invalid local type to load" + t);
+	    }
+
+	    public void caseDoubleType(DoubleType t)
+	    {
+		if(slot >= 0 && slot <= 3)
+		    emit("dload_" + slot, 2);
+		else
+		    emit("dload " + slot, 2);
+	    }
+
+	    public void caseFloatType(FloatType t)
+	    {
+		if(slot >= 0 && slot <= 3)
+		    emit("fload_" + slot, 1);
+		else
+		    emit("fload " + slot, 1);
+	    }
+	    
+	    public void caseIntType(IntType t)
+	    {
+		if (vAlias.equals(plusPlusHolder))
+		{
+		    switch(plusPlusState)
+		    {
+		    case 0:    
+			// ok, we're called upon to emit the
+			// ++ target, whatever it was.
+			
+			// now we need to emit a statement incrementing
+			// the correct value.  instead of loading the 
+			// value itself, load a dummy local (which we don't
+			// emit) -- handle it with state 1.
+
+			plusPlusState = 1;
+			
+			emitStmt(plusPlusIncrementer);
+			plusPlusHolder = null;
+
+			// afterwards we have the value on the stack.
+			return;
+		    case 1:
+			int ht = currentStackHeight;
+			emitValue(plusPlusValue);
+
+			emit("dup_x"+(currentStackHeight-ht), 1);
+
+			return;
+		    }
+		}
+		if(slot >= 0 && slot <= 3)
+		    emit("iload_" + slot, 1);
+		else
+		    emit("iload " + slot, 1);
+	    }
+
+	    public void caseLongType(LongType t)
+	    {
+		if(slot >= 0 && slot <= 3)
+		    emit("lload_" + slot, 2);
+		else
+		    emit("lload " + slot, 2);
+	    }
+
+	    public void caseRefType(RefType t)
+	    {
+		if(slot >= 0 && slot <= 3)
+		    emit("aload_" + slot, 1);
+		else
+		    emit("aload " + slot, 1);
+	    }
+
+	    public void caseNullType(NullType t)
+	    {
+		if(slot >= 0 && slot <= 3)
+		    emit("aload_" + slot, 1);
+		else
+		    emit("aload " + slot, 1);
+	    }
+	});
+    }
+
     void emitValue(Value value)
     {
         value.apply(new AbstractJimpleValueSwitch()
@@ -1709,12 +1950,11 @@ public class JasminClass
                         emit("laload", 0);
                     }
 
-                    public void caseRefType(RefType ty)
+                    public void caseNullType(NullType ty)
                     {
                         emit("aaload", -1);
                     }
-
-                    public void caseNullType(NullType ty)
+                    public void caseRefType(RefType ty)
                     {
                         emit("aaload", -1);
                     }
@@ -2004,72 +2244,7 @@ public class JasminClass
 
             public void caseLocal(Local v)
             {
-                final int slot = ((Integer) localToSlot.get(v)).intValue();
-
-                v.getType().apply(new TypeSwitch()
-                {
-                    public void caseArrayType(ArrayType t)
-                    {
-                        if(slot >= 0 && slot <= 3)
-                            emit("aload_" + slot, 1);
-                        else
-                            emit("aload " + slot, 1);
-                    }
-
-                    public void defaultCase(Type t)
-                    {
-                        throw new RuntimeException("invalid local type to load" + t);
-                    }
-
-                    public void caseDoubleType(DoubleType t)
-                    {
-                        if(slot >= 0 && slot <= 3)
-                            emit("dload_" + slot, 2);
-                        else
-                            emit("dload " + slot, 2);
-                    }
-
-                    public void caseFloatType(FloatType t)
-                    {
-                        if(slot >= 0 && slot <= 3)
-                            emit("fload_" + slot, 1);
-                        else
-                            emit("fload " + slot, 1);
-                    }
-
-                    public void caseIntType(IntType t)
-                    {
-                        if(slot >= 0 && slot <= 3)
-                            emit("iload_" + slot, 1);
-                        else
-                            emit("iload " + slot, 1);
-                    }
-
-                    public void caseLongType(LongType t)
-                    {
-                        if(slot >= 0 && slot <= 3)
-                            emit("lload_" + slot, 2);
-                        else
-                            emit("lload " + slot, 2);
-                    }
-
-                    public void caseRefType(RefType t)
-                    {
-                        if(slot >= 0 && slot <= 3)
-                            emit("aload_" + slot, 1);
-                        else
-                            emit("aload " + slot, 1);
-                    }
-
-                    public void caseNullType(NullType t)
-                    {
-                        if(slot >= 0 && slot <= 3)
-                            emit("aload_" + slot, 1);
-                        else
-                            emit("aload " + slot, 1);
-                    }
-                });
-
+		emitLocal(v);
             }
 
             public void caseLongConstant(LongConstant v)
