@@ -1,4 +1,4 @@
-Package ca.mcgill.sable.soot.jimple.parser;
+Package soot.jimple.parser;
 
 Helpers
   all = [0 .. 0xffff];

@@ -1,4 +1,4 @@
-import ca.mcgill.sable.soot.*;
+import soot.*;
 
 import java.util.*;
 import java.io.*;
@@ -10,7 +10,7 @@ public class HierarchyBrowser
         System.out.println("Usage: java HierarchyBrowser <command> <class> [context-class1] [context-class2] ...");
         System.out.println("    where command is one of: [d]subc[_i], [d]subi[_i], [d]imp\n");
         System.out.println("OR:    java HierarchyBrowser interactive <context-class1> [context-class2] ...");
-        System.out.println("\nExample: java HierarchyBrowser subi ca.mcgill.sable.soot.Unit ca.mcgill.sable.soot.Main");
+        System.out.println("\nExample: java HierarchyBrowser subi soot.Unit soot.Main");
     }
 
     public static void doCommand(Hierarchy h, String command, String className)
