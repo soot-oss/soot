@@ -40,7 +40,7 @@ public class JavaToJimple {
             options.source_path.add(new File(next.toString()));
         }
 
-        options.source_ext = "java";
+        options.source_ext = new String []{"java"};
 		options.serialize_type_info = false;
 		
 		source.add(fileName);
