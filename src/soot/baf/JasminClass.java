@@ -231,8 +231,6 @@ public class JasminClass
 
             if(sootClass.hasSuperclass())
                 emit(".super " + slashify(sootClass.getSuperclass().getName()));
-            else
-                emit(".super " + slashify(sootClass.getName()));
 
             emit("");
         }
