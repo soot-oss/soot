@@ -117,4 +117,6 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf
             u.addTag((Tag) it.next());
         }
     }
+	public SootField XgetField() { return getField(); }
+
 }

@@ -97,4 +97,5 @@ abstract public class AbstractInvokeExpr implements InvokeExpr
     {
         return method.getReturnType();
     }
+	public SootMethod XgetMethod() { return getMethod(); }
 }

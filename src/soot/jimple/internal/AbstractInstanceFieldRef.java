@@ -148,4 +148,5 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
 	    u.addTag((Tag) it.next());
 	}
     }
+    public SootField XgetField() { return getField(); }
 }

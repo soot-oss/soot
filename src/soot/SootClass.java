@@ -988,5 +988,38 @@ public class SootClass extends AbstractHost implements Numberable
     public final void setNumber( int number ) { this.number = number; }
 
     private int number = 0;
+
+    // temporary abc stubs
+    public SootField XgetField( String name, Type type ) {
+        return getField(name, type);
+    }
+    public SootField XgetFieldByName(String name) {
+        return getFieldByName(name);
+    }
+    public boolean XdeclaresFieldByName(String name) {
+        return declaresFieldByName(name);
+    }
+    public boolean XdeclaresField(String name, Type type) {
+        return declaresField(name, type);
+    }
+    public SootMethod XgetMethod( String name, List parameterTypes, Type returnType ) {
+        return getMethod(name, parameterTypes, returnType);
+    }
+    public SootMethod XgetMethod(String name, List parameterTypes) {
+        return getMethod(name, parameterTypes);
+    }
+    public SootMethod XgetMethodByName(String name) {
+        return getMethodByName(name);
+    }
+    public boolean XdeclaresMethod(String name, List parameterTypes) {
+        return declaresMethod(name, parameterTypes);
+    }
+    public boolean XdeclaresMethod(String name, List parameterTypes, Type returnType) {
+        return declaresMethod(name, parameterTypes, returnType);
+    }
+    public boolean XdeclaresMethodByName(String name) {
+        return declaresMethodByName(name);
+    }
+
 }
 
