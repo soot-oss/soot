@@ -50,17 +50,13 @@ import soot.xml.*;
 
 /** Manages the phase options of the various soot phases. */
 public class PhaseOptions {
-    /** Needed for preventing infinite recursion in constructor. */
-    private PackManager pm;
-    public void setPackManager(PackManager m) { this.pm = m; }
-
     public PhaseOptions( Singletons.Global g ) { }
     public static PhaseOptions v() { return G.v().PhaseOptions(); }
 
     private Map phaseToOptionMap = new HashMap();
 
     public Map getPhaseOptions(String phaseName) {
-        return getPhaseOptions(pm.getPhase(phaseName));
+        return getPhaseOptions(PackManager.v().getPhase(phaseName));
     }
 
     public Map getPhaseOptions(HasPhaseOptions phase) {
@@ -127,7 +123,7 @@ public class PhaseOptions {
 
 
     private Map mapForPhase( String phaseName ) {
-        HasPhaseOptions phase = pm.getPhase( phaseName );
+        HasPhaseOptions phase = PackManager.v().getPhase( phaseName );
         if( phase == null ) return null;
         return mapForPhase( phase );
     }
@@ -159,7 +155,7 @@ public class PhaseOptions {
         }
     }
     private void resetRadioPack( String phaseName ) {
-        for( Iterator pIt = pm.allPacks().iterator(); pIt.hasNext(); ) {
+        for( Iterator pIt = PackManager.v().allPacks().iterator(); pIt.hasNext(); ) {
             final Pack p = (Pack) pIt.next();
             if( !(p instanceof RadioScenePack) ) continue;
             if( p.get(phaseName) == null ) continue;
@@ -174,7 +170,7 @@ public class PhaseOptions {
         // This check for the parent being enabled
         // has been taken out, because it caused problems with the order in
         // which the options are specified.
-        for( Iterator pIt = pm.allPacks().iterator(); pIt.hasNext(); ) {
+        for( Iterator pIt = PackManager.v().allPacks().iterator(); pIt.hasNext(); ) {
             final Pack p = (Pack) pIt.next();
             if( getBoolean( getPhaseOptions( p ), "enabled" ) ) continue;
             for( Iterator tIt = p.iterator(); tIt.hasNext(); ) {
