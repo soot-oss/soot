@@ -141,7 +141,15 @@ public class InitialResolver {
             }
 
         }
-      
+     
+        // determine if assert is used
+        AssertStmtChecker asc = new AssertStmtChecker();
+        astNode.visit(asc);
+
+        if (asc.isHasAssert()){
+            handleAssert();
+        }
+        
         // create class to source map first 
         // create source file
         if (astNode instanceof polyglot.ast.SourceFile) {
@@ -149,6 +157,39 @@ public class InitialResolver {
         }
         
 
+    }
+
+    private void handleAssert(){
+        // two extra fields
+        sootClass.addField(new soot.SootField("$assertionsDisabled", soot.BooleanType.v(), soot.Modifier.STATIC | soot.Modifier.FINAL));
+        sootClass.addField(new soot.SootField("class$"+sootClass.getName(), soot.RefType.v("java.lang.Class"), soot.Modifier.STATIC));
+        // two extra methods
+        String methodName = "class$";
+        soot.Type methodRetType = soot.RefType.v("java.lang.Class");
+        ArrayList paramTypes = new ArrayList();
+        paramTypes.add(soot.RefType.v("java.lang.String"));
+        if (!sootClass.declaresMethod(methodName, paramTypes, methodRetType)){
+            soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
+            AssertClassMethodSource mSrc = new AssertClassMethodSource();
+            sootMethod.setSource(mSrc);
+            sootClass.addMethod(sootMethod);
+        }
+        methodName = "<clinit>";
+        methodRetType = soot.VoidType.v();
+        paramTypes = new ArrayList();
+        if (!sootClass.declaresMethod(methodName, paramTypes, methodRetType)){
+            soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
+            PolyglotMethodSource mSrc = new PolyglotMethodSource();
+            mSrc.hasAssert(true);
+            sootMethod.setSource(mSrc);
+            sootClass.addMethod(sootMethod);
+            System.out.println("assert? : "+((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).hasAssert());
+        }
+        else {
+            ((soot.javaToJimple.PolyglotMethodSource)sootClass.getMethod(methodName, paramTypes, methodRetType).getSource()).hasAssert(true);
+            System.out.println("assert? : "+((soot.javaToJimple.PolyglotMethodSource)sootClass.getMethod(methodName, paramTypes, methodRetType).getSource()).hasAssert());
+        }
+        System.out.println("handled assert"); 
     }
 		
     /**
@@ -391,12 +432,12 @@ public class InitialResolver {
                 clinitMethod = new soot.SootMethod("<clinit>", new ArrayList(), soot.VoidType.v(), soot.Modifier.STATIC, new ArrayList());
                 
                 sootClass.addMethod(clinitMethod);
+                clinitMethod.setSource(new soot.javaToJimple.PolyglotMethodSource());
             }
             else {
                 clinitMethod = sootClass.getMethod("<clinit>", new ArrayList(), soot.VoidType.v());
             
             }
-            clinitMethod.setSource(new soot.javaToJimple.PolyglotMethodSource());
             ((PolyglotMethodSource)clinitMethod.getSource()).setStaticFieldInits(staticFieldInits);
             ((PolyglotMethodSource)clinitMethod.getSource()).setStaticInitializerBlocks(staticInitializerBlocks);
 

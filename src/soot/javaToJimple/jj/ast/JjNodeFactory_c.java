@@ -74,6 +74,11 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
         return n;
     }
     
+    public NewArray NewArray(Position pos, TypeNode base, List dims, int addDims, ArrayInit init) {
+        System.out.println("new array pos: "+pos);
+        return super.NewArray(pos, base, dims, addDims, init);
+    }
+    
     public ArrayInit ArrayInit(Position pos, List elements) {
         ArrayInit n = new JjArrayInit_c(pos, elements);
         n = (ArrayInit)n.ext(extFactory().extArrayInit());

@@ -3015,7 +3015,8 @@ public class Grm
     }
 
     public static Position pos(Object first, Object last){
-       
+      
+        System.out.println("first: "+first+" class: "+first.getClass()+" last: "+last+" class: "+last.getClass());
         Position fpos = null;
         Position epos = null;
         if (first instanceof Node) {
@@ -4525,7 +4526,7 @@ class CUP$Grm$actions {
 		int cright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
 		Integer c = (Integer)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                                                           RESULT = parser.nf.NewArray(parser.pos(n, c), a, b, 
+                                                           RESULT = parser.nf.NewArray(parser.pos(n, b), a, b, 
                 c.intValue()); 
                                                            
               CUP$Grm$result = new java_cup.runtime.Symbol(120/*array_creation_expression*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-3)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
@@ -4549,7 +4550,7 @@ class CUP$Grm$actions {
 		int cright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
 		Integer c = (Integer)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                                                  RESULT = parser.nf.NewArray(parser.pos(n, c), a, b,
+                                                  RESULT = parser.nf.NewArray(parser.pos(n, b), a, b,
                 c.intValue()); 
                                                   
               CUP$Grm$result = new java_cup.runtime.Symbol(120/*array_creation_expression*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-3)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);

@@ -27,6 +27,7 @@ public class JavaToJimple {
         };
         polyglot.main.Options options = extInfo.getOptions();
 
+        options.assertions = true;
         options.source_path = new LinkedList();
         Iterator it = sourceLocations.iterator();
         while (it.hasNext()){

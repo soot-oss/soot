@@ -76,7 +76,8 @@ public class JimpleBodyBuilder {
         
         // if method is <clinit> handle static field inits
         if (sootMethod.getName().equals("<clinit>")){
-    
+            
+            handleAssert(sootMethod);
             handleStaticFieldInits(sootMethod);
             handleStaticInitializerBlocks(sootMethod);
         }
@@ -111,6 +112,12 @@ public class JimpleBodyBuilder {
     
     }
 
+    private void handleAssert(soot.SootMethod sootMethod){
+        System.out.println("assert? : "+((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).hasAssert());
+        if (!((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).hasAssert()) return;
+        ((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).addAssertInits(body);
+    }
+    
     private void handleFieldInits(soot.SootMethod sootMethod) {
             
         ArrayList fieldInits = ((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).getFieldInits();
@@ -955,7 +962,89 @@ public class JimpleBodyBuilder {
      * Assert Stmt Creation
      */
     private void createAssert(polyglot.ast.Assert assertStmt) {
-        throw new RuntimeException("Assert not yet Implemented");
+        
+        // check if assertions are disabled
+        soot.Local testLocal = generateLocal(soot.BooleanType.v());
+        soot.SootField assertField = body.getMethod().getDeclaringClass().getField("$assertionsDisabled", soot.BooleanType.v());
+        soot.jimple.FieldRef assertFieldRef = soot.jimple.Jimple.v().newStaticFieldRef(assertField);
+        soot.jimple.AssignStmt fieldAssign = soot.jimple.Jimple.v().newAssignStmt(testLocal, assertFieldRef);
+        body.getUnits().add(fieldAssign);
+        
+        soot.jimple.NopStmt nop1 = soot.jimple.Jimple.v().newNopStmt();
+        soot.jimple.ConditionExpr cond1 = soot.jimple.Jimple.v().newNeExpr(testLocal, soot.jimple.IntConstant.v(0));
+        soot.jimple.IfStmt testIf = soot.jimple.Jimple.v().newIfStmt(cond1, nop1);
+        body.getUnits().add(testIf);
+
+        // actual cond test
+        soot.Value sootCond = createExpr(assertStmt.cond());
+        if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
+            sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(0));
+        }
+        else {
+            //sootCond = reverseCondition((soot.jimple.ConditionExpr)sootCond);
+            sootCond = handleDFLCond((soot.jimple.ConditionExpr)sootCond);
+        }
+       
+        // add if
+		soot.jimple.IfStmt ifStmt = soot.jimple.Jimple.v().newIfStmt(sootCond, nop1);
+        body.getUnits().add(ifStmt);
+
+        Util.addLnPosTags(ifStmt.getConditionBox(), assertStmt.cond().position());
+        Util.addLnPosTags(ifStmt, assertStmt.position());
+        // assertion failure code
+        soot.Local failureLocal = generateLocal(soot.RefType.v("java.lang.AssertionError"));
+        soot.jimple.NewExpr newExpr = soot.jimple.Jimple.v().newNewExpr(soot.RefType.v("java.lang.AssertionError"));
+        soot.jimple.AssignStmt newAssign = soot.jimple.Jimple.v().newAssignStmt(failureLocal, newExpr);
+        body.getUnits().add(newAssign);
+
+        soot.SootMethod methToInvoke;
+        ArrayList paramTypes = new ArrayList();
+        ArrayList params = new ArrayList();
+        if (assertStmt.errorMessage() != null){
+            soot.Value errorExpr = createExpr(assertStmt.errorMessage());
+            soot.Type errorType = errorExpr.getType();
+            if (errorType instanceof soot.IntType) {
+                paramTypes.add(soot.IntType.v());
+            }
+            else if (errorType instanceof soot.LongType){
+                paramTypes.add(soot.LongType.v());
+            }
+            else if (errorType instanceof soot.FloatType){
+                paramTypes.add(soot.FloatType.v());
+            }
+            else if (errorType instanceof soot.DoubleType){
+                paramTypes.add(soot.DoubleType.v());
+            }
+            else if (errorType instanceof soot.CharType){
+                paramTypes.add(soot.CharType.v());
+            }
+            else if (errorType instanceof soot.BooleanType){
+                paramTypes.add(soot.BooleanType.v());
+            }
+            else if (errorType instanceof soot.ShortType){
+                paramTypes.add(soot.IntType.v());
+            }
+            else if (errorType instanceof soot.ByteType){
+                paramTypes.add(soot.IntType.v());
+            }
+            else {
+                paramTypes.add(soot.RefType.v());
+            }
+            params.add(errorExpr);
+        }
+        methToInvoke = soot.Scene.v().getSootClass("java.lang.AssertionError").getMethod("<init>", paramTypes, soot.VoidType.v());
+        
+        soot.jimple.SpecialInvokeExpr invokeExpr = soot.jimple.Jimple.v().newSpecialInvokeExpr(failureLocal, methToInvoke, params);
+        soot.jimple.InvokeStmt invokeStmt = soot.jimple.Jimple.v().newInvokeStmt(invokeExpr);
+        body.getUnits().add(invokeStmt);
+
+        soot.jimple.ThrowStmt throwStmt = soot.jimple.Jimple.v().newThrowStmt(failureLocal);
+        body.getUnits().add(throwStmt);
+
+        // end
+        body.getUnits().add(nop1);
+        
+        //throw new RuntimeException("Assert not yet Implemented");
     }
     
     /**

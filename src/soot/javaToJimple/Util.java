@@ -12,7 +12,9 @@ public class Util {
     }
     
     public static void addLnPosTags(soot.tagkit.Host host, int sline, int eline, int spos, int epos) {
-        host.addTag(new soot.tagkit.SourceLnPosTag(sline, eline, spos, epos));
+        if (soot.options.Options.v().keep_line_number()){
+            host.addTag(new soot.tagkit.SourceLnPosTag(sline, eline, spos, epos));
+        }
         //host.addTag(new soot.tagkit.SourceLineNumberTag(sline, eline));
         //host.addTag(new soot.tagkit.SourcePositionTag(spos, epos));
     }
@@ -50,7 +52,9 @@ public class Util {
     }
 
     public static void addMethodLineTag(soot.tagkit.Host host, int sline, int eline){
-        host.addTag(new soot.tagkit.SourceLineNumberTag(sline, eline));    
+        if (soot.options.Options.v().keep_line_number()){
+            host.addTag(new soot.tagkit.SourceLineNumberTag(sline, eline));    
+        }
     }
     
     /**
