@@ -385,11 +385,6 @@ public class Scene  //extends AbstractHost
         throw new RuntimeException("tried to get nonexistent field "+fieldSignature);
     }
 
-        /** This method appears to be only used by some lazy VTA developer. */
-	public SootMethod forceGetMethod(String methodSignature) {
-            return grabMethod( methodSignature );
-	}
-	
     public SootMethod getMethod(String methodSignature)
     {
         SootMethod m = grabMethod( methodSignature );

@@ -58,9 +58,10 @@ public class ImplicitMethodInvocation
             set.add( cls.getMethod( methodSubSig ) );
         }
     }
-    private final void addMethod( NumberedSet set, String methodName ) {
-        SootMethod m = Scene.v().forceGetMethod( methodName );
-        if( m != null ) set.add(m);
+    private final void addMethod( NumberedSet set, String methodSig ) {
+        if( Scene.v().containsMethod( methodSig ) ) {
+            set.add( Scene.v().getMethod( methodSig ) );
+        }
     }
     public NumberedSet getEntryPoints() {
         NumberedSet ret = new NumberedSet( Scene.v().getMethodNumberer() );

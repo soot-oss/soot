@@ -242,13 +242,17 @@ public class ClassHierarchyAnalysis
     return g;	
   }
 
+  private static SootMethod forceGetMethod( String sig ) {
+      if( !Scene.v().containsMethod( sig ) ) return null;
+      return Scene.v().getMethod(sig);
+  }
   /* for classes touched by getStatic, we need to run <clinit> method
    */
   private static void getClinitMethod(SootClass c, 
 				      LinkedList worklist,
 				      HashSet visited) {
     String fullsig = "<" + c.getName()+": void <clinit>()>";
-    SootMethod m = Scene.v().forceGetMethod(fullsig);
+    SootMethod m = forceGetMethod(fullsig);
     if ((m!=null) &&(!visited.contains(m))) {
       worklist.addLast(m);
       visited.add(m);
@@ -266,7 +270,7 @@ public class ClassHierarchyAnalysis
 					    HashSet visited) {
     for (int i=0, n=smsig.length; i<n; i++) {
       String fullsig = "<"+c.getName()+": "+smsig[i]+">";
-      SootMethod m = Scene.v().forceGetMethod(fullsig);
+      SootMethod m = forceGetMethod(fullsig);
 
       if ((m != null) && (!visited.contains(m))) {
 	worklist.addLast(m);
