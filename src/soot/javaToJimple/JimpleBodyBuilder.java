@@ -326,6 +326,10 @@ public class JimpleBodyBuilder {
 
         Util.addLnPosTags(stmt, formal.position());
         Util.addLnPosTags(((soot.jimple.IdentityStmt) stmt).getRightOpBox(), formal.position());
+
+        ArrayList names = new ArrayList();
+        names.add(formal.name());
+        stmt.addTag(new soot.tagkit.ParamNamesTag(names));
         return formalLocal;
     }
         
@@ -711,7 +715,9 @@ public class JimpleBodyBuilder {
      * For Loop Stmts Creation
      */
     private void createForLoop(polyglot.ast.For forStmt){
-        
+       
+        System.out.println("forStmt pos: "+forStmt.position());
+        System.out.println("forStmt body pos: "+forStmt.body().position());
         // these ()are for break and continue
         endControlNoop.push(soot.jimple.Jimple.v().newNopStmt());
         condControlNoop.push(soot.jimple.Jimple.v().newNopStmt());

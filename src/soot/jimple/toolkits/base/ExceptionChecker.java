@@ -5,6 +5,7 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 import soot.jimple.toolkits.scalar.*;
+import soot.tagkit.*;
 
 public class ExceptionChecker extends BodyTransformer{
 
@@ -38,7 +39,7 @@ public class ExceptionChecker extends BodyTransformer{
     private void checkThrow(Body b, ThrowStmt ts){
         if (isThrowDeclared(b, ((RefType)ts.getOp().getType()).getSootClass()) || isThrowFromCompiler(ts) || isExceptionCaught(b, ts, (RefType)ts.getOp().getType())) return;
         if (reporter != null){
-            reporter.reportError(new ExceptionCheckerError(b.getMethod(), ((RefType)ts.getOp().getType()).getSootClass(), ts));
+            reporter.reportError(new ExceptionCheckerError(b.getMethod(), ((RefType)ts.getOp().getType()).getSootClass(), ts, (SourceLnPosTag)ts.getOpBox().getTag("SourceLnPosTag")));
         }
     }
 
@@ -107,7 +108,12 @@ public class ExceptionChecker extends BodyTransformer{
             SootClass sc = (SootClass)it.next();
             if (isThrowDeclared(b, sc) || isExceptionCaught(b, s, sc.getType())) continue;
             if (reporter != null){
-                reporter.reportError(new ExceptionCheckerError(b.getMethod(), sc, s));
+                if (s instanceof InvokeStmt){
+                    reporter.reportError(new ExceptionCheckerError(b.getMethod(), sc, s, (SourceLnPosTag)s.getTag("SourceLnPosTag")));
+                }
+                else if (s instanceof AssignStmt){
+                    reporter.reportError(new ExceptionCheckerError(b.getMethod(), sc, s, (SourceLnPosTag)((AssignStmt)s).getRightOpBox().getTag("SourceLnPosTag")));
+                }
             }
         }
     }

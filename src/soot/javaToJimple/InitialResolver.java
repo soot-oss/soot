@@ -1378,7 +1378,7 @@ public class InitialResolver {
         
         int modifier = Util.getModifier(flags);
 
-        soot.SootMethod method = new soot.SootMethod(name, parameters, soot.VoidType.v(), modifier);
+        soot.SootMethod method = new soot.SootMethod(name, parameters, soot.VoidType.v(), modifier, exceptions);
 
         return method;
     }
