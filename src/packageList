@@ -18,6 +18,10 @@ soot.jimple.toolkits.scalar
 soot.jimple.toolkits.scalar.pre
 soot.jimple.toolkits.typing
 soot.jimple.toolkits.graph
+soot.shimple
+soot.shimple.internal
+soot.shimple.internal.analysis
+soot.shimple.toolkits.scalar
 soot.tagkit
 soot.toolkits.graph
 soot.toolkits.scalar

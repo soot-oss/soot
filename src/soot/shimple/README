@@ -15,9 +15,14 @@ soot.toolkits.scalar.SimpleLocalUses.
 Available example analyses with Shimple currently include:
 soot.shimple.toolkits.scalar.{ShimpleLocalDefs,SEvaluator,SConstantPropagatorAndFolder}
 
-Suggestions and improvements welcome!  Please send these either to the
-Soot mailing list at soot-list@sable.mcgill.ca, or directly to myself
-at navindra@cs.mcgill.ca.
+Suggestions, improvements and bug reports/fixes welcome!  Please send
+these either to the Soot mailing list at soot-list@sable.mcgill.ca, or
+directly to myself at navindra@cs.mcgill.ca.
+
+TODO: Make some of the internal analyses externally available.
+TODO: Investigate why the Aggregator doesn't seem to work too well.
+TODO: Write a Shimple parser.
+TODO: Implement a Control Dependence Graph?  Any interest in that?
 
 6 Feb 2003
 Navindra Umanee
