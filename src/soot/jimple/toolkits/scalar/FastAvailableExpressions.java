@@ -45,8 +45,8 @@ public class FastAvailableExpressions implements AvailableExpressions
     /** Wrapper for AvailableExpressionsAnalysis. */ 
     public FastAvailableExpressions(Body b)
     {
-        AvailableExpressionsAnalysis analysis = 
-            new AvailableExpressionsAnalysis(new CompleteUnitGraph(b));
+        FastAvailableExpressionsAnalysis analysis = 
+            new FastAvailableExpressionsAnalysis(new CompleteUnitGraph(b));
 
         // Build unitToExprs map
         {
