@@ -167,9 +167,12 @@ import java.io.*;
     */
    	public Instruction[] branchpoints(Instruction next) 
    	{  
-   		Instruction[] bp = new Instruction[1];
-   		bp[0] = next;
-		return bp; 
+	    /*
+	    Instruction[] bps= new Instruction[1];
+	    bps[0] = next;
+	    return bps;
+	    */
+	    return null;
 	}
 
    /** Marks the appropriate spot if that constant_pool entry is used by this instr.

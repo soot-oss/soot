@@ -145,8 +145,7 @@ class BasicBlock {
     * @return <i>true</i> if they do, <i>false</i> if they don't.
     */
    public boolean equals(BasicBlock b) {
-      if (b.head.label == head.label) return true;
-      return false;
+      return (this == b);
    }
 
    /** For printing the string "BB: " + id.

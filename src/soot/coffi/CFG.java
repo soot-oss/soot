@@ -83,7 +83,9 @@ public class CFG {
 	eliminateJsrRets();
 
 	buildBBCFG();
-       
+
+	//       	printBBCFGSucc();
+
 	cfg.beginCode = true;
 
 	m.cfg = this;
@@ -93,12 +95,12 @@ public class CFG {
 	else
 	    firstInstruction = null;
 
-//	printBBs();
+	//       	printBBs();
     }
 
-    private void printBBCFGSucc(BasicBlock fb)
+    private void printBBCFGSucc()
     {
-	BasicBlock b = fb;
+	BasicBlock b = this.cfg;
 	while ( b!= null )
 	{
 	    System.out.print(b.id +" -> ");
@@ -156,10 +158,13 @@ public class CFG {
 
     private void printBBs()
     {
+	Set reachablebb = getReachableBBs();
+
 	BasicBlock bb = this.cfg;
 	while (bb != null)
 	{
-	    printOneBasicBlock(bb);
+	    if (reachablebb.contains(bb))
+		printOneBasicBlock(bb);
 	    bb = bb.next;
 	}
     }
@@ -241,8 +246,10 @@ public class CFG {
 
 		    branches = ethandlers.toArray();
 		} 
-		else 
+		else
+		{
 		    branches = insn.branchpoints(insn.next);              
+		}
 
 		if (branches != null)
 		{
@@ -323,6 +330,42 @@ public class CFG {
 	return insn;
     }
 
+    private Set getReachableBBs()
+    {
+	Code_attribute codeAttribute = method.locate_code_attribute();
+
+	/* find all reachable blocks. */
+	Set reachablebb = new HashSet();
+	LinkedList tovisit = new LinkedList();
+
+	tovisit.add(this.cfg);
+	
+	for (int i=0; i<codeAttribute.exception_table.length; i++)
+	{
+	    Instruction handler = codeAttribute.exception_table[i].handler_inst;
+	    BasicBlock hbb = (BasicBlock)h2bb.get(handler);
+	    tovisit.add(hbb);
+	}
+
+	while (!tovisit.isEmpty())
+	{
+	    BasicBlock bb = (BasicBlock)tovisit.removeFirst();
+	    reachablebb.add(bb);
+
+	    Vector succs = bb.succ;
+	    for (int i=0; i<succs.size(); i++)
+	    {
+		Object succ = succs.get(i);
+		if (succ != null 
+		    && ! reachablebb.contains(succ))
+		{
+		    tovisit.add(succ);
+		}
+	    }
+	}
+
+	return reachablebb;
+    }
 
     /* We only handle simple cases. */
     Map jsr2astore = new HashMap();
@@ -444,18 +487,21 @@ public class CFG {
 	}
     }
 
-    private Instruction makeCopyOf(Instruction from,
-				   Instruction to,
+    /* make a copy of code between astore and ret, 
+     * fixup targets of branch instructions in the code.
+     */
+    private Instruction makeCopyOf(Instruction astore,
+				   Instruction ret,
 				   Instruction after,
 				   Instruction before,
 				   int label)
     {
-	Instruction stop = to;
+	Instruction stop = ret;
 	Instruction last = after;
 
 	HashMap insnmap = new HashMap(); // mapping from original instructions to new instructions.
 
-	Instruction insn = from.next;
+	Instruction insn = astore.next;
 	
 	while (insn != stop && insn != null)
 	{
@@ -477,6 +523,10 @@ public class CFG {
 
 	last.next = before;
 	before.prev = last;
+
+	// The ret instruction is removed, 
+	insnmap.put(astore, after.next);
+	insnmap.put(ret, before);
 
 	// fixup targets in new instruction (only in the scope of new instructions).
 	insn = after.next;
