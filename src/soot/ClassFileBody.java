@@ -41,6 +41,10 @@ public class ClassFileBody extends Body
     public ClassFileBody(SootMethod method)
     {
         super(method);
+        
+        if(!method.isConcrete())
+            throw new NullPointerException("there is no ClassFileBody associated with non-concrete methods!");
+            
         this.coffiClass = method.coffiClass;
         this.coffiMethod = method.coffiMethod;
     }

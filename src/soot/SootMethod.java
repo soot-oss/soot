@@ -135,6 +135,15 @@ public class SootMethod extends AbstractHost
         return isPhantom;
     }
     
+    /**
+        Not phantom, abstract or native.
+     */
+     
+    public boolean isConcrete()
+    {
+        return !isPhantom() && !isAbstract() && !isNative();
+    }
+    
     public void setPhantom(boolean value)
     {
         isPhantom = value;
@@ -208,8 +217,8 @@ public class SootMethod extends AbstractHost
         if (declaringClass.isContextClass() || declaringClass.isPhantomClass())
             throw new RuntimeException("cannot set active body for context or signature class!");
 
-        if(isPhantom())
-            throw new RuntimeException("cannot set body for phantom method!");
+        if(!isConcrete())
+            throw new RuntimeException("cannot set body for non-concrete method!");
             
         if (body.getMethod() != this)
             body.setMethod(this);
@@ -277,6 +286,16 @@ public class SootMethod extends AbstractHost
     public boolean isPrivate()
     {
         return Modifier.isPrivate(this.getModifiers());
+    }
+
+    public boolean isAbstract()
+    {
+        return Modifier.isAbstract(this.getModifiers());
+    }
+
+    public boolean isNative()
+    {
+        return Modifier.isNative(this.getModifiers());
     }
 
     /**

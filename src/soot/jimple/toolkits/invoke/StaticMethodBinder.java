@@ -61,6 +61,10 @@ public class StaticMethodBinder extends SceneTransformer
             while (!methodsList.isEmpty())
             {
                 SootMethod container = (SootMethod)methodsList.removeFirst();
+
+                if (container.isAbstract() || container.isNative() || container.isPhantom())
+                    continue;
+
                 JimpleBody b = (JimpleBody)container.getActiveBody();
                 
                 if (graph.getSitesOf(container).size() == 0)
@@ -91,10 +95,11 @@ public class StaticMethodBinder extends SceneTransformer
 
                     SootMethod target = (SootMethod)targets.get(0);
                     
-                    if (!target.getDeclaringClass().isApplicationClass())
+                    if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete())
                         continue;
 
                     boolean targetUsesThis = methodUsesThis(target);
+                    targetUsesThis = true;
 
                     if (!instanceToStaticMap.containsKey(target))
                     {

@@ -89,12 +89,14 @@ public class JimpleBody extends StmtBody
         if(Main.isVerbose)
             System.out.println("[" + getMethod().getName() + "] Jimplifying...");
 
-        if(Modifier.isAbstract(getMethod().getModifiers()) || Modifier.isNative(getMethod().getModifiers()))
+        if(getMethod().isAbstract() || getMethod().isNative() || getMethod().isPhantom())
             return;
             
         if(Main.isProfilingOptimization)
             Main.conversionTimer.start();
 
+        if (coffiMethod == null)
+            System.out.println(body.getMethod());
         if(coffiMethod.instructions == null)
         {
             if(Main.isVerbose)

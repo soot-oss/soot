@@ -57,6 +57,10 @@ public class ClassHierarchyAnalysis
             while (methodsIt.hasNext())
             {
                 SootMethod m = (SootMethod)methodsIt.next();
+                
+                if(!m.isConcrete())
+                    continue;
+                    
                 if (!m.hasActiveBody())
                     m.setActiveBody(Jimple.v().newBody(new ClassFileBody(m), "cha.jb"));
 

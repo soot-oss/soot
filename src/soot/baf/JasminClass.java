@@ -346,8 +346,26 @@ public class JasminClass
             Main.packTimer.end();
                     
     }
-    
+
     void emitMethod(SootMethod method)
+    {
+       // Emit prologue
+            emit(".method " + Modifier.toString(method.getModifiers()) + " " +
+                 method.getName() + jasminDescriptorOf(method));
+
+       if(method.isConcrete())
+       {
+            if(!method.hasActiveBody())
+                throw new RuntimeException("method: " + method.getName() + " has no active body!");
+            else
+                emitMethodBody(method);
+       }
+       
+       // Emit epilogue
+            emit(".end method");
+    }
+    
+    void emitMethodBody(SootMethod method)
     {
         if(soot.Main.isProfilingOptimization)
             soot.Main.buildJasminTimer.end();
@@ -366,14 +384,9 @@ public class JasminClass
             soot.Main.buildJasminTimer.start();
         
         Chain instList = body.getUnits();
-        try { // debug
-
 
         int stackLimitIndex = -1;
         
-        // Emit prologue
-            emit(".method " + Modifier.toString(method.getModifiers()) + " " +
-                 method.getName() + jasminDescriptorOf(method));
 
         subroutineToReturnAddressSlot = new HashMap(10, 0.7f);
 
@@ -564,18 +577,6 @@ public class JasminClass
             if (!Modifier.isNative(method.getModifiers())
                 && !Modifier.isAbstract(method.getModifiers()))
                 code.set(stackLimitIndex, "    .limit stack " + maxStackHeight);
-        }
-
-        // Emit epilogue
-            emit(".end method");
-        } catch (RuntimeException e) {
-            System.out.println(e);
-            Iterator unitIt = instList.iterator();
-            while(unitIt.hasNext()) {System.out.println(unitIt.next());}
-            throw e;
-            
-        
-        
         }
 
     }

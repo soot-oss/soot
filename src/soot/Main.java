@@ -179,7 +179,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.10");
+            System.out.println("Soot version 1.beta.5.dev.11");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -738,7 +738,10 @@ public class Main
             while(methodIt.hasNext())
             {   
                 SootMethod m = (SootMethod) methodIt.next();
-                   
+                
+                if(!m.isConcrete())
+                    continue;
+                    
                 if(produceJimple)
                 {
                     if(!m.hasActiveBody())
@@ -806,7 +809,9 @@ public class Main
             while(methodIt.hasNext())
             {   
                 SootMethod m = (SootMethod) methodIt.next();
-                m.releaseActiveBody();
+                
+                if(m.hasActiveBody())
+                    m.releaseActiveBody();
             }
         }
     }
