@@ -179,7 +179,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.114");
+            System.out.println("Soot version 1.beta.5");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -229,8 +229,8 @@ public class Main
             System.out.println("");
             System.out.println("Optimization options:");
             System.out.println("  -O  --optimize             perform scalar optimizations on the classfiles");
-            System.out.println("  -W  --whole-optimize       perform whole program optimizations on the ");
-            System.out.println("                             classfiles");
+//            System.out.println("  -W  --whole-optimize       perform whole program optimizations on the ");
+//            System.out.println("                             classfiles");
             System.out.println("");
             System.out.println("Miscellaneous options:");
             System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
@@ -275,7 +275,7 @@ public class Main
                     targetExtension = ".class";
                 else if(arg.equals("-O") || arg.equals("--optimize"))
                     isOptimizing = true;
-                else if(arg.equals("-W") || arg.equals("--whole-optimize"))
+/*                else if(arg.equals("-W") || arg.equals("--whole-optimize"))
                 {
                     if (!isApplication)
                     {
@@ -284,7 +284,7 @@ public class Main
                     }
                     isOptimizingWhole = true;
                     isOptimizing = true;
-                }
+                } */
                 /*
                 else if(arg.equals("--use-vta"))
                 {
