@@ -6,7 +6,7 @@ import soot.*;
 public class MethodDomain extends Domain {
     public Numberer numberer() { return new soot.util.JeddNumberer(Scene.v().getMethodNumberer()); }
     
-    public final int bits = 20;
+    public final int bits = 17;
     
     public static Domain v() { return instance; }
     

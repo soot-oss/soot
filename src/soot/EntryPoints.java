@@ -127,6 +127,20 @@ public class EntryPoints
         return ret;
     }
 
+    /** Returns a list of all concrete main(String[]) methods of all
+     * application classes. */
+    public List mainsOfApplicationClasses() {
+        List ret = new ArrayList();
+        for( Iterator clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = (SootClass) clIt.next();
+            if( cl.declaresMethod( "void main(java.lang.String[])" ) ) {
+                SootMethod m = cl.getMethod("void main(java.lang.String[])" );
+                if( m.isConcrete() ) ret.add( m );
+            }
+        }
+        return ret;
+    }
+
     /** Returns a list of all clinits of class cl and its superclasses. */
     public List clinitsOf( SootClass cl ) {
         List ret = new ArrayList();

@@ -35,7 +35,7 @@ public class Qobj_typeDebug extends Qobj_type {
         bdd.add( _obj, _type );
         trad.add( _obj, _type );
     }
-    public void add( <obj:H1, type:T2> in ) {
+    public void add( <obj:H1, type:T1> in ) {
         Iterator it = in.iterator( new Attribute[] { obj.v(), type.v() } );
         while( it.hasNext() ) {
             Object[] tuple = (Object[]) it.next();

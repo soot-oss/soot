@@ -36,7 +36,7 @@ public class Qvar_srcm_stmt_tgtmTrad extends Qvar_srcm_stmt_tgtm {
         q.add( _stmt );
         q.add( _tgtm );
     }
-    public void add( <var:V1, srcm:T1, stmt:ST, tgtm:T2> in ) {
+    public void add( <var:V1, srcm:MS, stmt:ST, tgtm:MT> in ) {
         Iterator it = in.iterator( new Attribute[] { var.v(), srcm.v(), stmt.v(), tgtm.v() } );
         while( it.hasNext() ) {
             Object[] tuple = (Object[]) it.next();

@@ -33,23 +33,23 @@ public class Robj_method_typeIter extends Robj_method_type {
     public jedd.internal.RelationContainer get() {
         final jedd.internal.RelationContainer ret =
           new jedd.internal.RelationContainer(new Attribute[] { obj.v(), method.v(), type.v() },
-                                              new PhysicalDomain[] { H1.v(), T1.v(), T2.v() },
+                                              new PhysicalDomain[] { H1.v(), MS.v(), T1.v() },
                                               ("<soot.jimple.paddle.bdddomains.obj:soot.jimple.paddle.bdddom" +
                                                "ains.H1, soot.jimple.paddle.bdddomains.method:soot.jimple.pa" +
-                                               "ddle.bdddomains.T1, soot.jimple.paddle.bdddomains.type:soot." +
-                                               "jimple.paddle.bdddomains.T2> ret = jedd.internal.Jedd.v().fa" +
-                                               "lseBDD(); at /home/olhotak/soot-trunk2/src/soot/jimple/paddl" +
-                                               "e/queue/Robj_method_typeIter.jedd:46,37-40"),
+                                               "ddle.bdddomains.MS, soot.jimple.paddle.bdddomains.type:soot." +
+                                               "jimple.paddle.bdddomains.T1> ret = jedd.internal.Jedd.v().fa" +
+                                               "lseBDD(); at /home/research/ccl/olhota/soot-trunk/src/soot/j" +
+                                               "imple/paddle/queue/Robj_method_typeIter.jedd:46,37-40"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next(), r.next() },
                                                        new Attribute[] { obj.v(), method.v(), type.v() },
-                                                       new PhysicalDomain[] { H1.v(), T1.v(), T2.v() }));
+                                                       new PhysicalDomain[] { H1.v(), MS.v(), T1.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v(), method.v() },
-                                                   new PhysicalDomain[] { H1.v(), T2.v(), T1.v() },
-                                                   ("return ret; at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
-                                                    "dle/queue/Robj_method_typeIter.jedd:50,8-14"),
+        return new jedd.internal.RelationContainer(new Attribute[] { method.v(), obj.v(), type.v() },
+                                                   new PhysicalDomain[] { MS.v(), H1.v(), T1.v() },
+                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
+                                                    "/jimple/paddle/queue/Robj_method_typeIter.jedd:50,8-14"),
                                                    ret);
     }
     

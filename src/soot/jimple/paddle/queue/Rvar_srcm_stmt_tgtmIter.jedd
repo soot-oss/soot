@@ -42,8 +42,8 @@ public class Rvar_srcm_stmt_tgtmIter extends Rvar_srcm_stmt_tgtm{
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <var:V1, srcm:T1, stmt:ST, tgtm:T2> get() {
-        <var:V1, srcm:T1, stmt:ST, tgtm:T2> ret = 0B;
+    public <var:V1, srcm:MS, stmt:ST, tgtm:MT> get() {
+        <var:V1, srcm:MS, stmt:ST, tgtm:MT> ret = 0B;
         while( r.hasNext() ) {
             ret |= new { r.next()=>var, r.next()=>srcm, r.next()=>stmt, r.next()=>tgtm };
         }

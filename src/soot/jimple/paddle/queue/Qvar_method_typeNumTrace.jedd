@@ -37,7 +37,7 @@ public final class Qvar_method_typeNumTrace extends Qvar_method_type {
             reader.add( in );
         }
     }
-    public void add( <var:V1, method:T1, type:T2> in ) {
+    public void add( <var:V1, method:MS, type:T1> in ) {
         throw new RuntimeException();
     }
     public Rvar_method_type reader( String rname ) {

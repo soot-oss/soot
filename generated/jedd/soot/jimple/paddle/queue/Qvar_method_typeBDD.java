@@ -16,23 +16,23 @@ public final class Qvar_method_typeBDD extends Qvar_method_type {
     
     public void add(VarNode _var, SootMethod _method, Type _type) {
         this.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), method.v(), type.v() },
-                                                     new PhysicalDomain[] { V1.v(), T1.v(), T2.v() },
+                                                     new PhysicalDomain[] { V1.v(), MS.v(), T1.v() },
                                                      ("this.add(jedd.internal.Jedd.v().literal(new java.lang.Object" +
                                                       "[...], new jedd.Attribute[...], new jedd.PhysicalDomain[...]" +
-                                                      ")) at /home/olhotak/soot-trunk2/src/soot/jimple/paddle/queue" +
-                                                      "/Qvar_method_typeBDD.jedd:34,8-11"),
+                                                      ")) at /home/research/ccl/olhota/soot-trunk/src/soot/jimple/p" +
+                                                      "addle/queue/Qvar_method_typeBDD.jedd:34,8-11"),
                                                      jedd.internal.Jedd.v().literal(new Object[] { _var, _method, _type },
                                                                                     new Attribute[] { var.v(), method.v(), type.v() },
-                                                                                    new PhysicalDomain[] { V1.v(), T1.v(), T2.v() })));
+                                                                                    new PhysicalDomain[] { V1.v(), MS.v(), T1.v() })));
     }
     
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_method_typeBDD reader = (Rvar_method_typeBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v(), method.v() },
-                                                           new PhysicalDomain[] { V1.v(), T2.v(), T1.v() },
-                                                           ("reader.add(in) at /home/olhotak/soot-trunk2/src/soot/jimple/" +
-                                                            "paddle/queue/Qvar_method_typeBDD.jedd:39,12-18"),
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { method.v(), var.v(), type.v() },
+                                                           new PhysicalDomain[] { MS.v(), V1.v(), T1.v() },
+                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
+                                                            "oot/jimple/paddle/queue/Qvar_method_typeBDD.jedd:39,12-18"),
                                                            in));
         }
     }

@@ -111,7 +111,7 @@ public abstract class Body extends AbstractHost implements Serializable
     }
 
     /** Copies the contents of the given Body into this one. */
-    public void importBodyContentsFrom(Body b)
+    public Map importBodyContentsFrom(Body b)
     {
         HashMap bindings = new HashMap();
 
@@ -188,6 +188,7 @@ public abstract class Body extends AbstractHost implements Serializable
             if(vb.getValue() instanceof Local) 
                 vb.setValue((Value) bindings.get(vb.getValue()));
         }
+        return bindings;
     }
     
     /** Verifies a few sanity conditions on the contents on this body. */

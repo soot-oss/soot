@@ -11,21 +11,23 @@ public class BDDInsensitiveStaticContextManager extends AbsStaticContextManager 
     public boolean update() {
         final jedd.internal.RelationContainer newOut =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() },
-                                              new jedd.PhysicalDomain[] { V1.v(), T1.v(), ST.v(), FD.v(), V2.v(), T2.v() },
+                                              new jedd.PhysicalDomain[] { C1.v(), MS.v(), ST.v(), KD.v(), C2.v(), MT.v() },
                                               ("<soot.jimple.paddle.bdddomains.srcc:soot.jimple.paddle.bdddo" +
-                                               "mains.V1, soot.jimple.paddle.bdddomains.srcm:soot.jimple.pad" +
-                                               "dle.bdddomains.T1, soot.jimple.paddle.bdddomains.stmt:soot.j" +
+                                               "mains.C1, soot.jimple.paddle.bdddomains.srcm:soot.jimple.pad" +
+                                               "dle.bdddomains.MS, soot.jimple.paddle.bdddomains.stmt:soot.j" +
                                                "imple.paddle.bdddomains.ST, soot.jimple.paddle.bdddomains.ki" +
-                                               "nd:soot.jimple.paddle.bdddomains.FD, soot.jimple.paddle.bddd" +
-                                               "omains.tgtc:soot.jimple.paddle.bdddomains.V2, soot.jimple.pa" +
-                                               "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.T2> newOu" +
-                                               "t = in.get(); at /home/olhotak/soot-trunk2/src/soot/jimple/p" +
-                                               "addle/BDDInsensitiveStaticContextManager.jedd:34,45-51"),
+                                               "nd:soot.jimple.paddle.bdddomains.KD, soot.jimple.paddle.bddd" +
+                                               "omains.tgtc:soot.jimple.paddle.bdddomains.C2, soot.jimple.pa" +
+                                               "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.MT> newOu" +
+                                               "t = in.get(); at /home/research/ccl/olhota/soot-trunk/src/so" +
+                                               "ot/jimple/paddle/BDDInsensitiveStaticContextManager.jedd:34," +
+                                               "45-51"),
                                               in.get());
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), srcm.v(), tgtc.v(), tgtm.v(), kind.v(), stmt.v() },
-                                                    new jedd.PhysicalDomain[] { V1.v(), T1.v(), V2.v(), T2.v(), FD.v(), ST.v() },
-                                                    ("out.add(newOut) at /home/olhotak/soot-trunk2/src/soot/jimple" +
-                                                     "/paddle/BDDInsensitiveStaticContextManager.jedd:35,8-11"),
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { kind.v(), stmt.v(), srcm.v(), tgtm.v(), srcc.v(), tgtc.v() },
+                                                    new jedd.PhysicalDomain[] { KD.v(), ST.v(), MS.v(), MT.v(), C1.v(), C2.v() },
+                                                    ("out.add(newOut) at /home/research/ccl/olhota/soot-trunk/src/" +
+                                                     "soot/jimple/paddle/BDDInsensitiveStaticContextManager.jedd:3" +
+                                                     "5,8-11"),
                                                     newOut));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newOut), jedd.internal.Jedd.v().falseBDD());
     }

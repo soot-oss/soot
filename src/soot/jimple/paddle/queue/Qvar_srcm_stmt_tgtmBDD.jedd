@@ -33,7 +33,7 @@ public final class Qvar_srcm_stmt_tgtmBDD extends Qvar_srcm_stmt_tgtm {
     public void add( VarNode _var, SootMethod _srcm, Unit _stmt, SootMethod _tgtm ) {
         add( new { _var=>var, _srcm=>srcm, _stmt=>stmt, _tgtm=>tgtm } );
     }
-    public void add( <var:V1, srcm:T1, stmt:ST, tgtm:T2> in ) {
+    public void add( <var:V1, srcm:MS, stmt:ST, tgtm:MT> in ) {
         for( Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_srcm_stmt_tgtmBDD reader = (Rvar_srcm_stmt_tgtmBDD) it.next();
             reader.add( in );

@@ -35,7 +35,7 @@ public abstract class Rvar_srcm_stmt_signature_kind implements Readers.Reader {
     protected String name;
     public final String toString() { return name; }
     public abstract Iterator iterator();
-    public abstract <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> get();
+    public abstract <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> get();
     public abstract boolean hasNext();
     public static class Tuple {
         private VarNode _var;

@@ -37,7 +37,7 @@ public final class Qobj_method_typeSet extends Qobj_method_type {
             reader.add( in );
         }
     }
-    public void add( <obj:H1, method:T1, type:T2> in ) {
+    public void add( <obj:H1, method:MS, type:T1> in ) {
         throw new RuntimeException();
     }
     public Robj_method_type reader( String rname ) {

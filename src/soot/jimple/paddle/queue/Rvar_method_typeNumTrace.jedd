@@ -52,7 +52,7 @@ public class Rvar_method_typeNumTrace extends Rvar_method_type {
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <var:V1, method:T1, type:T2> get() {
+    public <var:V1, method:MS, type:T1> get() {
         throw new RuntimeException();
     }
     public boolean hasNext() { return !bdd.isEmpty(); }

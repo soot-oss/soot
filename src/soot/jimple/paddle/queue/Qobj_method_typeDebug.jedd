@@ -35,7 +35,7 @@ public class Qobj_method_typeDebug extends Qobj_method_type {
         bdd.add( _obj, _method, _type );
         trad.add( _obj, _method, _type );
     }
-    public void add( <obj:H1, method:T1, type:T2> in ) {
+    public void add( <obj:H1, method:MS, type:T1> in ) {
         Iterator it = in.iterator( new Attribute[] { obj.v(), method.v(), type.v() } );
         while( it.hasNext() ) {
             Object[] tuple = (Object[]) it.next();

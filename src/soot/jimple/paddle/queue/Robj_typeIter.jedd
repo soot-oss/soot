@@ -42,8 +42,8 @@ public class Robj_typeIter extends Robj_type{
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <obj:H1, type:T2> get() {
-        <obj:H1, type:T2> ret = 0B;
+    public <obj:H1, type:T1> get() {
+        <obj:H1, type:T1> ret = 0B;
         while( r.hasNext() ) {
             ret |= new { r.next()=>obj, r.next()=>type };
         }

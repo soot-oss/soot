@@ -34,7 +34,7 @@ public class Qobj_typeTrad extends Qobj_type {
         q.add( _obj );
         q.add( _type );
     }
-    public void add( <obj:H1, type:T2> in ) {
+    public void add( <obj:H1, type:T1> in ) {
         Iterator it = in.iterator( new Attribute[] { obj.v(), type.v() } );
         while( it.hasNext() ) {
             Object[] tuple = (Object[]) it.next();

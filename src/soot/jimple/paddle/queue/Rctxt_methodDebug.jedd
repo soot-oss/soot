@@ -52,7 +52,7 @@ public class Rctxt_methodDebug extends Rctxt_method{
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <ctxt:V1, method:T1> get() {
+    public <ctxt:C1, method:MS> get() {
         throw new RuntimeException( "NYI" );
     }
     public boolean hasNext() { return trad.hasNext(); }

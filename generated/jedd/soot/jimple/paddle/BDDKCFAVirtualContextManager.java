@@ -28,44 +28,42 @@ public class BDDKCFAVirtualContextManager extends AbsVirtualContextManager {
         }
         final jedd.internal.RelationContainer newEdges =
           new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() },
-                                              new PhysicalDomain[] { C1.v(), T1.v(), ST.v(), FD.v(), C2.v(), T2.v() },
+                                              new PhysicalDomain[] { C1.v(), MS.v(), ST.v(), KD.v(), C2.v(), MT.v() },
                                               ("<soot.jimple.paddle.bdddomains.srcc:soot.jimple.paddle.bdddo" +
                                                "mains.C1, soot.jimple.paddle.bdddomains.srcm:soot.jimple.pad" +
-                                               "dle.bdddomains.T1, soot.jimple.paddle.bdddomains.stmt:soot.j" +
+                                               "dle.bdddomains.MS, soot.jimple.paddle.bdddomains.stmt:soot.j" +
                                                "imple.paddle.bdddomains.ST, soot.jimple.paddle.bdddomains.ki" +
-                                               "nd:soot.jimple.paddle.bdddomains.FD, soot.jimple.paddle.bddd" +
+                                               "nd:soot.jimple.paddle.bdddomains.KD, soot.jimple.paddle.bddd" +
                                                "omains.tgtc:soot.jimple.paddle.bdddomains.C2, soot.jimple.pa" +
-                                               "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.T2> newEd" +
-                                               "ges = jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().rep" +
-                                               "lace(jedd.internal.Jedd.v().project(in.get(), new jedd.Physi" +
-                                               "calDomain[...]), new jedd.PhysicalDomain[...], new jedd.Phys" +
+                                               "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.MT> newEd" +
+                                               "ges = jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().pro" +
+                                               "ject(jedd.internal.Jedd.v().replace(in.get(), new jedd.Physi" +
+                                               "calDomain[...], new jedd.PhysicalDomain[...]), new jedd.Phys" +
                                                "icalDomain[...]), new jedd.PhysicalDomain[...], new jedd.Phy" +
-                                               "sicalDomain[...]); at /home/olhotak/soot-trunk2/src/soot/jim" +
-                                               "ple/paddle/BDDKCFAVirtualContextManager.jedd:49,51-59"),
-                                              jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(in.get(),
-                                                                                                                                        new PhysicalDomain[] { V1.v(), H1.v() }),
-                                                                                                         new PhysicalDomain[] { V2.v() },
-                                                                                                         new PhysicalDomain[] { C1.v() }),
-                                                                          new PhysicalDomain[] { ST.v() },
-                                                                          new PhysicalDomain[] { C2.v() }));
+                                               "sicalDomain[...]); at /home/research/ccl/olhota/soot-trunk/s" +
+                                               "rc/soot/jimple/paddle/BDDKCFAVirtualContextManager.jedd:49,5" +
+                                               "1-59"),
+                                              jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().project(jedd.internal.Jedd.v().replace(in.get(),
+                                                                                                                                        new PhysicalDomain[] { C2.v(), ST.v() },
+                                                                                                                                        new PhysicalDomain[] { C1.v(), C2.v() }),
+                                                                                                         new PhysicalDomain[] { V1.v(), H1.v() }),
+                                                                          new PhysicalDomain[] { C2.v() },
+                                                                          new PhysicalDomain[] { ST.v() }));
         newEdges.eq(jedd.internal.Jedd.v().cast((jedd.internal.RelationContainer)
-                                                  new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), srcm.v(), tgtc.v(), tgtm.v(), kind.v(), stmt.v() },
-                                                                                      new PhysicalDomain[] { C1.v(), T1.v(), C2.v(), T2.v(), FD.v(), ST.v() },
-                                                                                      ("newEdges.applyShifter(shifter) at /home/olhotak/soot-trunk2/" +
-                                                                                       "src/soot/jimple/paddle/BDDKCFAVirtualContextManager.jedd:52," +
-                                                                                       "12-20"),
+                                                  new jedd.internal.RelationContainer(new Attribute[] { kind.v(), stmt.v(), srcm.v(), tgtm.v(), srcc.v(), tgtc.v() },
+                                                                                      new PhysicalDomain[] { KD.v(), ST.v(), MS.v(), MT.v(), C1.v(), C2.v() },
+                                                                                      ("newEdges.applyShifter(shifter) at /home/research/ccl/olhota/" +
+                                                                                       "soot-trunk/src/soot/jimple/paddle/BDDKCFAVirtualContextManag" +
+                                                                                       "er.jedd:52,12-20"),
                                                                                       newEdges).applyShifter(shifter),
                                                 new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() },
-                                                new PhysicalDomain[] { C1.v(), T1.v(), ST.v(), FD.v(), C2.v(), T2.v() }));
-        out.add(new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), srcm.v(), tgtc.v(), tgtm.v(), kind.v(), stmt.v() },
-                                                    new PhysicalDomain[] { V1.v(), T1.v(), V2.v(), T2.v(), FD.v(), ST.v() },
-                                                    ("out.add(jedd.internal.Jedd.v().replace(newEdges, new jedd.Ph" +
-                                                     "ysicalDomain[...], new jedd.PhysicalDomain[...])) at /home/o" +
-                                                     "lhotak/soot-trunk2/src/soot/jimple/paddle/BDDKCFAVirtualCont" +
-                                                     "extManager.jedd:53,8-11"),
-                                                    jedd.internal.Jedd.v().replace(newEdges,
-                                                                                   new PhysicalDomain[] { C1.v(), C2.v() },
-                                                                                   new PhysicalDomain[] { V1.v(), V2.v() })));
+                                                new PhysicalDomain[] { C1.v(), MS.v(), ST.v(), KD.v(), C2.v(), MT.v() }));
+        out.add(new jedd.internal.RelationContainer(new Attribute[] { kind.v(), stmt.v(), srcm.v(), tgtm.v(), srcc.v(), tgtc.v() },
+                                                    new PhysicalDomain[] { KD.v(), ST.v(), MS.v(), MT.v(), C1.v(), C2.v() },
+                                                    ("out.add(newEdges) at /home/research/ccl/olhota/soot-trunk/sr" +
+                                                     "c/soot/jimple/paddle/BDDKCFAVirtualContextManager.jedd:53,8-" +
+                                                     "11"),
+                                                    newEdges));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newEdges), jedd.internal.Jedd.v().falseBDD());
     }
 }

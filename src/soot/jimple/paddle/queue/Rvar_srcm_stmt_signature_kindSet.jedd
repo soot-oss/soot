@@ -51,7 +51,7 @@ public class Rvar_srcm_stmt_signature_kindSet extends Rvar_srcm_stmt_signature_k
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> get() {
+    public <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> get() {
         throw new RuntimeException();
     }
     public boolean hasNext() { return !bdd.isEmpty(); }

@@ -28,9 +28,9 @@ import jedd.*;
 import java.util.*;
 
 public final class Rsrcm_stmt_kind_tgtm_src_dstBDD extends Rsrcm_stmt_kind_tgtm_src_dst {
-    private <srcm:T1, stmt:ST, kind:FD, tgtm:T2, src:V1, dst:V2> bdd;
-    void add( <srcm:T1, stmt:ST, kind:FD, tgtm:T2, src:V1, dst:V2> tuple ) { bdd |= tuple; }
-    public Rsrcm_stmt_kind_tgtm_src_dstBDD( <srcm:T1, stmt:ST, kind:FD, tgtm:T2, src:V1, dst:V2> bdd, String name ) { this(name); add(bdd); }
+    private <srcm:MS, stmt:ST, kind:KD, tgtm:MT, src:V1, dst:V2> bdd;
+    void add( <srcm:MS, stmt:ST, kind:KD, tgtm:MT, src:V1, dst:V2> tuple ) { bdd |= tuple; }
+    public Rsrcm_stmt_kind_tgtm_src_dstBDD( <srcm:MS, stmt:ST, kind:KD, tgtm:MT, src:V1, dst:V2> bdd, String name ) { this(name); add(bdd); }
     Rsrcm_stmt_kind_tgtm_src_dstBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
@@ -51,8 +51,8 @@ public final class Rsrcm_stmt_kind_tgtm_src_dstBDD extends Rsrcm_stmt_kind_tgtm_
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <srcm:T1, stmt:ST, kind:FD, tgtm:T2, src:V1, dst:V2> get() {
-        <srcm:T1, stmt:ST, kind:FD, tgtm:T2, src:V1, dst:V2> ret = bdd;
+    public <srcm:MS, stmt:ST, kind:KD, tgtm:MT, src:V1, dst:V2> get() {
+        <srcm:MS, stmt:ST, kind:KD, tgtm:MT, src:V1, dst:V2> ret = bdd;
         bdd = 0B;
         return ret;
     }

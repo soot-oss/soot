@@ -3,7 +3,7 @@ package soot.jimple.paddle.bdddomains;
 import jedd.*;
 
 public class FD extends PhysicalDomain {
-    public int bits() { return 20; }
+    public int bits() { return 14; }
     
     public static PhysicalDomain v() { return instance; }
     

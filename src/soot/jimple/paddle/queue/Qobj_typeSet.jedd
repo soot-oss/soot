@@ -37,7 +37,7 @@ public final class Qobj_typeSet extends Qobj_type {
             reader.add( in );
         }
     }
-    public void add( <obj:H1, type:T2> in ) {
+    public void add( <obj:H1, type:T1> in ) {
         throw new RuntimeException();
     }
     public Robj_type reader( String rname ) {

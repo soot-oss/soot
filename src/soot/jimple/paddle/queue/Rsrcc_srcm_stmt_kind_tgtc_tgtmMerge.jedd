@@ -28,7 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmMerge extends Rsrcc_srcm_stmt_kind_tgtc_tgtm {
-    void add( <srcc:V1, srcm:T1, stmt:ST, kind:FD, tgtc:V2, tgtm:T2> tuple ) { throw new RuntimeException(); }
+    void add( <srcc:C1, srcm:MS, stmt:ST, kind:KD, tgtc:C2, tgtm:MT> tuple ) { throw new RuntimeException(); }
     private Rsrcc_srcm_stmt_kind_tgtc_tgtm in1;
     private Rsrcc_srcm_stmt_kind_tgtc_tgtm in2;
     public Rsrcc_srcm_stmt_kind_tgtc_tgtmMerge( Rsrcc_srcm_stmt_kind_tgtc_tgtm in1, Rsrcc_srcm_stmt_kind_tgtc_tgtm in2 ) {
@@ -48,7 +48,7 @@ public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmMerge extends Rsrcc_srcm_stmt_k
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <srcc:V1, srcm:T1, stmt:ST, kind:FD, tgtc:V2, tgtm:T2> get() {
+    public <srcc:C1, srcm:MS, stmt:ST, kind:KD, tgtc:C2, tgtm:MT> get() {
         return in1.get() | in2.get();
     }
     public boolean hasNext() { return in1.hasNext() || in2.hasNext(); }

@@ -37,7 +37,7 @@ public final class Qvar_srcm_stmt_tgtmNumTrace extends Qvar_srcm_stmt_tgtm {
             reader.add( in );
         }
     }
-    public void add( <var:V1, srcm:T1, stmt:ST, tgtm:T2> in ) {
+    public void add( <var:V1, srcm:MS, stmt:ST, tgtm:MT> in ) {
         throw new RuntimeException();
     }
     public Rvar_srcm_stmt_tgtm reader( String rname ) {

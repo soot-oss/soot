@@ -33,7 +33,7 @@ public final class Qobj_method_typeBDD extends Qobj_method_type {
     public void add( AllocNode _obj, SootMethod _method, Type _type ) {
         add( new { _obj=>obj, _method=>method, _type=>type } );
     }
-    public void add( <obj:H1, method:T1, type:T2> in ) {
+    public void add( <obj:H1, method:MS, type:T1> in ) {
         for( Iterator it = readers.iterator(); it.hasNext(); ) {
             Robj_method_typeBDD reader = (Robj_method_typeBDD) it.next();
             reader.add( in );

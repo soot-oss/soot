@@ -37,7 +37,7 @@ public final class Qctxt_methodSet extends Qctxt_method {
             reader.add( in );
         }
     }
-    public void add( <ctxt:V1, method:T1> in ) {
+    public void add( <ctxt:C1, method:MS> in ) {
         throw new RuntimeException();
     }
     public Rctxt_method reader( String rname ) {

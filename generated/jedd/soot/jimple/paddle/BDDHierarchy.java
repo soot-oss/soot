@@ -11,8 +11,8 @@ public final class BDDHierarchy {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { supt.v(), subt.v() },
                                                    new jedd.PhysicalDomain[] { T2.v(), T1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(closure), anySub); at /home/olhotak/soot-trunk2/src/soot" +
-                                                    "/jimple/paddle/BDDHierarchy.jedd:36,8-14"),
+                                                    "ead(closure), anySub); at /home/research/ccl/olhota/soot-tru" +
+                                                    "nk/src/soot/jimple/paddle/BDDHierarchy.jedd:36,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(closure),
                                                                                 anySub));
     }
@@ -33,8 +33,8 @@ public final class BDDHierarchy {
                                           ("private <soot.jimple.paddle.bdddomains.subt:soot.jimple.padd" +
                                            "le.bdddomains.T1, soot.jimple.paddle.bdddomains.supt:soot.ji" +
                                            "mple.paddle.bdddomains.T2> identity = jedd.internal.Jedd.v()" +
-                                           ".falseBDD() at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
-                                           "dle/BDDHierarchy.jedd:57,12-30"),
+                                           ".falseBDD() at /home/research/ccl/olhota/soot-trunk/src/soot" +
+                                           "/jimple/paddle/BDDHierarchy.jedd:57,12-30"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer extend =
@@ -43,15 +43,15 @@ public final class BDDHierarchy {
                                           ("private <soot.jimple.paddle.bdddomains.subt:soot.jimple.padd" +
                                            "le.bdddomains.T1, soot.jimple.paddle.bdddomains.supt:soot.ji" +
                                            "mple.paddle.bdddomains.T2> extend = jedd.internal.Jedd.v().f" +
-                                           "alseBDD() at /home/olhotak/soot-trunk2/src/soot/jimple/paddl" +
-                                           "e/BDDHierarchy.jedd:62,12-30"),
+                                           "alseBDD() at /home/research/ccl/olhota/soot-trunk/src/soot/j" +
+                                           "imple/paddle/BDDHierarchy.jedd:62,12-30"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     public jedd.internal.RelationContainer extend() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { supt.v(), subt.v() },
                                                    new jedd.PhysicalDomain[] { T2.v(), T1.v() },
-                                                   ("return extend; at /home/olhotak/soot-trunk2/src/soot/jimple/" +
-                                                    "paddle/BDDHierarchy.jedd:63,35-41"),
+                                                   ("return extend; at /home/research/ccl/olhota/soot-trunk/src/s" +
+                                                    "oot/jimple/paddle/BDDHierarchy.jedd:63,35-41"),
                                                    extend);
     }
     
@@ -61,8 +61,8 @@ public final class BDDHierarchy {
                                           ("private <soot.jimple.paddle.bdddomains.subt:soot.jimple.padd" +
                                            "le.bdddomains.T1, soot.jimple.paddle.bdddomains.supt:soot.ji" +
                                            "mple.paddle.bdddomains.T2> implement = jedd.internal.Jedd.v(" +
-                                           ").falseBDD() at /home/olhotak/soot-trunk2/src/soot/jimple/pa" +
-                                           "ddle/BDDHierarchy.jedd:68,12-30"),
+                                           ").falseBDD() at /home/research/ccl/olhota/soot-trunk/src/soo" +
+                                           "t/jimple/paddle/BDDHierarchy.jedd:68,12-30"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer array =
@@ -71,15 +71,15 @@ public final class BDDHierarchy {
                                           ("private <soot.jimple.paddle.bdddomains.subt:soot.jimple.padd" +
                                            "le.bdddomains.T1, soot.jimple.paddle.bdddomains.supt:soot.ji" +
                                            "mple.paddle.bdddomains.T2> array = jedd.internal.Jedd.v().fa" +
-                                           "lseBDD() at /home/olhotak/soot-trunk2/src/soot/jimple/paddle" +
-                                           "/BDDHierarchy.jedd:76,12-30"),
+                                           "lseBDD() at /home/research/ccl/olhota/soot-trunk/src/soot/ji" +
+                                           "mple/paddle/BDDHierarchy.jedd:76,12-30"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     public jedd.internal.RelationContainer array() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { supt.v(), subt.v() },
                                                    new jedd.PhysicalDomain[] { T2.v(), T1.v() },
-                                                   ("return array; at /home/olhotak/soot-trunk2/src/soot/jimple/p" +
-                                                    "addle/BDDHierarchy.jedd:77,34-40"),
+                                                   ("return array; at /home/research/ccl/olhota/soot-trunk/src/so" +
+                                                    "ot/jimple/paddle/BDDHierarchy.jedd:77,34-40"),
                                                    array);
     }
     
@@ -89,17 +89,26 @@ public final class BDDHierarchy {
                                           ("private <soot.jimple.paddle.bdddomains.anyst:soot.jimple.pad" +
                                            "dle.bdddomains.T1, soot.jimple.paddle.bdddomains.type:soot.j" +
                                            "imple.paddle.bdddomains.T2> anySub = jedd.internal.Jedd.v()." +
-                                           "falseBDD() at /home/olhotak/soot-trunk2/src/soot/jimple/padd" +
-                                           "le/BDDHierarchy.jedd:82,12-31"),
+                                           "falseBDD() at /home/research/ccl/olhota/soot-trunk/src/soot/" +
+                                           "jimple/paddle/BDDHierarchy.jedd:82,12-31"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     public jedd.internal.RelationContainer anySub() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { anyst.v(), type.v() },
                                                    new jedd.PhysicalDomain[] { T1.v(), T2.v() },
-                                                   ("return anySub; at /home/olhotak/soot-trunk2/src/soot/jimple/" +
-                                                    "paddle/BDDHierarchy.jedd:83,36-42"),
+                                                   ("return anySub; at /home/research/ccl/olhota/soot-trunk/src/s" +
+                                                    "oot/jimple/paddle/BDDHierarchy.jedd:83,36-42"),
                                                    anySub);
     }
+    
+    private final jedd.internal.RelationContainer oldAnySub =
+      new jedd.internal.RelationContainer(new jedd.Attribute[] { anyst.v(), type.v() },
+                                          new jedd.PhysicalDomain[] { T1.v(), T2.v() },
+                                          ("private <soot.jimple.paddle.bdddomains.anyst, soot.jimple.pa" +
+                                           "ddle.bdddomains.type> oldAnySub = jedd.internal.Jedd.v().fal" +
+                                           "seBDD() at /home/research/ccl/olhota/soot-trunk/src/soot/jim" +
+                                           "ple/paddle/BDDHierarchy.jedd:84,12-25"),
+                                          jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer closure =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { subt.v(), supt.v() },
@@ -107,24 +116,24 @@ public final class BDDHierarchy {
                                           ("private <soot.jimple.paddle.bdddomains.subt:soot.jimple.padd" +
                                            "le.bdddomains.T1, soot.jimple.paddle.bdddomains.supt:soot.ji" +
                                            "mple.paddle.bdddomains.T2> closure = jedd.internal.Jedd.v()." +
-                                           "falseBDD() at /home/olhotak/soot-trunk2/src/soot/jimple/padd" +
-                                           "le/BDDHierarchy.jedd:88,12-30"),
+                                           "falseBDD() at /home/research/ccl/olhota/soot-trunk/src/soot/" +
+                                           "jimple/paddle/BDDHierarchy.jedd:89,12-30"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer concrete =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { type.v() },
                                           new jedd.PhysicalDomain[] { T2.v() },
                                           ("private <soot.jimple.paddle.bdddomains.type> concrete = jedd" +
-                                           ".internal.Jedd.v().falseBDD() at /home/olhotak/soot-trunk2/s" +
-                                           "rc/soot/jimple/paddle/BDDHierarchy.jedd:90,12-18"),
+                                           ".internal.Jedd.v().falseBDD() at /home/research/ccl/olhota/s" +
+                                           "oot-trunk/src/soot/jimple/paddle/BDDHierarchy.jedd:91,12-18"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     public jedd.internal.RelationContainer concrete() {
         this.updateTypes();
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { type.v() },
                                                    new jedd.PhysicalDomain[] { T2.v() },
-                                                   ("return concrete; at /home/olhotak/soot-trunk2/src/soot/jimpl" +
-                                                    "e/paddle/BDDHierarchy.jedd:93,8-14"),
+                                                   ("return concrete; at /home/research/ccl/olhota/soot-trunk/src" +
+                                                    "/soot/jimple/paddle/BDDHierarchy.jedd:94,8-14"),
                                                    concrete);
     }
     
@@ -208,40 +217,46 @@ public final class BDDHierarchy {
     }
     
     private void updateClosure() {
-        closure.eqUnion(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(extend),
-                                                                                                                                                                       implement)),
-                                                                                                              array)),
-                                                     identity));
-        while (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(closure),
-                                              closure.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(closure),
-                                                                                                                            jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().replace(closure,
-                                                                                                                                                                                          new jedd.PhysicalDomain[] { T1.v() },
-                                                                                                                                                                                          new jedd.PhysicalDomain[] { T3.v() }),
-                                                                                                                                                           new jedd.PhysicalDomain[] { T2.v() },
-                                                                                                                                                           new jedd.PhysicalDomain[] { T1.v() }),
-                                                                                                                            new jedd.PhysicalDomain[] { T1.v() }),
-                                                                                             new jedd.PhysicalDomain[] { T3.v() },
-                                                                                             new jedd.PhysicalDomain[] { T1.v() }))))
-            ;
-        anySub.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(anySub,
-                                                                                                                 new jedd.PhysicalDomain[] { T2.v() },
-                                                                                                                 new jedd.PhysicalDomain[] { T3.v() })),
-                                                      jedd.internal.Jedd.v().replace(closure,
-                                                                                     new jedd.PhysicalDomain[] { T2.v(), T1.v() },
-                                                                                     new jedd.PhysicalDomain[] { T3.v(), T2.v() }),
-                                                      new jedd.PhysicalDomain[] { T3.v() }));
-        anySub.eq(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(anySub),
-                                              concrete,
-                                              new jedd.PhysicalDomain[] { T2.v() }));
-        closure.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(anySub),
-                                                                                      jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().replace(closure,
-                                                                                                                                                    new jedd.PhysicalDomain[] { T2.v() },
-                                                                                                                                                    new jedd.PhysicalDomain[] { T3.v() }),
-                                                                                                                     new jedd.PhysicalDomain[] { T1.v() },
-                                                                                                                     new jedd.PhysicalDomain[] { T2.v() }),
-                                                                                      new jedd.PhysicalDomain[] { T2.v() }),
-                                                       new jedd.PhysicalDomain[] { T3.v() },
-                                                       new jedd.PhysicalDomain[] { T2.v() }));
+        boolean closureChanged =
+          !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(closure),
+                                         closure.eqUnion(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(extend),
+                                                                                                                                                                                                        implement)),
+                                                                                                                                               array)),
+                                                                                      identity)));
+        if (closureChanged)
+            while (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(closure),
+                                                  closure.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(closure),
+                                                                                                                                jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().replace(closure,
+                                                                                                                                                                                              new jedd.PhysicalDomain[] { T1.v() },
+                                                                                                                                                                                              new jedd.PhysicalDomain[] { T3.v() }),
+                                                                                                                                                               new jedd.PhysicalDomain[] { T2.v() },
+                                                                                                                                                               new jedd.PhysicalDomain[] { T1.v() }),
+                                                                                                                                new jedd.PhysicalDomain[] { T1.v() }),
+                                                                                                 new jedd.PhysicalDomain[] { T3.v() },
+                                                                                                 new jedd.PhysicalDomain[] { T1.v() }))))
+                ;
+        if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(anySub), oldAnySub) || closureChanged) {
+            anySub.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(anySub,
+                                                                                                                     new jedd.PhysicalDomain[] { T2.v() },
+                                                                                                                     new jedd.PhysicalDomain[] { T3.v() })),
+                                                          jedd.internal.Jedd.v().replace(closure,
+                                                                                         new jedd.PhysicalDomain[] { T2.v(), T1.v() },
+                                                                                         new jedd.PhysicalDomain[] { T3.v(), T2.v() }),
+                                                          new jedd.PhysicalDomain[] { T3.v() }));
+            anySub.eq(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(anySub),
+                                                  concrete,
+                                                  new jedd.PhysicalDomain[] { T2.v() }));
+            closure.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(anySub),
+                                                                                          jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().replace(closure,
+                                                                                                                                                        new jedd.PhysicalDomain[] { T2.v() },
+                                                                                                                                                        new jedd.PhysicalDomain[] { T3.v() }),
+                                                                                                                         new jedd.PhysicalDomain[] { T1.v() },
+                                                                                                                         new jedd.PhysicalDomain[] { T2.v() }),
+                                                                                          new jedd.PhysicalDomain[] { T2.v() }),
+                                                           new jedd.PhysicalDomain[] { T3.v() },
+                                                           new jedd.PhysicalDomain[] { T2.v() }));
+        }
+        oldAnySub.eq(anySub);
     }
     
     public BDDHierarchy() { super(); }

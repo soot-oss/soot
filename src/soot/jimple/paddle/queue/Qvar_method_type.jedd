@@ -32,7 +32,7 @@ public abstract class Qvar_method_type {
     protected String name;
     public final String toString() { return name; }
     public abstract void add( VarNode _var, SootMethod _method, Type _type );
-    public abstract void add( <var:V1, method:T1, type:T2> in );
+    public abstract void add( <var:V1, method:MS, type:T1> in );
     public abstract Rvar_method_type reader( String rname );
     public Rvar_method_type revreader( String rname ) { return reader( rname ); }
     public void add( Rvar_method_type.Tuple in ) {

@@ -33,7 +33,7 @@ public final class Qctxt_methodBDD extends Qctxt_method {
     public void add( Context _ctxt, SootMethod _method ) {
         add( new { _ctxt=>ctxt, _method=>method } );
     }
-    public void add( <ctxt:V1, method:T1> in ) {
+    public void add( <ctxt:C1, method:MS> in ) {
         for( Iterator it = readers.iterator(); it.hasNext(); ) {
             Rctxt_methodBDD reader = (Rctxt_methodBDD) it.next();
             reader.add( in );

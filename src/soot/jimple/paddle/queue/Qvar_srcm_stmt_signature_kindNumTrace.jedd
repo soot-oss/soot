@@ -37,7 +37,7 @@ public final class Qvar_srcm_stmt_signature_kindNumTrace extends Qvar_srcm_stmt_
             reader.add( in );
         }
     }
-    public void add( <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> in ) {
+    public void add( <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> in ) {
         throw new RuntimeException();
     }
     public Rvar_srcm_stmt_signature_kind reader( String rname ) {

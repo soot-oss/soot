@@ -42,8 +42,8 @@ public class Rsrcc_srcm_stmt_kind_tgtc_tgtmIter extends Rsrcc_srcm_stmt_kind_tgt
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <srcc:V1, srcm:T1, stmt:ST, kind:FD, tgtc:V2, tgtm:T2> get() {
-        <srcc:V1, srcm:T1, stmt:ST, kind:FD, tgtc:V2, tgtm:T2> ret = 0B;
+    public <srcc:C1, srcm:MS, stmt:ST, kind:KD, tgtc:C2, tgtm:MT> get() {
+        <srcc:C1, srcm:MS, stmt:ST, kind:KD, tgtc:C2, tgtm:MT> ret = 0B;
         while( r.hasNext() ) {
             ret |= new { r.next()=>srcc, r.next()=>srcm, r.next()=>stmt, r.next()=>kind, r.next()=>tgtc, r.next()=>tgtm };
         }

@@ -25,11 +25,11 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad extends Qsrcc_srcm_stmt_kind_tgt
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), srcm.v(), tgtc.v(), tgtm.v(), kind.v(), stmt.v() },
-                                              new PhysicalDomain[] { V1.v(), T1.v(), V2.v(), T2.v(), FD.v(), ST.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
-                                               "runk2/src/soot/jimple/paddle/queue/Qsrcc_srcm_stmt_kind_tgtc" +
-                                               "_tgtmTrad.jedd:42,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { kind.v(), stmt.v(), srcm.v(), tgtm.v(), srcc.v(), tgtc.v() },
+                                              new PhysicalDomain[] { KD.v(), ST.v(), MS.v(), MT.v(), C1.v(), C2.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
+                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qsrcc_srcm_stm" +
+                                               "t_kind_tgtc_tgtmTrad.jedd:42,22-24"),
                                               in).iterator(new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

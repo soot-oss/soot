@@ -42,8 +42,8 @@ public class Rctxt_methodIter extends Rctxt_method{
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <ctxt:V1, method:T1> get() {
-        <ctxt:V1, method:T1> ret = 0B;
+    public <ctxt:C1, method:MS> get() {
+        <ctxt:C1, method:MS> ret = 0B;
         while( r.hasNext() ) {
             ret |= new { r.next()=>ctxt, r.next()=>method };
         }

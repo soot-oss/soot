@@ -35,7 +35,7 @@ public abstract class Rvar_srcm_stmt_tgtm implements Readers.Reader {
     protected String name;
     public final String toString() { return name; }
     public abstract Iterator iterator();
-    public abstract <var:V1, srcm:T1, stmt:ST, tgtm:T2> get();
+    public abstract <var:V1, srcm:MS, stmt:ST, tgtm:MT> get();
     public abstract boolean hasNext();
     public static class Tuple {
         private VarNode _var;

@@ -33,7 +33,7 @@ public final class Qvar_srcm_stmt_signature_kindBDD extends Qvar_srcm_stmt_signa
     public void add( VarNode _var, SootMethod _srcm, Unit _stmt, NumberedString _signature, Kind _kind ) {
         add( new { _var=>var, _srcm=>srcm, _stmt=>stmt, _signature=>signature, _kind=>kind } );
     }
-    public void add( <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> in ) {
+    public void add( <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> in ) {
         for( Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_srcm_stmt_signature_kindBDD reader = (Rvar_srcm_stmt_signature_kindBDD) it.next();
             reader.add( in );

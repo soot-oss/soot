@@ -37,7 +37,7 @@ public class Qvar_srcm_stmt_signature_kindTrad extends Qvar_srcm_stmt_signature_
         q.add( _signature );
         q.add( _kind );
     }
-    public void add( <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> in ) {
+    public void add( <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> in ) {
         Iterator it = in.iterator( new Attribute[] { var.v(), srcm.v(), stmt.v(), signature.v(), kind.v() } );
         while( it.hasNext() ) {
             Object[] tuple = (Object[]) it.next();

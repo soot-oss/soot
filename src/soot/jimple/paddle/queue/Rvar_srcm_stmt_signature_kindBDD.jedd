@@ -28,9 +28,9 @@ import jedd.*;
 import java.util.*;
 
 public final class Rvar_srcm_stmt_signature_kindBDD extends Rvar_srcm_stmt_signature_kind {
-    private <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> bdd;
-    void add( <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> tuple ) { bdd |= tuple; }
-    public Rvar_srcm_stmt_signature_kindBDD( <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> bdd, String name ) { this(name); add(bdd); }
+    private <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> bdd;
+    void add( <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> tuple ) { bdd |= tuple; }
+    public Rvar_srcm_stmt_signature_kindBDD( <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> bdd, String name ) { this(name); add(bdd); }
     Rvar_srcm_stmt_signature_kindBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
@@ -51,8 +51,8 @@ public final class Rvar_srcm_stmt_signature_kindBDD extends Rvar_srcm_stmt_signa
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> get() {
-        <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> ret = bdd;
+    public <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> get() {
+        <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> ret = bdd;
         bdd = 0B;
         return ret;
     }

@@ -32,7 +32,7 @@ public abstract class Qvar_srcm_stmt_tgtm {
     protected String name;
     public final String toString() { return name; }
     public abstract void add( VarNode _var, SootMethod _srcm, Unit _stmt, SootMethod _tgtm );
-    public abstract void add( <var:V1, srcm:T1, stmt:ST, tgtm:T2> in );
+    public abstract void add( <var:V1, srcm:MS, stmt:ST, tgtm:MT> in );
     public abstract Rvar_srcm_stmt_tgtm reader( String rname );
     public Rvar_srcm_stmt_tgtm revreader( String rname ) { return reader( rname ); }
     public void add( Rvar_srcm_stmt_tgtm.Tuple in ) {

@@ -33,7 +33,7 @@ public final class Qsrcm_stmt_kind_tgtm_src_dstBDD extends Qsrcm_stmt_kind_tgtm_
     public void add( SootMethod _srcm, Unit _stmt, Kind _kind, SootMethod _tgtm, VarNode _src, VarNode _dst ) {
         add( new { _srcm=>srcm, _stmt=>stmt, _kind=>kind, _tgtm=>tgtm, _src=>src, _dst=>dst } );
     }
-    public void add( <srcm:T1, stmt:ST, kind:FD, tgtm:T2, src:V1, dst:V2> in ) {
+    public void add( <srcm:MS, stmt:ST, kind:KD, tgtm:MT, src:V1, dst:V2> in ) {
         for( Iterator it = readers.iterator(); it.hasNext(); ) {
             Rsrcm_stmt_kind_tgtm_src_dstBDD reader = (Rsrcm_stmt_kind_tgtm_src_dstBDD) it.next();
             reader.add( in );

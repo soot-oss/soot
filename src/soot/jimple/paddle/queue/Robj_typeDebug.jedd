@@ -52,7 +52,7 @@ public class Robj_typeDebug extends Robj_type{
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <obj:H1, type:T2> get() {
+    public <obj:H1, type:T1> get() {
         throw new RuntimeException( "NYI" );
     }
     public boolean hasNext() { return trad.hasNext(); }

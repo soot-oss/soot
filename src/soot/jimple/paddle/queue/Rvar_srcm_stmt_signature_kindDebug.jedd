@@ -52,7 +52,7 @@ public class Rvar_srcm_stmt_signature_kindDebug extends Rvar_srcm_stmt_signature
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> get() {
+    public <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> get() {
         throw new RuntimeException( "NYI" );
     }
     public boolean hasNext() { return trad.hasNext(); }

@@ -6,7 +6,7 @@ import soot.*;
 public class SigDomain extends Domain {
     public Numberer numberer() { return new soot.util.JeddNumberer(Scene.v().getSubSigNumberer()); }
     
-    public final int bits = 20;
+    public final int bits = 16;
     
     public static Domain v() { return instance; }
     

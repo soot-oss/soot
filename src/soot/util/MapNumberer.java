@@ -42,4 +42,5 @@ public class MapNumberer implements Numberer {
     }
     public int size() { return nextIndex; }
     public MapNumberer() { al.add(null); }
+    public boolean contains(Object o) { return map.containsKey(o); }
 }

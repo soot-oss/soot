@@ -42,8 +42,8 @@ public class Rsrcm_stmt_kind_tgtm_src_dstIter extends Rsrcm_stmt_kind_tgtm_src_d
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <srcm:T1, stmt:ST, kind:FD, tgtm:T2, src:V1, dst:V2> get() {
-        <srcm:T1, stmt:ST, kind:FD, tgtm:T2, src:V1, dst:V2> ret = 0B;
+    public <srcm:MS, stmt:ST, kind:KD, tgtm:MT, src:V1, dst:V2> get() {
+        <srcm:MS, stmt:ST, kind:KD, tgtm:MT, src:V1, dst:V2> ret = 0B;
         while( r.hasNext() ) {
             ret |= new { r.next()=>srcm, r.next()=>stmt, r.next()=>kind, r.next()=>tgtm, r.next()=>src, r.next()=>dst };
         }

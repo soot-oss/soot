@@ -35,7 +35,7 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug extends Qsrcc_srcm_stmt_kind_tg
         bdd.add( _srcc, _srcm, _stmt, _kind, _tgtc, _tgtm );
         trad.add( _srcc, _srcm, _stmt, _kind, _tgtc, _tgtm );
     }
-    public void add( <srcc:V1, srcm:T1, stmt:ST, kind:FD, tgtc:V2, tgtm:T2> in ) {
+    public void add( <srcc:C1, srcm:MS, stmt:ST, kind:KD, tgtc:C2, tgtm:MT> in ) {
         Iterator it = in.iterator( new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() } );
         while( it.hasNext() ) {
             Object[] tuple = (Object[]) it.next();

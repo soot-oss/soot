@@ -35,7 +35,7 @@ public class Qvar_typeDebug extends Qvar_type {
         bdd.add( _var, _type );
         trad.add( _var, _type );
     }
-    public void add( <var:V1, type:T2> in ) {
+    public void add( <var:V1, type:T1> in ) {
         Iterator it = in.iterator( new Attribute[] { var.v(), type.v() } );
         while( it.hasNext() ) {
             Object[] tuple = (Object[]) it.next();

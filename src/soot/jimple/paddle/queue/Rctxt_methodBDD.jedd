@@ -28,9 +28,9 @@ import jedd.*;
 import java.util.*;
 
 public final class Rctxt_methodBDD extends Rctxt_method {
-    private <ctxt:V1, method:T1> bdd;
-    void add( <ctxt:V1, method:T1> tuple ) { bdd |= tuple; }
-    public Rctxt_methodBDD( <ctxt:V1, method:T1> bdd, String name ) { this(name); add(bdd); }
+    private <ctxt:C1, method:MS> bdd;
+    void add( <ctxt:C1, method:MS> tuple ) { bdd |= tuple; }
+    public Rctxt_methodBDD( <ctxt:C1, method:MS> bdd, String name ) { this(name); add(bdd); }
     Rctxt_methodBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
@@ -51,8 +51,8 @@ public final class Rctxt_methodBDD extends Rctxt_method {
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <ctxt:V1, method:T1> get() {
-        <ctxt:V1, method:T1> ret = bdd;
+    public <ctxt:C1, method:MS> get() {
+        <ctxt:C1, method:MS> ret = bdd;
         bdd = 0B;
         return ret;
     }

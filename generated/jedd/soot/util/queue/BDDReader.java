@@ -15,8 +15,8 @@ public class BDDReader implements Cloneable {
         final jedd.internal.RelationContainer ret =
           new jedd.internal.RelationContainer(new jedd.Attribute[] {  },
                                               new jedd.PhysicalDomain[] {  },
-                                              ("<> ret; at /home/olhotak/soot-trunk2/src/soot/util/queue/BDD" +
-                                               "Reader.jedd:41,11-14"));
+                                              ("<> ret; at /home/research/ccl/olhota/soot-trunk/src/soot/uti" +
+                                               "l/queue/BDDReader.jedd:41,11-14"));
         do  {
             ret.eq(chunk.bdd);
             chunk = chunk.next;
@@ -25,8 +25,8 @@ public class BDDReader implements Cloneable {
                  chunk.next != null); 
         return new jedd.internal.RelationContainer(new jedd.Attribute[] {  },
                                                    new jedd.PhysicalDomain[] {  },
-                                                   ("return ret; at /home/olhotak/soot-trunk2/src/soot/util/queue" +
-                                                    "/BDDReader.jedd:47,8-14"),
+                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
+                                                    "/util/queue/BDDReader.jedd:47,8-14"),
                                                    ret);
     }
     

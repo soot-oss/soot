@@ -52,7 +52,7 @@ public class Rsrcm_stmt_kind_tgtm_src_dstDebug extends Rsrcm_stmt_kind_tgtm_src_
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <srcm:T1, stmt:ST, kind:FD, tgtm:T2, src:V1, dst:V2> get() {
+    public <srcm:MS, stmt:ST, kind:KD, tgtm:MT, src:V1, dst:V2> get() {
         throw new RuntimeException( "NYI" );
     }
     public boolean hasNext() { return trad.hasNext(); }

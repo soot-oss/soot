@@ -99,7 +99,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         findOrAdd( "void <clinit>()" );
     
     private <type, signature, method> targets = 0B;
-    private <type, signature, method:T3> declaresMethod = 0B;
+    private <type, signature, method> declaresMethod = 0B;
     private BDDHierarchy hier = new BDDHierarchy();
 
     private <ctxt, var, obj> newPt = 0B;
@@ -133,9 +133,9 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         return change;
     }
 
+    private <var, srcm, stmt, kind> clinits;
     private void updateClinits() {
-        <var, srcm, stmt, kind> clinits = (signature=>)
-            allRcv{kind} >< new{Kind.CLINIT=>kind}{kind};
+        clinits |= (signature=>) newRcv{kind} >< new{Kind.CLINIT=>kind}{kind};
 
         <srcc, var, tgtm> tgtMethods =
             (ctxt=>srcc) newPt{obj} <> stringConstants{obj};
@@ -159,21 +159,25 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         if( newSpecials != 0B ) change = true;
     }
 
+    private <var, srcm, stmt, type, kind, tgtm> callSiteTargets = 0B;
+    private <var, signature> rcvSigs = 0B;
+    private <var, signature> threadRcvSigs = 0B;
+    private <var, srcm, stmt, signature, kind> rcv = 0B;
     private void updateVirtuals() {
-        <var, srcm, stmt, signature, kind> rcv = 
-            allRcv{kind} >< virtual{kind};
+        <var, srcm, stmt, signature, kind> newVirtRcv = 
+            newRcv{kind} >< (virtual|new{Kind.THREAD=>kind}){kind};
+        rcv |= newVirtRcv;
 
-        <var, srcm, stmt, signature, kind> threadRcv = 
-            allRcv{kind} >< new{Kind.THREAD=>kind}{kind};
+        <var, signature, kind> sigs = (srcm=>, stmt=>) newVirtRcv;
+        rcvSigs |= sigs{kind} <> virtual{kind};
+        threadRcvSigs |= sigs{kind} <> new{Kind.THREAD=>kind}{kind};
 
         // resolve new points-to sets
         <var, type> ptTypes = allocNodes{obj} <> (ctxt=>) newPt{obj}; 
 
-        <type, signature> newTypes = ptTypes{var} 
-                <> (stmt=>,srcm=>,kind=>)rcv{var};
+        <type, signature> newTypes = ptTypes{var} <> rcvSigs{var};
 
-        newTypes |= (ptTypes{type} >< threads{type}) {var}
-                  <> (stmt=>,srcm=>,kind=>)threadRcv {var};
+        newTypes |= (ptTypes{type} >< threads{type}){var} <> threadRcvSigs{var};
 
         // close under AnySubType; that is, if the receiver is AnySubType(t),
         // replace it with all subtypes of t
@@ -189,6 +193,8 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         // for each tuple [t, s], make it [t, s, t].
         <subt, signature, supt> toResolve = (type=>subt, type=>supt) newTypes;
 
+        <type, signature, method> newTargets = 0B;
+
         do {
             // figure out which receivers are already resolved (if the
             // corresponding class already declares the method)
@@ -199,7 +205,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls
             toResolve -= (method=>) resolved;
 
             // add resolved ones to targets
-            targets |= (subt=>type, supt=>) resolved;
+            newTargets |= (subt=>type, supt=>) resolved;
 
             // move one step up the hierarchy for the other receiver types
             toResolve =                          toResolve {supt} 
@@ -207,7 +213,6 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         } while( toResolve != 0B );
 
         <var, obj, type, ctxt> typedPt = allocNodes{obj}><newPt{obj};
-
 
         // close typedPt under AnySubType
         typedPt |= typedPt{type} <> hier.anySub(){anyst};
@@ -222,9 +227,9 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         // Weed out non-concrete actual types.
         varCtxtPt = varCtxtPt{type} >< hier.concrete(){type};
 
-        <var, srcm, stmt, type, kind, tgtm> callSiteTargets =
-            (rcv|threadRcv){signature} 
-                        <> (method=>tgtm) targets{signature};
+        callSiteTargets |= 
+            newVirtRcv{signature} <> (method=>tgtm) targets{signature};
+        callSiteTargets |= rcv{signature} <> (method=>tgtm) newTargets{signature};
 
         <ctxt, var, obj, srcm, stmt, kind, tgtm> newVirtuals =
             (type=>) (

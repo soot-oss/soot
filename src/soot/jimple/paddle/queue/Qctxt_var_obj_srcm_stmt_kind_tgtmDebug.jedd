@@ -35,7 +35,7 @@ public class Qctxt_var_obj_srcm_stmt_kind_tgtmDebug extends Qctxt_var_obj_srcm_s
         bdd.add( _ctxt, _var, _obj, _srcm, _stmt, _kind, _tgtm );
         trad.add( _ctxt, _var, _obj, _srcm, _stmt, _kind, _tgtm );
     }
-    public void add( <ctxt:V2, var:V1, obj:H1, srcm:T1, stmt:ST, kind:FD, tgtm:T2> in ) {
+    public void add( <ctxt:C2, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> in ) {
         Iterator it = in.iterator( new Attribute[] { ctxt.v(), var.v(), obj.v(), srcm.v(), stmt.v(), kind.v(), tgtm.v() } );
         while( it.hasNext() ) {
             Object[] tuple = (Object[]) it.next();

@@ -35,7 +35,7 @@ public abstract class Rctxt_method implements Readers.Reader {
     protected String name;
     public final String toString() { return name; }
     public abstract Iterator iterator();
-    public abstract <ctxt:V1, method:T1> get();
+    public abstract <ctxt:C1, method:MS> get();
     public abstract boolean hasNext();
     public static class Tuple {
         private Context _ctxt;

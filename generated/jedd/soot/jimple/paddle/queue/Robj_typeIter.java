@@ -33,22 +33,22 @@ public class Robj_typeIter extends Robj_type {
     public jedd.internal.RelationContainer get() {
         final jedd.internal.RelationContainer ret =
           new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
-                                              new PhysicalDomain[] { H1.v(), T2.v() },
+                                              new PhysicalDomain[] { H1.v(), T1.v() },
                                               ("<soot.jimple.paddle.bdddomains.obj:soot.jimple.paddle.bdddom" +
                                                "ains.H1, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
-                                               "le.bdddomains.T2> ret = jedd.internal.Jedd.v().falseBDD(); a" +
-                                               "t /home/olhotak/soot-trunk2/src/soot/jimple/paddle/queue/Rob" +
-                                               "j_typeIter.jedd:46,26-29"),
+                                               "le.bdddomains.T1> ret = jedd.internal.Jedd.v().falseBDD(); a" +
+                                               "t /home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddl" +
+                                               "e/queue/Robj_typeIter.jedd:46,26-29"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next() },
                                                        new Attribute[] { obj.v(), type.v() },
-                                                       new PhysicalDomain[] { H1.v(), T2.v() }));
+                                                       new PhysicalDomain[] { H1.v(), T1.v() }));
         }
         return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
-                                                   new PhysicalDomain[] { H1.v(), T2.v() },
-                                                   ("return ret; at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
-                                                    "dle/queue/Robj_typeIter.jedd:50,8-14"),
+                                                   new PhysicalDomain[] { H1.v(), T1.v() },
+                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
+                                                    "/jimple/paddle/queue/Robj_typeIter.jedd:50,8-14"),
                                                    ret);
     }
     

@@ -37,7 +37,7 @@ public final class Qvar_typeNumTrace extends Qvar_type {
             reader.add( in );
         }
     }
-    public void add( <var:V1, type:T2> in ) {
+    public void add( <var:V1, type:T1> in ) {
         throw new RuntimeException();
     }
     public Rvar_type reader( String rname ) {

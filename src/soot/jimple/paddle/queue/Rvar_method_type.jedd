@@ -35,7 +35,7 @@ public abstract class Rvar_method_type implements Readers.Reader {
     protected String name;
     public final String toString() { return name; }
     public abstract Iterator iterator();
-    public abstract <var:V1, method:T1, type:T2> get();
+    public abstract <var:V1, method:MS, type:T1> get();
     public abstract boolean hasNext();
     public static class Tuple {
         private VarNode _var;

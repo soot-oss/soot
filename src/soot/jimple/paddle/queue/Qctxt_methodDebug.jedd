@@ -35,7 +35,7 @@ public class Qctxt_methodDebug extends Qctxt_method {
         bdd.add( _ctxt, _method );
         trad.add( _ctxt, _method );
     }
-    public void add( <ctxt:V1, method:T1> in ) {
+    public void add( <ctxt:C1, method:MS> in ) {
         Iterator it = in.iterator( new Attribute[] { ctxt.v(), method.v() } );
         while( it.hasNext() ) {
             Object[] tuple = (Object[]) it.next();

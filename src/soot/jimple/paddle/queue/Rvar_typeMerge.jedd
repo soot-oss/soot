@@ -28,7 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Rvar_typeMerge extends Rvar_type {
-    void add( <var:V1, type:T2> tuple ) { throw new RuntimeException(); }
+    void add( <var:V1, type:T1> tuple ) { throw new RuntimeException(); }
     private Rvar_type in1;
     private Rvar_type in2;
     public Rvar_typeMerge( Rvar_type in1, Rvar_type in2 ) {
@@ -48,7 +48,7 @@ public final class Rvar_typeMerge extends Rvar_type {
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <var:V1, type:T2> get() {
+    public <var:V1, type:T1> get() {
         return in1.get() | in2.get();
     }
     public boolean hasNext() { return in1.hasNext() || in2.hasNext(); }

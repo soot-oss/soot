@@ -33,7 +33,7 @@ public final class Qvar_typeBDD extends Qvar_type {
     public void add( VarNode _var, Type _type ) {
         add( new { _var=>var, _type=>type } );
     }
-    public void add( <var:V1, type:T2> in ) {
+    public void add( <var:V1, type:T1> in ) {
         for( Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_typeBDD reader = (Rvar_typeBDD) it.next();
             reader.add( in );

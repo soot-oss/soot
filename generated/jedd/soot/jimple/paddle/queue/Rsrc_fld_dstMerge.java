@@ -42,8 +42,9 @@ public final class Rsrc_fld_dstMerge extends Rsrc_fld_dst {
         return new jedd.internal.RelationContainer(new Attribute[] { fld.v(), dst.v(), src.v() },
                                                    new PhysicalDomain[] { FD.v(), V2.v(), V1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk2/src" +
-                                                    "/soot/jimple/paddle/queue/Rsrc_fld_dstMerge.jedd:52,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/research/ccl/olhota/soo" +
+                                                    "t-trunk/src/soot/jimple/paddle/queue/Rsrc_fld_dstMerge.jedd:" +
+                                                    "52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

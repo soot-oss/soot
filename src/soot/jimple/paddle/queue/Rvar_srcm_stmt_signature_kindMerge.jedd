@@ -28,7 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Rvar_srcm_stmt_signature_kindMerge extends Rvar_srcm_stmt_signature_kind {
-    void add( <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> tuple ) { throw new RuntimeException(); }
+    void add( <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> tuple ) { throw new RuntimeException(); }
     private Rvar_srcm_stmt_signature_kind in1;
     private Rvar_srcm_stmt_signature_kind in2;
     public Rvar_srcm_stmt_signature_kindMerge( Rvar_srcm_stmt_signature_kind in1, Rvar_srcm_stmt_signature_kind in2 ) {
@@ -48,7 +48,7 @@ public final class Rvar_srcm_stmt_signature_kindMerge extends Rvar_srcm_stmt_sig
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <var:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> get() {
+    public <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> get() {
         return in1.get() | in2.get();
     }
     public boolean hasNext() { return in1.hasNext() || in2.hasNext(); }

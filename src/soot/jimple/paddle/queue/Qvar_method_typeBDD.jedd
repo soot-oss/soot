@@ -33,7 +33,7 @@ public final class Qvar_method_typeBDD extends Qvar_method_type {
     public void add( VarNode _var, SootMethod _method, Type _type ) {
         add( new { _var=>var, _method=>method, _type=>type } );
     }
-    public void add( <var:V1, method:T1, type:T2> in ) {
+    public void add( <var:V1, method:MS, type:T1> in ) {
         for( Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_method_typeBDD reader = (Rvar_method_typeBDD) it.next();
             reader.add( in );

@@ -33,7 +33,7 @@ public final class Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD extends Qsrcc_srcm_stmt_kin
     public void add( Context _srcc, SootMethod _srcm, Unit _stmt, Kind _kind, Context _tgtc, SootMethod _tgtm ) {
         add( new { _srcc=>srcc, _srcm=>srcm, _stmt=>stmt, _kind=>kind, _tgtc=>tgtc, _tgtm=>tgtm } );
     }
-    public void add( <srcc:V1, srcm:T1, stmt:ST, kind:FD, tgtc:V2, tgtm:T2> in ) {
+    public void add( <srcc:C1, srcm:MS, stmt:ST, kind:KD, tgtc:C2, tgtm:MT> in ) {
         for( Iterator it = readers.iterator(); it.hasNext(); ) {
             Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD reader = (Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD) it.next();
             reader.add( in );

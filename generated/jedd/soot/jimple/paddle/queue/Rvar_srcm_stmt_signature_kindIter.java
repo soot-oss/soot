@@ -39,26 +39,27 @@ public class Rvar_srcm_stmt_signature_kindIter extends Rvar_srcm_stmt_signature_
     public jedd.internal.RelationContainer get() {
         final jedd.internal.RelationContainer ret =
           new jedd.internal.RelationContainer(new Attribute[] { var.v(), srcm.v(), stmt.v(), signature.v(), kind.v() },
-                                              new PhysicalDomain[] { V1.v(), T1.v(), ST.v(), H2.v(), FD.v() },
+                                              new PhysicalDomain[] { V1.v(), MS.v(), ST.v(), SG.v(), KD.v() },
                                               ("<soot.jimple.paddle.bdddomains.var:soot.jimple.paddle.bdddom" +
                                                "ains.V1, soot.jimple.paddle.bdddomains.srcm:soot.jimple.padd" +
-                                               "le.bdddomains.T1, soot.jimple.paddle.bdddomains.stmt:soot.ji" +
+                                               "le.bdddomains.MS, soot.jimple.paddle.bdddomains.stmt:soot.ji" +
                                                "mple.paddle.bdddomains.ST, soot.jimple.paddle.bdddomains.sig" +
-                                               "nature:soot.jimple.paddle.bdddomains.H2, soot.jimple.paddle." +
-                                               "bdddomains.kind:soot.jimple.paddle.bdddomains.FD> ret = jedd" +
-                                               ".internal.Jedd.v().falseBDD(); at /home/olhotak/soot-trunk2/" +
-                                               "src/soot/jimple/paddle/queue/Rvar_srcm_stmt_signature_kindIt" +
-                                               "er.jedd:46,58-61"),
+                                               "nature:soot.jimple.paddle.bdddomains.SG, soot.jimple.paddle." +
+                                               "bdddomains.kind:soot.jimple.paddle.bdddomains.KD> ret = jedd" +
+                                               ".internal.Jedd.v().falseBDD(); at /home/research/ccl/olhota/" +
+                                               "soot-trunk/src/soot/jimple/paddle/queue/Rvar_srcm_stmt_signa" +
+                                               "ture_kindIter.jedd:46,58-61"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next(), r.next(), r.next(), r.next() },
                                                        new Attribute[] { var.v(), srcm.v(), stmt.v(), signature.v(), kind.v() },
-                                                       new PhysicalDomain[] { V1.v(), T1.v(), ST.v(), H2.v(), FD.v() }));
+                                                       new PhysicalDomain[] { V1.v(), MS.v(), ST.v(), SG.v(), KD.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), signature.v(), var.v(), kind.v(), stmt.v() },
-                                                   new PhysicalDomain[] { T1.v(), H2.v(), V1.v(), FD.v(), ST.v() },
-                                                   ("return ret; at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
-                                                    "dle/queue/Rvar_srcm_stmt_signature_kindIter.jedd:50,8-14"),
+        return new jedd.internal.RelationContainer(new Attribute[] { kind.v(), stmt.v(), srcm.v(), var.v(), signature.v() },
+                                                   new PhysicalDomain[] { KD.v(), ST.v(), MS.v(), V1.v(), SG.v() },
+                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
+                                                    "/jimple/paddle/queue/Rvar_srcm_stmt_signature_kindIter.jedd:" +
+                                                    "50,8-14"),
                                                    ret);
     }
     

@@ -42,8 +42,8 @@ public class Rvar_method_typeIter extends Rvar_method_type{
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <var:V1, method:T1, type:T2> get() {
-        <var:V1, method:T1, type:T2> ret = 0B;
+    public <var:V1, method:MS, type:T1> get() {
+        <var:V1, method:MS, type:T1> ret = 0B;
         while( r.hasNext() ) {
             ret |= new { r.next()=>var, r.next()=>method, r.next()=>type };
         }
