@@ -205,6 +205,22 @@ public class StringTools
         } 
         return res;
     }
+
+	public static String replaceAll(String in, String oldS, String newS) {
+		StringBuffer sb = new StringBuffer(in);
+		int from = 0;
+
+		int index = in.indexOf(oldS, from);
+		while (index != -1) {
+			sb = sb.delete(index, index+oldS.length());
+			sb = sb.insert(index, newS);
+			from = index+1;
+			in = sb.toString();
+			index = in.indexOf(oldS, from);
+		}
+
+		return sb.toString();
+	}
 }
 
 
