@@ -51,13 +51,13 @@ public class SootClasspath {
 	
 	public String getSootClasspath() {
 		StringBuffer cp = new StringBuffer();
-		cp.append(getJre_lib());
-		cp.append(getSeparator());
+		//cp.append(getJre_lib());
+		//cp.append(getSeparator());
 		//cp.append(getSoot_lib());
 		//cp.append(getSeparator());
 		//cp.append(getJasmin_lib());
 		//cp.append(getSeparator());
-		cp.append(getDot());
+		//cp.append(getDot());
 		
 		return cp.toString();
 	}

@@ -1,3 +1,4 @@
+
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jennifer Lhotak
  *
@@ -32,6 +33,7 @@ public class SootFolderLauncher extends SootLauncher {
 
 	public void run(IAction action) {
 		super.run(action);
+		classpathAppend = null;
 		
 		//super.resetSootOutputFolder();
 		//setOutputLocation(platform_location+getSootOutputFolder().getFullPath().toOSString());

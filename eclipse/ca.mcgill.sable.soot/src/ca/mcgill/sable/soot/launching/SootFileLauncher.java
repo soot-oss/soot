@@ -61,6 +61,7 @@ public class SootFileLauncher extends SootLauncher {
     
 	public void run(IAction action){
 		super.run(action);
+		classpathAppend = null;
 		//handleFiles();
     }
     
@@ -104,6 +105,7 @@ public class SootFileLauncher extends SootLauncher {
 			IFile file = getSootSelection().getFile();
 			if (file.getFileExtension().compareTo("jimple") == 0) {
 				setClasspathAppend(platform_location+file.getParent().getFullPath().toOSString());	
+				addJars();
 				setIsSrcPrec(true);
 				setSrcPrec(LaunchCommands.JIMPLE_IN);
 				setToProcess(removeFileExt(file.getName()));
@@ -271,7 +273,9 @@ public class SootFileLauncher extends SootLauncher {
 		//System.out.println("to process: "+getToProcess());
 		//		System.out.println("classpath append: "+getClasspathAppend());
 		//setToProcess(cf.toString().substring(cf.toString().lastIndexOf(".")));
+		addJars();
 		setClasspathAppend(file.getLocation().toOSString().substring(0, file.getLocation().toOSString().indexOf(cf.toString())));
+		
 		//System.out.println("to process: "+getToProcess());
 		//System.out.println("classpath append: "+getClasspathAppend());
 	}
@@ -310,6 +314,7 @@ public class SootFileLauncher extends SootLauncher {
 	 * @param classpathAppend The classpathAppend to set
 	 */
 	public void setClasspathAppend(String ca) {
+		System.out.println("Before adding claspath is: "+classpathAppend);
 		if (this.classpathAppend == null){
 			this.classpathAppend = ca;
 		}

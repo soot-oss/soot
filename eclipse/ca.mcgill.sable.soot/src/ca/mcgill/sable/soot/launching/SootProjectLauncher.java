@@ -32,6 +32,7 @@ public class SootProjectLauncher extends SootLauncher {
 	
 	public void run(IAction action) {
 		super.run(action);
+		classpathAppend = null;
 		//super.resetSootOutputFolder();
 		try {
 			setProcess_path(platform_location+getSootSelection().getJavaProject().getOutputLocation().toOSString());
