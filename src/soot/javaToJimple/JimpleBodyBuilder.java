@@ -2521,6 +2521,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             //System.out.println("binary: "+binary);
             if (areAllStringLits(binary)){
                 String result = createStringConstant(binary);
+                //System.out.println("created string constant: "+result);
                 return soot.jimple.StringConstant.v(result);
             }
             else {
@@ -2671,7 +2672,16 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     }
     
     private String createStringConstantBinary(polyglot.ast.Binary binary){
-        String s = createStringConstant(binary.left()) + createStringConstant(binary.right());
+        //System.out.println("create string binary: type"+binary.type());
+        String s = null;
+        if (Util.getSootType(binary.type()).toString().equals("java.lang.String")){
+            // here if type is a string return string constant
+            s = createStringConstant(binary.left()) + createStringConstant(binary.right());
+        }
+        else {
+            // else eval and return string of the eval result
+            s = binary.constantValue().toString();
+        }
         return s;
         
     }
@@ -3118,7 +3128,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      */
     private void generateAppends(polyglot.ast.Expr expr, soot.Local sb) {
 
-      
+        //System.out.println("generate appends for expr: "+expr); 
         if (isStringConcat(expr)){
             if (expr instanceof polyglot.ast.Binary){
                 generateAppends(((polyglot.ast.Binary)expr).left(), sb);
@@ -3131,6 +3141,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
         else {
             soot.Value toApp = base().createExpr(expr);
+            //System.out.println("toApp: "+toApp+" type: "+toApp.getType());
             soot.Type appendType = null;
             if (toApp instanceof soot.jimple.StringConstant) {
                 appendType = soot.RefType.v("java.lang.String");
