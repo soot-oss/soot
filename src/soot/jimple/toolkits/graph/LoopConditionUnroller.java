@@ -214,7 +214,6 @@ public class LoopConditionUnroller {
    * @return the head of the copied block.
    */
   private Unit copyBlock(Block block) {
-    System.out.println("copying block");
     Map traps = getTraps();
     Set openedTraps = new HashSet();
     Map copiedTraps = new HashMap();

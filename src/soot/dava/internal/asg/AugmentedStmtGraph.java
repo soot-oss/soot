@@ -68,7 +68,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 	find_Dominators();
     }
    
-    public AugmentedStmtGraph( BriefUnitGraph bug, CompleteUnitGraph cug)
+    public AugmentedStmtGraph( BriefUnitGraph bug, TrapUnitGraph cug)
     {
 	this();
 

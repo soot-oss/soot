@@ -54,10 +54,6 @@ public class CompleteUnitGraph extends UnitGraph
         super(body, true);
     }
 
-    public CompleteUnitGraph( Body body, boolean workaround)
-    {
-        super(body, true, workaround);
-    }
 }
 
 

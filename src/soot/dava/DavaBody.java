@@ -134,7 +134,7 @@ public class DavaBody extends Body
 	copy_Body( body);
 	
 	// prime the analysis
-        AugmentedStmtGraph asg = new AugmentedStmtGraph( new BriefUnitGraph( this), new CompleteUnitGraph( this, true));
+        AugmentedStmtGraph asg = new AugmentedStmtGraph( new BriefUnitGraph( this), new TrapUnitGraph( this));
 
 	ExceptionFinder.v().preprocess( this, asg);
 	SETNode SET = new SETTopNode( asg.get_ChainView());
