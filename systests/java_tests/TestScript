@@ -1,0 +1,47 @@
+#!/bin/sh
+
+function mytest(){
+
+    echo 'starting function test';
+    i=$1;
+    j=${i/.java/};
+    if java -Xmx400M soot.Main -f J -src-prec java -app $j > $j.produceJimple;
+    then
+        echo $i 'Passed Producing Jimple';
+        if java -Xmx400M soot.Main -src-prec java -app $j > $j.produceClass;
+        then
+            echo $i 'Passed Producing Class';
+            javac -source 1.4 $i;
+            java $j < input > $j.realOutput;
+            if java -cp sootOutput $j < input > $j.myOutput;
+            then
+                echo $i 'Passed Running';
+                if diff $j.realOutput $j.myOutput > $j.diff;
+                then
+                    echo $i 'Passed Diff';
+                else
+                    echo $i 'Failed Diff';
+                fi
+                rm $j.diff;
+            else
+                echo $i 'Failed Running';
+            fi
+            rm $j.myOutput;
+            rm $j.realOutput;
+        else
+            echo $i 'Failed Producing Class';
+        fi
+        rm $j.produceClass;
+    else
+        echo $i 'Failed';
+    fi
+    rm $j.produceJimple;
+
+}
+
+for i in *.java;
+do
+    mytest $i ;
+done
+
+
