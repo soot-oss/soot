@@ -92,6 +92,23 @@ public class ConstantAndCopyPropagator
         propagateConstantsAndCopies_internal(stmtBody, false);
     }
 
+    /** Cascaded constant/copy propagator.
+    
+        If it encounters situations of the form: A: a = ...; B: ... x = a; C:... use (x); 
+        where a has only one definition, and x has only one definition (B), then it can 
+        propagate immediately without checking between B and C for redefinitions
+        of a (namely) A because they cannot occur.  In this case the propagator is global.
+        
+        Otherwise, if a has multiple definitions then it only checks for redefinitions of
+        Propagates constants and copies in extended basic blocks. 
+        
+        Propagates stack locals.
+    */
+    public static void aggressivelyPropagateConstantsAndCopies(StmtBody stmtBody)
+    {
+        propagateConstantsAndCopies_internal(stmtBody, true);
+    }
+
     private static void propagateConstantsAndCopies_internal(StmtBody stmtBody, boolean propagateStackLocals)
     {
         int fastCopyPropagationCount = 0;

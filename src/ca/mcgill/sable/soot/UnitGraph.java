@@ -160,9 +160,9 @@ public class UnitGraph implements DirectedGraph
                     if( currentUnit.fallsThrough() ) {
                         if(nextUnit != null)
                             successors.add(nextUnit);
-                        else
-                            throw new RuntimeException("last unit of a method should not fall through: " + currentUnit + 
-                                " " + body.getMethod().getSignature());
+//                          else
+//                              throw new RuntimeException("last unit of a method should not fall through: " + currentUnit + 
+//                                  " " + body.getMethod().getSignature());
                     }
                         
                     if( currentUnit.branches() ) {

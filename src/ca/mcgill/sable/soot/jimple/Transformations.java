@@ -198,25 +198,6 @@ public class Transformations
         }
     }
 
-    /**
-        Cleans up the code of the method by performing copy/constant propagation and dead code elimination.
-        
-        Right now it must only be called on JimpleBody's (as opposed to GrimpBody's) because 
-        it checks for the different forms on the rhs such as fieldref, etc to determine if a statement
-        has a side effect.  (FieldRef can throw a null pointer exception)
-        
-        A better way to handle this would be to have a method which returns whether the statement
-        has a side effect.
-     */
-     
-    public static void cleanupCode(JimpleBody stmtBody)
-    {
-        ConstantAndCopyPropagator.propagateConstantsAndCopies(stmtBody);
-        DeadCodeEliminator.eliminateDeadCode(stmtBody);
-        
-        //stmtBody.printDebugTo(new java.io.PrintWriter(System.out, true));
-    }
-
     public static void standardizeStackLocalNames(StmtBody body)
     {
         boolean saveStackName = true;

@@ -268,7 +268,9 @@ public class JimpleBody extends StmtBody
         int localCount = 0;
         Local newObjectLocal = null;
         
-        Transformations.cleanupCode(this);
+        ConstantAndCopyPropagator.aggressivelyPropagateConstantsAndCopies(this);
+        DeadCodeEliminator.eliminateDeadCode(this);
+        
         Transformations.removeUnusedLocals(this);
         
         List unitList = new ArrayList(); 

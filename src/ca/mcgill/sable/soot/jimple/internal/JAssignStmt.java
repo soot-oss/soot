@@ -132,6 +132,8 @@ public class JAssignStmt extends AbstractDefinitionStmt
     {
         leftBox = new LinkedVariableBox(variable);
         rightBox = new LinkedRValueBox(rvalue);
+//          leftBox = Jimple.v().newVariableBox(variable);
+//          rightBox = Jimple.v().newRValueBox(rvalue);
 
         ((LinkedVariableBox)leftBox).setOtherBox(rightBox); 
         ((LinkedRValueBox)rightBox).setOtherBox(leftBox);
