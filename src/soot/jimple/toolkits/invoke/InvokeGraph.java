@@ -65,7 +65,12 @@ public class InvokeGraph
 
     public List getTargetsOf(InvokeExpr ie) 
     {
-        return (List)invokeExprToTargetMethods.get(ie);
+        List toReturn = (List) invokeExprToTargetMethods.get(ie);
+
+        if(toReturn == null)
+            throw new RuntimeException("Site is not part of invoke graph!");
+            
+        return toReturn;
     }
 
     public void removeTarget(InvokeExpr ie, SootMethod target) 
