@@ -307,14 +307,19 @@ public class JAssignStmt extends AbstractDefinitionStmt
                 public void caseLocal(final Local v)
                 {
                     ((ConvertToBaf) rvalue).convertToBaf(context, out);
-                    Unit u = Baf.v().newStoreInst(v.getType(), 
-                                        context.getBafLocalOfJimpleLocal(v));
-                    out.add(u);
 
+                    /* Add the tags to the statement that COMPUTES the
+                     * value, NOT to the statement that stores it. */
+                    Unit u = (Unit) out.get(out.size()-1);
 		    Iterator it = getTags().iterator();
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
 		    }
+
+                    u = Baf.v().newStoreInst(v.getType(), 
+                                        context.getBafLocalOfJimpleLocal(v));
+                    out.add(u);
+
                 }
                 
                 public void caseStaticFieldRef(StaticFieldRef v)

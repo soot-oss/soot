@@ -68,13 +68,18 @@ public class ImplicitMethodInvocation
         if( source.getSubSignature().indexOf( "<init>" ) >= 0 ) {
             addMethod( ret, source.getDeclaringClass(), sigFinalize );
         }
+        if( source.getNumberedSubSignature() == sigClinit 
+        && source.getDeclaringClass().hasSuperclass() ) {
+            addMethod( ret, source.getDeclaringClass().getSuperclass(), sigClinit );
+        }
         Body b = source.retrieveActiveBody();
         for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
                 if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
-                    System.out.println( "WARNING: call to java.lang.reflect.Method: invoke() from "+source );
+                    System.out.println( "WARNING: call to java.lang.reflect.Method: invoke() from "+source+
+                            "; graph will be incomplete!" );
                 }
                 if( ie instanceof StaticInvokeExpr ) {
                     ret.add( ie.getMethod() );
