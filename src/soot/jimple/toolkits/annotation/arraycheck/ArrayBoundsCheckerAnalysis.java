@@ -249,10 +249,10 @@ class ArrayBoundsCheckerAnalysis
 	if (debug)
 	    System.out.println("Building PseudoTopological order list on "+start);
 
-        LinkedList allUnits = (LinkedList)PseudoTopologicalOrderer2.v().newList(this.graph);
+        LinkedList allUnits = (LinkedList)SlowPseudoTopologicalOrderer.v().newList(this.graph);
 			
-	OrderedBoundedList changedUnits = 
-	    new OrderedBoundedList(allUnits);	    
+	BoundedPriorityList changedUnits = 
+	    new BoundedPriorityList(allUnits);	    
 
 	//       	LinkedList changedUnits = new LinkedList(allUnits);	
 
