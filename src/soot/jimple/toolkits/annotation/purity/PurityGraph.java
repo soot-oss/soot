@@ -144,6 +144,23 @@ public class PurityGraph
 	    ;
     }
 
+    /** 
+     * Caching: this semm to actually improve both speed and memory 
+     * consumption!
+     */
+    private static Map nodeCache =  new HashMap();
+    private static Map edgeCache =  new HashMap();
+    private static PurityNode cacheNode(PurityNode p)
+    {
+	if (!nodeCache.containsKey(p)) nodeCache.put(p,p);
+	return (PurityNode)nodeCache.get(p);
+    }
+    private static PurityEdge cacheEdge(PurityEdge e)
+    {
+	if (!edgeCache.containsKey(e)) edgeCache.put(e,e);
+	return (PurityEdge)edgeCache.get(e);
+    }
+
     /**
      * Conservative constructor for unanalysable calls.
      *
@@ -157,7 +174,7 @@ public class PurityGraph
 						boolean withEffect)
     {
 	PurityGraph g = new PurityGraph();
-	PurityNode glob = new PurityGlobalNode();
+	PurityNode glob = PurityGlobalNode.node;
 	g.nodes.add(glob);
 
 	// parameters & this escape globally
@@ -165,7 +182,7 @@ public class PurityGraph
 	int i = 0;
 	while (it.hasNext()) {
 	    if (it.next() instanceof RefLikeType) {
-		PurityNode n = new PurityParamNode(i);
+		PurityNode n = cacheNode(new PurityParamNode(i));
 		g.globEscape.add(n);
 		g.nodes.add(n);
 		g.paramNodes.add(n);
@@ -193,7 +210,7 @@ public class PurityGraph
     {
 	PurityGraph g = new PurityGraph();
 	if (m.getReturnType() instanceof RefLikeType) {
-	    PurityNode n = new PurityMethodNode(m);
+	    PurityNode n = cacheNode(new PurityMethodNode(m));
 	    g.ret.add(n);
 	    g.nodes.add(n);
 	}
@@ -239,8 +256,7 @@ public class PurityGraph
 		    {G.v().out.println("nodes does not contain edge source "+e);err=true;}
 		if (!nodes.contains(e.getTarget()))
 		    {G.v().out.println("nodes does not contain edge target "+e);err=true;}
-		if (!backEdges.containsKey(e.getTarget()) ||
-		    !backEdges.get(e.getTarget()).contains(e))
+		if (!backEdges.get(e.getTarget()).contains(e))
 		    {G.v().out.println("backEdges does not contain edge "+e);err=true;}
 		if (!e.isInside() && !e.getTarget().isLoad())
 		    {G.v().out.println("target of outside edge is not a load node "+e);err=true;}
@@ -254,8 +270,7 @@ public class PurityGraph
 		PurityEdge e = (PurityEdge)itt.next();
 		if (!dst.equals(e.getTarget()))
 		    {G.v().out.println("invalid backEdge dest "+e+", should be "+dst);err=true;}
-		if (!(edges.containsKey(e.getSource()) &&
-		      edges.get(e.getSource()).contains(e)))
+		if (!edges.get(e.getSource()).contains(e))
 		    {G.v().out.println("backEdge not in edges "+e);err=true;}
 	    }
 	}
@@ -287,8 +302,7 @@ public class PurityGraph
 		PurityNode n = (PurityNode)itt.next();
 		if (!nodes.contains(n))
 		    {G.v().out.println("target of local node in nodes "+l+" / "+n);err=true;}
-		if (!backLocals.containsKey(n) ||
-		    !backLocals.get(n).contains(l))
+		if (!backLocals.get(n).contains(l))
 		    {G.v().out.println("backLocals does contain local "+l+" / "+n);err=true;}
 	    }
 	}
@@ -300,8 +314,7 @@ public class PurityGraph
 		Local l = (Local)itt.next();
 		if (!nodes.contains(n))
 		    {G.v().out.println("backLocal node not in in nodes "+l+" / "+n);err=true;}
-		if (!locals.containsKey(l) ||
-		    !locals.get(l).contains(n))
+		if (!locals.get(l).contains(n))
 		    {G.v().out.println("locals does contain backLocal "+l+" / "+n);err=true;}
 	    }
 	}
@@ -369,7 +382,7 @@ public class PurityGraph
 	Set escaping = new HashSet();
 	internalPassNodes(ret,escaping,true);
 	internalPassNodes(globEscape,escaping,true);
-	internalPassNode(new PurityGlobalNode(),escaping,true);
+	internalPassNode(PurityGlobalNode.node,escaping,true);
 	internalPassNodes(paramNodes,escaping,true);
 	return escaping;
     }
@@ -381,12 +394,12 @@ public class PurityGraph
      */
     public boolean isPure()
     {
-	if (!mutated.get(new PurityGlobalNode()).isEmpty()) return false;
+	if (!mutated.get(PurityGlobalNode.node).isEmpty()) return false;
 	Set A = new HashSet();
 	Set B = new HashSet();
 	internalPassNodes(paramNodes, A, false);
 	internalPassNodes(globEscape, B, true);
-	internalPassNode(new PurityGlobalNode(),B,true);
+	internalPassNode(PurityGlobalNode.node,B,true);
 	Iterator it = A.iterator();
 	while (it.hasNext()) {
 	    PurityNode n = (PurityNode)it.next();
@@ -403,13 +416,13 @@ public class PurityGraph
     */
     public boolean isPureConstructor()
     {
-	if (!mutated.get(new PurityGlobalNode()).isEmpty()) return false;
+	if (!mutated.get(PurityGlobalNode.node).isEmpty()) return false;
 	Set A = new HashSet();
 	Set B = new HashSet();
 	internalPassNodes(paramNodes, A, false);
 	internalPassNodes(globEscape, B, true);
-	internalPassNode(new PurityGlobalNode(),B,true);
-	PurityNode th = new PurityThisNode();
+	internalPassNode(PurityGlobalNode.node,B,true);
+	PurityNode th = PurityThisNode.node;
 	Iterator it = A.iterator();
 	while (it.hasNext()) {
 	    PurityNode n = (PurityNode)it.next();
@@ -467,13 +480,13 @@ public class PurityGraph
      * Returns PARAM_RW for primitive-type parameters.
      */
     public int paramStatus(int param)
-    { return internalParamStatus(new PurityParamNode(param)); }
+    { return internalParamStatus(cacheNode(new PurityParamNode(param))); }
 
     /**
      * @see isParamReadOnly
      */
     public int thisStatus()
-    { return internalParamStatus(new PurityThisNode()); }
+    { return internalParamStatus(PurityThisNode.node); }
 
 
     /////////////////////////
@@ -549,7 +562,8 @@ public class PurityGraph
 	    PurityEdge e = (PurityEdge)it.next();
 	    PurityNode n = e.getTarget();
 	    if (n.equals(src)) n = dst;	    
-	    PurityEdge ee = new PurityEdge(dst, e.getField(), n, e.isInside());
+	    PurityEdge ee = 
+		cacheEdge(new PurityEdge(dst, e.getField(), n, e.isInside()));
 	    edges.remove(src, e);
 	    edges.put(dst, ee);
 	    backEdges.remove(n, e);
@@ -560,7 +574,8 @@ public class PurityGraph
 	    PurityEdge e = (PurityEdge)it.next();
 	    PurityNode n = e.getSource();
 	    if (n.equals(src)) n = dst;
-	    PurityEdge ee = new PurityEdge(n, e.getField(), dst, e.isInside());
+	    PurityEdge ee = 
+		cacheEdge(new PurityEdge(n, e.getField(), dst, e.isInside()));
 	    edges.remove(n, e);
 	    edges.put(n, ee);
 	    backEdges.remove(src, e);
@@ -623,7 +638,7 @@ public class PurityGraph
 	internalPassNodes(paramNodes,r,true);
 	internalPassNodes(ret,r,true);
 	internalPassNodes(globEscape,r,true);
-	internalPassNode(new PurityGlobalNode(),r,true);
+	internalPassNode(PurityGlobalNode.node,r,true);
 	Iterator it = nodes.iterator();
 	while (it.hasNext()) {
 	    PurityNode n = (PurityNode) it.next();
@@ -655,7 +670,7 @@ public class PurityGraph
     void assignParamToLocal(int right, Local left)
     {
 	// strong update on local
-	PurityNode node = new PurityParamNode(right);
+	PurityNode node = cacheNode(new PurityParamNode(right));
 	localsRemove(left);
 	localsPut(left,node);
 	nodes.add(node);
@@ -667,7 +682,7 @@ public class PurityGraph
     void assignThisToLocal(Local left)
     {
 	// strong update on local
-	PurityNode node = new PurityThisNode();
+	PurityNode node = PurityThisNode.node;
 	localsRemove(left);
 	localsPut(left,node);
 	nodes.add(node);
@@ -721,13 +736,14 @@ public class PurityGraph
 	    // right can escape
 	    
 	    // we add a label load node & outside edges
-	    PurityNode loadNode = new PurityStmtNode(stmt,false);
+	    PurityNode loadNode = cacheNode(new PurityStmtNode(stmt,false));
 	    nodes.add(loadNode);
 	    
 	    Iterator itEsc = esc.iterator();
 	    while (itEsc.hasNext()) {
 		PurityNode node = (PurityNode) itEsc.next();
-		PurityEdge edge = new PurityEdge(node, field, loadNode, false);
+		PurityEdge edge = 
+		    cacheEdge(new PurityEdge(node, field, loadNode, false));
 		if (edges.put(node, edge))
 		    backEdges.put(loadNode, edge);
 	    }
@@ -748,7 +764,8 @@ public class PurityGraph
 	    Iterator itRight = locals.get(right).iterator();
 	    while (itRight.hasNext()) {
 		PurityNode nodeRight = (PurityNode) itRight.next();
-		PurityEdge edge = new PurityEdge(nodeLeft, field, nodeRight, true);
+		PurityEdge edge = 
+		    cacheEdge(new PurityEdge(nodeLeft, field, nodeRight, true));
 		if (edges.put(nodeLeft, edge))
 		    backEdges.put(nodeRight, edge);
 	    }
@@ -763,7 +780,7 @@ public class PurityGraph
     {
 	// strong update on local
 	// we add a label inside node
-	PurityNode node = new PurityStmtNode(stmt,true);
+	PurityNode node = cacheNode(new PurityStmtNode(stmt,true));
 	localsRemove(left);
 	localsPut(left, node);
 	nodes.add(node);
@@ -782,7 +799,7 @@ public class PurityGraph
     void localIsUnknown(Local l)
     {
 	// strong update on local
-	PurityNode node = new PurityGlobalNode();
+	PurityNode node = PurityGlobalNode.node;
 	localsRemove(l);
 	localsPut(l, node);
 	nodes.add(node);
@@ -794,7 +811,7 @@ public class PurityGraph
      */
     void assignLocalToStaticField(Local right, String field)
     {
-	PurityNode node = new PurityGlobalNode();
+	PurityNode node = PurityGlobalNode.node;
 	localEscapes(right);
 	mutated.put(node, field);
 	nodes.add(node);
@@ -820,7 +837,7 @@ public class PurityGraph
      */
     void mutateStaticField(String field)
     {
-	PurityNode node = new PurityGlobalNode();
+	PurityNode node = PurityGlobalNode.node;
 	mutated.put(node, field);
 	nodes.add(node);
 	if (doCheck) sanityCheck();
@@ -847,12 +864,12 @@ public class PurityGraph
 	    Value arg = (Value)it.next();
 	    if (arg instanceof Local && 
 		((Local)arg).getType() instanceof RefLikeType) {
-		mu.putAll(new PurityParamNode(nb),locals.get(arg));
+		mu.putAll(cacheNode(new PurityParamNode(nb)),locals.get(arg));
 	    }
 	    nb++;
 	}
 	if (right!=null) // (1) rule for "this" argument
-	    mu.putAll(new PurityThisNode(),locals.get(right));
+	    mu.putAll(PurityThisNode.node,locals.get(right));
 
 	// COULD BE OPTIMIZED!
 	// many times, we need to copy sets cause we mutate them within iterators
@@ -964,13 +981,15 @@ public class PurityGraph
 			Iterator itm2 = mu.get(n2).iterator();
 			while (itm2.hasNext()) {
 			    PurityNode mu2  = (PurityNode)itm2.next();
-			    PurityEdge edge = new PurityEdge(mu1,f,mu2,true);
+			    PurityEdge edge = 
+				cacheEdge(new PurityEdge(mu1,f,mu2,true));
 			    edges.put(mu1,edge);
 			    backEdges.put(mu2,edge);
 			}
 		    }
 		    else {
-			PurityEdge edge = new PurityEdge(mu1,f,n2,false);
+			PurityEdge edge = 
+			    cacheEdge(new PurityEdge(mu1,f,n2,false));
 			edges.put(mu1,edge);
 			backEdges.put(n2,edge);
 		    }

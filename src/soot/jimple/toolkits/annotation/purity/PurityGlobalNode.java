@@ -10,11 +10,12 @@ package soot.jimple.toolkits.annotation.purity;
 
 /** 
  * The GBL node.
- * Each purity graph has only one of this kind. (should we make it a singleton ?)
  */
 public class PurityGlobalNode implements PurityNode
 {
-    PurityGlobalNode() {}
+    private PurityGlobalNode() {}
+
+    public static PurityGlobalNode node = new PurityGlobalNode();
 
     public String toString()   
     { return "GBL"; }
