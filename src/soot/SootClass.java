@@ -69,6 +69,7 @@ public class SootClass extends AbstractHost implements Numberable
 
     protected boolean isInScene;
     protected SootClass superClass;
+    protected SootClass outerClass;
 
     protected boolean isPhantom;
     
@@ -716,6 +717,21 @@ public class SootClass extends AbstractHost implements Numberable
         superClass = c;
     }
 
+    public boolean hasOuterClass(){
+        return outerClass != null;
+    }
+
+    public SootClass getOuterClass(){
+        if (outerClass == null)
+            throw new RuntimeException("no outer class");
+        else 
+            return outerClass;
+    }
+
+    public void setOuterClass(SootClass c){
+        outerClass = c;
+    }
+    
     /**
         Returns the name of this class.
     */

@@ -1921,8 +1921,14 @@ public class JimpleBodyBuilder {
             return soot.jimple.IntConstant.v(val ? 1 : 0);
         }
         else if (field.type().isChar()){//.constantValue() instanceof Character){
-            
-            char val = (char)((Integer)field.constantValue()).intValue();
+           //System.out.println("filed cons class: "+field.constantValue().getClass());       
+            char val;
+            if (field.constantValue() instanceof Integer){ 
+                val = (char)((Integer)field.constantValue()).intValue();
+            }
+            else {
+                val = ((Character)field.constantValue()).charValue();
+            }
             return soot.jimple.IntConstant.v(val);
         }
         else {//if (field.fieldInstance().constantValue() instanceof Number){
