@@ -42,49 +42,33 @@ public class ShimpleOptions
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Naive Phi Node Elimination --
+    public static final int phi_elim_opt_none = 1;
+    public static final int phi_elim_opt_pre = 2;
+    public static final int phi_elim_opt_post = 3;
+    public static final int phi_elim_opt_pre_and_post = 4;
+    /** Phi Node Elimination Optimizations --
     
-     * If enabled, no pre- or post- optimizations are 
-     * applied before eliminating Phi nodes..
+     * Options affecting Phi node elimination..
     
-     * If set to true, neither pre-optimization nor 
-     * post-optimization will be applied to the Phi elimination 
-     * process. This is useful for monitoring and understanding 
-     * the behaviour of Shimple optimizations or transformations. 
-     * Note that setting this option to true takes precedence 
-     * over other Phi elimination options.
+     * These options control Shimple's behaviour when 
+     * eliminating Phi nodes.
      */
-    public boolean naive_phi_elimination() {
-        return soot.PhaseOptions.getBoolean( options, "naive-phi-elimination" );
-    }
-    
-    /** Pre-optimize Phi Elimination --
-    
-     * If enabled, some optimizations are applied before 
-     * Phi nodes are eliminated..
-    
-     * If set to true, some recommended optimizations such as 
-     * dead code elimination and local packing are applied 
-     * before Phi node elimination. This does not appear to be as 
-     * effective as post-optimization, but the option is provided 
-     * for future testing and investigation.
-     */
-    public boolean pre_optimize_phi_elimination() {
-        return soot.PhaseOptions.getBoolean( options, "pre-optimize-phi-elimination" );
-    }
-    
-    /** Post-optimize Phi Elimination --
-    
-     * If enabled, some optimizations are applied after Phi 
-     * nodes are eliminated..
-    
-     * Applies recommended optimizations such as dead code 
-     * elimination and local packing after Phi node 
-     * elimination. This appears to be more effective than 
-     * pre-optimization.
-     */
-    public boolean post_optimize_phi_elimination() {
-        return soot.PhaseOptions.getBoolean( options, "post-optimize-phi-elimination" );
+    public int phi_elim_opt() {
+        String s = soot.PhaseOptions.getString( options, "phi-elim-opt" );
+        
+        if( s.equalsIgnoreCase( "none" ) )
+            return phi_elim_opt_none;
+        
+        if( s.equalsIgnoreCase( "pre" ) )
+            return phi_elim_opt_pre;
+        
+        if( s.equalsIgnoreCase( "post" ) )
+            return phi_elim_opt_post;
+        
+        if( s.equalsIgnoreCase( "pre-and-post" ) )
+            return phi_elim_opt_pre_and_post;
+        
+        throw new RuntimeException( "Invalid value "+s+" of phase option phi-elim-opt" );
     }
     
 }

@@ -746,9 +746,12 @@ public class ShimpleBodyBuilder
     public static void eliminatePhiNodes(ShimpleBody body)
     {
         ShimpleOptions options = body.getOptions();
+
+        int phiElimOpt = options.phi_elim_opt();
         
         // off by default
-        if(options.pre_optimize_phi_elimination() && !options.naive_phi_elimination())
+        if((phiElimOpt == options.phi_elim_opt_pre) ||
+           (phiElimOpt == options.phi_elim_opt_pre_and_post))
         {
             DeadAssignmentEliminator.v().transform(body);
             Aggregator.v().transform(body);
@@ -758,7 +761,8 @@ public class ShimpleBodyBuilder
         doEliminatePhiNodes(body);
 
         // on by default
-        if(options.post_optimize_phi_elimination() && !options.naive_phi_elimination())
+        if((phiElimOpt == options.phi_elim_opt_post) ||
+           (phiElimOpt == options.phi_elim_opt_pre_and_post))
         {
             DeadAssignmentEliminator.v().transform(body);
             Aggregator.v().transform(body);
