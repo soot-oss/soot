@@ -56,7 +56,7 @@ public class BCmpgInst extends AbstractOpTypeInst implements CmpgInst
 
     public int getInMachineCount()
     {
-        return 2;
+        return 2*JasminClass.sizeOfType(getOpType());
     }
     
     public int getOutCount()

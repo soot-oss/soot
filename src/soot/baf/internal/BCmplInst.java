@@ -47,9 +47,6 @@ public class BCmplInst extends AbstractOpTypeInst implements CmplInst
         return 2;
     }
 
-
-
-
     
     public Object clone() 
     {
@@ -59,7 +56,7 @@ public class BCmplInst extends AbstractOpTypeInst implements CmplInst
     
     public int getInMachineCount()
     {
-        return 2;
+        return 2*JasminClass.sizeOfType(getOpType());
     }
     
     public int getOutCount()
