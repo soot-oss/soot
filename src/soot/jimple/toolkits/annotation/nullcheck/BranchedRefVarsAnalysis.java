@@ -105,10 +105,10 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 */
 
     // constants for the analysis
-    protected  final int kBottom = 0;
-    protected  final int kNull = 1;
-    protected  final int kNonNull = 2;
-    protected  final int kTop = 99;
+    public final static int kBottom = 0;
+    public final static int kNull = 1;
+    public final static int kNonNull = 2;
+    public final static int kTop = 99;
 
 
     // bottom and top sets
@@ -215,7 +215,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
             return r instanceof InstanceFieldRef || r instanceof StaticFieldRef;
     } // end isAlwaysTop
 
-    private final boolean isAlwaysNonNull(Value ro) {
+    protected boolean isAlwaysNonNull(Value ro) {
         if( ro instanceof NewExpr ) return true;
         if( ro instanceof NewArrayExpr ) return true;
         if( ro instanceof NewMultiArrayExpr ) return true;
@@ -268,7 +268,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
     
     // Like refInfo, but the reference doesn't have to be in the flow set
     // note: it still need to be a reference, i.e. ArrayType or RefType
-    protected  final int anyRefInfo(Value r, FlowSet f)
+    public int anyRefInfo(Value r, FlowSet f)
     {
         if (isAlwaysNull(r))
             return kNull;
