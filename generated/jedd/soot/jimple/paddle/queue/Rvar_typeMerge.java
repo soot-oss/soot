@@ -39,12 +39,11 @@ public final class Rvar_typeMerge extends Rvar_type {
     }
     
     public jedd.internal.RelationContainer get() {
-        return new jedd.internal.RelationContainer(new Attribute[] { type.v(), var.v() },
-                                                   new PhysicalDomain[] { T1.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v() },
+                                                   new PhysicalDomain[] { V1.v(), T1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /home/research/ccl/olhota/soo" +
-                                                    "t-jedd/src/soot/jimple/paddle/queue/Rvar_typeMerge.jedd:52,8" +
-                                                    "-14"),
+                                                    "ead(in1.get()), in2.get()); at /tmp/soot-trunk-saved/src/soo" +
+                                                    "t/jimple/paddle/queue/Rvar_typeMerge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

@@ -114,6 +114,22 @@ public class BitVector
         for( long k = 1L << 63; (k&j) == 0L; k >>=1, i-- );
         return i;
     }
+    public void copyFrom( BitVector other ) {
+        if( this == other ) return;
+        long[] otherBits = other.bits;
+        int j;
+        for( j = otherBits.length-1; j >= 0; j-- ) {
+            if( otherBits[j] != 0L ) break;
+        }
+        expand( j<<6 );
+        int i = j+1;
+        for( ; j >= 0; j-- ) {
+            bits[j] = otherBits[j];
+        }
+        for( ; i < bits.length; i++ ) {
+            bits[i] = 0L;
+        }
+    }
     public void or( BitVector other ) {
         if( this == other ) return;
         long[] otherBits = other.bits;

@@ -172,3 +172,5 @@ soot.jimple.paddle.PaddleScene
 soot.javaToJimple.InitialResolver
 soot.jimple.paddle.queue.Readers
 soot.jimple.paddle.ShadowNumberer
+soot.jimple.paddle.Results
+soot.jimple.paddle.ExecutesManyAnalysis

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,26 +17,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-
-
-
-
 package soot.jimple;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
+/** Any expression that allocates objects.
+ * @author Ondrej Lhotak
+ */
 
-public interface NewExpr extends Expr, AnyNewExpr
-{
-    public RefType getBaseType();
-    public void setBaseType(RefType type);
-    public Type getType();
-    public void apply(Switch sw);
+public interface AnyNewExpr extends Expr {
 }
+

@@ -62,8 +62,8 @@ public class BDDReachableMethods extends AbsReachableMethods
         }
         return change;
     }
-    boolean add( MethodOrMethodContext m ) {
-        <ctxt, method> newM = new{ m.context()=>ctxt, m.method()=>method };
+    boolean add( Context c, SootMethod m ) {
+        <ctxt, method> newM = new{ c=>ctxt, m=>method };
         <ctxt, method> newReachables = reachables | newM;
         if( newReachables != reachables ) {
             reachables = newReachables;
@@ -75,8 +75,8 @@ public class BDDReachableMethods extends AbsReachableMethods
     int size() {
         return (int) reachables.size();
     }
-    boolean contains( MethodOrMethodContext m ) {
-        <ctxt, method> newM = new{ m.context()=>ctxt, m.method()=>method };
+    boolean contains( Context c, SootMethod m ) {
+        <ctxt, method> newM = new{ c=>ctxt, m=>method };
         return (reachables & newM) != 0B;
     }
 }

@@ -26,9 +26,8 @@ public class QobjDebug extends Qobj {
         Iterator it =
           new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                               new PhysicalDomain[] { H1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-jedd/src/soot/jimple/paddle/queue/QobjDebug.jedd:" +
-                                               "40,22-24"),
+                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk-save" +
+                                               "d/src/soot/jimple/paddle/queue/QobjDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { obj.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

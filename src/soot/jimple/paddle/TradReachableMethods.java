@@ -37,7 +37,7 @@ public class TradReachableMethods extends AbsReachableMethods
     }
     private boolean processEdge( Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t ) {
         if( !reachables.contains( MethodContext.v( t.srcm(), t.srcc() ) ) ) return false;
-        return add( MethodContext.v( t.tgtm(), t.tgtc() ) );
+        return add( t.tgtc(), t.tgtm() );
     }
     public boolean update() {
         boolean change = false;
@@ -45,7 +45,7 @@ public class TradReachableMethods extends AbsReachableMethods
         if( methodsIn != null ) {
             for( Iterator tIt = methodsIn.iterator(); tIt.hasNext(); ) {
                 final Rctxt_method.Tuple t = (Rctxt_method.Tuple) tIt.next();
-                change = change | add( MethodContext.v( t.method(), t.ctxt() ) );
+                change = change | add( t.ctxt(), t.method() );
             }
         }
         
@@ -62,9 +62,9 @@ public class TradReachableMethods extends AbsReachableMethods
         }
         return change;
     }
-    boolean add( MethodOrMethodContext m ) {
-        if( reachables.add( m ) ) {
-            out.add( m.context(), m.method() );
+    boolean add( Context c, SootMethod m ) {
+        if( reachables.add( MethodContext.v(m, c) ) ) {
+            out.add( c, m );
             return true;
         }
         return false;
@@ -72,8 +72,8 @@ public class TradReachableMethods extends AbsReachableMethods
     int size() {
         return reachables.size();
     }
-    boolean contains( MethodOrMethodContext m ) {
-        return reachables.contains(m);
+    boolean contains( Context c, SootMethod m ) {
+        return reachables.contains(MethodContext.v(m, c));
     }
 }
 

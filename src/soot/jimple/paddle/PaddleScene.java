@@ -334,8 +334,8 @@ public class PaddleScene
     public void solve() {
         for( Iterator mIt = Scene.v().getEntryPoints().iterator(); mIt.hasNext(); ) {
             final SootMethod m = (SootMethod) mIt.next();
-            rm.add( m );
-            rc.add( m );
+            rm.add( null, m );
+            rc.add( null, m );
         }
         if(!USE_DEP_MAN) {
             updateFrontEnd();

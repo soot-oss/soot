@@ -21,22 +21,18 @@ public class BDD1CFAVirtualContextManager extends AbsVirtualContextManager {
                                                "omains.tgtc:soot.jimple.paddle.bdddomains.C2, soot.jimple.pa" +
                                                "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.MT> newOu" +
                                                "t = jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().proje" +
-                                               "ct(jedd.internal.Jedd.v().replace(in.get(), new jedd.Physica" +
-                                               "lDomain[...], new jedd.PhysicalDomain[...]), new jedd.Physic" +
-                                               "alDomain[...]), new jedd.PhysicalDomain[...], new jedd.Physi" +
-                                               "calDomain[...]); at /home/research/ccl/olhota/soot-jedd/src/" +
-                                               "soot/jimple/paddle/BDD1CFAVirtualContextManager.jedd:35,45-5" +
-                                               "1"),
-                                              jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().project(jedd.internal.Jedd.v().replace(in.get(),
-                                                                                                                                        new jedd.PhysicalDomain[] { ST.v() },
-                                                                                                                                        new jedd.PhysicalDomain[] { C2.v() }),
-                                                                                                         new jedd.PhysicalDomain[] { H1.v(), V1.v() }),
-                                                                          new jedd.PhysicalDomain[] { C2.v() },
-                                                                          new jedd.PhysicalDomain[] { ST.v() }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtc.v(), tgtm.v(), srcc.v(), srcm.v(), kind.v(), stmt.v() },
-                                                    new jedd.PhysicalDomain[] { C2.v(), MT.v(), C1.v(), MS.v(), KD.v(), ST.v() },
-                                                    ("out.add(newOut) at /home/research/ccl/olhota/soot-jedd/src/s" +
-                                                     "oot/jimple/paddle/BDD1CFAVirtualContextManager.jedd:37,8-11"),
+                                               "ct(in.get(), new jedd.PhysicalDomain[...]), new jedd.Physica" +
+                                               "lDomain[...], new jedd.PhysicalDomain[...]); at /tmp/soot-tr" +
+                                               "unk-saved/src/soot/jimple/paddle/BDD1CFAVirtualContextManage" +
+                                               "r.jedd:35,45-51"),
+                                              jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().project(in.get(),
+                                                                                                         new jedd.PhysicalDomain[] { V1.v(), H1.v() }),
+                                                                          new jedd.PhysicalDomain[] { ST.v() },
+                                                                          new jedd.PhysicalDomain[] { C2.v() }));
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), srcc.v(), tgtc.v(), stmt.v(), srcm.v(), kind.v() },
+                                                    new jedd.PhysicalDomain[] { MT.v(), C1.v(), C2.v(), ST.v(), MS.v(), KD.v() },
+                                                    ("out.add(newOut) at /tmp/soot-trunk-saved/src/soot/jimple/pad" +
+                                                     "dle/BDD1CFAVirtualContextManager.jedd:37,8-11"),
                                                     newOut));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newOut), jedd.internal.Jedd.v().falseBDD());
     }

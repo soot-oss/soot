@@ -35,9 +35,9 @@ public abstract class AbsReachableMethods implements DepItem
         this.out = out;
     }
     public abstract boolean update();
-    abstract boolean add( MethodOrMethodContext m );
+    abstract boolean add( Context c, SootMethod m );
     abstract int size();
-    abstract boolean contains( MethodOrMethodContext m );
+    abstract boolean contains( Context c, SootMethod m );
 }
 
 

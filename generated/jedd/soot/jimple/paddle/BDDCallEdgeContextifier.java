@@ -27,9 +27,8 @@ public class BDDCallEdgeContextifier extends AbsCallEdgeContextifier {
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.dstc:soot.ji" +
                                                "mple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains.dst" +
                                                ":soot.jimple.paddle.bdddomains.V2> simpleOut = jedd.internal" +
-                                               ".Jedd.v().falseBDD(); at /home/research/ccl/olhota/soot-jedd" +
-                                               "/src/soot/jimple/paddle/BDDCallEdgeContextifier.jedd:47,31-4" +
-                                               "0"),
+                                               ".Jedd.v().falseBDD(); at /tmp/soot-trunk-saved/src/soot/jimp" +
+                                               "le/paddle/BDDCallEdgeContextifier.jedd:47,31-40"),
                                               jedd.internal.Jedd.v().falseBDD());
         allParms.eqUnion(parms.get());
         allRets.eqUnion(rets.get());
@@ -44,17 +43,17 @@ public class BDDCallEdgeContextifier extends AbsCallEdgeContextifier {
                                                "omains.tgtc:soot.jimple.paddle.bdddomains.C1, soot.jimple.pa" +
                                                "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.MT> newCa" +
                                                "lls = jedd.internal.Jedd.v().replace(calls.get(), new jedd.P" +
-                                               "hysicalDomain[...], new jedd.PhysicalDomain[...]); at /home/" +
-                                               "research/ccl/olhota/soot-jedd/src/soot/jimple/paddle/BDDCall" +
-                                               "EdgeContextifier.jedd:52,45-53"),
+                                               "hysicalDomain[...], new jedd.PhysicalDomain[...]); at /tmp/s" +
+                                               "oot-trunk-saved/src/soot/jimple/paddle/BDDCallEdgeContextifi" +
+                                               "er.jedd:52,45-53"),
                                               jedd.internal.Jedd.v().replace(calls.get(),
                                                                              new jedd.PhysicalDomain[] { C1.v(), C2.v() },
                                                                              new jedd.PhysicalDomain[] { C2.v(), C1.v() }));
-        simpleOut.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(newCalls),
-                                                                                        allParms,
-                                                                                        new jedd.PhysicalDomain[] { MS.v(), ST.v(), KD.v(), MT.v() }),
-                                                         new jedd.PhysicalDomain[] { C1.v(), C2.v() },
-                                                         new jedd.PhysicalDomain[] { C2.v(), C1.v() }));
+        simpleOut.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(newCalls,
+                                                                                                                    new jedd.PhysicalDomain[] { C2.v(), C1.v() },
+                                                                                                                    new jedd.PhysicalDomain[] { C1.v(), C2.v() })),
+                                                         allParms,
+                                                         new jedd.PhysicalDomain[] { MS.v(), ST.v(), KD.v(), MT.v() }));
         simpleOut.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(newCalls),
                                                          allRets,
                                                          new jedd.PhysicalDomain[] { MS.v(), ST.v(), KD.v(), MT.v() }));
@@ -66,15 +65,12 @@ public class BDDCallEdgeContextifier extends AbsCallEdgeContextifier {
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.dstc:soot.ji" +
                                                "mple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains.dst" +
                                                ":soot.jimple.paddle.bdddomains.V2> globalDsts = jedd.interna" +
-                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), jedd" +
-                                               ".internal.Jedd.v().replace(ni.globalSet(), new jedd.Physical" +
-                                               "Domain[...], new jedd.PhysicalDomain[...]), new jedd.Physica" +
-                                               "lDomain[...]); at /home/research/ccl/olhota/soot-jedd/src/so" +
-                                               "ot/jimple/paddle/BDDCallEdgeContextifier.jedd:61,31-41"),
+                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), ni.g" +
+                                               "lobalSet(), new jedd.PhysicalDomain[...]); at /tmp/soot-trun" +
+                                               "k-saved/src/soot/jimple/paddle/BDDCallEdgeContextifier.jedd:" +
+                                               "61,31-41"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut),
-                                                                          jedd.internal.Jedd.v().replace(ni.globalSet(),
-                                                                                                         new jedd.PhysicalDomain[] { V1.v() },
-                                                                                                         new jedd.PhysicalDomain[] { V2.v() }),
+                                                                          ni.globalSet(),
                                                                           new jedd.PhysicalDomain[] { V2.v() }));
         simpleOut.eqMinus(globalDsts);
         simpleOut.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(globalDsts,
@@ -91,12 +87,15 @@ public class BDDCallEdgeContextifier extends AbsCallEdgeContextifier {
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.dstc:soot.ji" +
                                                "mple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains.dst" +
                                                ":soot.jimple.paddle.bdddomains.V2> globalSrcs = jedd.interna" +
-                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), ni.g" +
-                                               "lobalSet(), new jedd.PhysicalDomain[...]); at /home/research" +
-                                               "/ccl/olhota/soot-jedd/src/soot/jimple/paddle/BDDCallEdgeCont" +
-                                               "extifier.jedd:64,31-41"),
+                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), jedd" +
+                                               ".internal.Jedd.v().replace(ni.globalSet(), new jedd.Physical" +
+                                               "Domain[...], new jedd.PhysicalDomain[...]), new jedd.Physica" +
+                                               "lDomain[...]); at /tmp/soot-trunk-saved/src/soot/jimple/padd" +
+                                               "le/BDDCallEdgeContextifier.jedd:64,31-41"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut),
-                                                                          ni.globalSet(),
+                                                                          jedd.internal.Jedd.v().replace(ni.globalSet(),
+                                                                                                         new jedd.PhysicalDomain[] { V2.v() },
+                                                                                                         new jedd.PhysicalDomain[] { V1.v() }),
                                                                           new jedd.PhysicalDomain[] { V1.v() }));
         simpleOut.eqMinus(globalSrcs);
         simpleOut.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(globalSrcs,
@@ -105,11 +104,10 @@ public class BDDCallEdgeContextifier extends AbsCallEdgeContextifier {
                                                                                      new jedd.Attribute[] { srcc.v() },
                                                                                      new jedd.PhysicalDomain[] { C1.v() }),
                                                       new jedd.PhysicalDomain[] {  }));
-        csimple.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { dstc.v(), src.v(), srcc.v(), dst.v() },
-                                                        new jedd.PhysicalDomain[] { C2.v(), V1.v(), C1.v(), V2.v() },
-                                                        ("csimple.add(simpleOut) at /home/research/ccl/olhota/soot-jed" +
-                                                         "d/src/soot/jimple/paddle/BDDCallEdgeContextifier.jedd:67,8-1" +
-                                                         "5"),
+        csimple.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), dst.v(), dstc.v(), src.v() },
+                                                        new jedd.PhysicalDomain[] { C1.v(), V2.v(), C2.v(), V1.v() },
+                                                        ("csimple.add(simpleOut) at /tmp/soot-trunk-saved/src/soot/jim" +
+                                                         "ple/paddle/BDDCallEdgeContextifier.jedd:67,8-15"),
                                                         simpleOut));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(simpleOut),
                                               jedd.internal.Jedd.v().falseBDD());
@@ -122,9 +120,8 @@ public class BDDCallEdgeContextifier extends AbsCallEdgeContextifier {
                                            "dle.bdddomains.stmt, soot.jimple.paddle.bdddomains.kind, soo" +
                                            "t.jimple.paddle.bdddomains.tgtm, soot.jimple.paddle.bdddomai" +
                                            "ns.src, soot.jimple.paddle.bdddomains.dst> allParms = jedd.i" +
-                                           "nternal.Jedd.v().falseBDD() at /home/research/ccl/olhota/soo" +
-                                           "t-jedd/src/soot/jimple/paddle/BDDCallEdgeContextifier.jedd:7" +
-                                           "2,12-46"),
+                                           "nternal.Jedd.v().falseBDD() at /tmp/soot-trunk-saved/src/soo" +
+                                           "t/jimple/paddle/BDDCallEdgeContextifier.jedd:72,12-46"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer allRets =
@@ -134,8 +131,7 @@ public class BDDCallEdgeContextifier extends AbsCallEdgeContextifier {
                                            "dle.bdddomains.stmt, soot.jimple.paddle.bdddomains.kind, soo" +
                                            "t.jimple.paddle.bdddomains.tgtm, soot.jimple.paddle.bdddomai" +
                                            "ns.src, soot.jimple.paddle.bdddomains.dst> allRets = jedd.in" +
-                                           "ternal.Jedd.v().falseBDD() at /home/research/ccl/olhota/soot" +
-                                           "-jedd/src/soot/jimple/paddle/BDDCallEdgeContextifier.jedd:73" +
-                                           ",12-46"),
+                                           "ternal.Jedd.v().falseBDD() at /tmp/soot-trunk-saved/src/soot" +
+                                           "/jimple/paddle/BDDCallEdgeContextifier.jedd:73,12-46"),
                                           jedd.internal.Jedd.v().falseBDD());
 }

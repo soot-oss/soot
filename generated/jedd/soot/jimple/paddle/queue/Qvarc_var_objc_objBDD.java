@@ -19,8 +19,8 @@ public final class Qvarc_var_objc_objBDD extends Qvarc_var_objc_obj {
                                                 new PhysicalDomain[] { C1.v(), V1.v(), C2.v(), H1.v() },
                                                 ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
                                                  ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
-                                                 " /home/research/ccl/olhota/soot-jedd/src/soot/jimple/paddle/" +
-                                                 "queue/Qvarc_var_objc_objBDD.jedd:34,8-11"),
+                                                 " /tmp/soot-trunk-saved/src/soot/jimple/paddle/queue/Qvarc_va" +
+                                                 "r_objc_objBDD.jedd:34,8-11"),
                                                 jedd.internal.Jedd.v().literal(new Object[] { _varc, _var, _objc, _obj },
                                                                                new Attribute[] { varc.v(), var.v(), objc.v(), obj.v() },
                                                                                new PhysicalDomain[] { C1.v(), V1.v(), C2.v(), H1.v() })));
@@ -31,10 +31,10 @@ public final class Qvarc_var_objc_objBDD extends Qvarc_var_objc_obj {
             invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvarc_var_objc_objBDD reader = (Rvarc_var_objc_objBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { objc.v(), varc.v(), obj.v(), var.v() },
-                                                           new PhysicalDomain[] { C2.v(), C1.v(), H1.v(), V1.v() },
-                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-jedd/src/so" +
-                                                            "ot/jimple/paddle/queue/Qvarc_var_objc_objBDD.jedd:40,12-18"),
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), varc.v(), obj.v(), objc.v() },
+                                                           new PhysicalDomain[] { V1.v(), C1.v(), H1.v(), C2.v() },
+                                                           ("reader.add(in) at /tmp/soot-trunk-saved/src/soot/jimple/padd" +
+                                                            "le/queue/Qvarc_var_objc_objBDD.jedd:40,12-18"),
                                                            in));
         }
     }

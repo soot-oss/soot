@@ -14,11 +14,10 @@ public class BDDP2Sets extends AbsP2Sets {
     }
     
     public PointsToSetReadOnly get(Context ctxt, VarNode v) {
-        return new BDDPointsToSet(new jedd.internal.RelationContainer(new jedd.Attribute[] { objc.v(), obj.v() },
-                                                                      new jedd.PhysicalDomain[] { C3.v(), H1.v() },
-                                                                      ("new soot.jimple.paddle.BDDPointsToSet(...) at /home/research" +
-                                                                       "/ccl/olhota/soot-jedd/src/soot/jimple/paddle/BDDP2Sets.jedd:" +
-                                                                       "39,15-18"),
+        return new BDDPointsToSet(new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), objc.v() },
+                                                                      new jedd.PhysicalDomain[] { H1.v(), C1.v() },
+                                                                      ("new soot.jimple.paddle.BDDPointsToSet(...) at /tmp/soot-trun" +
+                                                                       "k-saved/src/soot/jimple/paddle/BDDP2Sets.jedd:39,15-18"),
                                                                       jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(prop.pt),
                                                                                                      jedd.internal.Jedd.v().literal(new Object[] { ctxt, v },
                                                                                                                                     new jedd.Attribute[] { varc.v(), var.v() },
@@ -27,18 +26,17 @@ public class BDDP2Sets extends AbsP2Sets {
     }
     
     public PointsToSetReadOnly get(Context ctxt, AllocDotField adf) {
-        return new BDDPointsToSet(new jedd.internal.RelationContainer(new jedd.Attribute[] { objc.v(), obj.v() },
-                                                                      new jedd.PhysicalDomain[] { C3.v(), H1.v() },
-                                                                      ("new soot.jimple.paddle.BDDPointsToSet(...) at /home/research" +
-                                                                       "/ccl/olhota/soot-jedd/src/soot/jimple/paddle/BDDP2Sets.jedd:" +
-                                                                       "43,15-18"),
-                                                                      jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(prop.fieldPt,
-                                                                                                                                                                                               new jedd.PhysicalDomain[] { C2.v() },
-                                                                                                                                                                                               new jedd.PhysicalDomain[] { C3.v() })),
-                                                                                                                                    jedd.internal.Jedd.v().literal(new Object[] { ctxt, adf.base(), adf.field() },
-                                                                                                                                                                   new jedd.Attribute[] { basec.v(), base.v(), fld.v() },
+        return new BDDPointsToSet(new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), objc.v() },
+                                                                      new jedd.PhysicalDomain[] { H1.v(), C1.v() },
+                                                                      ("new soot.jimple.paddle.BDDPointsToSet(...) at /tmp/soot-trun" +
+                                                                       "k-saved/src/soot/jimple/paddle/BDDP2Sets.jedd:43,15-18"),
+                                                                      jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(prop.fieldPt),
+                                                                                                                                                                   jedd.internal.Jedd.v().literal(new Object[] { ctxt, adf.base(), adf.field() },
+                                                                                                                                                                                                  new jedd.Attribute[] { basec.v(), base.v(), fld.v() },
+                                                                                                                                                                                                  new jedd.PhysicalDomain[] { C1.v(), H1.v(), FD.v() }),
                                                                                                                                                                    new jedd.PhysicalDomain[] { C1.v(), H1.v(), FD.v() }),
-                                                                                                                                    new jedd.PhysicalDomain[] { C1.v(), H1.v(), FD.v() }),
+                                                                                                                                    new jedd.PhysicalDomain[] { C2.v() },
+                                                                                                                                    new jedd.PhysicalDomain[] { C1.v() }),
                                                                                                      new jedd.PhysicalDomain[] { H2.v() },
                                                                                                      new jedd.PhysicalDomain[] { H1.v() })));
     }

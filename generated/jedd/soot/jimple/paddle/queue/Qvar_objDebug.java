@@ -24,11 +24,10 @@ public class Qvar_objDebug extends Qvar_obj {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                              new PhysicalDomain[] { H1.v(), V1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-jedd/src/soot/jimple/paddle/queue/Qvar_objDebug.j" +
-                                               "edd:40,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                              new PhysicalDomain[] { V1.v(), H1.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk-save" +
+                                               "d/src/soot/jimple/paddle/queue/Qvar_objDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { var.v(), obj.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

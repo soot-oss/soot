@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public interface NewMultiArrayExpr extends Expr
+public interface NewMultiArrayExpr extends Expr, AnyNewExpr
 {
     public ArrayType getBaseType();
     public void setBaseType(ArrayType baseType);

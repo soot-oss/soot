@@ -15,18 +15,17 @@ public final class Robj_varBDD extends Robj_var {
                                           new PhysicalDomain[] { H1.v(), V1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.obj:soot.jimple.paddl" +
                                            "e.bdddomains.H1, soot.jimple.paddle.bdddomains.var:soot.jimp" +
-                                           "le.paddle.bdddomains.V1> bdd at /home/research/ccl/olhota/so" +
-                                           "ot-jedd/src/soot/jimple/paddle/queue/Robj_varBDD.jedd:31,12-" +
-                                           "28"));
+                                           "le.paddle.bdddomains.V1> bdd at /tmp/soot-trunk-saved/src/so" +
+                                           "ot/jimple/paddle/queue/Robj_varBDD.jedd:31,12-28"));
     
     void add(final jedd.internal.RelationContainer tuple) { bdd.eqUnion(tuple); }
     
     public Robj_varBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                new PhysicalDomain[] { H1.v(), V1.v() },
-                                                ("add(bdd) at /home/research/ccl/olhota/soot-jedd/src/soot/jim" +
-                                                 "ple/paddle/queue/Robj_varBDD.jedd:33,74-77"),
+        add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                new PhysicalDomain[] { V1.v(), H1.v() },
+                                                ("add(bdd) at /tmp/soot-trunk-saved/src/soot/jimple/paddle/que" +
+                                                 "ue/Robj_varBDD.jedd:33,74-77"),
                                                 bdd));
     }
     
@@ -50,11 +49,10 @@ public final class Robj_varBDD extends Robj_var {
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                          new PhysicalDomain[] { H1.v(), V1.v() },
-                                                          ("bdd.iterator(new jedd.Attribute[...]) at /home/research/ccl/" +
-                                                           "olhota/soot-jedd/src/soot/jimple/paddle/queue/Robj_varBDD.je" +
-                                                           "dd:45,25-28"),
+                      new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                          new PhysicalDomain[] { V1.v(), H1.v() },
+                                                          ("bdd.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk-sav" +
+                                                           "ed/src/soot/jimple/paddle/queue/Robj_varBDD.jedd:45,25-28"),
                                                           bdd).iterator(new Attribute[] { obj.v(), var.v() });
                     bdd.eq(jedd.internal.Jedd.v().falseBDD());
                 }
@@ -72,15 +70,14 @@ public final class Robj_varBDD extends Robj_var {
                                               new PhysicalDomain[] { H1.v(), V1.v() },
                                               ("<soot.jimple.paddle.bdddomains.obj:soot.jimple.paddle.bdddom" +
                                                "ains.H1, soot.jimple.paddle.bdddomains.var:soot.jimple.paddl" +
-                                               "e.bdddomains.V1> ret = bdd; at /home/research/ccl/olhota/soo" +
-                                               "t-jedd/src/soot/jimple/paddle/queue/Robj_varBDD.jedd:55,25-2" +
-                                               "8"),
+                                               "e.bdddomains.V1> ret = bdd; at /tmp/soot-trunk-saved/src/soo" +
+                                               "t/jimple/paddle/queue/Robj_varBDD.jedd:55,25-28"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                   new PhysicalDomain[] { H1.v(), V1.v() },
-                                                   ("return ret; at /home/research/ccl/olhota/soot-jedd/src/soot/" +
-                                                    "jimple/paddle/queue/Robj_varBDD.jedd:57,8-14"),
+        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                   new PhysicalDomain[] { V1.v(), H1.v() },
+                                                   ("return ret; at /tmp/soot-trunk-saved/src/soot/jimple/paddle/" +
+                                                    "queue/Robj_varBDD.jedd:57,8-14"),
                                                    ret);
     }
     

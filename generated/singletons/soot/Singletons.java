@@ -1072,4 +1072,16 @@ public class Singletons {
         return instance_soot_jimple_paddle_ShadowNumberer;
     }
 
+    private soot.jimple.paddle.Results instance_soot_jimple_paddle_Results;
+    public soot.jimple.paddle.Results soot_jimple_paddle_Results() {
+        if( instance_soot_jimple_paddle_Results == null ) instance_soot_jimple_paddle_Results = new soot.jimple.paddle.Results( g );
+        return instance_soot_jimple_paddle_Results;
+    }
+
+    private soot.jimple.paddle.ExecutesManyAnalysis instance_soot_jimple_paddle_ExecutesManyAnalysis;
+    public soot.jimple.paddle.ExecutesManyAnalysis soot_jimple_paddle_ExecutesManyAnalysis() {
+        if( instance_soot_jimple_paddle_ExecutesManyAnalysis == null ) instance_soot_jimple_paddle_ExecutesManyAnalysis = new soot.jimple.paddle.ExecutesManyAnalysis( g );
+        return instance_soot_jimple_paddle_ExecutesManyAnalysis;
+    }
+
 }
