@@ -588,9 +588,10 @@ public class Main {
             dynClasses.addAll(classesInDynamicPackage(pkg));
         }
 
-        while (it.hasNext()) {
-            Object o = it.next();
-            Scene.v().loadClassAndSupport((String) o);
+        for( Iterator classNameIt = dynClasses.iterator(); classNameIt.hasNext(); ) {
+
+            final String className = (String) classNameIt.next();
+            Scene.v().loadClassAndSupport(className);
         }
 
         for( Iterator pathIt = Options.v().process_path().iterator(); pathIt.hasNext(); ) {
