@@ -228,6 +228,9 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
         this.number = number;
     }
     private int number = 0;
+    public SootFieldRef makeRef() {
+        return Scene.v().makeFieldRef(declaringClass, name, type);
+    }
 }
 
 

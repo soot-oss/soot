@@ -699,4 +699,7 @@ public class SootMethod
     private int number = 0;
     public SootMethod method() { return this; }
     public Context context() { return null; }
+    public SootMethodRef makeRef() {
+        return Scene.v().makeMethodRef( declaringClass, name, parameterTypes, returnType );
+    }
 }
