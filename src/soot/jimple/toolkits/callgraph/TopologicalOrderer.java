@@ -51,7 +51,7 @@ public class TopologicalOrderer
     private void dfsVisit( SootMethod m ) {
         if( visited.contains( m ) ) return;
         visited.add( m );
-        Iterator targets = new Targets( cg.targetsOf(m) );
+        Iterator targets = new Targets( cg.edgesOutOf(m) );
         while( targets.hasNext() ) {
             SootMethod target = (SootMethod) targets.next();
             dfsVisit( target );

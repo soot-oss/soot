@@ -40,7 +40,7 @@ public class TransitiveTargets
     }
     public Iterator iterator( Unit u ) {
         ArrayList methods = new ArrayList();
-        Iterator it = cg.targetsOf( u );
+        Iterator it = cg.edgesOutOf( u );
         if( filter != null ) it = filter.wrap( it );
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
@@ -50,7 +50,7 @@ public class TransitiveTargets
     }
     public Iterator iterator( SootMethod method ) {
         ArrayList methods = new ArrayList();
-        Iterator it = cg.targetsOf( method );
+        Iterator it = cg.edgesOutOf( method );
         if( filter != null ) it = filter.wrap( it );
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
@@ -70,7 +70,7 @@ public class TransitiveTargets
     private Iterator iterator( NumberedSet s, ArrayList worklist ) {
         for( int i = 0; i < worklist.size(); i++ ) {
             SootMethod method = (SootMethod) worklist.get(i);
-            Iterator it = cg.targetsOf( method );
+            Iterator it = cg.edgesOutOf( method );
             if( filter != null ) it = filter.wrap( it );
             while( it.hasNext() ) {
                 Edge e = (Edge) it.next();

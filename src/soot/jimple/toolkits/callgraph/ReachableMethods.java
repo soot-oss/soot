@@ -71,7 +71,7 @@ public class ReachableMethods
         while(true) {
             SootMethod m = (SootMethod) unprocessedMethods.next();
             if( m == null ) break;
-            Iterator targets = cg.targetsOf( m );
+            Iterator targets = cg.edgesOutOf( m );
             if( filter != null ) targets = filter.wrap( targets );
             addMethods( new Targets( targets ) );
         }

@@ -76,7 +76,7 @@ public class StaticInliner extends SceneTransformer
                 if (!container.isConcrete())
                     continue;
     
-                if (!explicitInvokesFilter.wrap( cg.targetsOf(container) ).hasNext())
+                if (!explicitInvokesFilter.wrap( cg.edgesOutOf(container) ).hasNext())
                     continue;
     
                 JimpleBody b = (JimpleBody)container.retrieveActiveBody();
@@ -91,7 +91,7 @@ public class StaticInliner extends SceneTransformer
                         continue;
                     
                     Iterator targets = new Targets(
-                            explicitInvokesFilter.wrap( cg.targetsOf(s) ) );
+                            explicitInvokesFilter.wrap( cg.edgesOutOf(s) ) );
                     if( !targets.hasNext() ) continue;
                     SootMethod target = (SootMethod)targets.next();
                     if( targets.hasNext() ) continue;

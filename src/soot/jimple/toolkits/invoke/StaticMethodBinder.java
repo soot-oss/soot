@@ -68,7 +68,7 @@ public class StaticMethodBinder extends SceneTransformer
                 if (!container.isConcrete())
                     continue;
 
-                if (!instanceInvokesFilter.wrap( cg.targetsOf(container) ).hasNext())
+                if (!instanceInvokesFilter.wrap( cg.edgesOutOf(container) ).hasNext())
                     continue;
 
                 JimpleBody b = (JimpleBody)container.getActiveBody();
@@ -90,7 +90,7 @@ public class StaticMethodBinder extends SceneTransformer
                         continue;
 
                     Iterator targets = new Targets( 
-                            instanceInvokesFilter.wrap( cg.targetsOf(s) ) );
+                            instanceInvokesFilter.wrap( cg.edgesOutOf(s) ) );
                     if( !targets.hasNext() ) continue;
                     SootMethod target = (SootMethod)targets.next();
                     if( targets.hasNext() ) continue;
@@ -147,7 +147,7 @@ public class StaticMethodBinder extends SceneTransformer
                                 oldStmt = (Stmt)oldUnits.next(); 
                                 newStmt = (Stmt)newUnits.next();
 
-                                Iterator edges = cg.targetsOf( oldStmt );
+                                Iterator edges = cg.edgesOutOf( oldStmt );
                                 while( edges.hasNext() ) {
                                     Edge e = (Edge) edges.next();
                                     cg.addEdge( new Edge(

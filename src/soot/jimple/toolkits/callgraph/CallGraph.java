@@ -104,7 +104,7 @@ public class CallGraph
         return srcMethodToEdge.keySet().iterator();
     }
     /** Returns an iterator over all edges that have u as their source unit. */
-    public Iterator targetsOf( Unit u ) {
+    public Iterator edgesOutOf( Unit u ) {
         return new TargetsOfUnitIterator( u );
     }
     class TargetsOfUnitIterator implements Iterator {
@@ -131,7 +131,7 @@ public class CallGraph
         }
     }
     /** Returns an iterator over all edges that have m as their source method. */
-    public Iterator targetsOf( SootMethod m ) {
+    public Iterator edgesOutOf( SootMethod m ) {
         return new TargetsOfMethodIterator( m );
     }
     class TargetsOfMethodIterator implements Iterator {
@@ -158,7 +158,7 @@ public class CallGraph
         }
     }
     /** Returns an iterator over all edges that have m as their target method. */
-    public Iterator callersOf( SootMethod m ) {
+    public Iterator edgesInto( SootMethod m ) {
         return new CallersOfMethodIterator( m );
     }
     class CallersOfMethodIterator implements Iterator {

@@ -125,7 +125,7 @@ public class ThrowFinder
 		    }
 		}
 
-		it = cg.targetsOf(m);
+		it = cg.edgesOutOf(m);
 		while (it.hasNext()) {
                     Edge e = (Edge) it.next();
 		    Stmt callSite = e.srcStmt();
@@ -192,7 +192,7 @@ public class ThrowFinder
 		}
 	    }
 
-            Iterator it = cg.targetsOf(m);
+            Iterator it = cg.edgesOutOf(m);
             while (it.hasNext()) {
                 Edge e = (Edge) it.next();
 		Stmt callingSite = e.srcStmt();

@@ -23,7 +23,7 @@ public class CallGraphTagger extends BodyTransformer {
         
             Stmt s = (Stmt) stmtIt.next();
 
-            Iterator edges = cg.targetsOf(s); 
+            Iterator edges = cg.edgesOutOf(s); 
             
             while (edges.hasNext()){
                 Edge e = (Edge)edges.next();
@@ -34,7 +34,7 @@ public class CallGraphTagger extends BodyTransformer {
         }
 
         SootMethod m = b.getMethod();
-        Iterator callerEdges = cg.callersOf(m);
+        Iterator callerEdges = cg.edgesInto(m);
         while (callerEdges.hasNext()){
             Edge callEdge = (Edge)callerEdges.next();
             SootMethod methodCaller = callEdge.src();            

@@ -306,7 +306,7 @@ public class RectangularArrayFinder extends SceneTransformer
 		    /* from node, it is a local */
 		    MethodLocal ml = new MethodLocal(method, (Local)arg);
 
-                    Iterator targetIt = new Targets( cg.targetsOf(s) );
+                    Iterator targetIt = new Targets( cg.edgesOutOf(s) );
 		    
 		    while (targetIt.hasNext())
 		    {
@@ -447,7 +447,7 @@ public class RectangularArrayFinder extends SceneTransformer
 		    {
 			to = new MethodLocal(method, (Local)leftOp);
 
-			Iterator targetIt = new Targets( cg.targetsOf(s) );
+			Iterator targetIt = new Targets( cg.edgesOutOf(s) );
 			
 			while (targetIt.hasNext())
 			{

@@ -84,9 +84,9 @@ public static final int NEWINSTANCE = 10;
 
 \begin{slide}{Querying Call Graph}
 \begin{description}
-\item[\texttt{targetsOf(SootMethod)}] iterator over edges with given source method
-\item[\texttt{targetsOf(Unit)}] iterator over edges with given source statement
-\item[\texttt{callersOf(SootMethod)}] iterator over edges with given target method
+\item[\texttt{edgesOutOf(SootMethod)}] iterator over edges with given source method
+\item[\texttt{edgesOutOf(Unit)}] iterator over edges with given source statement
+\item[\texttt{edgesInto(SootMethod)}] iterator over edges with given target method
 \begin{tabular}{|c|c|c|c|}\hline {\red src}&o.foo();&foo()&VIRTUAL\\\hline\end{tabular}
 \begin{tabular}{|c|c|c|c|}\hline {\red src}&o.goo();&goo()&VIRTUAL\\\hline\end{tabular}
 \begin{tabular}{|c|c|c|c|}\hline {\red src}&o.hoo();&hoo()&VIRTUAL\\\hline\end{tabular}
@@ -96,9 +96,9 @@ public static final int NEWINSTANCE = 10;
 
 \begin{slide}{Querying Call Graph}
 \begin{description}
-\item[\texttt{targetsOf(SootMethod)}] iterator over edges with given source method
-\item[\texttt{targetsOf(Unit)}] iterator over edges with given source statement
-\item[\texttt{callersOf(SootMethod)}] iterator over edges with given target method
+\item[\texttt{edgesOutOf(SootMethod)}] iterator over edges with given source method
+\item[\texttt{edgesOutOf(Unit)}] iterator over edges with given source statement
+\item[\texttt{edgesInto(SootMethod)}] iterator over edges with given target method
 \begin{tabular}{|c|c|c|c|}\hline src&o.foo();&{\red foo()}&VIRTUAL\\\hline\end{tabular}
 {\gray \begin{tabular}{|c|c|c|c|}\hline src&o.goo();&goo()&VIRTUAL\\\hline\end{tabular}}
 {\gray \begin{tabular}{|c|c|c|c|}\hline src&o.hoo();&hoo()&VIRTUAL\\\hline\end{tabular}}
@@ -135,7 +135,7 @@ public static final int NEWINSTANCE = 10;
 void mayCall( SootMethod src ) {
    CallGraph cg =
             Scene.v().getCallGraph();
-   Iterator edges = cg.targetsOf(src);
+   Iterator edges = cg.edgesOutOf(src);
    Iterator targets =
                   new Targets(edges);
    while( targets.hasNext() ) {

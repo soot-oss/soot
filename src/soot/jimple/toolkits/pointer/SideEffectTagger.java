@@ -80,7 +80,7 @@ public class SideEffectTagger extends BodyTransformer
     protected Object keyFor( Stmt s ) {
 	if( s.containsInvokeExpr() ) {
 	    if( optionNaive ) throw new RuntimeException( "shouldn't get here" );
-            Iterator it = cg.targetsOf( s );
+            Iterator it = cg.edgesOutOf( s );
 	    if( !it.hasNext() ) {
 		return Collections.EMPTY_LIST;
 	    }
