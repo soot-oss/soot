@@ -1,4 +1,22 @@
-Improvements in version 1.0.1
+Improvements in version 1.2.0 (Thu Sep 28 21:41:16 EDT 2000)
+
+1. An annotation framework is included in this release.
+2. A clean implementation of VTA is finally included in Soot.
+3. New implementation of typing system included
+     - contains nice integer typing system.
+4. HashChain has a fast 'contains' method.
+     (this was announced on the soot mailing list)
+5. A branched flow analysis framework is present.
+     - This allows different results to be propagated on
+        different edges of a branch.
+6. Implemented an Array Bounds Check and a Null Pointer Check algorithm.
+   The new option '-A' annotates class files with analysis results.
+      - See the new annotation tutorials.
+7. Other minor bugs were zapped.
+ 
+(release by Feng Qian)
+
+Improvements in version 1.0.1 (not released)
 
 1. Eliminated useless Directed interface.
 
@@ -173,25 +191,5 @@ Best regards,
 
 Raja Vallee-Rai
 Sable Research Group
-
-
------------------------------------------------------------------------------
-
-Improvements in the second release (version 1.2.0)
-Thu Sep 28 21:41:16 EDT 2000
-
-1) An annotation framework is added to this release.
-2) New implementation of VTA.
-3) New implementation of typing system, which has a nice interger typing system.
-4) HashChain has a fast 'contains' method.
-5) Fix some other minor bugs.
-6) We have branched flow analysis framework now.
-7) Implement an Array Bounds Check and a Null Pointer Check algorithm.
-   A new option '-A' can annotate class files with analysis results.
- 
-Feng Qian
-
-
-
 
 

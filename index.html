@@ -1,7 +1,7 @@
 <html>
 <head><title>Soot: a Java Optimization Framework</title></head>
 
-<body background="background5.gif" TEXT="#000000" BGCOLOR="#F3F3F3" LINK="#0000CC">
+<body background="background6.gif" TEXT="#000000" BGCOLOR="#F3F3F3" LINK="#0000CC">
 
 <table border=0 cellpadding=0 cellspacing=3>
 
@@ -9,7 +9,7 @@
 
 <!--LeftHandTable-->
 
-<TD ALIGN=LEFT VALIGN=TOP ROWSPACE="1" WIDTH=135>
+<TD ALIGN=LEFT VALIGN=TOP ROWSPACE="1" WIDTH=160>
 
 <p><font face="helvetica,arial" size="+1"><b>Soot Home</b></font>
 
@@ -34,7 +34,7 @@
 <center>
 <a name="top"><b><font face="helvetica,arial" size="+2">Soot: a Java Optimization Framework</font></b></center></a> <br>
 <center>
-<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 1.0.0</font></b></center></a> <br><br>
+<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 1.2.0</font></b></center></a> <br><br>
 
 <!--Introduction-->
 <a name="introduction"> <table width=100%> <tr>
@@ -81,17 +81,49 @@ License</a>.
 <p>The Soot Framework is an evolving research project. Our goal is to produce a
 highly robust framework for optimizing Java which is easy to use.  
 
+<!-- Release 1.2.0 -->
+<p>The 1.2.0 release is our second official release. The major new feature
+in 1.2.0 is support for classfile annotation (courtesy of Feng Qian and
+Patrice Pominville). There is also an improved typing system, due to 
+Etienne Gagnon. Variable-Type Analysis was cleanly reimplemented and
+we have included it in our release of Soot for the first time.
+We also fixed a few bugs reported against version 1.0.0. 
+
+<p>In the future, we will develop a mechanism to support
+whole-program analysis based on a program's call graph.
+
+<!-- Release 1.0.0
 <p>This release is our first official release.  We believe it to be quite solid,
 and have tested it on a set of 266 benchmarks.
 
 <p>In the future, we hope to improve support for whole-program analysis.
 We will also develop more transformations for use with Soot.
+-->
 
 </blockquote>
 
 <br>
 
 <!--ProjectStatus-->
+
+<a name="projectStatus"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Major improvements in version 1.2.0</b></font></td></a>
+<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</table>
+
+<blockquote>
+This is a subset of changes in version 1.2.0; a more complete listing is in the CHANGES file.
+
+<p>1. An annotation framework was added to the project.
+
+<p>2. A new implementation of the typing system is included.
+
+<p>2. A clean implementation of VTA is finally included in Soot.
+
+</blockquote>
+
+<!-- Status of release 1.0.0
+
 <a name="projectStatus"> <table width=100%> <tr>
 <td width=97% align=left><b><font face="helvetica,arial" size="+1">Improvements in version 1.0.0</b></font></td></a>
 <td width=3% align=left><font size="-2"><a href="#top">top</a></td>
@@ -102,17 +134,20 @@ This is a subset of the changes in version 1.0.0; a more complete listing is in 
 
 <p>1. Fixed bug with original name recovery.
 
-<p>2. Added documentation (see <a href="http://www.sable.mcgill.ca/soot/tutorial">some tutorials</a>.)
+<p>2. Added documentation (see <a href="tutorial">some tutorials</a>.)
 
 <p>3. Added static class synchronizer.
 
 </blockquote>
+
+-->
 
 <br>
 
 
 
 <!--Download-->
+
 <a name="download"> <table width=100%> <tr>
 <td width=97% align=left><b><font face="helvetica,arial" size="+1">Download and Installation</b></font></td></a>
 <td width=3% align=left><font size="-2"><a href="#top">top</a></td>
@@ -124,8 +159,8 @@ href="http://www.sable.mcgill.ca/software">http://www.sable.mcgill.ca/software</
 
 <p>
 To install it you must unjar(untar) it, and add the classes directories
-<tt>soot-1.0.0/soot/classes</tt> and
-<tt>soot-1.0.0/jasmin/classes</tt> to your CLASSPATH.  
+<tt>soot-1.2.0/soot/classes</tt> and
+<tt>soot-1.2.0/jasmin/classes</tt> to your CLASSPATH.  
 
 To test your installation of Soot, try:
 
@@ -135,9 +170,15 @@ java soot.Main
 </tt>
 
 <p>for some options on processing classfiles.  They are documented in more detail in the
-<a href="http://www.sable.mcgill.ca/soot/tutorial/usage">usage document</a>.
+<a href="tutorial/usage">usage document</a>.<p>
+
+Note that Soot requires at least JDK 1.2 (Java 2), as it uses Java Collections.
+We have experienced some problems with the sunwjit JIT compiler; we do
+not recommend the use of this JIT.  In particular, common subexpression 
+elimination has triggered JIT problems with sunwjit.
 
 </blockquote>
+
 <br>
 
 <!--Compilation-->
@@ -149,21 +190,23 @@ java soot.Main
 
 Soot is already compiled in the distribution.  To recompile Soot, 
 we use the <tt> jams</tt> tool, a modified version of <tt>jam</tt> by Raffaele Sena.
-This is included in the <tt>soot-1.0.0/jams</tt> directory of the distribution.  Invoking
-jams from the <tt>soot-1.0.0/soot</tt> will recompile Soot as necessary.
+This is included in the <tt>soot-1.2.0/jams</tt> directory of the distribution. 
+Invoking jams from the <tt>soot-1.2.0/soot</tt> will recompile Soot as necessary.
+It may be tricky to compile both Soot and jasmin at the same time
+because of dependences. An easy way is to use the compiled jasmin
+when compiling Soot. 
 
+<p>
 NOTE: The Jimple parser is generated by <a href="http://www.sable.mcgill.ca/sablecc">SableCC</a>.
-It requires <tt> lexer.dat</tt> and <tt>parser.dat</tt> files to be in the classes directory;
-they are provided in the src directory.  The following commands in the main
-Soot directory (<tt>soot-1.beta.6/soot</tt>) are required after a clean recompile.
+It requires <tt>lexer.dat</tt> and <tt>parser.dat</tt> files to be in the classes directory;
+they are provided in the src directory. Also, Soot uses peephole optimization to improve the
+generated bytecode. This requires the <tt>peephole.dat</tt> file be copied to 
+the classes directory. 
 
-<pre>
-$ cp src/soot/jimple/parser/parser/parser.dat \
-             classes/soot/jimple/parser/parser
-$ cp src/soot/jimple/parser/lexer/lexer.dat \
-             classes/soot/jimple/parser/parser
-</pre>
-                          
+<p>
+If you have jams correctly set up, the `foo' target will copy these <tt>.dat</tt>
+files from the src/ directory to the classes/ directory. Use command `<tt>jams foo</tt>'.
+
 </blockquote>
 <br>
 
@@ -182,7 +225,7 @@ current sources of information are:
 href="http://www.sable.mcgill.ca/publications">conference papers</a>
 describing Soot.  
 
-<li>A set of <a href="http://www.sable.mcgill.ca/soot/tutorial">documents</a> describing Soot, both as a Java application optimizer and
+<li>A set of <a href="tutorial">documents</a> describing Soot, both as a Java application optimizer and
 as a compiler framework.
 
 <li><a href="doc/index.html">The Soot API.</a> Most of the
@@ -231,8 +274,10 @@ for questions, discussions and comments on the Soot framework.
 
 <blockquote>
  
-The official Soot maintainers are <a href="mailto:rvalleerai@sable.mcgill.ca"> Raja Vallee-Rai</a> and 
-<a href="mailto:plam@sable.mcgill.ca">Patrick Lam</a>.
+The official Soot maintainers are 
+<a href="mailto:rvalleerai@sable.mcgill.ca"> Raja Vallee-Rai</a>, 
+<a href="mailto:plam@sable.mcgill.ca">Patrick Lam</a>, and
+<a href="mailto:fqian@sable.mcgill.ca">Feng Qian</a>.
 
 <br>
 <br><b>Click <a href="./credits">here</a> for the complete list of contributors and acknowledgements.</b>
@@ -244,7 +289,7 @@ The official Soot maintainers are <a href="mailto:rvalleerai@sable.mcgill.ca"> R
 <center>
 <blockquote>
 
-<font face="Arial, Helvetica" size=-2> <i>Last updated on March 24, 2000</i><br></font>
+<font face="Arial, Helvetica" size=-2> <i>Last updated on Octumber 2, 2000</i><br></font>
           
 </blockquote>
 

@@ -1,14 +1,10 @@
-For the next release of Soot, we will improve the whole-program analysis
-features.
+Open problems (as of 1.2.0):
 
-improve soot.toolkits.graph.Block so that we keep a state counter for
-the Body and don't trample stuff; this is needed to keep the BlockLength up
-to date.  Actually, that is somewhat complicated.
+1. improve our naming scheme to make Soot run on Macintosh.
+2. improve the invoke graph builder.
+3. include an interprocedural flow analysis framework
+      and improve the whole-program analysis features.
+4. improve soot.toolkits.graph.Block so that we keep a state counter for
+      the Body and don't trample stuff; this is needed to keep the 
+      BlockLength up to date.  Actually, that is somewhat complicated.
 
-------------------------------------------------
-Version 1.1.0
-Next release to do:
- 1) improve the temporary file name scheme to make the Soot run 
-    on Macintosh.
- 2) improve the invoke graph builder.
- 3) interprocedural flow analysis framework.

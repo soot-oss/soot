@@ -1,7 +1,7 @@
                       Soot Credits
                  
                  
-      Soot Maintainers: Raja Vallee-Rai, Patrick Lam
+      Soot Maintainers: Raja Vallee-Rai, Patrick Lam, Feng Qian
     
     
 -------------------- Soot Contributors ------------------------
@@ -26,6 +26,7 @@ Patrick Lam (plam@sable.mcgill.ca)
 Feng Qian (fqian@sable.mcgill.ca)
     - array bounds check and annotation
     - contributed to documentation writing
+    - prepared 1.2.0 release
     
 Patrice Pominville (patrice@sable.mcgill.ca)
     - Soot infrastructure
@@ -46,7 +47,6 @@ Clark Verbrugge (clarkv@ca.ibm.com)
 
 Felix Kwok
     - VTA re-implementation
-    
     
 -------------------- Funding Acknowledgements ------------------
                     
