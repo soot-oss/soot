@@ -98,8 +98,7 @@ public class Util
 
         soot.Main.resolverTimer.start();
         
-                        
-        setActiveClassManager(cm);
+       setActiveClassManager(cm);
 
         classesToResolve = new LinkedList();
         markedClasses = new HashSet();

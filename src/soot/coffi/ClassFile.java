@@ -188,8 +188,9 @@ public class ClassFile {
       locatorTimer.start();
       
       try
-      {   if(Main.sootClassPath != null)
-          {   classFileStream = ClassLocator.getInputStreamOf(Main.sootClassPath, fn);
+      {   
+          if(!soot.Scene.v().getSootClassPath().equals("<external-class-path>"))
+          {   classFileStream = ClassLocator.getInputStreamOf(soot.Scene.v().getSootClassPath(), fn);
           }
           else
           {   classFileStream = ClassLocator.getInputStreamOf(fn);

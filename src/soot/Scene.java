@@ -53,10 +53,36 @@ public class Scene extends AbstractHost
     boolean allowsPhantomRefs = false;
 
     Map packNameToPack = new HashMap();
-
+    SootClass mainClass;
+    String sootClassPath = "<external-class-path>";
+    
     public static Scene v()
     {
         return constant;
+    }
+    
+    public void setMainClass(SootClass m)
+    {
+        mainClass = m;
+    }
+    
+    public SootClass getMainClass()
+    {
+        if(mainClass == null)
+            throw new NullPointerException("There is no main class set!");
+            
+        return mainClass;
+    }
+    
+    
+    public void setSootClassPath(String p)
+    {
+        sootClassPath = p;
+    }
+    
+    public String getSootClassPath()
+    {
+        return sootClassPath;
     }
     
     private Scene()

@@ -133,6 +133,28 @@ public class HashChain extends AbstractCollection
         }
     }
 
+    
+    public void insertBefore(List toInsert, Object point)
+    {
+        LinkedList backwardList = new LinkedList();
+        // Insert toInsert backwards into the list
+        {
+            Iterator it = toInsert.iterator();
+            
+            while(it.hasNext())
+                backwardList.addFirst(it.next());
+        }
+                
+        Object previousPoint = point;
+        Iterator it = backwardList.iterator();
+        while (it.hasNext())
+        {
+            Object o = it.next();
+            insertBefore(o, previousPoint);
+            previousPoint = o;
+        }
+    }
+
     public void insertBefore(Object toInsert, Object point)
     {
 
