@@ -53,7 +53,7 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
  		getSootSelection().initialize(); 		
 		setFileHandler(new SootOutputFilesHandler(window));
 		getFileHandler().resetSootOutputFolder(getSootSelection().getProject());		
-		
+		System.out.println("starting SootLauncher");
 		setDavaHandler(new DavaHandler());
 		getDavaHandler().setSootOutputFolder(getFileHandler().getSootOutputFolder());
 		getDavaHandler().handleBefore();

@@ -1,4 +1,4 @@
-Once you have installed the soot-clipse plugin and restarted Eclipse you must make the menus available by the following:
+Once you have installed the soot-eclipse plugin and restarted Eclipse you must make the menus available by the following:
 
 Select Window -> Customize Perspective
 Expand Other option in the tree

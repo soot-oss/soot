@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.views.contentoutline.*;
 
 import ca.mcgill.sable.soot.*;
@@ -56,15 +58,7 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 					}
 					
 				}
-				/*else if ((flags & IResourceDelta.REPLACED) != 0) {
-					System.out.println("Resource replaced: "+delta.getResource().getFullPath().toOSString());
-					
-				}
 				
-				else {
-					System.out.println("Resource other event: "+delta.getResource().getFullPath().toOSString());
-					
-				}*/
 				break;
 			}
 			case IResourceDelta.ADDED: {
@@ -80,36 +74,25 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 		return true;
 	}
 
+	// only updates after a save or Soot run 
+	// (if editor is currently "dirty" the outline will be potenially incorrect 
 	private void updateJimpleOutline(IFile file) {
 		
-		//SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getAdapter(IContentOutlinePage.class);
 		
-		//JimpleEditor ed = (JimpleEditor) file.getAdapter(JimpleEditor.class);
-	
-		//System.out.println("updating outliner");
-		//ed.getAdapter(IContentOutlinePage.class);//.getPage().setInput(file);
-		/*try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(file.getContents()));
-			ArrayList text = new ArrayList();
-			//StringBuffer text = new StringBuffer();
-			while (true) {
-				String nextLine = br.readLine();
-				if (nextLine == null) break;// || (nextLine.length() == 0)) break;
-				//text.append(nextLine);
-				text.add(nextLine);
-				System.out.println(nextLine);
-				//System.out.println(nextLine.trim().length());
+		IEditorReference [] refs = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+		for (int i = 0; i < refs.length; i++){
+			System.out.println(refs[i].getName());
+			if (refs[i].getName().equals(file.getName())){
+				JimpleEditor ed = (JimpleEditor) refs[i].getEditor(true).getAdapter(JimpleEditor.class);
+				if (ed != null){
+					ed.getPage().getContentOutline();
+					ed.getPage().getViewer().setInput(ed.getPage().getContentOutline());
+					ed.getPage().getViewer().refresh();
+					ed.getPage().getViewer().expandAll();
+				}
 			}
-			
 		}
-		catch (IOException e) {
-			System.out.println("io exception");
-		}
-		catch (CoreException e1) {
-			System.out.println("core exception");
-		}
-		ed.getPage().getContentOutline();
-		ed.getPage().getViewer().setInput(ed.getPage().getContentOutline());
-		ed.getPage().getViewer().refresh();*/
+
+		
 	}
 }

@@ -113,8 +113,8 @@ public class SootPlugin extends AbstractUIPlugin {
 	protected void initializeDefaultPreferences(IPreferenceStore store) {
 		// These settings will show up when Preference dialog
 		// opens up for the first time.
-		store.setDefault("classes", "soot.Main");
-		store.setDefault("selected", "soot.Main");
+		store.setDefault(Messages.getString("SootPlugin.classes"), "soot.Main"); //$NON-NLS-1$ //$NON-NLS-2$
+		store.setDefault(Messages.getString("SootPlugin.selected"), "soot.Main"); //$NON-NLS-1$ //$NON-NLS-2$
 	}	
 
 	private SootResourceManager manager;
@@ -160,7 +160,7 @@ public class SootPlugin extends AbstractUIPlugin {
 	 */
 	public void startUp() throws CoreException {
 		super.startup();
-		System.out.println("starting up plugin");
+		System.out.println("starting up plugin"); //$NON-NLS-1$
 		soot_output_doc = new SootDocument();
 		soot_output_doc.startUp();		
 	}

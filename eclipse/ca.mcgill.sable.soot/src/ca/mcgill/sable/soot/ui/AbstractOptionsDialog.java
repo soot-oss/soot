@@ -77,7 +77,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		if (getDefList() == null) {
 			setDefList(new HashMap());
 		}
-		System.out.println("adding to defList: key: "+key+" val: "+val);
+		System.out.println("adding to defList: key: "+key+" val: "+val); //$NON-NLS-1$ //$NON-NLS-2$
 		getDefList().put(key, val);
 	} 
 
@@ -98,7 +98,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 
 	protected void configureShell(Shell shell){
 		super	.configureShell(shell);
-		shell.setText("Soot Options");
+		shell.setText(Messages.getString("AbstractOptionsDialog.Soot_Options")); //$NON-NLS-1$
 	}
 	
 	/**
@@ -118,10 +118,10 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		
 		// Set the things that TitleAreaDialog takes care of
 		// TODO: externalize this title
-		setTitle("Soot Launching Options");
+		setTitle(Messages.getString("AbstractOptionsDialog.Soot_Launching_Options")); //$NON-NLS-1$
 		//Image i = new Image(device, "icons/soot.jpg");
 		//setTitleImage(i); 
-		setMessage(""); 
+		setMessage("");  //$NON-NLS-1$
 
 		// Create the SashForm that contains the selection area on the left,
 		// and the edit area on the right
@@ -165,12 +165,12 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		if (isCanRun()) {
 			//createButton(parent, 0, "Save", false);
 			// create OK and Cancel buttons by default
-			createButton(parent, 1, "Run", true);
-			createButton(parent, 2, "Close", false);
+			createButton(parent, 1, Messages.getString("AbstractOptionsDialog.Run"), true); //$NON-NLS-1$
+			createButton(parent, 2, Messages.getString("AbstractOptionsDialog.Close"), false); //$NON-NLS-1$
 		}
 		else {
-			createButton(parent, 0, "Save", true);	
-			createButton(parent, 2, "Close", false);
+			createButton(parent, 0, Messages.getString("AbstractOptionsDialog.Save"), true);	 //$NON-NLS-1$
+			createButton(parent, 2, Messages.getString("AbstractOptionsDialog.Close"), false); //$NON-NLS-1$
 		}
 	}
 	
@@ -178,7 +178,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	protected void buttonPressed(int i){
 		switch(i) {
 			case 0: {
-				System.out.println("Saving");
+				System.out.println("Saving"); //$NON-NLS-1$
 				handleSaving();
 				break;
 			} 
@@ -285,13 +285,13 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		//config_count++;
 		//settings.put("config_count", config_count);
 		newConfig.setEclipseDefs(getEclipseDefList());
-		System.out.println("about to add config to editMap");
+		System.out.println("about to add config to editMap"); //$NON-NLS-1$
 		if (getEditMap() == null) {
 			setEditMap(new HashMap());
 		}
 		// TODO switch lines
 		getEditMap().put(name, newConfig.toSaveArray());
-		System.out.println("put in editMap: "+name);
+		System.out.println("put in editMap: "+name); //$NON-NLS-1$
 		//getEditMap().put(name, newConfig.toSaveString());
 		//System.out.println("added config to editMap");
 		//System.out.println("Save String: "+newConfig.toSaveString());
@@ -368,7 +368,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	public void selectionChanged(SelectionChangedEvent event) {
 		IStructuredSelection selection = (IStructuredSelection)event.getSelection();
 		if (selection.isEmpty()) {
-			System.out.println("selection empty");	
+			System.out.println("selection empty");	 //$NON-NLS-1$
 		}
 		else {
 			Object elem = selection.getFirstElement();

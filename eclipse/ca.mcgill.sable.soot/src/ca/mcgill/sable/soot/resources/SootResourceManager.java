@@ -32,8 +32,8 @@ import org.eclipse.core.runtime.CoreException;
 
 public class SootResourceManager implements IResourceChangeListener {
 
-	private static final String JAVA_FILE_EXT = "java";
-	public static final String JIMPLE_FILE_EXT = "jimple";
+	private static final String JAVA_FILE_EXT = Messages.getString("SootResourceManager.java"); //$NON-NLS-1$
+	public static final String JIMPLE_FILE_EXT = Messages.getString("SootResourceManager.jimple"); //$NON-NLS-1$
 	//private static final int UPDATE_BIT = 0;
 	//private static final int REMOVE_BIT = 1;
 	private static final int SOOT_RAN_BIT = 1;
@@ -206,18 +206,18 @@ public class SootResourceManager implements IResourceChangeListener {
 		System.out.println(res.getClass().toString());
 		if (res instanceof IFile){
 			IFile file = (IFile)res;
-			System.out.println("is a file");
+			System.out.println("is a file"); //$NON-NLS-1$
 			if ((file.getFileExtension().equals(JAVA_FILE_EXT)) ||
 			 	(file.getFileExtension().equals(JIMPLE_FILE_EXT))){
 						
-				System.out.println("is a java or jimple file");
+				System.out.println("is a java or jimple file"); //$NON-NLS-1$
 				if (getChangedResources() == null){
 					setChangedResources(new HashMap());
 				}
 				getChangedResources().put(file, new BitSet(2));
-			 	System.out.println("added file: "+file.getFullPath().toOSString());
+			 	System.out.println("added file: "+file.getFullPath().toOSString()); //$NON-NLS-1$
 			 		
-				System.out.println("added to resource tracking list");
+				System.out.println("added to resource tracking list"); //$NON-NLS-1$
 				Iterator it = getChangedResources().keySet().iterator();
 				while (it.hasNext()){
 					System.out.println(((IFile)it.next()).getFullPath().toOSString());

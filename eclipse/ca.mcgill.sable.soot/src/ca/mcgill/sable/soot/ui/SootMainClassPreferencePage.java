@@ -73,7 +73,7 @@ public class SootMainClassPreferencePage extends PreferencePage implements IWork
 		table.setLayout(tableLayout);
 
 		TableColumn column1= new TableColumn(table, SWT.NONE);		
-		column1.setText("Main Class");
+		column1.setText(Messages.getString("SootMainClassPreferencePage.Main_Class")); //$NON-NLS-1$
 		column1.setWidth(320);
 		//TableColumn column2= new TableColumn(table, SWT.NONE);		
 		//column2.setText("Main Class");
@@ -97,8 +97,8 @@ public class SootMainClassPreferencePage extends PreferencePage implements IWork
 		getTableViewer().addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				// TODO : finish this method
-				System.out.println("something was checked");
-				System.out.println(event.getElement()+" "+event.getChecked());
+				System.out.println("something was checked"); //$NON-NLS-1$
+				System.out.println(event.getElement()+" "+event.getChecked()); //$NON-NLS-1$
 				handleCheckedEvent(event);
 			}
 		});
@@ -111,7 +111,7 @@ public class SootMainClassPreferencePage extends PreferencePage implements IWork
 		buttons.setLayout(layout);
 		
 		setAddButton(new Button(buttons, SWT.PUSH));
-		getAddButton().setText("Add"); 
+		getAddButton().setText(Messages.getString("SootMainClassPreferencePage.Add"));  //$NON-NLS-1$
 		getAddButton().addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				add();
@@ -119,7 +119,7 @@ public class SootMainClassPreferencePage extends PreferencePage implements IWork
 		});
 
 		setRemoveButton(new Button(buttons, SWT.PUSH));
-		getRemoveButton().setText("Remove");
+		getRemoveButton().setText(Messages.getString("SootMainClassPreferencePage.Remove")); //$NON-NLS-1$
 		getRemoveButton().addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				remove();
@@ -153,7 +153,7 @@ public class SootMainClassPreferencePage extends PreferencePage implements IWork
 	}
 		
 	private void add(){
-		InputDialog classDialog = new InputDialog(this.getShell(), "New Main Class", "Enter main class:", "", null); 
+		InputDialog classDialog = new InputDialog(this.getShell(), Messages.getString("SootMainClassPreferencePage.New_Main_Class"), Messages.getString("SootMainClassPreferencePage.Enter_main_class"), "", null);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		classDialog.open();
 		
 		if (classDialog.getReturnCode() == Dialog.OK) {
@@ -167,14 +167,14 @@ public class SootMainClassPreferencePage extends PreferencePage implements IWork
 	}
 	
 	private void remove() {
-		MessageDialog msgDialog = new MessageDialog(this.getShell(), "Main Class Remove Message", null, "Are you sure you want to remove this main class?", 0, new String [] {"Yes", "No"}, 0);
+		MessageDialog msgDialog = new MessageDialog(this.getShell(), Messages.getString("SootMainClassPreferencePage.Main_Class_Remove_Message"), null, Messages.getString("SootMainClassPreferencePage.Are_you_sure_you_want_to_remove_this_main_class"), 0, new String [] {Messages.getString("SootMainClassPreferencePage.Yes"), Messages.getString("SootMainClassPreferencePage.No")}, 0); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		msgDialog.open();
 		if (msgDialog.getReturnCode() == 0) {
 			Object currData = getTableViewer().getInput();
 			System.out.println(currData.getClass().toString());
 			if (currData instanceof SootPrefData) {
 				IStructuredSelection sel = (IStructuredSelection)getTableViewer().getSelection();
-				System.out.println("sel to remove: "+sel.getFirstElement().toString());
+				System.out.println("sel to remove: "+sel.getFirstElement().toString()); //$NON-NLS-1$
 				((SootPrefData)currData).removeFromClassesArray(sel.getFirstElement().toString());
 				getTableViewer().setChecked(((SootPrefData)currData).getSelected(), true);
 				getTableViewer().refresh();
@@ -193,8 +193,8 @@ public class SootMainClassPreferencePage extends PreferencePage implements IWork
 	private void initializeValues() {
 		IPreferenceStore store = getPreferenceStore();
 		
-		getTableViewer().setInput(new SootPrefData(store.getString("classes"), store.getString("selected")));
-		getTableViewer().setChecked(store.getString("selected"), true);
+		getTableViewer().setInput(new SootPrefData(store.getString(Messages.getString("SootMainClassPreferencePage.classes")), store.getString(Messages.getString("SootMainClassPreferencePage.selected")))); //$NON-NLS-1$ //$NON-NLS-2$
+		getTableViewer().setChecked(store.getString(Messages.getString("SootMainClassPreferencePage.selected")), true); //$NON-NLS-1$
 	}
 
 	
@@ -206,17 +206,17 @@ public class SootMainClassPreferencePage extends PreferencePage implements IWork
 	private void storeValues() {
 		IPreferenceStore store = getPreferenceStore();
 		SootPrefData spd = (SootPrefData)getTableViewer().getInput();
-		System.out.println(spd.getSaveString()+" "+spd.getSelected());
-		store.setValue("classes", spd.getSaveString());
-		store.setValue("selected", spd.getSelected());
+		System.out.println(spd.getSaveString()+" "+spd.getSelected()); //$NON-NLS-1$
+		store.setValue(Messages.getString("SootMainClassPreferencePage.classes"), spd.getSaveString()); //$NON-NLS-1$
+		store.setValue(Messages.getString("SootMainClassPreferencePage.selected"), spd.getSelected()); //$NON-NLS-1$
 		
 	}
 
 	// for when user presses restore default button
 	private void initializeDefaults() {
 	   	IPreferenceStore store = getPreferenceStore();
-		getTableViewer().setInput(new SootPrefData(store.getDefaultString("classes"), store.getDefaultString("selected")));
-		getTableViewer().setChecked(store.getDefaultString("selected"), true);
+		getTableViewer().setInput(new SootPrefData(store.getDefaultString(Messages.getString("SootMainClassPreferencePage.classes")), store.getDefaultString(Messages.getString("SootMainClassPreferencePage.selected")))); //$NON-NLS-1$ //$NON-NLS-2$
+		getTableViewer().setChecked(store.getDefaultString(Messages.getString("SootMainClassPreferencePage.selected")), true); //$NON-NLS-1$
 	
 	}
 

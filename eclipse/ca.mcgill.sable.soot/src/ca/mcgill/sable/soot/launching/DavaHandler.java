@@ -28,7 +28,6 @@ import ca.mcgill.sable.soot.*;
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.jdt.core.*;
-//import org.eclipse.jdt.launching.*;
 
 public class DavaHandler {
 
@@ -41,14 +40,16 @@ public class DavaHandler {
 	
 	
 	public DavaHandler(){
-		setDavaProjName("Dava Project");	
+		System.out.println(Messages.getString("DavaHandler.Dava_Project"));
+		setDavaProjName(Messages.getString("DavaHandler.Dava_Project"));	 //$NON-NLS-1$
 	}
 	
 	public boolean isDava(){
-		if (!getSootOutputFolder().getFolder("dava").exists()) return false;
+		if (!getSootOutputFolder().getFolder(Messages.getString("DavaHandler.dava")).exists()) return false; //$NON-NLS-1$
 		return true;
 	}
 	
+	// creates list of Dava files before Soot runs
 	public void handleBefore() {
 		if (isDava()){
 			createBeforeList();	
@@ -57,7 +58,7 @@ public class DavaHandler {
 	
 	private void createBeforeList(){
 		try {
-			IResource [] elems = getSootOutputFolder().getFolder("dava").getFolder("src").members();
+			IResource [] elems = getSootOutputFolder().getFolder(Messages.getString("DavaHandler.dava")).getFolder(Messages.getString("DavaHandler.src")).members(); //$NON-NLS-1$ //$NON-NLS-2$
 			for (int i = 0; i < elems.length; i++) {
 				if (getBeforeList() == null){
 					setBeforeList(new ArrayList());
@@ -70,21 +71,37 @@ public class DavaHandler {
 		
 	}
 	
+	// handles two things:
+	// 1. if new dava files exist
+	// 2. if already existing dava files have changed
+	// if one of those two things is true then:
+	// if no dava project exists asks to create one else
+	// asks to copy files
 	public void handleAfter() {
 		ArrayList newMembers = new ArrayList();
 		IPath jreLibPath = null;
 		try {
-			IResource [] elems = getSootOutputFolder().getFolder("dava").getFolder("src").members();
+			IResource [] elems = getSootOutputFolder().getFolder(Messages.getString("DavaHandler.dava")).getFolder(Messages.getString("DavaHandler.src")).members(); //$NON-NLS-1$ //$NON-NLS-2$
 			for (int i = 0; i < elems.length; i++) {
 				if (getBeforeList() == null){
 					newMembers.add(elems[i]);
+					SootPlugin.getDefault().getManager().setToFalseRemove((IFile)elems[i]);
 				}
-				else if (!newMembers.contains(elems[i])){
-				
+				else if (getBeforeList().contains(elems[i])) {
+					if (SootPlugin.getDefault().getManager().isFileMarkersRemove((IFile)elems[i])){
+						newMembers.add(elems[i]);
+						// this sets changed bit to 0 - so file doesn't stay on list indefinitely
+						SootPlugin.getDefault().getManager().setToFalseRemove((IFile)elems[i]);
+					}
+					
+				}
+				else if (!getBeforeList().contains(elems[i])){
 					if (SootPlugin.getDefault().getManager().getChangedResources() == null){
 					}
 					else if (SootPlugin.getDefault().getManager().getChangedResources().containsKey(elems[i])){
 						newMembers.add(elems[i]);
+						// this sets changed bit to 0 - so file doesn't stay on list indefinitely
+						SootPlugin.getDefault().getManager().setToFalseRemove((IFile)elems[i]);
 					}
 				}
 			}
@@ -92,12 +109,7 @@ public class DavaHandler {
 			// testing class lib copying
 			IProject proj = getSootOutputFolder().getProject();
 			IResource [] elements = proj.members();
-			/*for (int i = 0; i < elements.length; i++){
-				System.out.println("name: "+elements[i].getName());
-				System.out.println("class: "+elements[i].getClass());
-				System.out.println("type: "+elements[i].getType());
-				System.out.println("location: "+elements[i].getLocation());
-			}*/
+			
 		
 			IJavaProject jProj = JavaCore.create(proj);
 			IClasspathEntry [] paths = jProj.getRawClasspath();
@@ -105,32 +117,13 @@ public class DavaHandler {
 			for (int i = 0; i < paths.length; i++){
 				switch(paths[i].getEntryKind()){
 					case IClasspathEntry.CPE_CONTAINER:{
-						System.out.println("entry is container");
+						System.out.println("entry is container"); //$NON-NLS-1$
 						System.out.println(paths[i].getPath());
 						jreLibPath = paths[i].getPath();
 						
 						break;
 					}
-					/*case IClasspathEntry.CPE_LIBRARY:{
-						System.out.println("entry is library");
-						System.out.println(paths[i].getPath());
-						break;
-					}
-					case IClasspathEntry.CPE_PROJECT:{
-						System.out.println("entry is project");
-						System.out.println(paths[i].getPath());
-						break;
-					}
-					case IClasspathEntry.CPE_SOURCE:{
-						System.out.println("entry is source");
-						System.out.println(paths[i].getPath());
-						break;
-					}
-					case IClasspathEntry.CPE_VARIABLE:{
-						System.out.println("entry is variable");
-						System.out.println(paths[i].getPath());
-						break;
-					}*/
+					
 				}
 			}
 		}
@@ -138,14 +131,12 @@ public class DavaHandler {
 		}
 		
 		if (!newMembers.isEmpty()){
-			//IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-			//String dava_proj = settings.get("special_dava_project");
 			
 			// if is special dava project add src files there
 			if (davaProjectExists()){
 				setDavaProj(JavaCore.create(SootPlugin.getWorkspace().getRoot().getProject(getDavaProjName())));
 				if (getDavaProj().isOpen()){
-					System.out.println("dava proj open");
+					System.out.println("dava proj open"); //$NON-NLS-1$
 					if (shouldCopyFiles()){
 						copyFiles(newMembers);
 					}
@@ -153,7 +144,7 @@ public class DavaHandler {
 				else {
 					openProject();
 					if (shouldCopyFiles()){
-						System.out.println("dava proj was closed");
+						System.out.println("dava proj was closed"); //$NON-NLS-1$
 						copyFiles(newMembers);
 					}
 				}
@@ -171,7 +162,7 @@ public class DavaHandler {
 	
 	private boolean createSpecialDavaProject(IPath jreLibPath){
 		IWorkbenchWindow window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-		MessageDialog create = new MessageDialog(window.getShell(), "Soot Question", null, "Would you like to create a new Dava Project with generated Dava src files?", 0, new String [] {"OK", "Cancel"}, 0);
+		MessageDialog create = new MessageDialog(window.getShell(), Messages.getString("DavaHandler.Soot_Question"), null, Messages.getString("DavaHandler.Would_you_like_to_create_a_new_Dava_Project_with_generated_Dava_src_files"), 0, new String [] {Messages.getString("DavaHandler.OK"), Messages.getString("DavaHandler.Cancel")}, 0); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		create.open();
 		if (create.getReturnCode() == Dialog.OK){
 			// create proj
@@ -182,18 +173,18 @@ public class DavaHandler {
 					proj.create(null);
 					proj.open(null);
 					IProjectDescription pd = proj.getDescription();
-					String [] natures = new String [] {"org.eclipse.jdt.core.javanature"};
+					String [] natures = new String [] {Messages.getString("org.eclipse.jdt.core.javanature")}; 
 					
 					pd.setNatureIds(natures);
 					proj.setDescription(pd, null);
 					
 					setDavaProj(JavaCore.create(proj));
-					IFolder folder = proj.getFolder("src");
+					IFolder folder = proj.getFolder(Messages.getString("DavaHandler.src")); //$NON-NLS-1$
 					if (!folder.exists()){
 						folder.create(false, true, null);
 					}
 					setSrcFolder(folder);
-					IFolder out = proj.getFolder("bin");
+					IFolder out = proj.getFolder(Messages.getString("DavaHandler.bin")); //$NON-NLS-1$
 					if (!folder.exists()){
 						folder.create(false, true, null);
 					}
@@ -202,7 +193,7 @@ public class DavaHandler {
 					//entries[0] = JavaCore.newProjectEntry(proj.getFullPath());
 					//entries[1] = JavaCore.newContainerEntry(out.getFullPath());
 					entries[0] = JavaCore.newSourceEntry(folder.getFullPath());
-					System.out.println(JavaCore.getClasspathVariable("JRE_LIB").toOSString());
+					System.out.println(JavaCore.getClasspathVariable("JRE_LIB").toOSString()); //$NON-NLS-1$
 					if (jreLibPath != null){
 						entries[1] = JavaCore.newContainerEntry(jreLibPath);
 					}
@@ -224,7 +215,7 @@ public class DavaHandler {
 	
 	private boolean shouldCopyFiles() {
 		IWorkbenchWindow window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-		MessageDialog copy = new MessageDialog(window.getShell(), "Soot Question", null, "Would you like to copy Dava src files to the Dava Project?", 0, new String [] {"OK", "Cancel"}, 0);
+		MessageDialog copy = new MessageDialog(window.getShell(), Messages.getString("DavaHandler.Soot_Question"), null, Messages.getString("DavaHandler.Would_you_like_to_copy_Dava_src_files_to_the_Dava_Project"), 0, new String [] {Messages.getString("DavaHandler.OK"), Messages.getString("DavaHandler.Cancel")}, 0); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		copy.open();
 		if (copy.getReturnCode() == Dialog.OK) return true;
 		return false;
@@ -233,15 +224,17 @@ public class DavaHandler {
 	private void copyFiles(ArrayList newFiles){
 		// copy new files
 		Iterator it = newFiles.iterator();
-		IPath srcPath = getDavaProj().getProject().getFolder("src").getFullPath();//getSrcFolder().getFullPath();
+		IPath srcPath = getDavaProj().getProject().getFolder(Messages.getString("DavaHandler.src")).getFullPath();//getSrcFolder().getFullPath(); //$NON-NLS-1$
 		while (it.hasNext()){
 		
 			try {
 				IResource next = (IResource)it.next();
 				System.out.println(next.getName());
-				IPath copyTo = srcPath.append(System.getProperty("file.separator")+next.getName());
+				IPath copyTo = srcPath.append(System.getProperty("file.separator")+next.getName()); //$NON-NLS-1$
+				if (getDavaProj().getProject().getFolder(Messages.getString("DavaHandler.src")).getFile(next.getName()).exists()) { //$NON-NLS-1$
+					getDavaProj().getProject().getFolder(Messages.getString("DavaHandler.src")).getFile(next.getName()).delete(false, null);
+				}
 				next.copy(copyTo, false, null);
-				//ject().getFile((String)it.next()).copy(getDavaProj().getOutputLocation(), false, null);
 			} 
 			catch (CoreException e) {
 				// TODO Auto-generated catch block
