@@ -99,7 +99,7 @@ public class JimpleConstructorFolder extends BodyTransformer
                     if (invoke.getInvokeExpr() instanceof SpecialInvokeExpr) {
                         SpecialInvokeExpr invokeExpr = (SpecialInvokeExpr)invoke.getInvokeExpr();
                         if (invokeExpr.getBase() == lhs){
-                            break;
+                            continue;
                         }
                     }
                 }
