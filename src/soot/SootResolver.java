@@ -147,7 +147,10 @@ public class SootResolver
             Collection references = is.resolve(sc);
             classToReferences.put( sc, new ArrayList(new HashSet(references)) );
         }
+        reResolveHierarchy(sc);
+    }
 
+    public void reResolveHierarchy(SootClass sc) {
         // Bring superclasses to hierarchy
         if(sc.hasSuperclass()) 
             addToResolveWorklist(sc.getSuperclass(), SootClass.HIERARCHY);
@@ -225,6 +228,15 @@ public class SootResolver
                 addToResolveWorklist((Type) o, SootClass.SIGNATURES);
             } else throw new RuntimeException(o.toString());
         }
+    }
+
+    public void reResolve(SootClass cl) {
+        int resolvingLevel = cl.resolvingLevel();
+        if( resolvingLevel < SootClass.HIERARCHY ) return;
+        reResolveHierarchy(cl);
+        cl.setResolvingLevel(SootClass.HIERARCHY);
+        addToResolveWorklist(cl, resolvingLevel);
+        processResolveWorklist();
     }
 }
 
