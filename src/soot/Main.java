@@ -149,7 +149,14 @@ public class Main {
      *   Entry point for cmd line invocation of soot.
      */
     public static void main(String[] args) {
-        Main.v().run(args);
+        try {
+            Main.v().run(args);
+        } catch( OutOfMemoryError e ) {
+            G.v().out.println( "Soot has run out of the memory allocated to it by the Java VM." );
+            G.v().out.println( "To allocate more memory to Soot, use the -Xmx switch to Java." );
+            G.v().out.println( "For example (for 400MB): java -Xmx400m soot.Main ..." );
+            throw e;
+        }
     }
 
     /** 
