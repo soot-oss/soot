@@ -113,7 +113,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		gd = new GridData(GridData.FILL_BOTH);
 		topComp.setLayoutData(gd);
 		GridLayout topLayout = new GridLayout();
-		topLayout.numColumns = 10;
+		topLayout.numColumns = 2;
 		//topLayout.makeColumnsEqualWidth = false;
 		//topLayout.horizontalSpacing = 20;
 		topComp.setLayout(topLayout);
@@ -136,7 +136,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		
 		Composite selection = createSelectionArea(topComp);
 		gd = new GridData(GridData.FILL_BOTH);
-		gd.horizontalSpan = 9;
+		gd.horizontalSpan = 1;
 		
 		selection.setLayoutData(gd);
 		
@@ -162,7 +162,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 				
 		Label separator = new Label(topComp, SWT.HORIZONTAL | SWT.SEPARATOR);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 10;
+		gd.horizontalSpan = 2;
 		separator.setLayoutData(gd);
 		
 		//topComp.layout(true);
@@ -367,8 +367,10 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		createSpecialButton(parent, 1, "Edit", false);
 		// create OK and Cancel buttons by default
 		createSpecialButton(parent, 2, "Delete", false);
-		createSpecialButton(parent, 3, "Run", false);
-		createSpecialButton(parent, 4, "Close", true);
+		createSpecialButton(parent, 3, "Rename", false);
+		createSpecialButton(parent, 4, "Clone", false);
+		createSpecialButton(parent, 5, "Run", false);
+		createSpecialButton(parent, 6, "Close", true);
 	}
 	
 	protected void buttonPressed(int id) {
@@ -386,10 +388,18 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 				break;
 			}
 			case 3: {
-				runPressed();
+				renamePressed();
 				break;
 			}
 			case 4: {
+				clonePressed();
+				break;
+			}
+			case 5: {
+				runPressed();
+				break;
+			}
+			case 6: {
 				cancelPressed();
 				break;
 			}
@@ -438,9 +448,10 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 			System.out.println("return code: "+returnCode);
 			if (returnCode != Dialog.CANCEL) {
 				getTreeRoot().addChild(new SootConfiguration(nameDialog.getValue()));
-				getTreeViewer().setInput(getTreeRoot());
-				getTreeViewer().setExpandedState(getTreeRoot(), true);
-				getTreeViewer().refresh(getTreeRoot(), false);
+				refreshTree();
+				//getTreeViewer().setInput(getTreeRoot());
+				//getTreeViewer().setExpandedState(getTreeRoot(), true);
+				//getTreeViewer().refresh(getTreeRoot(), false);
 				//getTreeViewer().expandAll();
 				System.out.println("updated tree");
 			}
@@ -451,6 +462,11 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		}
 	}
 		
+	private void refreshTree() {
+		getTreeViewer().setInput(getTreeRoot());
+		getTreeViewer().setExpandedState(getTreeRoot(), true);
+		getTreeViewer().refresh(getTreeRoot(), false);
+	}
 	private int displayOptions(String name) {
 		/*Object [] temp = this.getSelectedElements();
 		String result = (String)temp[0];
@@ -533,12 +549,99 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 			
 			// remove also from tree
 			getTreeRoot().removeChild(result);
-			getTreeViewer().setInput(getTreeRoot());
-			getTreeViewer().setExpandedState(getTreeRoot(), true);
-			getTreeViewer().refresh(getTreeRoot(), false);
+			refreshTree();
+			//getTreeViewer().setInput(getTreeRoot());
+			//getTreeViewer().setExpandedState(getTreeRoot(), true);
+			//getTreeViewer().refresh(getTreeRoot(), false);
 		}
 		
 		
+	}
+	
+	private void renamePressed(){
+		if (getSelected() == null) return;
+		
+		String result = this.getSelected();
+		System.out.println("will rename: "+result);
+		
+		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
+		
+		// gets current number of configurations
+		int config_count = 0;
+		int oldNameCount = 0;
+		try {
+			config_count = settings.getInt("config_count");
+		}
+		catch (NumberFormatException e) {	
+		}
+
+		System.out.println("config_count: "+config_count);
+		ArrayList currentNames = new ArrayList();
+		for (int i = 1; i <= config_count; i++) {
+			currentNames.add(settings.get("soot_run_config_"+i));
+			System.out.println(currentNames.get(i-1));
+			if (((String)currentNames.get(i-1)).equals(result)){
+				oldNameCount = i;
+			}
+		}
+
+		
+		// sets validator to know about already used names 
+		SootConfigNameInputValidator validator = new SootConfigNameInputValidator();
+		validator.setAlreadyUsed(currentNames);
+		
+		InputDialog nameDialog = new InputDialog(this.getShell(), "Rename Saved Configuration", "Enter new name:", "", validator); 
+		nameDialog.open();
+		if (nameDialog.getReturnCode() == Dialog.OK){
+			settings.put("soot_run_config_"+oldNameCount, nameDialog.getValue());
+			System.out.println("setting pointer: "+oldNameCount+" with: "+nameDialog.getValue());
+			settings.put(nameDialog.getValue(), settings.getArray(result));
+			getTreeRoot().renameChild(result, nameDialog.getValue());
+		}
+		refreshTree();
+	}
+	
+	
+
+	private void clonePressed(){
+		if (getSelected() == null) return;
+		
+		String result = this.getSelected();
+		System.out.println("will clone: "+result);
+		
+		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
+		
+		// gets current number of configurations
+		int config_count = 0;
+		try {
+			config_count = settings.getInt("config_count");
+		}
+		catch (NumberFormatException e) {	
+		}
+
+		System.out.println("config_count: "+config_count);
+		ArrayList currentNames = new ArrayList();
+		for (int i = 1; i <= config_count; i++) {
+			currentNames.add(settings.get("soot_run_config_"+i));
+			
+		}
+
+		
+		// sets validator to know about already used names 
+		SootConfigNameInputValidator validator = new SootConfigNameInputValidator();
+		validator.setAlreadyUsed(currentNames);
+		
+		InputDialog nameDialog = new InputDialog(this.getShell(), "Rename Saved Configuration", "Enter new name:", "", validator); 
+		nameDialog.open();
+		if (nameDialog.getReturnCode() == Dialog.OK){
+			config_count++;
+			settings.put("soot_run_config_"+config_count, nameDialog.getValue());
+			//System.out.println("setting pointer: "+oldNameCount+" with: "+nameDialog.getValue());
+			settings.put(nameDialog.getValue(), settings.getArray(result));
+			settings.put("config_count", config_count);
+			getTreeRoot().addChild(new SootConfiguration(nameDialog.getValue()));
+		}
+		refreshTree();
 	}
 
 	// runs the config

@@ -65,6 +65,16 @@ public class SootConfiguration {
 		}
 	}
 
+	public void renameChild(String oldName, String newName){
+		Iterator it = getChildren().iterator();
+		while (it.hasNext()){
+			SootConfiguration temp = (SootConfiguration)it.next();
+			if (temp.getLabel().equals(oldName)){
+				temp.setLabel(newName);	
+			}
+		}
+	}
+	
 	/**
 	 * Returns the aliasValPairs.
 	 * @return HashMap

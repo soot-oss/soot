@@ -109,8 +109,19 @@ public class SavedConfigManager {
 	
 	private boolean alreadyInList(String name) {
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		if (settings.getArray(name) == null) return false;
-		else return true;
+		int count = 0;
+		try {
+			count = settings.getInt("config_count");
+		}
+		catch (NumberFormatException e){
+		}
+		for (int i = 1; i < count; i++){
+			if (settings.get("soot_run_config_"+i).equals(name)){
+				return true;
+			}
+		}
+		//if (settings.getArray(name) == null) return false;
+		return false;
 	}
 
 	//	TODO use this instaed of with String, String
