@@ -804,7 +804,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      * Local Decl Creation
      */
     private void createLocalDecl(polyglot.ast.LocalDecl localDecl) {
-        
+       
         String name = localDecl.name();
         polyglot.types.LocalInstance localInst = localDecl.localInstance();
         soot.Value lhs = createLocal(localInst);
@@ -1675,7 +1675,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
        
         return handlePrivateFieldSet(fLeft, right);
     }
-    
+
     protected soot.Local handlePrivateFieldSet(polyglot.ast.Expr expr, soot.Value right){ 
         // in normal j2j its always a field (and checked before call)
         // only has an expr for param for extensibility
@@ -3088,7 +3088,45 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         polyglot.ast.Expr expr = unary.expr();
         polyglot.ast.Unary.Operator op = unary.operator();
 
-        if (op == polyglot.ast.Unary.POST_INC){
+        if (op == polyglot.ast.Unary.POST_INC || op == polyglot.ast.Unary.PRE_INC || op == polyglot.ast.Unary.POST_DEC || op == polyglot.ast.Unary.PRE_DEC) {
+            soot.Value left = createLHS(unary.expr());
+    
+            soot.Local tmp = lg.generateLocal(left.getType());
+            soot.jimple.AssignStmt stmt1 = soot.jimple.Jimple.v().newAssignStmt(tmp, left);
+            body.getUnits().add(stmt1);
+            Util.addLnPosTags(stmt1, unary.position());
+            
+            soot.Value incVal = getConstant(left.getType(), 1);
+           
+            soot.jimple.BinopExpr binExpr;
+            if (unary.operator() == polyglot.ast.Unary.PRE_INC || unary.operator() == polyglot.ast.Unary.POST_INC){
+                binExpr = soot.jimple.Jimple.v().newAddExpr(tmp, incVal);
+            }
+            else {
+                binExpr = soot.jimple.Jimple.v().newSubExpr(tmp, incVal);
+            }
+           
+            soot.Local tmp2 = lg.generateLocal(left.getType());
+            soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(tmp2, binExpr);
+            body.getUnits().add(assign);
+                
+            if (needsAccessor(unary.expr())){
+                System.out.println("thinks accessor is needed");
+                handlePrivateFieldSet(unary.expr(), tmp2);
+            }
+            else {  
+                soot.jimple.AssignStmt stmt3 = soot.jimple.Jimple.v().newAssignStmt(left, tmp2);
+                body.getUnits().add(stmt3);
+            }
+            
+            if (unary.operator() == polyglot.ast.Unary.POST_DEC || unary.operator() == polyglot.ast.Unary.POST_INC){
+                return tmp;    
+            }
+            else {
+                return tmp2;
+            }
+        }
+        /*if (op == polyglot.ast.Unary.POST_INC){
             soot.Local retLocal = generateLocal(expr.type());
             soot.Value sootExpr = base().createExpr(expr);
             soot.jimple.AssignStmt preStmt = soot.jimple.Jimple.v().newAssignStmt(retLocal, sootExpr);
@@ -3222,7 +3260,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
             return local;
             
-        }
+        }*/
         else if (op == polyglot.ast.Unary.BIT_NOT) {
             soot.jimple.IntConstant int1 = soot.jimple.IntConstant.v(-1);
             

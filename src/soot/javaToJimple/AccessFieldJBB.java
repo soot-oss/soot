@@ -60,7 +60,9 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder{
             if (!accessField.field().flags().isStatic()){
                 params.add(base().getThis(Util.getSootType(accessField.field().target().type())));
             }
-            params.add(right);
+            if (right != null){
+                params.add(right);
+            }
             soot.jimple.InvokeExpr invoke;
             if (methToCall.isStatic()){
                 invoke = soot.jimple.Jimple.v().newStaticInvokeExpr(methToCall, params);
@@ -83,6 +85,7 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder{
     protected soot.Value createExpr(polyglot.ast.Expr expr){
         if (expr instanceof soot.javaToJimple.jj.ast.JjAccessField_c){
             soot.javaToJimple.jj.ast.JjAccessField_c accessField = (soot.javaToJimple.jj.ast.JjAccessField_c)expr;
+            
             return ext().createExpr(accessField.field());
         }
         else {

@@ -69,6 +69,7 @@ public abstract class AbstractJimpleBodyBuilder {
     protected soot.Local handlePrivateFieldAssignSet(polyglot.ast.Assign assign){
         return ext().handlePrivateFieldAssignSet(assign);
     }
+    
 
     protected soot.Value getAssignRightLocal(polyglot.ast.Assign assign, soot.Local leftLocal){
         return ext().getAssignRightLocal(assign, leftLocal);
