@@ -60,7 +60,7 @@ public class StaticMethodBinder extends SceneTransformer
                 SootMethod container = (SootMethod)methodsList.removeFirst();
                 JimpleBody b = (JimpleBody)container.getActiveBody();
 
-                if (g.getInvokeExprsIn(container).size() == 0)
+                if (g.getSitesOf(container).size() == 0)
                     continue;
 
                 List unitList = new ArrayList(); unitList.addAll(b.getUnits());
@@ -75,11 +75,8 @@ public class StaticMethodBinder extends SceneTransformer
                     InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
 
                     List targets = g.getTargetsOf(ie);
-                    // HACK
-                    if (targets == null)
-                        continue;
 
-                    if (targets.size() > 1 || 
+                    if (targets.size() != 1 || 
                         ie instanceof StaticInvokeExpr || 
                         ie instanceof SpecialInvokeExpr)
                         continue;
@@ -109,7 +106,7 @@ public class StaticMethodBinder extends SceneTransformer
                             newName = newName + "_static";
 
                         SootMethod ct = new SootMethod(newName, newParameterTypes,
-                                                       target.getReturnType(), target.getModifiers());
+                                                       target.getReturnType(), target.getModifiers() | Modifier.STATIC);
                         target.getDeclaringClass().addMethod(ct);
 
                         methodsList.addLast(ct);
@@ -132,8 +129,8 @@ public class StaticMethodBinder extends SceneTransformer
                                     InvokeExpr newIE = (InvokeExpr)newStmt.getInvokeExpr();
                                     InvokeExpr oldIE = (InvokeExpr)oldStmt.getInvokeExpr();
 
-                                    g.addInvokeExpr(newIE, ct);
-                                    g.imitateInvokeExpr(newIE, oldIE);
+                                    g.addSite(newIE, ct);
+                                    g.copyTargets(oldIE, newIE);
                                 }
                             }
                         }
@@ -193,8 +190,8 @@ public class StaticMethodBinder extends SceneTransformer
                         ValueBox ieBox = s.getInvokeExprBox();
                         ieBox.setValue(sie);
 
-                        g.removeInvokeExpr(ie);
-                        g.addInvokeExpr(sie, container);
+                        g.removeSite(ie);
+                        g.addSite(sie, container);
                         g.addTarget(sie, clonedTarget);
                     }
 

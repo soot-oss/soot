@@ -44,7 +44,7 @@ public class InvokeGraph
     }
 
     /** Returns the invoke expressions of container added via addInvokeExpr */
-    public List getInvokeExprsIn(SootMethod container) 
+    public List getSitesOf(SootMethod container) 
     {
         List l = (List)methodToInvokeExprs.get(container);
         if (l != null)
@@ -82,7 +82,7 @@ public class InvokeGraph
         l.add(target);
     }
 
-    public void addInvokeExpr(InvokeExpr ie, SootMethod container) 
+    public void addSite(InvokeExpr ie, SootMethod container) 
     {
         invokeExprToDeclaringMethod.put(ie, container);
         invokeExprToTargetMethods.put(ie, new ArrayList());
@@ -95,7 +95,7 @@ public class InvokeGraph
         methodToInvokeExprs.put(container, l);
     }
 
-    public void removeInvokeExpr(InvokeExpr ie) 
+    public void removeSite(InvokeExpr ie) 
     {
         SootMethod d = (SootMethod)invokeExprToDeclaringMethod.remove(ie);
         invokeExprToTargetMethods.remove(ie);
@@ -107,10 +107,11 @@ public class InvokeGraph
     }
 
     /** This method is to be called after the imitator has been addInvokeExpr'd. */
-    public void imitateInvokeExpr(InvokeExpr imitator, InvokeExpr roleModel)
+    public void copyTargets(InvokeExpr roleModel, InvokeExpr imitator)
     {
         Iterator it = getTargetsOf(roleModel).iterator();
         while (it.hasNext())
             addTarget(imitator, (SootMethod)it.next());
     }
 }
+

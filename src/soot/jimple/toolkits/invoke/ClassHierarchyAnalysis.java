@@ -70,22 +70,28 @@ public class ClassHierarchyAnalysis
                         if (ie instanceof VirtualInvokeExpr ||
                             ie instanceof InterfaceInvokeExpr)
                         {
-                            Iterator targetsIt = h.resolveAbstractDispatch
-                                (((RefType)((InstanceInvokeExpr)ie).getBase().getType()).getSootClass(), 
-                                ie.getMethod()).iterator();
-                            g.addInvokeExpr(ie, m);
+                            Type receiverType = ((InstanceInvokeExpr)ie).getBase().getType();
+
+                            g.addSite(ie, m);
                             
-                            while (targetsIt.hasNext())
-                                g.addTarget(ie, (SootMethod)targetsIt.next());
+                            if(receiverType instanceof RefType)
+                            {   
+                                // Type might be Null
+                                Iterator targetsIt = h.resolveAbstractDispatch(((RefType)receiverType).getSootClass(), 
+                                    ie.getMethod()).iterator();
+                            
+                                while (targetsIt.hasNext())
+                                    g.addTarget(ie, (SootMethod)targetsIt.next());
+                            }
                         }
                         else if (ie instanceof StaticInvokeExpr)
                         {
-                            g.addInvokeExpr(ie, m);
+                            g.addSite(ie, m);
                             g.addTarget(ie, ie.getMethod());
                         }
                         else if (ie instanceof SpecialInvokeExpr)
                         {
-                            g.addInvokeExpr(ie, m);
+                            g.addSite(ie, m);
                             g.addTarget(ie, h.resolveSpecialDispatch((SpecialInvokeExpr)ie, m));
                         }
                     }
