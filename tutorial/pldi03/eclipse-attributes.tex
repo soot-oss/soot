@@ -1,0 +1,47 @@
+\begin{slide}{Motivation of Soot Attributes in Eclipse}
+\begin{itemize}
+\item The Soot - Eclipse plugin provides a mechanism for viewing
+attribute information in visual ways within Eclipse.
+\item This can aid in software visualization and program understanding.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{String Tags}
+\begin{itemize}
+\item {\red StringTag}s attach a string of information to a {\red Host}.
+{\tiny
+\begin{verbatim}
+s.addTag(new StringTag(val+": NonNull"));
+\end{verbatim}
+}
+\item The Soot - Eclipse plugin displays the string as hover help when the mouse hovers over a line of text in the Java editor and Jimple editor.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Color and Position Tags}
+\begin{itemize}
+\item {\red ColorTag}s attach a color to a {\red Host} and {\red PositionTag}s are then automatically generated and added to the {\red Host}.
+{\tiny
+\begin{verbatim}
+v.addTag(new ColorTag(ColorTag.GREEN));
+\end{verbatim}
+}
+\item The Soot - Eclipse plugin highlights the background color of the text in the editor at the given positions with the given color in the Jimple editor.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Link Tags}
+\begin{itemize}
+\item {\red LinkTag}s attach a string of information, a {\red Host} target and the class name of the target to a {\red Host}.
+{\tiny
+\begin{verbatim}
+String text = "Target:"+m.toString();
+Host h = m;
+String cName = m.getDeclaringClass().getName();
+s.addTag(new LinkTag(text, h, cName));
+\end{verbatim}
+}
+\item The Soot - Eclipse plugin displays a click-able marker beside each line with a link in the Jimple Editor. When clicked a pop-up list containing the link text appears. When text is selected the cursor jumps to the class and position of the target.
+\end{itemize}
+\end{slide}
+

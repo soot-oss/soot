@@ -96,7 +96,7 @@
       <editor
             name="Jimple Editor"
             icon="icons/soot.png"
-            extensions="jimple,grimp,jimp,grimple,shimple,shimp"
+            extensions="jimple,grimp,jimp,grimple,shimple,shimp,baf"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="ca.mcgill.sable.soot.editors.JimpleEditor"
             id="ca.mcgill.sable.soot.editors.JimpleEditor">

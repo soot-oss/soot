@@ -4,10 +4,10 @@ package ca.mcgill.sable.soot.launching;
 import java.io.PrintStream;
 import java.lang.reflect.*;
 
-import org.eclipse.jface.preference.IPreferenceStore;
+//import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 
-import ca.mcgill.sable.soot.SootPlugin;
+//import ca.mcgill.sable.soot.SootPlugin;
 
 //import ca.mcgill.sable.soot.SootPlugin;
 

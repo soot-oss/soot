@@ -54,7 +54,7 @@ public class ListOptionWidget {
         			
 		setLabel(new Label(path, SWT.NONE));
 		setLabelText(data.getText());
-		setText(new Text(path,  SWT.MULTI | SWT.BORDER));
+		setText(new Text(path,  SWT.MULTI | SWT.BORDER | SWT.V_SCROLL));
 		
 
 		if ((data.getInitText() == null) || (data.getInitText().length() == 0)){

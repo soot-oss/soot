@@ -34,12 +34,13 @@ public class SootAttributesJimpleColorer {
 
 	private ITextViewer viewer;
 	private IEditorPart editorPart;
+    private ArrayList textPresList;
 	
-	public TextPresentation computeColors(SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
+	public void computeColors(SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
 		setViewer(viewer);
 		setEditorPart(editorPart);
 		Iterator it = handler.getAttrList().iterator();
-		TextPresentation tp = new TextPresentation();
+		//TextPresentation tp = new TextPresentation();
 		System.out.println("computing colors");
 		while (it.hasNext()) {
 			// sets colors for stmts
@@ -47,7 +48,7 @@ public class SootAttributesJimpleColorer {
 			if ((sa.getRed() == 0) && (sa.getGreen() == 0) && (sa.getBlue() == 0)){
 			}
 			else {
-				setAttributeTextColor(sa.getJimple_ln(), sa.getJimpleOffsetStart()+1, sa.getJimpleOffsetEnd()+1, sa.getRGBColor(), tp);
+				setAttributeTextColor(sa.getJimple_ln(), sa.getJimpleOffsetStart()+1, sa.getJimpleOffsetEnd()+1, sa.getRGBColor());//, tp);
 			}
 			// sets colors for valueboxes
 			if (sa.getValueAttrs() != null){
@@ -57,18 +58,22 @@ public class SootAttributesJimpleColorer {
 					if ((vba.getRed() == 0) && (vba.getGreen() == 0) && (vba.getBlue() == 0)){
 					}
 					else {
-						setAttributeTextColor(sa.getJimple_ln(), vba.getStartOffset()+1, vba.getEndOffset()+1, vba.getRGBColor(), tp);
+						setAttributeTextColor(sa.getJimple_ln(), vba.getStartOffset()+1, vba.getEndOffset()+1, vba.getRGBColor());//, tp);
 					}
 				}
 			}
 		}
-		return tp;
+		//return tp;
 					
 	}
 	
-	private void setAttributeTextColor(int line, int start, int end, RGB colorKey, TextPresentation tp){
+	private void setAttributeTextColor(int line, int start, int end, RGB colorKey) {//, TextPresentation tp){
 		Display display = getEditorPart().getSite().getShell().getDisplay();
-		tp = new TextPresentation();
+		TextPresentation tp = new TextPresentation();
+        if (getTextPresList() == null) {
+            setTextPresList(new ArrayList());
+        }
+        getTextPresList().add(tp);
 		ColorManager colorManager = new ColorManager();
 		int lineOffset = 0;
 		try {
@@ -85,7 +90,7 @@ public class SootAttributesJimpleColorer {
 		
 		display.asyncExec( new Runnable() {
 			public void run() {
-				getViewer().changeTextPresentation(newPresentation, false);
+				getViewer().changeTextPresentation(newPresentation, true);
 			};
 		});
 		
@@ -93,6 +98,18 @@ public class SootAttributesJimpleColorer {
 			
 		
 	}
+    
+    public void clearTextPresentations(){
+        if (getTextPresList() == null) return;
+        
+        Iterator it = getTextPresList().iterator();
+        while (it.hasNext()){
+            TextPresentation tp = (TextPresentation)it.next();
+            tp.clear();
+            System.out.println("cleared TextPresentation");
+        }
+        
+    }
 	
 
 	/**
@@ -122,5 +139,19 @@ public class SootAttributesJimpleColorer {
 	public void setEditorPart(IEditorPart part) {
 		editorPart = part;
 	}
+
+    /**
+     * @return
+     */
+    public ArrayList getTextPresList() {
+        return textPresList;
+    }
+
+    /**
+     * @param list
+     */
+    public void setTextPresList(ArrayList list) {
+        textPresList = list;
+    }
 
 }
