@@ -543,10 +543,10 @@ public class Main implements Runnable
 	}
     }
 
-    private static void printHelp()
+    private static void printVersion()
     {
          // $Format: "            System.out.println(\"Soot version 1.2.0 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.0 (build 1.2.0.dev.11)");
+            System.out.println("Soot version 1.2.0 (build 1.2.0.dev.12)");
             System.out.println("Copyright (C) 1997-2000 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -556,9 +556,17 @@ public class Main implements Runnable
             System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
             System.out.println("and you are welcome to redistribute it under certain conditions.");
             System.out.println("See the accompanying file 'license.html' for details.");
-            System.out.println("");
-            System.out.println("Syntax: (single-file mode) soot [option]* classname ...  ");
+    }
+
+    private static void printHelp()
+    {
+            System.out.println("Syntax:");
+            System.out.println("        (single-file mode) soot [option]* classname ...  ");
             System.out.println("        (application mode) soot --app [option]* mainClassName");
+            System.out.println("");
+            System.out.println("General options:");
+            System.out.println("  --version                    output version information and exit");
+            System.out.println("  -h, --help                   display this help and exit");
             System.out.println("");
             System.out.println("Output options:");
             System.out.println("  -b, --b                      produce .b (abbreviated .baf) files");
@@ -601,7 +609,7 @@ public class Main implements Runnable
             System.out.println("  --subtract-gc                attempt to subtract the gc from the time stats");
             System.out.println("  -v, --verbose                verbose mode");
             System.out.println("  --debug                      avoid catching exceptions");
-            System.out.println("  -p, --phase-option PHASE-NAME KEY[:VALUE]");
+            System.out.println("  -p, --phase-option PHASE-NAME KEY1[:VALUE1],KEY2[:VALUE2],...,KEYn[:VALUEn]");
             System.out.println("                               set run-time option KEY to VALUE for PHASE-NAME");
             System.out.println("                               (default for VALUE is true)");
 	    System.out.println("  -A  --annotation [both|nullpointer|arraybounds]");
@@ -622,152 +630,147 @@ public class Main implements Runnable
         throws CompilationDeathException
     {
         if(args.length == 0)
-        {
-            printHelp();
-            throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
-        }
+	    {
+		printHelp();
+		throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
+	    }
 
-        // Handle all the options
-        for(int i = 0; i < args.length; i++)
-        {
+	// handle --app option first
+        for(int i = 0; i < args.length; i++) {
             String arg = args[i];
-             if(arg.equals("-j") || arg.equals("--jimp"))
-                setTargetRep(JIMP);
-            else if(arg.equals("--njimple"))
-                setTargetRep(NJIMPLE);
-            else if(arg.equals("-s") || arg.equals("--jasmin"))
-                setTargetRep(JASMIN);
-            else if(arg.equals("-J") || arg.equals("--jimple"))
-                setTargetRep(JIMPLE);
-            else if(arg.equals("-B") || arg.equals("--baf"))
-                setTargetRep(BAF);
-            else if(arg.equals("-b") || arg.equals("--b"))
-                setTargetRep(B);
-            else if(arg.equals("-g") || arg.equals("--grimp"))
-                setTargetRep(GRIMP);
-            else if(arg.equals("-G") || arg.equals("--grimple"))
-                setTargetRep(GRIMPLE);
-            else if(arg.equals("-c") || arg.equals("--class"))
-                setTargetRep(CLASS);
-            else if(arg.equals("--dava"))
-                setTargetRep(DAVA);
-
-            else if(arg.equals("-X") || arg.equals("--xml"))
-                produceXmlOutput = true;
-            else if(arg.equals("-O") || arg.equals("--optimize"))
-                setOptimizing(true);
-            else if(arg.equals("-W") || arg.equals("--whole-optimize"))            
-                setOptimizingWhole(true);
-           
-             else if(arg.equals("-t") || arg.equals("--time"))
-                setProfiling(true);
-            else if(arg.equals("--subtract-gc"))
-                setSubstractingGC(true);
-            else if(arg.equals("-v") || arg.equals("--verbose"))
-                setVerbose(true);
-            else if(arg.equals("--soot-class-path") || arg.equals("--soot-classpath"))
-            {
-                if(++i < args.length)
-                    Scene.v().setSootClassPath(args[i]);
-            }
-            else if(arg.equals("--app"))
-            {
-                if (i != 0)
-                {
+            if(arg.equals("--app")) {
+                if (i != 0) {
                     throw new CompilationDeathException(COMPILATION_ABORTED, 
-                                    "Application mode (--app) must be set as first argument to Soot!" +
-                                    "\neg. java soot.Main --app Simulator");           
+							"Application mode (--app) must be set as first argument to Soot!" +
+							"\neg. java soot.Main --app Simulator");           
                 }
                 setAppMode(true);
             }
-            else if(arg.equals("-d"))
-            {
-                if(++i < args.length)
-                    outputDir = args[i];
-            }
-             else if(arg.equals("-x") || arg.equals("--exclude"))
-            {            
-                if(++i < args.length)
-                    addExclude(args[i]);
-            }
-            else if(arg.equals("-i") || arg.equals("--include"))
-            {                 
-                if(++i < args.length)
-                    addInclude(args[i]);
-            }
-            else if(arg.equals("-a") || arg.equals("--analyze-context"))
-                setAnalyzingLibraries(true);
-            else if(arg.equals("--final-rep"))
-            {
-                if(++i < args.length)
-                    setFinalRep(args[i]);
-            }
-            else if (arg.equals("-p") || arg.equals("--phase-option"))
-            {
-                if(i+2 < args.length)
-                    processPhaseOption(args[++i], args[++i]);                
-            }
-            else if (arg.equals("--debug"))
-                setDebug(true);
-               
-            else if (arg.equals("--dynamic-path"))
-            {
-                if(++i < args.length) 
-                    addDynamicPath(args[i]);
-            }
-            else if (arg.equals("--dynamic-packages"))
-            {
-                if(++i < args.length)
-                    addDynamicPackage(args[i]);
-            }
-            else if (arg.equals("--process-path")) 
-            {
-                if(++i < args.length)
-                    addProcessPath(args[i]);                    
-            }                    
-            else if(arg.equals("--src-prec"))
-            {                    
-                if(++i < args.length)                    
-                    setSrcPrecedence(args[i]);
-            } 
-	     else if(arg.equals("--tag-file")) {
-		if(++i < args.length)
-		    sTagFileList.add(args[i]);
+	}
+
+        // Handle all the options
+        for(int i = 0; i < args.length; i++)
+	    {
+		String arg = args[i];
+		if(arg.equals("-j") || arg.equals("--jimp"))
+		    setTargetRep(JIMP);
+		else if(arg.equals("--njimple"))
+		    setTargetRep(NJIMPLE);
+		else if(arg.equals("-s") || arg.equals("--jasmin"))
+		    setTargetRep(JASMIN);
+		else if(arg.equals("-J") || arg.equals("--jimple"))
+		    setTargetRep(JIMPLE);
+		else if(arg.equals("-B") || arg.equals("--baf"))
+		    setTargetRep(BAF);
+		else if(arg.equals("-b") || arg.equals("--b"))
+		    setTargetRep(B);
+		else if(arg.equals("-g") || arg.equals("--grimp"))
+		    setTargetRep(GRIMP);
+		else if(arg.equals("-G") || arg.equals("--grimple"))
+		    setTargetRep(GRIMPLE);
+		else if(arg.equals("-c") || arg.equals("--class"))
+		    setTargetRep(CLASS);
+		else if(arg.equals("--dava"))
+		    setTargetRep(DAVA);
+		else if(arg.equals("-X") || arg.equals("--xml"))
+		    produceXmlOutput = true;
+		else if(arg.equals("-O") || arg.equals("--optimize"))
+		    setOptimizing(true);
+		else if(arg.equals("-W") || arg.equals("--whole-optimize"))
+		    setOptimizingWhole(true);
+		else if(arg.equals("-t") || arg.equals("--time"))
+		    setProfiling(true);
+		else if(arg.equals("--subtract-gc"))
+		    setSubstractingGC(true);
+		else if(arg.equals("-v") || arg.equals("--verbose"))
+		    setVerbose(true);
+		else if(arg.equals("--soot-class-path") 
+			|| arg.equals("--soot-classpath")) {
+		    if(++i < args.length)
+			Scene.v().setSootClassPath(args[i]);
+		}
+		else if(arg.equals("-d")) {
+		    if(++i < args.length)
+			outputDir = args[i];
+		}
+		else if(arg.equals("-x") || arg.equals("--exclude")) {
+		    if(++i < args.length)
+			addExclude(args[i]);
+		}
+		else if(arg.equals("-i") || arg.equals("--include")) {
+		    if(++i < args.length)
+			addInclude(args[i]);
+		}
+		else if(arg.equals("-a") || arg.equals("--analyze-context"))
+		    setAnalyzingLibraries(true);
+		else if(arg.equals("--final-rep")) {
+		    if(++i < args.length)
+			setFinalRep(args[i]);
+		}
+		else if (arg.equals("-p") || arg.equals("--phase-option")) {
+		    if(i+2 < args.length)
+			processPhaseOptions(args[++i], args[++i]);                
+		    //syntax -p phase-name:phase-options
+		    //if(++i < args.length) 
+		    //    processPhaseOption(args[i]);                
+		}
+		else if (arg.equals("--debug"))
+		    setDebug(true);
+		else if (arg.equals("--dynamic-path")) {
+		    if(++i < args.length) 
+			addDynamicPath(args[i]);
+		}
+		else if (arg.equals("--dynamic-packages")) {
+		    if(++i < args.length)
+			addDynamicPackage(args[i]);
+		}
+		else if (arg.equals("--process-path")) {
+		    if(++i < args.length)
+			addProcessPath(args[i]);                    
+		}
+		else if(arg.equals("--src-prec")) {
+		    if(++i < args.length)                    
+			setSrcPrecedence(args[i]);
+		}
+		else if(arg.equals("--tag-file")) {
+		    if(++i < args.length)
+			sTagFileList.add(args[i]);
+		}
+		else if(arg.equals("-A") || arg.equals("--annotation")) {
+		    if (++i < args.length)
+			setAnnotationPhases(args[i]);
+		}
+		else if(arg.equals("--version")) {
+		    printVersion();
+		    throw new CompilationDeathException(COMPILATION_SUCCEDED);            
+		}
+		else if(arg.equals("-h") || arg.equals("--help")) {
+		    printHelp();
+		    throw new CompilationDeathException(COMPILATION_SUCCEDED);            
+		}
+		else if(arg.startsWith("-")) {
+		    System.out.println("Unrecognized option: " + arg);
+		    printHelp();
+		    throw new CompilationDeathException(COMPILATION_ABORTED);
+		}  
+		else if(arg.startsWith("@")) {
+		    try {
+			File fn = new File(arg.substring(1));
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fn)));
+			List argsList = new LinkedList();
+			while (br.ready())
+			    argsList.add(br.readLine());
+			br.close();
+			processCmdLine((String[])argsList.toArray(new String[argsList.size()]));
+		    } catch (IOException e) {
+			throw new CompilationDeathException(COMPILATION_ABORTED,
+							    "Error reading file "+arg.substring(1));
+		    }
+		}
+		else {                    
+		    cmdLineClasses.add(arg);
+		}
 	    }
-	     else if(arg.equals("-A") || arg.equals("--annotation"))
-	     {
-		 if (++i < args.length)
-		     setAnnotationPhases(args[i]);
-	     }
-             else if(arg.startsWith("-"))
-             {
-                 System.out.println("Unrecognized option: " + arg);
-                 printHelp();
-                 throw new CompilationDeathException(COMPILATION_ABORTED);
-             }  
-             else if(arg.startsWith("@"))
-             {
-                    try
-                    {
-                        File fn = new File(arg.substring(1));
-                        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fn)));
-                        List argsList = new LinkedList();
-                        while (br.ready())
-                            argsList.add(br.readLine());
-                        br.close();
-                        processCmdLine((String[])argsList.toArray(new String[argsList.size()]));
-                    }
-                    catch (IOException e)
-                        {
-                            throw new CompilationDeathException(COMPILATION_ABORTED,
-                                            "Error reading file "+arg.substring(1));
-                        }
-                }
-                else
-                {                    
-                    cmdLineClasses.add(arg);
-                }
-        }
         postCmdLineCheck();
     }
     
@@ -786,11 +789,18 @@ public class Main implements Runnable
 	    
     }
 
+    private static void processPhaseOptions(String phaseName, String option) {
+	StringTokenizer st = new StringTokenizer(option, ",");
+	while (st.hasMoreTokens()) {
+	    processPhaseOption(phaseName, st.nextToken());
+	}
+    }
+
     private static void processPhaseOption(String phaseName, String option)
     {
         int colonLoc = option.indexOf(':');
         String key = null, value = null;
-
+	
         if (colonLoc == -1)
             {
                 key = option;
@@ -930,13 +940,13 @@ public class Main implements Runnable
     {   
 
         start = new Date();
-        System.out.println("Soot started on "+start);
 
         try {
         totalTimer.start();
         cmdLineClasses = new HashChain();
         initApp();
         processCmdLine(cmdLineArgs);
+        System.out.println("Soot started on "+start);
 
         // Load necessary classes.
         {            
