@@ -6,7 +6,7 @@
 \item \texttt{internalTransform} method \\does the transformation
 \end{itemize}
 \item Choose a pack for your transformation (usually \texttt{jtp})
-\item Write a \texttt{main} method that adds the phase to the pack, then
+\item Write a \texttt{main} method that adds the transform to the pack, then
 runs Soot's main
 \item (Optional) If your transformation needs command-line options,
 call \texttt{setDeclaredOptions()}
@@ -21,6 +21,7 @@ $\qquad \Rightarrow$ Group them in a {\tt Pack}.
 \vspace{0.1in}
 Soot defines default {\tt Pack}s which are run automatically.
 To add a {\tt Transformer} to the {\tt jtp} {\tt Pack}:
+{\small
 \begin{verbatim}
   Pack jtp = G.v().PackManager().
                      getPack("jtp");
@@ -28,10 +29,8 @@ To add a {\tt Transformer} to the {\tt jtp} {\tt Pack}:
             new NullTransformer()));
   jtp.add(new Transform("jtp.nac", 
             new NullnessAnalysisColorer()));
-\end{verbatim}
-
-On {\tt Pack}, also have {\tt insertBefore()}, {\tt insertAfter()},
-{\tt iterator()}, {\tt apply()}.
+\end{verbatim}}
+\sablefootnote{soot.Pack}
 \end{slide}
 
 \begin{slide}{Extending Soot (hard way)}
@@ -59,7 +58,9 @@ You can do any or all of these yourself:
 \input{intraprocphases}
 
 \begin{slide}{Soot Pack Naming Scheme}
+\vspace*{-0.2in}
 \[ w^? (j|s|b|g) (b|t|o|a)p \]
+\sablefootnote{The p is sometimes silent.}
 
 \begin{itemize}
 \item w $\Rightarrow$ Whole-program phase

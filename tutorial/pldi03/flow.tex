@@ -65,6 +65,23 @@ CFG using a worklist algorithm.
 \sablefootnote{soot.toolkits.scalar}
 \end{slide}
 
+\begin{slide}{Backward vs. Forward Analyses}
+\vspace*{-0.24in}
+A forward analysis computes {\sf OUT} from {\sf IN}:
+
+\vspace*{-0.05in}
+\begin{center}
+\input{flow-fwd.eepic}
+\end{center}
+
+\vspace*{-0.05in}
+A backward analysis computes {\sf IN} from {\sf OUT}:
+
+\begin{center}
+\input{flow-bkwd.eepic}
+\end{center}
+
+\end{slide}
 
 \begin{slide}{Outline: Soot Flow Analysis Examples}
 Will describe how to implement a flow analysis in Soot and present examples:
@@ -113,24 +130,6 @@ In Soot, we subclass {\tt \red BackwardFlowAnalysis}.
 \qquad
 
 {\red \tt class LiveVariablesAnalysis \\ \qquad extends BackwardFlowAnalysis}
-\end{slide}
-
-\begin{slide}{Backward vs. Forward Analyses}
-\vspace*{-0.24in}
-A forward analysis computes {\sf OUT} from {\sf IN}:
-
-\vspace*{-0.05in}
-\begin{center}
-\input{flow-fwd.eepic}
-\end{center}
-
-\vspace*{-0.05in}
-A backward analysis computes {\sf IN} from {\sf OUT}:
-
-\begin{center}
-\input{flow-bkwd.eepic}
-\end{center}
-
 \end{slide}
 
 \begin{slide}{Step 2: Abstraction domain}
@@ -588,6 +587,23 @@ Like {\tt copy()}, use {\tt FlowSet} method -- here, {\tt intersection()}:
 
 \newcounter{plamfoo}
 
+\begin{slide}{Step 3: Branched Flow Function}
+Need to differentiate between branch and fall-through OUT sets.
+
+\begin{verbatim}
+protected void 
+    flowThrough(Object srcValue, 
+                Unit unit,
+                List fallOut, 
+                List branchOuts)
+\end{verbatim}
+
+{\tt fallOut} is a one-element list.
+
+{\tt branchOuts} contains a {\tt FlowSet} for each non-fallthrough
+successor.
+\end{slide}
+
 \overlays{6}{
 \begin{slide}{Step 3: Flow equations}
 \vspace*{-0.1in}
@@ -635,7 +651,6 @@ public NullnessAnalysis(UnitGraph g)
 
   unitToGenerateSet = new HashMap();
   Body b = g.getBody();
-  List refLocals = new LinkedList();
 \end{verbatim}
 \end{slide}
 

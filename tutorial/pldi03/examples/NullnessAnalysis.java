@@ -73,7 +73,7 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
                 dest.add(as.getLeftOp());
         }
 
-        // Copy the out value to all branch boxes.
+        // Copy the out value to the fallthrough box (don't need iterator)
         {
             Iterator it = fallOut.iterator();
             while (it.hasNext()) {
@@ -82,7 +82,7 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
             }
         }
         
-        // Copy the out value to the fallthrough box (don't need iterator)
+        // Copy the out value to all branch boxes.
         {
             Iterator it = branchOuts.iterator();
             while (it.hasNext()) {
