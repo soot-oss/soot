@@ -211,10 +211,11 @@
 				<name>Jimple Body Creation</name>
 				<alias>jb</alias>
                                 <class>JBOptions</class>
+				<short_desc>Create a <tt>JimpleBody</tt> for each method</short_desc>
                                 <long_desc>
-This phase creates a JimpleBody for each input method, using
-either coffi, to read .class files, or the jimple parser, to read
-.jimple files.
+Jimple Body Creation creates a <tt>JimpleBody</tt> for each input
+method, using either coffi, to read <tt>.class</tt> files, or the
+jimple parser, to read <tt>.jimple</tt> files.
 </long_desc>
 				<boolopt>
 					<name>Enabled</name>
@@ -228,7 +229,7 @@ either coffi, to read .class files, or the jimple parser, to read
 					<alias>use-original-names</alias>
 					<short_desc/>
 					<long_desc>
-Use the original names for local variables when the source
+Retain the original names for local variables when the source
 includes those names.  Otherwise, Soot gives variables generic
 names based on their types.
 </long_desc>
@@ -241,20 +242,29 @@ names based on their types.
 						<alias>enabled</alias>
                                                 <default>true</default>
 					</boolopt>
+					<short_desc>Associates separate locals with each use-def web</short_desc>
 					<long_desc>
-This phase identifies use-def webs for local variables and
+The Local Splitter identifies use-def webs for local variables and
 introduces new variables so that each disjoint web is associated
 with a single local.
 </long_desc>
 				</sub_phase>
 				<sub_phase>
-					<name>Aggregator</name>
+					<name>Jimple Local Aggregator</name>
 					<alias>jb.a</alias>
+					<short_desc>Removes some unnecessary copies</short_desc>
                                         <long_desc>
-This phase aggregates Jimple local variables. Essentially, it
-finds definitions which have only a single use and, if it is safe
-to do so, removes the original definition after replacing the use
-with the definition's right-hand side.
+<p>
+The Jimple Local Aggregator removes some unnecessary copies by
+combining some local variables. Essentially, it finds definitions
+which have only a single use and, if it is safe to do so, removes
+the original definition after replacing the use with the
+definition's right-hand side.</p>
+<p>
+At this stage in <tt>JimpleBody</tt> construction, local
+aggregation serves largely to remove the copies to and from stack
+variables which simulate load and store instructions in the
+original bytecode.</p>
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -265,7 +275,9 @@ with the definition's right-hand side.
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
 						<long_desc>
-Aggregate only values stored in stack locals.
+Only aggregate locals that represent stack locations in the
+original bytecode.  (Stack locals can be distinguished in Jimple
+by the <dollar/> character with which their names begin.)
 </long_desc>
                                                 <default>true</default>
 					</boolopt>
@@ -273,8 +285,10 @@ Aggregate only values stored in stack locals.
 				<sub_phase>
 					<name>Unused Local Eliminator</name>
 					<alias>jb.ule</alias>
+					<short_desc>Removes unused locals</short_desc>
                                         <long_desc>
-This phase removes any unused locals.
+The Unused Local Eliminator phase removes any unused locals from
+the method.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -283,8 +297,10 @@ This phase removes any unused locals.
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
+					<short_desc>Assigns types to locals</short_desc>
                                         <long_desc>
-This phase assigns types to local variables.
+The Type Assigner gives local variables types which will
+accommodate the values stored in the variable by the method.
 </long_desc>
 					<name>Type Assigner</name>
 					<alias>jb.tr</alias>
@@ -297,6 +313,7 @@ This phase assigns types to local variables.
 				<sub_phase>
 					<name>Unsplit-originals Local Packer</name>
 					<alias>jb.ulp</alias>
+					<short_desc>Minimizes number of locals</short_desc>
 					<long_desc>
 The Unsplit-originals Local Packer executes only when the
 `<tt>use-original-names</tt>&apos; option is chosen for the
@@ -319,7 +336,7 @@ inverse of the Local Splitter.
 						<short_desc/>
 						<long_desc>
 Use the variable names in the original source as a guide when
-determining how to share local variables across non-interfering
+determining how to share local variables among non-interfering
 variable usages. This recombines named locals which were split by
 the Local Splitter.
 </long_desc>
@@ -328,8 +345,9 @@ the Local Splitter.
 				<sub_phase>
 					<name>Local Name Standardizer</name>
 					<alias>jb.lns</alias>
+					<short_desc>Gives names to locals</short_desc>
 					<long_desc>
-This phase assigns generic names to local variables.
+The Local Name Standardizer assigns generic names to local variables.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -343,15 +361,17 @@ This phase assigns generic names to local variables.
 						<alias>only-stack-locals</alias>
 						<short_desc/>
 						<long_desc>
-Standardizes the names of stack local variables only. This
-becomes the default when the `<tt>use-original-names</tt>&apos;
-option is specified for the `<tt>jb</tt>&apos; phase.
+Only standardizes the names of variables that represent stack
+locations in the original bytecode. This becomes the default when
+the `<tt>use-original-names</tt>&apos; option is specified for
+the `<tt>jb</tt>&apos; phase.
 </long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Copy Propagator</name>
 					<alias>jb.cp</alias>
+					<short_desc>Removes unnecessary copies</short_desc>
 					<long_desc>
 This phase performs cascaded copy propagation.  
     
@@ -395,10 +415,8 @@ those declared in the source bytecode.
 						<default>true</default>
 						<short_desc/>
 						<long_desc>
-Propagate copies only for ``stack&apos;&apos; locals, that is,
-the locals introduced in Jimple to represent stack
-locations. (Stack locals can USUALLY be distinguished in Jimple
-by the <dollar/> character with which their names begin.)
+Propagate copies only for locals that represent stack locations
+in the original bytecode.
 </long_desc>
 					</boolopt>
 				</sub_phase>
@@ -407,8 +425,8 @@ by the <dollar/> character with which their names begin.)
 					<alias>jb.dae</alias>
 					<long_desc>
 This phase eliminates assignment statements to locals whose
-values are not subsequently used, except for assignments where
-the evaluation of the right-hand side may cause side-effects.
+values are not subsequently used, unless evaluating the
+right-hand side of the assignment may cause side-effects.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -423,13 +441,15 @@ the evaluation of the right-hand side may cause side-effects.
 						<default>true</default>
 						<short_desc/>
 						<long_desc>
-Only eliminates dead assignments to stack locals.
+Only eliminate dead assignments to locals that represent stack
+locations in the original bytecode.
 </long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Post-copy propagation Unused Local Eliminator</name>
 					<alias>jb.cp-ule</alias>
+					<short_desc>Removes unused locals</short_desc>
                                         <long_desc>
 This phase removes any locals that are unused as a result of copy propagation.
 </long_desc>
@@ -442,6 +462,7 @@ This phase removes any locals that are unused as a result of copy propagation.
 				<sub_phase>
 					<name>Local Packer</name>
 					<alias>jb.lp</alias>
+					<short_desc>Minimizes number of locals</short_desc>
 					<long_desc>
 The Local Packer attempts to minimize the number of local
 variables required in a method by reusing the same variable for
@@ -673,7 +694,7 @@ allocation site.
 							<default>true</default>
                                                         <short_desc>Simulate effects of native methods in standard class library</short_desc>
 							<long_desc>
-When this option is set to true, effects of native methods in the standard Java class library are simulated.
+When this option is set to true, the effects of native methods in the standard Java class library are simulated.
         </long_desc>
 						</boolopt>
 						<boolopt>
@@ -823,7 +844,7 @@ simplified. This is useful if an external solver is being used to perform the
 propagation.
 </long_desc>
 							</value>
-                                                        <short_desc>Select algorithm to use for propagation</short_desc>
+                                                        <short_desc>Select propagation algorithm</short_desc>
 							<long_desc>
 This option tells Spark which propagation algorithm to use.
         </long_desc>
@@ -854,7 +875,7 @@ Bit is an implementation using a bit vector.
 <short_desc>Hybrid representation using bit vector for large sets</short_desc>
 <long_desc>
 Hybrid is an implementation that keeps an explicit list of up to
-16 elements, and switches to using a bit-vector when the set gets
+16 elements, and switches to a bit-vector when the set gets
 larger than this.
 </long_desc>
 							</value>
@@ -863,10 +884,10 @@ larger than this.
 								<alias>array</alias>
                                                                 <short_desc>Sorted array representation</short_desc>
                                                                 <long_desc>
-Array is an implementation that keeps the elements of the points-to set
-in an array that is always maintained in sorted order. Set membership is
-tested using binary search, and set union and intersection are computed
-using an algorithm based on the merge step from merge sort.
+Array is an implementation that keeps the elements of the
+points-to set in a sorted array. Set membership is tested using
+binary search, and set union and intersection are computed using
+an algorithm based on the merge step from merge sort.
 </long_desc>
 							</value>
 							<value>
@@ -922,7 +943,7 @@ Bit is an implementation using a bit vector.
 <short_desc>Hybrid representation using bit vector for large sets</short_desc>
 <long_desc>
 Hybrid is an implementation that keeps an explicit list of up to
-16 elements, and switches to using a bit-vector when the set gets
+16 elements, and switches to a bit-vector when the set gets
 larger than this.
 </long_desc>
 							</value>
@@ -931,10 +952,10 @@ larger than this.
 								<alias>array</alias>
                                                                 <short_desc>Sorted array representation</short_desc>
                                                                 <long_desc>
-Array is an implementation that keeps the elements of the points-to set
-in an array that is always maintained in sorted order. Set membership is
-tested using binary search, and set union and intersection are computed
-using an algorithm based on the merge step from merge sort.
+Array is an implementation that keeps the elements of the
+points-to set in a sorted array. Set membership is tested using
+binary search, and set union and intersection are computed using
+an algorithm based on the merge step from merge sort.
 </long_desc>
 							</value>
 							<value>
@@ -979,7 +1000,7 @@ Bit is an implementation using a bit vector.
 <short_desc>Hybrid representation using bit vector for large sets</short_desc>
 <long_desc>
 Hybrid is an implementation that keeps an explicit list of up to
-16 elements, and switches to using a bit-vector when the set gets
+16 elements, and switches to a bit-vector when the set gets
 larger than this.
 </long_desc>
 							</value>
@@ -988,10 +1009,10 @@ larger than this.
 								<alias>array</alias>
                                                                 <short_desc>Sorted array representation</short_desc>
                                                                 <long_desc>
-Array is an implementation that keeps the elements of the points-to set
-in an array that is always maintained in sorted order. Set membership is
-tested using binary search, and set union and intersection are computed
-using an algorithm based on the merge step from merge sort.
+Array is an implementation that keeps the elements of the
+points-to set in a sorted array. Set membership is tested using
+binary search, and set union and intersection are computed using
+an algorithm based on the merge step from merge sort.
 </long_desc>
 							</value>
 							<value>
@@ -1154,13 +1175,13 @@ all classes referenced (directly or indirectly) by it.  It excludes
 classes in <tt>java.*</tt>, <tt>javax.*</tt>, and <tt>sun.*</tt>.  This mode is
 triggered by the <tt>-</tt><tt>-app</tt> option.
 
-In whole-program mode, Soot will always apply the contents of the
-Whole-Jimple Transformation Pack to each method under analysis.  This
-occurs after all Jimple bodies have been created.  This pack is called
-<tt>wjtp</tt>.  In an
-unmodified version of Soot, the only transformation in <tt>wjtp</tt> is the
-Spark pointer analysis kit. Spark has many options, which are
-listed at <a href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps">spark.ps</a>.
+In whole-program mode, Soot applies the contents of the
+Whole-Jimple Transformation Pack to each method under analysis.
+This occurs after all Jimple bodies have been created.  In an
+unmodified version of Soot, the only transformation in
+<tt>wjtp</tt> is the Spark pointer analysis kit. Spark has many
+options, which are listed at <a
+href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps">spark.ps</a>.
 
                         </long_desc>
 				<boolopt>
@@ -1176,8 +1197,8 @@ listed at <a href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.
 				<alias>wjop</alias>
 				<long_desc>
 To run optimizing transformations on the whole program, use the <tt>-W</tt>
-command-line option.  This tells Soot that the Whole-Jimple
-Optimization Pack is to be applied (phase name <tt>wjop</tt>).
+command-line option.  This tells Soot to apply Whole-Jimple
+Optimization Pack.
 
 The default behaviour of this Pack has static method binding disabled
 and static inlining enabled.  To reverse this, give the options
@@ -1356,7 +1377,7 @@ then it will not be inlined into other methods.
 				</sub_phase>
 			</phase>
 			<phase>
-				<name>Whole Jimple Annotation Pack</name>
+				<name>Whole-Jimple Annotation Pack</name>
 				<alias>wjap</alias>
 				<boolopt>
 					<name>Enabled</name>
@@ -1479,7 +1500,7 @@ This phase does not change the program.
 				</sub_phase>
 			</phase>
 			<phase>
-				<name>Jimple Transformations Pack</name>
+				<name>Jimple Transformation Pack</name>
 				<alias>jtp</alias>
 				<boolopt>
 					<name>Enabled</name>
@@ -1487,21 +1508,22 @@ This phase does not change the program.
                                         <default>true</default>
 					<short_desc/>
 					<long_desc>
-Soot will always apply the contents of the Jimple transformation pack
-to each method under analysis.  This pack is called <tt>jtp</tt>.  There are
-no transformations in this pack in an unmodified version of Soot.
-                    </long_desc>
+Soot applies the contents of the Jimple Transformation Pack to
+each method under analysis.  This pack contains no
+transformations in an unmodified version of Soot.
+</long_desc>
 				</boolopt>
 			</phase>
 			<phase>
-				<name>Jimple Optimizations Pack</name>
+				<name>Jimple Optimization Pack</name>
 				<alias>jop</alias>
 				<long_desc>
-When Soot is given the <tt>-O</tt> command-line option, the 
-<tt>JimpleOptimizationPack</tt> is applied to every JimpleBody in an
-application class.  This section lists the default transformations in
-the <tt>JimpleOptimizationPack</tt>.
-                        </long_desc>
+When Soot is given the <tt>-O</tt> or <tt>-optimize</tt>
+command-line option, it applies the
+Jimple Optimization Pack to every <tt>JimpleBody</tt> in
+application classes.  This section lists the default
+transformations in the Jimple Optimization Pack.
+</long_desc>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
@@ -1513,8 +1535,8 @@ the <tt>JimpleOptimizationPack</tt>.
 					<name>Common Subexpression Elimination</name>
 					<alias>jop.cse</alias>
 					<long_desc>
-Runs an available expressions analysis on a body, then eliminates
-common subexpressions.
+Runs an available expressions analysis on the method body, then
+eliminates common subexpressions.
 
 This implementation is especially slow, as it does not run on basic
 blocks.  A better implementation (which wouldn&apos;t catch every single
@@ -1669,7 +1691,10 @@ The default behaviour here is to propagate on all locals.
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
 						<short_desc/>
-						<long_desc>Copy propagation only occurs on the ``stack&apos;&apos; locals.</long_desc>
+						<long_desc>
+Only propagate copies to locals that represent stack locations in
+the original bytecode.
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -1757,7 +1782,7 @@ Removes unreachable codes and empty traps.
 					<name>Unconditional Branch Folder 1</name>
 					<alias>jop.ubf1</alias>
 					<long_desc>
-Removes unnecessary `goto&apos; statements from a JimpleBody.
+Removes unnecessary `goto&apos; statements from a <tt>JimpleBody</tt>.
 
 If a <tt>GotoStmt</tt>&apos;s target is the next instruction, then it is
 removed.  If a <tt>GotoStmt</tt> <tt>x</tt>&apos;s target is another <tt>GotoStmt</tt>,
@@ -1792,6 +1817,7 @@ branches, we might generate more unreachable code.)
 				<sub_phase>
 					<name>Unused Local Eliminator</name>
 					<alias>jop.ule</alias>
+					<short_desc>Removes unused locals</short_desc>
 					<long_desc>
 Removes locals with no uses in the method body.
                         </long_desc>
@@ -2047,15 +2073,16 @@ each source method. It is run only if the output format is <tt>grimp</tt> or <tt
 					<long_desc/>
 				</boolopt>
 				<sub_phase>
-					<name>Grimp Pre-Constructor Folding Aggregator</name>
+					<name>Grimp Pre-folding Aggregator</name>
 					<alias>gb.a1</alias>
 	  				<long_desc>
-This phase aggregates Grimp local variables, finding definitions
-with only a single use and removing the definition after
-replacing the use with the definition's right-hand side. While
-the mechanism is the same as that used for aggregating Jimple
-locals, there is more scope for aggregation because Grimp allows
-more complicated expressions.
+The Grimp Pre-folding Aggregator combines some local variables,
+finding definitions with only a single use and removing the
+definition after replacing the use with the definition's
+right-hand side, if it is safe to do so. While the mechanism is
+the same as that employed by the Jimple Local Aggregator, there
+is more scope for aggregation because of Grimp's more complicated
+expressions.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -2097,29 +2124,29 @@ r2 = new java.util.ArrayList();
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Grimp Post-Constructor Folding Aggregator</name>
+					<name>Grimp Post-folding Aggregator</name>
 					<alias>gb.a2</alias>
 	  				<long_desc>
-This phase aggregates Grimp local variables after constructors
-have been folded. Constructor folding typically introduces new
-opportunities for aggregation, since when a sequence of
-instructions like
+The Grimp Post-folding Aggregator combines local variables after
+constructors have been folded. Constructor folding typically
+introduces new opportunities for aggregation, since when a
+sequence of instructions like
 <pre>
 r2 = new java.util.ArrayList;
 r2.<lt/>init<gt/>();
 r3 = r2
 </pre>
-is replaced with
+is replaced by
 <pre>
 r2 = new java.util.ArrayList();
 r3 = r2
 </pre>
-the constructor invocation no longer represents a potential side-effect 
-separating the two definitions, which can be turned into
+the invocation of <tt><lt/>init<gt/></tt> no longer represents a potential side-effect 
+separating the two definitions, so they can be combined into
 <pre>
 r3 = new java.util.ArrayList();
 </pre>
-(assuming there are no other uses of <tt>r2</tt>
+(assuming there are no subsequent uses of <tt>r2</tt>
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -2141,6 +2168,7 @@ Aggregate only values stored in stack locals.
 				<sub_phase>
 					<name>Grimp Unused Local Eliminator</name>
 					<alias>gb.ule</alias>
+					<short_desc>Removes unused locals</short_desc>
                                         <long_desc>
 This phase removes any locals that are unused after constructor
 folding and aggregation.
@@ -2269,7 +2297,7 @@ them dynamically. Then it continues to run apply the
 perform any further optimizations.
 <p>
 Soot provides only one <tt>Peephole</tt>, named
-<tt>ExamplePeephole</tt>, which is not included in the delivered .
+<tt>ExamplePeephole</tt>, which is not enabled by the delivered
 <tt>peephole.dat</tt> file.
 <tt>ExamplePeephole</tt> removes all <tt>checkcast</tt>
 instructions.</p>
@@ -2283,6 +2311,7 @@ instructions.</p>
 				<sub_phase>
 					<name>Unused Local Eliminator</name>
 					<alias>bb.ule</alias>
+					<short_desc>Removes unused locals</short_desc>
                                         <long_desc>
 This phase removes any locals that are unused after load store optimization
 and peephole optimization.
@@ -2296,6 +2325,7 @@ and peephole optimization.
 				<sub_phase>
 					<name>Local Packer</name>
 					<alias>bb.lp</alias>
+					<short_desc>Minimizes number of locals</short_desc>
 					<long_desc>
 The Local Packer attempts to minimize the number of local
 variables required in a method by reusing the same variable for
