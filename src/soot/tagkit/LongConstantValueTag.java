@@ -43,7 +43,7 @@ public class LongConstantValueTag extends ConstantValueTag
 	};
     }
 
-    public double getLongValue() {
+    public long getLongValue() {
 	return value;
     }
 }
