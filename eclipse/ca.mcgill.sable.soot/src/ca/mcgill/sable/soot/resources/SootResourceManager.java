@@ -1,24 +1,3 @@
-/*
- * Created on 20-Mar-2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
-package ca.mcgill.sable.soot.resources;
-
-import java.util.*;
-
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.ITextListener;
-import org.eclipse.jface.text.TextEvent;
-import org.eclipse.jface.text.TextPresentation;
-
-import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
-
-
-
-
 /**
  * @author jlhotak
  *
@@ -37,6 +16,18 @@ import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+package ca.mcgill.sable.soot.resources;
+
+import java.util.*;
+
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.ITextListener;
+import org.eclipse.jface.text.TextEvent;
+import org.eclipse.jface.text.TextPresentation;
+
+import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
 
 public class SootResourceManager implements IResourceChangeListener, ITextListener {
 
@@ -59,7 +50,7 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 	}
 	
 	public void textChanged(TextEvent e){
-		System.out.println("textChanged event occured");
+		//System.out.println("textChanged event occured");
 	}
 
 	
@@ -99,7 +90,7 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 		if (getColorList() != null){
 			Iterator it = getColorList().keySet().iterator();
 			while (it.hasNext()){
-				System.out.println("clearing colors");
+				//System.out.println("clearing colors");
 				((TextPresentation)getColorList().get(it.next())).clear();
 				 
 			}
@@ -133,25 +124,25 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 
 	
 	public void addToLists(IResource res){
-		System.out.println(res.getClass().toString());
+		//System.out.println(res.getClass().toString());
 		if (res instanceof IFile){
 			IFile file = (IFile)res;
-			System.out.println("is a file"); //$NON-NLS-1$
+			///System.out.println("is a file"); //$NON-NLS-1$
 			if ((file.getFileExtension().equals(JAVA_FILE_EXT)) ||
 			 	(file.getFileExtension().equals(JIMPLE_FILE_EXT))){
 						
-				System.out.println("is a java or jimple file"); //$NON-NLS-1$
+				//System.out.println("is a java or jimple file"); //$NON-NLS-1$
 				if (getChangedResources() == null){
 					setChangedResources(new HashMap());
 				}
 				getChangedResources().put(file, new BitSet(2));
-			 	System.out.println("added file: "+file.getFullPath().toOSString()); //$NON-NLS-1$
+			 	//System.out.println("added file: "+file.getFullPath().toOSString()); //$NON-NLS-1$
 			 		
-				System.out.println("added to resource tracking list"); //$NON-NLS-1$
-				Iterator it = getChangedResources().keySet().iterator();
-				while (it.hasNext()){
-					System.out.println(((IFile)it.next()).getFullPath().toOSString());
-				}
+				//System.out.println("added to resource tracking list"); //$NON-NLS-1$
+				//Iterator it = getChangedResources().keySet().iterator();
+				//while (it.hasNext()){
+					//System.out.println(((IFile)it.next()).getFullPath().toOSString());
+				//}
 			 	}
 		}
 		

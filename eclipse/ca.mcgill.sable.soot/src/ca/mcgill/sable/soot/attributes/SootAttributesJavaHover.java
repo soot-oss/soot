@@ -47,7 +47,7 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 	public void setEditor(IEditorPart ed) {
 		super.setEditor(ed);
 	
-		System.out.println(ed.getClass().toString());
+		//System.out.println(ed.getClass().toString());
 		if (ed instanceof AbstractTextEditor) {
 			IJavaElement jElem = getJavaElement((AbstractTextEditor)ed);
 			setSelectedProj(jElem.getResource().getProject().getName());
@@ -65,7 +65,7 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 					}
 					else {
 						for (int i = 0; i < pfs.length; i++) {
-							System.out.println(pfs[i].getElementName());
+							//System.out.println(pfs[i].getElementName());
 						}
 					
 					setPackFileName(fileToNoExt(pfs[0].getElementName()+"."+cu.getElementName()));
@@ -173,7 +173,7 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 		}
 		
 		if (getAttrsHandler() != null) {
-			System.out.println("getting attribute for java ln: "+getLineNum());
+			//System.out.println("getting attribute for java ln: "+getLineNum());
 		  	return getAttrsHandler().getJavaAttribute(getLineNum());
 		}
 		else {

@@ -51,26 +51,26 @@ public class SootRunner implements IRunnableWithProgress {
 		try {
 		
 			final PipedInputStream pis = new PipedInputStream();
-			System.out.println("created inputstream");
+			//System.out.println("created inputstream");
 			//StreamGobbler sootIn = new StreamGobbler(new PipedInputStream(),0);
       		final PipedOutputStream pos = new PipedOutputStream(pis);
-      		System.out.println("created outputstream");
+      		//System.out.println("created outputstream");
       		final PrintStream sootOut = new PrintStream(pos);
-      		System.out.println("created printstream");
+      		//System.out.println("created printstream");
       		
       		//StreamGobbler out = new StreamGobbler(pis,0);
       		//out.run();
         	//(new Thread() {
             	//public void run() {
             final String [] cmdFinal = getCmd();
-            System.out.println("made cmd final");
+            //System.out.println("made cmd final");
             
             //try {
             	
             SootThread sootThread = new SootThread(getDisplay(), getMainClass());
             sootThread.setCmd(cmdFinal);
             sootThread.setSootOut(sootOut);
-            System.out.println("About to start sootThread");
+            //System.out.println("About to start sootThread");
             sootThread.start();
             //sootThread.join();
             //System.out.println("About to start sootThread");
@@ -104,7 +104,7 @@ public class SootRunner implements IRunnableWithProgress {
         	//out);
         	
         	sootThread.join();
-            System.out.println("After sootThread join");
+            //System.out.println("After sootThread join");
             
         	
         	//out.run();	

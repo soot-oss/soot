@@ -114,7 +114,7 @@ public class JimpleFile {
 			className = token;
 			break;
 		}
-		System.out.println(className);
+		//System.out.println(className);
 		
 		JimpleOutlineObject outline = new JimpleOutlineObject("", JimpleOutlineObject.NONE, null);
 		

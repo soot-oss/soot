@@ -1,16 +1,3 @@
-package ca.mcgill.sable.soot.editors;
-
-import java.util.*;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.swt.graphics.Image;
-//import org.eclipse.jface.viewers.ILightweightLabelDecorator;
-import ca.mcgill.sable.soot.SootPlugin;
-
-//import ca.mcgill.sable.soot.launching.SootConfiguration;
-
 /**
  * @author jlhotak
  *
@@ -29,6 +16,20 @@ import ca.mcgill.sable.soot.SootPlugin;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+package ca.mcgill.sable.soot.editors;
+
+import java.util.*;
+
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
+//import org.eclipse.jface.viewers.ILightweightLabelDecorator;
+import ca.mcgill.sable.soot.SootPlugin;
+
+
+
 public class JimpleOutlineLabelProvider implements ILabelProvider {
 
 	private HashMap imageCache;
@@ -44,11 +45,10 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(Object)
 	 */
 	public Image getImage(Object element) {
-		//System.out.println("getting image");
+		
 		ImageDescriptor descriptor = null;
 		if (element instanceof JimpleOutlineObject){
-			//System.out.println("is JimpleOutlineObject");
-			//System.out.println(((JimpleOutlineObject)element).getType());
+			
 			switch (((JimpleOutlineObject)element).getType()){
 				case JimpleOutlineObject.CLASS: {
 					descriptor = SootPlugin.getImageDescriptor("class_obj.gif");
@@ -119,16 +119,7 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 		   	getImageCache().put(descriptor, image);
 		}
 		
-		/*if (element instanceof JimpleOutlineObject){
-			BitSet bits = ((JimpleOutlineObject)element).getDecorators();
-			if (bits != null){
-				if (bits.get(JimpleOutlineObject.FINAL_DEC)){
-					descriptor = SootPlugin.getImageDescriptor("final_co.gif");
-					// add this descriptor image to image as decoration ??
-					image = descriptor.createImage();
-				}
-			}
-		}*/
+	
 		return image;
 		
 		

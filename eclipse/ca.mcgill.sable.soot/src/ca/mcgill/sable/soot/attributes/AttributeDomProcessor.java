@@ -93,7 +93,7 @@ public class AttributeDomProcessor {
 				}			
 			}
 			else {
-				System.out.println("children are null"); 
+				//System.out.println("children are null"); 
 			}
 		}
 		else if (node.getNodeType() == Node.ELEMENT_NODE) {

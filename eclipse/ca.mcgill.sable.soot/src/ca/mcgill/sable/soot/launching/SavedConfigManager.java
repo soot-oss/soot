@@ -38,7 +38,7 @@ public class SavedConfigManager {
 			Iterator it = getDeleteList().iterator();
 			while (it.hasNext()) {
 				String name = (String)it.next();
-				System.out.println("about to remove: "+name);
+				//System.out.println("about to remove: "+name);
 				remove(name);
 			}
 		}
@@ -55,7 +55,7 @@ public class SavedConfigManager {
 		String [] pointers = new String [count];
 		for (int i = 1; i <= count; i++) {
 			pointers[i-1] = settings.get("soot_run_config_"+i);
-			System.out.println("pointers[i]: "+pointers[i-1]);
+			//System.out.println("pointers[i]: "+pointers[i-1]);
 		}
 
 		int i = 1;
@@ -64,7 +64,7 @@ public class SavedConfigManager {
 		//for (int i = 1; i <= count; i++) {
 			if (!pointers[j].equals(name)) {
 			  	settings.put("soot_run_config_"+i, pointers[j]);
-			  	System.out.println("soot_run_config_"+i+": "+pointers[j]);
+			  	//System.out.println("soot_run_config_"+i+": "+pointers[j]);
 			  	i++;
 			}
 			j++;		
@@ -76,7 +76,7 @@ public class SavedConfigManager {
 			count = 0;
 		}
 		settings.put("config_count", count);
-		System.out.println("new config_count: "+count);
+		//System.out.println("new config_count: "+count);
 		settings.put(name, (String)null);	
 		
 				/*
@@ -94,14 +94,14 @@ public class SavedConfigManager {
 			Iterator it = getEditMap().keySet().iterator();
 			while (it.hasNext()) {
 				String name = (String)it.next();
-				System.out.println("will save: "+name);
+				//System.out.println("will save: "+name);
 				if (alreadyInList(name)) {
-					System.out.println("claims it will update");
+					//System.out.println("claims it will update");
 					update(name, (ArrayList)getEditMap().get(name));
 				}
 				else {
-					System.out.println("claims it will add");
-					System.out.println(getEditMap().get(name).getClass().toString());
+					//System.out.println("claims it will add");
+					//System.out.println(getEditMap().get(name).getClass().toString());
 					add(name, (ArrayList)getEditMap().get(name));
 				}
 			}
@@ -170,7 +170,7 @@ public class SavedConfigManager {
 		}
 		count++;
 		settings.put("config_count", count);
-		System.out.println("config_count: "+count);
+		//System.out.println("config_count: "+count);
 		settings.put("soot_run_config_"+count, name);
 		update(name, val);	
 	}
@@ -186,7 +186,7 @@ public class SavedConfigManager {
 		}
 		count++;
 		settings.put("config_count", count);
-		System.out.println("config_count: "+count);
+		//System.out.println("config_count: "+count);
 		settings.put("soot_run_config_"+count, name);
 		update(name, val);
 	}

@@ -1,10 +1,3 @@
-
-package ca.mcgill.sable.soot.editors.parser;
-
-import java.util.*;
-
-import ca.mcgill.sable.soot.editors.JimpleOutlineObject;
-
 /**
  * @author jlhotak
  *
@@ -23,6 +16,14 @@ import ca.mcgill.sable.soot.editors.JimpleOutlineObject;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+package ca.mcgill.sable.soot.editors.parser;
+
+import java.util.*;
+
+import ca.mcgill.sable.soot.editors.JimpleOutlineObject;
+
+
 public class JimpleMethod {
 
 
@@ -48,7 +49,7 @@ public class JimpleMethod {
 		boolean addLabel = false;
 		while (st.hasMoreTokens()){
 			String next = st.nextToken();
-			System.out.println("jimple method next: "+next);
+			//System.out.println("jimple method next: "+next);
 			if (JimpleModifier.isModifier(next)) {
 				if (getModifiers() == null){
 					setModifiers(new ArrayList());

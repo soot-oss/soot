@@ -49,7 +49,7 @@ public class SootAttributeRulerActionDelegate extends AbstractRulerActionDelegat
 		try {
 			ResourceBundle rb = SootPlugin.getDefault().getResourceBundle();
 			if (rb == null){
-				System.out.println("Resource Bundle is null");
+				//System.out.println("Resource Bundle is null");
 			}
 			if (editor instanceof JimpleEditor){
 				return new SootAttributeJimpleSelectAction(rb, null, editor, rulerInfo);

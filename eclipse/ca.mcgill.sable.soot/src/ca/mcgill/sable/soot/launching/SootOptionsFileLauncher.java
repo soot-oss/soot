@@ -25,10 +25,10 @@ public class SootOptionsFileLauncher extends SootFileLauncher {
 		// sometimes window needs to be reset (not sure why)
 		window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		if (window == null) {
-			System.out.println("window is null");
+			//System.out.println("window is null");
 		}
 		else {
-			System.out.println("window not null");
+			//System.out.println("window not null");
 		}
 		
 		PhaseOptionsDialog dialog = new PhaseOptionsDialog(window.getShell());

@@ -49,9 +49,9 @@ public class JimpleEditor extends TextEditor {
 		setSourceViewerConfiguration(new JimpleConfiguration(colorManager, this));
 		setDocumentProvider(new JimpleDocumentProvider());
 		setViewer(this.getSourceViewer());
-		if (this.getSourceViewer() == null){
-			System.out.println("JimpleEditor viewer is always null");
-		}
+		//if (this.getSourceViewer() == null){
+			//System.out.println("JimpleEditor viewer is always null");
+		//}
 		//ColorManager colorManager = new ColorManager();
 		//getViewer().setTextColor(colorManager.getColor(IJimpleColorConstants.JIMPLE_ATTRIBUTE_GOOD), 0, 10, true);
 		
@@ -63,7 +63,7 @@ public class JimpleEditor extends TextEditor {
 	 */
 	public Object getAdapter(Class key) {
 		if (key.equals(IContentOutlinePage.class)) {
-			System.out.println("in getAdapter of editor");
+			//System.out.println("in getAdapter of editor");
 			IEditorInput input = getEditorInput();
 			if (input instanceof IFileEditorInput) {
 				setPage(new JimpleContentOutlinePage(((IFileEditorInput)input).getFile(), this));
@@ -93,7 +93,7 @@ public class JimpleEditor extends TextEditor {
 	}
 
 	protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
-		System.out.println("source viewer created");
+		//System.out.println("source viewer created");
 		setViewer(super.createSourceViewer(parent, ruler, styles));
 		SootPlugin.getDefault().addEditorViewer(getViewer());
 		return getViewer();

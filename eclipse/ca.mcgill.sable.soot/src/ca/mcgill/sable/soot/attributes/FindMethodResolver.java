@@ -44,7 +44,7 @@ public class FindMethodResolver implements IMarkerResolution {
 	 */
 	public String getLabel() {
 		// TODO Auto-generated method stub
-		System.out.println("in get resolution label");
+		//System.out.println("in get resolution label");
 		return getLabel();
 	}
 

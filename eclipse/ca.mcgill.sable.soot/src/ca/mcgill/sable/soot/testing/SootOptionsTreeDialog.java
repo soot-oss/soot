@@ -42,7 +42,7 @@ public class SootOptionsTreeDialog extends TitleAreaDialog {
 
 	private Composite createSelectionComposite(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
-		System.out.println("creating selection composite");
+		//System.out.println("creating selection composite");
 		Tree optionsTree = new Tree(parent, SWT.SINGLE);
 		
 		TreeItem test1 = new TreeItem(optionsTree, SWT.NONE);
@@ -57,7 +57,7 @@ public class SootOptionsTreeDialog extends TitleAreaDialog {
 
 	private Composite createDataComposite(Composite parent) {
 		//Composite composite = new Composite(parent, SWT.NONE);
-		System.out.println("creating data composite");
+		//System.out.println("creating data composite");
 		Label l1 = new Label(parent, SWT.NONE);
 		l1.setText("Smile");
 		

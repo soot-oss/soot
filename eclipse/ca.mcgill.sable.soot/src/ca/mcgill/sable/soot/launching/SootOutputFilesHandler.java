@@ -93,12 +93,12 @@ public class SootOutputFilesHandler {
 				IWorkbenchPage page= window.getActivePage();
 				if (page != null) {
 				
-					System.out.println("soot output folder has: "+children.length+" files");
+					//System.out.println("soot output folder has: "+children.length+" files");
 					for (int i = 0; i < children.length; i++) {
-						System.out.println(children[i].getName());
+						//System.out.println(children[i].getName());
 						if (children[i] instanceof IFile) {
 							if (page == null ) {
-								System.out.println("page is null");
+								//System.out.println("page is null");
 							}
 							getOldFilelist().add(page.openEditor((IFile)children[i]));
 						}

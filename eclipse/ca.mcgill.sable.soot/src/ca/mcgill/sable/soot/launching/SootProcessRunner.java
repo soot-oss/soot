@@ -51,7 +51,7 @@ public class SootProcessRunner implements IRunnableWithProgress {
 		try {
                               
         	String exec1 = "java -cp \""+getSootClasspath().getSootClasspath()+"\" soot.Main -p jb use-original-names "+ getCmd();
-            System.out.println(exec1);
+            //System.out.println(exec1);
             //newProcessStarting();
             setProc(Runtime.getRuntime().exec(exec1));
             
@@ -76,7 +76,7 @@ public class SootProcessRunner implements IRunnableWithProgress {
             //	errorGobbler
             //);
             
-            System.out.println("just before wait for");
+            //System.out.println("just before wait for");
 			getProc().waitFor();
 		}
         catch (Exception e1) {

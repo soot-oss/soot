@@ -79,7 +79,7 @@ public class SootOptionsProjectLauncher extends SootProjectLauncher {
       		//setCmd(ssc.toRunString());
       		//System.out.println("to run soot main class "+dialog.getSootMainClass());
       		String mainClass = dialog.getSootMainClass();
-      		System.out.println("mainClass: "+mainClass);
+      		//System.out.println("mainClass: "+mainClass);
       		if ((mainClass == null) || (mainClass.length() == 0)){
       			runSootDirectly();
       		}
@@ -96,17 +96,17 @@ public class SootOptionsProjectLauncher extends SootProjectLauncher {
 	}
 	
 	private void presetDialog() {
-		System.out.println("presetting dialog");
+		//System.out.println("presetting dialog");
 		getSdc().setOutputDir(getOutputLocation());
-		System.out.println("presetting output dir");
+		//System.out.println("presetting output dir");
 		getSdc().setSootClassPath(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
-		System.out.println("presetting cp");
+		//System.out.println("presetting cp");
 		getSdc().setProcessPath(getProcess_path());
-		System.out.println("presetting process-path"+getProcess_path());
+		//System.out.println("presetting process-path"+getProcess_path());
 		getSdc().setKeepLineNum();
-		System.out.println("presetting keep line num");
+		//System.out.println("presetting keep line num");
 		getSdc().setPrintTags();	
-		System.out.println("presetting print tags");
+		//System.out.println("presetting print tags");
 		getSdc().setSootMainClass();
 	}
 	

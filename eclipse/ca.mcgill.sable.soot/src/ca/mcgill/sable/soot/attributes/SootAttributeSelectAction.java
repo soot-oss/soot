@@ -54,8 +54,8 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 		
 		super(bundle, prefix);
 		
-		System.out.println("called SootAttributeSelectAction constr");
-		System.out.println("editor: "+editor.getClass().toString());
+		//System.out.println("called SootAttributeSelectAction constr");
+		//System.out.println("editor: "+editor.getClass().toString());
 		setEditor((AbstractTextEditor)editor);
 		
 		setRulerInfo(rulerInfo);
@@ -81,7 +81,7 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 		}
 		
 		int markerLine = getRulerInfo().getLineOfLastMouseButtonActivity();
-		System.out.println("markerLine: "+markerLine);
+		//System.out.println("markerLine: "+markerLine);
 		IResource rec = getResource(getEditor());
 		try {
 			IMarker [] markers = rec.findMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
@@ -150,8 +150,8 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 		
 			
 			int selOffset = getLinkToEditor().getDocumentProvider().getDocument(getLinkToEditor().getEditorInput()).getLineOffset(toShow);
-			System.out.println("line to show: "+toShow);
-			System.out.println("offset of line to show: "+selOffset);
+			///System.out.println("line to show: "+toShow);
+			//System.out.println("offset of line to show: "+selOffset);
 			if ((selOffset != -1) && (selOffset != 0)){
 				
 				if (getLinkToEditor() instanceof JimpleEditor){
@@ -167,11 +167,11 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 	}
 	
 	public void findClass(String className){
-		System.out.println("className: "+className);
-		System.out.println("rec: "+getResource(getEditor()).getName());
+		//System.out.println("className: "+className);
+		//System.out.println("rec: "+getResource(getEditor()).getName());
 		
 		String resource = removeExt(getResource(getEditor()).getName());
-		System.out.println(resource);
+		//System.out.println(resource);
 		
 		String ext = getResource(getEditor()).getFileExtension();
 		
@@ -185,7 +185,7 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 			else {
 				try {
 					setLinkToEditor((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor((IFile)file));
-					System.out.println("after setting link to editor - diff file");
+					//System.out.println("after setting link to editor - diff file");
 				}
 				catch (PartInitException e){
 					
@@ -222,7 +222,7 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 		if (sarg.hasResolutions(marker)){
 			IMarkerResolution [] res = sarg.getResolutions(marker);
 			for (int i = 0; i < res.length; i++){
-				System.out.println("res: "+res[i].getLabel());
+				//System.out.println("res: "+res[i].getLabel());
 			}
 		}
 	}

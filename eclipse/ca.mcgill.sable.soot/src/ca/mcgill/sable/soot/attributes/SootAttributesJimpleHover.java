@@ -61,7 +61,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 		
 		super.setEditor(ed);
 		if (ed instanceof JimpleEditor){
-			System.out.println("editor is a jimple editor");
+			//System.out.println("editor is a jimple editor");
 		}
 		if (ed instanceof AbstractTextEditor) {
 			IResource rec = getResource((AbstractTextEditor)ed);
@@ -79,7 +79,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 	
 	
 	private void computeAttributes() {
-		System.out.println("computing attributes");
+		//System.out.println("computing attributes");
 		SootAttributeFilesReader safr = new SootAttributeFilesReader();
 		AttributeDomProcessor adp = safr.readFile(createAttrFileName());
 		if (adp != null) {

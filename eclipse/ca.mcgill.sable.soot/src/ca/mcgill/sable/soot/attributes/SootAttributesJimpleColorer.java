@@ -41,7 +41,7 @@ public class SootAttributesJimpleColorer {
 		setEditorPart(editorPart);
 		Iterator it = handler.getAttrList().iterator();
 		//TextPresentation tp = new TextPresentation();
-		System.out.println("computing colors");
+		//System.out.println("computing colors");
 		while (it.hasNext()) {
 			// sets colors for stmts
 			SootAttribute sa = (SootAttribute)it.next();
@@ -106,7 +106,7 @@ public class SootAttributesJimpleColorer {
         while (it.hasNext()){
             TextPresentation tp = (TextPresentation)it.next();
             tp.clear();
-            System.out.println("cleared TextPresentation");
+            //System.out.println("cleared TextPresentation");
         }
         
     }

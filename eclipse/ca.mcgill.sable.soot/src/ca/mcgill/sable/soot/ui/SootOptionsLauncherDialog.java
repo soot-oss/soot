@@ -1,13 +1,3 @@
-package ca.mcgill.sable.soot.ui;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.swt.widgets.*;
-//import org.eclipse.ui.model.*;
-import org.eclipse.swt.*;
-import ca.mcgill.sable.soot.*;
-
 /**
  * @author jlhotak
  * 
@@ -27,6 +17,17 @@ import ca.mcgill.sable.soot.*;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
 */
+
+package ca.mcgill.sable.soot.ui;
+
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.*;
+import ca.mcgill.sable.soot.*;
+
+
 
 
 public class SootOptionsLauncherDialog extends Dialog {

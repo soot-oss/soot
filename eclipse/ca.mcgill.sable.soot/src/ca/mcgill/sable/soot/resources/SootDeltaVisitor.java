@@ -1,21 +1,3 @@
-/*
- * Created on 20-Mar-2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
-package ca.mcgill.sable.soot.resources;
-
-
-
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.ui.IEditorReference;
-
-
-import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.soot.editors.*;
-
 /**
  * @author jlhotak
  *
@@ -35,6 +17,20 @@ import ca.mcgill.sable.soot.editors.*;
  * Boston, MA 02111-1307, USA.
  */
 
+package ca.mcgill.sable.soot.resources;
+
+
+
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.ui.IEditorReference;
+
+
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.editors.*;
+
+
+
 public class SootDeltaVisitor implements IResourceDeltaVisitor {
 
 	/* (non-Javadoc)
@@ -47,7 +43,7 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 			
 				int flags = delta.getFlags();
 				if ((flags & IResourceDelta.CONTENT) != 0) {
-					System.out.println("Contents changed: "+delta.getResource().getFullPath().toOSString());
+					//System.out.println("Contents changed: "+delta.getResource().getFullPath().toOSString());
 					if (delta.getResource() instanceof IFile){
 						SootPlugin.getDefault().getManager().updateFileChangedFlag((IFile)delta.getResource());
 						if (delta.getResource().getFullPath().getFileExtension().equals(SootResourceManager.JIMPLE_FILE_EXT)){
@@ -60,7 +56,7 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 				break;
 			}
 			case IResourceDelta.ADDED: {
-				System.out.println("Resource added event: "+delta.getResource().getFullPath().toOSString());
+				//System.out.println("Resource added event: "+delta.getResource().getFullPath().toOSString());
 				SootPlugin.getDefault().getManager().addToLists(delta.getResource());
 				if (delta.getResource() instanceof IFile){
 					if (delta.getResource().getFullPath().getFileExtension().equals(SootResourceManager.JIMPLE_FILE_EXT)){
@@ -79,7 +75,7 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 		
 		IEditorReference [] refs = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
 		for (int i = 0; i < refs.length; i++){
-			System.out.println(refs[i].getName());
+			//System.out.println(refs[i].getName());
 			if (refs[i].getName().equals(file.getName())){
 				JimpleEditor ed = (JimpleEditor) refs[i].getEditor(true).getAdapter(JimpleEditor.class);
 				if (ed != null){

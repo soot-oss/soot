@@ -89,7 +89,7 @@ public class SootPlugin extends AbstractUIPlugin {
 	
 		try {
 			resourceBundle= ResourceBundle.getBundle(ISootConstants.SOOT_PLUGIN_RESOURCES_ID);
-			System.out.println("resource bundle not missing");
+			//System.out.println("resource bundle not missing");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
@@ -165,7 +165,7 @@ public class SootPlugin extends AbstractUIPlugin {
 	 */
 	public void startUp() throws CoreException {
 		super.startup();
-		System.out.println("starting up plugin"); //$NON-NLS-1$
+		//System.out.println("starting up plugin"); //$NON-NLS-1$
 		soot_output_doc = new SootDocument();
 		soot_output_doc.startUp();		
 	}

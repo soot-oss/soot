@@ -1,7 +1,25 @@
+/**
+ * @author jlhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 package ca.mcgill.sable.soot.ui;
 
 
-//import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.action.*;
 import org.eclipse.swt.widgets.*;
@@ -9,20 +27,10 @@ import org.eclipse.ui.part.*;
 import org.eclipse.swt.*;
 import org.eclipse.ui.*;
 
-//import ca.mcgill.sable.soot.launching.SootDocument;
 
-/**
- * @author jlhotak
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
- */
 public class SootOutputView extends ViewPart implements ITextListener, IDocumentListener {
 	private TextViewer textViewer;
-	//private SootDocument doc;
-	//private int first_index = 0;
+	
 	private Control control;
 	private Action selectAllAction;
 	private Action copyAction;
@@ -108,12 +116,7 @@ public class SootOutputView extends ViewPart implements ITextListener, IDocument
 		getTextViewer().getControl().setFocus();
 	}
 	
-	/*public void setSootDocument(SootDocument sootDoc) {
-		doc = sootDoc;
-		viewer.setDocument(doc);
-		viewer.setTopIndex(doc.getNumberOfLines());
-		
-	}
+	
 	
 	/**
 	 * Returns the control.
@@ -132,16 +135,14 @@ public class SootOutputView extends ViewPart implements ITextListener, IDocument
 	}
 
 	public void textChanged(TextEvent e) {
-		//System.out.println("Text Changed Event: "+e.getText());
+		
 	}
 	
 	public void documentAboutToBeChanged(DocumentEvent e) {
-		///System.out.println("Document About to be Changed Event");
-	}
+    }
 	
 	public void documentChanged(DocumentEvent e) {
-		//System.out.println("Document Changed Event: "+e.getText());
-		//viewer.setTopIndex(doc.getNumberOfLines());
+		
 	}
 
 	/**

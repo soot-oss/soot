@@ -36,7 +36,10 @@ import java.util.*;
 public interface IfStmt extends Stmt
 {
     public Value getCondition();
-    public void setCondition(Value condition);
+    /**
+	 * condition must be soot.jimple.ConditionExpr
+	 */
+	public void setCondition(Value condition);
     public ValueBox getConditionBox();
     public Stmt getTarget();
     public void setTarget(Unit target);

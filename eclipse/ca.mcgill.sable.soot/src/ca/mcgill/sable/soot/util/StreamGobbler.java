@@ -1,13 +1,3 @@
-package ca.mcgill.sable.soot.util;
-
-import java.io.*;
-
-
-import org.eclipse.swt.widgets.Display;
-
-import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.soot.launching.*;
-
 /**
  * @author jlhotak
  *
@@ -26,6 +16,18 @@ import ca.mcgill.sable.soot.launching.*;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+package ca.mcgill.sable.soot.util;
+
+import java.io.*;
+
+
+import org.eclipse.swt.widgets.Display;
+
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.launching.*;
+
+
 public class StreamGobbler extends Thread {
 
 	public static final int OUTPUT_STREAM_TYPE = 0;
@@ -44,7 +46,7 @@ public class StreamGobbler extends Thread {
 	}
 	
 	public void run() {
-		System.out.println("Gobbler running");
+		//System.out.println("Gobbler running");
 		try {
 			InputStreamReader isr = new InputStreamReader(getIs());
 			BufferedReader br = new BufferedReader(isr);
@@ -76,7 +78,7 @@ public class StreamGobbler extends Thread {
 			}
 		}
 		catch(IOException e1) {
-			System.out.println(e1.getMessage());
+			//System.out.println(e1.getMessage());
 		}
 	}
 	

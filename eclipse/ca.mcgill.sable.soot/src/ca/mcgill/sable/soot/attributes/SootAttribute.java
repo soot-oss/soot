@@ -109,7 +109,7 @@ public class SootAttribute {
 	}
 	
 	public RGB getRGBColor(){
-		System.out.println("RGB Color: "+getRed()+" "+getGreen()+" "+getBlue());
+		//System.out.println("RGB Color: "+getRed()+" "+getGreen()+" "+getBlue());
 		return new RGB(getRed(), getGreen(), getBlue());
 	}
 	

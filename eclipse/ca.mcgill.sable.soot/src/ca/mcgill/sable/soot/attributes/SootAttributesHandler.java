@@ -72,8 +72,8 @@ public class SootAttributesHandler {
 		while (it.hasNext()) {
 			SootAttribute sa = (SootAttribute)it.next();
 			if (sa.attrForJavaLn(lnNum)) {
-				System.out.println("Soot Attribute:");
-				System.out.println(sa);
+				//System.out.println("Soot Attribute:");
+				//System.out.println(sa);
 				//if (sa.getTextList() == null) return null;
 				sb.append(sa.getAllTextAttrs("<br>"));
 			}

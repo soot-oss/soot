@@ -72,7 +72,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		if (getDefList() == null) {
 			setDefList(new HashMap());
 		}
-		System.out.println("adding to defList: key: "+key+" val: "+val); //$NON-NLS-1$ //$NON-NLS-2$
+		//System.out.println("adding to defList: key: "+key+" val: "+val); //$NON-NLS-1$ //$NON-NLS-2$
 		getDefList().put(key, val);
 		
 	} 
@@ -107,21 +107,21 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	
 	public void handleWidgetSelected(SelectionEvent e){
 		
-		System.out.println(e.getSource().getClass().toString());
+		//System.out.println(e.getSource().getClass().toString());
 		if (getRadioGroups() != null) {
-			System.out.println("radioGroups not null");
+			//System.out.println("radioGroups not null");
 			Iterator it = getRadioGroups().keySet().iterator();
 			while (it.hasNext()){
 				Integer key = (Integer)it.next();
-				System.out.println("Key is: "+key);
+				//System.out.println("Key is: "+key);
 				if (getRadioGroups().get(key) == null) break;
 				ArrayList buttons = (ArrayList)getRadioGroups().get(key);
 				Iterator itButtons = buttons.iterator();
-				System.out.println(buttons.size());
+				//System.out.println(buttons.size());
 				while (itButtons.hasNext()){
-					System.out.println("Testing Button");
+					//System.out.println("Testing Button");
 					if (((BooleanOptionWidget)itButtons.next()).getButton().equals(e.getSource())) {
-						System.out.println("radio phase button changed");
+						//System.out.println("radio phase button changed");
 						switchButtons(buttons, (Button)e.getSource());
 					}
 				}
@@ -216,7 +216,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	protected void addToEnableGroup(String phaseAlias, ISootOptionWidget widget, String alias){
 		EnableGroup eGroup = findEnableGroup(phaseAlias);
 		if (eGroup == null){
-			System.out.println("Exception generating option dialog (phase).");
+			//System.out.println("Exception generating option dialog (phase).");
 		}
 		if (widget instanceof BooleanOptionWidget){
 			// could be leader
@@ -247,7 +247,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	protected void addToEnableGroup(String phaseAlias, String subPhaseAlias, ISootOptionWidget widget, String alias){
 		EnableGroup eGroup = findEnableGroup(phaseAlias, subPhaseAlias);
 		if (eGroup == null){
-			System.out.println("Exception generating option dialog (subphase).");
+			//System.out.println("Exception generating option dialog (subphase).");
 		}
 		if (widget instanceof BooleanOptionWidget){
 			// could be leader
@@ -280,14 +280,14 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	
 	protected void updateAllEnableGroups(){
 		if (getEnableGroups() == null) return;
-		System.out.println("Updating All Enable Groups");
+		//System.out.println("Updating All Enable Groups");
 		Iterator it = getEnableGroups().iterator();
 		
 		while (it.hasNext()){
 			EnableGroup eGroup = (EnableGroup)it.next();
 			if (eGroup.isPhaseOptType()){
 				if (eGroup.getLeader() == null){
-					System.out.println("This enable Group has no leader.");
+					//System.out.println("This enable Group has no leader.");
 					continue;
 				}
 				if (eGroup.getLeader().getButton().getSelection() && eGroup.getLeader().getButton().isEnabled()){
@@ -305,7 +305,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 			EnableGroup eGroup = (EnableGroup)it.next();
 			if (!eGroup.isPhaseOptType()){
 				if (eGroup.getLeader() == null){
-					System.out.println("This enable Group has no leader.");
+					//System.out.println("This enable Group has no leader.");
 					continue;
 				}
 				if (eGroup.getLeader().getButton().getSelection() && eGroup.getLeader().getButton().isEnabled()){
@@ -321,11 +321,11 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	
 	private void printEnableGroups(){
 		if (getEnableGroups() == null) return;
-		System.out.println("EGroups:");
+		//System.out.println("EGroups:");
 		Iterator it = getEnableGroups().iterator();
 		while (it.hasNext()){
 			EnableGroup eGroup = (EnableGroup)it.next();
-			System.out.println(eGroup);
+			//System.out.println(eGroup);
 		
 		}
 	}
@@ -364,7 +364,13 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		setPageContainer(createEditArea(getSashForm()));
 
 		initializePageContainer();
-		
+
+        // set general as first page
+        Control [] pages = getPageContainer().getChildren();
+        ((StackLayout)getPageContainer().getLayout()).topControl = pages[0];
+        getPageContainer().layout();
+        
+        		
 		try {
 			getSashForm().setWeights(new int[] {30, 70});
 		}
@@ -435,13 +441,13 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		SootSavedConfiguration newConfig = new SootSavedConfiguration(name, savePressed());
 		
 		newConfig.setEclipseDefs(getEclipseDefList());
-		System.out.println("about to add config to editMap"); //$NON-NLS-1$
+		//System.out.println("about to add config to editMap"); //$NON-NLS-1$
 		if (getEditMap() == null) {
 			setEditMap(new HashMap());
 		}
 		
 		getEditMap().put(name, newConfig.toSaveArray());
-		System.out.println("put in editMap: "+name); //$NON-NLS-1$
+		//System.out.println("put in editMap: "+name); //$NON-NLS-1$
 					
 	}
 		
@@ -485,7 +491,8 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		tree.setContentProvider(new SootOptionsContentProvider());
 		tree.setLabelProvider(new SootOptionsLabelProvider());
 	  	tree.setInput(getInitialInput());
-		
+	
+        
 		setTreeViewer(tree);
 		
 		tree.addSelectionChangedListener(this);
@@ -507,7 +514,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	public void selectionChanged(SelectionChangedEvent event) {
 		IStructuredSelection selection = (IStructuredSelection)event.getSelection();
 		if (selection.isEmpty()) {
-			System.out.println("selection empty");	 //$NON-NLS-1$
+			//System.out.println("selection empty");	 //$NON-NLS-1$
 		}
 		else {
 			Object elem = selection.getFirstElement();

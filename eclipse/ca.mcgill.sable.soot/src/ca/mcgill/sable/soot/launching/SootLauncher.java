@@ -45,7 +45,7 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
  		getSootSelection().initialize(); 		
 		setFileHandler(new SootOutputFilesHandler(window));
 		getFileHandler().resetSootOutputFolder(getSootSelection().getProject());		
-		System.out.println("starting SootLauncher");
+		//System.out.println("starting SootLauncher");
 		setDavaHandler(new DavaHandler());
 		getDavaHandler().setSootOutputFolder(getFileHandler().getSootOutputFolder());
 		getDavaHandler().handleBefore();
@@ -91,14 +91,14 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		
 		for (int i = 0; i < temp.length; i++) {
 			
-			System.out.println(temp[i]);
+			//System.out.println(temp[i]);
 			sendSootOutputEvent(temp[i]);
 			sendSootOutputEvent(" ");
 		}
 		sendSootOutputEvent("\n");
 		
 		
-		System.out.println("about to make list be array of strings");
+		//System.out.println("about to make list be array of strings");
 		//final String [] cmdAsArray = (String []) temp;
 		IRunnableWithProgress op; 
 		try {   
@@ -163,7 +163,7 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
         
         while(st.hasMoreTokens()) {
             cmdLine[count++] = st.nextToken();
-            System.out.println(cmdLine[count-1]); 
+            //System.out.println(cmdLine[count-1]); 
         }
         
         return cmdLine; 

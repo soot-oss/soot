@@ -1,5 +1,3 @@
-package ca.mcgill.sable.soot.util;
-
 /**
  * @author jlhotak
  *
@@ -18,6 +16,10 @@ package ca.mcgill.sable.soot.util;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+package ca.mcgill.sable.soot.util;
+
+
 public class SootCmdFormat {
 
 	public static final String SPACE = " ";

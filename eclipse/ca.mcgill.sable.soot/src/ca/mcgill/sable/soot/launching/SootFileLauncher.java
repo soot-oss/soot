@@ -78,24 +78,24 @@ public class SootFileLauncher extends SootLauncher {
 				IProject proj = cu.getJavaProject().getProject();
 				
 				IFolder output = proj.getFolder(cu.getJavaProject().getOutputLocation().lastSegment());
-				System.out.println("Project Output Folder Location: "+output.getLocation().toOSString());
+				//System.out.println("Project Output Folder Location: "+output.getLocation().toOSString());
 				IPackageFragment pkf = (IPackageFragment)cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
 				IFile exists = null;
 				if (pkf.isDefaultPackage()) {
 					//if (cu.getPackageDeclarations())
 					exists = output.getFile(removeFileExt(cu.getElementName())+".class");
-					System.out.println("output: "+output);
+					//System.out.println("output: "+output);
 					//System.out.println(removeFileExt(cu.getElementName())+".class");
 					//IFile exists = output.getFile(output.getLocation().toOSString()+removeFileExt(cu.getElementName())+".class");
-					System.out.println(exists.getLocation().toOSString());
+					//System.out.println(exists.getLocation().toOSString());
 				}
 				else {
 					IFolder pkg = output.getFolder(pf.getElementName());
 					exists = pkg.getFile(removeFileExt(cu.getElementName())+".class");
-					System.out.println(exists.getLocation().toOSString());
+					//System.out.println(exists.getLocation().toOSString());
 				}
 				if (!exists.exists()){
-					System.out.println("underlying class file cannot be found.");
+					//System.out.println("underlying class file cannot be found.");
 					window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 					MessageDialog noClassFound = new MessageDialog(window.getShell(), "Soot Information", null, "No underlying class file was found, maybe build project.", 0, new String [] {"OK"}, 0);
 					noClassFound.open();
@@ -131,7 +131,7 @@ public class SootFileLauncher extends SootLauncher {
 			setDoNotContinue(true);	
 		}
 		
-		System.out.println( cf.getClass().toString()+" "+cf.toString() );
+		//System.out.println( cf.getClass().toString()+" "+cf.toString() );
 		
 		setToProcess(replaceWithDot(cf.toString()));
 		
@@ -139,15 +139,15 @@ public class SootFileLauncher extends SootLauncher {
 		//		System.out.println("classpath append: "+getClasspathAppend());
 		//setToProcess(cf.toString().substring(cf.toString().lastIndexOf(".")));
 		setClasspathAppend(file.getLocation().toOSString().substring(0, file.getLocation().toOSString().indexOf(cf.toString())));
-		System.out.println("to process: "+getToProcess());
-		System.out.println("classpath append: "+getClasspathAppend());
+		//System.out.println("to process: "+getToProcess());
+		//System.out.println("classpath append: "+getClasspathAppend());
 	}
 	
 	private String replaceWithDot(String in){
 		String separator = System.getProperty("file.separator");
-		System.out.println(separator);
+		//System.out.println(separator);
 		in = in.replaceAll(separator, ".");
-		System.out.println(in);
+		//System.out.println(in);
 		return in;
 	}
 	private String removeFileExt(String filename) {

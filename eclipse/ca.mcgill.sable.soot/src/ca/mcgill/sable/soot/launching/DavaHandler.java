@@ -40,7 +40,7 @@ public class DavaHandler {
 	
 	
 	public DavaHandler(){
-		System.out.println(Messages.getString("DavaHandler.Dava_Project"));
+		//System.out.println(Messages.getString("DavaHandler.Dava_Project"));
 		setDavaProjName(Messages.getString("DavaHandler.Dava_Project"));	 //$NON-NLS-1$
 	}
 	

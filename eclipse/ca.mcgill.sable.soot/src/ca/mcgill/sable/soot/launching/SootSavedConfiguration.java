@@ -67,14 +67,14 @@ public class SootSavedConfiguration {
 	// same as before (removes defs from HashMap)
 	private void removeEclipseDefs(){
 		if (getEclipseDefs() == null) return;
-		System.out.println("removing eclipse defs");
+		//System.out.println("removing eclipse defs");
 		Iterator it = getEclipseDefs().keySet().iterator();
 		while (it.hasNext()) {
 			String key = (String)it.next();
-			System.out.println("test to remove: "+key);
+			//System.out.println("test to remove: "+key);
 			if (getConfig().containsKey(key)) {
 				if (getConfig().get(key).equals(getEclipseDefs().get(key))) {
-					System.out.println("removing: "+key);
+					//System.out.println("removing: "+key);
 					getConfig().remove(key);
 				}
 			}
@@ -82,10 +82,10 @@ public class SootSavedConfiguration {
 				getConfig().put(key, getOppositeVal(getEclipseDefs().get(key)) );
 			}
 		}
-		Iterator temp = getConfig().entrySet().iterator();
-		while (temp.hasNext()) {
-			System.out.println("Testing : "+temp.next().toString());
-		}
+		//Iterator temp = getConfig().entrySet().iterator();
+		//while (temp.hasNext()) {
+		//	System.out.println("Testing : "+temp.next().toString());
+		//}
 	}
 	
 	private Object getOppositeVal(Object val) {
@@ -100,14 +100,14 @@ public class SootSavedConfiguration {
 	
 	// will use addEclipseDefs to Array instead
 	private void addEclipseDefs() {
-		System.out.println("adding eclipse defs");
+		//System.out.println("adding eclipse defs");
 		if (getEclipseDefs() == null) return;
 		Iterator it = getEclipseDefs().keySet().iterator();
-		System.out.println("before adding saved is: "+getSaved());
+		//System.out.println("before adding saved is: "+getSaved());
 		StringBuffer tempSaved = new StringBuffer(getSaved());
 		while (it.hasNext()) {
 			String key = (String)it.next();
-			System.out.println("going to add : "+key);
+			//System.out.println("going to add : "+key);
 			if (getSaved().indexOf((DASH+key)) != -1) {
 				// already there don't add (implies user changed val)	
 			}
@@ -119,7 +119,7 @@ public class SootSavedConfiguration {
 				tempSaved.append(SPACE);
 				tempSaved.append(getEclipseDefs().get(key).toString());
 				tempSaved.append(SPACE);
-				System.out.println("added : "+key);
+				//System.out.println("added : "+key);
 			}
 		}
 		setSaved(tempSaved.toString());
@@ -127,16 +127,16 @@ public class SootSavedConfiguration {
 	
 	// will use this one in future and not addEclipseDefs
 	private void addEclipseDefsToArray() {
-		System.out.println("adding eclipse defs to array");
+		//System.out.println("adding eclipse defs to array");
 		if (getEclipseDefs() == null) return;
 		Iterator it = getEclipseDefs().keySet().iterator();
-		System.out.println("before adding saved is: "+getSaved());
+		//System.out.println("before adding saved is: "+getSaved());
 		//StringBuffer tempSaved = new StringBuffer(getSaved());
 		//ArrayList tempSaved = new ArrayList();
 		//tempSaved.addAll(getSaveArray());
 		while (it.hasNext()) {
 			String key = (String)it.next();
-			System.out.println("going to add : "+key);
+			//System.out.println("going to add : "+key);
 			if (getSaveArray().contains(DASH+key)) {
 				// already there don't add (implies user changed val)	
 			}
@@ -150,7 +150,7 @@ public class SootSavedConfiguration {
 				//tempSaved.append(SPACE);
 				//tempSaved.append(getEclipseDefs().get(key).toString());
 				//tempSaved.append(SPACE);
-				System.out.println("added : "+key);
+				//System.out.println("added : "+key);
 			}
 		}
 		//setSaved(tempSaved.toString());
@@ -168,9 +168,9 @@ public class SootSavedConfiguration {
 		}
 		int counter = 0;
 		
-		System.out.println(getSaveArray().size());
+		//System.out.println(getSaveArray().size());
 		while (counter < getSaveArray().size()){
-			System.out.println(getSaveArray().get(counter)+" "+bits.get(counter));
+			//System.out.println(getSaveArray().get(counter)+" "+bits.get(counter));
 			if ((bits.get(counter+2)) || ((counter+2) >= getSaveArray().size())){
 				// non phase opt
 				config.put(((String)getSaveArray().get(counter)).substring(2), (String)getSaveArray().get(counter+1));
@@ -185,7 +185,7 @@ public class SootSavedConfiguration {
 				config.put(key.substring(2), val);
 				counter = counter + 3;
 			}
-			System.out.println(counter);
+			//System.out.println(counter);
 		}
 		
 		return config;
@@ -331,9 +331,9 @@ public class SootSavedConfiguration {
 		while (keysIt.hasNext()) {
 			String key = (String)keysIt.next();
 			StringTokenizer st = new StringTokenizer(key);
-			System.out.println("about to find val");
+			//System.out.println("about to find val");
 			Object val = getConfig().get(key);
-			System.out.println("found val");
+			//System.out.println("found val");
 			switch(st.countTokens()) {
 				case 1: {
 					String aliasName = st.nextToken();
@@ -400,15 +400,15 @@ public class SootSavedConfiguration {
 		
 		// first remove eclipse defs
 		removeEclipseDefs();
-		System.out.println("removed eclipse defs");
+		//System.out.println("removed eclipse defs");
 		StringBuffer toSave = new StringBuffer();
 		Iterator keysIt = getConfig().keySet().iterator();
 		while (keysIt.hasNext()) {
 			String key = (String)keysIt.next();
 			StringTokenizer st = new StringTokenizer(key);
-			System.out.println("about to find val");
+			//System.out.println("about to find val");
 			Object val = getConfig().get(key);
-			System.out.println("found val");
+			//System.out.println("found val");
 			switch(st.countTokens()) {
 				case 1: {
 					toSave.append(DASH);
@@ -430,7 +430,7 @@ public class SootSavedConfiguration {
 									toSave.append(SPACE);		
 								}
 							}
-							System.out.println("LISTOPT: String contains newline");
+							//System.out.println("LISTOPT: String contains newline");
 						}
 						else {
 							toSave.append(val);
@@ -465,7 +465,7 @@ public class SootSavedConfiguration {
 			
 		}
 		setSaved(toSave.toString());
-		System.out.println("about to return toSave string: "+getSaved());
+		//System.out.println("about to return toSave string: "+getSaved());
 		return toSave.toString();
 	}
 	

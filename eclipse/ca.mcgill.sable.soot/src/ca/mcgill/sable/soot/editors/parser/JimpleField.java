@@ -53,7 +53,7 @@ public class JimpleField {
 			}
 			if (counter == numTokens){
 				setType(tempType);
-				System.out.println("count = numTokens: "+next);
+				//System.out.println("count = numTokens: "+next);
 				setLabel(next.substring(0, next.indexOf(";"))+" : "+getType());
 			}
 			counter++;

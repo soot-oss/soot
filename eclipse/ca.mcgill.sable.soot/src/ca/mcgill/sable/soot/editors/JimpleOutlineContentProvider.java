@@ -1,11 +1,3 @@
-package ca.mcgill.sable.soot.editors;
-
-import org.eclipse.jface.viewers.ITreeContentProvider;
-//import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-
-//import ca.mcgill.sable.soot.launching.SootConfiguration;
-
 /**
  * @author jlhotak
  *
@@ -24,6 +16,16 @@ import org.eclipse.jface.viewers.Viewer;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+package ca.mcgill.sable.soot.editors;
+
+import org.eclipse.jface.viewers.ITreeContentProvider;
+//import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+
+//import ca.mcgill.sable.soot.launching.SootConfiguration;
+
+
 public class JimpleOutlineContentProvider implements ITreeContentProvider {
 
 
@@ -101,7 +103,7 @@ public class JimpleOutlineContentProvider implements ITreeContentProvider {
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		
-		System.out.println("jimple content outline editor input changed ");
+		//System.out.println("jimple content outline editor input changed ");
 	}
 
 }

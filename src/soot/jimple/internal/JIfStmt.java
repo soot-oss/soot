@@ -93,9 +93,6 @@ public class JIfStmt extends AbstractStmt implements IfStmt
     {
         return conditionBox.getValue();
     }
-	/**
-	 * condition must be soot.jimple.ConditionExpr
-     * */
     public void setCondition(Value condition)
     {
         conditionBox.setValue(condition);

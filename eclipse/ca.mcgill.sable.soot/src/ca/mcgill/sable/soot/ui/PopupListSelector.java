@@ -26,12 +26,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public class PopupListSelector {
 	private Shell shell;
 	private List list;
@@ -93,8 +88,8 @@ public class PopupListSelector {
 		int spaceBelow = screenSize.height - (rect.y + rect.height) - 30;
 		int spaceAbove = rect.y - 30;
 
-		System.out.println("spaceBelow: "+spaceBelow);
-		System.out.println("spaceAbove: "+spaceAbove);
+		//System.out.println("spaceBelow: "+spaceBelow);
+		//System.out.println("spaceAbove: "+spaceAbove);
 		int y = 0;
 		if (spaceAbove > spaceBelow && listSize.y > spaceBelow) {
 			// place popup list above table cell
@@ -126,11 +121,11 @@ public class PopupListSelector {
 		y = 0;
 		if (spaceAbove <= spaceBelow){
 			y = spaceAbove + rect.y;
-			System.out.println(spaceBelow - spaceAbove);
+			///System.out.println(spaceBelow - spaceAbove);
 		}
 		else {
 			y = rect.y - spaceBelow;
-			System.out.println(spaceAbove - spaceAbove);
+			//System.out.println(spaceAbove - spaceAbove);
 		}
 		
 		y = (rect.y * 16) + 85;
