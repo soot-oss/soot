@@ -76,9 +76,13 @@ public class Aggregator extends BodyTransformer
                 Unit u = (Unit) unitIt.next();
                 Zone zone = (Zone) zonation.getZoneOf(u);
                 
-                
-                Iterator boxIt = u.getUseAndDefBoxes().iterator();
-                           
+                Iterator boxIt = u.getUseBoxes().iterator();
+                while(boxIt.hasNext())
+                {
+                    ValueBox box = (ValueBox) boxIt.next();                    
+                    boxToZone.put(box, zone);
+                }   
+                boxIt = u.getDefBoxes().iterator();
                 while(boxIt.hasNext())
                 {
                     ValueBox box = (ValueBox) boxIt.next();                    
@@ -271,10 +275,8 @@ public class Aggregator extends BodyTransformer
               // Check for intervening side effects due to method calls
                 if(propagatingInvokeExpr || propagatingFieldRef || propagatingArrayRef)
                     {
-                      for (Iterator useIt = (between.getUseBoxes()).iterator();
-                           useIt.hasNext(); )
-                        {
-                          ValueBox box = (ValueBox) useIt.next();
+                      for( Iterator boxIt = (between.getUseBoxes()).iterator(); boxIt.hasNext(); ) {
+                          final ValueBox box = (ValueBox) boxIt.next();
                           
                           if(between == use && box == useBox)
                           {

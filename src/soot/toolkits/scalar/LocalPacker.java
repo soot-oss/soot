@@ -194,8 +194,19 @@ public class LocalPacker extends BodyTransformer
             {
                 Unit s = (Unit) codeIt.next();
 
-                Iterator boxIt = s.getUseAndDefBoxes().iterator();
+                Iterator boxIt;
+                boxIt = s.getUseBoxes().iterator();
+                while(boxIt.hasNext())
+                {
+                    ValueBox box = (ValueBox) boxIt.next();
 
+                    if(box.getValue() instanceof Local)
+                    {
+                        Local l = (Local) box.getValue();
+                        box.setValue((Local) localToNewLocal.get(l));
+                    }
+                }
+                boxIt = s.getDefBoxes().iterator();
                 while(boxIt.hasNext())
                 {
                     ValueBox box = (ValueBox) boxIt.next();

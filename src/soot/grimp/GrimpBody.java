@@ -167,8 +167,14 @@ public class GrimpBody extends StmtBody
 
             /* map old Expr's to new Expr's. */
             Stmt newStmt = (Stmt)(newStmtBox.getUnit());
-            Iterator useBoxesIt = (Iterator)
-                newStmt.getUseAndDefBoxes().iterator();
+            Iterator useBoxesIt;
+            useBoxesIt = newStmt.getUseBoxes().iterator();
+            while(useBoxesIt.hasNext())
+                {
+                    ValueBox b = (ValueBox) (useBoxesIt.next());
+                    b.setValue(Grimp.v().newExpr(b.getValue()));
+                }
+            useBoxesIt = newStmt.getDefBoxes().iterator();
             while(useBoxesIt.hasNext())
                 {
                     ValueBox b = (ValueBox) (useBoxesIt.next());

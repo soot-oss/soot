@@ -82,12 +82,27 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     /** Returns a list of Boxes pointing to this Unit. */
     public List getBoxesPointingToThis()
     {
-        return boxesPointingToThis;
+        return Collections.unmodifiableList( boxesPointingToThis );
+    }
+
+    public void addBoxPointingToThis( UnitBox b ) {
+        if( boxesPointingToThis == null ) boxesPointingToThis = new ArrayList();
+        boxesPointingToThis.add( b );
+    }
+
+    public void removeBoxPointingToThis( UnitBox b ) {
+        if( boxesPointingToThis != null ) boxesPointingToThis.remove( b );
     }
 
     /** Returns a list of ValueBoxes, either used or defined in this Unit. */
     public List getUseAndDefBoxes()
     {
+        List useBoxes = getUseBoxes();
+        List defBoxes = getDefBoxes();
+        if( useBoxes == emptyList && defBoxes == emptyList ) return emptyList;
+        if( useBoxes == emptyList ) return Collections.unmodifiableList(defBoxes);
+        if( defBoxes == emptyList ) return Collections.unmodifiableList(useBoxes);
+
         valueBoxes = new ArrayList();
 
         valueBoxes.addAll(getUseBoxes());

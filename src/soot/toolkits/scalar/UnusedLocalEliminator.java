@@ -70,8 +70,16 @@ public class UnusedLocalEliminator extends BodyTransformer
 
                 // Remove all locals in defBoxes from unusedLocals
                 {
-                    Iterator boxIt = s.getUseAndDefBoxes().iterator();
+                    Iterator boxIt;
+                    boxIt = s.getUseBoxes().iterator();
+                    while(boxIt.hasNext())
+                    {
+                        Value value = ((ValueBox) boxIt.next()).getValue();
 
+                        if(value instanceof Local && !usedLocals.contains(value))
+                            usedLocals.add(value);
+                    }
+                    boxIt = s.getDefBoxes().iterator();
                     while(boxIt.hasNext())
                     {
                         Value value = ((ValueBox) boxIt.next()).getValue();

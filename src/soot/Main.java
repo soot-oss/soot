@@ -61,7 +61,7 @@ public class Main implements Runnable
 {   
     // TODO: the following string should be updated by the source control
     //   $Format: "            public static final String versionString = \"1.2.4 (build $ProjectVersion$)\";"$
-            public static final String versionString = "1.2.4 (build 1.2.4.dev.43)";
+            public static final String versionString = "1.2.4 (build 1.2.4.dev.44)";
     
     public Date start;
     public Date finish;
@@ -731,7 +731,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.4 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.43)");
+            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.44)");
 	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -1513,7 +1513,7 @@ public class Main implements Runnable
     }
 	
     // called by the "classic" command-line parser
-    private static void processPhaseOptions(String phaseName, String option) {
+    static void processPhaseOptions(String phaseName, String option) {
 	StringTokenizer st = new StringTokenizer(option, ",");
 	while (st.hasMoreTokens()) {
 	    processPhaseOption(phaseName, st.nextToken(), ':');
@@ -1777,15 +1777,7 @@ public class Main implements Runnable
       SootClass s = (SootClass)classIt.next();
       System.out.println(" Transforming " + s.getName() + "...");
 
-      if (!isInDebugMode) {
-	try {
-	  lazyHandleClass(s);
-	} catch (RuntimeException e) {
-	  e.printStackTrace();
-	}
-      } else {
-	lazyHandleClass(s);
-      }
+      lazyHandleClass(s);
     }
   }
 
@@ -1804,15 +1796,7 @@ public class Main implements Runnable
       System.out.print( s.getName() + "... " );
       System.out.flush();
 							
-      if(!isInDebugMode) {
-	try {
-	  handleClass(s);
-	} catch(RuntimeException e) {
-	  e.printStackTrace();
-	}
-      } else {
-	handleClass(s);
-      }									
+      handleClass(s);
       System.out.println();
     }
   }
@@ -1846,15 +1830,7 @@ public class Main implements Runnable
 	System.out.print( "Generating " + fileName + "... ");
 	System.out.flush();
 
-	if (!isInDebugMode) {
-	  try {
-	    s.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
-	  } catch (RuntimeException e) {
-	    e.printStackTrace();
-	  }
-	} else {
-	  s.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
-	}
+        s.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
 
 	System.out.println();
 	System.out.flush();

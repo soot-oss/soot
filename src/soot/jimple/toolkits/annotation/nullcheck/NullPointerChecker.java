@@ -129,8 +129,35 @@ public class NullPointerChecker extends BodyTransformer
 			}
 			else
 			{
-			    Iterator boxIt = s.getUseAndDefBoxes().iterator();
+			    Iterator boxIt;
+                            boxIt = s.getDefBoxes().iterator();
+			    while (boxIt.hasNext())
+			    {
+				ValueBox vBox = (ValueBox)boxIt.next();
+				Value v = vBox.getValue();
 
+				// putfield, and getfield 
+				if (v instanceof InstanceFieldRef)
+				{
+				    obj = ((InstanceFieldRef)v).getBase();
+				    break;
+				}
+				else
+				// invokevirtual, invokespecial, invokeinterface
+				if (v instanceof InstanceInvokeExpr)
+				{
+				    obj = ((InstanceInvokeExpr)v).getBase();
+				    break;
+				}
+				else
+				// arraylength 
+				if (v instanceof LengthExpr)
+				{
+				    obj = ((LengthExpr)v).getOp();
+				    break;
+				}
+			    }
+                            boxIt = s.getUseBoxes().iterator();
 			    while (boxIt.hasNext())
 			    {
 				ValueBox vBox = (ValueBox)boxIt.next();

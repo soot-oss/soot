@@ -426,49 +426,11 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 		
 		Unit s = (Unit) unitIt.next();
 		
-		Iterator boxIt = s.getUseAndDefBoxes().iterator();
-		
-		while(boxIt.hasNext()) {
-		    
-		    ValueBox box = (ValueBox) boxIt.next();
-		    Value val = box.getValue();
-		    Type opType = null;
-		    
-		    if (val instanceof InstanceFieldRef) {
-			
-			InstanceFieldRef ir = (InstanceFieldRef) val;
-			
-			opType = ir.getType(); 
-			if (opType instanceof RefType ||
-			    opType instanceof ArrayType) {
-			    
-			    EquivalentValue eir = getEquivalentValue(ir); 
-
-			    if (!refTypeInstFields.contains(eir)) {
-				refTypeInstFields.add(eir);
-
-				EquivalentValue eirbase = getEquivalentValue(ir.getBase());
-				if (!refTypeInstFieldBases.contains(eirbase))
-				    refTypeInstFieldBases.add(eirbase);
-			    }
-
-			}
-		    } else if (val instanceof StaticFieldRef) {
-			
-			StaticFieldRef sr = (StaticFieldRef) val;
-			opType = sr.getType();
-			
-			if (opType instanceof RefType ||
-			    opType instanceof ArrayType) {
-			    
-			    EquivalentValue esr = getEquivalentValue(sr);
-
-			    if (!refTypeStaticFields.contains(esr)) {
-				refTypeStaticFields.add(esr);
-			    }
-			}
-		    }
-		}
+		Iterator boxIt;
+                boxIt = s.getUseBoxes().iterator();
+		while(boxIt.hasNext()) initRefTypeLists( (ValueBox) boxIt.next() );
+                boxIt = s.getDefBoxes().iterator();
+		while(boxIt.hasNext()) initRefTypeLists( (ValueBox) boxIt.next() );
 		
 	    }
 
@@ -482,7 +444,45 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 	// System.out.println("Analyzed references: " + refTypeValues);
     } // end initRefTypeLists 
 
+    private void initRefTypeLists( ValueBox box ) {
+        Value val = box.getValue();
+        Type opType = null;
+        
+        if (val instanceof InstanceFieldRef) {
+            
+            InstanceFieldRef ir = (InstanceFieldRef) val;
+            
+            opType = ir.getType(); 
+            if (opType instanceof RefType ||
+                opType instanceof ArrayType) {
+                
+                EquivalentValue eir = getEquivalentValue(ir); 
 
+                if (!refTypeInstFields.contains(eir)) {
+                    refTypeInstFields.add(eir);
+
+                    EquivalentValue eirbase = getEquivalentValue(ir.getBase());
+                    if (!refTypeInstFieldBases.contains(eirbase))
+                        refTypeInstFieldBases.add(eirbase);
+                }
+
+            }
+        } else if (val instanceof StaticFieldRef) {
+            
+            StaticFieldRef sr = (StaticFieldRef) val;
+            opType = sr.getType();
+            
+            if (opType instanceof RefType ||
+                opType instanceof ArrayType) {
+                
+                EquivalentValue esr = getEquivalentValue(sr);
+
+                if (!refTypeStaticFields.contains(esr)) {
+                    refTypeStaticFields.add(esr);
+                }
+            }
+        }
+    }
     // method to initialize the emptySet, fullSet and tempFlowSet
     // from the refTypeValues
     private void initUniverseSets()
@@ -658,8 +658,37 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 	    // since those operations cause a null pointer check
 	    // after the statement we know the involved references are non-null
 	    {
-		Iterator boxIt = s.getUseAndDefBoxes().iterator();
-
+		Iterator boxIt;
+                boxIt = s.getUseBoxes().iterator();
+		while(boxIt.hasNext()) {
+		    
+		    Value boxValue = ((ValueBox) boxIt.next()).getValue();
+		    Value base = null;
+		    
+		    if(boxValue instanceof InstanceFieldRef) {
+			base = ((InstanceFieldRef) (boxValue)).getBase();
+			instanceFieldRefChecksSet.add(base);
+		    } else if (boxValue instanceof ArrayRef) {
+			base = ((ArrayRef) (boxValue)).getBase();
+			arrayRefChecksSet.add(base);
+		    } else if (boxValue instanceof InstanceInvokeExpr) {
+			base = ((InstanceInvokeExpr) boxValue).getBase();
+			instanceInvokeExprChecksSet.add(base);			
+		    } else if (boxValue instanceof LengthExpr) {
+			base = ((LengthExpr) boxValue).getOp();
+			lengthExprChecksSet.add(base);
+		    } else if (s instanceof ThrowStmt) {
+			base = ((ThrowStmt)s).getOp();
+		    } else if (s instanceof MonitorStmt) {
+			base = ((MonitorStmt)s).getOp();
+		    }
+		    
+		    if (base != null && isAnalyzedRef(base)) { 
+			uAddInfoToFlowSet(base, kNonNull, genSet, preSet);
+			analyzedChecksSet.add(base);
+		    }
+		}
+                boxIt = s.getDefBoxes().iterator();
 		while(boxIt.hasNext()) {
 		    
 		    Value boxValue = ((ValueBox) boxIt.next()).getValue();

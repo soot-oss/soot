@@ -175,7 +175,13 @@ public abstract class Body extends AbstractHost implements Serializable
 
 
         // backpatching all local variables.
-        it = getUseAndDefBoxes().iterator();
+        it = getUseBoxes().iterator();
+        while(it.hasNext()) {
+            ValueBox vb = (ValueBox) it.next();
+            if(vb.getValue() instanceof Local) 
+                vb.setValue((Value) bindings.get(vb.getValue()));
+        }
+        it = getDefBoxes().iterator();
         while(it.hasNext()) {
             ValueBox vb = (ValueBox) it.next();
             if(vb.getValue() instanceof Local) 
@@ -196,15 +202,21 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain. */
     public void validateLocals()
     {
-        Iterator it = getUseAndDefBoxes().iterator();
-        
+        Iterator it;
+        it = getUseBoxes().iterator();
         while(it.hasNext()){
-            ValueBox vb = (ValueBox) it.next();
-            Value value;
-            if( (value = vb.getValue()) instanceof Local) {
-                if(!localChain.contains(value))
-                    throw new RuntimeException("Local not in chain : "+value);                
-            }
+            validateLocal( (ValueBox) it.next() );
+        }
+        it = getDefBoxes().iterator();
+        while(it.hasNext()){
+            validateLocal( (ValueBox) it.next() );
+        }
+    }
+    private void validateLocal( ValueBox vb ) {
+        Value value;
+        if( (value = vb.getValue()) instanceof Local) {
+            if(!localChain.contains(value))
+                throw new RuntimeException("Local not in chain : "+value);                
         }
     }
 
@@ -437,7 +449,8 @@ public abstract class Body extends AbstractHost implements Serializable
         Iterator it = unitChain.iterator();
         while(it.hasNext()) {
             Unit item = (Unit) it.next();
-            useAndDefBoxList.addAll(item.getUseAndDefBoxes());  
+            useAndDefBoxList.addAll(item.getUseBoxes());  
+            useAndDefBoxList.addAll(item.getDefBoxes());  
         }
         return useAndDefBoxList;
     }

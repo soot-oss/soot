@@ -48,8 +48,7 @@ public abstract class AbstractUnitBox implements UnitBox
         // Remove this from set of back pointers.
             if(this.unit != null)
             {
-                List boxesPointingToThis = this.unit.getBoxesPointingToThis();
-                boxesPointingToThis.remove(this);
+                this.unit.removeBoxPointingToThis(this);
             }
 
         // Perform link
@@ -58,8 +57,7 @@ public abstract class AbstractUnitBox implements UnitBox
         // Add this to back pointers
             if(this.unit != null)
             {
-                List boxesPointingToThis = this.unit.getBoxesPointingToThis();
-                boxesPointingToThis.add(this);
+                this.unit.addBoxPointingToThis(this);
             }
     }
 

@@ -41,8 +41,7 @@ public final class NumberedSet {
                 } else {
                     int number = o.getNumber();
                     if( number == 0 ) throw new RuntimeException( "unnumbered" );
-                    bits[number/64] |= (1L)<<(number%64);
-                    return true;
+                    return bits.set( number );
                 }
             }
             array[pos] = o;
@@ -50,17 +49,12 @@ public final class NumberedSet {
         } else {
             int number = o.getNumber();
             if( number == 0 ) throw new RuntimeException( "unnumbered" );
-            long bit = (1L)<<(number%64);
-            boolean ret = true;
-            try {
-                ret = ( 0 == ( bits[number/64] & bit ) );
-            } catch( ArrayIndexOutOfBoundsException e ) {
-                long[] oldBits = bits;
-                bits = new long[ universe.size()/64+2 ];
-                System.arraycopy(oldBits,0,bits,0,oldBits.length);
+            if( bits.set( number ) ) {
+                size++;
+                return true;
+            } else {
+                return false;
             }
-            bits[number/64] |= bit;
-            return ret;
         }
     }
     public boolean contains( Numberable o ) {
@@ -69,12 +63,7 @@ public final class NumberedSet {
         } else {
             int number = o.getNumber();
             if( number == 0 ) throw new RuntimeException( "unnumbered" );
-            long bit = (1L)<<(number%64);
-            boolean ret = false;
-            try {
-                ret = ( 0 != ( bits[number/64] & bit ) );
-            } catch( ArrayIndexOutOfBoundsException e ) {}
-            return ret;
+            return bits.get( number );
         }
     }
 
@@ -93,14 +82,23 @@ public final class NumberedSet {
     private final void doubleSize() {
         int uniSize = universe.size();
         if( array.length*128 > uniSize ) {
-            bits = new long[ uniSize/64+2 ];
-        }
-        Numberable[] oldArray = array;
-        array = new Numberable[array.length*2];
-        for( int i = 0; i < oldArray.length; i++ ) {
-            Numberable element = oldArray[i];
-            if( element != null ) {
-                array[findPosition(element)] = element;
+            bits = new soot.util.BitSet( uniSize );
+            Numberable[] oldArray = array;
+            array = null;
+            for( int i = 0; i < oldArray.length; i++ ) {
+                Numberable element = oldArray[i];
+                if( element != null ) {
+                    bits.set( element.getNumber() );
+                }
+            }
+        } else {
+            Numberable[] oldArray = array;
+            array = new Numberable[array.length*2];
+            for( int i = 0; i < oldArray.length; i++ ) {
+                Numberable element = oldArray[i];
+                if( element != null ) {
+                    array[findPosition(element)] = element;
+                }
             }
         }
     }
@@ -110,48 +108,19 @@ public final class NumberedSet {
     }
 
     class BitSetIterator implements Iterator {
-        NumberedSet set;
-        int cur = 0;
-        long mask = 1;
+        soot.util.BitSetIterator iter;
         BitSetIterator( NumberedSet set ) {
-            this.set = set;
-            seekNext();
+            iter = set.bits.iterator();
         }
-        protected final void seekNext() {
-            try {
-                while( ( set.bits[cur] & mask ) == 0 ) {
-                    mask <<= 1;
-                    if( mask == 0 ) {
-                        cur++;
-                        mask = 1;
-                    }
-                }
-            } catch( ArrayIndexOutOfBoundsException e ) {
-                cur = -1;
-                mask = 0;
-            }
-        }
-        public final boolean hasNext() { return cur != -1; }
+        public final boolean hasNext() { return iter.hasNext(); }
         public void remove() {
             throw new RuntimeException( "Not implemented." );
         }
         public final Object next() {
-            Numberable ret = universe.get(cur*64 + lookup[(int)(mask%67L)]);
-            mask <<= 1;
-            seekNext();
-            return ret;
+            return universe.get( iter.next() );
         }
 
     }
-    /* Computes log_2(x) modulo 67. This uses the fact that 2 is a
-     * primitive root modulo 67 */
-    final static int[] lookup = {-1, 0, 1, 39, 2, 15, 40, 23, 3, 12, 16,
-                         59, 41, 19, 24, 54,  4, -1, 13, 10, 17,
-                         62, 60, 28, 42, 30, 20, 51, 25, 44, 55,
-                         47,  5, 32, -1, 38, 14, 22, 11, 58, 18,
-                         53, -1,  9, 61, 27, 29, 50, 43, 46, 31,
-                         37, 21, 57, 52,  8, 26, 49, 45, 36, 56,
-                         7, 48, 35, 6, 34, 33};
 
     class NumberedSetIterator implements Iterator {
         NumberedSet set;
@@ -183,7 +152,7 @@ public final class NumberedSet {
     public final int size() { return size; }
 
     private Numberable[] array = new Numberable[8];
-    private long[] bits;
+    private soot.util.BitSet bits;
     private int size = 0;
     private Numberer universe;
 

@@ -166,7 +166,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 		AnySubType.v( RefType.v( "java.lang.ClassLoader" ) ), null );
 	VarNode v = pag.makeVarNode(
 		PointsToAnalysis.DEFAULT_CLASS_LOADER_LOCAL,
-		AnySubType.v( RefType.v( "java.lang.ClassLoader" ) ), null );
+		RefType.v( "java.lang.ClassLoader" ), null );
 	addEdge( a, v );
 	return v;
     }

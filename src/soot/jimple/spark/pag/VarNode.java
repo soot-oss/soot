@@ -79,7 +79,7 @@ public class VarNode extends ValNode implements Comparable {
 
     VarNode( PAG pag, Object variable, Type t, SootMethod m ) {
 	super( pag, t );
-	if( !(t instanceof RefLikeType) ) {
+	if( !(t instanceof RefLikeType) || t instanceof AnySubType ) {
 	    throw new RuntimeException( "Attempt to create VarNode of type "+t );
 	}
 	this.variable = variable;

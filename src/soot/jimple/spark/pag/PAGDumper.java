@@ -32,7 +32,6 @@ import soot.jimple.spark.sets.PointsToSetInternal;
 public class PAGDumper {
     public PAGDumper( PAG pag ) {
         this.pag = pag;
-        this.fh = Scene.v().getOrMakeFastHierarchy();
     }
     public void dumpPointsToSets() {
         try {
@@ -139,7 +138,6 @@ public class PAGDumper {
     protected PAG pag;
     protected int fieldNum = 0;
     protected HashMap fieldMap = new HashMap();
-    protected FastHierarchy fh;
     protected ObjectNumberer root = new ObjectNumberer( null, 0 );
 
     protected void dumpTypes( PrintWriter file ) throws IOException {
@@ -187,7 +185,7 @@ public class PAGDumper {
             final Type declType = (Type) declTypeIt.next();
             for( Iterator actTypeIt = actualTypes.iterator(); actTypeIt.hasNext(); ) {
                 final Type actType = (Type) actTypeIt.next();
-                if( fh.canStoreType( actType, declType ) ) {
+                if( pag.getTypeManager().castNeverFails( actType, declType ) ) {
                     file.println( ""+typeToInt.get( declType )+" "+typeToInt.get( actType ) );
                 }
             }
