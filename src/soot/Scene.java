@@ -535,6 +535,7 @@ public class Scene  //extends AbstractHost
             reachableMethods = new ReachableMethods(
                     getCallGraph(), getEntryPoints() );
         }
+        reachableMethods.update();
         return reachableMethods;
     }
     public void setReachableMethods( ReachableMethods rm ) {
