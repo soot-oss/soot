@@ -1,18 +1,18 @@
-package soot.jimple.toolkits.pointer;
+package soot.jimple.toolkits.invoke;
 
-import soot.jimple.toolkits.invoke.*;
 import java.util.*;
 import soot.util.*;
 import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
+import soot.jimple.spark.PointsToAnalysis;
 
 public class InvokeGraphTrimmer
 {
-    PointerAnalysis pa;
+    PointsToAnalysis pa;
     InvokeGraph ig;
 
-    public InvokeGraphTrimmer( PointerAnalysis pa, InvokeGraph ig ) {
+    public InvokeGraphTrimmer( PointsToAnalysis pa, InvokeGraph ig ) {
 	this.pa = pa;
 	this.ig = ig;
     }
@@ -81,26 +81,19 @@ public class InvokeGraphTrimmer
 				pa.reachingObjects( m, s, (Local) base )
 				    .possibleTypes() );
 
-                            Collection targets = fh.resolveConcreteDispatch(validReachingTypes, ie.getMethod(), (RefType) base.getType() );
+                            Collection targets = fh.resolveConcreteDispatchWithoutFailing(validReachingTypes, ie.getMethod(), (RefType) base.getType() );
 			    /*
 			    if( targets.isEmpty() ) {
 				System.out.println( "Couldn't resolve dispatch "+s+" in method "+m );
 				System.out.println( "reaching types: "+validReachingTypes );
 			    }
 			    */
-                            Iterator targetsIt = targets.iterator();
+                            Iterator targetsIt = oldTargets.iterator();
                             
                             while (targetsIt.hasNext()) {
 				SootMethod target = (SootMethod) targetsIt.next();
-                                ig.addTarget(s, target);
-				if( !oldTargets.contains( target ) ) {
-				    System.out.println( "Computed possible target "+
-					    target+" for site "+s+" in method "+m+
-					    "that wasn't there in CHA" );
-				    System.out.println( "Type of base is "+base.getType() );
-				    System.out.println( "Reaching types of base are "+validReachingTypes );
-				    System.out.println( "Old targets are "+oldTargets );
-				    System.out.println( "New targets are "+targets );
+				if( targets.contains( target ) ) {
+                                    ig.addTarget(s, target);
 				}
 			    }
                         }

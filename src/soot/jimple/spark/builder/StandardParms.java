@@ -268,7 +268,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	setResult( caseThrow() );
     }
     final public void caseInstanceFieldRef( InstanceFieldRef ifr ) {
-	if( pag.getOpts().ignoreBaseObjects() ) {
+	if( pag.getOpts().ignoreBaseObjects() || pag.getOpts().VTA() ) {
 	    setResult( pag.makeVarNode( 
 			ifr.getField(), 
 			ifr.getField().getType(), currentMethod ) );

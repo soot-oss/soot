@@ -70,23 +70,29 @@ public class SparkOptions {
 *********************************************************************/
 
     /**
-     * If set to true, parameters to methods are represented as fields (Red
-     * nodes) of the 'this' object; otherwise, parameters are represented as
-     * variable (Green) nodes.
+     * Setting VTA to true has the effect of setting ignoreBaseObjects,
+     * typesForSites, and collapseSCCs to true to simulate Variable
+     * Type Analysis, described in Sundaresan et al., OOPSLA 2000.
+     * Note that the algorithm differs from the original VTA in that it
+     * handles array elements more precisely. To use the results of
+     * the analysis to trim the invoke graph, set
+     * the trimInvokeGraph option to true as well.
      * Default value is false
      */
-    public boolean parmsAsFields() {
-        return Options.getBoolean( options, "parmsAsFields" );
+    public boolean VTA() {
+        return Options.getBoolean( options, "VTA" );
     }
 
     /**
-     * If set to true, return values from methods are represented as fields
-     * (Red nodes) of the 'this' object; otherwise, return values are
-     * represented as variable (Green) nodes.
+     * Setting RTA to true sets typesForSites, and causes Spark to use a single
+     * points-to set for all variables, giving Rapid Type Analysis.
+     * To use the results of
+     * the analysis to trim the invoke graph, set
+     * the trimInvokeGraph option to true as well.
      * Default value is false
      */
-    public boolean returnsAsFields() {
-        return Options.getBoolean( options, "returnsAsFields" );
+    public boolean RTA() {
+        return Options.getBoolean( options, "RTA" );
     }
 
     /**
@@ -145,6 +151,26 @@ public class SparkOptions {
         return Options.getBoolean( options, "onFlyCallGraph" );
     }
 
+    /**
+     * If set to true, parameters to methods are represented as fields (Red
+     * nodes) of the 'this' object; otherwise, parameters are represented as
+     * variable (Green) nodes.
+     * Default value is false
+     */
+    public boolean parmsAsFields() {
+        return Options.getBoolean( options, "parmsAsFields" );
+    }
+
+    /**
+     * If set to true, return values from methods are represented as fields
+     * (Red nodes) of the 'this' object; otherwise, return values are
+     * represented as variable (Green) nodes.
+     * Default value is false
+     */
+    public boolean returnsAsFields() {
+        return Options.getBoolean( options, "returnsAsFields" );
+    }
+
 
 /*********************************************************************
 *** Pointer assignment graph simplification options
@@ -153,17 +179,17 @@ public class SparkOptions {
     /**
      * If set to true, variable (Green) nodes which are connected by simple paths
      * (so they must have the same points-to set) are merged together.
-     * Default value is true
+     * Default value is false
      */
     public boolean simplifyOffline() {
         return Options.getBoolean( options, "simplifyOffline" );
     }
 
     /**
-     * If set to true, variable (Green) nodes which are form strongly-connected
+     * If set to true, variable (Green) nodes which form strongly-connected
      * components (so they must have the same points-to set) are merged
      * together.
-     * Default value is true
+     * Default value is false
      */
     public boolean simplifySCCs() {
         return Options.getBoolean( options, "simplifySCCs" );
@@ -179,7 +205,7 @@ public class SparkOptions {
      * If set to false, only edges connecting nodes of the same type are
      * considered when detecting SCCs.
      * 
-     * This option has no effect if collapseSCCs is false.
+     * This option has no effect unless collapseSCCs is true.
      * Default value is false
      */
     public boolean ignoreTypesForSCCs() {
@@ -198,12 +224,14 @@ public class SparkOptions {
      * graph does not change.
      * 
      * Worklist is a worklist-based algorithm that tries
-     * to do as little work as possible.
+     * to do as little work as possible. This is currently the fastest algorithm.
+     * 
+     * Alias is an alias-edge based algorithm. This algorithm tends to take
+     * the least memory for very large problems, because it does not represent
+     * explicitly points-to sets of fields of heap objects.
      * 
      * Merge is an algorithm that merges all yellow nodes with their corresponding
-     * red nodes.
-     * 
-     * Alias is a relevant aliases based algorithm.
+     * red nodes. This algorithm is not yet finished.
      * 
      * None means that propagation is not done; the graph is only built and
      * simplified.
@@ -238,18 +266,17 @@ public class SparkOptions {
      * 16 elements, and switches to using a bit-vector when the set gets
      * larger than this.
      * 
-     * FastType is a variation of Hybrid that uses a bit vector to perform fast
-     * subtype tests.
-     * 
      * Array is an implementation that keeps the elements of the points-to set
      * in an array that is always maintained in sorted order. Set membership is
      * tested using binary search, and set union and intersection are computed
      * using an algorithm based on the merge step from merge sort.
      * 
-     * Double is an implementation that itself uses a pair of sets for each
-     * points-to set. The first set in the pair stores new pointed-to objects
-     * that have not yet been propagated, while the second set stores old
-     * pointed-to objects that have been propagated and need not be reconsidered.
+     * Double is an implementation that itself uses a pair of sets for
+     * each points-to set. The first set in the pair stores new pointed-to
+     * objects that have not yet been propagated, while the second set stores
+     * old pointed-to objects that have been propagated and need not be
+     * reconsidered. This allows the propagation algorithms to be incremental,
+     * often speeding them up significantly.
      * Default value is double
      */
     public void setImpl( Switch_setImpl sw ) {
@@ -274,7 +301,7 @@ public class SparkOptions {
      * Selects an implementation for the sets of old objects in the double
      * points-to set implementation.
      * 
-     * This option has no effect if setImpl is not set to double.
+     * This option has no effect unless setImpl is set to double.
      * Default value is hybrid
      */
     public void doubleSetOld( Switch_doubleSetOld sw ) {
@@ -297,7 +324,7 @@ public class SparkOptions {
      * Selects an implementation for the sets of new objects in the double
      * points-to set implementation.
      * 
-     * This option has no effect if setImpl is not set to double.
+     * This option has no effect unless setImpl is set to double.
      * Default value is hybrid
      */
     public void doubleSetNew( Switch_doubleSetNew sw ) {
@@ -323,7 +350,8 @@ public class SparkOptions {
 
     /**
      * If set to true, a browseable HTML representation of the pointer assignment
-     * graph is output after the analysis completes.
+     * graph is output after the analysis completes. Note that this representation
+     * is typically very large.
      * Default value is false
      */
     public boolean dumpHTML() {
@@ -332,7 +360,7 @@ public class SparkOptions {
 
     /**
      * If set to true, a representation of the pointer assignment graph
-     * suitable for processing with other solvers (such as the BDD one) is
+     * suitable for processing with other solvers (such as the BDD-based solver) is
      * output before the analysis begins.
      * Default value is false
      */
@@ -355,7 +383,7 @@ public class SparkOptions {
      * If set to true, the representation dumped by the dumpPAG option
      * is dumped with the green nodes in (pseudo-)topological order.
      * 
-     * This option has no effect if dumpPAG is false.
+     * This option has no effect unless dumpPAG is true.
      * Default value is false
      */
     public boolean topoSort() {
@@ -366,7 +394,7 @@ public class SparkOptions {
      * If set to true, the representation dumped by the dumpPAG option
      * includes type information for all nodes.
      * 
-     * This option has no effect if dumpPAG is false.
+     * This option has no effect unless dumpPAG is true.
      * Default value is true
      */
     public boolean dumpTypes() {
@@ -379,7 +407,7 @@ public class SparkOptions {
      * the method separately, rather than assigning a single integer to each
      * node.
      * 
-     * This option has no effect if dumpPAG is false.
+     * This option has no effect unless dumpPAG is true.
      * Setting classMethodVar to true has the effect of setting topoSort to false.
      * Default value is true
      */
@@ -390,20 +418,29 @@ public class SparkOptions {
     /**
      * If set to true, the computed reaching types for each variable are
      * dumped to a file, so that they can be compared with the results of
-     * other analyses.
+     * other analyses (such as the old VTA).
      * Default value is false
      */
     public boolean dumpAnswer() {
         return Options.getBoolean( options, "dumpAnswer" );
     }
 
+    /**
+     * If set to true, the results of the analysis are used to make the invoke graph
+     * more precise after the analysis completes.
+     * Default value is false
+     */
+    public boolean trimInvokeGraph() {
+        return Options.getBoolean( options, "trimInvokeGraph" );
+    }
+
     public static String getDeclaredOptions() {
         return
-        " verbose ignoreTypesEntirely forceGCs parmsAsFields returnsAsFields ignoreBaseObjects typesForSites mergeStringBuffer simulateNatives simpleEdgesBidirectional onFlyCallGraph simplifyOffline simplifySCCs ignoreTypesForSCCs propagator setImpl doubleSetOld doubleSetNew dumpHTML dumpPAG dumpSolution topoSort dumpTypes classMethodVar dumpAnswer";
+        " verbose ignoreTypesEntirely forceGCs VTA RTA ignoreBaseObjects typesForSites mergeStringBuffer simulateNatives simpleEdgesBidirectional onFlyCallGraph parmsAsFields returnsAsFields simplifyOffline simplifySCCs ignoreTypesForSCCs propagator setImpl doubleSetOld doubleSetNew dumpHTML dumpPAG dumpSolution topoSort dumpTypes classMethodVar dumpAnswer trimInvokeGraph";
     }
     public static String getDefaultOptions() {
         return
-        " verbose:false ignoreTypesEntirely:false forceGCs:false parmsAsFields:false returnsAsFields:false ignoreBaseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false simplifyOffline:true simplifySCCs:true ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true classMethodVar:true dumpAnswer:false";
+        " verbose:false ignoreTypesEntirely:false forceGCs:false VTA:false RTA:false ignoreBaseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false parmsAsFields:false returnsAsFields:false simplifyOffline:false simplifySCCs:false ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true classMethodVar:true dumpAnswer:false trimInvokeGraph:false";
     }
 
     protected Map options;

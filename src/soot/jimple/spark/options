@@ -22,18 +22,24 @@ END
 SECTION Pointer assignment graph building options
 #################################################
 
-BOPT parmsAsFields
+BOPT VTA
 false
-If set to true, parameters to methods are represented as fields (Red
-nodes) of the 'this' object; otherwise, parameters are represented as
-variable (Green) nodes.
+Setting VTA to true has the effect of setting ignoreBaseObjects,
+typesForSites, and simplifySCCs to true to simulate Variable
+Type Analysis, described in Sundaresan et al., OOPSLA 2000.
+Note that the algorithm differs from the original VTA in that it
+handles array elements more precisely. To use the results of
+the analysis to trim the invoke graph, set
+the trimInvokeGraph option to true as well.
 END
 
-BOPT returnsAsFields
+BOPT RTA
 false
-If set to true, return values from methods are represented as fields
-(Red nodes) of the 'this' object; otherwise, return values are
-represented as variable (Green) nodes.
+Setting RTA to true sets typesForSites, and causes Spark to use a single
+points-to set for all variables, giving Rapid Type Analysis.
+To use the results of
+the analysis to trim the invoke graph, set
+the trimInvokeGraph option to true as well.
 END
 
 BOPT ignoreBaseObjects
@@ -74,18 +80,33 @@ information is computed. Otherwise, an initial approximation
 to the call graph is used.
 END
 
+BOPT parmsAsFields
+false
+If set to true, parameters to methods are represented as fields (Red
+nodes) of the 'this' object; otherwise, parameters are represented as
+variable (Green) nodes.
+END
+
+BOPT returnsAsFields
+false
+If set to true, return values from methods are represented as fields
+(Red nodes) of the 'this' object; otherwise, return values are
+represented as variable (Green) nodes.
+END
+
+
 SECTION Pointer assignment graph simplification options
 #######################################################
 
 BOPT simplifyOffline
-true
+false
 If set to true, variable (Green) nodes which are connected by simple paths
 (so they must have the same points-to set) are merged together.
 END
 
 BOPT simplifySCCs
-true
-If set to true, variable (Green) nodes which are form strongly-connected
+false
+If set to true, variable (Green) nodes which form strongly-connected
 components (so they must have the same points-to set) are merged
 together.
 END
@@ -101,7 +122,7 @@ point to objects of any type.
 If set to false, only edges connecting nodes of the same type are
 considered when detecting SCCs.
 
-This option has no effect if collapseSCCs is false.
+This option has no effect unless simplifySCCs is true.
 END
 
 SECTION Points-to set flowing options
@@ -115,12 +136,14 @@ Iter is a dumb, iterative algorithm, that propagates everything until the
 graph does not change.
 
 Worklist is a worklist-based algorithm that tries
-to do as little work as possible.
+to do as little work as possible. This is currently the fastest algorithm.
+
+Alias is an alias-edge based algorithm. This algorithm tends to take
+the least memory for very large problems, because it does not represent
+explicitly points-to sets of fields of heap objects.
 
 Merge is an algorithm that merges all yellow nodes with their corresponding
-red nodes.
-
-Alias is a relevant aliases based algorithm.
+red nodes. This algorithm is not yet finished.
 
 None means that propagation is not done; the graph is only built and
 simplified.
@@ -138,18 +161,17 @@ Hybrid is an implementation that keeps an explicit list of up to
 16 elements, and switches to using a bit-vector when the set gets
 larger than this.
 
-FastType is a variation of Hybrid that uses a bit vector to perform fast
-subtype tests.
-
 Array is an implementation that keeps the elements of the points-to set
 in an array that is always maintained in sorted order. Set membership is
 tested using binary search, and set union and intersection are computed
 using an algorithm based on the merge step from merge sort.
 
-Double is an implementation that itself uses a pair of sets for each
-points-to set. The first set in the pair stores new pointed-to objects
-that have not yet been propagated, while the second set stores old
-pointed-to objects that have been propagated and need not be reconsidered.
+Double is an implementation that itself uses a pair of sets for
+each points-to set. The first set in the pair stores new pointed-to
+objects that have not yet been propagated, while the second set stores
+old pointed-to objects that have been propagated and need not be
+reconsidered. This allows the propagation algorithms to be incremental,
+often speeding them up significantly.
 END
 
 MOPT doubleSetOld hash bit hybrid array
@@ -157,7 +179,7 @@ hybrid
 Selects an implementation for the sets of old objects in the double
 points-to set implementation.
 
-This option has no effect if setImpl is not set to double.
+This option has no effect unless setImpl is set to double.
 END
 
 MOPT doubleSetNew hash bit hybrid array
@@ -165,7 +187,7 @@ hybrid
 Selects an implementation for the sets of new objects in the double
 points-to set implementation.
 
-This option has no effect if setImpl is not set to double.
+This option has no effect unless setImpl is set to double.
 END
 
 SECTION Output options
@@ -174,13 +196,14 @@ SECTION Output options
 BOPT dumpHTML
 false
 If set to true, a browseable HTML representation of the pointer assignment
-graph is output after the analysis completes.
+graph is output after the analysis completes. Note that this representation
+is typically very large.
 END
 
 BOPT dumpPAG
 false
 If set to true, a representation of the pointer assignment graph
-suitable for processing with other solvers (such as the BDD one) is
+suitable for processing with other solvers (such as the BDD-based solver) is
 output before the analysis begins.
 END
 
@@ -197,7 +220,7 @@ false
 If set to true, the representation dumped by the dumpPAG option
 is dumped with the green nodes in (pseudo-)topological order.
 
-This option has no effect if dumpPAG is false.
+This option has no effect unless dumpPAG is true.
 END
 
 BOPT dumpTypes
@@ -205,7 +228,7 @@ true
 If set to true, the representation dumped by the dumpPAG option
 includes type information for all nodes.
 
-This option has no effect if dumpPAG is false.
+This option has no effect unless dumpPAG is true.
 END
 
 BOPT classMethodVar
@@ -215,7 +238,7 @@ represents nodes by numbering each class, method, and variable within
 the method separately, rather than assigning a single integer to each
 node.
 
-This option has no effect if dumpPAG is false.
+This option has no effect unless dumpPAG is true.
 Setting classMethodVar to true has the effect of setting topoSort to false.
 END
 
@@ -223,6 +246,12 @@ BOPT dumpAnswer
 false
 If set to true, the computed reaching types for each variable are
 dumped to a file, so that they can be compared with the results of
-other analyses.
+other analyses (such as the old VTA).
+END
+
+BOPT trimInvokeGraph
+false
+If set to true, the results of the analysis are used to make the invoke graph
+more precise after the analysis completes.
 END
 

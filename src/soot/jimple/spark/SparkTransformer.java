@@ -25,6 +25,7 @@ import soot.jimple.spark.solver.*;
 import soot.jimple.spark.sets.*;
 import soot.jimple.toolkits.invoke.InvokeGraph;
 import soot.jimple.toolkits.invoke.InvokeGraphBuilder;
+import soot.jimple.toolkits.invoke.InvokeGraphTrimmer;
 import soot.jimple.*;
 import java.util.*;
 
@@ -46,9 +47,12 @@ public class SparkTransformer extends SceneTransformer
     public String getDefaultOptions() { return SparkOptions.getDefaultOptions(); }
 
     private static void reportTime( String desc, Date start, Date end ) {
-        System.out.println( "[Spark] "+desc+" in "+(end.getTime()-start.getTime())/100+" deciseconds." );
+        long time = end.getTime()-start.getTime();
+        System.out.println( "[Spark] "+desc+" in "+time/1000+"."+(time/100)%10+" seconds." );
     }
     private static void doGC() {
+        // Do 5 times because the garbage collector doesn't seem to always collect
+        // everything on the first try.
         System.gc();
         System.gc();
         System.gc();
@@ -85,11 +89,11 @@ public class SparkTransformer extends SceneTransformer
 
         // Simplify pag
         Date startSimplify = new Date();
-        if( opts.simplifySCCs() ) {
+        if( opts.simplifySCCs() || opts.VTA() ) {
             new SCCCollapser( pag, opts.ignoreTypesForSCCs() ).collapse();
         }
         if( opts.simplifyOffline() ) new EBBCollapser( pag ).collapse();
-        if( true || opts.simplifySCCs() || opts.simplifyOffline() ) {
+        if( true || opts.simplifySCCs() || opts.VTA() || opts.simplifyOffline() ) {
             pag.cleanUpMerges();
         }
         Date endSimplify = new Date();
@@ -128,7 +132,7 @@ public class SparkTransformer extends SceneTransformer
         if( opts.forceGCs() ) doGC();
         reportTime( "Solution found", startSimplify, endProp );
 
-        findSetMass( pag );
+        //findSetMass( pag );
 
         /*
         if( propagator[0] instanceof PropMerge ) {
@@ -147,6 +151,9 @@ public class SparkTransformer extends SceneTransformer
             Parm.delete();
         } else {
             Scene.v().setActivePointsToAnalysis( pag );
+        }
+        if( opts.trimInvokeGraph() ) {
+            new InvokeGraphTrimmer( pag, ig ).trimInvokeGraph();
         }
     }
     protected void findSetMass( PAG pag ) {

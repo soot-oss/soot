@@ -46,7 +46,7 @@ public class PAG implements PointsToAnalysis {
     /** Finds or creates the AllocNode for the new expression newExpr,
      * of type type. */
     public AllocNode makeAllocNode( Object newExpr, Type type ) {
-        if( opts.typesForSites() ) newExpr = type;
+        if( opts.typesForSites() || opts.VTA() ) newExpr = type;
 	AllocNode ret = (AllocNode) valToAllocNode.get( newExpr );
 	if( ret == null ) {
 	    valToAllocNode.put( newExpr, ret = new AllocNode( this, newExpr, type ) );
@@ -58,10 +58,16 @@ public class PAG implements PointsToAnalysis {
     }
     /** Finds the VarNode for the variable value, or returns null. */
     public VarNode findVarNode( Object value ) {
+        if( opts.RTA() ) {
+            value = null;
+        }
 	return (VarNode) valToVarNode.get( value );
     }
     /** Finds or creates the VarNode for the variable value, of type type. */
     public VarNode makeVarNode( Object value, Type type, SootMethod method ) {
+        if( opts.RTA() ) {
+            value = null; type = RefType.v("java.lang.Object"); method = null;
+        }
 	VarNode ret = (VarNode) valToVarNode.get( value );
 	if( ret == null ) {
 	    valToVarNode.put( value, 
@@ -129,16 +135,20 @@ public class PAG implements PointsToAnalysis {
                     throw new RuntimeException( "Attempt to add edge from "+
                         from+" to "+to );
                 }
-		ret = addToMap( store, from, (FieldRefNode) to ) | ret;
-		ret = addToMap( storeInv, to, from ) | ret;
+                if( !opts.RTA() ) {
+                    ret = addToMap( store, from, (FieldRefNode) to ) | ret;
+                    ret = addToMap( storeInv, to, from ) | ret;
+                }
 	    }
 	} else if( from instanceof FieldRefNode ) {
-            if( !( to instanceof VarNode ) ) {
-                throw new RuntimeException( "Attempt to add edge from "+
-                    from+" to "+to );
+            if( !opts.RTA() ) {
+                if( !( to instanceof VarNode ) ) {
+                    throw new RuntimeException( "Attempt to add edge from "+
+                        from+" to "+to );
+                }
+                ret = addToMap( load, from, to ) | ret;
+                ret = addToMap( loadInv, to, from ) | ret;
             }
-	    ret = addToMap( load, from, to ) | ret;
-	    ret = addToMap( loadInv, to, from ) | ret;
 	} else {
             if( !( from instanceof AllocNode ) 
             || !( to instanceof VarNode ) ) {

@@ -1,0 +1,650 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2K.1beta (1.48)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Spark Options</TITLE>
+<META NAME="description" CONTENT="Spark Options">
+<META NAME="keywords" CONTENT="opts">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2K.1beta">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="opts.css">
+
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
+ SRC="/usr/share/latex2html/icons/nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev_g.png">   
+<BR>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+<H1 ALIGN="CENTER">Spark Options</H1>
+<P ALIGN="CENTER"><STRONG>Ondrej Lhot&#225;k</STRONG></P>
+This documents describes the command-line options to Spark.
+Values for options are specified on the Soot command-line, following
+the switch <TT>-p wjtp.Spark</TT>. For example:
+
+<P>
+<TT>java soot.Main -a -app -p wjtp.Spark disabled:false,verbose:true hello</TT>
+
+<P>
+Spark is still under active development, so these options are subject
+to change. For the most current, automatically generated version of
+this document, please see the file
+<TT>src/soot/jimple/spark/opts.ps</TT>
+in your Soot directory.
+<BR>
+
+<H2><A NAME="SECTION00010000000000000000">
+Contents</A>
+</H2>
+<!--Table of Contents-->
+
+<UL>
+<LI><A NAME="tex2html36"
+  HREF="opts.html">General options</A>
+<UL>
+<LI><A NAME="tex2html37"
+  HREF="#SECTION00021000000000000000">Option <TT>verbose</TT></A>
+<LI><A NAME="tex2html38"
+  HREF="#SECTION00022000000000000000">Option <TT>ignoreTypesEntirely</TT></A>
+<LI><A NAME="tex2html39"
+  HREF="#SECTION00023000000000000000">Option <TT>forceGCs</TT></A>
+</UL>
+<BR>
+<LI><A NAME="tex2html40"
+  HREF="#SECTION00030000000000000000">Pointer assignment graph building options</A>
+<UL>
+<LI><A NAME="tex2html41"
+  HREF="#SECTION00031000000000000000">Option <TT>VTA</TT></A>
+<LI><A NAME="tex2html42"
+  HREF="#SECTION00032000000000000000">Option <TT>RTA</TT></A>
+<LI><A NAME="tex2html43"
+  HREF="#SECTION00033000000000000000">Option <TT>ignoreBaseObjects</TT></A>
+<LI><A NAME="tex2html44"
+  HREF="#SECTION00034000000000000000">Option <TT>typesForSites</TT></A>
+<LI><A NAME="tex2html45"
+  HREF="#SECTION00035000000000000000">Option <TT>mergeStringBuffer</TT></A>
+<LI><A NAME="tex2html46"
+  HREF="#SECTION00036000000000000000">Option <TT>simulateNatives</TT></A>
+<LI><A NAME="tex2html47"
+  HREF="#SECTION00037000000000000000">Option <TT>simpleEdgesBidirectional</TT></A>
+<LI><A NAME="tex2html48"
+  HREF="#SECTION00038000000000000000">Option <TT>onFlyCallGraph</TT></A>
+<LI><A NAME="tex2html49"
+  HREF="#SECTION00039000000000000000">Option <TT>parmsAsFields</TT></A>
+<LI><A NAME="tex2html50"
+  HREF="#SECTION000310000000000000000">Option <TT>returnsAsFields</TT></A>
+</UL>
+<BR>
+<LI><A NAME="tex2html51"
+  HREF="#SECTION00040000000000000000">Pointer assignment graph simplification options</A>
+<UL>
+<LI><A NAME="tex2html52"
+  HREF="#SECTION00041000000000000000">Option <TT>simplifyOffline</TT></A>
+<LI><A NAME="tex2html53"
+  HREF="#SECTION00042000000000000000">Option <TT>simplifySCCs</TT></A>
+<LI><A NAME="tex2html54"
+  HREF="#SECTION00043000000000000000">Option <TT>ignoreTypesForSCCs</TT></A>
+</UL>
+<BR>
+<LI><A NAME="tex2html55"
+  HREF="#SECTION00050000000000000000">Points-to set flowing options</A>
+<UL>
+<LI><A NAME="tex2html56"
+  HREF="#SECTION00051000000000000000">Option <TT>propagator</TT></A>
+<LI><A NAME="tex2html57"
+  HREF="#SECTION00052000000000000000">Option <TT>setImpl</TT></A>
+<LI><A NAME="tex2html58"
+  HREF="#SECTION00053000000000000000">Option <TT>doubleSetOld</TT></A>
+<LI><A NAME="tex2html59"
+  HREF="#SECTION00054000000000000000">Option <TT>doubleSetNew</TT></A>
+</UL>
+<BR>
+<LI><A NAME="tex2html60"
+  HREF="#SECTION00060000000000000000">Output options</A>
+<UL>
+<LI><A NAME="tex2html61"
+  HREF="#SECTION00061000000000000000">Option <TT>dumpHTML</TT></A>
+<LI><A NAME="tex2html62"
+  HREF="#SECTION00062000000000000000">Option <TT>dumpPAG</TT></A>
+<LI><A NAME="tex2html63"
+  HREF="#SECTION00063000000000000000">Option <TT>dumpSolution</TT></A>
+<LI><A NAME="tex2html64"
+  HREF="#SECTION00064000000000000000">Option <TT>topoSort</TT></A>
+<LI><A NAME="tex2html65"
+  HREF="#SECTION00065000000000000000">Option <TT>dumpTypes</TT></A>
+<LI><A NAME="tex2html66"
+  HREF="#SECTION00066000000000000000">Option <TT>classMethodVar</TT></A>
+<LI><A NAME="tex2html67"
+  HREF="#SECTION00067000000000000000">Option <TT>dumpAnswer</TT></A>
+<LI><A NAME="tex2html68"
+  HREF="#SECTION00068000000000000000">Option <TT>trimInvokeGraph</TT></A>
+</UL>
+<BR>
+<LI><A NAME="tex2html69"
+  HREF="#SECTION00070000000000000000">About this document ...</A>
+</UL>
+<!--End of Table of Contents-->
+<H1><A NAME="SECTION00020000000000000000">
+General options</A>
+</H1>
+
+<H2><A NAME="SECTION00021000000000000000">
+Option <TT>verbose</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, Spark prints detailed information.
+
+<H2><A NAME="SECTION00022000000000000000">
+Option <TT>ignoreTypesEntirely</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, all parts of Spark completely ignore declared types of
+variables and casts.
+
+<H2><A NAME="SECTION00023000000000000000">
+Option <TT>forceGCs</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, calls to System.gc() will be done at various points to
+allow memory usage to be measured.
+
+<H1><A NAME="SECTION00030000000000000000">
+Pointer assignment graph building options</A>
+</H1>
+
+<H2><A NAME="SECTION00031000000000000000">
+Option <TT>VTA</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+Setting VTA to true has the effect of setting ignoreBaseObjects,
+typesForSites, and collapseSCCs to true to simulate Variable
+Type Analysis, described in Sundaresan et al., OOPSLA 2000.
+Note that the algorithm differs from the original VTA in that it
+handles array elements more precisely. To use the results of
+the analysis to trim the invoke graph, set
+the trimInvokeGraph option to true as well.
+
+<H2><A NAME="SECTION00032000000000000000">
+Option <TT>RTA</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+Setting RTA to true sets typesForSites, and causes Spark to use a single
+points-to set for all variables, giving Rapid Type Analysis.
+To use the results of
+the analysis to trim the invoke graph, set
+the trimInvokeGraph option to true as well.
+
+<H2><A NAME="SECTION00033000000000000000">
+Option <TT>ignoreBaseObjects</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, fields are represented by variable (Green) nodes, and
+the object that the field belongs to is ignored (all fields are lumped
+together). Otherwise, fields are represented by field reference (Red)
+nodes, and the objects that they belong to are distinguished.
+
+<H2><A NAME="SECTION00034000000000000000">
+Option <TT>typesForSites</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, types rather than allocation sites are used as the
+elements of the points-to sets.
+
+<H2><A NAME="SECTION00035000000000000000">
+Option <TT>mergeStringBuffer</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>true</TT>
+</LI>
+</UL>
+If set to true, all allocation sites creating java.lang.StringBuffer
+objects are grouped together as a single allocation site.
+
+<H2><A NAME="SECTION00036000000000000000">
+Option <TT>simulateNatives</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, effects of native methods are simulated.
+
+<H2><A NAME="SECTION00037000000000000000">
+Option <TT>simpleEdgesBidirectional</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, all edges connecting variable (Green) nodes are made
+bidirectional, as in Steensgaard's analysis.
+
+<H2><A NAME="SECTION00038000000000000000">
+Option <TT>onFlyCallGraph</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, the call graph is computed on-the-fly as points-to
+information is computed. Otherwise, an initial approximation
+to the call graph is used.
+
+<H2><A NAME="SECTION00039000000000000000">
+Option <TT>parmsAsFields</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, parameters to methods are represented as fields (Red
+nodes) of the 'this' object; otherwise, parameters are represented as
+variable (Green) nodes.
+
+<H2><A NAME="SECTION000310000000000000000">
+Option <TT>returnsAsFields</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, return values from methods are represented as fields
+(Red nodes) of the 'this' object; otherwise, return values are
+represented as variable (Green) nodes.
+
+<H1><A NAME="SECTION00040000000000000000">
+Pointer assignment graph simplification options</A>
+</H1>
+
+<H2><A NAME="SECTION00041000000000000000">
+Option <TT>simplifyOffline</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, variable (Green) nodes which are connected by simple paths
+(so they must have the same points-to set) are merged together.
+
+<H2><A NAME="SECTION00042000000000000000">
+Option <TT>simplifySCCs</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, variable (Green) nodes which form strongly-connected
+components (so they must have the same points-to set) are merged
+together.
+
+<H2><A NAME="SECTION00043000000000000000">
+Option <TT>ignoreTypesForSCCs</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, when collapsing strongly-connected components, nodes
+forming SCCs are collapsed regardless of their type. The collapsed SCC
+is given the most general type of all the nodes in the component. If no
+node has the most general type, then the SCC is given no type, and may
+point to objects of any type.
+
+<P>
+If set to false, only edges connecting nodes of the same type are
+considered when detecting SCCs.
+
+<P>
+This option has no effect unless collapseSCCs is true.
+
+<H1><A NAME="SECTION00050000000000000000">
+Points-to set flowing options</A>
+</H1>
+
+<H2><A NAME="SECTION00051000000000000000">
+Option <TT>propagator</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>iter worklist merge alias none</TT>
+</LI>
+<LI>Default value: <TT>worklist</TT>
+</LI>
+</UL>
+Tells Spark which propagation algorithm to use.
+
+<P>
+Iter is a dumb, iterative algorithm, that propagates everything until the
+graph does not change.
+
+<P>
+Worklist is a worklist-based algorithm that tries
+to do as little work as possible. This is currently the fastest algorithm.
+
+<P>
+Alias is an alias-edge based algorithm. This algorithm tends to take
+the least memory for very large problems, because it does not represent
+explicitly points-to sets of fields of heap objects.
+
+<P>
+Merge is an algorithm that merges all yellow nodes with their corresponding
+red nodes. This algorithm is not yet finished.
+
+<P>
+None means that propagation is not done; the graph is only built and
+simplified.
+
+<H2><A NAME="SECTION00052000000000000000">
+Option <TT>setImpl</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>hash bit hybrid array double</TT>
+</LI>
+<LI>Default value: <TT>double</TT>
+</LI>
+</UL>
+Selects an implementation of a points-to set that Spark should use.
+
+<P>
+Hash is an implementation based on Java's built-in hash-set.
+
+<P>
+Bit is an implementation using a bit vector.
+
+<P>
+Hybrid is an implementation that keeps an explicit list of up to
+16 elements, and switches to using a bit-vector when the set gets
+larger than this.
+
+<P>
+Array is an implementation that keeps the elements of the points-to set
+in an array that is always maintained in sorted order. Set membership is
+tested using binary search, and set union and intersection are computed
+using an algorithm based on the merge step from merge sort.
+
+<P>
+Double is an implementation that itself uses a pair of sets for
+each points-to set. The first set in the pair stores new pointed-to
+objects that have not yet been propagated, while the second set stores
+old pointed-to objects that have been propagated and need not be
+reconsidered. This allows the propagation algorithms to be incremental,
+often speeding them up significantly.
+
+<H2><A NAME="SECTION00053000000000000000">
+Option <TT>doubleSetOld</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>hash bit hybrid array</TT>
+</LI>
+<LI>Default value: <TT>hybrid</TT>
+</LI>
+</UL>
+Selects an implementation for the sets of old objects in the double
+points-to set implementation.
+
+<P>
+This option has no effect unless setImpl is set to double.
+
+<H2><A NAME="SECTION00054000000000000000">
+Option <TT>doubleSetNew</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>hash bit hybrid array</TT>
+</LI>
+<LI>Default value: <TT>hybrid</TT>
+</LI>
+</UL>
+Selects an implementation for the sets of new objects in the double
+points-to set implementation.
+
+<P>
+This option has no effect unless setImpl is set to double.
+
+<H1><A NAME="SECTION00060000000000000000">
+Output options</A>
+</H1>
+
+<H2><A NAME="SECTION00061000000000000000">
+Option <TT>dumpHTML</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, a browseable HTML representation of the pointer assignment
+graph is output after the analysis completes. Note that this representation
+is typically very large.
+
+<H2><A NAME="SECTION00062000000000000000">
+Option <TT>dumpPAG</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, a representation of the pointer assignment graph
+suitable for processing with other solvers (such as the BDD-based solver) is
+output before the analysis begins.
+
+<H2><A NAME="SECTION00063000000000000000">
+Option <TT>dumpSolution</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, a representation of the resulting points-to
+sets is dumped. The format is similar to that of the dumpPAG
+option, and is therefore suitable for comparison with the results of other
+solvers.
+
+<H2><A NAME="SECTION00064000000000000000">
+Option <TT>topoSort</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, the representation dumped by the dumpPAG option
+is dumped with the green nodes in (pseudo-)topological order.
+
+<P>
+This option has no effect unless dumpPAG is true.
+
+<H2><A NAME="SECTION00065000000000000000">
+Option <TT>dumpTypes</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>true</TT>
+</LI>
+</UL>
+If set to true, the representation dumped by the dumpPAG option
+includes type information for all nodes.
+
+<P>
+This option has no effect unless dumpPAG is true.
+
+<H2><A NAME="SECTION00066000000000000000">
+Option <TT>classMethodVar</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>true</TT>
+</LI>
+</UL>
+If set to true, the representation dumped by the dumpPAG option
+represents nodes by numbering each class, method, and variable within
+the method separately, rather than assigning a single integer to each
+node.
+
+<P>
+This option has no effect unless dumpPAG is true.
+Setting classMethodVar to true has the effect of setting topoSort to false.
+
+<H2><A NAME="SECTION00067000000000000000">
+Option <TT>dumpAnswer</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, the computed reaching types for each variable are
+dumped to a file, so that they can be compared with the results of
+other analyses (such as the old VTA).
+
+<H2><A NAME="SECTION00068000000000000000">
+Option <TT>trimInvokeGraph</TT></A>
+</H2>
+
+<UL>
+<LI>Allowed values: <TT>true false</TT>
+</LI>
+<LI>Default value: <TT>false</TT>
+</LI>
+</UL>
+If set to true, the results of the analysis are used to make the invoke graph
+more precise after the analysis completes.
+
+<H1><A NAME="SECTION00070000000000000000">
+About this document ...</A>
+</H1>
+ <STRONG>Spark Options</STRONG><P>
+This document was generated using the
+<A HREF="http://www-texdev.mpce.mq.edu.au/l2h/docs/manual/"><STRONG>LaTeX</STRONG>2<tt>HTML</tt></A> translator Version 2K.1beta (1.48)
+<P>
+Copyright &#169; 1993, 1994, 1995, 1996,
+<A HREF="http://cbl.leeds.ac.uk/nikos/personal.html">Nikos Drakos</A>, 
+Computer Based Learning Unit, University of Leeds.
+<BR>
+Copyright &#169; 1997, 1998, 1999,
+<A HREF="http://www.maths.mq.edu.au/~ross/">Ross Moore</A>, 
+Mathematics Department, Macquarie University, Sydney.
+<P>
+The command line arguments were: <BR>
+ <STRONG>latex2html</STRONG> <TT>-split 0 opts.tex</TT>
+<P>
+The translation was initiated by Ondrej Lhotak on 2002-11-19<HR>
+<!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
+ SRC="/usr/share/latex2html/icons/nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev_g.png">   
+<BR>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Ondrej Lhotak
+2002-11-19
+</ADDRESS>
+</BODY>
+</HTML>
