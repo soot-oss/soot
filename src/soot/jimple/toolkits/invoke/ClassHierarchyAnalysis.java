@@ -60,7 +60,6 @@ public class ClassHierarchyAnalysis
         {
             SootClass c = (SootClass)classesIt.next();
 
-	    System.out.println("requesting methods iterator for "+c.getName());
             Iterator methodsIt = c.getMethods().iterator();
             while (methodsIt.hasNext())
             {

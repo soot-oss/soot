@@ -21,7 +21,7 @@
 #
 # Compiler
 #
-JC=jikes -d classes -classpath classes:src:$$CLASSPATH
+JC=javac -d classes -classpath classes:src:$$CLASSPATH
 
 #
 # Virtual machine

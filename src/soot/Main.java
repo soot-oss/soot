@@ -548,7 +548,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
          // $Format: "            System.out.println(\"Soot version 1.2.1 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.1 (build 1.2.1.dev.4)");
+            System.out.println("Soot version 1.2.1 (build 1.2.1.dev.5)");
             System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -830,11 +830,6 @@ public class Main implements Runnable
         for(int i = 0; i < args.length; i++) {
             String arg = args[i];
             if(arg.equals("--app")) {
-                if (i != 0) {
-                    throw new CompilationDeathException(COMPILATION_ABORTED, 
-														"Application mode (--app) must be set as first argument to Soot!" +
-														"\neg. java soot.Main --app Simulator");           
-                }
                 setAppMode(true);
             }
 		}
@@ -1074,11 +1069,6 @@ public class Main implements Runnable
         for(int i = 0; i < args.length; i++) {
             String arg = args[i];
             if(arg.equals("--app")) {
-                if (i != 0) {
-                    throw new CompilationDeathException(COMPILATION_ABORTED, 
-														"Application mode (--app) must be set as first argument to Soot!" +
-														"\neg. java soot.Main --app Simulator");           
-                }
                 setAppMode(true);
             }
 		}
