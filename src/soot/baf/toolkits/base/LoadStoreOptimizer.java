@@ -145,12 +145,12 @@ public class LoadStoreOptimizer extends BodyTransformer
     /* This is the public interface to LoadStoreOptimizer */
   
     protected void internalTransform(Body body, String phaseName, Map options) 
-    {        
+    {   
         mBody = body;        
         mUnits =  mBody.getUnits();
 
         gOptions = options;
-
+	
 	if(Options.getBoolean(gOptions, "debug")) {
 	    debug = true;
 	}
@@ -186,8 +186,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 		if(debug){System.err.println("Calling optimizeLoadStore(2)");}
 		optimizeLoadStores();   
 	    }
-	}
-	
+	}	
     }
     
 

@@ -1,0 +1,141 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 1999 Patrice Pominville
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+/*
+ * Modified by the Sable Research Group and others 1997-1999.  
+ * See the 'credits' file distributed with Soot for the complete list of
+ * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ */
+
+
+package soot.baf.toolkits.base;
+
+import java.util.*;
+import java.io.*;
+
+import soot.*;
+import soot.util.*;
+import soot.baf.*;
+import soot.toolkits.scalar.*;
+import soot.toolkits.graph.*;
+import soot.baf.internal.*;
+
+/**
+ *   Driver class to run peepholes on the Baf IR. The peepholes applied
+ *   must implement the Peephole interface. Peepholes are loaded dynamically
+ *   by the soot runtime; the runtime reads the file peephole.dat, in order to
+ *   determine which peepholes to apply.
+ *  
+ *   @see Peephole
+ *   @see ExamplePeephole
+ */
+
+public class PeepholeOptimizer extends BodyTransformer
+{
+    private final String peepholeListing = "/localhome/patrice/soot/src/soot/baf/toolkits/base/peephole.dat"; //xxx should be made a ressource
+    private final String packageName = "soot.baf.toolkits.base";
+
+    private static Map peepholeMap = new HashMap();
+    public PeepholeOptimizer(){}
+
+    public String getDefaultOptions() 
+    {
+	return "";
+	//return "sl sll inter:false sl2:false sll2:false debug:false";
+    }
+ 
+    public String getDeclaredOptions()
+    {
+	return "";
+        //return super.getDeclaredOptions() + " debug inter sl sl2 sll sll2";
+    }
+
+    /** The method that drives the optimizations. */
+    /* This is the public interface to PeepholeOptimizer */
+  
+    protected void internalTransform(Body body, String phaseName, Map options) 
+    {   	
+	boolean changed = true;
+	BufferedReader reader = null;
+	
+	try {
+	    reader = new BufferedReader(new FileReader(peepholeListing));
+	} catch (FileNotFoundException e) {
+	    return ;
+	    /*	    throw new RuntimeException("Could not find file:  " +
+		    peepholeListing + System.getProperty("line.separator") + e);*/
+	}
+	
+
+	String line = null;
+	List peepholes = new LinkedList();
+	try {
+	    line = reader.readLine();
+	    while(line != null) {
+		if(line.length() > 0)
+		    if(!(line.charAt(0) == '#'))
+			peepholes.add(line);
+		line = reader.readLine();
+	    }
+	} catch (IOException e) {
+	    throw new RuntimeException("IO error occured while reading file:  " +
+				       line + System.getProperty("line.separator") + e);
+	}
+
+	
+	while(changed) {
+	    changed = false;	   
+
+	    Iterator  it = peepholes.iterator();
+	    while(it.hasNext()) {
+		
+		boolean peepholeWorked = true;
+		String peepholeName = (String) it.next();
+		
+		while(peepholeWorked) {
+		    peepholeWorked = false;
+
+		
+		    Class peepholeClass;
+		    if((peepholeClass = (Class) peepholeMap.get(peepholeName)) == null) {
+			try {
+			    peepholeClass =  (Class) Class.forName(packageName + "." + peepholeName);
+			} catch (ClassNotFoundException e) {
+			    throw new RuntimeException(e.toString());
+			}
+			peepholeMap.put(peepholeName, peepholeClass);
+		    }
+		    
+		    Peephole p = null;
+		    try {
+			p = (Peephole) peepholeClass.newInstance();
+		    } catch (IllegalAccessException e) {
+			throw new RuntimeException(e.toString());
+		    } catch (InstantiationException e) {
+			throw new RuntimeException(e.toString());
+		    }
+		    if(p.apply(body)) {
+			peepholeWorked = true;
+			changed = true;
+		    }
+		}
+	    }
+	}            
+    }
+}
