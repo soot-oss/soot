@@ -9,6 +9,8 @@
    <runtime>
       <library name="soot-plugin.jar"/>
       <library name="soot/classes/"/>
+      <library name="polyglot/classes/"/>
+      <library name="polyglot/cup-classes/"/>
 <!--<library name="sootclasses.jar"/>-->
 	  <library name="myclasses/"/>
       <library name="jasminclasses-sable-1.2.jar"/>
@@ -472,11 +474,25 @@
             </separator>
          </menu>
          <action
+               label="%PopupMenus.action36"
+               class="ca.mcgill.sable.soot.launching.SootConfigFromJavaFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction36">
+         </action>
+         <action
                label="%PopupMenus.action21"
                class="ca.mcgill.sable.soot.launching.SootConfigFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction10">
+         </action>
+         <action
+               label="%PopupMenus.action35"
+               class="ca.mcgill.sable.soot.launching.SootOptionsFromJavaFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction35">
          </action>
          <action
                label="%PopupMenus.action22"
@@ -486,6 +502,13 @@
                id="ca.mcgill.sable.soot.popupaction4">
          </action>
          <action
+               label="%PopupMenus.action28"
+               class="ca.mcgill.sable.soot.launching.DavaDecompileAppFromJavaFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction28">
+         </action>
+         <action
                label="%PopupMenus.action23"
                class="ca.mcgill.sable.soot.launching.DavaDecompileAppFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
@@ -493,11 +516,25 @@
                id="ca.mcgill.sable.soot.popupaction8">
          </action>
          <action
+               label="%PopupMenus.action27"
+               class="ca.mcgill.sable.soot.launching.SootGrimpFromJavaFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction27">
+         </action>
+         <action
                label="%PopupMenus.action25"
                class="ca.mcgill.sable.soot.launching.SootGrimpFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction5">
+         </action>
+         <action
+               label="%PopupMenus.action26"
+               class="ca.mcgill.sable.soot.launching.SootJimpleFromJavaFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction26">
          </action>
          <action
                label="%PopupMenus.action24"
@@ -599,4 +636,16 @@
       </objectContribution>
    </extension>
 
+
+   <extension point="org.eclipse.help.toc">
+      <toc file="toc.xml" primary="true" />
+   </extension>
+
+
+   <extension point="org.eclipse.help.toc">
+       <toc file="toc_Concepts.xml" />
+       <toc file="toc_Reference.xml" />
+   </extension>
 </plugin>
+
+

@@ -134,7 +134,7 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
                             //popup.open(new Rectangle(400, getDocument().getLineOffset(getLineNumber()+1)-getDocument().getLineOffset(topIndex), 600, 45 ));
 						}	
 						else {
-							popup.open(new Rectangle(380, 200, 600, 45 ));
+							popup.open(new Rectangle(380, 40, 600, 45 ));
 
 						}
 						

@@ -134,7 +134,11 @@ public class XMLAttributesPrinter {
 		else if (t instanceof StringTag) {
 			printTextAttr(formatForXML(((StringTag)t).toString()));
 		}
-		else if (t instanceof PositionTag){
+		else if (t instanceof SourcePositionTag){
+			SourcePositionTag pt = (SourcePositionTag)t;
+			printSourcePositionAttr(pt.getStartOffset(), pt.getEndOffset());
+		}
+        else if (t instanceof PositionTag){
 			PositionTag pt = (PositionTag)t;
 			printPositionAttr(pt.getStartOffset(), pt.getEndOffset());
 		}
@@ -197,10 +201,19 @@ public class XMLAttributesPrinter {
 		writerOut.println("</link_attribute>");
 	}
 
+	/*private void startPrintSourceValBoxAttr(){
+		writerOut.println("<source_value_box_attribute>");
+	}*/
+    
 	private void startPrintValBoxAttr(){
 		writerOut.println("<value_box_attribute>");
 	}
 
+	private void printSourcePositionAttr(int start, int end){
+		writerOut.println("<sourceStartOffset>"+start+"</sourceStartOffset>");
+		writerOut.println("<sourceEndOffset>"+end+"</sourceEndOffset>");
+	}
+    
 	private void printPositionAttr(int start, int end){
 		writerOut.println("<startOffset>"+start+"</startOffset>");
 		writerOut.println("<endOffset>"+end+"</endOffset>");
@@ -212,6 +225,10 @@ public class XMLAttributesPrinter {
 		writerOut.println("<blue>"+b+"</blue>");
 	}
 	
+	/*private void endPrintSourceValBoxAttr(){
+		writerOut.println("</source_value_box_attribute>");
+	}*/
+    
 	private void endPrintValBoxAttr(){
 		writerOut.println("</value_box_attribute>");
 	}
@@ -247,6 +264,7 @@ public class XMLAttributesPrinter {
 	private String  formatForXML(String in) {
 		in = StringTools.replaceAll(in, "<", "&lt;");
 		in = StringTools.replaceAll(in, ">", "&gt;");
+		in = StringTools.replaceAll(in, "&", "&amp;");
 		return in;
 	}
 

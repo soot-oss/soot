@@ -290,6 +290,16 @@ the Soot classpath.  Fall back to <tt>.class</tt> files only when
 unable to find a <tt>.jimple</tt> file.
 </long_desc>
 			</value>
+			<value>
+				<name>Java File</name>
+				<alias>java</alias>
+				<short_desc>Favour Java files as Soot source</short_desc>
+				<long_desc>
+Try to resolve classes first from <tt>.java</tt> files found in
+the Soot classpath.  Fall back to <tt>.class</tt> files only when
+unable to find a <tt>.java</tt> file.
+</long_desc>
+			</value>
 		</multiopt>
 		<boolopt>
 			<name>Allow Phantom References</name>

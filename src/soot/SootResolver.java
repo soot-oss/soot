@@ -33,6 +33,7 @@ import java.util.*;
 import java.io.*;
 import soot.util.*;
 import soot.jimple.*;
+import soot.javaToJimple.*;
 
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver 
@@ -40,8 +41,7 @@ public class SootResolver
     private Set markedClasses = new HashSet();
     private LinkedList classesToResolve = new LinkedList();
     private boolean mIsResolving = false;
-
-
+    private InitialResolver initSourceResolver;
 
     /** Creates a new SootResolver. */
     public SootResolver()
@@ -76,13 +76,13 @@ public class SootResolver
     {
         mIsResolving = true;
         SootClass resolvedClass = getResolvedClass(className);
-        
+       
         while(!classesToResolve.isEmpty()) {
             
             InputStream is = null;
             SootClass sc = (SootClass) classesToResolve.removeFirst();
             className = sc.getName();
-            
+           
             try 
             {
                 is = SourceLocator.v().getInputStreamOf(className);
@@ -124,7 +124,17 @@ public class SootResolver
                     assertResolvedClass(nclass);
                 }
                 
-            } 
+            }else if(is instanceof JavaInputStream) {
+                if (Options.v().verbose())
+                    G.v().out.println("resolving [from .java]: " + className);
+                            
+
+                if (initSourceResolver == null) {
+                    initSourceResolver = new soot.javaToJimple.InitialResolver();
+                }
+                initSourceResolver.formAst(SourceLocator.v().getFullPathFound(), SourceLocator.v().getLocationsFound());
+                initSourceResolver.resolveFromJavaFile(sc, this);
+            }
             else {
                 throw new RuntimeException("could not resolve class: " + is+" (is your soot-class-path correct?)");
             }

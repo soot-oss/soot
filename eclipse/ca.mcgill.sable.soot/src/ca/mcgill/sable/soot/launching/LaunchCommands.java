@@ -50,7 +50,7 @@ public class LaunchCommands {
 	public static final String GRIMP_OUT = "g";
 	public static final String INLINING = "--W --app --f grimp ";
 	public static final String STATIC = "--W --app --p wjop.smb diasabled:false --p wjop.si disabled:true --f grimp ";
-
+    public static final String JAVA_IN = "java";
 
 	private LaunchCommands() {
 		// prevent instantiation of class

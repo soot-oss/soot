@@ -212,6 +212,12 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 		}
 		
 		if (getAttrsHandler() != null) {
+            
+            System.out.println("about to make java colorer");
+            setSajc(new SootAttributesJavaColorer());
+            
+            sajc.computeColors(getAttrsHandler(), getViewer(), getEditor());
+                          
 			//System.out.println("getting attribute for java ln: "+getLineNum());
 		  	return getAttrsHandler().getJavaAttribute(getLineNum());
 		}
@@ -219,6 +225,21 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 			return null;
 		}
 	}
-	
+    
+    private SootAttributesJavaColorer sajc;   
+
+    /**
+     * @return
+     */
+    public SootAttributesJavaColorer getSajc() {
+        return sajc;
+    }
+
+    /**
+     * @param colorer
+     */
+    public void setSajc(SootAttributesJavaColorer colorer) {
+        sajc = colorer;
+    }
 
 }

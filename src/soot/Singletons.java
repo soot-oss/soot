@@ -440,6 +440,12 @@ public class Singletons {
         return instanceIntType;
     }
 
+    private JavaInputRep instanceJavaInputRep;
+    public JavaInputRep JavaInputRep() {
+        if( instanceJavaInputRep == null ) instanceJavaInputRep = new JavaInputRep( g );
+        return instanceJavaInputRep;
+    }
+
     private JavaIoFileDescriptorNative instanceJavaIoFileDescriptorNative;
     public JavaIoFileDescriptorNative JavaIoFileDescriptorNative() {
         if( instanceJavaIoFileDescriptorNative == null ) instanceJavaIoFileDescriptorNative = new JavaIoFileDescriptorNative( g );

@@ -38,6 +38,7 @@ public class Options extends OptionsBase {
     public static final int src_prec_class = 1;
     public static final int src_prec_J = 2;
     public static final int src_prec_jimple = 2;
+    public static final int src_prec_java = 3;
     public static final int output_format_J = 1;
     public static final int output_format_jimple = 1;
     public static final int output_format_j = 2;
@@ -208,6 +209,17 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     src_prec = src_prec_jimple;
+                }
+    
+                else if( false
+                || value.equals( "java" )
+                ) {
+                    if( src_prec != 0
+                    && src_prec != src_prec_java ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    src_prec = src_prec_java;
                 }
     
                 else {
@@ -829,6 +841,7 @@ public class Options extends OptionsBase {
 +padOpt(" -src-prec FORMAT", "Sets source precedence to FORMAT files" )
 +padVal(" c class (default)", "Favour class files as Soot source" )
 +padVal(" J jimple", "Favour Jimple files as Soot source" )
++padVal(" java", "Favour Java files as Soot source" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
 +"\nOutput Options:\n"
       

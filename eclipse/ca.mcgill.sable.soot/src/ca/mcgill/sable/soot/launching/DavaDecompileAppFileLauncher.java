@@ -32,6 +32,7 @@ public class DavaDecompileAppFileLauncher extends SootFileLauncher {
 	 */
 	public void run(IAction action) {
 		super.run(action);
+        super.handleFiles();
 
 		if (isDoNotContinue()) return;
 		setCmd();
@@ -72,6 +73,11 @@ public class DavaDecompileAppFileLauncher extends SootFileLauncher {
 		if (isExtraCmd()) {
 			getSootCommandList().addSingleOpt("--"+getExtraCmd());
 		}
+        
+        if (isSrcPrec()) {
+            getSootCommandList().addDoubleOpt("--"+LaunchCommands.SRC_PREC, getSrcPrec());
+        }
+        
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.APP);
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.DAVA);
 		

@@ -44,7 +44,9 @@ public class ValueBoxAttribute {
 
 	private int startOffset;
 	private int endOffset;
-	
+    private int javaOffsetStart;
+    private int javaOffsetEnd;
+    
 	private int red;
 	private int green;
 	private int blue;
@@ -122,5 +124,33 @@ public class ValueBoxAttribute {
 	public void setStartOffset(int i) {
 		startOffset = i;
 	}
+
+    /**
+     * @return
+     */
+    public int getJavaOffsetEnd() {
+        return javaOffsetEnd;
+    }
+
+    /**
+     * @return
+     */
+    public int getJavaOffsetStart() {
+        return javaOffsetStart;
+    }
+
+    /**
+     * @param i
+     */
+    public void setJavaOffsetEnd(int i) {
+        javaOffsetEnd = i;
+    }
+
+    /**
+     * @param i
+     */
+    public void setJavaOffsetStart(int i) {
+        javaOffsetStart = i;
+    }
 
 }

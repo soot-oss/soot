@@ -47,6 +47,8 @@ public class SootAttribute {
 	private int jimple_ln;
 	private int jimpleOffsetStart;
 	private int jimpleOffsetEnd;
+    private int javaOffsetStart;
+    private int javaOffsetEnd;
 	private int colorKey;
 	private String text;
 	private ArrayList textList;
@@ -340,5 +342,33 @@ public class SootAttribute {
 	public void setLinkList(ArrayList list) {
 		linkList = list;
 	}
+
+    /**
+     * @return
+     */
+    public int getJavaOffsetEnd() {
+        return javaOffsetEnd;
+    }
+
+    /**
+     * @return
+     */
+    public int getJavaOffsetStart() {
+        return javaOffsetStart;
+    }
+
+    /**
+     * @param i
+     */
+    public void setJavaOffsetEnd(int i) {
+        javaOffsetEnd = i;
+    }
+
+    /**
+     * @param i
+     */
+    public void setJavaOffsetStart(int i) {
+        javaOffsetStart = i;
+    }
 
 }

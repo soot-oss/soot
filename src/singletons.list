@@ -57,6 +57,7 @@ FullObjectSet
 Grimp
 IfFinder
 IntType
+JavaInputRep
 JavaIoFileDescriptorNative
 JavaIoFileInputStreamNative
 JavaIoFileOutputStreamNative

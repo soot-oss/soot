@@ -55,6 +55,17 @@ public class SourceLocator
 
     private List zipFileList = Collections.synchronizedList(new LinkedList()); 
 
+    private HashMap sourceToClassMap;
+
+    public HashMap getSourceToClassMap(){
+        return sourceToClassMap;
+    }
+    public void setSourceToClassMap(HashMap map){
+        sourceToClassMap = map;
+    }
+    public void addToSourceToClassMap(String key, String val) {
+        sourceToClassMap.put(key, val);
+    }
     /** Given a class name, uses the default soot-class-path to return an input stream for the given class. */
     public InputStream getInputStreamOf(String className) throws ClassNotFoundException
     {
@@ -139,6 +150,7 @@ public class SourceLocator
             previousLocations = locations;
         }
 
+        setLocationsFound(locations);
         InputStream res = null;
         { // for now types are found on the filesystem.
             List reps = new ArrayList(4);
@@ -162,7 +174,28 @@ public class SourceLocator
                 if( (res = getFileInputStream(locations, reps, className)) != null)
                     return res;
 
-            } else
+            }else if (Options.v().src_prec() == Options.src_prec_java) {
+                List lst = new LinkedList();
+                lst.add(JavaInputRep.v());
+              
+                String javaClassName = className;
+                if (className.indexOf("$") != -1) {
+                    // class is an inner class and will be in
+                    // Outer of Outer$Inner
+                    javaClassName = className.substring(0, className.indexOf("$"));
+                    
+                }
+                if (sourceToClassMap != null) {
+                    if (sourceToClassMap.get(javaClassName) != null) {
+                        javaClassName = (String)sourceToClassMap.get(javaClassName);
+                    }
+                }
+                if ((res = getFileInputStream(locations, lst, javaClassName)) != null) {
+                    return res;
+                }
+                if ((res = getFileInputStream(locations, reps, className)) != null) 
+                    return res;
+            }else
                 throw new RuntimeException("Other source precedences are not currently supported.");
             throw new ClassNotFoundException();
         }
@@ -170,6 +203,24 @@ public class SourceLocator
     }
 
 
+    private List locationsFound;
+
+    private void setLocationsFound(List locs) {
+        locationsFound = locs;
+    }
+    public List getLocationsFound(){
+        return locationsFound;
+    }
+    
+    private String fullPathFound;
+
+    private void setFullPathFound(String fp) {
+        fullPathFound = fp;
+    }
+    public String getFullPathFound(){
+        return fullPathFound;
+    }
+    
     private InputStream getFileInputStream(List locations, List reps, String className)
     {    
         Iterator it = locations.iterator();
@@ -197,11 +248,14 @@ public class SourceLocator
                 String adjustedClassName = path + className;
                 if(inputRep instanceof ClassInputRep)
                     adjustedClassName = path + classNameSlashed;
+                
+                if (inputRep instanceof JavaInputRep) 
+                    adjustedClassName = path + classNameSlashed;
 
                 String fullPath = adjustedClassName + inputRep.getFileExtension();
-		
                 File f = new File(fullPath);
-
+                
+                setFullPathFound(fullPath);
                 if (f.canRead()) {
                     try {       
                         return inputRep.createInputStream(new FileInputStream(f));                    
@@ -230,7 +284,6 @@ public class SourceLocator
                     try {
                         InputStream is = new BufferedInputStream(zip.getInputStream(entry));
                         InputStream bugFreeInputStream = doJDKBugWorkaround(is, entry.getSize());				
-				
                         return inputRep.createInputStream(bugFreeInputStream);
                     } catch(IOException e) {
                         G.v().out.println("error reading file:" + zip.getName() + e.toString());
@@ -312,6 +365,11 @@ public class SourceLocator
 
                 if (fileName.endsWith(".jimple")) {
                     int index = fileName.lastIndexOf(".jimple");
+                    fileNames.add(fileName.substring(0, index));
+                }
+                
+                if (fileName.endsWith(".java")) {
+                    int index = fileName.lastIndexOf(".java");
                     fileNames.add(fileName.substring(0, index));
                 }
             }

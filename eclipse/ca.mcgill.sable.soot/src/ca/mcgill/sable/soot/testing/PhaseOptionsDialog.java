@@ -6456,6 +6456,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
+		new OptionData("Java File",
+		"java",
+		"\nTry to resolve classes first from .java files found in the Soot \nclasspath. Fall back to .class files only when unable to find a \n.java file. ",
+		
+		false),
+		
 		};
 		
 										

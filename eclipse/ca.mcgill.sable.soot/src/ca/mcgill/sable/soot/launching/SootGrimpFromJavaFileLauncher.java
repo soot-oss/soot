@@ -26,10 +26,12 @@ import org.eclipse.jface.action.IAction;
 /**
  * Launches Soot with -f g on selected files.
  */
-public class SootGrimpFileLauncher extends SootFileLauncher {
+public class SootGrimpFromJavaFileLauncher extends SootFileLauncher {
 	
 	public void run(IAction action) {
 		super.run(action);
+        super.setIsSrcPrec(true);
+        super.setSrcPrec(LaunchCommands.JAVA_IN);
         super.handleFiles();
         
 		if (isDoNotContinue()) return;

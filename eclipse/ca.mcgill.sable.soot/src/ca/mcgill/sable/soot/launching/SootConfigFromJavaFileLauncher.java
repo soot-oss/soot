@@ -31,11 +31,13 @@ import org.eclipse.jface.dialogs.*;
 /**
  * Launches a saved Soot configuration on the selected file
  */
-public class SootConfigFileLauncher extends SootFileLauncher {
+public class SootConfigFromJavaFileLauncher extends SootFileLauncher {
 
 	public void run(IAction action) {
 		
 		super.run(action);
+        super.setIsSrcPrec(true);
+        super.setSrcPrec(LaunchCommands.JAVA_IN);
         super.handleFiles();
         
 		if (isDoNotContinue()) return;

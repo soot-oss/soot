@@ -99,7 +99,9 @@ public class SootThread extends Thread {
 			//Main.main(cmdFinal, sootOutFinal);
 		}
 		catch (Exception e) {
+            System.out.println("Soot exception");
 			e.printStackTrace(sootOutFinal);
+            //this.interrupt();
        	}
 	}
 	/**

@@ -135,6 +135,13 @@ public class Printer {
 
         out.println();
         incJimpleLnNum();
+/*        if (!addJimpleLn()) {
+            Iterator clTagsIt = cl.getTags().iterator();
+            while (clTagsIt.hasNext()) {
+                final Tag t = (Tag)clTagsIt.next();
+                out.println(t);
+            }
+        }*/
         out.println("{");
         incJimpleLnNum();
 
@@ -150,6 +157,13 @@ public class Printer {
                         continue;
 
                     out.println("    " + f.getDeclaration() + ";");
+                    /*if (!addJimpleLn()) {
+                        Iterator fieldTagsIt = f.getTags().iterator();
+                        while (fieldTagsIt.hasNext()) {
+                            final Tag t = (Tag)fieldTagsIt.next();
+                            out.println(t);
+                        }
+                    }*/
                     incJimpleLnNum();
                 }
             }
@@ -279,12 +293,12 @@ public class Printer {
     
         // only print tags if not printing attributes in a file 
         if (!addJimpleLn()) {
-            for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
+            /*for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
                 final Tag t = (Tag) tIt.next();
                 out.println(t);
                 incJimpleLnNum();
 
-            }
+            }*/
         }
        
         if (addJimpleLn()) {
@@ -375,6 +389,17 @@ public class Printer {
                     up.literal(t.toString());
                     up.newline();
                 }
+                /*Iterator udIt = currentStmt.getUseAndDefBoxes().iterator();
+                while (udIt.hasNext()) {
+                    ValueBox temp = (ValueBox)udIt.next();
+                    Iterator vbtags = temp.getTags().iterator();
+                    while (vbtags.hasNext()) {
+                        Tag t = (Tag) vbtags.next();
+                        up.noIndent();
+                        up.literal("VB Tag: "+t.toString());
+                        up.newline();
+                    }
+                }*/
             }
         }
 

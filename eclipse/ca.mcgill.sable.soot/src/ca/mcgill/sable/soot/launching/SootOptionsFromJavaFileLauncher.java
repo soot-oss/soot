@@ -30,11 +30,13 @@ import ca.mcgill.sable.soot.testing.PhaseOptionsDialog;
  * Displays the Soot Options dialog and launches Soot with
  * selected options on selected file.
  */
-public class SootOptionsFileLauncher extends SootFileLauncher {
+public class SootOptionsFromJavaFileLauncher extends SootFileLauncher {
 
 	public void run(IAction action) {
 		
 		super.run(action);
+        super.setIsSrcPrec(true);
+        super.setSrcPrec(LaunchCommands.JAVA_IN);
         super.handleFiles();
 		
 		if (isDoNotContinue()) return;
