@@ -316,7 +316,7 @@ public class DavaPrinter {
                             out.println();
                     } else {
                         out.print("    ");
-                        out.print(method.getDeclaration());
+                        out.print(method.getDavaDeclaration());
                         out.println(";");
 
                         if (methodIt.hasNext())
@@ -337,7 +337,7 @@ public class DavaPrinter {
     private void printTo(Body b, PrintWriter out) {
         b.validate();
 
-        String decl = b.getMethod().getDeclaration();
+        String decl = b.getMethod().getDavaDeclaration();
 
         {
             out.println("    " + decl);
