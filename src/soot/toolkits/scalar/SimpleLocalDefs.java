@@ -51,12 +51,14 @@ public class SimpleLocalDefs implements LocalDefs
 
 
     /**
-     *   Computes the analysis given a CompleteUnitGraph computed from a method body.
+     *   Computes the analysis given a UnitGraph computed from a method body.
+     *   It is recommended that a CompleteUnitGraph (or similar) be provided
+     *   for correct results in the case of exceptional control flow.
      *   @param g a graph on which to compute the analysis.
      *   
      *   @see CompleteUnitGraph
      */
-    public SimpleLocalDefs(CompleteUnitGraph g)
+    public SimpleLocalDefs(UnitGraph g)
     {
         if(Options.v().time())
             Timers.v().defsTimer.start();
