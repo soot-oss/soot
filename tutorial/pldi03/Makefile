@@ -1,5 +1,5 @@
 tutorial.pdf: tutorial.tex flow.tex figs
-	latex tutorial && latex tutorial && ./dvi2pdf.pl -t a4 tutorial
+	latex tutorial && latex tutorial && ./dvi2pdf.pl -t a4 tutorial && dvips -o tutorial.ps tutorial.dvi && psnup -l6 -Pa4 -pletter tutorial.ps > tutorial-6up.ps && pstops '1:0(0,.25in)' tutorial-6up.ps > ps2pdf_is_broken.ps && ps2pdf -sPAPERSIZE=letter ps2pdf_is_broken.ps tutorial-6up.pdf
 
 figs:  rd.eepic rd-example.eepic rd-example-specific.eepic vocab.tex ecosystem.eepic body-ecosystem.eepic intra.tex lv.eepic lv-example.eepic lv-example-specific.eepic br-example.eepic br-example-specific.eepic copy-bkwd.eepic merge-bkwd.eepic flowthrough-bkwd.eepic flow-fwd.eepic flow-bkwd.eepic copy-fwd.eepic merge-fwd.eepic body-bare.eepic
 
