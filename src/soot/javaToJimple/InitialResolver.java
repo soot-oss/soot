@@ -60,14 +60,18 @@ public class InitialResolver {
             
             // will find these separately
             if (classType.isLocal()) continue;
-                  
+                 
+            if (classType.isAnonymous()) continue;
+
             // fix class names of inner member classes
             if (classType.isNested()){
-                    
+                System.out.println("class is nested");
+                System.out.println(classType.kind());
                 className = classType.fullName();
                 
                 while (classType.isNested()){
                 //System.out.println("classType:"+classType);    
+                    System.out.println("want to resolve: "+classType.outer().toString());
                     resolver.assertResolvedClass(classType.outer().toString());
                     //System.out.println("resolved: "+classType.outer().toString());
                     StringBuffer sb = new StringBuffer(className);
@@ -88,6 +92,8 @@ public class InitialResolver {
             
             //System.out.println("className: "+className);
             if (!className.equals("java.lang.String[]")) {
+                    
+                System.out.println("want to resolve: "+className);
                     
                 resolver.assertResolvedClass(className);
                 //System.out.println("Soot resolved className: "+className);
@@ -204,6 +210,7 @@ public class InitialResolver {
             polyglot.types.ClassType outer = (polyglot.types.ClassType)keysIt.next();
             for (int i = 0; i < ((Integer)anonClassChecker.getMap().get(outer)).intValue(); i++) {
                 String className = outer.toString()+"$"+(i+1);
+                System.out.println("want to resolve: "+className+" for anon class");
                 resolver.assertResolvedClass(className);
                 //System.out.println("resolved class: "+className);
             }
@@ -228,6 +235,7 @@ public class InitialResolver {
                 int count = ((Integer)innerMap.get(innerName)).intValue();
                 for (int i = 0; i < count; i++) {
                     String className = outer.toString()+"$"+count+"$"+innerName;
+                    System.out.println("want to resolve: "+className);
                     resolver.assertResolvedClass(className);
                     //System.out.println("resolved class: "+className);
                 }
@@ -331,7 +339,7 @@ public class InitialResolver {
                     if (counter == count) {
                         //System.out.println("Anon class found");
                         // anon class found!
-                        createAnonClassDecl(next.objectType().type(), outerName);
+                        createAnonClassDecl(next.objectType().type(), outerName, next);
                         createClassBody(next.body());
 
                         // need to create field for outer ref 
@@ -359,21 +367,46 @@ public class InitialResolver {
         }
     }
     
-    private void createAnonClassDecl(polyglot.types.Type type, String outerName) {
-        //System.out.println("create anon class: type: "+type);
-        sootClass.addInterface(soot.Scene.v().getSootClass(type.toString()));
-        sootClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
+    private void createAnonClassDecl(polyglot.types.Type type, String outerName, polyglot.ast.New next) {
+        System.out.println("create anon class: type: "+type);
+        soot.SootClass typeClass = soot.Scene.v().getSootClass(type.toString());
+        if (typeClass.isInterface()){
+            sootClass.addInterface(typeClass);
+            sootClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
+        }
+        else {
+            sootClass.setSuperclass(typeClass);
+        }
         soot.SootField field = new soot.SootField("this$0", soot.Scene.v().getSootClass(outerName).getType(), soot.Modifier.FINAL | soot.Modifier.PRIVATE);
         sootClass.addField(field);
         //System.out.println("this$0 type: "+ Util.getSootType(type));
         
         ArrayList params = new ArrayList();
         params.add(soot.Scene.v().getSootClass(outerName).getType());
+       
+        if (typeClass.isInterface()){
+            soot.SootMethod method = new soot.SootMethod("<init>", params, soot.VoidType.v(), soot.Modifier.PUBLIC);
+            AnonClassInitMethodSource src = new AnonClassInitMethodSource();
+            src.outerClassType(soot.Scene.v().getSootClass(outerName).getType());
+            method.setSource(src);
+            sootClass.addMethod(method);
+        }
+        else {
+            ArrayList allParams = new ArrayList();
+            Iterator aIt = next.arguments().iterator();
+            while (aIt.hasNext()){
+                polyglot.types.Type pType = ((polyglot.ast.Expr)aIt.next()).type();
+                allParams.add(Util.getSootType(pType));
+            }
+            allParams.add(soot.Scene.v().getSootClass(outerName).getType());
+            soot.SootMethod method = new soot.SootMethod("<init>", allParams, soot.VoidType.v(), soot.Modifier.PUBLIC);
         
-        soot.SootMethod method = new soot.SootMethod("<init>", params, soot.VoidType.v(), soot.Modifier.PUBLIC);
-        
-        method.setSource(new AnonClassInitMethodSource());
-        sootClass.addMethod(method);
+            AnonClassInitMethodSource src = new AnonClassInitMethodSource();
+            src.outerClassType(soot.Scene.v().getSootClass(outerName).getType());
+            method.setSource(src);
+            sootClass.addMethod(method);
+                    
+        }
     }
     /**
      * Class Declaration Creation
@@ -625,7 +658,11 @@ public class InitialResolver {
 		ArrayList exceptions = new ArrayList();
 		Iterator throwsIt = procedure.throwTypes().iterator();
 		while (throwsIt.hasNext()){
-            String nextException = throwsIt.next().toString();
+            polyglot.types.Type throwType = ((polyglot.ast.TypeNode)throwsIt.next()).type();
+            String nextException = throwType.toString();
+            if (((polyglot.types.ClassType)throwType).isNested()){
+                nextException = fixInnerClassName((polyglot.types.ClassType)throwType);
+            }
             exceptions.add(soot.Scene.v().getSootClass(nextException));
 		}
         return exceptions; 

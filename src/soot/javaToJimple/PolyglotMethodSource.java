@@ -28,6 +28,7 @@ public class PolyglotMethodSource implements MethodSource {
     }
 
     public soot.Body getBody(soot.SootMethod sm, String phaseName) {
+        System.out.println("getting body for method: "+sm.getName()+" in class: "+sm.getDeclaringClass().getName());
         JimpleBodyBuilder jbb = new JimpleBodyBuilder();
         soot.jimple.JimpleBody jb = jbb.createJimpleBody(block, formals, sm);
        

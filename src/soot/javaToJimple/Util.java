@@ -150,6 +150,7 @@ public class Util {
             else {
 			    className = classType.fullName();
             }
+            System.out.println("className for type: "+className);
 			sootType = soot.RefType.v(className);
 		}
 		else{
