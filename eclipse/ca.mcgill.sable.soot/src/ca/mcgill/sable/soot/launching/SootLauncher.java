@@ -36,7 +36,7 @@ import ca.mcgill.sable.soot.attributes.AbstractAttributesComputer;
 import ca.mcgill.sable.soot.attributes.JavaAttributesComputer;
 import ca.mcgill.sable.soot.attributes.JimpleAttributesComputer;
 import ca.mcgill.sable.soot.attributes.SootAttributesJavaColorer;
-
+import ca.mcgill.sable.soot.editors.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.jdt.core.*;
 
@@ -257,7 +257,18 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		SootPlugin.getDefault().getManager().updateSootRanFlag();
 		//getDavaHandler().handleAfter();
 		//getFileHandler().handleFilesChanged();
-		IEditorPart activeEdPart = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		final IEditorPart activeEdPart = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		/*if ((activeEdPart != null) && (activeEdPart instanceof JimpleEditor)){
+            if (activeEdPart.getEditorInput() != null){
+                System.out.println("will update ed first");
+                    
+                activeEdPart.getSite().getShell().getDisplay().asyncExec(new Runnable(){
+                    public void run() {
+                        ((AbstractTextEditor)activeEdPart).setInput(activeEdPart.getEditorInput());
+                    };
+                });
+            }
+		}*/
 		SootPlugin.getDefault().getPartManager().updatePart(activeEdPart);
 	}
 	

@@ -35,7 +35,7 @@ public abstract class AbstractAttributesColorer {
     private void clearPres(){
         if (getEditorPart() == null) return;
             if (getEditorPart().getEditorInput() != null){
-                getDisplay().asyncExec(new Runnable(){
+                getDisplay().syncExec(new Runnable(){
                     public void run() {
                         ((AbstractTextEditor)getEditorPart()).setInput(getEditorPart().getEditorInput());
                     };

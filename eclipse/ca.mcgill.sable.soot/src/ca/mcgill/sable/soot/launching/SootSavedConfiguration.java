@@ -332,6 +332,7 @@ public class SootSavedConfiguration {
 		if (getRunArray() == null){
 			setRunArray(new ArrayList());
 		}
+	
 		Iterator it = getSaveArray().iterator();
 		String lastKey = "";
 		while (it.hasNext()){
@@ -352,10 +353,16 @@ public class SootSavedConfiguration {
 			if (test.equals("true")){
 				// don't send 
 			}
+			else if (test.equals("false")){
+				// don't send and also don't send key 
+				int index = getRunArray().size() - 1;
+				getRunArray().remove(index);
+			}
 			else if (test.indexOf(spliter) != -1){
 				System.out.println("test has newline");
 				String [] tokens = test.split(spliter);
 				getRunArray().add(tokens[0]);
+				
 				System.out.println("added "+tokens[0]);
 				for (int i = 1; i < tokens.length; i++){
 				//StringTokenizer st = new StringTokenizer(test, "\r\n");
@@ -460,12 +467,18 @@ public class SootSavedConfiguration {
 			StringTokenizer st = new StringTokenizer(key);
 			//System.out.println("about to find val");
 			Object val = getConfig().get(key);
+			System.out.println("val: "+val);
+			
 			//System.out.println("found val");
 			switch(st.countTokens()) {
 				case 1: {
 					String aliasName = st.nextToken();
 					if (aliasName.equals("sootMainClass")) continue;
 					System.out.println("adding: "+aliasName);
+					if (val instanceof String) {
+						String test = (String)val;
+						if ((test == null) |(test.length() == 0)) { System.out.println("continuing" ); continue;}
+					}
 					getSaveArray().add(DASH+aliasName);
 					//toSave.append(DASH);
 					//String aliasName = st.nextToken();
@@ -483,7 +496,7 @@ public class SootSavedConfiguration {
 						else if (test.indexOf('\n') != -1){
 							spliter = "\n";
 						}
-						System.out.println("test in toRunArray: "+test);
+						System.out.println("test in toSaveArray: "+test);
 						//if (test.equals("true")){
 							// don't send 
 						//}
@@ -516,6 +529,7 @@ public class SootSavedConfiguration {
 							System.out.println("LISTOPT: String contains newline");
 						}
 						else {*/
+							System.out.println("added val: "+val);
 							getSaveArray().add(val);
 						}
 						//}
