@@ -6,6 +6,8 @@ Improvements in version 1.2.1 (Fri Jan 12 15:22:59 EST 2001)
 4. fix by patrice to work around stupid jar bug
 5. minor changes to jar bug workaround
 6. fix for grimp precedence
+7. improved error messages in the event of missing .dat files.
+8. new build system (via the SootCompiler class).
 
 
 Improvements in version 1.2.0 (Thu Sep 28 21:41:16 EDT 2000)
