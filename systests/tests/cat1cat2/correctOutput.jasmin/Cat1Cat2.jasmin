@@ -2,6 +2,7 @@
 .class  Cat1Cat2
 .super java/lang/Object
 
+
 .method public <init>()V
     .limit stack 1
     .limit locals 1
