@@ -28,7 +28,6 @@ package soot.tagkit;
 
 import java.io.UnsupportedEncodingException;
 import soot.*;
-import soot.util.*;
 
 public class SourceFileTag implements Tag
 {
@@ -75,7 +74,7 @@ public class SourceFileTag implements Tag
 
     public String toString()
     {
-	return StringTools.getQuotedStringOf(sourceFile);
+	return sourceFile;
     }
 }
 
