@@ -154,31 +154,13 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
 
     }
 
-    public boolean redirectPointersToThisTo(Unit newLocation, Body body, boolean branchTarget)
+    public void redirectPointersToThisTo(Unit newLocation, boolean branchTarget)
     {
-        Set trappedUnits = Collections.EMPTY_SET;
-
-        if(body != null)
-            trappedUnits = TrapManager.getTrappedUnitsOf(body);
-        
         if(branchTarget){
-            if(newLocation.branches())
-                return false;
-
-            if(trappedUnits.contains(newLocation))
-                return false;
-            
             redirectJumpsToThisTo(newLocation);
-            return true;
+            return;
         }
-
-        // this == oldLocation
-        if(this.branches())
-            return false;
-
-        if(trappedUnits.contains(this))
-            return false;
-        
+            
         List boxesPointing = this.getBoxesPointingToThis();
 
         // important to change this to an array to have a static copy
@@ -193,7 +175,5 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
             if(!box.isBranchTarget())
                 box.setUnit(newLocation);
         }
-
-        return true;
     }
 }

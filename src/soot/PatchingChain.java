@@ -58,9 +58,9 @@ public class PatchingChain extends AbstractCollection implements Chain
     /**
      * Returns the inner chain used by the PatchingChain.  In general,
      * this should not be used.  However, direct access to the inner
-     * chain may be necessary if you wish to perform perform certain
+     * chain may be necessary if you wish to perform certain
      * operations (such as control-flow manipulations) without
-     * interference from the patching algorithms. 
+     * interference from the patching algorithms.
      **/
     public Chain getNonPatchingChain()
     {
@@ -83,7 +83,25 @@ public class PatchingChain extends AbstractCollection implements Chain
     /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
     public void insertAfter(Object toInsert, Object point)
     {
-        ((Unit) point).redirectPointersToThisTo((Unit) toInsert, body, false);
+        Unit unit = (Unit) point;
+
+        // update any pointers from Phi nodes, only if the unit
+        // being inserted does not change control flow
+        patchpointers:
+        {
+            if(unit.branches())
+                break patchpointers;
+
+            Set trappedUnits = Collections.EMPTY_SET;
+            if(body != null)
+                trappedUnits = TrapManager.getTrappedUnitsOf(body);
+
+            if(trappedUnits.contains(unit))
+                break patchpointers;
+            
+            unit.redirectPointersToThisTo((Unit) toInsert, false);
+        }
+        
         innerChain.insertAfter(toInsert, point);
     }
 

@@ -75,18 +75,13 @@ public interface Unit extends Switchable, Host, Serializable
     public void redirectJumpsToThisTo(Unit newLocation);
 
     /**
-     * Conditionally redirects pointers to this Unit to newLocation.
+     * Redirects pointers to this Unit to newLocation.
      *
      * <p> branchTarget indicates whether the Unit should be processed
      * as the target of a jump (hence at the beginning of a CFG) or as
      * a Unit indicative of the end of a CFG block (used for SSA).
      *
-     * <p> The provided body may be null, in which case exceptional
-     * control flow is ignored.
-     *
-     * <p> Returns true on success, false otherwise.
-     *
      * @see UnitBox
      **/
-    public boolean redirectPointersToThisTo(Unit newLocation, Body body, boolean branchTarget);
+    public void redirectPointersToThisTo(Unit newLocation, boolean branchTarget);
 }
