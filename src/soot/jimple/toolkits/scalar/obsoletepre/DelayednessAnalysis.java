@@ -23,7 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.toolkits.scalar.pre;
+package soot.jimple.toolkits.scalar.obsoletepre;
 
 import soot.*;
 import soot.jimple.*;
@@ -31,50 +31,60 @@ import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
 
-/** An expression is <i>earliest</i> at the entrance to basic block <code>b</code> 
- * if no block from <code>entry</code> to <code>b</code> both includes a computation of
- * the expression and produces the same value as evaluating the expression at the
- * entrance to block <code>b</code>. */
-class EarliestnessAnalysis extends ForwardFlowAnalysis
+/** An expression is <i>delayed</i> at the entrance to basic block <code>b</code> 
+ * if it is anticipatable and earliest at that point and if all subsequent
+ * computations of it are in block <code>b</code>. */
+class DelayednessAnalysis extends ForwardFlowAnalysis
 {
     BoundedFlowSet emptySet;
     FlowUniverse exprUniv;
 
     HashMap blockToGenerateSet;
-    HashMap blockToPreserveSet;       
+    HashMap blockToPreserveSet;
+    AnticipEarliestExprs anea;
+    BlockGraph g;
 
-    public EarliestnessAnalysis(BlockGraph g, AnticipatableExprs a, FlowUniverse exprUniv)
+    public DelayednessAnalysis(BlockGraph g, AnticipEarliestExprs anea, FlowUniverse exprUniv)
     {
         super(g);
         blockToGenerateSet = new HashMap(g.size() * 2 + 1, 0.7f);
         blockToPreserveSet = new HashMap(g.size() * 2 + 1, 0.7f);
+        this.anea = anea;
+        this.g = g;
 
         emptySet = new ArrayPackedSet(exprUniv);
         this.exprUniv = exprUniv;
 
         Iterator blockIt = g.iterator();
-
         while (blockIt.hasNext())
         {
             Block b = (Block)blockIt.next();
 
-            BoundedFlowSet nonTrans = LocallyTransparentExprs.getTransLocExprsOf(b, exprUniv);
-            nonTrans.complement(nonTrans);
-            blockToGenerateSet.put(b, nonTrans);
+            BoundedFlowSet aneaSet = anea.getAnticipEarliestExprsBefore(b);
+            blockToGenerateSet.put(b, aneaSet);
 
-            BoundedFlowSet ant = a.getAnticipatableExprsBefore(b);
+            BoundedFlowSet ant = LocallyAnticipatableExprs.getAntLocExprsOf(b, exprUniv);
+            ant.complement(ant);
             blockToPreserveSet.put(b, ant);
         }
 
         doAnalysis();
     }
 
+    protected void customizeInitialFlowGraph()
+    {
+        Iterator blockIt = g.getHeads().iterator();
+
+        while (blockIt.hasNext())
+        {
+            Block b = (Block) blockIt.next();
+            unitToAfterFlow.put(b, anea.getAnticipEarliestExprsBefore(b));
+        }
+    }
+
     protected Object newInitialFlow()
     {
-        BoundedFlowSet allExprs = (BoundedFlowSet)emptySet.clone();
-        allExprs.complement(allExprs);
-
-        return allExprs;
+        return emptySet.clone();
     }
 
     protected void copy(Object source, Object dest)
@@ -92,17 +102,17 @@ class EarliestnessAnalysis extends ForwardFlowAnalysis
         
         FlowSet outSet = (FlowSet) out;
         
-        inSet1.union(inSet2, outSet);
+        inSet1.intersection(inSet2, outSet);
     }
 
     protected void flowThrough(Object inValue, Object b, Object outValue)
     {
         BoundedFlowSet in = (BoundedFlowSet) inValue, out = (BoundedFlowSet) outValue;
 
-        // Remove non-preserved sets from `in' and dump into `out'.
-        in.intersection((FlowSet) blockToPreserveSet.get(b), out);
-
         // Add generated sets to `out'.
-        out.union((FlowSet) blockToGenerateSet.get(b), out);
+        in.union((FlowSet) blockToGenerateSet.get(b), out);
+
+        // Intersect with \neg AntLoc.
+        out.intersection((FlowSet) blockToPreserveSet.get(b), out);
     }
 }

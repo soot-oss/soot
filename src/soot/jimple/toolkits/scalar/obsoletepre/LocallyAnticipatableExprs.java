@@ -23,7 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.toolkits.scalar.pre;
+package soot.jimple.toolkits.scalar.obsoletepre;
 
 import soot.*;
 import soot.jimple.*;

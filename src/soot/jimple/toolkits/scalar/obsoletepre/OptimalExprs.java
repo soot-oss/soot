@@ -23,7 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.toolkits.scalar.pre;
+package soot.jimple.toolkits.scalar.obsoletepre;
 
 import soot.*;
 import soot.jimple.*;
@@ -31,18 +31,22 @@ import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
 
-class AnticipatableExprs
+class OptimalExprs
 {
-    GlobalAnticipatabilityAnalysis a;
-     
-    public AnticipatableExprs(BlockGraph g, FlowUniverse uni)
+    LatestExprs lat;
+    IsolatedExprs iso;
+
+    public OptimalExprs(BlockGraph g, LatestExprs lat, IsolatedExprs iso,
+                                FlowUniverse uni)
     {
-        a = new GlobalAnticipatabilityAnalysis(g, uni);
+        this.lat = lat; this.iso = iso;
     }
 
-    /* universe is all expressions in the program. */
-    public BoundedFlowSet getAnticipatableExprsBefore(Block b)
+    public BoundedFlowSet getOptimalExprsBefore(Block b)
     {
-        return (BoundedFlowSet)a.getFlowAfter(b);
+        BoundedFlowSet res = iso.getIsolatedExprsAfter(b);
+        res.complement(res);
+        res.union(lat.getLatestExprsBefore(b), res);
+        return res;
     }
 }

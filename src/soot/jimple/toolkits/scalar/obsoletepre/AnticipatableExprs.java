@@ -23,7 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.toolkits.scalar.pre;
+package soot.jimple.toolkits.scalar.obsoletepre;
 
 import soot.*;
 import soot.jimple.*;
@@ -31,24 +31,18 @@ import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
 
-class AnticipEarliestExprs
+class AnticipatableExprs
 {
-    AnticipatableExprs ant;
-    EarliestnessAnalysis earl;
-
-    public AnticipEarliestExprs(BlockGraph g, AnticipatableExprs a, 
-                                FlowUniverse uni)
+    GlobalAnticipatabilityAnalysis a;
+     
+    public AnticipatableExprs(BlockGraph g, FlowUniverse uni)
     {
-        this.ant = a;
-        this.earl = new EarliestnessAnalysis(g, a, uni);
+        a = new GlobalAnticipatabilityAnalysis(g, uni);
     }
 
     /* universe is all expressions in the program. */
-    public BoundedFlowSet getAnticipEarliestExprsBefore(Block b)
+    public BoundedFlowSet getAnticipatableExprsBefore(Block b)
     {
-        BoundedFlowSet res = (BoundedFlowSet)ant.getAnticipatableExprsBefore(b).clone();
-        res.intersection((FlowSet)earl.getFlowAfter(b), res);
-
-        return res;
+        return (BoundedFlowSet)a.getFlowAfter(b);
     }
 }

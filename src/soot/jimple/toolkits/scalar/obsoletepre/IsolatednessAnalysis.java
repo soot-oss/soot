@@ -23,7 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.toolkits.scalar.pre;
+package soot.jimple.toolkits.scalar.obsoletepre;
 
 import soot.*;
 import soot.jimple.*;
@@ -31,23 +31,26 @@ import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
 
-/** An expression's value is <i>globally anticipatable</i> in a basic block <code>b</code> 
- * if every path from the entry point of <code>b</code> includes a computation of
- * the expression and if placing that computation at any point on these paths
- * would leave the expression's value unchanged. */
-class GlobalAnticipatabilityAnalysis extends BackwardFlowAnalysis
+/** An expression is <i>delayed</i> at the entrance to basic block <code>b</code> 
+ * if it is anticipatable and earliest at that point and if all subsequent
+ * computations of it are in block <code>b</code>. */
+class IsolatednessAnalysis extends BackwardFlowAnalysis
 {
     BoundedFlowSet emptySet;
     FlowUniverse exprUniv;
 
     HashMap blockToGenerateSet;
-    HashMap blockToPreserveSet;       
+    HashMap blockToPreserveSet;
+    LatestExprs lat;
+    BlockGraph g;
 
-    public GlobalAnticipatabilityAnalysis(BlockGraph g, FlowUniverse exprUniv)
+    public IsolatednessAnalysis(BlockGraph g, LatestExprs lat, FlowUniverse exprUniv)
     {
         super(g);
         blockToGenerateSet = new HashMap(g.size() * 2 + 1, 0.7f);
         blockToPreserveSet = new HashMap(g.size() * 2 + 1, 0.7f);
+        this.lat = lat;
+        this.g = g;
 
         emptySet = new ArrayPackedSet(exprUniv);
         this.exprUniv = exprUniv;
@@ -56,15 +59,12 @@ class GlobalAnticipatabilityAnalysis extends BackwardFlowAnalysis
         while (blockIt.hasNext())
         {
             Block b = (Block)blockIt.next();
-            BoundedFlowSet genSet = (BoundedFlowSet)emptySet.clone();
 
-            genSet.union(LocallyAnticipatableExprs.getAntLocExprsOf(b, exprUniv), genSet);
-            blockToGenerateSet.put(b, genSet);
+            blockToGenerateSet.put(b, lat.getLatestExprsBefore(b));
 
-            BoundedFlowSet killSet = (BoundedFlowSet)emptySet.clone();
-            killSet.union(LocallyTransparentExprs.getTransLocExprsOf(b, exprUniv), killSet);
-            killSet.complement(killSet);
-            blockToPreserveSet.put(b, killSet);
+            BoundedFlowSet ant = LocallyAnticipatableExprs.getAntLocExprsOf(b, exprUniv);
+            ant.complement(ant);
+            blockToPreserveSet.put(b, ant);
         }
 
         doAnalysis();
@@ -97,10 +97,8 @@ class GlobalAnticipatabilityAnalysis extends BackwardFlowAnalysis
     {
         BoundedFlowSet in = (BoundedFlowSet) inValue, out = (BoundedFlowSet) outValue;
 
-        // Remove non-preserved sets from `out' and dump into `in'.
-        out.intersection((FlowSet) blockToPreserveSet.get(b), in);
-
         // Add generated sets to `in'.
-        in.union((FlowSet) blockToGenerateSet.get(b), in);
+        out.intersection((FlowSet) blockToPreserveSet.get(b), out);
+        out.union((FlowSet) blockToGenerateSet.get(b), in);
     }
 }

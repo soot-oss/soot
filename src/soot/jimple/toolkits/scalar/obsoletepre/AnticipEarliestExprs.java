@@ -23,7 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.toolkits.scalar.pre;
+package soot.jimple.toolkits.scalar.obsoletepre;
 
 import soot.*;
 import soot.jimple.*;
@@ -31,27 +31,24 @@ import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
 
-class DelayedExprs
+class AnticipEarliestExprs
 {
-    AnticipEarliestExprs anea;
-    DelayednessAnalysis del;
+    AnticipatableExprs ant;
+    EarliestnessAnalysis earl;
 
-    public DelayedExprs(BlockGraph g, AnticipEarliestExprs anea, 
+    public AnticipEarliestExprs(BlockGraph g, AnticipatableExprs a, 
                                 FlowUniverse uni)
     {
-        this.anea = anea;
-        this.del = new DelayednessAnalysis(g, anea, uni);
+        this.ant = a;
+        this.earl = new EarliestnessAnalysis(g, a, uni);
     }
 
-    public BoundedFlowSet getDelayedExprsBefore(Block b)
+    /* universe is all expressions in the program. */
+    public BoundedFlowSet getAnticipEarliestExprsBefore(Block b)
     {
-        BoundedFlowSet res = (BoundedFlowSet)(((BoundedFlowSet)del.getFlowBefore(b)).clone());
-        res.union(anea.getAnticipEarliestExprsBefore(b), res);
+        BoundedFlowSet res = (BoundedFlowSet)ant.getAnticipatableExprsBefore(b).clone();
+        res.intersection((FlowSet)earl.getFlowAfter(b), res);
+
         return res;
-    }
-
-    public BoundedFlowSet getDelayedExprsAfter(Block b)
-    {
-        return (BoundedFlowSet)del.getFlowAfter(b);
     }
 }

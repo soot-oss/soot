@@ -23,7 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.toolkits.scalar.pre;
+package soot.jimple.toolkits.scalar.obsoletepre;
 
 import soot.*;
 import soot.jimple.*;
@@ -31,24 +31,30 @@ import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
 
-class RedundantExprs
+class LatestExprs
 {
-    LatestExprs lat;
-    IsolatedExprs iso;
+    DelayedExprs del;
     FlowUniverse uni;
+    BlockGraph g;
 
-    public RedundantExprs(BlockGraph g, LatestExprs lat, IsolatedExprs iso,
-                                FlowUniverse uni)
+    public LatestExprs(BlockGraph g, DelayedExprs del, FlowUniverse uni)
     {
-        this.lat = lat; this.iso = iso; this.uni = uni;
+        this.g = g;
+        this.del = del;
+        this.uni = uni;
     }
 
-    public BoundedFlowSet getRedundantExprsOf(Block b)
+    public BoundedFlowSet getLatestExprsBefore(Block b)
     {
-        BoundedFlowSet res = iso.getIsolatedExprsAfter(b);
-        res.union(lat.getLatestExprsBefore(b), res);
-        res.complement(res);
-        res.intersection(LocallyAnticipatableExprs.getAntLocExprsOf(b, uni), res);
+        BoundedFlowSet res = new ArrayPackedSet(uni); res.complement(res);
+
+        Iterator bSuccsIt = g.getSuccsOf(b).iterator();
+        while (bSuccsIt.hasNext())
+            res.intersection(del.getDelayedExprsBefore((Block)bSuccsIt.next()), res);
+
+        res.union(LocallyAnticipatableExprs.getAntLocExprsOf(b, uni), res);
+        res.intersection(del.getDelayedExprsBefore(b), res);
+
         return res;
     }
 }

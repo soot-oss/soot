@@ -23,7 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.toolkits.scalar.pre;
+package soot.jimple.toolkits.scalar.obsoletepre;
 
 import soot.*;
 import soot.jimple.*;
@@ -31,23 +31,27 @@ import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
 
-class IsolatedExprs
+class DelayedExprs
 {
-    IsolatednessAnalysis iso;
+    AnticipEarliestExprs anea;
+    DelayednessAnalysis del;
 
-    public IsolatedExprs(BlockGraph g, LatestExprs lat, 
+    public DelayedExprs(BlockGraph g, AnticipEarliestExprs anea, 
                                 FlowUniverse uni)
     {
-        this.iso = new IsolatednessAnalysis(g, lat, uni);
+        this.anea = anea;
+        this.del = new DelayednessAnalysis(g, anea, uni);
     }
 
-    public BoundedFlowSet getIsolatedExprsBefore(Block b)
+    public BoundedFlowSet getDelayedExprsBefore(Block b)
     {
-        return (BoundedFlowSet)iso.getFlowBefore(b);
+        BoundedFlowSet res = (BoundedFlowSet)(((BoundedFlowSet)del.getFlowBefore(b)).clone());
+        res.union(anea.getAnticipEarliestExprsBefore(b), res);
+        return res;
     }
 
-    public BoundedFlowSet getIsolatedExprsAfter(Block b)
+    public BoundedFlowSet getDelayedExprsAfter(Block b)
     {
-        return (BoundedFlowSet)iso.getFlowAfter(b);
+        return (BoundedFlowSet)del.getFlowAfter(b);
     }
 }

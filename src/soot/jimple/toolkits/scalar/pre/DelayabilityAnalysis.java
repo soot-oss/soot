@@ -1,6 +1,5 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2002 Florian Loitsch
- *       based on FastAvailableExpressionsAnalysis from Patrick Lam.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -25,7 +24,7 @@
  */
 
 
-package soot.jimple.toolkits.scalar.PRE;
+package soot.jimple.toolkits.scalar.pre;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -35,56 +34,67 @@ import java.util.*;
 import soot.util.*;
 
 /** 
- * Performs an UpSafe-analysis on the given graph.<br>
- * An expression is upsafe, if the computation already has been performed on
- * every path from START to the given program-point.<br>
+ * Performs a Delayability-analysis on the given graph.<br>
+ * This analysis is the third analysis in the PRE (lazy code motion) and has
+ * little (no?) sense if used alone. Basicly it tries to push the computations
+ * we would insert in the Busy Code Motion as far down as possible, to decrease
+ * life-time ranges (clearly this is not true, if the computation "uses" two
+ * variables and produces only one temporary).
  */
-public class UpSafetyAnalysis extends ForwardFlowAnalysis {
-  private SideEffectTester sideEffect;
-
-  private Map unitToGenerateMap;
-
+public class DelayabilityAnalysis extends ForwardFlowAnalysis {
+  private HashMap unitToGenerateSet;
+  private Map unitToKillValue;
   private FlowSet emptySet;
 
   /**
    * this constructor should not be used, and will throw a runtime-exception!
    */
-  public UpSafetyAnalysis(DirectedGraph dg) {
+  public DelayabilityAnalysis(DirectedGraph dg) {
     /* we have to add super(dg). otherwise Javac complains. */
     super(dg);
     throw new RuntimeException("Don't use this Constructor!");
   }
 
   /**
-   * this constructor automaticly performs the UpSafety-analysis.<br>
-   * the result of the analysis is as usual in FlowBefore (getFlowBefore())
-   * and FlowAfter (getFlowAfter()).<br>
-   * the naive side-effect tester is used to perform kills.
+   * automaticly performs the Delayability-analysis on the graph
+   * <code>dg</code> and the Earliest-computation <code>earliest</code>.<br>
+   * the <code>equivRhsMap</code> is only here to avoid doing these things
+   * again...
    *
    * @param dg a CompleteUnitGraph
-   * @param unitToGen the EquivalentValue of each unit.
+   * @param earliest the earliest-computation of the <b>same</b> graph.
+   * @param equivRhsMap the rhs of each unit (if assignment-stmt).
    */
-  public UpSafetyAnalysis(DirectedGraph dg, Map unitToGen) {
-    this(dg, unitToGen, new NaiveSideEffectTester());
-  }
-
-  /**
-   * this constructor automaticly performs the UpSafety-analysis.<br>
-   * the result of the analysis is as usual in FlowBefore (getFlowBefore())
-   * and FlowAfter (getFlowAfter()).<br>
-   *
-   * @param dg a CompleteUnitGraph
-   * @param unitToGen the EquivalentValue of each unit.
-   * @param sideEffect the SideEffectTester that will be used to perform kills.
-   */
-  public UpSafetyAnalysis(DirectedGraph dg, Map unitToGen, SideEffectTester
-			  sideEffect) {
+  public DelayabilityAnalysis(DirectedGraph dg, EarliestnessComputation
+      earliest, Map equivRhsMap) {
     super(dg);
-    this.sideEffect = sideEffect;
     UnitGraph g = (UnitGraph)dg;
     emptySet = new ToppedSet(new ArraySparseSet());
-    unitToGenerateMap = unitToGen;
+    unitToKillValue = equivRhsMap;
+
+    /* Create generate sets */
+    {
+      unitToGenerateSet = new HashMap(g.size() * 2 + 1, 0.7f);
+
+      Iterator unitIt = g.iterator();
+      while (unitIt.hasNext()) {
+        Unit currentUnit = (Unit)unitIt.next();
+        FlowSet genSet = (FlowSet)emptySet.clone();
+        Iterator genIt = earliest.getEarliestBefore(currentUnit).iterator();
+        while (genIt.hasNext())
+          genSet.add(genIt.next(), genSet);
+        unitToGenerateSet.put(currentUnit, genSet);
+      }
+    }
     doAnalysis();
+    { // finally add the genSet to each BeforeFlow
+      Iterator unitIt = g.iterator();
+      while (unitIt.hasNext()) {
+        Unit currentUnit = (Unit)unitIt.next();
+        FlowSet beforeSet = (FlowSet)getFlowBefore(currentUnit);
+        beforeSet.union((FlowSet)unitToGenerateSet.get(currentUnit), beforeSet);
+      }
+    }
   }
 
   protected Object newInitialFlow() {
@@ -110,9 +120,7 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
       return;
 
     // Perform generation
-    Value add = (Value)unitToGenerateMap.get(unit);
-    if (add != null)
-      out.add(add, out);
+    out.union((FlowSet) unitToGenerateSet.get(unit), out);
 
     /* should not be possible */
     if (((ToppedSet)out).isTop()) {
@@ -121,31 +129,9 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
 
     { /* Perform kill */
       Unit u = (Unit)unit;
-
-      /* simulate a snapshotIterator, as we modify the underlying set */
-      List outList = new LinkedList();
-      outList.addAll(((FlowSet)out).toList());
-      Iterator outIt = outList.iterator();
-
-      // iterate over things (avail) in out set.
-      while (outIt.hasNext()) {
-        EquivalentValue equiVal = (EquivalentValue)outIt.next();
-        Value avail = equiVal.getValue();
-        if (avail instanceof FieldRef) {
-          if (sideEffect.unitCanWriteTo(u, avail))
-            out.remove(equiVal, out);
-        } else {
-          Iterator usesIt = avail.getUseBoxes().iterator();
-
-          // iterate over uses in each avail.
-          while (usesIt.hasNext()) {
-            Value use = ((ValueBox)usesIt.next()).getValue();
-
-            if (sideEffect.unitCanWriteTo(u, use))
-              out.remove(equiVal, out);
-          }
-        }
-      }
+      EquivalentValue equiVal = (EquivalentValue)unitToKillValue.get(u);
+      if (equiVal != null)
+        out.remove(equiVal, out);
     }
   }
 
