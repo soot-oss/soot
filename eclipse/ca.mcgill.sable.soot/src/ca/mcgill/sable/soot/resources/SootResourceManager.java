@@ -12,11 +12,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.TextEvent;
-import org.eclipse.jface.text.source.*;
-import org.eclipse.ui.*;
 
-import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.soot.editors.JimpleEditor;
 
 
 
@@ -54,72 +50,14 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 	
 	public SootResourceManager() {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-		/*Iterator it = SootPlugin.getDefault().getEditorViewers().iterator();
-		while (it.hasNext()){
-			SourceViewer sv = (SourceViewer)it.next();
-			sv.addTextListener(this);
-			System.out.println("added listener for source viewer"+sv);
-		}*/
+
 		
 	}
 	
 	public void textChanged(TextEvent e){
 		System.out.println("textChanged event occured");
-		/*IWorkbench workbench = SootPlugin.getDefault().getWorkbench();
-		if (workbench != null) {
-			IEditorPart edPart = workbench.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-			JimpleEditor ed = (JimpleEditor) edPart.getAdapter(JimpleEditor.class);
-			if (ed != null && ed.getPage() != null){
-				ed.getPage().getContentOutline();
-				ed.getPage().getViewer().setInput(ed.getPage().getContentOutline());
-				ed.getPage().getViewer().refresh();
-				ed.getPage().getViewer().expandAll();
-			}
-		}*/
-		//System.out.println(e.getDocumentEvent().getDocument())
 	}
-	// here do nothing on start up - just not calling this method 
-	/*public void initialize() {
-		setProjects(new HashMap());
-		IProject [] projs = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		for (int i = 0; i < projs.length; i++){
-			System.out.println("adding to ResourceManger project: "+projs[i].getFullPath().toOSString());
-			getProjects().put(projs[i], getFilesForContainer(projs[i]));
-		}
-		
-	}*/
-	
-	// not used
-	/*public HashMap getFilesForContainer(IContainer parent) {
-		HashMap list = new HashMap();
-		try {
-			IResource [] members = parent.members();
-			for (int i = 0; i < members.length; i++){
-				
-				//System.out.println(members[i].getFullPath().toOSString()+" and ext: "+members[i].getFileExtension());
-				if (members[i] instanceof IFolder) {
-					
-					list.putAll(getFilesForContainer((IFolder)members[i]));
-				}
-				else if (members[i] instanceof IFile){
-					
-					IFile file = (IFile)members[i];
-					if (file.getFileExtension() == null){
-					}
-					else if ((file.getFileExtension().equals(JAVA_FILE_EXT)) ||
-						(file.getFileExtension().equals(JIMPLE_FILE_EXT))){
-							//System.out.println("adding to Resource Manager file: "+file.getFullPath().toOSString());
-							list.put(file, new BitSet(2));
-						}
-				}
-			}
-		}
-		catch(CoreException e){
-			
-		}
-		return list;
-		
-	}*/
+
 	
 	public void updateSootRanFlag(){
 		//System.out.println("updating update bit");
@@ -133,30 +71,7 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 		}
 	}
 	
-	/*public void updateSootRanFlag(){
-		//System.out.println("updating update bit");
-		if (getProjects() == null) return;
-		
-		Iterator it = getProjects().keySet().iterator();
-		while (it.hasNext()){
-			IProject proj = (IProject)it.next();
-			//System.out.println("updating update bit for proj: "+proj.getFullPath().toOSString());
-			HashMap files = (HashMap)getProjects().get(proj);
-			
-			if (files == null) break;
-			//System.out.println(files.keySet());
-			
-			Iterator fileIt = files.keySet().iterator();
-			
-			while (fileIt.hasNext()){
-				Object obj = fileIt.next();
-				//System.out.println(obj.getClass().toString());
-				IFile file = (IFile)obj;
-				//System.out.println("updating update bit for file: "+file.getFullPath().toOSString());
-				((BitSet)files.get(file)).set(UPDATE_BIT);
-			}
-		}
-	}*/
+	
 	
 	public void updateFileChangedFlag(IFile file){
 		//System.out.println("updating remove bit");
@@ -178,16 +93,7 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 		if (getChangedResources().get(file) == null) return false;
 		return ((BitSet)getChangedResources().get(file)).get(SOOT_RAN_BIT);
 	}
-	
-	/*public boolean isFileMarkersUpdate(IFile file){
-		//System.out.println("projects: "+getProjects());
-		HashMap files = (HashMap)getProjects().get(file.getProject());
-		//System.out.println(file.getFullPath().toOSString());
-		//System.out.println("files: "+files);
-		if (files == null) return false;
-		if (files.get(file) == null) return false;
-		return ((BitSet)files.get(file)).get(UPDATE_BIT);
-	}*/
+
 	public void setToFalseUpdate(IFile file){
 		if (getChangedResources() == null) return;
 		if (getChangedResources().get(file) == null) return;
@@ -201,37 +107,13 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 		((BitSet)getChangedResources().get(file)).clear(CHANGED_BIT);
 			
 	}
-	/*public void setToFalseUpdate(IFile file){
-		HashMap files = (HashMap)getProjects().get(file.getProject());
-		//System.out.println(file.getFullPath().toOSString());
-		//System.out.println("files: "+files);
-		if (files == null) return;
-		if (files.get(file) == null) return;
-		((BitSet)files.get(file)).clear(UPDATE_BIT);	
-	}
-	
-	public void setToFalseRemove(IFile file){
-		HashMap files = (HashMap)getProjects().get(file.getProject());
-		//System.out.println(file.getFullPath().toOSString());
-		//System.out.println("files: "+files);
-		if (files == null) return;
-		if (files.get(file) == null) return;
-		((BitSet)files.get(file)).clear(REMOVE_BIT);
-	}*/
+
 	public boolean isFileMarkersRemove(IFile file){
 		if (getChangedResources() == null) return false;
 		if (getChangedResources().get(file) == null) return false;
 		return ((BitSet)getChangedResources().get(file)).get(CHANGED_BIT);
 	}
-	/*public boolean isFileMarkersRemove(IFile file){
-		//System.out.println("projects: "+getProjects());
-		HashMap files = (HashMap)getProjects().get(file.getProject());
-		//System.out.println(file.getFullPath().toOSString());
-		//System.out.println("files: "+files);
-		if (files == null) return false;
-		if (files.get(file) == null) return false;
-		return ((BitSet)files.get(file)).get(REMOVE_BIT);
-	}*/
+
 	
 	public void addToLists(IResource res){
 		System.out.println(res.getClass().toString());
@@ -283,23 +165,6 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 	}
 	
 
-	/**
-	 * @return
-	 */
-	/*public HashMap getProjects() {
-		return projects;
-	}
-
-	/**
-	 * @param map
-	 */
-	/*public void setProjects(HashMap map) {
-		projects = map;
-	}
-
-	/**
-	 * @return
-	 */
 	public HashMap getChangedResources() {
 		return changedResources;
 	}

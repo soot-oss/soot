@@ -50,9 +50,11 @@ public class StreamGobbler extends Thread {
        			//se.setTextToAppend(Character.toString((char)temp));
        			se.setTextToAppend(temp);
        			final SootOutputEvent toSend = se;
+       			//System.out.println("wants to fire sootevent: "+toSend);
        			getDisplay().asyncExec(new Runnable(){
        				public void run() {
        					SootPlugin.getDefault().fireSootOutputEvent(toSend);
+       					//System.out.println("fired sootevent: "+toSend);
        				};
        			});
        			se = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);

@@ -28,7 +28,7 @@ public class SootAttributesHandler {
 	private String fileName;
 	private HashMap projList;
 
-	private static final String NEWLINE = "\r\n";
+	private static final String NEWLINE = "\n";
 	
 	public SootAttributesHandler() {
 				
@@ -38,7 +38,7 @@ public class SootAttributesHandler {
 		this.attrList = attrList;
 	}
 	
-	public void setAttrListForFilename(Vector attrList, String filename, String project) {
+	/*public void setAttrListForFilename(Vector attrList, String filename, String project) {
 		
 		System.out.println("Project: "+project+" filename: "+filename);
 		if (attrList == null ) {
@@ -60,7 +60,7 @@ public class SootAttributesHandler {
 		
 		getProjList().put(project, temp);
 		
-	}
+	}*/
 
 	public void printAttrs() {
 		System.out.println(getAttrList());
@@ -117,16 +117,18 @@ public class SootAttributesHandler {
 		while (it.hasNext()) {
 			SootAttribute sa = (SootAttribute)it.next();
 			if (sa.attrForJimpleLn(lnNum)) {
-				sb.append(sa.getText());
+				//if (sa.getTextList() == null) return null;
+				sb.append(sa.getAllTextAttrs());
 				sb.append(NEWLINE);
 			}
 		}	
 		String result = sb.toString();
 		result = result.trim();
+		if (result.length() == 0 ) return null;
 		return result;
 	}
 	
-	public String getJimpleAttributes(String proj, String filename, int lineNum) {
+	/*public String getJimpleAttributes(String proj, String filename, int lineNum) {
 		
 		System.out.println("Project: "+proj+" Filename: "+filename);
 		if (getProjList().get(proj) == null) {
@@ -148,7 +150,7 @@ public class SootAttributesHandler {
 			}	
 			return sb.toString();
 		}
-	}
+	}*/
 	
 	public String getJavaAttribute(int lnNum) {
 		Iterator it = getAttrList().iterator();
@@ -156,7 +158,8 @@ public class SootAttributesHandler {
 		while (it.hasNext()) {
 			SootAttribute sa = (SootAttribute)it.next();
 			if (sa.attrForJavaLn(lnNum)) {
-				sb.append(sa.getText());
+				if (sa.getTextList() == null) return null;
+				sb.append(sa.getAllTextAttrs());
 				sb.append(NEWLINE);
 			}
 		}	
@@ -164,7 +167,7 @@ public class SootAttributesHandler {
 	}
 
 	
-	public String getJavaAttribute(String proj, String filename, int lineNum) {
+	/*public String getJavaAttribute(String proj, String filename, int lineNum) {
 		System.out.println("Project: "+proj+" Filename: "+filename);
 		if (getProjList().get(proj) == null) {
 			return null;
@@ -185,7 +188,7 @@ public class SootAttributesHandler {
 			}	
 			return sb.toString();
 		}
-	}
+	}*/
 
 	
 

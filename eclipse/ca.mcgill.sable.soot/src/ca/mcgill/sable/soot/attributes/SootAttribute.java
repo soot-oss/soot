@@ -1,5 +1,7 @@
 package ca.mcgill.sable.soot.attributes;
 
+import java.util.*;
+
 /**
  * @author jlhotak
  *
@@ -26,9 +28,11 @@ public class SootAttribute {
 	private int jimple_offset_end;
 	private int colorKey;
 	private String text;
-	
+	private ArrayList textList;
+	private ArrayList valueAttrs;
 	private String filename;
 	
+	private static final String NEWLINE = "\n";
 	
 	/*public SootAttribute(int java_ln, int jimple_ln, 
 		String text, String filename) {
@@ -37,6 +41,32 @@ public class SootAttribute {
 		setText(text);
 		setFilename(filename);
 	}*/
+	
+	public void addValueAttr(ValueBoxAttribute valAttr){
+		if (getValueAttrs() == null){
+			setValueAttrs(new ArrayList());
+		}
+		getValueAttrs().add(valAttr);
+	}
+	
+	public void addTextAttr(String text){
+		if (getTextList() == null){
+			setTextList(new ArrayList());
+		}
+		getTextList().add(text);
+	}
+	
+	public StringBuffer getAllTextAttrs(){
+		StringBuffer sb = new StringBuffer();
+		if (getTextList() != null){
+			Iterator it = getTextList().iterator();
+			while (it.hasNext()){
+				sb.append((String)it.next());
+				sb.append(NEWLINE);
+			}
+		}
+		return sb;
+	}
 	
 	public boolean attrForJimpleLn(int jimple_ln) {
 		if (getJimple_ln() == jimple_ln) return true;
@@ -180,6 +210,34 @@ public class SootAttribute {
 	 */
 	public void setJimple_offset_start(int i) {
 		jimple_offset_start = i;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getTextList() {
+		return textList;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setTextList(ArrayList list) {
+		textList = list;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getValueAttrs() {
+		return valueAttrs;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setValueAttrs(ArrayList list) {
+		valueAttrs = list;
 	}
 
 }

@@ -22,6 +22,7 @@ import java.util.*;
 
 import org.eclipse.jface.text.*;
 import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
 
@@ -39,13 +40,25 @@ public class SootAttributesJimpleColorer {
 		Iterator it = handler.getAttrList().iterator();
 		while (it.hasNext()) {
 			SootAttribute sa = (SootAttribute)it.next();
-			setAttributeTextColor(sa.getJimple_ln(), sa.getJimple_offset_start(), sa.getJimple_offset_end(), sa.getColorKey());
+			if (sa.getValueAttrs() != null){
+				Iterator valIt = sa.getValueAttrs().iterator();
+				while (valIt.hasNext()){
+					ValueBoxAttribute vba = (ValueBoxAttribute)valIt.next();
+					if ((vba.getRed() == 0) && (vba.getGreen() == 0) && (vba.getBlue() == 0)){
+						// no color set	
+					}
+					else {
+						setAttributeTextColor(sa.getJimple_ln(), vba.getStartOffset(), vba.getEndOffset(), vba.getRGBColor());
+					}
+				}
+			
+			}
 			
 		}
 					
 	}
 	
-	private void setAttributeTextColor(int line, int start, int end, int colorKey){
+	private void setAttributeTextColor(int line, int start, int end, RGB colorKey){
 		Display display = getEditorPart().getSite().getShell().getDisplay();
 		//Display display = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay();
 		TextPresentation tp = new TextPresentation();
@@ -61,7 +74,7 @@ public class SootAttributesJimpleColorer {
 		System.out.println("start: "+(lineOffset+start));
 		System.out.println("start: "+start+" end: "+end);
 		System.out.println("length: "+(end-start));
-		StyleRange sr = new StyleRange((lineOffset + start - 1	), (end - start), colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT), colorManager.getColor(IJimpleColorConstants.JIMPLE_ATTRIBUTE_GOOD));
+		StyleRange sr = new StyleRange((lineOffset + start - 1	), (end - start), colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT), colorManager.getColor(colorKey));
 		tp.addStyleRange(sr);
 		final TextPresentation newPresentation = tp;
 		if (getViewer() == null){

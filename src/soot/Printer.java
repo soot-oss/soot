@@ -349,10 +349,17 @@ public class Printer {
             }
         }
 
-        UnitPrinter up = isPrecise ?
-            new NormalUnitPrinter(stmtToName, indent) :
-            new BriefUnitPrinter(stmtToName, indent);
-
+		UnitPrinter up;
+		if (addJimpleLn()) {
+			up = new AttributesUnitPrinter(stmtToName, indent); 
+	
+		}
+		else {
+        	up = isPrecise ?
+            	new NormalUnitPrinter(stmtToName, indent) :
+            	new BriefUnitPrinter(stmtToName, indent);
+		}
+	
         Iterator unitIt = units.iterator();
         Unit currentStmt = null, previousStmt;
 

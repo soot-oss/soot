@@ -31,7 +31,7 @@ public class SootAttributeResolutionGenerator
 	 */
 	public boolean hasResolutions(IMarker marker) {
 		// TODO Auto-generated method stub
-		System.out.println("in hasResolution");
+		//System.out.println("in hasResolution");
 		return true;
 	}
 
@@ -40,7 +40,7 @@ public class SootAttributeResolutionGenerator
 	 */
 	public IMarkerResolution[] getResolutions(IMarker marker) {
 		// TODO Auto-generated method stub
-		System.out.println("in getResolution");
+		//System.out.println("in getResolution");
 		return new IMarkerResolution[] {new FindMethodResolver()};
 	}
 

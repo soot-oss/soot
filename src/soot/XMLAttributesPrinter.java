@@ -6,6 +6,7 @@ import java.io.*;
 
 public class XMLAttributesPrinter {
 
+	
 	private String inFilename;
 	private String useFilename;
 	private SootClass sootClass;
@@ -46,6 +47,8 @@ public class XMLAttributesPrinter {
 	}
 	public void printAttrs(SootClass c) {
 		
+		int java_ln = 0;
+		int jimple_ln = 0;
 		
 		Iterator it = c.getMethods().iterator();
 		while (it.hasNext()) {
@@ -54,60 +57,72 @@ public class XMLAttributesPrinter {
 				continue;
 			}
 			Iterator mTags = sm.getTags().iterator();
-			int jimple_ln = -1;
-			int java_ln = -1;				
-			Vector attrs = new Vector();
+			startPrintAttribute();
 			while (mTags.hasNext()){
 				Tag t = (Tag)mTags.next();
 				if (t instanceof LineNumberTag) {
-					java_ln = (new Integer(((LineNumberTag)t).toString())).intValue();
+					printJavaLnAttr((new Integer(((LineNumberTag)t).toString())).intValue());
 				}
 				else if (t instanceof JimpleLineNumberTag) {
-					  jimple_ln = (new Integer(((JimpleLineNumberTag)t).toString())).intValue();
+					  printJimpleLnAttr((new Integer(((JimpleLineNumberTag)t).toString())).intValue());
 				}
 				else if (t instanceof StringTag) {
 					  
-					  attrs.add(formatForXML(((StringTag)t).toString()));
+					  printTextAttr(formatForXML(((StringTag)t).toString()));
 				}
 				else {
 					if (!t.toString().equals("[Unknown]")){
-				    	attrs.add(t.toString());
+				    	printTextAttr(t.toString());
 				  	}
 					
 				}
 				
 			}
+			endPrintAttribute();
 
-			printAttribute(java_ln, jimple_ln, attrs);
 			
 			Body b = sm.getActiveBody();
 			Iterator itUnits = b.getUnits().iterator();
 			while (itUnits.hasNext()) {
-				jimple_ln = -1;
-				java_ln = -1;
-				attrs = new Vector();
 				Unit u = (Unit)itUnits.next();
 				Iterator itTags = u.getTags().iterator();
+				startPrintAttribute();
 				while (itTags.hasNext()) {
 			        	Tag t = (Tag)itTags.next();
 					if (t instanceof LineNumberTag) {
-					  java_ln = (new Integer(((LineNumberTag)t).toString())).intValue();
+					  printJavaLnAttr((new Integer(((LineNumberTag)t).toString())).intValue());
 					}
 					else if (t instanceof JimpleLineNumberTag) {
-					  jimple_ln = (new Integer(((JimpleLineNumberTag)t).toString())).intValue();
+					  printJimpleLnAttr((new Integer(((JimpleLineNumberTag)t).toString())).intValue());
 					}
 					else if (t instanceof StringTag) {
 					  
-					  attrs.add(formatForXML(((StringTag)t).toString()));
+					  printTextAttr(formatForXML(((StringTag)t).toString()));
 					}
 					else {
 					  if (!t.toString().equals("[Unknown]")){
-					    attrs.add(t.toString());
+						printTextAttr(t.toString());
 					  }
 					}
 				}
-				printAttribute(java_ln, jimple_ln, attrs);
-				
+				Iterator valBoxIt = u.getUseAndDefBoxes().iterator();
+				while (valBoxIt.hasNext()){
+					ValueBox vb = (ValueBox)valBoxIt.next();
+					startPrintValBoxAttr();
+					Iterator tagsIt = vb.getTags().iterator(); 
+					while (tagsIt.hasNext()) {
+						Tag t = (Tag)tagsIt.next();
+						if (t instanceof PositionTag){
+							printPositionAttr(((PositionTag)t).getStartOffset(), ((PositionTag)t).getEndOffset());
+						}
+						if (t instanceof ColorTag){
+							ColorTag ct = (ColorTag)t;
+							printColorAttr(ct.getRed(), ct.getGreen(), ct.getBlue());
+						}
+					}
+					endPrintValBoxAttr();
+				}
+				endPrintAttribute();	
 			}
 		}
 		finishFile();
@@ -116,18 +131,46 @@ public class XMLAttributesPrinter {
 	
 	FileOutputStream streamOut = null;
 	PrintWriter writerOut = null;
-
-	private void printAttribute(int java_ln, int jimple_ln, Vector attrs) {
-
-		Iterator it = attrs.iterator();
-		while(it.hasNext()) {
-			  writerOut.println("<attribute>");
-			  writerOut.println("<java_ln>"+java_ln+"</java_ln>");
-			  writerOut.println("<jimple_ln>"+jimple_ln+"</jimple_ln>");
-			  writerOut.println("<text>"+(String)it.next()+"</text>");
-			  writerOut.println("</attribute>");
-		}
+	
+	private void startPrintAttribute(){
+		writerOut.println("<attribute>");
 	}
+
+	private void printJavaLnAttr(int java_ln){
+		writerOut.println("<java_ln>"+java_ln+"</java_ln>");
+	}
+
+	private void printJimpleLnAttr(int jimple_ln){
+		writerOut.println("<jimple_ln>"+jimple_ln+"</jimple_ln>");
+	}
+
+	private void printTextAttr(String text){
+		writerOut.println("<text>"+text+"</text>");
+	}
+
+	private void startPrintValBoxAttr(){
+		writerOut.println("<value_box_attribute>");
+	}
+
+	private void printPositionAttr(int start, int end){
+		writerOut.println("<startOffset>"+start+"</startOffset>");
+		writerOut.println("<endOffset>"+end+"</endOffset>");
+	}
+	
+	private void printColorAttr(int r, int g, int b){
+		writerOut.println("<red>"+r+"</red>");
+		writerOut.println("<green>"+g+"</green>");
+		writerOut.println("<blue>"+b+"</blue>");
+	}
+	
+	private void endPrintValBoxAttr(){
+		writerOut.println("</value_box_attribute>");
+	}
+	
+	private void endPrintAttribute(){
+		writerOut.println("</attribute>");
+	}
+	
 
 	private void initAttributesDir() {
 	

@@ -83,10 +83,12 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 			if (refs[i].getName().equals(file.getName())){
 				JimpleEditor ed = (JimpleEditor) refs[i].getEditor(true).getAdapter(JimpleEditor.class);
 				if (ed != null){
-					ed.getPage().getContentOutline();
-					ed.getPage().getViewer().setInput(ed.getPage().getContentOutline());
-					ed.getPage().getViewer().refresh();
-					ed.getPage().getViewer().expandAll();
+					if (ed.getPage() != null){
+						ed.getPage().getContentOutline();
+						ed.getPage().getViewer().setInput(ed.getPage().getContentOutline());
+						ed.getPage().getViewer().refresh();
+						ed.getPage().getViewer().expandAll();
+					}
 				}
 			}
 		}

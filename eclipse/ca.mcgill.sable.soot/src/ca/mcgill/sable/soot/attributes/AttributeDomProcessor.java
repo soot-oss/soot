@@ -29,6 +29,7 @@ public class AttributeDomProcessor {
 	Document domDoc;
 	Vector attributes;
 	private SootAttribute current;
+	private ValueBoxAttribute vbAttr;
 	
 	/**
 	 * Method AttributeDomProcessor.
@@ -92,6 +93,15 @@ public class AttributeDomProcessor {
 				for (int i = 0; i < children.getLength(); i++) {
 					processNode(children.item(i));
 				}
+				getAttributes().add(current);
+			}
+			else if (node.getNodeName().equals("value_box_attribute")){
+				NodeList children = node.getChildNodes();
+				vbAttr = new ValueBoxAttribute();
+				for (int i = 0; i < children.getLength(); i++) {
+					processNode(children.item(i));
+				}
+				current.addValueAttr(vbAttr);
 			}
 			else {//if (node.getNodeName().compareTo("attributes") == 0) {
 				NodeList children = node.getChildNodes();
@@ -102,31 +112,37 @@ public class AttributeDomProcessor {
 		}
 		else if (node.getNodeType() == Node.TEXT_NODE) {
 			System.out.println(node.getParentNode().getNodeName()+" "+node.getNodeValue()); //$NON-NLS-1$
-			if (node.getParentNode().getNodeName().compareTo(Messages.getString("AttributeDomProcessor.java_ln")) == 0 ) { //$NON-NLS-1$
-			//System.out.println(node.getNodeValue());
+			if (node.getParentNode().getNodeName().equals("java_ln")){			//System.out.println(node.getNodeValue());
 				current.setJava_ln((new Integer(node.getNodeValue())).intValue());
 			}
-			else if (node.getParentNode().getNodeName().compareTo(Messages.getString("AttributeDomProcessor.jimple_ln")) == 0) { //$NON-NLS-1$
-			//System.out.println(node.getNodeValue());
+			else if (node.getParentNode().getNodeName().equals("jimple_ln")) {
+				//System.out.println(node.getNodeValue());
 				current.setJimple_ln((new Integer(node.getNodeValue())).intValue());
 			}
-			else if (node.getParentNode().getNodeName().compareTo(Messages.getString("AttributeDomProcessor.jimple_offset_start")) == 0){ //$NON-NLS-1$
+			else if (node.getParentNode().getNodeName().equals("startOffset")){
 				System.out.println(node.getParentNode().getNodeName()+" "+node.getNodeValue()); //$NON-NLS-1$
-				current.setJimple_offset_start((new Integer(node.getNodeValue()).intValue()));
+				//current.setJimple_offset_start((new Integer(node.getNodeValue()).intValue()));
+				vbAttr.setStartOffset((new Integer(node.getNodeValue()).intValue()));
 			}
-			else if (node.getParentNode().getNodeName().equals(Messages.getString("AttributeDomProcessor.jimple_offset_end"))){ //$NON-NLS-1$
-				//System.out.println(node.getNodeValue());
-				current.setJimple_offset_end((new Integer(node.getNodeValue()).intValue()));
+			else if (node.getParentNode().getNodeName().equals("endOffset")){ //$NON-NLS-1$
+				System.out.println(node.getNodeValue());
+				//current.setJimple_offset_end((new Integer(node.getNodeValue()).intValue()));
+				vbAttr.setEndOffset((new Integer(node.getNodeValue()).intValue()));
 			}
-			else if (node.getParentNode().getNodeName().equals(Messages.getString("AttributeDomProcessor.color_key"))){ //$NON-NLS-1$
-				//System.out.println(node.getNodeValue());
-				current.setColorKey((new Integer(node.getNodeValue()).intValue()));
+			else if (node.getParentNode().getNodeName().equals("red")){
+				vbAttr.setRed((new Integer(node.getNodeValue()).intValue()));
 			}
-			else if (node.getParentNode().getNodeName().compareTo(Messages.getString("AttributeDomProcessor.text")) == 0) { //$NON-NLS-1$
+			else if (node.getParentNode().getNodeName().equals("green")){
+				vbAttr.setGreen((new Integer(node.getNodeValue()).intValue()));
+			}
+			else if (node.getParentNode().getNodeName().equals("blue")){
+				vbAttr.setBlue((new Integer(node.getNodeValue()).intValue()));
+			}
+			else if (node.getParentNode().getNodeName().equals("text")) {
 			//System.out.println(node.getNodeValue());
-				current.setText(node.getNodeValue());
+				current.addTextAttr(node.getNodeValue());
 				//System.out.println("just before add "+current.java_ln+" "+current.jimple_ln+" "+current.text);
-				getAttributes().add(current);
+				//getAttributes().add(current);
 				//System.out.println("in attrList "+getAttributes().capacity()+"size: "+getAttributes().size()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}	

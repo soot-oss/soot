@@ -6,17 +6,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.action.*;
-//import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
-//import org.eclipse.jdt.core.*;
-//import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-
-//import soot.*;
 import ca.mcgill.sable.soot.*;
-//import ca.mcgill.sable.soot.attributes.SootAttributeFilesReader;
-//import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
-//import ca.mcgill.sable.soot.util.*;
 import org.eclipse.swt.widgets.*;
 
 

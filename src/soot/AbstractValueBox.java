@@ -26,9 +26,11 @@
 
 package soot;
 
+import soot.tagkit.*;
+
 /** Reference implementation for ValueBox; just
  * add a canContainValue method. */
-public abstract class AbstractValueBox implements ValueBox
+public abstract class AbstractValueBox extends AbstractHost implements ValueBox
 {
     Value value;
 

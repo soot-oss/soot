@@ -132,7 +132,9 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 			markerAttr.put(IMarker.MESSAGE, "Soot Attribute: "+sa.getText());
 			markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJava_ln()));
 			try {
-				MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
+				if (sa.getTextList() != null){
+					MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
+				}
 				//MarkerUtilities.createMarker(getRec(), markerAttr, "org.eclipse.core.resources.bookmark");		
 			}
 			catch(CoreException e) {
