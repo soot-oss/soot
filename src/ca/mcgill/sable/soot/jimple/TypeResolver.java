@@ -63,6 +63,8 @@
  *                                                                   *
 
  B) Changes:
+ - Modified on January 20, 1999 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
+   Fixed a fixed a basic type array typing problem.
 
  - Modified on January 15, 1999 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
    Fixed typing bug in null assignment to array variables.
@@ -130,11 +132,91 @@ class TypeResolver
     /** Indicates that a new relation due to merging isArrayOf has be added **/
     boolean new_relation;
 
+    private JimpleBody stmtBody;
+
+    private void debug_locals()
+    {
+      for(Iterator i = stmtBody.getLocals().iterator(); i.hasNext(); )
+      {
+        Local local = (Local) i.next();
+
+        System.out.print(local + ": ");
+
+        TypeVariable var = getTypeVariable(local).ecr();
+        if(var == null)
+        {
+          System.out.println("null");
+        }
+        else
+        {
+          System.out.println(var.getEcrId());
+        }
+      }
+    }
+
+    private void debug()
+    {
+      System.out.println("*** DEBUG ***");
+      debug_locals();
+      int size = typeVariableInstances.size();
+      for(int i = 0; i < size; i++)
+      {
+        TypeVariable a = (TypeVariable) typeVariableInstances.elementAt(i);
+
+        if(a == a.ecr())
+        {
+          System.out.print(i + ":");
+
+          ClassHierarchy.TypeNode node = a.getEcrTypeNode();
+          if(node != null)
+          {
+            System.out.print(" " + node.getType());
+          }
+          System.out.println();
+
+          TypeVariable[] parents = a.getEcrParents();
+          if(parents.length != 0)
+          {
+            System.out.print("  Parents:");
+
+            for(int j = 0; j < parents.length; j++)
+            {
+              System.out.print(" " + parents[j].getEcrId());
+            }
+
+            System.out.println();
+          }
+
+          TypeVariable[] children = a.getEcrChildren();
+          if(children.length != 0)
+          {
+            System.out.print("  Children:");
+
+            for(int j = 0; j < children.length; j++)
+            {
+              System.out.print(" " + children[j].getEcrId());
+            }
+
+            System.out.println();
+          }
+
+          if(a.isArrayOf != null)
+          {
+            System.out.println("  Array of: " + a.isArrayOf.getEcrId());
+          }
+
+          System.out.println("  Array depth: " + a.arrayDepth);
+        }
+      }
+    }
+
     /** This constructor triggers the type resolution of
         local variables of the given statement list body. **/
     private TypeResolver(JimpleBody stmtBody)
     {
         try {
+
+        this.stmtBody = stmtBody;
 
         currentMethod = stmtBody.getMethod();
         if(!currentMethod.getDeclaringClass().getName().equals(lastClass))
@@ -170,6 +252,8 @@ class TypeResolver
         getTypeVariable(RefType.v("java.lang.Cloneable"));
         getTypeVariable(NullType.v());
 
+//        debug();
+
 //        long en = System.currentTimeMillis();
 
 /*        {
@@ -202,6 +286,8 @@ class TypeResolver
         mergeAll(getTypeVariable(DoubleType.v()));
         mergeAll(getTypeVariable(StmtAddressType.v()));
 
+//        debug();
+
         // Collapse connected components
         do
         {
@@ -210,6 +296,8 @@ class TypeResolver
         }
         while(new_relation == true);
 //        collapseStronglyConnectedComponents();
+
+//        debug();
 
 /*        if(currentMethod.getName().equals("decapitalize"))
         {
@@ -232,8 +320,12 @@ class TypeResolver
         // Propagate array constraints
         propagateArrayConstraints();
 
+//        debug();
+
         addRelationsBetweenHardNodes();
 //        removeRelationsBetweenNonEcrs();
+
+//        debug();
 
         // Collapse basic types (again)
         mergeAll(getTypeVariable(IntType.v()));
@@ -242,9 +334,12 @@ class TypeResolver
         mergeAll(getTypeVariable(DoubleType.v()));
         mergeAll(getTypeVariable(StmtAddressType.v()));
 
+//        debug();
+
         // Collapse connected components (again)
         collapseStronglyConnectedComponents();
 
+//        debug();
 
 /*        {
             int edges = 0, nodes = 0, unresolved = 0;
@@ -278,6 +373,8 @@ class TypeResolver
             resolveSingleRelations();
 //            count++;
         }
+
+//        debug();
 
         boolean modified = true;
         while((unresolvedTypeVariables.size() != 0) && modified)
@@ -475,11 +572,12 @@ class TypeResolver
     }
 
     /** Merge the given type variable with all its ancestors and descentants. **/
-    private void mergeAll(TypeVariable var)
+    private boolean mergeAll(TypeVariable var)
     {
         TypeVariable[] parents = var.getEcrParents();
         TypeVariable[] children = var.getEcrChildren();
         boolean changed = true;
+        boolean modif = false;
 
         while(changed)
         {
@@ -489,6 +587,7 @@ class TypeResolver
             {
                 if(parents[i].ecr().arrayDepth == var.ecr().arrayDepth)
                 {
+                    modif = true;
                     changed = true;
                     var.ecrUnion(parents[i]);
                 }
@@ -498,6 +597,7 @@ class TypeResolver
             {
                 if(children[i].ecr().arrayDepth == var.ecr().arrayDepth)
                 {
+                    modif = true;
                     changed = true;
                     var.ecrUnion(children[i]);
                 }
@@ -506,6 +606,8 @@ class TypeResolver
             parents = var.getEcrParents();
             children = var.getEcrChildren();
         }
+
+        return modif;
     }
 
     /** Propagate array constraints to base elements, so that the typing problem is
@@ -513,14 +615,22 @@ class TypeResolver
     private void propagateArrayConstraints()
     {
         computeArrayDepths();
+//        debug();
         propagateConstrains();
+//        debug();
         mergeBaseTypeArrays();
     }
 
     private void mergeBaseTypeArrays()
     {
-        for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
+        boolean changed;
+
+        do
         {
+          changed = false;
+
+          for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
+          {
             TypeVariable var = (TypeVariable) e.nextElement();
 
             if((var == var.ecr()) &&
@@ -531,10 +641,14 @@ class TypeResolver
 
                 if(!(type.baseType instanceof RefType))
                 {
-                    mergeAll(var);
+                    if(mergeAll(var))
+                    {
+                        changed = true;
+                    }
                 }
             }
-        }
+          }
+        } while(changed);
     }
 
     private void propagateConstrains()

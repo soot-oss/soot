@@ -82,36 +82,6 @@ import ca.mcgill.sable.util.*;
 
 // FSet version
 
-class LocalStmtPair
-{
-    Local local;
-    Stmt stmt;
-
-    LocalStmtPair(Local local, Stmt stmt)
-    {
-        this.local = local;
-        this.stmt = stmt;
-    }
-
-    public boolean equals(Object other)
-    {
-        if(other instanceof LocalStmtPair &&
-            ((LocalStmtPair) other).local == this.local &&
-            ((LocalStmtPair) other).stmt == this.stmt)
-        {
-            return true;
-        }
-        else
-            return false;
-    }
-
-    public int hashCode()
-    {
-        return local.hashCode() * 101 + stmt.hashCode() + 17;
-    }
-
-}
-
 public class SparseLocalDefs implements LocalDefs
 {
     Map localStmtPairToDefs;
@@ -183,25 +153,41 @@ public class SparseLocalDefs implements LocalDefs
 
         return (List) localStmtPairToDefs.get(pair);
     }
-}
-
-class IntPair
-{
-    int op1, op2;
-
-    public IntPair(int op1, int op2)
+    
+    class LocalStmtPair
     {
-        this.op1 = op1;
-        this.op2 = op2;
+        Local local;
+        Stmt stmt;
+    
+        LocalStmtPair(Local local, Stmt stmt)
+        {
+            this.local = local;
+            this.stmt = stmt;
+        }
+    
+        public boolean equals(Object other)
+        {
+            if(other instanceof LocalStmtPair &&
+                ((LocalStmtPair) other).local == this.local &&
+                ((LocalStmtPair) other).stmt == this.stmt)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+    
+        public int hashCode()
+        {
+            return local.hashCode() * 101 + stmt.hashCode() + 17;
+        }
     }
-
 }
 
 class SparseLocalDefsFlowAnalysis extends ForwardFlowAnalysis
 {
     FlowSet emptySet;
     Map localToPreserveSet;
-    Map localToIntPair;
     FlowSet workingSet;
     LiveLocals liveLocals;
     
