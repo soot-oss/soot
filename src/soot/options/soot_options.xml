@@ -2036,6 +2036,17 @@ This is only for profiling purpose.
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
+					<name>Null Pointer Coloring Options</name>
+					<alias>jap.npcolorer</alias>
+					<default>true</default>
+				<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<short_desc>Produce color tags highlighting null, and non-null variables.</short_desc>
+						<long_desc></long_desc>	
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
 					<name>Array Bound Check Options</name>
 					<class>ABCOptions</class>
 					<alias>jap.abc</alias>
@@ -2203,6 +2214,17 @@ produced for it, in order to keep the size of the tags reasonable.
 				<sub_phase>
 					<name>Call Graph Tagger</name>
 					<alias>jap.cgtagger</alias>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Parity Tagger</name>
+					<alias>jap.parity</alias>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>

@@ -179,6 +179,8 @@ Composite jopjop_uleChild = jopjop_uleCreate(getPageContainer());
 
 Composite japjap_npcChild = japjap_npcCreate(getPageContainer());
 
+Composite japjap_npcolorerChild = japjap_npcolorerCreate(getPageContainer());
+
 Composite japjap_abcChild = japjap_abcCreate(getPageContainer());
 
 Composite japjap_profilingChild = japjap_profilingCreate(getPageContainer());
@@ -188,6 +190,8 @@ Composite japjap_seaChild = japjap_seaCreate(getPageContainer());
 Composite japjap_fieldrwChild = japjap_fieldrwCreate(getPageContainer());
 
 Composite japjap_cgtaggerChild = japjap_cgtaggerCreate(getPageContainer());
+
+Composite japjap_parityChild = japjap_parityCreate(getPageContainer());
 
 Composite gbgb_a1Child = gbgb_a1Create(getPageContainer());
 
@@ -811,6 +815,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getjapjap_npcprofiling_widget().getButton().addSelectionListener(this);
 		
 		
+		makeNewEnableGroup("jap", "jap.npcolorer");
+		
+		
+		addToEnableGroup("jap", "jap.npcolorer", getjapjap_npcolorerenabled_widget(), "enabled");
+		
+		getjapjap_npcolorerenabled_widget().getButton().addSelectionListener(this);
+		
+		
 		makeNewEnableGroup("jap", "jap.abc");
 		
 		
@@ -887,6 +899,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("jap", "jap.cgtagger", getjapjap_cgtaggerenabled_widget(), "enabled");
 		
 		getjapjap_cgtaggerenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jap", "jap.parity");
+		
+		
+		addToEnableGroup("jap", "jap.parity", getjapjap_parityenabled_widget(), "enabled");
+		
+		getjapjap_parityenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("gb");
@@ -2300,6 +2320,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_npcprofiling_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getjapjap_npcolorerenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjapjap_npcolorerenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getjapjap_abcenabled_widget().getButton().getSelection();
 		
 		
@@ -2447,6 +2477,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_cgtaggerenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjapjap_parityenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjapjap_parityenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getgbenabled_widget().getButton().getSelection();
@@ -3299,6 +3339,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jap_jap_npc_branch;
 			
 			
+			SootOption jap_jap_npcolorer_branch = new SootOption("Null Pointer Coloring Options", "japjap_npcolorer");
+			subParent.addChild(jap_jap_npcolorer_branch);
+
+
+			
+
+			
+			subSectParent = jap_jap_npcolorer_branch;
+			
+			
 			SootOption jap_jap_abc_branch = new SootOption("Array Bound Check Options", "japjap_abc");
 			subParent.addChild(jap_jap_abc_branch);
 
@@ -3347,6 +3397,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 			subSectParent = jap_jap_cgtagger_branch;
+			
+			
+			SootOption jap_jap_parity_branch = new SootOption("Parity Tagger", "japjap_parity");
+			subParent.addChild(jap_jap_parity_branch);
+
+
+			
+
+			
+			subSectParent = jap_jap_parity_branch;
 			
 			
 			//Grimp Body Creation
@@ -4773,6 +4833,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return japjap_npcprofiling_widget;
 	}	
 	
+	private BooleanOptionWidget japjap_npcolorerenabled_widget;
+	
+	private void setjapjap_npcolorerenabled_widget(BooleanOptionWidget widget) {
+		japjap_npcolorerenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjapjap_npcolorerenabled_widget() {
+		return japjap_npcolorerenabled_widget;
+	}	
+	
 	private BooleanOptionWidget japjap_abcenabled_widget;
 	
 	private void setjapjap_abcenabled_widget(BooleanOptionWidget widget) {
@@ -4923,6 +4993,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getjapjap_cgtaggerenabled_widget() {
 		return japjap_cgtaggerenabled_widget;
+	}	
+	
+	private BooleanOptionWidget japjap_parityenabled_widget;
+	
+	private void setjapjap_parityenabled_widget(BooleanOptionWidget widget) {
+		japjap_parityenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjapjap_parityenabled_widget() {
+		return japjap_parityenabled_widget;
 	}	
 	
 	private BooleanOptionWidget gbenabled_widget;
@@ -9016,6 +9096,50 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 
+	private Composite japjap_npcolorerCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupjapjap_npcolorer = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjapjap_npcolorer.setLayout(layout);
+	
+	 	editGroupjapjap_npcolorer.setText("Null Pointer Coloring Options");
+	 	
+		editGroupjapjap_npcolorer.setData("id", "japjap_npcolorer");
+		
+		String descjapjap_npcolorer = "";	
+		if (descjapjap_npcolorer.length() > 0) {
+			Label descLabeljapjap_npcolorer = new Label(editGroupjapjap_npcolorer, SWT.WRAP);
+			descLabeljapjap_npcolorer.setText(descjapjap_npcolorer);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"jap.npcolorer"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjapjap_npcolorerenabled_widget(new BooleanOptionWidget(editGroupjapjap_npcolorer, SWT.NONE, new OptionData("Enabled", "p", "jap.npcolorer","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjapjap_npcolorer;
+	}
+
+
+
 	private Composite japjap_abcCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -9391,6 +9515,50 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupjapjap_cgtagger;
+	}
+
+
+
+	private Composite japjap_parityCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupjapjap_parity = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjapjap_parity.setLayout(layout);
+	
+	 	editGroupjapjap_parity.setText("Parity Tagger");
+	 	
+		editGroupjapjap_parity.setData("id", "japjap_parity");
+		
+		String descjapjap_parity = "";	
+		if (descjapjap_parity.length() > 0) {
+			Label descLabeljapjap_parity = new Label(editGroupjapjap_parity, SWT.WRAP);
+			descLabeljapjap_parity.setText(descjapjap_parity);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"jap.parity"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjapjap_parityenabled_widget(new BooleanOptionWidget(editGroupjapjap_parity, SWT.NONE, new OptionData("Enabled", "p", "jap.parity","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjapjap_parity;
 	}
 
 

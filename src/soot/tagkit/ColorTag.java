@@ -52,7 +52,7 @@ public class ColorTag implements Tag
     }
 
 	public ColorTag(int color){
-		G.v().out.println("color: "+color);
+		//G.v().out.println("color: "+color);
 		switch (color) {
 			case RED: {
 				red = 255;

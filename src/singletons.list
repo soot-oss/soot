@@ -149,3 +149,5 @@ EntryPoints
 CallGraphTagger
 Shimple    
 SConstantPropagatorAndFolder
+NullPointerColorer
+ParityTagger

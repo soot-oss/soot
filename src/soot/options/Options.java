@@ -902,11 +902,13 @@ public class Options extends OptionsBase {
         +padVal("jop.ule", "Removes unused locals")
         +padOpt("jap", "")
         +padVal("jap.npc", "")
+        +padVal("jap.npcolorer", "")
         +padVal("jap.abc", "")
         +padVal("jap.profiling", "")
         +padVal("jap.sea", "")
         +padVal("jap.fieldrw", "")
         +padVal("jap.cgtagger", "")
+        +padVal("jap.parity", "")
         +padOpt("gb", "")
         +padVal("gb.a1", "")
         +padVal("gb.cf", "")
@@ -1311,6 +1313,12 @@ public class Options extends OptionsBase {
                 +padOpt( "only-array-ref", "" )
                 +padOpt( "profiling", "Insert profiling instructions counting the number of safe null pointer accesses." );
     
+        if( phaseName.equals( "jap.npcolorer" ) )
+            return "Phase "+phaseName+":\n"+
+                "\n"
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled", "Produce color tags highlighting null, and non-null variables." );
+    
         if( phaseName.equals( "jap.abc" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThe array bounds check analysis has the phase name jtp.abc. If \nwhole-program analysis is required, an extra phase wjap.ra for \nfinding rectangular arrays occurs. "
@@ -1346,6 +1354,12 @@ public class Options extends OptionsBase {
                 +padOpt( "threshold (100)", "" );
     
         if( phaseName.equals( "jap.cgtagger" ) )
+            return "Phase "+phaseName+":\n"+
+                "\n"
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" );
+    
+        if( phaseName.equals( "jap.parity" ) )
             return "Phase "+phaseName+":\n"+
                 "\n"
                 +"\n\nRecognized options (with default values):\n"
@@ -1697,6 +1711,10 @@ public class Options extends OptionsBase {
                 +"only-array-ref "
                 +"profiling ";
     
+        if( phaseName.equals( "jap.npcolorer" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "jap.abc" ) )
             return ""
                 +"enabled "
@@ -1724,6 +1742,10 @@ public class Options extends OptionsBase {
                 +"threshold ";
     
         if( phaseName.equals( "jap.cgtagger" ) )
+            return ""
+                +"enabled ";
+    
+        if( phaseName.equals( "jap.parity" ) )
             return ""
                 +"enabled ";
     
@@ -2028,6 +2050,9 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:false ";
     
+        if( phaseName.equals( "jap.npcolorer" ) )
+            return "";
+    
         if( phaseName.equals( "jap.abc" ) )
             return ""
               +"enabled:false ";
@@ -2048,6 +2073,10 @@ public class Options extends OptionsBase {
               +"threshold:100 ";
     
         if( phaseName.equals( "jap.cgtagger" ) )
+            return ""
+              +"enabled:false ";
+    
+        if( phaseName.equals( "jap.parity" ) )
             return ""
               +"enabled:false ";
     
@@ -2171,11 +2200,13 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jop.ule" ) ) return;
         if( phaseName.equals( "jap" ) ) return;
         if( phaseName.equals( "jap.npc" ) ) return;
+        if( phaseName.equals( "jap.npcolorer" ) ) return;
         if( phaseName.equals( "jap.abc" ) ) return;
         if( phaseName.equals( "jap.profiling" ) ) return;
         if( phaseName.equals( "jap.sea" ) ) return;
         if( phaseName.equals( "jap.fieldrw" ) ) return;
         if( phaseName.equals( "jap.cgtagger" ) ) return;
+        if( phaseName.equals( "jap.parity" ) ) return;
         if( phaseName.equals( "gb" ) ) return;
         if( phaseName.equals( "gb.a1" ) ) return;
         if( phaseName.equals( "gb.cf" ) ) return;
@@ -2282,6 +2313,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jap" );
         if( !PackManager.v().hasPhase( "jap.npc" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jap.npc" );
+        if( !PackManager.v().hasPhase( "jap.npcolorer" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jap.npcolorer" );
         if( !PackManager.v().hasPhase( "jap.abc" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jap.abc" );
         if( !PackManager.v().hasPhase( "jap.profiling" ) )
@@ -2292,6 +2325,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jap.fieldrw" );
         if( !PackManager.v().hasPhase( "jap.cgtagger" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jap.cgtagger" );
+        if( !PackManager.v().hasPhase( "jap.parity" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jap.parity" );
         if( !PackManager.v().hasPhase( "gb" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase gb" );
         if( !PackManager.v().hasPhase( "gb.a1" ) )

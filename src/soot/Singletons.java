@@ -55,6 +55,7 @@ import soot.jimple.spark.fieldrw.*;
 import soot.jimple.toolkits.annotation.arraycheck.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.callgraph.*;
+import soot.jimple.toolkits.annotation.parity.*;
 import soot.jimple.toolkits.annotation.profiling.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.base.*;
@@ -754,6 +755,18 @@ public class Singletons {
     public NullPointerChecker NullPointerChecker() {
         if( instanceNullPointerChecker == null ) instanceNullPointerChecker = new NullPointerChecker( g );
         return instanceNullPointerChecker;
+    }
+    
+	private NullPointerColorer instanceNullPointerColorer;
+    public NullPointerColorer NullPointerColorer() {
+        if( instanceNullPointerColorer == null ) instanceNullPointerColorer = new NullPointerColorer( g );
+        return instanceNullPointerColorer;
+    }
+	
+	private ParityTagger instanceParityTagger;
+    public ParityTagger ParityTagger() {
+        if( instanceParityTagger == null ) instanceParityTagger = new ParityTagger( g );
+        return instanceParityTagger;
     }
 
     private NullType instanceNullType;
