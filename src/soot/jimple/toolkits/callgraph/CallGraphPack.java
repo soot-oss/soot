@@ -39,7 +39,7 @@ public class CallGraphPack extends RadioScenePack
         CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions(this) );
 
         if( options.trim_clinit() ) {
-            for( Iterator clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
+            for( Iterator clIt = Scene.v().getClasses(SootClass.BODIES).iterator(); clIt.hasNext(); ) {
                 final SootClass cl = (SootClass) clIt.next();
                 for( Iterator mIt = cl.getMethods().iterator(); mIt.hasNext(); ) {
                     final SootMethod m = (SootMethod) mIt.next();
