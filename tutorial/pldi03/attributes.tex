@@ -1,10 +1,15 @@
+\begin{slide}{Soot Attributes}
+\end{slide}
+
 \begin{slide}{Motivation of Soot Attributes}
 \begin{itemize}
-\item Java bytecode is a relatively high-level representation
-\item Lower-level optimizations, such as register allocation and bounds 
-      check elemination, cannot be performed at bytecode level 
-\item Some analysis results and off-line profiling information need to
-      be annotated in the class file
+\item We often want to attach annotations to code
+\begin{itemize}
+\item to convey low-level analysis results, such as register allocation or
+      array bounds check elimination to a VM
+\item to convey analysis results to humans
+\item to record profiling information
+\end{itemize}
 \item Soot provides a framework to support the embedding of custom, 
       user-defined attributes in class files
 \end{itemize}
@@ -17,10 +22,12 @@
 \item In fact: Code is an attribute of a method
 \item Standard attributes: SourceFile, ConstantValue, Exceptions,
       LineNumberTable, LocalVariableTable
+\item VM is required to ignore attributes it does not recognize
 \end{itemize}
 \end{slide}
 
 \begin{slide}{Attribute format}
+The VM spec defines the format of attributes:
 \small{
 \begin{verbatim}
 attribute_info {
@@ -38,11 +45,12 @@ attribute_info {
 \end{slide}
 
 \begin{slide}{Attribute and Soot (overview)}
+\vspace*{-5mm}
 \epsfig{file=soot-attribute.eps,width=4.3in}
 \begin{itemize}
 \item Soot parses several standard attributes 
-\item New attributes can be created and attached to Hosts
-\item Users have options to design their own attribute's format
+\item New attributes can be created and attached 
+\item Users can design their own attribute format
 \end{itemize}
 \end{slide}
 
@@ -78,6 +86,7 @@ public interface Tag {
   public String getName ();  
   public byte[] getValue () 
     throws AttributeValueException; 
+  public String toString();
 }
 \end{verbatim}
 }
@@ -177,7 +186,7 @@ extends TagAggregator {
 \end{verbatim}
 \end{slide}
 
-\begin{slide}{Todo list for creating new attributes}
+\begin{slide}{Howto for creating new attributes}
 \begin{itemize}
 \item Create a new Tag class, decide which structure is the host
 \item If the tag is for Units, write a tag aggregator by extending {\em TagAggregator} or one of its subclasses
