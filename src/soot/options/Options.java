@@ -990,6 +990,16 @@ public class Options extends OptionsBase {
                 +"disabled "
                 +"notmainentry ";
     
+        if( phaseName.equals( "jap.sea" ) )
+            return ""
+                +"disabled "
+                +"naive ";
+    
+        if( phaseName.equals( "jap.fieldrw" ) )
+            return ""
+                +"disabled "
+                +"threshold ";
+    
         if( phaseName.equals( "gb" ) )
             return ""
                 +"disabled ";
@@ -1060,6 +1070,10 @@ public class Options extends OptionsBase {
                 +"disabled ";
     
         if( phaseName.equals( "tag.dep" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "tag.fieldrw" ) )
             return ""
                 +"disabled ";
     
@@ -1260,6 +1274,16 @@ public class Options extends OptionsBase {
               +"disabled:true "
               +"notmainentry:false ";
     
+        if( phaseName.equals( "jap.sea" ) )
+            return ""
+              +"disabled:true "
+              +"naive:false ";
+    
+        if( phaseName.equals( "jap.fieldrw" ) )
+            return ""
+              +"disabled:true "
+              +"threshold:100 ";
+    
         if( phaseName.equals( "gb" ) )
             return "";
     
@@ -1315,6 +1339,10 @@ public class Options extends OptionsBase {
             return ""
               +"disabled:true ";
     
+        if( phaseName.equals( "tag.fieldrw" ) )
+            return ""
+              +"disabled:true ";
+    
         // The default default value is nothing.
         return "";
     }
@@ -1365,6 +1393,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jap.npc" ) ) return;
         if( phaseName.equals( "jap.abc" ) ) return;
         if( phaseName.equals( "jap.profiling" ) ) return;
+        if( phaseName.equals( "jap.sea" ) ) return;
+        if( phaseName.equals( "jap.fieldrw" ) ) return;
         if( phaseName.equals( "gb" ) ) return;
         if( phaseName.equals( "gb.a1" ) ) return;
         if( phaseName.equals( "gb.cf" ) ) return;
@@ -1381,6 +1411,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "tag.ln" ) ) return;
         if( phaseName.equals( "tag.an" ) ) return;
         if( phaseName.equals( "tag.dep" ) ) return;
+        if( phaseName.equals( "tag.fieldrw" ) ) return;
         G.v().out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
     }
 
@@ -1474,6 +1505,10 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jap.abc" );
         if( !PackManager.v().hasPhase( "jap.profiling" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jap.profiling" );
+        if( !PackManager.v().hasPhase( "jap.sea" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jap.sea" );
+        if( !PackManager.v().hasPhase( "jap.fieldrw" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jap.fieldrw" );
         if( !PackManager.v().hasPhase( "gb" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase gb" );
         if( !PackManager.v().hasPhase( "gb.a1" ) )
@@ -1506,6 +1541,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase tag.an" );
         if( !PackManager.v().hasPhase( "tag.dep" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase tag.dep" );
+        if( !PackManager.v().hasPhase( "tag.fieldrw" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase tag.fieldrw" );
     }
   
 }

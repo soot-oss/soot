@@ -24,6 +24,7 @@ soot.toolkits.scalar
 soot.util
 soot.util.queue
 soot.jimple.spark
+soot.jimple.spark.fieldrw
 soot.jimple.spark.builder
 soot.jimple.spark.pag
 soot.jimple.spark.solver

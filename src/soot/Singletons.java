@@ -56,6 +56,7 @@ import soot.jimple.spark.internal.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.solver.*;
+import soot.jimple.spark.fieldrw.*;
 import soot.jimple.toolkits.annotation.arraycheck.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.profiling.*;
@@ -928,6 +929,24 @@ public class Singletons {
     public WordType WordType() {
         if( instanceWordType == null ) instanceWordType = new WordType( g );
         return instanceWordType;
+    }
+
+    private FieldReadTagAggregator instanceFieldReadTagAggregator;
+    public FieldReadTagAggregator FieldReadTagAggregator() {
+        if( instanceFieldReadTagAggregator == null ) instanceFieldReadTagAggregator = new FieldReadTagAggregator( g );
+        return instanceFieldReadTagAggregator;
+    }
+
+    private FieldWriteTagAggregator instanceFieldWriteTagAggregator;
+    public FieldWriteTagAggregator FieldWriteTagAggregator() {
+        if( instanceFieldWriteTagAggregator == null ) instanceFieldWriteTagAggregator = new FieldWriteTagAggregator( g );
+        return instanceFieldWriteTagAggregator;
+    }
+
+    private FieldTagAggregator instanceFieldTagAggregator;
+    public FieldTagAggregator FieldTagAggregator() {
+        if( instanceFieldTagAggregator == null ) instanceFieldTagAggregator = new FieldTagAggregator( g );
+        return instanceFieldTagAggregator;
     }
 
 }

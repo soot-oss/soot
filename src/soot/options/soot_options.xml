@@ -1697,6 +1697,58 @@ result.
 						<long_desc/>
 					</boolopt>
 				</sub_phase>
+				<sub_phase>
+					<name>Side effect tagger</name>
+					<alias>jap.sea</alias>
+					<class>SETOptions</class>
+                                        <long_desc>Uses the active invoke graph to
+produce side-effect attributes as described in the Spark thesis, chapter 6.
+</long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Build naive dependence graph</name>
+						<alias>naive</alias>
+						<default>false</default>
+						<short_desc/>
+						<long_desc>When set to true, the
+dependence graph is built with a node for each statement, without merging the
+nodes for equivalent statements. The purpose of this switch is to make it possible
+to measure the effect of merging nodes for equivalent statements on the size
+of the dependence graph.</long_desc>
+					</boolopt>
+				</sub_phase>
+                                <sub_phase>
+					<name>Field Read/Write Tagger</name>
+                                        <class>FRWOptions</class>
+					<alias>jap.fieldrw</alias>
+					<long_desc>
+Uses the active invoke graph to produce tags indicating which fields may
+be read or written by each statement, including invoke statements.
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<intopt>
+						<name>Maximum number of fields</name>
+						<alias>threshold</alias>
+                                                <default>100</default>
+						<short_desc/>
+						<long_desc>
+If a statement reads/writes more than this number of fields, no tag will be
+produced for it, in order to keep the size of the tags reasonable.
+                        </long_desc>
+					</intopt>
+				</sub_phase>
 			</phase>
 			<phase>
 				<name>Grimp Body Creation</name>
@@ -1876,6 +1928,19 @@ result.
 				<sub_phase>
 					<name>Dependence Tag Aggregator</name>
 					<alias>tag.dep</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+                                <sub_phase>
+					<name>Field Read/Write Tag Aggregator</name>
+					<alias>tag.fieldrw</alias>
+                                        <long_desc>Aggregates field read/write
+tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_desc>
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>

@@ -36,6 +36,7 @@ import soot.tagkit.*;
 import soot.options.Options;
 import soot.toolkits.scalar.*;
 import soot.jimple.spark.SparkTransformer;
+import soot.jimple.spark.fieldrw.*;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
@@ -111,6 +112,8 @@ public class PackManager {
             p.add(new Transform("jap.npc", NullPointerChecker.v()));
             p.add(new Transform("jap.abc", ArrayBoundsChecker.v()));
             p.add(new Transform("jap.profiling", ProfilingGenerator.v()));
+            p.add(new Transform("jap.sea", SideEffectTagger.v()));
+            p.add(new Transform("jap.fieldrw", FieldTagger.v()));
         }
 
         // Call graph pack
@@ -156,6 +159,7 @@ public class PackManager {
             p.add(new Transform("tag.ln", LineNumberTagAggregator.v()));
             p.add(new Transform("tag.an", ArrayNullTagAggregator.v()));
             p.add(new Transform("tag.dep", DependenceTagAggregator.v()));
+            p.add(new Transform("tag.fieldrw", FieldTagAggregator.v()));
         }
     }
     public static PackManager v() { return G.v().PackManager(); }

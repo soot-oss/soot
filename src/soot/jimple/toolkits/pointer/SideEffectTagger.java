@@ -18,7 +18,6 @@ public class SideEffectTagger extends BodyTransformer
     public int numWWs = 0;
     public int numNatives = 0;
     public Date startTime = null;
-    boolean optionDontTag = false;
     boolean optionNaive = false;
 
     protected class UniqueRWSets {
@@ -83,7 +82,6 @@ public class SideEffectTagger extends BodyTransformer
 	HashMap stmtToReadSet = new HashMap();
 	HashMap stmtToWriteSet = new HashMap();
 	UniqueRWSets sets = new UniqueRWSets();
-	optionDontTag = PackManager.getBoolean( options, "dont-tag" );
 	boolean justDoTotallyConservativeThing = 
 	    body.getMethod().getName().equals( "<clinit>" );
 	for( Iterator stmtIt = body.getUnits().iterator(); stmtIt.hasNext(); ) {
@@ -117,9 +115,6 @@ public class SideEffectTagger extends BodyTransformer
 		}
 	    }
 	}
-	if( !optionDontTag ) {
-	    body.getMethod().addTag( graph );
-	}
 	for( Iterator stmtIt = body.getUnits().iterator(); stmtIt.hasNext(); ) {
 	    final Stmt stmt = (Stmt) stmtIt.next();
 	    Object key;
@@ -141,7 +136,6 @@ public class SideEffectTagger extends BodyTransformer
 		}
 		tag.setRead( sets.indexOf( read ) );
 		tag.setWrite( sets.indexOf( write ) );
-		if( !optionDontTag ) stmt.addTag( tag );
 
 		// The loop below is just fro calculating stats.
 		if( !justDoTotallyConservativeThing ) {
