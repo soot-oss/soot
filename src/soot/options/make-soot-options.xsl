@@ -445,8 +445,8 @@ public class <xsl:copy-of select="$filename"/>
             </xsl:for-each>
       </xsl:for-each>;
     </xsl:for-each>
-        // The default default value is nothing.
-        return "";
+        // The default default value is enabled.
+        return "enabled";
     }
   </xsl:template>
 

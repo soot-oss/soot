@@ -1426,8 +1426,8 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:false ";
     
-        // The default default value is nothing.
-        return "";
+        // The default default value is enabled.
+        return "enabled";
     }
   
     public void warnForeignPhase( String phaseName ) {
