@@ -258,10 +258,19 @@ public class JTableSwitchStmt extends AbstractStmt
             targetPlaceholders.add(Baf.v().newPlaceholderInst
                                    (getTarget(i)));
         }
-
-        out.add(Baf.v().newTableSwitchInst
+	
+	Unit u;
+        out.add(u = Baf.v().newTableSwitchInst
                 (Baf.v().newPlaceholderInst(getDefaultTarget()),
                  lowIndex, highIndex, targetPlaceholders));
+	
+	Unit currentUnit = context.getCurrentUnit();
+
+	Iterator it = currentUnit.getTags().iterator();	
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
+	
     }
 
 

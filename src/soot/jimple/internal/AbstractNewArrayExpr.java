@@ -141,7 +141,17 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
     public void convertToBaf(JimpleToBafContext context, List out)
     {
        ((ConvertToBaf)(getSize())).convertToBaf(context, out);
+       
 
-        out.add(Baf.v().newNewArrayInst(getBaseType()));
+       Unit u;
+       out.add(u = Baf.v().newNewArrayInst(getBaseType()));
+	
+	Unit currentUnit = context.getCurrentUnit();
+
+	Iterator it = currentUnit.getTags().iterator();	
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
+	
     }
 }

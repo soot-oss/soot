@@ -134,7 +134,15 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
         {
             ((ConvertToBaf)(argBoxes[i].getValue())).convertToBaf(context, out);
         }
+       
+       Unit u;
+       out.add(u = Baf.v().newStaticInvokeInst(method));
 
-        out.add(Baf.v().newStaticInvokeInst(method));
+       Unit currentUnit = context.getCurrentUnit();
+
+	Iterator it = currentUnit.getTags().iterator();	
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
     }
 }

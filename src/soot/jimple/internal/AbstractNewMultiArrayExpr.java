@@ -171,7 +171,15 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
 
         for(int i = 0; i < sizes.size(); i++)
             ((ConvertToBaf)(sizes.get(i))).convertToBaf(context, out);
+	
+	Unit u;
+        out.add(u = Baf.v().newNewMultiArrayInst(getBaseType(), sizes.size()));
 
-        out.add(Baf.v().newNewMultiArrayInst(getBaseType(), sizes.size()));
+	Unit currentUnit = context.getCurrentUnit();
+	Iterator it = currentUnit.getTags().iterator();	
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
+	
     }
 }

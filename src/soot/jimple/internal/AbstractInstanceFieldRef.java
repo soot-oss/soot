@@ -121,6 +121,14 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
     public void convertToBaf(JimpleToBafContext context, List out)
     {
         ((ConvertToBaf)getBase()).convertToBaf(context, out);
-        out.add(Baf.v().newFieldGetInst(field));
+	Unit u;
+        out.add(u = Baf.v().newFieldGetInst(field));
+
+	
+	Unit currentUnit = context.getCurrentUnit();
+	Iterator it = currentUnit.getTags().iterator();	
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
     }
 }

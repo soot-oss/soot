@@ -130,9 +130,19 @@ abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
 
         ((ConvertToBaf)getOp()).convertToBaf(context, out);
 
+	Unit u;
         if (toType instanceof ArrayType || toType instanceof RefType)
-            out.add(Baf.v().newInstanceCastInst(toType));
+            u = Baf.v().newInstanceCastInst(toType);
         else
-            out.add(Baf.v().newPrimitiveCastInst(fromType, toType));
+            u = Baf.v().newPrimitiveCastInst(fromType, toType);
+
+	out.add(u);
+
+	Unit currentUnit = context.getCurrentUnit();
+
+	Iterator it = currentUnit.getTags().iterator();	
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
     }
 }

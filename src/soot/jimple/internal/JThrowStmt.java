@@ -98,7 +98,17 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
     public void convertToBaf(JimpleToBafContext context, List out)
     {
         ((ConvertToBaf)getOp()).convertToBaf(context, out);
-        out.add(Baf.v().newThrowInst());
+
+	Unit u;
+        out.add(u = Baf.v().newThrowInst());
+
+	Unit currentUnit = context.getCurrentUnit();
+
+	Iterator it = currentUnit.getTags().iterator();	
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
+	
     }
 
 

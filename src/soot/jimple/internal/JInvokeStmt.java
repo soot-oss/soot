@@ -106,7 +106,7 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
         ((ConvertToBaf) ie).convertToBaf(context, out);
         
         if(!ie.getMethod().getReturnType().equals(VoidType.v()))
-            out.add(Baf.v().newPopInst(ie.getMethod().getReturnType()));
+            out.add(Baf.v().newPopInst(ie.getMethod().getReturnType()));	
     }    
 
     public boolean fallsThrough() {return true;}        

@@ -97,8 +97,17 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
     public void convertToBaf(JimpleToBafContext context, List out)
     {
        ((ConvertToBaf)(getOp())).convertToBaf(context, out);
+       
+       
+       Unit u;
+       out.add(u = Baf.v().newReturnInst(getOp().getType()));
+     
+       Unit currentUnit = context.getCurrentUnit();
 
-        out.add(Baf.v().newReturnInst(getOp().getType()));
+	Iterator it = currentUnit.getTags().iterator();	
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
     }
 
      

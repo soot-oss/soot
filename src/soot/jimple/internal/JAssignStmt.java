@@ -231,7 +231,18 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     ((ConvertToBaf)(v.getBase())).convertToBaf(context, out);
                     ((ConvertToBaf) rvalue).convertToBaf(context, out);
 
-                    out.add(Baf.v().newFieldPutInst(v.getField()));
+
+		    
+		    Unit u = Baf.v().newFieldPutInst(v.getField());
+		    Iterator it = getTags().iterator();
+		    while(it.hasNext()) {
+			u.addTag((Tag) it.next());
+		    }
+		    u.addTag(new ArrayCheckTag(true, false));
+                    out.add(u);
+
+
+                    out.add(u);
                 }
                 
                 public void caseLocal(final Local v)
@@ -246,7 +257,16 @@ public class JAssignStmt extends AbstractDefinitionStmt
                 {
                     ((ConvertToBaf) rvalue).convertToBaf(context, out);
 
-                    out.add(Baf.v().newStaticPutInst(v.getField()));
+		    Unit u = Baf.v().newStaticPutInst(v.getField());
+		    Iterator it = getTags().iterator();
+		    while(it.hasNext()) {
+			u.addTag((Tag) it.next());
+		    }
+		    u.addTag(new ArrayCheckTag(true, false));
+                    out.add(u);
+
+
+                    out.add(u);
                 }
             }); 
     }    

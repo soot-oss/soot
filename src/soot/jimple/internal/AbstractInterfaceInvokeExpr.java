@@ -147,8 +147,17 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
         {
             ((ConvertToBaf)(argBoxes[i].getValue())).convertToBaf(context, out);
         }
+       
+       Unit u;
+       out.add(u = Baf.v().newInterfaceInvokeInst(method, argCountOf(method)));
 
-        out.add(Baf.v().newInterfaceInvokeInst(method, argCountOf(method)));
+	Unit currentUnit = context.getCurrentUnit();
+
+	Iterator it = currentUnit.getTags().iterator();	
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
+	
     }
 }
 

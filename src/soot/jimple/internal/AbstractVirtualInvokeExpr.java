@@ -123,6 +123,15 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
             ((ConvertToBaf)(argBoxes[i].getValue())).convertToBaf(context, out);
         }
 
-        out.add(Baf.v().newVirtualInvokeInst(method));
+       Unit u;
+       out.add(u = Baf.v().newVirtualInvokeInst(method));
+
+       Unit currentUnit = context.getCurrentUnit();
+
+	Iterator it = currentUnit.getTags().iterator();	
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
+
     }
 }
