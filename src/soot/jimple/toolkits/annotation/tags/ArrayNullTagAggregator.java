@@ -27,8 +27,8 @@ public class ArrayNullTagAggregator implements TagAggregator
 
     public void refresh()
     {
-        tags = new LinkedList();
-	units = new LinkedList();
+        tags.clear();
+	units.clear();
 	lastUnit = null;
 	lastTag = null;
     }
@@ -59,7 +59,9 @@ public class ArrayNullTagAggregator implements TagAggregator
 	if(units.size() == 0)
 	    return null;
 	else
-	    return new CodeAttribute("ArrayNullCheckAttribute", units, tags);
+	    return new CodeAttribute("ArrayNullCheckAttribute", 
+				     new LinkedList(units), 
+				     new LinkedList(tags));
     }
 }
 

@@ -33,6 +33,9 @@ import soot.jimple.*;
 public class ClassHierarchyAnalysis
 {
 
+    /* We really need a newConsertiveInvokeGraph() method. */
+   
+
     /** Creates a new InvokeGraph based on CHA from the current Scene. */
     public static InvokeGraph newInvokeGraph()
     {
@@ -56,6 +59,7 @@ public class ClassHierarchyAnalysis
         while (classesIt.hasNext())
         {
             SootClass c = (SootClass)classesIt.next();
+
             Iterator methodsIt = c.getMethods().iterator();
             while (methodsIt.hasNext())
             {
@@ -112,6 +116,7 @@ public class ClassHierarchyAnalysis
         }
         
         g.mcg = (MethodCallGraph)g.newMethodGraph();
+
         return g;
     }
 

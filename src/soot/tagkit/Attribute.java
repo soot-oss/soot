@@ -13,9 +13,6 @@ import java.util.*;
 
 public interface  Attribute extends Tag
 {
-    /**
-     *  Sets the value of the attribute from a byte[]. Currently this is usualy done
-     *  when reading in a classfile with Soot attributes in it.
-     */
+    /** Sets the value of the attribute from a byte[]. */
     public void setValue(byte[] v);    
 }
