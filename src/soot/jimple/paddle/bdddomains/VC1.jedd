@@ -1,5 +1,0 @@
-package soot.jimple.paddle.bdddomains;
-import jedd.*;
-
-public class VC1() extends PhysicalDomain {
-}
