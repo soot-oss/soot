@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Patrice Pominville
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,22 +17,28 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-package soot.util;
-
-import soot.*;
+package soot;
+import soot.options.*;
 import java.io.*;
 
-public class JimpleInputRep  implements SootInputRepresentation
+/** A class source for resolving from .java files using javaToJimple.
+ */
+public class JavaClassSource extends ClassSource
 {
-    public JimpleInputRep ( Singletons.Global g ) {}
-    public static JimpleInputRep  v() { return G.v().JimpleInputRep (); }
+    public JavaClassSource( String className, File fullPath ) {
+        super( className );
+        this.fullPath = fullPath;
+    }
+    public void resolve( SootClass sc ) {
+        if (Options.v().verbose())
+            G.v().out.println("resolving [from .java]: " + className);
+                    
 
-    public InputStream createInputStream(InputStream is){return new JimpleInputStream(is);}
-    public String getFileExtension(){return ".jimple";}
+        SootResolver.v().getInitSourceResolver().formAst(fullPath.getPath(), SourceLocator.v().classPath());
+        //System.out.println("about to call initial resolver in j2j: "+sc.getName());
+        SootResolver.v().getInitSourceResolver().resolveFromJavaFile(sc);
+    }
+
+    private File fullPath;
 }
+

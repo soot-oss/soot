@@ -34,6 +34,12 @@ public class CompilationDeathException extends RuntimeException
     public static final int COMPILATION_ABORTED = 0;
     public static final int COMPILATION_SUCCEEDED = 1;
 
+    public CompilationDeathException(String msg)
+    {
+        mMsg = msg;
+        mStatus = COMPILATION_ABORTED;
+    }
+        
     public CompilationDeathException(int status, String msg)
     {
         mMsg = msg;

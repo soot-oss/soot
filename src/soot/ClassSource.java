@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Patrice Pominville
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,22 +17,18 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+package soot;
+
+/** A class source is responsible for resolving a single class from a
+ * particular source format (.class, .jimple, .java, etc.)
  */
-
-package soot.util;
-
-import soot.*;
-import java.io.*;
-
-public class JavaInputRep  implements SootInputRepresentation
+public abstract class ClassSource 
 {
-    public JavaInputRep ( Singletons.Global g ) {}
-    public static JavaInputRep  v() { return G.v().JavaInputRep(); }
-
-    public InputStream createInputStream(InputStream is){return new JavaInputStream(is);}
-    public String getFileExtension(){return ".java";}
+    public ClassSource( String className ) {
+        this.className = className;
+    }
+    /** Resolve the class into the SootClass sc. */
+    public abstract void resolve( SootClass sc );
+    protected String className;
 }
+

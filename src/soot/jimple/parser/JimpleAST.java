@@ -45,15 +45,12 @@ public class JimpleAST
     private Start mTree = null;
     private HashMap methodToParsedBodyMap = null;
 
-    private SootResolver mResolver;
-
-    /** Constructs a JimpleAST and generates its parse tree from the given JimpleInputStream.
+    /** Constructs a JimpleAST and generates its parse tree from the given InputStream.
      *
-     * @param aInputStream The JimpleInputStream to parse.
+     * @param aInputStream The InputStream to parse.
      */
-    public JimpleAST(JimpleInputStream aJIS, SootResolver resolver)
+    public JimpleAST(InputStream aJIS)
     {
-        mResolver = resolver;
         Parser p =
             new Parser(new Lexer(
                     new PushbackReader(new BufferedReader(
@@ -73,7 +70,7 @@ public class JimpleAST
      * returns it. */
     public SootClass createSootClass()
     {        
-        Walker w = new Walker(mResolver);        
+        Walker w = new Walker(SootResolver.v());        
         mTree.apply(w);  
         return w.getSootClass();
     }
@@ -87,7 +84,7 @@ public class JimpleAST
      */
     public void getSkeleton(SootClass sc)
     {
-        Walker w = new SkeletonExtractorWalker(mResolver, sc);        
+        Walker w = new SkeletonExtractorWalker(SootResolver.v(), sc);        
         mTree.apply(w);          
     }
     
@@ -118,23 +115,17 @@ public class JimpleAST
     /** Returns the SootResolver currently in use. */
     public SootResolver getResolver()
     {
-        return mResolver;
+        return SootResolver.v();
     }
 
-    /** Sets the SootResolver used in this class as given. */
-    public void setResolver(SootResolver resolver)
-    {
-        mResolver = resolver;
-    }
-    
-    /* Runs a Walker on the JimpleInputStream associated to this object.
+    /* Runs a Walker on the InputStream associated to this object.
      * The SootClass which we want bodies for is passed as the argument. 
      */
     private void stashBodiesForClass(SootClass sc) 
     {          
         methodToParsedBodyMap = new HashMap();
 
-        Walker w = new BodyExtractorWalker(sc, mResolver, methodToParsedBodyMap);
+        Walker w = new BodyExtractorWalker(sc, SootResolver.v(), methodToParsedBodyMap);
 
         boolean oldPhantomValue = Scene.v().getPhantomRefs();
 

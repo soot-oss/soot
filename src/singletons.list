@@ -22,7 +22,6 @@ ArrayBoundsChecker
 ArrayElement
 ArrayNullTagAggregator
 ASTWalker
-BafInputRep
 Baf
 BooleanType
 BusyCodeMotion
@@ -30,7 +29,6 @@ ByteType
 CastCheckEliminatorDumper
 CharType
 ClassFieldAnalysis
-ClassInputRep
 CommonSubexpressionEliminator
 ConditionalBranchFolder
 ConstantPropagatorAndFolder
@@ -57,7 +55,6 @@ FullObjectSet
 Grimp
 IfFinder
 IntType
-JavaInputRep
 JavaIoFileDescriptorNative
 JavaIoFileInputStreamNative
 JavaIoFileOutputStreamNative
@@ -95,7 +92,6 @@ JavaUtilZipCRC32Native
 JavaUtilZipInflaterNative
 JavaUtilZipZipEntryNative
 JavaUtilZipZipFileNative
-JimpleInputRep
 Jimple
 LabeledBlockFinder
 LazyCodeMotion

@@ -89,71 +89,25 @@ public class SootResolver
        
         while(!classesToResolve.isEmpty()) {
             
-            InputStream is = null;
+            ClassSource is;
+
             SootClass sc = (SootClass) classesToResolve.removeFirst();
             className = sc.getName();
            
-            try 
-            {
-                is = SourceLocator.v().getInputStreamOf(className);
-            } catch(ClassNotFoundException e) 
-            {
-                if(!Scene.v().allowsPhantomRefs())
-                    throw new RuntimeException("couldn't find type: " + className + " (is your soot-class-path set properly?)");
-                else 
-                {
-                    G.v().out.println("Warning: " + className + " is a phantom class!");
+            is = SourceLocator.v().getClassSource(className);
+            if( is == null ) {
+                if(!Scene.v().allowsPhantomRefs()) {
+                    throw new RuntimeException("couldn't find type: " +
+                        className + " (is your soot-class-path set properly?)");
+                } else {
+                    G.v().out.println("Warning: " + className +
+                            " is a phantom class!");
                     sc.setPhantomClass();
                     continue;
                 }
             }
                 
-            Set s = null;
-            if(is instanceof ClassInputStream) {
-                if(Options.v().verbose())
-                    G.v().out.println("resolving [from .class]: " + className );
-                soot.coffi.Util.v().resolveFromClassFile(sc, is, this, Scene.v());
-            } else if(is instanceof JimpleInputStream) {
-                if(Options.v().verbose())
-                    G.v().out.println("resolving [from .jimple]: " + className );
-                if(sc == null) throw new RuntimeException("sc is null!!");
-                
-                soot.jimple.parser.JimpleAST jimpAST = new soot.jimple.parser.JimpleAST((JimpleInputStream) is, this);                
-                jimpAST.getSkeleton(sc);
-                JimpleMethodSource mtdSrc = new JimpleMethodSource(jimpAST);
-
-                Iterator mtdIt = sc.methodIterator();
-                while(mtdIt.hasNext()) {
-                    SootMethod sm = (SootMethod) mtdIt.next();
-                    sm.setSource(mtdSrc);
-                }
-                
-                Iterator it = jimpAST.getCstPool().iterator();                
-                while(it.hasNext()) {
-                    String nclass = (String) it.next();
-                    assertResolvedClass(nclass);
-                }
-                
-            }else if(is instanceof JavaInputStream) {
-                if (Options.v().verbose())
-                    G.v().out.println("resolving [from .java]: " + className);
-                            
-
-                if (initSourceResolver == null) {
-                    initSourceResolver = new soot.javaToJimple.InitialResolver();
-                }
-                initSourceResolver.formAst(SourceLocator.v().getFullPathFound(), SourceLocator.v().getLocationsFound());
-                //System.out.println("about to call initial resolver in j2j: "+sc.getName());
-                initSourceResolver.resolveFromJavaFile(sc, this);
-            }
-            else {
-                throw new RuntimeException("could not resolve class: " + is+" (is your soot-class-path correct?)");
-            }
-            try
-            {
-                is.close();
-            }
-            catch (IOException e) { throw new RuntimeException("!?"); }
+            is.resolve( sc );
         }        
         
         mIsResolving = false;

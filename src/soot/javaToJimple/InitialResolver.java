@@ -1,4 +1,5 @@
 package soot.javaToJimple;
+import soot.*;
 import java.util.*;
 
 public class InitialResolver {
@@ -57,9 +58,9 @@ public class InitialResolver {
         }
 
         // all classes may be in map 
-        if (soot.util.SourceLocator.v().getSourceToClassMap() != null) {
-            if (soot.util.SourceLocator.v().getSourceToClassMap().get(name) != null) {
-                name = (String)soot.util.SourceLocator.v().getSourceToClassMap().get(name);
+        if (soot.SourceLocator.v().getSourceToClassMap() != null) {
+            if (soot.SourceLocator.v().getSourceToClassMap().get(name) != null) {
+                name = (String)soot.SourceLocator.v().getSourceToClassMap().get(name);
             }
         }
 
@@ -70,7 +71,7 @@ public class InitialResolver {
     }
     
     // resolves all types and deals with .class literals and asserts
-    public void resolveFromJavaFile(soot.SootClass sc, soot.SootResolver resolver) {
+    public void resolveFromJavaFile(soot.SootClass sc) {
         sootClass = sc;
 
         // add sourcefile tag to Soot class
@@ -105,7 +106,7 @@ public class InitialResolver {
                 className = classType.fullName();
                 
                 while (classType.isNested()){
-                    resolver.assertResolvedClass(classType.outer().toString());
+                    SootResolver.v().assertResolvedClass(classType.outer().toString());
                     StringBuffer sb = new StringBuffer(className);
                     
                     int lastDot = className.lastIndexOf(".");
@@ -125,20 +126,20 @@ public class InitialResolver {
             if (!className.equals("java.lang.String[]")) {
                     
                 //System.out.println("Will resolve class: "+className);    
-                resolver.assertResolvedClass(className);
+                SootResolver.v().assertResolvedClass(className);
             }
             
         }
         
         // resolve Object, StrungBuffer and inner classes
-        resolver.assertResolvedClass("java.lang.Object");
-        resolver.assertResolvedClass("java.lang.StringBuffer");
-        resolver.assertResolvedClass("java.lang.Throwable");
+        SootResolver.v().assertResolvedClass("java.lang.Object");
+        SootResolver.v().assertResolvedClass("java.lang.StringBuffer");
+        SootResolver.v().assertResolvedClass("java.lang.Throwable");
         
         // find and resolve anonymous classes
-        resolveAnonClasses(resolver);
+        resolveAnonClasses(SootResolver.v());
         // find and resolve local classes
-        resolveLocalClasses(resolver);
+        resolveLocalClasses(SootResolver.v());
         
         // determine is ".class" literal is used
         ClassLiteralChecker classLitChecker = new ClassLiteralChecker();
@@ -382,13 +383,13 @@ public class InitialResolver {
             sourceToClassMap = new HashMap();
         }
             
-        if (soot.util.SourceLocator.v().getSourceToClassMap() == null) {
-            soot.util.SourceLocator.v().setSourceToClassMap(sourceToClassMap);
+        if (soot.SourceLocator.v().getSourceToClassMap() == null) {
+            soot.SourceLocator.v().setSourceToClassMap(sourceToClassMap);
         }
             
-        if (!soot.util.SourceLocator.v().getSourceToClassMap().containsKey(className)) {
+        if (!soot.SourceLocator.v().getSourceToClassMap().containsKey(className)) {
             //System.out.println("adding to classSource map className: "+className+" and source: "+sourceName);
-            soot.util.SourceLocator.v().addToSourceToClassMap(className, sourceName);
+            soot.SourceLocator.v().addToSourceToClassMap(className, sourceName);
         }
     }
     

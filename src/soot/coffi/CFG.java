@@ -1034,7 +1034,6 @@ public class CFG {
         jmethod = listBody.getMethod();
         cm = Scene.v();
         
-        Util.v().setActiveClassManager(cm);
         //TypeArray.setClassManager(cm);
         //TypeStack.setClassManager(cm);
 
@@ -1905,7 +1904,7 @@ public class CFG {
             String arrayDescriptor = ((CONSTANT_Utf8_info) (constant_pool[c.name_index])).convert();
 
             ArrayType arrayType = (ArrayType)
-                Util.v().jimpleTypeOfFieldDescriptor(cm, arrayDescriptor);
+                Util.v().jimpleTypeOfFieldDescriptor(arrayDescriptor);
 
             for (int j=0;j<bdims;j++)
                 typeStack = popSafe(typeStack, IntType.v());
@@ -2591,7 +2590,7 @@ public class CFG {
             Type castType;
 
             if(className.startsWith("["))
-                castType = Util.v().jimpleTypeOfFieldDescriptor(cm, getClassName(constant_pool,
+                castType = Util.v().jimpleTypeOfFieldDescriptor(getClassName(constant_pool,
                 ((Instruction_Checkcast)ins).arg_i));
             else
                 castType = RefType.v(className);
@@ -2634,7 +2633,7 @@ public class CFG {
         String fieldDescriptor = ((CONSTANT_Utf8_info)
         (constant_pool[nat.descriptor_index])).convert();
 
-        return Util.v().jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+        return Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
     }
 
     private Type jimpleReturnTypeOfMethodRef(Scene cm,
@@ -2649,7 +2648,7 @@ public class CFG {
         String methodDescriptor = ((CONSTANT_Utf8_info)
             (constant_pool[nat.descriptor_index])).convert();
 
-        return Util.v().jimpleReturnTypeOfMethodDescriptor(cm, methodDescriptor);
+        return Util.v().jimpleReturnTypeOfMethodDescriptor(methodDescriptor);
     }
 
     private Type jimpleReturnTypeOfInterfaceMethodRef(Scene cm,
@@ -2664,7 +2663,7 @@ public class CFG {
         String methodDescriptor = ((CONSTANT_Utf8_info)
             (constant_pool[nat.descriptor_index])).convert();
 
-        return Util.v().jimpleReturnTypeOfMethodDescriptor(cm, methodDescriptor);
+        return Util.v().jimpleReturnTypeOfMethodDescriptor(methodDescriptor);
     }
 
     private OutFlow processCPEntry(cp_info constant_pool[],int i,
@@ -3378,8 +3377,7 @@ public class CFG {
             Type baseType;
 
             if(baseName.startsWith("["))
-                baseType = Util.v().jimpleTypeOfFieldDescriptor(cm,
-                    getClassName(constant_pool, ((Instruction_Anewarray)ins).arg_i));
+                baseType = Util.v().jimpleTypeOfFieldDescriptor(getClassName(constant_pool, ((Instruction_Anewarray)ins).arg_i));
             else
                 baseType = RefType.v(baseName);
 
@@ -3403,7 +3401,7 @@ public class CFG {
                String mstype = constant_pool[((Instruction_Multianewarray)ins).arg_i].
                   toString(constant_pool);
 
-               ArrayType jimpleType = (ArrayType) Util.v().jimpleTypeOfFieldDescriptor(cm, mstype);
+               ArrayType jimpleType = (ArrayType) Util.v().jimpleTypeOfFieldDescriptor(mstype);
 
                rhs = Jimple.v().newNewMultiArrayExpr(jimpleType, dims);
 
@@ -4293,7 +4291,7 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                     convert();
 
-            Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+            Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
                 
             SootClass bclass = cm.getSootClass(className);
 
@@ -4334,7 +4332,7 @@ public class CFG {
             SootClass bclass = cm.getSootClass(className);
 
             
-            Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+            Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
             SootField field = bclass.getField(fieldName, fieldType);
 
             fr = Jimple.v().newInstanceFieldRef(Util.v().getLocalForStackOp(listBody, typeStack,
@@ -4366,7 +4364,7 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                 convert();
 
-            Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+            Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
             
             SootClass bclass = cm.getSootClass(className);
             SootField field = bclass.getField(fieldName, fieldType);
@@ -4398,7 +4396,7 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                 convert();
 
-            Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+            Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
             
             SootClass bclass = cm.getSootClass(className);
             SootField field = bclass.getField(fieldName, fieldType);
@@ -4445,8 +4443,7 @@ public class CFG {
 
             // Generate parameters & returnType & parameterTypes
             {
-                Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(cm,
-                    methodDescriptor);
+                Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
 
                 parameterTypes = new ArrayList();
 
@@ -4519,8 +4516,7 @@ public class CFG {
 
                 // Generate parameters & returnType & parameterTypes
                 {
-                    Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(cm,
-                        methodDescriptor);
+                    Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
 
                     parameterTypes = new ArrayList();
 
@@ -4596,8 +4592,7 @@ public class CFG {
 
                 // Generate parameters & returnType & parameterTypes
                 {
-                    Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(cm,
-                        methodDescriptor);
+                    Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
 
                     parameterTypes = new ArrayList();
 
@@ -4680,8 +4675,7 @@ public class CFG {
 
                 // Generate parameters & returnType & parameterTypes
                 {
-                    Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(cm,
-                        methodDescriptor);
+                    Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
 
                     parameterTypes = new ArrayList();
 
@@ -4745,7 +4739,7 @@ public class CFG {
             Type castType;
 
             if(className.startsWith("["))
-                castType = Util.v().jimpleTypeOfFieldDescriptor(cm, getClassName(constant_pool,
+                castType = Util.v().jimpleTypeOfFieldDescriptor(getClassName(constant_pool,
                     ((Instruction_Checkcast)ins).arg_i));
             else
                 castType = RefType.v(className);
@@ -4765,7 +4759,7 @@ public class CFG {
             String className = getClassName(constant_pool, ((Instruction_Instanceof)ins).arg_i);
 
             if(className.startsWith("["))
-                checkType = Util.v().jimpleTypeOfFieldDescriptor(cm, getClassName(constant_pool,
+                checkType = Util.v().jimpleTypeOfFieldDescriptor(getClassName(constant_pool,
                 ((Instruction_Instanceof)ins).arg_i));
             else
                 checkType = RefType.v(className);

@@ -435,6 +435,11 @@ public class Options extends OptionsBase {
             )
                 xml_attributes = true;
   
+            else if( false 
+            || option.equals( "print-tags-in-output" )
+            )
+                print_tags_in_output = true;
+  
             else if( false
             || option.equals( "dump-body" )
             ) {
@@ -853,6 +858,10 @@ public class Options extends OptionsBase {
     private boolean xml_attributes = false;
     public void set_xml_attributes( boolean setting ) { xml_attributes = setting; }
   
+    public boolean print_tags_in_output() { return print_tags_in_output; }
+    private boolean print_tags_in_output = false;
+    public void set_print_tags_in_output( boolean setting ) { print_tags_in_output = setting; }
+  
     public List dump_body() { 
         if( dump_body == null )
             return java.util.Collections.EMPTY_LIST;
@@ -994,6 +1003,7 @@ public class Options extends OptionsBase {
 +padVal(" c class (default)", "Produce .class Files" )
 +padVal(" d dava", "Produce dava-decompiled .java files" )
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
++padOpt(" -print-tags-in-output", "Print tags in output files after stmt" )
 +padOpt(" -dump-body PHASENAME", "Dump the internal representation of each method before and after phase PHASENAME" )
 +padOpt(" -dump-cfg PHASENAME", "Dump the internal representation of each CFG constructed during phase PHASENAME" )
 +padOpt(" -show-exception-dests", "Include exception destination edges as well as CFG edges in dumped CFGs" )

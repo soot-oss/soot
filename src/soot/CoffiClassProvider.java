@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Patrice Pominville
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,19 +17,22 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-package soot.util;
-
+package soot;
 import java.io.*;
 
-interface SootInputRepresentation 
+/** A class provider looks for a file of a specific format for a specified
+ * class, and returns a ClassSource for it if it finds it.
+ */
+public class CoffiClassProvider implements ClassProvider
 {
-    InputStream createInputStream(InputStream is);
-    String getFileExtension();
-        
+    /** Look for the specified class. Return a ClassSource for it if found,
+     * or null if it was not found. */
+    public ClassSource find( String className ) {
+        String fileName = className.replace('.', File.separatorChar) + ".class";
+        SourceLocator.FoundFile file = 
+            SourceLocator.v().lookupInClassPath(className);
+        if( file == null ) return null;
+        return new CoffiClassSource(className, file.inputStream());
+    }
 }
+

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Patrice Pominville
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,25 +17,15 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+package soot;
+
+/** A class provider looks for a file of a specific format for a specified
+ * class, and returns a ClassSource for it if it finds it.
  */
-
-package soot.util;
-
-import java.io.*;
-import java.util.*;
-
-/** InputStream for getting data via the Baf Parser. */
-public class BafInputStream extends SootInputStream
+public interface ClassProvider 
 {
-    /** Constructs a BafInputStream from the given stream. */
-    public BafInputStream(InputStream istream)
-    {
-        super(istream);
-    }
+    /** Look for the specified class. Return a ClassSource for it if found,
+     * or null if it was not found. */
+    public abstract ClassSource find( String className );
 }
-
 

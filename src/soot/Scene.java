@@ -31,6 +31,7 @@ import soot.options.*;
 
 import soot.util.*;
 import java.util.*;
+import java.io.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.*;
@@ -136,6 +137,11 @@ public class Scene  //extends AbstractHost
             String optionscp = Options.v().soot_classpath();
             if( optionscp.length() > 0 )
                 sootClassPath = optionscp;
+        }
+        if( sootClassPath == null ) {
+            sootClassPath = System.getProperty("java.class.path")+File.pathSeparator+
+                System.getProperty("java.home")+File.separator+
+                "lib"+File.separator+"rt.jar";
         }
         return sootClassPath;
     }

@@ -238,12 +238,6 @@ public class Singletons {
         return instanceASTWalker;
     }
 
-    private BafInputRep instanceBafInputRep;
-    public BafInputRep BafInputRep() {
-        if( instanceBafInputRep == null ) instanceBafInputRep = new BafInputRep( g );
-        return instanceBafInputRep;
-    }
-
     private Baf instanceBaf;
     public Baf Baf() {
         if( instanceBaf == null ) instanceBaf = new Baf( g );
@@ -284,12 +278,6 @@ public class Singletons {
     public ClassFieldAnalysis ClassFieldAnalysis() {
         if( instanceClassFieldAnalysis == null ) instanceClassFieldAnalysis = new ClassFieldAnalysis( g );
         return instanceClassFieldAnalysis;
-    }
-
-    private ClassInputRep instanceClassInputRep;
-    public ClassInputRep ClassInputRep() {
-        if( instanceClassInputRep == null ) instanceClassInputRep = new ClassInputRep( g );
-        return instanceClassInputRep;
     }
 
     private CommonSubexpressionEliminator instanceCommonSubexpressionEliminator;
@@ -446,12 +434,6 @@ public class Singletons {
     public IntType IntType() {
         if( instanceIntType == null ) instanceIntType = new IntType( g );
         return instanceIntType;
-    }
-
-    private JavaInputRep instanceJavaInputRep;
-    public JavaInputRep JavaInputRep() {
-        if( instanceJavaInputRep == null ) instanceJavaInputRep = new JavaInputRep( g );
-        return instanceJavaInputRep;
     }
 
     private JavaIoFileDescriptorNative instanceJavaIoFileDescriptorNative;
@@ -674,12 +656,6 @@ public class Singletons {
     public JavaUtilZipZipFileNative JavaUtilZipZipFileNative() {
         if( instanceJavaUtilZipZipFileNative == null ) instanceJavaUtilZipZipFileNative = new JavaUtilZipZipFileNative( g );
         return instanceJavaUtilZipZipFileNative;
-    }
-
-    private JimpleInputRep instanceJimpleInputRep;
-    public JimpleInputRep JimpleInputRep() {
-        if( instanceJimpleInputRep == null ) instanceJimpleInputRep = new JimpleInputRep( g );
-        return instanceJimpleInputRep;
     }
 
     private Jimple instanceJimple;
@@ -1112,6 +1088,12 @@ public class Singletons {
     public CallGraphGrapher CallGraphGrapher() {
         if( instanceCallGraphGrapher == null ) instanceCallGraphGrapher = new CallGraphGrapher( g );
         return instanceCallGraphGrapher;
+    }
+
+    private SootResolver instanceSootResolver;
+    public SootResolver SootResolver() {
+        if( instanceSootResolver == null ) instanceSootResolver = new SootResolver( g );
+        return instanceSootResolver;
     }
 
 }

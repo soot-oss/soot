@@ -132,7 +132,7 @@ public class PhaseDumper {
     private static java.io.File makeDirectoryIfMissing(Body b) 
 	throws java.io.IOException {
 	StringBuffer buf = 
-	    new StringBuffer(soot.util.SourceLocator.v().getOutputDir());
+	    new StringBuffer(soot.SourceLocator.v().getOutputDir());
 	buf.append(File.separatorChar);
 	String className = b.getMethod().getDeclaringClass().getName();
 	buf.append(className);

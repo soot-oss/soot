@@ -256,7 +256,7 @@ throwAnalysisOptions.help(0, 70,
     DotGraph canvas = graphtype.drawGraph(drawer, graph, body);
 
     String methodname = body.getMethod().getSubSignature();
-    String filename = soot.util.SourceLocator.v().getOutputDir();
+    String filename = soot.SourceLocator.v().getOutputDir();
     if (filename.length() > 0) {
 	filename = filename + java.io.File.separator;
     }

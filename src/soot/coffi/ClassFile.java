@@ -36,7 +36,6 @@ import java.io.*;
 import java.util.*;
 import java.util.Enumeration;
 import java.util.Vector;
-import soot.util.SourceLocator;
 import java.util.*;
 import soot.*;
 
@@ -168,35 +167,6 @@ public class ClassFile {
     /** Returns the name of this Class. */
     public String toString() {
 	return (constant_pool[this_class].toString(constant_pool));
-    }
-
-   /** Main entry point for reading in a class file.
-    * The file name is given in the constructor; this opens the
-    * file and reads in the contents, building the representation.
-    * @return <i>true</i> on success.
-    */
-    public boolean loadClassFile() {
-	InputStream f = null;
-	InputStream classFileStream;
-	DataInputStream d;
-	boolean b;
-
-	Timers.v().locatorTimer.start();
-      
-	try {   
-            String cp = soot.Scene.v().getSootClassPath();
-	    if(cp != null)
-		classFileStream = SourceLocator.v().getInputStreamOf(cp, fn);
-	    else
-		classFileStream = SourceLocator.v().getInputStreamOf(fn);
-	} catch(ClassNotFoundException e) {   
-	    Timers.v().locatorTimer.end();
-	    return false;      
-	}
-	
-	Timers.v().locatorTimer.end();
-
-	return loadClassFile(classFileStream);
     }
 
     public boolean loadClassFile(InputStream is) 
