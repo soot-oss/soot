@@ -25,9 +25,29 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
             return e;
         }
 
-
+        /*
+         * double -> (int, long, float)
+         * float -> (int, long, double)
+         * long -> (int, double, float)
+         * int (byte, char, short, boolean) -> (byte, char, short, long,
+         *      double, float)
+         * ie double to short goes through int etc.
+         */
         if (toType.isPrimitive() && fromType.isPrimitive()) {
-            polyglot.ast.Expr newExpr = nf.Cast(p, nf.CanonicalTypeNode(p, toType), e).type(toType);
+
+            polyglot.ast.Expr newExpr;
+            
+            if (fromType.isFloat() || fromType.isLong() || fromType.isDouble()){
+                if (toType.isFloat() || toType.isLong() || toType.isDouble() || toType.isInt()){
+                    newExpr = nf.Cast(p, nf.CanonicalTypeNode(p, toType), e).type(toType);
+                }
+                else {
+                    newExpr = nf.Cast(p, nf.CanonicalTypeNode(p, toType), nf.Cast(p, nf.CanonicalTypeNode(p, ts.Int()), e).type(ts.Int())).type(toType);
+                }
+            }
+            else {
+                newExpr = nf.Cast(p, nf.CanonicalTypeNode(p, toType), e).type(toType);
+            }
             return newExpr;
         }
         
