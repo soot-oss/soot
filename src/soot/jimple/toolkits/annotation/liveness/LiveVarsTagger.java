@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.annotation.liveVars;
+package soot.jimple.toolkits.annotation.liveness;
 
 import soot.*;
 import soot.toolkits.scalar.*;

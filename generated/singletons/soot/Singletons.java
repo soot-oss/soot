@@ -62,7 +62,7 @@ import soot.jimple.toolkits.annotation.qualifiers.*;
 import soot.jimple.toolkits.annotation.profiling.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.annotation.defs.*;
-import soot.jimple.toolkits.annotation.liveVars.*;
+import soot.jimple.toolkits.annotation.liveness.*;
 import soot.jimple.toolkits.base.*;
 import soot.jimple.toolkits.graph.*;
 import soot.jimple.toolkits.invoke.*;

@@ -44,7 +44,7 @@ import soot.jimple.toolkits.annotation.qualifiers.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.annotation.defs.*;
-import soot.jimple.toolkits.annotation.liveVars.*;
+import soot.jimple.toolkits.annotation.liveness.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.tagkit.*;
