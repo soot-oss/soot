@@ -40,7 +40,10 @@ public class PAG2HTML {
             final VarNode v = (VarNode) vIt.next();
             mergedNodes.put( v.getReplacement(), v );
             if( v instanceof LocalVarNode ) {
-                methodToNodes.put( ((LocalVarNode)v).getMethod(), v );
+                SootMethod m = ((LocalVarNode)v).getMethod();
+                if( m != null ) {
+                    methodToNodes.put( m, v );
+                }
             }
         }
         try {
@@ -126,9 +129,12 @@ public class PAG2HTML {
         ret.append( "</a><br>" );
         if( vv instanceof LocalVarNode ) {
             LocalVarNode lvn = (LocalVarNode) vv;
-            ret.append( "<a href=\"../"
-                    +toFileName(lvn.getMethod().toString() )+".html\">" );
-            ret.append( htmlify(lvn.getMethod().toString())+"</a><br>" );
+            SootMethod m = lvn.getMethod();
+            if( m != null ) {
+                ret.append( "<a href=\"../"
+                        +toFileName(m.toString() )+".html\">" );
+                ret.append( htmlify(m.toString())+"</a><br>" );
+            }
         }
         ret.append( htmlify(vv.getType().toString())+"\n" );
         return ret.toString();
