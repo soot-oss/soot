@@ -256,14 +256,16 @@ public class Util {
     private static soot.Local getLocalOfType(soot.Body body, soot.Type type) {
         soot.FastHierarchy fh = InitialResolver.v().hierarchy();
         Iterator it = body.getLocals().iterator();
+        soot.Local correctLocal = null;
         while (it.hasNext()){
             soot.Local l = (soot.Local)it.next();
             if (l.getType().equals(type)){
             //if (!(l.getType() instanceof soot.PrimType) && fh.canStoreType(l.getType(), type)){
-                return l;
+                //return l;
+                correctLocal = l;
             }
         }
-        return null;
+        return correctLocal;
     }
     
     private static boolean bodyHasLocal(soot.Body body, soot.Type type) {
