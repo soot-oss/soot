@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
+ * Copyright (C) 1999 Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,71 +24,29 @@
  */
 
 
-
-
-
-package soot.baf;
+package soot.grimp.internal;
 
 import soot.*;
-import soot.util.*;
-import java.util.*;
+import soot.jimple.*;
 
-class BafLocal implements Local
+public class ObjExprBox extends ExprBox
 {
-    String name;
-    Type type;
-
-    int fixedHashCode;
-    boolean isHashCodeChosen;
-        
-    BafLocal(String name, Type t)
+    /* an ExprBox which can only contain object-looking references */
+    public ObjExprBox(Value value)
     {
-        this.name = name;
-        this.type = t;
+        super(value);
     }
 
-    public Object clone()
+    public boolean canContainValue(Value value)
     {
-        return new BafLocal(name, type);
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public Type getType()
-    {
-        return type;
-    }
-
-    public void setType(Type t)
-    {
-        this.type = t;
-    }
-
-    public String toString()
-    {
-        return getName();
-    }
-
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
-    public List getUseBoxes()
-    {
-        return AbstractUnit.emptyList;
-    }
-
-    public void apply(Switch s)
-    {
-        throw new RuntimeException("invalid case switch");
+        return value instanceof ConcreteRef ||
+            value instanceof InvokeExpr || 
+        value instanceof NewArrayExpr ||
+        value instanceof NewMultiArrayExpr ||
+            value instanceof Local ||
+        value instanceof NullConstant ||
+        value instanceof StringConstant ||
+            (value instanceof CastExpr && 
+                canContainValue(((CastExpr)value).getOp()));
     }
 }

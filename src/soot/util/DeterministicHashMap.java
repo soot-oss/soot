@@ -24,10 +24,7 @@
  */
 
 
-
-
-
-package soot;
+package soot.util;
 
 import soot.util.*;
 import java.util.*;

@@ -24,24 +24,68 @@
  */
 
 
-
-
-
-package soot.baf;
+package soot.baf.internal;
 
 import soot.*;
 import soot.util.*;
 import java.util.*;
 
-class InstBox extends AbstractUnitBox
+public class BafLocal implements Local
 {
-    InstBox(Inst s)
+    String name;
+    Type type;
+
+    int fixedHashCode;
+    boolean isHashCodeChosen;
+        
+    public BafLocal(String name, Type t)
     {
-        setUnit(s);
+        this.name = name;
+        this.type = t;
+    }
+
+    public Object clone()
+    {
+        return new BafLocal(name, type);
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public Type getType()
+    {
+        return type;
+    }
+
+    public void setType(Type t)
+    {
+        this.type = t;
+    }
+
+    public String toString()
+    {
+        return getName();
+    }
+
+    public String toBriefString()
+    {
+        return toString();
     }
     
-    public boolean canContainUnit(Unit u)
+    public List getUseBoxes()
     {
-        return u instanceof Inst || u == null;
+        return AbstractUnit.emptyList;
+    }
+
+    public void apply(Switch s)
+    {
+        throw new RuntimeException("invalid case switch");
     }
 }

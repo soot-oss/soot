@@ -39,9 +39,9 @@ public class BlockGraph implements DirectedGraph
     List mHeads = new ArrayList();
     List mTails = new ArrayList();
 
-    protected static final int COMPLETE = 0;
-    protected static final int BRIEF = 1;
-    protected static final int ZONED = 2;
+    static final int COMPLETE = 0;
+    static final int BRIEF = 1;
+    static final int ZONED = 2;
 
     private Map blockToSuccs;
     private Map blockToPreds;

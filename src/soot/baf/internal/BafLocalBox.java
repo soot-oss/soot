@@ -24,10 +24,7 @@
  */
 
 
-
-
-
-package soot.baf;
+package soot.baf.internal;
 
 import soot.*;
 

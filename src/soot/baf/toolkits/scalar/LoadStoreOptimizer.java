@@ -212,7 +212,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 
 
     // main optimizing method
-    public  void optimizeLoadStores() 
+    private void optimizeLoadStores() 
     {
         
         Chain units  = mUnits;

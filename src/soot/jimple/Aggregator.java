@@ -117,7 +117,7 @@ public class Aggregator extends BodyTransformer
       localDefs = new SimpleLocalDefs(graph);
       localUses = new SimpleLocalUses(graph, localDefs);
           
-      stmtIt = graph.pseudoTopologicalOrderIterator();
+      stmtIt = PseudoTopologicalOrderer.v().newList(graph).iterator();
       
       while (stmtIt.hasNext())
         {

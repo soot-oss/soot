@@ -56,13 +56,13 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
                                "] Propagating and folding constants...");
 
         Chain units = stmtBody.getUnits();
-        CompleteUnitGraph stmtGraph = new CompleteUnitGraph(stmtBody);
+        CompleteUnitGraph unitGraph = new CompleteUnitGraph(stmtBody);
         LocalDefs localDefs;
         
-        localDefs = new SimpleLocalDefs(stmtGraph);
+        localDefs = new SimpleLocalDefs(unitGraph);
 
         // Perform a constant/local propagation pass.
-        Iterator stmtIt = stmtGraph.pseudoTopologicalOrderIterator();
+        Iterator stmtIt = PseudoTopologicalOrderer.v().newList(unitGraph).iterator();
 
         // go through each use box in each statement
         while (stmtIt.hasNext()) {

@@ -24,11 +24,7 @@
  */
 
 
-
-
-
-
-package soot.grimp;
+package soot.grimp.internal;
 
 import soot.*;
 import soot.jimple.*;

@@ -26,7 +26,18 @@
 
 package soot.toolkits.graph;
 
-public class ReversePseudoTopologicalOrderer extends PseudoTopologicalOrderer
+import java.util.*;
+
+public class ReversePseudoTopologicalOrderer
 {
-   
+    private static ReversePseudoTopologicalOrderer instance = 
+        new ReversePseudoTopologicalOrderer();
+    private ReversePseudoTopologicalOrderer() {}
+
+    public static ReversePseudoTopologicalOrderer v() { return instance; }
+
+    public List newList(DirectedGraph g)
+    {        
+        return PseudoTopologicalOrderer.computeOrder(true, g);
+    }
 }

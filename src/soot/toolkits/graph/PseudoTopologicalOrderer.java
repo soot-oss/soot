@@ -26,17 +26,16 @@
 
 package soot.toolkits.graph;
 
-
 import soot.*;
 import soot.util.*;
 import java.util.*;
 
-
-
 public class PseudoTopologicalOrderer
 {
-    private static boolean isPseudoTopologicalOrderReady;
-    private static List topOrder;
+    private static PseudoTopologicalOrderer instance = new PseudoTopologicalOrderer();
+    private PseudoTopologicalOrderer() {}
+
+    public static PseudoTopologicalOrderer v() { return instance; }
 
     private static Map stmtToColor;
     private static final int 
@@ -49,17 +48,12 @@ public class PseudoTopologicalOrderer
   
     private static DirectedGraph graph;
         
-    public static Iterator iteratorOf(DirectedGraph g)
+    public List newList(DirectedGraph g)
     {        
-        if(!isPseudoTopologicalOrderReady){
-            topOrder = Collections.unmodifiableList(computeOrder(false, g));
-            isPseudoTopologicalOrderReady = true;
-        }
-        
-        return topOrder.iterator();
+        return computeOrder(false, g);
     }
 
-    private static LinkedList computeOrder(boolean isReversed, DirectedGraph g)
+    static LinkedList computeOrder(boolean isReversed, DirectedGraph g)
     {
         stmtToColor = new HashMap();
     
@@ -98,28 +92,6 @@ public class PseudoTopologicalOrderer
 
     // Unfortunately, the nice recursive solution fails
     // because of stack overflows
-    /*
-    private void visitStmt(Stmt s)
-    {
-        stmtToColor.put(s, new Integer(GRAY));
-         
-        Iterator succIt = getSuccsOf(s).iterator();
-        
-        while(succIt.hasNext())
-        {
-            Stmt succ = (Stmt) succIt.next();
-            
-            if(((Integer) stmtToColor.get(succ)).intValue() == WHITE)
-                visitStmt(succ);
-        }
-        
-        stmtToColor.put(s, new Integer(BLACK));
-         
-        if(isReversed)
-            order.addLast(s);
-        else
-            order.addFirst(s); 
-    }*/
     
     // Fill in the 'order' list with a pseudo topological order (possibly reversed)
     // list of statements starting at s.  Simulates recursion with a stack.
@@ -174,7 +146,4 @@ public class PseudoTopologicalOrderer
         }
     }
     
-
-
-
 }
