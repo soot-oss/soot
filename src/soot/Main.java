@@ -455,8 +455,9 @@ public class Main
       
       loadNecessaryClasses();
       prepareClasses();
-
 	    
+      runPacks();
+
       Timers.v().totalTimer.end();            
 				
       // Print out time stats.				
