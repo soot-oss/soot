@@ -17,28 +17,47 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.javaToJimple;
+package soot.javaToJimple.jj.ast;
 
-public class CommaJBB extends AbstractJimpleBodyBuilder{
+import polyglot.ast.*;
+import polyglot.types.*;
+import polyglot.visit.*;
+import polyglot.ext.jl.ast.*;
+import polyglot.util.*;
+import java.util.*;
 
-    public CommaJBB(){
-        //ext(null);
-        //base(this);
+public class JjAccessField_c extends Expr_c implements Expr {
+
+    private Call getMeth;
+    private Call setMeth;
+    private Field field;
+    
+    public JjAccessField_c(Position pos, Call getMeth, Call setMeth, Field field ){
+        super(pos);
+        this.getMeth = getMeth;
+        this.setMeth = setMeth;
+        this.field = field;
     }
 
-    protected soot.Value createExpr(polyglot.ast.Expr expr){
-        if (expr instanceof soot.javaToJimple.jj.ast.JjComma_c){
-            return getCommaLocal((soot.javaToJimple.jj.ast.JjComma_c)expr);
-        }
-        else {
-            return ext().createExpr(expr);
-        }
+    public Call getMeth(){
+        return getMeth;
+    }
+
+    public Call setMeth(){
+        return setMeth;
+    }
+
+    public Field field() {
+        return field;
     }
     
-    private soot.Value getCommaLocal(soot.javaToJimple.jj.ast.JjComma_c comma){
-        base().createExpr(comma.first());
-        soot.Value val = base().createExpr(comma.second());
-        return val;
-    }
+    public List acceptCFG(CFGBuilder v, List succs)
+    {
+        return succs;
+    }           
 
+    public Term entry(){
+        return field.entry();
+    }
 }
+

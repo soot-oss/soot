@@ -26,7 +26,9 @@ import java.util.*;
 import soot.SootFieldRef;
 
 public abstract class AbstractJimpleBodyBuilder {
-    
+   
+    protected soot.jimple.JimpleBody body;
+
     public void ext(AbstractJimpleBodyBuilder ext){
         this.ext = ext;
         if (ext.ext != null){
@@ -52,11 +54,43 @@ public abstract class AbstractJimpleBodyBuilder {
         return ext().createJimpleBody(block, formals, sootMethod);
     }
     
-    protected abstract soot.Value createExpr(polyglot.ast.Expr expr);
-    //    return ext().createExpr(expr);
-    //}
+    protected soot.Value createExpr(polyglot.ast.Expr expr){
+        return ext().createExpr(expr);
+    }
     
-    protected abstract void createStmt(polyglot.ast.Stmt stmt);
-    //    ext().createStmt(stmt);
-    //}
+    protected void createStmt(polyglot.ast.Stmt stmt){
+        ext().createStmt(stmt);
+    }
+
+    protected boolean needsAccessor(polyglot.ast.Expr expr){
+        return ext().needsAccessor(expr);
+    }
+    
+    protected soot.Local handlePrivateFieldAssignSet(polyglot.ast.Assign assign){
+        return ext().handlePrivateFieldAssignSet(assign);
+    }
+
+    protected soot.Value getAssignRightLocal(polyglot.ast.Assign assign, soot.Local leftLocal){
+        return ext().getAssignRightLocal(assign, leftLocal);
+    }
+   
+    protected soot.Local handlePrivateFieldSet(polyglot.ast.Expr expr, soot.Value right){
+        return ext().handlePrivateFieldSet(expr, right);
+    }
+
+    protected soot.SootMethodRef getSootMethodRef(polyglot.ast.Call call){
+        return ext().getSootMethodRef(call);
+    }
+
+    protected soot.Local generateLocal(soot.Type sootType){
+        return ext().generateLocal(sootType);
+    }
+
+    protected soot.Local getThis(soot.Type sootType){
+        return ext().getThis(sootType);
+    }
+
+    protected soot.Value getBaseLocal(polyglot.ast.Receiver receiver){
+        return ext().getBaseLocal(receiver);
+    }
 }
