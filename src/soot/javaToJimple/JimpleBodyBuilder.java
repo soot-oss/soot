@@ -290,6 +290,7 @@ public class JimpleBodyBuilder {
     private void createFormal(polyglot.ast.Formal formal, int counter){
 
         soot.Type sootType = Util.getSootType(formal.type().type());
+        System.out.println("soot type for formal: "+sootType);
         soot.Local formalLocal = createLocal(formal.localInstance());
         soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(sootType, counter);
         soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(formalLocal, paramRef);
@@ -302,7 +303,7 @@ public class JimpleBodyBuilder {
     /**
      * Literal Creation
      */
-    private soot.jimple.Constant createLiteral(polyglot.ast.Lit lit) {
+    private soot.Value createLiteral(polyglot.ast.Lit lit) {
 		if (lit instanceof polyglot.ast.IntLit) {
 			polyglot.ast.IntLit intLit = (polyglot.ast.IntLit)lit;
 			long litValue = intLit.value();
@@ -362,9 +363,9 @@ public class JimpleBodyBuilder {
     
     // this should be used for generated locals only
     private soot.Local createLocal(String name, soot.Type sootType) {
-        if (sootType instanceof soot.CharType) {
+        /*if (sootType instanceof soot.CharType) {
             sootType = soot.IntType.v();
-        }
+        }*/
         soot.Local sootLocal = soot.jimple.Jimple.v().newLocal(name, sootType);
         body.getLocals().add(sootLocal);
 		return sootLocal;
@@ -1508,7 +1509,10 @@ public class JimpleBodyBuilder {
             // not a binary add 
             if (assign.type().toString().equals("java.lang.String")){
             //if (((leftLocal instanceof soot.jimple.StringConstant) || (right instanceof soot.jimple.StringConstant)) || ((leftLocal.getType().toString().equals("java.lang.String")) || (right.getType().toString().equals("java.lang.String")))){
-                soot.Value rValue = getStringConcatLocal(assign);
+                soot.Local sb = (soot.Local)createStringBuffer(assign);
+                generateAppends(assign.left(), sb);
+                generateAppends(assign.right(), sb);
+                soot.Value rValue = createToString(sb, assign);
                 //soot.Value rValue = getStringConcatLocal(leftLocal, right);
                 stmt = soot.jimple.Jimple.v().newAssignStmt(leftLocal, rValue);
                 body.getUnits().add(stmt);
@@ -1872,7 +1876,11 @@ public class JimpleBodyBuilder {
         }
 
         if (binary.type().toString().equals("java.lang.String")){
-            return getStringConcatLocal(binary);
+            soot.Local sb = (soot.Local)createStringBuffer(binary);
+            generateAppends(binary.left(), sb);
+            generateAppends(binary.right(), sb);
+            return createToString(sb, binary);
+            //return getStringConcatLocal(binary);
         }
         
         //System.out.println("binary: "+binary);
@@ -2257,11 +2265,32 @@ public class JimpleBodyBuilder {
         
     }
     
+    private soot.Value createStringBuffer(polyglot.ast.Expr expr){
+        // create and add one string buffer 
+        soot.Local local = lg.generateLocal(soot.RefType.v("java.lang.StringBuffer"));
+        soot.jimple.NewExpr newExpr = soot.jimple.Jimple.v().newNewExpr(soot.RefType.v("java.lang.StringBuffer"));
+        soot.jimple.Stmt assign = soot.jimple.Jimple.v().newAssignStmt(local, newExpr);
+        
+        body.getUnits().add(assign);
+        Util.addLnPosTags(assign, expr.position());
+        
+        soot.SootClass classToInvoke1 = soot.Scene.v().getSootClass("java.lang.StringBuffer");
+        soot.SootMethod methodToInvoke1 = getMethodFromClass(classToInvoke1, "<init>", new ArrayList(), soot.VoidType.v()); 
+        
+        soot.jimple.SpecialInvokeExpr invoke = soot.jimple.Jimple.v().newSpecialInvokeExpr(local, methodToInvoke1);
+            
+        soot.jimple.Stmt invokeStmt = soot.jimple.Jimple.v().newInvokeStmt(invoke);
+        body.getUnits().add(invokeStmt);
+        Util.addLnPosTags(invokeStmt, expr.position());
+        
+        return local;
+    }
+    
     /**
      * Creates a local with all parts of the string
      */
     //private soot.Local getStringConcatLocal(soot.Value lVal, soot.Value rVal) {
-    private soot.Local getStringConcatLocal(polyglot.ast.Expr expr) {
+    /*private soot.Local getStringConcatLocal(polyglot.ast.Expr expr) {
   
         polyglot.ast.Expr left = null;
         polyglot.ast.Expr right = null;
@@ -2299,18 +2328,22 @@ public class JimpleBodyBuilder {
         Iterator it = appendList.keySet().iterator();
         while (it.hasNext()){
             Object next = it.next();
+            System.out.println("next to append: "+next);
             local = generateAppendStmts((soot.Value)next, local, (polyglot.ast.Expr)appendList.get(next));
         }
         // generate appends for left and right
         //local = generateAppendStmts(lVal, local);
         //local = generateAppendStmts(rVal, local);
-        
+    
+     }*/
+
+    private soot.Local createToString(soot.Local sb, polyglot.ast.Expr expr){
         // invoke toString on local (type StringBuffer)
         soot.Local newString = lg.generateLocal(soot.RefType.v("java.lang.String"));
         soot.SootClass classToInvoke2 = soot.Scene.v().getSootClass("java.lang.StringBuffer");
         soot.SootMethod methodToInvoke2 = getMethodFromClass(classToInvoke2, "toString", new ArrayList(), soot.RefType.v("java.lang.String")); 
                  
-        soot.jimple.VirtualInvokeExpr toStringInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(local, methodToInvoke2);
+        soot.jimple.VirtualInvokeExpr toStringInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(sb, methodToInvoke2);
                 
         soot.jimple.Stmt lastAssign = soot.jimple.Jimple.v().newAssignStmt(newString, toStringInvoke);
 
@@ -2320,90 +2353,130 @@ public class JimpleBodyBuilder {
         return newString; 
     }
 
-    private HashMap generateAppendList(polyglot.ast.Expr left, polyglot.ast.Expr right){
+    
+    /*private HashMap generateAppendList(polyglot.ast.Expr left, polyglot.ast.Expr right){
         HashMap map = new HashMap();
         if (!left.type().toString().equals("java.lang.String")){
+            System.out.println("left not string");
             map.put(createExpr(left), left);
         }
         else if (left instanceof polyglot.ast.Binary){
             polyglot.ast.Binary tempLeft = (polyglot.ast.Binary)left;
             if (tempLeft.operator() == polyglot.ast.Binary.ADD){
+                System.out.println("left binary add");
                 map.putAll(generateAppendList(tempLeft.left(), tempLeft.right()));        
             }
             else {
+                System.out.println("left other binary");
                 map.put(createExpr(left), left);
             }
         }
         else {
+            System.out.println("left simple string");
+            
             map.put(createExpr(left), left);
         }
         map.put(createExpr(right), right);
 
         return map;
+    }*/
+
+    private boolean isStringConcat(polyglot.ast.Expr expr){
+        if (expr instanceof polyglot.ast.Binary) {
+            polyglot.ast.Binary bin = (polyglot.ast.Binary)expr;
+            if (bin.operator() == polyglot.ast.Binary.ADD){
+                if (bin.type().toString().equals("java.lang.String")) return true;
+                return false;        
+            }
+            return false;
+        }
+        else if (expr instanceof polyglot.ast.Assign) {
+            polyglot.ast.Assign assign = (polyglot.ast.Assign)expr;
+            if (assign.operator() == polyglot.ast.Assign.ADD_ASSIGN){
+                if (assign.type().toString().equals("java.lang.String")) return true;
+                return false;
+            }
+            return false;
+        }
+        return false;
     }
     
     /**
      * Generates one part of a concatenation String
      */
-    private soot.Local generateAppendStmts(soot.Value toApp, soot.Local base, polyglot.ast.Expr origExpr) {
+    private void generateAppends(polyglot.ast.Expr expr, soot.Local sb) {
 
-        soot.Type appendType = null;
-        if (toApp instanceof soot.jimple.StringConstant) {
-            appendType = soot.RefType.v("java.lang.String");
-        }
-        else if (toApp instanceof soot.jimple.Constant) {
-            appendType = toApp.getType();
-        }
-        else if (toApp instanceof soot.Local) {
-            if (((soot.Local)toApp).getType() instanceof soot.PrimType) {
-                appendType = ((soot.Local)toApp).getType();   
+      
+        if (isStringConcat(expr)){
+            if (expr instanceof polyglot.ast.Binary){
+                generateAppends(((polyglot.ast.Binary)expr).left(), sb);
+                generateAppends(((polyglot.ast.Binary)expr).right(), sb);
             }
-            else if (((soot.Local)toApp).getType() instanceof soot.RefType) {
-                if (((soot.Local)toApp).getType().toString().equals("java.lang.String")){
-                    appendType = soot.RefType.v("java.lang.String");
-                }
-                else if (((soot.Local)toApp).getType().toString().equals("java.lang.StringBuffer")){
-                    appendType = soot.RefType.v("java.lang.StringBuffer");
-                }
-                else{
-                    appendType = soot.RefType.v("java.lang.Object");
-                }
+            else {
+                generateAppends(((polyglot.ast.Assign)expr).left(), sb);
+                generateAppends(((polyglot.ast.Assign)expr).right(), sb);
             }
         }
-        else if (toApp instanceof soot.jimple.ConditionExpr) {
-            toApp = handleCondBinExpr((soot.jimple.ConditionExpr)toApp);
-            appendType = soot.BooleanType.v();
+        else {
+            soot.Value toApp = createExpr(expr);
+            soot.Type appendType = null;
+            if (toApp instanceof soot.jimple.StringConstant) {
+                appendType = soot.RefType.v("java.lang.String");
+            }
+            else if (toApp instanceof soot.jimple.Constant) {
+                //System.out.println("is constant to app: "+toApp.getType());
+                appendType = toApp.getType();
+            }
+            else if (toApp instanceof soot.Local) {
+                if (((soot.Local)toApp).getType() instanceof soot.PrimType) {
+                    //System.out.println("is local to app: "+((soot.Local)toApp).getType());
+                    appendType = ((soot.Local)toApp).getType();   
+                }
+                else if (((soot.Local)toApp).getType() instanceof soot.RefType) {
+                    if (((soot.Local)toApp).getType().toString().equals("java.lang.String")){
+                        appendType = soot.RefType.v("java.lang.String");
+                    }
+                    else if (((soot.Local)toApp).getType().toString().equals("java.lang.StringBuffer")){
+                        appendType = soot.RefType.v("java.lang.StringBuffer");
+                    }
+                    else{
+                        appendType = soot.RefType.v("java.lang.Object");
+                    }
+                }
+            }
+            else if (toApp instanceof soot.jimple.ConditionExpr) {
+                toApp = handleCondBinExpr((soot.jimple.ConditionExpr)toApp);
+                appendType = soot.BooleanType.v();
+            }
+
+            // handle shorts
+            if (appendType instanceof soot.ShortType || appendType instanceof soot.ByteType) {
+                soot.Local intLocal = lg.generateLocal(soot.IntType.v());
+                soot.jimple.Expr cast = soot.jimple.Jimple.v().newCastExpr(toApp, soot.IntType.v());
+                soot.jimple.Stmt castAssign = soot.jimple.Jimple.v().newAssignStmt(intLocal, cast);
+                body.getUnits().add(castAssign);
+                toApp = intLocal;
+                appendType = soot.IntType.v();
+            }
+        
+            ArrayList paramsTypes = new ArrayList();
+            paramsTypes.add(appendType);
+            ArrayList params = new ArrayList();
+            params.add(toApp);
+
+            soot.SootClass classToInvoke = soot.Scene.v().getSootClass("java.lang.StringBuffer");
+            soot.SootMethod methodToInvoke = getMethodFromClass(classToInvoke, "append", paramsTypes, soot.RefType.v("java.lang.StringBuffer"));
+
+            soot.jimple.VirtualInvokeExpr appendInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(sb, methodToInvoke, params);
+
+            //soot.Local nextSB = lg.generateLocal(soot.RefType.v("java.lang.StringBuffer"));
+
+            soot.jimple.Stmt appendStmt = soot.jimple.Jimple.v().newInvokeStmt(appendInvoke);
+
+            body.getUnits().add(appendStmt);
+        
+            Util.addLnPosTags(appendStmt, expr.position()); 
         }
-
-        // handle shorts
-        if (appendType instanceof soot.ShortType || appendType instanceof soot.ByteType) {
-            soot.Local intLocal = lg.generateLocal(soot.IntType.v());
-            soot.jimple.Expr cast = soot.jimple.Jimple.v().newCastExpr(toApp, soot.IntType.v());
-            soot.jimple.Stmt castAssign = soot.jimple.Jimple.v().newAssignStmt(intLocal, cast);
-            body.getUnits().add(castAssign);
-            toApp = intLocal;
-            appendType = soot.IntType.v();
-        }
-        
-        ArrayList paramsTypes = new ArrayList();
-        paramsTypes.add(appendType);
-        ArrayList params = new ArrayList();
-        params.add(toApp);
-
-        soot.SootClass classToInvoke = soot.Scene.v().getSootClass("java.lang.StringBuffer");
-        soot.SootMethod methodToInvoke = getMethodFromClass(classToInvoke, "append", paramsTypes, soot.RefType.v("java.lang.StringBuffer"));
-
-        soot.jimple.VirtualInvokeExpr appendInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(base, methodToInvoke, params);
-
-        soot.Local nextSB = lg.generateLocal(soot.RefType.v("java.lang.StringBuffer"));
-
-        soot.jimple.Stmt appendAssign = soot.jimple.Jimple.v().newAssignStmt(nextSB, appendInvoke);
-
-        body.getUnits().add(appendAssign);
-        
-        Util.addLnPosTags(appendAssign, origExpr.position()); 
-        
-        return nextSB;
     }
 
     /**

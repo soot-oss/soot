@@ -59,7 +59,7 @@ public class LocalGenerator{
                 name = nextIntName();
                 if (!bodyContainsLocal(name)) break;
             }
-            type = soot.IntType.v();
+            type = soot.CharType.v();
         }
 		else if (type instanceof soot.DoubleType) {
             while (true){

@@ -27,7 +27,8 @@ public class InitialResolver {
      * Invokes polyglot and gets the AST for the source given in fullPath
      */
     public void formAst(String fullPath, List locations){
-   
+    
+        //System.out.println("full source path: "+fullPath);
         JavaToJimple jtj = new JavaToJimple();
         polyglot.frontend.ExtensionInfo extInfo = jtj.initExtInfo(fullPath, locations);
         // only have one compiler - for memory issues
@@ -267,6 +268,7 @@ public class InitialResolver {
                 }
                 else {
                     // if not already there put cdecl name in class to source file map
+                    //System.out.println("class to src map: "+((polyglot.ast.ClassDecl)next).name()+" and "+sootClass.getName());
                     addToClassToSourceMap(((polyglot.ast.ClassDecl)next).name(), sootClass.getName());                
                 }
 		    }
