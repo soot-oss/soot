@@ -303,17 +303,24 @@ public class PackManager {
                     +" phase "+phaseName );
             return false;
         }
+        String key = getKey( option );
+        if( declaresOption( phaseName, key ) ) {
+            optionMap.put( key, getValue( option ) );
+            return true;
+        }
+        G.v().out.println( "Invalid option "+option+" for phase "+phaseName );
+        return false;
+    }
+
+    private boolean declaresOption( String phaseName, String option ) {
         HasPhaseOptions phase = getPhase( phaseName );
         String declareds = phase.getDeclaredOptions();
-        String key = getKey( option );
         for( StringTokenizer st = new StringTokenizer( declareds );
                 st.hasMoreTokens(); ) {
-            if( st.nextToken().equals( key ) ) {
-                optionMap.put( key, getValue( option ) );
+            if( st.nextToken().equals( option ) ) {
                 return true;
             }
         }
-        G.v().out.println( "Invalid option "+option+" for phase "+phaseName );
         return false;
     }
 
@@ -322,6 +329,8 @@ public class PackManager {
         if( optionMap == null )
             throw new RuntimeException( "No such phase "+phaseName );
         if( optionMap.containsKey( getKey( option ) ) ) return;
+        if( !declaresOption( phaseName, getKey( option ) ) )
+            throw new RuntimeException( "No option "+option+" for phase "+phaseName );
         optionMap.put( getKey( option ), getValue( option ) );
     }
 
