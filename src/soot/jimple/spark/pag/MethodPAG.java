@@ -48,7 +48,7 @@ public final class MethodPAG {
 
     /** Adds this method to the main PAG, with all VarNodes parameterized by
      * varNodeParameter. */
-    public void addToPAG( Object varNodeParameter ) {
+    public void addToPAG( Context varNodeParameter ) {
         if( !hasBeenBuilt ) throw new RuntimeException();
         if( varNodeParameter == null ) {
             if( hasBeenAdded ) return;
@@ -137,12 +137,12 @@ public final class MethodPAG {
         //System.out.println( "parameterizing "+vn+" with "+varNodeParameter );
         return pag().makeContextVarNode( vn, varNodeParameter );
     }
-    protected FieldRefNode parameterize( FieldRefNode frn, Object varNodeParameter ) {
+    protected FieldRefNode parameterize( FieldRefNode frn, Context varNodeParameter ) {
         return pag().makeFieldRefNode(
                 (VarNode) parameterize( frn.getBase(), varNodeParameter ),
                 frn.getField() );
     }
-    public Node parameterize( Node n, Object varNodeParameter ) {
+    public Node parameterize( Node n, Context varNodeParameter ) {
         if( varNodeParameter == null ) return n;
         if( n instanceof LocalVarNode ) 
             return parameterize( (LocalVarNode) n, varNodeParameter);

@@ -33,6 +33,11 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
 	return FullObjectSet.v();
     }
 
+    /** Returns the set of objects pointed to by variable l in context c. */
+    public PointsToSet reachingObjects( Context c, Local l ) {
+        return reachingObjects(null, l);
+    }
+
     /** Returns the set of objects pointed to by static field f. */
     public PointsToSet reachingObjects( SootField f ) {
         Type t = f.getType();
@@ -49,6 +54,12 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
     /** Returns the set of objects pointed to by instance field f
      * of the objects pointed to by l. */
     public PointsToSet reachingObjects( Local l, SootField f ) {
+        return reachingObjects(f);
+    }
+
+    /** Returns the set of objects pointed to by instance field f
+     * of the objects pointed to by l in context c. */
+    public PointsToSet reachingObjects( Context c, Local l, SootField f ) {
         return reachingObjects(f);
     }
 

@@ -27,6 +27,9 @@ public interface PointsToAnalysis {
     /** Returns the set of objects pointed to by variable l. */
     public PointsToSet reachingObjects( Local l );
 
+    /** Returns the set of objects pointed to by variable l in context c. */
+    public PointsToSet reachingObjects( Context c, Local l );
+
     /** Returns the set of objects pointed to by static field f. */
     public PointsToSet reachingObjects( SootField f );
 
@@ -37,6 +40,10 @@ public interface PointsToAnalysis {
     /** Returns the set of objects pointed to by instance field f
      * of the objects pointed to by l. */
     public PointsToSet reachingObjects( Local l, SootField f );
+
+    /** Returns the set of objects pointed to by instance field f
+     * of the objects pointed to by l in context c. */
+    public PointsToSet reachingObjects( Context c, Local l, SootField f );
 
     /** Returns the set of objects pointed to by elements of the arrays
      * in the PointsToSet s. */

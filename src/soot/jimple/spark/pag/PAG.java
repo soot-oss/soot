@@ -118,6 +118,15 @@ public class PAG implements PointsToAnalysis {
         }
         return n.getP2Set();
     }
+    
+    /** Returns the set of objects pointed to by variable l in context c. */
+    public PointsToSet reachingObjects( Context c, Local l ) {
+        VarNode n = findContextVarNode( l, c );
+        if( n == null ) {
+            return EmptyPointsToSet.v();
+        }
+        return n.getP2Set();
+    }
 
     /** Returns the set of objects pointed to by static field f. */
     public PointsToSet reachingObjects( SootField f ) {
@@ -376,6 +385,12 @@ public class PAG implements PointsToAnalysis {
         return reachingObjects( reachingObjects(l), f );
     }
 
+    /** Returns the set of objects pointed to by instance field f
+     * of the objects pointed to by l in context c. */
+    public PointsToSet reachingObjects( Context c, Local l, SootField f ) {
+        return reachingObjects( reachingObjects(c, l), f );
+    }
+
     private void addNodeTag( Node node, SootMethod m ) {
         if( nodeToTag != null ) {
             Tag tag;
@@ -494,7 +509,7 @@ public class PAG implements PointsToAnalysis {
     }
     /** Finds the ContextVarNode for base variable value and context
      * context, or returns null. */
-    public ContextVarNode findContextVarNode( Object baseValue, Object context ) {
+    public ContextVarNode findContextVarNode( Object baseValue, Context context ) {
 	LocalVarNode base = findLocalVarNode( baseValue );
 	if( base == null ) return null;
 	return base.context( context );
@@ -760,8 +775,8 @@ public class PAG implements PointsToAnalysis {
     final public void addCallTarget( MethodPAG srcmpag,
                                      MethodPAG tgtmpag,
                                      Stmt s,
-                                     Object srcContext,
-                                     Object tgtContext ) {
+                                     Context srcContext,
+                                     Context tgtContext ) {
         MethodNodeFactory srcnf = srcmpag.nodeFactory();
         MethodNodeFactory tgtnf = tgtmpag.nodeFactory();
         InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
