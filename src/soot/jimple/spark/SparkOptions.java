@@ -139,7 +139,7 @@ public class SparkOptions {
 
     /**
      * When this option is set to true, effects of native methods are simulated.
-     * Default value is false
+     * Default value is true
      */
     public boolean simulateNatives() {
         return Options.getBoolean( options, "simulateNatives" );
@@ -462,7 +462,7 @@ public class SparkOptions {
     }
     public static String getDefaultOptions() {
         return
-        " verbose:false ignoreTypesEntirely:false forceGCs:false preJimplify:false VTA:false RTA:false ignoreBaseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false parmsAsFields:false returnsAsFields:false simplifyOffline:false simplifySCCs:false ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true classMethodVar:true dumpAnswer:false trimInvokeGraph:false addTags:false";
+        " verbose:false ignoreTypesEntirely:false forceGCs:false preJimplify:false VTA:false RTA:false ignoreBaseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:true simpleEdgesBidirectional:false onFlyCallGraph:false parmsAsFields:false returnsAsFields:false simplifyOffline:false simplifySCCs:false ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true classMethodVar:true dumpAnswer:false trimInvokeGraph:false addTags:false";
     }
 
     protected Map options;

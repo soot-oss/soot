@@ -292,12 +292,12 @@ public class InvokeGraph
             addTarget(imitator, (SootMethod)it.next());
     }
 
-    public MutableDirectedGraph newMethodGraph()
+    public MethodCallGraph newMethodGraph()
     {
         return new MethodCallGraph(this);
     }
 
-    public MutableDirectedGraph newMethodGraph(Collection methodSet)
+    public MethodCallGraph newMethodGraph(Collection methodSet)
     {
         return new MethodCallGraph(this, methodSet);
     }
@@ -319,50 +319,3 @@ public class InvokeGraph
   }
 }
 
-class CallGraphStats 
-{  
-    int nodes;
-    int benchNodes;
-    int monoCS;
-    int polyCS;
-    int monoEdges;
-    int polyEdges;
-    int benchMonoCS;
-    int benchPolyCS;
-    int benchMonoEdges;
-    int benchPolyEdges;
-
-    public CallGraphStats() 
-    {
-        nodes = 0;
-        benchNodes = 0;
-        monoCS = 0;
-        polyCS = 0;
-        monoEdges = 0;
-        polyEdges = 0;
-        benchMonoCS = 0;
-        benchPolyCS = 0;
-        benchMonoEdges = 0;
-        benchPolyEdges = 0;
-    }
-
-    public String toString() 
-    {
-        String s = "\n";
-        s = s + "          Call Graph Statistics\n";
-        s = s + "============================================\n";
-        s = s + "Number of nodes = "+nodes+"\n";
-        s = s + "Number of sites = "+(monoCS+polyCS)+"\n";
-        s = s + "Number of resolved sites = "+monoCS+"\n";
-        s = s + "Number of unresolved sites = "+polyCS+"\n";
-        s = s + "Number of resolved edges = "+monoEdges+"\n";
-        s = s + "Number of unresolved edges = "+polyEdges+"\n";
-        s = s + "Number of benchmark nodes = "+benchNodes+"\n";
-        s = s + "Number of benchmark sites = "+(benchMonoCS+benchPolyCS)+"\n";
-        s = s + "Number of resolved benchmark sites = "+benchMonoCS+"\n";
-        s = s + "Number of unresolved benchmark sites = "+benchPolyCS+"\n";
-        s = s + "Number of resolved benchmark edges = "+benchMonoEdges+"\n";
-        s = s + "Number of unresolved benchmark edges = "+benchPolyEdges+"\n";
-        return s;
-    }
-}

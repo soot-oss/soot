@@ -105,7 +105,7 @@ public class StaticInliner extends SceneTransformer
                 if (graph.getSitesOf(container).size() == 0)
                     continue;
     
-                JimpleBody b = (JimpleBody)container.getActiveBody();
+                JimpleBody b = (JimpleBody)container.retrieveActiveBody();
                     
                 List unitList = new ArrayList(); unitList.addAll(b.getUnits());
                 Iterator unitIt = unitList.iterator();
@@ -147,12 +147,12 @@ public class StaticInliner extends SceneTransformer
             {
                 List l = (List)sitesIt.next();
                 SootMethod inlinee = (SootMethod)l.get(0);
-                int inlineeSize = ((JimpleBody)(inlinee.getActiveBody())).getUnits().size();
+                int inlineeSize = ((JimpleBody)(inlinee.retrieveActiveBody())).getUnits().size();
 
                 Stmt invokeStmt = (Stmt)l.get(1);
 
                 SootMethod container = (SootMethod)l.get(2);
-                int containerSize = ((JimpleBody)(container.getActiveBody())).getUnits().size();
+                int containerSize = ((JimpleBody)(container.retrieveActiveBody())).getUnits().size();
                 
                 if (inlineeSize + containerSize > maxContainerSize)
                     continue;
@@ -192,7 +192,7 @@ public class StaticInliner extends SceneTransformer
                 SootMethod m = (SootMethod) methodsIt.next();
                 if (m.isConcrete())
                 {
-                    int size = ((JimpleBody)m.getActiveBody()).getUnits().size();
+                    int size = ((JimpleBody)m.retrieveActiveBody()).getUnits().size();
                     sum += size;
                     methodToOriginalSize.put(m, new Integer(size));
                     count++;

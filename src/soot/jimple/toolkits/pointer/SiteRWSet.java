@@ -8,7 +8,6 @@ public class SiteRWSet extends RWSet {
     protected HashSet sets = new HashSet();
     protected boolean callsNative = false;
 
-    static int count = 0;
     public String toString() {
         final StringBuffer ret = new StringBuffer();
         for( Iterator keyIt = sets.iterator(); keyIt.hasNext(); ) {
@@ -18,12 +17,6 @@ public class SiteRWSet extends RWSet {
         return ret.toString();
     }
 
-    public SiteRWSet() {
-	count++;
-	if( 0 == (count % 1000) ) {
-	    System.out.println( "Created "+count+"th SiteRWSet" );
-	}
-    }
     public boolean getCallsNative() {
 	return callsNative;
     }

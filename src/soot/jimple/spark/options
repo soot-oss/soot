@@ -72,7 +72,7 @@ allocation site.
 END
 
 BOPT simulateNatives
-false
+true
 When this option is set to true, effects of native methods are simulated.
 END
 

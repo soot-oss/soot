@@ -609,7 +609,8 @@ public class Scene  //extends AbstractHost
     public Hierarchy getActiveHierarchy() 
     {
         if(!hasActiveHierarchy())
-            throw new RuntimeException("no active Hierarchy present for scene");
+            //throw new RuntimeException("no active Hierarchy present for scene");
+            setActiveHierarchy( new Hierarchy() );
             
         return activeHierarchy;
     }

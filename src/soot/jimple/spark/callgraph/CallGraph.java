@@ -308,6 +308,7 @@ public final class CallGraph
             r.add(m);
         }
         ig.setReachableMethods( r );
+        ig.mcg = ig.newMethodGraph( r );
         return ig;
     }
 
