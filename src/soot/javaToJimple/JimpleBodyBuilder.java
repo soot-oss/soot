@@ -716,8 +716,8 @@ public class JimpleBodyBuilder {
      */
     private void createForLoop(polyglot.ast.For forStmt){
        
-        System.out.println("forStmt pos: "+forStmt.position());
-        System.out.println("forStmt body pos: "+forStmt.body().position());
+        //System.out.println("forStmt pos: "+forStmt.position());
+        //System.out.println("forStmt body pos: "+forStmt.body().position());
         // these ()are for break and continue
         endControlNoop.push(soot.jimple.Jimple.v().newNopStmt());
         condControlNoop.push(soot.jimple.Jimple.v().newNopStmt());
@@ -1894,7 +1894,7 @@ public class JimpleBodyBuilder {
             
             body.getUnits().add(fieldAssignStmt);
             Util.addLnPosTags(fieldAssignStmt, field.position());
-            Util.addLnPosTags(fieldAssignStmt.getLeftOpBox(), field.position());
+            //Util.addLnPosTags(fieldAssignStmt.getRightOpBox(), field.position());
             return baseLocal; 
         }
     }
@@ -1988,77 +1988,110 @@ public class JimpleBodyBuilder {
      * To get the local for the special .class literal
      */
     private soot.Local getSpecialClassLitLocal(polyglot.ast.ClassLit lit) {
-       
-        // this class
-        soot.SootClass thisClass = body.getMethod().getDeclaringClass();
-        String fieldName = "class$";
-        String type = Util.getSootType(lit.typeNode().type()).toString();
-        String typeName = type;
-        type = soot.util.StringTools.replaceAll(type, ".", "$");
-        fieldName = fieldName+type;
-        soot.Type fieldType = soot.RefType.v("java.lang.Class");
-        soot.Local fieldLocal = lg.generateLocal(soot.RefType.v("java.lang.Class"));
-        soot.SootField sootField = null;
-        if (thisClass.isInterface()){
-            HashMap specialAnonMap = InitialResolver.v().specialAnonMap();
-            if ((specialAnonMap != null) && (specialAnonMap.containsKey(thisClass))){
-                soot.SootClass specialClass = (soot.SootClass)specialAnonMap.get(thisClass);
-                //System.out.println("special class fields: "+specialClass.getFields());
-                sootField = specialClass.getField(fieldName, fieldType);
+      
+        if (lit.typeNode().type().isPrimitive()){
+            polyglot.types.PrimitiveType primType = (polyglot.types.PrimitiveType)lit.typeNode().type();
+            soot.Local retLocal = lg.generateLocal(soot.RefType.v("java.lang.Class"));
+            soot.SootField primField = null;
+            if (primType.isBoolean()){
+                primField = soot.Scene.v().getSootClass("java.lang.Boolean").getField("TYPE", soot.RefType.v("java.lang.Class"));
             }
-            else {
-                throw new RuntimeException("Class is interface so it must have an anon class to handle class lits but its anon class cannot be found.");
+            else if (primType.isByte()){
+                primField = soot.Scene.v().getSootClass("java.lang.Byte").getField("TYPE", soot.RefType.v("java.lang.Class"));
             }
-        }   
-        else {
-            sootField = thisClass.getField(fieldName, fieldType);
+            else if (primType.isChar()){
+                primField = soot.Scene.v().getSootClass("java.lang.Character").getField("TYPE", soot.RefType.v("java.lang.Class"));
+            }
+            else if (primType.isDouble()){
+                primField = soot.Scene.v().getSootClass("java.lang.Double").getField("TYPE", soot.RefType.v("java.lang.Class"));
+            }
+            else if (primType.isFloat()){
+                primField = soot.Scene.v().getSootClass("java.lang.Float").getField("TYPE", soot.RefType.v("java.lang.Class"));
+            }
+            else if (primType.isInt()){
+                primField = soot.Scene.v().getSootClass("java.lang.Integer").getField("TYPE", soot.RefType.v("java.lang.Class"));
+            }
+            else if (primType.isLong()){
+                primField = soot.Scene.v().getSootClass("java.lang.Long").getField("TYPE", soot.RefType.v("java.lang.Class"));
+            }
+            else if (primType.isShort()){
+                primField = soot.Scene.v().getSootClass("java.lang.Short").getField("TYPE", soot.RefType.v("java.lang.Class"));
+            }
+            else if (primType.isVoid()){
+                primField = soot.Scene.v().getSootClass("java.lang.Void").getField("TYPE", soot.RefType.v("java.lang.Class"));
+            }
+            soot.jimple.StaticFieldRef fieldRef = soot.jimple.Jimple.v().newStaticFieldRef(primField);
+            soot.jimple.AssignStmt assignStmt = soot.jimple.Jimple.v().newAssignStmt(retLocal, fieldRef);
+            body.getUnits().add(assignStmt);
+            return retLocal;
         }
-        soot.jimple.StaticFieldRef fieldRef = soot.jimple.Jimple.v().newStaticFieldRef(sootField);
-        soot.jimple.Stmt fieldAssign = soot.jimple.Jimple.v().newAssignStmt(fieldLocal,  fieldRef);
-        body.getUnits().add(fieldAssign);
-
-        soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
-        soot.jimple.Expr neExpr = soot.jimple.Jimple.v().newNeExpr(fieldLocal, soot.jimple.NullConstant.v());
-        soot.jimple.Stmt ifStmt = soot.jimple.Jimple.v().newIfStmt(neExpr, noop1);
-        body.getUnits().add(ifStmt);
-
-        ArrayList paramTypes = new ArrayList();
-        paramTypes.add(soot.RefType.v("java.lang.String"));
-        soot.SootMethod invokeMeth = null;
-        if (thisClass.isInterface()){
-            HashMap specialAnonMap = InitialResolver.v().specialAnonMap();
-            if ((specialAnonMap != null) && (specialAnonMap.containsKey(thisClass))){
-                soot.SootClass specialClass = (soot.SootClass)specialAnonMap.get(thisClass);
-                invokeMeth  = specialClass.getMethod("class$", paramTypes, soot.RefType.v("java.lang.Class"));
-            }
-            else {
-                throw new RuntimeException("Class is interface so it must have an anon class to handle class lits but its anon class cannot be found.");
-            }
-        }   
         else {
-            invokeMeth = thisClass.getMethod("class$", paramTypes, soot.RefType.v("java.lang.Class"));
-        }
-        ArrayList params = new ArrayList();
-        params.add(soot.jimple.StringConstant.v(typeName));
-        soot.jimple.Expr classInvoke = soot.jimple.Jimple.v().newStaticInvokeExpr(invokeMeth, params);
-        soot.Local methLocal = lg.generateLocal(soot.RefType.v("java.lang.Class"));
-        soot.jimple.Stmt invokeAssign = soot.jimple.Jimple.v().newAssignStmt(methLocal, classInvoke);
-        body.getUnits().add(invokeAssign);
+            // this class
+            soot.SootClass thisClass = body.getMethod().getDeclaringClass();
+            String fieldName = Util.getFieldNameForClassLit(lit.typeNode().type());
+            soot.Type fieldType = soot.RefType.v("java.lang.Class");
+            soot.Local fieldLocal = lg.generateLocal(soot.RefType.v("java.lang.Class"));
+            soot.SootField sootField = null;
+            if (thisClass.isInterface()){
+                HashMap specialAnonMap = InitialResolver.v().specialAnonMap();
+                if ((specialAnonMap != null) && (specialAnonMap.containsKey(thisClass))){
+                    soot.SootClass specialClass = (soot.SootClass)specialAnonMap.get(thisClass);
+                    //System.out.println("special class fields: "+specialClass.getFields());
+                    sootField = specialClass.getField(fieldName, fieldType);
+                }
+                else {
+                    throw new RuntimeException("Class is interface so it must have an anon class to handle class lits but its anon class cannot be found.");
+                }
+            }   
+            else {
+                sootField = thisClass.getField(fieldName, fieldType);
+            }
+            soot.jimple.StaticFieldRef fieldRef = soot.jimple.Jimple.v().newStaticFieldRef(sootField);
+            soot.jimple.Stmt fieldAssign = soot.jimple.Jimple.v().newAssignStmt(fieldLocal,  fieldRef);
+            body.getUnits().add(fieldAssign);
 
-        soot.jimple.Stmt assignField = soot.jimple.Jimple.v().newAssignStmt(fieldRef, methLocal);
-        body.getUnits().add(assignField);
+            soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
+            soot.jimple.Expr neExpr = soot.jimple.Jimple.v().newNeExpr(fieldLocal, soot.jimple.NullConstant.v());
+            soot.jimple.Stmt ifStmt = soot.jimple.Jimple.v().newIfStmt(neExpr, noop1);
+            body.getUnits().add(ifStmt);
 
-        soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
-        soot.jimple.Stmt goto1 = soot.jimple.Jimple.v().newGotoStmt(noop2);
-        body.getUnits().add(goto1);
+            ArrayList paramTypes = new ArrayList();
+            paramTypes.add(soot.RefType.v("java.lang.String"));
+            soot.SootMethod invokeMeth = null;
+            if (thisClass.isInterface()){
+                HashMap specialAnonMap = InitialResolver.v().specialAnonMap();
+                if ((specialAnonMap != null) && (specialAnonMap.containsKey(thisClass))){
+                    soot.SootClass specialClass = (soot.SootClass)specialAnonMap.get(thisClass);
+                    invokeMeth  = specialClass.getMethod("class$", paramTypes, soot.RefType.v("java.lang.Class"));
+                }
+                else {
+                    throw new RuntimeException("Class is interface so it must have an anon class to handle class lits but its anon class cannot be found.");
+                }
+            }   
+            else {
+                invokeMeth = thisClass.getMethod("class$", paramTypes, soot.RefType.v("java.lang.Class"));
+            }
+            ArrayList params = new ArrayList();
+            params.add(soot.jimple.StringConstant.v(Util.getParamNameForClassLit(lit.typeNode().type())));
+            soot.jimple.Expr classInvoke = soot.jimple.Jimple.v().newStaticInvokeExpr(invokeMeth, params);
+            soot.Local methLocal = lg.generateLocal(soot.RefType.v("java.lang.Class"));
+            soot.jimple.Stmt invokeAssign = soot.jimple.Jimple.v().newAssignStmt(methLocal, classInvoke);
+            body.getUnits().add(invokeAssign);
+
+            soot.jimple.Stmt assignField = soot.jimple.Jimple.v().newAssignStmt(fieldRef, methLocal);
+            body.getUnits().add(assignField);
+
+            soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
+            soot.jimple.Stmt goto1 = soot.jimple.Jimple.v().newGotoStmt(noop2);
+            body.getUnits().add(goto1);
         
-        body.getUnits().add(noop1);
-        fieldAssign = soot.jimple.Jimple.v().newAssignStmt(methLocal,  fieldRef);
-        body.getUnits().add(fieldAssign);
-        body.getUnits().add(noop2);
+            body.getUnits().add(noop1);
+            fieldAssign = soot.jimple.Jimple.v().newAssignStmt(methLocal,  fieldRef);
+            body.getUnits().add(fieldAssign);
+            body.getUnits().add(noop2);
 
-        return methLocal;
-
+            return methLocal;
+        }
     }
 
     /**
@@ -2858,11 +2891,14 @@ public class JimpleBodyBuilder {
             
             soot.Value sootExpr = createExpr(expr);
             
-            soot.jimple.Stmt assign1 = soot.jimple.Jimple.v().newAssignStmt(retLocal, soot.jimple.Jimple.v().newXorExpr(sootExpr, getConstant(sootExpr.getType(), -1)));
+            soot.jimple.XorExpr xor = soot.jimple.Jimple.v().newXorExpr(sootExpr, getConstant(sootExpr.getType(), -1));
+
+            Util.addLnPosTags(xor.getOp1Box(), expr.position());
+            soot.jimple.Stmt assign1 = soot.jimple.Jimple.v().newAssignStmt(retLocal, xor);
 
             body.getUnits().add(assign1);
             
-            Util.addLnPosTags(assign1, expr.position());
+            Util.addLnPosTags(assign1, unary.position());
             
             return retLocal;
         }

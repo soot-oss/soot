@@ -16,7 +16,11 @@ public class ClassLiteralChecker extends polyglot.visit.NodeVisitor {
     public polyglot.ast.Node leave(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {
     
         if (n instanceof polyglot.ast.ClassLit) {
-            list.add(n);
+            polyglot.ast.ClassLit lit = (polyglot.ast.ClassLit)n;
+            // only find ones where type is not primitive
+            if (!lit.typeNode().type().isPrimitive()){
+                list.add(n);
+            }
         }
         return n;
     }

@@ -3,8 +3,112 @@ package soot.javaToJimple;
 import java.util.*;
 
 public class Util {
-   
+  
+    public static String getParamNameForClassLit(polyglot.types.Type type){
+        String name = "";
+        if (type.isArray()){
+            int dims = ((polyglot.types.ArrayType)type).dims();
+            polyglot.types.Type arrType = ((polyglot.types.ArrayType)type).base();
+            while (arrType instanceof polyglot.types.ArrayType) {
+              arrType = ((polyglot.types.ArrayType)arrType).base();
+            }
+            String fieldName = "";
+            if (arrType.isBoolean()){
+                fieldName = "Z";
+            }
+            else if (arrType.isByte()){
+                fieldName = "B";
+            }
+            else if (arrType.isChar()){
+                fieldName = "C";
+            }
+            else if (arrType.isDouble()){
+                fieldName = "D";
+            }
+            else if (arrType.isFloat()){
+                fieldName = "F";
+            }
+            else if (arrType.isInt()){
+                fieldName = "I";
+            }
+            else if (arrType.isLong()){
+                fieldName = "J";
+            }
+            else if (arrType.isShort()){
+                fieldName = "S";
+            }
+            else {
+                String typeSt = getSootType(arrType).toString();
+                fieldName = "L"+typeSt;
+            }
+            
+            for (int i = 0; i < dims; i++){
+                name += "[";
+            }
+            name += fieldName;
+            if (!arrType.isPrimitive()){
+                name += ";";
+            }
+        }
+        else {
+            name = getSootType(type).toString();
+        }
+        return name;
+    }
+    
+    public static String getFieldNameForClassLit(polyglot.types.Type type){
+        String fieldName = "";
+        if (type.isArray()){
+            int dims = ((polyglot.types.ArrayType)type).dims();
+            polyglot.types.Type arrType = ((polyglot.types.ArrayType)type).base();
+            while (arrType instanceof polyglot.types.ArrayType) {
+              arrType = ((polyglot.types.ArrayType)arrType).base();
+            }
+            fieldName = "array$";
+            for (int i = 0; i < (dims - 1); i++){
+                fieldName += "$";
+            }
+            if (arrType.isBoolean()){
+                fieldName += "Z";
+            }
+            else if (arrType.isByte()){
+                fieldName += "B";
+            }
+            else if (arrType.isChar()){
+                fieldName += "C";
+            }
+            else if (arrType.isDouble()){
+                fieldName += "D";
+            }
+            else if (arrType.isFloat()){
+                fieldName += "F";
+            }
+            else if (arrType.isInt()){
+                fieldName += "I";
+            }
+            else if (arrType.isLong()){
+                fieldName += "J";
+            }
+            else if (arrType.isShort()){
+                fieldName += "S";
+            }
+            else {
+                String typeSt = getSootType(arrType).toString();
+                typeSt = soot.util.StringTools.replaceAll(typeSt, ".", "$");
 
+                fieldName = fieldName+"L"+typeSt;
+            }
+       }
+       else {
+            fieldName = "class$";
+            String typeSt = getSootType(type).toString();
+            typeSt = soot.util.StringTools.replaceAll(typeSt, ".", "$");
+            fieldName = fieldName+typeSt;
+       }
+       
+       return fieldName;
+    }
+    
     public static String getSourceFileOfClass(soot.SootClass sootClass){
         String name = sootClass.getName();
         int index = name.indexOf("$");
@@ -264,9 +368,6 @@ public class Util {
                 }
                 else if (classType.isLocal() && (soot.javaToJimple.InitialResolver.v().getLocalTypeMap() != null) && soot.javaToJimple.InitialResolver.v().getLocalTypeMap().containsKey(new polyglot.util.IdentityKey(classType))) {
                     className = (String)soot.javaToJimple.InitialResolver.v().getLocalTypeMap().get(new polyglot.util.IdentityKey(classType));    
-                }
-                else if (classType.isAnonymous() || classType.isLocal()){
-                    className = classType.toString();
                 }
                 else {
                     String fullName = classType.fullName();

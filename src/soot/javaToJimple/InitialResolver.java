@@ -402,10 +402,7 @@ public class InitialResolver {
             //System.out.println("next class lit: "+classLit);
 
             // field
-            String fieldName = "class$";
-            String type = Util.getSootType(classLit.typeNode().type()).toString();
-            type = soot.util.StringTools.replaceAll(type, ".", "$");
-            fieldName = fieldName+type;
+            String fieldName = Util.getFieldNameForClassLit(classLit.typeNode().type());
             soot.Type fieldType = soot.RefType.v("java.lang.Class");
             soot.SootField sootField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
             if (sootClass.isInterface()){
