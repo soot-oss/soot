@@ -96,7 +96,7 @@ public class BIfNonNullInst extends AbstractBranchInst implements IfNonNullInst
 
     public Object clone() 
     {
-	return new  BIfNonNullInst(getTarget());
+        return new  BIfNonNullInst(getTarget());
     }
 
     public int getInMachineCount()

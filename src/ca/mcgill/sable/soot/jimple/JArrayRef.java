@@ -112,7 +112,7 @@ public class JArrayRef implements ArrayRef, ConvertToBaf
     
     public Object clone() 
     {
-	return new JArrayRef(Jimple.cloneIfNecessary(getBase()), Jimple.cloneIfNecessary(getIndex()));
+        return new JArrayRef(Jimple.cloneIfNecessary(getBase()), Jimple.cloneIfNecessary(getIndex()));
     }
 
 

@@ -92,10 +92,10 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
     BStoreInst(Type opType, Local local)
     {
         super(opType);      
-	localBox = new BafLocalBox(local);
-	defBoxes = new ArrayList();
-	defBoxes.add(localBox);
-	defBoxes = Collections.unmodifiableList(defBoxes);
+        localBox = new BafLocalBox(local);
+        defBoxes = new ArrayList();
+        defBoxes.add(localBox);
+        defBoxes = Collections.unmodifiableList(defBoxes);
     }
 
     public int getInCount()
@@ -105,7 +105,7 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
 
     public Object clone() 
     {
-	return new  BStoreInst(getOpType(), getLocal());
+        return new  BStoreInst(getOpType(), getLocal());
     }
 
     public int getInMachineCount()
@@ -147,7 +147,7 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
 
     public List getDefBoxes() 
     {
-	return defBoxes;
+        return defBoxes;
     }
 
     

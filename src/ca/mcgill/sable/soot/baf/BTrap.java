@@ -94,7 +94,7 @@ public class BTrap extends AbstractTrap
     
     public Object clone() 
     {
-	return new BTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
+        return new BTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
     }
     
     

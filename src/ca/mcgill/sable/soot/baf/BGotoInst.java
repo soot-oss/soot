@@ -93,17 +93,17 @@ public class BGotoInst extends AbstractBranchInst implements GotoInst
 
     public Object clone()
     {
-	return new BGotoInst(getTarget());
+        return new BGotoInst(getTarget());
     }
 
     public int getInMachineCount()
     {
-	return 0;
+        return 0;
     }
 
     public boolean branches()
     {
-	return true;
+        return true;
     }
     
     public int getInCount()

@@ -79,9 +79,9 @@ import java.io.*;
 public abstract class AbstractBody implements Body
 {
     SootMethod method;
-    List locals = new ArrayList();
-    List instList;
-    List traps = new ArrayList();
+    protected List locals = new ArrayList();
+    protected List instList = null;
+    protected List traps = new ArrayList();
 
     protected AbstractBody(SootMethod m)
     {

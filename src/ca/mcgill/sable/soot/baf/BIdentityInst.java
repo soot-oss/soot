@@ -167,7 +167,7 @@ public class BIdentityInst extends AbstractInst
 
     public Object clone() 
     {
-    	return new BIdentityInst(getLeftOp(), getRightOp());
+            return new BIdentityInst(getLeftOp(), getRightOp());
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)

@@ -105,12 +105,12 @@ class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr
  
     public Object clone() 
     {
-	ArrayList clonedArgs = new ArrayList(getArgCount());
+        ArrayList clonedArgs = new ArrayList(getArgCount());
 
-	for(int i = 0; i < getArgCount(); i++) {
-	    clonedArgs.add(i, getArg(i));
-	}
-	
-	return new  JSpecialInvokeExpr((Local) getBase(), method, clonedArgs);
+        for(int i = 0; i < getArgCount(); i++) {
+            clonedArgs.add(i, getArg(i));
+        }
+        
+        return new  JSpecialInvokeExpr((Local) getBase(), method, clonedArgs);
     }
 }

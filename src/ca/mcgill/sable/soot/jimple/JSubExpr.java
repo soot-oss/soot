@@ -92,7 +92,7 @@ class JSubExpr extends AbstractJimpleFloatBinopExpr implements SubExpr
 
     public Object clone() 
     {
-	return new JSubExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JSubExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 

@@ -96,7 +96,7 @@ class JInstanceFieldRef extends AbstractInstanceFieldRef
    
     public Object  clone() 
     {
-	return new JInstanceFieldRef( Jimple.cloneIfNecessary(getBase()), getField());
+        return new JInstanceFieldRef( Jimple.cloneIfNecessary(getBase()), getField());
     }
 
     

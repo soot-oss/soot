@@ -10,7 +10,7 @@ public class CompleteBlockGraph extends BlockGraph
 
     public CompleteBlockGraph(UnitBody body)
     {
-	super(body, COMPLETE);
+        super(body, COMPLETE);
     }
 }
 

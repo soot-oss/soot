@@ -93,7 +93,7 @@ class JGeExpr extends AbstractJimpleIntBinopExpr implements GeExpr
 
     public Object clone() 
     {
-	return new JGeExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JGeExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 }

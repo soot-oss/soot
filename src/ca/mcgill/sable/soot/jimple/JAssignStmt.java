@@ -115,7 +115,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
 
     public Object clone() 
     {
-    	return new JAssignStmt(Jimple.cloneIfNecessary(getLeftOp()), Jimple.cloneIfNecessary(getRightOp()));
+            return new JAssignStmt(Jimple.cloneIfNecessary(getLeftOp()), Jimple.cloneIfNecessary(getRightOp()));
     }
 
     public void setLeftOp(Value variable)

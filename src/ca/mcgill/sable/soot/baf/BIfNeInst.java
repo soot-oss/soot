@@ -96,7 +96,7 @@ public class BIfNeInst extends AbstractBranchInst implements IfNeInst
 
     public Object clone() 
     {
-	return new  BIfNeInst(getTarget());
+        return new  BIfNeInst(getTarget());
     }
 
     public int getInMachineCount()

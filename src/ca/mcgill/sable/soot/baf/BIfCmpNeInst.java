@@ -97,7 +97,7 @@ public class BIfCmpNeInst extends AbstractOpTypeBranchInst
 
     public Object clone() 
     {
-	return new  BIfCmpNeInst(getOpType(), getTarget());
+        return new  BIfCmpNeInst(getOpType(), getTarget());
     }
 
     public int getInMachineCount()

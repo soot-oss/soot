@@ -100,7 +100,7 @@ public class BFieldGetInst extends AbstractInst implements FieldGetInst
 
     public Object clone() 
     {
-	return new BFieldGetInst(getField());
+        return new BFieldGetInst(getField());
     }
 
     public int getInMachineCount()

@@ -96,7 +96,7 @@ public abstract class Constant implements ca.mcgill.sable.util.ValueObject, Valu
     }
     public Object clone() 
     {
-	throw new RuntimeException();
+        throw new RuntimeException();
     }
 }
 

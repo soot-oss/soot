@@ -123,7 +123,7 @@ public class ThisRef implements IdentityRef, ToBriefString
     
     public Object clone()
     {
-	return new ThisRef(sootClass);
+        return new ThisRef(sootClass);
     }
 
 }

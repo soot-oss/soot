@@ -102,7 +102,7 @@ public class BStaticPutInst extends AbstractInst implements StaticPutInst
 
     public Object clone() 
     {
-	return new  BStaticPutInst(getField());
+        return new  BStaticPutInst(getField());
     }
 
 

@@ -101,7 +101,7 @@ public class BRemInst extends AbstractOpTypeInst implements RemInst
 
     public Object clone() 
     {
-	return new  BRemInst(getOpType());
+        return new  BRemInst(getOpType());
     }
 
     

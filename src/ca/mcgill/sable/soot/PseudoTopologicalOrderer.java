@@ -14,9 +14,9 @@ public class PseudoTopologicalOrderer
 
     private static Map stmtToColor;
     private static final int 
-	WHITE = 0,
-	GRAY = 1,
-	BLACK = 2;
+        WHITE = 0,
+        GRAY = 1,
+        BLACK = 2;
 
     private static LinkedList order;
     private static boolean mIsReversed;
@@ -24,10 +24,10 @@ public class PseudoTopologicalOrderer
     private static DirectedGraph graph;
         
     public static Iterator iteratorOf(DirectedGraph g)
-    {	
+    {        
         if(!isPseudoTopologicalOrderReady){
-	    topOrder = Collections.unmodifiableList(computeOrder(false, g));
-	    isPseudoTopologicalOrderReady = true;
+            topOrder = Collections.unmodifiableList(computeOrder(false, g));
+            isPseudoTopologicalOrderReady = true;
         }
         
         return topOrder.iterator();
@@ -35,17 +35,17 @@ public class PseudoTopologicalOrderer
 
     private static LinkedList computeOrder(boolean isReversed, DirectedGraph g)
     {
-	stmtToColor = new HashMap();
+        stmtToColor = new HashMap();
     
         mIsReversed = isReversed;
         order = new LinkedList();
-	graph = g;
+        graph = g;
         
         // Color all statements white
         {
             
 
-	    Iterator stmtIt = g.iterator();
+            Iterator stmtIt = g.iterator();
             while(stmtIt.hasNext())
             {
                 Unit s = (Unit) stmtIt.next();

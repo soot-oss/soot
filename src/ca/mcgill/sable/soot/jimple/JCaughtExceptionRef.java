@@ -94,7 +94,7 @@ public class JCaughtExceptionRef implements CaughtExceptionRef
     
     public Object clone() 
     {
-	return new JCaughtExceptionRef(body);
+        return new JCaughtExceptionRef(body);
     }
 
 

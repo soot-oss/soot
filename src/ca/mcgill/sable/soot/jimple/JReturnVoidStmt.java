@@ -92,7 +92,7 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
   
     public Object clone() 
     {
-	return new JReturnVoidStmt();
+        return new JReturnVoidStmt();
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)

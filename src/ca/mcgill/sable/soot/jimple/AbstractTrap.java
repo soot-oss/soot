@@ -165,6 +165,6 @@ public class AbstractTrap implements Trap
 
     public Object clone()
     {
-	throw new RuntimeException();
+        throw new RuntimeException();
     }
 }

@@ -83,8 +83,8 @@ public interface Unit extends Switchable
     public List getUseAndDefBoxes();
     public Object clone();
 
-    public boolean fallsThrough();	
-    public boolean branches();	
+    public boolean fallsThrough();        
+    public boolean branches();        
     
     public String toBriefString();
     public String toBriefString(Map stmtToName, String indentation);

@@ -93,7 +93,7 @@ class JLeExpr extends AbstractJimpleIntBinopExpr implements LeExpr
 
     public Object clone() 
     {
-	return new JLeExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JLeExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 }

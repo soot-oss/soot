@@ -98,7 +98,7 @@ public class BAndInst extends AbstractOpTypeInst implements AndInst
 
     public Object clone() 
     {
-	return new BAndInst(getOpType());
+        return new BAndInst(getOpType());
     }
    
     public int getInMachineCount()

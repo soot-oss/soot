@@ -103,7 +103,7 @@ public class JIdentityStmt extends AbstractDefinitionStmt
 
     public Object clone()
     {
-	return new JIdentityStmt(Jimple.cloneIfNecessary(getLeftOp()), Jimple.cloneIfNecessary(getRightOp()));
+        return new JIdentityStmt(Jimple.cloneIfNecessary(getLeftOp()), Jimple.cloneIfNecessary(getRightOp()));
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)

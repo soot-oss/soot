@@ -94,7 +94,7 @@ public class JTrap extends AbstractTrap
 
     public Object clone() 
     {
-	return new JTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
+        return new JTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
     }
  
 }

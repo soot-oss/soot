@@ -98,7 +98,7 @@ public class BNewArrayInst extends AbstractOpTypeInst implements NewArrayInst
 
     public Object clone() 
     {
-	return new  BNewArrayInst(getOpType());
+        return new  BNewArrayInst(getOpType());
     }
 
     public int getInMachineCount()

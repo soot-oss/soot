@@ -93,9 +93,9 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst
     {
         super(opType);
         localBox = new BafLocalBox(local);
-	useBoxes = new ArrayList();
-	useBoxes.add(localBox);
-	useBoxes = Collections.unmodifiableList(useBoxes);
+        useBoxes = new ArrayList();
+        useBoxes.add(localBox);
+        useBoxes = Collections.unmodifiableList(useBoxes);
     }
 
     public int getInCount()
@@ -105,7 +105,7 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst
 
     public Object clone() 
     {
-	return new  BLoadInst(getOpType(), getLocal());
+        return new  BLoadInst(getOpType(), getLocal());
     }
 
     public int getInMachineCount()
@@ -147,7 +147,7 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst
 
     public List getUseBoxes() 
     {
-	return useBoxes;
+        return useBoxes;
     }
 
     

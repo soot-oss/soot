@@ -102,7 +102,7 @@ public class JEnterMonitorStmt extends AbstractStmt
 
     public Object clone() 
     {
-	return new JEnterMonitorStmt(Jimple.cloneIfNecessary(getOp()));
+        return new JEnterMonitorStmt(Jimple.cloneIfNecessary(getOp()));
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)

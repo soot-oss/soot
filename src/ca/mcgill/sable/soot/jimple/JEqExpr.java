@@ -93,7 +93,7 @@ class JEqExpr extends AbstractJimpleIntBinopExpr implements EqExpr
     
     public Object clone() 
     {
-	return new JEqExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JEqExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
-	
+        
 }

@@ -95,7 +95,7 @@ public class BPushInst extends AbstractInst implements PushInst
 
     public Object clone() 
     {
-	return new  BPushInst(getConstant());
+        return new  BPushInst(getConstant());
     }
 
 

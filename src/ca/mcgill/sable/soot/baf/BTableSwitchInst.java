@@ -36,13 +36,13 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
     }
 
     public Object clone() 
-    {	
-	List list = new ArrayList();
-	for(int i =0; i< targetBoxes.length; i++) {
-	    list.add(targetBoxes[i].getUnit());
-	}
+    {        
+        List list = new ArrayList();
+        for(int i =0; i< targetBoxes.length; i++) {
+            list.add(targetBoxes[i].getUnit());
+        }
     
-	return new  BTableSwitchInst(defaultTargetBox.getUnit(), lowIndex, highIndex, list);		
+        return new  BTableSwitchInst(defaultTargetBox.getUnit(), lowIndex, highIndex, list);                
     }
     
 

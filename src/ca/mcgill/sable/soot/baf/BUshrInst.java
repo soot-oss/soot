@@ -96,7 +96,7 @@ public class BUshrInst extends AbstractOpTypeInst implements UshrInst
 
     public Object clone() 
     {
-	return new  BUshrInst(getOpType());
+        return new  BUshrInst(getOpType());
     }
 
     public int getInMachineCount()

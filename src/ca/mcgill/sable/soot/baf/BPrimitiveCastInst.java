@@ -117,7 +117,7 @@ public class BPrimitiveCastInst extends AbstractOpTypeInst
     
     public Object clone() 
     {
-	return new BPrimitiveCastInst(getFromType(), getToType());
+        return new BPrimitiveCastInst(getFromType(), getToType());
     }
 
 

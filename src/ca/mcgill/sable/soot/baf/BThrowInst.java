@@ -117,6 +117,6 @@ public class BThrowInst extends AbstractInst implements ThrowInst
 
     public Object clone() 
     {
-	return new BThrowInst();
+        return new BThrowInst();
     }
 }

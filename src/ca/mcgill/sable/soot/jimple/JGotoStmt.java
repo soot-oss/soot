@@ -101,7 +101,7 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
     // xxx
     public Object clone() 
     {
-	return new JGotoStmt(getTarget());
+        return new JGotoStmt(getTarget());
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
@@ -139,7 +139,7 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
         out.add(Baf.v().newGotoInst(Baf.v().newPlaceholderInst(getTarget())));
     }
     
-    public boolean fallsThrough(){return false;}	
+    public boolean fallsThrough(){return false;}        
     public boolean branches() { return true;}
     
 }

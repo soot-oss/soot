@@ -99,7 +99,7 @@ class JNegExpr extends AbstractNegExpr implements NegExpr, ConvertToBaf
     
     public Object clone()  
     {
-	return new JNegExpr(Jimple.cloneIfNecessary(getOp()));
+        return new JNegExpr(Jimple.cloneIfNecessary(getOp()));
     }
     
 

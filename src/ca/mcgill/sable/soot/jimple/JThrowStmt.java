@@ -99,7 +99,7 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
 
     public Object clone() 
     {
-	return new JThrowStmt(Jimple.cloneIfNecessary(getOp()));
+        return new JThrowStmt(Jimple.cloneIfNecessary(getOp()));
     }
 
     public ValueBox getOpBox()

@@ -96,7 +96,7 @@ public class BAddInst extends AbstractOpTypeInst implements AddInst
 
     public Object clone() 
     {
-	return new BAddInst(getOpType());
+        return new BAddInst(getOpType());
     }
 
     public int getInMachineCount()

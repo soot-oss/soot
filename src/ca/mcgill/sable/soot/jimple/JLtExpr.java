@@ -93,7 +93,7 @@ class JLtExpr extends AbstractJimpleIntBinopExpr implements LtExpr
 
     public Object clone() 
     {
-	return new JLtExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JLtExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 }

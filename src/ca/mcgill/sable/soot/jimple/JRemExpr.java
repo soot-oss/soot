@@ -92,7 +92,7 @@ class JRemExpr extends AbstractJimpleFloatBinopExpr implements RemExpr
 
     public Object clone() 
     {
-	return new JRemExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JRemExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 }

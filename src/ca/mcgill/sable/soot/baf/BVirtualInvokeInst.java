@@ -24,7 +24,7 @@ public class BVirtualInvokeInst extends AbstractInvokeInst implements VirtualInv
 
     public Object clone() 
     {
-	return new  BVirtualInvokeInst(getMethod());
+        return new  BVirtualInvokeInst(getMethod());
     }
 
     

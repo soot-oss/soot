@@ -94,7 +94,7 @@ class JOrExpr extends AbstractJimpleIntLongBinopExpr implements OrExpr
 
     public Object clone() 
     {
-	return new JOrExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JOrExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 

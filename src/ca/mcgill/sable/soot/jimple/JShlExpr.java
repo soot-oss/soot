@@ -94,6 +94,6 @@ class JShlExpr extends AbstractJimpleIntLongBinopExpr implements ShlExpr
 
     public Object clone() 
     {
-	return new JShlExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JShlExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 }

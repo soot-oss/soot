@@ -24,7 +24,7 @@ public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInv
 
     public Object clone() 
     {
-	return new  BSpecialInvokeInst(getMethod());
+        return new  BSpecialInvokeInst(getMethod());
     }
 
 

@@ -99,7 +99,7 @@ public class BArrayReadInst extends AbstractOpTypeInst implements ArrayReadInst
     
     public Object clone() 
     {
-	return new BArrayReadInst(getOpType());
+        return new BArrayReadInst(getOpType());
     }
 
     public int getInMachineCount()

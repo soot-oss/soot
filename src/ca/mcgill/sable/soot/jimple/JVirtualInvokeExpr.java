@@ -101,13 +101,13 @@ class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr
     
     public Object clone() 
     {
-	ArrayList clonedArgs = new ArrayList(getArgCount());
+        ArrayList clonedArgs = new ArrayList(getArgCount());
 
-	for(int i = 0; i < getArgCount(); i++) {
-	    clonedArgs.add(i, getArg(i));
-	}
-	
-	return new  JVirtualInvokeExpr((Local) getBase(), getMethod(), clonedArgs);
+        for(int i = 0; i < getArgCount(); i++) {
+            clonedArgs.add(i, getArg(i));
+        }
+        
+        return new  JVirtualInvokeExpr((Local) getBase(), getMethod(), clonedArgs);
     }
         
 }

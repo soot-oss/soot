@@ -91,7 +91,7 @@ class JCastExpr extends AbstractCastExpr implements CastExpr
     
     public Object clone()
     {
-	return new JCastExpr(Jimple.cloneIfNecessary(getOp()), type);
+        return new JCastExpr(Jimple.cloneIfNecessary(getOp()), type);
     }
-	
+        
 }

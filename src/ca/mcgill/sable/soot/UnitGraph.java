@@ -122,68 +122,68 @@ public class UnitGraph implements DirectedGraph
 
     UnitGraph(UnitBody unitBody, boolean addExceptionEdges)
     {
-	body = unitBody;
-	unitChain = body.getUnits();
+        body = unitBody;
+        unitChain = body.getUnits();
         method = getBody().getMethod();
         
         if(Main.isVerbose)
             System.out.println("[" + method.getName() + 
-			       "]     Constructing StmtGraph...");
+                               "]     Constructing StmtGraph...");
       
         if(Main.isProfilingOptimization)
             Main.graphTimer.start();
       
         
-	// Build successors
+        // Build successors
         {
             Map classToHandler = new HashMap(); // list of exceptions being caught, and their handlers
-	    
+            
             unitToSuccs = new HashMap(size * 2 + 1, 0.7f);
-	    unitToPreds = new HashMap(size * 2 + 1, 0.7f);
+            unitToPreds = new HashMap(size * 2 + 1, 0.7f);
 
 
             // Add regular successors
             {
                 Iterator unitIt = unitChain.iterator();
-		Unit currentUnit, nextUnit;
-		
-		nextUnit = unitIt.hasNext() ? (Unit) unitIt.next(): null;
+                Unit currentUnit, nextUnit;
                 
-		while(nextUnit != null) {
-		    currentUnit = nextUnit;
-		    nextUnit = unitIt.hasNext() ? (Unit) unitIt.next(): null;
-		    
-		    List successors = new ArrayList();
+                nextUnit = unitIt.hasNext() ? (Unit) unitIt.next(): null;
+                
+                while(nextUnit != null) {
+                    currentUnit = nextUnit;
+                    nextUnit = unitIt.hasNext() ? (Unit) unitIt.next(): null;
                     
-		    
-		    // Put the next statement as the successor
-		    if( currentUnit.fallsThrough() ) {
-			if(nextUnit != null)
-			    successors.add(nextUnit);
-			else
-			    throw new RuntimeException("last unit of a method should not fall through");
-		    }
-			
-		    if( currentUnit.branches() ) {
-			Iterator targetIt = currentUnit.getUnitBoxes().iterator();
-			while(targetIt.hasNext()) {
-			    successors.add(((UnitBox) targetIt.next()).getUnit());
-			}
-		    }
-		    
+                    List successors = new ArrayList();
+                    
+                    
+                    // Put the next statement as the successor
+                    if( currentUnit.fallsThrough() ) {
+                        if(nextUnit != null)
+                            successors.add(nextUnit);
+                        else
+                            throw new RuntimeException("last unit of a method should not fall through");
+                    }
+                        
+                    if( currentUnit.branches() ) {
+                        Iterator targetIt = currentUnit.getUnitBoxes().iterator();
+                        while(targetIt.hasNext()) {
+                            successors.add(((UnitBox) targetIt.next()).getUnit());
+                        }
+                    }
+                    
 
-		    // Store away successors
-		    unitToSuccs.put(currentUnit, successors);
-		}
+                    // Store away successors
+                    unitToSuccs.put(currentUnit, successors);
+                }
             }
 
             // Add exception based successors
-	    if(addExceptionEdges)
+            if(addExceptionEdges)
                 {
                     Map beginToHandler = new HashMap();
                     
                     Iterator trapIt = body.getTraps().iterator();
-		    
+                    
                     while(trapIt.hasNext())
                     {
                         Trap trap = (Trap) trapIt.next();
@@ -192,18 +192,18 @@ public class UnitGraph implements DirectedGraph
                         Unit handlerUnit = (Unit) trap.getHandlerUnit();
                         Unit endUnit = (Unit) trap.getEndUnit();
                         Iterator unitIt = unitChain.iterator(beginUnit);
-			
+                        
                         beginToHandler.put(beginUnit, handlerUnit);
-			
-			Unit u;
+                        
+                        Unit u;
                         do  {
                             u = (Unit) unitIt.next();
-			    
+                            
                             ((List) unitToSuccs.get(u)).add(handlerUnit);
-			    
+                            
                         } while(u != endUnit);
                     
-		    }
+                    }
                     
                     // Add edges from the predecessors of begin statements directly to the handlers
                     // This is necessary because sometimes the first statement of try block
@@ -244,11 +244,11 @@ public class UnitGraph implements DirectedGraph
 
             // Make successors unmodifiable
             {
-		Iterator unitIt = body.getUnits().iterator();
+                Iterator unitIt = body.getUnits().iterator();
                 while(unitIt.hasNext())
                 {
                     Unit s = (Unit) unitIt.next();
-	
+        
                     unitToSuccs.put(s, Collections.unmodifiableList((List) unitToSuccs.get(s)));
                 }
             }
@@ -280,7 +280,7 @@ public class UnitGraph implements DirectedGraph
 
                     while(succIt.hasNext())
                     {
-			List predList = (List) stmtToPredList.get(succIt.next());
+                        List predList = (List) stmtToPredList.get(succIt.next());
                         predList.add(s);
                     }
                 }

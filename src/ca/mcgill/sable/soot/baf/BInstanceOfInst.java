@@ -125,7 +125,7 @@ public class BInstanceOfInst extends AbstractOpTypeInst
 
     public Object clone() 
     {
-	return new BInstanceOfInst(opType); 
+        return new BInstanceOfInst(opType); 
     }
 
 }

@@ -2255,7 +2255,7 @@ public class JasminClass
                     if(s.equals("-InfinityF"))
                         s="-FloatInfinity";
                         
-                    if(s.equals("NaN"))
+                    if(s.equals("NaNF"))
                         s="+FloatNaN";
                     
                     emit("ldc " + s, 1);

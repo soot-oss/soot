@@ -94,7 +94,7 @@ class JXorExpr extends AbstractJimpleIntLongBinopExpr implements XorExpr
     
     public Object clone() 
     {
-	return new JXorExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JXorExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 }

@@ -98,13 +98,13 @@ class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr implements Interf
 
     public Object clone() 
     {
-	List argList = new ArrayList(getArgCount());
+        List argList = new ArrayList(getArgCount());
 
-	for(int i = 0; i < getArgCount(); i++) {
-	    argList.add(i, Jimple.cloneIfNecessary(getArg(i)));
-	}
-	    
-	return new  JInterfaceInvokeExpr(Jimple.cloneIfNecessary(getBase()), getMethod(), argList);
+        for(int i = 0; i < getArgCount(); i++) {
+            argList.add(i, Jimple.cloneIfNecessary(getArg(i)));
+        }
+            
+        return new  JInterfaceInvokeExpr(Jimple.cloneIfNecessary(getBase()), getMethod(), argList);
     }
 
 }

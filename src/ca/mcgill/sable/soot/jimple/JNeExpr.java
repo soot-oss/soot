@@ -93,7 +93,7 @@ class JNeExpr extends AbstractJimpleIntBinopExpr implements NeExpr
 
     public Object clone() 
     {
-	return new JNeExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JNeExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 }

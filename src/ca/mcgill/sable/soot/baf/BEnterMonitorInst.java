@@ -118,7 +118,7 @@ public class BEnterMonitorInst extends AbstractInst implements EnterMonitorInst
 
     public Object clone() 
     {
-	return new BEnterMonitorInst();
+        return new BEnterMonitorInst();
     }
    
 }

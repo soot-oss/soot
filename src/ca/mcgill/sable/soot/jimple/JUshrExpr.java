@@ -94,7 +94,7 @@ class JUshrExpr extends AbstractJimpleIntLongBinopExpr implements UshrExpr
     
     public Object clone() 
     {
-	return new JUshrExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JUshrExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 

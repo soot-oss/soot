@@ -98,7 +98,7 @@ public class BMulInst extends AbstractOpTypeInst implements MulInst
 
     public Object clone() 
     {
-	return new  BMulInst(getOpType());
+        return new  BMulInst(getOpType());
     }
 
 

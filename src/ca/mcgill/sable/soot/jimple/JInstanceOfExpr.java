@@ -106,7 +106,7 @@ class JInstanceOfExpr extends AbstractInstanceOfExpr
   
     public Object clone() 
     {
-	return new JInstanceOfExpr(Jimple.cloneIfNecessary(getOp()), checkType);
+        return new JInstanceOfExpr(Jimple.cloneIfNecessary(getOp()), checkType);
     }
     
 }

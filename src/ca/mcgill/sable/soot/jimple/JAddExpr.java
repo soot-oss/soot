@@ -91,7 +91,7 @@ class JAddExpr extends AbstractJimpleFloatBinopExpr implements AddExpr
     Object makeBafInst(Type opType) { return Baf.v().newAddInst(this.getOp1().getType()); }
     public Object clone() 
     {
-	return new JAddExpr( Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JAddExpr( Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 }
 

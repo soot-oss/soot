@@ -98,7 +98,7 @@ public class BOrInst extends AbstractOpTypeInst implements OrInst
 
     public Object clone() 
     {
-	return new  BOrInst(getOpType());
+        return new  BOrInst(getOpType());
     }
 
 

@@ -110,11 +110,11 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
 
     public boolean fallsThrough()
     {
-	return true;
+        return true;
     }
     public boolean branches()
     {
-	return false;
+        return false;
     }
     
 
@@ -138,7 +138,7 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
     
     public  Object clone()
     {
-	throw new RuntimeException("undefined clone for: " + this.toString());
+        throw new RuntimeException("undefined clone for: " + this.toString());
     }
    
     

@@ -98,7 +98,7 @@ public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf
 
     public Object clone() 
     {
-	return new StaticFieldRef(field);
+        return new StaticFieldRef(field);
     }
 
     public String toString()

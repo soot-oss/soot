@@ -93,7 +93,7 @@ class JGtExpr extends AbstractJimpleIntBinopExpr implements GtExpr
 
     public Object clone() 
     {
-	return new JGtExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JGtExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 }

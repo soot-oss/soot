@@ -100,7 +100,7 @@ public class JExitMonitorStmt extends AbstractStmt
 
     public Object clone() 
     {
-	return new JExitMonitorStmt(Jimple.cloneIfNecessary(getOp()));
+        return new JExitMonitorStmt(Jimple.cloneIfNecessary(getOp()));
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
@@ -151,7 +151,7 @@ public class JExitMonitorStmt extends AbstractStmt
 
     
     public boolean fallsThrough(){return true;}
-    public boolean branches(){return false;}	
+    public boolean branches(){return false;}        
     
 
 

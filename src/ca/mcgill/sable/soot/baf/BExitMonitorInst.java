@@ -117,7 +117,7 @@ public class BExitMonitorInst extends AbstractInst implements ExitMonitorInst
     
     public Object clone() 
     {
-	return new BExitMonitorInst();
+        return new BExitMonitorInst();
     }
    
 }

@@ -92,7 +92,7 @@ class JMulExpr extends AbstractJimpleFloatBinopExpr implements MulExpr
 
     public Object clone() 
     {
-	return new JMulExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JMulExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 }

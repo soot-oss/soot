@@ -92,6 +92,6 @@ class JNewArrayExpr extends AbstractNewArrayExpr
 
     public Object clone() 
     {
-	return new JNewArrayExpr(getBaseType(), Jimple.cloneIfNecessary(getSize()));
+        return new JNewArrayExpr(getBaseType(), Jimple.cloneIfNecessary(getSize()));
     }
 }

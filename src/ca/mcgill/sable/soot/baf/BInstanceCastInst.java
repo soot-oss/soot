@@ -104,7 +104,7 @@ public class BInstanceCastInst extends AbstractOpTypeInst
 
     public Object clone() 
     {
-	return new  BInstanceCastInst(getOpType());
+        return new  BInstanceCastInst(getOpType());
     }
 
     

@@ -92,6 +92,6 @@ class JDivExpr extends AbstractJimpleFloatBinopExpr implements DivExpr
 
     public Object clone() 
     {
-	return new JDivExpr(Jimple.cloneIfNecessary(getOp2()), Jimple.cloneIfNecessary(getOp1()));
+        return new JDivExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 }

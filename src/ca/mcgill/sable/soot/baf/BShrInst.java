@@ -97,7 +97,7 @@ public class BShrInst extends AbstractOpTypeInst implements ShrInst
     
     public Object clone() 
     {
-	return new  BShrInst(getOpType());
+        return new  BShrInst(getOpType());
     }
 
     public int getInMachineCount()

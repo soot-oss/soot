@@ -9,7 +9,7 @@ public class BriefBlockGraph extends BlockGraph
 
     public  BriefBlockGraph(UnitBody body)
     {
-	super(body, BRIEF);
+        super(body, BRIEF);
     }
 }
 

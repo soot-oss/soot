@@ -92,7 +92,7 @@ public class JNopStmt extends AbstractStmt implements NopStmt
 
     public Object clone() 
     {
-	return new JNopStmt();
+        return new JNopStmt();
     }
 
 
@@ -112,7 +112,7 @@ public class JNopStmt extends AbstractStmt implements NopStmt
     }
 
 
-    public boolean fallsThrough(){return true;}	
+    public boolean fallsThrough(){return true;}        
     public boolean branches(){return false;}
 
 }

@@ -93,7 +93,7 @@ class JAndExpr extends AbstractJimpleIntLongBinopExpr implements AndExpr
 
     public Object clone() 
     {
-    	return new JAndExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+            return new JAndExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
 
 }

@@ -99,7 +99,7 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
  
     public Object clone() 
     {
-	return new JInvokeStmt(Jimple.cloneIfNecessary(getInvokeExpr()));
+        return new JInvokeStmt(Jimple.cloneIfNecessary(getInvokeExpr()));
     }
 
 
@@ -149,7 +149,7 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
 
     
 
-    public boolean fallsThrough() {return true;}	
+    public boolean fallsThrough() {return true;}        
     public boolean branches() {return false;}
 
 }

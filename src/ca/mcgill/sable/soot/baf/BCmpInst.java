@@ -105,7 +105,7 @@ public class BCmpInst extends AbstractOpTypeInst implements CmpInst
 
     public Object clone() 
     {
-	return new BCmpInst(getOpType());
+        return new BCmpInst(getOpType());
     }
 
     

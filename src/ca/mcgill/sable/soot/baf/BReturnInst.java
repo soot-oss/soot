@@ -95,7 +95,7 @@ public class BReturnInst extends AbstractOpTypeInst implements ReturnInst
 
     public Object clone() 
     {
-	return new  BReturnInst(getOpType());
+        return new  BReturnInst(getOpType());
     }
 
     public int getInMachineCount()

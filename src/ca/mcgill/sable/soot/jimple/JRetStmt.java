@@ -103,7 +103,7 @@ public class JRetStmt extends AbstractStmt implements RetStmt
 
     public Object clone() 
     {
-	return new JRetStmt(Jimple.cloneIfNecessary(getStmtAddress()));
+        return new JRetStmt(Jimple.cloneIfNecessary(getStmtAddress()));
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
@@ -144,7 +144,7 @@ public class JRetStmt extends AbstractStmt implements RetStmt
         ((StmtSwitch) sw).caseRetStmt(this);
     }    
 
-    public boolean fallsThrough(){return true;}	
+    public boolean fallsThrough(){return true;}        
     public boolean branches(){return false;}
 
 }

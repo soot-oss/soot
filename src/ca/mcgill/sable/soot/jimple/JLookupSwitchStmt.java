@@ -114,14 +114,14 @@ public class JLookupSwitchStmt extends AbstractStmt
     // xxx
     public Object clone() 
     {
-	int lookupValueCount = lookupValues.size();
-	List clonedLookupValues = new ArrayList(lookupValueCount);
+        int lookupValueCount = lookupValues.size();
+        List clonedLookupValues = new ArrayList(lookupValueCount);
 
-	for( int i = 0; i < lookupValueCount ;i++) {
-	    clonedLookupValues.add(i, new Integer(getLookupValue(i)));
-	}
-	
-	return new JLookupSwitchStmt(getKey(), clonedLookupValues, getTargets(), getDefaultTarget());
+        for( int i = 0; i < lookupValueCount ;i++) {
+            clonedLookupValues.add(i, new Integer(getLookupValue(i)));
+        }
+        
+        return new JLookupSwitchStmt(getKey(), clonedLookupValues, getTargets(), getDefaultTarget());
     }
 
 

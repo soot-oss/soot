@@ -92,7 +92,7 @@ public class PlaceholderInst extends AbstractInst
 
     public Object clone() 
     {
-	return new PlaceholderInst(getSource());
+        return new PlaceholderInst(getSource());
     }
     public Unit getSource()
     {

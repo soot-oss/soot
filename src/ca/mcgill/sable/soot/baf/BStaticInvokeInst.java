@@ -20,7 +20,7 @@ public class BStaticInvokeInst extends AbstractInvokeInst implements StaticInvok
 
     public Object clone() 
     {
-	return new  BStaticInvokeInst(getMethod());
+        return new  BStaticInvokeInst(getMethod());
     }
 
 

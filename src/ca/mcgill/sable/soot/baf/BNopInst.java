@@ -99,7 +99,7 @@ public class BNopInst extends AbstractInst implements NopInst
 
     public Object clone() 
     {
-	return new  BNopInst();
+        return new  BNopInst();
     }
 
 

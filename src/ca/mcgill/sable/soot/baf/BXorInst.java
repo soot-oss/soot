@@ -97,7 +97,7 @@ public class BXorInst extends AbstractOpTypeInst implements XorInst
 
     public Object clone() 
     {
-	return new  BXorInst(getOpType());
+        return new  BXorInst(getOpType());
     }
 
     public int getInMachineCount()

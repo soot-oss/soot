@@ -95,7 +95,7 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
     
     public Object clone() 
     {
-	return new ParameterRef(method, n);
+        return new ParameterRef(method, n);
     }
     
     public String toString()

@@ -95,6 +95,6 @@ class JNewExpr extends AbstractNewExpr implements NewExpr, ConvertToBaf
 
     public Object clone() 
     {
-	return new JNewExpr(type);
+        return new JNewExpr(type);
     }
 }

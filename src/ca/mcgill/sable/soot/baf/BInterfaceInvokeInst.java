@@ -43,7 +43,7 @@ public class BInterfaceInvokeInst extends AbstractInvokeInst
 
     public Object clone() 
     {
-	return new  BInterfaceInvokeInst(getMethod(), getArgCount());
+        return new  BInterfaceInvokeInst(getMethod(), getArgCount());
     }
 
     

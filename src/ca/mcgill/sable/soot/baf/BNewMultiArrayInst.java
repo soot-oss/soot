@@ -94,7 +94,7 @@ public class BNewMultiArrayInst extends AbstractOpTypeInst implements NewMultiAr
 
     public Object clone() 
     {
-	return new  BNewMultiArrayInst(getBaseType(), getDimensionCount());
+        return new  BNewMultiArrayInst(getBaseType(), getDimensionCount());
     }
 
     final String getName() { return "newmultiarray"; }

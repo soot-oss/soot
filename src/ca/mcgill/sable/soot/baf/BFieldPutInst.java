@@ -100,7 +100,7 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst
 
     public Object clone() 
     {
-	return new BFieldPutInst(getField());
+        return new BFieldPutInst(getField());
     }
 
     public int getInMachineCount()

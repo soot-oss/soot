@@ -92,7 +92,7 @@ class JCmplExpr extends AbstractJimpleIntBinopExpr implements CmplExpr
     
     public Object clone() 
     {
-	return new JCmplExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+        return new JCmplExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
     }
     
 }
