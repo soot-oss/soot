@@ -122,7 +122,7 @@ public class AbstractInterfaceInvokeExpr extends AbstractNonStaticInvokeExpr imp
         StringBuffer buffer = new StringBuffer();
 
         buffer.append(((ToBriefString) baseBox.getValue()).toBriefString() +
-            "." + method.getName() + "(");
+            ".'" + method.getName() + "'(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {

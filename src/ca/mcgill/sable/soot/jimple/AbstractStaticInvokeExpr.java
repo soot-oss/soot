@@ -119,7 +119,7 @@ public class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements Stat
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(method.getDeclaringClass().getName() + "." + method.getName() + "(");
+        buffer.append("'" + method.getDeclaringClass().getName() + "'.'" + method.getName() + "'(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
