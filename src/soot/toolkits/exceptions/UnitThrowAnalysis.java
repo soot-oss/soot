@@ -143,8 +143,8 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
     }
 
 
-    static private IntConstant INT_CONSTANT_ZERO = IntConstant.v(0);
-    static private LongConstant LONG_CONSTANT_ZERO = LongConstant.v(0);
+    private static final IntConstant INT_CONSTANT_ZERO = IntConstant.v(0);
+    private static final LongConstant LONG_CONSTANT_ZERO = LongConstant.v(0);
 
 
     protected class UnitSwitch implements InstSwitch, StmtSwitch {
