@@ -98,7 +98,7 @@ public class ZonedBlockGraph extends BlockGraph
      * the <tt>Unit</tt> returned by {@link Trap.getBeginUnit()}.</li>
      *
      * <li>The first <tt>Unit</tt> not covered by each {@link Trap} (i.e.,
-     * the <tt>Unit</tt> returned by {@link Trap.getLastUnit()}.</li>
+     * the <tt>Unit</tt> returned by {@link Trap.getEndUnit()}.</li>
      *
      * </ul></p>
      *

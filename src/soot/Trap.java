@@ -38,7 +38,9 @@ public interface Trap extends UnitBoxOwner
     /** Returns the first trapped unit. */
     public Unit getBeginUnit();
 
-    /** Returns the last trapped unit. */
+    /** Returns the unit following the last trapped unit (that is, the
+     *  first succeeeding untrapped unit in the underlying 
+     *  <Code>Chain</code>.). */
     public Unit getEndUnit();
 
     /** Returns the unit handling the exception being trapped. */
@@ -47,7 +49,9 @@ public interface Trap extends UnitBoxOwner
     /** Returns the box holding this trap's first trapped unit. */
     public UnitBox getBeginUnitBox();
 
-    /** Returns the box holding this trap's last trapped unit. */
+    /** Returns the box holding the unit following this trap's last
+     *  trapped unit (that is, the first succeeding untrapped unit
+     *  in the underlying <code>Chain</code>). */
     public UnitBox getEndUnitBox();
 
     /** Returns the box holding the exception handler's unit. */
@@ -62,7 +66,13 @@ public interface Trap extends UnitBoxOwner
     /** Sets the first unit being trapped to <code>beginUnit</code>. */
     public void setBeginUnit(Unit beginUnit);
 
-    /** Sets the last unit being trapped to <code>endUnit</code>. */
+    /** Indirectly sets the last unit being trapped by specifying that
+     *  <code>endUnit</code> follows the last unit being trapped; that is,
+     *  <code>endUnit</code> is the first succeeding untrapped unit in
+     *  the underlying <code>Chain</code>.  Note that this mechanism
+     *  provides no way to specify that the last unit in a method is 
+     *  trapped.
+     */
     public void setEndUnit(Unit endUnit);
 
     /** Sets the unit handling the exception to <code>handlerUnit</code>. */

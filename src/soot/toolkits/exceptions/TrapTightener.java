@@ -67,15 +67,17 @@ public final class TrapTightener extends BodyTransformer {
 		Trap trap = (Trap) trapIt.next();
 		Unit firstTrappedUnit = trap.getBeginUnit();
 		Unit firstTrappedThrower = null;
+		Unit firstUntrappedUnit = trap.getEndUnit();
 		Unit lastTrappedUnit = 
-		    (Unit) unitChain.getPredOf((Unit) trap.getEndUnit());
+		    (Unit) unitChain.getPredOf(firstUntrappedUnit);
 		Unit lastTrappedThrower = null;
 		for (Unit u = firstTrappedUnit; 
-		     u != null; u = (Unit) unitChain.getSuccOf(u)) {
-		    if (mightThrowTo(graph, u, trap)) {
-			firstTrappedThrower = u;
-			break;
-		    }
+		     u != null && u != firstUntrappedUnit; 
+		     u = (Unit) unitChain.getSuccOf(u)) {
+			if (mightThrowTo(graph, u, trap)) {
+			    firstTrappedThrower = u;
+			    break;
+			}
 		}
 		if (firstTrappedThrower != null) {
 		    for (Unit u = lastTrappedUnit;
