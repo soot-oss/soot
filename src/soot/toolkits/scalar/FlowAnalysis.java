@@ -63,7 +63,7 @@ public abstract class FlowAnalysis
 
   /**
    * Returns the initial flow values for entry/exit graph nodes.
-   * This is intended to replace customizeFlowGraph is a unified way.
+   * This is intended to replace customizeInitialFlowGraph.
    *
    * For back compatibility, we use newInitialFlow value, but 
    * it should be overrided by an analysis.

@@ -67,7 +67,6 @@ public abstract class UnitMap implements Map {
    *
    * @param b a Body
    * @param initialCapacity the initialCapacity of the internal hashtable.
-   * @see Hashtable#<init>(int)
    */
   public UnitMap(Body b, int initialCapacity) {
     unitToResult = new Hashtable(initialCapacity);
@@ -81,7 +80,6 @@ public abstract class UnitMap implements Map {
    *
    * @param g a UnitGraph
    * @param initialCapacity the initialCapacity of the internal hashtable.
-   * @see Hashtable#<init>(int)
    */
   public UnitMap(UnitGraph g, int initialCapacity) {
     this(g.getBody(), initialCapacity);
@@ -96,7 +94,6 @@ public abstract class UnitMap implements Map {
    * @param b a Body
    * @param initialCapacity the initialCapacity of the internal hashtable.
    * @param loadFactor the loadFactor of the internal hashtable.
-   * @see Hashtable#<init>(int, float)
    */
   public UnitMap(Body b, int initialCapacity, float loadFactor) {
     unitToResult = new Hashtable(initialCapacity);
@@ -113,7 +110,6 @@ public abstract class UnitMap implements Map {
    * @param g a UnitGraph
    * @param initialCapacity the initialCapacity of the internal hashtable.
    * @param loadFactor the loadFactor of the internal hashtable.
-   * @see Hashtable#<init>(int, float)
    */
   public UnitMap(UnitGraph g, int initialCapacity, float loadFactor) {
     this(g.getBody(), initialCapacity);

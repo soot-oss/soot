@@ -30,7 +30,7 @@ import soot.*;
 import java.util.*;
 import java.io.*;
 
-/** Implementation of the Tag interface for the array bounds check.
+/** Implementation of the Tag interface for array bounds checks.
  */
 public class ArrayCheckTag implements OneByteCodeTag
 {

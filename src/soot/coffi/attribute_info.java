@@ -50,7 +50,7 @@ class attribute_info {
     */
    public static final String Code = "Code";
    /** String by which an Exceptions attribute is recognized.
-    * @see Exceptions_attribute
+    * @see Exception_attribute
     */
    public static final String Exceptions = "Exceptions";
    /** String by which a LineNumberTable attribute is recognized.

@@ -34,9 +34,9 @@ import java.util.*;
 import soot.util.*;
 
 /** 
- * Performs a Latest-Computation on the given graph.<br>
+ * Performs a Latest-Computation on the given graph.
  * a computation is latest, when we can't delay it anymore. This uses the
- * Delayability-analysis.<br>
+ * Delayability-analysis.
  * More precise: The delayability-analysis says us already until which point we
  * can delay a computation from the earliest computation-point. We just have to
  * search for points, where there's a computation, or, where we can't delay the
@@ -48,7 +48,7 @@ public class LatestComputation {
 
   /**
    * given a DelayabilityAnalysis and the computations of each unit, calculates
-   * the latest computation-point for each expression.<br>
+   * the latest computation-point for each expression.
    * the <code>equivRhsMap</code> could be calculated on the fly, but it is
    * <b>very</b> likely that it already exists (as similar maps are used for
    * calculating Earliestness, Delayed,...

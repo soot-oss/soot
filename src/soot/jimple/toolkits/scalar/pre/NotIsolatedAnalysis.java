@@ -41,7 +41,7 @@ import soot.util.*;
  * computation-point. In other words: if the result of the computation will not
  * be used later on the computation is isolated.<br>
  * The Latest-analysis helps us in finding isolated computations, as they
- * show us points, where a precedent computation can't be used anymore.<br>
+ * show us points, where a precedent computation can't be used anymore.
  * In completely other words: we search the interval "latest"-"computation". a
  * computation in this interval would not be isolated.
  */

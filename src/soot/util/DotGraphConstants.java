@@ -24,9 +24,13 @@
  */
 
 
-/* @author Feng Qian */
-
 package soot.util;
+
+/**
+ * Defines several constants used to generate a Dot graph.
+ *
+ * @author Feng Qian 
+ */
 
 public interface DotGraphConstants {
   public static final String NODE_SHAPE_BOX       ="box";

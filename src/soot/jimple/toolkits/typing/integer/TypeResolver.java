@@ -549,7 +549,7 @@ public class TypeResolver
 	  {
 	    TypeVariable var = typeVariable(local);
 	    
-	    if(var.inv_approx() != null && var.inv_approx() != null)
+	    if(var.inv_approx() != null && var.inv_approx().type() != null)
 	      {
 		local.setType(var.inv_approx().type());
 	      }

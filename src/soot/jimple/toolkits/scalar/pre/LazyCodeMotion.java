@@ -35,15 +35,16 @@ import java.util.*;
 import soot.util.*;
 
 /** 
- * performs a partial redundancy elimination (= code motion). This is done, by
+ * Performs a partial redundancy elimination (= code motion). This is done, by
  * introducing helper-vars, that store an already computed value, or if a
  * compuation only arrives partially (not from all predecessors) inserts a new
- * computation on these paths.
- * afterwards).<br>
+ * computation on these paths afterwards).<p>
+ *
  * In order to catch every redundant expression, this transformation must be
  * done on a graph without critical edges. Therefore the first thing we do, is
  * removing them. A subsequent pass can then easily remove the synthetic nodes
- * we have introduced.<br>
+ * we have introduced.<p>
+ *
  * The term "lazy" refers to the fact, that we move computations only if
  * necessary.
  *
@@ -62,7 +63,7 @@ public class LazyCodeMotion extends BodyTransformer {
   }
 
   // safe is one out of "safe" "medium" "unsafe"
-  public String getDefaultOptions() { return "safe:medium unroll:true"; }
+  public String getDefaultOptions() { return "safe:safe unroll:true"; }
         
   /**
    * performs the lazy code motion.

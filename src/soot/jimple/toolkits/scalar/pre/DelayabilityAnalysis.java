@@ -34,7 +34,7 @@ import java.util.*;
 import soot.util.*;
 
 /** 
- * Performs a Delayability-analysis on the given graph.<br>
+ * Performs a Delayability-analysis on the given graph.
  * This analysis is the third analysis in the PRE (lazy code motion) and has
  * little (no?) sense if used alone. Basicly it tries to push the computations
  * we would insert in the Busy Code Motion as far down as possible, to decrease

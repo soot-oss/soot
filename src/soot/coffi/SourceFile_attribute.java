@@ -38,7 +38,7 @@ import java.io.*;
  * @see attribute_info
  * @author Clark Verbrugge
  */
-class SourceFile_attribute extends attribute_info {
+public class SourceFile_attribute extends attribute_info {
    /** Constant pool index of a utf8 string for the name of
     * the associated source file.
     * @see CONSTANT_Utf8_info

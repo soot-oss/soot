@@ -31,7 +31,9 @@ package soot.util;
 import java.io.*;
 import java.util.*;
 
-/* A graph node may has attributes to be set */  
+/**
+ * A Dot graph node with various attributes.
+ */  
 public class DotGraphNode implements Renderable{
   private String name;
   private List attributes;

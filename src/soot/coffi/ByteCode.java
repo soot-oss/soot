@@ -556,6 +556,10 @@ class ByteCode {
                 i = new Instruction_Lload();
                 break;
 
+            case DLOAD:
+                i = new Instruction_Dload();
+                break;
+
             case ISTORE:
                 i = new Instruction_Istore();
                 break;
@@ -570,6 +574,10 @@ class ByteCode {
 
             case LSTORE:
                 i = new Instruction_Lstore();
+                break;
+
+            case DSTORE:
+                i = new Instruction_Dstore();
                 break;
 
             case RET:

@@ -849,7 +849,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 	  {
 	    if(fix)
 	      {
-		stmt.setRightOp(insertCast(stmt.getRightOp(), right.type(), left.type(), stmt));
+		stmt.setRightOp(insertCast(stmt.getRightOp(), getTypeForCast(right), getTypeForCast(left), stmt));
 	      }
 	    else
 	      {
@@ -857,6 +857,35 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      }
 	  }
       }
+  }
+
+  static Type getTypeForCast(TypeNode node)
+      // This method is a local kludge, for avoiding NullPointerExceptions
+      // when a R0_1, R0_127, or R0_32767 node is used in a type
+      // cast. A more elegant solution would work with the TypeNode 
+      // type definition itself, but that would require a more thorough
+      // knowledge of the typing system than the kludger posesses.
+  {
+    if (node.type() == null) 
+      {
+	if (node == ClassHierarchy.R0_1) 
+	  {
+	    return BooleanType.v();
+	  }
+	else if (node == ClassHierarchy.R0_127) 
+	  { 
+	    return ByteType.v();
+	  }
+	else if (node == ClassHierarchy.R0_32767)
+	  {
+	    return ShortType.v();
+	  }
+	// Perhaps we should throw an exception here, since I don't think
+	// there should be any other cases where node.type() is null. 
+	// In case that supposition is incorrect, though, we'll just
+	// go on to return the null, and let the callers worry about it.
+      }
+    return node.type();
   }
 
   public void caseIdentityStmt(IdentityStmt stmt)

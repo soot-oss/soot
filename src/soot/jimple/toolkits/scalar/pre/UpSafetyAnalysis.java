@@ -35,9 +35,9 @@ import java.util.*;
 import soot.util.*;
 
 /** 
- * Performs an UpSafe-analysis on the given graph.<br>
+ * Performs an UpSafe-analysis on the given graph.
  * An expression is upsafe, if the computation already has been performed on
- * every path from START to the given program-point.<br>
+ * every path from START to the given program-point.
  */
 public class UpSafetyAnalysis extends ForwardFlowAnalysis {
   private SideEffectTester sideEffect;

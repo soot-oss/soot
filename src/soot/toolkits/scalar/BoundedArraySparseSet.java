@@ -30,10 +30,11 @@ import soot.util.*;
 import java.util.*;
 
 /**
- * provides an efficient implementation for flowsets, that are usually sparse,
+ * Provides an efficient implementation for flowsets, that are usually sparse,
  * but sometimes completely full. The full set is marked by a boolean to avoid
  * using memory, but removing an element from these full sets make them grow
- * very big.<br>
+ * very big.<p>
+ *
  * Even without the use of "complement()" or "topSet()" this flowSet is well
  * suited for sparse sets.
  */

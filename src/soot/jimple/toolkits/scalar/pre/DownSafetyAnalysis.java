@@ -35,9 +35,9 @@ import java.util.*;
 import soot.util.*;
 
 /** 
- * Performs an DownSafe-analysis on the given graph.<br>
+ * Performs an DownSafe-analysis on the given graph.
  * An expression is downsafe, if the computation will occur on every path from
- * the current point down to the END.<br>
+ * the current point down to the END.
  */
 public class DownSafetyAnalysis extends BackwardFlowAnalysis {
   private SideEffectTester sideEffect = null;

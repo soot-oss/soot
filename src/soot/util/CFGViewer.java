@@ -24,10 +24,6 @@
  */
 
 
-/* A utility class for generating dot graph file for a control flow graph
- *
- * @author Feng Qian
- */
 package soot.util;
 
 import soot.*;
@@ -35,6 +31,11 @@ import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
 
+/**
+ * A utility class for generating dot graph file for a control flow graph
+ *
+ * @author Feng Qian
+ */
 public class CFGViewer {
 
   /* make all control fields public, allow other soot class dump 
@@ -150,7 +151,12 @@ public class CFGViewer {
 
   private static int nodecount = 0;
 
-  /* generating dot format for plotting */
+  /**
+   * Generates a dot format file for a DirectedGraph
+   * @param methodname, the name of generated dot file
+   * @param graph, a directed control flow graph (UnitGraph, BlockGraph ...)
+   * @param graphname, the title of the graph
+   */
   public static void toDotFile(String methodname, 
 				DirectedGraph graph, 
 				String graphname) {

@@ -24,10 +24,13 @@
  */
 
 
-/* @author Feng Qian */
-
 package soot.util;
 
+/**
+ * A class for specifying Dot graph attributes.
+ *
+ * @author Feng Qian 
+ */
 public class DotGraphAttribute {
   String id;
   String value;

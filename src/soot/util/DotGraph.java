@@ -24,11 +24,12 @@
  */
 
 
-/*
- * DotPainter provide an interface to soot for generating DOT language
+/**
+ * DotGraph provides an interface to SOOT for generating DOT language
  * for graphviz from ATT research lab.
  *
  * Intended ussage: virtualize CFG, graphes, etc...
+ *
  * @author Feng Qian
  */
 
@@ -55,7 +56,7 @@ public class DotGraph implements Renderable{
   private List    attributes;
 
   /**
-   * creates a new graph for drawing.
+   * Creates a new graph for drawing.
    * @param graphname, the file name with dot format will be generated
    */
   public DotGraph(String graphname) {
@@ -67,7 +68,7 @@ public class DotGraph implements Renderable{
   }
   
   /**
-   * generates the drawing on canvas to the dot file.
+   * Generates the drawing on canvas to the dot file.
    */
   public void plot() {
     try {
@@ -84,7 +85,10 @@ public class DotGraph implements Renderable{
   }
 
   /**
-   * draws a directed edge
+   * Draws a directed edge
+   * @param from, the source node
+   * @param to, the end node
+   * @return a graph edge
    */
   public DotGraphEdge drawEdge(String from, String to) {
 
@@ -107,6 +111,10 @@ public class DotGraph implements Renderable{
     return edge;
   }
 
+  /**
+   * Gets the graph node by name.
+   * @param name, unique name of the node.
+   */
   public DotGraphNode getNode(String name){
     DotGraphNode node = (DotGraphNode)nodes.get(name);
     if (node == null) {
@@ -117,7 +125,8 @@ public class DotGraph implements Renderable{
   }
 
   /**
-   * sets all node shapes, see the list of node shapes in DotGraphConstants.
+   * Sets all node shapes, see the list of node shapes in DotGraphConstants.
+   * @param shape, the node shape
    */
   public void setNodeShape(String shape){
     StringBuffer command = new StringBuffer("node [shape=");
@@ -127,7 +136,8 @@ public class DotGraph implements Renderable{
   }
 
   /**
-   * sets all node styles
+   * Sets all node styles
+   * @param style, the node style
    */
   public void setNodeStyle(String style){
     StringBuffer command = new StringBuffer("node [style=");
