@@ -34,8 +34,8 @@ import soot.options.Options;
  *
  *  <p><tt>ClassicCompleteUnitGraph</tt> attempts to duplicate the
  *  results that would have been produced by Soot's
- *  <code>CompleteUnitGraph</code> in releases up to Soot 2.0.1 (the
- *  one known discrepancy is that the 2.0.1
+ *  <code>CompleteUnitGraph</code> in releases up to Soot 2.1.0 (the
+ *  one known discrepancy is that the 2.1.0
  *  <code>CompleteUnitGraph</code> would include two edges joining one
  *  node to another 
  *  {@link Unit}s if the first node both branched to and fell through to

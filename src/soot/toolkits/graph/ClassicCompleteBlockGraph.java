@@ -34,7 +34,7 @@ import java.io.*;
  *
  *  <p> <tt>ClassicCompleteBlockGraph</tt> approximates the results
  *  that would have been produced by Soot's {@link CompleteBlockGraph}
- *  in releases up to Soot 2.0.1. It is included solely for testing
+ *  in releases up to Soot 2.1.0. It is included solely for testing
  *  purposes, and should not be used in actual analyses.  The approximation
  *  works not by duplicating the old {@link CompleteBlockGraph}'s logic,
  *  but by using {@link ClassicCompleteUnitGraph} as the basis for

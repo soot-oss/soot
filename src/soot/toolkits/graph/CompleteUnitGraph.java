@@ -43,7 +43,7 @@ import soot.toolkits.exceptions.PedanticThrowAnalysis;
  *  for backwards compatibility, but the graphs it produces are not
  *  necessarily identical to the graphs produced by the implementation of
  *  <code>CompleteUnitGraph</code> provided by versions of Soot
- *  up to and including release 2.0.1.  The known differences include:
+ *  up to and including release 2.1.0.  The known differences include:
  *
  *  <ul>
  * 
@@ -52,7 +52,7 @@ import soot.toolkits.exceptions.PedanticThrowAnalysis;
  *  implementation of <code>CompleteUnitGraph</code> will include
  *  edges from those branching {@link Unit}s to the {@link Trap}'s
  *  handler (since the branches are predecessors of an instruction which may
- *  throw an exception caught by the {@link Trap}.  The 2.0.1
+ *  throw an exception caught by the {@link Trap}.  The 2.1.0
  *  implementation of {@link CompleteUnitGraph} mistakenly omitted
  *  these edges.
  *
