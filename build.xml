@@ -60,4 +60,18 @@
             classpath="classes:${java.class.path}"
             />
     </target>
+
+    <target name="runtests" depends="buildtests">
+        <junit printsummary="yes">
+            <classpath>
+                <pathelement location="testclasses"/>
+                <pathelement path="${java.class.path}"/>
+            </classpath>
+
+            <formatter type="plain"/>
+            <batchtest>
+                <fileset dir="testclasses" includes="**/*.class"/>
+            </batchtest>
+        </junit>
+    </target>
 </project>
