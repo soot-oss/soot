@@ -305,6 +305,33 @@ interesting (a Jimple-based analysis could easily detect this
 particular case), once control flow gets more elaborate, the SSA-based
 analysis will really start to win out.
 
+Perhaps you would like to experiment with slightly less simple
+examples and see how well the Shimple optimization fares:
+
+public class ShimpleTest
+{
+   public boolean doIt, doIt2;
+
+   public int test2(){
+     int i = 1000;
+     int j = i;
+
+     while (doIt){
+         i = j;
+
+         while(doIt2)
+             j = i;
+
+         if(doIt2 != doIt)
+             i = 1000;
+         else
+             j = 1000;
+     }
+
+     return i;
+   }
+}
+
 
 Thanks and Credits
 ==================
@@ -333,6 +360,7 @@ navindra@cs.mcgill.ca <mailto:navindra@cs.mcgill.ca>.
 (a) Partial To-Do List
 
     * Implement more SSA-based analyses.
+    * Add timers and profiling code.
     * Make internal analyses more useful and generic for external use.
     * Adopt an Strategy-type pattern for SSA builder modules, etc.
     * Implement a Shimple parser.

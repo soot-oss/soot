@@ -343,7 +343,7 @@ propagated the constants to the Phi node and then noticed that the
 Phi node was useless (because it made a selection from identical
 values) and therefore trimmed it out.
 
-To really understand what is going on, you can look at the output from
+To understand what is really going on, you can look at the output from
 {\tt soot.Main -f shimple -p sop on} and {\tt soot.Main -f jimple
 --via-shimple -p shimple phi-elim-opt:none -p sop on} on this and
 other examples.
@@ -351,7 +351,36 @@ other examples.
 Although this example isn't sufficiently complex to be all that
 interesting (a Jimple-based analysis could easily detect and handle
 this particular case), once control flow gets more elaborate, the
-SSA-based analysis will really start to win out.
+SSA-based analysis will really start to win out.  
+
+Perhaps you would like to experiment with slightly less simple 
+examples and see how well the Shimple optimization fares:
+
+\begin{verbatim}
+public class ShimpleTest
+{
+   public boolean doIt, doIt2;
+
+   public int test2(){
+     int i = 1000;
+     int j = i;
+
+     while (doIt){
+         i = j;
+
+         while(doIt2)
+             j = i;
+
+         if(doIt2 != doIt)
+             i = 1000;
+         else
+             j = 1000;
+     }
+
+     return i;
+   }
+}
+\end{verbatim}
 
 \section{Thanks and Credits}
 
@@ -379,6 +408,7 @@ at
 
 \begin{itemize}
 \item Implement more SSA-based analyses.
+\item Add timers and profiling code.
 \item Make internal analyses more useful and generic for external use.
 \item Adopt an Strategy-type pattern for SSA builder modules, etc.
 \item Implement a Shimple parser.

@@ -74,7 +74,7 @@
                 dest.add(as.getLeftOp());
         }
 
-        <FONT COLOR=Firebrick>// Copy the out value to all branch boxes.
+        <FONT COLOR=Firebrick>// Copy the out value to the fallthrough box (don't need iterator)
 </FONT>        {
             <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>it</FONT> = fallOut.iterator();
             <FONT COLOR=Purple>while</FONT> (it.hasNext()) {
@@ -83,7 +83,7 @@
             }
         }
         
-        <FONT COLOR=Firebrick>// Copy the out value to the fallthrough box (don't need iterator)
+        <FONT COLOR=Firebrick>// Copy the out value to all branch boxes.
 </FONT>        {
             <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>it</FONT> = branchOuts.iterator();
             <FONT COLOR=Purple>while</FONT> (it.hasNext()) {
