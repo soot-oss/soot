@@ -32,32 +32,70 @@ public class SIOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Insert Null Checks --  */
+    /** Insert Null Checks --
+    
+     * .
+    
+     * As in StaticMethodBinder.
+     */
     public boolean insert_null_checks() {
         return soot.PhaseOptions.getBoolean( options, "insert-null-checks" );
     }
     
-    /** Insert Redundant Casts --  */
+    /** Insert Redundant Casts --
+    
+     * .
+    
+     * As in StaticMethodBinder.
+     */
     public boolean insert_redundant_casts() {
         return soot.PhaseOptions.getBoolean( options, "insert-redundant-casts" );
     }
     
-    /** Max Container Size --  */
+    /** Max Container Size --
+    
+     * .
+    
+     * Determines the maximum number of Jimple statements for a 
+     * container method. If a method has more than this number of 
+     * Jimple statements, then no methods will be inlined into it. 
+     * 
+     */
     public int max_container_size() {
         return soot.PhaseOptions.getInt( options, "max-container-size" );
     }
     
-    /** Max Inlinee Size --  */
+    /** Max Inlinee Size --
+    
+     * .
+    
+     * Determines the maximum number of Jimple statements for an 
+     * inlinee method. If a method has more than this number of Jimple 
+     * statements, then it will not be inlined into other methods. 
+     * 
+     */
     public int max_inlinee_size() {
         return soot.PhaseOptions.getInt( options, "max-inlinee-size" );
     }
     
-    /** Expansion Factor --  */
+    /** Expansion Factor --
+    
+     * .
+    
+     * Determines the maximum allowed expansion of a method. Inlining 
+     * will cause the method to grow by a factor of no more than 
+     * expansion-factor. 
+     */
     public float expansion_factor() {
         return soot.PhaseOptions.getFloat( options, "expansion-factor" );
     }
@@ -65,7 +103,12 @@ public class SIOptions
     public static final int allowed_modifier_changes_unsafe = 1;
     public static final int allowed_modifier_changes_safe = 2;
     public static final int allowed_modifier_changes_none = 3;
-    /** Allow Modifier Changes --  */
+    /** Allow Modifier Changes --
+    
+     * .
+    
+     * As in StaticMethodBinder.
+     */
     public int allowed_modifier_changes() {
         String s = soot.PhaseOptions.getString( options, "allowed-modifier-changes" );
         

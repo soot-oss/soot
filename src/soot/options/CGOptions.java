@@ -32,17 +32,44 @@ public class CGOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Safe forName -- Handle Class.forName() calls conservatively */
+    /** Safe forName --
+    
+     * Handle Class.forName() calls conservatively.
+    
+     * When a program calls Class.forName(), the named class is 
+     * resolved, and its static initializer executed. In many cases, it 
+     * cannot be determined statically which class will be loaded, and 
+     * which static initializer executed. When this option is set to 
+     * true, Soot will conservatively assume that any static 
+     * initializer could be executed. This may make the call graph very 
+     * large. When this option is set to false, any calls to 
+     * Class.forName() for which the class cannot be determined 
+     * statically are not assumed to call any static initializers. 
+     */
     public boolean safe_forname() {
         return soot.PhaseOptions.getBoolean( options, "safe-forname" );
     }
     
-    /** Verbose -- Print warnings about where the call graph may be incomplete */
+    /** Verbose --
+    
+     * Print warnings about where the call graph may be incomplete.
+    
+     * Due to the effects of native methods and reflection, it may not 
+     * always be possible to construct a fully conservative call graph. 
+     * Setting this option to true causes Soot to point out the parts 
+     * of the call graph that may be incomplete, so that they can be 
+     * checked by hand. 
+     */
     public boolean verbose() {
         return soot.PhaseOptions.getBoolean( options, "verbose" );
     }

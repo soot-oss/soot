@@ -32,12 +32,24 @@ public class FRWOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Maximum number of fields --  */
+    /** Maximum number of fields --
+    
+     * .
+    
+     * If a statement reads/writes more than this number of fields, no 
+     * tag will be produced for it, in order to keep the size of the 
+     * tags reasonable. 
+     */
     public int threshold() {
         return soot.PhaseOptions.getInt( options, "threshold" );
     }

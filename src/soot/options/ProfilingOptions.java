@@ -32,12 +32,22 @@ public class ProfilingOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Not Main Entry --  */
+    /** Not Main Entry --
+    
+     * .
+    
+     * 
+     */
     public boolean notmainentry() {
         return soot.PhaseOptions.getBoolean( options, "notmainentry" );
     }

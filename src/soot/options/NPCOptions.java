@@ -32,17 +32,40 @@ public class NPCOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Only Array Ref --  */
+    /** Only Array Ref --
+    
+     * .
+    
+     * By default, all bytecodes that need null pointer checks 
+     * are annotated with the analysis result. When this option is 
+     * set to true, Soot will annotate only array-referencing 
+     * bytecodes with null pointer check information; other bytecodes, 
+     * such as getfield and putfield, will not be annotated. 
+     * 
+     */
     public boolean only_array_ref() {
         return soot.PhaseOptions.getBoolean( options, "only-array-ref" );
     }
     
-    /** Profiling -- Insert profiling instructions counting the number of safe null pointer accesses. */
+    /** Profiling --
+    
+     * Insert profiling instructions counting the number of safe null 
+     * pointer accesses..
+    
+     * If this option is true, the analysis inserts profiling 
+     * instructions counting the number of eliminated safe null pointer 
+     * checks at runtime. This is only for profiling purpose. 						
+     */
     public boolean profiling() {
         return soot.PhaseOptions.getBoolean( options, "profiling" );
     }

@@ -32,17 +32,32 @@ public class CPOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Only Regular Locals --  */
+    /** Only Regular Locals --
+    
+     * .
+    
+     * Copy propagation only occurs on the ``regular'' locals.
+     */
     public boolean only_regular_locals() {
         return soot.PhaseOptions.getBoolean( options, "only-regular-locals" );
     }
     
-    /** Only Stack Locals --  */
+    /** Only Stack Locals --
+    
+     * .
+    
+     * Copy propagation only occurs on the ``stack'' locals.
+     */
     public boolean only_stack_locals() {
         return soot.PhaseOptions.getBoolean( options, "only-stack-locals" );
     }

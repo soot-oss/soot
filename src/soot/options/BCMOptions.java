@@ -32,12 +32,22 @@ public class BCMOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Naive Side Effect Tester --  */
+    /** Naive Side Effect Tester --
+    
+     * .
+    
+     * 
+     */
     public boolean naive_side_effect() {
         return soot.PhaseOptions.getBoolean( options, "naive-side-effect" );
     }

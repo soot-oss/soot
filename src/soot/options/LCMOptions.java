@@ -32,17 +32,33 @@ public class LCMOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Unroll --  */
+    /** Unroll --
+    
+     * .
+    
+     * if true, loop inversion is performed before doing the 
+     * transformation. 
+     */
     public boolean unroll() {
         return soot.PhaseOptions.getBoolean( options, "unroll" );
     }
     
-    /** Naive Side Effect Tester --  */
+    /** Naive Side Effect Tester --
+    
+     * .
+    
+     * 
+     */
     public boolean naive_side_effect() {
         return soot.PhaseOptions.getBoolean( options, "naive-side-effect" );
     }
@@ -50,7 +66,18 @@ public class LCMOptions
     public static final int safe_safe = 1;
     public static final int safe_medium = 2;
     public static final int safe_unsafe = 3;
-    /** Safe --  */
+    /** Safe --
+    
+     * .
+    
+     * This option controls how fields and exception-throwing 
+     * statements are treated. safe is safe, but only considers 
+     * additions, subtractions and multiplications. medium is unsafe in 
+     * multi-threaded environment, as already performed field accesses 
+     * are reused. unsafe moves exception-throwing statements, and 
+     * reorders them. They are potentially moved out of 
+     * try-catch-blocks. 
+     */
     public int safe() {
         String s = soot.PhaseOptions.getString( options, "safe" );
         

@@ -32,17 +32,40 @@ public class SMBOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Insert Null Checks --  */
+    /** Insert Null Checks --
+    
+     * .
+    
+     * The receiver object is checked for nullness before the target 
+     * method is invoked. If the target is null, then a NullPointer 
+     * exception is thrown. 
+     */
     public boolean insert_null_checks() {
         return soot.PhaseOptions.getBoolean( options, "insert-null-checks" );
     }
     
-    /** Insert Redundant Casts --  */
+    /** Insert Redundant Casts --
+    
+     * .
+    
+     * Inserts extra casts for the verifier. The verifier will 
+     * complain if the target uses `this' (so we have to pass an extra 
+     * parameter), and the argument passed to the method is not the 
+     * same type. For instance, Bottle.pricestatic is a method which 
+     * takes a Cost object, and Cost is an interface implemented by 
+     * Bottle. We must then cast the Cost to a Bottle before passing 
+     * it to pricestatic. 
+     */
     public boolean insert_redundant_casts() {
         return soot.PhaseOptions.getBoolean( options, "insert-redundant-casts" );
     }
@@ -50,7 +73,17 @@ public class SMBOptions
     public static final int allowed_modifier_changes_unsafe = 1;
     public static final int allowed_modifier_changes_safe = 2;
     public static final int allowed_modifier_changes_none = 3;
-    /** Allow Modifier Changes --  */
+    /** Allow Modifier Changes --
+    
+     * .
+    
+     * Determines what changes in visibility modifiers are allowed. 
+     * ``unsafe'' modifies the visibility on code so that all inlining 
+     * is permitted; some IllegalAccessErrors may be missed. ``safe'' 
+     * preserves the exact meaning of the analysed program, and 
+     * ``none'' changes no modifiers whatsoever. 
+     * 
+     */
     public int allowed_modifier_changes() {
         String s = soot.PhaseOptions.getString( options, "allowed-modifier-changes" );
         

@@ -32,12 +32,24 @@ public class CHAOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Verbose -- Print statistics about the resulting call graph */
+    /** Verbose --
+    
+     * Print statistics about the resulting call graph.
+    
+     * Setting this option to true causes Soot to print out statistics 
+     * about the call graph computed by this phase, such as the number 
+     * of methods determined to be reachable.
+     */
     public boolean verbose() {
         return soot.PhaseOptions.getBoolean( options, "verbose" );
     }

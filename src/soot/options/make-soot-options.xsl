@@ -368,25 +368,37 @@ public class <xsl:copy-of select="$filename"/>
         this.options = options;
     }
     <xsl:for-each select="boolopt|section/boolopt"><!---->
-    /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
+    /** <xsl:value-of select="name"/> --
+    <xsl:call-template name="wrap-comment"><xsl:with-param name="text" select="short_desc"/></xsl:call-template>.
+    <xsl:call-template name="wrap-comment"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>
+     */
     public boolean <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
         return soot.PhaseOptions.getBoolean( options, "<xsl:value-of select="alias"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="intopt|section/intopt"><!---->
-    /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
+    /** <xsl:value-of select="name"/> --
+    <xsl:call-template name="wrap-comment"><xsl:with-param name="text" select="short_desc"/></xsl:call-template>.
+    <xsl:call-template name="wrap-comment"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>
+     */
     public int <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
         return soot.PhaseOptions.getInt( options, "<xsl:value-of select="alias"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="flopt|section/flopt"><!---->
-    /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
+    /** <xsl:value-of select="name"/> --
+    <xsl:call-template name="wrap-comment"><xsl:with-param name="text" select="short_desc"/></xsl:call-template>.
+    <xsl:call-template name="wrap-comment"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>
+     */
     public float <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
         return soot.PhaseOptions.getFloat( options, "<xsl:value-of select="alias"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="stropt|section/stropt"><!---->
-    /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
+    /** <xsl:value-of select="name"/> --
+    <xsl:call-template name="wrap-comment"><xsl:with-param name="text" select="short_desc"/></xsl:call-template>.
+    <xsl:call-template name="wrap-comment"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>
+     */
     public String <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
         return soot.PhaseOptions.getString( options, "<xsl:value-of select="alias"/>" );
     }
@@ -396,7 +408,10 @@ public class <xsl:copy-of select="$filename"/>
         <xsl:for-each select="value"><!---->
     public static final int <xsl:value-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/> = <xsl:number/>;<!---->
         </xsl:for-each>
-    /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
+    /** <xsl:value-of select="name"/> --
+    <xsl:call-template name="wrap-comment"><xsl:with-param name="text" select="short_desc"/></xsl:call-template>.
+    <xsl:call-template name="wrap-comment"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>
+     */
     public int <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
         String s = soot.PhaseOptions.getString( options, "<xsl:value-of select="alias"/>" );
         <xsl:for-each select="value"><!---->
@@ -469,4 +484,44 @@ public class <xsl:copy-of select="$filename"/>
     </xsl:for-each>
     }
   </xsl:template>
+
+
+
+<!-- code to justify comments -->
+  <xsl:template name="wrap-comment">
+    <xsl:param name="text"/>
+    <xsl:call-template name="wrap-comment-guts">
+      <xsl:with-param name="text" select="translate($text,'&#10;',' ')"/>
+      <xsl:with-param name="width" select='0'/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template name="wrap-comment-guts">
+    <xsl:param name="text"/>
+    <xsl:param name="width"/>
+    <xsl:variable name="print" select="concat(substring-before(concat($text,' '),' '),' ')"/>
+    <xsl:choose>
+      <xsl:when test="string-length($print) > number($width)">
+      <xsl:text>
+     * </xsl:text>
+          <xsl:call-template name="wrap-comment-guts">
+            <xsl:with-param name="text" select="$text"/>
+            <xsl:with-param name="width" select='65'/>
+          </xsl:call-template>
+       </xsl:when>
+       <xsl:otherwise>
+        <xsl:copy-of select="substring($print,1,string-length($print)-1)"/>
+        <xsl:if test="contains($text,' ')">
+          <xsl:if test="string-length($print) > 1">
+            <xsl:text> </xsl:text>
+          </xsl:if>
+          <xsl:call-template name="wrap-comment-guts">
+            <xsl:with-param name="text" select="substring-after($text,' ')"/>
+            <xsl:with-param name="width" select="number($width) - string-length($print)"/>
+          </xsl:call-template>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
 </xsl:stylesheet>

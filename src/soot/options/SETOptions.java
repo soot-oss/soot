@@ -32,12 +32,26 @@ public class SETOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Build naive dependence graph --  */
+    /** Build naive dependence graph --
+    
+     * .
+    
+     * When set to true, the dependence graph is built with a node for 
+     * each statement, without merging the nodes for equivalent 
+     * statements. The purpose of this switch is to make it possible to 
+     * measure the effect of merging nodes for equivalent statements on 
+     * the size of the dependence graph.
+     */
     public boolean naive() {
         return soot.PhaseOptions.getBoolean( options, "naive" );
     }

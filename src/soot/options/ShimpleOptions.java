@@ -32,25 +32,57 @@ public class ShimpleOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Naive Phi Node Elimination -- If enabled, no pre- or post- optimizations are
-            applied before eliminating Phi nodes. */
+    /** Naive Phi Node Elimination --
+    
+     * If enabled, no pre- or post- optimizations are 
+     * applied before eliminating Phi nodes..
+    
+     * If set to true, neither pre-optimization nor 
+     * post-optimization will be applied to the Phi elimination 
+     * process. This is useful for monitoring and understanding 
+     * the behaviour of Shimple optimizations or transformations. 
+     * Note that setting this option to true takes precedence 
+     * over other Phi elimination options.
+     */
     public boolean naive_phi_elimination() {
         return soot.PhaseOptions.getBoolean( options, "naive-phi-elimination" );
     }
     
-    /** Pre-optimize Phi Elimination -- If enabled, some optimizations are applied
-            before Phi nodes are eliminated. */
+    /** Pre-optimize Phi Elimination --
+    
+     * If enabled, some optimizations are applied before 
+     * Phi nodes are eliminated..
+    
+     * If set to true, some recommended optimizations such as 
+     * dead code elimination and aggregation are applied 
+     * before Phi node elimination. This does not appear to be as 
+     * effective as post-optimization, but the option is provided 
+     * for future testing and investigation.
+     */
     public boolean pre_optimize_phi_elimination() {
         return soot.PhaseOptions.getBoolean( options, "pre-optimize-phi-elimination" );
     }
     
-    /** Post-optimize Phi Elimination -- If enabled, some optimizations are applied after
-          Phi nodes are eliminated. */
+    /** Post-optimize Phi Elimination --
+    
+     * If enabled, some optimizations are applied after Phi 
+     * nodes are eliminated..
+    
+     * Applies recommended optimizations such as dead code 
+     * elimination and aggregation after Phi node elimination. 
+     * This appears to be more effective than 
+     * pre-optimization.
+     */
     public boolean post_optimize_phi_elimination() {
         return soot.PhaseOptions.getBoolean( options, "post-optimize-phi-elimination" );
     }

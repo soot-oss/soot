@@ -32,12 +32,24 @@ public class JBOptions
         this.options = options;
     }
     
-    /** Enabled --  */
+    /** Enabled --
+    
+     * .
+    
+     * 
+     */
     public boolean enabled() {
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Use Original Names --  */
+    /** Use Original Names --
+    
+     * .
+    
+     * Soot attempts to find and use the original names from the 
+     * method source. If this is not specified, Soot gives standard 
+     * names to local variables, according to the variable type. 
+     */
     public boolean use_original_names() {
         return soot.PhaseOptions.getBoolean( options, "use-original-names" );
     }
