@@ -829,7 +829,7 @@ public class SootClass
             File tempFile = new File(outputDirWithSep + this.getName() + ".jasmin");
  
             FileOutputStream streamOut = new FileOutputStream(tempFile);
-            PrintWriter writerOut = new PrintWriter(streamOut);
+            PrintWriter writerOut = new EscapedPrintWriter(streamOut);
 
             if(containsBafBody())
                 new ca.mcgill.sable.soot.baf.JasminClass(this).print(writerOut);

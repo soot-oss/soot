@@ -114,7 +114,7 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
     protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
         StringBuffer buffer = new StringBuffer();
-        String endOfLine = (indentation.equals("")) ? " " : "\n";
+        String endOfLine = (indentation.equals("")) ? " " : StringTools.lineSeparator;
         
         buffer.append(indentation + "tableswitch" + endOfLine);
             

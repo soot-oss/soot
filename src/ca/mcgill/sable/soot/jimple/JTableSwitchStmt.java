@@ -138,7 +138,7 @@ public class JTableSwitchStmt extends AbstractStmt
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         StringBuffer buffer = new StringBuffer();
-        String endOfLine = (indentation.equals("")) ? " " : "\n";
+        String endOfLine = (indentation.equals("")) ? " " : StringTools.lineSeparator;
         
         buffer.append(indentation + "tableswitch(" + ((isBrief) ? ((ToBriefString) keyBox.getValue()).toBriefString() :
             keyBox.getValue().toString()) + ")" + endOfLine);

@@ -99,7 +99,7 @@ public class StringConstant extends Constant implements Switchable, ToBriefStrin
 
     public String toString()
     {
-        return "\"" + value + "\"";
+        return StringTools.getQuotedStringOf(value);
     }
 
     public String toBriefString()

@@ -759,9 +759,14 @@ public class JasminClass
             public void caseNopInst(NopInst i) { emit ("nop", 0); }
 
             public void caseEnterMonitorInst(EnterMonitorInst i) 
-                { emit ("entermonitor", -1); }
+            { 
+                emit ("monitorenter", -1); 
+            }
+            
             public void caseExitMonitorInst(ExitMonitorInst i) 
-                { emit ("exitmonitor", 0); }
+            { 
+                emit ("monitorexit", -1); 
+            }
 
             public void caseGotoInst(GotoInst i)
             { 
@@ -788,22 +793,7 @@ public class JasminClass
                 }
                 else if (i.getConstant() instanceof StringConstant)
                 {
-                    StringBuffer src = new StringBuffer(((StringConstant)(i.getConstant())).value);
-                    StringBuffer dest = new StringBuffer();
-
-                    for(int j = 0; j < src.length(); j++)
-                        {
-                            if(src.charAt(j) == '\"')
-                                dest.append("\\\"");
-                            else if(src.charAt(j) == '\'')
-                                dest.append("\\\'");
-                            else if(src.charAt(j) == '\\')
-                                dest.append("\\\\");
-                            else
-                                dest.append(src.charAt(j));
-                        }
-                    
-                    emit("ldc " + '"' + dest.toString() + '"', 1);
+                    emit("ldc " + i.getConstant().toString(), 1);
                 }
                 else if (i.getConstant() instanceof DoubleConstant)
                 {

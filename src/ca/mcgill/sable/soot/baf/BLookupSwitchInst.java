@@ -130,7 +130,7 @@ public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst
     protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
         StringBuffer buffer = new StringBuffer();
-        String endOfLine = (indentation.equals("")) ? " " : "\n";
+        String endOfLine = (indentation.equals("")) ? " " : StringTools.lineSeparator;
         
         buffer.append(indentation + "lookupswitch" + endOfLine);
             

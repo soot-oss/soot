@@ -2918,22 +2918,7 @@ public class JasminClass
 
             public void caseStringConstant(StringConstant v)
             {
-                StringBuffer src = new StringBuffer(v.value);
-                StringBuffer dest = new StringBuffer();
-
-                for(int i = 0; i < src.length(); i++)
-                {
-                    if(src.charAt(i) == '\"')
-                        dest.append("\\\"");
-                    else if(src.charAt(i) == '\'')
-                        dest.append("\\\'");
-                    else if(src.charAt(i) == '\\')
-                        dest.append("\\\\");
-                    else
-                        dest.append(src.charAt(i));
-                }
-
-                emit("ldc " + '"' + dest.toString() + '"', 1);
+                emit("ldc " + v.toString(), 1);
             }
 
             public void caseSubExpr(SubExpr v)
