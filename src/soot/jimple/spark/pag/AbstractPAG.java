@@ -36,10 +36,6 @@ import soot.tagkit.*;
 public abstract class AbstractPAG implements PointsToAnalysis {
     public AbstractPAG( AbstractSparkOptions opts ) {
         this.opts = opts;
-        typeManager = new TypeManager();
-        if( !opts.ignore_types() ) {
-            typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
-        }
         if( opts.add_tags() ) {
             nodeToTag = new HashMap();
         }
@@ -372,7 +368,7 @@ public abstract class AbstractPAG implements PointsToAnalysis {
     private Map valToAllocNode = new HashMap(1000);
     private OnFlyCallGraph ofcg;
     private ArrayList dereferences = new ArrayList();
-    private AbstractTypeManager typeManager;
+    protected AbstractTypeManager typeManager;
     private LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
     public int maxFinishNumber = 0;
     private Map nodeToTag;

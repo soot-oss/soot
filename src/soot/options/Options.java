@@ -1136,54 +1136,6 @@ public class Options extends OptionsBase {
                 +padOpt( "simplify-offline (false)", "Collapse single-entry subgraphs of the PAG" )
                 +padOpt( "simplify-sccs (false)", "Collapse strongly-connected components of the PAG" )
                 +padOpt( "ignore-types-for-sccs (false)", "Ignore declared types when determining node equivalence for SCCs" )
-                +padOpt( "propagator", "Select propagation algorithm" )
-                +padVal( "iter", "Simple iterative algorithm" )
-                
-                +padVal( "worklist (default)", "Fast, worklist-based algorithm" )
-                
-                +padVal( "cycle", "Unfinished on-the-fly cycle detection algorithm" )
-                
-                +padVal( "merge", "Unfinished field reference merging algorithms" )
-                
-                +padVal( "alias", "Alias-edge based algorithm" )
-                
-                +padVal( "none", "Disable propagation" )
-                
-                +padOpt( "set-impl", "Select points-to set implementation" )
-                +padVal( "hash", "Use Java HashSet" )
-                
-                +padVal( "bit", "Bit vector" )
-                
-                +padVal( "hybrid", "Hybrid representation using bit vector for large sets" )
-                
-                +padVal( "array", "Sorted array representation" )
-                
-                +padVal( "double (default)", "Double set representation for incremental propagation" )
-                
-                +padVal( "shared", "Shared bit-vector representation" )
-                
-                +padOpt( "double-set-old", "Select implementation of points-to set for old part of double set" )
-                +padVal( "hash", "Use Java HashSet" )
-                
-                +padVal( "bit", "Bit vector" )
-                
-                +padVal( "hybrid (default)", "Hybrid representation using bit vector for large sets" )
-                
-                +padVal( "array", "Sorted array representation" )
-                
-                +padVal( "shared", "Shared bit-vector representation" )
-                
-                +padOpt( "double-set-new", "Select implementation of points-to set for new part of double set" )
-                +padVal( "hash", "Use Java HashSet" )
-                
-                +padVal( "bit", "Bit vector" )
-                
-                +padVal( "hybrid (default)", "Hybrid representation using bit vector for large sets" )
-                
-                +padVal( "array", "Sorted array representation" )
-                
-                +padVal( "shared", "Shared bit-vector representation" )
-                
                 +padOpt( "dump-html (false)", "Dump pointer assignment graph to HTML for debugging" )
                 +padOpt( "dump-pag (false)", "Dump pointer assignment graph for other solvers" )
                 +padOpt( "dump-solution (false)", "Dump final solution for comparison with other solvers" )
@@ -1696,10 +1648,6 @@ public class Options extends OptionsBase {
                 +"simplify-offline "
                 +"simplify-sccs "
                 +"ignore-types-for-sccs "
-                +"propagator "
-                +"set-impl "
-                +"double-set-old "
-                +"double-set-new "
                 +"dump-html "
                 +"dump-pag "
                 +"dump-solution "
@@ -2086,10 +2034,6 @@ public class Options extends OptionsBase {
               +"simplify-offline:false "
               +"simplify-sccs:false "
               +"ignore-types-for-sccs:false "
-              +"propagator:worklist "
-              +"set-impl:double "
-              +"double-set-old:hybrid "
-              +"double-set-new:hybrid "
               +"dump-html:false "
               +"dump-pag:false "
               +"dump-solution:false "

@@ -36,6 +36,10 @@ import soot.tagkit.*;
 public class PAG extends AbstractPAG {
     public PAG( final SparkOptions opts ) {
         super( opts );
+        typeManager = new TypeManager(this);
+        if( !opts.ignore_types() ) {
+            typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
+        }
         switch( opts.set_impl() ) {
             case SparkOptions.set_impl_hash:
                 setFactory = HashPointsToSet.getFactory();

@@ -196,11 +196,10 @@ public class Relation
         PhysicalDomain[] resphys = new PhysicalDomain[domains.length-1];
         int j = 0;
         for( int i = 0; i < domains.length; i++ ) {
-            if( !domains[i].equals(remove) ) {
-                resdomains[j] = domains[i];
-                resphys[j] = phys[j];
-                j++;
-            }
+            if( domains[i].equals(remove) ) continue;
+            resdomains[j] = domains[i];
+            resphys[j] = phys[i];
+            j++;
         }
         Relation result = new Relation( resdomains, resphys );
         result.bdd = JBuddy.bdd_exist( bdd, JBuddy.fdd_ithset( phys[find(remove)].var() ) );
@@ -343,13 +342,28 @@ public class Relation
         eqRelprod( r1, eqs1, r2, eqs2, res, bases, doms );
     }
 
-    public int size() {
-        if( CHECK ) {
-            if( domains.length != 1 ) throw new RuntimeException( "Can only get size over single-column relation" );
+    public long size() {
+        if( domains.length == 0 ) {
+            return 1L;
         }
-        return JBuddy.fdd_satcount( bdd, phys[0].var() );
+        int var = phys[0].var();
+        Relation firstDomain = projectDownTo( domains[0] );
+        int size = JBuddy.fdd_satcount( firstDomain.bdd, var );
+        int[] sats = new int[size];
+        int confirmsize = JBuddy.fdd_allsat( firstDomain.bdd, var, sats );
+        if( size != confirmsize ) {
+            String sizes = "size: "+size+" confirmsize: "+confirmsize;
+            JBuddy.bdd_printset( firstDomain.bdd );
+            throw new RuntimeException(sizes);
+        }
+        long ret = 0;
+        for( int i = 0; i < sats.length; i++ ) {
+            ret += restrict( domains[0], sats[i] )
+                .project( domains[0] )
+                    .size();
+        }
+        return ret;
     }
-
     private void toString( String prefix, StringBuffer b ) {
         if( domains.length == 0 ) {
             b.append( prefix+"\n" );
@@ -418,7 +432,12 @@ public class Relation
             return numberer.get(sats[cur++]);
         }
     }
+    public void makeEmpty() {
+        JBuddy.bdd_delref( bdd );
+        bdd = JBuddy.bdd_false();
+    }
     public void makeFull() {
+        JBuddy.bdd_delref( bdd );
         bdd = JBuddy.bdd_true();
     }
     public boolean isFull() { 

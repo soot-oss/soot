@@ -31,6 +31,9 @@ import soot.options.SparkOptions;
  * @author Ondrej Lhotak
  */
 public final class TypeManager extends AbstractTypeManager {
+    public TypeManager( AbstractPAG pag ) {
+        super(pag);
+    }
     final public BitVector get( Type type ) {
         if( type == null ) return null;
         while(true) {
@@ -63,9 +66,8 @@ public final class TypeManager extends AbstractTypeManager {
     final public void clearTypeMask() {
         typeMask = null;
     }
-    final public void makeTypeMask( AbstractPAG pag ) {
+    final public void makeTypeMask() {
         RefType.v( "java.lang.Class" );
-        this.pag = (PAG) pag;
         typeMask = new LargeNumberedMap( Scene.v().getTypeNumberer() );
         if( fh == null ) return;
 

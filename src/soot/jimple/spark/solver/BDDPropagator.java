@@ -76,7 +76,7 @@ public final class BDDPropagator extends Propagator {
                                                      h1,   fd,  v2 );
         final Relation loadAss = loadsFromHeap.sameDomains();
 
-
+        final BDDTypeManager typeManager = (BDDTypeManager) pag.getTypeManager();
 
         pointsTo.eqUnion( pointsTo, alloc );
         newPointsTo.eqUnion( newPointsTo, pointsTo );
@@ -90,7 +90,7 @@ public final class BDDPropagator extends Propagator {
                                        var, edgeSet,     dst,
                                        obj, newPointsTo, obj );
                 newPointsTo.eqMinus( newPointsTo, pointsTo );
-                // newPointsTo = newPointsTo & typeFilter;
+                newPointsTo.eqIntersect( newPointsTo, typeManager.get() );
                 pointsTo.eqUnion( pointsTo, newPointsTo );
 
                 if( pag.getOpts().verbose() ) {
@@ -152,7 +152,7 @@ public final class BDDPropagator extends Propagator {
             newPointsTo.eqMinus( newPointsTo, pointsTo );
     
             // apply typeFilter
-            //newPointsTo = typeFilter & newPointsTo;
+            newPointsTo.eqIntersect( newPointsTo, typeManager.get() );
             pointsTo.eqUnion( pointsTo, newPointsTo );
 
             if( pag.getOpts().verbose() ) {

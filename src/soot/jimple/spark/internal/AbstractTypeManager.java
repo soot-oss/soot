@@ -31,6 +31,9 @@ import soot.options.SparkOptions;
  * @author Ondrej Lhotak
  */
 public abstract class AbstractTypeManager {
+    public AbstractTypeManager( AbstractPAG pag ) {
+        this.pag = pag;
+    }
     abstract public void clearTypeMask();
     final public boolean castNeverFails( Type src, Type dst ) {
         if( fh == null ) return true;
@@ -44,7 +47,7 @@ public abstract class AbstractTypeManager {
         if( dst instanceof AnySubType ) throw new RuntimeException( "oops src="+src+" dst="+dst );
         return fh.canStoreType( src, dst );
     }
-    abstract public void makeTypeMask( AbstractPAG pag );
+    abstract public void makeTypeMask();
 
     public void setFastHierarchy( FastHierarchy fh ) { this.fh = fh; }
     public FastHierarchy getFastHierarchy() { return fh; }

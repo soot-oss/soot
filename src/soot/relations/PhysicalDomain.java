@@ -37,6 +37,7 @@ public class PhysicalDomain
         this.name = name;
     }
     private int bits;
+    public int bits() { return bits; }
     private int var;
     private String name;
     public String toString() {

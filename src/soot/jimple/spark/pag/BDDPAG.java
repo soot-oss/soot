@@ -38,11 +38,17 @@ import soot.jbuddy.JBuddy;
 public class BDDPAG extends AbstractPAG {
     public BDDPAG( final BDDSparkOptions opts ) {
         super( opts );
-        PhysicalDomain[] interleaved = { v1, v2, fd, h1, h2 };
+
+        typeManager = new BDDTypeManager(this);
+        if( !opts.ignore_types() ) {
+            typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
+        }
+
+        PhysicalDomain[] interleaved = { v1, v2, fd, h1, h2, t1, t2 };
         PhysicalDomain[] v1v2 = { v1, v2 };
-        Object[] order = { fd, v1v2, h1, h2 };
+        Object[] order = { fd, v1v2, h1, h2, t1, t2 };
         // Object[] order = { interleaved };
-        PhysicalDomain.setOrder( order, true );
+        //PhysicalDomain.setOrder( order, true );
     }
 
     public PointsToSet reachingObjects( Local l ) {
@@ -108,11 +114,21 @@ public class BDDPAG extends AbstractPAG {
 
     private BDDSparkOptions opts;
 
-    public PhysicalDomain v1 = new PhysicalDomain(18,"V1");
-    public PhysicalDomain v2 = new PhysicalDomain(18,"V2");
-    public PhysicalDomain fd = new PhysicalDomain(13,"FD");
-    public PhysicalDomain h1 = new PhysicalDomain(14,"H1");
-    public PhysicalDomain h2 = new PhysicalDomain(14,"H2");
+    public PhysicalDomain v1 = new PhysicalDomain(20,"V1");
+    public PhysicalDomain v2 = new PhysicalDomain(20,"V2");
+    public PhysicalDomain fd = new PhysicalDomain(20,"FD");
+    public PhysicalDomain h1 = new PhysicalDomain(20,"H1");
+    public PhysicalDomain h2 = new PhysicalDomain(20,"H2");
+    public PhysicalDomain t1 = new PhysicalDomain(20,"T1");
+    public PhysicalDomain t2 = new PhysicalDomain(20,"T2");
+
+    //public PhysicalDomain v1 = new PhysicalDomain(18,"V1");
+    //public PhysicalDomain v2 = new PhysicalDomain(18,"V2");
+    //public PhysicalDomain fd = new PhysicalDomain(13,"FD");
+    //public PhysicalDomain h1 = new PhysicalDomain(14,"H1");
+    //public PhysicalDomain h2 = new PhysicalDomain(14,"H2");
+    //public PhysicalDomain t1 = new PhysicalDomain(12,"T1");
+    //public PhysicalDomain t2 = new PhysicalDomain(12,"T2");
 
     public Domain var = new Domain( getVarNodeNumberer(), "var" );
     public Domain src = new Domain( getVarNodeNumberer(), "src" );

@@ -56,7 +56,7 @@ public class BDDSparkTransformer extends AbstractSparkTransformer
 
         // Build type masks
         Date startTM = new Date();
-        // NYI
+        pag.getTypeManager().makeTypeMask();
         Date endTM = new Date();
         reportTime( "Type masks", startTM, endTM );
         if( opts.force_gc() ) doGC();
