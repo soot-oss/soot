@@ -64,12 +64,12 @@ SYNOPSIS}.
   <xsl:variable name="argLabel">
     <xsl:choose>
       <xsl:when test="name()='boolopt' or name()='macroopt'"></xsl:when>
-      <xsl:when test="count(./set_arg_label)>0">{ \it <xsl:value-of select="./set_arg_label"/>}</xsl:when>
+      <xsl:when test="set_arg_label">{ \it <xsl:value-of select="set_arg_label"/>}</xsl:when>
       <xsl:otherwise>{ \it arg}</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   \item[<xsl:for-each select="alias">
-  {\tt -<xsl:if test="string-length(string(.))>1">-</xsl:if><xsl:value-of select="."/>}<xsl:value-of select="$argLabel"/><xsl:if test="count(./following-sibling::alias) > 0"><xsl:text>, </xsl:text></xsl:if>
+  {\tt -<xsl:value-of select="."/>}<xsl:value-of select="$argLabel"/><xsl:if test="following-sibling::alias"><xsl:text>, </xsl:text></xsl:if>
   </xsl:for-each>]
 <xsl:if test="default|value/default">
 (default value: {\tt <xsl:choose>  
@@ -89,7 +89,7 @@ SYNOPSIS}.
 Possible values:\\
 \begin{longtable}{p{1in}p{4in}}
 <xsl:for-each select="value">
-  <xsl:for-each select="alias">{\tt <xsl:value-of select="."/>}<xsl:if test="count(./following-sibling::alias) > 0">,</xsl:if><xsl:text> </xsl:text></xsl:for-each>
+  <xsl:for-each select="alias">{\tt <xsl:value-of select="."/>}<xsl:if test="following-sibling::alias">,</xsl:if><xsl:text> </xsl:text></xsl:for-each>
 &amp;
 <xsl:apply-templates mode="to_latex" select="long_desc"/>\\
 </xsl:for-each>
@@ -101,7 +101,7 @@ Possible values:\\
 
 <xsl:template match="use_arg_label" mode="to_latex">
   <xsl:choose>
-    <xsl:when test="count(ancestor::*/set_arg_label)!=0">{\it <xsl:value-of select="ancestor::*/set_arg_label"/>}</xsl:when>
+    <xsl:when test="ancestor::*/set_arg_label">{\it <xsl:value-of select="ancestor::*/set_arg_label"/>}</xsl:when>
     <xsl:otherwise>{\it arg}</xsl:otherwise>
   </xsl:choose>
 </xsl:template>

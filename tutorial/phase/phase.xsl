@@ -132,7 +132,7 @@ options.
 \item[<xsl:value-of select="name"/> ({\tt <xsl:value-of select="alias"/>})]
 (default value: {\tt <xsl:choose>
 <xsl:when test="default"><xsl:value-of select="default"/></xsl:when>
-<xsl:when test="value/default"><xsl:for-each select="value"><xsl:if test="default"><xsl:value-of select="alias"/></xsl:if></xsl:for-each></xsl:when>
+<xsl:when test="value/default"><xsl:value-of select="value/default/../alias"/></xsl:when>
 <xsl:otherwise>false</xsl:otherwise>
 </xsl:choose>})
 

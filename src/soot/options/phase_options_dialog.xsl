@@ -343,7 +343,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		<xsl:for-each select="/options/section">
 		<xsl:call-template name="compInit">
-		<xsl:with-param name="description" select="short_desc"/>
+                <xsl:with-param name="description"><xsl:apply-templates select="short_desc"/></xsl:with-param>
 		<xsl:with-param name="subParent" select="translate(name[last()],'-. ','___')"/>
 		<xsl:with-param name="name" select="name"/>
 		<xsl:with-param name="callName" select="translate(name[last()],'-. ','___')"/>
@@ -355,7 +355,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		<xsl:for-each select="(phase|radio_phase)">
 		
 		<xsl:call-template name="compInit">
-		<xsl:with-param name="description" select="short_desc"/>
+                <xsl:with-param name="description"><xsl:apply-templates select="short_desc"/></xsl:with-param>
 		<xsl:with-param name="subParent" select="translate(alias[last()],'-. ','___')"/>
 		<xsl:with-param name="parentAlias" select="$phaseOptAlias"/>
 		<xsl:with-param name="subParentAlias" select="alias"/>
@@ -368,7 +368,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		<xsl:for-each select="sub_phase">
 		
 		<xsl:call-template name="compInit">
-		<xsl:with-param name="description" select="short_desc"/>
+                <xsl:with-param name="description"><xsl:apply-templates select="short_desc"/></xsl:with-param>
 		<xsl:with-param name="parent" select="$phaseAlias"/>
 		<xsl:with-param name="subParent" select="translate(alias[last()],'-. ','___')"/>
 		<xsl:with-param name="parentAlias" select="$phaseOptAlias"/>
@@ -381,7 +381,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		<xsl:for-each select="section">
 		
 		<xsl:call-template name="compInit">
-		<xsl:with-param name="description" select="short_desc"/>
+                <xsl:with-param name="description"><xsl:apply-templates select="short_desc"/></xsl:with-param>
 		<xsl:with-param name="parent" select="$phaseAlias"/>
 		<xsl:with-param name="subParent" select="translate($subPhaseAlias[last()],'-. ','___')"/>
 		<xsl:with-param name="parentAlias" select="$phaseOptAlias"/>
@@ -512,7 +512,7 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 			</xsl:if>
 		}
 
-		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new BooleanOptionWidget(editGroup<xsl:value-of select="$parent"/><xsl:value-of select="$callName"/>, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="format-tooltips"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>", defaultBool)));
+		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new BooleanOptionWidget(editGroup<xsl:value-of select="$parent"/><xsl:value-of select="$callName"/>, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="format-tooltips"><xsl:with-param name="text"><xsl:apply-templates select="long_desc"/></xsl:with-param></xsl:call-template>", defaultBool)));
 		
 		</xsl:for-each>
 		
@@ -523,7 +523,7 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 		<xsl:for-each select="value">
 		new OptionData("<xsl:value-of select="name"/>",
 		"<xsl:value-of select="alias"/>",
-		"<xsl:call-template name="format-tooltips"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>",
+		"<xsl:call-template name="format-tooltips"><xsl:with-param name="text"><xsl:apply-templates select="long_desc"/></xsl:with-param></xsl:call-template>",
 		<xsl:if test="default">
 		true),
 		</xsl:if>
@@ -535,7 +535,7 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 		};
 		
 										
-		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new MultiOptionWidget(editGroup<xsl:value-of select="$parent"/><xsl:value-of select="$callName"/>, SWT.NONE, data, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="format-tooltips"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>")));
+		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new MultiOptionWidget(editGroup<xsl:value-of select="$parent"/><xsl:value-of select="$callName"/>, SWT.NONE, data, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="format-tooltips"><xsl:with-param name="text"><xsl:apply-templates select="long_desc"/></xsl:with-param></xsl:call-template>")));
 		
 		defKey = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
 		defKey = defKey.trim();
@@ -566,7 +566,7 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 			</xsl:if>
 		}
 
-		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new ListOptionWidget(editGroup<xsl:value-of select="$parent"/><xsl:value-of select="$callName"/>, SWT.NONE, new OptionData("<xsl:value-of select="name"/>",  "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="format-tooltips"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>", defaultString)));
+		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new ListOptionWidget(editGroup<xsl:value-of select="$parent"/><xsl:value-of select="$callName"/>, SWT.NONE, new OptionData("<xsl:value-of select="name"/>",  "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="format-tooltips"><xsl:with-param name="text"><xsl:apply-templates select="long_desc"/></xsl:with-param></xsl:call-template>", defaultString)));
 		</xsl:for-each>
 		
 <!--String, Int and Float Widget-->
@@ -587,7 +587,7 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 			</xsl:if>
 		}
 
-		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new StringOptionWidget(editGroup<xsl:value-of select="$parent"/><xsl:value-of select="$callName"/>, SWT.NONE, new OptionData("<xsl:value-of select="name"/>",  "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="format-tooltips"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>", defaultString)));
+		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new StringOptionWidget(editGroup<xsl:value-of select="$parent"/><xsl:value-of select="$callName"/>, SWT.NONE, new OptionData("<xsl:value-of select="name"/>",  "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="format-tooltips"><xsl:with-param name="text"><xsl:apply-templates select="long_desc"/></xsl:with-param></xsl:call-template>", defaultString)));
 		</xsl:for-each>
 
 		
@@ -732,6 +732,17 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
         </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="use_arg_label">
+  <xsl:choose>
+    <xsl:when test="ancestor::*/set_arg_label">
+      <xsl:value-of select="translate(string(ancestor::*/set_arg_label),
+                            'abcdefghijklmnopqrstuvwxyz',
+                            'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/>
+    </xsl:when>
+    <xsl:otherwise>ARG</xsl:otherwise>
+  </xsl:choose>
   </xsl:template>
 
 </xsl:stylesheet>

@@ -6,7 +6,7 @@
 The descriptions of Soot options talk about three categories of
 classes: argument classes, application classes, and library classes.</p>
 <p>
-<arg>Argument classes</arg> are those you specify explicitly to
+<var>Argument classes</var> are those you specify explicitly to
 Soot. When you use Soot's command line interface, argument
 classes are those classes which are either listed explicitly on
 the command line or found in a directory specified with the
@@ -16,10 +16,10 @@ starting Soot from the Navigator popup menu, or all classes in
 the current project if you started Soot from the Project
 menu.</p>
 <p>
-<arg>Application classes</arg> are classes that Soot analyzes,
+<var>Application classes</var> are classes that Soot analyzes,
 transforms, and turns into output files.</p>
 <p>
-<arg>Library classes</arg> are classes which are referred to,
+<var>Library classes</var> are classes which are referred to,
 directly or indirectly, by the application classes, but which are
 not themselves application classes. Soot resolves these classes
 and reads <tt>.class</tt> or <tt>.jimple</tt> source files for
@@ -209,8 +209,8 @@ value as the classpath.</p>
 If neither the command line nor the system properties specify a
 Soot classpath, Soot falls back on a default classpath consisting
 of the value of the system property <tt>java.class.path</tt>
-followed <arg>java.home</arg><tt>/lib/rt.jar</tt>, where
-<arg>java.home</arg> stands for the contents of the system property
+followed <var>java.home</var><tt>/lib/rt.jar</tt>, where
+<var>java.home</var> stands for the contents of the system property
 <tt>java.home</tt> and <tt>/</tt> stands for the system file
 separator.</p>
 </long_desc>
@@ -238,9 +238,10 @@ instance, then Soot assumes <tt>MyClass</tt> is in package
 		<multiopt>
 			<name>Input Source Precedence</name>
 			<alias>src-prec</alias>
-			<short_desc>Sets source precedence for soot</short_desc>
+			<set_arg_label>format</set_arg_label>
+			<short_desc>Sets source precedence to <use_arg_label/> files</short_desc>
 			<long_desc>
-Set Soot's preference for the type of source files to read when
+Sets <use_arg_label/> as Soot's preference for the type of source files to read when
 it looks for a class.
 </long_desc>
 			<value>
@@ -458,14 +459,14 @@ source, to aid program understanding.
 			<alias>p</alias>
 			<alias>phase-option</alias>
 			<set_arg_label>phase opt:val</set_arg_label>
-			<short_desc>Set <arg>phase</arg>&apos;s <arg>opt</arg> option to <arg>value</arg></short_desc>
+			<short_desc>Set <var>phase</var>&apos;s <var>opt</var> option to <var>value</var></short_desc>
 			<long_desc>
 <p>
-Set <arg>phase</arg>'s run-time option named <arg>opt</arg> to
-<arg>value</arg>.</p>
+Set <var>phase</var>'s run-time option named <var>opt</var> to
+<var>value</var>.</p>
 <p>
 This is a mechanism for specifying phase-specific options to
-different parts of Soot. See <arg>Soot phase options</arg> for
+different parts of Soot. See <var>Soot phase options</var> for
 details about the available phases and options.</p>
 </long_desc>
 			<phase>

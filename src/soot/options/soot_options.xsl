@@ -22,13 +22,14 @@ Soot Command Line Options
 
 <xsl:for-each select="boolopt|listopt|multiopt|stropt|macroopt|phaseopt">
 
-<xsl:if test="value">
 <tr>
 <td>
 <xsl:for-each select="alias">
-<tt>-<xsl:value-of select="."/></tt><br/>
+<tt>-<xsl:value-of select="."/><xsl:text> </xsl:text><xsl:call-template name="format_arg"/></tt><br/>
 </xsl:for-each>
 </td>
+
+<xsl:if test="value">
 <td>
 <xsl:for-each select="value">
 <xsl:for-each select="alias">
@@ -36,22 +37,11 @@ Soot Command Line Options
 </xsl:for-each><br/>
 </xsl:for-each>
 </td>
-<td>
-<xsl:value-of select="short_desc"/>
-</td></tr>
 </xsl:if>
 
-<xsl:if test="not(value)">
-<tr>
-<td>
-<xsl:for-each select="alias">
-<tt>-<xsl:value-of select="."/></tt><br/>
-</xsl:for-each>
-</td>
-<td colspan="2">
-<xsl:value-of select="short_desc"/>
+<td colspan="{2 - number(count(value)>0)}">
+<xsl:apply-templates select="short_desc"/>
 </td></tr>
-</xsl:if>
 
 </xsl:for-each>
 </xsl:for-each>
@@ -97,5 +87,23 @@ Soot Command Line Options
 </xsl:otherwise>
 </xsl:choose>
 </tt>
+</xsl:template>
+
+<xsl:template match="use_arg_label">
+  <xsl:choose>
+    <xsl:when test="count(ancestor::*/set_arg_label)!=0"><var><xsl:value-of select="ancestor::*/set_arg_label"/></var></xsl:when>
+    <xsl:otherwise><var>arg</var></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="format_arg">
+  <xsl:choose>
+    <xsl:when test="../set_arg_label"><var><xsl:value-of select="../set_arg_label"/></var></xsl:when>
+    <xsl:when test="parent::listopt | parent::multiopt | parent::stropt | parent::phaseopt"><var>arg</var></xsl:when>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="var">
+  <var><xsl:apply-templates/></var>
 </xsl:template>
 </xsl:stylesheet>

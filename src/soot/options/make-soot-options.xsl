@@ -317,12 +317,12 @@ public class Options extends OptionsBase {
 
 <!--* BOOLEAN_OPTION *******************************************************-->
   <xsl:template mode="usage" match="boolopt">
-+padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/></xsl:for-each>", "<xsl:value-of select="short_desc"/>" )<!---->
++padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/></xsl:for-each>", "<xsl:apply-templates select="short_desc"/>" )<!---->
   </xsl:template>
 
 <!--* MULTI_OPTION *******************************************************-->
   <xsl:template mode="usage" match="multiopt">
-+padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/> ARG</xsl:for-each>", "<xsl:value-of select="short_desc"/>" )<!---->
++padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/><xsl:text> </xsl:text><xsl:call-template name="arg-label"/></xsl:for-each>", "<xsl:apply-templates select="short_desc"/>" )<!---->
     <xsl:for-each select="value">
 +padVal("<xsl:for-each select="alias"><xsl:value-of select="string(' ')"/><xsl:value-of select="."/></xsl:for-each>", "<xsl:value-of select="value"/>" )<!---->
       </xsl:for-each>
@@ -330,22 +330,22 @@ public class Options extends OptionsBase {
 
 <!--* PATH_OPTION *******************************************************-->
   <xsl:template mode="usage" match="listopt">
-+padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/> ARG</xsl:for-each>", "<xsl:value-of select="short_desc"/>" )<!---->
++padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/><xsl:text> </xsl:text><xsl:call-template name="arg-label"/></xsl:for-each>", "<xsl:apply-templates select="short_desc"/>" )<!---->
   </xsl:template>
 
 <!--* PHASE_OPTION *******************************************************-->
   <xsl:template mode="usage" match="phaseopt">
-+padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/> PHASE-NAME PHASE-OPTIONS</xsl:for-each>", "<xsl:value-of select="short_desc"/>" )<!---->
++padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/><xsl:text> </xsl:text><xsl:call-template name="arg-label"/></xsl:for-each>", "<xsl:apply-templates select="short_desc"/>" )<!---->
   </xsl:template>
 
 <!--* STRING_OPTION *******************************************************-->
   <xsl:template mode="usage" match="stropt">
-+padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/> ARG</xsl:for-each>", "<xsl:value-of select="short_desc"/>" )<!---->
++padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/><xsl:text> </xsl:text><xsl:call-template name="arg-label"/></xsl:for-each>", "<xsl:apply-templates select="short_desc"/>" )<!---->
   </xsl:template>
 
 <!--* MACRO_OPTION *******************************************************-->
   <xsl:template mode="usage" match="macroopt">
-+padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/></xsl:for-each>", "<xsl:value-of select="short_desc"/>" )<!---->
++padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/></xsl:for-each>", "<xsl:apply-templates select="short_desc"/>" )<!---->
   </xsl:template>
 
 <!--*************************************************************************-->
@@ -605,4 +605,27 @@ public class <xsl:copy-of select="$filename"/>
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template match="use_arg_label">
+    <xsl:call-template name="arg-label"/>
+  </xsl:template>
+
+  <!-- Factored out for so it can be used to print the argument labels in
+       the option summary, e.g. "-src-prec format", 
+       as well as argument labels in short_desc and long_desc. -->
+  <xsl:template name="arg-label">
+  <xsl:choose>
+    <xsl:when test="ancestor::*/set_arg_label">
+      <xsl:value-of select="translate(string(ancestor::*/set_arg_label),
+                            'abcdefghijklmnopqrstuvwxyz',
+                            'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/>
+    </xsl:when>
+    <xsl:otherwise>arg</xsl:otherwise>
+  </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="var">
+  <xsl:value-of select="translate(string(),
+                            'abcdefghijklmnopqrstuvwxyz',
+                            'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/>
+  </xsl:template>
 </xsl:stylesheet>

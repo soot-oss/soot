@@ -9,7 +9,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template mode="to_latex" match="i">{\it <xsl:apply-templates mode="to_latex"/>}</xsl:template>
 
-<xsl:template mode="to_latex" match="arg">{\it <xsl:apply-templates mode="to_latex"/>}</xsl:template>
+<xsl:template mode="to_latex" match="var">{\it <xsl:apply-templates mode="to_latex"/>}</xsl:template>
 
 <xsl:template mode="to_latex" match="cite">\cite{<xsl:apply-templates mode="to_latex"/>}</xsl:template>
 

@@ -793,7 +793,7 @@ public class Options extends OptionsBase {
       
 +padOpt(" -h -help", "Display help and exit" )
 +padOpt(" -pl -phase-list", "Print list of available phases" )
-+padOpt(" -ph ARG -phase-help ARG", "Print help for specified " )
++padOpt(" -ph PHASE -phase-help PHASE", "Print help for specified PHASE" )
 +padOpt(" -version", "Display version information and exit" )
 +padOpt(" -v -verbose", "Verbose mode" )
 +padOpt(" -app", "Run in application mode" )
@@ -801,16 +801,16 @@ public class Options extends OptionsBase {
 +padOpt(" -debug", "Print various Soot debugging info" )
 +"\nInput Options:\n"
       
-+padOpt(" -cp ARG -soot-class-path ARG -soot-classpath ARG", "Use  as the classpath for finding classes." )
-+padOpt(" -process-dir ARG", "Process all classes found in " )
-+padOpt(" -src-prec ARG", "Sets source precedence for soot" )
++padOpt(" -cp PATH -soot-class-path PATH -soot-classpath PATH", "Use PATH as the classpath for finding classes." )
++padOpt(" -process-dir DIR", "Process all classes found in DIR" )
++padOpt(" -src-prec FORMAT", "Sets source precedence to FORMAT files" )
 +padVal(" c class", "" )
 +padVal(" J jimple", "" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
 +"\nOutput Options:\n"
       
-+padOpt(" -d ARG -output-dir ARG", "Store output files in " )
-+padOpt(" -f ARG -output-format ARG", "Set output format for Soot" )
++padOpt(" -d DIR -output-dir DIR", "Store output files in DIR" )
++padOpt(" -f FORMAT -output-format FORMAT", "Set output format for Soot" )
 +padVal(" J jimple", "" )
 +padVal(" j jimp", "" )
 +padVal(" S shimple", "" )
@@ -827,18 +827,18 @@ public class Options extends OptionsBase {
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +"\nProcessing Options:\n"
       
-+padOpt(" -p PHASE-NAME PHASE-OPTIONS -phase-option PHASE-NAME PHASE-OPTIONS", "Set phase's opt option to value" )
++padOpt(" -p PHASE OPT:VAL -phase-option PHASE OPT:VAL", "Set PHASE's OPT option to VALUE" )
 +padOpt(" -O -optimize", "Perform intraprocedural optimizations" )
 +padOpt(" -W -whole-optimize", "Perform whole program optimizations" )
 +padOpt(" -via-grimp", "Convert to bytecode via Grimp instead of via Baf" )
 +padOpt(" -via-shimple", "Enable Shimple SSA representation" )
 +"\nApplication Mode Options:\n"
       
-+padOpt(" -i ARG -include ARG", "Include classes in  as application classes" )
-+padOpt(" -x ARG -exclude ARG", "Exclude classes in  from application classes" )
-+padOpt(" -dynamic-class ARG", "Note that  may be loaded dynamically" )
-+padOpt(" -dynamic-dir ARG", "Mark all classes in  as potentially dynamic" )
-+padOpt(" -dynamic-package ARG", "Marks classes in  as potentially dynamic" )
++padOpt(" -i PKG -include PKG", "Include classes in PKG as application classes" )
++padOpt(" -x PKG -exclude PKG", "Exclude classes in PKG from application classes" )
++padOpt(" -dynamic-class CLASS", "Note that CLASS may be loaded dynamically" )
++padOpt(" -dynamic-dir DIR", "Mark all classes in DIR as potentially dynamic" )
++padOpt(" -dynamic-package PKG", "Marks classes in PKG as potentially dynamic" )
 +"\nInput Attribute Options:\n"
       
 +padOpt(" -keep-line-number", "Keep line number tables" )

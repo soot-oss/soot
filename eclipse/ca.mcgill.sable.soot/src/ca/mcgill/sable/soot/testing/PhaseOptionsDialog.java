@@ -5608,7 +5608,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionsphase_help_widget(new ListOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase Help",  "", "","ph", "\nPrint a help message about the phase or sub-phase named , then \nexit. To see the help message of more than one phase, specify \nmultiple phase-help options. ", defaultString)));
+		setGeneral_Optionsphase_help_widget(new ListOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase Help",  "", "","ph", "\nPrint a help message about the phase or sub-phase named PHASE, \nthen exit. To see the help message of more than one phase, \nspecify multiple phase-help options. ", defaultString)));
 		
 
 		
@@ -5672,7 +5672,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "\nSet Soot's preference for the type of source files to read when \nit looks for a class. ")));
+		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "\nSets FORMAT as Soot's preference for the type of source files \nto read when it looks for a class. ")));
 		
 		defKey = ""+" "+""+" "+"src-prec";
 		defKey = defKey.trim();
@@ -5697,7 +5697,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setInput_Optionsprocess_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-dir", "\nAdd all classes found in to the set of argument classes which \nis analyzed and transformed by Soot. You can specify the option \nmore than once, to add argument classes from multiple \ndirectories. If subdirectories of contain .class or .jimple \nfiles, Soot assumes that the subdirectory names correspond to \ncomponents of the classes' package names. If contains \nsubA/subB/MyClass.class, for instance, then Soot assumes MyClass \nis in package subA.subB.", defaultString)));
+		setInput_Optionsprocess_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-dir", "\nAdd all classes found in DIR to the set of argument classes \nwhich is analyzed and transformed by Soot. You can specify the \noption more than once, to add argument classes from multiple \ndirectories. If subdirectories of DIR contain .class or .jimple \nfiles, Soot assumes that the subdirectory names correspond to \ncomponents of the classes' package names. If DIR contains \nsubA/subB/MyClass.class, for instance, then Soot assumes MyClass \nis in package subA.subB.", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"cp";
@@ -5712,7 +5712,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUse as the list of directories in which Soot should search for \nclasses. should be a series of directories, separated by the \npath separator character for your system. If no classpath is set \non the command line, but the system property soot.class.path has \nbeen set, Soot uses its value as the classpath. If neither the \ncommand line nor the system properties specify a Soot classpath, \nSoot falls back on a default classpath consisting of the value \nof the system property java.class.path followed \njava.home/lib/rt.jar, where java.home stands for the contents of \nthe system property java.home and / stands for the system file \nseparator.", defaultString)));
+		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUse PATH as the list of directories in which Soot should search \nfor classes. PATH should be a series of directories, separated \nby the path separator character for your system. If no classpath \nis set on the command line, but the system property \nsoot.class.path has been set, Soot uses its value as the \nclasspath. If neither the command line nor the system properties \nspecify a Soot classpath, Soot falls back on a default classpath \nconsisting of the value of the system property java.class.path \nfollowed java.home/lib/rt.jar, where java.home stands for the \ncontents of the system property java.home and / stands for the \nsystem file separator.", defaultString)));
 		
 
 		
@@ -5867,7 +5867,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setOutput_Optionsoutput_dir_widget(new StringOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Directory",  "", "","d", "\nStore output files in . may be relative to the working \ndirectory. ", defaultString)));
+		setOutput_Optionsoutput_dir_widget(new StringOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Directory",  "", "","d", "\nStore output files in DIR. DIR may be relative to the working \ndirectory. ", defaultString)));
 		
 
 		
@@ -10580,7 +10580,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsinclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include Package",  "", "","i", "\nDesignate classes in packages whose names begin with (e.g. \njava.util.) as application classes which should be analyzed and \noutput. This option allows you to selectively analyze classes in \nsome packages that Soot normally treats as library classes. You \ncan use the include option multiple times, to designate the \nclasses of multiple packages as application classes. If you \nspecify both include and exclude options, first the classes from \nall excluded packages are marked as library classes, then the \nclasses from all included packages are marked as application \nclasses.", defaultString)));
+		setApplication_Mode_Optionsinclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include Package",  "", "","i", "\nDesignate classes in packages whose names begin with PKG (e.g. \njava.util.) as application classes which should be analyzed and \noutput. This option allows you to selectively analyze classes in \nsome packages that Soot normally treats as library classes. You \ncan use the include option multiple times, to designate the \nclasses of multiple packages as application classes. If you \nspecify both include and exclude options, first the classes from \nall excluded packages are marked as library classes, then the \nclasses from all included packages are marked as application \nclasses.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"x";
@@ -10595,7 +10595,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsexclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Exclude Package",  "", "","x", "\nExcludes any classes in packages whose names begin with from \nthe set of application classes which are analyzed and output, \ntreating them as library classes instead. This option allows you \nto selectively exclude classes which would normally be treated \nas application classes You can use the exclude option multiple \ntimes, to designate the classes of multiple packages as library \nclasses. If you specify both include and exclude options, first \nthe classes from all excluded packages are marked as library \nclasses, then the classes from all included packages are marked \nas application classes.", defaultString)));
+		setApplication_Mode_Optionsexclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Exclude Package",  "", "","x", "\nExcludes any classes in packages whose names begin with PKG \nfrom the set of application classes which are analyzed and \noutput, treating them as library classes instead. This option \nallows you to selectively exclude classes which would normally \nbe treated as application classes You can use the exclude \noption multiple times, to designate the classes of multiple \npackages as library classes. If you specify both include and \nexclude options, first the classes from all excluded packages \nare marked as library classes, then the classes from all \nincluded packages are marked as application classes.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-class";
@@ -10610,7 +10610,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_class_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Classes",  "", "","dynamic-class", "\nMark as a class which the application may load dynamically. \nSoot will read it as a library class even if it is not \nreferenced from the argument classes. This permits whole \nprogram optimizations on programs which load classes dynamically \nif the set of classes that can be loaded is known at compile \ntime. You can use the dynamic class option multiple times to \nspecify more than one dynamic class.", defaultString)));
+		setApplication_Mode_Optionsdynamic_class_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Classes",  "", "","dynamic-class", "\nMark CLASS as a class which the application may load \ndynamically. Soot will read it as a library class even if it is \nnot referenced from the argument classes. This permits whole \nprogram optimizations on programs which load classes dynamically \nif the set of classes that can be loaded is known at compile \ntime. You can use the dynamic class option multiple times to \nspecify more than one dynamic class.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-dir";
@@ -10625,7 +10625,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_dir_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Directories",  "", "","dynamic-dir", "\nMark all class files in as classes that may be loaded \ndynamically. Soot will read them as library classes even if they \nare not referenced from the argument classes. You can specify \nmore than one directory of potentially dynamic classes by \nspecifying multiple dynamic directory options.", defaultString)));
+		setApplication_Mode_Optionsdynamic_dir_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Directories",  "", "","dynamic-dir", "\nMark all class files in DIR as classes that may be loaded \ndynamically. Soot will read them as library classes even if they \nare not referenced from the argument classes. You can specify \nmore than one directory of potentially dynamic classes by \nspecifying multiple dynamic directory options.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-package";
@@ -10640,7 +10640,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_package_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Package",  "", "","dynamic-package", "\nMarks all class files belonging to the package or any of its \nsubpackages as classes which the application may load \ndynamically. Soot will read all classes in as library classes, \neven if they are not referenced by any of the argument \nclasses.To specify more than one dynamic package, use the \ndynamic package option multiple times.", defaultString)));
+		setApplication_Mode_Optionsdynamic_package_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Package",  "", "","dynamic-package", "\nMarks all class files belonging to the package PKG or any of \nits subpackages as classes which the application may load \ndynamically. Soot will read all classes in PKG as library \nclasses, even if they are not referenced by any of the argument \nclasses.To specify more than one dynamic package, use the \ndynamic package option multiple times.", defaultString)));
 		
 
 		

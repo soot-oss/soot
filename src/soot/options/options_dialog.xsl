@@ -184,7 +184,7 @@ public class OptionsDialog extends AbstractOptionsDialog {
 		
 		
 		<xsl:for-each select="boolopt">
-		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")));
+		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:apply-templates select="short_desc"/>")));
 		</xsl:for-each>
 		
 		<xsl:for-each select="multiopt">
@@ -193,7 +193,7 @@ public class OptionsDialog extends AbstractOptionsDialog {
 		<xsl:for-each select="value">
 		new OptionData("<xsl:value-of select="value"/>",
 		"<xsl:value-of select="alias"/>",
-		"<xsl:value-of select="short_desc"/>",
+		"<xsl:apply-templates select="short_desc"/>",
 		<xsl:if test="default">
 		true),
 		</xsl:if>
@@ -205,19 +205,19 @@ public class OptionsDialog extends AbstractOptionsDialog {
 		};
 		
 										
-		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")));
+		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:apply-templates select="short_desc"/>")));
 		</xsl:for-each>
 		
 		<xsl:for-each select="listopt">
-		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new PathOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")));
+		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new PathOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:apply-templates select="short_desc"/>")));
 		</xsl:for-each>
 		
 		<xsl:for-each select="stropt">
-		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new StringOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")));
+		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new StringOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:apply-templates select="short_desc"/>")));
 		</xsl:for-each>
 
 		<xsl:for-each select="macroopt">
-		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>",  "<xsl:value-of select="short_desc"/>")));
+		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>",  "<xsl:apply-templates select="short_desc"/>")));
 		</xsl:for-each>
 		
 		return editGroup;
@@ -228,5 +228,16 @@ public class OptionsDialog extends AbstractOptionsDialog {
 }
 
 </xsl:template>
+
+  <xsl:template match="use_arg_label">
+  <xsl:choose>
+    <xsl:when test="ancestor::*/set_arg_label">
+      <xsl:value-of select="translate(string(ancestor::*/set_arg_label),
+                            'abcdefghijklmnopqrstuvwxyz',
+                            'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/>
+    </xsl:when>
+    <xsl:otherwise>ARG</xsl:otherwise>
+  </xsl:choose>
+  </xsl:template>
 
 </xsl:stylesheet>
