@@ -50,18 +50,13 @@ public interface UnitBox extends Serializable
     /**
      * Returns true if the UnitBox is holding a Unit that is the
      * target of a branch (ie a Unit at the beginning of a CFG block).
-     * Returns false if the UnitBox is holding a Unit that indicates
-     * the end of a CFG block (used by SSA to locate CFG
-     * predecessors).
+     * This is the default case.
+     *
+     * <p> Returns false if the UnitBox is holding a Unit that
+     * indicates the end of a CFG block and may require specialised
+     * processing for SSA.
      **/
     public boolean isBranchTarget();
-
-    /**
-     * If not set, this is normally assumed to be true by default.
-     *
-     * @see #isBranchTarget()
-     **/
-    public void setBranchTarget(boolean branchTarget);
 
     public void toString(UnitPrinter up); 
 }

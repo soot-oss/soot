@@ -29,7 +29,13 @@ import soot.jimple.Jimple;
  **/
 public class ValueUnitPair extends AbstractValueBox implements UnitBox
 {
-    protected UnitBox oub;
+    // oub was initially a private inner class.  ended up being a
+    // *bad* *bad* idea with endless opportunity for *evil* *evil*
+    // pointer bugs.  in the end so much code needed to be copy pasted
+    // that using an innerclass to reuse code from AbstractUnitBox was
+    // a losing proposition.
+    // protected UnitBox oub;
+    protected Unit unit;
         
     /**
      * Constructs a ValueUnitPair from a Unit object and a Value object.
@@ -40,7 +46,7 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox
     public ValueUnitPair(Value value, Unit unit)
     {
         setValue(value);
-        oub = new OurUnitBox(unit);
+        setUnit(unit);
     }
 
     public boolean canContainValue(Value value)
@@ -51,10 +57,25 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox
     /**
      * @see soot.UnitBox#setUnit(Unit)
      **/
-    public void setUnit(Unit u)
+    public void setUnit(Unit unit)
     {
-        Unit oldU = getUnit();
-        oub.setUnit(u);
+        /* Code copied from AbstractUnitBox */
+        
+        if(!canContainUnit(unit))
+            throw new RuntimeException("Cannot put " + unit + " in this box");
+        
+        // Remove this from set of back pointers.
+        if(this.unit != null){
+            this.unit.removeBoxPointingToThis(this);
+        }
+
+        // Perform link
+        this.unit = unit;
+
+        // Add this to back pointers
+        if(this.unit != null){
+            this.unit.addBoxPointingToThis(this);
+        }
     }
 
     /**
@@ -62,7 +83,7 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox
      **/
     public Unit getUnit()
     {
-        return oub.getUnit();
+        return unit;
     }
 
     /**
@@ -70,7 +91,7 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox
      **/
     public boolean canContainUnit(Unit u)
     {
-        return oub.canContainUnit(u);
+        return true;
     }
 
     /**
@@ -78,15 +99,7 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox
      **/
     public boolean isBranchTarget()
     {
-        return oub.isBranchTarget();
-    }
-
-    /**
-     * @see soot.UnitBox#setBranchTarget(boolean)
-     **/
-    public void setBranchTarget(boolean branchTarget)
-    {
-        oub.setBranchTarget(branchTarget);
+        return true;
     }
 
     public String toString()
@@ -97,11 +110,15 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox
     public void toString(UnitPrinter up) 
     {
         super.toString(up);
+
         if(isBranchTarget())
             up.literal(", ");
         else
             up.literal(" #");
-        oub.toString(up);
+
+        up.startUnitBox(this);
+        up.unitRef(unit, isBranchTarget());
+        up.endUnitBox(this);
     }
     
     public int hashCode()
@@ -147,35 +164,5 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox
         Value cv = Jimple.cloneIfNecessary((Value) getValue());
         Unit cu = (Unit) getUnit();
         return new ValueUnitPair(cv, cu);
-    }
-
-    private class OurUnitBox extends AbstractUnitBox
-    {
-        public OurUnitBox(Unit u)
-        {
-            setUnit(u);
-        }
-        
-        // extreme nastiness.  we do *not* want something to point
-        // directly to oub.  unfortunately oub does some ugly stuff
-        // internally, and now so do we.
-        public void setUnit(Unit unit)
-        {
-            if(!canContainUnit(unit))
-                throw new RuntimeException("Attempting to put invalid unit in UnitBox.");
-            
-            if(this.unit != null)
-                this.unit.removeBoxPointingToThis(ValueUnitPair.this);
-
-            this.unit = unit;
-
-            if(this.unit != null)
-                this.unit.addBoxPointingToThis(ValueUnitPair.this);
-        }
-        
-        public boolean canContainUnit(Unit u)
-        {
-            return true;
-        }
     }
 }

@@ -38,21 +38,11 @@ public abstract class AbstractUnitBox implements UnitBox
 {
     protected Unit unit;
 
-    /**
-     * Assumes common case (true) by default.
-     **/
-    protected boolean branchTarget = true;  
-    
     public abstract boolean canContainUnit(Unit u);
-
-    public void setBranchTarget(boolean branchTarget)
-    {
-        this.branchTarget = branchTarget;
-    }
 
     public boolean isBranchTarget()
     {
-        return branchTarget;
+        return true;
     }
     
     public void setUnit(Unit unit)

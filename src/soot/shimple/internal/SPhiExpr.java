@@ -322,7 +322,6 @@ public class SPhiExpr implements PhiExpr
             return false;
 
         ValueUnitPair vup = new SValueUnitPair(arg, predTailUnit);
-        vup.setBranchTarget(false);
 
         // add and update cache
         argPairs.add(vup);
@@ -376,6 +375,15 @@ public class SPhiExpr implements PhiExpr
         return argPairs;
     }
 
+    public void clearUnitBoxes()
+    {
+        Iterator boxesIt = argPairs.iterator();
+        while(boxesIt.hasNext()){
+            UnitBox box = (UnitBox) boxesIt.next();
+            box.setUnit(null);
+        }
+    }
+    
     public List getUseBoxes()
     {
         Set set = new HashSet();
@@ -384,7 +392,6 @@ public class SPhiExpr implements PhiExpr
 
         while(argPairsIt.hasNext()){
             ValueUnitPair argPair = (ValueUnitPair) argPairsIt.next();
-            
             set.addAll(argPair.getValue().getUseBoxes());
             set.add(argPair);
         }

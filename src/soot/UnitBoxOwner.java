@@ -33,5 +33,6 @@ import java.util.*;
 public interface UnitBoxOwner
 {
     public List getUnitBoxes();
+    public void clearUnitBoxes();
 }
     

@@ -76,7 +76,11 @@ public class JIfStmt extends AbstractStmt implements IfStmt
     
     public String toString()
     {
-            return Jimple.v().IF + " "  + getCondition().toString() + " " + Jimple.v().GOTO + " "  + getTarget();
+        Unit t = getTarget();
+        String target = "(branch)";
+        if(!t.branches())
+            target = t.toString();
+        return Jimple.v().IF + " "  + getCondition().toString() + " " + Jimple.v().GOTO + " "  + target;
     }
     
     public void toString(UnitPrinter up) {

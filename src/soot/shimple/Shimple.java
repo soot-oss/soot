@@ -20,6 +20,7 @@
 package soot.shimple;
 
 import soot.*;
+import soot.options.Options;
 import soot.jimple.*;
 import soot.shimple.internal.*;
 import soot.util.*;
@@ -127,8 +128,15 @@ public class Shimple
     }
 
     /**
-     * Misc utility function.  Returns true if the unit is a Phi node,
-     * false otherwise.
+     * Returns true if the value is a Phi expression, false otherwise.
+     **/
+    public static boolean isPhiExpr(Value value)
+    {
+        return (value instanceof PhiExpr);
+    }
+    
+    /**
+     * Returns true if the unit is a Phi node, false otherwise.
      **/
     public static boolean isPhiNode(Unit unit)
     {
@@ -139,8 +147,8 @@ public class Shimple
     }
 
     /**
-     * Misc utility function.  Returns the corresponding PhiExpr if
-     * the unit is a Phi node, null otherwise.
+     * Returns the corresponding PhiExpr if the unit is a Phi node,
+     * null otherwise.
      **/
     public static PhiExpr getPhiExpr(Unit unit)
     {
@@ -156,8 +164,8 @@ public class Shimple
     }
 
     /**
-     * Misc utility function.  Returns the corresponding left Local if
-     * the unit is a Phi node, null otherwise.
+     * Returns the corresponding left Local if the unit is a Phi node,
+     * null otherwise.
      **/
     public static Local getLhsLocal(Unit unit)
     {
@@ -185,8 +193,14 @@ public class Shimple
      * directly, since patching is taken care of Shimple's internal
      * implementation of PatchingChain.
      **/
-    public static void redirectToPreds(Chain units, Unit remove)
+    public static void redirectToPreds(Body body, Unit remove)
     {
+        boolean debug = Options.v().debug();
+        if(body instanceof ShimpleBody)
+            debug |= ((ShimpleBody)body).getOptions().debug();
+            
+        Chain units = body.getUnits();
+
         /* Determine whether we should continue processing or not. */
 
         Iterator pointersIt = remove.getBoxesPointingToThis().iterator();
@@ -243,16 +257,29 @@ public class Shimple
         /* sanity check */
         
         if(phis.size() == 0){
-            G.v().out.println("WARNING: Orphaned UnitBoxes to " + remove + "? Shimple.redirectToPreds is giving up.");
+            if(debug)
+                G.v().out.println("Warning: Orphaned UnitBoxes to " + remove + "? Shimple.redirectToPreds is giving up.");
             return;
         }
 
         if(preds.size() == 0){
-            G.v().out.println("WARNING: Shimple.redirectToPreds couldn't find any predecessors for " + remove + ".");
-            G.v().out.println("WARNING: Falling back to immediate successor.");
-            if(remove.equals(units.getLast()))
+            if(debug)
+                G.v().out.println("Warning: Shimple.redirectToPreds couldn't find any predecessors for " + remove + " in " + body.getMethod() + ".");
+
+            if(!remove.equals(units.getFirst())){
+                Unit pred = (Unit) units.getPredOf(remove);
+                if(debug)
+                    G.v().out.println("Warning: Falling back to immediate chain predecessor: " + pred + ".");
+                preds.add(pred);
+            }
+            else if(!remove.equals(units.getLast())){
+                Unit succ = (Unit) units.getSuccOf(remove);
+                if(debug)
+                    G.v().out.println("Warning: Falling back to immediate chain successor: " + succ + ".");
+                preds.add(succ);
+            }
+            else
                 throw new RuntimeException("Assertion failed.");
-            preds.add(units.getSuccOf(remove));
         }
 
         /* At this point we have found all the preds and relevant Phi's */

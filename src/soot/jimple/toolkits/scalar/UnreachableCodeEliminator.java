@@ -71,6 +71,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
             if (!visited.contains(stmt)) 
             {
                 body.getUnits().remove(stmt);
+		stmt.clearUnitBoxes();
                 numPruned++;
             }
         }

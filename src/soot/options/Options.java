@@ -1184,25 +1184,27 @@ public class Options extends OptionsBase {
                 
                 +padVal( "pre-and-post", "If enabled, some optimizations are applied             both before and after Phi nodes are eliminated." )
                 
-                +padOpt( "standard-local-names (false)", "Uses naming scheme of the Local Name             Standardizer." );
+                +padOpt( "standard-local-names (false)", "Uses naming scheme of the Local Name             Standardizer." )
+                +padOpt( "debug (false)", "Enables debugging output, if any." );
     
         if( phaseName.equals( "stp" ) )
             return "Phase "+phaseName+":\n"+
-                "\nWhen the Shimple representation is produced, Soot applies the \ncontents of the Shimple Transformation Pack to each method under \nanalysis. This pack contains no transformations in an \nunmodified version of Soot."
+                "\nWhen the Shimple representation is produced, Soot \napplies the contents of the Shimple Transformation \nPack to each method under analysis. This pack \ncontains no transformations in an unmodified version \nof Soot. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "sop" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Shimple Optimization Pack contains transformations that \nperform optimizations on Shimple, Soot's SSA representation."
+                "\nThe Shimple Optimization Pack contains \ntransformations that perform optimizations on \nShimple, Soot's SSA representation. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "sop.cpf" ) )
             return "Phase "+phaseName+":\n"+
-                "\nAn example implementation of constant propagation using \nShimple. Informal tests show that this analysis is already more \npowerful than the Jimple Constant Propagator and Folder, \nparticularly when control flow is involved. This optimization \ndemonstrates some of the benefits of SSA --- particularly the \nfact that Phi nodes represent natural merge points in the \ncontrol flow. This implementation also demonstrates how to \naccess U/D and D/U chains in Shimple."
+                "\nAn example implementation of constant propagation \nusing Shimple. Informal tests show that this \nanalysis is already more powerful than the Jimple \nConstant Propagator and Folder, particularly when \ncontrol flow is involved. This optimization \ndemonstrates some of the benefits of SSA --- \nparticularly the fact that Phi nodes represent \nnatural merge points in the control flow. This \nimplementation also demonstrates how to access U/D \nand D/U chains in Shimple. "
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (true)", "" );
+                +padOpt( "enabled (true)", "" )
+                +padOpt( "prune-cfg (true)", "Take advantage of CFG optimization             opportunities." );
     
         if( phaseName.equals( "jtp" ) )
             return "Phase "+phaseName+":\n"+
@@ -1630,7 +1632,8 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled "
                 +"phi-elim-opt "
-                +"standard-local-names ";
+                +"standard-local-names "
+                +"debug ";
     
         if( phaseName.equals( "stp" ) )
             return ""
@@ -1642,7 +1645,8 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "sop.cpf" ) )
             return ""
-                +"enabled ";
+                +"enabled "
+                +"prune-cfg ";
     
         if( phaseName.equals( "jtp" ) )
             return ""
@@ -1984,7 +1988,8 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true "
               +"phi-elim-opt:post "
-              +"standard-local-names:false ";
+              +"standard-local-names:false "
+              +"debug:false ";
     
         if( phaseName.equals( "stp" ) )
             return ""
@@ -1996,7 +2001,8 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "sop.cpf" ) )
             return ""
-              +"enabled:true ";
+              +"enabled:true "
+              +"prune-cfg:true ";
     
         if( phaseName.equals( "jtp" ) )
             return ""

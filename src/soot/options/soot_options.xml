@@ -1867,61 +1867,88 @@ more effective than post-optimization.</p>
             behaviour.
           </long_desc>
         </boolopt>
+        <boolopt>
+          <name>Debugging Output</name>
+          <alias>debug</alias>
+          <default>false</default>
+          <short_desc>Enables debugging output, if any.</short_desc>
+          <long_desc>
+            If enabled, Soot may print out warnings and messages
+            useful for debugging the Shimple module.  Automatically
+            enabled by the global debugging option.
+          </long_desc>
+        </boolopt>
       </phase>
 
-			<phase>
-				<name>Shimple Transformation Pack</name>
-				<alias>stp</alias>
-				<short_desc>Shimple transformation pack</short_desc>
+      <phase>
+        <name>Shimple Transformation Pack</name>
+        <alias>stp</alias>
+        <short_desc>Shimple transformation pack</short_desc>
+        <long_desc>
+          <p>
+            When the Shimple representation is produced, Soot applies the
+            contents of the Shimple Transformation Pack to each method
+            under analysis.  This pack contains no transformations in an
+            unmodified version of Soot.
+          </p>
+        </long_desc>
+        <boolopt>
+          <name>Enabled</name>
+          <alias>enabled</alias>
+          <default>true</default>
+        </boolopt>
+      </phase>
+      <phase>
+        <name>Shimple Optimization Pack</name>
+        <alias>sop</alias>
+        <short_desc>Shimple optimization pack</short_desc>
+        <long_desc>
+          <p>
+            The Shimple Optimization Pack contains transformations that
+            perform optimizations on Shimple, Soot's SSA
+            representation.
+          </p>
+        </long_desc>
+        <boolopt>
+          <name>Enabled</name>
+          <alias>enabled</alias>
+          <default>false</default>
+        </boolopt>
+        <sub_phase>
+          <name>Shimple Constant Propagator and Folder</name>
+          <short_desc>Shimple constant propagator and folder</short_desc>
           <long_desc>
-<p>
-When the Shimple representation is produced, Soot applies the
-contents of the Shimple Transformation Pack to each method
-under analysis.  This pack contains no transformations in an
-unmodified version of Soot.</p>
-</long_desc>
-				<boolopt>
-					<name>Enabled</name>
-					<alias>enabled</alias>
-          				<default>true</default>
-				</boolopt>
-			</phase>
-			<phase>
-				<name>Shimple Optimization Pack</name>
-				<alias>sop</alias>
-				<short_desc>Shimple optimization pack</short_desc>
-				<long_desc>
-<p>
-The Shimple Optimization Pack contains transformations that
-perform optimizations on Shimple, Soot's SSA representation.</p>
-</long_desc>
-				<boolopt>
-					<name>Enabled</name>
-					<alias>enabled</alias>
-					<default>false</default>
-				</boolopt>
-				<sub_phase>
-					<name>Shimple Constant Propagator and Folder</name>
-					<short_desc>Shimple constant propagator and folder</short_desc>
-					<long_desc>
-<p>
-An example implementation of constant propagation using
-Shimple. Informal tests show that this analysis is already more
-powerful than the Jimple Constant Propagator and Folder,
-particularly when control flow is involved.  This optimization
-demonstrates some of the benefits of SSA --- particularly the fact
-that Phi nodes represent natural merge points in the control
-flow.  This implementation also demonstrates how to access U/D
-and D/U chains in Shimple.</p>
-</long_desc>
-					<alias>sop.cpf</alias>
-					<boolopt>
-						<name>Enabled</name>
-						<alias>enabled</alias>
-						<default>true</default>
-					</boolopt>
-				</sub_phase>
-			</phase>
+            <p>
+              An example implementation of constant propagation using
+              Shimple. Informal tests show that this analysis is
+              already more powerful than the Jimple Constant
+              Propagator and Folder, particularly when control flow is
+              involved.  This optimization demonstrates some of the
+              benefits of SSA --- particularly the fact that Phi nodes
+              represent natural merge points in the control flow.
+              This implementation also demonstrates how to access U/D
+              and D/U chains in Shimple.
+            </p>
+          </long_desc>
+          <alias>sop.cpf</alias>
+          <boolopt>
+            <name>Enabled</name>
+            <alias>enabled</alias>
+            <default>true</default>
+          </boolopt>
+          <boolopt>
+            <name>Prune Control Flow Graph</name>
+            <alias>prune-cfg</alias>
+            <default>true</default>
+            <short_desc>Take advantage of CFG optimization
+            opportunities.</short_desc>
+            <long_desc>
+              <p>
+              </p>
+            </long_desc>
+          </boolopt>
+        </sub_phase>
+      </phase>
 			<phase>
 				<name>Jimple Transformation Pack</name>
 				<alias>jtp</alias>

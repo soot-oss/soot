@@ -57,6 +57,19 @@ public class ShimpleOptions
         return soot.PhaseOptions.getBoolean( options, "standard-local-names" );
     }
     
+    /** Debugging Output --
+    
+     * Enables debugging output, if any..
+    
+     * If enabled, Soot may print out warnings and 
+     * messages useful for debugging the Shimple module. 
+     * Automatically enabled by the global debugging 
+     * option. 
+     */
+    public boolean debug() {
+        return soot.PhaseOptions.getBoolean( options, "debug" );
+    }
+    
     public static final int phi_elim_opt_none = 1;
     public static final int phi_elim_opt_pre = 2;
     public static final int phi_elim_opt_post = 3;

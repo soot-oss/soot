@@ -783,8 +783,15 @@ public class ShimpleBodyBuilder
         if((phiElimOpt == options.phi_elim_opt_pre) ||
            (phiElimOpt == options.phi_elim_opt_pre_and_post))
         {
-            DeadAssignmentEliminator.v().transform(body);
             Aggregator.v().transform(body);
+            DeadAssignmentEliminator.v().transform(body);
+
+            // UCE is not safe if a Phi node is using a value from the
+            // unreachable code.
+            // UnreachableCodeEliminator.v().transform(body);
+
+            UnconditionalBranchFolder.v().transform(body);
+            UnusedLocalEliminator.v().transform(body);
         }
         
         // offloaded in a separate function for historical reasons
@@ -795,8 +802,11 @@ public class ShimpleBodyBuilder
         if((phiElimOpt == options.phi_elim_opt_post) ||
            (phiElimOpt == options.phi_elim_opt_pre_and_post))
         {
-            DeadAssignmentEliminator.v().transform(body);
             Aggregator.v().transform(body);
+            DeadAssignmentEliminator.v().transform(body);
+            UnreachableCodeEliminator.v().transform(body);
+            UnconditionalBranchFolder.v().transform(body);
+            UnusedLocalEliminator.v().transform(body);
         }
     }
     

@@ -20,6 +20,7 @@
 package soot.shimple.internal;
 
 import soot.*;
+import soot.options.Options;
 import soot.util.*;
 import soot.shimple.*;
 import java.util.*;
@@ -36,11 +37,15 @@ public class SPatchingChain extends PatchingChain
      * Needed to find non-trapped Units of the body.
      **/
     Body body = null;
-
+    boolean debug;
+    
     public SPatchingChain(Body aBody, Chain aChain)
     {
         super(aChain);
         this.body = aBody;
+        this.debug = Options.v().debug();
+        if(aBody instanceof ShimpleBody)
+            debug |= ((ShimpleBody)aBody).getOptions().debug();
     }
 
     public boolean add(Object o)
@@ -49,6 +54,20 @@ public class SPatchingChain extends PatchingChain
         return super.add(o);
     }
 
+    public void swapWith(Object out, Object in)
+    {
+        // Ensure that branching statements are swapped correctly.
+        // The normal swapWith implementation would still work
+        // correctly but redirectToPreds performed during the remove
+        // would be more expensive and might print warnings if no
+        // actual CFG predecessors for out was found due to the
+        // insertion of branching statement in.
+        processPhiNode(in);
+        Shimple.redirectPointers((Unit) out, (Unit) in);
+        super.insertBefore(in, out);
+        super.remove(out);
+    }
+    
     public void insertAfter(Object toInsert, Object point)
     {
         // important to do these before the patching, so that
@@ -108,7 +127,8 @@ public class SPatchingChain extends PatchingChain
                         // maybe the user forgot to clearUnitBoxes()
                         // when removing a Phi node, or the user removed
                         // a Phi node and hasn't put it back yet
-                        G.v().out.println("WARNING: Orphaned UnitBox to " + unit + "?  SPatchingChain will not move the pointer.");
+                        if(debug)
+                            G.v().out.println("Warning: Orphaned UnitBox to " + unit + "?  SPatchingChain will not move the pointer.");
                         continue;
                     }
                 }
@@ -154,7 +174,7 @@ public class SPatchingChain extends PatchingChain
     public boolean remove(Object obj)
     {
         if(contains(obj)){
-            Shimple.redirectToPreds(this, (Unit)obj);
+            Shimple.redirectToPreds(body, (Unit)obj);
         }
         
         return super.remove(obj);
@@ -327,7 +347,7 @@ public class SPatchingChain extends PatchingChain
             
             if(!state)
                 throw new IllegalStateException("remove called before first next() call");
-            Shimple.redirectToPreds(SPatchingChain.this, victim);
+            Shimple.redirectToPreds(SPatchingChain.this.body, victim);
 
             // work around for inadequate inner class support in javac 1.2
             // super.remove();

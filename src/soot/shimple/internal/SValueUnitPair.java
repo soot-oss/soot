@@ -36,6 +36,11 @@ public class SValueUnitPair extends ValueUnitPair implements SUnitBox
         setUnitChanged(true);
     }
 
+    public boolean isBranchTarget()
+    {
+        return false;
+    }
+
     public void setUnit(Unit u)
     {
         super.setUnit(u);

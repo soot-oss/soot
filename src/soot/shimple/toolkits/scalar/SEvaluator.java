@@ -189,6 +189,10 @@ public class SEvaluator
             }
         }
 
+        // oops -- clear spurious pointers to the unit chain!
+        if(expr instanceof UnitBoxOwner)
+            ((UnitBoxOwner)expr).clearUnitBoxes();
+        
         /* evaluate the expression */
         
         return(getFuzzyConstantValueOf(expr));

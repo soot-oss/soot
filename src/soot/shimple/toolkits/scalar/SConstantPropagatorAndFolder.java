@@ -35,70 +35,110 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
 {
     public SConstantPropagatorAndFolder(Singletons.Global g) {}
 
-
     public static SConstantPropagatorAndFolder v()
     { return G.v().SConstantPropagatorAndFolder(); }
 
+    protected ShimpleBody sb;
+    protected boolean debug;
+    
     protected void internalTransform(Body b, String phaseName, Map options)
     {
         if(!(b instanceof ShimpleBody))
             throw new RuntimeException("SConstantPropagatorAndFolder requires a ShimpleBody.");
-
-        ShimpleBody sb = (ShimpleBody) b;
+        
+        this.sb = (ShimpleBody) b;
 
         if(!sb.isSSA())
             throw new RuntimeException("ShimpleBody is not in proper SSA form as required by SConstantPropagatorAndFolder.  You may need to rebuild it or use ConstantPropagatorAndFolder instead.");
 
+        boolean pruneCFG = PhaseOptions.getBoolean(options, "prune-cfg");
+        debug = Options.v().debug();
+        debug |= sb.getOptions().debug();
+        
         if (Options.v().verbose())
             G.v().out.println("[" + sb.getMethod().getName() +
                               "] Propagating and folding constants (SSA)...");
 
-        // perform the main analysis
         SCPFAnalysis scpf = new SCPFAnalysis(new CompleteUnitGraph(sb));
-        Map localToConstant = scpf.getResults();
+        propagateResults(scpf.getResults());
 
-        // propagate the results
-        {
-            Chain units = sb.getUnits();
-            Chain locals = sb.getLocals();
-            ShimpleLocalDefs localDefs = new ShimpleLocalDefs(sb);
-            ShimpleLocalUses localUses = new ShimpleLocalUses(sb);
+        if(pruneCFG){
+            removeStmts(scpf.getDeadStmts());
+            replaceStmts(scpf.getStmtsToReplace());
+        }
+    }
+
+    protected void propagateResults(Map localToConstant)
+    {
+        Chain units = sb.getUnits();
+        Chain locals = sb.getLocals();
+        ShimpleLocalDefs localDefs = new ShimpleLocalDefs(sb);
+        ShimpleLocalUses localUses = new ShimpleLocalUses(sb);
         
-            Iterator localsIt = locals.iterator();
-            while(localsIt.hasNext()){
-                Local local = (Local) localsIt.next();
-                Constant constant = (Constant) localToConstant.get(local);
+        Iterator localsIt = locals.iterator();
+        while(localsIt.hasNext()){
+            Local local = (Local) localsIt.next();
+            Constant constant = (Constant) localToConstant.get(local);
+            
+            if(constant instanceof MetaConstant)
+                continue;
 
-                if(!(constant instanceof MetaConstant)){
-                    DefinitionStmt stmt =
-                        (DefinitionStmt) localDefs.getDefsOf(local).get(0);
+            // update definition
+            {
+                DefinitionStmt stmt =
+                    (DefinitionStmt) localDefs.getDefsOf(local).get(0);
 
-                    // update the definition
-                    {
-                        ValueBox defSrcBox = stmt.getRightOpBox();
+                ValueBox defSrcBox = stmt.getRightOpBox();
+                Value defSrc = defSrcBox.getValue();
+                
+                if(defSrcBox.canContainValue(constant)){
+                    if(Shimple.isPhiNode(stmt))
+                        stmt.clearUnitBoxes();
 
-                        if(defSrcBox.canContainValue(constant))
-                            defSrcBox.setValue(constant);
-                        else
-                            G.v().out.println("Warning: Couldn't propagate a constant.");
-                    }
-                    
-                    // update the uses
-                    {
-                        Iterator usesIt = localUses.getUsesOf(local).iterator();
+                    defSrcBox.setValue(constant);
+                }
+                else if(debug)
+                    G.v().out.println("Warning: Couldn't propagate constant " + constant + " to box " + defSrcBox.getValue() + " in unit " + stmt);
+            }
+            
+            // update uses
+            {
+                Iterator usesIt = localUses.getUsesOf(local).iterator();
+                
+                while(usesIt.hasNext()){
+                    UnitValueBoxPair pair = (UnitValueBoxPair) usesIt.next();
+                    ValueBox useBox = pair.getValueBox();
 
-                        while(usesIt.hasNext()){
-                            ValueBox clientUseBox =
-                                ((UnitValueBoxPair) usesIt.next()).getValueBox();
-
-                            if(clientUseBox.canContainValue(constant))
-                                clientUseBox.setValue(constant);
-                            else
-                                G.v().out.println("Warning: Couldn't propagate a constant.");
-                        }
-                    }
+                    if(useBox.canContainValue(constant))
+                       useBox.setValue(constant);
+                    else if(debug)
+                        G.v().out.println("Warning: Couldn't propagate constant " + constant + " to box " + useBox.getValue() + " in unit " + pair.getUnit());
                 }
             }
+        }
+    }
+
+    protected void removeStmts(List deadStmts)
+    {
+        Chain units = sb.getUnits();
+        Iterator deadIt = deadStmts.iterator();
+        while(deadIt.hasNext()){
+            Unit dead = (Unit) deadIt.next();
+            units.remove(dead);
+            dead.clearUnitBoxes();
+        }
+    }
+
+    protected void replaceStmts(Map stmtsToReplace)
+    {
+        Chain units = sb.getUnits();
+        Iterator stmtsIt = stmtsToReplace.keySet().iterator();
+        while(stmtsIt.hasNext()){
+            // important not to call clearUnitBoxes() on booted since
+            // replacement uses the same UnitBox
+            Unit booted = (Unit) stmtsIt.next();
+            Unit replacement = (Unit) stmtsToReplace.get(booted);
+            units.swapWith(booted, replacement);
         }
     }
 }
@@ -107,17 +147,31 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
 {
     FlowSet emptySet;
     Map localToConstant;
-
+    Map stmtToReplacement;
+    List deadStmts;
+    
     public Map getResults()
     {
         return localToConstant;
+    }
+
+    public List getDeadStmts()
+    {
+        return deadStmts;
+    }
+
+    public Map getStmtsToReplace()
+    {
+        return stmtToReplacement;
     }
     
     public SCPFAnalysis(UnitGraph graph)
     {
         super(graph);
         emptySet = new ArraySparseSet();
-
+        stmtToReplacement = new HashMap();
+        deadStmts = new ArrayList();
+        
         // initialise localToConstant map -- assume all scalars are
         // constant (Top)
         {
@@ -160,7 +214,7 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         fin1.union(fin2, fout);
     }
 
-    public void copy(Object source, Object dest)
+    protected void copy(Object source, Object dest)
     {
         FlowSet fource = (FlowSet) source;
         FlowSet fest = (FlowSet) dest;
@@ -168,7 +222,7 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         fource.copy(fest);
     }
 
-    public void flowThrough(Object in, Unit s, List fallOut, List branchOuts)
+    protected void flowThrough(Object in, Unit s, List fallOut, List branchOuts)
     {
         FlowSet fin = (FlowSet) ((FlowSet)in).clone();
 
@@ -200,7 +254,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         IFSTMT:
         {
         if(s instanceof IfStmt){
-            Value cond = ((IfStmt) s).getCondition();
+            IfStmt ifStmt = (IfStmt) s;
+            Value cond = ifStmt.getCondition();
             Constant constant =
                 SEvaluator.getFuzzyConstantValueOf(cond, localToConstant);
             
@@ -217,11 +272,17 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
             Constant trueC = IntConstant.v(1);
             Constant falseC = IntConstant.v(0);
 
-            if(constant.equals(trueC))
+            if(constant.equals(trueC)){
                 branch = true;
+                GotoStmt gotoStmt =
+                    Jimple.v().newGotoStmt(ifStmt.getTargetBox());
+                stmtToReplacement.put(ifStmt, gotoStmt);
+            }
 
-            if(constant.equals(falseC))
+            if(constant.equals(falseC)){
                 fall = true;
+                deadStmts.add(ifStmt);
+            }
         }
         } // end IFSTMT
 
@@ -258,9 +319,11 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
             else
                 branchBox = table.getTargetBox(index);
 
+            GotoStmt gotoStmt = Jimple.v().newGotoStmt(branchBox);
+            stmtToReplacement.put(table, gotoStmt);
+            
             List unitBoxes = table.getUnitBoxes();
             int setIndex = unitBoxes.indexOf(branchBox);
-            
             oneBranch = (FlowSet) branchOuts.get(setIndex);
         }
         } // end TABLESWITCHSTMT
@@ -294,10 +357,12 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
                 branchBox = lookup.getDefaultTargetBox();
             else
                 branchBox = lookup.getTargetBox(index);
-                    
+
+            GotoStmt gotoStmt = Jimple.v().newGotoStmt(branchBox);
+            stmtToReplacement.put(lookup, gotoStmt);
+            
             List unitBoxes = lookup.getUnitBoxes();
             int setIndex = unitBoxes.indexOf(branchBox);
-            
             oneBranch = (FlowSet) branchOuts.get(setIndex);
         }
         } // end LOOKUPSWITCHSTMT
@@ -332,7 +397,7 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
     /**
      * Returns null or (Unit, Constant) pair if something has changed.
      **/
-    public Pair processDefinitionStmt(Unit u)
+    protected Pair processDefinitionStmt(Unit u)
     {
         if(!(u instanceof DefinitionStmt))
             return null;
