@@ -63,6 +63,10 @@ public final class Edge
     /** Implicit call to run() through AccessController.doPrivileged(). */
     public static final int PRIVILEGED = 9;
 
+    public static final String[] types = { "INVALID",
+        "STATIC", "VIRTUAL", "INTERFACE", "SPECIAL",
+        "CLINIT", "THREAD", "EXIT", "FINALIZE", "PRIVILEGED" };
+
     /** The type of edge. Valid types are given by the static final
      * fields above. Note: type should not be returned; instead,
      * accessors such as isExplicit() should be added. */
@@ -121,8 +125,6 @@ public final class Edge
         return true;
     }
     public String toString() {
-        String[] types = { "error", "STATIC", "VIRTUAL", "INTERFACE", "SPECIAL",
-            "CLINIT", "THREAD" };
         return types[type]+" edge: "+srcUnit+" in "+src+" ==> "+tgt;
     }
 
