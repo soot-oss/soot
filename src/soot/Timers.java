@@ -196,7 +196,7 @@ public class Timers
             
             System.out.println("totalTime:" + toTimeString(totalTimer, totalTime));
             
-            if(Main.opts.subGC())
+            if(Main.opts.subtract_gc())
 		{
 		    System.out.println("Garbage collection was subtracted from these numbers.");
 		    System.out.println("           forcedGC:" + 

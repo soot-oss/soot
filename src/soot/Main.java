@@ -76,36 +76,36 @@ public class Main implements Runnable
         String str = null;
 
         switch(rep) {
-        case Options.outputFormat_baf:
+        case Options.output_format_baf:
             str = ".baf";
             break;
-        case Options.outputFormat_b:
+        case Options.output_format_b:
             str = ".b";
             break;
             
-        case Options.outputFormat_jimple:
+        case Options.output_format_jimple:
             str = ".jimple";
             break;                        
-        case Options.outputFormat_jimp:
+        case Options.output_format_jimp:
             str = ".jimp";
             break;
-        case Options.outputFormat_grimp:
+        case Options.output_format_grimp:
             str = ".grimp";
             break;
-        case Options.outputFormat_grimple:
+        case Options.output_format_grimple:
             str = ".grimple";
             break;
-        case Options.outputFormat_classFile:
+        case Options.output_format_class:
             str = ".class";
             break;
-        case Options.outputFormat_dava:
+        case Options.output_format_dava:
 	    str = ".java";
             break;
-        case Options.outputFormat_jasmin:
+        case Options.output_format_jasmin:
             str = ".jasmin";
             break;
              
-        case Options.outputFormat_xml:
+        case Options.output_format_xml:
             str = ".xml";
             break;
 
@@ -118,17 +118,17 @@ public class Main implements Runnable
     public static String getFileNameFor( SootClass c, int rep)
     {
 	// add an option for no output
-	if (rep == Options.outputFormat_none) return null;
+	if (rep == Options.output_format_none) return null;
 
 	StringBuffer b = new StringBuffer();
 
-	if (opts.outputDir() != null)
-	    b.append(opts.outputDir());
+	if (opts.output_dir() != null)
+	    b.append(opts.output_dir());
 	
 	if ((b.length() > 0) && (b.charAt( b.length() - 1) != fileSeparator))
 	    b.append( fileSeparator);
 	
-	if (rep != Options.outputFormat_dava) {
+	if (rep != Options.output_format_dava) {
 	    b.append( c.getName());
 	    b.append( getExtensionFor( rep));
 
@@ -255,7 +255,7 @@ public class Main implements Runnable
     public static void setOptimizingWhole(boolean val)
 	throws CompilationDeathException
     {
-        if (!opts.appMode() && val){            
+        if (!opts.app() && val){            
             throw new CompilationDeathException(COMPILATION_ABORTED, "Can only whole-program optimize in application mode!");
         }
   
@@ -405,12 +405,12 @@ public class Main implements Runnable
     private static void postCmdLineCheck()
         throws CompilationDeathException
     {
-	if(opts.classes().isEmpty() && opts.processPath().isEmpty())
+	if(opts.classes().isEmpty() && opts.process_path().isEmpty())
             {
                 throw new CompilationDeathException(COMPILATION_ABORTED, "Nothing to do!"); 
             }
 	// Command line classes
-	if (opts.appMode() && opts.classes().size() > 1)
+	if (opts.app() && opts.classes().size() > 1)
             {
 
                 throw new CompilationDeathException(COMPILATION_ABORTED,
@@ -449,8 +449,8 @@ public class Main implements Runnable
 
       System.out.println("Soot started on "+start);
 
-      if( opts.classpath().length() > 0 ) {
-          Scene.v().setSootClassPath( opts.classpath() );
+      if( opts.soot_classpath().length() > 0 ) {
+          Scene.v().setSootClassPath( opts.soot_classpath() );
       }
       
       loadNecessaryClasses();
@@ -498,7 +498,7 @@ public class Main implements Runnable
 
   /* preprocess classes for DAVA */
   private static void preProcessDAVA() {
-    if (opts.outputFormat() == Options.outputFormat_dava) {
+    if (opts.output_format() == Options.output_format_dava) {
       ThrowFinder.v().find();
       PackageNamer.v().fixNames();
 
@@ -514,7 +514,7 @@ public class Main implements Runnable
     while(classIt.hasNext()) {
       SootClass s = (SootClass) classIt.next();
 				
-      if (opts.outputFormat() == Options.outputFormat_dava) {
+      if (opts.output_format() == Options.output_format_dava) {
 	System.out.print( "Decompiling ");
       } else {
 	System.out.print( "Transforming ");
@@ -529,7 +529,7 @@ public class Main implements Runnable
 
   /* post process for DAVA */
   private static void postProcessDAVA() {
-    if (opts.outputFormat() == Options.outputFormat_dava) {
+    if (opts.output_format() == Options.output_format_dava) {
 
       // ThrowFinder.v().find();
       // PackageNamer.v().fixNames();
@@ -544,7 +544,7 @@ public class Main implements Runnable
 	
 	FileOutputStream streamOut = null;
 	PrintWriter writerOut = null;
-	String fileName = getFileNameFor( s, opts.outputFormat());
+	String fileName = getFileNameFor( s, opts.output_format());
 		    
 	try {
 	  streamOut = new FileOutputStream(fileName);
@@ -604,15 +604,15 @@ public class Main implements Runnable
         }
 
         HashSet dynClasses = new HashSet();
-        dynClasses.addAll( opts.dynClasses() );
+        dynClasses.addAll( opts.dynamic_classes() );
 
-        for( Iterator pathIt = opts.dynPath().iterator(); pathIt.hasNext(); ) {
+        for( Iterator pathIt = opts.dynamic_path().iterator(); pathIt.hasNext(); ) {
 
             final String path = (String) pathIt.next();
             dynClasses.addAll(getClassesUnder(path));
         }
 
-        for( Iterator pkgIt = opts.dynPackage().iterator(); pkgIt.hasNext(); ) {
+        for( Iterator pkgIt = opts.dynamic_package().iterator(); pkgIt.hasNext(); ) {
 
             final String pkg = (String) pkgIt.next();
             dynClasses.addAll( classesInDynamicPackage( pkg ) );
@@ -623,7 +623,7 @@ public class Main implements Runnable
             Scene.v().loadClassAndSupport((String) o);
         }
 
-        for( Iterator pathIt = opts.processPath().iterator(); pathIt.hasNext(); ) {
+        for( Iterator pathIt = opts.process_path().iterator(); pathIt.hasNext(); ) {
 
             final String path = (String) pathIt.next();
             for( Iterator clIt = getClassesUnder(path).iterator(); clIt.hasNext(); ) {
@@ -639,8 +639,8 @@ public class Main implements Runnable
   private static void prepareClasses() {
       
       LinkedList excludedPackages = new LinkedList();
-      if( opts.excPackage() != null )
-          excludedPackages.addAll( opts.excPackage() );
+      if( opts.exclude() != null )
+          excludedPackages.addAll( opts.exclude() );
 
         excludedPackages.add("java.");
         excludedPackages.add("sun.");
@@ -651,7 +651,7 @@ public class Main implements Runnable
         excludedPackages.add("org.w3c.");
         excludedPackages.add("org.apache.");
 
-    if(opts.appMode()) {
+    if(opts.app()) {
       Iterator contextClassesIt = 
 	Scene.v().getContextClasses().snapshotIterator();
       while (contextClassesIt.hasNext())
@@ -679,7 +679,7 @@ public class Main implements Runnable
 	      && s.getPackageName().startsWith(pkg))
 	    s.setContextClass();
       }
-      for( Iterator pkgIt = opts.incPackage().iterator(); pkgIt.hasNext(); ) {
+      for( Iterator pkgIt = opts.include().iterator(); pkgIt.hasNext(); ) {
           final String pkg = (String) pkgIt.next();
 	  if (s.isContextClass() 
 	      && s.getPackageName().startsWith(pkg))
@@ -687,7 +687,7 @@ public class Main implements Runnable
       }
     }
 
-    if (opts.analyzeContext()) {
+    if (opts.analyze_context()) {
       Iterator contextClassesIt = 
 	Scene.v().getContextClasses().snapshotIterator();
       while (contextClassesIt.hasNext())
@@ -752,37 +752,37 @@ public class Main implements Runnable
       produceGrimp = false,
       produceDava  = false;
         
-    switch( opts.outputFormat() ) {	
-    case Options.outputFormat_none:
+    switch( opts.output_format() ) {	
+    case Options.output_format_none:
       break;
-    case Options.outputFormat_jimple:
-    case Options.outputFormat_jimp:
+    case Options.output_format_jimple:
+    case Options.output_format_jimp:
       break;
-    case Options.outputFormat_dava:
+    case Options.output_format_dava:
       produceDava = true;
-    case Options.outputFormat_grimp:
-    case Options.outputFormat_grimple:
+    case Options.output_format_grimp:
+    case Options.output_format_grimple:
       produceGrimp = true;
       break;
-    case Options.outputFormat_baf:
-    case Options.outputFormat_b:
+    case Options.output_format_baf:
+    case Options.output_format_b:
       produceBaf = true;
       break;
-    case Options.outputFormat_xml:
+    case Options.output_format_xml:
       break;
-    case Options.outputFormat_jasmin:
-    case Options.outputFormat_classFile:
-      produceGrimp = opts.viaGrimp();
+    case Options.output_format_jasmin:
+    case Options.output_format_class:
+      produceGrimp = opts.via_grimp();
       produceBaf = !produceGrimp;
       break;
     default:
       throw new RuntimeException();
     }
    
-    String fileName = getFileNameFor( c, opts.outputFormat());
+    String fileName = getFileNameFor( c, opts.output_format());
 	
-    if( opts.outputFormat() != Options.outputFormat_none
-    &&  opts.outputFormat() != Options.outputFormat_classFile ) {
+    if( opts.output_format() != Options.output_format_none
+    &&  opts.output_format() != Options.output_format_class ) {
       try {
 	streamOut = new FileOutputStream(fileName);
 	writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
@@ -855,37 +855,37 @@ public class Main implements Runnable
       }
     }
 
-    switch(opts.outputFormat()) {
-    case Options.outputFormat_none:
+    switch(opts.output_format()) {
+    case Options.output_format_none:
       break;
-    case Options.outputFormat_jasmin:
+    case Options.output_format_jasmin:
       if(c.containsBafBody())
 	new soot.baf.JasminClass(c).print(writerOut);            
       else
 	new soot.jimple.JasminClass(c).print(writerOut);
       break;
-    case Options.outputFormat_jimp:            
+    case Options.output_format_jimp:            
       c.printTo(writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
       break;
-    case Options.outputFormat_b:
+    case Options.output_format_b:
       c.printTo(writerOut, soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
       break;
-    case Options.outputFormat_grimp:
+    case Options.output_format_grimp:
       c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
       break;
-    case Options.outputFormat_baf:
-    case Options.outputFormat_jimple:
-    case Options.outputFormat_grimple:
+    case Options.output_format_baf:
+    case Options.output_format_jimple:
+    case Options.output_format_grimple:
       writerOut = 
 	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
       c.printJimpleStyleTo(writerOut, 0);
       break;
-    case Options.outputFormat_dava:
+    case Options.output_format_dava:
       break;
-    case Options.outputFormat_classFile:
-      c.write(opts.outputDir());
+    case Options.output_format_class:
+      c.write(opts.output_dir());
       break;    
-    case Options.outputFormat_xml:
+    case Options.output_format_xml:
       writerOut = 
 	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
       c.printJimpleStyleTo(writerOut, PrintJimpleBodyOption.XML_OUTPUT);
@@ -894,8 +894,8 @@ public class Main implements Runnable
       throw new RuntimeException();
     }
     
-    if( opts.outputFormat() != Options.outputFormat_none
-    &&  opts.outputFormat() != Options.outputFormat_classFile ) {
+    if( opts.output_format() != Options.output_format_none
+    &&  opts.output_format() != Options.output_format_class ) {
       try {
 	writerOut.flush();
 	streamOut.close();

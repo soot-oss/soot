@@ -38,12 +38,12 @@ public class CPOptions
     }
     
     /** Only Regular Locals --  */
-    public boolean onlyRegLocals() {
+    public boolean only_regular_locals() {
         return soot.PackManager.getBoolean( options, "only-regular-locals" );
     }
     
     /** Only Stack Locals --  */
-    public boolean onlyStackLocals() {
+    public boolean only_stack_locals() {
         return soot.PackManager.getBoolean( options, "only-stack-locals" );
     }
     

@@ -147,7 +147,7 @@ public class SourceLocator
             reps.add(ClassInputRep.v());
             reps.add(JimpleInputRep.v());
 
-            if( Main.opts.srcPrec() == Options.srcPrec_classFile ) {
+            if( Main.opts.src_prec() == Options.src_prec_class ) {
                 List lst = new LinkedList();
                 lst.add(ClassInputRep.v());
                 if( (res = getFileInputStream(locations, lst, className)) != null) {
@@ -156,7 +156,7 @@ public class SourceLocator
                 if( (res = getFileInputStream(locations, reps, className)) != null) {
                     return res;
 		}
-            } else if( Main.opts.srcPrec() == Options.srcPrec_jimple ) {
+            } else if( Main.opts.src_prec() == Options.src_prec_jimple ) {
                 List lst = new LinkedList();
                 lst.add(JimpleInputRep.v());
                 if( (res = getFileInputStream(locations, lst, className)) != null)

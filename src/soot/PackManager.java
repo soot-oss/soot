@@ -49,6 +49,8 @@ public class PackManager {
     }
 
     private void addPack( Pack p ) {
+        if( packNameToPack.containsKey( p.getPhaseName() ) )
+            throw new RuntimeException( "Duplicate pack "+p.getPhaseName() );
         packNameToPack.put( p.getPhaseName(), p );
     }
 
@@ -148,7 +150,7 @@ public class PackManager {
         addPack(p = new ScenePack("wstp"));
 
         // Whole-Shimple Optimization pack (--app -W)
-        addPack(p = new ScenePack("wstp"));
+        addPack(p = new ScenePack("wsop"));
 
         // Give another chance to do Whole-Jimple transformation
         // The RectangularArrayFinder will be put into this package.

@@ -43,7 +43,7 @@ public class LCMOptions
     }
     
     /** Naive Side Effect Tester --  */
-    public boolean naiveSE() {
+    public boolean naive_side_effect() {
         return soot.PackManager.getBoolean( options, "naive-side-effect" );
     }
     

@@ -38,35 +38,35 @@ public class SMBOptions
     }
     
     /** Insert Null Checks --  */
-    public boolean insertNullChecks() {
+    public boolean insert_null_checks() {
         return soot.PackManager.getBoolean( options, "insert-null-checks" );
     }
     
     /** Insert Redundant Casts --  */
-    public boolean insertRedundantCasts() {
+    public boolean insert_redundant_casts() {
         return soot.PackManager.getBoolean( options, "insert-redundant-casts" );
     }
     
     /** VTA Passes --  */
-    public int vtaPasses() {
+    public int VTA_passes() {
         return soot.PackManager.getInt( options, "VTA-passes" );
     }
     
-    public static final int allowModChanges_unsafe = 1;
-    public static final int allowModChanges_safe = 2;
-    public static final int allowModChanges_none = 3;
+    public static final int allowed_modifier_changes_unsafe = 1;
+    public static final int allowed_modifier_changes_safe = 2;
+    public static final int allowed_modifier_changes_none = 3;
     /** Allow Modifier Changes --  */
-    public int allowModChanges() {
+    public int allowed_modifier_changes() {
         String s = soot.PackManager.getString( options, "allowed-modifier-changes" );
         
         if( s.equalsIgnoreCase( "unsafe" ) )
-            return allowModChanges_unsafe;
+            return allowed_modifier_changes_unsafe;
         
         if( s.equalsIgnoreCase( "safe" ) )
-            return allowModChanges_safe;
+            return allowed_modifier_changes_safe;
         
         if( s.equalsIgnoreCase( "none" ) )
-            return allowModChanges_none;
+            return allowed_modifier_changes_none;
         
         throw new RuntimeException( "Invalid value "+s+" of phase option allowed-modifier-changes" );
     }

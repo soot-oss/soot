@@ -38,7 +38,7 @@ public class NPCOptions
     }
     
     /** Only Array Ref --  */
-    public boolean onlyArrayRef() {
+    public boolean only_array_ref() {
         return soot.PackManager.getBoolean( options, "only-array-ref" );
     }
     

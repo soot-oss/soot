@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
+<phase><phase_name>stp</phase_name><phase_java_name>stp</phase_java_name><phase_alias>stp</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></phase>
+<phase><phase_name>sop</phase_name><phase_java_name>sop</phase_java_name><phase_alias>sop</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></phase>
 <phase>
 	<phase_name>Jimple Transformations Pack</phase_name>
 	<phase_java_name>jimpleTransPack</phase_java_name>

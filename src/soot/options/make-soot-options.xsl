@@ -96,7 +96,7 @@ public class Options extends OptionsBase {
             || option.equals( "<xsl:value-of select="."/>" )<!---->
     </xsl:for-each>
             )
-                <xsl:value-of select="java_name"/> = true;
+                <xsl:value-of select="translate(alias_name[last()],'-','_')"/> = true;
   </xsl:template>
 
 <!--* MULTI_OPTION *******************************************************-->
@@ -111,7 +111,7 @@ public class Options extends OptionsBase {
                     return false;
                 }
                 String value = nextOption();
-    <xsl:variable name="name" select="java_name"/>
+    <xsl:variable name="name" select="translate(alias_name[last()],'-','_')"/>
                 if( false );
     <xsl:for-each select="value">
                 else if( false<!---->
@@ -120,11 +120,11 @@ public class Options extends OptionsBase {
       </xsl:for-each>
                 ) {
                     if( <xsl:copy-of select="$name"/> != 0
-                    &#38;&#38; <xsl:copy-of select="$name"/> != <xsl:copy-of select="$name"/>_<xsl:value-of select="java_name"/> ) {
+                    &#38;&#38; <xsl:copy-of select="$name"/> != <xsl:copy-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-','_')"/> ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    <xsl:copy-of select="$name"/> = <xsl:copy-of select="$name"/>_<xsl:value-of select="java_name"/>;
+                    <xsl:copy-of select="$name"/> = <xsl:copy-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-','_')"/>;
                 }
     </xsl:for-each>
                 else {
@@ -146,7 +146,7 @@ public class Options extends OptionsBase {
                     return false;
                 }
                 String value = nextOption();
-    <xsl:variable name="name" select="java_name"/>
+    <xsl:variable name="name" select="translate(alias_name[last()],'-','_')"/>
                 if( <xsl:copy-of select="$name"/> == null )
                     <xsl:copy-of select="$name"/> = new LinkedList();
 
@@ -171,7 +171,7 @@ public class Options extends OptionsBase {
                     return false;
                 }
                 String phaseOption = nextOption();
-    <xsl:variable name="name" select="java_name"/>
+    <xsl:variable name="name" select="translate(alias_name[last()],'-','_')"/>
                 if( !setPhaseOption( phaseName, phaseOption ) )
                     return false;
             }
@@ -189,7 +189,7 @@ public class Options extends OptionsBase {
                     return false;
                 }
                 String value = nextOption();
-    <xsl:variable name="name" select="java_name"/>
+    <xsl:variable name="name" select="translate(alias_name[last()],'-','_')"/>
                 if( <xsl:copy-of select="$name"/> == null )
                     <xsl:copy-of select="$name"/> = value;
                 else {
@@ -220,33 +220,33 @@ public class Options extends OptionsBase {
 
 <!--* BOOLEAN_OPTION *******************************************************-->
   <xsl:template mode="vars" match="boolean_option">
-    public boolean <xsl:value-of select="java_name"/>() { return <xsl:value-of select="java_name"/>; }
-    private boolean <xsl:value-of select="java_name"/> = false;<!---->
+    public boolean <xsl:value-of select="translate(alias_name[last()],'-','_')"/>() { return <xsl:value-of select="translate(alias_name[last()],'-','_')"/>; }
+    private boolean <xsl:value-of select="translate(alias_name[last()],'-','_')"/> = false;<!---->
   </xsl:template>
 
 <!--* MULTI_OPTION *******************************************************-->
   <xsl:template mode="vars" match="multi_option">
-    public int <xsl:value-of select="java_name"/>() {<!---->
-    <xsl:variable name="name" select="java_name"/><!---->
+    public int <xsl:value-of select="translate(alias_name[last()],'-','_')"/>() {<!---->
+    <xsl:variable name="name" select="translate(alias_name[last()],'-','_')"/><!---->
     <xsl:for-each select="value">
       <xsl:if test="default"><!---->
-        if( <xsl:value-of select="$name"/> == 0 ) return <xsl:value-of select="$name"/>_<xsl:value-of select="java_name"/>;<!---->
+        if( <xsl:value-of select="$name"/> == 0 ) return <xsl:value-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-','_')"/>;<!---->
       </xsl:if>
     </xsl:for-each>
-        return <xsl:value-of select="java_name"/>; 
+        return <xsl:value-of select="translate(alias_name[last()],'-','_')"/>; 
     }
-    private int <xsl:value-of select="java_name"/> = 0;<!---->
+    private int <xsl:value-of select="translate(alias_name[last()],'-','_')"/> = 0;<!---->
   </xsl:template>
 
 <!--* PATH_OPTION *******************************************************-->
   <xsl:template mode="vars" match="path_option">
-    public List <xsl:value-of select="java_name"/>() { 
-        if( <xsl:value-of select="java_name"/> == null )
+    public List <xsl:value-of select="translate(alias_name[last()],'-','_')"/>() { 
+        if( <xsl:value-of select="translate(alias_name[last()],'-','_')"/> == null )
             return java.util.Collections.EMPTY_LIST;
         else
-            return <xsl:value-of select="java_name"/>;
+            return <xsl:value-of select="translate(alias_name[last()],'-','_')"/>;
     }
-    private List <xsl:value-of select="java_name"/> = null;<!---->
+    private List <xsl:value-of select="translate(alias_name[last()],'-','_')"/> = null;<!---->
   </xsl:template>
 
 <!--* PHASE_OPTION *******************************************************-->
@@ -255,8 +255,8 @@ public class Options extends OptionsBase {
 
 <!--* STRING_OPTION *******************************************************-->
   <xsl:template mode="vars" match="string_option">
-    public String <xsl:value-of select="java_name"/>() { return <xsl:value-of select="java_name"/>; }
-    private String <xsl:value-of select="java_name"/> = "";<!---->
+    public String <xsl:value-of select="translate(alias_name[last()],'-','_')"/>() { return <xsl:value-of select="translate(alias_name[last()],'-','_')"/>; }
+    private String <xsl:value-of select="translate(alias_name[last()],'-','_')"/> = "";<!---->
   </xsl:template>
 
 <!--* MACRO_OPTION *******************************************************-->
@@ -273,9 +273,9 @@ public class Options extends OptionsBase {
 
 <!--* MULTI_OPTION *******************************************************-->
   <xsl:template mode="constants" match="multi_option">
-    <xsl:variable name="name" select="java_name"/>
+    <xsl:variable name="name" select="translate(alias_name[last()],'-','_')"/>
     <xsl:for-each select="value">
-    public static final int <xsl:copy-of select="$name"/>_<xsl:value-of select="java_name"/> = <xsl:number/>;<!---->
+    public static final int <xsl:copy-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-','_')"/> = <xsl:number/>;<!---->
     </xsl:for-each>
   </xsl:template>
 
@@ -364,39 +364,39 @@ public class <xsl:copy-of select="$filename"/>
     }
     <xsl:for-each select="boolean_option"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
-    public boolean <xsl:value-of select="java_name"/>() {
+    public boolean <xsl:value-of select="translate(alias_name[last()],'-','_')"/>() {
         return soot.PackManager.getBoolean( options, "<xsl:value-of select="alias_name"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="int_option"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
-    public int <xsl:value-of select="java_name"/>() {
+    public int <xsl:value-of select="translate(alias_name[last()],'-','_')"/>() {
         return soot.PackManager.getInt( options, "<xsl:value-of select="alias_name"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="float_option"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
-    public float <xsl:value-of select="java_name"/>() {
+    public float <xsl:value-of select="translate(alias_name[last()],'-','_')"/>() {
         return soot.PackManager.getFloat( options, "<xsl:value-of select="alias_name"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="string_option"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
-    public String <xsl:value-of select="java_name"/>() {
+    public String <xsl:value-of select="translate(alias_name[last()],'-','_')"/>() {
         return soot.PackManager.getString( options, "<xsl:value-of select="alias_name"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="multi_option"><!---->
-      <xsl:variable name="name" select="java_name"/>
+      <xsl:variable name="name" select="translate(alias_name,'-','_')"/>
         <xsl:for-each select="value"><!---->
-    public static final int <xsl:value-of select="$name"/>_<xsl:value-of select="java_name"/> = <xsl:number/>;<!---->
+    public static final int <xsl:value-of select="$name"/>_<xsl:value-of select="translate(alias,'-','_')"/> = <xsl:number/>;<!---->
         </xsl:for-each>
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
-    public int <xsl:value-of select="java_name"/>() {
+    public int <xsl:value-of select="translate(alias_name,'-','_')"/>() {
         String s = soot.PackManager.getString( options, "<xsl:value-of select="alias_name"/>" );
         <xsl:for-each select="value"><!---->
         if( s.equalsIgnoreCase( "<xsl:value-of select="alias"/>" ) )
-            return <xsl:value-of select="$name"/>_<xsl:value-of select="java_name"/>;
+            return <xsl:value-of select="$name"/>_<xsl:value-of select="translate(alias,'-','_')"/>;
         </xsl:for-each>
         throw new RuntimeException( "Invalid value "+s+" of phase option <xsl:value-of select="alias_name"/>" );
     }

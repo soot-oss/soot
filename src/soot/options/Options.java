@@ -22,7 +22,7 @@
 
 package soot.options;
 import java.util.*;
-import soot.PackManager;
+import soot.*;
 
 /** Soot command-line options parser.
  * @author Ondrej Lhotak
@@ -35,20 +35,20 @@ public class Options extends OptionsBase {
         }
     }
 
-    public static final int srcPrec_classFile = 1;
-    public static final int srcPrec_jimple = 2;
-    public static final int outputFormat_jimp = 1;
-    public static final int outputFormat_njimple = 2;
-    public static final int outputFormat_jimple = 3;
-    public static final int outputFormat_baf = 4;
-    public static final int outputFormat_b = 5;
-    public static final int outputFormat_grimp = 6;
-    public static final int outputFormat_grimple = 7;
-    public static final int outputFormat_xml = 8;
-    public static final int outputFormat_none = 9;
-    public static final int outputFormat_jasmin = 10;
-    public static final int outputFormat_classFile = 11;
-    public static final int outputFormat_dava = 12;
+    public static final int src_prec_class = 1;
+    public static final int src_prec_jimple = 2;
+    public static final int output_format_jimp = 1;
+    public static final int output_format_njimple = 2;
+    public static final int output_format_jimple = 3;
+    public static final int output_format_baf = 4;
+    public static final int output_format_b = 5;
+    public static final int output_format_grimp = 6;
+    public static final int output_format_grimple = 7;
+    public static final int output_format_xml = 8;
+    public static final int output_format_none = 9;
+    public static final int output_format_jasmin = 10;
+    public static final int output_format_class = 11;
+    public static final int output_format_dava = 12;
 
     public boolean parse() {
         while( hasMoreOptions() ) {
@@ -86,7 +86,7 @@ public class Options extends OptionsBase {
             else if( false 
             || option.equals( "app" )
             )
-                appMode = true;
+                app = true;
   
             else if( false
             || option.equals( "cp" )
@@ -98,10 +98,10 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( classpath == null )
-                    classpath = value;
+                if( soot_classpath == null )
+                    soot_classpath = value;
                 else {
-                    System.out.println( "Duplicate values "+classpath+" and "+value+" for option -"+option );
+                    System.out.println( "Duplicate values "+soot_classpath+" and "+value+" for option -"+option );
                     return false;
                 }
             }
@@ -121,24 +121,24 @@ public class Options extends OptionsBase {
                 || value.equals( "c" )
                 || value.equals( "class" )
                 ) {
-                    if( srcPrec != 0
-                    && srcPrec != srcPrec_classFile ) {
+                    if( src_prec != 0
+                    && src_prec != src_prec_class ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    srcPrec = srcPrec_classFile;
+                    src_prec = src_prec_class;
                 }
     
                 else if( false
                 || value.equals( "J" )
                 || value.equals( "jimple" )
                 ) {
-                    if( srcPrec != 0
-                    && srcPrec != srcPrec_jimple ) {
+                    if( src_prec != 0
+                    && src_prec != src_prec_jimple ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    srcPrec = srcPrec_jimple;
+                    src_prec = src_prec_jimple;
                 }
     
                 else {
@@ -150,7 +150,7 @@ public class Options extends OptionsBase {
             else if( false 
             || option.equals( "allow-phantom-refs" )
             )
-                allowPhantoms = true;
+                allow_phantom_refs = true;
   
             else if( false
             || option.equals( "d" )
@@ -162,10 +162,10 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( outputDir == null )
-                    outputDir = value;
+                if( output_dir == null )
+                    output_dir = value;
                 else {
-                    System.out.println( "Duplicate values "+outputDir+" and "+value+" for option -"+option );
+                    System.out.println( "Duplicate values "+output_dir+" and "+value+" for option -"+option );
                     return false;
                 }
             }
@@ -186,144 +186,142 @@ public class Options extends OptionsBase {
                 || value.equals( "j" )
                 || value.equals( "jimp" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_jimp ) {
+                    if( output_format != 0
+                    && output_format != output_format_jimp ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_jimp;
+                    output_format = output_format_jimp;
                 }
     
                 else if( false
                 || value.equals( "njimple" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_njimple ) {
+                    if( output_format != 0
+                    && output_format != output_format_njimple ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_njimple;
+                    output_format = output_format_njimple;
                 }
     
                 else if( false
                 || value.equals( "J" )
                 || value.equals( "jimple" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_jimple ) {
+                    if( output_format != 0
+                    && output_format != output_format_jimple ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_jimple;
+                    output_format = output_format_jimple;
                 }
     
                 else if( false
                 || value.equals( "B" )
                 || value.equals( "baf" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_baf ) {
+                    if( output_format != 0
+                    && output_format != output_format_baf ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_baf;
+                    output_format = output_format_baf;
                 }
     
                 else if( false
                 || value.equals( "b" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_b ) {
+                    if( output_format != 0
+                    && output_format != output_format_b ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_b;
+                    output_format = output_format_b;
                 }
     
                 else if( false
                 || value.equals( "g" )
                 || value.equals( "grimp" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_grimp ) {
+                    if( output_format != 0
+                    && output_format != output_format_grimp ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_grimp;
+                    output_format = output_format_grimp;
                 }
     
                 else if( false
                 || value.equals( "G" )
                 || value.equals( "grimple" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_grimple ) {
+                    if( output_format != 0
+                    && output_format != output_format_grimple ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_grimple;
+                    output_format = output_format_grimple;
                 }
     
                 else if( false
                 || value.equals( "X" )
                 || value.equals( "xml" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_xml ) {
+                    if( output_format != 0
+                    && output_format != output_format_xml ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_xml;
+                    output_format = output_format_xml;
                 }
     
                 else if( false
                 || value.equals( "n" )
                 || value.equals( "none" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_none ) {
+                    if( output_format != 0
+                    && output_format != output_format_none ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_none;
+                    output_format = output_format_none;
                 }
     
                 else if( false
                 || value.equals( "s" )
                 || value.equals( "jasmin" )
-                || value.equals( "jasmin-through-baf" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_jasmin ) {
+                    if( output_format != 0
+                    && output_format != output_format_jasmin ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_jasmin;
+                    output_format = output_format_jasmin;
                 }
     
                 else if( false
                 || value.equals( "c" )
                 || value.equals( "class" )
-                || value.equals( "class-through-baf" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_classFile ) {
+                    if( output_format != 0
+                    && output_format != output_format_class ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_classFile;
+                    output_format = output_format_class;
                 }
     
                 else if( false
                 || value.equals( "d" )
                 || value.equals( "dava" )
                 ) {
-                    if( outputFormat != 0
-                    && outputFormat != outputFormat_dava ) {
+                    if( output_format != 0
+                    && output_format != output_format_dava ) {
                         System.out.println( "Multiple values given for option "+option );
                         return false;
                     }
-                    outputFormat = outputFormat_dava;
+                    output_format = output_format_dava;
                 }
     
                 else {
@@ -335,7 +333,7 @@ public class Options extends OptionsBase {
             else if( false 
             || option.equals( "via-grimp" )
             )
-                viaGrimp = true;
+                via_grimp = true;
   
             else if( false
             || option.equals( "p" )
@@ -379,10 +377,10 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( processPath == null )
-                    processPath = new LinkedList();
+                if( process_path == null )
+                    process_path = new LinkedList();
 
-                processPath.add( value );
+                process_path.add( value );
             }
   
             else if( false
@@ -395,10 +393,10 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( incPackage == null )
-                    incPackage = new LinkedList();
+                if( include == null )
+                    include = new LinkedList();
 
-                incPackage.add( value );
+                include.add( value );
             }
   
             else if( false
@@ -411,17 +409,17 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( excPackage == null )
-                    excPackage = new LinkedList();
+                if( exclude == null )
+                    exclude = new LinkedList();
 
-                excPackage.add( value );
+                exclude.add( value );
             }
   
             else if( false 
             || option.equals( "a" )
             || option.equals( "analyze-context" )
             )
-                analyzeContext = true;
+                analyze_context = true;
   
             else if( false
             || option.equals( "dynamic-classes" )
@@ -432,10 +430,10 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( dynClasses == null )
-                    dynClasses = new LinkedList();
+                if( dynamic_classes == null )
+                    dynamic_classes = new LinkedList();
 
-                dynClasses.add( value );
+                dynamic_classes.add( value );
             }
   
             else if( false
@@ -447,10 +445,10 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( dynPath == null )
-                    dynPath = new LinkedList();
+                if( dynamic_path == null )
+                    dynamic_path = new LinkedList();
 
-                dynPath.add( value );
+                dynamic_path.add( value );
             }
   
             else if( false
@@ -462,22 +460,22 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( dynPackage == null )
-                    dynPackage = new LinkedList();
+                if( dynamic_package == null )
+                    dynamic_package = new LinkedList();
 
-                dynPackage.add( value );
+                dynamic_package.add( value );
             }
   
             else if( false 
             || option.equals( "keep-line-number" )
             )
-                keepLineNum = true;
+                keep_line_number = true;
   
             else if( false 
             || option.equals( "keep-bytecode-offset" )
             || option.equals( "keep-offset" )
             )
-                keepByteOffset = true;
+                keep_offset = true;
   
             else if( false
             || option.equals( "annot-nullpointer" )
@@ -499,7 +497,7 @@ public class Options extends OptionsBase {
             else if( false 
             || option.equals( "subtract-gc" )
             )
-                subGC = true;
+                subtract_gc = true;
   
             else {
                 System.out.println( "Invalid option -"+option );
@@ -515,78 +513,78 @@ public class Options extends OptionsBase {
     private boolean version = false;
     public boolean verbose() { return verbose; }
     private boolean verbose = false;
-    public boolean appMode() { return appMode; }
-    private boolean appMode = false;
-    public String classpath() { return classpath; }
-    private String classpath = "";
-    public int srcPrec() {
-        if( srcPrec == 0 ) return srcPrec_classFile;
-        return srcPrec; 
+    public boolean app() { return app; }
+    private boolean app = false;
+    public String soot_classpath() { return soot_classpath; }
+    private String soot_classpath = "";
+    public int src_prec() {
+        if( src_prec == 0 ) return src_prec_class;
+        return src_prec; 
     }
-    private int srcPrec = 0;
-    public boolean allowPhantoms() { return allowPhantoms; }
-    private boolean allowPhantoms = false;
-    public String outputDir() { return outputDir; }
-    private String outputDir = "";
-    public int outputFormat() {
-        if( outputFormat == 0 ) return outputFormat_classFile;
-        return outputFormat; 
+    private int src_prec = 0;
+    public boolean allow_phantom_refs() { return allow_phantom_refs; }
+    private boolean allow_phantom_refs = false;
+    public String output_dir() { return output_dir; }
+    private String output_dir = "";
+    public int output_format() {
+        if( output_format == 0 ) return output_format_class;
+        return output_format; 
     }
-    private int outputFormat = 0;
-    public boolean viaGrimp() { return viaGrimp; }
-    private boolean viaGrimp = false;
-    public List processPath() { 
-        if( processPath == null )
+    private int output_format = 0;
+    public boolean via_grimp() { return via_grimp; }
+    private boolean via_grimp = false;
+    public List process_path() { 
+        if( process_path == null )
             return java.util.Collections.EMPTY_LIST;
         else
-            return processPath;
+            return process_path;
     }
-    private List processPath = null;
-    public List incPackage() { 
-        if( incPackage == null )
+    private List process_path = null;
+    public List include() { 
+        if( include == null )
             return java.util.Collections.EMPTY_LIST;
         else
-            return incPackage;
+            return include;
     }
-    private List incPackage = null;
-    public List excPackage() { 
-        if( excPackage == null )
+    private List include = null;
+    public List exclude() { 
+        if( exclude == null )
             return java.util.Collections.EMPTY_LIST;
         else
-            return excPackage;
+            return exclude;
     }
-    private List excPackage = null;
-    public boolean analyzeContext() { return analyzeContext; }
-    private boolean analyzeContext = false;
-    public List dynClasses() { 
-        if( dynClasses == null )
+    private List exclude = null;
+    public boolean analyze_context() { return analyze_context; }
+    private boolean analyze_context = false;
+    public List dynamic_classes() { 
+        if( dynamic_classes == null )
             return java.util.Collections.EMPTY_LIST;
         else
-            return dynClasses;
+            return dynamic_classes;
     }
-    private List dynClasses = null;
-    public List dynPath() { 
-        if( dynPath == null )
+    private List dynamic_classes = null;
+    public List dynamic_path() { 
+        if( dynamic_path == null )
             return java.util.Collections.EMPTY_LIST;
         else
-            return dynPath;
+            return dynamic_path;
     }
-    private List dynPath = null;
-    public List dynPackage() { 
-        if( dynPackage == null )
+    private List dynamic_path = null;
+    public List dynamic_package() { 
+        if( dynamic_package == null )
             return java.util.Collections.EMPTY_LIST;
         else
-            return dynPackage;
+            return dynamic_package;
     }
-    private List dynPackage = null;
-    public boolean keepLineNum() { return keepLineNum; }
-    private boolean keepLineNum = false;
-    public boolean keepByteOffset() { return keepByteOffset; }
-    private boolean keepByteOffset = false;
+    private List dynamic_package = null;
+    public boolean keep_line_number() { return keep_line_number; }
+    private boolean keep_line_number = false;
+    public boolean keep_offset() { return keep_offset; }
+    private boolean keep_offset = false;
     public boolean time() { return time; }
     private boolean time = false;
-    public boolean subGC() { return subGC; }
-    private boolean subGC = false;
+    public boolean subtract_gc() { return subtract_gc; }
+    private boolean subtract_gc = false;
 
     public String getUsage() {
         return ""
@@ -617,8 +615,8 @@ public class Options extends OptionsBase {
 +padVal(" G grimple", "Grimple File" )
 +padVal(" X xml", "Xml File" )
 +padVal(" n none", "No Output File" )
-+padVal(" s jasmin jasmin-through-baf", "Jasmin File" )
-+padVal(" c class class-through-baf", "Class File" )
++padVal(" s jasmin", "Jasmin File" )
++padVal(" c class", "Class File" )
 +padVal(" d dava", "Dava Decompiled File" )
 +padOpt(" -via-grimp", "convert jimple to bytecode via grimp instead of via baf" )
 +"\nProcessing Options:\n"
@@ -728,108 +726,78 @@ public class Options extends OptionsBase {
             return ""
                 +"disabled ";
     
-        if( phaseName.equals( "gb" ) )
+        if( phaseName.equals( "cg" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wstp" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wsop" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wjtp" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wjtp.Spark" ) )
             return ""
                 +"disabled "
-                +"no-aggregating "
-                +"aggregate-all-locals ";
+                +"verbose "
+                +"ignoreTypesEntirely "
+                +"forceGCs "
+                +"preJimplify "
+                +"VTA "
+                +"RTA "
+                +"ignoreBaseObjects "
+                +"typesForSites "
+                +"mergeStringBuffer "
+                +"simulateNatives "
+                +"simpleEdgesBidirectional "
+                +"onFlyCallGraph "
+                +"parmsAsFields "
+                +"returnsAsFields "
+                +"simplifyOffline "
+                +"simplifySCCs "
+                +"ignoreTypesForSCCs "
+                +"propagator "
+                +"setImpl "
+                +"doubleSetOld "
+                +"doubleSetNew "
+                +"dumpHTML "
+                +"dumpPAG "
+                +"dumpSolution "
+                +"topoSort "
+                +"dumpTypes "
+                +"classMethodVar "
+                +"dumpAnswer "
+                +"trimInvokeGraph "
+                +"addTags ";
     
-        if( phaseName.equals( "gb.a" ) )
+        if( phaseName.equals( "wjop" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wjop.smb" ) )
             return ""
                 +"disabled "
-                +"only-stack-locals ";
+                +"insert-null-checks "
+                +"insert-redundant-casts "
+                +"allowed-modifier-changes "
+                +"VTA-passes ";
     
-        if( phaseName.equals( "gb.cf" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "gb.ule" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "gb.asv1" ) )
+        if( phaseName.equals( "wjop.si" ) )
             return ""
                 +"disabled "
-                +"only-stack-locals ";
-    
-        if( phaseName.equals( "gb.asv2" ) )
-            return ""
-                +"disabled "
-                +"only-stack-locals ";
-    
-        if( phaseName.equals( "bb" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "bb.lso" ) )
-            return ""
-                +"disabled "
-                +"debug "
-                +"inter "
-                +"sl "
-                +"sl2 "
-                +"sll "
-                +"sll2 ";
-    
-        if( phaseName.equals( "bb.pho" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "bb.ule" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "bb.lp" ) )
-            return ""
-                +"disabled "
-                +"unsplit-original-locals ";
-    
-        if( phaseName.equals( "jap" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "jap.npc" ) )
-            return ""
-                +"disabled "
-                +"only-array-ref "
-                +"profiling ";
-    
-        if( phaseName.equals( "jap.abc" ) )
-            return ""
-                +"disabled "
-                +"with-all "
-                +"with-fieldref "
-                +"with-arrayref "
-                +"with-cse "
-                +"with-classfield "
-                +"with-rectarray "
-                +"profiling ";
-    
-        if( phaseName.equals( "jap.profiling" ) )
-            return ""
-                +"disabled "
-                +"enable "
-                +"notmainentry ";
-    
-        if( phaseName.equals( "gop" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "tag" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "tag.ln" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "tag.an" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "tag.dep" ) )
-            return ""
-                +"disabled ";
+                +"insert-null-checks "
+                +"insert-redundant-casts "
+                +"allowed-modifier-changes "
+                +"expansion-factor "
+                +"max-container-size "
+                +"max-inlinee-size "
+                +"VTA-passes ";
     
         if( phaseName.equals( "wjtp2" ) )
             return ""
@@ -844,19 +812,7 @@ public class Options extends OptionsBase {
             return ""
                 +"disabled ";
     
-        if( phaseName.equals( "bop" ) )
-            return ""
-                +"disabled ";
-    
         if( phaseName.equals( "sop" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "wstp" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "cg" ) )
             return ""
                 +"disabled ";
     
@@ -924,66 +880,112 @@ public class Options extends OptionsBase {
             return ""
                 +"disabled ";
     
-        if( phaseName.equals( "wjtp" ) )
+        if( phaseName.equals( "jap" ) )
             return ""
                 +"disabled ";
     
-        if( phaseName.equals( "wjtp.Spark" ) )
+        if( phaseName.equals( "jap.npc" ) )
             return ""
                 +"disabled "
-                +"verbose "
-                +"ignoreTypesEntirely "
-                +"forceGCs "
-                +"preJimplify "
-                +"VTA "
-                +"RTA "
-                +"ignoreBaseObjects "
-                +"typesForSites "
-                +"mergeStringBuffer "
-                +"simulateNatives "
-                +"simpleEdgesBidirectional "
-                +"onFlyCallGraph "
-                +"parmsAsFields "
-                +"returnsAsFields "
-                +"simplifyOffline "
-                +"simplifySCCs "
-                +"ignoreTypesForSCCs "
-                +"propagator "
-                +"setImpl "
-                +"doubleSetOld "
-                +"doubleSetNew "
-                +"dumpHTML "
-                +"dumpPAG "
-                +"dumpSolution "
-                +"topoSort "
-                +"dumpTypes "
-                +"classMethodVar "
-                +"dumpAnswer "
-                +"trimInvokeGraph "
-                +"addTags ";
+                +"only-array-ref "
+                +"profiling ";
     
-        if( phaseName.equals( "wjop" ) )
+        if( phaseName.equals( "jap.abc" ) )
+            return ""
+                +"disabled "
+                +"with-all "
+                +"with-fieldref "
+                +"with-arrayref "
+                +"with-cse "
+                +"with-classfield "
+                +"with-rectarray "
+                +"profiling ";
+    
+        if( phaseName.equals( "jap.profiling" ) )
+            return ""
+                +"disabled "
+                +"enable "
+                +"notmainentry ";
+    
+        if( phaseName.equals( "gb" ) )
+            return ""
+                +"disabled "
+                +"no-aggregating "
+                +"aggregate-all-locals ";
+    
+        if( phaseName.equals( "gb.a" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "gb.asv1" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "gb.asv2" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "gb.cf" ) )
             return ""
                 +"disabled ";
     
-        if( phaseName.equals( "wjop.smb" ) )
+        if( phaseName.equals( "gb.ule" ) )
             return ""
-                +"disabled "
-                +"insert-null-checks "
-                +"insert-redundant-casts "
-                +"allowed-modifier-changes "
-                +"VTA-passes ";
+                +"disabled ";
     
-        if( phaseName.equals( "wjop.si" ) )
+        if( phaseName.equals( "gop" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "bb" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "bb.lso" ) )
             return ""
                 +"disabled "
-                +"insert-null-checks "
-                +"insert-redundant-casts "
-                +"allowed-modifier-changes "
-                +"expansion-factor "
-                +"max-container-size "
-                +"max-inlinee-size "
-                +"VTA-passes ";
+                +"debug "
+                +"inter "
+                +"sl "
+                +"sl2 "
+                +"sll "
+                +"sll2 ";
+    
+        if( phaseName.equals( "bb.pho" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "bb.ule" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "bb.lp" ) )
+            return ""
+                +"disabled "
+                +"unsplit-original-locals ";
+    
+        if( phaseName.equals( "bop" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "tag" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "tag.ln" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "tag.an" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "tag.dep" ) )
+            return ""
+                +"disabled ";
     
         // The default set of options is just disabled.
         return "disabled";
@@ -1037,145 +1039,13 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.uce" ) )
             return "";
     
-        if( phaseName.equals( "gb" ) )
-            return "";
-    
-        if( phaseName.equals( "gb.a" ) )
-            return "";
-    
-        if( phaseName.equals( "gb.cf" ) )
-            return "";
-    
-        if( phaseName.equals( "gb.ule" ) )
-            return "";
-    
-        if( phaseName.equals( "gb.asv1" ) )
-            return ""
-              +"only-stack-locals:true ";
-    
-        if( phaseName.equals( "gb.asv2" ) )
-            return ""
-              +"only-stack-locals:true ";
-    
-        if( phaseName.equals( "bb" ) )
-            return "";
-    
-        if( phaseName.equals( "bb.lso" ) )
-            return ""
-              +"sl:true "
-              +"sll:true ";
-    
-        if( phaseName.equals( "bb.pho" ) )
-            return "";
-    
-        if( phaseName.equals( "bb.ule" ) )
-            return "";
-    
-        if( phaseName.equals( "bb.lp" ) )
-            return "";
-    
-        if( phaseName.equals( "jap" ) )
-            return "";
-    
-        if( phaseName.equals( "jap.npc" ) )
-            return ""
-              +"disabled:true ";
-    
-        if( phaseName.equals( "jap.abc" ) )
-            return ""
-              +"disabled:true ";
-    
-        if( phaseName.equals( "jap.profiling" ) )
-            return ""
-              +"disabled:true "
-              +"enable:false "
-              +"notmainentry:false ";
-    
-        if( phaseName.equals( "gop" ) )
-            return "";
-    
-        if( phaseName.equals( "tag" ) )
-            return "";
-    
-        if( phaseName.equals( "tag.ln" ) )
-            return ""
-              +"disabled:true ";
-    
-        if( phaseName.equals( "tag.an" ) )
-            return ""
-              +"disabled:true ";
-    
-        if( phaseName.equals( "tag.dep" ) )
-            return ""
-              +"disabled:true ";
-    
-        if( phaseName.equals( "wjtp2" ) )
-            return "";
-    
-        if( phaseName.equals( "wjtp2.ra" ) )
-            return ""
-              +"disabled:true ";
-    
-        if( phaseName.equals( "stp" ) )
-            return "";
-    
-        if( phaseName.equals( "bop" ) )
-            return "";
-    
-        if( phaseName.equals( "sop" ) )
+        if( phaseName.equals( "cg" ) )
             return "";
     
         if( phaseName.equals( "wstp" ) )
             return "";
     
-        if( phaseName.equals( "cg" ) )
-            return "";
-    
-        if( phaseName.equals( "jtp" ) )
-            return "";
-    
-        if( phaseName.equals( "jop" ) )
-            return "";
-    
-        if( phaseName.equals( "jop.cse" ) )
-            return ""
-              +"disabled:true ";
-    
-        if( phaseName.equals( "jop.bcm" ) )
-            return ""
-              +"disabled:true ";
-    
-        if( phaseName.equals( "jop.lcm" ) )
-            return ""
-              +"disabled:true "
-              +"safe:safe "
-              +"unroll:true ";
-    
-        if( phaseName.equals( "jop.cp" ) )
-            return "";
-    
-        if( phaseName.equals( "jop.cpf" ) )
-            return "";
-    
-        if( phaseName.equals( "jop.cbf" ) )
-            return "";
-    
-        if( phaseName.equals( "jop.dae" ) )
-            return "";
-    
-        if( phaseName.equals( "jop.uce1" ) )
-            return "";
-    
-        if( phaseName.equals( "jop.uce2" ) )
-            return "";
-    
-        if( phaseName.equals( "jop.ubf1" ) )
-            return "";
-    
-        if( phaseName.equals( "jop.ubf2" ) )
-            return "";
-    
-        if( phaseName.equals( "jop.ule" ) )
+        if( phaseName.equals( "wsop" ) )
             return "";
     
         if( phaseName.equals( "wjtp" ) )
@@ -1238,6 +1108,141 @@ public class Options extends OptionsBase {
               +"max-inlinee-size:20 "
               +"VTA-passes:0 ";
     
+        if( phaseName.equals( "wjtp2" ) )
+            return "";
+    
+        if( phaseName.equals( "wjtp2.ra" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "stp" ) )
+            return "";
+    
+        if( phaseName.equals( "sop" ) )
+            return "";
+    
+        if( phaseName.equals( "jtp" ) )
+            return "";
+    
+        if( phaseName.equals( "jop" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.cse" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "jop.bcm" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "jop.lcm" ) )
+            return ""
+              +"disabled:true "
+              +"safe:safe "
+              +"unroll:true ";
+    
+        if( phaseName.equals( "jop.cp" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.cpf" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.cbf" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.dae" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.uce1" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.uce2" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.ubf1" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.ubf2" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.ule" ) )
+            return "";
+    
+        if( phaseName.equals( "jap" ) )
+            return "";
+    
+        if( phaseName.equals( "jap.npc" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "jap.abc" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "jap.profiling" ) )
+            return ""
+              +"disabled:true "
+              +"enable:false "
+              +"notmainentry:false ";
+    
+        if( phaseName.equals( "gb" ) )
+            return "";
+    
+        if( phaseName.equals( "gb.a" ) )
+            return "";
+    
+        if( phaseName.equals( "gb.asv1" ) )
+            return ""
+              +"only-stack-locals:true ";
+    
+        if( phaseName.equals( "gb.asv2" ) )
+            return ""
+              +"only-stack-locals:true ";
+    
+        if( phaseName.equals( "gb.cf" ) )
+            return "";
+    
+        if( phaseName.equals( "gb.ule" ) )
+            return "";
+    
+        if( phaseName.equals( "gop" ) )
+            return "";
+    
+        if( phaseName.equals( "bb" ) )
+            return "";
+    
+        if( phaseName.equals( "bb.lso" ) )
+            return ""
+              +"sl:true "
+              +"sll:true ";
+    
+        if( phaseName.equals( "bb.pho" ) )
+            return "";
+    
+        if( phaseName.equals( "bb.ule" ) )
+            return "";
+    
+        if( phaseName.equals( "bb.lp" ) )
+            return "";
+    
+        if( phaseName.equals( "bop" ) )
+            return "";
+    
+        if( phaseName.equals( "tag" ) )
+            return "";
+    
+        if( phaseName.equals( "tag.ln" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "tag.an" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "tag.dep" ) )
+            return ""
+              +"disabled:true ";
+    
         // The default default value is nothing.
         return "";
     }
@@ -1258,33 +1263,18 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.lp" ) ) return;
         if( phaseName.equals( "jb.ne" ) ) return;
         if( phaseName.equals( "jb.uce" ) ) return;
-        if( phaseName.equals( "gb" ) ) return;
-        if( phaseName.equals( "gb.a" ) ) return;
-        if( phaseName.equals( "gb.cf" ) ) return;
-        if( phaseName.equals( "gb.ule" ) ) return;
-        if( phaseName.equals( "gb.asv1" ) ) return;
-        if( phaseName.equals( "gb.asv2" ) ) return;
-        if( phaseName.equals( "bb" ) ) return;
-        if( phaseName.equals( "bb.lso" ) ) return;
-        if( phaseName.equals( "bb.pho" ) ) return;
-        if( phaseName.equals( "bb.ule" ) ) return;
-        if( phaseName.equals( "bb.lp" ) ) return;
-        if( phaseName.equals( "jap" ) ) return;
-        if( phaseName.equals( "jap.npc" ) ) return;
-        if( phaseName.equals( "jap.abc" ) ) return;
-        if( phaseName.equals( "jap.profiling" ) ) return;
-        if( phaseName.equals( "gop" ) ) return;
-        if( phaseName.equals( "tag" ) ) return;
-        if( phaseName.equals( "tag.ln" ) ) return;
-        if( phaseName.equals( "tag.an" ) ) return;
-        if( phaseName.equals( "tag.dep" ) ) return;
+        if( phaseName.equals( "cg" ) ) return;
+        if( phaseName.equals( "wstp" ) ) return;
+        if( phaseName.equals( "wsop" ) ) return;
+        if( phaseName.equals( "wjtp" ) ) return;
+        if( phaseName.equals( "wjtp.Spark" ) ) return;
+        if( phaseName.equals( "wjop" ) ) return;
+        if( phaseName.equals( "wjop.smb" ) ) return;
+        if( phaseName.equals( "wjop.si" ) ) return;
         if( phaseName.equals( "wjtp2" ) ) return;
         if( phaseName.equals( "wjtp2.ra" ) ) return;
         if( phaseName.equals( "stp" ) ) return;
-        if( phaseName.equals( "bop" ) ) return;
         if( phaseName.equals( "sop" ) ) return;
-        if( phaseName.equals( "wstp" ) ) return;
-        if( phaseName.equals( "cg" ) ) return;
         if( phaseName.equals( "jtp" ) ) return;
         if( phaseName.equals( "jop" ) ) return;
         if( phaseName.equals( "jop.cse" ) ) return;
@@ -1299,11 +1289,27 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jop.ubf1" ) ) return;
         if( phaseName.equals( "jop.ubf2" ) ) return;
         if( phaseName.equals( "jop.ule" ) ) return;
-        if( phaseName.equals( "wjtp" ) ) return;
-        if( phaseName.equals( "wjtp.Spark" ) ) return;
-        if( phaseName.equals( "wjop" ) ) return;
-        if( phaseName.equals( "wjop.smb" ) ) return;
-        if( phaseName.equals( "wjop.si" ) ) return;
+        if( phaseName.equals( "jap" ) ) return;
+        if( phaseName.equals( "jap.npc" ) ) return;
+        if( phaseName.equals( "jap.abc" ) ) return;
+        if( phaseName.equals( "jap.profiling" ) ) return;
+        if( phaseName.equals( "gb" ) ) return;
+        if( phaseName.equals( "gb.a" ) ) return;
+        if( phaseName.equals( "gb.asv1" ) ) return;
+        if( phaseName.equals( "gb.asv2" ) ) return;
+        if( phaseName.equals( "gb.cf" ) ) return;
+        if( phaseName.equals( "gb.ule" ) ) return;
+        if( phaseName.equals( "gop" ) ) return;
+        if( phaseName.equals( "bb" ) ) return;
+        if( phaseName.equals( "bb.lso" ) ) return;
+        if( phaseName.equals( "bb.pho" ) ) return;
+        if( phaseName.equals( "bb.ule" ) ) return;
+        if( phaseName.equals( "bb.lp" ) ) return;
+        if( phaseName.equals( "bop" ) ) return;
+        if( phaseName.equals( "tag" ) ) return;
+        if( phaseName.equals( "tag.ln" ) ) return;
+        if( phaseName.equals( "tag.an" ) ) return;
+        if( phaseName.equals( "tag.dep" ) ) return;
         System.out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
     }
 
@@ -1337,60 +1343,30 @@ public class Options extends OptionsBase {
             System.out.println( "Warning: Options exist for non-existent phase jb.ne" );
         if( !PackManager.v().hasPhase( "jb.uce" ) )
             System.out.println( "Warning: Options exist for non-existent phase jb.uce" );
-        if( !PackManager.v().hasPhase( "gb" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb" );
-        if( !PackManager.v().hasPhase( "gb.a" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb.a" );
-        if( !PackManager.v().hasPhase( "gb.cf" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb.cf" );
-        if( !PackManager.v().hasPhase( "gb.ule" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb.ule" );
-        if( !PackManager.v().hasPhase( "gb.asv1" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb.asv1" );
-        if( !PackManager.v().hasPhase( "gb.asv2" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb.asv2" );
-        if( !PackManager.v().hasPhase( "bb" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bb" );
-        if( !PackManager.v().hasPhase( "bb.lso" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bb.lso" );
-        if( !PackManager.v().hasPhase( "bb.pho" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bb.pho" );
-        if( !PackManager.v().hasPhase( "bb.ule" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bb.ule" );
-        if( !PackManager.v().hasPhase( "bb.lp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bb.lp" );
-        if( !PackManager.v().hasPhase( "jap" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jap" );
-        if( !PackManager.v().hasPhase( "jap.npc" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jap.npc" );
-        if( !PackManager.v().hasPhase( "jap.abc" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jap.abc" );
-        if( !PackManager.v().hasPhase( "jap.profiling" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jap.profiling" );
-        if( !PackManager.v().hasPhase( "gop" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gop" );
-        if( !PackManager.v().hasPhase( "tag" ) )
-            System.out.println( "Warning: Options exist for non-existent phase tag" );
-        if( !PackManager.v().hasPhase( "tag.ln" ) )
-            System.out.println( "Warning: Options exist for non-existent phase tag.ln" );
-        if( !PackManager.v().hasPhase( "tag.an" ) )
-            System.out.println( "Warning: Options exist for non-existent phase tag.an" );
-        if( !PackManager.v().hasPhase( "tag.dep" ) )
-            System.out.println( "Warning: Options exist for non-existent phase tag.dep" );
+        if( !PackManager.v().hasPhase( "cg" ) )
+            System.out.println( "Warning: Options exist for non-existent phase cg" );
+        if( !PackManager.v().hasPhase( "wstp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wstp" );
+        if( !PackManager.v().hasPhase( "wsop" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wsop" );
+        if( !PackManager.v().hasPhase( "wjtp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjtp" );
+        if( !PackManager.v().hasPhase( "wjtp.Spark" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjtp.Spark" );
+        if( !PackManager.v().hasPhase( "wjop" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjop" );
+        if( !PackManager.v().hasPhase( "wjop.smb" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjop.smb" );
+        if( !PackManager.v().hasPhase( "wjop.si" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjop.si" );
         if( !PackManager.v().hasPhase( "wjtp2" ) )
             System.out.println( "Warning: Options exist for non-existent phase wjtp2" );
         if( !PackManager.v().hasPhase( "wjtp2.ra" ) )
             System.out.println( "Warning: Options exist for non-existent phase wjtp2.ra" );
         if( !PackManager.v().hasPhase( "stp" ) )
             System.out.println( "Warning: Options exist for non-existent phase stp" );
-        if( !PackManager.v().hasPhase( "bop" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bop" );
         if( !PackManager.v().hasPhase( "sop" ) )
             System.out.println( "Warning: Options exist for non-existent phase sop" );
-        if( !PackManager.v().hasPhase( "wstp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wstp" );
-        if( !PackManager.v().hasPhase( "cg" ) )
-            System.out.println( "Warning: Options exist for non-existent phase cg" );
         if( !PackManager.v().hasPhase( "jtp" ) )
             System.out.println( "Warning: Options exist for non-existent phase jtp" );
         if( !PackManager.v().hasPhase( "jop" ) )
@@ -1419,16 +1395,48 @@ public class Options extends OptionsBase {
             System.out.println( "Warning: Options exist for non-existent phase jop.ubf2" );
         if( !PackManager.v().hasPhase( "jop.ule" ) )
             System.out.println( "Warning: Options exist for non-existent phase jop.ule" );
-        if( !PackManager.v().hasPhase( "wjtp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjtp" );
-        if( !PackManager.v().hasPhase( "wjtp.Spark" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjtp.Spark" );
-        if( !PackManager.v().hasPhase( "wjop" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjop" );
-        if( !PackManager.v().hasPhase( "wjop.smb" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjop.smb" );
-        if( !PackManager.v().hasPhase( "wjop.si" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjop.si" );
+        if( !PackManager.v().hasPhase( "jap" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jap" );
+        if( !PackManager.v().hasPhase( "jap.npc" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jap.npc" );
+        if( !PackManager.v().hasPhase( "jap.abc" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jap.abc" );
+        if( !PackManager.v().hasPhase( "jap.profiling" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jap.profiling" );
+        if( !PackManager.v().hasPhase( "gb" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb" );
+        if( !PackManager.v().hasPhase( "gb.a" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb.a" );
+        if( !PackManager.v().hasPhase( "gb.asv1" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb.asv1" );
+        if( !PackManager.v().hasPhase( "gb.asv2" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb.asv2" );
+        if( !PackManager.v().hasPhase( "gb.cf" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb.cf" );
+        if( !PackManager.v().hasPhase( "gb.ule" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb.ule" );
+        if( !PackManager.v().hasPhase( "gop" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gop" );
+        if( !PackManager.v().hasPhase( "bb" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bb" );
+        if( !PackManager.v().hasPhase( "bb.lso" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bb.lso" );
+        if( !PackManager.v().hasPhase( "bb.pho" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bb.pho" );
+        if( !PackManager.v().hasPhase( "bb.ule" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bb.ule" );
+        if( !PackManager.v().hasPhase( "bb.lp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bb.lp" );
+        if( !PackManager.v().hasPhase( "bop" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bop" );
+        if( !PackManager.v().hasPhase( "tag" ) )
+            System.out.println( "Warning: Options exist for non-existent phase tag" );
+        if( !PackManager.v().hasPhase( "tag.ln" ) )
+            System.out.println( "Warning: Options exist for non-existent phase tag.ln" );
+        if( !PackManager.v().hasPhase( "tag.an" ) )
+            System.out.println( "Warning: Options exist for non-existent phase tag.an" );
+        if( !PackManager.v().hasPhase( "tag.dep" ) )
+            System.out.println( "Warning: Options exist for non-existent phase tag.dep" );
     }
   
 }

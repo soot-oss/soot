@@ -943,7 +943,7 @@ public class CFG {
 
     private void adjustLineNumberTable()
     {
-	if (!soot.Main.opts.keepLineNum())
+	if (!soot.Main.opts.keep_line_number())
 	    return;
 	if (method.code_attr == null)
 	    return;
@@ -1592,7 +1592,7 @@ public class CFG {
         }
 
 	/* covert line number table to tags attached to statements */
-	if (soot.Main.opts.keepLineNum())
+	if (soot.Main.opts.keep_line_number())
 	{
 	    HashMap stmtstags = new HashMap();
 	    LinkedList startstmts = new LinkedList();
@@ -4748,7 +4748,7 @@ public class CFG {
         }
 
       if(stmt != null) {
-	if (soot.Main.opts.keepByteOffset()) {
+	if (soot.Main.opts.keep_offset()) {
 	  stmt.addTag(new BytecodeOffsetTag(ins.label));
 	}
         statements.add(stmt);

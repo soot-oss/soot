@@ -566,7 +566,7 @@ public class Scene  //extends AbstractHost
     
     public boolean getPhantomRefs()
     {
-        if( !soot.Main.opts.allowPhantoms() ) return false;
+        if( !soot.Main.opts.allow_phantom_refs() ) return false;
         return allowsPhantomRefs;
     }
 

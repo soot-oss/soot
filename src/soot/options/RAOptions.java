@@ -38,7 +38,7 @@ public class RAOptions
     }
     
     /** With Whole Application --  */
-    public boolean withWholeApp() {
+    public boolean with_wholeapp() {
         return soot.PackManager.getBoolean( options, "with-wholeapp" );
     }
     

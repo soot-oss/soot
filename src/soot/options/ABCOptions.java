@@ -38,32 +38,32 @@ public class ABCOptions
     }
     
     /** With All --  */
-    public boolean withAll() {
+    public boolean with_all() {
         return soot.PackManager.getBoolean( options, "with-all" );
     }
     
     /** With Field References --  */
-    public boolean withFieldRef() {
+    public boolean with_fieldref() {
         return soot.PackManager.getBoolean( options, "with-fieldref" );
     }
     
     /** With Array References --  */
-    public boolean withArrayRef() {
+    public boolean with_arrayref() {
         return soot.PackManager.getBoolean( options, "with-arrayref" );
     }
     
     /** With Common Sub-expressions --  */
-    public boolean withCse() {
+    public boolean with_cse() {
         return soot.PackManager.getBoolean( options, "with-cse" );
     }
     
     /** With Class Field --  */
-    public boolean withClassField() {
+    public boolean with_classfield() {
         return soot.PackManager.getBoolean( options, "with-classfield" );
     }
     
     /** With Rectangular Array --  */
-    public boolean withRectArray() {
+    public boolean with_rectarray() {
         return soot.PackManager.getBoolean( options, "with-rectarray" );
     }
     

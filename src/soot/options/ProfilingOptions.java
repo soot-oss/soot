@@ -43,7 +43,7 @@ public class ProfilingOptions
     }
     
     /** Not Main Entry --  */
-    public boolean notMainEntry() {
+    public boolean notmainentry() {
         return soot.PackManager.getBoolean( options, "notmainentry" );
     }
     
