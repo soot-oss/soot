@@ -1,10 +1,88 @@
+
+#######################################################################
+### Set these variables
+#######################################################################
+
 ECLIPSE_HOME=/home/research/ccl/jlhotak/eclipse2.1/eclipse/plugins/
 SOOT_DIR=/home/research/ccl/jlhotak/mirrored/soot/classes
 
-all:
-	javac -d classes -classpath $(ECLIPSE_HOME)org.eclipse.jface.text_2.1.0/jfacetext.jar:$(ECLIPSE_HOME)org.eclipse.jface_2.1.0/jface.jar:$(ECLIPSE_HOME)org.eclipse.ui.workbench_2.1.0/workbench.jar:$(ECLIPSE_HOME)org.eclipse.ui_2.1.0/ui.jar:$(ECLIPSE_HOME)org.eclipse.ui.views_2.1.0/views.jar:$(ECLIPSE_HOME)org.eclipse.ui.editors_2.1.0/editors.jar:$(ECLIPSE_HOME)org.eclipse.ui.workbench.texteditor_2.1.0/texteditor.jar:$(ECLIPSE_HOME)org.eclipse.text_2.1.0/text.jar:$(ECLIPSE_HOME)org.eclipse.core.boot_2.1.0/boot.jar:$(ECLIPSE_HOME)org.eclipse.jdt.ui_2.1.0/jdt.jar:$(ECLIPSE_HOME)org.eclipse.jdt.core_2.1.0/jdtcore.jar:$(ECLIPSE_HOME)org.eclipse.core.resources_2.1.0/resources.jar:$(ECLIPSE_HOME)org.eclipse.core.runtime_2.1.0/runtime.jar:$(ECLIPSE_HOME)org.eclipse.swt.motif_2.1.0/ws/motif/swt.jar:$(ECLIPSE_HOME)org.eclipse.swt.gtk_2.1.0/ws/gtk/swt.jar:$(SOOT_DIR):. src/ca/mcgill/sable/soot/*.java src/ca/mcgill/sable/soot/*/*.java src/ca/mcgill/sable/soot/*/*/*.java
 
-	jar -cf soot-plugin.jar icons/*.jpg icons/*.gif icons/*.png build.properties .project .classpath plugin.properties plugin.xml
+#######################################################################
+### These variables probably do not need to be changed
+#######################################################################
+
+# the OSTYPE
+# this only needs to be set for windows; 
+# unix (default) and cygwin should work fine without setting this
+#OSTYPE=windows
+#OSTYPE=cygwin
+#OSTYPE=linux
+
+# the eclipse version
+V=_2.1.0
+
+
+
+#######################################################################
+### classpath variables and file lists
+#######################################################################
+
+# classpath for SWT 
+SWT_GTK=$(ECLIPSE_HOME)org.eclipse.swt.gtk$(V)/ws/gtk/swt.jar
+SWT_MOTIF=$(ECLIPSE_HOME)org.eclipse.swt.motif$(V)/ws/motif/swt.jar
+SWT_WINDOWS=$(ECLIPSE_HOME)org.eclipse.swt.win32$(V)/ws/win32/swt.jar
+SWT_CLASSPATH=$(SWT_GTK):$(SWT_MOTIF):$(SWT_WINDOWS)
+
+# the main classpath
+MAIN_CLASSPATH=$(ECLIPSE_HOME)org.eclipse.jface.text$(V)/jfacetext.jar:$(ECLIPSE_HOME)org.eclipse.jface$(V)/jface.jar:$(ECLIPSE_HOME)org.eclipse.ui.workbench$(V)/workbench.jar:$(ECLIPSE_HOME)org.eclipse.ui$(V)/ui.jar:$(ECLIPSE_HOME)org.eclipse.ui.views$(V)/views.jar:$(ECLIPSE_HOME)org.eclipse.ui.editors$(V)/editors.jar:$(ECLIPSE_HOME)org.eclipse.ui.workbench.texteditor$(V)/texteditor.jar:$(ECLIPSE_HOME)org.eclipse.text$(V)/text.jar:$(ECLIPSE_HOME)org.eclipse.core.boot$(V)/boot.jar:$(ECLIPSE_HOME)org.eclipse.jdt.ui$(V)/jdt.jar:$(ECLIPSE_HOME)org.eclipse.jdt.core$(V)/jdtcore.jar:$(ECLIPSE_HOME)org.eclipse.core.resources$(V)/resources.jar:$(ECLIPSE_HOME)org.eclipse.core.runtime$(V)/runtime.jar:$(SWT_CLASSPATH):$(SOOT_DIR):. 
+
+# some lists of files to make things more readable
+JAR_ICONS=icons/*.jpg icons/*.gif icons/*.png 
+JAR_FILES=build.properties .project .classpath plugin.properties plugin.xml
+SRC_PATHS=src/ca/mcgill/sable/soot/*.java src/ca/mcgill/sable/soot/*/*.java src/ca/mcgill/sable/soot/*/*/*.java
+
+
+
+
+#######################################################################
+### Figure out the OSTYPE
+#######################################################################
+
+ifndef OSTYPE
+	OSTYPE := $(shell uname)
+endif
+
+# get things into lower case
+# this is a hack, but I don't know any other way to do this strictly
+# within make (ie, not requiring some shell feature or other program)
+OSTYPE := $(subst CYGWIN,cygwin,$(OSTYPE))
+OSTYPE := $(subst Cygwin,cygwin,$(OSTYPE))
+OSTYPE := $(subst WINDOWS,windows,$(OSTYPE))
+OSTYPE := $(subst Windows,windows,$(OSTYPE))
+
+#cygwin
+ifeq (cygwin, $(findstring cygwin,$(OSTYPE)))
+	CP=`cygpath -w -p $(MAIN_CLASSPATH)`
+endif
+
+#windows
+# nb: this has not been tested
+ifeq (windows ,$(findstring windows,$(OSTYPE)))
+	CP=$(subst :,;,$(MAIN_CLASSPATH))
+endif
+
+# see if the classpath is defined yet
+# if not, then the default (unix)
+ifndef CP
+	CP=$(MAIN_CLASSPATH)
+endif
+
+
+#######################################################################
+### actually build it ...
+#######################################################################
+all:
+	javac -d classes -classpath $(CP) $(SRC_PATHS)
 
 	cp src/ca/mcgill/sable/soot/*.properties classes/ca/mcgill/sable/soot/
 	cp src/ca/mcgill/sable/soot/attributes/*.properties classes/ca/mcgill/sable/soot/attributes/
@@ -21,7 +99,15 @@ all:
 
 #	cd ..
 	
-	jar -uf soot-plugin.jar -C classes ca
+	jar -cf soot-plugin.jar -C classes ca $(JAR_ICONS) $(JAR_FILES)
 
+	# nb: jar -u is "unimplemented" in Sun's Windows JDK 1.4.1_02
+	#jar -uf soot-plugin.jar -C classes ca
+
+
+
+#######################################################################
+### update dialog box from xml 
+#######################################################################
 updateDialog:
 	xsltproc -o src/ca/mcgill/sable/soot/testing/PhaseOptionsDialog.java ../../src/soot/options/phase_options_dialog.xsl ../../src/soot/options/soot_options.xml
