@@ -25,6 +25,7 @@
 
 
 package soot.grimp;
+import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
@@ -64,7 +65,7 @@ public class GrimpBody extends StmtBody
     {
         super(body.getMethod());
 
-        if(soot.Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + getMethod().getName() + "] Constructing GrimpBody...");
         
         JimpleBody jBody = null;

@@ -24,6 +24,7 @@
  */
 
 package soot.jimple.toolkits.invoke;
+import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
@@ -40,7 +41,7 @@ public class StaticInliner extends SceneTransformer
 
     protected void internalTransform(String phaseName, Map options)
     {
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[] Inlining methods...");
 
         boolean enableNullPointerCheckInsertion = PackManager.getBoolean(options, "insert-null-checks");

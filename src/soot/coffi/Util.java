@@ -30,7 +30,7 @@
 
 
 package soot.coffi;
-
+import soot.options.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
@@ -133,7 +133,7 @@ public class Util
         className = bclass.getName();
             
             
-        if(soot.Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("Resolving " + className + "...");
     
         ClassFile coffiClass = new ClassFile(className);
@@ -533,7 +533,7 @@ public class Util
             
             timer.start();
             
-            if(soot.Main.v().opts.verbose())
+            if(Options.v().verbose())
                 G.v().out.println("Resolving " + className + "...");
     
             ClassFile coffiClass = new ClassFile(className);

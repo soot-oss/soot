@@ -25,6 +25,7 @@
 
 
 package soot.jimple.toolkits.scalar.pre;
+import soot.options.*;
 import soot.jimple.toolkits.graph.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.*;
@@ -66,7 +67,7 @@ public class LazyCodeMotion extends BodyTransformer {
     HashMap expToHelper = new HashMap();
     Chain unitChain = b.getUnits();
 
-    if(Main.v().opts.verbose()) G.v().out.println("[" + b.getMethod().getName() +
+    if(Options.v().verbose()) G.v().out.println("[" + b.getMethod().getName() +
                                           "] Performing Lazy Code Motion...");
 
     if (options.unroll()) new LoopConditionUnroller().transform(b, phaseName + ".lcu");
@@ -226,7 +227,7 @@ public class LazyCodeMotion extends BodyTransformer {
         }
       }
     }
-    if(Main.v().opts.verbose())
+    if(Options.v().verbose())
       G.v().out.println("[" + b.getMethod().getName() +
                          "]     Lazy Code Motion done.");
   }

@@ -39,14 +39,15 @@ import soot.PackManager;
  */
 
 public class Options extends OptionsBase {
-    public Options( String[] argv ) {
+    public Options(Singletons.Global g) { }
+    public static Options v() { return G.v().Options(); }
+
+<xsl:apply-templates mode="constants" select="/options/section"/>
+
+    public boolean parse( String[] argv ) {
         for( int i = argv.length; i > 0; i-- ) {
             pushOptions( argv[i-1] );
         }
-    }
-<xsl:apply-templates mode="constants" select="/options/section"/>
-
-    public boolean parse() {
         while( hasMoreOptions() ) {
             String option = nextOption();
             if( option.charAt(0) != '-' ) {
@@ -222,6 +223,7 @@ public class Options extends OptionsBase {
   <xsl:template mode="vars" match="boolopt">
     public boolean <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() { return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>; }
     private boolean <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = false;<!---->
+    public void set_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>( boolean setting ) { <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = setting; }
   </xsl:template>
 
 <!--* MULTI_OPTION *******************************************************-->
@@ -235,6 +237,7 @@ public class Options extends OptionsBase {
     </xsl:for-each>
         return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>; 
     }
+    public void set_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>( int setting ) { <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = setting; }
     private int <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = 0;<!---->
   </xsl:template>
 
@@ -246,6 +249,7 @@ public class Options extends OptionsBase {
         else
             return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>;
     }
+    public void set_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>( List setting ) { <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = setting; }
     private List <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = null;<!---->
   </xsl:template>
 
@@ -256,6 +260,7 @@ public class Options extends OptionsBase {
 <!--* STRING_OPTION *******************************************************-->
   <xsl:template mode="vars" match="stropt">
     public String <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() { return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>; }
+    public void set_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>( String setting ) { <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = setting; }
     private String <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = "";<!---->
   </xsl:template>
 

@@ -25,6 +25,7 @@
 
 
 package soot.jimple.toolkits.scalar.pre;
+import soot.options.*;
 import soot.jimple.toolkits.graph.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.*;
@@ -67,7 +68,7 @@ public class BusyCodeMotion extends BodyTransformer {
     HashMap expToHelper = new HashMap();
     Chain unitChain = b.getUnits();
 
-    if(Main.v().opts.verbose())
+    if(Options.v().verbose())
       G.v().out.println("[" + b.getMethod().getName() +
           "]     performing Busy Code Motion...");
 
@@ -148,7 +149,7 @@ public class BusyCodeMotion extends BodyTransformer {
         }
       }
     }
-    if(Main.v().opts.verbose())
+    if(Options.v().verbose())
       G.v().out.println("[" + b.getMethod().getName() +
           "]     Busy Code Motion done!");
   }

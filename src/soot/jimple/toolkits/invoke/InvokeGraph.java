@@ -24,7 +24,7 @@
  */
 
 package soot.jimple.toolkits.invoke;
-
+import soot.options.*;
 import java.util.*;
 import soot.*;
 import soot.jimple.*;
@@ -93,7 +93,7 @@ public class InvokeGraph
                     if (isBench) {
                         stats.benchPolyCS++;
                         stats.benchPolyEdges += numOfEdges;
-                        if (Main.v().opts.verbose()) {
+                        if (Options.v().verbose()) {
                             G.v().out.println("Polymorphic site: "+s);
                             G.v().out.println("in method: "+m);
                             G.v().out.println("Targets: "+siteToTargetMethods.get(s));

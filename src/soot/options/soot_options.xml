@@ -36,6 +36,12 @@
 			<short_desc>runs in whole-program mode</short_desc>
 			<long_desc>This option ...</long_desc>
                 </boolopt>
+                <boolopt>
+			<name>Debug</name>
+			<alias>debug</alias>
+			<short_desc>prints various Soot debugging info</short_desc>
+			<long_desc>This option ...</long_desc>
+                </boolopt>
 	</section>
 	<section>
 		<name>Input Options</name>
@@ -1979,8 +1985,11 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<alias>O</alias>
 			<alias>optimize</alias>
 			<expansion>-p</expansion>
-                        <expansion>gb</expansion>
-                        <expansion>aggregate-all-locals:true</expansion>
+                        <expansion>gb.a1</expansion>
+                        <expansion>only-stack-locals:false</expansion>
+			<expansion>-p</expansion>
+                        <expansion>gb.a2</expansion>
+                        <expansion>only-stack-locals:false</expansion>
 			<expansion>-p</expansion>
                         <expansion>bop</expansion>
                         <expansion>disabled:false</expansion>

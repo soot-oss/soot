@@ -26,6 +26,7 @@
 
 package soot;
 import soot.*;
+import soot.options.*;
 
 import soot.coffi.*;
 import java.util.*;
@@ -99,11 +100,11 @@ public class SootResolver
                 
             Set s = null;
             if(is instanceof ClassInputStream) {
-                if(soot.Main.v().opts.verbose())
+                if(Options.v().verbose())
                     G.v().out.println("resolving [from .class]: " + className );
                 soot.coffi.Util.v().resolveFromClassFile(sc, is, this, Scene.v());
             } else if(is instanceof JimpleInputStream) {
-                if(soot.Main.v().opts.verbose())
+                if(Options.v().verbose())
                     G.v().out.println("resolving [from .jimple]: " + className );
                 if(sc == null) throw new RuntimeException("sc is null!!");
                 

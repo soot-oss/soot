@@ -25,6 +25,7 @@
 
 
 package soot.jimple.toolkits.invoke;
+import soot.options.*;
 
 import soot.*;
 import soot.util.*;
@@ -38,13 +39,13 @@ public class InvokeGraphBuilder extends SceneTransformer
 
   protected void internalTransform(String phaseName, Map options) {
     if (!Scene.v().hasActiveInvokeGraph()) {
-      if (Main.v().opts.verbose())
+      if (Options.v().verbose())
 	G.v().out.println("[] Start building the invoke graph...");
 
       InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph();
       Scene.v().setActiveInvokeGraph(invokeGraph);
 	
-      if (Main.v().opts.verbose())
+      if (Options.v().verbose())
 	G.v().out.println("[] Finished building the invoke graph");
     }
   }

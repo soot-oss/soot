@@ -25,6 +25,7 @@
 
 
 package soot.toolkits.graph;
+import soot.options.*;
 
 
 
@@ -96,11 +97,11 @@ public class UnitGraph implements DirectedGraph
 	int size = unitChain.size();
         method = getBody().getMethod();
         
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + method.getName() + 
                                "]     Constructing UnitGraph...");
       
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().graphTimer.start();
       
         
@@ -302,7 +303,7 @@ public class UnitGraph implements DirectedGraph
             heads = Collections.unmodifiableList(headList);
         }
 
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().graphTimer.end();        
     }
 

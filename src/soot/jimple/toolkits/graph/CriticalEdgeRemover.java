@@ -25,6 +25,7 @@
 
 
 package soot.jimple.toolkits.graph;
+import soot.options.*;
 
 
 import soot.*;
@@ -53,11 +54,11 @@ public class CriticalEdgeRemover extends BodyTransformer {
    * performs critical edge-removing.
    */
   protected void internalTransform(Body b, String phaseName, Map options) {
-    if(Main.v().opts.verbose())
+    if(Options.v().verbose())
       G.v().out.println("[" + b.getMethod().getName() +
                          "]     Removing Critical Edges...");
     removeCriticalEdges(b);
-    if(Main.v().opts.verbose())
+    if(Options.v().verbose())
       G.v().out.println("[" + b.getMethod().getName() +
                          "]     Removing Critical Edges done.");
 

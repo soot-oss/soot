@@ -29,6 +29,7 @@
 
 
 package soot.jimple.toolkits.scalar;
+import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
@@ -62,11 +63,11 @@ public class CopyPropagator extends BodyTransformer
         int fastCopyPropagationCount = 0;
         int slowCopyPropagationCount = 0;
         
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + stmtBody.getMethod().getName() +
                 "] Propagating copies...");
 
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().propagatorTimer.start();                
                 
         Chain units = stmtBody.getUnits();
@@ -211,13 +212,13 @@ public class CopyPropagator extends BodyTransformer
         }
 
 
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + stmtBody.getMethod().getName() +
                 "]     Propagated: " +
                 fastCopyPropagationCount + " fast copies  " +
                 slowCopyPropagationCount + " slow copies");
      
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().propagatorTimer.end();
     
     }

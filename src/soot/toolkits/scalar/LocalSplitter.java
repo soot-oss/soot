@@ -28,6 +28,7 @@
 
 
 package soot.toolkits.scalar;
+import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
@@ -64,12 +65,12 @@ public class LocalSplitter extends BodyTransformer
         Chain units = body.getUnits();
         List webs = new ArrayList();
 
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Splitting locals...");
 
         Map boxToSet = new HashMap(units.size() * 2 + 1, 0.7f);
 
-        if(Main.v().opts.time())
+        if(Options.v().time())
                 Timers.v().splitPhase1Timer.start();
 
         // Go through the definitions, building the webs
@@ -82,10 +83,10 @@ public class LocalSplitter extends BodyTransformer
 
             LocalUses localUses = new SimpleLocalUses(graph, localDefs);
             
-            if(Main.v().opts.time())
+            if(Options.v().time())
                 Timers.v().splitPhase1Timer.end();
     
-            if(Main.v().opts.time())
+            if(Options.v().time())
                 Timers.v().splitPhase2Timer.start();
 
             Set markedBoxes = new HashSet();
@@ -222,7 +223,7 @@ public class LocalSplitter extends BodyTransformer
             }
         }
         
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().splitPhase2Timer.end();
 
     }   

@@ -26,6 +26,7 @@
 
 
 package soot.jimple.toolkits.scalar;
+import soot.options.*;
 
 import soot.util.*;
 import soot.*;
@@ -45,7 +46,7 @@ public class ConditionalBranchFolder  extends BodyTransformer
 
         int numTrue = 0, numFalse = 0;
 
-        if (soot.Main.v().opts.verbose())
+        if (Options.v().verbose())
             G.v().out.println("[" + stmtBody.getMethod().getName() +
                                "] Folding conditional branches...");
 
@@ -79,7 +80,7 @@ public class ConditionalBranchFolder  extends BodyTransformer
             }
         }
 
-       if (soot.Main.v().opts.verbose())
+       if (Options.v().verbose())
             G.v().out.println("[" + stmtBody.getMethod().getName() +
                 "]     Folded " + numTrue + " true, " + numFalse +
                                " conditional branches");

@@ -81,6 +81,12 @@ public class Singletons {
     }
     private Global g = new Global();
 
+    private Options instanceOptions;
+    public Options Options() {
+        if( instanceOptions == null ) instanceOptions = new Options( g );
+        return instanceOptions;
+    }
+
     private OldCHATransformer instanceOldCHATransformer;
     public OldCHATransformer OldCHATransformer() {
         if( instanceOldCHATransformer == null ) instanceOldCHATransformer = new OldCHATransformer( g );

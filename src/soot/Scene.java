@@ -26,6 +26,7 @@
 
 package soot;
 import soot.*;
+import soot.options.*;
 
 
 import soot.util.*;
@@ -141,7 +142,7 @@ public class Scene  //extends AbstractHost
             throw new RuntimeException("duplicate class: "+c.getName());
 
         classes.add(c);
-        if( Main.v().opts.whole_program() ) {
+        if( Options.v().whole_program() ) {
             c.setLibraryClass();
         } else {
             c.setContextClass();
@@ -243,7 +244,7 @@ public class Scene  //extends AbstractHost
     public SootClass loadClassAndSupport(String className) 
     {   
         /*
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Main.v().resolveTimer.start();
         */
         
@@ -255,7 +256,7 @@ public class Scene  //extends AbstractHost
         return toReturn;
         
         /*
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Main.v().resolveTimer.end(); */
     }
     
@@ -534,7 +535,7 @@ public class Scene  //extends AbstractHost
     
     public boolean getPhantomRefs()
     {
-        if( !soot.Main.v().opts.allow_phantom_refs() ) return false;
+        if( !Options.v().allow_phantom_refs() ) return false;
         return allowsPhantomRefs;
     }
 

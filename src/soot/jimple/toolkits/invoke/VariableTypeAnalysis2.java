@@ -24,6 +24,7 @@
  */
 
 package soot.jimple.toolkits.invoke;
+import soot.options.*;
 
 import java.util.*;
 import soot.util.*;
@@ -165,7 +166,7 @@ public class VariableTypeAnalysis2
 
     start = new Date();
     VTAStart = start;
-    //    if (Main.v().opts.verbose()) 
+    //    if (Options.v().verbose()) 
     {
       G.v().out.println("[vta2] VTA started on "+start);
       G.v().out.println("[vta2] Constructing Variable Type Analysis graph.");
@@ -175,7 +176,7 @@ public class VariableTypeAnalysis2
     vtg = new VTATypeGraph2(ig);
 
     finish = new Date();
-    //    if (Main.v().opts.verbose()) 
+    //    if (Options.v().verbose()) 
     {
       G.v().out.println("[vta2] VTA graph has "+vtg.size()+" nodes and "+vtg.numEdges()+" edges.");
       long runtime = finish.getTime()-start.getTime();
@@ -190,7 +191,7 @@ public class VariableTypeAnalysis2
     scc = new StronglyConnectedComponents(vtg);
 
     finish = new Date();
-    //    if (Main.v().opts.verbose()) 
+    //    if (Options.v().verbose()) 
     {
       long runtime = finish.getTime()-start.getTime();
       G.v().out.println("[vta2] SCC took "+
@@ -207,7 +208,7 @@ public class VariableTypeAnalysis2
     visitNodes(h, superGraph);
 
     finish = new Date();
-    //    if (Main.v().opts.verbose()) 
+    //    if (Options.v().verbose()) 
     {
       long runtime = finish.getTime()-start.getTime();
       G.v().out.println("[vta2] Type propagation took "+
@@ -215,13 +216,13 @@ public class VariableTypeAnalysis2
 			 ((runtime%60000)/1000)+" sec.");
       G.v().out.println("[vta2] Done constructing Variable Type Analysis graph.");
     }
-    if (Main.v().opts.verbose())
+    if (Options.v().verbose())
       G.v().out.println("[vta2] Done constructing Variable Type Analysis graph.");
   }
 
   /** Uses the results of this analysis to trim the active invoke graph. */
   public void trimActiveInvokeGraph() {
-    if (Main.v().opts.verbose())
+    if (Options.v().verbose())
       G.v().out.println("[vta2] Trimming active invoke graph.");
 
     Date trimStart = new Date();
@@ -272,7 +273,7 @@ public class VariableTypeAnalysis2
 	      // the ones that VTA doesn't rule out.)
 	      ig.removeAllTargets(s);
 	      
-	      if (Main.v().opts.verbose()) {
+	      if (Options.v().verbose()) {
 		G.v().out.println("stmt "+s);
 		G.v().out.println("local: "
 				   +VTATypeGraph2.getVTALabel(m, base));

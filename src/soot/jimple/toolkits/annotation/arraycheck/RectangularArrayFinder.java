@@ -24,6 +24,7 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
+import soot.options.*;
 
 import soot.*;
 import soot.util.*;
@@ -55,7 +56,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	Scene sc = Scene.v();
 
 	Date start = new Date();
-	if (soot.Main.v().opts.verbose())
+	if (Options.v().verbose())
 	    G.v().out.println("[ra] Finding rectangular arrays, start on "+start);
 
 	ig = sc.getActiveInvokeGraph();
@@ -195,7 +196,7 @@ public class RectangularArrayFinder extends SceneTransformer
 
 	/* For verification, print out true set and false set. */
 	
-	if (soot.Main.v().isInDebugMode)
+	if (Options.v().debug())
 	{
 	    G.v().out.println("Rectangular Array :");
 	    {
@@ -223,7 +224,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	ig = null;
 
 	Date finish = new Date();
-	if (soot.Main.v().opts.verbose()) 
+	if (Options.v().verbose()) 
 	{
 	    long runtime = finish.getTime() - start.getTime();
 	    long mins = runtime/60000;
@@ -235,7 +236,7 @@ public class RectangularArrayFinder extends SceneTransformer
 
     private void addInfoFromMethod(SootMethod method)
     {
-	if (soot.Main.v().opts.verbose()) 
+	if (Options.v().verbose()) 
 	    G.v().out.println("[ra] Operating "+method.getSignature());
 
 	boolean needTransfer = true;

@@ -25,6 +25,7 @@
 
 
 package soot;
+import soot.options.*;
 
 import soot.jimple.*;
 import java.util.*;
@@ -58,12 +59,12 @@ public class JimpleBodyPack extends BodyPack
         
         if(!options.no_splitting())
         {
-            if(Main.v().opts.time())
+            if(Options.v().time())
                 Timers.v().splitTimer.start();
 
             PackManager.v().getTransform( "jb.ls" ).apply( b );
 
-            if(Main.v().opts.time())
+            if(Options.v().time())
                 Timers.v().splitTimer.end();
 
             if(!options.no_typing())
@@ -79,12 +80,12 @@ public class JimpleBodyPack extends BodyPack
                     PackManager.v().getTransform( "jb.ule" ).apply( b );
 		}
 
-                if(Main.v().opts.time())
+                if(Options.v().time())
                     Timers.v().assignTimer.start();
 
                 PackManager.v().getTransform( "jb.tr" ).apply( b );
 		
-                if(Main.v().opts.time())
+                if(Options.v().time())
                     Timers.v().assignTimer.end();
 
 		if(typingFailed(b))
@@ -130,7 +131,7 @@ public class JimpleBodyPack extends BodyPack
         if (!options.no_unreachable_code_elimination())
             PackManager.v().getTransform( "jb.uce" ).apply( b );
                     
-        if(soot.Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().stmtCount += b.getUnits().size();
     }
 

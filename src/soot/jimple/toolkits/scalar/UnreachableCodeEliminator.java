@@ -26,6 +26,7 @@
 
 
 package soot.jimple.toolkits.scalar;
+import soot.options.*;
 
 import soot.util.*;
 import soot.*;
@@ -47,7 +48,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
     {
         StmtBody body = (StmtBody)b;
         
-        if (soot.Main.v().opts.verbose()) 
+        if (Options.v().verbose()) 
             G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
 
         numPruned = 0;
@@ -73,7 +74,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
                 numPruned++;
             }
         }
-        if (soot.Main.v().opts.verbose())
+        if (Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "]     Removed " + numPruned + " statements...");
             
         // Now eliminate empty traps.

@@ -24,6 +24,7 @@
  */
 
 package soot.jimple.parser;
+import soot.options.*;
 
 import soot.baf.*;
 import soot.*;
@@ -150,7 +151,7 @@ public class BodyExtractorWalker extends Walker
         if (mSootClass.declaresMethod(SootMethod.getSubSignature(name, parameterList, type)))
         {
             sm = mSootClass.getMethod(SootMethod.getSubSignature(name, parameterList, type));
-            if (soot.Main.v().opts.verbose())
+            if (Options.v().verbose())
                 G.v().out.println("[Jimple parser] " + SootMethod.getSubSignature(name, parameterList, type));
         }
         else
@@ -169,14 +170,14 @@ public class BodyExtractorWalker extends Walker
 
         if(sm.isConcrete()) 
         {
-          if (soot.Main.v().opts.verbose())
+          if (Options.v().verbose())
               G.v().out.println("[Parsed] "+sm.getDeclaration());
 
           methodBody.setMethod(sm);
           methodToParsedBodyMap.put(sm, methodBody);
         } 
         else if(node.getMethodBody() instanceof AFullMethodBody) {
-            if(sm.isPhantom() && soot.Main.v().opts.verbose())
+            if(sm.isPhantom() && Options.v().verbose())
                G.v().out.println("[jimple parser] phantom method!");
             throw new RuntimeException("Impossible: !concrete => ! instanceof " + sm.getName() );        
         }

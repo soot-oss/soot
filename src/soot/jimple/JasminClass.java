@@ -25,7 +25,7 @@
 
 
 package soot.jimple;
-
+import soot.options.*;
 import soot.*;
 import soot.jimple.internal.*;
 import soot.toolkits.graph.*;
@@ -223,10 +223,10 @@ public class JasminClass
     {
         Map options = new HashMap();
 
-        if(soot.Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().buildJasminTimer.start();
 
-        if(soot.Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + SootClass.getName() + "] Constructing jimple.JasminClass...");
         
         code = new LinkedList();
@@ -294,17 +294,17 @@ public class JasminClass
             }
         }
         
-        if(soot.Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().buildJasminTimer.end();
     }
 
     void assignColorsToLocals(StmtBody body)
     {
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() +
                 "] Assigning colors to locals...");
         
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().packTimer.start();
 
         localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
@@ -363,7 +363,7 @@ public class JasminClass
             FastColorer.assignColorsToLocals(body, localToGroup,
                 localToColor, groupToColorCount);
 
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().packTimer.end();
                     
     }
@@ -391,7 +391,7 @@ public class JasminClass
     
     void emitMethodBody(SootMethod method, Map options)
     {
-        if(soot.Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().buildJasminTimer.end();
                     
      
@@ -406,7 +406,7 @@ public class JasminClass
             
         if(body == null)
             
-        if(soot.Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().buildJasminTimer.start();
         
         Chain units = body.getUnits();
@@ -418,7 +418,7 @@ public class JasminClass
         
         // let's create a u-d web for the ++ peephole optimization.
 
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() +
                 "] Performing peephole optimizations...");
 

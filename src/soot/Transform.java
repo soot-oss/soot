@@ -72,7 +72,7 @@ public class Transform implements HasPhaseOptions
     public void apply() {
         Map options = PackManager.v().getPhaseOptions( phaseName );
         if( !PackManager.getBoolean( options, "disabled" ) ) {
-            if( Main.v().opts.verbose()  ) {
+            if( Options.v().verbose()  ) {
                 G.v().out.println( "Applying phase "+phaseName+" to the scene." );
             }
         }
@@ -81,7 +81,7 @@ public class Transform implements HasPhaseOptions
     public void apply(Body b) {
         Map options = PackManager.v().getPhaseOptions( phaseName );
         if( !PackManager.getBoolean( options, "disabled" ) ) {
-            if( Main.v().opts.verbose() ) {
+            if( Options.v().verbose() ) {
                 G.v().out.println( "Applying phase "+phaseName+" to "+b.getMethod()+"." );
             }
         }

@@ -24,6 +24,7 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
+import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
@@ -70,7 +71,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 
 	    Date start = new Date();
 
-	    if (soot.Main.v().opts.verbose())
+	    if (Options.v().verbose())
 	    {
 		G.v().out.println("[abc] Analyzing array bounds information for "+m.getName());
 		G.v().out.println("[abc] Started on "+start);
@@ -120,7 +121,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 			boolean uppercheck = true;
 	    
 			{
-			    if (soot.Main.v().isInDebugMode)
+			    if (Options.v().debug())
 			    {
 				if (!vgraph.makeShortestPathGraph())
 				{
@@ -211,7 +212,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 	    }
 
 	    Date finish = new Date();
-	    if (soot.Main.v().opts.verbose()) 
+	    if (Options.v().verbose()) 
 	    {
 		long runtime = finish.getTime() - start.getTime();
 		G.v().out.println("[abc] ended on "+finish

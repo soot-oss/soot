@@ -24,6 +24,7 @@
  */
 
 package soot.jimple.toolkits.invoke;
+import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
@@ -44,7 +45,7 @@ public class StaticMethodBinder extends SceneTransformer
         Date start = new Date();
 
         Date finish = new Date();
-        if (Main.v().opts.verbose()) {
+        if (Options.v().verbose()) {
             G.v().out.println("[stb] Done building invoke graph.");
             long runtime = finish.getTime() - start.getTime();
             G.v().out.println("[stb] Invoke graph building took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
@@ -59,7 +60,7 @@ public class StaticMethodBinder extends SceneTransformer
 
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 
-        if (Main.v().opts.verbose())
+        if (Options.v().verbose())
             G.v().out.println(graph.computeStats());
 
         Iterator classesIt = Scene.v().getApplicationClasses().iterator();

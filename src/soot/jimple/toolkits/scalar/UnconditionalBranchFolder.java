@@ -26,6 +26,7 @@
 
 
 package soot.jimple.toolkits.scalar;
+import soot.options.*;
 
 import soot.util.*;
 import soot.*;
@@ -48,7 +49,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
     {
         StmtBody body = (StmtBody)b;
 
-        if (soot.Main.v().opts.verbose()) 
+        if (Options.v().verbose()) 
             G.v().out.println("[" + body.getMethod().getName() + "] Folding unconditional branches...");
 
 
@@ -110,7 +111,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
                 }
             }
         }
-        if (soot.Main.v().opts.verbose()) 
+        if (Options.v().verbose()) 
             G.v().out.println("[" + body.getMethod().getName() + "]     " + numFixed[0] + " of " + 
                                 numFound[0] + " branches folded.");
              

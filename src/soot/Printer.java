@@ -24,7 +24,7 @@
  */
 
 package soot;
-
+import soot.options.*;
 import java.io.*;
 import soot.tagkit.*;
 import java.util.*;
@@ -227,7 +227,7 @@ public class Printer {
 
             writerOut.close();
 
-            if (soot.Main.v().opts.time())
+            if (Options.v().time())
                 Timers.v().assembleJasminTimer.start();
 
             // Invoke jasmin
@@ -251,7 +251,7 @@ public class Printer {
 
             tempFile.delete();
 
-            if (soot.Main.v().opts.time())
+            if (Options.v().time())
                 Timers.v().assembleJasminTimer.end();
 
         } catch (IOException e) {
@@ -276,9 +276,7 @@ public class Printer {
         {
             out.println("    " + decl);
             incJimpleLnNum();
-            for (Iterator tIt = b.getMethod().getTags().iterator();
-                tIt.hasNext();
-                ) {
+            for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
                 final Tag t = (Tag) tIt.next();
                 out.println(t);
                 incJimpleLnNum();

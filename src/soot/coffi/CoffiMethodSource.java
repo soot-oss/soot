@@ -25,6 +25,7 @@
 
 
 package soot.coffi;
+import soot.options.*;
 
 import soot.*;
 import java.util.*;
@@ -57,20 +58,20 @@ public class CoffiMethodSource implements MethodSource
         bafBody.coffiMethod = null;
 
         */
-        if(soot.Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + m.getName() + "] Constructing JimpleBody from coffi...");
 
         if(m.isAbstract() || m.isNative() || m.isPhantom())
             return jb;
             
-        if(soot.Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().conversionTimer.start();
 
         if (coffiMethod == null)
             G.v().out.println(m);
         if(coffiMethod.instructions == null)
         {
-            if(soot.Main.v().opts.verbose())
+            if(Options.v().verbose())
                 G.v().out.println("[" + m.getName() +
                     "]     Parsing Coffi instructions...");
 
@@ -79,7 +80,7 @@ public class CoffiMethodSource implements MethodSource
                 
         if(coffiMethod.cfg == null)
         {
-            if(soot.Main.v().opts.verbose())
+            if(Options.v().verbose())
                 G.v().out.println("[" + m.getName() +
                     "]     Building Coffi CFG...");
 
@@ -87,7 +88,7 @@ public class CoffiMethodSource implements MethodSource
 
          }
 
-         if(soot.Main.v().opts.verbose())
+         if(Options.v().verbose())
              G.v().out.println("[" + m.getName() +
                     "]     Producing naive Jimple...");
 
@@ -98,7 +99,7 @@ public class CoffiMethodSource implements MethodSource
              coffiClass.this_class, jb);
          Scene.v().setPhantomRefs(oldPhantomValue);
 
-        if(soot.Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().conversionTimer.end();
 
          coffiMethod.instructions = null;

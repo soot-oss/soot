@@ -26,6 +26,7 @@
 /* Reference Version: $SootVersion: 1.2.5.dev.5 $ */
 
 package soot.jimple.toolkits.base;
+import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
@@ -52,7 +53,7 @@ public class Aggregator extends BodyTransformer
 
         int aggregateCount = 1;
 
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().aggregationTimer.start();
          boolean changed = false;
 
@@ -86,7 +87,7 @@ public class Aggregator extends BodyTransformer
         
                      
         do {
-            if(Main.v().opts.verbose())
+            if(Options.v().verbose())
                 G.v().out.println("[" + body.getMethod().getName() + "] Aggregating iteration " + aggregateCount + "...");
         
             // body.printTo(new java.io.PrintWriter(G.v().out, true));
@@ -96,7 +97,7 @@ public class Aggregator extends BodyTransformer
             aggregateCount++;
         } while(changed);
         
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().aggregationTimer.end();
             
     }
@@ -320,7 +321,7 @@ public class Aggregator extends BodyTransformer
             }
           else
             {/*
-            if(Main.v().opts.verbose())
+            if(Options.v().verbose())
             {
                 G.v().out.println("[debug] failed aggregation");
                   G.v().out.println("[debug] tried to put "+aggregatee+

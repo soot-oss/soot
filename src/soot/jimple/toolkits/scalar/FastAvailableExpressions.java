@@ -25,6 +25,7 @@
 
 
 package soot.jimple.toolkits.scalar;
+import soot.options.*;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -44,7 +45,7 @@ public class FastAvailableExpressions implements AvailableExpressions
     /** Wrapper for AvailableExpressionsAnalysis. */ 
     public FastAvailableExpressions(Body b, SideEffectTester st)
     {
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + b.getMethod().getName() +
                 "] Finding available expressions...");
 
@@ -116,7 +117,7 @@ public class FastAvailableExpressions implements AvailableExpressions
             }  
         }
 
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + b.getMethod().getName() +
                 "]     Found available expressions...");
     }

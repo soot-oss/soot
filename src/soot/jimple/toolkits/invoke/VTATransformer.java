@@ -45,7 +45,7 @@ public class VTATransformer extends SceneTransformer
 
         for (int i = 0; i < passes; i++)
         {
-            if (Main.v().opts.verbose())
+            if (Options.v().verbose())
                 G.v().out.println(Scene.v().getActiveInvokeGraph().computeStats());
             vta = new VariableTypeAnalysis(Scene.v().getActiveInvokeGraph());
             vta.trimActiveInvokeGraph();

@@ -25,6 +25,7 @@
 
 
 package soot.baf.toolkits.base;
+import soot.options.*;
 
 import soot.util.*;
 import java.util.*;
@@ -131,7 +132,7 @@ public class LoadStoreOptimizer extends BodyTransformer
         
         debug = PackManager.getBoolean(gOptions, "debug");
         
-        if(soot.Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
 
         if(debug) { G.v().out.println("\n\nOptimizing Method: " + body.getMethod().getName());}

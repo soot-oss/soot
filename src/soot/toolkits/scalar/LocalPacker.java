@@ -29,6 +29,7 @@
 
 
 package soot.toolkits.scalar;
+import soot.options.*;
 
 import soot.*;
 import soot.util.*;
@@ -67,7 +68,7 @@ public class LocalPacker extends BodyTransformer
     {
         boolean isUnsplit = PackManager.getBoolean(options, "unsplit-original-locals");
         
-        if(soot.Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Packing locals...");
     
         Map localToGroup = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);

@@ -30,11 +30,9 @@ import soot.PackManager;
  */
 
 public class Options extends OptionsBase {
-    public Options( String[] argv ) {
-        for( int i = argv.length; i > 0; i-- ) {
-            pushOptions( argv[i-1] );
-        }
-    }
+    public Options(Singletons.Global g) { }
+    public static Options v() { return G.v().Options(); }
+
 
     public static final int src_prec_class = 1;
     public static final int src_prec_jimple = 2;
@@ -50,7 +48,10 @@ public class Options extends OptionsBase {
     public static final int output_format_class = 10;
     public static final int output_format_dava = 11;
 
-    public boolean parse() {
+    public boolean parse( String[] argv ) {
+        for( int i = argv.length; i > 0; i-- ) {
+            pushOptions( argv[i-1] );
+        }
         while( hasMoreOptions() ) {
             String option = nextOption();
             if( option.charAt(0) != '-' ) {
@@ -89,6 +90,11 @@ public class Options extends OptionsBase {
             || option.equals( "whole-program" )
             )
                 whole_program = true;
+  
+            else if( false 
+            || option.equals( "debug" )
+            )
+                debug = true;
   
             else if( false
             || option.equals( "cp" )
@@ -367,8 +373,11 @@ public class Options extends OptionsBase {
                 pushOptions( "disabled:false" );
                 pushOptions( "bop" );
                 pushOptions( "-p" );
-                pushOptions( "aggregate-all-locals:true" );
-                pushOptions( "gb" );
+                pushOptions( "only-stack-locals:false" );
+                pushOptions( "gb.a2" );
+                pushOptions( "-p" );
+                pushOptions( "only-stack-locals:false" );
+                pushOptions( "gb.a1" );
                 pushOptions( "-p" );
             }
   
@@ -576,42 +585,69 @@ public class Options extends OptionsBase {
 
     public boolean help() { return help; }
     private boolean help = false;
+    public void set_help( boolean setting ) { help = setting; }
+  
     public boolean version() { return version; }
     private boolean version = false;
+    public void set_version( boolean setting ) { version = setting; }
+  
     public boolean verbose() { return verbose; }
     private boolean verbose = false;
+    public void set_verbose( boolean setting ) { verbose = setting; }
+  
     public boolean app() { return app; }
     private boolean app = false;
+    public void set_app( boolean setting ) { app = setting; }
+  
     public boolean whole_program() { return whole_program; }
     private boolean whole_program = false;
+    public void set_whole_program( boolean setting ) { whole_program = setting; }
+  
+    public boolean debug() { return debug; }
+    private boolean debug = false;
+    public void set_debug( boolean setting ) { debug = setting; }
+  
     public String soot_classpath() { return soot_classpath; }
+    public void set_soot_classpath( String setting ) { soot_classpath = setting; }
     private String soot_classpath = "";
     public int src_prec() {
         if( src_prec == 0 ) return src_prec_class;
         return src_prec; 
     }
+    public void set_src_prec( int setting ) { src_prec = setting; }
     private int src_prec = 0;
     public boolean allow_phantom_refs() { return allow_phantom_refs; }
     private boolean allow_phantom_refs = false;
+    public void set_allow_phantom_refs( boolean setting ) { allow_phantom_refs = setting; }
+  
     public String output_dir() { return output_dir; }
+    public void set_output_dir( String setting ) { output_dir = setting; }
     private String output_dir = "";
     public int output_format() {
         if( output_format == 0 ) return output_format_class;
         return output_format; 
     }
+    public void set_output_format( int setting ) { output_format = setting; }
     private int output_format = 0;
     public boolean via_grimp() { return via_grimp; }
     private boolean via_grimp = false;
+    public void set_via_grimp( boolean setting ) { via_grimp = setting; }
+  
     public boolean xml_attributes() { return xml_attributes; }
     private boolean xml_attributes = false;
+    public void set_xml_attributes( boolean setting ) { xml_attributes = setting; }
+  
     public boolean via_shimple() { return via_shimple; }
     private boolean via_shimple = false;
+    public void set_via_shimple( boolean setting ) { via_shimple = setting; }
+  
     public List process_path() { 
         if( process_path == null )
             return java.util.Collections.EMPTY_LIST;
         else
             return process_path;
     }
+    public void set_process_path( List setting ) { process_path = setting; }
     private List process_path = null;
     public List include() { 
         if( include == null )
@@ -619,6 +655,7 @@ public class Options extends OptionsBase {
         else
             return include;
     }
+    public void set_include( List setting ) { include = setting; }
     private List include = null;
     public List exclude() { 
         if( exclude == null )
@@ -626,15 +663,19 @@ public class Options extends OptionsBase {
         else
             return exclude;
     }
+    public void set_exclude( List setting ) { exclude = setting; }
     private List exclude = null;
     public boolean analyze_context() { return analyze_context; }
     private boolean analyze_context = false;
+    public void set_analyze_context( boolean setting ) { analyze_context = setting; }
+  
     public List dynamic_classes() { 
         if( dynamic_classes == null )
             return java.util.Collections.EMPTY_LIST;
         else
             return dynamic_classes;
     }
+    public void set_dynamic_classes( List setting ) { dynamic_classes = setting; }
     private List dynamic_classes = null;
     public List dynamic_path() { 
         if( dynamic_path == null )
@@ -642,6 +683,7 @@ public class Options extends OptionsBase {
         else
             return dynamic_path;
     }
+    public void set_dynamic_path( List setting ) { dynamic_path = setting; }
     private List dynamic_path = null;
     public List dynamic_package() { 
         if( dynamic_package == null )
@@ -649,15 +691,24 @@ public class Options extends OptionsBase {
         else
             return dynamic_package;
     }
+    public void set_dynamic_package( List setting ) { dynamic_package = setting; }
     private List dynamic_package = null;
     public boolean keep_line_number() { return keep_line_number; }
     private boolean keep_line_number = false;
+    public void set_keep_line_number( boolean setting ) { keep_line_number = setting; }
+  
     public boolean keep_offset() { return keep_offset; }
     private boolean keep_offset = false;
+    public void set_keep_offset( boolean setting ) { keep_offset = setting; }
+  
     public boolean time() { return time; }
     private boolean time = false;
+    public void set_time( boolean setting ) { time = setting; }
+  
     public boolean subtract_gc() { return subtract_gc; }
     private boolean subtract_gc = false;
+    public void set_subtract_gc( boolean setting ) { subtract_gc = setting; }
+  
 
     public String getUsage() {
         return ""
@@ -669,6 +720,7 @@ public class Options extends OptionsBase {
 +padOpt(" -v -verbose", "verbose mode" )
 +padOpt(" -app", "runs in application mode" )
 +padOpt(" -w -whole-program", "runs in whole-program mode" )
++padOpt(" -debug", "prints various Soot debugging info" )
 +"\nInput Options:\n"
       
 +padOpt(" -cp ARG -soot-classpath ARG", "uses given PATH as the classpath for finding classes for Soot processing" )

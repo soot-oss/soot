@@ -51,8 +51,6 @@ public class Main {
     // the code to not compile all the time.
     public final String versionString = "2.0";
 
-    public Options opts;
-
     private Date start;
     private Date finish;
 
@@ -103,7 +101,7 @@ public class Main {
     }
 
     public String getOutputDir() {
-        String ret = opts.output_dir();
+        String ret = Options.v().output_dir();
         if( ret.length() == 0 ) ret = "sootOutput";
         File dir = new File(ret);
 
@@ -184,12 +182,7 @@ public class Main {
         System.getProperty("file.separator").charAt(0);
     private final String pathSeparator = System.getProperty("path.separator");
 
-    public boolean isInDebugMode;
-
     private boolean useJavaStyle = false;
-
-    private boolean isOptimizing = false;
-    private boolean isOptimizingWhole = false;
 
     // hack for J2ME, patch provided by Stephen Chen
     // by default, this is set as false, to use SOOT with J2ME library
@@ -240,30 +233,6 @@ public class Main {
         return fileNames;
     }
 
-    public void setOptimizing(boolean val) {
-        isOptimizing = val;
-    }
-
-    public boolean isOptimizing() {
-        return isOptimizing;
-    }
-
-    public void setOptimizingWhole(boolean val)
-        throws CompilationDeathException {
-        if (!opts.app() && val) {
-            throw new CompilationDeathException(
-                COMPILATION_ABORTED,
-                "Can only whole-program optimize in application mode!");
-        }
-
-        isOptimizingWhole = val;
-        isOptimizing = val;
-    }
-
-    public boolean isOptimizingWhole() {
-        return isOptimizingWhole;
-    }
-
     /* hack for J2ME */
     public boolean isJ2ME() {
         return isJ2ME;
@@ -308,14 +277,6 @@ public class Main {
         return set;
     }
 
-    public void setDebug(boolean val) {
-        isInDebugMode = val;
-    }
-
-    public boolean isDebug() {
-        return isInDebugMode;
-    }
-
     private void printVersion() {
         G.v().out.println("Soot version " + versionString);
 
@@ -342,14 +303,13 @@ public class Main {
     }
 
     private void printHelp() {
-        G.v().out.println(opts.getUsage());
+        G.v().out.println(Options.v().getUsage());
     }
 
     private void processCmdLine(String[] args)
         throws CompilationDeathException {
-        opts = new Options(args);
 
-        if (!opts.parse())
+        if (!Options.v().parse(args))
             throw new CompilationDeathException(
                 COMPILATION_ABORTED,
                 "Option parse error");
@@ -357,20 +317,20 @@ public class Main {
         for( Iterator packIt = PackManager.v().allPacks().iterator(); packIt.hasNext(); ) {
 
             final Pack pack = (Pack) packIt.next();
-            opts.warnForeignPhase(pack.getPhaseName());
+            Options.v().warnForeignPhase(pack.getPhaseName());
             for( Iterator trIt = pack.iterator(); trIt.hasNext(); ) {
                 final Transform tr = (Transform) trIt.next();
-                opts.warnForeignPhase(tr.getPhaseName());
+                Options.v().warnForeignPhase(tr.getPhaseName());
             }
         }
-        opts.warnNonexistentPhase();
+        Options.v().warnNonexistentPhase();
 
-        if (opts.help()) {
+        if (Options.v().help()) {
             printHelp();
             throw new CompilationDeathException(COMPILATION_SUCCEDED);
         }
 
-        if (args.length == 0 || opts.version()) {
+        if (args.length == 0 || Options.v().version()) {
             printVersion();
             throw new CompilationDeathException(COMPILATION_SUCCEDED);
         }
@@ -390,13 +350,13 @@ public class Main {
     }
 
     private void postCmdLineCheck() throws CompilationDeathException {
-        if (opts.classes().isEmpty() && opts.process_path().isEmpty()) {
+        if (Options.v().classes().isEmpty() && Options.v().process_path().isEmpty()) {
             throw new CompilationDeathException(
                 COMPILATION_ABORTED,
                 "Nothing to do!");
         }
         // Command line classes
-        if (opts.app() && opts.classes().size() > 1) {
+        if (Options.v().app() && Options.v().classes().size() > 1) {
 
             throw new CompilationDeathException(
                 COMPILATION_ABORTED,
@@ -442,8 +402,8 @@ public class Main {
 
             G.v().out.println("Soot started on " + start);
 
-            if (opts.soot_classpath().length() > 0) {
-                Scene.v().setSootClassPath(opts.soot_classpath());
+            if (Options.v().soot_classpath().length() > 0) {
+                Scene.v().setSootClassPath(Options.v().soot_classpath());
             }
 
             loadNecessaryClasses();
@@ -454,7 +414,7 @@ public class Main {
             Timers.v().totalTimer.end();
 
             // Print out time stats.				
-            if (opts.time())
+            if (Options.v().time())
                 Timers.v().printProfilingInformation();
 
         } catch (CompilationDeathException e) {
@@ -479,10 +439,10 @@ public class Main {
     }
 
     private void runPacks() {
-        if (opts.whole_program()) {
+        if (Options.v().whole_program()) {
             // Run the whole-program packs.
             PackManager.v().getPack("cg").apply();
-            if (opts.via_shimple()) {
+            if (Options.v().via_shimple()) {
                 PackManager.v().getPack("wstp").apply();
                 PackManager.v().getPack("wsop").apply();
             } else {
@@ -502,7 +462,7 @@ public class Main {
 
     /* preprocess classes for DAVA */
     private void preProcessDAVA() {
-        if (opts.output_format() == Options.output_format_dava) {
+        if (Options.v().output_format() == Options.output_format_dava) {
             ThrowFinder.v().find();
             PackageNamer.v().fixNames();
 
@@ -537,7 +497,7 @@ public class Main {
 
     /* post process for DAVA */
     private void postProcessDAVA() {
-        if (opts.output_format() == Options.output_format_dava) {
+        if (Options.v().output_format() == Options.output_format_dava) {
 
             // ThrowFinder.v().find();
             // PackageNamer.v().fixNames();
@@ -552,7 +512,7 @@ public class Main {
 
                 FileOutputStream streamOut = null;
                 PrintWriter writerOut = null;
-                String fileName = getFileNameFor(s, opts.output_format());
+                String fileName = getFileNameFor(s, Options.v().output_format());
 
                 try {
                     streamOut = new FileOutputStream(fileName);
@@ -598,7 +558,7 @@ public class Main {
     }
 
     private void loadNecessaryClasses() {
-        Iterator it = opts.classes().iterator();
+        Iterator it = Options.v().classes().iterator();
 
         while (it.hasNext()) {
             String name = (String) it.next();
@@ -614,15 +574,15 @@ public class Main {
         }
 
         HashSet dynClasses = new HashSet();
-        dynClasses.addAll(opts.dynamic_classes());
+        dynClasses.addAll(Options.v().dynamic_classes());
 
-        for( Iterator pathIt = opts.dynamic_path().iterator(); pathIt.hasNext(); ) {
+        for( Iterator pathIt = Options.v().dynamic_path().iterator(); pathIt.hasNext(); ) {
 
             final String path = (String) pathIt.next();
             dynClasses.addAll(getClassesUnder(path));
         }
 
-        for( Iterator pkgIt = opts.dynamic_package().iterator(); pkgIt.hasNext(); ) {
+        for( Iterator pkgIt = Options.v().dynamic_package().iterator(); pkgIt.hasNext(); ) {
 
             final String pkg = (String) pkgIt.next();
             dynClasses.addAll(classesInDynamicPackage(pkg));
@@ -633,7 +593,7 @@ public class Main {
             Scene.v().loadClassAndSupport((String) o);
         }
 
-        for( Iterator pathIt = opts.process_path().iterator(); pathIt.hasNext(); ) {
+        for( Iterator pathIt = Options.v().process_path().iterator(); pathIt.hasNext(); ) {
 
             final String path = (String) pathIt.next();
             for( Iterator clIt = getClassesUnder(path).iterator(); clIt.hasNext(); ) {
@@ -649,8 +609,8 @@ public class Main {
     private void prepareClasses() {
 
         LinkedList excludedPackages = new LinkedList();
-        if (opts.exclude() != null)
-            excludedPackages.addAll(opts.exclude());
+        if (Options.v().exclude() != null)
+            excludedPackages.addAll(Options.v().exclude());
 
         excludedPackages.add("java.");
         excludedPackages.add("sun.");
@@ -661,7 +621,7 @@ public class Main {
         excludedPackages.add("org.w3c.");
         excludedPackages.add("org.apache.");
 
-        if (opts.app()) {
+        if (Options.v().app()) {
             Iterator contextClassesIt =
                 Scene.v().getContextClasses().snapshotIterator();
             while (contextClassesIt.hasNext())
@@ -672,7 +632,7 @@ public class Main {
         for( Iterator sIt = Scene.v().getClasses().iterator(); sIt.hasNext(); ) {
             final SootClass s = (SootClass) sIt.next();
             if( s.isPhantom() ) continue;
-            if (opts.classes().contains(s.getName())) {
+            if (Options.v().classes().contains(s.getName())) {
                 s.setApplicationClass();
                 continue;
             }
@@ -682,21 +642,21 @@ public class Main {
                 final String pkg = (String) pkgIt.next();
                 if (s.isApplicationClass()
                 && s.getPackageName().startsWith(pkg)) {
-                    if( opts.whole_program() ) {
+                    if( Options.v().whole_program() ) {
                         s.setLibraryClass();
                     } else {
                         s.setContextClass();
                     }
                 }
             }
-            for( Iterator pkgIt = opts.include().iterator(); pkgIt.hasNext(); ) {
+            for( Iterator pkgIt = Options.v().include().iterator(); pkgIt.hasNext(); ) {
                 final String pkg = (String) pkgIt.next();
                 if (s.getPackageName().startsWith(pkg))
                     s.setApplicationClass();
             }
         }
 
-        if (opts.analyze_context()) {
+        if (Options.v().analyze_context()) {
             Iterator contextClassesIt =
                 Scene.v().getContextClasses().snapshotIterator();
             while (contextClassesIt.hasNext())
@@ -710,7 +670,7 @@ public class Main {
         FileOutputStream streamOut = null;
         PrintWriter writerOut = null;
 
-        if (opts.output_format() == Options.output_format_dava) {
+        if (Options.v().output_format() == Options.output_format_dava) {
             G.v().out.print("Decompiling ");
         } else {
             G.v().out.print("Transforming ");
@@ -720,7 +680,7 @@ public class Main {
 
         boolean produceBaf = false, produceGrimp = false, produceDava = false;
 
-        switch (opts.output_format()) {
+        switch (Options.v().output_format()) {
             case Options.output_format_none :
                 break;
             case Options.output_format_jimple :
@@ -740,17 +700,17 @@ public class Main {
                 break;
             case Options.output_format_jasmin :
             case Options.output_format_class :
-                produceGrimp = opts.via_grimp();
+                produceGrimp = Options.v().via_grimp();
                 produceBaf = !produceGrimp;
                 break;
             default :
                 throw new RuntimeException();
         }
 
-        String fileName = getFileNameFor(c, opts.output_format());
+        String fileName = getFileNameFor(c, Options.v().output_format());
 
-        if (opts.output_format() != Options.output_format_none
-            && opts.output_format() != Options.output_format_class) {
+        if (Options.v().output_format() != Options.output_format_none
+            && Options.v().output_format() != Options.output_format_class) {
             try {
                 streamOut = new FileOutputStream(fileName);
                 writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
@@ -774,7 +734,7 @@ public class Main {
                 {
                     JimpleBody body = (JimpleBody) m.retrieveActiveBody();
 
-                    if (opts.via_shimple()) {
+                    if (Options.v().via_shimple()) {
                         PackManager.v().getPack("stp").apply(body);
                         PackManager.v().getPack("sop").apply(body);
                     }
@@ -808,10 +768,10 @@ public class Main {
             }
         }
 
-        if (opts.xml_attributes()) {
+        if (Options.v().xml_attributes()) {
             Printer.v().setOption(Printer.ADD_JIMPLE_LN);
         }
-        switch (opts.output_format()) {
+        switch (Options.v().output_format()) {
             case Options.output_format_none :
                 break;
             case Options.output_format_jasmin :
@@ -849,8 +809,8 @@ public class Main {
                 throw new RuntimeException();
         }
 
-        if (opts.output_format() != Options.output_format_none
-            && opts.output_format() != Options.output_format_class) {
+        if (Options.v().output_format() != Options.output_format_none
+            && Options.v().output_format() != Options.output_format_class) {
             try {
                 writerOut.flush();
                 streamOut.close();
@@ -859,7 +819,7 @@ public class Main {
             }
         }
 
-        if (opts.xml_attributes()) {
+        if (Options.v().xml_attributes()) {
             XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName);
             xap.printAttrs(c);
         }

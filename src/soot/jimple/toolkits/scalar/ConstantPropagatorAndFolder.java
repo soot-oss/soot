@@ -26,6 +26,7 @@
 
 
 package soot.jimple.toolkits.scalar;
+import soot.options.*;
 
 import soot.util.*;
 import soot.*;
@@ -49,7 +50,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
         int numFolded = 0;
         int numPropagated = 0;
 
-        if (soot.Main.v().opts.verbose())
+        if (Options.v().verbose())
             G.v().out.println("[" + stmtBody.getMethod().getName() +
                                "] Propagating and folding constants...");
 
@@ -107,7 +108,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
             }
         }
 
-       if (soot.Main.v().opts.verbose())
+       if (Options.v().verbose())
             G.v().out.println("[" + stmtBody.getMethod().getName() +
                 "]     Propagated: " + numPropagated + ", Folded:  " + numFolded);
 

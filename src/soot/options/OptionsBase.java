@@ -91,7 +91,7 @@ abstract class OptionsBase {
     protected LinkedList classes = new LinkedList();
     public LinkedList classes() { return classes; }
 
-    protected boolean setPhaseOption( String phase, String option ) {
+    public boolean setPhaseOption( String phase, String option ) {
         return PackManager.v().processPhaseOptions( phase, option );
     }
 

@@ -27,6 +27,7 @@
 
 
 package soot.toolkits.scalar;
+import soot.options.*;
 
 import soot.*;
 import java.util.*;
@@ -48,7 +49,7 @@ public class UnusedLocalEliminator extends BodyTransformer
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {
-        if(soot.Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unused locals...");
 
         Set usedLocals = new HashSet();

@@ -29,6 +29,7 @@
 
 
 package soot.toolkits.scalar;
+import soot.options.*;
 
 import soot.*;
 import soot.toolkits.graph.*;
@@ -67,13 +68,13 @@ public class SimpleLocalUses implements LocalUses
      */
     public SimpleLocalUses(Body body, LocalDefs localDefs)
     {
-        if(Main.v().opts.time())
+        if(Options.v().time())
            Timers.v().usesTimer.start();
     
-        if(Main.v().opts.time())
+        if(Options.v().time())
            Timers.v().usePhase1Timer.start();
         
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() +
                 "]     Constructing SimpleLocalUses...");
     
@@ -92,10 +93,10 @@ public class SimpleLocalUses implements LocalUses
             }
         }
 
-        if(Main.v().opts.time())
+        if(Options.v().time())
            Timers.v().usePhase1Timer.end();
     
-        if(Main.v().opts.time())
+        if(Options.v().time())
            Timers.v().usePhase2Timer.start();
     
         // Traverse units and associate uses with definitions
@@ -131,10 +132,10 @@ public class SimpleLocalUses implements LocalUses
             }
         }
 
-        if(Main.v().opts.time())
+        if(Options.v().time())
            Timers.v().usePhase2Timer.end();
     
-        if(Main.v().opts.time())
+        if(Options.v().time())
            Timers.v().usePhase3Timer.start();
     
         // Store the map as a bunch of unmodifiable lists.
@@ -150,10 +151,10 @@ public class SimpleLocalUses implements LocalUses
             
         }
         
-        if(Main.v().opts.time())
+        if(Options.v().time())
            Timers.v().usePhase3Timer.end();
     
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().usesTimer.end();
     }
 

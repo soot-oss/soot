@@ -29,6 +29,7 @@
 
 
 package soot.toolkits.scalar;
+import soot.options.*;
 
 import soot.*;
 import soot.util.*;
@@ -55,17 +56,17 @@ public class SimpleLiveLocals implements LiveLocals
      */
     public SimpleLiveLocals(CompleteUnitGraph graph)
     {
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().liveTimer.start();
         
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + graph.getBody().getMethod().getName() +
                 "]     Constructing SimpleLiveLocals...");
 
                         
         SimpleLiveLocalsAnalysis analysis = new SimpleLiveLocalsAnalysis(graph);
 
-        if(Main.v().opts.time())
+        if(Options.v().time())
                 Timers.v().livePostTimer.start();
 
         // Build unitToLocals map
@@ -87,10 +88,10 @@ public class SimpleLiveLocals implements LiveLocals
             }            
         }
         
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().livePostTimer.end();
         
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().liveTimer.end();
     }
 
@@ -115,7 +116,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
     {
         super(g);
 
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().liveSetupTimer.start();
 
         // Generate list of locals and empty set
@@ -181,15 +182,15 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
             }
         }
 
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().liveSetupTimer.end();
 
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().liveAnalysisTimer.start();
 
         doAnalysis();
         
-        if(Main.v().opts.time())
+        if(Options.v().time())
             Timers.v().liveAnalysisTimer.end();
 
     }

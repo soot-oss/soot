@@ -25,6 +25,7 @@
 
 
 package soot;
+import soot.options.*;
 
 import soot.util.*;
 import java.util.*;
@@ -57,7 +58,7 @@ public class Timer
     public void start()
     {
         // Subtract garbage collection time
-				if(!G.v().Timer_isGarbageCollecting && Main.v().opts != null && Main.v().opts.subtract_gc() && ((G.v().Timer_count++ % 4) == 0))
+				if(!G.v().Timer_isGarbageCollecting && Options.v() != null && Options.v().subtract_gc() && ((G.v().Timer_count++ % 4) == 0))
             {
                 // garbage collects only every 4 calls to avoid round off errors
                 

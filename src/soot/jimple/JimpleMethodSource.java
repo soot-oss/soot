@@ -25,7 +25,7 @@
 
 
 package soot.jimple;
-
+import soot.options.*;
 import soot.*;
 import soot.coffi.*;
 import soot.util.*;
@@ -46,7 +46,7 @@ public class JimpleMethodSource implements MethodSource
     {  
         JimpleBody jb = (JimpleBody)mJimpleAST.getBody(m);
 
-        if(soot.Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + m.getName() + "] Retrieving JimpleBody from AST...");
     
 

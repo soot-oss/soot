@@ -29,6 +29,7 @@
 
 
 package soot.grimp.toolkits.base;
+import soot.options.*;
 
 import soot.*;
 import soot.toolkits.scalar.*;
@@ -48,7 +49,7 @@ public class ConstructorFolder extends BodyTransformer
     {
         GrimpBody body = (GrimpBody)b;
 
-        if(soot.Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() +
                 "] Folding constructors...");
 

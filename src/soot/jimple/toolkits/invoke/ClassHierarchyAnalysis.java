@@ -24,6 +24,7 @@
  */
 
 package soot.jimple.toolkits.invoke;
+import soot.options.*;
 
 import java.util.*;
 import soot.*;
@@ -113,7 +114,7 @@ public class ClassHierarchyAnalysis
       g.mcg = (MethodCallGraph)g.newMethodGraph();
     }
 
-    if (Main.v().opts.verbose()) {
+    if (Options.v().verbose()) {
       G.v().out.println("  processed "+appAndLibClasses.size()+" classes");
       G.v().out.println("  processed "+visitedMethods.size()+" methods");
     }
@@ -234,7 +235,7 @@ public class ClassHierarchyAnalysis
       g.mcg = (MethodCallGraph)g.newMethodGraph();
     }
 
-//    if (Main.v().opts.verbose()) 
+//    if (Options.v().verbose()) 
     {
       G.v().out.println("  processed "+visitedClasses.size()+" classes");
       G.v().out.println("  processed "+visitedMethods.size()+" methods");

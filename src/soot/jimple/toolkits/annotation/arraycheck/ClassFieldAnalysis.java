@@ -24,6 +24,7 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
+import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
@@ -57,7 +58,7 @@ public class ClassFieldAnalysis
      
 	/* Summerize class information here. */
 	Date start = new Date();
- 	if (soot.Main.v().opts.verbose()) 
+ 	if (Options.v().verbose()) 
 	    G.v().out.println("[] ClassFieldAnalysis started on : "
 			       +start+" for "
 			       +c.getPackageName()+c.getName());
@@ -94,7 +95,7 @@ public class ClassFieldAnalysis
 
 	if (arrayTypeFieldNum == 0)
 	{
-	    if (Main.v().opts.verbose()) 
+	    if (Options.v().verbose()) 
 		G.v().out.println("[] ClassFieldAnalysis finished with nothing");
 	    return;
 	}
@@ -119,7 +120,7 @@ public class ClassFieldAnalysis
 	}
 
 	Date finish = new Date();
-	if (Main.v().opts.verbose()) 
+	if (Options.v().verbose()) 
 	{
 	    long runtime=finish.getTime()-start.getTime();
 	    long mins=runtime/60000;
@@ -222,7 +223,7 @@ public class ClassFieldAnalysis
 	}
 
 
-	if (soot.Main.v().opts.verbose())
+	if (Options.v().verbose())
 	{
 	    G.v().out.println("[] ScanMethod for field started.");
 	}
@@ -258,7 +259,7 @@ public class ClassFieldAnalysis
 			{
 			    usestmt = (DefinitionStmt)defs.get(0);
 
-			    if (soot.Main.v().isInDebugMode)
+			    if (Options.v().debug())
 				G.v().out.println("        "+usestmt);
 
 			    Value tmp_rhs = usestmt.getRightOp();
@@ -342,7 +343,7 @@ public class ClassFieldAnalysis
 	    }
 	}	
 	
-	if (soot.Main.v().opts.verbose())
+	if (Options.v().verbose())
 	{
 	    G.v().out.println("[] ScanMethod finished.");
 	}

@@ -38,6 +38,7 @@ import soot.util.*;
 import java.util.*;
 import java.io.*;
 import soot.toolkits.scalar.*;
+import soot.options.*;
 
 
 /**
@@ -195,7 +196,7 @@ public abstract class Body extends AbstractHost implements Serializable
         validateLocals();
         validateTraps();
         validateUnitBoxes();
-        if (Main.v().isInDebugMode)
+        if (Options.v().debug())
             validateUses();
     }
 

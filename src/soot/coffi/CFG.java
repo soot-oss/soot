@@ -30,6 +30,7 @@
 
 
 package soot.coffi;
+import soot.options.*;
 
 import java.lang.*;
 import java.util.*;
@@ -943,7 +944,7 @@ public class CFG {
 
     private void adjustLineNumberTable()
     {
-	if (!soot.Main.v().opts.keep_line_number())
+	if (!Options.v().keep_line_number())
 	    return;
 	if (method.code_attr == null)
 	    return;
@@ -1592,7 +1593,7 @@ public class CFG {
         }
 
 	/* covert line number table to tags attached to statements */
-	if (soot.Main.v().opts.keep_line_number())
+	if (Options.v().keep_line_number())
 	{
 	    HashMap stmtstags = new HashMap();
 	    LinkedList startstmts = new LinkedList();
@@ -4748,7 +4749,7 @@ public class CFG {
         }
 
       if(stmt != null) {
-	if (soot.Main.v().opts.keep_offset()) {
+	if (Options.v().keep_offset()) {
 	  stmt.addTag(new BytecodeOffsetTag(ins.label));
 	}
         statements.add(stmt);

@@ -24,6 +24,7 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
+import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
@@ -83,7 +84,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
 	csin = takeCSE;
 	rectarray = takeRectArray;
 
-	if (soot.Main.v().isInDebugMode) 
+	if (Options.v().debug()) 
 	    G.v().out.println("Enter ArrayIndexLivenessAnalysis");
 
 	cug = (CompleteUnitGraph)dg;
@@ -128,7 +129,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
 
       	doAnalysis();
 
-	if (soot.Main.v().isInDebugMode) 
+	if (Options.v().debug()) 
 	    G.v().out.println("Leave ArrayIndexLivenessAnalysis");
     }
 

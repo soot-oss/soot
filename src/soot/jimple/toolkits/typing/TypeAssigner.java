@@ -27,6 +27,7 @@
 package soot.jimple.toolkits.typing;
 
 import soot.*;
+import soot.options.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
@@ -50,13 +51,13 @@ public class TypeAssigner extends BodyTransformer
 
     Date start = new Date();
     
-    if (soot.Main.v().opts.verbose())
+    if (Options.v().verbose())
       G.v().out.println("[TypeAssigner] typing system started on "+start);
 
     TypeResolver.resolve((JimpleBody)b, Scene.v());
 
     Date finish = new Date();
-    if (soot.Main.v().opts.verbose())
+    if (Options.v().verbose())
       {
 	long runtime = finish.getTime()-start.getTime();
 	long mins = runtime/60000;

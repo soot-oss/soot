@@ -205,7 +205,7 @@ public class Timers
             
             G.v().out.println("totalTime:" + toTimeString(totalTimer, totalTime));
             
-            if(Main.v().opts.subtract_gc())
+            if(Options.v().subtract_gc())
 		{
 		    G.v().out.println("Garbage collection was subtracted from these numbers.");
 		    G.v().out.println("           forcedGC:" + 

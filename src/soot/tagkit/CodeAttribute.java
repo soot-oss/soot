@@ -25,6 +25,7 @@
 
 
 package soot.tagkit;
+import soot.options.*;
 
 import java.util.*;
 import soot.baf.*;
@@ -128,7 +129,7 @@ public class CodeAttribute extends JasminAttribute
 
     public byte[] decode(String attr, Hashtable labelToPc)
     {
-	if (soot.Main.v().opts.verbose())
+	if (Options.v().verbose())
 	    G.v().out.println("[] JasminAttribute decode...");
 
 	List attributeHunks = new LinkedList();
@@ -192,7 +193,7 @@ public class CodeAttribute extends JasminAttribute
 	if(index != (attributeSize))
 	    throw new RuntimeException("Index does not euqal to attrubute size :"+index+" -- "+attributeSize);
 
-	if (soot.Main.v().opts.verbose())
+	if (Options.v().verbose())
 	    G.v().out.println("[] Jasmin.decode finished...");
 
 	return attributeValue;

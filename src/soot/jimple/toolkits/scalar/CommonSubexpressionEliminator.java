@@ -25,6 +25,8 @@
 
 
 package soot.jimple.toolkits.scalar;
+import soot.options.*;
+import soot.options.*;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -72,7 +74,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
         }
         sideEffect.newMethod( b.getMethod() );
 
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + b.getMethod().getName() +
                 "]     Eliminating common subexpressions (naively)...");
 
@@ -132,7 +134,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
                 }
             }
         }
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + b.getMethod().getName() +
                      "]     Eliminating common subexpressions done!");
     }

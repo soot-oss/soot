@@ -25,6 +25,7 @@
 
 
 package soot.jimple.toolkits.scalar;
+import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
@@ -46,7 +47,7 @@ public class NopEliminator extends BodyTransformer
     {
         JimpleBody body = (JimpleBody)b;
         
-        if(Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() +
                 "] Removing nops...");
                 

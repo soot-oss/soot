@@ -28,6 +28,7 @@
 
 
 package soot.baf;
+import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
@@ -56,7 +57,7 @@ public class BafBody extends Body
     {
         super(body.getMethod());
 
-        if(soot.Main.v().opts.verbose())
+        if(Options.v().verbose())
             G.v().out.println("[" + getMethod().getName() + "] Constructing BafBody...");
 
         JimpleBody jimpleBody;
