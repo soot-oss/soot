@@ -28,7 +28,8 @@ public class JimpleClassProvider implements ClassProvider
     /** Look for the specified class. Return a ClassSource for it if found,
      * or null if it was not found. */
     public ClassSource find( String className ) {
-        String fileName = className.replace('.', '/') + ".jimple";
+        //String fileName = className.replace('.', '/') + ".jimple";
+        String fileName = className + ".jimple";
         SourceLocator.FoundFile file = 
             SourceLocator.v().lookupInClassPath(fileName);
         if( file == null ) return null;
