@@ -203,7 +203,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 sootExpr = getArrayInitLocal((polyglot.ast.ArrayInit)initExpr, field.type().type());
             }
             else {
+                //System.out.println("field init expr: "+initExpr);
                 sootExpr = base().createExpr(initExpr);
+                //System.out.println("soot expr: "+sootExpr);
             }
             if (sootExpr instanceof soot.jimple.ConditionExpr) {
                 sootExpr = handleCondBinExpr((soot.jimple.ConditionExpr)sootExpr); 
@@ -262,7 +264,10 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                     sootExpr = getArrayInitLocal((polyglot.ast.ArrayInit)initExpr, field.type().type());
                 }
                 else {
+                    //System.out.println("field init expr: "+initExpr);
                     sootExpr = base().createExpr(initExpr);
+                    //System.out.println("soot expr: "+sootExpr);
+                    
                     if (sootExpr instanceof soot.jimple.ConditionExpr) {
                         sootExpr = handleCondBinExpr((soot.jimple.ConditionExpr)sootExpr);
                     }

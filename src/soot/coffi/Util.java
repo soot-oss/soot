@@ -164,7 +164,8 @@ public class Util
                     tag = new IntegerConstantValueTag((int)((CONSTANT_Integer_info)cval).bytes);
                     break;
                     case cp_info.CONSTANT_Float:
-                    tag = new FloatConstantValueTag((int)((CONSTANT_Float_info)cval).bytes);
+                    //tag = new FloatConstantValueTag((int)((CONSTANT_Float_info)cval).bytes);
+                    tag = new FloatConstantValueTag(((CONSTANT_Float_info)cval).convert());
                     break;
                     case cp_info.CONSTANT_Long:
                       {
@@ -175,7 +176,8 @@ public class Util
                     case cp_info.CONSTANT_Double:
                       {
                     CONSTANT_Double_info dcval = (CONSTANT_Double_info)cval;
-                    tag = new DoubleConstantValueTag((dcval.high << 32) + dcval.low);
+                    //tag = new DoubleConstantValueTag((dcval.high << 32) + dcval.low);
+                    tag = new DoubleConstantValueTag(dcval.convert());
                     break;
                       }
                     case cp_info.CONSTANT_String:

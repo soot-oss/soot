@@ -349,11 +349,13 @@ public abstract class AbstractJasminClass
                 }
                 else if (field.hasTag("FloatConstantValueTag")){
                     fieldString += " = ";
-                    fieldString += ((FloatConstantValueTag)field.getTag("FloatConstantValueTag")).getFloatValue();
+                    float val = ((FloatConstantValueTag)field.getTag("FloatConstantValueTag")).getFloatValue();
+                    fieldString += Float.floatToRawIntBits(val);
                 }
                 else if (field.hasTag("DoubleConstantValueTag")){
                     fieldString += " = ";
-                    fieldString += ((DoubleConstantValueTag)field.getTag("DoubleConstantValueTag")).getDoubleValue();
+                    double val = ((DoubleConstantValueTag)field.getTag("DoubleConstantValueTag")).getDoubleValue();
+                    fieldString += Double.doubleToRawLongBits(val);
                 }
                 /*if (field.hasTag("ConstantValueTag")){
                     fieldString += " = ";

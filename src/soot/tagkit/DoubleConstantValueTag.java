@@ -27,9 +27,10 @@ package soot.tagkit;
 
 public class DoubleConstantValueTag extends ConstantValueTag
 {
-    private final long value;
+    private final double value;
+    //private final long value;
 
-    public DoubleConstantValueTag(long value) {
+    /*public DoubleConstantValueTag(long value) {
 	this.value = value;
 	/*this.bytes = new byte[] {
 	  (byte)((value >> 56) & 0xff),
@@ -41,10 +42,10 @@ public class DoubleConstantValueTag extends ConstantValueTag
 	  (byte)((value >>  8) & 0xff),
 	  (byte)((value      ) & 0xff)
 	};*/
-    makeBytes();
-    }
+    //makeBytes();
+    //}
 
-    public void makeBytes(){
+    /*public void makeBytes(){
 	this.bytes = new byte[] {
 	  (byte)((value >> 56) & 0xff),
 	  (byte)((value >> 48) & 0xff),
@@ -55,19 +56,18 @@ public class DoubleConstantValueTag extends ConstantValueTag
 	  (byte)((value >>  8) & 0xff),
 	  (byte)((value      ) & 0xff)
 	};
-    }
+    }*/
 
-    public DoubleConstantValueTag(double value){
-        this.value = (long)value;
-        makeBytes();
-    }
-    
     public double getDoubleValue() {
-	return Double.longBitsToDouble(value);
+	    return value;
     }
 
-    public long getRawBits() {
+   /* public long getRawBits() {
 	return value;
+    }*/
+
+    public DoubleConstantValueTag(double val){
+        this.value = val;
     }
 }
 
