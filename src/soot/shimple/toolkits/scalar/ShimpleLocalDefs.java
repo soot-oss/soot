@@ -30,11 +30,11 @@ import java.util.*;
  * ShimpleLocalDefs can be used in conjunction with SimpleLocalUses to
  * provide Definition/Use and Use/Definition chains in SSA.
  *
- * <p> This implemenation can be considered a small demo for how SSA
+ * <p> This implementation can be considered a small demo for how SSA
  * can be put to good use. It is much simpler than
- * soot.toolkits.scalar.SimpleLocalDefs because we can make SSA
- * assumptions.  The lesson to learn: Shimple can be treated as Jimple
- * with the added benefits of SSA assumptions.
+ * soot.toolkits.scalar.SimpleLocalDefs thanks to SSA form.  The
+ * lesson to learn?  Shimple can be treated as Jimple with the added
+ * benefits of SSA assumptions.
  *
  * <p> In addition to the interface required by LocalDefs,
  * ShimpleLocalDefs also provides a method for obtaining the

@@ -27,14 +27,16 @@ import soot.toolkits.scalar.*;
 import java.util.*;
 
 /**
- * An example of constant propagation using Shimple.  This analysis is
- * already more powerful than the simplistic
+ * An example of constant propagation using Shimple.
+ *
+ *
+ * <p> This analysis is already more powerful than the simplistic
  * soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder and
- * demonstrates some of the added benefits of SSA during scalar
- * analysis particular the fact that PHI functions represent natural
- * merge points in the control flow.  This implementation also shows
- * how ShimpleLocalDefs and SimpleLocalUses provide Use/Definition
- * Definition/Use chains in SSA.
+ * demonstrates some of the benefits of SSA -- particularly the fact
+ * that PHI functions represent natural merge points in the control
+ * flow.  This implementation also shows how ShimpleLocalDefs and
+ * SimpleLocalUses provide Use/Definition Definition/Use chains in
+ * SSA.
  *
  * <p> To use this analysis from the command line in Soot, try
  * something like: <code>soot.Main --shimple -p shimple optimize
