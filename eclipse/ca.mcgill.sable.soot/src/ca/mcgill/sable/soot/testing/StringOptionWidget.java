@@ -83,7 +83,7 @@ public class StringOptionWidget implements ISootOptionWidget {//extends Composit
 		//	
 		//}
 		getText().setText(data.getInitText());
-		getText().setToolTipText(data.getTooltip());	
+		getText().setToolTipText(data.getTooltip().trim());	
 		getText().setSize(300, 20);	
 		
 		// this makes label fill available space		

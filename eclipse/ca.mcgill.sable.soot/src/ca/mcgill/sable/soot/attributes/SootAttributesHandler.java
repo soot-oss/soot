@@ -72,13 +72,26 @@ public class SootAttributesHandler {
 		while (it.hasNext()) {
 			SootAttribute sa = (SootAttribute)it.next();
 			if (sa.attrForJavaLn(lnNum)) {
-				if (sa.getTextList() == null) return null;
+				System.out.println("Soot Attribute:");
+				System.out.println(sa);
+				//if (sa.getTextList() == null) return null;
 				sb.append(sa.getAllTextAttrs("<br>"));
 			}
 		}	
 		return sb.toString();
 	}
 
+	public ArrayList getJavaLinks(int lnNum){
+		Iterator it = getAttrList().iterator();
+		ArrayList list = new ArrayList();
+		while (it.hasNext()){
+			SootAttribute sa = (SootAttribute)it.next();
+			if (sa.attrForJavaLn(lnNum)){
+				list = sa.getAllLinkAttrs();
+			}
+		}
+		return list;
+	}
 
 	/**
 	 * Returns the projList.

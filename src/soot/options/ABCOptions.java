@@ -116,8 +116,8 @@ public class ABCOptions
     
      * .
     
-     * This option is used together with "wjap.ra" to make Soot run 
-     * the whole-program analysis for rectangular array objects. This 
+     * This option is used together with wjap.ra to make Soot run the 
+     * whole-program analysis for rectangular array objects. This 
      * analysis is based on the call graph, and it usually takes a long 
      * time. If the application uses rectangular arrays, these options 
      * can improve the analysis result. 

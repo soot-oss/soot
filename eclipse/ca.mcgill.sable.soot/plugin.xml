@@ -96,7 +96,7 @@
       <editor
             name="Jimple Editor"
             icon="icons/soot.png"
-            extensions="jimple,grimp"
+            extensions="jimple,grimp,jimp,grimple,shimple,shimp"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="ca.mcgill.sable.soot.editors.JimpleEditor"
             id="ca.mcgill.sable.soot.editors.JimpleEditor">
@@ -107,6 +107,20 @@
 	<editorContribution
 		id="ca.mcgill.sable.soot.ruler.actions"
 		targetID="ca.mcgill.sable.soot.editors.JimpleEditor">
+	
+        <action
+           id="ca.mcgill.sable.soot.editors.sootattributesselectaction"
+           actionID="RulerClick"
+           label="none"
+           class="ca.mcgill.sable.soot.attributes.SootAttributeRulerActionDelegate">
+        </action>
+	</editorContribution>
+   </extension>
+   
+   <extension point="org.eclipse.ui.editorActions">
+	<editorContribution
+		id="ca.mcgill.sable.soot.ruler.actions"
+		targetID="org.eclipse.jdt.ui.CompilationUnitEditor">
 
         <action
            id="ca.mcgill.sable.soot.editors.sootattributesselectaction"
@@ -116,6 +130,7 @@
         </action>
 	</editorContribution>
    </extension>
+   
    
    <!--<extension point="org.eclipse.ui.editorActions">
 	<editorContribution

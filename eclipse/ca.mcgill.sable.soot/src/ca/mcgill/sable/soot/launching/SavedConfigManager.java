@@ -117,7 +117,7 @@ public class SavedConfigManager {
 		}
 		catch (NumberFormatException e){
 		}
-		for (int i = 1; i < count; i++){
+		for (int i = 1; i <= count; i++){
 			if (settings.get("soot_run_config_"+i).equals(name)){
 				return true;
 			}

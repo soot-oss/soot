@@ -107,7 +107,7 @@ public class XMLAttributesPrinter {
 		else if (t instanceof LinkTag) {
 			LinkTag lt = (LinkTag)t;
 			Host h = lt.getLink();
-			printLinkAttr(formatForXML(lt.toString()), getJimpleLnOfHost(h), lt.getClassName());
+			printLinkAttr(formatForXML(lt.toString()), getJimpleLnOfHost(h), getJavaLnOfHost(h), lt.getClassName());
 		}
 		else if (t instanceof StringTag) {
 			printTextAttr(formatForXML(((StringTag)t).toString()));
@@ -124,6 +124,19 @@ public class XMLAttributesPrinter {
 			printTextAttr(t.toString());
 		}
 								
+	}
+	
+	private int getJavaLnOfHost(Host h){
+		Iterator it = h.getTags().iterator();
+		while (it.hasNext()){
+			Tag t = (Tag)it.next();
+			G.v().out.println(t.getClass().toString());
+			if (t instanceof LineNumberTag) {
+				G.v().out.println("t is LineNumberTag");
+				return (new Integer(((LineNumberTag)t).toString())).intValue();
+			}
+		}
+		return 0;
 	}
 	
 	private int getJimpleLnOfHost(Host h){
@@ -153,10 +166,11 @@ public class XMLAttributesPrinter {
 		writerOut.println("<text>"+text+"</text>");
 	}
 	
-	private void printLinkAttr(String label, int link, String className){
+	private void printLinkAttr(String label, int jimpleLink, int javaLink, String className){
 		writerOut.println("<link_attribute>");
 		writerOut.println("<link_label>"+label+"</link_label>");
-		writerOut.println("<link>"+link+"</link>");
+		writerOut.println("<jimple_link>"+jimpleLink+"</jimple_link>");
+		writerOut.println("<java_link>"+javaLink+"</java_link>");
 		writerOut.println("<className>"+className+"</className>");
 		writerOut.println("</link_attribute>");
 	}

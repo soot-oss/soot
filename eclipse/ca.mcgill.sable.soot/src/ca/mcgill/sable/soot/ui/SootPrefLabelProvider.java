@@ -20,12 +20,7 @@ package ca.mcgill.sable.soot.ui;
 
 import org.eclipse.jface.viewers.LabelProvider;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public class SootPrefLabelProvider extends LabelProvider {
 	
 	public String getColumnText(Object element, int columnIndex) {

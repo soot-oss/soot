@@ -14,6 +14,7 @@ import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.text.TextPresentation;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.editors.*;
@@ -154,6 +155,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 			try {
 				System.out.println("need to remove markers from: "+getRec().getFullPath().toOSString());
 				getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_ONE);
+				//SootPlugin.getDefault().getManager().clearColors();
 			}
 			catch(CoreException e){
 			}
@@ -161,9 +163,13 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 		}
 		if (getAttrsHandler() != null) {
 					
-			SootAttributesJimpleColorer sajc = new SootAttributesJimpleColorer();
-			sajc.computeColors(getAttrsHandler(), getViewer(), getEditor());
-		
+			//if (!SootPlugin.getDefault().getManager().alreadyOnColorList((IFile)getRec())){
+				SootAttributesJimpleColorer sajc = new SootAttributesJimpleColorer();
+				//TextPresentation tp = 
+				sajc.computeColors(getAttrsHandler(), getViewer(), getEditor());
+				//SootPlugin.getDefault().getManager().addToColorList((IFile)getRec(), tp);
+			//}
+			
 			return getAttrsHandler().getJimpleAttributes(
 			getLineNum());
 			

@@ -79,15 +79,13 @@ Composite jbChild = jbCreate(getPageContainer());
 
 Composite cgChild = cgCreate(getPageContainer());
 
-Composite wstpChild = wstpCreate(getPageContainer());
-
-Composite wsopChild = wsopCreate(getPageContainer());
-
 Composite wjtpChild = wjtpCreate(getPageContainer());
 
 Composite wjopChild = wjopCreate(getPageContainer());
 
 Composite wjapChild = wjapCreate(getPageContainer());
+
+Composite shimpleChild = shimpleCreate(getPageContainer());
 
 Composite stpChild = stpCreate(getPageContainer());
 
@@ -111,15 +109,11 @@ Composite tagChild = tagCreate(getPageContainer());
 
 Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
 
-Composite jbjb_a1Child = jbjb_a1Create(getPageContainer());
+Composite jbjb_aChild = jbjb_aCreate(getPageContainer());
 
-Composite jbjb_ule1Child = jbjb_ule1Create(getPageContainer());
+Composite jbjb_uleChild = jbjb_uleCreate(getPageContainer());
 
 Composite jbjb_trChild = jbjb_trCreate(getPageContainer());
-
-Composite jbjb_a2Child = jbjb_a2Create(getPageContainer());
-
-Composite jbjb_ule2Child = jbjb_ule2Create(getPageContainer());
 
 Composite jbjb_ulpChild = jbjb_ulpCreate(getPageContainer());
 
@@ -157,6 +151,8 @@ Composite wjopwjop_siChild = wjopwjop_siCreate(getPageContainer());
 
 Composite wjapwjap_raChild = wjapwjap_raCreate(getPageContainer());
 
+Composite sopsop_cpfChild = sopsop_cpfCreate(getPageContainer());
+
 Composite jopjop_cseChild = jopjop_cseCreate(getPageContainer());
 
 Composite jopjop_bcmChild = jopjop_bcmCreate(getPageContainer());
@@ -173,9 +169,9 @@ Composite jopjop_daeChild = jopjop_daeCreate(getPageContainer());
 
 Composite jopjop_uce1Child = jopjop_uce1Create(getPageContainer());
 
-Composite jopjop_uce2Child = jopjop_uce2Create(getPageContainer());
-
 Composite jopjop_ubf1Child = jopjop_ubf1Create(getPageContainer());
+
+Composite jopjop_uce2Child = jopjop_uce2Create(getPageContainer());
 
 Composite jopjop_ubf2Child = jopjop_ubf2Create(getPageContainer());
 
@@ -285,24 +281,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getjbjb_lsenabled_widget().getButton().addSelectionListener(this);
 		
 		
-		makeNewEnableGroup("jb", "jb.a1");
+		makeNewEnableGroup("jb", "jb.a");
 		
 		
-		addToEnableGroup("jb", "jb.a1", getjbjb_a1enabled_widget(), "enabled");
+		addToEnableGroup("jb", "jb.a", getjbjb_aenabled_widget(), "enabled");
 		
-		addToEnableGroup("jb", "jb.a1", getjbjb_a1only_stack_locals_widget(), "only-stack-locals");
+		addToEnableGroup("jb", "jb.a", getjbjb_aonly_stack_locals_widget(), "only-stack-locals");
 		
-		getjbjb_a1enabled_widget().getButton().addSelectionListener(this);
+		getjbjb_aenabled_widget().getButton().addSelectionListener(this);
 		
-		getjbjb_a1only_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
-		makeNewEnableGroup("jb", "jb.ule1");
+		getjbjb_aonly_stack_locals_widget().getButton().addSelectionListener(this);
 		
 		
-		addToEnableGroup("jb", "jb.ule1", getjbjb_ule1enabled_widget(), "enabled");
+		makeNewEnableGroup("jb", "jb.ule");
 		
-		getjbjb_ule1enabled_widget().getButton().addSelectionListener(this);
+		
+		addToEnableGroup("jb", "jb.ule", getjbjb_uleenabled_widget(), "enabled");
+		
+		getjbjb_uleenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jb", "jb.tr");
@@ -311,26 +307,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("jb", "jb.tr", getjbjb_trenabled_widget(), "enabled");
 		
 		getjbjb_trenabled_widget().getButton().addSelectionListener(this);
-		
-		
-		makeNewEnableGroup("jb", "jb.a2");
-		
-		
-		addToEnableGroup("jb", "jb.a2", getjbjb_a2enabled_widget(), "enabled");
-		
-		addToEnableGroup("jb", "jb.a2", getjbjb_a2only_stack_locals_widget(), "only-stack-locals");
-		
-		getjbjb_a2enabled_widget().getButton().addSelectionListener(this);
-		
-		getjbjb_a2only_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
-		makeNewEnableGroup("jb", "jb.ule2");
-		
-		
-		addToEnableGroup("jb", "jb.ule2", getjbjb_ule2enabled_widget(), "enabled");
-		
-		getjbjb_ule2enabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jb", "jb.ulp");
@@ -430,9 +406,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", getcgsafe_forname_widget(), "safe-forname");
 		
 		
+		addToEnableGroup("cg", getcgverbose_widget(), "verbose");
+		
+		
 		getcgenabled_widget().getButton().addSelectionListener(this);
 		
 		getcgsafe_forname_widget().getButton().addSelectionListener(this);
+		
+		getcgverbose_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg", "cg.cha");
@@ -496,9 +477,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkreturns_as_fields_widget(), "returns-as-fields");
 
 		
-		addToEnableGroup("cg", "cg.spark", getcgcg_sparkall_clinit_widget(), "all-clinit");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimplify_offline_widget(), "simplify-offline");
 
 		
@@ -546,24 +524,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkset_mass_widget(), "set-mass");
 
-		
-		
-		makeNewEnableGroup("wstp");
-		
-		
-		addToEnableGroup("wstp", getwstpenabled_widget(), "enabled");
-		
-		
-		getwstpenabled_widget().getButton().addSelectionListener(this);
-		
-		
-		makeNewEnableGroup("wsop");
-		
-		
-		addToEnableGroup("wsop", getwsopenabled_widget(), "enabled");
-		
-		
-		getwsopenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("wjtp");
@@ -643,6 +603,30 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getwjapwjap_raenabled_widget().getButton().addSelectionListener(this);
 		
 		
+		makeNewEnableGroup("shimple");
+		
+		
+		addToEnableGroup("shimple", getshimpleenabled_widget(), "enabled");
+		
+		
+		addToEnableGroup("shimple", getshimplenaive_phi_elimination_widget(), "naive-phi-elimination");
+		
+		
+		addToEnableGroup("shimple", getshimplepre_optimize_phi_elimination_widget(), "pre-optimize-phi-elimination");
+		
+		
+		addToEnableGroup("shimple", getshimplepost_optimize_phi_elimination_widget(), "post-optimize-phi-elimination");
+		
+		
+		getshimpleenabled_widget().getButton().addSelectionListener(this);
+		
+		getshimplenaive_phi_elimination_widget().getButton().addSelectionListener(this);
+		
+		getshimplepre_optimize_phi_elimination_widget().getButton().addSelectionListener(this);
+		
+		getshimplepost_optimize_phi_elimination_widget().getButton().addSelectionListener(this);
+		
+		
 		makeNewEnableGroup("stp");
 		
 		
@@ -659,6 +643,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		getsopenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("sop", "sop.cpf");
+		
+		
+		addToEnableGroup("sop", "sop.cpf", getsopsop_cpfenabled_widget(), "enabled");
+		
+		getsopsop_cpfenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jtp");
@@ -708,7 +700,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		addToEnableGroup("jop", "jop.lcm", getjopjop_lcmenabled_widget(), "enabled");
 		
-		addToEnableGroup("jop", "jop.lcm", getjopjop_lcmsafe_widget(), "safe");
+		addToEnableGroup("jop", "jop.lcm", getjopjop_lcmsafety_widget(), "safety");
 		
 		addToEnableGroup("jop", "jop.lcm", getjopjop_lcmunroll_widget(), "unroll");
 		
@@ -773,20 +765,20 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getjopjop_uce1enabled_widget().getButton().addSelectionListener(this);
 		
 		
-		makeNewEnableGroup("jop", "jop.uce2");
-		
-		
-		addToEnableGroup("jop", "jop.uce2", getjopjop_uce2enabled_widget(), "enabled");
-		
-		getjopjop_uce2enabled_widget().getButton().addSelectionListener(this);
-		
-		
 		makeNewEnableGroup("jop", "jop.ubf1");
 		
 		
 		addToEnableGroup("jop", "jop.ubf1", getjopjop_ubf1enabled_widget(), "enabled");
 		
 		getjopjop_ubf1enabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jop", "jop.uce2");
+		
+		
+		addToEnableGroup("jop", "jop.uce2", getjopjop_uce2enabled_widget(), "enabled");
+		
+		getjopjop_uce2enabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jop", "jop.ubf2");
@@ -1303,34 +1295,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbjb_lsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_a1enabled_widget().getButton().getSelection();
+		boolRes = getjbjb_aenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_a1enabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_aenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_a1only_stack_locals_widget().getButton().getSelection();
+		boolRes = getjbjb_aonly_stack_locals_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_a1only_stack_locals_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_aonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_ule1enabled_widget().getButton().getSelection();
+		boolRes = getjbjb_uleenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_ule1enabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_uleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_trenabled_widget().getButton().getSelection();
@@ -1341,36 +1333,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_trenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbjb_a2enabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_a2enabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbjb_a2only_stack_locals_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_a2only_stack_locals_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbjb_ule2enabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_ule2enabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_ulpenabled_widget().getButton().getSelection();
@@ -1533,6 +1495,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgsafe_forname_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getcgverbose_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgverbose_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getcgcg_chaenabled_widget().getButton().getSelection();
 		
 		
@@ -1676,7 +1648,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getcgcg_sparkon_fly_cg_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -1701,16 +1673,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkreturns_as_fields_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_sparkall_clinit_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_sparkall_clinit_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparksimplify_offline_widget().getButton().getSelection();
@@ -1873,26 +1835,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_sparkset_mass_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getwstpenabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getwstpenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getwsopenabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getwsopenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
 		boolRes = getwjtpenabled_widget().getButton().getSelection();
 		
 		
@@ -2040,6 +1982,46 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getwjapwjap_raenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getshimpleenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getshimpleenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getshimplenaive_phi_elimination_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getshimplenaive_phi_elimination_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getshimplepre_optimize_phi_elimination_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getshimplepre_optimize_phi_elimination_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getshimplepost_optimize_phi_elimination_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getshimplepost_optimize_phi_elimination_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getstpenabled_widget().getButton().getSelection();
 		
 		
@@ -2058,6 +2040,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getsopenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getsopsop_cpfenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getsopsop_cpfenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjtpenabled_widget().getButton().getSelection();
@@ -2150,14 +2142,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjopjop_lcmnaive_side_effect_widget().getAlias(), new Boolean(boolRes));
 		}
 		 
-		stringRes = getjopjop_lcmsafe_widget().getSelectedAlias();
+		stringRes = getjopjop_lcmsafety_widget().getSelectedAlias();
 
 		
 		defStringRes = "safe";
 		
 
 		if (!stringRes.equals(defStringRes)) {
-			getConfig().put(getjopjop_lcmsafe_widget().getAlias(), stringRes);
+			getConfig().put(getjopjop_lcmsafety_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getjopjop_cpenabled_widget().getButton().getSelection();
@@ -2240,16 +2232,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjopjop_uce1enabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjopjop_uce2enabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_uce2enabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
 		boolRes = getjopjop_ubf1enabled_widget().getButton().getSelection();
 		
 		
@@ -2258,6 +2240,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_ubf1enabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjopjop_uce2enabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjopjop_uce2enabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_ubf2enabled_widget().getButton().getSelection();
@@ -2929,24 +2921,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jb_jb_ls_branch;
 			
 			
-			SootOption jb_jb_a1_branch = new SootOption("Pre-typing Aggregator", "jbjb_a1");
-			subParent.addChild(jb_jb_a1_branch);
+			SootOption jb_jb_a_branch = new SootOption("Jimple Local Aggregator", "jbjb_a");
+			subParent.addChild(jb_jb_a_branch);
 
 
 			
 
 			
-			subSectParent = jb_jb_a1_branch;
+			subSectParent = jb_jb_a_branch;
 			
 			
-			SootOption jb_jb_ule1_branch = new SootOption("Pre-typing Unused Local Eliminator", "jbjb_ule1");
-			subParent.addChild(jb_jb_ule1_branch);
+			SootOption jb_jb_ule_branch = new SootOption("Unused Local Eliminator", "jbjb_ule");
+			subParent.addChild(jb_jb_ule_branch);
 
 
 			
 
 			
-			subSectParent = jb_jb_ule1_branch;
+			subSectParent = jb_jb_ule_branch;
 			
 			
 			SootOption jb_jb_tr_branch = new SootOption("Type Assigner", "jbjb_tr");
@@ -2957,26 +2949,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 			subSectParent = jb_jb_tr_branch;
-			
-			
-			SootOption jb_jb_a2_branch = new SootOption("Post-typing Aggregator", "jbjb_a2");
-			subParent.addChild(jb_jb_a2_branch);
-
-
-			
-
-			
-			subSectParent = jb_jb_a2_branch;
-			
-			
-			SootOption jb_jb_ule2_branch = new SootOption("Post-typing Unused Local Eliminator", "jbjb_ule2");
-			subParent.addChild(jb_jb_ule2_branch);
-
-
-			
-
-			
-			subSectParent = jb_jb_ule2_branch;
 			
 			
 			SootOption jb_jb_ulp_branch = new SootOption("Unsplit-originals Local Packer", "jbjb_ulp");
@@ -3019,7 +2991,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jb_jb_dae_branch;
 			
 			
-			SootOption jb_jb_cp_ule_branch = new SootOption("Unused Local Eliminator", "jbjb_cp_ule");
+			SootOption jb_jb_cp_ule_branch = new SootOption("Post-copy propagation Unused Local Eliminator", "jbjb_cp_ule");
 			subParent.addChild(jb_jb_cp_ule_branch);
 
 
@@ -3106,20 +3078,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			subSectParent.addChild(cg_Spark_Output_Options_branch);
 			
-			//Whole Shimple Transformation Pack
-			SootOption wstp_branch = new SootOption("Whole Shimple Transformation Pack", "wstp");
-			parent.addChild(wstp_branch);
-			subParent = wstp_branch;
-
-
-			
-			//Whole Shimple Optimization Pack
-			SootOption wsop_branch = new SootOption("Whole Shimple Optimization Pack", "wsop");
-			parent.addChild(wsop_branch);
-			subParent = wsop_branch;
-
-
-			
 			//Whole-Jimple Transformation Pack
 			SootOption wjtp_branch = new SootOption("Whole-Jimple Transformation Pack", "wjtp");
 			parent.addChild(wjtp_branch);
@@ -3154,8 +3112,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = wjop_wjop_si_branch;
 			
 			
-			//Whole Jimple Annotation Pack
-			SootOption wjap_branch = new SootOption("Whole Jimple Annotation Pack", "wjap");
+			//Whole-Jimple Annotation Pack
+			SootOption wjap_branch = new SootOption("Whole-Jimple Annotation Pack", "wjap");
 			parent.addChild(wjap_branch);
 			subParent = wjap_branch;
 
@@ -3171,6 +3129,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = wjap_wjap_ra_branch;
 			
 			
+			//Shimple Phase Options
+			SootOption shimple_branch = new SootOption("Shimple Phase Options", "shimple");
+			parent.addChild(shimple_branch);
+			subParent = shimple_branch;
+
+
+			
 			//Shimple Transformation Pack
 			SootOption stp_branch = new SootOption("Shimple Transformation Pack", "stp");
 			parent.addChild(stp_branch);
@@ -3185,21 +3150,31 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 			
-			//Jimple Transformations Pack
-			SootOption jtp_branch = new SootOption("Jimple Transformations Pack", "jtp");
+			SootOption sop_sop_cpf_branch = new SootOption("Constant Propagator and Folder", "sopsop_cpf");
+			subParent.addChild(sop_sop_cpf_branch);
+
+
+			
+
+			
+			subSectParent = sop_sop_cpf_branch;
+			
+			
+			//Jimple Transformation Pack
+			SootOption jtp_branch = new SootOption("Jimple Transformation Pack", "jtp");
 			parent.addChild(jtp_branch);
 			subParent = jtp_branch;
 
 
 			
-			//Jimple Optimizations Pack
-			SootOption jop_branch = new SootOption("Jimple Optimizations Pack", "jop");
+			//Jimple Optimization Pack
+			SootOption jop_branch = new SootOption("Jimple Optimization Pack", "jop");
 			parent.addChild(jop_branch);
 			subParent = jop_branch;
 
 
 			
-			SootOption jop_jop_cse_branch = new SootOption("Common Subexpression Elimination", "jopjop_cse");
+			SootOption jop_jop_cse_branch = new SootOption("Common Subexpression Eliminator", "jopjop_cse");
 			subParent.addChild(jop_jop_cse_branch);
 
 
@@ -3229,7 +3204,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jop_jop_lcm_branch;
 			
 			
-			SootOption jop_jop_cp_branch = new SootOption("Copy Propogator", "jopjop_cp");
+			SootOption jop_jop_cp_branch = new SootOption("Copy Propagator", "jopjop_cp");
 			subParent.addChild(jop_jop_cp_branch);
 
 
@@ -3279,16 +3254,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jop_jop_uce1_branch;
 			
 			
-			SootOption jop_jop_uce2_branch = new SootOption("Unreachable Code Eliminator 2", "jopjop_uce2");
-			subParent.addChild(jop_jop_uce2_branch);
-
-
-			
-
-			
-			subSectParent = jop_jop_uce2_branch;
-			
-			
 			SootOption jop_jop_ubf1_branch = new SootOption("Unconditional Branch Folder 1", "jopjop_ubf1");
 			subParent.addChild(jop_jop_ubf1_branch);
 
@@ -3297,6 +3262,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 			subSectParent = jop_jop_ubf1_branch;
+			
+			
+			SootOption jop_jop_uce2_branch = new SootOption("Unreachable Code Eliminator 2", "jopjop_uce2");
+			subParent.addChild(jop_jop_uce2_branch);
+
+
+			
+
+			
+			subSectParent = jop_jop_uce2_branch;
 			
 			
 			SootOption jop_jop_ubf2_branch = new SootOption("Unconditional Branch Folder 2", "jopjop_ubf2");
@@ -3393,7 +3368,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 			
-			SootOption gb_gb_a1_branch = new SootOption("Aggregator 1", "gbgb_a1");
+			SootOption gb_gb_a1_branch = new SootOption("Grimp Pre-folding Aggregator", "gbgb_a1");
 			subParent.addChild(gb_gb_a1_branch);
 
 
@@ -3403,7 +3378,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = gb_gb_a1_branch;
 			
 			
-			SootOption gb_gb_cf_branch = new SootOption("Constructor Folder", "gbgb_cf");
+			SootOption gb_gb_cf_branch = new SootOption("Grimp Constructor Folder", "gbgb_cf");
 			subParent.addChild(gb_gb_cf_branch);
 
 
@@ -3413,7 +3388,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = gb_gb_cf_branch;
 			
 			
-			SootOption gb_gb_a2_branch = new SootOption("Aggregator 2", "gbgb_a2");
+			SootOption gb_gb_a2_branch = new SootOption("Grimp Post-folding Aggregator", "gbgb_a2");
 			subParent.addChild(gb_gb_a2_branch);
 
 
@@ -3423,7 +3398,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = gb_gb_a2_branch;
 			
 			
-			SootOption gb_gb_ule_branch = new SootOption("Unused Local Eliminator", "gbgb_ule");
+			SootOption gb_gb_ule_branch = new SootOption("Grimp Unused Local Eliminator", "gbgb_ule");
 			subParent.addChild(gb_gb_ule_branch);
 
 
@@ -3433,8 +3408,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = gb_gb_ule_branch;
 			
 			
-			//Grimp Optimization Pack
-			SootOption gop_branch = new SootOption("Grimp Optimization Pack", "gop");
+			//Grimp Optimization
+			SootOption gop_branch = new SootOption("Grimp Optimization", "gop");
 			parent.addChild(gop_branch);
 			subParent = gop_branch;
 
@@ -3487,8 +3462,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = bb_bb_lp_branch;
 			
 			
-			//Baf Optimization Pack
-			SootOption bop_branch = new SootOption("Baf Optimization Pack", "bop");
+			//Baf Optimization
+			SootOption bop_branch = new SootOption("Baf Optimization", "bop");
 			parent.addChild(bop_branch);
 			subParent = bop_branch;
 
@@ -3764,34 +3739,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbjb_lsenabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_a1enabled_widget;
+	private BooleanOptionWidget jbjb_aenabled_widget;
 	
-	private void setjbjb_a1enabled_widget(BooleanOptionWidget widget) {
-		jbjb_a1enabled_widget = widget;
+	private void setjbjb_aenabled_widget(BooleanOptionWidget widget) {
+		jbjb_aenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_a1enabled_widget() {
-		return jbjb_a1enabled_widget;
+	public BooleanOptionWidget getjbjb_aenabled_widget() {
+		return jbjb_aenabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_a1only_stack_locals_widget;
+	private BooleanOptionWidget jbjb_aonly_stack_locals_widget;
 	
-	private void setjbjb_a1only_stack_locals_widget(BooleanOptionWidget widget) {
-		jbjb_a1only_stack_locals_widget = widget;
+	private void setjbjb_aonly_stack_locals_widget(BooleanOptionWidget widget) {
+		jbjb_aonly_stack_locals_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_a1only_stack_locals_widget() {
-		return jbjb_a1only_stack_locals_widget;
+	public BooleanOptionWidget getjbjb_aonly_stack_locals_widget() {
+		return jbjb_aonly_stack_locals_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_ule1enabled_widget;
+	private BooleanOptionWidget jbjb_uleenabled_widget;
 	
-	private void setjbjb_ule1enabled_widget(BooleanOptionWidget widget) {
-		jbjb_ule1enabled_widget = widget;
+	private void setjbjb_uleenabled_widget(BooleanOptionWidget widget) {
+		jbjb_uleenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_ule1enabled_widget() {
-		return jbjb_ule1enabled_widget;
+	public BooleanOptionWidget getjbjb_uleenabled_widget() {
+		return jbjb_uleenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_trenabled_widget;
@@ -3802,36 +3777,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getjbjb_trenabled_widget() {
 		return jbjb_trenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jbjb_a2enabled_widget;
-	
-	private void setjbjb_a2enabled_widget(BooleanOptionWidget widget) {
-		jbjb_a2enabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbjb_a2enabled_widget() {
-		return jbjb_a2enabled_widget;
-	}	
-	
-	private BooleanOptionWidget jbjb_a2only_stack_locals_widget;
-	
-	private void setjbjb_a2only_stack_locals_widget(BooleanOptionWidget widget) {
-		jbjb_a2only_stack_locals_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbjb_a2only_stack_locals_widget() {
-		return jbjb_a2only_stack_locals_widget;
-	}	
-	
-	private BooleanOptionWidget jbjb_ule2enabled_widget;
-	
-	private void setjbjb_ule2enabled_widget(BooleanOptionWidget widget) {
-		jbjb_ule2enabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbjb_ule2enabled_widget() {
-		return jbjb_ule2enabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_ulpenabled_widget;
@@ -3992,6 +3937,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getcgsafe_forname_widget() {
 		return cgsafe_forname_widget;
+	}	
+	
+	private BooleanOptionWidget cgverbose_widget;
+	
+	private void setcgverbose_widget(BooleanOptionWidget widget) {
+		cgverbose_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgverbose_widget() {
+		return cgverbose_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_chaenabled_widget;
@@ -4164,16 +4119,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_sparkreturns_as_fields_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_sparkall_clinit_widget;
-	
-	private void setcgcg_sparkall_clinit_widget(BooleanOptionWidget widget) {
-		cgcg_sparkall_clinit_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_sparkall_clinit_widget() {
-		return cgcg_sparkall_clinit_widget;
-	}	
-	
 	private BooleanOptionWidget cgcg_sparksimplify_offline_widget;
 	
 	private void setcgcg_sparksimplify_offline_widget(BooleanOptionWidget widget) {
@@ -4342,26 +4287,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_sparkset_mass_widget;
 	}	
 	
-	private BooleanOptionWidget wstpenabled_widget;
-	
-	private void setwstpenabled_widget(BooleanOptionWidget widget) {
-		wstpenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getwstpenabled_widget() {
-		return wstpenabled_widget;
-	}	
-	
-	private BooleanOptionWidget wsopenabled_widget;
-	
-	private void setwsopenabled_widget(BooleanOptionWidget widget) {
-		wsopenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getwsopenabled_widget() {
-		return wsopenabled_widget;
-	}	
-	
 	private BooleanOptionWidget wjtpenabled_widget;
 	
 	private void setwjtpenabled_widget(BooleanOptionWidget widget) {
@@ -4522,6 +4447,46 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return wjapwjap_raenabled_widget;
 	}	
 	
+	private BooleanOptionWidget shimpleenabled_widget;
+	
+	private void setshimpleenabled_widget(BooleanOptionWidget widget) {
+		shimpleenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getshimpleenabled_widget() {
+		return shimpleenabled_widget;
+	}	
+	
+	private BooleanOptionWidget shimplenaive_phi_elimination_widget;
+	
+	private void setshimplenaive_phi_elimination_widget(BooleanOptionWidget widget) {
+		shimplenaive_phi_elimination_widget = widget;
+	}
+	
+	public BooleanOptionWidget getshimplenaive_phi_elimination_widget() {
+		return shimplenaive_phi_elimination_widget;
+	}	
+	
+	private BooleanOptionWidget shimplepre_optimize_phi_elimination_widget;
+	
+	private void setshimplepre_optimize_phi_elimination_widget(BooleanOptionWidget widget) {
+		shimplepre_optimize_phi_elimination_widget = widget;
+	}
+	
+	public BooleanOptionWidget getshimplepre_optimize_phi_elimination_widget() {
+		return shimplepre_optimize_phi_elimination_widget;
+	}	
+	
+	private BooleanOptionWidget shimplepost_optimize_phi_elimination_widget;
+	
+	private void setshimplepost_optimize_phi_elimination_widget(BooleanOptionWidget widget) {
+		shimplepost_optimize_phi_elimination_widget = widget;
+	}
+	
+	public BooleanOptionWidget getshimplepost_optimize_phi_elimination_widget() {
+		return shimplepost_optimize_phi_elimination_widget;
+	}	
+	
 	private BooleanOptionWidget stpenabled_widget;
 	
 	private void setstpenabled_widget(BooleanOptionWidget widget) {
@@ -4540,6 +4505,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getsopenabled_widget() {
 		return sopenabled_widget;
+	}	
+	
+	private BooleanOptionWidget sopsop_cpfenabled_widget;
+	
+	private void setsopsop_cpfenabled_widget(BooleanOptionWidget widget) {
+		sopsop_cpfenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getsopsop_cpfenabled_widget() {
+		return sopsop_cpfenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jtpenabled_widget;
@@ -4633,14 +4608,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 	
-	private MultiOptionWidget jopjop_lcmsafe_widget;
+	private MultiOptionWidget jopjop_lcmsafety_widget;
 	
-	private void setjopjop_lcmsafe_widget(MultiOptionWidget widget) {
-		jopjop_lcmsafe_widget = widget;
+	private void setjopjop_lcmsafety_widget(MultiOptionWidget widget) {
+		jopjop_lcmsafety_widget = widget;
 	}
 	
-	public MultiOptionWidget getjopjop_lcmsafe_widget() {
-		return jopjop_lcmsafe_widget;
+	public MultiOptionWidget getjopjop_lcmsafety_widget() {
+		return jopjop_lcmsafety_widget;
 	}	
 	
 	
@@ -4724,16 +4699,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jopjop_uce1enabled_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_uce2enabled_widget;
-	
-	private void setjopjop_uce2enabled_widget(BooleanOptionWidget widget) {
-		jopjop_uce2enabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjopjop_uce2enabled_widget() {
-		return jopjop_uce2enabled_widget;
-	}	
-	
 	private BooleanOptionWidget jopjop_ubf1enabled_widget;
 	
 	private void setjopjop_ubf1enabled_widget(BooleanOptionWidget widget) {
@@ -4742,6 +4707,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getjopjop_ubf1enabled_widget() {
 		return jopjop_ubf1enabled_widget;
+	}	
+	
+	private BooleanOptionWidget jopjop_uce2enabled_widget;
+	
+	private void setjopjop_uce2enabled_widget(BooleanOptionWidget widget) {
+		jopjop_uce2enabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjopjop_uce2enabled_widget() {
+		return jopjop_uce2enabled_widget;
 	}	
 	
 	private BooleanOptionWidget jopjop_ubf2enabled_widget;
@@ -5403,7 +5378,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionshelp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Help", "", "","h", "display help and exit", defaultBool)));
+		setGeneral_Optionshelp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Help", "", "","h", "\nThis option displays the textual help message and exits \nimmediately without doing any further processing.", defaultBool)));
 		
 		
 		
@@ -5419,7 +5394,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionsversion_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Version", "", "","version", "output version information and exit", defaultBool)));
+		setGeneral_Optionsversion_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Version", "", "","version", "\nThis option displays the Soot version information and exits \nimmediately without doing any further processing.", defaultBool)));
 		
 		
 		
@@ -5435,7 +5410,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionsverbose_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Verbose", "", "","v", "verbose mode", defaultBool)));
+		setGeneral_Optionsverbose_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Verbose", "", "","v", "\nThis option causes Soot to display detailed information about \nwhat it is doing.", defaultBool)));
 		
 		
 		
@@ -5451,7 +5426,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionsapp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Application Mode", "", "","app", "runs in application mode", defaultBool)));
+		setGeneral_Optionsapp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Application Mode", "", "","app", "\nThis option causes Soot to process any application classes \nreferenced by the classes specified on the command line, in \naddition to the specified classes.", defaultBool)));
 		
 		
 		
@@ -5467,7 +5442,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionswhole_program_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Program Mode", "", "","w", "runs in whole-program mode", defaultBool)));
+		setGeneral_Optionswhole_program_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Program Mode", "", "","w", "\nThis option causes Soot to run in whole program mode, taking \ninto consideration the whole program when performing \noptimizations.", defaultBool)));
 		
 		
 		
@@ -5483,7 +5458,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionsdebug_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug", "", "","debug", "prints various Soot debugging info", defaultBool)));
+		setGeneral_Optionsdebug_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug", "", "","debug", "\nThis option causes Soot to print various debugging information, \nparticularly from the Baf Body Phase and the Jimple Annotation \nPack Phase.", defaultBool)));
 		
 		
 
@@ -5527,7 +5502,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setInput_Optionsallow_phantom_refs_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","allow-phantom-refs", "allow unresolved classes; may cause errors", defaultBool)));
+		setInput_Optionsallow_phantom_refs_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","allow-phantom-refs", "\nThis option causes Soot to process a class even if it cannot \nfind classes referenced by that class. This may cause Soot to \nproduce incorrect results.", defaultBool)));
 		
 		
 		
@@ -5535,20 +5510,20 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Class File",
 		"c",
-		"Use class for source of Soot",
+		"\n",
 		
 		true),
 		
 		new OptionData("Jimple File",
 		"J",
-		"Use Jimple for source of Soot",
+		"\n",
 		
 		false),
 		
 		};
 		
 										
-		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "sets the source precedence for Soot")));
+		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "\nBy default, Soot will resolve classes from .class files. If a \nclass cannot be resolved from a .class file, Soot will attempt \nto resolve it from a .jimple file. Setting this option to jimple \nspecifies the opposite policy: classes are resolved from .jimple \nfiles, and only if this fails will an attempt be made to resolve \nthem from .class files.")));
 		
 		defKey = ""+" "+""+" "+"src-prec";
 		defKey = defKey.trim();
@@ -5573,7 +5548,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "uses given PATH as the classpath for finding classes for Soot processing", defaultString)));
+		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUses given PATH as the classpath for finding classes for Soot \nprocessing.", defaultString)));
 		
 
 		
@@ -5616,7 +5591,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setOutput_Optionsvia_grimp_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Via Grimp", "", "","via-grimp", "convert jimple to bytecode via grimp instead of via baf", defaultBool)));
+		setOutput_Optionsvia_grimp_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Via Grimp", "", "","via-grimp", "\nThis option converts Jimple to bytecode via Grimp instead of via \nBaf.", defaultBool)));
 		
 		
 		
@@ -5632,82 +5607,94 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setOutput_Optionsxml_attributes_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Save Tags to XML", "", "","xml-attributes", "Save tags to XML attributes for Eclipse", defaultBool)));
+		setOutput_Optionsxml_attributes_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Save Tags to XML", "", "","xml-attributes", "\nThis option saves a variety of tags which are attached to hosts \nto an XML file that is later read by Eclipse to show program \nunderstanding annotations within Eclipse.", defaultBool)));
 		
 		
 		
 		data = new OptionData [] {
 		
-		new OptionData("Jimp File",
-		"j",
-		"produce .jimp (abbreviated .jimple) files",
+		new OptionData("Jimple File",
+		"J",
+		"\nProduces .jimple files that contain a textual representation for \ntypes in Soot's Jimple internal representation.",
 		
 		false),
 		
-		new OptionData("Jimple File",
-		"J",
-		"produce .jimple code",
+		new OptionData("Jimp File",
+		"j",
+		"\nProduces .jimp files which contain an abbreviated \ntextual form for Soot's Jimple internal representation. The \nabbreviated form is easier to read than the non-abbreviated \ncounterpart, but may also contain ambiguities; for \ninstance, method signatures are not uniquely determined.",
+		
+		false),
+		
+		new OptionData("Shimple File",
+		"S",
+		"\nProduces .shimple files containing the textual \nrepresentation of Soot's SSA Shimple internal \nrepresentation. Shimple is very similar to Jimple except \nthat it supports Phi nodes.",
+		
+		false),
+		
+		new OptionData("Shimp File",
+		"s",
+		"\nProduces .shimp files which contain an abbreviated \ntextual form for Soot's SSA Shimple internal representation. \nThe abbreviated form is easier to read than the \nnon-abbreviated counterpart, but may also contain ambiguities; \nfor instance, method signatures are not uniquely \ndetermined.",
 		
 		false),
 		
 		new OptionData("Baf File",
 		"B",
-		"produce .baf code",
+		"\nProduces .baf files that contain a textual representation for \ntypes in Soot's Baf internal representation.",
 		
 		false),
 		
 		new OptionData("Abbreviated Baf File",
 		"b",
-		"produce .b (abbreviated .baf) files",
-		
-		false),
-		
-		new OptionData("Grimp File",
-		"g",
-		"produce .grimp (abbreviated .grimple) files",
+		"\nProduces .b files. These contain an abbreviated textual form for \nSoot's Baf internal representation. It is easier to read than \nits non-abbreviated counterpart, but can also contain \nambiguities; for instance, method signatures are not uniquely \ndetermined.",
 		
 		false),
 		
 		new OptionData("Grimple File",
 		"G",
-		"produce .grimple files",
+		"\nProduces .grimple files that contain a textual representation \nfor types in Soot's Grimp internal representation.",
+		
+		false),
+		
+		new OptionData("Grimp File",
+		"g",
+		"\nProduces .grimp files which contain an abbreviated \ntextual form for Soot's Grimple internal representation. \nThe abbreviated form is easier to read than the \nnon-abbreviated counterpart, but may also contain ambiguities; \nfor instance, method signatures are not uniquely \ndetermined.",
 		
 		false),
 		
 		new OptionData("Xml File",
 		"X",
-		"produce .xml files",
+		"\nProduces .xml files of classes based on the Jimple statements.",
 		
 		false),
 		
 		new OptionData("No Output File",
 		"n",
-		"produces no output",
+		"\nThis option causes Soot to produces no output files.",
 		
 		false),
 		
 		new OptionData("Jasmin File",
-		"s",
-		"produce .jasmin files",
+		"jasmin",
+		"\nProduces .jasmin files as output. These can be understood by the \njasmin bytecode assembler tool.",
 		
 		false),
 		
 		new OptionData("Class File",
 		"c",
-		"produce .class files",
+		"\nProduces Java .class files executable under any Java Virtual \nMachine.",
 		
 		true),
 		
 		new OptionData("Dava Decompiled File",
 		"d",
-		"produce dava decompiled .java files",
+		"\nProduces dava decompiled .java files.",
 		
 		false),
 		
 		};
 		
 										
-		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Output Format", "", "","f", "sets the output format for Soot")));
+		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Output Format", "", "","f", "\nThis option sets the output format of files Soot will produce or \nno output.")));
 		
 		defKey = ""+" "+""+" "+"f";
 		defKey = defKey.trim();
@@ -5732,7 +5719,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setOutput_Optionsoutput_dir_widget(new StringOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Directory",  "", "","d", "store produced files in PATH", defaultString)));
+		setOutput_Optionsoutput_dir_widget(new StringOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Directory",  "", "","d", "\nSpecifies that the outputted files are to be stored in PATH. The \npath may be relative to the working directory. This PATH must \nalready exist before running Soot.", defaultString)));
 		
 
 		
@@ -5775,7 +5762,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setProcessing_Optionsoptimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Optimize", "", "","O", "perform scalar optimizations on the classfiles", defaultBool)));
+		setProcessing_Optionsoptimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Optimize", "", "","O", "\nPerform scalar optimizations on the classfiles.", defaultBool)));
 		
 		
 		
@@ -5791,7 +5778,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setProcessing_Optionswhole_optimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Whole Program Optimize", "", "","W", "perform whole program optimizations on the classfiles", defaultBool)));
+		setProcessing_Optionswhole_optimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Whole Program Optimize", "", "","W", "\nPerform whole program optimizations on the classfiles; this also \nenables -O.", defaultBool)));
 		
 		
 		
@@ -5807,7 +5794,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setProcessing_Optionsvia_shimple_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Shimple", "", "","via-shimple", "enables phases operating on Shimple SSA representation", defaultBool)));
+		setProcessing_Optionsvia_shimple_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Shimple", "", "","via-shimple", "\nThis option ... ", defaultBool)));
 		
 		
 
@@ -5830,7 +5817,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjb.setData("id", "jb");
 		
-		String descjb = "";	
+		String descjb = "Create a JimpleBody for each method";	
 		if (descjb.length() > 0) {
 			Label descLabeljb = new Label(editGroupjb, SWT.WRAP);
 			descLabeljb.setText(descjb);
@@ -5851,7 +5838,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbenabled_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Enabled", "p", "jb","enabled", "", defaultBool)));
+		setjbenabled_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Enabled", "p", "jb","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -5867,7 +5854,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbuse_original_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Use Original Names", "p", "jb","use-original-names", "", defaultBool)));
+		setjbuse_original_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Use Original Names", "p", "jb","use-original-names", "\nRetain the original names for local variables when the source \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types. ", defaultBool)));
 		
 		
 
@@ -5890,7 +5877,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_ls.setData("id", "jbjb_ls");
 		
-		String descjbjb_ls = "";	
+		String descjbjb_ls = "Associates separate locals with each use-def web";	
 		if (descjbjb_ls.length() > 0) {
 			Label descLabeljbjb_ls = new Label(editGroupjbjb_ls, SWT.WRAP);
 			descLabeljbjb_ls.setText(descjbjb_ls);
@@ -5911,7 +5898,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_lsenabled_widget(new BooleanOptionWidget(editGroupjbjb_ls, SWT.NONE, new OptionData("Enabled", "p", "jb.ls","enabled", "", defaultBool)));
+		setjbjb_lsenabled_widget(new BooleanOptionWidget(editGroupjbjb_ls, SWT.NONE, new OptionData("Enabled", "p", "jb.ls","enabled", "\n", defaultBool)));
 		
 		
 
@@ -5921,29 +5908,29 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 
-	private Composite jbjb_a1Create(Composite parent) {
+	private Composite jbjb_aCreate(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
 		
-		Group editGroupjbjb_a1 = new Group(parent, SWT.NONE);
+		Group editGroupjbjb_a = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		editGroupjbjb_a1.setLayout(layout);
+		editGroupjbjb_a.setLayout(layout);
 	
-	 	editGroupjbjb_a1.setText("Pre-typing Aggregator");
+	 	editGroupjbjb_a.setText("Jimple Local Aggregator");
 	 	
-		editGroupjbjb_a1.setData("id", "jbjb_a1");
+		editGroupjbjb_a.setData("id", "jbjb_a");
 		
-		String descjbjb_a1 = "";	
-		if (descjbjb_a1.length() > 0) {
-			Label descLabeljbjb_a1 = new Label(editGroupjbjb_a1, SWT.WRAP);
-			descLabeljbjb_a1.setText(descjbjb_a1);
+		String descjbjb_a = "Removes some unnecessary copies";	
+		if (descjbjb_a.length() > 0) {
+			Label descLabeljbjb_a = new Label(editGroupjbjb_a, SWT.WRAP);
+			descLabeljbjb_a.setText(descjbjb_a);
 		}
 		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.a1"+" "+"enabled";
+		defKey = "p"+" "+"jb.a"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5955,11 +5942,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_a1enabled_widget(new BooleanOptionWidget(editGroupjbjb_a1, SWT.NONE, new OptionData("Enabled", "p", "jb.a1","enabled", "", defaultBool)));
+		setjbjb_aenabled_widget(new BooleanOptionWidget(editGroupjbjb_a, SWT.NONE, new OptionData("Enabled", "p", "jb.a","enabled", "\n", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"jb.a1"+" "+"only-stack-locals";
+		defKey = "p"+" "+"jb.a"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5971,39 +5958,39 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_a1only_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_a1, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.a1","only-stack-locals", "Aggregate values stored in stack locals only.", defaultBool)));
+		setjbjb_aonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_a, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.a","only-stack-locals", "\nOnly aggregate locals that represent stack locations in the \noriginal bytecode. (Stack locals can be distinguished in Jimple \nby the character with which their names begin.) ", defaultBool)));
 		
 		
 
 		
-		return editGroupjbjb_a1;
+		return editGroupjbjb_a;
 	}
 
 
 
-	private Composite jbjb_ule1Create(Composite parent) {
+	private Composite jbjb_uleCreate(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
 		
-		Group editGroupjbjb_ule1 = new Group(parent, SWT.NONE);
+		Group editGroupjbjb_ule = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		editGroupjbjb_ule1.setLayout(layout);
+		editGroupjbjb_ule.setLayout(layout);
 	
-	 	editGroupjbjb_ule1.setText("Pre-typing Unused Local Eliminator");
+	 	editGroupjbjb_ule.setText("Unused Local Eliminator");
 	 	
-		editGroupjbjb_ule1.setData("id", "jbjb_ule1");
+		editGroupjbjb_ule.setData("id", "jbjb_ule");
 		
-		String descjbjb_ule1 = "";	
-		if (descjbjb_ule1.length() > 0) {
-			Label descLabeljbjb_ule1 = new Label(editGroupjbjb_ule1, SWT.WRAP);
-			descLabeljbjb_ule1.setText(descjbjb_ule1);
+		String descjbjb_ule = "Removes unused locals";	
+		if (descjbjb_ule.length() > 0) {
+			Label descLabeljbjb_ule = new Label(editGroupjbjb_ule, SWT.WRAP);
+			descLabeljbjb_ule.setText(descjbjb_ule);
 		}
 		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.ule1"+" "+"enabled";
+		defKey = "p"+" "+"jb.ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -6015,12 +6002,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_ule1enabled_widget(new BooleanOptionWidget(editGroupjbjb_ule1, SWT.NONE, new OptionData("Enabled", "p", "jb.ule1","enabled", "", defaultBool)));
+		setjbjb_uleenabled_widget(new BooleanOptionWidget(editGroupjbjb_ule, SWT.NONE, new OptionData("Enabled", "p", "jb.ule","enabled", "\n", defaultBool)));
 		
 		
 
 		
-		return editGroupjbjb_ule1;
+		return editGroupjbjb_ule;
 	}
 
 
@@ -6038,7 +6025,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_tr.setData("id", "jbjb_tr");
 		
-		String descjbjb_tr = "";	
+		String descjbjb_tr = "Assigns types to locals";	
 		if (descjbjb_tr.length() > 0) {
 			Label descLabeljbjb_tr = new Label(editGroupjbjb_tr, SWT.WRAP);
 			descLabeljbjb_tr.setText(descjbjb_tr);
@@ -6059,116 +6046,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_trenabled_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Enabled", "p", "jb.tr","enabled", "", defaultBool)));
+		setjbjb_trenabled_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Enabled", "p", "jb.tr","enabled", "\n", defaultBool)));
 		
 		
 
 		
 		return editGroupjbjb_tr;
-	}
-
-
-
-	private Composite jbjb_a2Create(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroupjbjb_a2 = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjbjb_a2.setLayout(layout);
-	
-	 	editGroupjbjb_a2.setText("Post-typing Aggregator");
-	 	
-		editGroupjbjb_a2.setData("id", "jbjb_a2");
-		
-		String descjbjb_a2 = "";	
-		if (descjbjb_a2.length() > 0) {
-			Label descLabeljbjb_a2 = new Label(editGroupjbjb_a2, SWT.WRAP);
-			descLabeljbjb_a2.setText(descjbjb_a2);
-		}
-		OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"jb.a2"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = true;
-			
-		}
-
-		setjbjb_a2enabled_widget(new BooleanOptionWidget(editGroupjbjb_a2, SWT.NONE, new OptionData("Enabled", "p", "jb.a2","enabled", "", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.a2"+" "+"only-stack-locals";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = true;
-			
-		}
-
-		setjbjb_a2only_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_a2, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.a2","only-stack-locals", "Aggregate values stored in stack locals only.", defaultBool)));
-		
-		
-
-		
-		return editGroupjbjb_a2;
-	}
-
-
-
-	private Composite jbjb_ule2Create(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroupjbjb_ule2 = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjbjb_ule2.setLayout(layout);
-	
-	 	editGroupjbjb_ule2.setText("Post-typing Unused Local Eliminator");
-	 	
-		editGroupjbjb_ule2.setData("id", "jbjb_ule2");
-		
-		String descjbjb_ule2 = "";	
-		if (descjbjb_ule2.length() > 0) {
-			Label descLabeljbjb_ule2 = new Label(editGroupjbjb_ule2, SWT.WRAP);
-			descLabeljbjb_ule2.setText(descjbjb_ule2);
-		}
-		OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"jb.ule2"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = true;
-			
-		}
-
-		setjbjb_ule2enabled_widget(new BooleanOptionWidget(editGroupjbjb_ule2, SWT.NONE, new OptionData("Enabled", "p", "jb.ule2","enabled", "", defaultBool)));
-		
-		
-
-		
-		return editGroupjbjb_ule2;
 	}
 
 
@@ -6186,7 +6069,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_ulp.setData("id", "jbjb_ulp");
 		
-		String descjbjb_ulp = "\nThis phase only executes when the `use-original-names' option is chosen\nfor the `jb' phase.  It unsplits the locals according to the original names\nfound for them.";	
+		String descjbjb_ulp = "Minimizes number of locals";	
 		if (descjbjb_ulp.length() > 0) {
 			Label descLabeljbjb_ulp = new Label(editGroupjbjb_ulp, SWT.WRAP);
 			descLabeljbjb_ulp.setText(descjbjb_ulp);
@@ -6207,7 +6090,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_ulpenabled_widget(new BooleanOptionWidget(editGroupjbjb_ulp, SWT.NONE, new OptionData("Enabled", "p", "jb.ulp","enabled", "", defaultBool)));
+		setjbjb_ulpenabled_widget(new BooleanOptionWidget(editGroupjbjb_ulp, SWT.NONE, new OptionData("Enabled", "p", "jb.ulp","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -6223,7 +6106,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.ulp","unsplit-original-locals", "", defaultBool)));
+		setjbjb_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.ulp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables among non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
 		
 		
 
@@ -6246,7 +6129,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_lns.setData("id", "jbjb_lns");
 		
-		String descjbjb_lns = "\nThis phase assigns standard names to local variables.  It only\nexecutes when `use-original-names' is not chosen.\n\n                        ";	
+		String descjbjb_lns = "Gives names to locals";	
 		if (descjbjb_lns.length() > 0) {
 			Label descLabeljbjb_lns = new Label(editGroupjbjb_lns, SWT.WRAP);
 			descLabeljbjb_lns.setText(descjbjb_lns);
@@ -6267,7 +6150,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_lnsenabled_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Enabled", "p", "jb.lns","enabled", "", defaultBool)));
+		setjbjb_lnsenabled_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Enabled", "p", "jb.lns","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -6283,7 +6166,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.lns","only-stack-locals", "", defaultBool)));
+		setjbjb_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.lns","only-stack-locals", "\nOnly standardizes the names of variables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option is specified for the `jb' \nphase. ", defaultBool)));
 		
 		
 
@@ -6306,7 +6189,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_cp.setData("id", "jbjb_cp");
 		
-		String descjbjb_cp = "\nThis phase provides a cascaded copy propagator.  It is executed only\nwhen `no-cp' is not chosen in the `jb' phase.\n    \nIf it encounters situations of the form: A: a = ...; B: ... x = a;\nC:... use (x); where a has only one definition, and x has only one\ndefinition (B), then it can propagate immediately without checking\nbetween B and C for redefinitions of a (namely A) because they cannot\noccur.  In this case the propagator is global.\n        \nOtherwise, if a has multiple definitions then it only checks for\nredefinitions of constants and copies in extended basic blocks.\n        \nFrom bytecode, we get some number of declared locals; we call these\n``regular locals''.  In Jimple, we have converted the stack elements\nto locals.  The new locals thus introduced are called ``stack\nlocals''. These locals have names which usually begin with .  \n\nThe default behaviour in this phase is to propagate only on the\n`stack' locals.\n\n                        ";	
+		String descjbjb_cp = "Removes unnecessary copies";	
 		if (descjbjb_cp.length() > 0) {
 			Label descLabeljbjb_cp = new Label(editGroupjbjb_cp, SWT.WRAP);
 			descLabeljbjb_cp.setText(descjbjb_cp);
@@ -6327,7 +6210,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_cpenabled_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Enabled", "p", "jb.cp","enabled", "", defaultBool)));
+		setjbjb_cpenabled_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Enabled", "p", "jb.cp","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -6343,7 +6226,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jb.cp","only-regular-locals", "", defaultBool)));
+		setjbjb_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jb.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, \nthose declared in the source bytecode. ", defaultBool)));
 		
 		
 		
@@ -6359,7 +6242,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.cp","only-stack-locals", "", defaultBool)));
+		setjbjb_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
 		
 		
 
@@ -6382,7 +6265,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_dae.setData("id", "jbjb_dae");
 		
-		String descjbjb_dae = "\nThis phase eliminates assignment statements (to locals) with no uses.\n                        ";	
+		String descjbjb_dae = "";	
 		if (descjbjb_dae.length() > 0) {
 			Label descLabeljbjb_dae = new Label(editGroupjbjb_dae, SWT.WRAP);
 			descLabeljbjb_dae.setText(descjbjb_dae);
@@ -6403,7 +6286,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_daeenabled_widget(new BooleanOptionWidget(editGroupjbjb_dae, SWT.NONE, new OptionData("Enabled", "p", "jb.dae","enabled", "", defaultBool)));
+		setjbjb_daeenabled_widget(new BooleanOptionWidget(editGroupjbjb_dae, SWT.NONE, new OptionData("Enabled", "p", "jb.dae","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -6419,7 +6302,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.dae","only-stack-locals", "", defaultBool)));
+		setjbjb_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
 		
 		
 
@@ -6438,11 +6321,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_cp_ule.setLayout(layout);
 	
-	 	editGroupjbjb_cp_ule.setText("Unused Local Eliminator");
+	 	editGroupjbjb_cp_ule.setText("Post-copy propagation Unused Local Eliminator");
 	 	
 		editGroupjbjb_cp_ule.setData("id", "jbjb_cp_ule");
 		
-		String descjbjb_cp_ule = "";	
+		String descjbjb_cp_ule = "Removes unused locals";	
 		if (descjbjb_cp_ule.length() > 0) {
 			Label descLabeljbjb_cp_ule = new Label(editGroupjbjb_cp_ule, SWT.WRAP);
 			descLabeljbjb_cp_ule.setText(descjbjb_cp_ule);
@@ -6463,7 +6346,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_cp_uleenabled_widget(new BooleanOptionWidget(editGroupjbjb_cp_ule, SWT.NONE, new OptionData("Enabled", "p", "jb.cp-ule","enabled", "", defaultBool)));
+		setjbjb_cp_uleenabled_widget(new BooleanOptionWidget(editGroupjbjb_cp_ule, SWT.NONE, new OptionData("Enabled", "p", "jb.cp-ule","enabled", "\n", defaultBool)));
 		
 		
 
@@ -6486,7 +6369,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_lp.setData("id", "jbjb_lp");
 		
-		String descjbjb_lp = "";	
+		String descjbjb_lp = "Minimizes number of locals";	
 		if (descjbjb_lp.length() > 0) {
 			Label descLabeljbjb_lp = new Label(editGroupjbjb_lp, SWT.WRAP);
 			descLabeljbjb_lp.setText(descjbjb_lp);
@@ -6507,7 +6390,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_lpenabled_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Enabled", "p", "jb.lp","enabled", "", defaultBool)));
+		setjbjb_lpenabled_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Enabled", "p", "jb.lp","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -6523,7 +6406,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.lp","unsplit-original-locals", "", defaultBool)));
+		setjbjb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. SHOULD WE ENSURE THAT IF jb.ulp IS ALSO \nENABLED, THEN ITS unsplit-original-locals MATCHES THIS ONE? ", defaultBool)));
 		
 		
 
@@ -6567,7 +6450,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_neenabled_widget(new BooleanOptionWidget(editGroupjbjb_ne, SWT.NONE, new OptionData("Enabled", "p", "jb.ne","enabled", "", defaultBool)));
+		setjbjb_neenabled_widget(new BooleanOptionWidget(editGroupjbjb_ne, SWT.NONE, new OptionData("Enabled", "p", "jb.ne","enabled", "\n", defaultBool)));
 		
 		
 
@@ -6611,7 +6494,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_uceenabled_widget(new BooleanOptionWidget(editGroupjbjb_uce, SWT.NONE, new OptionData("Enabled", "p", "jb.uce","enabled", "", defaultBool)));
+		setjbjb_uceenabled_widget(new BooleanOptionWidget(editGroupjbjb_uce, SWT.NONE, new OptionData("Enabled", "p", "jb.uce","enabled", "\n", defaultBool)));
 		
 		
 
@@ -6634,7 +6517,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupcg.setData("id", "cg");
 		
-		String desccg = "The purpose of this pack is to compute\nan invoke graph. When this pack finishes, the Scene should have an active invoke\ngraph. The different phases represent different ways to construct the invoke\ngraph. Only one phase may be enabled; Soot will raise an error otherwise.\nIf no phases are enabled, the Old Class Hierarchy Analysis phase\ncg.cha is used as the default.";	
+		String desccg = "Build a call graph";	
 		if (desccg.length() > 0) {
 			Label descLabelcg = new Label(editGroupcg, SWT.WRAP);
 			descLabelcg.setText(desccg);
@@ -6655,7 +6538,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgenabled_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Enabled", "p", "cg","enabled", "", defaultBool)));
+		setcgenabled_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Enabled", "p", "cg","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -6671,7 +6554,23 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgsafe_forname_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe forName", "p", "cg","safe-forname", "", defaultBool)));
+		setcgsafe_forname_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe forName", "p", "cg","safe-forname", "\nWhen a program calls Class.forName(), the named class is \nresolved, and its static initializer executed. In many cases, it \ncannot be determined statically which class will be loaded, and \nwhich static initializer executed. When this option is set to \ntrue, Soot will conservatively assume that any static \ninitializer could be executed. This may make the call graph very \nlarge. When this option is set to false, any calls to \nClass.forName() for which the class cannot be determined \nstatically are not assumed to call any static initializers. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg"+" "+"verbose";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgverbose_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Verbose", "p", "cg","verbose", "\nDue to the effects of native methods and reflection, it may not \nalways be possible to construct a fully conservative call graph. \nSetting this option to true causes Soot to point out the parts \nof the call graph that may be incomplete, so that they can be \nchecked by hand. ", defaultBool)));
 		
 		
 
@@ -6694,7 +6593,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupcgcg_cha.setData("id", "cgcg_cha");
 		
-		String desccgcg_cha = "";	
+		String desccgcg_cha = "Build a call graph using Class Hierarchy Analysis";	
 		if (desccgcg_cha.length() > 0) {
 			Label descLabelcgcg_cha = new Label(editGroupcgcg_cha, SWT.WRAP);
 			descLabelcgcg_cha.setText(desccgcg_cha);
@@ -6715,7 +6614,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_chaenabled_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Enabled", "p", "cg.cha","enabled", "", defaultBool)));
+		setcgcg_chaenabled_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Enabled", "p", "cg.cha","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -6731,7 +6630,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_chaverbose_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Verbose", "p", "cg.cha","verbose", "", defaultBool)));
+		setcgcg_chaverbose_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Verbose", "p", "cg.cha","verbose", "\nSetting this option to true causes Soot to print out statistics \nabout the call graph computed by this phase, such as the number \nof methods determined to be reachable.", defaultBool)));
 		
 		
 
@@ -6754,7 +6653,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupcgcg_spark.setData("id", "cgcg_spark");
 		
-		String desccgcg_spark = "";	
+		String desccgcg_spark = "Spark points-to analysis framework";	
 		if (desccgcg_spark.length() > 0) {
 			Label descLabelcgcg_spark = new Label(editGroupcgcg_spark, SWT.WRAP);
 			descLabelcgcg_spark.setText(desccgcg_spark);
@@ -6775,7 +6674,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkenabled_widget(new BooleanOptionWidget(editGroupcgcg_spark, SWT.NONE, new OptionData("Enabled", "p", "cg.spark","enabled", "", defaultBool)));
+		setcgcg_sparkenabled_widget(new BooleanOptionWidget(editGroupcgcg_spark, SWT.NONE, new OptionData("Enabled", "p", "cg.spark","enabled", "\n", defaultBool)));
 		
 		
 
@@ -6819,7 +6718,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkverbose_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Verbose", "p", "cg.spark","verbose", "\nWhen this option is set to true, Spark prints detailed information.\n        ", defaultBool)));
+		setcgcg_sparkverbose_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Verbose", "p", "cg.spark","verbose", "\nWhen this option is set to true, Spark prints detailed \ninformation about its execution. ", defaultBool)));
 		
 		
 		
@@ -6835,7 +6734,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkignore_types_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.spark","ignore-types", "\nWhen this option is set to true, all parts of Spark completely ignore\ndeclared types of variables and casts.\n        ", defaultBool)));
+		setcgcg_sparkignore_types_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.spark","ignore-types", "\nWhen this option is set to true, all parts of Spark completely \nignore declared types of variables and casts. ", defaultBool)));
 		
 		
 		
@@ -6851,7 +6750,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkforce_gc_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Force Garbages Collections", "p", "cg.spark","force-gc", "\nWhen this option is set to true, calls to System.gc() will be made at\nvarious points to allow memory usage to be measured.\n        ", defaultBool)));
+		setcgcg_sparkforce_gc_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Force Garbage Collections", "p", "cg.spark","force-gc", "\nWhen this option is set to true, calls to System.gc() will be \nmade at various points to allow memory usage to be measured. \n", defaultBool)));
 		
 		
 		
@@ -6867,7 +6766,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkpre_jimplify_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.spark","pre-jimplify", "\n        When this option is set to true, convert all available methods to Jimple\nbefore starting the points-to analysis. This allows the Jimplification\ntime to be separated from the points-to time. However, it increases the\ntotal time and memory requirement, because all methods are Jimplified,\nrather than only those deemed reachable by the points-to analysis.\n        ", defaultBool)));
+		setcgcg_sparkpre_jimplify_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.spark","pre-jimplify", "\nWhen this option is set to true, Spark converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis. ", defaultBool)));
 		
 		
 
@@ -6911,7 +6810,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkvta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p", "cg.spark","vta", "\nSetting VTA to true has the effect of setting ignoreBaseObjects,\ntypesForSites, and simplifySCCs to true to simulate Variable Type\nAnalysis, described in sund.hend.ea00. Note that the\nalgorithm differs from the original VTA in that it handles array\nelements more precisely. To use the results of the analysis to trim the\ninvoke graph, set the trimInvokeGraph option to true as well.\n        ", defaultBool)));
+		setcgcg_sparkvta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p", "cg.spark","vta", "\nSetting VTA to true has the effect of setting field-based, \ntypes-for-sites, and simplify-sccs to true to simulate Variable \nType Analysis, described in our OOPSLA 2000 paper. Note that the \nalgorithm differs from the original VTA in that it handles array \nelements more precisely. ", defaultBool)));
 		
 		
 		
@@ -6927,7 +6826,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkrta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p", "cg.spark","rta", "\nSetting RTA to true sets typesForSites to true, and causes Spark to use\na single points-to set for all variables, giving Rapid Type\nAnalysis baco.swee96.\nTo use the results of the analysis to trim the invoke graph, set the\ntrimInvokeGraph option to true as well.\n        ", defaultBool)));
+		setcgcg_sparkrta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p", "cg.spark","rta", "\nSetting RTA to true sets types-for-sites to true, and causes \nSpark to use a single points-to set for all variables, giving \nRapid Type Analysis. ", defaultBool)));
 		
 		
 		
@@ -6943,7 +6842,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkfield_based_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p", "cg.spark","field-based", "\nWhen this option is set to true, fields are represented by variable\n(Green) nodes, and the object that the field belongs to is ignored\n(all objects are lumped together), giving a field-based analysis. Otherwise, fields are represented by\nfield reference (Red) nodes, and the objects that they belong to are\ndistinguished, giving a field-sensitive analysis.\n        ", defaultBool)));
+		setcgcg_sparkfield_based_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p", "cg.spark","field-based", "\nWhen this option is set to true, fields are represented by \nvariable (Green) nodes, and the object that the field belongs to \nis ignored (all objects are lumped together), giving a \nfield-based analysis. Otherwise, fields are represented by field \nreference (Red) nodes, and the objects that they belong to are \ndistinguished, giving a field-sensitive analysis. ", defaultBool)));
 		
 		
 		
@@ -6959,7 +6858,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparktypes_for_sites_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p", "cg.spark","types-for-sites", "\nWhen this option is set to true, types rather than allocation sites are\nused as the elements of the points-to sets.\n        ", defaultBool)));
+		setcgcg_sparktypes_for_sites_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p", "cg.spark","types-for-sites", "\nWhen this option is set to true, types rather than allocation \nsites are used as the elements of the points-to sets. ", defaultBool)));
 		
 		
 		
@@ -6975,7 +6874,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkmerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.spark","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating\njava.lang.StringBuffer objects are grouped together as a single\nallocation site.\n        ", defaultBool)));
+		setcgcg_sparkmerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.spark","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. ", defaultBool)));
 		
 		
 		
@@ -6991,7 +6890,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparksimulate_natives_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.spark","simulate-natives", "\nWhen this option is set to true, effects of native methods are simulated.\n        ", defaultBool)));
+		setcgcg_sparksimulate_natives_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.spark","simulate-natives", "\nWhen this option is set to true, the effects of native methods \nin the standard Java class library are simulated. ", defaultBool)));
 		
 		
 		
@@ -7007,7 +6906,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparksimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.spark","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable (Green)\nnodes are made bidirectional, as in Steensgaard's analysis stee96*1.\n        ", defaultBool)));
+		setcgcg_sparksimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.spark","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable \n(Green) nodes are made bidirectional, as in Steensgaard's \nanalysis. ", defaultBool)));
 		
 		
 		
@@ -7019,11 +6918,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setcgcg_sparkon_fly_cg_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.spark","on-fly-cg", "\nWhen this option is set to true, the call graph is computed on-the-fly\nas points-to information is computed. Otherwise, an initial\napproximation to the call graph is used.\n        ", defaultBool)));
+		setcgcg_sparkon_fly_cg_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.spark","on-fly-cg", "\nWhen this option is set to true, the call graph is computed \non-the-fly as points-to information is computed. Otherwise, an \ninitial CHA approximation to the call graph is used. ", defaultBool)));
 		
 		
 		
@@ -7039,7 +6938,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkparms_as_fields_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Parms As Fields", "p", "cg.spark","parms-as-fields", "\nWhen this option is set to true, parameters to methods are represented\nas fields (Red nodes) of the this object; otherwise, parameters are\nrepresented as variable (Green) nodes.\n        ", defaultBool)));
+		setcgcg_sparkparms_as_fields_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Parms As Fields", "p", "cg.spark","parms-as-fields", "\nWhen this option is set to true, parameters to methods are \nrepresented as fields (Red nodes) of the this object; otherwise, \nparameters are represented as variable (Green) nodes. ", defaultBool)));
 		
 		
 		
@@ -7055,23 +6954,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkreturns_as_fields_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Returns As Fields", "p", "cg.spark","returns-as-fields", "\nWhen this option is set to true, return values from methods are\nrepresented as fields (Red nodes) of the this object; otherwise,\nreturn values are represented as variable (Green) nodes.\n        ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"all-clinit";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_sparkall_clinit_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("All Static Initializers Reachable", "p", "cg.spark","all-clinit", "\nWhen this option is set to true, all static initializer methods in\navailable classes are considered to be reachable. Otherwise, static\ninitializers are only considered reachable if a statement using the\nclass (such as a static read, an object creation, or use of Class.forName())\nis reachable.\n        ", defaultBool)));
+		setcgcg_sparkreturns_as_fields_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Returns As Fields", "p", "cg.spark","returns-as-fields", "\nWhen this option is set to true, return values from methods are \nrepresented as fields (Red nodes) of the this object; otherwise, \nreturn values are represented as variable (Green) nodes. \n", defaultBool)));
 		
 		
 
@@ -7115,7 +6998,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparksimplify_offline_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.spark","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which are\nconnected by simple paths (so they must have the same points-to set) are\nmerged together.\n        ", defaultBool)));
+		setcgcg_sparksimplify_offline_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.spark","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which \nforming single-entry subgraphs (so they must have the same \npoints-to set) are merged together before propagation begins. \n", defaultBool)));
 		
 		
 		
@@ -7131,7 +7014,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparksimplify_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.spark","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which form\nstrongly-connected components (so they must have the same points-to set)\nare merged together.\n        ", defaultBool)));
+		setcgcg_sparksimplify_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.spark","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which \nform strongly-connected components (so they must have the same \npoints-to set) are merged together before propagation begins. \n", defaultBool)));
 		
 		
 		
@@ -7147,7 +7030,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkignore_types_for_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Ignore Types For SCCs", "p", "cg.spark","ignore-types-for-sccs", "\nWhen this option is set to true, when collapsing strongly-connected\ncomponents, nodes forming SCCs are collapsed regardless of their type.\nThe collapsed SCC is given the most general type of all the nodes in the\ncomponent.\n\nWhen this option is set to false, only edges connecting nodes of the\nsame type are considered when detecting SCCs.\n\nThis option has no effect unless simplifySCCs is true.\n        ", defaultBool)));
+		setcgcg_sparkignore_types_for_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Ignore Types For SCCs", "p", "cg.spark","ignore-types-for-sccs", "\nWhen this option is set to true, when collapsing \nstrongly-connected components, nodes forming SCCs are collapsed \nregardless of their declared type. The collapsed SCC is given \nthe most general type of all the nodes in the component. When \nthis option is set to false, only edges connecting nodes of the \nsame type are considered when detecting SCCs. This option has \nno effect unless simplify-sccs is true. ", defaultBool)));
 		
 		
 
@@ -7183,44 +7066,44 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Iter",
 		"iter",
-		"",
+		"\nIter is a simple, iterative algorithm, which propagates \neverything until the graph does not change. ",
 		
 		false),
 		
 		new OptionData("Worklist",
 		"worklist",
-		"",
+		"\nWorklist is a worklist-based algorithm that tries to do as \nlittle work as possible. This is currently the fastest \nalgorithm. ",
 		
 		true),
 		
 		new OptionData("Cycle",
 		"cycle",
-		"",
+		"\nThis algorithm finds cycles in the PAG on-the-fly. It is not yet \nfinished.",
 		
 		false),
 		
 		new OptionData("Merge",
 		"merge",
-		"",
+		"\nMerge is an algorithm that merges all concrete field (yellow) \nnodes with their corresponding field reference (red) nodes. This \nalgorithm is not yet finished. ",
 		
 		false),
 		
 		new OptionData("Alias",
 		"alias",
-		"",
+		"\nAlias is an alias-edge based algorithm. This algorithm tends to \ntake the least memory for very large problems, because it does \nnot represent explicitly points-to sets of fields of heap \nobjects. ",
 		
 		false),
 		
 		new OptionData("None",
 		"none",
-		"",
+		"\nNone means that propagation is not done; the graph is only \nbuilt and simplified. This is useful if an external solver is \nbeing used to perform the propagation. ",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_sparkpropagator_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Propagator", "p", "cg.spark","propagator", "\nThis option tells Spark which propagation algorithm to use.\n\nIter is a simple, iterative algorithm, which propagates everything until the\ngraph does not change.\n\nWorklist is a worklist-based algorithm that tries\nto do as little work as possible. This is currently the fastest algorithm.\n\nAlias is an alias-edge based algorithm. This algorithm tends to take\nthe least memory for very large problems, because it does not represent\nexplicitly points-to sets of fields of heap objects.\n\nMerge is an algorithm that merges all yellow nodes with their corresponding\nred nodes. This algorithm is not yet finished.\n\nNone means that propagation is not done; the graph is only built and\nsimplified.\n        ")));
+		setcgcg_sparkpropagator_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Propagator", "p", "cg.spark","propagator", "\nThis option tells Spark which propagation algorithm to use. \n")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"propagator";
 		defKey = defKey.trim();
@@ -7235,46 +7118,46 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		data = new OptionData [] {
 		
-		new OptionData("Hash",
+		new OptionData("Hash set",
 		"hash",
-		"",
+		"\nHash is an implementation based on Java's built-in hash-set. ",
 		
 		false),
 		
-		new OptionData("Bit",
+		new OptionData("Bit-vector",
 		"bit",
-		"",
+		"\nBit is an implementation using a bit vector. ",
 		
 		false),
 		
 		new OptionData("Hybrid",
 		"hybrid",
-		"",
+		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
 		
 		false),
 		
-		new OptionData("Array",
+		new OptionData("Sorted array",
 		"array",
-		"",
+		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
 		
 		false),
 		
 		new OptionData("Double",
 		"double",
-		"",
+		"\nDouble is an implementation that itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have not yet been propagated, while the \nsecond set stores old pointed-to objects that have been \npropagated and need not be reconsidered. This allows the \npropagation algorithms to be incremental, often speeding them up \nsignificantly. ",
 		
 		true),
 		
-		new OptionData("Shared",
+		new OptionData("Shared bit-vector",
 		"shared",
-		"",
+		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_sparkset_impl_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.spark","set-impl", "\nSelects an implementation of a points-to set that Spark should use.\n\nHash is an implementation based on Java's built-in hash-set.\n\nBit is an implementation using a bit vector.\n\nHybrid is an implementation that keeps an explicit list of up to\n16 elements, and switches to using a bit-vector when the set gets\nlarger than this.\n\nArray is an implementation that keeps the elements of the points-to set\nin an array that is always maintained in sorted order. Set membership is\ntested using binary search, and set union and intersection are computed\nusing an algorithm based on the merge step from merge sort.\n\nDouble is an implementation that itself uses a pair of sets for\neach points-to set. The first set in the pair stores new pointed-to\nobjects that have not yet been propagated, while the second set stores\nold pointed-to objects that have been propagated and need not be\nreconsidered. This allows the propagation algorithms to be incremental,\noften speeding them up significantly.\n        ")));
+		setcgcg_sparkset_impl_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.spark","set-impl", "\nSelects an implementation of a points-to set that Spark should \nuse. ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"set-impl";
 		defKey = defKey.trim();
@@ -7289,40 +7172,40 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		data = new OptionData [] {
 		
-		new OptionData("Hash",
+		new OptionData("Hash set",
 		"hash",
-		"",
+		"\nHash is an implementation based on Java's built-in hash-set. ",
 		
 		false),
 		
-		new OptionData("Bit",
+		new OptionData("Bit-vector",
 		"bit",
-		"",
+		"\nBit is an implementation using a bit vector. ",
 		
 		false),
 		
 		new OptionData("Hybrid",
 		"hybrid",
-		"",
+		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
 		
 		true),
 		
-		new OptionData("Array",
+		new OptionData("Sorted array",
 		"array",
-		"",
+		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
 		
 		false),
 		
-		new OptionData("Shared",
+		new OptionData("Shared bit-vector",
 		"shared",
-		"",
+		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_sparkdouble_set_old_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.spark","double-set-old", "\nSelects an implementation for the sets of old objects in the double\npoints-to set implementation.\n\nThis option has no effect unless setImpl is set to double.\n        ")));
+		setcgcg_sparkdouble_set_old_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.spark","double-set-old", "\nSelects an implementation for the sets of old objects in the \ndouble points-to set implementation. This option has no effect \nunless set-impl is set to double. ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"double-set-old";
 		defKey = defKey.trim();
@@ -7337,40 +7220,40 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		data = new OptionData [] {
 		
-		new OptionData("Hash",
+		new OptionData("Hash set",
 		"hash",
-		"",
+		"\nHash is an implementation based on Java's built-in hash-set. ",
 		
 		false),
 		
-		new OptionData("Bit",
+		new OptionData("Bit-vector",
 		"bit",
-		"",
+		"\nBit is an implementation using a bit vector. ",
 		
 		false),
 		
 		new OptionData("Hybrid",
 		"hybrid",
-		"",
+		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
 		
 		true),
 		
-		new OptionData("Array",
+		new OptionData("Sorted array",
 		"array",
-		"",
+		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
 		
 		false),
 		
-		new OptionData("Shared",
+		new OptionData("Shared bit-vector",
 		"shared",
-		"",
+		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_sparkdouble_set_new_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.spark","double-set-new", "\nSelects an implementation for the sets of new objects in the double\npoints-to set implementation.\n\nThis option has no effect unless setImpl is set to double.\n        ")));
+		setcgcg_sparkdouble_set_new_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.spark","double-set-new", "\nSelects an implementation for the sets of new objects in the \ndouble points-to set implementation. This option has no effect \nunless setImpl is set to double. ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"double-set-new";
 		defKey = defKey.trim();
@@ -7423,7 +7306,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkdump_html_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump HTML", "p", "cg.spark","dump-html", "\nWhen this option is set to true, a browseable HTML representation of the\npointer assignment graph is output after the analysis completes. Note\nthat this representation is typically very large.\n        ", defaultBool)));
+		setcgcg_sparkdump_html_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump HTML", "p", "cg.spark","dump-html", "\nWhen this option is set to true, a browseable HTML \nrepresentation of the pointer assignment graph is output to a \nfile called pag.jar after the analysis completes. Note that this \nrepresentation is typically very large. ", defaultBool)));
 		
 		
 		
@@ -7439,7 +7322,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkdump_pag_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump PAG", "p", "cg.spark","dump-pag", "\nWhen this option is set to true, a representation of the pointer assignment graph\nsuitable for processing with other solvers (such as the BDD-based solver) is\noutput before the analysis begins.\n        ", defaultBool)));
+		setcgcg_sparkdump_pag_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump PAG", "p", "cg.spark","dump-pag", "\nWhen this option is set to true, a representation of the \npointer assignment graph suitable for processing with other \nsolvers (such as the BDD-based solver) is output before the \nanalysis begins. ", defaultBool)));
 		
 		
 		
@@ -7455,7 +7338,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkdump_solution_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p", "cg.spark","dump-solution", "\nWhen this option is set to true, a representation of the resulting points-to\nsets is dumped. The format is similar to that of the dumpPAG\noption, and is therefore suitable for comparison with the results of other\nsolvers.\n        ", defaultBool)));
+		setcgcg_sparkdump_solution_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p", "cg.spark","dump-solution", "\nWhen this option is set to true, a representation of the \nresulting points-to sets is dumped. The format is similar to \nthat of the dump-pag option, and is therefore suitable for \ncomparison with the results of other solvers. ", defaultBool)));
 		
 		
 		
@@ -7471,7 +7354,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparktopo_sort_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p", "cg.spark","topo-sort", "\nWhen this option is set to true, the representation dumped by the dumpPAG option\nis dumped with the green nodes in (pseudo-)topological order.\n\nThis option has no effect unless dumpPAG is true.\n        ", defaultBool)));
+		setcgcg_sparktopo_sort_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p", "cg.spark","topo-sort", "\nWhen this option is set to true, the representation dumped by \nthe dump-pag option is dumped with the variable (green) nodes in \n(pseudo-)topological order. This option has no effect unless \ndump-pag is true. ", defaultBool)));
 		
 		
 		
@@ -7487,7 +7370,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkdump_types_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Types", "p", "cg.spark","dump-types", "\nWhen this option is set to true, the representation dumped by the dumpPAG option\nincludes type information for all nodes.\n\nThis option has no effect unless dumpPAG is true.\n        ", defaultBool)));
+		setcgcg_sparkdump_types_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Types", "p", "cg.spark","dump-types", "\nWhen this option is set to true, the representation dumped by \nthe dump-pag option includes type information for all nodes. \nThis option has no effect unless dump-pag is true. ", defaultBool)));
 		
 		
 		
@@ -7503,7 +7386,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkclass_method_var_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p", "cg.spark","class-method-var", "\nWhen this option is set to true, the representation dumped by the dumpPAG option\nrepresents nodes by numbering each class, method, and variable within\nthe method separately, rather than assigning a single integer to each\nnode.\n\nThis option has no effect unless dumpPAG is true.\nSetting classMethodVar to true has the effect of setting topoSort to false.\n        ", defaultBool)));
+		setcgcg_sparkclass_method_var_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p", "cg.spark","class-method-var", "\nWhen this option is set to true, the representation dumped by \nthe dump-pag option represents nodes by numbering each class, \nmethod, and variable within the method separately, rather than \nassigning a single integer to each node. This option has no \neffect unless dump-pag is true. Setting class-method-var to true \nhas the effect of setting topo-sort to false. ", defaultBool)));
 		
 		
 		
@@ -7519,7 +7402,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkdump_answer_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Answer", "p", "cg.spark","dump-answer", "\nWhen this option is set to true, the computed reaching types for each variable are\ndumped to a file, so that they can be compared with the results of\nother analyses (such as the old VTA).\n        ", defaultBool)));
+		setcgcg_sparkdump_answer_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Answer", "p", "cg.spark","dump-answer", "\nWhen this option is set to true, the computed reaching types \nfor each variable are dumped to a file, so that they can be \ncompared with the results of other analyses (such as the old \nVTA). ", defaultBool)));
 		
 		
 		
@@ -7535,7 +7418,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkadd_tags_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Add Tags", "p", "cg.spark","add-tags", "\n        When this option is set to true, the results of the analysis are encoded inside\ntags, and printed with the resulting Jimple code.\n\n        ", defaultBool)));
+		setcgcg_sparkadd_tags_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Add Tags", "p", "cg.spark","add-tags", "\nWhen this option is set to true, the results of the \nanalysis are encoded inside tags, and printed with the resulting \nJimple code. ", defaultBool)));
 		
 		
 		
@@ -7551,100 +7434,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkset_mass_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.spark","set-mass", "\nWhen this option is set to true, Spark computes and prints various\ncryptic statistics about the size of the points-to sets computed.\n        ", defaultBool)));
+		setcgcg_sparkset_mass_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.spark","set-mass", "\nWhen this option is set to true, Spark computes and prints \nvarious cryptic statistics about the size of the points-to sets \ncomputed. ", defaultBool)));
 		
 		
 
 		
 		return editGroupcgSpark_Output_Options;
-	}
-
-
-
-	private Composite wstpCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroupwstp = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupwstp.setLayout(layout);
-	
-	 	editGroupwstp.setText("Whole Shimple Transformation Pack");
-	 	
-		editGroupwstp.setData("id", "wstp");
-		
-		String descwstp = "";	
-		if (descwstp.length() > 0) {
-			Label descLabelwstp = new Label(editGroupwstp, SWT.WRAP);
-			descLabelwstp.setText(descwstp);
-		}
-		OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"wstp"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = true;
-			
-		}
-
-		setwstpenabled_widget(new BooleanOptionWidget(editGroupwstp, SWT.NONE, new OptionData("Enabled", "p", "wstp","enabled", "", defaultBool)));
-		
-		
-
-		
-		return editGroupwstp;
-	}
-
-
-
-	private Composite wsopCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroupwsop = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupwsop.setLayout(layout);
-	
-	 	editGroupwsop.setText("Whole Shimple Optimization Pack");
-	 	
-		editGroupwsop.setData("id", "wsop");
-		
-		String descwsop = "";	
-		if (descwsop.length() > 0) {
-			Label descLabelwsop = new Label(editGroupwsop, SWT.WRAP);
-			descLabelwsop.setText(descwsop);
-		}
-		OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"wsop"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setwsopenabled_widget(new BooleanOptionWidget(editGroupwsop, SWT.NONE, new OptionData("Enabled", "p", "wsop","enabled", "", defaultBool)));
-		
-		
-
-		
-		return editGroupwsop;
 	}
 
 
@@ -7662,7 +7457,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupwjtp.setData("id", "wjtp");
 		
-		String descwjtp = "\nSoot can do whole-program analyses.  For the current version of Soot,\nthis means that Jimple bodies are created for each method in the\napplication, and analyses run on this set of Jimple bodies.  The\napplication consists of one class, specified on the command-line, plus\nall classes referenced (directly or indirectly) by it.  It excludes\nclasses in java.*, javax.*, and sun.*.  This mode is\ntriggered by the --app option.\n\nIn whole-program mode, Soot will always apply the contents of the\nWhole-Jimple transformation pack to each method under analysis.  This\noccurs after all Jimple bodies have been created.  This pack is called\nwjtp.  In an\nunmodified version of Soot, the only transformation in wjtp is the\nSpark pointer analysis kit. Spark has many options, which are\nlisted at spark.ps.\n\n                        ";	
+		String descwjtp = "";	
 		if (descwjtp.length() > 0) {
 			Label descLabelwjtp = new Label(editGroupwjtp, SWT.WRAP);
 			descLabelwjtp.setText(descwjtp);
@@ -7683,7 +7478,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjtpenabled_widget(new BooleanOptionWidget(editGroupwjtp, SWT.NONE, new OptionData("Enabled", "p", "wjtp","enabled", "", defaultBool)));
+		setwjtpenabled_widget(new BooleanOptionWidget(editGroupwjtp, SWT.NONE, new OptionData("Enabled", "p", "wjtp","enabled", "\n", defaultBool)));
 		
 		
 
@@ -7706,7 +7501,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupwjop.setData("id", "wjop");
 		
-		String descwjop = "\nTo run optimizing transformations on the whole program, use the -W\ncommand-line option.  This tells Soot that the whole-jimple\noptimization pack is to be applied (phase name wjop).\n\nThe default behaviour of this Pack has static method binding disabled\nand static inlining enabled.  To reverse this, give the options\n-p wjop.smb enabled:true -p wjop.si disabled.\n\n                        ";	
+		String descwjop = "";	
 		if (descwjop.length() > 0) {
 			Label descLabelwjop = new Label(editGroupwjop, SWT.WRAP);
 			descLabelwjop.setText(descwjop);
@@ -7727,7 +7522,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopenabled_widget(new BooleanOptionWidget(editGroupwjop, SWT.NONE, new OptionData("Enabled", "p", "wjop","enabled", "", defaultBool)));
+		setwjopenabled_widget(new BooleanOptionWidget(editGroupwjop, SWT.NONE, new OptionData("Enabled", "p", "wjop","enabled", "\n", defaultBool)));
 		
 		
 
@@ -7750,7 +7545,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupwjopwjop_smb.setData("id", "wjopwjop_smb");
 		
-		String descwjopwjop_smb = "\nStatic method binding uses CHA or VTA to statically bind \nmonomorphic call sites. That is, smb takes the call graph returned\nby CHA or VTA; if the analysis result shows that any virtual invoke\nstatement in the Jimple bodies actually only calls one method, then a\nstatic copy of the method is made, and the virtual invoke is changed\nto a static invoke.\n\n                        ";	
+		String descwjopwjop_smb = "";	
 		if (descwjopwjop_smb.length() > 0) {
 			Label descLabelwjopwjop_smb = new Label(editGroupwjopwjop_smb, SWT.WRAP);
 			descLabelwjopwjop_smb.setText(descwjopwjop_smb);
@@ -7771,7 +7566,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_smbenabled_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Enabled", "p", "wjop.smb","enabled", "", defaultBool)));
+		setwjopwjop_smbenabled_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Enabled", "p", "wjop.smb","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -7787,7 +7582,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_smbinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.smb","insert-null-checks", "", defaultBool)));
+		setwjopwjop_smbinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.smb","insert-null-checks", "\nThe receiver object is checked for nullness before the target \nmethod is invoked. If the target is null, then a NullPointer \nexception is thrown. ", defaultBool)));
 		
 		
 		
@@ -7803,7 +7598,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_smbinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.smb","insert-redundant-casts", "", defaultBool)));
+		setwjopwjop_smbinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.smb","insert-redundant-casts", "\nInserts extra casts for the verifier. The verifier will \ncomplain if the target uses `this' (so we have to pass an extra \nparameter), and the argument passed to the method is not the \nsame type. For instance, Bottle.pricestatic is a method which \ntakes a Cost object, and Cost is an interface implemented by \nBottle. We must then cast the Cost to a Bottle before passing \nit to pricestatic. ", defaultBool)));
 		
 		
 		
@@ -7811,26 +7606,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Unsafe",
 		"unsafe",
-		"",
+		"\n",
 		
 		true),
 		
 		new OptionData("Safe",
 		"safe",
-		"",
+		"\n",
 		
 		false),
 		
 		new OptionData("None",
 		"none",
-		"",
+		"\n",
 		
 		false),
 		
 		};
 		
 										
-		setwjopwjop_smballowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_smb, SWT.NONE, data, new OptionData("Allow Modifier Changes", "p", "wjop.smb","allowed-modifier-changes", "")));
+		setwjopwjop_smballowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_smb, SWT.NONE, data, new OptionData("Allow Modifier Changes", "p", "wjop.smb","allowed-modifier-changes", "\nDetermines what changes in visibility modifiers are allowed. \n``unsafe'' modifies the visibility on code so that all inlining \nis permitted; some IllegalAccessErrors may be missed. ``safe'' \npreserves the exact meaning of the analysed program, and \n``none'' changes no modifiers whatsoever. \n")));
 		
 		defKey = "p"+" "+"wjop.smb"+" "+"allowed-modifier-changes";
 		defKey = defKey.trim();
@@ -7862,7 +7657,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupwjopwjop_si.setData("id", "wjopwjop_si");
 		
-		String descwjopwjop_si = "\nThe StaticInliner talkes an call graph returned by CHA or VTA and visits\nall call sites in the application in a bottom-up fashion, inlining \ninvoke statements which is determined to be monomorphic by analysis result.\nNote that the modifier ``static'' is supposed to be compared to a\n(not-currently-implemented) profile-guided inliner.\n \n                        ";	
+		String descwjopwjop_si = "";	
 		if (descwjopwjop_si.length() > 0) {
 			Label descLabelwjopwjop_si = new Label(editGroupwjopwjop_si, SWT.WRAP);
 			descLabelwjopwjop_si.setText(descwjopwjop_si);
@@ -7883,7 +7678,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_sienabled_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Enabled", "p", "wjop.si","enabled", "", defaultBool)));
+		setwjopwjop_sienabled_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Enabled", "p", "wjop.si","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -7899,7 +7694,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_siinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.si","insert-null-checks", "", defaultBool)));
+		setwjopwjop_siinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.si","insert-null-checks", "\nAs in StaticMethodBinder.", defaultBool)));
 		
 		
 		
@@ -7915,7 +7710,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_siinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.si","insert-redundant-casts", "", defaultBool)));
+		setwjopwjop_siinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.si","insert-redundant-casts", "\nAs in StaticMethodBinder.", defaultBool)));
 		
 		
 		
@@ -7923,26 +7718,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Unsafe",
 		"unsafe",
-		"",
+		"\n",
 		
 		true),
 		
 		new OptionData("Safe",
 		"safe",
-		"",
+		"\n",
 		
 		false),
 		
 		new OptionData("None",
 		"none",
-		"",
+		"\n",
 		
 		false),
 		
 		};
 		
 										
-		setwjopwjop_siallowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_si, SWT.NONE, data, new OptionData("Allow Modifier Changes", "p", "wjop.si","allowed-modifier-changes", "")));
+		setwjopwjop_siallowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_si, SWT.NONE, data, new OptionData("Allow Modifier Changes", "p", "wjop.si","allowed-modifier-changes", "\nAs in StaticMethodBinder.")));
 		
 		defKey = "p"+" "+"wjop.si"+" "+"allowed-modifier-changes";
 		defKey = defKey.trim();
@@ -7967,7 +7762,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_siexpansion_factor_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Expansion Factor",  "p", "wjop.si","expansion-factor", "", defaultString)));
+		setwjopwjop_siexpansion_factor_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Expansion Factor",  "p", "wjop.si","expansion-factor", "\nDetermines the maximum allowed expansion of a method. Inlining \nwill cause the method to grow by a factor of no more than \nexpansion-factor. ", defaultString)));
 		
 		
 		defKey = "p"+" "+"wjop.si"+" "+"max-container-size";
@@ -7982,7 +7777,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_simax_container_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Container Size",  "p", "wjop.si","max-container-size", "", defaultString)));
+		setwjopwjop_simax_container_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Container Size",  "p", "wjop.si","max-container-size", "\nDetermines the maximum number of Jimple statements for a \ncontainer method. If a method has more than this number of \nJimple statements, then no methods will be inlined into it. \n", defaultString)));
 		
 		
 		defKey = "p"+" "+"wjop.si"+" "+"max-inlinee-size";
@@ -7997,7 +7792,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_simax_inlinee_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Inline Size",  "p", "wjop.si","max-inlinee-size", "", defaultString)));
+		setwjopwjop_simax_inlinee_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Inlinee Size",  "p", "wjop.si","max-inlinee-size", "\nDetermines the maximum number of Jimple statements for an \ninlinee method. If a method has more than this number of Jimple \nstatements, then it will not be inlined into other methods. \n", defaultString)));
 		
 
 		
@@ -8015,7 +7810,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupwjap.setLayout(layout);
 	
-	 	editGroupwjap.setText("Whole Jimple Annotation Pack");
+	 	editGroupwjap.setText("Whole-Jimple Annotation Pack");
 	 	
 		editGroupwjap.setData("id", "wjap");
 		
@@ -8040,7 +7835,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjapenabled_widget(new BooleanOptionWidget(editGroupwjap, SWT.NONE, new OptionData("Enabled", "p", "wjap","enabled", "", defaultBool)));
+		setwjapenabled_widget(new BooleanOptionWidget(editGroupwjap, SWT.NONE, new OptionData("Enabled", "p", "wjap","enabled", "\nSome analyses do not transform Jimple body directly, but \nannotate statements or values with tags. Whole-Jimple annotation \npack provides a place for annotation-oriented analysis in a \nwhole program mode. 					", defaultBool)));
 		
 		
 
@@ -8084,12 +7879,104 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjapwjap_raenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_ra, SWT.NONE, new OptionData("Enabled", "p", "wjap.ra","enabled", "", defaultBool)));
+		setwjapwjap_raenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_ra, SWT.NONE, new OptionData("Enabled", "p", "wjap.ra","enabled", "\nIn Java, a multi-dimensional array is an array of arrays, \nwhich means the shape of the array can be ragged. However, many \napplications use rectangular arrays. Such information is very \nhelpful in proving safe array bounds checks. Rectangular array \nfinder traverses Jimple statements based on static call graph, \nand finds array variables always holding rectangular \ntwo-dimensional array objects. The analysis results are used by \narray bounds check elimination (jap.abc). This phase does not \nchange the program. 						", defaultBool)));
 		
 		
 
 		
 		return editGroupwjapwjap_ra;
+	}
+
+
+
+	private Composite shimpleCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupshimple = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupshimple.setLayout(layout);
+	
+	 	editGroupshimple.setText("Shimple Phase Options");
+	 	
+		editGroupshimple.setData("id", "shimple");
+		
+		String descshimple = "Miscellaneous Shimple Options.";	
+		if (descshimple.length() > 0) {
+			Label descLabelshimple = new Label(editGroupshimple, SWT.WRAP);
+			descLabelshimple.setText(descshimple);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"shimple"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setshimpleenabled_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Enabled", "p", "shimple","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"shimple"+" "+"naive-phi-elimination";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setshimplenaive_phi_elimination_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Naive Phi Node Elimination", "p", "shimple","naive-phi-elimination", "\nIf set to true, neither pre-optimization nor \npost-optimization will be applied to the Phi elimination \nprocess. This is useful for monitoring and understanding \nthe behaviour of Shimple optimizations or transformations. \nNote that setting this option to true takes precedence \nover other Phi elimination options.", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"shimple"+" "+"pre-optimize-phi-elimination";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setshimplepre_optimize_phi_elimination_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Pre-optimize Phi Elimination", "p", "shimple","pre-optimize-phi-elimination", "\nIf set to true, some recommended optimizations such as \ndead code elimination and local packing are applied \nbefore Phi node elimination. This does not appear to be as \neffective as post-optimization, but the option is provided \nfor future testing and investigation.", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"shimple"+" "+"post-optimize-phi-elimination";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setshimplepost_optimize_phi_elimination_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Post-optimize Phi Elimination", "p", "shimple","post-optimize-phi-elimination", "\nApplies recommended optimizations such as dead code \nelimination and local packing after Phi node \nelimination. This appears to be more effective than \npre-optimization.", defaultBool)));
+		
+		
+
+		
+		return editGroupshimple;
 	}
 
 
@@ -8128,7 +8015,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setstpenabled_widget(new BooleanOptionWidget(editGroupstp, SWT.NONE, new OptionData("Enabled", "p", "stp","enabled", "", defaultBool)));
+		setstpenabled_widget(new BooleanOptionWidget(editGroupstp, SWT.NONE, new OptionData("Enabled", "p", "stp","enabled", "\nIf the Shimple phase is enabled, Soot applies the \ncontents of the Shimple Transformation Pack to each method \nunder analysis. This pack contains no transformations in an \nunmodified version of Soot.", defaultBool)));
 		
 		
 
@@ -8172,12 +8059,56 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setsopenabled_widget(new BooleanOptionWidget(editGroupsop, SWT.NONE, new OptionData("Enabled", "p", "sop","enabled", "", defaultBool)));
+		setsopenabled_widget(new BooleanOptionWidget(editGroupsop, SWT.NONE, new OptionData("Enabled", "p", "sop","enabled", "\nWhen enabled, Soot applies the Shimple Optimization \nPack to every ShimpleBody in application classes. \nThis section lists the default transformations in the \nShimple Optimization Pack.", defaultBool)));
 		
 		
 
 		
 		return editGroupsop;
+	}
+
+
+
+	private Composite sopsop_cpfCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupsopsop_cpf = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupsopsop_cpf.setLayout(layout);
+	
+	 	editGroupsopsop_cpf.setText("Constant Propagator and Folder");
+	 	
+		editGroupsopsop_cpf.setData("id", "sopsop_cpf");
+		
+		String descsopsop_cpf = "";	
+		if (descsopsop_cpf.length() > 0) {
+			Label descLabelsopsop_cpf = new Label(editGroupsopsop_cpf, SWT.WRAP);
+			descLabelsopsop_cpf.setText(descsopsop_cpf);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"sop.cpf"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setsopsop_cpfenabled_widget(new BooleanOptionWidget(editGroupsopsop_cpf, SWT.NONE, new OptionData("Enabled", "p", "sop.cpf","enabled", "\nAn example implementation of constant 						propagation using \nShimple. Informal tests show that this 						analysis is already \nmore powerful than the simplistic \n						ConstantPropagatorAndFolder optimization provided by \n						Jimple, particularly when control flow is involved. This \n						optimization demonstrates some of the benefits of SSA -- \n						particularly the fact that Phi nodes represent natural \n						merge points in the control flow. This implementation \n						also demonstrates how to access U/D and D/U chains in \n						Shimple.", defaultBool)));
+		
+		
+
+		
+		return editGroupsopsop_cpf;
 	}
 
 
@@ -8191,7 +8122,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjtp.setLayout(layout);
 	
-	 	editGroupjtp.setText("Jimple Transformations Pack");
+	 	editGroupjtp.setText("Jimple Transformation Pack");
 	 	
 		editGroupjtp.setData("id", "jtp");
 		
@@ -8216,7 +8147,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjtpenabled_widget(new BooleanOptionWidget(editGroupjtp, SWT.NONE, new OptionData("Enabled", "p", "jtp","enabled", "", defaultBool)));
+		setjtpenabled_widget(new BooleanOptionWidget(editGroupjtp, SWT.NONE, new OptionData("Enabled", "p", "jtp","enabled", "\nSoot applies the contents of the Jimple Transformation Pack to \neach method under analysis. This pack contains no \ntransformations in an unmodified version of Soot. ", defaultBool)));
 		
 		
 
@@ -8235,11 +8166,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjop.setLayout(layout);
 	
-	 	editGroupjop.setText("Jimple Optimizations Pack");
+	 	editGroupjop.setText("Jimple Optimization Pack");
 	 	
 		editGroupjop.setData("id", "jop");
 		
-		String descjop = "\nWhen Soot is given the -O command-line option, the \nJimpleOptimizationPack is applied to every JimpleBody in an\napplication class.  This section lists the default transformations in\nthe JimpleOptimizationPack.\n                        ";	
+		String descjop = "";	
 		if (descjop.length() > 0) {
 			Label descLabeljop = new Label(editGroupjop, SWT.WRAP);
 			descLabeljop.setText(descjop);
@@ -8260,7 +8191,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopenabled_widget(new BooleanOptionWidget(editGroupjop, SWT.NONE, new OptionData("Enabled", "p", "jop","enabled", "", defaultBool)));
+		setjopenabled_widget(new BooleanOptionWidget(editGroupjop, SWT.NONE, new OptionData("Enabled", "p", "jop","enabled", "\n", defaultBool)));
 		
 		
 
@@ -8279,11 +8210,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_cse.setLayout(layout);
 	
-	 	editGroupjopjop_cse.setText("Common Subexpression Elimination");
+	 	editGroupjopjop_cse.setText("Common Subexpression Eliminator");
 	 	
 		editGroupjopjop_cse.setData("id", "jopjop_cse");
 		
-		String descjopjop_cse = "\nRuns an available expressions analysis on a body, then eliminates\ncommon subexpressions.\n\nThis implementation is especially slow, as it does not run on basic\nblocks.  A better implementation (which wouldn't catch every single\ncommon subexpression, but would get most) would use basic blocks\ninstead.\n\nIt is also slow because the flow universe is explicitly created; it\nneed not be.  A better implementation would implicitly compute the kill\nsets at every node.\n\nBecause of the current slowness, this transformation is not enabled in\nthe default settings.  To enable it, specify -p jop.cse\nenabled:true on the command line.\n\n                        ";	
+		String descjopjop_cse = "";	
 		if (descjopjop_cse.length() > 0) {
 			Label descLabeljopjop_cse = new Label(editGroupjopjop_cse, SWT.WRAP);
 			descLabeljopjop_cse.setText(descjopjop_cse);
@@ -8304,7 +8235,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_cseenabled_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Enabled", "p", "jop.cse","enabled", "", defaultBool)));
+		setjopjop_cseenabled_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Enabled", "p", "jop.cse","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -8320,7 +8251,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_csenaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.cse","naive-side-effect", "", defaultBool)));
+		setjopjop_csenaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.cse","naive-side-effect", "\nIf naive-side-effect is set to true the Common Subexpression \nEliminator uses the conservative side effect information \nprovided by the NaiveSideEffectTester class, even if \ninterprocedural information about side effects is available. The \nnaive side effect analysis is based solely on the information \navailable locally about a statement. It assumes, for example, \nthat any method call has the potential to write and read all \ninstance and static fields in the program. If naive-side-effect \nis set to false and whole program analysis has been specified by \nthe -W or -whole-program options, then the Common Subexpression \nEliminator uses the side effect information provided by the \nPASideEffectTester class. PASideEffectTester uses the \ninformation provided by a points-to analysis to determine which \nfields and statics may be written or read by a given statement. \nIf whole program analysis is not performed, naive side effect \ninformation is used regardless of the setting of \nnaive-side-effect. ", defaultBool)));
 		
 		
 
@@ -8343,7 +8274,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_bcm.setData("id", "jopjop_bcm");
 		
-		String descjopjop_bcm = "\nBusy Code Motion is a straightforward implementation of Partial\nRedundancy Elimination. This implementation is not very aggressive.\nThe Lazy Code Motion\nis an improved version of the Busy Code Motion, and should be used\ninstead of it.\n\nBusy Code Motion is not enabled by default. To enable it, specify\n-p jop.bcm enabled:true on the command line.\n\n                        ";	
+		String descjopjop_bcm = "";	
 		if (descjopjop_bcm.length() > 0) {
 			Label descLabeljopjop_bcm = new Label(editGroupjopjop_bcm, SWT.WRAP);
 			descLabeljopjop_bcm.setText(descjopjop_bcm);
@@ -8364,7 +8295,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_bcmenabled_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Enabled", "p", "jop.bcm","enabled", "", defaultBool)));
+		setjopjop_bcmenabled_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Enabled", "p", "jop.bcm","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -8380,7 +8311,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_bcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.bcm","naive-side-effect", "", defaultBool)));
+		setjopjop_bcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.bcm","naive-side-effect", "\nIf naive-side-effect is set to true Busy Code Motion uses the \nconservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If naive-side-effect is set to false and whole \nprogram analysis has been specified by the -W or -whole-program \noptions, then Busy Code Motion uses the side effect information \nprovided by the PASideEffectTester class. PASideEffectTester \nuses the information provided by a points-to analysis to \ndetermine which fields and statics may be written or read by a \ngiven statement. If whole program analysis is not performed, \nnaive side effect information is used regardless of the setting \nof naive-side-effect. ", defaultBool)));
 		
 		
 
@@ -8403,7 +8334,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_lcm.setData("id", "jopjop_lcm");
 		
-		String descjopjop_lcm = "\nLazy Code Motion is the enhanced version of the Busy Code Motion, a\nPartial Redundancy Eliminator. Before doing Partial Redundancy Elimination,\nthis optimization performs loop inversion (turning while loops\ninto do while loops inside an if statement).\nThis allows the Partial Redundancy Eliminator\nto optimize loop invariants of while loops.\n\nBy default, this transformation is disabled. To enable it, specify\n-p jop.lcm enabled:true on the command line.\n\n                        ";	
+		String descjopjop_lcm = "";	
 		if (descjopjop_lcm.length() > 0) {
 			Label descLabeljopjop_lcm = new Label(editGroupjopjop_lcm, SWT.WRAP);
 			descLabeljopjop_lcm.setText(descjopjop_lcm);
@@ -8424,7 +8355,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_lcmenabled_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Enabled", "p", "jop.lcm","enabled", "", defaultBool)));
+		setjopjop_lcmenabled_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Enabled", "p", "jop.lcm","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -8440,7 +8371,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_lcmunroll_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Unroll", "p", "jop.lcm","unroll", "", defaultBool)));
+		setjopjop_lcmunroll_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Unroll", "p", "jop.lcm","unroll", "\nIf true, perform loop inversion before doing the \ntransformation. ", defaultBool)));
 		
 		
 		
@@ -8456,7 +8387,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_lcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.lcm","naive-side-effect", "", defaultBool)));
+		setjopjop_lcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.lcm","naive-side-effect", "\nIf naive-side-effect is set to true Lazy Code Motion uses the \nconservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If naive-side-effect is set to false and whole \nprogram analysis has been specified by the -W or -whole-program \noptions, then Lazy Code Motion uses the side effect information \nprovided by the PASideEffectTester class. PASideEffectTester \nuses the information provided by a points-to analysis to \ndetermine which fields and statics may be written or read by a \ngiven statement. If whole program analysis is not performed, \nnaive side effect information is used regardless of the setting \nof naive-side-effect. ", defaultBool)));
 		
 		
 		
@@ -8464,34 +8395,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Safe",
 		"safe",
-		"",
+		"\nSafe, but only considers moving additions, subtractions and \nmultiplications. ",
 		
 		true),
 		
 		new OptionData("Medium",
 		"medium",
-		"",
+		"\nUnsafe in multi-threaded programs, as it may reuse the values \nread from field accesses. ",
 		
 		false),
 		
 		new OptionData("Unsafe",
 		"unsafe",
-		"",
+		"\nMay violate Java's exception semantics, as it may move or \nreorder exception-throwing statements, potentially outside of \ntry-catch blocks. ",
 		
 		false),
 		
 		};
 		
 										
-		setjopjop_lcmsafe_widget(new MultiOptionWidget(editGroupjopjop_lcm, SWT.NONE, data, new OptionData("Safe", "p", "jop.lcm","safe", "")));
+		setjopjop_lcmsafety_widget(new MultiOptionWidget(editGroupjopjop_lcm, SWT.NONE, data, new OptionData("Safety", "p", "jop.lcm","safety", "\nThis option controls which fields and statements are candidates \nfor code motion. ")));
 		
-		defKey = "p"+" "+"jop.lcm"+" "+"safe";
+		defKey = "p"+" "+"jop.lcm"+" "+"safety";
 		defKey = defKey.trim();
 		
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
 		
-			getjopjop_lcmsafe_widget().setDef(defaultString);
+			getjopjop_lcmsafety_widget().setDef(defaultString);
 		}
 		
 		
@@ -8511,11 +8442,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_cp.setLayout(layout);
 	
-	 	editGroupjopjop_cp.setText("Copy Propogator");
+	 	editGroupjopjop_cp.setText("Copy Propagator");
 	 	
 		editGroupjopjop_cp.setData("id", "jopjop_cp");
 		
-		String descjopjop_cp = "\nThe default behaviour here is to propagate on all locals.\n                        ";	
+		String descjopjop_cp = "Removes unnecessary copies";	
 		if (descjopjop_cp.length() > 0) {
 			Label descLabeljopjop_cp = new Label(editGroupjopjop_cp, SWT.WRAP);
 			descLabeljopjop_cp.setText(descjopjop_cp);
@@ -8536,7 +8467,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_cpenabled_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Enabled", "p", "jop.cp","enabled", "", defaultBool)));
+		setjopjop_cpenabled_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Enabled", "p", "jop.cp","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -8552,7 +8483,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jop.cp","only-regular-locals", "", defaultBool)));
+		setjopjop_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jop.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, \nthose declared in the source bytecode. ", defaultBool)));
 		
 		
 		
@@ -8568,7 +8499,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.cp","only-stack-locals", "", defaultBool)));
+		setjopjop_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
 		
 		
 
@@ -8612,7 +8543,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_cpfenabled_widget(new BooleanOptionWidget(editGroupjopjop_cpf, SWT.NONE, new OptionData("Enabled", "p", "jop.cpf","enabled", "", defaultBool)));
+		setjopjop_cpfenabled_widget(new BooleanOptionWidget(editGroupjopjop_cpf, SWT.NONE, new OptionData("Enabled", "p", "jop.cpf","enabled", "\n", defaultBool)));
 		
 		
 
@@ -8635,7 +8566,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_cbf.setData("id", "jopjop_cbf");
 		
-		String descjopjop_cbf = "\nStatically evaluates the condition-expression of Jimple \nIfStmts.  If the condition is identically `true' or `false',\nchanges the conditional branch instruction to a `goto' statement.\n\n                        ";	
+		String descjopjop_cbf = "";	
 		if (descjopjop_cbf.length() > 0) {
 			Label descLabeljopjop_cbf = new Label(editGroupjopjop_cbf, SWT.WRAP);
 			descLabeljopjop_cbf.setText(descjopjop_cbf);
@@ -8656,7 +8587,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_cbfenabled_widget(new BooleanOptionWidget(editGroupjopjop_cbf, SWT.NONE, new OptionData("Enabled", "p", "jop.cbf","enabled", "", defaultBool)));
+		setjopjop_cbfenabled_widget(new BooleanOptionWidget(editGroupjopjop_cbf, SWT.NONE, new OptionData("Enabled", "p", "jop.cbf","enabled", "\n", defaultBool)));
 		
 		
 
@@ -8679,7 +8610,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_dae.setData("id", "jopjop_dae");
 		
-		String descjopjop_dae = "\nThis phase eliminates assignment statements (to locals) with no uses.\n\nIn this incarnation, the default value for only-stack-locals\nis false.\n\n                        ";	
+		String descjopjop_dae = "";	
 		if (descjopjop_dae.length() > 0) {
 			Label descLabeljopjop_dae = new Label(editGroupjopjop_dae, SWT.WRAP);
 			descLabeljopjop_dae.setText(descjopjop_dae);
@@ -8700,7 +8631,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_daeenabled_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Enabled", "p", "jop.dae","enabled", "", defaultBool)));
+		setjopjop_daeenabled_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Enabled", "p", "jop.dae","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -8716,7 +8647,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.dae","only-stack-locals", "", defaultBool)));
+		setjopjop_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.dae","only-stack-locals", "\n", defaultBool)));
 		
 		
 
@@ -8739,7 +8670,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_uce1.setData("id", "jopjop_uce1");
 		
-		String descjopjop_uce1 = "\nRemoves unreachable codes and empty traps.\n                        ";	
+		String descjopjop_uce1 = "";	
 		if (descjopjop_uce1.length() > 0) {
 			Label descLabeljopjop_uce1 = new Label(editGroupjopjop_uce1, SWT.WRAP);
 			descLabeljopjop_uce1.setText(descjopjop_uce1);
@@ -8760,12 +8691,56 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_uce1enabled_widget(new BooleanOptionWidget(editGroupjopjop_uce1, SWT.NONE, new OptionData("Enabled", "p", "jop.uce1","enabled", "", defaultBool)));
+		setjopjop_uce1enabled_widget(new BooleanOptionWidget(editGroupjopjop_uce1, SWT.NONE, new OptionData("Enabled", "p", "jop.uce1","enabled", "\n", defaultBool)));
 		
 		
 
 		
 		return editGroupjopjop_uce1;
+	}
+
+
+
+	private Composite jopjop_ubf1Create(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupjopjop_ubf1 = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjopjop_ubf1.setLayout(layout);
+	
+	 	editGroupjopjop_ubf1.setText("Unconditional Branch Folder 1");
+	 	
+		editGroupjopjop_ubf1.setData("id", "jopjop_ubf1");
+		
+		String descjopjop_ubf1 = "";	
+		if (descjopjop_ubf1.length() > 0) {
+			Label descLabeljopjop_ubf1 = new Label(editGroupjopjop_ubf1, SWT.WRAP);
+			descLabeljopjop_ubf1.setText(descjopjop_ubf1);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"jop.ubf1"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjopjop_ubf1enabled_widget(new BooleanOptionWidget(editGroupjopjop_ubf1, SWT.NONE, new OptionData("Enabled", "p", "jop.ubf1","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjopjop_ubf1;
 	}
 
 
@@ -8804,56 +8779,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_uce2enabled_widget(new BooleanOptionWidget(editGroupjopjop_uce2, SWT.NONE, new OptionData("Enabled", "p", "jop.uce2","enabled", "", defaultBool)));
+		setjopjop_uce2enabled_widget(new BooleanOptionWidget(editGroupjopjop_uce2, SWT.NONE, new OptionData("Enabled", "p", "jop.uce2","enabled", "\n", defaultBool)));
 		
 		
 
 		
 		return editGroupjopjop_uce2;
-	}
-
-
-
-	private Composite jopjop_ubf1Create(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroupjopjop_ubf1 = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjopjop_ubf1.setLayout(layout);
-	
-	 	editGroupjopjop_ubf1.setText("Unconditional Branch Folder 1");
-	 	
-		editGroupjopjop_ubf1.setData("id", "jopjop_ubf1");
-		
-		String descjopjop_ubf1 = "\nRemoves unnecessary `goto' statements from a JimpleBody.\n\nIf a GotoStmt's target is the next instruction, then it is\nremoved.  If a GotoStmtx's target is another GotoStmt,\nwith target y, then x's target can be changed to y's target.\n\nIf some IfStmt's target is a GotoStmt, then the\nIfStmt's target can be updated to the GotoStmt's target.\n        \n(These situations could result from other optimizations; after folding\nbranches, we might generate more unreachable code.)\n\n                        ";	
-		if (descjopjop_ubf1.length() > 0) {
-			Label descLabeljopjop_ubf1 = new Label(editGroupjopjop_ubf1, SWT.WRAP);
-			descLabeljopjop_ubf1.setText(descjopjop_ubf1);
-		}
-		OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"jop.ubf1"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = true;
-			
-		}
-
-		setjopjop_ubf1enabled_widget(new BooleanOptionWidget(editGroupjopjop_ubf1, SWT.NONE, new OptionData("Enabled", "p", "jop.ubf1","enabled", "", defaultBool)));
-		
-		
-
-		
-		return editGroupjopjop_ubf1;
 	}
 
 
@@ -8892,7 +8823,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_ubf2enabled_widget(new BooleanOptionWidget(editGroupjopjop_ubf2, SWT.NONE, new OptionData("Enabled", "p", "jop.ubf2","enabled", "", defaultBool)));
+		setjopjop_ubf2enabled_widget(new BooleanOptionWidget(editGroupjopjop_ubf2, SWT.NONE, new OptionData("Enabled", "p", "jop.ubf2","enabled", "\n", defaultBool)));
 		
 		
 
@@ -8915,7 +8846,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_ule.setData("id", "jopjop_ule");
 		
-		String descjopjop_ule = "\nRemoves locals with no uses in the method body.\n                        ";	
+		String descjopjop_ule = "Removes unused locals";	
 		if (descjopjop_ule.length() > 0) {
 			Label descLabeljopjop_ule = new Label(editGroupjopjop_ule, SWT.WRAP);
 			descLabeljopjop_ule.setText(descjopjop_ule);
@@ -8936,7 +8867,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_uleenabled_widget(new BooleanOptionWidget(editGroupjopjop_ule, SWT.NONE, new OptionData("Enabled", "p", "jop.ule","enabled", "", defaultBool)));
+		setjopjop_uleenabled_widget(new BooleanOptionWidget(editGroupjopjop_ule, SWT.NONE, new OptionData("Enabled", "p", "jop.ule","enabled", "\n", defaultBool)));
 		
 		
 
@@ -8959,7 +8890,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjap.setData("id", "jap");
 		
-		String descjap = "\nSoot has a number of phase options to configure the annotation process.\nArray bounds check and null pointer check detection have \nseparate phases and phase options.\n                        ";	
+		String descjap = "";	
 		if (descjap.length() > 0) {
 			Label descLabeljap = new Label(editGroupjap, SWT.WRAP);
 			descLabeljap.setText(descjap);
@@ -8980,7 +8911,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapenabled_widget(new BooleanOptionWidget(editGroupjap, SWT.NONE, new OptionData("Enabled", "p", "jap","enabled", "", defaultBool)));
+		setjapenabled_widget(new BooleanOptionWidget(editGroupjap, SWT.NONE, new OptionData("Enabled", "p", "jap","enabled", "\n", defaultBool)));
 		
 		
 
@@ -9003,7 +8934,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjapjap_npc.setData("id", "japjap_npc");
 		
-		String descjapjap_npc = "\nThe null pointer check analysis has the phase name jtp.npc. \nIt has one phase option (aside from the default disabled option). \n\n                        ";	
+		String descjapjap_npc = "";	
 		if (descjapjap_npc.length() > 0) {
 			Label descLabeljapjap_npc = new Label(editGroupjapjap_npc, SWT.WRAP);
 			descLabeljapjap_npc.setText(descjapjap_npc);
@@ -9024,7 +8955,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_npcenabled_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Enabled", "p", "jap.npc","enabled", "", defaultBool)));
+		setjapjap_npcenabled_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Enabled", "p", "jap.npc","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -9040,7 +8971,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_npconly_array_ref_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Only Array Ref", "p", "jap.npc","only-array-ref", "", defaultBool)));
+		setjapjap_npconly_array_ref_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Only Array Ref", "p", "jap.npc","only-array-ref", "\nBy default, all bytecodes that need null pointer checks \nare annotated with the analysis result. When this option is \nset to true, Soot will annotate only array-referencing \nbytecodes with null pointer check information; other bytecodes, \nsuch as getfield and putfield, will not be annotated. \n", defaultBool)));
 		
 		
 		
@@ -9056,7 +8987,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_npcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Profiling", "p", "jap.npc","profiling", "", defaultBool)));
+		setjapjap_npcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Profiling", "p", "jap.npc","profiling", "\nIf this option is true, the analysis inserts profiling \ninstructions counting the number of eliminated safe null pointer \nchecks at runtime. This is only for profiling purpose. 						", defaultBool)));
 		
 		
 
@@ -9079,7 +9010,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjapjap_abc.setData("id", "japjap_abc");
 		
-		String descjapjap_abc = "\nThe array bounds check analysis has the phase name jtp.abc. \nIf whole-program analysis is required, an extra\nphase wjap.ra for finding rectangular arrays occurs.\n                        ";	
+		String descjapjap_abc = "";	
 		if (descjapjap_abc.length() > 0) {
 			Label descLabeljapjap_abc = new Label(editGroupjapjap_abc, SWT.WRAP);
 			descLabeljapjap_abc.setText(descjapjap_abc);
@@ -9100,7 +9031,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcenabled_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Enabled", "p", "jap.abc","enabled", "", defaultBool)));
+		setjapjap_abcenabled_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Enabled", "p", "jap.abc","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -9116,7 +9047,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcwith_all_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With All", "p", "jap.abc","with-all", "", defaultBool)));
+		setjapjap_abcwith_all_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With All", "p", "jap.abc","with-all", "\nA macro. Instead of typing a long string of phase options, \nthis option will turn on all options of the phase ``jap.abc''. \n", defaultBool)));
 		
 		
 		
@@ -9132,7 +9063,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcwith_fieldref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Field References", "p", "jap.abc","with-fieldref", "", defaultBool)));
+		setjapjap_abcwith_fieldref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Field References", "p", "jap.abc","with-fieldref", "\nThe analysis treats field references (static and instance) as \ncommon subexpressions. The restrictions from the `with-arrayref' \noption also apply. ", defaultBool)));
 		
 		
 		
@@ -9148,7 +9079,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcwith_arrayref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Array References", "p", "jap.abc","with-arrayref", "", defaultBool)));
+		setjapjap_abcwith_arrayref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Array References", "p", "jap.abc","with-arrayref", "\nWith this option enabled, array references can be considered as \ncommon subexpressions; however, we are more conservative when \nwriting into an array, because array objects may be aliased. \nNOTE: We also assume that the application in a single-threaded \nprogram or in a synchronized block. That is, an array element \nmay not be changed by other threads between two array \nreferences. ", defaultBool)));
 		
 		
 		
@@ -9164,7 +9095,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcwith_cse_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Common Sub-expressions", "p", "jap.abc","with-cse", "", defaultBool)));
+		setjapjap_abcwith_cse_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Common Sub-expressions", "p", "jap.abc","with-cse", "\nThe analysis will consider common subexpressions. For example, \nconsider the situation where r1 is assigned a*b; later, r2 \nis assigned a*b, where both a and b have not been changed \nbetween the two statements. The analysis can conclude that r2 \nhas the same value as r1. Experiments show that this option \ncan improve the result slightly. ", defaultBool)));
 		
 		
 		
@@ -9180,7 +9111,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcwith_classfield_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Class Field", "p", "jap.abc","with-classfield", "", defaultBool)));
+		setjapjap_abcwith_classfield_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Class Field", "p", "jap.abc","with-classfield", "\nThis option makes the analysis work on the class level. The \nalgorithm analyzes `final' or `private' class fields first. It \ncan recognize the fields that hold array objects with constant \nlength. In an application using lots of array fields, this \noption can improve the analysis results dramatically. \n", defaultBool)));
 		
 		
 		
@@ -9196,7 +9127,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcwith_rectarray_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Rectangular Array", "p", "jap.abc","with-rectarray", "", defaultBool)));
+		setjapjap_abcwith_rectarray_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Rectangular Array", "p", "jap.abc","with-rectarray", "\nThis option is used together with wjap.ra to make Soot run the \nwhole-program analysis for rectangular array objects. This \nanalysis is based on the call graph, and it usually takes a long \ntime. If the application uses rectangular arrays, these options \ncan improve the analysis result. ", defaultBool)));
 		
 		
 		
@@ -9212,7 +9143,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Profiling", "p", "jap.abc","profiling", "", defaultBool)));
+		setjapjap_abcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Profiling", "p", "jap.abc","profiling", "\n", defaultBool)));
 		
 		
 
@@ -9256,7 +9187,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_profilingenabled_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Enabled", "p", "jap.profiling","enabled", "", defaultBool)));
+		setjapjap_profilingenabled_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Enabled", "p", "jap.profiling","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -9272,7 +9203,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_profilingnotmainentry_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Not Main Entry", "p", "jap.profiling","notmainentry", "", defaultBool)));
+		setjapjap_profilingnotmainentry_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Not Main Entry", "p", "jap.profiling","notmainentry", "\n", defaultBool)));
 		
 		
 
@@ -9295,7 +9226,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjapjap_sea.setData("id", "japjap_sea");
 		
-		String descjapjap_sea = "Uses the active invoke graph to\nproduce side-effect attributes as described in the Spark thesis, chapter 6.\n";	
+		String descjapjap_sea = "";	
 		if (descjapjap_sea.length() > 0) {
 			Label descLabeljapjap_sea = new Label(editGroupjapjap_sea, SWT.WRAP);
 			descLabeljapjap_sea.setText(descjapjap_sea);
@@ -9316,7 +9247,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_seaenabled_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Enabled", "p", "jap.sea","enabled", "", defaultBool)));
+		setjapjap_seaenabled_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Enabled", "p", "jap.sea","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -9332,7 +9263,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_seanaive_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Build naive dependence graph", "p", "jap.sea","naive", "", defaultBool)));
+		setjapjap_seanaive_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Build naive dependence graph", "p", "jap.sea","naive", "\nWhen set to true, the dependence graph is built with a node for \neach statement, without merging the nodes for equivalent \nstatements. The purpose of this switch is to make it possible to \nmeasure the effect of merging nodes for equivalent statements on \nthe size of the dependence graph.", defaultBool)));
 		
 		
 
@@ -9355,7 +9286,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjapjap_fieldrw.setData("id", "japjap_fieldrw");
 		
-		String descjapjap_fieldrw = "\nUses the active invoke graph to produce tags indicating which fields may\nbe read or written by each statement, including invoke statements.\n                        ";	
+		String descjapjap_fieldrw = "";	
 		if (descjapjap_fieldrw.length() > 0) {
 			Label descLabeljapjap_fieldrw = new Label(editGroupjapjap_fieldrw, SWT.WRAP);
 			descLabeljapjap_fieldrw.setText(descjapjap_fieldrw);
@@ -9376,7 +9307,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_fieldrwenabled_widget(new BooleanOptionWidget(editGroupjapjap_fieldrw, SWT.NONE, new OptionData("Enabled", "p", "jap.fieldrw","enabled", "", defaultBool)));
+		setjapjap_fieldrwenabled_widget(new BooleanOptionWidget(editGroupjapjap_fieldrw, SWT.NONE, new OptionData("Enabled", "p", "jap.fieldrw","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -9392,7 +9323,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_fieldrwthreshold_widget(new StringOptionWidget(editGroupjapjap_fieldrw, SWT.NONE, new OptionData("Maximum number of fields",  "p", "jap.fieldrw","threshold", "", defaultString)));
+		setjapjap_fieldrwthreshold_widget(new StringOptionWidget(editGroupjapjap_fieldrw, SWT.NONE, new OptionData("Maximum number of fields",  "p", "jap.fieldrw","threshold", "\nIf a statement reads/writes more than this number of fields, no \ntag will be produced for it, in order to keep the size of the \ntags reasonable. ", defaultString)));
 		
 
 		
@@ -9435,7 +9366,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_cgtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_cgtagger, SWT.NONE, new OptionData("Enabled", "p", "jap.cgtagger","enabled", "", defaultBool)));
+		setjapjap_cgtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_cgtagger, SWT.NONE, new OptionData("Enabled", "p", "jap.cgtagger","enabled", "\n", defaultBool)));
 		
 		
 
@@ -9479,7 +9410,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setgbenabled_widget(new BooleanOptionWidget(editGroupgb, SWT.NONE, new OptionData("Enabled", "p", "gb","enabled", "", defaultBool)));
+		setgbenabled_widget(new BooleanOptionWidget(editGroupgb, SWT.NONE, new OptionData("Enabled", "p", "gb","enabled", "\n", defaultBool)));
 		
 		
 
@@ -9498,7 +9429,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupgbgb_a1.setLayout(layout);
 	
-	 	editGroupgbgb_a1.setText("Aggregator 1");
+	 	editGroupgbgb_a1.setText("Grimp Pre-folding Aggregator");
 	 	
 		editGroupgbgb_a1.setData("id", "gbgb_a1");
 		
@@ -9523,7 +9454,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setgbgb_a1enabled_widget(new BooleanOptionWidget(editGroupgbgb_a1, SWT.NONE, new OptionData("Enabled", "p", "gb.a1","enabled", "", defaultBool)));
+		setgbgb_a1enabled_widget(new BooleanOptionWidget(editGroupgbgb_a1, SWT.NONE, new OptionData("Enabled", "p", "gb.a1","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -9539,7 +9470,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setgbgb_a1only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a1, SWT.NONE, new OptionData("Only Stack Locals", "p", "gb.a1","only-stack-locals", "", defaultBool)));
+		setgbgb_a1only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a1, SWT.NONE, new OptionData("Only Stack Locals", "p", "gb.a1","only-stack-locals", "\nAggregate only values stored in stack locals. ", defaultBool)));
 		
 		
 
@@ -9558,7 +9489,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupgbgb_cf.setLayout(layout);
 	
-	 	editGroupgbgb_cf.setText("Constructor Folder");
+	 	editGroupgbgb_cf.setText("Grimp Constructor Folder");
 	 	
 		editGroupgbgb_cf.setData("id", "gbgb_cf");
 		
@@ -9583,7 +9514,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setgbgb_cfenabled_widget(new BooleanOptionWidget(editGroupgbgb_cf, SWT.NONE, new OptionData("Enabled", "p", "gb.cf","enabled", "", defaultBool)));
+		setgbgb_cfenabled_widget(new BooleanOptionWidget(editGroupgbgb_cf, SWT.NONE, new OptionData("Enabled", "p", "gb.cf","enabled", "\n", defaultBool)));
 		
 		
 
@@ -9602,7 +9533,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupgbgb_a2.setLayout(layout);
 	
-	 	editGroupgbgb_a2.setText("Aggregator 2");
+	 	editGroupgbgb_a2.setText("Grimp Post-folding Aggregator");
 	 	
 		editGroupgbgb_a2.setData("id", "gbgb_a2");
 		
@@ -9627,7 +9558,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setgbgb_a2enabled_widget(new BooleanOptionWidget(editGroupgbgb_a2, SWT.NONE, new OptionData("Enabled", "p", "gb.a2","enabled", "", defaultBool)));
+		setgbgb_a2enabled_widget(new BooleanOptionWidget(editGroupgbgb_a2, SWT.NONE, new OptionData("Enabled", "p", "gb.a2","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -9643,7 +9574,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setgbgb_a2only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a2, SWT.NONE, new OptionData("Only Stack Locals", "p", "gb.a2","only-stack-locals", "", defaultBool)));
+		setgbgb_a2only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a2, SWT.NONE, new OptionData("Only Stack Locals", "p", "gb.a2","only-stack-locals", "\nAggregate only values stored in stack locals. ", defaultBool)));
 		
 		
 
@@ -9662,11 +9593,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupgbgb_ule.setLayout(layout);
 	
-	 	editGroupgbgb_ule.setText("Unused Local Eliminator");
+	 	editGroupgbgb_ule.setText("Grimp Unused Local Eliminator");
 	 	
 		editGroupgbgb_ule.setData("id", "gbgb_ule");
 		
-		String descgbgb_ule = "";	
+		String descgbgb_ule = "Removes unused locals";	
 		if (descgbgb_ule.length() > 0) {
 			Label descLabelgbgb_ule = new Label(editGroupgbgb_ule, SWT.WRAP);
 			descLabelgbgb_ule.setText(descgbgb_ule);
@@ -9687,7 +9618,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setgbgb_uleenabled_widget(new BooleanOptionWidget(editGroupgbgb_ule, SWT.NONE, new OptionData("Enabled", "p", "gb.ule","enabled", "", defaultBool)));
+		setgbgb_uleenabled_widget(new BooleanOptionWidget(editGroupgbgb_ule, SWT.NONE, new OptionData("Enabled", "p", "gb.ule","enabled", "\n", defaultBool)));
 		
 		
 
@@ -9706,7 +9637,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupgop.setLayout(layout);
 	
-	 	editGroupgop.setText("Grimp Optimization Pack");
+	 	editGroupgop.setText("Grimp Optimization");
 	 	
 		editGroupgop.setData("id", "gop");
 		
@@ -9731,7 +9662,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setgopenabled_widget(new BooleanOptionWidget(editGroupgop, SWT.NONE, new OptionData("Enabled", "p", "gop","enabled", "", defaultBool)));
+		setgopenabled_widget(new BooleanOptionWidget(editGroupgop, SWT.NONE, new OptionData("Enabled", "p", "gop","enabled", "\n", defaultBool)));
 		
 		
 
@@ -9775,7 +9706,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbenabled_widget(new BooleanOptionWidget(editGroupbb, SWT.NONE, new OptionData("Enabled", "p", "bb","enabled", "", defaultBool)));
+		setbbenabled_widget(new BooleanOptionWidget(editGroupbb, SWT.NONE, new OptionData("Enabled", "p", "bb","enabled", "\n", defaultBool)));
 		
 		
 
@@ -9819,7 +9750,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_lsoenabled_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Enabled", "p", "bb.lso","enabled", "", defaultBool)));
+		setbbbb_lsoenabled_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Enabled", "p", "bb.lso","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -9835,7 +9766,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_lsodebug_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Debug", "p", "bb.lso","debug", "", defaultBool)));
+		setbbbb_lsodebug_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Debug", "p", "bb.lso","debug", "\nProduces voluminous debugging output describing the progress of \nthe load store optimizer. ", defaultBool)));
 		
 		
 		
@@ -9851,7 +9782,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_lsointer_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Inter", "p", "bb.lso","inter", "", defaultBool)));
+		setbbbb_lsointer_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Inter", "p", "bb.lso","inter", "\nEnables two simple inter-block optimizations which attempt to \nkeep some variables on the stack between blocks. Both are \nintended to catch if-like constructions where control flow \nbranches temporarily into two paths that converge at a later \npoint. ", defaultBool)));
 		
 		
 		
@@ -9867,7 +9798,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_lsosl_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl", "p", "bb.lso","sl", "", defaultBool)));
+		setbbbb_lsosl_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl", "p", "bb.lso","sl", "\nEnables an optimization which attempts to eliminate store/load \npairs. ", defaultBool)));
 		
 		
 		
@@ -9883,7 +9814,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_lsosl2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl2", "p", "bb.lso","sl2", "", defaultBool)));
+		setbbbb_lsosl2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl2", "p", "bb.lso","sl2", "\nEnables an a second pass of the optimization which attempts to \neliminate store/load pairs. ", defaultBool)));
 		
 		
 		
@@ -9899,7 +9830,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_lsosll_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll", "p", "bb.lso","sll", "", defaultBool)));
+		setbbbb_lsosll_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll", "p", "bb.lso","sll", "\nEnables an optimization which attempts to eliminate \nstore/load/load trios with some variant of dup. ", defaultBool)));
 		
 		
 		
@@ -9915,7 +9846,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_lsosll2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll2", "p", "bb.lso","sll2", "", defaultBool)));
+		setbbbb_lsosll2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll2", "p", "bb.lso","sll2", "\nEnables an a second pass of the optimization which attempts to \neliminate store/load/load trios with some variant of dup. ", defaultBool)));
 		
 		
 
@@ -9959,7 +9890,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_phoenabled_widget(new BooleanOptionWidget(editGroupbbbb_pho, SWT.NONE, new OptionData("Enabled", "p", "bb.pho","enabled", "", defaultBool)));
+		setbbbb_phoenabled_widget(new BooleanOptionWidget(editGroupbbbb_pho, SWT.NONE, new OptionData("Enabled", "p", "bb.pho","enabled", "\n", defaultBool)));
 		
 		
 
@@ -9982,7 +9913,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupbbbb_ule.setData("id", "bbbb_ule");
 		
-		String descbbbb_ule = "";	
+		String descbbbb_ule = "Removes unused locals";	
 		if (descbbbb_ule.length() > 0) {
 			Label descLabelbbbb_ule = new Label(editGroupbbbb_ule, SWT.WRAP);
 			descLabelbbbb_ule.setText(descbbbb_ule);
@@ -10003,7 +9934,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_uleenabled_widget(new BooleanOptionWidget(editGroupbbbb_ule, SWT.NONE, new OptionData("Enabled", "p", "bb.ule","enabled", "", defaultBool)));
+		setbbbb_uleenabled_widget(new BooleanOptionWidget(editGroupbbbb_ule, SWT.NONE, new OptionData("Enabled", "p", "bb.ule","enabled", "\n", defaultBool)));
 		
 		
 
@@ -10026,7 +9957,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupbbbb_lp.setData("id", "bbbb_lp");
 		
-		String descbbbb_lp = "";	
+		String descbbbb_lp = "Minimizes number of locals";	
 		if (descbbbb_lp.length() > 0) {
 			Label descLabelbbbb_lp = new Label(editGroupbbbb_lp, SWT.WRAP);
 			descLabelbbbb_lp.setText(descbbbb_lp);
@@ -10047,7 +9978,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_lpenabled_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Enabled", "p", "bb.lp","enabled", "", defaultBool)));
+		setbbbb_lpenabled_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Enabled", "p", "bb.lp","enabled", "\n", defaultBool)));
 		
 		
 		
@@ -10063,7 +9994,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "bb.lp","unsplit-original-locals", "", defaultBool)));
+		setbbbb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "bb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. SHOULD WE ENSURE THAT IF jb.ulp IS ALSO \nENABLED, THEN ITS unsplit-original-locals MATCHES THIS ONE? ", defaultBool)));
 		
 		
 
@@ -10082,7 +10013,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupbop.setLayout(layout);
 	
-	 	editGroupbop.setText("Baf Optimization Pack");
+	 	editGroupbop.setText("Baf Optimization");
 	 	
 		editGroupbop.setData("id", "bop");
 		
@@ -10107,7 +10038,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbopenabled_widget(new BooleanOptionWidget(editGroupbop, SWT.NONE, new OptionData("Enabled", "p", "bop","enabled", "", defaultBool)));
+		setbopenabled_widget(new BooleanOptionWidget(editGroupbop, SWT.NONE, new OptionData("Enabled", "p", "bop","enabled", "\n", defaultBool)));
 		
 		
 
@@ -10151,7 +10082,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		settagenabled_widget(new BooleanOptionWidget(editGrouptag, SWT.NONE, new OptionData("Enabled", "p", "tag","enabled", "", defaultBool)));
+		settagenabled_widget(new BooleanOptionWidget(editGrouptag, SWT.NONE, new OptionData("Enabled", "p", "tag","enabled", "\n", defaultBool)));
 		
 		
 
@@ -10195,7 +10126,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		settagtag_lnenabled_widget(new BooleanOptionWidget(editGrouptagtag_ln, SWT.NONE, new OptionData("Enabled", "p", "tag.ln","enabled", "", defaultBool)));
+		settagtag_lnenabled_widget(new BooleanOptionWidget(editGrouptagtag_ln, SWT.NONE, new OptionData("Enabled", "p", "tag.ln","enabled", "\n", defaultBool)));
 		
 		
 
@@ -10239,7 +10170,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		settagtag_anenabled_widget(new BooleanOptionWidget(editGrouptagtag_an, SWT.NONE, new OptionData("Enabled", "p", "tag.an","enabled", "", defaultBool)));
+		settagtag_anenabled_widget(new BooleanOptionWidget(editGrouptagtag_an, SWT.NONE, new OptionData("Enabled", "p", "tag.an","enabled", "\n", defaultBool)));
 		
 		
 
@@ -10283,7 +10214,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		settagtag_depenabled_widget(new BooleanOptionWidget(editGrouptagtag_dep, SWT.NONE, new OptionData("Enabled", "p", "tag.dep","enabled", "", defaultBool)));
+		settagtag_depenabled_widget(new BooleanOptionWidget(editGrouptagtag_dep, SWT.NONE, new OptionData("Enabled", "p", "tag.dep","enabled", "\n", defaultBool)));
 		
 		
 
@@ -10306,7 +10237,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGrouptagtag_fieldrw.setData("id", "tagtag_fieldrw");
 		
-		String desctagtag_fieldrw = "Aggregates field read/write\ntags produced by the Field Read/Write Tagger, phase jap.fieldrw.";	
+		String desctagtag_fieldrw = "";	
 		if (desctagtag_fieldrw.length() > 0) {
 			Label descLabeltagtag_fieldrw = new Label(editGrouptagtag_fieldrw, SWT.WRAP);
 			descLabeltagtag_fieldrw.setText(desctagtag_fieldrw);
@@ -10327,7 +10258,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		settagtag_fieldrwenabled_widget(new BooleanOptionWidget(editGrouptagtag_fieldrw, SWT.NONE, new OptionData("Enabled", "p", "tag.fieldrw","enabled", "", defaultBool)));
+		settagtag_fieldrwenabled_widget(new BooleanOptionWidget(editGrouptagtag_fieldrw, SWT.NONE, new OptionData("Enabled", "p", "tag.fieldrw","enabled", "\n", defaultBool)));
 		
 		
 
@@ -10371,7 +10302,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setSingle_File_Mode_Optionsprocess_path_widget(new ListOptionWidget(editGroupSingle_File_Mode_Options, SWT.NONE, new OptionData("Process Path",  "", "","process-path", "process all classes on the PATH", defaultString)));
+		setSingle_File_Mode_Optionsprocess_path_widget(new ListOptionWidget(editGroupSingle_File_Mode_Options, SWT.NONE, new OptionData("Process Path",  "", "","process-path", "\nProcess all classes in PATH. All the classes found in PATH will \nbe loaded and transformed in single-file mode. ", defaultString)));
 		
 
 		
@@ -10414,7 +10345,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsinclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include Package",  "", "","i", "marks classfiles in PACKAGE (e.g. java.util.)as application classes", defaultString)));
+		setApplication_Mode_Optionsinclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include Package",  "", "","i", "\nMarks the classfiles in PACKAGE (e.g. java.util.) as application \nclasses. This option can be used to transform library types \nwhich by default are not transformed by Soot.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"x";
@@ -10429,7 +10360,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsexclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Exclude Package",  "", "","x", "marks classfiles in PACKAGE (e.g. java.) as context classes", defaultString)));
+		setApplication_Mode_Optionsexclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Exclude Package",  "", "","x", "\nMarks classfiles in PACKAGE (e.g. java.) as context classes. \nJimple is not produced for context classes, but the SootClass, \nSootField and SootMethod signature objects are created.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-classes";
@@ -10444,7 +10375,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_classes_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Classes",  "", "","dynamic-classes", "marks CLASSES (separated by colons) as potentially dynamic classes", defaultString)));
+		setApplication_Mode_Optionsdynamic_classes_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Classes",  "", "","dynamic-classes", "\nThis option marks CLASSES (separated by colons) as potentially \ndynamic classes. ", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-path";
@@ -10459,7 +10390,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_path_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Path",  "", "","dynamic-path", "marks all class files in PATH as potentially dynamic classes", defaultString)));
+		setApplication_Mode_Optionsdynamic_path_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Path",  "", "","dynamic-path", "\nMarks all class files in PATH as potentially dynamic classes. \nThis allows aggressive optimization of applications for which \nthe set of dynamic classes that can be loaded is known at \ncompile time.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-package";
@@ -10474,7 +10405,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_package_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Package",  "", "","dynamic-package", "marks classfiles in PACKAGES (separated by commas) as potentially dynamic classes", defaultString)));
+		setApplication_Mode_Optionsdynamic_package_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Package",  "", "","dynamic-package", "\nMarks all class files belonging to a package listed in PACKAGES \n(or one of its subpackages) as potentially dynamic classes.", defaultString)));
 		
 
 		
@@ -10517,7 +10448,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setInput_Attribute_Optionskeep_line_number_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Line Number", "", "","keep-line-number", "keep line number tables", defaultBool)));
+		setInput_Attribute_Optionskeep_line_number_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Line Number", "", "","keep-line-number", "\nPreserves the line number tables of class files throughout the \ntransformations.", defaultBool)));
 		
 		
 		
@@ -10533,7 +10464,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setInput_Attribute_Optionskeep_offset_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Bytecode Offset", "", "","keep-bytecode-offset", "attach bytecode offset to jimple statement", defaultBool)));
+		setInput_Attribute_Optionskeep_offset_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Bytecode Offset", "", "","keep-bytecode-offset", "\nPreserves the bytecode offset tables of class files throughout \nthe transformations.", defaultBool)));
 		
 		
 
@@ -10577,7 +10508,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setAnnotation_Optionsannot_nullpointer_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Null Pointer Annotation", "", "","annot-nullpointer", "turn on the annotation for null pointer", defaultBool)));
+		setAnnotation_Optionsannot_nullpointer_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Null Pointer Annotation", "", "","annot-nullpointer", "\nThis option turns on annotations for Null Pointer. This creates \nannotations that can be added to class files and later used by \nthe JVM.", defaultBool)));
 		
 		
 		
@@ -10593,7 +10524,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setAnnotation_Optionsannot_arraybounds_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Array Bounds Annotation", "", "","annot-arraybounds", "turn on the annotation for array bounds check", defaultBool)));
+		setAnnotation_Optionsannot_arraybounds_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Array Bounds Annotation", "", "","annot-arraybounds", "\nThis option turns on annotations for Array Bound Check. This \ncreates annotations that can be added to class files and later \nused by the JVM.", defaultBool)));
 		
 		
 		
@@ -10609,7 +10540,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setAnnotation_Optionsannot_side_effect_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Side effect annotation", "", "","annot-side-effect", "turn on side-effect attributes", defaultBool)));
+		setAnnotation_Optionsannot_side_effect_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Side effect annotation", "", "","annot-side-effect", "\nThis option turns on the generation of side-effect attributes.", defaultBool)));
 		
 		
 		
@@ -10625,7 +10556,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setAnnotation_Optionsannot_fieldrw_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Field read/write annotation", "", "","annot-fieldrw", "turn on field read/write attributes", defaultBool)));
+		setAnnotation_Optionsannot_fieldrw_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Field read/write annotation", "", "","annot-fieldrw", "\nThis option turns on the generation of field read/write \nattributes.", defaultBool)));
 		
 		
 
@@ -10669,7 +10600,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setMiscellaneous_Optionstime_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Time", "", "","time", "print out time statistics about tranformations", defaultBool)));
+		setMiscellaneous_Optionstime_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Time", "", "","time", "\nPrint out time statistics about transformations.", defaultBool)));
 		
 		
 		
@@ -10685,7 +10616,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setMiscellaneous_Optionssubtract_gc_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Subtract Garbage Collection Time", "", "","subtract-gc", "attempt to subtract the gc from the time stats", defaultBool)));
+		setMiscellaneous_Optionssubtract_gc_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Subtract Garbage Collection Time", "", "","subtract-gc", "\nAttempt to subtract garbage-collection time from the time stats.", defaultBool)));
 		
 		
 

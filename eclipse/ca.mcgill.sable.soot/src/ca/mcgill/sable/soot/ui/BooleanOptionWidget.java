@@ -1,13 +1,9 @@
 package ca.mcgill.sable.soot.ui;
 
 import java.util.*;
-
 import org.eclipse.swt.widgets.*;
-//import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.*;
-//import org.eclipse.swt.layout.*;
 
-//import ca.mcgill.sable.soot.SootPlugin;
 
 /**
  * @author jlhotak
@@ -34,39 +30,20 @@ public class BooleanOptionWidget implements ISootOptionWidget {//extends Composi
 	private String labelText;
 	private Composite dialogParent;
 	private OptionData data;
-	
-	/**
-	 * Constructor for BooleanOptionWidget.
-	 * @param parent
-	 * @param style
-	 */
-	//public BooleanOptionWidget(Composite parent, int style) {
-	//	super(parent, style);
-	//}
+
 	
 	public BooleanOptionWidget(Composite parent, int style,
 	 OptionData data){
-		//super(parent, style);
+		
 		setAlias(data.getRealAlias());
 		setData(data);
-		//setLabelText(data.getText());
 		
-		
-				
-       	//GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-
-        //gridData.horizontalSpan = 4;
-		//IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		//boolean defaultVal = false;
-		//defaultVal = settings.getBoolean(getAlias());
-				
 		setButton(new Button(parent, SWT.CHECK));
-		//getButton().setSelection(defaultVal);
+		
 		getButton().setSelection(data.isDefaultVal());
 		getButton().setText(data.getText());
-		getButton().setToolTipText(data.getTooltip());
+		getButton().setToolTipText(data.getTooltip().trim());
 		
-		//getButton().setLayoutData(gridData);
 	}
 	
 	public ArrayList getControls() {
@@ -79,9 +56,6 @@ public class BooleanOptionWidget implements ISootOptionWidget {//extends Composi
 		return getAlias();
 	}
 	
-	public void getWidget() {
-		//setButton(newButton(parent
-	}
 
 	/**
 	 * Returns the button.

@@ -217,8 +217,11 @@ public class AttributeDomProcessor {
 		}
 		else if (node.getNodeType() == Node.TEXT_NODE){
 			String type = node.getParentNode().getNodeName();
-			if (type.equals("link")){
-				la.setLink((new Integer(node.getNodeValue())).intValue());	
+			if (type.equals("jimple_link")){
+				la.setJimpleLink((new Integer(node.getNodeValue())).intValue());	
+			}
+			else if (type.equals("java_link")){
+				la.setJavaLink((new Integer(node.getNodeValue())).intValue());	
 			}
 			else if (type.equals("link_label")){
 				la.setLabel(node.getNodeValue());

@@ -25,6 +25,7 @@ import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.ui.texteditor.*;
 
 import ca.mcgill.sable.soot.SootPlugin;
+import ca.mcgill.sable.soot.editors.JimpleEditor;
 
 
 public class SootAttributeRulerActionDelegate extends AbstractRulerActionDelegate {
@@ -50,7 +51,12 @@ public class SootAttributeRulerActionDelegate extends AbstractRulerActionDelegat
 			if (rb == null){
 				System.out.println("Resource Bundle is null");
 			}
-			return new SootAttributeSelectAction(rb, null, editor, rulerInfo);
+			if (editor instanceof JimpleEditor){
+				return new SootAttributeJimpleSelectAction(rb, null, editor, rulerInfo);
+			}
+			else {
+				return new SootAttributeJavaSelectAction(rb, null, editor, rulerInfo);
+			}
 		}
 		catch (Exception e){
 			System.out.println("exception: "+e.getMessage());

@@ -2,7 +2,6 @@ package ca.mcgill.sable.soot.ui;
 
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.*;
-//import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.*;
 import java.util.*;
 
@@ -32,16 +31,7 @@ public class MultiOptionWidget implements ISootOptionWidget {//extends Composite
 	private String [] values;
 	private String [] aliases;
 	private Button [] buttons;
-	//private String defaultVal;
-	
-	/**
-	 * Constructor for MultiOptionWidget.
-	 * @param parent
-	 * @param style
-	 */
-	//public MultiOptionWidget(Composite parent, int style) {
-	//	super(parent, style);
-	//}
+
 	
 	/**
 	 * Constructor for MultiOptionWidget.
@@ -50,12 +40,10 @@ public class MultiOptionWidget implements ISootOptionWidget {//extends Composite
 	 */
 	public MultiOptionWidget(Composite parent, int style, 
 		OptionData [] dataVals, OptionData data) {
-		
-		//super(parent, style);
+	
 		setAlias(data.getRealAlias());
 		
 		Group multi = new Group(parent, SWT.NONE);
-		//FillLayout fl = new FillLayout();
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 4;
 		
@@ -63,50 +51,33 @@ public class MultiOptionWidget implements ISootOptionWidget {//extends Composite
 		
 		GridData gridData2 = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
        	gridData2.horizontalSpan = 2;
-       	//gridData2.verticalSpan = 4;
        	multi.setLayoutData(gridData2);
 		
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
 
-        //gridData.verticalSpan = 4;
-        //gridData.horizontalSpan = 1;
 
 		GridData gd = new GridData(GridData.CENTER );
 		gd.horizontalSpan = 4;      
 		Label label = new Label(multi, SWT.NONE);
 		label.setText(data.getText());
 		label.setLayoutData(gd);
-		label.setToolTipText(data.getTooltip());
+		label.setToolTipText(data.getTooltip().trim());
 		
 		setButtons(new Button [dataVals.length]);
 		setDataVals(dataVals);
-		//setValues(values);
-		//setAliases(aliases);
+
 				
 		for (int i = 0; i < dataVals.length; i++) {
 			buttons[i] = new Button(multi, SWT.RADIO);
 			buttons[i].setText(dataVals[i].getText());
-			buttons[i].setToolTipText(dataVals[i].getTooltip());
-			//buttons[i].setEnabled(false);
-			//System.out.println(defaultVal);
+			buttons[i].setToolTipText(dataVals[i].getTooltip().trim());
+
 			if (dataVals[i].isDefaultVal()) {
 				buttons[i].setSelection(true);
 			}
 		}
 		
 		
-		/*List categories = new List(multi, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL);
-        categories.setItems(values);
-			
-		String [] temp = new String [] { defaultVal };
-		categories.setSelection(temp);		        
-        int listHeight = categories.getItemHeight() * 6;
-
-		Rectangle trim = categories.computeTrim(0, 0, 0, listHeight);
-
- 		gridData.heightHint = trim.height;
-
-        categories.setLayoutData(gridData);*/
 	}
 	
 	public ArrayList getControls(){
@@ -203,22 +174,6 @@ public class MultiOptionWidget implements ISootOptionWidget {//extends Composite
 	 */
 	public void setValues(String[] values) {
 		this.values = values;
-	}
-
-	/**
-	 * Returns the defaultVal.
-	 * @return String
-	 */
-	/*public String getDefaultVal() {
-		return defaultVal;
-	}
-
-	/**
-	 * Sets the defaultVal.
-	 * @param defaultVal The defaultVal to set
-	 */
-	/*public void setDefaultVal(String defaultVal) {
-		this.defaultVal = defaultVal;
 	}
 
 	/**

@@ -1,22 +1,15 @@
 package ca.mcgill.sable.soot.ui;
 
-//import java.util.ArrayList;
-import java.util.*;
-//import java.util.Iterator;
 
+import java.util.*;
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.*;
-//import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
-//import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.*;
-//import org.eclipse.jface.dialogs.Dialog;
-//import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.launching.SavedConfigManager;
-//import ca.mcgill.sable.soot.launching.SootConfigNameInputValidator;
 import ca.mcgill.sable.soot.launching.SootSavedConfiguration;
 import ca.mcgill.sable.soot.testing.*;
 
@@ -47,10 +40,11 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	private HashMap config;
 	private String configName;
 	private HashMap editMap;
-	//private ArrayList deleteList;
 	private boolean canRun = true;
 	private HashMap radioGroups;
 	private ArrayList enableGroups;
+	private HashMap eclipseDefList;
+	private HashMap defList;
 	
 	/**
 	 * Constructor for AbstractOptionsDialog.
@@ -59,10 +53,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	public AbstractOptionsDialog(Shell parentShell) {
 		super(parentShell);
 	}
-	private HashMap eclipseDefList;
-	
-	private HashMap defList;
-	
+
 	public void addToEclipseDefList(String key, Object val) {
 		if (getEclipseDefList() == null) {
 			setEclipseDefList(new HashMap());
@@ -94,8 +85,10 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		return (String)getDefList().get(key);
 	}
 
+	// This sets the title in the shell that displays the
+	// options dialog box
 	protected void configureShell(Shell shell){
-		super	.configureShell(shell);
+		super.configureShell(shell);
 		shell.setText(Messages.getString("AbstractOptionsDialog.Soot_Options")); //$NON-NLS-1$
 	}
 	
@@ -103,6 +96,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		if (alias.equals("enabled")) return true;
 		return false;
 	}
+	
 	
 	public void handleWidgetSelected(SelectionEvent e){
 		
@@ -346,10 +340,8 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		topComp.setLayout(topLayout);
 		
 		// Set the things that TitleAreaDialog takes care of
-		// TODO: externalize this title
-		setTitle(Messages.getString("AbstractOptionsDialog.Soot_Launching_Options")); //$NON-NLS-1$
-		//Image i = new Image(device, "icons/soot.jpg");
-		//setTitleImage(i); 
+
+		setTitle(Messages.getString("AbstractOptionsDialog.Soot_Launching_Options")); //$NON-NLS-1$ 
 		setMessage("");  //$NON-NLS-1$
 
 		// Create the SashForm that contains the selection area on the left,
@@ -358,19 +350,12 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		getSashForm().setOrientation(SWT.HORIZONTAL);
 		
 		gd = new GridData(GridData.FILL_BOTH);
-		//gd.horizontalSpan = 7;
 		getSashForm().setLayoutData(gd);
 		
 		Composite selection = createSelectionArea(getSashForm());
-		//gd = new GridData(GridData.FILL_VERTICAL);
-		//gd.horizontalSpan = 1;
-		//selection.setLayoutData(gd);
 		
 		setPageContainer(createEditArea(getSashForm()));
-		
-		//gd = new GridData(GridData.FILL_BOTH);
-		//gd.horizontalSpan = 4;
-		
+
 		initializePageContainer();
 		
 		try {
@@ -382,18 +367,17 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		
 		Label separator = new Label(topComp, SWT.HORIZONTAL | SWT.SEPARATOR);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		//gd.horizontalSpan = 7;
 		separator.setLayoutData(gd);
 		
 		dialogComp.layout(true);
 		
 		return dialogComp;
 	}
-	
+
+	// creates buttons Run and Close for a runnable dialog and
+	// buttons Save and Close for a savable one	
 	protected void createButtonsForButtonBar(Composite parent) {
 		if (isCanRun()) {
-			//createButton(parent, 0, "Save", false);
-			// create OK and Cancel buttons by default
 			createButton(parent, 1, Messages.getString("AbstractOptionsDialog.Run"), true); //$NON-NLS-1$
 			createButton(parent, 2, Messages.getString("AbstractOptionsDialog.Close"), false); //$NON-NLS-1$
 		}
@@ -407,7 +391,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	protected void buttonPressed(int i){
 		switch(i) {
 			case 0: {
-				System.out.println("Saving"); //$NON-NLS-1$
+				//System.out.println("Saving"); //$NON-NLS-1$
 				handleSaving();
 				break;
 			} 
@@ -422,9 +406,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		}
 		
 	}
-	
-	//private HashMap okMap;
-	
+		
 	protected abstract HashMap savePressed();
 	
 	private void handleSaving() {
@@ -437,108 +419,25 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		
 		super.okPressed();
 		
-		/*IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		
-		// gets current number of configurations before adding any
-		int config_count = 0;
-		try {
-			config_count = settings.getInt("config_count");
-		}
-		catch (NumberFormatException e) {	
-		}
-		
-		// gets a list of current config names
-		ArrayList currentNames = new ArrayList();
-		for (int i = 1; i <= config_count; i++) {
-			currentNames.add(settings.get("soot_run_config_"+i));
-		}
-		
-		Iterator temp = currentNames.iterator();
-		while (temp.hasNext()) {
-			System.out.println("Current Name: "+(String)temp.next());
-		}
-		
-		// sets validator to know about already used names - but it doesn't use
-		// them because then editing a file cannot use same file name
-		SootConfigNameInputValidator validator = new SootConfigNameInputValidator();
-		validator.setAlreadyUsed(currentNames);
-		
-		//boolean nameOk = false;
-		while (true) {
-			// create dialog to get name
-			InputDialog nameDialog = new InputDialog(this.getShell(), "Saving Configuration Name", "Enter name to save configuration with:", getConfigName(), validator); 
-			nameDialog.open();
-		
-			if (nameDialog.getReturnCode() == Dialog.OK) {
-				
-				if ((currentNames.contains(nameDialog.getValue())) && !(nameDialog.getValue().equals(getConfigName()))) {
-					System.out.println("both cond true");
-					MessageDialog msgDialog = new MessageDialog(this.getShell(), "Soot Configuration Saving Message", null, "This name has already been used okay to overwrite?", 0, new String [] {"Yes", "No"}, 0);
-					msgDialog.open();
-					if (msgDialog.getReturnCode() == 0) {
-						
-						saveConfigToMap(nameDialog.getValue());
-			
-						break;			
-					}
-					else {
-						// continue and ask again
-					}
-				
-				}
-				//incConfigCount(config_count, nameDialog.getValue());
-				saveConfigToMap(nameDialog.getValue());
-				break;
-			}
-			else if (nameDialog.getReturnCode() == Dialog.CANCEL) {
-				break;
-			}
-		
-		}*/
 	}	
 	
-	/*private void incConfigCount(int config_count, String name) {
-		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		System.out.println("config_count: "+config_count);
-		config_count++;
-		settings.put("config_count", config_count);
-		settings.put("soot_run_config_"+config_count, name);
-		System.out.println("added name to settings");
-		//return config_count;
-	}*/
 		
 	private void saveConfigToMap(String name) {
-		//IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		//System.out.println("config_count: "+config_count);
+		
 		SootSavedConfiguration newConfig = new SootSavedConfiguration(name, savePressed());
-		//config_count++;
-		//settings.put("config_count", config_count);
+		
 		newConfig.setEclipseDefs(getEclipseDefList());
 		System.out.println("about to add config to editMap"); //$NON-NLS-1$
 		if (getEditMap() == null) {
 			setEditMap(new HashMap());
 		}
-		// TODO switch lines
+		
 		getEditMap().put(name, newConfig.toSaveArray());
 		System.out.println("put in editMap: "+name); //$NON-NLS-1$
-		//getEditMap().put(name, newConfig.toSaveString());
-		//System.out.println("added config to editMap");
-		//System.out.println("Save String: "+newConfig.toSaveString());
 					
 	}
-		//settings.put("New_Config","Smile");
-		//settings.put("New Config", "Hello");
 		
-		/*ElementListSelectionDialog configChooser = new ElementListSelectionDialog(this.getShell(), new LabelProvider());
-		System.out.println("configChooser created");
-		configChooser.setElements(new Object [] {"Smile", "Jennifer"});
-		System.out.println("set elements");
-		configChooser.setTitle("Soot Configuration Chooser");
-		configChooser.setMessage("Select:");
-		configChooser.setMultipleSelection(false);
-		configChooser.open();*/
-	//}
-	
 	protected abstract void initializePageContainer();
 	protected abstract SootOption getInitialInput();
 	
@@ -594,6 +493,10 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		return comp;
 	}
 
+	/*
+	 *  (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+	 */
 	public void selectionChanged(SelectionChangedEvent event) {
 		IStructuredSelection selection = (IStructuredSelection)event.getSelection();
 		if (selection.isEmpty()) {

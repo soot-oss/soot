@@ -12,6 +12,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.TextEvent;
+import org.eclipse.jface.text.TextPresentation;
 
 import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
 
@@ -49,7 +50,8 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 	
 	private HashMap filesWithAttributes;
 	private HashMap changedResources;
-	
+	private HashMap colorList;
+		
 	public SootResourceManager() {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 
@@ -71,6 +73,7 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 			bits.set(SOOT_RAN_BIT);
 			bits.clear(CHANGED_BIT);
 		}
+		setColorList(null);
 	}
 	
 	
@@ -88,8 +91,20 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 			((BitSet)getChangedResources().get(file)).set(CHANGED_BIT);
 			}
 
+		
 	}
 	
+	public void clearColors(){
+		// clear colors
+		if (getColorList() != null){
+			Iterator it = getColorList().keySet().iterator();
+			while (it.hasNext()){
+				System.out.println("clearing colors");
+				((TextPresentation)getColorList().get(it.next())).clear();
+				 
+			}
+		}
+	}
 	public boolean isFileMarkersUpdate(IFile file){
 		if (getChangedResources() == null) return false;
 		if (getChangedResources().get(file) == null) return false;
@@ -192,6 +207,19 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 		else return (SootAttributesHandler)getFilesWithAttributes().get(file);
 	}
 	
+	// colors
+	public void addToColorList(IFile file, TextPresentation tp){
+		if (getColorList() == null){
+			setColorList(new HashMap());
+		}
+		getColorList().put(file, tp);
+	}
+	
+	public boolean alreadyOnColorList(IFile file){
+		if (getColorList() == null) return false;
+		else return getColorList().containsKey(file);
+	}
+	
 	/**
 	 * @return
 	 */
@@ -204,6 +232,20 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 	 */
 	public void setFilesWithAttributes(HashMap map) {
 		filesWithAttributes = map;
+	}
+
+	/**
+	 * @return
+	 */
+	public HashMap getColorList() {
+		return colorList;
+	}
+
+	/**
+	 * @param map
+	 */
+	public void setColorList(HashMap map) {
+		colorList = map;
 	}
 
 }

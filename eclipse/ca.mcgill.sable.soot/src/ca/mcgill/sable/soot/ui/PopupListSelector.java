@@ -20,9 +20,9 @@ package ca.mcgill.sable.soot.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-//import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-//import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.*;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PopupListSelector {//extends PopupList {
+public class PopupListSelector {
 	private Shell shell;
 	private List list;
 	private String selected; 
@@ -44,7 +44,7 @@ public class PopupListSelector {//extends PopupList {
 		shell = new Shell(parent, 0);
 	
 		list = new List(shell, SWT.SINGLE | SWT.V_SCROLL);	
-		//list.setForeground(new Color(Display.getCurrent(), new RGB(30, 109, 255)));
+		list.setBackground(new Color(Display.getCurrent(), new RGB(255, 255, 255)));
 	
 		// close dialog if user selects outside of the shell
 		shell.addListener(SWT.Deactivate, new Listener() {
@@ -87,7 +87,7 @@ public class PopupListSelector {//extends PopupList {
 	public String open (Rectangle rect) {
 
 		Point listSize = getList().computeSize (rect.width, SWT.DEFAULT);
-		Rectangle screenSize = getShell().getDisplay().getBounds();
+		/*Rectangle screenSize = getShell().getDisplay().getBounds();
 
 		// Position the dialog so that it does not run off the screen and the largest number of items are visible
 		int spaceBelow = screenSize.height - (rect.y + rect.height) - 30;
@@ -132,8 +132,8 @@ public class PopupListSelector {//extends PopupList {
 			y = rect.y - spaceBelow;
 			System.out.println(spaceAbove - spaceAbove);
 		}
-		
-		y = (rect.y * 16) + 88;
+		*/
+		int y = (rect.y * 16) + 85;
 	
 	
 		getShell().setBounds(rect.x, y, listSize.x, listSize.y);

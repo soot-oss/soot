@@ -38,7 +38,7 @@ import ca.mcgill.sable.soot.editors.JimpleEditor;
 import ca.mcgill.sable.soot.ui.PopupListSelector;
 import ca.mcgill.sable.soot.*;
 
-public class SootAttributeSelectAction extends ResourceAction {
+public abstract class SootAttributeSelectAction extends ResourceAction {
 
 	AbstractTextEditor editor;
 	AbstractTextEditor linkToEditor;
@@ -55,6 +55,7 @@ public class SootAttributeSelectAction extends ResourceAction {
 		super(bundle, prefix);
 		
 		System.out.println("called SootAttributeSelectAction constr");
+		System.out.println("editor: "+editor.getClass().toString());
 		setEditor((AbstractTextEditor)editor);
 		
 		setRulerInfo(rulerInfo);
@@ -80,7 +81,7 @@ public class SootAttributeSelectAction extends ResourceAction {
 		}
 		
 		int markerLine = getRulerInfo().getLineOfLastMouseButtonActivity();
-	
+		System.out.println("markerLine: "+markerLine);
 		IResource rec = getResource(getEditor());
 		try {
 			IMarker [] markers = rec.findMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
@@ -88,7 +89,7 @@ public class SootAttributeSelectAction extends ResourceAction {
 				setLineNumber(getDocument().getLineOfOffset(getModel().getMarkerPosition(markers[i]).getOffset()));
 				if (getLineNumber() == markerLine){
 					
-					
+					System.out.println("just before getMarkerLinks()");
 					ArrayList links = getMarkerLinks();
 					String [] list = getMarkerLabels(links);
 					if ((list == null) || (list.length == 0)) {
@@ -107,7 +108,7 @@ public class SootAttributeSelectAction extends ResourceAction {
 							popup.open(new Rectangle(400, (getLineNumber()+1-topIndex), 600, 30 ));
 						}	
 						else {
-							popup.open(new Rectangle(400, 400, 600, 30 ));
+							popup.open(new Rectangle(400, 200, 600, 30 ));
 						}
 						
 						handleSelection(popup.getSelected(), links);
@@ -132,7 +133,7 @@ public class SootAttributeSelectAction extends ResourceAction {
 			while (it.hasNext()){
 				LinkAttribute la = (LinkAttribute)it.next();
 				if (la.getLabel().equals(selected)){
-					toShow = la.getLink() - 1;
+					toShow = la.getJimpleLink() - 1;
 					className = la.getClassName();
 					findClass(className);
 					System.out.println("return from findClass");
@@ -190,12 +191,7 @@ public class SootAttributeSelectAction extends ResourceAction {
 		return fileName.substring(0, fileName.lastIndexOf("."));
 	}
 	
-	public ArrayList getMarkerLinks(){
-		SootAttributesHandler handler = SootPlugin.getDefault().getManager().getAttributesHandlerForFile((IFile)getResource(getEditor()));
-		if (handler == null ) System.out.println("handler is null");
-		ArrayList links = handler.getJimpleLinks(getLineNumber()+1);
-		return links;
-	}
+	public abstract ArrayList getMarkerLinks();
 	
 	public String [] getMarkerLabels(ArrayList links){
 		
@@ -209,6 +205,7 @@ public class SootAttributeSelectAction extends ResourceAction {
 		list.toArray(attributeTexts);
 		return attributeTexts;
 	}
+	
 	public void getMarkerResolutions(IMarker marker){
 		
 		SootAttributeResolutionGenerator sarg = new SootAttributeResolutionGenerator();

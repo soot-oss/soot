@@ -20,12 +20,7 @@ package ca.mcgill.sable.soot.ui;
 
 import java.util.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public class SootPrefData {
 	
 	public SootPrefData(String classes, String selected){

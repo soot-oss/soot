@@ -21,7 +21,8 @@ package ca.mcgill.sable.soot.attributes;
 public class LinkAttribute {
 	
 	private String label;
-	private int link;
+	private int jimpleLink;
+	private int javaLink;
 	
 	private String className;
 		
@@ -42,8 +43,8 @@ public class LinkAttribute {
 	/**
 	 * @return
 	 */
-	public int getLink() {
-		return link;
+	public int getJimpleLink() {
+		return jimpleLink;
 	}
 
 	/**
@@ -63,8 +64,22 @@ public class LinkAttribute {
 	/**
 	 * @param string
 	 */
-	public void setLink(int l) {
-		link = l;
+	public void setJimpleLink(int l) {
+		jimpleLink = l;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getJavaLink() {
+		return javaLink;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setJavaLink(int i) {
+		javaLink = i;
 	}
 
 }

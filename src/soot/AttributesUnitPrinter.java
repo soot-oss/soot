@@ -28,7 +28,8 @@ import soot.tagkit.*;
 public class AttributesUnitPrinter {
 
     private int startOffset;
-    private int endOffset;
+	private Stack startOffsets;
+	private int endOffset;
 	private int startStmtOffset;
     private int startLn;
 	private int currentLn;
@@ -48,11 +49,14 @@ public class AttributesUnitPrinter {
 		u.addTag( new PositionTag(startStmtOffset, endStmtOffset) );
 	}
     public void startValueBox( ValueBox u ) {
-        startOffset = output().length() - lastNewline;
+		if (startOffsets == null) {
+			startOffsets = new Stack();
+		}
+        startOffsets.push(new Integer(output().length() - lastNewline));
     }
     public void endValueBox( ValueBox u ) {
         endOffset = output().length() - lastNewline;
-        u.addTag(new PositionTag(startOffset, endOffset));
+        u.addTag(new PositionTag(((Integer)startOffsets.pop()).intValue(), endOffset));
     }
 
     public void setEndLn(int ln){

@@ -35,19 +35,6 @@ public class OptionData {
 		super();
 	}
 	
-	/**
-	 * Constructor for OptionData.
-	 */
-	/*public OptionData(String text, String alias, String tooltip) {
-		super();
-		setText(text);
-		setParentAlias(null);
-		setAlias(alias);
-		setRealAlias(getAlias());
-		setRealAlias(getRealAlias().trim());
-		setTooltip(tooltip);
-		setDefaultVal(false);
-	}
 	
 	/**
 	 * Constructor for OptionData.
@@ -105,21 +92,7 @@ public class OptionData {
 		setDefaultVal(defaultVal);
 	}
 	
-	/**
-	 * Constructor for OptionData.
-	 */
-	/*public OptionData(String text, String phaseAlias, String parentAlias, String alias, String tooltip, boolean defaultVal) {
-		super();
-		setText(text);
-		setParentAlias(phaseAlias+" "+parentAlias);
-		setAlias(alias);
-		setRealAlias(getParentAlias()+" "+getAlias());
-		setRealAlias(getRealAlias().trim());
-		setTooltip(tooltip);
-		setDefaultVal(defaultVal);
-	}
-	
-	
+		
 	/**
 	 * Returns the alias.
 	 * @return String

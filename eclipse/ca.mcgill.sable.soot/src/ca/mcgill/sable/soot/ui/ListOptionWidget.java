@@ -2,10 +2,7 @@ package ca.mcgill.sable.soot.ui;
 
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
-//import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.*;
-
-//import ca.mcgill.sable.soot.SootPlugin;
 
 
 /**
@@ -26,20 +23,12 @@ import org.eclipse.swt.*;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-public class ListOptionWidget {//extends Composite {
+public class ListOptionWidget {
 
 	private Label label;
 	private Text text;
 	private String alias;
 	
-	/**
-	 * Constructor for PathOptionClass.
-	 * @param parent
-	 * @param style
-	 */
-	//public PathOptionWidget(Composite parent, int style) {
-	//	super(parent, style);
-	//}
 	
 	/**
 	 * Constructor for PathOptionClass.
@@ -48,37 +37,25 @@ public class ListOptionWidget {//extends Composite {
 	 */
 	public ListOptionWidget(Composite parent, int style, 
 	  OptionData data) {
-		//super(parent, style);
 		
 		setAlias(data.getRealAlias());
 		
 		Group path = new Group(parent, SWT.RIGHT);
-		//path.pack();
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 3;	
-		//gl.marginHeight = 0;
-			
+		
 		path.setLayout(gl);
-		//parent.setLayout(gl);
+
 		// this makes widget fill horizontal space
 		GridData gridData2 = new GridData(GridData.FILL_HORIZONTAL);
        	gridData2.horizontalSpan = 3;
-       	//gridData2.verticalSpan = 1;
-       	//gridData2.grabExcessHorizontalSpace = true;
-       	//gridData2.grabExcessVerticalSpace = true;
+
        	path.setLayoutData(gridData2);
-       
-  
-  		//IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-  		//String defaultVal = settings.get(getAlias());
-  			
+        			
 		setLabel(new Label(path, SWT.NONE));
 		setLabelText(data.getText());
 		setText(new Text(path,  SWT.MULTI | SWT.BORDER));
-		
-		//if (defaultVal != null) {
-		//	getText().setText(defaultVal);
-		//}
+
 		if ((data.getInitText() == null) || (data.getInitText().length() == 0)){
 			getText().setText("");
 		}
@@ -86,24 +63,17 @@ public class ListOptionWidget {//extends Composite {
 			getText().setText(data.getInitText());
 		}
 		String listMessage = " Separate values on different lines.";
-		getText().setToolTipText(data.getTooltip()+listMessage);		
-		// this makes label fill available space		
-		//GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-        //gridData.horizontalSpan = 1;
-        
-		//getLabel().setLayoutData(gridData);
-
+		getText().setToolTipText(data.getTooltip().trim()+listMessage);		
+	
 		// this makes textbox fill available space		
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalSpan = 2;
-        //gridData.grabExcessHorizontalSpace = false;
+
 		getText().setLayoutData(gridData);
 		
 		
 	}
-	
-	
-	
+
 
 	public void setLabelText(String text) {
 		getLabel().setText(text);

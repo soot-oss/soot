@@ -38,6 +38,20 @@ public class SootAttribute {
 	private int blue;
 	private ArrayList linkList;
 	
+	public String toString(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("\n");
+		sb.append("Java Line: "+java_ln+"\n");
+		sb.append("Jimple Line: "+jimple_ln+"\n");
+		sb.append("Jimple Offset Start: "+jimpleOffsetStart+"\n");
+		sb.append("Jimple Offset End: "+jimpleOffsetEnd+"\n");
+		sb.append("Texts: \n");
+		sb.append(getAllTextAttrs("\n"));
+		
+		
+		return sb.toString();
+	}
+	
 	private static final String NEWLINE = "\n";
 		
 	public void addValueAttr(PosColAttribute valAttr){
@@ -71,11 +85,27 @@ public class SootAttribute {
 		if (getTextList() != null){
 			Iterator it = getTextList().iterator();
 			while (it.hasNext()){
-				sb.append((String)it.next());
+				String next = (String)it.next();
+				if (lineSep.equals("<br>")){
+					// implies java tooltip
+					next = convertHTMLTags(next);
+				}
+				sb.append(next);
 				sb.append(lineSep);
 			}
 		}
 		return sb;
+	}
+	
+	public String convertHTMLTags(String next){
+		if (next == null) return null;
+		else {
+			//System.out.println("next before replace: "+next);
+			next = next.replaceAll("<", "&lt;");
+			next = next.replaceAll(">", "&gt;");
+			//System.out.println("next after replace: "+next);
+			return next;
+		}
 	}
 	
 	public RGB getRGBColor(){
