@@ -302,7 +302,7 @@ class_name_list =
 
   expression =
     {new}         new_expr |
-    {cast}        l_paren nonvoid_type r_paren local_name |
+    {cast}        l_paren nonvoid_type r_paren immediate |
     {instanceof}  immediate instanceof nonvoid_type |
     {invoke}      invoke_expr |
     {reference}   reference |

@@ -10,7 +10,7 @@ public final class ACastExpression extends PExpression
     private TLParen _lParen_;
     private PNonvoidType _nonvoidType_;
     private TRParen _rParen_;
-    private PLocalName _localName_;
+    private PImmediate _immediate_;
 
     public ACastExpression()
     {
@@ -20,7 +20,7 @@ public final class ACastExpression extends PExpression
         TLParen _lParen_,
         PNonvoidType _nonvoidType_,
         TRParen _rParen_,
-        PLocalName _localName_)
+        PImmediate _immediate_)
     {
         setLParen(_lParen_);
 
@@ -28,7 +28,7 @@ public final class ACastExpression extends PExpression
 
         setRParen(_rParen_);
 
-        setLocalName(_localName_);
+        setImmediate(_immediate_);
 
     }
     public Object clone()
@@ -37,7 +37,7 @@ public final class ACastExpression extends PExpression
             (TLParen) cloneNode(_lParen_),
             (PNonvoidType) cloneNode(_nonvoidType_),
             (TRParen) cloneNode(_rParen_),
-            (PLocalName) cloneNode(_localName_));
+            (PImmediate) cloneNode(_immediate_));
     }
 
     public void apply(Switch sw)
@@ -120,16 +120,16 @@ public final class ACastExpression extends PExpression
         _rParen_ = node;
     }
 
-    public PLocalName getLocalName()
+    public PImmediate getImmediate()
     {
-        return _localName_;
+        return _immediate_;
     }
 
-    public void setLocalName(PLocalName node)
+    public void setImmediate(PImmediate node)
     {
-        if(_localName_ != null)
+        if(_immediate_ != null)
         {
-            _localName_.parent(null);
+            _immediate_.parent(null);
         }
 
         if(node != null)
@@ -142,7 +142,7 @@ public final class ACastExpression extends PExpression
             node.parent(this);
         }
 
-        _localName_ = node;
+        _immediate_ = node;
     }
 
     public String toString()
@@ -151,7 +151,7 @@ public final class ACastExpression extends PExpression
             + toString(_lParen_)
             + toString(_nonvoidType_)
             + toString(_rParen_)
-            + toString(_localName_);
+            + toString(_immediate_);
     }
 
     void removeChild(Node child)
@@ -174,9 +174,9 @@ public final class ACastExpression extends PExpression
             return;
         }
 
-        if(_localName_ == child)
+        if(_immediate_ == child)
         {
-            _localName_ = null;
+            _immediate_ = null;
             return;
         }
 
@@ -202,9 +202,9 @@ public final class ACastExpression extends PExpression
             return;
         }
 
-        if(_localName_ == oldChild)
+        if(_immediate_ == oldChild)
         {
-            setLocalName((PLocalName) newChild);
+            setImmediate((PImmediate) newChild);
             return;
         }
 

@@ -2116,9 +2116,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseACastExpression(ACastExpression node)
     {
         inACastExpression(node);
-        if(node.getLocalName() != null)
+        if(node.getImmediate() != null)
         {
-            node.getLocalName().apply(this);
+            node.getImmediate().apply(this);
         }
         if(node.getRParen() != null)
         {

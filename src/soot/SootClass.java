@@ -984,8 +984,8 @@ public class SootClass extends AbstractHost
             File tempFile = new File(outputDirWithSep + this.getName() + ".jasmin");
  
             FileOutputStream streamOut = new FileOutputStream(tempFile);
-	    //xxxx 
-            PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+
+            PrintWriter writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
 
             if(containsBafBody())
                 new soot.baf.JasminClass(this).print(writerOut);

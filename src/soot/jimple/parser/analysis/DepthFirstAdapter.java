@@ -2129,9 +2129,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getRParen().apply(this);
         }
-        if(node.getLocalName() != null)
+        if(node.getImmediate() != null)
         {
-            node.getLocalName().apply(this);
+            node.getImmediate().apply(this);
         }
         outACastExpression(node);
     }

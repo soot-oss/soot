@@ -36,31 +36,28 @@ public class EscapedWriter extends FilterWriter
 
     public EscapedWriter(Writer fos)
     {
-
         super(fos);
-
     }
 
     private final static ThreadLocal miniTL = new ThreadLocal() 
     {
         protected Object initialValue() { return new StringBuffer(); }
     };
+
     public void print(int ch) throws IOException
-  {
+    {
 	write(ch);
 	throw new RuntimeException();
     }
   
-  public void write(String s, int off, int len) throws IOException
-  {
-    for(int i = off; i < off + len; i++)
-      write(s.charAt(i));
-    
-  }
+    public void write(String s, int off, int len) throws IOException
+    {
+        for(int i = off; i < off + len; i++)
+            write(s.charAt(i));
+    }
   
     public void write(int ch) throws IOException
     {
-	
         if (ch >= 32 && ch <= 126 || ch == cr || ch == lf)
             { super.write(ch); return; }
 	

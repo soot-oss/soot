@@ -100,8 +100,8 @@ public class JimpleAST
     {	
 	Parser p =
 	    new Parser(new Lexer(
-		    new PushbackReader(new EscapedReader(new BufferedReader(
-                    new InputStreamReader(istream))), 1024)));
+		    new PushbackReader(new BufferedReader(
+                    new InputStreamReader(istream)), 1024)));
 	try {
 	    mTree = p.parse();
 	} catch(ParserException e) {
