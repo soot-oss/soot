@@ -1889,7 +1889,7 @@ public class Options extends OptionsBase {
             return "Phase "+phaseName+":\n"+
                 "\nThe Line Number Tag Aggregator aggregates line number tags."
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "" );
+                +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "tag.an" ) )
             return "Phase "+phaseName+":\n"+
@@ -2904,7 +2904,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "tag.ln" ) )
             return ""
-              +"enabled:false ";
+              +"enabled:true ";
     
         if( phaseName.equals( "tag.an" ) )
             return ""

@@ -4092,7 +4092,7 @@ tags.</p>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
-						<default>false</default>
+						<default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
