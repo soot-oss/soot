@@ -68,7 +68,6 @@ public class JoinPointAnalysis
      */
     public void setup( final Set/*Local*/ joinPoints ) {
         this.joinPoints = joinPoints;
-        System.out.println("join points are: "+joinPoints);
 
         DepItem joinPointModeller = new DepItem() {
             Rvar_method_type locals = PaddleScene.v().locals.reader("jpm");
@@ -78,7 +77,6 @@ public class JoinPointAnalysis
                     final Rvar_method_type.Tuple t = (Rvar_method_type.Tuple) tIt.next();
                     if( !joinPoints.contains(t.var().getVariable()) )
                         continue;
-                    System.out.println("jpa cares about "+t );
                     processedLocals.add(t.var().getVariable());
                     PaddleScene.v().alloc.add(
                         PaddleScene.v().nodeManager().makeGlobalAllocNode(
@@ -120,8 +118,6 @@ public class JoinPointAnalysis
                 }
             }
         }
-        System.out.println("Out of "+joinPoints.size()+" dynamic join points, "+ret.size()+" can be made static.");
-        System.out.println("Number of join points found reachable: "+processedLocals.size());
         return ret;
     }
 }
