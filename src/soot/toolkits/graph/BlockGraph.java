@@ -52,11 +52,11 @@ public class BlockGraph implements DirectedGraph
     List mHeads = new ArrayList();
     List mTails = new ArrayList();
 
-    static final int COMPLETE = 0;
-    static final int BRIEF = 1;
-    static final int ZONED = 2;
+    public static final int COMPLETE = 0;
+    public static final int BRIEF = 1;
+    public static final int ZONED = 2;
 
-    static final int ARRAYREF = 99;
+    public static final int ARRAYREF = 99;
 
     private Map blockToSuccs;
     private Map blockToPreds;
@@ -72,7 +72,7 @@ public class BlockGraph implements DirectedGraph
      *   @see ZonedBlockGraph
      *   @see ArrayRefBlockGraph 
      */
-    BlockGraph(Body aBody, int type) 
+    public BlockGraph(Body aBody, int type) 
     {
         /* Algorithm used to compute basic blocks:
          * 1) Identify basic block leaders: these are the units that mark
@@ -584,6 +584,57 @@ public class BlockGraph implements DirectedGraph
     {
         return mBlocks.iterator();
     }
+
+  /* generating dot format for plotting */
+  public void toDotFile() {
+    SootMethod method = mBody.getMethod();
+
+    // file name is the method name + .dot
+    String filename = method.getName();
+
+    DotGraph canvas = new DotGraph(filename);
+
+    canvas.setNodeShape(DotGraphConstants.NODE_SHAPE_BOX);
+
+    Iterator nodesIt = iterator();
+    while (nodesIt.hasNext()) {
+      Block node = (Block)nodesIt.next();
+
+      Iterator succsIt = getSuccsOf(node).iterator();
+      while (succsIt.hasNext()) {
+        Block succ = (Block)succsIt.next();
+
+        canvas.drawEdge(node.toShortString(), succ.toShortString());
+      }
+
+      /* set label for the block */
+      DotGraphNode gnode = canvas.getNode(node.toShortString());
+      gnode.setLabel(node.toString());
+    }
+
+    // make the entry and exit node filled.
+    Iterator headsIt = getHeads().iterator();
+    while (headsIt.hasNext()) {
+      Object head = headsIt.next();
+      DotGraphNode headNode = canvas.getNode(head.toString());
+      headNode.setStyle(DotGraphConstants.NODE_STYLE_FILLED);
+    }
+
+    /* getTails is not implemented for BlockGraph */
+    /* 
+    Iterator tailsIt = getTails().iterator();
+    while (tailsIt.hasNext()) {
+      Object tail = tailsIt.next();
+      DotGraphNode tailNode = canvas.getNode(tail.toString());
+      tailNode.setStyle(DotGraphConstants.NODE_STYLE_FILLED);
+    }
+    */
+
+    SootClass sclass = method.getDeclaringClass();
+    canvas.setGraphLabel(sclass.getName()+"."+method.getName());
+
+    canvas.plot();
+  } 
 }
 
     

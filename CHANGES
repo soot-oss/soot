@@ -53,7 +53,11 @@ Improvements in current version
     reported by Nathan Kitchen. See fix 12 also.    (fqian)
 17. Small improvement in ArraySparseSet and BackwardFlowAnalysis pointed
     out by Florian Loitsch.                         (fqian)
-
+18. Add several utility classes for drawing generate graphs, e.g., 
+    UnitGraph, BlockGraph, and Hierarchy can produce "dot" file
+	for generating postscript files. 
+	See soot/util/DotGraph*.java
+	(More function will be added on.)               (fqian)
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 
