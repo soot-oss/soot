@@ -22,6 +22,9 @@ Patrick Lam (plam@sable.mcgill.ca)
     - Baf implementation
     - Aggregation
     - second implementation of inlining and devirtualization
+
+Feng Qian (fqian@sable.mcgill.ca)
+    - contributed to documentation writing
     
 Patrice Pominville (patrice@sable.mcgill.ca)
     - Soot infrastructure

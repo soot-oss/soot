@@ -38,7 +38,7 @@ import java.util.*;
 /**
  *    A BodyTransformer that removes all used local variables from a given Body.
  *    Implemented as a singleton.
- *    @see BodyTranformer
+ *    @see BodyTransformer
  *    @see Body 
  */
 public class UnusedLocalEliminator extends BodyTransformer

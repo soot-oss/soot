@@ -1,9 +1,2 @@
-The next release of Soot (version 1) is forthcoming.
-It will contain the following major additional features:
-
-1. A Soot manual. 
-
-2. Correct name recovery from java classfiles produced with "javac -g".
-
-
-We can also make these items incrementally available if needed.
+For the next release of Soot, we will improve the whole-program analysis
+features.

@@ -54,9 +54,9 @@ import soot.jimple.*;
  *
  *    Note: LocalSplitter is corresponds to the inverse transformation.
  *   
- *    @see BodyTranformer
+ *    @see BodyTransformer
  *    @see Body 
- *    @see LocalSpitter
+ *    @see LocalSplitter
  */
 public class LocalPacker extends BodyTransformer
 {

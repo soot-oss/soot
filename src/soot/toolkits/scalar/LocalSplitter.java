@@ -50,7 +50,7 @@ import java.util.*;
  *    for(int j; j < k; j++);
  *
  *
- *    @see BodyTranformer
+ *    @see BodyTransformer
  *    @see LocalPacker
  *    @see Body 
  */

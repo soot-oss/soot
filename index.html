@@ -18,7 +18,6 @@
 <a href="#status"><font face="helvetica,arial" size="+0">Release Status</font></a><br>
 <a href="http://gloom.cs.mcgill.ca/soot"><font face="helvetica,arial" size="+0">Soot Bug Tracking</font></a><br>
 <a href="#projectStatus"><font face="helvetica,arial" size="+0">Improvements</font></a><br>
-<a href="#futureWork"><font face="helvetica,arial" size="+0">Future Work</font></a><br>
 <a href="#download"><font face="helvetica,arial" size="+0">Download</font></a><br>
 <a href="#compilation"><font face="helvetica,arial" size="+0">Compilation</font></a><br>
 <a href="#documentation"><font face="helvetica,arial" size="+0">Documentation</font></a><br>
@@ -35,7 +34,7 @@
 <center>
 <a name="top"><b><font face="helvetica,arial" size="+2">Soot: a Java Optimization Framework</font></b></center></a> <br>
 <center>
-<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 1.beta.6</font></b></center></a> <br><br>
+<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 1.0.0</font></b></center></a> <br><br>
 
 <!--Introduction-->
 <a name="introduction"> <table width=100%> <tr>
@@ -80,19 +79,13 @@ License</a>.
 <blockquote>
 
 <p>The Soot Framework is an evolving research project. Our goal is to produce a
-highly robust framework for optimizing Java which is easy to use.  To reach this
-goal we expect to evolve the API and underlying code as necessary.
+highly robust framework for optimizing Java which is easy to use.  
 
-<p>This constitutes most of the code which will be in Release 1.  The remaining
-work can be seen on the <a href="http://gloom.cs.mcgill.ca/soot">Soot bug tracking</a>
-page.  Most of the remaining work will consist of writing adequate documentation.
+<p>This release is our first official release.  We believe it to be quite solid,
+and have tested it on a set of 266 benchmarks.
 
-<p>We have provided this release (version <tt>1.beta.6</tt>) in order
-to allow Soot users to prepare for Release 1 and benefit from all the
-improvements in the current code base.
-
-<p> There should be no significant API changes between Release 1 and
-<tt>1.beta.6</tt>.
+<p>In the future, we hope to improve support for whole-program analysis.
+We will also develop more transformations for use with Soot.
 
 </blockquote>
 
@@ -100,55 +93,23 @@ improvements in the current code base.
 
 <!--ProjectStatus-->
 <a name="projectStatus"> <table width=100%> <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Improvements in <tt>1.beta.6</tt></b></font></td></a>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Improvements in version 1.0.0</b></font></td></a>
 <td width=3% align=left><font size="-2"><a href="#top">top</a></td>
 </table>
 
 <blockquote>
+This is a subset of the changes in version 1.0.0; a more complete listing is in the CHANGES file.
 
-<p>1. A Jimple parser has been added to the Soot framework.  Soot can
-now read both .class files and .jimple files (produced by the
-<tt>"--jimple"</tt> option).  Parsing .jimple files is faster than
-reading .class files, and these files can be modified easily in a text
-editor.
+<p>1. Fixed bug with original name recovery.
 
-<p>2. Different phases of Sootification can now be passed command-line
-options.  For instance, the static inliner (<tt>si</tt>) in the
-whole-jimple optimization pack (<tt>wjop</tt>) can told that it is to
-expand code by no more than a factor of 5, by giving the following
-command-line option: <tt> -p wjop.si expansion-factor:5</tt>.
+<p>2. Added documentation (see <a href="http://www.sable.mcgill.ca/soot/tutorial">some tutorials</a>.)
 
-<p>3. Some whole-program (excluding library) optimizations are
-included, namely a static method binder and a static inliner.  The
-inliner is enabled by default when the <tt>-W</tt> option is given.
-It can be disabled with the option <tt> -p wjop.si disabled:true -p
-wjop.smb disabled:false</tt>.
+<p>3. Added static class synchronizer.
 
 </blockquote>
 
 <br>
 
-
-<!--FutureWork-->
-<a name="futureWork"> <table width=100%> <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Future Work</b></font></td></a>
-<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
-</table>
-
-<blockquote>
-
-<p>The next release of Soot (version 1) is forthcoming.
-It will contain the following major additional features:
-
-<p>1. A Soot manual. 
-
-<p>2. Correct name recovery from java classfiles produced with "javac -g".
-
-<p>
-We can also make these items incrementally available if needed.
-
-</blockquote>
-<br>
 
 
 <!--Download-->
@@ -163,8 +124,8 @@ href="http://www.sable.mcgill.ca/software">http://www.sable.mcgill.ca/software</
 
 <p>
 To install it you must unjar(untar) it, and add the classes directories
-<tt>soot-1.beta.6/soot/classes</tt> and
-<tt>soot-1.beta.6/jasmin/classes</tt> to your CLASSPATH.  
+<tt>soot-1.0.0/soot/classes</tt> and
+<tt>soot-1.0.0/jasmin/classes</tt> to your CLASSPATH.  
 
 To test your installation of Soot, try:
 
@@ -173,8 +134,9 @@ To test your installation of Soot, try:
 java soot.Main
 </tt>
 
-<p>for some options on processing classfiles.
-                          
+<p>for some options on processing classfiles.  They are documented in more detail in the
+<a href="http://www.sable.mcgill.ca/soot/tutorial/usage">usage document</a>.
+
 </blockquote>
 <br>
 
@@ -187,8 +149,8 @@ java soot.Main
 
 Soot is already compiled in the distribution.  To recompile Soot, 
 we use the <tt> jams</tt> tool, a modified version of <tt>jam</tt> by Raffaele Sena.
-This is included in the <tt>soot-1.beta.6/jams</tt> directory of the distribution.  Invoking
-jams from the <tt>soot-1.beta.6/soot</tt> will recompile Soot as necessary.
+This is included in the <tt>soot-1.0.0/jams</tt> directory of the distribution.  Invoking
+jams from the <tt>soot-1.0.0/soot</tt> will recompile Soot as necessary.
 
 NOTE: The Jimple parser is generated by <a href="http://www.sable.mcgill.ca/sablecc">SableCC</a>.
 It requires <tt> lexer.dat</tt> and <tt>parser.dat</tt> files to be in the classes directory;
@@ -212,16 +174,19 @@ $ cp src/soot/jimple/parser/lexer/lexer.dat \
 </table>
 
 <blockquote>
-This version of Soot is still barebones in terms of documentation.
-There are 2 accepted <a
-href="http://www.sable.mcgill.ca/publications">conference papers</a>
-describing Soot.  We are also working on a Soot manual.  Your main
+We have developed a number of documents describing Soot.  Your main
 current sources of information are:
 
 <ul>
+<li>There are 2 accepted <a
+href="http://www.sable.mcgill.ca/publications">conference papers</a>
+describing Soot.  
 
-<li><a href="doc/index.html">The Soot API.</a> Although lightly decorated, most
-of the functionality is self-explanatory.  This API is included in the Soot
+<li>A set of <a href="http://www.sable.mcgill.ca/soot/tutorial">documents</a> describing Soot, both as a Java application optimizer and
+as a compiler framework.
+
+<li><a href="doc/index.html">The Soot API.</a> Most of the
+functionality is self-explanatory.  This API is included in the Soot
 distribution.
 
 <li>The Soot source itself.  It is full of examples on how to use the API.
@@ -279,7 +244,7 @@ The official Soot maintainers are <a href="mailto:rvalleerai@sable.mcgill.ca"> R
 <center>
 <blockquote>
 
-<font face="Arial, Helvetica" size=-2> <i>Last updated on January 31, 2000</i><br></font>
+<font face="Arial, Helvetica" size=-2> <i>Last updated on March 24, 2000</i><br></font>
           
 </blockquote>
 
@@ -290,8 +255,3 @@ The official Soot maintainers are <a href="mailto:rvalleerai@sable.mcgill.ca"> R
 </table>
 
 </html>
-
-
-
-
-
