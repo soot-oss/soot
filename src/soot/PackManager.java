@@ -287,6 +287,7 @@ public class PackManager {
         if (Options.v().whole_program() || Options.v().whole_shimple()) {
             runWholeProgramPacks();
         }
+        retrieveAllBodies();
         preProcessDAVA();
         if (Options.v().interactive_mode()){
             if (InteractionHandler.v().getInteractionListener() == null){
@@ -642,6 +643,21 @@ public class PackManager {
 
             if (m.hasActiveBody())
                 m.releaseActiveBody();
+        }
+    }
+
+    private void retrieveAllBodies() {
+        Iterator clIt = reachableClasses();
+        while( clIt.hasNext() ) {
+            SootClass cl = (SootClass) clIt.next();
+            Iterator methodIt = cl.methodIterator();
+            while (methodIt.hasNext()) {
+                SootMethod m = (SootMethod) methodIt.next();
+
+                if( m.isConcrete() ) {
+                    m.retrieveActiveBody();
+                }
+            }
         }
     }
 }
