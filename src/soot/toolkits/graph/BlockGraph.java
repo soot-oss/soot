@@ -485,10 +485,16 @@ public class BlockGraph implements DirectedGraph
                 Iterator blockIt =  mBlocks.iterator();
                 while(blockIt.hasNext()) {
                     Block b = (Block) blockIt.next();
+
                     if(b.getHead() == mUnits.getFirst() ||
                        (type != COMPLETE && handlerList.contains(b.getHead())))
-                    {
                         mHeads.add(b);
+                    else{
+                        List preds = b.getPreds();
+                        if(preds == null)
+                            mHeads.add(b);
+                        else if(preds.isEmpty())
+                            mHeads.add(b);
                     }
                 }
                 /*
