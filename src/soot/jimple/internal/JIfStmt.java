@@ -287,7 +287,7 @@ public class JIfStmt extends AbstractStmt implements IfStmt
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
 		    }
-		    u.addTag(new ArrayCheckTag(true, false));
+
                     
 
 		    
@@ -302,7 +302,7 @@ public class JIfStmt extends AbstractStmt implements IfStmt
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
 		    }
-		    u.addTag(new ArrayCheckTag(true, false));
+
                     
 	      
             }
@@ -316,7 +316,7 @@ public class JIfStmt extends AbstractStmt implements IfStmt
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
 		    }
-		    u.addTag(new ArrayCheckTag(true, false));
+
                     
 
             }
@@ -330,7 +330,7 @@ public class JIfStmt extends AbstractStmt implements IfStmt
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
 		    }
-		    u.addTag(new ArrayCheckTag(true, false));
+
                     
             }
 
@@ -343,7 +343,7 @@ public class JIfStmt extends AbstractStmt implements IfStmt
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
 		    }
-		    u.addTag(new ArrayCheckTag(true, false));
+
                     
 
             }
@@ -357,7 +357,7 @@ public class JIfStmt extends AbstractStmt implements IfStmt
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
 		    }
-		    u.addTag(new ArrayCheckTag(true, false));
+
 
 
             }

@@ -218,7 +218,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
 		    }
-		    u.addTag(new ArrayCheckTag(true, false));
+		    
                     out.add(u);
                 }
                 
@@ -239,7 +239,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
 		    }
-		    u.addTag(new ArrayCheckTag(true, false));
+
                     out.add(u);
 
 
@@ -263,7 +263,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
 		    }
-		    u.addTag(new ArrayCheckTag(true, false));
+
                     out.add(u);
 
 

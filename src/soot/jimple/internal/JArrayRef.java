@@ -167,7 +167,6 @@ public class JArrayRef implements ArrayRef, ConvertToBaf, EquivTo
         out.add(x = Baf.v().newArrayReadInst(getType()));
 
 	Iterator it = currentUnit.getTags().iterator();
-	x.addTag(new ArrayCheckTag(true, true));
 	while(it.hasNext()) {
 	    x.addTag((Tag) it.next());
 	}
