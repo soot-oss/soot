@@ -48,6 +48,7 @@
 		<stropt>
 			<name>Soot Classpath</name>
 			<alias>cp</alias>
+			<alias>soot-class-path</alias>
 			<alias>soot-classpath</alias>
 			<short_desc>uses given PATH as the classpath for finding classes for Soot processing</short_desc>
 			<long_desc>This option ...</long_desc>

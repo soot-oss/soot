@@ -81,8 +81,7 @@ abstract class OptionsBase {
 
     private LinkedList options = new LinkedList();
     protected void pushOptions( String s ) {
-        StringTokenizer t = new StringTokenizer( s );
-        while( t.hasMoreTokens() ) options.addFirst( t.nextToken() );
+        options.addFirst( s );
     }
 
     protected boolean hasMoreOptions() { return !options.isEmpty(); }

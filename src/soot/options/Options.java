@@ -98,6 +98,7 @@ public class Options extends OptionsBase {
   
             else if( false
             || option.equals( "cp" )
+            || option.equals( "soot-class-path" )
             || option.equals( "soot-classpath" )
             ) {
                 if( !hasMoreOptions() ) {
@@ -707,7 +708,7 @@ public class Options extends OptionsBase {
 +padOpt(" -debug", "prints various Soot debugging info" )
 +"\nInput Options:\n"
       
-+padOpt(" -cp ARG -soot-classpath ARG", "uses given PATH as the classpath for finding classes for Soot processing" )
++padOpt(" -cp ARG -soot-class-path ARG -soot-classpath ARG", "uses given PATH as the classpath for finding classes for Soot processing" )
 +padOpt(" -src-prec ARG", "sets the source precedence for Soot" )
 +padVal(" c class", "" )
 +padVal(" J jimple", "" )
