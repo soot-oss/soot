@@ -268,8 +268,15 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet implements BoundedFlo
         super.intersection(otherFlow, destFlow);
     }
 
+  /** Returns true, if the object is in the set.
+   */
     public boolean contains(Object obj)
     {
+      /* check if the object is in the map, direct call of map.getInt will
+       * add the object into the map.
+       */
+        if (!map.contains(obj)) return false;
+
         int bitNum = map.getInt(obj);
 
         return (bits[bitNum / 32] & (1 << (bitNum % 32))) != 0;

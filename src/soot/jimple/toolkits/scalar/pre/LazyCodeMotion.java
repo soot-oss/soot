@@ -191,8 +191,8 @@ public class LazyCodeMotion extends BodyTransformer {
           /* insert a new Assignment-stmt before the currentUnit */
           Value insertValue = Jimple.cloneIfNecessary(equiVal.getValue());
           Unit firstComp = Jimple.v().newAssignStmt(helper, insertValue);
-          unitChain.insertBefore(firstComp, currentUnit);
-          //	  System.out.print("x");
+          unitChain.insertBefore(firstComp, currentUnit);          
+	  //	  System.out.print("x");
         }
       }
     }
@@ -206,10 +206,23 @@ public class LazyCodeMotion extends BodyTransformer {
           FlowSet latestSet = (FlowSet)latest.getFlowBefore(currentUnit);
           FlowSet notIsolatedSet =
             (FlowSet)notIsolated.getFlowAfter(currentUnit);
-          if (!latestSet.contains(rhs) || notIsolatedSet.contains(rhs)) {
+          if (!latestSet.contains(rhs) && notIsolatedSet.contains(rhs)) {
             Local helper = (Local)expToHelper.get(rhs);
-            ((AssignStmt)currentUnit).setRightOp(helper);
-            //	    System.out.print(".");
+
+	    try {
+	      ((AssignStmt)currentUnit).setRightOp(helper);
+	    } catch (RuntimeException e){
+	      System.err.println("Error on "+b.getMethod().getName());
+	      System.err.println(currentUnit.toString());
+
+	      System.err.println(latestSet);
+	      
+	      System.err.println(notIsolatedSet);
+
+	      throw e;
+	    }
+           
+	    // System.out.print(".");
           }
         }
       }

@@ -64,6 +64,10 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
   /* to avoid unnecessary allocations, we keep a tmp-array here */
   private TmpArrayHolder tmpArrayHolder;
 
+  /** to be able to report concurrent modifications this integer has to be
+   * incremented for every modification of the set */
+  protected int modifyCounter = 0;
+
   /**
    * creates a BoundedArraySparseSet without an explicite
    * flow-universe. although complement(), and topSet() can be called, toList()
@@ -114,7 +118,6 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
     tmpArrayHolder = other.tmpArrayHolder;
   }
 
-    /** Returns true if flowSet is the same type of flow set as this. */
   private boolean sameType(Object flowSet) {
     return (flowSet instanceof BoundedArraySparseSet) &&
       ((BoundedArraySparseSet)flowSet).elementIntMap == elementIntMap &&
@@ -240,6 +243,7 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
   }
 
   public void clear() {
+    modifyCounter++;
     numElements = 0;
     isComplemented = false;
     isSorted = true;
@@ -269,7 +273,12 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
    * the returned iterator implements the <code>remove()</code>-method.
    */
   public Iterator iterator() {
-    return new BoundedArraySparseSetIterator();
+    if (!isComplemented)
+      return new ConcurrentModificationIterator(new
+        BoundedArraySparseSetIterator());
+    else 
+      return new ConcurrentModificationIterator(new
+        ComplementedBoundedArraySparseSetIterator());
   }
 
   public List toList() {
@@ -297,9 +306,10 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
 
   public void complement(FlowSet dest) {
     if (sameType(dest)) {
-      if (this == dest)
+      if (this == dest) {
+        modifyCounter++;
         isComplemented = !isComplemented;
-      else {
+      } else {
         copy(dest);
         ((BoundedArraySparseSet)dest).complement();
       }
@@ -314,6 +324,7 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
    * @param i the integer associated to the object we insert in the array.
    */
   private void appendToElements(int i) {
+    modifyCounter++;
     // Expand array if necessary
     if (numElements == maxElements)
       increaseCapacity();
@@ -340,16 +351,29 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
   }
 
   /**
+   * removes the element at location <code>index</code> in the
+   * <code>elements</code>-array, and returns the index of the next element (for
+   * an iterator), or something bigger, if there's no element anymore.
+   */
+  private int removeElementAt(int index) {
+    modifyCounter++;
+    elements[index] = elements[--numElements];
+    if (index != numElements)
+      isSorted = false;
+    return index;
+  }
+
+  /**
    * removes <code>i</code> from the elements-array, if it is in the array.
    *
    * @param i the integer associated to the object we remove from the array.
    */
+  /* note, that the BoundedArraySparseSetIterator could remove elements too (not
+   * calling this method). */
   private void removeFromElements(int i) {
     int index = search(i);
-    if (index >= 0) {
-      elements[index] = elements[--numElements];
-      isSorted = false;
-    }
+    if (index >= 0)
+      removeElementAt(index);
   }
 
   public void add(Object obj) {
@@ -369,12 +393,21 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
   }
 
   /**
+   * remove is already in the Iterator-interface, and hence the iterator can't
+   * access the remove-method. here's a small work-around.
+   */
+  private void itRemove(Object obj) {
+    remove(obj);
+  }
+
+  /**
    * performs union (a + b), intersection (a * b), difference (a - b) and
    * inverse difference (b - a) in O(n.log(n)). If the sets are sorted, it is
    * even in O(n). (n = max(numElements, other.numElements)).
    */
   private void elementsBinOp(BoundedArraySparseSet other, BoundedArraySparseSet
                              dest, int action) {
+    dest.modifyCounter++;
     sort();
     other.sort();
     int[] sourceThis = elements;
@@ -583,6 +616,7 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
     if (destFlow == this) return;
     if (sameType(destFlow)) {
       BoundedArraySparseSet dest = (BoundedArraySparseSet)destFlow;
+      dest.modifyCounter++;
       if (dest.maxElements >= numElements) { //do a array-copy
         dest.numElements = numElements;
         System.arraycopy(elements, 0, dest.elements, 0, numElements);
@@ -625,7 +659,7 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
   }
 
   /**
-   * a simple implementation of an Iterator.
+   * a simple implementation of an Iterator for a not complemented set.
    */
   private class BoundedArraySparseSetIterator implements Iterator {
     private int index;
@@ -634,6 +668,7 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
     BoundedArraySparseSetIterator() {
       index = 0;
       removeAllowed = false;
+      sort();
     }
 
     public boolean hasNext() {
@@ -651,10 +686,74 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
     public void remove() {
       if (removeAllowed) {
         removeAllowed = false;
-        elements[--index] = elements[--numElements];
-        isSorted = false;
+        index = removeElementAt(--index);
       } else
         throw new IllegalStateException();
+    }
+  }
+
+  /**
+   * a simple implementation of an Iterator for a complemented set.
+   */
+  private class ComplementedBoundedArraySparseSetIterator implements Iterator {
+    private Iterator it;
+    private Object lastObject;
+    private boolean removeAllowed;
+
+    ComplementedBoundedArraySparseSetIterator() {
+      sort();
+      it = toList().iterator();
+      removeAllowed = false;
+    }
+
+    public boolean hasNext() {
+      return it.hasNext();
+    }
+
+    public Object next() {
+      removeAllowed = true;
+      lastObject = it.next();
+      return lastObject;
+    }
+
+    public void remove() {
+      if (removeAllowed) {
+        removeAllowed = false;
+        itRemove(lastObject);
+      } else
+        throw new IllegalStateException();
+    }
+  }
+
+  /**
+   * throws an exception, if the underlying set has been modified.
+   */
+  private class ConcurrentModificationIterator implements Iterator {
+    private int oldModifyCounter;
+    private Iterator underlyingIterator;
+
+    public ConcurrentModificationIterator(Iterator it) {
+      underlyingIterator = it;
+      oldModifyCounter = modifyCounter;
+    }
+
+    public boolean hasNext() {
+      if (oldModifyCounter != modifyCounter) throw new
+        ConcurrentModificationException();
+      return underlyingIterator.hasNext();
+    }
+
+    public Object next() {
+      if (oldModifyCounter != modifyCounter) throw new
+        ConcurrentModificationException();
+      return underlyingIterator.next();
+    }
+
+    public void remove() {
+      if (oldModifyCounter != modifyCounter) throw new
+        ConcurrentModificationException();
+      underlyingIterator.remove();
+      oldModifyCounter = modifyCounter;
     }
   }
 }

@@ -15,7 +15,9 @@ soot.jimple.toolkits.annotation.nullcheck
 soot.jimple.toolkits.base
 soot.jimple.toolkits.invoke
 soot.jimple.toolkits.scalar
+soot.jimple.toolkits.pre
 soot.jimple.toolkits.typing
+soot.jimple.toolkits.graph
 soot.tagkit
 soot.toolkits.graph
 soot.toolkits.scalar

@@ -52,7 +52,7 @@ class ClassFieldAnalysis
   
     private ClassFieldAnalysis() {}
 
-    static boolean debug = true;
+    static boolean debug = soot.Main.isInDebugMode;
 
     public static ClassFieldAnalysis v()
     {

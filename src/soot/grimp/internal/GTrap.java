@@ -38,7 +38,7 @@ import soot.util.*;
 import java.util.*;
 
 
-public class GTrap extends AbstractTrap implements Trap
+public class GTrap extends AbstractTrap 
 {
     public GTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
     {

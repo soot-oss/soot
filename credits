@@ -30,6 +30,8 @@ Feng Qian (fqian@sable.mcgill.ca)
     - array bounds check and annotation
     - contributed to documentation writing
     - prepared 1.2.0 release
+    - Dot interface, CFGViewer
+    - prepared 1.2.2, 1.2.3 release
     
 Patrice Pominville (patrice@sable.mcgill.ca)
     - Soot infrastructure
@@ -51,6 +53,15 @@ Clark Verbrugge (clump@cs.mcgill.ca)
 Felix Kwok (wkwok@sable.mcgill.ca)
     - VTA re-implementation
     
+Florian Loitsch (florian@loitsch.net)
+    - PRE re-implementation
+
+Ondrej Lhotak (olhota@sable.mcgill.ca)
+    - General bug-fixes, soot hacker
+
+David Eng (flynn@sable.mcgill.ca)
+    - XML output
+
 -------------------- Funding Acknowledgements ------------------
                     
 Funding support provided by:

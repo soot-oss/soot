@@ -37,16 +37,24 @@ import java.util.*;
 
 public class CFGViewer {
 
-  private static String clsname;
-  private static String methname;
+  /* make all control fields public, allow other soot class dump 
+   * the graph in the middle */
+  
+  public final static int UNITGRAPH  = 0;
+  public final static int BLOCKGRAPH = 1;
+  public final static int ARRAYBLOCK = 2;
 
-  private static boolean useUnitGraph = true;
-  private static boolean isBrief      = false;
+  public static int graphtype = UNITGRAPH;
+
+  public static String clsname;
+  public static String methname;
+
+  public static boolean isBrief      = false;
  
   private static int meth_count = 0;
 
   /* in one page or several pages of 8.5x11 */
-  private static boolean onepage      = true;
+  public static boolean onepage      = true;
 
   public static void main(String[] args) {
 
@@ -68,8 +76,8 @@ public class CFGViewer {
     while (methodIt.hasNext()) {
       SootMethod meth = (SootMethod)methodIt.next();
       
-      if ((methname != null) 
-	  && (methname.equals(meth.getName()))) {
+      if ((methname == null) 
+	  || (methname.equals(meth.getName()))) {
 	if (meth.isConcrete()) {
 	  Body body = meth.retrieveActiveBody();
 	  print_cfg(body);
@@ -82,7 +90,7 @@ public class CFGViewer {
       System.err.println("Usage:");
       System.err.println("   java soot.util.CFGViewer [options] class[:method]");
       System.err.println("   options:");
-      System.err.println("       --unit|block : produces the unit(default)/block graph.");
+      System.err.println("       --unit|block|array : produces the unit(default)/block graph.");
       System.err.println("       --brief : uses the unit/block index as the label.");
       System.err.println("       --soot-classpath PATHs : specifies the soot class pathes.");
       System.err.println("       --multipages : produces the dot file sets multi pages (8.5x11).");
@@ -93,9 +101,11 @@ public class CFGViewer {
   private static void parse_options(String[] args){
     for (int i=0, n=args.length; i<n; i++) {
       if (args[i].equals("--unit")) {
-	useUnitGraph = true;
+	graphtype = UNITGRAPH;
       } else if (args[i].equals("--block")) {
-	useUnitGraph = false;
+	graphtype = BLOCKGRAPH;
+      } else if (args[i].equals("--array")) {
+	graphtype = ARRAYBLOCK;
       } else if (args[i].equals("--brief")) {
 	isBrief = true;
       } else if (args[i].equals("--soot-classpath")) {
@@ -119,11 +129,17 @@ public class CFGViewer {
     SootClass  sclass = method.getDeclaringClass();
 
     DirectedGraph graph = null;
-    
-    if (useUnitGraph) {
+
+    switch (graphtype) {
+    case UNITGRAPH:
       graph = new UnitGraph(body, false);
-    } else {
+      break;
+    case BLOCKGRAPH:
       graph = new BlockGraph(body, BlockGraph.BRIEF);
+      break;
+    case ARRAYBLOCK:
+      graph = new BlockGraph(body, BlockGraph.ARRAYREF);
+      break;
     }
 
     String methodname = method.getName()+"-"+meth_count++;
@@ -135,7 +151,7 @@ public class CFGViewer {
   private static int nodecount = 0;
 
   /* generating dot format for plotting */
-  private static void toDotFile(String methodname, 
+  public static void toDotFile(String methodname, 
 				DirectedGraph graph, 
 				String graphname) {
 

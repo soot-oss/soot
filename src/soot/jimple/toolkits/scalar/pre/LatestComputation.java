@@ -88,13 +88,12 @@ public class LatestComputation {
 
       /* basically the latest-set is: 
        * (delayed) INTERSECT (comp UNION (UNION_successors ~Delayed)) =
-       * (delayed) MINUS ~((INTERSECTION_successors Delayed) MINUS comp).
+       * (delayed) MINUS ((INTERSECTION_successors Delayed) MINUS comp).
        */
 
       FlowSet delaySet = (FlowSet)delayed.getFlowBefore(currentUnit);
 
-      /* We'll calculate (UNION_successors ~Delayed) by 
-       * ~(INTERSECTION_successors Delayed) */
+      /* Calculate (INTERSECTION_successors Delayed) */
       FlowSet succCompSet = (FlowSet)set.topSet();
       List succList = unitGraph.getSuccsOf(currentUnit);
       Iterator succIt = succList.iterator();
@@ -104,7 +103,7 @@ public class LatestComputation {
             succCompSet);
       }
       /* remove the computation of this set: succCompSet is then:
-       * ~((INTERSECTION_successors Delayed) MINUS comp) */
+       * ((INTERSECTION_successors Delayed) MINUS comp) */
       if (equivRhsMap.get(currentUnit) != null)
         succCompSet.remove(equivRhsMap.get(currentUnit));
 

@@ -169,13 +169,18 @@ public class JimpleBody extends StmtBody implements Serializable
             soot.Main.stmtCount += getUnits().size();
     }
 
-    /** Make sure that the JimpleBody is well formed.  If not, throw an exception.
-        Right now, performs only a handful of checks.
-      */      
+    /** Make sure that the JimpleBody is well formed.  If not, throw
+     *  an exception.  Right now, performs only a handful of checks.  
+     */
     public void validate()
     {
         super.validate();
+
         // Check validity of traps.
+	/* this check may not hold when jop.bcm is enabled. 
+	 *           disabled by Feng Qian, May 2002
+         */
+	/*
         {
             Iterator it = getTraps().iterator();
             
@@ -184,14 +189,15 @@ public class JimpleBody extends StmtBody implements Serializable
                 Trap t = (Trap) it.next();
                 
                 Stmt s = (Stmt) t.getHandlerUnit();
-                
-                
-                if(!(s instanceof IdentityStmt) || !(((IdentityStmt) s).getRightOp() instanceof CaughtExceptionRef)){
+                                
+                if(!(s instanceof IdentityStmt) 
+		   || !(((IdentityStmt) s).getRightOp() instanceof CaughtExceptionRef)){
                     System.out.println(s);
                     throw new RuntimeException("Trap handler is not of the form x := caughtexceptionref");
                 }
             }
         }
+	*/
     }
     
     /** Temporary patch to get the typing algorithm working.

@@ -691,16 +691,19 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.67)");
-	System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.68)");
+	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
-	System.out.println("Contributions are copyright (C) 1997-2001 by their respective contributors.");
+	System.out.println("Contributions are copyright (C) 1997-2003 by their respective contributors.");
 	System.out.println("See individual source files for details.");
 	System.out.println("");
 	System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
 	System.out.println("and you are welcome to redistribute it under certain conditions.");
 	System.out.println("See the accompanying file 'license.html' for details.");
+	System.out.println();
+	System.out.println("Visit the Soot website:");
+	System.out.println("  http://www.sable.mcgill.ca/soot/");
     }
 
     private static void printHelp()
@@ -762,6 +765,7 @@ public class Main implements Runnable
 	System.out.println("                               turn on the annotation for null pointer and/or ");
 	System.out.println("                               array bounds check. ");
 	System.out.println("                               more options are in the document. ");
+	System.out.println("  -A LineNumber                keep line number tables.");
 	System.out.println("");
 	System.out.println("Examples:");
 	System.out.println("");

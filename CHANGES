@@ -65,6 +65,9 @@ Improvements in current version
 	original function is not affected.
 	Patch provided by Stephen Cheng.                (fqian)
 20. Fixed some obvious bugs in CFGViewer, added simple options. (fqian)
+21. Added a new implementation of PRE by Florian Loitsch, merging 
+    was done by Ondrej. The old implementation of PRE was obseleted.
+    The new implementation to be tested.                (fqian)
 
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)

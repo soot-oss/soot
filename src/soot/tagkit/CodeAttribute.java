@@ -90,6 +90,8 @@ public class CodeAttribute extends JasminAttribute
   /** Generates Jasmin Value String */
     public String getJasminValue(Map instToLabel)
     {
+        // some benchmarks fail because of the returned string larger than
+        // the possible buffer size. 
 	StringBuffer buf = new StringBuffer();
 	
 	if (mTags.size() != mUnits.size())

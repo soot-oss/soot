@@ -52,10 +52,20 @@ public class JTrap extends AbstractTrap
               handlerStmt);
     }
 
-
     public Object clone() 
     {
-        return new JTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
+        return new JTrap(exception, getBeginUnit(), 
+                         getEndUnit(), getHandlerUnit());
     }
- 
+
+  public String toString(){
+    StringBuffer buf = new StringBuffer("Trap :");
+    buf.append("\nbegin  : ");
+    buf.append(getBeginUnit());
+    buf.append("\nend    : ");
+    buf.append(getEndUnit());
+    buf.append("\nhandler: ");
+    buf.append(getHandlerUnit());
+    return new String(buf);
+  }
 }

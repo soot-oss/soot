@@ -148,40 +148,36 @@ public class UnitGraph implements DirectedGraph
             }
 
             // Add exception based successors
-            if(addExceptionEdges)
-                {
-                    Map beginToHandler = new HashMap();
+            if(addExceptionEdges) {
+	      Map beginToHandler = new HashMap();
                     
-                    Iterator trapIt = body.getTraps().iterator();
+	      Iterator trapIt = body.getTraps().iterator();
                     
-                    while(trapIt.hasNext())
-                    {                        
-                        Trap trap = (Trap) trapIt.next();
+	      while(trapIt.hasNext()) {                        
+		Trap trap = (Trap) trapIt.next();
 
-                        Unit beginUnit = (Unit) trap.getBeginUnit();
-                        Unit handlerUnit = (Unit) trap.getHandlerUnit();
-                        Unit endUnit = (Unit) trap.getEndUnit();
-                        Iterator unitIt = unitChain.iterator(beginUnit);
+		Unit beginUnit = (Unit) trap.getBeginUnit();
+		Unit handlerUnit = (Unit) trap.getHandlerUnit();
+		Unit endUnit = (Unit) trap.getEndUnit();
+		Iterator unitIt = unitChain.iterator(beginUnit);
                         
-                        beginToHandler.put(beginUnit, handlerUnit);
+		beginToHandler.put(beginUnit, handlerUnit);
 
-			
-			for (Unit u = (Unit) unitIt.next(); u != endUnit; u = (Unit) unitIt.next())
-			    ((List) unitToSuccs.get(u)).add(handlerUnit);
-			/*                        		       
+		for (Unit u = (Unit) unitIt.next(); 
+		     u != endUnit; 
+		     u = (Unit) unitIt.next())
+		  ((List) unitToSuccs.get(u)).add(handlerUnit);
 
-                        Unit u;
-
-                        do  {
-                            u = (Unit) unitIt.next();
+		/* 
+                Unit u;
+		do  {
+		  u = (Unit) unitIt.next();
+		   
+		  ((List) unitToSuccs.get(u)).add(handlerUnit);
                             
-                            ((List) unitToSuccs.get(u)).add(handlerUnit);
-                            
-                        } while(u != endUnit);
-                        
-                        */
-
-                    }
+	        } while(u != endUnit);                        
+		*/
+	      }
            
                     // Add edges from the predecessors of begin statements directly to the handlers
                     // This is necessary because sometimes the first statement of try block

@@ -70,8 +70,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
     private boolean rectarray;
     HashSet multiarraylocals;
 
-    // static boolean debug = soot.Main.isInDebugMode;
-    static boolean debug = true;
+    static boolean debug = soot.Main.isInDebugMode;
 
     public ArrayIndexLivenessAnalysis(DirectedGraph dg, 
 				      boolean takeFieldRef, 

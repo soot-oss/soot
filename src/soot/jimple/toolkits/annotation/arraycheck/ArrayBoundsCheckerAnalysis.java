@@ -72,8 +72,7 @@ class ArrayBoundsCheckerAnalysis
 
     private ArrayIndexLivenessAnalysis ailanalysis;
 
-    // static boolean debug = soot.Main.isInDebugMode;
-    static boolean debug = true;
+    static boolean debug = soot.Main.isInDebugMode;
 
     /* A little bit different from ForwardFlowAnalysis */
     public ArrayBoundsCheckerAnalysis(Body body, 
@@ -543,8 +542,8 @@ class ArrayBoundsCheckerAnalysis
 	// at the end of block, it should update the out edges.
 	if (s instanceof IfStmt)
 	{
-	    if (!assertBranchStmt(ingraph, s, block, succs, changedSuccs))
-		updateOutEdges(ingraph, block, succs, changedSuccs);
+	  if (!assertBranchStmt(ingraph, s, block, succs, changedSuccs))
+	    updateOutEdges(ingraph, block, succs, changedSuccs);
 	}
 	else
 	{
@@ -1189,7 +1188,10 @@ class ArrayBoundsCheckerAnalysis
 	}
     }
 
-
+  /* assert the branch statement
+   * return true, if the out condition changed,
+   *        false, otherwise
+   */
     private boolean assertBranchStmt(Object in,
 				     Unit s, Block current,
 				     List succs,
@@ -1202,6 +1204,11 @@ class ArrayBoundsCheckerAnalysis
 
 	if (!(cmpcond instanceof ConditionExpr))
 	    return false;
+
+	// how may succs?
+	if (succs.size() != 2) {
+	  return false;
+	}
 
 	Stmt targetUnit = ifstmt.getTarget();
 	Block targetBlock = (Block)succs.get(0);

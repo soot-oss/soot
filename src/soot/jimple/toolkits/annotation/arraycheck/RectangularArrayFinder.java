@@ -54,8 +54,6 @@ public class RectangularArrayFinder extends SceneTransformer
 
     static boolean debug = soot.Main.isInDebugMode;
 
-    // static boolean debug = true;
-
     private RectangularArrayFinder()
     {}
 

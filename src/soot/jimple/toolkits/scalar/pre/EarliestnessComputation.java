@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Florian Loitsch
+ * Copyright (C) 2002 Florian Loitsch, Feng Qian
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -47,15 +47,20 @@ import soot.util.*;
  * Intuitively: If the one predecessor is not transparent, we can't push the
  * computation further up. If one of the predecessor is not safe, we would
  * introduce a new computation on its path. Hence we can't push further up.<p>
- * Note that this computation is linear in the number of units, as we don't need
- * to find any fixed-point.
+ * Note that this computation is linear in the number of units, as we don't 
+ * need to find any fixed-point.
  *
- * @see UpSafetyAnalysis
+ * This implementation follows Knoop's PLDI 1992 paper.
+ *
  * @see DownSafetyAnalysis
  */
-public class EarliestnessComputation {
-  private Map unitToEarliest;
+public class EarliestnessComputation extends ForwardFlowAnalysis{
+  private DownSafetyAnalysis downSafe;
   private SideEffectTester sideEffect;
+  private BoundedFlowSet set;
+
+  private Map unitToNotTrans;
+  
 
   /**
    * given an UpSafetyAnalysis and a DownSafetyAnalysis, performs the
@@ -64,11 +69,12 @@ public class EarliestnessComputation {
    * transparent.
    *
    * @param unitGraph the Unitgraph we'll work on.
-   * @param upSafe a UpSafetyAnalysis of <code>unitGraph</code>
+   * @param upSafe (unused) a UpSafetyAnalysis of <code>unitGraph</code>.
    * @param downSafe a DownSafetyAnalysis of <code>unitGraph</code>
    */
-  public EarliestnessComputation(UnitGraph unitGraph, UpSafetyAnalysis upSafe,
-      DownSafetyAnalysis downSafe) {
+  public EarliestnessComputation(UnitGraph unitGraph, 
+				 UpSafetyAnalysis upSafe,
+				 DownSafetyAnalysis downSafe) {
     this(unitGraph, upSafe, downSafe, new NaiveSideEffectTester());
   }
 
@@ -77,16 +83,18 @@ public class EarliestnessComputation {
    * earliest-computation.<br>
    *
    * @param unitGraph the Unitgraph we'll work on.
-   * @param upSafe a UpSafetyAnalysis of <code>unitGraph</code>
+   * @param upSafe (unused) a UpSafetyAnalysis of <code>unitGraph</code>
    * @param downSafe a DownSafetyAnalysis of <code>unitGraph</code>
    * @param sideEffect the SideEffectTester that will tell if a node is
    * transparent or not.
    */
-  public EarliestnessComputation(UnitGraph unitGraph, UpSafetyAnalysis upSafe,
-      DownSafetyAnalysis downSafe, SideEffectTester sideEffect) {
+  public EarliestnessComputation(UnitGraph unitGraph,
+				 UpSafetyAnalysis upSafe,
+				 DownSafetyAnalysis downSafe, 
+				 SideEffectTester sideEffect) {
     this(unitGraph, upSafe, downSafe, sideEffect, new BoundedArraySparseSet());
   }
-
+  
   /**
    * given an UpSafetyAnalysis and a DownSafetyAnalysis, performs the
    * earliest-computation.<br>
@@ -94,98 +102,95 @@ public class EarliestnessComputation {
    * more efficient, if the sets come from the same source).
    *
    * @param unitGraph the Unitgraph we'll work on.
-   * @param upSafe a UpSafetyAnalysis of <code>unitGraph</code>
+   * @param upSafe (unused) a UpSafetyAnalysis of <code>unitGraph</code>
    * @param downSafe a DownSafetyAnalysis of <code>unitGraph</code>
    * @param sideEffect the SideEffectTester that will tell if a node is
    * transparent or not.
    * @param set the shared set.
    */
-  public EarliestnessComputation(UnitGraph unitGraph, UpSafetyAnalysis upSafe,
-      DownSafetyAnalysis downSafe, SideEffectTester sideEffect, FlowSet set) {
+  public EarliestnessComputation(UnitGraph unitGraph,
+				 UpSafetyAnalysis upSafe,
+				 DownSafetyAnalysis downSafe, 
+				 SideEffectTester sideEffect, 
+				 FlowSet fullset) {
+    super(unitGraph);
+
     this.sideEffect = sideEffect;
+    this.downSafe   = downSafe;
+    this.set        = (BoundedFlowSet)fullset;
 
-    unitToEarliest = new HashMap(unitGraph.size() + 1, 0.7f);
-
+    // pre-compute ~TRANSLoc
+    this.unitToNotTrans = new HashMap(unitGraph.size() + 1, 0.7f);
     Iterator unitIt = unitGraph.iterator();
     while (unitIt.hasNext()) {
-      /* create a new Earliest-list for each unit */
-      Unit currentUnit = (Unit)unitIt.next();
-      FlowSet earliest = (FlowSet)set.emptySet();
-      unitToEarliest.put(currentUnit, earliest);
+      Unit u = (Unit)unitIt.next();
+      FlowSet s = (FlowSet)set.topSet();
+      Iterator exprIt = s.iterator();
+      while (exprIt.hasNext()) {
+	EquivalentValue equiVal = (EquivalentValue)exprIt.next();
+	Value avail = equiVal.getValue();
+	if (avail instanceof FieldRef) {
+	  if (sideEffect.unitCanWriteTo(u, avail))
+	    exprIt.remove();
+	} else {
+	  Iterator usesIt = avail.getUseBoxes().iterator();
 
-      /* get a copy of the downSafe-set at the current unit */
-      FlowSet downSafeSet =
-        (FlowSet)((FlowSet)downSafe.getFlowBefore(currentUnit)).clone();
+	  // iterate over uses in each avail.
+	  while (usesIt.hasNext()) {
+	    Value use = ((ValueBox)usesIt.next()).getValue();
 
-      List predList = unitGraph.getPredsOf(currentUnit);
-      if (predList.size() == 0) { //no predecessor
-        /* we are obviously at the earliest position for any downsafe
-         * computation */ 
-        earliest.union(downSafeSet);
-      } else {
-        Iterator predIt = predList.iterator();
-        while(predIt.hasNext()) {
-          Unit predecessor = (Unit)predIt.next();
-
-          { /* if a predecessor is not transparent for a certain computation,
-             * that is downsafe here, we can't push the computation further up,
-             * and the earliest computation is before the current point.*/
-
-            /* for each element in the downSafe-set, look if it passes through
-             * the predecessor */
-            Iterator downSafeIt = downSafeSet.iterator();
-            while (downSafeIt.hasNext()) {
-              EquivalentValue equiVal = (EquivalentValue)downSafeIt.next();
-              Value avail = equiVal.getValue();
-              if (avail instanceof FieldRef) {
-                if (sideEffect.unitCanWriteTo(predecessor, avail)) {
-                  earliest.add(equiVal);
-                  downSafeIt.remove();
-                }
-              } else {
-                Iterator usesIt = avail.getUseBoxes().iterator();
-
-                // iterate over uses in each avail.
-                while (usesIt.hasNext()) {
-                  Value use = ((ValueBox)usesIt.next()).getValue();
-
-                  if (sideEffect.unitCanWriteTo(predecessor, use)) {
-                    earliest.add(equiVal);
-                    downSafeIt.remove();
-                    break;
-                  }
-                }
-              }
-            }
-          }
-
-          { /* look if one of the expressions is not upsafe and not downsafe in
-             * one of the predecessors */
-            Iterator downSafeIt = downSafeSet.iterator();
-            while (downSafeIt.hasNext()) {
-              EquivalentValue equiVal = (EquivalentValue)downSafeIt.next();
-              Value avail = equiVal.getValue();
-              FlowSet preDown = (FlowSet)downSafe.getFlowBefore(predecessor);
-              FlowSet preUp = (FlowSet)upSafe.getFlowBefore(predecessor);
-              if (!preDown.contains(equiVal) && !preUp.contains(equiVal)) {
-                earliest.add(equiVal);
-                downSafeIt.remove();
-              }
-            }
-          }
-        }
-      }
+	    if (sideEffect.unitCanWriteTo(u, use)) {                
+	      exprIt.remove();
+	      break;
+	    }
+	  }
+	}
+      }   
+      
+      this.unitToNotTrans.put(u, s);
     }
+    doAnalysis();
   }
 
-  /**
-   * returns the FlowSet of expressions, that have their earliest computation just
-   * before <code>node</code>.
-   *
-   * @param node a Object of the flow-graph (in our case always a unit).
-   * @return a FlowSet containing the expressions.
-   */
-  public Object getFlowBefore(Object node) {
-    return unitToEarliest.get(node);
+  protected Object newInitialFlow(){
+    return set.emptySet();
+  }
+
+  // same effect as call customizeInitialFlowGraph...
+  protected Object entryInitialFlow(){
+    return set.topSet();
+  }
+
+  protected void flowThrough(Object inValue,
+			     Object unit,
+			     Object outValue) {
+    FlowSet in = (FlowSet)inValue;
+    FlowSet out = (FlowSet)outValue;
+
+    in.copy(out);
+
+    // remove down-safe
+    FlowSet downSafeSet = (FlowSet)this.downSafe.getFlowAfter(unit);
+    out.difference(downSafeSet);
+
+    // add ~TRANSloc
+    FlowSet notTransSet = (FlowSet)this.unitToNotTrans.get(unit);
+    out.union(notTransSet);
+  }
+
+  protected void merge(Object in1, Object in2, Object out){
+    FlowSet inSet1 = (FlowSet)in1;
+    FlowSet inSet2 = (FlowSet)in2;
+
+    FlowSet outSet = (FlowSet)out;
+
+    inSet1.union(inSet2, outSet);
+  }
+
+  protected void copy(Object source, Object dest){
+    FlowSet sourceSet = (FlowSet)source;
+    FlowSet destSet = (FlowSet)dest;
+
+    sourceSet.copy(destSet);
   }
 }

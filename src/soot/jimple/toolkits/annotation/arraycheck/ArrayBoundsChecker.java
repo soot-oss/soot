@@ -57,8 +57,6 @@ public class ArrayBoundsChecker extends BodyTransformer
 
     static boolean debug = soot.Main.isInDebugMode;
 
-    //    static boolean debug = true;
-
     public String getDeclaredOptions()
     {
 	return super.getDeclaredOptions()+" with-all with-fieldref with-arrayref"

@@ -1,3 +1,10 @@
+Todo (as of 1.2.3)
+1. Spark (points-to) package, Ondrej
+2. SSA-Jimple (Navindra)
+3. Decompiler (Jerome)
+4. Solve UnitGraph for infinite loops (without exit points).
+5. More projects from CS621.
+
 Todo (as of 1.2.2)
 1. waiting for more improvements on speed and memory usage
    John is working on that.

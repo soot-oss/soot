@@ -1565,7 +1565,10 @@ public class CFG {
 		{
 		    Stmt afterEndStmt = (Stmt)units.getSuccOf(lastStmt);
 
-		    Trap trap = Jimple.v().newTrap(exception, firstStmt, afterEndStmt, newTarget);
+		    Trap trap = Jimple.v().newTrap(exception, 
+						   firstStmt, 
+						   afterEndStmt, 
+						   newTarget);
 		    listBody.getTraps().add(trap);
 		}
 
