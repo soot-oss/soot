@@ -96,7 +96,7 @@ public class StaticFieldRef implements FieldRef, ToBriefString
 
     public String toString()
     {
-        return "[" + field.getSignature() + "]";
+        return "<" + field.getSignature() + ">";
     }
 
     public String toBriefString()

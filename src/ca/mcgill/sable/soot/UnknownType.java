@@ -107,7 +107,7 @@ public class UnknownType extends Type
     {
         return "<unknown>";
     }
-
+    
     public void apply(Switch sw)
     {
         ((TypeSwitch) sw).caseUnknownType(this);

@@ -100,7 +100,7 @@ public class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements Stat
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("staticinvoke [" + method.getSignature() + "](");
+        buffer.append("staticinvoke <" + method.getSignature() + ">(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {

@@ -73,10 +73,15 @@ package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
 
-public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchable
+public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchable, ToBriefString
 {
     public abstract String toString();
-
+    
+    public String toBriefString()
+    {
+        return toString();
+    }
+    
     public static Type toMachineType(Type t)
     {
         if(t.equals(ShortType.v()) || t.equals(ByteType.v()) ||

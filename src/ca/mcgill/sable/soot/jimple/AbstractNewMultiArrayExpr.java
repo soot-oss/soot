@@ -110,7 +110,7 @@ public class AbstractNewMultiArrayExpr implements NewMultiArrayExpr
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("new " + baseType.baseType.toString());
+        buffer.append("new " + baseType.baseType.toBriefString());
 
         for(int i = 0; i < sizeBoxes.length; i++)
             buffer.append("[" + ((ToBriefString) sizeBoxes[i].getValue()).toBriefString() + "]");

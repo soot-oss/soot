@@ -103,8 +103,8 @@ public class SootField
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(getDeclaringClass().getName());
-        buffer.append("." + getName());
+        buffer.append("'" + getDeclaringClass().getName() + "'");
+        buffer.append(":" + "'" + getName() + "'");
         buffer.append(":" + getType());
 
         return buffer.toString();
@@ -161,7 +161,7 @@ public class SootField
         if(qualifiers.equals(""))
             return name;
         else
-            return qualifiers + " " + name;
+            return qualifiers + " '" + name + "'";
     }
 }
 

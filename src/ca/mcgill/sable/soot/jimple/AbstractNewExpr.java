@@ -92,7 +92,7 @@ public class AbstractNewExpr implements NewExpr
 
     public String toBriefString()
     {
-        return toString();
+        return "new " + type.toBriefString();
     }
     
     public RefType getBaseType()

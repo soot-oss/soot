@@ -109,7 +109,7 @@ public class AbstractNewArrayExpr implements NewArrayExpr
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("new " + baseType.toString());
+        buffer.append("new " + baseType.toBriefString());
         buffer.append("[" + ((ToBriefString) sizeBox.getValue()).toBriefString() + "]");
 
         return buffer.toString();

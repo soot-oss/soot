@@ -108,7 +108,7 @@ public class AbstractVirtualInvokeExpr extends AbstractNonStaticInvokeExpr
         StringBuffer buffer = new StringBuffer();
 
         buffer.append("virtualinvoke " + baseBox.getValue().toString() +
-            ".[" + method.getSignature() + "](");
+            ".<" + method.getSignature() + ">(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {

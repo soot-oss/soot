@@ -109,6 +109,18 @@ public class ArrayType extends Type
             return false;
     }
 
+    public String toBriefString()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(baseType.toBriefString());
+
+        for(int i = 0; i < numDimensions; i++)
+            buffer.append("[]");
+
+        return buffer.toString();
+    }
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();

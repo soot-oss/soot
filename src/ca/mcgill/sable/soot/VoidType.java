@@ -103,7 +103,7 @@ public class VoidType extends Type
     {
         return "void";
     }
-
+    
     public void apply(Switch sw)
     {
         ((TypeSwitch) sw).caseVoidType(this);

@@ -333,10 +333,9 @@ public class SootMethod
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(getDeclaringClass().getName());
-        buffer.append(".");
-        buffer.append(getName());
-        buffer.append("(");
+        buffer.append("'" + getDeclaringClass().getName() + "'");
+        buffer.append(":'" + getName() + "'");
+        buffer.append(":(");
 
         Iterator typeIt = getParameterTypes().iterator();
 
@@ -377,7 +376,7 @@ public class SootMethod
         if(buffer.length() != 0)
             buffer.append(" ");
 
-        buffer.append(this.getReturnType().toString() + " " + this.getName());
+        buffer.append(this.getReturnType().toString() + " '" + this.getName() + "'");
         buffer.append("(");
 
         Iterator typeIt = this.getParameterTypes().iterator();
@@ -402,12 +401,12 @@ public class SootMethod
             if(exceptionIt.hasNext())
             {
                 buffer.append(" throws ");
-                buffer.append(((SootClass) exceptionIt.next()).getName());
+                buffer.append("'" + ((SootClass) exceptionIt.next()).getName() + "'");
 
                 while(exceptionIt.hasNext())
                 {
                     buffer.append(", ");
-                    buffer.append(((SootClass) exceptionIt.next()).getName());
+                    buffer.append("'" + ((SootClass) exceptionIt.next()).getName() + "'");
                 }
             }
 

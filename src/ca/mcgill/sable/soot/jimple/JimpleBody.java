@@ -577,7 +577,7 @@ public class JimpleBody implements StmtBody
             if(buffer.length() != 0)
                 buffer.append(" ");
 
-            buffer.append(method.getReturnType().toString() + " " + method.getName());
+            buffer.append(method.getReturnType().toString() + " '" + method.getName() + "'");
             buffer.append("(");
 
             Iterator typeIt = method.getParameterTypes().iterator();

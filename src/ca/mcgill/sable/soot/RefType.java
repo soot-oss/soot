@@ -97,13 +97,12 @@ public class RefType extends BaseType implements ToBriefString
 
     public String toString()
     {
-        return className;
+        return "'" + className + "'";
     }
 
-    /* eventually this could return the shortest-unambiguous-className */
     public String toBriefString()
     {
-	return className;
+	    return className;
     }
 
     public int hashCode()
