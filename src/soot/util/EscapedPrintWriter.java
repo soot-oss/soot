@@ -2,7 +2,7 @@ package soot.util;
 
 import java.io.*;
 
-class EscapedPrintWriter extends PrintWriter
+public class EscapedPrintWriter extends PrintWriter
 {
     public EscapedPrintWriter(FileOutputStream fos)
     {
