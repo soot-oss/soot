@@ -293,10 +293,13 @@ public class ModelCreator {
 			
 			buildModel(cfgGraph);
 		}
-    
-		catch (CoreException e){
-			System.err.println(e.getMessage());
-			e.printStackTrace();
+        catch (PartInitException ex){
+        	System.err.println(ex.getMessage());
+        //}
+		//catch (CoreException e){
+			System.err.println("part kind: "+part.getClass());
+			//System.err.println(e.getMessage());
+			ex.printStackTrace();
 		}
 	}
 	
