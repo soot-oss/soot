@@ -66,6 +66,9 @@ Feng Qian (fqian@sable.mcgill.ca)
     - prepared 1.2.0 release
     - Dot interface, CFGViewer
     - prepared 1.2.2, 1.2.3 release
+
+Ganesh Sittampalam (ganesh@earth.li>
+   - contributed to resolver redesign
     
 Vijay Sundaresan (vijay@sable.mcgill.ca)
     - first implementation of inlining and devirtualization
