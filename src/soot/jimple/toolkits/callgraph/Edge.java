@@ -62,10 +62,12 @@ public final class Edge
     public static final int FINALIZE = 8;
     /** Implicit call to run() through AccessController.doPrivileged(). */
     public static final int PRIVILEGED = 9;
+    /** Implicit call to constructor from java.lang.Class.newInstance(). */
+    public static final int NEWINSTANCE = 10;
 
     public static final String[] kinds = { "INVALID",
         "STATIC", "VIRTUAL", "INTERFACE", "SPECIAL",
-        "CLINIT", "THREAD", "EXIT", "FINALIZE", "PRIVILEGED" };
+        "CLINIT", "THREAD", "EXIT", "FINALIZE", "PRIVILEGED", "NEWINSTANCE" };
 
     /** The kind of edge. Valid kinds are given by the static final
      * fields above. Note: kind should not be tested by other classes;

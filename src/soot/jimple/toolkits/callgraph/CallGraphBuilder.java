@@ -283,6 +283,21 @@ public final class CallGraphBuilder
                         warnedAlready = true;
                     }
                 }
+                if( ie.getMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
+                    if( options.safe_newinstance() ) {
+                        for( Iterator tgtIt = EntryPoints.v().inits().iterator(); tgtIt.hasNext(); ) {
+                            final SootMethod tgt = (SootMethod) tgtIt.next();
+                            cg.addEdge( new Edge( source, s, tgt, Edge.NEWINSTANCE ) );
+                        }
+                    } else {
+                        if( options.verbose() ) {
+                            G.v().out.println( "Warning: Method "+source+
+                                " is reachable, and calls Class.newInstance;"+
+                                " graph will be incomplete!"+
+                                " Use safe-newinstance option for a conservative result." );
+                        }
+                    } 
+                }
                 if( ie instanceof StaticInvokeExpr ) {
                     addEdge( source, s, ie.getMethod().getDeclaringClass(),
                         sigClinit, Edge.CLINIT );

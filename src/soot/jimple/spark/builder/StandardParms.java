@@ -92,6 +92,19 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
                     Node tgtThis = caseThis( e.tgt() ).getReplacement();
                     addEdge( srcThis, tgtThis );
                     break;
+                case Edge.NEWINSTANCE:
+                    Stmt s = (Stmt) e.srcUnit();
+                    Node newObject;
+                    if( s instanceof AssignStmt ) {
+                        AssignStmt as = (AssignStmt) s;
+                        caseLocal( (Local) as.getRightOp() );
+                        newObject = getNode();
+                    } else if( s instanceof InvokeExpr ) {
+                        newObject = caseRet( e.tgt() ).getReplacement();
+                    } else throw new RuntimeException();
+                    Node initThis = caseThis( e.tgt() ).getReplacement();
+                    addEdge( newObject, initThis );
+                    break;
                 default:
                     throw new RuntimeException( "Unhandled edge "+e );
             }

@@ -577,6 +577,21 @@ static initializers.
 </long_desc>
                                 </boolopt>
                                 <boolopt>
+                                        <name>Safe newInstance</name>
+                                        <alias>safe-newinstance</alias>
+                                        <default>false</default>
+                                        <short_desc>Handle Class.newInstance() calls conservatively</short_desc>
+                                        <long_desc>When a program calls
+Class.newInstance(), a new object is created and its constructor
+executed. Soot does not determine statically which
+type of object will be created, and which constructor executed. When this
+option is set to true, Soot will conservatively assume that any constructor
+could be executed. This may make the call graph very large.
+When this option is set to false, any calls to Class.newInstance()
+are assumed not to call the constructor of the created object.
+</long_desc>
+                                </boolopt>
+                                <boolopt>
                                         <name>Verbose</name>
                                         <alias>verbose</alias>
                                         <default>false</default>

@@ -1022,6 +1022,7 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "safe-forname (false)", "Handle Class.forName() calls conservatively" )
+                +padOpt( "safe-newinstance (false)", "Handle Class.newInstance() calls conservatively" )
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" );
     
         if( phaseName.equals( "cg.cha" ) )
@@ -1546,6 +1547,7 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled "
                 +"safe-forname "
+                +"safe-newinstance "
                 +"verbose ";
     
         if( phaseName.equals( "cg.cha" ) )
@@ -1893,6 +1895,7 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true "
               +"safe-forname:false "
+              +"safe-newinstance:false "
               +"verbose:false ";
     
         if( phaseName.equals( "cg.cha" ) )

@@ -60,6 +60,23 @@ public class CGOptions
         return soot.PhaseOptions.getBoolean( options, "safe-forname" );
     }
     
+    /** Safe newInstance --
+    
+     * Handle Class.newInstance() calls conservatively.
+    
+     * When a program calls Class.newInstance(), a new object is 
+     * created and its constructor executed. Soot does not determine 
+     * statically which type of object will be created, and which 
+     * constructor executed. When this option is set to true, Soot will 
+     * conservatively assume that any constructor could be executed. 
+     * This may make the call graph very large. When this option is set 
+     * to false, any calls to Class.newInstance() are assumed not to 
+     * call the constructor of the created object. 
+     */
+    public boolean safe_newinstance() {
+        return soot.PhaseOptions.getBoolean( options, "safe-newinstance" );
+    }
+    
     /** Verbose --
     
      * Print warnings about where the call graph may be incomplete.

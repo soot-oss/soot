@@ -40,6 +40,8 @@ public class EntryPoints
         findOrAdd( "void exit()" );
     final NumberedString sigClinit = Scene.v().getSubSigNumberer().
         findOrAdd( "void <clinit>()" );
+    final NumberedString sigInit = Scene.v().getSubSigNumberer().
+        findOrAdd( "void <init>()" );
     final NumberedString sigStart = Scene.v().getSubSigNumberer().
         findOrAdd( "void start()" );
     final NumberedString sigRun = Scene.v().getSubSigNumberer().
@@ -100,6 +102,15 @@ public class EntryPoints
         for( Iterator clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
             final SootClass cl = (SootClass) clIt.next();
             addMethod( ret, cl, sigClinit );
+        }
+        return ret;
+    }
+    /** Returns a list of all constructors taking no arguments. */
+    public List inits() {
+        List ret = new ArrayList();
+        for( Iterator clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = (SootClass) clIt.next();
+            addMethod( ret, cl, sigInit );
         }
         return ret;
     }
