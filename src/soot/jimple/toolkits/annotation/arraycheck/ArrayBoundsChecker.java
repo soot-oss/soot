@@ -251,6 +251,23 @@ public class ArrayBoundsChecker extends BodyTransformer
                 }
             }
 
+            if( addColorTags && takeRectArray ) {
+                RectangularArrayFinder raf = RectangularArrayFinder.v();
+                for( Iterator vbIt = body.getUseAndDefBoxes().iterator(); vbIt.hasNext(); ) {
+                    final ValueBox vb = (ValueBox) vbIt.next();
+                    Value v = vb.getValue();
+                    if( !(v instanceof Local) ) continue;
+                    Type t = v.getType();
+                    if( !(t instanceof ArrayType) ) continue;
+                    ArrayType at = (ArrayType) t;
+                    if( at.numDimensions <= 1 ) continue;
+                    vb.addTag( new ColorTag(
+                        raf.isRectangular( new MethodLocal(m, (Local) v) )
+                                   ? ColorTag.GREEN
+                                   : ColorTag.RED ));
+                }
+            }
+
             Date finish = new Date();
             if (Options.v().verbose()) 
             {
