@@ -46,8 +46,8 @@ public class CoffiMethodSource implements MethodSource
     {
         JimpleBody jb = Jimple.v().newBody(m);
         
-        Map options = PackManager.v().getPhaseOptions(phaseName);
-        boolean useOriginalNames = PackManager.getBoolean(options, "use-original-names");
+        Map options = PhaseOptions.v().getPhaseOptions(phaseName);
+        boolean useOriginalNames = PhaseOptions.getBoolean(options, "use-original-names");
 
         if(useOriginalNames)
             soot.coffi.Util.v().setFaithfulNaming(true);

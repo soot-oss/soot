@@ -45,7 +45,7 @@ public abstract class BodyTransformer extends Transformer
      */
     public final void transform(Body b, String phaseName, Map options)
     {
-        if(!PackManager.getBoolean(options, "enabled"))
+        if(!PhaseOptions.getBoolean(options, "enabled"))
             return;
 
         internalTransform(b, phaseName, options);

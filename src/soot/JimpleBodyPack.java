@@ -52,7 +52,7 @@ public class JimpleBodyPack extends BodyPack
         JBOptions options = new JBOptions( opts );
         
         if(options.use_original_names())
-            PackManager.v().setPhaseOptionIfUnset( "jb.lns", "only-stack-locals");
+            PhaseOptions.v().setPhaseOptionIfUnset( "jb.lns", "only-stack-locals");
         
         if(Options.v().time()) Timers.v().splitTimer.start();
 
@@ -117,6 +117,6 @@ public class JimpleBodyPack extends BodyPack
     protected void internalApply(Body b)
     {
         applyPhaseOptions( (JimpleBody) b,
-                PackManager.v().getPhaseOptions( getPhaseName() ) );
+                PhaseOptions.v().getPhaseOptions( getPhaseName() ) );
     }
 }

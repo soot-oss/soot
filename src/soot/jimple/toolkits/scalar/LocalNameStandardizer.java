@@ -42,7 +42,7 @@ public class LocalNameStandardizer extends BodyTransformer
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {
-        boolean onlyStackName = PackManager.getBoolean(options, "only-stack-locals");
+        boolean onlyStackName = PhaseOptions.getBoolean(options, "only-stack-locals");
 
         // Change the names to the standard forms now.
         {

@@ -37,8 +37,8 @@ public class RadioScenePack extends ScenePack
         for( Iterator tIt = this.iterator(); tIt.hasNext(); ) {
 
             final Transform t = (Transform) tIt.next();
-            Map opts = PackManager.v().getPhaseOptions( t );
-            if( !PackManager.getBoolean( opts, "enabled" ) ) continue;
+            Map opts = PhaseOptions.v().getPhaseOptions( t );
+            if( !PhaseOptions.getBoolean( opts, "enabled" ) ) continue;
             enableds.add( t );
         }
         if( enableds.size() == 0 ) {
@@ -58,6 +58,29 @@ public class RadioScenePack extends ScenePack
         for( Iterator tIt = enableds.iterator(); tIt.hasNext(); ) {
             final Transform t = (Transform) tIt.next();
             t.apply();
+        }
+    }
+
+    public void add(Transform t) {
+        super.add(t);
+        checkEnabled(t);
+    }
+    public void insertAfter(Transform t, String phaseName) {
+        super.insertAfter(t, phaseName);
+        checkEnabled(t);
+    }
+    public void insertBefore(Transform t, String phaseName) {
+        super.insertBefore(t, phaseName);
+        checkEnabled(t);
+    }
+    private void checkEnabled(Transform t) {
+        Map options = PhaseOptions.v().getPhaseOptions(t);
+        if( PhaseOptions.v().getBoolean( options, "enabled" ) ) {
+            for( Iterator otherIt = this.iterator(); otherIt.hasNext(); ) {
+                final Transform other = (Transform) otherIt.next();
+                if( other == t ) continue;
+                PhaseOptions.v().setPhaseOptionWithoutChecks( other, "enabled:false" );
+            }
         }
     }
 }

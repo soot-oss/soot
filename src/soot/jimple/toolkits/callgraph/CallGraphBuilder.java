@@ -41,7 +41,7 @@ public final class CallGraphBuilder
 
     public CallGraphBuilder( PointsToAnalysis pa ) {
         this.pa = pa;
-        options = new CGOptions( PackManager.v().getPhaseOptions("cg") );
+        options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
         cg = new CallGraph();
         Scene.v().setCallGraph( cg );
         reachables = Scene.v().getReachableMethods();
@@ -54,7 +54,7 @@ public final class CallGraphBuilder
         G.v().out.println( "Warning: using incomplete callgraph containing "+
                 "only application classes." );
         pa = soot.jimple.toolkits.pointer.DumbPointerAnalysis.v();
-        options = new CGOptions( PackManager.v().getPhaseOptions("cg") );
+        options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
         cg = new CallGraph();
         Scene.v().setCallGraph(cg);
         reachables = Scene.v().getReachableMethods();

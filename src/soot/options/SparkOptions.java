@@ -34,142 +34,142 @@ public class SparkOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Verbose --  */
     public boolean verbose() {
-        return soot.PackManager.getBoolean( options, "verbose" );
+        return soot.PhaseOptions.getBoolean( options, "verbose" );
     }
     
     /** Ignore Types Entirely --  */
     public boolean ignore_types() {
-        return soot.PackManager.getBoolean( options, "ignore-types" );
+        return soot.PhaseOptions.getBoolean( options, "ignore-types" );
     }
     
     /** Force Garbages Collections --  */
     public boolean force_gc() {
-        return soot.PackManager.getBoolean( options, "force-gc" );
+        return soot.PhaseOptions.getBoolean( options, "force-gc" );
     }
     
     /** Pre Jimplify --  */
     public boolean pre_jimplify() {
-        return soot.PackManager.getBoolean( options, "pre-jimplify" );
+        return soot.PhaseOptions.getBoolean( options, "pre-jimplify" );
     }
     
     /** VTA --  */
     public boolean vta() {
-        return soot.PackManager.getBoolean( options, "vta" );
+        return soot.PhaseOptions.getBoolean( options, "vta" );
     }
     
     /** RTA --  */
     public boolean rta() {
-        return soot.PackManager.getBoolean( options, "rta" );
+        return soot.PhaseOptions.getBoolean( options, "rta" );
     }
     
     /** Field Based --  */
     public boolean field_based() {
-        return soot.PackManager.getBoolean( options, "field-based" );
+        return soot.PhaseOptions.getBoolean( options, "field-based" );
     }
     
     /** Types For Sites --  */
     public boolean types_for_sites() {
-        return soot.PackManager.getBoolean( options, "types-for-sites" );
+        return soot.PhaseOptions.getBoolean( options, "types-for-sites" );
     }
     
     /** Merge String Buffer --  */
     public boolean merge_stringbuffer() {
-        return soot.PackManager.getBoolean( options, "merge-stringbuffer" );
+        return soot.PhaseOptions.getBoolean( options, "merge-stringbuffer" );
     }
     
     /** Simulate Natives --  */
     public boolean simulate_natives() {
-        return soot.PackManager.getBoolean( options, "simulate-natives" );
+        return soot.PhaseOptions.getBoolean( options, "simulate-natives" );
     }
     
     /** Simple Edges Bidirectional --  */
     public boolean simple_edges_bidirectional() {
-        return soot.PackManager.getBoolean( options, "simple-edges-bidirectional" );
+        return soot.PhaseOptions.getBoolean( options, "simple-edges-bidirectional" );
     }
     
     /** On Fly Call Graph --  */
     public boolean on_fly_cg() {
-        return soot.PackManager.getBoolean( options, "on-fly-cg" );
+        return soot.PhaseOptions.getBoolean( options, "on-fly-cg" );
     }
     
     /** Parms As Fields --  */
     public boolean parms_as_fields() {
-        return soot.PackManager.getBoolean( options, "parms-as-fields" );
+        return soot.PhaseOptions.getBoolean( options, "parms-as-fields" );
     }
     
     /** Returns As Fields --  */
     public boolean returns_as_fields() {
-        return soot.PackManager.getBoolean( options, "returns-as-fields" );
+        return soot.PhaseOptions.getBoolean( options, "returns-as-fields" );
     }
     
     /** All Static Initializers Reachable --  */
     public boolean all_clinit() {
-        return soot.PackManager.getBoolean( options, "all-clinit" );
+        return soot.PhaseOptions.getBoolean( options, "all-clinit" );
     }
     
     /** Simplify Offline --  */
     public boolean simplify_offline() {
-        return soot.PackManager.getBoolean( options, "simplify-offline" );
+        return soot.PhaseOptions.getBoolean( options, "simplify-offline" );
     }
     
     /** Simplify SCCs --  */
     public boolean simplify_sccs() {
-        return soot.PackManager.getBoolean( options, "simplify-sccs" );
+        return soot.PhaseOptions.getBoolean( options, "simplify-sccs" );
     }
     
     /** Ignore Types For SCCs --  */
     public boolean ignore_types_for_sccs() {
-        return soot.PackManager.getBoolean( options, "ignore-types-for-sccs" );
+        return soot.PhaseOptions.getBoolean( options, "ignore-types-for-sccs" );
     }
     
     /** Dump HTML --  */
     public boolean dump_html() {
-        return soot.PackManager.getBoolean( options, "dump-html" );
+        return soot.PhaseOptions.getBoolean( options, "dump-html" );
     }
     
     /** Dump PAG --  */
     public boolean dump_pag() {
-        return soot.PackManager.getBoolean( options, "dump-pag" );
+        return soot.PhaseOptions.getBoolean( options, "dump-pag" );
     }
     
     /** Dump Solution --  */
     public boolean dump_solution() {
-        return soot.PackManager.getBoolean( options, "dump-solution" );
+        return soot.PhaseOptions.getBoolean( options, "dump-solution" );
     }
     
     /** Topological Sort --  */
     public boolean topo_sort() {
-        return soot.PackManager.getBoolean( options, "topo-sort" );
+        return soot.PhaseOptions.getBoolean( options, "topo-sort" );
     }
     
     /** Dump Types --  */
     public boolean dump_types() {
-        return soot.PackManager.getBoolean( options, "dump-types" );
+        return soot.PhaseOptions.getBoolean( options, "dump-types" );
     }
     
     /** Class Method Var --  */
     public boolean class_method_var() {
-        return soot.PackManager.getBoolean( options, "class-method-var" );
+        return soot.PhaseOptions.getBoolean( options, "class-method-var" );
     }
     
     /** Dump Answer --  */
     public boolean dump_answer() {
-        return soot.PackManager.getBoolean( options, "dump-answer" );
+        return soot.PhaseOptions.getBoolean( options, "dump-answer" );
     }
     
     /** Add Tags --  */
     public boolean add_tags() {
-        return soot.PackManager.getBoolean( options, "add-tags" );
+        return soot.PhaseOptions.getBoolean( options, "add-tags" );
     }
     
     /** Calculate Set Mass --  */
     public boolean set_mass() {
-        return soot.PackManager.getBoolean( options, "set-mass" );
+        return soot.PhaseOptions.getBoolean( options, "set-mass" );
     }
     
     public static final int propagator_iter = 1;
@@ -180,7 +180,7 @@ public class SparkOptions
     public static final int propagator_none = 6;
     /** Propagator --  */
     public int propagator() {
-        String s = soot.PackManager.getString( options, "propagator" );
+        String s = soot.PhaseOptions.getString( options, "propagator" );
         
         if( s.equalsIgnoreCase( "iter" ) )
             return propagator_iter;
@@ -211,7 +211,7 @@ public class SparkOptions
     public static final int set_impl_shared = 6;
     /** Set Implementation --  */
     public int set_impl() {
-        String s = soot.PackManager.getString( options, "set-impl" );
+        String s = soot.PhaseOptions.getString( options, "set-impl" );
         
         if( s.equalsIgnoreCase( "hash" ) )
             return set_impl_hash;
@@ -241,7 +241,7 @@ public class SparkOptions
     public static final int double_set_old_shared = 5;
     /** Double Set Old --  */
     public int double_set_old() {
-        String s = soot.PackManager.getString( options, "double-set-old" );
+        String s = soot.PhaseOptions.getString( options, "double-set-old" );
         
         if( s.equalsIgnoreCase( "hash" ) )
             return double_set_old_hash;
@@ -268,7 +268,7 @@ public class SparkOptions
     public static final int double_set_new_shared = 5;
     /** Double Set New --  */
     public int double_set_new() {
-        String s = soot.PackManager.getString( options, "double-set-new" );
+        String s = soot.PhaseOptions.getString( options, "double-set-new" );
         
         if( s.equalsIgnoreCase( "hash" ) )
             return double_set_new_hash;

@@ -34,12 +34,12 @@ public class FRWOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Maximum number of fields --  */
     public int threshold() {
-        return soot.PackManager.getInt( options, "threshold" );
+        return soot.PhaseOptions.getInt( options, "threshold" );
     }
     
 }

@@ -38,7 +38,7 @@ public class FieldTagger extends BodyTransformer
     }
     protected void internalTransform(Body body, String phaseName, Map options)
     {
-        int threshold = PackManager.getInt( options, "threshold" );
+        int threshold = PhaseOptions.getInt( options, "threshold" );
 
         ensureProcessed( body.getMethod() );
 

@@ -74,7 +74,7 @@ public class LoopConditionUnroller extends BodyTransformer {
     visitingSuccs = new HashSet();
     visitedBlocks = new HashSet();
     this.body = body;
-    this.maxSize = PackManager.getInt(options, "maxSize");
+    this.maxSize = PhaseOptions.getInt(options, "maxSize");
     
     BlockGraph bg = new BriefBlockGraph(body);
     Iterator headIter = bg.getHeads().iterator();

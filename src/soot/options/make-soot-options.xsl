@@ -370,25 +370,25 @@ public class <xsl:copy-of select="$filename"/>
     <xsl:for-each select="boolopt|section/boolopt"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public boolean <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
-        return soot.PackManager.getBoolean( options, "<xsl:value-of select="alias"/>" );
+        return soot.PhaseOptions.getBoolean( options, "<xsl:value-of select="alias"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="intopt|section/intopt"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public int <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
-        return soot.PackManager.getInt( options, "<xsl:value-of select="alias"/>" );
+        return soot.PhaseOptions.getInt( options, "<xsl:value-of select="alias"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="flopt|section/flopt"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public float <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
-        return soot.PackManager.getFloat( options, "<xsl:value-of select="alias"/>" );
+        return soot.PhaseOptions.getFloat( options, "<xsl:value-of select="alias"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="stropt|section/stropt"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public String <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
-        return soot.PackManager.getString( options, "<xsl:value-of select="alias"/>" );
+        return soot.PhaseOptions.getString( options, "<xsl:value-of select="alias"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="multiopt|section/multiopt"><!---->
@@ -398,7 +398,7 @@ public class <xsl:copy-of select="$filename"/>
         </xsl:for-each>
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public int <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
-        String s = soot.PackManager.getString( options, "<xsl:value-of select="alias"/>" );
+        String s = soot.PhaseOptions.getString( options, "<xsl:value-of select="alias"/>" );
         <xsl:for-each select="value"><!---->
         if( s.equalsIgnoreCase( "<xsl:value-of select="alias"/>" ) )
             return <xsl:value-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>;

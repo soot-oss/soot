@@ -34,12 +34,12 @@ public class SETOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Build naive dependence graph --  */
     public boolean naive() {
-        return soot.PackManager.getBoolean( options, "naive" );
+        return soot.PhaseOptions.getBoolean( options, "naive" );
     }
     
 }

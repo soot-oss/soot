@@ -422,7 +422,7 @@ public class JasminClass
             G.v().out.println("[" + body.getMethod().getName() +
                 "] Performing peephole optimizations...");
 
-        boolean disablePeephole = PackManager.getBoolean(options, "no-peephole");
+        boolean disablePeephole = PhaseOptions.getBoolean(options, "no-peephole");
         disablePeephole = true;
 
         if (!disablePeephole)

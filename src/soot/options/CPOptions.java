@@ -34,17 +34,17 @@ public class CPOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Only Regular Locals --  */
     public boolean only_regular_locals() {
-        return soot.PackManager.getBoolean( options, "only-regular-locals" );
+        return soot.PhaseOptions.getBoolean( options, "only-regular-locals" );
     }
     
     /** Only Stack Locals --  */
     public boolean only_stack_locals() {
-        return soot.PackManager.getBoolean( options, "only-stack-locals" );
+        return soot.PhaseOptions.getBoolean( options, "only-stack-locals" );
     }
     
 }

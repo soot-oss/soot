@@ -41,11 +41,10 @@ public class StaticMethodBinder extends SceneTransformer
     public StaticMethodBinder( Singletons.Global g ) {}
     public static StaticMethodBinder v() { return G.v().StaticMethodBinder(); }
 
-    protected void internalTransform(String phaseName, Map options)
+    protected void internalTransform(String phaseName, Map opts)
     {
-        boolean enableNullPointerCheckInsertion = PackManager.getBoolean(options, "insert-null-checks");
-        boolean enableRedundantCastInsertion = PackManager.getBoolean(options, "insert-redundant-casts");
-        String modifierOptions = PackManager.getString(options, "allowed-modifier-changes");
+        SMBOptions options = new SMBOptions( opts );
+        String modifierOptions = PhaseOptions.getString( opts, "allowed-modifier-changes");
         HashMap instanceToStaticMap = new HashMap();
 
         CallGraph cg = Scene.v().getCallGraph();
@@ -200,7 +199,7 @@ public class StaticMethodBinder extends SceneTransformer
                     Value thisToAdd = ((InstanceInvokeExpr)ie).getBase();
 
                     // Insert casts to please the verifier.
-                    if (enableRedundantCastInsertion && targetUsesThis)
+                    if (options.insert_redundant_casts() && targetUsesThis)
                     {
                         // The verifier will complain if targetUsesThis, and:
                         //    the argument passed to the method is not the same type.
@@ -239,7 +238,7 @@ public class StaticMethodBinder extends SceneTransformer
                     }
 
                     // (If enabled), add a null pointer check.
-                    if (enableNullPointerCheckInsertion)
+                    if (options.insert_null_checks())
                     {
                         boolean caught = TrapManager.isExceptionCaughtAt
                             (Scene.v().getSootClass("java.lang.NullPointerException"), s, b);

@@ -34,12 +34,12 @@ public class ProfilingOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Not Main Entry --  */
     public boolean notmainentry() {
-        return soot.PackManager.getBoolean( options, "notmainentry" );
+        return soot.PhaseOptions.getBoolean( options, "notmainentry" );
     }
     
 }

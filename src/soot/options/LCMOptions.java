@@ -34,17 +34,17 @@ public class LCMOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Unroll --  */
     public boolean unroll() {
-        return soot.PackManager.getBoolean( options, "unroll" );
+        return soot.PhaseOptions.getBoolean( options, "unroll" );
     }
     
     /** Naive Side Effect Tester --  */
     public boolean naive_side_effect() {
-        return soot.PackManager.getBoolean( options, "naive-side-effect" );
+        return soot.PhaseOptions.getBoolean( options, "naive-side-effect" );
     }
     
     public static final int safe_safe = 1;
@@ -52,7 +52,7 @@ public class LCMOptions
     public static final int safe_unsafe = 3;
     /** Safe --  */
     public int safe() {
-        String s = soot.PackManager.getString( options, "safe" );
+        String s = soot.PhaseOptions.getString( options, "safe" );
         
         if( s.equalsIgnoreCase( "safe" ) )
             return safe_safe;

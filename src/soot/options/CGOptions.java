@@ -34,17 +34,17 @@ public class CGOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Safe forName --  */
     public boolean safe_forname() {
-        return soot.PackManager.getBoolean( options, "safe-forname" );
+        return soot.PhaseOptions.getBoolean( options, "safe-forname" );
     }
     
     /** Verbose --  */
     public boolean verbose() {
-        return soot.PackManager.getBoolean( options, "verbose" );
+        return soot.PhaseOptions.getBoolean( options, "verbose" );
     }
     
 }

@@ -78,7 +78,7 @@ public class SideEffectTagger extends BodyTransformer
     {
 	initializationStuff( phaseName );
 	SideEffectAnalysis sea = Scene.v().getSideEffectAnalysis();
-	optionNaive = PackManager.getBoolean( options, "naive" );
+	optionNaive = PhaseOptions.getBoolean( options, "naive" );
 	if( !optionNaive ) {
 	    sea.findNTRWSets( body.getMethod() );
 	}

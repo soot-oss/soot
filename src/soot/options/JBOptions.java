@@ -34,12 +34,12 @@ public class JBOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Use Original Names --  */
     public boolean use_original_names() {
-        return soot.PackManager.getBoolean( options, "use-original-names" );
+        return soot.PhaseOptions.getBoolean( options, "use-original-names" );
     }
     
 }

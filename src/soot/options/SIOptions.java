@@ -34,32 +34,32 @@ public class SIOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Insert Null Checks --  */
     public boolean insert_null_checks() {
-        return soot.PackManager.getBoolean( options, "insert-null-checks" );
+        return soot.PhaseOptions.getBoolean( options, "insert-null-checks" );
     }
     
     /** Insert Redundant Casts --  */
     public boolean insert_redundant_casts() {
-        return soot.PackManager.getBoolean( options, "insert-redundant-casts" );
+        return soot.PhaseOptions.getBoolean( options, "insert-redundant-casts" );
     }
     
     /** Max Container Size --  */
     public int max_container_size() {
-        return soot.PackManager.getInt( options, "max-container-size" );
+        return soot.PhaseOptions.getInt( options, "max-container-size" );
     }
     
-    /** Max Inline Size --  */
+    /** Max Inlinee Size --  */
     public int max_inlinee_size() {
-        return soot.PackManager.getInt( options, "max-inlinee-size" );
+        return soot.PhaseOptions.getInt( options, "max-inlinee-size" );
     }
     
     /** Expansion Factor --  */
     public float expansion_factor() {
-        return soot.PackManager.getFloat( options, "expansion-factor" );
+        return soot.PhaseOptions.getFloat( options, "expansion-factor" );
     }
     
     public static final int allowed_modifier_changes_unsafe = 1;
@@ -67,7 +67,7 @@ public class SIOptions
     public static final int allowed_modifier_changes_none = 3;
     /** Allow Modifier Changes --  */
     public int allowed_modifier_changes() {
-        String s = soot.PackManager.getString( options, "allowed-modifier-changes" );
+        String s = soot.PhaseOptions.getString( options, "allowed-modifier-changes" );
         
         if( s.equalsIgnoreCase( "unsafe" ) )
             return allowed_modifier_changes_unsafe;

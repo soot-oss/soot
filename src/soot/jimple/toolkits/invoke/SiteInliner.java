@@ -78,8 +78,8 @@ public class SiteInliner
                                     SootMethod container, Map options)
     {
 
-        boolean enableNullPointerCheckInsertion = PackManager.getBoolean(options, "insert-null-checks");
-        boolean enableRedundantCastInsertion = PackManager.getBoolean(options, "insert-redundant-casts");
+        boolean enableNullPointerCheckInsertion = PhaseOptions.getBoolean(options, "insert-null-checks");
+        boolean enableRedundantCastInsertion = PhaseOptions.getBoolean(options, "insert-redundant-casts");
 
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 

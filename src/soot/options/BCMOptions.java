@@ -34,12 +34,12 @@ public class BCMOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Naive Side Effect Tester --  */
     public boolean naive_side_effect() {
-        return soot.PackManager.getBoolean( options, "naive-side-effect" );
+        return soot.PhaseOptions.getBoolean( options, "naive-side-effect" );
     }
     
 }

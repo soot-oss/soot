@@ -34,12 +34,12 @@ public class CHAOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Verbose --  */
     public boolean verbose() {
-        return soot.PackManager.getBoolean( options, "verbose" );
+        return soot.PhaseOptions.getBoolean( options, "verbose" );
     }
     
 }

@@ -66,7 +66,7 @@ public class LocalPacker extends BodyTransformer
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {
-        boolean isUnsplit = PackManager.getBoolean(options, "unsplit-original-locals");
+        boolean isUnsplit = PhaseOptions.getBoolean(options, "unsplit-original-locals");
         
         if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Packing locals...");

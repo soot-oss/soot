@@ -536,7 +536,7 @@ public class Baf
     /** Returns a BafBody constructed from b. */
     public BafBody newBody(Body b, String phase)
     {
-        Map options = PackManager.v().getPhaseOptions(phase);
+        Map options = PhaseOptions.v().getPhaseOptions(phase);
         return new BafBody(b, options);
     }
 }

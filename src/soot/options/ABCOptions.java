@@ -34,42 +34,42 @@ public class ABCOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** With All --  */
     public boolean with_all() {
-        return soot.PackManager.getBoolean( options, "with-all" );
+        return soot.PhaseOptions.getBoolean( options, "with-all" );
     }
     
     /** With Field References --  */
     public boolean with_fieldref() {
-        return soot.PackManager.getBoolean( options, "with-fieldref" );
+        return soot.PhaseOptions.getBoolean( options, "with-fieldref" );
     }
     
     /** With Array References --  */
     public boolean with_arrayref() {
-        return soot.PackManager.getBoolean( options, "with-arrayref" );
+        return soot.PhaseOptions.getBoolean( options, "with-arrayref" );
     }
     
     /** With Common Sub-expressions --  */
     public boolean with_cse() {
-        return soot.PackManager.getBoolean( options, "with-cse" );
+        return soot.PhaseOptions.getBoolean( options, "with-cse" );
     }
     
     /** With Class Field --  */
     public boolean with_classfield() {
-        return soot.PackManager.getBoolean( options, "with-classfield" );
+        return soot.PhaseOptions.getBoolean( options, "with-classfield" );
     }
     
     /** With Rectangular Array --  */
     public boolean with_rectarray() {
-        return soot.PackManager.getBoolean( options, "with-rectarray" );
+        return soot.PhaseOptions.getBoolean( options, "with-rectarray" );
     }
     
-    /** Profiling --  */
+    /** Profiling -- Profile the results of array bounds check analysis. */
     public boolean profiling() {
-        return soot.PackManager.getBoolean( options, "profiling" );
+        return soot.PhaseOptions.getBoolean( options, "profiling" );
     }
     
 }

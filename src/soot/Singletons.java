@@ -82,6 +82,12 @@ public class Singletons {
     }
     private Global g = new Global();
 
+    private PhaseOptions instancePhaseOptions;
+    public PhaseOptions PhaseOptions() {
+        if( instancePhaseOptions == null ) instancePhaseOptions = new PhaseOptions( g );
+        return instancePhaseOptions;
+    }
+
     private VirtualCalls instanceVirtualCalls;
     public VirtualCalls VirtualCalls() {
         if( instanceVirtualCalls == null ) instanceVirtualCalls = new VirtualCalls( g );

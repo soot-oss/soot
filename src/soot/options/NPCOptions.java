@@ -34,17 +34,17 @@ public class NPCOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Only Array Ref --  */
     public boolean only_array_ref() {
-        return soot.PackManager.getBoolean( options, "only-array-ref" );
+        return soot.PhaseOptions.getBoolean( options, "only-array-ref" );
     }
     
-    /** Profiling --  */
+    /** Profiling -- Insert profiling instructions counting the number of safe null pointer accesses. */
     public boolean profiling() {
-        return soot.PackManager.getBoolean( options, "profiling" );
+        return soot.PhaseOptions.getBoolean( options, "profiling" );
     }
     
 }

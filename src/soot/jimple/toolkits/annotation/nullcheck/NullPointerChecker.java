@@ -64,8 +64,8 @@ public class NullPointerChecker extends BodyTransformer
     
     public void internalTransform(Body body, String phaseName, Map options)
     {
-	isProfiling = PackManager.getBoolean(options, "profiling");
-	enableOther = !PackManager.getBoolean(options, "onlyarrayref");
+	isProfiling = PhaseOptions.getBoolean(options, "profiling");
+	enableOther = !PhaseOptions.getBoolean(options, "onlyarrayref");
 
 	{
 	    Date start = new Date();

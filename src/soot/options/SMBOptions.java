@@ -34,17 +34,17 @@ public class SMBOptions
     
     /** Enabled --  */
     public boolean enabled() {
-        return soot.PackManager.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
     /** Insert Null Checks --  */
     public boolean insert_null_checks() {
-        return soot.PackManager.getBoolean( options, "insert-null-checks" );
+        return soot.PhaseOptions.getBoolean( options, "insert-null-checks" );
     }
     
     /** Insert Redundant Casts --  */
     public boolean insert_redundant_casts() {
-        return soot.PackManager.getBoolean( options, "insert-redundant-casts" );
+        return soot.PhaseOptions.getBoolean( options, "insert-redundant-casts" );
     }
     
     public static final int allowed_modifier_changes_unsafe = 1;
@@ -52,7 +52,7 @@ public class SMBOptions
     public static final int allowed_modifier_changes_none = 3;
     /** Allow Modifier Changes --  */
     public int allowed_modifier_changes() {
-        String s = soot.PackManager.getString( options, "allowed-modifier-changes" );
+        String s = soot.PhaseOptions.getString( options, "allowed-modifier-changes" );
         
         if( s.equalsIgnoreCase( "unsafe" ) )
             return allowed_modifier_changes_unsafe;
