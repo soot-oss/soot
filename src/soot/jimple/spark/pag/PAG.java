@@ -60,22 +60,38 @@ public class PAG implements PointsToAnalysis {
     public VarNode findVarNode( Object value ) {
         if( opts.RTA() ) {
             value = null;
+        } else if( value instanceof Local ) {
+            return (VarNode) localToNodeMap.get( (Local) value );
         }
 	return (VarNode) valToVarNode.get( value );
     }
     /** Finds or creates the VarNode for the variable value, of type type. */
     public VarNode makeVarNode( Object value, Type type, SootMethod method ) {
         if( opts.RTA() ) {
-            value = null; type = RefType.v("java.lang.Object"); method = null;
-        }
-	VarNode ret = (VarNode) valToVarNode.get( value );
-	if( ret == null ) {
-	    valToVarNode.put( value, 
+            value = null;
+            type = RefType.v("java.lang.Object");
+            method = null;
+        } else if( value instanceof Local ) {
+            Local val = (Local) value;
+            if( val.getNumber() == 0 ) Scene.v().getLocalNumberer().add(val);
+            VarNode ret = (VarNode) localToNodeMap.get( val );
+            if( ret == null ) {
+                localToNodeMap.put( (Local) value,
                     ret = new VarNode( this, value, type, method ) );
-	} else if( !( ret.getType().equals( type ) ) ) {
-	    throw new RuntimeException( "Value "+value+" of type "+type+
-		    " previously had type "+ret.getType() );
-	}
+            } else if( !( ret.getType().equals( type ) ) ) {
+                throw new RuntimeException( "Value "+value+" of type "+type+
+                        " previously had type "+ret.getType() );
+            }
+            return ret;
+        }
+        VarNode ret = (VarNode) valToVarNode.get( value );
+        if( ret == null ) {
+            valToVarNode.put( value, 
+                    ret = new VarNode( this, value, type, method ) );
+        } else if( !( ret.getType().equals( type ) ) ) {
+            throw new RuntimeException( "Value "+value+" of type "+type+
+                    " previously had type "+ret.getType() );
+        }
 	return ret;
     }
     /** Finds the FieldRefNode for base variable value and field
@@ -188,7 +204,6 @@ public class PAG implements PointsToAnalysis {
     public Set allocInvSources() { return allocInv.keySet(); }
     public Set storeInvSources() { return storeInv.keySet(); }
     public Set loadInvSources() { return loadInv.keySet(); }
-    public Set allVarNodes() { return new HashSet( valToVarNode.values() ); }
 
     public P2SetFactory getSetFactory() {
         return setFactory;
@@ -236,7 +251,7 @@ public class PAG implements PointsToAnalysis {
         } );
     }
     public int getNumAllocNodes() {
-        return (-nextAllocNodeId)-1;
+        return allocNodeNumberer.size();
     }
     public TypeManager getTypeManager() {
         return typeManager;
@@ -366,14 +381,14 @@ public class PAG implements PointsToAnalysis {
             m.remove( n2 );
         }
     }
-    protected int nextNodeId = 1;
-    int getNextNodeId() {
-	return nextNodeId++;
-    }
-    protected int nextAllocNodeId = -1;
-    int getNextAllocNodeId() {
-	return nextAllocNodeId--;
-    }
+    private Numberer allocNodeNumberer = new Numberer();
+    public Numberer getAllocNodeNumberer() { return allocNodeNumberer; }
+    private Numberer varNodeNumberer = new Numberer();
+    public Numberer getVarNodeNumberer() { return varNodeNumberer; }
+    private Numberer fieldRefNodeNumberer = new Numberer();
+    public Numberer getFieldRefNodeNumberer() { return fieldRefNodeNumberer; }
+    private Numberer allocDotFieldNodeNumberer = new Numberer();
+    public Numberer getAllocDotFieldNodeNumberer() { return allocDotFieldNodeNumberer; }
 
     /* End of package methods. */
 
@@ -471,5 +486,6 @@ public class PAG implements PointsToAnalysis {
     protected static boolean somethingMerged = false;
     protected ArrayList dereferences = new ArrayList();
     protected TypeManager typeManager;
+    protected LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
 }
 

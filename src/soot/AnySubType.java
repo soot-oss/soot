@@ -33,42 +33,34 @@ import soot.util.*;
 import java.util.*;
 
 
-public class AnyType extends Type implements RefLikeType
+public class AnySubType extends RefLikeType
 {
-    private static AnyType constant = new AnyType();
-
-    private AnyType()
+    private AnySubType( RefType base )
     {
-    }
-    
-    /** @return this class's singleton object */
-    public static AnyType v()
-    {
-        return constant;
+        this.base = base;
     }
 
-    
-    public int hashCode()
-    {
-        return 0x9891DFE1;
+    public static AnySubType v( RefType base ) {
+        if( base.getAnySubType() == null ) {
+            base.setAnySubType( new AnySubType( base ) );
+        }
+        return base.getAnySubType();
     }
     
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
-
     public String toString()
     {
-        return "any_type";
+        return "Any_subtype_of_"+base;
     }
 
     public void apply(Switch sw)
     {
-        ((TypeSwitch) sw).caseAnyType(this);
+        ((TypeSwitch) sw).caseAnySubType(this);
     }
 
     public Type getArrayElementType() {
 	throw new RuntimeException( "Attempt to get array base type of a non-array" );  
     }
+    public RefType getBase() { return base; }
+    public void setBase( RefType base ) { this.base = base; }
+    private RefType base;
 }

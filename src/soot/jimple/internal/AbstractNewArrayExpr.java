@@ -131,7 +131,7 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
         if(baseType instanceof ArrayType)
             return ArrayType.v(((ArrayType) baseType).baseType, ((ArrayType) baseType).numDimensions + 1);
         else
-            return ArrayType.v((BaseType) baseType, 1);
+            return ArrayType.v(baseType, 1);
     }
 
     public void apply(Switch sw)

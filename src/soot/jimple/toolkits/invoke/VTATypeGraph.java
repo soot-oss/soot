@@ -134,7 +134,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
                     continue;
 
                 // Add nodes for method contents, if it is reachable.
-                Iterator methodsIt = c.getMethods().iterator();
+                Iterator methodsIt = c.methodIterator();
 
                 while (methodsIt.hasNext())
                 {
@@ -253,7 +253,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
                     h = Scene.v().getActiveHierarchy();
 
                 // Add edges for method contents, if it is reachable.
-                Iterator methodsIt = c.getMethods().iterator();
+                Iterator methodsIt = c.methodIterator();
 
                 while (methodsIt.hasNext())
                 {
@@ -502,8 +502,8 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
                     {
                         Chain trapChain = b.getTraps();
                         PatchingChain ch = b.getUnits();
-                        for (Iterator trapsIt = trapChain.iterator(); trapsIt.hasNext(); ) {
-                            Trap trap = (Trap)trapsIt.next();
+                        for( Iterator trapIt = trapChain.iterator(); trapIt.hasNext(); ) {
+                            final Trap trap = (Trap) trapIt.next();
                             Unit start = trap.getBeginUnit();
                             Unit end = trap.getEndUnit();
                             IdentityStmt handler = (IdentityStmt)trap.getHandlerUnit();
@@ -569,8 +569,8 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
                 if (!nodeToColor.containsKey(o)) {
                     // NODE IS WHITE
                     nodeToColor.put(o, GREY);
-                    for (Iterator succsIt = ((List)getSuccsOf(o)).iterator(); succsIt.hasNext(); ) {
-                        Object child = succsIt.next();
+                    for( Iterator childIt = ((List)getSuccsOf(o)).iterator(); childIt.hasNext(); ) {
+                        final Object child = (Object) childIt.next();
                         Type t = (Type)labelToDeclaredType.get(child);
                         if (t instanceof ArrayType || t.equals(RefType.v("java.lang.Object"))) {
                             if (!nodeToColor.containsKey(child)) {

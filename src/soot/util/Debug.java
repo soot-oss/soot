@@ -46,6 +46,7 @@ public class Debug
     }
 
     /** Asserts that condition is true; otherwise, abort. */
+    /*
     public static void assert(boolean condition, String message)
     {
         if (!condition)
@@ -56,6 +57,7 @@ public class Debug
         
             }
     }
+    */
 }
 
 

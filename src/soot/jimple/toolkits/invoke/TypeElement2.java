@@ -64,7 +64,7 @@ public class TypeElement2 implements AbstractObject {
   }
   
   public static TypeElement2 v(RefType reftype){
-    return v(reftype.className);
+    return v(reftype.getClassName());
   }
  
   public static TypeElement2 v(SootClass cls){

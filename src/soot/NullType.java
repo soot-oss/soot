@@ -37,7 +37,7 @@ import java.util.*;
  *   Soot representation of the Java type 'null'. Implemented as
  *   a singleton.
  */
-public class NullType extends Type implements RefLikeType
+public class NullType extends RefLikeType
 {
     private static NullType constant = new NullType();
 

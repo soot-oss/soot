@@ -56,7 +56,7 @@ public class ReachingTypeDumper {
     protected PointsToAnalysis pa;
 
     protected void handleClass( PrintWriter out, SootClass c ) {
-        for( Iterator mIt = c.getMethods().iterator(); mIt.hasNext(); ) {
+        for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
             final SootMethod m = (SootMethod) mIt.next();
             if( !m.isConcrete() ) continue;
             Body b = m.retrieveActiveBody();

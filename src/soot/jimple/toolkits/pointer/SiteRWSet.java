@@ -9,6 +9,15 @@ public class SiteRWSet extends RWSet {
     protected boolean callsNative = false;
 
     static int count = 0;
+    public String toString() {
+        final StringBuffer ret = new StringBuffer();
+        for( Iterator keyIt = sets.iterator(); keyIt.hasNext(); ) {
+            final Object key = (Object) keyIt.next();
+            ret.append( key.toString() );
+        }
+        return ret.toString();
+    }
+
     public SiteRWSet() {
 	count++;
 	if( 0 == (count % 1000) ) {
@@ -28,8 +37,8 @@ public class SiteRWSet extends RWSet {
     /** Returns an iterator over any globals read/written. */
     public Set getGlobals() {
 	HashSet ret = new HashSet();
-	for( Iterator it = sets.iterator(); it.hasNext(); ) {
-	    RWSet s = (RWSet) it.next();
+	for( Iterator sIt = sets.iterator(); sIt.hasNext(); ) {
+	    final RWSet s = (RWSet) sIt.next();
 	    ret.addAll( s.getGlobals() );
 	}
 	return ret;
@@ -38,8 +47,8 @@ public class SiteRWSet extends RWSet {
     /** Returns an iterator over any fields read/written. */
     public Set getFields() {
 	HashSet ret = new HashSet();
-	for( Iterator it = sets.iterator(); it.hasNext(); ) {
-	    RWSet s = (RWSet) it.next();
+	for( Iterator sIt = sets.iterator(); sIt.hasNext(); ) {
+	    final RWSet s = (RWSet) sIt.next();
 	    ret.addAll( s.getFields() );
 	}
 	return ret;
@@ -48,8 +57,8 @@ public class SiteRWSet extends RWSet {
     /** Returns a set of base objects whose field f is read/written. */
     public PointsToSet getBaseForField( Object f ) {
 	Union ret = null;
-	for( Iterator it = sets.iterator(); it.hasNext(); ) {
-	    RWSet s = (RWSet) it.next();
+	for( Iterator sIt = sets.iterator(); sIt.hasNext(); ) {
+	    final RWSet s = (RWSet) sIt.next();
 	    PointsToSet os = s.getBaseForField( f );
 	    if( os == null ) continue;
 	    if( os.isEmpty() ) continue;
@@ -61,8 +70,8 @@ public class SiteRWSet extends RWSet {
 
     public boolean hasNonEmptyIntersection( RWSet oth ) {
 	if( sets.contains( oth ) ) return true;
-	for( Iterator it = sets.iterator(); it.hasNext(); ) {
-	    RWSet s = (RWSet) it.next();
+	for( Iterator sIt = sets.iterator(); sIt.hasNext(); ) {
+	    final RWSet s = (RWSet) sIt.next();
 	    if( oth.hasNonEmptyIntersection( s ) ) return true;
 	}
 	return false;

@@ -42,7 +42,7 @@ public class FieldRefNode extends ValNode {
     /** Returns the field of this field reference. */
     public SparkField getField() { return field; }
     public String toString() {
-	return "FieldRefNode "+id+" "+base+"."+field;
+	return "FieldRefNode "+getNumber()+" "+base+"."+field;
     }
 
     /* End of public methods. */
@@ -53,6 +53,7 @@ public class FieldRefNode extends ValNode {
 	this.base = base;
 	this.field = field;
 	base.addField( this, field );
+        pag.getFieldRefNodeNumberer().add( this );
     }
 
     /* End of package methods. */

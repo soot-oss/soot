@@ -54,7 +54,7 @@ public class MergeChecker {
             final FieldRefNode fr = (FieldRefNode) frIt.next();
             fieldToBase.put( fr.getField(), fr.getBase() );
         }
-        for( Iterator srcIt = pag.allVarNodes().iterator(); srcIt.hasNext(); ) {
+        for( Iterator srcIt = pag.getVarNodeNumberer().iterator(); srcIt.hasNext(); ) {
             final VarNode src = (VarNode) srcIt.next();
             for( Iterator frIt = src.getAllFieldRefs().iterator(); frIt.hasNext(); ) {
                 final FieldRefNode fr = (FieldRefNode) frIt.next();

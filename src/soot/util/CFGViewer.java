@@ -73,7 +73,7 @@ public class CFGViewer {
     cls.setApplicationClass();
     
     /* iterate each method and call print_cfg */
-    Iterator methodIt = cls.getMethods().iterator();
+    Iterator methodIt = cls.methodIterator();
     while (methodIt.hasNext()) {
       SootMethod meth = (SootMethod)methodIt.next();
       

@@ -455,7 +455,7 @@ class ConstraintCollector extends AbstractStmtSwitch
 	  }
 	else
 	  {
-	    right = resolver.typeVariable(ArrayType.v((BaseType) baseType, 1));
+	    right = resolver.typeVariable(ArrayType.v(baseType, 1));
 	  }
 
 	if(uses)

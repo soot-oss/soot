@@ -37,10 +37,13 @@ import java.util.*;
  *   Two RefType are equal iff they are parametrized by the same class name as a String.
  */
 
-public class RefType extends BaseType implements ToBriefString, Comparable, RefLikeType
+public class RefType extends RefLikeType implements ToBriefString, Comparable
 {
     /** the class name that parametrizes this RefType */
-    public final String className;
+    private final String className;
+    public String getClassName() { return className; }
+    private SootClass sootClass;
+    private AnySubType anySubType;
 
     private static RefType singleton = new RefType("");
 
@@ -56,7 +59,12 @@ public class RefType extends BaseType implements ToBriefString, Comparable, RefL
      */
     public static RefType v(String className)
     {
-        return new RefType(className);
+        RefType ret = Scene.v().getRefType( className );
+        if( ret == null ) {
+            ret = new RefType(className);
+            Scene.v().addRefType( ret );
+        }
+        return ret;
     }
 
     public int compareTo(Object o) throws ClassCastException
@@ -91,7 +99,16 @@ public class RefType extends BaseType implements ToBriefString, Comparable, RefL
       */    
     public SootClass getSootClass()
     {
-        return Scene.v().getSootClass(className);
+        return sootClass;
+    }
+
+     /** 
+      *  Get the SootClass object corresponding to this RefType.
+      *  @return the corresponding SootClass
+      */    
+    public void setSootClass( SootClass sootClass )
+    {
+        this.sootClass = sootClass;
     }
 
     /** 
@@ -212,5 +229,10 @@ public class RefType extends BaseType implements ToBriefString, Comparable, RefL
 	}
 	throw new RuntimeException( "Attempt to get array base type of a non-array" );
 
+    }
+
+    public AnySubType getAnySubType() { return anySubType; }
+    public void setAnySubType( AnySubType anySubType ) {
+        this.anySubType = anySubType;
     }
 }

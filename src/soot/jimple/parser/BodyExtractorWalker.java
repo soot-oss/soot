@@ -159,7 +159,7 @@ public class BodyExtractorWalker extends Walker
 
 	    
             System.out.println("[!] Methods in class are:");
-            Iterator it = mSootClass.getMethods().iterator();
+            Iterator it = mSootClass.methodIterator();
             while(it.hasNext()) {
                 SootMethod next = (SootMethod) it.next();
                 System.out.println(next.getSubSignature());

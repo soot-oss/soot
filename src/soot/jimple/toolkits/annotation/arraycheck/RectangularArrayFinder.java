@@ -107,9 +107,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	{
 	    SootClass c = (SootClass)classIt.next();
 
-	    Chain methods = c.getMethods();
-
-	    Iterator methodIt = methods.iterator();
+	    Iterator methodIt = c.methodIterator();
 	    
 	    while (methodIt.hasNext())
 	    {

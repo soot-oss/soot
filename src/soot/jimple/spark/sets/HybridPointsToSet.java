@@ -246,7 +246,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     /** Adds n to this set, returns true if n was not already in this set. */
     public final boolean add( Node n, long[] mask ) {
         if( mask != null ) {
-            int id = -n.getId();
+            int id = n.getNumber();
             if( ( mask[id/64] & (id%64) ) == 0 ) return false;
         }
         return fastAdd( n );
@@ -279,7 +279,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
             if( n16 == n ) return true;
             return false;
         } else {
-            int id = -n.getId();
+            int id = n.getNumber();
             return ( bits[ id/64 ] & 1L<<(id%64 ) ) != 0;
         }
     }
@@ -318,7 +318,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
             if( n16 == null ) { empty = false; n16 = n; return true; } if( n16 == n ) return false;
             convertToBits();
         }
-        int id = -n.getId();
+        int id = n.getNumber();
         if( nodes[id] == null ) nodes[id] = n;
         if( ( bits[id/64] & 1L<<(id%64) ) != 0 ) return false;
         bits[id/64] |= 1L<<(id%64);

@@ -31,49 +31,62 @@ import java.util.*;
 
 
 /**
- *   A class that models Java's array types. ArrayTypes are parametrized by a BaseType and 
+ *   A class that models Java's array types. ArrayTypes are parametrized by a Type and 
  *   and an integer representing the array's dimension count..
  *   Two ArrayType are 'equal' if they are parametrized equally.
  *
  */
-public class ArrayType extends Type implements RefLikeType
+public class ArrayType extends RefLikeType
 {
     /** baseType can be any type except for an array type, null and void 
-     *  @see BaseType 
      */
-    public final BaseType baseType;
+    public final Type baseType;
     
     /** dimension count for the array type*/
     public final int numDimensions;
 
    
-    private ArrayType(BaseType baseType, int numDimensions)
+    private ArrayType(Type baseType, int numDimensions)
     {
+        if( !( baseType instanceof PrimType || baseType instanceof RefType ) )
+            throw new RuntimeException( "oops" );
         this.baseType = baseType;
         this.numDimensions = numDimensions;
     }
 
      /** 
-     *  Creates an ArrayType  parametrized by a given BaseType and dimension count.
-     *  @param baseType a BaseType to parametrize the ArrayType
+     *  Creates an ArrayType  parametrized by a given Type and dimension count.
+     *  @param baseType a Type to parametrize the ArrayType
      *  @param numDimensions the dimension count to parametrize the ArrayType.
      *  @return an ArrayType parametrized accrodingly.
      */
-    public static ArrayType v(BaseType baseType, int numDimensions)
+    public static ArrayType v(Type baseType, int numDimensions)
     {
-        return new ArrayType(baseType, numDimensions);
+        ArrayType ret;
+        Type elementType;
+        if( numDimensions == 1 ) {
+            elementType = baseType;
+        } else {
+            elementType = ArrayType.v( baseType, numDimensions-1 );
+        }
+        ret = elementType.getArrayType();
+        if( ret == null ) {
+            ret = new ArrayType(baseType, numDimensions);
+            elementType.setArrayType( ret );
+        }
+        return ret;
     }
-
-
 
     /**
      *  Two ArrayType are 'equal' if they are parametrized identically.
-     * (ie have same BaseType and dimension count.
+     * (ie have same Type and dimension count.
      * @param t object to test for equality
      * @return true if t is an ArrayType and is parametrized identically to this.
      */
     public boolean equals(Object t)
     {
+        return t == this;
+        /*
         if(t instanceof ArrayType)
         {
             ArrayType arrayType = (ArrayType) t;
@@ -83,6 +96,7 @@ public class ArrayType extends Type implements RefLikeType
         }
         else
             return false;
+            */
     }
 
     public String toBriefString()
@@ -128,6 +142,9 @@ public class ArrayType extends Type implements RefLikeType
 	} else {
 	    return baseType;
 	}
+    }
+    public ArrayType makeArrayType() {
+        return ArrayType.v( baseType, numDimensions+1 );
     }
 }
 

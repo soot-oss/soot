@@ -34,14 +34,23 @@ public interface ClassMember
     /** Returns the SootClass declaring this one. */
     public SootClass getDeclaringClass();
 
-    /** Convenience class returning true if this class member is protected. */
+    /** Returns true when some SootClass object declares this object. */
+    public boolean isDeclared();
+
+    /** Returns true when this object is from a phantom class. */
+    public boolean isPhantom();
+
+    /** Convenience method returning true if this class member is protected. */
     public boolean isProtected();
 
-    /** Convenience class returning true if this class member is private. */
+    /** Convenience method returning true if this class member is private. */
     public boolean isPrivate();
 
-    /** Convenience class returning true if this class member is public. */
+    /** Convenience method returning true if this class member is public. */
     public boolean isPublic();
+
+    /** Convenience method returning true if this class member is static. */
+    public boolean isStatic();
 
     /** Sets modifiers of this class member. */
     public void setModifiers(int modifiers);

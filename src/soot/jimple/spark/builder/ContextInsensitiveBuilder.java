@@ -29,6 +29,7 @@ import soot.jimple.*;
 import soot.jimple.spark.internal.*;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.spark.solver.OnFlyCallGraph;
+import soot.jimple.spark.solver.NewOnFlyCallGraph;
 
 /** A context insensitive pointer assignment graph builder.
  * @author Ondrej Lhotak
@@ -38,7 +39,7 @@ public class ContextInsensitiveBuilder implements Builder {
 	ig = Scene.v().getActiveInvokeGraph();
         for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
             final SootClass c = (SootClass) cIt.next();
-            for( Iterator mIt = c.getMethods().iterator(); mIt.hasNext(); ) {
+            for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
                 final SootMethod m = (SootMethod) mIt.next();
                 if( !m.isConcrete() ) continue;
                 if( !ig.mcg.isReachable(m)) continue;
@@ -55,11 +56,19 @@ public class ContextInsensitiveBuilder implements Builder {
         }
 	parms = new StandardParms( pag );
         if( opts.onFlyCallGraph() ) {
-            pag.setOnFlyCallGraph( new OnFlyCallGraph(
-                        pag,
-                        Scene.v().getOrMakeFastHierarchy(),
-                        ig,
-                        parms ) );
+            if( opts.useNewCallGraph() ) {
+                pag.setOnFlyCallGraph( new NewOnFlyCallGraph(
+                            pag,
+                            Scene.v().getOrMakeFastHierarchy(),
+                            ig,
+                            parms ) );
+            } else {
+                pag.setOnFlyCallGraph( new OnFlyCallGraph(
+                            pag,
+                            Scene.v().getOrMakeFastHierarchy(),
+                            ig,
+                            parms ) );
+            }
         }
         for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
             final SootClass c = (SootClass) cIt.next();
@@ -83,7 +92,7 @@ public class ContextInsensitiveBuilder implements Builder {
     /* End of package methods. */
     protected void handleClass( SootClass c ) {
         boolean incedClasses = false;
-	Iterator methodsIt = c.getMethods().iterator();
+	Iterator methodsIt = c.methodIterator();
 	while( methodsIt.hasNext() ) 
 	{
 	    SootMethod m = (SootMethod) methodsIt.next();
@@ -130,7 +139,7 @@ public class ContextInsensitiveBuilder implements Builder {
         if( c.declaresMethod( finalize ) ) {
             // In VTA, there was the comment:
             // I have no clue whether or not this is right.
-            for( Iterator mIt = c.getMethods().iterator(); mIt.hasNext(); ) {
+            for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
                 final SootMethod m = (SootMethod) mIt.next();
                 if( !m.getName().equals("<init>") ) continue;
                 parms.addEdge( parms.caseThis( m ),

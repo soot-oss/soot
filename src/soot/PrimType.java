@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2002 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,12 +31,11 @@ package soot;
 
 
 /**
- *   Abstract base class for Soot classes that that model Java programming types 
- *   that are not arrays. (ie all types except void, null, and array types)
+ *   Abstract class for Soot classes that that model Java primitive types 
+ *   (ie all types except void, null, reference types, and array types)
+ * @author Ondrej Lhotak
  */
 public
-abstract class BaseType extends Type 
+abstract class PrimType extends Type
 {
-    /** @return the base type's name as a string*/
-    public abstract String toString();
 }

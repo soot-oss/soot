@@ -745,7 +745,7 @@ public class TypeResolver
 	      }
 	    else
 	      {
-		BaseType t = (BaseType) element.type().type();
+		Type t = element.type().type();
 		if(t instanceof IntType)
 		  {
 		    local.setType(var.approx().type());

@@ -31,7 +31,7 @@ public class AllocDotField extends Node {
     /** Returns the field of this node. */
     public SparkField getField() { return field; }
     public String toString() {
-	return "AllocDotField "+id+" "+base+"."+field;
+	return "AllocDotField "+getNumber()+" "+base+"."+field;
     }
 
     /* End of public methods. */
@@ -42,6 +42,7 @@ public class AllocDotField extends Node {
 	this.base = base;
 	this.field = field;
 	base.addField( this, field );
+        pag.getAllocDotFieldNodeNumberer().add( this );
     }
 
     /* End of package methods. */

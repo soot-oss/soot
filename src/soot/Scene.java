@@ -48,11 +48,17 @@ public class Scene  //extends AbstractHost
     Chain contextClasses = new HashChain();
     Chain phantomClasses = new HashChain();
     
-    Map nameToClass = new HashMap();
+    private Map nameToClass = new HashMap();
     Map methodSignatureToMethod = new HashMap();
     Map fieldSignatureToField = new HashMap();
 
     Map phaseToOptionMaps = new HashMap();
+
+    Numberer typeNumberer = new Numberer();
+    Numberer methodNumberer = new Numberer();
+    Numberer classNumberer = new Numberer();
+    StringNumberer subSigNumberer = new StringNumberer();
+    Numberer localNumberer = new Numberer();
 
     Hierarchy activeHierarchy;
     FastHierarchy activeFastHierarchy;
@@ -294,7 +300,8 @@ public class Scene  //extends AbstractHost
 
         classes.add(c);
 
-        nameToClass.put(c.getName(), c);
+        nameToClass.put(c.getName(), c.getType());
+        c.getType().setSootClass(c);
         c.setInScene(true);
         modifyHierarchy();
     }
@@ -305,14 +312,18 @@ public class Scene  //extends AbstractHost
             throw new RuntimeException();
 
         classes.remove(c);
-        nameToClass.remove(c.getName());
+        c.getType().setSootClass(null);
         c.setInScene(false);
         modifyHierarchy();
     }
 
     public boolean containsClass(String className)
     {
-        return nameToClass.containsKey(className);
+        RefType type = (RefType) nameToClass.get(className);
+        if( type == null ) return false;
+        SootClass c = type.getSootClass();
+        if( c == null ) return false;
+        return c.isInScene();
     }
 
     public boolean containsField(String fieldSignature)
@@ -372,12 +383,30 @@ public class Scene  //extends AbstractHost
     }
     
     /**
+     * Returns the RefType with the given className.  
+     */
+    public RefType getRefType(String className) 
+    {
+        return (RefType) nameToClass.get(className);
+    }
+
+    /**
+     * Returns the RefType with the given className.  
+     */
+    public void addRefType(RefType type) 
+    {
+        nameToClass.put(type.getClassName(), type);
+    }
+
+    /**
      * Returns the SootClass with the given className.  
      */
 
     public SootClass getSootClass(String className) 
     {   
-        SootClass toReturn = (SootClass) nameToClass.get(className);
+        RefType type = (RefType) nameToClass.get(className);
+        SootClass toReturn = null;
+        if( type != null ) toReturn = type.getSootClass();
         
         if(toReturn != null) {
 	    return toReturn;
@@ -649,4 +678,9 @@ public class Scene  //extends AbstractHost
     {
         return allowsLazyResolving;
     }
+    public Numberer getTypeNumberer() { return typeNumberer; }
+    public Numberer getMethodNumberer() { return methodNumberer; }
+    public Numberer getClassNumberer() { return classNumberer; }
+    public StringNumberer getSubSigNumberer() { return subSigNumberer; }
+    public Numberer getLocalNumberer() { return localNumberer; }
 }

@@ -55,8 +55,8 @@ public final class SortedArraySet extends PointsToSetInternal {
             for( ;; ) {
                 if( myi < size ) {
                     if( oi < osize ) {
-                        int myhc = mya[myi].getId();
-                        int ohc = oa[oi].getId();
+                        int myhc = mya[myi].getNumber();
+                        int ohc = oa[oi].getNumber();
                         if( myhc < ohc ) {
                             newa[ newi++ ] = mya[ myi++ ];
                         } else if( myhc > ohc ) {
@@ -76,7 +76,7 @@ public final class SortedArraySet extends PointsToSetInternal {
                     }
                 } else { // myi >= size
                     if( oi < osize ) {
-                        int ohc = oa[oi].getId();
+                        int ohc = oa[oi].getNumber();
                         if( ( type == null || typeMask == null ||
                           (0 != (typeMask[(-ohc)/64] & (1L<<((-ohc)%64))))  ) 
                         && ( exclude == null || !exclude.contains( oa[oi] ) ) ) {
@@ -109,10 +109,10 @@ public final class SortedArraySet extends PointsToSetInternal {
             int left = 0;
             int right = size;
             int mid;
-            int hc = n.getId();
+            int hc = n.getNumber();
             while( left < right ) {
                 mid = (left + right)/2;
-                int midhc = nodes[mid].getId();
+                int midhc = nodes[mid].getNumber();
                 if( midhc < hc ) {
                     left = mid+1;
                 } else if( midhc > hc ) {
@@ -137,10 +137,10 @@ public final class SortedArraySet extends PointsToSetInternal {
     public final boolean contains( Node n ) {
         int left = 0;
         int right = size;
-        int hc = n.getId();
+        int hc = n.getNumber();
         while( left < right ) {
             int mid = (left + right)/2;
-            int midhc = nodes[mid].getId();
+            int midhc = nodes[mid].getNumber();
             if( midhc < hc ) {
                 left = mid+1;
             } else if( midhc > hc ) {

@@ -364,7 +364,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 		  }
 		else
 		  {
-		    ref.setBase(insertCast((Local) ref.getBase(), ArrayType.v((BaseType) lefttype, 1), stmt));
+		    ref.setBase(insertCast((Local) ref.getBase(), ArrayType.v(lefttype, 1), stmt));
 		  }
 	      }
 	    else
@@ -633,7 +633,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 	  }
 	else
 	  {
-	    right = hierarchy.typeNode(ArrayType.v((BaseType) baseType, 1));
+	    right = hierarchy.typeNode(ArrayType.v(baseType, 1));
 	  }
 
 	if(!left.hasDescendantOrSelf(right))

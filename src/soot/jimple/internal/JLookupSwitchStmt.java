@@ -43,6 +43,8 @@ public class JLookupSwitchStmt extends AbstractStmt
 {
     UnitBox defaultTargetBox;
     ValueBox keyBox;
+    /** List of lookup values from the corresponding bytecode instruction,
+     * represented as IntConstants. */
     List lookupValues;
     protected UnitBox[] targetBoxes;
 
@@ -182,7 +184,7 @@ public class JLookupSwitchStmt extends AbstractStmt
 
     public void setLookupValue(int index, int value)
     {
-        this.lookupValues.set(index, new Integer(value));
+        this.lookupValues.set(index, IntConstant.v(value));
     }
 
 

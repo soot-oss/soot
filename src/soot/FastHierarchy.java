@@ -133,7 +133,7 @@ public class FastHierarchy
 
     /** For an interface parent (MUST be an interface), returns set of all
      * implementers of it but NOT their subclasses. */
-    protected Set getAllImplementersOfInterface( SootClass parent ) {
+    public Set getAllImplementersOfInterface( SootClass parent ) {
 	Set subs;
 	if( interfaceToAllImplementers.containsKey( parent ) ) {
 	    subs = interfaceToAllImplementers.get( parent );
@@ -197,11 +197,20 @@ public class FastHierarchy
 	    } else {
 		return false;
 	    }
-	} else if( child instanceof AnyType ) {
+	} else if( child instanceof AnySubType ) {
 	    if( !(parent instanceof RefLikeType ) ) {
 		throw new RuntimeException( "Unhandled type "+parent );
 	    } else {
-		return true;
+                RefType base = ((AnySubType)child).getBase();
+                if( parent instanceof RefType ) {
+                    if( ((RefType)parent).getSootClass().isInterface() ) 
+                        return true;
+                }
+                if( base instanceof RefType ) {
+                    if( ((RefType)base).getSootClass().isInterface() ) 
+                        return true;
+                }
+		return canStoreType( parent, base ) || canStoreType( base, parent );
 	    }
 	} else {
 	    ArrayType achild = (ArrayType) child;
@@ -267,7 +276,7 @@ public class FastHierarchy
 	SootClass declaringClass = declaredTypeOfBase.getSootClass();
 	for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
 	    final Type t = (Type) tIt.next();
-	    if( t instanceof AnyType ) {
+	    if( t instanceof AnySubType ) {
 		String methodSig = m.getSubSignature();
 		HashSet s = new HashSet();
 		s.add( declaringClass );
@@ -324,7 +333,7 @@ public class FastHierarchy
 	SootClass declaringClass = declaredTypeOfBase.getSootClass();
 	for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
 	    final Type t = (Type) tIt.next();
-	    if( t instanceof AnyType ) {
+	    if( t instanceof AnySubType ) {
 		String methodSig = m.getSubSignature();
 		HashSet s = new HashSet();
 		s.add( declaringClass );
@@ -461,5 +470,9 @@ public class FastHierarchy
             return resolveConcreteDispatch(container.getDeclaringClass(), target );
         else
             return target;
+    }
+
+    public Set getSubclassesOf( SootClass c ) {
+        return classToSubclasses.get( c );
     }
 }

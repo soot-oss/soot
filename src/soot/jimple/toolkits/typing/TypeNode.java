@@ -59,7 +59,7 @@ class TypeNode
 	throw new InternalTypingException();
       }
       
-    if(!((type instanceof BaseType) || (type instanceof RefType) || 
+    if(!((type instanceof PrimType) || (type instanceof RefType) || 
 	 (type instanceof ArrayType) || (type instanceof NullType)))
       {
 	System.out.println("Unhandled type: " + type);
@@ -167,15 +167,15 @@ class TypeNode
 	    }
 	  else
 	    {
-	      plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.OBJECT.type(), type.numDimensions - 1)));
+	      plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.OBJECT.type(), type.numDimensions - 1)));
 
 	      // hack for J2ME library, reported by Stephen Cheng
 	      if (!J2ME) {
-		plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
-		plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
+		plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
+		plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
 	      }
 
-	      parentClass = hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.OBJECT.type(), type.numDimensions - 1));
+	      parentClass = hierarchy.typeNode(ArrayType.v(hierarchy.OBJECT.type(), type.numDimensions - 1));
 	    }
 
 	  for(Iterator i = sClass.getInterfaces().iterator(); i.hasNext(); )
@@ -198,14 +198,14 @@ class TypeNode
 	}
       else
 	{
-	  plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.OBJECT.type(), type.numDimensions - 1)));
+	  plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.OBJECT.type(), type.numDimensions - 1)));
 	  // hack for J2ME library, reported by Stephen Cheng
 	  if (!J2ME) {
-	    plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
-	    plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
+	    plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
+	    plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
 	  }
 
-	  parentClass = hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.OBJECT.type(), type.numDimensions - 1));
+	  parentClass = hierarchy.typeNode(ArrayType.v(hierarchy.OBJECT.type(), type.numDimensions - 1));
 	}
       	    
       parents = Collections.unmodifiableList(plist);
@@ -416,9 +416,9 @@ class TypeNode
 	return array;
       }
 
-    if(type instanceof BaseType)
+    if(type instanceof PrimType || type instanceof RefType)
       {
-	array = hierarchy.typeNode(ArrayType.v((BaseType) type, 1));
+	array = hierarchy.typeNode(ArrayType.v(type, 1));
 	return array;
       }
 

@@ -31,8 +31,11 @@ import java.util.*;
 import java.io.*;
 
 /** Represents types within Soot, eg <code>int</code>, <code>java.lang.String</code>. */
-public abstract class Type implements Switchable, ToBriefString, Serializable
+public abstract class Type implements Switchable, ToBriefString, Serializable, Numberable
 {
+    public Type() {
+        Scene.v().getTypeNumberer().add( this );
+    }
     /** Returns a textual representation of this type. */
     public abstract String toString();
     
@@ -68,5 +71,19 @@ public abstract class Type implements Switchable, ToBriefString, Serializable
     {
     }
 
-    public int typeNum = 0;
+    public void setArrayType( ArrayType at ) {
+        arrayType = at;
+    }
+    public ArrayType getArrayType() {
+        return arrayType;
+    }
+    public ArrayType makeArrayType() {
+        return ArrayType.v( this, 1 );
+    }
+
+    public final int getNumber() { return number; }
+    public final void setNumber( int number ) { this.number = number; }
+
+    protected ArrayType arrayType;
+    private int number = 0;
 }

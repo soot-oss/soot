@@ -38,7 +38,7 @@ import java.util.*;
  *   Soot representation of the Java built-in type 'float'. Implemented as
  *   a singleton.
  */
-public class FloatType extends BaseType
+public class FloatType extends PrimType
 {
     private static final FloatType constant = new FloatType();
 

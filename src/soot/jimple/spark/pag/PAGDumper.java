@@ -39,7 +39,7 @@ public class PAGDumper {
             final PrintWriter file = new PrintWriter(
                     new FileOutputStream( "solution" ) );
             file.println( "Solution:" );
-            for( Iterator vnIt = pag.allVarNodes().iterator(); vnIt.hasNext(); ) {
+            for( Iterator vnIt = pag.getVarNodeNumberer().iterator(); vnIt.hasNext(); ) {
                 final VarNode vn = (VarNode) vnIt.next();
                 if( vn.getReplacement() != vn ) {
                     continue;
@@ -146,7 +146,7 @@ public class PAGDumper {
         HashSet declaredTypes = new HashSet();
         HashSet actualTypes = new HashSet();
         HashSet allFields = new HashSet();
-        for( Iterator nIt = pag.allVarNodes().iterator(); nIt.hasNext(); ) {
+        for( Iterator nIt = pag.getVarNodeNumberer().iterator(); nIt.hasNext(); ) {
             final Node n = (Node) nIt.next();
             Type t = n.getType();
             if( t != null ) declaredTypes.add( t );
@@ -206,7 +206,7 @@ public class PAGDumper {
             }
         }
         file.println( "Variable Types:" );
-        for( Iterator nIt = pag.allVarNodes().iterator(); nIt.hasNext(); ) {
+        for( Iterator nIt = pag.getVarNodeNumberer().iterator(); nIt.hasNext(); ) {
             final Node n = (Node) nIt.next();
             if( n.getReplacement() != n ) continue;
             Type t = n.getType();
@@ -250,7 +250,7 @@ public class PAGDumper {
         } else if( pag.getOpts().topoSort() && n instanceof VarNode ) {
             out.print( ""+((VarNode) n).finishingNumber );
         } else {
-            out.print( ""+n.getId() );
+            out.print( ""+n.getNumber() );
         }
     }
 

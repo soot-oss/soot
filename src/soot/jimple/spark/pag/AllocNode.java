@@ -38,7 +38,7 @@ public class AllocNode extends Node {
     public AllocDotField dot( SparkField field ) 
     { return fields == null ? null : (AllocDotField) fields.get( field ); }
     public String toString() {
-	return "AllocNode "+id+" "+newExpr;
+	return "AllocNode "+getNumber()+" "+newExpr;
     }
 
     /* End of public methods. */
@@ -54,6 +54,7 @@ public class AllocNode extends Node {
         }
         */
 	this.newExpr = newExpr;
+        pag.getAllocNodeNumberer().add( this );
     }
     /** Registers a AllocDotField as having this node as its base. */
     void addField( AllocDotField adf, SparkField field ) {
@@ -67,10 +68,6 @@ public class AllocNode extends Node {
     }
 
     /* End of package methods. */
-
-    protected void assignId() {
-	id = pag.getNextAllocNodeId();
-    }
 
     protected Object newExpr;
     protected Map fields;

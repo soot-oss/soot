@@ -94,7 +94,9 @@ public class StaticMethodBinder extends SceneTransformer
             SootClass c = (SootClass)classesIt.next();
             
             LinkedList methodsList = new LinkedList(); 
-            methodsList.addAll(c.getMethods());
+            for( Iterator it = c.methodIterator(); it.hasNext(); ) {
+                methodsList.add(it.next());
+            }
 
             while (!methodsList.isEmpty())
             {

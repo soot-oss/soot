@@ -35,11 +35,15 @@ public class SCCCollapser {
     public void collapse() {
         boolean verbose = pag.getOpts().verbose();
         if( verbose ) {
-            System.out.println( "Total VarNodes: "+pag.allVarNodes().size()+". Collapsing SCCs..." );
+            System.out.println( "Total VarNodes: "+pag.getVarNodeNumberer().size()+". Collapsing SCCs..." );
         }
 
         new TopoSorter( pag, ignoreTypes ).sort();
-        TreeSet s = new TreeSet( pag.allVarNodes() );
+        TreeSet s = new TreeSet();
+        for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
+            final VarNode v = (VarNode) vIt.next();
+            s.add(v);
+        }
         for( Iterator vIt = s.iterator(); vIt.hasNext(); ) {
             final VarNode v = (VarNode) vIt.next();
             dfsVisit( v, v );

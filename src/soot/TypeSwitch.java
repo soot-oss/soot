@@ -96,7 +96,7 @@ public class TypeSwitch implements ITypeSwitch
         defaultCase(t);
     }
 
-    public void caseAnyType(AnyType t)
+    public void caseAnySubType(AnySubType t)
     {
         defaultCase(t);
     }

@@ -19,6 +19,7 @@
 
 package soot.jimple.spark.pag;
 import soot.jimple.spark.*;
+import soot.util.*;
 import soot.Type;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.spark.sets.EmptyPointsToSet;
@@ -27,21 +28,11 @@ import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 /** Represents every node in the pointer assignment graph.
  * @author Ondrej Lhotak
  */
-public class Node implements ReferenceVariable {
-    public final int hashCode() { return id; }
+public class Node implements ReferenceVariable, Numberable {
+    public final int hashCode() { return number; }
     public final boolean equals( Object other ) { 
-        /*
-        Node o = (Node) other;
-        if( (this == o) != (this.id == o.id ) ) {
-            System.out.println( "this is "+this+" with id "+id );
-            System.out.println( "other is "+o+" with id "+o.id );
-            throw new RuntimeException( "equality error" );
-        }
-        */
         return this == other;
     }
-    /** Returns an integer unique to this node. */
-    public int getId() { return id; }
     /** Returns the declared type of this node, null for unknown. */
     public Type getType() { return type; }
     /** Sets the declared type of this node, null for unknown. */
@@ -114,17 +105,16 @@ public class Node implements ReferenceVariable {
     Node( PAG pag, Type type ) {
 	this.type = type;
 	this.pag = pag;
-	assignId();
         replacement = this;
     }
 
     /* End of package methods. */
 
-    protected void assignId() {
-	id = pag.getNextNodeId();
-    }
+    public final int getNumber() { return number; }
+    public final void setNumber( int number ) { this.number = number; }
 
-    protected int id;
+    private int number = 0;
+
     protected Type type;
     protected Node replacement;
     protected PAG pag;

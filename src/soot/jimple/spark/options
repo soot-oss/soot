@@ -22,6 +22,12 @@ END
 SECTION Pointer Assignment Graph Building Options
 #################################################
 
+BOPT useNewCallGraph
+false
+When set to true, causes Spark to use the new experimental call graph
+construction code.
+END
+
 BOPT VTA
 false
 Setting VTA to true has the effect of setting ignoreBaseObjects,

@@ -340,7 +340,7 @@ public abstract class PointerPropagationGraph extends PointerStmtSwitch
 	{
 	    SootClass c = (SootClass) classesIt.next();
             boolean cHasReachableMethods = false;
-	    Iterator methodsIt = c.getMethods().iterator();
+	    Iterator methodsIt = c.methodIterator();
 	    while( methodsIt.hasNext() )
 	    {
 		SootMethod m = (SootMethod) methodsIt.next();
@@ -399,7 +399,8 @@ public abstract class PointerPropagationGraph extends PointerStmtSwitch
 	    c.getType(), RefType.v("java.lang.Runnable") ) ) {
 	    if( c.declaresMethod( run ) ) {
 		SootMethod runM = c.getMethod( run );
-		addNewEdge( AnyType.v(), AnyType.v(), 
+                Type anyType = AnySubType.v( RefType.v( "java.lang.Object" ) );
+		addNewEdge( anyType, anyType,
 		    new Pair( runM, PointerAnalysis.THIS_NODE ), c.getType() );
 		if( c.declaresMethod( exit ) ) {
 		    SootMethod exitM = c.getMethod( exit );
@@ -410,7 +411,7 @@ public abstract class PointerPropagationGraph extends PointerStmtSwitch
 	if( c.declaresMethod( finalize ) ) {
 	    // In VTA, there was the comment:
 	    // I have no clue whether or not this is right.
-	    for( Iterator mIt = c.getMethods().iterator(); mIt.hasNext(); ){
+	    for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ){
 		SootMethod m = (SootMethod) mIt.next();
 		if( !m.getName().equals("<init>") ) continue;
 		addSimpleEdge( new Pair( m, PointerAnalysis.THIS_NODE ),

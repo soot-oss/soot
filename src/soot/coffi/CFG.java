@@ -1842,7 +1842,7 @@ public class CFG {
          case ByteCode.NEWARRAY:
          {
             typeStack = popSafe(typeStack, IntType.v());
-            BaseType baseType = (BaseType) jimpleTypeOfAtype(((Instruction_Newarray)ins).atype);
+            Type baseType = (Type) jimpleTypeOfAtype(((Instruction_Newarray)ins).atype);
 
             typeStack = typeStack.push(ArrayType.v(baseType, 1));
             break;
@@ -3328,7 +3328,7 @@ public class CFG {
 
          case ByteCode.NEWARRAY:
          {
-            BaseType baseType = (BaseType) jimpleTypeOfAtype(((Instruction_Newarray)ins).atype);
+            Type baseType = (Type) jimpleTypeOfAtype(((Instruction_Newarray)ins).atype);
 
             rhs = Jimple.v().newNewArrayExpr(baseType,
                 Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));

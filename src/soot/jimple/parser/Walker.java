@@ -287,7 +287,7 @@ public class Walker extends DepthFirstAdapter
 	Type t = (Type) mProductions.removeLast();
         int dim = node.getArrayBrackets().size();
         if(dim > 0) 
-            t = ArrayType.v((BaseType) t, dim);
+            t = ArrayType.v(t, dim);
 	mProductions.addLast(t);
     }
 
@@ -299,7 +299,7 @@ public class Walker extends DepthFirstAdapter
        
         int dim = node.getArrayBrackets().size();
         if(dim > 0) 
-            t = ArrayType.v((BaseType) t, dim);
+            t = ArrayType.v(t, dim);
 	mProductions.addLast(t);
     }
 
@@ -309,7 +309,7 @@ public class Walker extends DepthFirstAdapter
 	Type t = RefType.v(typeName);
         int dim = node.getArrayBrackets().size();
         if(dim > 0)
-            t = ArrayType.v((BaseType) t, dim);
+            t = ArrayType.v( t, dim);
 	mProductions.addLast(t);
     }
 
@@ -320,7 +320,7 @@ public class Walker extends DepthFirstAdapter
 	Type t = RefType.v(typeName);
         int dim = node.getArrayBrackets().size();
         if(dim > 0)
-            t = ArrayType.v((BaseType)t, dim);                
+            t = ArrayType.v(t, dim);                
 	mProductions.addLast(t);
     }
     
@@ -1567,7 +1567,7 @@ public class Walker extends DepthFirstAdapter
                 break;
         }
                             
-	BaseType type = (BaseType) mProductions.removeLast();
+	Type type = (Type) mProductions.removeLast();
         ArrayType arrayType = ArrayType.v(type, descCnt);
         
 	mProductions.addLast(Jimple.v().newNewMultiArrayExpr(arrayType, sizes));   

@@ -151,7 +151,9 @@ public class VTATestingFramework extends SceneTransformer
             SootClass c = (SootClass)classesIt.next();
             
             LinkedList methodsList = new LinkedList(); 
-            methodsList.addAll(c.getMethods());
+            for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
+                methodsList.add(mIt.next());
+            }
 
             while (!methodsList.isEmpty())
             {

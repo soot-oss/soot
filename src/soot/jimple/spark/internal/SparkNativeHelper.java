@@ -66,7 +66,7 @@ public class SparkNativeHelper extends NativeHelper {
 	return source;
     }
     protected ReferenceVariable newInstanceOfImpl(ReferenceVariable cls) {
-	AllocNode site = pag.makeAllocNode( cls, AnyType.v() );
+	AllocNode site = pag.makeAllocNode( cls, AnySubType.v( RefType.v( "java.lang.Object" ) ) );
 	VarNode local = pag.makeVarNode( site, RefType.v( "java.lang.Object" ), null );
 	pag.addEdge( site, local );
 	return local;

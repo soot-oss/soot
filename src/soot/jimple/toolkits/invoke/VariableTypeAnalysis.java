@@ -113,8 +113,8 @@ public class VariableTypeAnalysis implements PointsToAnalysis
             if (t.equals(RefType.v("java.lang.Object")))
                 validReachingTypes.addAll(reachingTypes);
             else
-                for (Iterator rtIt = reachingTypes.iterator(); rtIt.hasNext(); ) {
-                    Type rt = (Type)rtIt.next();
+                for( Iterator rtIt = reachingTypes.iterator(); rtIt.hasNext(); ) {
+                    final Type rt = (Type) rtIt.next();
                     SootClass subCls = ((RefType)rt).getSootClass();
                     if (cls.isInterface()) {
                         boolean found = false;
@@ -242,7 +242,7 @@ public class VariableTypeAnalysis implements PointsToAnalysis
                 }
             }
 
-            Iterator methodsIt = c.getMethods().iterator();
+            Iterator methodsIt = c.methodIterator();
             while (methodsIt.hasNext())
             {
                 SootMethod m = (SootMethod)methodsIt.next();
@@ -359,8 +359,9 @@ public class VariableTypeAnalysis implements PointsToAnalysis
         TypeSet set;
         boolean recompute = false;
 
-        for (Iterator nodeIt = nodelist.iterator(); nodeIt.hasNext(); ) {
-            Object node = nodeIt.next();
+        for( Iterator nodeIt = nodelist.iterator(); nodeIt.hasNext(); ) {
+
+            final Object node = (Object) nodeIt.next();
             List preds = graph.getPredsOf(node);
             set = new TypeSet();
             set.addAll(computeReachingTypes((List)node));

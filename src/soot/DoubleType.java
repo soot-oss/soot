@@ -36,7 +36,7 @@ import java.util.*;
  *   Soot representation of the Java built-in type 'double'. Implemented as
  *   a singleton.
  */
-public class DoubleType extends BaseType
+public class DoubleType extends PrimType
 {
     private static final DoubleType constant = new DoubleType();
 

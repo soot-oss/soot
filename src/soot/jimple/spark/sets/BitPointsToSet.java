@@ -165,7 +165,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
     }
     /** Returns true iff the set contains n. */
     public final boolean contains( Node n ) {
-        int id = -n.getId();
+        int id = n.getNumber();
         return ( bits[ id/64 ] & 1L<<(id%64 ) ) != 0;
     }
     public static P2SetFactory getFactory() {
@@ -184,7 +184,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
     /* End of package methods. */
 
     protected boolean fastAdd( Node n ) {
-        int id = -n.getId();
+        int id = n.getNumber();
         if( nodes[id] == null ) nodes[id] = n;
         if( ( bits[id/64] & 1L<<(id%64) ) != 0 ) return false;
         bits[id/64] |= 1L<<(id%64);

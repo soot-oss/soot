@@ -33,19 +33,7 @@ public final class TypeManager {
     }
     final public void clearTypeMask() {
         typeMask = null;
-        typeToNum = null;
         typeCache = null;
-    }
-    private void addType( Type t ) {
-        if( t == null ) return;
-        Integer i = (Integer) typeToNum.get( t );
-        if( i == null ) {
-            t.typeNum = nextTypeNum; 
-            i = new Integer( nextTypeNum++ );
-            typeToNum.put( t, i );
-        } else {
-            t.typeNum = i.intValue();
-        }
     }
     final public boolean castNeverFails( Type src, Type dst ) {
         if( typeCache == null ) return true;
@@ -54,21 +42,13 @@ public final class TypeManager {
         if( src == null ) return false;
         if( dst.equals( src ) ) return true;
         return 
-            (typeCache[src.typeNum][dst.typeNum/32] & (1<<(dst.typeNum%32))) != 0;
+            (typeCache[src.getNumber()][dst.getNumber()/32] & (1<<(dst.getNumber()%32))) != 0;
     }
     final public void makeTypeMask( PAG pag ) {
-        if( typeToNum != null ) throw new RuntimeException( "oops" );
-        typeToNum = new HashMap();
-        nextTypeNum = 1;
         HashSet declaredTypes = new HashSet();
-        for( Iterator nIt = pag.allVarNodes().iterator(); nIt.hasNext(); ) {
+        for( Iterator nIt = pag.getVarNodeNumberer().iterator(); nIt.hasNext(); ) {
             final VarNode n = (VarNode) nIt.next();
-            addType( n.getType() );
             declaredTypes.add( n.getType() );
-        }
-        for( Iterator nIt = pag.allocSources().iterator(); nIt.hasNext(); ) {
-            final Node n = (Node) nIt.next();
-            addType( n.getType() );
         }
         
         SIZE = pag.getNumAllocNodes()/64+2;
@@ -77,20 +57,23 @@ public final class TypeManager {
         typeMask = new HashMap();
         if( fh == null ) return;
 
+        int numTypes = Scene.v().getTypeNumberer().size();
         if( pag.getOpts().verbose() )
-            System.out.println( "Total types: "+nextTypeNum );
-        typeCache = new int[nextTypeNum+1][nextTypeNum/32+2];
+            System.out.println( "Total types: "+numTypes );
+        typeCache = new int[numTypes+1][numTypes/32+2];
 
-        for( Iterator childIt = typeToNum.keySet().iterator(); childIt.hasNext(); ) {
+        for( Iterator childIt = Scene.v().getTypeNumberer().iterator(); childIt.hasNext(); ) {
 
             final Type child = (Type) childIt.next();
-            for( Iterator parentIt = typeToNum.keySet().iterator(); parentIt.hasNext(); ) {
+            if( !(child instanceof RefLikeType) ) continue;
+            for( Iterator parentIt = Scene.v().getTypeNumberer().iterator(); parentIt.hasNext(); ) {
                 final Type parent = (Type) parentIt.next();
-                if( (child instanceof NullType || child instanceof AnyType ) ||
-                        ( !(parent instanceof NullType || parent instanceof AnyType ) 
+                if( !(parent instanceof RefLikeType) ) continue;
+                if( (child instanceof NullType || child instanceof AnySubType ) ||
+                        ( !(parent instanceof NullType || parent instanceof AnySubType ) 
                           &&  fh.canStoreType( child, parent ) ) ) {
-                    typeCache[child.typeNum][parent.typeNum/32] 
-                        |= (1<<(parent.typeNum%32));
+                    typeCache[child.getNumber()][parent.getNumber()/32] 
+                        |= (1<<(parent.getNumber()%32));
                 }
             }
         }
@@ -102,7 +85,7 @@ public final class TypeManager {
             for( Iterator nIt = pag.allocSources().iterator(); nIt.hasNext(); ) {
                 final Node n = (Node) nIt.next();
                 if( castNeverFails( n.getType(), t ) ) {
-                    int id = -n.getId();
+                    int id = n.getNumber();
                     mask[id/64] |= 1L<<(id%64);
                 }
             }
@@ -116,8 +99,6 @@ public final class TypeManager {
     private int SIZE = 0;
     private Node[] nodes = null;
     private HashMap typeMask = null;
-    private HashMap typeToNum = null;
-    private int nextTypeNum = 1;
     private int[][] typeCache = null;
     private FastHierarchy fh = null;
 }

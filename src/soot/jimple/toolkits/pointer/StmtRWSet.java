@@ -9,6 +9,10 @@ public class StmtRWSet extends RWSet {
     protected PointsToSet base;
     protected boolean callsNative = false;
 
+    public String toString() {
+        return "[Field: "+field+base+"]\n";
+    }
+
     public boolean getCallsNative() {
 	return callsNative;
     }

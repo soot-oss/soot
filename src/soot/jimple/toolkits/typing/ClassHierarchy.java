@@ -112,7 +112,7 @@ class ClassHierarchy
   /** Get the type node for the given type. **/
   public TypeNode typeNode(Type type)
   {
-    if(type == null)
+    if(type == null) 
       {
 	throw new InternalTypingException();
       }

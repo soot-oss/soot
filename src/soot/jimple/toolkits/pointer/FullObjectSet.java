@@ -1,6 +1,7 @@
 package soot.jimple.toolkits.pointer;
 import soot.jimple.spark.PointsToSet;
 import java.util.*;
+import soot.*;
 
 public class FullObjectSet extends Union implements PointsToSet {
     /** Returns true if this set contains no run-time objects. */
@@ -13,7 +14,7 @@ public class FullObjectSet extends Union implements PointsToSet {
     }
     /** Set of all possible run-time types of objects in the set. */
     public Set possibleTypes() {
-	throw new RuntimeException( "Not implemented" );
+        return Collections.singleton( AnySubType.v( RefType.v( "java.lang.Object" ) ) );
     }
 
     /** Adds all objects in s into this union of sets, returning true if this

@@ -43,7 +43,7 @@ import java.util.jar.*;
     Does not contain the actual code, which belongs to a Body.
     The getActiveBody() method points to the currently-active body.
 */
-public class SootMethod extends AbstractHost implements ClassMember
+public class SootMethod extends AbstractHost implements ClassMember, Numberable
 {
     public static final String constructorName = "<init>";
     public static final String staticInitializerName = "<clinit>";
@@ -113,6 +113,8 @@ public class SootMethod extends AbstractHost implements ClassMember
         this.parameterTypes = new ArrayList();
         this.parameterTypes.addAll(parameterTypes);
         this.returnType = returnType;
+        Scene.v().getMethodNumberer().add( this );
+        subsignature = Scene.v().getSubSigNumberer().findOrAdd( getSubSignature() );
     }
 
     /** Constructs a SootMethod with the given name, parameter types, return type and modifiers. */
@@ -124,6 +126,8 @@ public class SootMethod extends AbstractHost implements ClassMember
 
         this.returnType = returnType;
         this.modifiers = modifiers;        
+        Scene.v().getMethodNumberer().add( this );
+        subsignature = Scene.v().getSubSigNumberer().findOrAdd( getSubSignature() );
     }
 
     /** Constructs a SootMethod with the given name, parameter types, return type, 
@@ -143,6 +147,8 @@ public class SootMethod extends AbstractHost implements ClassMember
             exceptions = new ArrayList();
             this.exceptions.addAll(thrownExceptions);
         }
+        Scene.v().getMethodNumberer().add( this );
+        subsignature = Scene.v().getSubSigNumberer().findOrAdd( getSubSignature() );
     }   
 
     /** Returns the name of this method. */
@@ -658,10 +664,11 @@ public class SootMethod extends AbstractHost implements ClassMember
         
         return buffer.toString();
     }
-    
-    
 
-
+    private NumberedString subsignature;
+    public NumberedString getNumberedSubSignature() {
+        return subsignature;
+    }
 
     /** Returns the signature of this method. */
     public String toString()
@@ -769,4 +776,7 @@ public class SootMethod extends AbstractHost implements ClassMember
 
         return buffer.toString();
     }
+    public final int getNumber() { return number; }
+    public final void setNumber( int number ) { this.number = number; }
+    private int number = 0;
 }

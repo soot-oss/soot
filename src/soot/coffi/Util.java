@@ -77,7 +77,7 @@ public class Util
     public static void assertResolvedClassForType(Type type)
     {
         if(type instanceof RefType)
-            assertResolvedClass(((RefType) type).className);
+            assertResolvedClass(((RefType) type).getClassName());
         else if(type instanceof ArrayType)
             assertResolvedClassForType(((ArrayType) type).baseType);
     }
@@ -833,7 +833,7 @@ public class Util
 
             // Determine type
                 if(isArray)
-                    t = ArrayType.v((BaseType) baseType, numDimensions);
+                    t = ArrayType.v(baseType, numDimensions);
                 else
                     t = baseType;
 
@@ -891,7 +891,7 @@ public class Util
 
         // Return type
             if(isArray)
-                return ArrayType.v((BaseType) baseType, numDimensions);
+                return ArrayType.v(baseType, numDimensions);
             else
                 return baseType;
     }

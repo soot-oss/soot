@@ -23,9 +23,11 @@ import soot.jimple.spark.builder.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.solver.*;
 import soot.jimple.spark.sets.*;
+import soot.jimple.spark.callgraph.*;
 import soot.jimple.toolkits.invoke.InvokeGraph;
 import soot.jimple.toolkits.invoke.InvokeGraphBuilder;
 import soot.jimple.toolkits.invoke.InvokeGraphTrimmer;
+import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
 import soot.jimple.*;
 import java.util.*;
 
@@ -63,6 +65,18 @@ public class SparkTransformer extends SceneTransformer
     {
         SparkOptions opts = new SparkOptions( options );
 
+        /*
+        if( opts.useNewCallGraph() ) {
+            CallGraph cg = new CallGraph( new ImplicitMethodInvocation(),
+                    new DumbPointerAnalysis() );
+            cg.build();
+            for( Iterator methods = cg.getReachableMethods(); methods.hasNext(); ) {
+                System.out.println( ""+methods.next() );
+            }
+            return;
+        }
+        */
+
         // Build invoke graph
         Date startIg = new Date();
         InvokeGraphBuilder.v().transform( phaseName + ".igb" );
@@ -86,6 +100,10 @@ public class SparkTransformer extends SceneTransformer
         Date endTM = new Date();
         reportTime( "Type masks", startTM, endTM );
         if( opts.forceGCs() ) doGC();
+
+        System.out.println( "VarNodes: "+pag.getVarNodeNumberer().size() );
+        System.out.println( "FieldRefNodes: "+pag.getFieldRefNodeNumberer().size() );
+        System.out.println( "AllocNodes: "+pag.getAllocNodeNumberer().size() );
 
         // Simplify pag
         Date startSimplify = new Date();
@@ -132,6 +150,14 @@ public class SparkTransformer extends SceneTransformer
         if( opts.forceGCs() ) doGC();
         reportTime( "Solution found", startSimplify, endProp );
 
+        if( opts.useNewCallGraph() ) {
+            CallGraph cg = ((NewOnFlyCallGraph)pag.getOnFlyCallGraph()).getCallGraph();
+            for( Iterator methods = cg.getReachableMethods(); methods.hasNext(); ) {
+                System.out.println( ""+methods.next() );
+            }
+            return;
+        }
+
         findSetMass( pag );
 
         /*
@@ -166,7 +192,7 @@ public class SparkTransformer extends SceneTransformer
         int varMass = 0;
         int adfs = 0;
         int scalars = 0;
-        for( Iterator vIt = pag.allVarNodes().iterator(); vIt.hasNext(); ) {
+        for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
             final VarNode v = (VarNode) vIt.next();
                 scalars++;
             PointsToSetInternal set = v.getP2Set();

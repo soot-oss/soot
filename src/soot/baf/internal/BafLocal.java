@@ -105,4 +105,8 @@ public class BafLocal implements Local
     {
         throw new RuntimeException("invalid case switch");
     }
+    public final int getNumber() { return number; }
+    public final void setNumber( int number ) { this.number = number; }
+
+    private int number = 0;
 }

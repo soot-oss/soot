@@ -36,7 +36,7 @@ import java.util.*;
  *   Soot representation of the Java built-in type 'short'. Implemented as
  *   a singleton.
  */
-public class ShortType extends BaseType implements IntegerType
+public class ShortType extends PrimType implements IntegerType
 {
     private static final ShortType constant = new ShortType();
 

@@ -37,9 +37,6 @@ public interface Parms {
     public void addEdge( Node from, Node to );
     /** Node for the argv array parameter to main. */
     public Node caseArgv();
-    /** Node representing allocation of any object of any type (for native
-     * stuff). */
-    public Node caseAnyType();
     /** This node for method m. */
     public Node caseThis( SootMethod m );
     /** Node for index'th parameter of method m. */

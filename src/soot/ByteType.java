@@ -37,7 +37,7 @@ import java.util.*;
  *   Soot representation of the Java built-in type 'byte'. Implemented as
  *   a singleton.
  */
-public class ByteType extends BaseType implements IntegerType
+public class ByteType extends PrimType implements IntegerType
 {
     private static final ByteType constant = new ByteType();
 

@@ -37,7 +37,7 @@ import java.util.*;
  *   Soot representation of the Java built-in type 'boolean'. Implemented as
  *   a singleton.
  */
-public class BooleanType extends BaseType implements IntegerType
+public class BooleanType extends PrimType implements IntegerType
 {
     private static final BooleanType constant = new BooleanType();
 

@@ -119,7 +119,7 @@ class ClassFieldAnalysis
 	   For PRIVATE STATIC field, if it is not always assigned value, it may count null pointer
 	   exception before array exception */
 
-	Iterator methodIt = c.getMethods().iterator();
+	Iterator methodIt = c.methodIterator();
 	while (methodIt.hasNext())
 	{
 	    ScanMethod ((SootMethod)methodIt.next(),

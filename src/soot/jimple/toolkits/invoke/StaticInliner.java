@@ -186,7 +186,7 @@ public class StaticInliner extends SceneTransformer
         {
             SootClass c = (SootClass) classesIt.next();
 
-            Iterator methodsIt = c.getMethods().iterator();
+            Iterator methodsIt = c.methodIterator();
             while (methodsIt.hasNext())
             {
                 SootMethod m = (SootMethod) methodsIt.next();

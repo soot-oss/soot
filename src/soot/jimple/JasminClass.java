@@ -149,7 +149,7 @@ public class JasminClass
 
             public void caseRefType(RefType t)
             {
-                setResult("L" + t.className.replace('.', '/') + ";");
+                setResult("L" + t.getClassName().replace('.', '/') + ";");
             }
 
             public void caseVoidType(VoidType t)
@@ -285,7 +285,7 @@ public class JasminClass
 
         // Emit the methods
         {
-            Iterator methodIt = SootClass.getMethods().iterator();
+            Iterator methodIt = SootClass.methodIterator();
 
             while(methodIt.hasNext())
             {

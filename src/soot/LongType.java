@@ -36,7 +36,7 @@ import java.util.*;
  *   Soot representation of the Java built-in type 'long'. Implemented as
  *   a singleton.
  */
-public class LongType extends BaseType
+public class LongType extends PrimType
 {
     private static final LongType constant = new LongType();
 

@@ -131,7 +131,7 @@ public class MethodCallGraph extends MemoryEfficientGraph {
          Iterator classesIt = appAndLibClasses.iterator();
          while (classesIt.hasNext()) {
              SootClass c = (SootClass)classesIt.next();
-             Iterator methodsIt = c.getMethods().iterator();
+             Iterator methodsIt = c.methodIterator();
              while (methodsIt.hasNext()) {
                  SootMethod m = (SootMethod)methodsIt.next();
                  String sig = m.getSubSignature();
@@ -200,8 +200,8 @@ public class MethodCallGraph extends MemoryEfficientGraph {
               }
               if (!greyNodes.contains(o)) {
                   greyNodes.add(o);
-                  for (Iterator succsIt = ((List)getSuccsOf(o)).iterator(); succsIt.hasNext(); ) {
-                      Object child = succsIt.next();
+                  for( Iterator childIt = ((List)getSuccsOf(o)).iterator(); childIt.hasNext(); ) {
+                      final Object child = (Object) childIt.next();
                       if (!greyNodes.contains(child))
                           st.addLast(child);
                   }
@@ -244,8 +244,8 @@ public class MethodCallGraph extends MemoryEfficientGraph {
           st.addLast(meth);
           while (!st.isEmpty()) {
               SootMethod m = (SootMethod)st.removeLast();
-              for (Iterator targetsIt = ig.getTargetsOf(m).iterator(); targetsIt.hasNext(); ) {
-                  SootMethod target = (SootMethod)targetsIt.next();
+              for( Iterator targetIt = ig.getTargetsOf(m).iterator(); targetIt.hasNext(); ) {
+                  final SootMethod target = (SootMethod) targetIt.next();
                   if (!containsNode(target))
                       addNode(target);
                   addEdge(m, target);

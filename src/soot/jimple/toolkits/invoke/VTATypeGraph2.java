@@ -153,7 +153,7 @@ public class VTATypeGraph2 extends MemoryEfficientGraph
 	  continue;
 
 	// Add nodes for method contents, if it is reachable.
-	Iterator methodsIt = c.getMethods().iterator();
+	Iterator methodsIt = c.methodIterator();
 
 	while (methodsIt.hasNext()) {
 	  SootMethod m = (SootMethod)methodsIt.next();
@@ -283,7 +283,7 @@ public class VTATypeGraph2 extends MemoryEfficientGraph
 	VTANativeMethodWrapper2.initialize(nhelper);
 	  
 	// Add edges for method contents, if it is reachable.
-	Iterator methodsIt = c.getMethods().iterator();
+	Iterator methodsIt = c.methodIterator();
 
 	while (methodsIt.hasNext()) {
 	  SootMethod m = (SootMethod)methodsIt.next();

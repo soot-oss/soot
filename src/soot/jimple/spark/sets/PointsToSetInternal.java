@@ -116,6 +116,14 @@ public abstract class PointsToSetInternal implements PointsToSet {
         } );
         return ret[0];
     }
+    public String toString() {
+        final StringBuffer ret = new StringBuffer();
+        this.forall( new P2SetVisitor() {
+        public final void visit( Node n ) {
+            ret.append( ""+n+"," );
+        }} );
+        return ret.toString();
+    }
     /* End of public methods. */
     /* End of package methods. */
 

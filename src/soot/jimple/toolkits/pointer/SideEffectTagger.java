@@ -1,4 +1,5 @@
 package soot.jimple.toolkits.pointer;
+import soot.jimple.toolkits.pointer.kloj.*;
 import soot.tagkit.*;
 import soot.*;
 import java.util.*;
@@ -31,8 +32,8 @@ public class SideEffectTagger extends BodyTransformer
 	protected ArrayList l = new ArrayList();
 	RWSet getUnique( RWSet s ) {
 	    if( s == null ) return s;
-	    for( Iterator it = l.iterator(); it.hasNext(); ) {
-		RWSet ret = (RWSet) it.next();
+	    for( Iterator retIt = l.iterator(); retIt.hasNext(); ) {
+	        final RWSet ret = (RWSet) retIt.next();
 		if( ret.isEquivTo( s ) ) return ret;
 	    }
 	    l.add( s );
@@ -43,8 +44,8 @@ public class SideEffectTagger extends BodyTransformer
 	}
 	short indexOf( RWSet s ) {
 	    short i = 0;
-	    for( Iterator it = l.iterator(); it.hasNext(); ) {
-		RWSet ret = (RWSet) it.next();
+	    for( Iterator retIt = l.iterator(); retIt.hasNext(); ) {
+	        final RWSet ret = (RWSet) retIt.next();
 		if( ret.isEquivTo( s ) ) return i;
 		i++;
 	    }
@@ -56,11 +57,12 @@ public class SideEffectTagger extends BodyTransformer
 	if( !Scene.v().hasActiveInvokeGraph() ) {
 	    InvokeGraphBuilder.v().transform( phaseName + ".igb" );
 	}
-	if( Union.factory == null ) {
-	    Union.factory = new UnionFactory() {
-		public Union newUnion() { return new FullObjectSet(); }
-	    };
-	}
+        Union.factory = new UnionFactory() {
+	    //ReallyCheapRasUnion ru =  new ReallyCheapRasUnion();
+	    //public Union newUnion() { return new RasUnion(); }
+	    public Union newUnion() { return new MemoryEfficientRasUnion(); }
+	};
+
 	if( startTime == null ) {
 	    startTime = new Date();
 	}
@@ -92,7 +94,7 @@ public class SideEffectTagger extends BodyTransformer
 	boolean justDoTotallyConservativeThing = 
 	    body.getMethod().getName().equals( "<clinit>" );
 	for( Iterator stmtIt = body.getUnits().iterator(); stmtIt.hasNext(); ) {
-	    Stmt stmt = (Stmt) stmtIt.next();
+	    final Stmt stmt = (Stmt) stmtIt.next();
 	    if( justDoTotallyConservativeThing 
 	    || ( optionNaive && stmt.containsInvokeExpr() ) ) {
 		stmtToReadSet.put( stmt, sets.getUnique( new FullRWSet() ) );
@@ -109,12 +111,15 @@ public class SideEffectTagger extends BodyTransformer
 	}
 	DependenceGraph graph = new DependenceGraph();
 	for( Iterator outerIt = sets.iterator(); outerIt.hasNext(); ) {
-	    RWSet outer = (RWSet) outerIt.next();
+	    final RWSet outer = (RWSet) outerIt.next();
 
 	    for( Iterator innerIt = sets.iterator(); innerIt.hasNext(); ) {
-		RWSet inner = (RWSet) innerIt.next();
+
+	        final RWSet inner = (RWSet) innerIt.next();
 		if( inner == outer ) break;
 		if( outer.hasNonEmptyIntersection( inner ) ) {
+                    //System.out.println( "inner set is: "+inner );
+                    //System.out.println( "outer set is: "+outer );
 		    graph.addEdge( sets.indexOf( outer ), sets.indexOf( inner ) );
 		}
 	    }
@@ -123,7 +128,7 @@ public class SideEffectTagger extends BodyTransformer
 	    body.getMethod().addTag( graph );
 	}
 	for( Iterator stmtIt = body.getUnits().iterator(); stmtIt.hasNext(); ) {
-	    Stmt stmt = (Stmt) stmtIt.next();
+	    final Stmt stmt = (Stmt) stmtIt.next();
 	    Object key;
 	    if( optionNaive && stmt.containsInvokeExpr() ) {
 		key = stmt;
@@ -147,9 +152,8 @@ public class SideEffectTagger extends BodyTransformer
 
 		// The loop below is just fro calculating stats.
 		if( !justDoTotallyConservativeThing ) {
-		    for( Iterator innerIt = body.getUnits().iterator();
-			    innerIt.hasNext(); ) {
-			Stmt inner = (Stmt) innerIt.next();
+		    for( Iterator innerIt = body.getUnits().iterator(); innerIt.hasNext(); ) {
+		        final Stmt inner = (Stmt) innerIt.next();
 			Object ikey;
 			if( optionNaive && inner.containsInvokeExpr() ) {
 			    ikey = inner;

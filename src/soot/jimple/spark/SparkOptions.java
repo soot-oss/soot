@@ -70,6 +70,15 @@ public class SparkOptions {
 *********************************************************************/
 
     /**
+     * When set to true, causes Spark to use the new experimental call graph
+     * construction code.
+     * Default value is false
+     */
+    public boolean useNewCallGraph() {
+        return Options.getBoolean( options, "useNewCallGraph" );
+    }
+
+    /**
      * Setting VTA to true has the effect of setting ignoreBaseObjects,
      * typesForSites, and simplifySCCs to true to simulate Variable Type
      * Analysis, described in~\cite{sund.hend.ea00}. Note that the
@@ -97,7 +106,7 @@ public class SparkOptions {
     /**
      * When this option is set to true, fields are represented by variable
      * (Green) nodes, and the object that the field belongs to is ignored
-     * (all fields are lumped together). Otherwise, fields are represented by
+     * (all objects are lumped together). Otherwise, fields are represented by
      * field reference (Red) nodes, and the objects that they belong to are
      * distinguished.
      * Default value is false
@@ -201,8 +210,7 @@ public class SparkOptions {
      * When this option is set to true, when collapsing strongly-connected
      * components, nodes forming SCCs are collapsed regardless of their type.
      * The collapsed SCC is given the most general type of all the nodes in the
-     * component. If no node has the most general type, then the SCC is given
-     * no type, and may point to objects of any type.
+     * component.
      * 
      * When this option is set to false, only edges connecting nodes of the
      * same type are considered when detecting SCCs.
@@ -438,11 +446,11 @@ public class SparkOptions {
 
     public static String getDeclaredOptions() {
         return
-        " verbose ignoreTypesEntirely forceGCs VTA RTA ignoreBaseObjects typesForSites mergeStringBuffer simulateNatives simpleEdgesBidirectional onFlyCallGraph parmsAsFields returnsAsFields simplifyOffline simplifySCCs ignoreTypesForSCCs propagator setImpl doubleSetOld doubleSetNew dumpHTML dumpPAG dumpSolution topoSort dumpTypes classMethodVar dumpAnswer trimInvokeGraph";
+        " verbose ignoreTypesEntirely forceGCs useNewCallGraph VTA RTA ignoreBaseObjects typesForSites mergeStringBuffer simulateNatives simpleEdgesBidirectional onFlyCallGraph parmsAsFields returnsAsFields simplifyOffline simplifySCCs ignoreTypesForSCCs propagator setImpl doubleSetOld doubleSetNew dumpHTML dumpPAG dumpSolution topoSort dumpTypes classMethodVar dumpAnswer trimInvokeGraph";
     }
     public static String getDefaultOptions() {
         return
-        " verbose:false ignoreTypesEntirely:false forceGCs:false VTA:false RTA:false ignoreBaseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false parmsAsFields:false returnsAsFields:false simplifyOffline:false simplifySCCs:false ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true classMethodVar:true dumpAnswer:false trimInvokeGraph:false";
+        " verbose:false ignoreTypesEntirely:false forceGCs:false useNewCallGraph:false VTA:false RTA:false ignoreBaseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false parmsAsFields:false returnsAsFields:false simplifyOffline:false simplifySCCs:false ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true classMethodVar:true dumpAnswer:false trimInvokeGraph:false";
     }
 
     protected Map options;

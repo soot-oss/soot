@@ -35,8 +35,7 @@ public class PAG2HTML {
         this.pag = pag;
     }
     public void dump() {
-        Set allNodes = pag.allVarNodes();
-        for( Iterator vIt = allNodes.iterator(); vIt.hasNext(); ) {
+        for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
             final VarNode v = (VarNode) vIt.next();
             mergedNodes.put( v.getReplacement(), v );
             if( v.getMethod() != null ) {
@@ -54,7 +53,7 @@ public class PAG2HTML {
                 final SootMethod m = (SootMethod) mIt.next();
                 dumpMethod( m, jarOut );
             }
-            addSymLinks( allNodes, jarOut );
+            addSymLinks( pag.getVarNodeNumberer().iterator(), jarOut );
             jarOut.close();
         } catch( IOException e ) {
             throw new RuntimeException( "Couldn't dump html"+e );
@@ -70,7 +69,7 @@ public class PAG2HTML {
     protected MultiMap methodToNodes = new HashMultiMap();
 
     protected void dumpVarNode( VarNode v, JarOutputStream jarOut ) throws IOException {
-        jarOut.putNextEntry( new ZipEntry( "n"+v.getId()+".html" ) );
+        jarOut.putNextEntry( new ZipEntry( "n"+v.getNumber()+".html" ) );
         final PrintWriter out = new PrintWriter( jarOut );
         out.println( "<html>" );
         
@@ -117,7 +116,7 @@ public class PAG2HTML {
     }
     protected String varNode( VarNode vv ) {
         StringBuffer ret = new StringBuffer();
-        ret.append( "<li><a href=\"n"+vv.getId()+".html\">" );
+        ret.append( "<li><a href=\"n"+vv.getNumber()+".html\">" );
         ret.append( ""+htmlify(vv.getValue().toString()) );
         ret.append( "</a><br>" );
         if( vv.getMethod() != null ) {
@@ -153,15 +152,15 @@ public class PAG2HTML {
         out.println( "</html>" );
         out.flush();
     }
-    protected void addSymLinks( Set nodes, JarOutputStream jarOut ) throws IOException {
+    protected void addSymLinks( Iterator nodes, JarOutputStream jarOut ) throws IOException {
         jarOut.putNextEntry( new ZipEntry( "symlinks.sh" ) );
         final PrintWriter out = new PrintWriter( jarOut );
         out.println( "#!/bin/sh" );
-        for( Iterator vIt = nodes.iterator(); vIt.hasNext(); ) {
-            final VarNode v = (VarNode) vIt.next();
+        while( nodes.hasNext() ) {
+            VarNode v = (VarNode) nodes.next();
             VarNode rep = (VarNode) v.getReplacement();
             if( v != rep ) {
-                out.println( "ln -s n"+rep.getId()+".html n"+v.getId()+".html" );
+                out.println( "ln -s n"+rep.getNumber()+".html n"+v.getNumber()+".html" );
             }
         }
         out.flush();

@@ -44,7 +44,7 @@ public class ThrowFinder
 	// Get all the methods, and find protection for every statement.
 	Iterator classIt = Scene.v().getApplicationClasses().iterator();
 	while (classIt.hasNext()) {
-	    Iterator methodIt = ((SootClass) classIt.next()).getMethods().iterator();
+	    Iterator methodIt = ((SootClass) classIt.next()).methodIterator();
 	    while (methodIt.hasNext()) {
 		SootMethod m = (SootMethod) methodIt.next();
 

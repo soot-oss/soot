@@ -60,14 +60,14 @@ import soot.jimple.*;
     Soot representation of a Java class.  They are usually created by a Scene,
     but can also be constructed manually through the given constructors.
 */
-public class SootClass extends AbstractHost
+public class SootClass extends AbstractHost implements Numberable
 {
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
 
     String name, shortName, fixedShortName, packageName, fixedPackageName;
     int modifiers;
     Chain fields = new HashChain();
-    Chain methods = new HashChain();
+    SmallNumberedMap subSigToMethods = new SmallNumberedMap( Scene.v().getSubSigNumberer() );
     Chain interfaces = new HashChain();
 
     boolean isInScene;
@@ -83,6 +83,8 @@ public class SootClass extends AbstractHost
     {
 	setName( name);
         this.modifiers = modifiers;
+        refType = RefType.v(name);
+        refType.setSootClass(this);
     }
 
     /**
@@ -275,15 +277,33 @@ public class SootClass extends AbstractHost
         Returns the method of this class with the given subsignature.
     */
 
-    public SootMethod getMethod(String subsignature)
+    public SootMethod getMethod(NumberedString subsignature)
     {
-        SootMethod toReturn = (SootMethod) Scene.v().methodSignatureToMethod.get("<" + getName() + ": " + subsignature + ">");
-
-
-        if(toReturn == null)
+        SootMethod ret = (SootMethod) getMethods().get( subsignature );
+        if(ret == null)
             throw new RuntimeException("No method " + subsignature + " in class " + getName());
         else
-            return toReturn;
+            return ret;
+    }
+
+    /**
+        Does this class declare a method with the given subsignature?
+    */
+
+    public boolean declaresMethod(NumberedString subsignature)
+    {
+        SootMethod ret = (SootMethod) getMethods().get( subsignature );
+        return ret != null;
+    }
+    
+    
+    /*    
+        Returns the method of this class with the given subsignature.
+    */
+
+    public SootMethod getMethod(String subsignature)
+    {
+        return getMethod( Scene.v().getSubSigNumberer().findOrAdd( subsignature ) );
     }
 
     /**
@@ -292,8 +312,7 @@ public class SootClass extends AbstractHost
 
     public boolean declaresMethod(String subsignature)
     {
-
-        return Scene.v().methodSignatureToMethod.containsKey("<" + getName() + ": " + subsignature + ">");
+        return declaresMethod( Scene.v().getSubSigNumberer().findOrAdd( subsignature ) );
     }
     
     
@@ -343,22 +362,31 @@ public class SootClass extends AbstractHost
 
     public int getMethodCount()
     {
-        return methods.size();
+        return getMethods().nonNullSize();
     }
 
     /**
-     * Returns a backed Chain of methods.
+     * Returns a backed SmallNumberedMap of methods.
      */
 
-    public Chain getMethods()
+    private SmallNumberedMap getMethods()
     {
-        return methods;
+        return subSigToMethods;
+    }
+
+    /**
+     * Returns an iterator over the methods in this class.
+     */
+
+    public Iterator methodIterator()
+    {
+        return subSigToMethods.iterator();
     }
 
     private SootMethod findMethodInClass( String name, List parameterTypes,
             Type returnType )
     {
-        for( Iterator methodIt = this.getMethods().iterator(); methodIt.hasNext(); ) {
+        for( Iterator methodIt = methodIterator(); methodIt.hasNext(); ) {
             final SootMethod method = (SootMethod) methodIt.next();
             if(method.getName().equals(name) &&
                 parameterTypes.equals(method.getParameterTypes()) &&
@@ -420,7 +448,7 @@ public class SootClass extends AbstractHost
         boolean found = false;
         SootMethod foundMethod = null;
         
-        Iterator methodIt = getMethods().iterator();
+        Iterator methodIt = methodIterator();
 
         while(methodIt.hasNext())
         {
@@ -456,7 +484,7 @@ public class SootClass extends AbstractHost
         boolean found = false;
         SootMethod foundMethod = null;
         
-        Iterator methodIt = getMethods().iterator();
+        Iterator methodIt = methodIterator();
 
         while(methodIt.hasNext())
         {
@@ -485,7 +513,7 @@ public class SootClass extends AbstractHost
 
     public boolean declaresMethod(String name, List parameterTypes)
     {
-        Iterator methodIt = getMethods().iterator();
+        Iterator methodIt = methodIterator();
 
         while(methodIt.hasNext())
         {
@@ -505,7 +533,7 @@ public class SootClass extends AbstractHost
 
     public boolean declaresMethod(String name, List parameterTypes, Type returnType)
     {
-        Iterator methodIt = getMethods().iterator();
+        Iterator methodIt = methodIterator();
 
         while(methodIt.hasNext())
         {
@@ -527,7 +555,7 @@ public class SootClass extends AbstractHost
 
     public boolean declaresMethodByName(String name)
     {
-        Iterator methodIt = getMethods().iterator();
+        Iterator methodIt = methodIterator();
 
         while(methodIt.hasNext())
         {
@@ -561,7 +589,7 @@ public class SootClass extends AbstractHost
             throw new RuntimeException("duplicate signature for: " + m.getName());
         */
         
-        methods.add(m);
+        subSigToMethods.put(m.getNumberedSubSignature(),m);
         m.isDeclared = true;
         m.declaringClass = this;
         
@@ -577,7 +605,7 @@ public class SootClass extends AbstractHost
         if(!m.isDeclared() || m.getDeclaringClass() != this)
             throw new RuntimeException("incorrect declarer for remove: "+m.getName());
 
-        methods.remove(m);
+        subSigToMethods.put(m.getNumberedSubSignature(),null);
         m.isDeclared = false;
     }
 
@@ -647,7 +675,6 @@ public class SootClass extends AbstractHost
     {
         if(implementsInterface(interfaceClass.getName()))
             throw new RuntimeException("duplicate interface: "+interfaceClass.getName());
-
         interfaces.add(interfaceClass);
     }
 
@@ -890,7 +917,7 @@ public class SootClass extends AbstractHost
 
         // Print methods
         {
-            Iterator methodIt = this.getMethods().iterator();
+            Iterator methodIt = this.methodIterator();
 
             if( Scene.v().getJimpleStmtPrinter() instanceof XMLStmtPrinter )
             {
@@ -993,11 +1020,11 @@ public class SootClass extends AbstractHost
         
         // Print methods
         {
-            Iterator methodIt = this.getMethods().iterator();
+            Iterator methodIt = this.methodIterator();
 
             if(methodIt.hasNext())
             {
-                if(this.getMethods().size() != 0)
+                if(getMethodCount() != 0)
                     out.println();
                 
                 while(methodIt.hasNext())
@@ -1059,7 +1086,7 @@ public class SootClass extends AbstractHost
 		    packagesUsed.add( interfacePackage);
 	    }
 
-	    Iterator methodIt = this.getMethods().iterator();
+	    Iterator methodIt = this.methodIterator();
 	    while (methodIt.hasNext()) {
 		SootMethod dm = (SootMethod) methodIt.next();
 		
@@ -1192,11 +1219,11 @@ public class SootClass extends AbstractHost
 
         // Print methods
         {
-            Iterator methodIt = this.getMethods().iterator();
+            Iterator methodIt = this.methodIterator();
             
             if(methodIt.hasNext())
             {
-                if(this.getMethods().size() != 0)
+                if(getMethodCount() != 0)
                     out.println();
                 
                 while(methodIt.hasNext())
@@ -1243,7 +1270,7 @@ public class SootClass extends AbstractHost
     /** Returns true if some method in this class has an active Baf body. */
     public boolean containsBafBody()
     {
-        Iterator methodIt = getMethods().iterator();
+        Iterator methodIt = methodIterator();
         
         while(methodIt.hasNext())
         {
@@ -1319,10 +1346,14 @@ public class SootClass extends AbstractHost
         }        
     }
 
+    private RefType refType;
+    void setRefType( RefType refType ) { this.refType = refType; }
+    public boolean hasRefType() { return refType != null; }
+    
     /** Returns the RefType corresponding to this class. */
     public RefType getType()
     {
-        return RefType.v(getName());
+        return refType;
     }
 
     /** Returns the name of this class. */
@@ -1355,7 +1386,7 @@ public class SootClass extends AbstractHost
 
         // Rename methods.  Again, ignore collisions for now.
         {
-            Iterator methodIt = this.getMethods().iterator();
+            Iterator methodIt = this.methodIterator();
             int methodCount = 0;
 
             if(methodIt.hasNext())
@@ -1489,5 +1520,9 @@ public class SootClass extends AbstractHost
         return Modifier.isAbstract(this.getModifiers());
     }
 
+    public final int getNumber() { return number; }
+    public final void setNumber( int number ) { this.number = number; }
+
+    private int number = 0;
 }
 

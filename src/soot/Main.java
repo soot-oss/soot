@@ -60,7 +60,7 @@ public class Main implements Runnable
 {   
     // TODO: the following string should be updated by the source control
     //   $Format: "            public static final String versionString = \"1.2.4 (build $ProjectVersion$)\";"$
-            public static final String versionString = "1.2.4 (build 1.2.4.dev.21)";
+            public static final String versionString = "1.2.4 (build 1.2.4.dev.22)";
 
     public Date start;
     public Date finish;
@@ -715,7 +715,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.4 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.21)");
+            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.22)");
 	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -1823,7 +1823,7 @@ public class Main implements Runnable
 	}
 
 	{
-	  Iterator methodIt = s.getMethods().iterator();
+	  Iterator methodIt = s.methodIterator();
 	  
 	  while(methodIt.hasNext()) {   
 	    SootMethod m = (SootMethod) methodIt.next();
@@ -2067,7 +2067,7 @@ public class Main implements Runnable
 
   /** Attach JimpleBodies to the methods of c. */
   private static void attachJimpleBodiesFor(SootClass c) {
-    Iterator methodIt = c.getMethods().iterator();
+    Iterator methodIt = c.methodIterator();
            
     while(methodIt.hasNext()) {   
       SootMethod m = (SootMethod) methodIt.next();
@@ -2089,7 +2089,7 @@ public class Main implements Runnable
    * by the call graph, it does not have any output.
    */
   private static void lazyHandleClass(SootClass c) {
-    Iterator methodIt = c.getMethods().iterator();
+    Iterator methodIt = c.methodIterator();
     
     while(methodIt.hasNext()) {   
       SootMethod m = (SootMethod) methodIt.next();
@@ -2171,7 +2171,7 @@ public class Main implements Runnable
 	
     // Build all necessary bodies
     {
-      Iterator methodIt = c.getMethods().iterator();
+      Iterator methodIt = c.methodIterator();
       
       while(methodIt.hasNext()) {   
 	SootMethod m = (SootMethod) methodIt.next();
@@ -2218,7 +2218,7 @@ public class Main implements Runnable
       }
 
       if (produceDava) {
-	methodIt = c.getMethods().iterator();
+	methodIt = c.methodIterator();
 		
 	while (methodIt.hasNext()) {
 	  SootMethod m = (SootMethod) methodIt.next();
@@ -2285,7 +2285,7 @@ public class Main implements Runnable
 
     // Release bodies
     if (!produceDava) {
-      Iterator methodIt = c.getMethods().iterator();
+      Iterator methodIt = c.methodIterator();
                 
       while(methodIt.hasNext()) {   
 	SootMethod m = (SootMethod) methodIt.next();

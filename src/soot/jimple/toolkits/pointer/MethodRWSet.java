@@ -14,6 +14,15 @@ public class MethodRWSet extends RWSet {
     final static PointsToSet fullObjectSet = new FullObjectSet();
     public static int MAX_SIZE = Integer.MAX_VALUE;
 
+    public String toString() {
+        StringBuffer ret = new StringBuffer();
+        for( Iterator fieldIt = fields.keySet().iterator(); fieldIt.hasNext(); ) {
+            final Object field = (Object) fieldIt.next();
+            ret.append( "[Field: "+field+" "+fields.get(field)+"]\n" );
+        }
+        return ret.toString();
+    }
+
     //static int count = 0;
     public MethodRWSet() {
         /*
@@ -96,6 +105,7 @@ public class MethodRWSet extends RWSet {
 	    if( o.isFull ) {
 		ret = !isFull | ret;
 		isFull = true;
+                if( true ) throw new RuntimeException( "attempt to add full set "+o+" into "+this );
 		globals = null;
 		fields = null;
 		return ret;
@@ -106,6 +116,7 @@ public class MethodRWSet extends RWSet {
 		if( globals.size() > MAX_SIZE ) {
 		    globals = null;
 		    isFull = true;
+                throw new RuntimeException( "attempt to add full set "+o+" into "+this );
 		}
 	    }
 	    if( o.fields != null ) {
@@ -136,6 +147,7 @@ public class MethodRWSet extends RWSet {
 	if( globals.size() > MAX_SIZE ) {
 	    globals = null;
 	    isFull = true;
+                throw new RuntimeException( "attempt to add more than "+MAX_SIZE+" globals into "+this );
 	}
 	return ret;
     }
@@ -159,6 +171,7 @@ public class MethodRWSet extends RWSet {
 	    if( fields.keySet().size() > MAX_SIZE ) {
 		fields = null;
 		isFull = true;
+            if( true )    throw new RuntimeException( "attempt to add more than "+MAX_SIZE+" fields into "+this );
 		return true;
 	    }
 	} else {

@@ -41,7 +41,7 @@ class TypeNode
   private final int id;
   private final Type type;
   
-  public TypeNode(int id, BaseType type)
+  public TypeNode(int id, Type type)
   {
     this.id = id;
     this.type = type;

@@ -109,7 +109,7 @@ public class TypeResolver
   /** Get type variable for the given type. **/
   public TypeVariable typeVariable(Type type)
   {
-    return typeVariable(ClassHierarchy.typeNode((BaseType) type));
+    return typeVariable(ClassHierarchy.typeNode(type));
   }
 
   /** Get new type variable **/

@@ -111,7 +111,7 @@ public class SootResolver
                 jimpAST.getSkeleton(sc);
                 JimpleMethodSource mtdSrc = new JimpleMethodSource(jimpAST);
 
-                Iterator mtdIt = sc.getMethods().iterator();
+                Iterator mtdIt = sc.methodIterator();
                 while(mtdIt.hasNext()) {
                     SootMethod sm = (SootMethod) mtdIt.next();
                     sm.setSource(mtdSrc);
@@ -142,7 +142,7 @@ public class SootResolver
     public void assertResolvedClassForType(Type type)
     {
         if(type instanceof RefType)
-            assertResolvedClass(((RefType) type).className);
+            assertResolvedClass(((RefType) type).getClassName());
         else if(type instanceof ArrayType)
             assertResolvedClassForType(((ArrayType) type).baseType);
     }

@@ -21,6 +21,7 @@ package soot.jimple.spark.solver;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.*;
+import soot.util.*;
 import java.util.*;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
@@ -31,7 +32,7 @@ import soot.jimple.spark.sets.PointsToSetInternal;
 public class TopoSorter {
     /** Actually perform the topological sort on the PAG. */
     public void sort() {
-        for( Iterator it = pag.allVarNodes().iterator(); it.hasNext(); ) {
+        for( Iterator it = pag.getVarNodeNumberer().iterator(); it.hasNext(); ) {
             dfsVisit( (VarNode) it.next() );
         }
         visited = null;
@@ -39,6 +40,8 @@ public class TopoSorter {
     public TopoSorter( PAG pag, boolean ignoreTypes ) {
         this.pag = pag;
         this.ignoreTypes = ignoreTypes;
+        //this.visited = new NumberedSet( pag.getVarNodeNumberer() );
+        this.visited = new HashSet();
     }
     
     /* End of public methods. */
@@ -47,7 +50,7 @@ public class TopoSorter {
     protected boolean ignoreTypes;
     protected PAG pag;
     protected int nextFinishNumber = 1;
-    protected HashSet visited = new HashSet();
+    protected HashSet visited;
     protected void dfsVisit( VarNode n ) {
         if( visited.contains( n ) ) return;
         visited.add( n );

@@ -170,9 +170,9 @@ class ClassHierarchy
   }
 
   /** Get the type node for the given type. **/
-  public static TypeNode typeNode(BaseType type)
+  public static TypeNode typeNode(Type type)
   {
-    if(type == null)
+    if(type == null || !(type instanceof PrimType || type instanceof RefType))
       {
 	throw new InternalTypingException();
       }

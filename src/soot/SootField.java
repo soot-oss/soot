@@ -135,20 +135,39 @@ public class SootField extends AbstractHost implements ClassMember, SparkField
         this.type = t;
     }
 
+    /**
+     * Convenience method returning true if this field is public.
+     */
     public boolean isPublic()
     {
         return Modifier.isPublic(this.getModifiers());
     }
 
+    /**
+     * Convenience method returning true if this field is protected.
+     */
     public boolean isProtected()
     {
         return Modifier.isProtected(this.getModifiers());
     }
 
+    /**
+     * Convenience method returning true if this field is private.
+     */
     public boolean isPrivate()
     {
         return Modifier.isPrivate(this.getModifiers());
     }
+
+    /**
+     * Convenience method returning true if this field is static.
+     */
+    public boolean isStatic()
+    {
+        return Modifier.isStatic(this.getModifiers());
+    }
+
+
 
     public void setModifiers(int modifiers)
     {

@@ -205,9 +205,6 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
                 pag.makeFieldRefNode( sanl, ArrayElement.v() ) );
 	return sanl;
     }
-    final public Node caseAnyType() {
-	return pag.makeAllocNode( AnyType.v(), AnyType.v() );
-    }
     final public Node caseThis( SootMethod m ) {
 	VarNode ret = pag.makeVarNode(
 		    new Pair( m, PointsToAnalysis.THIS_NODE ),
