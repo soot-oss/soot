@@ -1,0 +1,14 @@
+tutorial.pdf: tutorial.tex flow.tex rd.eepic rd-example.eepic rd-example-specific.eepic copy.eepic merge.eepic vocab.tex ecosystem.eepic body-ecosystem.eepic intra.tex
+	latex tutorial && latex tutorial && ./dvi2pdf.pl tutorial
+
+%.eepic: %.fig
+	fig2dev -L eepic $< > $@
+
+#   1.  latex file.tex
+#   2. dvips -Ppdf -G0 file.dvi -o file.ps
+#   3. ps2pdf -dPDFsettings=/prepress file.ps file.pdf 
+
+#Two points to note:
+
+#    * The -G0 parameter passed to dvips is used to get around a bug in GhostScript which converts the "f" character to a pound sign in the final PDF.
+#    * The -dPDFsettings parameter for ps2pdf is used to prevent downsampling of EPS images when they are converted to PDF. Without this switch, EPS graphics in the final PDF look very fuzzy, especially when viewed with a projector. 

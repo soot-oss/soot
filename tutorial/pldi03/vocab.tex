@@ -1,0 +1,198 @@
+\begin{slide}{Jimple}
+Jimple is:
+\begin{itemize}
+\item principal Soot Intermediate Representation
+\item 3-address code in a \emph{control-flow graph}
+\item a \emph{typed} intermediate representation
+\item \emph{stackless}
+\end{itemize}
+
+\quad
+
+Other IRs: Baf, Grimp, Shimple, Dava
+\end{slide}
+
+\begin{slide}{Soot Classes}
+\vspace*{-0.1in}
+\begin{center}
+\input{ecosystem.eepic}
+\end{center}
+\end{slide}
+
+\begin{slide}{{\tt Body}-centric View}
+\vspace*{-0.1in}
+\begin{center}
+\input{body-ecosystem.eepic}
+\end{center}
+\end{slide}
+
+\begin{slide}{Control-flow units}
+\begin{itemize}
+\item {\tt Unit}: abstract superclass
+
+\item {\tt Inst}: Baf's bytecode-level unit
+
+\item {\tt Stmt}: Jimple's three-address code units
+
+\item {\tt Stmt}: also used in Grimp\\
+\qquad \qquad ({\tt z = x + y * 2 \% n;})
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Kinds of Jimple {\tt Stmt}s I}
+\vspace*{-0.1in}
+\begin{itemize}
+\item Core statements:
+\vspace*{-0.1in}
+{\tt 
+\begin{tabbing}
+\quad NopStmt \\
+\quad DefinitionStmt: \= IdentityStmt, \\
+                \>AssignStmt 
+\end{tabbing}}
+
+\vspace*{-0.1in}
+\item Intraprocedural control-flow:
+
+{\tt \quad IfStmt}
+
+{\tt \quad GotoStmt}
+
+{\tt \quad TableSwitchStmt,LookupSwitchStmt}
+
+\item Interprocedural control-flow:
+
+{\tt \quad InvokeStmt}
+
+{\tt \quad ReturnStmt, ReturnVoidStmt}
+
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Kinds of Jimple {\tt Stmt}s II}
+\begin{itemize}
+\item {\tt ThrowStmt}
+
+\qquad throws an exception
+
+\item {\tt RetStmt}
+
+\qquad not used; returns from a JSR
+
+\item {\tt \begin{tabbing}
+MonitorStmt: \= EnterMonitorStmt, \\
+                  \> ExitMonitorStmt
+\end{tabbing}}
+
+\qquad mutual exclusion
+\end{itemize}
+\end{slide}
+
+\begin{slide}{IdentityStmt}
+\begin{center}
+{\tt this.m(); }
+\end{center}
+
+Where's the definition of {\tt this}?
+
+\quad
+\vspace*{-0.08in}
+
+{\tt IdentityStmt}:
+\begin{itemize}
+\item Used for assigning parameter values and {\tt this} ref to locals.
+
+\item Gives each local at least one definition point.
+\end{itemize}
+
+\vspace*{0.03in}
+Jimple rep of {\tt IdentityStmt}s:
+\begin{verbatim}
+    r0 := @this;
+    i1 := @parameter0;
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Soot Philosophy on {\tt Unit}s}
+\vspace*{-0.1in}
+\begin{center}
+All Access should be Abstract!
+\end{center}
+
+\vspace*{0.05in}
+Accessing data:
+\begin{itemize}
+\item {\tt \yellow getUseBoxes(), getDefBoxes(),\\
+\qquad \qquad  getUseAndDefBoxes()}
+\end{itemize}
+
+{\small 
+(also control-flow information:)\\
+\qquad \begin{minipage}{0.8\textwidth}
+{\tt fallsThrough(), branches()},\\
+{\tt getBoxesPointingToThis(), \\
+ addBoxesPointingToThis(), \\
+ removeBoxesPointingToThis(),}\\
+{\tt redirectJumpsToThisTo()}
+\end{minipage}}
+\end{slide}
+
+\begin{slide}{What is a Box?}
+We wanted to write this:
+
+\begin{tabbing}
+\qquad \= {\tt Value * pV = ...;}\\
+       \> {\tt *pV = new Local(...);}
+\end{tabbing}
+
+
+\vspace*{-0.05in}
+\begin{itemize}
+\item Pointers allow indirection.
+\end{itemize}
+
+Problem: Java doesn't expose pointers
+
+\vspace*{0.05in}
+\begin{tabbing}
+\qquad \= {\tt ValueBox b = s.getUseBoxes().get(0);}\\
+       \>{\tt b.setValue(new Local(...));}
+\end{tabbing}
+
+\[ \fbox{\tt i} \: \mathop{\longrightarrow}^{\small \tt getValue()} \: \mbox{\tt i} \]
+
+\end{slide}
+
+\begin{slide}{{\tt getDefBoxes()} et al.}
+
+\begin{center}
+\fbox{\tt s: \fbox{x} = \fbox{y} op \fbox{z};}
+\end{center}
+
+\quad
+
+{\tt getDefBoxes(s) = \{\fbox{x}\}}\\
+
+\quad
+
+{\tt getUseBoxes(s) = \{\fbox{y}, \fbox{z}\}}\\
+
+\quad
+
+{\tt getUseAndDefBoxes(s) = \{\fbox{x}, \fbox{y}, \fbox{z}\}}\\
+
+\end{slide}
+
+\begin{slide}{More Abstract Accessors: {\tt Stmt}}
+Jimple provides the following additional accessors for special kinds of {\tt Value}s:
+
+\begin{itemize}
+\item {\tt containsArrayRef(),
+ getArrayRef(),~getArrayRefBox()}
+\item {\tt containsInvokeExpr(), getInvokeExpr(),~getInvokeExprBox()}
+\item {\tt containsFieldRef(), getFieldRef(),~getFieldRefBox()}
+\end{itemize}
+
+\end{slide}
+
+
