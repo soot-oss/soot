@@ -80,6 +80,11 @@ public class CFGEditor extends GraphicalEditor {
 		getActionRegistry().registerAction(stop);
 	 	this.getSelectionActions().add(stop.getId());
 		
+		UnStopAction unStop = new UnStopAction(this);
+		getActionRegistry().registerAction(unStop);
+	 	this.getSelectionActions().add(unStop.getId());
+		
+		
 		CFGMenuProvider menuProvider = new CFGMenuProvider(getGraphicalViewer(), getActionRegistry(), this);
 		getGraphicalViewer().setContextMenu(menuProvider);
 		getSite().registerContextMenu(menuProvider, getGraphicalViewer());

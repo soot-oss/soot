@@ -106,7 +106,20 @@ public class NodeDataEditPart
 		soot.toolkits.graph.interaction.InteractionHandler.v().addToStopUnitList(((CFGNodeDataFigure)getFigure()).getUnit());
 	}
 	
+	public void unMarkStop(){
+		((CFGNodeDataFigure)getFigure()).removeStopIcon();
+		soot.toolkits.graph.interaction.InteractionHandler.v().removeFromStopUnitList(((CFGNodeDataFigure)getFigure()).getUnit());
+	}
+	
 	public void resetColors(){
-		//((CFGNodeDataFigure)getFigure()).setBackgroundColor(SootPlugin.getDefault().getColorManager().getColor(new RGB(255, 255 ,255)));
+		removeIndicator();
+	}
+	
+	public void addIndicator(){
+		((CFGNodeDataFigure)getFigure()).addIndicator();
+	}
+	
+	public void removeIndicator(){
+		((CFGNodeDataFigure)getFigure()).removeIndicator();
 	}
 }

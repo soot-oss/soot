@@ -300,6 +300,13 @@ public class CFGNodeEditPart
 			
 			((CFGNode)getModel()).setBefore(data);
 		}
+		Iterator it = this.getChildren().iterator();
+		while (it.hasNext()){
+			Object next = it.next();
+			if (next instanceof NodeDataEditPart){
+				((NodeDataEditPart)next).addIndicator();
+			}
+		}
 		((CFGNodeFigure)getFigure()).addIndicator();
 	}
 	

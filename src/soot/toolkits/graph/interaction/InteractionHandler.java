@@ -21,6 +21,12 @@ public class InteractionHandler {
         stopUnitList.add(elem);
     }
     
+    public void removeFromStopUnitList(Object elem){
+        if (stopUnitList.contains(elem)){
+            stopUnitList.remove(elem);
+        }
+    }
+    
     public void handleNewAnalysis(Transform t, Body b){
         // here save current phase name and only send if actual data flow analysis exists
         if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions( t.getPhaseName()), "enabled")){

@@ -240,6 +240,8 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 	
 	private void handleStopAtNodeEvent(Object info){
 		// highlight box being waited on 
+		InteractionHandler.v().autoCon(false);
+		
 		final soot.Unit stopUnit = (soot.Unit)info;
 		final ModelCreator mc = getMc();
 		getDisplay().syncExec(new Runnable() {

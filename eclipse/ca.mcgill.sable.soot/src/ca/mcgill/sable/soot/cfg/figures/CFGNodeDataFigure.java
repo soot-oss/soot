@@ -45,7 +45,8 @@ public class CFGNodeDataFigure extends Figure {
 		getRect().setBackgroundColor(SootPlugin.getDefault().getColorManager().getColor(new RGB(255, 255 ,255)));
 		ToolbarLayout layout = new ToolbarLayout();
 		layout.setMinorAlignment(ToolbarLayout.ALIGN_CENTER);
-	
+		layout.setVertical(false);
+		
 		this.setLayoutManager(layout);
 		
 		//XYLayout xylayout = new XYLayout();
@@ -99,15 +100,40 @@ public class CFGNodeDataFigure extends Figure {
 	}
 
 	Image stopImage = null;
+	Image highlightImage = null;
 	
 	public void addStopIcon(){
 		if (stopImage == null){
 			ImageDescriptor desc = SootPlugin.getImageDescriptor("stop_icon.gif");
 			stopImage = desc.createImage();
 		}
+		/*if (highlightImage == null){
+			ImageDescriptor desc = SootPlugin.getImageDescriptor("highlight_icon.gif");
+			highlightImage = desc.createImage();
+		}*/
 		//Label l = new Label(stopImage);
 		
 		((Label)getRect().getChildren().get(0)).setIcon(stopImage);
+		//Label l = new Label(highlightImage);
+		//this.add(l, 0);
+	}
+	
+	Label indicatorLabel;
+	
+	public void addIndicator(){
+		if (highlightImage == null){
+			ImageDescriptor desc = SootPlugin.getImageDescriptor("indicator.gif");
+			highlightImage = desc.createImage();
+		}
+		
+		indicatorLabel = new Label(highlightImage);
+		this.add(indicatorLabel, 0);
+	}
+	
+	public void removeIndicator(){
+		if (this.getChildren().get(0).equals(indicatorLabel)){
+			this.remove(indicatorLabel);
+		}
 	}
 	
 	public void removeStopIcon(){

@@ -47,6 +47,7 @@ public class CFGMenuProvider extends ContextMenuProvider {
 		System.out.println("registry: "+getRegistry());
 		System.out.println("acion: "+getRegistry().getAction(StopAction.STOP));
 		menu.add(getRegistry().getAction(StopAction.STOP));
+		menu.add(getRegistry().getAction(UnStopAction.UN_STOP));
 		//getRegistry().registerAction(showCode);
 		//((GraphEditor)part).getGraphEditorSelectionActions().add(showCode);
 	}

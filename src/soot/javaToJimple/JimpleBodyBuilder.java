@@ -1084,23 +1084,29 @@ public class JimpleBodyBuilder {
         soot.jimple.IfStmt testIf = soot.jimple.Jimple.v().newIfStmt(cond1, nop1);
         body.getUnits().add(testIf);
 
+        //System.out.println("Assert: cond"+assertStmt.cond().getClass());
         // actual cond test
-        soot.Value sootCond = createExpr(assertStmt.cond());
-        boolean needIf = needSootIf(sootCond);
-        if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
-            sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(0));
+        if ((assertStmt.cond() instanceof polyglot.ast.BooleanLit) && (!((polyglot.ast.BooleanLit)assertStmt.cond()).value())){
+            // don't makeif
         }
         else {
-            sootCond = handleDFLCond((soot.jimple.ConditionExpr)sootCond);
-        }
+            soot.Value sootCond = createExpr(assertStmt.cond());
+            boolean needIf = needSootIf(sootCond);
+            if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
+                sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(0));
+            }
+            else {
+                sootCond = handleDFLCond((soot.jimple.ConditionExpr)sootCond);
+            }
        
-        if (needIf){
-            // add if
-		    soot.jimple.IfStmt ifStmt = soot.jimple.Jimple.v().newIfStmt(sootCond, nop1);
-            body.getUnits().add(ifStmt);
+            if (needIf){
+                // add if
+		        soot.jimple.IfStmt ifStmt = soot.jimple.Jimple.v().newIfStmt(sootCond, nop1);
+                body.getUnits().add(ifStmt);
 
-            Util.addLnPosTags(ifStmt.getConditionBox(), assertStmt.cond().position());
-            Util.addLnPosTags(ifStmt, assertStmt.position());
+                Util.addLnPosTags(ifStmt.getConditionBox(), assertStmt.cond().position());
+                Util.addLnPosTags(ifStmt, assertStmt.position());
+            }
         }
         
         // assertion failure code

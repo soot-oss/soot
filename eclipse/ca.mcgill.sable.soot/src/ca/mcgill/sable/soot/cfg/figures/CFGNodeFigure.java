@@ -166,7 +166,7 @@ public class CFGNodeFigure extends Figure {
 		}
 		this.add(indicatorFigure,0);*/
 		
-		this.setBorder(new LineBorder());
+		//this.setBorder(new LineBorder());
 		//getData().setBackgroundColor(c);
 		/*if (indicatorImage == null){
 			ImageDescriptor desc = SootPlugin.getImageDescriptor("indicator_icon.gif");
@@ -191,7 +191,7 @@ public class CFGNodeFigure extends Figure {
 				this.remove(indicatorFigure);
 			}
 		}*/
-		this.setBorder(null);
+		//this.setBorder(null);
 	}
 	
 
