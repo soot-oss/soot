@@ -56,7 +56,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
 
     public String getDeclaredOptions() { return super.getDeclaredOptions(); }
 
-    public String getDefaultOptions() { return "disabled"; }
+    public String getDefaultOptions() { return ""; }
 
     /** Common subexpression eliminator. */
     protected void internalTransform(Body b, String phaseName, Map options)
