@@ -26,11 +26,13 @@
 
 package soot;
 
+/** Overridable class which adjusts the default packs in the Scene.
+ * Called as the first act of soot.Main. */
 public class PackAdjuster
 { 
-    public static void adjustPacks(Scene s)
+    public static void adjustPacks()
     {
-        Pack p = s.getPack("jtp");
+        Pack p = Scene.v().getPack("jtp");
 
         /* You can override this class and provide your 
          * own implementation of adjustPacks.  It would add the necessary

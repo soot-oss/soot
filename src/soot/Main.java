@@ -238,7 +238,6 @@ public class Main
         return fileNames;
     }
 
-    /* NEW! */        
     public static void setTargetRep(int rep)
     {
         targetExtension = rep;
@@ -433,7 +432,7 @@ public class Main
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.30");
+            System.out.println("Soot version 1.beta.6.dev.31");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -677,9 +676,8 @@ public class Main
             }
     }
 
-
-
-
+    /** Initializes various Soot data and calls the PackAdjuster.
+     * Must be called! */
     public static void initApp()
     { 
         packageInclusionFlags.add(new Boolean(false));
@@ -691,8 +689,10 @@ public class Main
         packageInclusionFlags.add(new Boolean(false));
         packageInclusionMasks.add("javax.");	
 	
+        PackAdjuster.adjustPacks();
     }
 
+    /** main() method for Soot.  It's all here. */
     public static void main(String[] args)
     {       
         totalTimer.start();

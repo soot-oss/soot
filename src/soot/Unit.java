@@ -36,9 +36,17 @@ import java.util.*;
  */
 public interface Unit extends Switchable, Directed
 {
+    /** Returns a list of Boxes containing Values used in this Unit. */
     public List getUseBoxes();
+
+    /** Returns a list of Boxes containing Values defined in this Unit. */
     public List getDefBoxes();
+
+    /** Returns a list of Boxes containing Units defined in this Unit; typically
+     * branch targets. */
     public List getUnitBoxes();
+
+    /** Returns a list of Boxes pointing to this Unit. */
     public List getBoxesPointingToThis();
     public List getUseAndDefBoxes();
     public Object clone();

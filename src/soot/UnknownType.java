@@ -32,6 +32,10 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+/**
+ *   Soot representation used for not-yet-typed objects. Implemented as
+ *   a singleton.
+ */
 public class UnknownType extends Type
 {
     private static final UnknownType constant = new UnknownType();

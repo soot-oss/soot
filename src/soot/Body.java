@@ -38,11 +38,11 @@ import soot.toolkits.scalar.*;
 
 
 /**
- *   Abstract base class that models the body of a Java method.
+ *   Abstract base class that models the body (code attribute) of a Java method.
  *   Classes that implement an Intermediate Representation for a method body should subclass it.
  *   In particular the classes GrimpBody, JimpleBody and BafBody all extend this
- *   class. This class provides methods that are common to any IR of body, such as methods
- *   to get the body's statements, traps, locals, ...
+ *   class. This class provides methods that are common to any IR, such as methods
+ *   to get the body's units (statements), traps, and locals.
  *   
  *  @see soot.grimp.GrimpBody
  *  @see soot.jimple.JimpleBody
@@ -50,15 +50,22 @@ import soot.toolkits.scalar.*;
  */
 public abstract class Body
 {
+    /** The method associated with this Body. */
     protected SootMethod method = null;
 
+    /** The chain of locals for this Body. */
     protected Chain localChain = new HashChain();
+
+    /** The chain of traps for this Body. */
     protected Chain trapChain = new HashChain();
+
+    /** The chain of units for this Body. */
     protected PatchingChain unitChain = new PatchingChain(new HashChain());
 
+    /** Creates a deep copy of this Body. */
     abstract public Object clone();
 
-    /** Used by subclasses during initialization. 
+    /** Creates a Body associated to the given method.  Used by subclasses during initialization. 
      *  Creation of a Body is triggered by e.g. Jimple.v().newBody(options).
      */
     protected Body(SootMethod m) 
@@ -66,6 +73,7 @@ public abstract class Body
         this.method = m;
     }
 
+    /** Creates an extremely empty Body.  The Body is not associated to any method. */
     protected Body() 
     {       	
     }
@@ -92,13 +100,13 @@ public abstract class Body
         this.method = method;
     }
     
-    /**  @return the number of locals declared in this body */          
+    /** Returns the number of locals declared in this body. */
     public int getLocalCount()
     {
         return localChain.size();
     }
 
-
+    /** Copies the contents of the given Body into this one. */
     public void importBodyContentsFrom(Body b)
     {
         HashMap bindings = new HashMap();
@@ -172,6 +180,7 @@ public abstract class Body
         }
     }
     
+    /** Verifies a few sanity conditions on the contents on this body. */
     public void validate()
     {
         validateLocals();
@@ -179,6 +188,7 @@ public abstract class Body
         validateUnitBoxes();
     }
 
+    /** Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain. */
     public void validateLocals()
     {
         Iterator it = getUseAndDefBoxes().iterator();
@@ -194,6 +204,7 @@ public abstract class Body
         }
     }
 
+    /** Verifies that the begin, end and handler units of each trap are in this body. */
     public void validateTraps()
     {
         Iterator it = getTraps().iterator();
@@ -211,6 +222,7 @@ public abstract class Body
         }
     }
 
+    /** Verifies that the UnitBoxes of this Body all point to a Unit contained within this body. */
     public void validateUnitBoxes()
     {
         Iterator it = getUnitBoxes().iterator();
@@ -223,18 +235,18 @@ public abstract class Body
     }
 
 
-    /** @return a view of the locals declared in this Body */
+    /** Returns a backed chain of the locals declared in this Body. */
     public Chain getLocals() {return localChain;} 
 
-    /** @return a view of the traps founds in this Body */
+    /** Returns a backed view of the traps found in this Body. */
     public Chain getTraps() {return trapChain;}
 
 
     /**
-     *  Returns the Units  that make up this body. The units are
+     *  Returns the Chain of Units that make up this body. The units are
      *  returned as a PatchingChain. The client can then manipulate the chain,
-     *  adding are removing units, and the changes will be reflected in the body.  
-     *  Since a PatchingChain is returned the client need NOT worry about removing exception
+     *  adding and removing units, and the changes will be reflected in the body.  
+     *  Since a PatchingChain is returned the client need <i>not</i> worry about removing exception
      *  boundary units or otherwise corrupting the chain.
      * 
      *  @return the units in this Body 
@@ -242,22 +254,23 @@ public abstract class Body
      *  @see PatchingChain
      *  @see Unit
      */
-    public PatchingChain getUnits() {return unitChain;}
-                 
-
-
+    public PatchingChain getUnits() 
+    {
+        return unitChain;
+    }
 
     /**
-     *   Goes through all the body's Units querying them for their UnitBoxes.
-     *   All of the UnitBoxes found are then returned. Only branching Units
-     *   will have UnitBoxes; a UnitBox contains a Unit that is a target of a 
-     *   branch.
+     *   Returns the result of iterating through all Units in this
+     *   body and querying them for their UnitBoxes.  All 
+     *   UnitBoxes thus found are returned. Only branching Units will
+     *   have UnitBoxes; a UnitBox contains a Unit that is a target of
+     *   a branch.
+     *
      *   @return a list of all the UnitBoxes held by this body's units.
      *     
      *   @see UnitBox
      *   @see Unit#getUnitBoxes
-     *
-     */
+     * */
     public List getUnitBoxes() 
     {
         ArrayList unitBoxList = new ArrayList();
@@ -277,20 +290,11 @@ public abstract class Body
         return unitBoxList;
     }
 
-    
 
     /**
-     *  
-     */
-
-
-
-
-
-    /**
-     *   Goes through all the body's Units querying them for the ValueBox
-     *   for the Values each Unit uses.
-     *   All of the ValueBoxes found are then returned as List.
+     *   Returns the result of iterating through all Units in this
+     *   body and querying them for ValueBoxes used. 
+     *   All of the ValueBoxes found are then returned as a List.
      *
      *   @return a list of all the ValueBoxes for the Values used this body's units.
      *     
@@ -314,9 +318,9 @@ public abstract class Body
 
 
     /**
-     *   Goes through all this body's Units querying them for the ValueBoxes
-     *   for the Values each Unit defines.
-     *   All of the ValueBoxes found are then returned as List.
+     *   Returns the result of iterating through all Units in this
+     *   body and querying them for ValueBoxes defined.
+     *   All of the ValueBoxes found are then returned as a List.
      *
      *   @return a list of all the ValueBoxes for Values defined by this body's units.
      *     
@@ -338,9 +342,8 @@ public abstract class Body
     }
 
      /**
-     *   Goes through all this body's Units querying them for the ValueBoxes
-     *   for the Values each Unit defines and Uses.
-     *   All of the ValueBoxes found are then returned as List.
+     *   Returns a list of boxes corresponding to Values 
+     * either used or defined in any unit of this Body.
      *
      *   @return a list of ValueBoxes for held by the body's Units.
      *     
@@ -363,7 +366,7 @@ public abstract class Body
 
 
     /**
-     *   Prints out the method corresponding to this Body,( both declaration and body),
+     *   Prints out the method corresponding to this Body, (declaration and body),
      *   in the textual format corresponding to the IR used to encode this body. Default
      *   printBodyOptions are used.
      *
@@ -377,7 +380,7 @@ public abstract class Body
     
 
     /**
-     *   Prints out the method corresponding to this Body,( both declaration and body),
+     *   Prints out the method corresponding to this Body, (declaration and body),
      *   in the textual format corresponding to the IR used to encode this body.
      *
      *   @param out a PrintWriter instance to print to.
@@ -592,7 +595,7 @@ public abstract class Body
 
 
     /**
-     *   Prints out the method corresponding to this Body,( both declaration and body),
+     *   Prints out the method corresponding to this Body, (declaration and body),
      *   in the textual format corresponding to the IR used to encode this body. Includes
      *   extra debugging information.
      *

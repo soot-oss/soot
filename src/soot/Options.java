@@ -28,6 +28,7 @@ package soot;
 
 import java.util.*;
 
+/** Utility methods for dealing with Soot options maps. */
 public class Options
 {
     /** This method returns true iff key "name" is in options 

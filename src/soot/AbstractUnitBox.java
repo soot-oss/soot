@@ -32,6 +32,8 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+/** Reference implementation for UnitBox; just
+ * add a canContainUnit method. */
 public abstract class AbstractUnitBox implements UnitBox
 {
     private Unit unit;

@@ -24,11 +24,10 @@
  */
 
 
-
-
-
 package soot;
 
+/** Reference implementation for ValueBox; just
+ * add a canContainValue method. */
 public abstract class AbstractValueBox implements ValueBox
 {
     Value value;

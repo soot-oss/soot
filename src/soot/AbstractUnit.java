@@ -33,51 +33,58 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
+/** Provides default implementations for the methods in Unit. */
 public abstract class AbstractUnit implements Unit
 {
     static Map allMapToUnnamed = Collections.unmodifiableMap(new AllMapTo("<unnamed>"));
+
+    /** Returns a deep clone of this object. */
+    public abstract Object clone();
     
-    /**
+    /** Returns a list of Boxes containing Values used in this Unit.
      * The list of boxes is dynamically updated as the structure changes.
      * Note that they are returned in usual evaluation order.
      * (this is important for aggregation)
      */
-
-    public abstract Object clone();
     public List getUseBoxes()
     {
         return emptyList;
     }
 
-    /**
+    /** Returns a list of Boxes containing Values defined in this Unit.
      * The list of boxes is dynamically updated as the structure changes.
      */
-
     public List getDefBoxes()
     {
         return emptyList;
     }
 
 
-    /**
+    /** Returns a list of Boxes containing Units defined in this Unit; typically
+     * branch targets.
      * The list of boxes is dynamically updated as the structure changes.
      */
-
     public List getUnitBoxes()
     {
         return emptyList;
     }
 
+    /** Canonical AbstractUnit.emptyList list. */
     static final public List emptyList = Collections.unmodifiableList(new ArrayList());
 
+    /** List of UnitBoxes pointing to this Unit. */
     List boxesPointingToThis = new ArrayList();
+
+    /** List of ValueBoxes contained in this Unit. */
     List valueBoxes = null;
 
+    /** Returns a list of Boxes pointing to this Unit. */
     public List getBoxesPointingToThis()
     {
         return boxesPointingToThis;
     }
 
+    /** Returns a list of ValueBoxes, either used or defined in this Unit. */
     public List getUseAndDefBoxes()
     {
         valueBoxes = new ArrayList();
@@ -90,50 +97,60 @@ public abstract class AbstractUnit implements Unit
         return valueBoxes;
     }
 
+    /** Used to implement the Switchable construct. */
     public void apply(Switch sw)
     {
     }
 
+    /** Returns a brief description of this object. */
     public String toBriefString()
     {
         return toString(true, allMapToUnnamed, "");
     }
     
+    /** Returns a brief description of this object, using the given Map. */
     public String toBriefString(Map stmtToName)
     {
         return toString(true, stmtToName, "");
     }
     
+    /** Returns a brief description of this object, using the given indentation. */
     public String toBriefString(String indentation)
     {
         return toString(true, allMapToUnnamed, indentation);
     }
     
+    /** Returns a brief description of this object, using the given Map and indentation. */
     public String toBriefString(Map stmtToName, String indentation)
     {
         return toString(true, stmtToName, indentation);
     }
     
+    /** Returns a textual representation of this object. */
     public String toString()
     {
         return toString(false, allMapToUnnamed, "");
     }
     
+    /** Returns a textual representation of this object, using the given Map. */
     public String toString(Map stmtToName)
     {
         return toString(false, stmtToName, "");
     }
     
+    /** Returns a textual representation of this object, using the given indentation. */
     public String toString(String indentation)
     {
         return toString(false, allMapToUnnamed, indentation);
     }
     
+    /** Returns a textual representation of this object, using the given Map and indentation. */
     public String toString(Map stmtToName, String indentation)
     {
         return toString(false, stmtToName, indentation);
     }
     
+    /** Returns a textual representation of this object, with the given briefness, Map and indentation. */
     abstract protected String toString(boolean isBrief, Map stmtToName, String indentation);
 
     static class AllMapTo extends AbstractMap
@@ -156,8 +173,7 @@ public abstract class AbstractUnit implements Unit
         }
     }
 
-    
-
+    /** Adjusts UnitBoxes pointing to this Unit to a newLocation. */
     public void redirectJumpsToThisTo(Unit newLocation)
     {
         List boxesPointing = this.getBoxesPointingToThis();

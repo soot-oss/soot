@@ -24,9 +24,6 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.*;
@@ -34,14 +31,26 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
+/** Partial implementation of trap (exception catcher), used within Body
+ * classes.  */
 public class AbstractTrap implements Trap
 {
+    /** The exception being caught. */
     protected SootClass exception;
+
+    /** The first unit being trapped. */
     protected UnitBox beginUnitBox;
+
+    /** The unit just before the last unit being trapped. */
     protected UnitBox endUnitBox;
+
+    /** The unit to which execution flows after the caught exception is triggered. */
     protected UnitBox handlerUnitBox;
+
+    /** The list of unitBoxes referred to in this Trap (begin, end and handler. */
     protected List unitBoxes;
 
+    /** Creates an AbstractTrap with the given exception, handler, begin and end units. */
     protected AbstractTrap(SootClass exception, UnitBox beginUnitBox,
                    UnitBox endUnitBox, UnitBox handlerUnitBox)
     {

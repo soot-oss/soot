@@ -24,14 +24,15 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.util.*;
 import java.util.*;
 
+/**
+ *   Soot representation of the Java type for a statement address. Implemented as
+ *   a singleton.
+ */
 public class StmtAddressType extends Type
 {
     private static final StmtAddressType constant = new StmtAddressType();

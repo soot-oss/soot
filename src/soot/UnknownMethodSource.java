@@ -31,7 +31,9 @@ import java.util.*;
 import java.io.*;
 import soot.jimple.parser.*;
 
-
+/** A MethodSource for methods that don't know where to get Body's from. 
+ * @see soot.jimple.JimpleMethodSource
+ * @see soot.coffi.CoffiMethodSource */
 public class UnknownMethodSource implements MethodSource
 {
     UnknownMethodSource()

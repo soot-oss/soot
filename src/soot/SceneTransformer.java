@@ -27,6 +27,7 @@ package soot;
 
 import java.util.*;
 
+/** An abstract class which acts on the whole Scene. */
 public abstract class SceneTransformer extends Transformer
 {
     /** Calls internalTransform with the optionsString properly set up.
@@ -44,18 +45,22 @@ public abstract class SceneTransformer extends Transformer
         internalTransform(phaseName, options);
     }
 
+    /** Performs the transformation on the Scene. */
     public final void transform()
     {
         transform("", "");
     }
 
+    /** Performs the transformation on the Scene, under the given phaseName. */
     public final void transform(String phaseName)
     {
         transform(phaseName, "");
     }
 
+    /** Performs the transformation on the Scene, under the given phaseName and with the given Options. */
     protected abstract void internalTransform(String phaseName, Map options);
 
+    /** Returns the list of the default phase options for this transformer. */
     public String getDefaultOptions() 
     {
         return "";

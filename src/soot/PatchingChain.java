@@ -28,38 +28,46 @@ package soot;
 import java.util.*;
 import soot.util.*;
 
-public class PatchingChain extends AbstractCollection implements Chain {
-
-
+/** An implementation of a Chain which can contain only Units,
+ * and handles patching to deal with element insertions and removals.
+ * This is done by calling Unit.redirectJumpsToThisTo at strategic
+ * times. */
+public class PatchingChain extends AbstractCollection implements Chain 
+{
     private Chain innerChain;
     
+    /** Constructs a PatchingChain from the given Chain. */
     public PatchingChain(Chain aChain)
     {
         innerChain = aChain;
     }
 
+    /** Adds the given object to this Chain. */
     public boolean add(Object o)
     {
         return innerChain.add(o);
     }
 
+    /** Replaces <code>out</code> in the Chain by <code>in</code>. */
     public void swapWith(Object out, Object in)
     {
         insertBefore(in, out);
         remove(out);
     }
 
+    /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
     public void insertAfter(Object toInsert, Object point)
     {
         innerChain.insertAfter(toInsert, point);
     }
 
+    /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
     public void insertAfter(List toInsert, Object point)
     {
         innerChain.insertAfter(toInsert, point);
     }
-
     
+    /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
     public void insertBefore(List toInsert, Object point)
     {
         LinkedList backwardList = new LinkedList();
@@ -81,17 +89,20 @@ public class PatchingChain extends AbstractCollection implements Chain {
         }
     }
 
+    /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
     public void insertBefore(Object toInsert, Object point)
     {
         ((Unit) point).redirectJumpsToThisTo((Unit) toInsert);
         innerChain.insertBefore(toInsert, point);
     }
 
+    /** Returns true if object <code>a</code> follows object <code>b</code> in the Chain. */
     public boolean follows(Object a, Object b)
     {
         return innerChain.follows(a,b);
     }
 
+    /** Removes the given object from this Chain. */
     public boolean remove(Object obj)
     {
         boolean res = false;
@@ -111,32 +122,40 @@ public class PatchingChain extends AbstractCollection implements Chain {
         return res;        
     }
 
+    /** Adds the given object at the beginning of the Chain. */
     public void addFirst(Object u)
     {
         innerChain.addFirst(u);
     }
     
-
-
+    /** Adds the given object at the end of the Chain. */
     public void addLast(Object u)
     {
         innerChain.addLast(u);
     }
     
+    /** Removes the first object from this Chain. */
     public void removeFirst() 
     {
         remove(innerChain.getFirst());
     }
     
+    /** Removes the last object from this Chain. */
     public void removeLast()
     {
         remove(innerChain.getLast());
     }
     
-    public Object getFirst(){ return innerChain.getFirst();}
-    public Object getLast(){return innerChain.getLast();}
+    /** Returns the first object in this Chain. */
+    public Object getFirst() { return innerChain.getFirst(); }
+
+    /** Returns the last object in this Chain. */
+    public Object getLast() { return innerChain.getLast(); }
     
+    /** Returns the object immediately following <code>point</code>. */
     public Object getSuccOf(Object point){return innerChain.getSuccOf(point);}
+
+    /** Returns the object immediately preceding <code>point</code>. */
     public Object getPredOf(Object point){return innerChain.getPredOf(point);}
 
     private class PatchingIterator implements Iterator
@@ -167,16 +186,26 @@ public class PatchingChain extends AbstractCollection implements Chain {
         }
     }
 
+    /** Returns an iterator over a copy of this chain. 
+     * This avoids ConcurrentModificationExceptions from being thrown
+     * if the underlying Chain is modified during iteration.
+     * Do not use this to remove elements which have not yet been
+     * iterated over! */
     public Iterator snapshotIterator() 
     {
         List l = new ArrayList(); l.addAll(this);
         return l.iterator();
     }
    
+    /** Returns an iterator over this Chain. */
     public Iterator iterator() { return new PatchingIterator(innerChain); }
+
+    /** Returns an iterator over this Chain, starting at the given object. */
     public Iterator iterator(Object u) { return new PatchingIterator(innerChain, u); }
+
+    /** Returns an iterator over this Chain, starting at head and reaching tail (inclusive). */
     public Iterator iterator(Object head, Object tail) { return new PatchingIterator(innerChain, head, tail); }
-    public int size(){return innerChain.size();}       
 
-
+    /** Returns the size of this Chain. */
+    public int size(){return innerChain.size(); }
 }

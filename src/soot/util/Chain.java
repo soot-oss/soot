@@ -29,29 +29,68 @@ package soot.util;
 import java.util.*;
 import soot.*;
 
+/** Augmented data type guaranteeing O(1) insertion and removal from a set
+ * of ordered, unique elements.  */
 public interface Chain extends Collection
 {
+    /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
     public void insertBefore(List toInsert, Object point);
+    /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
     public void insertAfter(List toInsert, Object point);
+    /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
     public void insertAfter(Object toInsert, Object point);
+    /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
     public void insertBefore(Object toInsert, Object point);
+
+    /** Replaces <code>out</code> in the Chain by <code>in</code>. */
     public void swapWith(Object out, Object in);
+
+    /** Removes the given object from this Chain. */
     public boolean remove(Object u);
+
+    /** Adds the given object at the beginning of the Chain. */
     public void addFirst(Object u);
+
+    /** Adds the given object at the end of the Chain. */
     public void addLast(Object u);
+
+    /** Removes the first object contained in this Chain. */
     public void removeFirst();
+    /** Removes the last object contained in this Chain. */
     public void removeLast();
+
+    /** Returns true if object <code>someObject</code> follows object <code>someReferenceObject</code> in the Chain. */
     public boolean follows(Object someObject, Object someReferenceObject);
-    
+
+    /** Returns the first object in this Chain. */
     public Object getFirst();
+
+    /** Returns the last object in this Chain. */
     public Object getLast();
     
+    /** Returns the object immediately following <code>point</code>. */
     public Object getSuccOf(Object point);
+
+    /** Returns the object immediately preceding <code>point</code>. */
     public Object getPredOf(Object point);
+
+    /** Returns an iterator over a copy of this chain. 
+     * This avoids ConcurrentModificationExceptions from being thrown
+     * if the underlying Chain is modified during iteration.
+     * Do not use this to remove elements which have not yet been
+     * iterated over! */
     public Iterator snapshotIterator();
+
+    /** Returns an iterator over this Chain. */
     public Iterator iterator();
+
+    /** Returns an iterator over this Chain, starting at the given object. */
     public Iterator iterator(Object u);
+
+    /** Returns an iterator over this Chain, starting at head and reaching tail (inclusive). */
     public Iterator iterator(Object head, Object tail);
+
+    /** Returns the size of this Chain. */
     public int size();   
 }
 
