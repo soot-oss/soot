@@ -87,6 +87,11 @@ public class BriefUnitPrinter extends NormalUnitPrinter {
         }
         super.literal(s);
     }
+
+    public void type( Type t ) {
+        handleIndent();
+        output.append( t.toString() );
+    }
 }
 
 

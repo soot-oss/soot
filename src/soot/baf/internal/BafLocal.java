@@ -86,11 +86,6 @@ public class BafLocal implements Local
         return getName();
     }
 
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
     public void toString( UnitPrinter up ) {
         up.local( this );
     }

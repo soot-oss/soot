@@ -117,26 +117,6 @@ public class GNewInvokeExpr extends AbstractStaticInvokeExpr
     }
 
 
-    public String toBriefString()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("new " + 
-                      ((ToBriefString) type).toBriefString() + "(");
-
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            if(i != 0)
-                buffer.append(", ");
-
-            buffer.append(((ToBriefString) argBoxes[i].getValue()).toBriefString());
-        }
-
-        buffer.append(")");
-
-        return buffer.toString();
-    }
-
     public List getUseBoxes()
     {
         List list = new ArrayList();

@@ -372,11 +372,11 @@ public class PackageNamer
 
 	Iterator classIt = Scene.v().getLibraryClasses().iterator();
 	while (classIt.hasNext())
-	    add_ClassName( ((SootClass) classIt.next()).getFullName(), otherRoots);
+	    add_ClassName( ((SootClass) classIt.next()).getName(), otherRoots);
 
 	classIt = Scene.v().getApplicationClasses().iterator();
 	while (classIt.hasNext())
-	    add_ClassName( ((SootClass) classIt.next()).getFullName(), appRoots);
+	    add_ClassName( ((SootClass) classIt.next()).getName(), appRoots);
 
 	Iterator arit = appRoots.iterator();
 	while (arit.hasNext())

@@ -88,13 +88,6 @@ public class JArrayRef implements ArrayRef, ConvertToBaf, EquivTo
         up.literal("]");
     }
 
-    public String toBriefString()
-    {
-        return ((ToBriefString) baseBox.getValue()).toBriefString() + 
-            "[" + ((ToBriefString) indexBox.getValue()).toBriefString() 
-            + "]";
-    }
-
     public Value getBase()
     {
         return baseBox.getValue();

@@ -76,7 +76,7 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
     }
 
     final public String getName() { return "store"; }
-    final String getParameters(boolean isBrief, Map unitToName)
+    final String getParameters()
     { return " " + localBox.getValue().toString(); }
     protected void getParameters(UnitPrinter up ) {
         up.literal(" ");

@@ -74,13 +74,9 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         return new JIfStmt(Jimple.cloneIfNecessary(getCondition()), getTarget());
     }
     
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
-        if(isBrief)
-            return indentation + Jimple.v().IF + " "  + 
-                ((ToBriefString) getCondition()).toBriefString() + " " + Jimple.v().GOTO + " "  + (String) stmtToName.get(getTarget());
-        else
-            return indentation + Jimple.v().IF + " "  + getCondition().toString() + " " + Jimple.v().GOTO + " "  + (String) stmtToName.get(getTarget());
+            return Jimple.v().IF + " "  + getCondition().toString() + " " + Jimple.v().GOTO + " "  + getTarget();
     }
     
     public void toString(UnitPrinter up) {
@@ -93,11 +89,6 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         targetBox.toString(up);
     }
     
-    public String toString()
-    {
-	return Jimple.v().IF + " "  + conditionBox.getValue().toString() + "[?= "+ getTarget() + "]";
-     }
-
     public Value getCondition()
     {
         return conditionBox.getValue();

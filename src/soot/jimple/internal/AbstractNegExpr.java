@@ -68,12 +68,6 @@ public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExp
         opBox.toString(up);
     }
 
-    public String toBriefString()
-    {
-        return Jimple.NEG + " " + ((ToBriefString) opBox.getValue()).toBriefString();
-    }
-
-    
     public Type getType()
     {
         Value op = opBox.getValue();

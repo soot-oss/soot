@@ -39,16 +39,6 @@ public interface Inst extends Unit
     public int getOutMachineCount();
     public int getNetMachineCount();
     
-
-    public String toBriefString();
-    public String toBriefString(Map stmtToName);
-    public String toBriefString(String indentation);
-    public String toBriefString(Map stmtToName, String indentation);
-    public String toString();
-    public String toString(Map stmtToName);
-    public String toString(String indentation);
-    public String toString(Map stmtToName, String indentation);
-
     public boolean containsInvokeExpr();
     public boolean containsFieldRef();
     public boolean containsArrayRef();

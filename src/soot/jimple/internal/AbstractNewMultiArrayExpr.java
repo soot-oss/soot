@@ -108,21 +108,6 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
         }
     }
 
-    public String toBriefString()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append(Jimple.v().NEWMULTIARRAY + " (" + baseType.baseType.toBriefString() + ")");
-
-        for(int i = 0; i < sizeBoxes.length; i++)
-            buffer.append("[" + ((ToBriefString) sizeBoxes[i].getValue()).toBriefString() + "]");
-
-        for(int i = 0; i < baseType.numDimensions - sizeBoxes.length; i++)
-            buffer.append("[]");
-
-        return buffer.toString();
-    }
-
     public ArrayType getBaseType()
     {
         return baseType;

@@ -122,15 +122,9 @@ public class BIdentityInst extends AbstractInst
             return new BIdentityInst(getLeftOp(), getRightOp());
     }
 
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
-        if(isBrief)
-        {
-            return indentation + ((ToBriefString) leftBox.getValue()).toBriefString() + " := " + 
-                ((ToBriefString) rightBox.getValue()).toBriefString();
-        }
-        else
-            return indentation + leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
+        return leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
     }
 
     public void toString( UnitPrinter up ) {

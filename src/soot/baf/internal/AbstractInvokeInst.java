@@ -52,14 +52,14 @@ abstract class AbstractInvokeInst extends AbstractInst
         return method.getReturnType();
     }
 
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    public String toString()
     {
-        return indentation + getName() + getParameters(isBrief, unitToName);
+        return getName() + getParameters();
     }
 
     abstract public String getName();
-    String getParameters(boolean isBrief, Map unitToName)
-        { return " " + (isBrief ? method.getName() : method.getSignature()); }
+    String getParameters()
+        { return " " + method.getSignature(); }
     protected void getParameters(UnitPrinter up) {
         up.literal(" ");
         up.method(method);

@@ -52,7 +52,7 @@ public class BPushInst extends AbstractInst implements PushInst
 
 
     final public String getName() { return "push"; }
-    final String getParameters(boolean isBrief, Map unitToName) 
+    final String getParameters()
     {
         return " "+constant.toString(); 
     }

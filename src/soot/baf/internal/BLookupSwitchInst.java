@@ -166,23 +166,23 @@ public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst
 
     public String getName() { return "lookupswitch"; }
 
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    public String toString()
     {
         StringBuffer buffer = new StringBuffer();
-        String endOfLine = (indentation.equals("")) ? " " : StringTools.lineSeparator;
+        String endOfLine = " ";
         
-        buffer.append(indentation + "lookupswitch" + endOfLine);
+        buffer.append("lookupswitch" + endOfLine);
             
-        buffer.append(indentation + "{" + endOfLine);
+        buffer.append("{" + endOfLine);
         
         for(int i = 0; i < lookupValues.size(); i++)
         {
-            buffer.append(indentation + "    case " + lookupValues.get(i) + ": goto " + 
-                (String) unitToName.get(getTarget(i)) + ";" + endOfLine);
+            buffer.append("    case " + lookupValues.get(i) + ": goto " + 
+                    getTarget(i) + ";" + endOfLine);
         }
 
-        buffer.append(indentation + "    default: goto " + (String) unitToName.get(getDefaultTarget()) + ";" + endOfLine);
-        buffer.append(indentation + "}");
+        buffer.append("    default: goto " + getDefaultTarget() + ";" + endOfLine);
+        buffer.append("}");
 
         return buffer.toString();
     }

@@ -291,7 +291,7 @@ public class XMLPrinter {
                 ValueBox box = (ValueBox) boxIt.next();
                 if (box.getValue() instanceof Local) {
                     String local =
-                        cleanLocal(((Local) box.getValue()).toBriefString());
+                        cleanLocal(((Local) box.getValue()).toString());
                     sootstmtNode.addChild(
                         "uses",
                         new String[] { "id", "local", "method" },
@@ -324,7 +324,7 @@ public class XMLPrinter {
                 ValueBox box = (ValueBox) boxIt.next();
                 if (box.getValue() instanceof Local) {
                     String local =
-                        cleanLocal(((Local) box.getValue()).toBriefString());
+                        cleanLocal(((Local) box.getValue()).toString());
                     sootstmtNode.addChild(
                         "defines",
                         new String[] { "id", "local", "method" },
@@ -448,7 +448,7 @@ public class XMLPrinter {
             }
 
             // parse any info from the statement code
-            String jimpleStr = currentStmt.toString(stmtToName, indent).trim();
+            String jimpleStr = currentStmt.toString().trim();
             if (currentStmt instanceof soot.jimple.IdentityStmt &&
 		jimpleStr.indexOf(":= @parameter") != -1) {
                 // this line is a use of a parameter                
@@ -544,7 +544,7 @@ public class XMLPrinter {
             int defineCount = 0;
             Local localData = (Local) localsIterator.next();
             String local = cleanLocal((String) localData.toString());
-            String localType = localData.getType().toBriefString();
+            String localType = localData.getType().toString();
 
             // collect the local types			
             if (!localTypes.contains(localType)) {

@@ -73,11 +73,9 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst
         
 
     final public String getName() { return "fieldput"; }
-    final String getParameters(boolean isBrief, Map unitToName) 
+    final String getParameters()
     { 
-        return " " + (isBrief ? 
-                      (field.getDeclaringClass().getName() + "." + 
-                       field.getName()) : field.getSignature()); 
+        return " " + field.getSignature(); 
     }
     protected void getParameters( UnitPrinter up ) {
         up.literal(" ");

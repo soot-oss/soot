@@ -449,7 +449,7 @@ public class BlockGraph implements DirectedGraph
 				    G.v().out.println("Printing basic blocks ...");
 				    it = basicBlockList.iterator();
 				    while(it.hasNext()) {
-					G.v().out.println(((Block)it.next()).toBriefString());
+					G.v().out.println(((Block)it.next()).toString());
 				    }
 				    throw new RuntimeException("Code structure error");
 				}
@@ -470,7 +470,7 @@ public class BlockGraph implements DirectedGraph
 			    G.v().out.println("Printing basic blocks ...");
 			    it = basicBlockList.iterator();
 			    while(it.hasNext()) {
-				G.v().out.println(((Block)it.next()).toBriefString());
+				G.v().out.println(((Block)it.next()).toString());
 			    }
 			    throw new RuntimeException("Code structure error (interesting case)");      
 			}
@@ -546,7 +546,7 @@ public class BlockGraph implements DirectedGraph
         while(it.hasNext()) {
             Block someBlock = (Block) it.next();
             
-            buf.append(someBlock.toBriefString() + '\n');
+            buf.append(someBlock.toString() + '\n');
         }
         
         return buf.toString();

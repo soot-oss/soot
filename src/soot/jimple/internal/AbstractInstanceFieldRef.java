@@ -73,11 +73,6 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
         up.fieldRef(field);
     }
 
-    public String toBriefString()
-    {
-        return ((ToBriefString) baseBox.getValue()).toBriefString() + "." + field.getName() + "";
-    }
-    
     public Value getBase()
     {
         return baseBox.getValue();

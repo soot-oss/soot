@@ -63,13 +63,6 @@ public class GInstanceFieldRef extends AbstractInstanceFieldRef
                         "." + getField().getSignature());
     }
 
-    public String toBriefString()
-    {
-        return toString(getBase(), 
-                        ((ToBriefString)getBase()).toBriefString(), 
-                        "." + getField().getName());
-    }
-
     public int getPrecedence()
     {
         return 950;

@@ -114,27 +114,6 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
         up.literal(")");
     }
 
-    public String toBriefString()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append(((ToBriefString) baseBox.getValue()).toBriefString() +
-            "." + method.getName() + "(");
-
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            if(i != 0)
-                buffer.append(", ");
-
-            buffer.append(((ToBriefString) argBoxes[i].getValue()).toBriefString());
-        }
-
-        buffer.append(")");
-
-        return buffer.toString();
-    }
-
-
     public void convertToBaf(JimpleToBafContext context, List out)
     {
        ((ConvertToBaf)(getBase())).convertToBaf(context, out);

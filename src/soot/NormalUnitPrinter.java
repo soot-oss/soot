@@ -41,6 +41,7 @@ public class NormalUnitPrinter implements UnitPrinter {
     public void startValueBox( ValueBox u ) { handleIndent(); }
     public void endValueBox( ValueBox u ) {}
 
+    public void noIndent() { startOfLine = false; }
     public void incIndent() { indent = indent + "    "; }
     public void decIndent() {
         if( indent.length() >= 4 ) indent = indent.substring(4);
@@ -60,7 +61,7 @@ public class NormalUnitPrinter implements UnitPrinter {
     }
     public void type( Type t ) { 
         handleIndent();
-        output.append( t.toString() );
+        output.append( Scene.v().quotedNameOf(t.toString()) );
     }
     public void method( SootMethod m ) {
         handleIndent();

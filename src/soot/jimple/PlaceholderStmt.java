@@ -39,9 +39,9 @@ public class PlaceholderStmt extends AbstractStmt
 {
     private Unit source;
 
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    public String toString()
     {
-        return indentation + "<placeholder: " + ((ToBriefString) source).toBriefString() + ">";
+        return "<placeholder: " + source.toString() + ">";
     }
     
     public void toString( UnitPrinter up ) {

@@ -35,7 +35,7 @@ import java.io.*;
  * classes.  Intermediate representations must use an implementation
  * of Local for their local variables.
  *  */
-public interface Local extends Value, ToBriefString, Serializable, Numberable
+public interface Local extends Value, Serializable, Numberable
 {
     /** Returns the name of the current Local variable. */
     public String getName();

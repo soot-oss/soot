@@ -17,12 +17,8 @@ public class DIdentityStmt extends GIdentityStmt
         getRightOpBox().toString(up);
     }
 
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
-        if (isBrief) 
-	    return indentation + ((ToBriefString) getLeftOpBox().getValue()).toBriefString() + " = " + 
-		((ToBriefString) getRightOpBox().getValue()).toBriefString();
-        else
-            return indentation + getLeftOpBox().getValue().toString() + " = " + getRightOpBox().getValue().toString();
+        return getLeftOpBox().getValue().toString() + " = " + getRightOpBox().getValue().toString();
     }    
 }

@@ -152,24 +152,24 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
 
     public String getName() { return "tableswitch"; }
 
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    public String toString()
     {
         StringBuffer buffer = new StringBuffer();
-        String endOfLine = (indentation.equals("")) ? " " : StringTools.lineSeparator;
+        String endOfLine = " ";
         
-        buffer.append(indentation + "tableswitch" + endOfLine);
+        buffer.append("tableswitch" + endOfLine);
             
-        buffer.append(indentation + "{" + endOfLine);
+        buffer.append("{" + endOfLine);
         
         for(int i = lowIndex; i <= highIndex; i++)
         {
-            buffer.append(indentation + "    case " + i + ": goto " + 
-                (String) unitToName.get(getTarget(i - lowIndex)) + ";" 
+            buffer.append("    case " + i + ": goto " + 
+                getTarget(i - lowIndex) + ";" 
                           + endOfLine);
         }
 
-        buffer.append(indentation + "    default: goto " + (String) unitToName.get(getDefaultTarget()) + ";" + endOfLine);
-        buffer.append(indentation + "}");
+        buffer.append("    default: goto " + getDefaultTarget() + ";" + endOfLine);
+        buffer.append("}");
 
         return buffer.toString();
     }

@@ -12,16 +12,6 @@ public class DNewInvokeExpr extends GNewInvokeExpr
 	super( type, method, args);
     }
 
-    public String toBriefString()
-    {
-	return toString();
-    }
-
-    public String toString()
-    {
-	return super.toBriefString();
-    }
-
     public Object clone() 
     {
         ArrayList clonedArgs = new ArrayList( getArgCount());

@@ -104,27 +104,6 @@ public class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
     }
 
     
-    public String toBriefString()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("." + getMethod().getName() + "(");
-
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            if(i != 0)
-                buffer.append(", ");
-
-            buffer.append(((ToBriefString) argBoxes[i].getValue()).toBriefString());
-        }
-
-        buffer.append(")");
-
-        return toString(getBase(), 
-                        ((ToBriefString)getBase()).toBriefString(),
-                        buffer.toString());
-    }
-
     public Object clone() 
     {
         List argList = new ArrayList(getArgCount());

@@ -57,8 +57,4 @@ public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr implements New
 	return buffer.toString();
     }
 
-    public String toBriefString()
-    {
-	return toString();
-    }
 }

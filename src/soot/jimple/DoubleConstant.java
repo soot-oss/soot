@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class DoubleConstant extends RealConstant implements Switchable, ToBriefString
+public class DoubleConstant extends RealConstant implements Switchable
 {
     public final double value;
 
@@ -176,11 +176,6 @@ public class DoubleConstant extends RealConstant implements Switchable, ToBriefS
             return "#" + doubleString;
         else
             return doubleString;
-    }
-    
-    public String toBriefString()
-    {
-        return toString();
     }
     
     public Type getType()

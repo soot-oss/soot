@@ -75,16 +75,6 @@ public class GArrayRef extends JArrayRef implements ArrayRef, Precedence
       return toString(op1, leftOp, rightOp);
     }
 
-  public String toBriefString()
-    {
-      Value op1 = getBase(), op2 = getIndex();
-      String leftOp = ((ToBriefString)op1).toBriefString(), 
-        rightOp = ((ToBriefString)op2).toBriefString();
-      
-      return toString(op1, leftOp, rightOp);
-    }    
-    
-    
     public Object clone() 
     {
         return new GArrayRef(Grimp.cloneIfNecessary(getBase()), Grimp.cloneIfNecessary(getIndex()));

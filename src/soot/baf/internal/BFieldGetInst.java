@@ -72,11 +72,9 @@ public class BFieldGetInst extends AbstractInst implements FieldGetInst
     
 
     final public String getName() { return "fieldget"; }
-    final String getParameters(boolean isBrief, Map unitToName) 
+    final String getParameters()
     { 
-        return " " + (isBrief ? 
-                      (field.getDeclaringClass().getName() + "." + 
-                       field.getName()) : field.getSignature()); 
+        return " " + field.getSignature(); 
     }
     protected void getParameters(UnitPrinter up) {
         up.literal(" ");

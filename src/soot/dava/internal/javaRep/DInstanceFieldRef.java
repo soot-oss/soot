@@ -23,17 +23,12 @@ public class DInstanceFieldRef extends GInstanceFieldRef
         }
     }
 
-    public String toBriefString()
-    {
-	return toString();
-    }
-
     public String toString()
     {
 	if (thisLocals.contains( getBase())) 
 	    return getField().getName();
 
-	return super.toBriefString();
+	return super.toString();
     }
 
     public Object clone()

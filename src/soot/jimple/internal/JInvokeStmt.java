@@ -62,12 +62,9 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
         return true;
     }
 
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
-        if(isBrief)
-            return indentation + ((ToBriefString) invokeExprBox.getValue()).toBriefString();
-        else
-            return indentation + invokeExprBox.getValue().toString();
+        return invokeExprBox.getValue().toString();
     }
     
     public void toString(UnitPrinter up) {

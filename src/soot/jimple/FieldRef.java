@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public interface FieldRef extends ConcreteRef, ToBriefString
+public interface FieldRef extends ConcreteRef
 {
     public SootField getField();
     public void setField(SootField field);

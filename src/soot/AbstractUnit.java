@@ -126,57 +126,6 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     {
     }
 
-    /** Returns a brief description of this object. */
-    public String toBriefString()
-    {
-        return toString(true, G.v().AbstractUnit_allMapToUnnamed, "");
-    }
-    
-    /** Returns a brief description of this object, using the given Map. */
-    public String toBriefString(Map stmtToName)
-    {
-        return toString(true, stmtToName, "");
-    }
-    
-    /** Returns a brief description of this object, using the given indentation. */
-    public String toBriefString(String indentation)
-    {
-        return toString(true, G.v().AbstractUnit_allMapToUnnamed, indentation);
-    }
-    
-    /** Returns a brief description of this object, using the given Map and indentation. */
-    public String toBriefString(Map stmtToName, String indentation)
-    {
-        return toString(true, stmtToName, indentation);
-    }
-    
-    /** Returns a textual representation of this object. */
-    public String toString()
-    {
-        return toString(false, G.v().AbstractUnit_allMapToUnnamed, "");
-    }
-    
-    /** Returns a textual representation of this object, using the given Map. */
-    public String toString(Map stmtToName)
-    {
-        return toString(false, stmtToName, "");
-    }
-    
-    /** Returns a textual representation of this object, using the given indentation. */
-    public String toString(String indentation)
-    {
-        return toString(false, G.v().AbstractUnit_allMapToUnnamed, indentation);
-    }
-    
-    /** Returns a textual representation of this object, using the given Map and indentation. */
-    public String toString(Map stmtToName, String indentation)
-    {
-        return toString(false, stmtToName, indentation);
-    }
-    
-    /** Returns a textual representation of this object, with the given briefness, Map and indentation. */
-    abstract protected String toString(boolean isBrief, Map stmtToName, String indentation);
-
     /** Adjusts UnitBoxes pointing to this Unit to a newLocation. */
     public void redirectJumpsToThisTo(Unit newLocation)
     {

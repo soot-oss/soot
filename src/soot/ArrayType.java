@@ -99,18 +99,6 @@ public class ArrayType extends RefLikeType
             */
     }
 
-    public String toBriefString()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append(baseType.toBriefString());
-
-        for(int i = 0; i < numDimensions; i++)
-            buffer.append("[]");
-
-        return buffer.toString();
-    }
-
     public void toString(UnitPrinter up)
     {
         up.type( baseType );

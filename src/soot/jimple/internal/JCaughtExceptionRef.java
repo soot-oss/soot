@@ -63,11 +63,6 @@ public class JCaughtExceptionRef implements CaughtExceptionRef
         up.identityRef(this);
     }
 
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
     public List getUseBoxes()
     {
         return AbstractUnit.emptyList;

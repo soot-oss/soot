@@ -18,16 +18,6 @@ public class DStaticInvokeExpr extends GStaticInvokeExpr
         super.toString(up);
     }
 
-    public String toBriefString()
-    {
-	return toString();
-    }
-
-    public String toString()
-    {
-	return super.toBriefString();
-    }
-
     public Object clone() 
     {
         ArrayList clonedArgs = new ArrayList( getArgCount());

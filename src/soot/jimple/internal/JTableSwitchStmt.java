@@ -119,28 +119,28 @@ public class JTableSwitchStmt extends AbstractStmt
         }
     }
 
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
         StringBuffer buffer = new StringBuffer();
-        String endOfLine = (indentation.equals("")) ? " " : StringTools.lineSeparator;
+        String endOfLine = " ";
         
-        buffer.append(indentation + Jimple.v().TABLESWITCH + "(" + ((isBrief) ? ((ToBriefString) keyBox.getValue()).toBriefString() :
-            keyBox.getValue().toString()) + ")" + endOfLine);
+        buffer.append(Jimple.v().TABLESWITCH + "(" +
+            keyBox.getValue().toString() + ")" + endOfLine);
             
-        buffer.append(indentation + "{" + endOfLine);
+        buffer.append("{" + endOfLine);
         
         for(int i = lowIndex; i <= highIndex; i++)
         {
-            buffer.append(indentation +
+            buffer.append(
                           "    " + Jimple.v().CASE + " " + i + ": " + Jimple.v().GOTO + 
-                          " " + (String) stmtToName.get(getTarget(i - lowIndex)) + ";" + endOfLine);
+                          " " + getTarget(i - lowIndex) + ";" + endOfLine);
         }
 
-        buffer.append(indentation + "    " +  Jimple.v().DEFAULT + 
+        buffer.append("    " +  Jimple.v().DEFAULT + 
                       ": " +  Jimple.v().GOTO + " " 
-                      + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
+                      + getDefaultTarget() + ";" + endOfLine);
         
-        buffer.append(indentation + "}");
+        buffer.append("}");
 
         return buffer.toString();
     }

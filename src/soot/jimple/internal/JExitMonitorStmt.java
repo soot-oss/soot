@@ -59,12 +59,9 @@ public class JExitMonitorStmt extends AbstractStmt
         return new JExitMonitorStmt(Jimple.cloneIfNecessary(getOp()));
     }
 
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
-        if(isBrief)
-            return indentation + Jimple.v().EXITMONITOR + " "  + ((ToBriefString) opBox.getValue()).toBriefString();
-        else
-            return indentation + Jimple.v().EXITMONITOR + " "  + opBox.getValue().toString();
+        return Jimple.v().EXITMONITOR + " "  + opBox.getValue().toString();
     }
     
     public void toString(UnitPrinter up) {

@@ -728,15 +728,7 @@ public class SootClass extends AbstractHost implements Numberable
 
     public String getName()
     {
-	if (Main.v().getJavaStyle())
-	    return getJavaStyleName();
-	else
-	    return name;
-    }
-
-    public String getFullName()
-    {
-	return name;
+        return name;
     }
 
     public String getJavaStyleName()
@@ -772,9 +764,6 @@ public class SootClass extends AbstractHost implements Numberable
 
     public String getPackageName()
     {
-	if (Main.v().getJavaStyle())
-	    return getJavaPackageName();
-
 	return packageName;
     }
 

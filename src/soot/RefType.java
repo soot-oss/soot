@@ -38,7 +38,7 @@ import java.util.*;
  *   Two RefType are equal iff they are parametrized by the same class name as a String.
  */
 
-public class RefType extends RefLikeType implements ToBriefString, Comparable
+public class RefType extends RefLikeType implements Comparable
 {
     public RefType( Singletons.Global g ) { className = ""; }
     public static RefType v() { return G.v().RefType(); }
@@ -115,23 +115,7 @@ public class RefType extends RefLikeType implements ToBriefString, Comparable
 
     public String toString()
     {
-	if (Main.v().getJavaStyle())
-	    return toBriefString();
-	else
-	    return Scene.v().quotedNameOf(className);
-    }
-
-    public String toBriefString()
-    {
-	if (Main.v().getJavaStyle())
-	    return toVeryBriefString();
-	else
-	    return className;
-    }
-
-    public String toVeryBriefString()
-    {
-	return Scene.v().getSootClass( className).getJavaStyleName();
+        return className;
     }
 
     public int hashCode()

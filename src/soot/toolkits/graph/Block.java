@@ -324,53 +324,7 @@ public class Block
     
     public String toShortString() {return "Block #" + mIndexInMethod; }
 
-    /** Returns a brief description of this object. */
-    public String toBriefString()
-    {
-        return toString(true, buildMapForBlock(), "        ");
-    }
-    
-    /** Returns a brief description of this object using the given Map. */
-    public String toBriefString(Map stmtToName)
-    {
-        return toString(true, stmtToName, "");
-    }
-
-    /** Returns a brief description of this object, using the given indentation. */
-    public String toBriefString(String indentation)
-    {
-        return toString(true, buildMapForBlock(), indentation);
-    }
-
-    /** Returns a brief description of this object, using the given Map and indentation.. */
-    public String toBriefString(Map stmtToName, String indentation)
-    {
-        return toString(true, stmtToName, indentation);
-    }
-    
     public String toString()
-    {
-        return toString(false, allMapToUnnamed, "");
-    }
-    
-    public String toString(Map stmtToName)
-    {
-        return toString(false, stmtToName, "");
-    }
-    
-    public String toString(String indentation)
-    {
-        return toString(false, allMapToUnnamed, indentation);
-    }
-    
-    public String toString(Map stmtToName, String indentation)
-    {
-        return toString(false, stmtToName, indentation);
-    }
-
-
-    
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         StringBuffer strBuf = new StringBuffer();
 
@@ -409,23 +363,18 @@ public class Block
         
         if(basicBlockIt.hasNext()) {
             Unit someUnit = (Unit) basicBlockIt.next();
-            strBuf.append(someUnit.toBriefString(stmtToName, indentation) + ";" + System.getProperty("line.separator"));
-            if(!isBrief) {
-                while(basicBlockIt.hasNext()){
-                    someUnit = (Unit) basicBlockIt.next();
-                    if(someUnit == mTail)
-                        break;
-                    strBuf.append(someUnit.toBriefString(stmtToName, indentation) + ";" + System.getProperty("line.separator"));        
-                }
-            } else {
-                if(mBlockLength > 1)
-                    strBuf.append("          ..." + System.getProperty("line.separator"));
-        }
+            strBuf.append(someUnit.toString() + ";" + System.getProperty("line.separator"));
+            while(basicBlockIt.hasNext()){
+                someUnit = (Unit) basicBlockIt.next();
+                if(someUnit == mTail)
+                    break;
+                strBuf.append(someUnit.toString() + ";" + System.getProperty("line.separator"));        
+            }
             someUnit = mTail;
             if(mTail == null) 
                 strBuf.append("error: null tail found; block length: " + mBlockLength +"" + System.getProperty("line.separator"));
             else if(mHead != mTail)
-                strBuf.append(someUnit.toBriefString(stmtToName, indentation) + ";" + System.getProperty("line.separator"));        
+                strBuf.append(someUnit.toString() + ";" + System.getProperty("line.separator"));        
         
 
         }  else 

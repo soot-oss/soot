@@ -125,7 +125,7 @@ public class SimpleLocalDefs implements LocalDefs
         
         if(toReturn == null)
             throw new RuntimeException("Illegal LocalDefs query; local " + l + " has no definition at " + 
-                                       ((ToBriefString) s).toBriefString());
+                                       s.toString());
                
         
         return toReturn;

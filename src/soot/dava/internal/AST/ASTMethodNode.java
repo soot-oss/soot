@@ -30,8 +30,8 @@ public class ASTMethodNode extends ASTNode
         body_toString( up, body );
     }
 
-    public String toString( Map stmtToName, String indentation)
+    public String toString()
     {
-	return body_toString( stmtToName, indentation, body);
+	return body_toString(body);
     }
 }

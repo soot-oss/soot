@@ -65,11 +65,6 @@ public abstract class AbstractNewExpr implements NewExpr
         up.type(type);
     }
 
-    public String toBriefString()
-    {
-        return Jimple.v().NEW + " " + type.toBriefString();
-    }
-    
     public RefType getBaseType()
     {
         return type;

@@ -43,19 +43,17 @@ public class ASTLabeledBlockNode extends ASTLabeledNode
         up.newline();
     }
 
-    public String toString( Map stmtToName, String indentation)
+    public String toString()
     {
 	StringBuffer b = new StringBuffer();
 
-	b.append( label_toString(  indentation));
+	b.append( label_toString());
 
-	b.append( indentation);
 	b.append( "{");
 	b.append( NEWLINE);
  
-	b.append( body_toString( stmtToName, indentation + TAB, body));
+	b.append( body_toString(body));
 
-	b.append( indentation);
 	b.append( "}");
 	b.append( NEWLINE);
 

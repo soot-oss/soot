@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class NullConstant extends Constant implements Switchable, ToBriefString
+public class NullConstant extends Constant implements Switchable
 {
     public NullConstant( Singletons.Global g ) {}
     public static NullConstant v() { return G.v().NullConstant(); }
@@ -53,11 +53,6 @@ public class NullConstant extends Constant implements Switchable, ToBriefString
         return Jimple.NULL;
     }
 
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
     public Type getType()
     {
         return NullType.v();

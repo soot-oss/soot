@@ -154,7 +154,7 @@ public class AugmentedStmt
 
     public String toString()
     {
-	return "(" + s.toBriefString() + " @ " + hashCode() + ")";
+	return "(" + s.toString() + " @ " + hashCode() + ")";
     }
 
     public void reset_PredsSuccs()

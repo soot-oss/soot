@@ -30,7 +30,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class ThisRef implements IdentityRef, ToBriefString
+public class ThisRef implements IdentityRef
 {
     RefType thisType;
 
@@ -62,11 +62,6 @@ public class ThisRef implements IdentityRef, ToBriefString
         up.identityRef(this);
     }
 
-    public String toBriefString()
-    {
-        return "@this";
-    }
-    
     public List getUseBoxes()
     {
         return AbstractUnit.emptyList;

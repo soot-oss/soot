@@ -25,11 +25,6 @@ public class DLengthExpr extends AbstractLengthExpr implements LengthExpr
 
     public String toString()
     {
-	return ((ToBriefString) getOpBox().getValue()).toBriefString() + ".length"; 
-    }
-
-    public String toBriefString()
-    {
-	return toString();
+	return ( getOpBox().getValue()).toString() + ".length"; 
     }
 }

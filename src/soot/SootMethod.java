@@ -601,8 +601,6 @@ public class SootMethod
      *  (before the {}'s containing the code for representation.)
      */
     public String getDeclaration() {
-        if( Main.v().getJavaStyle() ) return getDavaDeclaration();
-
         StringBuffer buffer = new StringBuffer();
 
         // modifiers

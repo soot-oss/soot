@@ -33,10 +33,8 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public interface StaticInvokeExpr extends InvokeExpr, ToBriefString
+public interface StaticInvokeExpr extends InvokeExpr
 {
-    public String toString();
-    public String toBriefString();
     public Type getType();
     public void apply(Switch sw);
 }

@@ -68,5 +68,4 @@ abstract public class AbstractUnopExpr implements UnopExpr
         return list;
     }
 
-    public abstract String toBriefString();
 }

@@ -50,13 +50,13 @@ public class ASTStatementSequenceNode extends ASTNode
         }
     }
 
-    public String toString( Map stmtToName, String indentation)
+    public String toString()
     {
 	StringBuffer b = new StringBuffer();
 
 	Iterator it = statementSequence.iterator();
 	while (it.hasNext()) {
-	    b.append( ((Unit) ((AugmentedStmt) it.next()).get_Stmt()).toBriefString( stmtToName, indentation));
+	    b.append( ((Unit) ((AugmentedStmt) it.next()).get_Stmt()).toString());
 	    b.append( ";");
 	    b.append( NEWLINE);
 	}

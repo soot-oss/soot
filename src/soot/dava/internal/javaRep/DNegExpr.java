@@ -29,11 +29,6 @@ public class DNegExpr extends AbstractNegExpr implements NegExpr
 
     public String toString()
     {
-	return "(- (" + ((ToBriefString) getOpBox().getValue()).toBriefString() + "))"; 
-    }
-
-    public String toBriefString()
-    {
-	return toString();
+	return "(- (" + ( getOpBox().getValue()).toString() + "))"; 
     }
 }

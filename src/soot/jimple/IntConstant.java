@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class IntConstant extends ArithmeticConstant implements Switchable, ToBriefString
+public class IntConstant extends ArithmeticConstant implements Switchable
 {
     public final int value;
 
@@ -187,11 +187,6 @@ public class IntConstant extends ArithmeticConstant implements Switchable, ToBri
         return new Integer(value).toString();
     }
 
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
     public Type getType()
     {
         return IntType.v();

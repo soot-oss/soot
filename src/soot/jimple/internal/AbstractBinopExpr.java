@@ -32,7 +32,7 @@ import soot.util.*;
 import java.util.*;
 import soot.grimp.PrecedenceTest;
 
-public abstract class AbstractBinopExpr implements Expr, ToBriefString
+public abstract class AbstractBinopExpr implements Expr
 {
     protected ValueBox op1Box;
     protected ValueBox op2Box;
@@ -110,15 +110,6 @@ public abstract class AbstractBinopExpr implements Expr, ToBriefString
         return leftOp + getSymbol() + rightOp;
     }
 
-    public String toBriefString()
-    {
-        Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
-        String leftOp = ((ToBriefString)op1).toBriefString(), 
-            rightOp = ((ToBriefString)op2).toBriefString();
-
-        return leftOp + getSymbol() + rightOp;
-    }
-    
     public void toString( UnitPrinter up ) {
         Value val1 = op1Box.getValue();
         Value val2 = op2Box.getValue();

@@ -42,9 +42,9 @@ public class PlaceholderInst extends AbstractInst
 
     public final String getName() { return "<placeholder>"; }
 
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    public String toString()
     {
-        return indentation + "<placeholder: " + ((ToBriefString) source).toBriefString() + ">";
+        return "<placeholder: " + source.toString() + ">";
     }
     
     PlaceholderInst(Unit source)

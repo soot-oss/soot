@@ -48,7 +48,7 @@ public class DavaPrinter {
                     String typeName;
                     Type t = local.getType();
 
-                    typeName = t.toBriefString();
+                    typeName = t.toString();
 
                     if (typeToLocals.containsKey(typeName))
                         localList = (List) typeToLocals.get(typeName);
@@ -127,19 +127,9 @@ public class DavaPrinter {
             throw new RuntimeException("DavaBody AST doesn't have single root.");
         }
 
-        String old = ((ASTNode) units.getFirst()).toString(null, "        ");
         UnitPrinter up = new DavaUnitPrinter("        ");
-        Main.v().setJavaStyle(false);
         ((ASTNode) units.getFirst()).toString(up);
-        Main.v().setJavaStyle(true);
-        String newS = up.toString();
-        if( !old.equals(newS) ) {
-            System.err.println( "OLD:" );
-            System.err.println( old );
-            System.err.println( "NEW:" );
-            System.err.println( newS );
-        }
-        out.print( old );
+        out.print( up.toString() );
     }
 
     public void printTo(SootClass cl, PrintWriter out) {
@@ -260,7 +250,7 @@ public class DavaPrinter {
 
         // Print extension
         if (cl.hasSuperclass()
-            && !(cl.getSuperclass().getFullName().equals("java.lang.Object")))
+            && !(cl.getSuperclass().getName().equals("java.lang.Object")))
             out.print(" extends " + cl.getSuperclass().getName() + "");
 
         // Print interfaces

@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public interface CaughtExceptionRef extends IdentityRef, ToBriefString
+public interface CaughtExceptionRef extends IdentityRef
 {
     public Type getType();
     public void apply(Switch sw);

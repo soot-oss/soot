@@ -74,12 +74,11 @@ public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst
     }
 
    
-    protected String toString(boolean isBrief, 
-                              Map unitToName, String indentation)
+    public String toString()
     {
       // do stuff with opType later.
-        return indentation + getName() + "." + Baf.bafDescriptorOf(opType)+
-           " " + (String) unitToName.get(getTarget());
+        return getName() + "." + Baf.bafDescriptorOf(opType)+
+           " " + getTarget();
           
     }    
     public void toString( UnitPrinter up ) {

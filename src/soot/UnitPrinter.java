@@ -33,6 +33,7 @@ public interface UnitPrinter {
 
     public void incIndent();
     public void decIndent();
+    public void noIndent();
 
     public void literal( String s );
     public void newline();

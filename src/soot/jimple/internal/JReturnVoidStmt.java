@@ -50,9 +50,9 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
         return new JReturnVoidStmt();
     }
 
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
-        return indentation + Jimple.v().RETURN;
+        return Jimple.v().RETURN;
     }
     
     public void toString(UnitPrinter up) {

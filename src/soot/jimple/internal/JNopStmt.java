@@ -52,9 +52,9 @@ public class JNopStmt extends AbstractStmt implements NopStmt
     }
 
 
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
-        return indentation + Jimple.v().NOP;
+        return Jimple.v().NOP;
     }
     
     public void toString(UnitPrinter up) {

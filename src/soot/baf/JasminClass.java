@@ -661,7 +661,7 @@ public class JasminClass
                 {
                     public void defaultCase(Type t)
                     {
-                        throw new RuntimeException("invalid return type " + t.toBriefString());
+                        throw new RuntimeException("invalid return type " + t.toString());
                      }
 
                      public void caseDoubleType(DoubleType t)
@@ -1751,7 +1751,7 @@ public class JasminClass
                 Type castType = i.getCastType();
 
                 if(castType instanceof RefType)
-                    emit("checkcast " + slashify(castType.toBriefString()));
+                    emit("checkcast " + slashify(castType.toString()));
                 else if(castType instanceof ArrayType)
                     emit("checkcast " + jasminDescriptorOf(castType));
             }
@@ -1761,7 +1761,7 @@ public class JasminClass
                 Type checkType = i.getCheckType();
 
                 if(checkType instanceof RefType)
-                    emit("instanceof " + slashify(checkType.toBriefString()));
+                    emit("instanceof " + slashify(checkType.toString()));
                 else if(checkType instanceof ArrayType)
                     emit("instanceof " + jasminDescriptorOf(checkType));
             }
@@ -1947,11 +1947,11 @@ public class JasminClass
             public void caseNewArrayInst(NewArrayInst i)
             {
                 if(i.getBaseType() instanceof RefType)
-                    emit("anewarray " + slashify(i.getBaseType().toBriefString()));
+                    emit("anewarray " + slashify(i.getBaseType().toString()));
                 else if(i.getBaseType() instanceof ArrayType)
                     emit("anewarray " + jasminDescriptorOf(i.getBaseType()));
                 else
-                    emit("newarray " + i.getBaseType().toBriefString());
+                    emit("newarray " + i.getBaseType().toString());
             }
 
             public void caseNewMultiArrayInst(NewMultiArrayInst i)

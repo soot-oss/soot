@@ -166,23 +166,20 @@ public class ASTTryNode extends ASTLabeledNode
 	}
     }
 
-    public String toString( Map stmtToName, String indentation)
+    public String toString()
     {
 	StringBuffer b = new StringBuffer();
 	
-	b.append( label_toString( indentation));
+	b.append( label_toString( ));
 
-	b.append( indentation);
 	b.append( "try");
 	b.append( NEWLINE);
 	
-	b.append( indentation);
 	b.append( "{");
 	b.append( NEWLINE);
 
-	b.append( body_toString( stmtToName, indentation + TAB, tryBody));
+	b.append( body_toString( tryBody));
 
-	b.append( indentation);
 	b.append( "}");
 	b.append( NEWLINE);
 
@@ -190,7 +187,6 @@ public class ASTTryNode extends ASTLabeledNode
 	while (cit.hasNext()) {
 	    container catchBody = (container) cit.next();
 
-	    b.append( indentation);
 	    b.append( "catch (");
 	    b.append( ((SootClass) exceptionMap.get( catchBody)).getName());
 	    b.append( " ");
@@ -198,13 +194,11 @@ public class ASTTryNode extends ASTLabeledNode
 	    b.append( ")");
 	    b.append( NEWLINE);
 
-	    b.append( indentation);
 	    b.append( "{");
 	    b.append( NEWLINE);
 
-	    b.append( body_toString( stmtToName, indentation + TAB, (List) catchBody.o));
+	    b.append( body_toString( (List) catchBody.o));
 
-	    b.append( indentation);
 	    b.append( "}");
 	    b.append( NEWLINE);
 	}

@@ -15,23 +15,10 @@ public class DStaticFieldRef extends StaticFieldRef
         up.fieldRef( getField() );
     }
 
-    public String toBriefString()
-    {
-	if (supressDeclaringClass)
-	    return getField().getName();
-	else
-	    return super.toBriefString();
-    }
-
-    public String toString()
-    {
-	return this.toBriefString();
-    }
-
     public DStaticFieldRef( SootField field, String myClassName)
     {
 	super( field);
-	supressDeclaringClass = myClassName.equals( getField().getDeclaringClass().getFullName());
+	supressDeclaringClass = myClassName.equals( getField().getDeclaringClass().getName());
     }
 
     public DStaticFieldRef( SootField field, boolean supressDeclaringClass)

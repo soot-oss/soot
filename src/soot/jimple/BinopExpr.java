@@ -43,5 +43,4 @@ public interface BinopExpr extends Expr
     public void setOp2(Value op2);
     public String getSymbol();
     public String toString();
-    public String toBriefString();
 }

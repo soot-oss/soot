@@ -70,11 +70,9 @@ public class BStaticGetInst extends AbstractInst implements StaticGetInst
     }
 
     final public String getName() { return "staticget"; }
-    final String getParameters(boolean isBrief, Map unitToName) 
+    final String getParameters()
     { 
-        return " " + (isBrief ? 
-                      (field.getDeclaringClass().getName() + "." + 
-                       field.getName()) : field.getSignature()); 
+        return " " + field.getSignature(); 
     }
 
     protected void getParameters(UnitPrinter up) {

@@ -38,7 +38,7 @@ import java.util.*;
  *
  * For instance, in an instance method, the first statement will
  * often be <code> this := @parameter0; </code> */
-public class ParameterRef implements IdentityRef, Switchable, ToBriefString
+public class ParameterRef implements IdentityRef, Switchable
 {
     int n;
     Type paramType;
@@ -82,12 +82,6 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
         up.identityRef(this);
     }
 
-    /** Converts the given ParameterRef into a brief String i.e. <code>@paraemter0</code>. */
-    public String toBriefString()
-    {
-        return "@parameter" + n;
-    }
-    
     /** Returns the index of this ParameterRef. */
     public int getIndex()
     {

@@ -553,7 +553,7 @@ public class DavaBody extends Body
 	Ref r = (Ref) vb.getValue();
 
 	if (r instanceof StaticFieldRef)
-	    vb.setValue( new DStaticFieldRef( ((StaticFieldRef) r).getField(), getMethod().getDeclaringClass().getFullName()));
+	    vb.setValue( new DStaticFieldRef( ((StaticFieldRef) r).getField(), getMethod().getDeclaringClass().getName()));
 
 	else if (r instanceof ArrayRef) {
 	    ArrayRef ar = (ArrayRef) r;

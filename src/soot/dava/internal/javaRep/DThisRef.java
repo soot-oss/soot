@@ -15,11 +15,6 @@ public class DThisRef extends ThisRef
         return "this: "+ getType();
     }
 
-    public String toBriefString()
-    {
-        return "this";
-    }
-
     public Object clone()
     {
 	return new DThisRef( (RefType) getType());

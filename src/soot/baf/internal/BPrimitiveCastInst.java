@@ -187,10 +187,10 @@ public class BPrimitiveCastInst extends AbstractInst
     }
 
     /* override toString with our own, *not* including types */
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    public String toString()
     {
-        return indentation + getName() + 
-            getParameters(isBrief, unitToName);
+        return getName() + 
+            getParameters();
     }
 
     public void apply(Switch sw)

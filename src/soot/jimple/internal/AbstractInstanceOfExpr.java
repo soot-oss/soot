@@ -73,11 +73,6 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr
         up.type(checkType);
     }
 
-    public String toBriefString()
-    {
-        return ((ToBriefString) opBox.getValue()).toBriefString() + " " + Jimple.v().INSTANCEOF + " " + checkType.toString();
-    }
-
     public Value getOp()
     {
         return opBox.getValue();

@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public interface UnopExpr extends Expr, ToBriefString
+public interface UnopExpr extends Expr
 {
     public Value getOp();
     public void setOp(Value op);

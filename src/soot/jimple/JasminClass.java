@@ -1689,7 +1689,7 @@ public class JasminClass
                 {
                     public void defaultCase(Type t)
                     {
-                        throw new RuntimeException("invalid return type " + t.toBriefString());
+                        throw new RuntimeException("invalid return type " + t.toString());
                      }
 
                      public void caseDoubleType(DoubleType t)
@@ -2104,7 +2104,7 @@ public class JasminClass
                 emitValue(v.getOp());
 
                 if(toType instanceof RefType)
-                    emit("checkcast " + slashify(toType.toBriefString()), 0);
+                    emit("checkcast " + slashify(toType.toString()), 0);
                 else if(toType instanceof ArrayType)
                     emit("checkcast " + jasminDescriptorOf(toType), 0);
                 else {
@@ -2184,7 +2184,7 @@ public class JasminClass
 				;
                             else
                                 throw new RuntimeException("invalid toType from int: " + toType +
-                                    " " + v.toBriefString());
+                                    " " + v.toString());
                         }
 
                         public void caseLongType(LongType ty)
@@ -2349,7 +2349,7 @@ public class JasminClass
                 checkType = v.getCheckType();
                 
                 if(checkType instanceof RefType)
-                    emit("instanceof " + slashify(checkType.toBriefString()), 0);
+                    emit("instanceof " + slashify(checkType.toString()), 0);
                 else if(checkType instanceof ArrayType)
                     emit("instanceof " + jasminDescriptorOf(checkType), 0);
             }
@@ -2776,11 +2776,11 @@ public class JasminClass
                 emitValue(size);
 
                 if(v.getBaseType() instanceof RefType)
-                    emit("anewarray " + slashify(v.getBaseType().toBriefString()), 0);
+                    emit("anewarray " + slashify(v.getBaseType().toString()), 0);
                 else if(v.getBaseType() instanceof ArrayType)
                     emit("anewarray " + jasminDescriptorOf(v.getBaseType()), 0);
                 else
-                    emit("newarray " + v.getBaseType().toBriefString(), 0);
+                    emit("newarray " + v.getBaseType().toString(), 0);
             }
 
             public void caseNewMultiArrayExpr(NewMultiArrayExpr v)
@@ -2795,12 +2795,12 @@ public class JasminClass
 
             public void caseNewExpr(NewExpr v)
             {
-                emit("new " + slashify(v.getBaseType().toBriefString()), 1);
+                emit("new " + slashify(v.getBaseType().toString()), 1);
             }
 
             public void caseNewInvokeExpr(NewInvokeExpr v)
             {
-                emit("new " + slashify(v.getBaseType().toBriefString()), 1);
+                emit("new " + slashify(v.getBaseType().toString()), 1);
                 emit("dup", 1);
                 
                 SootMethod m = v.getMethod();

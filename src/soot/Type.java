@@ -31,7 +31,7 @@ import java.util.*;
 import java.io.*;
 
 /** Represents types within Soot, eg <code>int</code>, <code>java.lang.String</code>. */
-public abstract class Type implements Switchable, ToBriefString, Serializable, Numberable
+public abstract class Type implements Switchable, Serializable, Numberable
 {
     public Type() {
         Scene.v().getTypeNumberer().add( this );
@@ -39,12 +39,6 @@ public abstract class Type implements Switchable, ToBriefString, Serializable, N
     /** Returns a textual representation of this type. */
     public abstract String toString();
     
-    /** Returns a brief textual representation of this type. */
-    public String toBriefString()
-    {
-        return toString();
-    }
-
     /** Converts the int-like types (short, byte, boolean and char) to IntType. */
     public static Type toMachineType(Type t)
     {

@@ -75,7 +75,7 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst
 
 
     final public String getName() { return "load"; }
-    final String getParameters(boolean isBrief, Map unitToName) 
+    final String getParameters()
     { return " "+ localBox.getValue().toString(); }
     protected void getParameters( UnitPrinter up ) {
         up.literal(" ");

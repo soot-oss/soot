@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class LongConstant extends ArithmeticConstant implements Switchable, ToBriefString
+public class LongConstant extends ArithmeticConstant implements Switchable 
 {
     public final long value;
 
@@ -200,11 +200,6 @@ public class LongConstant extends ArithmeticConstant implements Switchable, ToBr
         return new Long(value).toString() + "L";
     }
 
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
     public Type getType()
     {
         return LongType.v();

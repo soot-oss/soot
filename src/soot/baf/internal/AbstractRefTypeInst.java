@@ -56,7 +56,7 @@ public abstract class AbstractRefTypeInst extends AbstractInst
     public RefType getBaseType() { return (RefType)opType; }
     public void setBaseType(RefType type) { this.opType = type; }
 
-    String getParameters(boolean isBrief, Map unitToName) { return " "+opType.toString(); }
+    String getParameters() { return " "+opType.toString(); }
     protected void getParameters( UnitPrinter up ) {
         up.literal(" ");
         up.type(opType);

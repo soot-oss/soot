@@ -32,8 +32,4 @@ public class DNewArrayExpr extends AbstractNewArrayExpr implements NewArrayExpr,
 	return "new " + getBaseType() + "[" + getSize() + "]";
     }
     
-    public String toBriefString()
-    {
-	return toString();
-    }
 }

@@ -81,9 +81,9 @@ public class BDup2Inst extends BDupInst implements Dup2Inst
 
 
     
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    public String toString()
     {
-        return indentation + "dup2." +  Baf.bafDescriptorOf(mOp1Type) + Baf.bafDescriptorOf(mOp2Type);  
+        return "dup2." +  Baf.bafDescriptorOf(mOp1Type) + Baf.bafDescriptorOf(mOp2Type);  
     }
     
 }

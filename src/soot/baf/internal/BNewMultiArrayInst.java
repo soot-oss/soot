@@ -75,7 +75,7 @@ public class BNewMultiArrayInst extends AbstractInst implements NewMultiArrayIns
     }
 
     final public String getName() { return "newmultiarray"; }
-    final String getParameters(boolean isBrief, Map unitToName) 
+    final String getParameters()
         { return " "+dimensionCount; }
     protected void getParameters(UnitPrinter up) {
         up.literal(" ");

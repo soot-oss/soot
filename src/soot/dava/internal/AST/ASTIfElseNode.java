@@ -60,39 +60,33 @@ public class ASTIfElseNode extends ASTControlFlowNode
         up.newline();
     }
 
-    public String toString( Map stmtToName, String indentation)
+    public String toString()
     {
 	StringBuffer b = new StringBuffer();
 	
-	b.append( label_toString( indentation));
+	b.append( label_toString());
 
-	b.append( indentation);
 	b.append( "if (");
 	b.append( get_Condition().toString());
 	b.append( ")");
 	b.append( NEWLINE);
 	
-	b.append( indentation);
 	b.append( "{");
 	b.append( NEWLINE);
 
-	b.append( body_toString( stmtToName, indentation + TAB, ifBody));
+	b.append( body_toString(ifBody));
 
-	b.append( indentation);
 	b.append( "}");
 	b.append( NEWLINE);
 
-	b.append( indentation);
 	b.append( "else");
 	b.append( NEWLINE);
 
-	b.append( indentation);
 	b.append( "{");
 	b.append( NEWLINE);
 
-	b.append( body_toString( stmtToName, indentation + TAB, elseBody));
+	b.append( body_toString(elseBody));
 
-	b.append( indentation);
 	b.append( "}");
 	b.append( NEWLINE);
 

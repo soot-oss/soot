@@ -44,11 +44,6 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr
     }
 
 
-    public String toBriefString()
-    {
-	return toString();
-    }
-
     public String toString()
     {
 	if (getBase().getType() instanceof NullType) {
@@ -58,7 +53,7 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr
 	    b.append( getMethod().getDeclaringClass().getJavaStyleName());
 	    b.append( ") ");
 	    
-	    String baseStr = ((ToBriefString) getBase()).toBriefString();
+	    String baseStr = ( getBase()).toString();
 	    if ((getBase() instanceof Precedence) && ( ((Precedence) getBase()).getPrecedence() < getPrecedence()))
 		baseStr = "(" + baseStr + ")";
 
@@ -72,7 +67,7 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr
 		if(i != 0)
 		    b.append(", ");
 		
-		b.append( ((ToBriefString) argBoxes[i].getValue()).toBriefString());
+		b.append( ( argBoxes[i].getValue()).toString());
 	    }
 
 	    b.append(")");
@@ -80,7 +75,7 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr
 	    return b.toString();
 	}
 
-	return super.toBriefString();
+	return super.toString();
     }
 
     public Object clone() 

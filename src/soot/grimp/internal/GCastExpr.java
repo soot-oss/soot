@@ -62,13 +62,6 @@ public class GCastExpr extends AbstractCastExpr implements CastExpr, Precedence
                         getOp().toString());
     }
 
-    public String toBriefString()
-    {
-          return toString("(" + getCastType().toString() + ") ", getOp(),
-                          ((ToBriefString)getOp()).toBriefString());
-    }
-
-        
     public Object clone()
     {
         return new GCastExpr(Grimp.cloneIfNecessary(getOp()), getCastType());

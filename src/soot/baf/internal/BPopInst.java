@@ -67,7 +67,7 @@ public class BPopInst extends AbstractInst implements PopInst
 
     final public String getName() { return "pop"; }
 
-    final String getParameters(boolean isBrief, Map unitToName) 
+    final String getParameters()
     {
         return ""; 
     }

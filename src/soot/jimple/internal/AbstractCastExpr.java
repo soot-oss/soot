@@ -83,12 +83,6 @@ abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
         if( PrecedenceTest.needsBrackets( opBox, this ) ) up.literal(")");
     }
 
-    public String toBriefString()
-    {
-        return "(" + type.toString() + ") " + 
-                  ((ToBriefString) opBox.getValue()).toBriefString();
-    }
-    
     public Value getOp()
     {
         return opBox.getValue();

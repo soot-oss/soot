@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class StringConstant extends Constant implements Switchable, ToBriefString
+public class StringConstant extends Constant implements Switchable
 {
     public final String value;
 
@@ -64,11 +64,6 @@ public class StringConstant extends Constant implements Switchable, ToBriefStrin
         return StringTools.getQuotedStringOf(value);
     }
 
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
     public Type getType()
     {
         return RefType.v("java.lang.String");

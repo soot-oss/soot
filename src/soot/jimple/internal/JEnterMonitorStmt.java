@@ -59,12 +59,9 @@ public class JEnterMonitorStmt extends AbstractStmt
         return new JEnterMonitorStmt(Jimple.cloneIfNecessary(getOp()));
     }
 
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
-        if(isBrief)
-            return indentation + Jimple.v().ENTERMONITOR + " "  + ((ToBriefString) opBox.getValue()).toBriefString();
-        else
-            return indentation + Jimple.v().ENTERMONITOR + " "  + opBox.getValue().toString();
+        return Jimple.v().ENTERMONITOR + " "  + opBox.getValue().toString();
     }
     
     public void toString(UnitPrinter up) {

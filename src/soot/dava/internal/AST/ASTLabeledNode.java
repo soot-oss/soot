@@ -39,7 +39,7 @@ public abstract class ASTLabeledNode extends ASTNode
 	}
     }
 
-    public String label_toString( String indentation)
+    public String label_toString()
     {
 	if (label.toString() == null)
 	    return new String();
@@ -47,7 +47,6 @@ public abstract class ASTLabeledNode extends ASTNode
 	else {
 	    StringBuffer b = new StringBuffer();
 
-	    b.append( indentation);
 	    b.append( label.toString());
 	    b.append( ":");
 	    b.append( ASTNode.NEWLINE);

@@ -122,11 +122,6 @@ public class JimpleLocal implements Local, ConvertToBaf
         up.local(this);
     }
 
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
     public List getUseBoxes()
     {
         return AbstractUnit.emptyList;

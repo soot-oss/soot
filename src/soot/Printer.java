@@ -274,48 +274,55 @@ public class Printer {
 
         String decl = b.getMethod().getDeclaration();
 
-        {
-            out.println("    " + decl);
-            //incJimpleLnNum();
-	
-	    // only print tags if not printing attributes in a file 
-	    if (!addJimpleLn()) {
-            	for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
-            	    final Tag t = (Tag) tIt.next();
-                    out.println(t);
-                    incJimpleLnNum();
+        out.println("    " + decl);
+        //incJimpleLnNum();
+    
+        // only print tags if not printing attributes in a file 
+        if (!addJimpleLn()) {
+            for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
+                final Tag t = (Tag) tIt.next();
+                out.println(t);
+                incJimpleLnNum();
 
-            	}
-	    }
-	   
-            if (addJimpleLn()) {
-                setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), b.getMethod()));		
-		//G.v().out.println("added jimple ln tag for method");
             }
-
-            out.println("    {");
-            incJimpleLnNum();
-
-            printLocalsInBody(b, out, isPrecise);
+        }
+       
+        if (addJimpleLn()) {
+            setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), b.getMethod()));		
+            //G.v().out.println("added jimple ln tag for method");
         }
 
-        printStatementsInBody(b, out);
+        out.println("    {");
+        incJimpleLnNum();
+        
+        UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph(b);
+
+        Map stmtToName = createLabelMap(b, unitGraph);
+        final String indent = "        ";
+        UnitPrinter up;
+        if (addJimpleLn()) {
+            up = new AttributesUnitPrinter(stmtToName, indent); 
+        } else {
+            up = isPrecise ?
+            new NormalUnitPrinter(stmtToName, indent) :
+            new BriefUnitPrinter(stmtToName, indent);
+        }
+	
+        printLocalsInBody(b, out, up);
+
+        printStatementsInBody(b, out, up, unitGraph, stmtToName);
 
         out.println("    }");
         incJimpleLnNum();
 
     }
-
-    /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
-    private void printStatementsInBody(Body body, java.io.PrintWriter out) {
+    private Map createLabelMap(Body body, UnitGraph unitGraph) {
         boolean isPrecise = !useAbbreviations();
-        final String indent = "        ";
 
         Chain units = body.getUnits();
 
         Map stmtToName = new HashMap(units.size() * 2 + 1, 0.7f);
-        UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph(body);
-
+        
         // Create statement name table
         {
             Iterator boxIt = body.getUnitBoxes().iterator();
@@ -348,18 +355,13 @@ public class Printer {
                 }
             }
         }
+        return stmtToName;
+    }
 
-		UnitPrinter up;
-		if (addJimpleLn()) {
-			up = new AttributesUnitPrinter(stmtToName, indent); 
-	
-		}
-		else {
-        	up = isPrecise ?
-            	new NormalUnitPrinter(stmtToName, indent) :
-            	new BriefUnitPrinter(stmtToName, indent);
-		}
-	
+
+    /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
+    private void printStatementsInBody(Body body, java.io.PrintWriter out, UnitPrinter up, UnitGraph unitGraph, Map stmtToName ) {
+    	Chain units = body.getUnits();
         Iterator unitIt = units.iterator();
         Unit currentStmt = null, previousStmt;
 
@@ -378,49 +380,34 @@ public class Printer {
                     if (unitGraph.getSuccsOf(previousStmt).size() != 1
                         || unitGraph.getPredsOf(currentStmt).size() != 1
                         || stmtToName.containsKey(currentStmt)) {
-                        out.println();
-                        incJimpleLnNum();
+                        up.newline();
                     } else {
                         // Or if the previous node does not have body statement as a successor.
 
                         List succs = unitGraph.getSuccsOf(previousStmt);
 
                         if (succs.get(0) != currentStmt) {
-                            out.println();
-                            incJimpleLnNum();
-
+                            up.newline();
                         }
                     }
                 }
 
                 if (stmtToName.containsKey(currentStmt)) {
-                    out.println("     " + stmtToName.get(currentStmt) + ":");
-                    incJimpleLnNum();
-
+                    up.noIndent();
+                    up.unitRef( currentStmt );
+                    up.literal(":");
+                    up.newline();
                 }
 
             }
 
-            String oldString;
-            if (isPrecise) {
-                oldString = currentStmt.toString(stmtToName, indent);
-            } else {
-                oldString = currentStmt.toBriefString(stmtToName, indent);
-            }
             up.startUnit(currentStmt);
             currentStmt.toString(up);
             up.endUnit(currentStmt);
-            String newString = up.toString();
-            if( !newString.equals( oldString ) ) {
-                System.err.println( "\nOLD: "+oldString+"\nNEW: "+newString );
-            }
-            out.print(oldString);
 
+            up.literal(";");
             up.newline();
-            up.toString();
 
-            out.print(";");
-            out.println();
             if (addJimpleLn()) {
                 setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), currentStmt));
             }
@@ -431,10 +418,14 @@ public class Printer {
                 Iterator tagIterator = currentStmt.getTags().iterator();
                 while (tagIterator.hasNext()) {
                     Tag t = (Tag) tagIterator.next();
-                    out.println(t);
+                    up.noIndent();
+                    up.literal(t.toString());
+                    up.newline();
                 }
             }
         }
+
+        out.print(up.toString());
 
         // Print out exceptions
         {
@@ -482,7 +473,7 @@ public class Printer {
     private void printLocalsInBody(
         Body body,
         java.io.PrintWriter out,
-        boolean isPrecise) {
+        UnitPrinter up) {
         // Print out local variables
         {
             Map typeToLocals =
@@ -497,16 +488,13 @@ public class Printer {
 
                     List localList;
 
-                    String typeName;
                     Type t = local.getType();
 
-                    typeName = (isPrecise) ? t.toString() : t.toBriefString();
-
-                    if (typeToLocals.containsKey(typeName))
-                        localList = (List) typeToLocals.get(typeName);
+                    if (typeToLocals.containsKey(t))
+                        localList = (List) typeToLocals.get(t);
                     else {
                         localList = new ArrayList();
-                        typeToLocals.put(typeName, localList);
+                        typeToLocals.put(t, localList);
                     }
 
                     localList.add(local);
@@ -518,27 +506,27 @@ public class Printer {
                 Iterator typeIt = typeToLocals.keySet().iterator();
 
                 while (typeIt.hasNext()) {
-                    String type = (String) typeIt.next();
+                    Type type = (Type) typeIt.next();
 
                     List localList = (List) typeToLocals.get(type);
                     Object[] locals = localList.toArray();
-                    out.print("        " + type + " ");
+                    up.type( type );
+                    up.literal( " " );
 
                     for (int k = 0; k < locals.length; k++) {
                         if (k != 0)
-                            out.print(", ");
+                            up.literal( ", " );
 
-                        out.print(((Local) locals[k]).getName());
+                        up.local( (Local) locals[k] );
                     }
 
-                    out.println(";");
-                    incJimpleLnNum();
+                    up.literal(";");
+                    up.newline();
                 }
             }
 
             if (!typeToLocals.isEmpty()) {
-                out.println();
-                incJimpleLnNum();
+                up.newline();
             }
         }
     }

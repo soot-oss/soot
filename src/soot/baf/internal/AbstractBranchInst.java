@@ -49,11 +49,9 @@ public abstract class AbstractBranchInst extends AbstractInst
 
     abstract public String getName();
 
-    protected String toString(boolean isBrief, 
-                              Map unitToName, String indentation)
+    public String toString()
     {
-        return indentation + getName() + " " + 
-          (String) unitToName.get(getTarget());
+        return getName() + " " + getTarget();
     }
 
     public void toString( UnitPrinter up ) {

@@ -59,10 +59,10 @@ public abstract class AbstractOpTypeInst extends AbstractInst
     }
 
     /* override AbstractInst's toString with our own, including types */
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    public String toString()
     {
-        return indentation + getName() + "." + 
-          Baf.bafDescriptorOf(opType) + getParameters(isBrief, unitToName);
+        return getName() + "." + 
+          Baf.bafDescriptorOf(opType) + getParameters();
     }
     
     public void toString(UnitPrinter up) {

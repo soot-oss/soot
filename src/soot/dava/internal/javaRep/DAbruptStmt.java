@@ -37,11 +37,10 @@ public class DAbruptStmt extends AbstractStmt
 	return new DAbruptStmt( command, label);
     }
 
-    public String toString( Map stmtToName, String indentation)
+    public String toString()
     {
 	StringBuffer b = new StringBuffer();
 
-	b.append( indentation);
 	b.append( command);
 
 	if ((surpressDestinationLabel == false) && (label.toString() != null)) {
@@ -60,11 +59,6 @@ public class DAbruptStmt extends AbstractStmt
         }
     }
 
-    public String toString( boolean isBrief, Map stmtToName, String indentation)
-    {
-	return toString( stmtToName, indentation);
-    }
-    
     public boolean is_Continue()
     {
 	return command.equals( "continue");

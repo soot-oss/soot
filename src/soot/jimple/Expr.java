@@ -31,6 +31,6 @@ package soot.jimple;
 
 import soot.*;
 
-public interface Expr extends Value, ToBriefString
+public interface Expr extends Value
 {
 }

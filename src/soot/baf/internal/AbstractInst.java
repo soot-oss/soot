@@ -37,9 +37,9 @@ import java.util.*;
 public abstract class AbstractInst extends AbstractUnit implements Inst
 {
     
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    public String toString()
     {
-        return indentation + getName() + getParameters(isBrief, unitToName);
+        return getName() + getParameters();
     }
     
     public void toString(UnitPrinter up) {
@@ -100,7 +100,7 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
    
     
     public abstract String getName();
-    String getParameters(boolean isBrief, Map unitToName) { return ""; }
+    String getParameters() { return ""; }
     protected void getParameters(UnitPrinter up) {}
 
     public boolean containsInvokeExpr() { return false; }

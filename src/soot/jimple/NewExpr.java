@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public interface NewExpr extends Expr, ToBriefString
+public interface NewExpr extends Expr
 {
     public RefType getBaseType();
     public void setBaseType(RefType type);

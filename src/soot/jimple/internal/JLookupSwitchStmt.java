@@ -122,25 +122,25 @@ public class JLookupSwitchStmt extends AbstractStmt
         }
     }
 
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
         StringBuffer buffer = new StringBuffer();
-        String endOfLine = (indentation.equals("")) ? " " : StringTools.lineSeparator;
+        String endOfLine = " ";
         
-        buffer.append(indentation + Jimple.v().LOOKUPSWITCH + "(" + ((isBrief) ? ((ToBriefString) keyBox.getValue()).toBriefString() :
-            keyBox.getValue().toString()) + ")" + endOfLine);
+        buffer.append(Jimple.v().LOOKUPSWITCH + "(" + 
+            keyBox.getValue().toString() + ")" + endOfLine);
             
-        buffer.append(indentation + "{" + endOfLine);
+        buffer.append("{" + endOfLine);
         
         for(int i = 0; i < lookupValues.size(); i++)
         {
-            buffer.append(indentation + "    " +  Jimple.v().CASE + " " + lookupValues.get(i) + ": " +  Jimple.v().GOTO + " " + 
-                (String) stmtToName.get(getTarget(i)) + ";" + endOfLine);
+            buffer.append("    " +  Jimple.v().CASE + " " + lookupValues.get(i) + ": " +  Jimple.v().GOTO + " " + 
+                getTarget(i) + ";" + endOfLine);
         }
 
-        buffer.append(indentation + "    " +  Jimple.v().DEFAULT + ": " +  Jimple.v().GOTO +
-                      " " + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
-        buffer.append(indentation + "}");
+        buffer.append("    " +  Jimple.v().DEFAULT + ": " +  Jimple.v().GOTO +
+                      " " + getDefaultTarget() + ";" + endOfLine);
+        buffer.append("}");
 
         return buffer.toString();
     }

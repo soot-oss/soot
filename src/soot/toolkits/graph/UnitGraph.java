@@ -441,7 +441,7 @@ public class UnitGraph implements DirectedGraph
             
             List l = new ArrayList(); l.addAll(getPredsOf(u));
             buf.append("// preds "+l+"\n");
-            buf.append(u.toBriefString() + '\n');
+            buf.append(u.toString() + '\n');
             l = new ArrayList(); l.addAll(getSuccsOf(u));
             buf.append("// succs "+l+"\n");
         }

@@ -30,7 +30,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class FloatConstant extends RealConstant implements Switchable, ToBriefString
+public class FloatConstant extends RealConstant implements Switchable
 {
     public final float value;
 
@@ -174,11 +174,6 @@ public class FloatConstant extends RealConstant implements Switchable, ToBriefSt
             return floatString + "F";
     }
 
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
     public Type getType()
     {
         return FloatType.v();

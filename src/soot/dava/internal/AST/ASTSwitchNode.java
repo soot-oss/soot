@@ -102,19 +102,17 @@ public class ASTSwitchNode extends ASTLabeledNode
         up.newline();
     }
 
-    public String toString( Map stmtToName, String indentation)
+    public String toString()
     {
 	StringBuffer b = new StringBuffer();
 	
-	b.append( label_toString( indentation));
+	b.append( label_toString( ));
 	
-	b.append( indentation);
 	b.append( "switch (");
 	b.append( get_Key() );
 	b.append( ")");
 	b.append( NEWLINE);
 
-	b.append( indentation);
 	b.append( "{");
 	b.append( NEWLINE);
 
@@ -123,7 +121,6 @@ public class ASTSwitchNode extends ASTLabeledNode
 	    
 	    Object index = it.next();
 
-	    b.append( indentation);
 	    b.append( TAB);
 	    
 	    if (index instanceof String) 
@@ -140,14 +137,13 @@ public class ASTSwitchNode extends ASTLabeledNode
 	    List subBody = (List) index2BodyList.get( index);
 
 	    if (subBody != null) {
-		b.append( body_toString( stmtToName, indentation + TAB + TAB, subBody));
+		b.append( body_toString(subBody));
 	    
 		if (it.hasNext())
 		    b.append( NEWLINE);
 	    }
 	}
 
-	b.append( indentation);
 	b.append( "}");
 	b.append( NEWLINE);
 

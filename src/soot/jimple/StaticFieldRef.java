@@ -36,7 +36,7 @@ import soot.util.*;
 import java.util.*;
 import java.io.*;
 
-public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf, EquivTo, Serializable
+public class StaticFieldRef implements FieldRef, ConvertToBaf, EquivTo, Serializable
 {
     SootField field;
 
@@ -65,11 +65,6 @@ public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf, Eq
         return field.getSignature();
     }
 
-    public String toBriefString()
-    {
-        return "" + field.getDeclaringClass().getName() + "." + field.getName() + "";
-    }
-    
     public void toString( UnitPrinter up ) {
         up.fieldRef(field);
     }

@@ -33,6 +33,6 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public interface CmplExpr extends BinopExpr, ToBriefString
+public interface CmplExpr extends BinopExpr
 {
 }

@@ -17,13 +17,7 @@ public abstract class ASTNode extends AbstractUnit
 	subBodies = new ArrayList();
     }
 
-    protected String toString( boolean isBrief, Map stmtToName, String indentation)
-    {
-	return toString( stmtToName, indentation);
-    }
-
     public abstract void toString( UnitPrinter up );
-    public abstract String toString( Map stmtToName, String indentation);
  
     protected void body_toString( UnitPrinter up, List body )
     {
@@ -36,13 +30,13 @@ public abstract class ASTNode extends AbstractUnit
 	}
     }
 
-    protected String body_toString( Map stmtToName, String indentation, List body)
+    protected String body_toString(List body)
     {
 	StringBuffer b = new StringBuffer();
 
 	Iterator it = body.iterator();
 	while (it.hasNext()) {
-	    b.append( ((ASTNode) it.next()).toString( stmtToName, indentation));
+	    b.append( ((ASTNode) it.next()).toString());
 
 	    if (it.hasNext())
 		b.append( NEWLINE);

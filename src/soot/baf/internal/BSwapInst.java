@@ -101,9 +101,9 @@ public class BSwapInst extends AbstractInst implements SwapInst
         ((InstSwitch) sw).caseSwapInst(this);
     }   
     
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    public String toString()
     {
-        return indentation + "swap." + Baf.bafDescriptorOf(mFromType)  + Baf.bafDescriptorOf(mToType);
+        return "swap." + Baf.bafDescriptorOf(mFromType)  + Baf.bafDescriptorOf(mToType);
     }
     
     

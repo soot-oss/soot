@@ -56,12 +56,9 @@ public class JRetStmt extends AbstractStmt implements RetStmt
         return new JRetStmt(Jimple.cloneIfNecessary(getStmtAddress()));
     }
 
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
-        if(isBrief)
-            return indentation + Jimple.v().RET + " "  + ((ToBriefString) stmtAddressBox.getValue()).toBriefString();
-        else
-            return indentation + Jimple.v().RET + " "  + stmtAddressBox.getValue().toString();
+        return Jimple.v().RET + " "  + stmtAddressBox.getValue().toString();
     }
     
     public void toString(UnitPrinter up) {

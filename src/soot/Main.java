@@ -182,8 +182,6 @@ public class Main {
         System.getProperty("file.separator").charAt(0);
     private final String pathSeparator = System.getProperty("path.separator");
 
-    private boolean useJavaStyle = false;
-
     // hack for J2ME, patch provided by Stephen Chen
     // by default, this is set as false, to use SOOT with J2ME library
     // flag isJ2ME true. Type system works around Clonable, Serializeable.
@@ -236,14 +234,6 @@ public class Main {
     /* hack for J2ME */
     public boolean isJ2ME() {
         return isJ2ME;
-    }
-
-    public void setJavaStyle(boolean val) {
-        useJavaStyle = val;
-    }
-
-    public boolean getJavaStyle() {
-        return useJavaStyle;
     }
 
     /* This is called after sootClassPath has been defined. */
@@ -514,8 +504,6 @@ public class Main {
 
             G.v().out.println();
 
-            setJavaStyle(true);
-
             Iterator classIt = Scene.v().getApplicationClasses().iterator();
             while (classIt.hasNext()) {
                 SootClass s = (SootClass) classIt.next();
@@ -562,8 +550,6 @@ public class Main {
                 }
             }
             G.v().out.println();
-
-            setJavaStyle(false);
         }
     }
 

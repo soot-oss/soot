@@ -72,12 +72,9 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
         opBox.setValue(op);
     }
 
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    public String toString()
     {
-        if(isBrief)
-            return indentation + "throw " + ((ToBriefString) opBox.getValue()).toBriefString();
-        else
-            return indentation + "throw " + opBox.getValue().toString();
+        return "throw " + opBox.getValue().toString();
     }
     
     public void toString(UnitPrinter up) {
