@@ -91,6 +91,7 @@ public class InitialResolver {
                 name = (String)classToSourceMap.get(name);
             }
         }
+        //System.out.println("source file tag: "+name);
         // all classes may be in map 
         /*if (soot.SourceLocator.v().getSourceToClassMap() != null) {
             if (soot.SourceLocator.v().getSourceToClassMap().get(name) != null) {
@@ -99,7 +100,7 @@ public class InitialResolver {
         }*/
 
         // add file extension
-        name += ".java";
+        //name += ".java";
         sc.addTag(new soot.tagkit.SourceFileTag(name));
     }
 
@@ -268,23 +269,40 @@ public class InitialResolver {
     }
 
     private void createClassToSourceMap(polyglot.ast.SourceFile src){
-        polyglot.ast.ClassDecl publicDecl = null;
+        //System.out.println("src source name: "+src.source().name());
+        //System.out.println("src source path: "+src.source().path());
+        //System.out.println("src package: "+src.package_());
+       
+        String srcName = src.source().name();
+        String srcFileName = null;
+        if (src.package_() != null){
+            srcFileName = srcName.substring(srcName.lastIndexOf(src.package_().toString()));
+        }
+        else {
+            srcFileName = srcName.substring(srcName.lastIndexOf(System.getProperty("file.separator"))+1);
+        }
+
+        //System.out.println("srcFile name: "+srcFileName);
+        //polyglot.ast.ClassDecl publicDecl = null;
         ArrayList list = new ArrayList();
         Iterator it = src.decls().iterator();
         while (it.hasNext()){
             polyglot.ast.ClassDecl nextDecl = (polyglot.ast.ClassDecl)it.next();
-            if (nextDecl.flags().isPublic()){
+            /*if (nextDecl.flags().isPublic()){
                 publicDecl = nextDecl;
             }
-            else {
-                list.add(nextDecl);
-            }
+            else {*/
+            //    list.add(nextDecl);
+            //System.out.println("adding to class to source map: "+nextDecl.type().toString()+" and "+srcFileName);
+            addToClassToSourceMap(Util.getSootType(nextDecl.type()).toString(), srcFileName); 
+            //}
         }
 
-        Iterator it2 = list.iterator();
+        /*Iterator it2 = list.iterator();
         while (it2.hasNext()){
-            addToClassToSourceMap(Util.getSootType(((polyglot.ast.ClassDecl)it2.next()).type()).toString(), Util.getSootType(publicDecl.type()).toString()); 
-        }
+            //addToClassToSourceMap(Util.getSootType(((polyglot.ast.ClassDecl)it2.next()).type()).toString(), Util.getSootType(publicDecl.type()).toString()); 
+            addToClassToSourceMap(Util.getSootType(((polyglot.ast.ClassDecl)it2.next()).type()).toString(), srcFileName); 
+        }*/
     }
 
 
