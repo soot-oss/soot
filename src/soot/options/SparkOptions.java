@@ -32,6 +32,11 @@ public class SparkOptions
         this.options = options;
     }
     
+    /** Disabled --  */
+    public boolean disabled() {
+        return soot.PackManager.getBoolean( options, "disabled" );
+    }
+    
     /** verbose --  */
     public boolean verbose() {
         return soot.PackManager.getBoolean( options, "verbose" );
@@ -47,9 +52,9 @@ public class SparkOptions
         return soot.PackManager.getBoolean( options, "forceGCs" );
     }
     
-    /** useNewCallGraph --  */
-    public boolean useNewCallGraph() {
-        return soot.PackManager.getBoolean( options, "useNewCallGraph" );
+    /** preJimplify --  */
+    public boolean preJimplify() {
+        return soot.PackManager.getBoolean( options, "preJimplify" );
     }
     
     /** VTA --  */
@@ -155,6 +160,11 @@ public class SparkOptions
     /** trimInvokeGraph --  */
     public boolean trimInvokeGraph() {
         return soot.PackManager.getBoolean( options, "trimInvokeGraph" );
+    }
+    
+    /** addTags --  */
+    public boolean addTags() {
+        return soot.PackManager.getBoolean( options, "addTags" );
     }
     
     public static final int propagator_iter = 1;

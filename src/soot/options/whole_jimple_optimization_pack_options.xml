@@ -8,7 +8,7 @@
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
 			<alias_name>disabled</alias_name>
-                        <default>true</default>
+                        <default_value>true</default_value>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
@@ -22,6 +22,7 @@
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
 			<alias_name>disabled</alias_name>
+                        <default_value>true</default_value>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
@@ -30,19 +31,21 @@
 			<name>Insert Null Checks</name>
 			<java_name>insertNullChecks</java_name>
 			<alias_name>insert-null-checks</alias_name>
+                        <default_value>true</default_value>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>								<boolean_option>
 			<name>Insert Redundant Casts</name>
 			<java_name>insertRedundantCasts</java_name>
 			<alias_name>insert-redundant-casts</alias_name>
+                        <default_value>true</default_value>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
 		<multi_option>
 			<name>Allow Modifier Changes</name>
 			<java_name>allowModChanges</java_name>
-			<alias_name>allow-modifier-changes</alias_name>
+			<alias_name>allowed-modifier-changes</alias_name>
 				<value>
 					<value_name>Unsafe</value_name>
 					<java_name>unsafe</java_name>
@@ -91,6 +94,7 @@
 			<name>Insert Null Checks</name>
 			<java_name>insertNullChecks</java_name>
 			<alias_name>insert-null-checks</alias_name>
+                        <default_value>true</default_value>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
@@ -98,13 +102,14 @@
 			<name>Insert Redundant Casts</name>
 			<java_name>insertRedundantCasts</java_name>
 			<alias_name>insert-redundant-casts</alias_name>
+                        <default_value>true</default_value>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
 		<multi_option>
 			<name>Allow Modifier Changes</name>
 			<java_name>allowModChanges</java_name>
-			<alias_name>allow-modifier-changes</alias_name>
+			<alias_name>allowed-modifier-changes</alias_name>
 				<value>
 					<value_name>Unsafe</value_name>
 					<java_name>unsafe</java_name>
@@ -146,7 +151,7 @@
 		<int_option>
 			<name>Max Inline Size</name>
 			<java_name>maxInlineSize</java_name>
-			<alias_name>max-inline-size</alias_name>
+			<alias_name>max-inlinee-size</alias_name>
 			<default_value>20</default_value>
 			<short_desc></short_desc>
 			<long_desc></long_desc>

@@ -57,7 +57,7 @@ public class SMBOptions
     public static final int allowModChanges_none = 3;
     /** Allow Modifier Changes --  */
     public int allowModChanges() {
-        String s = soot.PackManager.getString( options, "allow-modifier-changes" );
+        String s = soot.PackManager.getString( options, "allowed-modifier-changes" );
         
         if( s.equalsIgnoreCase( "unsafe" ) )
             return allowModChanges_unsafe;
@@ -68,7 +68,7 @@ public class SMBOptions
         if( s.equalsIgnoreCase( "none" ) )
             return allowModChanges_none;
         
-        throw new RuntimeException( "Invalid value "+s+" of phase option allow-modifier-changes" );
+        throw new RuntimeException( "Invalid value "+s+" of phase option allowed-modifier-changes" );
     }
     
 }

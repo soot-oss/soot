@@ -23,12 +23,12 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Array Bound Check Options. */
-public class ABCOptions
+/** Option parser for Rectangular Array Finder. */
+public class RAOptions
 {
     private Map options;
 
-    public ABCOptions( Map options ) {
+    public RAOptions( Map options ) {
         this.options = options;
     }
     
@@ -37,39 +37,9 @@ public class ABCOptions
         return soot.PackManager.getBoolean( options, "disabled" );
     }
     
-    /** With All --  */
-    public boolean withAll() {
-        return soot.PackManager.getBoolean( options, "with-all" );
-    }
-    
-    /** With Field References --  */
-    public boolean withFieldRef() {
-        return soot.PackManager.getBoolean( options, "with-fieldref" );
-    }
-    
-    /** With Array References --  */
-    public boolean withArrayRef() {
-        return soot.PackManager.getBoolean( options, "with-arrayref" );
-    }
-    
-    /** With Common Sub-expressions --  */
-    public boolean withCse() {
-        return soot.PackManager.getBoolean( options, "with-cse" );
-    }
-    
-    /** With Class Field --  */
-    public boolean withClassField() {
-        return soot.PackManager.getBoolean( options, "with-classfield" );
-    }
-    
-    /** With Rectangular Array --  */
-    public boolean withRectArray() {
-        return soot.PackManager.getBoolean( options, "with-rectarray" );
-    }
-    
-    /** Profiling --  */
-    public boolean profiling() {
-        return soot.PackManager.getBoolean( options, "profiling" );
+    /** With Whole Application --  */
+    public boolean withWholeApp() {
+        return soot.PackManager.getBoolean( options, "with-wholeapp" );
     }
     
 }

@@ -44,7 +44,7 @@ TARGETS_TMP = $(SOURCES:.java=.class)
 TARGETS = $(subst src,classes,${TARGETS_TMP})
 RM_TARGETS = $(TARGETS) $(subst .class,\$$*.class,$(TARGETS))
 
-all: ${TARGETS} foo classes/soot/options/Options.class
+all: classes/soot/options/Options.class ${TARGETS} foo 
 
 $(TARGETS): classes/%.class: src/%.java
 	$(JC) $<

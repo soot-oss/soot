@@ -26,6 +26,9 @@ import soot.baf.toolkits.base.*;
 import soot.jimple.toolkits.typing.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.jimple.toolkits.scalar.pre.*;
+import soot.jimple.toolkits.annotation.arraycheck.*;
+import soot.jimple.toolkits.annotation.profiling.*;
+import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.options.Options;
 import soot.toolkits.scalar.*;
 import soot.jimple.spark.SparkTransformer;
@@ -114,6 +117,11 @@ public class PackManager {
 
         // Jimple annotation pack
         addPack(p = new BodyPack("jap"));
+        {
+            p.add(new Transform("jap.npc", NullPointerChecker.v()));
+            p.add(new Transform("jap.abc", ArrayBoundsChecker.v()));
+            p.add(new Transform("jap.profiling", ProfilingGenerator.v()));
+        }
 
         // Call graph pack
         addPack(p = new ScenePack("cg"));
@@ -142,6 +150,9 @@ public class PackManager {
         // Give another chance to do Whole-Jimple transformation
         // The RectangularArrayFinder will be put into this package.
         addPack(p = new ScenePack("wjtp2"));
+        {
+            p.add(new Transform("wjtp2.ra", RectangularArrayFinder.v()));
+        }
 
         // Baf optimization pack
         addPack(p = new BodyPack("bop"));
@@ -293,4 +304,6 @@ public class PackManager {
         if( optionMap.containsKey( getKey( option ) ) ) return;
         optionMap.put( getKey( option ), getValue( option ) );
     }
+
+    public Collection allPacks() { return packNameToPack.values(); }
 }

@@ -69,13 +69,6 @@ public abstract class BodyTransformer extends Transformer
      */
     protected abstract void internalTransform(Body b, String phaseName, Map options);
 
-    public String getDefaultOptions() {
-        throw new RuntimeException( "this method will be removed" );
-    }
-    public String getDeclaredOptions() {
-        throw new RuntimeException( "this method will be removed" );
-    }
-
 }
 
 

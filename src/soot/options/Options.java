@@ -22,6 +22,7 @@
 
 package soot.options;
 import java.util.*;
+import soot.PackManager;
 
 /** Soot command-line options parser.
  * @author Ondrej Lhotak
@@ -517,7 +518,7 @@ public class Options extends OptionsBase {
     public boolean appMode() { return appMode; }
     private boolean appMode = false;
     public String classpath() { return classpath; }
-    private String classpath = null;
+    private String classpath = "";
     public int srcPrec() {
         if( srcPrec == 0 ) return srcPrec_classFile;
         return srcPrec; 
@@ -526,7 +527,7 @@ public class Options extends OptionsBase {
     public boolean allowPhantoms() { return allowPhantoms; }
     private boolean allowPhantoms = false;
     public String outputDir() { return outputDir; }
-    private String outputDir = null;
+    private String outputDir = "";
     public int outputFormat() {
         if( outputFormat == 0 ) return outputFormat_classFile;
         return outputFormat; 
@@ -693,11 +694,58 @@ public class Options extends OptionsBase {
                 +"disabled "
                 +"only-stack-locals ";
     
+        if( phaseName.equals( "jb.ls" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jb.a" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "jb.ule" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jb.tr" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jb.cp-ule" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jb.lp" ) )
+            return ""
+                +"disabled "
+                +"unsplit-original-locals ";
+    
+        if( phaseName.equals( "jb.ne" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jb.uce" ) )
+            return ""
+                +"disabled ";
+    
         if( phaseName.equals( "gb" ) )
             return ""
                 +"disabled "
                 +"no-aggregating "
                 +"aggregate-all-locals ";
+    
+        if( phaseName.equals( "gb.a" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "gb.cf" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "gb.ule" ) )
+            return ""
+                +"disabled ";
     
         if( phaseName.equals( "gb.asv1" ) )
             return ""
@@ -709,22 +757,100 @@ public class Options extends OptionsBase {
                 +"disabled "
                 +"only-stack-locals ";
     
-        if( phaseName.equals( "jtp" ) )
+        if( phaseName.equals( "bb" ) )
             return ""
                 +"disabled ";
     
-        if( phaseName.equals( "jtp.ncp" ) )
+        if( phaseName.equals( "bb.lso" ) )
             return ""
                 +"disabled "
-                +"only-array-ref ";
+                +"debug "
+                +"inter "
+                +"sl "
+                +"sl2 "
+                +"sll "
+                +"sll2 ";
     
-        if( phaseName.equals( "jtp.abc" ) )
+        if( phaseName.equals( "bb.pho" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "bb.ule" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "bb.lp" ) )
             return ""
                 +"disabled "
-                +"with-cse "
-                +"with-arrayref "
+                +"unsplit-original-locals ";
+    
+        if( phaseName.equals( "jap" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jap.npc" ) )
+            return ""
+                +"disabled "
+                +"only-array-ref "
+                +"profiling ";
+    
+        if( phaseName.equals( "jap.abc" ) )
+            return ""
+                +"disabled "
+                +"with-all "
                 +"with-fieldref "
-                +"with-classfield ";
+                +"with-arrayref "
+                +"with-cse "
+                +"with-classfield "
+                +"with-rectarray "
+                +"profiling ";
+    
+        if( phaseName.equals( "jap.profiling" ) )
+            return ""
+                +"disabled "
+                +"enable "
+                +"notmainentry ";
+    
+        if( phaseName.equals( "gop" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "tag" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wjtp2" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wjtp2.ra" ) )
+            return ""
+                +"disabled "
+                +"with-wholeapp ";
+    
+        if( phaseName.equals( "stp" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "bop" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "sop" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wstp" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "cg" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jtp" ) )
+            return ""
+                +"disabled ";
     
         if( phaseName.equals( "jop" ) )
             return ""
@@ -732,17 +858,20 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jop.cse" ) )
             return ""
-                +"disabled ";
+                +"disabled "
+                +"naive-side-effect ";
     
         if( phaseName.equals( "jop.bcm" ) )
             return ""
-                +"disabled ";
+                +"disabled "
+                +"naive-side-effect ";
     
         if( phaseName.equals( "jop.lcm" ) )
             return ""
                 +"disabled "
                 +"safe "
-                +"unroll ";
+                +"unroll "
+                +"naive-side-effect ";
     
         if( phaseName.equals( "jop.cp" ) )
             return ""
@@ -760,13 +889,22 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jop.dae" ) )
             return ""
-                +"disabled ";
+                +"disabled "
+                +"only-stack-locals ";
     
         if( phaseName.equals( "jop.uce1" ) )
             return ""
                 +"disabled ";
     
+        if( phaseName.equals( "jop.uce2" ) )
+            return ""
+                +"disabled ";
+    
         if( phaseName.equals( "jop.ubf1" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jop.ubf2" ) )
             return ""
                 +"disabled ";
     
@@ -780,10 +918,11 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjtp.Spark" ) )
             return ""
+                +"disabled "
                 +"verbose "
                 +"ignoreTypesEntirely "
                 +"forceGCs "
-                +"useNewCallGraph "
+                +"preJimplify "
                 +"VTA "
                 +"RTA "
                 +"ignoreBaseObjects "
@@ -808,7 +947,8 @@ public class Options extends OptionsBase {
                 +"dumpTypes "
                 +"classMethodVar "
                 +"dumpAnswer "
-                +"trimInvokeGraph ";
+                +"trimInvokeGraph "
+                +"addTags ";
     
         if( phaseName.equals( "wjop" ) )
             return ""
@@ -819,7 +959,7 @@ public class Options extends OptionsBase {
                 +"disabled "
                 +"insert-null-checks "
                 +"insert-redundant-casts "
-                +"allow-modifier-changes "
+                +"allowed-modifier-changes "
                 +"VTA-passes ";
     
         if( phaseName.equals( "wjop.si" ) )
@@ -827,16 +967,11 @@ public class Options extends OptionsBase {
                 +"disabled "
                 +"insert-null-checks "
                 +"insert-redundant-casts "
-                +"allow-modifier-changes "
+                +"allowed-modifier-changes "
                 +"expansion-factor "
                 +"max-container-size "
-                +"max-inline-size "
+                +"max-inlinee-size "
                 +"VTA-passes ";
-    
-        if( phaseName.equals( "Jimple.JasminClass" ) )
-            return ""
-                +"disabled "
-                +"no-peephole ";
     
         // The default set of options is just disabled.
         return "disabled";
@@ -866,7 +1001,40 @@ public class Options extends OptionsBase {
             return ""
               +"only-stack-locals:true ";
     
+        if( phaseName.equals( "jb.ls" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.a" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.ule" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.tr" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.cp-ule" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.lp" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.ne" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.uce" ) )
+            return "";
+    
         if( phaseName.equals( "gb" ) )
+            return "";
+    
+        if( phaseName.equals( "gb.a" ) )
+            return "";
+    
+        if( phaseName.equals( "gb.cf" ) )
+            return "";
+    
+        if( phaseName.equals( "gb.ule" ) )
             return "";
     
         if( phaseName.equals( "gb.asv1" ) )
@@ -877,27 +1045,87 @@ public class Options extends OptionsBase {
             return ""
               +"only-stack-locals:true ";
     
+        if( phaseName.equals( "bb" ) )
+            return "";
+    
+        if( phaseName.equals( "bb.lso" ) )
+            return ""
+              +"sl:true "
+              +"sll:true ";
+    
+        if( phaseName.equals( "bb.pho" ) )
+            return "";
+    
+        if( phaseName.equals( "bb.ule" ) )
+            return "";
+    
+        if( phaseName.equals( "bb.lp" ) )
+            return "";
+    
+        if( phaseName.equals( "jap" ) )
+            return "";
+    
+        if( phaseName.equals( "jap.npc" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "jap.abc" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "jap.profiling" ) )
+            return ""
+              +"disabled:true "
+              +"enable:false "
+              +"notmainentry:false ";
+    
+        if( phaseName.equals( "gop" ) )
+            return "";
+    
+        if( phaseName.equals( "tag" ) )
+            return "";
+    
+        if( phaseName.equals( "wjtp2" ) )
+            return "";
+    
+        if( phaseName.equals( "wjtp2.ra" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "stp" ) )
+            return "";
+    
+        if( phaseName.equals( "bop" ) )
+            return "";
+    
+        if( phaseName.equals( "sop" ) )
+            return "";
+    
+        if( phaseName.equals( "wstp" ) )
+            return "";
+    
+        if( phaseName.equals( "cg" ) )
+            return "";
+    
         if( phaseName.equals( "jtp" ) )
-            return "";
-    
-        if( phaseName.equals( "jtp.ncp" ) )
-            return "";
-    
-        if( phaseName.equals( "jtp.abc" ) )
             return "";
     
         if( phaseName.equals( "jop" ) )
             return "";
     
         if( phaseName.equals( "jop.cse" ) )
-            return "";
+            return ""
+              +"disabled:true ";
     
         if( phaseName.equals( "jop.bcm" ) )
-            return "";
+            return ""
+              +"disabled:true ";
     
         if( phaseName.equals( "jop.lcm" ) )
             return ""
-              +"safe:safe ";
+              +"disabled:true "
+              +"safe:safe "
+              +"unroll:true ";
     
         if( phaseName.equals( "jop.cp" ) )
             return "";
@@ -914,7 +1142,13 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jop.uce1" ) )
             return "";
     
+        if( phaseName.equals( "jop.uce2" ) )
+            return "";
+    
         if( phaseName.equals( "jop.ubf1" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.ubf2" ) )
             return "";
     
         if( phaseName.equals( "jop.ule" ) )
@@ -926,16 +1160,17 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjtp.Spark" ) )
             return ""
+              +"disabled:true "
               +"verbose:false "
               +"ignoreTypesEntirely:false "
               +"forceGCs:false "
-              +"useNewCallGraph:false "
+              +"preJimplify:false "
               +"VTA:false "
               +"RTA:false "
               +"ignoreBaseObjects:false "
               +"typesForSites:false "
               +"mergeStringBuffer:true "
-              +"simulateNatives:false "
+              +"simulateNatives:true "
               +"simpleEdgesBidirectional:false "
               +"onFlyCallGraph:false "
               +"parmsAsFields:false "
@@ -954,7 +1189,8 @@ public class Options extends OptionsBase {
               +"dumpTypes:true "
               +"classMethodVar:true "
               +"dumpAnswer:false "
-              +"trimInvokeGraph:false ";
+              +"trimInvokeGraph:false "
+              +"addTags:false ";
     
         if( phaseName.equals( "wjop" ) )
             return ""
@@ -962,17 +1198,205 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjop.smb" ) )
             return ""
-              +"allow-modifier-changes:unsafe ";
+              +"disabled:true "
+              +"insert-null-checks:true "
+              +"insert-redundant-casts:true "
+              +"allowed-modifier-changes:unsafe "
+              +"VTA-passes:0 ";
     
         if( phaseName.equals( "wjop.si" ) )
             return ""
-              +"allow-modifier-changes:unsafe ";
-    
-        if( phaseName.equals( "Jimple.JasminClass" ) )
-            return "";
+              +"insert-null-checks:true "
+              +"insert-redundant-casts:true "
+              +"allowed-modifier-changes:unsafe "
+              +"expansion-factor:3 "
+              +"max-container-size:5000 "
+              +"max-inlinee-size:20 "
+              +"VTA-passes:0 ";
     
         // The default default value is nothing.
         return "";
+    }
+  
+    public void warnForeignPhase( String phaseName ) {
+    
+        if( phaseName.equals( "jb" ) ) return;
+        if( phaseName.equals( "jb.asv" ) ) return;
+        if( phaseName.equals( "jb.ulp" ) ) return;
+        if( phaseName.equals( "jb.lns" ) ) return;
+        if( phaseName.equals( "jb.cp" ) ) return;
+        if( phaseName.equals( "jb.dae" ) ) return;
+        if( phaseName.equals( "jb.ls" ) ) return;
+        if( phaseName.equals( "jb.a" ) ) return;
+        if( phaseName.equals( "jb.ule" ) ) return;
+        if( phaseName.equals( "jb.tr" ) ) return;
+        if( phaseName.equals( "jb.cp-ule" ) ) return;
+        if( phaseName.equals( "jb.lp" ) ) return;
+        if( phaseName.equals( "jb.ne" ) ) return;
+        if( phaseName.equals( "jb.uce" ) ) return;
+        if( phaseName.equals( "gb" ) ) return;
+        if( phaseName.equals( "gb.a" ) ) return;
+        if( phaseName.equals( "gb.cf" ) ) return;
+        if( phaseName.equals( "gb.ule" ) ) return;
+        if( phaseName.equals( "gb.asv1" ) ) return;
+        if( phaseName.equals( "gb.asv2" ) ) return;
+        if( phaseName.equals( "bb" ) ) return;
+        if( phaseName.equals( "bb.lso" ) ) return;
+        if( phaseName.equals( "bb.pho" ) ) return;
+        if( phaseName.equals( "bb.ule" ) ) return;
+        if( phaseName.equals( "bb.lp" ) ) return;
+        if( phaseName.equals( "jap" ) ) return;
+        if( phaseName.equals( "jap.npc" ) ) return;
+        if( phaseName.equals( "jap.abc" ) ) return;
+        if( phaseName.equals( "jap.profiling" ) ) return;
+        if( phaseName.equals( "gop" ) ) return;
+        if( phaseName.equals( "tag" ) ) return;
+        if( phaseName.equals( "wjtp2" ) ) return;
+        if( phaseName.equals( "wjtp2.ra" ) ) return;
+        if( phaseName.equals( "stp" ) ) return;
+        if( phaseName.equals( "bop" ) ) return;
+        if( phaseName.equals( "sop" ) ) return;
+        if( phaseName.equals( "wstp" ) ) return;
+        if( phaseName.equals( "cg" ) ) return;
+        if( phaseName.equals( "jtp" ) ) return;
+        if( phaseName.equals( "jop" ) ) return;
+        if( phaseName.equals( "jop.cse" ) ) return;
+        if( phaseName.equals( "jop.bcm" ) ) return;
+        if( phaseName.equals( "jop.lcm" ) ) return;
+        if( phaseName.equals( "jop.cp" ) ) return;
+        if( phaseName.equals( "jop.cpf" ) ) return;
+        if( phaseName.equals( "jop.cbf" ) ) return;
+        if( phaseName.equals( "jop.dae" ) ) return;
+        if( phaseName.equals( "jop.uce1" ) ) return;
+        if( phaseName.equals( "jop.uce2" ) ) return;
+        if( phaseName.equals( "jop.ubf1" ) ) return;
+        if( phaseName.equals( "jop.ubf2" ) ) return;
+        if( phaseName.equals( "jop.ule" ) ) return;
+        if( phaseName.equals( "wjtp" ) ) return;
+        if( phaseName.equals( "wjtp.Spark" ) ) return;
+        if( phaseName.equals( "wjop" ) ) return;
+        if( phaseName.equals( "wjop.smb" ) ) return;
+        if( phaseName.equals( "wjop.si" ) ) return;
+        System.out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase" );
+        System.out.println( " and isn't listed in the options XML files." );
+    }
+
+    public void warnNonexistentPhase() {
+    
+        if( !PackManager.v().hasPhase( "jb" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb" );
+        if( !PackManager.v().hasPhase( "jb.asv" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.asv" );
+        if( !PackManager.v().hasPhase( "jb.ulp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.ulp" );
+        if( !PackManager.v().hasPhase( "jb.lns" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.lns" );
+        if( !PackManager.v().hasPhase( "jb.cp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.cp" );
+        if( !PackManager.v().hasPhase( "jb.dae" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.dae" );
+        if( !PackManager.v().hasPhase( "jb.ls" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.ls" );
+        if( !PackManager.v().hasPhase( "jb.a" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.a" );
+        if( !PackManager.v().hasPhase( "jb.ule" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.ule" );
+        if( !PackManager.v().hasPhase( "jb.tr" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.tr" );
+        if( !PackManager.v().hasPhase( "jb.cp-ule" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.cp-ule" );
+        if( !PackManager.v().hasPhase( "jb.lp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.lp" );
+        if( !PackManager.v().hasPhase( "jb.ne" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.ne" );
+        if( !PackManager.v().hasPhase( "jb.uce" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jb.uce" );
+        if( !PackManager.v().hasPhase( "gb" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb" );
+        if( !PackManager.v().hasPhase( "gb.a" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb.a" );
+        if( !PackManager.v().hasPhase( "gb.cf" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb.cf" );
+        if( !PackManager.v().hasPhase( "gb.ule" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb.ule" );
+        if( !PackManager.v().hasPhase( "gb.asv1" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb.asv1" );
+        if( !PackManager.v().hasPhase( "gb.asv2" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gb.asv2" );
+        if( !PackManager.v().hasPhase( "bb" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bb" );
+        if( !PackManager.v().hasPhase( "bb.lso" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bb.lso" );
+        if( !PackManager.v().hasPhase( "bb.pho" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bb.pho" );
+        if( !PackManager.v().hasPhase( "bb.ule" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bb.ule" );
+        if( !PackManager.v().hasPhase( "bb.lp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bb.lp" );
+        if( !PackManager.v().hasPhase( "jap" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jap" );
+        if( !PackManager.v().hasPhase( "jap.npc" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jap.npc" );
+        if( !PackManager.v().hasPhase( "jap.abc" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jap.abc" );
+        if( !PackManager.v().hasPhase( "jap.profiling" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jap.profiling" );
+        if( !PackManager.v().hasPhase( "gop" ) )
+            System.out.println( "Warning: Options exist for non-existent phase gop" );
+        if( !PackManager.v().hasPhase( "tag" ) )
+            System.out.println( "Warning: Options exist for non-existent phase tag" );
+        if( !PackManager.v().hasPhase( "wjtp2" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjtp2" );
+        if( !PackManager.v().hasPhase( "wjtp2.ra" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjtp2.ra" );
+        if( !PackManager.v().hasPhase( "stp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase stp" );
+        if( !PackManager.v().hasPhase( "bop" ) )
+            System.out.println( "Warning: Options exist for non-existent phase bop" );
+        if( !PackManager.v().hasPhase( "sop" ) )
+            System.out.println( "Warning: Options exist for non-existent phase sop" );
+        if( !PackManager.v().hasPhase( "wstp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wstp" );
+        if( !PackManager.v().hasPhase( "cg" ) )
+            System.out.println( "Warning: Options exist for non-existent phase cg" );
+        if( !PackManager.v().hasPhase( "jtp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jtp" );
+        if( !PackManager.v().hasPhase( "jop" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop" );
+        if( !PackManager.v().hasPhase( "jop.cse" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.cse" );
+        if( !PackManager.v().hasPhase( "jop.bcm" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.bcm" );
+        if( !PackManager.v().hasPhase( "jop.lcm" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.lcm" );
+        if( !PackManager.v().hasPhase( "jop.cp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.cp" );
+        if( !PackManager.v().hasPhase( "jop.cpf" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.cpf" );
+        if( !PackManager.v().hasPhase( "jop.cbf" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.cbf" );
+        if( !PackManager.v().hasPhase( "jop.dae" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.dae" );
+        if( !PackManager.v().hasPhase( "jop.uce1" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.uce1" );
+        if( !PackManager.v().hasPhase( "jop.uce2" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.uce2" );
+        if( !PackManager.v().hasPhase( "jop.ubf1" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.ubf1" );
+        if( !PackManager.v().hasPhase( "jop.ubf2" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.ubf2" );
+        if( !PackManager.v().hasPhase( "jop.ule" ) )
+            System.out.println( "Warning: Options exist for non-existent phase jop.ule" );
+        if( !PackManager.v().hasPhase( "wjtp" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjtp" );
+        if( !PackManager.v().hasPhase( "wjtp.Spark" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjtp.Spark" );
+        if( !PackManager.v().hasPhase( "wjop" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjop" );
+        if( !PackManager.v().hasPhase( "wjop.smb" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjop.smb" );
+        if( !PackManager.v().hasPhase( "wjop.si" ) )
+            System.out.println( "Warning: Options exist for non-existent phase wjop.si" );
     }
   
 }

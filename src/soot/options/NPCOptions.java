@@ -42,5 +42,10 @@ public class NPCOptions
         return soot.PackManager.getBoolean( options, "only-array-ref" );
     }
     
+    /** Profiling --  */
+    public boolean profiling() {
+        return soot.PackManager.getBoolean( options, "profiling" );
+    }
+    
 }
         

@@ -342,6 +342,9 @@ public class Main implements Runnable
 	System.out.println();
 	System.out.println("Visit the Soot website:");
 	System.out.println("  http://www.sable.mcgill.ca/soot/");
+	System.out.println();
+	System.out.println("For a list of command line options, enter:");
+	System.out.println("  java soot.Main --help");
     }
 
     private static void printHelp()
@@ -359,12 +362,23 @@ public class Main implements Runnable
             throw new CompilationDeathException(COMPILATION_ABORTED,
                     "Option parse error" );
 
-        if( args.length == 0 || opts.help() ) {
+        for( Iterator packIt = PackManager.v().allPacks().iterator(); packIt.hasNext(); ) {
+
+            final Pack pack = (Pack) packIt.next();
+            opts.warnForeignPhase( pack.getPhaseName() );
+            for( Iterator trIt = pack.iterator(); trIt.hasNext(); ) {
+                final Transform tr = (Transform) trIt.next();
+                opts.warnForeignPhase( tr.getPhaseName() );
+            }
+        }
+        opts.warnNonexistentPhase();
+
+        if( opts.help() ) {
             printHelp();
             throw new CompilationDeathException(COMPILATION_SUCCEDED);
         }
 
-        if( opts.version() ) {
+        if( args.length == 0 || opts.version() ) {
             printVersion();
             throw new CompilationDeathException(COMPILATION_SUCCEDED);
         }
@@ -435,7 +449,7 @@ public class Main implements Runnable
 
       System.out.println("Soot started on "+start);
 
-      if( opts.classpath() != null ) {
+      if( opts.classpath().length() > 0 ) {
           Scene.v().setSootClassPath( opts.classpath() );
       }
       
@@ -443,7 +457,6 @@ public class Main implements Runnable
 
       prepareClasses();
 
-      /*
       // Run the whole-program packs.
       PackManager.v().getPack("wjtp").apply();
       if(isOptimizingWhole)
@@ -451,7 +464,6 @@ public class Main implements Runnable
 				
       // Give one more chance
       PackManager.v().getPack("wjtp2").apply();
-      */
 				
       // System.gc();
 

@@ -20,6 +20,14 @@
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
 			<alias_name>disabled</alias_name>
+                        <default_value>true</default_value>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+		<boolean_option>
+			<name>Naive Side Effect Tester</name>
+			<java_name>naiveSE</java_name>
+			<alias_name>naive-side-effect</alias_name>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
@@ -33,6 +41,14 @@
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
 			<alias_name>disabled</alias_name>
+                        <default_value>true</default_value>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+		<boolean_option>
+			<name>Naive Side Effect Tester</name>
+			<java_name>naiveSE</java_name>
+			<alias_name>naive-side-effect</alias_name>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
@@ -47,10 +63,10 @@
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
 			<alias_name>disabled</alias_name>
+                        <default_value>true</default_value>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
-
 		<multi_option>
 			<name>Safe</name>
 			<java_name>safe</java_name>
@@ -83,7 +99,16 @@
 			<alias_name>unroll</alias_name>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
+                        <default_value>true</default_value>
 		</boolean_option>
+		<boolean_option>
+			<name>Naive Side Effect Tester</name>
+			<java_name>naiveSE</java_name>
+			<alias_name>naive-side-effect</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+
 	</sub_phase>
 	<sub_phase>
 		<sub_phase_name>Copy Propogator</sub_phase_name>
@@ -104,7 +129,8 @@
 			<alias_name>only-regular-locals</alias_name>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>								<boolean_option>
+		</boolean_option>	
+                <boolean_option>
 			<name>Only Stack Locals</name>
 			<java_name>onlyStackLocals</java_name>
 			<alias_name>only-stack-locals</alias_name>
@@ -149,12 +175,31 @@
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
+                <boolean_option>
+			<name>Only Stack Locals</name>
+			<java_name>onlyStackLocals</java_name>
+			<alias_name>only-stack-locals</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
 
 	</sub_phase>
 	<sub_phase>
 		<sub_phase_name>Unreachable Code Eliminator</sub_phase_name>
 		<sub_phase_java_name>unreachCodeElimin</sub_phase_java_name>
 		<sub_phase_alias>jop.uce1</sub_phase_alias>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Unreachable Code Eliminator</sub_phase_name>
+		<sub_phase_java_name>unreachCodeElimin</sub_phase_java_name>
 		<sub_phase_alias>jop.uce2</sub_phase_alias>
 		<boolean_option>
 			<name>Disabled</name>
@@ -169,6 +214,18 @@
 		<sub_phase_name>Unconditional Branch Folder</sub_phase_name>
 		<sub_phase_java_name>uncondBranchFolder</sub_phase_java_name>
 		<sub_phase_alias>jop.ubf1</sub_phase_alias>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Unconditional Branch Folder</sub_phase_name>
+		<sub_phase_java_name>uncondBranchFolder</sub_phase_java_name>
 		<sub_phase_alias>jop.ubf2</sub_phase_alias>
 		<boolean_option>
 			<name>Disabled</name>

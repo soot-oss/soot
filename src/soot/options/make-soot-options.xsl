@@ -31,6 +31,7 @@
 
 package soot.options;
 import java.util.*;
+import soot.PackManager;
 
 /** Soot command-line options parser.
  * @author Ondrej Lhotak
@@ -75,6 +76,7 @@ public class Options extends OptionsBase {
         ;
     }
 <xsl:apply-templates mode="declphaseopts" select="/options/section/phase_option"/>
+<xsl:apply-templates mode="warnforeign" select="/options/section/phase_option"/>
 }
 <xsl:apply-templates mode="phaseopts" select="/options/section/phase_option"/>
   </xsl:template>
@@ -254,7 +256,7 @@ public class Options extends OptionsBase {
 <!--* STRING_OPTION *******************************************************-->
   <xsl:template mode="vars" match="string_option">
     public String <xsl:value-of select="java_name"/>() { return <xsl:value-of select="java_name"/>; }
-    private String <xsl:value-of select="java_name"/> = null;<!---->
+    private String <xsl:value-of select="java_name"/> = "";<!---->
   </xsl:template>
 
 <!--* MACRO_OPTION *******************************************************-->
@@ -427,8 +429,8 @@ public class <xsl:copy-of select="$filename"/>
         if( phaseName.equals( "<xsl:value-of select="phase_alias|sub_phase_alias"/>" ) )
             return ""<!---->
       <xsl:for-each select="boolean_option|multi_option|int_option|float_option|string_option"><!---->
-            <xsl:if test="default">
-              +"<xsl:value-of select="alias_name"/>:<xsl:value-of select="default"/> "<!---->
+            <xsl:if test="default_value">
+              +"<xsl:value-of select="alias_name"/>:<xsl:value-of select="default_value"/> "<!---->
             </xsl:if>
             <xsl:variable name="key_alias" select="alias_name"/>
             <xsl:for-each select="value">
@@ -440,6 +442,27 @@ public class <xsl:copy-of select="$filename"/>
     </xsl:for-each>
         // The default default value is nothing.
         return "";
+    }
+  </xsl:template>
+
+<!--*************************************************************************-->
+<!--* WARN FOREIGN TEMPLATES ************************************************-->
+<!--*************************************************************************-->
+
+  <xsl:template mode="warnforeign" match="phase_option">
+    public void warnForeignPhase( String phaseName ) {
+    <xsl:for-each select="phase|phase/sub_phase"><!---->
+        if( phaseName.equals( "<xsl:value-of select="phase_alias|sub_phase_alias"/>" ) ) return;<!---->
+    </xsl:for-each>
+        System.out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase" );
+        System.out.println( " and isn't listed in the options XML files." );
+    }
+
+    public void warnNonexistentPhase() {
+    <xsl:for-each select="phase|phase/sub_phase"><!---->
+        if( !PackManager.v().hasPhase( "<xsl:value-of select="phase_alias|sub_phase_alias"/>" ) )
+            System.out.println( "Warning: Options exist for non-existent phase <xsl:value-of select="phase_alias|sub_phase_alias"/>" );<!---->
+    </xsl:for-each>
     }
   </xsl:template>
 </xsl:stylesheet>

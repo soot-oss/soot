@@ -63,11 +63,6 @@ public class JimpleBodyPack extends BodyPack
         if (verbatim)
             return;
 
-        PackManager.v().setPhaseOptionIfUnset( "jb.asv", "only-stack-locals" );
-        PackManager.v().setPhaseOptionIfUnset( "jb.ulp", "unsplit-original-locals");
-        PackManager.v().setPhaseOptionIfUnset( "jb.cp", "only-stack-locals");
-        PackManager.v().setPhaseOptionIfUnset( "jb.dae", "only-stack-locals");
-
         if(useOriginalNames)
             PackManager.v().setPhaseOptionIfUnset( "jb.lns", "only-stack-locals");
 

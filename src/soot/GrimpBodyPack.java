@@ -56,9 +56,6 @@ public class GrimpBodyPack extends BodyPack
         boolean aggregateAllLocals = PackManager.getBoolean(options, "aggregate-all-locals");
         boolean noAggregating = PackManager.getBoolean(options, "no-aggregating");
 
-        PackManager.v().setPhaseOptionIfUnset( "gb.asv1", "only-stack-locals" );
-        PackManager.v().setPhaseOptionIfUnset( "gb.asv2", "only-stack-locals" );
-
         if(aggregateAllLocals)
         {
             PackManager.v().getTransform("gb.a").apply( b );

@@ -32,4 +32,14 @@ import java.util.*;
  * method. */
 public abstract class Transformer
 {
+        /** Returns the list of the default phase options for this transformer. */
+    public String getDefaultOptions() 
+    {
+        throw new RuntimeException();
+    }
+
+    /* Returns a String containing the list of phase options understood here. */
+    public String getDeclaredOptions() {
+        throw new RuntimeException();
+    }
 }

@@ -42,6 +42,11 @@ public class LCMOptions
         return soot.PackManager.getBoolean( options, "unroll" );
     }
     
+    /** Naive Side Effect Tester --  */
+    public boolean naiveSE() {
+        return soot.PackManager.getBoolean( options, "naive-side-effect" );
+    }
+    
     public static final int safe_safe = 1;
     public static final int safe_medium = 2;
     public static final int safe_unsafe = 3;
