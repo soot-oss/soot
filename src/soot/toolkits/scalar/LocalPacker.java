@@ -45,13 +45,16 @@ public class LocalPacker extends BodyTransformer
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {
-        boolean isUnsplit = options.containsKey("unsplit-original-locals") &&
-            options.get("unsplit-original-locals").equals("true");
-
+        boolean isUnsplit = Options.getBoolean(options, "unsplit-original-locals");
+        
         if(soot.Main.isVerbose)
             System.out.println("[" + body.getMethod().getName() + "] Packing locals...");
     
         Map localToGroup = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
+            // A group represents a bunch of locals which may potentially intefere with each other
+            // 2 separate groups can not possibly interfere with each other 
+            // (coloring say ints and doubles)
+            
         Map groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
         Map localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
         Map localToNewLocal;

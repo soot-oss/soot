@@ -40,12 +40,10 @@ public class FastColorer
     public static void unsplitAssignColorsToLocals(Body unitBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
     {
-        
+        unitBody.printTo(new java.io.PrintWriter(System.out, true));
         CompleteUnitGraph unitGraph = new CompleteUnitGraph(unitBody);
 
-        LiveLocals liveLocals;
-
-        
+        LiveLocals liveLocals;        
         liveLocals = new SimpleLiveLocals(unitGraph);
         
         
@@ -56,15 +54,7 @@ public class FastColorer
         while(it.hasNext()) {
             Local local = (Local) it.next();
             Local[] locals = intGraph.getInterferencesOf(local);
-            System.out.println(local);
-            System.out.println(locals); 
         }
-
-            
-
-
-
-
 
         Map localToOriginalName = new HashMap();
         
@@ -85,11 +75,12 @@ public class FastColorer
                     localToOriginalName.put(local, local.getName().substring(0, signIndex));
                 }
                 else
-                    localToOriginalName.put(local, local.getName());
+                    localToOriginalName.put(local, local.getName()); 
+                    
             }
         }
         
-        Map originalNameToColors = new HashMap();
+        Map originalNameAndGroupToColors = new HashMap();
             // maps an original name to the colors being used for it
                     
         // Assign a color for each local.
@@ -137,12 +128,12 @@ public class FastColorer
                 // Assign a color to this local.
                 {
                     String originalName = (String) localToOriginalName.get(local);
-                    List originalNameColors = (List) originalNameToColors.get(originalName);
+                    List originalNameColors = (List) originalNameAndGroupToColors.get(new StringGroupPair(originalName, group));
                     
                     if(originalNameColors == null)
                     {
                         originalNameColors = new ArrayList();
-                        originalNameToColors.put(originalName, originalNameColors);
+                        originalNameAndGroupToColors.put(new StringGroupPair(originalName, group), originalNameColors);
                         
                     }
                     
@@ -175,10 +166,9 @@ public class FastColorer
                     localToColor.put(local, new Integer(assignedColor));
                 }
             }
-        }
-                            
+        }                            
     }    
-    
+        
     public static void assignColorsToLocals(Body unitBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
     {
@@ -365,5 +355,34 @@ public class FastColorer
     
             return locals; 
         }
+    }
+}
+
+
+class StringGroupPair
+{
+    String string;
+    Object group;
+    
+    public StringGroupPair(String s, Object g)
+    {
+        string = s;
+        group = g;    
+    }
+    
+    public boolean equals(Object p)
+    {
+        if(p instanceof StringGroupPair)
+        {
+            return ((StringGroupPair) p).string.equals(this.string) &&
+                ((StringGroupPair) p).group.equals(this.group);
+        }
+        
+        return false;
+    }
+    
+    public int hashCode()
+    {
+        return string.hashCode() * 101 + group.hashCode() + 17;
     }
 }

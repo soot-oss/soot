@@ -73,6 +73,9 @@ public class JimpleBody extends StmtBody
 
         ClassFileBody fileBody;
 
+        if(useOriginalNames)
+            soot.coffi.Util.setFaithfulNaming(true);
+            
         if(body instanceof ClassFileBody)
             fileBody = (ClassFileBody) body;
         else

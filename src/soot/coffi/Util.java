@@ -49,7 +49,11 @@ public class Util
     static LocalVariableTable_attribute activeVariableTable;
     static boolean useFaithfulNaming = false;
     static boolean isLocalStore = false;
-    
+
+    public static void setFaithfulNaming(boolean v)
+    {
+        useFaithfulNaming = v;
+    }    
     static void setActiveClassManager(Scene manager)
     {
         scene = manager;
