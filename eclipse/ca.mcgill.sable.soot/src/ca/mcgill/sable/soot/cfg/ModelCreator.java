@@ -243,7 +243,7 @@ public class ModelCreator {
 				
 			}
 		}
-		((CFGEditor)part).setContentsChanged();
+		//((CFGEditor)part).setContentsChanged();
 	}
 	
 	private void initializeNode(Object sootNode, CFGNode cfgNode, CFGGraph cfgGraph){

@@ -33,12 +33,12 @@ import org.eclipse.gef.*;
 import org.eclipse.gef.editparts.*;
 import ca.mcgill.sable.soot.cfg.model.*;
 import ca.mcgill.sable.soot.cfg.editParts.*;
-import org.eclipse.gef.palette.*;
+//import org.eclipse.gef.palette.*;
 import org.eclipse.jface.action.*;
 import org.eclipse.gef.ui.actions.*;
-import ca.mcgill.sable.soot.*;
+//import ca.mcgill.sable.soot.*;
 
-import java.util.*;
+//import java.util.*;
 
 /**
  * @author jlhotak
@@ -49,7 +49,7 @@ import java.util.*;
 public class CFGEditor extends GraphicalEditor {
 
 	private CFGGraph cfgGraph;
-	private boolean isSaved = false;
+	//private boolean isSaved = false;
 	//private PaletteRoot root; 
 	/**
 	 * 
@@ -90,9 +90,9 @@ public class CFGEditor extends GraphicalEditor {
 		getSite().getKeyBindingService().registerAction(zoomOut);
 	
 	
-		IAction print = new PrintAction(this);
-		getActionRegistry().registerAction(print);
-		getSite().getKeyBindingService().registerAction(print);
+		//IAction print = new PrintAction(this);
+		//getActionRegistry().registerAction(print);
+		//getSite().getKeyBindingService().registerAction(print);
 		
 		/*IAction save = new SaveAction(this);
 		save.setEnabled(true);
@@ -155,7 +155,7 @@ public class CFGEditor extends GraphicalEditor {
 	 */
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
-		System.out.println("saving cfgs");
+		/*System.out.println("saving cfgs");
 		// idea is to save to dot file
 		String fileNameBase = SootPlugin.getDefault().getCurrentProject().getFolder("sootOutput").getLocation().toOSString();
 		
@@ -163,13 +163,13 @@ public class CFGEditor extends GraphicalEditor {
 		saver.saveGraph();
 		isSaved = true;
 		firePropertyChange(IEditorPart.PROP_DIRTY);
-	
+	*/
 	}
 
-	public void setContentsChanged(){
+	/*public void setContentsChanged(){
 		isSaved = false;
 		firePropertyChange(IEditorPart.PROP_DIRTY);
-	}
+	}*/
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
@@ -191,7 +191,8 @@ public class CFGEditor extends GraphicalEditor {
 	 */
 	public boolean isDirty() {
 		// TODO Auto-generated method stub
-		return !isSaved;
+		//return !isSaved;
+		return false;
 	}
 
 	/* (non-Javadoc)
