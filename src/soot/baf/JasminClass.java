@@ -2050,7 +2050,7 @@ public class JasminClass
 
             public void caseDup1_x2Inst(Dup1_x2Inst i)
             {
-                Type opType = i.getOpType();
+                Type opType = i.getOp1Type();
                 Type under1Type = i.getUnder1Type();
                 Type under2Type = i.getUnder2Type();
 
@@ -2074,7 +2074,7 @@ public class JasminClass
                 Type under1Type = i.getUnder1Type();
 
                 if (isDwordType(under1Type)) {
-                    if (!isDwordType(op1Type) && !isDwordType(under2Type))
+                    if (!isDwordType(op1Type) && !isDwordType(op2Type))
                         throw new RuntimeException("magic not implemented yet");
                     else
                         emit("dup2_x2"); // (form 3)
