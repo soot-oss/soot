@@ -39,7 +39,7 @@ attribute_info {
 }
 \begin{itemize}
 \item {\tt attribute\_name\_index}, the index of the attribute's name in the class files' {\em Constant Pool}
-\item {\tt attribute\_length}, the length of the arrtibute's data
+\item {\tt attribute\_length}, the length of the attribute's data
 \item {\tt info}, an array of raw attribute data
 \end{itemize}
 \end{slide}
@@ -196,17 +196,19 @@ extends TagAggregator {
 
 \begin{slide}{Example: nullness attribute}
 Step 1: create NullCheckTag
-\footnotesize{
+{\scriptsize
 \begin{verbatim}
-package soot.jimple.toolkits.annotation.tags;
-class NullCheckTag implements OneByteCodeTag {
-  private static String NAME = "NullCheckTag";
+class NullCheckTag {
+  public String getName() { return "NullCheckTag"; }
   private byte value = 0;
-  public NullCheckTag(boolean needCheck) {
-    if (needCheck) value = 0x04;
+  public byte[] getValue() {
+    byte[] bv = new byte[1];
+    bv[0] = value;
+    return bv;
   }
-  public byte[] getValue() { ... };
-  ......
+  public void toString() {
+    return ((value==0)?"[not null]":"[unknown]");
+  }
 }
 \end{verbatim}
 }
@@ -214,11 +216,9 @@ class NullCheckTag implements OneByteCodeTag {
 
 \begin{slide}{Example: nullness attribute}
 Step 2: attach tags to units after analysis \\
-{\small soot.jimple.toolkits.annotation.nullcheck.NullPointerChecker}
 \footnotesize{
 \begin{verbatim}
-int vInfo = analysis.anyRefInfo(obj, beforeSet);
-boolean needCheck = (vInfo != analysis.kNonNull); 
+boolean needCheck;
 s.addTag(new NullCheckTag(needCheck));
 \end{verbatim}
 }
@@ -226,9 +226,10 @@ s.addTag(new NullCheckTag(needCheck));
 
 \begin{slide}{Example: nullness attribute}
 Step 3: create a NullTagAggregator
-{\scriptsize \verb$ p.add(new Transform("tag.null",$
+{\scriptsize\verb$p.add(new Transform("tag.null",$
    \verb$         NullTagAggergator.v())); $}
-
+\ \\
+\ \\
 {\scriptsize
 \begin{verbatim}
 class NullTagAggregator
