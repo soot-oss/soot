@@ -12,6 +12,12 @@ public class DStaticInvokeExpr extends GStaticInvokeExpr
 	super( method, args);
     }
 
+    public void toString( UnitPrinter up ) {
+        up.type( getMethod().getDeclaringClass().getType() );
+        up.literal( "." );
+        super.toString(up);
+    }
+
     public String toBriefString()
     {
 	return toString();

@@ -111,6 +111,14 @@ public class ArrayType extends RefLikeType
         return buffer.toString();
     }
 
+    public void toString(UnitPrinter up)
+    {
+        up.type( baseType );
+
+        for(int i = 0; i < numDimensions; i++)
+            up.literal("[]");
+    }
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();

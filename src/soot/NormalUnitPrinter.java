@@ -25,38 +25,64 @@ import java.util.*;
 * UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
 */
 public class NormalUnitPrinter implements UnitPrinter {
-    Map labels;
-    String indent;
-    StringBuffer output = new StringBuffer();
+    protected Map labels;
+    protected String indent;
+    protected StringBuffer output = new StringBuffer();
 
-    NormalUnitPrinter( Map labels, String indent ) {
+    public NormalUnitPrinter( Map labels, String indent ) {
         this.labels = labels;
         this.indent = indent;
     }
 
-    public void startUnit( Unit u ) { output.append(indent); }
+    public void startUnit( Unit u ) { handleIndent(); }
     public void endUnit( Unit u ) {}
-    public void startUnitBox( UnitBox u ) {}
+    public void startUnitBox( UnitBox u ) { handleIndent(); }
     public void endUnitBox( UnitBox u ) {}
-    public void startValueBox( ValueBox u ) {}
+    public void startValueBox( ValueBox u ) { handleIndent(); }
     public void endValueBox( ValueBox u ) {}
 
-    public void literal( String s ) { output.append( s ); }
-    public void newline() { output.append("\n"+indent); }
-    public void local( Local l ) { output.append( l.getName() ); }
-    public void type( Type t ) { output.append( t.toString() ); }
-    public void method( SootMethod m ) { output.append( m.getSignature() ); }
-    public void constant( Constant c ) { output.append( c.toString() ); }
+    public void incIndent() { indent = indent + "    "; }
+    public void decIndent() {
+        if( indent.length() >= 4 ) indent = indent.substring(4);
+    }
+
+    public void literal( String s ) {
+        handleIndent();
+        output.append( s );
+    }
+    public void newline() {
+        output.append("\n");
+        startOfLine = true;
+    }
+    public void local( Local l ) { 
+        handleIndent();
+        output.append( l.getName() );
+    }
+    public void type( Type t ) { 
+        handleIndent();
+        output.append( t.toString() );
+    }
+    public void method( SootMethod m ) {
+        handleIndent();
+        output.append( m.getSignature() );
+    }
+    public void constant( Constant c ) {
+        handleIndent();
+        output.append( c.toString() );
+    }
     public void fieldRef( SootField f ) { 
+        handleIndent();
         output.append(f.getSignature());
     }
     public void unitRef( Unit u ) {
+        handleIndent();
         String label = (String) labels.get( u );
         if( label == null || label.equals( "<unnamed>" ) )
             label = "[?= "+u+"]";
         output.append(label);
     }
     public void identityRef( IdentityRef r ) {
+        handleIndent();
         if( r instanceof ThisRef ) {
             literal("@this: ");
             type(r.getType());
@@ -70,15 +96,16 @@ public class NormalUnitPrinter implements UnitPrinter {
     }
 
     public String toString() {
-        // strip trailing space
-        while( output.length() > 0 
-        && output.charAt( output.length()-1 ) == ' ' ) {
-            output.deleteCharAt( output.length()-1 );
-        }
         String ret = output.toString();
         output = new StringBuffer();
         return ret;
     }
+
+    protected void handleIndent() {
+        if( startOfLine ) output.append( indent );
+        startOfLine = false;
+    }
+    protected boolean startOfLine = true;
 }
 
 

@@ -11,6 +11,12 @@ public class DIdentityStmt extends GIdentityStmt
         super( local, identityValue);
     }
 
+    public void toString( UnitPrinter up ) {
+        getLeftOpBox().toString(up);
+        up.literal(" := ");
+        getRightOpBox().toString(up);
+    }
+
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if (isBrief) 

@@ -31,6 +31,9 @@ public interface UnitPrinter {
     public void startValueBox( ValueBox u );
     public void endValueBox( ValueBox u );
 
+    public void incIndent();
+    public void decIndent();
+
     public void literal( String s );
     public void newline();
     public void local( Local l );

@@ -416,6 +416,9 @@ public class Printer {
             }
             out.print(oldString);
 
+            up.newline();
+            up.toString();
+
             out.print(";");
             out.println();
             if (addJimpleLn()) {

@@ -1,6 +1,7 @@
 package soot.dava.internal.AST;
 
 import soot.*;
+import soot.jimple.*;
 import java.util.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
@@ -8,13 +9,13 @@ import soot.dava.toolkits.base.AST.*;
 public class ASTSynchronizedBlockNode extends ASTLabeledNode
 {
     private List body;
-    private Value local;
+    private ValueBox localBox;
 
     public ASTSynchronizedBlockNode( SETNodeLabel label, List body, Value local)
     {
 	super( label);
 	this.body = body;
-	this.local = local;
+	this.localBox = Jimple.v().newLocalBox( local );
 
 	subBodies.add( body);
     }
@@ -23,10 +24,38 @@ public class ASTSynchronizedBlockNode extends ASTLabeledNode
     {
 	return body.size();
     }
+    
+    public Local getLocal() {
+        return (Local) localBox.getValue();
+    }
 
     public Object clone()
     {
-	return new ASTSynchronizedBlockNode( get_Label(), body, local);
+	return new ASTSynchronizedBlockNode( get_Label(), body, getLocal());
+    }
+
+    public void toString( UnitPrinter up)
+    {
+	label_toString(up);
+
+        up.literal( "synchronized" );
+        up.literal( " " );
+        up.literal( "(" );
+
+	up.literal( "synchronized (");
+	localBox.toString(up);
+	up.literal( ")");
+        up.newline();
+
+        up.literal( "{" );
+        up.newline();
+ 
+        up.incIndent();
+        body_toString( up, body );
+        up.decIndent();
+
+        up.literal( "}" );
+        up.newline();
     }
 
     public String toString( Map stmtToName, String indentation)
@@ -37,7 +66,7 @@ public class ASTSynchronizedBlockNode extends ASTLabeledNode
 
 	b.append( indentation);
 	b.append( "synchronized (");
-	b.append( local);
+	b.append( getLocal());
 	b.append( ")");
 	b.append( NEWLINE);
 

@@ -1,5 +1,6 @@
 package soot.dava.internal.AST;
 
+import soot.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
 
@@ -27,6 +28,15 @@ public abstract class ASTLabeledNode extends ASTNode
     public void perform_Analysis( ASTAnalysis a)
     {
 	perform_AnalysisOnSubBodies( a);
+    }
+
+    public void label_toString( UnitPrinter up )
+    {
+	if (label.toString() != null) {
+            up.literal( label.toString() );
+            up.literal( ":" );
+            up.newline();
+	}
     }
 
     public String label_toString( String indentation)

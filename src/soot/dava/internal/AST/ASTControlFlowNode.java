@@ -1,27 +1,28 @@
 package soot.dava.internal.AST;
 
+import soot.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
 
 public abstract class ASTControlFlowNode extends ASTLabeledNode
 {
-    private ConditionExpr condition;
+    protected ValueBox conditionBox;
 
     public ASTControlFlowNode( SETNodeLabel label, ConditionExpr condition)
     {
 	super( label);
-	this.condition = condition;
+        this.conditionBox = Jimple.v().newConditionExprBox(condition);
     }
 
     public ConditionExpr get_Condition()
     {
-	return condition;
+	return (ConditionExpr) conditionBox.getValue();
     }
 
     public void perform_Analysis( ASTAnalysis a)
     {
-	ASTWalker.v().walk_value( a, condition);
+	ASTWalker.v().walk_value( a, get_Condition());
 
 	if (a instanceof TryContentsFinder) {
 	    TryContentsFinder tcf = (TryContentsFinder) a;

@@ -100,7 +100,7 @@ public class ThrowFinder
 	while (worklistIt.hasNext()) {
 	    SootMethod m = (SootMethod) worklistIt.next();
 
-	    if (m.isAbstract() == false) {
+	    if (!m.isAbstract() && !m.isNative() ) {
 
 		List exceptionList = m.getExceptions();
 		IterableSet exceptionSet = new IterableSet( exceptionList);

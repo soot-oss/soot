@@ -40,8 +40,8 @@ import java.util.*;
 
 public class JArrayRef implements ArrayRef, ConvertToBaf, EquivTo
 {
-    ValueBox baseBox;
-    ValueBox indexBox;
+    protected ValueBox baseBox;
+    protected ValueBox indexBox;
 
     public JArrayRef(Value base, Value index)
     {

@@ -7,6 +7,14 @@ public class DStaticFieldRef extends StaticFieldRef
 {
     private boolean supressDeclaringClass;
 
+    public void toString( UnitPrinter up ) {
+        if( !supressDeclaringClass ) {
+            up.type( getField().getDeclaringClass().getType() );
+            up.literal( "." );
+        }
+        up.fieldRef( getField() );
+    }
+
     public String toBriefString()
     {
 	if (supressDeclaringClass)

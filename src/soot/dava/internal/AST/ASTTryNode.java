@@ -124,6 +124,48 @@ public class ASTTryNode extends ASTLabeledNode
 	return new ASTTryNode( get_Label(), tryBody, newCatchList, exceptionMap, paramMap);
     }
 
+    public void toString( UnitPrinter up )
+    {
+        label_toString( up );
+
+	up.literal( "try");
+        up.newline();
+	
+        up.literal( "{" );
+        up.newline();
+
+        up.incIndent();
+	body_toString( up, tryBody );
+        up.decIndent();
+
+        up.literal( "}" );
+        up.newline();
+
+	Iterator cit = catchList.iterator();
+	while (cit.hasNext()) {
+	    container catchBody = (container) cit.next();
+
+            up.literal( "catch" );
+            up.literal( " " );
+            up.literal( "(" );
+            up.type( ((SootClass) exceptionMap.get(catchBody)).getType() );
+	    up.literal( " ");
+            up.local( (Local) paramMap.get(catchBody) );
+	    up.literal( ")");
+            up.newline();
+
+            up.literal("{");
+            up.newline();
+
+            up.incIndent();
+            body_toString( up, (List) catchBody.o );
+            up.decIndent();
+
+            up.literal( "}" );
+            up.newline();
+	}
+    }
+
     public String toString( Map stmtToName, String indentation)
     {
 	StringBuffer b = new StringBuffer();

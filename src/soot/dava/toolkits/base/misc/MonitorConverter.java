@@ -7,6 +7,7 @@ import soot.dava.*;
 import soot.jimple.*;
 import soot.grimp.internal.*;
 import soot.dava.internal.asg.*;
+import soot.dava.internal.javaRep.*;
 
 public class MonitorConverter
 {
@@ -59,9 +60,9 @@ public class MonitorConverter
 	    arg.add( ms.getOp());
 
 	    if (ms instanceof EnterMonitorStmt)
-		mas.set_Stmt( new GInvokeStmt( new GVirtualInvokeExpr( new GStaticInvokeExpr( v, new ArrayList()), enter, arg)));
+		mas.set_Stmt( new GInvokeStmt( new DVirtualInvokeExpr( new DStaticInvokeExpr( v, new ArrayList()), enter, arg, new HashSet())));
 	    else
-		mas.set_Stmt( new GInvokeStmt( new GVirtualInvokeExpr( new GStaticInvokeExpr( v, new ArrayList()), exit, arg)));
+		mas.set_Stmt( new GInvokeStmt( new DVirtualInvokeExpr( new DStaticInvokeExpr( v, new ArrayList()), exit, arg, new HashSet())));
 	}
     }
 }

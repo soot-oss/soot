@@ -17,6 +17,16 @@ public class DNegExpr extends AbstractNegExpr implements NegExpr
         return new DNegExpr(Grimp.cloneIfNecessary(getOp()));
     }
 
+    public void toString( UnitPrinter up ) {
+        up.literal( "(" );
+        up.literal( "-" );
+        up.literal( " " );
+        up.literal( "(" );
+        getOpBox().toString(up);
+        up.literal( ")" );
+        up.literal( ")" );
+    }
+
     public String toString()
     {
 	return "(- (" + ((ToBriefString) getOpBox().getValue()).toBriefString() + "))"; 

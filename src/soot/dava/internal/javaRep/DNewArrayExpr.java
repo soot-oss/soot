@@ -19,6 +19,14 @@ public class DNewArrayExpr extends AbstractNewArrayExpr implements NewArrayExpr,
         return new DNewArrayExpr(getBaseType(), Grimp.cloneIfNecessary(getSize()));
     }
 
+    public void toString( UnitPrinter up ) {
+        up.literal( "new" );
+        up.literal( " " );
+        up.type( getBaseType() );
+        up.literal( "[" );
+        getSizeBox().toString( up );
+        up.literal( "]" );
+    }
     public String toString()
     {
 	return "new " + getBaseType() + "[" + getSize() + "]";

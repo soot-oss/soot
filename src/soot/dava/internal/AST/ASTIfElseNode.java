@@ -25,6 +25,41 @@ public class ASTIfElseNode extends ASTControlFlowNode
 	return new ASTIfElseNode( get_Label(), get_Condition(), ifBody, elseBody);
     }
 
+    public void toString( UnitPrinter up ) 
+    {
+        label_toString( up );
+
+        up.literal( "if" );
+        up.literal( " " );
+        up.literal( "(" );
+        conditionBox.toString( up );
+        up.literal( ")" );
+        up.newline();
+	
+        up.literal( "{" );
+        up.newline();
+
+        up.incIndent();
+        body_toString( up, ifBody );
+        up.decIndent();
+
+        up.literal( "}" );
+        up.newline();
+
+        up.literal( "else" );
+        up.newline();
+
+        up.literal( "{" );
+        up.newline();
+
+        up.incIndent();
+        body_toString( up, elseBody );
+        up.decIndent();
+
+        up.literal( "}" );
+        up.newline();
+    }
+
     public String toString( Map stmtToName, String indentation)
     {
 	StringBuffer b = new StringBuffer();

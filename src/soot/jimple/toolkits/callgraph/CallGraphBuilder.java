@@ -36,6 +36,7 @@ public final class CallGraphBuilder
     private PointsToAnalysis pa;
     private CGOptions options;
     private ReachableMethods reachables;
+    private boolean appOnly = false;
     public ReachableMethods reachables() { return reachables; }
 
     public CallGraphBuilder( PointsToAnalysis pa ) {
@@ -45,6 +46,17 @@ public final class CallGraphBuilder
         Scene.v().setCallGraph( cg );
         reachables = Scene.v().getReachableMethods();
         worklist = reachables.listener();
+    }
+    public CallGraphBuilder() {
+        G.v().out.println( "Warning: using incomplete callgraph containing "+
+                "only application classes." );
+        pa = soot.jimple.toolkits.pointer.DumbPointerAnalysis.v();
+        options = new CGOptions( PackManager.v().getPhaseOptions("cg") );
+        cg = new CallGraph();
+        Scene.v().setCallGraph(cg);
+        reachables = Scene.v().getReachableMethods();
+        worklist = reachables.listener();
+        appOnly = true;
     }
     public void build() {
         processWorklist();
@@ -57,6 +69,8 @@ public final class CallGraphBuilder
                 m = (SootMethod) worklist.next();
                 if( m == null ) break;
             }
+            if( appOnly && !m.getDeclaringClass().isApplicationClass() )
+                continue;
             processNewMethod( m );
         }
     }
@@ -130,7 +144,7 @@ public final class CallGraphBuilder
     }
 
     private void findReceivers(SootMethod m, Body b, HashSet receivers) {
-        for (Iterator sIt = b.getUnits().iterator(); sIt.hasNext();) {
+        for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if (s.containsInvokeExpr()) {
                 InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();

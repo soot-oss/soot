@@ -1,6 +1,7 @@
 package soot.dava.internal.AST;
 
 import java.util.*;
+import soot.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
@@ -20,6 +21,32 @@ public class ASTDoWhileNode extends ASTControlFlowNode
     public Object clone()
     {
 	return new ASTDoWhileNode( get_Label(), get_Condition(), body);
+    }
+
+    public void toString( UnitPrinter up )
+    {
+	label_toString( up);
+
+        up.literal( "do" );
+        up.newline();
+
+        up.literal( "{" );
+        up.newline();
+
+        up.incIndent();
+	body_toString( up, body );
+        up.decIndent();
+
+        up.literal( "}" );
+        up.newline();
+
+        up.literal( "while" );
+        up.literal( " " );
+        up.literal( "(" );
+        conditionBox.toString(up);
+        up.literal( ")" );
+        up.literal( ";" );
+        up.newline();
     }
 
     public String toString( Map stmtToName, String indentation)

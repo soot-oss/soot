@@ -37,6 +37,19 @@ public class ASTStatementSequenceNode extends ASTNode
 	}
     }
 
+    public void toString( UnitPrinter up ) {
+	Iterator it = statementSequence.iterator();
+	while (it.hasNext()) {
+            AugmentedStmt as = (AugmentedStmt) it.next();
+            Unit u = as.get_Stmt();
+            up.startUnit( u );
+            u.toString( up );
+            up.literal(";");
+            up.endUnit( u );
+            up.newline();
+        }
+    }
+
     public String toString( Map stmtToName, String indentation)
     {
 	StringBuffer b = new StringBuffer();

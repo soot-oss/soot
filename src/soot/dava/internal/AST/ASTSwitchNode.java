@@ -8,7 +8,7 @@ import soot.dava.toolkits.base.AST.*;
 
 public class ASTSwitchNode extends ASTLabeledNode
 {
-    private Value key;
+    private ValueBox keyBox;
     private List indexList;
     private Map index2BodyList;
 
@@ -16,7 +16,7 @@ public class ASTSwitchNode extends ASTLabeledNode
     {
 	super( label);
 
-	this.key = key;
+	this.keyBox = Jimple.v().newRValueBox( key );
 	this.indexList = indexList;
 	this.index2BodyList = index2BodyList;
 
@@ -31,17 +31,17 @@ public class ASTSwitchNode extends ASTLabeledNode
 
     public Value get_Key()
     {
-	return key;
+	return keyBox.getValue();
     }
 
     public Object clone()
     {
-	return new ASTSwitchNode( get_Label(), key, indexList, index2BodyList);
+	return new ASTSwitchNode( get_Label(), get_Key(), indexList, index2BodyList);
     }
 
     public void perform_Analysis( ASTAnalysis a)
     {
-	ASTWalker.v().walk_value( a, key);
+	ASTWalker.v().walk_value( a, get_Key());
 
 	if (a instanceof TryContentsFinder) {
 	    TryContentsFinder tcf = (TryContentsFinder) a;
@@ -52,6 +52,56 @@ public class ASTSwitchNode extends ASTLabeledNode
     }
 
 
+    public void toString( UnitPrinter up )
+    {
+        label_toString( up );
+
+        up.literal( "switch" );
+        up.literal( " " );
+        up.literal( "(" );
+        keyBox.toString( up );
+        up.literal( ")" );
+        up.newline();
+
+        up.literal( "{" );
+        up.newline();
+
+	Iterator it = indexList.iterator();
+	while (it.hasNext()) {
+	    
+	    Object index = it.next();
+
+            up.incIndent();
+	    
+	    if (index instanceof String) 
+                up.literal( "default" );
+
+	    else {
+                up.literal( "case" );
+                up.literal( " " );
+                up.literal( index.toString() );
+	    }
+	    
+            up.literal( ":" );
+            up.newline();
+
+	    List subBody = (List) index2BodyList.get( index);
+
+	    if (subBody != null) {
+                up.incIndent();
+                body_toString( up, subBody );
+	    
+		if (it.hasNext())
+		    up.newline();
+                up.decIndent();
+	    }
+            up.decIndent();
+	}
+
+	up.literal( "}");
+        up.newline();
+    }
+
     public String toString( Map stmtToName, String indentation)
     {
 	StringBuffer b = new StringBuffer();
@@ -60,7 +110,7 @@ public class ASTSwitchNode extends ASTLabeledNode
 	
 	b.append( indentation);
 	b.append( "switch (");
-	b.append( key);
+	b.append( get_Key() );
 	b.append( ")");
 	b.append( NEWLINE);
 

@@ -22,8 +22,20 @@ public abstract class ASTNode extends AbstractUnit
 	return toString( stmtToName, indentation);
     }
 
+    public abstract void toString( UnitPrinter up );
     public abstract String toString( Map stmtToName, String indentation);
  
+    protected void body_toString( UnitPrinter up, List body )
+    {
+	Iterator it = body.iterator();
+	while (it.hasNext()) {
+	    ((ASTNode) it.next()).toString( up );
+
+	    if (it.hasNext())
+		up.newline();
+	}
+    }
+
     protected String body_toString( Map stmtToName, String indentation, List body)
     {
 	StringBuffer b = new StringBuffer();
@@ -73,9 +85,5 @@ public abstract class ASTNode extends AbstractUnit
     public boolean branches()
     {
         return false;
-    }
-    
-    public void toString( UnitPrinter up ) {
-        throw new RuntimeException("Not implemented yet.");
     }
 }

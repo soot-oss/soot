@@ -392,6 +392,9 @@ public class DavaBody extends Body
 		if (s instanceof IfStmt)
 		    javafy( ((IfStmt) s).getConditionBox());
 
+                else if (s instanceof ThrowStmt)
+                    javafy( ((ThrowStmt) s).getOpBox() );
+
 		else if (s instanceof TableSwitchStmt)
 		    javafy( ((TableSwitchStmt) s).getKeyBox());
 

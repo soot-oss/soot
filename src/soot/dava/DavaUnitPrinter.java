@@ -17,53 +17,31 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot;
+package soot.dava;
+import soot.*;
 import soot.jimple.*;
-import java.util.*;
 
 /**
-* UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
+* UnitPrinter implementation for Dava.
 */
-public class BriefUnitPrinter extends NormalUnitPrinter {
-    BriefUnitPrinter( Map labels, String indent ) {
-        super(labels, indent);
-    }
-
-    private boolean baf;
-    public void startUnit( Unit u ) {
-        super.startUnit(u);
-        if( u instanceof Stmt ) {
-            baf = false;
-        } else {
-            baf = true;
-        }
+public class DavaUnitPrinter extends NormalUnitPrinter {
+    DavaUnitPrinter( String indent ) {
+        super(null, indent);
+        startOfLine = true;
     }
 
     public void method( SootMethod m ) {
         handleIndent();
-        if( !baf && m.isStatic() ){
-            output.append( m.getDeclaringClass().getName() );
-            literal(".");
-        }
         output.append( m.getName() );
     }
     public void fieldRef( SootField f ) { 
         handleIndent();
-        if( baf || f.isStatic() ){
-            output.append( f.getDeclaringClass().getName() );
-            literal(".");
-        }
         output.append(f.getName());
     }
     public void identityRef( IdentityRef r ) {
         handleIndent();
         if( r instanceof ThisRef ) {
-            literal("@this");
-        } else if( r instanceof ParameterRef ) {
-            ParameterRef pr = (ParameterRef) r;
-            literal("@parameter"+pr.getIndex());
-        } else if( r instanceof CaughtExceptionRef ) {
-            literal("@caughtexception");
+            literal("this");
         } else throw new RuntimeException();
     }
 
@@ -75,17 +53,25 @@ public class BriefUnitPrinter extends NormalUnitPrinter {
             return;
         }
         eatSpace = false;
-        if( !baf ) {
-            if( false
-            ||  s.equals( Jimple.v().STATICINVOKE )
-            ||  s.equals( Jimple.v().VIRTUALINVOKE )
-            ||  s.equals( Jimple.v().INTERFACEINVOKE )
-              ) {
-                eatSpace = true;
-                return;
-            }
+        if( false
+        ||  s.equals( Jimple.v().STATICINVOKE )
+        ||  s.equals( Jimple.v().VIRTUALINVOKE )
+        ||  s.equals( Jimple.v().INTERFACEINVOKE )
+          ) {
+            eatSpace = true;
+            return;
         }
         super.literal(s);
+    }
+    public void type( Type t ) {
+        handleIndent();
+        if( t instanceof RefType ) {
+            output.append( ((RefType) t).getSootClass().getJavaStyleName() );
+        } else if( t instanceof ArrayType ) {
+            ((ArrayType) t).toString( this );
+        } else {
+            output.append( t.toString() );
+        }
     }
 }
 

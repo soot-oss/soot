@@ -15,6 +15,14 @@ public class DInstanceFieldRef extends GInstanceFieldRef
 	this.thisLocals = thisLocals;
     }
 
+    public void toString( UnitPrinter up ) {
+        if( thisLocals.contains(getBase()) ) {
+            up.fieldRef( getField() );
+        } else {
+            super.toString( up );
+        }
+    }
+
     public String toBriefString()
     {
 	return toString();

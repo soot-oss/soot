@@ -17,6 +17,12 @@ public class DLengthExpr extends AbstractLengthExpr implements LengthExpr
         return new DLengthExpr(Grimp.cloneIfNecessary(getOp()));
     }
 
+    public void toString( UnitPrinter up ) {
+        getOpBox().toString(up);
+        up.literal(".");
+        up.literal("length");
+    }
+
     public String toString()
     {
 	return ((ToBriefString) getOpBox().getValue()).toBriefString() + ".length"; 

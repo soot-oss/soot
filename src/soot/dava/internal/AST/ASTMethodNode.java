@@ -1,5 +1,6 @@
 package soot.dava.internal.AST;
 
+import soot.*;
 import java.util.*;
 import soot.dava.toolkits.base.AST.*;
 
@@ -23,6 +24,10 @@ public class ASTMethodNode extends ASTNode
     public void perform_Analysis( ASTAnalysis a)
     {
 	perform_AnalysisOnSubBodies( a);
+    }
+
+    public void toString( UnitPrinter up ) {
+        body_toString( up, body );
     }
 
     public String toString( Map stmtToName, String indentation)

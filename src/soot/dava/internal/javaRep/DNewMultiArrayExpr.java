@@ -27,6 +27,20 @@ public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr implements New
         return new DNewMultiArrayExpr(getBaseType(), clonedSizes);
     }
 
+    public void toString( UnitPrinter up )
+    {
+	up.literal( "new" );
+        up.literal( " " );
+        up.type( getBaseType().baseType );
+        for( int i = 0; i < sizeBoxes.length; i++ ) {
+            up.literal( "[" );
+            sizeBoxes[i].toString( up );
+            up.literal( "]" );
+        }
+
+	for (int i=getSizeCount(); i<getBaseType().numDimensions; i++)
+	    up.literal( "[]");
+    }
     public String toString()
     {
 	StringBuffer buffer = new StringBuffer();

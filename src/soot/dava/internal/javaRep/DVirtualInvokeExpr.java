@@ -16,6 +16,38 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr
 	this.thisLocals = thisLocals;
     }
 
+    public void toString( UnitPrinter up ) {
+	if (getBase().getType() instanceof NullType) {
+        // OL: I don't know what this is for; I'm just refactoring the
+        // original code. An explanation here would be welcome.
+            up.literal( "((" );
+            up.type( getMethod().getDeclaringClass().getType() );
+            up.literal( ") " );
+	    
+            if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal("(");
+            baseBox.toString( up );
+            if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal(")");
+
+	    up.literal( ")" );
+            up.literal( "." );
+
+            up.method( getMethod() );
+            up.literal( "(" );
+
+	    for (int i=0; i<argBoxes.length; i++) {
+		if(i != 0)
+                    up.literal( ", " );
+		
+                argBoxes[i].toString(up);
+	    }
+
+            up.literal( ")" );
+	} else {
+            super.toString( up );
+        }
+    }
+
+
     public String toBriefString()
     {
 	return toString();

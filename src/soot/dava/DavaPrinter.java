@@ -127,7 +127,19 @@ public class DavaPrinter {
             throw new RuntimeException("DavaBody AST doesn't have single root.");
         }
 
-        out.print(((ASTNode) units.getFirst()).toString(null, "        "));
+        String old = ((ASTNode) units.getFirst()).toString(null, "        ");
+        UnitPrinter up = new DavaUnitPrinter("        ");
+        Main.v().setJavaStyle(false);
+        ((ASTNode) units.getFirst()).toString(up);
+        Main.v().setJavaStyle(true);
+        String newS = up.toString();
+        if( !old.equals(newS) ) {
+            System.err.println( "OLD:" );
+            System.err.println( old );
+            System.err.println( "NEW:" );
+            System.err.println( newS );
+        }
+        out.print( old );
     }
 
     public void printTo(SootClass cl, PrintWriter out) {

@@ -108,7 +108,7 @@ public class Scene  //extends AbstractHost
     public SootClass getMainClass()
     {
         if(mainClass == null)
-            throw new NullPointerException("There is no main class set!");
+            throw new RuntimeException("There is no main class set!");
             
         return mainClass;
     }
@@ -503,7 +503,8 @@ public class Scene  //extends AbstractHost
     public CallGraph getCallGraph() 
     {
         if(!hasCallGraph()) {
-            throw new RuntimeException( "no active call graph in scene" );
+            CallGraphBuilder cgb = new CallGraphBuilder();
+            cgb.build();
         }
             
         return activeCallGraph;

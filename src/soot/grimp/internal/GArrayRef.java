@@ -58,6 +58,15 @@ public class GArrayRef extends JArrayRef implements ArrayRef, Precedence
       return leftOp + "[" + rightOp + "]";
     }
 
+    public void toString( UnitPrinter up ) {
+        if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal("(");
+        baseBox.toString(up);
+        if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal(")");
+        up.literal("[");
+        indexBox.toString(up);
+        up.literal("]");
+    }
+
   public String toString()
     {
       Value op1 = getBase(), op2 = getIndex();
