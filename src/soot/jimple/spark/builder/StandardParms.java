@@ -101,19 +101,6 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
                 }
             }
         }
-        if( ie instanceof InstanceInvokeExpr ) {
-            InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-            Local base = (Local) iie.getBase();
-            if( target != null
-            && Scene.v().getOrMakeFastHierarchy().
-                    canStoreType( base.getType(), RefType.v("java.lang.Runnable") ) 
-            && target.getSignature().equals( "void start()" )  
-            && target.getDeclaringClass().declaresMethod( "void run()" ) ) {
-
-                addCallTarget( s,
-                    target.getDeclaringClass().getMethod( "void run()" ) );
-            }
-        }
     }
     /** Adds the edges required for this statement to the graph. */
     final public void handleStmt( Stmt s ) {

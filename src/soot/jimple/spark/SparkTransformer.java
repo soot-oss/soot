@@ -161,7 +161,7 @@ public class SparkTransformer extends SceneTransformer
         if( true ) {
             for( Iterator it = b.getCallGraph().reachableMethods(); it.hasNext(); ) {
                 SootMethod m = (SootMethod) it.next();
-                System.out.println( graph.get(m).size()+" #"+m.getBytecodeSignature() );
+                System.out.println( m.getBytecodeSignature() );
             }
         }
 

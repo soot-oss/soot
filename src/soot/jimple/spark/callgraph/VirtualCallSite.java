@@ -37,6 +37,10 @@ public class VirtualCallSite
     private static FastHierarchy fh;
     private NumberedString subSig;
     private boolean seenInvokeSpecial = false;
+    private static final NumberedString sigRun = Scene.v().getSubSigNumberer().
+        findOrAdd( "void run()" );
+    private static final NumberedString sigStart = Scene.v().getSubSigNumberer().
+        findOrAdd( "void start()" );
     private static final NumberedString sigClinit = Scene.v().getSubSigNumberer().
         findOrAdd( "void <clinit>()" );
 
@@ -79,7 +83,15 @@ public class VirtualCallSite
                     SootMethod m = cls.getMethod( subSig );
                     if( m.isConcrete() || m.isNative() ) {
                         SootMethod target = cls.getMethod( subSig );
-                        //target.addTag( new soot.tagkit.StringTag( this.toString() ) );
+                        targets.add( target );
+                    }
+                    break;
+                }
+                if( subSig == sigStart && cls.declaresMethod( sigRun ) 
+                && fh.canStoreType( t, RefType.v( "java.lang.Runnable" ) ) ) {
+                    SootMethod m = cls.getMethod( sigRun );
+                    if( m.isConcrete() || m.isNative() ) {
+                        SootMethod target = cls.getMethod( sigRun );
                         targets.add( target );
                     }
                     break;
