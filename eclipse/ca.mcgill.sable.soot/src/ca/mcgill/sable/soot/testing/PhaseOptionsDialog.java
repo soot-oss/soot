@@ -57,7 +57,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	protected void initializePageContainer() {
 
 
-		
 Composite General_OptionsChild = General_OptionsCreate(getPageContainer());
 
 Composite Input_OptionsChild = Input_OptionsCreate(getPageContainer());
@@ -163,6 +162,12 @@ Composite wjopwjop_smbChild = wjopwjop_smbCreate(getPageContainer());
 Composite wjopwjop_siChild = wjopwjop_siCreate(getPageContainer());
 
 Composite wjapwjap_raChild = wjapwjap_raCreate(getPageContainer());
+
+Composite wjapwjap_umtChild = wjapwjap_umtCreate(getPageContainer());
+
+Composite wjapwjap_uftChild = wjapwjap_uftCreate(getPageContainer());
+
+Composite wjapwjap_tqtChild = wjapwjap_tqtCreate(getPageContainer());
 
 Composite sopsop_cpfChild = sopsop_cpfCreate(getPageContainer());
 
@@ -735,6 +740,30 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("wjap", "wjap.ra", getwjapwjap_raenabled_widget(), "enabled");
 		
 		getwjapwjap_raenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("wjap", "wjap.umt");
+		
+		
+		addToEnableGroup("wjap", "wjap.umt", getwjapwjap_umtenabled_widget(), "enabled");
+		
+		getwjapwjap_umtenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("wjap", "wjap.uft");
+		
+		
+		addToEnableGroup("wjap", "wjap.uft", getwjapwjap_uftenabled_widget(), "enabled");
+		
+		getwjapwjap_uftenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("wjap", "wjap.tqt");
+		
+		
+		addToEnableGroup("wjap", "wjap.tqt", getwjapwjap_tqtenabled_widget(), "enabled");
+		
+		getwjapwjap_tqtenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("shimple");
@@ -2462,6 +2491,36 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getwjapwjap_raenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getwjapwjap_umtenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_umtenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjapwjap_uftenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_uftenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjapwjap_tqtenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_tqtenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getshimpleenabled_widget().getButton().getSelection();
 		
 		
@@ -3391,7 +3450,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		SootOption subSectParent;
 		
 
-		
 		SootOption General_Options_branch = new SootOption("General Options", "General_Options");
 		root.addChild(General_Options_branch);
 		parent = General_Options_branch;		
@@ -3679,6 +3737,36 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 			subSectParent = wjap_wjap_ra_branch;
+			
+			
+			SootOption wjap_wjap_umt_branch = new SootOption("Unreachable Method Tagger", "wjapwjap_umt");
+			subParent.addChild(wjap_wjap_umt_branch);
+
+
+			
+
+			
+			subSectParent = wjap_wjap_umt_branch;
+			
+			
+			SootOption wjap_wjap_uft_branch = new SootOption("Unreachable Fields Tagger", "wjapwjap_uft");
+			subParent.addChild(wjap_wjap_uft_branch);
+
+
+			
+
+			
+			subSectParent = wjap_wjap_uft_branch;
+			
+			
+			SootOption wjap_wjap_tqt_branch = new SootOption("Tightest Qualifiers Tagger", "wjapwjap_tqt");
+			subParent.addChild(wjap_wjap_tqt_branch);
+
+
+			
+
+			
+			subSectParent = wjap_wjap_tqt_branch;
 			
 			
 			//Shimple Control
@@ -4111,8 +4199,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}
 
 
-		
-		
 	private BooleanOptionWidget General_Optionshelp_widget;
 	
 	private void setGeneral_Optionshelp_widget(BooleanOptionWidget widget) {
@@ -5355,6 +5441,36 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return wjapwjap_raenabled_widget;
 	}	
 	
+	private BooleanOptionWidget wjapwjap_umtenabled_widget;
+	
+	private void setwjapwjap_umtenabled_widget(BooleanOptionWidget widget) {
+		wjapwjap_umtenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_umtenabled_widget() {
+		return wjapwjap_umtenabled_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_uftenabled_widget;
+	
+	private void setwjapwjap_uftenabled_widget(BooleanOptionWidget widget) {
+		wjapwjap_uftenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_uftenabled_widget() {
+		return wjapwjap_uftenabled_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_tqtenabled_widget;
+	
+	private void setwjapwjap_tqtenabled_widget(BooleanOptionWidget widget) {
+		wjapwjap_tqtenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_tqtenabled_widget() {
+		return wjapwjap_tqtenabled_widget;
+	}	
+	
 	private BooleanOptionWidget shimpleenabled_widget;
 	
 	private void setshimpleenabled_widget(BooleanOptionWidget widget) {
@@ -6302,8 +6418,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = ""+" "+""+" "+"h";
 		defKey = defKey.trim();
@@ -6474,8 +6589,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = ""+" "+""+" "+"allow-phantom-refs";
 		defKey = defKey.trim();
@@ -6585,8 +6699,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = ""+" "+""+" "+"xml-attributes";
 		defKey = defKey.trim();
@@ -6741,8 +6854,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = ""+" "+""+" "+"O";
 		defKey = defKey.trim();
@@ -6834,8 +6946,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb"+" "+"enabled";
 		defKey = defKey.trim();
@@ -6895,8 +7006,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.ls"+" "+"enabled";
 		defKey = defKey.trim();
@@ -6940,8 +7050,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.a"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7001,8 +7110,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.ule"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7046,8 +7154,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.tr"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7091,8 +7198,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.ulp"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7152,8 +7258,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.lns"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7213,8 +7318,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.cp"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7290,8 +7394,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.dae"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7351,8 +7454,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.cp-ule"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7396,8 +7498,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.lp"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7457,8 +7558,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.ne"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7502,8 +7602,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jb.uce"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7547,8 +7646,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7708,8 +7806,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg.cha"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7769,8 +7866,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg.spark"+" "+"enabled";
 		defKey = defKey.trim();
@@ -7814,8 +7910,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg.spark"+" "+"verbose";
 		defKey = defKey.trim();
@@ -7907,8 +8002,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg.spark"+" "+"vta";
 		defKey = defKey.trim();
@@ -8064,8 +8158,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg.spark"+" "+"simplify-offline";
 		defKey = defKey.trim();
@@ -8141,8 +8234,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		data = new OptionData [] {
 		
@@ -8374,8 +8466,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg.spark"+" "+"dump-html";
 		defKey = defKey.trim();
@@ -8547,8 +8638,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg.bdd"+" "+"enabled";
 		defKey = defKey.trim();
@@ -8592,8 +8682,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg.bdd"+" "+"verbose";
 		defKey = defKey.trim();
@@ -8685,8 +8774,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg.bdd"+" "+"vta";
 		defKey = defKey.trim();
@@ -8842,8 +8930,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg.bdd"+" "+"simplify-offline";
 		defKey = defKey.trim();
@@ -8919,8 +9006,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"cg.bdd"+" "+"dump-html";
 		defKey = defKey.trim();
@@ -9092,8 +9178,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"wstp"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9137,8 +9222,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"wsop"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9182,8 +9266,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"wjtp"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9227,8 +9310,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"wjop"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9272,8 +9354,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"wjop.smb"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9385,8 +9466,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"wjop.si"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9543,8 +9623,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"wjap"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9588,8 +9667,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"wjap.ra"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9609,6 +9687,138 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupwjapwjap_ra;
+	}
+
+
+
+	private Composite wjapwjap_umtCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupwjapwjap_umt = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupwjapwjap_umt.setLayout(layout);
+	
+	 	editGroupwjapwjap_umt.setText("Unreachable Method Tagger");
+	 	
+		editGroupwjapwjap_umt.setData("id", "wjapwjap_umt");
+		
+		String descwjapwjap_umt = "Tags all unreachable methods";	
+		if (descwjapwjap_umt.length() > 0) {
+			Label descLabelwjapwjap_umt = new Label(editGroupwjapwjap_umt, SWT.WRAP);
+			descLabelwjapwjap_umt.setText(descwjapwjap_umt);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"wjap.umt"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwjapwjap_umtenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_umt, SWT.NONE, new OptionData("Enabled", "p", "wjap.umt","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupwjapwjap_umt;
+	}
+
+
+
+	private Composite wjapwjap_uftCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupwjapwjap_uft = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupwjapwjap_uft.setLayout(layout);
+	
+	 	editGroupwjapwjap_uft.setText("Unreachable Fields Tagger");
+	 	
+		editGroupwjapwjap_uft.setData("id", "wjapwjap_uft");
+		
+		String descwjapwjap_uft = "Tags all unreachable fields";	
+		if (descwjapwjap_uft.length() > 0) {
+			Label descLabelwjapwjap_uft = new Label(editGroupwjapwjap_uft, SWT.WRAP);
+			descLabelwjapwjap_uft.setText(descwjapwjap_uft);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"wjap.uft"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwjapwjap_uftenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_uft, SWT.NONE, new OptionData("Enabled", "p", "wjap.uft","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupwjapwjap_uft;
+	}
+
+
+
+	private Composite wjapwjap_tqtCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupwjapwjap_tqt = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupwjapwjap_tqt.setLayout(layout);
+	
+	 	editGroupwjapwjap_tqt.setText("Tightest Qualifiers Tagger");
+	 	
+		editGroupwjapwjap_tqt.setData("id", "wjapwjap_tqt");
+		
+		String descwjapwjap_tqt = "Tags all qualifiers that could be tighter";	
+		if (descwjapwjap_tqt.length() > 0) {
+			Label descLabelwjapwjap_tqt = new Label(editGroupwjapwjap_tqt, SWT.WRAP);
+			descLabelwjapwjap_tqt.setText(descwjapwjap_tqt);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"wjap.tqt"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwjapwjap_tqtenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_tqt, SWT.NONE, new OptionData("Enabled", "p", "wjap.tqt","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupwjapwjap_tqt;
 	}
 
 
@@ -9633,8 +9843,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"shimple"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9752,8 +9961,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"stp"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9797,8 +10005,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"sop"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9842,8 +10049,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"sop.cpf"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9903,8 +10109,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jtp"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9948,8 +10153,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop"+" "+"enabled";
 		defKey = defKey.trim();
@@ -9993,8 +10197,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.cse"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10054,8 +10257,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.bcm"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10115,8 +10317,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.lcm"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10228,8 +10429,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.cp"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10305,8 +10505,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.cpf"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10350,8 +10549,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.cbf"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10395,8 +10593,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.dae"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10456,8 +10653,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.uce1"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10501,8 +10697,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.ubf1"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10546,8 +10741,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.uce2"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10591,8 +10785,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.ubf2"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10636,8 +10829,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jop.ule"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10681,8 +10873,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jap"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10726,8 +10917,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jap.npc"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10803,8 +10993,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jap.npcolorer"+" "+"enabled";
 		defKey = defKey.trim();
@@ -10848,8 +11037,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jap.abc"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11005,8 +11193,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jap.profiling"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11066,8 +11253,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jap.sea"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11127,8 +11313,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jap.fieldrw"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11187,8 +11372,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jap.cgtagger"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11232,8 +11416,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"jap.parity"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11277,8 +11460,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"gb"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11322,8 +11504,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"gb.a1"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11383,8 +11564,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"gb.cf"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11428,8 +11608,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"gb.a2"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11489,8 +11668,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"gb.ule"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11534,8 +11712,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"gop"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11579,8 +11756,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"bb"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11624,8 +11800,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"bb.lso"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11765,8 +11940,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"bb.pho"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11810,8 +11984,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"bb.ule"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11855,8 +12028,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"bb.lp"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11916,8 +12088,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"bop"+" "+"enabled";
 		defKey = defKey.trim();
@@ -11961,8 +12132,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"tag"+" "+"enabled";
 		defKey = defKey.trim();
@@ -12006,8 +12176,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"tag.ln"+" "+"enabled";
 		defKey = defKey.trim();
@@ -12051,8 +12220,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"tag.an"+" "+"enabled";
 		defKey = defKey.trim();
@@ -12096,8 +12264,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"tag.dep"+" "+"enabled";
 		defKey = defKey.trim();
@@ -12141,8 +12308,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = "p"+" "+"tag.fieldrw"+" "+"enabled";
 		defKey = defKey.trim();
@@ -12186,8 +12352,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = ""+" "+""+" "+"include-all";
 		defKey = defKey.trim();
@@ -12306,8 +12471,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = ""+" "+""+" "+"keep-line-number";
 		defKey = defKey.trim();
@@ -12367,8 +12531,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = ""+" "+""+" "+"annot-nullpointer";
 		defKey = defKey.trim();
@@ -12460,8 +12623,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
+
 		
 		defKey = ""+" "+""+" "+"time";
 		defKey = defKey.trim();

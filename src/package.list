@@ -33,6 +33,9 @@ soot.jimple.toolkits.annotation.arraycheck
 soot.jimple.toolkits.annotation.nullcheck
 soot.jimple.toolkits.annotation.callgraph
 soot.jimple.toolkits.annotation.parity
+soot.jimple.toolkits.annotation.methods
+soot.jimple.toolkits.annotation.fields
+soot.jimple.toolkits.annotation.qualifiers
 soot.jimple.toolkits.annotation.profiling
 soot.jimple.toolkits.annotation.tags
 soot.jimple.toolkits.base

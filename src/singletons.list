@@ -153,4 +153,6 @@ EntryPoints
 CallGraphTagger
 NullPointerColorer
 ParityTagger
-
+UnreachableMethodsTagger
+UnreachableFieldsTagger
+TightestQualifiersTagger

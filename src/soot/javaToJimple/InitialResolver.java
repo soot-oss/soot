@@ -68,6 +68,8 @@ public class InitialResolver {
                 
                 while (classType.isNested()){
                     
+                    resolver.assertResolvedClass(classType.outer().toString());
+                    System.out.println("resolved: "+classType.outer().toString());
                     StringBuffer sb = new StringBuffer(className);
                     
                     int lastDot = className.lastIndexOf(".");
@@ -88,7 +90,7 @@ public class InitialResolver {
             if (!className.equals("java.lang.String[]")) {
                     
                 resolver.assertResolvedClass(className);
-                //System.out.println("Soot resolved className: "+className);
+                System.out.println("Soot resolved className: "+className);
             }
             
         }
@@ -373,8 +375,8 @@ public class InitialResolver {
         }
 
         // add outer class ref to constructors of inner classes
-        // and out class field ref
-        if (cDecl.type().isNested()) {
+        // and out class field ref (only for non-static inner classes
+        if (cDecl.type().isNested() && !cDecl.flags().isStatic()) {
             polyglot.types.ClassType outerType = cDecl.type().outer();
             soot.Type outerSootType = Util.getSootType(outerType);
             Iterator it = sootClass.getMethods().iterator();

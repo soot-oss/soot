@@ -921,6 +921,9 @@ public class Options extends OptionsBase {
         +padVal("wjop.si", "Static inliner: inlines monomorphic calls")
         +padOpt("wjap", "Whole-jimple annotation pack: adds interprocedural tags")
         +padVal("wjap.ra", "Rectangular array finder")
+        +padVal("wjap.umt", "Tags all unreachable methods")
+        +padVal("wjap.uft", "Tags all unreachable fields")
+        +padVal("wjap.tqt", "Tags all qualifiers that could be tighter")
         +padOpt("shimple", "Sets parameters for Shimple SSA form")
         +padOpt("stp", "Shimple transformation pack")
         +padOpt("sop", "Shimple optimization pack")
@@ -1254,6 +1257,24 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjap.ra" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThe Rectangular Array Finder traverses Jimple statements based \non the static call graph, and finds array variables which always \nhold rectangular two-dimensional array objects. In Java, a \nmulti-dimensional array is an array of arrays, which means the \nshape of the array can be ragged. Nevertheless, many \napplications use rectangular arrays. Knowing that an array is \nrectangular can be very helpful in proving safe array bounds \nchecks. The Rectangular Array Finder does not change the program \nbeing analyzed. Its results are used by the Array Bound Checker."
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" );
+    
+        if( phaseName.equals( "wjap.umt" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nUses the call graph to determine which methods are unreachable \nand adds color tags so they can be highlighted in a source \nbrowser."
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" );
+    
+        if( phaseName.equals( "wjap.uft" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nUses the call graph to determine which fields are unreachable \nand adds color tags so they can be highlighted in a source \nbrowser."
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" );
+    
+        if( phaseName.equals( "wjap.tqt" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nDetermines which methods and fields have qualifiers that could \nbe tightened. For example: if a field or method has the \nqualifier of public but is only used within the declaring class \nit could be private. This, this field or method is tagged with \ncolor tags so that the results can be highlighted in a source \nbrowser."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
@@ -1750,6 +1771,18 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
+        if( phaseName.equals( "wjap.umt" ) )
+            return ""
+                +"enabled ";
+    
+        if( phaseName.equals( "wjap.uft" ) )
+            return ""
+                +"enabled ";
+    
+        if( phaseName.equals( "wjap.tqt" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "shimple" ) )
             return ""
                 +"enabled "
@@ -2141,6 +2174,18 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:false ";
     
+        if( phaseName.equals( "wjap.umt" ) )
+            return ""
+              +"enabled:false ";
+    
+        if( phaseName.equals( "wjap.uft" ) )
+            return ""
+              +"enabled:false ";
+    
+        if( phaseName.equals( "wjap.tqt" ) )
+            return ""
+              +"enabled:false ";
+    
         if( phaseName.equals( "shimple" ) )
             return ""
               +"enabled:true "
@@ -2381,6 +2426,9 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjop.si" ) ) return;
         if( phaseName.equals( "wjap" ) ) return;
         if( phaseName.equals( "wjap.ra" ) ) return;
+        if( phaseName.equals( "wjap.umt" ) ) return;
+        if( phaseName.equals( "wjap.uft" ) ) return;
+        if( phaseName.equals( "wjap.tqt" ) ) return;
         if( phaseName.equals( "shimple" ) ) return;
         if( phaseName.equals( "stp" ) ) return;
         if( phaseName.equals( "sop" ) ) return;
@@ -2480,6 +2528,12 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase wjap" );
         if( !PackManager.v().hasPhase( "wjap.ra" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjap.ra" );
+        if( !PackManager.v().hasPhase( "wjap.umt" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjap.umt" );
+        if( !PackManager.v().hasPhase( "wjap.uft" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjap.uft" );
+        if( !PackManager.v().hasPhase( "wjap.tqt" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjap.tqt" );
         if( !PackManager.v().hasPhase( "shimple" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase shimple" );
         if( !PackManager.v().hasPhase( "stp" ) )

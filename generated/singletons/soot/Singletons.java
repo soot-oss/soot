@@ -56,6 +56,9 @@ import soot.jimple.toolkits.annotation.arraycheck.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.callgraph.*;
 import soot.jimple.toolkits.annotation.parity.*;
+import soot.jimple.toolkits.annotation.methods.*;
+import soot.jimple.toolkits.annotation.fields.*;
+import soot.jimple.toolkits.annotation.qualifiers.*;
 import soot.jimple.toolkits.annotation.profiling.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.base.*;
@@ -1014,6 +1017,24 @@ public class Singletons {
     public ParityTagger ParityTagger() {
         if( instanceParityTagger == null ) instanceParityTagger = new ParityTagger( g );
         return instanceParityTagger;
+    }
+
+    private UnreachableMethodsTagger instanceUnreachableMethodsTagger;
+    public UnreachableMethodsTagger UnreachableMethodsTagger() {
+        if( instanceUnreachableMethodsTagger == null ) instanceUnreachableMethodsTagger = new UnreachableMethodsTagger( g );
+        return instanceUnreachableMethodsTagger;
+    }
+
+    private UnreachableFieldsTagger instanceUnreachableFieldsTagger;
+    public UnreachableFieldsTagger UnreachableFieldsTagger() {
+        if( instanceUnreachableFieldsTagger == null ) instanceUnreachableFieldsTagger = new UnreachableFieldsTagger( g );
+        return instanceUnreachableFieldsTagger;
+    }
+
+    private TightestQualifiersTagger instanceTightestQualifiersTagger;
+    public TightestQualifiersTagger TightestQualifiersTagger() {
+        if( instanceTightestQualifiersTagger == null ) instanceTightestQualifiersTagger = new TightestQualifiersTagger( g );
+        return instanceTightestQualifiersTagger;
     }
 
 }

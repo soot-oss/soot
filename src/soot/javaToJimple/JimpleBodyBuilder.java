@@ -142,6 +142,10 @@ public class JimpleBodyBuilder {
     }
 
     private void handleOuterClassThisInit(soot.SootMethod sootMethod) {
+        
+        // static inner classes are different
+        if (soot.Modifier.isStatic(body.getMethod().getDeclaringClass().getModifiers())) return;
+        
         soot.Local local = ((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).getOuterClassThisInit();
         if (local != null) {
             soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, body.getMethod().getDeclaringClass().getField("this$0", local.getType()));
@@ -2393,7 +2397,7 @@ public class JimpleBodyBuilder {
         
        
         int index = classToInvoke.getName().lastIndexOf("$");
-        if (index != -1) {
+        if (index != -1 && !soot.Modifier.isStatic(classToInvoke.getModifiers())) {
             soot.SootClass outerClass = soot.Scene.v().getSootClass(classToInvoke.getName().substring(0, index));
             sootParamsTypes.add(outerClass.getType());
             soot.Local fieldRefLocal = generateLocal(outerClass.getType());
@@ -2517,7 +2521,7 @@ public class JimpleBodyBuilder {
         soot.SootClass classToInvoke = soot.Scene.v().getSootClass(className);
         
         int index = classToInvoke.getName().indexOf("$");
-        if (index != -1) {
+        if (index != -1 && !soot.Modifier.isStatic(classToInvoke.getModifiers())) {
             soot.SootClass outerClass = soot.Scene.v().getSootClass(classToInvoke.getName().substring(0, index));
             sootParamsTypes.add(outerClass.getType());
             soot.Local fieldRefLocal = generateLocal(outerClass.getType());
@@ -2545,8 +2549,9 @@ public class JimpleBodyBuilder {
         
         soot.SootMethod methodToInvoke = getMethodFromClass(classToInvoke, "<init>", sootParamsTypes, soot.VoidType.v());
         
+        System.out.println("retLocal: "+retLocal+" meth: "+methodToInvoke+" params: "+sootParams);
         soot.jimple.SpecialInvokeExpr specialInvokeExpr = soot.jimple.Jimple.v().newSpecialInvokeExpr(retLocal, methodToInvoke, sootParams);
-
+                
         soot.jimple.Stmt invokeStmt = soot.jimple.Jimple.v().newInvokeStmt(specialInvokeExpr);
 
         body.getUnits().add(invokeStmt);

@@ -2151,6 +2151,39 @@ Checker.</p>
 						<default>false</default>
 					</boolopt>
 				</sub_phase>
+                <sub_phase>
+					<name>Unreachable Method Tagger</name>
+					<alias>wjap.umt</alias>
+					<short_desc>Tags all unreachable methods</short_desc>
+					<long_desc><p>Uses the call graph to determine which methods are unreachable and adds color tags so they can be highlighted in a source browser.</p></long_desc> 
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+                </sub_phase>
+                <sub_phase>
+					<name>Unreachable Fields Tagger</name>
+					<alias>wjap.uft</alias>
+					<short_desc>Tags all unreachable fields</short_desc>
+					<long_desc><p>Uses the call graph to determine which fields are unreachable and adds color tags so they can be highlighted in a source browser.</p></long_desc> 
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+                </sub_phase>
+                <sub_phase>
+					<name>Tightest Qualifiers Tagger</name>
+					<alias>wjap.tqt</alias>
+					<short_desc>Tags all qualifiers that could be tighter</short_desc>
+					<long_desc><p>Determines which methods and fields have qualifiers that could be tightened. For example: if a field or method has the qualifier of public but is only used within the declaring class it could be private. This, this field or method is tagged with color tags so that the results can be highlighted in a source browser.</p></long_desc> 
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+                </sub_phase>
 			</phase>
       <phase>
         <name>Shimple Control</name>
