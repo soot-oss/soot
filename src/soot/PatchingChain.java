@@ -34,25 +34,12 @@ import soot.util.*;
  * times. */
 public class PatchingChain extends AbstractCollection implements Chain 
 {
-    private Chain innerChain;
+    protected Chain innerChain;
 
-    /**
-     * May be used to find trapped Units.
-     **/
-    private Body body;
-    
     /** Constructs a PatchingChain from the given Chain. */
     public PatchingChain(Chain aChain)
     {
         innerChain = aChain;
-        body = null;
-    }
-
-    /** Constructs a PatchingChain from the given Chain. */
-    public PatchingChain(Chain aChain, Body aBody)
-    {
-        innerChain = aChain;
-        body = aBody;
     }
 
     /**
@@ -83,27 +70,6 @@ public class PatchingChain extends AbstractCollection implements Chain
     /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
     public void insertAfter(Object toInsert, Object point)
     {
-        Unit unit = (Unit) point;
-
-        // update any pointers from Phi nodes only if the unit
-        // being inserted is in the same basic block as point, since
-	// the default assumption is that we are tracking control
-	// flow predecessors.
-        patchpointers:
-        {
-            if(unit.branches())
-                break patchpointers;
-
-            Set trappedUnits = Collections.EMPTY_SET;
-            if(body != null)
-                trappedUnits = TrapManager.getTrappedUnitsOf(body);
-
-            if(trappedUnits.contains(unit))
-                break patchpointers;
-            
-            unit.redirectPointersToThisTo((Unit) toInsert, false);
-        }
-        
         innerChain.insertAfter(toInsert, point);
     }
 
@@ -160,9 +126,6 @@ public class PatchingChain extends AbstractCollection implements Chain
             if((successor = (Unit)getSuccOf(obj)) == null)
                 successor = (Unit)getPredOf(obj);
             
-            // Fix up any PhiExpr's first if necessary.
-            soot.shimple.Shimple.redirectToPreds((Unit)obj, this);
-
             res = innerChain.remove(obj);
 
             ((Unit)obj).redirectJumpsToThisTo(successor);
@@ -213,15 +176,15 @@ public class PatchingChain extends AbstractCollection implements Chain
     /** Returns the object immediately preceding <code>point</code>. */
     public Object getPredOf(Object point){return innerChain.getPredOf(point);}
 
-    private class PatchingIterator implements Iterator
+    protected class PatchingIterator implements Iterator
     {
-        Iterator innerIterator = null;
-        Object lastObject;
-        boolean state = false;
+        protected Iterator innerIterator = null;
+        protected Object lastObject;
+        protected boolean state = false;
 
-        PatchingIterator (Chain innerChain) { innerIterator = innerChain.iterator(); }
-        PatchingIterator (Chain innerChain, Object u) { innerIterator = innerChain.iterator(u); }
-        PatchingIterator (Chain innerChain, Object head, Object tail) { innerIterator = innerChain.iterator(head, tail); }
+        protected PatchingIterator (Chain innerChain) { innerIterator = innerChain.iterator(); }
+        protected PatchingIterator (Chain innerChain, Object u) { innerIterator = innerChain.iterator(u); }
+        protected PatchingIterator (Chain innerChain, Object head, Object tail) { innerIterator = innerChain.iterator(head, tail); }
 
         public boolean hasNext() { return innerIterator.hasNext(); }
         public Object next() { lastObject = innerIterator.next(); state = true; return lastObject; }

@@ -1182,7 +1182,8 @@ public class Options extends OptionsBase {
                 +padVal( "post (default)", "If enabled, some optimizations are applied after               Phi nodes are eliminated." )
                 
                 +padVal( "pre-and-post", "If enabled, some optimizations are applied             both before and after Phi nodes are eliminated." )
-                ;
+                
+                +padOpt( "standard-local-names (false)", "Uses naming scheme of the Local Name             Standardizer." );
     
         if( phaseName.equals( "stp" ) )
             return "Phase "+phaseName+":\n"+
@@ -1626,7 +1627,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "shimple" ) )
             return ""
                 +"enabled "
-                +"phi-elim-opt ";
+                +"phi-elim-opt "
+                +"standard-local-names ";
     
         if( phaseName.equals( "stp" ) )
             return ""
@@ -1975,7 +1977,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "shimple" ) )
             return ""
               +"enabled:true "
-              +"phi-elim-opt:post ";
+              +"phi-elim-opt:post "
+              +"standard-local-names:false ";
     
         if( phaseName.equals( "stp" ) )
             return ""

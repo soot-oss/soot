@@ -72,16 +72,13 @@ public interface Unit extends Switchable, Host, Serializable
     
     public void toString(UnitPrinter up);
 
-    public void redirectJumpsToThisTo(Unit newLocation);
-
     /**
-     * Redirects pointers to this Unit to newLocation.
-     *
-     * <p> branchTarget indicates whether the Unit should be processed
-     * as the target of a jump (hence at the beginning of a CFG) or as
-     * a Unit indicative of the end of a CFG block (used for SSA).
-     *
-     * @see UnitBox
+     * Redirects jumps to this Unit to newLocation.  In general, you shouldn't
+     * have to use this directly.
+     * 
+     * @see PatchingChain#getNonPatchingChain()
+     * @see soot.shimple.Shimple#redirectToPreds(Chain, Unit)
+     * @see soot.shimple.Shimple#redirectPointers(Unit, Unit)
      **/
-    public void redirectPointersToThisTo(Unit newLocation, boolean branchTarget);
+    public void redirectJumpsToThisTo(Unit newLocation);
 }

@@ -17,20 +17,34 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.shimple;
+package soot.shimple.internal;
 
-import soot.util.*;
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
+import soot.UnitBox;
 
 /**
+ * Extension of UnitBox to provide some extra information needed by
+ * SPatchingChain.
+ *
  * @author Navindra Umanee
  **/
-public abstract class AbstractShimpleValueSwitch extends AbstractJimpleValueSwitch implements ShimpleValueSwitch
+public interface SUnitBox extends UnitBox
 {
-    public void casePhiExpr(PhiExpr e)
-    {
-        defaultCase(e);
-    }
+    /**
+     * Indicates whether the contents of the UnitBox may have been
+     * changed.  Returns true if setUnit(Unit) has been called
+     * recently and was not followed by setUnitChanged(false).
+     *
+     * <p> Needed for Shimple internal Unit chain patching.
+     **/
+    public boolean isUnitChanged();
+    
+    /**
+     * Updates the value of the flag used to indicate whether the
+     * contents of the UnitBox may have changed.
+     *
+     * <p> Needed for Shimple internal Unit chain patching.
+     *
+     * @see #isUnitChanged()
+     **/
+    public void setUnitChanged(boolean unitChanged);
 }

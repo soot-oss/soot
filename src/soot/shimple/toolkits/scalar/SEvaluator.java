@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,7 +43,7 @@ public class SEvaluator
     public static boolean isValueConstantValued(Value op)
     {
         if(op instanceof PhiExpr) {
-            Iterator argsIt = ((PhiExpr) op).getValueArgs().iterator();
+            Iterator argsIt = ((PhiExpr) op).getValues().iterator();
             Constant firstConstant = null;
 
             while(argsIt.hasNext()){
@@ -76,7 +76,7 @@ public class SEvaluator
         if(!(isValueConstantValued(op)))
             return null;
         
-        return (Value) ((PhiExpr) op).getValueArgs().get(0);
+        return (Value) ((PhiExpr) op).getValues().get(0);
     }
 
     /**
@@ -85,7 +85,7 @@ public class SEvaluator
      **/
     public static boolean isPhiFuzzyConstantValued(PhiExpr op)
     {
-        Iterator argsIt = op.getValueArgs().iterator();
+        Iterator argsIt = op.getValues().iterator();
         Constant firstConstant = null;
 
         while(argsIt.hasNext()){
@@ -112,7 +112,7 @@ public class SEvaluator
      **/
     public static Constant getFirstConstantInPhi(PhiExpr op)
     {
-        Iterator argsIt = op.getValueArgs().iterator();
+        Iterator argsIt = op.getValues().iterator();
 
         while(argsIt.hasNext()){
             Value arg = (Value) argsIt.next();

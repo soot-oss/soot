@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -103,7 +103,7 @@ public class ShimpleBodyBuilder
         insertTrivialPhiNodes();
         renameLocals();
         trimExceptionalPhiNodes();
-        body.makeUniqueLocalNames();
+        makeUniqueLocalNames(body);
     }
 
     /**
@@ -532,9 +532,8 @@ public class ShimpleBodyBuilder
         if(subscript.intValue() == 0)
             return oldLocal;
 
-        // ** TODO: What if this name already exists?
-        // In theory it doesn't matter since we are creating a new Local
-        // object.  The text output can be wrong, however.
+        // If the name already exists, makeUniqueLocalNames() will
+        // take care of it.
         String name = oldLocal.getName() + "_" + subscript;
 
         Local newLocal = (Local) newLocals.get(name);
@@ -732,7 +731,7 @@ public class ShimpleBodyBuilder
 
         return(champNode.dominates(challengerNode));
     }
-
+    
     /**
      * Remove Phi nodes from current body, high probablity this
      * destroys SSA form.
@@ -746,7 +745,6 @@ public class ShimpleBodyBuilder
     public static void eliminatePhiNodes(ShimpleBody body)
     {
         ShimpleOptions options = body.getOptions();
-
         int phiElimOpt = options.phi_elim_opt();
         
         // off by default
@@ -756,10 +754,11 @@ public class ShimpleBodyBuilder
             DeadAssignmentEliminator.v().transform(body);
             Aggregator.v().transform(body);
         }
-
+        
         // offloaded in a separate function for historical reasons
-        doEliminatePhiNodes(body);
-
+        if(doEliminatePhiNodes(body))
+            makeUniqueLocalNames(body);
+        
         // on by default
         if((phiElimOpt == options.phi_elim_opt_post) ||
            (phiElimOpt == options.phi_elim_opt_pre_and_post))
@@ -767,19 +766,36 @@ public class ShimpleBodyBuilder
             DeadAssignmentEliminator.v().transform(body);
             Aggregator.v().transform(body);
         }
-        
-        body.makeUniqueLocalNames();
     }
     
     /**
      * Eliminate Phi nodes in block by naively replacing them with
      * shimple assignment statements in the control flow predecessors.
+     * Returns true if new locals were added to the body during the
+     * process, false otherwise.
      **/
-    public static void doEliminatePhiNodes(ShimpleBody body)
+    public static boolean doEliminatePhiNodes(ShimpleBody body)
     {
+        // flag that indicates whether we created new locals during the
+        // elimination process
+        boolean addedNewLocals = false;
+        
+        // List of Phi nodes to be deleted.
         List phiNodes = new ArrayList();
-        Map stmtsToAppend = new HashMap();
 
+        // This stores the assignment statements equivalent to each
+        // (and every) Phi.  We use lists instead of a Map of
+        // non-determinate order since we prefer to preserve the order
+        // of the assignment statements, i.e. if a block has more than
+        // one Phi expression, we prefer that the equivalent
+        // assignments be placed in the same order as the Phi expressions.
+        List equivStmts = new ArrayList();
+
+        // Similarly, to preserve order, instead of directly storing
+        // the pred, we store the pred box so that we follow the
+        // pointers when SPatchingChain moves them.
+        List predBoxes = new ArrayList();
+        
         Chain units = body.getUnits();
         Iterator unitsIt = units.iterator();
 
@@ -793,22 +809,25 @@ public class ShimpleBodyBuilder
             Local lhsLocal = Shimple.getLhsLocal(unit);
 
             for(int i = 0; i < phi.getArgCount(); i++){
-                Value phiValueArg = phi.getValueArg(i);
-                Unit pred = phi.getPredArg(i);
-                AssignStmt convertedPhi = Jimple.v().newAssignStmt(lhsLocal, phiValueArg);
-                stmtsToAppend.put(convertedPhi, pred);
+                Value phiValue = phi.getValue(i);
+                AssignStmt convertedPhi =
+                    Jimple.v().newAssignStmt(lhsLocal, phiValue);
+
+                equivStmts.add(convertedPhi);
+                predBoxes.add(phi.getArgBox(i));
             }
 
             phiNodes.add(unit);
         }
 
+        if(equivStmts.size() != predBoxes.size())
+            throw new RuntimeException("Assertion failed.");
+        
         /* Avoid Concurrent Modification exceptions. */
 
-        Iterator stmtsIt = stmtsToAppend.keySet().iterator();
-
-        while(stmtsIt.hasNext()){
-            AssignStmt stmt = (AssignStmt) stmtsIt.next();
-            Unit pred = (Unit) stmtsToAppend.get(stmt);
+        for(int i = 0; i < equivStmts.size(); i++){
+            AssignStmt stmt = (AssignStmt) equivStmts.get(i);
+            Unit pred = ((UnitBox) predBoxes.get(i)).getUnit();
 
             // if we need to insert the copy statement *before* an
             // instruction that happens to be *using* the Local being
@@ -825,6 +844,7 @@ public class ShimpleBodyBuilder
                     ValueBox useBox = (ValueBox) useBoxesIt.next();
                     if(lhsLocal.equals(useBox.getValue())){
                         needPriming = true;
+                        addedNewLocals = true;
                         useBox.setValue(savedLocal);
                     }
                 }
@@ -849,8 +869,53 @@ public class ShimpleBodyBuilder
             units.remove(removeMe);
             removeMe.clearUnitBoxes();
         }
+
+        return addedNewLocals;
     }
 
+    /**
+     * Make sure the locals in the given body all have unique String
+     * names.  Renaming is done if necessary.
+     **/
+    public static void makeUniqueLocalNames(ShimpleBody body)
+    {
+        if(body.getOptions().standard_local_names()){
+            LocalNameStandardizer.v().transform(body);
+            return;
+        }
+
+        Set localNames = new HashSet();
+        Iterator localsIt = body.getLocals().iterator();
+
+        while(localsIt.hasNext()){
+            Local local = (Local) localsIt.next();
+            String localName = local.getName();
+            
+            if(localNames.contains(localName)){
+                String uniqueName = makeUniqueLocalName(localName, localNames);
+                local.setName(uniqueName);
+                localNames.add(uniqueName);
+            }
+            else
+                localNames.add(localName);
+        }
+    }
+
+    /**
+     * Given a set of Strings, return a new name for dupName that is
+     * not currently in the set.
+     **/
+    public static String makeUniqueLocalName(String dupName, Set localNames)
+    {
+        int counter = 1;
+        String newName = dupName;
+
+        while(localNames.contains(newName))
+            newName = dupName + "_" + counter++;
+
+        return newName;
+    }
+    
     /**
      * Convenience function that really ought to be implemented in
      * soot.toolkits.graph.Block.

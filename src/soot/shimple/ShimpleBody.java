@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,10 +32,12 @@ import java.util.*;
 /**
  * Implementation of the Body class for the Shimple (SSA Jimple) IR.
  * This class provides methods for maintaining SSA form as well as
- * elimininating SSA form.
+ * eliminating SSA form.
  *
  * <p> We decided to hide all the intelligence in
- * internal.ShimpleBodyBuilder for clarity of API.
+ * internal.ShimpleBodyBuilder for clarity of API.  Eventually we will
+ * likely switch to an explicit Strategy pattern that will allow us to
+ * select different SSA behaviours and algorithms.
  *
  * @author Navindra Umanee
  * @see soot.shimple.internal.ShimpleBodyBuilder
@@ -59,6 +61,7 @@ public class ShimpleBody extends StmtBody
     ShimpleBody(SootMethod m, Map options)
     {
         super(m);
+        unitChain = new SPatchingChain(new HashChain());
         this.options = new ShimpleOptions(options);
         setIsSSA(true);
     }
@@ -81,8 +84,10 @@ public class ShimpleBody extends StmtBody
         if(Options.v().verbose())
             G.v().out.println("[" + getMethod().getName() + "] Constructing ShimpleBody...");
 
+        unitChain = new SPatchingChain(new HashChain());
         this.options = new ShimpleOptions(options);
         importBodyContentsFrom(body);
+
         // Shimplise body
         rebuild(false);
     }
@@ -226,6 +231,9 @@ public class ShimpleBody extends StmtBody
         return isSSA;
     }
 
+    /**
+     * Returns the Shimple options applicable to this body.
+     **/
     public ShimpleOptions getOptions()
     {
         return options;
@@ -233,39 +241,16 @@ public class ShimpleBody extends StmtBody
 
     /**
      * Make sure the locals in this body all have unique String names.
-     * Renaming is done if necessary.
+     * If the standard-local-names option is specified to Shimple,
+     * this results in the LocalNameStandardizer being applied.
+     * Otherwise, renaming is kept to a minimum and an underscore
+     * notation is used to differentiate locals previously of the same
+     * name.
+     *
+     * @see soot.jimple.toolkits.scalar.LocalNameStandardizer
      **/
     public void makeUniqueLocalNames()
     {
-        Set localNames = new HashSet();
-        Iterator localsIt = getLocals().iterator();
-
-        while(localsIt.hasNext()){
-            Local local = (Local) localsIt.next();
-            String localName = local.getName();
-            
-            if(localNames.contains(localName)){
-                String uniqueName = makeUniqueLocalName(localName, localNames);
-                local.setName(uniqueName);
-                localNames.add(uniqueName);
-            }
-            else
-                localNames.add(localName);
-        }
-    }
-
-    /**
-     * Given a set of Strings, return a new name for dupName that is
-     * not currently in the set.
-     **/
-    public String makeUniqueLocalName(String dupName, Set localNames)
-    {
-        int counter = 1;
-        String newName = dupName;
-
-        while(localNames.contains(newName))
-            newName = dupName + "_" + counter++;
-
-        return newName;
+        ShimpleBodyBuilder.makeUniqueLocalNames(this);
     }
 }

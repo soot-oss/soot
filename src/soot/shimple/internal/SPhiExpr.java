@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,10 +33,11 @@ import soot.toolkits.graph.*;
  *
  * @author Navindra Umanee
  * @see soot.shimple.PhiExpr
-**/
+ **/
 public class SPhiExpr implements PhiExpr
 {
-    protected List argPairs;
+    protected List argPairs = new ArrayList();
+    protected Map predToPair = new HashMap();  // cache
     protected Type type;
     
     /**
@@ -46,10 +47,8 @@ public class SPhiExpr implements PhiExpr
     public SPhiExpr(Local leftLocal, List preds)
     {
         type = leftLocal.getType();
-        argPairs = new ArrayList();
 
         Iterator predsIt = preds.iterator();
-        
         while(predsIt.hasNext())
         {
             Object pred = predsIt.next();
@@ -75,8 +74,6 @@ public class SPhiExpr implements PhiExpr
             throw new RuntimeException("Arg list does not match Pred list");
 
         type = ((Value) args.get(0)).getType();
-        argPairs = new ArrayList();
-    
         Iterator argsIt = args.iterator();
         Iterator predsIt = preds.iterator();
 
@@ -93,129 +90,37 @@ public class SPhiExpr implements PhiExpr
         }
     }
 
-    /**
-     * Create a Phi expression from the given list of argValues and
-     * predUnits.
-     * 
-     * <p> Ugly, but sometimes we don't have a list of Blocks, only a
-     * list of Units.  The value of the flag is ignored.  It is only
-     * there to change the signature of the constructor.
-     **/
-    public SPhiExpr(List args, List preds, int onlyHaveUnitsFlag)
-    {
-        if(args.size() == 0)
-            throw new RuntimeException("Arg list may not be empty");
-        
-        if(args.size() != preds.size())
-            throw new RuntimeException("Arg list does not match Pred list");
-
-        type = ((Value) args.get(0)).getType();
-        argPairs = new ArrayList();
+    /* get-accessor implementations */
     
-        Iterator argsIt = args.iterator();
-        Iterator predsIt = preds.iterator();
-
-        while(argsIt.hasNext()){
-            Value arg = (Value) argsIt.next();
-            Unit pred = (Unit) predsIt.next();
-
-            addArg(arg, pred);
-        }
-    }
-    
-    public Value getValueArg(int index)
+    public List getArgs()
     {
-        return ((ValueUnitPair)argPairs.get(index)).getValue();
+        return Collections.unmodifiableList(argPairs);
     }
 
-    public Value getValueArg(Block pred)
-    {
-        return getValueArg(pred.getTail());
-    }
-
-    public Value getValueArg(Unit predTailUnit)
-    {
-        // *** hmmm, expensive implementation
-
-        Iterator argPairsIt = argPairs.iterator();
-
-        while(argPairsIt.hasNext()){
-            ValueUnitPair vu = (ValueUnitPair) argPairsIt.next();
-            if((vu.getUnit()).equals(predTailUnit))
-                return vu.getValue();
-        }
-
-        return null;
-    }
-    
-    public Unit getPredArg(int index)
-    {
-        return ((ValueUnitPair)argPairs.get(index)).getUnit();
-    }
-    
-    public List getValueArgs()
+    public List getValues()
     {
         List args = new ArrayList();
-        
         Iterator argPairsIt = argPairs.iterator();
 
         while(argPairsIt.hasNext()){
             Value arg = ((ValueUnitPair)argPairsIt.next()).getValue();
-
             args.add(arg);
         }
         
         return args;
     }
 
-    public List getPredArgs()
+    public List getPreds()
     {
         List preds = new ArrayList();
-        
         Iterator argPairsIt = argPairs.iterator();
 
         while(argPairsIt.hasNext()){
             Unit arg = ((ValueUnitPair)argPairsIt.next()).getUnit();
-
             preds.add(arg);
         }
         
         return preds;
-    }
-
-    public int getArgIndex(Block pred)
-    {
-        Unit predTailUnit = pred.getTail();
-        int index = getArgIndex(predTailUnit);
-
-        // workaround added for internal cases where the predTailUnit
-        // may not be at the end of the predecessor block
-        // (fall-through pointer not moved)
-        while(index == -1){
-            predTailUnit = pred.getPredOf(predTailUnit);
-            if(predTailUnit == null)
-                break;
-            index = getArgIndex(predTailUnit);
-        }
-
-        return index;
-    }
-
-    public int getArgIndex(Unit predTailUnit)
-    {
-        // *** hmmm, expensive implementation
-
-        int count = 0;
-        Iterator argPairsIt = argPairs.iterator();
-
-        while(argPairsIt.hasNext()){
-            ValueUnitPair vu = (ValueUnitPair) argPairsIt.next();
-            if((vu.getUnit()).equals(predTailUnit))
-                return count;
-            count++;
-        }
-
-        return -1;
     }
 
     public int getArgCount()
@@ -223,79 +128,178 @@ public class SPhiExpr implements PhiExpr
         return argPairs.size();
     }
 
+    public ValueUnitPair getArgBox(int index)
+    {
+        if(index < 0 || index >= argPairs.size())
+            return null;
+        return (ValueUnitPair) argPairs.get(index);
+    }
+    
+    public Value getValue(int index)
+    {
+        ValueUnitPair arg = getArgBox(index);
+        if(arg == null)
+            return null;
+        return arg.getValue();
+    }
+
+    public Unit getPred(int index)
+    {
+        ValueUnitPair arg = getArgBox(index);
+        if(arg == null)
+            return null;
+        return arg.getUnit();
+    }
+
+    public int getArgIndex(Unit predTailUnit)
+    {
+        ValueUnitPair pair = getArgBox(predTailUnit);
+        return argPairs.indexOf(pair); // (-1 on null)
+    }
+
+    public ValueUnitPair getArgBox(Unit predTailUnit)
+    {
+        ValueUnitPair vup = (ValueUnitPair) predToPair.get(predTailUnit);
+
+        // we pay a penalty for misses but hopefully the common case
+        // is faster than an iteration over argPairs every time
+        if(vup == null || vup.getUnit() != predTailUnit){
+            updateCache();
+            vup = (ValueUnitPair) predToPair.get(predTailUnit);
+            if((vup != null) && (vup.getUnit() != predTailUnit))
+                throw new RuntimeException("Assertion failed.");
+        }
+
+        // (null if not found)
+        return vup;
+    }
+    
+    public Value getValue(Unit predTailUnit)
+    {
+        ValueBox vb = getArgBox(predTailUnit);
+        if(vb == null)
+            return null;
+        return vb.getValue();
+    }
+
+    public int getArgIndex(Block pred)
+    {
+        ValueUnitPair box = getArgBox(pred);
+        return argPairs.indexOf(box); // (-1 on null)
+    }
+
+    public ValueUnitPair getArgBox(Block pred)
+    {
+        Unit predTailUnit = pred.getTail();
+        ValueUnitPair box = getArgBox(predTailUnit);
+
+        // workaround added for internal cases where the predTailUnit
+        // may not be at the end of the predecessor block
+        // (eg, fall-through pointer not moved)
+        while(box == null){
+            predTailUnit = pred.getPredOf(predTailUnit);
+            if(predTailUnit == null)
+                break;
+            box = getArgBox(predTailUnit);
+        }
+
+        return box;
+    }
+
+    public Value getValue(Block pred)
+    {
+        ValueBox vb = getArgBox(pred);
+        if(vb == null)
+            return null;
+        return vb.getValue();
+    }
+
+    /* set-accessor implementations */
+    
+    public boolean setArg(int index, Value arg, Unit predTailUnit)
+    {
+        boolean ret1 = setValue(index, arg);
+        boolean ret2 = setPred(index, predTailUnit);
+        if(ret1 != ret2)
+            throw new RuntimeException("Assertion failed.");
+        return ret1;
+    }
+    
     public boolean setArg(int index, Value arg, Block pred)
     {
         return setArg(index, arg, pred.getTail());
     }
     
-    public boolean setArg(int index, Value arg, Unit predTailUnit)
+    public boolean setValue(int index, Value arg)
     {
-        ValueUnitPair argPair = (ValueUnitPair) argPairs.get(index);
-
+        ValueUnitPair argPair = getArgBox(index);
         if(argPair == null)
             return false;
-
-        argPair.setValue(arg);
-
-        // remove old back pointer
-        Unit oldPredTailUnit = argPair.getUnit();
-        oldPredTailUnit.removeBoxPointingToThis(argPair);
-            
-        predTailUnit.addBoxPointingToThis(argPair);
-        argPair.setUnit(predTailUnit);
-        return true;
-    }
-    
-    
-    public boolean setValueArg(int index, Value arg)
-    {
-        ValueUnitPair argPair = (ValueUnitPair) argPairs.get(index);
-
-        if(argPair == null)
-            return false;
-
         argPair.setValue(arg);
         return true;
     }
 
-    public boolean setPredArg(int index, Block pred)
+    public boolean setValue(Unit predTailUnit, Value arg)
     {
-        return setPredArg(index, pred.getTail());
+        int index = getArgIndex(predTailUnit);
+        return setValue(index, arg);
     }
-    
-    public boolean setPredArg(int index, Unit predTailUnit)
-    {
-        ValueUnitPair argPair = (ValueUnitPair) argPairs.get(index);
 
+    public boolean setValue(Block pred, Value arg)
+    {
+        int index = getArgIndex(pred);
+        return setValue(index, arg);
+    }
+
+    public boolean setPred(int index, Unit predTailUnit)
+    {
+        ValueUnitPair argPair = getArgBox(index);
         if(argPair == null)
             return false;
 
-        // remove old back pointer
-        Unit oldPredTailUnit = argPair.getUnit();
-        oldPredTailUnit.removeBoxPointingToThis(argPair);
+        int other = getArgIndex(predTailUnit);
+        if(other != -1){
+            G.v().out.println("WARNING: An argument with control flow predecessor " +  predTailUnit + " already exists in " + this + "!");
+            G.v().out.println("WARNING: setPred resulted in deletion of " + argPair + " from " + this + ".");
+            removeArg(argPair);
+            return false;
+        }
 
-        predTailUnit.addBoxPointingToThis(argPair);
         argPair.setUnit(predTailUnit);
         return true;
     }
+
+    public boolean setPred(int index, Block pred)
+    {
+        return setPred(index, pred.getTail());
+    }
+    
+    /* add/remove implementations */
     
     public boolean removeArg(int index)
     {
-        ValueUnitPair valueUnit = (ValueUnitPair) argPairs.remove(index);
-        
-        if(valueUnit == null)
-            return false;
-        
-        // remove old back pointer
-        Unit pred = valueUnit.getUnit();
-        pred.removeBoxPointingToThis(valueUnit);
-
-        return true;
+        ValueUnitPair arg = getArgBox(index);
+        return removeArg(arg);
     }
 
+    public boolean removeArg(Unit predTailUnit)
+    {
+        ValueUnitPair arg = getArgBox(predTailUnit);
+        return removeArg(arg);
+    }
+
+    public boolean removeArg(Block pred)
+    {
+        ValueUnitPair arg = getArgBox(pred);
+        return removeArg(arg);
+    }
+    
     public boolean removeArg(ValueUnitPair arg)
     {
         if(argPairs.remove(arg)){
+            // update cache
+            predToPair.remove(arg.getUnit());
+            // remove back-pointer
             arg.getUnit().removeBoxPointingToThis(arg);
             return true;
         }
@@ -303,32 +307,43 @@ public class SPhiExpr implements PhiExpr
         return false;
     }
 
-    public void addArg(Value arg, Block pred)
+    public boolean addArg(Value arg, Block pred)
     {
-        addArg(arg, pred.getTail());
+        return addArg(arg, pred.getTail());
     }
     
-    public void addArg(Value arg, Unit predTailUnit)
+    public boolean addArg(Value arg, Unit predTailUnit)
     {
-        ValueUnitPair vup = new ValueUnitPair(arg, predTailUnit);
+        // we have no choice but to flush the cache
+        updateCache();
+
+        // we disallow duplicate arguments
+        if(predToPair.keySet().contains(predTailUnit))
+            return false;
+
+        ValueUnitPair vup = new SValueUnitPair(arg, predTailUnit);
         vup.setBranchTarget(false);
 
-        // there is no possible use for duplicate arguments
-        if(argPairs.contains(vup))
-            return;
-            
-        predTailUnit.addBoxPointingToThis(vup);
+        // add and update cache
         argPairs.add(vup);
+        predToPair.put(predTailUnit, vup);
+        return true;
     }
-    
-    public List getArgs()
+
+    /* misc */
+
+    /**
+     * Update predToPair cache map which could be out-of-sync due to
+     * external setUnit or clone operations on the UnitBoxes.
+     **/
+    protected void updateCache()
     {
-        return (List) ((ArrayList) argPairs).clone();
-    }
-    
-    public ValueUnitPair getArgBox(int index)
-    {
-        return (ValueUnitPair) argPairs.get(index);
+        predToPair = new HashMap();
+        Iterator pairsIt = argPairs.iterator();
+        while(pairsIt.hasNext()){
+            ValueUnitPair vup = (ValueUnitPair) pairsIt.next();
+            predToPair.put(vup.getUnit(), vup);
+        }
     }
 
     public boolean equivTo(Object o)
@@ -340,7 +355,7 @@ public class SPhiExpr implements PhiExpr
                 return false;
 
             for(int i = 0; i < argPairs.size(); i++){
-                if(!getArgBox(i).equals(pe.getArgBox(i)))
+                if(!getArgBox(i).equivTo(pe.getArgBox(i)))
                     return false;
             }
 
@@ -425,6 +440,11 @@ public class SPhiExpr implements PhiExpr
 
     public Object clone()
     {
-        return new SPhiExpr(getValueArgs(), getPredArgs());
+        // Note to self: Do not try to "fix" this *again*.  Yes, it
+        // should be a shallow copy in order to conform with the rest
+        // of Soot.  When a body is cloned, the Values are cloned
+        // explicitly and replaced, and UnitBoxes are explicitly
+        // patched.  See Body.importBodyContentsFrom for details.
+        return new SPhiExpr(getValues(), getPreds());
     }
 }

@@ -64,7 +64,7 @@ public abstract class Body extends AbstractHost implements Serializable
     protected Chain trapChain = new HashChain();
 
     /** The chain of units for this Body. */
-    protected PatchingChain unitChain = new PatchingChain(new HashChain(), this);
+    protected PatchingChain unitChain = new PatchingChain(new HashChain());
 
     /** Creates a deep copy of this Body. */
     abstract public Object clone();

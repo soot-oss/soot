@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,6 +23,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.shimple.internal.*;
 import soot.util.*;
+import soot.toolkits.scalar.ValueUnitPair;
 import java.util.*;
 import java.io.*;
 
@@ -94,10 +95,10 @@ public class Shimple
     }
 
     /**
-     * Create a trivial Phi expression, where preds are an ordered
-     * list of the control predecessor Blocks of the Phi expression.
-     * Instead of a list of blocks, you may provide a list of the tail
-     * Units from the corresponding blocks.
+     * Create a trivial PhiExpr, where preds are an ordered list of
+     * the control predecessor Blocks of the Phi expression.  Instead
+     * of a list of blocks, you may provide a list of the tail Units
+     * from the corresponding blocks.
      **/
     public PhiExpr newPhiExpr(Local leftLocal, List preds)
     {
@@ -105,11 +106,10 @@ public class Shimple
     }
 
     /**
-     * Create a Phi expression with the provided list of Values
-     * (Locals or Constants) and the corresponding control flow
-     * predecessor Blocks.  Instead of a list of predecessor blocks,
-     * you may provide a list of the tail Units from the corresponding
-     * blocks.
+     * Create a PhiExpr with the provided list of Values (Locals or
+     * Constants) and the corresponding control flow predecessor
+     * Blocks.  Instead of a list of predecessor blocks, you may
+     * provide a list of the tail Units from the corresponding blocks.
      **/
     public PhiExpr newPhiExpr(List args, List preds)
     {
@@ -175,20 +175,25 @@ public class Shimple
     }
 
     /**
-     * Misc utility function.  Perform the necessary fix ups when
-     * removing a CFG block from the Unit chain.
+     * If you are removing a Unit from a Unit chain which contains
+     * PhiExpr's, you might want to call this utility function in
+     * order to update any PhiExpr pointers to the Unit to point to
+     * the Unit's predecessor(s). This function will not modify
+     * "branch target" UnitBoxes.
      *
-     * @see soot.PatchingChain
+     * <p> Normally you should not have to call this function
+     * directly, since patching is taken care of Shimple's internal
+     * implementation of PatchingChain.
      **/
-    public static void redirectToPreds(Unit remove, Chain unitChain)
+    public static void redirectToPreds(Chain units, Unit remove)
     {
         /* Determine whether we should continue processing or not. */
 
         Iterator pointersIt = remove.getBoxesPointingToThis().iterator();
-        
+
         if(!pointersIt.hasNext())
             return;
-        
+
         while(pointersIt.hasNext()){
             UnitBox pointer = (UnitBox) pointersIt.next();
 
@@ -209,14 +214,14 @@ public class Shimple
         Set phis  = new HashSet();
         
         // find fall-through pred
-        if(!remove.equals(unitChain.getFirst())){
-            Unit possiblePred = (Unit) unitChain.getPredOf(remove);
-            if(!possiblePred.branches())
+        if(!remove.equals(units.getFirst())){
+            Unit possiblePred = (Unit) units.getPredOf(remove);
+            if(possiblePred.fallsThrough())
                 preds.add(possiblePred);
         }
 
         // find the rest of the preds and all Phi's that point to remove
-        Iterator unitsIt = unitChain.iterator();
+        Iterator unitsIt = units.iterator();
         while(unitsIt.hasNext()){
             Unit unit = (Unit) unitsIt.next();
             Iterator targetsIt = unit.getUnitBoxes().iterator();
@@ -227,35 +232,75 @@ public class Shimple
                     if(targetBox.isBranchTarget())
                         preds.add(unit);
                     else{
-                        PhiExpr phiExpr = getPhiExpr(unit);
+                        PhiExpr phiExpr = Shimple.getPhiExpr(unit);
                         if(phiExpr != null)
                             phis.add(phiExpr);
                     }
                 }
             }
         }
+
+        /* sanity check */
         
+        if(phis.size() == 0){
+            G.v().out.println("WARNING: Orphaned UnitBoxes to " + remove + "? Shimple.redirectToPreds is giving up.");
+            return;
+        }
+
+        if(preds.size() == 0){
+            G.v().out.println("WARNING: Shimple.redirectToPreds couldn't find any predecessors for " + remove + ".");
+            G.v().out.println("WARNING: Falling back to immediate successor.");
+            if(remove.equals(units.getLast()))
+                throw new RuntimeException("Assertion failed.");
+            preds.add(units.getSuccOf(remove));
+        }
+
         /* At this point we have found all the preds and relevant Phi's */
 
         /* Each Phi needs an argument for each pred. */
         Iterator phiIt = phis.iterator();
         while(phiIt.hasNext()){
             PhiExpr phiExpr = (PhiExpr) phiIt.next();
-            int argIndex = phiExpr.getArgIndex(remove);
+            ValueUnitPair argBox = phiExpr.getArgBox(remove);
 
-            if(argIndex == -1)
+            if(argBox == null)
                 throw new RuntimeException("Assertion failed.");
-
+            
             // now we've got the value!
-            Value argValue = phiExpr.getArgBox(argIndex).getValue();
-            phiExpr.removeArg(argIndex);
+            Value arg = argBox.getValue();
+            phiExpr.removeArg(argBox);
 
             // add new arguments to Phi
             Iterator predsIt = preds.iterator();
             while(predsIt.hasNext()){
                 Unit pred = (Unit) predsIt.next();
-                phiExpr.addArg(argValue, pred);
+                phiExpr.addArg(arg, pred);
             }
+        }
+    }
+
+    /**
+     * Redirects PhiExpr pointers to the given Unit to the new Unit.
+     *
+     * <p> Normally you should not have to call this function
+     * directly, since patching is taken care of Shimple's internal
+     * implementation of PatchingChain.
+     **/
+    public static void redirectPointers(Unit oldLocation, Unit newLocation)
+    {
+        List boxesPointing = oldLocation.getBoxesPointingToThis();
+
+        // important to change this to an array to have a static copy
+        Object[] boxes = boxesPointing.toArray();
+
+        for(int i = 0; i < boxes.length; i++){
+            UnitBox box = (UnitBox) boxes[i];
+
+            if(box.getUnit() != oldLocation)
+                throw new RuntimeException("Something weird's happening");
+            
+            if(!box.isBranchTarget())
+                box.setUnit(newLocation);
         }
     }
 }

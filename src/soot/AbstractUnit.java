@@ -133,7 +133,6 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     {
     }
 
-    /** Adjusts UnitBoxes pointing to this Unit to a newLocation. */
     public void redirectJumpsToThisTo(Unit newLocation)
     {
         List boxesPointing = this.getBoxesPointingToThis();
@@ -152,28 +151,5 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
                 box.setUnit(newLocation);
         }
 
-    }
-
-    public void redirectPointersToThisTo(Unit newLocation, boolean branchTarget)
-    {
-        if(branchTarget){
-            redirectJumpsToThisTo(newLocation);
-            return;
-        }
-            
-        List boxesPointing = this.getBoxesPointingToThis();
-
-        // important to change this to an array to have a static copy
-        Object[] boxes = boxesPointing.toArray();
-        
-        for(int i = 0; i < boxes.length; i++){
-            UnitBox box = (UnitBox) boxes[i];
-
-            if(box.getUnit() != this)
-                throw new RuntimeException("Something weird's happening");
-
-            if(!box.isBranchTarget())
-                box.setUnit(newLocation);
-        }
     }
 }

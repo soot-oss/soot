@@ -1794,7 +1794,7 @@ transformations.</p>
             <long_desc>
 <p>
 Perform some optimizations, such as dead code elimination and
-local packing, before eliminating Phi nodes.  This appears to be
+local aggregation, before eliminating Phi nodes.  This appears to be
 less effective than post-optimization, but the option is provided
 for future testing and investigation.</p>
 </long_desc>
@@ -1808,7 +1808,7 @@ for future testing and investigation.</p>
             <long_desc>
 <p>
 Perform some optimizations, such as dead code elimination and
-local packing, after eliminating Phi nodes.  This appears to be
+local aggregation, after eliminating Phi nodes.  This appears to be
 more effective than post-optimization.</p>
 </long_desc>
           </value>
@@ -1818,12 +1818,28 @@ more effective than post-optimization.</p>
             <short_desc>If enabled, some optimizations are applied
             both before and after Phi nodes are eliminated.</short_desc>
             <long_desc>If enabled, applies recommended optimizations
-            such as dead code elimination and local packing both
+            such as dead code elimination and local aggregation both
             before and after Phi node elimination.  Provided for
             experimentation.</long_desc>
           </value>
         </multiopt>
+        <boolopt>
+          <name>Local Name Standardization</name>
+          <alias>standard-local-names</alias>
+          <default>false</default>
+          <short_desc>Uses naming scheme of the Local Name
+            Standardizer.</short_desc>
+          <long_desc>
+            If enabled, the Local Name Standardizer is applied after
+            Shimple creates new locals.  Normally, Shimple will retain
+            the original local names as far as possible and use an
+            underscore notation to denote SSA subscripts.  This
+            transformation does not otherwise affect Shimple
+            behaviour.
+          </long_desc>
+        </boolopt>
       </phase>
+
 			<phase>
 				<name>Shimple Transformation Pack</name>
 				<alias>stp</alias>

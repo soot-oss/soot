@@ -17,20 +17,46 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.shimple;
+package soot.shimple.internal;
 
-import soot.util.*;
-import java.util.*;
 import soot.*;
-import soot.jimple.*;
+import soot.toolkits.scalar.ValueUnitPair;
 
 /**
+ * Extension of ValueUnitPair that implements SUnitBox.  Needed by
+ * SPatchingChain.  Equality is no longer dependent on the value.
+ *
  * @author Navindra Umanee
  **/
-public abstract class AbstractShimpleValueSwitch extends AbstractJimpleValueSwitch implements ShimpleValueSwitch
+public class SValueUnitPair extends ValueUnitPair implements SUnitBox
 {
-    public void casePhiExpr(PhiExpr e)
+    public SValueUnitPair(Value value, Unit unit)
     {
-        defaultCase(e);
+        super(value, unit);
+        setUnitChanged(true);
+    }
+
+    public void setUnit(Unit u)
+    {
+        super.setUnit(u);
+        setUnitChanged(true);
+    }
+
+    protected boolean unitChanged = false;
+
+    /**
+     * @see SUnitBox#isUnitChanged()
+     **/
+    public boolean isUnitChanged()
+    {
+        return unitChanged;
+    }
+    
+    /**
+     * @see SUnitBox#setUnitChanged(boolean)
+     **/
+    public void setUnitChanged(boolean unitChanged)
+    {
+        this.unitChanged = unitChanged;
     }
 }

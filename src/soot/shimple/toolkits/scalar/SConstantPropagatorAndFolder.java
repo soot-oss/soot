@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,12 +50,12 @@ import java.util.*;
  * off -p jop.dae off -p jop.uce1 off -p jop.ubf1 off -p jop.uce2 off
  * -p jop.ubf2 off -p jop.ubf2 off * &lt;classname&gt;</code>
  * 
- *  <p> The analysis is based on the efficient linear algorithm
- *  described in section 1.1, P5 of the Cytron paper with the
- *  exception that conditional control flow is not considered
- *  (conservatively estimated).  This is not necessarily the best
- *  implementation (in fact, it's a somewhat brute force approach to
- *  programming!) -- improvements and suggestions are welcome.
+ * <p> The analysis is based on the efficient linear algorithm
+ * described in section 1.1, P5 of the Cytron paper with the exception
+ * that conditional control flow is not considered (conservatively
+ * estimated).  This is not necessarily the best implementation (in
+ * fact, it's a somewhat brute force approach to programming!) --
+ * improvements and suggestions are welcome.
  *
  * @author Navindra Umanee
  * @see soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder
@@ -315,7 +315,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
 class TopConstant extends Constant
 {
     private static final TopConstant constant = new TopConstant();
-
+    
     private TopConstant() {}
 
     public static Constant v()
@@ -340,7 +340,7 @@ class TopConstant extends Constant
 class BottomConstant extends Constant
 {
     private static final BottomConstant constant = new BottomConstant();
-
+        
     private BottomConstant() {}
 
     public static Constant v()
@@ -352,7 +352,7 @@ class BottomConstant extends Constant
     {
         return UnknownType.v();
     }
-
+    
     public void apply(Switch sw)
     {
         throw new RuntimeException("Not implemented.");
