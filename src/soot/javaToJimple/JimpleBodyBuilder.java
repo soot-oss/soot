@@ -2966,12 +2966,14 @@ public class JimpleBodyBuilder {
         }
 
         // decide which invoke 
-		
+	    System.out.println("meth inst name: "+methodInstance.name()+" flags: "+methodInstance.flags());	
         soot.jimple.InvokeExpr invokeExpr; 
         if (isPrivateAccess){
+            // for accessing private methods in outer class -> always static
             invokeExpr = soot.jimple.Jimple.v().newStaticInvokeExpr(callMethod, sootParams);
         }
-        else if (soot.Modifier.isInterface(receiverTypeClass.getModifiers())) {
+        else if (soot.Modifier.isInterface(receiverTypeClass.getModifiers()) && methodInstance.flags().isAbstract()) {
+            // if reciever class is interface and method is abstract -> interface
             invokeExpr = soot.jimple.Jimple.v().newInterfaceInvokeExpr(baseLocal, callMethod, sootParams);
         }
         else if (methodInstance.flags().isStatic()){
@@ -2984,6 +2986,7 @@ public class JimpleBodyBuilder {
         }
         else if ((receiver instanceof polyglot.ast.Special) &&
             (((polyglot.ast.Special)receiver).kind() == polyglot.ast.Special.SUPER)){
+            // receiver is special super -> special
             invokeExpr = soot.jimple.Jimple.v().newSpecialInvokeExpr(baseLocal, callMethod, sootParams);
         }   
         else {
