@@ -144,7 +144,7 @@ public class JIdentityStmt extends AbstractDefinitionStmt
         else if(currentRhs instanceof ParameterRef)
             newRhs = Baf.v().newParameterRef(((ParameterRef) currentRhs).getMethod(), ((ParameterRef) currentRhs).getIndex());
         else if(currentRhs instanceof CaughtExceptionRef)
-            newRhs = Baf.v().newCaughtExceptionRef(context.getBafBody());
+            { out.add(Baf.v().newStoreInst(RefType.v(), context.getBafLocalOfJimpleLocal((Local) getLeftOp()))); return; }
         else
             throw new RuntimeException("Don't know how to convert unknown rhs");
 

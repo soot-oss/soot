@@ -118,7 +118,7 @@ public class BPopInst extends AbstractInst implements PopInst
 
     final String getParameters(boolean isBrief, Map unitToName) 
     {
-        return " "; 
+        return ""; 
     }
 
     public int getInCount()

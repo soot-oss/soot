@@ -200,16 +200,6 @@ public class Baf implements BodyRepresentation
     {
         return new ParameterRef(m, number);
     }
-
-    
-    /**
-        Constructs a CaughtExceptionRef() grammar chunk.
-     */
-
-    public CaughtExceptionRef newCaughtExceptionRef(BafBody b)
-    {
-        return new JCaughtExceptionRef(b);
-    }
     
     public StoreInst newStoreInst(Type opType, Local l)
     {
