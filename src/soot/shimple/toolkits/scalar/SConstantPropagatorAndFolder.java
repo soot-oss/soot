@@ -375,8 +375,11 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
                 SEvaluator.getFuzzyConstantValueOf(cond, localToConstant);
             
             // flow both ways
-            if(constant instanceof BottomConstant)
+            if(constant instanceof BottomConstant){
+                deadStmts.remove(ifStmt);
+                stmtToReplacement.remove(ifStmt);
                 break IFSTMT;
+            }
 
             // no flow
             if(constant instanceof TopConstant)
@@ -412,8 +415,10 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
                 SEvaluator.getFuzzyConstantValueOf(keyV, localToConstant);
 
             // flow all branches
-            if(keyC instanceof BottomConstant)
+            if(keyC instanceof BottomConstant){
+                stmtToReplacement.remove(table);
                 break TABLESWITCHSTMT;
+            }
 
             // no flow
             if(keyC instanceof TopConstant)
@@ -456,8 +461,10 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
                 SEvaluator.getFuzzyConstantValueOf(keyV, localToConstant);
 
             // flow all branches
-            if(keyC instanceof BottomConstant)
+            if(keyC instanceof BottomConstant){
+                stmtToReplacement.remove(lookup);
                 break LOOKUPSWITCHSTMT;
+            }
 
             // no flow
             if(keyC instanceof TopConstant)
