@@ -380,14 +380,11 @@ abstract accessors to values used and defined in a unit.
 // Take out kill set:
 //  for each local v def'd in 
 //  this unit, remove v from dest
-Iterator boxIt = ut.getDefBoxes()
-                     .iterator();
-while( boxIt.hasNext() ) {
-    ValueBox box = 
-         (ValueBox) boxIt.next();
-    Value value = box.getValue();
-    if( value instanceof Local )
-        dest.remove( value );
+for (ValueBox box : ut.getDefBoxes()) 
+{
+  Value value = box.getValue();
+  if( value instanceof Local )
+    dest.remove( value );
 }
 \end{verbatim}
 \end{slide}
@@ -398,13 +395,11 @@ while( boxIt.hasNext() ) {
 // Add gen set
 //  for each local v used in 
 //  this unit, add v to dest
-boxIt = ut.getUseBoxes().iterator();
-while (boxIt.hasNext()) {
-    ValueBox box = 
-         (ValueBox) boxIt.next();
-    Value value = box.getValue();
-    if (value instanceof Local)
-        dest.add(value);
+for (ValueBox box : ut.getUseBoxes()) 
+{
+  Value value = box.getValue();
+  if (value instanceof Local)
+    dest.add(value);
 }
 \end{verbatim}
 
@@ -635,13 +630,9 @@ Create flowsets, finding all locals in body:
 emptySet = new ArraySparseSet();
 fullSet = new ArraySparseSet();
 
-Iterator localIt = 
-  b.getLocals().iterator();
-
-while (localIt.hasNext()) {
-    Local l = (Local)localIt.next();
-    if (isRefOrArrayType(l.getType()))
-        fullSet.add(l);
+for (Local l : b.getLocals()) {
+  if (isRefOrArrayType(l.getType()))
+    fullSet.add(l);
 }
 \end{verbatim}
 \end{slide}
