@@ -31,7 +31,6 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     public JimpleBodyBuilder(){
         //ext(null);
         //base(this);
-        base(this);
     }
     
     

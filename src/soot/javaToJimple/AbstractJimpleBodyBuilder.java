@@ -29,8 +29,8 @@ public abstract class AbstractJimpleBodyBuilder {
     
     public void ext(AbstractJimpleBodyBuilder ext){
         this.ext = ext;
-        if (ext.ext() != null){
-            throw new RuntimeException("Extensions created in wrong order, try doing right.");
+        if (ext.ext != null){
+            throw new RuntimeException("Extensions created in wrong order.");
         }
         ext.base = this.base;
     }
@@ -38,7 +38,7 @@ public abstract class AbstractJimpleBodyBuilder {
         if (ext == null) return this;
         return ext;
     }
-    private AbstractJimpleBodyBuilder ext;
+    private AbstractJimpleBodyBuilder ext = null;
     
     public void base(AbstractJimpleBodyBuilder base){
         this.base = base;
@@ -46,7 +46,7 @@ public abstract class AbstractJimpleBodyBuilder {
     public AbstractJimpleBodyBuilder base(){
         return base;
     }
-    private AbstractJimpleBodyBuilder base;
+    private AbstractJimpleBodyBuilder base = this;
     
     protected soot.jimple.JimpleBody createJimpleBody(polyglot.ast.Block block, List formals, soot.SootMethod sootMethod){
         return ext().createJimpleBody(block, formals, sootMethod);
