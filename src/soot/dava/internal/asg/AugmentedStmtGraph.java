@@ -457,7 +457,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 	    if (succs.size() == 0)
 		btails.add( as);
 	}
-	else if (ug instanceof CompleteUnitGraph) {
+	else if (ug instanceof TrapUnitGraph) {
 	    as.cpreds = preds;
 	    as.csuccs = succs;
 
