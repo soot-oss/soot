@@ -173,7 +173,7 @@
             <zipfileset file="${polyglot.jar}" prefix="ca.mcgill.sable.soot"/>
             <zipfileset file="${jasmin.jar}" prefix="ca.mcgill.sable.soot"/>
         </jar>
-        <tar destfile="${release.loc}/soot-eclipse-quickstart-${soot.version}.tar.gz">
+        <tar destfile="${release.loc}/soot-eclipse-quickstart-${soot.version}.tar.gz" compression="gzip" longfile="gnu">
             <tarfileset dir="eclipse/ca.mcgill.sable.soot/" includes="soot-plugin.jar,plugin.xml,plugin.properties, toc*.xml, doc/concepts/*, doc/ref/*" prefix="ca.mcgill.sable.soot"/>
             <tarfileset dir="${release.loc}/" includes="sootclasses-${soot.version}.jar" prefix="ca.mcgill.sable.soot"/>
             <tarfileset dir="eclipse/ca.mcgill.sable.soot/" includes="icons/*.png,icons/*.jpg,icons/*.gif" prefix="ca.mcgill.sable.soot"/>
