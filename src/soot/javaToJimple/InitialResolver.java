@@ -344,13 +344,13 @@ public class InitialResolver {
         if (member instanceof polyglot.ast.ProcedureDecl){
             polyglot.ast.ProcedureDecl procedure = (polyglot.ast.ProcedureDecl)member;
             // not sure if this will break deep nesting
-            alci.finalLocals(mfc.finalLocals());
+            alci.finalLocalsAvail(mfc.finalLocals());
             if (procedure.flags().isStatic()){
                 alci.inStaticMethod(true);
             }
         }
         else if (member instanceof polyglot.ast.FieldDecl){
-            alci.finalLocals(new ArrayList());
+            alci.finalLocalsAvail(new ArrayList());
             if (((polyglot.ast.FieldDecl)member).flags().isStatic()){
                 alci.inStaticMethod(true);
             }
@@ -358,7 +358,7 @@ public class InitialResolver {
         else if (member instanceof polyglot.ast.Initializer){
             // for now don't make final locals avail in init blocks
             // need to test this
-            alci.finalLocals(mfc.finalLocals());
+            alci.finalLocalsAvail(mfc.finalLocals());
             if (((polyglot.ast.Initializer)member).flags().isStatic()){
                 alci.inStaticMethod(true);
             }
@@ -372,8 +372,11 @@ public class InitialResolver {
             polyglot.types.ClassType cType = (polyglot.types.ClassType)((polyglot.util.IdentityKey)it.next()).object();
             AnonLocalClassInfo info = new AnonLocalClassInfo();
             info.inStaticMethod(alci.inStaticMethod());
-            info.finalLocals(alci.finalLocals());
-            finalLocalInfo.put(new polyglot.util.IdentityKey(cType), info);
+            //System.out.println("init final locals for: "+Util.getSootType(cType)+" are: "+alci.finalLocalsAvail());
+            info.finalLocalsAvail(alci.finalLocalsAvail());
+            if (!finalLocalInfo.containsKey(new polyglot.util.IdentityKey(cType))){
+                finalLocalInfo.put(new polyglot.util.IdentityKey(cType), info);
+            }
         }
         //System.out.println("init build of final local map: "+finalLocalInfo);
     }

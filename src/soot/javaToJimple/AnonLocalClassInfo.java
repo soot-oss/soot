@@ -24,7 +24,8 @@ import java.util.*;
 public class AnonLocalClassInfo{
 
     private boolean inStaticMethod;
-    private ArrayList finalLocals;
+    private ArrayList finalLocalsAvail;
+    private ArrayList finalLocalsUsed;
 
     public boolean inStaticMethod(){
         return inStaticMethod;
@@ -33,19 +34,28 @@ public class AnonLocalClassInfo{
         inStaticMethod = b;
     }
 
-    public ArrayList finalLocals(){
-        return finalLocals;
+    public ArrayList finalLocalsAvail(){
+        return finalLocalsAvail;
     }
-    public void finalLocals(ArrayList list){
-        finalLocals = list;
+    public void finalLocalsAvail(ArrayList list){
+        finalLocalsAvail = list;
+    }
+
+    public ArrayList finalLocalsUsed(){
+        return finalLocalsUsed;
+    }
+    public void finalLocalsUsed(ArrayList list){
+        finalLocalsUsed = list;
     }
 
     public String toString(){
         StringBuffer sb = new StringBuffer();
         sb.append("static: ");
         sb.append(inStaticMethod);
-        sb.append(" finalLocals: ");
-        sb.append(finalLocals);
+        sb.append(" finalLocalsAvail: ");
+        sb.append(finalLocalsAvail);
+        sb.append(" finalLocalsUsed: ");
+        sb.append(finalLocalsUsed);
         return sb.toString();
     }
 }

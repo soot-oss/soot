@@ -1653,7 +1653,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
        
     }
 
-    private soot.Local handlePrivateFieldSet(polyglot.ast.Assign assign){
+    private soot.Local handlePrivateFieldAssignSet(polyglot.ast.Assign assign){
         polyglot.ast.Field fLeft = (polyglot.ast.Field)assign.left();
         //soot.Value right = createExpr(assign.right());
 
@@ -1670,10 +1670,14 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             right = getStringConcatAssignRightLocal(assign);
         }
         else {
-            soot.Local leftLocal = (soot.Local)getFieldLocal(fLeft);
+            soot.Local leftLocal = (soot.Local)createExpr(fLeft);
             right = getAssignRightLocal(assign, leftLocal);
         }
-        
+       
+        return handlePrivateFieldSet(fLeft, right);
+    }
+    
+    private soot.Local handlePrivateFieldSet(polyglot.ast.Field fLeft, soot.Value right){ 
         soot.SootClass containClass = ((soot.RefType)Util.getSootType(fLeft.target().type())).getSootClass();
         soot.SootMethod methToUse = addSetAccessMeth(containClass, fLeft, right);
         ArrayList params = new ArrayList();
@@ -1901,7 +1905,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         // be handled as such)
         if ((assign.left() instanceof polyglot.ast.Field) && (needsPrivateAccessor((polyglot.ast.Field)assign.left()) || needsProtectedAccessor((polyglot.ast.Field)assign.left()))){
                 //((polyglot.ast.Field)assign.left()).fieldInstance().flags().isPrivate() && !Util.getSootType(((polyglot.ast.Field)assign.left()).fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
-            return handlePrivateFieldSet(assign);    
+            return handlePrivateFieldAssignSet(assign);    
         }
 
         if (assign.operator() == polyglot.ast.Assign.ASSIGN){
@@ -3072,11 +3076,16 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             Util.addLnPosTags(aStmt, unary.position());
             
             if ((expr instanceof polyglot.ast.Field) || (expr instanceof polyglot.ast.ArrayAccess)) {
-                soot.Value actualUnaryExpr = createLHS(expr);
-                soot.jimple.AssignStmt s = soot.jimple.Jimple.v().newAssignStmt(actualUnaryExpr, local);
-                body.getUnits().add(s);
-                Util.addLnPosTags(s, expr.position());
-                Util.addLnPosTags(s.getLeftOpBox(), expr.position());
+                if ((expr instanceof polyglot.ast.Field) && (needsPrivateAccessor((polyglot.ast.Field)expr) || needsProtectedAccessor((polyglot.ast.Field)expr))){
+                    handlePrivateFieldSet((polyglot.ast.Field)expr, local);
+                }
+                else {
+                    soot.Value actualUnaryExpr = createLHS(expr);
+                    soot.jimple.AssignStmt s = soot.jimple.Jimple.v().newAssignStmt(actualUnaryExpr, local);
+                    body.getUnits().add(s);
+                    Util.addLnPosTags(s, expr.position());
+                    Util.addLnPosTags(s.getLeftOpBox(), expr.position());
+                }
                 
             }
             return retLocal;
@@ -3105,12 +3114,17 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             Util.addLnPosTags(aStmt, unary.position());
            
             if ((expr instanceof polyglot.ast.Field) || (expr instanceof polyglot.ast.ArrayAccess)) {
-                soot.Value actualUnaryExpr = createLHS(expr);
-                soot.jimple.AssignStmt s = soot.jimple.Jimple.v().newAssignStmt(actualUnaryExpr, local);
-                body.getUnits().add(s);
+                if ((expr instanceof polyglot.ast.Field) && (needsPrivateAccessor((polyglot.ast.Field)expr) || needsProtectedAccessor((polyglot.ast.Field)expr))){
+                    handlePrivateFieldSet((polyglot.ast.Field)expr, local);
+                }
+                else {
+                    soot.Value actualUnaryExpr = createLHS(expr);
+                    soot.jimple.AssignStmt s = soot.jimple.Jimple.v().newAssignStmt(actualUnaryExpr, local);
+                    body.getUnits().add(s);
 
-                Util.addLnPosTags(s, expr.position());
-                Util.addLnPosTags(s.getLeftOpBox(), expr.position());
+                    Util.addLnPosTags(s, expr.position());
+                    Util.addLnPosTags(s.getLeftOpBox(), expr.position());
+                }
             }
 
             return retLocal;
@@ -3131,8 +3145,13 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             Util.addLnPosTags(stmt, expr.position());
             
             if ((expr instanceof polyglot.ast.Field) || (expr instanceof polyglot.ast.ArrayAccess) || (expr instanceof polyglot.ast.Local)) {
-                soot.Value actualUnaryExpr = createLHS(expr);
-                body.getUnits().add(soot.jimple.Jimple.v().newAssignStmt(actualUnaryExpr, local));
+                if ((expr instanceof polyglot.ast.Field) && (needsPrivateAccessor((polyglot.ast.Field)expr) || needsProtectedAccessor((polyglot.ast.Field)expr))){
+                    handlePrivateFieldSet((polyglot.ast.Field)expr, local);
+                }
+                else {
+                    soot.Value actualUnaryExpr = createLHS(expr);
+                    body.getUnits().add(soot.jimple.Jimple.v().newAssignStmt(actualUnaryExpr, local));
+                }
             }
 
             return local;
@@ -3153,8 +3172,14 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             Util.addLnPosTags(stmt, expr.position());
             
             if ((expr instanceof polyglot.ast.Field) || (expr instanceof polyglot.ast.ArrayAccess) || (expr instanceof polyglot.ast.Local)) {
-                soot.Value actualUnaryExpr = createLHS(expr);
-                body.getUnits().add(soot.jimple.Jimple.v().newAssignStmt(actualUnaryExpr, local));
+                    
+                if ((expr instanceof polyglot.ast.Field) && (needsPrivateAccessor((polyglot.ast.Field)expr) || needsProtectedAccessor((polyglot.ast.Field)expr))){
+                    handlePrivateFieldSet((polyglot.ast.Field)expr, local);
+                }
+                else {
+                    soot.Value actualUnaryExpr = createLHS(expr);
+                    body.getUnits().add(soot.jimple.Jimple.v().newAssignStmt(actualUnaryExpr, local));
+                }
             }
 
             return local;
@@ -3362,11 +3387,13 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     private void handleFinalLocalParams(ArrayList sootParams, ArrayList sootParamTypes, polyglot.types.ClassType keyType){
         
         HashMap finalLocalInfo = soot.javaToJimple.InitialResolver.v().finalLocalInfo();
+        System.out.println("finalLocalInfo: "+finalLocalInfo);
         if (finalLocalInfo != null){
             if (finalLocalInfo.containsKey(new polyglot.util.IdentityKey(keyType))){
                 AnonLocalClassInfo alci = (AnonLocalClassInfo)finalLocalInfo.get(new polyglot.util.IdentityKey(keyType));
                 
-                ArrayList finalLocals = alci.finalLocals();
+                ArrayList finalLocals = alci.finalLocalsUsed();
+                System.out.println("finalLocals for: "+Util.getSootType(keyType)+" are: "+finalLocals);
                 if (finalLocals != null){
                     Iterator it = finalLocals.iterator();
                     while (it.hasNext()){
@@ -3566,7 +3593,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         sootParamsTypes.addAll(getSootParamsTypes(newExpr));
 
         handleFinalLocalParams(sootParams, sootParamsTypes, (polyglot.types.ClassType)objType);
-     
+    
+        System.out.println("creating new for classToInvoke: "+classToInvoke+" with params: "+sootParamsTypes);
         soot.SootMethodRef methodToInvoke = getMethodFromClass(classToInvoke, "<init>", sootParamsTypes, soot.VoidType.v(), false);
         soot.jimple.SpecialInvokeExpr specialInvokeExpr = soot.jimple.Jimple.v().newSpecialInvokeExpr(retLocal, methodToInvoke, sootParams);
                 
