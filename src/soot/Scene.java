@@ -492,8 +492,10 @@ public class Scene  //extends AbstractHost
 
     public InvokeGraph getActiveInvokeGraph() 
     {
-        if(!hasActiveInvokeGraph())
-            throw new RuntimeException("no active InvokeGraph present for scene");
+        if(!hasActiveInvokeGraph()) {
+            setActiveInvokeGraph(
+                    ClassHierarchyAnalysis.newInvokeGraph(true,false) );
+        }
             
         return activeInvokeGraph;
     }

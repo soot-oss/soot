@@ -42,7 +42,7 @@ public class InvokeGraphBuilder extends SceneTransformer
       if (Options.v().verbose())
 	G.v().out.println("[] Start building the invoke graph...");
 
-      InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph();
+      InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph(true,true);
       Scene.v().setActiveInvokeGraph(invokeGraph);
 	
       if (Options.v().verbose())

@@ -21,14 +21,7 @@ public class ThrowFinder
 	registeredMethods = new HashSet();
 	protectionSet = new HashMap();
 
-	InvokeGraph invokeGraph = null;
-
-	try {
-	    invokeGraph = ClassHierarchyAnalysis.newInvokeGraph();
-	}
-	catch (RuntimeException re) {
-	    return; // don't die ... most likely a phantom class problem ... will have already been reported ... 
-	}	
+	InvokeGraph invokeGraph = Scene.v().getActiveInvokeGraph();
 
 	IterableSet worklist = new IterableSet();
 

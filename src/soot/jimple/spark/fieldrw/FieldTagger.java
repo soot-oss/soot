@@ -42,9 +42,6 @@ public class FieldTagger extends BodyTransformer
 
         ensureProcessed( body.getMethod() );
 
-	if( !Scene.v().hasActiveInvokeGraph() ) {
-	    InvokeGraphBuilder.v().transform( phaseName + ".igb" );
-	}
         InvokeGraph ig = Scene.v().getActiveInvokeGraph();
 statement: for( Iterator sIt = ig.getSitesOf( body.getMethod() ).iterator(); sIt.hasNext(); ) {     final Stmt s = (Stmt) sIt.next();
             HashSet transitiveTargets = new HashSet();

@@ -39,17 +39,20 @@ public class ClassHierarchyAnalysis
    
 
     /** Creates a new InvokeGraph based on CHA from the current Scene. */
-  public static InvokeGraph newInvokeGraph() {
-    return newInvokeGraph(true);
-  }
 
-  public static InvokeGraph newInvokeGraph(boolean buildCallGraph) {
+  public static InvokeGraph newInvokeGraph(boolean buildCallGraph,
+          boolean includeLibrary ) {
 
     HashSet visitedMethods = new HashSet(3000);
 
     List appAndLibClasses = new ArrayList();
     appAndLibClasses.addAll(Scene.v().getApplicationClasses());
-    appAndLibClasses.addAll(Scene.v().getLibraryClasses());
+    if( includeLibrary ) 
+        appAndLibClasses.addAll(Scene.v().getLibraryClasses());
+    else
+        G.v().out.println( "Warning: using incomplete invoke graph: "+
+                "excluding library classes." );
+
 
     FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
 
