@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project default="compile">
+<project default="compile" name="Soot Build File">
     <property file="ant.settings"/>
     <target name="settings">
         <fail
@@ -66,7 +66,7 @@
             classpath="classes:${polyglot.jar}:${jasmin.jar}"
             sourcepath="src:generated/singletons:generated/sablecc:generated/options"
             destdir="doc"
-            maxmemory="200m"
+            maxmemory="400m"
             link="${javaapi.url}"
             windowtitle="Soot API"
             verbose="true"
