@@ -342,7 +342,7 @@ public class JasminClass
 
     void emitMethod(SootMethod method, BodyExpr bodyExpr)
     {
-        JimpleBody body = (JimpleBody) bodyExpr.resolveFor(method);
+        StmtBody body = (StmtBody) bodyExpr.resolveFor(method);
 
         StmtList stmtList = body.getStmtList();
 
@@ -385,47 +385,6 @@ public class JasminClass
                         " using " + stmtToLabel.get(trap.getHandlerUnit()));
             }
         }
-
-        /*
-        // Emit the exceptions
-        {
-            ListIterator stmtIt = stmtList.listIterator();
-
-            while(stmtIt.hasNext())
-            {
-                Stmt s = (Stmt) stmtIt.next();
-
-                if(s instanceof BeginCatchStmt)
-                {
-                    BeginCatchStmt begin = (BeginCatchStmt) s;
-                    EndCatchStmt end = null;
-
-                    // Determine end
-                    {
-                        ListIterator endList = stmtList.listIterator(stmtIt.nextIndex());
-
-                        while(endList.hasNext())
-                        {
-                            Stmt r = (Stmt) endList.next();
-
-                            if(r instanceof EndCatchStmt &&
-                                begin.getException() == ((EndCatchStmt) r).getException())
-                            {
-                                end = (EndCatchStmt) r;
-                                break;
-                            }
-                        }
-                    }
-
-                    if(end == null)
-                        throw new RuntimeException("unmatched BeginCatchStmt for " + begin.getException());
-
-                    // Output exception
-
-                }
-            }
-        }
-                            */
 
         // Determine where the locals go
         {

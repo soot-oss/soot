@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on February 8, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+   Added getUnitBoxes();
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -83,6 +86,8 @@ public interface StmtBody extends Body
     public List getTraps();
     public int getLocalCount();
     public List getLocals();
+    public List getUnitBoxes();
+    
 }
 
 
