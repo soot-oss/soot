@@ -110,7 +110,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
 
        if (soot.Main.isVerbose)
             System.out.println("[" + stmtBody.getMethod().getName() +
-                "] Propagated: " + numPropagated + ", Folded:  " + numFolded);
+                "]     Propagated: " + numPropagated + ", Folded:  " + numFolded);
 
     } // optimizeConstants
 

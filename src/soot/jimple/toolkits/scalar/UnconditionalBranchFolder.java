@@ -53,7 +53,8 @@ public class UnconditionalBranchFolder extends BodyTransformer
         StmtBody body = (StmtBody)b;
 
         if (soot.Main.isVerbose) 
-            System.out.println("[" + body.getMethod().getName() + "] Starting jump optimizer...");
+            System.out.println("[" + body.getMethod().getName() + "] Folding unconditional branches...");
+
 
         // allocate counters once only
         if (numFound == null) {
@@ -114,9 +115,10 @@ public class UnconditionalBranchFolder extends BodyTransformer
             }
         }
         if (soot.Main.isVerbose) 
-            System.out.println("[" + body.getMethod().getName() + "] Found " + numFound[0] +
-                               " branch optimization opportunities, " +
-                               numFixed[0] + " fixed.");
+            System.out.println("[" + body.getMethod().getName() + "]     " + numFixed[0] + " of " + 
+                                numFound[0] + " branches folded.");
+             
+                               
     } // optimizeJumps
 
     private static void updateCounters(int type, boolean fixed) {

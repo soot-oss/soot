@@ -72,7 +72,12 @@ public class ConditionalBranchFolder  extends BodyTransformer
                             Jimple.v().newGotoStmt(((IfStmt)stmt).getTarget());
                         
                         units.insertAfter(newStmt, stmt);
+                        
+                        numTrue++;
                     }
+                    else
+                        numFalse++;
+                        
                     // remove if
                     units.remove(stmt);
                 }
@@ -81,7 +86,7 @@ public class ConditionalBranchFolder  extends BodyTransformer
 
        if (soot.Main.isVerbose)
             System.out.println("[" + stmtBody.getMethod().getName() +
-                "] Folded " + numTrue + " true, " + numFalse +
+                "]     Folded " + numTrue + " true, " + numFalse +
                                " conditional branches");
 
     } // foldBranches

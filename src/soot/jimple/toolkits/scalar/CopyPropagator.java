@@ -208,7 +208,7 @@ public class CopyPropagator extends BodyTransformer
 
         if(Main.isVerbose)
             System.out.println("[" + stmtBody.getMethod().getName() +
-                "] Propagated: " +
+                "]     Propagated: " +
                 fastCopyPropagationCount + " fast copies  " +
                 slowCopyPropagationCount + " slow copies");
      

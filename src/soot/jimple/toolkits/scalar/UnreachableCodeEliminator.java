@@ -50,13 +50,14 @@ public class UnreachableCodeEliminator extends BodyTransformer
     protected void internalTransform(Body b, String phaseName, Map options) 
     {
         StmtBody body = (StmtBody)b;
+        
+        if (soot.Main.isVerbose) 
+            System.out.println("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
 
         numPruned = 0;
         stmtGraph = new CompleteUnitGraph(body);
         visited = new HashSet();
-
-        if (soot.Main.isVerbose) 
-            System.out.println("[" + body.getMethod().getName() + "] Starting unreachable pruner...");
+            
 
         // mark first statement and all its successors, recursively
         if (!body.getUnits().isEmpty())
@@ -72,15 +73,8 @@ public class UnreachableCodeEliminator extends BodyTransformer
             }
         }
         if (soot.Main.isVerbose)
-        {
-            if (numPruned == 0) {
-                System.out.println("    --- no unreachable blocks ---");
-            }
-            else {
-                System.out.println("    --- removed " + numPruned +
-                                   " unreachable blocks");
-            }
-        }
+            System.out.println("[" + body.getMethod().getName() + "]     Removed " + numPruned + " statements...");
+            
   } // pruneUnreachables
 
     private static void visitStmt(Stmt stmt) {
