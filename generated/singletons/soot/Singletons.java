@@ -1054,4 +1054,10 @@ public class Singletons {
         return instance_soot_jimple_toolkits_annotation_DominatorsTagger;
     }
 
+    private soot.jimple.toolkits.annotation.purity.PurityAnalysis instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis;
+    public soot.jimple.toolkits.annotation.purity.PurityAnalysis soot_jimple_toolkits_annotation_purity_PurityAnalysis() {
+        if( instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis == null ) instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis = new soot.jimple.toolkits.annotation.purity.PurityAnalysis( g );
+        return instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis;
+    }
+
 }

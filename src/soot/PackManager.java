@@ -47,6 +47,7 @@ import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.annotation.defs.*;
 import soot.jimple.toolkits.annotation.liveness.*;
 import soot.jimple.toolkits.annotation.logic.*;
+import soot.jimple.toolkits.annotation.purity.*; // [AM]
 import soot.jimple.toolkits.annotation.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -148,6 +149,7 @@ public class PackManager {
             p.add(new Transform("wjap.uft", UnreachableFieldsTagger.v()));
             p.add(new Transform("wjap.tqt", TightestQualifiersTagger.v()));
             p.add(new Transform("wjap.cgg", CallGraphGrapher.v()));
+            p.add(new Transform("wjap.purity", PurityAnalysis.v())); // [AM]
         }
 
         // Shimple pack

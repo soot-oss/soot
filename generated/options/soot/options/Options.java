@@ -753,6 +753,16 @@ public class Options extends OptionsBase {
                 keep_offset = true;
   
             else if( false
+            || option.equals( "annot-purity" )
+            ) {
+                
+                pushOptions( "enabled:true" );
+                pushOptions( "wjap.purity" );
+                pushOptions( "-p" );
+                pushOptions( "-w" );
+            }
+  
+            else if( false
             || option.equals( "annot-nullpointer" )
             ) {
                 
@@ -1136,6 +1146,7 @@ public class Options extends OptionsBase {
 +padOpt(" -keep-bytecode-offset -keep-offset", "Attach bytecode offset to IR" )
 +"\nAnnotation Options:\n"
       
++padOpt(" -annot-purity", "Emit purity attributes" )
 +padOpt(" -annot-nullpointer", "Emit null pointer attributes" )
 +padOpt(" -annot-arraybounds", "Emit array bounds check attributes" )
 +padOpt(" -annot-side-effect", "Emit side-effect attributes" )
@@ -1193,6 +1204,7 @@ public class Options extends OptionsBase {
         +padVal("wjap.uft", "Tags all unreachable fields")
         +padVal("wjap.tqt", "Tags all qualifiers that could be tighter")
         +padVal("wjap.cgg", "Creates graphical call graph.")
+        +padVal("wjap.purity", "Emit purity attributes")
         +padOpt("shimple", "Sets parameters for Shimple SSA form")
         +padOpt("stp", "Shimple transformation pack")
         +padOpt("sop", "Shimple optimization pack")
@@ -1735,6 +1747,15 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "show-lib-meths (false)", "" );
+    
+        if( phaseName.equals( "wjap.purity" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nPurity anaysis implemented by Antoine Mine and based on the \npaper A Combined Pointer and Purity Analysis for Java Programs \nby Alexandru Salcianu and Martin Rinard. "
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" )
+                +padOpt( "dump-summaries (true)", "" )
+                +padOpt( "dump-cg (true)", "" )
+                +padOpt( "dump-intra (false)", "" );
     
         if( phaseName.equals( "shimple" ) )
             return "Phase "+phaseName+":\n"+
@@ -2387,6 +2408,13 @@ public class Options extends OptionsBase {
                 +"enabled "
                 +"show-lib-meths ";
     
+        if( phaseName.equals( "wjap.purity" ) )
+            return ""
+                +"enabled "
+                +"dump-summaries "
+                +"dump-cg "
+                +"dump-intra ";
+    
         if( phaseName.equals( "shimple" ) )
             return ""
                 +"enabled "
@@ -2916,6 +2944,13 @@ public class Options extends OptionsBase {
               +"enabled:false "
               +"show-lib-meths:false ";
     
+        if( phaseName.equals( "wjap.purity" ) )
+            return ""
+              +"enabled:false "
+              +"dump-summaries:true "
+              +"dump-cg:true "
+              +"dump-intra:false ";
+    
         if( phaseName.equals( "shimple" ) )
             return ""
               +"enabled:true "
@@ -3211,6 +3246,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjap.uft" ) ) return;
         if( phaseName.equals( "wjap.tqt" ) ) return;
         if( phaseName.equals( "wjap.cgg" ) ) return;
+        if( phaseName.equals( "wjap.purity" ) ) return;
         if( phaseName.equals( "shimple" ) ) return;
         if( phaseName.equals( "stp" ) ) return;
         if( phaseName.equals( "sop" ) ) return;
@@ -3354,6 +3390,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase wjap.tqt" );
         if( !PackManager.v().hasPhase( "wjap.cgg" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjap.cgg" );
+        if( !PackManager.v().hasPhase( "wjap.purity" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjap.purity" );
         if( !PackManager.v().hasPhase( "shimple" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase shimple" );
         if( !PackManager.v().hasPhase( "stp" ) )

@@ -169,3 +169,4 @@ soot.SootResolver
 soot.javaToJimple.InitialResolver
 soot.jimple.paddle.PaddleHook
 soot.jimple.toolkits.annotation.DominatorsTagger
+soot.jimple.toolkits.annotation.purity.PurityAnalysis

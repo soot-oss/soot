@@ -410,6 +410,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-keep-offset");
         }
   
+        public void setannot_purity(boolean arg) {
+            if(arg) addArg("-annot-purity");
+        }
+  
         public void setannot_nullpointer(boolean arg) {
             if(arg) addArg("-annot-nullpointer");
         }
@@ -1705,6 +1709,39 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("wjap.cgg");
             addArg("show-lib-meths:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_wjap_purity() {
+            Object ret = new PhaseOptwjap_purity();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptwjap_purity {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("wjap.purity");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+          public void setdump_summaries(boolean arg) {
+            addArg("-p");
+            addArg("wjap.purity");
+            addArg("dump-summaries:"+(arg?"true":"false"));
+          }
+      
+          public void setdump_cg(boolean arg) {
+            addArg("-p");
+            addArg("wjap.purity");
+            addArg("dump-cg:"+(arg?"true":"false"));
+          }
+      
+          public void setdump_intra(boolean arg) {
+            addArg("-p");
+            addArg("wjap.purity");
+            addArg("dump-intra:"+(arg?"true":"false"));
           }
       
         }
