@@ -217,7 +217,7 @@ public class InitialResolver {
 
         makeASTMap();
         // determine is ".class" literal is used
-        ClassLiteralChecker classLitChecker = new ClassLiteralChecker();
+        /*ClassLiteralChecker classLitChecker = new ClassLiteralChecker();
         astNode.visit(classLitChecker);
         ArrayList classLitList = classLitChecker.getList();
         if (!classLitList.isEmpty()) {
@@ -246,15 +246,15 @@ public class InitialResolver {
                 sc.addField(sootField);
             }
 
-        }
+        }*/
      
         // determine if assert is used
-        AssertStmtChecker asc = new AssertStmtChecker();
+        /*AssertStmtChecker asc = new AssertStmtChecker();
         astNode.visit(asc);
 
         if (asc.isHasAssert()){
             handleAssert();
-        }
+        }*/
         
         // create class to source map first 
         // create source file
@@ -312,7 +312,10 @@ public class InitialResolver {
      * Handling for assert stmts - extra fields and methods are needed
      * in the Jimple 
      */
-    private void handleAssert(){
+    private void handleAssert(polyglot.ast.ClassBody cBody){
+        AssertStmtChecker asc = new AssertStmtChecker();
+        cBody.visit(asc);
+        if (!asc.isHasAssert()) return;
         // two extra fields
         if (!sootClass.declaresField("$assertionsDisabled", soot.BooleanType.v())){
             sootClass.addField(new soot.SootField("$assertionsDisabled", soot.BooleanType.v(), soot.Modifier.STATIC | soot.Modifier.FINAL));
@@ -345,7 +348,40 @@ public class InitialResolver {
             ((soot.javaToJimple.PolyglotMethodSource)sootClass.getMethod(methodName, paramTypes, methodRetType).getSource()).hasAssert(true);
         }
     }
-		
+
+    private void handleClassLiteral(polyglot.ast.ClassBody cBody){
+        ClassLiteralChecker classLitChecker = new ClassLiteralChecker();
+        cBody.visit(classLitChecker);
+        ArrayList classLitList = classLitChecker.getList();
+        if (!classLitList.isEmpty()) {
+            String methodName = "class$";
+            soot.Type methodRetType = soot.RefType.v("java.lang.Class");
+            ArrayList paramTypes = new ArrayList();
+            paramTypes.add(soot.RefType.v("java.lang.String"));
+            if (!sootClass.declaresMethod(methodName, paramTypes, methodRetType)){
+                soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
+                ClassLiteralMethodSource mSrc = new ClassLiteralMethodSource();
+                sootMethod.setSource(mSrc);
+                sootClass.addMethod(sootMethod);
+            }
+        }
+        Iterator classLitIt = classLitList.iterator();
+        while (classLitIt.hasNext()) {
+            polyglot.ast.ClassLit classLit = (polyglot.ast.ClassLit)classLitIt.next();
+            // field
+            String fieldName = "class$";
+            String type = Util.getSootType(classLit.typeNode().type()).toString();
+            type = soot.util.StringTools.replaceAll(type, ".", "$");
+            fieldName = fieldName+type;
+            soot.Type fieldType = soot.RefType.v("java.lang.Class");
+            if (!sootClass.declaresField(fieldName, fieldType)){
+                soot.SootField sootField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
+                sootClass.addField(sootField);
+            }
+
+        }
+    
+    }
   
     private void resolveAnonClass(polyglot.types.ClassType type){
         NewFinder finder = new NewFinder();
@@ -862,7 +898,10 @@ public class InitialResolver {
         fieldInits = null;
         initializerBlocks = null;
         staticInitializerBlocks = null;
-       
+      
+        handleClassLiteral(classBody);
+        handleAssert(classBody);
+        
         // handle members
         Iterator it = classBody.members().iterator();
 		while (it.hasNext()){
