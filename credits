@@ -13,6 +13,10 @@ Marc Berndl
 Phong Co (phong@hasc.com)
     - Jimple scalar optimizations
 
+Archie Cobbs
+    - Added SourceFileTag, InnerClassTag, and the various ConstantValueTags
+    - Miscellaneous bug fixes
+
 David Eng (flynn@sable.mcgill.ca)
     - XML output
 
