@@ -350,10 +350,12 @@ public class Main {
     }
 
     private void postCmdLineCheck() throws CompilationDeathException {
-        if (Options.v().classes().isEmpty() && Options.v().process_path().isEmpty()) {
+        if (Options.v().classes().isEmpty()
+        && (Options.v().whole_program() 
+            || Options.v().process_path().isEmpty())) {
             throw new CompilationDeathException(
                 COMPILATION_ABORTED,
-                "Nothing to do!");
+                "No main class specified!");
         }
         // Command line classes
         if (Options.v().app() && Options.v().classes().size() > 1) {
