@@ -34,7 +34,7 @@ import java.util.*;
 public interface Dup2_x1Inst extends DupInst
 { 
     public Type getOp1Type();
-    public Type GetOp2Type();
+    public Type getOp2Type();
     public Type getUnder1Type();
 }
 

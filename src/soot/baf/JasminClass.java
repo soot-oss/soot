@@ -1988,75 +1988,118 @@ public class JasminClass
 
                 emit("default : " + instToLabel.get(i.getDefaultTarget()));
             }
+
+            private boolean isDwordType(Type t)
+            {
+                return t instanceof LongType || t instanceof DoubleType
+                    || t instanceof DoubleWordType;
+            }
             
             public void caseDup1Inst(Dup1Inst i)
             {
                 Type firstOpType = i.getOp1Type();
-                if(firstOpType instanceof LongType || firstOpType instanceof DoubleType) 
-                    emit("dup2");
+                if (isDwordType(firstOpType))
+                    emit("dup2"); // (form 2)
                 else
-                    emit("dup");                
+                    emit("dup");
             }
 
             public void caseDup2Inst(Dup2Inst i)
             {
                 Type firstOpType = i.getOp1Type();
                 Type secondOpType = i.getOp2Type();
-                if(firstOpType instanceof LongType || firstOpType instanceof DoubleType) {
-                    emit("dup2");
-                    if(secondOpType instanceof LongType || secondOpType instanceof DoubleType) {
-                        emit("dup2");
+                // The first two cases have no real bytecode equivalents.
+                // Use a pair of insts to simulate them.
+                if(isDwordType(firstOpType)) {
+                    emit("dup2"); // (form 2)
+                    if(isDwordType(secondOpType)) {
+                        emit("dup2"); // (form 2 -- by simulation)
+                    } else 
+                        emit("dup"); // also a simulation
+                } else if(isDwordType(secondOpType)) {
+                    if(isDwordType(firstOpType)) {
+                        emit("dup2"); // (form 2)
                     } else 
                         emit("dup");
-                } else if(secondOpType instanceof LongType || secondOpType instanceof DoubleType) {
-                    if(firstOpType instanceof LongType || firstOpType instanceof DoubleType) {
-                        emit("dup2");
-                    } else 
-                        emit("dup");
-                    emit("dup2");
+                    emit("dup2"); // (form 2 -- complete the simulation)
                 } else {
                     //delme[
                     G.v().out.println("3000:(JasminClass): dup2 created");
                     //delme
-                    emit("dup2");
+                    emit("dup2"); // form 1
                 }
             }
 
-            
             public void caseDup1_x1Inst(Dup1_x1Inst i)
             {
                 Type opType = i.getOp1Type();
                 Type underType = i.getUnder1Type();
                 
-                if(opType instanceof LongType || opType instanceof DoubleType) {
-                    if(underType instanceof LongType || underType instanceof DoubleType) {
-                        emit("dup2_x2");
+                if(isDwordType(opType)) {
+                    if(isDwordType(underType)) {
+                        emit("dup2_x2"); // (form 4)
                     } else 
-                        emit("dup2_x1");
+                        emit("dup2_x1"); // (form 2)
                 } else {
-                    if(underType instanceof LongType || underType instanceof DoubleType) 
-                        emit("dup_x2");
+                    if(isDwordType(underType)) 
+                        emit("dup_x2");  // (form 2)
                     else 
-                        emit("dup_x1");
+                        emit("dup_x1");  // (only one form)
                 }        
             }
-            
 
             public void caseDup1_x2Inst(Dup1_x2Inst i)
             {
-                throw new RuntimeException("undifined");
+                Type opType = i.getOpType();
+                Type under1Type = i.getUnder1Type();
+                Type under2Type = i.getUnder2Type();
+
+                if (isDwordType(opType)) {
+                    if (!isDwordType(under1Type) && !isDwordType(under2Type))
+                        emit("dup2_x2"); // (form 2)
+                    else
+                        throw new RuntimeException("magic not implemented yet");
+                } else {
+                    if (isDwordType(under1Type) || isDwordType(under2Type))
+                        throw new RuntimeException("magic not implemented yet");
+                }
+
+                emit("dup_x2"); // (form 1)
             }
 
             public void caseDup2_x1Inst(Dup2_x1Inst i)
             {
-                throw new RuntimeException("undifined");
+                Type op1Type = i.getOp1Type();
+                Type op2Type = i.getOp2Type();
+                Type under1Type = i.getUnder1Type();
+
+                if (isDwordType(under1Type)) {
+                    if (!isDwordType(op1Type) && !isDwordType(under2Type))
+                        throw new RuntimeException("magic not implemented yet");
+                    else
+                        emit("dup2_x2"); // (form 3)
+                } else {
+                    if (isDwordType(op1Type) || isDwordType(op2Type))
+                        throw new RuntimeException("magic not implemented yet");
+                }
+
+                emit("dup2_x1"); // (form 1)
             }
 
            
 
             public void caseDup2_x2Inst(Dup2_x2Inst i)
             {
-                throw new RuntimeException("undifined");
+                Type op1Type = i.getOp1Type();
+                Type op2Type = i.getOp2Type();
+                Type under1Type = i.getUnder1Type();
+                Type under2Type = i.getUnder2Type();
+
+                if (isDwordType(op1Type) || isDwordType(op2Type) || 
+                    isDwordType(under1Type) || isDwordType(under1Type))
+                    throw new RuntimeException("magic not implemented yet");
+
+                emit("dup2_x2"); // (form 1)
             }
 
             public void caseSwapInst(SwapInst i)

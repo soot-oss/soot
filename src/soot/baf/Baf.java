@@ -436,6 +436,23 @@ public class Baf
         return new BDup1_x1Inst(aOpType, aUnderType);
     }
     
+    public Dup1_x2Inst newDup1_x2Inst(Type aOpType,
+                                      Type aUnder1Type, Type aUnder2Type)
+    {
+        return new BDup1_x2Inst(aOpType, aUnder1Type, aUnder2Type);
+    }
+
+    public Dup2_x1Inst newDup2_x1Inst(Type aOp1Type, Type aOp2Type,
+                                      Type aUnderType)
+    {
+        return new BDup2_x1Inst(aOp1Type, aOp2Type, aUnderType);
+    }
+
+    public Dup2_x2Inst newDup2_x2Inst(Type aOp1Type, Type aOp2Type,
+                                      Type aUnder1Type, Type aUnder2Type)
+    {
+        return new BDup2_x2Inst(aOp1Type, aOp2Type, aUnder1Type, aUnder2Type);
+    }
 
   public IncInst newIncInst(Local aLocal, Constant aConstant)
   {
