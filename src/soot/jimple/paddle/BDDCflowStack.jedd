@@ -31,9 +31,11 @@ import java.util.*;
 public class BDDCflowStack
 { 
     BDDCflow cflow;
+    boolean bindsArgs;
 
-    public BDDCflowStack( BDDCflow cflow, Collection/*Shadow*/ shadows, Collection/*Stmt*/ isValids ) {
+    public BDDCflowStack( BDDCflow cflow, Collection/*Shadow*/ shadows, Collection/*Stmt*/ isValids, boolean bindsArgs ) {
         this.cflow = cflow;
+        this.bindsArgs = bindsArgs;
         for( Iterator sIt = isValids.iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             Scene.v().getUnitNumberer().add(s);
@@ -179,6 +181,10 @@ public class BDDCflowStack
     }
 
     private <stmt> computeAlwaysValid() {
+        if( bindsArgs ) {
+            alwaysValid = 0B;
+            return alwaysValid;
+        }
         if( mustCflow == 1B ) mustCflow = mustCflow();
         alwaysValid = mustCflow{stmt} >< isValids{stmt};
         return alwaysValid;
@@ -202,7 +208,9 @@ public class BDDCflowStack
         interestingIsValids -= computeNeverValid();
         if( mayCflow == 1B ) mayCflow = mayCflow();
         <shadow> necessaryShadows = mayCflow{stmt} <> interestingIsValids{stmt};
-        necessaryShadows -= mustCflow{stmt} <> pushes{stmt};
+        if( !bindsArgs ) {
+            necessaryShadows -= mustCflow{stmt} <> pushes{stmt};
+        }
         return (shadows - necessaryShadows).iterator();
     }
 }

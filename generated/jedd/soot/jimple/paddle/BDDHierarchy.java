@@ -163,7 +163,7 @@ public final class BDDHierarchy {
     
     private final jedd.internal.RelationContainer concrete =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { type.v() },
-                                          new jedd.PhysicalDomain[] { T2.v() },
+                                          new jedd.PhysicalDomain[] { T3.v() },
                                           ("private <soot.jimple.paddle.bdddomains.type> concrete = jedd" +
                                            ".internal.Jedd.v().falseBDD() at /tmp/olhotak/soot-trunk/src" +
                                            "/soot/jimple/paddle/BDDHierarchy.jedd:102,12-18"),
@@ -172,7 +172,7 @@ public final class BDDHierarchy {
     public jedd.internal.RelationContainer concrete() {
         updateTypes();
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { type.v() },
-                                                   new jedd.PhysicalDomain[] { T2.v() },
+                                                   new jedd.PhysicalDomain[] { T3.v() },
                                                    ("return concrete; at /tmp/olhotak/soot-trunk/src/soot/jimple/" +
                                                     "paddle/BDDHierarchy.jedd:105,8-14"),
                                                    concrete);
@@ -215,7 +215,7 @@ public final class BDDHierarchy {
             if (sc.isConcrete()) {
                 concrete.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { rt },
                                                                 new jedd.Attribute[] { type.v() },
-                                                                new jedd.PhysicalDomain[] { T2.v() }));
+                                                                new jedd.PhysicalDomain[] { T3.v() }));
                 concreteNonArray.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { rt },
                                                                         new jedd.Attribute[] { type.v() },
                                                                         new jedd.PhysicalDomain[] { T2.v() }));
@@ -274,7 +274,7 @@ public final class BDDHierarchy {
                                                                  new jedd.PhysicalDomain[] { T3.v(), T2.v() }));
                 concrete.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { at },
                                                                 new jedd.Attribute[] { type.v() },
-                                                                new jedd.PhysicalDomain[] { T2.v() }));
+                                                                new jedd.PhysicalDomain[] { T3.v() }));
             } else
                 if (t instanceof AnySubType) {
                     AnySubType as = (AnySubType) t;

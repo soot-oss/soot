@@ -21,9 +21,7 @@ public class BDDNodeInfo extends AbsNodeInfo {
                                                                                            new jedd.PhysicalDomain[] { T1.v() }))))
             ret = true;
         if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(globalSet),
-                                           globalSet.eqUnion(jedd.internal.Jedd.v().project(jedd.internal.Jedd.v().replace(globals.get(),
-                                                                                                                           new jedd.PhysicalDomain[] { V1.v() },
-                                                                                                                           new jedd.PhysicalDomain[] { V2.v() }),
+                                           globalSet.eqUnion(jedd.internal.Jedd.v().project(globals.get(),
                                                                                             new jedd.PhysicalDomain[] { T1.v() }))))
             ret = true;
         if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(localallocMap),
@@ -48,7 +46,7 @@ public class BDDNodeInfo extends AbsNodeInfo {
     
     private final jedd.internal.RelationContainer globalSet =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v() },
-                                          new jedd.PhysicalDomain[] { V2.v() },
+                                          new jedd.PhysicalDomain[] { V1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.var> globalSet = jedd" +
                                            ".internal.Jedd.v().falseBDD() at /tmp/olhotak/soot-trunk/src" +
                                            "/soot/jimple/paddle/BDDNodeInfo.jedd:54,12-17"),
@@ -82,9 +80,13 @@ public class BDDNodeInfo extends AbsNodeInfo {
     public jedd.internal.RelationContainer globalSet() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v() },
                                                    new jedd.PhysicalDomain[] { V2.v() },
-                                                   ("return globalSet; at /tmp/olhotak/soot-trunk/src/soot/jimple" +
-                                                    "/paddle/BDDNodeInfo.jedd:59,31-37"),
-                                                   globalSet);
+                                                   ("return jedd.internal.Jedd.v().replace(globalSet, new jedd.Ph" +
+                                                    "ysicalDomain[...], new jedd.PhysicalDomain[...]); at /tmp/ol" +
+                                                    "hotak/soot-trunk/src/soot/jimple/paddle/BDDNodeInfo.jedd:59," +
+                                                    "31-37"),
+                                                   jedd.internal.Jedd.v().replace(globalSet,
+                                                                                  new jedd.PhysicalDomain[] { V1.v() },
+                                                                                  new jedd.PhysicalDomain[] { V2.v() }));
     }
     
     public jedd.internal.RelationContainer localallocMap() {
