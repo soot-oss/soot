@@ -156,10 +156,6 @@ public class StronglyConnectedComponents
 
 	while(last>0)
         {
-	      Object toVisitNode = nodeStack.getLast();
-	      toVisitIndex++;
-	      indexStack.addLast(new Integer(toVisitIndex));*/
-	    
 	    int toVisitIndex = ++indexStack[last-1];
             Object toVisitNode = nodeStack[last-1];
             
