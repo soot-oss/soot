@@ -764,7 +764,7 @@ extern int bdd_getreorder_method(void);
 extern void bdd_enable_reorder(void);
 extern void bdd_disable_reorder(void);
 extern int bdd_reorder_verbose(int);
-extern void bdd_setvarorder(int *);
+extern void bdd_setvarorder(int []);
 extern void bdd_printorder(void);
 extern void bdd_fprintorder(FILE *);
 extern BDD const bddfalse;
@@ -793,6 +793,7 @@ extern int fdd_setpair(bddPair *,int,int);
 extern int fdd_setpairs(bddPair *,int *,int *,int);
 extern int fdd_allsat(int,int,int []);
 extern int fdd_satcount(int,int);
+extern void fdd_getvars(int [],int);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -3423,14 +3424,17 @@ JNIEXPORT jint JNICALL Java_soot_jbuddy_JBuddyJNI_bdd_1reorder_1verbose(JNIEnv *
 }
 
 
-JNIEXPORT void JNICALL Java_soot_jbuddy_JBuddyJNI_bdd_1setvarorder(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-    int *arg1 = (int *) 0 ;
+JNIEXPORT void JNICALL Java_soot_jbuddy_JBuddyJNI_bdd_1setvarorder(JNIEnv *jenv, jclass jcls, jintArray jarg1) {
+    int *arg1 ;
+    jint *jarr1 ;
     
     (void)jenv;
     (void)jcls;
-    arg1 = *(int **)&jarg1; 
+    if (!SWIG_JavaArrayInInt(jenv, &jarr1, &arg1, jarg1)) return ; 
     bdd_setvarorder(arg1);
     
+    SWIG_JavaArrayArgoutInt(jenv, jarr1, arg1, jarg1); 
+    free(arg1); 
 }
 
 
@@ -4447,6 +4451,22 @@ JNIEXPORT jint JNICALL Java_soot_jbuddy_JBuddyJNI_fdd_1satcount(JNIEnv *jenv, jc
     
     jresult = (jint)result; 
     return jresult;
+}
+
+
+JNIEXPORT void JNICALL Java_soot_jbuddy_JBuddyJNI_fdd_1getvars(JNIEnv *jenv, jclass jcls, jintArray jarg1, jint jarg2) {
+    int *arg1 ;
+    int arg2 ;
+    jint *jarr1 ;
+    
+    (void)jenv;
+    (void)jcls;
+    if (!SWIG_JavaArrayInInt(jenv, &jarr1, &arg1, jarg1)) return ; 
+    arg2 = (int)jarg2; 
+    fdd_getvars(arg1,arg2);
+    
+    SWIG_JavaArrayArgoutInt(jenv, jarr1, arg1, jarg1); 
+    free(arg1); 
 }
 
 

@@ -471,8 +471,8 @@ public class JBuddy {
     return JBuddyJNI.bdd_reorder_verbose(arg0);
   }
 
-  public static void bdd_setvarorder(SWIGTYPE_p_int arg0) {
-    JBuddyJNI.bdd_setvarorder(SWIGTYPE_p_int.getCPtr(arg0));
+  public static void bdd_setvarorder(int[] arg0) {
+    JBuddyJNI.bdd_setvarorder(arg0);
   }
 
   public static void bdd_printorder() {
@@ -593,6 +593,10 @@ public class JBuddy {
 
   public static int fdd_satcount(int arg0, int arg1) {
     return JBuddyJNI.fdd_satcount(arg0, arg1);
+  }
+
+  public static void fdd_getvars(int[] INPUT, int domain) {
+    JBuddyJNI.fdd_getvars(INPUT, domain);
   }
 
   // enums and constants

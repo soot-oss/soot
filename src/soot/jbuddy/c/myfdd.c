@@ -62,7 +62,7 @@ int fdd_satcount( BDD r, int var ) {
     int ret = fdd_satcount_guts( r, var );
     int i;
     for( i = 0; i < domain[var].binsize; i++ )
-        if( bddvar2level[domain[var].ivar[i]] < bddvar2level[LEVEL(r)] ) ret *= 2;
+        if( bddvar2level[domain[var].ivar[i]] < LEVEL(r) ) ret *= 2;
     return ret;
 }
 
@@ -81,4 +81,11 @@ int fdd_satcount_guts( BDD r, int var ) {
         if( isfddvar( bddlevel2var[i], var ) ) high *= 2;
     }
     return low+high;
+}
+
+void fdd_getvars(int* p, int domain) {
+    int* vars = fdd_vars(domain);
+    int num = fdd_varnum(domain);
+    int i;
+    for( i=0; i<num; i++ ) *p++ = *vars++;
 }

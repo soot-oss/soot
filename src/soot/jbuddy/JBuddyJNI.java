@@ -191,7 +191,7 @@ class JBuddyJNI {
   public final static native void bdd_enable_reorder();
   public final static native void bdd_disable_reorder();
   public final static native int bdd_reorder_verbose(int jarg1);
-  public final static native void bdd_setvarorder(long jarg1);
+  public final static native void bdd_setvarorder(int[] jarg1);
   public final static native void bdd_printorder();
   public final static native void bdd_fprintorder(long jarg1);
   public final static native int get_bddfalse();
@@ -264,4 +264,5 @@ class JBuddyJNI {
   public final static native int fdd_setpairs(long jarg1, long jarg2, long jarg3, int jarg4);
   public final static native int fdd_allsat(int jarg1, int jarg2, int[] jarg3);
   public final static native int fdd_satcount(int jarg1, int jarg2);
+  public final static native void fdd_getvars(int[] jarg1, int jarg2);
 }

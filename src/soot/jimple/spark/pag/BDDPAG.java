@@ -30,6 +30,7 @@ import soot.util.queue.*;
 import soot.options.BDDSparkOptions;
 import soot.tagkit.*;
 import soot.relations.*;
+import soot.jbuddy.JBuddy;
 
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
@@ -37,6 +38,11 @@ import soot.relations.*;
 public class BDDPAG extends AbstractPAG {
     public BDDPAG( final BDDSparkOptions opts ) {
         super( opts );
+        PhysicalDomain[] interleaved = { v1, v2, fd, h1, h2 };
+        PhysicalDomain[] v1v2 = { v1, v2 };
+        Object[] order = { fd, v1v2, h1, h2 };
+        // Object[] order = { interleaved };
+        PhysicalDomain.setOrder( order, true );
     }
 
     public PointsToSet reachingObjects( Local l ) {
@@ -102,11 +108,11 @@ public class BDDPAG extends AbstractPAG {
 
     private BDDSparkOptions opts;
 
-    public PhysicalDomain v1 = new PhysicalDomain(20,"V1");
-    public PhysicalDomain v2 = new PhysicalDomain(20,"V2");
-    public PhysicalDomain fd = new PhysicalDomain(20,"FD");
-    public PhysicalDomain h1 = new PhysicalDomain(20,"H1");
-    public PhysicalDomain h2 = new PhysicalDomain(20,"H2");
+    public PhysicalDomain v1 = new PhysicalDomain(18,"V1");
+    public PhysicalDomain v2 = new PhysicalDomain(18,"V2");
+    public PhysicalDomain fd = new PhysicalDomain(13,"FD");
+    public PhysicalDomain h1 = new PhysicalDomain(14,"H1");
+    public PhysicalDomain h2 = new PhysicalDomain(14,"H2");
 
     public Domain var = new Domain( getVarNodeNumberer(), "var" );
     public Domain src = new Domain( getVarNodeNumberer(), "src" );
@@ -136,5 +142,24 @@ public class BDDPAG extends AbstractPAG {
     final public Relation fieldPt = new Relation( base, fld, obj,
                                                   h1,   fd,  h2 );
 
+
+    private void reportOrdering() {
+      reportVarOrderingOfDomain("FD", fd);
+      reportVarOrderingOfDomain("V1", v1);
+      reportVarOrderingOfDomain("V2", v2);
+      reportVarOrderingOfDomain("H1", h1);
+      reportVarOrderingOfDomain("H2", h2); 
+    }
+
+    /* report variable orderings for single domain */
+    private void reportVarOrderingOfDomain(String dname, PhysicalDomain var) {
+      int vnum = JBuddy.fdd_varnum(var.var());
+      int[] vars = new int[vnum];
+      JBuddy.fdd_getvars(vars, var.var());
+      for (int i=0; i<vnum; i++) {
+        System.out.print(""+JBuddy.bdd_var2level(vars[i])+" ");
+      }
+      System.out.println("");
+    }
 }
 

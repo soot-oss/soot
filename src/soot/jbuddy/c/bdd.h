@@ -347,7 +347,7 @@ extern int      bdd_getreorder_method(void);
 extern void     bdd_enable_reorder(void);
 extern void     bdd_disable_reorder(void);
 extern int      bdd_reorder_verbose(int);
-extern void     bdd_setvarorder(int *);
+extern void     bdd_setvarorder(int[]);
 extern void     bdd_printorder(void);
 extern void     bdd_fprintorder(FILE *);
 

@@ -19,6 +19,7 @@
 
 package soot.relations;
 import soot.jbuddy.*;
+import java.util.*;
 
 public class PhysicalDomain
 { 
@@ -45,5 +46,61 @@ public class PhysicalDomain
     public int var() { return var; }
     public int ithvar( int value ) {
         return JBuddy.fdd_ithvar( var, value );
+    }
+
+    private int[] getvars() {
+        int[] ret = new int[JBuddy.fdd_varnum(var())];
+        JBuddy.fdd_getvars( ret, var() );
+        return ret;
+    }
+    private static void reverse( int[] a ) {
+        int i = a.length-1;
+        int j = 0;
+        while( j < i ) {
+            int t = a[i];
+            a[i] = a[j];
+            a[j] = t;
+            j++;
+            i--;
+        }
+    }
+    public static void setOrder( Object[] order, boolean msbAtTop ) {
+        List newOrder = new ArrayList();
+
+        for( int i = 0; i < order.length; i++ ) {
+            Object o = order[i];
+            if( o instanceof PhysicalDomain ) {
+                PhysicalDomain pd = (PhysicalDomain) o;
+                int[] vars = pd.getvars();
+                if( msbAtTop ) reverse( vars );
+                for( int k = 0; k < vars.length; k++ ) {
+                    newOrder.add( new Integer( vars[k] ) );
+                }
+            } else if( o instanceof Object[] ) {
+                PhysicalDomain[] domains = (PhysicalDomain[]) o;
+                int[][] vars = new int[domains.length][];
+                for( int j = 0; j < domains.length; j++ ) {
+                    vars[j] = domains[j].getvars();
+                    if( msbAtTop ) reverse( vars[j] );
+                }
+                boolean change = true;
+                for( int j = 0; change; j++ ) {
+                    change = false;
+                    for( int k = 0; k < vars.length; k++ ) {
+                        if( j < vars[k].length ) {
+                            newOrder.add( new Integer( vars[k][j] ) );
+                            change = true;
+                        }
+                    }
+                }
+            } else throw new RuntimeException();
+        }
+        int[] buddyOrder = new int[newOrder.size()];
+        int j = 0;
+        for( Iterator iIt = newOrder.iterator(); iIt.hasNext(); ) {
+            final Integer i = (Integer) iIt.next();
+            buddyOrder[j++] = i.intValue();
+        }
+        JBuddy.bdd_setvarorder(buddyOrder);
     }
 }
