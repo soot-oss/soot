@@ -927,6 +927,6 @@ public class Jimple
         return newVirtualInvokeExpr(base, method.resolve(), arg1, arg2);
     }
     public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, Value arg1, Value arg2) {
-        return newInterfaceInvokeExpr(base, method, arg1, arg2);
+        return newInterfaceInvokeExpr(base, method.resolve(), arg1, arg2);
     }
 }
