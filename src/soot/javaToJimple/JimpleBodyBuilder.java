@@ -1166,6 +1166,7 @@ public class JimpleBodyBuilder {
      */
     private void createReturn(polyglot.ast.Return retStmt) {
         polyglot.ast.Expr expr = retStmt.expr();
+        //System.out.println("creating ret: "+retStmt);
         if (expr == null) {
             soot.jimple.Stmt retStmtVoid = soot.jimple.Jimple.v().newReturnVoidStmt();
             body.getUnits().add(retStmtVoid);
@@ -2784,6 +2785,7 @@ public class JimpleBodyBuilder {
      * Gets the Soot Method form the given Soot Class
      */
     private soot.SootMethod getMethodFromClass(soot.SootClass sootClass, String name, ArrayList paramTypes, soot.Type returnType) {
+        //System.out.println("sc: "+sootClass.getName()+" meths: "+sootClass.getMethods());
         return sootClass.getMethod(name, paramTypes, returnType);
     }
   
@@ -2796,7 +2798,8 @@ public class JimpleBodyBuilder {
         HashMap finalsMap = ((soot.javaToJimple.PolyglotMethodSource)body.getMethod().getSource()).getFinalsMap();
         if (finalsMap != null){
             if (finalsMap.containsKey(call)){
-                ArrayList finals = (ArrayList)finalsMap.get(call);
+                AnonLocalClassInfo info = (AnonLocalClassInfo)finalsMap.get(call);
+                ArrayList finals = info.finalFields();
                 if (finals != null){
                     Iterator it = finals.iterator();
                     while (it.hasNext()){
@@ -2804,6 +2807,7 @@ public class JimpleBodyBuilder {
                         polyglot.types.LocalInstance li = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)it.next()).object();
                         sootParamTypes.add(Util.getSootType(li.type()));
                         sootParams.add(getLocal(li));
+                        //System.out.println("added finals param type: "+li.type());
                     }
                 }
             }
@@ -2821,6 +2825,7 @@ public class JimpleBodyBuilder {
             if (!body.getMethod().isStatic()){
                 sootParamsTypes.add(outerClass.getType());
                 sootParams.add(specialThisLocal);
+                //System.out.println("added param of type: "+outerClass.getType());
             }
         }
         else {

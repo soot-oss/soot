@@ -5,11 +5,12 @@ import soot.*;
 
 public class AnonClassInitMethodSource implements soot.MethodSource {
 
-    private ArrayList finalLocals;
     private ArrayList fields;
-    
-    public void setFinalLocals(ArrayList list){
-        finalLocals = list;
+   
+    private boolean inStaticMethod;
+
+    public void inStaticMethod(boolean b){
+        inStaticMethod = b;
     }
     
     public void setFieldList(ArrayList list){
@@ -83,11 +84,12 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
         body.getUnits().add(invokeStmt);
         
         // field assign
-        soot.SootField field = sootMethod.getDeclaringClass().getField("this$0", outerClassType);
-        soot.jimple.InstanceFieldRef ref = soot.jimple.Jimple.v().newInstanceFieldRef(thisLocal, field);
-        soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(ref, outerLocal);
-        body.getUnits().add(assign);
-       
+        if (!inStaticMethod){
+            soot.SootField field = sootMethod.getDeclaringClass().getField("this$0", outerClassType);
+            soot.jimple.InstanceFieldRef ref = soot.jimple.Jimple.v().newInstanceFieldRef(thisLocal, field);
+            soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(ref, outerLocal);
+            body.getUnits().add(assign);
+        }
         if (fields != null){
             Iterator finalsIt = paramsForFinals.iterator();
             Iterator fieldsIt = fields.iterator();

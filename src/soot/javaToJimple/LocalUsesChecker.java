@@ -28,8 +28,10 @@ public class LocalUsesChecker extends polyglot.visit.NodeVisitor{
             localDecls.add(new polyglot.util.IdentityKey(((polyglot.ast.LocalDecl)n).localInstance()));
         }
         if (n instanceof polyglot.ast.Local){
-            //System.out.println("adding to locals: "+n);
-            locals.add(new polyglot.util.IdentityKey(((polyglot.ast.Local)n).localInstance()));
+            if (!(locals.contains(new polyglot.util.IdentityKey(((polyglot.ast.Local)n).localInstance())))){
+                //System.out.println("adding to locals: "+n);
+                locals.add(new polyglot.util.IdentityKey(((polyglot.ast.Local)n).localInstance()));
+            }
         }
         if (n instanceof polyglot.ast.Formal){
             //System.out.println("adding a formal: "+n);
