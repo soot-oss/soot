@@ -40,7 +40,14 @@ public class ThrowFinder
 	registeredMethods = new HashSet();
 	protectionSet = new HashMap();
 
-        CallGraph cg = Scene.v().getCallGraph();
+        CallGraph cg;
+        if( Scene.v().hasCallGraph() ) {
+            cg = Scene.v().getCallGraph();
+        } else {
+            new CallGraphBuilder().build();
+            cg = Scene.v().getCallGraph();
+            Scene.v().releaseCallGraph();
+        }
 
 	IterableSet worklist = new IterableSet();
 

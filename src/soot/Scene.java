@@ -508,11 +508,7 @@ public class Scene  //extends AbstractHost
     public CallGraph getCallGraph() 
     {
         if(!hasCallGraph()) {
-            CallGraphBuilder cgb = new CallGraphBuilder();
-            cgb.build();
-            CallGraph ret = activeCallGraph;
-            activeCallGraph = null;
-            return ret;
+            throw new RuntimeException( "No call graph present in Scene. Maybe you want Whole Program mode (-w)." );
         }
             
         return activeCallGraph;
