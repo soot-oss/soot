@@ -60,6 +60,7 @@ public class ConstructorFolder extends BodyTransformer
       Iterator it = stmtList.iterator();
 
       ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
+              
         
       LocalDefs localDefs = new SimpleLocalDefs(graph);
       LocalUses localUses = new SimpleLocalUses(graph, localDefs);
@@ -88,20 +89,20 @@ public class ConstructorFolder extends BodyTransformer
 
              Also, do note that any new's (object creation) without
              corresponding constructors must be dead. */
-            
+           
           List lu = localUses.getUsesOf((DefinitionStmt)s);
           Iterator luIter = lu.iterator();
           boolean MadeNewInvokeExpr = false;
-          
+           
           while (luIter.hasNext())
             {
               Unit use = ((UnitValueBoxPair)(luIter.next())).unit;
               if (!(use instanceof InvokeStmt))
-                break;
+                continue;
               InvokeStmt is = (InvokeStmt)use;
               if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr) ||
                   lhs != ((SpecialInvokeExpr)is.getInvokeExpr()).getBase())
-                break;
+                continue;
               
               SpecialInvokeExpr oldInvoke = 
                 ((SpecialInvokeExpr)is.getInvokeExpr());

@@ -260,8 +260,11 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 	
 	
 	private void handleCallGraphStartEvent(Object info){
-		setGenerator(new CallGraphGenerator());
-		getGenerator().setInfo((CallGraphInfo)info);
+		System.out.println("about to make new Generator");
+        setGenerator(new CallGraphGenerator());
+		System.out.println("made new call graph generator");
+        System.out.println("info :"+info.getClass());
+        getGenerator().setInfo((CallGraphInfo)info);
 		getGenerator().setController(this);
 		final CallGraphGenerator cgg = getGenerator();
 		getDisplay().syncExec(new Runnable(){

@@ -6,7 +6,7 @@
  */
 package ca.mcgill.sable.soot.callgraph;
 
-import ca.mcgill.sable.graph.model.SimpleNode;
+import ca.mcgill.sable.graph.model.*;
 import soot.*;
 
 /**

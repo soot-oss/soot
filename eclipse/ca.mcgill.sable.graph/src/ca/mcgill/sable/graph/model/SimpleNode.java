@@ -27,6 +27,7 @@ public class SimpleNode extends Element {
 	public SimpleNode() {
 		super();
 		// TODO Auto-generated constructor stub
+        System.out.println("generating Simple Node");
 	}
 
 	public void addInput(Edge e){

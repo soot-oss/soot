@@ -38,7 +38,8 @@ public class CallGraphGenerator {
 	 * 
 	 */
 	public CallGraphGenerator() {
-	}
+	    System.out.println("creating call graph generator");
+    }
 	
 	public void run(){
 		

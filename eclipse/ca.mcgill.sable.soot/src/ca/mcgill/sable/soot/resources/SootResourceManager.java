@@ -90,6 +90,7 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 	
 	public void updateFileChangedFlag(IFile file){
 		//System.out.println("updating remove bit");
+        if (file.getFileExtension() == null) return;
 		if ((file.getFileExtension().equals(JAVA_FILE_EXT)) ||
 			(file.getFileExtension().equals(JIMPLE_FILE_EXT))){
 			if (getChangedResources() == null){
