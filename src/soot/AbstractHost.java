@@ -41,7 +41,7 @@ public  class AbstractHost implements Host
         return mTagList;
     }
 
-    public void destroyTag(String aName)
+    public void removeTag(String aName)
     {
         int tagIndex;
         if((tagIndex = searchForTag(aName)) != -1) {
@@ -76,76 +76,11 @@ public  class AbstractHost implements Host
     {
         return (searchForTag(aName) != -1);
     }
-
-    public Object getTagValue(String aName)
-    {
-        return getTag(aName).getValue();       
-    }
-
-    public void setTagValue(String aName, Object v)
-    {
-        getTag(aName).setValue(v);
-    }
-
-    public void incTagValue(String aName)
-    {
-        Tag tag = getTag(aName);
-        Object value = tag.getValue();
-        if(value instanceof Long) 
-            tag.setValue(new Long( ((Long)value).longValue() +1));
-        else if (value instanceof Double)
-            tag.setValue(new Double( ((Double)value).doubleValue() +1));
-        else
-            throw new RuntimeException("Operation not supported on given tag type");        
-    }
-
-    public void incTagValue(String aName, long inc)
-    {
-        Tag tag = getTag(aName);
-        Object value = tag.getValue();
-        if(value instanceof Long) 
-            tag.setValue(new Long( ((Long)value).longValue() + inc));
-        else
-            throw new RuntimeException("Tag must be long.");        
-    }
-
-    public void incTagValue(String aName, double inc)
-    {
-        Tag tag = getTag(aName);
-        Object value = tag.getValue();
-        if (value instanceof Double)
-            tag.setValue(new Double( ((Double)value).doubleValue() +  inc));
-        else
-            throw new RuntimeException("Tag must be double.");        
-    }
     
-    
-    public Tag newTag(String aName, Object v)
+    public void addTag(Tag t)
     {
-        Tag tag = new  Tag(aName, v);
-        if(hasTag(aName)) 
-            throw new RuntimeException("tag having the same name already present: "+ aName);
-            
-        mTagList.add(tag);
-        return tag;
+	mTagList.add(t);
     }
-
-
-    public Tag newTag(String aName)
-    {
-        Tag tag = null;
-        if(aName.endsWith(".l")) 
-            tag = newTag(aName, new Long(0L));
-        else if (aName.endsWith(".d")) 
-            tag = newTag(aName, new Double(0.0));
-        else if(aName.endsWith(".s")) 
-            tag =newTag(aName, new String(""));
-        else 
-            throw new RuntimeException("Cannot create tag: name extension is invalid:" + aName );        
-
-        return tag;
-    }
-    
 }
 
 

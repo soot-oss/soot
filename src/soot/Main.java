@@ -452,7 +452,7 @@ public class Main implements Runnable, ICompilationListener
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version 1.0.0 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.4)");
+            System.out.println("Soot version 1.0.0 (build 1.beta.6.dev.78)");
             System.out.println("Copyright (C) 1997-2000 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -954,7 +954,7 @@ public class Main implements Runnable, ICompilationListener
 			
 			if(Long.valueOf(value) == null)
 			    System.out.println(value);
-			((Host) u).newTag(name, Long.valueOf(value));
+
 			
 		    }
 		}				

@@ -41,37 +41,17 @@ public interface Host
 {
     /** Get a list of tags associated with the current object. */
     public List getTags();
-
-    /** Remove the tag with the given name. */
-    public void destroyTag(String name);
-
-    /** Returns the value attached to the given tag. */
-    public Object getTagValue(String name);
-
-    /** Sets the value associated with the given tag. */
-    public void setTagValue(String name, Object v); 
-
-    /** Increments the given tag, if it is either Long or Double. */
-    public void incTagValue(String name);
-
-    /** Increments the given tag by the given amount. */
-    public void incTagValue(String name, long inc);
-
-    /** Increments the given tag by the given amount. */
-    public void incTagValue(String name, double inc);
-
-    /** Creates a new Tag object with given initial value, attaches it to the tags list, and returns it. */
-    public Tag newTag(String name, Object v);
-
-    /** Creates a new Tag object, attaches it to the tags list, and returns it. */
-    public Tag newTag(String name);
-
+    
     /** Returns the tag with the given name. */
     public Tag getTag(String aName);
 
+    public void addTag(Tag t);
+
+    /** Remove the tag with the given name. */
+    public void removeTag(String name);
+   
     /** Returns true if this host has a tag with the given name. */
     public boolean hasTag(String aName);
-
 }
 
 

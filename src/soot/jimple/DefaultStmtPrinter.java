@@ -141,9 +141,15 @@ public class DefaultStmtPrinter implements StmtPrinter
                     out.print(currentStmt.toString(stmtToName, indent));
                 else
                     out.print(currentStmt.toBriefString(stmtToName, indent));
-
-            out.print(";"); 
-            out.println();
+	
+		out.print(";"); 
+		out.println();
+		
+		Iterator tagIterator = currentStmt.getTags().iterator();
+		while(tagIterator.hasNext()) {
+		    Tag t = (Tag) tagIterator.next();		   		    
+		    out.println(t);
+		}		 
         }
 
         // Print out exceptions
