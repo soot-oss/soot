@@ -281,25 +281,6 @@ public class JimpleBody extends AbstractBody implements StmtBody
             LocalPacker.packLocals(this);
         }
 
-            /*
-            if(!Main.noCleanUp)
-            {
-                if(Main.isProfilingOptimization)
-                    Main.cleanup2Timer.start();
-
-                Transformations.cleanupCode(this);
-                Transformations.removeUnusedLocals(this);
-
-                if(Main.isProfilingOptimization)
-                {
-                    Main.cleanup2LocalCount += getLocalCount();
-                    Main.cleanup2StmtCount += stmtList.size();
-
-                    Main.cleanup2Timer.end();
-                }
-            }
-            */
-
     }
 
     /** Temporary patch to get the typing algorithm working.

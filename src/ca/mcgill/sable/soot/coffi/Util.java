@@ -127,7 +127,7 @@ public class Util
     static int activeOriginalIndex = -1;
     static cp_info[] activeConstantPool = null;
     static LocalVariableTable_attribute activeVariableTable;
-    static boolean useFaithfulNaming = true;
+    static boolean useFaithfulNaming = false;
     static boolean isLocalStore = false;
     
     static void setActiveClassManager(SootClassManager manager)

@@ -218,7 +218,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.28");
+            System.out.println("Soot version 1.beta.4.dev.29");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -251,7 +251,7 @@ public class Main
             System.out.println("  --use-packing              pack locals after conversion");
             System.out.println("  --no-typing                do not assign types to the local variables");
             System.out.println("  --no-jimple-aggregating    do not perform any Jimple-level aggregation");
-            System.out.println("  --use-original-names       retain variables name from local variable table");
+//            System.out.println("  --use-original-names       retain variables name from local variable table");
             System.out.println("");
             System.out.println("Optimization options:");
             System.out.println("  -O  --optimize             perform scalar optimizations on the classfiles");
@@ -309,8 +309,8 @@ public class Main
                     buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_SPLITTING;
                 else if(arg.equals("--use-packing"))
                     buildJimpleBodyOptions |= BuildJimpleBodyOption.USE_PACKING;
-                else if(arg.equals("--use-original-names"))
-                    buildJimpleBodyOptions |= BuildJimpleBodyOption.USE_ORIGINAL_NAMES;
+//                else if(arg.equals("--use-original-names"))
+//                    buildJimpleBodyOptions |= BuildJimpleBodyOption.USE_ORIGINAL_NAMES;
                 else if(arg.equals("-t") || arg.equals("--time"))
                     isProfilingOptimization = true;
                 else if(arg.equals("--subtract-gc"))
