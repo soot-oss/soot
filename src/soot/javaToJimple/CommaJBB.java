@@ -21,11 +21,9 @@ package soot.javaToJimple;
 
 public class CommaJBB extends AbstractJimpleBodyBuilder{
 
-    protected AbstractJimpleBodyBuilder ext(){
-        return ext;
-    }
-
     public CommaJBB(){
+        ext(null);
+        base(this);
     }
 
     protected soot.Value createExpr(polyglot.ast.Expr expr){
@@ -38,8 +36,12 @@ public class CommaJBB extends AbstractJimpleBodyBuilder{
     }
     
     private soot.Value getCommaLocal(soot.javaToJimple.jj.ast.JjComma_c comma){
-        createExpr(comma.first());
-        soot.Value val = createExpr(comma.second());
+        base().createExpr(comma.first());
+        soot.Value val = base().createExpr(comma.second());
         return val;
+    }
+
+    protected void createStmt(polyglot.ast.Stmt stmt){
+        ext().createStmt(stmt);
     }
 }

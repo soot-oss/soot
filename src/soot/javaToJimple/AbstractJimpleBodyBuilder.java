@@ -27,21 +27,35 @@ import soot.SootFieldRef;
 
 public abstract class AbstractJimpleBodyBuilder {
     
-    protected abstract AbstractJimpleBodyBuilder ext();
     public void ext(AbstractJimpleBodyBuilder ext){
         this.ext = ext;
+        if (ext.ext() == null){
+            throw new RuntimeException("Extensions created in wrong order, try doing right.");
+        }
+        ext.base = this.base;
     }
-    protected AbstractJimpleBodyBuilder ext;
-
+    public AbstractJimpleBodyBuilder ext(){
+        return ext;
+    }
+    private AbstractJimpleBodyBuilder ext;
+    
+    public void base(AbstractJimpleBodyBuilder base){
+        this.base = base;
+    }
+    public AbstractJimpleBodyBuilder base(){
+        return base;
+    }
+    private AbstractJimpleBodyBuilder base;
+    
     protected soot.jimple.JimpleBody createJimpleBody(polyglot.ast.Block block, List formals, soot.SootMethod sootMethod){
         return ext().createJimpleBody(block, formals, sootMethod);
     }
     
-    protected soot.Value createExpr(polyglot.ast.Expr expr){
-        return ext().createExpr(expr);
-    }
+    protected abstract soot.Value createExpr(polyglot.ast.Expr expr);
+    //    return ext().createExpr(expr);
+    //}
     
-    protected void createStmt(polyglot.ast.Stmt stmt){
-        ext().createStmt(stmt);
-    }
+    protected abstract void createStmt(polyglot.ast.Stmt stmt);
+    //    ext().createStmt(stmt);
+    //}
 }
