@@ -237,6 +237,8 @@ public class TypeResolver
 
   private void resolve_step_1() throws TypeException
   {
+    remove_spurious_locals();
+
     collect_constraints_1_2();
     debug_vars("constraints");
 
@@ -1021,15 +1023,64 @@ public class TypeResolver
       }
   }
 
-  private void split_new()
+  private void remove_spurious_locals()
   {
     CompleteUnitGraph graph = new CompleteUnitGraph(stmtBody);
     SimpleLocalDefs defs = new SimpleLocalDefs(graph);
     SimpleLocalUses uses = new SimpleLocalUses(graph, defs);
     PatchingChain units = stmtBody.getUnits();
     Stmt[] stmts = new Stmt[units.size()];
+    int modified = 0;
 
-    stmtBody.getUnits().toArray(stmts);
+    units.toArray(stmts);
+    
+    for(int i = 0; i < stmts.length; i++)
+      {
+	Stmt stmt = stmts[i];
+
+	if(stmt instanceof AssignStmt)
+	  {
+	    AssignStmt assign1 = (AssignStmt) stmt;
+
+	    if(assign1.getLeftOp() instanceof Local)
+	      {
+		List uselist = uses.getUsesOf(assign1);
+
+		if(uselist.size() == 1)
+		  {
+		    UnitValueBoxPair pair = (UnitValueBoxPair) uselist.get(0);
+		    
+		    List deflist = defs.getDefsOfAt((Local) pair.getValueBox().getValue(), pair.getUnit());
+				
+		    if(deflist.size() == 1)
+		      {
+			if(pair.getValueBox().canContainValue(assign1.getRightOp()))
+			  {
+			    // This is definitely a spurious local!
+			    // System.out.println(pair.getValueBox().getValue() + ": [" + assign1 + "] <--> [" + pair.getUnit() + "]");
+			    pair.getValueBox().setValue(assign1.getRightOp());
+			    units.remove(assign1);
+			    modified++;
+			    // System.out.println(" --> [" + pair.getUnit() + "]");
+			  }
+		      }
+		  }
+	      }
+	  }
+      }
+
+    System.out.println("remove spurious locals done: " + modified);
+  }
+
+  private void split_new()
+  {
+    CompleteUnitGraph graph = new CompleteUnitGraph(stmtBody);
+    SimpleLocalDefs defs = new SimpleLocalDefs(graph);
+    // SimpleLocalUses uses = new SimpleLocalUses(graph, defs);
+    PatchingChain units = stmtBody.getUnits();
+    Stmt[] stmts = new Stmt[units.size()];
+
+    units.toArray(stmts);
     
     for(int i = 0; i < stmts.length; i++)
       {
