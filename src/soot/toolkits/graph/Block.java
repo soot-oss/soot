@@ -31,7 +31,7 @@ import java.util.*;
 import soot.*;
 import soot.baf.*;
 
-public class Block 
+public class Block implements Directed
 {
     private Unit mHead, mTail;
     private Body mBody;
@@ -39,23 +39,21 @@ public class Block
     private int mPredCount = 0, mBlockLength = 0, mIndexInMethod = 0;
     private BlockGraph mBlockGraph;
 
-
-  public Body getBody() 
-  {
-    return mBody;
-  }
+    public Body getBody() 
+    {
+        return mBody;
+    }
        
-    
- 
     // xxx can't call remove on first or last item!!!!!! tail/ head won't get ajusted
     public Iterator iterator() 
     {
-      if(mBody != null) {
-          Chain units = mBody.getUnits();
-          return units.iterator(mHead, mTail);
-      } else {
-          return null;
-      }
+        if(mBody != null) 
+        {
+            Chain units = mBody.getUnits();
+            return units.iterator(mHead, mTail);
+        } else {
+            return null;
+        }
     }
     
     //    insertBefore(aLoadInst, candidate);
@@ -268,23 +266,17 @@ public class Block
         return mPreds;
     }
 
-
-    void setSuccessors(List successors)
+    void setSuccs(List successors)
     {
         mSuccessors = successors;
     }
 
-
-    public List getSuccessors()
+    public List getSuccs()
     {
         return mSuccessors;
     }
 
-
     public String toShortString() {return "Block #" + mIndexInMethod; }
-    
-
-
 
     private Map buildMapForBlock() 
     {

@@ -40,9 +40,9 @@ public abstract class FlowAnalysis
     protected Map unitToAfterFlow,
         unitToBeforeFlow;
 
-    UnitGraph graph;
+    DirectedGraph graph;
 
-    public FlowAnalysis(UnitGraph graph)
+    public FlowAnalysis(DirectedGraph graph)
     {
         unitToAfterFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
         unitToBeforeFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
@@ -54,17 +54,24 @@ public abstract class FlowAnalysis
 
     protected abstract boolean isForward();
 
-    protected abstract void flowThrough(Object in, Unit s, Object out);
+    /** Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s</code>. */
+    protected abstract void flowThrough(Object in, Directed d, Object out);
+    /** Compute the merge of the <code>in1</code> and <code>in2</code> sets, putting the result into <code>out</code>. 
+      * Used by the doAnalysis method. */
     protected abstract void merge(Object in1, Object in2, Object out);
     protected abstract void copy(Object source, Object dest);
     protected abstract void doAnalysis();
 
-    public Object getFlowAfterUnit(Unit s)
+    protected void customizeInitialFlowGraph()
+    {
+    }
+
+    public Object getFlowAfter(Directed s)
     {
         return unitToAfterFlow.get(s);
     }
 
-    public Object getFlowBeforeUnit(Unit s)
+    public Object getFlowBefore(Directed s)
     {
         return unitToBeforeFlow.get(s);
     }

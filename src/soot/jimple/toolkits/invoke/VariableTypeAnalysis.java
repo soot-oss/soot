@@ -187,7 +187,7 @@ public class VariableTypeAnalysis
         while(!nodeStack.isEmpty())
         {
             int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Object toVisitNode = nodeStack.getLast();
+            Directed toVisitNode = (Directed)nodeStack.getLast();
             List toVisitTypes = (List)typesStack.getLast();
 
             List outTypes = (List)nodeToOutTypes.get(toVisitNode);

@@ -1986,7 +1986,7 @@ public class JasminClass
         }
         
 	
-        Iterator succs = aBlock.getSuccessors().iterator();
+        Iterator succs = aBlock.getSuccs().iterator();
         while(succs.hasNext()) {
             Block b = (Block) succs.next();
             Integer i = (Integer) blockToStackHeight.get(b);
@@ -2028,7 +2028,7 @@ public class JasminClass
         }
         
 	
-        Iterator succs = aBlock.getSuccessors().iterator();
+        Iterator succs = aBlock.getSuccs().iterator();
         while(succs.hasNext()) {
             Block b = (Block) succs.next();
             Integer i = (Integer) blockToLogicalStackHeight.get(b);

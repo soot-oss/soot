@@ -32,7 +32,7 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
-public interface Unit extends Switchable
+public interface Unit extends Switchable, Directed
 {
     public List getUseBoxes();
     public List getDefBoxes();

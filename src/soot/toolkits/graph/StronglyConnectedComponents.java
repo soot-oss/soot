@@ -25,6 +25,7 @@
 
 package soot.toolkits.graph;
 
+import soot.*;
 import soot.util.*;
 import java.util.*;
 
@@ -110,7 +111,7 @@ public class StronglyConnectedComponents
         while(!nodeStack.isEmpty())
         {
             int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Object toVisitNode = nodeStack.getLast();
+            Directed toVisitNode = (Directed)nodeStack.getLast();
             
             toVisitIndex++;
             
@@ -156,7 +157,7 @@ public class StronglyConnectedComponents
         while(!nodeStack.isEmpty())
         {
             int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Object toVisitNode = nodeStack.getLast();
+            Directed toVisitNode = (Directed)nodeStack.getLast();
             
             toVisitIndex++;
             

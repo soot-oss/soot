@@ -64,4 +64,9 @@ public class FlowUniverse
         else
             return index.intValue();
     }
+
+    public boolean contains(Object obj)
+    {
+        return objectToIndex.get(obj) != null;
+    }
 }

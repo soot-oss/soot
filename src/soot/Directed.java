@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrice Pominville, Raja Vallee-Rai
+ * Copyright (C) 1997-1999 Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,21 +23,8 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
+package soot;
 
-package soot.toolkits.graph;
-
-
-import java.util.*;
-import soot.*;
-
-public interface DirectedGraph
+public interface Directed
 {
-    public List getHeads();
-    public List getTails();
-    public List getPredsOf(Directed s);
-    public List getSuccsOf(Directed s);
-    public int size();
-    public Iterator iterator();
 }
-
- 

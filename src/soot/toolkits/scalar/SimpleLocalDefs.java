@@ -81,7 +81,7 @@ public class SimpleLocalDefs implements LocalDefs
                                     if(!localUnitPairToDefs.containsKey(pair))
                                         {
                                             IntPair intPair = (IntPair) analysis.localToIntPair.get(l);
-                                            BoundedFlowSet value = (BoundedFlowSet) analysis.getFlowBeforeUnit(s);
+                                            BoundedFlowSet value = (BoundedFlowSet) analysis.getFlowBefore(s);
 
                                             List unitLocalDefs = value.toList(intPair.op1, intPair.op2);
 
@@ -387,10 +387,10 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
         return emptySet.clone();
 }
 
-    protected void flowThrough(Object inValue, Unit unit, Object outValue)
+    protected void flowThrough(Object inValue, Directed d, Object outValue)
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
-        
+        Unit unit = (Unit)d;
 
         List defBoxes = unit.getDefBoxes();
         if(!defBoxes.isEmpty()) {
@@ -419,22 +419,21 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
             in.copy(out);
     }
 
+    protected void copy(Object source, Object dest)
+    {
+        FlowSet sourceSet = (FlowSet) source,
+            destSet = (FlowSet) dest;
+        
+        sourceSet.copy(destSet);
+    }
 
-protected void copy(Object source, Object dest)
-{
-    FlowSet sourceSet = (FlowSet) source,
-        destSet = (FlowSet) dest;
-            
-    sourceSet.copy(destSet);
-}
-
-protected void merge(Object in1, Object in2, Object out)
-{
-    FlowSet inSet1 = (FlowSet) in1,
-        inSet2 = (FlowSet) in2;
-
-    FlowSet outSet = (FlowSet) out;
-
-    inSet1.union(inSet2, outSet);
-}
+    protected void merge(Object in1, Object in2, Object out)
+    {
+        FlowSet inSet1 = (FlowSet) in1,
+            inSet2 = (FlowSet) in2;
+        
+        FlowSet outSet = (FlowSet) out;
+        
+        inSet1.union(inSet2, outSet);
+    }
 }

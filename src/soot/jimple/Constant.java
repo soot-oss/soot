@@ -40,13 +40,23 @@ public abstract class Constant implements Value, ConvertToBaf
     {
         return AbstractUnit.emptyList;
     }
-    
+
+    /** Adds a Baf instruction pushing this constant to the stack onto <code>out</code>. */
     public void convertToBaf(JimpleToBafContext context, List out)
     {
         out.add(Baf.v().newPushInst(this));
     }
+
+    /** Clones the current constant.  Not implemented here. */
     public Object clone() 
     {
         throw new RuntimeException();
+    }
+
+    /** Returns true if this object is structurally equivalent to c. 
+     * For Constants, equality is structural equality, so we just call equals(). */
+    public boolean equivTo(Object c)
+    {
+        return equals(c);
     }
 }

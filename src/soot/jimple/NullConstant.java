@@ -51,11 +51,6 @@ public class NullConstant extends Constant implements Switchable, ToBriefString
         return c == constant;
     }
 
-    public boolean equivTo(Object c)
-    {
-        return equals(c);
-    }
-
     public String toString()
     {
         return Jimple.NULL;

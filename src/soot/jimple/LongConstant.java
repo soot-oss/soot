@@ -52,11 +52,6 @@ public class LongConstant extends ArithmeticConstant implements Switchable, ToBr
         return c instanceof IntConstant && ((IntConstant) c).value == this.value;
     }
 
-    public boolean equivTo(Object c)
-    {
-        return equals(c);
-    }
-
     // PTC 1999/06/28
     public NumericConstant add(NumericConstant c)
     {

@@ -53,11 +53,6 @@ public class StringConstant extends Constant implements Switchable, ToBriefStrin
         return (c instanceof StringConstant && ((StringConstant) c).value.equals(this.value));
     }
 
-    public boolean equivTo(Object c)
-    {
-        return equals(c);
-    }
-
     public String toString()
     {
         return StringTools.getQuotedStringOf(value);

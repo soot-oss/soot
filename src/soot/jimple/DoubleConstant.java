@@ -52,11 +52,6 @@ public class DoubleConstant extends RealConstant implements Switchable, ToBriefS
         return (c instanceof DoubleConstant && ((DoubleConstant) c).value == this.value);
     }
 
-    public boolean equivTo(Object c)
-    {
-        return equals(c);
-    }
-
     // PTC 1999/06/28
     public NumericConstant add(NumericConstant c)
     {

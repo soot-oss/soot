@@ -1017,7 +1017,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 				if(uses.size() == 1){
                                     if(allSuccesorsOfAreThePredecessorsOf(defBlock, loadBlock)) {
                                         if(getDeltaStackHeightFromTo((Unit) defBlock.getSuccOf(storeUnit), (Unit)defBlock.getTail()) == 0) {
-                                            Iterator it2 = defBlock.getSuccessors().iterator();
+                                            Iterator it2 = defBlock.getSuccs().iterator();
                                             boolean res = true;
                                             while(it2.hasNext()) {
                                                 Block b = (Block) it2.next();
@@ -1025,7 +1025,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                                                     res = false;
                                                     break;
                                                 }
-                                                if(b.getPreds().size() != 1 || b.getSuccessors().size() != 1){
+                                                if(b.getPreds().size() != 1 || b.getSuccs().size() != 1){
                                                     res = false;
                                                     break;
                                                 }
@@ -1057,8 +1057,8 @@ public class LoadStoreOptimizer extends BodyTransformer
 			if(defBlock0 != loadBlock && defBlock1 != loadBlock && defBlock0 != defBlock1
 			   && !(isExceptionHandlerBlock(loadBlock))) {                                
 			    if(mLocalUses.getUsesOf(def0).size() == 1  && mLocalUses.getUsesOf(def1).size() == 1) {
-				List def0Succs = defBlock0.getSuccessors();
-				List def1Succs  = defBlock1.getSuccessors();
+				List def0Succs = defBlock0.getSuccs();
+				List def1Succs  = defBlock1.getSuccs();
 				if(def0Succs.size()==1 && def1Succs.size()==1) {
 				    if(def0Succs.get(0) == loadBlock && def1Succs.get(0)== loadBlock) {                                         
 					if(loadBlock.getPreds().size() == 2) {
@@ -1092,8 +1092,8 @@ public class LoadStoreOptimizer extends BodyTransformer
      */    
     private boolean allSuccesorsOfAreThePredecessorsOf(Block aFirstBlock, Block aSecondBlock)
     {        
-        int size = aFirstBlock.getSuccessors().size();        
-        Iterator it = aFirstBlock.getSuccessors().iterator();
+        int size = aFirstBlock.getSuccs().size();        
+        Iterator it = aFirstBlock.getSuccs().iterator();
         
         List preds = aSecondBlock.getPreds();
         while(it.hasNext()) {

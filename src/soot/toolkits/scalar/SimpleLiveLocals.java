@@ -67,10 +67,10 @@ public class SimpleLiveLocals implements LiveLocals
             {
                 Unit s = (Unit) unitIt.next();
  
-                FlowSet set = (FlowSet) analysis.getFlowBeforeUnit(s);
+                FlowSet set = (FlowSet) analysis.getFlowBefore(s);
                 unitToLocalsBefore.put(s, Collections.unmodifiableList(set.toList()));
                 
-                set = (FlowSet) analysis.getFlowAfterUnit(s);
+                set = (FlowSet) analysis.getFlowAfter(s);
                 unitToLocalsAfter.put(s, Collections.unmodifiableList(set.toList()));
             }            
         }
@@ -187,7 +187,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
         return emptySet.clone();
     }
 
-    protected void flowThrough(Object inValue, Unit unit, Object outValue)
+    protected void flowThrough(Object inValue, Directed unit, Object outValue)
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 

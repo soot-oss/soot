@@ -110,7 +110,7 @@ public class PseudoTopologicalOrderer
         while(!stmtStack.isEmpty())
         {
             int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Object toVisitNode = stmtStack.getLast();
+            Directed toVisitNode = (Directed)stmtStack.getLast();
             
             toVisitIndex++;
             

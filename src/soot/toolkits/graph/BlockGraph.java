@@ -296,7 +296,6 @@ public class BlockGraph implements DirectedGraph
             Iterator it = mUnits.iterator();
             blockHead = (Unit) mUnits.getFirst();
             int blockLength = 1;
-            int blockDeltaHeight = 0;
             boolean isHandler = false;
 
             while(it.hasNext()) {
@@ -315,7 +314,6 @@ public class BlockGraph implements DirectedGraph
                     basicBlockList.add(block);
                     blockHead = unit;
                     blockLength = 1;
-                    blockDeltaHeight = 0;
                 }                
                 
             }
@@ -351,6 +349,14 @@ public class BlockGraph implements DirectedGraph
                     }
                     bb.setPreds(newl);
                 }
+                else
+                {
+                    // Hmm.  This BB has no preds.
+                    // It must be a head!
+                    // Clearly we don't want BB's with no preds around.
+
+                    bb.setPreds(new ArrayList());
+                }
             }
                             
 
@@ -372,7 +378,7 @@ public class BlockGraph implements DirectedGraph
                         }
                     }
                 }
-                b.setSuccessors(successorList);
+                b.setSuccs(successorList);
             }
             
             
@@ -385,13 +391,13 @@ public class BlockGraph implements DirectedGraph
             /*            it = basicBlockList.iterator();
                     while(it.hasNext()) {
                     Block currentBlock = (Block) it.next();
-                    List blockSuccsList = currentBlock.getSuccessors();
+                    List blockSuccsList = currentBlock.getSuccs();
                     if(blockSuccsList.size() == 1) {
                     Block succBlock = (Block)  blockSuccsList.get(0);
                     if(succBlock.getPreds().size() == 1) {
-                    if(succBlock.getSuccessors().size() == 1 || succBlock.getSuccessors().size()==0) { 
+                    if(succBlock.getSuccs().size() == 1 || succBlock.getSuccs().size()==0) { 
 
-                    if(succBlock.getSuccessors().size() == 1) {
+                    if(succBlock.getSuccs().size() == 1) {
                     Block succBlock2 = (Block)  blockSuccsList.get(0);
                     if(mUnits.getSuccOf(currentBlock.getTail()) == succBlock2.getHead() ) {
                                     
@@ -399,7 +405,7 @@ public class BlockGraph implements DirectedGraph
                     System.out.println("Code structure error dump:");
                     System.out.println("Current block: " + currentBlock.toString());
                     System.out.println("Succ block: " + succBlock.toString());
-                    System.out.println("pred: " + succBlock.getPreds().toString() + "succ  :" + succBlock.getSuccessors().toString());
+                    System.out.println("pred: " + succBlock.getPreds().toString() + "succ  :" + succBlock.getSuccs().toString());
                                 
                     mBlocks = basicBlockList;
                     System.out.println("Printing basic blocks ...");
@@ -420,7 +426,7 @@ public class BlockGraph implements DirectedGraph
                     System.out.println("Code structure error dump:");
                     System.out.println("Current block: " + currentBlock.toString());
                     System.out.println("Succ block: " + succBlock.toString());
-                    System.out.println("pred: " + succBlock.getPreds().toString() + "succ  :" + succBlock.getSuccessors().toString());
+                    System.out.println("pred: " + succBlock.getPreds().toString() + "succ  :" + succBlock.getSuccs().toString());
                             
                     mBlocks = basicBlockList;
                     System.out.println("Printing basic blocks ...");
@@ -493,14 +499,18 @@ public class BlockGraph implements DirectedGraph
     {
         throw new RuntimeException("not yet implemented");
     }
-    public List getPredsOf(Object s)
+    public List getPredsOf(Directed s)
     {
-        throw new RuntimeException("not yet implemented");
+        Block b = (Block) s;
+        return b.getPreds();
     }
-    public List getSuccsOf(Object s)
+
+    public List getSuccsOf(Directed s)
     {
-        throw new RuntimeException("not yet implemented");
+        Block b = (Block) s;
+        return b.getSuccs();
     }
+
     public int size()
     {
         return mBlocks.size();

@@ -308,7 +308,7 @@ public class UnitGraph implements DirectedGraph
         return tails;
     }
 
-    public List getPredsOf(Object s)
+    public List getPredsOf(Directed s)
     {
         if(!unitToPreds.containsKey(s))
             throw new RuntimeException("Invalid stmt" + s);
@@ -316,7 +316,7 @@ public class UnitGraph implements DirectedGraph
         return (List) unitToPreds.get(s);
     }
 
-    public List getSuccsOf(Object s)
+    public List getSuccsOf(Directed s)
     {
         if(!unitToSuccs.containsKey(s))
             throw new RuntimeException("Invalid stmt" + s);

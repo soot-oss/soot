@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.toolkits.scalar;
 
 import soot.*;
@@ -35,11 +31,9 @@ import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
 
-
-
 public abstract class ForwardFlowAnalysis extends FlowAnalysis
 {
-    public ForwardFlowAnalysis(UnitGraph graph)
+    public ForwardFlowAnalysis(DirectedGraph graph)
     {
         super(graph);
     }
@@ -62,7 +56,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
 
             while(it.hasNext())
             {
-                Unit s = (Unit) it.next();
+                Directed s = (Directed) it.next();
 
                 changedUnits.addLast(s);
                 changedUnitsSet.add(s);
@@ -71,6 +65,8 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                 unitToAfterFlow.put(s, newInitialFlow());
             }
         }
+
+        customizeInitialFlowGraph();
 
         // Perform fixed point flow analysis
         {
@@ -81,7 +77,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                 Object beforeFlow;
                 Object afterFlow;
 
-                Unit s = (Unit) changedUnits.removeFirst();
+                Directed s = (Directed) changedUnits.removeFirst();
 
                 changedUnitsSet.remove(s);
 
@@ -124,7 +120,7 @@ next());
 
                         while(succIt.hasNext())
                         {
-                            Unit succ = (Unit) succIt.next();
+                            Directed succ = (Directed) succIt.next();
                             
                             if(!changedUnitsSet.contains(succ))
                             {

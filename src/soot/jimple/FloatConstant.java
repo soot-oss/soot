@@ -53,11 +53,6 @@ public class FloatConstant extends RealConstant implements Switchable, ToBriefSt
         return c instanceof FloatConstant && ((FloatConstant) c).value == value;
     }
 
-    public boolean equivTo(Object c)
-    {
-        return equals(c);
-    }
-
     // PTC 1999/06/28
      public NumericConstant add(NumericConstant c)
     {
