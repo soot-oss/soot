@@ -734,7 +734,7 @@ public class Jimple
 
     public Local newLocal(String name, Type t)
     {
-        return new JimpleLocal(name, t);
+        return new JimpleLocal(name.intern(), t);
     }
 
     /**

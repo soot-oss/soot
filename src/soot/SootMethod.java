@@ -442,7 +442,7 @@ public class SootMethod
             final Type type = (Type) typeIt.next();
             buffer.append(soot.jimple.JasminClass.jasminDescriptorOf(type));
         }
-        return buffer.toString();
+        return buffer.toString().intern();
     }
 
     /**
@@ -459,9 +459,7 @@ public class SootMethod
         buffer.append(soot.jimple.JasminClass.jasminDescriptorOf(makeRef()));
         buffer.append(">");
 
-        // Again, memory-usage tweak depending on JDK implementation due
-        // to Michael Pan.
-        return new String(buffer.toString());
+        return buffer.toString().intern();
     }
 
     /**
@@ -479,7 +477,7 @@ public class SootMethod
 
         // Again, memory-usage tweak depending on JDK implementation due
         // to Michael Pan.
-        return new String(buffer.toString());
+        return buffer.toString().intern();
     }
 
     /**
@@ -525,7 +523,7 @@ public class SootMethod
         }
         buffer.append(")");
 
-        return buffer.toString();
+        return buffer.toString().intern();
     }
 
     private NumberedString subsignature;
@@ -631,7 +629,7 @@ public class SootMethod
             }
         }
 
-        return buffer.toString();
+        return buffer.toString().intern();
     }
 
     /**
@@ -690,7 +688,7 @@ public class SootMethod
             }
         }
 
-        return buffer.toString();
+        return buffer.toString().intern();
     }
     public final int getNumber() {
         return number;
