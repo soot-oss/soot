@@ -83,7 +83,7 @@ public class Main
             
             // insert "tmpRef.println("Hello world!")"
             {
-                SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
+                SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: .void println(java.lang.String)>");
                 units.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, StringConstant.v("Hello world!"))));
             }                        
             

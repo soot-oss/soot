@@ -145,7 +145,6 @@ public class SootMethod extends AbstractHost implements ClassMember
     
     public void setPhantom(boolean value)
     {
-	System.out.println("setting is phantom" );
 	//	ThreaddumpStack();
         isPhantom = value;
     }

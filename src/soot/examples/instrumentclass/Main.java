@@ -114,7 +114,7 @@ public class Main
         // Add code at the end of the main method to print out the 
         // gotoCounter (this only works in simple cases, because you may have multiple returns or System.exit()'s )
         {
-            SootMethod m = sClass.getMethod("void main(java.lang.String[])");
+            SootMethod m = sClass.getMethod(".void main(java.lang.String[])");
                 
             JimpleBody body = (JimpleBody) m.getActiveBody();
             Chain units = body.getUnits();

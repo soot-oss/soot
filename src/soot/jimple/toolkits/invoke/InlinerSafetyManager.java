@@ -221,9 +221,6 @@ public class InlinerSafetyManager
 
         Hierarchy h = Scene.v().getActiveHierarchy();
 
-        System.out.println(h.isClassSuperclassOf(m.getDeclaringClass(), 
-                                   containerClass));
-
         if (!h.isClassSuperclassOf(m.getDeclaringClass(), 
                                    containerClass))
             return false;
