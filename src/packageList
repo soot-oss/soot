@@ -9,7 +9,6 @@ soot.grimp.toolkits.base
 soot.jimple
 soot.jimple.internal
 soot.jimple.parser
-soot.jimple.toolkits.pointer.rinard
 soot.jimple.toolkits.annotation.tags
 soot.jimple.toolkits.annotation.arraycheck
 soot.jimple.toolkits.annotation.nullcheck
