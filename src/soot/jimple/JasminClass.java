@@ -86,7 +86,7 @@ public class JasminClass
         return argCount;
     }
 
-    static String jasminDescriptorOf(Type type)
+    public static String jasminDescriptorOf(Type type)
     {
         TypeSwitch sw;
 
