@@ -68,6 +68,9 @@
 
  B) Changes:
 
+ - Modified on March 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Made some tweeks to make printTo deterministic.
+   
  - Modified on March 16, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Introduced a patch to get around current typing limitations.
 
@@ -604,7 +607,7 @@ public class JimpleBody implements StmtBody
 
         // Print out local variables
         {
-            Map typeToLocalSet = new HashMap(this.getLocalCount() * 2 + 1, 0.7f);
+            Map typeToLocals = new DeterministicHashMap(this.getLocalCount() * 2 + 1, 0.7f);
 
             // Collect locals
             {
@@ -614,32 +617,30 @@ public class JimpleBody implements StmtBody
                 {
                     Local local = (Local) localIt.next();
 
-                    Set localSet;
-
-                    if(typeToLocalSet.containsKey(local.getType().toString()))
-                        localSet = (Set) typeToLocalSet.get(local.getType().toString());
+                    List localList;
+ 
+                    if(typeToLocals.containsKey(local.getType().toString()))
+                        localList = (List) typeToLocals.get(local.getType().toString());
                     else
                     {
-                        localSet = new HashSet();
-                        typeToLocalSet.put(local.getType().toString(), localSet);
+                        localList = new ArrayList();
+                        typeToLocals.put(local.getType().toString(), localList);
                     }
 
-                    localSet.add(local);
+                    localList.add(local);
                 }
             }
 
             // Print locals
             {
-                Set typeSet = typeToLocalSet.keySet();
+                Iterator typeIt = typeToLocals.keySet().iterator();
 
-                Object[] types = typeSet.toArray();
-
-                for(int j = 0; j < types.length; j++)
+                while(typeIt.hasNext())
                 {
-                    String type = (String) types[j];
+                    String type = (String) typeIt.next();
 
-                    Set localSet = (Set) typeToLocalSet.get(type);
-                    Object[] locals = localSet.toArray();
+                    List localList = (List) typeToLocals.get(type);
+                    Object[] locals = localList.toArray();
 
                     out.print("        " + type + " ");
 
@@ -656,7 +657,7 @@ public class JimpleBody implements StmtBody
             }
 
 
-            if(!typeToLocalSet.isEmpty())
+            if(!typeToLocals.isEmpty())
                 out.println();
         }
 

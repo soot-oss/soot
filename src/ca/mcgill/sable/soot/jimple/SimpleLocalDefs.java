@@ -313,7 +313,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
 
             // Generate the list & localToIntPair
             {
-                Iterator it = localToDefList.keySet().iterator();
+                Iterator it = g.getBody().getLocals().iterator();
                 List defList = new LinkedList();
 
                 int startPos = 0;

@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Performed some tweaks to make this class deterministic.
+   
  - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Re-organized the timers.
 
@@ -167,20 +170,24 @@ public class FastColorer
     public class InterferenceGraph
     {
         Map localToLocals;// Maps a local to its interfering locals.
-    
+        List locals;
+        
         private InterferenceGraph()
         {
         }
     
-        public Set getLocals()
+        public List getLocals()
         {
-            return localToLocals.keySet();
+            return locals;
         }
         
         public InterferenceGraph(StmtBody body, Map localToGroup, LiveLocals liveLocals)
         {
             StmtList stmtList = body.getStmtList();
     
+            locals = new ArrayList();
+            locals.addAll(body.getLocals());
+            
             // Initialize localToLocals
             {
                 localToLocals = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);

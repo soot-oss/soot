@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Disabled class.
+   
  - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Re-organized the timers.
 
@@ -77,9 +80,16 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ChaitinAllocator
-{   
-    public static void packLocals(JimpleBody body)
+/**
+   This is an old class which packs locals with a Chaitin style allocation algorithm.
+   This unfortunately has terrible complexity and is non-deterministic.  Do not use!
+ */
+ 
+class ChaitinAllocator
+{    
+    // Made private to discourage use.
+    
+    private static void packLocals(JimpleBody body)
     {
         new ChaitinAllocator(body);
     } 

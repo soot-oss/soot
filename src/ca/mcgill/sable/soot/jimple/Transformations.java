@@ -68,6 +68,9 @@
 
  B) Changes:
 
+ - Modified on March 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Modified removeUnusedLocals to not use an iterator for HashSet (which is non-deterministic).
+ 
  - Modified on March 17, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Corrected some aggregation bugs.
    Moved the local splitting code into its own file.
@@ -197,10 +200,7 @@ public class Transformations
     public static void removeUnusedLocals(StmtBody listBody)
     {
         StmtList stmtList = listBody.getStmtList();
-        Set unusedLocals = new HashSet();
-
-        // Set all locals as unused
-            unusedLocals.addAll(listBody.getLocals());
+        Set usedLocals = new HashSet();
 
         // Traverse statements noting all the uses
         {
@@ -218,8 +218,8 @@ public class Transformations
                     {
                         Value value = ((ValueBox) boxIt.next()).getValue();
 
-                        if(value instanceof Local && unusedLocals.contains(value))
-                            unusedLocals.remove(value);
+                        if(value instanceof Local && !usedLocals.contains(value))
+                            usedLocals.add(value);
                     }
                 }
 
@@ -231,24 +231,24 @@ public class Transformations
                     {
                         Value value = ((ValueBox) boxIt.next()).getValue();
 
-                        if(value instanceof Local && unusedLocals.contains(value))
-                            unusedLocals.remove(value);
+                        if(value instanceof Local && !usedLocals.contains(value))
+                            usedLocals.add(value);
                     }
                 }
             }
 
         }
 
-        // Remove all locals in unusedLocals
+        // Remove all locals that are unused.
         {
-            Iterator it = unusedLocals.iterator();
-            List locals = listBody.getLocals();
+            Iterator it = listBody.getLocals().iterator();
             
             while(it.hasNext())
             {
                 Local local = (Local) it.next();
 
-                locals.remove(local);
+                if(!usedLocals.contains(local))
+                    it.remove();
             }
         }
     }
@@ -532,7 +532,7 @@ public class Transformations
     
     public static void packLocals(StmtBody body)
     {
-        Map localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        Map localToGroup = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
         Map groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
         Map localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
         Map localToNewLocal;

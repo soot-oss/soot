@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Disabled class.
+
  - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Re-organized the timers.
 
@@ -80,9 +83,13 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class FastAllocator
+/** This is an obsolete non-deterministic local packer.  Use
+    Transformations.packLocals() instead.
+*/
+
+class FastAllocator
 {   
-    public static void packLocals(StmtBody body)
+    private static void packLocals(StmtBody body)
     {
         new FastAllocator(body);
     } 
