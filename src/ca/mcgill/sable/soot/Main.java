@@ -16,7 +16,7 @@
  * modification not identified as such is not covered by the         *
  * preceding statement.                                              *
  *                                                                   *
- * This work is free software; you can redistribute it and/or        *
+ * This work is freed software; you can redistribute it and/or       *
  * modify it under the terms of the GNU Library General Public       *
  * License as published by the Free Software Foundation; either      *
  * version 2 of the License, or (at your option) any later version.  *
@@ -213,21 +213,21 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.21");
+            System.out.println("Soot version 1.beta.4.dev.22");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
             System.out.println("Contributions are copyright (C) 1997-1999 by their respective contributors.");
             System.out.println("See individual source files for details.");
             System.out.println("");
-            System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is freed source software,");
+            System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is freed software,");
             System.out.println("and you are welcome to redistribute it under certain conditions.");
             System.out.println("See the accompanying file 'license.html' for details.");
             System.out.println("");
             System.out.println("Syntax: soot [option]* classname ...  ");
             System.out.println("");
             System.out.println("Output options:");
-            System.out.println("  -b, --ba                   produce .ba (abbreviated .baf) files");
+            System.out.println("  -b, --b                    produce .b (abbreviated .baf) files");
             System.out.println("  -B, --baf                  produce .baf code");
             System.out.println("  -j, --jimp                 produce .jimp (abbreviated .jimple) files");
             System.out.println("  -J, --jimple               produce .jimple code");
@@ -279,8 +279,8 @@ public class Main
                     targetExtension = ".jimple";
                 else if(arg.equals("-B") || arg.equals("--baf"))
                     targetExtension = ".baf";
-                else if(arg.equals("-b") || arg.equals("--ba"))
-                    targetExtension = ".ba";
+                else if(arg.equals("-b") || arg.equals("--b"))
+                    targetExtension = ".b";
                 else if(arg.equals("-g") || arg.equals("--grimp"))
                     targetExtension = ".grimp";
                 else if(arg.equals("-G") || arg.equals("--grimple"))
@@ -558,7 +558,7 @@ public class Main
             c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions),
                 writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
         }
-        else if(targetExtension.equals(".ba"))
+        else if(targetExtension.equals(".b"))
         {
             c.printTo(new BuildBody(Baf.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions)),
                 writerOut, ca.mcgill.sable.soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
