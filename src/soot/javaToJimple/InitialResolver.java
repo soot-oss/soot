@@ -781,7 +781,7 @@ public class InitialResolver {
      */
 	private void addModifiers(polyglot.types.Flags flags, polyglot.ast.ClassDecl cDecl){
 		int modifiers = 0;
-        //System.out.println("modifiers for class decl: "+cDecl.name());
+        //System.out.println("modifiers for class decl: "+cDecl.name()+" mods: "+flags);
         if (cDecl.type().isNested()){
             //System.out.println("cdecl is nested");
             if (flags.isPublic() || flags.isProtected() || flags.isPrivate()){
@@ -798,7 +798,7 @@ public class InitialResolver {
             // implicitly static and public (jls9.5)
             if (cDecl.type().outer().flags().isInterface()){
                 //System.out.println("outer is interface");
-                modifiers = soot.Modifier.PUBLIC;
+                modifiers = modifiers | soot.Modifier.PUBLIC;
                 //System.out.println("mods: "+modifiers);
             }
         }
