@@ -411,39 +411,40 @@ public class InitialResolver {
         ArrayList finalLocalsFields = new ArrayList();
         ArrayList params = new ArrayList();
         ArrayList allParams = new ArrayList();
+        AnonLocalClassInfo info = null;
         if (finalsMap != null){
             if (finalsMap.containsKey(next)){
-                AnonLocalClassInfo info = (AnonLocalClassInfo)finalsMap.get(next);
-                
-                // add this field
-                if (!info.inStaticMethod()){ 
-                    //only if enclosing method is not static
-                    soot.SootField field = new soot.SootField("this$0", soot.Scene.v().getSootClass(outerName).getType(), soot.Modifier.FINAL | soot.Modifier.PRIVATE);
-                    sootClass.addField(field);
-                }
-        
-                // anon classes need to be able to access locals from 
-                // the outer methods
-                // in which they are declared
-                Iterator fIt = info.finalFields().iterator();
-                while (fIt.hasNext()){
-                    polyglot.types.LocalInstance li = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)fIt.next()).object();
-                    
-                    soot.SootField sf = new soot.SootField("val$"+li.name(), Util.getSootType(li.type()), soot.Modifier.FINAL | soot.Modifier.PRIVATE);
-                    finalLocalsFields.add(sf);
-                    sootClass.addField(sf);
-                }
-       
-                // handle parameters
-                if (!info.inStaticMethod()){
-                    params.add(soot.Scene.v().getSootClass(outerName).getType());
-                }
-                ArrayList finalLocals = info.finalFields();
-                Iterator fIt2 = finalLocals.iterator();
-                while (fIt2.hasNext()){
-                    params.add(Util.getSootType(((polyglot.types.LocalInstance)((polyglot.util.IdentityKey)fIt2.next()).object()).type()));
-                }
+                info = (AnonLocalClassInfo)finalsMap.get(next);
             }
+        }
+                
+        // add this field
+        if (!info.inStaticMethod()){ 
+            //only if enclosing method is not static
+            soot.SootField field = new soot.SootField("this$0", soot.Scene.v().getSootClass(outerName).getType(), soot.Modifier.FINAL | soot.Modifier.PRIVATE);
+            sootClass.addField(field);
+        }
+        
+        // anon classes need to be able to access locals from 
+        // the outer methods
+        // in which they are declared
+        Iterator fIt = info.finalFields().iterator();
+        while (fIt.hasNext()){
+            polyglot.types.LocalInstance li = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)fIt.next()).object();
+                    
+            soot.SootField sf = new soot.SootField("val$"+li.name(), Util.getSootType(li.type()), soot.Modifier.FINAL | soot.Modifier.PRIVATE);
+            finalLocalsFields.add(sf);
+            sootClass.addField(sf);
+        }
+       
+        // handle parameters
+        if (!info.inStaticMethod()){
+            params.add(soot.Scene.v().getSootClass(outerName).getType());
+        }
+        ArrayList finalLocals = info.finalFields();
+        Iterator fIt2 = finalLocals.iterator();
+        while (fIt2.hasNext()){
+            params.add(Util.getSootType(((polyglot.types.LocalInstance)((polyglot.util.IdentityKey)fIt2.next()).object()).type()));
         }
        
         // if interface there are no extra params
@@ -451,45 +452,34 @@ public class InitialResolver {
             soot.SootMethod method = new soot.SootMethod("<init>", params, soot.VoidType.v());
             AnonClassInitMethodSource src = new AnonClassInitMethodSource();
             src.outerClassType(soot.Scene.v().getSootClass(outerName).getType());
+            src.inStaticMethod(info.inStaticMethod());
             method.setSource(src);
             sootClass.addMethod(method);
         }
         else {
-            if (finalsMap != null){
-                if (finalsMap.containsKey(next)){
-                    
-                    AnonLocalClassInfo info = (AnonLocalClassInfo)finalsMap.get(next);
-                    // otherwise add outer class param if not in static meth
-            
-                    if (!info.inStaticMethod()){
-                        allParams.add(soot.Scene.v().getSootClass(outerName).getType());
-                    }
-                    Iterator aIt = next.arguments().iterator();
-                    while (aIt.hasNext()){
-                        polyglot.types.Type pType = ((polyglot.ast.Expr)aIt.next()).type();
-                        allParams.add(Util.getSootType(pType));
-                    }
-                    ArrayList finalLocals = info.finalFields();
+            // otherwise add outer class param if not in static meth
+            if (!info.inStaticMethod()){
+                allParams.add(soot.Scene.v().getSootClass(outerName).getType());
+            }
+            Iterator aIt = next.arguments().iterator();
+            while (aIt.hasNext()){
+                polyglot.types.Type pType = ((polyglot.ast.Expr)aIt.next()).type();
+                allParams.add(Util.getSootType(pType));
+            }
+            ArrayList finalLocals2 = info.finalFields();
 
                     
-                    Iterator fIt = finalLocals.iterator();
-                    while (fIt.hasNext()){
-                        allParams.add(Util.getSootType(((polyglot.types.LocalInstance)((polyglot.util.IdentityKey)fIt.next()).object()).type()));
-                    }
-                }
+            Iterator fIt3 = finalLocals2.iterator();
+            while (fIt3.hasNext()){
+                allParams.add(Util.getSootType(((polyglot.types.LocalInstance)((polyglot.util.IdentityKey)fIt3.next()).object()).type()));
             }
             soot.SootMethod method = new soot.SootMethod("<init>", allParams, soot.VoidType.v());
         
             AnonClassInitMethodSource src = new AnonClassInitMethodSource();
             src.outerClassType(soot.Scene.v().getSootClass(outerName).getType());
             src.setFieldList(finalLocalsFields);
-            if (finalsMap != null){
-                if (finalsMap.containsKey(next)){
-                    
-                    AnonLocalClassInfo info = (AnonLocalClassInfo)finalsMap.get(next);
-                    src.inStaticMethod(info.inStaticMethod());
-                }
-            }
+            System.out.println("in static: "+info.inStaticMethod());
+            src.inStaticMethod(info.inStaticMethod());
             method.setSource(src);
             sootClass.addMethod(method);
                     
