@@ -65,6 +65,7 @@
  B) Changes:
 
  - Modified on March 2, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca)
+   Added an equals method.
    Split off FieldRef from InstanceFieldRef & StaticFieldRef.
 
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
@@ -126,5 +127,17 @@ public class StaticFieldRef implements FieldRef, ToBriefString
     public void apply(Switch sw)
     {
         ((RefSwitch) sw).caseStaticFieldRef(this);
+    }
+    
+    public boolean equals(Object o)
+    {
+	    if (o instanceof StaticFieldRef)
+	    {
+            StaticFieldRef fr = (StaticFieldRef) o;
+            
+            return fr.field.equals(field);
+	    }
+        
+	    return false;
     }
 }
