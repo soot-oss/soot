@@ -308,8 +308,24 @@ public class PackManager {
             }
         }
     }
+    private boolean checkParentEnabled( String phaseName ) {
+        for( Iterator pIt = packList.iterator(); pIt.hasNext(); ) {
+            final Pack p = (Pack) pIt.next();
+            if( getBoolean( getPhaseOptions( p ), "enabled" ) ) continue;
+            for( Iterator tIt = p.iterator(); tIt.hasNext(); ) {
+                final Transform t = (Transform) tIt.next();
+                if( t.getPhaseName().equals( phaseName ) ) {
+                    G.v().out.println( "Attempt to set option for phase "+phaseName+" of disabled pack "+p.getPhaseName() );
+                    return false;
+
+                }
+            }
+        }
+        return true;
+    }
     public boolean setPhaseOption( String phaseName, String option ) {
         Map optionMap = mapForPhase( phaseName );
+        if( !checkParentEnabled( phaseName ) ) return false;
         if( optionMap == null ) {
             G.v().out.println( "Option "+option+" given for nonexistent"
                     +" phase "+phaseName );
