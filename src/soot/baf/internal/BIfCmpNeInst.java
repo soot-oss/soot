@@ -54,7 +54,7 @@ public class BIfCmpNeInst extends AbstractOpTypeBranchInst
 
     public int getInMachineCount()
     {
-        return 2;
+        return 2*JasminClass.sizeOfType(getOpType());
     }
     
     public int getOutCount()
