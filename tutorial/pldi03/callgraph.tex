@@ -87,11 +87,12 @@ public static final int NEWINSTANCE = 10;
 \item[\texttt{edgesOutOf(SootMethod)}] iterator over edges with given source method
 \item[\texttt{edgesOutOf(Unit)}] iterator over edges with given source statement
 \item[\texttt{edgesInto(SootMethod)}] iterator over edges with given target method
-\begin{tabular}{|c|c|c|c|}\hline {\red src}&o.foo();&foo()&VIRTUAL\\\hline\end{tabular}
-\begin{tabular}{|c|c|c|c|}\hline {\red src}&o.goo();&goo()&VIRTUAL\\\hline\end{tabular}
-\begin{tabular}{|c|c|c|c|}\hline {\red src}&o.hoo();&hoo()&VIRTUAL\\\hline\end{tabular}
-{\gray \begin{tabular}{|c|c|c|c|}\hline bar&o.foo();&foo()&VIRTUAL\\\hline\end{tabular}}
+\begin{tabular}{|c|c|c|c|}\hline {\red main()}&o.foo();&C1.foo()&VIRTUAL\\\hline\end{tabular}
+\begin{tabular}{|c|c|c|c|}\hline {\red main()}&o.goo();&C1.goo()&VIRTUAL\\\hline\end{tabular}
+\begin{tabular}{|c|c|c|c|}\hline {\red main()}&o.goo();&C2.goo()&VIRTUAL\\\hline\end{tabular}
+{\gray \begin{tabular}{|c|c|c|c|}\hline bar()&o.foo();&C2.foo()&VIRTUAL\\\hline\end{tabular}}
 \end{description}
+\sablefootnote{soot.jimple.toolkits.callgraph.CallGraph}
 \end{slide}
 
 \begin{slide}{Querying Call Graph}
@@ -99,11 +100,12 @@ public static final int NEWINSTANCE = 10;
 \item[\texttt{edgesOutOf(SootMethod)}] iterator over edges with given source method
 \item[\texttt{edgesOutOf(Unit)}] iterator over edges with given source statement
 \item[\texttt{edgesInto(SootMethod)}] iterator over edges with given target method
-\begin{tabular}{|c|c|c|c|}\hline src&o.foo();&{\red foo()}&VIRTUAL\\\hline\end{tabular}
-{\gray \begin{tabular}{|c|c|c|c|}\hline src&o.goo();&goo()&VIRTUAL\\\hline\end{tabular}}
-{\gray \begin{tabular}{|c|c|c|c|}\hline src&o.hoo();&hoo()&VIRTUAL\\\hline\end{tabular}}
-\begin{tabular}{|c|c|c|c|}\hline bar&o.foo();&{\red foo()}&VIRTUAL\\\hline\end{tabular}
+\begin{tabular}{|c|c|c|c|}\hline main()&o.foo();&{\red C1.foo()}&VIRTUAL\\\hline\end{tabular}
+{\gray \begin{tabular}{|c|c|c|c|}\hline main()&o.goo();&C1.goo()&VIRTUAL\\\hline\end{tabular}}
+{\gray \begin{tabular}{|c|c|c|c|}\hline main()&o.goo();&C2.goo()&VIRTUAL\\\hline\end{tabular}}
+\begin{tabular}{|c|c|c|c|}\hline bar()&o.foo();&{\red C1.foo()}&VIRTUAL\\\hline\end{tabular}
 \end{description}
+\sablefootnote{soot.jimple.toolkits.callgraph.CallGraph}
 \end{slide}
 
 \begin{slide}{Adapters}
@@ -127,6 +129,7 @@ public static final int NEWINSTANCE = 10;
 \src{2}\\
 \src{3}\\
 \end{minipage}
+\sablefootnote{soot.jimple.toolkits.callgraph.\{Sources,Units,Targets\}}
 \end{slide}
 
 \begin{slide}{Code Example}
@@ -135,9 +138,9 @@ public static final int NEWINSTANCE = 10;
 void mayCall( SootMethod src ) {
    CallGraph cg =
             Scene.v().getCallGraph();
-   Iterator edges = cg.edgesOutOf(src);
    Iterator targets =
-                  new Targets(edges);
+     new Targets(cg.edgesOutOf(src));
+
    while( targets.hasNext() ) {
       SootMethod tgt =
          (SootMethod) targets.next();
