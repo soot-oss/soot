@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 29, 19989 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Added the releaseBody() method.
+   
  - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Added the isBodyStored method.
    
@@ -250,6 +253,16 @@ public class SootMethod
         repToBody.put(r, b);
     }
 
+    /**
+        Releases a representation for the body of the method.
+     */
+     
+    public void releaseBody(BodyRepresentation r)
+    {
+        if(repToBody.containsKey(r))
+            repToBody.remove(r);
+    }
+    
     /*
     public void setInstListBody(InstListBody instListBody)
     {

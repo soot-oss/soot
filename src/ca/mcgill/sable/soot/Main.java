@@ -70,7 +70,8 @@
 
  - Modified on March 28, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Renamed class to ca.mcgill.sable.soot.Main
-
+   Fixed up all the command line arguments to conform to GNU standards.
+   
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -135,7 +136,7 @@ public class Main
     static public boolean usePackedDefs = true;
     static boolean isTestingPerformance;
 
-    public static String jimpleClassPath;
+    public static String sootClassPath;
 
     static private String targetExtension = ".class";
 
@@ -208,7 +209,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.11");
+            System.out.println("Soot version 1.beta.4.dev.12");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -296,7 +297,7 @@ public class Main
                 else if(arg.equals("--soot-class-path"))
                 {   
                     if(++i < args.length)
-                        jimpleClassPath = args[i];
+                        sootClassPath = args[i];
                 }
                 else if(arg.equals("-r") || arg.equals("--recurse"))
                     isRecursing=true;
@@ -439,8 +440,8 @@ public class Main
                     System.out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
                     System.out.println("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
                     System.out.println("            Coloring locals: " + toTimeString(packTimer, totalTime));
-                    System.out.println("  Building jasmin classfile: " + toTimeString(buildJasminTimer, totalTime));
-                    System.out.println(" Converting jasmin -> class: " + toTimeString(assembleJasminTimer, totalTime));
+                    System.out.println("     Generating jasmin code: " + toTimeString(buildJasminTimer, totalTime));
+                    System.out.println("          .jasmin -> .class: " + toTimeString(assembleJasminTimer, totalTime));
 
                                             
 //                    System.out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +

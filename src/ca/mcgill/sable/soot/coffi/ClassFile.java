@@ -99,6 +99,9 @@
 
  B) Changes:
 
+ - Modified on March 29, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Renamed jimpleClassPath to sootClassPath.
+   
  - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Changed some short's to int's to properly contain unsigned
    short values.
@@ -273,8 +276,8 @@ public class ClassFile {
       locatorTimer.start();
       
       try
-      {   if(Main.jimpleClassPath != null)
-          {   f = ClassLocator.getInputStreamOf(Main.jimpleClassPath, fn);
+      {   if(Main.sootClassPath != null)
+          {   f = ClassLocator.getInputStreamOf(Main.sootClassPath, fn);
           }
           else
           {   f = ClassLocator.getInputStreamOf(fn);

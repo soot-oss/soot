@@ -701,13 +701,13 @@ public class SootClass
                 classPrefix = classPrefix.trim();
             }
 
-            out.print(classPrefix + " " + this.getName());
+            out.print(classPrefix + " '" + this.getName() + "'");
         }
 
         // Print extension
         {
             if(this.hasSuperClass())
-                out.print(" extends " + this.getSuperClass().getName());
+                out.print(" extends '" + this.getSuperClass().getName() + "'");
         }
 
         // Print interfaces
@@ -718,12 +718,12 @@ public class SootClass
             {
                 out.print(" implements ");
 
-                out.print(((SootClass) interfaceIt.next()).getName());
+                out.print("'" + ((SootClass) interfaceIt.next()).getName() + "'");
 
                 while(interfaceIt.hasNext())
                 {
                     out.print(",");
-                    out.print(" " + ((SootClass) interfaceIt.next()).getName());
+                    out.print(" '" + ((SootClass) interfaceIt.next()).getName() + "'");
                 }
             }
         }
@@ -812,7 +812,29 @@ public class SootClass
 
             if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
                 ca.mcgill.sable.soot.Main.assembleJasminTimer.start(); 
-        
+
+            // Invoke jasmin
+            {
+                String[] args;
+                
+                if(outputDir.equals(""))
+                {
+                    args = new String[1];
+                    
+                    args[0] = this.getName() + ".jasmin";
+                }
+                else
+                {
+                    args = new String[3];
+                    
+                    args[0] = "-d";
+                    args[1] = outputDir;
+                    args[2] = outputDirWithSep + this.getName() + ".jasmin";
+                }
+                
+                jasmin.Main.main(args);
+            }
+                /*        
             Process p;
             
             if(outputDir.equals(""))
@@ -825,6 +847,7 @@ public class SootClass
             } catch(InterruptedException e)
             {
             }
+            */
             
             tempFile.delete();
             
