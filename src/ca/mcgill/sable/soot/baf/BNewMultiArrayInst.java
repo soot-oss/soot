@@ -82,13 +82,38 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class BNewMultiArrayInst extends AbstractOpTypeInst implements NewMultiArrayInst
+public class BNewMultiArrayInst extends AbstractInst implements NewMultiArrayInst
 {
     int dimensionCount;
 
+    ArrayType baseType;
+
     public BNewMultiArrayInst(ArrayType opType, int dimensionCount)
     {
-        super(opType); this.dimensionCount = dimensionCount;
+	this.dimensionCount = dimensionCount;
+	baseType = opType;
+    }
+
+
+
+    public int getInCount() 
+    {
+	return dimensionCount;
+    }
+
+    public int getOutCount()
+    {
+	return 1; 
+    }
+
+    public int getInMachineCount() 
+    {
+	return dimensionCount;
+    }
+
+    public int getOutMachineCount()
+    {
+	return 1; 	
     }
 
 
@@ -101,8 +126,8 @@ public class BNewMultiArrayInst extends AbstractOpTypeInst implements NewMultiAr
     final String getParameters(boolean isBrief, Map unitToName) 
         { return " "+dimensionCount; }
 
-    public ArrayType getBaseType() { return (ArrayType)opType; }
-    public void setBaseType(ArrayType type) { this.opType = type; }
+    public ArrayType getBaseType() { return baseType; }
+    public void setBaseType(ArrayType type) { baseType = type; }
 
     public int getDimensionCount() { return dimensionCount; }
     public void setDimensionCount(int x) { x = dimensionCount; }

@@ -82,14 +82,16 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class BPrimitiveCastInst extends AbstractOpTypeInst 
+public class BPrimitiveCastInst extends AbstractInst 
                             implements PrimitiveCastInst
 {
     Type fromType;
     
+    protected Type toType;
+
     public int getInCount()
     {
-        return JasminClass.sizeOfType(fromType);
+        return 1;
     }
 
     public int getInMachineCount()
@@ -104,30 +106,31 @@ public class BPrimitiveCastInst extends AbstractOpTypeInst
 
     public int getOutMachineCount()
     {
-        return JasminClass.sizeOfType(getOpType());
+        return JasminClass.sizeOfType(toType);
     }
 
     
     public BPrimitiveCastInst(Type fromType, Type toType) 
     { 
-        super(toType); 
+        
         this.fromType = fromType;
+	this.toType = toType;
     }
 
     
     public Object clone() 
     {
-        return new BPrimitiveCastInst(getFromType(), getToType());
+	return new BPrimitiveCastInst(getFromType(), toType);
     }
 
 
 
     // after changing the types, use getName to check validity
     public Type getFromType() { return fromType; }
-    public void setFromType(Type t) { fromType = t; getName(); }
+    public void setFromType(Type t) { fromType = t;}
     
-    public Type getToType() { return getOpType(); }
-    public void setToType(Type t) { setOpType(t); getName(); }
+    public Type getToType() { return toType; }
+    public void setToType(Type t) { toType = t;}
 
     final String getName() 
     {
@@ -142,28 +145,28 @@ public class BPrimitiveCastInst extends AbstractOpTypeInst
 
             public void caseDoubleType(DoubleType ty)
                 {
-                    if(opType.equals(IntType.v()))
+                    if(toType.equals(IntType.v()))
                         setResult("d2i");
-                    else if(opType.equals(LongType.v()))
+                    else if(toType.equals(LongType.v()))
                         setResult("d2l");
-                    else if(opType.equals(FloatType.v()))
+                    else if(toType.equals(FloatType.v()))
                         setResult("d2f");
                     else
                         throw new RuntimeException
-                            ("invalid toType from double: " + opType);
+                            ("invalid toType from double: " + toType);
                 }
 
             public void caseFloatType(FloatType ty)
                 {
-                    if(opType.equals(IntType.v()))
+                    if(toType.equals(IntType.v()))
                         setResult("f2i");
-                    else if(opType.equals(LongType.v()))
+                    else if(toType.equals(LongType.v()))
                         setResult("f2l");
-                    else if(opType.equals(DoubleType.v()))
+                    else if(toType.equals(DoubleType.v()))
                         setResult("f2d");
                     else
                         throw new RuntimeException
-                            ("invalid toType from float: " + opType);
+                            ("invalid toType from float: " + toType);
                 }
 
             public void caseIntType(IntType ty)
@@ -193,36 +196,36 @@ public class BPrimitiveCastInst extends AbstractOpTypeInst
 
             private void emitIntToTypeCast()
                 {
-                    if(opType.equals(ByteType.v()))
+                    if(toType.equals(ByteType.v()))
                         setResult("i2b");
-                    else if(opType.equals(CharType.v()))
+                    else if(toType.equals(CharType.v()))
                         setResult("i2c");
-                    else if(opType.equals(ShortType.v()))
+                    else if(toType.equals(ShortType.v()))
                         setResult("i2s");
-                    else if(opType.equals(FloatType.v()))
+                    else if(toType.equals(FloatType.v()))
                         setResult("i2f");
-                    else if(opType.equals(LongType.v()))
+                    else if(toType.equals(LongType.v()))
                         setResult("i2l");
-                    else if(opType.equals(DoubleType.v()))
+                    else if(toType.equals(DoubleType.v()))
                         setResult("i2d");
-                    else if(opType.equals(IntType.v()))
+                    else if(toType.equals(IntType.v()))
                             ;  // this shouldn't happen?
                     else
                         throw new RuntimeException
-                            ("invalid toType from int: " + opType);
+                            ("invalid toType from int: " + toType);
                 }
 
             public void caseLongType(LongType ty)
                 {
-                    if(opType.equals(IntType.v()))
+                    if(toType.equals(IntType.v()))
                         setResult("l2i");
-                    else if(opType.equals(FloatType.v()))
+                    else if(toType.equals(FloatType.v()))
                         setResult("l2f");
-                    else if(opType.equals(DoubleType.v()))
+                    else if(toType.equals(DoubleType.v()))
                         setResult("l2d");
                     else
                         throw new RuntimeException
-                              ("invalid toType from long: " + opType);
+                              ("invalid toType from long: " + toType);
                             
                 }
         });

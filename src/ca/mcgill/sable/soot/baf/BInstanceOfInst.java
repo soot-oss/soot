@@ -82,14 +82,19 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class BInstanceOfInst extends AbstractOpTypeInst 
+public class BInstanceOfInst extends AbstractInst 
                             implements InstanceOfInst
 {
+
+
+    protected Type checkType;
+
     public BInstanceOfInst(Type opType) 
     { 
-        super(opType); 
         if (!(opType instanceof RefType) && !(opType instanceof ArrayType))
             throw new RuntimeException("invalid InstanceOfInst: "+ opType);
+
+	checkType = opType;
     }
     
     public int getInCount()
@@ -114,8 +119,8 @@ public class BInstanceOfInst extends AbstractOpTypeInst
     
     final String getName() { return "instanceof"; }
 
-    public Type getCheckType() { return opType; }
-    public void setCheckType(Type t) { opType = t; }
+    public Type getCheckType() { return checkType; }
+    public void setCheckType(Type t) { checkType = t; }
 
     public void apply(Switch sw)
     {
@@ -125,7 +130,7 @@ public class BInstanceOfInst extends AbstractOpTypeInst
 
     public Object clone() 
     {
-        return new BInstanceOfInst(opType); 
+	return new BInstanceOfInst(checkType); 
     }
 
 }

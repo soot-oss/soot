@@ -138,7 +138,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
         final Value lvalue = this.getLeftOp();
         final Value rvalue = this.getRightOp();
 
-        /*
+        
         // Handle simple subcase where you can use the efficient iinc bytecode
             if(lvalue instanceof Local && (rvalue instanceof AddExpr || rvalue instanceof SubExpr))
             {
@@ -161,6 +161,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
                         op2 == l && op1 instanceof IntConstant)
                     {
                         // Note expr can't be a SubExpr because that would be x = 3 - x
+
                         
                         x = ((IntConstant) op1).value;
                         isValidCase = true;
@@ -168,15 +169,12 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     
                     if(isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE)
                     {
-                        throw new RuntimeException("missing shortcut for iinc");
-                        
-                        emit("iinc " + ((Integer) localToSlot.get(l)).intValue() + " " +  
-                            ((expr instanceof AddExpr) ? x : -x), 0);
-                        return;
+			out.add(Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l),  IntConstant.v((expr instanceof AddExpr) ? x : -x)));    
+			return;
                     }        
                 }
             }
-*/
+
 
             lvalue.apply(new AbstractJimpleValueSwitch()
             {

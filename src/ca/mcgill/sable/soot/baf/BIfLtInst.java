@@ -91,7 +91,7 @@ public class BIfLtInst extends AbstractBranchInst implements IfLtInst
     
     public int getInCount()
     {
-        return 2;
+        return 1;
     }
 
 
@@ -102,7 +102,7 @@ public class BIfLtInst extends AbstractBranchInst implements IfLtInst
 
     public int getInMachineCount()
     {
-        return 2;
+        return 1;
     }
     
     public int getOutCount()

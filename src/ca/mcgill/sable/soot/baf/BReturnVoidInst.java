@@ -121,4 +121,15 @@ public class BReturnVoidInst extends AbstractInst implements ReturnVoidInst
     {
         ((InstSwitch) sw).caseReturnVoidInst(this);
     }   
+
+     public boolean fallsThrough()
+    {
+	return false;
+    }
+  
+
+
+
+
+
 }

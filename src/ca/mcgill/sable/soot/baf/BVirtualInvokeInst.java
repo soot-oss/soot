@@ -50,6 +50,8 @@ public class BVirtualInvokeInst extends AbstractInvokeInst implements VirtualInv
     {
         ((InstSwitch) sw).caseVirtualInvokeInst(this);
     }   
+
+
 }
 
 

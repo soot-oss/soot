@@ -82,11 +82,13 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class BNewArrayInst extends AbstractOpTypeInst implements NewArrayInst
+public class BNewArrayInst extends AbstractInst implements NewArrayInst
 {
+    protected Type baseType;
+    
     public BNewArrayInst(Type opType)
     {
-        super(opType);
+        baseType = opType;
     }
     
     public int getInCount()
@@ -94,11 +96,17 @@ public class BNewArrayInst extends AbstractOpTypeInst implements NewArrayInst
         return 1;
     }
 
+    public int getOutCount()
+    {
+	return 1;
+    }
+
+
 
 
     public Object clone() 
     {
-        return new  BNewArrayInst(getOpType());
+	return new  BNewArrayInst(baseType);
     }
 
     public int getInMachineCount()
@@ -114,8 +122,8 @@ public class BNewArrayInst extends AbstractOpTypeInst implements NewArrayInst
 
     final String getName() { return "newarray"; }
 
-    public Type getBaseType() { return opType; }
-    public void setBaseType(Type type) { this.opType = type; }
+    public Type getBaseType() { return baseType; }
+    public void setBaseType(Type type) { baseType = type; }
 
 
     public void apply(Switch sw)

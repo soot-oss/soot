@@ -88,10 +88,10 @@ public class BafBody implements Body
 
     public BafBody(UnitBody body)
     {
-        method = body.getMethod();
-        locals = HashChain.hashChainToList((HashChain) body.getLocals());
-        instList = HashChain.hashChainToList((HashChain)body.getUnits());
-        traps = HashChain.hashChainToList((HashChain) body.getTraps());
+	method = body.getMethod();
+	locals = HashChain.toList(body.getLocals());
+	instList = HashChain.toList(body.getUnits());
+	traps = HashChain.toList(body.getTraps());
     }
 
 

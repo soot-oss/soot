@@ -81,6 +81,10 @@ public class RefType extends BaseType implements ToBriefString
 {
     public final String className;
 
+
+    private static RefType singleton = new RefType("");
+
+
     private RefType(String className)
     {
         this.className = className;
@@ -90,6 +94,12 @@ public class RefType extends BaseType implements ToBriefString
     {
         return new RefType(className);
     }
+
+    public static RefType v()
+    {
+        return singleton;
+    }
+
 
     public boolean equals(Object t)
     {

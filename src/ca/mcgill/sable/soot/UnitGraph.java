@@ -194,16 +194,24 @@ public class UnitGraph implements DirectedGraph
                         Iterator unitIt = unitChain.iterator(beginUnit);
                         
                         beginToHandler.put(beginUnit, handlerUnit);
-                        
-                        Unit u;
+
+			
+			Unit u;
+
+			
+
                         do  {
                             u = (Unit) unitIt.next();
                             
                             ((List) unitToSuccs.get(u)).add(handlerUnit);
-                            
+
+			    System.out.println(u);
+
                         } while(u != endUnit);
-                    
-                    }
+
+			
+		    }
+
                     
                     // Add edges from the predecessors of begin statements directly to the handlers
                     // This is necessary because sometimes the first statement of try block

@@ -82,14 +82,18 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class BInstanceCastInst extends AbstractOpTypeInst 
+public class BInstanceCastInst extends AbstractInst 
                             implements InstanceCastInst
 {
+
+    protected Type castType;
+
     public BInstanceCastInst(Type opType) 
     { 
-        super(opType); 
+        
         if (!(opType instanceof RefType) && !(opType instanceof ArrayType))
             throw new RuntimeException("invalid InstanceCastInst: "+ opType);
+	castType = opType;
     }
 
     
@@ -104,7 +108,9 @@ public class BInstanceCastInst extends AbstractOpTypeInst
 
     public Object clone() 
     {
-        return new  BInstanceCastInst(getOpType());
+
+	return new  BInstanceCastInst(castType);
+
     }
 
     
@@ -126,8 +132,8 @@ public class BInstanceCastInst extends AbstractOpTypeInst
 
     final String getName() { return "checkcast"; }
 
-    public Type getCastType() { return opType; }
-    public void setCastType(Type t) { opType = t; }
+    public Type getCastType() { return castType; }
+    public void setCastType(Type t) { castType = t; }
 
     public void apply(Switch sw)
     {

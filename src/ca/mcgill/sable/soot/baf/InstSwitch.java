@@ -90,6 +90,7 @@ public interface InstSwitch extends Switch
     public void caseNopInst(NopInst i);
     public void caseGotoInst(GotoInst i);
     public void casePushInst(PushInst i);
+    public void casePopInst(PopInst i);
     public void caseIdentityInst(IdentityInst i);
     public void caseStoreInst(StoreInst i);
     public void caseLoadInst(LoadInst i);
@@ -140,7 +141,21 @@ public interface InstSwitch extends Switch
     public void caseNewInst(NewInst i);
     public void caseNegInst(NegInst i);
     public void caseSwapInst(SwapInst i);
-    public void caseDupInst(DupInst i);
+   
+    
+    public void caseDup1Inst(Dup1Inst i); 
+    public void caseDup2Inst(Dup2Inst i);    
+    public void caseDup1_x1Inst(Dup1_x1Inst i);    
+    public void caseDup1_x2Inst(Dup1_x2Inst i);    
+    public void caseDup2_x1Inst(Dup2_x1Inst i);    
+    public void caseDup2_x2Inst(Dup2_x2Inst i);    
+
+
+
+
+
+
+
     public void caseNewArrayInst(NewArrayInst i);
     public void caseNewMultiArrayInst(NewMultiArrayInst i);
     public void caseLookupSwitchInst(LookupSwitchInst i);

@@ -67,12 +67,12 @@
 
 package ca.mcgill.sable.soot.jimple;
 
-class GroupIntPair
+public class GroupIntPair
 {
-    Object group;
-    int x;
+    public Object group;
+    public int x;
     
-    GroupIntPair(Object group, int x)
+   public  GroupIntPair(Object group, int x)
     {
         this.group = group;
         this.x = x;

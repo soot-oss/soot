@@ -80,6 +80,15 @@ public class Baf implements BodyRepresentation
 {
     private static Baf bafRepresentation = new Baf();
 
+
+    static Type getDescriptorTypeOf(Type opType) 
+    {	
+	if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
+	    opType = RefType.v();
+	
+	return opType;
+    }
+
     private Baf()
     {
     }
@@ -245,6 +254,11 @@ public class Baf implements BodyRepresentation
         return new BAddInst(opType);
     }
 
+    public PopInst newPopInst(Type aType) 
+    {
+	return new BPopInst(aType);
+    }
+
     public SubInst newSubInst(Type opType)
     {
         return new BSubInst(opType);
@@ -265,9 +279,9 @@ public class Baf implements BodyRepresentation
         return new BAndInst(opType);
     }
 
-    public ArrayLengthInst newArrayLengthInst(Type opType)
+    public ArrayLengthInst newArrayLengthInst()
     {
-        return new BArrayLengthInst(opType);
+        return new BArrayLengthInst();
     }
 
     public NegInst newNegInst(Type opType)
@@ -289,6 +303,10 @@ public class Baf implements BodyRepresentation
     {
         return new BShlInst(opType);
     }
+
+
+
+
 
     public ShrInst newShrInst(Type opType)
     {
@@ -450,6 +468,39 @@ public class Baf implements BodyRepresentation
         return new BThrowInst();
     }
 
+    public SwapInst newSwapInst(Type fromType, Type toType)
+    {
+	return new BSwapInst(fromType, toType);
+    }
+  
+    /*
+    public DupInst newDupInst(Type type)
+    {
+	return new BDupInst(new ArrayList(), Arrays.asList(new Type[] {type}));
+	}*/
+    
+
+    public Dup1Inst newDup1Inst(Type type)
+    {
+	return new BDup1Inst(type);
+    }
+
+    public Dup2Inst newDup2Inst(Type aOp1Type, Type aOp2Type)
+    {
+	return new BDup2Inst(aOp1Type,aOp2Type);
+    }
+
+    public Dup1_x1Inst newDup1_x1Inst(Type aOpType, Type aUnderType)
+    {
+	return new BDup1_x1Inst(aOpType, aUnderType);
+    }
+    
+
+  public IncInst newIncInst(Local aLocal, Constant aConstant)
+  {
+       return new BIncInst(aLocal, aConstant);
+  }
+  
     public LookupSwitchInst newLookupSwitchInst(Unit defaultTarget, 
                              List lookupValues, List targets)
     {
@@ -462,4 +513,72 @@ public class Baf implements BodyRepresentation
         return new BTableSwitchInst(defaultTarget, lowIndex,
                                      highIndex, targets);
     }
+
+
+
+    public static String bafDescriptorOf(Type type)
+    {
+        TypeSwitch sw;
+
+        type.apply(sw = new TypeSwitch()
+        {
+            public void caseBooleanType(BooleanType t)
+            {
+                setResult("b");
+            }
+
+            public void caseByteType(ByteType t)
+            {
+                setResult("b");
+            }
+
+            public void caseCharType(CharType t)
+            {
+                setResult("c");
+            }
+
+            public void caseDoubleType(DoubleType t)
+            {
+                setResult("d");
+            }
+
+            public void caseFloatType(FloatType t)
+            {
+                setResult("f");
+            }
+
+            public void caseIntType(IntType t)
+            {
+                setResult("i");
+            }
+
+            public void caseLongType(LongType t)
+            {
+                setResult("l");
+            }
+
+            public void caseShortType(ShortType t)
+            {
+                setResult("s");
+            }
+
+	    
+	    public void defaultCase(Type t)
+	    {
+                throw new RuntimeException("Invalid type: " + t);
+	    }
+
+            public void caseRefType(RefType t)
+            {
+                setResult("r");
+            }
+
+
+        });
+
+        return (String) sw.getResult();
+
+    }
+
+
 }

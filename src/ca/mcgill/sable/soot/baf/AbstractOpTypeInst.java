@@ -84,10 +84,13 @@ import java.util.*;
 
 public abstract class AbstractOpTypeInst extends AbstractInst
 {
-    Type opType;
+    protected Type opType;
 
     protected AbstractOpTypeInst(Type opType)
     {
+	if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
+	    opType = RefType.v();
+	
         this.opType = opType;
     }
     
@@ -99,6 +102,8 @@ public abstract class AbstractOpTypeInst extends AbstractInst
     public void setOpType(Type t)
     {
         opType = t;
+	if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
+	    opType = RefType.v();
     }
 
     private static String bafDescriptorOf(Type type)
@@ -147,25 +152,18 @@ public abstract class AbstractOpTypeInst extends AbstractInst
                 setResult("s");
             }
 
-            public void caseArrayType(ArrayType t)
-            {
-                setResult("r"); 
-            }
-
-            public void defaultCase(Type t)
-            {
+	    
+	    public void defaultCase(Type t)
+	    {
                 throw new RuntimeException("Invalid type: " + t);
-            }
+	    }
 
             public void caseRefType(RefType t)
             {
                 setResult("r");
             }
 
-            public void caseNullType(NullType t)
-            {
-                setResult("r");
-            }
+
         });
 
         return (String) sw.getResult();
@@ -176,6 +174,6 @@ public abstract class AbstractOpTypeInst extends AbstractInst
     protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
         return indentation + getName() + "." + 
-          bafDescriptorOf(opType) + getParameters(isBrief, unitToName);
+          Baf.bafDescriptorOf(opType) + getParameters(isBrief, unitToName);
     }
 }

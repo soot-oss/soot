@@ -127,5 +127,13 @@ public abstract class AbstractBranchInst extends AbstractInst
     }
 
     abstract public void apply(Switch sw);
+
+    
+    public boolean branches()
+    {
+	return true;
+    }
+    
+
 }
 

@@ -157,4 +157,17 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
     {
         ((InstSwitch) sw).caseTableSwitchInst(this);
     }
+
+
+    public boolean fallsThrough()
+    {
+	return false;
+    }
+    public boolean branches()
+    {
+	return true;
+    }
+
+    
+
 }

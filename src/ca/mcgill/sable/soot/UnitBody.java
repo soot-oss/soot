@@ -100,6 +100,7 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 import java.io.*;
+import ca.mcgill.sable.soot.toolkit.scalar.*;
 
 
 public class UnitBody 
@@ -108,8 +109,8 @@ public class UnitBody
     /* temp */
     SootMethod method;
 
-    Chain localChain, trapChain, unitChain;
-    
+    Chain localChain, trapChain;
+    PatchingChain unitChain;
 
     public SootMethod getMethod()
     {
@@ -123,118 +124,127 @@ public class UnitBody
 
     
     public UnitBody(Body body) 
-    {        
-        localChain = new HashChain();
-        trapChain = new HashChain();
-        unitChain = new HashChain();
+    {	
+	localChain = new HashChain();
+	trapChain = new HashChain();
+	unitChain = new PatchingChain(new HashChain());
 
-        this.method = body.getMethod();
-        List list;
-        
+	this.method = body.getMethod();
+	List list;
+	
 
-        list = null;
-        if(body instanceof JimpleBody)
-            list = ((JimpleBody)body).getStmtList();
-        else if (body instanceof BafBody) 
-            list = ((BafBody)body).getUnitList();
-        else
-            throw new RuntimeException("this should not be.");
-
-
-        Iterator it = list.iterator();
-        HashMap bindings = new HashMap();
-
-        // Clone units in body's statement list 
-        while(it.hasNext()) {
-            Unit original = (Unit) it.next();
-            Unit copy = (Unit) original.clone();
-             
-            // Add cloned unit to our unitChain.
-            unitChain.addLast(copy);
-
-            // Build old <-> new map to be able to patch up references to other units 
-            // within the cloned units. (these are still refering to the original
-            // unit objects).
-            bindings.put(original, copy);
-            //            stmtList.add(copy); //hack
-        }
-
-        // Clone trap units.
-        list = body.getTraps();
-        it = list.iterator();
-        while(it.hasNext()) {
-            Trap original = (Trap) it.next();
-            Trap copy = (Trap) original.clone();
-            
-            // Add cloned unit to our trap list.
-            trapChain.addLast(copy);
-
-            // Store old <-> new mapping.
-            bindings.put(original, copy);
-        }
-
-        
-        // Clone local units.
-        list = body.getLocals();
-        it = list.iterator();
-        while(it.hasNext()) {
-            Value original = (Value) it.next();
-            Value copy = (Value) original.clone();
-            
-            // Add cloned unit to our trap list.
-            localChain.addLast(copy);
-
-            // Build old <-> new mapping.
-            bindings.put(original, copy);
-        }
-        
+	list = null;
+	if(body instanceof JimpleBody)
+	    list = ((JimpleBody)body).getStmtList();
+	else if (body instanceof BafBody) 
+	    list = ((BafBody)body).getUnitList();
+	else
+	    throw new RuntimeException("this should not be.");
 
 
-        // Patch up references within units using our (old <-> new) map.
-        list = getUnitBoxes();
-        it = list.iterator();
-        while(it.hasNext()) {
-            UnitBox box = (UnitBox) it.next();
-            Unit newObject, oldObject = box.getUnit();
-            
-            // if we have a reference to an old object, replace it 
-            // it's clone.
-            if( (newObject = (Unit)  bindings.get(oldObject)) != null )
-                box.setUnit(newObject);
-                
-        }        
+	Iterator it = list.iterator();
+	HashMap bindings = new HashMap();
+
+	// Clone units in body's statement list 
+	while(it.hasNext()) {
+	    Unit original = (Unit) it.next();
+	    Unit copy = (Unit) original.clone();
+	     
+	    // Add cloned unit to our unitChain.
+	    unitChain.addLast(copy);
+
+	    // Build old <-> new map to be able to patch up references to other units 
+	    // within the cloned units. (these are still refering to the original
+	    // unit objects).
+	    bindings.put(original, copy);
+	    //	    stmtList.add(copy); //hack
+	}
+
+	// Clone trap units.
+	list = body.getTraps();
+	it = list.iterator();
+	while(it.hasNext()) {
+	    Trap original = (Trap) it.next();
+	    Trap copy = (Trap) original.clone();
+	    
+	    // Add cloned unit to our trap list.
+	    trapChain.addLast(copy);
+
+	    // Store old <-> new mapping.
+	    bindings.put(original, copy);
+	}
+
+	
+	// Clone local units.
+	list = body.getLocals();
+	it = list.iterator();
+	while(it.hasNext()) {
+	    Value original = (Value) it.next();
+	    Value copy = (Value) original.clone();
+	    
+	    // Add cloned unit to our trap list.
+	    localChain.addLast(copy);
+
+	    // Build old <-> new mapping.
+	    bindings.put(original, copy);
+	}
+	
+
+
+	// Patch up references within units using our (old <-> new) map.
+	list = getUnitBoxes();
+	it = list.iterator();
+	while(it.hasNext()) {
+	    UnitBox box = (UnitBox) it.next();
+	    Unit newObject, oldObject = box.getUnit();
+	    
+	    // if we have a reference to an old object, replace it 
+	    // it's clone.
+	    if( (newObject = (Unit)  bindings.get(oldObject)) != null )
+		box.setUnit(newObject);
+		
+	}	
 
 
 
-        // backpatching all local variables.
-        list = getUseAndDefBoxes();
-        it = list.iterator();
-        while(it.hasNext()) {
-            ValueBox vb = (ValueBox) it.next();
-            if(vb.getValue() instanceof Local) 
-                vb.setValue((Value) bindings.get(vb.getValue()));
-        }
+	// backpatching all local variables.
+	list = getUseAndDefBoxes();
+	it = list.iterator();
+	while(it.hasNext()) {
+	    ValueBox vb = (ValueBox) it.next();
+	    if(vb.getValue() instanceof Local) 
+		vb.setValue((Value) bindings.get(vb.getValue()));
+	}
 
-        validateLocals();
+	validateLocals();
+
+
     }
     
     public void validateLocals()
     {
-        Iterator it =  getUseAndDefBoxes().iterator();
-        
-        while(it.hasNext()){
-            ValueBox vb = (ValueBox) it.next();
-            Value value;
-            if( (value = vb.getValue()) instanceof Local) {
-                if(!localChain.contains(value))
-                    throw new RuntimeException("not in chain");
-                
-            }
-        }
+	Iterator it =  getUseAndDefBoxes().iterator();
+	
+	while(it.hasNext()){
+	    ValueBox vb = (ValueBox) it.next();
+	    Value value;
+	    if( (value = vb.getValue()) instanceof Local) {
+		if(!localChain.contains(value))
+		    throw new RuntimeException("not in chain");
+		
+	    }
+	}
        
-        
+	
     }
     
+
+
+    
+  
+
+
+
         
     public Chain getLocals() {return localChain;} 
     public Chain getTraps() {return trapChain;}
@@ -242,59 +252,59 @@ public class UnitBody
                  
     public List getUnitBoxes() 
     {
-        ArrayList unitBoxList = new ArrayList();
-        
-        Iterator it = unitChain.iterator();
-        while(it.hasNext()) {
-            Unit item = (Unit) it.next();
-            unitBoxList.addAll(item.getUnitBoxes());  
-        }
-        
-        it = trapChain.iterator();
-        while(it.hasNext()) {
-            Trap item = (Trap) it.next();
-            unitBoxList.addAll(item.getUnitBoxes());  
-        }
-        
-        return unitBoxList;
+	ArrayList unitBoxList = new ArrayList();
+	
+	Iterator it = unitChain.iterator();
+	while(it.hasNext()) {
+	    Unit item = (Unit) it.next();
+	    unitBoxList.addAll(item.getUnitBoxes());  
+	}
+	
+	it = trapChain.iterator();
+	while(it.hasNext()) {
+	    Trap item = (Trap) it.next();
+	    unitBoxList.addAll(item.getUnitBoxes());  
+	}
+	
+	return unitBoxList;
     }
 
     
     public List getUseBoxes()
     {
-        ArrayList useBoxList = new ArrayList();
-        
-        Iterator it = unitChain.iterator();
-        while(it.hasNext()) {
-            Unit item = (Unit) it.next();
-            useBoxList.addAll(item.getUseBoxes());  
-        }
-        return useBoxList;
+	ArrayList useBoxList = new ArrayList();
+	
+	Iterator it = unitChain.iterator();
+	while(it.hasNext()) {
+	    Unit item = (Unit) it.next();
+	    useBoxList.addAll(item.getUseBoxes());  
+	}
+	return useBoxList;
     }
 
 
     public List getDefBoxes()
     {
-        ArrayList defBoxList = new ArrayList();
-        
-        Iterator it = unitChain.iterator();
-        while(it.hasNext()) {
-            Unit item = (Unit) it.next();
-            defBoxList.addAll(item.getDefBoxes());  
-        }
-        return defBoxList;
+	ArrayList defBoxList = new ArrayList();
+	
+	Iterator it = unitChain.iterator();
+	while(it.hasNext()) {
+	    Unit item = (Unit) it.next();
+	    defBoxList.addAll(item.getDefBoxes());  
+	}
+	return defBoxList;
     }
 
     public List getUseAndDefBoxes()
-    {        
-        ArrayList useAndDefBoxList = new ArrayList();
-        
-        Iterator it = unitChain.iterator();
-        while(it.hasNext()) {
-            Unit item = (Unit) it.next();
-            useAndDefBoxList.addAll(item.getUseAndDefBoxes());  
-        }
-        return useAndDefBoxList;
+    {	
+	ArrayList useAndDefBoxList = new ArrayList();
+	
+	Iterator it = unitChain.iterator();
+	while(it.hasNext()) {
+	    Unit item = (Unit) it.next();
+	    useAndDefBoxList.addAll(item.getUseAndDefBoxes());  
+	}
+	return useAndDefBoxList;
     }
 
     
@@ -386,6 +396,9 @@ public class UnitBody
         
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
         UnitGraph unitGraph = new BriefUnitGraph(this);
+	
+	CompleteUnitGraph completeUnitGraph = new CompleteUnitGraph(this);
+	SimpleUnitLocalDefs localDefs = new SimpleUnitLocalDefs(completeUnitGraph);
 
         // Create statement name table
         {
@@ -421,35 +434,35 @@ public class UnitBody
         }
 
         
-        Iterator unitIt = unitChain.iterator();
-        Unit currentStmt = null, previousStmt;
+	Iterator unitIt = unitChain.iterator();
+	Unit currentStmt = null, previousStmt;
 
-        while(unitIt.hasNext()) {
-            
-            previousStmt = currentStmt;
-            currentStmt = (Unit) unitIt.next();
-            
-            // Put an empty line if the previous node was a branch node, the current node is a join node
+	while(unitIt.hasNext()) {
+	    
+	    previousStmt = currentStmt;
+	    currentStmt = (Unit) unitIt.next();
+	    
+	    // Put an empty line if the previous node was a branch node, the current node is a join node
             //   or the previous statement does not have this statement as a successor, or if
             //   this statement has a label on it
             
-            if(currentStmt != unitChain.getFirst()) {
-                
+	    if(currentStmt != unitChain.getFirst()) {
+		
 
-                if(unitGraph.getSuccsOf(previousStmt).size() != 1 ||
-                   unitGraph.getPredsOf(currentStmt).size() != 1 ||
-                   stmtToName.containsKey(currentStmt))
-                    out.println();
-                else {
-                    // Or if the previous node does not have this statement as a successor.
-                    
-                    List succs = unitGraph.getSuccsOf(previousStmt);
-                    
-                    if(succs.get(0) != currentStmt)
-                        out.println();
-                }
-            }
-             
+		if(unitGraph.getSuccsOf(previousStmt).size() != 1 ||
+		   unitGraph.getPredsOf(currentStmt).size() != 1 ||
+		   stmtToName.containsKey(currentStmt))
+		    out.println();
+		else {
+		    // Or if the previous node does not have this statement as a successor.
+		    
+		    List succs = unitGraph.getSuccsOf(previousStmt);
+		    
+		    if(succs.get(0) != currentStmt)
+			out.println();
+		}
+	    }
+	     
             if(stmtToName.containsKey(currentStmt))
                 out.println("     " + stmtToName.get(currentStmt) + ":");
 
@@ -458,7 +471,28 @@ public class UnitBody
             else
                 out.print(currentStmt.toBriefString(stmtToName, "        "));
 
-            out.print(";");
+            out.print(";"); 
+	    ArrayList al = new ArrayList();
+	    //	    al.addAll(liveLocals.getLiveLocalsAfter(currentStmt));
+	    
+	    Iterator it = currentStmt.getUseBoxes().iterator();
+	    while(it.hasNext()) {
+		ValueBox vb = (ValueBox) it.next();
+		if(vb.getValue() instanceof Local) {
+		    out.print("[defs of " + vb.getValue() + ":");
+		    
+		    List defs = localDefs.getDefsOfAt(((Local)vb.getValue()), currentStmt);
+		    Iterator unitsIt = defs.iterator();
+		    while(unitsIt.hasNext()){
+			out.print(unitsIt.next() + " ");
+		    }
+
+		    out.print("]"); 
+		}
+		
+	    }
+
+	    // out.print(al);
             out.println();
         }
 

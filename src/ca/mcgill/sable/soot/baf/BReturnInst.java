@@ -100,7 +100,7 @@ public class BReturnInst extends AbstractOpTypeInst implements ReturnInst
 
     public int getInMachineCount()
     {
-        return 1;
+        return JasminClass.sizeOfType(((Type) getOpType()));
     }
     
     public int getOutCount()
@@ -123,4 +123,13 @@ public class BReturnInst extends AbstractOpTypeInst implements ReturnInst
     {
         ((InstSwitch) sw).caseReturnInst(this);
     }   
+    
+    public boolean fallsThrough()
+    {
+	return false;
+    }
+
+
+
+    
 }

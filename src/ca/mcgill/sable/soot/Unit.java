@@ -89,4 +89,7 @@ public interface Unit extends Switchable
     public String toBriefString();
     public String toBriefString(Map stmtToName, String indentation);
     public String toString(Map stmtToName, String indentation);
+
+    public void redirectJumpsToThisTo(Unit newLocation);
+
 }

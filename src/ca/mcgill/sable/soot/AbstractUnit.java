@@ -116,6 +116,16 @@ public abstract class AbstractUnit implements Unit
         return emptyList;
     }
 
+
+
+
+    
+
+
+
+
+
+
     /**
      * The list of boxes is dynamically updated as the structure changes.
      */
@@ -212,6 +222,29 @@ public abstract class AbstractUnit implements Unit
             throw new UnsupportedOperationException();
         }
     }
+
+    
+
+    public void redirectJumpsToThisTo(Unit newLocation)
+    {
+        List boxesPointing = this.getBoxesPointingToThis();
+
+        Object[] boxes = boxesPointing.toArray();
+	// important to change this to an array to have a static copy
+	
+        for(int i = 0; i < boxes.length; i++)
+        {
+            UnitBox box = (UnitBox) boxes[i];
+
+            if(box.getUnit() != this)
+                throw new RuntimeException("Something weird's happening");
+
+            box.setUnit(newLocation);
+        }
+
+    }
+
+
     
 }
 

@@ -91,7 +91,7 @@ public class BIfGtInst extends AbstractBranchInst implements IfGtInst
 
     public int getInCount()
     {
-        return 2;
+        return 1;
     }
 
     public Object clone() 
@@ -101,7 +101,7 @@ public class BIfGtInst extends AbstractBranchInst implements IfGtInst
 
     public int getInMachineCount()
     {
-        return 2;
+        return 1;
     }
     
     public int getOutCount()

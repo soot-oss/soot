@@ -82,7 +82,7 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public interface IdentityInst extends Inst
+public interface IdentityInst extends Inst, IdentityUnit  
 { 
     public Value getLeftOp();
     public Value getRightOp();

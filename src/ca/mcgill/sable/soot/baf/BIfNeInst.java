@@ -90,7 +90,7 @@ public class BIfNeInst extends AbstractBranchInst implements IfNeInst
     }
     public int getInCount()
     {
-        return 2;
+        return 1;
     }
 
 
@@ -101,7 +101,7 @@ public class BIfNeInst extends AbstractBranchInst implements IfNeInst
 
     public int getInMachineCount()
     {
-        return 2;
+        return 1;
     }
     
     public int getOutCount()

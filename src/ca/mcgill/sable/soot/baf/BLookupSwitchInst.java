@@ -170,4 +170,15 @@ public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst
     {
         ((InstSwitch) sw).caseLookupSwitchInst(this);
     }
+
+    public boolean fallsThrough()
+    {
+	return false;
+    }
+    public boolean branches()
+    {
+	return true;
+    }
+
+
 }

@@ -121,7 +121,8 @@ import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.grimp.*;
 import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.soot.jimple.toolkit.invoke.*;
-
+import ca.mcgill.sable.soot.baf.toolkit.scalar.*;
+import ca.mcgill.sable.soot.toolkit.scalar.*;
 import java.io.*;
 
 import java.text.*;
@@ -221,7 +222,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.64");
+            System.out.println("Soot version 1.beta.4.dev.65");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -658,10 +659,12 @@ public class Main
                     if(!m.hasActiveBody())
                         m.setActiveBody(new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions));
     
+
                     if(isOptimizing) {
                         m.setActiveBody(new JimpleBody (new UnitBody(m.getActiveBody())));
                         BaseJimpleOptimizer.optimize((JimpleBody) m.getActiveBody());
                     }
+
                 }
                 
                 if(produceGrimp)
@@ -672,14 +675,25 @@ public class Main
                         m.setActiveBody(new GrimpBody(m.getActiveBody()));
                         
                     if(isOptimizing)
-                        BaseGrimpOptimizer.optimize((GrimpBody) m.getActiveBody());
-                }
+                    
+		      BaseGrimpOptimizer.optimize((GrimpBody) m.getActiveBody());
+		}
                 else if(produceBaf)
                 {   
                      m.setActiveBody(new BafBody((JimpleBody) m.getActiveBody()));
-                     
-                     if(isOptimizing)
-                        m.setActiveBody(new BafBody(new UnitBody(m.getActiveBody())));
+
+		       if(isOptimizing) {
+			 UnitBody b = new UnitBody(m.getActiveBody());
+			 
+			 LoadStoreOptimizer.v().optimize(b);// new UnitBody(new BafBody (new UnitBody(m.getActiveBody()))));
+			 //UnusedLocalRemover.removeUnusedLocals(b);
+			 //UnitLocalPacker.packLocals(b);
+			 b.printTo(new PrintWriter(System.out, true));
+
+			 m.setActiveBody(new BafBody (b)); //new UnitBody(m.getActiveBody())));
+			 
+		     }
+
                 } 
             }
         }

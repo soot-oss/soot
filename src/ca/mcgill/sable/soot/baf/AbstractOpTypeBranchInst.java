@@ -84,7 +84,7 @@ import java.util.*;
 
 public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst
 {
-    Type opType;
+    protected Type opType;
 
   
 
@@ -92,6 +92,10 @@ public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst
     AbstractOpTypeBranchInst(Type opType, UnitBox targetBox)
     {
         super(targetBox);
+	if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
+	    opType = RefType.v();
+
+
         this.opType = opType;
     }
 
@@ -113,78 +117,16 @@ public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst
     public void setOpType(Type t)
     {
         opType = t;
+	if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
+	    opType = RefType.v();
     }
 
-    private static String bafDescriptorOf(Type type)
-    {
-        TypeSwitch sw;
-
-        type.apply(sw = new TypeSwitch()
-        {
-            public void caseBooleanType(BooleanType t)
-            {
-                setResult("b");
-            }
-
-            public void caseByteType(ByteType t)
-            {
-                setResult("b");
-            }
-
-            public void caseCharType(CharType t)
-            {
-                setResult("c");
-            }
-
-            public void caseDoubleType(DoubleType t)
-            {
-                setResult("d");
-            }
-
-            public void caseFloatType(FloatType t)
-            {
-                setResult("f");
-            }
-
-            public void caseIntType(IntType t)
-            {
-                setResult("i");
-            }
-
-            public void caseLongType(LongType t)
-            {
-                setResult("l");
-            }
-
-            public void caseShortType(ShortType t)
-            {
-                setResult("s");
-            }
-
-            public void caseArrayType(ArrayType t)
-            {
-                setResult("r"); 
-            }
-
-            public void defaultCase(Type t)
-            {
-                throw new RuntimeException("Invalid type: " + t);
-            }
-
-            public void caseRefType(RefType t)
-            {
-                setResult("r");
-            }
-        });
-
-        return (String) sw.getResult();
-
-    }
+   
     protected String toString(boolean isBrief, 
                               Map unitToName, String indentation)
     {
       // do stuff with opType later.
-        return indentation + getName() + "." + bafDescriptorOf(opType)+
+        return indentation + getName() + "." + Baf.bafDescriptorOf(opType)+
            " " + (String) unitToName.get(getTarget());
           
     }    

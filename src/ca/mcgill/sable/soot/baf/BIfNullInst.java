@@ -93,6 +93,10 @@ public class BIfNullInst extends AbstractBranchInst implements IfNullInst
     {
         return 1;
     }
+    public int getOutCount() 
+    {
+	return 0;
+    }
 
 
     public Object clone() 
@@ -102,7 +106,7 @@ public class BIfNullInst extends AbstractBranchInst implements IfNullInst
 
     public int getInMachineCount()
     {
-        return 0;
+        return 1;
     }
 
     public int getOutMachineCount()

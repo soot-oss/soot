@@ -342,7 +342,7 @@ public class JasminClass
             int modifiers = SootClass.getModifiers();
 
             if(Modifier.isInterface(modifiers))
-            {
+		{
                 modifiers -= Modifier.INTERFACE;
 
                 emit(".interface " + Modifier.toString(modifiers) + " " + slashify(SootClass.getName()));
@@ -493,6 +493,7 @@ public class JasminClass
             ca.mcgill.sable.soot.Main.buildJasminTimer.start();
         
         List instList = body.getUnitList();
+	try { // debug
 
         // let's create a u-d web for the ++ peephole optimization.
 
@@ -669,6 +670,15 @@ public class JasminClass
 
         // Emit epilogue
             emit(".end method");
+	} catch (RuntimeException e) {
+	    System.out.println(e);
+	    Iterator unitIt = instList.iterator();
+	    while(unitIt.hasNext()) {System.out.println(unitIt.next());}
+	    throw e;
+	    
+	
+	
+	}
 
     }
 
@@ -763,6 +773,16 @@ public class JasminClass
                 emit ("monitorenter", -1); 
             }
             
+	    public void casePopInst(PopInst inst) 
+		{
+		    if(inst.getWordCount() == 2) {
+			emit("pop2", -2);
+		    }
+		    else
+			emit("pop", -1);
+		}
+		    
+
             public void caseExitMonitorInst(ExitMonitorInst i) 
             { 
                 emit ("monitorexit", -1); 
@@ -1895,7 +1915,7 @@ public class JasminClass
 
             public void caseIncInst(IncInst i)
             {
-                emitOpTypeInst("inc", i);
+                emit("iinc " + ((Integer) localToSlot.get(i.getLocal())) + " " + i.getConstant());
             }
 
             public void caseArrayLengthInst(ArrayLengthInst i)
@@ -1939,7 +1959,7 @@ public class JasminClass
             }
 
             public void caseTableSwitchInst(TableSwitchInst i)
-            {
+		{
                 emit("tableswitch " + i.getLowIndex() + " ; high = " + i.getHighIndex(), -1);
 
                 List targets = i.getTargets();
@@ -1950,15 +1970,83 @@ public class JasminClass
                 emit("default : " + instToLabel.get(i.getDefaultTarget()));
             }
             
-            public void caseDupInst(DupInst i)
-            {
-                throw new RuntimeException("not handled yet!");
-            }
-            
+            public void caseDup1Inst(Dup1Inst i)
+	    {
+		Type firstOpType = i.getOp1Type();
+		if(firstOpType instanceof LongType || firstOpType instanceof DoubleType) 
+		    emit("dup2", 2);
+		else
+		    emit("dup", 1);		
+	    }
+
+	    public void caseDup2Inst(Dup2Inst i)
+	    {
+		Type firstOpType = i.getOp1Type();
+		Type secondOpType = i.getOp2Type();
+		if(firstOpType instanceof LongType || firstOpType instanceof DoubleType) {
+		    emit("dup2", 2);
+		    if(secondOpType instanceof LongType || secondOpType instanceof DoubleType) {
+			emit("dup2, 2");
+		    } else 
+			emit("dup", 1);
+		} else if(secondOpType instanceof LongType || secondOpType instanceof DoubleType) {
+		    if(firstOpType instanceof LongType || firstOpType instanceof DoubleType) {
+			emit("dup2, 2");
+		    } else 
+			emit("dup", 1);
+		    emit("dup2", 2);
+		} else {
+		    //delme[
+		    System.out.println("3000:(JasminClass): dup2 created");
+		    //delme
+		    emit("dup2", 2);
+		}
+	    }
+
+	    
+	    public void caseDup1_x1Inst(Dup1_x1Inst i)
+	    {
+		Type opType = i.getOp1Type();
+		Type underType = i.getUnder1Type();
+		
+		if(opType instanceof LongType || opType instanceof DoubleType) {
+		    if(underType instanceof LongType || underType instanceof DoubleType) {
+			emit("dup2_x2", 2);
+		    } else 
+			emit("dup2_x1", 2);
+		} else {
+		    if(underType instanceof LongType || underType instanceof DoubleType) 
+			emit("dup_x2", 1);
+		    else 
+			emit("dup_x1", 1);
+		}	
+	    }
+	    
+
+	    public void caseDup1_x2Inst(Dup1_x2Inst i)
+	    {
+		throw new RuntimeException("undifined");
+	    }
+
+	    public void caseDup2_x1Inst(Dup2_x1Inst i)
+	    {
+		throw new RuntimeException("undifined");
+	    }
+
+	   
+
+	    public void caseDup2_x2Inst(Dup2_x2Inst i)
+	    {
+		throw new RuntimeException("undifined");
+	    }
+
             public void caseSwapInst(SwapInst i)
-            {
-                throw new RuntimeException("not handled yet!");
-            }
+		{
+		    emit("swap");
+		}
+
+
+
         });
     }
 

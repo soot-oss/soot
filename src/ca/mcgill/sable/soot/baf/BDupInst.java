@@ -82,37 +82,63 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class BDupInst extends AbstractInst implements DupInst
+public abstract class BDupInst extends AbstractInst implements DupInst
 {
-    // Creates a dup instruction that will duplicate opTypes under all of underTypes.
-    BDupInst(List underTypes, List opTypes)
-    {
-    }
 
     public int getInCount()
     {
-        return 0;
+        return getUnderTypes().size() + getOpTypes().size();
     }
 
     public int getInMachineCount()
     {
-        return 0;
+	int count = 0;
+
+	Iterator underTypesIt = getUnderTypes().iterator();
+	while(underTypesIt.hasNext()) {
+	    count += JasminClass.sizeOfType(((Type) underTypesIt.next()));
+	}
+
+	Iterator opTypesIt = getOpTypes().iterator();
+	while(opTypesIt.hasNext()) {
+	    count += JasminClass.sizeOfType(((Type) opTypesIt.next()));
+	}
+	
+	
+        return count;
     }
     
     public int getOutCount()
     {
-        return 0;
-    }
+        return  getUnderTypes().size() + 2*getOpTypes().size(); 
+    } 
+
+    
 
     public int getOutMachineCount()
     {
-        return 0;
+	int count = 0;
+
+	Iterator underTypesIt = getUnderTypes().iterator();
+	while(underTypesIt.hasNext()) {
+	    count += JasminClass.sizeOfType(((Type) underTypesIt.next()));
+	}
+
+	Iterator opTypesIt = getOpTypes().iterator();
+	while(opTypesIt.hasNext()) {	    	    
+	    count += 2*JasminClass.sizeOfType(((Type) opTypesIt.next()));
+	}		
+        return count;
     }
     
-    final String getName() { return "dup"; }
 
+    
     public void apply(Switch sw)
     {
-        ((InstSwitch) sw).caseDupInst(this);
+	throw new RuntimeException();
     }   
+
 }
+
+
+

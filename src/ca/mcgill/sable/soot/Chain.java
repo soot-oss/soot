@@ -13,8 +13,8 @@ public interface Chain extends Collection
     public void addLast(Object u);
     public void removeFirst();
     public void removeLast();
+    public boolean follows(Object someObject, Object someReferenceObject);
     
-
     public Object getFirst();
     public Object getLast();
     
@@ -22,6 +22,7 @@ public interface Chain extends Collection
     public Object getPredOf(Object point);
     public Iterator iterator();
     public Iterator iterator(Object u);
-    public int size();       
+    public Iterator iterator(Object head, Object tail);
+    public int size();   
 }
 

@@ -127,5 +127,10 @@ public class BGotoInst extends AbstractBranchInst implements GotoInst
     {
         ((InstSwitch) sw).caseGotoInst(this);
     }    
+   
+    public boolean fallsThrough()
+    {
+	return false;
+    }
 }
 
