@@ -1597,7 +1597,11 @@ public class JasminClass
 
                     modifyStackHeight(1); // simulate the pushing of the exception onto the 
                                           // stack by the jvm
-                    emit("astore " + slot, -1);
+                                          
+                    if(slot >= 0 && slot <= 3)
+                        emit("astore_" + slot, -1);
+                    else
+                        emit("astore " + slot, -1);
                 }
             }
 
