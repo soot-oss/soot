@@ -21,7 +21,7 @@ class AnticipEarliestExprs
     /* universe is all expressions in the program. */
     public BoundedFlowSet getAnticipEarliestExprsBefore(Block b)
     {
-        BoundedFlowSet res = ant.getAnticipatableExprsBefore(b);
+        BoundedFlowSet res = (BoundedFlowSet)ant.getAnticipatableExprsBefore(b).clone();
         res.intersection((FlowSet)earl.getFlowBefore(b), res);
 
         return res;

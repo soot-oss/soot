@@ -18,6 +18,6 @@ class AnticipatableExprs
     /* universe is all expressions in the program. */
     public BoundedFlowSet getAnticipatableExprsBefore(Block b)
     {
-        return (BoundedFlowSet)a.getFlowBefore(b);
+        return (BoundedFlowSet)a.getFlowAfter(b);
     }
 }

@@ -40,11 +40,6 @@ class GlobalAnticipatabilityAnalysis extends BackwardFlowAnalysis
             killSet.union(LocallyTransparentExprs.getTransLocExprsOf(b, exprUniv), killSet);
             killSet.complement(killSet);
             blockToPreserveSet.put(b, killSet);
-
-            System.out.println("global ant: "+b);
-            System.out.println("gen: " + genSet);
-            System.out.println("trans: "+LocallyTransparentExprs.getTransLocExprsOf(b, exprUniv));
-            System.out.println("kill: " + killSet);
         }
 
         doAnalysis();

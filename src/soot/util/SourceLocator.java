@@ -79,8 +79,6 @@ public class SourceLocator
     {
 
         List locations = null;
-	if(soot.Main.isInDebugMode)
-	    System.err.println("classpath is: " + classPath);
 
         if (classPath.hashCode() == previousCPHashCode)
         {
@@ -188,13 +186,8 @@ public class SourceLocator
 		    adjustedClassName = path + className2;
 
 		String fullPath = adjustedClassName + inputRep.getFileExtension();
-
-	      
 		                     
 		File f = new File(fullPath);
-		if(soot.Main.isInDebugMode)
-		    System.err.println("looking for: " + fullPath);
-	    
 
 		InputStream in;
 

@@ -18,7 +18,7 @@ class LocallyAnticipatableExprs
         BoundedFlowSet retVal = new ArrayPackedSet(uni);
 
         Iterator it = b.iterator();
-
+    
         HashSet defdLocals = new HashSet();
 
         while (it.hasNext())
