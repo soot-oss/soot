@@ -89,7 +89,7 @@ public class ArrayCheckTag implements OneByteCodeTag
 
     public String toString()
     {
-	return   (lowerCheck ? "": "[safe lower bound]") +"" +  (upperCheck ? "":"[safe upper bound]");
+	return   (lowerCheck ? "[potentially unsafe lower bound]": "[safe lower bound]") +"" +  (upperCheck ? "[potentially unsafe upper bound]":"[safe upper bound]");
     }
 }
 

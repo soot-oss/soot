@@ -106,12 +106,17 @@ public class SootFileLauncher extends SootLauncher {
 					//System.out.println("output: "+output);
 					//System.out.println(removeFileExt(cu.getElementName())+".class");
 					//IFile exists = output.getFile(output.getLocation().toOSString()+removeFileExt(cu.getElementName())+".class");
-					//System.out.println(exists.getLocation().toOSString());
+					System.out.println("No Pck: "+exists.getLocation().toOSString());
 				}
 				else {
-					IFolder pkg = output.getFolder(pf.getElementName());
-					exists = pkg.getFile(removeFileExt(cu.getElementName())+".class");
-					//System.out.println(exists.getLocation().toOSString());
+					IFolder pkg = output.getFolder(dotsToSlashes(pf.getElementName()));
+					System.out.println("pkg folder: "+pkg.getLocation().toOSString());
+                    System.out.println("pf path: "+pf.getPath().toOSString());
+                    if (pkg.exists()){
+                        System.out.println("pkg exists");
+                    }
+                    exists = pkg.getFile(removeFileExt(cu.getElementName())+".class");
+					System.out.println("Pck: "+exists.getLocation().toOSString());
 				}
 				if (!exists.exists()){
 					//System.out.println("underlying class file cannot be found.");
@@ -132,7 +137,12 @@ public class SootFileLauncher extends SootLauncher {
 			}
 		}
 	}
-	
+
+    private String dotsToSlashes(String name) {
+        name = name.replaceAll("\\.", System.getProperty("file.separator"));
+        return name;
+    }
+    
 	private void handleClassFile(IFile file) {
 		ClassFile cf = new ClassFile( file.getLocation().toOSString());
 		FileInputStream fis = null;
