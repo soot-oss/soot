@@ -15,7 +15,7 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
- */
+ *
 
 /*
  * Modified by the Sable Research Group and others 1997-1999.  
@@ -46,6 +46,23 @@ public class Main
      //------> this used to be in Main
      // DEBUG
     static boolean isAnalyzingLibraries = false;
+
+
+    private static List compilationListeners = new ArrayList(1);
+    public static void addCompilationListener(ICompilationListener l)
+    {
+	compilationListeners.add(l);
+    }
+    public static final int COMPILATION_ABORTED = 0;
+    public static final int COMPILATION_SUCCEDED = 1;
+    
+
+
+
+
+
+
+
 
     // The following lists are paired.  false is exclude in the first list.
     static List packageInclusionFlags = new ArrayList();
@@ -261,9 +278,8 @@ public class Main
 
     public static void setOptimizingWhole(boolean val)
     {
-        if (!isApplication && val){
-            System.out.println("Can only whole-program optimize in application mode!");
-            System.exit(1);
+        if (!isApplication && val){            
+	    exitCompilation(COMPILATION_ABORTED, "Can only whole-program optimize in application mode!");
         }
   
         isOptimizingWhole = val;
@@ -307,8 +323,7 @@ public class Main
     public static void addExclude(String str)
     {
         if (!isApplication) {    
-            System.out.println("Exclude flag only valid in application mode!");
-            System.exit(1);
+	    exitCompilation(COMPILATION_ABORTED, "Exclude flag only valid in application mode!");
         }
   
         packageInclusionFlags.add(new Boolean(false));
@@ -319,8 +334,7 @@ public class Main
     public static void addInclude(String str)
     {
         if (!isApplication) {
-            System.out.println("Include flag only valid in application mode!");
-            System.exit(1);
+            exitCompilation(COMPILATION_ABORTED, "Include flag only valid in application mode!");
         }
         packageInclusionFlags.add(new Boolean(true));
         packageInclusionMasks.add(str);
@@ -330,8 +344,7 @@ public class Main
     {
         if (!isApplication)
             {
-                System.out.println("Dynamic-path flag only valid in application mode!");
-                System.exit(1);
+		exitCompilation(COMPILATION_ABORTED, "Dynamic-path flag only valid in application mode!");
             }
                      
         StringTokenizer tokenizer = new StringTokenizer(path, ":");
@@ -344,8 +357,7 @@ public class Main
     {
         if (isApplication)
             {
-                System.out.println("Process-path flag only valid in single-file mode!");
-                System.exit(1);
+		exitCompilation(COMPILATION_ABORTED, "Process-path flag only valid in single-file mode!");
             }
 
         StringTokenizer tokenizer = new StringTokenizer(path, ":");
@@ -380,9 +392,9 @@ public class Main
         else if(prec.equals("class"))
             SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_CLASS);
         else {                    
-            System.out.println("Illegal --src-prec arg: " + prec);
-            System.out.println("Valid args are: \"jimple\" or \"class\"");
-            System.exit(1);
+	    
+	    exitCompilation(COMPILATION_ABORTED,"Illegal --src-prec arg: " + prec +
+			    ". Valid args are: \"jimple\" or \"class\"");           
         }
     }
 
@@ -395,9 +407,8 @@ public class Main
         else if(rep.equals("baf"))
             finalRep = BAF;
         else {                    
-            System.out.println("Illegal --final-rep arg: " + rep);
-            System.out.println("valid args are: [baf|grimp|jimple]" );
-            System.exit(1);
+	    exitCompilation(COMPILATION_ABORTED, "Illegal --final-rep arg: " + rep +           
+			    "\nvalid args are: [baf|grimp|jimple]" );
         }
     }
 
@@ -432,7 +443,7 @@ public class Main
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.34");
+            System.out.println("Soot version 1.beta.6.dev.35");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -493,10 +504,7 @@ public class Main
             System.out.println("");
             System.out.println("  soot --app -d newClasses Simulator");
             System.out.println("         Transforms all classes starting with Simulator, ");
-            System.out.println("         and stores them in newClasses. ");
-               
-            
-            System.exit(0);
+            System.out.println("         and stores them in newClasses. ");                           
     }
 
 
@@ -506,6 +514,7 @@ public class Main
         if(args.length == 0)
         {
             printHelp();
+	    exitCompilation(COMPILATION_ABORTED);            
         }
 
         // Handle all the options
@@ -555,9 +564,9 @@ public class Main
             {
                 if (i != 0)
                 {
-                    System.out.println("Application mode (--app) must be set as first argument to Soot!");
-                    System.out.println("eg. java soot.Main --app Simulator");
-                    System.exit(1);
+		    exitCompilation(COMPILATION_ABORTED, 
+				    "Application mode (--app) must be set as first argument to Soot!" +
+				    "\neg. java soot.Main --app Simulator");           
                 }
                 setAppMode(true);
             }
@@ -610,7 +619,7 @@ public class Main
              {
                  System.out.println("Unrecognized option: " + arg);
                  printHelp();
-                 System.exit(0);
+		 exitCompilation(COMPILATION_ABORTED);            
              }  
              else if(arg.startsWith("@"))
              {
@@ -626,8 +635,8 @@ public class Main
                     }
                     catch (IOException e)
                         {
-                            System.out.println("Error reaing file "+arg.substring(1));
-                            System.exit(1);
+			    exitCompilation(COMPILATION_ABORTED,
+					    "Error reaing file "+arg.substring(1));
                         }
                 }
                 else
@@ -637,8 +646,31 @@ public class Main
         }
         postCmdLineCheck();	   
     }
-
     
+    private static void exitCompilation(int status)
+    {
+	Iterator it = compilationListeners.iterator();
+	while(it.hasNext()) {
+	    ((ICompilationListener)it.next()).compilationTerminated(status);
+	}
+    }
+
+    private static void exitCompilation(int status, String msg)
+    {
+	Iterator it = compilationListeners.iterator();
+	while(it.hasNext()) {
+	    ((ICompilationListener)it.next()).compilationTerminated(status, msg);
+	}
+    
+	if(status == COMPILATION_ABORTED)
+	    System.err.println(msg);
+	else if(status == COMPILATION_SUCCEDED)
+	    System.out.println(msg);
+    }
+    
+
+
+
 
     private static void processPhaseOption(String phaseName, String option)
     {
@@ -663,16 +695,16 @@ public class Main
     {
 	    if(cmdLineClasses.isEmpty())
             {
-                System.out.println("Nothing to do!");
-                System.exit(0);
+		exitCompilation(COMPILATION_ABORTED, "Nothing to do!"); 
             }
 	    // Command line classes
 	    if (isApplication && cmdLineClasses.size() > 1)
             {
-                System.out.println("Can only specify one class in application mode!");
-                System.out.println("The transitive closure of the specified class gets loaded.");
-                System.out.println("(Did you mean to use single-file mode?)");
-                System.exit(1);
+
+		exitCompilation(COMPILATION_ABORTED,
+				"Can only specify one class in application mode!\n" +
+				"The transitive closure of the specified class gets loaded.\n" +
+				"(Did you mean to use single-file mode?)");
             }
     }
 
@@ -858,6 +890,7 @@ public class Main
 
 	if(isProfilingOptimization)
 	    printProfilingInformation();
+	exitCompilation(COMPILATION_SUCCEDED);            
     }        
 
     private static void printProfilingInformation()
