@@ -35,7 +35,7 @@ public class ClassInputStream extends SootInputStream
     /** Constructs a ClassInputStream from the given stream. */
     public ClassInputStream(InputStream istream)
     {
-	super(istream);
+        super(istream);
     }
 }
 

@@ -378,8 +378,8 @@ public class Block implements Directed
 
         // print out predecessors.
 
-	strBuf.append("Block " + mIndexInMethod + ":" + System.getProperty("line.separator"));
-	strBuf.append("[preds: ");
+        strBuf.append("Block " + mIndexInMethod + ":" + System.getProperty("line.separator"));
+        strBuf.append("[preds: ");
         int count = 0;
         if(mPreds != null) {
             Iterator it = mPreds.iterator();

@@ -59,10 +59,10 @@ public class Main
         // Create the class
            Scene.v().loadClassAndSupport("java.lang.Object");
            
-	// Declare 'public class HelloWorld'   
+        // Declare 'public class HelloWorld'   
            sClass = new SootClass("HelloWorld", Modifier.PUBLIC);
         
-	// 'extends Object'
+        // 'extends Object'
            sClass.setSuperclass(Scene.v().getSootClass("java.lang.Object"));
            Scene.v().addClass(sClass);
            
@@ -75,7 +75,7 @@ public class Main
            
         // Create the method body
         {
-	    // create empty body
+            // create empty body
             JimpleBody body = Jimple.v().newBody(method);
             
             method.setActiveBody(body);
@@ -86,7 +86,7 @@ public class Main
                 arg = Jimple.v().newLocal("l0", ArrayType.v(RefType.v("java.lang.String"), 1));
                 body.getLocals().add(arg);
             
-	    // Add locals, java.io.printStream tmpRef
+            // Add locals, java.io.printStream tmpRef
                 tmpRef = Jimple.v().newLocal("tmpRef", RefType.v("java.io.PrintStream"));
                 body.getLocals().add(tmpRef);
                 
@@ -106,8 +106,8 @@ public class Main
             
             // insert "return"
                 units.add(Jimple.v().newReturnVoidStmt());
-	             
-	}
+                     
+        }
 
         sClass.write();
     }

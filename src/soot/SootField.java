@@ -95,12 +95,12 @@ public class SootField extends AbstractHost implements ClassMember, EquivTo
         StringBuffer buffer = new StringBuffer();
 
         buffer.append("<" + getDeclaringClass().getName() + ": ");
-	Type t = getType();
+        Type t = getType();
 
-	if(Jimple.isJavaKeywordType(t))
-	  buffer.append("." + t  + " " + getName() + ">");
-	else
-	  buffer.append(getType() + " " + getName() + ">");
+        if(Jimple.isJavaKeywordType(t))
+          buffer.append("." + t  + " " + getName() + ">");
+        else
+          buffer.append(getType() + " " + getName() + ">");
 
         return buffer.toString();
 
@@ -220,9 +220,9 @@ public class SootField extends AbstractHost implements ClassMember, EquivTo
     {
       int outputMode = Scene.v().getOutputMode();
       if(outputMode == Scene.v().OUTPUT_JIMPLE)
-	return getJimpleStyleDeclaration();
+        return getJimpleStyleDeclaration();
       else
-	return getOriginalStyleDeclaration();
+        return getOriginalStyleDeclaration();
     }
 }
 

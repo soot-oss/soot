@@ -31,5 +31,5 @@ interface SootInputRepresentation
 {
     InputStream createInputStream(InputStream is);
     String getFileExtension();
-	
+        
 }

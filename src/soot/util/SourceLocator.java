@@ -68,7 +68,7 @@ public class SourceLocator
     /** Sets the source precedence. */
     public static void setSrcPrecedence(int precedence)
     {
-	srcPrecedence = precedence;
+        srcPrecedence = precedence;
     }    
 
     /** Given a class name, uses the default soot-class-path to return an input stream for the given class. */
@@ -102,12 +102,12 @@ public class SourceLocator
 
             locations = new ArrayList();
             int sepIndex;
-	    boolean absolutePath;
+            boolean absolutePath;
 
             if(classPath.equals("<external-class-path>"))
                 classPath = System.getProperty("java.class.path");
 
-	    String userDir = System.getProperty("user.dir");
+            String userDir = System.getProperty("user.dir");
             for(boolean done = false; !done;)
             {
                 if(classPath.indexOf(fileSeparator) == 0 ||
@@ -117,7 +117,7 @@ public class SourceLocator
                     absolutePath = false;
 
                 sepIndex = classPath.indexOf(pathSeparator);
-		
+                
                 String candidate = null;
 
                 if(sepIndex == -1)
@@ -148,79 +148,79 @@ public class SourceLocator
             previousLocations = locations;
         }
 
-	InputStream res = null;
-	{ // for now types are found on the filesystem.
-	    List reps = new ArrayList(4);
-	    reps.add(ClassInputRep.v());
-	    reps.add(JimpleInputRep.v());
+        InputStream res = null;
+        { // for now types are found on the filesystem.
+            List reps = new ArrayList(4);
+            reps.add(ClassInputRep.v());
+            reps.add(JimpleInputRep.v());
 
-	    if(srcPrecedence == PRECEDENCE_CLASS || srcPrecedence == PRECEDENCE_NONE) {
-		List lst = new LinkedList();
-		lst.add(ClassInputRep.v());
-		if( (res = getFileInputStream(locations, lst, className)) != null)
-		    return res;
-		if( (res = getFileInputStream(locations, reps, className)) != null)
-		    return res;
-	    } 
-	    else if (srcPrecedence == PRECEDENCE_JIMPLE) {
-		List lst = new LinkedList();
-		lst.add(JimpleInputRep.v());
-		if( (res = getFileInputStream(locations, lst, className)) != null)
-		    return res;
-		if( (res = getFileInputStream(locations, reps, className)) != null)
-		    return res;
+            if(srcPrecedence == PRECEDENCE_CLASS || srcPrecedence == PRECEDENCE_NONE) {
+                List lst = new LinkedList();
+                lst.add(ClassInputRep.v());
+                if( (res = getFileInputStream(locations, lst, className)) != null)
+                    return res;
+                if( (res = getFileInputStream(locations, reps, className)) != null)
+                    return res;
+            } 
+            else if (srcPrecedence == PRECEDENCE_JIMPLE) {
+                List lst = new LinkedList();
+                lst.add(JimpleInputRep.v());
+                if( (res = getFileInputStream(locations, lst, className)) != null)
+                    return res;
+                if( (res = getFileInputStream(locations, reps, className)) != null)
+                    return res;
 
-	    } else
-		throw new RuntimeException("Other source precedences are not currently supported.");
-	    throw new ClassNotFoundException();
-	}
-	
+            } else
+                throw new RuntimeException("Other source precedences are not currently supported.");
+            throw new ClassNotFoundException();
+        }
+        
     }
 
 
     static private InputStream getFileInputStream(List locations, List reps, String className)
     {    
-	Iterator it = locations.iterator();
-	className = className.replace('/','.');  // so that you can give for example either spec.bench.main or spec/bench/main
-	String className2 = className.replace('.', '/');
+        Iterator it = locations.iterator();
+        className = className.replace('/','.');  // so that you can give for example either spec.bench.main or spec/bench/main
+        String className2 = className.replace('.', '/');
 
-	
-	while(it.hasNext()) 
+        
+        while(it.hasNext()) 
         {
-	    StringBuffer locationBuf = new StringBuffer();
-	    String locationPath = (String)it.next();
-	    locationBuf.append(locationPath);
+            StringBuffer locationBuf = new StringBuffer();
+            String locationPath = (String)it.next();
+            locationBuf.append(locationPath);
 
-	    if(!locationPath.endsWith(new Character(fileSeparator).toString()))
-		locationBuf.append(fileSeparator);
+            if(!locationPath.endsWith(new Character(fileSeparator).toString()))
+                locationBuf.append(fileSeparator);
 
-	    String path = locationBuf.toString();
-		
-	    Iterator repsIt = reps.iterator();    
-	    while(repsIt.hasNext()) 
+            String path = locationBuf.toString();
+                
+            Iterator repsIt = reps.iterator();    
+            while(repsIt.hasNext()) 
             { 
-		SootInputRepresentation inputRep = (SootInputRepresentation) repsIt.next();
+                SootInputRepresentation inputRep = (SootInputRepresentation) repsIt.next();
 
-		String adjustedClassName = path + className;
-		if(inputRep instanceof ClassInputRep)
-		    adjustedClassName = path + className2;
+                String adjustedClassName = path + className;
+                if(inputRep instanceof ClassInputRep)
+                    adjustedClassName = path + className2;
 
-		String fullPath = adjustedClassName + inputRep.getFileExtension();
-		                     
-		File f = new File(fullPath);
+                String fullPath = adjustedClassName + inputRep.getFileExtension();
+                                     
+                File f = new File(fullPath);
 
-		InputStream in;
+                InputStream in;
 
-		if (f.canRead()) {
-		    try {       
-			return in = inputRep.createInputStream(new FileInputStream(f));		    
-		    } catch(IOException e) { 
-			System.out.println(e); throw new RuntimeException("!"); 
-		    }
-		}
-	    }
-	}
-	return null;
+                if (f.canRead()) {
+                    try {       
+                        return in = inputRep.createInputStream(new FileInputStream(f));                    
+                    } catch(IOException e) { 
+                        System.out.println(e); throw new RuntimeException("!"); 
+                    }
+                }
+            }
+        }
+        return null;
     }    
 }
 

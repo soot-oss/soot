@@ -144,7 +144,7 @@ public class BafBody extends Body
         // Perform some optimizations on the naive baf code
         {
              LoadStoreOptimizer.v().transform(this, "bb.lso");
-	     (new PeepholeOptimizer()).transform(this,"");
+             (new PeepholeOptimizer()).transform(this,"");
              UnusedLocalEliminator.v().transform(this, "bb.ule");
              LocalPacker.v().transform(this, "bb.lp");
         }

@@ -75,11 +75,11 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
     {
         StringBuffer buffer = new StringBuffer();
 
-	Type t = baseType.baseType;
-	if(Jimple.isJavaKeywordType(t))
-	  buffer.append(Jimple.v().NEWMULTIARRAY + " (" + "." + t.toString() + ")");
-	else
-	  buffer.append(Jimple.v().NEWMULTIARRAY + " (" +  t.toString() + ")");
+        Type t = baseType.baseType;
+        if(Jimple.isJavaKeywordType(t))
+          buffer.append(Jimple.v().NEWMULTIARRAY + " (" + "." + t.toString() + ")");
+        else
+          buffer.append(Jimple.v().NEWMULTIARRAY + " (" +  t.toString() + ")");
 
         for(int i = 0; i < sizeBoxes.length; i++)
             buffer.append("[" + sizeBoxes[i].getValue().toString() + "]");

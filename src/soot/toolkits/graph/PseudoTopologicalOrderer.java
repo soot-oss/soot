@@ -68,7 +68,7 @@ public class PseudoTopologicalOrderer
      */
     public void setReverseOrder(boolean isReversed)
     {
-	mIsReversed = isReversed;
+        mIsReversed = isReversed;
     }
 
     /**
@@ -77,7 +77,7 @@ public class PseudoTopologicalOrderer
      */
     public boolean isReverseOrder()
     {
-	return mIsReversed;
+        return mIsReversed;
     }
 
     /**

@@ -52,61 +52,61 @@ class CstPoolExtractor
 
     public CstPoolExtractor(Start parseTree) 
     {
-	mParseTree = parseTree;
+        mParseTree = parseTree;
     }
 
     public Set getCstPool()
     {
-	if(mRefTypes == null) {	    
-	    mRefTypes = new HashSet();
-	    CstPoolExtractorWalker  walker = new CstPoolExtractorWalker(); 	
-	    mParseTree.apply(walker);  	
-	    mParseTree = null; // allow garbage collection
-	}	   
-	return mRefTypes;
+        if(mRefTypes == null) {            
+            mRefTypes = new HashSet();
+            CstPoolExtractorWalker  walker = new CstPoolExtractorWalker();         
+            mParseTree.apply(walker);          
+            mParseTree = null; // allow garbage collection
+        }           
+        return mRefTypes;
     }        
-		
+                
 
     private class CstPoolExtractorWalker extends DepthFirstAdapter
     {               
-	CstPoolExtractorWalker() 
-	{	
-	}
+        CstPoolExtractorWalker() 
+        {        
+        }
    
-	public void inStart(Start node)
-	{
-	    defaultIn(node);
-	}
+        public void inStart(Start node)
+        {
+            defaultIn(node);
+        }
 
-	public void outAQuotedClassName(AQuotedClassName node)
-	{
-	    mRefTypes.add(node.getQuotedName().getText());
-	}
-	public void outAIdentClassName(AIdentClassName node)
-	{
-	    mRefTypes.add(node.getIdentifier().getText());
-	}
+        public void outAQuotedClassName(AQuotedClassName node)
+        {
+            mRefTypes.add(node.getQuotedName().getText());
+        }
+        public void outAIdentClassName(AIdentClassName node)
+        {
+            mRefTypes.add(node.getIdentifier().getText());
+        }
 
-	public void outAFullIdentClassName(AFullIdentClassName node)
-	{
-	    mRefTypes.add(node.getFullIdentifier().getText());
-	}
+        public void outAFullIdentClassName(AFullIdentClassName node)
+        {
+            mRefTypes.add(node.getFullIdentifier().getText());
+        }
 
-	public void outAQuotedNonvoidType(AQuotedNonvoidType node)
-	{
-	    mRefTypes.add(node.getQuotedName().getText());
-	}
+        public void outAQuotedNonvoidType(AQuotedNonvoidType node)
+        {
+            mRefTypes.add(node.getQuotedName().getText());
+        }
    
-	public void outAFullIdentNonvoidType(AFullIdentNonvoidType node)
-	{
-	    mRefTypes.add(node.getFullIdentifier().getText());
-	}    
+        public void outAFullIdentNonvoidType(AFullIdentNonvoidType node)
+        {
+            mRefTypes.add(node.getFullIdentifier().getText());
+        }    
     
-	public void outAIdentNonvoidType(AIdentNonvoidType node)
-	{
-	    mRefTypes.add(node.getIdentifier().getText());
+        public void outAIdentNonvoidType(AIdentNonvoidType node)
+        {
+            mRefTypes.add(node.getIdentifier().getText());
 
-	}
+        }
     }
 } 
 

@@ -135,10 +135,10 @@ public class Jimple
   public static boolean isJavaKeywordType(Type t)
   {
     return !(t instanceof StmtAddressType ||
-	     t instanceof UnknownType ||
-		 t instanceof RefType ||
-		 (t instanceof ArrayType && (!isJavaKeywordType(((ArrayType)t).baseType))) ||
-		 t instanceof ErroneousType );
+             t instanceof UnknownType ||
+                 t instanceof RefType ||
+                 (t instanceof ArrayType && (!isJavaKeywordType(((ArrayType)t).baseType))) ||
+                 t instanceof ErroneousType );
   }
 
 
@@ -697,7 +697,7 @@ public class Jimple
     
     public IfStmt newIfStmt(Value condition, UnitBox target)
     {
-	return new JIfStmt(condition, target);
+        return new JIfStmt(condition, target);
     }
 
 
@@ -742,7 +742,7 @@ public class Jimple
 
 
     public TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, List targets, UnitBox defaultTarget)
-    {		
+    {                
         return new JTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
     }
 
@@ -781,7 +781,7 @@ public class Jimple
 
     public Trap newTrap(SootClass exception, UnitBox beginStmt, UnitBox endStmt, UnitBox handlerStmt)
     {
-	return new JTrap(exception, beginStmt, endStmt, handlerStmt);
+        return new JTrap(exception, beginStmt, endStmt, handlerStmt);
     }
 
 
@@ -924,10 +924,10 @@ public class Jimple
 //      public JimpleBody newBody(Body b, String phase)
 //      {
 //          Map options = Scene.v().computePhaseOptions(phase, "");
-//  	if(b instanceof JimpleBody) {
-//  	    ((JimpleBody)b).applyPhaseOptions(options);
-//  	    return (JimpleBody) b;
-//  	}
+//          if(b instanceof JimpleBody) {
+//              ((JimpleBody)b).applyPhaseOptions(options);
+//              return (JimpleBody) b;
+//          }
 //          return new JimpleBody(b, options);
 //      }
 
@@ -935,8 +935,8 @@ public class Jimple
      public JimpleBody newBody(JimpleBody b, String phase)
     {
         //Map options = Scene.v().computePhaseOptions(phase, "");
-	
-	// xxx patrice - deal with phase options
+        
+        // xxx patrice - deal with phase options
         return b;
     }
     */

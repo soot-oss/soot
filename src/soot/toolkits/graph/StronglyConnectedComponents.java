@@ -249,7 +249,7 @@ public class StronglyConnectedComponents
      */
     public DirectedGraph getSuperGraph()
     {
-	/* we should make this unmodifiable at some point. */
+        /* we should make this unmodifiable at some point. */
         return sccGraph;
     }
 }

@@ -54,28 +54,28 @@ public class EscapedReader extends FilterReader
         }
 
         int ch = super.read();
-	
+        
         if (ch != '\\')
             return ch;
 
-	/* we may have an escape sequence here ..*/
+        /* we may have an escape sequence here ..*/
         mini = new StringBuffer();
 
         ch = super.read();
         if (ch != 'u')
-	  {
-	    nextF = true; nextch = ch;
-	    return '\\';
-	  }
-	
-	mini.append("\\u");
+          {
+            nextF = true; nextch = ch;
+            return '\\';
+          }
+        
+        mini.append("\\u");
         while (mini.length() < 6)
         {
             ch = super.read();
             mini.append((char)ch);
         }
 
-	//	System.out.println(mini.toString());
+        //        System.out.println(mini.toString());
         ch = Integer.parseInt(mini.substring(2).toString(), 16);
 
         return ch;

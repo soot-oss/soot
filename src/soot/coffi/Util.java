@@ -106,83 +106,83 @@ public class Util
         scene.addClass(newClass);
         newClass.setContextClass();
         
-	return newClass;
+        return newClass;
     }
 
     
     public static SootClass resolveClassAndSupportClasses2(String className, InputStream is)
     {
         SootClass newClass = null;
-	Scene cm = Scene.v();
-	scene = cm;
-	if(scene.containsClass(className))
+        Scene cm = Scene.v();
+        scene = cm;
+        if(scene.containsClass(className))
             newClass =  scene.getSootClass(className);
-	else {
-	    newClass = new SootClass(className);
-	    scene.addClass(newClass);
-	    newClass.setContextClass();
+        else {
+            newClass = new SootClass(className);
+            scene.addClass(newClass);
+            newClass.setContextClass();
         
-	    //markedClasses.add(newClass);
-	    //classesToResolve.addLast(newClass);
-	}
+            //markedClasses.add(newClass);
+            //classesToResolve.addLast(newClass);
+        }
 
         
-	    
-	SootClass bclass = newClass;
+            
+        SootClass bclass = newClass;
                 
-	className = bclass.getName();
+        className = bclass.getName();
             
             
-	if(soot.Main.isVerbose)
-	    System.out.println("Resolving " + className + "...");
+        if(soot.Main.isVerbose)
+            System.out.println("Resolving " + className + "...");
     
-	ClassFile coffiClass = new ClassFile(className);
+        ClassFile coffiClass = new ClassFile(className);
     
-	// Load up class file, and retrieve bclass from class manager.
-	{
-	    boolean success = coffiClass.loadClassFile(is);
-		
-	       
+        // Load up class file, and retrieve bclass from class manager.
+        {
+            boolean success = coffiClass.loadClassFile(is);
+                
+               
 
 
-		
+                
 
-	    if(!success)
+            if(!success)
                 {
                     if(!Scene.v().allowsPhantomRefs())
                         throw new RuntimeException("Could not load classfile: " + bclass.getName());
                     else {
 
-		
-			System.out.println("Warning: " + className + " is a phantom class!");
-			bclass.setPhantom(true);								
-			//		continue;
-			return newClass;
-		    } 
+                
+                        System.out.println("Warning: " + className + " is a phantom class!");
+                        bclass.setPhantom(true);                                                                
+                        //                continue;
+                        return newClass;
+                    } 
 
                 }
-	    
-		
+            
                 
-	    CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.this_class];
+                
+            CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.this_class];
     
-	    String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
-	    name = name.replace('/', '.');
-		
-	    bclass.setName(name);
-	    // replace this classes name with its fully qualified version.
+            String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
+            name = name.replace('/', '.');
+                
+            bclass.setName(name);
+            // replace this classes name with its fully qualified version.
     
-	}
+        }
       
-	// Set modifier
-	bclass.setModifiers(coffiClass.access_flags & (~0x0020));
-	// don't want the ACC_SUPER flag, it is always supposed to be set anyways
+        // Set modifier
+        bclass.setModifiers(coffiClass.access_flags & (~0x0020));
+        // don't want the ACC_SUPER flag, it is always supposed to be set anyways
     
-	// Set superclass
-	{
+        // Set superclass
+        {
 
 
-	    if(coffiClass.super_class != 0)
+            if(coffiClass.super_class != 0)
             {
                 // This object is not java.lang.Object, so must have a super class
                 
@@ -194,14 +194,14 @@ public class Util
     
                     bclass.setSuperclass(getResolvedClass2(superName));
                 }
-	}
+        }
     
-	// Add interfaces to the bclass
-	{
-	    for(int i = 0; i < coffiClass.interfaces_count; i++)
+        // Add interfaces to the bclass
+        {
+            for(int i = 0; i < coffiClass.interfaces_count; i++)
                 {
                     CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.
-											  interfaces[i]];
+                                                                                          interfaces[i]];
     
                     String interfaceName =
                         ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
@@ -211,172 +211,172 @@ public class Util
                     SootClass interfaceClass = getResolvedClass2(interfaceName);
                     bclass.addInterface(interfaceClass);
                 }
-	}
+        }
     
-	// Add every field to the bclass
-	for(int i = 0; i < coffiClass.fields_count; i++)
-	    {
-		field_info fieldInfo = coffiClass.fields[i];
+        // Add every field to the bclass
+        for(int i = 0; i < coffiClass.fields_count; i++)
+            {
+                field_info fieldInfo = coffiClass.fields[i];
     
-		String fieldName = ((CONSTANT_Utf8_info)
-				    (coffiClass.constant_pool[fieldInfo.name_index])).convert();
+                String fieldName = ((CONSTANT_Utf8_info)
+                                    (coffiClass.constant_pool[fieldInfo.name_index])).convert();
     
-		String fieldDescriptor = ((CONSTANT_Utf8_info)
-					  (coffiClass.constant_pool[fieldInfo.descriptor_index])).convert();
+                String fieldDescriptor = ((CONSTANT_Utf8_info)
+                                          (coffiClass.constant_pool[fieldInfo.descriptor_index])).convert();
     
-		int modifiers = fieldInfo.access_flags;
-		Type fieldType = jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+                int modifiers = fieldInfo.access_flags;
+                Type fieldType = jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
                     
-		bclass.addField(new SootField(fieldName,
-					      fieldType, modifiers));
+                bclass.addField(new SootField(fieldName,
+                                              fieldType, modifiers));
                     
-		//		assertResolvedClassForType(fieldType);
-	    }
+                //                assertResolvedClassForType(fieldType);
+            }
     
-	// Add every method to the bclass
-	for(int i = 0; i < coffiClass.methods_count; i++)
-	    {
-		method_info methodInfo = coffiClass.methods[i];
+        // Add every method to the bclass
+        for(int i = 0; i < coffiClass.methods_count; i++)
+            {
+                method_info methodInfo = coffiClass.methods[i];
 
-		String methodName = ((CONSTANT_Utf8_info)
-				     (coffiClass.constant_pool[methodInfo.name_index])).convert();
+                String methodName = ((CONSTANT_Utf8_info)
+                                     (coffiClass.constant_pool[methodInfo.name_index])).convert();
     
-		String methodDescriptor = ((CONSTANT_Utf8_info)
-					   (coffiClass.constant_pool[methodInfo.descriptor_index])).convert();
+                String methodDescriptor = ((CONSTANT_Utf8_info)
+                                           (coffiClass.constant_pool[methodInfo.descriptor_index])).convert();
     
-		List parameterTypes;
-		Type returnType;
+                List parameterTypes;
+                Type returnType;
     
-		// Generate parameterTypes & returnType
-		{
-		    Type[] types = jimpleTypesOfFieldOrMethodDescriptor(cm,
-									methodDescriptor);
+                // Generate parameterTypes & returnType
+                {
+                    Type[] types = jimpleTypesOfFieldOrMethodDescriptor(cm,
+                                                                        methodDescriptor);
     
-		    parameterTypes = new ArrayList();
+                    parameterTypes = new ArrayList();
     
-		    for(int j = 0; j < types.length - 1; j++)
+                    for(int j = 0; j < types.length - 1; j++)
                         {
-			    //                            assertResolvedClassForType(types[j]);
+                            //                            assertResolvedClassForType(types[j]);
                             parameterTypes.add(types[j]);
                         }
                         
-		    returnType = types[types.length - 1];
-		    //		    assertResolvedClassForType(returnType);
-		}
+                    returnType = types[types.length - 1];
+                    //                    assertResolvedClassForType(returnType);
+                }
     
-		int modifiers = methodInfo.access_flags;
+                int modifiers = methodInfo.access_flags;
     
-		SootMethod method;
+                SootMethod method;
     
-		method = new SootMethod(methodName,
-					parameterTypes, returnType, modifiers);
-		bclass.addMethod(method);
+                method = new SootMethod(methodName,
+                                        parameterTypes, returnType, modifiers);
+                bclass.addMethod(method);
     
-		methodInfo.jmethod = method;
+                methodInfo.jmethod = method;
     
-		// add exceptions to method
-		{
-		    for(int j = 0; j < methodInfo.attributes_count; j++)
-			if(methodInfo.attributes[j] instanceof Exception_attribute)
+                // add exceptions to method
+                {
+                    for(int j = 0; j < methodInfo.attributes_count; j++)
+                        if(methodInfo.attributes[j] instanceof Exception_attribute)
                             {
                                 Exception_attribute exceptions = (Exception_attribute) methodInfo.attributes[j];
     
                                 for(int k = 0; k < exceptions.number_of_exceptions; k++)
-				    {
-					CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.
-					    constant_pool[exceptions.exception_index_table[k]];
+                                    {
+                                        CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.
+                                            constant_pool[exceptions.exception_index_table[k]];
     
-					String exceptionName = ((CONSTANT_Utf8_info)
-								(coffiClass.constant_pool[c.name_index])).convert();
+                                        String exceptionName = ((CONSTANT_Utf8_info)
+                                                                (coffiClass.constant_pool[c.name_index])).convert();
     
-					exceptionName = exceptionName.replace('/', '.');
+                                        exceptionName = exceptionName.replace('/', '.');
     
-					method.addException(getResolvedClass2(exceptionName));
-				    }
+                                        method.addException(getResolvedClass2(exceptionName));
+                                    }
                             }
-		}
+                }
                     
                 
             }
 
-	// Set coffi source of method
-	for(int i = 0; i < coffiClass.methods_count; i++)
+        // Set coffi source of method
+        for(int i = 0; i < coffiClass.methods_count; i++)
             {
                 method_info methodInfo = coffiClass.methods[i];
-		//                methodInfo.jmethod.setSource(coffiClass, methodInfo);
-		methodInfo.jmethod.setSource(new CoffiMethodSource(coffiClass, methodInfo));
+                //                methodInfo.jmethod.setSource(coffiClass, methodInfo);
+                methodInfo.jmethod.setSource(new CoffiMethodSource(coffiClass, methodInfo));
             }
             
-	
-	
+        
+        
 
-	//System.out.println("loading" + timer.getTime());
-	//System.out.println("building" + buildTimer.getTime());
+        //System.out.println("loading" + timer.getTime());
+        //System.out.println("building" + buildTimer.getTime());
 
 
-	
-	return newClass;
+        
+        return newClass;
     }
     
 
     public static void resolveFromClassFile(SootClass aClass, soot.SootResolver sootResolver, Scene cm)
     {
-	SootClass bclass = aClass;                
-	String className = bclass.getName();
-	setActiveClassManager(cm);
+        SootClass bclass = aClass;                
+        String className = bclass.getName();
+        setActiveClassManager(cm);
     
-	ClassFile coffiClass = new ClassFile(className);
-	
-	// Load up class file, and retrieve bclass from class manager.
-	{
-	    boolean success = coffiClass.loadClassFile();	    	              
-	    if(!success)
-		{
+        ClassFile coffiClass = new ClassFile(className);
+        
+        // Load up class file, and retrieve bclass from class manager.
+        {
+            boolean success = coffiClass.loadClassFile();                                  
+            if(!success)
+                {
                     if(!Scene.v().allowsPhantomRefs())
                         throw new RuntimeException("Could not load classfile: " + bclass.getName());
-                    else {			
-			System.out.println("Warning: " + className + " is a phantom class!");
-			bclass.setPhantom(true);								
-			return;
-		    } 
-		    
+                    else {                        
+                        System.out.println("Warning: " + className + " is a phantom class!");
+                        bclass.setPhantom(true);                                                                
+                        return;
+                    } 
+                    
                 }
-	    
-	    CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.this_class];
+            
+            CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.this_class];
     
-	    String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
-	    name = name.replace('/', '.');
-		
-	    bclass.setName(name);
-	    // replace this classe'ss name with its fully qualified version.    
-	}
+            String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
+            name = name.replace('/', '.');
+                
+            bclass.setName(name);
+            // replace this classe'ss name with its fully qualified version.    
+        }
       
-	// Set modifier
-	bclass.setModifiers(coffiClass.access_flags & (~0x0020));
-	// don't want the ACC_SUPER flag, it is always supposed to be set anyways
+        // Set modifier
+        bclass.setModifiers(coffiClass.access_flags & (~0x0020));
+        // don't want the ACC_SUPER flag, it is always supposed to be set anyways
     
-	// Set superclass
-	{
-	    if(coffiClass.super_class != 0)
+        // Set superclass
+        {
+            if(coffiClass.super_class != 0)
                 {
                     // This object is not java.lang.Object, so must have a super class
-		    
+                    
                     CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.
-											  super_class];
+                                                                                          super_class];
     
                     String superName = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
                     superName = superName.replace('/', '.');
     
                     bclass.setSuperclass(sootResolver.getResolvedClass(superName));
                 }
-	}
+        }
     
-	// Add interfaces to the bclass
-	{
-	    for(int i = 0; i < coffiClass.interfaces_count; i++)
+        // Add interfaces to the bclass
+        {
+            for(int i = 0; i < coffiClass.interfaces_count; i++)
                 {
                     CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.
-											  interfaces[i]];
+                                                                                          interfaces[i]];
     
                     String interfaceName =
                         ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
@@ -386,117 +386,117 @@ public class Util
                     SootClass interfaceClass = sootResolver.getResolvedClass(interfaceName);
                     bclass.addInterface(interfaceClass);
                 }
-	}
+        }
     
-	// Add every field to the bclass
-	for(int i = 0; i < coffiClass.fields_count; i++)
-	    {
-		field_info fieldInfo = coffiClass.fields[i];
+        // Add every field to the bclass
+        for(int i = 0; i < coffiClass.fields_count; i++)
+            {
+                field_info fieldInfo = coffiClass.fields[i];
     
-		String fieldName = ((CONSTANT_Utf8_info)
-				    (coffiClass.constant_pool[fieldInfo.name_index])).convert();
+                String fieldName = ((CONSTANT_Utf8_info)
+                                    (coffiClass.constant_pool[fieldInfo.name_index])).convert();
     
-		String fieldDescriptor = ((CONSTANT_Utf8_info)
-					  (coffiClass.constant_pool[fieldInfo.descriptor_index])).convert();
+                String fieldDescriptor = ((CONSTANT_Utf8_info)
+                                          (coffiClass.constant_pool[fieldInfo.descriptor_index])).convert();
     
-		int modifiers = fieldInfo.access_flags;
-		Type fieldType = jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+                int modifiers = fieldInfo.access_flags;
+                Type fieldType = jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
                     
-		bclass.addField(new SootField(fieldName,
-					      fieldType, modifiers));
+                bclass.addField(new SootField(fieldName,
+                                              fieldType, modifiers));
                     
-		sootResolver.assertResolvedClassForType(fieldType);
-	    }
+                sootResolver.assertResolvedClassForType(fieldType);
+            }
     
-	// Add every method to the bclass
-	for(int i = 0; i < coffiClass.methods_count; i++)
-	    {
-		method_info methodInfo = coffiClass.methods[i];
+        // Add every method to the bclass
+        for(int i = 0; i < coffiClass.methods_count; i++)
+            {
+                method_info methodInfo = coffiClass.methods[i];
 
-		String methodName = ((CONSTANT_Utf8_info)
-				     (coffiClass.constant_pool[methodInfo.name_index])).convert();
+                String methodName = ((CONSTANT_Utf8_info)
+                                     (coffiClass.constant_pool[methodInfo.name_index])).convert();
     
-		String methodDescriptor = ((CONSTANT_Utf8_info)
-					   (coffiClass.constant_pool[methodInfo.descriptor_index])).convert();
+                String methodDescriptor = ((CONSTANT_Utf8_info)
+                                           (coffiClass.constant_pool[methodInfo.descriptor_index])).convert();
     
-		List parameterTypes;
-		Type returnType;
+                List parameterTypes;
+                Type returnType;
     
-		// Generate parameterTypes & returnType
-		{
-		    Type[] types = jimpleTypesOfFieldOrMethodDescriptor(cm,
-									methodDescriptor);
+                // Generate parameterTypes & returnType
+                {
+                    Type[] types = jimpleTypesOfFieldOrMethodDescriptor(cm,
+                                                                        methodDescriptor);
     
-		    parameterTypes = new ArrayList();
+                    parameterTypes = new ArrayList();
     
-		    for(int j = 0; j < types.length - 1; j++)
+                    for(int j = 0; j < types.length - 1; j++)
                         {
                             sootResolver.assertResolvedClassForType(types[j]);
                             parameterTypes.add(types[j]);
                         }
                         
-		    returnType = types[types.length - 1];
-		    sootResolver.assertResolvedClassForType(returnType);
-		}
+                    returnType = types[types.length - 1];
+                    sootResolver.assertResolvedClassForType(returnType);
+                }
     
-		int modifiers = methodInfo.access_flags;
+                int modifiers = methodInfo.access_flags;
     
-		SootMethod method;
+                SootMethod method;
     
-		method = new SootMethod(methodName,
-					parameterTypes, returnType, modifiers);
-		bclass.addMethod(method);
+                method = new SootMethod(methodName,
+                                        parameterTypes, returnType, modifiers);
+                bclass.addMethod(method);
     
-		methodInfo.jmethod = method;
+                methodInfo.jmethod = method;
     
-		// add exceptions to method
-		{
-		    for(int j = 0; j < methodInfo.attributes_count; j++)
-			if(methodInfo.attributes[j] instanceof Exception_attribute)
+                // add exceptions to method
+                {
+                    for(int j = 0; j < methodInfo.attributes_count; j++)
+                        if(methodInfo.attributes[j] instanceof Exception_attribute)
                             {
                                 Exception_attribute exceptions = (Exception_attribute) methodInfo.attributes[j];
     
                                 for(int k = 0; k < exceptions.number_of_exceptions; k++)
-				    {
-					CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.
-					    constant_pool[exceptions.exception_index_table[k]];
+                                    {
+                                        CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.
+                                            constant_pool[exceptions.exception_index_table[k]];
     
-					String exceptionName = ((CONSTANT_Utf8_info)
-								(coffiClass.constant_pool[c.name_index])).convert();
+                                        String exceptionName = ((CONSTANT_Utf8_info)
+                                                                (coffiClass.constant_pool[c.name_index])).convert();
     
-					exceptionName = exceptionName.replace('/', '.');
+                                        exceptionName = exceptionName.replace('/', '.');
     
-					method.addException(sootResolver.getResolvedClass(exceptionName));
-				    }
+                                        method.addException(sootResolver.getResolvedClass(exceptionName));
+                                    }
                             }
-		}
+                }
                     
                 // Go through the constant pool, forcing all mentioned classes to be resolved. 
                 {
                     for(int k = 0; k < coffiClass.constant_pool_count; k++)
                         if(coffiClass.constant_pool[k] instanceof CONSTANT_Class_info)
-			    {
-				CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[k];
+                            {
+                                CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[k];
 
-				String desc = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
-				String name = desc.replace('/', '.');
+                                String desc = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
+                                String name = desc.replace('/', '.');
 
-				if(name.startsWith("["))
-				    sootResolver.assertResolvedClassForType(jimpleTypeOfFieldDescriptor(cm, desc));
-				else
-				    sootResolver.assertResolvedClass(name);
-			    }
+                                if(name.startsWith("["))
+                                    sootResolver.assertResolvedClassForType(jimpleTypeOfFieldDescriptor(cm, desc));
+                                else
+                                    sootResolver.assertResolvedClass(name);
+                            }
                 }
             }
 
         // Set coffi source of method
-	for(int i = 0; i < coffiClass.methods_count; i++)
+        for(int i = 0; i < coffiClass.methods_count; i++)
             {
                 method_info methodInfo = coffiClass.methods[i];
-		//                methodInfo.jmethod.setSource(coffiClass, methodInfo);
-		methodInfo.jmethod.setSource(new CoffiMethodSource(coffiClass, methodInfo));
+                //                methodInfo.jmethod.setSource(coffiClass, methodInfo);
+                methodInfo.jmethod.setSource(new CoffiMethodSource(coffiClass, methodInfo));
             }
-	
+        
     }
     
 
@@ -511,8 +511,8 @@ public class Util
 
         soot.Main.resolverTimer.start();
         
-	setActiveClassManager(cm);
-	
+        setActiveClassManager(cm);
+        
         classesToResolve = new LinkedList();
         markedClasses = new HashSet();
         
@@ -534,33 +534,33 @@ public class Util
             // Load up class file, and retrieve bclass from class manager.
             {
                 boolean success = coffiClass.loadClassFile();
-		
-	       
+                
+               
                 timer.end();
 
-		
+                
 
                 if(!success)
-		    {
+                    {
                     if(!Scene.v().allowsPhantomRefs())
                         throw new RuntimeException("Could not load classfile: " + bclass.getName());
                     else {
-			System.out.println("Warning: " + className + " is a phantom class!");
-			bclass.setPhantom(true);								
-			continue;
-		    } 
+                        System.out.println("Warning: " + className + " is a phantom class!");
+                        bclass.setPhantom(true);                                                                
+                        continue;
+                    } 
 
                 }
                 buildTimer.start();
-		
+                
                 
                 CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.this_class];
     
                 String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
                 name = name.replace('/', '.');
-		
+                
                 bclass.setName(name);
-		// replace this classes name with its fully qualified version.
+                // replace this classes name with its fully qualified version.
     
             }
       
@@ -649,16 +649,16 @@ public class Util
                         }
                         
                         returnType = types[types.length - 1];
-			assertResolvedClassForType(returnType);
+                        assertResolvedClassForType(returnType);
                     }
     
                     int modifiers = methodInfo.access_flags;
     
                     SootMethod method;
     
-		    method = new SootMethod(methodName,
-					    parameterTypes, returnType, modifiers);
-		    bclass.addMethod(method);
+                    method = new SootMethod(methodName,
+                                            parameterTypes, returnType, modifiers);
+                    bclass.addMethod(method);
     
                     methodInfo.jmethod = method;
     
@@ -706,8 +706,8 @@ public class Util
             for(int i = 0; i < coffiClass.methods_count; i++)
             {
                 method_info methodInfo = coffiClass.methods[i];
-		//                methodInfo.jmethod.setSource(coffiClass, methodInfo);
-		methodInfo.jmethod.setSource(new CoffiMethodSource(coffiClass, methodInfo));
+                //                methodInfo.jmethod.setSource(coffiClass, methodInfo);
+                methodInfo.jmethod.setSource(new CoffiMethodSource(coffiClass, methodInfo));
             }
             
             buildTimer.end();
@@ -864,7 +864,7 @@ public class Util
                 baseType = IntType.v();
             else if(descriptor.equals("J"))
                 baseType = LongType.v();
-	    else if(descriptor.equals("V"))
+            else if(descriptor.equals("V"))
                 baseType = VoidType.v();
             else if(descriptor.startsWith("L"))
             {

@@ -74,8 +74,8 @@ public class StmtPrinter
                 int labelCount = 0;
 
                 Iterator stmtIt = units.iterator();
-		
-		
+                
+                
                 while(stmtIt.hasNext())
                 {
                     Unit s = (Unit) stmtIt.next();
@@ -89,7 +89,7 @@ public class StmtPrinter
                     }
                 }
             }
-        }	
+        }        
 
 
         
@@ -111,7 +111,7 @@ public class StmtPrinter
                     //   or the previous statement does not have body statement as a successor, or if
                     //   body statement has a label on it
 
-		    if(currentStmt != units.getFirst()) 
+                    if(currentStmt != units.getFirst()) 
                         {       
                             if(unitGraph.getSuccsOf(previousStmt).size() != 1 ||
                                unitGraph.getPredsOf(currentStmt).size() != 1 ||
@@ -128,11 +128,11 @@ public class StmtPrinter
                         }
                     
                      if(stmtToName.containsKey(currentStmt))
-			 out.println("     " + stmtToName.get(currentStmt) + ":");
+                         out.println("     " + stmtToName.get(currentStmt) + ":");
                 }
                    
 
-		if(isPrecise)
+                if(isPrecise)
                     out.print(currentStmt.toString(stmtToName, indent));
                 else
                     out.print(currentStmt.toBriefString(stmtToName, indent));

@@ -150,7 +150,7 @@ public class SimpleLocalUses implements LocalUses
      */
     public List getUsesOf(Unit s)
     {
-	List l = (List) unitToUses.get(s);
+        List l = (List) unitToUses.get(s);
 
         return l;
     }

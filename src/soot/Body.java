@@ -75,7 +75,7 @@ public abstract class Body
 
     /** Creates an extremely empty Body.  The Body is not associated to any method. */
     protected Body() 
-    {       	
+    {               
     }
 
     /** 
@@ -84,8 +84,8 @@ public abstract class Body
      */
     public SootMethod getMethod()
     {
-	if(method == null)
-	    throw new RuntimeException("no method associated w/ body");
+        if(method == null)
+            throw new RuntimeException("no method associated w/ body");
         return method;
     }
 
@@ -417,7 +417,7 @@ public abstract class Body
      */   
     public void printTo(PrintWriter out, int printBodyOptions)
     {
-	printToImpl(out, printBodyOptions, false);
+        printToImpl(out, printBodyOptions, false);
     }
 
     
@@ -433,8 +433,8 @@ public abstract class Body
      */
     public void printDebugTo(PrintWriter out, int printBodyOptions)
     {
-	printToImpl(out, printBodyOptions, true);
-    }	
+        printToImpl(out, printBodyOptions, true);
+    }        
 
     
 
@@ -445,7 +445,7 @@ public abstract class Body
         boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
         boolean isNumbered = PrintJimpleBodyOption.numbered(printBodyOptions);
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
-	String decl = getMethod().getDeclaration();
+        String decl = getMethod().getDeclaration();
 
         out.println("    " + decl);        
         out.println("    {");
@@ -464,12 +464,12 @@ public abstract class Body
 
                     List localList;
  
-		    String typeName;
-		    Type t = local.getType();
-		    if(Jimple.isJavaKeywordType(t))		   
-		      typeName = (isPrecise) ? "." + t.toString() : "." + t.toBriefString();
+                    String typeName;
+                    Type t = local.getType();
+                    if(Jimple.isJavaKeywordType(t))                   
+                      typeName = (isPrecise) ? "." + t.toString() : "." + t.toBriefString();
                     else
-		      typeName = (isPrecise) ?  t.toString() :  t.toBriefString();
+                      typeName = (isPrecise) ?  t.toString() :  t.toBriefString();
 
                     if(typeToLocals.containsKey(typeName))
                         localList = (List) typeToLocals.get(typeName);
@@ -494,7 +494,7 @@ public abstract class Body
                     List localList = (List) typeToLocals.get(type);
                     Object[] locals = localList.toArray();
                     out.print("        "  + type + " ");
-		    
+                    
                     for(int k = 0; k < locals.length; k++)
                     {
                         if(k != 0)
@@ -514,12 +514,12 @@ public abstract class Body
 
         // Print out statements
         // Use an external class so that it can be overridden.
-	if(debug) {
-	    // StmtPrinter.printDebugStatementsInBody(this, out, isPrecise, isNumbered);
-	} else {
-	    StmtPrinter.printStatementsInBody(this, out, isPrecise, isNumbered);
-	}
-	
+        if(debug) {
+            // StmtPrinter.printDebugStatementsInBody(this, out, isPrecise, isNumbered);
+        } else {
+            StmtPrinter.printStatementsInBody(this, out, isPrecise, isNumbered);
+        }
+        
         out.println("    }");
     }
     

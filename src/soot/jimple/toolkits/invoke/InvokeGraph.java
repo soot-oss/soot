@@ -57,64 +57,64 @@ public class InvokeGraph
     /** Returns the list of targets of SootMethod */
     public List getTargetsOf(SootMethod m) 
     {
-	if ((!m.isConcrete()) || (!m.hasActiveBody()))
-	{
-	    // No body to look at so no targets
-	    return new ArrayList();
-	}
-
-	Iterator unitsIt = m.getActiveBody().getUnits().iterator();
-
-	// Use a set as temporary structure to ensure unique targets
-	Set targets = new HashSet();
-
-	// The targets of a method is the union of the targets
-	// for all invoke expressions in the method
-	while (unitsIt.hasNext())
+        if ((!m.isConcrete()) || (!m.hasActiveBody()))
         {
-	    Stmt s = (Stmt)unitsIt.next();
-	    if (s.containsInvokeExpr())
-                targets.addAll(getTargetsOf(s));
-	}
+            // No body to look at so no targets
+            return new ArrayList();
+        }
 
-	// Transfer the results to a list to match return type 
-	ArrayList retList = new ArrayList();
-	retList.addAll(targets);
-	return retList;
+        Iterator unitsIt = m.getActiveBody().getUnits().iterator();
+
+        // Use a set as temporary structure to ensure unique targets
+        Set targets = new HashSet();
+
+        // The targets of a method is the union of the targets
+        // for all invoke expressions in the method
+        while (unitsIt.hasNext())
+        {
+            Stmt s = (Stmt)unitsIt.next();
+            if (s.containsInvokeExpr())
+                targets.addAll(getTargetsOf(s));
+        }
+
+        // Transfer the results to a list to match return type 
+        ArrayList retList = new ArrayList();
+        retList.addAll(targets);
+        return retList;
     }
 
     public List getTransitiveTargetsOf(SootMethod m) 
     {
-	Set workList  = new HashSet();
-	Set processed = new HashSet();
-	Set targets   = new HashSet();
+        Set workList  = new HashSet();
+        Set processed = new HashSet();
+        Set targets   = new HashSet();
 
-	// Start with just this method
-	workList.add(m);
-	
-	while(!workList.isEmpty())
-	{
-	    SootMethod cur = (SootMethod) workList.iterator().next();
+        // Start with just this method
+        workList.add(m);
+        
+        while(!workList.isEmpty())
+        {
+            SootMethod cur = (SootMethod) workList.iterator().next();
 
-	    // Pop a method from the worklist, add it to the processed set
-	    workList.remove(cur);
-	    processed.add(cur);
+            // Pop a method from the worklist, add it to the processed set
+            workList.remove(cur);
+            processed.add(cur);
 
-	    // Find the targets of this method that are not 
-	    // already in the processed set
-	    List curTargets = getTargetsOf(cur);
-	    curTargets.removeAll(processed);
+            // Find the targets of this method that are not 
+            // already in the processed set
+            List curTargets = getTargetsOf(cur);
+            curTargets.removeAll(processed);
 
-	    // Add these targets to the result set
-	    // and to the worklist
-	    targets.addAll(curTargets);
-	    workList.addAll(curTargets);
-	}
-	
-	// Transfer the results to a list to match return type 
-	ArrayList toReturn = new ArrayList();
-	toReturn.addAll(targets);
-	return toReturn;
+            // Add these targets to the result set
+            // and to the worklist
+            targets.addAll(curTargets);
+            workList.addAll(curTargets);
+        }
+        
+        // Transfer the results to a list to match return type 
+        ArrayList toReturn = new ArrayList();
+        toReturn.addAll(targets);
+        return toReturn;
     }
 
     public List getTargetsOf(Stmt site) 

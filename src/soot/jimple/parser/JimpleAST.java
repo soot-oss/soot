@@ -53,29 +53,29 @@ public class JimpleAST
      */
     public JimpleAST(JimpleInputStream aJIS, SootResolver resolver)
     {
-	mResolver = resolver;
-	Parser p =
-	    new Parser(new Lexer(
-		    new PushbackReader(new BufferedReader(
+        mResolver = resolver;
+        Parser p =
+            new Parser(new Lexer(
+                    new PushbackReader(new BufferedReader(
                     new InputStreamReader(aJIS)), 1024)));
-	try {
-	    mTree = p.parse();
-	} catch(ParserException e) {
-	    throw new RuntimeException("Parser exception occurred: " + e);
-	} catch(LexerException e) {
-	    throw new RuntimeException("Lexer exception occurred: " + e);
-	} catch(IOException e) {
-	    throw new RuntimeException("IOException occurred: " + e);
-	}
+        try {
+            mTree = p.parse();
+        } catch(ParserException e) {
+            throw new RuntimeException("Parser exception occurred: " + e);
+        } catch(LexerException e) {
+            throw new RuntimeException("Lexer exception occurred: " + e);
+        } catch(IOException e) {
+            throw new RuntimeException("IOException occurred: " + e);
+        }
     }
 
     /** Reads an entire class from jimple, creates the Soot objects & 
      * returns it. */
     public SootClass createSootClass()
-    {	
-	Walker w = new Walker(mResolver);	
-	mTree.apply(w);  
-	return w.getSootClass();
+    {        
+        Walker w = new Walker(mResolver);        
+        mTree.apply(w);  
+        return w.getSootClass();
     }
 
     /** 
@@ -87,8 +87,8 @@ public class JimpleAST
      */
     public void getSkeleton(SootClass sc)
     {
-	Walker w = new SkeletonExtractorWalker(mResolver, sc);	
-	mTree.apply(w);  	
+        Walker w = new SkeletonExtractorWalker(mResolver, sc);        
+        mTree.apply(w);          
     }
     
 
@@ -111,35 +111,35 @@ public class JimpleAST
      */
     public Set getCstPool() 
     {  
-	CstPoolExtractor cpe = new CstPoolExtractor(mTree);
-	return cpe.getCstPool();	
+        CstPoolExtractor cpe = new CstPoolExtractor(mTree);
+        return cpe.getCstPool();        
     }
 
     /** Returns the SootResolver currently in use. */
     public SootResolver getResolver()
     {
-	return mResolver;
+        return mResolver;
     }
 
     /** Sets the SootResolver used in this class as given. */
     public void setResolver(SootResolver resolver)
     {
-	mResolver = resolver;
+        mResolver = resolver;
     }
     
     /* Runs a Walker on the JimpleInputStream associated to this object.
      * The SootClass which we want bodies for is passed as the argument. 
      */
     private void stashBodiesForClass(SootClass sc) 
-    {  	
+    {          
         methodToParsedBodyMap = new HashMap();
 
-	Walker w = new BodyExtractorWalker(sc, mResolver, methodToParsedBodyMap);
+        Walker w = new BodyExtractorWalker(sc, mResolver, methodToParsedBodyMap);
 
         boolean oldPhantomValue = Scene.v().getPhantomRefs();
 
         Scene.v().setPhantomRefs(true);
-	mTree.apply(w);
+        mTree.apply(w);
         Scene.v().setPhantomRefs(oldPhantomValue);
     }    
 } // Parse

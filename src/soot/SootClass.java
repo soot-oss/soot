@@ -369,8 +369,8 @@ public class SootClass extends AbstractHost
         }
         else
             throw new RuntimeException("couldn't find method: "+getName() + "." + name + "(" + 
-		     parameterTypes + ")" + " : " + returnType);
-	
+                     parameterTypes + ")" + " : " + returnType);
+        
     }
 
     /**
@@ -788,7 +788,7 @@ public class SootClass extends AbstractHost
 
                     if(method.isPhantom())
                         continue;
-		    
+                    
                     if(!Modifier.isAbstract(method.getModifiers()) &&
                        !Modifier.isNative(method.getModifiers()))
                     {
@@ -893,7 +893,7 @@ public class SootClass extends AbstractHost
                     
                     if(method.isPhantom())
                         continue;
-		    
+                    
                     if(!Modifier.isAbstract(method.getModifiers()) &&
                        !Modifier.isNative(method.getModifiers()))
                     {

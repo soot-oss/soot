@@ -55,38 +55,38 @@ public class Parse
     */
     static public SootClass parse(InputStream istream, SootClass sc) 
     {  
-	Start tree = null;
-	
-	Parser p = 
-		new Parser(new Lexer(
-		      new PushbackReader(new EscapedReader(new BufferedReader(
-			      new InputStreamReader(istream))), 1024)));	
+        Start tree = null;
+        
+        Parser p = 
+                new Parser(new Lexer(
+                      new PushbackReader(new EscapedReader(new BufferedReader(
+                              new InputStreamReader(istream))), 1024)));        
 
-	try {
-	    tree = p.parse();
-	} catch(ParserException e) {
-	    throw new RuntimeException("Parser exception occurred: " + e);
-	} catch(LexerException e) {
-	    throw new RuntimeException("Lexer exception occurred: " + e);
-	} catch(IOException e) {
-	    throw new RuntimeException("IOException occurred: " + e);
-	}
-	
-	Walker w;
-	if(sc == null)
-	    w = new Walker(null);
-	else {
-	    w = new BodyExtractorWalker(sc, null, new HashMap());
-	}
-	
-	tree.apply(w);  	
-	return w.getSootClass();	
+        try {
+            tree = p.parse();
+        } catch(ParserException e) {
+            throw new RuntimeException("Parser exception occurred: " + e);
+        } catch(LexerException e) {
+            throw new RuntimeException("Lexer exception occurred: " + e);
+        } catch(IOException e) {
+            throw new RuntimeException("IOException occurred: " + e);
+        }
+        
+        Walker w;
+        if(sc == null)
+            w = new Walker(null);
+        else {
+            w = new BodyExtractorWalker(sc, null, new HashMap());
+        }
+        
+        tree.apply(w);          
+        return w.getSootClass();        
     }
 
 
     public static void main(String args[])  
-	throws java.lang.Exception
-	      
+        throws java.lang.Exception
+              
 
     {
         InputStream inFile;
@@ -98,7 +98,7 @@ public class Parse
         }
 
 
-	Scene.v().setPhantomRefs(true);
+        Scene.v().setPhantomRefs(true);
 
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -111,7 +111,7 @@ public class Parse
             }
             else {
 
-	       
+               
                 try {
                     if (verbose)
                         System.out.println(" ... looking for " + arg);
@@ -132,15 +132,15 @@ public class Parse
                     }
                 }
                
-		Parser p =
-		    new Parser(
-			       new Lexer(
-					 new PushbackReader(
-							    new InputStreamReader(inFile), 1024)));
+                Parser p =
+                    new Parser(
+                               new Lexer(
+                                         new PushbackReader(
+                                                            new InputStreamReader(inFile), 1024)));
 
-		Start tree = p.parse();
+                Start tree = p.parse();
                     
-		tree.apply(new Walker(null));               
+                tree.apply(new Walker(null));               
             }
         }
     } // main

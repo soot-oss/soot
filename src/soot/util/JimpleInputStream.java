@@ -33,7 +33,7 @@ public class JimpleInputStream extends SootInputStream
 {
     public JimpleInputStream(InputStream istream)
     {
-	super(istream);
+        super(istream);
     }
 }
 

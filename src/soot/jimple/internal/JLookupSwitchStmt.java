@@ -60,11 +60,11 @@ public class JLookupSwitchStmt extends AbstractStmt
 
 
     private static UnitBox[] unitBoxListToArray(List targets) {
-	UnitBox[] targetBoxes = new UnitBox[targets.size()];
-	
-	for(int i = 0; i < targetBoxes.length; i++)
-	    targetBoxes[i] = (UnitBox) targets.get(i);
-	return targetBoxes;
+        UnitBox[] targetBoxes = new UnitBox[targets.size()];
+        
+        for(int i = 0; i < targetBoxes.length; i++)
+            targetBoxes[i] = (UnitBox) targets.get(i);
+        return targetBoxes;
     }
 
 
@@ -137,7 +137,7 @@ public class JLookupSwitchStmt extends AbstractStmt
         }
 
         buffer.append(indentation + "    " +  Jimple.v().DEFAULT + ": " +  Jimple.v().GOTO +
-		      " " + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
+                      " " + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
         buffer.append(indentation + "}");
 
         return buffer.toString();

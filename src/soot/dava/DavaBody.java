@@ -76,11 +76,11 @@ public class DavaBody extends Body
                 Unit original = (Unit) it.next();
                 
 
-		if(original instanceof IdentityStmt)
-		    System.out.println("found identity stmt: " + original);
-		else
-		    System.out.println("not found identity stmt: " + original);
-		
+                if(original instanceof IdentityStmt)
+                    System.out.println("found identity stmt: " + original);
+                else
+                    System.out.println("not found identity stmt: " + original);
+                
 
 
                 
@@ -109,15 +109,15 @@ public class DavaBody extends Body
             
     
             // Patch up references within units using our (old <-> new) map.
-	    
+            
             it = getUnitBoxes().iterator();
             while(it.hasNext()) {
                 UnitBox box = (UnitBox) it.next();
                 Unit newObject, oldObject = box.getUnit();
                 
-		
+                
 
-		
+                
                 // if we have a reference to an old object, replace it 
                 // it's clone.
                 if( (newObject = (Unit)  bindings.get(oldObject)) != null )

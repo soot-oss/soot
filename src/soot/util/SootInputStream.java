@@ -40,7 +40,7 @@ abstract public class SootInputStream extends InputStream
     /** Constructs a SootInputStream from the given InputStream. */
     public SootInputStream(InputStream istream)
     {
-	mStream = istream;
+        mStream = istream;
     }
 
     // delegate all invocations.

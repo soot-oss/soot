@@ -70,12 +70,12 @@ public class BlockGraph implements DirectedGraph
      */
     BlockGraph(Body aBody, int type) 
     {
-	/* Algorithm used to compute basic blocks:
-	 * 1) Identify basic block leaders: these are the units that mark
-	 *    the start of a basic block (ex: target of branches)
-	 * 2) Use the leaders found in step 1 to slice the linear chain of 
-	 *    units into basic blocks, with the leaders as delimiters.
-	 */ 
+        /* Algorithm used to compute basic blocks:
+         * 1) Identify basic block leaders: these are the units that mark
+         *    the start of a basic block (ex: target of branches)
+         * 2) Use the leaders found in step 1 to slice the linear chain of 
+         *    units into basic blocks, with the leaders as delimiters.
+         */ 
 
         mBody = aBody;
         mUnits = aBody.getUnits();
@@ -110,22 +110,22 @@ public class BlockGraph implements DirectedGraph
             } else {
                 trapList.add(someTrap);
             }
-	    
+            
 
-	    // Get the leaders that bound exception contexts.
-	    if(type == ZONED) {	      
-	      List predList = new ArrayList();
-	      predList.add(mUnits.getPredOf(someTrap.getBeginUnit()));
-	      leaders.put(someTrap.getBeginUnit(), predList);
+            // Get the leaders that bound exception contexts.
+            if(type == ZONED) {              
+              List predList = new ArrayList();
+              predList.add(mUnits.getPredOf(someTrap.getBeginUnit()));
+              leaders.put(someTrap.getBeginUnit(), predList);
 
-	      predList = new ArrayList();
-	      predList.add(mUnits.getPredOf(someTrap.getEndUnit()));
-	      leaders.put(someTrap.getEndUnit(), predList);      	      
-	    }	    
+              predList = new ArrayList();
+              predList.add(mUnits.getPredOf(someTrap.getEndUnit()));
+              leaders.put(someTrap.getEndUnit(), predList);                    
+            }            
         }
         
 
-	/*            
+        /*            
         List trapHeads = new ArrayList();
         trapIt = trapBeginUnits.values().iterator();
         while(trapIt.hasNext() ) {
@@ -135,7 +135,7 @@ public class BlockGraph implements DirectedGraph
             trapHeads.add(someTrap.getHandlerUnit());
             trapHeads.add(someTrap.getBeginUnit());
         }        
-	*/      
+        */      
 
 
 
@@ -220,7 +220,7 @@ public class BlockGraph implements DirectedGraph
                 else if(!currentUnit.branches() && !currentUnit.fallsThrough()) {
                     if(nextUnit != null) {
                         if(!leaders.containsKey(nextUnit)) {
-			    leaders.put(nextUnit, new LinkedList());
+                            leaders.put(nextUnit, new LinkedList());
                         } 
                     }
 

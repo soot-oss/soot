@@ -34,7 +34,7 @@ public class BafInputStream extends SootInputStream
     /** Constructs a BafInputStream from the given stream. */
     public BafInputStream(InputStream istream)
     {
-	super(istream);
+        super(istream);
     }
 }
 

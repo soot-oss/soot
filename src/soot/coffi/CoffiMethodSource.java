@@ -44,9 +44,9 @@ public class CoffiMethodSource implements MethodSource
     public Body getBody(SootMethod m, String phaseName)
     {
         JimpleBody jb = Jimple.v().newBody(m);
-	
+        
         Map options = Scene.v().getPhaseOptions(phaseName);
-	boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
+        boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
 
         if(useOriginalNames)
             soot.coffi.Util.setFaithfulNaming(true);
@@ -100,7 +100,7 @@ public class CoffiMethodSource implements MethodSource
 
          coffiMethod.instructions = null;
          coffiMethod.cfg = null;
-	 
+         
          jb.applyPhaseOptions(options);
          return jb;
     }

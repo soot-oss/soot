@@ -56,13 +56,13 @@ public class PeepholeOptimizer extends BodyTransformer
 
     public String getDefaultOptions() 
     {
-	return "";
-	//return "sl sll inter:false sl2:false sll2:false debug:false";
+        return "";
+        //return "sl sll inter:false sl2:false sll2:false debug:false";
     }
  
     public String getDeclaredOptions()
     {
-	return "";
+        return "";
         //return super.getDeclaredOptions() + " debug inter sl sl2 sll sll2";
     }
 
@@ -70,66 +70,66 @@ public class PeepholeOptimizer extends BodyTransformer
     /* This is the public interface to PeepholeOptimizer */
   
     protected void internalTransform(Body body, String phaseName, Map options) 
-    {   	
-	boolean changed = true;
-	BufferedReader reader = null;
-	
+    {           
+        boolean changed = true;
+        BufferedReader reader = null;
+        
         peepholeListingStream = PeepholeOptimizer.class.getResourceAsStream("peephole.dat");
-        reader = new BufferedReader(new InputStreamReader(peepholeListingStream));	
+        reader = new BufferedReader(new InputStreamReader(peepholeListingStream));        
 
-	String line = null;
-	List peepholes = new LinkedList();
-	try {
-	    line = reader.readLine();
-	    while(line != null) {
-		if(line.length() > 0)
-		    if(!(line.charAt(0) == '#'))
-			peepholes.add(line);
-		line = reader.readLine();
-	    }
-	} catch (IOException e) {
-	    throw new RuntimeException("IO error occured while reading file:  " +
-				       line + System.getProperty("line.separator") + e);
-	}
+        String line = null;
+        List peepholes = new LinkedList();
+        try {
+            line = reader.readLine();
+            while(line != null) {
+                if(line.length() > 0)
+                    if(!(line.charAt(0) == '#'))
+                        peepholes.add(line);
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("IO error occured while reading file:  " +
+                                       line + System.getProperty("line.separator") + e);
+        }
 
-	
-	while(changed) {
-	    changed = false;	   
+        
+        while(changed) {
+            changed = false;           
 
-	    Iterator  it = peepholes.iterator();
-	    while(it.hasNext()) {
-		
-		boolean peepholeWorked = true;
-		String peepholeName = (String) it.next();
-		
-		while(peepholeWorked) {
-		    peepholeWorked = false;
+            Iterator  it = peepholes.iterator();
+            while(it.hasNext()) {
+                
+                boolean peepholeWorked = true;
+                String peepholeName = (String) it.next();
+                
+                while(peepholeWorked) {
+                    peepholeWorked = false;
 
-		
-		    Class peepholeClass;
-		    if((peepholeClass = (Class) peepholeMap.get(peepholeName)) == null) {
-			try {
-			    peepholeClass =  (Class) Class.forName(packageName + "." + peepholeName);
-			} catch (ClassNotFoundException e) {
-			    throw new RuntimeException(e.toString());
-			}
-			peepholeMap.put(peepholeName, peepholeClass);
-		    }
-		    
-		    Peephole p = null;
-		    try {
-			p = (Peephole) peepholeClass.newInstance();
-		    } catch (IllegalAccessException e) {
-			throw new RuntimeException(e.toString());
-		    } catch (InstantiationException e) {
-			throw new RuntimeException(e.toString());
-		    }
-		    if(p.apply(body)) {
-			peepholeWorked = true;
-			changed = true;
-		    }
-		}
-	    }
-	}            
+                
+                    Class peepholeClass;
+                    if((peepholeClass = (Class) peepholeMap.get(peepholeName)) == null) {
+                        try {
+                            peepholeClass =  (Class) Class.forName(packageName + "." + peepholeName);
+                        } catch (ClassNotFoundException e) {
+                            throw new RuntimeException(e.toString());
+                        }
+                        peepholeMap.put(peepholeName, peepholeClass);
+                    }
+                    
+                    Peephole p = null;
+                    try {
+                        p = (Peephole) peepholeClass.newInstance();
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e.toString());
+                    } catch (InstantiationException e) {
+                        throw new RuntimeException(e.toString());
+                    }
+                    if(p.apply(body)) {
+                        peepholeWorked = true;
+                        changed = true;
+                    }
+                }
+            }
+        }            
     }
 }

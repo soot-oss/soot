@@ -114,8 +114,8 @@ public class Lexer
         int accept_pos = -1;
         int accept_line = -1;
 
-	int[][][] gotoTable = this.gotoTable[state.id()];
-	int[] accept = this.accept[state.id()];
+        int[][][] gotoTable = this.gotoTable[state.id()];
+        int[] accept = this.accept[state.id()];
         text.setLength(0);
 
         while(true)

@@ -73,25 +73,25 @@ public class Scene extends AbstractHost
 
     public void setOutputMode(int mode)
     {
-	outputMode = mode;
+        outputMode = mode;
     }
 
     public void addClassToResolve(String c) 
     {
-	classesToResolve.add(c);
+        classesToResolve.add(c);
     }
 
     public String getNextClassToResolve()
     {
-	if(!classesToResolve.isEmpty())
-	    return (String) classesToResolve.firstElement();
-	else
-	    return null;
+        if(!classesToResolve.isEmpty())
+            return (String) classesToResolve.firstElement();
+        else
+            return null;
     }
 
     public List getClassesToResolve()
     {
-	return classesToResolve;
+        return classesToResolve;
     }
 
     public static Scene v()
@@ -280,7 +280,7 @@ public class Scene extends AbstractHost
         if (f != null)
             return f;
 
-	throw new RuntimeException("tried to get nonexistent field!");
+        throw new RuntimeException("tried to get nonexistent field!");
     }
 
     public SootMethod getMethod(String methodSignature)
@@ -303,8 +303,8 @@ public class Scene extends AbstractHost
         */
         
         Scene.v().setPhantomRefs(true);
-	SootResolver resolver = new SootResolver();
-	SootClass toReturn = resolver.resolveClassAndSupportClasses(className);
+        SootResolver resolver = new SootResolver();
+        SootClass toReturn = resolver.resolveClassAndSupportClasses(className);
         Scene.v().setPhantomRefs(false);
 
         return toReturn;
@@ -323,20 +323,20 @@ public class Scene extends AbstractHost
         SootClass toReturn = (SootClass) nameToClass.get(className);
         
         if(toReturn == null)
-        {	 
+        {         
             if(Scene.v().allowsPhantomRefs())
             {
                 SootClass c = new SootClass(className);
                 c.setPhantom(true);
                 addClass(c);
-		classesToResolve.add(c.getName());
+                classesToResolve.add(c.getName());
                 return c;
             }
             else 
             { 
                 System.out.println("can't find classfile" + className );
                 throw new RuntimeException();
-	    }
+            }
         }
         else
             return toReturn;
@@ -477,7 +477,7 @@ public class Scene extends AbstractHost
     
     public void setLazyResolving(boolean value) 
     {
-	allowsLazyResolving = value;
+        allowsLazyResolving = value;
     }
 
 
@@ -487,7 +487,7 @@ public class Scene extends AbstractHost
     }
     public boolean allowsLazyResolving() 
     {
-	return allowsLazyResolving;
+        return allowsLazyResolving;
     }
     
 

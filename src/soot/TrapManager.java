@@ -95,8 +95,8 @@ public class TrapManager
         Iterator trapsIt = b.getTraps().iterator();
 
         while (trapsIt.hasNext())
-	{
-		Trap t = (Trap)trapsIt.next();
+        {
+                Trap t = (Trap)trapsIt.next();
 
             Iterator it = units.iterator(t.getBeginUnit(),
                                          units.getPredOf(t.getEndUnit()));

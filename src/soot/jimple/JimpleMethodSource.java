@@ -39,7 +39,7 @@ public class JimpleMethodSource implements MethodSource
 
     public JimpleMethodSource(JimpleAST aJimpleAST)
     {
-	mJimpleAST = aJimpleAST;
+        mJimpleAST = aJimpleAST;
     }
 
     public Body getBody(SootMethod m, String phaseName)

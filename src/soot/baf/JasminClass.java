@@ -572,15 +572,15 @@ public class JasminClass
                                 initialHeight = new Integer(1);
                             }                                                
                             blockToStackHeight.put(entryBlock, initialHeight);
-			    blockToLogicalStackHeight.put(entryBlock, initialHeight); 
+                            blockToLogicalStackHeight.put(entryBlock, initialHeight); 
                         }                
                                     
                         // dfs the block graph using the blocks in the entryPoints list  as roots 
                         entryIt = entryPoints.iterator();
                         while(entryIt.hasNext()) {
-			    Block nextBlock = (Block) entryIt.next();
+                            Block nextBlock = (Block) entryIt.next();
                             calculateStackHeight(nextBlock);
-			    calculateLogicalStackHeightCheck(nextBlock);
+                            calculateLogicalStackHeightCheck(nextBlock);
                         }                
                     }
                 }
@@ -1965,27 +1965,27 @@ public class JasminClass
         int blockHeight =  ((Integer)blockToStackHeight.get(aBlock)).intValue();
         
         while(it.hasNext()) {
-	  Inst nInst = (Inst) it.next();
-	  
-	  blockHeight -= nInst.getInMachineCount();
-	  if(blockHeight < 0 ){	    
-	    throw new RuntimeException("Negative Stack height has been attained\n:" +
-				       "StackHeight: " + blockHeight + 
-				       "\nAt instruction:" + nInst +
-				       "\nBlock:\n" + aBlock +
-				       "\n\nMethod: " + aBlock.getBody().getMethod().getName() 
-				       + "\n" +  aBlock.getBody().getMethod()				       
-				       );
-	  }
-	  
-	  blockHeight += nInst.getOutMachineCount();
-	  if( blockHeight > maxStackHeight) {
-	    maxStackHeight = blockHeight;
-	  }
-	  //System.out.println(">>> " + nInst + " " + blockHeight);	    
+          Inst nInst = (Inst) it.next();
+          
+          blockHeight -= nInst.getInMachineCount();
+          if(blockHeight < 0 ){            
+            throw new RuntimeException("Negative Stack height has been attained\n:" +
+                                       "StackHeight: " + blockHeight + 
+                                       "\nAt instruction:" + nInst +
+                                       "\nBlock:\n" + aBlock +
+                                       "\n\nMethod: " + aBlock.getBody().getMethod().getName() 
+                                       + "\n" +  aBlock.getBody().getMethod()                                       
+                                       );
+          }
+          
+          blockHeight += nInst.getOutMachineCount();
+          if( blockHeight > maxStackHeight) {
+            maxStackHeight = blockHeight;
+          }
+          //System.out.println(">>> " + nInst + " " + blockHeight);            
         }
         
-	
+        
         Iterator succs = aBlock.getSuccs().iterator();
         while(succs.hasNext()) {
             Block b = (Block) succs.next();
@@ -2009,25 +2009,25 @@ public class JasminClass
         int blockHeight =  ((Integer)blockToLogicalStackHeight.get(aBlock)).intValue();
         
         while(it.hasNext()) {
-	    Inst nInst = (Inst) it.next();
-	  
-	    blockHeight -= nInst.getInCount();
-	    if(blockHeight < 0 ){	    
-		throw new RuntimeException("Negative Stack Logical height has been attained\n:" +
-					   "StackHeight: " + blockHeight + 
-					   "\nAt instruction:" + nInst +
-					   "\nBlock:\n" + aBlock +
-					   "\n\nMethod: " + aBlock.getBody().getMethod().getName() 
-					   + "\n" +  aBlock.getBody().getMethod()				       
-					   );
-	    }
-	  
-	    blockHeight += nInst.getOutCount();
-	    
-	    //System.out.println(">>> " + nInst + " " + blockHeight);	    
+            Inst nInst = (Inst) it.next();
+          
+            blockHeight -= nInst.getInCount();
+            if(blockHeight < 0 ){            
+                throw new RuntimeException("Negative Stack Logical height has been attained\n:" +
+                                           "StackHeight: " + blockHeight + 
+                                           "\nAt instruction:" + nInst +
+                                           "\nBlock:\n" + aBlock +
+                                           "\n\nMethod: " + aBlock.getBody().getMethod().getName() 
+                                           + "\n" +  aBlock.getBody().getMethod()                                       
+                                           );
+            }
+          
+            blockHeight += nInst.getOutCount();
+            
+            //System.out.println(">>> " + nInst + " " + blockHeight);            
         }
         
-	
+        
         Iterator succs = aBlock.getSuccs().iterator();
         while(succs.hasNext()) {
             Block b = (Block) succs.next();

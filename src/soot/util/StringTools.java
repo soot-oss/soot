@@ -94,20 +94,20 @@ public class StringTools
         for (int i = 0; i < fromStringArray.length; i++)
         {
             char ch = fromStringArray[i];
-	    {
-	      if (ch == '\\')
+            {
+              if (ch == '\\')
                 { toStringBuffer.append("\\\\"); continue;}
-	      if (ch == '\'')
-		{ toStringBuffer.append("\\\'"); continue; }
-	      if (ch == '\"')
+              if (ch == '\'')
+                { toStringBuffer.append("\\\'"); continue; }
+              if (ch == '\"')
                 { toStringBuffer.append("\\\""); continue; }
-	      if (ch == '\n')
+              if (ch == '\n')
                 { toStringBuffer.append("\\n"); continue; }
-	      else if((int) ch >= 32 && (int) ch <= 126)
-		{toStringBuffer.append(ch); continue;}
-	    }
-	    
-	    toStringBuffer.append(getUnicodeStringFromChar(ch));
+              else if((int) ch >= 32 && (int) ch <= 126)
+                {toStringBuffer.append(ch); continue;}
+            }
+            
+            toStringBuffer.append(getUnicodeStringFromChar(ch));
         }
 
         toStringBuffer.append("\"");

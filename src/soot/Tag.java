@@ -39,43 +39,43 @@ public class Tag
     /** Constructs a tag with the given name and initial value. */
     Tag(String aName, Object aValue)
     {
-	mName = aName;
-	mValue = aValue;
-	validateType();
+        mName = aName;
+        mValue = aValue;
+        validateType();
     }
     
     /** Returns the name of the current tag. */
     public String getName()
     {
-	return mName;
+        return mName;
     }
 
     /** Returns a textual representation of the current tag. */
     public String toString()
     {
-	return mName + ": " + mValue;
+        return mName + ": " + mValue;
     }
 
     /** Returns the value of the current tag. */
     public Object getValue()
     {
-	return mValue;
+        return mValue;
     }
 
     /** Sets the value of the current tag. */
     public void setValue(Object o)
-    {	
-	mValue = o;
-	validateType();
+    {        
+        mValue = o;
+        validateType();
     }
     
     /** Checks that the suffix of the tag matches its type. */
     private void validateType()
     {
-	if(mName.endsWith(".l") && !(mValue instanceof Long) ||
-	   mName.endsWith(".d") && !(mValue instanceof Double) ||
-	   mName.endsWith(".s") && !(mValue instanceof String) )
-	    throw new RuntimeException("invalid type for tag: " + mName);	    
+        if(mName.endsWith(".l") && !(mValue instanceof Long) ||
+           mName.endsWith(".d") && !(mValue instanceof Double) ||
+           mName.endsWith(".s") && !(mValue instanceof String) )
+            throw new RuntimeException("invalid type for tag: " + mName);            
     }
      
 }

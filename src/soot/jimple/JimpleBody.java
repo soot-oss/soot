@@ -72,9 +72,9 @@ public class JimpleBody extends StmtBody
                              "use-original-names pack-locals no-cp "+
                              "no-nop-elimination verbatim");
 
-	boolean noSplitting = Options.getBoolean(options, "no-splitting");
-	boolean noTyping = Options.getBoolean(options, "no-typing");
-	boolean aggregateAllLocals = Options.getBoolean(options, "aggregate-all-locals");
+        boolean noSplitting = Options.getBoolean(options, "no-splitting");
+        boolean noTyping = Options.getBoolean(options, "no-typing");
+        boolean aggregateAllLocals = Options.getBoolean(options, "aggregate-all-locals");
         boolean noAggregating = Options.getBoolean(options, "no-aggregating");
         boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
         boolean usePacking = Options.getBoolean(options, "pack-locals");
@@ -87,7 +87,7 @@ public class JimpleBody extends StmtBody
         if (verbatim)
             return;
 
-	if(!noSplitting)
+        if(!noSplitting)
         {
             if(Main.isProfilingOptimization)
                 Main.splitTimer.start();
@@ -113,7 +113,7 @@ public class JimpleBody extends StmtBody
                 }
             }
         }
-	
+        
         
         if(aggregateAllLocals)
         {
@@ -172,11 +172,11 @@ public class JimpleBody extends StmtBody
                 
                 Stmt s = (Stmt) t.getHandlerUnit();
                 
-		
+                
                 if(!(s instanceof IdentityStmt) || !(((IdentityStmt) s).getRightOp() instanceof CaughtExceptionRef)){
-		    System.out.println(s);
+                    System.out.println(s);
                     throw new RuntimeException("Trap handler is not of the form x := caughtexceptionref");
-		}
+                }
             }
         }
     }

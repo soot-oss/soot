@@ -62,18 +62,18 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr
     
     public String toString()
     {
-	String dot ="";
-	if(Jimple.isJavaKeywordType(checkType)) 
-	    dot = ".";
-	    
+        String dot ="";
+        if(Jimple.isJavaKeywordType(checkType)) 
+            dot = ".";
+            
         return opBox.getValue().toString() + " " + Jimple.v().INSTANCEOF + " " + dot + checkType.toString();
     }
 
     public String toBriefString()
     {
-	String dot ="";
-	if(Jimple.isJavaKeywordType(checkType)) 
-	    dot = ".";
+        String dot ="";
+        if(Jimple.isJavaKeywordType(checkType)) 
+            dot = ".";
 
         return ((ToBriefString) opBox.getValue()).toBriefString() + " " + Jimple.v().INSTANCEOF + " " + dot + checkType.toString();
     }

@@ -83,11 +83,11 @@ public class JTableSwitchStmt extends AbstractStmt
     }
    
     private static UnitBox[] unitBoxListToArray(List targets) {
-	UnitBox[] targetBoxes = new UnitBox[targets.size()];
-	
-	for(int i = 0; i < targetBoxes.length; i++)
-	    targetBoxes[i] = (UnitBox) targets.get(i);
-	return targetBoxes;
+        UnitBox[] targetBoxes = new UnitBox[targets.size()];
+        
+        for(int i = 0; i < targetBoxes.length; i++)
+            targetBoxes[i] = (UnitBox) targets.get(i);
+        return targetBoxes;
     }
     
 
@@ -97,9 +97,9 @@ public class JTableSwitchStmt extends AbstractStmt
         this.keyBox = keyBox;
         this.defaultTargetBox = defaultTargetBox;
 
-	if(lowIndex > highIndex)
-	    throw new RuntimeException("Error creating tableswitch: lowIndex(" 
-				       + lowIndex +  ") can't be greater than highIndex(" + highIndex + ").");
+        if(lowIndex > highIndex)
+            throw new RuntimeException("Error creating tableswitch: lowIndex(" 
+                                       + lowIndex +  ") can't be greater than highIndex(" + highIndex + ").");
 
         this.lowIndex = lowIndex;
         this.highIndex = highIndex;
@@ -131,14 +131,14 @@ public class JTableSwitchStmt extends AbstractStmt
         for(int i = lowIndex; i <= highIndex; i++)
         {
             buffer.append(indentation +
-			  "    " + Jimple.v().CASE + " " + i + ": " + Jimple.v().GOTO + 
-			  " " + (String) stmtToName.get(getTarget(i - lowIndex)) + ";" + endOfLine);
+                          "    " + Jimple.v().CASE + " " + i + ": " + Jimple.v().GOTO + 
+                          " " + (String) stmtToName.get(getTarget(i - lowIndex)) + ";" + endOfLine);
         }
 
         buffer.append(indentation + "    " +  Jimple.v().DEFAULT + 
-		      ": " +  Jimple.v().GOTO + "  " 
-		      + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
-	
+                      ": " +  Jimple.v().GOTO + "  " 
+                      + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
+        
         buffer.append(indentation + "}");
 
         return buffer.toString();

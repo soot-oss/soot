@@ -51,8 +51,8 @@ public class EscapedWriter extends FilterWriter
     /** Print a single character (unsupported). */
     public void print(int ch) throws IOException
     {
-	write(ch);
-	throw new RuntimeException();
+        write(ch);
+        throw new RuntimeException();
     }
   
     /** Write a segment of the given String. */
@@ -67,7 +67,7 @@ public class EscapedWriter extends FilterWriter
     {
         if (ch >= 32 && ch <= 126 || ch == cr || ch == lf || ch == ' ')
             { super.write(ch); return; }
-	
+        
         StringBuffer mini = (StringBuffer)miniTL.get();
         mini.setLength(0);
         mini.append(Integer.toHexString(ch));

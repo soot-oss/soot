@@ -50,16 +50,16 @@ public class UnknownMethodSource implements MethodSource
 
         throw new RuntimeException("Can't get body for unknown source!");
 
-//  	InputStream classFileStream;
+//          InputStream classFileStream;
 
-//  	try {
-//  	    classFileStream = SourceLocator.getInputStreamOf(m.getDeclaringClass().toString());
-//  	} 
-//  	catch(ClassNotFoundException e) {
-//  	    throw new RuntimeException("Can't find jimple file: " + e);		    
-//  	}
-		
-//  	Parser.parse(classFileStream,  m.getDeclaringClass());
+//          try {
+//              classFileStream = SourceLocator.getInputStreamOf(m.getDeclaringClass().toString());
+//          } 
+//          catch(ClassNotFoundException e) {
+//              throw new RuntimeException("Can't find jimple file: " + e);                    
+//          }
+                
+//          Parser.parse(classFileStream,  m.getDeclaringClass());
     }
 }
 

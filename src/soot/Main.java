@@ -53,7 +53,7 @@ public class Main implements Runnable, ICompilationListener
     private static List compilationListeners = new ArrayList(1);
     public static void addCompilationListener(ICompilationListener l)
     {
-	compilationListeners.add(l);
+        compilationListeners.add(l);
     }
     public static final int COMPILATION_ABORTED = 0;
     public static final int COMPILATION_SUCCEDED = 1;
@@ -276,7 +276,7 @@ public class Main implements Runnable, ICompilationListener
     throws CompilationDeathException
     {
         if (!isApplication && val){            
-	    throw new CompilationDeathException(COMPILATION_ABORTED, "Can only whole-program optimize in application mode!");
+            throw new CompilationDeathException(COMPILATION_ABORTED, "Can only whole-program optimize in application mode!");
         }
   
         isOptimizingWhole = val;
@@ -321,7 +321,7 @@ public class Main implements Runnable, ICompilationListener
         throws CompilationDeathException
     {
         if (!isApplication) {    
-	    throw new CompilationDeathException(COMPILATION_ABORTED, "Exclude flag only valid in application mode!");
+            throw new CompilationDeathException(COMPILATION_ABORTED, "Exclude flag only valid in application mode!");
         }
   
         packageInclusionFlags.add(new Boolean(false));
@@ -344,7 +344,7 @@ public class Main implements Runnable, ICompilationListener
     {
         if (!isApplication)
             {
-		throw new CompilationDeathException(COMPILATION_ABORTED, "Dynamic-path flag only valid in application mode!");
+                throw new CompilationDeathException(COMPILATION_ABORTED, "Dynamic-path flag only valid in application mode!");
             }
                      
         StringTokenizer tokenizer = new StringTokenizer(path, ":");
@@ -358,7 +358,7 @@ public class Main implements Runnable, ICompilationListener
     {
         if (isApplication)
             {
-		throw new CompilationDeathException(COMPILATION_ABORTED, "Process-path flag only valid in single-file mode!");
+                throw new CompilationDeathException(COMPILATION_ABORTED, "Process-path flag only valid in single-file mode!");
             }
 
         StringTokenizer tokenizer = new StringTokenizer(path, ":");
@@ -394,9 +394,9 @@ public class Main implements Runnable, ICompilationListener
         else if(prec.equals("class"))
             SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_CLASS);
         else {                    
-	    
-	    throw new CompilationDeathException(COMPILATION_ABORTED,"Illegal --src-prec arg: " + prec +
-			    ". Valid args are: \"jimple\" or \"class\"");           
+            
+            throw new CompilationDeathException(COMPILATION_ABORTED,"Illegal --src-prec arg: " + prec +
+                            ". Valid args are: \"jimple\" or \"class\"");           
         }
     }
 
@@ -410,8 +410,8 @@ public class Main implements Runnable, ICompilationListener
         else if(rep.equals("baf"))
             finalRep = BAF;
         else {                    
-	    throw new CompilationDeathException(COMPILATION_ABORTED, "Illegal --final-rep arg: " + rep +           
-			    "\nvalid args are: [baf|grimp|jimple]" );
+            throw new CompilationDeathException(COMPILATION_ABORTED, "Illegal --final-rep arg: " + rep +           
+                            "\nvalid args are: [baf|grimp|jimple]" );
         }
     }
 
@@ -446,7 +446,7 @@ public class Main implements Runnable, ICompilationListener
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.44");
+            System.out.println("Soot version 1.beta.6.dev.45");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -518,7 +518,7 @@ public class Main implements Runnable, ICompilationListener
         if(args.length == 0)
         {
             printHelp();
-	    throw new CompilationDeathException(COMPILATION_ABORTED);            
+            throw new CompilationDeathException(COMPILATION_ABORTED);            
         }
 
         // Handle all the options
@@ -568,9 +568,9 @@ public class Main implements Runnable, ICompilationListener
             {
                 if (i != 0)
                 {
-		    throw new CompilationDeathException(COMPILATION_ABORTED, 
-				    "Application mode (--app) must be set as first argument to Soot!" +
-				    "\neg. java soot.Main --app Simulator");           
+                    throw new CompilationDeathException(COMPILATION_ABORTED, 
+                                    "Application mode (--app) must be set as first argument to Soot!" +
+                                    "\neg. java soot.Main --app Simulator");           
                 }
                 setAppMode(true);
             }
@@ -623,7 +623,7 @@ public class Main implements Runnable, ICompilationListener
              {
                  System.out.println("Unrecognized option: " + arg);
                  printHelp();
-		 throw new CompilationDeathException(COMPILATION_ABORTED);            
+                 throw new CompilationDeathException(COMPILATION_ABORTED);            
              }  
              else if(arg.startsWith("@"))
              {
@@ -639,32 +639,32 @@ public class Main implements Runnable, ICompilationListener
                     }
                     catch (IOException e)
                         {
-			    throw new CompilationDeathException(COMPILATION_ABORTED,
-					    "Error reaing file "+arg.substring(1));
+                            throw new CompilationDeathException(COMPILATION_ABORTED,
+                                            "Error reaing file "+arg.substring(1));
                         }
                 }
                 else
-                {		    
+                {                    
                     cmdLineClasses.add(arg);
                 }
         }
-        postCmdLineCheck();	   
+        postCmdLineCheck();           
     }
     
     private static void exitCompilation(int status)
     {
-	exitCompilation(status, null) ;
+        exitCompilation(status, null) ;
     }
 
     private static void exitCompilation(int status, String msg)
     {
-	Iterator it = compilationListeners.iterator();
+        Iterator it = compilationListeners.iterator();
 
-	if(msg != null) {
-	    while(it.hasNext()) {
-		((ICompilationListener)it.next()).compilationTerminated(status, msg);
-	    }
-	} 
+        if(msg != null) {
+            while(it.hasNext()) {
+                ((ICompilationListener)it.next()).compilationTerminated(status, msg);
+            }
+        } 
     }
 
     private static void processPhaseOption(String phaseName, String option)
@@ -687,20 +687,20 @@ public class Main implements Runnable, ICompilationListener
     }
 
     private static void postCmdLineCheck()
-	throws CompilationDeathException
+        throws CompilationDeathException
     {
-	    if(cmdLineClasses.isEmpty())
+            if(cmdLineClasses.isEmpty())
             {
-		throw new CompilationDeathException(COMPILATION_ABORTED, "Nothing to do!"); 
+                throw new CompilationDeathException(COMPILATION_ABORTED, "Nothing to do!"); 
             }
-	    // Command line classes
-	    if (isApplication && cmdLineClasses.size() > 1)
+            // Command line classes
+            if (isApplication && cmdLineClasses.size() > 1)
             {
 
-		throw new CompilationDeathException(COMPILATION_ABORTED,
-				"Can only specify one class in application mode!\n" +
-				"The transitive closure of the specified class gets loaded.\n" +
-				"(Did you mean to use single-file mode?)");
+                throw new CompilationDeathException(COMPILATION_ABORTED,
+                                "Can only specify one class in application mode!\n" +
+                                "The transitive closure of the specified class gets loaded.\n" +
+                                "(Did you mean to use single-file mode?)");
             }
     }
 
@@ -715,8 +715,8 @@ public class Main implements Runnable, ICompilationListener
         packageInclusionMasks.add("sun.");
 
         packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("javax.");	
-	
+        packageInclusionMasks.add("javax.");        
+        
         PackAdjuster.adjustPacks();
     }
 
@@ -725,7 +725,7 @@ public class Main implements Runnable, ICompilationListener
     private static String[] cmdLineArgs;
     public static void setCmdLineArgs(String[] args)
     {
-	cmdLineArgs = args;
+        cmdLineArgs = args;
     }
     
     /**
@@ -733,24 +733,24 @@ public class Main implements Runnable, ICompilationListener
      */
     public static void main(String[] args)
     {
-	setCmdLineArgs(args);
-	Main m = new Main();
-	addCompilationListener(m);
-	(new Thread(m)).start();
+        setCmdLineArgs(args);
+        Main m = new Main();
+        addCompilationListener(m);
+        (new Thread(m)).start();
     }
 
     /** Implementation of ICompilationListener */
     public  void compilationTerminated(int status, String msg) 
     {
-	if(msg != null)
-	    System.out.println(msg);
+        if(msg != null)
+            System.out.println(msg);
 
-	if(status == COMPILATION_ABORTED) { 
-	    System.exit(1);
-	}
-	else if(status == COMPILATION_SUCCEDED) {
-	    System.exit(0);	
-	}
+        if(status == COMPILATION_ABORTED) { 
+            System.exit(1);
+        }
+        else if(status == COMPILATION_SUCCEDED) {
+            System.exit(0);        
+        }
     }
 
 
@@ -762,32 +762,32 @@ public class Main implements Runnable, ICompilationListener
      */
     public void run()
     {   
-	try {
+        try {
         totalTimer.start();
-	cmdLineClasses = new HashChain();
+        cmdLineClasses = new HashChain();
         initApp();
         processCmdLine(cmdLineArgs);
 
-	
+        
         // Load necessary classes.
         {            
             Iterator it = cmdLineClasses.iterator();
-	
+        
             while(it.hasNext())
-		{
+                {
                 String name = (String) it.next();
                 SootClass c;
-			    
-                c = Scene.v().loadClassAndSupport(name);						  
+                            
+                c = Scene.v().loadClassAndSupport(name);                                                  
                 
                 if(mainClass == null)
                 {
                     mainClass = c;
                     Scene.v().setMainClass(c);
-			    }   
+                            }   
                 c.setApplicationClass();
-		    }
-	
+                    }
+        
                
             // Dynamic & process classes
             it = dynamicClasses.iterator();
@@ -864,7 +864,7 @@ public class Main implements Runnable, ICompilationListener
         Iterator classIt = Scene.v().getApplicationClasses().iterator();
 
         while(classIt.hasNext())
-	    {
+            {
             SootClass s = (SootClass) classIt.next();
                 
             System.out.print("Jimplifying " + s.getName() + "... " );
@@ -886,7 +886,7 @@ public class Main implements Runnable, ICompilationListener
                 }
                 
                 System.out.println();
-	    }
+            }
 
     // Run the whole-program packs.
         Scene.v().getPack("wjtp").apply();
@@ -897,7 +897,7 @@ public class Main implements Runnable, ICompilationListener
         classIt = Scene.v().getApplicationClasses().iterator();
 
         while(classIt.hasNext())
-	    {
+            {
             SootClass s = (SootClass) classIt.next();
                 
             System.out.print("Transforming " + s.getName() + "... " );
@@ -919,28 +919,28 @@ public class Main implements Runnable, ICompilationListener
                 }
                 
                 System.out.println();
-	    }
+            }
 
         totalTimer.end();            
 
-	// Print out time stats.
+        // Print out time stats.
 
        
-	if(isProfilingOptimization)
-	    printProfilingInformation();
+        if(isProfilingOptimization)
+            printProfilingInformation();
    
-	
-	} catch (CompilationDeathException e) {
-	    totalTimer.end();            
-	    exitCompilation(e.getStatus(), e.getMessage());
-	    return;
-	}	
+        
+        } catch (CompilationDeathException e) {
+            totalTimer.end();            
+            exitCompilation(e.getStatus(), e.getMessage());
+            return;
+        }        
 
-	exitCompilation(COMPILATION_SUCCEDED);            
+        exitCompilation(COMPILATION_SUCCEDED);            
     }        
 
     private static void printProfilingInformation()
-    {		                                   
+    {                                                   
         long totalTime = totalTimer.getTime();
                 
         System.out.println("Time measurements");
@@ -1037,14 +1037,14 @@ public class Main implements Runnable, ICompilationListener
     private static void attachJimpleBodiesFor(SootClass c)
     {
         Iterator methodIt = c.getMethods().iterator();
-	   
+           
         while(methodIt.hasNext())
         {   
             SootMethod m = (SootMethod) methodIt.next();
-	
+        
             if(!m.isConcrete())
                 continue;
-				
+                                
             if(!m.hasActiveBody()) 
             {
                 m.setActiveBody(m.getBodyFromMethodSource("jb"));
@@ -1132,14 +1132,14 @@ public class Main implements Runnable, ICompilationListener
         // At this point, JimpleBodies should be active.
         {
             Iterator methodIt = c.getMethods().iterator();
-	   
+           
             while(methodIt.hasNext())
             {   
                 SootMethod m = (SootMethod) methodIt.next();
-	
+        
                 if(!m.isConcrete())
                     continue;
-				                
+                                                
                 if(produceGrimp)
                 {
                     if(isOptimizing)
@@ -1264,22 +1264,22 @@ class CompilationDeathException extends RuntimeException
 
     CompilationDeathException(int status, String msg)
     {
-	mMsg = msg;
-	mStatus = status;
+        mMsg = msg;
+        mStatus = status;
     }
-	
+        
     CompilationDeathException(int status)
     {
-	mStatus = status;
+        mStatus = status;
     }
 
     public int getStatus()
     {
-	return mStatus;
+        return mStatus;
     }
     public String getMsg()
     {
-	return mMsg;
+        return mMsg;
     }
 }
 

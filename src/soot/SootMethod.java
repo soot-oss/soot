@@ -83,14 +83,14 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
 
     /** Sets the MethodSource of the current SootMethod. */
     public void setSource(MethodSource ms)
-    {	
+    {        
         this.ms = ms;
     }
 
     /** Returns the MethodSource of the current SootMethod. */
     public MethodSource getSource() 
     {
-	return ms;
+        return ms;
     }
 
     /** Compares the specified object with this one for structural equality.  Does <i>not</i> 
@@ -131,7 +131,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
         this.parameterTypes.addAll(parameterTypes);
 
         this.returnType = returnType;
-        this.modifiers = modifiers;	
+        this.modifiers = modifiers;        
     }
 
     /** Constructs a SootMethod with the given name, parameter types, return type, 
@@ -389,26 +389,26 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
      */
     public String getSignature()
     {
-	String name = getName();
-	List params =  getParameterTypes();
-	Type returnType = getReturnType();
-	
-	StringBuffer buffer = new StringBuffer();
+        String name = getName();
+        List params =  getParameterTypes();
+        Type returnType = getReturnType();
+        
+        StringBuffer buffer = new StringBuffer();
         buffer.append("<" + getDeclaringClass().getName() + ": ");
-	buffer.append(getSubSignatureImpl(name, params, returnType));
+        buffer.append(getSubSignatureImpl(name, params, returnType));
         buffer.append(">");
-	
-	return buffer.toString();
+        
+        return buffer.toString();
     }
 
     // xxx temporary stufff
     public String getJimpleStyleSignature()
     {
-	int mode = Scene.v().getOutputMode();
-	Scene.v().setOutputMode(Scene.v().OUTPUT_JIMPLE);
-	String res = getSignature();
-	Scene.v().setOutputMode(mode);
-	return res;	
+        int mode = Scene.v().getOutputMode();
+        Scene.v().setOutputMode(Scene.v().OUTPUT_JIMPLE);
+        String res = getSignature();
+        Scene.v().setOutputMode(mode);
+        return res;        
     }
     
     /**
@@ -416,34 +416,34 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
      */
     public String getSubSignature()
     {
-	String name = getName();
-	List params =  getParameterTypes();
-	Type returnType = getReturnType();
+        String name = getName();
+        List params =  getParameterTypes();
+        Type returnType = getReturnType();
 
-	return getSubSignatureImpl(name, params, returnType);
+        return getSubSignatureImpl(name, params, returnType);
     }
 
     public static String getSubSignature(String name, List params, Type returnType)
     {
-	return getSubSignatureImpl(name, params, returnType); 
+        return getSubSignatureImpl(name, params, returnType); 
     }
     
-    public static String getSubSignatureImpl(String name, List params, Type returnType) 
+    private static String getSubSignatureImpl(String name, List params, Type returnType) 
     {
-	StringBuffer buffer = new StringBuffer();
-	
-	boolean isJimpleOutput = false;
-	if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
+        StringBuffer buffer = new StringBuffer();
+        
+        boolean isJimpleOutput = false;
+        if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
             isJimpleOutput = true;
-	
-	Type t = returnType;
-	if(isJimpleOutput && Jimple.isJavaKeywordType(t))
+        
+        Type t = returnType;
+        if(isJimpleOutput && Jimple.isJavaKeywordType(t))
             buffer.append(".");
-	
-	buffer.append(t.toString() + " " + name);
+        
+        buffer.append(t.toString() + " " + name);
 
         buffer.append("(");
-	
+        
         Iterator typeIt = params.iterator();
 
         if(typeIt.hasNext())
@@ -451,21 +451,21 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
             t = (Type) typeIt.next();
             if(isJimpleOutput && Jimple.isJavaKeywordType(t))
                 buffer.append(".");
-	    
-	    buffer.append(t);
+            
+            buffer.append(t);
             
             while(typeIt.hasNext())
             {
                 buffer.append(",");
-		
+                
                 t = (Type) typeIt.next();
                 if(isJimpleOutput && Jimple.isJavaKeywordType(t))
-                    buffer.append(".");		
-		buffer.append(t);
+                    buffer.append(".");                
+                buffer.append(t);
             }
         }
         buffer.append(")");
-	
+        
         return buffer.toString();
     }
     
@@ -487,8 +487,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
     {
         StringBuffer buffer = new StringBuffer();
 
-	boolean isJimpleOutput = false;
-	if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
+        boolean isJimpleOutput = false;
+        if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
             isJimpleOutput = true;
 
         // modifiers
@@ -509,7 +509,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
         buffer.append(t);
 
         // name
-	buffer.append(" " + this.getName() + "(");	    
+        buffer.append(" " + this.getName() + "(");            
 
         // parameters
         Iterator typeIt = this.getParameterTypes().iterator();
@@ -520,7 +520,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
             if(isJimpleOutput && Jimple.isJavaKeywordType(t))
                 buffer.append(".");
             buffer.append(t);
-		       
+                       
             while(typeIt.hasNext())
             {
                 buffer.append(", ");

@@ -54,7 +54,7 @@ public class BodyExtractorWalker extends Walker
      * the given methodToParsedBodyMap. */
     public BodyExtractorWalker(SootClass sc, SootResolver resolver, Map methodToParsedBodyMap) 
     {
-	super(sc, resolver);
+        super(sc, resolver);
         this.methodToParsedBodyMap = methodToParsedBodyMap;
     }
     
@@ -64,7 +64,7 @@ public class BodyExtractorWalker extends Walker
     */       
     public void caseAFile(AFile node)
     {
-	inAFile(node);
+        inAFile(node);
         {
             Object temp[] = node.getModifier().toArray();
             for(int i = 0; i < temp.length; i++)
@@ -80,10 +80,10 @@ public class BodyExtractorWalker extends Walker
         {
             node.getClassName().apply(this);
         }
-	
-	String className = (String) mProductions.pop();
-	if(!className.equals(mSootClass.getName()))
-	    throw new RuntimeException("expected:  " + className + ", but got: " + mSootClass.getName());
+        
+        String className = (String) mProductions.pop();
+        if(!className.equals(mSootClass.getName()))
+            throw new RuntimeException("expected:  " + className + ", but got: " + mSootClass.getName());
 
         if(node.getExtendsClause() != null)
         {
@@ -97,20 +97,20 @@ public class BodyExtractorWalker extends Walker
         {
             node.getFileBody().apply(this);
         }
-        outAFile(node);	
+        outAFile(node);        
     }
 
     public void outAFile(AFile node)
-    {	
-	if(node.getImplementsClause() != null) 
-	    mProductions.pop(); // implements_clause
-	
-	if(node.getExtendsClause() != null) 
-	    mProductions.pop(); // extends_clause
-	
-	mProductions.pop(); // file_type
-	
-	mProductions.push(mSootClass);
+    {        
+        if(node.getImplementsClause() != null) 
+            mProductions.pop(); // implements_clause
+        
+        if(node.getExtendsClause() != null) 
+            mProductions.pop(); // extends_clause
+        
+        mProductions.pop(); // file_type
+        
+        mProductions.push(mSootClass);
     } 
 
 
@@ -121,32 +121,32 @@ public class BodyExtractorWalker extends Walker
     */    
     public void outAFieldMember(AFieldMember node)
     {
-	mProductions.pop(); // name
-	mProductions.pop(); // type
+        mProductions.pop(); // name
+        mProductions.pop(); // type
     }
 
     public void outAMethodMember(AMethodMember node)
     {
-	int modifier = 0;
-	Type type;
-	String name;
-	List parameterList = new ArrayList();
-	List throwsClause = null;
-	JimpleBody methodBody = null;
+        int modifier = 0;
+        Type type;
+        String name;
+        List parameterList = new ArrayList();
+        List throwsClause = null;
+        JimpleBody methodBody = null;
 
-	if(node.getMethodBody() instanceof AFullMethodBody)
-	    methodBody = (JimpleBody) mProductions.pop();
-	
-	if(node.getThrowsClause() != null)
-	    throwsClause = (List) mProductions.pop();
-	
-	if(node.getParameterList() != null) {
-	    parameterList = (List) mProductions.pop();
-	}
+        if(node.getMethodBody() instanceof AFullMethodBody)
+            methodBody = (JimpleBody) mProductions.pop();
+        
+        if(node.getThrowsClause() != null)
+            throwsClause = (List) mProductions.pop();
+        
+        if(node.getParameterList() != null) {
+            parameterList = (List) mProductions.pop();
+        }
 
-	name = (String) mProductions.pop(); // name
-	type = (Type) mProductions.pop(); // type
-	SootMethod sm = null;
+        name = (String) mProductions.pop(); // name
+        type = (Type) mProductions.pop(); // type
+        SootMethod sm = null;
         if (mSootClass.declaresMethod(SootMethod.getSubSignature(name, parameterList, type)))
         {
             sm = mSootClass.getMethod(SootMethod.getSubSignature(name, parameterList, type));
@@ -155,29 +155,29 @@ public class BodyExtractorWalker extends Walker
         }
         else
         {
-	    System.out.println("[!! Couldn't parse !!] " + SootMethod.getSubSignature(name, parameterList, type));
+            System.out.println("[!! Couldn't parse !!] " + SootMethod.getSubSignature(name, parameterList, type));
             System.out.println("[!] Methods in class are:");
-	    Iterator it = mSootClass.getMethods().iterator();
-	    while(it.hasNext()) {
-		SootMethod next = (SootMethod) it.next();
-		System.out.println(next.getSubSignature());
-	    }
-	    
-	}
+            Iterator it = mSootClass.getMethods().iterator();
+            while(it.hasNext()) {
+                SootMethod next = (SootMethod) it.next();
+                System.out.println(next.getSubSignature());
+            }
+            
+        }
 
-	if(sm.isConcrete()) 
+        if(sm.isConcrete()) 
         {
-	  if (soot.Main.isVerbose)
+          if (soot.Main.isVerbose)
               System.out.println("[Parsed] "+sm.getDeclaration());
 
-	  methodBody.setMethod(sm);
+          methodBody.setMethod(sm);
           methodToParsedBodyMap.put(sm, methodBody);
-	} 
+        } 
         else if(node.getMethodBody() instanceof AFullMethodBody) {
-	    if(sm.isPhantom() && soot.Main.isVerbose)
-	       System.out.println("[jimple parser] phantom method!");
-	    throw new RuntimeException("Impossible: !concrete => ! instanceof " + sm.getName() );	
-	}
+            if(sm.isPhantom() && soot.Main.isVerbose)
+               System.out.println("[jimple parser] phantom method!");
+            throw new RuntimeException("Impossible: !concrete => ! instanceof " + sm.getName() );        
+        }
     }
   
 } 
