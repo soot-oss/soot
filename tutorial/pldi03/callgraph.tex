@@ -1,3 +1,6 @@
+\newcommand{\comment}[1]{}
+
+
 \begin{slide}{Call Graph}
 \begin{itemize}
 \item Collection of edges representing {\red all} method invocations known to Soot
@@ -13,6 +16,7 @@
 \end{itemize}
 \end{slide}
 
+\comment{
 \begin{slide}{Updating Call Graph}
 \begin{itemize}
 \item {\tt addEdge( Edge )}
@@ -20,10 +24,12 @@
 \item Call graph queries always give up-to-date information
 \end{itemize}
 \end{slide}
+}
 
 
 \begin{slide}{Call Graph Edge}
 \begin{itemize}
+\vspace*{-5mm}
 \item Each {\tt Edge} contains
 \begin{itemize}
 \item Source method
@@ -32,6 +38,56 @@
 \item Edge type
 \end{itemize}
 \end{itemize}
+\newcommand{\dott}[1]{\rnode{#1}{$\bullet$}}
+\begin{tabular}{|c|c|c|c|}
+\hline
+source m. & source stmt. & target m. & type\\
+\hline
+\dott{src} & \dott{stmt} & \dott{tgt} & VIRTUAL \\
+\hline
+\end{tabular}
+\newcommand{\tab}{\hspace*{8mm}}
+\vspace*{6mm}\\
+\begin{minipage}{2in}
+\tt
+\rnode{foo}{foo()} \{\\
+\tab \rnode{foos}{o.bar();}\\
+\}
+\end{minipage}
+\begin{minipage}{2in}
+\tt
+\rnode{bar}{bar()} \{ \\
+\tab /* */ \\
+\}
+\end{minipage}
+\newcommand{\arrow}[2]{\nccurve[arrowsize=.3,angleA=270,angleB=45]{->}{#1}{#2}}
+\arrow{src}{foo}\arrow{tgt}{bar}\arrow{stmt}{foos}\nccurve[arrowsize=.3,linestyle=dashed,angleB=180]{->}{foos}{bar}
+\end{slide}
+
+\begin{slide}{Edge Types}
+{
+\tiny\bf
+\begin{verbatim}
+// Due to explicit invokestatic instruction.
+public static final int STATIC = 1;
+// Due to explicit invokevirtual instruction.
+public static final int VIRTUAL = 2;
+// Due to explicit invokeinterface instruction.
+public static final int INTERFACE = 3;
+// Due to explicit invokespecial instruction.
+public static final int SPECIAL = 4;
+// Implicit call to static initializer.
+public static final int CLINIT = 5;
+// Implicit call to Thread.run() due to Thread.start() call.
+public static final int THREAD = 6;
+// Implicit call to Thread.exit().
+public static final int EXIT = 7;
+// Implicit call to non-trivial finalizer from constructor.
+public static final int FINALIZE = 8;
+// Implicit call to run() through AccessController.doPrivileged().
+public static final int PRIVILEGED = 9;
+\end{verbatim}
+}
 \end{slide}
 
 \begin{slide}{Querying Call Graph}
@@ -39,6 +95,22 @@
 \item[\tt targetsOf(SootMethod)] iterator over edges with given source method
 \item[\tt targetsOf(Unit)] iterator over edges with given source statement
 \item[\tt callersOf(SootMethod)] iterator over edges with given target method
+\begin{tabular}{|c|c|c|c|}\hline {\red src}&o.foo();&foo()&VIRTUAL\\\hline\end{tabular}
+\begin{tabular}{|c|c|c|c|}\hline {\red src}&o.goo();&goo()&VIRTUAL\\\hline\end{tabular}
+\begin{tabular}{|c|c|c|c|}\hline {\red src}&o.hoo();&hoo()&VIRTUAL\\\hline\end{tabular}
+{\gray \begin{tabular}{|c|c|c|c|}\hline bar&o.foo();&foo()&VIRTUAL\\\hline\end{tabular}}
+\end{description}
+\end{slide}
+
+\begin{slide}{Querying Call Graph}
+\begin{description}
+\item[\tt targetsOf(SootMethod)] iterator over edges with given source method
+\item[\tt targetsOf(Unit)] iterator over edges with given source statement
+\item[\tt callersOf(SootMethod)] iterator over edges with given target method
+\begin{tabular}{|c|c|c|c|}\hline src&o.foo();&{\red foo()}&VIRTUAL\\\hline\end{tabular}
+{\gray \begin{tabular}{|c|c|c|c|}\hline src&o.goo();&goo()&VIRTUAL\\\hline\end{tabular}}
+{\gray \begin{tabular}{|c|c|c|c|}\hline src&o.hoo();&hoo()&VIRTUAL\\\hline\end{tabular}}
+\begin{tabular}{|c|c|c|c|}\hline bar&o.foo();&{\red foo()}&VIRTUAL\\\hline\end{tabular}
 \end{description}
 \end{slide}
 
@@ -51,6 +123,35 @@
 \item[{\tt Targets}] target methods
 \end{description}
 \end{itemize}
+\newcommand{\src}[1]{\begin{tabular}{|c|}\hline {\red $src_#1$}\\\hline\end{tabular}}
+\newcommand{\edge}[1]{\begin{tabular}{|c|c|c|c|}\hline {\red $src_#1$}&$stmt_#1$&$tgt_#1$&$type_#1$\\\hline\end{tabular}}
+\begin{minipage}{2.5in}
+\edge{1}\\
+\edge{2}\\
+\edge{3}\\
+\end{minipage}
+\begin{minipage}{1in}
+\src{1}\\
+\src{2}\\
+\src{3}\\
+\end{minipage}
+\end{slide}
+
+\begin{slide}{Code Example}
+\begin{verbatim}
+void mayCall( SootMethod src,
+        CallGraph cg ) {
+   Iterator edges = cg.targetsOf(src);
+   Iterator targets =
+                  new Targets(edges);
+   while( targets.hasNext() ) {
+      SootMethod tgt =
+         (SootMethod) targets.next();
+      System.out.println( ""+
+        src+" may call "+tgt );
+   }
+}
+\end{verbatim}
 \end{slide}
 
 \begin{slide}{Transitive Targets}
@@ -66,6 +167,7 @@ called from targets of given statement
 \end{description}
 \end{slide}
 
+\comment{
 \begin{slide}{Entry Points}
 \begin{itemize}
 \item Kept separate from call graph edges
@@ -77,7 +179,30 @@ called from targets of given statement
 \end{description}
 \end{itemize}
 \end{slide}
+}
 
+\begin{slide}{Implementation Big Picture}
+\newcommand{\cls}[2]{\rnode{#2}{\psframebox{\begin{tabular}{c}#1\end{tabular}}}}
+\vspace*{-5mm}
+\begin{psmatrix}[colsep=.2,rowsep=.4]
+\cls{Entry Points}{ep}\\
+&\cls{Scene}{scene}\\\ \\
+\cls{Reachable\\Methods}{rm}&\cls{Call Graph\\Builder}{cgb}&\cls{Points-to}{pt}\\
+\ \\
+&&\cls{Naive}{naive} \cls{Spark}{spark}
+\end{psmatrix}
+\psset{arrowsize=.3}
+\nccurve[angleA=270,angleB=175]{->}{ep}{scene}\mput*{\tiny methods}
+\nccurve[angleA=185,angleB=90]{->}{scene}{rm}\mput*{\tiny methods}
+\nccurve[angleA=270,angleB=265]{->}{rm}{cgb}\mput*{\tiny methods}
+\nccurve[angleA=90,angleB=80]{->}{cgb}{rm}\mput*{\tiny edges}
+\nccurve[angleA=90,angleB=135]{->}{cgb}{pt}\mput*{\tiny edges}
+\nccurve[angleA=225,angleB=275]{->}{pt}{cgb}\mput*{\tiny receiver types}
+\ncangles[angleA=90,angleB=270,arrowinset=0]{->}{naive}{pt}
+\ncangles[angleA=90,angleB=270,arrowinset=0]{->}{spark}{pt}
+\end{slide}
+
+\comment{
 \begin{slide}{Reachable Methods}
 \begin{itemize}
 \item {\tt ReachableMethods} class requires
@@ -118,5 +243,5 @@ types for virtual calls
 \end{itemize}
 \end{itemize}
 \end{slide}
-
+}
 
