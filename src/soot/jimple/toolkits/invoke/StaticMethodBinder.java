@@ -43,7 +43,7 @@ public class StaticMethodBinder extends SceneTransformer
 
     public String getDefaultOptions() 
     {
-        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe VTA-passes:1";
+        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe VTA-passes:0";
     }
 
     public String getDeclaredOptions() 

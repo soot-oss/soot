@@ -12,12 +12,20 @@ public class ArrayCheckTag implements OneByteCodeTag
     private boolean lowerCheck = true;
     private boolean upperCheck = true;
 
+    /** 
+     * Tag represents two bounds checks of an array reference.
+     * Value 'true' indicates check needed.
+     */
     public ArrayCheckTag(boolean lower, boolean upper)
     {
 	lowerCheck = lower;
 	upperCheck = upper;
     }
-    
+
+    /** 
+     * Return back the check information in binary form, which
+     * will be written into the class file.
+     */    
     public byte[] getValue()
     {
         byte[] value = new byte[1];
