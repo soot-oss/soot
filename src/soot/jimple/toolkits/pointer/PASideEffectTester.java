@@ -26,7 +26,7 @@ public class PASideEffectTester implements SideEffectTester
     public PASideEffectTester() {
 	if( Union.factory == null ) {
 	    Union.factory = new UnionFactory() {
-		public Union newUnion() { return new FullObjectSet(); }
+		public Union newUnion() { return FullObjectSet.v(); }
 	    };
 	}
     }

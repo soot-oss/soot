@@ -37,6 +37,14 @@ public interface PointsToAnalysis {
     public static final Integer EXCEPTION_NODE = new Integer( -9 );
     public static final Integer RETURN_STRING_CONSTANT_NODE = new Integer( -10 );
     public static final Integer STRING_ARRAY_NODE_LOCAL = new Integer( -11 );
+    public static final Integer MAIN_THREAD_NODE = new Integer( -12 );
+    public static final Integer MAIN_THREAD_NODE_LOCAL = new Integer( -13 );
+    public static final Integer MAIN_THREAD_GROUP_NODE = new Integer( -14 );
+    public static final Integer MAIN_THREAD_GROUP_NODE_LOCAL = new Integer( -15 );
+    public static final Integer MAIN_CLASS_NAME_STRING = new Integer( -16 );
+    public static final Integer MAIN_CLASS_NAME_STRING_LOCAL = new Integer( -17 );
+    public static final Integer DEFAULT_CLASS_LOADER = new Integer( -18 );
+    public static final Integer DEFAULT_CLASS_LOADER_LOCAL = new Integer( -19 );
 
     /** Returns the set of objects reaching variable l before stmt in method. */
     public PointsToSet reachingObjects( SootMethod method, Stmt stmt,

@@ -22,7 +22,7 @@ import soot.jimple.spark.*;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.internal.*;
-import java.util.*;
+import soot.util.*;
 import soot.Type;
 
 /** Implementation of points-to set using a sorted array.
@@ -42,7 +42,7 @@ public final class SortedArraySet extends PointsToSetInternal {
     public final boolean addAll( final PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
         boolean ret = false;
-        long[] typeMask = pag.getTypeManager().get( type );
+        BitSet typeMask = pag.getTypeManager().get( type );
         if( other instanceof SortedArraySet ) {
             SortedArraySet o = (SortedArraySet) other;
             Node[] mya = nodes;
@@ -61,7 +61,7 @@ public final class SortedArraySet extends PointsToSetInternal {
                             newa[ newi++ ] = mya[ myi++ ];
                         } else if( myhc > ohc ) {
                             if( ( type == null || typeMask == null ||
-                              (0 != (typeMask[(-ohc)/64] & (1L<<((-ohc)%64))))  ) 
+                                        typeMask.get(ohc) )
                             && ( exclude == null || !exclude.contains( oa[oi] ) ) ) {
                                 newa[ newi++ ] = oa[ oi ];
                                 ret = true;
@@ -78,7 +78,7 @@ public final class SortedArraySet extends PointsToSetInternal {
                     if( oi < osize ) {
                         int ohc = oa[oi].getNumber();
                         if( ( type == null || typeMask == null ||
-                          (0 != (typeMask[(-ohc)/64] & (1L<<((-ohc)%64))))  ) 
+                                    typeMask.get(ohc) )
                         && ( exclude == null || !exclude.contains( oa[oi] ) ) ) {
                             newa[ newi++ ] = oa[ oi ];
                             ret = true;

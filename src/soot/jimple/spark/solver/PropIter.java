@@ -22,6 +22,7 @@ import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 import soot.*;
+import soot.util.queue.*;
 import java.util.*;
 
 /** Propagates points-to sets along pointer assignment graph using iteration.
@@ -34,44 +35,50 @@ public final class PropIter extends Propagator {
     public final void propagate() {
         final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
         new TopoSorter( pag, false ).sort();
-	for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
-	    handleAllocNode( (AllocNode) it.next() );
-	}
-
+        for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
+            handleAllocNode( (AllocNode) it.next() );
+        }
         int iteration = 1;
 	boolean change;
 	do {
+	    change = false;
             TreeSet simpleSources = new TreeSet( pag.simpleSources() );
             if( pag.getOpts().verbose() ) {
                 System.out.println( "Iteration "+(iteration++) );
             }
-	    change = false;
             for( Iterator it = simpleSources.iterator(); it.hasNext(); ) {
                 change = handleSimples( (VarNode) it.next() ) | change;
             }
             if( ofcg != null ) {
-                final ArrayList addedEdges = new ArrayList();
-                for( Iterator recIt = ofcg.allReceivers().iterator(); recIt.hasNext(); ) {
+                QueueReader addedEdges = pag.edgeReader();
+                for( Iterator recIt = pag.getVarNodeNumberer().iterator(); recIt.hasNext(); ) {
                     final VarNode rec = (VarNode) recIt.next();
                     PointsToSetInternal recSet = rec.getP2Set();
                     if( recSet != null ) {
-                        change = rec.getP2Set().forall( new P2SetVisitor() {
-                        public final void visit( Node n ) {
-                                returnValue = ofcg.addReachingType(
-                                    rec, n.getType(), addedEdges ) | returnValue;
-                            }
-                        } ) | change;
+                        if( ofcg.wantReachingTypes( rec ) ) {
+                            recSet.forall( new P2SetVisitor() {
+                            public final void visit( Node n ) {
+                                    ofcg.addReachingType( n.getType() );
+                                }
+                            } );
+                        }
                     }
                 }
-                if( pag.getOpts().verbose() ) {
-                    System.out.println( "Added "+addedEdges.size()+" interprocedural edges" );
+                ofcg.doneReachingTypes();
+                while(true) {
+                    Node addedSrc = (Node) addedEdges.next();
+                    if( addedSrc == null ) break;
+                    Node addedTgt = (Node) addedEdges.next();
+                    change = true;
+                    if( addedSrc instanceof VarNode ) {
+                        PointsToSetInternal p2set = ((VarNode)addedSrc).getP2Set();
+                        if( p2set != null ) p2set.unFlushNew();
+                    } else if( addedSrc instanceof AllocNode ) {
+                        ((VarNode) addedTgt).makeP2Set().add( (AllocNode) addedSrc );
+                    }
                 }
-                for( Iterator nIt = addedEdges.iterator(); nIt.hasNext(); ) {
-                    final Node[] n = (Node[]) nIt.next();
-                    VarNode src = (VarNode) n[0].getReplacement();
-                    VarNode tgt = (VarNode) n[1].getReplacement();
-                    PointsToSetInternal p2set = src.getP2Set();
-                    if( p2set != null ) p2set.unFlushNew();
+                if( change ) {
+                    new TopoSorter( pag, false ).sort();
                 }
             }
 	    for( Iterator it = pag.loadSources().iterator(); it.hasNext(); ) {

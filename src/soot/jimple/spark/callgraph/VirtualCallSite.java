@@ -22,6 +22,7 @@ import soot.*;
 import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
+import soot.util.queue.*;
 
 /** Resolves a virtual call site.
  * @author Ondrej Lhotak
@@ -35,6 +36,7 @@ public class VirtualCallSite
     private SootMethod container;
     private static FastHierarchy fh;
     private NumberedString subSig;
+    private boolean seenInvokeSpecial = false;
     private static final NumberedString sigClinit = Scene.v().getSubSigNumberer().
         findOrAdd( "void <clinit>()" );
 
@@ -46,7 +48,7 @@ public class VirtualCallSite
         fh = Scene.v().getOrMakeFastHierarchy();
     }
 
-    public void addType( Type t, NumberedSet targets ) {
+    public void addType( Type t, ChunkedQueue targets ) {
         if( t instanceof RefType ) {
             if( iie instanceof SpecialInvokeExpr ) {
                 SootMethod target = iie.getMethod();
@@ -55,12 +57,16 @@ public class VirtualCallSite
                         target.getDeclaringClass().getType() )
                     && container.getDeclaringClass().getType() !=
                         target.getDeclaringClass().getType() 
-                    && subSig.getString().indexOf( "<init>" ) < 0
+                    && !target.getName().equals( "<init>" ) 
                     && subSig != sigClinit ) {
 
                     t = container.getDeclaringClass().getSuperclass().getType();
                 } else {
-                    targets.add( iie.getMethod() );
+                    if( !seenInvokeSpecial ) {
+                        seenInvokeSpecial = true;
+                        //target.addTag( new soot.tagkit.StringTag( this.toString() ) );
+                        targets.add( target );
+                    }
                     return;
                 }
             } else if( !fh.canStoreType( t, iie.getBase().getType() ) ) {
@@ -71,7 +77,11 @@ public class VirtualCallSite
                 if( !seenTypes.add( cls.getType() ) ) break;
                 if( cls.declaresMethod( subSig ) ) {
                     SootMethod m = cls.getMethod( subSig );
-                    if( m.isConcrete() ) targets.add( cls.getMethod( subSig ) );
+                    if( m.isConcrete() || m.isNative() ) {
+                        SootMethod target = cls.getMethod( subSig );
+                        //target.addTag( new soot.tagkit.StringTag( this.toString() ) );
+                        targets.add( target );
+                    }
                     break;
                 }
                 if( !cls.hasSuperclass() ) break;
@@ -83,8 +93,15 @@ public class VirtualCallSite
         } else if( t instanceof AnySubType ) {
             RefType base = ((AnySubType)t).getBase();
             if( seenAllSubtypes.add( base ) ) {
+                SootClass cl = base.getSootClass();
+                if( cl.isInterface() ) {
+                    for( Iterator cIt = fh.getAllImplementersOfInterface(cl).iterator(); cIt.hasNext(); ) {
+                        final SootClass c = (SootClass) cIt.next();
+                        addType( AnySubType.v( c.getType() ), targets );
+                    }
+                }
                 addType( base, targets );
-                for( Iterator cIt = fh.getSubclassesOf( base.getSootClass() ).iterator(); cIt.hasNext(); ) {
+                for( Iterator cIt = fh.getSubclassesOf( cl ).iterator(); cIt.hasNext(); ) {
                     final SootClass c = (SootClass) cIt.next();
                     addType( AnySubType.v( c.getType() ), targets );
                 }
@@ -98,11 +115,11 @@ public class VirtualCallSite
         seenAllSubtypes = null;
     }
     public String toString() {
-        return "VCS: "+iie;
+        return "VCS: "+iie+" in "+container;
     }
-    public Stmt getStmt() {
-        return stmt;
-    }
+    public Stmt getStmt() { return stmt; }
+    public SootMethod getContainer() { return container; }
+    public InstanceInvokeExpr getInstanceInvokeExpr() { return iie; }
 }
 
 

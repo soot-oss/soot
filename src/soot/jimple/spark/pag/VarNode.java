@@ -36,7 +36,7 @@ public class VarNode extends ValNode implements Comparable {
     public FieldRefNode dot( SparkField field ) 
     { return fields == null ? null : (FieldRefNode) fields.get( field ); }
     public String toString() {
-	return "VarNode "+getNumber()+" "+value+" "+method;
+	return "VarNode "+getNumber()+" "+variable+" "+method;
     }
     public int compareTo( Object o ) {
 	VarNode other = (VarNode) o;
@@ -49,7 +49,7 @@ public class VarNode extends ValNode implements Comparable {
     }
     public void setFinishingNumber( int i ) {
         finishingNumber = i;
-        finishingNumbersSet = true;
+        if( i > maxFinishNumber ) maxFinishNumber = i;
     }
     /** NOTE: The method is here only for dumping the graph; not all VarNodes
      * will have a method so don't rely on it.
@@ -57,9 +57,9 @@ public class VarNode extends ValNode implements Comparable {
     public SootMethod getMethod() {
         return method;
     }
-    /** Returns the underlying value that this node represents. */
-    public Object getValue() {
-        return value;
+    /** Returns the underlying variable that this node represents. */
+    public Object getVariable() {
+        return variable;
     }
 
     /** Designates this node as the potential target of a interprocedural 
@@ -77,17 +77,15 @@ public class VarNode extends ValNode implements Comparable {
 
     /* End of public methods. */
 
-    VarNode( PAG pag, Object value, Type t, SootMethod m ) {
+    VarNode( PAG pag, Object variable, Type t, SootMethod m ) {
 	super( pag, t );
 	if( !(t instanceof RefLikeType) ) {
 	    throw new RuntimeException( "Attempt to create VarNode of type "+t );
 	}
-        if( finishingNumbersSet ) {
-	    throw new RuntimeException( "Attempt to create VarNode after toposort for "+value+" of type "+t+" in method "+m );
-        }
-	this.value = value;
+	this.variable = variable;
         this.method = m;
         pag.getVarNodeNumberer().add(this);
+        setFinishingNumber( ++maxFinishNumber );
     }
     /** Registers a frn as having this node as its base. */
     void addField( FieldRefNode frn, SparkField field ) {
@@ -97,10 +95,10 @@ public class VarNode extends ValNode implements Comparable {
 
     /* End of package methods. */
 
-    protected Object value;
+    protected Object variable;
     protected Map fields;
     protected int finishingNumber = 0;
-    static protected boolean finishingNumbersSet = false;
+    static protected int maxFinishNumber = 0;
     protected SootMethod method;
     protected boolean interProcTarget = false;
     protected int numDerefs = 0;

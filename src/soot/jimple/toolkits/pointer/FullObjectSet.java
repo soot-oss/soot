@@ -4,6 +4,10 @@ import java.util.*;
 import soot.*;
 
 public class FullObjectSet extends Union implements PointsToSet {
+    private static FullObjectSet instance = new FullObjectSet();
+    public static FullObjectSet v() { return instance; }
+    private FullObjectSet() {}
+
     /** Returns true if this set contains no run-time objects. */
     public boolean isEmpty() {
 	return false;
@@ -12,9 +16,11 @@ public class FullObjectSet extends Union implements PointsToSet {
     public boolean hasNonEmptyIntersection( PointsToSet other ) {
 	return other != null;
     }
+    private static final Set types = 
+        Collections.singleton( AnySubType.v( RefType.v( "java.lang.Object" ) ) );
     /** Set of all possible run-time types of objects in the set. */
     public Set possibleTypes() {
-        return Collections.singleton( AnySubType.v( RefType.v( "java.lang.Object" ) ) );
+        return types;
     }
 
     /** Adds all objects in s into this union of sets, returning true if this
@@ -22,5 +28,8 @@ public class FullObjectSet extends Union implements PointsToSet {
     public boolean addAll( PointsToSet s ) {
 	return false;
     }
+
+    public Set possibleStringConstants() { return null; }
+    public Set possibleClassConstants() { return null; }
 }
 

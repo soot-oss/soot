@@ -30,8 +30,8 @@ public class VTANativeHelper2
   protected 
     void assignObjectToImpl(ReferenceVariable lhs, AbstractObject obj) {
     TypeSet2 ts = (TypeSet2)vtg.getReachingTypesOf(lhs);
-    SootClass type = obj.getType();
-    ts.add(TypeElement2.v(type));
+    Type type = obj.getType();
+    ts.add(TypeElement2.v(((RefType)type).getSootClass()));
   }
 
   /* Also cloning returns the original variable, it is conservative
@@ -51,9 +51,9 @@ public class VTANativeHelper2
     ReferenceVariable newInstanceOfImpl(ReferenceVariable cls) {
     /* all types are possible */
     TypeGraphNode2 tempNode = TypeGraphNode2.makeTempNode();
-    vtg.addNode(tempNode, RefType.v(OBJECTCLASS));
+    vtg.addNode(tempNode, OBJECTCLASS);
     includeSubtypesOf(tempNode.getTypeSet2(), 
-		      OBJECTCLASS);
+		      ((RefType) OBJECTCLASS).getSootClass());
     return tempNode;
   }
 
@@ -74,7 +74,7 @@ public class VTANativeHelper2
   protected 
     ReferenceVariable staticFieldImpl(String clsname, String fieldsig) {
     TypeGraphNode2 tempNode = TypeGraphNode2.v(clsname+fieldsig);
-    vtg.addNode(tempNode, RefType.v(OBJECTCLASS));
+    vtg.addNode(tempNode, OBJECTCLASS);
     return tempNode;
   }
 
@@ -83,7 +83,7 @@ public class VTANativeHelper2
   protected 
     ReferenceVariable tempFieldImpl(String fieldsig){
     TypeGraphNode2 tempNode = TypeGraphNode2.v(fieldsig);
-    vtg.addNode(tempNode, RefType.v(OBJECTCLASS));
+    vtg.addNode(tempNode, OBJECTCLASS);
     return tempNode;
   } 
 
@@ -92,7 +92,7 @@ public class VTANativeHelper2
   protected
     ReferenceVariable tempVariableImpl(){
     TypeGraphNode2 tempNode = TypeGraphNode2.makeTempNode();
-    vtg.addNode(tempNode, RefType.v(OBJECTCLASS));  
+    vtg.addNode(tempNode, OBJECTCLASS);  
     return tempNode;
   }
 

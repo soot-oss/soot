@@ -19,7 +19,7 @@
 
 package soot.jimple.spark.sets;
 import soot.jimple.spark.*;
-import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.*;
 import soot.*;
 import java.util.*;
 
@@ -124,6 +124,30 @@ public abstract class PointsToSetInternal implements PointsToSet {
         }} );
         return ret.toString();
     }
+
+    public Set possibleStringConstants() { 
+        final HashSet ret = new HashSet();
+        return this.forall( new P2SetVisitor() {
+        public final void visit( Node n ) {
+            if( n instanceof StringConstantNode ) {
+                ret.add( ((StringConstantNode)n).getString() );
+            } else {
+                returnValue = true;
+            }
+        }} ) ? null : ret;
+    }
+    public Set possibleClassConstants() { 
+        final HashSet ret = new HashSet();
+        return this.forall( new P2SetVisitor() {
+        public final void visit( Node n ) {
+            if( n instanceof ClassConstantNode ) {
+                ret.add( ((ClassConstantNode)n).getString() );
+            } else {
+                returnValue = true;
+            }
+        }} ) ? null : ret;
+    }
+
     /* End of public methods. */
     /* End of package methods. */
 

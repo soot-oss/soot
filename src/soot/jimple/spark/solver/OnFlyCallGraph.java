@@ -22,99 +22,110 @@ import soot.jimple.*;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.builder.*;
+import soot.jimple.spark.callgraph.*;
 import soot.*;
 import java.util.*;
 import soot.util.*;
-import soot.jimple.toolkits.invoke.InvokeGraph;
+import soot.util.queue.*;
 
-/** Performs a pseudo-topological sort on the VarNodes in a PAG.
+/** The interface between the pointer analysis engine and the on-the-fly
+ * call graph builder.
  * @author Ondrej Lhotak
  */
 
 public class OnFlyCallGraph {
-    public OnFlyCallGraph( PAG pag, FastHierarchy fh, InvokeGraph ig,
-            Parms parms ) {
+    CallGraph cg;
+    QueueReader reachables;
+    QueueReader callEdges;
+    public CallGraph getCallGraph() { return cg; }
+    public OnFlyCallGraph( PAG pag, FastHierarchy fh, Parms parms ) {
         this.pag = pag;
         this.fh = fh;
-        this.ig = ig;
         this.parms = parms;
-        for( Iterator siteIt = ig.getAllSites().iterator(); siteIt.hasNext(); ) {
-            final Stmt site = (Stmt) siteIt.next();
-            InvokeExpr ie = (InvokeExpr) site.getInvokeExpr();
-            if( ie instanceof VirtualInvokeExpr 
-            || ie instanceof InterfaceInvokeExpr ) {
-                ig.removeAllTargets( site );
-                addSite( site );
-            }
-        }
+        cg = new CallGraph( pag, pag.getOpts().verbose() );
+        reachables = cg.reachables();
+        callEdges = cg.callEdges();
+    }
+    public void build() {
+        cg.build();
+        processReachables();
+        processCallEdges();
     }
     public boolean addSite( Stmt site ) {
-        InstanceInvokeExpr iie = (InstanceInvokeExpr) site.getInvokeExpr();
-        if( iie instanceof SpecialInvokeExpr ) 
-            throw new RuntimeException( "Can't handle that" );
-        parms.addCallTarget( site, null, null );
-        return receiverToSite.put( pag.findVarNode( iie.getBase() ), site );
+        return false;
+    }
+    private void processReachables() {
+        while(true) {
+            SootMethod m = (SootMethod) reachables.next();
+            if( m == null ) return;
+            MethodPAG mpag = MethodPAG.v( pag, m );
+            mpag.build();
+            mpag.addToPAG();
+        }
+    }
+    private void processCallEdges() {
+        Stmt s = null;
+        while(true) {
+            Object o = callEdges.next();
+            if( o == null ) break;
+            if( o instanceof SootMethod ) {
+                SootMethod target = (SootMethod) o;
+                parms.addCallTarget( s, target );
+            } else if( o instanceof VirtualCallSite )
+                s = ((VirtualCallSite) o).getStmt();
+            else if( o instanceof Stmt ) s = (Stmt) o;
+            else throw new RuntimeException( "oops" );
+        }
     }
 
-    public boolean addReachingType( VarNode receiver, Type type, Collection addedEdges ) {
-        boolean ret = false;
-        if( !receiverToSite.containsKey( receiver ) ) return ret;
-        if( receiverToType.put( receiver, type ) ) {
-            for( Iterator siteIt = receiverToSite.get( receiver ).iterator(); siteIt.hasNext(); ) {
-                final Stmt site = (Stmt) siteIt.next();
-                InstanceInvokeExpr ie = (InstanceInvokeExpr) site.getInvokeExpr();
-                Type baseType = ie.getBase().getType();
-                RefType declaredTypeOfBase = null;
-                if( baseType instanceof RefType ) {
-                    declaredTypeOfBase = (RefType) baseType;
-                } else if( baseType instanceof ArrayType ) {
-                    declaredTypeOfBase = RefType.v("java.lang.Object");
-                } else {
-                    throw new RuntimeException( "Weird declared type: "+baseType );
-                }
-                Collection targets = null;
-                try {
-                    targets = fh.resolveConcreteDispatch(
-                            Collections.singletonList( type ), ie.getMethod(),
-                            declaredTypeOfBase );
-                } catch( RuntimeException e ) {
-                    // failed to resolve because pointer analysis is too
-                    // conservative, and came up with a reaching type that
-                    // doesn't actually reach.
-                    targets = Collections.EMPTY_SET;
-                }
-                for( Iterator targetIt = targets.iterator(); targetIt.hasNext(); ) {
-                    final SootMethod target = (SootMethod) targetIt.next();
-                    if( ig.addTarget( site, target ) ) {
-                        parms.addCallTarget( site, target, addedEdges );
-                        ret = true;
-                    }
-                }
-            }
-        }
-        return ret;
+    public boolean wantReachingTypes( VarNode receiver ) {
+        Object r = receiver.getVariable();
+        if( !(r instanceof Local) ) return false;
+        return cg.wantTypes( (Local) r );
+    }
+    public void addReachingType( Type type ) {
+        cg.addType( type );
+    }
+    public void doneReachingTypes() {
+        cg.doneTypes();
+        processReachables();
+        processCallEdges();
     }
 
     /** Node uses this to notify PAG that n2 has been merged into n1. */
     public void mergedWith( Node n1, Node n2 ) {
-        if( !receiverToSite.containsKey( n2 ) ) return;
-        receiverToSite.putAll( n1, receiverToSite.get( n2 ) );
-        receiverToType.putAll( n1, receiverToType.get( n2 ) );
     }
 
     public Set allReceivers() {
-        return receiverToSite.keySet();
+        throw new RuntimeException( "not implemented" );
+    }
+
+    public boolean wantStringConstants( VarNode v ) {
+        Object r = v.getVariable();
+        if( !(r instanceof Local) ) return false;
+        return cg.wantStringConstants( (Local) r );
+    }
+
+    public void newStringConstant( VarNode v, String name ) {
+        cg.newStringConstant( (Local) v.getVariable(), name );
+    }
+    
+    public boolean wantClassConstants( VarNode v ) {
+        Object r = v.getVariable();
+        if( !(r instanceof Local) ) return false;
+        return cg.wantClassConstants( (Local) r );
+    }
+
+    public void newClassConstant( VarNode v, String name ) {
+        cg.newClassConstant( (Local) v.getVariable(), name );
     }
     
     /* End of public methods. */
     /* End of package methods. */
 
-    protected PAG pag;
-    protected MultiMap receiverToSite = new HashMultiMap();
-    protected MultiMap receiverToType = new HashMultiMap();
-    protected FastHierarchy fh;
-    protected InvokeGraph ig;
-    protected Parms parms;
+    private PAG pag;
+    private FastHierarchy fh;
+    private Parms parms;
 }
 
 

@@ -1,5 +1,6 @@
 package soot.jimple.toolkits.pointer;
 import soot.jimple.spark.PointsToSet;
+import java.util.*;
 
 /** A generic interface to some set of runtime objects computed by a pointer analysis. */
 public abstract class Union implements PointsToSet {
@@ -13,6 +14,8 @@ public abstract class Union implements PointsToSet {
         if( s2 == null ) return false;
         return s2.hasNonEmptyIntersection( s1 );
     }
+    public Set possibleStringConstants() { return null; }
+    public Set possibleClassConstants() { return null; }
 
     public static UnionFactory factory = null;
 }

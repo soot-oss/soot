@@ -23,20 +23,20 @@ import soot.jimple.spark.pag.*;
 import soot.jimple.*;
 import soot.*;
 import java.util.*;
-import soot.jimple.toolkits.invoke.InvokeGraph;
 import soot.jimple.spark.internal.*;
 
 /** Class implementing builder parameters (this decides
  * what kinds of nodes should be built for each kind of Soot value).
  * @author Ondrej Lhotak
  */
-class StandardParms extends AbstractJimpleValueSwitch implements Parms {
-    public StandardParms( PAG pag ) {
+public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
+    public StandardParms( PAG pag, MethodPAG mpag ) {
 	this.pag = pag;
-	ig = Scene.v().getActiveInvokeGraph();
+	this.mpag = mpag;
+        setCurrentMethod( mpag==null ? null : mpag.getMethod() );
     }
     /** Sets the method for which a graph is currently being built. */
-    final public void setCurrentMethod( SootMethod m ) {
+    private void setCurrentMethod( SootMethod m ) {
 	currentMethod = m;
         if( m != null ) {
             if( !m.isStatic() ) {
@@ -63,7 +63,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
      * TouchedNodes is an out parameter that is filled in with all the
      * nodes to which edges were added by adding the target. It may be
      * null if the caller does not need this information. */
-    final public void addCallTarget( Stmt s, SootMethod target, Collection addedEdges ) {
+    final public void addCallTarget( Stmt s, SootMethod target ) {
         InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
         int numArgs = ie.getArgCount();
         for( int i = 0; i < numArgs; i++ ) {
@@ -76,10 +76,6 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             if( target != null ) {
                 Node parm = caseParm( target, i ).getReplacement();
                 addEdge( argNode, parm );
-                if( addedEdges != null ) {
-                    Node[] edge = { argNode, parm };
-                    addedEdges.add( edge );
-                }
             }
         }
         if( ie instanceof InstanceInvokeExpr ) {
@@ -89,10 +85,6 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             if( target != null ) {
                 Node thisRef = caseThis( target ).getReplacement();
                 addEdge( baseNode, thisRef );
-                if( addedEdges != null ) {
-                    Node[] edge = { baseNode, thisRef };
-                    addedEdges.add( edge );
-                }
             }
         }
         if( s instanceof AssignStmt ) {
@@ -106,10 +98,6 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
                 if( target != null ) {
                     Node retNode = caseRet( target ).getReplacement();
                     addEdge( retNode, destNode );
-                    if( addedEdges != null ) {
-                        Node[] edge = { retNode, destNode };
-                        addedEdges.add( edge );
-                    }
                 }
             }
         }
@@ -123,8 +111,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             && target.getDeclaringClass().declaresMethod( "void run()" ) ) {
 
                 addCallTarget( s,
-                    target.getDeclaringClass().getMethod( "void run()" ),
-                    addedEdges );
+                    target.getDeclaringClass().getMethod( "void run()" ) );
             }
         }
     }
@@ -132,11 +119,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     final public void handleStmt( Stmt s ) {
 	if( s.containsInvokeExpr() ) {
 	    InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
-            Iterator it = ig.getTargetsOf( s ).iterator();
-            while( it.hasNext() ) {
-                SootMethod target = (SootMethod) it.next();
-                addCallTarget( s, target, null );
-            }
+            addCallTarget( s, null );
 	    return;
 	}
 	s.apply( new AbstractStmtSwitch() {
@@ -183,21 +166,65 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     }
     final public void addEdge( Node from, Node to ) {
         if( from != null ) {
-            pag.addEdge( from, to );
+            if( mpag != null ) {
+                mpag.addEdge( from, to );
+            } else {
+                pag.addEdge( from, to );
+            }
         }
+    }
+    final public Node caseDefaultClassLoader() {
+	AllocNode a = pag.makeAllocNode( 
+		PointsToAnalysis.DEFAULT_CLASS_LOADER,
+		AnySubType.v( RefType.v( "java.lang.ClassLoader" ) ), null );
+	VarNode v = pag.makeVarNode(
+		PointsToAnalysis.DEFAULT_CLASS_LOADER_LOCAL,
+		AnySubType.v( RefType.v( "java.lang.ClassLoader" ) ), null );
+	addEdge( a, v );
+	return v;
+    }
+    final public Node caseMainClassNameString() {
+	AllocNode a = pag.makeAllocNode( 
+		PointsToAnalysis.MAIN_CLASS_NAME_STRING,
+		string, null );
+	VarNode v = pag.makeVarNode(
+		PointsToAnalysis.MAIN_CLASS_NAME_STRING_LOCAL,
+		string, null );
+	addEdge( a, v );
+	return v;
+    }
+    final public Node caseMainThreadGroup() {
+	AllocNode threadGroupNode = pag.makeAllocNode( 
+		PointsToAnalysis.MAIN_THREAD_GROUP_NODE,
+		threadGroup, null );
+	VarNode threadGroupNodeLocal = pag.makeVarNode(
+		PointsToAnalysis.MAIN_THREAD_GROUP_NODE_LOCAL,
+		threadGroup, null );
+	addEdge( threadGroupNode, threadGroupNodeLocal );
+	return threadGroupNodeLocal;
+    }
+    final public Node caseMainThread() {
+	AllocNode threadNode = pag.makeAllocNode( 
+		PointsToAnalysis.MAIN_THREAD_NODE,
+		thread, null );
+	VarNode threadNodeLocal = pag.makeVarNode(
+		PointsToAnalysis.MAIN_THREAD_NODE_LOCAL,
+		thread, null );
+	addEdge( threadNode, threadNodeLocal );
+	return threadNodeLocal;
     }
     final public Node caseArgv() {
 	AllocNode argv = pag.makeAllocNode( 
-		new Pair( currentMethod, PointsToAnalysis.STRING_ARRAY_NODE ),
-		strAr );
+		PointsToAnalysis.STRING_ARRAY_NODE,
+		strAr, null );
         VarNode sanl = pag.makeVarNode(
-                new Pair( currentMethod, PointsToAnalysis.STRING_ARRAY_NODE_LOCAL ),
+                PointsToAnalysis.STRING_ARRAY_NODE_LOCAL,
                 strAr, null );
 	AllocNode stringNode = pag.makeAllocNode( 
-		new Pair( currentMethod, PointsToAnalysis.STRING_NODE ),
-		string );
+		PointsToAnalysis.STRING_NODE,
+		string, null );
 	VarNode stringNodeLocal = pag.makeVarNode(
-		new Pair( currentMethod, PointsToAnalysis.STRING_NODE_LOCAL ),
+		PointsToAnalysis.STRING_NODE_LOCAL,
 		string, null );
 	addEdge( argv, sanl );
 	addEdge( stringNode, stringNodeLocal );
@@ -281,20 +308,20 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	setResult( pag.makeVarNode( l,  l.getType(), currentMethod ) );
     }
     final public void caseNewArrayExpr( NewArrayExpr nae ) {
-        setResult( pag.makeAllocNode( nae, nae.getType() ) );
+        setResult( pag.makeAllocNode( nae, nae.getType(), currentMethod ) );
     }
     final public void caseNewExpr( NewExpr ne ) {
         if( pag.getOpts().mergeStringBuffer() 
         && ne.getType().equals( RefType.v("java.lang.StringBuffer" ) ) ) {
-            setResult( pag.makeAllocNode( ne.getType(), ne.getType() ) );
+            setResult( pag.makeAllocNode( ne.getType(), ne.getType(), null ) );
         } else {
-            setResult( pag.makeAllocNode( ne, ne.getType() ) );
+            setResult( pag.makeAllocNode( ne, ne.getType(), currentMethod ) );
         }
     }
     final public void caseNewMultiArrayExpr( NewMultiArrayExpr nmae ) {
         ArrayType type = (ArrayType) nmae.getType();
         AllocNode prevAn = pag.makeAllocNode(
-            new Pair( nmae, new Integer( type.numDimensions ) ), type );
+            new Pair( nmae, new Integer( type.numDimensions ) ), type, currentMethod );
         VarNode prevVn = pag.makeVarNode( prevAn, prevAn.getType(), currentMethod );
         setResult( prevAn );
         while( true ) {
@@ -302,7 +329,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             if( !( t instanceof ArrayType ) ) break;
             type = (ArrayType) t;
             AllocNode an = pag.makeAllocNode(
-                new Pair( nmae, new Integer( type.numDimensions ) ), type );
+                new Pair( nmae, new Integer( type.numDimensions ) ), type, currentMethod );
             VarNode vn = pag.makeVarNode( an, an.getType(), currentMethod );
             addEdge( an, vn );
             addEdge( vn, pag.makeFieldRefNode( prevVn, ArrayElement.v() ) );
@@ -319,12 +346,13 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 		    sfr.getField().getType(), null ) );
     }
     final public void caseStringConstant( StringConstant sc ) {
-        VarNode stringConstantLocal = pag.makeVarNode(
-            PointsToAnalysis.STRING_NODE_LOCAL,
-            RefType.v( "java.lang.String" ), null );
+        //AllocNode stringConstant = pag.makeStringConstantNode( sc.value );
         AllocNode stringConstant = pag.makeAllocNode(
             PointsToAnalysis.STRING_NODE,
-            RefType.v( "java.lang.String" ) );
+            RefType.v( "java.lang.String" ), null );
+        VarNode stringConstantLocal = pag.makeVarNode(
+            stringConstant,
+            RefType.v( "java.lang.String" ), null );
         addEdge( stringConstant, stringConstantLocal );
         setResult( stringConstantLocal );
     }
@@ -342,6 +370,8 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 		    RefType.v("java.lang.Throwable"), null );
     }
     private static final RefType string = RefType.v("java.lang.String");
+    private static final RefType thread = RefType.v("java.lang.Thread");
+    private static final RefType threadGroup = RefType.v("java.lang.ThreadGroup");
     private static final ArrayType strAr = ArrayType.v(string, 1);
     private static final List strArL = Collections.singletonList( strAr );
     private static final String main = SootMethod.getSubSignature( "main", strArL, VoidType.v() );
@@ -351,7 +381,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 
 
     protected PAG pag;
-    protected InvokeGraph ig;
+    protected MethodPAG mpag;
     protected SootMethod currentMethod;
 }
 

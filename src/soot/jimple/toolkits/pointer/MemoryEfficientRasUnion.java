@@ -60,4 +60,6 @@ public class MemoryEfficientRasUnion extends Union {
 	count++;
 	if( ( count % 1000 ) == 0 ) System.out.println( "Made "+count+"th MemoryEffcientRasunion" );
     }
+
+
 }

@@ -31,5 +31,17 @@ public interface PointsToSet {
     public boolean hasNonEmptyIntersection( PointsToSet other );
     /** Set of all possible run-time types of objects in the set. */
     public Set possibleTypes();
+
+    /** If this points-to set consists entirely of string constants,
+     * returns a set of these constant strings.
+     * If this point-to set may contain something other than constant
+     * strings, returns null. */
+    public Set possibleStringConstants();
+
+    /** If this points-to set consists entirely of objects of
+     * type java.lang.Class of a known class,
+     * returns a set of strings that are the names of these classes.
+     * If this point-to set may contain something else, returns null. */
+    public Set possibleClassConstants();
 }
 

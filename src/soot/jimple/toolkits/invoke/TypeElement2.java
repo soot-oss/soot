@@ -85,8 +85,8 @@ public class TypeElement2 implements AbstractObject {
   }
 
   /******** Implementation of AbstractObject ******************/
-  public SootClass getType() {
-    return Scene.v().getSootClass(className);
+  public Type getType() {
+      return getRefType();
   }
 
   public String toString() {

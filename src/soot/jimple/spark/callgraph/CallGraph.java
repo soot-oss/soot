@@ -23,114 +23,297 @@ import soot.jimple.*;
 import soot.jimple.spark.*;
 import java.util.*;
 import soot.util.*;
-import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
+import soot.util.queue.*;
+import soot.jimple.spark.pag.*;
+import soot.jimple.toolkits.invoke.InvokeGraph;
 
 /** Models the call graph.
  * @author Ondrej Lhotak
  */
-public class CallGraph
+public final class CallGraph
 { 
-    private NumberedSet reachableMethods = new NumberedSet( Scene.v().getMethodNumberer() );
+    private NumberedSet reachable = new NumberedSet( Scene.v().getMethodNumberer() );
     private HashMap invokeExprToVCS = new HashMap();
     private LargeNumberedMap localToVCS = new LargeNumberedMap( Scene.v().getLocalNumberer() );
-    private LinkedList worklist = new LinkedList();
+    private QueueReader worklist;
     private PointsToAnalysis pa;
-    private ImplicitMethodInvocation imi;
+    private ChunkedQueue reachableQueue;
+    public QueueReader reachables() { return reachableQueue.reader(); }
+    private ChunkedQueue callEdgeQueue = new ChunkedQueue();
+    public QueueReader callEdges() { return callEdgeQueue.reader(); }
+    private boolean verbose;
 
-    public CallGraph( ImplicitMethodInvocation imi, PointsToAnalysis pa ) {
-        this.imi = imi;
+    public CallGraph( PointsToAnalysis pa, boolean verbose ) {
+        this.verbose = verbose;
         this.pa = pa;
+        reachableQueue = new ChunkedQueue();
+        worklist = reachables();
+    }
+    /** Specifies an InvokeGraph that will be filled in as this CallGraph
+     * is built. */
+    public void setInvokeGraph( InvokeGraph ig ) { this.ig = ig; }
+    private boolean setReachable( SootMethod cur, SootMethod m ) {
+        if( reachable.add( m ) ) {
+            reachableQueue.add( m );
+            return true;
+        }
+        graph.put( cur, m );
+        return false;
+    }
+    public boolean isReachable( SootMethod m ) {
+        return reachable.contains( m );
+    }
+    public Iterator reachableMethods() {
+        return reachable.iterator();
     }
     public void build() {
-        for( Iterator mIt = imi.getEntryPoints().iterator(); mIt.hasNext(); ) {
+        for( Iterator mIt = ImplicitMethodInvocation.v().getEntryPoints().iterator(); mIt.hasNext(); ) {
             final SootMethod m = (SootMethod) mIt.next();
-            if( reachableMethods.add( m ) ) {
-                worklist.add( m );
-            }
+            setReachable( m, m );
         }
         processWorklist();
     }
     private void processWorklist() {
-        while( !worklist.isEmpty() ) {
-            SootMethod m = (SootMethod) worklist.removeFirst();
+        while(true) {
+            SootMethod m = (SootMethod) worklist.next();
+            if( m == null ) break;
             processNewMethod( m );
-            for( Iterator tgtIt = imi.getImplicitTargets( m ).iterator(); tgtIt.hasNext(); ) {
-                final SootMethod tgt = (SootMethod) tgtIt.next();
-                if( reachableMethods.add( tgt ) ) worklist.add( tgt );
+        }
+    }
+
+    private static final NumberedString sigClinit = Scene.v().getSubSigNumberer().findOrAdd( "void <clinit>()" );
+    private void handleClassName( SootMethod m, AssignStmt s, String name ) {
+        if( name.length() == 0 ) return;
+        if( name.charAt(0) == '[' ) return;
+        if( pa instanceof PAG ) {
+            PAG pag = (PAG) pa;
+            AllocNode an = pag.makeClassConstantNode( name );
+            VarNode vn = pag.makeVarNode( s.getLeftOp(), s.getLeftOp().getType(), m );
+            pag.addEdge( an, vn );
+        }
+    }
+
+    private void handleClassConstant( SootMethod m, AssignStmt s, String name ) {
+        InstanceInvokeExpr ie = (InstanceInvokeExpr) s.getInvokeExpr();
+        if( !Scene.v().containsClass( name ) ) {
+            if( verbose ) {
+                System.out.println( "WARNING: Class "+name+" is"+
+                    " a dynamic class, and you did not specify"+
+                    " it as such; graph will be incomplete!" );
+            }
+        } else {
+            SootClass sootcls = Scene.v().getSootClass( name );
+            if( pa instanceof PAG ) {
+                PAG pag = (PAG) pa;
+                AllocNode an = pag.makeAllocNode( s, sootcls.getType(), null );
+                VarNode vn = pag.makeVarNode( s.getLeftOp(), s.getLeftOp().getType(), m );
+                pag.addEdge( an, vn );
+            }
+            if( sootcls.declaresMethod( sigClinit ) ) {
+                setReachable( m, sootcls.getMethod( sigClinit ) );
             }
         }
     }
+    private void handleNewInstance( SootMethod m, AssignStmt s, InstanceInvokeExpr ie ) {
+        Value nameVal = ie.getBase();
+        wantedClassConstants.put( nameVal, s );
+        stmtToMethod.put( s, m );
+        Set classes = pa.reachingObjects( m, s, (Local) nameVal ).possibleClassConstants();
+        if( classes == null ) {
+            if( verbose ) {
+                System.out.println( "WARNING: Method "+m+
+                    " is reachable, and calls newInstance on an unknown"+
+                    " java.lang.Class; graph will be incomplete!" );
+            }
+        } else {
+            for( Iterator nameIt = classes.iterator(); nameIt.hasNext(); ) {
+                final String name = (String) nameIt.next();
+                handleClassConstant( m, s, name );
+            }
+        }
+    }
+
+    private void handleForName( SootMethod m, AssignStmt s, StaticInvokeExpr ie ) {
+        Value nameVal = ie.getArg(0);
+        wantedStringConstants.put( nameVal, s );
+        stmtToMethod.put( s, m );
+        if( nameVal instanceof StringConstant ) {
+            String name = ((StringConstant) nameVal ).value;
+            handleClassName( m, s, name );
+        } else if( nameVal instanceof Local ) {
+            Set names = pa.reachingObjects( m, s, (Local) nameVal ).possibleStringConstants();
+            if( names == null ) {
+                if( verbose ) {
+                    System.out.println( "WARNING: Method "+m+
+                        " is reachable, and calls Class.forName on a"+
+                        " non-constant String; graph will be incomplete!" );
+                }
+            } else {
+                for( Iterator nameIt = names.iterator(); nameIt.hasNext(); ) {
+                    final String name = (String) nameIt.next();
+                    handleClassName( m, s, name );
+                }
+            }
+        } else throw new RuntimeException( "oops "+nameVal );
+    }
+
     private void processNewMethod( SootMethod m ) {
         if( m.isNative() ) {
             return;
         }
-        if( !m.isConcrete() ) {
-            System.out.println( "looking at abstract method "+m );
-        }
         Body b = m.retrieveActiveBody();
+        HashSet receivers = new HashSet();
+        for( Iterator tgtIt = ImplicitMethodInvocation.v().getImplicitTargets( m, verbose ).iterator(); tgtIt.hasNext(); ) {
+            final SootMethod tgt = (SootMethod) tgtIt.next();
+            setReachable( m, tgt );
+        }
         for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
+
+                if( ig != null ) ig.addSite( s, m );
                 if( ie instanceof InstanceInvokeExpr ) {
                     VirtualCallSite vcs = new VirtualCallSite( s, m );
                     invokeExprToVCS.put( ie, vcs );
-                    Local base = (Local) ((InstanceInvokeExpr)ie).getBase();
-                    HashSet vcss = (HashSet) localToVCS.get( base );
+                    Local receiver = (Local) ((InstanceInvokeExpr)ie).getBase();
+                    HashSet vcss = (HashSet) localToVCS.get( receiver );
                     if( vcss == null ) {
-                        localToVCS.put( base, vcss = new HashSet() );
+                        localToVCS.put( receiver, vcss = new HashSet() );
                     }
                     vcss.add( vcs );
-                    NumberedSet targets = new NumberedSet( Scene.v().getMethodNumberer() );
-                    addType( base, pa.reachingObjects( m, s, base ).possibleTypes().iterator() );
-                    if( pa instanceof DumbPointerAnalysis ) {
-                        vcs.noMoreTypes();
+                    receivers.add( receiver );
+
+                    /*
+                    SootMethod tgt = ie.getMethod();
+                    if( tgt.getName().equals( "newInstance" )
+                    && tgt.getDeclaringClass().getName().equals( "java.lang.Class" )
+                    && s instanceof AssignStmt ) {
+                        handleNewInstance( m, (AssignStmt) s, (InstanceInvokeExpr) ie );
                     }
+                    */
+                } else {
+                    SootMethod tgt = ((StaticInvokeExpr)ie).getMethod();
+                    callEdgeQueue.add( s );
+                    callEdgeQueue.add( tgt );
+                    setReachable( m, tgt );
+                    if( ig != null ) ig.addTarget( s, tgt );
+                    //tgt.addTag( new soot.tagkit.StringTag( "SCS: "+s.getInvokeExpr()+" in "+m ) );
+
+                    /*
+                    if( tgt.getName().equals( "forName" ) 
+                    && tgt.getDeclaringClass().getName().equals( "java.lang.Class" )
+                    && s instanceof AssignStmt ) {
+                        handleForName( m, (AssignStmt) s, (StaticInvokeExpr) ie );
+                    }
+                    */
                 }
             }
         }
-    }
-    public void addType( Local l, Type t, List edges ) {
-        HashSet vcss = (HashSet) localToVCS.get( l );
-        if( vcss != null ) {
+        for( Iterator receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {
+            final Local receiver = (Local) receiverIt.next();
+            Set types = pa.reachingObjects( m, null, receiver ).possibleTypes();
+            HashSet vcss = (HashSet) localToVCS.get( receiver );
             for( Iterator vcsIt = vcss.iterator(); vcsIt.hasNext(); ) {
                 final VirtualCallSite vcs = (VirtualCallSite) vcsIt.next();
-                NumberedSet targets = new NumberedSet( Scene.v().getMethodNumberer() );
-                vcs.addType( t, targets );
-                if( edges != null ) {
-                    edges.add( vcs );
+                callEdgeQueue.add( vcs );
+                QueueReader targets = callEdges();
+                for( Iterator tIt = types.iterator(); tIt.hasNext(); ) {
+                    final Type t = (Type) tIt.next();
+                    vcs.addType( t, callEdgeQueue );
                 }
-                for( Iterator smIt = targets.iterator(); smIt.hasNext(); ) {
-                    final SootMethod sm = (SootMethod) smIt.next();
-                    if( reachableMethods.add( sm ) ) {
-                        worklist.add( sm );
-                    }
-                    if( edges != null ) {
-                        edges.add( sm );
-                    }
+                while(true) {
+                    SootMethod target = (SootMethod) targets.next();
+                    if( target == null ) break;
+                    setReachable( m, target );
+                    if( ig != null ) ig.addTarget( vcs.getStmt(), target );
                 }
-            }
-        }
-    }
-    public void addType( Local l, Iterator types ) {
-        HashSet vcss = (HashSet) localToVCS.get( l );
-        if( vcss != null ) {
-            for( Iterator vcsIt = vcss.iterator(); vcsIt.hasNext(); ) {
-                final VirtualCallSite vcs = (VirtualCallSite) vcsIt.next();
-                NumberedSet targets = new NumberedSet( Scene.v().getMethodNumberer() );
-                while( types.hasNext() ) {
-                    vcs.addType( (Type) types.next(), targets );
-                }
-                for( Iterator smIt = targets.iterator(); smIt.hasNext(); ) {
-                    final SootMethod sm = (SootMethod) smIt.next();
-                    if( reachableMethods.add( sm ) ) worklist.add( sm );
+                if( !(pa instanceof PAG) ) {
+                    vcs.noMoreTypes();
                 }
             }
         }
     }
-    public Iterator getReachableMethods() {
-        return reachableMethods.iterator();
+
+    HashSet currentvcss = null;
+    public boolean wantTypes( Local l ) {
+        currentvcss = (HashSet) localToVCS.get( l );
+        return currentvcss != null && !currentvcss.isEmpty();
     }
+    public void addType( Type t ) {
+        for( Iterator vcsIt = currentvcss.iterator(); vcsIt.hasNext(); ) {
+            final VirtualCallSite vcs = (VirtualCallSite) vcsIt.next();
+            callEdgeQueue.add( vcs );
+            QueueReader targets = callEdges();
+            vcs.addType( t, callEdgeQueue );
+            while(true) {
+                SootMethod target = (SootMethod) targets.next();
+                if( target == null ) break;
+                setReachable( vcs.getContainer(), target );
+            }
+        }
+    }
+    public void doneTypes() {
+        currentvcss = null;
+        processWorklist();
+    }
+
+    public boolean wantStringConstants( Local l ) {
+        return false;
+//        return wantedStringConstants.keySet().contains( l );
+    }
+
+    public boolean wantClassConstants( Local l ) {
+        return false;
+//        return wantedClassConstants.keySet().contains( l );
+    }
+
+    public void newStringConstant( Local l, String name ) {
+        for( Iterator sIt = wantedStringConstants.get( l ).iterator(); sIt.hasNext(); ) {
+            final AssignStmt s = (AssignStmt) sIt.next();
+            SootMethod m = (SootMethod) stmtToMethod.get(s);
+            if( name == null ) {
+                System.out.println( "WARNING: Method "+m+
+                    " is reachable, and calls Class.forName on a"+
+                    " non-constant String; graph will be incomplete!" );
+                wantedStringConstants.remove( l );
+            } else {
+                handleClassName( m, s, name );
+            }
+        }
+    }
+
+    public void newClassConstant( Local l, String name ) {
+        for( Iterator sIt = wantedStringConstants.get( l ).iterator(); sIt.hasNext(); ) {
+            final AssignStmt s = (AssignStmt) sIt.next();
+            SootMethod m = (SootMethod) stmtToMethod.get(s);
+            if( name == null ) {
+                System.out.println( "WARNING: Method "+stmtToMethod.get(s)+
+                    " is reachable, and calls newInstance on an unknown"+
+                    " java.lang.Class; graph will be incomplete!" );
+                wantedClassConstants.remove( l );
+            } else {
+                handleClassConstant( m, s, name );
+            }
+        }
+    }
+
+    public InvokeGraph getInvokeGraph() {
+        HashSet r = new HashSet();
+        for( Iterator mIt = reachable.iterator(); mIt.hasNext(); ) {
+            final SootMethod m = (SootMethod) mIt.next();
+            r.add(m);
+        }
+        ig.setReachableMethods( r );
+        return ig;
+    }
+
+    private HashMultiMap wantedStringConstants = new HashMultiMap();
+    private HashMap stmtToMethod = new HashMap();
+    private HashMultiMap wantedClassConstants = new HashMultiMap();
+    private InvokeGraph ig;
+
+    public HashMultiMap graph = new HashMultiMap();
 }
 
 

@@ -27,7 +27,7 @@ import java.io.Serializable;
  * Also, unlike the Kaffe BitSet, this BitSet is unsynchronized (for efficiency
  * purposes.
  */ 
-public class BitSet
+public final class BitSet
     implements Cloneable, Serializable
 {
     private static final long serialVersionUID = 7997698588986878753L;
@@ -100,11 +100,15 @@ public class BitSet
      * Set a bit in the set.
      * @param bit the bit to set.
      */
-    public void set(int bit) {
+    public boolean set(int bit) {
 	if (bit < 0)
 	    throw new IndexOutOfBoundsException();
 	ensureSize(bit+1);
-	bits[bitOffset(bit)] |= bitMask(bit);
+        int offset = bitOffset( bit );
+	long l = bits[offset];
+        long mask = bitMask(bit);
+        bits[ offset ] = l | mask;
+        return (l & mask) == 0;
     }
 
     /**
@@ -165,7 +169,6 @@ public class BitSet
      * @return the number of bits in the set.
      */
     public int size() {
-	// don't need synchronization
 	return bits.length << 6;
     }
 
@@ -231,7 +234,7 @@ public class BitSet
     /**
      * Performs a logical AND of this set and the COMPLEMENT of the argument
      * bit set.
-     * Result of the mathematical substaction of two set.
+     * Result of the mathematical subtraction of two sets.
      * @param set a bit set.
      * @since JDK1.2
      */
@@ -253,6 +256,7 @@ public class BitSet
             a[i] &= ~b[i];
         // don't nead to check upper bits
     }
+
 
 
 
@@ -289,6 +293,128 @@ public class BitSet
                 a[i] = b[i];
             }
         }
+    }
+
+
+    /**
+     * Computes this = this OR ((orset AND andset ) AND (NOT andnotset))
+     * Returns true iff this is modified.
+     * Result of the mathematical union of two sets.
+     * @param set a bit set.
+     */
+    public boolean orAndAndNot(BitSet orset, BitSet andset, BitSet andnotset) {
+        boolean ret = false;
+        long[] a = null, b = null, c = null, d = null, e = null;
+        int al, bl, cl, dl, el;
+        a = this.bits;
+        al = a.length;
+        if( orset == null ) {
+            bl = 0;
+        } else {
+            b = orset.bits;
+            bl = b.length;
+        }
+        if( andset == null ) {
+            cl = 0;
+        } else {
+            c = andset.bits;
+            cl = c.length;
+        }
+        if( andnotset == null ) {
+            dl = 0;
+        } else {
+            d = andnotset.bits;
+            dl = d.length;
+        }
+
+        if( al < bl ) {
+            e = new long[bl];
+            System.arraycopy( a, 0, e, 0, al );
+            this.bits = e;
+        } else {
+            e = a;
+        }
+        el = e.length;
+
+        // INV: el >= bl
+
+        int i = 0;
+        long l;
+
+        if( bl <= cl && bl <= dl ) {
+            while( i < bl ) {
+                l = b[i] & c[i] & ~d[i];
+                if( (l & ~e[i]) != 0 ) ret = true;
+                e[i] |= l;
+                i++;
+            }
+        } else if( cl <= dl && dl <= bl ) {
+            while( i < cl ) {
+                l = b[i] & c[i] & ~d[i];
+                if( (l & ~e[i]) != 0 ) ret = true;
+                e[i] |= l;
+                i++;
+            }
+            while( i < dl ) {
+                l = b[i] & ~d[i];
+                if( (l & ~e[i]) != 0 ) ret = true;
+                e[i] |= l;
+                i++;
+            }
+            while( i < bl ) {
+                l = b[i];
+                if( (l & ~e[i]) != 0 ) ret = true;
+                e[i] |= l;
+                i++;
+            }
+        } else if( dl <= cl && cl <= bl ) {
+            while( i < dl ) {
+                l = b[i] & c[i] & ~d[i];
+                if( (l & ~e[i]) != 0 ) ret = true;
+                e[i] |= l;
+                i++;
+            }
+            while( i < cl ) {
+                l = b[i] & c[i];
+                if( (l & ~e[i]) != 0 ) ret = true;
+                e[i] |= l;
+                i++;
+            }
+            while( i < bl ) {
+                l = b[i];
+                if( (l & ~e[i]) != 0 ) ret = true;
+                e[i] |= l;
+                i++;
+            }
+        } else if( dl <= bl && bl <= cl ) {
+            while( i < dl ) {
+                l = b[i] & c[i] & ~d[i];
+                if( (l & ~e[i]) != 0 ) ret = true;
+                e[i] |= l;
+                i++;
+            }
+            while( i < bl ) {
+                l = b[i] & c[i];
+                if( (l & ~e[i]) != 0 ) ret = true;
+                e[i] |= l;
+                i++;
+            }
+        } else if( cl <= bl && bl <= dl ) {
+            while( i < cl ) {
+                l = b[i] & c[i] & ~d[i];
+                if( (l & ~e[i]) != 0 ) ret = true;
+                e[i] |= l;
+                i++;
+            }
+            while( i < bl ) {
+                l = b[i] & ~d[i];
+                if( (l & ~e[i]) != 0 ) ret = true;
+                e[i] |= l;
+                i++;
+            }
+        } else throw new RuntimeException( "oops bl="+bl+" cl="+cl+" dl="+dl );
+
+        return ret;
     }
 
 

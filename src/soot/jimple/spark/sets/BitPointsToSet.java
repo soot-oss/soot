@@ -22,7 +22,7 @@ import soot.jimple.spark.*;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.internal.*;
-import java.util.*;
+import soot.util.*;
 import soot.Type;
 
 /** Implementation of points-to set using a bit vector.
@@ -32,129 +32,51 @@ public final class BitPointsToSet extends PointsToSetInternal {
     public BitPointsToSet( Type type, PAG pag ) {
         super( type );
         this.pag = pag;
-        if( nodes == null ) {
-            SIZE = pag.getNumAllocNodes()/64+2;
-            nodes = new Node[ SIZE * 64 ];
-        }
-        bits = new long[ SIZE ];
+        if( allocNodeNumberer == null ) allocNodeNumberer = pag.getAllocNodeNumberer();
+        bits = new BitSet( allocNodeNumberer.size() );
     }
     /** Returns true if this set contains no run-time objects. */
     public final boolean isEmpty() {
         return empty;
     }
-    /** Adds contents of other into this set, returns true if this set 
-     * changed. */
-    public final boolean addAll( final PointsToSetInternal other,
-            final PointsToSetInternal exclude ) {
-        boolean ret = false;
-        long[] mask = null;
+
+    private final boolean superAddAll( PointsToSetInternal other, PointsToSetInternal exclude ) {
+        boolean ret = super.addAll( other, exclude );
+        if( ret ) empty = false;
+        return ret;
+    }
+
+    private final boolean nativeAddAll( BitPointsToSet other, BitPointsToSet exclude ) {
+        BitSet mask = null;
         TypeManager typeManager = pag.getTypeManager();
         if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
             mask = typeManager.get( this.getType() );
         }
-        if( other instanceof BitPointsToSet ) {
-            BitPointsToSet o = (BitPointsToSet) other;
-            if( exclude == null || exclude.isEmpty() ) {
-                if( mask == null ) {
-                    for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i];
-                        if( l != 0L ) {
-                            ret = true;
-                            empty = false;
-                            bits[i] |= l;
-                        }
-                    }
-                } else {
-                    for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i] & mask[i];
-                        if( l != 0L ) {
-                            ret = true;
-                            empty = false;
-                            bits[i] |= l;
-                        }
-                    }
-                }
-                return ret;
-            } else if( exclude instanceof BitPointsToSet ) {
-                BitPointsToSet e = (BitPointsToSet) exclude;
-                if( mask == null ) {
-                    for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i] & ~e.bits[i];
-                        if( l != 0L ) {
-                            ret = true;
-                            empty = false;
-                            bits[i] |= l;
-                        }
-                    }
-                } else {
-                    for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i] & ~e.bits[i] & mask[i];
-                        if( l != 0L ) {
-                            ret = true;
-                            empty = false;
-                            bits[i] |= l;
-                        }
-                    }
-                }
-                return ret;
-            } else {
-                if( mask == null ) {
-                    for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i];
-                        if( l != 0L ) {
-                            for( int j=0; j<64; j++ ) {
-                                if( ( l & (1L<<j) ) != 0  ) {
-                                    Node n = nodes[i*64+j];
-                                    if( exclude.contains( n ) ) {
-                                        l &= ~(1L<<j);
-                                    }
-                                }
-                            }
-                            if( l != 0L ) {
-                                ret = true;
-                                empty = false;
-                                bits[i] |= l;
-                            }
-                        }
-                    }
-                } else {
-                    for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i] & mask[i];
-                        if( l != 0L ) {
-                            for( int j=0; j<64; j++ ) {
-                                if( ( l & (1L<<j) ) != 0  ) {
-                                    Node n = nodes[i*64+j];
-                                    if( exclude.contains( n ) ) {
-                                        l &= ~(1L<<j);
-                                    }
-                                }
-                            }
-                            if( l != 0L ) {
-                                ret = true;
-                                empty = false;
-                                bits[i] |= l;
-                            }
-                        }
-                    }
-                }
-                return ret;
-            }
-        }
-        return super.addAll( other, exclude );
+        BitSet obits = other.bits;
+        BitSet ebits = ( exclude==null ? null : exclude.bits );
+        boolean ret = bits.orAndAndNot( obits, mask, ebits );
+        if( ret ) empty = false;
+        return ret;
+    }
+
+    /** Adds contents of other into this set, returns true if this set 
+     * changed. */
+    public final boolean addAll( PointsToSetInternal other,
+            PointsToSetInternal exclude ) {
+        boolean ret;
+        if( other != null && !(other instanceof BitPointsToSet) )
+            return superAddAll( other, exclude );
+        if( exclude != null && !(exclude instanceof BitPointsToSet) )
+            return superAddAll( other, exclude );
+        return nativeAddAll( (BitPointsToSet) other, (BitPointsToSet) exclude );
+        //return superAddAll( (BitPointsToSet) other, (BitPointsToSet) exclude );
     }
     /** Calls v's visit method on all nodes in this set. */
     public final boolean forall( P2SetVisitor v ) {
-        for( int i=0; i < SIZE; i++ ) {
-            long bitsi = bits[i];
-            if( bitsi != 0 ) for( int j=0; j<64; j++ ) {
-                if( ( bitsi & (1L<<j) ) != 0  ) {
-                    v.visit( nodes[i*64+j] );
-                }
-            }
+        for( BitSetIterator it = bits.iterator(); it.hasNext(); ) {
+            v.visit( (Node) allocNodeNumberer.get( it.next() ) );
         }
-        boolean ret = v.getReturnValue();
-        if( ret ) empty = false;
-        return ret;
+        return v.getReturnValue();
     }
     /** Adds n to this set, returns true if n was not already in this set. */
     public final boolean add( Node n ) {
@@ -165,8 +87,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
     }
     /** Returns true iff the set contains n. */
     public final boolean contains( Node n ) {
-        int id = n.getNumber();
-        return ( bits[ id/64 ] & 1L<<(id%64 ) ) != 0;
+        return bits.get( n.getNumber() );
     }
     public static P2SetFactory getFactory() {
         return new P2SetFactory() {
@@ -176,26 +97,18 @@ public final class BitPointsToSet extends PointsToSetInternal {
         };
     }
 
-    public final static void delete() {
-        nodes = null;
-    }
-
     /* End of public methods. */
     /* End of package methods. */
 
-    protected boolean fastAdd( Node n ) {
-        int id = n.getNumber();
-        if( nodes[id] == null ) nodes[id] = n;
-        if( ( bits[id/64] & 1L<<(id%64) ) != 0 ) return false;
-        bits[id/64] |= 1L<<(id%64);
-        empty = false;
-        return true;
+    private boolean fastAdd( Node n ) {
+        boolean ret = bits.set( n.getNumber() );
+        if( ret ) empty = false;
+        return ret;
     }
 
-    private static int SIZE = 0;
-    private static Node[] nodes = null;
-    private long[] bits = null;
+    private BitSet bits = null;
     private boolean empty = true;
     private PAG pag = null;
+    private static Numberer allocNodeNumberer = null;
 }
 

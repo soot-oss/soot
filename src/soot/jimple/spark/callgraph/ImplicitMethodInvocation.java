@@ -30,18 +30,29 @@ import java.util.*;
  */
 public class ImplicitMethodInvocation
 { 
+    private static final ImplicitMethodInvocation instance = new ImplicitMethodInvocation();
+    public static final ImplicitMethodInvocation v() { return instance; }
+    private ImplicitMethodInvocation() {}
+
     private static final NumberedString sigMain = Scene.v().getSubSigNumberer().
         findOrAdd( "void main(java.lang.String[])" );
     private static final NumberedString sigFinalize = Scene.v().getSubSigNumberer().
         findOrAdd( "void finalize()" );
+    private static final NumberedString sigExit = Scene.v().getSubSigNumberer().
+        findOrAdd( "void exit()" );
     private static final NumberedString sigClinit = Scene.v().getSubSigNumberer().
         findOrAdd( "void <clinit>()" );
     private static final NumberedString sigStart = Scene.v().getSubSigNumberer().
         findOrAdd( "void start()" );
     private static final NumberedString sigRun = Scene.v().getSubSigNumberer().
         findOrAdd( "void run()" );
+    private static final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
+        findOrAdd( "java.lang.Object run()" );
     private static final NumberedString sigForName = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Class forName(java.lang.String)" );
+    private static final RefType clPrivilegedAction = RefType.v("java.security.PrivilegedAction");
+    private static final RefType clPrivilegedExceptionAction = RefType.v("java.security.PrivilegedExceptionAction");
+    private static final RefType clRunnable = RefType.v("java.lang.Runnable");
     private final void addMethod( NumberedSet set, SootClass cls, NumberedString methodSubSig ) {
         if( cls.declaresMethod( methodSubSig ) ) {
             set.add( cls.getMethod( methodSubSig ) );
@@ -57,41 +68,72 @@ public class ImplicitMethodInvocation
         addMethod( ret, Scene.v().getMainClass(), sigClinit );
         addMethod( ret, "<java.lang.System: void initializeSystemClass()>" );
         addMethod( ret, "<java.lang.ThreadGroup: void <init>()>");
+        addMethod( ret, "<java.lang.ThreadGroup: void remove(java.lang.Thread)>");
         addMethod( ret, "<java.lang.ThreadGroup: void uncaughtException(java.lang.Thread,java.lang.Throwable)>");
         addMethod( ret, "<java.lang.System: void loadLibrary(java.lang.String)>");
         addMethod( ret, "<java.lang.ClassLoader: java.lang.Class loadClassInternal(java.lang.String)>");
+        addMethod( ret, "<java.lang.ClassLoader: void checkPackageAccess(java.lang.Class,java.security.ProtectionDomain)>");
+        addMethod( ret, "<java.lang.ClassLoader: void addClass(java.lang.Class)>");
+        addMethod( ret, "<java.lang.ClassLoader: long findNative(java.lang.ClassLoader,java.lang.String)>");
+        addMethod( ret, "<java.security.PrivilegedActionException: void <init>(java.lang.Exception)>");
+        addMethod( ret, "<java.lang.ref.Finalizer: void register(java.lang.Object)>");
+        addMethod( ret, "<java.lang.String: byte[] getBytes()>");
         return ret;
     }
-    public NumberedSet getImplicitTargets( SootMethod source ) {
-        NumberedSet ret = new NumberedSet( Scene.v().getMethodNumberer() );
+    public NumberedSet getImplicitTargets( SootMethod source, boolean verbose ) {
+        final NumberedSet ret = new NumberedSet( Scene.v().getMethodNumberer() );
+        final SootClass scl = source.getDeclaringClass();
         if( source.isNative() ) return ret;
         if( source.getSubSignature().indexOf( "<init>" ) >= 0 ) {
-            addMethod( ret, source.getDeclaringClass(), sigFinalize );
-        }
-        if( source.getNumberedSubSignature() == sigClinit 
-        && source.getDeclaringClass().hasSuperclass() ) {
-            addMethod( ret, source.getDeclaringClass().getSuperclass(), sigClinit );
+            addMethod( ret, scl, sigFinalize );
+            FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
+            if( fh.canStoreType( scl.getType(), clPrivilegedAction )
+            ||  fh.canStoreType( scl.getType(), clPrivilegedExceptionAction ) ) {
+                addMethod( ret, scl, sigObjRun );
+            }
+            if( fh.canStoreType( scl.getType(), clRunnable ) ) {
+                addMethod( ret, scl, sigExit );
+            }
         }
         Body b = source.retrieveActiveBody();
+        boolean warnedAlready = false;
         for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
                 if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
-                    System.out.println( "WARNING: call to java.lang.reflect.Method: invoke() from "+source+
-                            "; graph will be incomplete!" );
+                    if( !warnedAlready ) {
+                        if( verbose ) {
+                            System.out.println( "WARNING: call to "+
+                                "java.lang.reflect.Method: invoke() from "+source+
+                                "; graph will be incomplete!" );
+                            warnedAlready = true;
+                        }
+                    }
                 }
-                if( ie instanceof StaticInvokeExpr ) {
-                    ret.add( ie.getMethod() );
-                } else if( ie.getMethod().getNumberedSubSignature() == sigForName ) {
+                if( ie.getMethod().getNumberedSubSignature() == sigForName ) {
                     Value name = ie.getArg(0);
                     if( name instanceof StringConstant ) {
                         String cls = ((StringConstant) name ).value;
-                        addMethod( ret, Scene.v().loadClassAndSupport( cls ), sigClinit );
+                        if( cls.charAt(0) != '[' ) {
+                            if( !Scene.v().containsClass( cls ) ) {
+                                if( verbose ) {
+                                    System.out.println( "WARNING: Class "+cls+" is"+
+                                        " a dynamic class, and you did not specify"+
+                                        " it as such; graph will be incomplete!" );
+                                }
+                            } else {
+                                SootClass sootcls = Scene.v().getSootClass( cls );
+                                sootcls.setApplicationClass();
+                                addMethod( ret, sootcls, sigClinit );
+                            }
+                        }
                     } else {
-                        System.out.println( "WARNING: Method "+source+
-                                " is reachable, and calls Class.forName on a"+
-                                " non-constant String; graph will be incomplete!" );
+                        if( verbose ) {
+                            System.out.println( "WARNING: Method "+source+
+                                    " is reachable, and calls Class.forName on a"+
+                                    " non-constant String; graph will be incomplete!" );
+                        }
                     }
                 }
                 addMethod( ret, ie.getMethod().getDeclaringClass(), sigClinit );

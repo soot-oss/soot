@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
+ * Copyright (C) 2003 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,20 +17,27 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.jimple.spark.builder;
+package soot.jimple.spark.pag;
 import soot.jimple.spark.*;
-import soot.jimple.spark.pag.PAG;
-import soot.jimple.spark.callgraph.CallGraph;
+import soot.*;
+import java.util.*;
 
-/** Generic interface to a pointer assignment graph builder.
+/** Represents an allocation site node the represents a constant string.
  * @author Ondrej Lhotak
  */
-public interface Builder {
-    public void preJimplify();
-    /** Creates an empty pointer assignment graph. */
-    public PAG setup( SparkOptions opts );
-    /** Fills in the pointer assignment graph returned by setup. */
-    public void build();
-    public CallGraph getCallGraph();
+public class StringConstantNode extends AllocNode {
+    public String toString() {
+	return "StringConstantNode "+getNumber()+" "+newExpr;
+    }
+
+    public String getString() {
+        return (String) newExpr;
+    }
+
+    /* End of public methods. */
+
+    StringConstantNode( PAG pag, String sc ) {
+        super( pag, sc, RefType.v( "java.lang.String" ), null );
+    }
 }
 

@@ -11,7 +11,7 @@ public class MethodRWSet extends RWSet {
     protected boolean isFull = false;
     static Set allGlobals = new HashSet();
     static Set allFields = new HashSet();
-    final static PointsToSet fullObjectSet = new FullObjectSet();
+    final static PointsToSet fullObjectSet = FullObjectSet.v();
     public static int MAX_SIZE = Integer.MAX_VALUE;
 
     public String toString() {

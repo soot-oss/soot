@@ -15,7 +15,7 @@ package soot.jimple.toolkits.pointer.representations;
 import soot.*;
 
 public interface AbstractObject extends TypeConstants{
-  public SootClass getType();
+  public Type getType();
   public String toString();
   public String shortString();
 }

@@ -26,11 +26,54 @@ import soot.jimple.spark.sets.*;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.jimple.spark.internal.*;
 import soot.util.*;
+import soot.util.queue.*;
 
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
  */
 public class PAG implements PointsToAnalysis {
+    public PAG( final SparkOptions opts ) {
+	this.opts = opts;
+        typeManager = new TypeManager();
+        if( !opts.ignoreTypesEntirely() ) {
+            typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
+        }
+        opts.setImpl( new SparkOptions.Switch_setImpl() {
+            public void case_hash() 
+            { setFactory = HashPointsToSet.getFactory(); }
+            public void case_hybrid() 
+            { setFactory = HybridPointsToSet.getFactory(); }
+            public void case_array() 
+            { setFactory = SortedArraySet.getFactory(); }
+            public void case_bit() 
+            { setFactory = BitPointsToSet.getFactory(); }
+            public void case_double() {
+                final P2SetFactory[] oldF = new P2SetFactory[1];
+                final P2SetFactory[] newF = new P2SetFactory[1];
+                opts.doubleSetOld( new SparkOptions.Switch_doubleSetOld() {
+                    public void case_hash() 
+                    { oldF[0] = HashPointsToSet.getFactory(); }
+                    public void case_hybrid() 
+                    { oldF[0] = HybridPointsToSet.getFactory(); }
+                    public void case_array() 
+                    { oldF[0] = SortedArraySet.getFactory(); }
+                    public void case_bit() 
+                    { oldF[0] = BitPointsToSet.getFactory(); }
+                } );
+                opts.doubleSetNew( new SparkOptions.Switch_doubleSetNew() {
+                    public void case_hash() 
+                    { newF[0] = HashPointsToSet.getFactory(); }
+                    public void case_hybrid() 
+                    { newF[0] = HybridPointsToSet.getFactory(); }
+                    public void case_array() 
+                    { newF[0] = SortedArraySet.getFactory(); }
+                    public void case_bit() 
+                    { newF[0] = BitPointsToSet.getFactory(); }
+                } );
+                setFactory = DoublePointsToSet.getFactory( newF[0], oldF[0] );
+            }
+        } );
+    }
     /** Returns the set of objects reaching variable l before stmt in method. */
     public PointsToSet reachingObjects( SootMethod method, Stmt stmt,
                             Local l ) {
@@ -45,17 +88,44 @@ public class PAG implements PointsToAnalysis {
     public SparkOptions getOpts() { return opts; }
     /** Finds or creates the AllocNode for the new expression newExpr,
      * of type type. */
-    public AllocNode makeAllocNode( Object newExpr, Type type ) {
+    public AllocNode makeAllocNode( Object newExpr, Type type, SootMethod m ) {
         if( opts.typesForSites() || opts.VTA() ) newExpr = type;
 	AllocNode ret = (AllocNode) valToAllocNode.get( newExpr );
 	if( ret == null ) {
-	    valToAllocNode.put( newExpr, ret = new AllocNode( this, newExpr, type ) );
+	    valToAllocNode.put( newExpr, ret = new AllocNode( this, newExpr, type, m ) );
+            newAllocNodes.add( ret );
 	} else if( !( ret.getType().equals( type ) ) ) {
 	    throw new RuntimeException( "NewExpr "+newExpr+" of type "+type+
 		    " previously had type "+ret.getType() );
 	}
 	return ret;
     }
+    public AllocNode makeStringConstantNode( String s ) {
+        if( opts.typesForSites() || opts.VTA() )
+            return makeAllocNode( RefType.v( "java.lang.String" ),
+                    RefType.v( "java.lang.String" ), null );
+        StringConstantNode ret = (StringConstantNode) valToAllocNode.get( s );
+	if( ret == null ) {
+	    valToAllocNode.put( s, ret = new StringConstantNode( this, s ) );
+            newAllocNodes.add( ret );
+	}
+	return ret;
+    }
+    public AllocNode makeClassConstantNode( String s ) {
+        if( opts.typesForSites() || opts.VTA() )
+            return makeAllocNode( RefType.v( "java.lang.Class" ),
+                    RefType.v( "java.lang.Class" ), null );
+        ClassConstantNode ret = (ClassConstantNode) valToAllocNode.get( "$$"+s );
+	if( ret == null ) {
+	    valToAllocNode.put( "$$"+s, ret = new ClassConstantNode( this, s ) );
+            newAllocNodes.add( ret );
+	}
+	return ret;
+    }
+
+    ChunkedQueue newAllocNodes = new ChunkedQueue();
+    public QueueReader allocNodeListener() { return newAllocNodes.reader(); }
+
     /** Finds the VarNode for the variable value, or returns null. */
     public VarNode findVarNode( Object value ) {
         if( opts.RTA() ) {
@@ -140,11 +210,21 @@ public class PAG implements PointsToAnalysis {
             throw new RuntimeException( "Edge between merged nodes" );
 	if( from instanceof VarNode ) {
 	    if( to instanceof VarNode ) {
-		ret = addToMap( simple, from, to ) | ret;
-		ret = addToMap( simpleInv, to, from ) | ret;
+		boolean ret1 = addToMap( simple, from, to );
+		ret1 = addToMap( simpleInv, to, from ) | ret1;
+                if( ret1 ) {
+                    edgeQueue.add( from );
+                    edgeQueue.add( to );
+                    ret = true;
+                }
                 if( opts.simpleEdgesBidirectional() ) {
-                    ret = addToMap( simple, to, from ) | ret;
-                    ret = addToMap( simpleInv, from, to ) | ret;
+                    boolean ret2 = addToMap( simple, to, from );
+                    ret2 = addToMap( simpleInv, from, to ) | ret2;
+                    if( ret2 ) {
+                        edgeQueue.add( to );
+                        edgeQueue.add( from );
+                        ret = true;
+                    }
                 }
 	    } else {
                 if( !( to instanceof FieldRefNode ) ) {
@@ -154,6 +234,10 @@ public class PAG implements PointsToAnalysis {
                 if( !opts.RTA() ) {
                     ret = addToMap( store, from, (FieldRefNode) to ) | ret;
                     ret = addToMap( storeInv, to, from ) | ret;
+                    if( ret ) {
+                        edgeQueue.add( from );
+                        edgeQueue.add( to );
+                    }
                 }
 	    }
 	} else if( from instanceof FieldRefNode ) {
@@ -164,6 +248,10 @@ public class PAG implements PointsToAnalysis {
                 }
                 ret = addToMap( load, from, to ) | ret;
                 ret = addToMap( loadInv, to, from ) | ret;
+                if( ret ) {
+                    edgeQueue.add( from );
+                    edgeQueue.add( to );
+                }
             }
 	} else {
             if( !( from instanceof AllocNode ) 
@@ -175,10 +263,16 @@ public class PAG implements PointsToAnalysis {
             || fh.canStoreType( from.getType(), to.getType() ) ) {
                 ret = addToMap( alloc, from, to ) | ret;
                 ret = addToMap( allocInv, to, from ) | ret;
+                if( ret ) {
+                    edgeQueue.add( from );
+                    edgeQueue.add( to );
+                }
             }
 	}
 	return ret;
     }
+    private ChunkedQueue edgeQueue = new ChunkedQueue();
+    public QueueReader edgeReader() { return edgeQueue.reader(); }
 
     public Node[] simpleLookup( VarNode key ) 
     { return lookup( simple, key ); }
@@ -207,48 +301,6 @@ public class PAG implements PointsToAnalysis {
 
     public P2SetFactory getSetFactory() {
         return setFactory;
-    }
-    public PAG( final SparkOptions opts ) {
-	this.opts = opts;
-        typeManager = new TypeManager();
-        if( !opts.ignoreTypesEntirely() ) {
-            typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
-        }
-        opts.setImpl( new SparkOptions.Switch_setImpl() {
-            public void case_hash() 
-            { setFactory = HashPointsToSet.getFactory(); }
-            public void case_hybrid() 
-            { setFactory = HybridPointsToSet.getFactory(); }
-            public void case_array() 
-            { setFactory = SortedArraySet.getFactory(); }
-            public void case_bit() 
-            { setFactory = BitPointsToSet.getFactory(); }
-            public void case_double() {
-                final P2SetFactory[] oldF = new P2SetFactory[1];
-                final P2SetFactory[] newF = new P2SetFactory[1];
-                opts.doubleSetOld( new SparkOptions.Switch_doubleSetOld() {
-                    public void case_hash() 
-                    { oldF[0] = HashPointsToSet.getFactory(); }
-                    public void case_hybrid() 
-                    { oldF[0] = HybridPointsToSet.getFactory(); }
-                    public void case_array() 
-                    { oldF[0] = SortedArraySet.getFactory(); }
-                    public void case_bit() 
-                    { oldF[0] = BitPointsToSet.getFactory(); }
-                } );
-                opts.doubleSetNew( new SparkOptions.Switch_doubleSetNew() {
-                    public void case_hash() 
-                    { newF[0] = HashPointsToSet.getFactory(); }
-                    public void case_hybrid() 
-                    { newF[0] = HybridPointsToSet.getFactory(); }
-                    public void case_array() 
-                    { newF[0] = SortedArraySet.getFactory(); }
-                    public void case_bit() 
-                    { newF[0] = BitPointsToSet.getFactory(); }
-                } );
-                setFactory = DoublePointsToSet.getFactory( newF[0], oldF[0] );
-            }
-        } );
     }
     public int getNumAllocNodes() {
         return allocNodeNumberer.size();
@@ -479,13 +531,13 @@ public class PAG implements PointsToAnalysis {
         }
 	return ret;
     }
-    protected Map valToVarNode = new HashMap(1000);
-    protected Map valToAllocNode = new HashMap(1000);
-    protected P2SetFactory setFactory;
-    protected OnFlyCallGraph ofcg;
-    protected static boolean somethingMerged = false;
-    protected ArrayList dereferences = new ArrayList();
-    protected TypeManager typeManager;
-    protected LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
+    private Map valToVarNode = new HashMap(1000);
+    private Map valToAllocNode = new HashMap(1000);
+    private P2SetFactory setFactory;
+    private OnFlyCallGraph ofcg;
+    private static boolean somethingMerged = false;
+    private ArrayList dereferences = new ArrayList();
+    private TypeManager typeManager;
+    private LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
 }
 

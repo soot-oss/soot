@@ -379,6 +379,8 @@ public class VariableTypeAnalysis implements PointsToAnalysis
         public boolean isEmpty() { throw new RuntimeException( "NYI" ); }
         public boolean hasNonEmptyIntersection( PointsToSet other )
         { throw new RuntimeException( "NYI" ); }
+        public Set possibleStringConstants() { return null; }
+        public Set possibleClassConstants() { return null; }
     }
     public PointsToSet reachingObjects( SootMethod m, Stmt stmt, Local l ) {
         Collection c = getReachingTypesOf(VTATypeGraph.getVTALabel(m, l));

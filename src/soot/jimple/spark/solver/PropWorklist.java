@@ -23,6 +23,7 @@ import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.internal.*;
 import soot.*;
+import soot.util.queue.*;
 import java.util.*;
 
 /** Propagates points-to sets along pointer assignment graph using a worklist.
@@ -119,20 +120,58 @@ public final class PropWorklist extends Propagator {
 	if( newP2Set.isEmpty() ) return false;
 
         if( ofcg != null ) {
-            final ArrayList addedEdges = new ArrayList();
-            newP2Set.forall( new P2SetVisitor() {
-            public final void visit( Node n ) {
-                    returnValue = ofcg.addReachingType(
-                        src, n.getType(), addedEdges ) | returnValue;
+            QueueReader addedEdges = pag.edgeReader();
+            if( ofcg.wantReachingTypes( src ) ) {
+                newP2Set.forall( new P2SetVisitor() {
+                public final void visit( Node n ) {
+                        ofcg.addReachingType( n.getType() );
+                    }
+                } );
+            }
+            ofcg.doneReachingTypes();
+
+            if( ofcg.wantStringConstants( src ) ) {
+                Set constants = newP2Set.possibleStringConstants();
+                if( constants == null ) {
+                    ofcg.newStringConstant( src, null );
+                } else {
+                    for( Iterator constantIt = constants.iterator(); constantIt.hasNext(); ) {
+                        final String constant = (String) constantIt.next();
+                        ofcg.newStringConstant( src, constant );
+                    }
                 }
-            } );
-            for( Iterator nIt = addedEdges.iterator(); nIt.hasNext(); ) {
-                final Node[] n = (Node[]) nIt.next();
+            }
+
+            if( ofcg.wantClassConstants( src ) ) {
+                Set constants = newP2Set.possibleClassConstants();
+                if( constants == null ) {
+                    ofcg.newClassConstant( src, null );
+                } else {
+                    for( Iterator constantIt = constants.iterator(); constantIt.hasNext(); ) {
+                        final String constant = (String) constantIt.next();
+                        ofcg.newClassConstant( src, constant );
+                    }
+                }
+            }
+
+            while(true) {
+                Node addedSrc = (Node) addedEdges.next();
+                if( addedSrc == null ) break;
+                Node addedTgt = (Node) addedEdges.next();
                 ret = true;
-                VarNode edgeSrc = (VarNode) n[0].getReplacement();
-                VarNode edgeTgt = (VarNode) n[1].getReplacement();
-                if( edgeTgt.makeP2Set().addAll( edgeSrc.getP2Set(), null ) )
-                    varNodeWorkList.add( edgeTgt );
+                if( addedSrc instanceof VarNode ) {
+                    if( addedTgt instanceof VarNode ) {
+                        VarNode edgeSrc = (VarNode) addedSrc;
+                        VarNode edgeTgt = (VarNode) addedTgt;
+                        if( edgeTgt.makeP2Set().addAll( edgeSrc.getP2Set(), null ) )
+                            varNodeWorkList.add( edgeTgt );
+                    }
+                } else if( addedSrc instanceof AllocNode ) {
+                    AllocNode edgeSrc = (AllocNode) addedSrc;
+                    VarNode edgeTgt = (VarNode) addedTgt;
+                    if( edgeTgt.makeP2Set().add( edgeSrc ) )
+                        varNodeWorkList.add( edgeTgt );
+                }
             }
         }
 

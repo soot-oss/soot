@@ -24,6 +24,7 @@ import soot.jimple.spark.sets.*;
 import soot.jimple.spark.internal.*;
 import soot.*;
 import soot.util.*;
+import soot.util.queue.*;
 import java.util.*;
 
 /** Propagates points-to sets along pointer assignment graph using a relevant
@@ -172,20 +173,45 @@ public final class PropAlias extends Propagator {
 	if( newP2Set.isEmpty() ) return false;
 
         if( ofcg != null ) {
-            final ArrayList addedEdges = new ArrayList();
-            newP2Set.forall( new P2SetVisitor() {
-            public final void visit( Node n ) {
-                    returnValue = ofcg.addReachingType(
-                        src, n.getType(), addedEdges ) | returnValue;
-                }
-            } );
-            for( Iterator nIt = addedEdges.iterator(); nIt.hasNext(); ) {
-                final Node[] n = (Node[]) nIt.next();
+            QueueReader addedEdges = pag.edgeReader();
+            if( ofcg.wantReachingTypes( src ) ) {
+                newP2Set.forall( new P2SetVisitor() {
+                public final void visit( Node n ) {
+                        ofcg.addReachingType( n.getType() );
+                    }
+                } );
+            }
+            ofcg.doneReachingTypes();
+
+            while(true) {
+                Node addedSrc = (Node) addedEdges.next();
+                if( addedSrc == null ) break;
+                Node addedTgt = (Node) addedEdges.next();
                 ret = true;
-                VarNode edgeSrc = (VarNode) n[0].getReplacement();
-                VarNode edgeTgt = (VarNode) n[1].getReplacement();
-                if( edgeTgt.makeP2Set().addAll( edgeSrc.getP2Set(), null ) )
-                    varNodeWorkList.add( edgeTgt );
+                if( addedSrc instanceof VarNode ) {
+                    if( addedTgt instanceof VarNode ) {
+                        VarNode edgeSrc = (VarNode) addedSrc;
+                        VarNode edgeTgt = (VarNode) addedTgt;
+                        if( edgeTgt.makeP2Set().addAll( edgeSrc.getP2Set(), null ) )
+                            addToWorklist( edgeTgt );
+                    }
+                } else if( addedSrc instanceof AllocNode ) {
+                    AllocNode edgeSrc = (AllocNode) addedSrc;
+                    VarNode edgeTgt = (VarNode) addedTgt;
+                    if( edgeTgt.makeP2Set().add( edgeSrc ) )
+                        addToWorklist( edgeTgt );
+                }
+                FieldRefNode frn = null;
+                if( addedSrc instanceof FieldRefNode )
+                    frn = (FieldRefNode) addedSrc;
+                if( addedTgt instanceof FieldRefNode )
+                    frn = (FieldRefNode) addedTgt;
+                if( frn != null ) {
+                    VarNode base = frn.getBase();
+                    if( fieldToBase.put( frn.getField(), base ) ) {
+                        aliasWorkList.add( base );
+                    }
+                }
             }
         }
 
@@ -227,7 +253,7 @@ public final class PropAlias extends Propagator {
         return ret;
     }
 
-    protected boolean addToWorklist( VarNode n ) {
+    private boolean addToWorklist( VarNode n ) {
         if( n.getReplacement() != n ) throw new RuntimeException(
                 "Adding bad node "+n+" with rep "+n.getReplacement() );
         return varNodeWorkList.add( n );

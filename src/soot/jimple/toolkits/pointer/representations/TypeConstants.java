@@ -5,39 +5,36 @@ import soot.jimple.*;
 
 public interface TypeConstants {
   
-  public SootClass OBJECTCLASS = 
-    Scene.v().getSootClass("java.lang.Object");
+  public Type OBJECTCLASS = 
+    RefType.v("java.lang.Object");
 
-  public SootClass STRINGCLASS =
-    Scene.v().getSootClass("java.lang.String");
+  public Type STRINGCLASS =
+    RefType.v("java.lang.String");
 
-  public SootClass CLASSLOADERCLASS =
-    Scene.v().getSootClass("java.lang.ClassLoader");
+  public Type CLASSLOADERCLASS =
+    AnySubType.v( RefType.v("java.lang.ClassLoader") );
   
-  public SootClass PROCESSCLASS =
-    Scene.v().getSootClass("java.lang.Process");
+  public Type PROCESSCLASS =
+    AnySubType.v( RefType.v("java.lang.Process") );
 
-  public SootClass THREADCLASS =
-    Scene.v().getSootClass("java.lang.Thread");
+  public Type THREADCLASS =
+    AnySubType.v( RefType.v( "java.lang.Thread"));
 
-  public SootClass CLASSCLASS =
-    Scene.v().getSootClass("java.lang.Class");
+  public Type CLASSCLASS =
+    RefType.v("java.lang.Class");
 
-  /*** TODO ***/
-  /* It must be the least class in hierarchy.
-   */
-  public SootClass LEASTCLASS =
-    Scene.v().getSootClass("java.lang.Object");
+  public Type LEASTCLASS =
+    AnySubType.v( RefType.v( "java.lang.Object" ) );
   
-  public SootClass FIELDCLASS = 
-    Scene.v().getSootClass("java.lang.reflect.Field");
+  public Type FIELDCLASS = 
+    RefType.v("java.lang.reflect.Field");
 
-  public SootClass METHODCLASS =
-    Scene.v().getSootClass("java.lang.reflect.Method");
+  public Type METHODCLASS =
+    RefType.v("java.lang.reflect.Method");
   
-  public SootClass CONSTRUCTORCLASS =
-    Scene.v().getSootClass("java.lang.reflect.Constructor");
+  public Type CONSTRUCTORCLASS =
+    RefType.v("java.lang.reflect.Constructor");
 
-  public SootClass FILESYSTEMCLASS =
-    Scene.v().getSootClass("java.io.FileSystem");
+  public Type FILESYSTEMCLASS =
+    AnySubType.v( RefType.v("java.io.FileSystem") );
 }

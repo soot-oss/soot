@@ -69,7 +69,7 @@ public class PAG2HTML {
     protected MultiMap methodToNodes = new HashMultiMap();
 
     protected void dumpVarNode( VarNode v, JarOutputStream jarOut ) throws IOException {
-        jarOut.putNextEntry( new ZipEntry( "n"+v.getNumber()+".html" ) );
+        jarOut.putNextEntry( new ZipEntry( "nodes/n"+v.getNumber()+".html" ) );
         final PrintWriter out = new PrintWriter( jarOut );
         out.println( "<html>" );
         
@@ -109,18 +109,18 @@ public class PAG2HTML {
         ret.append( "<ul>\n" );
         for( Iterator vvIt = mergedNodes.get( v ).iterator(); vvIt.hasNext(); ) {
             final VarNode vv = (VarNode) vvIt.next();
-            ret.append( varNode( vv ) );
+            ret.append( varNode( "", vv ) );
         }
         ret.append( "</ul>\n" );
         return ret.toString();
     }
-    protected String varNode( VarNode vv ) {
+    protected String varNode( String dirPrefix, VarNode vv ) {
         StringBuffer ret = new StringBuffer();
-        ret.append( "<li><a href=\"n"+vv.getNumber()+".html\">" );
-        ret.append( ""+htmlify(vv.getValue().toString()) );
+        ret.append( "<li><a href=\""+dirPrefix+"n"+vv.getNumber()+".html\">" );
+        ret.append( ""+htmlify(vv.getVariable().toString()) );
         ret.append( "</a><br>" );
         if( vv.getMethod() != null ) {
-            ret.append( "<a href=\""
+            ret.append( "<a href=\"../"
                     +toFileName( vv.getMethod().toString() )+".html\">" );
             ret.append( htmlify(vv.getMethod().toString())+"</a><br>" );
         }
@@ -147,7 +147,7 @@ public class PAG2HTML {
         
         out.println( "This is method "+htmlify( m.toString() )+"<hr>" );
         for( Iterator it = methodToNodes.get( m ).iterator(); it.hasNext(); ) {
-            out.println( varNode( (VarNode) it.next() ) );
+            out.println( varNode( "nodes/", (VarNode) it.next() ) );
         }
         out.println( "</html>" );
         out.flush();

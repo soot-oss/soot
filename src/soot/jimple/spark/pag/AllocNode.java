@@ -38,21 +38,20 @@ public class AllocNode extends Node {
     public AllocDotField dot( SparkField field ) 
     { return fields == null ? null : (AllocDotField) fields.get( field ); }
     public String toString() {
-	return "AllocNode "+getNumber()+" "+newExpr;
+	return "AllocNode "+getNumber()+" "+newExpr+" in method "+method;
     }
 
     /* End of public methods. */
 
-    AllocNode( PAG pag, Object newExpr, Type t ) {
+    AllocNode( PAG pag, Object newExpr, Type t, SootMethod m ) {
 	super( pag, t );
-        /*
+        this.method = m;
         if( t instanceof RefType ) {
             RefType rt = (RefType) t;
             if( rt.getSootClass().isAbstract() ) {
                 throw new RuntimeException( "Attempt to create allocnode with abstract type "+t );
             }
         }
-        */
 	this.newExpr = newExpr;
         pag.getAllocNodeNumberer().add( this );
     }
@@ -71,5 +70,8 @@ public class AllocNode extends Node {
 
     protected Object newExpr;
     protected Map fields;
+
+    private SootMethod method;
+    public SootMethod getMethod() { return method; }
 }
 

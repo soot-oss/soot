@@ -525,7 +525,7 @@ public class Scene  //extends AbstractHost
     public PointsToAnalysis getActivePointsToAnalysis() 
     {
         if(!hasActivePointsToAnalysis()) {
-	    return new DumbPointerAnalysis();
+	    return DumbPointerAnalysis.v();
 	}
             
         return activePointsToAnalysis;

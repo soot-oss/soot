@@ -29,14 +29,21 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public interface Parms {
-    /** Must be called whenever starting to build graph for a new method. */
-    public void setCurrentMethod( SootMethod m );
     /** Build the edges for the statement s. */
     public void handleStmt( Stmt s );
     /** Add an edge from node from to node to. */
     public void addEdge( Node from, Node to );
     /** Node for the argv array parameter to main. */
     public Node caseArgv();
+    /** Node for the main thread of the program, created by the VM. */
+    public Node caseMainThread();
+    /** Node for the main ThreadGroup of the program, created by the VM. */
+    public Node caseMainThreadGroup();
+    /** Node for the default ClassLoader, created by the VM. */
+    public Node caseDefaultClassLoader();
+    /** Node for the String holding the name of the main class, created by
+     * the VM and passed to the class loader. */
+    public Node caseMainClassNameString();
     /** This node for method m. */
     public Node caseThis( SootMethod m );
     /** Node for index'th parameter of method m. */
@@ -46,6 +53,6 @@ public interface Parms {
     /** Node for elements of array base of type arrayType. */
     public Node caseArray( Object base, ArrayType arrayType );
     /** Adds a possible target of a call site. */
-    public void addCallTarget( Stmt s, SootMethod target, Collection addedEdges );
+    public void addCallTarget( Stmt s, SootMethod target );
 }
 

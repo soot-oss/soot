@@ -19,17 +19,17 @@
 
 package soot.jimple.spark;
 import soot.*;
+import soot.util.queue.*;
 import soot.jimple.spark.builder.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.solver.*;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.callgraph.*;
-import soot.jimple.toolkits.invoke.InvokeGraph;
-import soot.jimple.toolkits.invoke.InvokeGraphBuilder;
-import soot.jimple.toolkits.invoke.InvokeGraphTrimmer;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
+import soot.jimple.toolkits.invoke.InvokeGraph;
 import soot.jimple.*;
 import java.util.*;
+import soot.util.*;
 
 /** Main entry point for Spark.
  * @author Ondrej Lhotak
@@ -39,7 +39,6 @@ public class SparkTransformer extends SceneTransformer
     private static SparkTransformer instance = 
 	new SparkTransformer();
     private SparkTransformer() {}
-    private InvokeGraph ig;
 
     public static SparkTransformer v() { return instance; }
 
@@ -65,31 +64,16 @@ public class SparkTransformer extends SceneTransformer
     {
         SparkOptions opts = new SparkOptions( options );
 
-        /*
-        if( opts.useNewCallGraph() ) {
-            CallGraph cg = new CallGraph( new ImplicitMethodInvocation(),
-                    new DumbPointerAnalysis() );
-            cg.build();
-            for( Iterator methods = cg.getReachableMethods(); methods.hasNext(); ) {
-                System.out.println( ""+methods.next() );
-            }
-            return;
-        }
-        */
-
-        // Build invoke graph
-        Date startIg = new Date();
-        InvokeGraphBuilder.v().transform( phaseName + ".igb" );
-        ig = Scene.v().getActiveInvokeGraph();
-        Date endIg = new Date();
-        reportTime( "Invoke Graph", startIg, endIg );
-
         // Build pointer assignment graph
         Builder b = new ContextInsensitiveBuilder();
-        b.preJimplify();
+        //b.preJimplify();
         if( opts.forceGCs() ) doGC();
         Date startBuild = new Date();
-        final PAG pag = b.build( opts );
+        final PAG pag = b.setup( opts );
+        if( opts.trimInvokeGraph() ) {
+            b.getCallGraph().setInvokeGraph( new InvokeGraph() );
+        }
+        b.build();
         Date endBuild = new Date();
         reportTime( "Pointer Assignment Graph", startBuild, endBuild );
         if( opts.forceGCs() ) doGC();
@@ -150,15 +134,39 @@ public class SparkTransformer extends SceneTransformer
         if( opts.forceGCs() ) doGC();
         reportTime( "Solution found", startSimplify, endProp );
 
-        if( opts.useNewCallGraph() ) {
-            CallGraph cg = ((NewOnFlyCallGraph)pag.getOnFlyCallGraph()).getCallGraph();
-            for( Iterator methods = cg.getReachableMethods(); methods.hasNext(); ) {
-                System.out.println( ""+methods.next() );
+        HashMultiMap graph = b.getCallGraph().graph;
+        if( false ) {
+            for( Iterator srcIt = graph.keySet().iterator(); srcIt.hasNext(); ) {
+                final SootMethod src = (SootMethod) srcIt.next();
+                for( Iterator dstIt = graph.get(src).iterator(); dstIt.hasNext(); ) {
+                    final SootMethod dst = (SootMethod) dstIt.next();
+                    System.out.println( src.getBytecodeSignature()+" -> "+
+                            dst.getBytecodeSignature() );
+                }
             }
-            return;
+        }
+        if( false ) {
+            boolean change;
+            do {
+                change = false;
+                for( Iterator srcIt = new ArrayList( graph.keySet() ).iterator(); srcIt.hasNext(); ) {
+                    final SootMethod src = (SootMethod) srcIt.next();
+                    for( Iterator dstIt = new ArrayList( graph.get(src) ).iterator(); dstIt.hasNext(); ) {
+                        final SootMethod dst = (SootMethod) dstIt.next();
+                        change = graph.putAll( src, graph.get( dst ) ) | change;
+                    }
+                }
+            } while( change );
+        }
+        if( true ) {
+            for( Iterator it = b.getCallGraph().reachableMethods(); it.hasNext(); ) {
+                SootMethod m = (SootMethod) it.next();
+                System.out.println( graph.get(m).size()+" #"+m.getBytecodeSignature() );
+            }
         }
 
-        findSetMass( pag );
+
+        //findSetMass( pag );
 
         /*
         if( propagator[0] instanceof PropMerge ) {
@@ -171,22 +179,50 @@ public class SparkTransformer extends SceneTransformer
         if( opts.dumpAnswer() ) new ReachingTypeDumper( pag ).dump();
         if( opts.dumpSolution() ) dumper.dumpPointsToSets();
         if( opts.dumpHTML() ) new PAG2HTML( pag ).dump();
-        if( false ) {
-            BitPointsToSet.delete();
-            HybridPointsToSet.delete();
-            Parm.delete();
-        } else {
-            Scene.v().setActivePointsToAnalysis( pag );
+        if( true ) {
+            for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
+                final SootClass c = (SootClass) cIt.next();
+                for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
+                    SootMethod m = (SootMethod) mIt.next();
+                    if( !m.isConcrete() ) continue;
+                    if( !m.hasActiveBody() ) continue;
+                    for( Iterator sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
+                        final Stmt s = (Stmt) sIt.next();
+                        if( s instanceof DefinitionStmt ) {
+                            Value lhs = ((DefinitionStmt) s).getLeftOp();
+                            VarNode v = null;
+                            if( lhs instanceof Local ) {
+                                v = pag.findVarNode( (Local) lhs );
+                            } else if( lhs instanceof FieldRef ) {
+                                v = pag.findVarNode( ((FieldRef) lhs).getField() );
+                            }
+                            if( false && v != null ) {
+                                PointsToSetInternal p2set = v.getP2Set();
+                                p2set.forall( new P2SetVisitor() {
+                                public final void visit( Node n ) {
+                                    s.addTag( new soot.tagkit.StringTag( n.toString() ) );
+                                }} );
+                                s.addTag( new soot.tagkit.StringTag( v.toString() ) );
+                                Node[] simpleSources = pag.simpleInvLookup(v);
+                                for( int i=0; i < simpleSources.length; i++ ) {
+                                    s.addTag( new soot.tagkit.StringTag( simpleSources[i].toString() ) );
+                                }
+                                simpleSources = pag.allocInvLookup(v);
+                                for( int i=0; i < simpleSources.length; i++ ) {
+                                    s.addTag( new soot.tagkit.StringTag( simpleSources[i].toString() ) );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+        Scene.v().setActivePointsToAnalysis( pag );
         if( opts.trimInvokeGraph() ) {
-            if( opts.verbose() ) System.out.println( Scene.v()
-                    .getActiveInvokeGraph().computeStats() );
-            new InvokeGraphTrimmer( pag, ig ).trimInvokeGraph();
-            if( opts.verbose() ) System.out.println( Scene.v()
-                    .getActiveInvokeGraph().computeStats() );
+            Scene.v().setActiveInvokeGraph( b.getCallGraph().getInvokeGraph() );
         }
-        System.out.println( Scene.v().getActiveInvokeGraph().computeStats() );
     }
+    /*
     protected void findSetMass( PAG pag ) {
         int mass = 0;
         int varMass = 0;
@@ -199,8 +235,8 @@ public class SparkTransformer extends SceneTransformer
             if( set != null ) mass += set.size();
             if( set != null ) varMass += set.size();
             if( set != null && set.size() > 0 ) {
-                //System.out.println( "V "+v.getValue()+" "+set.size() );
-            //    System.out.println( ""+v.getValue()+" "+v.getMethod()+" "+set.size() );
+                //System.out.println( "V "+v.getVariable()+" "+set.size() );
+            //    System.out.println( ""+v.getVariable()+" "+v.getMethod()+" "+set.size() );
             }
         }
         for( Iterator anIt = pag.allocSources().iterator(); anIt.hasNext(); ) {
@@ -296,6 +332,7 @@ public class SparkTransformer extends SceneTransformer
             }
         }
     }
+    */
 }
 
 

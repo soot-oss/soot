@@ -56,5 +56,9 @@ public class EmptyPointsToSet extends PointsToSetInternal {
     public boolean contains( Node n ) {
         return false;
     }
+
+    public Set possibleStringConstants() { return Collections.EMPTY_SET; }
+    public Set possibleClassConstants() { return Collections.EMPTY_SET; }
+
 }
 

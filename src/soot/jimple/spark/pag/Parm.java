@@ -45,4 +45,7 @@ public class Parm implements SparkField {
     public static final void delete() {
         pairToElement = null;
     }
+    public String toString() {
+        return "Parm "+index+" to "+method;
+    }
 }

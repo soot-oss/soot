@@ -30,7 +30,9 @@ import java.util.*;
 public final class LargeNumberedMap {
     public LargeNumberedMap( Numberer universe ) {
         this.universe = universe;
-        values = new Object[universe.size()];
+        int newsize = universe.size();
+        if( newsize < 8 ) newsize = 8;
+        values = new Object[newsize];
     }
     public boolean put( Numberable key, Object value ) {
         int number = key.getNumber();
@@ -45,16 +47,14 @@ public final class LargeNumberedMap {
         return ret;
     }
     public Object get( Numberable key ) {
-        try {
-            return values[ key.getNumber() ];
-        } catch( ArrayIndexOutOfBoundsException e ) {
-            return null;
-        }
+        int i = key.getNumber();
+        if( i >= values.length ) return null;
+        return values[ i ];
     }
 
     /* Private stuff. */
 
-    private Object[] values = new Object[8];
+    private Object[] values;
     private long[] bits;
     private int size = 0;
     private Numberer universe;

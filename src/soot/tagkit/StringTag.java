@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Patrick Lam
+ * Copyright (C) 2003 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,10 +23,32 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot;
+package soot.tagkit;
+import soot.*;
 
-/** An object which can be put into a DirectedGraph.  Then again, so can Object. 
- * @deprecated: use Object instead.  This has no use.*/
-public interface Directed
+
+/** Represents a tag that just has a string to be printed with the code.
+ */
+
+public class StringTag implements  Tag
 {
+    String s;
+    public StringTag( String s ) {
+        this.s = s;
+    }
+
+    public String toString() {
+        return s;
+    }
+
+    /** Returns the tag name. */
+    public String getName() {
+        return "StringTag";
+    }
+
+    /** Returns the tag raw data. */
+    public byte[] getValue() {
+        throw new RuntimeException( "StringTag has no value for bytecode" );
+    }
 }
+

@@ -36,10 +36,7 @@ public class SparkNativeHelper extends NativeHelper {
     protected void assignObjectToImpl(ReferenceVariable lhs, AbstractObject obj) {
 	AllocNode objNode = pag.makeAllocNode( 
 		new Pair( "AbstractObject", obj.getType() ),
-    //            AnyType.v() );
-		 obj.getType().getType() );
-                // OL: Types from native method simulator can't be used, because
-                // objects may actually be subtypes of them.
+		 obj.getType(), null );
 
         VarNode var;
         if( lhs instanceof FieldRefNode ) {
@@ -66,7 +63,7 @@ public class SparkNativeHelper extends NativeHelper {
 	return source;
     }
     protected ReferenceVariable newInstanceOfImpl(ReferenceVariable cls) {
-	AllocNode site = pag.makeAllocNode( cls, AnySubType.v( RefType.v( "java.lang.Object" ) ) );
+	AllocNode site = pag.makeAllocNode( cls, AnySubType.v( RefType.v( "java.lang.Object" ) ), null );
 	VarNode local = pag.makeVarNode( site, RefType.v( "java.lang.Object" ), null );
 	pag.addEdge( site, local );
 	return local;

@@ -125,9 +125,9 @@ public class VariableTypeAnalysis2
 	  validReachingTypes.add(te.getRefType());
 	}
       }  else {
-	for (Iterator rtIt = reachingTypes.iterator(); rtIt.hasNext(); ) {
-	  TypeElement2 rt = (TypeElement2)rtIt.next();
-	  SootClass subCls = rt.getType();
+	for( Iterator rtIt = reachingTypes.iterator(); rtIt.hasNext(); ) {
+	    final TypeElement2 rt = (TypeElement2) rtIt.next();
+	  SootClass subCls = ((RefType) rt.getType()).getSootClass();
 	  if (cls.isInterface()) {
 	    boolean found = false;
 	    List classList = h.getSuperclassesOfIncluding(subCls);
@@ -345,8 +345,9 @@ public class VariableTypeAnalysis2
         TypeSet2 set;
         boolean recompute = false;
 
-        for (Iterator nodeIt = nodelist.iterator(); nodeIt.hasNext(); ) {
-            Object node = nodeIt.next();
+        for( Iterator nodeIt = nodelist.iterator(); nodeIt.hasNext(); ) {
+
+            final Object node = (Object) nodeIt.next();
             List preds = graph.getPredsOf(node);
             set = new TypeSet2();
             set.addAll(computeReachingTypes((List)node));

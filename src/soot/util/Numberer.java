@@ -31,23 +31,18 @@ public class Numberer {
 
     public void add( Numberable o ) {
         if( o.getNumber() != 0 ) return;
-        try {
-            numberToObj[lastNumber] = o;
-        } catch( ArrayIndexOutOfBoundsException e ) {
+        ++lastNumber;
+        if( lastNumber >= numberToObj.length ) {
             Numberable[] newnto = new Numberable[numberToObj.length*2];
             System.arraycopy(numberToObj, 0, newnto, 0, numberToObj.length);
             numberToObj = newnto;
-            numberToObj[lastNumber] = o;
         }
-        o.setNumber( ++lastNumber );
+        numberToObj[lastNumber] = o;
+        o.setNumber( lastNumber );
     }
 
     public Numberable get( int number ) {
-        try {
-            return numberToObj[number];
-        } catch( ArrayIndexOutOfBoundsException e ) {
-            return null;
-        }
+        return numberToObj[number];
     }
 
     public int size() { return lastNumber; }
@@ -64,12 +59,13 @@ public class Numberer {
             seekNext();
         }
         private final void seekNext() {
-            try {
-                while( numb.numberToObj[cur] == null ) {
-                    cur++;
+            while(true) {
+                if( cur >= numb.numberToObj.length ) {
+                    cur = -1;
+                    break;
                 }
-            } catch( ArrayIndexOutOfBoundsException e ) {
-                cur = -1;
+                if( numb.numberToObj[cur] != null ) break;
+                cur++;
             }
         }
         public final boolean hasNext() { return cur != -1; }
