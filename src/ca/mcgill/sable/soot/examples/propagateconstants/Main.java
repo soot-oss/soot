@@ -70,6 +70,7 @@ package ca.mcgill.sable.soot.examples.propagateconstants;
 
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.toolkit.scalar.*;
 import ca.mcgill.sable.soot.jimple.*;
 import java.io.*;
 import java.util.*;
@@ -111,11 +112,11 @@ public class Main
                 SootMethod m = (SootMethod) methodIt.next();
                 
                 JimpleBody body = (JimpleBody) m.getActiveBody();
-                StmtList stmtList = body.getStmtList();
-                CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
+                Chain units = body.getUnits();
+                CompleteUnitGraph stmtGraph = new CompleteUnitGraph(body);
                 
-                LocalDefs localDefs = new SimpleLocalDefs(stmtGraph);
-                Iterator stmtIt = stmtList.iterator();
+                UnitLocalDefs localDefs = new SimpleUnitLocalDefs(stmtGraph);
+                Iterator stmtIt = units.iterator();
                 
                 while(stmtIt.hasNext())
                 {

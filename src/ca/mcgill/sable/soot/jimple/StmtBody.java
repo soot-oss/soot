@@ -79,15 +79,12 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import java.io.*;
 
-public interface StmtBody extends Body
+public class StmtBody extends Body
 {
-    public StmtList getStmtList();
-    void redirectJumps(Stmt oldLocation, Stmt newLocation);
-    void eliminateBackPointersTo(Stmt oldLocation);
-    public List getTraps();
-    public int getLocalCount();
-    public List getLocals();
-    public List getUnitBoxes();
+    protected StmtBody(SootMethod m)
+    {
+        super(m);
+    }
 }
 
 

@@ -144,12 +144,12 @@ public class Transformations
 
     public static void removeUnusedLocals(StmtBody listBody)
     {
-        StmtList stmtList = listBody.getStmtList();
+        Chain units = listBody.getUnits();
         Set usedLocals = new HashSet();
 
         // Traverse statements noting all the uses
         {
-            Iterator stmtIt = stmtList.iterator();
+            Iterator stmtIt = units.iterator();
 
             while(stmtIt.hasNext())
             {
@@ -220,7 +220,6 @@ public class Transformations
     public static void standardizeStackLocalNames(StmtBody body)
     {
         boolean saveStackName = true;
-        StmtList stmtList = body.getStmtList();
 
         // Change the names to the standard forms now.
         {
@@ -271,7 +270,6 @@ public class Transformations
     public static void standardizeLocalNames(StmtBody body)
     {
         boolean saveStackName = true;
-        StmtList stmtList = body.getStmtList();
 
         // Change the names to the standard forms now.
         {

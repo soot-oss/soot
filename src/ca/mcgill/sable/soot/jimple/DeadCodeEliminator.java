@@ -72,6 +72,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.toolkit.scalar.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -95,12 +96,12 @@ public class DeadCodeEliminator
 
         Set essentialStmts = new HashSet();
         LinkedList toVisit = new LinkedList();
-        StmtList stmtList = body.getStmtList();
+        Chain units = body.getUnits();
         
         // Make a first pass through the statements, noting 
         // the statements we must absolutely keep. 
         {
-            Iterator stmtIt = stmtList.iterator();
+            Iterator stmtIt = units.iterator();
             
             while(stmtIt.hasNext()) 
             {
@@ -157,8 +158,8 @@ public class DeadCodeEliminator
         // Add all the statements which are used to compute values
         // for the essential statements, recursively
         {
-            CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
-            LocalDefs defs = new SimpleLocalDefs(graph);
+            CompleteUnitGraph graph = new CompleteUnitGraph(body);
+            UnitLocalDefs defs = new SimpleUnitLocalDefs(graph);
             
             while(!toVisit.isEmpty())
             {
@@ -191,9 +192,9 @@ public class DeadCodeEliminator
             }
         }
         
-        // Remove all statements which are not essential
+        // Remove some dead statements
         {
-            Iterator stmtIt = stmtList.iterator();
+            Iterator stmtIt = units.iterator();
             
             while(stmtIt.hasNext())
             {

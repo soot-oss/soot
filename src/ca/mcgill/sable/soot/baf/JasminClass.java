@@ -442,7 +442,7 @@ public class JasminClass
 
         // Assign colors to the parameter locals.
         {
-            Iterator codeIt = body.getUnitList().iterator();
+            Iterator codeIt = body.getUnits().iterator();
 
             while(codeIt.hasNext())
             {
@@ -492,7 +492,7 @@ public class JasminClass
         if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
             ca.mcgill.sable.soot.Main.buildJasminTimer.start();
         
-        List instList = body.getUnitList();
+        Chain instList = body.getUnits();
 	try { // debug
 
         // let's create a u-d web for the ++ peephole optimization.
@@ -501,10 +501,10 @@ public class JasminClass
 //              System.out.println("[" + body.getMethod().getName() +
 //                  "] Performing peephole optimizations...");
 
-//          CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
+//          CompleteUnitGraph stmtGraph = new CompleteUnitGraph(stmtList);
 
-//          LocalDefs ld = new SimpleLocalDefs(stmtGraph);
-//              LocalUses lu = new SimpleLocalUses(stmtGraph, ld);
+//          UnitLocalDefs ld = new SimpleUnitLocalDefs(stmtGraph);
+//              UnitLocalUses lu = new SimpleUnitLocalUses(stmtGraph, ld);
 
         int stackLimitIndex = -1;
         

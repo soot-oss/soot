@@ -624,16 +624,48 @@ public class Util
         return className;
     }
 
+    static public Local getLocal(Body b, String name) 
+        throws ca.mcgill.sable.soot.jimple.NoSuchLocalException
+    {
+        Iterator localIt = b.getLocals().iterator();
+
+        while(localIt.hasNext())
+        {
+            Local local = (Local) localIt.next();
+
+            if(local.getName().equals(name))
+                return local;
+        }
+
+        throw new ca.mcgill.sable.soot.jimple.NoSuchLocalException();
+    }
+
+
+    static public boolean declaresLocal(Body b, String localName)
+    {
+        Iterator localIt = b.getLocals().iterator();
+
+        while(localIt.hasNext())
+        {
+            Local local = (Local) localIt.next();
+
+            if(local.getName().equals(localName))
+                return true;
+        }
+
+        return false;
+    }
+
      static Local
         getLocalCreatingIfNecessary(JimpleBody listBody, String name, Type type)
     {
-        if(listBody.declaresLocal(name))
+        if(declaresLocal(listBody, name))
         {
-            return listBody.getLocal(name);
+            return getLocal(listBody, name);
         }
         else {
             Local l = Jimple.v().newLocal(name, type);
-            listBody.addLocal(l);
+            listBody.getLocals().add(l);
 
             return l;
         }
@@ -662,13 +694,13 @@ public class Util
         if(!assignedName)
             name = "l" + index;
 
-        if(listBody.declaresLocal(name))
-            return listBody.getLocal(name);
+        if(declaresLocal(listBody, name))
+            return getLocal(listBody, name);
         else {
             Local l = Jimple.v().newLocal(name,
                 UnknownType.v());
 
-            listBody.addLocal(l);
+            listBody.getLocals().add(l);
 
             return l;
         }

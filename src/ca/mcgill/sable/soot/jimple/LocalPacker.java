@@ -120,7 +120,7 @@ public class LocalPacker
 
         // Assign colors to the parameter locals.
         {
-            Iterator codeIt = body.getStmtList().iterator();
+            Iterator codeIt = body.getUnits().iterator();
 
             while(codeIt.hasNext())
             {
@@ -190,7 +190,7 @@ public class LocalPacker
         
         // Go through all valueBoxes of this method and perform changes
         {
-            Iterator codeIt = body.getStmtList().iterator();
+            Iterator codeIt = body.getUnits().iterator();
 
             while(codeIt.hasNext())
             {

@@ -17,6 +17,11 @@ class PatchingChain extends AbstractCollection implements Chain {
 	innerChain = aChain;
     }
 
+    public boolean add(Object o)
+    {
+        return innerChain.add(o);
+    }
+
     public void insertAfter(Object toInsert, Object point)
     {
 	innerChain.insertAfter(toInsert, point);

@@ -9,7 +9,7 @@ import ca.mcgill.sable.soot.baf.*;
 public class Block 
 {
     private Unit mHead, mTail;
-    private UnitBody mBody;
+    private Body mBody;
     private List mPreds, mSuccessors;
     private int mPredCount = 0, mBlockLength = 0, mIndexInMethod = 0;
     private BlockGraph mBlockGraph;
@@ -81,7 +81,7 @@ public class Block
 
 
 
-    public Block(Unit aHead, Unit aTail, UnitBody aBody, int aIndexInMethod, int aBlockLength, BlockGraph aBlockGraph)
+    public Block(Unit aHead, Unit aTail, Body aBody, int aIndexInMethod, int aBlockLength, BlockGraph aBlockGraph)
     {
 	mHead = aHead;	
 	mTail = aTail;

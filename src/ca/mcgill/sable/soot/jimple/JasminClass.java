@@ -142,6 +142,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.toolkit.scalar.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 import java.io.*;
@@ -441,7 +442,7 @@ public class JasminClass
 
         // Assign colors to the parameter locals.
         {
-            Iterator codeIt = body.getStmtList().iterator();
+            Iterator codeIt = body.getUnits().iterator();
 
             while(codeIt.hasNext())
             {
@@ -465,7 +466,7 @@ public class JasminClass
         }
         
         // Call the graph colorer.
-            FastColorer.assignColorsToLocals(body, localToGroup,
+            UnitFastColorer.assignColorsToLocals(body, localToGroup,
                 localToColor, groupToColorCount);
 
         if(Main.isProfilingOptimization)
@@ -491,7 +492,7 @@ public class JasminClass
         if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
             ca.mcgill.sable.soot.Main.buildJasminTimer.start();
         
-        StmtList stmtList = body.getStmtList();
+        Chain units = body.getUnits();
 
         // let's create a u-d web for the ++ peephole optimization.
 
@@ -499,10 +500,10 @@ public class JasminClass
             System.out.println("[" + body.getMethod().getName() +
                 "] Performing peephole optimizations...");
 
-        CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
+        CompleteUnitGraph stmtGraph = new CompleteUnitGraph(body);
 
-        LocalDefs ld = new SimpleLocalDefs(stmtGraph);
-            LocalUses lu = new SimpleLocalUses(stmtGraph, ld);
+        UnitLocalDefs ld = new SimpleUnitLocalDefs(stmtGraph);
+        UnitLocalUses lu = new SimpleUnitLocalUses(stmtGraph, ld);
 
         int stackLimitIndex = -1;
         
@@ -516,7 +517,7 @@ public class JasminClass
         {
             Iterator boxIt = body.getUnitBoxes().iterator();
 
-            stmtToLabel = new HashMap(stmtList.size() * 2 + 1, 0.7f);
+            stmtToLabel = new HashMap(units.size() * 2 + 1, 0.7f);
             labelCount = 0;
 
             while(boxIt.hasNext())
@@ -577,7 +578,7 @@ public class JasminClass
 
             // Handle identity statements
             {
-                Iterator stmtIt = stmtList.iterator();
+                Iterator stmtIt = units.iterator();
 
                 while(stmtIt.hasNext())
                 {
@@ -668,7 +669,7 @@ public class JasminClass
 
         // Emit code in one pass
         {
-            Iterator codeIt = stmtList.iterator();
+            Iterator codeIt = units.iterator();
 
             isEmittingMethodCode = true;
             maxStackHeight = 0; 
@@ -776,7 +777,7 @@ public class JasminClass
 
                     /* check that we have two uses and that these */
                     /* uses live precisely in nextStmt and nextNextStmt */
-                    /* LocalDefs tells us this: if there was no use, */
+                    /* UnitLocalDefs tells us this: if there was no use, */
                     /* there would be no corresponding def. */
                     if (lu.getUsesOf(stmt).size() != 2 ||
                         ld.getDefsOfAt((Local)lvalue, nextStmt).size() != 1 ||

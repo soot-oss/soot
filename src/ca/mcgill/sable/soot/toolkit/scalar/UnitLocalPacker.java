@@ -84,17 +84,17 @@ import ca.mcgill.sable.soot.jimple.*;
 
 public class UnitLocalPacker
 {
-    public static void packLocals(UnitBody body)
+    public static void packLocals(Body body)
     {
         packLocals_internal(body, false);        
     }
     
-    public static void unsplitOriginalLocals(UnitBody body)
+    public static void unsplitOriginalLocals(Body body)
     {
         packLocals_internal(body, true);    
     }
     
-    private static void packLocals_internal(UnitBody body, boolean isConservative)
+    private static void packLocals_internal(Body body, boolean isConservative)
     {
     
         Map localToGroup = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);

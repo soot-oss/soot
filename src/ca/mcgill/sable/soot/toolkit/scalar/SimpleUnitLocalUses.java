@@ -98,7 +98,7 @@ public class SimpleUnitLocalUses implements UnitLocalUses
         
         if(Main.isVerbose)
             System.out.println("[" + graph.getBody().getMethod().getName() +
-                "]     Constructing SimpleLocalUses...");
+                "]     Constructing SimpleUnitLocalUses...");
     
         unitToUses = new HashMap(graph.size() * 2 + 1, 0.7f);
     

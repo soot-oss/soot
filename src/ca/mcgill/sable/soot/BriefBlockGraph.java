@@ -7,7 +7,7 @@ import java.io.*;
 public class BriefBlockGraph extends BlockGraph 
 {
 
-    public  BriefBlockGraph(UnitBody body)
+    public  BriefBlockGraph(Body body)
     {
         super(body, BRIEF);
     }

@@ -246,10 +246,14 @@ public class Main
                 m.setActiveBody(body);
                 
                 Local tmpLocal = Jimple.v().newLocal("tmp", LongType.v());
-                body.addLocal(tmpLocal);
-                
-                StmtList stmtList = body.getStmtList();
-                ListIterator stmtIt = stmtList.listIterator();
+                body.getLocals().add(tmpLocal);
+
+                Chain units = body.getUnits();
+
+                List l = new ArrayList();
+                l.addAll(units);
+
+                Iterator stmtIt = l.iterator();
                 
                 while(stmtIt.hasNext())
                 {
@@ -281,39 +285,26 @@ public class Main
                                 counter = virtualInvokeCount;
                             else if(invokeExpr instanceof InterfaceInvokeExpr)
                                 counter = interfaceInvokeCount;    
-                                                        
-                            // insert "tmpLocal = counter;"
-                                stmtIt.add(Jimple.v().newAssignStmt(tmpLocal, 
-                                    Jimple.v().newStaticFieldRef(counter)));
-                                                        
-                            // insert "counter = tmpLocal + 1L;" 
-                                stmtIt.add(Jimple.v().newAssignStmt(
+
+                            AssignStmt toAdd1 = Jimple.v().newAssignStmt(
                                     Jimple.v().newStaticFieldRef(counter), 
-                                    Jimple.v().newAddExpr(tmpLocal, LongConstant.v(1L))));
-                    
-                            // Need to do this hideously contorted operation to make sure these statements
-                            // were added to the basic block
-                                stmtIt.previous();
-                                stmtIt.previous();
-                                stmtIt.previous();
-                                stmtIt.remove();
-                                stmtIt.next();
-                                stmtIt.next();
-                                stmtIt.add(s);
-                                
+                                    Jimple.v().newAddExpr(tmpLocal, LongConstant.v(1L)));
+
+                            AssignStmt toAdd2 = Jimple.v().newAssignStmt(tmpLocal, 
+                                    Jimple.v().newStaticFieldRef(counter)); 
+                        
+                            // insert "counter = tmpLocal + 1L;" 
+                                units.insertBefore(toAdd1, s);
+
+                            // insert "tmpLocal = counter;"
+                                units.insertAfter(toAdd2, toAdd1);
+
                             if(invokeExpr.getMethod() == systemExitMethod)
                             {   
                                 // Add a call to CounterClass before the System.exit(x) call
-                                    stmtIt.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(
-                                        counterClass.getMethod("void stopProfiling()"))));
-                                                                        
-                                // Contortions to make sure element is inserted in correct basic block.  hideous!
-                                    stmtIt.previous();
-                                    stmtIt.previous();
-                                    stmtIt.remove();
-                                    stmtIt.next();
-                                    stmtIt.add(s);
-                            }   
+                                    units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(
+                                        counterClass.getMethod("void stopProfiling()"))), s);
+                            }                                                                                        
                         }
                     }   
                 }
@@ -328,9 +319,11 @@ public class Main
                     
                 JimpleBody body = (JimpleBody) m.getActiveBody();
                 
-                StmtList stmtList = body.getStmtList();
+                Chain units = body.getUnits();
                 
-                ListIterator stmtIt = stmtList.listIterator();
+                List l = new ArrayList(); l.addAll(units);
+
+                Iterator stmtIt = l.listIterator();
                 
                 while(stmtIt.hasNext())
                 {
@@ -338,15 +331,8 @@ public class Main
                     
                     if(s instanceof ReturnVoidStmt)
                     {
-                        stmtIt.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(
-                            counterClass.getMethod("void stopProfiling()"))));       
-                     
-                        // More contortions
-                            stmtIt.previous();
-                            stmtIt.previous();
-                            stmtIt.remove();
-                            stmtIt.next();
-                            stmtIt.add(s);
+                        units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(
+                            counterClass.getMethod("void stopProfiling()"))), s);       
                     } 
                 }
             }

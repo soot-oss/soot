@@ -137,6 +137,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.toolkit.scalar.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -172,13 +173,13 @@ public class Aggregator
             Main.aggregationTimer.start();
          boolean changed = false;
 
-        Map boxToZone = new HashMap(body.getStmtList().size() * 2 + 1, 0.7f);
+        Map boxToZone = new HashMap(body.getUnits().size() * 2 + 1, 0.7f);
 
         // Determine the zone of every box
         {
             Zonation zonation = new Zonation(body);
             
-            Iterator unitIt = body.getStmtList().iterator();
+            Iterator unitIt = body.getUnits().iterator();
             
             while(unitIt.hasNext())
             {
@@ -216,16 +217,15 @@ public class Aggregator
   private static boolean internalAggregate(StmtBody body, Map boxToZone, boolean isConservative)
     {
       Iterator stmtIt;
-      LocalUses localUses;
-      LocalDefs localDefs;
-      CompleteStmtGraph graph;
+      UnitLocalUses localUses;
+      UnitLocalDefs localDefs;
+      CompleteUnitGraph graph;
       boolean hadAggregation = false;
-      StmtList stmtList = body.getStmtList();
+      Chain units = body.getUnits();
       
-
-      graph = new CompleteStmtGraph(stmtList);
-      localDefs = new SimpleLocalDefs(graph);
-      localUses = new SimpleLocalUses(graph, localDefs);
+      graph = new CompleteUnitGraph(body);
+      localDefs = new SimpleUnitLocalDefs(graph);
+      localUses = new SimpleUnitLocalUses(graph, localDefs);
           
       stmtIt = graph.pseudoTopologicalOrderIterator();
       
@@ -247,8 +247,8 @@ public class Aggregator
           if (lu.size() != 1)
             continue;
             
-          StmtValueBoxPair usepair = (StmtValueBoxPair)lu.get(0);
-          Stmt use = usepair.stmt;
+          UnitValueBoxPair usepair = (UnitValueBoxPair)lu.get(0);
+          Unit use = usepair.unit;
           ValueBox useBox = usepair.valueBox;
               
           List ld = localDefs.getDefsOfAt((Local)lhs, use);
@@ -414,8 +414,7 @@ public class Aggregator
           if (usepair.valueBox.canContainValue(aggregatee))
             {
               usepair.valueBox.setValue(aggregatee);
-              body.eliminateBackPointersTo(s);
-              stmtList.remove(s);
+              units.remove(s);
               hadAggregation = true;
               aggrCount++;
             }

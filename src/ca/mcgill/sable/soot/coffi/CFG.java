@@ -186,7 +186,7 @@ public class CFG {
    private java.util.Hashtable h;
    private int bbcount;        // statistics, number of BBs processed
 
-   StmtList stmtList;
+   Chain units;
    JimpleBody listBody;
 
    Map instructionToFirstStmt;
@@ -1561,10 +1561,10 @@ public class CFG {
    {
         Util.setClassNameToAbbreviation(new HashMap());
 
-        StmtList stmtList = listBody.getStmtList();
+        Chain units = listBody.getUnits();
 
         this.listBody = listBody;
-        this.stmtList = stmtList;
+        this.units = units;
         instructionToFirstStmt = new HashMap();
         instructionToLastStmt = new HashMap();
 
@@ -1607,12 +1607,11 @@ public class CFG {
                         
                     Local local = Jimple.v().newLocal(name, UnknownType.v());
 
-                    // stmtList.setThisLocal(local);
-                    listBody.addLocal(local);
+                    listBody.getLocals().add(local);
 
                     currentLocalIndex++;
 
-                    stmtList.add(Jimple.v().newIdentityStmt(local, Jimple.v().newThisRef(jmethod.getDeclaringClass())));
+                    units.add(Jimple.v().newIdentityStmt(local, Jimple.v().newThisRef(jmethod.getDeclaringClass())));
                 }
             }
 
@@ -1633,9 +1632,9 @@ public class CFG {
 
                     Local local = Jimple.v().newLocal(name, UnknownType.v());
                     initialLocals.add(local);
-                    listBody.addLocal(local);
+                    listBody.getLocals().add(local);
 
-                    stmtList.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(jmethod, argCount)));
+                    units.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(jmethod, argCount)));
 
                     if(type.equals(DoubleType.v()) ||
                         type.equals(LongType.v()))
@@ -2041,7 +2040,7 @@ public class CFG {
                     {
                         for(int i = 0; i < statementsForIns.size(); i++)
                         {
-                            stmtList.add(statementsForIns.get(i));
+                            units.add(statementsForIns.get(i));
                             blockStatements.add(statementsForIns.get(i));
                         }
 
@@ -2103,9 +2102,7 @@ public class CFG {
 
                     // Determine the last stmt
                     {
-                        int afterLastIndex = stmtList.indexOf(instructionToLastStmt.get(endIns));
-
-                        lastStmt = (Stmt) stmtList.get(afterLastIndex - 1);
+                        lastStmt = (Stmt)units.getPredOf(instructionToLastStmt.get(endIns));
                     }
 
                     if(!instructionToFirstStmt.containsKey(targetIns))
@@ -2146,14 +2143,12 @@ public class CFG {
                             newTarget = (Stmt) targetToHandler.get(firstTargetStmt);
                         else
                         {
-                            int targetIndex = stmtList.indexOf(firstTargetStmt);
-    
                             Local local = Util.getLocalCreatingIfNecessary(listBody, "$stack0",
                                 UnknownType.v());
     
                             newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef(listBody));
     
-                            stmtList.add(targetIndex, newTarget);
+                            units.insertBefore(newTarget, firstTargetStmt);
                             
                             targetToHandler.put(firstTargetStmt, newTarget);
                         }
@@ -2161,11 +2156,10 @@ public class CFG {
 
                     // Insert trap
                     {
-                        int endIndex = stmtList.indexOf(lastStmt);
-                        Stmt afterEndStmt = (Stmt) stmtList.get(endIndex + 1);
+                        Stmt afterEndStmt = (Stmt)units.getSuccOf(lastStmt);
 
                         Trap trap = Jimple.v().newTrap(exception, firstStmt, afterEndStmt, newTarget);
-                        listBody.addTrap(trap);
+                        listBody.getTraps().add(trap);
                     }
 
                     /*

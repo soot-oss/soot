@@ -119,10 +119,14 @@ public class Main
                 m.setActiveBody(body);
                                                 
                 Local tmpLocal = Jimple.v().newLocal("tmp", LongType.v());
-                body.addLocal(tmpLocal);
+                body.getLocals().add(tmpLocal);
                 
-                StmtList stmtList = body.getStmtList();
-                ListIterator stmtIt = stmtList.listIterator();
+                Chain units = body.getUnits();
+
+                List l = new ArrayList();
+                l.addAll(units);
+
+                Iterator stmtIt = l.iterator();
                 
                 while(stmtIt.hasNext())
                 {
@@ -130,26 +134,17 @@ public class Main
                     
                     if(s instanceof GotoStmt)
                     {
-                        // Back up before the GotoStmt
-                            stmtIt.previous();
-                        
+                        AssignStmt toAdd1 = Jimple.v().newAssignStmt(tmpLocal, 
+                                Jimple.v().newStaticFieldRef(gotoCounter));
+                        AssignStmt toAdd2 = Jimple.v().newAssignStmt(
+                                Jimple.v().newStaticFieldRef(gotoCounter), 
+                                Jimple.v().newAddExpr(tmpLocal, LongConstant.v(1L)));
+
                         // insert "tmpLocal = gotoCounter;"
-                            stmtIt.add(Jimple.v().newAssignStmt(tmpLocal, 
-                                Jimple.v().newStaticFieldRef(gotoCounter)));
-                        
-                        // skip over statement just added
-                            stmtIt.next();
+                            units.insertBefore(toAdd1, s);
                         
                         // insert "gotoCounter = tmpLocal + 1L;" 
-                            stmtIt.add(Jimple.v().newAssignStmt(
-                                Jimple.v().newStaticFieldRef(gotoCounter), 
-                                Jimple.v().newAddExpr(tmpLocal, LongConstant.v(1L))));
-                                
-                        // skip over statement just added
-                            stmtIt.next();
-                         
-                        // skip over the goto
-                            stmtIt.next();
+                            units.insertBefore(toAdd2, s);
                     }
                 }
             }
@@ -160,28 +155,26 @@ public class Main
             SootMethod m = sClass.getMethod("void main(java.lang.String[])");
                 
             JimpleBody body = (JimpleBody) m.getActiveBody();
-            StmtList stmtList = body.getStmtList();
-            
-            int returnIndex = stmtList.size() - 1;
+            Chain units = body.getUnits();
             
             Local tmpRef = Jimple.v().newLocal("tmpRef", RefType.v("java.io.PrintStream"));
-            body.addLocal(tmpRef);
+            body.getLocals().add(tmpRef);
             
             Local tmpLong = Jimple.v().newLocal("tmpLong", LongType.v()); 
-            body.addLocal(tmpLong);
+            body.getLocals().add(tmpLong);
             
             // insert "tmpRef = java.lang.System.out;"
-                stmtList.add(returnIndex, Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
+                units.addLast(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
                     Scene.v().getField("<java.lang.System: java.io.PrintStream out>"))));
             
             // insert "tmpLong = gotoCounter;"
-                stmtList.add(returnIndex + 1, Jimple.v().newAssignStmt(tmpLong, Jimple.v().newStaticFieldRef(
+                units.addLast(Jimple.v().newAssignStmt(tmpLong, Jimple.v().newStaticFieldRef(
                     gotoCounter)));
             
             // insert "tmpRef.println(tmpLong);"
             {
                 SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(long)>");                    
-                stmtList.add(returnIndex + 2, Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, tmpLong)));
+                units.addLast(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, tmpLong)));
             }
         }
         

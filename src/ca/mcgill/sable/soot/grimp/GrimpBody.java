@@ -82,10 +82,8 @@ import java.util.*;
 import ca.mcgill.sable.soot.baf.*;
 import java.io.*;
 
-public class GrimpBody extends AbstractBody implements StmtBody
+public class GrimpBody extends StmtBody
 {
-    StmtList stmtList;
-
     /**
         Construct an empty GrimpBody 
      **/
@@ -93,7 +91,6 @@ public class GrimpBody extends AbstractBody implements StmtBody
     public GrimpBody(SootMethod m)
     {
         super(m);
-        stmtList = new StmtList(this);   
     }
 
     public GrimpBody(Body body)
@@ -126,13 +123,12 @@ public class GrimpBody extends AbstractBody implements StmtBody
 
         Iterator it = jBody.getLocals().iterator();
         while (it.hasNext())
-            addLocal(((Local)(it.next())));
+            getLocals().add(((Local)(it.next())));
             //            getLocals().add(((Local)(it.next())).clone());
 
-        stmtList = new StmtList(this);
-        it = jBody.getStmtList().iterator();
+        it = jBody.getUnits().iterator();
 
-        final HashMap oldToNew = new HashMap(stmtList.size() * 2 + 1, 0.7f);
+        final HashMap oldToNew = new HashMap(getUnits().size() * 2 + 1, 0.7f);
         LinkedList updates = new LinkedList();
 
         /* we should Grimpify the Stmt's here... */
@@ -226,7 +222,7 @@ public class GrimpBody extends AbstractBody implements StmtBody
                     b.setValue(Grimp.v().newExpr(b.getValue()));
                 }
 
-            stmtList.add(newStmt);
+            getUnits().add(newStmt);
             oldToNew.put(oldStmt, newStmt);
             if (updateStmtBox.getUnit() != null)
                 updates.add(updateStmtBox.getUnit());
@@ -286,7 +282,7 @@ public class GrimpBody extends AbstractBody implements StmtBody
         while (it.hasNext())
         {
             Trap oldTrap = (Trap)(it.next());
-            addTrap(Grimp.v().newTrap
+            getTraps().add(Grimp.v().newTrap
                            (oldTrap.getException(),
                             (Unit)(oldToNew.get(oldTrap.getBeginUnit())),
                             (Unit)(oldToNew.get(oldTrap.getEndUnit())),
@@ -309,471 +305,176 @@ public class GrimpBody extends AbstractBody implements StmtBody
         }    
     }
 
-
-    public StmtList getStmtList()
-    {
-        return stmtList;
-    }
-
-    public void redirectJumps(Stmt oldLocation, Stmt newLocation)
-    {
-        List boxesPointing = oldLocation.getBoxesPointingToThis();
-
-        Object[] boxes = boxesPointing.toArray();
-            // important to change this to an array to have a static copy
-
-        for(int i = 0; i < boxes.length; i++)
-        {
-            StmtBox box = (StmtBox) boxes[i];
-
-            if(box.getUnit() != oldLocation)
-                throw new RuntimeException("Something weird's happening");
-
-            box.setUnit(newLocation);
-        }
-
-    }
-
-    public void eliminateBackPointersTo(Stmt oldLocation)
-    {
-        Iterator boxIt = oldLocation.getUnitBoxes().iterator();
-
-        while(boxIt.hasNext())
-        {
-            StmtBox box = (StmtBox) boxIt.next();
-            Stmt stmt = (Stmt) box.getUnit();
-
-            stmt.getBoxesPointingToThis().remove(oldLocation);
-        }
-    }
-
-    public List getUnitBoxes()
-    {
-        List stmtBoxes = new ArrayList();
-
-        // Put in all statement boxes from the statements
-            Iterator stmtIt = stmtList.iterator();
-
-            while(stmtIt.hasNext())
-            {
-                Stmt stmt = (Stmt) stmtIt.next();
-
-                Iterator boxIt = stmt.getUnitBoxes().iterator();
-
-                while(boxIt.hasNext())
-                    stmtBoxes.add(boxIt.next());
-            }
-
-        // Put in all statement boxes from the trap table
-        {
-            Iterator trapIt = getTraps().iterator();
-
-            while(trapIt.hasNext())
-            {
-                Trap trap = (Trap) trapIt.next();
-                stmtBoxes.addAll(trap.getUnitBoxes());
-            }
-        }
-
-        return stmtBoxes;
-    }
-
-    public void printTo(java.io.PrintWriter out)
-    {
-        printTo(out, 0);
-    }
-
-    public void printTo(PrintWriter out, int printBodyOptions)
-    {
-        boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
-
-        if(PrintJimpleBodyOption.debugMode(printBodyOptions))
-        {
-            print_debug(out);
-            return;
-        }
-        
-        //System.out.println("Constructing the graph of " + getName() + "...");
-
-        StmtList stmtList = this.getStmtList();
-
-        Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
-
-        // Print out method name plus parameters
-        {
-            StringBuffer buffer = new StringBuffer();
-
-            buffer.append(Modifier.toString(getMethod().getModifiers()));
-
-            if(buffer.length() != 0)
-                buffer.append(" ");
-
-            buffer.append(getMethod().getReturnType().toString() + " " + getMethod().getName());
-            buffer.append("(");
-
-            Iterator typeIt = getMethod().getParameterTypes().iterator();
-
-            if(typeIt.hasNext())
-            {
-                buffer.append(typeIt.next());
-
-                while(typeIt.hasNext())
-                {
-                    buffer.append(", ");
-                    buffer.append(typeIt.next());
-                }
-            }
-
-            buffer.append(")");
-
-            out.print("    " + buffer.toString());
-        }
-
-        out.println();
-        out.println("    {");
-
-        /*
-        // Print out local variables
-        {
-            Local[] locals = getLocals();
-
-            for(int j = 0; j < locals.length; j++)
-                out.println("        " + locals[j].getType().toString() + " " +
-                    locals[j].getName());
-        }
-
-        */
-            
-        // Print out local variables
-        {
-            Map typeToLocals = new DeterministicHashMap(this.getLocalCount() * 2 + 1, 0.7f);
-
-            // Collect locals
-            {
-                Iterator localIt = this.getLocals().iterator();
-
-                while(localIt.hasNext())
-                {
-                    Local local = (Local) localIt.next();
-
-                    List localList;
- 
-                    if(typeToLocals.containsKey(local.getType().toString()))
-                        localList = (List) typeToLocals.get(local.getType().toString());
-                    else
-                    {
-                        localList = new ArrayList();
-                        typeToLocals.put(local.getType().toString(), localList);
-                    }
-
-                    localList.add(local);
-                }
-            }
-
-            // Print locals
-            {
-                Iterator typeIt = typeToLocals.keySet().iterator();
-
-                while(typeIt.hasNext())
-                {
-                    String type = (String) typeIt.next();
-
-                    List localList = (List) typeToLocals.get(type);
-                    Object[] locals = localList.toArray();
-
-                    out.print("        " + type + " ");
-
-                    for(int k = 0; k < locals.length; k++)
-                    {
-                        if(k != 0)
-                            out.print(", ");
-
-                        out.print(((Local) locals[k]).getName());
-                    }
-
-                    out.println(";");
-                }
-            }
-
-
-            if(!typeToLocals.isEmpty())
-                out.println();
-        }
-
-        // Print out statements
-            printStatementsInBody(out, isPrecise);
-
-        out.println("    }");
-    }
-
-    void printStatementsInBody(java.io.PrintWriter out, boolean isPrecise)
-    {
-        StmtList stmtList = this.getStmtList();
-
-        Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
-        StmtGraph stmtGraph = new BriefStmtGraph(stmtList);
-
-        // Create statement name table
-        {
-            Iterator boxIt = this.getUnitBoxes().iterator();
-
-            Set labelStmts = new HashSet();
-
-            // Build labelStmts
-            {
-                while(boxIt.hasNext())
-                {
-                    StmtBox box = (StmtBox) boxIt.next();
-                    Stmt stmt = (Stmt) box.getUnit();
-
-                    labelStmts.add(stmt);
-                }
-            }
-
-            // Traverse the stmts and assign a label if necessary
-            {
-                int labelCount = 0;
-
-                Iterator stmtIt = stmtList.iterator();
-
-                while(stmtIt.hasNext())
-                {
-                    Stmt s = (Stmt) stmtIt.next();
-
-                    if(labelStmts.contains(s))
-                        stmtToName.put(s, "label" + (labelCount++));
-                }
-            }
-        }
-
-        for(int j = 0; j < stmtList.size(); j++)
-        {
-            Stmt s = ((Stmt) stmtList.get(j));
-
-            // Put an empty line if the previous node was a branch node, the current node is a join node
-            //   or the previous statement does not have this statement as a successor, or if
-            //   this statement has a label on it
-            {
-                if(j != 0)
-                {
-                    Stmt previousStmt = (Stmt) stmtList.get(j - 1);
-
-                    if(stmtGraph.getSuccsOf(previousStmt).size() != 1 ||
-                        stmtGraph.getPredsOf(s).size() != 1 ||
-                        stmtToName.containsKey(s))
-                        out.println();
-                    else {
-                        // Or if the previous node does not have this statement as a successor.
-
-                        List succs = stmtGraph.getSuccsOf(previousStmt);
-
-                        if(succs.get(0) != s)
-                            out.println();
-
-                    }
-                }
-            }
-
-            if(stmtToName.containsKey(s))
-                out.println("     " + stmtToName.get(s) + ":");
-
-            if(isPrecise)
-                out.print(s.toString(stmtToName, "        "));
-            else
-                out.print(s.toBriefString(stmtToName, "        "));
-
-            out.print(";");
-            out.println();
-        }
-
-        // Print out exceptions
-        {
-            Iterator trapIt = this.getTraps().iterator();
-
-            if(trapIt.hasNext())
-                out.println();
-
-            while(trapIt.hasNext())
-            {
-                Trap trap = (Trap) trapIt.next();
-
-                out.println("        .catch " + trap.getException().getName() + " from " +
-                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
-                    " with " + stmtToName.get(trap.getHandlerUnit()));
-            }
-        }
-    }
-
-    void print_debug(java.io.PrintWriter out)
-    {
-        StmtList stmtList = this.getStmtList();
+//      void print_debug(java.io.PrintWriter out)
+//      {
+//          StmtList stmtList = this.getUnits();
 
         
-        Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
-/*
-        StmtGraph stmtGraph = new BriefStmtGraph(stmtList);
-*/
-        /*
-        System.out.println("Constructing LocalDefs of " + this.getMethod().getName() + "...");
+//          Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
+//  /*
+//          StmtGraph stmtGraph = new BriefStmtGraph(stmtList);
+//  */
+//          /*
+//          System.out.println("Constructing UnitLocalDefs of " + this.getMethod().getName() + "...");
 
-        LocalDefs localDefs = new LocalDefs(graphBody);
+//          UnitLocalDefs localDefs = new UnitLocalDefs(graphBody);
 
-        System.out.println("Constructing LocalUses of " + getName() + "...");
+//          System.out.println("Constructing UnitLocalUses of " + getName() + "...");
 
-        LocalUses localUses = new LocalUses(stmtGraph, localDefs);
+//          UnitLocalUses localUses = new UnitLocalUses(stmtGraph, localDefs);
 
-        LocalCopies localCopies = new LocalCopies(stmtGraph);
+//          LocalCopies localCopies = new LocalCopies(stmtGraph);
 
-        System.out.println("Constructing LiveLocals of " + this.getMethod().getName() + " ...");
-        LiveLocals liveLocals = new LiveLocals(stmtGraph);
-        */
+//          System.out.println("Constructing UnitLiveLocals of " + this.getMethod().getName() + " ...");
+//          UnitLiveLocals liveLocals = new UnitLiveLocals(stmtGraph);
+//          */
 
-        // Create statement name table
-        {
-           int labelCount = 0;
+//          // Create statement name table
+//          {
+//             int labelCount = 0;
 
-            Iterator stmtIt = stmtList.iterator();
+//              Iterator stmtIt = stmtList.iterator();
 
-            while(stmtIt.hasNext())
-            {
-                Stmt s = (Stmt) stmtIt.next();
+//              while(stmtIt.hasNext())
+//              {
+//                  Stmt s = (Stmt) stmtIt.next();
 
-                stmtToName.put(s, new Integer(labelCount++).toString());
-            }
-        }
+//                  stmtToName.put(s, new Integer(labelCount++).toString());
+//              }
+//          }
 
-        for(int j = 0; j < stmtList.size(); j++)
-        {
-            Stmt s = ((Stmt) stmtList.get(j));
+//          for(int j = 0; j < stmtList.size(); j++)
+//          {
+//              Stmt s = ((Stmt) stmtList.get(j));
 
-            out.print("    " + stmtToName.get(s) + ": ");
+//              out.print("    " + stmtToName.get(s) + ": ");
 
-            out.print(s.toString(stmtToName, "        "));
-            out.print(";");
-        /*
+//              out.print(s.toString(stmtToName, "        "));
+//              out.print(";");
+//          /*
 
-            // Print info about live locals
-            {
-                Iterator localIt = liveLocals.getLiveLocalsAfter(s).iterator();
+//              // Print info about live locals
+//              {
+//                  Iterator localIt = liveLocals.getLiveLocalsAfter(s).iterator();
 
-                out.print("   [");
+//                  out.print("   [");
 
-                while(localIt.hasNext())
-                {
-                    out.print(localIt.next());
+//                  while(localIt.hasNext())
+//                  {
+//                      out.print(localIt.next());
 
-                    if(localIt.hasNext())
-                        out.print(", ");
+//                      if(localIt.hasNext())
+//                          out.print(", ");
 
-                }
+//                  }
 
-                out.print("]");
-            }
-        */
+//                  out.print("]");
+//              }
+//          */
 
 
-             /*
-             // Print info about uses
-                if(s instanceof DefinitionStmt)
-                {
-                    Iterator useIt = localUses.getUsesOf((DefinitionStmt) s).iterator();
+//               /*
+//               // Print info about uses
+//                  if(s instanceof DefinitionStmt)
+//                  {
+//                      Iterator useIt = localUses.getUsesOf((DefinitionStmt) s).iterator();
 
-                    out.print("   (");
+//                      out.print("   (");
 
-                    while(useIt.hasNext())
-                    {
-                        if(k != 0)
-                            out.print(", ");
+//                      while(useIt.hasNext())
+//                      {
+//                          if(k != 0)
+//                              out.print(", ");
 
-                        out.print(stmtToName.get(useIt.next()));
-                    }
+//                          out.print(stmtToName.get(useIt.next()));
+//                      }
 
-                    out.print(")");
-                }
-            */
+//                      out.print(")");
+//                  }
+//              */
 
-/*
-            // Print info about defs
-            {
-                Iterator boxIt = s.getUseBoxes().iterator();
+//  /*
+//              // Print info about defs
+//              {
+//                  Iterator boxIt = s.getUseBoxes().iterator();
 
-                while(boxIt.hasNext())
-                {
-                    ValueBox useBox = (ValueBox) boxIt.next();
+//                  while(boxIt.hasNext())
+//                  {
+//                      ValueBox useBox = (ValueBox) boxIt.next();
 
-                    if(useBox.getValue() instanceof Local)
-                    {
-                        Iterator defIt = localDefs.getDefsOfAt((Local) useBox.getValue(), s).iterator();
+//                      if(useBox.getValue() instanceof Local)
+//                      {
+//                          Iterator defIt = localDefs.getDefsOfAt((Local) useBox.getValue(), s).iterator();
 
-                        out.print("  " + useBox.getValue() + " = {");
+//                          out.print("  " + useBox.getValue() + " = {");
 
-                        while(defIt.hasNext())
-                        {
-                            out.print(stmtToName.get((Stmt) defIt.next()));
+//                          while(defIt.hasNext())
+//                          {
+//                              out.print(stmtToName.get((Stmt) defIt.next()));
 
-                            if(defIt.hasNext())
-                                out.print(", ");
-                        }
+//                              if(defIt.hasNext())
+//                                  out.print(", ");
+//                          }
 
-                        out.print("}");
-                    }
-                }
-            } */
-            /*
-            // Print info about successors
-            {
-                Iterator succIt = stmtGraph.getSuccsOf(s).iterator();
+//                          out.print("}");
+//                      }
+//                  }
+//              } */
+//              /*
+//              // Print info about successors
+//              {
+//                  Iterator succIt = stmtGraph.getSuccsOf(s).iterator();
 
-                out.print("    [");
+//                  out.print("    [");
 
-                if(succIt.hasNext())
-                {
-                    out.print(stmtToName.get(succIt.next()));
+//                  if(succIt.hasNext())
+//                  {
+//                      out.print(stmtToName.get(succIt.next()));
 
-                    while(succIt.hasNext())
-                    {
-                        Stmt stmt = (Stmt) succIt.next();
+//                      while(succIt.hasNext())
+//                      {
+//                          Stmt stmt = (Stmt) succIt.next();
 
-                        out.print(", " + stmtToName.get(stmt));
-                    }
-                }
+//                          out.print(", " + stmtToName.get(stmt));
+//                      }
+//                  }
 
-                out.print("]");
-            }
-                */
-            /*
-            // Print info about predecessors
-            {
-                Stmt[] preds = stmtGraph.getPredsOf(s);
+//                  out.print("]");
+//              }
+//                  */
+//              /*
+//              // Print info about predecessors
+//              {
+//                  Stmt[] preds = stmtGraph.getPredsOf(s);
 
-                out.print("    {");
+//                  out.print("    {");
 
-                for(int k = 0; k < preds.length; k++)
-                {
-                    if(k != 0)
-                        out.print(", ");
+//                  for(int k = 0; k < preds.length; k++)
+//                  {
+//                      if(k != 0)
+//                          out.print(", ");
 
-                    out.print(stmtToName.get(preds[k]));
-                }
+//                      out.print(stmtToName.get(preds[k]));
+//                  }
 
-                out.print("}");
-            }
-            */
-            out.println();
-        }
+//                  out.print("}");
+//              }
+//              */
+//              out.println();
+//          }
 
-        // Print out exceptions
-        {
-            Iterator trapIt = this.getTraps().iterator();
+//          // Print out exceptions
+//          {
+//              Iterator trapIt = this.getTraps().iterator();
 
-            while(trapIt.hasNext())
-            {
-                Trap trap = (Trap) trapIt.next();
+//              while(trapIt.hasNext())
+//              {
+//                  Trap trap = (Trap) trapIt.next();
 
-                out.println(".catch " + trap.getException().getName() + " from " +
-                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
-                    " with " + stmtToName.get(trap.getHandlerUnit()));
-            }
-        }
-    }
+//                  out.println(".catch " + trap.getException().getName() + " from " +
+//                      stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
+//                      " with " + stmtToName.get(trap.getHandlerUnit()));
+//              }
+//          }
+//      }
 }

@@ -95,7 +95,6 @@ public class HashChain extends AbstractCollection
 
 	while(it.hasNext()) {
 	    Unit tempp = (Unit) it.next();
-	    System.out.println(tempp.toString());
 	    Unit copy = (Unit) tempp.clone();
 	    bindings.put(tempp,copy);
 	    chain.addLast(copy);
@@ -170,7 +169,7 @@ public class HashChain extends AbstractCollection
         Link link = (Link) map.get(item);
         
         link.unlinkSelf();
-        map.remove(link);
+        map.remove(item);
         return true;
     }
 

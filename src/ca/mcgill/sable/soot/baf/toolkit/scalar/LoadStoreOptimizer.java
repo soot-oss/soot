@@ -35,7 +35,7 @@ public class LoadStoreOptimizer
 
 
     protected Chain mUnits;
-    protected UnitBody mBody;
+    protected Body mBody;
     protected CompleteUnitGraph mCompleteUnitGraph;
     protected UnitLocalDefs mLocalDefs;
     protected UnitLocalUses mLocalUses;
@@ -85,7 +85,7 @@ public class LoadStoreOptimizer
     }
 
 
-    public void optimize(UnitBody body) 
+    public void optimize(Body body) 
     {
 	mBody = body;	
 	mUnits =  mBody.getUnits();

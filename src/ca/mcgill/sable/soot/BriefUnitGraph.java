@@ -7,7 +7,7 @@ import java.util.*;
 
 public class BriefUnitGraph extends UnitGraph
 {
-    public BriefUnitGraph(UnitBody body)
+    public BriefUnitGraph(Body body)
     {
         super(body, false);
     }

@@ -7,7 +7,7 @@ import java.util.*;
 
 
 public class UnusedLocalRemover { 
-public static void removeUnusedLocals(UnitBody listBody)
+public static void removeUnusedLocals(Body listBody)
     {
 
         Set usedLocals = new HashSet();

@@ -78,12 +78,12 @@ public class Zonation
     
     public Zonation(StmtBody body)
     {
-        StmtList stmtList = body.getStmtList();
+        Chain units = body.getUnits();
         Map unitToTrapBoundaries = new HashMap();
         
         // Initialize each unit to an empty set
         {
-            Iterator unitIt = stmtList.iterator();
+            Iterator unitIt = units.iterator();
             
             while(unitIt.hasNext())
             {
@@ -116,13 +116,13 @@ public class Zonation
             Zone currentZone;
             
             zoneCount = 0;
-            unitToZone = new HashMap(stmtList.size() * 2 + 1, 0.7f);
+            unitToZone = new HashMap(units.size() * 2 + 1, 0.7f);
                         
             // Initialize first empty zone
                 currentZone = new Zone("0");
                 trapListToZone.put(new ArrayList(), currentZone);
                 
-            Iterator unitIt = stmtList.iterator();
+            Iterator unitIt = units.iterator();
             
             while(unitIt.hasNext())
             {

@@ -223,7 +223,7 @@ class TypeResolver
             classHierarchy = ClassHierarchy.getClassHierarchy(Scene.v());
             
             // Collect constraints
-            for(Iterator i = stmtBody.getStmtList().iterator(); i.hasNext();)
+            for(Iterator i = stmtBody.getUnits().iterator(); i.hasNext();)
             {
                 Stmt stmt = (Stmt) i.next();
                 stmt.apply(constraintCollector);

@@ -102,31 +102,31 @@ public class Main
             JimpleBody body = new JimpleBody(method);
             
             method.setActiveBody(body);
-            StmtList stmts = body.getStmtList();
+            Chain units = body.getUnits();
             Local arg, tmpRef;
             
             // Add some locals
                 arg = Jimple.v().newLocal("l0", ArrayType.v(RefType.v("java.lang.String"), 1));
-                body.addLocal(arg);
+                body.getLocals().add(arg);
             
                 tmpRef = Jimple.v().newLocal("tmpRef", RefType.v("java.io.PrintStream"));
-                body.addLocal(tmpRef);
+                body.getLocals().add(tmpRef);
                 
             // add "l0 = @parameter0"
-                stmts.add(Jimple.v().newIdentityStmt(arg, Jimple.v().newParameterRef(method, 0)));
+                units.add(Jimple.v().newIdentityStmt(arg, Jimple.v().newParameterRef(method, 0)));
             
             // add "tmpRef = java.lang.System.out"
-                stmts.add(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
+                units.add(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
                     Scene.v().getField("<java.lang.System: java.io.PrintStream out>"))));
             
             // insert "tmpRef.println("Hello world!")"
             {
                 SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
-                stmts.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, StringConstant.v("Hello world!"))));
+                units.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, StringConstant.v("Hello world!"))));
             }                        
             
             // insert "return"
-                stmts.add(Jimple.v().newReturnVoidStmt());
+                units.add(Jimple.v().newReturnVoidStmt());
                 
         }
 

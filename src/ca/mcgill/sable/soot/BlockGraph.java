@@ -7,7 +7,7 @@ import ca.mcgill.sable.soot.baf.*;
 
 public class BlockGraph 
 {
-    UnitBody mBody;
+    Body mBody;
     Chain mUnits;
     List mBlocks;
 
@@ -18,7 +18,7 @@ public class BlockGraph
     private Map blockToSuccs;
     private Map blockToPreds;
     
-    public UnitBody getBody()
+    public Body getBody()
     {
 	return mBody;
     }
@@ -34,7 +34,7 @@ public class BlockGraph
      * 2) Use the leaders found in step 1 to slice the linear chain of 
      *    units into basic blocks, with the leaders as delimiters.
      */ 
-    BlockGraph(UnitBody aBody, int type) 
+    BlockGraph(Body aBody, int type) 
     {
 	mBody = aBody;
 	mUnits = aBody.getUnits();
@@ -42,7 +42,7 @@ public class BlockGraph
 
 	Map trapBeginUnits = new HashMap();  // Map a unit to all 
 	List trapsInScope = null;    // List of Trap that can be invoked at a given unit
-	Chain traps = null;          // Traps for this UnitBody
+	Chain traps = null;          // Traps for this Body
 
 
 	/*
@@ -53,7 +53,7 @@ public class BlockGraph
 	
 	    
 	// if(type == COMPLETE) {
-	// Get the list of all traps for this UnitBody
+	// Get the list of all traps for this Body
 	traps = mBody.getTraps();
 	trapsInScope = new ArrayList(traps.size());
 	    
@@ -91,7 +91,7 @@ public class BlockGraph
 
 
 	{
-	    // Iterate over the UnitBody searching for leaders.
+	    // Iterate over the Body searching for leaders.
 	    Iterator it = mUnits.iterator();
 	    Unit currentUnit, nextUnit; 
 	    nextUnit = it.hasNext() ? (Unit) it.next(): null;

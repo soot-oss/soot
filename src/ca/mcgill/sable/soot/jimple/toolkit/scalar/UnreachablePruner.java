@@ -13,13 +13,13 @@ public class UnreachablePruner {
     static boolean debug = false;
     static boolean verbose = false;
 
-    static CompleteStmtGraph stmtGraph;
+    static CompleteUnitGraph stmtGraph;
     static HashSet visited;
     static int numPruned;
 
     public static void pruneUnreachables(StmtBody body) {
 	numPruned = 0;
-	stmtGraph = new CompleteStmtGraph(body.getStmtList());
+	stmtGraph = new CompleteUnitGraph(body);
 	visited = new HashSet();
 
 	verbose = ca.mcgill.sable.soot.Main.isVerbose;
@@ -29,10 +29,10 @@ public class UnreachablePruner {
 	    System.out.println("    ... starting unreachable pruner ...");
 
 	// mark first statement and all its successors, recursively
-	if (!body.getStmtList().isEmpty())
-	    visitStmt((Stmt)body.getStmtList().get(0));
+	if (!body.getUnits().isEmpty())
+	    visitStmt((Stmt)body.getUnits().getFirst());
 
-	Iterator stmtIt = body.getStmtList().iterator();
+	Iterator stmtIt = body.getUnits().iterator();
 	while (stmtIt.hasNext()) {
 	    // find unmarked nodes
 	    Stmt stmt = (Stmt)stmtIt.next();

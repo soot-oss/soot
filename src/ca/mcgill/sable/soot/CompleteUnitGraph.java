@@ -77,7 +77,7 @@ import java.util.*;
 
 public class CompleteUnitGraph extends UnitGraph
 {
-    public CompleteUnitGraph(UnitBody body)
+    public CompleteUnitGraph(Body body)
     {
         super(body, true);
     }

@@ -79,7 +79,7 @@ import java.util.*;
 
 public class UnitFastColorer
 {   
-    public static void unsplitAssignColorsToLocals(UnitBody unitBody, Map localToGroup, 
+    public static void unsplitAssignColorsToLocals(Body unitBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
     {
 	
@@ -221,7 +221,7 @@ public class UnitFastColorer
                             
     }    
     
-    public static void assignColorsToLocals(UnitBody unitBody, Map localToGroup, 
+    public static void assignColorsToLocals(Body unitBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
     {
        
@@ -326,7 +326,7 @@ public class UnitFastColorer
             return locals;
         }
         
-        public UnitInterferenceGraph(UnitBody body, Map localToGroup, UnitLiveLocals liveLocals)
+        public UnitInterferenceGraph(Body body, Map localToGroup, UnitLiveLocals liveLocals)
         {
 
             locals = new ArrayList();

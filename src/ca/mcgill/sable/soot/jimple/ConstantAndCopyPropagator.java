@@ -68,6 +68,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.toolkit.scalar.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -111,13 +112,13 @@ public class ConstantAndCopyPropagator
         if(Main.isProfilingOptimization)
             Main.propagatorTimer.start();                
                 
-        StmtList stmtList = stmtBody.getStmtList();
+        Chain units = stmtBody.getUnits();
 
         Map localToDefCount = new HashMap();
         
         // Count number of definitions for each local.
         {
-            Iterator stmtIt = stmtList.iterator();
+            Iterator stmtIt = units.iterator();
         
             while(stmtIt.hasNext())
             {
@@ -139,27 +140,13 @@ public class ConstantAndCopyPropagator
         
 //            ((JimpleBody) stmtBody).printDebugTo(new java.io.PrintWriter(System.out, true));
             
-        CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
+        CompleteUnitGraph graph = new CompleteUnitGraph(stmtBody);
 
-        LocalDefs localDefs;
+        UnitLocalDefs localDefs;
         
-        if(Main.usePackedDefs) 
-        {
-            localDefs = new SimpleLocalDefs(graph);
-        }
-        else {
-            LiveLocals liveLocals;
-        
-            if(Main.usePackedLive) 
-                liveLocals = new SimpleLiveLocals(graph);
-            else
-                liveLocals = new SparseLiveLocals(graph);    
+        localDefs = new SimpleUnitLocalDefs(graph);
 
-            localDefs = new SparseLocalDefs(graph, liveLocals);                
-        }           
-
-
-        LocalUses localUses = new SimpleLocalUses(graph, localDefs);
+        UnitLocalUses localUses = new SimpleUnitLocalUses(graph, localDefs);
 
         // Perform a constant/local propagation pass.
         {

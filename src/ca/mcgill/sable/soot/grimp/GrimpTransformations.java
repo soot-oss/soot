@@ -75,6 +75,7 @@
 package ca.mcgill.sable.soot.grimp;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.toolkit.scalar.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
@@ -89,18 +90,21 @@ public class GrimpTransformations
             System.out.println("[" + body.getMethod().getName() +
                 "] Folding constructors...");
 
-      StmtList stmtList = body.getStmtList();
-      int stmtListLen = stmtList.size();
+      Chain units = body.getUnits();
+      List stmtList = new ArrayList();
+      stmtList.addAll(units);
 
-      CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
+      Iterator it = stmtList.iterator();
+
+      CompleteUnitGraph graph = new CompleteUnitGraph(body);
         
-      LocalDefs localDefs = new SimpleLocalDefs(graph);        
-      LocalUses localUses = new SimpleLocalUses(graph, localDefs);
+      UnitLocalDefs localDefs = new SimpleUnitLocalDefs(graph);
+      UnitLocalUses localUses = new SimpleUnitLocalUses(graph, localDefs);
 
       /* fold in NewExpr's with specialinvoke's */
-      for (int st = 0; st < stmtListLen; st++)
+      for (; it.hasNext(); )
         {
-          Stmt s = (Stmt)(stmtList.get(st));
+          Stmt s = (Stmt)it.next();
             
           if (!(s instanceof AssignStmt))
             continue;
@@ -128,7 +132,7 @@ public class GrimpTransformations
           
           while (luIter.hasNext())
             {
-              Stmt use = ((StmtValueBoxPair)(luIter.next())).stmt;
+              Unit use = ((UnitValueBoxPair)(luIter.next())).unit;
               if (!(use instanceof InvokeStmt))
                 break;
               InvokeStmt is = (InvokeStmt)use;
@@ -149,16 +153,13 @@ public class GrimpTransformations
                  (((NewExpr)rhs).getBaseType(), oldInvoke.getMethod(), invokeArgs));
               MadeNewInvokeExpr = true;
               
-              body.redirectJumps(use, constructStmt);
-              body.eliminateBackPointersTo(use);
-              stmtList.add(stmtList.indexOf(use), constructStmt);
-              stmtList.remove(use);
+              use.redirectJumpsToThisTo(constructStmt);
+              units.insertBefore(constructStmt, use);
+              units.remove(use);
             }
           if (MadeNewInvokeExpr)
             {
-              body.eliminateBackPointersTo(s);
-              stmtList.remove(st);
-              stmtListLen--;
+              units.remove(s);
             }
         }
     }  

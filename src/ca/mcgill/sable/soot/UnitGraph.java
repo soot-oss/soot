@@ -111,16 +111,16 @@ public class UnitGraph implements DirectedGraph
     int size;
 
 
-    UnitBody body;
+    Body body;
     Chain unitChain;
     
 
-    public UnitBody getBody()
+    public Body getBody()
     {
         return body;
     }
 
-    UnitGraph(UnitBody unitBody, boolean addExceptionEdges)
+    UnitGraph(Body unitBody, boolean addExceptionEdges)
     {
         body = unitBody;
         unitChain = body.getUnits();
@@ -204,8 +204,6 @@ public class UnitGraph implements DirectedGraph
                             u = (Unit) unitIt.next();
                             
                             ((List) unitToSuccs.get(u)).add(handlerUnit);
-
-			    System.out.println(u);
 
                         } while(u != endUnit);
 
@@ -392,29 +390,220 @@ public class UnitGraph implements DirectedGraph
     {
         return size;
     }  
+
+
+    private boolean isPseudoTopologicalOrderReady;
+    private List topOrder;
+              
+    public Iterator pseudoTopologicalOrderIterator()
+    {
+        if(!isPseudoTopologicalOrderReady)
+        {
+            topOrder = Collections.unmodifiableList(computeOrder(false));
+            isPseudoTopologicalOrderReady = true;
+        }
+        
+        return topOrder.iterator();
+    }   
     
+    private boolean isReversePseudoTopologicalOrderReady;
+    private List reverseTopOrder;
+              
+    public Iterator reversePseudoTopologicalOrderIterator()
+    {
+        if(!isReversePseudoTopologicalOrderReady)
+        {
+            reverseTopOrder = Collections.unmodifiableList(computeOrder(false));
+            isReversePseudoTopologicalOrderReady = true;
+        }
+                
+        return reverseTopOrder.iterator();
+    }   
+    
+    private Map unitToColor;
+    private final int WHITE = 0,
+              GRAY = 1,
+              BLACK = 2;
+
+    private LinkedList order;
+    private boolean isReversed;
+    
+    private LinkedList computeOrder(boolean isReversed)
+    {
+        unitToColor = new HashMap();
+    
+        this.isReversed = isReversed;
+        order = new LinkedList();
+        
+        // Color all statements white
+        {
+            Iterator unitIt = iterator();
+            
+            while(unitIt.hasNext())
+            {
+                Unit s = (Unit) unitIt.next();
+                
+                unitToColor.put(s, new Integer(WHITE));
+            }
+        }
+        
+        // Visit each statement 
+        {
+            Iterator unitIt = iterator();
+            
+            while(unitIt.hasNext())
+            {
+                Unit s = (Unit) unitIt.next();
+               
+                if(((Integer) unitToColor.get(s)).intValue() == WHITE)
+                    visitUnit(s); 
+            }
+        }
+        
+        return order;
+    }
+    
+    // Unfortunately, the nice recursive solution fails
+    // because of stack overflows
+    /*
+    private void visitUnit(Unit s)
+    {
+        unitToColor.put(s, new Integer(GRAY));
+         
+        Iterator succIt = getSuccsOf(s).iterator();
+        
+        while(succIt.hasNext())
+        {
+            Unit succ = (Unit) succIt.next();
+            
+            if(((Integer) unitToColor.get(succ)).intValue() == WHITE)
+                visitUnit(succ);
+        }
+        
+        unitToColor.put(s, new Integer(BLACK));
+         
+        if(isReversed)
+            order.addLast(s);
+        else
+            order.addFirst(s); 
+    }*/
+    
+    // Fill in the 'order' list with a pseudo topological order (possibly reversed)
+    // list of statements starting at s.  Simulates recursion with a stack.
+    
+    private void visitUnit(Unit startUnit)
+    {
+        LinkedList unitStack = new LinkedList();
+        LinkedList indexStack = new LinkedList();
+        
+        unitToColor.put(startUnit, new Integer(GRAY));
+        
+        unitStack.addLast(startUnit);
+        indexStack.addLast(new Integer(-1));
+        
+        while(!unitStack.isEmpty())
+        {
+            int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
+            Unit toVisitUnit = (Unit) unitStack.getLast();
+            
+            toVisitIndex++;
+            
+            indexStack.addLast(new Integer(toVisitIndex));
+            
+            if(toVisitIndex >= getSuccsOf(toVisitUnit).size())
+            {
+                // Visit this node now that we ran out of children 
+                    if(isReversed)
+                        order.addLast(toVisitUnit);
+                    else
+                        order.addFirst(toVisitUnit);
+                           
+                    unitToColor.put(toVisitUnit, new Integer(BLACK));                
+                
+                // Pop this node off
+                    unitStack.removeLast();
+                    indexStack.removeLast();
+            }
+            else
+            {
+                Unit childUnit = (Unit) getSuccsOf(toVisitUnit).get(toVisitIndex);
+                
+                // Visit this child next if not already visited (or on stack)
+                    if(((Integer) unitToColor.get(childUnit)).intValue() == WHITE)
+                    {
+                        unitToColor.put(childUnit, new Integer(GRAY));
+                        
+                        unitStack.addLast(childUnit);
+                        indexStack.addLast(new Integer(-1));
+                    }
+            }
+        }
+    }
+    
+
+  /** Look for a path, in g, from def to use. 
+   * This path has to lie inside an extended basic block 
+   * (and this property implies uniqueness.) */
+  /* The path returned includes from and to.
+     returns null if there is no such path */
+  
+  public List getExtendedBasicBlockPathBetween(Unit from, Unit to)
+    {
+        UnitGraph g = this;
+        
+      // if this holds, we're doomed to failure!!!
+      if (g.getPredsOf(to).size() > 1)
+        return null;
+
+      // pathStack := list of succs lists
+      // pathStackIndex := last visited index in pathStack
+      LinkedList pathStack = new LinkedList();
+      LinkedList pathStackIndex = new LinkedList();
+
+      pathStack.add(from);
+      pathStackIndex.add(new Integer(0));
+
+      int psiMax = (g.getSuccsOf((Unit)pathStack.get(0))).size();
+      int level = 0;
+      while (((Integer)pathStackIndex.get(0)).intValue() != psiMax)
+        {
+          int p = ((Integer)(pathStackIndex.get(level))).intValue();
+
+          List succs = g.getSuccsOf((Unit)(pathStack.get(level)));
+          if (p >= succs.size())
+            {
+              // no more succs - backtrack to previous level.
+
+              pathStack.remove(level);
+              pathStackIndex.remove(level);
+
+              level--;
+              int q = ((Integer)pathStackIndex.get(level)).intValue();
+              pathStackIndex.set(level, new Integer(q+1));
+              continue;
+            }
+
+          Unit betweenUnit = (Unit)(succs.get(p));
+
+          // we win!
+          if (betweenUnit == to)
+            {
+              pathStack.add(to);
+              return pathStack;
+            }
+
+          // check preds of betweenUnit to see if we should visit its kids.
+          if (g.getPredsOf(betweenUnit).size() > 1)
+            {
+              pathStackIndex.set(level, new Integer(p+1));
+              continue;
+            }
+
+          // visit kids of betweenUnit.
+          level++;
+          pathStackIndex.add(new Integer(0));
+          pathStack.add(betweenUnit);
+        }
+      return null;
+    }       
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
