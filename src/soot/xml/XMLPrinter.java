@@ -96,6 +96,7 @@ public class XMLPrinter {
 
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
     private void printStatementsInBody(Body body, java.io.PrintWriter out) {
+	LabeledUnitPrinter up = new NormalUnitPrinter(body);
         Chain units = body.getUnits();
 
         Map stmtToName = new HashMap(units.size() * 2 + 1, 0.7f);
@@ -448,7 +449,8 @@ public class XMLPrinter {
             }
 
             // parse any info from the statement code
-            String jimpleStr = currentStmt.toString().trim();
+            currentStmt.toString(up);
+            String jimpleStr = up.toString().trim();
             if (currentStmt instanceof soot.jimple.IdentityStmt &&
 		jimpleStr.indexOf("@parameter") != -1) {
                 // this line is a use of a parameter                
