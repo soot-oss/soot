@@ -38,6 +38,10 @@ public interface PointsToAnalysis {
      * of the objects pointed to by l. */
     public PointsToSet reachingObjects( Local l, SootField f );
 
+    /** Returns the set of objects pointed to by elements of the arrays
+     * in the PointsToSet s. */
+    public PointsToSet reachingObjectsOfArrayElement( PointsToSet s );
+
     public static final Integer THIS_NODE = new Integer( -1 );
     public static final int RETURN_NODE = -2;
     public static final Integer THROW_NODE = new Integer( -3 );

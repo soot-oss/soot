@@ -51,5 +51,11 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
     public PointsToSet reachingObjects( Local l, SootField f ) {
         return reachingObjects(f);
     }
+
+    /** Returns the set of objects pointed to by elements of the arrays
+     * in the PointsToSet s. */
+    public PointsToSet reachingObjectsOfArrayElement( PointsToSet s ) {
+        return FullObjectSet.v();
+    }
 }
 

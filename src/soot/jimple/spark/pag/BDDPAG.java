@@ -63,6 +63,9 @@ public class BDDPAG extends AbstractPAG {
     public PointsToSet reachingObjects( PointsToSet ptset, SootField f ) {
         throw new RuntimeException( "NYI" );
     }
+    public PointsToSet reachingObjectsOfArrayElement( PointsToSet ptset ) {
+        throw new RuntimeException( "NYI" );
+    }
 
     public Iterator simpleSourcesIterator() {
         return edgeSet.projectDownTo( src ).iterator();
