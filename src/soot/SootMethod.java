@@ -555,9 +555,9 @@ public class SootMethod
             Type t = (Type) typeIt.next();
 
             buffer.append(t);
-            buffer.append(" ");
 
             if (Main.v().getJavaStyle()) {
+                buffer.append(" ");
                 if (hasActiveBody())
                     buffer.append(
                         ((DavaBody) getActiveBody()).get_ParamMap().get(
