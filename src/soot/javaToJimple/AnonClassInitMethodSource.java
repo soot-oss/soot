@@ -9,6 +9,22 @@ public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodS
     //public ArrayList fields(){
     //    return fields;
     //}
+    private boolean hasOuterRef;
+    public void hasOuterRef(boolean b){
+        hasOuterRef = b;
+    }
+    public boolean hasOuterRef(){
+        return hasOuterRef;
+    }
+    
+    private boolean hasQualifier;
+    public void hasQualifier(boolean b){
+        hasQualifier = b;
+    }
+    public boolean hasQualifier(){
+        return hasQualifier;
+    }
+    
     
     private boolean inStaticMethod;
 

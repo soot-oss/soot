@@ -3076,11 +3076,12 @@ public class JimpleBodyBuilder {
      * Gets the Soot Method form the given Soot Class
      */
     private soot.SootMethod getMethodFromClass(soot.SootClass sootClass, String name, ArrayList paramTypes, soot.Type returnType) {
-        try {
+        //try {
         //if (sootClass.declaresMethod(name, paramTypes, returnType)){
+        //System.out.println("sootClass: "+sootClass.getName()+" has methods: "+sootClass.getMethods());
             return sootClass.getMethod(name, paramTypes, returnType);
-        }
-        catch(Exception e){
+        //}
+        /*catch(Exception e){
         //else {
             // its possible we're looking for a init method for an inner
             // class and we have a subclass as the outerclass this ref param
@@ -3098,7 +3099,7 @@ public class JimpleBodyBuilder {
                 }
             }
         }
-        return null;
+        return null;*/
     }
   
     /**
@@ -3134,16 +3135,35 @@ public class JimpleBodyBuilder {
     /**
      * adds outer class params
      */
-    private void handleOuterClassParams(ArrayList sootParams, ArrayList sootParamsTypes, polyglot.types.ClassType typeToInvoke){
+    private void handleOuterClassParams(ArrayList sootParams, soot.Value qVal,  ArrayList sootParamsTypes, polyglot.types.ClassType typeToInvoke){
            
 
         ArrayList needsRef = soot.javaToJimple.InitialResolver.v().getHasOuterRefInInit();
 
-        if ((needsRef != null) && (needsRef.contains(Util.getSootType(typeToInvoke)))){
+        boolean addRef = (needsRef != null) && (needsRef.contains(Util.getSootType(typeToInvoke)));
+        if (addRef){
+            // if adding an outer type ref always add exact type
             soot.SootClass outerClass = ((soot.RefType)Util.getSootType(typeToInvoke.outer())).getSootClass();
-            soot.Local classToInvokeOuterParam = getThis(outerClass.getType());
             sootParamsTypes.add(outerClass.getType());
-            sootParams.add(classToInvokeOuterParam);
+        }
+
+        if (addRef && !typeToInvoke.isAnonymous() && (qVal != null)){
+            // for nested and local if qualifier use that for param
+            sootParams.add(qVal);
+        }
+        else if (addRef && !typeToInvoke.isAnonymous()){
+            soot.SootClass outerClass = ((soot.RefType)Util.getSootType(typeToInvoke.outer())).getSootClass();
+            sootParams.add(getThis(outerClass.getType()));
+        }
+        else if (addRef && typeToInvoke.isAnonymous()){
+            soot.SootClass outerClass = ((soot.RefType)Util.getSootType(typeToInvoke.outer())).getSootClass();
+            sootParams.add(getThis(outerClass.getType()));
+        }
+
+        // handle anon qualifiers
+        if (typeToInvoke.isAnonymous() && (qVal != null)){
+            sootParamsTypes.add(qVal.getType());
+            sootParams.add(qVal);
         }
     }
     
@@ -3175,7 +3195,24 @@ public class JimpleBodyBuilder {
             throw new RuntimeException("Unknown kind of Constructor Call");
         }
         soot.Local base = specialThisLocal;
+
+        polyglot.types.ClassType objType = (polyglot.types.ClassType)cInst.container();
+        soot.Local qVal = null;
         if (cCall.qualifier() != null){
+            qVal = (soot.Local)createExpr(cCall.qualifier());
+        }
+        handleOuterClassParams(sootParams, qVal, sootParamsTypes, objType);
+        /*if (cCall.qualifier() != null){
+            soot.Local qVal = (soot.Local)createExpr(cCall.qualifier());
+            handleOuterClassParams(sootParams, qVal, sootParamsTypes, objType); 
+        }*/
+        //else {
+            //if (!objType.flags().isStatic() && !soot.Modifier.isStatic(body.getMethod().getModifiers())){
+          //      handleOuterClassParams(sootParams, null, sootParamsTypes, objType);
+            //}
+            
+        //}
+        /*if (cCall.qualifier() != null){
             polyglot.types.ClassType objType = (polyglot.types.ClassType)cInst.container();
             if ((objType.outer() != null) && (body.getMethod().getDeclaringClass().equals(((soot.RefType)Util.getSootType(objType.outer())).getSootClass()))){
                 handleOuterClassParams(sootParams, sootParamsTypes, objType);
@@ -3191,7 +3228,7 @@ public class JimpleBodyBuilder {
         else {
         
             handleOuterClassParams(sootParams, sootParamsTypes, (polyglot.types.ClassType)cInst.container());
-        }
+        }*/
         int index = classToInvoke.getName().lastIndexOf("$");
         sootParams.addAll(getSootParams(cCall));
         sootParamsTypes.addAll(getSootParamsTypes(cCall));
@@ -3200,7 +3237,10 @@ public class JimpleBodyBuilder {
             handleFinalLocalParams(sootParams, sootParamsTypes, (polyglot.types.ClassType)cCall.constructorInstance().container());
         }
         
-        
+        //if (classToInvoke.hasTag("OuterClassTag")){
+            //soot.tagkit.OuterClassTag tag = (soot.tagkit.OuterClassTag)classToInvoke.getTag("OuterClassTag");
+            //System.out.println("classToInvoke: "+classToInvoke+" outer: "+tag.getOuterClass());
+        //}
         soot.SootMethod methodToInvoke = getMethodFromClass(classToInvoke, "<init>", sootParamsTypes, soot.VoidType.v());
         
         soot.jimple.SpecialInvokeExpr specialInvokeExpr = soot.jimple.Jimple.v().newSpecialInvokeExpr(base, methodToInvoke, sootParams);
@@ -3315,8 +3355,31 @@ public class JimpleBodyBuilder {
         
         
         soot.SootClass classToInvoke = sootType.getSootClass();
-
-         if (newExpr.qualifier() != null){
+        //System.out.println("new: "+newExpr);
+        //System.out.println("new: qualifier: "+newExpr.qualifier());
+       
+        //System.out.println("new objType: "+objType+" soot type: "+Util.getSootType(objType));
+        //if (objType.outer() != null){
+            //System.out.println("new objType outer: "+objType.outer()+" soot type: "+Util.getSootType(objType.outer()));
+        //}
+        // if no qualifier --> X to invoke is static
+        soot.Value qVal = null;
+        if (newExpr.qualifier() != null) {
+            //System.out.println("new has qualifier: "+newExpr);
+            qVal = createExpr(newExpr.qualifier());
+        }
+        handleOuterClassParams(sootParams, qVal, sootParamsTypes, objType);
+        /*if (newExpr.qualifier() != null) {
+            soot.Value qVal = createExpr(newExpr.qualifier());
+            handleOuterClassParams(sootParams, qVal, sootParamsTypes, objType);  
+        }*/
+        /*else {
+            //if (!objType.flags().isStatic() && !soot.Modifier.isStatic(body.getMethod().getModifiers())){
+                handleOuterClassParams(sootParams, null, sootParamsTypes, objType);
+            //}
+            
+        }*/
+        /* if (newExpr.qualifier() != null){
             if ((objType.outer() != null) && (body.getMethod().getDeclaringClass().equals(((soot.RefType)Util.getSootType(objType.outer())).getSootClass())) && (!soot.Modifier.isStatic(body.getMethod().getModifiers()))){
                 handleOuterClassParams(sootParams, sootParamsTypes, objType);
             }
@@ -3332,12 +3395,16 @@ public class JimpleBodyBuilder {
              handleOuterClassParams(sootParams, sootParamsTypes, objType);
          }
 
-         
+         */
         sootParams.addAll(getSootParams(newExpr));
         sootParamsTypes.addAll(getSootParamsTypes(newExpr));
 
         handleFinalLocalParams(sootParams, sootParamsTypes, (polyglot.types.ClassType)objType);
      
+        //if (classToInvoke.hasTag("OuterClassTag")){
+            //soot.tagkit.OuterClassTag tag = (soot.tagkit.OuterClassTag)classToInvoke.getTag("OuterClassTag");
+            //System.out.println("classToInvoke: "+classToInvoke+" outer: "+tag.getOuterClass());
+        //}
         soot.SootMethod methodToInvoke = getMethodFromClass(classToInvoke, "<init>", sootParamsTypes, soot.VoidType.v());
       
         if (!methodToInvoke.getDeclaringClass().getType().equals(classToInvoke.getType())){

@@ -18,6 +18,10 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         soot.Type thisOuterType = ((AnonClassInitMethodSource)body.getMethod().getSource()).thisOuterType();
         ArrayList fieldInits = ((AnonClassInitMethodSource)body.getMethod().getSource()).getFieldInits();
         soot.Type outerClassType = ((AnonClassInitMethodSource)body.getMethod().getSource()).outerClassType();
+
+        boolean hasOuterRef = ((AnonClassInitMethodSource)body.getMethod().getSource()).hasOuterRef();
+        boolean hasQualifier = ((AnonClassInitMethodSource)body.getMethod().getSource()).hasQualifier();
+        
         // this formal needed
         soot.RefType type = sootMethod.getDeclaringClass().getType();
         specialThisLocal = soot.jimple.Jimple.v().newLocal("this", type);
@@ -43,7 +47,9 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         ArrayList paramsForFinals = new ArrayList();
 
         soot.Local outerLocal = null;
-        
+        soot.Local qualifierLocal = null;
+       
+        //System.out.println("hasOuterRef: "+hasOuterRef+" hasQualifier: "+hasQualifier);
         // param
         Iterator fIt = sootMethod.getParameterTypes().iterator();
         int counter = 0;
@@ -54,39 +60,70 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
             soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(fType, counter);
             soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(local, paramRef);
 
-            if (fType.equals(thisOuterType)){
+            int realArgs = 0;
+            if ((hasOuterRef) && (counter == 0)){
+                // in a non static method the first param is the outer ref
+                outerLocal = local;
+                realArgs = 1;
+                //invokeTypeList.add(outerLocal.getType());
+                //invokeList.add(outerLocal);
+            }
+            if ((hasOuterRef) && (hasQualifier) && (counter == 1)){
+                // here second param is qualifier if there is one
+                qualifierLocal = local;
+                realArgs = 2;
+                //invokeTypeList.add(qualifierLocal.getType());
+                invokeList.add(qualifierLocal);
+                
+            }
+            else if ((!hasOuterRef) && (hasQualifier) && (counter == 0)){
+                qualifierLocal = local;
+                realArgs = 1;
+                //invokeTypeList.add(qualifierLocal.getType());
+                invokeList.add(qualifierLocal);
+            }
+            
+            /*if (fType.equals(thisOuterType)){
                 outerLocal = local;
             }
-            //System.out.println("counter: "+counter+" startFinals: "+startFinals);
-            if ((counter != 0) && (counter < startFinals)){
+            //System.out.println("counter: "+counter+" startFinals: "+startFinals);*/
+            if ((counter >= realArgs) && (counter < startFinals)){
                 invokeTypeList.add(fType);
                 invokeList.add(local);
             }
-            else if ((counter == 0) && (!inStaticMethod)) {
+            /*else if ((counter == 0) && (!inStaticMethod)) {
                 outerLocal = local;   
-            }
-            else {
+            }*/
+            else if (counter >= startFinals) {
                 paramsForFinals.add(local);
             }
             body.getUnits().add(stmt);
             counter++;
         }
         SootClass superClass = sootMethod.getDeclaringClass().getSuperclass();
+
+        /*if (hasOuterRef && !hasQualifier){
+            invokeTypeList.add(0, superOuterType);
+        }*/
         ArrayList needsRef = soot.javaToJimple.InitialResolver.v().getHasOuterRefInInit();
-        if ((needsRef != null) && (needsRef.contains(superClass.getType()))){
+        if ((needsRef != null) && (needsRef.contains(superClass.getType())) ){
             invokeTypeList.add(0, superOuterType);
         }
+        //System.out.println("type list invoke: "+invokeTypeList);
         SootMethod callMethod = sootMethod.getDeclaringClass().getSuperclass().getMethod("<init>",  invokeTypeList, VoidType.v());
-        if ((needsRef != null) && (needsRef.contains(superClass.getType()))){
+        if ((!hasQualifier) && (needsRef != null) && (needsRef.contains(superClass.getType()))){
             if (isSubType){
                 invokeList.add(0, outerLocal);
             }
             else {
-                System.out.println("super outer type: "+superOuterType);
-                System.out.println("outer local: "+outerLocal);
+                //System.out.println("super outer type: "+superOuterType);
+                //System.out.println("outer local: "+outerLocal);
                 invokeList.add(0, Util.getThisGivenOuter(superOuterType, new HashMap(), body, new LocalGenerator(body), outerLocal));
             }
         }
+        //else {
+        //    invokeList.add(qualifierLocal);
+        //}
         soot.jimple.InvokeExpr invoke = soot.jimple.Jimple.v().newSpecialInvokeExpr(specialThisLocal, callMethod, invokeList);
 
         soot.jimple.Stmt invokeStmt = soot.jimple.Jimple.v().newInvokeStmt(invoke);

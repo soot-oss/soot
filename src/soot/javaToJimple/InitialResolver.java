@@ -626,18 +626,18 @@ public class InitialResolver {
    
         AnonLocalClassInfo info = (AnonLocalClassInfo)finalLocalInfo.get(new polyglot.util.IdentityKey(aNew.anonType()));
        
-        //System.out.println("new : "+aNew);
+        //System.out.println("new : "+aNew.anonType());
+        //System.out.println("new : "+aNew.anonType().outer());
+        if (aNew.qualifier() != null) {
+            // add qualifier ref - do this first to get right order
+            addQualifierRefToInit(aNew.qualifier().type());
+            src.hasQualifier(true);
+        }
         if (!info.inStaticMethod()){
             addOuterClassThisRefToInit(aNew.anonType().outer());
             addOuterClassThisRefField(aNew.anonType().outer());
             src.thisOuterType(Util.getSootType(aNew.anonType().outer()));
-        }
-        else if (aNew.qualifier() != null) {
-            // add outer class ref
-            addOuterClassThisRefToInit(aNew.qualifier().type());
-            addOuterClassThisRefField(aNew.qualifier().type());
-            src.thisOuterType(Util.getSootType(aNew.qualifier().type()));
-            
+            src.hasOuterRef(true);
         }
         
         src.inStaticMethod(info.inStaticMethod());
@@ -646,6 +646,10 @@ public class InitialResolver {
         }
         src.outerClassType(Util.getSootType(aNew.anonType().outer()));
         if (((polyglot.types.ClassType)aNew.objectType().type()).isNested()){
+            //System.out.println("aNew: "+aNew);
+            //System.out.println("aNew anon: "+aNew.anonType());
+            //System.out.println("aNew object: "+aNew.objectType().type());
+            //System.out.println("aNew object outer: "+((polyglot.types.ClassType)aNew.objectType().type()).outer());
             src.superOuterType(Util.getSootType(((polyglot.types.ClassType)aNew.objectType().type()).outer()));
             src.isSubType(Util.isSubType(aNew.anonType().outer(), ((polyglot.types.ClassType)aNew.objectType().type()).outer())); 
         }
@@ -828,6 +832,18 @@ public class InitialResolver {
         
     }
     
+    private void addQualifierRefToInit(polyglot.types.Type type){
+        soot.Type sootType = Util.getSootType(type);
+        Iterator it = sootClass.getMethods().iterator();
+        while (it.hasNext()){
+            soot.SootMethod meth = (soot.SootMethod)it.next();
+            if (meth.getName().equals("<init>")){
+                meth.getParameterTypes().add(0, sootType);
+                //System.out.println("meth in add qualifier: "+meth);
+            }
+        }
+    }
+    
     private void addOuterClassThisRefToInit(polyglot.types.Type outerType){
         soot.Type outerSootType = Util.getSootType(outerType);
         Iterator it = sootClass.getMethods().iterator();
@@ -835,6 +851,7 @@ public class InitialResolver {
             soot.SootMethod meth = (soot.SootMethod)it.next();
             if (meth.getName().equals("<init>")){
                 meth.getParameterTypes().add(0, outerSootType);
+                //System.out.println("meth in add outer ref: "+meth);
                 if (hasOuterRefInInit == null){
                     hasOuterRefInInit = new ArrayList();
                 }
