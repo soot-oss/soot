@@ -265,6 +265,9 @@ public class Util {
                 else if (classType.isLocal() && (soot.javaToJimple.InitialResolver.v().getLocalTypeMap() != null) && soot.javaToJimple.InitialResolver.v().getLocalTypeMap().containsKey(new polyglot.util.IdentityKey(classType))) {
                     className = (String)soot.javaToJimple.InitialResolver.v().getLocalTypeMap().get(new polyglot.util.IdentityKey(classType));    
                 }
+                else if (classType.isAnonymous() || classType.isLocal()){
+                    className = classType.toString();
+                }
                 else {
                     String fullName = classType.fullName();
                     String pkgName = "";
