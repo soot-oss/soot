@@ -37,7 +37,7 @@ import soot.baf.internal.*;
 public class LoadStoreOptimizer extends BodyTransformer
 {
     // Constants
-    final static  boolean debug = false;
+    static  boolean debug = false;
     
     // constants returned by the stackIndependent function.
     final static private int FAILURE = 0;
@@ -137,8 +137,12 @@ public class LoadStoreOptimizer extends BodyTransformer
         mUnits =  mBody.getUnits();
                 
 	gOptions = options;
-
 	
+	if(Options.getBoolean(gOptions, "debug")) {
+	  debug = true;
+	}
+	
+
         if(soot.Main.isVerbose)
             System.out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
 
@@ -1040,11 +1044,11 @@ public class LoadStoreOptimizer extends BodyTransformer
                     // first optimization 
                     if(defs.size() ==  1) {
                         Block defBlock =(Block)  mUnitToBlockMap.get(defs.get(0));
-                        if(defBlock != loadBlock) {
-                            Unit storeUnit = (Unit) defs.get(0);
-                            if(storeUnit instanceof StoreInst) {
-                                List uses = mLocalUses.getUsesOf(storeUnit);
-                                if(uses.size() == 1){
+                        if(defBlock != loadBlock && !(isExceptionHandlerBlock(loadBlock))) {
+			  Unit storeUnit = (Unit) defs.get(0);
+			  if(storeUnit instanceof StoreInst) {
+			    List uses = mLocalUses.getUsesOf(storeUnit);
+			    if(uses.size() == 1){
                                     if(allSuccesorsOfAreThePredecessorsOf(defBlock, loadBlock)) {
                                         if(getDeltaStackHeightFromTo((Unit) defBlock.getSuccOf(storeUnit), (Unit)defBlock.getTail()) == 0) {
                                             Iterator it2 = defBlock.getSuccessors().iterator();
@@ -1084,7 +1088,8 @@ public class LoadStoreOptimizer extends BodyTransformer
                             
                             Block defBlock0 = (Block)  mUnitToBlockMap.get(def0);
                             Block defBlock1 = (Block)  mUnitToBlockMap.get(def1);
-                            if(defBlock0 != loadBlock && defBlock1 != loadBlock && defBlock0 != defBlock1) {                                
+                            if(defBlock0 != loadBlock && defBlock1 != loadBlock && defBlock0 != defBlock1
+			       && !(isExceptionHandlerBlock(loadBlock))) {                                
                                 if(mLocalUses.getUsesOf(def0).size() == 1  && mLocalUses.getUsesOf(def1).size() == 1) {
                                     List def0Succs = defBlock0.getSuccessors();
                                     List def1Succs  = defBlock1.getSuccessors();
