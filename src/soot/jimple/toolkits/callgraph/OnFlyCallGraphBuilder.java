@@ -108,17 +108,16 @@ public final class OnFlyCallGraphBuilder
                 if( iie == null ) {
                     cm.addVirtualEdge(
                             MethodContext.v( site.getContainer(), srcContext ),
-                            new Edge( site.getContainer(),
-                                      site.getStmt(),
-                                      target,
-                                      Edge.PRIVILEGED ),
+                            site.getStmt(),
+                            target,
+                            Edge.PRIVILEGED ,
                             typeContext );
                 } else {
                     cm.addVirtualEdge(
                             MethodContext.v( site.getContainer(), srcContext ),
-                            new Edge( site.getContainer(),
-                                      site.getStmt(),
-                                      target ),
+                            site.getStmt(),
+                            target,
+                            Edge.ieToKind( site.getStmt().getInvokeExpr() ),
                             typeContext );
                 }
             }
@@ -132,10 +131,9 @@ public final class OnFlyCallGraphBuilder
                     if( target == null ) break;
                     cm.addVirtualEdge(
                             MethodContext.v( site.getContainer(), srcContext ),
-                            new Edge( site.getContainer(),
-                                      site.getStmt(),
-                                      target,
-                                      Edge.THREAD ),
+                            site.getStmt(),
+                            target,
+                            Edge.THREAD,
                             typeContext );
                 }
             }
@@ -174,12 +172,10 @@ public final class OnFlyCallGraphBuilder
                     }
                     if( sootcls.declaresMethod( sigClinit ) ) {
                         cm.addStaticEdge(
-                              MethodContext.v( site.getContainer(),
-                                               srcContext ),
-                              new Edge( site.getContainer(),
-                                        site.getStmt(),
-                                        sootcls.getMethod(sigClinit),
-                                        Edge.CLINIT ) );
+                                MethodContext.v( site.getContainer(), srcContext ),
+                                site.getStmt(),
+                                sootcls.getMethod(sigClinit),
+                                Edge.CLINIT );
                     }
                 }
             }
@@ -337,7 +333,7 @@ public final class OnFlyCallGraphBuilder
         Iterator it = cicg.edgesOutOf(m);
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
-            cm.addStaticEdge( momc, e );
+            cm.addStaticEdge( momc, e.srcUnit(), e.tgt(), e.kind() );
         }
     }
 

@@ -551,6 +551,12 @@ public abstract class AbstractPAG implements PointsToAnalysis {
 	    m.put( key, valueList = new HashSet(4) );
 	} else if( !(valueList instanceof Set) ) {
 	    Node[] ar = (Node[]) valueList;
+            HashSet vl = new HashSet(ar.length+4);
+            m.put( key, vl );
+            for( int i = 0; i < ar.length; i++ ) vl.add( ar[i] );
+            return vl.add( value );
+            /*
+	    Node[] ar = (Node[]) valueList;
             Node[] newar = new Node[ar.length+1];
             for( int i = 0; i < ar.length; i++ ) {
                 Node n = ar[i];
@@ -560,6 +566,7 @@ public abstract class AbstractPAG implements PointsToAnalysis {
             newar[ar.length] = value;
             m.put( key, newar );
             return true;
+            */
 	}
 	return ((Set) valueList).add( value );
     }

@@ -36,12 +36,12 @@ public class OneCFAContextManager implements ContextManager
         this.cg = cg;
     }
 
-    public void addStaticEdge( MethodOrMethodContext momc, Edge e ) {
-        cg.addEdge( new Edge( momc, e.srcUnit(), MethodContext.v( e.tgt(), e.srcUnit() ), e.kind() ) );
+    public void addStaticEdge( MethodOrMethodContext src, Unit srcUnit, SootMethod target, int kind ) {
+        cg.addEdge( new Edge( src, srcUnit, MethodContext.v( target, srcUnit ), kind ) );
     }
 
-    public void addVirtualEdge( MethodOrMethodContext momc, Edge e, Object typeContext ) {
-        cg.addEdge( new Edge( momc, e.srcUnit(), MethodContext.v( e.tgt(), e.srcUnit() ), e.kind() ) );
+    public void addVirtualEdge( MethodOrMethodContext src, Unit srcUnit, SootMethod target, int kind, Object typeContext ) {
+        cg.addEdge( new Edge( src, srcUnit, MethodContext.v( target, srcUnit ), kind ) );
     }
 
     public CallGraph callGraph() { return cg; }

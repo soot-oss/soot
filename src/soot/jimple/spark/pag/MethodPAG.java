@@ -44,6 +44,8 @@ public final class MethodPAG extends AbstractMethodPAG {
         this.nodeFactory = new MethodNodeFactory( pag, this );
     }
 
+    private Set addedContexts;
+
     /** Adds this method to the main PAG, with all VarNodes parameterized by
      * varNodeParameter. */
     public void addToPAG( Object varNodeParameter ) {
@@ -51,6 +53,9 @@ public final class MethodPAG extends AbstractMethodPAG {
         if( varNodeParameter == null ) {
             if( hasBeenAdded ) return;
             hasBeenAdded = true;
+        } else {
+            if( addedContexts == null ) addedContexts = new HashSet();
+            if( !addedContexts.add( varNodeParameter ) ) return;
         }
         QueueReader reader = (QueueReader) internalReader.clone();
         while(true) {

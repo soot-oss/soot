@@ -77,7 +77,9 @@ public class OnFlyCallGraph {
         while(true) {
             Edge e = (Edge) callEdges.next();
             if( e == null ) break;
-            MethodPAG.v( pag, e.tgt() ).addToPAG( e.tgtCtxt() );
+            AbstractMethodPAG amp = AbstractMethodPAG.v( pag, e.tgt() );
+            amp.build();
+            amp.addToPAG( e.tgtCtxt() );
             pag.addCallTarget( e );
         }
     }

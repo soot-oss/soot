@@ -92,15 +92,18 @@ public final class Edge
     }
 
     public Edge( MethodOrMethodContext src, Stmt srcUnit, MethodOrMethodContext tgt ) {
-        InvokeExpr ie = srcUnit.getInvokeExpr();
-        if( ie instanceof VirtualInvokeExpr ) this.kind = VIRTUAL;
-        else if( ie instanceof SpecialInvokeExpr ) this.kind = SPECIAL;
-        else if( ie instanceof InterfaceInvokeExpr ) this.kind = INTERFACE;
-        else if( ie instanceof StaticInvokeExpr ) this.kind = STATIC;
-        else throw new RuntimeException();
+        this.kind = ieToKind( srcUnit.getInvokeExpr() );
         this.src = src;
         this.srcUnit = srcUnit;
         this.tgt = tgt;
+    }
+
+    public static int ieToKind( InvokeExpr ie ) {
+        if( ie instanceof VirtualInvokeExpr ) return VIRTUAL;
+        else if( ie instanceof SpecialInvokeExpr ) return SPECIAL;
+        else if( ie instanceof InterfaceInvokeExpr ) return INTERFACE;
+        else if( ie instanceof StaticInvokeExpr ) return STATIC;
+        else throw new RuntimeException();
     }
 
     /** Returns true if the call is due to an explicit invoke statement. */

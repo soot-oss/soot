@@ -31,8 +31,8 @@ import soot.util.queue.*;
  */
 public interface ContextManager 
 { 
-    public void addStaticEdge( MethodOrMethodContext momc, Edge e );
-    public void addVirtualEdge( MethodOrMethodContext momc, Edge e, Object typeContext );
+    public void addStaticEdge( MethodOrMethodContext src, Unit srcUnit, SootMethod target, int kind );
+    public void addVirtualEdge( MethodOrMethodContext src, Unit srcUnit, SootMethod target, int kind, Object typeContext );
     public CallGraph callGraph();
 }
 

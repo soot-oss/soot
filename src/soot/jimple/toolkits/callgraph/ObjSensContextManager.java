@@ -36,12 +36,12 @@ public class ObjSensContextManager implements ContextManager
         this.cg = cg;
     }
 
-    public void addStaticEdge( MethodOrMethodContext momc, Edge e ) {
-        cg.addEdge( new Edge( momc, e.srcUnit(), e.tgt(), e.kind() ) );
+    public void addStaticEdge( MethodOrMethodContext src, Unit srcUnit, SootMethod target, int kind ) {
+        cg.addEdge( new Edge( src, srcUnit, target, kind ) );
     }
 
-    public void addVirtualEdge( MethodOrMethodContext momc, Edge e, Object typeContext ) {
-        cg.addEdge( new Edge( momc, e.srcUnit(), MethodContext.v( e.tgt(), typeContext ), e.kind() ) );
+    public void addVirtualEdge( MethodOrMethodContext src, Unit srcUnit, SootMethod target, int kind, Object typeContext ) {
+        cg.addEdge( new Edge( src, srcUnit, MethodContext.v( target, typeContext ), kind ) );
     }
 
     public CallGraph callGraph() { return cg; }
