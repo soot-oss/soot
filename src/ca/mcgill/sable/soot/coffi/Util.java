@@ -234,7 +234,7 @@ public class Util
                     String superName = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
                     superName = superName.replace('/', '.');
     
-                    bclass.setSuperClass(getResolvedClass(superName));
+                    bclass.setSuperclass(getResolvedClass(superName));
                 }
             }
     

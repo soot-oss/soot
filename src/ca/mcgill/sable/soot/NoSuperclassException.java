@@ -72,14 +72,14 @@
 package ca.mcgill.sable.soot;
 
 public
-class NoSuperClassException extends RuntimeException
+class NoSuperclassException extends RuntimeException
 {
-    public NoSuperClassException(String s)
+    public NoSuperclassException(String s)
     {
         super(s);
     }
 
-    public NoSuperClassException()
+    public NoSuperclassException()
     {
     }
 }

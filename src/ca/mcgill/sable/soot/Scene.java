@@ -99,6 +99,9 @@ public class Scene
     {
     }
 
+    private int stateCount;
+    int getState() { return this.stateCount; }
+
     public void addClass(SootClass c) throws AlreadyManagedException, DuplicateNameException
     {
         if(c.isInScene())
@@ -111,6 +114,7 @@ public class Scene
         nameToClass.put(c.getName(), c);
         c.isInScene = true;
         c.scene = this;
+        this.stateCount++;
     }
 
     public void removeClass(SootClass c)
@@ -121,6 +125,7 @@ public class Scene
         classes.remove(c);
         nameToClass.remove(c.getName());
         c.isInScene = false;
+        this.stateCount++;
     }
 
     public boolean containsClass(String className)
@@ -183,11 +188,11 @@ public class Scene
     }
 
     /**
-     * Returns a backed list of the classes in this manager.
+     * Returns an unbacked list of the classes in this manager.
      */
      
     public List getClasses()
     {
-        return classes;
+        return Collections.unmodifiableList(classes);
     }
 }

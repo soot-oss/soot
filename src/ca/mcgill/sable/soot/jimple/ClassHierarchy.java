@@ -275,9 +275,9 @@ class ClassHierarchy
             this((Type) type);
 
             SootClass sClass = scene.getClass(type.className);
-            if(sClass.hasSuperClass())
+            if(sClass.hasSuperclass())
             {
-                parents.set(getTypeNode(RefType.v(sClass.getSuperClass().getName())).id);
+                parents.set(getTypeNode(RefType.v(sClass.getSuperclass().getName())).id);
             }
             for(Iterator i = sClass.getInterfaces().iterator(); i.hasNext(); )
             {
@@ -318,10 +318,10 @@ class ClassHierarchy
                 RefType baseType = (RefType) type.baseType;
 
                 SootClass sClass = scene.getClass(baseType.className);
-                if(sClass.hasSuperClass())
+                if(sClass.hasSuperclass())
                 {
                     parents.set(getTypeNode(ArrayType.v(RefType.v(
-                        sClass.getSuperClass().getName()),
+                        sClass.getSuperclass().getName()),
                         type.numDimensions)).id);
                 }
                 for(Iterator i = sClass.getInterfaces().iterator(); i.hasNext(); )

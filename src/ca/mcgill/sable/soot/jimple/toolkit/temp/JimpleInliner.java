@@ -28,7 +28,7 @@ public class JimpleInliner
                                     SootMethod container)
     {
         // DEBUG
-        System.out.println("inlining: "+inlinee + " into "+container);
+//          System.out.println("inlining: "+inlinee + " into "+container);
 
         Body containerB = (JimpleBody)container.getActiveBody();
         Chain containerUnits = containerB.getUnits();

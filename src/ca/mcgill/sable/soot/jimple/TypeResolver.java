@@ -869,9 +869,9 @@ class TypeResolver
         Type type = node.getType();
         SootClass sClass = classHierarchy.scene.getClass(
             ((RefType) type).className);
-        if(sClass.hasSuperClass())
+        if(sClass.hasSuperclass())
         {
-            return getTypeVariable(sClass.getSuperClass()).ecr();
+            return getTypeVariable(sClass.getSuperclass()).ecr();
         }
         
         return null;    

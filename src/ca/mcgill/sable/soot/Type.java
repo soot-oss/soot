@@ -124,7 +124,7 @@ public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchab
                     if(SootClass == javalangObject)
                         break;
 
-                    SootClass = SootClass.getSuperClass();
+                    SootClass = SootClass.getSuperclass();
                 }
             }
 
@@ -139,7 +139,7 @@ public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchab
                     if(SootClass == javalangObject)
                         break;
 
-                    SootClass = SootClass.getSuperClass();
+                    SootClass = SootClass.getSuperclass();
                 }
             }
 

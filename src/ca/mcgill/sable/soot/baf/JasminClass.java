@@ -334,8 +334,8 @@ public class JasminClass
             else
                 emit(".class " + Modifier.toString(modifiers) + " " + slashify(SootClass.getName()));
 
-            if(SootClass.hasSuperClass())
-                emit(".super " + slashify(SootClass.getSuperClass().getName()));
+            if(SootClass.hasSuperclass())
+                emit(".super " + slashify(SootClass.getSuperclass().getName()));
             else
                 emit(".super " + slashify(SootClass.getName()));
 

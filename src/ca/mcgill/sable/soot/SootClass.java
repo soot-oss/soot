@@ -674,19 +674,19 @@ public class SootClass
     */
 
 
-    public boolean hasSuperClass()
+    public boolean hasSuperclass()
     {
         return superClass != null;
     }
 
     /**
-        Returns the superclass of this class. (see hasSuperClass())
+        Returns the superclass of this class. (see hasSuperclass())
     */
 
-    public SootClass getSuperClass() throws NoSuperClassException
+    public SootClass getSuperclass() throws NoSuperclassException
     {
         if(superClass == null)
-            throw new NoSuperClassException();
+            throw new NoSuperclassException();
         else
             return superClass;
     }
@@ -695,7 +695,7 @@ public class SootClass
         Sets the superclass of this class.  Note that passing a null will cause the class to have no superclass.
     */
 
-    public void setSuperClass(SootClass c)
+    public void setSuperclass(SootClass c)
     {
         superClass = c;
     }
@@ -732,6 +732,11 @@ public class SootClass
         this.name = name;
     }
 
+    public boolean isInterface()
+    {
+        return Modifier.isInterface(this.getModifiers());
+    }
+
     public void printTo(PrintWriter out)
     {
         printTo(out, 0);
@@ -746,7 +751,7 @@ public class SootClass
             classPrefix = classPrefix + " " + Modifier.toString(this.getModifiers());
             classPrefix = classPrefix.trim();
 
-            if(!Modifier.isInterface(this.getModifiers()))
+            if(!isInterface())
             {
                 classPrefix = classPrefix + " class";
                 classPrefix = classPrefix.trim();
@@ -757,8 +762,8 @@ public class SootClass
 
         // Print extension
         {
-            if(this.hasSuperClass())
-                out.print(" extends " + this.getSuperClass().getName() + "");
+            if(this.hasSuperclass())
+                out.print(" extends " + this.getSuperclass().getName() + "");
         }
 
         // Print interfaces
