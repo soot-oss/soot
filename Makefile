@@ -84,7 +84,7 @@ document:
 # remove all the class files
 #
 clean:
-	-rm -rf ${RM_TARGETS}
+	find classes -name '*.class' | xargs rm
 
 
 #
