@@ -187,8 +187,9 @@
 				<alias>jb</alias>
                                 <class>JBOptions</class>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
@@ -205,16 +206,18 @@ standard names to local variables, according to the variable type.
 					<name>Local Splitter</name>
 					<alias>jb.ls</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Pre-typing Aggregator</name>
 					<alias>jb.a1</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 					<boolopt>
 						<name>Only Stack Locals</name>
@@ -227,24 +230,27 @@ standard names to local variables, according to the variable type.
 					<name>Pre-typing Unused Local Eliminator</name>
 					<alias>jb.ule1</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Type Assigner</name>
 					<alias>jb.tr</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Post-typing Aggregator</name>
 					<alias>jb.a2</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 					<boolopt>
 						<name>Only Stack Locals</name>
@@ -257,8 +263,9 @@ standard names to local variables, according to the variable type.
 					<name>Post-typing Unused Local Eliminator</name>
 					<alias>jb.ule2</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -269,8 +276,9 @@ This phase only executes when the `use-original-names&apos; option is chosen
 for the `jb&apos; phase.  It unsplits the locals according to the original names
 found for them.</long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -295,8 +303,9 @@ executes when `use-original-names&apos; is not chosen.
 
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -333,8 +342,9 @@ The default behaviour in this phase is to propagate only on the
 
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -360,8 +370,9 @@ The default behaviour in this phase is to propagate only on the
 						<long_desc>
 This phase eliminates assignment statements (to locals) with no uses.
                         </long_desc>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -377,17 +388,18 @@ This phase eliminates assignment statements (to locals) with no uses.
 					<name>Unused Local Eliminator</name>
 					<alias>jb.cp-ule</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Local Packer</name>
 					<alias>jb.lp</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-                                                <default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>false</default>
 					</boolopt>
 					<boolopt>
 						<name>Unsplit Original Locals</name>
@@ -398,16 +410,18 @@ This phase eliminates assignment statements (to locals) with no uses.
 					<name>Nop Eliminator</name>
 					<alias>jb.ne</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Unreachable Code Eliminator</name>
 					<alias>jb.uce</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 			</phase>
@@ -421,16 +435,17 @@ graph. Only one phase may be enabled; Soot will raise an error otherwise.
 If no phases are enabled, the Old Class Hierarchy Analysis phase
 <tt>cg.cha</tt> is used as the default.</long_desc>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 				</boolopt>
 				<sub_phase>
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>
                                         <class>CHAOptions</class>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
                                                 <default>true</default>
 					</boolopt>
 					<boolopt>
@@ -455,9 +470,9 @@ is reachable.
 					<class>SparkOptions</class>
 					<alias>cg.spark</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -929,17 +944,18 @@ cryptic statistics about the size of the points-to sets computed.
 				<name>Whole Shimple Transformation Pack</name>
 				<alias>wstp</alias>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 				</boolopt>
 			</phase>
 			<phase>
 				<name>Whole Shimple Optimization Pack</name>
 				<alias>wsop</alias>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
-                                        <default>true</default>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>false</default>
 				</boolopt>
 			</phase>
 			<phase>
@@ -964,8 +980,9 @@ listed at <a href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.
 
                         </long_desc>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
@@ -980,13 +997,13 @@ optimization pack is to be applied (phase name <tt>wjop</tt>).
 
 The default behaviour of this Pack has static method binding disabled
 and static inlining enabled.  To reverse this, give the options
-<tt>-p wjop.smb disabled:false -p wjop.si disabled</tt>.
+<tt>-p wjop.smb enabled:true -p wjop.si disabled</tt>.
 
                         </long_desc>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
-					<default>true</default>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+					<default>false</default>
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
@@ -1004,9 +1021,9 @@ to a static invoke.
 
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1077,8 +1094,9 @@ Note that the modifier ``static&apos;&apos; is supposed to be compared to a
  
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1157,16 +1175,17 @@ then it will not be inlined into other methods.
 				<name>Whole Jimple Annotation Pack</name>
 				<alias>wjap</alias>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 				</boolopt>
 				<sub_phase>
 					<name>Rectangular Array Finder</name>
 					<alias>wjap.ra</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1176,25 +1195,27 @@ then it will not be inlined into other methods.
 				<name>Shimple Transformation Pack</name>
 				<alias>stp</alias>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 				</boolopt>
 			</phase>
 			<phase>
 				<name>Shimple Optimization Pack</name>
 				<alias>sop</alias>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
-                                        <default>true</default>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>false</default>
 				</boolopt>
 			</phase>
 			<phase>
 				<name>Jimple Transformations Pack</name>
 				<alias>jtp</alias>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 					<short_desc/>
 					<long_desc>
 Soot will always apply the contents of the Jimple transformation pack
@@ -1214,9 +1235,9 @@ application class.  This section lists the default transformations in
 the <tt>JimpleOptimizationPack</tt>.
                         </long_desc>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
-                                        <default>true</default>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>false</default>
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
@@ -1238,13 +1259,13 @@ sets at every node.
 
 Because of the current slowness, this transformation is not enabled in
 the default settings.  To enable it, specify <tt>-p jop.cse
-disabled:false</tt> on the command line.
+enabled:true</tt> on the command line.
 
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1267,13 +1288,13 @@ is an improved version of the Busy Code Motion, and should be used
 instead of it.
 
 Busy Code Motion is not enabled by default. To enable it, specify
-<tt>-p jop.bcm disabled:false</tt> on the command line.
+<tt>-p jop.bcm enabled:true</tt> on the command line.
 
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1297,13 +1318,13 @@ This allows the Partial Redundancy Eliminator
 to optimize loop invariants of <tt>while</tt> loops.
 
 By default, this transformation is disabled. To enable it, specify
-<tt>-p jop.lcm disabled:false</tt> on the command line.
+<tt>-p jop.lcm enabled:true</tt> on the command line.
 
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1364,8 +1385,9 @@ transformation.
 The default behaviour here is to propagate on all locals.
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1386,8 +1408,9 @@ The default behaviour here is to propagate on all locals.
 					<name>Constant Propagator and Folder</name>
 					<alias>jop.cpf</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc>
 This phase does constant propagation and folding.
@@ -1406,8 +1429,9 @@ changes the conditional branch instruction to a `goto&apos; statement.
 
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1423,8 +1447,9 @@ is <tt>false</tt>.
 
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1442,8 +1467,9 @@ is <tt>false</tt>.
 Removes unreachable codes and empty traps.
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1452,8 +1478,9 @@ Removes unreachable codes and empty traps.
 					<name>Unreachable Code Eliminator 2</name>
 					<alias>jop.uce2</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1476,8 +1503,9 @@ branches, we might generate more unreachable code.)
 
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1486,8 +1514,9 @@ branches, we might generate more unreachable code.)
 					<name>Unconditional Branch Folder 2</name>
 					<alias>jop.ubf2</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1499,8 +1528,9 @@ branches, we might generate more unreachable code.)
 Removes locals with no uses in the method body.
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1515,8 +1545,9 @@ Array bounds check and null pointer check detection have
 separate phases and phase options.
                         </long_desc>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 				</boolopt>
 				<sub_phase>
 					<name>Null Pointer Check Options</name>
@@ -1528,9 +1559,9 @@ It has one phase option (aside from the default <tt>disabled</tt> option).
 
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1563,9 +1594,9 @@ If whole-program analysis is required, an extra
 phase <tt>wjap.ra</tt> for finding rectangular arrays occurs.
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1652,9 +1683,9 @@ result.
 					<alias>jap.profiling</alias>
 					<class>ProfilingOptions</class>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1674,9 +1705,9 @@ result.
 produce side-effect attributes as described in the Spark thesis, chapter 6.
 </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1701,9 +1732,9 @@ Uses the active invoke graph to produce tags indicating which fields may
 be read or written by each statement, including invoke statements.
                         </long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1723,8 +1754,9 @@ produced for it, in order to keep the size of the tags reasonable.
 				<name>Grimp Body Creation</name>
 				<alias>gb</alias>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
@@ -1732,8 +1764,9 @@ produced for it, in order to keep the size of the tags reasonable.
 					<name>Aggregator 1</name>
 					<alias>gb.a1</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1749,16 +1782,18 @@ produced for it, in order to keep the size of the tags reasonable.
 					<name>Constructor Folder</name>
 					<alias>gb.cf</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Aggregator 2</name>
 					<alias>gb.a2</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1774,8 +1809,9 @@ produced for it, in order to keep the size of the tags reasonable.
 					<name>Unused Local Eliminator</name>
 					<alias>gb.ule</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 			</phase>
@@ -1783,24 +1819,26 @@ produced for it, in order to keep the size of the tags reasonable.
 				<name>Grimp Optimization Pack</name>
 				<alias>gop</alias>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
-                                        <default>true</default>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>false</default>
 				</boolopt>
 			</phase>
 			<phase>
 				<name>Baf Body Creation</name>
 				<alias>bb</alias>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 				</boolopt>
 				<sub_phase>
 					<name>Load Store Optimizer</name>
 					<alias>bb.lso</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 					<boolopt>
 						<name>Debug</name>
@@ -1833,24 +1871,27 @@ produced for it, in order to keep the size of the tags reasonable.
 					<name>Peephole Optimizer</name>
 					<alias>bb.pho</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Unused Local Eliminator</name>
 					<alias>bb.ule</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Local Packer</name>
 					<alias>bb.lp</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 					<boolopt>
 						<name>Unsplit Original Locals</name>
@@ -1862,25 +1903,26 @@ produced for it, in order to keep the size of the tags reasonable.
 				<name>Baf Optimization Pack</name>
 				<alias>bop</alias>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
-                                        <default>true</default>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>false</default>
 				</boolopt>
 			</phase>
 			<phase>
 				<name>Tag</name>
 				<alias>tag</alias>
 				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 				</boolopt>
 				<sub_phase>
 					<name>Line Number Tag Aggregator</name>
 					<alias>tag.ln</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1889,9 +1931,9 @@ produced for it, in order to keep the size of the tags reasonable.
 					<name>Array Bounds and Null Pointer Check Tag Aggregator</name>
 					<alias>tag.an</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1900,9 +1942,9 @@ produced for it, in order to keep the size of the tags reasonable.
 					<name>Dependence Tag Aggregator</name>
 					<alias>tag.dep</alias>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1913,9 +1955,9 @@ produced for it, in order to keep the size of the tags reasonable.
                                         <long_desc>Aggregates field read/write
 tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_desc>
 					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<default>true</default>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1934,16 +1976,16 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>only-stack-locals:false</expansion>
 			<expansion>-p</expansion>
                         <expansion>bop</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
 			<expansion>-p</expansion>
                         <expansion>gop</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
 			<expansion>-p</expansion>
                         <expansion>jop</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
 			<expansion>-p</expansion>
                         <expansion>sop</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
 			<short_desc>perform scalar optimizations on the classfiles</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
@@ -1953,7 +1995,7 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<alias>whole-optimize</alias>
 			<expansion>-p</expansion>
                         <expansion>wjop</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
                         <expansion>-w</expansion>
 			<short_desc>perform whole program optimizations on the classfiles</short_desc>
 			<long_desc>This option ...</long_desc>
@@ -2032,10 +2074,10 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<alias>annot-nullpointer</alias>
 			<expansion>-p</expansion>
                         <expansion>jap.npc</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
                         <expansion>-p</expansion>
                         <expansion>tag.an</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
 			<short_desc>turn on the annotation for null pointer</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
@@ -2044,13 +2086,13 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<alias>annot-arraybounds</alias>
 			<expansion>-p</expansion>
                         <expansion>wjap.ra</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
                         <expansion>-p</expansion>
                         <expansion>jap.abc</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
                         <expansion>-p</expansion>
                         <expansion>tag.an</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
 			<short_desc>turn on the annotation for array bounds check</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
@@ -2060,10 +2102,10 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>-w</expansion>
 			<expansion>-p</expansion>
                         <expansion>jap.sea</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
                         <expansion>-p</expansion>
                         <expansion>tag.dep</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
 			<short_desc>turn on side-effect attributes</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
@@ -2073,10 +2115,10 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>-w</expansion>
 			<expansion>-p</expansion>
                         <expansion>jap.fieldrw</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
                         <expansion>-p</expansion>
                         <expansion>tag.fieldrw</expansion>
-                        <expansion>disabled:false</expansion>
+                        <expansion>enabled:true</expansion>
 			<short_desc>turn on field read/write attributes</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>

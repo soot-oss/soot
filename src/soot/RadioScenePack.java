@@ -38,12 +38,12 @@ public class RadioScenePack extends ScenePack
 
             final Transform t = (Transform) tIt.next();
             Map opts = PackManager.v().getPhaseOptions( t );
-            if( PackManager.getBoolean( opts, "disabled" ) ) continue;
+            if( !PackManager.getBoolean( opts, "enabled" ) ) continue;
             enableds.add( t );
         }
         if( enableds.size() == 0 ) {
             Transform deflt = (Transform) iterator().next();
-            PackManager.v().setPhaseOption( deflt.getPhaseName(), "disabled:false" );
+            PackManager.v().setPhaseOption( deflt.getPhaseName(), "enabled:true" );
             enableds.add( deflt );
         }
         if( enableds.size() > 1 ) {

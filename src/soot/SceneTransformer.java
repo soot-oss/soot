@@ -33,7 +33,7 @@ public abstract class SceneTransformer extends Transformer
     /** Performs the transformation on the Scene, under the given phaseName. */
     public final void transform(String phaseName, Map options)
     {
-        if (PackManager.getBoolean(options, "disabled"))
+        if (!PackManager.getBoolean(options, "enabled"))
             return;
 
         internalTransform(phaseName, options);
@@ -41,7 +41,7 @@ public abstract class SceneTransformer extends Transformer
     public final void transform(String phaseName)
     {
         HashMap dummyOptions = new HashMap();
-        dummyOptions.put( "disabled", "false" );
+        dummyOptions.put( "enabled", "true" );
         transform(phaseName, dummyOptions);
     }
 

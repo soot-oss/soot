@@ -425,8 +425,8 @@ public class <xsl:copy-of select="$filename"/>
                 +"<xsl:value-of select="alias"/> "<!---->
       </xsl:for-each>;
     </xsl:for-each>
-        // The default set of options is just disabled.
-        return "disabled";
+        // The default set of options is just enabled.
+        return "enabled";
     }
 
     public static String getDefaultOptionsForPhase( String phaseName ) {

@@ -100,13 +100,13 @@ public abstract class Pack implements HasPhaseOptions
 
     public final void apply() {
         Map options = PackManager.v().getPhaseOptions( this );
-        if( PackManager.getBoolean( options, "disabled" ) ) return;
+        if( !PackManager.getBoolean( options, "enabled" ) ) return;
         internalApply();
     }
 
     public final void apply(Body b) {
         Map options = PackManager.v().getPhaseOptions( this );
-        if( PackManager.getBoolean( options, "disabled" ) ) return;
+        if( !PackManager.getBoolean( options, "enabled" ) ) return;
         internalApply(b);
     }
 

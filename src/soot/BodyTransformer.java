@@ -45,7 +45,7 @@ public abstract class BodyTransformer extends Transformer
      */
     public final void transform(Body b, String phaseName, Map options)
     {
-        if(PackManager.getBoolean(options, "disabled"))
+        if(!PackManager.getBoolean(options, "enabled"))
             return;
 
         internalTransform(b, phaseName, options);
@@ -54,7 +54,7 @@ public abstract class BodyTransformer extends Transformer
     public final void transform(Body b, String phaseName)
     {
         HashMap dummyOptions = new HashMap();
-        dummyOptions.put( "disabled", "false" );
+        dummyOptions.put( "enabled", "true" );
         transform(b, phaseName, dummyOptions);
     }
 

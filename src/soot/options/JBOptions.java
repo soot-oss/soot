@@ -32,9 +32,9 @@ public class JBOptions
         this.options = options;
     }
     
-    /** Disabled --  */
-    public boolean disabled() {
-        return soot.PackManager.getBoolean( options, "disabled" );
+    /** Enabled --  */
+    public boolean enabled() {
+        return soot.PackManager.getBoolean( options, "enabled" );
     }
     
     /** Use Original Names --  */

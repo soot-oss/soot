@@ -57,13 +57,13 @@ public class Transform implements HasPhaseOptions
         return Options.getDefaultOptionsForPhase( phaseName );
     }
 
-    /** Allows user-defined phases to have options other than just disabled
+    /** Allows user-defined phases to have options other than just enabled
      * without having to mess with the XML. */
     public void setDeclaredOptions( String options ) {
         declaredOpts = options;
     }
 
-    /** Allows user-defined phases to have options other than just disabled
+    /** Allows user-defined phases to have options other than just enabled
      * without having to mess with the XML. */
     public void setDefaultOptions( String options ) {
         defaultOpts = options;
@@ -71,7 +71,7 @@ public class Transform implements HasPhaseOptions
 
     public void apply() {
         Map options = PackManager.v().getPhaseOptions( phaseName );
-        if( !PackManager.getBoolean( options, "disabled" ) ) {
+        if( PackManager.getBoolean( options, "enabled" ) ) {
             if( Options.v().verbose()  ) {
                 G.v().out.println( "Applying phase "+phaseName+" to the scene." );
             }
@@ -80,7 +80,7 @@ public class Transform implements HasPhaseOptions
     }
     public void apply(Body b) {
         Map options = PackManager.v().getPhaseOptions( phaseName );
-        if( !PackManager.getBoolean( options, "disabled" ) ) {
+        if( PackManager.getBoolean( options, "enabled" ) ) {
             if( Options.v().verbose() ) {
                 G.v().out.println( "Applying phase "+phaseName+" to "+b.getMethod()+"." );
             }

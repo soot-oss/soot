@@ -362,16 +362,16 @@ public class Options extends OptionsBase {
             || option.equals( "optimize" )
             ) {
                 
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "sop" );
                 pushOptions( "-p" );
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "jop" );
                 pushOptions( "-p" );
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "gop" );
                 pushOptions( "-p" );
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "bop" );
                 pushOptions( "-p" );
                 pushOptions( "only-stack-locals:false" );
@@ -388,7 +388,7 @@ public class Options extends OptionsBase {
             ) {
                 
                 pushOptions( "-w" );
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "wjop" );
                 pushOptions( "-p" );
             }
@@ -505,10 +505,10 @@ public class Options extends OptionsBase {
             || option.equals( "annot-nullpointer" )
             ) {
                 
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "tag.an" );
                 pushOptions( "-p" );
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "jap.npc" );
                 pushOptions( "-p" );
             }
@@ -517,13 +517,13 @@ public class Options extends OptionsBase {
             || option.equals( "annot-arraybounds" )
             ) {
                 
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "tag.an" );
                 pushOptions( "-p" );
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "jap.abc" );
                 pushOptions( "-p" );
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "wjap.ra" );
                 pushOptions( "-p" );
             }
@@ -532,10 +532,10 @@ public class Options extends OptionsBase {
             || option.equals( "annot-side-effect" )
             ) {
                 
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "tag.dep" );
                 pushOptions( "-p" );
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "jap.sea" );
                 pushOptions( "-p" );
                 pushOptions( "-w" );
@@ -545,10 +545,10 @@ public class Options extends OptionsBase {
             || option.equals( "annot-fieldrw" )
             ) {
                 
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "tag.fieldrw" );
                 pushOptions( "-p" );
-                pushOptions( "disabled:false" );
+                pushOptions( "enabled:true" );
                 pushOptions( "jap.fieldrw" );
                 pushOptions( "-p" );
                 pushOptions( "-w" );
@@ -767,86 +767,86 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"use-original-names ";
     
         if( phaseName.equals( "jb.ls" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jb.a1" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"only-stack-locals ";
     
         if( phaseName.equals( "jb.ule1" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jb.tr" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jb.a2" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"only-stack-locals ";
     
         if( phaseName.equals( "jb.ule2" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jb.ulp" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"unsplit-original-locals ";
     
         if( phaseName.equals( "jb.lns" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"only-stack-locals ";
     
         if( phaseName.equals( "jb.cp" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"only-regular-locals "
                 +"only-stack-locals ";
     
         if( phaseName.equals( "jb.dae" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"only-stack-locals ";
     
         if( phaseName.equals( "jb.cp-ule" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jb.lp" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"unsplit-original-locals ";
     
         if( phaseName.equals( "jb.ne" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jb.uce" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "cg" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"verbose "
                 +"all-clinit ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"verbose "
                 +"ignore-types "
                 +"force-gc "
@@ -881,30 +881,30 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wstp" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "wsop" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "wjtp" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "wjop" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "wjop.smb" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"insert-null-checks "
                 +"insert-redundant-casts "
                 +"allowed-modifier-changes ";
     
         if( phaseName.equals( "wjop.si" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"insert-null-checks "
                 +"insert-redundant-casts "
                 +"allowed-modifier-changes "
@@ -914,97 +914,97 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjap" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "wjap.ra" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "stp" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "sop" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jtp" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jop" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jop.cse" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"naive-side-effect ";
     
         if( phaseName.equals( "jop.bcm" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"naive-side-effect ";
     
         if( phaseName.equals( "jop.lcm" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"safe "
                 +"unroll "
                 +"naive-side-effect ";
     
         if( phaseName.equals( "jop.cp" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"only-regular-locals "
                 +"only-stack-locals ";
     
         if( phaseName.equals( "jop.cpf" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jop.cbf" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jop.dae" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"only-stack-locals ";
     
         if( phaseName.equals( "jop.uce1" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jop.uce2" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jop.ubf1" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jop.ubf2" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jop.ule" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jap" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "jap.npc" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"only-array-ref "
                 +"profiling ";
     
         if( phaseName.equals( "jap.abc" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"with-all "
                 +"with-fieldref "
                 +"with-arrayref "
@@ -1015,52 +1015,52 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jap.profiling" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"notmainentry ";
     
         if( phaseName.equals( "jap.sea" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"naive ";
     
         if( phaseName.equals( "jap.fieldrw" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"threshold ";
     
         if( phaseName.equals( "gb" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "gb.a1" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"only-stack-locals ";
     
         if( phaseName.equals( "gb.cf" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "gb.a2" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"only-stack-locals ";
     
         if( phaseName.equals( "gb.ule" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "gop" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "bb" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "bb.lso" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"debug "
                 +"inter "
                 +"sl "
@@ -1070,109 +1070,124 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "bb.pho" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "bb.ule" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "bb.lp" ) )
             return ""
-                +"disabled "
+                +"enabled "
                 +"unsplit-original-locals ";
     
         if( phaseName.equals( "bop" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "tag" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "tag.ln" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "tag.an" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "tag.dep" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
         if( phaseName.equals( "tag.fieldrw" ) )
             return ""
-                +"disabled ";
+                +"enabled ";
     
-        // The default set of options is just disabled.
-        return "disabled";
+        // The default set of options is just enabled.
+        return "enabled";
     }
 
     public static String getDefaultOptionsForPhase( String phaseName ) {
     
         if( phaseName.equals( "jb" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jb.ls" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jb.a1" ) )
             return ""
+              +"enabled:true "
               +"only-stack-locals:true ";
     
         if( phaseName.equals( "jb.ule1" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jb.tr" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jb.a2" ) )
             return ""
+              +"enabled:true "
               +"only-stack-locals:true ";
     
         if( phaseName.equals( "jb.ule2" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jb.ulp" ) )
             return ""
+              +"enabled:true "
               +"unsplit-original-locals:true ";
     
         if( phaseName.equals( "jb.lns" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jb.cp" ) )
             return ""
+              +"enabled:true "
               +"only-stack-locals:true ";
     
         if( phaseName.equals( "jb.dae" ) )
             return ""
+              +"enabled:true "
               +"only-stack-locals:true ";
     
         if( phaseName.equals( "jb.cp-ule" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jb.lp" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "jb.ne" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jb.uce" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "cg" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
-              +"disabled:true "
+              +"enabled:true "
               +"all-clinit:false ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""
-              +"disabled:true "
+              +"enabled:false "
               +"verbose:false "
               +"ignore-types:false "
               +"force-gc:false "
@@ -1206,28 +1221,31 @@ public class Options extends OptionsBase {
               +"set-mass:false ";
     
         if( phaseName.equals( "wstp" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "wsop" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "wjtp" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "wjop" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "wjop.smb" ) )
             return ""
-              +"disabled:true "
+              +"enabled:false "
               +"insert-null-checks:true "
               +"insert-redundant-casts:true "
               +"allowed-modifier-changes:unsafe ";
     
         if( phaseName.equals( "wjop.si" ) )
             return ""
+              +"enabled:true "
               +"insert-null-checks:true "
               +"insert-redundant-casts:true "
               +"allowed-modifier-changes:unsafe "
@@ -1236,153 +1254,177 @@ public class Options extends OptionsBase {
               +"max-inlinee-size:20 ";
     
         if( phaseName.equals( "wjap" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "wjap.ra" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "stp" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "sop" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "jtp" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jop" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "jop.cse" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "jop.bcm" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "jop.lcm" ) )
             return ""
-              +"disabled:true "
+              +"enabled:false "
               +"safe:safe "
               +"unroll:true ";
     
         if( phaseName.equals( "jop.cp" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jop.cpf" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jop.cbf" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jop.dae" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jop.uce1" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jop.uce2" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jop.ubf1" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jop.ubf2" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jop.ule" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jap" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jap.npc" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "jap.abc" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "jap.profiling" ) )
             return ""
-              +"disabled:true "
+              +"enabled:false "
               +"notmainentry:false ";
     
         if( phaseName.equals( "jap.sea" ) )
             return ""
-              +"disabled:true "
+              +"enabled:false "
               +"naive:false ";
     
         if( phaseName.equals( "jap.fieldrw" ) )
             return ""
-              +"disabled:true "
+              +"enabled:false "
               +"threshold:100 ";
     
         if( phaseName.equals( "gb" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "gb.a1" ) )
             return ""
+              +"enabled:true "
               +"only-stack-locals:true ";
     
         if( phaseName.equals( "gb.cf" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "gb.a2" ) )
             return ""
+              +"enabled:true "
               +"only-stack-locals:true ";
     
         if( phaseName.equals( "gb.ule" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "gop" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "bb" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "bb.lso" ) )
             return ""
+              +"enabled:true "
               +"sl:true "
               +"sll:true ";
     
         if( phaseName.equals( "bb.pho" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "bb.ule" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "bb.lp" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "bop" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "tag" ) )
-            return "";
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "tag.ln" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "tag.an" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "tag.dep" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "tag.fieldrw" ) )
             return ""
-              +"disabled:true ";
+              +"enabled:false ";
     
         // The default default value is nothing.
         return "";

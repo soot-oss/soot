@@ -282,6 +282,7 @@ public class PackManager {
     private String getKey( String option ) {
         int delimLoc = option.indexOf(":");
         if (delimLoc < 0) {
+            if( option.equals("on") || option.equals("off") ) return "enabled";
             return option;
         } else {
             return option.substring(0, delimLoc);
@@ -290,6 +291,7 @@ public class PackManager {
     private String getValue( String option ) {
         int delimLoc = option.indexOf(":");
         if (delimLoc < 0) {
+            if( option.equals("off") ) return "false";
             return "true";
         } else {
             return option.substring(delimLoc+1);

@@ -32,9 +32,9 @@ public class BCMOptions
         this.options = options;
     }
     
-    /** Disabled --  */
-    public boolean disabled() {
-        return soot.PackManager.getBoolean( options, "disabled" );
+    /** Enabled --  */
+    public boolean enabled() {
+        return soot.PackManager.getBoolean( options, "enabled" );
     }
     
     /** Naive Side Effect Tester --  */
