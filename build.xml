@@ -39,6 +39,11 @@
             in="src/soot/options/soot_options.xml"
             out="generated/options/soot/options/Options.java"
         />
+        <xslt
+            style="src/soot/options/ant-task.xsl"
+            in="src/soot/options/soot_options.xml"
+            out="generated/options/soot/AntTask.java"
+        />
     </target>
 
     <target name="copypeephole" depends="sablecc,settings">

@@ -44,11 +44,11 @@ public class BDDKCFAVirtualContextManager extends AbsVirtualContextManager {
                                                "rc/soot/jimple/paddle/BDDKCFAVirtualContextManager.jedd:49,5" +
                                                "1-59"),
                                               jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().project(jedd.internal.Jedd.v().replace(in.get(),
-                                                                                                                                        new PhysicalDomain[] { C2.v() },
-                                                                                                                                        new PhysicalDomain[] { C1.v() }),
+                                                                                                                                        new PhysicalDomain[] { C2.v(), ST.v() },
+                                                                                                                                        new PhysicalDomain[] { C1.v(), C2.v() }),
                                                                                                          new PhysicalDomain[] { V1.v(), H1.v() }),
-                                                                          new PhysicalDomain[] { ST.v() },
-                                                                          new PhysicalDomain[] { C2.v() }));
+                                                                          new PhysicalDomain[] { C2.v() },
+                                                                          new PhysicalDomain[] { ST.v() }));
         newEdges.eq(jedd.internal.Jedd.v().cast((jedd.internal.RelationContainer)
                                                   new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), srcm.v(), srcc.v(), kind.v(), stmt.v(), tgtc.v() },
                                                                                       new PhysicalDomain[] { MT.v(), MS.v(), C1.v(), KD.v(), ST.v(), C2.v() },

@@ -62,12 +62,15 @@ public class BDDCallEdgeContextifier extends AbsCallEdgeContextifier {
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.dstc:soot.ji" +
                                                "mple.paddle.bdddomains.C1, soot.jimple.paddle.bdddomains.dst" +
                                                ":soot.jimple.paddle.bdddomains.V2> globalDsts = jedd.interna" +
-                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), ni.g" +
-                                               "lobalSet(), new jedd.PhysicalDomain[...]); at /home/research" +
-                                               "/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDCallEdgeCon" +
-                                               "textifier.jedd:61,31-41"),
+                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), jedd" +
+                                               ".internal.Jedd.v().replace(ni.globalSet(), new jedd.Physical" +
+                                               "Domain[...], new jedd.PhysicalDomain[...]), new jedd.Physica" +
+                                               "lDomain[...]); at /home/research/ccl/olhota/soot-trunk/src/s" +
+                                               "oot/jimple/paddle/BDDCallEdgeContextifier.jedd:61,31-41"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut),
-                                                                          ni.globalSet(),
+                                                                          jedd.internal.Jedd.v().replace(ni.globalSet(),
+                                                                                                         new jedd.PhysicalDomain[] { V1.v() },
+                                                                                                         new jedd.PhysicalDomain[] { V2.v() }),
                                                                           new jedd.PhysicalDomain[] { V2.v() }));
         simpleOut.eqMinus(globalDsts);
         simpleOut.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(globalDsts,
@@ -84,15 +87,12 @@ public class BDDCallEdgeContextifier extends AbsCallEdgeContextifier {
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.dstc:soot.ji" +
                                                "mple.paddle.bdddomains.C1, soot.jimple.paddle.bdddomains.dst" +
                                                ":soot.jimple.paddle.bdddomains.V2> globalSrcs = jedd.interna" +
-                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), jedd" +
-                                               ".internal.Jedd.v().replace(ni.globalSet(), new jedd.Physical" +
-                                               "Domain[...], new jedd.PhysicalDomain[...]), new jedd.Physica" +
-                                               "lDomain[...]); at /home/research/ccl/olhota/soot-trunk/src/s" +
-                                               "oot/jimple/paddle/BDDCallEdgeContextifier.jedd:64,31-41"),
+                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), ni.g" +
+                                               "lobalSet(), new jedd.PhysicalDomain[...]); at /home/research" +
+                                               "/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDCallEdgeCon" +
+                                               "textifier.jedd:64,31-41"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut),
-                                                                          jedd.internal.Jedd.v().replace(ni.globalSet(),
-                                                                                                         new jedd.PhysicalDomain[] { V2.v() },
-                                                                                                         new jedd.PhysicalDomain[] { V1.v() }),
+                                                                          ni.globalSet(),
                                                                           new jedd.PhysicalDomain[] { V1.v() }));
         simpleOut.eqMinus(globalSrcs);
         simpleOut.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(globalSrcs,
