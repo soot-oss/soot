@@ -43,10 +43,36 @@ public class InitialResolver {
 	astNode = ast;
     }
    
+    private void addSourceFileTag(soot.SootClass sc){
+        if (sc.getTag("SourceFileTag") != null) return;
+        String name = sc.getName();
+
+        // inner classes are found in outer class source files
+        int index = name.indexOf("$");
+        if (index != -1){
+            name = sc.getName().substring(0, index);
+        }
+
+        // all classes may be in map 
+        if (soot.util.SourceLocator.v().getSourceToClassMap() != null) {
+            if (soot.util.SourceLocator.v().getSourceToClassMap().get(name) != null) {
+                name = (String)soot.util.SourceLocator.v().getSourceToClassMap().get(name);
+            }
+        }
+
+        // add file extension
+        name += ".java";
+        sc.addTag(new soot.tagkit.SourceFileTag(name));
+        //System.out.println("added to sc: "+sc.getName()+" sourcefiletag: "+name);
+    }
+    
     // resolves all types and deals with .class literals and asserts
     public void resolveFromJavaFile(soot.SootClass sc, soot.SootResolver resolver) {
         sootClass = sc;
 
+        // add sourcefile tag to Soot class
+        addSourceFileTag(sc);
+        
         // get types and resolve them in the Scene
         TypeListBuilder typeListBuilder = new TypeListBuilder();
         

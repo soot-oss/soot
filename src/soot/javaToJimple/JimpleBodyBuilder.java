@@ -290,7 +290,7 @@ public class JimpleBodyBuilder {
     private void createFormal(polyglot.ast.Formal formal, int counter){
 
         soot.Type sootType = Util.getSootType(formal.type().type());
-        System.out.println("soot type for formal: "+sootType);
+        //System.out.println("soot type for formal: "+sootType);
         soot.Local formalLocal = createLocal(formal.localInstance());
         soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(sootType, counter);
         soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(formalLocal, paramRef);
