@@ -167,17 +167,21 @@
         </jar>
     </target>
 
-    <!--not done yet
+    
     <target name="quickstart" depends="settings,eclipse-plugin,classesjar">
         <property file="ant.settings"/>
+        <basename property="polyglot.name" file="${polyglot.jar}"/>
+        <dirname property="polyglot.dir" file="${polyglot.jar}"/>
+        <basename property="jasmin.name" file="${jasmin.jar}"/>
+        <dirname property="jasmin.dir" file="${jasmin.jar}"/>
         <jar destfile="${eclipse.loc}/plugins/soot-eclipse-quickstart-${soot.version}.jar">
-            <includesfile name="${polyglot.jar}"/>
-            <fileset dir="eclipse/ca.mcgill.sable.soot/" includes="soot-plugin.jar,plugin.xml,plugin.properties"/>
-            <fileset dir="${release.loc}/" includes="sootclasses-${soot.version}.jar"/>
-            <fileset dir="eclipse/ca.mcgill.sable.soot/" includes="icons/*.png,icons/*.jpg,icons/*.gif"/>
-            <fileset dir="${jasmin.jar}"/>
+            <zipfileset dir="eclipse/ca.mcgill.sable.soot/" includes="soot-plugin.jar,plugin.xml,plugin.properties" prefix="ca.mcgill.sable.soot"/>
+            <zipfileset dir="${release.loc}/" includes="sootclasses-${soot.version}.jar" prefix="ca.mcgill.sable.soot"/>
+            <zipfileset dir="eclipse/ca.mcgill.sable.soot/" includes="icons/*.png,icons/*.jpg,icons/*.gif" prefix="ca.mcgill.sable.soot"/>
+            <zipfileset dir="${polyglot.dir}" includes="${polyglot.name}" prefix="ca.mcgill.sable.soot"/>
+            <zipfileset dir="${jasmin.dir}" includes="${jasmin.name}" prefix="ca.mcgill.sable.soot"/>
         </jar>
-    </target>-->
+    </target>
     
     <target name="eclipse-plugin" depends="compile,settings">
         <xslt
