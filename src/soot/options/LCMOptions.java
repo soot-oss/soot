@@ -46,7 +46,7 @@ public class LCMOptions
     
      * .
     
-     * if true, loop inversion is performed before doing the 
+     * If true, perform loop inversion before doing the 
      * transformation. 
      */
     public boolean unroll() {
@@ -55,42 +55,53 @@ public class LCMOptions
     
     /** Naive Side Effect Tester --
     
-     * .
+     * Use a naive side effect analysis even if interprocedural 
+     * information is available.
     
-     * 
+     * If naive-side-effect is set to true Lazy Code Motion uses the 
+     * conservative side effect information provided by the 
+     * NaiveSideEffectTester class, even if interprocedural information 
+     * about side effects is available. The naive side effect analysis 
+     * is based solely on the information available locally about a 
+     * statement. It assumes, for example, that any method call has the 
+     * potential to write and read all instance and static fields in 
+     * the program. If naive-side-effect is set to false and whole 
+     * program analysis has been specified by the -W or -whole-program 
+     * options, then Lazy Code Motion uses the side effect information 
+     * provided by the PASideEffectTester class. PASideEffectTester 
+     * uses the information provided by a points-to analysis to 
+     * determine which fields and statics may be written or read by a 
+     * given statement. If whole program analysis is not performed, 
+     * naive side effect information is used regardless of the setting 
+     * of naive-side-effect. 
      */
     public boolean naive_side_effect() {
         return soot.PhaseOptions.getBoolean( options, "naive-side-effect" );
     }
     
-    public static final int safe_safe = 1;
-    public static final int safe_medium = 2;
-    public static final int safe_unsafe = 3;
-    /** Safe --
+    public static final int safety_safe = 1;
+    public static final int safety_medium = 2;
+    public static final int safety_unsafe = 3;
+    /** Safety --
     
      * .
     
-     * This option controls how fields and exception-throwing 
-     * statements are treated. safe is safe, but only considers 
-     * additions, subtractions and multiplications. medium is unsafe in 
-     * multi-threaded environment, as already performed field accesses 
-     * are reused. unsafe moves exception-throwing statements, and 
-     * reorders them. They are potentially moved out of 
-     * try-catch-blocks. 
+     * This option controls which fields and statements are candidates 
+     * for code motion. 
      */
-    public int safe() {
-        String s = soot.PhaseOptions.getString( options, "safe" );
+    public int safety() {
+        String s = soot.PhaseOptions.getString( options, "safety" );
         
         if( s.equalsIgnoreCase( "safe" ) )
-            return safe_safe;
+            return safety_safe;
         
         if( s.equalsIgnoreCase( "medium" ) )
-            return safe_medium;
+            return safety_medium;
         
         if( s.equalsIgnoreCase( "unsafe" ) )
-            return safe_unsafe;
+            return safety_unsafe;
         
-        throw new RuntimeException( "Invalid value "+s+" of phase option safe" );
+        throw new RuntimeException( "Invalid value "+s+" of phase option safety" );
     }
     
 }

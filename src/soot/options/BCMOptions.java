@@ -44,9 +44,25 @@ public class BCMOptions
     
     /** Naive Side Effect Tester --
     
-     * .
+     * Use a naive side effect analysis even if interprocedural 
+     * information is available.
     
-     * 
+     * If naive-side-effect is set to true Busy Code Motion uses the 
+     * conservative side effect information provided by the 
+     * NaiveSideEffectTester class, even if interprocedural information 
+     * about side effects is available. The naive side effect analysis 
+     * is based solely on the information available locally about a 
+     * statement. It assumes, for example, that any method call has the 
+     * potential to write and read all instance and static fields in 
+     * the program. If naive-side-effect is set to false and whole 
+     * program analysis has been specified by the -W or -whole-program 
+     * options, then Busy Code Motion uses the side effect information 
+     * provided by the PASideEffectTester class. PASideEffectTester 
+     * uses the information provided by a points-to analysis to 
+     * determine which fields and statics may be written or read by a 
+     * given statement. If whole program analysis is not performed, 
+     * naive side effect information is used regardless of the setting 
+     * of naive-side-effect. 
      */
     public boolean naive_side_effect() {
         return soot.PhaseOptions.getBoolean( options, "naive-side-effect" );

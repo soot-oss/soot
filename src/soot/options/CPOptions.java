@@ -46,7 +46,8 @@ public class CPOptions
     
      * .
     
-     * Copy propagation only occurs on the ``regular'' locals.
+     * Only propagate copies through ``regular'' locals, that is, 
+     * those declared in the source bytecode. 
      */
     public boolean only_regular_locals() {
         return soot.PhaseOptions.getBoolean( options, "only-regular-locals" );
@@ -56,8 +57,8 @@ public class CPOptions
     
      * .
     
-     * Only propagate copies to locals that represent stack locations 
-     * in the original bytecode. 
+     * Only propagate copies through locals that represent stack 
+     * locations in the original bytecode. 
      */
     public boolean only_stack_locals() {
         return soot.PhaseOptions.getBoolean( options, "only-stack-locals" );

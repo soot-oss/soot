@@ -983,7 +983,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jop.lcm" ) )
             return ""
                 +"enabled "
-                +"safe "
+                +"safety "
                 +"unroll "
                 +"naive-side-effect ";
     
@@ -1010,11 +1010,11 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
-        if( phaseName.equals( "jop.uce2" ) )
+        if( phaseName.equals( "jop.ubf1" ) )
             return ""
                 +"enabled ";
     
-        if( phaseName.equals( "jop.ubf1" ) )
+        if( phaseName.equals( "jop.uce2" ) )
             return ""
                 +"enabled ";
     
@@ -1322,7 +1322,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jop.lcm" ) )
             return ""
               +"enabled:false "
-              +"safe:safe "
+              +"safety:safe "
               +"unroll:true ";
     
         if( phaseName.equals( "jop.cp" ) )
@@ -1345,11 +1345,11 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true ";
     
-        if( phaseName.equals( "jop.uce2" ) )
+        if( phaseName.equals( "jop.ubf1" ) )
             return ""
               +"enabled:true ";
     
-        if( phaseName.equals( "jop.ubf1" ) )
+        if( phaseName.equals( "jop.uce2" ) )
             return ""
               +"enabled:true ";
     
@@ -1506,8 +1506,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jop.cbf" ) ) return;
         if( phaseName.equals( "jop.dae" ) ) return;
         if( phaseName.equals( "jop.uce1" ) ) return;
-        if( phaseName.equals( "jop.uce2" ) ) return;
         if( phaseName.equals( "jop.ubf1" ) ) return;
+        if( phaseName.equals( "jop.uce2" ) ) return;
         if( phaseName.equals( "jop.ubf2" ) ) return;
         if( phaseName.equals( "jop.ule" ) ) return;
         if( phaseName.equals( "jap" ) ) return;
@@ -1611,10 +1611,10 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jop.dae" );
         if( !PackManager.v().hasPhase( "jop.uce1" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jop.uce1" );
-        if( !PackManager.v().hasPhase( "jop.uce2" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase jop.uce2" );
         if( !PackManager.v().hasPhase( "jop.ubf1" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jop.ubf1" );
+        if( !PackManager.v().hasPhase( "jop.uce2" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.uce2" );
         if( !PackManager.v().hasPhase( "jop.ubf2" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jop.ubf2" );
         if( !PackManager.v().hasPhase( "jop.ule" ) )
