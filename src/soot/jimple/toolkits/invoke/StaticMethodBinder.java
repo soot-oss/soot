@@ -65,8 +65,8 @@ public class StaticMethodBinder extends SceneTransformer
         HashMap instanceToStaticMap = new HashMap();
 
         InvokeGraph graph = Scene.v().getActiveInvokeGraph();
-        VariableTypeAnalysis vta = new VariableTypeAnalysis(graph);
-        vta.trimActiveInvokeGraph();
+//        VariableTypeAnalysis vta = new VariableTypeAnalysis(graph);
+//        vta.trimActiveInvokeGraph();
 
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
                 
