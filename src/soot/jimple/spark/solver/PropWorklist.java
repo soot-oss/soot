@@ -143,18 +143,6 @@ public final class PropWorklist extends Propagator {
                 }
             }
 
-            if( ofcg.wantClassConstants( src ) ) {
-                Set constants = newP2Set.possibleClassConstants();
-                if( constants == null ) {
-                    ofcg.newClassConstant( src, null );
-                } else {
-                    for( Iterator constantIt = constants.iterator(); constantIt.hasNext(); ) {
-                        final String constant = (String) constantIt.next();
-                        ofcg.newClassConstant( src, constant );
-                    }
-                }
-            }
-
             while(true) {
                 Node addedSrc = (Node) addedEdges.next();
                 if( addedSrc == null ) break;

@@ -23,6 +23,7 @@ import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.builder.*;
 import soot.jimple.spark.callgraph.*;
+import soot.jimple.toolkits.callgraph.*;
 import soot.*;
 import java.util.*;
 import soot.util.*;
@@ -35,20 +36,20 @@ import soot.options.SparkOptions;
  */
 
 public class OnFlyCallGraph {
-    CallGraphBuilder cg;
+    CallGraphBuilder cgb;
     QueueReader reachables;
     QueueReader callEdges;
-    public CallGraphBuilder getCallGraph() { return cg; }
+    public CallGraphBuilder getCallGraph() { return cgb; }
     public OnFlyCallGraph( PAG pag, FastHierarchy fh, Parms parms ) {
         this.pag = pag;
         this.fh = fh;
         this.parms = parms;
-        cg = new CallGraphBuilder( pag, pag.getOpts().verbose(), pag.getOpts().all_clinit() );
-        reachables = cg.reachables();
-        callEdges = cg.callEdges();
+        cgb = new CallGraphBuilder( pag );
+        reachables = cgb.reachables().listener();
+        callEdges = cgb.getCallGraph().listener();
     }
     public void build() {
-        cg.build();
+        cgb.build();
         processReachables();
         processCallEdges();
     }
@@ -67,31 +68,23 @@ public class OnFlyCallGraph {
     private void processCallEdges() {
         Stmt s = null;
         while(true) {
-            Object o = callEdges.next();
-            if( o == null ) break;
-            if( o instanceof SootMethod ) {
-                SootMethod target = (SootMethod) o;
-                Object parameter = null;
-                //if( pag.getOpts().context_sens() ) parameter = s;
-                MethodPAG.v( pag, target ).addToPAG( parameter );
-                parms.addCallTarget( s, target, parameter );
-            } else if( o instanceof VirtualCallSite )
-                s = ((VirtualCallSite) o).getStmt();
-            else if( o instanceof Stmt ) s = (Stmt) o;
-            else throw new RuntimeException( "oops" );
+            Edge e = (Edge) callEdges.next();
+            if( e == null ) break;
+            MethodPAG.v( pag, e.tgt() ).addToPAG( null );
+            parms.addCallTarget( e );
         }
     }
 
     public boolean wantReachingTypes( VarNode receiver ) {
         Object r = receiver.getVariable();
         if( !(r instanceof Local) ) return false;
-        return cg.wantTypes( (Local) r );
+        return cgb.wantTypes( (Local) r );
     }
     public void addReachingType( Type type ) {
-        cg.addType( type );
+        cgb.addType( type );
     }
     public void doneReachingTypes() {
-        cg.doneTypes();
+        cgb.doneTypes();
         processReachables();
         processCallEdges();
     }
@@ -107,23 +100,13 @@ public class OnFlyCallGraph {
     public boolean wantStringConstants( VarNode v ) {
         Object r = v.getVariable();
         if( !(r instanceof Local) ) return false;
-        return cg.wantStringConstants( (Local) r );
+        return cgb.wantStringConstants( (Local) r );
     }
 
     public void newStringConstant( VarNode v, String name ) {
-        cg.newStringConstant( (Local) v.getVariable(), name );
+        cgb.newStringConstant( (Local) v.getVariable(), name );
     }
-    
-    public boolean wantClassConstants( VarNode v ) {
-        Object r = v.getVariable();
-        if( !(r instanceof Local) ) return false;
-        return cg.wantClassConstants( (Local) r );
-    }
-
-    public void newClassConstant( VarNode v, String name ) {
-        cg.newClassConstant( (Local) v.getVariable(), name );
-    }
-    
+      
     /* End of public methods. */
     /* End of package methods. */
 

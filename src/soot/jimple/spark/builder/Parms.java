@@ -23,6 +23,7 @@ import soot.jimple.spark.pag.*;
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
+import soot.jimple.toolkits.callgraph.*;
 
 /** Generic interface to a class implementing builder parameters (this decides
  * what kinds of nodes should be built for each kind of Soot value).
@@ -52,6 +53,8 @@ public interface Parms {
     public Node caseRet( SootMethod m );
     /** Node for elements of array base of type arrayType. */
     public Node caseArray( Object base, ArrayType arrayType );
+    /** Adds a possible target of a call site. */
+    public void addCallTarget( Edge e );
     /** Adds a possible target of a call site. */
     public void addCallTarget( Stmt s, SootMethod target, Object varNodeParameter );
 }

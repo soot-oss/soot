@@ -836,13 +836,13 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "cg" ) )
             return ""
-                +"enabled ";
+                +"enabled "
+                +"safe-forname ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
                 +"enabled "
-                +"verbose "
-                +"all-clinit ";
+                +"verbose ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""
@@ -1182,12 +1182,13 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "cg" ) )
             return ""
-              +"enabled:true ";
+              +"enabled:true "
+              +"safe-forname:false ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
               +"enabled:true "
-              +"all-clinit:false ";
+              +"verbose:false ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""

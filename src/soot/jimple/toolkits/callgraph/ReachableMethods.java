@@ -56,7 +56,9 @@ public class ReachableMethods
             addMethod( (SootMethod) methods.next() );
     }
     private void addMethod( SootMethod m ) {
-            if( set.add( m ) ) reachables.add( m );
+            if( set.add( m ) ) {
+                reachables.add( m );
+            }
     }
     /** Causes the QueueReader objects to be filled up with any methods
      * that have become reachable since the last call. */
@@ -90,6 +92,10 @@ public class ReachableMethods
     /** Returns true iff method is reachable. */
     public boolean contains( SootMethod m ) {
         return set.contains( m );
+    }
+    /** Returns the number of methods that are reachable. */
+    public int size() {
+    	return set.size();
     }
 }
 

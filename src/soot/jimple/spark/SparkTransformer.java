@@ -63,7 +63,6 @@ public class SparkTransformer extends SceneTransformer
         if( opts.force_gc() ) doGC();
         Date startBuild = new Date();
         final PAG pag = b.setup( opts );
-        b.getCallGraphBuilder().setCallGraph( new CallGraph() );
         b.build();
         Date endBuild = new Date();
         reportTime( "Pointer Assignment Graph", startBuild, endBuild );
@@ -135,7 +134,7 @@ public class SparkTransformer extends SceneTransformer
 
         if( opts.verbose() ) {
             G.v().out.println( "[Spark] Number of reachable methods: "
-                    +b.getCallGraphBuilder().numReachableMethods() );
+                    +Scene.v().getReachableMethods().size() );
         }
 
         if( opts.set_mass() ) findSetMass( pag, b );
@@ -152,7 +151,6 @@ public class SparkTransformer extends SceneTransformer
         if( opts.dump_solution() ) dumper.dumpPointsToSets();
         if( opts.dump_html() ) new PAG2HTML( pag ).dump();
         Scene.v().setPointsToAnalysis( pag );
-        Scene.v().setCallGraph( b.getCallGraphBuilder().getCallGraph() );
         if( opts.add_tags() ) {
             addTags( pag );
         }
@@ -202,32 +200,8 @@ public class SparkTransformer extends SceneTransformer
         int varMass = 0;
         int adfs = 0;
         int scalars = 0;
-        HashMultiMap graph = b.getCallGraphBuilder().graph;
         if( false ) {
-            for( Iterator srcIt = graph.keySet().iterator(); srcIt.hasNext(); ) {
-                final SootMethod src = (SootMethod) srcIt.next();
-                for( Iterator dstIt = graph.get(src).iterator(); dstIt.hasNext(); ) {
-                    final SootMethod dst = (SootMethod) dstIt.next();
-                    G.v().out.println( src.getBytecodeSignature()+" -> "+
-                            dst.getBytecodeSignature() );
-                }
-            }
-        }
-        if( false ) {
-            boolean change;
-            do {
-                change = false;
-                for( Iterator srcIt = new ArrayList( graph.keySet() ).iterator(); srcIt.hasNext(); ) {
-                    final SootMethod src = (SootMethod) srcIt.next();
-                    for( Iterator dstIt = new ArrayList( graph.get(src) ).iterator(); dstIt.hasNext(); ) {
-                        final SootMethod dst = (SootMethod) dstIt.next();
-                        change = graph.putAll( src, graph.get( dst ) ) | change;
-                    }
-                }
-            } while( change );
-        }
-        if( false ) {
-            for( Iterator it = b.getCallGraphBuilder().reachableMethods(); it.hasNext(); ) {
+            for( Iterator it = Scene.v().getReachableMethods().listener(); it.hasNext(); ) {
                 SootMethod m = (SootMethod) it.next();
                 G.v().out.println( m.getBytecodeSignature() );
             }

@@ -94,6 +94,15 @@ public class EntryPoints
         ret.addAll( implicit() );
         return ret;
     }
+    /** Returns a list of all static initializers. */
+    public List clinits() {
+        List ret = new ArrayList();
+        for( Iterator clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = (SootClass) clIt.next();
+            addMethod( ret, cl, sigClinit );
+        }
+        return ret;
+    }
 }
 
 

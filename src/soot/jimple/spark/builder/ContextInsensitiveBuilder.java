@@ -20,6 +20,7 @@
 package soot.jimple.spark.builder;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
+import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
@@ -58,21 +59,21 @@ public class ContextInsensitiveBuilder implements Builder {
             OnFlyCallGraph ofcg = new OnFlyCallGraph( pag,
                         Scene.v().getOrMakeFastHierarchy(), parms );
             pag.setOnFlyCallGraph( ofcg );
-            cg = ofcg.getCallGraph();
+            cgb = ofcg.getCallGraph();
         } else {
-            cg = new CallGraphBuilder( DumbPointerAnalysis.v(), opts.verbose(), opts.all_clinit() );
+            cgb = new CallGraphBuilder( DumbPointerAnalysis.v() );
         }
         return pag;
     }
-    public CallGraphBuilder getCallGraphBuilder() { return cg; }
+    public CallGraphBuilder getCallGraphBuilder() { return cgb; }
     /** Fills in the pointer assignment graph returned by setup. */
     public void build() {
-        QueueReader callEdges = cg.callEdges();
+        QueueReader callEdges = cgb.getCallGraph().listener();
         OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
         if( ofcg != null ) {
             ofcg.build();
         } else {
-            cg.build();
+            cgb.build();
         }
         for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
             final SootClass c = (SootClass) cIt.next();
@@ -80,18 +81,10 @@ public class ContextInsensitiveBuilder implements Builder {
 	}
         Stmt s = null;
         while(true) {
-            Object o = callEdges.next();
-            if( o == null ) break;
-            if( o instanceof SootMethod ) {
-                SootMethod target = (SootMethod) o;
-                Object parameter = null;
-                //if( pag.getOpts().context_sens() ) parameter = s;
-                MethodPAG.v( pag, target ).addToPAG( parameter );
-                parms.addCallTarget( s, target, null );
-            } else if( o instanceof VirtualCallSite )
-                s = ((VirtualCallSite) o).getStmt();
-            else if( o instanceof Stmt ) s = (Stmt) o;
-            else throw new RuntimeException( "oops" );
+            Edge e = (Edge) callEdges.next();
+            if( e == null ) break;
+            MethodPAG.v( pag, e.tgt() ).addToPAG(null);
+            parms.addCallTarget( e );
         }
 
         if( pag.getOpts().verbose() ) {
@@ -111,7 +104,7 @@ public class ContextInsensitiveBuilder implements Builder {
 	    SootMethod m = (SootMethod) methodsIt.next();
 	    if( !m.isConcrete() && !m.isNative() ) continue;
             totalMethods++;
-            if( cg.isReachable( m ) ) {
+            if( cgb.reachables().contains( m ) ) {
                 MethodPAG mpag = MethodPAG.v( pag, m );
                 mpag.build();
                 mpag.addToPAG(null);
@@ -127,7 +120,7 @@ public class ContextInsensitiveBuilder implements Builder {
 
     private PAG pag;
     private Parms parms;
-    private CallGraphBuilder cg;
+    private CallGraphBuilder cgb;
     int classes = 0;
     int totalMethods = 0;
     int analyzedMethods = 0;

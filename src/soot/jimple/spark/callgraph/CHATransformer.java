@@ -40,10 +40,12 @@ public class CHATransformer extends SceneTransformer
     protected void internalTransform(String phaseName, Map opts)
     {
         CHAOptions options = new CHAOptions( opts );
-        CallGraphBuilder cg = new CallGraphBuilder( DumbPointerAnalysis.v(), options.verbose(), options.all_clinit() );
-        cg.setCallGraph( new CallGraph() );
+        CallGraphBuilder cg = new CallGraphBuilder( DumbPointerAnalysis.v() );
         cg.build();
-        Scene.v().setCallGraph( cg.getCallGraph() );
+        if( options.verbose() ) {
+            G.v().out.println( "Number of reachable methods: "
+                    +Scene.v().getReachableMethods().size() );
+        }
     }
 }
 

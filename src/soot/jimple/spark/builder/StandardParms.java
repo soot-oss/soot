@@ -26,6 +26,7 @@ import soot.util.*;
 
 import java.util.*;
 import soot.jimple.spark.internal.*;
+import soot.jimple.toolkits.callgraph.Edge;
 
 /** Class implementing builder parameters (this decides
  * what kinds of nodes should be built for each kind of Soot value).
@@ -59,6 +60,45 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             }
         }
     }
+
+    final public void addCallTarget( Edge e ) {
+        if( !e.passesParameters() ) return;
+        if( e.isExplicit() ) {
+            addCallTarget( (Stmt) e.srcUnit(), e.tgt(), null );
+        } else {
+            switch( e.type() ) {
+                case Edge.THREAD:
+                    addCallTarget( (Stmt) e.srcUnit(), e.tgt(), null );
+                    break;
+                case Edge.PRIVILEGED:
+                    Node ret = caseRet( e.tgt() ).getReplacement();
+                    SootClass accessController = RefType.v( "java.security.AccessController" ).getSootClass();
+                    final String[] methods = {
+                        "java.lang.Object doPrivileged(java.security.PrivilegedAction)",
+                        "java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)",
+                        "java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)",
+                        "java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)"
+                    };
+                    for( int i = 0; i < methods.length; i++ ) {
+                        Node doPrivRet =
+                            caseRet( accessController.getMethod( methods[i] ) )
+                                .getReplacement();
+                        addEdge( ret, doPrivRet );
+                    }
+                    // FALL THROUGH
+                case Edge.EXIT:
+                case Edge.FINALIZE:
+                    Node srcThis = caseThis( e.src() ).getReplacement();
+                    Node tgtThis = caseThis( e.tgt() ).getReplacement();
+                    addEdge( srcThis, tgtThis );
+                    break;
+                default:
+                    throw new RuntimeException( "Unhandled edge "+e );
+            }
+        }
+    }
+
+    
     /** Adds method target as a possible target of the invoke expression in s.
      * If target is null, only creates the nodes for the call site,
      * without actually connecting them to any target method.

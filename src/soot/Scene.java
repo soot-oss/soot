@@ -70,6 +70,7 @@ public class Scene  //extends AbstractHost
     private ReachableMethods reachableMethods;
     private PointsToAnalysis activePointsToAnalysis;
     private SideEffectAnalysis activeSideEffectAnalysis;
+    private List entryPoints;
     
     boolean allowsPhantomRefs = false;
     private boolean allowsLazyResolving = false;
@@ -487,6 +488,19 @@ public class Scene  //extends AbstractHost
         activeHierarchy = null;
     }
 
+    /** Get the set of entry points that are used to build the call graph. */
+    public List getEntryPoints() {
+        if( entryPoints == null ) {
+            entryPoints = EntryPoints.v().all();
+        }
+        return entryPoints;
+    }
+
+    /** Change the set of entry point methods used to build the call graph. */
+    public void setEntryPoints( List entryPoints ) {
+        this.entryPoints = entryPoints;
+    }
+
     public CallGraph getCallGraph() 
     {
         if(!hasCallGraph()) {
@@ -514,7 +528,7 @@ public class Scene  //extends AbstractHost
     public ReachableMethods getReachableMethods() {
         if( reachableMethods == null ) {
             reachableMethods = new ReachableMethods(
-                    getCallGraph(), EntryPoints.v().all() );
+                    getCallGraph(), getEntryPoints() );
         }
         return reachableMethods;
     }

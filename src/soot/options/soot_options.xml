@@ -428,6 +428,7 @@ This phase eliminates assignment statements (to locals) with no uses.
 			<radio_phase>
 				<name>Call Graph</name>
 				<alias>cg</alias>
+                                <class>CGOptions</class>
                                 <long_desc>The purpose of this pack is to compute
 an invoke graph. When this pack finishes, the Scene should have an active invoke
 graph. The different phases represent different ways to construct the invoke
@@ -439,6 +440,11 @@ If no phases are enabled, the Old Class Hierarchy Analysis phase
 					<alias>enabled</alias>
                                         <default>true</default>
 				</boolopt>
+                                <boolopt>
+                                        <name>Safe forName</name>
+                                        <alias>safe-forname</alias>
+                                        <default>false</default>
+                                </boolopt>
 				<sub_phase>
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>
@@ -451,19 +457,8 @@ If no phases are enabled, the Old Class Hierarchy Analysis phase
 					<boolopt>
 						<name>Verbose</name>
 						<alias>verbose</alias>
-					</boolopt>
-                                        <boolopt>
-                                                <name>All Static Initializers Reachable</name>
-                                                <alias>all-clinit</alias>
                                                 <default>false</default>
-                                                <long_desc>
-When this option is set to true, all static initializer methods in
-available classes are considered to be reachable. Otherwise, static
-initializers are only considered reachable if a statement using the
-class (such as a static read, an object creation, or use of Class.forName())
-is reachable.
-</long_desc>
-                                        </boolopt>
+					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Spark</name>

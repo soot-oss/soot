@@ -109,6 +109,10 @@ public final class Edge
         return type == STATIC;
     }
 
+    public boolean passesParameters() {
+        return isExplicit() || type == THREAD || type == EXIT ||
+            type == FINALIZE || type == PRIVILEGED;
+    }
 
     public int hashCode() {
         int ret = tgt.hashCode() + type;

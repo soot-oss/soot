@@ -83,6 +83,12 @@ public class Singletons {
     }
     private Global g = new Global();
 
+    private VirtualCalls instanceVirtualCalls;
+    public VirtualCalls VirtualCalls() {
+        if( instanceVirtualCalls == null ) instanceVirtualCalls = new VirtualCalls( g );
+        return instanceVirtualCalls;
+    }
+
     private FieldTagger instanceFieldTagger;
     public FieldTagger FieldTagger() {
         if( instanceFieldTagger == null ) instanceFieldTagger = new FieldTagger( g );

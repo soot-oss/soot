@@ -17,12 +17,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.jimple.spark.callgraph;
+package soot.jimple.toolkits.callgraph;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
-import soot.jimple.toolkits.callgraph.*;
 
 
 /** Given a method, returns the set of methods that may be invoked implicitly
@@ -34,25 +33,25 @@ public class ImplicitMethodInvocation
     public ImplicitMethodInvocation( Singletons.Global g ) {}
     public static ImplicitMethodInvocation v() { return G.v().ImplicitMethodInvocation(); }
 
-    final NumberedString sigMain = Scene.v().getSubSigNumberer().
+    public final NumberedString sigMain = Scene.v().getSubSigNumberer().
         findOrAdd( "void main(java.lang.String[])" );
-    final NumberedString sigFinalize = Scene.v().getSubSigNumberer().
+    public final NumberedString sigFinalize = Scene.v().getSubSigNumberer().
         findOrAdd( "void finalize()" );
-    final NumberedString sigExit = Scene.v().getSubSigNumberer().
+    public final NumberedString sigExit = Scene.v().getSubSigNumberer().
         findOrAdd( "void exit()" );
-    final NumberedString sigClinit = Scene.v().getSubSigNumberer().
+    public final NumberedString sigClinit = Scene.v().getSubSigNumberer().
         findOrAdd( "void <clinit>()" );
-    final NumberedString sigStart = Scene.v().getSubSigNumberer().
+    public final NumberedString sigStart = Scene.v().getSubSigNumberer().
         findOrAdd( "void start()" );
-    final NumberedString sigRun = Scene.v().getSubSigNumberer().
+    public final NumberedString sigRun = Scene.v().getSubSigNumberer().
         findOrAdd( "void run()" );
-    final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
+    public final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Object run()" );
-    final NumberedString sigForName = Scene.v().getSubSigNumberer().
+    public final NumberedString sigForName = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Class forName(java.lang.String)" );
-    final RefType clPrivilegedAction = RefType.v("java.security.PrivilegedAction");
-    final RefType clPrivilegedExceptionAction = RefType.v("java.security.PrivilegedExceptionAction");
-    final RefType clRunnable = RefType.v("java.lang.Runnable");
+    public final RefType clPrivilegedAction = RefType.v("java.security.PrivilegedAction");
+    public final RefType clPrivilegedExceptionAction = RefType.v("java.security.PrivilegedExceptionAction");
+    public final RefType clRunnable = RefType.v("java.lang.Runnable");
     private final void addMethod( NumberedSet set, SootClass cls, NumberedString methodSubSig ) {
         if( cls.declaresMethod( methodSubSig ) ) {
             set.add( cls.getMethod( methodSubSig ) );
@@ -94,7 +93,7 @@ public class ImplicitMethodInvocation
         addMethod( ret, "<java.lang.String: byte[] getBytes()>");
         return ret;
     }
-    public List getImplicitTargets( SootMethod source, boolean verbose ) {
+    public List getImplicitTargets( SootMethod source, boolean safeForName ) {
         final List ret = new ArrayList();
         final SootClass scl = source.getDeclaringClass();
         if( source.isNative() ) return ret;
@@ -117,12 +116,10 @@ public class ImplicitMethodInvocation
                 InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
                 if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
                     if( !warnedAlready ) {
-                        if( verbose ) {
-                            G.v().out.println( "Warning: call to "+
-                                "java.lang.reflect.Method: invoke() from "+source+
-                                "; graph will be incomplete!" );
-                            warnedAlready = true;
-                        }
+                        G.v().out.println( "Warning: call to "+
+                            "java.lang.reflect.Method: invoke() from "+source+
+                            "; graph will be incomplete!" );
+                        warnedAlready = true;
                     }
                 }
                 if( ie.getMethod().getNumberedSubSignature() == sigForName ) {
@@ -131,11 +128,9 @@ public class ImplicitMethodInvocation
                         String cls = ((StringConstant) name ).value;
                         if( cls.charAt(0) != '[' ) {
                             if( !Scene.v().containsClass( cls ) ) {
-                                if( verbose ) {
-                                    G.v().out.println( "Warning: Class "+cls+" is"+
-                                        " a dynamic class, and you did not specify"+
-                                        " it as such; graph will be incomplete!" );
-                                }
+                                G.v().out.println( "Warning: Class "+cls+" is"+
+                                    " a dynamic class, and you did not specify"+
+                                    " it as such; graph will be incomplete!" );
                             } else {
                                 SootClass sootcls = Scene.v().getSootClass( cls );
                                 if( !sootcls.isApplicationClass() ) {
@@ -145,10 +140,16 @@ public class ImplicitMethodInvocation
                             }
                         }
                     } else {
-                        if( verbose ) {
+                        if( safeForName ) {
+                            for( Iterator tgtIt = EntryPoints.v().clinits().iterator(); tgtIt.hasNext(); ) {
+                                final SootMethod tgt = (SootMethod) tgtIt.next();
+                                ret.add( new Edge( source, s, tgt, Edge.CLINIT ) );
+                            }
+                        } else {
                             G.v().out.println( "Warning: Method "+source+
                                     " is reachable, and calls Class.forName on a"+
-                                    " non-constant String; graph will be incomplete!" );
+                                    " non-constant String; graph will be incomplete!"+
+                                    " Use safe-forname option for a conservative result." );
                         }
                     }
                 }
