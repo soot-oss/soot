@@ -45,8 +45,12 @@ public class AttributesUnitPrinter {
 	}
 	public void endUnit( Unit u ) {
 		int endStmtOffset = output().length() - lastNewline;
-		u.addTag( new JimpleLineNumberTag( startLn, currentLn ));
-		u.addTag( new PositionTag(startStmtOffset, endStmtOffset) );
+		if (hasTag(u)){
+			u.addTag( new JimpleLineNumberTag( startLn, currentLn ));
+		}
+		if (hasColorTag(u)) {
+			u.addTag( new PositionTag(startStmtOffset, endStmtOffset) );
+		}
 	}
     public void startValueBox( ValueBox u ) {
 		if (startOffsets == null) {
@@ -56,9 +60,24 @@ public class AttributesUnitPrinter {
     }
     public void endValueBox( ValueBox u ) {
         endOffset = output().length() - lastNewline;
-        u.addTag(new PositionTag(((Integer)startOffsets.pop()).intValue(), endOffset));
+        if (hasColorTag(u)) {
+			u.addTag(new PositionTag(((Integer)startOffsets.pop()).intValue(), endOffset));
+		}
     }
 
+	private boolean hasTag(Host h) {
+		if (h.getTags().isEmpty()) return false;
+		return true;
+	}
+	
+	private boolean hasColorTag(Host h) {
+		Iterator it = h.getTags().iterator();
+		while (it.hasNext()){
+			if (it.next() instanceof ColorTag) return true;
+		}
+		return false;
+	}
+	
     public void setEndLn(int ln){
         currentLn = ln;
     }

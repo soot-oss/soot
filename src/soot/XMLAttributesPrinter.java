@@ -57,14 +57,15 @@ public class XMLAttributesPrinter {
 			if (!sm.hasActiveBody()) {
 				continue;
 			}
-			Iterator mTags = sm.getTags().iterator();
-			startPrintAttribute();
-			while (mTags.hasNext()){
-				Tag t = (Tag)mTags.next();
-				printAttributeTag(t);
+			if (!sm.getTags().isEmpty()){
+				Iterator mTags = sm.getTags().iterator();
+				startPrintAttribute();
+				while (mTags.hasNext()){
+					Tag t = (Tag)mTags.next();
+					printAttributeTag(t);
+				}
+				endPrintAttribute();
 			}
-			endPrintAttribute();
-
 			
 			Body b = sm.getActiveBody();
 			Iterator itUnits = b.getUnits().iterator();
@@ -73,19 +74,21 @@ public class XMLAttributesPrinter {
 				Iterator itTags = u.getTags().iterator();
 				startPrintAttribute();
 				while (itTags.hasNext()) {
-			        	Tag t = (Tag)itTags.next();
+			   		Tag t = (Tag)itTags.next();
 					printAttributeTag(t);
 				}
 				Iterator valBoxIt = u.getUseAndDefBoxes().iterator();
 				while (valBoxIt.hasNext()){
 					ValueBox vb = (ValueBox)valBoxIt.next();
-					startPrintValBoxAttr();
-					Iterator tagsIt = vb.getTags().iterator(); 
-					while (tagsIt.hasNext()) {
-						Tag t = (Tag)tagsIt.next();
-						printAttributeTag(t);
+					if (!vb.getTags().isEmpty()){
+						startPrintValBoxAttr();
+						Iterator tagsIt = vb.getTags().iterator(); 
+						while (tagsIt.hasNext()) {
+							Tag t = (Tag)tagsIt.next();
+							printAttributeTag(t);
+						}
+						endPrintValBoxAttr();
 					}
-					endPrintValBoxAttr();
 				}
 				endPrintAttribute();	
 			}

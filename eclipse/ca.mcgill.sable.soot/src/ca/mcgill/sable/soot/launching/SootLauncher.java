@@ -64,6 +64,18 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		runSootDirectly("soot.Main");
 	}
 	
+	private void sendSootOutputEvent(String toSend){
+		SootOutputEvent send = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);
+		send.setTextToAppend(toSend);
+		final SootOutputEvent sendFinal = send;
+		
+		Display.getCurrent().asyncExec(new Runnable(){
+			public void run() {
+				SootPlugin.getDefault().fireSootOutputEvent(sendFinal);
+			};
+		});
+	}
+	
 	protected void runSootDirectly(String mainClass) {
 		
 		int length = getSootCommandList().getList().size();
@@ -72,12 +84,20 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		
 		getSootCommandList().getList().toArray(temp);
 		
+		sendSootOutputEvent(mainClass);
+		sendSootOutputEvent(" ");
+		
 		final String [] cmdAsArray = temp;
 		
 		for (int i = 0; i < temp.length; i++) {
-			System.out.println(temp[i]);
 			
+			System.out.println(temp[i]);
+			sendSootOutputEvent(temp[i]);
+			sendSootOutputEvent(" ");
 		}
+		sendSootOutputEvent("\n");
+		
+		
 		System.out.println("about to make list be array of strings");
 		//final String [] cmdAsArray = (String []) temp;
 		IRunnableWithProgress op; 

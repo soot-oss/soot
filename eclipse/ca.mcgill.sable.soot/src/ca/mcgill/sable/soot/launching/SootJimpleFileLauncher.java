@@ -15,9 +15,9 @@ import org.eclipse.jface.action.*;
 public class SootJimpleFileLauncher extends SootFileLauncher {
 
 	public void run(IAction action) {
-	super.run(action);
+		super.run(action);
 
-		
+		if (isDoNotContinue()) return;
 		setCmd();
 		runSootDirectly();
 		runFinish();

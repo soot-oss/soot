@@ -78,7 +78,7 @@ public class SootFileLauncher extends SootLauncher {
 				IProject proj = cu.getJavaProject().getProject();
 				
 				IFolder output = proj.getFolder(cu.getJavaProject().getOutputLocation().lastSegment());
-				System.out.println(output.getLocation().toOSString());
+				System.out.println("Project Output Folder Location: "+output.getLocation().toOSString());
 				IPackageFragment pkf = (IPackageFragment)cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
 				IFile exists = null;
 				if (pkf.isDefaultPackage()) {

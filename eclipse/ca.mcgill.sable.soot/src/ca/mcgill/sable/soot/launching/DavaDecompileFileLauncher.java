@@ -21,6 +21,7 @@ public class DavaDecompileFileLauncher extends SootFileLauncher {
 	public void run(IAction action) {
 		super.run(action);
 
+		if (isDoNotContinue()) return;
 		String cmd = getCmd();
 		runSootAsProcess(cmd);
 		runFinish();
