@@ -87,8 +87,8 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 	
 	private String createAttrFileName() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(SootPlugin.getWorkspace().getRoot().getProject(getSelectedProj()).getLocation().toOSString());
-		sb.append("/sootOutput/attributes/");
+		sb.append(getRec().getLocation().removeLastSegments(1).toOSString());
+		sb.append("/attributes/");
 		sb.append(getPackFileName());
 		sb.append(".xml");
 		//System.out.println("Created attribute file name: "+sb.toString());

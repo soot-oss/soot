@@ -4,11 +4,17 @@
  * To change the template for this generated file go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-package ca.mcgill.sable.soot.attributes;
+package ca.mcgill.sable.soot.resources;
+
+import java.io.*;
+import java.util.ArrayList;
 
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.*;
+import org.eclipse.ui.views.contentoutline.*;
+
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.editors.*;
 
 /**
  * @author jlhotak
@@ -41,10 +47,14 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 			
 				int flags = delta.getFlags();
 				if ((flags & IResourceDelta.CONTENT) != 0) {
-					//System.out.println("Contents changed: "+delta.getResource().getFullPath().toOSString());
+					System.out.println("Contents changed: "+delta.getResource().getFullPath().toOSString());
 					if (delta.getResource() instanceof IFile){
 						SootPlugin.getDefault().getManager().updateFileChangedFlag((IFile)delta.getResource());
+						if (delta.getResource().getFullPath().getFileExtension().equals(SootResourceManager.JIMPLE_FILE_EXT)){
+							updateJimpleOutline((IFile)delta.getResource());
+						}
 					}
+					
 				}
 				/*else if ((flags & IResourceDelta.REPLACED) != 0) {
 					System.out.println("Resource replaced: "+delta.getResource().getFullPath().toOSString());
@@ -58,11 +68,48 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 				break;
 			}
 			case IResourceDelta.ADDED: {
-				//System.out.println("Resource added event: "+delta.getResource().getFullPath().toOSString());
+				System.out.println("Resource added event: "+delta.getResource().getFullPath().toOSString());
 				SootPlugin.getDefault().getManager().addToLists(delta.getResource());
+				if (delta.getResource() instanceof IFile){
+					if (delta.getResource().getFullPath().getFileExtension().equals(SootResourceManager.JIMPLE_FILE_EXT)){
+						updateJimpleOutline((IFile)delta.getResource());
+					}
+				}
 			}
 		}
 		return true;
 	}
 
+	private void updateJimpleOutline(IFile file) {
+		
+		//SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getAdapter(IContentOutlinePage.class);
+		
+		//JimpleEditor ed = (JimpleEditor) file.getAdapter(JimpleEditor.class);
+	
+		//System.out.println("updating outliner");
+		//ed.getAdapter(IContentOutlinePage.class);//.getPage().setInput(file);
+		/*try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(file.getContents()));
+			ArrayList text = new ArrayList();
+			//StringBuffer text = new StringBuffer();
+			while (true) {
+				String nextLine = br.readLine();
+				if (nextLine == null) break;// || (nextLine.length() == 0)) break;
+				//text.append(nextLine);
+				text.add(nextLine);
+				System.out.println(nextLine);
+				//System.out.println(nextLine.trim().length());
+			}
+			
+		}
+		catch (IOException e) {
+			System.out.println("io exception");
+		}
+		catch (CoreException e1) {
+			System.out.println("core exception");
+		}
+		ed.getPage().getContentOutline();
+		ed.getPage().getViewer().setInput(ed.getPage().getContentOutline());
+		ed.getPage().getViewer().refresh();*/
+	}
 }

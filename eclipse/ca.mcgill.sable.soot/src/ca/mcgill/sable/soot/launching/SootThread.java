@@ -4,7 +4,10 @@ package ca.mcgill.sable.soot.launching;
 import java.io.PrintStream;
 import java.lang.reflect.*;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
+
+import ca.mcgill.sable.soot.SootPlugin;
 
 //import ca.mcgill.sable.soot.SootPlugin;
 
@@ -43,12 +46,19 @@ public class SootThread extends Thread {
 	private String [] cmd;
 	private PrintStream sootOut;
 
+	
 	public void run() {
-		String className = "soot.Main";
+		IPreferenceStore store = SootPlugin.getDefault().getPreferenceStore();
+		String className = store.getString("selected");
+		
+		System.out.println("about to run: "+className);
 		
 		final String [] cmdFinal = getCmd();
 		final PrintStream sootOutFinal = getSootOut();
 		try {
+			
+			soot.G.v().reset();
+			
 			Class toRun = Class.forName(className);
 			Method [] meths = toRun.getDeclaredMethods();
 			Object [] args = new Object [2];

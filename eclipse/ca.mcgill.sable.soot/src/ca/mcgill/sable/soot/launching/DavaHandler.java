@@ -30,12 +30,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.jdt.core.*;
 //import org.eclipse.jdt.launching.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class DavaHandler {
 
 	private IFolder sootOutputFolder;
@@ -78,14 +72,65 @@ public class DavaHandler {
 	
 	public void handleAfter() {
 		ArrayList newMembers = new ArrayList();
+		IPath jreLibPath = null;
 		try {
 			IResource [] elems = getSootOutputFolder().getFolder("dava").getFolder("src").members();
 			for (int i = 0; i < elems.length; i++) {
 				if (getBeforeList() == null){
 					newMembers.add(elems[i]);
 				}
-				else if (!getBeforeList().contains(elems[i])){
-					newMembers.add(elems[i]);
+				else if (!newMembers.contains(elems[i])){
+				
+					if (SootPlugin.getDefault().getManager().getChangedResources() == null){
+					}
+					else if (SootPlugin.getDefault().getManager().getChangedResources().containsKey(elems[i])){
+						newMembers.add(elems[i]);
+					}
+				}
+			}
+			
+			// testing class lib copying
+			IProject proj = getSootOutputFolder().getProject();
+			IResource [] elements = proj.members();
+			/*for (int i = 0; i < elements.length; i++){
+				System.out.println("name: "+elements[i].getName());
+				System.out.println("class: "+elements[i].getClass());
+				System.out.println("type: "+elements[i].getType());
+				System.out.println("location: "+elements[i].getLocation());
+			}*/
+		
+			IJavaProject jProj = JavaCore.create(proj);
+			IClasspathEntry [] paths = jProj.getRawClasspath();
+			
+			for (int i = 0; i < paths.length; i++){
+				switch(paths[i].getEntryKind()){
+					case IClasspathEntry.CPE_CONTAINER:{
+						System.out.println("entry is container");
+						System.out.println(paths[i].getPath());
+						jreLibPath = paths[i].getPath();
+						
+						break;
+					}
+					/*case IClasspathEntry.CPE_LIBRARY:{
+						System.out.println("entry is library");
+						System.out.println(paths[i].getPath());
+						break;
+					}
+					case IClasspathEntry.CPE_PROJECT:{
+						System.out.println("entry is project");
+						System.out.println(paths[i].getPath());
+						break;
+					}
+					case IClasspathEntry.CPE_SOURCE:{
+						System.out.println("entry is source");
+						System.out.println(paths[i].getPath());
+						break;
+					}
+					case IClasspathEntry.CPE_VARIABLE:{
+						System.out.println("entry is variable");
+						System.out.println(paths[i].getPath());
+						break;
+					}*/
 				}
 			}
 		}
@@ -100,22 +145,31 @@ public class DavaHandler {
 			if (davaProjectExists()){
 				setDavaProj(JavaCore.create(SootPlugin.getWorkspace().getRoot().getProject(getDavaProjName())));
 				if (getDavaProj().isOpen()){
-					copyFiles(newMembers);
+					System.out.println("dava proj open");
+					if (shouldCopyFiles()){
+						copyFiles(newMembers);
+					}
 				}
 				else {
 					openProject();
-					copyFiles(newMembers);
+					if (shouldCopyFiles()){
+						System.out.println("dava proj was closed");
+						copyFiles(newMembers);
+					}
 				}
 			}
 			// if not special dava project ask user to create and add files there
 			else {
-				createSpecialDavaProject();
-				copyFiles(newMembers);
+				boolean result = createSpecialDavaProject(jreLibPath);
+				if (result){
+					copyFiles(newMembers);
+				}
+				
 			}
 		}
 	}
 	
-	private void createSpecialDavaProject(){
+	private boolean createSpecialDavaProject(IPath jreLibPath){
 		IWorkbenchWindow window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		MessageDialog create = new MessageDialog(window.getShell(), "Soot Question", null, "Would you like to create a new Dava Project with generated Dava src files?", 0, new String [] {"OK", "Cancel"}, 0);
 		create.open();
@@ -149,44 +203,52 @@ public class DavaHandler {
 					//entries[1] = JavaCore.newContainerEntry(out.getFullPath());
 					entries[0] = JavaCore.newSourceEntry(folder.getFullPath());
 					System.out.println(JavaCore.getClasspathVariable("JRE_LIB").toOSString());
-					entries[1] = JavaCore.newContainerEntry(JavaCore.getClasspathVariable("JRE_LIB"));
-					
+					if (jreLibPath != null){
+						entries[1] = JavaCore.newContainerEntry(jreLibPath);
+					}
 					getDavaProj().setRawClasspath(entries, null);
+					return true;
 				} 
 				catch (CoreException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					return false;
 				}
 				// open proj
 				//openProject();
 			}
 			
 		}	
+		return false;
 	}
 	
-	private void copyFiles(ArrayList newFiles){
+	private boolean shouldCopyFiles() {
 		IWorkbenchWindow window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		MessageDialog copy = new MessageDialog(window.getShell(), "Soot Question", null, "Would you like to copy Dava src files to the Dava Project?", 0, new String [] {"OK", "Cancel"}, 0);
 		copy.open();
-		if (copy.getReturnCode() == Dialog.OK){
-			// copy new files
-			Iterator it = newFiles.iterator();
-			IPath srcPath = getSrcFolder().getFullPath();
-			while (it.hasNext()){
-			
-				try {
-					IResource next = (IResource)it.next();
-					System.out.println(next.getName());
-					IPath copyTo = srcPath.append(System.getProperty("file.separator")+next.getName());
-					next.copy(copyTo, false, null);
-					//ject().getFile((String)it.next()).copy(getDavaProj().getOutputLocation(), false, null);
-				} 
-				catch (CoreException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		if (copy.getReturnCode() == Dialog.OK) return true;
+		return false;
+	}
+	
+	private void copyFiles(ArrayList newFiles){
+		// copy new files
+		Iterator it = newFiles.iterator();
+		IPath srcPath = getDavaProj().getProject().getFolder("src").getFullPath();//getSrcFolder().getFullPath();
+		while (it.hasNext()){
+		
+			try {
+				IResource next = (IResource)it.next();
+				System.out.println(next.getName());
+				IPath copyTo = srcPath.append(System.getProperty("file.separator")+next.getName());
+				next.copy(copyTo, false, null);
+				//ject().getFile((String)it.next()).copy(getDavaProj().getOutputLocation(), false, null);
+			} 
+			catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
+	
 		
 	}
 	

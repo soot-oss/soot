@@ -3,13 +3,14 @@ package ca.mcgill.sable.soot;
 import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.preference.*;
+import org.eclipse.jface.resource.*;
 
 import java.net.*;
 import java.util.*;
 
-import ca.mcgill.sable.soot.attributes.SootResourceManager;
 import ca.mcgill.sable.soot.launching.*;
+import ca.mcgill.sable.soot.resources.*;
 
 /**
  * @author jlhotak
@@ -91,7 +92,7 @@ public class SootPlugin extends AbstractUIPlugin {
 		// maybe should go in startUp method
 		// resource manager
 		setManager(new SootResourceManager());
-		getManager().initialize();
+		//getManager().initialize();
 		
 	}
 	
@@ -108,6 +109,14 @@ public class SootPlugin extends AbstractUIPlugin {
 		}
 	}
 	
+	
+	protected void initializeDefaultPreferences(IPreferenceStore store) {
+		// These settings will show up when Preference dialog
+		// opens up for the first time.
+		store.setDefault("classes", "soot.Main");
+		store.setDefault("selected", "soot.Main");
+	}	
+
 	private SootResourceManager manager;
 
 	/**

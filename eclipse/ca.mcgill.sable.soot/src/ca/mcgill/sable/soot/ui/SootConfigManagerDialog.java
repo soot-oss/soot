@@ -100,6 +100,11 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 	public SootConfigManagerDialog(Shell parentShell) {
 		super(parentShell);
 	}
+	
+	protected void configureShell(Shell shell){
+		super.configureShell(shell);
+		shell.setText("Manage Configurations");
+	}
 	/**
 	 * creates a sash form - one side for a selection tree 
 	 * and the other for the options 
@@ -217,7 +222,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		tree.setContentProvider(new SootConfigContentProvider());
 		tree.setLabelProvider(new SootConfigLabelProvider());
 	  	tree.setInput(getInitialInput());
-		
+	
 		setTreeViewer(tree);
 		
 		tree.addSelectionChangedListener(this);
@@ -247,6 +252,10 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 				setSelected(sel.getLabel());
 			}
 		}
+	}
+	
+	private void enableButtons(){
+			
 	}
 	
 	protected void handleKeyPressed(KeyEvent e) {
@@ -633,7 +642,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		SootConfigNameInputValidator validator = new SootConfigNameInputValidator();
 		validator.setAlreadyUsed(currentNames);
 		
-		InputDialog nameDialog = new InputDialog(this.getShell(), "Rename Saved Configuration", "Enter new name:", "", validator); 
+		InputDialog nameDialog = new InputDialog(this.getShell(), "Clone Saved Configuration", "Enter new name:", "", validator); 
 		nameDialog.open();
 		if (nameDialog.getReturnCode() == Dialog.OK){
 			config_count++;

@@ -12,7 +12,6 @@
 
    <extension point="org.eclipse.help.toc">
        <toc file="toc_Concepts.xml" />
-       <toc file="toc_Tasks.xml" />
        <toc file="toc_Reference.xml" />
    </extension>
 </plugin>

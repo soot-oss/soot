@@ -50,10 +50,11 @@ public class JimpleEditor extends TextEditor {
 	 */
 	public Object getAdapter(Class key) {
 		if (key.equals(IContentOutlinePage.class)) {
+			System.out.println("in getAdapter of editor");
 			IEditorInput input = getEditorInput();
 			if (input instanceof IFileEditorInput) {
-				page = new JimpleContentOutlinePage(((IFileEditorInput)input).getFile(), this);
-				return page;
+				setPage(new JimpleContentOutlinePage(((IFileEditorInput)input).getFile(), this));
+				return getPage();
 			}
 		}
 		return super.getAdapter(key);
@@ -64,4 +65,18 @@ public class JimpleEditor extends TextEditor {
 		super.dispose();
 	}
 	
+	/**
+	 * @return
+	 */
+	public JimpleContentOutlinePage getPage() {
+		return page;
+	}
+
+	/**
+	 * @param page
+	 */
+	public void setPage(JimpleContentOutlinePage page) {
+		this.page = page;
+	}
+
 }

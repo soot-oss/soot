@@ -96,7 +96,10 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		return (String)getDefList().get(key);
 	}
 
-	
+	protected void configureShell(Shell shell){
+		super	.configureShell(shell);
+		shell.setText("Soot Options");
+	}
 	
 	/**
 	 * creates a sash form - one side for a selection tree 

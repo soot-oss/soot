@@ -381,7 +381,7 @@ public class Main {
      *   Entry point for Eclipse line invocation of soot.
      */
     public static int main(String[] args, PrintStream out) {
-        G.v().reset();
+        //G.v().reset();
         G.v().out = out;
         return Main.v().go(args);
     }

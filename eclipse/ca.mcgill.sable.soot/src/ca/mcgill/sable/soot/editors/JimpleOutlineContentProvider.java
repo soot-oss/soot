@@ -101,6 +101,7 @@ public class JimpleOutlineContentProvider implements ITreeContentProvider {
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		
+		System.out.println("jimple content outline editor input changed ");
 	}
 
 }

@@ -79,7 +79,7 @@ public class ListOptionWidget {//extends Composite {
 		//	getText().setText(defaultVal);
 		//}
 		if ((data.getInitText() == null) || (data.getInitText().length() == 0)){
-			getText().setText(data.getInitText());
+			getText().setText(" ");
 		}
 		else {
 			getText().setText(data.getInitText());

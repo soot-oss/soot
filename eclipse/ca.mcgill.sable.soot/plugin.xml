@@ -10,7 +10,7 @@
       <library name="soot-plugin.jar"/>
       <library name="soot/classes/"/>
 <!--<library name="sootclasses.jar"/>-->
-<!--<library name="myclasses/"/>-->
+	  <library name="myclasses/"/>
       <library name="jasminclasses-sable-1.2.jar"/>
    </runtime>
    <requires>
@@ -32,7 +32,12 @@
       <import plugin="org.eclipse.swt"/>
    </requires>
 
-
+   <extension point = "org.eclipse.ui.preferencePages">
+       <page id="ca.mcgill.sable.soot.ui.SootPreference.Page1"
+	    class="ca.mcgill.sable.soot.ui.SootMainClassPreferencePage"
+            name="Soot Main Class">
+       </page>
+   </extension>
 <!--<extension point="org.eclipse.jdt.ui.javaElementFilters">
       <filter
          id="org.eclipse.jdt.ui.PackageExplorer.showclasses"

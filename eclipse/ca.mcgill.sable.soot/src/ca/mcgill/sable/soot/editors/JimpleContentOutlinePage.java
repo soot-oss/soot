@@ -45,6 +45,7 @@ public class JimpleContentOutlinePage extends ContentOutlinePage implements ISel
 	private IFile input;
 	private JimpleEditor ed;
 	private JimpleFile jimpleFileParser;
+	private TreeViewer viewer;
 	
 	public JimpleContentOutlinePage(IFile file, JimpleEditor ed) {
 		super();
@@ -56,16 +57,17 @@ public class JimpleContentOutlinePage extends ContentOutlinePage implements ISel
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		
-		TreeViewer viewer = getTreeViewer();
-		viewer.setContentProvider(new JimpleOutlineContentProvider());
-		viewer.setLabelProvider(new JimpleOutlineLabelProvider());
-		viewer.setInput(getContentOutline());
-		viewer.expandAll();
+		setViewer(getTreeViewer());
+		getViewer().setContentProvider(new JimpleOutlineContentProvider());
+		getViewer().setLabelProvider(new JimpleOutlineLabelProvider());
+		getViewer().setInput(getContentOutline());
+		getViewer().expandAll();
 		
-		viewer.addSelectionChangedListener(this);
+		getViewer().addSelectionChangedListener(this);
+		
 	}
 	
-	private JimpleOutlineObject getContentOutline(){
+	public JimpleOutlineObject getContentOutline(){
 	
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(getInput().getContents()));
@@ -152,6 +154,20 @@ public class JimpleContentOutlinePage extends ContentOutlinePage implements ISel
 	 */
 	public void setJimpleFileParser(JimpleFile file) {
 		jimpleFileParser = file;
+	}
+
+	/**
+	 * @return
+	 */
+	public TreeViewer getViewer() {
+		return viewer;
+	}
+
+	/**
+	 * @param viewer
+	 */
+	public void setViewer(TreeViewer viewer) {
+		this.viewer = viewer;
 	}
 
 }
