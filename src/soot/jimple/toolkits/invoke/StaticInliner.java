@@ -100,8 +100,6 @@ public class StaticInliner extends SceneTransformer
 
                 SootMethod target = (SootMethod)targets.get(0);
 
-                // System.out.println("Considering inlining the call: " + container + "/" + ie + " with " + target);
-                
                 if (!InlinerSafetyManager.canSafelyInlineInto(target, s, container, graph))
                     continue;
 
@@ -123,23 +121,33 @@ public class StaticInliner extends SceneTransformer
                         if (st.containsInvokeExpr())
                         {
                             InvokeExpr ie1 = (InvokeExpr)st.getInvokeExpr();
-                            if (!AccessManager.ensureAccess(container, ie1.getMethod(), modifierOptions))
-                                continue nextSite;
                             
                             if (ie1 instanceof SpecialInvokeExpr) 
                             {
-                                //System.out.println("Considering effect of: " + ie1 + "in: " + container + " and in: " + target);
-
                                 if((InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, container.getDeclaringClass()) ||
                                   InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, target.getDeclaringClass())))
                                 {
-                                    //System.out.println("   Performs a lookup!");
-                                    
                                     continue nextSite;
                                 }
+                             
+                                SootMethod specialTarget = ie1.getMethod();
                                 
-                                //System.out.println("   Does not perform a lookup!");
+                                if(specialTarget.isPrivate())
+                                {
+                                    if(specialTarget.getDeclaringClass() != container.getDeclaringClass())
+                                    {
+                                        // Do not inline a call which contains a specialinvoke call to a private method outside
+                                        // the current class.  This avoids a verifier error and we assume will not have a big
+                                        // impact because we are inlining methods bottom-up, so such a call will be rare
+                                        
+                                        continue nextSite;   
+                                    }
+                                }
                             }
+                            
+                            if (!AccessManager.ensureAccess(container, ie1.getMethod(), modifierOptions))
+                                continue nextSite;
+
                         }
 
                         if (st instanceof AssignStmt)

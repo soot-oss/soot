@@ -18,10 +18,6 @@ public class InlinerSafetyManager
         if (inlinee.getName().equals("<init>"))
             return false;
 
-        // Rule 1: There is exactly one possible target for toInline.
-//          if (g.getTargetsOf((InvokeExpr)toInline.getInvokeExpr()).size() != 1)
-//              return false;
-
         // Rule 2: inlinee != container.
         if (inlinee.getSignature().equals(container.getSignature()))
             return false;
@@ -43,7 +39,7 @@ public class InlinerSafetyManager
         Value base = (ie instanceof InstanceInvokeExpr) ? 
             ((InstanceInvokeExpr)ie).getBase() : null;
 
-        if (base != null && invokeOfThrowsAccessErrorIn(((RefType)base.getType()).getSootClass(), inlinee, container))
+        if (base != null && invokeThrowsAccessErrorIn(((RefType)base.getType()).getSootClass(), inlinee, container))
             return false;
 
         // Rule 5: Don't inline away any class, method or field access 
@@ -79,7 +75,7 @@ public class InlinerSafetyManager
      *                 of container's declaringClass. 
      *   The base class may be null, in which case 3b is omitted. 
      *     (for instance, for a static method invocation.) */
-    private static boolean invokeOfThrowsAccessErrorIn(SootClass base,
+    private static boolean invokeThrowsAccessErrorIn(SootClass base,
                                                      SootMethod inlinee,
                                                      SootMethod container)
     {
