@@ -75,7 +75,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 
     // we don't want the analysis to be conservative?
     // i.e. we don't want it to only care for locals
-    private  boolean isNotConservative = true;
+    private  boolean isNotConservative = false;
     
     // do we want the analysis to handle if statements?
     private  boolean isBranched = true;
@@ -86,7 +86,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
     
     // do we want the analysis to care that a method 
     // call could have side effects?
-    private  boolean careForMethodCalls = false;
+    private  boolean careForMethodCalls = true;
 
     // **** END OF COMPILATION OPTIONS *****
 
@@ -551,10 +551,11 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 	    // *** KILL PHASE ***
 
 	    // naivity here.  kill all the fields after an invoke, i.e. promote them to top
-	    if (careForMethodCalls && 
+	    if (careForMethodCalls && ((Stmt)s).containsInvokeExpr()) {
+/*
 		((s instanceof InvokeStmt) || ((s instanceof AssignStmt) &&
 					       ((AssignStmt) s).getRightOp() instanceof InvokeExpr))) {
-		
+*/		
 		uListAddTopToFlowSet(refTypeInstFields, genSet, preSet);
 		uListAddTopToFlowSet(refTypeStaticFields, genSet, preSet);
 	    }
