@@ -267,6 +267,26 @@ public class JasminClass
 	    Tag tag = (Tag) it.next();
 	    if(tag instanceof Attribute)
 		emit(".class_attribute "  + tag.getName() + " \"" + new String(Base64.encode(((Attribute)tag).getValue()))+"\"");
+        else if (tag instanceof InnerClassAttribute){
+            emit(".inner_class_attr ");
+            Iterator innersIt = ((InnerClassAttribute)tag).getSpecs().iterator();
+            while (innersIt.hasNext()){
+                InnerClassTag ict = (InnerClassTag)innersIt.next();
+                emit(".inner_class_spec_attr "+
+                    "\""+ict.getInnerClass()+"\" "+
+                    
+                    "\""+ict.getOuterClass()+"\" "+
+                    
+                    "\""+ict.getShortName()+"\" "+
+                    Modifier.toString(ict.getAccessFlags())+" "+
+
+                   ".end .inner_class_spec_attr");
+            }
+            emit(".end .inner_class_attr\n");
+        }
+        else {
+            emit("");
+        }
 	}
 
 

@@ -539,6 +539,7 @@ public class InitialResolver {
             }
         }
 
+        
     }
 
     /**
@@ -559,7 +560,10 @@ public class InitialResolver {
      * created 
      */
     private void createAnonClassDecl(polyglot.ast.New aNew) {
-       
+        
+        SootClass outerClass = ((soot.RefType)Util.getSootType(aNew.anonType().outer())).getSootClass();
+        sootClass.addTag(new soot.tagkit.OuterClassTag(outerClass, "0", true));
+    
         soot.SootClass typeClass = ((soot.RefType)Util.getSootType(aNew.objectType().type())).getSootClass();
        
         // set superclass
@@ -658,6 +662,12 @@ public class InitialResolver {
      * Class Declaration Creation
      */
     private void createClassDecl(polyglot.ast.ClassDecl cDecl){
+       
+        //add outer class tag if neccessary (if class is not top-level)
+        if (!cDecl.type().isTopLevel()){
+            SootClass outerClass = ((soot.RefType)Util.getSootType(cDecl.type().outer())).getSootClass();
+            sootClass.addTag(new soot.tagkit.OuterClassTag(outerClass, cDecl.name(), false));
+        }
        
         // modifiers
         polyglot.types.Flags flags = cDecl.flags();
@@ -781,9 +791,7 @@ public class InitialResolver {
      */
 	private void addModifiers(polyglot.types.Flags flags, polyglot.ast.ClassDecl cDecl){
 		int modifiers = 0;
-        //System.out.println("modifiers for class decl: "+cDecl.name()+" mods: "+flags);
         if (cDecl.type().isNested()){
-            //System.out.println("cdecl is nested");
             if (flags.isPublic() || flags.isProtected() || flags.isPrivate()){
                 modifiers = soot.Modifier.PUBLIC;
             }
@@ -791,15 +799,12 @@ public class InitialResolver {
                 modifiers = modifiers | soot.Modifier.INTERFACE;
             }
 
-            //System.out.println("cdecl outer flags: "+cDecl.type().outer().flags());
             // if inner classes are declared in an interface they need to be
             // given public access but I have no idea why
             // if inner classes are declared in an interface the are 
             // implicitly static and public (jls9.5)
             if (cDecl.type().outer().flags().isInterface()){
-                //System.out.println("outer is interface");
                 modifiers = modifiers | soot.Modifier.PUBLIC;
-                //System.out.println("mods: "+modifiers);
             }
         }
         else {
@@ -837,6 +842,13 @@ public class InitialResolver {
                 createConstructorDecl((polyglot.ast.ConstructorDecl)next);
 			}
 			else if (next instanceof polyglot.ast.ClassDecl){
+                // this handles inner class tags for immediately enclosed
+                // normal nested classes 
+                sootClass.addTag(new soot.tagkit.InnerClassTag(
+                    Util.getSootType(((polyglot.ast.ClassDecl)next).type()).toString(), 
+                    sootClass.getName(), 
+                    ((polyglot.ast.ClassDecl)next).name().toString(), 
+                    Util.getModifier(((polyglot.ast.ClassDecl)next).flags())));
 			}
             else if (next instanceof polyglot.ast.Initializer) {
                 createInitializer((polyglot.ast.Initializer)next);
@@ -846,8 +858,91 @@ public class InitialResolver {
 			}
         }
         handlePrivateAccessors(classBody);
+        handleInnerClassTags(classBody);
     }
    
+    private void handleInnerClassTags(polyglot.ast.ClassBody classBody){
+        // find immediately enclosed anon and inner classes
+        /*NestedClassListBuilder nclb = new NestedClassListBuilder();
+        classBody.visit(nclb);
+        Iterator it1 = nclb.getClassDeclsList().iterator();
+        while (it1.hasNext()){
+            polyglot.ast.ClassDecl next = (polyglot.ast.ClassDecl)it1.next();
+            if (Util.getSootType(next.type().outer()).equals(sootClass.getType())){
+                sootClass.addTag(new soot.tagkit.InnerClassTag(
+                    Util.getSootType(next.type()).toString(), 
+                    next.type().isLocal() ? "<not a member>" : sootClass.getName(), 
+                    next.name().toString(), 
+                    Util.getModifier(next.flags())));
+                
+            }
+            
+        }
+
+        Iterator it2 = nclb.getAnonClassBodyList().iterator();
+        while (it2.hasNext()){
+            polyglot.ast.New nextNew = (polyglot.ast.New)it2.next();
+            if (Util.getSootType(nextNew.anonType().outer()).equals(sootClass.getType())){
+                sootClass.addTag(new soot.tagkit.InnerClassTag(
+                    Util.getSootType(nextNew.anonType()).toString(), 
+                    "<not a member>", //sootClass.getName(), 
+                    "<anonymous>", 
+                    soot.Modifier.PUBLIC | soot.Modifier.STATIC));
+            }
+        }*/
+        // if this class is an inner class add self
+        if (sootClass.hasTag("OuterClassTag")){
+            
+            soot.tagkit.OuterClassTag tag = (soot.tagkit.OuterClassTag)sootClass.getTag("OuterClassTag");
+            sootClass.addTag(new soot.tagkit.InnerClassTag(
+                sootClass.getName(), 
+                tag.isAnon() ? "<not a member>" : tag.getOuterClass().getName(), 
+                tag.isAnon() ? "<anonymous>" : tag.getSimpleName(), 
+                soot.Modifier.isInterface(tag.getOuterClass().getModifiers()) ? soot.Modifier.STATIC | soot.Modifier.PUBLIC : sootClass.getModifiers()));
+        
+            // if this class is an inner class and enclosing class is also
+            // an inner class add enclsing class
+            SootClass outerClass = tag.getOuterClass();
+            while (outerClass.hasTag("OuterClassTag")){
+                soot.tagkit.OuterClassTag tag2 = (soot.tagkit.OuterClassTag)outerClass.getTag("OuterClassTag");
+                sootClass.addTag(new soot.tagkit.InnerClassTag(
+                    outerClass.getName(), 
+                    tag2.isAnon() ? "<not a member>" : tag2.getOuterClass().getName(), 
+                    tag2.isAnon() ? "<anonymous>" : tag2.getSimpleName(), 
+                    tag2.isAnon() && soot.Modifier.isInterface(tag2.getOuterClass().getModifiers()) ? soot.Modifier.STATIC | soot.Modifier.PUBLIC : outerClass.getModifiers()));
+                outerClass = tag2.getOuterClass();
+            }
+        }
+    
+        // also add any uses of anon inner classes that are declared in
+        // some other place
+        /*Iterator it3 = nclb.getNestedUsedList().iterator();
+        while (it3.hasNext()){
+            polyglot.ast.New next = (polyglot.ast.New)it3.next();
+            soot.SootClass tempClass = ((soot.RefType)Util.getSootType(next.qualifier())).getSootClass();
+            System.out.println("temp class: "+tempClass);
+            soot.tagkit.OuterClassTag tag3 = (soot.tagkit.OuterClassTag)tempClass.getTag("OuterClassTag");
+            soot.SootClass outerClass = tag3.getOuterClass();
+            sootClass.addTag(new soot.tagkit.InnerClassTag(
+                ,
+                .isAnon() ? "<not a member>" : tempClass.getName(), 
+                tag3.isAnon() ? "<anonymous>" : next.objectType().type().toString(),
+                tag3.isAnon() && soot.Modifier.isInterface(outerClass.getModifiers()) ? soot.Modifier.STATIC | soot.Modifier.PUBLIC : tempClass.getModifiers()));
+        }*/
+    }
+
+    public boolean hasClassInnerTag(soot.SootClass sc, String innerName){
+        Iterator it = sc.getTags().iterator();
+        while (it.hasNext()){
+            soot.tagkit.Tag t = (soot.tagkit.Tag)it.next();
+            if (t instanceof soot.tagkit.InnerClassTag) {
+                soot.tagkit.InnerClassTag tag = (soot.tagkit.InnerClassTag)t;
+                if (tag.getInnerClass().equals(innerName)) return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * inner classes can access private fields and methods of the
      * outer class and special methods are created in order

@@ -3144,9 +3144,6 @@ public class JimpleBodyBuilder {
      */
     private soot.Value getCastLocal(polyglot.ast.Cast castExpr){
  
-        //System.out.println("castExpr: "+castExpr);
-        //System.out.println("castExpr type: "+castExpr.type());
-        //System.out.println("castExpr.expr type: "+castExpr.expr().type());
         
         // if its already the right type
         if (castExpr.expr().type().equals(castExpr.type())) {
@@ -3162,15 +3159,12 @@ public class JimpleBodyBuilder {
             val = createExpr(castExpr.expr());
         //}
         soot.Type type = Util.getSootType(castExpr.type());
-        //System.out.println("soot type: "+type);
 
         soot.jimple.CastExpr cast = soot.jimple.Jimple.v().newCastExpr(val, type);
-        //System.out.println("cast: "+cast+" cast type: "+cast.getCastType());
         Util.addLnPosTags(cast.getOpBox(), castExpr.expr().position());
         soot.Local retLocal = lg.generateLocal(cast.getCastType());
         soot.jimple.Stmt castAssign = soot.jimple.Jimple.v().newAssignStmt(retLocal, cast);
         body.getUnits().add(castAssign);
-        //System.out.println("castAssign: "+castAssign);
         Util.addLnPosTags(castAssign, castExpr.position());
 
         return retLocal;
@@ -3213,10 +3207,6 @@ public class JimpleBodyBuilder {
      * Gets the Soot Method form the given Soot Class
      */
     private soot.SootMethod getMethodFromClass(soot.SootClass sootClass, String name, ArrayList paramTypes, soot.Type returnType) {
-        //System.out.println("soot class: "+sootClass.getName());
-        //System.out.println("has meths: "+sootClass.getMethods());
-        //System.out.println("method name: "+name);
-        //System.out.println("method param types: "+paramTypes);
         try {
         //if (sootClass.declaresMethod(name, paramTypes, returnType)){
             return sootClass.getMethod(name, paramTypes, returnType);
@@ -3389,7 +3379,15 @@ public class JimpleBodyBuilder {
      */
     private void createLocalClassDecl(polyglot.ast.LocalClassDecl cDecl) {
         BiMap lcMap = InitialResolver.v().getLocalClassMap();
-
+        String name = Util.getSootType(cDecl.decl().type()).toString();
+        if (!InitialResolver.v().hasClassInnerTag(body.getMethod().getDeclaringClass(), name)){
+            body.getMethod().getDeclaringClass().addTag(
+                    new soot.tagkit.InnerClassTag(
+                    name,
+                    "<not a member>",
+                    cDecl.decl().name(),
+                    Util.getModifier(cDecl.decl().flags()) ));
+        }
     }
     
     /**
@@ -3405,6 +3403,33 @@ public class JimpleBodyBuilder {
 
         if (newExpr.anonType() != null){
             objType = newExpr.anonType();
+            // add inner class tags for any anon classes created
+            String name = Util.getSootType(objType).toString();
+            polyglot.types.ClassType outerType = objType.outer();
+            if (!InitialResolver.v().hasClassInnerTag(body.getMethod().getDeclaringClass(), name)){
+                body.getMethod().getDeclaringClass().addTag(
+                    new soot.tagkit.InnerClassTag(
+                    name,
+                    "<not a member>",
+                    "<anonymous>",
+                    outerType.flags().isInterface() ? soot.Modifier.PUBLIC | soot.Modifier.STATIC : Util.getModifier(objType.flags()) ));
+            }
+        }
+        else {
+            // not an anon class but actually invoking a new something
+            if (!objType.isTopLevel()){
+                String name = Util.getSootType(objType).toString();
+                polyglot.types.ClassType outerType = objType.outer();
+                if (!InitialResolver.v().hasClassInnerTag(body.getMethod().getDeclaringClass(), name)){
+                    body.getMethod().getDeclaringClass().addTag(
+                        new soot.tagkit.InnerClassTag(
+                        name,
+                        Util.getSootType(outerType).toString(),
+                        objType.name(),
+                        outerType.flags().isInterface() ? soot.Modifier.PUBLIC | soot.Modifier.STATIC : Util.getModifier(objType.flags()) ));
+            }
+                
+            }
         }
         soot.RefType sootType = (soot.RefType)Util.getSootType(objType);
         soot.Local retLocal = lg.generateLocal(sootType);

@@ -622,6 +622,12 @@ public class Singletons {
         return instance_soot_tagkit_LineNumberTagAggregator;
     }
 
+    private soot.tagkit.InnerClassTagAggregator instance_soot_tagkit_InnerClassTagAggregator;
+    public soot.tagkit.InnerClassTagAggregator soot_tagkit_InnerClassTagAggregator() {
+        if( instance_soot_tagkit_InnerClassTagAggregator == null ) instance_soot_tagkit_InnerClassTagAggregator = new soot.tagkit.InnerClassTagAggregator( g );
+        return instance_soot_tagkit_InnerClassTagAggregator;
+    }
+
     private soot.baf.toolkits.base.LoadStoreOptimizer instance_soot_baf_toolkits_base_LoadStoreOptimizer;
     public soot.baf.toolkits.base.LoadStoreOptimizer soot_baf_toolkits_base_LoadStoreOptimizer() {
         if( instance_soot_baf_toolkits_base_LoadStoreOptimizer == null ) instance_soot_baf_toolkits_base_LoadStoreOptimizer = new soot.baf.toolkits.base.LoadStoreOptimizer( g );

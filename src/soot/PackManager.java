@@ -299,6 +299,7 @@ public class PackManager {
             }
         }
         runBodyPacks( reachableClasses() );
+        handleInnerClasses();
     }
 
     public void writeOutput() {
@@ -344,6 +345,11 @@ public class PackManager {
             SootClass cl = (SootClass) classes.next();
             runBodyPacks( cl );
         }
+    }
+
+    private void handleInnerClasses(){
+       InnerClassTagAggregator agg = InnerClassTagAggregator.v();
+       agg.internalTransform("", null);
     }
 
     private void writeOutput( Iterator classes ) {
