@@ -66,6 +66,9 @@ public class SootClass extends AbstractHost implements Numberable
     protected int modifiers;
     protected Chain fields = new HashChain();
     protected SmallNumberedMap subSigToMethods = new SmallNumberedMap( Scene.v().getSubSigNumberer() );
+    // methodList is just for keeping the methods in a consistent order. It
+    // needs to be kept consistent with subSigToMethods.
+    protected List methodList = new ArrayList();
     protected Chain interfaces = new HashChain();
 
     protected boolean isInScene;
@@ -395,7 +398,7 @@ public class SootClass extends AbstractHost implements Numberable
     public Iterator methodIterator()
     {
         checkLevel(SIGNATURES);
-        return subSigToMethods.iterator();
+        return methodList.iterator();
     }
 
     public List getMethods() {
@@ -585,6 +588,7 @@ public class SootClass extends AbstractHost implements Numberable
         */
         
         subSigToMethods.put(m.getNumberedSubSignature(),m);
+        methodList.add(m);
         m.isDeclared = true;
         m.declaringClass = this;
         
@@ -601,6 +605,7 @@ public class SootClass extends AbstractHost implements Numberable
             throw new RuntimeException("incorrect declarer for remove: "+m.getName());
 
         subSigToMethods.put(m.getNumberedSubSignature(),null);
+        methodList.remove(m);
         m.isDeclared = false;
     }
 
