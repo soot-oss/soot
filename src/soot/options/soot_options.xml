@@ -982,7 +982,7 @@ classes in <tt>java.*</tt>, <tt>javax.*</tt>, and <tt>sun.*</tt>.  This mode is
 triggered by the <tt>-</tt><tt>-app</tt> option.
 
 In whole-program mode, Soot will always apply the contents of the
-Whole-Jimple transformation pack to each method under analysis.  This
+Whole-Jimple Transformation Pack to each method under analysis.  This
 occurs after all Jimple bodies have been created.  This pack is called
 <tt>wjtp</tt>.  In an
 unmodified version of Soot, the only transformation in <tt>wjtp</tt> is the
@@ -1003,8 +1003,8 @@ listed at <a href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.
 				<alias>wjop</alias>
 				<long_desc>
 To run optimizing transformations on the whole program, use the <tt>-W</tt>
-command-line option.  This tells Soot that the whole-jimple
-optimization pack is to be applied (phase name <tt>wjop</tt>).
+command-line option.  This tells Soot that the Whole-Jimple
+Optimization Pack is to be applied (phase name <tt>wjop</tt>).
 
 The default behaviour of this Pack has static method binding disabled
 and static inlining enabled.  To reverse this, give the options
@@ -1097,7 +1097,7 @@ and ``none&apos;&apos; changes no modifiers whatsoever.
 					<class>SIOptions</class>
 					<alias>wjop.si</alias>
 					<long_desc>
-The StaticInliner talkes an call graph returned by CHA or VTA and visits
+The StaticInliner takes an call graph returned by CHA or VTA and visits
 all call sites in the application in a bottom-up fashion, inlining 
 invoke statements which is determined to be monomorphic by analysis result.
 Note that the modifier ``static&apos;&apos; is supposed to be compared to a
@@ -1170,7 +1170,7 @@ then no methods will be inlined into it.
                         </long_desc>
 					</intopt>
 					<intopt>
-						<name>Max Inline Size</name>
+						<name>Max Inlinee Size</name>
 						<alias>max-inlinee-size</alias>
 						<default>20</default>
 						<short_desc/>
@@ -1188,7 +1188,12 @@ then it will not be inlined into other methods.
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
-                                        <default>true</default>
+                    <default>true</default>
+					<long_desc>
+Some analyses donot transform Jimple body directly, but annotate
+statements or values with tags. Whole-Jimple annotation pack provides
+a place for annotation-oriented analysis in a whole program mode.
+					</long_desc>
 				</boolopt>
 				<sub_phase>
 					<name>Rectangular Array Finder</name>
@@ -1197,8 +1202,17 @@ then it will not be inlined into other methods.
 						<name>Enabled</name>
 						<alias>enabled</alias>
 						<default>false</default>
-						<short_desc/>
-						<long_desc/>
+						<short_desc> Find array variables always pointing to rectangular two-dimentional array objects. </short_desc>
+						<long_desc> 
+In Java, a multi-dimentional array is an array of arrays, which means
+the shape of the array can be ragged. However, many applications use
+rectangular arrays. Such information is very helpful in proving 
+safe array bounds checks. Rectangular array finder traverses Jimple
+statements based on static call graph, and finds array variables 
+always holding rectangular two-dimentional array objects. 
+The analysis results are used by array bounds check elimination (jap.abc).
+This phase does not change the program.
+						</long_desc>
 					</boolopt>
 				</sub_phase>
 			</phase>
@@ -1566,7 +1580,6 @@ separate phases and phase options.
 					<long_desc>
 The null pointer check analysis has the phase name <tt>jtp.npc</tt>. 
 It has one phase option (aside from the default <tt>disabled</tt> option). 
-
                         </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -1590,8 +1603,12 @@ It has one phase option (aside from the default <tt>disabled</tt> option).
 					<boolopt>
 						<name>Profiling</name>
 						<alias>profiling</alias>
-						<short_desc/>
-						<long_desc/>
+						<short_desc>Insert profiling instructions counting the number of safe null pointer accesses.</short_desc>
+						<long_desc>
+If this option is true, the analysis inserts profiling instructions
+counting the number of eliminated safe null pointer checks at runtime.
+This is only for profiling purpose.
+						</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -1674,7 +1691,7 @@ dramatically.
 						<alias>with-rectarray</alias>
 						<short_desc/>
 						<long_desc>
-This option is used together with wjap.ra with-wholeapp to make Soot run the whole-program
+This option is used together with "wjap.ra" to make Soot run the whole-program
 analysis for rectangular array objects. This analysis is based on the
 call graph, and it usually takes a long time. If the application uses
 rectangular arrays, these options can improve the analysis
@@ -1684,7 +1701,7 @@ result.
 					<boolopt>
 						<name>Profiling</name>
 						<alias>profiling</alias>
-						<short_desc/>
+						<short_desc>Profile the results of array bounds check analysis.</short_desc>
 						<long_desc/>
 					</boolopt>
 				</sub_phase>
