@@ -63,6 +63,7 @@ public class TagCollector {
         while (fTags.hasNext()){
             Tag t = (Tag)fTags.next();
             fa.addTag(t);
+            //System.out.println("field tag: "+t);
         }
         attributes.add(fa);
     }
@@ -77,6 +78,7 @@ public class TagCollector {
 		    while (mTags.hasNext()){
 			    Tag t = (Tag)mTags.next();
 			    ma.addTag(t);
+                //System.out.println("method tag: "+t);
 			}
             attributes.add(ma);
 		}
@@ -96,6 +98,7 @@ public class TagCollector {
                 if (t instanceof JimpleLineNumberTag){
                     jlnt = (JimpleLineNumberTag)t;
                 }
+                //System.out.println("unit tag: "+t);
             }
             attributes.add(ua);
 			Iterator valBoxIt = u.getUseAndDefBoxes().iterator();
@@ -109,12 +112,14 @@ public class TagCollector {
 						Tag t = (Tag)tagsIt.next();
                         //System.out.println("adding vb tag: "+t);
 					    va.addTag(t);
+                        //System.out.println("vb: "+vb.getValue()+" tag: "+t);
                         if (jlnt != null) {
                             va.addTag(jlnt);
                         }
                     }
                     // also here add line tags of the unit
                     attributes.add(va);
+                    //System.out.println("added att: "+va);
                 }
             }
         }
@@ -125,6 +130,7 @@ public class TagCollector {
         Iterator it = attributes.iterator();
         while (it.hasNext()){
             Attribute a = (Attribute)it.next();
+            //System.out.println("will print attr: "+a);
             a.print(writerOut);
         }
     }

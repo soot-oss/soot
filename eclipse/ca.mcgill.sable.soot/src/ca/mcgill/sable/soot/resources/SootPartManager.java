@@ -33,7 +33,7 @@ public class SootPartManager {
 	
 	public void updatePart(IEditorPart part){
 		
-		System.out.println("part in update: "+part);
+		//System.out.println("part in update: "+part);
 		if (part == null) return;
 		
 		if (part instanceof JimpleEditor){
@@ -45,16 +45,17 @@ public class SootPartManager {
 			SootAttributesHandler handler = aac.getAttributesHandler((AbstractTextEditor)part);
 			
 			if (handler != null){
-				if (handler.isUpdate() || isUpdateForOpen()){
+				if (isUpdateForOpen() || handler.isUpdate()){
 				
 					sajc.setEditorPart(part);
 					sajc.setViewer(viewer);
 					sajc.setHandler(handler);
+					//System.out.println("will set colors");
 					Thread cThread = new Thread(sajc);
 					cThread.start();
 				
 					
-					
+					//System.out.println("will set sa icons");
 					saji.setHandler(handler);
 					saji.setRec((IFile)aac.getRec());
 					Thread iThread = new Thread(saji);
@@ -76,9 +77,9 @@ public class SootPartManager {
 			SourceViewer viewer = (SourceViewer)((AbstractTextEditor)part).getAdapter(ITextOperationTarget.class);
 			SootAttributesHandler handler = aac.getAttributesHandler((AbstractTextEditor)part);
 			if (handler != null){
-				if (handler.isUpdate() || isUpdateForOpen()){
+				if (isUpdateForOpen() || handler.isUpdate()){
 				
-					System.out.println("updating colors");
+					//System.out.println("updating colors");
 					//saji.removeOldMarkers((IFile)aac.getRec());
 					sajc.setEditorPart(part);
 					sajc.setViewer(viewer);
@@ -97,7 +98,7 @@ public class SootPartManager {
 				
 			}
 	
-			System.out.println("active Ed: "+part.getTitle());
+			//System.out.println("active Ed: "+part.getTitle());
 			//handleKeys(handler);
 		}
 		setUpdateForOpen(false);

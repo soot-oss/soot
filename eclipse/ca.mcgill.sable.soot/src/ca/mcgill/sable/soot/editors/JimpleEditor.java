@@ -93,7 +93,7 @@ public class JimpleEditor extends TextEditor {
 	}
 		
 	public void dispose() {
-		colorManager.dispose();
+		//colorManager.dispose();
 		super.dispose();
 	}
 	

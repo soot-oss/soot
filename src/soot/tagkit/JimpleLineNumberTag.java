@@ -67,7 +67,7 @@ public class JimpleLineNumberTag implements Tag
 
     public String toString()
     {
-   		return ""+startLineNumber;
+   		return "Jimple Line Tag: "+startLineNumber;
     }
 
 }

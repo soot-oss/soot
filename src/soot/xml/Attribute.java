@@ -193,8 +193,20 @@ public class Attribute {
 		return 0;
 	}
 
+    public String toString(){
+        StringBuffer sb = new StringBuffer();    
+        sb.append("<srcPos sline=\""+javaStartLn()+"\" eline=\""+javaEndLn()+"\" spos=\""+javaStartPos()+"\" epos=\""+javaEndPos()+"\"/>");
+        sb.append("<jmpPos sline=\""+jimpleStartLn()+"\" eline=\""+jimpleEndLn()+"\" spos=\""+jimpleStartPos()+"\" epos=\""+jimpleEndPos()+"\"/>");
+        return sb.toString();
+    }
+
     public void print(PrintWriter writerOut){
-        if (color() == null && texts == null && links == null) return;
+        if (color() == null && texts == null && links == null) {
+            //System.out.println("no data found for: ");
+            //System.out.println("<srcPos sline=\""+javaStartLn()+"\" eline=\""+javaEndLn()+"\" spos=\""+javaStartPos()+"\" epos=\""+javaEndPos()+"\"/>");
+            //System.out.println("<jmpPos sline=\""+jimpleStartLn()+"\" eline=\""+jimpleEndLn()+"\" spos=\""+jimpleStartPos()+"\" epos=\""+jimpleEndPos()+"\"/>");
+            return;
+        }
         writerOut.println("<attribute>");
         writerOut.println("<srcPos sline=\""+javaStartLn()+"\" eline=\""+javaEndLn()+"\" spos=\""+javaStartPos()+"\" epos=\""+javaEndPos()+"\"/>");
         writerOut.println("<jmpPos sline=\""+jimpleStartLn()+"\" eline=\""+jimpleEndLn()+"\" spos=\""+jimpleStartPos()+"\" epos=\""+jimpleEndPos()+"\"/>");

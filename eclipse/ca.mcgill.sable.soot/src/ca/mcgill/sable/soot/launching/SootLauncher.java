@@ -216,11 +216,16 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 			IPackageFragmentRoot [] roots = getSootSelection().getJavaProject().getAllPackageFragmentRoots();
 			
 			for (int i = 0; i < roots.length; i++){
-				//System.out.println("root: "+roots[i]);
+				System.out.println("root: "+roots[i]);
+				System.out.println("root kind: "+roots[i].getKind());
+				System.out.println("root path: "+roots[i].getPath());
+				
+				
 				if (roots[i].isArchive()){
 					if (roots[i].getResource() != null){
 					
-						//System.out.println("Jar File: "+platform_location+roots[i].getResource().getFullPath().toOSString());
+						System.out.println("resource: "+roots[i].getResource());
+						System.out.println("Jar File: "+platform_location+roots[i].getResource().getFullPath().toOSString());
 						setClasspathAppend(platform_location+roots[i].getPath().toOSString());
 
 					}

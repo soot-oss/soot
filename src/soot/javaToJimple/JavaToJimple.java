@@ -11,6 +11,7 @@ import java.io.*;
 public class JavaToJimple {
 	
     public static final polyglot.frontend.Pass.ID CAST_INSERTION = new polyglot.frontend.Pass.ID("cast-insertion");
+    public static final polyglot.frontend.Pass.ID SAVE_AST = new polyglot.frontend.Pass.ID("save-ast");
     
 	public polyglot.frontend.ExtensionInfo initExtInfo(String fileName, List sourceLocations){
 		
@@ -20,6 +21,7 @@ public class JavaToJimple {
                 List passes = super.passes(job);
                 beforePass(passes, Pass.TYPE_CHECK, new VisitorPass(polyglot.frontend.Pass.FOLD, job, new polyglot.visit.ConstantFolder(ts, nf)));
                 beforePass(passes, Pass.EXIT_CHECK, new VisitorPass(CAST_INSERTION, job, new CastInsertionVisitor(job, ts, nf)));
+                afterPass(passes, Pass.PRE_OUTPUT_ALL, new SaveASTVisitor(SAVE_AST, job, this));
                 removePass(passes, Pass.OUTPUT);
                 return passes;
             }
@@ -129,8 +131,18 @@ public class JavaToJimple {
 		try {
 			FileSource source = new FileSource(fileName);
 
+            SourceJob job = null;
+
+            if (compiler.sourceExtension() instanceof soot.javaToJimple.jj.ExtensionInfo){
+                soot.javaToJimple.jj.ExtensionInfo jjInfo = (soot.javaToJimple.jj.ExtensionInfo)compiler.sourceExtension();
+                if (jjInfo.sourceJobMap() != null){
+                    job = (SourceJob)jjInfo.sourceJobMap().get(source);
+                }
+            }
+            if (job == null){
             ////System.out.println("source created");
-			SourceJob job = compiler.sourceExtension().addJob(source);
+			    job = compiler.sourceExtension().addJob(source);
+            }
             ////System.out.println("job added");
            
             //polyglot.frontend.Pass.ID CAST_INSERTION = new polyglot.frontend.Pass.ID("cast-insertion");

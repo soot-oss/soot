@@ -129,6 +129,7 @@ public class JimpleBodyBuilder {
                 polyglot.ast.Expr initExpr = field.init();
                 soot.SootClass currentClass = body.getMethod().getDeclaringClass();
                 soot.SootField sootField = currentClass.getField(fieldName, Util.getSootType(field.type().type()));
+                
                 soot.Local base = specialThisLocal;
                     
                 soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(base, sootField);
@@ -142,7 +143,8 @@ public class JimpleBodyBuilder {
                 }
                 soot.jimple.Stmt assign = soot.jimple.Jimple.v().newAssignStmt(fieldRef, sootExpr);
                 body.getUnits().add(assign);
-                Util.addLineTag(assign, initExpr);
+                Util.addLnPosTags(assign, initExpr.position());
+                Util.addLnPosTags(fieldRef.getField(), field.position());
 
             }
         }
@@ -186,6 +188,8 @@ public class JimpleBodyBuilder {
                 soot.jimple.Stmt assign = soot.jimple.Jimple.v().newAssignStmt(fieldRef, sootExpr);
 
                 body.getUnits().add(assign);
+                Util.addLnPosTags(assign, initExpr.position());
+                Util.addLnPosTags(fieldRef.getField(), field.position());
             }
         }
     }
@@ -254,6 +258,7 @@ public class JimpleBodyBuilder {
         body.getUnits().add(stmt);
 
         Util.addLnPosTags(stmt, formal.position());
+        Util.addLnPosTags(((soot.jimple.IdentityStmt) stmt).getRightOpBox(), formal.position());
         return formalLocal;
     }
         
@@ -273,6 +278,8 @@ public class JimpleBodyBuilder {
         //Util.addLineTag(stmt, formal);
         //Util.addPosTag(((soot.jimple.IdentityStmt) stmt).getRightOpBox(), formal.position());
         Util.addLnPosTags(((soot.jimple.IdentityStmt) stmt).getRightOpBox(), formal.position());
+        //Util.addLnPosTags(((soot.jimple.IdentityStmt) stmt).getLeftOpBox(), formal.position());
+        Util.addLnPosTags(stmt, formal.position());
     }
 
     /**
@@ -705,7 +712,8 @@ public class JimpleBodyBuilder {
             }
            if (isLitOrLocal(expr)) {
                 //System.out.println("local decl expr: "+expr+" pos: "+expr.position());
-		        Util.addPosTag(stmt.getRightOpBox(), expr.position());
+		        //Util.addPosTag(stmt.getRightOpBox(), expr.position());
+		        Util.addLnPosTags(stmt.getRightOpBox(), expr.position());
            }
         }
     }
@@ -1428,7 +1436,10 @@ public class JimpleBodyBuilder {
     private soot.Value getAssignLocal(polyglot.ast.Assign assign) {
         
         soot.jimple.AssignStmt stmt;
-           
+          
+        //System.out.println("assign: "+assign);
+        //System.out.println("left class: "+assign.left().getClass());
+        //System.out.println("right class: "+assign.right().getClass());
         soot.Value left = createLHS(assign.left());
         soot.Value right = createExpr(assign.right());
        
@@ -1619,6 +1630,8 @@ public class JimpleBodyBuilder {
             stmt = soot.jimple.Jimple.v().newAssignStmt(left, leftLocal);
             body.getUnits().add(stmt);
             Util.addLnPosTags(stmt, assign.position());
+            Util.addLnPosTags(stmt.getLeftOpBox(), assign.left().position());
+            Util.addLnPosTags(stmt.getRightOpBox(), assign.right().position());
             //Util.addPosTag(stmt, assign.position());
         }
         
@@ -1662,7 +1675,7 @@ public class JimpleBodyBuilder {
         else {
 
             soot.jimple.FieldRef fieldRef = getFieldRef(field);
-        
+            Util.addLnPosTags(fieldRef.getField(), field.position()); 
             soot.Local baseLocal = generateLocal(field.type());
             soot.jimple.AssignStmt fieldAssignStmt = soot.jimple.Jimple.v().newAssignStmt(baseLocal, fieldRef);
             
@@ -1686,6 +1699,10 @@ public class JimpleBodyBuilder {
         else {
             soot.Local base = (soot.Local)getBaseLocal(field.target());
             fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(base, receiverField);
+        }
+        Util.addLnPosTags(fieldRef.getField(), field.position());
+        if (fieldRef instanceof soot.jimple.InstanceFieldRef){
+            Util.addLnPosTags(((soot.jimple.InstanceFieldRef)fieldRef).getBaseBox(), field.target().position());
         }
         return fieldRef;
     }
@@ -1790,6 +1807,7 @@ public class JimpleBodyBuilder {
         soot.jimple.Stmt assign = soot.jimple.Jimple.v().newAssignStmt(retLocal, lengthExpr);
         body.getUnits().add(assign);
         Util.addLnPosTags(assign, field.position());
+        Util.addLnPosTags(lengthExpr.getOpBox(), field.target().position());
         return retLocal;
     }
     
@@ -1821,6 +1839,9 @@ public class JimpleBodyBuilder {
         if (binary.operator() == polyglot.ast.Binary.COND_OR) {
             return createCondOr(binary);
         }
+        //System.out.println("Binary: "+binary);
+        //System.out.println("bin left class: "+binary.left().getClass());
+        //System.out.println("bin right class: "+binary.right().getClass());
         soot.Value lVal = createExpr(binary.left());
         soot.Value rVal = createExpr(binary.right());
 
@@ -2064,9 +2085,9 @@ public class JimpleBodyBuilder {
             lVal = handleDFLCond((soot.jimple.ConditionExpr)lVal);
         }
             
-        soot.jimple.Stmt ifLeft = soot.jimple.Jimple.v().newIfStmt(lVal, noop1);
+        soot.jimple.IfStmt ifLeft = soot.jimple.Jimple.v().newIfStmt(lVal, noop1);
         body.getUnits().add(ifLeft);
-        
+        Util.addLnPosTags(ifLeft.getConditionBox(), binary.left().position()); 
 
         soot.jimple.Stmt endNoop = soot.jimple.Jimple.v().newNopStmt();
         soot.Value rVal = createExpr(binary.right());
@@ -2078,8 +2099,9 @@ public class JimpleBodyBuilder {
             rVal = handleDFLCond((soot.jimple.ConditionExpr)rVal);
         }
         
-        soot.jimple.Stmt ifRight = soot.jimple.Jimple.v().newIfStmt(rVal, noop1);
+        soot.jimple.IfStmt ifRight = soot.jimple.Jimple.v().newIfStmt(rVal, noop1);
         body.getUnits().add(ifRight);
+        Util.addLnPosTags(ifRight.getConditionBox(), binary.right().position());
         
         soot.jimple.Stmt assign1 = soot.jimple.Jimple.v().newAssignStmt(retLocal, soot.jimple.IntConstant.v(1));
         body.getUnits().add(assign1);
@@ -2111,9 +2133,10 @@ public class JimpleBodyBuilder {
             lVal = handleDFLCond((soot.jimple.ConditionExpr)lVal);
         }
         
-        soot.jimple.Stmt ifLeft = soot.jimple.Jimple.v().newIfStmt(lVal, noop1);
+        soot.jimple.IfStmt ifLeft = soot.jimple.Jimple.v().newIfStmt(lVal, noop1);
         body.getUnits().add(ifLeft);
         Util.addLnPosTags(ifLeft, binary.left().position());    
+        Util.addLnPosTags(ifLeft.getConditionBox(), binary.left().position());    
            
         soot.Value rVal = createExpr(binary.right());
         if (!(rVal instanceof soot.jimple.ConditionExpr)) {
@@ -2122,9 +2145,10 @@ public class JimpleBodyBuilder {
         else {
             rVal = handleDFLCond((soot.jimple.ConditionExpr)rVal);
         }
-        soot.jimple.Stmt ifRight = soot.jimple.Jimple.v().newIfStmt(rVal, noop1);
+        soot.jimple.IfStmt ifRight = soot.jimple.Jimple.v().newIfStmt(rVal, noop1);
         body.getUnits().add(ifRight);
         Util.addLnPosTags(ifRight, binary.right().position());    
+        Util.addLnPosTags(ifRight.getConditionBox(), binary.right().position());    
         
         soot.jimple.Stmt assign2 = soot.jimple.Jimple.v().newAssignStmt(retLocal, soot.jimple.IntConstant.v(0));
         body.getUnits().add(assign2);
@@ -2511,12 +2535,16 @@ public class JimpleBodyBuilder {
         soot.Type type = Util.getSootType(castExpr.type());
 
         soot.jimple.CastExpr cast = soot.jimple.Jimple.v().newCastExpr(val, type);
-        Util.addPosTag(cast.getOpBox(), castExpr.position().line(), castExpr.position().column() + castExpr.toString().indexOf(')') );
+        //Util.addPosTag(cast.getOpBox(), castExpr.position().line(), castExpr.position().column() + castExpr.toString().indexOf(')') );
+        if (castExpr.position() instanceof soot.javaToJimple.jj.DPosition){
+            soot.javaToJimple.jj.DPosition dpos = (soot.javaToJimple.jj.DPosition)castExpr.position();
+            Util.addLnPosTags(cast.getOpBox(), dpos.line(), dpos.line(), dpos.column() + castExpr.toString().indexOf(')') , dpos.endCol());
+        }
         soot.Local retLocal = generateLocal(cast.getCastType());
 
         soot.jimple.Stmt castAssign = soot.jimple.Jimple.v().newAssignStmt(retLocal, cast);
         body.getUnits().add(castAssign);
-        Util.addLineTag(castAssign, castExpr);
+        Util.addLnPosTags(castAssign, castExpr.position());
 
         return retLocal;
     }

@@ -27,6 +27,7 @@ import soot.util.*;
 import soot.jimple.*;
 import soot.tagkit.*;
 import java.io.*;
+import soot.options.Options;
 
 public class DavaPrinter {
     public DavaPrinter(Singletons.Global g) {
@@ -362,8 +363,9 @@ public class DavaPrinter {
             out.println("    " + decl);
             for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
                 final Tag t = (Tag) tIt.next();
-                out.println(t);
-
+                if (!Options.v().xml_attributes()){
+                    out.println(t);
+                }
             }
             out.println("    {");
 

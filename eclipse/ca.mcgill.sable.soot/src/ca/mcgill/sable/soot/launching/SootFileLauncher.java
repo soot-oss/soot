@@ -77,7 +77,12 @@ public class SootFileLauncher extends SootLauncher {
 			//handleClassFile(cf);
 			IPackageFragmentRoot pfr = (IPackageFragmentRoot) cf.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 			IPackageFragment pf = (IPackageFragment) cf.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
-			setClasspathAppend(platform_location+pfr.getPath().toOSString());
+			if (pfr.getResource() != null){
+				setClasspathAppend(platform_location+pfr.getPath().toOSString());
+			}
+			else {
+				setClasspathAppend(pfr.getPath().toOSString());
+			}
 			addJars();
 			if (pf.isDefaultPackage()) {
 				//setToProcess(removeFileExt(cf.getElementName()));

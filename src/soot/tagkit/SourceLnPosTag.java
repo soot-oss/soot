@@ -38,5 +38,18 @@ public class SourceLnPosTag implements Tag {
         byte[] v = new byte[4];
         return v;
     }
-    
+
+    public String toString(){
+        StringBuffer sb = new StringBuffer();
+        sb.append("Source Line Pos Tag: ");
+        sb.append("sline: ");
+        sb.append(startLn);
+        sb.append(" eline: ");
+        sb.append(endLn);
+        sb.append(" spos: ");
+        sb.append(startPos);
+        sb.append(" epos: ");
+        sb.append(endPos);
+        return sb.toString();
+    }
 }   

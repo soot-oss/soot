@@ -51,6 +51,7 @@ public class ColorManager {
 	protected Map fColorTable = new HashMap(10);
 
 	public void dispose() {
+		System.out.println("DISPOSING COLORS");
 		if (fColorTable.values() == null) return;
 		Iterator e= fColorTable.values().iterator();
 		while (e.hasNext())

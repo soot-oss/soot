@@ -53,4 +53,13 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
         return passes;
     }
 
+    private HashMap sourceJobMap;
+
+    public HashMap sourceJobMap(){
+        return sourceJobMap;
+    }
+
+    public void sourceJobMap(HashMap map){
+        sourceJobMap = map;
+    }
 }

@@ -40,7 +40,12 @@ public class SootFolderLauncher extends SootLauncher {
 		
 		if (getSootSelection().getType() == SootSelection.PACKAGEROOT_SELECTED_TYPE){
 			addJars();
-			setProcessPath(platform_location+getSootSelection().getPackageFragmentRoot().getPath().toOSString());
+			if (getSootSelection().getPackageFragmentRoot().getResource() != null){
+				setProcessPath(platform_location+getSootSelection().getPackageFragmentRoot().getPath().toOSString());
+			}
+			else {
+				setProcessPath(getSootSelection().getPackageFragmentRoot().getPath().toOSString());
+			}
 		}
 	}
 	

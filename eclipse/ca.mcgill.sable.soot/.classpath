@@ -20,8 +20,6 @@
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry kind="lib" path="myclasses"/>
     <classpathentry kind="lib" path="jasminclasses-sable-1.2.jar"/>
-    <classpathentry kind="lib" path="polyglot-1.0.1.jar"/>
-    <!--<classpathentry kind="lib" path="polyglot/classes"/>-->
-    <!--<classpathentry kind="lib" path="polyglot/cup-classes"/>-->
+    <classpathentry kind="lib" path="polyglot-1.1.0.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

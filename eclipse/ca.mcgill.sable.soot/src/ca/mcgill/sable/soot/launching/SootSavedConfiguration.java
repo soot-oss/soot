@@ -200,7 +200,7 @@ public class SootSavedConfiguration {
 			}
 			else {
 				Object val = getEclipseDefs().get(key);
-				System.out.println("val classtype: "+val.getClass());
+				System.out.println("val: "+val);
 				if (val instanceof String){
 
 					String res = (String)val;
@@ -253,7 +253,17 @@ public class SootSavedConfiguration {
 			//System.out.println(getSaveArray().get(counter)+" "+bits.get(counter));
 			if ((bits.get(counter+2)) || ((counter+2) >= getSaveArray().size())){
 				// non phase opt
-				config.put(((String)getSaveArray().get(counter)).substring(2), (String)getSaveArray().get(counter+1));
+				// if key is already in map val = val + \n\r newVal
+				String key = ((String)getSaveArray().get(counter)).substring(2);
+				String val = (String)getSaveArray().get(counter+1);
+				if (config.get(key) != null){
+					String tempVal = (String)config.get(key);
+					tempVal = tempVal + "\r\n" + val;
+					config.put(key, tempVal); 
+				}
+				else {
+					config.put(key,val);
+				}
 				counter = counter + 2;
 			}
 			else if ((bits.get(counter+3)) || ((counter+3) >= getSaveArray().size())){
@@ -333,9 +343,10 @@ public class SootSavedConfiguration {
 			else if (test.indexOf('\n') != -1){
 				spliter = "\n";
 			}
-			else if (test.indexOf(' ') != -1){
-				spliter = " ";
-			}
+			//else if (test.indexOf(' ') != -1){
+			//	System.out.println("test with space: "+test);
+			//	spliter = " ";
+			//}
 			//System.out.println("char at 2: "+test.charAt(2));
 			System.out.println("test in toRunArray: "+test);
 			if (test.equals("true")){
@@ -464,6 +475,33 @@ public class SootSavedConfiguration {
 						getSaveArray().add(val.toString());	
 					}	
 					else if (val instanceof String) {
+						String test = (String)val;
+						String spliter = "\r\n";
+						if (test.indexOf("\r\n") != -1){
+							spliter = "\r\n";
+						}
+						else if (test.indexOf('\n') != -1){
+							spliter = "\n";
+						}
+						System.out.println("test in toRunArray: "+test);
+						//if (test.equals("true")){
+							// don't send 
+						//}
+						if (test.indexOf(spliter) != -1){
+							System.out.println("test has newline");
+							String [] tokens = test.split(spliter);
+							getSaveArray().add(tokens[0]);
+				
+							for (int i = 1; i < tokens.length; i++){
+								//StringTokenizer st = new StringTokenizer(test, "\r\n");
+								//getRunArray().add(st.nextToken());
+								//while (st.hasMoreTokens()){
+									getSaveArray().add(DASH+aliasName);
+									getSaveArray().add(tokens[i]);
+									System.out.println("added "+tokens[i]);
+							}
+						}
+						else {
 						/*if (((String)val).indexOf("\r\n") != -1){
 							StringTokenizer listOptTokenizer = new StringTokenizer((String)val, "\r\n");
 							while (listOptTokenizer.hasMoreTokens()){
@@ -479,6 +517,7 @@ public class SootSavedConfiguration {
 						}
 						else {*/
 							getSaveArray().add(val);
+						}
 						//}
 					}			
 					//toSave.append(SPACE);

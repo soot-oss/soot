@@ -61,7 +61,7 @@ public class PositionTag implements Tag
 
     public String toString()
     {
-   	return ""+startOffset+" "+endOffset;
+   	return "Jimple pos tag: spos: "+startOffset+" epos: "+endOffset;
     }
 
 }
