@@ -91,11 +91,19 @@ public class BArrayWriteInst extends AbstractOpTypeInst
         super(opType);
     }
 
+
     public int getInCount()
     {
         return 3;
     }
 
+
+
+    public Object clone()
+    {
+	return new BArrayWriteInst(getOpType());
+    }
+    
     public int getInMachineCount()
     {
         return 3;

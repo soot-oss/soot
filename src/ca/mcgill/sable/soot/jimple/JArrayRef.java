@@ -109,6 +109,12 @@ public class JArrayRef implements ArrayRef, ConvertToBaf
         this.baseBox = baseBox;
         this.indexBox = indexBox;
     }
+    
+    public Object clone() 
+    {
+	return new JArrayRef(Jimple.cloneIfNecessary(getBase()), Jimple.cloneIfNecessary(getIndex()));
+    }
+
 
     public boolean equals(Object o)
     {

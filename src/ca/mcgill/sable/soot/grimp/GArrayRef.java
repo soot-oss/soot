@@ -112,7 +112,7 @@ public class GArrayRef extends JArrayRef implements ArrayRef, Precedence
       
       return toString(op1, leftOp, rightOp);
     }    
-}
+    public Object clone() { return new RuntimeException();}}
 
 
 

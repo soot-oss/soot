@@ -87,9 +87,17 @@ class JLengthExpr extends AbstractLengthExpr implements LengthExpr, ConvertToBaf
 {
     JLengthExpr(Value op) { super(Jimple.v().newImmediateBox(op)); }
 
+
     public void convertToBaf(JimpleToBafContext context, List out)
     {
         ((ConvertToBaf)(getOp())).convertToBaf(context, out);
         out.add(Baf.v().newArrayLengthInst(getType()));
     }
+  
+
+  public Object clone() 
+  {
+    return new JLengthExpr(Jimple.cloneIfNecessary(getOp()));
+  }
+
 }

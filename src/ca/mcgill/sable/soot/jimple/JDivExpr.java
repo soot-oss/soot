@@ -89,4 +89,9 @@ class JDivExpr extends AbstractJimpleFloatBinopExpr implements DivExpr
     public final String getSymbol() { return " / "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseDivExpr(this); }
     Object makeBafInst(Type opType) { return Baf.v().newDivInst(this.getOp1().getType()); }
+
+    public Object clone() 
+    {
+	return new JDivExpr(Jimple.cloneIfNecessary(getOp2()), Jimple.cloneIfNecessary(getOp1()));
+    }
 }

@@ -92,7 +92,12 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
         this.n = number;
         this.method = m;
     }
-
+    
+    public Object clone() 
+    {
+	return new ParameterRef(method, n);
+    }
+    
     public String toString()
     {
         return "@parameter" + n;

@@ -94,6 +94,15 @@ public class BOrInst extends AbstractOpTypeInst implements OrInst
         return 2;
     }
 
+
+
+    public Object clone() 
+    {
+	return new  BOrInst(getOpType());
+    }
+
+
+
     public int getInMachineCount()
     {
         return 2 * JasminClass.sizeOfType(getOpType());

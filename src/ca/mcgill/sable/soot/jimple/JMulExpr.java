@@ -89,4 +89,10 @@ class JMulExpr extends AbstractJimpleFloatBinopExpr implements MulExpr
     public final String getSymbol() { return " * "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseMulExpr(this); }
     Object makeBafInst(Type opType) { return Baf.v().newMulInst(this.getOp1().getType()); }
+
+    public Object clone() 
+    {
+	return new JMulExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+    }
+
 }

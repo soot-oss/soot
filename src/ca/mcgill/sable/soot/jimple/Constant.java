@@ -94,5 +94,10 @@ public abstract class Constant implements ca.mcgill.sable.util.ValueObject, Valu
     {
         out.add(Baf.v().newPushInst(this));
     }
+    public Object clone() 
+    {
+	throw new RuntimeException();
+    }
 }
+
 

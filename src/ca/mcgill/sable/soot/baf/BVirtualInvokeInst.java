@@ -14,11 +14,19 @@ public class BVirtualInvokeInst extends AbstractInvokeInst implements VirtualInv
         
     }
 
+
     public int getInMachineCount()
     {
         return getMethod().getParameterCount() + 1;
         
     }
+
+
+    public Object clone() 
+    {
+	return new  BVirtualInvokeInst(getMethod());
+    }
+
     
     public int getOutCount()
     {
@@ -43,3 +51,10 @@ public class BVirtualInvokeInst extends AbstractInvokeInst implements VirtualInv
         ((InstSwitch) sw).caseVirtualInvokeInst(this);
     }   
 }
+
+
+
+
+
+
+

@@ -81,4 +81,12 @@ public interface Unit extends Switchable
     public List getUnitBoxes();
     public List getBoxesPointingToThis();
     public List getUseAndDefBoxes();
+    public Object clone();
+
+    public boolean fallsThrough();	
+    public boolean branches();	
+    
+    public String toBriefString();
+    public String toBriefString(Map stmtToName, String indentation);
+    public String toString(Map stmtToName, String indentation);
 }

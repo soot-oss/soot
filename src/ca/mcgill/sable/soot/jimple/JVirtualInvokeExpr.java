@@ -98,4 +98,16 @@ class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
     }
+    
+    public Object clone() 
+    {
+	ArrayList clonedArgs = new ArrayList(getArgCount());
+
+	for(int i = 0; i < getArgCount(); i++) {
+	    clonedArgs.add(i, getArg(i));
+	}
+	
+	return new  JVirtualInvokeExpr((Local) getBase(), getMethod(), clonedArgs);
+    }
+        
 }

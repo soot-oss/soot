@@ -181,4 +181,4 @@ class GNewInvokeExpr extends AbstractStaticInvokeExpr
     {
         ((ExprSwitch) sw).caseNewInvokeExpr(this);
     }
-}
+    public Object clone() { return new RuntimeException();}}

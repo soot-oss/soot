@@ -82,4 +82,4 @@ class GInstanceOfExpr extends AbstractInstanceOfExpr implements InstanceOfExpr
     {
         super(Grimp.v().newObjExprBox(op), checkType);
     }
-}
+    public Object clone() { return new RuntimeException();}}

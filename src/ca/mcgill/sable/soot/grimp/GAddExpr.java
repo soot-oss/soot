@@ -83,4 +83,4 @@ class GAddExpr extends AbstractGrimpFloatBinopExpr implements AddExpr
     public final String getSymbol() { return " + "; }
     public final int getPrecedence() { return 700; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseAddExpr(this); }
-}
+    public Object clone() { return new RuntimeException();}}

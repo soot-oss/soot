@@ -111,4 +111,4 @@ class GInstanceFieldRef extends AbstractInstanceFieldRef
     {
         return 950;
     }
-}
+    public Object clone() { return new RuntimeException();}}

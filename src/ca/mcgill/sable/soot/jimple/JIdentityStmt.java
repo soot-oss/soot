@@ -101,6 +101,11 @@ public class JIdentityStmt extends AbstractDefinitionStmt
         defBoxes = Collections.unmodifiableList(defBoxes);
     }
 
+    public Object clone()
+    {
+	return new JIdentityStmt(Jimple.cloneIfNecessary(getLeftOp()), Jimple.cloneIfNecessary(getRightOp()));
+    }
+
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
@@ -143,6 +148,8 @@ public class JIdentityStmt extends AbstractDefinitionStmt
 
         out.add(Baf.v().newIdentityInst(context.getBafLocalOfJimpleLocal((Local) getLeftOp()), newRhs));
     }
+
+
 }
 
 

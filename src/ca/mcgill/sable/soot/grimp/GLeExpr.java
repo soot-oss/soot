@@ -82,4 +82,4 @@ class GLeExpr extends AbstractGrimpIntBinopExpr implements LeExpr
     public final String getSymbol() { return " <= "; }
     public final int getPrecedence() { return 600; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseLeExpr(this); }
-}
+    public Object clone() { return new RuntimeException();}}

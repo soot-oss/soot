@@ -88,12 +88,23 @@ public class BCmplInst extends AbstractOpTypeInst implements CmplInst
     {
         super(opType);
     }
+
     
     public int getInCount()
     {
         return 2;
     }
 
+
+
+
+    
+    public Object clone() 
+    {
+	return new BCmplInst(getOpType());
+    }
+
+    
     public int getInMachineCount()
     {
         return 2;

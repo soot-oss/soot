@@ -91,6 +91,12 @@ public class BNewMultiArrayInst extends AbstractOpTypeInst implements NewMultiAr
         super(opType); this.dimensionCount = dimensionCount;
     }
 
+
+    public Object clone() 
+    {
+	return new  BNewMultiArrayInst(getBaseType(), getDimensionCount());
+    }
+
     final String getName() { return "newmultiarray"; }
     final String getParameters(boolean isBrief, Map unitToName) 
         { return " "+dimensionCount; }

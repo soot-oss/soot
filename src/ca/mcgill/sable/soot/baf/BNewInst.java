@@ -93,6 +93,12 @@ public class BNewInst extends AbstractRefTypeInst implements NewInst
         return 0;
     }
 
+
+    public Object clone() 
+    {
+	return new  BNewInst(getBaseType());
+    }
+
     public int getInMachineCount()
     {
         return 0;

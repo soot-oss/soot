@@ -98,6 +98,13 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst
         return 0;
     }
 
+
+
+    public Object clone() 
+    {
+	return new  BLoadInst(getOpType(), getLocal());
+    }
+
     public int getInMachineCount()
     {
         return 0;

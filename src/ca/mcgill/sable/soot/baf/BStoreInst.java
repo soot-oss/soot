@@ -99,6 +99,11 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
         return 1;
     }
 
+    public Object clone() 
+    {
+	return new  BStoreInst(getOpType(), getLocal());
+    }
+
     public int getInMachineCount()
     {
         return 1;

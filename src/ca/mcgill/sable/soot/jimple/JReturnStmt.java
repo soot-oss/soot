@@ -97,6 +97,11 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
         this.returnValueBox = returnValueBox;
     }
 
+    public Object clone() 
+    {
+	return new JReturnStmt(Jimple.cloneIfNecessary(getReturnValue()));
+    }
+
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
@@ -141,5 +146,11 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
 
         out.add(Baf.v().newReturnInst(getReturnValue().getType()));
     }
+
+     
+    public boolean fallsThrough(){return false;}	
+    public boolean branches(){return false;}
+
+
 }
 

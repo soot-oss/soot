@@ -86,7 +86,7 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractInstanceOfExpr implements InstanceOfExpr
+public abstract class AbstractInstanceOfExpr implements InstanceOfExpr
 {
     ValueBox opBox;
     Type checkType;
@@ -95,6 +95,8 @@ public class AbstractInstanceOfExpr implements InstanceOfExpr
     {
         this.opBox = opBox; this.checkType = checkType;
     }
+    
+    public abstract Object clone();
     
     public String toString()
     {

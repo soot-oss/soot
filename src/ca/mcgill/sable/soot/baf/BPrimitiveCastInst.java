@@ -114,6 +114,14 @@ public class BPrimitiveCastInst extends AbstractOpTypeInst
         this.fromType = fromType;
     }
 
+    
+    public Object clone() 
+    {
+	return new BPrimitiveCastInst(getFromType(), getToType());
+    }
+
+
+
     // after changing the types, use getName to check validity
     public Type getFromType() { return fromType; }
     public void setFromType(Type t) { fromType = t; getName(); }

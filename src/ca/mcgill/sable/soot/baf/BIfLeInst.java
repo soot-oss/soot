@@ -94,6 +94,11 @@ public class BIfLeInst extends AbstractBranchInst implements IfLeInst
         return 2;
     }
 
+    public Object clone() 
+    {
+	return new  BIfLeInst(getTarget());
+    }
+
     public int getInMachineCount()
     {
         return 2;

@@ -97,12 +97,13 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst
         return 2;
     }
 
-    public int getInMachineCount()
+
+    public Object clone() 
     {
-        return 1 + JasminClass.sizeOfType(field.getType());
+	return new BFieldPutInst(getField());
     }
-    
-    public int getOutCount()
+
+    public int getInMachineCount()
     {
         return 0;
     }

@@ -90,6 +90,7 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
         return indentation + getName() + getParameters(isBrief, unitToName);
     }
 
+
     public int getInCount()
     {
         throw new RuntimeException("undefined"+ toString() + "!" );
@@ -105,7 +106,21 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
         return getOutCount() - getInCount();
     }
 
-    public int getInMachineCount()
+  
+
+    public boolean fallsThrough()
+    {
+	return true;
+    }
+    public boolean branches()
+    {
+	return false;
+    }
+    
+
+
+   
+    public int getInMachineCount() 
     {
         throw new RuntimeException("undefined"+ toString() + "!" );
     }
@@ -118,6 +133,12 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
     public int getNetMachineCount()
     {
         return getOutMachineCount() - getInMachineCount();
+    }
+
+    
+    public  Object clone()
+    {
+	throw new RuntimeException();
     }
    
     

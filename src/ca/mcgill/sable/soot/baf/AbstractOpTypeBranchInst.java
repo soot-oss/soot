@@ -86,6 +86,9 @@ public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst
 {
     Type opType;
 
+  
+
+
     AbstractOpTypeBranchInst(Type opType, UnitBox targetBox)
     {
         super(targetBox);

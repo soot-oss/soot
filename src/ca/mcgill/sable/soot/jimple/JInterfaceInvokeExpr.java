@@ -95,6 +95,18 @@ class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr implements Interf
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
     }
+
+    public Object clone() 
+    {
+	List argList = new ArrayList(getArgCount());
+
+	for(int i = 0; i < getArgCount(); i++) {
+	    argList.add(i, Jimple.cloneIfNecessary(getArg(i)));
+	}
+	    
+	return new  JInterfaceInvokeExpr(Jimple.cloneIfNecessary(getBase()), getMethod(), argList);
+    }
+
 }
 
 

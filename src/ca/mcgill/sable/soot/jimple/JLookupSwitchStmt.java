@@ -111,6 +111,20 @@ public class JLookupSwitchStmt extends AbstractStmt
              Jimple.v().newStmtBox(defaultTarget));
     }
 
+    // xxx
+    public Object clone() 
+    {
+	int lookupValueCount = lookupValues.size();
+	List clonedLookupValues = new ArrayList(lookupValueCount);
+
+	for( int i = 0; i < lookupValueCount ;i++) {
+	    clonedLookupValues.add(i, new Integer(getLookupValue(i)));
+	}
+	
+	return new JLookupSwitchStmt(getKey(), clonedLookupValues, getTargets(), getDefaultTarget());
+    }
+
+
     protected JLookupSwitchStmt(ValueBox keyBox, List lookupValues, 
                                 UnitBox[] targetBoxes, 
                                 UnitBox defaultTargetBox)
@@ -260,7 +274,7 @@ public class JLookupSwitchStmt extends AbstractStmt
 
     public void apply(Switch sw)
     {
-        ((StmtSwitch) sw).caseLookupSwitchStmt(this);
+      ((StmtSwitch) sw).caseLookupSwitchStmt(this);
     }
     
     public void convertToBaf(JimpleToBafContext context, List out)
@@ -279,4 +293,14 @@ public class JLookupSwitchStmt extends AbstractStmt
                 (Baf.v().newPlaceholderInst(getDefaultTarget()),
                  getLookupValues(), targetPlaceholders));
     }
+
+
+
+
+    
+
+    public boolean fallsThrough(){return false;}
+    public boolean branches(){return true;}
+
 }
+

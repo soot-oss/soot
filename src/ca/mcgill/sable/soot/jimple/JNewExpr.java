@@ -91,4 +91,10 @@ class JNewExpr extends AbstractNewExpr implements NewExpr, ConvertToBaf
     {
         out.add(Baf.v().newNewInst(getBaseType()));
     }
+
+
+    public Object clone() 
+    {
+	return new JNewExpr(type);
+    }
 }

@@ -94,6 +94,12 @@ public class BReturnVoidInst extends AbstractInst implements ReturnVoidInst
         return 0;
     }
 
+
+    public Object clone() 
+    {
+	return new  BReturnVoidInst();
+    }
+
     public int getInMachineCount()
     {
         return 0;

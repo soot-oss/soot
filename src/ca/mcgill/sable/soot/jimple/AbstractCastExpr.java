@@ -83,15 +83,18 @@ import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractCastExpr implements CastExpr, ConvertToBaf
+abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
 {
     ValueBox opBox;
     Type type;
+
 
     AbstractCastExpr(Value op, Type type)
     {
         this(Jimple.v().newImmediateBox(op), type);
     }
+
+    public abstract Object clone();
 
     protected AbstractCastExpr(ValueBox opBox, Type type)
     {

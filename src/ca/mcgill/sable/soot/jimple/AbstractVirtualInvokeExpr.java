@@ -89,7 +89,7 @@ import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractVirtualInvokeExpr extends AbstractNonStaticInvokeExpr
+public abstract class AbstractVirtualInvokeExpr extends AbstractNonStaticInvokeExpr
   implements VirtualInvokeExpr, ConvertToBaf                                               
 {
     protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethod method,
@@ -98,6 +98,9 @@ public class AbstractVirtualInvokeExpr extends AbstractNonStaticInvokeExpr
         this.baseBox = baseBox; this.method = method;
         this.argBoxes = argBoxes;
     }
+
+    public abstract Object clone();
+
 
     public void apply(Switch sw)
     {

@@ -79,4 +79,5 @@ public interface Value extends Switchable
 {
     public List getUseBoxes();
     public Type getType();
+    public Object clone();
 }

@@ -8,11 +8,21 @@ public class BStaticInvokeInst extends AbstractInvokeInst implements StaticInvok
 {
     BStaticInvokeInst(SootMethod method) { setMethod(method); }
 
+
     public int getInCount()
     {
         return getMethod().getParameterCount();
         
     }
+
+
+
+
+    public Object clone() 
+    {
+	return new  BStaticInvokeInst(getMethod());
+    }
+
 
     public int getInMachineCount()
     {

@@ -102,7 +102,7 @@ public class BExitMonitorInst extends AbstractInst implements ExitMonitorInst
     {
         return 0;
     }
-
+ 
     public int getOutMachineCount()
     {
         return 0;

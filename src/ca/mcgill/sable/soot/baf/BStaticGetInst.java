@@ -97,6 +97,11 @@ public class BStaticGetInst extends AbstractInst implements StaticGetInst
         return 0;
     }
 
+    public Object clone() 
+    {
+	return new  BStaticGetInst(getField());
+    }
+
     public int getInMachineCount()
     {
         return 0;

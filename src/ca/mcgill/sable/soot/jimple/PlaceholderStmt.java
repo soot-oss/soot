@@ -91,4 +91,10 @@ public class PlaceholderStmt extends AbstractStmt
     {
         return source;
     }
+
+    public boolean fallsThrough() {throw  new RuntimeException(); }
+    public boolean branches() {throw new RuntimeException(); }
+    public Object clone() {throw new RuntimeException();}
+
+
 }

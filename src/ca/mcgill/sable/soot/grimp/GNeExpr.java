@@ -82,4 +82,4 @@ class GNeExpr extends AbstractGrimpIntBinopExpr implements NeExpr
     public final String getSymbol() { return " != "; }
     public final int getPrecedence() { return 550; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseNeExpr(this); }
-}
+    public Object clone() { return new RuntimeException();}}

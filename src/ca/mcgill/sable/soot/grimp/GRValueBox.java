@@ -88,4 +88,4 @@ public class GRValueBox extends ca.mcgill.sable.soot.AbstractValueBox
             value instanceof ConcreteRef ||
             value instanceof Expr;
     }
-}
+    public Object clone() { return new RuntimeException();}}

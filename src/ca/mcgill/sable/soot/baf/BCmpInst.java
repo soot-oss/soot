@@ -95,10 +95,19 @@ public class BCmpInst extends AbstractOpTypeInst implements CmpInst
         return 1;
     }
 
+
     public int getInMachineCount()
     {
         return 1;
     }
+
+
+
+    public Object clone() 
+    {
+	return new BCmpInst(getOpType());
+    }
+
     
     public int getOutCount()
     {

@@ -83,11 +83,13 @@ import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, ConvertToBaf
+public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, ConvertToBaf
 {
     ArrayType baseType;
     protected ValueBox[] sizeBoxes;
 
+    public abstract Object clone();
+    
     protected AbstractNewMultiArrayExpr(ArrayType type, ValueBox[] sizeBoxes)
     {
         this.baseType = type; this.sizeBoxes = sizeBoxes;

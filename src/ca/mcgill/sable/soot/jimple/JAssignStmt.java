@@ -113,6 +113,11 @@ public class JAssignStmt extends AbstractDefinitionStmt
             return indentation + leftBox.getValue().toString() + " = " + rightBox.getValue().toString();
     }
 
+    public Object clone() 
+    {
+    	return new JAssignStmt(Jimple.cloneIfNecessary(getLeftOp()), Jimple.cloneIfNecessary(getRightOp()));
+    }
+
     public void setLeftOp(Value variable)
     {
         leftBox.setValue(variable);

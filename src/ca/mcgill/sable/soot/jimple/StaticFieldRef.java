@@ -96,6 +96,11 @@ public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf
         this.field = field;
     }
 
+    public Object clone() 
+    {
+	return new StaticFieldRef(field);
+    }
+
     public String toString()
     {
         return field.getSignature();

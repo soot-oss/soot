@@ -83,7 +83,7 @@ import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements StaticInvokeExpr, ConvertToBaf
+public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements StaticInvokeExpr, ConvertToBaf
 {
     AbstractStaticInvokeExpr(SootMethod method, List args)
     {
@@ -92,7 +92,8 @@ public class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements Stat
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
     }
-
+    public abstract Object clone();
+    
     protected AbstractStaticInvokeExpr(SootMethod method, ValueBox[] argBoxes)
     {
         this.method = method; this.argBoxes = argBoxes;

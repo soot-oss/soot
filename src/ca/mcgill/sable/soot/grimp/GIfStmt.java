@@ -83,4 +83,4 @@ public class GIfStmt extends JIfStmt implements IfStmt
         super(Grimp.v().newConditionExprBox(condition),
              Grimp.v().newStmtBox(target));
     }
-}
+    public Object clone() { return new RuntimeException();}}

@@ -117,6 +117,14 @@ public class Jimple implements BodyRepresentation
 {
     private static Jimple jimpleRepresentation = new Jimple();
 
+    static Value cloneIfNecessary(Value val) 
+    {
+	if( val instanceof Local || val instanceof Constant )
+	    return val;
+	else
+	    return (Value) val.clone();
+    } 
+
     protected Jimple()
     {
     }

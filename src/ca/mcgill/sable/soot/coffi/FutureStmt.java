@@ -156,6 +156,10 @@ class FutureStmt extends ca.mcgill.sable.soot.jimple.AbstractStmt
     {
         ((ca.mcgill.sable.soot.jimple.StmtSwitch) sw).defaultCase(this);
     }
+    public boolean fallsThrough() {throw  new RuntimeException(); }
+    public boolean branches() {throw new RuntimeException(); }
+    public Object clone() {throw new RuntimeException();}
+    
 }
 
 

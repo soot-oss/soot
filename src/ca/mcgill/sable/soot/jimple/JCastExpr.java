@@ -88,4 +88,10 @@ class JCastExpr extends AbstractCastExpr implements CastExpr
     {
         super(Jimple.v().newImmediateBox(op), type);
     }
+    
+    public Object clone()
+    {
+	return new JCastExpr(Jimple.cloneIfNecessary(getOp()), type);
+    }
+	
 }

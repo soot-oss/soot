@@ -82,4 +82,4 @@ class GCmpgExpr extends AbstractGrimpIntBinopExpr implements CmpgExpr
     public final String getSymbol() { return " cmpg "; }
     public final int getPrecedence() { return 600; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseCmpgExpr(this); }
-}
+    public Object clone() { return new RuntimeException();}}

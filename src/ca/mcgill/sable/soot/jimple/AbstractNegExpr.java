@@ -85,9 +85,11 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractNegExpr extends AbstractUnopExpr implements NegExpr
+public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExpr
 {
     protected AbstractNegExpr(ValueBox opBox) { super(opBox); }
+
+    public abstract Object clone();
 
     public String toString()
     {

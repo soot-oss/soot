@@ -89,4 +89,10 @@ class JCmplExpr extends AbstractJimpleIntBinopExpr implements CmplExpr
     public final String getSymbol() { return " cmpl "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseCmplExpr(this); }
     Object makeBafInst(Type opType) { return Baf.v().newCmplInst(this.getOp1().getType()); }
+    
+    public Object clone() 
+    {
+	return new JCmplExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+    }
+    
 }

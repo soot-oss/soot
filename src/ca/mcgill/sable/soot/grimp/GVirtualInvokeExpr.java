@@ -138,5 +138,5 @@ class GVirtualInvokeExpr extends AbstractVirtualInvokeExpr
                         ((ToBriefString)getBase()).toBriefString(),
                         buffer.toString());
     }
-}
+    public Object clone() { return new RuntimeException();}}
 

@@ -95,4 +95,5 @@ public interface Trap
     public void setEndUnit(Unit endUnit);
     public void setHandlerUnit(Unit handlerUnit);
     public void setException(SootClass exception);
+    public Object clone();
 }

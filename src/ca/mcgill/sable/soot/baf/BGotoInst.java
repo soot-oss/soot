@@ -89,12 +89,24 @@ public class BGotoInst extends AbstractBranchInst implements GotoInst
         super(Baf.v().newInstBox(target));
     }
     
-    public int getInCount()
+  
+
+    public Object clone()
     {
-        return 0;
+	return new BGotoInst(getTarget());
     }
 
     public int getInMachineCount()
+    {
+	return 0;
+    }
+
+    public boolean branches()
+    {
+	return true;
+    }
+    
+    public int getInCount()
     {
         return 0;
     }

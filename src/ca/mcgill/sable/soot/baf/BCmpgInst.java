@@ -89,9 +89,17 @@ public class BCmpgInst extends AbstractOpTypeInst implements CmpgInst
         super(opType);
     }
 
+
     public int getInCount()
     {
         return 2;
+    }
+
+
+
+  public Object clone() 
+    {
+	return new BCmpgInst(getOpType());
     }
 
     public int getInMachineCount()

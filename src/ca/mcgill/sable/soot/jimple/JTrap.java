@@ -84,10 +84,17 @@ import java.util.*;
 
 public class JTrap extends AbstractTrap
 {
+
     JTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
     {
         super(exception, Jimple.v().newStmtBox(beginStmt),
               Jimple.v().newStmtBox(endStmt),
               Jimple.v().newStmtBox(handlerStmt));
     }
+
+    public Object clone() 
+    {
+	return new JTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
+    }
+ 
 }

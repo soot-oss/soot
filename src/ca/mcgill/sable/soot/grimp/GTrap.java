@@ -72,6 +72,7 @@ import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
+
 public class GTrap extends AbstractTrap implements Trap
 {
     GTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
@@ -80,4 +81,6 @@ public class GTrap extends AbstractTrap implements Trap
               Grimp.v().newStmtBox(endStmt),
               Grimp.v().newStmtBox(handlerStmt));
     }
+    
+    public Object clone() { return new RuntimeException();}
 }

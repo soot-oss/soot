@@ -94,12 +94,13 @@ public class BXorInst extends AbstractOpTypeInst implements XorInst
         return 2;
     }
 
-    public int getInMachineCount()
+
+    public Object clone() 
     {
-        return 2 * JasminClass.sizeOfType(getOpType());
+	return new  BXorInst(getOpType());
     }
-    
-    public int getOutCount()
+
+    public int getInMachineCount()
     {
         return 1;
     }

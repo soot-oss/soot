@@ -88,6 +88,15 @@ class JShrExpr extends AbstractJimpleIntLongBinopExpr implements ShrExpr
     JShrExpr(Value op1, Value op2) { super(op1, op2); }
     public String getSymbol() { return " >> "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseShrExpr(this); }
+
     Object makeBafInst(Type opType) { return Baf.v().newShrInst(this.getOp1().getType()); }
+
+
+    public Object clone() 
+    {
+	return new JShrExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+    }
+
+
 }
 

@@ -137,4 +137,4 @@ class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
                         ((ToBriefString)getBase()).toBriefString(),
                         buffer.toString());
     }
-}
+    public Object clone() { return new RuntimeException();}}

@@ -86,7 +86,7 @@ import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
+public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
 {
     Type baseType;
     ValueBox sizeBox;
@@ -96,6 +96,8 @@ public class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
         this.baseType = type; this.sizeBox = sizeBox;
     }
 
+    public abstract Object clone();
+    
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();

@@ -82,4 +82,4 @@ class GEqExpr extends AbstractGrimpIntBinopExpr implements EqExpr
     public final String getSymbol() { return " == "; }
     public final int getPrecedence() { return 550; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseEqExpr(this); }
-}
+    public Object clone() { return new RuntimeException();}}

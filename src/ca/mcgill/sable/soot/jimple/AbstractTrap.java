@@ -162,4 +162,9 @@ public class AbstractTrap implements Trap
     {
         this.exception = exception;
     }
+
+    public Object clone()
+    {
+	throw new RuntimeException();
+    }
 }

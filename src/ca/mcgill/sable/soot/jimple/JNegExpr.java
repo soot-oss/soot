@@ -90,10 +90,17 @@ class JNegExpr extends AbstractNegExpr implements NegExpr, ConvertToBaf
         super(Jimple.v().newImmediateBox(op));
     }
 
-
     public void convertToBaf(JimpleToBafContext context, List out)
     {
         ((ConvertToBaf)(getOp())).convertToBaf(context, out);
         out.add(Baf.v().newNegInst(getType()));
     }
+
+    
+    public Object clone()  
+    {
+	return new JNegExpr(Jimple.cloneIfNecessary(getOp()));
+    }
+    
+
 }

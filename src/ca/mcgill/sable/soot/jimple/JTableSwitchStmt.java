@@ -94,6 +94,13 @@ public class JTableSwitchStmt extends AbstractStmt
 
     List stmtBoxes;
 
+  
+    public Object clone() 
+    {
+	return new JTableSwitchStmt(Jimple.v().newImmediateBox(Jimple.cloneIfNecessary(getKey())), lowIndex, highIndex, targetBoxes, defaultTargetBox);
+    }
+
+
     // This method is necessary to deal with constructor-must-be-first-ism.
     private static UnitBox[] getTargetBoxesArray(List targets)
     {
@@ -257,7 +264,8 @@ public class JTableSwitchStmt extends AbstractStmt
         ((StmtSwitch) sw).caseTableSwitchStmt(this);
     }    
 
-    
+
+  
     public void convertToBaf(JimpleToBafContext context, List out)
     {
         ArrayList targetPlaceholders = new ArrayList();
@@ -274,4 +282,13 @@ public class JTableSwitchStmt extends AbstractStmt
                 (Baf.v().newPlaceholderInst(getDefaultTarget()),
                  lowIndex, highIndex, targetPlaceholders));
     }
+
+
+     
+    public boolean fallsThrough() {return false;}
+    public boolean branches(){return true;}
+
+
+
+
 }

@@ -101,6 +101,7 @@ public abstract class AbstractUnit implements Unit
      * (this is important for aggregation)
      */
 
+    public abstract Object clone();
     public List getUseBoxes()
     {
         return emptyList;

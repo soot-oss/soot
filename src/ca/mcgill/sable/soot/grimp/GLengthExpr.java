@@ -82,4 +82,4 @@ class GLengthExpr extends AbstractLengthExpr implements LengthExpr
     {
         super(Grimp.v().newObjExprBox(op));
     }
-}
+    public Object clone() { return new RuntimeException();}}

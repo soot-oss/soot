@@ -82,4 +82,4 @@ class GRemExpr extends AbstractGrimpFloatBinopExpr implements RemExpr
     public final String getSymbol() { return " % "; }
     public final int getPrecedence() { return 800; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseRemExpr(this); }
-}
+    public Object clone() { return new RuntimeException();}}

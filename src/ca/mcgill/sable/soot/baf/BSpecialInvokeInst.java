@@ -14,11 +14,20 @@ public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInv
         
     }
 
+
     public int getInMachineCount()
     {
         return getMethod().getParameterCount() +1;
         
     }
+
+
+    public Object clone() 
+    {
+	return new  BSpecialInvokeInst(getMethod());
+    }
+
+
     
     public int getOutCount()
     {

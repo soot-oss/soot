@@ -82,4 +82,4 @@ class GLtExpr extends AbstractGrimpIntBinopExpr implements LtExpr
     public final String getSymbol() { return " < "; }
     public final int getPrecedence() { return 600; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseLtExpr(this); }
-}
+    public Object clone() { return new RuntimeException();}}

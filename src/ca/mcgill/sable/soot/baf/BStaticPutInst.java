@@ -92,15 +92,25 @@ public class BStaticPutInst extends AbstractInst implements StaticPutInst
         this.field = field;
     }
 
+
     public int getInCount()
     {
         return 1;
     }
 
-    public int getInMachineCount()
+
+
+    public Object clone() 
     {
-        return JasminClass.sizeOfType(field.getType());
+	return new  BStaticPutInst(getField());
     }
+
+
+
+  public int getInMachineCount()
+  {
+    return JasminClass.sizeOfType(field.getType());
+  }
     
     public int getOutCount()
     {

@@ -88,6 +88,13 @@ public class JNopStmt extends AbstractStmt implements NopStmt
     JNopStmt()
     {
     }
+    
+
+    public Object clone() 
+    {
+	return new JNopStmt();
+    }
+
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
@@ -103,4 +110,9 @@ public class JNopStmt extends AbstractStmt implements NopStmt
     {
         out.add(Baf.v().newNopInst());
     }
+
+
+    public boolean fallsThrough(){return true;}	
+    public boolean branches(){return false;}
+
 }

@@ -82,4 +82,4 @@ public class GInvokeStmt extends JInvokeStmt implements InvokeStmt
     {
         super(Grimp.v().newInvokeExprBox(c));
     }
-}
+    public Object clone() { return new RuntimeException();}}

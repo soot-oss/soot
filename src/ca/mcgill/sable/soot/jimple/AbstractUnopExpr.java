@@ -88,6 +88,8 @@ abstract class AbstractUnopExpr implements UnopExpr
 
     protected AbstractUnopExpr(ValueBox opBox) { this.opBox = opBox; }
 
+    public abstract Object clone();
+    
     public Value getOp()
     {
         return (Value) opBox.getValue();

@@ -90,6 +90,8 @@ abstract class AbstractInvokeExpr implements InvokeExpr
         return method;
     }
 
+    public abstract Object clone();
+    
     public void setMethod(SootMethod m)
     {
         method = m;

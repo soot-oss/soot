@@ -94,6 +94,11 @@ public class BIfEqInst extends AbstractBranchInst implements IfEqInst
         return 2;
     }
 
+    public Object clone() 
+    {
+	return new  BIfEqInst(getTarget());
+    }
+
     public int getInMachineCount()
     {
         return 2;

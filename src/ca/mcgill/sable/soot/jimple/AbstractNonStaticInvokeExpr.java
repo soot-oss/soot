@@ -87,7 +87,7 @@ public abstract class AbstractNonStaticInvokeExpr extends AbstractInvokeExpr
                       implements NonStaticInvokeExpr
 {
     ValueBox baseBox;
-
+    
     public Value getBase()
     {
         return baseBox.getValue();

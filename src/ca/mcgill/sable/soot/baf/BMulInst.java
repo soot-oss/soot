@@ -88,14 +88,24 @@ public class BMulInst extends AbstractOpTypeInst implements MulInst
     {
         super(opType);
     }
-
+    
     public int getInCount()
     {
         return 2;
     }
 
-    public int getInMachineCount()
+
+
+    public Object clone() 
     {
+	return new  BMulInst(getOpType());
+    }
+
+
+
+
+    public int getInMachineCount()
+    { 
         return 2 * JasminClass.sizeOfType(getOpType());
     }
     

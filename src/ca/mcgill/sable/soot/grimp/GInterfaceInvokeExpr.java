@@ -141,4 +141,4 @@ class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
                         ((ToBriefString)getBase()).toBriefString(),
                         buffer.toString());
     }
-}
+    public Object clone() { return new RuntimeException();}}

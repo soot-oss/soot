@@ -91,6 +91,13 @@ public class JCaughtExceptionRef implements CaughtExceptionRef
         this.body = b;
     }
 
+    
+    public Object clone() 
+    {
+	return new JCaughtExceptionRef(body);
+    }
+
+
     public String toString()
     {
         return "@caughtexception";

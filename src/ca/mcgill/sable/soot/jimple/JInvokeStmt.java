@@ -96,6 +96,14 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
         this.invokeExprBox = invokeExprBox;
     }
 
+ 
+    public Object clone() 
+    {
+	return new JInvokeStmt(Jimple.cloneIfNecessary(getInvokeExpr()));
+    }
+
+
+
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
@@ -138,4 +146,10 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
     {
         ((ConvertToBaf) getInvokeExpr()).convertToBaf(context, out);
     }
+
+    
+
+    public boolean fallsThrough() {return true;}	
+    public boolean branches() {return false;}
+
 }

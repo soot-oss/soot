@@ -97,6 +97,11 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
         this.opBox = opBox;
     }
 
+    public Object clone() 
+    {
+	return new JThrowStmt(Jimple.cloneIfNecessary(getOp()));
+    }
+
     public ValueBox getOpBox()
     {
         return opBox;
@@ -135,9 +140,18 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
         ((StmtSwitch) sw).caseThrowStmt(this);
     }    
 
+
     public void convertToBaf(JimpleToBafContext context, List out)
     {
         ((ConvertToBaf)getOp()).convertToBaf(context, out);
         out.add(Baf.v().newThrowInst());
     }
+
+
+    
+    public boolean fallsThrough(){return false;}
+    public boolean branches(){return false;}
+
+
+
 }

@@ -89,6 +89,9 @@ public class BIdentityInst extends AbstractInst
     ValueBox rightBox;
 
     List defBoxes;
+    
+   
+    
 
     public Value getLeftOp()
     {
@@ -159,6 +162,12 @@ public class BIdentityInst extends AbstractInst
         defBoxes = new ArrayList();
         defBoxes.add(leftBox);
         defBoxes = Collections.unmodifiableList(defBoxes);
+    }
+
+
+    public Object clone() 
+    {
+    	return new BIdentityInst(getLeftOp(), getRightOp());
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)

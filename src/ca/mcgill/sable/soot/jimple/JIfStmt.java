@@ -105,7 +105,13 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         targetBoxes.add(this.targetBox);
         targetBoxes = Collections.unmodifiableList(targetBoxes);
     }
-
+    
+    // xxx
+    public Object clone()
+    {
+	return new JIfStmt(Jimple.cloneIfNecessary(getCondition()), getTarget());
+    }
+    
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
@@ -343,4 +349,9 @@ public class JIfStmt extends AbstractStmt implements IfStmt
             }
         });
     }
+
+
+    public boolean fallsThrough(){return true;}	
+    public boolean branches(){return true;}
+
 }

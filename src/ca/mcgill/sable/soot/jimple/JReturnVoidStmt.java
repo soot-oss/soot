@@ -89,6 +89,12 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
     {
     }
 
+  
+    public Object clone() 
+    {
+	return new JReturnVoidStmt();
+    }
+
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         return indentation + "return";
@@ -103,5 +109,10 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
     {
         out.add(Baf.v().newReturnVoidInst());
     }
+
+
+    public boolean fallsThrough(){return false;}
+    public boolean branches(){return false;}
+
 }
 

@@ -83,4 +83,4 @@ public class GEnterMonitorStmt extends JEnterMonitorStmt
     {
         super(Grimp.v().newExprBox(op));
     }
-}
+    public Object clone() { return new RuntimeException();}}

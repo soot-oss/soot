@@ -87,10 +87,21 @@ public class BNopInst extends AbstractInst implements NopInst
     BNopInst()
     {
     }
+
     public int getInCount()
     {
         return 0;
     }
+
+
+
+
+
+    public Object clone() 
+    {
+	return new  BNopInst();
+    }
+
 
     public int getInMachineCount()
     {
@@ -114,3 +125,4 @@ public class BNopInst extends AbstractInst implements NopInst
         ((InstSwitch) sw).caseNopInst(this);
     }   
 }
+

@@ -86,7 +86,7 @@ import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.baf.*;
 import java.util.*;
 
-public class AbstractSpecialInvokeExpr extends AbstractNonStaticInvokeExpr 
+public abstract class AbstractSpecialInvokeExpr extends AbstractNonStaticInvokeExpr 
            implements SpecialInvokeExpr, ConvertToBaf
 {
     protected AbstractSpecialInvokeExpr(ValueBox baseBox, SootMethod method,
@@ -95,6 +95,9 @@ public class AbstractSpecialInvokeExpr extends AbstractNonStaticInvokeExpr
         this.baseBox = baseBox; this.method = method;
         this.argBoxes = argBoxes;
     }
+
+
+    public abstract Object clone();
 
     public String toString()
     {

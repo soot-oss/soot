@@ -120,4 +120,10 @@ public class ThisRef implements IdentityRef, ToBriefString
     {
         ((RefSwitch) sw).caseThisRef(this);
     }
+    
+    public Object clone()
+    {
+	return new ThisRef(sootClass);
+    }
+
 }

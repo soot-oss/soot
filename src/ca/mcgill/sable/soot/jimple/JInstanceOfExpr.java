@@ -95,9 +95,18 @@ class JInstanceOfExpr extends AbstractInstanceOfExpr
         super(Jimple.v().newImmediateBox(op), checkType);
     }
 
+
     public void convertToBaf(JimpleToBafContext context, List out)
     {
         ((ConvertToBaf)(getOp())).convertToBaf(context, out);
         out.add(Baf.v().newInstanceOfInst(getCheckType()));
     }
+    
+
+  
+    public Object clone() 
+    {
+	return new JInstanceOfExpr(Jimple.cloneIfNecessary(getOp()), checkType);
+    }
+    
 }

@@ -94,12 +94,14 @@ public class BNewArrayInst extends AbstractOpTypeInst implements NewArrayInst
         return 1;
     }
 
-    public int getInMachineCount()
+
+
+    public Object clone() 
     {
-        return 1;
+	return new  BNewArrayInst(getOpType());
     }
-    
-    public int getOutCount()
+
+    public int getInMachineCount()
     {
         return 1;
     }

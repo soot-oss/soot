@@ -84,30 +84,36 @@ import java.util.*;
 
 public class BSubInst extends AbstractOpTypeInst implements SubInst
 {
-    public BSubInst(Type opType)
-    {
-        super(opType);
-    }
+  public BSubInst(Type opType)
+  {
+    super(opType);
+  }
     
     public int getInCount()
     {
         return 2;
     }
 
-    public int getInMachineCount()
-    {
-        return 2 * JasminClass.sizeOfType(getOpType());
-    }
+  public int getInMachineCount()
+  {
+    return 2 * JasminClass.sizeOfType(getOpType());
+  }
+
+
+  public Object clone() 
+  {
+    return new  BSubInst(getOpType());
+  }
     
     public int getOutCount()
     {
         return 1;
     }
 
-    public int getOutMachineCount()
-    {
-        return 1 * JasminClass.sizeOfType(getOpType());
-    }
+  public int getOutMachineCount()
+  {
+    return 1 * JasminClass.sizeOfType(getOpType());
+  }
    
     public final String getName() { return "sub"; }
 

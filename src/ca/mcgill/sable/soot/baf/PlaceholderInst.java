@@ -89,7 +89,11 @@ public class PlaceholderInst extends AbstractInst
     {
         this.source = source;
     }
-    
+
+    public Object clone() 
+    {
+	return new PlaceholderInst(getSource());
+    }
     public Unit getSource()
     {
         return source;

@@ -94,6 +94,11 @@ public class BAddInst extends AbstractOpTypeInst implements AddInst
         return 2;
     }
 
+    public Object clone() 
+    {
+	return new BAddInst(getOpType());
+    }
+
     public int getInMachineCount()
     {
         return 2 * JasminClass.sizeOfType(getOpType());

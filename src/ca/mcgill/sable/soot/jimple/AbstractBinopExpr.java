@@ -130,6 +130,7 @@ public abstract class AbstractBinopExpr implements Expr, ToBriefString
     }
 
     abstract protected String getSymbol();
+    abstract public Object clone();
 
     public String toString()
     {

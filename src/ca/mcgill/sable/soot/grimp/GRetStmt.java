@@ -82,4 +82,4 @@ public class GRetStmt extends JRetStmt implements RetStmt
     {
         super(Grimp.v().newLocalBox(stmtAddress));
     }
-}
+    public Object clone() { return new RuntimeException();}}

@@ -88,12 +88,23 @@ public class BRemInst extends AbstractOpTypeInst implements RemInst
     {
         super(opType);
     }
+
     
     public int getInCount()
     {
         return 2;
     }
 
+
+
+
+
+    public Object clone() 
+    {
+	return new  BRemInst(getOpType());
+    }
+
+    
     public int getInMachineCount()
     {
         return 2 * JasminClass.sizeOfType(getOpType());

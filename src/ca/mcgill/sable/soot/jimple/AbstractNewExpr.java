@@ -82,9 +82,11 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractNewExpr implements NewExpr
+public abstract class AbstractNewExpr implements NewExpr
 {
     RefType type;
+
+    public abstract Object clone(); 
 
     public String toString()
     {

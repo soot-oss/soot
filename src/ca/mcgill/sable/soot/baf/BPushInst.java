@@ -92,6 +92,13 @@ public class BPushInst extends AbstractInst implements PushInst
         this.constant = c;
     }
 
+
+    public Object clone() 
+    {
+	return new  BPushInst(getConstant());
+    }
+
+
     final String getName() { return "push"; }
     final String getParameters(boolean isBrief, Map unitToName) 
     {

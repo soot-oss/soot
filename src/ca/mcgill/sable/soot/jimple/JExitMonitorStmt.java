@@ -98,6 +98,11 @@ public class JExitMonitorStmt extends AbstractStmt
         this.opBox = opBox;
     }
 
+    public Object clone() 
+    {
+	return new JExitMonitorStmt(Jimple.cloneIfNecessary(getOp()));
+    }
+
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
@@ -134,11 +139,20 @@ public class JExitMonitorStmt extends AbstractStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseExitMonitorStmt(this);
+
     }    
 
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-        ((ConvertToBaf)(getOp())).convertToBaf(context, out);
-        out.add(Baf.v().newExitMonitorInst());
-    }
+  public void convertToBaf(JimpleToBafContext context, List out)
+  {
+    ((ConvertToBaf)(getOp())).convertToBaf(context, out);
+    out.add(Baf.v().newExitMonitorInst());
+  }
+
+
+    
+    public boolean fallsThrough(){return true;}
+    public boolean branches(){return false;}	
+    
+
+
 }

@@ -39,6 +39,15 @@ public class BInterfaceInvokeInst extends AbstractInvokeInst
 
     BInterfaceInvokeInst(SootMethod method, int argCount) 
         { setMethod(method); this.argCount = argCount; }
+
+
+    public Object clone() 
+    {
+	return new  BInterfaceInvokeInst(getMethod(), getArgCount());
+    }
+
+    
+
     final String getName() { return "interfaceinvoke"; }
     final String getParameters(boolean isBrief, Map unitToName)
         { return super.getParameters(isBrief, unitToName) + " " + argCount; }

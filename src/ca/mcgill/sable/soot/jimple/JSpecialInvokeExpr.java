@@ -96,4 +96,21 @@ class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
     }
+    
+    JSpecialInvokeExpr(Local base, SootMethod method, ValueBox[] args)
+    {
+        super(Jimple.v().newLocalBox(base), method, args);
+    }
+    
+ 
+    public Object clone() 
+    {
+	ArrayList clonedArgs = new ArrayList(getArgCount());
+
+	for(int i = 0; i < getArgCount(); i++) {
+	    clonedArgs.add(i, getArg(i));
+	}
+	
+	return new  JSpecialInvokeExpr((Local) getBase(), method, clonedArgs);
+    }
 }

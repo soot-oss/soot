@@ -82,9 +82,11 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractLengthExpr extends AbstractUnopExpr implements LengthExpr
+public abstract class AbstractLengthExpr extends AbstractUnopExpr implements LengthExpr
 {
     protected AbstractLengthExpr(ValueBox opBox) { super(opBox); }
+
+    public abstract Object clone();
 
     public String toString()
     {

@@ -89,7 +89,7 @@ import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf
+public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf
 {
     SootField field;
     ValueBox baseBox;
@@ -99,6 +99,8 @@ public class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf
         this.baseBox = baseBox;
         this.field = field;
     }
+
+    public abstract Object clone();
 
     public String toString()
     {

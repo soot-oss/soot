@@ -79,4 +79,4 @@ import java.util.*;
 class GNegExpr extends AbstractNegExpr implements NegExpr
 {
     GNegExpr(Value op) { super(Grimp.v().newExprBox(op)); }
-}
+    public Object clone() { return new RuntimeException();}}

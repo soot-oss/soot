@@ -94,6 +94,11 @@ public class BDivInst extends AbstractOpTypeInst implements DivInst
         return 2;
     }
 
+    public Object clone() 
+    {
+      return new BDivInst(getOpType());
+    }
+
     public int getInMachineCount()
     {
         return 2 * JasminClass.sizeOfType(getOpType());

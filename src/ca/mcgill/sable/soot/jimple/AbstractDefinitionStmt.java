@@ -125,6 +125,8 @@ abstract class AbstractDefinitionStmt extends AbstractStmt
         return list;
     }
 
+    public boolean fallsThrough() { return true;}	
+    public boolean branches() { return false;}
 }
 
 

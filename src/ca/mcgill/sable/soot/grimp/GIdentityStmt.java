@@ -83,4 +83,4 @@ public class GIdentityStmt extends JIdentityStmt implements IdentityStmt
         super(Grimp.v().newLocalBox(local),
              Grimp.v().newIdentityRefBox(identityValue));
     }
-}
+    public Object clone() { return new RuntimeException();}}

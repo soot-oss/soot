@@ -88,21 +88,27 @@ public class BNegInst extends AbstractOpTypeInst implements NegInst
     {
         super(opType);
     }
-
+  
     public int getInCount()
     {
         return 1;
     }
 
+    public int getOutCount()
+    {
+        return 1;
+    }
+  
+    public Object clone() 
+    {
+        return new  BNegInst(getOpType());
+    }
+  
     public int getInMachineCount()
     {
         return JasminClass.sizeOfType(getOpType());
     }
     
-    public int getOutCount()
-    {
-        return 1;
-    }
 
     public int getOutMachineCount()
     {

@@ -89,11 +89,18 @@ public class BAndInst extends AbstractOpTypeInst implements AndInst
         super(opType);
     }
 
+
     public int getInCount()
     {
         return 2;
     }
 
+
+    public Object clone() 
+    {
+	return new BAndInst(getOpType());
+    }
+   
     public int getInMachineCount()
     {
         return 2 * JasminClass.sizeOfType(getOpType());

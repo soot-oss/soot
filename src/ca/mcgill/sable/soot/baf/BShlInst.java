@@ -94,6 +94,12 @@ public class BShlInst extends AbstractOpTypeInst implements ShlInst
         return 2;
     }
 
+
+    public Object clone() 
+    {
+	return new  BShlInst(getOpType());
+    }
+
     public int getInMachineCount()
     {
         return JasminClass.sizeOfType(getOpType()) + 1;

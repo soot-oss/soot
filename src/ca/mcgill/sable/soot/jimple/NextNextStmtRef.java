@@ -91,6 +91,11 @@ class NextNextStmtRef implements ConcreteRef, ToBriefString
     {
     }
 
+    public Object clone() 
+    {
+	return new NextNextStmtRef();
+    }
+
     public String toString()
     {
         return "&nextnextstmt";

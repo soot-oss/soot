@@ -82,4 +82,4 @@ class GMulExpr extends AbstractGrimpFloatBinopExpr implements MulExpr
     public final String getSymbol() { return " * "; }
     public final int getPrecedence() { return 800; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseMulExpr(this); }
-}
+    public Object clone() { return new RuntimeException();}}

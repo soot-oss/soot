@@ -91,7 +91,6 @@ import java.util.*;
 
 public interface Local extends Value, ToBriefString
 {
-    public Object clone();
     public String getName();
     public void setName(String name);
     public void setType(Type t);
