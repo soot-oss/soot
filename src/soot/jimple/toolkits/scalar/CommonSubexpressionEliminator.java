@@ -44,15 +44,15 @@ import soot.util.*;
  * need not be.  A better implementation would implicitly compute the
  * kill sets at every node.  */
 
-public class NaiveCommonSubexpressionEliminator extends BodyTransformer
+public class CommonSubexpressionEliminator extends BodyTransformer
 { 
     public static int cseCounter = 0;
 
-    private static NaiveCommonSubexpressionEliminator instance = 
-        new NaiveCommonSubexpressionEliminator();
-    private NaiveCommonSubexpressionEliminator() {}
+    private static CommonSubexpressionEliminator instance = 
+        new CommonSubexpressionEliminator();
+    private CommonSubexpressionEliminator() {}
 
-    public static NaiveCommonSubexpressionEliminator v() { return instance; }
+    public static CommonSubexpressionEliminator v() { return instance; }
 
     public String getDeclaredOptions() { return super.getDeclaredOptions(); }
 
