@@ -95,8 +95,8 @@ public class RefType extends RefLikeType implements ToBriefString, Comparable
     }
 
      /** 
-      *  Get the SootClass object corresponding to this RefType.
-      *  @return the corresponding SootClass
+      *  Set the SootClass object corresponding to this RefType.
+      *  @param sootClass The SootClass corresponding to this RefType.
       */    
     public void setSootClass( SootClass sootClass )
     {
