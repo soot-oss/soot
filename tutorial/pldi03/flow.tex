@@ -623,78 +623,8 @@ Like {\tt copy()}, use {\tt FlowSet} method -- here, {\tt intersection()}:
 
 \begin{slide}{Step 3: Flow equations}
 \vspace*{-0.1in}
-
+Lots of stuff goes here.
 \end{slide}
-
-%% Goal: At a stmt like {\tt x = y + z}, remove def {\tt x} from the
-%% flow set and add uses {\tt y} and {\tt z}.
-
-%% \vspace*{0.1in}
-
-%% Must implement this method:
-%% \begin{verbatim}
-%%     protected void flowThrough
-%%                  (Object inValue, 
-%%                   Object u, 
-%%                   Object outValue)
-%% \end{verbatim}
-
-%% We start by:
-%% \begin{itemize}
-%% \item casting {\tt inValue}, {\tt outValue} to {\tt FlowSet}.
-
-%% \item casting {\tt u} to {\tt Unit}.
-%% \end{itemize}
-%% \end{slide}
-
-%% \begin{slide}{Step 5: Implementing {\tt flowThrough}: removing kills}
-%% \begin{verbatim}
-%% // Take out kill set
-%% Iterator boxIt = s.getDefBoxes()
-%%                      .iterator();
-%% while( boxIt.hasNext() ) 
-%% {
-%%     ValueBox box = 
-%%          (ValueBox) boxIt.next();
-%%     Value value = box.getValue();
-%%     if( value instanceof Local )
-%%         in.remove( value );
-%% }
-%% \end{verbatim}
-%% \end{slide}
-
-%% \begin{slide}{Step 5: Implementing {\tt flowThrough}: adding gens}
-%% \begin{verbatim}
-%% // Add gen set
-%% boxIt = s.getUseBoxes().iterator();
-%% while( boxIt.hasNext() ) 
-%% {
-%%     ValueBox box = 
-%%          (ValueBox) boxIt.next();
-%%     Value value = box.getValue();
-%%     if( value instanceof Local )
-%%         in.add( value );
-%% }
-%% \end{verbatim}
-%% \end{slide}
-
-%% \begin{slide}{Step 6: Initial values}
-
-%% In constructor, we precompute full set (all locals):
-
-%% {\small \tt 
-%% \qquad fullSet = emptySet.clone();\\
-%% \qquad Iterator it = ((UnitGraph)g).\\
-%% \qquad \qquad    getBody().getLocals().iterator(); \\
-%% \qquad while (it.hasNext()) \{ \\
-%% \qquad \qquad Local v = (Local)it.next();\\
-%% \qquad \qquad if (v.getType() instanceof RefType)\\
-%% \qquad \qquad \qquad fullSet.add(v);\\
-%% \qquad \qquad \} \\
-%% \qquad \} }
-
-%% \end{slide}
-
 
 \begin{slide}{Step 4: Initial values}
 \vspace*{-0.1in}
@@ -713,6 +643,21 @@ Initialize IN, OUT sets.
 \end{itemize}
 
 (To be created in constructor!)
+\end{slide}
+
+\begin{slide}{Step 5: Constructor: Prologue}
+\vspace*{-0.1in}
+Create objects.
+\vspace*{0.05in}
+\begin{verbatim}
+    public NullnessAnalysis(UnitGraph g)
+    {
+        super(g);
+
+        unitToGenerateSet = new HashMap();
+        Body b = g.getBody();
+        List refLocals = new LinkedList();
+\end{verbatim}
 \end{slide}
 
 \begin{slide}{Step 5: Constructor: Finding All Locals}
@@ -735,7 +680,7 @@ while (localIt.hasNext())
 \end{verbatim}
 \end{slide}
 
-\begin{slide}{Step 5: Constructor: Creating sets}
+\begin{slide}{Step 5: Creating initial sets}
 \vspace*{-0.1in}
 Create {\tt FlowUniverse}, etc.
 
@@ -751,6 +696,10 @@ emptySet = new ArrayPackedSet
 fullSet = (ArrayPackedSet)emptySet.clone();
 ((ArrayPackedSet)fullSet).complement();
 \end{verbatim}
+\end{slide}
+
+\begin{slide}{Step 5: Creating gen sets}
+Big hairy mess here, hopefully becoming less hairy
 \end{slide}
 
 \begin{slide}{Step 5: Constructor: Doing work}
