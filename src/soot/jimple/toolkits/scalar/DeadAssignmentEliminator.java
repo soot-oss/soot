@@ -57,9 +57,8 @@ public class DeadAssignmentEliminator extends BodyTransformer
     {
         boolean eliminateOnlyStackLocals = Options.getBoolean(options, "only-stack-locals");
 
-        JimpleBody body = (JimpleBody)b;
         if(Main.isVerbose)
-            System.out.println("[" + body.getMethod().getName() +
+            System.out.println("[" + b.getMethod().getName() +
                 "] Eliminating dead code...");
         
         if(Main.isProfilingOptimization)
@@ -67,7 +66,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 
         Set essentialStmts = new HashSet();
         LinkedList toVisit = new LinkedList();
-        Chain units = body.getUnits();
+        Chain units = b.getUnits();
         
         // Make a first pass through the statements, noting 
         // the statements we must absolutely keep. 
@@ -106,7 +105,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
                         if(rhs instanceof InstanceFieldRef &&
                            !(!b.getMethod().isStatic() && 
                              ((InstanceFieldRef)rhs).getBase() == 
-                                    body.getThisLocal())) 
+                                    b.getThisLocal())) 
                         {
                             // Any InstanceFieldRef may have side effects,
                             // unless the base is reading from 'this'
@@ -140,7 +139,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
             }
         }
 
-        CompleteUnitGraph graph = new CompleteUnitGraph(body);
+        CompleteUnitGraph graph = new CompleteUnitGraph(b);
         LocalDefs defs = new SimpleLocalDefs(graph);
         LocalUses uses = new SimpleLocalUses(graph, defs);
         

@@ -330,43 +330,6 @@ public class JimpleBody extends StmtBody implements Serializable
             throw new RuntimeException("no non-id statements!");
         return (Stmt)o;
     }
-
-    /* Return LHS of the first identity stmt assigning from \@this. */
-    public Local getThisLocal()
-    {
-        Iterator unitsIt = getUnits().iterator();
-        while (unitsIt.hasNext())
-        {
-            Stmt s = (Stmt)unitsIt.next();
-            if (s instanceof IdentityStmt && 
-                ((IdentityStmt)s).getRightOp() instanceof ThisRef)
-                return (Local)(((IdentityStmt)s).getLeftOp());
-        }
-
-        throw new RuntimeException("couldn't find identityref!");
-    }
-
-    /* Return LHS of the first identity stmt assigning from \@parameter i. */
-    public Local getParameterLocal(int i)
-    {
-        Iterator unitsIt = getUnits().iterator();
-        while (unitsIt.hasNext())
-        {
-            Stmt s = (Stmt)unitsIt.next();
-            if (s instanceof IdentityStmt && 
-                ((IdentityStmt)s).getRightOp() instanceof ParameterRef)
-            {
-                IdentityStmt is = (IdentityStmt)s;
-                ParameterRef pr = (ParameterRef)is.getRightOp();
-                if (pr.getIndex() == i)
-                    return (Local)is.getLeftOp();
-            }
-        }
-
-        throw new RuntimeException("couldn't find parameterref!");
-    }
-
-    
 }
 
 

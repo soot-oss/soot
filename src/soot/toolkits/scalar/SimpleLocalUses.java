@@ -47,11 +47,25 @@ public class SimpleLocalUses implements LocalUses
     Map unitToUses;
 
     /**
-     *   Construct the analysis from a CompleteUnitGraph representation of
-     *   a method body and a LocalDefs interface. This supposes that a LocalDefs
-     *   analysis must have been computed prior.
+     * Construct the analysis from a CompleteUnitGraph representation
+     * of a method body and a LocalDefs interface. This supposes that
+     * a LocalDefs analysis must have been computed prior.
+     *
+     * <p> Note: If you do not already have a CompleteUnitGraph, it
+     * may be cheaper to use the constructor which only requires a
+     * Body.
      */
     public SimpleLocalUses(CompleteUnitGraph graph, LocalDefs localDefs)
+    {
+        this(graph.getBody(), localDefs);
+    }
+
+    /**
+     * Construct the analysis from a method body and a LocalDefs
+     * interface. This supposes that a LocalDefs analysis must have
+     * been computed prior.
+     */
+    public SimpleLocalUses(Body body, LocalDefs localDefs)
     {
         if(Main.isProfilingOptimization)
            Main.usesTimer.start();
@@ -60,14 +74,16 @@ public class SimpleLocalUses implements LocalUses
            Main.usePhase1Timer.start();
         
         if(Main.isVerbose)
-            System.out.println("[" + graph.getBody().getMethod().getName() +
+            System.out.println("[" + body.getMethod().getName() +
                 "]     Constructing SimpleLocalUses...");
     
-        unitToUses = new HashMap(graph.size() * 2 + 1, 0.7f);
+	Chain units = body.getUnits();
+	
+        unitToUses = new HashMap(units.size() * 2 + 1, 0.7f);
     
         // Initialize this map to empty sets
         {
-            Iterator it = graph.iterator();
+            Iterator it = units.iterator();
 
             while(it.hasNext())
             {
@@ -84,7 +100,7 @@ public class SimpleLocalUses implements LocalUses
     
         // Traverse units and associate uses with definitions
         {
-            Iterator it = graph.iterator();
+            Iterator it = units.iterator();
 
             while(it.hasNext())
             {
@@ -123,7 +139,7 @@ public class SimpleLocalUses implements LocalUses
     
         // Store the map as a bunch of unmodifiable lists.
         {
-            Iterator it = graph.iterator();
+            Iterator it = units.iterator();
             
             while(it.hasNext())
             {

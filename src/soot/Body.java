@@ -270,6 +270,41 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Returns a backed view of the traps found in this Body. */
     public Chain getTraps() {return trapChain;}
 
+    /** Return LHS of the first identity stmt assigning from \@this. **/
+    public Local getThisLocal()
+    {
+        Iterator unitsIt = getUnits().iterator();
+
+        while (unitsIt.hasNext())
+        {
+            Stmt s = (Stmt)unitsIt.next();
+            if (s instanceof IdentityStmt &&
+                ((IdentityStmt)s).getRightOp() instanceof ThisRef)
+                return (Local)(((IdentityStmt)s).getLeftOp());
+        }
+
+        throw new RuntimeException("couldn't find identityref!");
+    }
+
+    /** Return LHS of the first identity stmt assigning from \@parameter i. **/
+    public Local getParameterLocal(int i)
+    {
+        Iterator unitsIt = getUnits().iterator();
+        while (unitsIt.hasNext())
+        {
+            Stmt s = (Stmt)unitsIt.next();
+            if (s instanceof IdentityStmt && 
+                ((IdentityStmt)s).getRightOp() instanceof ParameterRef)
+            {
+                IdentityStmt is = (IdentityStmt)s;
+                ParameterRef pr = (ParameterRef)is.getRightOp();
+                if (pr.getIndex() == i)
+                    return (Local)is.getLeftOp();
+            }
+        }
+
+        throw new RuntimeException("couldn't find parameterref!");
+    }
 
     /**
      *  Returns the Chain of Units that make up this body. The units are
