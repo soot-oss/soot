@@ -44,6 +44,7 @@ soot.jimple.toolkits.pointer.util
 soot.jimple.toolkits.scalar
 soot.jimple.toolkits.scalar.pre
 soot.jimple.toolkits.typing.integer
+soot.jimple.toolkits.callgraph
 soot.options
 soot.tagkit
 soot.toolkits.graph

@@ -1,8 +1,6 @@
 FieldTagger
 SharedBitSetCache
 Options
-OldCHATransformer
-VTATransformer
 CHATransformer
 SlowPseudoTopologicalOrderer
 SynchronizerManager
@@ -59,7 +57,6 @@ Grimp
 IfFinder
 ImplicitMethodInvocation
 IntType
-InvokeGraphBuilder
 JavaIoFileDescriptorNative
 JavaIoFileInputStreamNative
 JavaIoFileOutputStreamNative
@@ -143,8 +140,8 @@ UnusedLocalEliminator
 UnusuableType
 UselessTryRemover
 VoidType
-VTATestingFramework
 WordType
 FieldReadTagAggregator
 FieldWriteTagAggregator
 FieldTagAggregator
+EntryPoints
