@@ -178,7 +178,7 @@ public class PolyglotMethodSource implements MethodSource {
         body.getLocals().add(boolLocal2);
 
         // virtual invoke
-        soot.SootMethodRef vMethodToInvoke = Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.Class"), "desiredAssertionStatus", new ArrayList(), soot.BooleanType.v(), true);
+        soot.SootMethodRef vMethodToInvoke = Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.Class"), "desiredAssertionStatus", new ArrayList(), soot.BooleanType.v(), false);
         soot.jimple.VirtualInvokeExpr vInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(invokeLocal, vMethodToInvoke, new ArrayList());
 
         
