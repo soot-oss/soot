@@ -1,3 +1,13 @@
+Improvements in version 1.2.5 (Fri, 14 Feb 2003)
+1. Spark improvements:
+ a) now supports truly on-the-fly call graph construction, resulting
+    in much smaller call graphs.
+ b) alias edge algorithm tweaked to be faster.
+ c) bug fixes.
+2. General bug fixes.
+3. Some performance improvements, plugging of memory leaks.
+4. Reinstate support for JDK versions 1.2 through 1.4.
+
 Improvements in version 1.2.4 (Fri, 22 Nov 2002)
 
 1. main change is the inclusion of development version of Spark: Soot Pointer

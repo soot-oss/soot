@@ -17,7 +17,6 @@
 <a href="#introduction"><font face="helvetica,arial" size="+0">Introduction</font></a><br>
 <a href="#status"><font face="helvetica,arial" size="+0">Release Status</font></a><br>
 <a href="/sootbugs"><font face="helvetica,arial" size="+0">Soot Bug Tracking</font></a><br>
-<a href="#projectStatus"><font face="helvetica,arial" size="+0">Improvements</font></a><br>
 <a href="#download"><font face="helvetica,arial" size="+0">Download</font></a><br>
 <a href="#compilation"><font face="helvetica,arial" size="+0">Compilation</font></a><br>
 <a href="#documentation"><font face="helvetica,arial" size="+0">Documentation</font></a><br>
@@ -34,7 +33,7 @@
 <center>
 <a name="top"><b><font face="helvetica,arial" size="+2">Soot: a Java Optimization Framework</font></b></center></a> <br>
 <center>
-<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 1.2.4 (Nov 22, 2002)</font></b></center></a> <br><br>
+<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 1.2.5 (Feb 14, 2003)</font></b></center></a> <br><br>
 
 Need help using Soot?  See the Soot <a href="tutorial"> tutorials</a>.<br><br>
 
@@ -83,7 +82,12 @@ License</a>.
 <p>The Soot Framework is an evolving research project. Our goal is to produce a
 robust, easy-to-use research framework for optimizing Java bytecode.  
 
-<!-- Release 1.2.4 --> <p>
+<!-- Release 1.2.5 --> <p>
+The latest release is version 1.2.5. This release contains mainly bug fixes
+and improvements to Spark, the Soot Pointer Analysis Research Kit,
+and bug fixes in general.
+
+<!-- Release 1.2.4 <p>
 The latest release is version 1.2.4. The main change is the
 inclusion of development version of Spark: Soot Pointer Analysis
 Research Kit. Available documentation for Spark includes the 
@@ -103,6 +107,7 @@ written.
 of javac.
 
 <p>A few bugs were also fixed.
+-->
 
 <!-- Release 1.2.3 <p>
 The release 1.2.3 fixes a few bugs from release 1.2.2 and incorporates
@@ -138,11 +143,13 @@ it in our release of Soot for the first time.  We also fixed a few
 bugs reported against version 1.0.0.<p>
  -->
 
+<!--
 <p>
 We plan the following <b>releases</b> for the near future:
 <ul>
 <li>The Dava decompiler is planned to have separate releases. 
 </ul>
+-->
 
 <!-- Release 1.0.0
 <p>This release is our first official release.  We believe it to be quite solid, and have tested it on a set of 266 benchmarks.
@@ -154,106 +161,6 @@ We will also develop more transformations for use with Soot.
 </blockquote>
 
 <br>
-
-<!--ProjectStatus-->
-<a name="projectStatus"> 
-
-<!-- status of 1.2.4 -->
-<table width=100%> 
-<tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Improvements in version 1.2.4</b></font></td>
-<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
-</tr>
-</table>
-<blockquote>
-Major improvements in version 1.2.4 are:
-<ul>
-<li> Inclusion of development version of Spark: Soot Pointer
-   Analysis Research Kit.
-<li> Soot should now support classes compiled with 1.4.x versions of javac.
-<li> Bug fixes. 
-</ul>
-A complete list of changes is in the <a href="CHANGES">CHANGES</a> file.
-</blockquote>
-<p>
-<!-- status of 1.2.3 -->
-<table width=100%>
-<tr>
-<td width=97% align=left><b>Major improvements in version 1.2.3</b></td>
-</tr>
-</table>
-<blockquote>
-Major improvements in version 1.2.3 are:
-<ul>
-<li> Improvements of memory usage reported by Michael Pan (pan@math.tau.ac.il).
-<li> Re-implementation of partial redundency elimination by Florian Loitsch (florian@loitsch.net).
-<li> Some utility classes helping SOOT produce Dot graphs.
-<li> An option (-A LineNumber) to preserve line number tables.
-</ul>
-Jasmin sable-1.2 allows the length of a token more than 64K.
-A complete list of changes is in the <a href="CHANGES">CHANGES</a> file.
-</blockquote>
-<p>
-
-<!-- status of 1.2.2 -->
-<table width=100%> 
-<tr>
-<td width=97% align=left><b>Major improvements in version 1.2.2</b></td>
-</table>
-<blockquote>
-   Release 1.2.2 improves the JSR eliminator to handle nested JSR/RETs, 
-   and corrects a misused method call in the method for building call graphs.
-   Jasmin 1.06-s10 fixes a bug in the grammar. 
-</blockquote>
-<p>
-
-<!-- status of 1.2.1 -->
-<table width=100%><tr>
-<td width=97% align=left><b>Major improvements in version 1.2.1</b></td>
-</tr>
-</table>
-<p>
-<blockquote>
-Release 1.2.1 fixes the jar bug in older versions. Now Soot can accept `rt.jar' in the --soot-class-path 
-command-line option.
-</blockquote>
-<p>
-
-<!-- status of 1.2.0 -->
-<table width=100%><tr>
-<td width=97% align=left><b>Major improvements in version 1.2.0</b></td>
-</tr>
-</table>
-<p>
-<blockquote>
-This is a subset of changes in version 1.2.0; a more complete listing is in the CHANGES file.
-<p>
-<ul>
-<li>An annotation framework has been added to the project.  
-<li>A new implementation of the typing system is included. 
-<li>A clean implementation of VTA is finally included in Soot.
-</ul>
-</blockquote>
-
-<!-- Status of release 1.0.0 -->
-<table width=100%> <tr>
-<td width=97% align=left><b>Improvements in version 1.0.0</b></font></td>
-<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
-</table>
-
-<blockquote>
-This is a subset of the changes in version 1.0.0; a more complete listing is in the CHANGES file.
-<ul>
-<li>Fixed bug with original name recovery.
-<li>Added documentation (see <a href="tutorial">some tutorials</a>.
-<li>Added static class synchronizer.
-</ul>
-</blockquote>
-
-
-<br>
-
-
 
 <!--Download-->
 
@@ -268,8 +175,8 @@ href="http://www.sable.mcgill.ca/software">http://www.sable.mcgill.ca/software</
 
 <p>
 To install it you must unjar(untar) it, and add the classes directories
-<tt>soot-1.2.4/soot/classes</tt> and
-<tt>soot-1.2.4/jasmin/classes</tt> to your CLASSPATH.  
+<tt>soot-1.2.5/soot/classes</tt> and
+<tt>soot-1.2.5/jasmin/classes</tt> to your CLASSPATH.  
 
 To test your installation of Soot, try:
 
@@ -306,7 +213,6 @@ use <tt>make</tt> using the <tt>Makefile</tt> in the main
 Note that in either case, <tt>jasmin</tt> must be in your <tt>classpath</tt>
 to compile Soot. Jasmin can be recompiled by using the script <tt>./bin/compile_all.sh</tt> 
 in the main Jasmin directory (you may need to type <tt>sh ./bin/compile_all.sh</tt>). 
-Release 1.2.3 uses a new version of Jasmin, sable-1.2.
 
 <!-- 1.2.2
 Soot is already compiled in the distribution.  To recompile Soot, 

@@ -57,6 +57,9 @@ Feng Qian (fqian@sable.mcgill.ca)
     
 Vijay Sundaresan (vijay@sable.mcgill.ca)
     - first implementation of inlining and devirtualization
+
+Navindra Umanee
+    - SSA-Jimple
     
 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca)
     - general Soot hacker    
