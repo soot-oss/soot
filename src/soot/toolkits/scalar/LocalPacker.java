@@ -36,11 +36,37 @@ import java.util.*;
 import soot.jimple.*;
 
 
+
+
+/**
+ *    A BodyTransformer that attemps to minimize the number of local variables used in 
+ *    Body by 'reusing' them when possible. Implemented as a singleton.
+ *    For example the code:
+ *
+ *    for(int i; i < k; i++);
+ *    for(int j; j < k; j++);
+ *
+ *    would be transformed into:
+ *    for(int i; i < k; i++);
+ *    for(int i; i < k; i++);
+ *
+ *    assuming to further conflicting uses of i and j.   
+ *
+ *    Note: LocalSplitter is corresponds to the inverse transformation.
+ *   
+ *    @see BodyTranformer
+ *    @see Body 
+ *    @see LocalSpitter
+ */
 public class LocalPacker extends BodyTransformer
 {
     private static LocalPacker instance = new LocalPacker();
     private LocalPacker() {}
 
+    /** 
+     *   Returns this class' singleton instance.
+     *   @return the singleton for this class.
+     */
     public static LocalPacker v() { return instance; }
 
     public String getDeclaredOptions() { return super.getDeclaredOptions() + " unsplit-original-locals"; }

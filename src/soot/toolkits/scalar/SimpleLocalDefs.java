@@ -39,10 +39,22 @@ import java.util.*;
 
 // FSet version
 
+
+
+/**
+ *   Analysis that provides an implementation of the LocalDefs interface.
+ */
 public class SimpleLocalDefs implements LocalDefs
 {
     Map localUnitPairToDefs;
 
+
+    /**
+     *   Computes the analysis given a CompleteUnitGraph computed from a method body.
+     *   @param g a graph on which to compute the analysis.
+     *   
+     *   @see CompleteUnitGraph
+     */
     public SimpleLocalDefs(CompleteUnitGraph g)
     {
         if(Main.isProfilingOptimization)
@@ -108,7 +120,8 @@ public class SimpleLocalDefs implements LocalDefs
         if(toReturn == null)
             throw new RuntimeException("Illegal LocalDefs query; local " + l + " has no definition at " + 
                                        ((ToBriefString) s).toBriefString());
-        
+       	
+	
         return toReturn;
     }
 

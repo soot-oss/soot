@@ -31,8 +31,16 @@ import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
 
+
+
+/**
+ *   Abstract class that provides the fixed point iteration functionality
+ *   required by all BackwardFlowAnalyses.
+ *  
+ */
 public abstract class BackwardFlowAnalysis extends FlowAnalysis
 {
+    /** Construct the analysis from a DirectedGraph representation of a Body. */
     public BackwardFlowAnalysis(DirectedGraph graph)
     {
         super(graph);

@@ -35,10 +35,22 @@ import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
 
+
+/**
+ *  Analysis that implements the LocalUses interface.
+ *  Uses for a Local defined at a given Unit are returned as 
+ *  a list of UnitValueBoxPairs each containing a Unit that use the
+ *  local and the Local itself wrapped in a ValueBox.
+ */
 public class SimpleLocalUses implements LocalUses
 {
     Map unitToUses;
 
+    /**
+     *   Construct the analysis from a CompleteUnitGraph representation of
+     *   a method body and a LocalDefs interface. This supposes that a LocalDefs
+     *   analysis must have been computed prior.
+     */
     public SimpleLocalUses(CompleteUnitGraph graph, LocalDefs localDefs)
     {
         if(Main.isProfilingOptimization)
@@ -129,8 +141,17 @@ public class SimpleLocalUses implements LocalUses
             Main.usesTimer.end();
     }
 
+    /**
+     *  Uses for a Local defined at a given Unit are returned as 
+     *  a list of UnitValueBoxPairs each containing a Unit that use the
+     *  local and the Local itself wrapped in a ValueBox.
+     *  @param s a unit that we want to query for the uses of the Local it (may) define.
+     *  @return a UnitValueBoxPair of the Units that use the Local.
+     */
     public List getUsesOf(Unit s)
     {
-        return (List) unitToUses.get(s);
+	List l = (List) unitToUses.get(s);
+
+        return l;
     }
 }

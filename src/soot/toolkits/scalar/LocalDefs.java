@@ -34,8 +34,25 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
+
+
+
+/**
+ *   Provides an interface for querying for the definitions of a Local
+ *   at a given Unit in a method.
+ */
 public interface LocalDefs
 {
+    /**
+     *   Returns the definition sites for a Local at a certain
+     *   point (Unit) in a method. 
+     *
+     *   @param l the Local in question.
+     *   @param s  a unit that specifies the method context (location) 
+     *             to query for the definitions of the Local. 
+     *   @return a list of Units where the local is defined in the current
+     *            method context.         
+     */
     public List getDefsOfAt(Local l, Unit s);
 }
 

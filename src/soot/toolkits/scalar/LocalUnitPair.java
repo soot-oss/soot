@@ -32,17 +32,32 @@ package soot.toolkits.scalar;
 
 import soot.*;
 
+
+/**
+ *   Utility class used to package a Local and a Unit together.
+ */
 public class LocalUnitPair
 {
     Local local;
     Unit unit;
 
+    /**
+     *  Constructs a LocalUnitPair from a Unit object and a Local object.
+     *  @param local some Local
+     *  @param unit some Unit.
+     */
     public LocalUnitPair(Local local, Unit unit)
     {
         this.local = local;
         this.unit = unit;
     }
 
+    /**
+     *   Two LocalUnitPairs are equal iff they hold the same Unit objects and
+     *   the same Local objects within them.
+     *   @param other another LocalUnitPair
+     *   @return true if other contains the same objects as this.
+     */
     public boolean equals(Object other)
     {
         if(other instanceof LocalUnitPair &&
@@ -59,5 +74,4 @@ public class LocalUnitPair
     {
         return local.hashCode() * 101 + unit.hashCode() + 17;
     }
-
 }

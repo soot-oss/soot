@@ -35,10 +35,30 @@ import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
 
+
+/**
+ *   Provides an interface for querying for the list of Locals that are
+ *   live before an after a given unit in a method.
+ */
 public interface LiveLocals
 {
-    public List getLiveLocalsAfter(Unit s);
+    
+    /**
+     *   Returns the list of Locals that are live before the specified
+     *   Unit. 
+     *   @param s the Unit that defines this query.
+     *   @return a list of Locals that are live before the specified unit in the method.
+     */
     public List getLiveLocalsBefore(Unit s);
+
+
+    /**
+     *   Returns the list of Locals that are live after the specified
+     *   Unit. 
+     *   @param s the Unit that defines this query.
+     *   @return a list of Locals that are live after the specified unit in the method.
+     */
+    public List getLiveLocalsAfter(Unit s);
 }
 
 

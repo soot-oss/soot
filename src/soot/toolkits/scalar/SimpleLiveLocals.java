@@ -36,11 +36,23 @@ import java.util.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 
+
+/**
+ *   Analysis that provides an implementation of the LiveLocals  interface.
+ */
 public class SimpleLiveLocals implements LiveLocals
 {
     Map unitToLocalsAfter;
     Map unitToLocalsBefore;
 
+
+
+    /**
+     *   Computes the analysis given a CompleteUnitGraph computed from a method body.
+     *   @param g a graph on which to compute the analysis.
+     *   
+     *   @see CompleteUnitGraph
+     */
     public SimpleLiveLocals(CompleteUnitGraph graph)
     {
         if(Main.isProfilingOptimization)

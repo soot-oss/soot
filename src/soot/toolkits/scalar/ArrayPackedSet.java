@@ -29,6 +29,10 @@ package soot.toolkits.scalar;
 import soot.util.*;
 import java.util.*;
 
+
+/**
+ *   Reference implementation for a BoundedFlowSet. Items are stored in an Array.  
+ */
 public class ArrayPackedSet implements BoundedFlowSet
 {
     FlowUniverse map;

@@ -34,8 +34,21 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
+
+/**
+ *   Provides an interface to find the Units that use
+ *   a Local defined at a given Unit.
+ */
 public interface LocalUses
 {
+    /**
+     *   Returns a list of the Units that use the Local that is 
+     *   defined by a given Unit. 
+     *   
+     *   @param s  the unit we wish to query for the use of the Local
+     *             it defines.
+     *   @return  a list of the Local's uses.
+     */    
     public List getUsesOf(Unit s);
 }
 

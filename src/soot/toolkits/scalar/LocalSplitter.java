@@ -27,7 +27,6 @@
 
 
 
-
 package soot.toolkits.scalar;
 
 import soot.*;
@@ -36,6 +35,25 @@ import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
 
+/**
+ *    A BodyTransformer that attemps to indentify and separate uses of a local
+ *    varible that are independent of each other. Conceptually the inverse transform
+ *    with respect to the LocalPacker transform.
+ *
+ *    For example the code:
+ *
+ *    for(int i; i < k; i++);
+ *    for(int i; i < k; i++);
+ *
+ *    would be transformed into:
+ *    for(int i; i < k; i++);
+ *    for(int j; j < k; j++);
+ *
+ *
+ *    @see BodyTranformer
+ *    @see LocalPacker
+ *    @see Body 
+ */
 public class LocalSplitter extends BodyTransformer
 {
     private static LocalSplitter instance = new LocalSplitter();

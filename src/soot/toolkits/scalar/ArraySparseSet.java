@@ -29,6 +29,15 @@ package soot.toolkits.scalar;
 import soot.util.*;
 import java.util.*;
 
+
+
+
+
+
+
+/**
+ *   Reference implementation for a FlowSet. Items are stored in an Array.  
+ */
 public class ArraySparseSet implements FlowSet
 {
     static final int DEFAULT_SIZE = 8; 

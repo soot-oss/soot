@@ -32,11 +32,25 @@ import soot.*;
 import java.util.*;
 
 
+
+
+
+/**
+ *    A BodyTransformer that removes all used local variables from a given Body.
+ *    Implemented as a singleton.
+ *    @see BodyTranformer
+ *    @see Body 
+ */
 public class UnusedLocalEliminator extends BodyTransformer
 { 
     private static UnusedLocalEliminator instance = new UnusedLocalEliminator();
     private UnusedLocalEliminator() {}
 
+
+    /** 
+     *   Returns this class' singleton instance.
+     *   @return the singleton for this class.
+     */
     public static UnusedLocalEliminator v() { return instance; }
 
     protected void internalTransform(Body body, String phaseName, Map options)
