@@ -81,7 +81,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-abstract class AbstractJimpleIntLongBinopExpr extends AbstractIntBinopExpr
+abstract class AbstractJimpleIntLongBinopExpr extends AbstractIntLongBinopExpr
 {
     protected AbstractJimpleIntLongBinopExpr(Value op1, Value op2)
     {

@@ -288,7 +288,7 @@ public class JasminClass
         else
             code.add(s);
 
-        //System.out.println(s);
+//        System.out.println(s);
     }
 
     void emit(String s, int stackChange)
