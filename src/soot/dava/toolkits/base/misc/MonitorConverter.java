@@ -12,11 +12,34 @@ public class MonitorConverter
 {
     public MonitorConverter( Singletons.Global g )
     {
-	SootClass davaMonitor = Scene.v().loadClassAndSupport( "soot.dava.toolkits.base.DavaMonitor.DavaMonitor");
+	SootClass davaMonitor = new SootClass(
+                "soot.dava.toolkits.base.DavaMonitor.DavaMonitor",
+                Modifier.PUBLIC );
+        davaMonitor.setSuperclass(
+                Scene.v().loadClassAndSupport("java.lang.Object"));
 
-	v = davaMonitor.getMethodByName( "v");
-	enter = davaMonitor.getMethodByName( "enter");
-	exit = davaMonitor.getMethodByName( "exit");
+        LinkedList objectSingleton = new LinkedList();
+        objectSingleton.add( RefType.v("java.lang.Object") );
+	v = new SootMethod(
+                "v",
+                new LinkedList(),
+                RefType.v("soot.dava.toolkits.base.DavaMonitor.DavaMonitor"),
+                Modifier.PUBLIC | Modifier.STATIC );
+	enter = new SootMethod(
+                "enter",
+                objectSingleton,
+                VoidType.v(),
+                Modifier.PUBLIC | Modifier.SYNCHRONIZED );
+	exit = new SootMethod(
+                "exit",
+                objectSingleton,
+                VoidType.v(),
+                Modifier.PUBLIC | Modifier.SYNCHRONIZED );
+        davaMonitor.addMethod( v );
+        davaMonitor.addMethod( enter );
+        davaMonitor.addMethod( exit );
+
+        Scene.v().addClass( davaMonitor );
     }
 
     public static MonitorConverter v() { return G.v().MonitorConverter(); }
