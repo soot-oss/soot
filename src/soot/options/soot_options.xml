@@ -2068,7 +2068,7 @@ cryptic statistics about the size of the points-to sets computed.
 					<class>PaddleOptions</class>
 					<alias>cg.paddle</alias>
                                         <short_desc>Paddle points-to analysis framework</short_desc>
-                                        <long_desc>Spark is a flexible points-to analysis framework. Aside from building a call graph, it also generates information about the targets of pointers. For details about Spark, please see <a href="http://www.sable.mcgill.ca/publications/thesis/#olhotakMastersThesis">Ondrej Lhotak's M.Sc. thesis</a>.</long_desc>
+                                        <long_desc>Paddle is a BDD-based interprocedural analysis framework. It includes points-to analysis, call graph construction, and various client analyses.</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -2087,6 +2087,92 @@ cryptic statistics about the size of the points-to sets computed.
 When this option is set to true, Paddle prints detailed information about its execution.
         </long_desc>
 						</boolopt>
+						<multiopt>
+							<name>Configuration</name>
+							<alias>conf</alias>
+							<value>
+								<name>On-the fly call graph</name>
+								<alias>ofcg</alias>
+								<default/>
+<short_desc>On-the fly call graph</short_desc>
+<long_desc>
+Performs points-to analysis and builds call graph together, on-the-fly.
+</long_desc>
+							</value>
+							<value>
+								<name>CHA only</name>
+								<alias>cha</alias>
+<short_desc>CHA only</short_desc>
+<long_desc>
+Builds only a call graph using Class Hieararchy Analysis, and performs no
+points-to analysis.
+</long_desc>
+							</value>
+							<value>
+								<name>CHA ahead-of-time call graph</name>
+								<alias>cha-aot</alias>
+<short_desc>CHA ahead-of-time callgraph</short_desc>
+<long_desc>
+First builds a call graph using CHA, then uses the call graph in a fixed-call-graph points-to analysis.
+</long_desc>
+							</value>
+							<value>
+								<name>OFCG-AOT</name>
+								<alias>ofcg-aot</alias>
+<short_desc>OFCG-AOT callgraph</short_desc>
+<long_desc>
+First builds a call graph on-the-fly during a points-to analysis, then
+uses the resulting call graph to perform a second points-to analysis
+with a fixed call graph.
+</long_desc>
+							</value>
+							<value>
+								<name>CHA-Context-AOT call graph</name>
+								<alias>cha-context-aot</alias>
+<short_desc>CHA-Context-AOT callgraph</short_desc>
+<long_desc>
+First builds a call graph using CHA, then makes it context-sensitive using
+the technique described by Calman and Zhu in PLDI 04,
+then uses the call graph in a fixed-call-graph points-to analysis.
+</long_desc>
+							</value>
+							<value>
+								<name>OFCG-Context-AOT</name>
+								<alias>ofcg-context-aot</alias>
+<short_desc>OFCG-Context-AOT callgraph</short_desc>
+<long_desc>
+First builds a call graph on-the-fly during a points-to analysis, then
+makes it context-sensitive using the technique described by Calman and
+Zhu in PLDI 04, then uses the resulting call graph to perform a second
+points-to analysis with a fixed call graph.
+</long_desc>
+							</value>
+							<value>
+								<name>CHA-Context call graph</name>
+								<alias>cha-context</alias>
+<short_desc>CHA-Context callgraph</short_desc>
+<long_desc>
+First builds a call graph using CHA, then makes it context-sensitive using
+the technique described by Calman and Zhu in PLDI 04. Does not produce
+points-to information.
+</long_desc>
+							</value>
+							<value>
+								<name>OFCG-Context</name>
+								<alias>ofcg-context</alias>
+<short_desc>OFCG-Context callgraph</short_desc>
+<long_desc>
+First builds a call graph on-the-fly during a points-to analysis, then
+makes it context-sensitive using the technique described by Calman and
+Zhu in PLDI 04. Does not perform a subsequent points-to analysis.
+</long_desc>
+							</value>
+                                                        <short_desc>Select Paddle configuration</short_desc>
+							<long_desc>
+Selects the configuration of points-to analysis and call graph construction
+to be used in Paddle.
+        </long_desc>
+						</multiopt>
 						<boolopt>
 							<name>Use BDDs</name>
 							<alias>bdd</alias>
@@ -2105,42 +2191,57 @@ When this option is set to true, Paddle prints detailed information about its ex
 Turns on JeddProfiler for profiling BDD operations.
         </long_desc>
 						</boolopt>
-						<boolopt>
-							<name>BDD Queues</name>
-							<alias>bddq</alias>
-							<default>false</default>
-                                                        <short_desc>Force BDD versions of queues</short_desc>
+						<multiopt>
+							<name>Queue Implementation</name>
+							<alias>q</alias>
+							<value>
+								<name>Traditional</name>
+								<alias>trad</alias>
+								<default/>
+<short_desc>Normal worklist queue implementation</short_desc>
+<long_desc>
+Normal worklist queue implementation
+</long_desc>
+							</value>
+							<value>
+								<name>BDD</name>
+								<alias>bdd</alias>
+<short_desc>BDD-based queue implementation</short_desc>
+<long_desc>
+BDD-based queue implementation
+</long_desc>
+							</value>
+							<value>
+								<name>Debug</name>
+								<alias>debug</alias>
+<short_desc>Debugging queue implementation</short_desc>
+<long_desc>
+An implementation of worklists that includes both traditional and BDD-based
+implementations, and signals an error whenever their contents differ.
+</long_desc>
+							</value>
+							<value>
+								<name>Trace</name>
+								<alias>trace</alias>
+<short_desc>Tracing queue implementation</short_desc>
+<long_desc>
+A worklist implementation that prints out all tuples added to every worklist.
+</long_desc>
+							</value>
+							<value>
+								<name>Number Trace</name>
+								<alias>numtrace</alias>
+<short_desc>Number-tracing queue implementation</short_desc>
+<long_desc>
+A worklist implementation that prints out the number of tuples added to
+each worklist after each operation.
+</long_desc>
+							</value>
+                                                        <short_desc>Select queue implementation</short_desc>
 							<long_desc>
-                                                        Force Paddle to use BDD versions of the queues for communicating between its components
+Select the implementation of worklists to be used in Paddle.
         </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Debug Queues</name>
-							<alias>debugq</alias>
-							<default>false</default>
-                                                        <short_desc>Force debug versions of queues</short_desc>
-							<long_desc>
-                                                        Force Paddle to use debugging versions of the queues for communicating between its components
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Trace</name>
-							<alias>trace</alias>
-							<default>false</default>
-                                                        <short_desc>Trace Paddle queues for debugging.</short_desc>
-							<long_desc>
-                                                        Print the contents of all internal Paddle queues for debugging.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Number Trace</name>
-							<alias>numtrace</alias>
-							<default>false</default>
-                                                        <short_desc>Trace Paddle queues for debugging.</short_desc>
-							<long_desc>
-                                                        Print the sizes of all internal Paddle queues for debugging.
-        </long_desc>
-						</boolopt>
+						</multiopt>
 						<multiopt>
 							<name>Backend</name>
 							<alias>backend</alias>
@@ -2226,20 +2327,6 @@ rather than only those deemed reachable by the points-to analysis.
 					<section>
 						<name>Paddle Pointer Assignment Graph Building Options</name>
 						<boolopt>
-							<name>VTA</name>
-							<alias>vta</alias>
-							<default>false</default>
-                                                        <short_desc>Emulate Variable Type Analysis</short_desc>
-							<long_desc>
-Setting VTA to true has the effect of setting field-based,
-types-for-sites, and simplify-sccs to true, and on-fly-cg to false,
-to simulate Variable Type
-Analysis, described in <a href="http://www.sable.mcgill.ca/publications/papers/#oopsla2000">our OOPSLA 2000 paper</a>. Note that the
-algorithm differs from the original VTA in that it handles array
-elements more precisely.
-        </long_desc>
-						</boolopt>
-						<boolopt>
 							<name>RTA</name>
 							<alias>rta</alias>
 							<default>false</default>
@@ -2317,17 +2404,6 @@ nodes are made bidirectional, as in <a href="http://doi.acm.org/10.1145/237721.2
         </long_desc>
 						</boolopt>
 						<boolopt>
-							<name>On Fly Call Graph</name>
-							<alias>on-fly-cg</alias>
-							<default>true</default>
-                                                        <short_desc>Build call graph as receiver types become known</short_desc>
-							<long_desc>
-When this option is set to true, the call graph is computed on-the-fly
-as points-to information is computed. Otherwise, an initial
-CHA approximation to the call graph is used.
-        </long_desc>
-						</boolopt>
-						<boolopt>
 							<name>Context-sensitive Heap Locations</name>
 							<alias>context-heap</alias>
 							<default>false</default>
@@ -2350,48 +2426,6 @@ context-sensitivity level.
     of any type. Setting this option to true causes them to be treated as if
     they return only objects of the type of some dynamic class.
             </long_desc>
-						</boolopt>
-					</section>
-					<section>
-						<name>Paddle Pointer Assignment Graph Simplification Options</name>
-						<boolopt>
-							<name>Simplify Offline</name>
-							<alias>simplify-offline</alias>
-							<default>false</default>
-                                                        <short_desc>Collapse single-entry subgraphs of the PAG</short_desc>
-							<long_desc>
-When this option is set to true, variable (Green) nodes which form
-single-entry subgraphs (so they must have the same points-to set) are
-merged before propagation begins.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Simplify SCCs</name>
-							<alias>simplify-sccs</alias>
-							<default>false</default>
-                                                        <short_desc>Collapse strongly-connected components of the PAG</short_desc>
-							<long_desc>
-When this option is set to true, variable (Green) nodes which form
-strongly-connected components (so they must have the same points-to set)
-are merged before propagation begins.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Ignore Types For SCCs</name>
-							<alias>ignore-types-for-sccs</alias>
-							<default>false</default>
-                                                        <short_desc>Ignore declared types when determining node equivalence for SCCs</short_desc>
-							<long_desc>
-When this option is set to true, when collapsing strongly-connected
-components, nodes forming SCCs are collapsed regardless of their declared type.
-The collapsed SCC is given the most general type of all the nodes in the
-component.
-
-When this option is set to false, only edges connecting nodes of the
-same type are considered when detecting SCCs.
-
-This option has no effect unless <tt>simplify-sccs</tt> is true.
-        </long_desc>
 						</boolopt>
 					</section>
 					<section>
@@ -2418,21 +2452,6 @@ Worklist is a worklist-based algorithm that tries
 to do as little work as possible. This is currently the fastest algorithm.
 </long_desc>
 
-							</value>
-							<value>
-								<name>Cycle</name>
-								<alias>cycle</alias>
-                                                                <short_desc>Unfinished on-the-fly cycle detection algorithm</short_desc>
-                                                                <long_desc>This algorithm finds cycles in the PAG on-the-fly. It is not yet finished.</long_desc>
-							</value>
-							<value>
-								<name>Merge</name>
-								<alias>merge</alias>
-<short_desc>Unfinished field reference merging algorithms</short_desc>
-<long_desc>
-Merge is an algorithm that merges all concrete field (yellow) nodes with their corresponding
-field reference (red) nodes. This algorithm is not yet finished.
-</long_desc>
 							</value>
 							<value>
 								<name>Alias</name>
@@ -2531,13 +2550,6 @@ reconsidered. This allows the propagation algorithms to be incremental,
 often speeding them up significantly.
 </long_desc>
 							</value>
-							<value>
-								<name>Shared bit-vector</name>
-								<alias>shared</alias>
-                                                                <short_desc>Shared bit-vector representation</short_desc>
-                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
-
-							</value>
                                                         <short_desc>Select points-to set implementation</short_desc>
 							<long_desc>
 Select an implementation of points-to sets for Paddle to use.
@@ -2584,13 +2596,6 @@ points-to set in a sorted array. Set membership is tested using
 binary search, and set union and intersection are computed using
 an algorithm based on the merge step from merge sort.
 </long_desc>
-							</value>
-							<value>
-								<name>Shared bit-vector</name>
-								<alias>shared</alias>
-                                                                <short_desc>Shared bit-vector representation</short_desc>
-                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
-
 							</value>
                                                         <short_desc>Select implementation of points-to set for old part of double set</short_desc>
 							<long_desc>
@@ -2642,13 +2647,6 @@ binary search, and set union and intersection are computed using
 an algorithm based on the merge step from merge sort.
 </long_desc>
 							</value>
-							<value>
-								<name>Shared bit-vector</name>
-								<alias>shared</alias>
-                                                                <short_desc>Shared bit-vector representation</short_desc>
-                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
-
-							</value>
                                                         <short_desc>Select implementation of points-to set for new part of double set</short_desc>
 							<long_desc>
 Select an implementation for sets of new objects in the double
@@ -2661,91 +2659,14 @@ This option has no effect unless Set Implementation is set to double.
 					<section>
 						<name>Paddle Output Options</name>
 						<boolopt>
-							<name>Dump HTML</name>
-							<alias>dump-html</alias>
+							<name>Print Context Counts</name>
+							<alias>context-counts</alias>
 							<default>false</default>
-                                                        <short_desc>Dump pointer assignment graph to HTML for debugging</short_desc>
+                                                        <short_desc>Print number of contexts for each method</short_desc>
 							<long_desc>
-When this option is set to true, a browseable HTML representation of the
-pointer assignment graph is output to a file called <tt>pag.jar</tt> after the analysis completes. Note
-that this representation is typically very large.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Dump PAG</name>
-							<alias>dump-pag</alias>
-							<default>false</default>
-                                                        <short_desc>Dump pointer assignment graph for other solvers</short_desc>
-							<long_desc>
-When this option is set to true, a representation of the pointer assignment graph
-suitable for processing with other solvers (such as the BDD-based solver) is
-output before the analysis begins.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Dump Solution</name>
-							<alias>dump-solution</alias>
-							<default>false</default>
-                                                        <short_desc>Dump final solution for comparison with other solvers</short_desc>
-							<long_desc>
-When this option is set to true, a representation of the resulting points-to
-sets is dumped. The format is similar to that of the Dump PAG
-option, and is therefore suitable for comparison with the results of other
-solvers.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Topological Sort</name>
-							<alias>topo-sort</alias>
-							<default>false</default>
-                                                        <short_desc>Sort variable nodes in dump</short_desc>
-							<long_desc>
-When this option is set to true, the representation dumped by the
-Dump PAG option
-is dumped with the variable (green) nodes in (pseudo-)topological order.
-
-This option has no effect unless Dump PAG is true.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Dump Types</name>
-							<alias>dump-types</alias>
-							<default>true</default>
-                                                        <short_desc>Include declared types in dump</short_desc>
-							<long_desc>
-When this option is set to true, the representation dumped by the
-Dump PAG option
-includes type information for all nodes.
-
-This option has no effect unless Dump PAG is true.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Class Method Var</name>
-							<alias>class-method-var</alias>
-							<default>true</default>
-                                                        <short_desc>In dump, label variables by class and method</short_desc>
-							<long_desc>
-When this option is set to true, the representation dumped by the
-Dump PAG option
-represents nodes by numbering each class, method, and variable within
-the method separately, rather than assigning a single integer to each
-node.
-
-This option has no effect unless Dump PAG is true.  Setting Class
-Method Var to true has the effect of setting Topological Sort to
-false.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Dump Answer</name>
-							<alias>dump-answer</alias>
-							<default>false</default>
-                                                        <short_desc>Dump computed reaching types for comparison with other solvers</short_desc>
-							<long_desc>
-When this option is set to true, the computed reaching types for each variable are
-dumped to a file, so that they can be compared with the results of
-other analyses (such as the old VTA).
+Causes Paddle to print the number of contexts for each method and
+call edge, and the number of equivalence classes of contexts for
+each variable node.
         </long_desc>
 						</boolopt>
 						<boolopt>

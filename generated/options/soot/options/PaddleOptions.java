@@ -74,53 +74,6 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "profile" );
     }
     
-    /** BDD Queues --
-    
-     * Force BDD versions of queues.
-    
-     * Force 
-     * Paddle to use BDD versions of the queues for communicating 
-     * between its components 
-     */
-    public boolean bddq() {
-        return soot.PhaseOptions.getBoolean( options, "bddq" );
-    }
-    
-    /** Debug Queues --
-    
-     * Force debug versions of queues.
-    
-     * Force 
-     * Paddle to use debugging versions of the queues for communicating 
-     * between its components 
-     */
-    public boolean debugq() {
-        return soot.PhaseOptions.getBoolean( options, "debugq" );
-    }
-    
-    /** Trace --
-    
-     * Trace Paddle queues for debugging..
-    
-     * Print 
-     * the contents of all internal Paddle queues for debugging. 
-     * 
-     */
-    public boolean trace() {
-        return soot.PhaseOptions.getBoolean( options, "trace" );
-    }
-    
-    /** Number Trace --
-    
-     * Trace Paddle queues for debugging..
-    
-     * Print 
-     * the sizes of all internal Paddle queues for debugging. 
-     */
-    public boolean numtrace() {
-        return soot.PhaseOptions.getBoolean( options, "numtrace" );
-    }
-    
     /** Ignore Types Entirely --
     
      * Make Paddle completely ignore declared types of variables.
@@ -157,21 +110,6 @@ public class PaddleOptions
      */
     public boolean pre_jimplify() {
         return soot.PhaseOptions.getBoolean( options, "pre-jimplify" );
-    }
-    
-    /** VTA --
-    
-     * Emulate Variable Type Analysis.
-    
-     * Setting VTA to true has the effect of setting field-based, 
-     * types-for-sites, and simplify-sccs to true, and on-fly-cg to 
-     * false, to simulate Variable Type Analysis, described in our 
-     * OOPSLA 2000 paper. Note that the algorithm differs from the 
-     * original VTA in that it handles array elements more precisely. 
-     * 
-     */
-    public boolean vta() {
-        return soot.PhaseOptions.getBoolean( options, "vta" );
     }
     
     /** RTA --
@@ -263,18 +201,6 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "simple-edges-bidirectional" );
     }
     
-    /** On Fly Call Graph --
-    
-     * Build call graph as receiver types become known.
-    
-     * When this option is set to true, the call graph is computed 
-     * on-the-fly as points-to information is computed. Otherwise, an 
-     * initial CHA approximation to the call graph is used. 
-     */
-    public boolean on_fly_cg() {
-        return soot.PhaseOptions.getBoolean( options, "on-fly-cg" );
-    }
-    
     /** Context-sensitive Heap Locations --
     
      * Treat allocation sites context-sensitively.
@@ -303,137 +229,16 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "precise-newinstance" );
     }
     
-    /** Simplify Offline --
+    /** Print Context Counts --
     
-     * Collapse single-entry subgraphs of the PAG.
+     * Print number of contexts for each method.
     
-     * When this option is set to true, variable (Green) nodes which 
-     * form single-entry subgraphs (so they must have the same 
-     * points-to set) are merged before propagation begins. 
+     * Causes Paddle to print the number of contexts for each method 
+     * and call edge, and the number of equivalence classes of contexts 
+     * for each variable node. 
      */
-    public boolean simplify_offline() {
-        return soot.PhaseOptions.getBoolean( options, "simplify-offline" );
-    }
-    
-    /** Simplify SCCs --
-    
-     * Collapse strongly-connected components of the PAG.
-    
-     * When this option is set to true, variable (Green) nodes which 
-     * form strongly-connected components (so they must have the same 
-     * points-to set) are merged before propagation begins. 
-     */
-    public boolean simplify_sccs() {
-        return soot.PhaseOptions.getBoolean( options, "simplify-sccs" );
-    }
-    
-    /** Ignore Types For SCCs --
-    
-     * Ignore declared types when determining node equivalence for SCCs.
-    
-     * When this option is set to true, when collapsing 
-     * strongly-connected components, nodes forming SCCs are collapsed 
-     * regardless of their declared type. The collapsed SCC is given 
-     * the most general type of all the nodes in the component. When 
-     * this option is set to false, only edges connecting nodes of the 
-     * same type are considered when detecting SCCs. This option has 
-     * no effect unless simplify-sccs is true. 
-     */
-    public boolean ignore_types_for_sccs() {
-        return soot.PhaseOptions.getBoolean( options, "ignore-types-for-sccs" );
-    }
-    
-    /** Dump HTML --
-    
-     * Dump pointer assignment graph to HTML for debugging.
-    
-     * When this option is set to true, a browseable HTML 
-     * representation of the pointer assignment graph is output to a 
-     * file called pag.jar after the analysis completes. Note that this 
-     * representation is typically very large. 
-     */
-    public boolean dump_html() {
-        return soot.PhaseOptions.getBoolean( options, "dump-html" );
-    }
-    
-    /** Dump PAG --
-    
-     * Dump pointer assignment graph for other solvers.
-    
-     * When this option is set to true, a representation of the 
-     * pointer assignment graph suitable for processing with other 
-     * solvers (such as the BDD-based solver) is output before the 
-     * analysis begins. 
-     */
-    public boolean dump_pag() {
-        return soot.PhaseOptions.getBoolean( options, "dump-pag" );
-    }
-    
-    /** Dump Solution --
-    
-     * Dump final solution for comparison with other solvers.
-    
-     * When this option is set to true, a representation of the 
-     * resulting points-to sets is dumped. The format is similar to 
-     * that of the Dump PAG option, and is therefore suitable for 
-     * comparison with the results of other solvers. 
-     */
-    public boolean dump_solution() {
-        return soot.PhaseOptions.getBoolean( options, "dump-solution" );
-    }
-    
-    /** Topological Sort --
-    
-     * Sort variable nodes in dump.
-    
-     * When this option is set to true, the representation dumped by 
-     * the Dump PAG option is dumped with the variable (green) nodes in 
-     * (pseudo-)topological order. This option has no effect unless 
-     * Dump PAG is true. 
-     */
-    public boolean topo_sort() {
-        return soot.PhaseOptions.getBoolean( options, "topo-sort" );
-    }
-    
-    /** Dump Types --
-    
-     * Include declared types in dump.
-    
-     * When this option is set to true, the representation dumped by 
-     * the Dump PAG option includes type information for all nodes. 
-     * This option has no effect unless Dump PAG is true. 
-     */
-    public boolean dump_types() {
-        return soot.PhaseOptions.getBoolean( options, "dump-types" );
-    }
-    
-    /** Class Method Var --
-    
-     * In dump, label variables by class and method.
-    
-     * When this option is set to true, the representation dumped by 
-     * the Dump PAG option represents nodes by numbering each class, 
-     * method, and variable within the method separately, rather than 
-     * assigning a single integer to each node. This option has no 
-     * effect unless Dump PAG is true. Setting Class Method Var to 
-     * true has the effect of setting Topological Sort to false. 
-     * 
-     */
-    public boolean class_method_var() {
-        return soot.PhaseOptions.getBoolean( options, "class-method-var" );
-    }
-    
-    /** Dump Answer --
-    
-     * Dump computed reaching types for comparison with other solvers.
-    
-     * When this option is set to true, the computed reaching types 
-     * for each variable are dumped to a file, so that they can be 
-     * compared with the results of other analyses (such as the old 
-     * VTA). 
-     */
-    public boolean dump_answer() {
-        return soot.PhaseOptions.getBoolean( options, "dump-answer" );
+    public boolean context_counts() {
+        return soot.PhaseOptions.getBoolean( options, "context-counts" );
     }
     
     /** Add Tags --
@@ -471,6 +276,84 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "number-nodes" );
     }
     
+    public static final int conf_ofcg = 1;
+    public static final int conf_cha = 2;
+    public static final int conf_cha_aot = 3;
+    public static final int conf_ofcg_aot = 4;
+    public static final int conf_cha_context_aot = 5;
+    public static final int conf_ofcg_context_aot = 6;
+    public static final int conf_cha_context = 7;
+    public static final int conf_ofcg_context = 8;
+    /** Configuration --
+    
+     * Select Paddle configuration.
+    
+     * Selects the configuration of points-to analysis and call graph 
+     * construction to be used in Paddle. 
+     */
+    public int conf() {
+        String s = soot.PhaseOptions.getString( options, "conf" );
+        
+        if( s.equalsIgnoreCase( "ofcg" ) )
+            return conf_ofcg;
+        
+        if( s.equalsIgnoreCase( "cha" ) )
+            return conf_cha;
+        
+        if( s.equalsIgnoreCase( "cha-aot" ) )
+            return conf_cha_aot;
+        
+        if( s.equalsIgnoreCase( "ofcg-aot" ) )
+            return conf_ofcg_aot;
+        
+        if( s.equalsIgnoreCase( "cha-context-aot" ) )
+            return conf_cha_context_aot;
+        
+        if( s.equalsIgnoreCase( "ofcg-context-aot" ) )
+            return conf_ofcg_context_aot;
+        
+        if( s.equalsIgnoreCase( "cha-context" ) )
+            return conf_cha_context;
+        
+        if( s.equalsIgnoreCase( "ofcg-context" ) )
+            return conf_ofcg_context;
+        
+        throw new RuntimeException( "Invalid value "+s+" of phase option conf" );
+    }
+    
+    public static final int q_trad = 1;
+    public static final int q_bdd = 2;
+    public static final int q_debug = 3;
+    public static final int q_trace = 4;
+    public static final int q_numtrace = 5;
+    /** Queue Implementation --
+    
+     * Select queue implementation.
+    
+     * Select the implementation of worklists to be used in Paddle. 
+     * 
+     */
+    public int q() {
+        String s = soot.PhaseOptions.getString( options, "q" );
+        
+        if( s.equalsIgnoreCase( "trad" ) )
+            return q_trad;
+        
+        if( s.equalsIgnoreCase( "bdd" ) )
+            return q_bdd;
+        
+        if( s.equalsIgnoreCase( "debug" ) )
+            return q_debug;
+        
+        if( s.equalsIgnoreCase( "trace" ) )
+            return q_trace;
+        
+        if( s.equalsIgnoreCase( "numtrace" ) )
+            return q_numtrace;
+        
+        throw new RuntimeException( "Invalid value "+s+" of phase option q" );
+    }
+    
     public static final int backend_buddy = 1;
     public static final int backend_cudd = 2;
     public static final int backend_sable = 3;
@@ -506,12 +389,10 @@ public class PaddleOptions
     
     public static final int propagator_iter = 1;
     public static final int propagator_worklist = 2;
-    public static final int propagator_cycle = 3;
-    public static final int propagator_merge = 4;
-    public static final int propagator_alias = 5;
-    public static final int propagator_bdd = 6;
-    public static final int propagator_incbdd = 7;
-    public static final int propagator_none = 8;
+    public static final int propagator_alias = 3;
+    public static final int propagator_bdd = 4;
+    public static final int propagator_incbdd = 5;
+    public static final int propagator_none = 6;
     /** Propagator --
     
      * Select propagation algorithm.
@@ -527,12 +408,6 @@ public class PaddleOptions
         
         if( s.equalsIgnoreCase( "worklist" ) )
             return propagator_worklist;
-        
-        if( s.equalsIgnoreCase( "cycle" ) )
-            return propagator_cycle;
-        
-        if( s.equalsIgnoreCase( "merge" ) )
-            return propagator_merge;
         
         if( s.equalsIgnoreCase( "alias" ) )
             return propagator_alias;
@@ -554,7 +429,6 @@ public class PaddleOptions
     public static final int set_impl_hybrid = 3;
     public static final int set_impl_array = 4;
     public static final int set_impl_double = 5;
-    public static final int set_impl_shared = 6;
     /** Set Implementation --
     
      * Select points-to set implementation.
@@ -579,9 +453,6 @@ public class PaddleOptions
         if( s.equalsIgnoreCase( "double" ) )
             return set_impl_double;
         
-        if( s.equalsIgnoreCase( "shared" ) )
-            return set_impl_shared;
-        
         throw new RuntimeException( "Invalid value "+s+" of phase option set-impl" );
     }
     
@@ -589,7 +460,6 @@ public class PaddleOptions
     public static final int double_set_old_bit = 2;
     public static final int double_set_old_hybrid = 3;
     public static final int double_set_old_array = 4;
-    public static final int double_set_old_shared = 5;
     /** Double Set Old --
     
      * Select implementation of points-to set for old part of double 
@@ -614,9 +484,6 @@ public class PaddleOptions
         if( s.equalsIgnoreCase( "array" ) )
             return double_set_old_array;
         
-        if( s.equalsIgnoreCase( "shared" ) )
-            return double_set_old_shared;
-        
         throw new RuntimeException( "Invalid value "+s+" of phase option double-set-old" );
     }
     
@@ -624,7 +491,6 @@ public class PaddleOptions
     public static final int double_set_new_bit = 2;
     public static final int double_set_new_hybrid = 3;
     public static final int double_set_new_array = 4;
-    public static final int double_set_new_shared = 5;
     /** Double Set New --
     
      * Select implementation of points-to set for new part of double 
@@ -648,9 +514,6 @@ public class PaddleOptions
         
         if( s.equalsIgnoreCase( "array" ) )
             return double_set_new_array;
-        
-        if( s.equalsIgnoreCase( "shared" ) )
-            return double_set_new_shared;
         
         throw new RuntimeException( "Invalid value "+s+" of phase option double-set-new" );
     }

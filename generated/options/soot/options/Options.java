@@ -1555,16 +1555,40 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "cg.paddle" ) )
             return "Phase "+phaseName+":\n"+
-                "\nSpark is a flexible points-to analysis framework. Aside from \nbuilding a call graph, it also generates information about the \ntargets of pointers. For details about Spark, please see Ondrej \nLhotak's M.Sc. thesis."
+                "\nPaddle is a BDD-based interprocedural analysis framework. It \nincludes points-to analysis, call graph construction, and \nvarious client analyses."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "verbose (false)", "Print detailed information about the execution of Paddle" )
+                +padOpt( "conf", "Select Paddle configuration" )
+                +padVal( "ofcg (default)", "On-the fly call graph" )
+                
+                +padVal( "cha", "CHA only" )
+                
+                +padVal( "cha-aot", "CHA ahead-of-time callgraph" )
+                
+                +padVal( "ofcg-aot", "OFCG-AOT callgraph" )
+                
+                +padVal( "cha-context-aot", "CHA-Context-AOT callgraph" )
+                
+                +padVal( "ofcg-context-aot", "OFCG-Context-AOT callgraph" )
+                
+                +padVal( "cha-context", "CHA-Context callgraph" )
+                
+                +padVal( "ofcg-context", "OFCG-Context callgraph" )
+                
                 +padOpt( "bdd (false)", "Use BDD version of Paddle" )
                 +padOpt( "profile (false)", "Profile BDDs using JeddProfiler" )
-                +padOpt( "bddq (false)", "Force BDD versions of queues" )
-                +padOpt( "debugq (false)", "Force debug versions of queues" )
-                +padOpt( "trace (false)", "Trace Paddle queues for debugging." )
-                +padOpt( "numtrace (false)", "Trace Paddle queues for debugging." )
+                +padOpt( "q", "Select queue implementation" )
+                +padVal( "trad (default)", "Normal worklist queue implementation" )
+                
+                +padVal( "bdd", "BDD-based queue implementation" )
+                
+                +padVal( "debug", "Debugging queue implementation" )
+                
+                +padVal( "trace", "Tracing queue implementation" )
+                
+                +padVal( "numtrace", "Number-tracing queue implementation" )
+                
                 +padOpt( "backend", "Select BDD backend" )
                 +padVal( "buddy (default)", "BuDDy backend" )
                 
@@ -1579,7 +1603,6 @@ public class Options extends OptionsBase {
                 +padOpt( "ignore-types (false)", "Make Paddle completely ignore declared types of variables" )
                 +padOpt( "force-gc (false)", "Force garbage collection for measuring memory usage" )
                 +padOpt( "pre-jimplify (false)", "Jimplify all methods before starting Paddle" )
-                +padOpt( "vta (false)", "Emulate Variable Type Analysis" )
                 +padOpt( "rta (false)", "Emulate Rapid Type Analysis" )
                 +padOpt( "field-based (false)", "Use a field-based rather than field-sensitive representation" )
                 +padOpt( "types-for-sites (false)", "Represent objects by their actual type rather than allocation site" )
@@ -1587,20 +1610,12 @@ public class Options extends OptionsBase {
                 +padOpt( "string-constants (false)", "Propagate all string constants, not just class names" )
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
-                +padOpt( "on-fly-cg (true)", "Build call graph as receiver types become known" )
                 +padOpt( "context-heap (false)", "Treat allocation sites context-sensitively" )
                 +padOpt( "precise-newinstance (true)", "Make newInstance only allocate objects of dynamic classes" )
-                +padOpt( "simplify-offline (false)", "Collapse single-entry subgraphs of the PAG" )
-                +padOpt( "simplify-sccs (false)", "Collapse strongly-connected components of the PAG" )
-                +padOpt( "ignore-types-for-sccs (false)", "Ignore declared types when determining node equivalence for SCCs" )
                 +padOpt( "propagator", "Select propagation algorithm" )
                 +padVal( "iter", "Simple iterative algorithm" )
                 
                 +padVal( "worklist (default)", "Fast, worklist-based algorithm" )
-                
-                +padVal( "cycle", "Unfinished on-the-fly cycle detection algorithm" )
-                
-                +padVal( "merge", "Unfinished field reference merging algorithms" )
                 
                 +padVal( "alias", "Alias-edge based algorithm" )
                 
@@ -1621,8 +1636,6 @@ public class Options extends OptionsBase {
                 
                 +padVal( "double (default)", "Double set representation for incremental propagation" )
                 
-                +padVal( "shared", "Shared bit-vector representation" )
-                
                 +padOpt( "double-set-old", "Select implementation of points-to set for old part of double set" )
                 +padVal( "hash", "Use Java HashSet" )
                 
@@ -1631,8 +1644,6 @@ public class Options extends OptionsBase {
                 +padVal( "hybrid (default)", "Hybrid representation using bit vector for large sets" )
                 
                 +padVal( "array", "Sorted array representation" )
-                
-                +padVal( "shared", "Shared bit-vector representation" )
                 
                 +padOpt( "double-set-new", "Select implementation of points-to set for new part of double set" )
                 +padVal( "hash", "Use Java HashSet" )
@@ -1643,15 +1654,7 @@ public class Options extends OptionsBase {
                 
                 +padVal( "array", "Sorted array representation" )
                 
-                +padVal( "shared", "Shared bit-vector representation" )
-                
-                +padOpt( "dump-html (false)", "Dump pointer assignment graph to HTML for debugging" )
-                +padOpt( "dump-pag (false)", "Dump pointer assignment graph for other solvers" )
-                +padOpt( "dump-solution (false)", "Dump final solution for comparison with other solvers" )
-                +padOpt( "topo-sort (false)", "Sort variable nodes in dump" )
-                +padOpt( "dump-types (true)", "Include declared types in dump" )
-                +padOpt( "class-method-var (true)", "In dump, label variables by class and method" )
-                +padOpt( "dump-answer (false)", "Dump computed reaching types for comparison with other solvers" )
+                +padOpt( "context-counts (false)", "Print number of contexts for each method" )
                 +padOpt( "add-tags (false)", "Output points-to results in tags for viewing with the Jimple" )
                 +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" )
                 +padOpt( "number-nodes (true)", "Print node numbers in dumps" );
@@ -2315,17 +2318,14 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled "
                 +"verbose "
+                +"conf "
                 +"bdd "
                 +"profile "
-                +"bddq "
-                +"debugq "
-                +"trace "
-                +"numtrace "
+                +"q "
                 +"backend "
                 +"ignore-types "
                 +"force-gc "
                 +"pre-jimplify "
-                +"vta "
                 +"rta "
                 +"field-based "
                 +"types-for-sites "
@@ -2333,23 +2333,13 @@ public class Options extends OptionsBase {
                 +"string-constants "
                 +"simulate-natives "
                 +"simple-edges-bidirectional "
-                +"on-fly-cg "
                 +"context-heap "
                 +"precise-newinstance "
-                +"simplify-offline "
-                +"simplify-sccs "
-                +"ignore-types-for-sccs "
                 +"propagator "
                 +"set-impl "
                 +"double-set-old "
                 +"double-set-new "
-                +"dump-html "
-                +"dump-pag "
-                +"dump-solution "
-                +"topo-sort "
-                +"dump-types "
-                +"class-method-var "
-                +"dump-answer "
+                +"context-counts "
                 +"add-tags "
                 +"set-mass "
                 +"number-nodes ";
@@ -2853,17 +2843,14 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:false "
               +"verbose:false "
+              +"conf:ofcg "
               +"bdd:false "
               +"profile:false "
-              +"bddq:false "
-              +"debugq:false "
-              +"trace:false "
-              +"numtrace:false "
+              +"q:trad "
               +"backend:buddy "
               +"ignore-types:false "
               +"force-gc:false "
               +"pre-jimplify:false "
-              +"vta:false "
               +"rta:false "
               +"field-based:false "
               +"types-for-sites:false "
@@ -2871,23 +2858,13 @@ public class Options extends OptionsBase {
               +"string-constants:false "
               +"simulate-natives:true "
               +"simple-edges-bidirectional:false "
-              +"on-fly-cg:true "
               +"context-heap:false "
               +"precise-newinstance:true "
-              +"simplify-offline:false "
-              +"simplify-sccs:false "
-              +"ignore-types-for-sccs:false "
               +"propagator:worklist "
               +"set-impl:double "
               +"double-set-old:hybrid "
               +"double-set-new:hybrid "
-              +"dump-html:false "
-              +"dump-pag:false "
-              +"dump-solution:false "
-              +"topo-sort:false "
-              +"dump-types:true "
-              +"class-method-var:true "
-              +"dump-answer:false "
+              +"context-counts:false "
               +"add-tags:false "
               +"set-mass:false "
               +"number-nodes:true ";

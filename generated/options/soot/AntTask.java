@@ -1249,30 +1249,6 @@ public class AntTask extends MatchingTask {
             addArg("profile:"+(arg?"true":"false"));
           }
       
-          public void setbddq(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("bddq:"+(arg?"true":"false"));
-          }
-      
-          public void setdebugq(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("debugq:"+(arg?"true":"false"));
-          }
-      
-          public void settrace(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("trace:"+(arg?"true":"false"));
-          }
-      
-          public void setnumtrace(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("numtrace:"+(arg?"true":"false"));
-          }
-      
           public void setignore_types(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");
@@ -1289,12 +1265,6 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.paddle");
             addArg("pre-jimplify:"+(arg?"true":"false"));
-          }
-      
-          public void setvta(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("vta:"+(arg?"true":"false"));
           }
       
           public void setrta(boolean arg) {
@@ -1339,12 +1309,6 @@ public class AntTask extends MatchingTask {
             addArg("simple-edges-bidirectional:"+(arg?"true":"false"));
           }
       
-          public void seton_fly_cg(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("on-fly-cg:"+(arg?"true":"false"));
-          }
-      
           public void setcontext_heap(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");
@@ -1357,64 +1321,10 @@ public class AntTask extends MatchingTask {
             addArg("precise-newinstance:"+(arg?"true":"false"));
           }
       
-          public void setsimplify_offline(boolean arg) {
+          public void setcontext_counts(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");
-            addArg("simplify-offline:"+(arg?"true":"false"));
-          }
-      
-          public void setsimplify_sccs(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("simplify-sccs:"+(arg?"true":"false"));
-          }
-      
-          public void setignore_types_for_sccs(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("ignore-types-for-sccs:"+(arg?"true":"false"));
-          }
-      
-          public void setdump_html(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("dump-html:"+(arg?"true":"false"));
-          }
-      
-          public void setdump_pag(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("dump-pag:"+(arg?"true":"false"));
-          }
-      
-          public void setdump_solution(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("dump-solution:"+(arg?"true":"false"));
-          }
-      
-          public void settopo_sort(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("topo-sort:"+(arg?"true":"false"));
-          }
-      
-          public void setdump_types(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("dump-types:"+(arg?"true":"false"));
-          }
-      
-          public void setclass_method_var(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("class-method-var:"+(arg?"true":"false"));
-          }
-      
-          public void setdump_answer(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("dump-answer:"+(arg?"true":"false"));
+            addArg("context-counts:"+(arg?"true":"false"));
           }
       
           public void setadd_tags(boolean arg) {
@@ -1433,6 +1343,18 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.paddle");
             addArg("number-nodes:"+(arg?"true":"false"));
+          }
+      
+          public void setconf(String arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("conf:"+arg);
+          }
+      
+          public void setq(String arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("q:"+arg);
           }
       
           public void setbackend(String arg) {
