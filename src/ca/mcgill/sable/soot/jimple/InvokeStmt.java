@@ -75,7 +75,7 @@ public class InvokeStmt extends Stmt
 {
     InvokeExprBox invokeExprBox;
     
-    public InvokeStmt(InvokeExpr c)
+    InvokeStmt(InvokeExpr c)
     {
         invokeExprBox = new InvokeExprBox(c);
     }

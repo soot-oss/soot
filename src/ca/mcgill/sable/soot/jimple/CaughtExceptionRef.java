@@ -71,9 +71,9 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class CaughtExceptionRef implements IdentityValue
+public class CaughtExceptionRef implements IdentityRef
 {   
-    public CaughtExceptionRef()
+    CaughtExceptionRef()
     {
     }
     

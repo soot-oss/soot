@@ -31,6 +31,7 @@
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+ 
 /*
  Reference Version
  -----------------
@@ -62,7 +63,7 @@
 
  B) Changes:
 
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on October 28, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
  
@@ -71,29 +72,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NextNextStmtAddress implements RValue
+public interface Ref extends Value
 {
-    public NextNextStmtAddress()
-    {
-    }   
-    
-    public String toString()
-    {
-        return "&nextnextstmt";
-    }
-    
-    public List getUseBoxes()
-    {
-        return Stmt.emptyList;
-    }
-    
-    public Type getType()
-    {
-        return StmtAddressType.v();
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((ValueSwitch) sw).caseNextNextStmtAddress(this);
-    }
 }
+

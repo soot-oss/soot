@@ -71,7 +71,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public abstract class Constant implements ca.mcgill.sable.util.ValueObject, Immediate, RValue
+public abstract class Constant implements ca.mcgill.sable.util.ValueObject, Immediate, RValue, Value
 {
     public abstract boolean equals(Constant c);
     

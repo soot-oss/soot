@@ -76,7 +76,7 @@ public class RetStmt extends Stmt
     LocalBox stmtAddressBox;
     List useBoxes;
     
-    public RetStmt(Local stmtAddress)
+    RetStmt(Local stmtAddress)
     {
         stmtAddressBox = new LocalBox(stmtAddress);
         

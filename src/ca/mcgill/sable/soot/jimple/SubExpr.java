@@ -73,7 +73,7 @@ import ca.mcgill.sable.util.*;
 
 public class SubExpr extends BinopExpr
 {
-    public SubExpr(Immediate op1, Immediate op2)
+    SubExpr(Immediate op1, Immediate op2)
     {
         op1Box = new ImmediateBox(op1);
         op2Box = new ImmediateBox(op2);

@@ -69,7 +69,46 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.util.*;
 
-public interface IdentityValue extends Value
-{
+public abstract class NonStaticInvokeExpr extends InvokeExpr
+{    
+    LocalBox baseBox;
+        
+    public Local getBase()
+    {
+        return (Local) baseBox.getValue();
+    }
+    
+    public LocalBox getBaseBox()
+    {
+        return baseBox;
+    }
+    
+    public void setBase(Local base)
+    {
+        baseBox.setValue(base);
+    }
+    
+        public List getUseBoxes()
+    {
+        List list = new ArrayList();
+            
+        list.add(baseBox);
+        
+        for(int i = 0; i < argBoxes.length; i++)
+            list.add(argBoxes[i]);
+    
+        // Add the boxes within the boxes
+        {        
+            list.addAll(baseBox.getValue().getUseBoxes());
+            
+            for(int i = 0; i < argBoxes.length; i++)
+                list.addAll(argBoxes[i].getValue().getUseBoxes());
+        }
+        
+        return list;
+    }    
+
+
 }

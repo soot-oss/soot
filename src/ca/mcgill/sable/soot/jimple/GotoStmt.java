@@ -77,7 +77,7 @@ public class GotoStmt extends Stmt
 
     List targetBoxes;
         
-    public GotoStmt(Stmt target)
+    GotoStmt(Stmt target)
     {
         this.targetBox = new StmtBox(target);
         
@@ -93,12 +93,12 @@ public class GotoStmt extends Stmt
     
     public Stmt getTarget()
     {
-        return targetBox.getStmt();
+        return (Stmt) targetBox.getUnit();
     }
     
     public void setTarget(Stmt target)
     {
-        targetBox.setStmt(target);
+        targetBox.setUnit(target);
     }
     
     public StmtBox getTargetBox()

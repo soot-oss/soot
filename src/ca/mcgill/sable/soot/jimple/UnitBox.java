@@ -35,7 +35,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $JimpleVersion: 0.5 $
+ The reference version is: $BafVersion: 0.4 $
 
  Change History
  --------------
@@ -68,63 +68,11 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.*;
 
-public class ReturnStmt extends Stmt
-{   
-    ImmediateBox returnValueBox;
-         
-    ReturnStmt(Immediate returnValue)
-    {
-        this.returnValueBox = new ImmediateBox(returnValue); 
-    }
-    
-    public String toString()
-    {
-        return "return " + returnValueBox.getValue().toString();
-    }
-    
-    public ImmediateBox getReturnValueBox()
-    {
-        return returnValueBox;
-    }
-    
-    public void setReturnValue(Immediate returnValue)
-    {
-        returnValueBox.setValue(returnValue);
-    }
-    
-    public Immediate getReturnValue()
-    {
-        return (Immediate) returnValueBox.getValue();
-    }
-    
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-    
-    public List getUseBoxes()
-    {
-        List useBoxes = new ArrayList();
-        
-        useBoxes.add(returnValueBox);
-        useBoxes.addAll(returnValueBox.getValue().getUseBoxes());
-        
-        return useBoxes;
-    }
-    
-    public List getStmtBoxes()
-    {
-        return emptyList;
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseReturnStmt(this);
-    }
-    
-    
+public interface UnitBox
+{
+    public void setUnit(Unit u);
+    public Unit getUnit();
 }
-

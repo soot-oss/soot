@@ -140,7 +140,7 @@ public class Jimple implements BodyRepresentation
                 while(boxIt.hasNext())
                 {
                     StmtBox box = (StmtBox) boxIt.next();
-                    Stmt stmt = box.getStmt();
+                    Stmt stmt = (Stmt) box.getUnit();
                     
                     labelStmts.add(stmt);
                 }
@@ -1121,7 +1121,7 @@ public class Jimple implements BodyRepresentation
                 out.print(v.toString());
             }
         
-            public void caseNextNextStmtAddress(NextNextStmtAddress v)
+            public void caseNextNextStmtRef(NextNextStmtRef v)
             {
                 out.print(v.toString());
             }
@@ -1600,7 +1600,7 @@ public class Jimple implements BodyRepresentation
                 out.print(v.toString());
             }
         
-            public void caseNextNextStmtAddress(NextNextStmtAddress v)
+            public void caseNextNextStmtRef(NextNextStmtRef v)
             {
                 out.print(v.toString());
             }
@@ -1618,4 +1618,552 @@ public class Jimple implements BodyRepresentation
         });
     }
 
+    /**
+        Constructs a XorExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public XorExpr newXorExpr(Value op1, Value op2)
+    {
+        return new XorExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a UshrExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public UshrExpr newUshrExpr(Value op1, Value op2)
+    {
+        return new UshrExpr((Immediate) op1, (Immediate) op2);
+    }
+     
+    
+    /**
+        Constructs a SubExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public SubExpr newSubExpr(Value op1, Value op2)
+    {
+        return new SubExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a ShrExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public ShrExpr newShrExpr(Value op1, Value op2)
+    {
+        return new ShrExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a ShlExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public ShlExpr newShlExpr(Value op1, Value op2)
+    {
+        return new ShlExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a RemExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public RemExpr newRemExpr(Value op1, Value op2)
+    {
+        return new RemExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a OrExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public OrExpr newOrExpr(Value op1, Value op2)
+    {
+        return new OrExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a NeExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public NeExpr newNeExpr(Value op1, Value op2)
+    {
+        return new NeExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a MulExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public MulExpr newMulExpr(Value op1, Value op2)
+    {
+        return new MulExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a LeExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public LeExpr newLeExpr(Value op1, Value op2)
+    {
+        return new LeExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a GeExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public GeExpr newGeExpr(Value op1, Value op2)
+    {
+        return new GeExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a EqExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public EqExpr newEqExpr(Value op1, Value op2)
+    {
+        return new EqExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    /**
+        Constructs a DivExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public DivExpr newDivExpr(Value op1, Value op2)
+    {
+        return new DivExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a CmplExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public CmplExpr newCmplExpr(Value op1, Value op2)
+    {
+        return new CmplExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a CmpgExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public CmpgExpr newCmpgExpr(Value op1, Value op2)
+    {
+        return new CmpgExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a CmpExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public CmpExpr newCmpExpr(Value op1, Value op2)
+    {
+        return new CmpExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+        
+    /**
+        Constructs a GtExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public GtExpr newGtExpr(Value op1, Value op2)
+    {
+        return new GtExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a LtExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public LtExpr newLtExpr(Value op1, Value op2)
+    {
+        return new LtExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    /**
+        Constructs a AddExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public AddExpr newAddExpr(Value op1, Value op2)
+    {
+        return new AddExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a AndExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public AndExpr newAndExpr(Value op1, Value op2)
+    {
+        return new AndExpr((Immediate) op1, (Immediate) op2);
+    }
+    
+    
+    /**
+        Constructs a NegExpr(Immediate, Immediate) grammar chunk.
+     */
+     
+    public NegExpr newNegExpr(Value op)
+    {
+        return new NegExpr((Immediate) op);
+    }
+    
+    
+    /**
+        Constructs a LengthExpr(Immediate) grammar chunk.
+     */
+     
+    public LengthExpr newLengthExpr(Value op)
+    {
+        return new LengthExpr((Immediate) op);
+    }
+    
+    
+    /**
+        Constructs a CastExpr(Immediate, Type) grammar chunk.
+     */
+     
+    public CastExpr newCastExpr(Value op1, Type t)
+    {
+        return new CastExpr((Immediate) op1, t);
+    }
+    
+    /**
+        Constructs a InstanceOfExpr(Immediate, Type) 
+        grammar chunk.
+     */
+     
+    public InstanceOfExpr newInstanceOfExpr(Value op1, Type t)
+    {
+        return new InstanceOfExpr((Immediate) op1, t);
+    }
+    
+    
+    /**
+        Constructs a NewExpr(RefType) grammar chunk.
+     */
+     
+    public NewExpr newNewExpr(RefType type)
+    {
+        return new NewExpr(type);
+    }
+
+    
+    /**
+        Constructs a NewArrayExpr(Type, Immediate) grammar chunk.
+     */
+     
+    public NewArrayExpr newNewArrayExpr(Type type, Value size)
+    {
+        return new NewArrayExpr(type, (Immediate) size);
+    }
+
+    /**
+        Constructs a NewMultiArrayExpr(ArrayType, List of Immediate) grammar chunk.
+     */
+     
+    public NewMultiArrayExpr newNewMultiArrayExpr(ArrayType type, List sizes)
+    {
+        return new NewMultiArrayExpr(type, sizes);
+    }
+
+    
+    /**
+        Constructs a NewStaticInvokeExpr(ArrayType, List of Immediate) grammar chunk.
+     */
+     
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, List args)
+    {
+        return new StaticInvokeExpr(method, args);
+    }
+
+
+    /**
+        Constructs a NewSpecialInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+     */
+     
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, List args)
+    {
+        return new SpecialInvokeExpr(base, method, args);
+    }
+
+    
+    /**
+        Constructs a NewVirtualInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+     */
+     
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, List args)
+    {
+        return new VirtualInvokeExpr(base, method, args);
+    }
+
+    
+    /**
+        Constructs a NewInterfaceInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+     */
+     
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, List args)
+    {
+        return new InterfaceInvokeExpr(base, method, args);
+    }
+
+    
+    /**
+        Constructs a ThrowStmt(Immediate) grammar chunk.
+     */
+        
+    public ThrowStmt newThrowStmt(Value op)
+    {
+        return new ThrowStmt((Immediate) op);
+    }
+    
+    
+    /**
+        Constructs a ExitMonitorStmt(Immediate) grammar chunk
+     */
+        
+    public ExitMonitorStmt newExitMonitorStmt(Value op)
+    {
+        return new ExitMonitorStmt((Immediate) op);
+    }
+    
+            
+    /**
+        Constructs a EnterMonitorStmt(Immediate) grammar chunk.
+     */
+        
+    public EnterMonitorStmt newEnterMonitorStmt(Value op)
+    {
+        return new EnterMonitorStmt((Immediate) op);
+    }
+    
+    
+    /**
+        Constructs a BreakpointStmt() grammar chunk.
+     */
+        
+    public BreakpointStmt newBreakpointStmt()
+    {
+        return new BreakpointStmt();
+    }
+
+    
+    /**
+        Constructs a GotoStmt(Stmt) grammar chunk.
+     */
+        
+    public GotoStmt newGotoStmt(Unit target)
+    {
+        return new GotoStmt((Stmt) target);
+    }
+
+    
+    /**
+        Constructs a NopStmt() grammar chunk.
+     */
+        
+    public NopStmt newNopStmt()
+    {
+        return new NopStmt();
+    }
+
+            
+    /**
+        Constructs a ReturnVoidStmt() grammar chunk.
+     */
+        
+    public ReturnVoidStmt newReturnVoidStmt()
+    {
+        return new ReturnVoidStmt();
+    }
+
+
+    /**
+        Constructs a ReturnStmt(Immediate) grammar chunk.
+     */
+        
+    public ReturnStmt newReturnStmt(Value op)
+    {
+        return new ReturnStmt((Immediate) op);
+    }
+    
+    
+    /**
+        Constructs a RetStmt(Local) grammar chunk.
+     */
+        
+    public RetStmt newRetStmt(Value stmtAddress)
+    {
+        return new RetStmt((Local) stmtAddress);
+    }
+
+    
+    /**
+        Constructs a IfStmt(Condition, Stmt) grammar chunk.
+     */
+        
+    public IfStmt newIfStmt(Value condition, Unit target)
+    {
+        return new IfStmt((Condition) condition, (Stmt) target);
+    }
+
+    
+    /**
+        Constructs a IdentityStmt(Local, IdentityRef) grammar chunk.
+     */
+        
+    public IdentityStmt newIdentityStmt(Value local, Value identityRef)
+    {
+        return new IdentityStmt((Local) local, (IdentityRef) identityRef);
+    }
+
+    
+    /**
+        Constructs a AssignStmt(Variable, RValue) grammar chunk.
+     */
+        
+    public AssignStmt newAssignStmt(Value variable, Value rvalue)
+    {
+        return new AssignStmt((Variable) variable, (RValue) rvalue);
+    }
+
+    
+    /**
+        Constructs a InvokeStmt(InvokeExpr) grammar chunk.
+     */
+        
+    public InvokeStmt newInvokeStmt(Value op)
+    {
+        return new InvokeStmt((InvokeExpr) op);
+    }
+    
+    
+    /**
+        Constructs a TableSwitchStmt(Immediate, int, int, List of Unit, Stmt) grammar chunk.
+     */
+        
+    public TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, List targets, Unit defaultTarget)
+    {
+        return new TableSwitchStmt((Immediate) key, lowIndex, highIndex, targets, (Stmt) defaultTarget);
+    }
+    
+    
+    /**
+        Constructs a LookupSwitchStmt(Immediate, List of Immediate, List of Unit, Stmt) grammar chunk.
+     */
+        
+    public LookupSwitchStmt newLookupSwitchStmt(Value key, List lookupValues, List targets, Unit defaultTarget)
+    {
+        return new LookupSwitchStmt((Immediate) key, lookupValues, targets, (Stmt) defaultTarget);
+    }
+    
+    /** 
+        Constructs a Local with the given name and type.  
+    */
+    
+    public Local newLocal(String name, Type t)
+    {
+        return new Local(name, t);
+    } 
+    
+    /** 
+        Constructs a new Trap for the given exception and with the given handlers.
+    */
+    
+    public StmtTrap newStmtTrap(SootClass exception, Stmt beginStmt, Stmt endStmt, Stmt handlerStmt)
+    {
+        return new StmtTrap(exception, beginStmt, endStmt, handlerStmt);
+    }
+    
+    
+    /**
+        Constructs a StaticFieldRef(SootField) grammar chunk.
+     */
+     
+    public StaticFieldRef newStaticFieldRef(SootField f)
+    {
+        return new StaticFieldRef(f);
+    }
+
+    
+    /**
+        Constructs a ThisRef(SootClass) grammar chunk.
+     */
+     
+    public ThisRef newThisRef(SootClass c)
+    {
+        return new ThisRef(c);
+    }
+
+    
+    /**
+        Constructs a ParameterRef(SootMethod, int) grammar chunk.
+     */
+     
+    public ParameterRef newParameterRef(SootMethod m, int number)
+    {
+        return new ParameterRef(m, number);
+    }
+
+    
+    /**
+        Constructs a NextNextStmtRef() grammar chunk.
+     */
+     
+    public NextNextStmtRef newNextNextStmtRef()
+    {
+        return new NextNextStmtRef();
+    }
+
+    
+    /**
+        Constructs a InstanceFieldRef(Value, SootField) grammar chunk.
+     */
+     
+    public InstanceFieldRef newInstanceFieldRef(Value base, SootField f)
+    {
+        return new InstanceFieldRef((Local) base, f);
+    }
+
+    
+    /**
+        Constructs a CaughtExceptionRef() grammar chunk.
+     */
+     
+    public CaughtExceptionRef newCaughtExceptionRef()
+    {
+        return new CaughtExceptionRef();
+    }
+
+
+    /**
+        Constructs a ArrayRef(Local, Immediate) grammar chunk.
+     */
+     
+    public ArrayRef newArrayRef(Value base, Value index)
+    {
+        return new ArrayRef((Local) base, (Immediate) index);
+    }
+    
 }
+
+
+
+

@@ -79,7 +79,7 @@ public class StmtTrap
     StmtBox handlerStmtBox;
     List stmtBoxes;
     
-    public StmtTrap(SootClass exception, Stmt beginStmt, Stmt endStmt, Stmt handlerStmt)
+    StmtTrap(SootClass exception, Stmt beginStmt, Stmt endStmt, Stmt handlerStmt)
     {
         this.exception = exception;
         
@@ -96,17 +96,17 @@ public class StmtTrap
     
     public Stmt getBeginStmt()
     {
-        return beginStmtBox.getStmt();
+        return (Stmt) beginStmtBox.getUnit();
     }
     
     public Stmt getEndStmt()
     {
-        return endStmtBox.getStmt();
+        return (Stmt) endStmtBox.getUnit();
     }
     
     public Stmt getHandlerStmt()
     {
-        return handlerStmtBox.getStmt();
+        return (Stmt) handlerStmtBox.getUnit();
     }
     
     public StmtBox getHandlerStmtBox()
@@ -136,17 +136,17 @@ public class StmtTrap
     
     public void setBeginStmt(Stmt beginStmt)
     {
-        beginStmtBox.setStmt(beginStmt);
+        beginStmtBox.setUnit(beginStmt);
     }
     
     public void setEndStmt(Stmt endStmt)
     {
-        endStmtBox.setStmt(endStmt);
+        endStmtBox.setUnit(endStmt);
     }
     
     public void setHandlerStmt(Stmt handlerStmt)
     {
-        handlerStmtBox.setStmt(handlerStmt);
+        handlerStmtBox.setUnit(handlerStmt);
     }
     
     public void setException(SootClass exception)

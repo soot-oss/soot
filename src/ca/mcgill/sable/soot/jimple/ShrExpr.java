@@ -73,7 +73,7 @@ import ca.mcgill.sable.util.*;
 
 public class ShrExpr extends BinopExpr 
 {
-    public ShrExpr(Immediate op1, Immediate op2)
+    ShrExpr(Immediate op1, Immediate op2)
     {
         op1Box = new ImmediateBox(op1);
         op2Box = new ImmediateBox(op2);

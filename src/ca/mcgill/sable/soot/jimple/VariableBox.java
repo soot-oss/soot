@@ -71,7 +71,9 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-public class VariableBox extends ValueBox
+import ca.mcgill.sable.soot.*;
+
+public class VariableBox implements  ValueBox
 {
     Variable variable;
 

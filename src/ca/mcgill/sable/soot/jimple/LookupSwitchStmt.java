@@ -80,7 +80,7 @@ public class LookupSwitchStmt extends Stmt
 
     List stmtBoxes;
         
-    public LookupSwitchStmt(Immediate key, List lookupValues, List targets, Stmt defaultTarget)
+    LookupSwitchStmt(Immediate key, List lookupValues, List targets, Stmt defaultTarget)
     {
         this.keyBox = new ImmediateBox(key);
         this.defaultTargetBox = new StmtBox(defaultTarget);
@@ -125,12 +125,12 @@ public class LookupSwitchStmt extends Stmt
     
     public Stmt getDefaultTarget()
     {
-        return (Stmt) defaultTargetBox.getStmt();
+        return (Stmt) defaultTargetBox.getUnit();
     }
     
     public void setDefaultTarget(Stmt defaultTarget)
     {
-        defaultTargetBox.setStmt(defaultTarget);
+        defaultTargetBox.setUnit(defaultTarget);
     }
     
     public StmtBox getDefaultTargetBox()
@@ -181,7 +181,7 @@ public class LookupSwitchStmt extends Stmt
     
     public Stmt getTarget(int index)
     {
-        return (Stmt) targetBoxes[index].getStmt();
+        return (Stmt) targetBoxes[index].getUnit();
     }
     
     public StmtBox getTargetBox(int index)
@@ -191,7 +191,7 @@ public class LookupSwitchStmt extends Stmt
     
     public void setTarget(int index, Stmt target)
     {
-        targetBoxes[index].setStmt(target);
+        targetBoxes[index].setUnit(target);
     }
     
     public List getTargets()
@@ -199,7 +199,7 @@ public class LookupSwitchStmt extends Stmt
         List targets = new ArrayList();
         
         for(int i = 0; i < targetBoxes.length; i++)
-            targets.add(targetBoxes[i].getStmt());
+            targets.add(targetBoxes[i].getUnit());
             
         return targets;
     }
@@ -207,7 +207,7 @@ public class LookupSwitchStmt extends Stmt
     public void setTargets(Stmt[] targets)
     {
         for(int i = 0; i < targets.length; i++)
-            targetBoxes[i].setStmt(targets[i]);
+            targetBoxes[i].setUnit(targets[i]);
     }
     
 

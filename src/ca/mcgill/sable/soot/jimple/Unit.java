@@ -35,7 +35,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $JimpleVersion: 0.5 $
+ The reference version is: $BafVersion: 0.4 $
 
  Change History
  --------------
@@ -62,39 +62,15 @@
 
  B) Changes:
 
- - Modified on September 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   Added method canContainValue().
- 
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
  
 package ca.mcgill.sable.soot.jimple;
 
+import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.*;
 
-public class IdentityValueBox extends ValueBox
+public interface Unit
 {
-    IdentityValue identityValue;
-
-    public IdentityValueBox(IdentityValue identityValue)
-    {
-        this.identityValue = identityValue;
-    }    
-    
-    public void setValue(Value value)
-    {
-        identityValue = (IdentityValue) value;
-    }
-    
-    public Value getValue()
-    {
-        return identityValue;
-    }
-    
-    public boolean canContainValue(Value value)
-    {
-        return value instanceof IdentityValue;
-    }
-    
 }

@@ -291,10 +291,10 @@ public class JimpleBody implements Body
         {
             StmtBox box = (StmtBox) boxes[i];
 
-            if(box.getStmt() != oldLocation)
+            if(box.getUnit() != oldLocation)
                 throw new RuntimeException("Something weird's happening");
                 
-            box.setStmt(newLocation);
+            box.setUnit(newLocation);
         }
         
     }
@@ -306,7 +306,7 @@ public class JimpleBody implements Body
         while(boxIt.hasNext())
         {
             StmtBox box = (StmtBox) boxIt.next();
-            Stmt stmt = box.getStmt();
+            Stmt stmt = (Stmt) box.getUnit();
             
             stmt.getBoxesPointingToThis().remove(oldLocation);
         }

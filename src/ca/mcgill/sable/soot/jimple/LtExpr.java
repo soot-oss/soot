@@ -73,7 +73,7 @@ import ca.mcgill.sable.util.*;
 
 public class LtExpr extends BinopExpr implements Condition
 {
-    public LtExpr(Immediate op1, Immediate op2)
+    LtExpr(Immediate op1, Immediate op2)
     {
         op1Box = new ImmediateBox(op1);
         op2Box = new ImmediateBox(op2);

@@ -81,7 +81,7 @@ public class TableSwitchStmt extends Stmt
     
     List stmtBoxes;
     
-    public TableSwitchStmt(Immediate key, int lowIndex, int highIndex, List targets, Stmt defaultTarget)
+    TableSwitchStmt(Immediate key, int lowIndex, int highIndex, List targets, Stmt defaultTarget)
     {
         this.keyBox = new ImmediateBox(key);
         this.defaultTargetBox = new StmtBox(defaultTarget);
@@ -125,12 +125,12 @@ public class TableSwitchStmt extends Stmt
     
     public Stmt getDefaultTarget()
     {
-        return (Stmt) defaultTargetBox.getStmt();
+        return (Stmt) defaultTargetBox.getUnit();
     }
     
     public void setDefaultTarget(Stmt defaultTarget)
     {
-        defaultTargetBox.setStmt(defaultTarget);
+        defaultTargetBox.setUnit(defaultTarget);
     }
     
     public StmtBox getDefaultTargetBox()
@@ -178,25 +178,25 @@ public class TableSwitchStmt extends Stmt
         List targets = new ArrayList();
         
         for(int i = 0; i < targetBoxes.length; i++)
-            targets.add(targetBoxes[i].getStmt());
+            targets.add(targetBoxes[i].getUnit());
             
         return targets;
     }
     
     public Stmt getTarget(int index)
     {
-        return (Stmt) targetBoxes[index].getStmt();
+        return (Stmt) targetBoxes[index].getUnit();
     }
     
     public void setTarget(int index, Stmt target)
     {
-        targetBoxes[index].setStmt(target);
+        targetBoxes[index].setUnit(target);
     }
 
     public void setTargets(List targets)
     {
         for(int i = 0; i < targets.size(); i++)
-            targetBoxes[i].setStmt((Stmt) targets.get(i));
+            targetBoxes[i].setUnit((Stmt) targets.get(i));
     }
     
     public StmtBox getTargetBox(int index)

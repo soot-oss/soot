@@ -68,6 +68,8 @@
  
 package ca.mcgill.sable.soot.jimple;
 
+import ca.mcgill.sable.soot.*;
+
 public interface Variable extends Value
 {
 }

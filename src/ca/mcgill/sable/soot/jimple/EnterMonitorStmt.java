@@ -77,7 +77,7 @@ public class EnterMonitorStmt extends Stmt
 {
     ImmediateBox opBox;
     
-    public EnterMonitorStmt(Immediate op)
+    EnterMonitorStmt(Immediate op)
     {
         this.opBox = new ImmediateBox(op);
     }

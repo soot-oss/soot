@@ -73,7 +73,7 @@ import ca.mcgill.sable.util.*;
 
 public class GtExpr extends BinopExpr implements Condition
 {
-    public GtExpr(Immediate op1, Immediate op2)
+    GtExpr(Immediate op1, Immediate op2)
     {
         op1Box = new ImmediateBox(op1);
         op2Box = new ImmediateBox(op2);

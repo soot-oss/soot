@@ -74,14 +74,14 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ArrayRef implements RValue, Variable, Switchable
+public class ArrayRef implements ConcreteRef, RValue, Variable, Switchable
 {
     LocalBox baseBox;
     ImmediateBox indexBox; 
     
     List useBoxes;
     
-    public ArrayRef(Local base, Immediate index)
+    ArrayRef(Local base, Immediate index)
     {
         this.baseBox = new LocalBox(base);
         this.indexBox = new ImmediateBox(index);

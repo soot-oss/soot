@@ -71,7 +71,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public abstract class Stmt
+public abstract class Stmt implements Unit
 {   
     /**
      * The list of boxes is not dynamically updated as the structure changes.

@@ -73,7 +73,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public class ConditionBox extends ValueBox
+public class ConditionBox implements ValueBox
 {
     Condition condition;
 

@@ -549,7 +549,7 @@ public class Util
             return listBody.getLocal(name);            
         }
         else {
-            Local l = new Local(name, type);
+            Local l = Jimple.v().newLocal(name, type);
             listBody.addLocal(l);
                         
             return l;
@@ -563,7 +563,7 @@ public class Util
         if(listBody.declaresLocal(name))
             return listBody.getLocal(name);
         else {
-            Local l = new Local(name, 
+            Local l = Jimple.v().newLocal(name, 
                 UnknownType.v());
                 
             listBody.addLocal(l);

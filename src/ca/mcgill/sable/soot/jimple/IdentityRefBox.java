@@ -62,6 +62,9 @@
 
  B) Changes:
 
+ - Modified on September 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+   Added method canContainValue().
+ 
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
@@ -69,62 +72,29 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.util.*;
 
-public class ReturnStmt extends Stmt
-{   
-    ImmediateBox returnValueBox;
-         
-    ReturnStmt(Immediate returnValue)
+public class IdentityRefBox implements ValueBox
+{
+    IdentityRef identityValue;
+
+    public IdentityRefBox(IdentityRef identityValue)
     {
-        this.returnValueBox = new ImmediateBox(returnValue); 
+        this.identityValue = identityValue;
+    }    
+    
+    public void setValue(Value value)
+    {
+        identityValue = (IdentityRef) value;
     }
     
-    public String toString()
+    public Value getValue()
     {
-        return "return " + returnValueBox.getValue().toString();
+        return identityValue;
     }
     
-    public ImmediateBox getReturnValueBox()
+    public boolean canContainValue(Value value)
     {
-        return returnValueBox;
+        return value instanceof IdentityRef;
     }
-    
-    public void setReturnValue(Immediate returnValue)
-    {
-        returnValueBox.setValue(returnValue);
-    }
-    
-    public Immediate getReturnValue()
-    {
-        return (Immediate) returnValueBox.getValue();
-    }
-    
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-    
-    public List getUseBoxes()
-    {
-        List useBoxes = new ArrayList();
-        
-        useBoxes.add(returnValueBox);
-        useBoxes.addAll(returnValueBox.getValue().getUseBoxes());
-        
-        return useBoxes;
-    }
-    
-    public List getStmtBoxes()
-    {
-        return emptyList;
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseReturnStmt(this);
-    }
-    
     
 }
-

@@ -71,11 +71,11 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ThisRef implements IdentityValue
+public class ThisRef implements IdentityRef
 {
     SootClass SootClass;
     
-    public ThisRef(SootClass SootClass)
+    ThisRef(SootClass SootClass)
     {
         this.SootClass = SootClass;
     }

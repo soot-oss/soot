@@ -71,16 +71,14 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-public abstract class ValueBox
+import ca.mcgill.sable.soot.*;
+
+
+public interface ValueBox
 {
     public abstract void setValue(Value value);
     public abstract Value getValue();
-    
     public abstract boolean canContainValue(Value value);
     
-    public String toString()
-    {
-        return "box[" + getValue() + "]";
-    }
-    
 }
+

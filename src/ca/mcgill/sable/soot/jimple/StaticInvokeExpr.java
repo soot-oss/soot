@@ -73,7 +73,7 @@ import ca.mcgill.sable.util.*;
 
 public class StaticInvokeExpr extends InvokeExpr
 {    
-    public StaticInvokeExpr(SootMethod method, List args)
+    StaticInvokeExpr(SootMethod method, List args)
     {
         this.method = method;
         

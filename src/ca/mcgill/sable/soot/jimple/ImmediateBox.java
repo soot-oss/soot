@@ -73,7 +73,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public class ImmediateBox extends ValueBox
+public class ImmediateBox implements ValueBox
 {
     Immediate immediate;
 

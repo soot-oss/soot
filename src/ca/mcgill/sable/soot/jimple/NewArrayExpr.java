@@ -71,13 +71,13 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NewArrayExpr extends Expr
+public class NewArrayExpr implements Expr
 {
     Type baseType;
     ImmediateBox sizeBox;
     List useBoxes;
         
-    public NewArrayExpr(Type type, Immediate size)
+    NewArrayExpr(Type type, Immediate size)
     {
         this.baseType = type;
         this.sizeBox = new ImmediateBox(size);

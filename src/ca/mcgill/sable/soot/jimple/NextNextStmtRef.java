@@ -71,60 +71,29 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ReturnStmt extends Stmt
-{   
-    ImmediateBox returnValueBox;
-         
-    ReturnStmt(Immediate returnValue)
+public class NextNextStmtRef implements ConcreteRef, RValue 
+{
+    NextNextStmtRef()
     {
-        this.returnValueBox = new ImmediateBox(returnValue); 
-    }
+    }   
     
     public String toString()
     {
-        return "return " + returnValueBox.getValue().toString();
-    }
-    
-    public ImmediateBox getReturnValueBox()
-    {
-        return returnValueBox;
-    }
-    
-    public void setReturnValue(Immediate returnValue)
-    {
-        returnValueBox.setValue(returnValue);
-    }
-    
-    public Immediate getReturnValue()
-    {
-        return (Immediate) returnValueBox.getValue();
-    }
-    
-    public List getDefBoxes()
-    {
-        return emptyList;
+        return "&nextnextstmt";
     }
     
     public List getUseBoxes()
     {
-        List useBoxes = new ArrayList();
-        
-        useBoxes.add(returnValueBox);
-        useBoxes.addAll(returnValueBox.getValue().getUseBoxes());
-        
-        return useBoxes;
+        return Stmt.emptyList;
     }
     
-    public List getStmtBoxes()
+    public Type getType()
     {
-        return emptyList;
+        return StmtAddressType.v();
     }
     
     public void apply(Switch sw)
     {
-        ((StmtSwitch) sw).caseReturnStmt(this);
+        ((ValueSwitch) sw).caseNextNextStmtRef(this);
     }
-    
-    
 }
-

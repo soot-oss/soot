@@ -62,7 +62,7 @@
 
  B) Changes:
 
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on October 28, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
  
@@ -71,60 +71,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ReturnStmt extends Stmt
-{   
-    ImmediateBox returnValueBox;
-         
-    ReturnStmt(Immediate returnValue)
-    {
-        this.returnValueBox = new ImmediateBox(returnValue); 
-    }
-    
-    public String toString()
-    {
-        return "return " + returnValueBox.getValue().toString();
-    }
-    
-    public ImmediateBox getReturnValueBox()
-    {
-        return returnValueBox;
-    }
-    
-    public void setReturnValue(Immediate returnValue)
-    {
-        returnValueBox.setValue(returnValue);
-    }
-    
-    public Immediate getReturnValue()
-    {
-        return (Immediate) returnValueBox.getValue();
-    }
-    
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-    
-    public List getUseBoxes()
-    {
-        List useBoxes = new ArrayList();
-        
-        useBoxes.add(returnValueBox);
-        useBoxes.addAll(returnValueBox.getValue().getUseBoxes());
-        
-        return useBoxes;
-    }
-    
-    public List getStmtBoxes()
-    {
-        return emptyList;
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseReturnStmt(this);
-    }
-    
-    
+public interface ConcreteRef extends Ref
+{
 }
 

@@ -77,6 +77,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.*;
 
 public class ValueSwitch implements ca.mcgill.sable.util.Switch
 {
@@ -285,7 +286,7 @@ public class ValueSwitch implements ca.mcgill.sable.util.Switch
         defaultCase(v);
     }
 
-    public void caseNextNextStmtAddress(NextNextStmtAddress v)
+    public void caseNextNextStmtRef(NextNextStmtRef v)
     {
         defaultCase(v);
     }

@@ -153,7 +153,7 @@ public class StmtGraph
                             {
                                 AssignStmt as = (AssignStmt) stmt;
                                 
-                                if(as.getRightOp() instanceof NextNextStmtAddress)
+                                if(as.getRightOp() instanceof NextNextStmtRef)
                                 {
                                     Iterator succIt = stmtList.listIterator(it.nextIndex());
                                     

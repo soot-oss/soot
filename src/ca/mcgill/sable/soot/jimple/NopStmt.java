@@ -73,7 +73,7 @@ import ca.mcgill.sable.util.*;
 
 public class NopStmt extends Stmt
 {
-    public NopStmt()
+    NopStmt()
     {
     }
     

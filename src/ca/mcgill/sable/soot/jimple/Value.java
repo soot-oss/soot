@@ -35,7 +35,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $JimpleVersion: 0.5 $
+ The reference version is: $BafVersion: 0.4 $
 
  Change History
  --------------
@@ -68,12 +68,13 @@
  
 package ca.mcgill.sable.soot.jimple;
 
+import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.util.List;
 
-public interface Value      // switchable
+public interface Value
 {
     public abstract List getUseBoxes();
     public abstract Type getType();
     public abstract void apply(ca.mcgill.sable.util.Switch sw);
+
 }

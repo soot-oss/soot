@@ -73,7 +73,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public class InvokeExprBox extends ValueBox
+public class InvokeExprBox implements ValueBox
 {
     InvokeExpr invokeExpr;
 

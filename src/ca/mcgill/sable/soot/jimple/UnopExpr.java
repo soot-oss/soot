@@ -71,7 +71,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public abstract class UnopExpr extends Expr
+public abstract class UnopExpr implements Expr
 {
     ImmediateBox opBox;
      

@@ -71,12 +71,12 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NewMultiArrayExpr extends Expr
+public class NewMultiArrayExpr implements Expr
 {
     ArrayType baseType;
     ImmediateBox[] sizeBoxes;
     
-    public NewMultiArrayExpr(ArrayType type, List sizes)
+    NewMultiArrayExpr(ArrayType type, List sizes)
     {
         this.baseType = type;
         this.sizeBoxes = new ImmediateBox[sizes.size()];

@@ -71,11 +71,11 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class StaticFieldRef implements RValue, Variable
+public class StaticFieldRef implements ConcreteRef, RValue, Variable
 {
     SootField field;
     
-    public StaticFieldRef(SootField field)
+    StaticFieldRef(SootField field)
     {
         this.field = field;
     }

@@ -73,7 +73,7 @@ import ca.mcgill.sable.util.*;
 
 public class ReturnVoidStmt extends Stmt
 {    
-    public ReturnVoidStmt()
+    ReturnVoidStmt()
     {
     }
 

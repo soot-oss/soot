@@ -73,7 +73,7 @@ import ca.mcgill.sable.util.*;
 
 public class NegExpr extends UnopExpr
 {
-    public NegExpr(Immediate op)
+    NegExpr(Immediate op)
     {
         opBox = new ImmediateBox(op);
     }

@@ -74,13 +74,13 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class InstanceFieldRef implements RValue, Variable
+public class InstanceFieldRef implements ConcreteRef, RValue, Variable
 {
     SootField field;
     LocalBox baseBox;
     List useBoxes;
         
-    public InstanceFieldRef(Local base, SootField field)
+    InstanceFieldRef(Local base, SootField field)
     {
         this.baseBox = new LocalBox(base);
         this.field = field;

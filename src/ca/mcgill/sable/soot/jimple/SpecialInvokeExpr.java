@@ -74,11 +74,9 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class SpecialInvokeExpr extends InvokeExpr 
-{
-    LocalBox baseBox;
-    
-    public SpecialInvokeExpr(Local base, SootMethod method, List args)
+public class SpecialInvokeExpr extends NonStaticInvokeExpr 
+{    
+    SpecialInvokeExpr(Local base, SootMethod method, List args)
     {
         this.baseBox = new LocalBox(base);
         this.method = method;
@@ -109,46 +107,6 @@ public class SpecialInvokeExpr extends InvokeExpr
         return buffer.toString();
     }
 
-    
-    public Local getBase()
-    {
-        return (Local) baseBox.getValue();
-    }
-    
-    public LocalBox getBaseBox()
-    {
-        return baseBox;
-    }
-    
-    public void setBase(Local base)
-    {
-        baseBox.setValue(base);
-    }
-            
-    public List getUseBoxes()
-    {
-        List list = new ArrayList();
-            
-        list.add(baseBox);
-        
-        for(int i = 0; i < argBoxes.length; i++)
-            list.add(argBoxes[i]);
-    
-        // Add the boxes within the boxes
-        {        
-            list.addAll(baseBox.getValue().getUseBoxes());
-            
-            for(int i = 0; i < argBoxes.length; i++)
-                list.addAll(argBoxes[i].getValue().getUseBoxes());
-        }
-        
-        return list;
-    }    
-    
-    public Type getType()
-    {
-        return method.getReturnType();
-    }
     
     public void apply(Switch sw)
     {

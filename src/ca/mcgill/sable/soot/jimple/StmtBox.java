@@ -71,17 +71,19 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class StmtBox
+public class StmtBox implements UnitBox
 {
     private Stmt stmt;
 
     public StmtBox(Stmt stmt)
     {
-        setStmt(stmt);
+        setUnit(stmt);
     }    
     
-    public void setStmt(Stmt stmt)
+    public void setUnit(Unit unit)
     {
+        Stmt stmt = (Stmt) unit;
+        
         // Remove this from set of back pointers.        
             if(this.stmt != null)
             {
@@ -101,7 +103,7 @@ public class StmtBox
             }    
     }
     
-    public Stmt getStmt()
+    public Unit getUnit()
     {
         return stmt;
     }

@@ -73,10 +73,10 @@ import ca.mcgill.sable.util.*;
 
 public class IdentityStmt extends DefinitionStmt
 {    
-    public IdentityStmt(Local local, IdentityValue identityValue)
+    IdentityStmt(Local local, IdentityRef identityValue)
     {
         this.leftBox = new LocalBox(local);
-        this.rightBox = new IdentityValueBox(identityValue);
+        this.rightBox = new IdentityRefBox(identityValue);
         
         defBoxes = new ArrayList();
         defBoxes.add(leftBox);
@@ -93,7 +93,7 @@ public class IdentityStmt extends DefinitionStmt
         leftBox.setValue(local);
     }
     
-    public void setRightValue(IdentityValue identityValue)
+    public void setRightValue(IdentityRef identityValue)
     {
         rightBox.setValue(identityValue);
     }

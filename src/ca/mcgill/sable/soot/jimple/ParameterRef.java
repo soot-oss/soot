@@ -71,12 +71,12 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ParameterRef implements IdentityValue, Switchable
+public class ParameterRef implements IdentityRef, Switchable
 {
     int n;
     SootMethod method;
     
-    public ParameterRef(SootMethod m, int number)
+    ParameterRef(SootMethod m, int number)
     {
         this.n = number;
         this.method = m;

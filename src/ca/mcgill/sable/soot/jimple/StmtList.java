@@ -154,7 +154,7 @@ public class StmtList extends ArrayList
             while(boxIt.hasNext())
             {
                 StmtBox box = (StmtBox) boxIt.next();
-                Stmt pointed = box.getStmt();
+                Stmt pointed = (Stmt) box.getUnit();
                 
                 if(!contains(pointed))
                     throw new RuntimeException(message + "Statement no longer contained");
@@ -177,7 +177,7 @@ public class StmtList extends ArrayList
             {
                 StmtBox box = (StmtBox) it.next();
                 
-                if(box.getStmt() != s)
+                if(box.getUnit() != s)
                     throw new RuntimeException(message + "back pointer still set");
             }
         }
@@ -193,9 +193,9 @@ public class StmtList extends ArrayList
             {
                 StmtBox box = (StmtBox) boxIt.next();
                 
-                if(indexOf(box.getStmt()) == -1)
+                if(indexOf(box.getUnit()) == -1)
                 {
-                    System.out.println("looking for: " + box.getStmt());
+                    System.out.println("looking for: " + box.getUnit());
                     throw new RuntimeException(message + "[failed integrity test for: " + s + "]");
                 }
             }

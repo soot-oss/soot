@@ -78,7 +78,7 @@ public class IfStmt extends Stmt
 
     List targetBoxes;
         
-    public IfStmt(Condition condition, Stmt target)
+    IfStmt(Condition condition, Stmt target)
     {
         this.conditionBox = new ConditionBox(condition);
         this.targetBox = new StmtBox(target);
@@ -110,12 +110,12 @@ public class IfStmt extends Stmt
     
     public Stmt getTarget()
     {
-        return targetBox.getStmt();
+        return (Stmt) targetBox.getUnit();
     }
     
     public void setTarget(Stmt target)
     {
-        targetBox.setStmt(target);
+        targetBox.setUnit(target);
     }
     
     public StmtBox getTargetBox()

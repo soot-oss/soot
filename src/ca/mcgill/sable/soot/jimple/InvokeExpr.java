@@ -70,7 +70,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public abstract class InvokeExpr extends Expr
+public abstract class InvokeExpr implements Expr
 {    
     SootMethod method;
     ImmediateBox[] argBoxes;
@@ -103,5 +103,10 @@ public abstract class InvokeExpr extends Expr
     public ImmediateBox getArgBox(int index)
     {
         return argBoxes[index];
-    }        
+    }       
+       
+    public Type getType()
+    {
+        return method.getReturnType();
+    } 
 }

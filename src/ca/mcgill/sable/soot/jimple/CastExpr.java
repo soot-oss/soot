@@ -71,12 +71,12 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class CastExpr extends Expr
+public class CastExpr implements Expr
 {
     ImmediateBox opBox;
     Type type;
     
-    public CastExpr(Immediate op, Type type)
+    CastExpr(Immediate op, Type type)
     {
         this.opBox = new ImmediateBox(op);
         this.type = type;

@@ -2149,7 +2149,7 @@ class TypeResolver
 
                 right = getTypeVariable(ref.getField().getType());
             }
-            else if(r instanceof NextNextStmtAddress)
+            else if(r instanceof NextNextStmtRef)
             {
                 right = getTypeVariable(StmtAddressType.v());
             }

@@ -75,7 +75,7 @@ class ExitMonitorStmt extends Stmt
 {
     ImmediateBox opBox;
     
-    public ExitMonitorStmt(Immediate op)
+    ExitMonitorStmt(Immediate op)
     {
         this.opBox = new ImmediateBox(op);
     }

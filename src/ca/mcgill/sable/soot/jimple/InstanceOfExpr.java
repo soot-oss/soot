@@ -75,12 +75,12 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class InstanceOfExpr extends Expr
+public class InstanceOfExpr implements Expr
 {
     ImmediateBox opBox;
     Type checkType;
     
-    public InstanceOfExpr(Immediate op, Type checkType)
+    InstanceOfExpr(Immediate op, Type checkType)
     {
         this.opBox = new ImmediateBox(op);
         this.checkType = checkType;

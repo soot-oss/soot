@@ -73,7 +73,7 @@ import ca.mcgill.sable.util.*;
 
 public class BreakpointStmt extends Stmt
 {
-    public BreakpointStmt()
+    BreakpointStmt()
     {
     }
     

@@ -68,7 +68,8 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-public
-abstract class Expr implements RValue
+import ca.mcgill.sable.soot.*;
+
+public interface Expr extends Value, RValue
 {
 }

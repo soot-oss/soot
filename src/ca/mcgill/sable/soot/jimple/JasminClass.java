@@ -356,8 +356,8 @@ class JasminClass
                 {
                     StmtBox box = (StmtBox) boxIt.next();
                         
-                    if(!stmtToLabel.containsKey(box.getStmt()))
-                        stmtToLabel.put(box.getStmt(), "label" + labelCount++);
+                    if(!stmtToLabel.containsKey(box.getUnit()))
+                        stmtToLabel.put(box.getUnit(), "label" + labelCount++);
                 }
             }
         }
@@ -455,7 +455,7 @@ class JasminClass
                     if(s instanceof IdentityStmt && ((IdentityStmt) s).getLeftOp() instanceof Local)
                     {
                         Local l = (Local) ((IdentityStmt) s).getLeftOp();
-                        IdentityValue identity = (IdentityValue) ((IdentityStmt) s).getRightOp();
+                        IdentityRef identity = (IdentityRef) ((IdentityStmt) s).getRightOp();
                         
                         if(identity instanceof ThisRef)
                         {

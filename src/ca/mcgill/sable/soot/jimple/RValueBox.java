@@ -73,7 +73,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public class RValueBox extends ValueBox
+public class RValueBox implements ValueBox
 {
     RValue rvalue;
 
