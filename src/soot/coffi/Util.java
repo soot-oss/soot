@@ -338,8 +338,13 @@ public class Util
 		if(!(coffiClass.attributes[i] instanceof SourceFile_attribute))
 		    continue;
 		SourceFile_attribute attr = (SourceFile_attribute)coffiClass.attributes[i];
-		bclass.addTag(new SourceFileTag(
-		    ((CONSTANT_Utf8_info)(coffiClass.constant_pool[attr.sourcefile_index])).convert()));
+                String sourceFile = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[attr.sourcefile_index])).convert();
+
+                if( sourceFile.indexOf(' ') >= 0 ) {
+                    G.v().out.println( "Warning: Class "+className+" has invalid SourceFile attribute (will be ignored)." );
+                } else {
+                    bclass.addTag(new SourceFileTag( sourceFile ) );
+                }
 		break;
 	    }
 
