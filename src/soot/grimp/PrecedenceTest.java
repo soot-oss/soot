@@ -48,11 +48,11 @@ public class PrecedenceTest
         Precedence exprP = (Precedence) expr;
         if( subP.getPrecedence() < exprP.getPrecedence() ) return true;
         if( subP.getPrecedence() == exprP.getPrecedence() ) {
-            if( exprP instanceof SubExpr ) return true;
-            if( exprP instanceof DivExpr ) return true;
-            if( exprP instanceof CmpExpr ) return true;
-            if( exprP instanceof CmpgExpr ) return true;
-            if( exprP instanceof CmplExpr ) return true;
+            if( subP instanceof SubExpr ) return true;
+            if( subP instanceof DivExpr ) return true;
+            if( subP instanceof CmpExpr ) return true;
+            if( subP instanceof CmpgExpr ) return true;
+            if( subP instanceof CmplExpr ) return true;
         }
         return false;
     }

@@ -24,12 +24,14 @@ import soot.grimp.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
 
-public class DLengthExpr extends AbstractLengthExpr
+public class DLengthExpr extends AbstractLengthExpr implements Precedence
 {
     public DLengthExpr(Value op)
     {
         super(Grimp.v().newObjExprBox(op));
     }
+
+    public int getPrecedence() { return 860; }
       
     public Object clone() 
     {
@@ -37,13 +39,21 @@ public class DLengthExpr extends AbstractLengthExpr
     }
 
     public void toString( UnitPrinter up ) {
+        if( PrecedenceTest.needsBrackets( getOpBox(), this ) ) up.literal("(");
         getOpBox().toString(up);
+        if( PrecedenceTest.needsBrackets( getOpBox(), this ) ) up.literal(")");
         up.literal(".");
         up.literal("length");
     }
 
     public String toString()
     {
-	return ( getOpBox().getValue()).toString() + ".length"; 
+        StringBuffer b = new StringBuffer();
+        if( PrecedenceTest.needsBrackets( getOpBox(), this ) ) b.append("(");
+        b.append(getOpBox().getValue().toString());
+        if( PrecedenceTest.needsBrackets( getOpBox(), this ) ) b.append(")");
+        b.append(".length");
+
+        return b.toString();
     }
 }
