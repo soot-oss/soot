@@ -125,7 +125,7 @@ public class SourceLocator
 			String entryExtension = entryName.substring(extensionIndex);
 			if (inputExtensions.contains(entryExtension)) {
 			    entryName = entryName.substring(0, extensionIndex);
-			    entryName = entryName.replace(File.separatorChar, '.');
+			    entryName = entryName.replace('/', '.');
 			    fileNames.add(entryName);
 			}
 		    }
