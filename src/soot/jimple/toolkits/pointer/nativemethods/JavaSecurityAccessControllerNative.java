@@ -94,7 +94,9 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
 				 ReferenceVariable thisVar,
 				 ReferenceVariable returnVar,
 				 ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastObject());
+    // No longer necessary since Spark handles it itself in a more precise
+    // way.
+    //NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastObject());
   }
 
   /**
@@ -110,7 +112,6 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
 					    ReferenceVariable returnVar,
 					    ReferenceVariable params[]){
     NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastObject());
-      //    throw new NativeMethodNotSupportedException(method);
   }
 
 
@@ -127,6 +128,5 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
 					   ReferenceVariable returnVar,
 					   ReferenceVariable params[]){
     NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastObject());
-    //    throw new NativeMethodNotSupportedException(method);
   }
 }
