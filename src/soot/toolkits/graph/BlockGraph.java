@@ -152,11 +152,19 @@ public abstract class BlockGraph implements DirectedGraph
 
 
     /**
-     * A utility method that does most of the work of constructing
+     * <p>A utility method that does most of the work of constructing
      * basic blocks, once the set of block leaders has been
-     * determined.  It splits the {@link Unit}s in <code>unitGraph</code>
-     * so that each <code>Unit</code> in the passed set of block leaders
-     * is the first unit in a block.
+     * determined, and which designates the heads and tails of the graph.</p>
+     *
+     * <p><code>BlockGraph</code> provides an implementation of
+     * <code>buildBlocks()</code> which splits the {@link Unit}s in
+     * <code>unitGraph</code> so that each <code>Unit</code> in the
+     * passed set of block leaders is the first unit in a block. It
+     * defines as heads the blocks which begin with 
+     * <code>Unit</code>s which are heads in <code>unitGraph</code>,
+     * and defines as tails the blocks which end with
+     * <code>Unit</code>s which are tails in <code>unitGraph</code>.
+     * Subclasses might override this behavior.
      *
      * @param leaders Contains <code>Unit</code>s which are
      *                to be block leaders.

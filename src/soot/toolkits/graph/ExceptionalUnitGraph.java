@@ -711,13 +711,39 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 
 
     /**
+     * <p>A placeholder that overrides {@link UnitGraph#buildHeadsAndTails()}
+     * with a method which always throws an exception. The placeholder serves
+     * to indicate that <code>ExceptionalUnitGraph</code> does not use
+     * <code>buildHeadsAndTails()</code>, and to document the conditions under 
+     * which <code>ExceptionalUnitGraph considers a node to be a head or 
+     * tail.</p>
+     *
+     * <p><code>ExceptionalUnitGraph</code> defines the graph's set of
+     * heads to include the first {@link Unit} in the graph's body,
+     * together with the first <code>Unit</code> in any exception
+     * handler which might catch an exception thrown by the first
+     * <code>Unit</code> in the body (because any of those
+     * <code>Unit</code>s might be the first to successfully complete
+     * execution). <code>ExceptionalUnitGraph</code> defines the
+     * graph's set of tails to include all <code>Unit</code>s which
+     * represent some variety of return bytecode or an
+     * <code>athrow</code> bytecode whose argument might escape the
+     * method.</p>
+     */
+    protected void buildHeadsAndTails() throws IllegalStateException {
+	throw new IllegalStateException("ExceptionalUnitGraph uses buildHeadsAndTails(List) instead of buildHeadsAndTails()");
+    }
+
+
+    /**
      * Utility method, to be called only after the unitToPreds and
      * unitToSuccs maps have been built. It defines the graph's set of
      * heads to include the first {@link Unit} in the graph's body,
      * together with all the <code>Unit</code>s in
-     * <code>additionalHeads</code>.  It defines the graph's set of tails
-     * to include all <code>Unit</code>s which represent some sort of
-     * return bytecode or an athrow bytecode which may escape the method.
+     * <code>additionalHeads</code>.  It defines the graph's set of
+     * tails to include all <code>Unit</code>s which represent some
+     * sort of return bytecode or an <code>athrow</code> bytecode
+     * which may escape the method.
      */
     private void buildHeadsAndTails(Set additionalHeads) {
 	List headList = new ArrayList(additionalHeads.size() + 1);

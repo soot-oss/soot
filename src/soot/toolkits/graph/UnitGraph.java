@@ -138,12 +138,18 @@ public abstract class UnitGraph implements DirectedGraph
 
 
     /**
-     * Utility method used in the construction of {@link UnitGraph}s, to be
+     * <p>Utility method used in the construction of {@link UnitGraph}s, to be
      * called only after the unitToPreds and unitToSuccs maps have
-     * been built. It defines the graph's set of heads to include the
-     * first {@link Unit} in the graph's body, together with any other
-     * <tt>Unit</tt> which has no predecessor.  It defines the graph's
-     * set of tails to include all <tt>Unit</tt>s with no successors.
+     * been built.</p>
+     *
+     * <p><code>UnitGraph</code> provides an implementation of
+     * <code>buildHeadsAndTails()</code> which defines the graph's set
+     * of heads to include the first {@link Unit} in the graph's body,
+     * together with any other <tt>Unit</tt> which has no predecessors.
+     * It defines the graph's set of tails to include all
+     * <tt>Unit</tt>s with no successors.  Subclasses of
+     * <code>UnitGraph</code> may override this method to change the
+     * criteria for classifying a node as a head or tail.</p>
      */
     protected void buildHeadsAndTails() {
 	List tailList = new ArrayList();
