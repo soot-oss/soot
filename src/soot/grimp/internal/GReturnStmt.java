@@ -45,4 +45,10 @@ public class GReturnStmt extends JReturnStmt implements ReturnStmt
     {
         super(Grimp.v().newExprBox(returnValue));
     }
-    public Object clone() { return new RuntimeException();}}
+
+    public Object clone() 
+    {
+        return new GReturnStmt(Grimp.cloneIfNecessary(getOp()));
+    }
+    
+}

@@ -136,4 +136,17 @@ public class GNewInvokeExpr extends AbstractStaticInvokeExpr
     {
         ((ExprSwitch) sw).caseNewInvokeExpr(this);
     }
-    public Object clone() { return new RuntimeException();}}
+    
+    public Object clone() 
+    {
+        ArrayList clonedArgs = new ArrayList(getArgCount());
+
+        for(int i = 0; i < getArgCount(); i++) {
+            clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+            
+        }
+        
+        return new  GNewInvokeExpr(getBaseType(), getMethod(), clonedArgs);
+    }
+
+}

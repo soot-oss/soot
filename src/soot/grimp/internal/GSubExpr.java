@@ -45,4 +45,9 @@ public class GSubExpr extends AbstractGrimpFloatBinopExpr implements SubExpr
     public final String getSymbol() { return " - "; }
     public final int getPrecedence() { return 700; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseSubExpr(this); }
-    public Object clone() { return new RuntimeException();}}
+    
+    public Object clone() 
+    {
+        return new GSubExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
+    }
+}

@@ -43,4 +43,8 @@ public class GGeExpr extends AbstractGrimpIntBinopExpr implements GeExpr
     public final String getSymbol() { return " >= "; }
     public final int getPrecedence() { return 600; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseGeExpr(this); }
-    public Object clone() { return new RuntimeException();}}
+    public Object clone() 
+    {
+        return new GGeExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
+    }    
+}

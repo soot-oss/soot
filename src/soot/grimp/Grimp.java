@@ -488,20 +488,6 @@ public class Grimp
     }
 
     /**
-        Constructs a RetStmt(Local) grammar chunk.
-     */
-
-    public RetStmt newRetStmt(Value stmtAddress)
-    {
-        return new GRetStmt(stmtAddress);
-    }
-
-    public RetStmt newRetStmt(RetStmt s)
-    {
-        return new GRetStmt(s.getStmtAddress());
-    }
-
-    /**
         Constructs a IfStmt(Condition, Stmt) grammar chunk.
      */
 
@@ -1011,4 +997,12 @@ public class Grimp
         Map options = Scene.v().computePhaseOptions(phase, optionsString);
         return new GrimpBody(b, options);
     }
+    
+    public static Value cloneIfNecessary(Value val) 
+    {
+        if( val instanceof Local || val instanceof Constant )
+            return val;
+        else
+            return (Value) val.clone();
+    } 
 }

@@ -104,4 +104,17 @@ public class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
                         ((ToBriefString)getBase()).toBriefString(),
                         buffer.toString());
     }
-    public Object clone() { return new RuntimeException();}}
+
+    public Object clone() 
+    {
+        List argList = new ArrayList(getArgCount());
+
+        for(int i = 0; i < getArgCount(); i++) {
+            argList.add(i, Grimp.cloneIfNecessary(getArg(i)));
+        }
+            
+        return new  GInterfaceInvokeExpr(Grimp.cloneIfNecessary(getBase()), 
+            getMethod(), argList);
+    }
+
+}

@@ -45,4 +45,11 @@ public class GThrowStmt extends JThrowStmt implements ThrowStmt
     {
         super(Grimp.v().newExprBox(op));
     }
-    public Object clone() { return new RuntimeException();}}
+    
+        
+    public Object clone() 
+    {
+        return new GThrowStmt(Grimp.cloneIfNecessary(getOp()));
+    }
+
+}

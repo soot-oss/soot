@@ -42,7 +42,7 @@ import java.util.*;
 public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
     implements SpecialInvokeExpr, Precedence
 {
-    public GSpecialInvokeExpr(Local base, SootMethod method, List args)
+    public GSpecialInvokeExpr(Value base, SootMethod method, List args)
     {
         super((ExprBox)Grimp.v().newObjExprBox(base), method, 
              (ExprBox[]) new ExprBox[args.size()]);
@@ -104,4 +104,17 @@ public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
                         ((ToBriefString)getBase()).toBriefString(),
                         buffer.toString());
     }
-    public Object clone() { return new RuntimeException();}}
+    
+    public Object clone() 
+    {
+        ArrayList clonedArgs = new ArrayList(getArgCount());
+
+        for(int i = 0; i < getArgCount(); i++) {
+            clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+        }
+        
+        return new GSpecialInvokeExpr(Grimp.cloneIfNecessary(getBase()), 
+            getMethod(), clonedArgs);
+    }
+}
+ 

@@ -45,4 +45,10 @@ public class GExitMonitorStmt extends JExitMonitorStmt implements ExitMonitorStm
     {
         super(((Grimp)(Grimp.v())).newExprBox(op));
     }
-    public Object clone() { return new RuntimeException();}}
+    
+    public Object clone() 
+    {
+        return new GExitMonitorStmt(Grimp.cloneIfNecessary(getOp()));
+    }
+    
+}

@@ -74,4 +74,12 @@ public class GInstanceFieldRef extends AbstractInstanceFieldRef
     {
         return 950;
     }
-    public Object clone() { return new RuntimeException();}}
+    
+    public Object  clone() 
+    {
+        return new GInstanceFieldRef(Grimp.cloneIfNecessary(getBase()), 
+            getField());
+    }
+
+    
+}

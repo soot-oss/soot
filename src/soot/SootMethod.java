@@ -188,7 +188,7 @@ public class SootMethod extends AbstractHost
     public Body getActiveBody() 
     {
         if (declaringClass.isContextClass() || declaringClass.isPhantomClass())
-            throw new RuntimeException("cannot get active body for context or signature class!");
+            throw new RuntimeException("cannot get active body for context or phantom class!");
 
         if(!hasActiveBody())
             throw new RuntimeException("no active body present for method " + getSignature());
@@ -203,7 +203,7 @@ public class SootMethod extends AbstractHost
     public void setActiveBody(Body body)
     {
         if (declaringClass.isContextClass() || declaringClass.isPhantomClass())
-            throw new RuntimeException("cannot set active body for context or signature class!");
+            throw new RuntimeException("cannot set active body for context or phantom class!");
 
         if(!isConcrete())
             throw new RuntimeException("cannot set body for non-concrete method!");

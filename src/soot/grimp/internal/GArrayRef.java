@@ -20,7 +20,8 @@
 /*
  * Modified by the Sable Research Group and others 1997-1999.  
  * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+
+  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 
@@ -73,7 +74,24 @@ public class GArrayRef extends JArrayRef implements ArrayRef, Precedence
       
       return toString(op1, leftOp, rightOp);
     }    
-    public Object clone() { return new RuntimeException();}}
+    
+    
+    public Object clone() 
+    {
+        return new GArrayRef(Grimp.cloneIfNecessary(getBase()), Grimp.cloneIfNecessary(getIndex()));
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+
 
 
 

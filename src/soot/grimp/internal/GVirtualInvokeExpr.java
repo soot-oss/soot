@@ -105,5 +105,18 @@ public class GVirtualInvokeExpr extends AbstractVirtualInvokeExpr
                         ((ToBriefString)getBase()).toBriefString(),
                         buffer.toString());
     }
-    public Object clone() { return new RuntimeException();}}
+    
+    public Object clone() 
+    {
+        ArrayList clonedArgs = new ArrayList(getArgCount());
+
+        for(int i = 0; i < getArgCount(); i++) {
+            clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+        }
+        
+        return new  GVirtualInvokeExpr(Grimp.cloneIfNecessary(getBase()), getMethod(), 
+            clonedArgs);
+    }
+
+}
 

@@ -34,6 +34,8 @@ import soot.baf.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.baf.toolkits.base.*;
 import soot.toolkits.scalar.*;
+import soot.dava.*;
+
 import java.io.*;
 
 import java.text.*;
@@ -174,7 +176,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.23");
+            System.out.println("Soot version 1.beta.5.dev.24");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -192,7 +194,7 @@ public class Main
             System.out.println("  -b, --b                    produce .b (abbreviated .baf) files");
             System.out.println("  -B, --baf                  produce .baf code");
             System.out.println("  -j, --jimp                 produce .jimp (abbreviated .jimple) files");
-           System.out.println("  -J, --jimple               produce .jimple code");
+            System.out.println("  -J, --jimple               produce .jimple code");
             System.out.println("  -g, --grimp                produce .grimp (abbreviated .grimple) files");
             System.out.println("  -G, --grimple              produce .grimple files");
             System.out.println("  -s, --jasmin               produce .jasmin files");
@@ -268,6 +270,8 @@ public class Main
                     targetExtension = ".grimple";
                 else if(arg.equals("-c") || arg.equals("--class"))
                     targetExtension = ".class";
+                else if(arg.equals("--dava"))
+                    targetExtension = ".dava";
                 else if(arg.equals("-O") || arg.equals("--optimize"))
                     isOptimizing = true;
                 else if(arg.equals("-W") || arg.equals("--whole-optimize"))
@@ -699,6 +703,7 @@ public class Main
         boolean produceJimple = false;
         boolean produceBaf = false;
         boolean produceGrimp = false;
+        boolean produceDava = false;
         
         // Determine paths
         
@@ -709,6 +714,8 @@ public class Main
                 endResult = "jimple";
             else if(targetExtension.startsWith(".grimp"))
                 endResult = "grimp";
+            else if(targetExtension.startsWith(".dava"))
+                endResult = "dava";
             else if(targetExtension.startsWith(".baf"))
                 endResult = "baf";
             else
@@ -726,6 +733,12 @@ public class Main
             {
                 produceJimple = true; 
                 produceGrimp = true;
+            }
+            else if(endResult.equals("dava"))
+            {
+                produceJimple = true; 
+                produceGrimp = true;
+                produceDava = true;
             }
         }
             
@@ -759,6 +772,7 @@ public class Main
                         
                     if(isOptimizing)
                         Scene.v().getPack("gop").apply(m.getActiveBody());
+                        
                 }
                 else if(produceBaf)
                 {   
@@ -767,7 +781,13 @@ public class Main
                      if(isOptimizing) 
                         Scene.v().getPack("bop").apply(m.getActiveBody());
                 } 
+                
+                if(produceDava)
+                {
+                    m.setActiveBody(Dava.v().newBody(m.getActiveBody(), "db"));
+                }    
             }
+            
         }
 
         if(targetExtension.equals(".jasmin"))
@@ -782,6 +802,8 @@ public class Main
         else if(targetExtension.equals(".b"))
             c.printTo(writerOut, soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
         else if(targetExtension.equals(".baf") || targetExtension.equals(".jimple") || targetExtension.equals(".grimple"))
+            c.printTo(writerOut);
+        else if(targetExtension.equals(".dava"))
             c.printTo(writerOut);
         else if(targetExtension.equals(".grimp"))
             c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);

@@ -59,4 +59,18 @@ public class GLookupSwitchStmt extends JLookupSwitchStmt
               lookupValues, getTargetBoxesArray(targets),
               Grimp.v().newStmtBox(defaultTarget));
     }
-    public Object clone() { return new RuntimeException();}}
+
+
+    public Object clone() 
+    {
+        int lookupValueCount = getLookupValues().size();
+        List clonedLookupValues = new ArrayList(lookupValueCount);
+
+        for( int i = 0; i < lookupValueCount ;i++) {
+            clonedLookupValues.add(i, new Integer(getLookupValue(i)));
+        }
+        
+        return new GLookupSwitchStmt(Grimp.cloneIfNecessary(getKey()), clonedLookupValues, getTargets(), getDefaultTarget());
+    }
+
+}

@@ -48,4 +48,11 @@ public class GNewArrayExpr extends AbstractNewArrayExpr implements NewArrayExpr,
     }
   
   public int getPrecedence() { return 850; }
-    public Object clone() { return new RuntimeException();}}
+    
+    
+    public Object clone() 
+    {
+        return new GNewArrayExpr(getBaseType(), Grimp.cloneIfNecessary(getSize()));
+    }
+
+}

@@ -43,4 +43,10 @@ public class GInstanceOfExpr extends AbstractInstanceOfExpr implements InstanceO
     {
         super(Grimp.v().newObjExprBox(op), checkType);
     }
-    public Object clone() { return new RuntimeException();}}
+    
+    public Object clone() 
+    {
+        return new GInstanceOfExpr(Grimp.cloneIfNecessary(getOp()), getCheckType());
+    }
+}
+

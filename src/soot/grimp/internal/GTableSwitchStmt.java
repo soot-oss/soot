@@ -59,4 +59,14 @@ public class GTableSwitchStmt extends JTableSwitchStmt implements TableSwitchStm
               getTargetBoxesArray(targets), 
               Grimp.v().newStmtBox(defaultTarget));
     }
-    public Object clone() { return new RuntimeException();}}
+
+    
+    public Object clone() 
+    {
+        return new GTableSwitchStmt(Grimp.cloneIfNecessary(getKey()), getLowIndex(), getHighIndex(), 
+            getTargets(), getDefaultTarget());
+    }
+
+}
+
+

@@ -46,6 +46,11 @@ public class GTrap extends AbstractTrap implements Trap
               Grimp.v().newStmtBox(endStmt),
               Grimp.v().newStmtBox(handlerStmt));
     }
+
+    public Object clone() 
+    {
+        return new GTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
+    }
     
-    public Object clone() { return new RuntimeException();}
+
 }

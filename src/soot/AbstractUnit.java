@@ -59,15 +59,6 @@ public abstract class AbstractUnit implements Unit
     }
 
 
-
-
-    
-
-
-
-
-
-
     /**
      * The list of boxes is dynamically updated as the structure changes.
      */

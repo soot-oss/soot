@@ -49,4 +49,30 @@ public class GStaticInvokeExpr extends AbstractStaticInvokeExpr
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
     }
-    public Object clone() { return new RuntimeException();}}
+    
+    
+    public Object clone() 
+    {
+        ArrayList clonedArgs = new ArrayList(getArgCount());
+
+        for(int i = 0; i < getArgCount(); i++) {
+            clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+        }
+        
+        return new  GStaticInvokeExpr(getMethod(), clonedArgs);
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -44,4 +44,16 @@ public class GAssignStmt extends JAssignStmt implements AssignStmt
         super(Grimp.v().newVariableBox(variable),
              Grimp.v().newRValueBox(rvalue));
     }
-    public Object clone() { return new RuntimeException();}}
+    
+    public Object clone() 
+    { 
+        return new GAssignStmt(Grimp.cloneIfNecessary(getLeftOp()), 
+            Grimp.cloneIfNecessary(getRightOp()));
+    }
+}
+
+
+
+
+
+

@@ -43,4 +43,13 @@ public class GXorExpr extends AbstractGrimpIntLongBinopExpr implements XorExpr
     public final String getSymbol() { return " ^ "; }
     public final int getPrecedence() { return 450; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseXorExpr(this); }
-    public Object clone() { return new RuntimeException();}}
+
+    public Object clone() 
+    {
+        return new GXorExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
+    }
+
+
+
+}
+

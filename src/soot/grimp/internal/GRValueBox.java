@@ -49,4 +49,4 @@ public class GRValueBox extends AbstractValueBox
             value instanceof ConcreteRef ||
             value instanceof Expr;
     }
-    public Object clone() { return new RuntimeException();}}
+    public Object clone() { throw new RuntimeException();}}

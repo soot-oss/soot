@@ -49,4 +49,17 @@ public class GNewMultiArrayExpr extends AbstractNewMultiArrayExpr
         for(int i = 0; i < sizes.size(); i++)
             sizeBoxes[i] = Grimp.v().newExprBox((Value) sizes.get(i));
     }
-    public Object clone() { return new RuntimeException();}}
+    
+    public Object clone() 
+    {
+        List clonedSizes =  new ArrayList(getSizeCount());
+
+        for(int i = 0; i <  getSizeCount(); i++) {
+            clonedSizes.add(i,  Grimp.cloneIfNecessary(getSize(i)));
+        }
+                                                         
+        
+        return new GNewMultiArrayExpr(getBaseType(), clonedSizes);
+    }
+
+}

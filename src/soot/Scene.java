@@ -322,7 +322,7 @@ public class Scene extends AbstractHost
     }
 
     /**
-     * Returns a chain of the signature classes in this scene.
+     * Returns a chain of the phantom classes in this scene.
      * These classes are referred to by other classes, but cannot be loaded.
      */
     public Chain getPhantomClasses()

@@ -43,4 +43,10 @@ public class GAndExpr extends AbstractGrimpIntLongBinopExpr implements AndExpr
     public final String getSymbol() { return " & "; }
     public final int getPrecedence() { return 500; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseAndExpr(this); }
-    public Object clone() { return new RuntimeException();}}
+
+    public Object clone() 
+    {
+        return new GAndExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
+    }
+
+}
