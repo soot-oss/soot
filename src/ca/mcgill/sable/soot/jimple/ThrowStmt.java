@@ -73,24 +73,24 @@ import ca.mcgill.sable.util.*;
 
 public class ThrowStmt extends Stmt
 {
-    ImmediateBox opBox;
+    ValueBox opBox;
     
-    public ThrowStmt(Immediate op)
+    public ThrowStmt(Value op)
     {
-        this.opBox = new ImmediateBox(op);        
+        this.opBox = Jimple.v().newImmediateBox(op);        
     }
     
-    public ImmediateBox getOpBox()
+    public ValueBox getOpBox()
     {
         return opBox;
     }
     
-    public Immediate getOp()
+    public Value getOp()
     {
-        return (Immediate) opBox.getValue();
+        return opBox.getValue();
     }
     
-    public void setOp(Immediate op)
+    public void setOp(Value op)
     {
         opBox.setValue(op);
     } 
@@ -115,7 +115,7 @@ public class ThrowStmt extends Stmt
         return useBoxes;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return emptyList;
     }

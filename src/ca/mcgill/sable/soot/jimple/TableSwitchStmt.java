@@ -73,27 +73,27 @@ import ca.mcgill.sable.util.*;
 
 public class TableSwitchStmt extends Stmt
 {
-    StmtBox defaultTargetBox;
-    ImmediateBox keyBox;
+    UnitBox defaultTargetBox;
+    ValueBox keyBox;
     int lowIndex;
     int highIndex;
-    StmtBox[] targetBoxes;
+    UnitBox[] targetBoxes;
     
     List stmtBoxes;
     
-    TableSwitchStmt(Immediate key, int lowIndex, int highIndex, List targets, Stmt defaultTarget)
+    TableSwitchStmt(Value key, int lowIndex, int highIndex, List targets, Unit defaultTarget)
     {
-        this.keyBox = new ImmediateBox(key);
-        this.defaultTargetBox = new StmtBox(defaultTarget);
+        this.keyBox = Jimple.v().newImmediateBox(key);
+        this.defaultTargetBox = Jimple.v().newStmtBox(defaultTarget);
         this.lowIndex = lowIndex;
         this.highIndex = highIndex;
         
-        this.targetBoxes = new StmtBox[targets.size()];
+        this.targetBoxes = new UnitBox[targets.size()];
         
         for(int i = 0; i < targetBoxes.length; i++)
-            targetBoxes[i] = new StmtBox((Stmt) targets.get(i));
+            targetBoxes[i] = Jimple.v().newStmtBox((Stmt) targets.get(i));
             
-         // Build up stmtBoxes
+        // Build up stmtBoxes
         {    
             stmtBoxes = new ArrayList();
             
@@ -123,32 +123,32 @@ public class TableSwitchStmt extends Stmt
         return buffer.toString();
     }
     
-    public Stmt getDefaultTarget()
+    public Unit getDefaultTarget()
     {
-        return (Stmt) defaultTargetBox.getUnit();
+        return defaultTargetBox.getUnit();
     }
     
-    public void setDefaultTarget(Stmt defaultTarget)
+    public void setDefaultTarget(Unit defaultTarget)
     {
         defaultTargetBox.setUnit(defaultTarget);
     }
     
-    public StmtBox getDefaultTargetBox()
+    public UnitBox getDefaultTargetBox()
     {
         return defaultTargetBox;
     }
     
-    public Immediate getKey()
+    public Value getKey()
     {
-        return (Immediate) keyBox.getValue();
+        return keyBox.getValue();
     }    
     
-    public void setKey(Immediate key)
+    public void setKey(Value key)
     {
         keyBox.setValue(key);
     }
     
-    public ImmediateBox getKeyBox()
+    public ValueBox getKeyBox()
     {
         return keyBox;
     }
@@ -183,12 +183,12 @@ public class TableSwitchStmt extends Stmt
         return targets;
     }
     
-    public Stmt getTarget(int index)
+    public Unit getTarget(int index)
     {
-        return (Stmt) targetBoxes[index].getUnit();
+        return targetBoxes[index].getUnit();
     }
     
-    public void setTarget(int index, Stmt target)
+    public void setTarget(int index, Unit target)
     {
         targetBoxes[index].setUnit(target);
     }
@@ -199,7 +199,7 @@ public class TableSwitchStmt extends Stmt
             targetBoxes[i].setUnit((Stmt) targets.get(i));
     }
     
-    public StmtBox getTargetBox(int index)
+    public UnitBox getTargetBox(int index)
     {
         return targetBoxes[index];
     }
@@ -219,7 +219,7 @@ public class TableSwitchStmt extends Stmt
         return list;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return stmtBoxes;
     }

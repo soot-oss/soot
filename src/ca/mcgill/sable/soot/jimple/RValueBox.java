@@ -73,27 +73,18 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public class RValueBox implements ValueBox
+class RValueBox extends AbstractValueBox
 {
-    RValue rvalue;
-
-    public RValueBox(RValue rvalue)
+    RValueBox (Value value)
     {
-        this.rvalue = rvalue;
-    }
-        
-    public void setValue(Value value)
-    {
-        rvalue = (RValue) value;
-    }
-    
-    public Value getValue()
-    {
-        return (Value) rvalue;
-    }
+        setValue(value);
+    }    
     
     public boolean canContainValue(Value value)
     {
-        return value instanceof RValue;
+        return value instanceof Local || 
+            value instanceof Constant ||
+            value instanceof ConcreteRef ||
+            value instanceof Expr;
     }
 }

@@ -907,7 +907,7 @@ public class CFG {
                         int endIndex = stmtList.indexOf(lastStmt);
                         Stmt afterEndStmt = (Stmt) stmtList.get(endIndex + 1);
                         
-                        StmtTrap trap = Jimple.v().newStmtTrap(exception, firstStmt, afterEndStmt, newTarget); 
+                        Trap trap = Jimple.v().newTrap(exception, firstStmt, afterEndStmt, newTarget); 
                         listBody.addTrap(trap);    
                     }
                     
@@ -2186,7 +2186,7 @@ public class CFG {
    {
       Expr e;
       Stmt stmt;
-      RValue rvalue;
+      Value rvalue;
       
       cp_info c = constant_pool[i];
       
@@ -2260,17 +2260,17 @@ public class CFG {
         cp_info constant_pool[], 
         List statements, BasicBlock basicBlock)
    {
-      Immediate[] params;
-      Variable v1=null,v2=null,v3=null,v4=null;
+      Value[] params;
+      Value v1=null,v2=null,v3=null,v4=null;
       Local l1 = null, l2 = null, l3 = null, l4 = null;
         
       Expr e=null,rhs=null;
       BinopExpr b=null;
-      Condition co = null;
+      ConditionExpr co = null;
       
       ArrayRef a=null;
       int args;
-      RValue rvalue;
+      Value rvalue;
       
       int localIndex;
       
@@ -3671,7 +3671,7 @@ public class CFG {
             method = bclass.getMethod(methodName, parameterTypes);
             
             // build array of parameters
-                params = new Immediate[args];
+                params = new Value[args];
                 for (int j=args-1;j>=0;j--) 
                 {
                    params[j] = Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex());
@@ -3745,7 +3745,7 @@ public class CFG {
                 method = bclass.getMethod(methodName, parameterTypes);
             
             // build array of parameters
-                params = new Immediate[args];
+                params = new Value[args];
                 for (int j=args-1;j>=0;j--) 
                 {
                    params[j] = Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex());
@@ -3819,7 +3819,7 @@ public class CFG {
                 method = bclass.getMethod(methodName, parameterTypes);
             
             // build Vector of parameters
-                   params = new Immediate[args];
+                   params = new Value[args];
                 for (int j=args-1;j>=0;j--) 
                 {
                     /* System.out.println("BeforeTypeStack");
@@ -3900,7 +3900,7 @@ public class CFG {
                 method = bclass.getMethod(methodName, parameterTypes);
             
             // build Vector of parameters
-                params = new Immediate[args];
+                params = new Value[args];
                 for (int j=args-1;j>=0;j--) 
                 {
                    params[j] = Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex());

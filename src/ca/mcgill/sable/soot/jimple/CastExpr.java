@@ -73,12 +73,12 @@ import ca.mcgill.sable.util.*;
 
 public class CastExpr implements Expr
 {
-    ImmediateBox opBox;
+    ValueBox opBox;
     Type type;
     
-    CastExpr(Immediate op, Type type)
+    CastExpr(Value op, Type type)
     {
-        this.opBox = new ImmediateBox(op);
+        this.opBox = Jimple.v().newImmediateBox(op);
         this.type = type;
     }    
     
@@ -87,17 +87,17 @@ public class CastExpr implements Expr
         return "(" + type.toString() + ") " + opBox.getValue().toString();
     }
     
-    public Immediate getOp()
+    public Value getOp()
     {
-        return (Immediate) opBox.getValue();
+        return opBox.getValue();
     }
     
-    public void setOp(Immediate op)
+    public void setOp(Value op)
     {
         opBox.setValue(op);
     }
     
-    public ImmediateBox getOpBox()
+    public ValueBox getOpBox()
     {
         return opBox;
     }

@@ -131,7 +131,7 @@ class TypeResolver
         currentMethod = stmtBody.getMethod();
         if(!currentMethod.getDeclaringClass().getName().equals(lastClass))
         {
-            System.out.println();
+            // System.out.println();
             lastClass = currentMethod.getDeclaringClass().getName();
         }
         
@@ -169,7 +169,7 @@ class TypeResolver
             
 //            System.out.println();
 //            System.out.print(currentMethod.getDeclaringClass().getName() + "." + currentMethod.getName() + ":");
-            System.out.print("\t" + stmtBody.getStmtList().size());
+//            System.out.print("\t" + stmtBody.getStmtList().size());
             
             for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
             {
@@ -181,7 +181,7 @@ class TypeResolver
                     unresolved++;
                 }
             }
-            System.out.print("\t" + nodes + "\t" + unresolved + "\t" + (nodes - unresolved) + "\t" + edges);
+            // System.out.print("\t" + nodes + "\t" + unresolved + "\t" + (nodes - unresolved) + "\t" + edges);
         }
         
         System.gc();
@@ -258,7 +258,7 @@ class TypeResolver
                     unresolved++;
                 }
             }
-            System.out.print("\t" + nodes + "\t" + unresolved + "\t" + (nodes - unresolved) + "\t" + edges);
+//            System.out.print("\t" + nodes + "\t" + unresolved + "\t" + (nodes - unresolved) + "\t" + edges);
         }
 
 /**/    {
@@ -279,40 +279,40 @@ class TypeResolver
 /**/        count++;
         }
 
-/**/    System.out.print("\t" + count);
+/*      System.out.print("\t" + count); */
 /**/    }
        
 
         // NP-Complete hard case!
         if(unresolvedTypeVariables.size() != 0)
         {
-/**/        System.out.print("\t1");
+/*          System.out.print("\t1"); */
 
             resolveComplexRelations();
             if(unresolvedTypeVariables.size() != 0)
             {
-/**/            System.out.print("\t1");
+/*              System.out.print("\t1"); */
             }
             else
             {
-/**/            System.out.print("\t0");
+/*              System.out.print("\t0"); */
             }
         }
         else
         {
-/**/        System.out.print("\t0\t0");
+/*          System.out.print("\t0\t0"); */
         }
         
 
 /**/    long end = System.currentTimeMillis();
-/**/    System.out.print("\t" + (end - start));
-/**/    System.out.print("\t" + (en - st));
+/*      System.out.print("\t" + (end - start)); */
+/*      System.out.print("\t" + (en - st)); */
         } catch(TypeException e)
         {
 ///**/        System.out.print(" error=1");
         }
         
-/**/    System.out.println();
+/*      System.out.println(); */
 
         for(Iterator i = stmtBody.getLocals().iterator(); i.hasNext(); )
         {
@@ -666,18 +666,21 @@ class TypeResolver
 
         if(counter != workList2.size())
         {
-            System.out.println(currentMethod.getName() + ": counter = " + counter + ", worlist = " + workList2.size());
+            // System.out.println(currentMethod.getName() + ": counter = " + counter + ", worlist = " + workList2.size());
         for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
         {
             TypeVariable var = (TypeVariable) e.nextElement();
 
             if(var == var.ecr())
             {
+            /*
             System.out.println(
                 var.getEcrId() + ": count=" + var.count + " parents=" + var.parents + " children=" + var.children + 
                 " isArrayOf=" + ((var.isArrayOf == null) ? "" : ("" + var.isArrayOf.getEcrId())) + " isElementOf=" + var.isElementOf +
                 " type=" + ((var.getEcrTypeNode() == null) ? "" : ("" + var.getEcrTypeNode().getType()))
             );
+            */
+            
             }
         }
         }
@@ -1437,7 +1440,7 @@ class TypeResolver
                 InterfaceInvokeExpr invoke = (InterfaceInvokeExpr) ie;
 
                 SootMethod method = invoke.getMethod();
-                Immediate base = invoke.getBase();
+                Value base = invoke.getBase();
 
                 if(base instanceof Local)
                 {
@@ -1467,7 +1470,7 @@ class TypeResolver
                 SpecialInvokeExpr invoke = (SpecialInvokeExpr) ie;
 
                 SootMethod method = invoke.getMethod();
-                Immediate base = invoke.getBase();
+                Value base = invoke.getBase();
 
                 if(base instanceof Local)
                 {
@@ -1497,7 +1500,7 @@ class TypeResolver
                 VirtualInvokeExpr invoke = (VirtualInvokeExpr) ie;
 
                 SootMethod method = invoke.getMethod();
-                Immediate base = invoke.getBase();
+                Value base = invoke.getBase();
 
                 if(base instanceof Local)
                 {
@@ -1555,7 +1558,7 @@ class TypeResolver
 
         public void caseInvokeStmt(InvokeStmt stmt)
         {
-            handleInvokeExpr(stmt.getInvokeExpr());
+            handleInvokeExpr((InvokeExpr) stmt.getInvokeExpr());
         }
     
         public void caseAssignStmt(AssignStmt stmt)
@@ -1571,8 +1574,8 @@ class TypeResolver
             if(l instanceof ArrayRef)
             {
                 ArrayRef ref = (ArrayRef) l;
-                Immediate base = ref.getBase();
-                Immediate index = ref.getIndex();
+                Value base = ref.getBase();
+                Value index = ref.getIndex();
 
                 TypeVariable baseType = getTypeVariable((Local) base);
                 left = baseType.getEcrIsArrayOf();
@@ -1612,8 +1615,8 @@ class TypeResolver
             if(r instanceof ArrayRef)
             {
                 ArrayRef ref = (ArrayRef) r;
-                Immediate base = ref.getBase();
-                Immediate index = ref.getIndex();
+                Value base = ref.getBase();
+                Value index = ref.getIndex();
 
                 TypeVariable baseType = getTypeVariable((Local) base);
                 right = baseType.getEcrIsArrayOf();
@@ -2055,7 +2058,7 @@ class TypeResolver
                 else
                     right = getTypeVariable(ArrayType.v((BaseType) baseType, 1));
 
-                Immediate size = nae.getSize();
+                Value size = nae.getSize();
                 if(size instanceof Local)
                 {
                     TypeVariable var = getTypeVariable((Local) size);
@@ -2080,7 +2083,7 @@ class TypeResolver
 
                 for(int i = 0; i < nmae.getSizeCount(); i++)
                 {
-                    Immediate size = nmae.getSize(i);
+                    Value size = nmae.getSize(i);
                     if(size instanceof Local)
                     {
                         TypeVariable var = getTypeVariable((Local) size);
@@ -2208,11 +2211,11 @@ class TypeResolver
     
         public void caseIfStmt(IfStmt stmt)
         {
-            Condition cond = stmt.getCondition();
+            ConditionExpr cond = (ConditionExpr) stmt.getCondition();
 
             BinopExpr expr = (BinopExpr) cond;
-            Immediate l = expr.getOp1();
-            Immediate r = expr.getOp2();
+            Value l = expr.getOp1();
+            Value r = expr.getOp2();
 
             if(l instanceof Local)
             {
@@ -2267,7 +2270,7 @@ class TypeResolver
     
         public void caseLookupSwitchStmt(LookupSwitchStmt stmt)
         {
-            Immediate key = stmt.getKey();
+            Value key = stmt.getKey();
 
             if(key instanceof Local)
             {
@@ -2285,7 +2288,7 @@ class TypeResolver
     
         public void caseRetStmt(RetStmt stmt)
         {
-            getTypeVariable(stmt.getStmtAddress()).
+            getTypeVariable((Local) stmt.getStmtAddress()).
                 ecrAddParent(getTypeVariable(StmtAddressType.v()));
         }
     
@@ -2304,7 +2307,7 @@ class TypeResolver
     
         public void caseTableSwitchStmt(TableSwitchStmt stmt)
         {
-            Immediate key = stmt.getKey();
+            Value key = stmt.getKey();
 
             if(key instanceof Local)
             {

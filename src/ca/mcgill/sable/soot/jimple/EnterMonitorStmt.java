@@ -75,11 +75,11 @@ import ca.mcgill.sable.util.*;
 
 public class EnterMonitorStmt extends Stmt 
 {
-    ImmediateBox opBox;
+    ValueBox opBox;
     
-    EnterMonitorStmt(Immediate op)
+    EnterMonitorStmt(Value op)
     {
-        this.opBox = new ImmediateBox(op);
+        this.opBox = Jimple.v().newImmediateBox(op);
     }
     
     public String toString()
@@ -87,17 +87,17 @@ public class EnterMonitorStmt extends Stmt
         return "entermonitor " + opBox.getValue().toString();
     }
     
-    public Immediate getOp()
+    public Value getOp()
     {
-        return (Immediate) opBox.getValue();
+        return opBox.getValue();
     }
     
-    public void setOp(Immediate op)
+    public void setOp(Value op)
     {
         opBox.setValue(op);
     }
     
-    public ImmediateBox getOpBox()
+    public ValueBox getOpBox()
     {
         return opBox;
     }
@@ -117,7 +117,7 @@ public class EnterMonitorStmt extends Stmt
         return list;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return emptyList;
     }

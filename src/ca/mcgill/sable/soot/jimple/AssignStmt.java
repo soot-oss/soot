@@ -73,10 +73,10 @@ import ca.mcgill.sable.util.*;
 
 public class AssignStmt extends DefinitionStmt
 {    
-    public AssignStmt(Variable variable, RValue rvalue)
+    public AssignStmt(Value variable, Value rvalue)
     {
-        leftBox = new VariableBox(variable);
-        rightBox = new RValueBox(rvalue);
+        leftBox = Jimple.v().newVariableBox(variable);
+        rightBox = Jimple.v().newRValueBox(rvalue);
         
         defBoxes = new ArrayList();
         defBoxes.add(leftBox);
@@ -89,12 +89,12 @@ public class AssignStmt extends DefinitionStmt
         return leftBox.getValue().toString() + " = " + rightBox.getValue().toString();
     }
         
-    public void setLeftValue(Variable variable)
+    public void setLeftOp(Value variable)
     {
         leftBox.setValue(variable);
     }
     
-    public void setRightValue(RValue rvalue)
+    public void setRightOp(Value rvalue)
     {
         rightBox.setValue(rvalue);
     }

@@ -73,7 +73,7 @@ import ca.mcgill.sable.soot.*;
 public abstract class InvokeExpr implements Expr
 {    
     SootMethod method;
-    ImmediateBox[] argBoxes;
+    ValueBox[] argBoxes;
         
     public SootMethod getMethod()
     {
@@ -85,9 +85,9 @@ public abstract class InvokeExpr implements Expr
         method = m;
     }
 
-    public Immediate getArg(int index)
+    public Value getArg(int index)
     {
-        return (Immediate) argBoxes[index].getValue();
+        return argBoxes[index].getValue();
     }
 
     public int getArgCount()
@@ -95,12 +95,12 @@ public abstract class InvokeExpr implements Expr
         return argBoxes.length;
     }
         
-    public void setArg(int index, Immediate arg)
+    public void setArg(int index, Value arg)
     {
         argBoxes[index].setValue(arg);
     }
     
-    public ImmediateBox getArgBox(int index)
+    public ValueBox getArgBox(int index)
     {
         return argBoxes[index];
     }       

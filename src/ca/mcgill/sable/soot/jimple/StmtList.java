@@ -149,7 +149,7 @@ public class StmtList extends ArrayList
         while(stmtIt.hasNext())
         {
             Stmt s = (Stmt) stmtIt.next();
-            Iterator boxIt = s.getStmtBoxes().iterator();
+            Iterator boxIt = s.getUnitBoxes().iterator();
             
             while(boxIt.hasNext())
             {
@@ -187,7 +187,7 @@ public class StmtList extends ArrayList
         while(stmtIt.hasNext())
         {
             Stmt s = (Stmt) stmtIt.next();
-            Iterator boxIt = s.getStmtBoxes().iterator();
+            Iterator boxIt = s.getUnitBoxes().iterator();
             
             while(boxIt.hasNext())
             {

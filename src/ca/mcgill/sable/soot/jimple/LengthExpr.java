@@ -73,9 +73,9 @@ import ca.mcgill.sable.util.*;
 
 public class LengthExpr extends UnopExpr
 {
-    public LengthExpr(Immediate op)
+    public LengthExpr(Value op)
     {
-        opBox = new ImmediateBox(op);
+        opBox = Jimple.v().newImmediateBox(op);
     }
         
     public String toString()

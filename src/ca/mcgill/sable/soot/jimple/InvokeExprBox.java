@@ -73,27 +73,15 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public class InvokeExprBox implements ValueBox
+class InvokeExprBox extends AbstractValueBox
 {
-    InvokeExpr invokeExpr;
-
-    public InvokeExprBox(InvokeExpr invokeExpr)
+    InvokeExprBox(Value value)
     {
-        this.invokeExpr = invokeExpr;
+        setValue(value);
     }    
     
-    public void setValue(Value value)
-    {
-        invokeExpr = (InvokeExpr) value;
-    }
-    
-    public Value getValue()
-    {
-        return (Value) invokeExpr;
-    }
-
     public boolean canContainValue(Value value)
     {
         return value instanceof InvokeExpr;
-    }    
+    }
 }

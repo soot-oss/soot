@@ -77,12 +77,12 @@ import ca.mcgill.sable.util.*;
 
 public class InstanceOfExpr implements Expr
 {
-    ImmediateBox opBox;
+    ValueBox opBox;
     Type checkType;
     
-    InstanceOfExpr(Immediate op, Type checkType)
+    InstanceOfExpr(Value op, Type checkType)
     {
-        this.opBox = new ImmediateBox(op);
+        this.opBox = Jimple.v().newImmediateBox(op);
         this.checkType = checkType;
     }    
     
@@ -91,17 +91,17 @@ public class InstanceOfExpr implements Expr
         return opBox.getValue().toString() + " instanceof " + checkType.toString();
     }
     
-    public Immediate getOp()
+    public Value getOp()
     {
-        return (Immediate) opBox.getValue();
+        return opBox.getValue();
     }
     
-    public void setOp(Immediate op)
+    public void setOp(Value op)
     {
         opBox.setValue(op);
     }
     
-    public ImmediateBox getOpBox()
+    public ValueBox getOpBox()
     {
         return opBox;
     }

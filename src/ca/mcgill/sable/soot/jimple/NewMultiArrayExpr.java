@@ -74,15 +74,15 @@ import ca.mcgill.sable.util.*;
 public class NewMultiArrayExpr implements Expr
 {
     ArrayType baseType;
-    ImmediateBox[] sizeBoxes;
+    ValueBox[] sizeBoxes;
     
     NewMultiArrayExpr(ArrayType type, List sizes)
     {
         this.baseType = type;
-        this.sizeBoxes = new ImmediateBox[sizes.size()];
+        this.sizeBoxes = new ValueBox[sizes.size()];
         
         for(int i = 0; i < sizes.size(); i++)
-            sizeBoxes[i] = new ImmediateBox((Immediate) sizes.get(i));
+            sizeBoxes[i] = Jimple.v().newImmediateBox((Value) sizes.get(i));
     }
     
     public String toString()
@@ -110,7 +110,7 @@ public class NewMultiArrayExpr implements Expr
         this.baseType = baseType;
     }
     
-    public ImmediateBox getSizeBox(int index)
+    public ValueBox getSizeBox(int index)
     {
         return sizeBoxes[index];
     }
@@ -120,9 +120,9 @@ public class NewMultiArrayExpr implements Expr
         return sizeBoxes.length;
     }
         
-    public Immediate getSize(int index)
+    public Value getSize(int index)
     {
-        return (Immediate) sizeBoxes[index].getValue();
+        return sizeBoxes[index].getValue();
     }
 
     public List getSizes()
@@ -135,7 +135,7 @@ public class NewMultiArrayExpr implements Expr
         return toReturn;
     }
     
-    public void setSize(int index, Immediate size)
+    public void setSize(int index, Value size)
     {
         sizeBoxes[index].setValue(size);
     }

@@ -76,15 +76,15 @@ import ca.mcgill.sable.util.*;
 
 public class InterfaceInvokeExpr extends NonStaticInvokeExpr
 {
-    InterfaceInvokeExpr(Local base, SootMethod method, List args)
+    InterfaceInvokeExpr(Value base, SootMethod method, List args)
     {
-        this.baseBox = new LocalBox(base);
+        this.baseBox = Jimple.v().newLocalBox(base);
         this.method = method;
         
-        this.argBoxes = (ImmediateBox[]) new ImmediateBox[args.size()];
+        this.argBoxes = new ValueBox[args.size()];
         
         for(int i = 0; i < args.size(); i++)
-            this.argBoxes[i] = new ImmediateBox((Immediate) args.get(i));
+            this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
     }
     
     public String toString()

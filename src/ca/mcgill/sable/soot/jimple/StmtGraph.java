@@ -222,11 +222,11 @@ public class StmtGraph
                         
                     while(trapIt.hasNext())
                     {
-                        StmtTrap trap = (StmtTrap) trapIt.next();
+                        Trap trap = (Trap) trapIt.next();
                         
-                        Stmt beginStmt = trap.getBeginStmt();
-                        Stmt handlerStmt = trap.getHandlerStmt();
-                        Stmt endStmt = trap.getEndStmt();
+                        Stmt beginStmt = (Stmt) trap.getBeginUnit();
+                        Stmt handlerStmt = (Stmt) trap.getHandlerUnit();
+                        Stmt endStmt = (Stmt) trap.getEndUnit();
                         Iterator stmtIt = stmtList.listIterator(stmtList.indexOf(beginStmt));
                         
                         for(;;)

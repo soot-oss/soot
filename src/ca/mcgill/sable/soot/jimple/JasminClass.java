@@ -345,7 +345,7 @@ class JasminClass
         
         // Determine the stmtToLabel map
         {
-            Iterator boxIt = body.getStmtBoxes().iterator();
+            Iterator boxIt = body.getUnitBoxes().iterator();
                         
             stmtToLabel = new HashMap(stmtList.size() * 2 + 1, 0.7f);
             labelCount = 0;
@@ -368,12 +368,12 @@ class JasminClass
             
             while(trapIt.hasNext())
             {
-                StmtTrap trap = (StmtTrap) trapIt.next();
+                Trap trap = (Trap) trapIt.next();
                 
-                if(trap.getBeginStmt() != trap.getEndStmt())
+                if(trap.getBeginUnit() != trap.getEndUnit())
                     emit(".catch " + slashify(trap.getException().getName()) + " from " + 
-                        stmtToLabel.get(trap.getBeginStmt()) + " to " + stmtToLabel.get(trap.getEndStmt()) + 
-                        " using " + stmtToLabel.get(trap.getHandlerStmt())); 
+                        stmtToLabel.get(trap.getBeginUnit()) + " to " + stmtToLabel.get(trap.getEndUnit()) + 
+                        " using " + stmtToLabel.get(trap.getHandlerUnit())); 
             }
         }
              
@@ -534,8 +534,8 @@ class JasminClass
     
     void emitAssignStmt(AssignStmt stmt)
     {
-        final Variable lvalue = (Variable) stmt.getLeftOp();
-        final RValue rvalue = (RValue) stmt.getRightOp();
+        final Value lvalue = stmt.getLeftOp();
+        final Value rvalue = stmt.getRightOp();
                         
         lvalue.apply(new ValueSwitch()
         {
@@ -720,7 +720,7 @@ class JasminClass
 
     void emitIfStmt(IfStmt stmt)
     {
-        Condition cond = stmt.getCondition();
+        Value cond = stmt.getCondition();
         
         final Value op1 = ((BinopExpr) cond).getOp1();
         final Value op2 = ((BinopExpr) cond).getOp2();
@@ -1893,7 +1893,7 @@ class JasminClass
             
             public void caseNewArrayExpr(NewArrayExpr v)
             {
-                Immediate size = v.getSize();
+                Value size = v.getSize();
                 
                 emitValue(size);
                 
@@ -1910,7 +1910,7 @@ class JasminClass
                 List sizes = v.getSizes();
                 
                 for(int i = 0; i < sizes.size(); i++)
-                    emitValue((Immediate) sizes.get(i));
+                    emitValue((Value) sizes.get(i));
                 
                 emit("multianewarray " + jasminDescriptorOf(v.getBaseType()) + " " + sizes.size());
             }

@@ -69,8 +69,88 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.util.*;
 
-public interface Variable extends Value
+public class Trap
 {
+    SootClass exception;
+    UnitBox beginStmtBox;
+    UnitBox endStmtBox;
+    UnitBox handlerStmtBox;
+    List stmtBoxes;
+    
+    Trap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
+    {
+        this.exception = exception;
+        
+        this.beginStmtBox = Jimple.v().newStmtBox(beginStmt);
+        this.endStmtBox = Jimple.v().newStmtBox(endStmt);
+        this.handlerStmtBox = Jimple.v().newStmtBox(handlerStmt);
+        
+        stmtBoxes = new ArrayList();
+        stmtBoxes.add(beginStmtBox);
+        stmtBoxes.add(endStmtBox);
+        stmtBoxes.add(handlerStmtBox);
+        stmtBoxes = Collections.unmodifiableList(stmtBoxes);
+    }
+    
+    public Unit getBeginUnit()
+    {
+        return  beginStmtBox.getUnit();
+    }
+    
+    public Unit getEndUnit()
+    {
+        return endStmtBox.getUnit();
+    }
+    
+    public Unit getHandlerUnit()
+    {
+        return handlerStmtBox.getUnit();
+    }
+    
+    public UnitBox getHandlerUnitBox()
+    {
+        return beginStmtBox;
+    }
+    
+    public UnitBox getBeginUnitBox()
+    {
+        return beginStmtBox;
+    }
+    
+    public UnitBox getEndUnitBox()
+    {
+        return endStmtBox;
+    }
+     
+    public List getUnitBoxes()
+    {
+        return stmtBoxes;
+    }
+    
+    public SootClass getException()
+    {
+        return exception;
+    }
+    
+    public void setBeginUnit(Unit beginUnit)
+    {
+        beginStmtBox.setUnit(beginUnit);
+    }
+    
+    public void setEndUnit(Unit endUnit)
+    {
+        endStmtBox.setUnit(endUnit);
+    }
+    
+    public void setHandlerUnit(Unit handlerUnit)
+    {
+        handlerStmtBox.setUnit(handlerUnit);
+    }
+    
+    public void setException(SootClass exception)
+    {
+        this.exception = exception;
+    }
 }
-

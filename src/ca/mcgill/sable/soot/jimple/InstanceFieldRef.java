@@ -74,15 +74,15 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class InstanceFieldRef implements ConcreteRef, RValue, Variable
+public class InstanceFieldRef implements ConcreteRef
 {
     SootField field;
-    LocalBox baseBox;
+    ValueBox baseBox;
     List useBoxes;
         
-    InstanceFieldRef(Local base, SootField field)
+    InstanceFieldRef(Value base, SootField field)
     {
-        this.baseBox = new LocalBox(base);
+        this.baseBox = Jimple.v().newLocalBox(base);
         this.field = field;
         
         useBoxes = new ArrayList();
@@ -95,17 +95,17 @@ public class InstanceFieldRef implements ConcreteRef, RValue, Variable
         return baseBox.getValue().toString() + ".[" + field.getSignature() + "]";
     }
     
-    public Local getBase()
+    public Value getBase()
     {
         return (Local) baseBox.getValue();
     }
     
-    public LocalBox getBaseBox()
+    public ValueBox getBaseBox()
     {
         return baseBox;
     }
     
-    public void setBase(Local base)
+    public void setBase(Value base)
     {
         baseBox.setValue(base);
     }

@@ -143,7 +143,7 @@ class FutureStmt extends ca.mcgill.sable.soot.jimple.Stmt
         return myEmptyList;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return myEmptyList;
     }

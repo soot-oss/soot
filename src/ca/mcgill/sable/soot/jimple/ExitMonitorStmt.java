@@ -73,11 +73,11 @@ import ca.mcgill.sable.util.*;
 public
 class ExitMonitorStmt extends Stmt
 {
-    ImmediateBox opBox;
+    ValueBox opBox;
     
-    ExitMonitorStmt(Immediate op)
+    ExitMonitorStmt(Value op)
     {
-        this.opBox = new ImmediateBox(op);
+        this.opBox = Jimple.v().newImmediateBox(op);
     }
     
     public String toString()
@@ -85,17 +85,17 @@ class ExitMonitorStmt extends Stmt
         return "exitmonitor " + opBox.getValue().toString();
     }
     
-    public Immediate getOp()
+    public Value getOp()
     {
-        return (Immediate) opBox.getValue();
+        return (Value) opBox.getValue();
     }
     
-    public void setOp(Immediate op)
+    public void setOp(Value op)
     {
         opBox.setValue(op);
     }
     
-    public ImmediateBox getOpBox()
+    public ValueBox getOpBox()
     {
         return opBox;
     }
@@ -115,7 +115,7 @@ class ExitMonitorStmt extends Stmt
         return list;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return emptyList;
     }

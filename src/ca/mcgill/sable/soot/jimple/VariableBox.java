@@ -73,28 +73,18 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public class VariableBox implements  ValueBox
+class VariableBox extends AbstractValueBox
 {
-    Variable variable;
-
-    public VariableBox(Variable variable)
+    VariableBox(Value value)
     {
-        this.variable = variable;
+        setValue(value);
     }    
-    
-    public void setValue(Value value)
-    {
-        variable = (Variable) value;
-    }
-    
-    public Value getValue()
-    {
-        return variable;
-    }
     
     public boolean canContainValue(Value value)
     {
-        return value instanceof Variable;
+        return value instanceof Local ||
+            (value instanceof ConcreteRef && !(value instanceof 
+                NextNextStmtRef));
     }
 }
 

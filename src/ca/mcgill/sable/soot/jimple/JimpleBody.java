@@ -301,7 +301,7 @@ public class JimpleBody implements Body
     
     void eliminateBackPointersTo(Stmt oldLocation)
     {
-        Iterator boxIt = oldLocation.getStmtBoxes().iterator();
+        Iterator boxIt = oldLocation.getUnitBoxes().iterator();
         
         while(boxIt.hasNext())
         {
@@ -372,7 +372,7 @@ public class JimpleBody implements Body
         return method;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         List stmtBoxes = new ArrayList();
      
@@ -383,7 +383,7 @@ public class JimpleBody implements Body
             {
                 Stmt stmt = (Stmt) stmtIt.next();
                 
-                Iterator boxIt = stmt.getStmtBoxes().iterator();
+                Iterator boxIt = stmt.getUnitBoxes().iterator();
                 
                 while(boxIt.hasNext())
                     stmtBoxes.add(boxIt.next());
@@ -395,8 +395,8 @@ public class JimpleBody implements Body
             
             while(trapIt.hasNext())
             {
-                StmtTrap trap = (StmtTrap) trapIt.next();
-                stmtBoxes.addAll(trap.getStmtBoxes());
+                Trap trap = (Trap) trapIt.next();
+                stmtBoxes.addAll(trap.getUnitBoxes());
             }
         }
 
@@ -408,12 +408,12 @@ public class JimpleBody implements Body
         return traps;
     }
     
-    public void addTrap(StmtTrap t)
+    public void addTrap(Trap t)
     {
         traps.add(t);
     }
     
-    public void removeTrap(StmtTrap t)
+    public void removeTrap(Trap t)
     {
         traps.remove(t);
     }

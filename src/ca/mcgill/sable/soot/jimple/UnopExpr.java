@@ -73,19 +73,19 @@ import ca.mcgill.sable.util.*;
 
 public abstract class UnopExpr implements Expr
 {
-    ImmediateBox opBox;
+    ValueBox opBox;
      
-    public Immediate getOp()
+    public Value getOp()
     {
-        return (Immediate) opBox.getValue();
+        return (Value) opBox.getValue();
     }    
     
-    public void setOp(Immediate op)
+    public void setOp(Value op)
     {
         opBox.setValue(op);
     }
     
-    public ImmediateBox getOpBox()
+    public ValueBox getOpBox()
     {
         return opBox;
     }

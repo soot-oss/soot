@@ -77,10 +77,10 @@ public class StaticInvokeExpr extends InvokeExpr
     {
         this.method = method;
         
-        this.argBoxes = (ImmediateBox[]) new ImmediateBox[args.size()];
+        this.argBoxes = new ValueBox[args.size()];
         
         for(int i = 0; i < args.size(); i++)
-            this.argBoxes[i] = new ImmediateBox((Immediate) args.get(i));
+            this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
     }
     
     public String toString()

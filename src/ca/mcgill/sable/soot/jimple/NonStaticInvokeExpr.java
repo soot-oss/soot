@@ -73,24 +73,24 @@ import ca.mcgill.sable.util.*;
 
 public abstract class NonStaticInvokeExpr extends InvokeExpr
 {    
-    LocalBox baseBox;
+    ValueBox baseBox;
         
-    public Local getBase()
+    public Value getBase()
     {
-        return (Local) baseBox.getValue();
+        return baseBox.getValue();
     }
     
-    public LocalBox getBaseBox()
+    public ValueBox getBaseBox()
     {
         return baseBox;
     }
     
-    public void setBase(Local base)
+    public void setBase(Value base)
     {
         baseBox.setValue(base);
     }
     
-        public List getUseBoxes()
+    public List getUseBoxes()
     {
         List list = new ArrayList();
             

@@ -73,13 +73,13 @@ import ca.mcgill.sable.util.*;
 
 public class GotoStmt extends Stmt
 {
-    StmtBox targetBox;
+    UnitBox targetBox;
 
     List targetBoxes;
         
-    GotoStmt(Stmt target)
+    GotoStmt(Unit target)
     {
-        this.targetBox = new StmtBox(target);
+        this.targetBox = Jimple.v().newStmtBox(target);
         
         targetBoxes = new ArrayList();
         targetBoxes.add(this.targetBox);
@@ -91,17 +91,17 @@ public class GotoStmt extends Stmt
         return "goto ?";
     }
     
-    public Stmt getTarget()
+    public Unit getTarget()
     {
-        return (Stmt) targetBox.getUnit();
+        return targetBox.getUnit();
     }
     
-    public void setTarget(Stmt target)
+    public void setTarget(Unit target)
     {
         targetBox.setUnit(target);
     }
     
-    public StmtBox getTargetBox()
+    public UnitBox getTargetBox()
     {
         return targetBox;
     }
@@ -116,7 +116,7 @@ public class GotoStmt extends Stmt
         return emptyList;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return targetBoxes;
     }

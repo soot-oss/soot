@@ -73,24 +73,12 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public class LocalBox implements ValueBox
+class LocalBox extends AbstractValueBox
 {
-    Local local;
-
-    public LocalBox(Local local)
+    LocalBox(Value value)
     {
-        this.local = local;
+        setValue(value);
     }    
-    
-    public void setValue(Value value)
-    {
-        local = (Local) value;
-    }
-    
-    public Value getValue()
-    {
-        return local;
-    }
     
     public boolean canContainValue(Value value)
     {

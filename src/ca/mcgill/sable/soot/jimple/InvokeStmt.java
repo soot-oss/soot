@@ -73,11 +73,11 @@ import ca.mcgill.sable.util.*;
 
 public class InvokeStmt extends Stmt
 {
-    InvokeExprBox invokeExprBox;
+    ValueBox invokeExprBox;
     
-    InvokeStmt(InvokeExpr c)
+    InvokeStmt(Value c)
     {
-        invokeExprBox = new InvokeExprBox(c);
+        invokeExprBox = Jimple.v().newInvokeExprBox(c);
     }
     
     public String toString()
@@ -85,17 +85,17 @@ public class InvokeStmt extends Stmt
         return invokeExprBox.getValue().toString();
     }
     
-    public void setInvokeExpr(InvokeExpr invokeExpr)
+    public void setInvokeExpr(Value invokeExpr)
     {
         invokeExprBox.setValue(invokeExpr);
     }
     
-    public InvokeExpr getInvokeExpr()
+    public Value getInvokeExpr()
     {
-        return (InvokeExpr) invokeExprBox.getValue();
+        return invokeExprBox.getValue();
     }
     
-    public InvokeExprBox getInvokeExprBox()
+    public ValueBox getInvokeExprBox()
     {
         return invokeExprBox;
     }
@@ -115,7 +115,7 @@ public class InvokeStmt extends Stmt
         return list;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return emptyList;
     }

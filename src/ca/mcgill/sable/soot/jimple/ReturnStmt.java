@@ -73,11 +73,11 @@ import ca.mcgill.sable.util.*;
 
 public class ReturnStmt extends Stmt
 {   
-    ImmediateBox returnValueBox;
+    ValueBox returnValueBox;
          
-    ReturnStmt(Immediate returnValue)
+    ReturnStmt(Value returnValue)
     {
-        this.returnValueBox = new ImmediateBox(returnValue); 
+        this.returnValueBox = Jimple.v().newImmediateBox(returnValue); 
     }
     
     public String toString()
@@ -85,19 +85,19 @@ public class ReturnStmt extends Stmt
         return "return " + returnValueBox.getValue().toString();
     }
     
-    public ImmediateBox getReturnValueBox()
+    public ValueBox getReturnValueBox()
     {
         return returnValueBox;
     }
     
-    public void setReturnValue(Immediate returnValue)
+    public void setReturnValue(Value returnValue)
     {
         returnValueBox.setValue(returnValue);
     }
     
-    public Immediate getReturnValue()
+    public Value getReturnValue()
     {
-        return (Immediate) returnValueBox.getValue();
+        return returnValueBox.getValue();
     }
     
     public List getDefBoxes()
@@ -115,7 +115,7 @@ public class ReturnStmt extends Stmt
         return useBoxes;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return emptyList;
     }

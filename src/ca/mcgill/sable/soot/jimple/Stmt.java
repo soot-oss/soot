@@ -89,7 +89,7 @@ public abstract class Stmt implements Unit
      * The list of boxes is not dynamically updated as the structure changes.
      */
      
-    public abstract List getStmtBoxes();
+    public abstract List getUnitBoxes();
     
     static List emptyList = Collections.unmodifiableList(new ArrayList());
     

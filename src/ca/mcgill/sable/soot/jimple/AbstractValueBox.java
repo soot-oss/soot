@@ -62,7 +62,7 @@
 
  B) Changes:
 
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on October 29, by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
  
@@ -70,6 +70,26 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public interface RValue extends Value
+abstract class AbstractValueBox implements ValueBox
 {
+    Value value;
+    
+    public void setValue(Value value)
+    {
+        if(canContainValue(value))
+            this.value = value;
+        else
+            throw new RuntimeException("Box cannot contain given value.");
+    }
+    
+    public Value getValue()
+    {
+        return value;
+    }
+    
 }
+
+
+
+
+

@@ -73,15 +73,15 @@ import ca.mcgill.sable.util.*;
 
 public class IfStmt extends Stmt
 {
-    ConditionBox conditionBox;
-    StmtBox targetBox;
+    ValueBox conditionBox;
+    UnitBox targetBox;
 
     List targetBoxes;
         
-    IfStmt(Condition condition, Stmt target)
+    IfStmt(Value condition, Unit target)
     {
-        this.conditionBox = new ConditionBox(condition);
-        this.targetBox = new StmtBox(target);
+        this.conditionBox = Jimple.v().newConditionExprBox(condition);
+        this.targetBox = Jimple.v().newStmtBox(target);
         
         targetBoxes = new ArrayList();
         targetBoxes.add(this.targetBox);
@@ -93,17 +93,17 @@ public class IfStmt extends Stmt
         return "if " + conditionBox.getValue().toString() + " goto ?";
     }
     
-    public Condition getCondition()
+    public Value getCondition()
     {
-        return (Condition) conditionBox.getValue();
+        return conditionBox.getValue();
     }
     
-    public void setCondition(Condition condition)
+    public void setCondition(Value condition)
     {
         conditionBox.setValue(condition);
     }
     
-    public ConditionBox getConditionBox()
+    public ValueBox getConditionBox()
     {
         return conditionBox;
     }
@@ -113,12 +113,12 @@ public class IfStmt extends Stmt
         return (Stmt) targetBox.getUnit();
     }
     
-    public void setTarget(Stmt target)
+    public void setTarget(Unit target)
     {
         targetBox.setUnit(target);
     }
     
-    public StmtBox getTargetBox()
+    public UnitBox getTargetBox()
     {
         return targetBox;
     }
@@ -138,7 +138,7 @@ public class IfStmt extends Stmt
         return useBoxes;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return targetBoxes;
     }

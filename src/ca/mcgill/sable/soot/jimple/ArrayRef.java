@@ -74,17 +74,17 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ArrayRef implements ConcreteRef, RValue, Variable, Switchable
+public class ArrayRef implements ConcreteRef, Switchable
 {
-    LocalBox baseBox;
-    ImmediateBox indexBox; 
+    ValueBox baseBox;
+    ValueBox indexBox; 
     
     List useBoxes;
     
-    ArrayRef(Local base, Immediate index)
+    ArrayRef(Value base, Value index)
     {
-        this.baseBox = new LocalBox(base);
-        this.indexBox = new ImmediateBox(index);
+        this.baseBox = Jimple.v().newLocalBox(base);
+        this.indexBox = Jimple.v().newImmediateBox(index);
         
         useBoxes = new ArrayList();
         useBoxes.add(baseBox);
@@ -97,9 +97,9 @@ public class ArrayRef implements ConcreteRef, RValue, Variable, Switchable
         return baseBox.getValue().toString() + "[" + indexBox.getValue().toString() + "]";
     }
     
-    public Local getBase()
+    public Value getBase()
     {
-        return (Local) baseBox.getValue();
+        return baseBox.getValue();
     }
     
     public void setBase(Local base)
@@ -107,22 +107,22 @@ public class ArrayRef implements ConcreteRef, RValue, Variable, Switchable
         baseBox.setValue(base);
     }
     
-    public LocalBox getBaseBox()
+    public ValueBox getBaseBox()
     {
         return baseBox;
     }
     
-    public Immediate getIndex()
+    public Value getIndex()
     {
-        return (Immediate) indexBox.getValue();
+        return indexBox.getValue();
     } 
     
-    public void setIndex(Immediate index)
+    public void setIndex(Value index)
     {
         indexBox.setValue(index);
     }
     
-    public ImmediateBox getIndexBox()
+    public ValueBox getIndexBox()
     {
         return indexBox;
     }

@@ -73,12 +73,12 @@ import ca.mcgill.sable.util.*;
 
 public class RetStmt extends Stmt
 {
-    LocalBox stmtAddressBox;
+    ValueBox stmtAddressBox;
     List useBoxes;
     
-    RetStmt(Local stmtAddress)
+    RetStmt(Value stmtAddress)
     {
-        stmtAddressBox = new LocalBox(stmtAddress);
+        stmtAddressBox = Jimple.v().newLocalBox(stmtAddress);
         
         useBoxes = new ArrayList();
         
@@ -91,17 +91,17 @@ public class RetStmt extends Stmt
         return "ret " + stmtAddressBox.getValue().toString();
     }
     
-    public Local getStmtAddress()
+    public Value getStmtAddress()
     {
-        return (Local) stmtAddressBox.getValue();
+        return stmtAddressBox.getValue();
     }   
     
-    public LocalBox getStmtAddressBox()
+    public ValueBox getStmtAddressBox()
     {
         return stmtAddressBox;
     }
     
-    public void setStmtAddress(Local stmtAddress)
+    public void setStmtAddress(Value stmtAddress)
     {
         stmtAddressBox.setValue(stmtAddress);
     }
@@ -117,7 +117,7 @@ public class RetStmt extends Stmt
         return useBoxes;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return emptyList;
     }

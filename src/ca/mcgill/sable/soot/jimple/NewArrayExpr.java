@@ -74,13 +74,13 @@ import ca.mcgill.sable.util.*;
 public class NewArrayExpr implements Expr
 {
     Type baseType;
-    ImmediateBox sizeBox;
+    ValueBox sizeBox;
     List useBoxes;
         
-    NewArrayExpr(Type type, Immediate size)
+    NewArrayExpr(Type type, Value size)
     {
         this.baseType = type;
-        this.sizeBox = new ImmediateBox(size);
+        this.sizeBox = Jimple.v().newImmediateBox(size);
         
         useBoxes = new ArrayList();
         useBoxes.add(sizeBox);
@@ -107,17 +107,17 @@ public class NewArrayExpr implements Expr
         baseType = type;
     }
     
-    public ImmediateBox getSizeBox()
+    public ValueBox getSizeBox()
     {
         return sizeBox;
     }
     
-    public Immediate getSize()
+    public Value getSize()
     {
-        return (Immediate) sizeBox.getValue();
+        return sizeBox.getValue();
     }
     
-    public void setSize(Immediate size)
+    public void setSize(Value size)
     {
         sizeBox.setValue(size);
     }

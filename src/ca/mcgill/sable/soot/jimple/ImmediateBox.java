@@ -73,27 +73,18 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public class ImmediateBox implements ValueBox
+class ImmediateBox extends AbstractValueBox
 {
-    Immediate immediate;
-
-    public ImmediateBox(Immediate immediate)
+    ImmediateBox(Value value)
     {
-        this.immediate = immediate;
+        setValue(value);
     }    
     
-    public void setValue(Value value)
-    {
-        immediate = (Immediate) value;
-    }
-
     public boolean canContainValue(Value value)
     {
-        return value instanceof Immediate;
-    }
-        
-    public Value getValue()
-    {
-        return (Value) immediate;
+        return value instanceof Local ||
+            value instanceof Constant;
     }
 }
+
+

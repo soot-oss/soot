@@ -71,11 +71,11 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class StmtBox implements UnitBox
+class StmtBox implements UnitBox
 {
     private Stmt stmt;
 
-    public StmtBox(Stmt stmt)
+    StmtBox(Stmt stmt)
     {
         setUnit(stmt);
     }    

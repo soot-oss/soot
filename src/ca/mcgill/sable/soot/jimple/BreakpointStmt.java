@@ -92,7 +92,7 @@ public class BreakpointStmt extends Stmt
         return emptyList;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return emptyList;
     }

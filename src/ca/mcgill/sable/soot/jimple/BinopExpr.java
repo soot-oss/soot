@@ -73,35 +73,35 @@ import ca.mcgill.sable.util.*;
 
 public abstract class BinopExpr implements Expr
 {
-    ImmediateBox op1Box;
-    ImmediateBox op2Box;
+    ValueBox op1Box;
+    ValueBox op2Box;
         
-    public Immediate getOp1()
+    public Value getOp1()
     {
-        return (Immediate) op1Box.getValue();
+        return op1Box.getValue();
     }
     
-    public Immediate getOp2()
+    public Value getOp2()
     {
-        return (Immediate) op2Box.getValue();
+        return op2Box.getValue();
     }
     
-    public ImmediateBox getOp1Box()
+    public ValueBox getOp1Box()
     {
         return op1Box;
     }
     
-    public ImmediateBox getOp2Box()
+    public ValueBox getOp2Box()
     {
         return op2Box;
     }
     
-    public void setOp1(Immediate op1)
+    public void setOp1(Value op1)
     {
         op1Box.setValue(op1);
     }
     
-    public void setOp2(Immediate op2)
+    public void setOp2(Value op2)
     {
         op2Box.setValue(op2);
     }

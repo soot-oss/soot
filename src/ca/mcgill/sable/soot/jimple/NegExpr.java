@@ -73,9 +73,9 @@ import ca.mcgill.sable.util.*;
 
 public class NegExpr extends UnopExpr
 {
-    NegExpr(Immediate op)
+    NegExpr(Value op)
     {
-        opBox = new ImmediateBox(op);
+        opBox = Jimple.v().newImmediateBox(op);
     }
     
     public String toString()

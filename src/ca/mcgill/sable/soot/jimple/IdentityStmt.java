@@ -73,10 +73,10 @@ import ca.mcgill.sable.util.*;
 
 public class IdentityStmt extends DefinitionStmt
 {    
-    IdentityStmt(Local local, IdentityRef identityValue)
+    IdentityStmt(Value local, Value identityValue)
     {
-        this.leftBox = new LocalBox(local);
-        this.rightBox = new IdentityRefBox(identityValue);
+        this.leftBox = Jimple.v().newLocalBox(local);
+        this.rightBox = Jimple.v().newIdentityRefBox(identityValue);
         
         defBoxes = new ArrayList();
         defBoxes.add(leftBox);
@@ -88,14 +88,14 @@ public class IdentityStmt extends DefinitionStmt
         return leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
     }
     
-    public void setLeftValue(Local local)
+    public void setLeftOp(Value local)
     {
         leftBox.setValue(local);
     }
     
-    public void setRightValue(IdentityRef identityValue)
+    public void setRightOp(Value identityRef)
     {
-        rightBox.setValue(identityValue);
+        rightBox.setValue(identityRef);
     }
     
     public void apply(Switch sw)

@@ -71,7 +71,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class Local implements Value, Immediate, RValue, Variable
+public class Local implements Value
 {
     String name;
     Type type;

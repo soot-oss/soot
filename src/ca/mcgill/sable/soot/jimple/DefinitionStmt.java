@@ -114,7 +114,7 @@ public abstract class DefinitionStmt extends Stmt
         return list;
     }
     
-    public List getStmtBoxes()
+    public List getUnitBoxes()
     {
         return emptyList;
     }

@@ -89,6 +89,16 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.io.*;
 
+/**
+    The Jimple class contains all the constructors for the components of the Jimple
+    grammar for the Jimple body.
+    
+    Immediate -> Local | Constant <br>
+    RValue -> Local | Constant | ConcreteRef | Expr<br>
+    Variable -> Local | ArrayRef | InstanceFieldRef | StaticFieldRef <br>
+ */
+ 
+
 public class Jimple implements BodyRepresentation
 {
     private static Jimple jimpleRepresentation = new Jimple();
@@ -131,7 +141,7 @@ public class Jimple implements BodyRepresentation
         
         // Create statement name table
         {
-            Iterator boxIt = stmtBody.getStmtBoxes().iterator();
+            Iterator boxIt = stmtBody.getUnitBoxes().iterator();
             
             Set labelStmts = new HashSet();
             
@@ -211,11 +221,11 @@ public class Jimple implements BodyRepresentation
                 
             while(trapIt.hasNext())
             {
-                StmtTrap trap = (StmtTrap) trapIt.next();
+                Trap trap = (Trap) trapIt.next();
                 
                 out.println("        .catch " + trap.getException().getName() + " from " +
-                    stmtToName.get(trap.getBeginStmt()) + " to " + stmtToName.get(trap.getEndStmt()) +
-                    " with " + stmtToName.get(trap.getHandlerStmt()));
+                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
+                    " with " + stmtToName.get(trap.getHandlerUnit()));
             }            
         }
     }
@@ -383,11 +393,11 @@ public class Jimple implements BodyRepresentation
             
             while(trapIt.hasNext())
             {
-                StmtTrap trap = (StmtTrap) trapIt.next();
+                Trap trap = (Trap) trapIt.next();
                 
                 out.println(".catch " + trap.getException().getName() + " from " +
-                    stmtToName.get(trap.getBeginStmt()) + " to " + stmtToName.get(trap.getEndStmt()) +
-                    " with " + stmtToName.get(trap.getHandlerStmt()));
+                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
+                    " with " + stmtToName.get(trap.getHandlerUnit()));
             }            
         }
     }
@@ -1624,7 +1634,7 @@ public class Jimple implements BodyRepresentation
      
     public XorExpr newXorExpr(Value op1, Value op2)
     {
-        return new XorExpr((Immediate) op1, (Immediate) op2);
+        return new XorExpr(op1, op2);
     }
     
     
@@ -1634,7 +1644,7 @@ public class Jimple implements BodyRepresentation
      
     public UshrExpr newUshrExpr(Value op1, Value op2)
     {
-        return new UshrExpr((Immediate) op1, (Immediate) op2);
+        return new UshrExpr(op1, op2);
     }
      
     
@@ -1644,7 +1654,7 @@ public class Jimple implements BodyRepresentation
      
     public SubExpr newSubExpr(Value op1, Value op2)
     {
-        return new SubExpr((Immediate) op1, (Immediate) op2);
+        return new SubExpr(op1, op2);
     }
     
     
@@ -1654,7 +1664,7 @@ public class Jimple implements BodyRepresentation
      
     public ShrExpr newShrExpr(Value op1, Value op2)
     {
-        return new ShrExpr((Immediate) op1, (Immediate) op2);
+        return new ShrExpr(op1, op2);
     }
     
     
@@ -1664,7 +1674,7 @@ public class Jimple implements BodyRepresentation
      
     public ShlExpr newShlExpr(Value op1, Value op2)
     {
-        return new ShlExpr((Immediate) op1, (Immediate) op2);
+        return new ShlExpr(op1, op2);
     }
     
     
@@ -1674,7 +1684,7 @@ public class Jimple implements BodyRepresentation
      
     public RemExpr newRemExpr(Value op1, Value op2)
     {
-        return new RemExpr((Immediate) op1, (Immediate) op2);
+        return new RemExpr(op1, op2);
     }
     
     
@@ -1684,7 +1694,7 @@ public class Jimple implements BodyRepresentation
      
     public OrExpr newOrExpr(Value op1, Value op2)
     {
-        return new OrExpr((Immediate) op1, (Immediate) op2);
+        return new OrExpr(op1, op2);
     }
     
     
@@ -1694,7 +1704,7 @@ public class Jimple implements BodyRepresentation
      
     public NeExpr newNeExpr(Value op1, Value op2)
     {
-        return new NeExpr((Immediate) op1, (Immediate) op2);
+        return new NeExpr(op1, op2);
     }
     
     
@@ -1704,7 +1714,7 @@ public class Jimple implements BodyRepresentation
      
     public MulExpr newMulExpr(Value op1, Value op2)
     {
-        return new MulExpr((Immediate) op1, (Immediate) op2);
+        return new MulExpr(op1, op2);
     }
     
     
@@ -1714,7 +1724,7 @@ public class Jimple implements BodyRepresentation
      
     public LeExpr newLeExpr(Value op1, Value op2)
     {
-        return new LeExpr((Immediate) op1, (Immediate) op2);
+        return new LeExpr(op1, op2);
     }
     
     
@@ -1724,7 +1734,7 @@ public class Jimple implements BodyRepresentation
      
     public GeExpr newGeExpr(Value op1, Value op2)
     {
-        return new GeExpr((Immediate) op1, (Immediate) op2);
+        return new GeExpr(op1, op2);
     }
     
     
@@ -1734,7 +1744,7 @@ public class Jimple implements BodyRepresentation
      
     public EqExpr newEqExpr(Value op1, Value op2)
     {
-        return new EqExpr((Immediate) op1, (Immediate) op2);
+        return new EqExpr(op1, op2);
     }
     
     /**
@@ -1743,7 +1753,7 @@ public class Jimple implements BodyRepresentation
      
     public DivExpr newDivExpr(Value op1, Value op2)
     {
-        return new DivExpr((Immediate) op1, (Immediate) op2);
+        return new DivExpr(op1, op2);
     }
     
     
@@ -1753,7 +1763,7 @@ public class Jimple implements BodyRepresentation
      
     public CmplExpr newCmplExpr(Value op1, Value op2)
     {
-        return new CmplExpr((Immediate) op1, (Immediate) op2);
+        return new CmplExpr(op1, op2);
     }
     
     
@@ -1763,7 +1773,7 @@ public class Jimple implements BodyRepresentation
      
     public CmpgExpr newCmpgExpr(Value op1, Value op2)
     {
-        return new CmpgExpr((Immediate) op1, (Immediate) op2);
+        return new CmpgExpr(op1, op2);
     }
     
     
@@ -1773,7 +1783,7 @@ public class Jimple implements BodyRepresentation
      
     public CmpExpr newCmpExpr(Value op1, Value op2)
     {
-        return new CmpExpr((Immediate) op1, (Immediate) op2);
+        return new CmpExpr(op1, op2);
     }
     
         
@@ -1783,7 +1793,7 @@ public class Jimple implements BodyRepresentation
      
     public GtExpr newGtExpr(Value op1, Value op2)
     {
-        return new GtExpr((Immediate) op1, (Immediate) op2);
+        return new GtExpr(op1, op2);
     }
     
     
@@ -1793,7 +1803,7 @@ public class Jimple implements BodyRepresentation
      
     public LtExpr newLtExpr(Value op1, Value op2)
     {
-        return new LtExpr((Immediate) op1, (Immediate) op2);
+        return new LtExpr(op1, op2);
     }
     
     /**
@@ -1802,7 +1812,7 @@ public class Jimple implements BodyRepresentation
      
     public AddExpr newAddExpr(Value op1, Value op2)
     {
-        return new AddExpr((Immediate) op1, (Immediate) op2);
+        return new AddExpr(op1, op2);
     }
     
     
@@ -1812,7 +1822,7 @@ public class Jimple implements BodyRepresentation
      
     public AndExpr newAndExpr(Value op1, Value op2)
     {
-        return new AndExpr((Immediate) op1, (Immediate) op2);
+        return new AndExpr(op1, op2);
     }
     
     
@@ -1822,7 +1832,7 @@ public class Jimple implements BodyRepresentation
      
     public NegExpr newNegExpr(Value op)
     {
-        return new NegExpr((Immediate) op);
+        return new NegExpr(op);
     }
     
     
@@ -1832,7 +1842,7 @@ public class Jimple implements BodyRepresentation
      
     public LengthExpr newLengthExpr(Value op)
     {
-        return new LengthExpr((Immediate) op);
+        return new LengthExpr(op);
     }
     
     
@@ -1842,7 +1852,7 @@ public class Jimple implements BodyRepresentation
      
     public CastExpr newCastExpr(Value op1, Type t)
     {
-        return new CastExpr((Immediate) op1, t);
+        return new CastExpr(op1, t);
     }
     
     /**
@@ -1852,7 +1862,7 @@ public class Jimple implements BodyRepresentation
      
     public InstanceOfExpr newInstanceOfExpr(Value op1, Type t)
     {
-        return new InstanceOfExpr((Immediate) op1, t);
+        return new InstanceOfExpr(op1, t);
     }
     
     
@@ -1872,7 +1882,7 @@ public class Jimple implements BodyRepresentation
      
     public NewArrayExpr newNewArrayExpr(Type type, Value size)
     {
-        return new NewArrayExpr(type, (Immediate) size);
+        return new NewArrayExpr(type, size);
     }
 
     /**
@@ -1931,7 +1941,7 @@ public class Jimple implements BodyRepresentation
         
     public ThrowStmt newThrowStmt(Value op)
     {
-        return new ThrowStmt((Immediate) op);
+        return new ThrowStmt(op);
     }
     
     
@@ -1941,7 +1951,7 @@ public class Jimple implements BodyRepresentation
         
     public ExitMonitorStmt newExitMonitorStmt(Value op)
     {
-        return new ExitMonitorStmt((Immediate) op);
+        return new ExitMonitorStmt(op);
     }
     
             
@@ -1951,7 +1961,7 @@ public class Jimple implements BodyRepresentation
         
     public EnterMonitorStmt newEnterMonitorStmt(Value op)
     {
-        return new EnterMonitorStmt((Immediate) op);
+        return new EnterMonitorStmt(op);
     }
     
     
@@ -1971,7 +1981,7 @@ public class Jimple implements BodyRepresentation
         
     public GotoStmt newGotoStmt(Unit target)
     {
-        return new GotoStmt((Stmt) target);
+        return new GotoStmt(target);
     }
 
     
@@ -2001,7 +2011,7 @@ public class Jimple implements BodyRepresentation
         
     public ReturnStmt newReturnStmt(Value op)
     {
-        return new ReturnStmt((Immediate) op);
+        return new ReturnStmt(op);
     }
     
     
@@ -2011,7 +2021,7 @@ public class Jimple implements BodyRepresentation
         
     public RetStmt newRetStmt(Value stmtAddress)
     {
-        return new RetStmt((Local) stmtAddress);
+        return new RetStmt(stmtAddress);
     }
 
     
@@ -2021,7 +2031,7 @@ public class Jimple implements BodyRepresentation
         
     public IfStmt newIfStmt(Value condition, Unit target)
     {
-        return new IfStmt((Condition) condition, (Stmt) target);
+        return new IfStmt(condition, target);
     }
 
     
@@ -2031,7 +2041,7 @@ public class Jimple implements BodyRepresentation
         
     public IdentityStmt newIdentityStmt(Value local, Value identityRef)
     {
-        return new IdentityStmt((Local) local, (IdentityRef) identityRef);
+        return new IdentityStmt(local, identityRef);
     }
 
     
@@ -2041,7 +2051,7 @@ public class Jimple implements BodyRepresentation
         
     public AssignStmt newAssignStmt(Value variable, Value rvalue)
     {
-        return new AssignStmt((Variable) variable, (RValue) rvalue);
+        return new AssignStmt(variable, rvalue);
     }
 
     
@@ -2051,7 +2061,7 @@ public class Jimple implements BodyRepresentation
         
     public InvokeStmt newInvokeStmt(Value op)
     {
-        return new InvokeStmt((InvokeExpr) op);
+        return new InvokeStmt(op);
     }
     
     
@@ -2061,7 +2071,7 @@ public class Jimple implements BodyRepresentation
         
     public TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, List targets, Unit defaultTarget)
     {
-        return new TableSwitchStmt((Immediate) key, lowIndex, highIndex, targets, (Stmt) defaultTarget);
+        return new TableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
     }
     
     
@@ -2071,7 +2081,7 @@ public class Jimple implements BodyRepresentation
         
     public LookupSwitchStmt newLookupSwitchStmt(Value key, List lookupValues, List targets, Unit defaultTarget)
     {
-        return new LookupSwitchStmt((Immediate) key, lookupValues, targets, (Stmt) defaultTarget);
+        return new LookupSwitchStmt(key, lookupValues, targets, defaultTarget);
     }
     
     /** 
@@ -2084,12 +2094,12 @@ public class Jimple implements BodyRepresentation
     } 
     
     /** 
-        Constructs a new Trap for the given exception and with the given handlers.
+        Constructs a new Trap for the given exception on the given Stmt range with the given Stmt handler.
     */
     
-    public StmtTrap newStmtTrap(SootClass exception, Stmt beginStmt, Stmt endStmt, Stmt handlerStmt)
+    public Trap newTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
     {
-        return new StmtTrap(exception, beginStmt, endStmt, handlerStmt);
+        return new Trap(exception, beginStmt, endStmt, handlerStmt);
     }
     
     
@@ -2139,7 +2149,7 @@ public class Jimple implements BodyRepresentation
      
     public InstanceFieldRef newInstanceFieldRef(Value base, SootField f)
     {
-        return new InstanceFieldRef((Local) base, f);
+        return new InstanceFieldRef(base, f);
     }
 
     
@@ -2159,11 +2169,49 @@ public class Jimple implements BodyRepresentation
      
     public ArrayRef newArrayRef(Value base, Value index)
     {
-        return new ArrayRef((Local) base, (Immediate) index);
+        return new ArrayRef(base, index);
     }
     
-}
+    public ValueBox newVariableBox(Value value)
+    {
+        return new VariableBox(value);
+    }
 
+    public ValueBox newLocalBox(Value value)
+    {
+        return new LocalBox(value);
+    }
+    
+    public ValueBox newRValueBox(Value value)
+    {
+        return new RValueBox(value);
+    }
+    
+    public ValueBox newImmediateBox(Value value)
+    {
+        return new ImmediateBox(value);
+    }
+    
+    public ValueBox newIdentityRefBox(Value value)
+    {
+        return new IdentityRefBox(value);
+    }
+    
+    public ValueBox newConditionExprBox(Value value)
+    {
+        return new ConditionExprBox(value);
+    }
+    
+    public ValueBox newInvokeExprBox(Value value)
+    {
+        return new InvokeExprBox(value);
+    }
+
+    public UnitBox newStmtBox(Unit unit)
+    {
+        return new StmtBox((Stmt) unit);
+    }    
+}
 
 
 

@@ -84,7 +84,7 @@ public class SpecialInvokeExpr extends NonStaticInvokeExpr
         this.argBoxes = (ImmediateBox[]) new ImmediateBox[args.size()];
         
         for(int i = 0; i < args.size(); i++)
-            this.argBoxes[i] = new ImmediateBox((Immediate) args.get(i));
+            this.argBoxes[i] = new ImmediateBox((Value) args.get(i));
     }
     
     public String toString()

@@ -71,12 +71,12 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class LtExpr extends BinopExpr implements Condition
+public class LtExpr extends BinopExpr implements ConditionExpr
 {
-    LtExpr(Immediate op1, Immediate op2)
+    LtExpr(Value op1, Value op2)
     {
-        op1Box = new ImmediateBox(op1);
-        op2Box = new ImmediateBox(op2);
+        op1Box = Jimple.v().newImmediateBox(op1);
+        op2Box = Jimple.v().newImmediateBox(op2);
     }
     
     public String toString()
