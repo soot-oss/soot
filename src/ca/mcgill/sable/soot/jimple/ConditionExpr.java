@@ -3,10 +3,6 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
- * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
- * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
- * rights reserved.                                                  *
- *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -65,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on February 12, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Made this class extend BinopExpr.
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -78,6 +77,6 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public interface ConditionExpr extends Expr
+public interface ConditionExpr extends BinopExpr
 {
 }

@@ -3,10 +3,6 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
- * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
- * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
- * rights reserved.                                                  *
- *                                                                   *
  * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
  * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
  *                                                                   *

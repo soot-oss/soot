@@ -185,7 +185,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.3.dev.3");
+            System.out.println("Jimple version 1.beta.3.dev.4");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -483,7 +483,7 @@ public class Main
     private static void handleClass(SootClass c, String postFix, PrintWriter writerOut, int buildBodyOptions)
     {
         if(postFix.equals(".jasmin"))
-            new JasminClass(c, new BuildBody(Grimp.v(), new StoredBody(ClassFile.v()))).print(writerOut);
+            new JasminClass(c, new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()))).print(writerOut);
         else if(postFix.equals(".jimp"))
         {
             c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions),

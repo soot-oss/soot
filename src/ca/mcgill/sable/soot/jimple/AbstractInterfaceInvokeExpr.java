@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on February 12, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Added "interfaceinvoke" to the toString().
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -97,7 +100,7 @@ public class AbstractInterfaceInvokeExpr extends AbstractNonStaticInvokeExpr imp
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(baseBox.getValue().toString() +
+        buffer.append("interfaceinvoke " + baseBox.getValue().toString() +
             ".[" + method.getSignature() + "](");
 
         for(int i = 0; i < argBoxes.length; i++)

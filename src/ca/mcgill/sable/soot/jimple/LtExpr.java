@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on February 12, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Made this class extend only ConditionExpr.
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -81,6 +84,8 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public interface LtExpr extends BinopExpr, ConditionExpr
+public interface LtExpr extends ConditionExpr
 {
+
 }
+

@@ -214,8 +214,8 @@ public class JimpleBody implements StmtBody
 
 	if(!BuildJimpleBodyOption.noAggregating(buildOptions))
 	{
-	  Transformations.aggregate(this);
-	  Transformations.removeUnusedLocals(this);
+	  //Transformations.aggregate(this);
+	  //Transformations.removeUnusedLocals(this);
 	}
 
         if(!BuildJimpleBodyOption.noSplitting(buildOptions))
