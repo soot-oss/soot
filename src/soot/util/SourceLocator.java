@@ -114,7 +114,8 @@ public class SourceLocator
             for(boolean done = false; !done;)
             {
                 if(classPath.indexOf(fileSeparator) == 0 ||
-                         (isRunningUnderBraindeadOS && classPath.charAt(1) == ':'))
+                       (isRunningUnderBraindeadOS && 
+                        classPath.length() >= 2 && classPath.charAt(1) == ':'))
                     absolutePath = true;
                 else
                     absolutePath = false;

@@ -1,3 +1,11 @@
+Improvements in current version
+
+1. fix to SourceLocator for the case where there are no actual
+     paths in the soot classpath. (plam)
+2. fix to HashMutableDirectedGraph to remove wayward extra
+     preds and succs edges to a removed node. (Felix Kwok, wkwok)
+3. fix for Windows classpaths which contain less than two letters.
+     Formerly, this crashed in charAt(1).  (plam, reported by Mary Payne)
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 
@@ -9,7 +17,7 @@ Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
    for attributes is fixed.
 5. replaced 'getNodes().contains()' by 'containsNode()' in 
    "jimple/toolkits/invoke/MethodCallGraph.java", which speeds up
-   the call graph construction significantly ( by John Jorgensen. )
+   the call graph construction significantly (by John Jorgensen.)
 
 Improvements in version 1.2.1 (Fri Jan 12 15:22:59 EST 2001)
 
