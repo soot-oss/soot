@@ -46,16 +46,20 @@ public interface ShimpleFactory
     public void setBody(Body body);
 
     /**
-     * Constructors may memoize their return value.  Call clearCache()
+     * Constructors should memoize their return value.  Call clearCache()
      * to force recomputations if body has changed and setBody()
      * hasn't been called again.
      **/
     public void clearCache();
-    
-    public BlockGraph getBlockGraph();
+
     public UnitGraph getUnitGraph();
-    
+    public BlockGraph getBlockGraph();
     public DominatorsFinder getDominatorsFinder();
     public DominatorTree getDominatorTree();
     public DominanceFrontier getDominanceFrontier();
+
+    public ReversibleGraph getReverseBlockGraph();
+    public DominatorsFinder getReverseDominatorsFinder();
+    public DominatorTree getReverseDominatorTree();
+    public DominanceFrontier getReverseDominanceFrontier();
 }

@@ -116,7 +116,18 @@ public class SPatchingChain extends PatchingChain
                     // if boxes were added or removed to the known Phi
                     if(!boxToPhiNode.containsKey(box)){
                         reprocessPhiNodes();
-                        if(!boxToPhiNode.containsKey(box))
+
+                        // *** FIXME: Disabling this allows us to have
+                        // PiExpr that have UnitBox pointers.
+                        // I think this means that any changes 
+                        // to the relevant Unit will be ignored by
+                        //  SPatchingChain.
+                        //
+                        // Hopefully this also means that any
+                        // transformation that moves/removes/modifies
+                        // a Unit pointed at by a PiExpr knows what
+                        // it's doing.
+                        if(!boxToPhiNode.containsKey(box) && debug)
                             throw new RuntimeException("SPatchingChain has pointers from a Phi node that has never been seen.");
                     }
                     

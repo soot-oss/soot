@@ -50,6 +50,7 @@ import java.io.*;
 public class Shimple
 {
     public static final String PHI = "Phi";
+    public static final String PI = "Pi";
     public static final String PHASE = "shimple";
     
     public Shimple(Singletons.Global g) {}
@@ -106,6 +107,11 @@ public class Shimple
         return new SPhiExpr(leftLocal, preds);
     }
 
+    public PiExpr newPiExpr(Local local, Unit pred)
+    {
+        return new SPiExpr(local, pred);
+    }
+    
     /**
      * Create a PhiExpr with the provided list of Values (Locals or
      * Constants) and the corresponding control flow predecessor
@@ -140,10 +146,8 @@ public class Shimple
      **/
     public static boolean isPhiNode(Unit unit)
     {
-        if(getPhiExpr(unit) == null)
-            return false;
-
-        return true;
+        return
+            getPhiExpr(unit) == null ? false : true;
     }
 
     /**
@@ -157,14 +161,37 @@ public class Shimple
 
         Value right = ((AssignStmt)unit).getRightOp();
         
-        if(right instanceof PhiExpr)
+        if(isPhiExpr(right))
             return (PhiExpr) right;
 
         return null;
     }
 
+    public static boolean isPiExpr(Value value)
+    {
+        return (value instanceof PiExpr);
+    }
+
+    public static boolean isPiNode(Unit unit)
+    {
+        return getPiExpr(unit) == null ? false : true;
+    }
+
+    public static PiExpr getPiExpr(Unit unit)
+    {
+        if(!(unit instanceof AssignStmt))
+            return null;
+
+        Value right = ((AssignStmt)unit).getRightOp();
+
+        if(isPiExpr(right))
+            return (PiExpr) right;
+
+        return null;
+    }
+
     /**
-     * Returns the corresponding left Local if the unit is a Phi node,
+     * Returns the corresponding left Local if the unit is a Shimple node,
      * null otherwise.
      **/
     public static Local getLhsLocal(Unit unit)
@@ -174,7 +201,7 @@ public class Shimple
 
         Value right = ((AssignStmt)unit).getRightOp();
         
-        if(right instanceof PhiExpr){
+        if(right instanceof ShimpleExpr){
             Value left = ((AssignStmt)unit).getLeftOp();
             return (Local) left;
         }

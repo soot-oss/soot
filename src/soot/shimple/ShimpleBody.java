@@ -23,21 +23,21 @@ import soot.*;
 import soot.options.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
+import soot.jimple.toolkits.scalar.*;
 import soot.shimple.internal.*;
 import soot.shimple.toolkits.scalar.*;
 import soot.toolkits.scalar.*;
 import soot.util.*;
 import java.util.*;
 
+// * <p> We decided to hide all the intelligence in
+// * internal.ShimpleBodyBuilder for clarity of API.  Eventually we will
+// * likely switch to an explicit Strategy pattern that will allow us to
+// * select different SSA behaviours and algorithms.
 /**
  * Implementation of the Body class for the SSA Shimple IR.
  * This class provides methods for maintaining SSA form as well as
  * eliminating SSA form.
- *
- * <p> We decided to hide all the intelligence in
- * internal.ShimpleBodyBuilder for clarity of API.  Eventually we will
- * likely switch to an explicit Strategy pattern that will allow us to
- * select different SSA behaviours and algorithms.
  *
  * @author Navindra Umanee
  * @see soot.shimple.internal.ShimpleBodyBuilder
@@ -53,6 +53,10 @@ public class ShimpleBody extends StmtBody
      **/
     protected ShimpleOptions options;
 
+    protected ShimpleBodyBuilder sbb;
+    
+    protected boolean isExtendedSSA = false;
+    
     /**
      * Construct an empty ShimpleBody associated with m.
      **/
@@ -63,8 +67,10 @@ public class ShimpleBody extends StmtBody
         // must happen before SPatchingChain gets created
         this.options = new ShimpleOptions(options);
         setSSA(true);
-
+        isExtendedSSA = this.options.extended();
+        
         unitChain = new SPatchingChain(this, new HashChain());
+        sbb = new ShimpleBodyBuilder(this);
     }
 
     /**
@@ -92,7 +98,8 @@ public class ShimpleBody extends StmtBody
         importBodyContentsFrom(body);
 
         /* Shimplise body */
-        
+        sbb = new ShimpleBodyBuilder(this);
+
         if(body instanceof ShimpleBody)
             rebuild(true);
         else
@@ -126,7 +133,8 @@ public class ShimpleBody extends StmtBody
      **/
     public void rebuild(boolean hasPhiNodes)
     {
-        new ShimpleBodyBuilder(this);
+        isExtendedSSA = options.extended();
+        sbb.transform();
         setSSA(true);
     }
     
@@ -148,7 +156,7 @@ public class ShimpleBody extends StmtBody
     public JimpleBody toJimpleBody()
     {
         ShimpleBody sBody = (ShimpleBody) this.clone();
-        sBody.eliminatePhiNodes();
+        sBody.eliminateNodes();
         JimpleBody jBody = Jimple.v().newBody(sBody.getMethod());
         jBody.importBodyContentsFrom(sBody);
         return jBody;
@@ -168,9 +176,27 @@ public class ShimpleBody extends StmtBody
      **/
     public void eliminatePhiNodes()
     {
-        ShimpleBodyBuilder.eliminatePhiNodes(this);
+        sbb.preElimOpt();
+        sbb.eliminatePhiNodes();
+        sbb.postElimOpt();
         setSSA(false);
     }
+
+    public void eliminatePiNodes()
+    {
+        sbb.eliminatePiNodes();
+    }
+    
+    public void eliminateNodes()
+    {
+        sbb.preElimOpt();
+        sbb.eliminatePhiNodes();
+        if(isExtendedSSA)
+            sbb.eliminatePiNodes();
+        sbb.postElimOpt();
+        setSSA(false);
+    }
+    
 
     /**
      * Returns a copy of the current ShimpleBody.
@@ -208,6 +234,11 @@ public class ShimpleBody extends StmtBody
         return isSSA;
     }
 
+    public boolean isExtendedSSA()
+    {
+        return isExtendedSSA;
+    }
+    
     /**
      * Returns the Shimple options applicable to this body.
      **/
@@ -228,6 +259,6 @@ public class ShimpleBody extends StmtBody
      **/
     public void makeUniqueLocalNames()
     {
-        ShimpleBodyBuilder.makeUniqueLocalNames(this);
+        sbb.makeUniqueLocalNames();
     }
 }

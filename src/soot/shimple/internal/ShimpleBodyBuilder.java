@@ -28,6 +28,8 @@ import soot.options.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
 import soot.jimple.toolkits.base.*;
+import soot.jimple.toolkits.callgraph.*;
+import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
@@ -62,27 +64,17 @@ public class ShimpleBodyBuilder
     protected ShimpleBody body;
     protected ShimpleFactory sf;
     protected DominatorTree dt;
-    protected DominanceFrontier df;
     protected BlockGraph cfg;
-
+    
     /**
      * A fixed list of all original Locals.
      **/
     protected List origLocals;
 
-    /**
-     * An analysis class that allows us to verify that a variable is
-     * guaranteed to be defined at program point P.  Used as an
-     * accessory to tweaking our Phi node insertion algorithm.
-     **/
-    protected GuaranteedDefs gd;
+    public PhiNodeManager phi;
+    public PiNodeManager pi;
 
-    /**
-     * Contains a list of all the Phi nodes added to the body by
-     * current invocation.  Pre-existing Phi nodes are treated as
-     * normal def/uses in the renaming algorithm.
-     **/
-    protected Set newPhiNodes;
+    ShimpleOptions options;
     
     /**
      * Transforms the provided body to pure SSA form.
@@ -90,209 +82,87 @@ public class ShimpleBodyBuilder
     public ShimpleBodyBuilder(ShimpleBody body)
     {
         this.body = body;
-
-        // Jimple sometimes assigns the same variable name to different locals.
-        // Since our local name tables currently index on the String name, this
-        // caused bug #7.  By ensuring unique local names we avoid the problem.
-        // Jimple probably shouldn't do that though.
-        makeUniqueLocalNames(body); 
-
         sf = G.v().shimpleFactory;
         sf.setBody(body);
-        initialize();
-        transform();
+        sf.clearCache();
+        phi = new PhiNodeManager(body);
+        pi = new PiNodeManager(body, false);
+        options = body.getOptions();
+        makeUniqueLocalNames();
     }
     
-    public void initialize()
+    public void update()
     {
-        sf.clearCache();
         cfg = sf.getBlockGraph();
         dt = sf.getDominatorTree();
-        df = sf.getDominanceFrontier();
-        gd = new GuaranteedDefs(sf.getUnitGraph());
         origLocals = new ArrayList(body.getLocals());
-
-        newPhiNodes = new HashSet();
     }
 
     public void transform()
     {
-        insertTrivialPhiNodes();
+        boolean change = false;
+        if(phi.insertTrivialPhiNodes())
+            phi.trimExceptionalPhiNodes();
+
+        if(options.extended()){
+            change = pi.insertTrivialPiNodes();
+        
+            while(change){
+                if(phi.insertTrivialPhiNodes()){
+                    phi.trimExceptionalPhiNodes();
+                    change = pi.insertTrivialPiNodes();
+                }
+                else{
+                    break;
+                }
+            }
+        }
+
         renameLocals();
-        trimExceptionalPhiNodes();
-        makeUniqueLocalNames(body);
+        makeUniqueLocalNames();
     }
 
-    /**
-     * Phi node Insertion Algorithm from Cytron et al 91, P24-5,
-     * implemented in various bits and pieces by the next functions.
-     *
-     * <p> For each definition of variable V, find the iterated
-     * dominance frontier.  Each block in the iterated dominance
-     * frontier is prepended with a trivial Phi node.
-     *
-     * <p> We found out the hard way that this isn't the ideal
-     * solution for Jimple because a lot of redundant Phi nodes
-     * get inserted probably due to the fact that the algorithm
-     * assumes all variables have an initial definition on entry.
-     *
-     * <p> While this assumption does not produce incorrect results, it
-     * produces hopelessly complicated and ineffectual code.
-     *
-     * <p> Our quick solution was to ensure that a variable was
-     * defined along all paths to the block where we were considering
-     * insertion of a Phi node.  If the variable was not defined
-     * along at least one path (isLocalDefinedOnEntry()), then
-     * certainly a Phi node was superfluous and meaningless.  Our
-     * GuaranteedDefs flow analysis provided us with the necessary
-     * information.
-     *
-     * <p> Better and more efficient alternatives suggest themselves.
-     * We later found this formulation from IBM's Jikes RVM:
-     *
-     * <p><i> Special Java case: if node N dominates all defs of V,
-     * then N does not need a Phi node for V. </i>
-     **/
-    public void insertTrivialPhiNodes()
+    public void preElimOpt()
     {
-        Map localsToDefPoints = new HashMap();
-
-        // compute localsToDefPoints
-        // ** can we use LocalDefs instead?  don't think so.
-        {
-            Iterator localsIt = origLocals.iterator();
-
-            while(localsIt.hasNext()){
-                Local local = (Local)localsIt.next();
-
-                // all blocks containing definitions of our Local
-                List blockList = new ArrayList();
-
-                Iterator blocksIt = cfg.iterator();
-
-                while(blocksIt.hasNext()){
-                    Block block = (Block)blocksIt.next();
-                    Iterator defBoxesIt = getDefBoxesFromBlock(block).iterator();
-                    while(defBoxesIt.hasNext()){
-                        Value def = ((ValueBox)defBoxesIt.next()).getValue();
-
-                        if(def.equals(local)){
-                            blockList.add(block);
-                            break;
-                        }
-                    }
-                }
-                
-                localsToDefPoints.put(local, blockList);
-            }
-        }
-
-        /* Routine initialisations. */
+        boolean optElim = options.node_elim_opt();
         
-        int[] workFlags = new int[cfg.size()];
-        int[] hasAlreadyFlags = new int[cfg.size()];
-        
-        int iterCount = 0;
-        Stack workList = new Stack();
-
-        /* Main Cytron algorithm. */
-        
-        {
-            Iterator localsIt = localsToDefPoints.keySet().iterator();
-
-            while(localsIt.hasNext()){
-                Local local = (Local) localsIt.next();
-
-                iterCount++;
-
-                // initialise worklist
-                {
-                    Iterator defNodesIt = ((List) localsToDefPoints.get(local)).iterator();
-                    while(defNodesIt.hasNext()){
-                        Block block = (Block) defNodesIt.next();
-                        workFlags[block.getIndexInMethod()] = iterCount;
-                        workList.push(block);
-                    }
-                }
-
-                while(!workList.empty()){
-                    Block block = (Block) workList.pop();
-                    DominatorNode node = dt.getDode(block);
-                    Iterator frontierNodes = df.getDominanceFrontierOf(node).iterator();
-
-                    while(frontierNodes.hasNext()){
-                        Block frontierBlock = (Block) ((DominatorNode) frontierNodes.next()).getGode();
-                        int fBIndex = frontierBlock.getIndexInMethod();
-                        
-                        if(hasAlreadyFlags[fBIndex] < iterCount){
-                            // Make sure we don't add useless Phi nodes
-                            if(needsPhiNode(local, frontierBlock))
-                                prependTrivialPhiNode(local, frontierBlock);
-
-                            hasAlreadyFlags[fBIndex] = iterCount;
-
-                            if(workFlags[fBIndex] < iterCount){
-                                workFlags[fBIndex] = iterCount;
-                                workList.push(frontierBlock);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        if(optElim)
+            DeadAssignmentEliminator.v().transform(body);
     }
 
-    /**
-     * Inserts a trivial Phi node with the appropriate number of
-     * arguments.
-     **/
-    public void prependTrivialPhiNode(Local local, Block frontierBlock)
+    public void postElimOpt()
     {
-        List preds = frontierBlock.getPreds();
-        Unit trivialPhi = Jimple.v().newAssignStmt(local, Shimple.v().newPhiExpr(local, preds));
-        Unit blockHead = frontierBlock.getHead();
+        boolean optElim = options.node_elim_opt();
+        
+        if(optElim){
+            UnreachableCodeEliminator.v().transform(body);
+            UnconditionalBranchFolder.v().transform(body);
+            Aggregator.v().transform(body);
+            UnusedLocalEliminator.v().transform(body);
+        }
+    }
+    
+    /**
+     * Remove Phi nodes from current body, high probablity this
+     * destroys SSA form.
+     *
+     * <p> Dead code elimination + register aggregation are performed
+     * as recommended by Cytron.  The Aggregator looks like it could
+     * use some improvements.
+     *
+     * @see soot.options.ShimpleOptions
+     **/
+    public void eliminatePhiNodes()
+    {
+        if(phi.doEliminatePhiNodes())
+            makeUniqueLocalNames();
 
-        // is it a catch block?
-        if(blockHead instanceof IdentityUnit)
-            frontierBlock.insertAfter(trivialPhi, frontierBlock.getHead());
-        else
-            frontierBlock.insertBefore(trivialPhi, frontierBlock.getHead());
-
-        newPhiNodes.add(trivialPhi);
     }
 
-    /**
-     * Function that allows us to weed out special cases where
-     * we do not require Phi nodes.
-     *
-     * <p> Temporary implementation, with much room for improvement.
-     **/
-    protected boolean needsPhiNode(Local local, Block block)
+    public void eliminatePiNodes()
     {
-        Iterator unitsIt = block.iterator();
-
-        if(!unitsIt.hasNext()){
-            if(!block.getSuccs().isEmpty())
-                throw new RuntimeException("Empty block in CFG?");
-            
-            // tail block
-            return false;
-        }
-
-        Unit unit = (Unit) unitsIt.next();
-        
-        // this will return null if the head unit is an inserted Phi statement
-        List definedLocals = gd.getGuaranteedDefs(unit);
-
-        // this should not fail
-        while(definedLocals == null){
-            if(!unitsIt.hasNext())
-                throw new RuntimeException("Empty block in CFG?");
-            unit = (Unit) unitsIt.next();
-            definedLocals = gd.getGuaranteedDefs(unit);
-        }
-        
-        return definedLocals.contains(local);
+        boolean optElim = options.node_elim_opt();
+        pi.eliminatePiNodes(optElim);
     }
     
     /**
@@ -311,44 +181,11 @@ public class ShimpleBodyBuilder
     /**
      * Variable Renaming Algorithm from Cytron et al 91, P26-8,
      * implemented in various bits and pieces by the next functions.
-     * Must be called after trivial Phi nodes have been added.
-     *
-     * <pre>
-     *  call search(entry)
-     *
-     *  search(X):
-     *  for each statement A in X do
-     *     if A is an ordinary assignment
-     *       for each variable V used do
-     *            replace use of V by use of V_i where i = Top(S(V))
-     *       done
-     *     fi
-     *    for each V in LHS(A) do
-     *       i <- C(V)
-     *       replace V by new V_i in LHS(A)
-     *       push i onto S(V)
-     *       C(V) <- i+1
-     *    done
-     *  done (end of first loop)
-     *  for each Y in succ(X) do
-     *      j <- whichPred(Y, X)
-     *      for each Phi-function F in Y do
-     *       replace the j-th operand V in RHS(F) by V_i with i = TOP(S(V))
-     *     done
-     *  done (end of second loop)
-     *  for each Y in Children(X) do
-     *    call search(Y)
-     *  done (end of third loop)
-     *  for each assignment A in X do
-     *     for each V in oldLHS(A) do
-     *       pop(S(V))
-     *    done
-     *  done (end of fourth loop)
-     *  end
-     * </pre>
+     * Must be called after trivial nodes have been added.
      **/
     public void renameLocals()
     {
+        update();
         newLocals = new HashMap();
         newLocalsToOldLocal = new HashMap();
 
@@ -390,8 +227,7 @@ public class ShimpleBodyBuilder
                 {
                     List useBoxes = new ArrayList();
 
-                    // process all Ordinary Uses
-                    if(!newPhiNodes.contains(unit))
+                    if(!Shimple.isPhiNode(unit))
                         useBoxes.addAll(unit.getUseBoxes());
 
                     Iterator useBoxesIt = useBoxes.iterator();
@@ -455,7 +291,7 @@ public class ShimpleBodyBuilder
 
         // Step 2 of 4 -- Rename Phi node uses in Successors
         {
-            Iterator succsIt = block.getSuccs().iterator();
+            Iterator succsIt = cfg.getSuccsOf(block).iterator();
 
             while(succsIt.hasNext()){
                 Block succ = (Block) succsIt.next();
@@ -465,10 +301,10 @@ public class ShimpleBodyBuilder
                 while(unitsIt.hasNext()){
                     Unit unit = (Unit) unitsIt.next();
 
-                    if(!(newPhiNodes.contains(unit)))
-                        continue;
-                    
                     PhiExpr phiExpr = Shimple.getPhiExpr(unit);
+
+                    if(phiExpr == null)
+                        continue;
 
                     // simulate whichPred
                     int argIndex = phiExpr.getArgIndex(block);
@@ -579,366 +415,12 @@ public class ShimpleBodyBuilder
     }
 
     /**
-     * Exceptional Phi nodes have a huge number of arguments and control
-     * flow predecessors by default.  Since it is useless trying to keep
-     * the number of arguments and control flow predecessors in synch,
-     * we might as well trim out all redundant arguments and eliminate
-     * a huge number of copy statements when we get out of SSA form in
-     * the process.
-     **/
-    public void trimExceptionalPhiNodes()
-    {
-        Set handlerUnits = new HashSet();
-        Iterator trapsIt = body.getTraps().iterator();
-
-        while(trapsIt.hasNext()) {
-            Trap trap = (Trap) trapsIt.next();
-            handlerUnits.add(trap.getHandlerUnit());
-        }
-
-        Iterator blocksIt = cfg.iterator();
-        while(blocksIt.hasNext()){
-            Block block = (Block) blocksIt.next();
-
-            // trim relevant Phi expressions
-            if(handlerUnits.contains(block.getHead())){
-                Iterator unitsIt = block.iterator();
-                while(unitsIt.hasNext()){
-                    Unit unit = (Unit) unitsIt.next();
-
-                    if(!(newPhiNodes.contains(unit)))
-                        continue;
-
-                    PhiExpr phi = Shimple.getPhiExpr(unit);
-                    trimPhiNode(phi);
-                }
-            }
-        }
-    }
-
-    /**
-     * @see #trimExceptionalPhiNodes()
-     **/
-    public void trimPhiNode(PhiExpr phiExpr)
-    {
-        /* A value may appear many times in an exceptional Phi. Hence,
-           the same value may be associated with many UnitBoxes. We
-           build the MultiMap valueToPairs for convenience.  */
-
-        MultiMap valueToPairs = new HashMultiMap();
-
-        Iterator argsIt = phiExpr.getArgs().iterator();
-        while(argsIt.hasNext()){
-            ValueUnitPair argPair = (ValueUnitPair) argsIt.next();
-            Value value = argPair.getValue();
-            valueToPairs.put(value, argPair);
-        }
-
-        /* Consider each value and see if we can find the dominating
-           UnitBoxes.  Once we have found all the dominating
-           UnitBoxes, the rest of the redundant arguments can be
-           trimmed.  */
-        
-        Iterator valuesIt = valueToPairs.keySet().iterator();
-        while(valuesIt.hasNext()){
-            Value value = (Value) valuesIt.next();
-
-            // although the champs list constantly shrinks, guaranteeing
-            // termination, the challengers list never does.  This could
-            // be optimised.
-            Set pairsSet = valueToPairs.get(value);
-            List champs = new ArrayList(pairsSet);
-            List challengers = new ArrayList(pairsSet);
-            
-            // champ is the currently assumed dominator
-            ValueUnitPair champ = (ValueUnitPair) champs.remove(0);
-            Unit champU = champ.getUnit();
-
-            // hopefully everything will work out the first time, but
-            // if not, we will have to try a new champion just in case
-            // there is more that can be trimmed.
-            boolean retry = true;
-            while(retry){
-                retry = false;
-
-                // go through each challenger and see if we dominate them
-                // if not, the challenger becomes the new champ
-                for(int i = 0; i < challengers.size(); i++){
-                    ValueUnitPair challenger = (ValueUnitPair)challengers.get(i);
-
-                    if(challenger.equals(champ))
-                        continue;
-                    Unit challengerU = challenger.getUnit();
-
-                    // kill the challenger
-                    if(dominates(champU, challengerU))
-                        phiExpr.removeArg(challenger);
-
-                    // we die, find a new champ
-                    else if(dominates(challengerU, champU)){
-                        phiExpr.removeArg(champ);
-                        champ = challenger;
-                        champU = champ.getUnit();
-                        champs.remove(champ);
-                    }
-
-                    // neither wins, oops!  we'll have to try the next
-                    // available champ at the next pass.  It may very
-                    // well be inevitable that we will have two
-                    // identical value args in an exceptional PhiExpr,
-                    // but the more we can trim the better.
-                    else
-                        retry = true;
-                }
-
-                if(retry) {
-                    if(champs.size() == 0)
-                        break;
-                    champ = (ValueUnitPair)champs.remove(0);
-                    champU = champ.getUnit();
-                }
-            }
-        }
-
-        /*
-        {
-            List preds = phiExpr.getPreds();
-
-            for(int i = 0; i < phiExpr.getArgCount(); i++){
-                ValueUnitPair vup = phiExpr.getArgBox(i);
-                Value value = vup.getValue();
-                Unit unit = vup.getUnit();
-
-                PhiExpr innerPhi = Shimple.getPhiExpr(unit);
-                if(innerPhi == null)
-                    continue;
-                
-                Value innerValue = Shimple.getLhsLocal(unit);
-                if(!innerValue.equals(value))
-                    continue;
-
-                boolean canRemove = true;
-                for(int j = 0; j < innerPhi.getArgCount(); j++){
-                    Unit innerPred = innerPhi.getPred(j);
-                    if(!preds.contains(innerPred)){
-                        canRemove = false;
-                        break;
-                    }
-                }
-
-                if(canRemove)
-                    phiExpr.removeArg(vup);
-            }
-        }
-        */
-    }
-    
-    protected Map unitToBlock;
-
-    /**
-     * Returns true if champ dominates challenger.  Note that false
-     * doesn't necessarily mean that challenger dominates champ.
-     **/
-    public boolean dominates(Unit champ, Unit challenger)
-    {
-        if(champ == null || challenger == null){
-            System.out.println(champ + " " + challenger);
-            System.out.println(body.getMethod());
-            throw new RuntimeException("Assertion failed.");
-        }
-        
-        
-        // self-domination
-        if(champ.equals(challenger))
-            return true;
-        
-        if(unitToBlock == null)
-            unitToBlock = getUnitToBlockMap(cfg);
-
-        Block champBlock = (Block) unitToBlock.get(champ);
-        Block challengerBlock = (Block) unitToBlock.get(challenger);
-
-        if(champBlock.equals(challengerBlock)){
-            Iterator unitsIt = champBlock.iterator();
-
-            while(unitsIt.hasNext()){
-                Unit unit = (Unit) unitsIt.next();
-                if(unit.equals(champ))
-                    return true;
-                if(unit.equals(challenger))
-                    return false;
-            }
-
-            throw new RuntimeException("Assertion failed.");
-        }
-
-        DominatorNode champNode = dt.getDode(champBlock);
-        DominatorNode challengerNode = dt.getDode(challengerBlock);
-
-        return(dt.isDominatorOf(champNode, challengerNode));
-    }
-    
-    /**
-     * Remove Phi nodes from current body, high probablity this
-     * destroys SSA form.
-     *
-     * <p> Dead code elimination + register aggregation are performed
-     * as recommended by Cytron.  The Aggregator looks like it could
-     * use some improvements.
-     *
-     * @see soot.options.ShimpleOptions
-     **/
-    public static void eliminatePhiNodes(ShimpleBody body)
-    {
-        ShimpleOptions options = body.getOptions();
-        int phiElimOpt = options.phi_elim_opt();
-        
-        // off by default
-        if((phiElimOpt == options.phi_elim_opt_pre) ||
-           (phiElimOpt == options.phi_elim_opt_pre_and_post))
-        {
-            Aggregator.v().transform(body);
-            DeadAssignmentEliminator.v().transform(body);
-
-            // UCE is not safe if a Phi node is using a value from the
-            // unreachable code.
-            // UnreachableCodeEliminator.v().transform(body);
-
-            UnconditionalBranchFolder.v().transform(body);
-            UnusedLocalEliminator.v().transform(body);
-        }
-        
-        // offloaded in a separate function for historical reasons
-        if(doEliminatePhiNodes(body))
-            makeUniqueLocalNames(body);
-        
-        // on by default
-        if((phiElimOpt == options.phi_elim_opt_post) ||
-           (phiElimOpt == options.phi_elim_opt_pre_and_post))
-        {
-            Aggregator.v().transform(body);
-            DeadAssignmentEliminator.v().transform(body);
-            UnreachableCodeEliminator.v().transform(body);
-            UnconditionalBranchFolder.v().transform(body);
-            UnusedLocalEliminator.v().transform(body);
-        }
-    }
-    
-    /**
-     * Eliminate Phi nodes in block by naively replacing them with
-     * shimple assignment statements in the control flow predecessors.
-     * Returns true if new locals were added to the body during the
-     * process, false otherwise.
-     **/
-    public static boolean doEliminatePhiNodes(ShimpleBody body)
-    {
-        // flag that indicates whether we created new locals during the
-        // elimination process
-        boolean addedNewLocals = false;
-        
-        // List of Phi nodes to be deleted.
-        List phiNodes = new ArrayList();
-
-        // This stores the assignment statements equivalent to each
-        // (and every) Phi.  We use lists instead of a Map of
-        // non-determinate order since we prefer to preserve the order
-        // of the assignment statements, i.e. if a block has more than
-        // one Phi expression, we prefer that the equivalent
-        // assignments be placed in the same order as the Phi expressions.
-        List equivStmts = new ArrayList();
-
-        // Similarly, to preserve order, instead of directly storing
-        // the pred, we store the pred box so that we follow the
-        // pointers when SPatchingChain moves them.
-        List predBoxes = new ArrayList();
-        
-        Chain units = body.getUnits();
-        Iterator unitsIt = units.iterator();
-
-        while(unitsIt.hasNext()){
-            Unit unit = (Unit) unitsIt.next();
-            PhiExpr phi = Shimple.getPhiExpr(unit);
-
-            if(phi == null)
-                continue;
-
-            Local lhsLocal = Shimple.getLhsLocal(unit);
-
-            for(int i = 0; i < phi.getArgCount(); i++){
-                Value phiValue = phi.getValue(i);
-                AssignStmt convertedPhi =
-                    Jimple.v().newAssignStmt(lhsLocal, phiValue);
-
-                equivStmts.add(convertedPhi);
-                predBoxes.add(phi.getArgBox(i));
-            }
-
-            phiNodes.add(unit);
-        }
-
-        if(equivStmts.size() != predBoxes.size())
-            throw new RuntimeException("Assertion failed.");
-        
-        /* Avoid Concurrent Modification exceptions. */
-
-        for(int i = 0; i < equivStmts.size(); i++){
-            AssignStmt stmt = (AssignStmt) equivStmts.get(i);
-            Unit pred = ((UnitBox) predBoxes.get(i)).getUnit();
-
-            if(pred == null)
-                throw new RuntimeException("Assertion failed.");
-
-            // if we need to insert the copy statement *before* an
-            // instruction that happens to be *using* the Local being
-            // defined, we need to do some extra work to make sure we
-            // don't overwrite the old value of the local
-            if(pred.branches()){
-                boolean needPriming = false;
-                Local lhsLocal = (Local) stmt.getLeftOp();
-                Local savedLocal = Jimple.v().newLocal(lhsLocal.getName()+"_",
-                                                       lhsLocal.getType());
-                Iterator useBoxesIt = pred.getUseBoxes().iterator();
-
-                while(useBoxesIt.hasNext()){
-                    ValueBox useBox = (ValueBox) useBoxesIt.next();
-                    if(lhsLocal.equals(useBox.getValue())){
-                        needPriming = true;
-                        addedNewLocals = true;
-                        useBox.setValue(savedLocal);
-                    }
-                }
-
-                if(needPriming){
-                    body.getLocals().add(savedLocal);
-                    AssignStmt copyStmt = Jimple.v().newAssignStmt(savedLocal, lhsLocal);
-                    units.insertBefore(copyStmt, pred);
-                }
-
-                // this is all we really wanted to do!
-                units.insertBefore(stmt, pred);
-            }
-            else
-                units.insertAfter(stmt, pred);
-        }
-        
-        Iterator phiNodesIt = phiNodes.iterator();
-
-        while(phiNodesIt.hasNext()){
-            Unit removeMe = (Unit) phiNodesIt.next();
-            units.remove(removeMe);
-            removeMe.clearUnitBoxes();
-        }
-
-        return addedNewLocals;
-    }
-
-    /**
      * Make sure the locals in the given body all have unique String
      * names.  Renaming is done if necessary.
      **/
-    public static void makeUniqueLocalNames(ShimpleBody body)
+    public void makeUniqueLocalNames()
     {
-        if(body.getOptions().standard_local_names()){
+        if(options.standard_local_names()){
             LocalNameStandardizer.v().transform(body);
             return;
         }
@@ -964,7 +446,7 @@ public class ShimpleBodyBuilder
      * Given a set of Strings, return a new name for dupName that is
      * not currently in the set.
      **/
-    public static String makeUniqueLocalName(String dupName, Set localNames)
+    public String makeUniqueLocalName(String dupName, Set localNames)
     {
         int counter = 1;
         String newName = dupName;
@@ -973,59 +455,5 @@ public class ShimpleBodyBuilder
             newName = dupName + "_" + counter++;
 
         return newName;
-    }
-    
-    /**
-     * Convenience function that really ought to be implemented in
-     * soot.toolkits.graph.Block.
-     **/
-    public static List getDefBoxesFromBlock(Block block)
-    {
-        Iterator unitsIt = block.iterator();
-        
-        List defBoxesList = new ArrayList();
-    
-        while(unitsIt.hasNext())
-            defBoxesList.addAll(((Unit)unitsIt.next()).getDefBoxes());
-        
-        return defBoxesList;
-    }
-
-    /**
-     * Convenience function that really ought to be implemented in
-     * soot.toolkits.graph.Block
-     **/
-    public static List getUseBoxesFromBlock(Block block)
-    {
-        Iterator unitsIt = block.iterator();
-        
-        List useBoxesList = new ArrayList();
-    
-        while(unitsIt.hasNext())
-            useBoxesList.addAll(((Unit)unitsIt.next()).getUseBoxes());
-        
-        return useBoxesList;
-    }
-
-    /**
-     * Convenience function that maps units to blocks.  Should
-     * probably be in BlockGraph.
-     **/
-    public static Map getUnitToBlockMap(BlockGraph blocks)
-    {
-        Map unitToBlock = new HashMap();
-
-        Iterator blocksIt = blocks.iterator();
-        while(blocksIt.hasNext()){
-            Block block = (Block) blocksIt.next();
-            Iterator unitsIt = block.iterator();
-
-            while(unitsIt.hasNext()){
-                Unit unit = (Unit) unitsIt.next();
-                unitToBlock.put(unit, block);
-            }
-        }
-
-        return unitToBlock;
     }
 }

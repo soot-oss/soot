@@ -3168,59 +3168,18 @@ SSA representation.</p>
           <alias>enabled</alias>
           <default>true</default>
         </boolopt>
-        <multiopt>
-          <name>Phi Node Elimination Optimizations</name>
-          <alias>phi-elim-opt</alias>
-          <short_desc>Phi node elimination optimizations</short_desc>
-          <long_desc/>
-          <value>
-            <name>No-optimize Phi Elimination</name>
-            <alias>none</alias>
-            <short_desc>Do not optimize during Phi elimination</short_desc>
-            <long_desc>
-<p>
-Do not optimize as part of Phi node elimination, either before
-or after eliminating Phi nodes.  This is useful for monitoring
-and understanding the behaviour of Shimple optimizations and
-transformations.</p>
-</long_desc>
-          </value>
-          <value>
-            <name>Pre-optimize Phi elimination</name>
-            <alias>pre</alias>
-            <short_desc>Perform some optimizations before eliminating Phi nodes</short_desc>
-            <long_desc>
-<p>
-Perform some optimizations, such as dead code elimination and
-local aggregation, before eliminating Phi nodes.  This appears to be
-less effective than post-optimization, but the option is provided
-for future testing and investigation.</p>
-</long_desc>
-          </value>
-          <value>
-            <name>Post-optimize Phi Elimination</name>
-            <alias>post</alias>
-            <default/>
-            <short_desc>If enabled, some optimizations are applied after
-              Phi nodes are eliminated.</short_desc>
-            <long_desc>
-<p>
-Perform some optimizations, such as dead code elimination and
-local aggregation, after eliminating Phi nodes.  This appears to be
-more effective than post-optimization.</p>
-</long_desc>
-          </value>
-          <value>
-            <name>Pre- and Post- Optimize Phi Elimination</name>
-            <alias>pre-and-post</alias> 
-            <short_desc>If enabled, some optimizations are applied
-            both before and after Phi nodes are eliminated.</short_desc>
-            <long_desc>If enabled, applies recommended optimizations
-            such as dead code elimination and local aggregation both
-            before and after Phi node elimination.  Provided for
-            experimentation.</long_desc>
-          </value>
-        </multiopt>
+        <boolopt>
+          <name>Shimple Node Elimination Optimizations</name>
+          <alias>node-elim-opt</alias>
+          <short_desc>Node elimination optimizations</short_desc>
+          <default>true</default>
+          <long_desc>
+          <p>
+          Perform some optimizations, such as dead code elimination
+          and local aggregation, before/after eliminating nodes.
+         </p>
+         </long_desc>
+        </boolopt>
         <boolopt>
           <name>Local Name Standardization</name>
           <alias>standard-local-names</alias>
@@ -3234,6 +3193,15 @@ more effective than post-optimization.</p>
             underscore notation to denote SSA subscripts.  This
             transformation does not otherwise affect Shimple
             behaviour.
+          </long_desc>
+        </boolopt>
+        <boolopt>
+          <name>Extended SSA (SSI)</name>
+          <alias>extended</alias>
+          <default>false</default>
+          <short_desc>Compute extended SSA (SSI) form.</short_desc>
+          <long_desc>
+            If enabled, Shimple will created extended SSA (SSI) form.
           </long_desc>
         </boolopt>
         <boolopt>

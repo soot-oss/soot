@@ -72,6 +72,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
             G.v().out.println("[" + sb.getMethod().getName() +
                               "] Propagating and folding constants (SSA)...");
 
+        // *** FIXME: What happens when Shimple is built with another UnitGraph?
         SCPFAnalysis scpf = new SCPFAnalysis(new ExceptionalUnitGraph(sb));
 
         propagateResults(scpf.getResults());

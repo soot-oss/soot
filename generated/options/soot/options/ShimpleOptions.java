@@ -42,6 +42,18 @@ public class ShimpleOptions
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
+    /** Shimple Node Elimination Optimizations --
+    
+     * Node elimination optimizations.
+    
+     * Perform some optimizations, such as dead code 
+     * elimination and local aggregation, before/after 
+     * eliminating nodes. 
+     */
+    public boolean node_elim_opt() {
+        return soot.PhaseOptions.getBoolean( options, "node-elim-opt" );
+    }
+    
     /** Local Name Standardization --
     
      * Uses naming scheme of the Local Name Standardizer..
@@ -57,6 +69,17 @@ public class ShimpleOptions
         return soot.PhaseOptions.getBoolean( options, "standard-local-names" );
     }
     
+    /** Extended SSA (SSI) --
+    
+     * Compute extended SSA (SSI) form..
+    
+     * If enabled, Shimple will created extended SSA (SSI) 
+     * form. 
+     */
+    public boolean extended() {
+        return soot.PhaseOptions.getBoolean( options, "extended" );
+    }
+    
     /** Debugging Output --
     
      * Enables debugging output, if any..
@@ -68,34 +91,6 @@ public class ShimpleOptions
      */
     public boolean debug() {
         return soot.PhaseOptions.getBoolean( options, "debug" );
-    }
-    
-    public static final int phi_elim_opt_none = 1;
-    public static final int phi_elim_opt_pre = 2;
-    public static final int phi_elim_opt_post = 3;
-    public static final int phi_elim_opt_pre_and_post = 4;
-    /** Phi Node Elimination Optimizations --
-    
-     * Phi node elimination optimizations.
-    
-     * 
-     */
-    public int phi_elim_opt() {
-        String s = soot.PhaseOptions.getString( options, "phi-elim-opt" );
-        
-        if( s.equalsIgnoreCase( "none" ) )
-            return phi_elim_opt_none;
-        
-        if( s.equalsIgnoreCase( "pre" ) )
-            return phi_elim_opt_pre;
-        
-        if( s.equalsIgnoreCase( "post" ) )
-            return phi_elim_opt_post;
-        
-        if( s.equalsIgnoreCase( "pre-and-post" ) )
-            return phi_elim_opt_pre_and_post;
-        
-        throw new RuntimeException( "Invalid value "+s+" of phase option phi-elim-opt" );
     }
     
 }

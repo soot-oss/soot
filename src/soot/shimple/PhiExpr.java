@@ -55,7 +55,7 @@ import soot.toolkits.graph.*;
  * @see Shimple#newPhiExpr(List, List)
  * @see Shimple#newPhiExpr(Local, List)
  **/
-public interface PhiExpr extends Expr, UnitBoxOwner
+public interface PhiExpr extends ShimpleExpr
 {
     /**
      * Returns an unmodifiable, backed view of the arguments to this PhiExpr.
@@ -211,7 +211,7 @@ public interface PhiExpr extends Expr, UnitBoxOwner
      * predecessor.  Returns false on failure.
      **/
     public boolean addArg(Value arg, Unit predTailUnit);
-
+        
     /**
      * The type of the PhiExpr is usually the same as the type of its
      * arguments.

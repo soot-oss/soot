@@ -27,7 +27,7 @@ import soot.jimple.Jimple;
  * 
  * @author Navindra Umanee
  **/
-public class ValueUnitPair extends AbstractValueBox implements UnitBox
+public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo
 {
     // oub was initially a private inner class.  ended up being a
     // *bad* *bad* idea with endless opportunity for *evil* *evil*
@@ -139,21 +139,39 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox
     
     /**
      * Two ValueUnitPairs are equivTo iff they hold the same
-     * Unit objects and the same Value objects within them.
+     * Unit objects and equivalent Value objects within them.
      *
      * @param other another ValueUnitPair
      * @return true if other contains the same objects as this.
      **/
     public boolean equivTo(Object other)
     {
-        if(other instanceof ValueUnitPair &&
-           ((ValueUnitPair) other).getValue() == this.getValue() &&
-           ((ValueUnitPair) other).getUnit() == getUnit())
-            return true;
-
-            return false;
+        return
+            (other instanceof ValueUnitPair) &&
+            ((ValueUnitPair) other).getValue().equivTo(this.getValue()) &&
+            ((ValueUnitPair) other).getUnit().equals(getUnit());
     }
 
+    /**
+     * Non-deterministic hashcode consistent with equivTo()
+     * implementation.
+     *
+     * <p>
+     *
+     * <b>Note:</b> If you are concerned about non-determinism,
+     * remember that current implementations of equivHashCode() in
+     * other parts of Soot are non-deterministic as well (see
+     * Constant.java for example).
+     **/
+    public int equivHashCode()
+    {
+        // this is not deterministic because a Unit's hash code is
+        // non-deterministic. 
+        return
+            (getUnit().hashCode() * 17) +
+            (getValue().equivHashCode() * 101);
+    }
+    
     public Object clone()
     {
         // Note to self: Do not try to "fix" this.  Yes, it should be

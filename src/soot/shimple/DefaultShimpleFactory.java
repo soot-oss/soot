@@ -47,6 +47,11 @@ public class DefaultShimpleFactory implements ShimpleFactory
     protected DominatorTree dTree;
     protected DominanceFrontier dFrontier;
 
+    protected ReversibleGraph rbg;
+    protected DominatorTree rdTree;
+    protected DominanceFrontier rdFrontier;
+    protected DominatorsFinder rdFinder;
+    
     public DefaultShimpleFactory()
     {
     }
@@ -58,12 +63,16 @@ public class DefaultShimpleFactory implements ShimpleFactory
         dFinder = null;
         dTree = null;
         dFrontier = null;
+        rbg = null;
+        rdTree = null;
+        rdFinder = null;
+        rdFrontier = null;
     }
     
     public void setBody(Body body)
     {
         this.body = body;
-        clearCache();
+        clearCache();        
     }
 
     public Body getBody()
@@ -74,6 +83,44 @@ public class DefaultShimpleFactory implements ShimpleFactory
         return body;
     }
 
+    public ReversibleGraph getReverseBlockGraph()
+    {
+        if(rbg != null)
+            return rbg;
+        
+        BlockGraph bg = getBlockGraph();
+        rbg = new HashReversibleGraph(bg);
+        rbg.reverse();
+        return rbg;
+    }
+
+    public DominatorsFinder getReverseDominatorsFinder()
+    {
+        if(rdFinder != null)
+            return rdFinder;
+
+        rdFinder = new SimpleDominatorsFinder(getReverseBlockGraph());
+        return rdFinder;
+    }
+
+    public DominatorTree getReverseDominatorTree()
+    {
+        if(rdTree != null)
+            return rdTree;
+
+        rdTree = new DominatorTree(getReverseDominatorsFinder());
+        return rdTree;
+    }
+
+    public DominanceFrontier getReverseDominanceFrontier()
+    {
+        if(rdFrontier != null)
+            return rdFrontier;
+
+        rdFrontier = new CytronDominanceFrontier(getReverseDominatorTree());
+        return rdFrontier;
+    }
+    
     public BlockGraph getBlockGraph()
     {
         if(bg != null)
@@ -89,7 +136,7 @@ public class DefaultShimpleFactory implements ShimpleFactory
         if(ug != null)
             return ug;
 
-        ug = new ExceptionalUnitGraph(getBody());
+        ug = new CompleteUnitGraph(getBody());
         return ug;
     }
     

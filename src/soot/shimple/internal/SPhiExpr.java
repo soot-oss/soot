@@ -350,10 +350,10 @@ public class SPhiExpr implements PhiExpr
         if(o instanceof SPhiExpr){
             SPhiExpr pe = (SPhiExpr) o;
 
-            if(argPairs.size() != pe.getArgCount())
+            if(getArgCount() != pe.getArgCount())
                 return false;
 
-            for(int i = 0; i < argPairs.size(); i++){
+            for(int i = 0; i < getArgCount(); i++){
                 if(!getArgBox(i).equivTo(pe.getArgBox(i)))
                     return false;
             }
@@ -366,8 +366,13 @@ public class SPhiExpr implements PhiExpr
 
     public int equivHashCode()
     {
-        // *** TODO: Do we need this?
-        throw new RuntimeException("Not Yet Implemented");
+        int hashcode = 1;
+        
+        for(int i = 0; i < getArgCount(); i++){
+            hashcode = hashcode * 17 + getArgBox(i).equivHashCode();
+        }
+
+        return hashcode;
     }
 
     public List getUnitBoxes()

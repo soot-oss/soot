@@ -1770,16 +1770,9 @@ public class Options extends OptionsBase {
                 "\nShimple Control sets parameters which apply throughout the \ncreation and manipulation of Shimple bodies. Shimple is Soot's \nSSA representation."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "phi-elim-opt", "Phi node elimination optimizations" )
-                +padVal( "none", "Do not optimize during Phi elimination" )
-                
-                +padVal( "pre", "Perform some optimizations before eliminating Phi nodes" )
-                
-                +padVal( "post (default)", "If enabled, some optimizations are applied after               Phi nodes are eliminated." )
-                
-                +padVal( "pre-and-post", "If enabled, some optimizations are applied             both before and after Phi nodes are eliminated." )
-                
+                +padOpt( "node-elim-opt (true)", "Node elimination optimizations" )
                 +padOpt( "standard-local-names (false)", "Uses naming scheme of the Local Name             Standardizer." )
+                +padOpt( "extended (false)", "Compute extended SSA (SSI) form." )
                 +padOpt( "debug (false)", "Enables debugging output, if any." );
     
         if( phaseName.equals( "stp" ) )
@@ -2415,8 +2408,9 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "shimple" ) )
             return ""
                 +"enabled "
-                +"phi-elim-opt "
+                +"node-elim-opt "
                 +"standard-local-names "
+                +"extended "
                 +"debug ";
     
         if( phaseName.equals( "stp" ) )
@@ -2940,8 +2934,9 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "shimple" ) )
             return ""
               +"enabled:true "
-              +"phi-elim-opt:post "
+              +"node-elim-opt:true "
               +"standard-local-names:false "
+              +"extended:false "
               +"debug:false ";
     
         if( phaseName.equals( "stp" ) )

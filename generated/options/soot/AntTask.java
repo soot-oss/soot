@@ -1693,22 +1693,28 @@ public class AntTask extends MatchingTask {
             addArg("enabled:"+(arg?"true":"false"));
           }
       
+          public void setnode_elim_opt(boolean arg) {
+            addArg("-p");
+            addArg("shimple");
+            addArg("node-elim-opt:"+(arg?"true":"false"));
+          }
+      
           public void setstandard_local_names(boolean arg) {
             addArg("-p");
             addArg("shimple");
             addArg("standard-local-names:"+(arg?"true":"false"));
           }
       
+          public void setextended(boolean arg) {
+            addArg("-p");
+            addArg("shimple");
+            addArg("extended:"+(arg?"true":"false"));
+          }
+      
           public void setdebug(boolean arg) {
             addArg("-p");
             addArg("shimple");
             addArg("debug:"+(arg?"true":"false"));
-          }
-      
-          public void setphi_elim_opt(String arg) {
-            addArg("-p");
-            addArg("shimple");
-            addArg("phi-elim-opt:"+arg);
           }
       
         }
