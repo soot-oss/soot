@@ -40,7 +40,7 @@ encoding class files with attributes is called {\em annotation}.
 Soot can be used as a compiler framework to support any attributes you
 would like to define; they can then be encoded into the class file.
 The process of adding new analyses and attributes is documented in
-``Adding attributes to classs file via Soot''.
+``Adding attributes to class files via Soot''.
 % there is a latex2html command that lets you provide a hyperlink.
 % See the other tutorials.
 
@@ -154,7 +154,7 @@ The following command only annotates the array reference bytecodes.
 \section{Using attributes in the Virtual Machine}
 The array bounds check and null pointer check information is encoded 
 in a single attribute in a class file. The attribute is called 
-``{\em ArrayNullCheckAttribute}''. When a VM reads in the class file, 
+{\tt ArrayNullCheckAttribute}. When a VM reads in the class file, 
 it can use the attribute to avoid generating comparison instructions for
 the safe bounds and nullness checks. 
 
@@ -176,8 +176,8 @@ are listed below:
 \end{verbatim}
 
 The attributes in the class file are organized as a table. If a method
-has been annotated, it will have an ``ArrayNullCheckAttribute''
-attribute on its Code\_attribute. The data structure is defined as:
+has been annotated, it will have an {\tt ArrayNullCheckAttribute}
+attribute on its {\tt Code\_attribute}. The data structure is defined as:
 
 \begin{verbatim}
         array_null_check_attribute

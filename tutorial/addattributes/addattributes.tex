@@ -13,7 +13,7 @@
 \date{\today}
 \maketitle
 
-Soot can annotate classfiles: for instance, it can add information
+Soot can annotate class files: for instance, it can add information
 about which array bounds checks and null pointer checks are redundant.
 We anticipate that users of Soot may wish to add new attributes to
 class files.  This tutorial uses the array bounds check attribute to
@@ -102,13 +102,13 @@ public interface Attribute extends Tag
 
 An {\tt Tag} which is not an {\tt Attribute} could be used
 to store arbitrary Soot information about a {\tt Host}.  An {\tt Attribute}
-is something that would go in a classfile.
+is something that would go in a class file.
 
 \item[TagAggregator] interface\\ The array-bounds check analysis
 annotates individual instructions as it discovers whether or not their
 bounds checks are required.  More generally, analyses will attach
 attributes directly to the Units in question.  However, the Java
-classfile structure does not make any provisions for directly attaching
+class file structure does not make any provisions for directly attaching
 attributes to bytecodes, and attaching attributes directly to
 bytecodes would in any case be inefficient.  Hence, we designed our
 attributes so that they would attach to a method in a tabular
@@ -148,8 +148,8 @@ takes a string of (label, value) pairs and a map from labels to PCs
 and emits raw data, ready for inclusion in a class file.  This method
 is called by Jasmin after the PC values are known.  Any attribute
 which uses (label, value) pairs can subclass {\tt JasminAttribute} to get
-output to classfiles for free; other attributes hoping to be output to
-classfiles must subclass {\tt JasminAttribute} and override the {\tt
+output to class files for free; other attributes hoping to be output to
+class files must subclass {\tt JasminAttribute} and override the {\tt
 decode} method.
 
 The abstract {\tt getJasminValue()} method must return a string that
@@ -202,8 +202,8 @@ public class GenericAttribute implements Attribute
      
 The above classes provide APIs useful for adding new attributes. Soot
 attributes are represented as {\tt Tag}s, and are attached to {\tt
-Host}s.  An exception is CodeAttribute. Because the tags for
-CodeAttribute are attached to units, a {\tt TagAggregator} is used to
+Host}s.  An exception is {\tt CodeAttribute}. Because the tags for
+{\tt CodeAttribute} are attached to units, a {\tt TagAggregator} is used to
 combine them. {\tt TagAggregator}s are instances of {\tt BodyTransformer}s,
 and are generally included in the {\tt tag} pack.
 
@@ -269,7 +269,7 @@ public class AnnExampleWrapper extends BodyTransformer
 }
 \end{verbatim}
 
-We recompile {\tt foo} and annotate it with new attribute.\\
+We recompile {\tt foo} and annotate it with new attributes.\\
 {\tt java AnnExample foo}\\ 
 The annotated class file has an ``Example'' attribute for each method.
 The string ``Hello world!'' is in binary form.
@@ -318,13 +318,13 @@ illustrate the process of creating a new code attribute.
 The classes in this example are located in the {\tt
 soot.jimple.toolkits.annotation.arraycheck} and {\tt .nullcheck} packages.
 
-Clearly we must be able to repesent whether or not an array reference
+Clearly we must be able to represent whether or not an array reference
 is safe.  To do this, we first created the {\tt ArrayCheckTag} class
 implementing (a subclass of) {\tt Tag}.  It is not an {\tt Attribute}
 because the information is not in a form suitable for adding to a 
-classfile and setting the information directly is meaningless.  
-This class has a constructor
-with boolean parameters representing upper and lower bounds checks. If
+class file and setting the information directly is meaningless.  
+{\tt ArrayCheckTag} has a constructor
+with boolean parameters representing upper and lower array bounds checks. If
 a parameter is {\tt true}, the respective bound check is needed. The
 {\tt getValue()} method converts the boolean values to a byte value
 where the lowest two bits represent the bounds checks.
@@ -332,7 +332,7 @@ where the lowest two bits represent the bounds checks.
 \begin{verbatim}
     /** 
      * This tag represents the two bounds checks of an array reference.
-     * The value <code>true</code> indicates that a check is xneeded.
+     * The value <code>true</code> indicates that a check is needed.
      */
     public ArrayCheckTag(boolean lower, boolean upper)
     {
@@ -341,7 +341,7 @@ where the lowest two bits represent the bounds checks.
     }
 
     /** Returns the value of this tag as a one-byte array for inclusion in
-     * the classfile. */
+     * the class file. */
     public byte[] getValue()
     {
         byte[] value = new byte[1];
@@ -386,7 +386,7 @@ public class ArrayNullCheckTag implements OneByteCodeTag
 
 The {\tt ArrayNullTagAggregator} implements the {\tt TagAggregator}
 interface.  It is called while Baf is generating its backend code.
-The {\tt wantTag} returns true for tags that are to be considered
+The {\tt wantTag()} method returns true for tags that are to be considered
 by this aggregator.
 The {\tt considerTag}
 method accumulates one (unit, tag) pair, typically encountered
@@ -399,7 +399,7 @@ public class ArrayNullTagAggregator extends TagAggregator
     public static ArrayNullTagAggregator v() { return G.v().ArrayNullTagAggregator(); }
 
     public boolean wantTag( Tag t ) {
-	return (t instanceof OneByteCodeTag);
+      return (t instanceof OneByteCodeTag);
     }
     public void considerTag(Tag t, Unit u)
     {
