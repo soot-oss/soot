@@ -354,6 +354,17 @@ referenced by that class. This may cause Soot to produce
 incorrect results.
 </long_desc>
 		</boolopt>
+		<boolopt>
+			<name>Use old Type Assigner </name>
+			<alias>use-old-type-assigner</alias>
+			<default>false</default>
+			<short_desc>Use old type assigner - may be slower</short_desc>
+			<long_desc>
+Disable the reimplemented type assigner. This uses improved data 
+structures to provide a significant performance benefit, but has
+not yet been thoroughly tested.
+</long_desc>
+		</boolopt>
 		<stropt>
 			<name>Main Class</name>
 			<alias>main-class</alias>

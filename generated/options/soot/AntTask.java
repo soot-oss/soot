@@ -200,6 +200,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-allow-phantom-refs");
         }
   
+        public void setuse_old_type_assigner(boolean arg) {
+            if(arg) addArg("-use-old-type-assigner");
+        }
+  
         public void setmain_class(String arg) {
             addArg("-main-class");
             addArg(arg);

@@ -255,6 +255,11 @@ public class Options extends OptionsBase {
             )
                 allow_phantom_refs = true;
   
+            else if( false 
+            || option.equals( "use-old-type-assigner" )
+            )
+                use_old_type_assigner = true;
+  
             else if( false
             || option.equals( "main-class" )
             ) {
@@ -911,6 +916,10 @@ public class Options extends OptionsBase {
     private boolean allow_phantom_refs = false;
     public void set_allow_phantom_refs( boolean setting ) { allow_phantom_refs = setting; }
   
+    public boolean use_old_type_assigner() { return use_old_type_assigner; }
+    private boolean use_old_type_assigner = false;
+    public void set_use_old_type_assigner( boolean setting ) { use_old_type_assigner = setting; }
+  
     public String main_class() { return main_class; }
     public void set_main_class( String setting ) { main_class = setting; }
     private String main_class = "";
@@ -1073,6 +1082,7 @@ public class Options extends OptionsBase {
 +padVal(" java", "Favour Java files as Soot source" )
 +padOpt(" -full-resolver", "Force transitive resolving of referenced classes" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
++padOpt(" -use-old-type-assigner", "Use old type assigner - may be slower" )
 +padOpt(" -main-class CLASS", "Sets the main class for whole-program." )
 +"\nOutput Options:\n"
       
