@@ -1,0 +1,1 @@
+java -Xmx300m soot.Main -cp classes:$CLASSPATH -w -f J -p cg.spark on-fly-cg:false,simulate-natives:true,add-tags -p jap.cgtagger on -print-tags test

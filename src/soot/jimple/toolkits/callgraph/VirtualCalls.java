@@ -83,6 +83,9 @@ public final class VirtualCalls
         resolve(t, declaredType, null, subSig, container, targets);
     }
     public void resolve( Type t, Type declaredType, Type sigType, NumberedString subSig, SootMethod container, ChunkedQueue targets ) {
+        if( declaredType instanceof ArrayType ) declaredType = RefType.v("java.lang.Object");
+        if( sigType instanceof ArrayType ) sigType = RefType.v("java.lang.Object");
+        if( t instanceof ArrayType ) t = RefType.v( "java.lang.Object" );
         if( declaredType != null && !Scene.v().getOrMakeFastHierarchy()
                 .canStoreType( t, declaredType ) ) {
             return;
@@ -91,7 +94,6 @@ public final class VirtualCalls
                 .canStoreType( t, sigType ) ) {
             return;
         }
-        if( t instanceof ArrayType ) t = RefType.v( "java.lang.Object" );
         if( t instanceof RefType ) {
             SootMethod target = resolveNonSpecial( (RefType) t, subSig );
             if( target != null ) targets.add( target );

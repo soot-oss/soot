@@ -1,17 +1,6 @@
 public class Devirt extends java.lang.Object
 {
 
-    public static void go_static(Devirt)
-    {
-        Devirt r0;
-        java.io.PrintStream $r1;
-
-        r0 := @parameter0: Devirt;
-        $r1 = <java.lang.System: java.io.PrintStream out>;
-        virtualinvoke $r1.<java.io.PrintStream: void println(java.lang.String)>("Hi there");
-        return;
-    }
-
     public void <init>()
     {
         Devirt r0;
@@ -47,6 +36,17 @@ public class Devirt extends java.lang.Object
         java.io.PrintStream $r1;
 
         r0 := @this: Devirt;
+        $r1 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke $r1.<java.io.PrintStream: void println(java.lang.String)>("Hi there");
+        return;
+    }
+
+    public static void go_static(Devirt)
+    {
+        Devirt r0;
+        java.io.PrintStream $r1;
+
+        r0 := @parameter0: Devirt;
         $r1 = <java.lang.System: java.io.PrintStream out>;
         virtualinvoke $r1.<java.io.PrintStream: void println(java.lang.String)>("Hi there");
         return;

@@ -215,7 +215,11 @@ public class FastHierarchy
             if( !(parent instanceof RefLikeType ) ) {
                 throw new RuntimeException( "Unhandled type "+parent );
             } else if(parent instanceof ArrayType) {
-                return false;
+                Type base = ((AnySubType)child).getBase();
+                // From Java Language Spec 2nd ed., Chapter 10, Arrays
+                return base.equals( RefType.v( "java.lang.Object" ) )
+                || base.equals( RefType.v( "java.io.Serializable" ) )
+                || base.equals( RefType.v( "java.lang.Cloneable" ) );
             } else {
                 SootClass base = ((AnySubType)child).getBase().getSootClass();
                 SootClass parentClass = ((RefType) parent).getSootClass();
