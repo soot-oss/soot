@@ -504,9 +504,6 @@ For example <code>-dump-body jb -dump-body jb.a</code> would dump each
 method before and after the <code>jb</code> and <code>jb.a</code>
 phases.  The pseudo phase name ``<code>ALL</code>''
 causes all phases to be dumped.</p>
-<p>For this option to have any effect, the <code>soot.Pack</code>
-and <code>soot.SceneTransformer</code> classes must have been compiled
-with debugging enabled.</p> 
 <p>
 Output files appear in subdirectories under the
 soot output directory, with names like
@@ -533,8 +530,6 @@ all
 CFGs constructed during the <code>jb</code> and <code>bb.lso</code>
 phases.  The pseudo phase name ``<code>ALL</code>''
 causes CFGs constructed in all phases to be dumped.</p>
-<p>This option has no effect if the CFG constructing classes were compiled
-with debugging disabled.</p> 
 <p>The control flow graphs are dumped in the form
 of a file containing input to <code>dot</code> graph visualization
 tool.  Output <code>dot</code> files are stored beneath the soot

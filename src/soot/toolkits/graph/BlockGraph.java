@@ -49,9 +49,6 @@ import soot.util.Chain;
      */
 public abstract class BlockGraph implements DirectedGraph 
 {
-    protected boolean DEBUG = true; // Controls whether subclass
-				    // constructors dump a representation
-				    // of the graph they build.
     Body mBody;
     Chain mUnits;
     List mBlocks;

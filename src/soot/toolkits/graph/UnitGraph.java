@@ -47,9 +47,6 @@ import soot.options.Options;
 
 public abstract class UnitGraph implements DirectedGraph
 {
-    protected boolean DEBUG = true; // Controls whether subclass
-				    // constructors dump a representation
-				    // of the graph they build.
     List heads;
     List tails;
 

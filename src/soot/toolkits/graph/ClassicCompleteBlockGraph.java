@@ -89,8 +89,7 @@ public class ClassicCompleteBlockGraph extends BlockGraph
 	mHeads = Collections.unmodifiableList(newHeads);
 	mTails = Collections.EMPTY_LIST;
 
-	if (DEBUG)
-	    soot.util.PhaseDumper.v().dumpGraph(this, mBody);
+	soot.util.PhaseDumper.v().dumpGraph(this, mBody);
     }
 }
 

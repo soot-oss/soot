@@ -76,8 +76,7 @@ public class ExceptionalBlockGraph extends BlockGraph
     {
         super(unitGraph);
 
-	if (DEBUG)
-	    soot.util.PhaseDumper.v().dumpGraph(this, mBody);
+	soot.util.PhaseDumper.v().dumpGraph(this, mBody);
     }
 }
 

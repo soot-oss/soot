@@ -67,8 +67,7 @@ public class BriefUnitGraph extends UnitGraph
         if(Options.v().time())
             Timers.v().graphTimer.end();
 
-	if (DEBUG)
-	    soot.util.PhaseDumper.v().dumpGraph(this, body);
+	soot.util.PhaseDumper.v().dumpGraph(this, body);
     }
 }
 
