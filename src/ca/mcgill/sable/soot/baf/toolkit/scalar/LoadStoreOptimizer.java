@@ -21,7 +21,7 @@ public class LoadStoreOptimizer
     final static protected int HAS_CHANGED = 5;
     final static protected int  SPECIAL_SUCCESS_2 = 6;
 
-    final static  boolean debug = true;
+    final static  boolean debug = false;
     final static boolean printStats = false;
 
     private static LoadStoreOptimizer mSingleton = new LoadStoreOptimizer();
@@ -114,13 +114,14 @@ public class LoadStoreOptimizer
 	doInterBlockOptimizations(); if(printStats) {System.out.println("Pass 2" + stats); }
 	optimizeLoadStores();         if(printStats) { System.out.println("Pass 3" + stats);}    
 	pushLoadsUp();                 if(printStats) { System.out.println("Pass 4" + stats); }
+	superDuper1();
 	optimizeLoadStores();          if(printStats) { System.out.println("Pass 5" + stats); }
 	propagateLoadsForward();         if(printStats) { System.out.println("Pass 6" + stats); }
 	propagateBackwardsIndependentHunk(); if(printStats) { System.out.println("Pass 7" + stats); }
 	optimizeLoadStores();       if(printStats) { System.out.println("Pass 8" + stats); } 
-	//	pushLoadsUp();
-	if(printStats) {	System.out.println(stats);}
-	stats.reset();
+	//pushLoadsUp();
+	//if(printStats) {	System.out.println(stats);}
+	//stats.reset();
 	//	superDuper();
     }
 
@@ -204,17 +205,17 @@ public class LoadStoreOptimizer
             h -= ((Inst)currentUnit).getOutCount();                
             if(h < 0){
 		/*if(currentUnit instanceof Dup1Inst) {
-                       Unit pred = (Unit) block.getPredOf(currentUnit);
-                       if(pred instanceof FieldArgInst) {
+		    Unit pred = (Unit) aBlock.getPredOf(currentUnit);
+		    if(pred instanceof FieldArgInst) {
  
-                           Unit predPred = (Unit) block.getPredOf(pred);
-                           if(predPred instanceof LoadInst) {                     
-                               replaceUnit(currentUnit,  Baf.v().newDup1_x1Inst(((Dup1Inst) currentUnit).getOp1Type(),((LoadInst)aInst).getOpType()));
-                               candidate = predPred;                       
-			       }
-			       }
+			Unit predPred = (Unit) aBlock.getPredOf(pred);
+			if(predPred instanceof LoadInst) {                     
+			    replaceUnit(currentUnit,  Baf.v().newDup1_x1Inst(((Dup1Inst) currentUnit).getOp1Type(),((LoadInst)aInst).getOpType()));
+			    candidate = predPred;                       
+			}
+		    }
 			       
-			       }*/
+		    }*/
 		
 
                 break;
@@ -257,7 +258,7 @@ public class LoadStoreOptimizer
             while(hasChanged) {
                 
                 hasChanged = false;
-                
+
                 // Iterate over the storeList 
                 Iterator unitIt = storeList.iterator();
                 
@@ -349,11 +350,11 @@ public class LoadStoreOptimizer
                                      
                                      block.remove(firstLoad);
                                      block.insertAfter(firstLoad, unit);                                
-                                     if(debug) { System.out.println("before: \n"+ block);}
-                                    
+                                     //if(debug) { System.out.println("before: \n"+ block);}
+				     
                         
                                      int res = stackIndependent(unit, secondLoad, block, -1);
-				     
+				    if(debug) { System.out.println(">>>>>>>>>>res is: " + res );}
                                      if(res == MAKE_DUP) {
                                          // replace store by dup, drop both loads                                
                                          
@@ -363,7 +364,7 @@ public class LoadStoreOptimizer
                                          block.remove(firstLoad); 
                                          block.remove(secondLoad);
 					 stats.madeSLL();
-                                         hasChanged = true;
+                                         hasChanged = true; 
                                          //delme[
                                          if(debug) { System.out.println("MAKE_DUP case invoked");}
                                          
@@ -552,7 +553,8 @@ public class LoadStoreOptimizer
         boolean hasChanged = true;
 
         if(debug) { System.out.println("Stack height= " + stackHeight + "minattained: " + minStackHeightAttained + "from succ: " + block.getSuccOf(from));
-	System.out .println(mUnitToBlockMap.get(from));}
+	//System.out .println(mUnitToBlockMap.get(from));
+	}
         while(hasChanged) {
             hasChanged = false;
 
@@ -567,6 +569,9 @@ public class LoadStoreOptimizer
                 }
                 else if(stackHeight == -2 && minStackHeightAttained == -2){if(debug) { System.out.println("xxx: succ -1 , make dupx1 ");}
                 return MAKE_DUP1_X1; }
+		/*else if (stackHeight == -2 && minStackHeightAttained == -3) {
+		    return specialCase(from, to, block);		    
+		    }*/
                 else  if (minStackHeightAttained < -2) {
                     if(debug) { System.out.println("xxx: failled due: minStackHeightAttained < -2 ");}
                     return FAILURE;
@@ -611,7 +616,7 @@ public class LoadStoreOptimizer
                 
                 if(((Inst)u).getNetCount() == 1) {
                     // xxx remove this check
-                    if(u instanceof LoadInst || u instanceof PushInst || u instanceof NewInst || u instanceof StaticGetInst) {
+                    if(u instanceof LoadInst || u instanceof PushInst || u instanceof NewInst || u instanceof StaticGetInst || u instanceof Dup1Inst) {
                         
                         // verify that unitToMove is not required by following units (until the 'to' unit)
                         if(!isRequiredByFollowingUnits(u, to)) {
@@ -644,7 +649,7 @@ public class LoadStoreOptimizer
                         break;
                     }
                 }
-               
+		
                 currentH += ((Inst)u).getNetCount();                
                 unitToMove = null;
                 u =  (Unit) it.next();
@@ -785,6 +790,7 @@ public class LoadStoreOptimizer
         boolean reachedStore = false;
         boolean reorderingOccurred =false;
               
+	if(debug) {System.out.println("[tryToMoveUnit]: trying to move:" + unitToMove);}
         if(unitToMove == null) 
             return false;                
                 
@@ -801,6 +807,17 @@ public class LoadStoreOptimizer
             h -= ((Inst)current).getOutCount();                
             if(h < 0 ){
                 if(debug) { System.out.println("1006:(LoadStoreOptimizer@stackIndependent): Stack went negative while trying to reorder code.");}
+
+
+
+		if(flag == 1) {
+		    if(current instanceof DupInst) {
+			block.remove(unitToMove);
+			block.insertAfter(unitToMove, current);	
+			//			block.insertAfter(  new BSwapInst(  )     ,unitToMove);
+		    }
+		    
+		}
                 return false;
             }
             h += ((Inst)current).getInCount();
@@ -852,16 +869,7 @@ public class LoadStoreOptimizer
 
     protected void replaceUnit(Unit aToReplace, Unit aReplacement) 
     {
-
 	replaceUnit(aToReplace, null, aReplacement);
-	/* Block block = (Block) mUnitToBlockMap.get(aToReplace);
-                    
-        block.insertAfter(aReplacement, aToReplace);
-        block.remove(aToReplace);
-        
-                                
-        // add the new unit the block map
-        mUnitToBlockMap.put(aReplacement, block);        */
     }
 
 
@@ -1017,7 +1025,7 @@ public class LoadStoreOptimizer
                         
                             Unit def0 = (Unit) defs.get(0);
                             Unit def1 = (Unit) defs.get(1);
-			    System.out.println("first>>>>" + mUnitToBlockMap.get(def0) + "second>>>>>> " + mUnitToBlockMap.get(def1) );
+			    
                             Block defBlock0 = (Block)  mUnitToBlockMap.get(def0);
                             Block defBlock1 = (Block)  mUnitToBlockMap.get(def1);
                             if(defBlock0 != loadBlock && defBlock1 != loadBlock && defBlock0 != defBlock1) {                                
@@ -1134,7 +1142,6 @@ public class LoadStoreOptimizer
     protected boolean propagateLoadForward(Unit aInst) 
     {
         Unit currentUnit;
-        Local loadLocal = ((LoadInst)aInst).getLocal();
         Block block  = (Block) mUnitToBlockMap.get(aInst);
         boolean res = false;
         int h = 0;
@@ -1148,13 +1155,17 @@ public class LoadStoreOptimizer
         while( currentUnit != block.getTail()) {
 	    
             if(!canMoveUnitOver(aInst,  currentUnit)){ if(debug) { System.out.println("can't go over: " + currentUnit);}
-                break;}
+	    break;}
             
 
             h -= ((Inst)currentUnit).getInCount();                
-            if(h < 0){ if(debug) { System.out.println("breaking at: " + currentUnit);}
-                break;
+            if(h < 0){
+		if(!(aInst instanceof Dup1Inst && currentUnit instanceof Dup1Inst)) {
+		    if(debug) { System.out.println("breaking at: " + currentUnit);}		
+		    break;
+		}
             }            
+	    
             h += ((Inst)currentUnit).getOutCount();
             
             if(h == 0){
@@ -1192,18 +1203,15 @@ public class LoadStoreOptimizer
 	    tempList.addAll(mUnits);
 	    Iterator it = tempList.iterator();
 	    
-        while(it.hasNext()) {
-            Unit u = (Unit) it.next();
-            if( u instanceof LoadInst) {
-		if(debug) { System.out.println("trying to push:"  + u);}
-                boolean res =propagateLoadForward(u);
-		if(!hasChanged)
-		    hasChanged = res;
-            } else if(u instanceof NopInst) {
-		Block block  = (Block) mUnitToBlockMap.get(u);
-		block.remove(u);
+	    while(it.hasNext()) {
+		Unit u = (Unit) it.next();
+		if( u instanceof LoadInst || u instanceof Dup1Inst) {
+		    if(debug) { System.out.println("trying to push:"  + u);}
+		    boolean res =propagateLoadForward(u);
+		    if(!hasChanged)
+			hasChanged = res;
+		}
 	    }
-        }
 	}
     }
 
@@ -1242,132 +1250,198 @@ public class LoadStoreOptimizer
 	    } 
 	}
     }
-    
-    void superDuper() {
-    	// compress a serie of loads using dup2's and dup's
-	{
-	    List tempList = new ArrayList();
-	    tempList.addAll(mUnits);
-	    Iterator it = tempList.iterator();
-	    while(it.hasNext()) {
-		Unit currentInst = (Unit) it.next();
-		   
-		if(currentInst instanceof LoadInst) {
-		    Block block = (Block) mUnitToBlockMap.get(currentInst);
+
+
+    void superDuper1() { 
+	List tempList = new ArrayList();
+	tempList.addAll(mUnits);
+	Iterator it = tempList.iterator();
+	boolean fetchUnit = true;
+	
+	while(it.hasNext()) {
+	    Unit currentInst = null;
+	    
+	    if(fetchUnit) {
+	       currentInst = (Unit) it.next();	       
+	    }
+	    fetchUnit = true;
+	    
+	    if(currentInst instanceof LoadInst) {
+		Block block = (Block) mUnitToBlockMap.get(currentInst);
+		
+		Local local = ((LoadInst)currentInst).getLocal();
 		    
-		    int loadCount = 1;
-		    Local local = ((LoadInst)currentInst).getLocal();
-		    
-		    // count the number of identical loads
-		    
-		    Unit u;
-		    for(;;){
+		// count the number of identical loads
+		
+		Unit u;
+		for(;;){
+		    if(it.hasNext()) {
 			u = (Unit) it.next();
 			if(mUnitToBlockMap.get(u) != block)
 			    break;
 			
 			if(u instanceof LoadInst) {
-			    if(((LoadInst)u).getLocal() == local)
-				loadCount++;
-			    else
+			    if(((LoadInst)u).getLocal() == local) {
+				replaceUnit(u, Baf.v().newDup1Inst(((LoadInst) u).getOpType()));
+
+			    } else {
+				fetchUnit =false;
 				break;
-			} else {
+			    }
+			} else {			
 			    break;
 			}
-		    }
-		    
-
-		    if(loadCount > 1) {
-			Type loadType = ((LoadInst)currentInst).getOpType();
-	
-			// must leave at least one load on stack before dupping
-			Unit currentLoad = (Unit) mUnits.getSuccOf(currentInst);
-			loadCount--; 
-		  
-			if(loadType instanceof LongType || loadType instanceof DoubleType) {
-				
-			 
-				
-			    while(loadCount > 0) {
-				Unit nextLoad = (Unit) mUnits.getSuccOf(currentLoad); 
-				replaceUnit(currentLoad,  Baf.v().newDup1Inst(loadType));						
-				    
-				currentLoad = nextLoad;				 
-				loadCount--;
-			    }				
-			} else {
-			    boolean canMakeDup2 = false;
-			    if(loadCount >= 3) {
-				canMakeDup2 = true;
-				currentLoad = (Unit) mUnits.getSuccOf(currentLoad);
-				loadCount--;
-			    }
-			    
-			    while(loadCount > 0) {
-				
-				if(loadCount == 1 || !canMakeDup2) {
-				    Unit nextLoad = (Unit) mUnits.getSuccOf(currentLoad); 
-				    replaceUnit(currentLoad,  Baf.v().newDup1Inst(loadType));						
-				    
-				    currentLoad = nextLoad;
-				    loadCount--;	
-				} else {
-				    if(canMakeDup2) {
-					Unit nextLoad = (Unit) mUnits.getSuccOf(mUnits.getSuccOf(currentLoad));
-					replaceUnit(currentLoad, (Unit) mUnits.getSuccOf(currentLoad),  Baf.v().newDup2Inst(loadType, loadType));  		  
-					currentLoad = nextLoad;
-					loadCount -= 2;	
-				    }
-				}			    				
-			    }
-			}
-		    }		    
-		    currentInst = u;
+		    } else 
+			break;
 		}		
 	    }
 	}
     }
+
+
     
-    void peephole() {
-       boolean hasChanged = true;
-       
-       while(hasChanged) {
-           hasChanged = false;
-           List tempList = new ArrayList();
-             tempList.addAll(mUnits);
-           
-           Iterator it = tempList.iterator();
-           while(it.hasNext() ) {
-               Unit currentUnit = (Unit) it.next();
-               if(currentUnit instanceof PopInst) {
-                   Block popBlock = (Block) mUnitToBlockMap.get(currentUnit);
-                   Unit prev = (Unit) popBlock.getPredOf(currentUnit);
-                   Unit succ = (Unit) popBlock.getSuccOf(currentUnit);
-                   
-                   if(prev instanceof LoadInst || prev instanceof PushInst) 
-                       if(((AbstractInst)prev).getOutMachineCount() == ((AbstractInst)currentUnit).getInMachineCount()) {
-                           popBlock.remove(prev);
-                           popBlock.remove(currentUnit);
-                       }
-                       else if(succ instanceof ReturnInst) {
-                           popBlock.remove(currentUnit);
-                           popBlock.remove(succ);
-                       }                                   
-               }
-           }       
-       }
-     }
+	    void superDuper() {
+		// compress a serie of loads using dup2's and dup's
+		{
+		    List tempList = new ArrayList();
+		    tempList.addAll(mUnits);
+		    Iterator it = tempList.iterator();
+		    while(it.hasNext()) {
+			Unit currentInst = (Unit) it.next();
+		   
+			if(currentInst instanceof LoadInst) {
+			    Block block = (Block) mUnitToBlockMap.get(currentInst);
+		    
+			    int loadCount = 1;
+			    Local local = ((LoadInst)currentInst).getLocal();
+		    
+			    // count the number of identical loads
+		    
+			    Unit u;
+			    for(;;){
+				u = (Unit) it.next();
+				if(mUnitToBlockMap.get(u) != block)
+				    break;
+			
+				if(u instanceof LoadInst) {
+				    if(((LoadInst)u).getLocal() == local)
+					loadCount++;
+				    else
+					break;
+				} else {
+				    break;
+				}
+			    }
+		    
 
-
-
-
-
-
-    class statistics {
+			    if(loadCount > 1) {
+				Type loadType = ((LoadInst)currentInst).getOpType();
 	
-	private int mSLL = 0;
-	private int mSL = 0;
-	private String methodName;
+				// must leave at least one load on stack before dupping
+				Unit currentLoad = (Unit) mUnits.getSuccOf(currentInst);
+				loadCount--; 
+		  
+				if(loadType instanceof LongType || loadType instanceof DoubleType) {
+				
+			 
+				
+				    while(loadCount > 0) {
+					Unit nextLoad = (Unit) mUnits.getSuccOf(currentLoad); 
+					replaceUnit(currentLoad,  Baf.v().newDup1Inst(loadType));						
+				    
+					currentLoad = nextLoad;				 
+					loadCount--;
+				    }				
+				} else {
+				    boolean canMakeDup2 = false;
+				    if(loadCount >= 3) {
+					canMakeDup2 = true;
+					currentLoad = (Unit) mUnits.getSuccOf(currentLoad);
+					loadCount--;
+				    }
+			    
+				    while(loadCount > 0) {
+				
+					if(loadCount == 1 || !canMakeDup2) {
+					    Unit nextLoad = (Unit) mUnits.getSuccOf(currentLoad); 
+					    replaceUnit(currentLoad,  Baf.v().newDup1Inst(loadType));						
+				    
+					    currentLoad = nextLoad;
+					    loadCount--;	
+					} else {
+					    if(canMakeDup2) {
+						Unit nextLoad = (Unit) mUnits.getSuccOf(mUnits.getSuccOf(currentLoad));
+						replaceUnit(currentLoad, (Unit) mUnits.getSuccOf(currentLoad),  Baf.v().newDup2Inst(loadType, loadType));  		  
+						currentLoad = nextLoad;
+						loadCount -= 2;	
+					    }
+					}			    				
+				    }
+				}
+			    }		    
+			    currentInst = u;
+			}		
+		    }
+		}
+	    }
+    
+	    void peephole() {
+		boolean hasChanged = true;
+       
+		while(hasChanged) {
+		    hasChanged = false;
+		    List tempList = new ArrayList();
+		    tempList.addAll(mUnits);
+           
+		    Iterator it = tempList.iterator();
+		    while(it.hasNext() ) {
+			Unit currentUnit = (Unit) it.next();
+			if(currentUnit instanceof PopInst) {
+			    Block popBlock = (Block) mUnitToBlockMap.get(currentUnit);
+			    Unit prev = (Unit) popBlock.getPredOf(currentUnit);
+			    Unit succ = (Unit) popBlock.getSuccOf(currentUnit);
+                   
+			    if(prev instanceof LoadInst || prev instanceof PushInst) 
+				if(((AbstractInst)prev).getOutMachineCount() == ((AbstractInst)currentUnit).getInMachineCount()) {
+				    popBlock.remove(prev);
+				    popBlock.remove(currentUnit);
+				}
+				else if(succ instanceof ReturnInst) {
+				    popBlock.remove(currentUnit);
+				    popBlock.remove(succ);
+				}                                   
+			}
+		    }       
+		}
+	    }
+
+
+    
+	    int specialCase(Unit from, Unit to, Block block) 
+		{
+		    Unit current = (Unit) mUnits.getSuccOf(from);
+		    while(current != to ) {
+			if(current instanceof FieldGetInst ) {
+			    if(!isRequiredByFollowingUnits(current, to)) {
+				if(tryToMoveUnit(current, block, from, to, 0) ) {
+				    if(debug) {System.out.println("specialcase reports success!");}
+				    return MAKE_DUP1_X1;		    		
+				}
+			    }
+		
+			}
+			current =  (Unit) mUnits.getSuccOf(current);
+		    }
+	
+		    return FAILURE;
+		}
+    
+
+	    class statistics {
+	
+		private int mSLL = 0;
+		private int mSL = 0;
+		private String methodName;
 	
 	void setMethodName(String aMethodName){methodName = aMethodName;}
 	void madeSL(){mSL++;};
