@@ -27,7 +27,7 @@ package soot.util.queue;
  * <b>after</b> the QueueReader was created.
  * @author Ondrej Lhotak
  */
-public class QueueReader
+public class QueueReader implements java.util.Iterator
 { 
     private Object[] q;
     private int index;
@@ -56,6 +56,10 @@ public class QueueReader
             if (q[index] == null) return false;
         }
         return true;
+    }
+
+    public final void remove() {
+        throw new UnsupportedOperationException();
     }
 
     public final Object clone() {
