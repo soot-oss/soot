@@ -513,9 +513,9 @@ public abstract class Body
         // Print out statements
         // Use an external class so that it can be overridden.
         if(debug) {
-            // StmtPrinter.printDebugStatementsInBody(this, out, isPrecise, isNumbered);
+            Scene.v().getJimpleStmtPrinter().printDebugStatementsInBody(this, out, isPrecise);
         } else {
-            StmtPrinter.printStatementsInBody(this, out, isPrecise, isNumbered);
+            Scene.v().getJimpleStmtPrinter().printStatementsInBody(this, out, isPrecise, isNumbered);
         }
         
         out.println("    }");

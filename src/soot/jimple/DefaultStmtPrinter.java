@@ -35,13 +35,18 @@ import soot.toolkits.graph.*;
 /** This class implements the <code>printStatementsInBody</code> method,
   * which writes out a JimpleBody to a PrintWriter.
   *
-  * Users may choose to replace this class with another soot.jimple.StmtPrinter
-  * class closer to the beginning of their CLASSPATH in order to provide
-  * custom printing of .jimple files, for instance to include analysis results. */
-public class StmtPrinter
+  * Users may choose to replace this class with another StmtPrinter
+  * implementation, for instance to include analysis results. This should
+  * be done by setting the JimpleStmtPrinter in the Scene. */
+public class DefaultStmtPrinter implements StmtPrinter
 {
+    private static DefaultStmtPrinter instance = new DefaultStmtPrinter();
+    private DefaultStmtPrinter() {}
+
+    public static DefaultStmtPrinter v() { return instance; }
+
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
-    public  static void printStatementsInBody(Body body, java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
+    public void printStatementsInBody(Body body, java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
     {
         Chain units = body.getUnits();
 
@@ -160,12 +165,9 @@ public class StmtPrinter
 
     }
 
-
-
     // moved here from body ; should be factorized with the above
-    public static void printDebugStatementsInBody(Body b, java.io.PrintWriter out, boolean isPrecise)
+    public void printDebugStatementsInBody(Body b, java.io.PrintWriter out, boolean isPrecise)
     {
-        
         Map stmtToName = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
 
         // Create statement name table
