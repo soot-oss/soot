@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,32 +17,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-
 package soot;
 
 import soot.*;
-import soot.util.*;
-import java.util.*;
-import java.io.*;
 
-/** A local variable, used within Body
- * classes.  Intermediate representations must use an implementation
- * of Local for their local variables.
+/** A local or constant.
  *  */
-public interface Local extends Value, Numberable, Immediate
+public interface Immediate extends Value
 {
-    /** Returns the name of the current Local variable. */
-    public String getName();
-
-    /** Sets the name of the current variable. */
-    public void setName(String name);
-
-    /** Sets the type of the current variable. */
-    public void setType(Type t);
 }

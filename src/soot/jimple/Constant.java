@@ -35,7 +35,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public abstract class Constant implements Value, ConvertToBaf
+public abstract class Constant implements Value, ConvertToBaf, Immediate
 {
     public List getUseBoxes()
     {
