@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <xsl:stylesheet version="1.0"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:include href="to_latex.xsl"/>
 <xsl:output method="text" indent="no"/>
 
 <xsl:template match="/">
@@ -80,7 +81,7 @@ belonging to the various Packs of Soot.
 </xsl:template>
 
 <xsl:template name="phase_section">
-<xsl:value-of select="long_desc|short_desc"/>
+<xsl:apply-templates mode="to_latex" select="long_desc|short_desc"/>
 
 \paragraph{Options} 
 
@@ -96,7 +97,7 @@ belonging to the various Packs of Soot.
 <xsl:when test="value/default"><xsl:for-each select="value"><xsl:if test="default"><xsl:value-of select="alias"/></xsl:if></xsl:for-each></xsl:when>
 <xsl:otherwise>false</xsl:otherwise>
 </xsl:choose>})
-<xsl:value-of select="short_desc"/>
+<xsl:apply-templates mode="to_latex" select="short_desc"/>
 <xsl:text>
 
 </xsl:text>
@@ -109,7 +110,7 @@ Allowed values:\\
 &amp;
 <xsl:value-of select="name"/>
 &amp;
-<xsl:value-of select="long_desc|short_desc"/>\\
+<xsl:apply-templates mode="to_latex" select="long_desc|short_desc"/>\\
 </xsl:for-each>
 \end{tabular}
 
@@ -117,7 +118,7 @@ Allowed values:\\
 <xsl:text>
 
 </xsl:text>
-<xsl:value-of select="long_desc"/>
+<xsl:apply-templates mode="to_latex" select="long_desc"/>
 </xsl:template>
 </xsl:stylesheet>
 

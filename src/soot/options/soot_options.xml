@@ -202,7 +202,7 @@ the types of local variables.
 					<short_desc/>
 					<long_desc>Soot will aggregate
 both regular locals and stack locals.
-(See the {\tt jop.cp}    phase for more information). 
+(See the <tt>jop.cp</tt>    phase for more information). 
 This options will suppress the `no-aggregating&apos; 
 option.
 </long_desc>
@@ -211,9 +211,9 @@ option.
 					<name>No Aggregating</name>
 					<alias>no-aggregating</alias>
 					<short_desc/>
-					<long_desc> If {\tt `aggregate-all-locals&apos;} is not
+					<long_desc> If <tt>`aggregate-all-locals&apos;</tt> is not
 specified, then disable the aggregation of locals for Jimple
-Body&apos;s. This subsumes {\tt `only-stack-locals&apos;} in the `jb.asv&apos;
+Body&apos;s. This subsumes <tt>`only-stack-locals&apos;</tt> in the `jb.asv&apos;
 phase.
 </long_desc>
 				</boolopt>
@@ -263,11 +263,11 @@ names tightly, using a graph coloring algorithm.
 					<alias>jb.asv</alias>
 					<long_desc>
 This phase handles the aggregation of stack variables for Jimple.
-For a full description of aggregation, see \cite{ccPaper}.  Briefly, 
+For a full description of aggregation, see <cite>ccPaper</cite>.  Briefly, 
 aggregation finds instances where some expression has a single use; it replaces
 the use with the expression itself.
 
-This phase is deactivated by the {\tt `no-aggregating&apos;} option in the {\tt jb} 
+This phase is deactivated by the <tt>`no-aggregating&apos;</tt> option in the <tt>jb</tt> 
 phase.
                         
                         </long_desc>
@@ -336,7 +336,7 @@ executes when `use-original-names&apos; is not chosen.
 					<alias>jb.cp</alias>
 					<long_desc>
 This phase provides a cascaded copy propagator.  It is executed only
-when `{\tt no-cp}&apos; is not chosen in the `{\tt jb}&apos; phase.
+when `<tt>no-cp</tt>&apos; is not chosen in the `<tt>jb</tt>&apos; phase.
     
 If it encounters situations of the form: A: a = ...; B: ... x = a;
 C:... use (x); where a has only one definition, and x has only one
@@ -350,7 +350,7 @@ redefinitions of constants and copies in extended basic blocks.
 From bytecode, we get some number of declared locals; we call these
 ``regular locals&apos;&apos;.  In Jimple, we have converted the stack elements
 to locals.  The new locals thus introduced are called ``stack
-locals&apos;&apos;. These locals have names which usually begin with \$.  
+locals&apos;&apos;. These locals have names which usually begin with <dollar/>.  
 
 The default behaviour in this phase is to propagate only on the
 `stack&apos; locals.
@@ -504,16 +504,16 @@ this means that Jimple bodies are created for each method in the
 application, and analyses run on this set of Jimple bodies.  The
 application consists of one class, specified on the command-line, plus
 all classes referenced (directly or indirectly) by it.  It excludes
-classes in {\tt java.*}, {\tt javax.*}, and {\tt sun.*}.  This mode is
-triggered by the {\tt -}{\tt -app} option.
+classes in <tt>java.*</tt>, <tt>javax.*</tt>, and <tt>sun.*</tt>.  This mode is
+triggered by the <tt>-</tt><tt>-app</tt> option.
 
 In whole-program mode, Soot will always apply the contents of the
 Whole-Jimple transformation pack to each method under analysis.  This
 occurs after all Jimple bodies have been created.  This pack is called
-{\tt wjtp}.  In an
-unmodified version of Soot, the only transformation in {\tt wjtp} is the
+<tt>wjtp</tt>.  In an
+unmodified version of Soot, the only transformation in <tt>wjtp</tt> is the
 Spark pointer analysis kit. Spark has many options, which are
-listed at \htmladdnormallink{http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps}{spark.ps}.
+listed at <a href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps">spark.ps</a>.
 
                         </long_desc>
 				<boolopt>
@@ -584,7 +584,7 @@ rather than only those deemed reachable by the points-to analysis.
 							<long_desc>
 Setting VTA to true has the effect of setting ignoreBaseObjects,
 typesForSites, and simplifySCCs to true to simulate Variable Type
-Analysis, described in~\cite{sund.hend.ea00}. Note that the
+Analysis, described in <cite>sund.hend.ea00</cite>. Note that the
 algorithm differs from the original VTA in that it handles array
 elements more precisely. To use the results of the analysis to trim the
 invoke graph, set the trimInvokeGraph option to true as well.
@@ -597,7 +597,7 @@ invoke graph, set the trimInvokeGraph option to true as well.
 							<long_desc>
 Setting RTA to true sets typesForSites to true, and causes Spark to use
 a single points-to set for all variables, giving Rapid Type
-Analysis~\cite{baco.swee96}.
+Analysis <cite>baco.swee96</cite>.
 To use the results of the analysis to trim the invoke graph, set the
 trimInvokeGraph option to true as well.
         </long_desc>
@@ -629,7 +629,7 @@ used as the elements of the points-to sets.
 							<default>true</default>
 							<long_desc>
 When this option is set to true, all allocation sites creating
-{\tt java.lang.StringBuffer} objects are grouped together as a single
+<tt>java.lang.StringBuffer</tt> objects are grouped together as a single
 allocation site.
         </long_desc>
 						</boolopt>
@@ -647,7 +647,7 @@ When this option is set to true, effects of native methods are simulated.
 							<default>false</default>
 							<long_desc>
 When this option is set to true, all edges connecting variable (Green)
-nodes are made bidirectional, as in Steensgaard&apos;s analysis~\cite{stee96*1}.
+nodes are made bidirectional, as in Steensgaard&apos;s analysis <cite>stee96*1</cite>.
         </long_desc>
 						</boolopt>
 						<boolopt>
@@ -974,17 +974,17 @@ tags, and printed with the resulting Jimple code.
 				<name>Whole-Jimple Optimization Pack</name>
 				<alias>wjop</alias>
 				<long_desc>
-To run optimizing transformations on the whole program, use the {\tt -W}
+To run optimizing transformations on the whole program, use the <tt>-W</tt>
 command-line option.  This tells Soot that the whole-jimple
-optimization pack is to be applied (phase name {\tt wjop}).
+optimization pack is to be applied (phase name <tt>wjop</tt>).
 
 The default behaviour of this Pack has static method binding disabled
 and static inlining enabled.  To reverse this, give the options
-{\tt -p wjop.smb disabled:false -p wjop.si disabled}.
+<tt>-p wjop.smb disabled:false -p wjop.si disabled</tt>.
 
 By default, static method binding  and static inlining uses Class
 Hierarchy Analysis (CHA) to identify monomophic call sites. Changing
-the {\tt VTA-passes} option can cause them to use Variable-Type 
+the <tt>VTA-passes</tt> option can cause them to use Variable-Type 
 Analysis (VTA) once or several times rather than CHA.
 
                         </long_desc>
@@ -1035,9 +1035,9 @@ exception is thrown.
 Inserts extra casts for the verifier.  The verifier will
 complain if the target uses `this&apos; (so we have to pass an extra
 parameter), and the argument passed to the method is not the same
-type.  For instance, {\tt Bottle.price\_static} is a method which takes a
+type.  For instance, <tt>Bottle.price<uscore/>static</tt> is a method which takes a
 Cost object, and Cost is an interface implemented by Bottle.  We must
-then cast the Cost to a Bottle before passing it to {\tt price\_static}.
+then cast the Cost to a Bottle before passing it to <tt>price<uscore/>static</tt>.
                         </long_desc>
 					</boolopt>
 					<multiopt>
@@ -1102,14 +1102,14 @@ Note that the modifier ``static&apos;&apos; is supposed to be compared to a
 						<alias>insert-null-checks</alias>
 						<default>true</default>
 						<short_desc/>
-						<long_desc>As in {\tt StaticMethodBinder}.</long_desc>
+						<long_desc>As in <tt>StaticMethodBinder</tt>.</long_desc>
 					</boolopt>
 					<boolopt>
 						<name>Insert Redundant Casts</name>
 						<alias>insert-redundant-casts</alias>
 						<default>true</default>
 						<short_desc/>
-						<long_desc>As in {\tt StaticMethodBinder}.</long_desc>
+						<long_desc>As in <tt>StaticMethodBinder</tt>.</long_desc>
 					</boolopt>
 					<multiopt>
 						<name>Allow Modifier Changes</name>
@@ -1131,7 +1131,7 @@ Note that the modifier ``static&apos;&apos; is supposed to be compared to a
 							<short_desc/>
 						</value>
 						<short_desc/>
-						<long_desc>As in {\tt StaticMethodBinder}.</long_desc>
+						<long_desc>As in <tt>StaticMethodBinder</tt>.</long_desc>
 					</multiopt>
 					<flopt>
 						<name>Expansion Factor</name>
@@ -1229,7 +1229,7 @@ the parameter.
 					<short_desc/>
 					<long_desc>
 Soot will always apply the contents of the Jimple transformation pack
-to each method under analysis.  This pack is called {\tt jtp}.  There are
+to each method under analysis.  This pack is called <tt>jtp</tt>.  There are
 no transformations in this pack in an unmodified version of Soot.
 
                     </long_desc>
@@ -1239,10 +1239,10 @@ no transformations in this pack in an unmodified version of Soot.
 				<name>Jimple Optimizations Pack</name>
 				<alias>jop</alias>
 				<long_desc>
-When Soot is given the {\tt -O} command-line option, the {\tt
-JimpleOptimizationPack} is applied to every JimpleBody in an
+When Soot is given the <tt>-O</tt> command-line option, the 
+<tt>JimpleOptimizationPack</tt> is applied to every JimpleBody in an
 application class.  This section lists the default transformations in
-the {\tt JimpleOptimizationPack}.
+the <tt>JimpleOptimizationPack</tt>.
                         </long_desc>
 				<boolopt>
 					<name>Disabled</name>
@@ -1267,8 +1267,8 @@ need not be.  A better implementation would implicitly compute the kill
 sets at every node.
 
 Because of the current slowness, this transformation is not enabled in
-the default settings.  To enable it, specify {\tt -p jop.cse
-disabled:false} on the command line.
+the default settings.  To enable it, specify <tt>-p jop.cse
+disabled:false</tt> on the command line.
 
                         </long_desc>
 					<boolopt>
@@ -1291,12 +1291,12 @@ disabled:false} on the command line.
 					<long_desc>
 Busy Code Motion is a straightforward implementation of Partial
 Redundancy Elimination. This implementation is not very aggressive.
-The Lazy Code Motion, described in section \ref{sec:lcm}
+The Lazy Code Motion
 is an improved version of the Busy Code Motion, and should be used
 instead of it.
 
 Busy Code Motion is not enabled by default. To enable it, specify
-{\tt -p jop.bcm disabled:false} on the command line.
+<tt>-p jop.bcm disabled:false</tt> on the command line.
 
                         </long_desc>
 					<boolopt>
@@ -1320,13 +1320,13 @@ Busy Code Motion is not enabled by default. To enable it, specify
 					<long_desc>
 Lazy Code Motion is the enhanced version of the Busy Code Motion, a
 Partial Redundancy Eliminator. Before doing Partial Redundancy Elimination,
-this optimization performs loop inversion (turning {\tt while} loops
-into {\tt do while} loops inside an {\tt if} statement).
+this optimization performs loop inversion (turning <tt>while</tt> loops
+into <tt>do while</tt> loops inside an <tt>if</tt> statement).
 This allows the Partial Redundancy Eliminator
-to optimize loop invariants of {\tt while} loops.
+to optimize loop invariants of <tt>while</tt> loops.
 
 By default, this transformation is disabled. To enable it, specify
-{\tt -p jop.lcm disabled:false} on the command line.
+<tt>-p jop.lcm disabled:false</tt> on the command line.
 
                         </long_desc>
 					<boolopt>
@@ -1359,22 +1359,20 @@ By default, this transformation is disabled. To enable it, specify
 						<long_desc>This option
 controls how fields and exception-throwing statements are
 treated.
-\begin{itemize}
-\item {\tt safe} is safe, but only considers additions,
+<tt>safe</tt> is safe, but only considers additions,
 subtractions and multiplications.
-\item {\tt medium} is unsafe in multi-threaded environment, as
+<tt>medium</tt> is unsafe in multi-threaded environment, as
 already performed field accesses are reused.
-\item {\tt unsafe} moves exception-throwing statements, and
+<tt>unsafe</tt> moves exception-throwing statements, and
 reorders them. They are potentially moved out of
-{\tt try-catch}-blocks.
-\end{itemize}
+<tt>try-catch</tt>-blocks.
 </long_desc>
 					</multiopt>
 					<boolopt>
 						<name>Unroll</name>
 						<alias>unroll</alias>
 						<short_desc/>
-						<long_desc>if {\tt true},
+						<long_desc>if <tt>true</tt>,
 loop inversion is performed before doing the
 transformation.
 </long_desc>
@@ -1431,8 +1429,8 @@ expressions (i.e. 2 * 3).
 					<name>Conditional Branch Folder</name>
 					<alias>jop.cbf</alias>
 					<long_desc>
-Statically evaluates the condition-expression of Jimple {\tt
-IfStmt}s.  If the condition is identically `true&apos; or `false&apos;,
+Statically evaluates the condition-expression of Jimple 
+<tt>IfStmt</tt>s.  If the condition is identically `true&apos; or `false&apos;,
 changes the conditional branch instruction to a `goto&apos; statement.
 
                         </long_desc>
@@ -1448,10 +1446,9 @@ changes the conditional branch instruction to a `goto&apos; statement.
 					<alias>jop.dae</alias>
 					<long_desc>
 This phase eliminates assignment statements (to locals) with no uses.
-See section \ref{dae}.
 
-In this incarnation, the default value for {\tt only-stack-locals}
-is {\tt false}.
+In this incarnation, the default value for <tt>only-stack-locals</tt>
+is <tt>false</tt>.
 
                         </long_desc>
 					<boolopt>
@@ -1496,12 +1493,12 @@ Removes unreachable codes and empty traps.
 					<long_desc>
 Removes unnecessary `goto&apos; statements from a JimpleBody.
 
-If a {\tt GotoStmt}&apos;s target is the next instruction, then it is
-removed.  If a {\tt GotoStmt} {\tt x}&apos;s target is another {\tt GotoStmt},
-with target {\tt y}, then {\tt x}&apos;s target can be changed to {\tt y}&apos;s target.
+If a <tt>GotoStmt</tt>&apos;s target is the next instruction, then it is
+removed.  If a <tt>GotoStmt</tt> <tt>x</tt>&apos;s target is another <tt>GotoStmt</tt>,
+with target <tt>y</tt>, then <tt>x</tt>&apos;s target can be changed to <tt>y</tt>&apos;s target.
 
-If some {\tt IfStmt}&apos;s target is a {\tt GotoStmt}, then the
-{\tt IfStmt}&apos;s target can be updated to the {\tt GotoStmt}&apos;s target.
+If some <tt>IfStmt</tt>&apos;s target is a <tt>GotoStmt</tt>, then the
+<tt>IfStmt</tt>&apos;s target can be updated to the <tt>GotoStmt</tt>&apos;s target.
         
 (These situations could result from other optimizations; after folding
 branches, we might generate more unreachable code.)
@@ -1555,8 +1552,8 @@ separate phases and phase options.
 					<phaseopt_class>NPCOptions</phaseopt_class>
 					<alias>jap.npc</alias>
 					<long_desc>
-The null pointer check analysis has the phase name {\tt jtp.npc}. 
-It has one phase option (aside from the default {\tt disabled} option). 
+The null pointer check analysis has the phase name <tt>jtp.npc</tt>. 
+It has one phase option (aside from the default <tt>disabled</tt> option). 
 
                         </long_desc>
 					<boolopt>
@@ -1575,7 +1572,7 @@ It has one phase option (aside from the default {\tt disabled} option).
   are annotated with the analysis result. When this option 
   is set to true, Soot will annotate only array-referencing 
   bytecodes with null pointer check information; other bytecodes, 
-  such as {\tt getfield} and {\tt putfield}, will not be annotated. 
+  such as <tt>getfield</tt> and <tt>putfield</tt>, will not be annotated. 
                         </long_desc>
 					</boolopt>
 					<boolopt>
@@ -1590,9 +1587,9 @@ It has one phase option (aside from the default {\tt disabled} option).
 					<phaseopt_class>ABCOptions</phaseopt_class>
 					<alias>jap.abc</alias>
 					<long_desc>
-The array bounds check analysis has the phase name {\tt jtp.abc}. 
+The array bounds check analysis has the phase name <tt>jtp.abc</tt>. 
 If whole-program analysis is required, an extra
-phase {\tt wjtp2.ra} for finding rectangular arrays occurs.
+phase <tt>wjtp2.ra</tt> for finding rectangular arrays occurs.
                         </long_desc>
 					<boolopt>
 						<name>Disabled</name>
@@ -1607,7 +1604,7 @@ phase {\tt wjtp2.ra} for finding rectangular arrays occurs.
 						<short_desc/>
 						<long_desc>
 A macro.  Instead of typing a long string of phase options, this option 
-will turn on all options of the phase ``{\tt jtp.abc}&apos;&apos;.
+will turn on all options of the phase ``<tt>jtp.abc</tt>&apos;&apos;.
                         </long_desc>
 					</boolopt>
 					<boolopt>
@@ -1616,7 +1613,7 @@ will turn on all options of the phase ``{\tt jtp.abc}&apos;&apos;.
 						<short_desc/>
 						<long_desc>
 The analysis treats field references (static and instance) as common
-subexpressions. The restrictions from the `{\tt with-arrayref}&apos; option also
+subexpressions. The restrictions from the `<tt>with-arrayref</tt>&apos; option also
 apply. 
                         </long_desc>
 					</boolopt>
@@ -1640,10 +1637,10 @@ references.
 						<short_desc/>
 						<long_desc>
 The analysis will consider common subexpressions.  For example,
-  consider the situation where {\tt r1} is assigned {\tt a*b}; later,
-  {\tt r2} is assigned {\tt a*b}, where both {\tt a} and {\tt b} have
+  consider the situation where <tt>r1</tt> is assigned <tt>a*b</tt>; later,
+  <tt>r2</tt> is assigned <tt>a*b</tt>, where both <tt>a</tt> and <tt>b</tt> have
   not been changed between the two statements. The analysis can
-  conclude that {\tt r2} has the same value as {\tt r1}. Experiments
+  conclude that <tt>r2</tt> has the same value as <tt>r1</tt>. Experiments
   show that this option can improve the result slightly.
                         </long_desc>
 					</boolopt>
