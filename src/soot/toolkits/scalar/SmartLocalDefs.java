@@ -32,6 +32,8 @@ import java.util.*;
  */
 public class SmartLocalDefs implements LocalDefs
 {
+    private final Map answer;
+
     private final LiveLocals live;
     private final Map localToDefs; // for each local, set of units
                                    // where it's defined
@@ -55,7 +57,7 @@ public class SmartLocalDefs implements LocalDefs
             final Unit u = (Unit) uIt.next();
             Local l = localDef(u);
             if( l == null ) continue;
-            FlowSet s = defsOf(l);
+            HashSet s = defsOf(l);
             s.add(u);
         }
 
@@ -63,15 +65,10 @@ public class SmartLocalDefs implements LocalDefs
             G.v().out.println("[" + g.getBody().getMethod().getName() +
                                "]        done localToDefs map..." );
 
+outer:
         for( Iterator uIt = g.iterator(); uIt.hasNext(); ) {
-
             final Unit u = (Unit) uIt.next();
-            FlowSet mask = new ArraySparseSet();
-            for( Iterator liveLocalIt = live.getLiveLocalsAfter(u).iterator(); liveLocalIt.hasNext(); ) {
-                final Local liveLocal = (Local) liveLocalIt.next();
-                mask.union(defsOf(liveLocal));
-            }
-            unitToMask.put(u, mask);
+            unitToMask.put(u, new HashSet(live.getLiveLocalsAfter(u)));
         }
 
         if(Options.v().verbose())
@@ -80,6 +77,18 @@ public class SmartLocalDefs implements LocalDefs
 
         analysis = new LocalDefsAnalysis(graph);
 
+        answer = new HashMap();
+        for( Iterator uIt = graph.iterator(); uIt.hasNext(); ) {
+            final Unit u = (Unit) uIt.next();
+            for( Iterator vbIt = u.getUseBoxes().iterator(); vbIt.hasNext(); ) {
+                final ValueBox vb = (ValueBox) vbIt.next();
+                Value v = vb.getValue();
+                if( !(v instanceof Local) ) continue;
+                HashSet ret = new HashSet(defsOf((Local)v));
+                ret.retainAll((HashSet)analysis.getFlowBefore(u));
+                answer.put(new Cons(u, v), new ArrayList(ret));
+            }
+        }
         if(Options.v().time())
             Timers.v().defsTimer.end();
 
@@ -96,9 +105,9 @@ public class SmartLocalDefs implements LocalDefs
         if( !(v instanceof Local) ) return null;
         return (Local) v;
     }
-    private FlowSet defsOf( Local l ) {
-        FlowSet ret = (FlowSet)localToDefs.get(l);
-        if( ret == null ) localToDefs.put( l, ret = new ArraySparseSet() );
+    private HashSet defsOf( Local l ) {
+        HashSet ret = (HashSet)localToDefs.get(l);
+        if( ret == null ) localToDefs.put( l, ret = new HashSet() );
         return ret;
     }
 
@@ -108,53 +117,57 @@ public class SmartLocalDefs implements LocalDefs
             doAnalysis();
         }
         protected void merge(Object inoutO, Object inO) {
-            FlowSet inout = (FlowSet) inoutO;
-            FlowSet in = (FlowSet) inO;
+            HashSet inout = (HashSet) inoutO;
+            HashSet in = (HashSet) inO;
 
-            inout.union(in);
+            inout.addAll(in);
         }
         protected void merge(Object in1, Object in2, Object out) {
-            FlowSet inSet1 = (FlowSet) in1;
-            FlowSet inSet2 = (FlowSet) in2;
-            FlowSet outSet = (FlowSet) out;
+            HashSet inSet1 = (HashSet) in1;
+            HashSet inSet2 = (HashSet) in2;
+            HashSet outSet = (HashSet) out;
 
-            inSet1.union(inSet2, outSet);
+            outSet.clear();
+            outSet.addAll(inSet1);
+            outSet.addAll(inSet2);
         }
         protected void flowThrough(Object inValue, Object unit, Object outValue) {
             Unit u = (Unit) unit;
-            FlowSet in = (FlowSet) inValue;
-            FlowSet out = (FlowSet) outValue;
-            Local l = localDef(u);
-            in.copy(out);
-            if( l != null ) {
-                out.difference(defsOf(l));
-                out.add(u);
+            HashSet in = (HashSet) inValue;
+            HashSet out = (HashSet) outValue;
+            out.clear();
+            Set mask = (Set) unitToMask.get(u);
+            for( Iterator inUIt = in.iterator(); inUIt.hasNext(); ) {
+                final Unit inU = (Unit) inUIt.next();
+                if( mask.contains(localDef(inU)) ) out.add(inU);
             }
-            out.intersection((FlowSet)unitToMask.get(u));
+            Local l = localDef(u);
+            if( l != null ) {
+                out.removeAll(defsOf(l));
+                if(mask.contains(localDef(u))) out.add(u);
+            }
         }
     
         protected void copy(Object source, Object dest) {
-            FlowSet sourceSet = (FlowSet) source;
-            FlowSet destSet   = (FlowSet) dest;
+            HashSet sourceSet = (HashSet) source;
+            HashSet destSet   = (HashSet) dest;
                 
-            sourceSet.copy(destSet);
+            destSet.clear();
+            destSet.addAll(sourceSet);
         }
 
         protected Object newInitialFlow() {
-            return new ArraySparseSet();
+            return new HashSet();
         }
 
         protected Object entryInitialFlow() {
-            return new ArraySparseSet();
+            return new HashSet();
         }
     }
 
     public List getDefsOfAt(Local l, Unit s)
     {
-        FlowSet ret = new ArraySparseSet();
-        defsOf(l).copy(ret);
-        ret.intersection((FlowSet)analysis.getFlowBefore(s));
-        return ret.toList();
+        return (List) answer.get(new Cons(s, l));
     }
 
 }
