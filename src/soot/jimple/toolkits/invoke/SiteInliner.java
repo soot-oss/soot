@@ -31,6 +31,7 @@ import soot.jimple.toolkits.scalar.*;
 import java.util.*;
 import soot.util.*;
 
+/** Provides methods to inline a given invoke site. */
 public class SiteInliner
 {
     public String getDefaultOptions() 
@@ -43,6 +44,8 @@ public class SiteInliner
         inlineSites(sites, new HashMap());
     }
 
+    /** Iterates over a list of sites, inlining them in order. 
+     * Each site is given as a 3-element list (inlinee, toInline, container). */
     public static void inlineSites(List sites, Map options)
     {
         Iterator it = sites.iterator();
@@ -57,6 +60,8 @@ public class SiteInliner
         }
     }
 
+    /** Inlines the method <code>inlinee</code> into the <code>container</code>
+     * at the point <code>toInline</code>. */
     public static void inlineSite(SootMethod inlinee, Stmt toInline, 
                                     SootMethod container)
     {

@@ -30,6 +30,8 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
+/** Provides an implementation of a flow universe, used by an implementation 
+ * of BoundedFlowSet to do complementation. */
 public class FlowUniverse
 {
     Object[] indexToObject;

@@ -37,7 +37,7 @@ import java.util.*;
 import java.util.*;
 
 /**
- * This class resolves the type of local variables.
+ * This transformer assigns types to local variables.
  **/
 public class TypeAssigner extends BodyTransformer
 {

@@ -33,7 +33,7 @@ import java.util.*;
 
 /**
  *   Abstract class that provides the fixed point iteration functionality
- *   required by all BackwardFlowAnalyses.
+ *   required by all ForwardFlowAnalyses.
  *  
  */
 public abstract class ForwardFlowAnalysis extends FlowAnalysis

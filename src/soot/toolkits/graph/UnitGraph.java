@@ -435,4 +435,20 @@ public class UnitGraph implements DirectedGraph
         return unitChain.iterator();
     }
 
+    public String toString() 
+    {
+        Iterator it = unitChain.iterator();
+        StringBuffer buf = new StringBuffer();
+        while(it.hasNext()) {
+            Unit u = (Unit) it.next();
+            
+            List l = new ArrayList(); l.addAll(getPredsOf(u));
+            buf.append("// preds "+l+"\n");
+            buf.append(u.toBriefString() + '\n');
+            l = new ArrayList(); l.addAll(getSuccsOf(u));
+            buf.append("// succs "+l+"\n");
+        }
+        
+        return buf.toString();
+    }
 }

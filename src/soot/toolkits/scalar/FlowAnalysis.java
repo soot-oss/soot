@@ -44,7 +44,7 @@ public abstract class FlowAnalysis
     protected Map unitToAfterFlow;
 
     /** The graph being analysed. */
-    DirectedGraph graph;
+    protected DirectedGraph graph;
 
     /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
     public FlowAnalysis(DirectedGraph graph)

@@ -3,6 +3,7 @@ package soot.jimple.toolkits.invoke;
 import soot.*;
 import soot.jimple.*;
 
+/** Methods for checking Java scope and visibiliity requirements. */
 public class AccessManager
 {
     /** Returns true iff target is legally accessible from container.
@@ -53,12 +54,14 @@ public class AccessManager
         return true;        
     }
 
+    /** Returns true if an access to <code>target</code> is legal from code in <code>container</code>. */
     public static boolean isAccessLegal(SootMethod container, SootClass target)
     {
         return target.isPublic() || 
             container.getDeclaringClass().getPackageName().equals(target.getPackageName());
     }
 
+    /** Modifies code so that an access to <code>target</code> is legal from code in <code>container</code>. */
     public static boolean ensureAccess(SootMethod container, ClassMember target, String options)
     {
         boolean allowChanges = !(options.equals("none"));
@@ -86,6 +89,7 @@ public class AccessManager
             return false;
     }
 
+    /** Modifies code so that an access to <code>target</code> is legal from code in <code>container</code>. */
     public static boolean ensureAccess(SootMethod container, SootClass target, String options)
     {
         boolean allowChanges = !(options.equals("none"));

@@ -4,6 +4,7 @@ import soot.*;
 import soot.jimple.*;
 import java.util.*;
 
+/** Methods for checking safety requirements for inlining. */
 public class InlinerSafetyManager
 {
     /** Returns true if this method can be inlined at the given site.

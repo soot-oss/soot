@@ -81,6 +81,7 @@ public class SourceLocator
     private static List previousLocations = null;
     private static String previousCP = null;
     private static int previousCPHashCode = 0;
+    private static boolean isRunningUnderBraindeadOS = System.getProperty("os.name").startsWith("Windows");
     
     /** Given a class name and class-path, returns an input stream for the given class. */
     public static InputStream getInputStreamOf(String classPath, String className) throws ClassNotFoundException
@@ -109,11 +110,12 @@ public class SourceLocator
 	    String userDir = System.getProperty("user.dir");
             for(boolean done = false; !done;)
             {
-		if(classPath.indexOf(fileSeparator) != 0)
-		    absolutePath = false;
-		else
-		    absolutePath = true;
-		
+                if(classPath.indexOf(fileSeparator) == 0 ||
+                         (isRunningUnderBraindeadOS && classPath.charAt(1) == ':'))
+                    absolutePath = true;
+                else
+                    absolutePath = false;
+
                 sepIndex = classPath.indexOf(pathSeparator);
 		
                 String candidate = null;

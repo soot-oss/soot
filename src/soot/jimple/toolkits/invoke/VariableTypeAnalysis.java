@@ -31,6 +31,9 @@ import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 
+/** Incomplete implementation of Variable Type Analysis (as defined in Vijay Sundaresan's thesis).
+ * It remains to implement some notion of a VTA-graph editor (for native methods); also, something
+ * needs to be done to properly account for start nodes. */
 public class VariableTypeAnalysis
 {
     VTATypeGraph vtg;
@@ -85,6 +88,7 @@ public class VariableTypeAnalysis
         }
     }
 
+    /** Uses the results of this analysis to trim the active invoke graph. */
     public void trimActiveInvokeGraph()
     {
         // Is there a better way to do this?

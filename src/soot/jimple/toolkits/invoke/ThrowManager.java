@@ -30,6 +30,7 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
+/** Utility methods for dealing with traps. */
 public class ThrowManager
 {
     /** Iterate through the statements in b (starting at the end), returning

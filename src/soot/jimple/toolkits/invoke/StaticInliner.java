@@ -32,6 +32,7 @@ import soot.toolkits.graph.*;
 import java.util.*;
 import soot.util.*;
 
+/** Uses the Scene's currently-active InvokeGraph to inline monomorphic call sites. */
 public class StaticInliner extends SceneTransformer
 {
     private static StaticInliner instance = new StaticInliner();

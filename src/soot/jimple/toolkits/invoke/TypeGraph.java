@@ -30,6 +30,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 
+/** A graph which contains types as nodes; used in VTA. */
 public interface TypeGraph extends MutableDirectedGraph
 {
 }

@@ -31,6 +31,8 @@ import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 
+/** A graph where the nodes are types in the analysed program;
+ * edges indicate that there is assignment between two types. */
 public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
 {
     int state;

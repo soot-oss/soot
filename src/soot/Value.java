@@ -38,7 +38,7 @@ import soot.*;
 public interface Value extends Switchable, EquivTo
 {
     /** Returns a List of boxes corresponding to Values 
-     * which are used by (i.e. contained within) this Value. */
+     * which are used by (ie contained within) this Value. */
     public List getUseBoxes();
 
     /** Returns the Soot type of this Value. */

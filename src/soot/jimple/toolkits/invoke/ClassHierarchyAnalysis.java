@@ -29,8 +29,10 @@ import java.util.*;
 import soot.*;
 import soot.jimple.*;
 
+/** Implementation of Class Hierarchy Analysis. */
 public class ClassHierarchyAnalysis
 {
+    /** Creates a new InvokeGraph based on CHA from the current Scene. */
     public static InvokeGraph newInvokeGraph()
     {
         List appAndLibClasses = new ArrayList();

@@ -302,12 +302,14 @@ public class HashChain extends AbstractCollection
     {
         StringBuffer strBuf = new StringBuffer();
         Iterator it = iterator();
+        boolean b = false;
 
-        
+        strBuf.append("[");
         while(it.hasNext()) {
-            strBuf.append(it.next().toString() + "\n" );
+            if (!b) b = true; else strBuf.append(", ");
+            strBuf.append(it.next().toString());
         }
-        
+        strBuf.append("]");
         return strBuf.toString();
     }
     

@@ -30,7 +30,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 
-/** Maps invoke statements to their declaring and target methods. 
+/** A graph mapping invoke statements to their declaring and target methods. 
  * ClassHierarchyAnalysis is the default source of InvokeGraphs, although
  * VTA and RTA can create or trim these graphs. */
 public class InvokeGraph
