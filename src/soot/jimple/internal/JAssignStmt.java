@@ -306,14 +306,21 @@ public class JAssignStmt extends AbstractDefinitionStmt
 
                     /* Add the tags to the statement that COMPUTES the
                      * value, NOT to the statement that stores it. */
-                    Unit u = (Unit) out.get(out.size()-1);
+                    
+                    /* No: the convertToBaf on the rvalue already adds
+                     * them, so no need to add them here. However, with
+                     * the current semantics, we should add them to every
+                     * statement and let the aggregator sort them out.
+                     */
+
+                    Unit u = Baf.v().newStoreInst(v.getType(), 
+                                        context.getBafLocalOfJimpleLocal(v));
+
 		    Iterator it = getTags().iterator();
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
 		    }
 
-                    u = Baf.v().newStoreInst(v.getType(), 
-                                        context.getBafLocalOfJimpleLocal(v));
                     out.add(u);
 
                 }
