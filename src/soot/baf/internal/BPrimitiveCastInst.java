@@ -161,7 +161,9 @@ public class BPrimitiveCastInst extends AbstractInst
                     else if(toType.equals(DoubleType.v()))
                         setResult("i2d");
                     else if(toType.equals(IntType.v()))
-                            ;  // this shouldn't happen?
+                        setResult("");  // this shouldn't happen?
+		    else if(toType.equals(BooleanType.v()))
+			setResult("");
                     else
                         throw new RuntimeException
                             ("invalid toType from int: " + toType);

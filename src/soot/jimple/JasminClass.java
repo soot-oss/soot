@@ -2181,6 +2181,8 @@ public class JasminClass
                                 emit("i2d", 1);
                             else if(toType.equals(IntType.v()))
                                 ;  // this shouldn't happen?
+			    else if(toType.equals(BooleanType.v()))
+				;
                             else
                                 throw new RuntimeException("invalid toType from int: " + toType +
                                     " " + v.toBriefString());
