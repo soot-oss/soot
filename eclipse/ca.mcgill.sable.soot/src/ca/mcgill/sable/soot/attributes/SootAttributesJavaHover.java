@@ -69,6 +69,26 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 		//System.out.println(ed.getClass().toString());
 		if (ed instanceof AbstractTextEditor) {
 			IJavaElement jElem = getJavaElement((AbstractTextEditor)ed);
+            if (jElem == null){
+                System.out.println("jElem null");
+                if (jElem.getResource() == null){
+                    System.out.println("jElem.getResource() null");
+                    if (jElem.getResource().getProject() == null){
+                        System.out.println("jElem.getResource().getProject() null");
+                    }
+                }
+            }
+            if (jElem != null){
+                System.out.println("jElem not null");
+                if (jElem.getResource() != null){
+                    System.out.println("jElem.getResource() not null");
+                    if (jElem.getResource().getProject() != null){
+                        System.out.println("jElem.getResource().getProject() not null");
+                    }
+                }
+            }
+            
+            if (jElem.getElementType() != IJavaElement.COMPILATION_UNIT) return;
 			setSelectedProj(jElem.getResource().getProject().getName());
 			setRec(jElem.getResource());
 			
