@@ -49,6 +49,7 @@ public class TestOptionsDialogHandler {
 
 	private final static String SPACE = " ";
 	private final static String DASH = "--";
+	private final static String COLON = ":";
 	
 	public TestOptionsDialogHandler() {
 	}
@@ -65,29 +66,39 @@ public class TestOptionsDialogHandler {
 		String key = null;
 		boolean value = false;
 		//HashMap phasePairs = new HashMap();
-		
+		boolean boolDefault = false;
+	
 		<xsl:apply-templates mode="handle" select="/options/section"/>
 		<xsl:for-each select="section"> 
 		<xsl:for-each select="phaseopt">
-		<xsl:apply-templates mode="handle" select="phase">
-		<xsl:with-param name="parentAlias" select="alias"/>
-		</xsl:apply-templates>
+
+		<xsl:variable name="phaseOptAlias" select="alias"/>
+		
+		<xsl:for-each select="phase">
+		<xsl:call-template name="phasehandle">
+		<xsl:with-param name="parentAlias" select="$phaseOptAlias"/>
+		<xsl:with-param name="subParentAlias" select="alias"/>
+		</xsl:call-template>
 
 		<xsl:variable name="phaseAlias" select="alias"/>
 
-		<xsl:for-each select="phase">
-		<xsl:apply-templates mode="handle" select="sub_phase">
-		<xsl:with-param name="parentAlias" select="$phaseAlias"/>
-		</xsl:apply-templates>
-	
-		<xsl:variable name="sectionAlias" select="translate(alias[last()],'-. ','___')"/>
 		<xsl:for-each select="sub_phase">
-		<xsl:apply-templates mode="handle" select="section">
-		<xsl:with-param name="parentAlias" select="$sectionAlias"/>
-		</xsl:apply-templates>
+		<xsl:call-template name="phasehandle">
+		<xsl:with-param name="parentAlias" select="$phaseOptAlias"/>
+		<xsl:with-param name="subParentAlias" select="alias"/>
+		</xsl:call-template>
+
+		<xsl:variable name="subPhaseAlias" select="alias"/>
+		
+		<xsl:for-each select="section">
+		<xsl:call-template name="phasehandle">
+		<xsl:with-param name="parentAlias" select="$phaseOptAlias"/>
+		<xsl:with-param name="subParentAlias" select="$subPhaseAlias"/>
+		</xsl:call-template>
 		
 		</xsl:for-each>
 		
+		</xsl:for-each>
 		</xsl:for-each>
 		</xsl:for-each>
 		</xsl:for-each>
@@ -101,12 +112,19 @@ public class TestOptionsDialogHandler {
 
 <xsl:template mode="handle" match="section|phase|sub_phase">
 <xsl:param name="parentAlias"/>
-<xsl:variable name="subParentAlias" select="alias|alias"/>
+<xsl:variable name="subParentAlias" select="alias"/>
 
 		<xsl:for-each select="boolopt|macroopt">
 		key = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
 		value = settings.getBoolean(key.trim());
-		if (value) {
+		<xsl:if test="default">
+		boolDefault = <xsl:value-of select="default"/>;
+		</xsl:if>
+		<xsl:if test="not(default)">
+		boolDefault = false;
+		</xsl:if>
+		
+		if (value != boolDefault) {
 			cmd.append(DASH);
 			cmd.append(key.trim());
 			cmd.append(SPACE);
@@ -134,9 +152,13 @@ public class TestOptionsDialogHandler {
 		
 		<xsl:for-each select="stropt|intopt|flopt">
 		key = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
-
+		
+		<xsl:if test="default">
+		defaultVal = "<xsl:value-of select="default"/>";
+		</xsl:if>
+		
 		path = settings.get(key.trim());
-		if ((path &#33;&#61; null) &#38;&#38; (path.length() &#33;&#61; 0)) {
+		if ((path &#33;&#61; null) &#38;&#38; (path.length() &#33;&#61; 0) &#38;&#38; (!path.equals(defaultVal)) ) {
 			cmd.append(DASH);
 			cmd.append(key.trim());
 			cmd.append(SPACE);
@@ -158,6 +180,65 @@ public class TestOptionsDialogHandler {
 			cmd.append(DASH);
 			cmd.append(key.trim());
 			cmd.append(SPACE);
+			cmd.append(path);
+			cmd.append(SPACE);
+		}	
+		</xsl:for-each>
+</xsl:template>
+
+<xsl:template name="phasehandle">
+<xsl:param name="parentAlias"/>
+<xsl:param name="subParentAlias"/>
+
+		<xsl:for-each select="boolopt|macroopt">
+		key = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
+		value = settings.getBoolean(key.trim());
+		<xsl:if test="default">
+		boolDefault = <xsl:value-of select="default"/>;
+		</xsl:if>
+		<xsl:if test="not(default)">
+		boolDefault = false;
+		</xsl:if>
+		
+		if (value != boolDefault ) {
+			cmd.append(DASH);
+			cmd.append(key.trim());
+			cmd.append(SPACE);
+		}
+		</xsl:for-each>
+		
+		
+		<xsl:for-each select="stropt|intopt|flopt">
+		key = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
+		
+		<xsl:if test="default">
+		defaultVal = "<xsl:value-of select="default"/>";
+		</xsl:if>
+				
+		
+		path = settings.get(key.trim());
+		if ((path &#33;&#61; null) &#38;&#38; (path.length() &#33;&#61; 0) &#38;&#38; (!path.equals(defaultVal)) ) {
+			cmd.append(DASH);
+			cmd.append(key.trim());
+			cmd.append(COLON);
+			cmd.append(path);
+			cmd.append(SPACE);
+		}
+		</xsl:for-each>
+		
+		<xsl:for-each select="multiopt"> 
+		key = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
+		path = settings.get(key.trim());
+		<xsl:for-each select="value">
+		<xsl:if test="default">
+		defaultVal = "<xsl:value-of select="alias"/>";
+		</xsl:if>
+		</xsl:for-each>
+		
+		if ((path &#33;&#61; null) &#38;&#38; (path.length() &#33;&#61; 0) &#38;&#38; (!path.equals(defaultVal))) {
+			cmd.append(DASH);
+			cmd.append(key.trim());
+			cmd.append(COLON);
 			cmd.append(path);
 			cmd.append(SPACE);
 		}	
