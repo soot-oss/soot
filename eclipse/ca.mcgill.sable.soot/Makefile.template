@@ -28,13 +28,13 @@ V=_2.1.0
 #######################################################################
 
 # classpath for SWT 
-SWT_GTK=$(ECLIPSE_HOME)org.eclipse.swt.gtk$(V)/ws/gtk/swt.jar
-SWT_MOTIF=$(ECLIPSE_HOME)org.eclipse.swt.motif$(V)/ws/motif/swt.jar
-SWT_WINDOWS=$(ECLIPSE_HOME)org.eclipse.swt.win32$(V)/ws/win32/swt.jar
+SWT_GTK=$(ECLIPSE_HOME)/org.eclipse.swt.gtk$(V)/ws/gtk/swt.jar
+SWT_MOTIF=$(ECLIPSE_HOME)/org.eclipse.swt.motif$(V)/ws/motif/swt.jar
+SWT_WINDOWS=$(ECLIPSE_HOME)/org.eclipse.swt.win32$(V)/ws/win32/swt.jar
 SWT_CLASSPATH=$(SWT_GTK):$(SWT_MOTIF):$(SWT_WINDOWS)
 
 # the main classpath
-MAIN_CLASSPATH=$(ECLIPSE_HOME)org.eclipse.jface.text$(V)/jfacetext.jar:$(ECLIPSE_HOME)org.eclipse.jface$(V)/jface.jar:$(ECLIPSE_HOME)org.eclipse.ui.workbench$(V)/workbench.jar:$(ECLIPSE_HOME)org.eclipse.ui$(V)/ui.jar:$(ECLIPSE_HOME)org.eclipse.ui.views$(V)/views.jar:$(ECLIPSE_HOME)org.eclipse.ui.editors$(V)/editors.jar:$(ECLIPSE_HOME)org.eclipse.ui.workbench.texteditor$(V)/texteditor.jar:$(ECLIPSE_HOME)org.eclipse.text$(V)/text.jar:$(ECLIPSE_HOME)org.eclipse.core.boot$(V)/boot.jar:$(ECLIPSE_HOME)org.eclipse.jdt.ui$(V)/jdt.jar:$(ECLIPSE_HOME)org.eclipse.jdt.core$(V)/jdtcore.jar:$(ECLIPSE_HOME)org.eclipse.core.resources$(V)/resources.jar:$(ECLIPSE_HOME)org.eclipse.core.runtime$(V)/runtime.jar:$(SWT_CLASSPATH):$(SOOT_DIR):. 
+MAIN_CLASSPATH=$(ECLIPSE_HOME)/org.eclipse.jface.text$(V)/jfacetext.jar:$(ECLIPSE_HOME)/org.eclipse.jface$(V)/jface.jar:$(ECLIPSE_HOME)/org.eclipse.ui.workbench$(V)/workbench.jar:$(ECLIPSE_HOME)/org.eclipse.ui$(V)/ui.jar:$(ECLIPSE_HOME)/org.eclipse.ui.views$(V)/views.jar:$(ECLIPSE_HOME)/org.eclipse.ui.editors$(V)/editors.jar:$(ECLIPSE_HOME)/org.eclipse.ui.workbench.texteditor$(V)/texteditor.jar:$(ECLIPSE_HOME)/org.eclipse.text$(V)/text.jar:$(ECLIPSE_HOME)/org.eclipse.core.boot$(V)/boot.jar:$(ECLIPSE_HOME)/org.eclipse.jdt.ui$(V)/jdt.jar:$(ECLIPSE_HOME)/org.eclipse.jdt.core$(V)/jdtcore.jar:$(ECLIPSE_HOME)/org.eclipse.core.resources$(V)/resources.jar:$(ECLIPSE_HOME)/org.eclipse.core.runtime$(V)/runtime.jar:$(SWT_CLASSPATH):$(SOOT_DIR):. 
 
 # some lists of files to make things more readable
 JAR_ICONS=icons/*.jpg icons/*.gif icons/*.png 
