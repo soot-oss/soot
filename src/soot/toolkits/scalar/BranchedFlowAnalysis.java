@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2000 Raja Vallee-Rai
+ * Copyright (C) 1997-2000 Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,8 +26,11 @@
 
 
 /*
-    2000, March 20 - Updated code provided by Patrick Lam <plam@sable.mcgill.ca>
-                     -- Janus
+    2000, March 20 - Updated code provided by
+                                    Patrick Lam <plam@sable.mcgill.ca>
+                     from 1.beta.4.dev.60
+                     to 1.beta.6.dev.34
+                     -- Janus (Richard Godard)
 */
 
 
@@ -39,6 +42,13 @@ import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
 
+/** Abstract class providing functionality for branched flow analysis.
+ *
+ * A branched flow analysis is one which can propagate different
+ * information to the successors of a node.  This is useful for
+ * propagating information past a statement like <code>if(x &gt;
+ * 0)</code>: one successor has <code>x &gt; 0</code> while the other
+ * successor has <code>x &le; 0</code>. */
 public abstract class BranchedFlowAnalysis
 {
     /** Maps graph nodes to IN sets. */

@@ -25,14 +25,19 @@
 
 
 /*
-    2000, March 20 - Updated code provided by Patrick Lam <plam@sable.mcgill.ca>
+    2000, March 20 - Updated code provided by Patrick Lam
+                            <plam@sable.mcgill.ca>
+                     from 1.beta.4.dev.60
+                     to 1.beta.6.dev.34
 		     Plus some bug fixes.
                      -- Janus <janus@place.org>
 
 
-     KNOWN LIMITATION: the analysis doesn't handle traps since traps handler statements have
-                       predecessors, but they don't have the trap handler as successor.
-		       This might be a limitation of the CompleteUnitGraph tho.
+     KNOWN LIMITATION: the analysis doesn't handle traps since traps
+		       handler statements have predecessors, but they
+		       don't have the trap handler as successor.  This
+		       might be a limitation of the CompleteUnitGraph
+		       tho.
 */
 
 
@@ -44,6 +49,7 @@ import soot.toolkits.scalar.*;
 import soot.util.*;
 import java.util.*;
 
+/** Abstract class providing an engine for branched forward flow analysis. */
 public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 {
 

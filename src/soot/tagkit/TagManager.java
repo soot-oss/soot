@@ -31,17 +31,18 @@ import java.util.*;
 import javax.swing.*;
 import java.io.*;
 
-
+/** Utility functions for tags. */
 public class TagManager
 {
     private static TagPrinter tagPrinter = new StdTagPrinter();
 
-
-
+    /** Returns the Tag class with the given name. 
+     *
+     * (This does not seem to be necessary.) */
     public static Tag getTagFor(String tagName) {
 	try {
 	    Class cc = Class.forName("soot.tagkit." + tagName);
-	    return (Tag)  cc.newInstance();
+	    return (Tag) cc.newInstance();
 	} 
 	catch (ClassNotFoundException e) {
 	    return null;
@@ -52,13 +53,15 @@ public class TagManager
 	}	
     }
 
-
+    /** Sets the default tag printer. */
     public static void setTagPrinter(TagPrinter p) 
     {
 	tagPrinter = p;
     }
 
-    public static String print(String aClassName, String aFieldOrMtdSignature, Tag aTag)
+    /** Prints the given Tag, assuming that it belongs to the given class and field or method. */
+    public static String print(String aClassName, String aFieldOrMtdSignature,
+                               Tag aTag)
     {
 	return tagPrinter.print(aClassName, aFieldOrMtdSignature,  aTag);
     }

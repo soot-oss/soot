@@ -31,10 +31,12 @@ import java.util.*;
 import javax.swing.*;
 import java.io.*;
 
-
+/** Default tag printer. */
 public class StdTagPrinter implements TagPrinter
 {
-    public String  print(String aClassName, String aFieldOrMtdSignature, Tag aTag)
+    /** Prints out the given tag. */
+    public String print(String aClassName, String aFieldOrMtdSignature, 
+                        Tag aTag)
     {
 	return aTag.toString();	
     }
