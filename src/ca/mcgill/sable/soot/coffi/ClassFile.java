@@ -124,7 +124,7 @@ import java.io.*;
 import java.util.Enumeration;
 import java.util.Vector;
 import ca.mcgill.sable.util.ClassLocator;
-import ca.mcgill.sable.soot.jimple.Main;
+import ca.mcgill.sable.soot.Main;
 
 /**
  * A ClassFile object represents the contents of a <tt>.class</tt> file.

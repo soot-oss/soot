@@ -68,6 +68,9 @@
 
  B) Changes:
 
+ - Modified on March 28, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Renamed class to ca.mcgill.sable.soot.Main
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -106,10 +109,10 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot;
 
-import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.grimp.*;
 
 import java.io.*;
@@ -118,28 +121,28 @@ import java.text.*;
 
 public class Main
 {
+    private static char fileSeparator = System.getProperty("file.separator").charAt(0);
+
     static boolean naiveJimplification;
     static boolean onlyJimpleOutput;
     public static boolean isVerbose;
     static boolean onlyJasminOutput;
-    static boolean isProfilingOptimization;
+    static public boolean isProfilingOptimization;
     static boolean isSubstractingGC;
-    static boolean oldTyping;
-    static boolean isInDebugMode;
-    static boolean usePackedLive;
-    static boolean usePackedDefs = true;
+    static public boolean oldTyping;
+    static public boolean isInDebugMode;
+    static public boolean usePackedLive;
+    static public boolean usePackedDefs = true;
     static boolean isTestingPerformance;
 
     public static String jimpleClassPath;
 
-    static boolean produceJimpleFile,
-        produceJasminFile,
-        produceJimpFile = true;
+    static private String targetExtension = ".class";
 
-    static int totalFlowNodes,
+    static public int totalFlowNodes,
            totalFlowComputations;
            
-    static Timer copiesTimer = new Timer("copies"),
+    static public Timer copiesTimer = new Timer("copies"),
         defsTimer = new Timer("defs"),
         usesTimer = new Timer("uses"),
         liveTimer = new Timer("live"),
@@ -172,125 +175,137 @@ public class Main
     static public Timer
         resolverTimer = new Timer("resolver");
         
-    static int conversionLocalCount,
+    static public int conversionLocalCount,
         cleanup1LocalCount,
         splitLocalCount,
         assignLocalCount,
         packLocalCount,
         cleanup2LocalCount;
 
-    static int conversionStmtCount,
+    static public int conversionStmtCount,
         cleanup1StmtCount,
         splitStmtCount,
         assignStmtCount,
         packStmtCount,
         cleanup2StmtCount;
 
-
+    static private int buildJimpleBodyOptions = 0;
+    static private String outputDir;
+    
     public static void main(String[] args) throws RuntimeException
     {
         int firstNonOption = 0;
         long stmtCount = 0;
-        int buildBodyOptions = 0;
+        boolean isRecursing = false;
+        Set excludingPackages = new HashSet();
+        List classesToProcess;
 
         totalTimer.start();
 
-        SootClassManager cm = new SootClassManager();
 
         if(args.length == 0)
         {
-// $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.4.dev.9");
-            System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
+// $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
+            System.out.println("Soot version 1.beta.4.dev.10");
+            System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
-            System.out.println("Portions copyright (C) 1997 Clark Verbrugge (clump@sable.mcgill.ca).");
-            System.out.println("All rights reserved.");
-            System.out.println("");
-            System.out.println("Modifications are copyright (C) 1997, 1998 by their respective contributors.");
+            System.out.println("Contributions are copyright (C) 1997-1999 by their respective contributors.");
             System.out.println("See individual source files for details.");
             System.out.println("");
-            System.out.println("Jimple comes with ABSOLUTELY NO WARRANTY.  This is free software,");
+            System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  This is free software,");
             System.out.println("and you are welcome to redistribute it under certain conditions.");
-            System.out.println("See the accompanying file 'COPYING' for details.");
+            System.out.println("See the accompanying file 'license.html' for details.");
             System.out.println("");
-            System.out.println("Syntax: java ca.mcgill.sable.soot.jimple.Main [options] class");
+            System.out.println("Syntax: soot [option]* classname ...  ");
             System.out.println("");
-            System.out.println("Classpath Option:");
-            System.out.println("    -jimpleClassPath <path>   uses <path> as classpath for finding classes");
+            System.out.println("Output options:");
+            System.out.println("  -j, --jimp                 produce .jimp (abbreviated .jimple) files");
+            System.out.println("  -J, --jimple               produce .jimple code");
+            System.out.println("  -g, --grimp                produce .grimp (abbreviated .grimple) files");
+            System.out.println("  -G, --grimple              produce .grimple files");
+            System.out.println("  -a, --jasmin               produce .jasmin files");
+            System.out.println("  -c, --class                produce .class files");
             System.out.println("");
-            System.out.println("Output Options:");
-            System.out.println("    -jimple                   produce .jimple code");
-            System.out.println("    -jimp                     produce .jimp (abbreviated .jimple) code [default]");
-            System.out.println("    -jasmin                   produce .jasmin code");
+            System.out.println("  -d PATH                    store produced files in PATH");
+            System.out.println("  -r, --recurse              process dependent classfiles as well");
+            System.out.println("  -x, --exclude PACKAGE      exclude classfiles in PACKAGE (e.g. java)"); 
+            System.out.println("                             from transformation");
             System.out.println("");
-            System.out.println("Jimplification Options:");
-            System.out.println("    -nocleanup                no constant or copy propagation is performed");
-            System.out.println("    -nosplitting              no splitting of variables is performed");
-            System.out.println("    -nocleanup                no constant or copy propagation is performed");
-            System.out.println("    -oldtyping                use old typing algorithm");
-            System.out.println("    -typeless                 do not assign types.  Cannot be used with -jasmin");
-            System.out.println("                              or -nolocalpacking ");
-            System.out.println("    -nolocalpacking           do not re-use locals after jimplification");
-            System.out.println("    -noaggregating            do not perform any Jimple-level aggregation");
+            System.out.println("Jimple construction options:");
+            System.out.println("  --no-cleanup               do not perform constant or copy propagation");
+            System.out.println("  --no-splitting             do not split local variables");
+            System.out.println("  --no-typing                do not assign types to the local variables");
+            System.out.println("  --no-jimple-aggregating    do not perform any Jimple-level aggregation");
             System.out.println("");
-            System.out.println("Profiling/Debugging Options:");
-            System.out.println("    -timetransform            perform full transformation and print timings");
-            System.out.println("    -verbose                  print out jimplification process");
-            System.out.println("    -debug                    avoid catching errors during jimplification");
-            System.out.println("    -testperf                 jimplify all classes & methods and gather stats");
-            System.out.println("                              does not throw exception if error in typing");
+            System.out.println("Misc. options:");
+            System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
+            System.out.println("  -t, --time                 print out time statistics about tranformations");
+            System.out.println("  --substract-gc             attempt to substract the gc from the time stats");
+            System.out.println("  -v, --verbose              verbose mode");
+            System.out.println("  --debug                    avoid catching exceptions");
             System.exit(0);
         }
 
         // Handle all the options
             for(int i = 0; i < args.length; i++)
             {
-                if(args[i].equals("-jimple"))
-                    produceJimpleFile = true;
-                else if(args[i].equals("-jasmin"))
-                    produceJasminFile = true;
-                else if(args[i].equals("-jimp"))
-                    produceJimpFile = true;
-                else if(args[i].equals("-nocleanup"))
-                    buildBodyOptions |= BuildJimpleBodyOption.NO_CLEANUP;
-                else if(args[i].equals("-typeless"))
-                    buildBodyOptions |= BuildJimpleBodyOption.NO_TYPING;
-                else if(args[i].equals("-nolocalpacking"))
-                    buildBodyOptions |= BuildJimpleBodyOption.NO_PACKING;
-                else if(args[i].equals("-noaggregating"))
-                    buildBodyOptions |= BuildJimpleBodyOption.NO_AGGREGATING;
-                else if(args[i].equals("-timetransform"))
+                String arg = args[i];
+                
+                if(arg.equals("-j") || arg.equals("--jimp"))
+                    targetExtension = ".jimp";
+                else if(arg.equals("-a") || arg.equals("--jasmin"))
+                    targetExtension = ".jasmin";
+                else if(arg.equals("-J") || arg.equals("--jimple"))
+                    targetExtension = ".jimple";
+                else if(arg.equals("-g") || arg.equals("--grimp"))
+                    targetExtension = ".grimp";
+                else if(arg.equals("-G") || arg.equals("--grimple"))
+                    targetExtension = ".grimple";
+                else if(arg.equals("-c") || arg.equals("--class"))
+                    targetExtension = ".class";
+        
+                else if(arg.equals("--no-cleanup"))
+                    buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_CLEANUP;
+                else if(arg.equals("--no-typing"))
+                    buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_TYPING;
+                else if(arg.equals("--no-jimple-aggregating"))
+                    buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_AGGREGATING;
+                else if(arg.equals("--no-splitting"))
+                    buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_SPLITTING;
+                    
+                else if(arg.equals("-t") || arg.equals("--time"))
                     isProfilingOptimization = true;
-                else if(args[i].equals("-substractgc"))
+                else if(arg.equals("--substract-gc"))
                 {
                     Timer.setSubstractingGC(true);
                     isSubstractingGC = true;
                 }    
-                else if(args[i].equals("-verbose"))
+                else if(arg.equals("-v") || arg.equals("--verbose"))
                     isVerbose = true;
-                else if(args[i].equals("-nosplitting"))
-                    buildBodyOptions |= BuildJimpleBodyOption.NO_SPLITTING;
-                else if(args[i].equals("-oldtyping"))
-                    oldTyping = true;
-                else if(args[i].equals("-usepackedlive"))
-                    usePackedLive = true;
-                else if(args[i].equals("-usepackeddefs"))
-                    usePackedDefs = true;    
-                else if(args[i].equals("-testperf"))
-                {
-                    isProfilingOptimization = true;
-                    isTestingPerformance = true;
-                }
-                else if(args[i].equals("-jimpleClassPath"))
-                {   if(++i < args.length)
+                else if(arg.equals("--soot-class-path"))
+                {   
+                    if(++i < args.length)
                         jimpleClassPath = args[i];
                 }
-                else if(args[i].equals("-debug"))
-                    isInDebugMode = true;
-                else if(args[i].startsWith("-"))
+                else if(arg.equals("-r") || arg.equals("--recurse"))
+                    isRecursing=true;
+                else if(arg.equals("-d"))
                 {
-                    System.out.println("Unrecognized option: " + args[i]);
+                    if(++i < args.length)
+                        outputDir = args[i];
+                }
+                else if(arg.equals("-x") || arg.equals("--exclude"))
+                {
+                    if(++i < args.length)
+                        excludingPackages.add(args[i]);
+                }
+                
+                else if(arg.equals("--debug"))
+                    isInDebugMode = true;
+                else if(arg.startsWith("-"))
+                {
+                    System.out.println("Unrecognized option: " + arg);
                     System.exit(0);
                 }
                 else
@@ -299,122 +314,72 @@ public class Main
                 firstNonOption = i + 1;
             }
 
-        // Handle all the classes
+        SootClassManager cm = new SootClassManager();
+
+        // Generate classes to process
         {
-            int numFailed = 0;
-            int numSuccess = 0;
-
-            List listBodies = new ArrayList();
-
+            classesToProcess = new LinkedList();
+            
             for(int i = firstNonOption; i < args.length; i++)
             {
                 SootClass c = cm.loadClassAndSupport(args[i]);
-                String postFix;
+                classesToProcess.add(c);
+            }
+            
+            if(isRecursing)
+            {
+                classesToProcess = new LinkedList();
+                classesToProcess.addAll(cm.getClasses());
+             }   
+                         
+            // Remove all classes from excludingPackages
+            {
+                Iterator classIt = classesToProcess.iterator();
+                
+                while(classIt.hasNext())
+                {
+                    SootClass s = (SootClass) classIt.next();
+                    
+                    if(excludingPackages.contains(s.getPackageName()))
+                        classIt.remove();
+                }
+            }
+        }
+        
+        // Handle each class
+        {
+            Iterator classIt = classesToProcess.iterator();
+            
+            while(classIt.hasNext())
+            {
+                SootClass s = (SootClass) classIt.next();
+                
                 PrintWriter writerOut = null;
                 FileOutputStream streamOut = null;
 
-                System.out.print("Jimplifying " + c.getName() + "... " );
+                System.out.print("Transforming " + s.getName() + "... " );
                 System.out.flush();
-
-                // Open output file.
+       
+                if(!isInDebugMode)
                 {
-                    if(produceJasminFile)
-                        postFix = ".jasmin";
-                    else if(produceJimpleFile)
-                        postFix = ".jimple";
-                    else
-                        postFix = ".jimp";
-
                     try {
-                        streamOut = new FileOutputStream(c.getName() + postFix);
-                        writerOut = new PrintWriter(streamOut);
-                    }
-                    catch (IOException e)
-                    {
-                        System.out.println("Cannot output file " + c.getName() + postFix);
-                    }
-                }
-
-                if(isTestingPerformance)
-                {
-                    Iterator methodIt = c.getMethods().iterator();
-                    long localStmtCount = 0;
-
-                    try {
-                        while(methodIt.hasNext())
-                        {
-                            SootMethod m = (SootMethod) methodIt.next();
-                            JimpleBody listBody = (JimpleBody) new BuildBody(Jimple.v(), new StoredBody(ClassFile.v())).resolveFor(m);
-                            
-                            listBodies.add(listBody);
-                            localStmtCount += listBody.getStmtList().size();
-                        }
-
-                        stmtCount += localStmtCount;
-
-                        System.out.println(localStmtCount + " stmts  ");
-                        numSuccess++;
+                        handleClass(s);
                     }
                     catch(Exception e)
                     {
                         System.out.println("failed due to: " + e);
-                        numFailed++;
                     }
                 }
-                else
-                {
-                    // Produce the file
-                    {
-                        if(!isInDebugMode)
-                        {
-                            try {
-                                handleClass(c, postFix, writerOut, buildBodyOptions);
-                            }
-                            catch(Exception e)
-                            {
-                                System.out.println("failed due to: " + e);
-                            }
-                        }
-                        else {
-                            handleClass(c, postFix, writerOut, buildBodyOptions);
-                        }
-    
-                        try {
-                            writerOut.flush();
-                            streamOut.close();
-                        }
-                        catch(IOException e )
-                        {
-                            System.out.println("Cannot close output file " + c.getName() + postFix);
-                        }
-    
-                        System.out.println();
-                    }
-                }
-            }
-            
-            if(isProfilingOptimization)
-            {
-                if(isTestingPerformance)
-                {
-                    System.out.println("Successfully jimplified " + numSuccess + " classfiles; failed on " + numFailed + ".");
-    
-                    // Count number of statements stored
-                    {
-                        Iterator bodyIt = listBodies.iterator();
-                        long storedStmtCount = 0;
-    
-                        while(bodyIt.hasNext())
-                        {
-                            JimpleBody listBody = (JimpleBody) bodyIt.next();
-                            storedStmtCount += listBody.getStmtList().size();
-                        }
-    
-                        System.out.println("Confirmed " + storedStmtCount + " stored statements.");
-                        System.out.println();
-                    }
+                else {
+                    handleClass(s);
                 }
                 
+                System.out.println();
+            }
+            
+        // Print out time stats.
+            if(isProfilingOptimization)
+            {
                 totalTimer.end();
                     
                 
@@ -525,18 +490,54 @@ public class Main
         return paddedLeftOf(new Double(truncatedOf(value, 2)).toString(), 5);
     }
     
-    private static void handleClass(SootClass c, String postFix, PrintWriter writerOut, int buildBodyOptions)
+    private static void handleClass(SootClass c)
     {
-        if(postFix.equals(".jasmin"))
-            new JasminClass(c, new BuildBody(Grimp.v(), new StoredBody(ClassFile.v()))).print(writerOut);
-        else if(postFix.equals(".jimp"))
+        FileOutputStream streamOut = null;
+        PrintWriter writerOut = null;
+        String fileName = outputDir + fileSeparator + c.getName() + targetExtension;
+        
+        if(!targetExtension.equals(".class"))
+        {   
+            try {
+                streamOut = new FileOutputStream(fileName);
+                writerOut = new PrintWriter(streamOut);
+            }
+            catch (IOException e)
+            {
+                System.out.println("Cannot output file " + c.getName() + targetExtension);
+            }
+        }
+
+        if(targetExtension.equals(".jasmin"))
+            new JasminClass(c, new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions))).print(writerOut);
+        else if(targetExtension.equals(".jimp"))
         {
-            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions),
+            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions),
                 writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
         }
-        else
-            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions),
+        else if(targetExtension.equals(".jimple"))
+            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions), writerOut);
+        else if(targetExtension.equals(".grimple"))
+            c.printTo(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions)),
                 writerOut);
+        else if(targetExtension.equals(".grimp"))
+            c.printTo(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions)),
+                writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+        else if(targetExtension.equals(".class"))
+            c.write(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions)),
+                outputDir);
+        
+        if(!targetExtension.equals(".class"))
+        {
+            try {
+                writerOut.flush();
+                streamOut.close();
+            }
+            catch(IOException e )
+            {
+                System.out.println("Cannot close output file " + fileName);
+            }
+        }
     }
     
     public static double truncatedOf(double d, int numDigits)

@@ -164,7 +164,7 @@ public class Util
         Timer timer = new Timer("timer");
         Timer buildTimer = new Timer("build");
 
-        ca.mcgill.sable.soot.jimple.Main.resolverTimer.start();
+        ca.mcgill.sable.soot.Main.resolverTimer.start();
         
                         
         setActiveClassManager(cm);
@@ -182,7 +182,7 @@ public class Util
             
             timer.start();
             
-            if(ca.mcgill.sable.soot.jimple.Main.isVerbose)
+            if(ca.mcgill.sable.soot.Main.isVerbose)
                 System.out.println("Resolving " + className + "...");
     
             ClassFile coffiClass = new ClassFile(className);
@@ -359,7 +359,7 @@ public class Util
         //System.out.println("loading" + timer.getTime());
         //System.out.println("building" + buildTimer.getTime());
 
-        ca.mcgill.sable.soot.jimple.Main.resolverTimer.end();
+        ca.mcgill.sable.soot.Main.resolverTimer.end();
 
         return newClass;
     }

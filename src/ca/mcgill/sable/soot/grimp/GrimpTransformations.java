@@ -1,4 +1,4 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Grimp, an aggregated-expression Java(TM) bytecode representation. *
  * Copyright (C) 1998 Patrick Lam (plam@sable.mcgill.ca)             *
  * All rights reserved.                                              *
@@ -84,7 +84,7 @@ public class GrimpTransformations
   /* Change all new Obj/<init>(args) pairs to new Obj(args) construction. */
   public static void foldConstructors(GrimpBody body)
     {
-        if(ca.mcgill.sable.soot.jimple.Main.isVerbose)
+        if(ca.mcgill.sable.soot.Main.isVerbose)
             System.out.println("[" + body.getMethod().getName() +
                 "] Folding constructors...");
 

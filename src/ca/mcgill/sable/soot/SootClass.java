@@ -66,7 +66,8 @@
 
  - Modified on March 27, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Changed the way classes are retrieved and loaded in.  
-
+   Added a getPackageName() method.
+   
  - Modified on March 2, 1999 by Patrick Lam (plam@sable.mcgill.ca)
    Added a toString method.
    
@@ -108,6 +109,8 @@ import java.io.*;
 
 public class SootClass
 {
+    private static char fileSeparator = System.getProperty("file.separator").charAt(0);
+
     String name;
     int modifiers;
     List fields = new ArrayList();
@@ -656,6 +659,20 @@ public class SootClass
     }
 
     /**
+        Returns the package name of this class.
+    */
+
+    public String getPackageName()
+    {
+        int index = getName().lastIndexOf(".");
+        
+        if(index == -1)
+            return "";
+        else
+            return name.substring(0, index);
+    }
+
+    /**
         Sets the name of this class.
     */
 
@@ -765,11 +782,21 @@ public class SootClass
         Writes the class out to a file.
      */
 
+
     public void write(BodyExpr bodyExpr)
     {
+        write(bodyExpr, "");
+    }
+
+    /**
+        Writes the class out to a file.
+     */
+
+    public void write(BodyExpr bodyExpr, String outputDir)
+    {
+        
         try {
-            //File tempFile = new File("jimpleClass.jasmin");
-            File tempFile = new File(this.getName() + ".jasmin");
+            File tempFile = new File(outputDir + fileSeparator + this.getName() + ".jasmin");
  
             FileOutputStream streamOut = new FileOutputStream(tempFile);
             PrintWriter writerOut = new PrintWriter(streamOut);
@@ -778,7 +805,7 @@ public class SootClass
 
             writerOut.close();
 
-            Runtime.getRuntime().exec("jasmin " + this.getName() + ".jasmin");
+            Runtime.getRuntime().exec("java jasmin.Main -d " + outputDir + " " + outputDir + fileSeparator + this.getName() + ".jasmin");
             tempFile.delete();
         } catch(IOException e)
         {
