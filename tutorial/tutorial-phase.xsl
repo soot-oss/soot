@@ -60,7 +60,7 @@ belonging to the various Packs of Soot.
 
 \tableofcontents
 
-<xsl:for-each select="options/section/phaseopt/phase">
+<xsl:for-each select="options/section/phaseopt/phase|options/section/phaseopt/radio_phase">
 \section{<xsl:value-of select="name"/> ({\tt <xsl:value-of select="alias"/>})}
 <xsl:call-template name="phase_section"/>
 
