@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<phase>
+	<phase_name>Generating Jasmin</phase_name>
+	<phase_java_name></phase_java_name>
+	<phase_alias>Jimple.JasminClass</phase_alias>
+	<phase_opts>
+		<boolean_option>
+			<name>No Peephole</name>
+			<java_name>noPeephole</java_name>
+			<alias_name>no-peephole</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+	</phase_opts>
+</phase>

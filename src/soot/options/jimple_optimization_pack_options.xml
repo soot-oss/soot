@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<phase>
+	<phase_name>Jimple Optimizations Pack</phase_name>
+	<phase_java_name></phase_java_name>
+	<phase_alias>jop</phase_alias>
+	<phase_opts>
+	</phase_opts>
+	<sub_phase>
+		<sub_phase_name>Common Subexpression Elimination</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>jop.cse</sub_phase_alias>
+		<sub_phase_opts>
+		
+		</sub_phase_opts>
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Busy Code Motion</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>jop.bcm</sub_phase_alias>
+		<sub_phase_opts>
+									
+		</sub_phase_opts>
+	</sub_phase>
+	<sub_phase>
+	<sub_phase_name>Lazy Code Motion</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>jop.lcm</sub_phase_alias>
+		<sub_phase_opts>
+		<multi_option>
+			<name>Safe</name>
+			<java_name>safe</java_name>
+			<alias_name>safe</alias_name>
+				<value>
+					<value_name>Safe</value_name>
+					<java_name>safe</java_name>
+					<alias>safe</alias>
+					<short_desc></short_desc>
+                                        <default/>
+				</value>
+				<value>
+					<value_name>Medium</value_name>
+					<java_name>medium</java_name>
+					<alias>medium</alias>
+					<short_desc></short_desc>
+				</value>
+				<value>
+					<value_name>Unsafe</value_name>
+					<java_name>unsafe</java_name>
+					<alias>unsafe</alias>
+					<short_desc></short_desc>
+				</value>
+			<short_desc>
+			<long_desc>
+		</multi_option>
+		<boolean_option>
+			<name>Unroll</name>
+			<java_name>unroll</java_name>
+			<alias_name>unroll</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+		</sub_phase_opts>
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Copy Propogator</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>jop.cp</sub_phase_alias>
+		<sub_phase_opts>
+		<boolean_option>
+			<name>Only Regular Locals</name>
+			<java_name>onlyRegLocals</java_name>
+			<alias_name>only-regular-locals</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>								<boolean_option>
+			<name>Only Stack Locals</name>
+			<java_name>onlyStackLocals</java_name>
+			<alias_name>only-stack-locals</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+		</sub_phase_opts>
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Constant Propogator and Folder</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>jop.cpf</sub_phase_alias>
+		<sub_phase_opts>
+									
+		</sub_phase_opts>
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Conditional Branch Folder</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>jop.cbf</sub_phase_alias>
+		<sub_phase_opts>
+									
+		</sub_phase_opts>
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Dead Assignment Eliminator</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>jop.dae</sub_phase_alias>
+		<sub_phase_opts>
+									
+		</sub_phase_opts>
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Unreachable Code Eliminator</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>jop.uce1</sub_phase_alias>
+		<sub_phase_alias>jop.uce2</sub_phase_alias>
+		<sub_phase_opts>
+									
+		</sub_phase_opts>
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Unconditional Branch Folder</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>jop.ubf1</sub_phase_alias>
+		<sub_phase_alias>jop.ubf2</sub_phase_alias>
+		<sub_phase_opts>
+									
+		</sub_phase_opts>
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Unused Local Eliminator</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>jop.ule</sub_phase_alias>
+		<sub_phase_opts>
+									
+		</sub_phase_opts>
+	</sub_phase>
+</phase>

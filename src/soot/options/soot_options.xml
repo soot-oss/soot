@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="soot_options.xsl"?>
+
+<options>
+
+	<section>
+		
+		<section_name>General Options</section_name>
+		<section_java_name>generalOpts</section_java_name>
+		
+		<boolean_option>
+			<name>Help</name>
+			<java_name>help</java_name>
+			<alias_name>h</alias_name>
+			<alias_name>help</alias_name>
+			<short_desc>display help and exit</short_desc>
+			<long_desc>This option displays the textual help message and exits immediately without doing any further processing</long_desc>
+		</boolean_option>
+		
+		<boolean_option>
+			<name>Version</name>
+			<java_name>version</java_name>
+			<alias_name>version</alias_name>
+			<short_desc>output version information and exit</short_desc>
+			<long_desc>This option outputs the Soot version information and exits immediately without doing any further processing</long_desc>
+		</boolean_option>
+		
+		<boolean_option>
+			<name>Verbose</name>
+			<java_name>verbose</java_name>
+			<alias_name>v</alias_name>
+			<alias_name>verbose</alias_name>
+			<short_desc>verbose mode</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+
+		<boolean_option>
+			<name>Application Mode</name>
+			<java_name>appMode</java_name>
+			<alias_name>app</alias_name>
+			<short_desc>runs in application mode</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+		
+	</section>
+
+	<section>
+
+		<section_name>Input Options</section_name>
+		<section_java_name>inputOpts</section_java_name>
+		
+
+		<path_option>
+			<name>Soot Classpath</name>
+			<java_name>classpath</java_name>
+			<alias_name>cp</alias_name>
+			<alias_name>soot-classpath</alias_name>
+			<short_desc>uses given PATH as the classpath for finding classes for Soot processing</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+		
+		<multi_option>
+			<name>Input Source Precedence</name>
+			<java_name>srcPrec</java_name>
+			<alias_name>src-prec</alias_name>
+				<value>
+					<value_name>Class File</value_name>
+					<java_name>classFile</java_name>
+					<alias>c</alias>
+					<alias>class</alias>
+					<short_desc>Use class for source of Soot</short_desc>
+                                        <default/>
+				</value>
+				<value>
+					<value_name>Jimple File</value_name>
+					<java_name>jimple</java_name>
+					<alias>J</alias>
+					<alias>jimple</alias>
+					<short_desc>Use Jimple for source of Soot</short_desc>
+				</value>
+			<short_desc>sets the source precedence for Soot</short_desc>
+			<long_desc>This option ...</long_desc>
+		</multi_option>
+
+		<boolean_option>
+			<name>Allow Phantom References</name>
+			<java_name>allowPhantoms</java_name>
+			<alias_name>allow-phantom-refs</alias_name>
+			<short_desc>allow unresolved classes; may cause errors</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+		
+	</section>
+
+	<section>
+		
+		<section_name>Output Options</section_name>
+		<section_java_name>outputOpts</section_java_name>
+		
+
+		<string_option>
+			<name>Output Directory</name>
+			<java_name>outputDir</java_name>
+			<alias_name>d</alias_name>
+			<alias_name>output-dir</alias_name>
+			<short_desc>store produced files in PATH</short_desc>
+			<long_desc>This option ...</long_desc>
+		</string_option>
+		
+		<multi_option>
+			<name>Output Format</name>
+			<java_name>outputFormat</java_name>
+			<alias_name>o</alias_name>
+			<alias_name>output-format</alias_name>
+				<value>
+				
+					<value_name>Jimp File</value_name>
+					<java_name>jimp</java_name>
+					<alias>j</alias>
+					<alias>jimp</alias>
+					<short_desc>produce .jimp (abbreviated .jimple) files</short_desc>
+				</value>
+				<value>
+					
+					<value_name>Njimple File</value_name>
+					<java_name>njimple</java_name>
+					<alias>njimple</alias>
+					<short_desc>produce .njimple files</short_desc>
+				</value>
+				<value>
+					
+					<value_name>Jimple File</value_name>
+					<java_name>jimple</java_name>
+					<alias>J</alias>
+					<alias>jimple</alias>
+					<short_desc>produce .jimple code</short_desc>
+				</value>
+				<value>
+					
+					<value_name>Baf File</value_name>
+					<java_name>baf</java_name>
+					<alias>B</alias>
+					<alias>baf</alias>
+					<short_desc>produce .baf code</short_desc>
+				</value>
+				<value>
+					
+					<value_name>Aggregated Baf File</value_name>
+					<java_name>b</java_name>
+					<alias>b</alias>
+					<short_desc>produce .b (abbreviated .baf) files</short_desc>
+				</value>
+				<value>
+					
+					<value_name>Grimp File</value_name>
+					<java_name>grimp</java_name>
+					<alias>g</alias>
+					<alias>grimp</alias>
+					<short_desc>produce .grimp (abbreviated .grimple) files</short_desc>
+				</value>
+				<value>
+					
+					<value_name>Grimple File</value_name>
+					<java_name>grimple</java_name>
+					<alias>G</alias>
+					<alias>grimple</alias>
+					<short_desc>produce .grimple files</short_desc>
+				</value>
+				<value>
+					
+					<value_name>Xml File</value_name>
+					<java_name>xml</java_name>
+					<alias>X</alias>
+					<alias>xml</alias>
+					<short_desc>produce .xml files</short_desc>
+				</value>
+				<value>
+					
+					<value_name>No Output File</value_name>
+					<java_name>none</java_name>
+					<alias>n</alias>
+					<alias>none</alias>
+					<short_desc>produces no output</short_desc>
+				</value>
+				<value>
+					
+					<value_name>Jasmin File</value_name>
+					<java_name>jasmin</java_name>
+					<alias>s</alias>
+					<alias>jasmin</alias>
+					<alias>jasmin-through-baf</alias>
+					<short_desc>produce .jasmin files</short_desc>
+				</value>
+				<value>
+					
+					<value_name>Class File</value_name>
+					<java_name>classFile</java_name>
+					<alias>c</alias>
+					<alias>class</alias>
+					<alias>class-through-baf</alias>
+                                        <default/>
+					<short_desc>produce .class files</short_desc>
+				</value>
+				<value>
+					
+					<value_name>Dava Decompiled File</value_name>
+					<java_name>dava</java_name>
+					<alias>d</alias>
+					<alias>dava</alias>
+					<short_desc>produce dava decompiled .java files</short_desc>
+				</value>
+			<short_desc>sets the source precedence for Soot</short_desc>
+			<long_desc>This option ...</long_desc>
+		</multi_option>
+		<boolean_option>
+			<name>Via Grimp</name>
+			<java_name>viaGrimp</java_name>
+			<alias_name>via-grimp</alias_name>
+			<short_desc>convert jimple to bytecode via grimp instead of via baf</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+	</section>
+
+	<section>
+
+		<section_name>Processing Options</section_name>
+		<section_java_name>processingOpts</section_java_name>
+		
+	
+		<phase_option>
+			<name>Phase Options</name>
+			<java_name>phaseOpt</java_name>
+			<alias_name>p</alias_name>
+			<alias_name>phase-option</alias_name>
+			<short_desc>set run-time option KEY to VALUE for PHASE-NAME</short_desc>
+			<long_desc>This option ...</long_desc>
+		</phase_option>
+		
+		<macro_option>
+			<name>Optimize</name>
+			<java_name>optimize</java_name>
+			<alias_name>O</alias_name>
+			<alias_name>optimize</alias_name>
+			<expansion>-p jop enabled:true</expansion>
+			<short_desc>perform scalar optimizations on the classfiles</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macro_option>
+
+		<macro_option>
+			<name>Whole Program Optimize</name>
+			<java_name>wholeOptimize</java_name>
+			<alias_name>W</alias_name>
+			<alias_name>whole-optimize</alias_name>
+			<expansion>-p wjop enabled:true</expansion>
+			<short_desc>perform whole program optimizations on the classfiles</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macro_option>
+
+			
+	</section>
+	
+	<section>
+		
+		<section_name>Single File Mode Options</section_name>
+		<section_java_name>singleFileOpts</section_java_name>
+		
+
+		<path_option>
+			<name>Process Path</name>
+			<java_name>processPath</java_name>
+		 	<alias_name>process-path</alias_name>
+			<short_desc>process all classes on the PATH</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+
+	</section>
+
+	<section>
+	
+		<section_name>Application Mode Options</section_name>
+		<section_java_name>appOpts</section_java_name>
+		
+		<path_option>
+			<name>Include Package</name>
+			<java_name>incPackage</java_name>
+			<alias_name>i</alias_name>
+		 	<alias_name>include</alias_name>
+			<short_desc>marks classfiles in PACKAGE (e.g. java.util.)as application classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+
+		<path_option>
+			<name>Exclude Package</name>
+			<java_name>excPackage</java_name>
+			<alias_name>x</alias_name>
+		 	<alias_name>exclude</alias_name>
+			<short_desc>marks classfiles in PACKAGE (e.g. java.) as context classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+		
+		<boolean_option>
+			<name>Analyze Context</name>
+			<java_name>analyzeContext</java_name>
+			<alias_name>a</alias_name>
+		 	<alias_name>analyze-context</alias_name>
+			<short_desc>label context classes as library</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+
+		<path_option>
+			<name>Dynamic Classes</name>
+			<java_name>dynClasses</java_name>
+			<alias_name>dynamic-classes</alias_name>
+			<short_desc>marks CLASSES (separated by colons) as potentially dynamic classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+
+		<path_option>
+			<name>Dynamic Path</name>
+			<java_name>dynPath</java_name>
+			<alias_name>dynamic-path</alias_name>
+			<short_desc>marks all class files in PATH as potentially dynamic classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+
+		<path_option>
+			<name>Dynamic Package</name>
+			<java_name>dynPackage</java_name>
+			<alias_name>dynamic-package</alias_name>
+			<short_desc>marks classfiles in PACKAGES (separated by commas) as potentially dynamic classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+		
+	</section>
+
+	<section>
+		
+		<section_name>Input Attribute Options</section_name>
+		<section_java_name>inputAttrOpts</section_java_name>
+		
+
+		<boolean_option>
+			<name>Keep Line Number</name>
+			<java_name>keepLineNum</java_name>
+			<alias_name>keep-line-number</alias_name>
+			<short_desc>keep line number tables</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+		
+		<boolean_option>
+			<name>Keep Bytecode Offset</name>
+			<java_name>keepByteOffset</java_name>
+			<alias_name>keep-bytecode-offset</alias_name>
+		 	<alias_name>keep-offset</alias_name>
+			<short_desc>attach bytecode offset to jimple statement</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+
+		
+	</section>
+	
+	<section>
+		
+		<section_name>Annotation Options</section_name>
+		<section_java_name>annotationOpts</section_java_name>
+		
+
+		<macro_option>
+			<name>Null Pointer Annotation</name>
+			<java_name>nullPointerAnn</java_name>
+			<alias_name>annot-nullpointer</alias_name>
+			<expansion>-p jtp.npc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true</expansion>
+			<short_desc>turn on the annotation for null pointer</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macro_option>
+		
+		<macro_option>
+			<name>Array Bounds Annotation</name>
+			<java_name>arrayBoundsAnn</java_name>
+			<alias_name>annot-arraybounds</alias_name>
+			<expansion>-p wjtp2.ra enabled:true -p jtp.abc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true</expansion>
+			<short_desc>turn on the annotation for array bounds check</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macro_option>
+
+		
+	</section>
+	
+	<section>
+		
+		<section_name>Miscellaneous Options</section_name>
+		<section_java_name>miscOpts</section_java_name>
+		
+		<boolean_option>
+			<name>Time</name>
+			<java_name>time</java_name>
+			<alias_name>time</alias_name>
+			<short_desc>print out time statistics about tranformations</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+		
+		<boolean_option>
+			<name>Subtract Garbage Collection Time</name>
+			<java_name>subGC</java_name>
+			<alias_name>subtract-gc</alias_name>
+			<short_desc>attempt to subtract the gc from the time stats</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+
+		
+	</section>
+</options>
+

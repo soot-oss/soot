@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<phase>
+	<phase_name>Whole-Jimple Transformation Pack</phase_name>
+	<phase_java_name></phase_java_name>
+	<phase_alias>wjtp</phase_alias>
+	<phase_opts>
+	</phase_opts>
+</phase>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<phase>
+	<phase_name>Whole-Jimple Optimization Pack</phase_name>
+	<phase_java_name></phase_java_name>
+	<phase_alias>wjop</phase_alias>
+	<phase_opts>
+	</phase_opts>
+	<sub_phase>
+		<sub_phase_name>Static Method Binding</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>wjop.smb</sub_phase_alias>
+		<sub_phase_opts>
+		<boolean_option>
+			<name>Insert Null Checks</name>
+			<java_name>insertNullChecks</java_name>
+			<alias_name>insert-null-checks</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>								<boolean_option>
+			<name>Insert Redundant Casts</name>
+			<java_name>insertRedundantCasts</java_name>
+			<alias_name>insert-redundant-casts</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+		<multi_option>
+			<name>Allow Modifier Changes</name>
+			<java_name>allowModChanges</java_name>
+			<alias_name>allow-modifier-changes</alias_name>
+				<value>
+					<value_name>Unsafe</value_name>
+					<java_name>unsafe</java_name>
+					<alias>unsafe</alias>
+					<short_desc></short_desc>
+                                        <default/>
+				</value>
+				<value>
+					<value_name>Safe</value_name>
+					<java_name>safe</java_name>
+					<alias>safe</alias>
+					<short_desc></short_desc>
+				</value>
+				<value>
+					<value_name>None</value_name>
+					<java_name>none</java_name>
+					<alias>none</alias>
+					<short_desc></short_desc>
+				</value>
+			<short_desc>
+			<long_desc>
+		</multi_option>
+		<int_option>
+			<name>VTA Passes</name>
+			<java_name>vtaPasses</java_name>
+			<alias_name>VTA-passes</alias_name>
+			<default_value>0<default_value>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</int_option>
+		</sub_phase_opts>
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Static Inlining</sub_phase_name>
+		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_alias>wjop.si</sub_phase_alias>
+		<sub_phase_opts>
+		<boolean_option>
+			<name>Insert Null Checks</name>
+			<java_name>insertNullChecks</java_name>
+			<alias_name>insert-null-checks</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+		<boolean_option>
+			<name>Insert Redundant Casts</name>
+			<java_name>insertRedundantCasts</java_name>
+			<alias_name>insert-redundant-casts</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+		<multi_option>
+			<name>Allow Modifier Changes</name>
+			<java_name>allowModChanges</java_name>
+			<alias_name>allow-modifier-changes</alias_name>
+				<value>
+					<value_name>Unsafe</value_name>
+					<java_name>unsafe</java_name>
+					<alias>unsafe</alias>
+					<short_desc></short_desc>
+                                        <default/>
+				</value>
+				<value>
+					<value_name>Safe</value_name>
+					<java_name>safe</java_name>
+					<alias>safe</alias>
+					<short_desc></short_desc>
+				</value>
+				<value>
+					<value_name>None</value_name>
+					<java_name>none</java_name>
+					<alias>none</alias>
+					<short_desc></short_desc>
+				</value>
+			<short_desc>
+			<long_desc>
+		</multi_option>
+		<float_option>
+			<name>Expansion Factor</name>
+			<java_name>expansionFactor</java_name>
+			<alias_name>expansion-factor</alias_name>
+			<default_value>3<default_value>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</float_option>
+		<int_option>
+			<name>Max Container Size</name>
+			<java_name>maxContainerSize</java_name>
+			<alias_name>max-container-size</alias_name>
+			<default_value>5000<default_value>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</int_option>
+		<int_option>
+			<name>Max Inline Size</name>
+			<java_name>maxInlineSize</java_name>
+			<alias_name>max-inline-size</alias_name>
+			<default_value>20<default_value>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</int_option>
+		<int_option>
+			<name>VTA Passes</name>
+			<java_name>vtaPasses</java_name>
+			<alias_name>VTA-passes</alias_name>
+			<default_value>0<default_value>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</int_option>
+
+		</sub_phase_opts>
+	</sub_phase>
+
+</phase>

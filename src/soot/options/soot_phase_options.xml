@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<document xmlns:xi="http://www.w3.org/2001/XInclude">
+     <xinclude:include href="jimple_body_creation_options.xml"/>
+</document>
+<document xmlns:xinclude="http://www.w3.org/2001/XInclude">
+     <xinclude:include href="jimple_transformation_pack_options.xml"/>
+</document>
+<document xmlns:xinclude="http://www.w3.org/2001/XInclude">
+     <xinclude:include href="jimple_optimization_pack_options.xml"/>
+</document>
+<document xmlns:xinclude="http://www.w3.org/2001/XInclude">
+     <xinclude:include href="whole_jimple_transformation_pack_options.xml"/>
+</document>
+<document xmlns:xinclude="http://www.w3.org/2001/XInclude">
+     <xinclude:include href="whole_jimple_optimization_pack_options.xml"/>
+</document>
+<document xmlns:xinclude="http://www.w3.org/2001/XInclude">
+     <xinclude:include href="generating_jasmin_options.xml"/>
+</document>
+

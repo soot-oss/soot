@@ -1,0 +1,619 @@
+Soot Options Proposal
+=====================
+
+This is a proposal describing how the Soot options should be cleaned up.
+Comments are welcome.
+
+1. Options will be divided into several sections. Each section will consist
+of a number of options.
+
+2. Each option will be of a specific type, defining its syntax.
+
+2.a) Boolean options will either be present or absent, and will not take
+any arguments.
+
+2.b) Multi-valued (radio) options will take exactly one argument, which
+may be one of a pre-defined number of strings. Multiple occurences of
+the same multi-valued option with different values will result in an
+error. Each multi-valued option will have a default value which will
+be used if the option is not present on the command line. Each value
+of a multi-valued option may have zero or more aliases (for exmaple,
+J and jimple).
+
+2.c) Path options will take exactly one argument, which will be a set
+of strings separated by a colon on Unix or a semicolon on Windows.
+Multiple occurrences of a path option will cause the values to be
+appended, separated with a colon or semicolon depending on the OS.
+
+2.d) Phase options will take exactly two arguments: the phase name
+and the options for the phase.
+
+2.e) Macro options will take no arguments, and will expand to some
+fixed string of other options. For example, -O will be a macro option
+expanding to something like -p jop enabled:true. The expansion of
+a macro option will be given in the XML file describing the options.
+
+2.f) A string option takes exactly one string as an argument.
+
+2.g) Additional option types may be added after careful consideration.
+
+3. The syntax @file will be used to read options out of a file. A path
+may be specified as part of file, either absolute or relative to the
+current directory when Soot is invoked.
+
+4. Each option may have zero or more aliases. Each alias may be
+specified with either a single dash or a double dash. That is, we
+are removing the rule that long options must have two dashes. This
+is consistent with most Java tools, and avoids problems with people
+giving the wrong number of dashes. It makes it impossible to group
+short options together; however, this was never supported in Soot, and
+most Soot options that one would want to group together only have long
+versions anyway.
+
+5. The policy for new options will be to have a short form only if
+the option is likely to be used often to avoid polluting the limited
+space of short options.
+
+6. The current options will be affected as follows:
+
+6.a) The -j, --jimp, --njimple, -s, --jasmin, -J, --jimple, -B,
+--baf, -b, -g, -grimp, -G, --grimple, -c, --class, -X, --xml,
+--nooutput, --dava, and --final-rep options will be replaced
+with a single multi-valued option -o, alias --output-format. Its
+values (with aliases) will be:
+j jimp
+njimple
+J jimple
+B baf
+b
+g grimp
+G grimple
+X xml
+n none
+s jasmin jasmin-through-baf
+jasmin-through-grimp
+c class class-through-baf
+class-through-grimp
+d dava
+The default value will be c.
+
+6.b) The --src-prec option will become a multi-valued option with values:
+J jimple
+c class
+
+6.c) The --soot-class-path option will be removed as it is an
+undocumented duplicate of --soot-classpath. A short alias -cp will be
+added for --soot-classpath.
+
+6.d) The -cp --soot-classpath, --process-path, -x --exclude, -i --include,
+--dynamic-classes, --dynamic-path, --dynamic-packages options will become
+path options.
+
+6.e) The -d --output-dir option will become a string option.
+
+6.f) The -h --help, --version, -v --verbose, --time, --subtract-gc,
+--app, -a --analyze-context options will become boolean options.
+
+6.g) The short form -t for --time will be removed, as it is rarely used.
+
+6.h) -O --optimize will be a macro option expanding to -p jop enabled:true.
+-W --whole-optimize will be a macro option expanding to -p wjop enabled:true.
+
+6.i) The -A option, which is currently very overloaded, will be changed
+to:
+
+Boolean option --keep-line-number (replacing -A LineNumber)
+
+Boolean option --keep-bytecode-offset --keep-offset (replacing -A BytecodeOffset)
+
+Macro option --annot-nullpointer (replacing -A nullpointer and -A both)
+with expansion -p jtp.npc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true
+
+Macro option --annot-arraybounds (replacing -A arraybounds and -A both)
+with expansion -p wjtp2.ra enabled:true -p jtp.abc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true
+
+6.j) The people who added the --lazy, --debug, --tag-file options will
+speak up, and tell us why they were added, what they do, and where they
+are documented, if anywhere. Based on these answers, we will decide what
+to do with them.
+
+6.k) The -k --cache-dir, --with-cache options will be removed, as they
+were an undocumented quick hack that never really worked.
+
+6.l) The -p --phase-option option will become a phase option.
+
+7) The options will be organized into sections as follows.
+
+General options
+-h --help
+--version
+-v --verbose
+--app
+
+Input options
+-cp --soot-classpath
+--src-prec
+
+Output options
+-d --output-dir
+-o --output-format
+
+Processing options
+-p --phase-option
+-O --optimize
+-W --whole-optimize
+
+Single-file mode options:
+--process-path
+
+Applications mode options:
+-i --include
+-x --exclude
+-a --analyze-context
+--dynamic-classes
+--dynamic-path
+--dynamic-packages
+
+Input attribute options
+--keep-line-number
+--keep-bytecode-offset --keep-offset
+
+Annotation options:
+--annot-arraybounds
+--annot-nullpointer
+
+Miscellaneous
+--time
+--subtract-gc
+
+8) Each option will have a name (for dialog box), a short description
+to be displayed in the --help screen, and a long description to be
+displayed in the documentation.
+
+9) Phase options will work as they currently do, will all be documented,
+and will be classified into several types:
+
+9.a) Boolean
+
+9.b) Multi-valued
+
+9.c) Integer
+
+9.d) Float
+
+10) All options will be specified in an XML file. From this file, we will
+generate, using XSLT, the Java source for the parser and for the usage string,
+the LaTeX documentation, and the Eclipse dialog. This will ensure that all
+of these will remain up-to-date with respect to changes in the options.
+An (incomplete) example of such an XML file is attached. There will be
+a separate XML file for each phase to simlarly specify the phase options.
+
+A) Old to new option conversion chart (only documented old options listed):
+
+old                             new
+  --version                    unchanged
+  -h, --help                   unchanged
+  -d PATH                      unchanged
+  -x, --exclude PACKAGE        unchanged
+  -i, --include PACKAGE        unchanged
+  -a, --analyze-context        unchanged
+  --dynamic-path PATH          unchanged
+  --dynamic-packages PACKAGES  unchanged
+  --dynamic-classes CLASSES    unchanged
+  --process-path PATH          unchanged
+  -O, --optimize               unchanged
+  -W, --whole-optimize         unchanged
+  --soot-classpath PATH        unchanged
+  --src-prec [jimple|class]    unchanged
+  --subtract-gc                unchanged
+  -v --verbose                 unchanged
+  -p --phase-option            unchanged
+  --app                        unchanged
+
+  -b, --b                      -o b
+  -B, --baf                    -o B, -o baf
+  -j, --jimp                   -o j, -o jimp
+  -J, --jimple                 -o J, -o jimple
+  -g, --grimp                  etc.
+  -G, --grimple                
+  -s, --jasmin                 
+  -c, --class                  
+  -X, --xml                    
+
+  --final-rep grimp            -o class-through-grimp
+                               or -o jasmin-through-grimp
+  --final-rep baf              (this is the default)
+  --final-rep jimple           (this is the default when producing Jimple)
+
+  -t, --time                   only --time allowed
+
+  -A LineNumber                --keep-line-number
+  -A BytecodeOffset            --keep-bytecode-offset --keep-offset
+  -A arraybounds               --annot-arraybounds
+  -A nullpointer               --annot-nullpointer
+  -A both                      --annot-arraybounds --annot-nullpointer
+
+  --debug                      To be determined
+
+B) Example XML file:
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="soot_options.xsl"?>
+
+<options>
+
+	<section>
+		
+		<section_name>General Options</section_name>
+		
+		<boolean_option>
+			<name>Help</name>
+			<java_name>help</java_name>
+			<alias_name>h</alias_name>
+			<alias_name>help</alias_name>
+			<short_desc>display help and exit</short_desc>
+			<long_desc>This option displays the textual help message and exits immediately without doing any further processing</long_desc>
+		</boolean_option>
+		
+		<boolean_option>
+			<name>Version</name>
+			<java_name>version</java_name>
+			<alias_name>version</alias_name>
+			<short_desc>output version information and exit</short_desc>
+			<long_desc>This option outputs the Soot version information and exits immediately without doing any further processing</long_desc>
+		</boolean_option>
+		
+		<boolean_option>
+			<name>Verbose</name>
+			<java_name>verbose</java_name>
+			<alias_name>v</alias_name>
+			<alias_name>verbose</alias_name>
+			<short_desc>verbose mode</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+
+		<boolean_option>
+			<name>Application Mode</name>
+			<java_name>addMode</java_name>
+			<alias_name>app</alias_name>
+			<short_desc>runs in application mode</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+		
+	</section>
+
+	<section>
+
+		<section_name>Input Options</section_name>
+
+		<path_option>
+			<name>Soot Classpath</name>
+			<java_name>classpath</java_name>
+			<alias_name>cp</alias_name>
+			<alias_name>soot-classpath</alias_name>
+			<short_desc>uses given PATH as the classpath for finding classes for Soot processing</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+		
+		<multi_option>
+			<name>Input Source Precedence</name>
+			<java_name>srcPrec</java_name>
+			<alias_name>src-prec</alias_name>
+				<value>
+					<value_name>Class File</value_name>
+					<java_name>classFile</java_name>
+					<alias>c</alias>
+					<alias>class</alias>
+				</value>
+				<value>
+					<value_name>Jimple File</value_name>
+					<java_name>jimpleFile</java_name>
+					<alias>J</alias>
+					<alias>jimple</alias>
+				</value>
+			<default>c</default>
+			<short_desc>sets the source precedence for Soot</short_desc>
+			<long_desc>This option ...</long_desc>
+		</multi_option>
+		
+	</section>
+
+	<section>
+		
+		<section_name>Output Options</section_name>
+
+		<string_option>
+			<name>Output Directory</name>
+			<java_name>outputDir</java_name>
+			<alias_name>d</alias_name>
+			<alias_name>output-dir</alias_name>
+			<short_desc>store produced files in PATH</short_desc>
+			<long_desc>This option ...</long_desc>
+		</string_option>
+		
+		<multi_option>
+			<name>Output Format</name>
+			<java_name>outputFormat</java_name>
+			<alias_name>o</alias_name>
+			<alias_name>output-format</alias_name>
+				<value>
+				
+					<value_name>Jimp File</value_name>
+					<java_name>jimpFile</java_name>
+					<alias>j</alias>
+					<alias>jimp</alias>
+				</value>
+				<value>
+					
+					<value_name>Njimple File</value_name>
+					<java_name>njimpFile</java_name>
+					<alias>njimple</alias>
+				</value>
+				<value>
+					
+					<value_name>Jimple File</value_name>
+					<java_name>jimpleFile</java_name>
+					<alias>J</alias>
+					<alias>jimple</alias>
+				</value>
+				<value>
+					
+					<value_name>Baf File</value_name>
+					<java_name>bafFile</java_name>
+					<alias>B</alias>
+					<alias>baf</alias>
+				</value>
+				<value>
+					
+					<value_name>Aggregated Baf File</value_name>
+					<java_name>bFile</java_name>
+					<alias>b</alias>
+				</value>
+				<value>
+					
+					<value_name>Grimp File</value_name>
+					<java_name>grimpFile</java_name>
+					<alias>g</alias>
+					<alias>grimp</alias>
+				</value>
+				<value>
+					
+					<value_name>Grimple File</value_name>
+					<java_name>grimpleFile</java_name>
+					<alias>G</alias>
+					<alias>grimple</alias>
+				</value>
+				<value>
+					
+					<value_name>Xml File</value_name>
+					<java_name>xmlFile</java_name>
+					<alias>X</alias>
+					<alias>xml</alias>
+				</value>
+				<value>
+					
+					<value_name>No Output File</value_name>
+					<java_name>noneFile</java_name>
+					<alias>n</alias>
+					<alias>none</alias>
+				</value>
+				<value>
+					
+					<value_name>Jasmin File</value_name>
+					<java_name>jasminFile</java_name>
+					<alias>s</alias>
+					<alias>jasmin</alias>
+					<alias>jasmin-through-baf</alias>
+				</value>
+				<value>
+					
+					<value_name>Jasmin Through Grimp File</value_name>
+					<java_name>jasminViaGrimpFile</java_name>
+					<alias>jasmin-through-grimp</alias>
+				</value>
+				<value>
+					
+					<value_name>Class File</value_name>
+					<java_name>classFile</java_name>
+					<alias>c</alias>
+					<alias>class</alias>
+					<alias>class-through-baf</alias>
+				</value>
+				<value>
+					
+					<value_name>Class Through Grimp File</value_name>
+					<java_name>classViaGrimpFile</java_name>
+					<alias>class-through-grimp</alias>
+				</value>
+				<value>
+					
+					<value_name>Dava Decompiled File</value_name>
+					<java_name>davaFile</java_name>
+					<alias>d</alias>
+					<alias>dava</alias>
+				</value>
+			<default>c</default>
+			<short_desc>sets the source precedence for Soot</short_desc>
+			<long_desc>This option ...</long_desc>
+		</multi_option>
+	</section>
+
+	<section>
+
+		<section_name>Processing Options</section_name>
+
+		<phase_option>
+			<name>Phase Options</name>
+			<java_name>phaseOpt</java_name>
+			<alias_name>p</alias_name>
+			<alias_name>phase-option</alias_name>
+			<short_desc>set run-time option KEY to VALUE for PHASE-NAME</short_desc>
+			<long_desc>This option ...</long_desc>
+		</phase_option>
+		
+		<macro_option>
+			<name>Optimize</name>
+			<java_name>optimize</java_name>
+			<alias_name>O</alias_name>
+			<alias_name>optimize</alias_name>
+			<expansion>-p jop enabled:true</expansion>
+			<short_desc>perform scalar optimizations on the classfiles</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macro_option>
+
+		<macro_option>
+			<name>Whole Program Optimize</name>
+			<java_name>wholeOptimize</java_name>
+			<alias_name>W</alias_name>
+			<alias_name>whole-optimize</alias_name>
+			<expansion>-p wjop enabled:true</expansion>
+			<short_desc>perform whole program optimizations on the classfiles</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macro_option>
+
+			
+	</section>
+	
+	<section>
+		
+		<section_name>Single File Mode Options</section_name>
+
+		<path_option>
+			<name>Process Path</name>
+			<java_name>procPath</java_name>
+		 	<alias_name>process-path</alias_name>
+			<short_desc>process all classes on the PATH</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+
+	</section>
+
+	<section>
+		<section_name>Application Mode Options</section_name>
+
+		<path_option>
+			<name>Include Package</name>
+			<java_name>incPackage</java_name>
+			<alias_name>i</alias_name>
+		 	<alias_name>include</alias_name>
+			<short_desc>marks classfiles in PACKAGE (e.g. java.util.)as application classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+
+		<path_option>
+			<name>Exclude Package</name>
+			<java_name>excPackage</java_name>
+			<alias_name>x</alias_name>
+		 	<alias_name>exclude</alias_name>
+			<short_desc>marks classfiles in PACKAGE (e.g. java.) as context classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+		
+		<boolean_option>
+			<name>Analyze Context</name>
+			<java_name>analyzeContext</java_name>
+			<alias_name>a</alias_name>
+		 	<alias_name>analyze-context</alias_name>
+			<short_desc>label context classes as library</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+
+		<path_option>
+			<name>Dynamic Classes</name>
+			<java_name>dynClasses</java_name>
+			<alias_name>dynamic-classes</alias_name>
+			<short_desc>marks CLASSES (separated by colons) as potentially dynamic classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+
+		<path_option>
+			<name>Dynamic Path</name>
+			<java_name>dynPath</java_name>
+			<alias_name>dynamic-path</alias_name>
+			<short_desc>marks all class files in PATH as potentially dynamic classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+
+		<path_option>
+			<name>Dynamic Package</name>
+			<java_name>dynPackage</java_name>
+			<alias_name>dynamic-package</alias_name>
+			<short_desc>marks classfiles in PACKAGES (separated by commas) as potentially dynamic classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</path_option>
+		
+	</section>
+
+	<section>
+		
+		<section_name>Input Attribute Options</section_name>
+
+		<boolean_option>
+			<name>Keep Line Number</name>
+			<java_name>keepLineNum</java_name>
+			<alias_name>keep-line-number</alias_name>
+			<short_desc>keep line number tables</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+		
+		<boolean_option>
+			<name>Keep Bytecode Offset</name>
+			<java_name>keepByteOffset</java_name>
+			<alias_name>keep-bytecode-offset</alias_name>
+		 	<alias_name>keep-offset</alias_name>
+			<short_desc>attach bytecode offset to jimple statement</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+
+		
+	</section>
+	
+	<section>
+		
+		<section_name>Annotaion Options</section_name>
+
+		<macro_option>
+			<name>Null Pointer Annotation</name>
+			<java_name>nullPointerAnn</java_name>
+			<alias_name>annot-nullpointer</alias_name>
+			<expansion>-p jtp.npc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true</expansion>
+			<short_desc>turn on the annotation for null pointer</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macro_option>
+		
+		<macro_option>
+			<name>Array Bounds Annotation</name>
+			<java_name>arrayBoundsAnn</java_name>
+			<alias_name>annot-arraybounds</alias_name>
+			<expansion>-p wjtp2.ra enabled:true -p jtp.abc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true</expansion>
+			<short_desc>turn on the annotation for array bounds check</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macro_option>
+
+		
+	</section>
+	
+	<section>
+		
+		<section_name>Miscellaneous Options</section_name>
+
+		<boolean_option>
+			<name>Time</name>
+			<java_name>time</java_name>
+			<alias_name>time</alias_name>
+			<short_desc>print out time statistics about tranformations</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+		
+		<boolean_option>
+			<name>Subtract Garbage Collection Time</name>
+			<java_name>subGC</java_name>
+			<alias_name>subtract-gc</alias_name>
+			<short_desc>attempt to subtract the gc from the time stats</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolean_option>
+
+		
+	</section>
+</options>
+
