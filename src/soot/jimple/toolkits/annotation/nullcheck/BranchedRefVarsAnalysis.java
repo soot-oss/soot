@@ -221,6 +221,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
         if( ro instanceof NewMultiArrayExpr ) return true;
         if( ro instanceof ThisRef ) return true;
         if( ro instanceof CaughtExceptionRef ) return true;
+        if( ro instanceof StringConstant ) return true;
         return false;
     }
 
