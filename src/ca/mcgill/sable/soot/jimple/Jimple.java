@@ -657,7 +657,7 @@ public class Jimple implements BodyRepresentation
 */
 
     /**
-        Constructs a InstanceFieldRef(Value, SootField) grammar chunk.
+        Constructs a InstanceFieldRef(Local, SootField) grammar chunk.
      */
 
     public InstanceFieldRef newInstanceFieldRef(Value base, SootField f)

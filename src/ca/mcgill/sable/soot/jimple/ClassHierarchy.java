@@ -92,7 +92,7 @@ class ClassHierarchy
     private static Hashtable classHierarchyHashtable = new Hashtable();
 
     /** The class manager **/
-    private SootClassManager classManager;
+    SootClassManager classManager;
 
     /** All type node instances **/
     private Vector typeNodeInstances = new Vector();
