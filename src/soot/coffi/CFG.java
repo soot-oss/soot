@@ -3404,6 +3404,8 @@ public class CFG {
 
       Util.activeOriginalIndex = ins.originalIndex;
       Util.isLocalStore = false;
+      Util.isWideLocalStore = false;
+      
       switch(x)
       {
          case ByteCode.BIPUSH:
@@ -3587,7 +3589,8 @@ public class CFG {
          case ByteCode.ISTORE:
          {
             Util.isLocalStore = true;
-      
+            Util.isWideLocalStore = true;
+            
             Local local =
                 Util.getLocalForIndex(listBody,
                 ((Instruction_bytevar)ins).arg_b);
@@ -3599,6 +3602,8 @@ public class CFG {
          case ByteCode.FSTORE:
          {
             Util.isLocalStore = true;
+            Util.isWideLocalStore = true;
+            
             Local local =
                 Util.getLocalForIndex(listBody,
                 ((Instruction_bytevar)ins).arg_b);
@@ -3610,6 +3615,8 @@ public class CFG {
          case ByteCode.ASTORE:
          {
             Util.isLocalStore = true;
+            Util.isWideLocalStore = true;
+            
             Local local =
                 Util.getLocalForIndex(listBody,
                 ((Instruction_bytevar)ins).arg_b);
@@ -3621,6 +3628,8 @@ public class CFG {
          case ByteCode.LSTORE:
          {
             Util.isLocalStore = true;
+            Util.isWideLocalStore = true;
+            
             Local local =
                 Util.getLocalForIndex(listBody,
                 ((Instruction_bytevar)ins).arg_b);
@@ -3632,6 +3641,8 @@ public class CFG {
          case ByteCode.DSTORE:
          {
             Util.isLocalStore = true;
+            Util.isWideLocalStore = true;
+            
             Local local =
                 Util.getLocalForIndex(listBody,
                 ((Instruction_bytevar)ins).arg_b);

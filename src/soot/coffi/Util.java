@@ -50,8 +50,8 @@ public class Util
     static cp_info[] activeConstantPool = null;
     static LocalVariableTable_attribute activeVariableTable;
     static boolean useFaithfulNaming = false;
-    static boolean isLocalStore = false;
-
+    static boolean isLocalStore = false;  // global variable used 
+    static boolean isWideLocalStore = false;
     public static void setFaithfulNaming(boolean v)
     {
         useFaithfulNaming = v;
@@ -1033,6 +1033,8 @@ public class Util
             if(activeOriginalIndex != -1)
             {
                 if(isLocalStore)
+                    activeOriginalIndex++;
+                if(isWideLocalStore)
                     activeOriginalIndex++;
                     
                 name = activeVariableTable.getLocalVariableName(activeConstantPool,
