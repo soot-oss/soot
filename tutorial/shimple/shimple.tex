@@ -20,8 +20,8 @@ This document briefly describes Shimple, an SSA variant of Soot's
 Jimple internal representation.  It assumes general knowledge of Soot,
 Jimple and SSA form. You may wish to jump directly to the walk-through
 section for a demonstration of why you might be interested in using
-Shimple either by implementing SSA-based optimizations or by applying
-them.
+Shimple either by implementing analyses or by applying existing
+optimizations.
 
 \section{Why Shimple?}
 
@@ -97,9 +97,8 @@ public int test()
 
 \subsection{Producing Jimple}
 
-If you produce Jimple with 
-{\tt soot.Main -f jimple ShimpleTest}, you obtain the following code
-for the {\tt test()} method:
+If you produce Jimple with `{\tt soot.Main -f jimple ShimpleTest}' you
+obtain the following code for the {\tt test()} method:
 
 \begin{verbatim}
         i0 = 100;
@@ -122,7 +121,7 @@ for the {\tt test()} method:
 
 \subsection{Producing Shimple}
 
-To produce Shimple instead, use {\tt soot.Main -f shimple ShimpleTest}:
+To produce Shimple instead, use `{\tt soot.Main -f shimple ShimpleTest}':
 
 \begin{verbatim}
         i0 = 100;
@@ -150,15 +149,15 @@ scalars).  Notice here that the variable {\tt i0} has been split into
 the four variables {\tt i0}, {\tt i0\_1}, {\tt i0\_2} and {\tt i0\_3},
 each with a unique definition point.
 
-We have also introduced a Phi node.  You can read {\tt i0\_1 = Phi(i0
-\#0, i0\_3 \#2, i0\_2 \#1)} as saying that {\tt i0\_1} will be assigned
+We have also introduced a Phi node.  You can read `{\tt i0\_1 = Phi(i0
+\#0, i0\_3 \#2, i0\_2 \#1)}' as saying that {\tt i0\_1} will be assigned
 value {\tt i0} if control flow comes from unit {\tt \#0} {\em or} it
 will be assigned {\tt i0\_3} if control flow comes from unit {\tt
 \#2} {\em or}... and so on.
 
 If you have a prejudice against variable names with underscores, you
-may use {\tt soot.Main -f shimple -p shimple standard-local-names
-ShimpleTest} instead so that Shimple applies the Local Name
+may use `{\tt soot.Main -f shimple -p shimple standard-local-names
+ShimpleTest}' instead so that Shimple applies the Local Name
 Standardizer each time new locals are introduced.
 
 Feel free to skip the following digression and move on to the next
@@ -201,8 +200,8 @@ new location dominates the original CFG block it was in.
 
 Since we eventually have to get rid of those pesky Phi nodes, you
 may wish to see what the code looks like after going from Jimple to
-Shimple and back again to Jimple.  Do this with {\tt java soot.Main -f
-jimple --via-shimple ShimpleTest}:
+Shimple and back again to Jimple.  Do this with `{\tt java soot.Main -f
+jimple --via-shimple ShimpleTest}':
 
 \begin{verbatim}
         i0_1 = 100;
@@ -224,13 +223,13 @@ jimple --via-shimple ShimpleTest}:
 \end{verbatim}
 
 Happily, in this case, the Jimple produced looks exactly like the
-original Jimple code.  As usual you may specify {\tt -p shimple
-standard-local-names} if the underscores hurt your eyes; they are
+original Jimple code.  As usual you may specify `{\tt -p shimple
+standard-local-names}' if the underscores hurt your eyes; they are
 otherwise quite harmless.
 
 To understand what's really going on when Shimple eliminates Phi
-nodes, you can tell it to eliminate them naively with {\tt soot.Main
--f jimple --via-shimple -p shimple phi-elim-opt:none ShimpleTest}:
+nodes, you can tell it to eliminate them naively with `{\tt soot.Main
+-f jimple --via-shimple -p shimple phi-elim-opt:none ShimpleTest}':
 
 \begin{verbatim}
         i0 = 100;
@@ -269,7 +268,7 @@ useless.  Obviously, this needs to be optimized away.
 
 Let's try to apply Jimple's Constant Propagator and Folder.  In fact,
 to be fair, let's try all the available  Jimple optimizations activated
-with {\tt soot.Main -f jimple -O ShimpleTest}:
+with `{\tt soot.Main -f jimple -O ShimpleTest}':
 
 \begin{verbatim}
 
@@ -306,7 +305,8 @@ control flow and can currently handle the conditional branching
 statements {\tt IfStmt}, {\tt TableSwitchStmt} and {\tt
 LookupSwitchStmt}.
 
-Let's apply it with {\tt soot.Main -f jimple --via-shimple -O ShimpleTest}:
+Let's apply it with `{\tt soot.Main -f jimple --via-shimple -O
+ShimpleTest}':
 
 \begin{verbatim}
      label0:
@@ -323,10 +323,10 @@ out.  In the process, dead code was exposed which was ultimately
 eliminated.
 
 To understand what is really going on, you can look at the output from
-{\tt soot.Main -f shimple -p sop on}, {\tt soot.Main -f shimple -p sop
-on -p sop.cpf prune-cfg:false} and {\tt soot.Main -f jimple
+`{\tt soot.Main -f shimple -p sop on}', `{\tt soot.Main -f shimple -p sop
+on -p sop.cpf prune-cfg:false}' and `{\tt soot.Main -f jimple
 --via-shimple -p shimple phi-elim-opt:none -p sop on -p
-prune-cfg:false} on this and other examples:
+prune-cfg:false}' on this and other examples:
 
 \begin{verbatim}
 public int test2()

@@ -1,6 +1,7 @@
 Improvements in version 2.0.1 (Fri, 18 Jun 2003)
 1. bug fixes
-2. minor improvements and cleanup of Shimple
+2. minor improvements and cleanup of Shimple, including:
+ a) Significantly improved constant propagator analysis.
 3. ant build file
 4. new framework for adding Soot system tests
 
