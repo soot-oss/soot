@@ -94,6 +94,10 @@
  *                                                                   *
 
  B) Changes:
+ 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed some int's to long's to properly contain unsigned
+   int values.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -113,9 +117,9 @@ import java.io.*;
  */
 class CONSTANT_Long_info extends cp_info {
    /** the upper 32 bits of the long. */
-   public int high;
+   public long high;
    /** the lower 32 bits of the long. */
-   public int low;
+   public long low;
    /** Returns the size of this cp_info object.
     * @return number of bytes occupied by this object.
     * @see cp_info#size

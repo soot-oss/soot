@@ -3,6 +3,10 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Madeleine Mony are                               *
+ * Copyright (C) 1998 Madeleine Mony.  All                           *
+ * rights reserved.                                                  *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +65,9 @@
 
  B) Changes:
 
+ - Modified on November 13, 1998 by Madeleine Mony
+   Implemented fixed hash code idea.
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -79,6 +86,9 @@ public class Local implements Value
     String name;
     Type type;
 
+    int fixedHashCode;
+    boolean isHashCodeChosen;
+        
     Local(String name, Type t)
     {
         this.name = name;
@@ -100,6 +110,27 @@ public class Local implements Value
         this.name = name;
     }
 
+    public int hashCode()
+    {
+        if(!isHashCodeChosen)
+        {
+            // Set the hash code for this object
+            
+            if(name != null & type != null)
+                fixedHashCode = name.hashCode() + 19 * type.hashCode();
+            else if(name != null)
+                fixedHashCode = name.hashCode();
+            else if(type != null)
+                fixedHashCode = type.hashCode();
+            else
+                fixedHashCode = 1;
+                
+            isHashCodeChosen = true;
+        }
+        
+        return fixedHashCode;
+    }
+    
     public Type getType()
     {
         return type;

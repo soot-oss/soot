@@ -94,6 +94,10 @@
  *                                                                   *
 
  B) Changes:
+ 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed some int's to long's to properly contain unsigned
+   int values.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -113,7 +117,7 @@ import java.io.*;
  */
 class CONSTANT_Integer_info extends cp_info {
    /** Internal representation. */
-   public int bytes;
+   public long bytes;
    /** Returns the size of this cp_info object.
     * @return number of bytes occupied by this object.
     * @see cp_info#size
@@ -125,7 +129,7 @@ class CONSTANT_Integer_info extends cp_info {
     * @see cp_info#toString
     */
    public String toString(cp_info constant_pool[]) {
-      return Integer.toString(bytes);
+      return Integer.toString((int) bytes);
    }
    /** Returns a String description of what kind of entry this is.
     * @return the String "int".
@@ -144,6 +148,6 @@ class CONSTANT_Integer_info extends cp_info {
    public int compareTo(cp_info constant_pool[],cp_info cp,cp_info cp_constant_pool[]) {
       if (tag!=cp.tag) return tag-cp.tag;
       CONSTANT_Integer_info cu = (CONSTANT_Integer_info)cp;
-      return bytes-cu.bytes;
+      return ((int) bytes) - (int) cu.bytes;
    }
 }

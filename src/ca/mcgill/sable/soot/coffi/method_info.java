@@ -95,6 +95,11 @@
 
  B) Changes:
 
+ 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed some short's to int's to properly contain unsigned
+   short values.
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -114,19 +119,19 @@ import java.util.Vector;
  */
 public class method_info {
    /** Access flags for this field. */
-    short access_flags;
+    int access_flags;
    /** Constant pool index of the name of this method.
     * @see ClassFile#constant_pool
     * @see CONSTANT_Utf8_info
     */
-    short name_index;
+    int name_index;
    /** Constant pool index of the type descriptor of this method.
     * @see ClassFile#constant_pool
     * @see CONSTANT_Utf8_info
     */
-    short descriptor_index;
+    int descriptor_index;
    /** Count of attributes this method contains. */
-    short attributes_count;
+    int attributes_count;
    /** Array of attribute_info objects for this method.
     * @see attribute_info
     */

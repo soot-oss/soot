@@ -94,6 +94,14 @@
  *                                                                   *
 
  B) Changes:
+ 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed some short's to int's to properly contain unsigned
+   short values.
+ 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed some short's to int's to properly contain unsigned
+   short values.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -118,21 +126,22 @@ import java.io.*;
  */
 class Code_attribute extends attribute_info {
    /** Maximum size of the operand stack. */
-   public short max_stack;
+   public int max_stack;
    /** Maximum number of locals required. */
-   public short max_locals;
+
+   public int max_locals;
    /** Length of code array. */
-   public int code_length;
+   public long code_length;
    /** Actual array of bytecode. */
    public byte code[];
    /** Length of exception table array. */
-   public short exception_table_length;
+   public int exception_table_length;
    /** Exception table array.
     * @see exception_table_entry
     */
    public exception_table_entry exception_table[];
    /** Length of attributes array. */
-   short attributes_count;
+   int attributes_count;
    /** Array of attributes.
     * @see attribute_info
     */

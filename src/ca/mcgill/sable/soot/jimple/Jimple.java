@@ -650,9 +650,9 @@ public class Jimple implements BodyRepresentation
         Constructs a CaughtExceptionRef() grammar chunk.
      */
 
-    public CaughtExceptionRef newCaughtExceptionRef()
+    public CaughtExceptionRef newCaughtExceptionRef(JimpleBody b)
     {
-        return new CaughtExceptionRef();
+        return new CaughtExceptionRef(b);
     }
 
 

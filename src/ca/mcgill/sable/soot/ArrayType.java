@@ -60,6 +60,9 @@
  *                                                                   *
 
  B) Changes:
+  
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Made hashCode() deterministic.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -120,7 +123,7 @@ public class ArrayType extends Type
 
     public int hashCode()
     {
-        return toString().hashCode();
+        return baseType.hashCode() + 0x432E0341 * numDimensions;
     }
 
     public void apply(Switch sw)

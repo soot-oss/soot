@@ -60,6 +60,9 @@
  *                                                                   *
 
  B) Changes:
+  
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Made hashCode() deterministic.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -96,6 +99,11 @@ public class CharType extends BaseType
         return "char";
     }
 
+    public int hashCode()
+    {
+        return 0x739EA474;
+    }
+    
     public void apply(Switch sw)
     {
         ((TypeSwitch) sw).caseCharType(this);

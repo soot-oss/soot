@@ -94,6 +94,10 @@
  *                                                                   *
 
  B) Changes:
+ 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed some short's to int's to properly contain unsigned
+   short values.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -115,11 +119,11 @@ class CONSTANT_NameAndType_info extends cp_info {
    /** Constant pool index of the CONSTANT_Utf8 object for the name.
     * @see CONSTANT_Utf8_info
     */
-   public short name_index;
+   public int name_index;
    /** Constant pool index of the CONSTANT_Utf8 object for the descriptor.
     * @see CONSTANT_Utf8_info
     */
-   public short descriptor_index;
+   public int descriptor_index;
    /** Returns the size of this cp_info object.
     * @return number of bytes occupied by this object.
     * @see cp_info#size

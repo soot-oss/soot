@@ -114,7 +114,7 @@ import java.io.*;
  */
 class LocalVariableTable_attribute extends attribute_info {
    /** Length of the local variable table. */
-   public short local_variable_table_length;
+   public int local_variable_table_length;
    /** Actual table of local variables. */
    public local_variable_table_entry local_variable_table[];
 

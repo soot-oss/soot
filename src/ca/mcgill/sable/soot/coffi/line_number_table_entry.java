@@ -113,7 +113,7 @@ import java.io.*;
  */
 class line_number_table_entry {
    /** Offset within bytecode of the start of the code for this line number. */
-   public short start_pc;
+   public int start_pc;
    /** Line number within the source code. */
-   public short line_number;
+   public int line_number;
 }

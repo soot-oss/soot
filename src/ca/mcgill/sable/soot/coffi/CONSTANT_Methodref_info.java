@@ -94,6 +94,10 @@
  *                                                                   *
 
  B) Changes:
+ 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed some short's to int's to properly contain unsigned
+   short values.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -115,11 +119,11 @@ class CONSTANT_Methodref_info extends cp_info {
    /** Constant pool index of a CONSTANT_Class object.
     * @see CONSTANT_Class_info
     */
-   public short class_index;
+   public int class_index;
    /** Constant pool index of a CONSTANT_NameAndType object.
     * @see CONSTANT_NameAndType_info
     */
-   public short name_and_type_index;
+   public int name_and_type_index;
    /** Returns the size of this cp_info object.
     * @return number of bytes occupied by this object.
     * @see cp_info#size

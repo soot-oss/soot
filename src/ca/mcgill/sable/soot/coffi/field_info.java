@@ -94,6 +94,10 @@
  *                                                                   *
 
  B) Changes:
+ 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed some short's to int's to properly contain unsigned
+   short values.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -113,19 +117,19 @@ import java.io.*;
  */
 class field_info {
    /** Access flags for this field. */
-   public short access_flags;
+   public int access_flags;
    /** Constant pool index of the name of this field.
     * @see ClassFile#constant_pool
     * @see CONSTANT_Utf8_info
     */
-   public short name_index;
+   public int name_index;
    /** Constant pool index of the type descriptor of this field.
     * @see ClassFile#constant_pool
     * @see CONSTANT_Utf8_info
     */
-   public short descriptor_index;
+   public int descriptor_index;
    /** Count of attributes this field contains. */
-   public short attributes_count;
+   public int attributes_count;
    /** Array of attribute_info objects for this field.
     * @see attribute_info
     */

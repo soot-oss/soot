@@ -146,8 +146,8 @@ public class Util
                 // replace this classes name with its fully qualified version.
 
         }
-
-        // Set modifier
+  
+          // Set modifier
             bclass.setModifiers(coffiClass.access_flags & (~0x0020));
                 // don't want the ACC_SUPER flag, it is always supposed to be set anyways
 

@@ -900,7 +900,7 @@ public class CFG {
                         Local local = Util.getLocalCreatingIfNecessary(listBody, "op0",
                             UnknownType.v());
 
-                        newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef());
+                        newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef(listBody));
 
                         stmtList.add(targetIndex, newTarget);
                     }
@@ -2197,7 +2197,7 @@ public class CFG {
       {
          CONSTANT_Integer_info ci = (CONSTANT_Integer_info)c;
 
-         rvalue = IntConstant.v(ci.bytes);
+         rvalue = IntConstant.v((int) ci.bytes);
          stmt = Jimple.v().newAssignStmt(Util.getLocalForStackOp(listBody, postTypeStack,
             postTypeStack.topIndex()), rvalue);
       }

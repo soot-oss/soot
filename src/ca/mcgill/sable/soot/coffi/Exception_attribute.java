@@ -95,6 +95,10 @@
 
  B) Changes:
 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed some short's to int's to properly contain unsigned
+   short values.
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -115,10 +119,10 @@ import java.io.*;
  */
 class Exception_attribute extends attribute_info {
    /** Length of exception table array. */
-   public short number_of_exceptions;
+   public int number_of_exceptions;
    /** Constant pool indices of CONSTANT_Class types representing exceptions
     * the associated method might throw.
     * @see CONSTANT_Class_info
     */
-   public short exception_index_table[];
+   public int exception_index_table[];
 }

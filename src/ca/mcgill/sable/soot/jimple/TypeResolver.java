@@ -2187,7 +2187,17 @@ class TypeResolver
                     right.ecrAddParent(left);
                 }
                 else
-                {
+                {   
+                    List exceptionTypes = ((CaughtExceptionRef) r).getExceptionTypes();
+                    Iterator typeIt = exceptionTypes.iterator();
+                    
+                    while(typeIt.hasNext())
+                    {
+                        Type t = (Type) typeIt.next();
+                        
+                        left.ecrAddChild(getTypeVariable(t));
+                    }
+                        
                     left.ecrAddParent(getTypeVariable(RefType.v("java.lang.Throwable")));
                 }
             }

@@ -65,6 +65,9 @@
 
  B) Changes:
 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Fixed a jsr generation bug.
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -511,13 +514,18 @@ public class JasminClass
             {
                 Stmt s = (Stmt) codeIt.next();
 
+                
                 if(stmtToLabel.containsKey(s))
                     emit(stmtToLabel.get(s) + ":");
 
                 if(subroutineToReturnAddressSlot.containsKey(s))
-                    emit("astore " + subroutineToReturnAddressSlot.get(s));
-
-                emitStmt(s);
+                {
+                    AssignStmt assignStmt = (AssignStmt) s;
+                    
+                    emit("astore " + localToSlot.get(assignStmt.getLeftOp()));
+                }   
+                else 
+                    emitStmt(s);                
             }
 
             isEmittingMethodCode = false;
@@ -1041,7 +1049,7 @@ public class JasminClass
                 if(isNextGotoAJsr)
                 {
                     emit("jsr " + stmtToLabel.get(s.getTarget()));
-                    isNextGotoAJsr = true;
+                    isNextGotoAJsr = false;
 
                     subroutineToReturnAddressSlot.put(s.getTarget(), new Integer(returnAddressSlot));
                 }

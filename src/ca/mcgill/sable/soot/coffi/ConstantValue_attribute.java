@@ -114,5 +114,5 @@ import java.io.*;
  */
 class ConstantValue_attribute extends attribute_info {
    /** The constant pool index of the actual constant. */
-   public short constantvalue_index;
+   public int constantvalue_index;
 }

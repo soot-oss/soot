@@ -99,6 +99,10 @@
 
  B) Changes:
 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed some short's to int's to properly contain unsigned
+   short values.
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -131,7 +135,7 @@ import ca.mcgill.sable.soot.jimple.Main;
 public class ClassFile {
 
    /** Magic number. */
-    static final int MAGIC = 0xCAFEBABE;
+    static final long MAGIC = 0xCAFEBABEL;
 
    /** Access bit flag. */
     static final short ACC_PUBLIC =    0x0001;
@@ -191,50 +195,50 @@ public class ClassFile {
    /** Magic number read in.
     * @see ClassFile#MAGIC
     */
-    int magic;
+    long magic;
    /** Minor version. */
-    short minor_version;
+    int minor_version;
    /** Major version. */
-    short major_version;
+    int major_version;
    /** Number of items in the constant pool. */
-    short constant_pool_count;
+    int constant_pool_count;
    /** Array of constant pool items.
     * @see cp_info
     */
     public cp_info constant_pool[];
    /** Access flags for this Class.
     */
-    short access_flags;
+    int access_flags;
    /** Constant pool index of the Class constant describing <i>this</i>.
     * @see CONSTANT_Class_info
     */
-    public short this_class;
+    public int this_class;
    /** Constant pool index of the Class constant describing <i>super</i>.
     * @see CONSTANT_Class_info
     */
-    short super_class;
+    int super_class;
    /** Count of interfaces implemented. */
-    short interfaces_count;
+    int interfaces_count;
    /** Array of constant pool indices of Class constants describing each
     * interace implemented by this class, as given in the source for this
     * class.
     * @see CONSTANT_Class_info
     */
-    short interfaces[];
+    int interfaces[];
    /** Count of fields this Class contains. */
-    short fields_count;
+    int fields_count;
    /** Array of field_info objects describing each field.
     * @see field_info
     */
     field_info fields[];
    /** Count of methods this Class contains. */
-    short methods_count;
+    int methods_count;
    /** Array of method_info objects describing each field.
     * @see method_info
     */
     method_info methods[];
    /** Count of attributes this class contains. */
-    short attributes_count;
+    int attributes_count;
    /** Array of attribute_info objects for this class.
     * @see attribute_info
     */
@@ -267,6 +271,7 @@ public class ClassFile {
           else
           {   f = ClassLocator.getInputStreamOf(fn);
           }
+          
       }
       catch(ClassNotFoundException e)
       {   throw new RuntimeException("Could not locate class " + fn);
@@ -274,13 +279,15 @@ public class ClassFile {
 
       d = new DataInputStream(f);
       b = readClass(d);
+      
       try {
-         d.close();
-         f.close();
+        d.close(); 
+        f.close();
       } catch(IOException e) {
          System.out.println("IOException with " + fn + ": " + e.getMessage());
          return false;
       }
+      
       if (!b) return false;
       parse();        // parse all methods & builds CFGs
       //System.out.println("-- Read " + cf + " --");
@@ -343,7 +350,7 @@ public class ClassFile {
     * @see method_info#access_flags
     * @see field_info#access_flags
     */
-    static String access_string(short af,String separator) {
+    static String access_string(int af,String separator) {
       boolean hasone = false;
       String s = "";
       if ((af & ACC_PUBLIC) != 0) {
@@ -411,54 +418,53 @@ public class ClassFile {
    public boolean readClass(DataInputStream d) {
       try {
          // first read in magic number
-         magic = d.readInt();
+         magic = d.readInt() & 0xFFFFFFFFL;
          if (magic != MAGIC) {
             System.out.println("Wrong magic number in " + fn + ": " + magic);
             return false;
          }
          //System.out.println("Magic number ok");
-         minor_version = (short)d.readUnsignedShort();
-         major_version = (short)d.readUnsignedShort();
+         minor_version = d.readUnsignedShort();
+         major_version = d.readUnsignedShort();
          //System.out.println("Version: " + major_version + "." + minor_version);
-         constant_pool_count = (short)d.readUnsignedShort();
+         constant_pool_count = d.readUnsignedShort();
          //System.out.println("Constant pool count: " + constant_pool_count);
 
          if (!readConstantPool(d))
             return false;
 
-         access_flags = (short)d.readUnsignedShort();
+         access_flags = d.readUnsignedShort();
          //if (access_flags!=0)
          //    System.out.println("Access flags: " + access_flags + " = " +
          //                   access_string(access_flags,", "));
 
-         this_class = (short)d.readUnsignedShort();
-         super_class = (short)d.readUnsignedShort();
-         interfaces_count = (short)d.readUnsignedShort();
+         this_class = d.readUnsignedShort();
+         super_class = d.readUnsignedShort();
+         interfaces_count = d.readUnsignedShort();
          if (interfaces_count>0) {
-            interfaces = new short[interfaces_count];
+            interfaces = new int[interfaces_count];
             int j;
             for (j=0; j<interfaces_count; j++)
-               interfaces[j] = (short)d.readUnsignedShort();
+               interfaces[j] = d.readUnsignedShort();
          }
          //System.out.println("Implements " + interfaces_count + " interface(s)");
 
-         fields_count = (short)d.readUnsignedShort();
+         fields_count = d.readUnsignedShort();
          //System.out.println("Has " + fields_count + " field(s)");
          readFields(d);
 
-         methods_count = (short)d.readUnsignedShort();
+         methods_count = d.readUnsignedShort();
          //System.out.println("Has " + methods_count + " method(s)");
          readMethods(d);
 
-         attributes_count = (short)d.readUnsignedShort();
+         attributes_count = d.readUnsignedShort();
          //System.out.println("Has " + attributes_count + " attribute(s)");
          if (attributes_count>0) {
             attributes =  new attribute_info[attributes_count];
             readAttributes(d,attributes_count,attributes);
          }
       } catch(IOException e) {
-         System.out.println("IOException with " + fn + ": " + e.getMessage());
-         return false;
+         throw new RuntimeException("IOException with " + fn + ": " + e.getMessage());
       }
 
       /*inf.fields = fields_count;
@@ -492,36 +498,36 @@ public class ClassFile {
          switch(tag) {
          case cp_info.CONSTANT_Class:
             cp = new CONSTANT_Class_info();
-            ((CONSTANT_Class_info)cp).name_index = (short)d.readUnsignedShort();
+            ((CONSTANT_Class_info)cp).name_index = d.readUnsignedShort();
             if (debug) System.out.println("Constant pool[" + i + "]: Class");
             break;
          case cp_info.CONSTANT_Fieldref:
             cp = new CONSTANT_Fieldref_info();
-            ((CONSTANT_Fieldref_info)cp).class_index = (short)d.readUnsignedShort();
+            ((CONSTANT_Fieldref_info)cp).class_index = d.readUnsignedShort();
             ((CONSTANT_Fieldref_info)cp).name_and_type_index =
-               (short)d.readUnsignedShort();
+                d.readUnsignedShort();
             if (debug) System.out.println("Constant pool[" + i + "]: Fieldref");
             break;
          case cp_info.CONSTANT_Methodref:
             cp = new CONSTANT_Methodref_info();
-            ((CONSTANT_Methodref_info)cp).class_index = (short)d.readUnsignedShort();
+            ((CONSTANT_Methodref_info)cp).class_index = d.readUnsignedShort();
             ((CONSTANT_Methodref_info)cp).name_and_type_index =
-               (short)d.readUnsignedShort();
+               d.readUnsignedShort();
             if (debug) System.out.println("Constant pool[" + i + "]: Methodref");
             break;
          case cp_info.CONSTANT_InterfaceMethodref:
             cp = new CONSTANT_InterfaceMethodref_info();
             ((CONSTANT_InterfaceMethodref_info)cp).class_index =
-               (short)d.readUnsignedShort();
+               d.readUnsignedShort();
             ((CONSTANT_InterfaceMethodref_info)cp).name_and_type_index =
-               (short)d.readUnsignedShort();
+               d.readUnsignedShort();
             if (debug)
                System.out.println("Constant pool[" + i + "]: InterfaceMethodref");
             break;
          case cp_info.CONSTANT_String:
             cp = new CONSTANT_String_info();
             ((CONSTANT_String_info)cp).string_index =
-               (short)d.readUnsignedShort();
+                d.readUnsignedShort();
             if (debug) System.out.println("Constant pool[" + i + "]: String");
             break;
          case cp_info.CONSTANT_Integer:
@@ -552,8 +558,8 @@ public class ClassFile {
             break;
          case cp_info.CONSTANT_Double:
             cp = new CONSTANT_Double_info();
-            ((CONSTANT_Double_info)cp).high = d.readInt();
-            ((CONSTANT_Double_info)cp).low = d.readInt();
+            ((CONSTANT_Double_info)cp).high = d.readInt() & 0xFFFFFFFFL;
+            ((CONSTANT_Double_info)cp).low = d.readInt() & 0xFFFFFFFFL;
             if (debug) System.out.println("Constant pool[" + i + "]: Double = " +
                                           ((CONSTANT_Double_info)cp).convert());
             skipone = true;  // next entry needs to be skipped
@@ -561,9 +567,9 @@ public class ClassFile {
          case cp_info.CONSTANT_NameAndType:
             cp = new CONSTANT_NameAndType_info();
             ((CONSTANT_NameAndType_info)cp).name_index =
-               (short)d.readUnsignedShort();
+               d.readUnsignedShort();
             ((CONSTANT_NameAndType_info)cp).descriptor_index =
-               (short)d.readUnsignedShort();
+               d.readUnsignedShort();
             if (debug) System.out.println("Constant pool[" + i + "]: Name and Type");
             break;
          case cp_info.CONSTANT_Utf8:
@@ -601,87 +607,88 @@ public class ClassFile {
     * @return <i>true</i> if read was successful, <i>false</i> on some error.
     * @exception java.io.IOException on error.
     */
-   protected boolean readAttributes(DataInputStream d,short attributes_count,
+   protected boolean readAttributes(DataInputStream d,int attributes_count,
                                     attribute_info[] ai) throws IOException {
       attribute_info a=null;
-      int i,len;
-      short j;
+      int i;
+      int j;
+      long len;
       String s;
 
       for (i=0;i<attributes_count;i++) {
-         j = (short)d.readUnsignedShort();  // read attribute name before allocating
-         len = d.readInt();
+         j = d.readUnsignedShort();  // read attribute name before allocating
+         len = d.readInt() & 0xFFFFFFFFL;
          s = ((CONSTANT_Utf8_info)(constant_pool[j])).convert();
 
          if (s.compareTo(attribute_info.SourceFile)==0) {
             SourceFile_attribute sa = new SourceFile_attribute();
-            sa.sourcefile_index = (short)d.readUnsignedShort();
+            sa.sourcefile_index = d.readUnsignedShort();
             a = (attribute_info)sa;
          } else if(s.compareTo(attribute_info.ConstantValue)==0) {
             ConstantValue_attribute ca = new ConstantValue_attribute();
-            ca.constantvalue_index = (short)d.readUnsignedShort();
+            ca.constantvalue_index = d.readUnsignedShort();
             a = (attribute_info)ca;
          } else if(s.compareTo(attribute_info.Code)==0) {
             Code_attribute ca = new Code_attribute();
-            ca.max_stack = (short)d.readUnsignedShort();
-            ca.max_locals = (short)d.readUnsignedShort();
-            ca.code_length = d.readInt();
-            ca.code = new byte[ca.code_length];
+            ca.max_stack = d.readUnsignedShort();
+            ca.max_locals = d.readUnsignedShort();
+            ca.code_length = d.readInt() & 0xFFFFFFFFL;
+            ca.code = new byte[(int) ca.code_length];
             d.read(ca.code);
-            ca.exception_table_length = (short)d.readUnsignedShort();
+            ca.exception_table_length = d.readUnsignedShort();
             ca.exception_table = new exception_table_entry[ca.exception_table_length];
             int k;
             exception_table_entry e;
             for (k=0; k<ca.exception_table_length; k++) {
                e = new exception_table_entry();
-               e.start_pc = (short)d.readUnsignedShort();
-               e.end_pc = (short)d.readUnsignedShort();
-               e.handler_pc = (short)d.readUnsignedShort();
-               e.catch_type = (short)d.readUnsignedShort();
+               e.start_pc = d.readUnsignedShort();
+               e.end_pc = d.readUnsignedShort();
+               e.handler_pc = d.readUnsignedShort();
+               e.catch_type = d.readUnsignedShort();
                ca.exception_table[k] = e;
             }
-            ca.attributes_count = (short)d.readUnsignedShort();
+            ca.attributes_count = d.readUnsignedShort();
             ca.attributes = new attribute_info[ca.attributes_count];
             readAttributes(d,ca.attributes_count,ca.attributes);
             a = (attribute_info)ca;
          } else if(s.compareTo(attribute_info.Exceptions)==0) {
             Exception_attribute ea = new Exception_attribute();
-            ea.number_of_exceptions = (short)d.readUnsignedShort();
+            ea.number_of_exceptions = d.readUnsignedShort();
             if (ea.number_of_exceptions>0) {
                int k;
-               ea.exception_index_table = new short[ea.number_of_exceptions];
+               ea.exception_index_table = new int[ea.number_of_exceptions];
                for (k=0; k<ea.number_of_exceptions; k++)
-                  ea.exception_index_table[k]  = (short)d.readUnsignedShort();
+                  ea.exception_index_table[k]  = d.readUnsignedShort();
             }
             a = (attribute_info)ea;
          } else if(s.compareTo(attribute_info.LineNumberTable)==0) {
             LineNumberTable_attribute la = new LineNumberTable_attribute();
-            la.line_number_table_length = (short)d.readUnsignedShort();
+            la.line_number_table_length = d.readUnsignedShort();
             int k;
             line_number_table_entry e;
             la.line_number_table = new
                line_number_table_entry[la.line_number_table_length];
             for (k=0; k<la.line_number_table_length; k++) {
                e = new line_number_table_entry();
-               e.start_pc = (short)d.readUnsignedShort();
-               e.line_number = (short)d.readUnsignedShort();
+               e.start_pc = d.readUnsignedShort();
+               e.line_number = d.readUnsignedShort();
                la.line_number_table[k] = e;
             }
             a = (attribute_info)la;
          } else if(s.compareTo(attribute_info.LocalVariableTable)==0) {
             LocalVariableTable_attribute la = new LocalVariableTable_attribute();
-            la.local_variable_table_length = (short)d.readUnsignedShort();
+            la.local_variable_table_length = d.readUnsignedShort();
             int k;
             local_variable_table_entry e;
             la.local_variable_table =
                new local_variable_table_entry[la.local_variable_table_length];
             for (k=0; k<la.local_variable_table_length; k++) {
                e = new local_variable_table_entry();
-               e.start_pc = (short)d.readUnsignedShort();
-               e.length = (short)d.readUnsignedShort();
-               e.name_index = (short)d.readUnsignedShort();
-               e.descriptor_index = (short)d.readUnsignedShort();
-               e.index = (short)d.readUnsignedShort();
+               e.start_pc = d.readUnsignedShort();
+               e.length = d.readUnsignedShort();
+               e.name_index = d.readUnsignedShort();
+               e.descriptor_index = d.readUnsignedShort();
+               e.index = d.readUnsignedShort();
                la.local_variable_table[k] = e;
             }
             a = (attribute_info)la;
@@ -690,7 +697,7 @@ public class ClassFile {
             // System.out.println("Generic/Unknown Attribute: " + s);
             Generic_attribute ga = new Generic_attribute();
             if (len>0) {
-               ga.info = new byte[len];
+               ga.info = new byte[(int) len];
                d.read(ga.info);
             }
             a = (attribute_info)ga;
@@ -716,10 +723,10 @@ public class ClassFile {
 
       for (i=0;i<fields_count;i++) {
          fi = new field_info();
-         fi.access_flags = (short)d.readUnsignedShort();
-         fi.name_index = (short)d.readUnsignedShort();
-         fi.descriptor_index = (short)d.readUnsignedShort();
-         fi.attributes_count = (short)d.readUnsignedShort();
+         fi.access_flags = d.readUnsignedShort();
+         fi.name_index = d.readUnsignedShort();
+         fi.descriptor_index = d.readUnsignedShort();
+         fi.attributes_count = d.readUnsignedShort();
          if (fi.attributes_count>0) {
             fi.attributes = new attribute_info[fi.attributes_count];
             readAttributes(d,fi.attributes_count,fi.attributes);
@@ -746,10 +753,10 @@ public class ClassFile {
 
       for (i=0;i<methods_count;i++) {
          mi = new method_info();
-         mi.access_flags = (short)d.readUnsignedShort();
-         mi.name_index = (short)d.readUnsignedShort();
-         mi.descriptor_index = (short)d.readUnsignedShort();
-         mi.attributes_count = (short)d.readUnsignedShort();
+         mi.access_flags = d.readUnsignedShort();
+         mi.name_index = d.readUnsignedShort();
+         mi.descriptor_index = d.readUnsignedShort();
+         mi.attributes_count = d.readUnsignedShort();
 
          /*CONSTANT_Utf8_info ci;
            ci = (CONSTANT_Utf8_info)(constant_pool[mi.name_index]);
@@ -823,19 +830,19 @@ public class ClassFile {
             dd.writeShort(((CONSTANT_String_info)cp).string_index);
             break;
          case cp_info.CONSTANT_Integer:
-            dd.writeInt(((CONSTANT_Integer_info)cp).bytes);
+            dd.writeInt((int) ((CONSTANT_Integer_info)cp).bytes);
             break;
          case cp_info.CONSTANT_Float:
-            dd.writeInt(((CONSTANT_Float_info)cp).bytes);
+            dd.writeInt((int) ((CONSTANT_Float_info)cp).bytes);
             break;
          case cp_info.CONSTANT_Long:
-            dd.writeInt(((CONSTANT_Long_info)cp).high);
-            dd.writeInt(((CONSTANT_Long_info)cp).low);
+            dd.writeInt((int) ((CONSTANT_Long_info)cp).high);
+            dd.writeInt((int) ((CONSTANT_Long_info)cp).low);
             skipone = true;
             break;
          case cp_info.CONSTANT_Double:
-            dd.writeInt(((CONSTANT_Double_info)cp).high);
-            dd.writeInt(((CONSTANT_Double_info)cp).low);
+            dd.writeInt((int) ((CONSTANT_Double_info)cp).high);
+            dd.writeInt((int) ((CONSTANT_Double_info)cp).low);
             skipone = true;
             break;
          case cp_info.CONSTANT_NameAndType:
@@ -863,7 +870,7 @@ public class ClassFile {
     * @return <i>true</i> if write was successful, <i>false</i> on some error.
     * @exception java.io.IOException on error.
     */
-   protected boolean writeAttributes(DataOutputStream dd,short attributes_count,
+   protected boolean writeAttributes(DataOutputStream dd, int attributes_count,
                                      attribute_info[] ai) throws IOException {
       attribute_info a=null;
       int i,len;
@@ -873,7 +880,7 @@ public class ClassFile {
       for (i=0;i<attributes_count;i++) {
          a = ai[i];
          dd.writeShort(a.attribute_name);
-         dd.writeInt(a.attribute_length);
+         dd.writeInt((int) a.attribute_length);
          if (a instanceof SourceFile_attribute) {
             SourceFile_attribute sa = (SourceFile_attribute)a;
             dd.writeShort(sa.sourcefile_index);
@@ -884,8 +891,8 @@ public class ClassFile {
             Code_attribute ca = (Code_attribute)a;
             dd.writeShort(ca.max_stack);
             dd.writeShort(ca.max_locals);
-            dd.writeInt(ca.code_length);
-            dd.write(ca.code,0,ca.code_length);
+            dd.writeInt((int) ca.code_length);
+            dd.write(ca.code,0, (int) ca.code_length);
             dd.writeShort(ca.exception_table_length);
             int k;
             exception_table_entry e;
@@ -935,7 +942,7 @@ public class ClassFile {
             System.out.println("Generic/Unknown Attribute in output");
             Generic_attribute ga = (Generic_attribute)a;
             if (ga.attribute_length>0) {
-               dd.write(ga.info,0,ga.attribute_length);
+               dd.write(ga.info,0,(int) ga.attribute_length);
             }
          }
       }
@@ -994,7 +1001,7 @@ public class ClassFile {
       // outputs the .class file from the loaded one
       try {
          // first write magic number
-         dd.writeInt(magic);
+         dd.writeInt((int) magic);
 
          dd.writeShort(minor_version);
          dd.writeShort(major_version);
@@ -1029,71 +1036,6 @@ public class ClassFile {
       }
       return true;
    }
-
-   /* DEPRECATED
-      // attempts to locate a Utf8 entry in the constant pool matching the
-      // given string.  Returns the index in the constant pool of the entry
-      // or 0 if not found
-       short locateUtf8(String s) {
-      int i;
-      // note that we start at 1 in the constant pool
-      for (i=1;i<constant_pool_count;i++) {
-      if ((constant_pool[i]).tag==cp_info.CONSTANT_Utf8) {
-      CONSTANT_Utf8_info cf = (CONSTANT_Utf8_info)(constant_pool[i]);
-      if (s.compareTo(cf.convert())==0) return (short)i;
-      } else if ((constant_pool[i]).tag==cp_info.CONSTANT_Long ||
-      (constant_pool[i]).tag==cp_info.CONSTANT_Double) {
-      // must skip an entry after a long or double constant
-      i++;
-      }
-      }
-      return (short)0;
-      }
-
-      // attempts to locate a NameAndType entry in the constant pool
-       short locateNameAndType(int name,int type) {
-      int i;
-      // note that we start at 1 in the constant pool
-      for (i=1;i<constant_pool_count;i++) {
-      if ((constant_pool[i]).tag==cp_info.CONSTANT_NameAndType) {
-      CONSTANT_NameAndType_info cf = (CONSTANT_NameAndType_info)(constant_pool[i]);
-      if (cf.name_index==name && cf.descriptor_index==type)
-      return (short)i;
-      } else if ((constant_pool[i]).tag==cp_info.CONSTANT_Long ||
-      (constant_pool[i]).tag==cp_info.CONSTANT_Double) {
-      // must skip an entry after a long or double constant
-      i++;
-      }
-      }
-      return (short)0;
-      }
-
-      // attempts to locate a NameAndType entry in the constant pool
-       short locateClass(int name) {
-      int i;
-      // note that we start at 1 in the constant pool
-      for (i=1;i<constant_pool_count;i++) {
-      if ((constant_pool[i]).tag==cp_info.CONSTANT_Class) {
-      CONSTANT_Class_info ci = (CONSTANT_Class_info)(constant_pool[i]);
-      if (ci.name_index==name)
-      return (short)i;
-      } else if ((constant_pool[i]).tag==cp_info.CONSTANT_Long ||
-      (constant_pool[i]).tag==cp_info.CONSTANT_Double) {
-      // must skip an entry after a long or double constant
-      i++;
-      }
-      }
-      return (short)0;
-      }
-
-      // returns a new CONSTANT_Utf8_info for the given string
-       CONSTANT_Utf8_info newUtf8(String s) {
-      CONSTANT_Utf8_info cu = new CONSTANT_Utf8_info();
-      cu.tag = cp_info.CONSTANT_Utf8;
-      cu.bytes = CONSTANT_Utf8_info.toUtf8(s);
-      //cu.length = cu.bytes.length;
-      return cu;
-      }*/
 
    /** Parses the given method, converting its bytecode array into a list
     * of Instruction objects.
@@ -1258,12 +1200,12 @@ public class ClassFile {
             // also recompile exception table
             for (j=0;j<ca.exception_table_length;j++) {
                e = ca.exception_table[j];
-               e.start_pc = (short)(e.start_inst.label);
+               e.start_pc = (e.start_inst.label);
                if (e.end_inst!=null)
-                  e.end_pc = (short)(e.end_inst.label);
+                  e.end_pc = (e.end_inst.label);
                else
-                  e.end_pc = (short)(ca.code_length);
-               e.handler_pc = (short)(e.handler_inst.label);
+                  e.end_pc = (int) (ca.code_length);
+               e.handler_pc = (e.handler_inst.label);
             }
          }
       }

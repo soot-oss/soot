@@ -166,7 +166,7 @@ abstract class cp_info {
     * @param low lower 32 bits of the long.
     * @return a long value composed from the two ints.
     */
-   public static long ints2long(int high,int low) {
+   public static long ints2long(long high,long low) {
       long h,l;
       h = high; l = low;
       return ((h<<32) + l);

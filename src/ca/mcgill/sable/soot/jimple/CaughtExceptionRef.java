@@ -76,8 +76,11 @@ import ca.mcgill.sable.util.*;
 
 public class CaughtExceptionRef implements IdentityRef
 {
-    CaughtExceptionRef()
+    JimpleBody body;
+    
+    CaughtExceptionRef(JimpleBody b)
     {
+        this.body = b;
     }
 
     public String toString()
@@ -90,6 +93,29 @@ public class CaughtExceptionRef implements IdentityRef
         return Stmt.emptyList;
     }
 
+    public List getExceptionTypes()
+    {
+        List possibleTypes = new ArrayList();
+        
+        Iterator trapIt = body.getTraps().iterator();
+        
+        while(trapIt.hasNext())
+        {
+            Trap trap = (Trap) trapIt.next();
+            
+            Unit handler = trap.getHandlerUnit();
+             
+            if(handler instanceof IdentityStmt
+                && ((IdentityStmt) handler).getRightOp() == this)
+            {
+                possibleTypes.add(RefType.v(trap.getException().
+                    getName()));
+            }
+        }
+        
+        return possibleTypes;
+    }
+    
     public Type getType()
     {
         return RefType.v("java.lang.Throwable");

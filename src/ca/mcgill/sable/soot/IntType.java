@@ -60,6 +60,9 @@
  *                                                                   *
 
  B) Changes:
+ 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Made hashCode() deterministic.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -92,6 +95,12 @@ public class IntType extends BaseType
         return this == t;
     }
 
+    
+    public int hashCode()
+    {
+        return 0xB747239F;
+    }
+    
     public String toString()
     {
         return "int";

@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Added a fixed hash code value.
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -86,6 +89,11 @@ public class VoidType extends Type
         return constant;
     }
 
+    public int hashCode()
+    {
+        return 0x3A8C1035;
+    }
+    
     public boolean equals(Object t)
     {
         return this == t;

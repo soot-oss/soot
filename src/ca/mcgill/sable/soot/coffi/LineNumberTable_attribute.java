@@ -114,7 +114,7 @@ import java.io.*;
  */
 class LineNumberTable_attribute extends attribute_info {
    /** Length of the line_number_table array. */
-   public short line_number_table_length;
+   public int line_number_table_length;
    /** Line number table.
     * @see line_number_table_entry
     */

@@ -113,18 +113,18 @@ import java.io.*;
  */
 class local_variable_table_entry {
    /** Code offset of start of code wherein this entry applies. */
-   public short start_pc;
+   public int start_pc;
    /** Length of code sequence in which this name applies. */
-   public short length;
+   public int length;
    /** Constant pool index of string giving this local variable's name.
     * @see CONSTANT_Utf8_info
     */
-   public short name_index;
+   public int name_index;
    /** Constant pool index of string giving this local variable's type
     * descriptor.
     * @see CONSTANT_Utf8_info
     */
-   public short descriptor_index;
+   public int descriptor_index;
    /** The index in the local variable array of this local variable. */
-   public short index;
+   public int index;
 }
