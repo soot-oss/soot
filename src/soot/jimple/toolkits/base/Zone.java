@@ -27,9 +27,10 @@
 
 
 
-package soot.jimple;
+package soot.jimple.toolkits.base;
 
 import soot.*;
+import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 

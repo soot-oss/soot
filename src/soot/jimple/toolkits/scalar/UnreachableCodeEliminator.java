@@ -48,7 +48,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
     static HashSet visited;
     static int numPruned;
 
-    protected void internalTransform(Body b, Map options) 
+    protected void internalTransform(Body b, String phaseName, Map options) 
     {
         StmtBody body = (StmtBody)b;
 

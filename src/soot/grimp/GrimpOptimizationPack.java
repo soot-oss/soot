@@ -37,7 +37,7 @@ public class GrimpOptimizationPack extends BodyTransformer
 
     public static GrimpOptimizationPack v() { return instance; }
 
-    protected void internalTransform(Body b, Map options)
+    protected void internalTransform(Body b, String phaseName, Map options)
     {
         GrimpBody body = (GrimpBody)b;
         if(Main.isVerbose)

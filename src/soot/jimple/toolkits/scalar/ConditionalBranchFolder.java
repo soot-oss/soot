@@ -44,7 +44,7 @@ public class ConditionalBranchFolder  extends BodyTransformer
     static boolean debug = soot.Main.isInDebugMode;
     static boolean verbose = soot.Main.isVerbose;
 
-    protected void internalTransform(Body body, Map options)
+    protected void internalTransform(Body body, String phaseName, Map options)
     {
         StmtBody stmtBody = (StmtBody)body;
 

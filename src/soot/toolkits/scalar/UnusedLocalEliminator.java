@@ -39,7 +39,7 @@ public class UnusedLocalEliminator extends BodyTransformer
 
     public static UnusedLocalEliminator v() { return instance; }
 
-    protected void internalTransform(Body body, Map options)
+    protected void internalTransform(Body body, String phaseName, Map options)
     {
         Set usedLocals = new HashSet();
 

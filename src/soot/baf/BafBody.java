@@ -31,7 +31,7 @@ package soot.baf;
 
 import soot.*;
 import soot.jimple.*;
-import soot.baf.toolkits.scalar.*;
+import soot.baf.toolkits.base.*;
 import soot.toolkits.scalar.*;
 
 import soot.util.*;

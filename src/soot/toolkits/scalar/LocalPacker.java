@@ -43,7 +43,7 @@ public class LocalPacker extends BodyTransformer
 
     public static LocalPacker v() { return instance; }
 
-    protected void internalTransform(Body body, Map options)
+    protected void internalTransform(Body body, String phaseName, Map options)
     {
         boolean isUnsplit = options.containsKey("unsplit-original-locals") &&
             options.get("unsplit-original-locals").equals("true");

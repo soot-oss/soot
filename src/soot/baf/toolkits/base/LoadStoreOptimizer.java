@@ -24,7 +24,7 @@
  */
 
 
-package soot.baf.toolkits.scalar;
+package soot.baf.toolkits.base;
 
 import soot.util.*;
 import java.util.*;
@@ -124,7 +124,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 
     /** The method that drives the optimizations. */
     /* This is the public interface to LoadStoreOptimizer */
-    protected void internalTransform(Body body, Map options) 
+    protected void internalTransform(Body body, String phaseName, Map options) 
     {        
         mBody = body;        
         mUnits =  mBody.getUnits();

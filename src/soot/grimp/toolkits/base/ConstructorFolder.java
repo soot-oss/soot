@@ -28,12 +28,13 @@
 
 
 
-package soot.grimp;
+package soot.grimp.toolkits.base;
 
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
+import soot.grimp.*;
 import soot.util.*;
 import java.util.*;
 
@@ -45,7 +46,7 @@ public class ConstructorFolder extends BodyTransformer
     public static ConstructorFolder v() { return instance; }
 
     /** This method change all new Obj/<init>(args) pairs to new Obj(args) idioms. */
-    protected void internalTransform(Body b, Map options)
+    protected void internalTransform(Body b, String phaseName, Map options)
     {
         GrimpBody body = (GrimpBody)b;
 

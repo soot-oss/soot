@@ -32,6 +32,9 @@ package soot;
 import soot.util.*;
 import java.util.*;
 import java.io.*;
+import soot.baf.toolkits.base.*;
+import soot.jimple.toolkits.base.*;
+import soot.*;
 
 /*
  * Incomplete and inefficient implementation.

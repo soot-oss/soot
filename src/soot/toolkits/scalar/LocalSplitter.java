@@ -43,13 +43,13 @@ public class LocalSplitter extends BodyTransformer
 
     public static LocalSplitter v() { return instance; }
 
-    protected void internalTransform(Body listBody, Map options)
+    protected void internalTransform(Body body, String phaseName, Map options)
     {
-        Chain units = listBody.getUnits();
+        Chain units = body.getUnits();
         List webs = new ArrayList();
 
         if(Main.isVerbose)
-            System.out.println("[" + listBody.getMethod().getName() + "] Splitting locals...");
+            System.out.println("[" + body.getMethod().getName() + "] Splitting locals...");
 
         Map boxToSet = new HashMap(units.size() * 2 + 1, 0.7f);
 
@@ -58,7 +58,7 @@ public class LocalSplitter extends BodyTransformer
 
         // Go through the definitions, building the webs
         {
-            CompleteUnitGraph graph = new CompleteUnitGraph(listBody);
+            CompleteUnitGraph graph = new CompleteUnitGraph(body);
 
             LocalDefs localDefs;
             
@@ -164,7 +164,7 @@ public class LocalSplitter extends BodyTransformer
 
         // Assign locals appropriately.
         {
-            Map localToUseCount = new HashMap(listBody.getLocalCount() * 2 + 1, 0.7f);
+            Map localToUseCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
             Iterator webIt = webs.iterator();
 
             while(webIt.hasNext())
@@ -189,7 +189,7 @@ public class LocalSplitter extends BodyTransformer
                     Local local = (Local) desiredLocal.clone();
                     local.setName(desiredLocal.getName() + "#" + useCount);
                     
-                    listBody.getLocals().add(local);
+                    body.getLocals().add(local);
 
                     // Change all boxes to point to this new local
                     {

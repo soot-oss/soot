@@ -37,7 +37,7 @@ public class BafOptimizationPack extends BodyTransformer
 
     public static BafOptimizationPack v() { return instance; }
 
-    protected void internalTransform(Body b, Map options)
+    protected void internalTransform(Body b, String phaseName, Map options)
     {
         BafBody body = (BafBody)b;
         if(Main.isVerbose)

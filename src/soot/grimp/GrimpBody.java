@@ -33,6 +33,8 @@ package soot.grimp;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
+import soot.jimple.toolkits.base.*;
+import soot.grimp.toolkits.base.*;
 import soot.toolkits.scalar.*;
 import soot.util.*;
 import java.util.*;

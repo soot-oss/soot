@@ -56,7 +56,7 @@ public class CopyPropagator extends BodyTransformer
         
         Does not propagate stack locals when the "ignore-stack-locals" option is true.
     */
-    protected void internalTransform(Body b, Map options)
+    protected void internalTransform(Body b, String phaseName, Map options)
     {
         StmtBody stmtBody = (StmtBody)b;
         boolean propagateStackLocals = !(options.containsKey("ignore-stack-locals") &&

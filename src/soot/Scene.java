@@ -67,9 +67,13 @@ public class Scene extends AbstractHost
 
     /** Returns the default options map associated with phaseName.
      * Note that this map is special and will not return 'null' 
-     * if the option does not exist.  Instead, it returns the string "false". */
+     * if the option does not exist.  Instead, it returns the string "false". 
+     * If a leading . is present in phaseName, strip it! */
     public Map getPhaseOptions(String phaseName)
     {
+        if (phaseName.startsWith("."))
+            phaseName = phaseName.substring(1);
+
         Map m = (Map)phaseToOptionMaps.get(phaseName);
         if (m == null)
         {

@@ -35,25 +35,23 @@ public abstract class SceneTransformer
     {
         Map options = Scene.v().computePhaseOptions(phaseName, 
                                                     getDefaultOptions() + " " + optionsString);
-        internalTransform(options);
+        internalTransform(phaseName, options);
     }
+
+    public final void transform()
+    {
+        transform("", "");
+    }
+
+    public final void transform(String phaseName)
+    {
+        transform(phaseName, "");
+    }
+
+    protected abstract void internalTransform(String phaseName, Map options);
 
     public String getDefaultOptions() 
     {
         return "";
     }
-
-    public final void transform()
-    {
-        Map options = Scene.v().computePhaseOptions("", getDefaultOptions());
-        internalTransform(options);
-    }
-
-    public final void transform(String phaseName)
-    {
-        Map options = Scene.v().computePhaseOptions(phaseName, getDefaultOptions());
-        internalTransform(options);
-    }
-
-    protected abstract void internalTransform(Map options);
 }

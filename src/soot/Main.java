@@ -35,7 +35,7 @@ import soot.jimple.*;
 import soot.grimp.*;
 import soot.baf.*;
 import soot.jimple.toolkits.invoke.*;
-import soot.baf.toolkits.scalar.*;
+import soot.baf.toolkits.base.*;
 import soot.toolkits.scalar.*;
 import java.io.*;
 
@@ -179,7 +179,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.13");
+            System.out.println("Soot version 1.beta.5.dev.14");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");

@@ -27,9 +27,10 @@
 
 
 
-package soot.jimple;
+package soot.jimple.toolkits.base;
 
 import soot.*;
+import soot.jimple.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
@@ -51,7 +52,7 @@ public class Aggregator extends BodyTransformer
       * 
       * option: only-stack-vars; if this is true, only aggregate variables
                         starting with $ */
-    protected void internalTransform(Body b, Map options)
+    protected void internalTransform(Body b, String phaseName, Map options)
     {
         StmtBody body = (StmtBody)b;
         boolean onlyStackVars = options.containsKey("only-stack-vars") &&

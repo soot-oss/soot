@@ -35,7 +35,17 @@ public abstract class BodyTransformer
     {
         Map options = Scene.v().computePhaseOptions(phaseName, 
                                                     getDefaultOptions() + " " + optionsString);
-        internalTransform(b, options);
+        internalTransform(b, phaseName, options);
+    }
+
+    public final void transform(Body b)
+    {
+        transform(b, "", "");
+    }
+
+    public final void transform(Body b, String phaseName)
+    {
+        transform(b, phaseName, "");
     }
 
     public String getDefaultOptions() 
@@ -43,17 +53,5 @@ public abstract class BodyTransformer
         return "";
     }
 
-    public final void transform(Body b)
-    {
-        Map options = Scene.v().computePhaseOptions("", getDefaultOptions());
-        internalTransform(b, options);
-    }
-
-    public final void transform(Body b, String phaseName)
-    {
-        Map options = Scene.v().computePhaseOptions(phaseName, getDefaultOptions());
-        internalTransform(b, options);
-    }
-
-    protected abstract void internalTransform(Body b, Map options);
+    protected abstract void internalTransform(Body b, String phaseName, Map options);
 }

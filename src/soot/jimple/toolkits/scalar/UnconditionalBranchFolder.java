@@ -49,7 +49,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
 
     static HashMap stmtMap;
     
-    protected void internalTransform(Body b, Map options) 
+    protected void internalTransform(Body b, String phaseName, Map options) 
     {
         StmtBody body = (StmtBody)b;
 

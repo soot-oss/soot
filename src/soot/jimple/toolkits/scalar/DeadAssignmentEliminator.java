@@ -51,7 +51,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
         side for side effects. 
     */
     
-    protected void internalTransform(Body b, Map options)
+    protected void internalTransform(Body b, String phaseName, Map options)
     {
         JimpleBody body = (JimpleBody)b;
         if(Main.isVerbose)

@@ -39,7 +39,7 @@ public class WholeJimpleOptimizationPack extends SceneTransformer
 
     public static WholeJimpleOptimizationPack v() { return instance; }
 
-    protected void internalTransform(Map options)
+    protected void internalTransform(String phaseName, Map options)
     {
         System.out.print("Building InvokeGraph...");
         System.out.flush();
@@ -55,7 +55,7 @@ public class WholeJimpleOptimizationPack extends SceneTransformer
         System.out.print("Binding static methods...");
         System.out.flush();
 
-        StaticMethodBinder.v().transform("wjop.smb");
+        StaticMethodBinder.v().transform(phaseName + ".smb");
         System.out.println();
 
 //          Iterator applicationClassesIt = Scene.v().getApplicationClasses().iterator();

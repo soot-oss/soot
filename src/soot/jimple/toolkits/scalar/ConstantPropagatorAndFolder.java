@@ -45,7 +45,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
     static boolean debug = soot.Main.isInDebugMode;
     static boolean verbose = soot.Main.isVerbose;
 
-    protected void internalTransform(Body b, Map options)
+    protected void internalTransform(Body b, String phaseName, Map options)
     {
         StmtBody stmtBody = (StmtBody)b;
         int numFolded = 0;

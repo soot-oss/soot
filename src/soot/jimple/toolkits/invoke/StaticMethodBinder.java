@@ -45,7 +45,7 @@ public class StaticMethodBinder extends SceneTransformer
         return "insert-null-checks insert-redundant-casts";
     }
     
-    protected void internalTransform(Map options)
+    protected void internalTransform(String phaseName, Map options)
     {
         boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
@@ -284,8 +284,7 @@ public class StaticMethodBinder extends SceneTransformer
                     }
 
                     // Resolve name collisions.
-                        LocalNameStandardizer.v().transform(b, "smb.lns");
-                    
+                        LocalNameStandardizer.v().transform(b, phaseName + ".lns");
                 }
             }
         }

@@ -30,6 +30,7 @@ import soot.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.jimple.toolkits.typing.*;
+import soot.jimple.toolkits.base.*;
 import soot.util.*;
 import java.util.*;
 import soot.baf.*;

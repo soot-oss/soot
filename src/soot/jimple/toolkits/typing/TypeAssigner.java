@@ -47,7 +47,7 @@ public class TypeAssigner extends BodyTransformer
     public static TypeAssigner v() { return instance; }
 
     /** Assign types to local variables. **/
-    protected void internalTransform(Body b, Map options)
+    protected void internalTransform(Body b, String phaseName, Map options)
     {
         new TypeResolver((JimpleBody)b);
     }
