@@ -742,10 +742,11 @@ public class SootMethod extends AbstractHost implements ClassMember
 		    else 
 			buffer.append( "r" + count++);
 		}
-
-		if (typeIt.hasNext())
-		    buffer.append( ", ");
 	    }
+
+	    if (typeIt.hasNext())
+		buffer.append( ", ");
+
 	}
 
         buffer.append(")");
