@@ -2064,9 +2064,6 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>jap.npc</expansion>
                         <expansion>disabled:false</expansion>
                         <expansion>-p</expansion>
-                        <expansion>jap.profiling</expansion>
-                        <expansion>disabled:false</expansion>
-                        <expansion>-p</expansion>
                         <expansion>tag.an</expansion>
                         <expansion>disabled:false</expansion>
 			<short_desc>turn on the annotation for null pointer</short_desc>
@@ -2080,9 +2077,6 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>disabled:false</expansion>
                         <expansion>-p</expansion>
                         <expansion>jap.abc</expansion>
-                        <expansion>disabled:false</expansion>
-                        <expansion>-p</expansion>
-                        <expansion>jap.profiling</expansion>
                         <expansion>disabled:false</expansion>
                         <expansion>-p</expansion>
                         <expansion>tag.an</expansion>

@@ -508,9 +508,6 @@ public class Options extends OptionsBase {
                 pushOptions( "tag.an" );
                 pushOptions( "-p" );
                 pushOptions( "disabled:false" );
-                pushOptions( "jap.profiling" );
-                pushOptions( "-p" );
-                pushOptions( "disabled:false" );
                 pushOptions( "jap.npc" );
                 pushOptions( "-p" );
             }
@@ -521,9 +518,6 @@ public class Options extends OptionsBase {
                 
                 pushOptions( "disabled:false" );
                 pushOptions( "tag.an" );
-                pushOptions( "-p" );
-                pushOptions( "disabled:false" );
-                pushOptions( "jap.profiling" );
                 pushOptions( "-p" );
                 pushOptions( "disabled:false" );
                 pushOptions( "jap.abc" );
