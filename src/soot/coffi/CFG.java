@@ -864,16 +864,18 @@ public class CFG {
 		Instruction_Lookupswitch switchinsn = 
 		    (Instruction_Lookupswitch)insn;
 		
-		Instruction newdefault = (Instruction)replacedInsns.get(switchinsn.default_inst);
+		Instruction newdefault = 
+		    (Instruction)replacedInsns.get(switchinsn.default_inst);
 		if (newdefault != null)
 		{
 		    switchinsn.default_inst = newdefault;
 		    newdefault.labelled = true;
 		}
-
-		for (int i=0; i<switchinsn.match_insts.length; i++)
+		
+		for (int i=0; i<switchinsn.npairs; i++)
 		{
-		    Instruction newtgt = (Instruction)replacedInsns.get(switchinsn.match_insts[i]);
+		    Instruction newtgt = 
+			(Instruction)replacedInsns.get(switchinsn.match_insts[i]);
 		    if (newtgt != null)
 		    {
 			switchinsn.match_insts[i] = newtgt;
@@ -894,9 +896,10 @@ public class CFG {
 		    newdefault.labelled = true;
 		}
 
-		for (int i=0; i<switchinsn.jump_insts.length; i++)
+		for (int i=0; i<switchinsn.high-switchinsn.low; i++)
 		{
-		    Instruction newtgt = (Instruction)replacedInsns.get(switchinsn.jump_insts[i]);
+		    Instruction newtgt = 
+			(Instruction)replacedInsns.get(switchinsn.jump_insts[i]);
 		    if (newtgt != null)
 		    {
 			switchinsn.jump_insts[i] = newtgt;
