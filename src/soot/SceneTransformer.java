@@ -45,12 +45,14 @@ public abstract class SceneTransformer
 
     public final void transform()
     {
-        internalTransform(new HashMap());
+        Map options = Scene.v().computePhaseOptions("", getDefaultOptions());
+        internalTransform(options);
     }
 
     public final void transform(String phaseName)
     {
-        internalTransform(Scene.v().getPhaseOptions(phaseName));
+        Map options = Scene.v().computePhaseOptions(phaseName, getDefaultOptions());
+        internalTransform(options);
     }
 
     protected abstract void internalTransform(Map options);

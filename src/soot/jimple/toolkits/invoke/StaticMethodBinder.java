@@ -40,11 +40,16 @@ public class StaticMethodBinder extends SceneTransformer
 
     public static StaticMethodBinder v() { return instance; }
 
+    public String getDefaultOptions() 
+    {
+        return "insert-null-checks insert-redundant-casts";
+    }
+    
     protected void internalTransform(Map options)
     {
-        boolean enableNullPointerCheckInsertion = !Options.getBoolean(options, "no-insert-null-checks");
-        boolean enableRedundantCastInsertion = !Options.getBoolean(options, "no-insert-redundant-casts");
-
+        boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
+        boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
+        
         HashMap instanceToStaticMap = new HashMap();
 
         InvokeGraph graph = Scene.v().getActiveInvokeGraph();

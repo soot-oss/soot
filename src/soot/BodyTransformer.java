@@ -45,12 +45,14 @@ public abstract class BodyTransformer
 
     public final void transform(Body b)
     {
-        internalTransform(b, new HashMap());
+        Map options = Scene.v().computePhaseOptions("", getDefaultOptions());
+        internalTransform(b, options);
     }
 
     public final void transform(Body b, String phaseName)
     {
-        internalTransform(b, Scene.v().getPhaseOptions(phaseName));
+        Map options = Scene.v().computePhaseOptions(phaseName, getDefaultOptions());
+        internalTransform(b, options);
     }
 
     protected abstract void internalTransform(Body b, Map options);
