@@ -212,9 +212,16 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
 
     public void removeNode(Object node)
     {
-        nodes.remove(node);
+        List succs = (List)((ArrayList)nodeToSuccs.get(node)).clone();
+        for (Iterator succsIt = succs.iterator(); succsIt.hasNext(); )
+            removeEdge(node, succsIt.next());
         nodeToSuccs.remove(node);
+        List preds = (List)((ArrayList)nodeToPreds.get(node)).clone();
+        for (Iterator predsIt = preds.iterator(); predsIt.hasNext(); )
+            removeEdge(predsIt.next(), node);
         nodeToPreds.remove(node);
+        nodes.remove(node);
+
         if (heads.contains(node))
             heads.remove(node); 
 
