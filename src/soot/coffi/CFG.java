@@ -4328,6 +4328,9 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                 convert();
 
+	    if (className.charAt(0) == '[')
+	    	className = "java.lang.Object";
+
             SootClass bclass = cm.getSootClass(className);
 
             
@@ -4581,6 +4584,9 @@ public class CFG {
                 String methodName = ((CONSTANT_Utf8_info) (constant_pool[i.name_index])).convert();
                 String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                     convert();
+
+		if (className.charAt(0) == '[')
+		    className = "java.lang.Object";
 
                 SootClass bclass = cm.getSootClass(className);
 

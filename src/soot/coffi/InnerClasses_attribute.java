@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2001 Feng Qian
+ * Copyright (C) 2004 Archie L. Cobbs
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,51 +24,34 @@
  */
 
 
-package soot.tagkit;
+
+
+
+
+
+package soot.coffi;
 import soot.*;
 
-public class LineNumberTag implements Tag
-{
-    /* it is a u2 value representing line number. */
-    int line_number;
-    public LineNumberTag(int ln)
-    {
-	line_number = ln;
-    }
+import java.io.*;
 
-    public String getName()
-    {
-	return "LineNumberTag";
-    }
+/** Attribute that connects inner classes with their containing classes.
+ * @see attribute_info
+ * @author Archie L. Cobbs
+ */
+class InnerClasses_attribute extends attribute_info {
+   /** Length of the inner classes table. */
+   public int inner_classes_length;
+   /** Actual table of local variables. */
+   public inner_class_entry inner_classes[];
 
-    public byte[] getValue()
-    {
-	byte[] v = new byte[2];
-	v[0] = (byte)(line_number/256);
-	v[1] = (byte)(line_number%256);
-	return v;
-    }
-
-    public int getLineNumber()
-    {
-	return line_number;
-    }
-
-    public String toString()
-    {
-   	return ""+line_number;
-    }
-
-    /*
-    protected void finalize()
-    {	
-	try {
-	    throw new RuntimeException();
-	} catch (RuntimeException re)
-	{
-	    G.v().out.println("I, at line "+line_number+", dead here.");
-	    re.printStackTrace();
+   public String toString()
+   {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < inner_classes_length; i++) {
+            buffer.append(inner_classes[i]);
+            buffer.append('\n');
 	}
-    }
-    */
+        return buffer.toString();
+   }
 }
+

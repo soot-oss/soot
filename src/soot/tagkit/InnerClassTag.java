@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2001 Feng Qian
+ * Copyright (C) 2003 Archie L. Cobbs
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,50 +25,68 @@
 
 
 package soot.tagkit;
+
+import java.io.UnsupportedEncodingException;
 import soot.*;
 
-public class LineNumberTag implements Tag
+public class InnerClassTag implements Tag
 {
-    /* it is a u2 value representing line number. */
-    int line_number;
-    public LineNumberTag(int ln)
+    String innerClass;
+    String outerClass;
+    String name;
+    int accessFlags;
+
+    public InnerClassTag(String innerClass, String outerClass, String name, int accessFlags)
     {
-	line_number = ln;
+	this.innerClass = innerClass;
+	this.outerClass = outerClass;
+	this.name = name;
+	this.accessFlags = accessFlags;
     }
 
     public String getName()
     {
-	return "LineNumberTag";
+	return "InnerClassTag";
     }
 
+    /**
+     * Returns the inner class name (only) encoded in UTF8.
+     * There is no obvious standalone byte[] encoding for this
+     * attribute because it contains embedded constant pool indicies.
+     */
     public byte[] getValue()
     {
-	byte[] v = new byte[2];
-	v[0] = (byte)(line_number/256);
-	v[1] = (byte)(line_number%256);
-	return v;
+	try {
+		return innerClass.getBytes("UTF8");
+	} catch (UnsupportedEncodingException e) {
+		return new byte[0];
+	}
     }
 
-    public int getLineNumber()
+    public String getInnerClass()
     {
-	return line_number;
+	return innerClass;
+    }
+
+    public String getOuterClass()
+    {
+	return outerClass;
+    }
+
+    public String getShortName()
+    {
+	return name;
+    }
+
+    public int getAccessFlags()
+    {
+	return accessFlags;
     }
 
     public String toString()
     {
-   	return ""+line_number;
+	return "[inner="+innerClass+", outer="+outerClass
+	    +", name="+name+",flags="+accessFlags+"]";
     }
-
-    /*
-    protected void finalize()
-    {	
-	try {
-	    throw new RuntimeException();
-	} catch (RuntimeException re)
-	{
-	    G.v().out.println("I, at line "+line_number+", dead here.");
-	    re.printStackTrace();
-	}
-    }
-    */
 }
+

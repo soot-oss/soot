@@ -36,6 +36,7 @@ import soot.util.*;
 import java.util.*;
 import java.io.*;
 import soot.baf.*;
+import soot.tagkit.*;
 import soot.*;
 
 
@@ -407,10 +408,50 @@ public class Util
                 int modifiers = fieldInfo.access_flags;
                 Type fieldType = jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
                     
-                bclass.addField(new SootField(fieldName,
-                                              fieldType, modifiers));
+                SootField field = new SootField(fieldName, fieldType, modifiers);
+                bclass.addField(field);
                     
                 sootResolver.assertResolvedClassForType(fieldType);
+    
+                // add initialization constant, if any
+		for(int j = 0; j < fieldInfo.attributes_count; j++) {
+		    if (!(fieldInfo.attributes[j] instanceof ConstantValue_attribute))
+			continue;
+		    ConstantValue_attribute attr = (ConstantValue_attribute) fieldInfo.attributes[j];
+		    cp_info cval = coffiClass.constant_pool[attr.constantvalue_index];
+		    ConstantValueTag tag;
+		    switch (cval.tag) {
+		    case cp_info.CONSTANT_Integer:
+			tag = new IntegerConstantValueTag((int)((CONSTANT_Integer_info)cval).bytes);
+			break;
+		    case cp_info.CONSTANT_Float:
+			tag = new FloatConstantValueTag((int)((CONSTANT_Float_info)cval).bytes);
+			break;
+		    case cp_info.CONSTANT_Long:
+		      {
+			CONSTANT_Long_info lcval = (CONSTANT_Long_info)cval;
+			tag = new LongConstantValueTag((lcval.high << 32) + lcval.low);
+			break;
+		      }
+		    case cp_info.CONSTANT_Double:
+		      {
+			CONSTANT_Double_info dcval = (CONSTANT_Double_info)cval;
+			tag = new DoubleConstantValueTag((dcval.high << 32) + dcval.low);
+			break;
+		      }
+		    case cp_info.CONSTANT_String:
+		      {
+			CONSTANT_String_info scval = (CONSTANT_String_info)cval;
+			CONSTANT_Utf8_info ucval = (CONSTANT_Utf8_info)coffiClass.constant_pool[scval.string_index];
+			tag = new StringConstantValueTag(ucval.convert());
+			break;
+		      }
+		    default:
+			throw new RuntimeException("unexpected ConstantValue: " + cval);
+		    }
+		    field.addTag(tag);
+		    break;
+		}
             }
     
         // Add every method to the bclass
@@ -508,6 +549,42 @@ public class Util
                 methodInfo.jmethod.setSource(new CoffiMethodSource(coffiClass, methodInfo));
             }
         
+	// Set "SourceFile" attribute tag
+	for(int i = 0; i < coffiClass.attributes_count; i++)
+	    {
+		if(!(coffiClass.attributes[i] instanceof SourceFile_attribute))
+		    continue;
+		SourceFile_attribute attr = (SourceFile_attribute)coffiClass.attributes[i];
+		bclass.addTag(new SourceFileTag(
+		    ((CONSTANT_Utf8_info)(coffiClass.constant_pool[attr.sourcefile_index])).convert()));
+		break;
+	    }
+
+	// Set "InnerClass" attribute tag
+	for(int i = 0; i < coffiClass.attributes_count; i++)
+	    {
+		if(!(coffiClass.attributes[i] instanceof InnerClasses_attribute))
+		    continue;
+		InnerClasses_attribute attr = (InnerClasses_attribute)coffiClass.attributes[i];
+		for (int j = 0; j < attr.inner_classes_length; j++)
+		    {
+		    	inner_class_entry e = attr.inner_classes[j];
+			String inner = null;
+			String outer = null;
+			String name = null;
+			int class_index;
+
+			if (e.inner_class_index != 0)
+				inner = ((CONSTANT_Utf8_info)coffiClass.constant_pool[((CONSTANT_Class_info)coffiClass.constant_pool[e.inner_class_index]).name_index]).convert();
+			if (e.outer_class_index != 0)
+				outer = ((CONSTANT_Utf8_info)coffiClass.constant_pool[((CONSTANT_Class_info)coffiClass.constant_pool[e.outer_class_index]).name_index]).convert();
+			if (e.name_index != 0)
+				name = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[e.name_index])).convert();
+			bclass.addTag(new InnerClassTag(inner, outer, name, e.access_flags));
+		    }
+		break;
+	    }
+
     }
     
 

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2001 Feng Qian
+ * Copyright (C) 2004 Archie L. Cobbs
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,51 +24,24 @@
  */
 
 
-package soot.tagkit;
-import soot.*;
 
-public class LineNumberTag implements Tag
-{
-    /* it is a u2 value representing line number. */
-    int line_number;
-    public LineNumberTag(int ln)
-    {
-	line_number = ln;
-    }
 
-    public String getName()
-    {
-	return "LineNumberTag";
-    }
 
-    public byte[] getValue()
-    {
-	byte[] v = new byte[2];
-	v[0] = (byte)(line_number/256);
-	v[1] = (byte)(line_number%256);
-	return v;
-    }
 
-    public int getLineNumber()
-    {
-	return line_number;
-    }
 
-    public String toString()
-    {
-   	return ""+line_number;
-    }
+package soot.coffi;
 
-    /*
-    protected void finalize()
-    {	
-	try {
-	    throw new RuntimeException();
-	} catch (RuntimeException re)
-	{
-	    G.v().out.println("I, at line "+line_number+", dead here.");
-	    re.printStackTrace();
-	}
-    }
-    */
+/** An entry in the inner classes table.
+ * @see InnerClasses_attribute
+ * @author Archie L. Cobbs
+ */
+class inner_class_entry {
+    /** Constant pool index for the inner class name */
+    public int inner_class_index;
+    /** Constant pool index for the outer class name */
+    public int outer_class_index;
+    /** Short name for the inner class if any, otherwise zero */
+    public int name_index;
+    /** Access flags for inner class */
+    public int access_flags;
 }

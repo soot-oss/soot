@@ -674,6 +674,20 @@ public class ClassFile {
                la.local_variable_table[k] = e;
             }
             a = (attribute_info)la;
+	 } else if(s.compareTo(attribute_info.InnerClasses)==0)
+	 {
+	    InnerClasses_attribute ia = new InnerClasses_attribute();
+	    ia.inner_classes_length = d.readUnsignedShort();
+	    ia.inner_classes = new inner_class_entry[ia.inner_classes_length];
+	    for (int k = 0; k < ia.inner_classes_length; k++) {
+	       inner_class_entry e = new inner_class_entry();
+	       e.inner_class_index = d.readUnsignedShort();
+	       e.outer_class_index = d.readUnsignedShort();
+	       e.name_index = d.readUnsignedShort();
+	       e.access_flags = d.readUnsignedShort();
+	       ia.inner_classes[k] = e;
+	    }
+	    a = (attribute_info)ia;
          } else {
             // unknown attribute
             // G.v().out.println("Generic/Unknown Attribute: " + s);

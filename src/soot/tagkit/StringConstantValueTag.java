@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2001 Feng Qian
+ * Copyright (C) 2003 Archie L. Cobbs
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,52 +23,21 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.tagkit;
-import soot.*;
 
-public class LineNumberTag implements Tag
+import soot.coffi.CONSTANT_Utf8_info;
+
+public class StringConstantValueTag extends ConstantValueTag
 {
-    /* it is a u2 value representing line number. */
-    int line_number;
-    public LineNumberTag(int ln)
-    {
-	line_number = ln;
+    private final String value;
+
+    public StringConstantValueTag(String value) {
+	this.value = value;
+	this.bytes = CONSTANT_Utf8_info.toUtf8(value);
     }
 
-    public String getName()
-    {
-	return "LineNumberTag";
+    public String getStringValue() {
+	return value;
     }
-
-    public byte[] getValue()
-    {
-	byte[] v = new byte[2];
-	v[0] = (byte)(line_number/256);
-	v[1] = (byte)(line_number%256);
-	return v;
-    }
-
-    public int getLineNumber()
-    {
-	return line_number;
-    }
-
-    public String toString()
-    {
-   	return ""+line_number;
-    }
-
-    /*
-    protected void finalize()
-    {	
-	try {
-	    throw new RuntimeException();
-	} catch (RuntimeException re)
-	{
-	    G.v().out.println("I, at line "+line_number+", dead here.");
-	    re.printStackTrace();
-	}
-    }
-    */
 }
+

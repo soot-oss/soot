@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2001 Feng Qian
+ * Copyright (C) 2003 Archie L. Cobbs
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,50 +25,41 @@
 
 
 package soot.tagkit;
+
+import java.io.UnsupportedEncodingException;
 import soot.*;
 
-public class LineNumberTag implements Tag
+public class SourceFileTag implements Tag
 {
-    /* it is a u2 value representing line number. */
-    int line_number;
-    public LineNumberTag(int ln)
+    String sourceFile;
+
+    public SourceFileTag(String sourceFile)
     {
-	line_number = ln;
+	this.sourceFile = sourceFile;
     }
 
     public String getName()
     {
-	return "LineNumberTag";
+	return "SourceFileTag";
     }
 
     public byte[] getValue()
     {
-	byte[] v = new byte[2];
-	v[0] = (byte)(line_number/256);
-	v[1] = (byte)(line_number%256);
-	return v;
+	try {
+		return sourceFile.getBytes("UTF8");
+	} catch (UnsupportedEncodingException e) {
+		return new byte[0];
+	}
     }
 
-    public int getLineNumber()
+    public String getSourceFile()
     {
-	return line_number;
+	return sourceFile;
     }
 
     public String toString()
     {
-   	return ""+line_number;
+	return sourceFile;
     }
-
-    /*
-    protected void finalize()
-    {	
-	try {
-	    throw new RuntimeException();
-	} catch (RuntimeException re)
-	{
-	    G.v().out.println("I, at line "+line_number+", dead here.");
-	    re.printStackTrace();
-	}
-    }
-    */
 }
+

@@ -49,7 +49,7 @@ public class BytecodeOffsetTag implements Tag {
     return "BytecodeOffsetTag";
   }
 
-  /** Returns the offset in a two byte array.
+  /** Returns the offset in a four byte array.
    */
   public byte [] getValue() {
     byte [] v = new byte[4];
@@ -58,6 +58,12 @@ public class BytecodeOffsetTag implements Tag {
     v[2] = (byte) ((offset >> 8) % 256);;
     v[3] = (byte) (offset % 256);
     return v;
+  }
+
+  /** Returns the offset as an int.
+   */
+  public int getBytecodeOffset() {
+    return offset;
   }
 
   /** Returns the offset in a string.

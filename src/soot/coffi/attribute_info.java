@@ -61,6 +61,10 @@ class attribute_info {
     * @see LocalVariableTable_attribute
     */
    public static final String LocalVariableTable = "LocalVariableTable";
+   /** String by which a InnerClasses attribute is recognized.
+    * @see InnerClasses_attribute
+    */
+   public static final String InnerClasses = "InnerClasses";
 
    /** Constant pool index of the name of this attribute; should be a utf8 String
     * matching one of the constant Strings define here.
@@ -70,6 +74,7 @@ class attribute_info {
     * @see attribute_info#Exceptions
     * @see attribute_info#LineNumberTable
     * @see attribute_info#LocalVariableTable
+    * @see attribute_info#InnerClasses
     * @see CONSTANT_Utf8_info
     */
    public int attribute_name;
