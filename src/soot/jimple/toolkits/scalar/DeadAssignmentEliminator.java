@@ -55,7 +55,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
     
     protected void internalTransform(Body b, String phaseName, Map options)
     {
-        boolean eliminateOnlyStackLocals = Options.getBoolean(options, "only-stack-locals");
+        boolean eliminateOnlyStackLocals = PackManager.getBoolean(options, "only-stack-locals");
 
         if(Main.opts.verbose())
             System.out.println("[" + b.getMethod().getName() +

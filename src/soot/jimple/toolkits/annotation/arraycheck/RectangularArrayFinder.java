@@ -69,7 +69,7 @@ public class RectangularArrayFinder extends SceneTransformer
 
     protected void internalTransform(String phaseName, Map options)
     {
-	enable = Options.getBoolean(options, "with-wholeapp");
+	enable = PackManager.getBoolean(options, "with-wholeapp");
 
 	if (!enable)
 	    return;

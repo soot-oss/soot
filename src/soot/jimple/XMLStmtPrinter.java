@@ -138,7 +138,7 @@ public class XMLStmtPrinter implements StmtPrinter{
 	try
 	{
 	    VariableTypeAnalysis vta = null;
-	    int VTApasses = 1; //Options.getInt( Scene.v().getPhaseOptions( "jil.igb" ), "VTA-passes" );
+	    int VTApasses = 1; //Options.getInt( PackManager.v().getPhaseOptions( "jil.igb" ), "VTA-passes" );
 	    for( int i = 0; i < VTApasses; i++ )
 	    {                     
 		vta = new VariableTypeAnalysis( igVTA );

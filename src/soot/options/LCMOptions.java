@@ -26,17 +26,6 @@ import java.util.*;
 /** Option parser for Lazy Code Motion. */
 public class LCMOptions
 {
-    public static String getDeclaredOptions() {
-        return ""
-            +"disabled "
-            +"safe "
-            +"unroll ";
-    }
-
-    public static String getDefaultOptions() {
-        return "";
-    }
-
     private Map options;
 
     public LCMOptions( Map options ) {
@@ -45,12 +34,12 @@ public class LCMOptions
     
     /** Disabled --  */
     public boolean disabled() {
-        return soot.Options.getBoolean( options, "disabled" );
+        return soot.PackManager.getBoolean( options, "disabled" );
     }
     
     /** Unroll --  */
     public boolean unroll() {
-        return soot.Options.getBoolean( options, "unroll" );
+        return soot.PackManager.getBoolean( options, "unroll" );
     }
     
     public static final int safe_safe = 1;
@@ -58,7 +47,7 @@ public class LCMOptions
     public static final int safe_unsafe = 3;
     /** Safe --  */
     public int safe() {
-        String s = soot.Options.getString( options, "safe" );
+        String s = soot.PackManager.getString( options, "safe" );
         
         if( s.equalsIgnoreCase( "safe" ) )
             return safe_safe;

@@ -50,8 +50,7 @@ public class JimpleMethodSource implements MethodSource
             System.out.println("[" + m.getName() + "] Retrieving JimpleBody from AST...");
     
 
-        Map options = Scene.v().computePhaseOptions(phaseName, "verbatim");
-        jb.applyPhaseOptions(options);
+        PackManager.v().getPack("jb").apply(jb);
         return jb;
     }
 }

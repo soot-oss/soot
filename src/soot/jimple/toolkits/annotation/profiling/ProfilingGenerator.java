@@ -61,12 +61,12 @@ public class ProfilingGenerator extends BodyTransformer
 
     public void internalTransform(Body body, String phaseName, Map options)
     {
-        boolean enable = Options.getBoolean(options, "enable");
+        boolean enable = PackManager.getBoolean(options, "enable");
 
 	if (!enable)
 	    return;
 
-	boolean notmainentry = Options.getBoolean(options, "notmainentry");
+	boolean notmainentry = PackManager.getBoolean(options, "notmainentry");
 	if (notmainentry)
 	    mainSignature = "long runBenchmark(java.lang.String[])";
 

@@ -64,7 +64,7 @@ public class LazyCodeMotion extends BodyTransformer {
   }
 
   // safe is one out of "safe" "medium" "unsafe"
-  public String getDefaultOptions() { return "safe:safe unroll:true"; }
+  public String getDefaultOptions() { return "disabled safe:safe unroll:true"; }
         
   /**
    * performs the lazy code motion.
@@ -72,8 +72,8 @@ public class LazyCodeMotion extends BodyTransformer {
   protected void internalTransform(Body b, String phaseName, Map options) {
     HashMap expToHelper = new HashMap();
     Chain unitChain = b.getUnits();
-    String safe = Options.getString(options, "safe");
-    boolean unroll = Options.getBoolean(options, "unroll");
+    String safe = PackManager.getString(options, "safe");
+    boolean unroll = PackManager.getBoolean(options, "unroll");
 
     if(Main.opts.verbose()) System.out.println("[" + b.getMethod().getName() +
                                           "] Performing Lazy Code Motion...");
@@ -109,7 +109,7 @@ public class LazyCodeMotion extends BodyTransformer {
     /* if a more precise sideeffect-tester comes out, please change it here! */
     SideEffectTester sideEffect;
     if( Scene.v().hasActiveInvokeGraph() 
-    && !Options.getBoolean(options, "naive-side-effect") ) {
+    && !PackManager.getBoolean(options, "naive-side-effect") ) {
         sideEffect = new PASideEffectTester();
     } else {
         sideEffect = new NaiveSideEffectTester();

@@ -42,49 +42,22 @@ public abstract class BodyTransformer extends Transformer
      *  That is, the options in optionsString override those in the Scene. 
      *  @param b the body on which to apply the transformation
      *  @param phaseName phaseName for the transform. Used to retrieve options from the Scene.
-     *  @param optionsString
      */
-    public final void transform(Body b, String phaseName, String optionsString)
+    public final void transform(Body b, String phaseName, Map options)
     {
-        Map options = Scene.v().computePhaseOptions(phaseName, 
-                                                    getDefaultOptions() + " " + optionsString);
-
-        if(Options.getBoolean(options, "disabled"))
+        if(PackManager.getBoolean(options, "disabled"))
             return;
 
-        Options.checkOptions(options, phaseName, getDeclaredOptions());
-            
         internalTransform(b, phaseName, options);
     }
 
-    /** 
-     *  Called by clients of the transformation. Acts as a generic interface
-     *  for BodyTransformers.
-     *  
-     *  @param b the body on which to apply the transformation
-     */
-    public final void transform(Body b)
-    {
-        transform(b, "", "");
-    }
-
-    /** 
-     *  Called by clients of the transformation. Acts as a generic interface
-     *  for BodyTransformers.
-     *   @param b the body on which to apply the transformation
-     *   @param phaseName phaseName for the transform. Used to retrieve options from the Scene.
-     */    
     public final void transform(Body b, String phaseName)
     {
-        transform(b, phaseName, "");
+        HashMap dummyOptions = new HashMap();
+        dummyOptions.put( "disabled", "false" );
+        transform(b, phaseName, dummyOptions);
     }
 
-    
-    /** @return the default options for this transform. */ 
-    public String getDefaultOptions() 
-    {
-        return "";
-    }
 
     /**
      *  This method is called to perform the transformation itself. It is declared
@@ -96,8 +69,13 @@ public abstract class BodyTransformer extends Transformer
      */
     protected abstract void internalTransform(Body b, String phaseName, Map options);
 
-    /* Returns a String containing the list of phase options understood here. */
-    protected String getDeclaredOptions() { return "disabled"; }
+    public String getDefaultOptions() {
+        throw new RuntimeException( "this method will be removed" );
+    }
+    public String getDeclaredOptions() {
+        throw new RuntimeException( "this method will be removed" );
+    }
+
 }
 
 

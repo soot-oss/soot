@@ -188,8 +188,8 @@ public class Main implements Runnable
    
     static private boolean useJavaStyle = false;
 
-    static private boolean isOptimizing;
-    static private boolean isOptimizingWhole;
+    static private boolean isOptimizing = false;
+    static private boolean isOptimizingWhole = false;
 
   // hack for J2ME, patch provided by Stephen Chen
   // by default, this is set as false, to use SOOT with J2ME library
@@ -388,33 +388,6 @@ public class Main implements Runnable
 				
     }
 
-        public static void processPhaseOptions(String phaseName, String option) {
-	StringTokenizer st = new StringTokenizer(option, ",");
-	while (st.hasMoreTokens()) {
-	    processPhaseOption(phaseName, st.nextToken(), ':');
-	}
-    }
-		
-    private static void processPhaseOption(String phaseName, String option,
-					   char delimiter)
-    {
-        int delimLoc = option.indexOf(delimiter);
-        String key = null, value = null;
-				
-        if (delimLoc == -1)
-            {
-                key = option;
-                value = "true";
-            }
-        else 
-            {
-                key = option.substring(0, delimLoc);
-                value = option.substring(delimLoc+1);
-            }
-
-        Scene.v().getPhaseOptions(phaseName).put(key, value);
-    }
-
     private static void postCmdLineCheck()
         throws CompilationDeathException
     {
@@ -470,13 +443,15 @@ public class Main implements Runnable
 
       prepareClasses();
 
+      /*
       // Run the whole-program packs.
-      Scene.v().getPack("wjtp").apply();
+      PackManager.v().getPack("wjtp").apply();
       if(isOptimizingWhole)
-	Scene.v().getPack("wjop").apply();
+	PackManager.v().getPack("wjop").apply();
 				
       // Give one more chance
-      Scene.v().getPack("wjtp2").apply();
+      PackManager.v().getPack("wjtp2").apply();
+      */
 				
       // System.gc();
 
@@ -721,9 +696,9 @@ public class Main implements Runnable
       if(!m.hasActiveBody()) {
 	m.setActiveBody(m.getBodyFromMethodSource("jb"));
 
-	Scene.v().getPack("jtp").apply(m.getActiveBody());
+	PackManager.v().getPack("jtp").apply(m.getActiveBody());
 	if(isOptimizing) 
-	  Scene.v().getPack("jop").apply(m.getActiveBody());
+	  PackManager.v().getPack("jop").apply(m.getActiveBody());
       }            
     }
   }
@@ -743,10 +718,10 @@ public class Main implements Runnable
       if (m.hasActiveBody()) {
 	JimpleBody body = (JimpleBody) m.getActiveBody();
 		    
-	Scene.v().getPack("jtp").apply(body);
+	PackManager.v().getPack("jtp").apply(body);
                     
 	if(isOptimizing) 
-	  Scene.v().getPack("jop").apply(body);
+	  PackManager.v().getPack("jop").apply(body);
 
 	m.releaseActiveBody();
       }
@@ -824,10 +799,10 @@ public class Main implements Runnable
 
 	  JimpleBody body = (JimpleBody) m.retrieveActiveBody();
 		    
-	  Scene.v().getPack("jtp").apply(body);
+	  PackManager.v().getPack("jtp").apply(body);
                     
 	  if(isOptimizing) 
-	    Scene.v().getPack("jop").apply(body);
+	    PackManager.v().getPack("jop").apply(body);
 
 	  isOptimizing = wasOptimizing;
 	}
@@ -838,12 +813,11 @@ public class Main implements Runnable
 	    isOptimizing = true;
 
 	  if(isOptimizing)
-	    m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb", "aggregate-all-locals"));
-	  else
-	    m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
+            PackManager.v().setPhaseOptionIfUnset("gb", "aggregate-all-locals");
+	  m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
                         
 	  if(isOptimizing)
-	    Scene.v().getPack("gop").apply(m.getActiveBody());
+	    PackManager.v().getPack("gop").apply(m.getActiveBody());
 
 	  isOptimizing = wasOptimizing;
 	}
@@ -851,7 +825,7 @@ public class Main implements Runnable
 	  m.setActiveBody(Baf.v().newBody((JimpleBody) m.getActiveBody()));
 
 	  if(isOptimizing) 
-	    Scene.v().getPack("bop").apply(m.getActiveBody());
+	    PackManager.v().getPack("bop").apply(m.getActiveBody());
 	} 
       }
 

@@ -20,6 +20,8 @@
 package soot.options;
 import java.util.*;
 
+import soot.PackManager;
+
 /** Soot command-line options parser base class.
  * @author Ondrej Lhotak
  */
@@ -78,7 +80,7 @@ abstract class OptionsBase {
     public LinkedList classes() { return classes; }
 
     protected boolean setPhaseOption( String phase, String option ) {
-        soot.Main.processPhaseOptions( phase, option );
+        PackManager.v().processPhaseOptions( phase, option );
         return true;
     }
 

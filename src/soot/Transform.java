@@ -28,28 +28,48 @@ package soot;
 
 import java.util.*;
 import soot.util.*;
+import soot.options.Options;
 
-/** Maintains the triple (phaseName, singleton, options) needed for a
+/** Maintains the pair (phaseName, singleton) needed for a
  * transformation. */
-public class Transform
+public class Transform implements HasPhaseOptions
 {
     String phaseName;
     Transformer t;
-    String options;
     
-    public Transform(String phaseName, Transformer t, String options)
+    public Transform(String phaseName, Transformer t)
     {
         this.phaseName = phaseName;
         this.t = t;
-        this.options = options;
-    }
-
-    public Transform(String phaseName, Transformer t)
-    {
-        this(phaseName, t, "");
     }
 
     public String getPhaseName() { return phaseName; }
     public Transformer getTransformer() { return t; }
-    public String getOptions() { return options; }
+
+    private String declaredOpts;
+    private String defaultOpts;
+    public String getDeclaredOptions() { 
+        if( declaredOpts != null ) return declaredOpts;
+        return Options.getDeclaredOptionsForPhase( phaseName );
+    }
+    public String getDefaultOptions() { 
+        if( defaultOpts != null ) return defaultOpts;
+        return Options.getDefaultOptionsForPhase( phaseName );
+    }
+
+    /** Allows user-defined phases to have options other than just disabled
+     * without having to mess with the XML. */
+    public void setDeclaredOptions( String options ) {
+        declaredOpts = options;
+    }
+
+    /** Allows user-defined phases to have options other than just disabled
+     * without having to mess with the XML. */
+    public void setDefaultOptions( String options ) {
+        defaultOpts = options;
+    }
+
+    public void apply(Body b) {
+        ((BodyTransformer) t).transform( b, phaseName );
+    }
 }

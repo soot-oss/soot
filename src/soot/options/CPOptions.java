@@ -26,17 +26,6 @@ import java.util.*;
 /** Option parser for Copy Propogator. */
 public class CPOptions
 {
-    public static String getDeclaredOptions() {
-        return ""
-            +"disabled "
-            +"only-regular-locals "
-            +"only-stack-locals ";
-    }
-
-    public static String getDefaultOptions() {
-        return "";
-    }
-
     private Map options;
 
     public CPOptions( Map options ) {
@@ -45,17 +34,17 @@ public class CPOptions
     
     /** Disabled --  */
     public boolean disabled() {
-        return soot.Options.getBoolean( options, "disabled" );
+        return soot.PackManager.getBoolean( options, "disabled" );
     }
     
     /** Only Regular Locals --  */
     public boolean onlyRegLocals() {
-        return soot.Options.getBoolean( options, "only-regular-locals" );
+        return soot.PackManager.getBoolean( options, "only-regular-locals" );
     }
     
     /** Only Stack Locals --  */
     public boolean onlyStackLocals() {
-        return soot.Options.getBoolean( options, "only-stack-locals" );
+        return soot.PackManager.getBoolean( options, "only-stack-locals" );
     }
     
 }

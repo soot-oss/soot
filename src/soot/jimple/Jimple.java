@@ -878,38 +878,4 @@ public class Jimple
     {
         return new JimpleBody();
     }
-
-    /** Returns a JimpleBody constructed from b. */
-//      public JimpleBody newBody(Body b)
-//      {
-//          return new JimpleBody(b, new HashMap());
-//      }
-
-    /** Returns a JimpleBody constructed from b. */
-//      public JimpleBody newBody(Body b, String phase)
-//      {
-//          Map options = Scene.v().computePhaseOptions(phase, "");
-//          if(b instanceof JimpleBody) {
-//              ((JimpleBody)b).applyPhaseOptions(options);
-//              return (JimpleBody) b;
-//          }
-//          return new JimpleBody(b, options);
-//      }
-
-    /*
-     public JimpleBody newBody(JimpleBody b, String phase)
-    {
-        //Map options = Scene.v().computePhaseOptions(phase, "");
-        
-        return b;
-    }
-    */
-   
-
-    /** Returns a JimpleBody constructed from b. */
-//      public JimpleBody newBody(Body b, String phase, String optionsString)
-//      {
-//          Map options = Scene.v().computePhaseOptions(phase, optionsString);
-//          return new JimpleBody(b, options);
-//      }
 }

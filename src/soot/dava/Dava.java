@@ -56,17 +56,10 @@ public class Dava
     /** Returns a DavaBody constructed from the given body b. */
     public DavaBody newBody(Body b, String phase)
     {
-        Map options = Scene.v().computePhaseOptions(phase, "");
+        Map options = PackManager.v().getPhaseOptions(phase);
         return new DavaBody(b, options);
     }
     
-    /** Returns a DavaBody constructed from the given body b. */
-    public DavaBody newBody(Body b, String phase, String optionsString)
-    {
-        Map options = Scene.v().computePhaseOptions(phase, optionsString);
-        return new DavaBody(b, options);
-    }
-
     public Local newLocal(String name, Type t)
     {
         return Jimple.v().newLocal(name, t);

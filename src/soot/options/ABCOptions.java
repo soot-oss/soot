@@ -26,19 +26,6 @@ import java.util.*;
 /** Option parser for Array Bound Check Options. */
 public class ABCOptions
 {
-    public static String getDeclaredOptions() {
-        return ""
-            +"disabled "
-            +"with-cse "
-            +"with-arrayref "
-            +"with-fieldref "
-            +"with-classfield ";
-    }
-
-    public static String getDefaultOptions() {
-        return "";
-    }
-
     private Map options;
 
     public ABCOptions( Map options ) {
@@ -47,27 +34,27 @@ public class ABCOptions
     
     /** Disabled --  */
     public boolean disabled() {
-        return soot.Options.getBoolean( options, "disabled" );
+        return soot.PackManager.getBoolean( options, "disabled" );
     }
     
     /** With Common Sub-expressions --  */
     public boolean withCse() {
-        return soot.Options.getBoolean( options, "with-cse" );
+        return soot.PackManager.getBoolean( options, "with-cse" );
     }
     
     /** With Array References --  */
     public boolean withArrayRef() {
-        return soot.Options.getBoolean( options, "with-arrayref" );
+        return soot.PackManager.getBoolean( options, "with-arrayref" );
     }
     
     /** With Field References --  */
     public boolean withFieldRef() {
-        return soot.Options.getBoolean( options, "with-fieldref" );
+        return soot.PackManager.getBoolean( options, "with-fieldref" );
     }
     
     /** With Class Field --  */
     public boolean withClassField() {
-        return soot.Options.getBoolean( options, "with-classfield" );
+        return soot.PackManager.getBoolean( options, "with-classfield" );
     }
     
 }

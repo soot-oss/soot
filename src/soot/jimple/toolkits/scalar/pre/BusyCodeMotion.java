@@ -62,7 +62,7 @@ public class BusyCodeMotion extends BodyTransformer {
   public String getDeclaredOptions() { return super.getDeclaredOptions()+
       " naive-side-effect "; }
 
-  public String getDefaultOptions() { return ""; }
+  public String getDefaultOptions() { return "disabled"; }
 
   /**
    * performs the busy code motion.
@@ -102,7 +102,7 @@ public class BusyCodeMotion extends BodyTransformer {
     /* if a more precise sideeffect-tester comes out, please change it here! */
     SideEffectTester sideEffect;
     if( Scene.v().hasActiveInvokeGraph() 
-    && !Options.getBoolean( options, "naive-side-effect" ) ) {
+    && !PackManager.getBoolean( options, "naive-side-effect" ) ) {
         sideEffect = new PASideEffectTester();
     } else {
         sideEffect = new NaiveSideEffectTester();

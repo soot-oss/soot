@@ -23,6 +23,8 @@
 package soot.options;
 import java.util.*;
 
+import soot.PackManager;
+
 public class WJOPOptions
 {
     public static String getDeclaredOptions() {
@@ -46,22 +48,22 @@ public class WJOPOptions
     
     /** Disabled --  */
     public boolean disabled() {
-        return soot.Options.getBoolean( options, "disabled" );
+        return PackManager.getBoolean( options, "disabled" );
     }
     
     /** Insert Null Checks --  */
     public boolean insertNullChecks() {
-        return soot.Options.getBoolean( options, "insert-null-checks" );
+        return PackManager.getBoolean( options, "insert-null-checks" );
     }
     
     /** Insert Redundant Casts --  */
     public boolean insertRedundantCasts() {
-        return soot.Options.getBoolean( options, "insert-redundant-casts" );
+        return PackManager.getBoolean( options, "insert-redundant-casts" );
     }
     
     /** VTA Passes --  */
     public int vtaPasses() {
-        return soot.Options.getInt( options, "VTA-passes" );
+        return PackManager.getInt( options, "VTA-passes" );
     }
     
     public static final int allowModChanges_unsafe = 1;
@@ -69,7 +71,7 @@ public class WJOPOptions
     public static final int allowModChanges_none = 3;
     /** Allow Modifier Changes --  */
     public int allowModChanges() {
-        String s = soot.Options.getString( options, "allow-modifier-changes" );
+        String s = PackManager.getString( options, "allow-modifier-changes" );
         
         if( s.equalsIgnoreCase( "unsafe" ) )
             return allowModChanges_unsafe;

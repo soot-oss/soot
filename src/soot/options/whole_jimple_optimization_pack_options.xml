@@ -8,6 +8,7 @@
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
 			<alias_name>disabled</alias_name>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>

@@ -34,23 +34,13 @@ import soot.*;
 import soot.baf.*;
 import soot.tagkit.*;
 
-public class  CodeAttributeGenerator extends BodyTransformer
+public class  CodeAttributeGenerator extends BodyPack
 {
-    private static CodeAttributeGenerator instance = new CodeAttributeGenerator();
-    private CodeAttributeGenerator() {}
-
-    public static CodeAttributeGenerator v() { return instance; }
-
-    static boolean debug = soot.Main.isInDebugMode;
-
-    private List tagAggregators = new LinkedList();
-
-    public void registerAggregator(TagAggregator aggregator)
-    {
-        tagAggregators.add(aggregator);
+    public CodeAttributeGenerator() {
+        super("tag");
     }
 
-    public void internalTransform(Body b, String phaseName, Map options) 
+    public void apply(Body b)
     {
         BafBody body = (BafBody) b;
        
@@ -60,7 +50,7 @@ public class  CodeAttributeGenerator extends BodyTransformer
 	/* different tag aggregator can be added to here */
 
 	/* clear the aggregator first. */
-	Iterator aggIt = tagAggregators.iterator();
+	Iterator aggIt = iterator();
 
 	while (aggIt.hasNext())
         {
@@ -79,7 +69,7 @@ public class  CodeAttributeGenerator extends BodyTransformer
 	    while(tagIt.hasNext()) {
 		Tag t = (Tag) tagIt.next();		
 
-		Iterator it = tagAggregators.iterator();
+		Iterator it = iterator();
 		while(it.hasNext()) {
 		    TagAggregator ta = (TagAggregator) it.next();
 		    if (ta.isActive())
@@ -88,7 +78,7 @@ public class  CodeAttributeGenerator extends BodyTransformer
 	    }         
         }        
 
-	Iterator it = tagAggregators.iterator();
+	Iterator it = iterator();
 	while(it.hasNext()) {
 	    TagAggregator ta = (TagAggregator) it.next();
 	    

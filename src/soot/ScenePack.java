@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Patrick Lam
+ * Copyright (C) 1997-1999 Raja Vallee-Rai and Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,33 +23,28 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
+
 package soot;
 
+import soot.util.*;
 import java.util.*;
 
-/** An abstract class which acts on the whole Scene. */
-public abstract class SceneTransformer extends Transformer
+/** A wrapper object for a pack of optimizations.
+ * Provides chain-like operations, except that the key is the phase name. */
+public class ScenePack extends Pack
 {
-    /** Performs the transformation on the Scene, under the given phaseName. */
-    public final void transform(String phaseName)
-    {
-        Map options = PackManager.v().getPhaseOptions(phaseName);
-
-        if (PackManager.getBoolean(options, "disabled"))
-            return;
-
-        internalTransform(phaseName, options);
+    public ScenePack(String name) {
+        super(name);
     }
 
-    /** Performs the transformation on the Scene, under the given phaseName and with the given Options. */
-    protected abstract void internalTransform(String phaseName, Map options);
-
-    /** Returns the list of the default phase options for this transformer. */
-    public String getDefaultOptions() 
+    public void apply()
     {
-        return "";
+        Iterator it = iterator();
+        while (it.hasNext())
+        {
+            Transform t = (Transform)it.next();
+            ((SceneTransformer)(t.getTransformer())).transform
+                (t.getPhaseName());
+        }
     }
-
-    /* Returns a String containing the list of phase options understood here. */
-    public String getDeclaredOptions() { return "disabled"; }
 }

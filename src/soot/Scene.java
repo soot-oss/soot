@@ -29,14 +29,9 @@ package soot;
 
 import soot.util.*;
 import java.util.*;
-import soot.jimple.toolkits.invoke.*;
-import soot.jimple.toolkits.scalar.*;
-import soot.jimple.toolkits.scalar.pre.*;
-import soot.options.Options;
-import soot.jimple.toolkits.pointer.*;
-import soot.toolkits.scalar.*;
 import soot.jimple.spark.PointsToAnalysis;
-import soot.jimple.spark.SparkTransformer;
+import soot.jimple.toolkits.invoke.*;
+import soot.jimple.toolkits.pointer.*;
 
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene  //extends AbstractHost
@@ -50,8 +45,6 @@ public class Scene  //extends AbstractHost
     Chain phantomClasses = new HashChain();
     
     private Map nameToClass = new HashMap();
-
-    Map phaseToOptionMaps = new HashMap();
 
     Numberer typeNumberer = new Numberer();
     Numberer methodNumberer = new Numberer();
@@ -68,7 +61,6 @@ public class Scene  //extends AbstractHost
     boolean allowsPhantomRefs = false;
     private boolean allowsLazyResolving = false;
 
-    Map packNameToPack = new HashMap();
     SootClass mainClass;
     String sootClassPath = "<external-class-path>";
 
@@ -139,94 +131,11 @@ public class Scene  //extends AbstractHost
     {
     	setReservedNames();
     	
-        Pack p;
-
-        // Shimple transformation pack
-        packNameToPack.put("stp", p = new BodyPack());
-
-        // Shimple optimization pack (-O)
-        packNameToPack.put("sop", p = new BodyPack());
-
-        // Jimple transformation pack
-        packNameToPack.put("jtp", p = new BodyPack());
-
-        // Jimple optimization pack (-O)
-        packNameToPack.put("jop", p = new BodyPack());
-        {
-            p.add(new Transform("jop.cse",  CommonSubexpressionEliminator.v(),
-                  "disabled"));
-            p.add(new Transform("jop.bcm",  BusyCodeMotion.v(), "disabled"));
-            p.add(new Transform("jop.lcm",  LazyCodeMotion.v(), "disabled"));
-            p.add(new Transform("jop.cp",   CopyPropagator.v()));
-            p.add(new Transform("jop.cpf",  ConstantPropagatorAndFolder.v()));
-            p.add(new Transform("jop.cbf",  ConditionalBranchFolder.v()));
-            p.add(new Transform("jop.dae",  DeadAssignmentEliminator.v()));
-            p.add(new Transform("jop.uce1", UnreachableCodeEliminator.v()));
-            p.add(new Transform("jop.ubf1", UnconditionalBranchFolder.v()));
-            p.add(new Transform("jop.uce2", UnreachableCodeEliminator.v()));
-            p.add(new Transform("jop.ubf2", UnconditionalBranchFolder.v()));
-            p.add(new Transform("jop.ule",  UnusedLocalEliminator.v()));
-        }
-
-        // Jimple annotation pack
-        packNameToPack.put("jap", p = new BodyPack());
-
-        // Call graph pack
-        packNameToPack.put("cg", p = new ScenePack());
-        {
-        }
-
-        // Whole-Jimple transformation pack (--app)
-        packNameToPack.put("wjtp", p = new ScenePack());
-        {
-            p.add(new Transform("wjtp.Spark", SparkTransformer.v(), "disabled"));
-        }
-
-        // Whole-Jimple Optimization pack (--app -W)
-        packNameToPack.put("wjop", p = new ScenePack());
-        {
-            p.add(new Transform("wjop.smb", StaticMethodBinder.v(), "disabled"));
-            p.add(new Transform("wjop.si", StaticInliner.v()));
-        }
-
-        // Whole-Shimple transformation pack (--app)
-        packNameToPack.put("wstp", p = new ScenePack());
-
-        // Whole-Shimple Optimization pack (--app -W)
-        packNameToPack.put("wsop", p = new ScenePack());
-
-	// Give another chance to do Whole-Jimple transformation
-	// The RectangularArrayFinder will be put into this package.
-	packNameToPack.put("wjtp2", p = new ScenePack());	
-		
-        // Baf optimization pack
-        packNameToPack.put("bop", p = new BodyPack());
-
-        // Grimp optimization pack
-        packNameToPack.put("gop", p = new BodyPack());
-
-        // Code attribute tag aggregation pack
-        packNameToPack.put("cat", p = new BodyPack());
-
         // load soot.class.path system property, if defined
         String scp = System.getProperty("soot.class.path");
 
         if (scp != null)
             setSootClassPath(scp);
-    }
-
-    public boolean hasPack(String phaseName)
-    {
-        Pack p = (Pack)packNameToPack.get(phaseName);
-        return p != null;
-    }
-
-    public Pack getPack(String phaseName)
-    {
-        Pack p = (Pack)packNameToPack.get(phaseName);
-        if (p == null)
-            throw new RuntimeException("tried to get nonexistant pack "+phaseName);
-        return p;
     }
 
     private int stateCount;
@@ -236,65 +145,6 @@ public class Scene  //extends AbstractHost
         activeFastHierarchy = null;
         activeSideEffectAnalysis = null;
         activePointsToAnalysis = null;
-    }
-
-    /** Returns the options map associated with phaseName. 
-      * If a leading . is present in phaseName, strip it! */
-    public Map getPhaseOptions(String phaseName)
-    {
-        if (phaseName.startsWith("."))
-            phaseName = phaseName.substring(1);
-
-        Map m = (Map)phaseToOptionMaps.get(phaseName);
-        if (m == null)
-        {
-            HashMap newMap = new HashMap();
-            phaseToOptionMaps.put(phaseName, newMap);
-            return newMap;
-        }
-        return m;
-    }
-
-    /* Adds optionsString to the Scene's options for phaseName 
-     * and returns the corresponding Map.  Does not change
-     * the getPhaseOptions() map in the Scene. 
-     *
-     * The previous options (getPhaseOptions()) get precedence. */
-    public Map computePhaseOptions(String phaseName, String optionsString)
-    {
-        Map options = new HashMap();
-
-        StringTokenizer tokenizer = new StringTokenizer(optionsString, " ");
-        while(tokenizer.hasMoreElements()) 
-        {
-            String option = tokenizer.nextToken();
-            int colonLoc = option.indexOf(':');
-            String key = null, value = null;
-
-            if (colonLoc == -1)
-            {
-                key = option;
-                value = "true";
-            }
-            else 
-            {
-                key = option.substring(0, option.indexOf(':'));
-                value = option.substring(option.indexOf(':')+1);
-            }
-
-            options.put(key, value);
-        }
-
-        Map oldOptions = getPhaseOptions(phaseName);
-        Iterator optionKeysIt = oldOptions.keySet().iterator();
-        while (optionKeysIt.hasNext())
-        {
-            String s = (String)optionKeysIt.next();
-            
-            options.put(s, oldOptions.get(s));
-        }
-
-        return options;
     }
 
     /** Returns the current StmtPrinter class for Jimple. */

@@ -45,7 +45,7 @@ public class SparkTransformer extends SceneTransformer
     public String getDeclaredOptions() { return super.getDeclaredOptions() +
 	SparkOptions.getDeclaredOptions(); }
 
-    public String getDefaultOptions() { return SparkOptions.getDefaultOptions(); }
+    public String getDefaultOptions() { return "disabled "+SparkOptions.getDefaultOptions(); }
 
     private static void reportTime( String desc, Date start, Date end ) {
         long time = end.getTime()-start.getTime();

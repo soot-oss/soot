@@ -44,7 +44,7 @@ BEGIN {
     print ""
     print "package soot.jimple.spark;"
     print "import java.util.*;"
-    print "import soot.Options;"
+    print "import soot.PackManager;"
     print ""
     print "/** Various options regulating the functioning of Spark."
     print " * @author Ondrej Lhotak"

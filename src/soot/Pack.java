@@ -31,13 +31,24 @@ import java.util.*;
 
 /** A wrapper object for a pack of optimizations.
  * Provides chain-like operations, except that the key is the phase name. */
-public abstract class Pack
+public abstract class Pack implements HasPhaseOptions
 {
+    private String name;
+    public String getPhaseName() { return name; }
+    public Pack( String name ) {
+        this.name = name;
+    }
     Chain opts = new HashChain();
     
     public Iterator iterator() { return opts.iterator(); }
 
-    public void add(Transform t) { opts.add(t); }
+    public void add(Transform t) { 
+        if( get( t.getPhaseName() ) != null ) {
+            throw new RuntimeException( "Phase "+t.getPhaseName()+" already "
+                    +"in pack" );
+        }
+        opts.add(t); 
+    }
 
     public void insertAfter(Transform t, String phaseName) 
     {
@@ -69,25 +80,24 @@ public abstract class Pack
         throw new RuntimeException("phase "+phaseName+" not found!");
     }
 
-    public void apply()
-    {
-        Iterator it = iterator();
-        while (it.hasNext())
-        {
-            Transform t = (Transform)it.next();
-            ((SceneTransformer)(t.getTransformer())).transform
-                (t.getPhaseName(), t.getOptions());
+    public Transform get( String phaseName ) {
+        for( Iterator trIt = opts.iterator(); trIt.hasNext(); ) {
+            final Transform tr = (Transform) trIt.next();
+            if( tr.getPhaseName().equals(phaseName) ) {
+                return tr;
+            }
         }
+        return null;
     }
 
-    public void apply(Body b)
-    {
-        Iterator it = iterator();
-        while (it.hasNext())
-        {
-            Transform t = (Transform)it.next();
-            ((BodyTransformer)(t.getTransformer())).transform
-                (b, t.getPhaseName(), t.getOptions());
-        }
+    public void apply() {
+        throw new RuntimeException("wrong type of pack");
     }
+
+    public void apply(Body b) {
+        throw new RuntimeException("wrong type of pack");
+    }
+
+    public String getDeclaredOptions() { return soot.options.Options.getDeclaredOptionsForPhase( getPhaseName() ); }
+    public String getDefaultOptions() { return soot.options.Options.getDefaultOptionsForPhase( getPhaseName() ); }
 }

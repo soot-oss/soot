@@ -97,6 +97,7 @@
 			<name>Only Stack Locals</name>
 			<java_name>onlyStackLocals</java_name>
 			<alias_name>only-stack-locals</alias_name>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
@@ -117,6 +118,7 @@
 			<name>Unsplit Original Locals</name>
 			<java_name>unsplitOrigLocals</java_name>
 			<alias_name>unsplit-original-locals</alias_name>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
@@ -165,6 +167,7 @@
 			<name>Only Stack Locals</name>
 			<java_name>onlyStackLocals</java_name>
 			<alias_name>only-stack-locals</alias_name>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
@@ -185,8 +188,77 @@
 			<name>Only Stack Locals</name>
 			<java_name>onlyStackLocals</java_name>
 			<alias_name>only-stack-locals</alias_name>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
 	</sub_phase>
+</phase>
+<phase>
+	<phase_name>Grimp Body Creation</phase_name>
+	<phase_java_name>grimpBodyCreation</phase_java_name>
+	<phase_alias>gb</phase_alias>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+		<boolean_option>
+			<name>No Aggregating</name>
+			<java_name>noAggregating</java_name>
+			<alias_name>no-aggregating</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+		<boolean_option>
+			<name>Aggregate All Locals</name>
+			<java_name>aggAllLocals</java_name>
+			<alias_name>aggregate-all-locals</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+	<sub_phase>
+		<sub_phase_name>ASV1</sub_phase_name>
+		<sub_phase_java_name>asv1</sub_phase_java_name>
+		<sub_phase_alias>gb.asv1</sub_phase_alias>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+
+                    <boolean_option>
+			<name>Only Stack Locals</name>
+			<java_name>onlyStackLocals</java_name>
+			<alias_name>only-stack-locals</alias_name>
+                        <default>true</default>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+			</sub_phase>
+	<sub_phase>
+		<sub_phase_name>ASV2</sub_phase_name>
+		<sub_phase_java_name>asv2</sub_phase_java_name>
+		<sub_phase_alias>gb.asv2</sub_phase_alias>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+
+                    <boolean_option>
+			<name>Only Stack Locals</name>
+			<java_name>onlyStackLocals</java_name>
+			<alias_name>only-stack-locals</alias_name>
+                        <default>true</default>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+            </sub_phase>
 </phase>

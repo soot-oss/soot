@@ -26,19 +26,6 @@ import java.util.*;
 /** Option parser for Static Method Binding. */
 public class SMBOptions
 {
-    public static String getDeclaredOptions() {
-        return ""
-            +"disabled "
-            +"insert-null-checks "
-            +"insert-redundant-casts "
-            +"allow-modifier-changes "
-            +"VTA-passes ";
-    }
-
-    public static String getDefaultOptions() {
-        return "";
-    }
-
     private Map options;
 
     public SMBOptions( Map options ) {
@@ -47,22 +34,22 @@ public class SMBOptions
     
     /** Disabled --  */
     public boolean disabled() {
-        return soot.Options.getBoolean( options, "disabled" );
+        return soot.PackManager.getBoolean( options, "disabled" );
     }
     
     /** Insert Null Checks --  */
     public boolean insertNullChecks() {
-        return soot.Options.getBoolean( options, "insert-null-checks" );
+        return soot.PackManager.getBoolean( options, "insert-null-checks" );
     }
     
     /** Insert Redundant Casts --  */
     public boolean insertRedundantCasts() {
-        return soot.Options.getBoolean( options, "insert-redundant-casts" );
+        return soot.PackManager.getBoolean( options, "insert-redundant-casts" );
     }
     
     /** VTA Passes --  */
     public int vtaPasses() {
-        return soot.Options.getInt( options, "VTA-passes" );
+        return soot.PackManager.getInt( options, "VTA-passes" );
     }
     
     public static final int allowModChanges_unsafe = 1;
@@ -70,7 +57,7 @@ public class SMBOptions
     public static final int allowModChanges_none = 3;
     /** Allow Modifier Changes --  */
     public int allowModChanges() {
-        String s = soot.Options.getString( options, "allow-modifier-changes" );
+        String s = soot.PackManager.getString( options, "allow-modifier-changes" );
         
         if( s.equalsIgnoreCase( "unsafe" ) )
             return allowModChanges_unsafe;

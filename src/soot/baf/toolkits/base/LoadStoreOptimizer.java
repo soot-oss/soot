@@ -151,7 +151,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 
         gOptions = options;
         
-        if(Options.getBoolean(gOptions, "debug")) {
+        if(PackManager.getBoolean(gOptions, "debug")) {
             debug = true;
         }
         
@@ -170,7 +170,7 @@ public class LoadStoreOptimizer extends BodyTransformer
             if(debug){System.err.println("Calling optimizeLoadStore(1)\n");}
             optimizeLoadStores(); 
         
-            if(Options.getBoolean(gOptions, "inter") ) {
+            if(PackManager.getBoolean(gOptions, "inter") ) {
                 if(debug){System.err.println("Calling doInterBlockOptimizations");}
                 doInterBlockOptimizations(); 
                              
@@ -181,7 +181,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                 //propagateBackwardsIndependentHunk(); if(debug)  System.out.println("pass 6");                        
             }
 
-            if(Options.getBoolean(gOptions, "sl2") || Options.getBoolean(gOptions, "sll2")  ) {        
+            if(PackManager.getBoolean(gOptions, "sl2") || PackManager.getBoolean(gOptions, "sll2")  ) {        
                 gPass2 = true;
                 if(debug){System.err.println("Calling optimizeLoadStore(2)");}
                 optimizeLoadStores();   
@@ -274,8 +274,8 @@ public class LoadStoreOptimizer extends BodyTransformer
                                 break;
                                     
                             case 1:
-                                if(Options.getBoolean(gOptions, "sl")) {
-                                    if(!gPass2 || Options.getBoolean(gOptions, "sl2")) {
+                                if(PackManager.getBoolean(gOptions, "sl")) {
+                                    if(!gPass2 || PackManager.getBoolean(gOptions, "sl2")) {
                                 // try to eliminate store/load pair
                                         Unit loadUnit = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                         block =  (Block) mUnitToBlockMap.get(unit);
@@ -304,8 +304,8 @@ public class LoadStoreOptimizer extends BodyTransformer
                                 break;
                                 
                             case 2:
-                                if(Options.getBoolean(gOptions, "sll")) {
-                                    if(!gPass2 || Options.getBoolean(gOptions, "sll2")) {
+                                if(PackManager.getBoolean(gOptions, "sll")) {
+                                    if(!gPass2 || PackManager.getBoolean(gOptions, "sll2")) {
                                 // try to replace store/load/load trio by a flavor of the dup unit
                                         Unit firstLoad = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                         Unit secondLoad = ((UnitValueBoxPair)uses.get(1)).getUnit();

@@ -142,13 +142,7 @@ public class BafBody extends Body
             }
         }
         
-        // Perform some optimizations on the naive baf code
-        {
-             LoadStoreOptimizer.v().transform(this, "bb.lso");
-             (new PeepholeOptimizer()).transform(this,"");
-             UnusedLocalEliminator.v().transform(this, "bb.ule");
-             LocalPacker.v().transform(this, "bb.lp");
-	     CodeAttributeGenerator.v().transform(this, "");
-        }
+        PackManager.v().getPack( "bb" ).apply( this );
+        PackManager.v().getPack( "tag" ).apply( this );
     }
 }

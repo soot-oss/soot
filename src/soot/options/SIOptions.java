@@ -26,22 +26,6 @@ import java.util.*;
 /** Option parser for Static Inlining. */
 public class SIOptions
 {
-    public static String getDeclaredOptions() {
-        return ""
-            +"disabled "
-            +"insert-null-checks "
-            +"insert-redundant-casts "
-            +"allow-modifier-changes "
-            +"expansion-factor "
-            +"max-container-size "
-            +"max-inline-size "
-            +"VTA-passes ";
-    }
-
-    public static String getDefaultOptions() {
-        return "";
-    }
-
     private Map options;
 
     public SIOptions( Map options ) {
@@ -50,37 +34,37 @@ public class SIOptions
     
     /** Disabled --  */
     public boolean disabled() {
-        return soot.Options.getBoolean( options, "disabled" );
+        return soot.PackManager.getBoolean( options, "disabled" );
     }
     
     /** Insert Null Checks --  */
     public boolean insertNullChecks() {
-        return soot.Options.getBoolean( options, "insert-null-checks" );
+        return soot.PackManager.getBoolean( options, "insert-null-checks" );
     }
     
     /** Insert Redundant Casts --  */
     public boolean insertRedundantCasts() {
-        return soot.Options.getBoolean( options, "insert-redundant-casts" );
+        return soot.PackManager.getBoolean( options, "insert-redundant-casts" );
     }
     
     /** Max Container Size --  */
     public int maxContainerSize() {
-        return soot.Options.getInt( options, "max-container-size" );
+        return soot.PackManager.getInt( options, "max-container-size" );
     }
     
     /** Max Inline Size --  */
     public int maxInlineSize() {
-        return soot.Options.getInt( options, "max-inline-size" );
+        return soot.PackManager.getInt( options, "max-inline-size" );
     }
     
     /** VTA Passes --  */
     public int vtaPasses() {
-        return soot.Options.getInt( options, "VTA-passes" );
+        return soot.PackManager.getInt( options, "VTA-passes" );
     }
     
     /** Expansion Factor --  */
     public float expansionFactor() {
-        return soot.Options.getFloat( options, "expansion-factor" );
+        return soot.PackManager.getFloat( options, "expansion-factor" );
     }
     
     public static final int allowModChanges_unsafe = 1;
@@ -88,7 +72,7 @@ public class SIOptions
     public static final int allowModChanges_none = 3;
     /** Allow Modifier Changes --  */
     public int allowModChanges() {
-        String s = soot.Options.getString( options, "allow-modifier-changes" );
+        String s = soot.PackManager.getString( options, "allow-modifier-changes" );
         
         if( s.equalsIgnoreCase( "unsafe" ) )
             return allowModChanges_unsafe;

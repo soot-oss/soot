@@ -43,7 +43,7 @@ public class StaticMethodBinder extends SceneTransformer
 
     public String getDefaultOptions() 
     {
-        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe VTA-passes:0";
+        return "disabled insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe VTA-passes:0";
     }
 
     public String getDeclaredOptions() 
@@ -63,10 +63,10 @@ public class StaticMethodBinder extends SceneTransformer
             System.out.println("[stb] Invoke graph building took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
         }
 
-        boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
-        boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
-        String modifierOptions = Options.getString(options, "allowed-modifier-changes");
-        int VTApasses = Options.getInt(options, "VTA-passes");
+        boolean enableNullPointerCheckInsertion = PackManager.getBoolean(options, "insert-null-checks");
+        boolean enableRedundantCastInsertion = PackManager.getBoolean(options, "insert-redundant-casts");
+        String modifierOptions = PackManager.getString(options, "allowed-modifier-changes");
+        int VTApasses = PackManager.getInt(options, "VTA-passes");
 
         HashMap instanceToStaticMap = new HashMap();
 

@@ -61,7 +61,7 @@ public class GenericAttribute implements Attribute
     }        
     public  String toString()
     {
-	return mName + " " + Base64.encode(mValue);
+	return mName + " " + Base64.encode(mValue).toString();
     }
 
     public void setValue(byte[] value)

@@ -55,7 +55,7 @@ public class Aggregator extends BodyTransformer
     protected void internalTransform(Body b, String phaseName, Map options)
     {
         StmtBody body = (StmtBody)b;
-        boolean onlyStackVars = Options.getBoolean(options, "only-stack-locals"); 
+        boolean onlyStackVars = PackManager.getBoolean(options, "only-stack-locals"); 
 
         int aggregateCount = 1;
 

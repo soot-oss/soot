@@ -23,6 +23,8 @@
 package soot.options;
 import java.util.*;
 
+import soot.PackManager;
+
 public class JBOptions
 {
     public static String getDeclaredOptions() {
@@ -52,57 +54,57 @@ public class JBOptions
     
     /** Disabled --  */
     public boolean disabled() {
-        return soot.Options.getBoolean( options, "disabled" );
+        return PackManager.getBoolean( options, "disabled" );
     }
     
     /** No Splitting --  */
     public boolean noSplitting() {
-        return soot.Options.getBoolean( options, "no-splitting" );
+        return PackManager.getBoolean( options, "no-splitting" );
     }
     
     /** No Typing --  */
     public boolean noTyping() {
-        return soot.Options.getBoolean( options, "no-typing" );
+        return PackManager.getBoolean( options, "no-typing" );
     }
     
     /** Aggregate All Locals --  */
     public boolean aggrAllLocals() {
-        return soot.Options.getBoolean( options, "aggregate-all-locals" );
+        return PackManager.getBoolean( options, "aggregate-all-locals" );
     }
     
     /** No Aggregating --  */
     public boolean noAggregating() {
-        return soot.Options.getBoolean( options, "no-aggregating" );
+        return PackManager.getBoolean( options, "no-aggregating" );
     }
     
     /** Use Original Names --  */
     public boolean useOrigNames() {
-        return soot.Options.getBoolean( options, "use-original-names" );
+        return PackManager.getBoolean( options, "use-original-names" );
     }
     
     /** Pack Locals --  */
     public boolean packLocals() {
-        return soot.Options.getBoolean( options, "pack-locals" );
+        return PackManager.getBoolean( options, "pack-locals" );
     }
     
     /** No Copy Propogator --  */
     public boolean noCp() {
-        return soot.Options.getBoolean( options, "no-cp" );
+        return PackManager.getBoolean( options, "no-cp" );
     }
     
     /** No Nop Elimination --  */
     public boolean noNopElim() {
-        return soot.Options.getBoolean( options, "no-nop-elimination" );
+        return PackManager.getBoolean( options, "no-nop-elimination" );
     }
     
     /** No Unreachable Code Elimination --  */
     public boolean noUnreachCodeElim() {
-        return soot.Options.getBoolean( options, "no-unreachable-code-elimination" );
+        return PackManager.getBoolean( options, "no-unreachable-code-elimination" );
     }
     
     /** Verbatim --  */
     public boolean verbatim() {
-        return soot.Options.getBoolean( options, "verbatim" );
+        return PackManager.getBoolean( options, "verbatim" );
     }
     
 }

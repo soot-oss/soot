@@ -65,7 +65,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 
     public void internalTransform(Body body, String phaseName, Map options)
     {
-	if (Options.getBoolean(options, "with-all"))
+	if (PackManager.getBoolean(options, "with-all"))
 	{
 	    takeClassField = true;
 	    takeFieldRef = true;
@@ -75,14 +75,14 @@ public class ArrayBoundsChecker extends BodyTransformer
 	}
 	else
 	{
-	    takeClassField = Options.getBoolean(options, "with-classfield");
-	    takeFieldRef = Options.getBoolean(options, "with-fieldref");
-	    takeArrayRef = Options.getBoolean(options, "with-arrayref");
-	    takeCSE = Options.getBoolean(options, "with-cse");
-	    takeRectArray = Options.getBoolean(options, "with-rectarray");
+	    takeClassField = PackManager.getBoolean(options, "with-classfield");
+	    takeFieldRef = PackManager.getBoolean(options, "with-fieldref");
+	    takeArrayRef = PackManager.getBoolean(options, "with-arrayref");
+	    takeCSE = PackManager.getBoolean(options, "with-cse");
+	    takeRectArray = PackManager.getBoolean(options, "with-rectarray");
 	}
 
-	isProfiling = Options.getBoolean(options, "profiling");
+	isProfiling = PackManager.getBoolean(options, "profiling");
 
 	{
 	    SootMethod m = body.getMethod();

@@ -82,14 +82,14 @@ public class SideEffectTagger extends BodyTransformer
     {
 	initializationStuff( phaseName );
 	SideEffectAnalysis sea = Scene.v().getActiveSideEffectAnalysis();
-	optionNaive = Options.getBoolean( options, "naive" );
+	optionNaive = PackManager.getBoolean( options, "naive" );
 	if( !optionNaive ) {
 	    sea.findNTRWSets( body.getMethod() );
 	}
 	HashMap stmtToReadSet = new HashMap();
 	HashMap stmtToWriteSet = new HashMap();
 	UniqueRWSets sets = new UniqueRWSets();
-	optionDontTag = Options.getBoolean( options, "dont-tag" );
+	optionDontTag = PackManager.getBoolean( options, "dont-tag" );
 	boolean justDoTotallyConservativeThing = 
 	    body.getMethod().getName().equals( "<clinit>" );
 	for( Iterator stmtIt = body.getUnits().iterator(); stmtIt.hasNext(); ) {

@@ -58,14 +58,12 @@ public class CommonSubexpressionEliminator extends BodyTransformer
     public String getDeclaredOptions() { return super.getDeclaredOptions()+
         " naive-side-effect "; }
 
-    public String getDefaultOptions() { return ""; }
+    public String getDefaultOptions() { return "disabled"; }
 
     /** Common subexpression eliminator. */
     protected void internalTransform(Body b, String phaseName, Map options)
     {
         int counter = 0;
-
-        Options.checkOptions(options, phaseName, getDeclaredOptions());
 
         // Sigh.  check for name collisions.
         Iterator localsIt = b.getLocals().iterator();
@@ -77,7 +75,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
 
         SideEffectTester sideEffect;
         if( Scene.v().hasActiveInvokeGraph()
-        && !Options.getBoolean( options, "naive-side-effect" ) ) {
+        && !PackManager.getBoolean( options, "naive-side-effect" ) ) {
             sideEffect = new PASideEffectTester();
         } else {
             sideEffect = new NaiveSideEffectTester();

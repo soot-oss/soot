@@ -61,8 +61,8 @@ public class CopyPropagator extends BodyTransformer
     protected void internalTransform(Body b, String phaseName, Map options)
     {
         StmtBody stmtBody = (StmtBody)b;
-        boolean propagateStackLocals = !Options.getBoolean(options, "only-regular-locals");
-        boolean propagateRegularLocals = !Options.getBoolean(options, "only-stack-locals");
+        boolean propagateStackLocals = !PackManager.getBoolean(options, "only-regular-locals");
+        boolean propagateRegularLocals = !PackManager.getBoolean(options, "only-stack-locals");
     
 
         int fastCopyPropagationCount = 0;

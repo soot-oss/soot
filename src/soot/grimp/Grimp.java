@@ -974,17 +974,9 @@ public class Grimp
     /** Returns a GrimpBody constructed from b. */
     public GrimpBody newBody(Body b, String phase)
     {
-        Map options = Scene.v().computePhaseOptions(phase, "");
-        return new GrimpBody(b, options);
+        return new GrimpBody(b);
     }
 
-    /** Returns a GrimpBody constructed from b. */
-    public GrimpBody newBody(Body b, String phase, String optionsString)
-    {
-        Map options = Scene.v().computePhaseOptions(phase, optionsString);
-        return new GrimpBody(b, options);
-    }
-    
     public static Value cloneIfNecessary(Value val) 
     {
         if( val instanceof Local || val instanceof Constant )

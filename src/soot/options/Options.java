@@ -650,4 +650,329 @@ public class Options extends OptionsBase {
 +padOpt(" -subtract-gc", "attempt to subtract the gc from the time stats" )
         ;
     }
+
+    public static String getDeclaredOptionsForPhase( String phaseName ) {
+    
+        if( phaseName.equals( "jb" ) )
+            return ""
+                +"disabled "
+                +"no-splitting "
+                +"no-typing "
+                +"aggregate-all-locals "
+                +"no-aggregating "
+                +"use-original-names "
+                +"pack-locals "
+                +"no-cp "
+                +"no-nop-elimination "
+                +"no-unreachable-code-elimination "
+                +"verbatim ";
+    
+        if( phaseName.equals( "jb.asv" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "jb.ulp" ) )
+            return ""
+                +"disabled "
+                +"unsplit-original-locals ";
+    
+        if( phaseName.equals( "jb.lns" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "jb.cp" ) )
+            return ""
+                +"disabled "
+                +"only-regular-locals "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "jb.dae" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "gb" ) )
+            return ""
+                +"disabled "
+                +"no-aggregating "
+                +"aggregate-all-locals ";
+    
+        if( phaseName.equals( "gb.asv1" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "gb.asv2" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "jtp" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jtp.ncp" ) )
+            return ""
+                +"disabled "
+                +"only-array-ref ";
+    
+        if( phaseName.equals( "jtp.abc" ) )
+            return ""
+                +"disabled "
+                +"with-cse "
+                +"with-arrayref "
+                +"with-fieldref "
+                +"with-classfield ";
+    
+        if( phaseName.equals( "jop" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jop.cse" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jop.bcm" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jop.lcm" ) )
+            return ""
+                +"disabled "
+                +"safe "
+                +"unroll ";
+    
+        if( phaseName.equals( "jop.cp" ) )
+            return ""
+                +"disabled "
+                +"only-regular-locals "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "jop.cpf" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jop.cbf" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jop.dae" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jop.uce1" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jop.ubf1" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jop.ule" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wjtp" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wjtp.Spark" ) )
+            return ""
+                +"verbose "
+                +"ignoreTypesEntirely "
+                +"forceGCs "
+                +"useNewCallGraph "
+                +"VTA "
+                +"RTA "
+                +"ignoreBaseObjects "
+                +"typesForSites "
+                +"mergeStringBuffer "
+                +"simulateNatives "
+                +"simpleEdgesBidirectional "
+                +"onFlyCallGraph "
+                +"parmsAsFields "
+                +"returnsAsFields "
+                +"simplifyOffline "
+                +"simplifySCCs "
+                +"ignoreTypesForSCCs "
+                +"propagator "
+                +"setImpl "
+                +"doubleSetOld "
+                +"doubleSetNew "
+                +"dumpHTML "
+                +"dumpPAG "
+                +"dumpSolution "
+                +"topoSort "
+                +"dumpTypes "
+                +"classMethodVar "
+                +"dumpAnswer "
+                +"trimInvokeGraph ";
+    
+        if( phaseName.equals( "wjop" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wjop.smb" ) )
+            return ""
+                +"disabled "
+                +"insert-null-checks "
+                +"insert-redundant-casts "
+                +"allow-modifier-changes "
+                +"VTA-passes ";
+    
+        if( phaseName.equals( "wjop.si" ) )
+            return ""
+                +"disabled "
+                +"insert-null-checks "
+                +"insert-redundant-casts "
+                +"allow-modifier-changes "
+                +"expansion-factor "
+                +"max-container-size "
+                +"max-inline-size "
+                +"VTA-passes ";
+    
+        if( phaseName.equals( "Jimple.JasminClass" ) )
+            return ""
+                +"disabled "
+                +"no-peephole ";
+    
+        // The default set of options is just disabled.
+        return "disabled";
+    }
+
+    public static String getDefaultOptionsForPhase( String phaseName ) {
+    
+        if( phaseName.equals( "jb" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.asv" ) )
+            return ""
+              +"only-stack-locals:true ";
+    
+        if( phaseName.equals( "jb.ulp" ) )
+            return ""
+              +"unsplit-original-locals:true ";
+    
+        if( phaseName.equals( "jb.lns" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.cp" ) )
+            return ""
+              +"only-stack-locals:true ";
+    
+        if( phaseName.equals( "jb.dae" ) )
+            return ""
+              +"only-stack-locals:true ";
+    
+        if( phaseName.equals( "gb" ) )
+            return "";
+    
+        if( phaseName.equals( "gb.asv1" ) )
+            return ""
+              +"only-stack-locals:true ";
+    
+        if( phaseName.equals( "gb.asv2" ) )
+            return ""
+              +"only-stack-locals:true ";
+    
+        if( phaseName.equals( "jtp" ) )
+            return "";
+    
+        if( phaseName.equals( "jtp.ncp" ) )
+            return "";
+    
+        if( phaseName.equals( "jtp.abc" ) )
+            return "";
+    
+        if( phaseName.equals( "jop" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.cse" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.bcm" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.lcm" ) )
+            return ""
+              +"safe:safe ";
+    
+        if( phaseName.equals( "jop.cp" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.cpf" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.cbf" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.dae" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.uce1" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.ubf1" ) )
+            return "";
+    
+        if( phaseName.equals( "jop.ule" ) )
+            return "";
+    
+        if( phaseName.equals( "wjtp" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "wjtp.Spark" ) )
+            return ""
+              +"verbose:false "
+              +"ignoreTypesEntirely:false "
+              +"forceGCs:false "
+              +"useNewCallGraph:false "
+              +"VTA:false "
+              +"RTA:false "
+              +"ignoreBaseObjects:false "
+              +"typesForSites:false "
+              +"mergeStringBuffer:true "
+              +"simulateNatives:false "
+              +"simpleEdgesBidirectional:false "
+              +"onFlyCallGraph:false "
+              +"parmsAsFields:false "
+              +"returnsAsFields:false "
+              +"simplifyOffline:false "
+              +"simplifySCCs:false "
+              +"ignoreTypesForSCCs:false "
+              +"propagator:worklist "
+              +"setImpl:double "
+              +"doubleSetOld:hybrid "
+              +"doubleSetNew:hybrid "
+              +"dumpHTML:false "
+              +"dumpPAG:false "
+              +"dumpSolution:false "
+              +"topoSort:false "
+              +"dumpTypes:true "
+              +"classMethodVar:true "
+              +"dumpAnswer:false "
+              +"trimInvokeGraph:false ";
+    
+        if( phaseName.equals( "wjop" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "wjop.smb" ) )
+            return ""
+              +"allow-modifier-changes:unsafe ";
+    
+        if( phaseName.equals( "wjop.si" ) )
+            return ""
+              +"allow-modifier-changes:unsafe ";
+    
+        if( phaseName.equals( "Jimple.JasminClass" ) )
+            return "";
+    
+        // The default default value is nothing.
+        return "";
+    }
+  
 }

@@ -23,7 +23,7 @@
 
 package soot.jimple.spark;
 import java.util.*;
-import soot.Options;
+import soot.PackManager;
 
 /** Various options regulating the functioning of Spark.
  * @author Ondrej Lhotak
@@ -43,7 +43,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean verbose() {
-        return Options.getBoolean( options, "verbose" );
+        return PackManager.getBoolean( options, "verbose" );
     }
 
     /**
@@ -52,7 +52,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean ignoreTypesEntirely() {
-        return Options.getBoolean( options, "ignoreTypesEntirely" );
+        return PackManager.getBoolean( options, "ignoreTypesEntirely" );
     }
 
     /**
@@ -61,7 +61,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean forceGCs() {
-        return Options.getBoolean( options, "forceGCs" );
+        return PackManager.getBoolean( options, "forceGCs" );
     }
 
     /**
@@ -73,7 +73,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean preJimplify() {
-        return Options.getBoolean( options, "preJimplify" );
+        return PackManager.getBoolean( options, "preJimplify" );
     }
 
 
@@ -91,7 +91,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean VTA() {
-        return Options.getBoolean( options, "VTA" );
+        return PackManager.getBoolean( options, "VTA" );
     }
 
     /**
@@ -103,7 +103,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean RTA() {
-        return Options.getBoolean( options, "RTA" );
+        return PackManager.getBoolean( options, "RTA" );
     }
 
     /**
@@ -115,7 +115,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean ignoreBaseObjects() {
-        return Options.getBoolean( options, "ignoreBaseObjects" );
+        return PackManager.getBoolean( options, "ignoreBaseObjects" );
     }
 
     /**
@@ -124,7 +124,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean typesForSites() {
-        return Options.getBoolean( options, "typesForSites" );
+        return PackManager.getBoolean( options, "typesForSites" );
     }
 
     /**
@@ -134,7 +134,7 @@ public class SparkOptions {
      * Default value is true
      */
     public boolean mergeStringBuffer() {
-        return Options.getBoolean( options, "mergeStringBuffer" );
+        return PackManager.getBoolean( options, "mergeStringBuffer" );
     }
 
     /**
@@ -142,7 +142,7 @@ public class SparkOptions {
      * Default value is true
      */
     public boolean simulateNatives() {
-        return Options.getBoolean( options, "simulateNatives" );
+        return PackManager.getBoolean( options, "simulateNatives" );
     }
 
     /**
@@ -151,7 +151,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean simpleEdgesBidirectional() {
-        return Options.getBoolean( options, "simpleEdgesBidirectional" );
+        return PackManager.getBoolean( options, "simpleEdgesBidirectional" );
     }
 
     /**
@@ -161,7 +161,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean onFlyCallGraph() {
-        return Options.getBoolean( options, "onFlyCallGraph" );
+        return PackManager.getBoolean( options, "onFlyCallGraph" );
     }
 
     /**
@@ -171,7 +171,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean parmsAsFields() {
-        return Options.getBoolean( options, "parmsAsFields" );
+        return PackManager.getBoolean( options, "parmsAsFields" );
     }
 
     /**
@@ -181,7 +181,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean returnsAsFields() {
-        return Options.getBoolean( options, "returnsAsFields" );
+        return PackManager.getBoolean( options, "returnsAsFields" );
     }
 
 
@@ -196,7 +196,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean simplifyOffline() {
-        return Options.getBoolean( options, "simplifyOffline" );
+        return PackManager.getBoolean( options, "simplifyOffline" );
     }
 
     /**
@@ -206,7 +206,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean simplifySCCs() {
-        return Options.getBoolean( options, "simplifySCCs" );
+        return PackManager.getBoolean( options, "simplifySCCs" );
     }
 
     /**
@@ -222,7 +222,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean ignoreTypesForSCCs() {
-        return Options.getBoolean( options, "ignoreTypesForSCCs" );
+        return PackManager.getBoolean( options, "ignoreTypesForSCCs" );
     }
 
 
@@ -251,7 +251,7 @@ public class SparkOptions {
      * Default value is worklist
      */
     public void propagator( Switch_propagator sw ) {
-        String s = Options.getString( options, "propagator" );
+        String s = PackManager.getString( options, "propagator" );
         if( false );
         else if( s.equalsIgnoreCase("iter") ) sw.case_iter();
         else if( s.equalsIgnoreCase("worklist") ) sw.case_worklist();
@@ -293,7 +293,7 @@ public class SparkOptions {
      * Default value is double
      */
     public void setImpl( Switch_setImpl sw ) {
-        String s = Options.getString( options, "setImpl" );
+        String s = PackManager.getString( options, "setImpl" );
         if( false );
         else if( s.equalsIgnoreCase("hash") ) sw.case_hash();
         else if( s.equalsIgnoreCase("bit") ) sw.case_bit();
@@ -318,7 +318,7 @@ public class SparkOptions {
      * Default value is hybrid
      */
     public void doubleSetOld( Switch_doubleSetOld sw ) {
-        String s = Options.getString( options, "doubleSetOld" );
+        String s = PackManager.getString( options, "doubleSetOld" );
         if( false );
         else if( s.equalsIgnoreCase("hash") ) sw.case_hash();
         else if( s.equalsIgnoreCase("bit") ) sw.case_bit();
@@ -341,7 +341,7 @@ public class SparkOptions {
      * Default value is hybrid
      */
     public void doubleSetNew( Switch_doubleSetNew sw ) {
-        String s = Options.getString( options, "doubleSetNew" );
+        String s = PackManager.getString( options, "doubleSetNew" );
         if( false );
         else if( s.equalsIgnoreCase("hash") ) sw.case_hash();
         else if( s.equalsIgnoreCase("bit") ) sw.case_bit();
@@ -368,7 +368,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean dumpHTML() {
-        return Options.getBoolean( options, "dumpHTML" );
+        return PackManager.getBoolean( options, "dumpHTML" );
     }
 
     /**
@@ -378,7 +378,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean dumpPAG() {
-        return Options.getBoolean( options, "dumpPAG" );
+        return PackManager.getBoolean( options, "dumpPAG" );
     }
 
     /**
@@ -389,7 +389,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean dumpSolution() {
-        return Options.getBoolean( options, "dumpSolution" );
+        return PackManager.getBoolean( options, "dumpSolution" );
     }
 
     /**
@@ -400,7 +400,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean topoSort() {
-        return Options.getBoolean( options, "topoSort" );
+        return PackManager.getBoolean( options, "topoSort" );
     }
 
     /**
@@ -411,7 +411,7 @@ public class SparkOptions {
      * Default value is true
      */
     public boolean dumpTypes() {
-        return Options.getBoolean( options, "dumpTypes" );
+        return PackManager.getBoolean( options, "dumpTypes" );
     }
 
     /**
@@ -425,7 +425,7 @@ public class SparkOptions {
      * Default value is true
      */
     public boolean classMethodVar() {
-        return Options.getBoolean( options, "classMethodVar" );
+        return PackManager.getBoolean( options, "classMethodVar" );
     }
 
     /**
@@ -435,7 +435,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean dumpAnswer() {
-        return Options.getBoolean( options, "dumpAnswer" );
+        return PackManager.getBoolean( options, "dumpAnswer" );
     }
 
     /**
@@ -444,7 +444,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean trimInvokeGraph() {
-        return Options.getBoolean( options, "trimInvokeGraph" );
+        return PackManager.getBoolean( options, "trimInvokeGraph" );
     }
 
     /**
@@ -453,7 +453,7 @@ public class SparkOptions {
      * Default value is false
      */
     public boolean addTags() {
-        return Options.getBoolean( options, "addTags" );
+        return PackManager.getBoolean( options, "addTags" );
     }
 
     public static String getDeclaredOptions() {

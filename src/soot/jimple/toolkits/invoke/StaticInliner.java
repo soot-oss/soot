@@ -59,13 +59,13 @@ public class StaticInliner extends SceneTransformer
 
         InvokeGraphBuilder.v().transform(phaseName + ".igb");
         
-        boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
-        boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
-        String modifierOptions = Options.getString(options, "allowed-modifier-changes");
-        float expansionFactor = Options.getFloat(options, "expansion-factor");
-        int maxContainerSize = Options.getInt(options, "max-container-size");
-        int maxInlineeSize = Options.getInt(options, "max-inlinee-size");
-        int VTApasses = Options.getInt(options, "VTA-passes");
+        boolean enableNullPointerCheckInsertion = PackManager.getBoolean(options, "insert-null-checks");
+        boolean enableRedundantCastInsertion = PackManager.getBoolean(options, "insert-redundant-casts");
+        String modifierOptions = PackManager.getString(options, "allowed-modifier-changes");
+        float expansionFactor = PackManager.getFloat(options, "expansion-factor");
+        int maxContainerSize = PackManager.getInt(options, "max-container-size");
+        int maxInlineeSize = PackManager.getInt(options, "max-inlinee-size");
+        int VTApasses = PackManager.getInt(options, "VTA-passes");
 
         HashMap instanceToStaticMap = new HashMap();
 

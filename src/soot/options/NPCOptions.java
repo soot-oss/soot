@@ -26,16 +26,6 @@ import java.util.*;
 /** Option parser for Null Pointer Check Options. */
 public class NPCOptions
 {
-    public static String getDeclaredOptions() {
-        return ""
-            +"disabled "
-            +"only-array-ref ";
-    }
-
-    public static String getDefaultOptions() {
-        return "";
-    }
-
     private Map options;
 
     public NPCOptions( Map options ) {
@@ -44,12 +34,12 @@ public class NPCOptions
     
     /** Disabled --  */
     public boolean disabled() {
-        return soot.Options.getBoolean( options, "disabled" );
+        return soot.PackManager.getBoolean( options, "disabled" );
     }
     
     /** Only Array Ref --  */
     public boolean onlyArrayRef() {
-        return soot.Options.getBoolean( options, "only-array-ref" );
+        return soot.PackManager.getBoolean( options, "only-array-ref" );
     }
     
 }

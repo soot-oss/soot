@@ -74,6 +74,7 @@ public class Options extends OptionsBase {
 <xsl:apply-templates mode="usage" select="/options/section"/>
         ;
     }
+<xsl:apply-templates mode="declphaseopts" select="/options/section/phase_option"/>
 }
 <xsl:apply-templates mode="phaseopts" select="/options/section/phase_option"/>
   </xsl:template>
@@ -354,22 +355,6 @@ import java.util.*;
 /** Option parser for <xsl:value-of select="phase_name|sub_phase_name"/>. */
 public class <xsl:copy-of select="$filename"/>
 {
-    public static String getDeclaredOptions() {
-        return ""<!---->
-          <xsl:for-each select="boolean_option|multi_option|int_option|float_option|string_option"><!---->
-            +"<xsl:value-of select="alias_name"/> "<!---->
-          </xsl:for-each>;
-    }
-
-    public static String getDefaultOptions() {
-        return ""<!---->
-          <xsl:for-each select="boolean_option|multi_option|int_option|float_option|string_option"><!---->
-            <xsl:if test="default">
-              +"<xsl:value-of select="alias_name"/>:<xsl:value-of select="default"/> "<!---->
-            </xsl:if>
-          </xsl:for-each>;
-    }
-
     private Map options;
 
     public <xsl:copy-of select="$filename"/>( Map options ) {
@@ -378,25 +363,25 @@ public class <xsl:copy-of select="$filename"/>
     <xsl:for-each select="boolean_option"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public boolean <xsl:value-of select="java_name"/>() {
-        return soot.Options.getBoolean( options, "<xsl:value-of select="alias_name"/>" );
+        return soot.PackManager.getBoolean( options, "<xsl:value-of select="alias_name"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="int_option"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public int <xsl:value-of select="java_name"/>() {
-        return soot.Options.getInt( options, "<xsl:value-of select="alias_name"/>" );
+        return soot.PackManager.getInt( options, "<xsl:value-of select="alias_name"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="float_option"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public float <xsl:value-of select="java_name"/>() {
-        return soot.Options.getFloat( options, "<xsl:value-of select="alias_name"/>" );
+        return soot.PackManager.getFloat( options, "<xsl:value-of select="alias_name"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="string_option"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public String <xsl:value-of select="java_name"/>() {
-        return soot.Options.getString( options, "<xsl:value-of select="alias_name"/>" );
+        return soot.PackManager.getString( options, "<xsl:value-of select="alias_name"/>" );
     }
     </xsl:for-each>
     <xsl:for-each select="multi_option"><!---->
@@ -406,7 +391,7 @@ public class <xsl:copy-of select="$filename"/>
         </xsl:for-each>
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public int <xsl:value-of select="java_name"/>() {
-        String s = soot.Options.getString( options, "<xsl:value-of select="alias_name"/>" );
+        String s = soot.PackManager.getString( options, "<xsl:value-of select="alias_name"/>" );
         <xsl:for-each select="value"><!---->
         if( s.equalsIgnoreCase( "<xsl:value-of select="alias"/>" ) )
             return <xsl:value-of select="$name"/>_<xsl:value-of select="java_name"/>;
@@ -418,5 +403,43 @@ public class <xsl:copy-of select="$filename"/>
         </xsl:document>
       </xsl:if>
     </xsl:for-each>
+  </xsl:template>
+
+<!--*************************************************************************-->
+<!--* DECLARED PHASE OPTION TEMPLATES ***************************************-->
+<!--*************************************************************************-->
+
+  <xsl:template mode="declphaseopts" match="phase_option">
+    public static String getDeclaredOptionsForPhase( String phaseName ) {
+    <xsl:for-each select="phase|phase/sub_phase">
+        if( phaseName.equals( "<xsl:value-of select="phase_alias|sub_phase_alias"/>" ) )
+            return ""<!---->
+      <xsl:for-each select="boolean_option|multi_option|int_option|float_option|string_option"><!---->
+                +"<xsl:value-of select="alias_name"/> "<!---->
+      </xsl:for-each>;
+    </xsl:for-each>
+        // The default set of options is just disabled.
+        return "disabled";
+    }
+
+    public static String getDefaultOptionsForPhase( String phaseName ) {
+    <xsl:for-each select="phase|phase/sub_phase">
+        if( phaseName.equals( "<xsl:value-of select="phase_alias|sub_phase_alias"/>" ) )
+            return ""<!---->
+      <xsl:for-each select="boolean_option|multi_option|int_option|float_option|string_option"><!---->
+            <xsl:if test="default">
+              +"<xsl:value-of select="alias_name"/>:<xsl:value-of select="default"/> "<!---->
+            </xsl:if>
+            <xsl:variable name="key_alias" select="alias_name"/>
+            <xsl:for-each select="value">
+              <xsl:if test="default">
+              +"<xsl:value-of select="$key_alias"/>:<xsl:value-of select="alias"/> "<!---->
+              </xsl:if>
+            </xsl:for-each>
+      </xsl:for-each>;
+    </xsl:for-each>
+        // The default default value is nothing.
+        return "";
+    }
   </xsl:template>
 </xsl:stylesheet>

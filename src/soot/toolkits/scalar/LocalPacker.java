@@ -73,7 +73,7 @@ public class LocalPacker extends BodyTransformer
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {
-        boolean isUnsplit = Options.getBoolean(options, "unsplit-original-locals");
+        boolean isUnsplit = PackManager.getBoolean(options, "unsplit-original-locals");
         
         if(soot.Main.opts.verbose())
             System.out.println("[" + body.getMethod().getName() + "] Packing locals...");

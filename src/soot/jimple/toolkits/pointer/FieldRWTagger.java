@@ -86,7 +86,7 @@ public class FieldRWTagger extends BodyTransformer
 	HashMap stmtToReadSet = new HashMap();
 	HashMap stmtToWriteSet = new HashMap();
 	UniqueRWSets sets = new UniqueRWSets();
-	optionDontTag = Options.getBoolean( options, "dont-tag" );
+	optionDontTag = PackManager.getBoolean( options, "dont-tag" );
 	boolean justDoTotallyConservativeThing = 
 	    body.getMethod().getName().equals( "<clinit>" );
 	for( Iterator stmtIt = body.getUnits().iterator(); stmtIt.hasNext(); ) {

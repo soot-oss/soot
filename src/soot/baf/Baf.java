@@ -545,14 +545,7 @@ public class Baf
     /** Returns a BafBody constructed from b. */
     public BafBody newBody(Body b, String phase)
     {
-        Map options = Scene.v().computePhaseOptions(phase, "");
-        return new BafBody(b, options);
-    }
-
-    /** Returns a BafBody constructed from b. */
-    public BafBody newBody(Body b, String phase, String optionsString)
-    {
-        Map options = Scene.v().computePhaseOptions(phase, optionsString);
+        Map options = PackManager.v().getPhaseOptions(phase);
         return new BafBody(b, options);
     }
 }

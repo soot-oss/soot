@@ -51,8 +51,10 @@ public class PeepholeOptimizer extends BodyTransformer
     private InputStream peepholeListingStream = null;
     private final String packageName = "soot.baf.toolkits.base";
 
-    private static Map peepholeMap = new HashMap();
-    public PeepholeOptimizer(){}
+    private Map peepholeMap = new HashMap();
+    private static PeepholeOptimizer instance = new PeepholeOptimizer();
+    public static PeepholeOptimizer v() { return instance; }
+    private PeepholeOptimizer(){}
 
     public String getDefaultOptions() 
     {

@@ -23,14 +23,10 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple;
 
 import soot.*;
 import soot.toolkits.scalar.*;
-import soot.jimple.toolkits.scalar.*;
-import soot.jimple.toolkits.typing.*;
-import soot.jimple.toolkits.base.*;
 import soot.util.*;
 import java.util.*;
 import java.io.*;
@@ -61,111 +57,6 @@ public class JimpleBody extends StmtBody implements Serializable
         Body b = new JimpleBody(getMethod());
         b.importBodyContentsFrom(this);
         return b;
-    }
-
-    /** Applies the transformations corresponding to the given options. */
-    public void applyPhaseOptions(Map options) 
-    { 
-        Options.checkOptions(options, "jb", "no-splitting no-typing "+
-                             "aggregate-all-locals no-aggregating "+
-                             "use-original-names pack-locals no-cp "+
-                             "no-nop-elimination verbatim "+
-			     "no-unreachable-code-elimination");
-
-        boolean noSplitting = Options.getBoolean(options, "no-splitting");
-        boolean noTyping = Options.getBoolean(options, "no-typing");
-        boolean aggregateAllLocals = Options.getBoolean(options, "aggregate-all-locals");
-        boolean noAggregating = Options.getBoolean(options, "no-aggregating");
-        boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
-        boolean usePacking = Options.getBoolean(options, "pack-locals");
-        boolean noCopyPropagating = Options.getBoolean(options, "no-cp");
-        
-        boolean noNopElimination = Options.getBoolean(options, "no-nop-elimination");
-        boolean noUcElimination = Options.getBoolean(options, "no-unreachable-code-elimination");
-
-        boolean verbatim = Options.getBoolean(options, "verbatim");
-
-        if (verbatim)
-            return;
-
-        if(!noSplitting)
-        {
-            if(Main.opts.time())
-                Timers.v().splitTimer.start();
-
-            LocalSplitter.v().transform(this, "jb.ls");
-
-            if(Main.opts.time())
-                Timers.v().splitTimer.end();
-
-            if(!noTyping)
-            {
-	        if(aggregateAllLocals)
-		{
-		    Aggregator.v().transform(this, "jb.a");
-		    UnusedLocalEliminator.v().transform(this, "jb.ule");
-		}
-		else if (!noAggregating)
-		{
-		    Aggregator.v().transform(this, "jb.asv", "only-stack-locals");
-		    UnusedLocalEliminator.v().transform(this, "jb.ule");
-		}
-
-                if(Main.opts.time())
-                    Timers.v().assignTimer.start();
-
-                TypeAssigner.v().transform(this, "jb.tr");
-		
-                if(Main.opts.time())
-                    Timers.v().assignTimer.end();
-
-		if(typingFailed())
-		  throw new RuntimeException("type inference failed!");
-            }
-        }
-        
-        
-        if(aggregateAllLocals)
-        {
-            Aggregator.v().transform(this, "jb.a");
-            UnusedLocalEliminator.v().transform(this, "jb.ule");
-        }
-        else if(!noAggregating)
-        {
-            Aggregator.v().transform(this, "jb.asv", "only-stack-locals");
-            UnusedLocalEliminator.v().transform(this, "jb.ule");
-        }
-
-        if(!useOriginalNames)
-            LocalNameStandardizer.v().transform(this, "jb.lns");
-        else
-        {   
-            LocalPacker.v().transform(this, "jb.ulp", "unsplit-original-locals");
-            LocalNameStandardizer.v().transform(this, "jb.lns", "only-stack-locals");
-        }
-
-        if(!noCopyPropagating)
-        {
-            CopyPropagator.v().transform(this, "jb.cp", "only-stack-locals");
-            DeadAssignmentEliminator.v().transform(this, "jb.dae", "only-stack-locals");
-            UnusedLocalEliminator.v().transform(this, "jb.cp-ule");
-        }
-        
-        //printDebugTo(new PrintWriter(System.out, true));
-        
-        if(usePacking)
-        {
-            LocalPacker.v().transform(this, "jb.lp");
-        }
-
-        if(!noNopElimination)
-            NopEliminator.v().transform(this, "jb.ne");
-
-        if (!noUcElimination)
-            UnreachableCodeEliminator.v().transform(this, "jb.uce");
-                    
-        if(soot.Main.opts.time())
-            Timers.v().stmtCount += getUnits().size();
     }
 
     /** Make sure that the JimpleBody is well formed.  If not, throw
@@ -199,101 +90,6 @@ public class JimpleBody extends StmtBody implements Serializable
 	*/
     }
     
-    /** Temporary patch to get the typing algorithm working.
-      */      
-    private void patchForTyping()
-    {
-        int localCount = 0;
-        Local newObjectLocal = null;
-        
-        CopyPropagator.v().transform(this, "jb.pft.cp");
-        DeadAssignmentEliminator.v().transform(this, "jb.pft.dae");
-        UnusedLocalEliminator.v().transform(this, "jb.pft.ule");
-     
-        List unitList = new ArrayList(); 
-        unitList.addAll(getUnits());
-
-        Iterator it = unitList.iterator();
-        for (; it.hasNext(); )
-          {
-            Stmt s = (Stmt)it.next();
-                    
-            if(s instanceof AssignStmt)
-            {
-                AssignStmt as = (AssignStmt) s;
-                
-                if(as.getRightOp() instanceof NewExpr &&
-                   as.getLeftOp() instanceof Local)
-                {
-                    // Add new local
-                        Local tmpLocal = Jimple.v().newLocal("tmp" + localCount, 
-                            UnknownType.v());
-                        getLocals().add(tmpLocal);
-                            
-                        localCount++;
-                    
-                    // Change left hand side of new
-                        newObjectLocal = (Local) as.getLeftOp();
-                        as.setLeftOp(tmpLocal);
-                    
-                    // Find matching special invoke
-                    {
-                        Iterator matchIt = getUnits().iterator(getUnits().getSuccOf(s));
-                        boolean foundMatch = false;
-                               
-                        while(matchIt.hasNext())
-                        {   
-                            Stmt r = (Stmt) matchIt.next();
-                            
-                            if(r instanceof InvokeStmt)
-                            {
-                               InvokeExpr expr = (InvokeExpr) ((InvokeStmt) r).getInvokeExpr();
-                                
-                                if(expr instanceof SpecialInvokeExpr &&
-                                    ((SpecialInvokeExpr) expr).getBase() == newObjectLocal)
-                                {
-                                    // Set base of special invoke
-                                        ((SpecialInvokeExpr) expr).setBase(tmpLocal);
-                                    
-                                    // Add copy newObjectLocal = tmpLocal
-                                    getUnits().insertAfter(Jimple.v().newAssignStmt(newObjectLocal,
-                                        tmpLocal), r);
-                                 
-                                    foundMatch = true;
-                                    break;       
-                                }
-                            }
-                        }
-                        
-                        if(!foundMatch)
-                            throw new RuntimeException("unable to patch code"); 
-                    }
-                }
-            }
-        }
-    }
-    
-    private boolean typingFailed()
-    {
-        // Check to see if any locals are untyped
-        {
-            Iterator localIt = this.getLocals().iterator();
-
-            while(localIt.hasNext())
-            {
-                Local l = (Local) localIt.next();
-
-                  if(l.getType().equals(UnknownType.v()) ||
-                    l.getType().equals(ErroneousType.v()))
-                {
-		  return true;
-                }
-            }
-        }
-        
-        return false;
-    }
-
     /** Inserts usual statements for handling this & parameters into body. */
     public void insertIdentityStmts()
     {
