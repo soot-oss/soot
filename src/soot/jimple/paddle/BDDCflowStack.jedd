@@ -45,6 +45,7 @@ public class BDDCflowStack
             Scene.v().getUnitNumberer().add(s.pushStmt());
             Scene.v().getUnitNumberer().add(s.popStmt());
             this.shadows |= new {s=>shadow};
+            this.pushes |= new {s=>shadow, s.pushStmt()=>stmt};
         }
     }
 
@@ -97,6 +98,7 @@ public class BDDCflowStack
         return ret;
     }
 
+    /*
     private <stmt> mustCflow() {
         <stmt> ret = 0B;
         for( Iterator shIt = shadows.iterator(); shIt.hasNext(); ) {
@@ -111,8 +113,35 @@ public class BDDCflowStack
         }
         return ret;
     }
+    */
+
+    private <stmt> mustCflow() {
+        <stmt> shadowStmts = 0B;
+        for( Iterator shIt = shadows.iterator(); shIt.hasNext(); ) {
+            final Shadow sh = (Shadow) shIt.next();
+            if( sh.unconditional() ) {
+                shadowStmts |= within(sh);
+            }
+        }
+        <method> targets = 0B;
+        for( Iterator mIt = Scene.v().getEntryPoints().iterator(); mIt.hasNext(); ) {
+            final SootMethod m = (SootMethod) mIt.next();
+            targets |= new{m=>method};
+        }
+        <stmt> ret = 0B;
+        <stmt> oldRet;
+        do {
+            <stmt> targetStmts = stmtsIn(targets);
+            targetStmts -= shadowStmts;
+            targets = targetsOf(targetStmts);
+            oldRet = ret;
+            ret |= targetStmts;
+        } while( oldRet != ret );
+        return ret;
+    }
 
     private <shadow:V1> shadows = 0B;
+    private <shadow, stmt> pushes = 0B;
     private <stmt> mustCflow = 1B;
     private <shadow, stmt> mayCflow = 1B;
     private <stmt> isValids = 0B;
@@ -173,6 +202,7 @@ public class BDDCflowStack
         interestingIsValids -= computeNeverValid();
         if( mayCflow == 1B ) mayCflow = mayCflow();
         <shadow> necessaryShadows = mayCflow{stmt} <> interestingIsValids{stmt};
+        necessaryShadows -= mustCflow{stmt} <> pushes{stmt};
         return (shadows - necessaryShadows).iterator();
     }
 }

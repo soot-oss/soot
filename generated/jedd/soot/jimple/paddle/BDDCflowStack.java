@@ -27,6 +27,9 @@ public class BDDCflowStack {
             this.shadows.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { s },
                                                                 new jedd.Attribute[] { shadow.v() },
                                                                 new jedd.PhysicalDomain[] { V1.v() }));
+            this.pushes.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { s, s.pushStmt() },
+                                                               new jedd.Attribute[] { shadow.v(), stmt.v() },
+                                                               new jedd.PhysicalDomain[] { V1.v(), ST.v() }));
         }
     }
     
@@ -42,7 +45,7 @@ public class BDDCflowStack {
                                               ("<soot.jimple.paddle.bdddomains.stmt:soot.jimple.paddle.bdddo" +
                                                "mains.ST> ret = jedd.internal.Jedd.v().falseBDD(); at /tmp/o" +
                                                "lhotak/soot-trunk/src/soot/jimple/paddle/BDDCflowStack.jedd:" +
-                                               "57,15-18"),
+                                               "58,15-18"),
                                               jedd.internal.Jedd.v().falseBDD());
         boolean inShadow = false;
         for (Iterator sIt = sh.method().getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
@@ -59,7 +62,7 @@ public class BDDCflowStack {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
                                                    new jedd.PhysicalDomain[] { ST.v() },
                                                    ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
-                                                    "e/BDDCflowStack.jedd:68,8-14"),
+                                                    "e/BDDCflowStack.jedd:69,8-14"),
                                                    ret);
     }
     
@@ -70,7 +73,7 @@ public class BDDCflowStack {
                                                     ".read(jedd.internal.Jedd.v().project(cflow.callGraph(), new " +
                                                     "jedd.PhysicalDomain[...])), calls, new jedd.PhysicalDomain[." +
                                                     "..]); at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDDC" +
-                                                    "flowStack.jedd:72,8-14"),
+                                                    "flowStack.jedd:73,8-14"),
                                                    jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(cflow.callGraph(),
                                                                                                                                              new jedd.PhysicalDomain[] { MS.v() })),
                                                                                   calls,
@@ -84,7 +87,7 @@ public class BDDCflowStack {
                                                     ".read(jedd.internal.Jedd.v().project(cflow.callGraph(), new " +
                                                     "jedd.PhysicalDomain[...])), calls, new jedd.PhysicalDomain[." +
                                                     "..]); at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDDC" +
-                                                    "flowStack.jedd:76,8-14"),
+                                                    "flowStack.jedd:77,8-14"),
                                                    jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(cflow.callGraph(),
                                                                                                                                              new jedd.PhysicalDomain[] { MS.v() })),
                                                                                   calls,
@@ -97,7 +100,7 @@ public class BDDCflowStack {
                                                    ("return jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v()" +
                                                     ".read(cflow.stmtMethod()), methods, new jedd.PhysicalDomain[" +
                                                     "...]); at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDD" +
-                                                    "CflowStack.jedd:80,8-14"),
+                                                    "CflowStack.jedd:81,8-14"),
                                                    jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(cflow.stmtMethod()),
                                                                                   methods,
                                                                                   new jedd.PhysicalDomain[] { MT.v() }));
@@ -109,7 +112,7 @@ public class BDDCflowStack {
                                                    ("return jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v()" +
                                                     ".read(cflow.stmtMethod()), methods, new jedd.PhysicalDomain[" +
                                                     "...]); at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDD" +
-                                                    "CflowStack.jedd:84,8-14"),
+                                                    "CflowStack.jedd:85,8-14"),
                                                    jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(cflow.stmtMethod()),
                                                                                   methods,
                                                                                   new jedd.PhysicalDomain[] { MT.v() }));
@@ -123,13 +126,13 @@ public class BDDCflowStack {
                                                "domains.V1, soot.jimple.paddle.bdddomains.stmt:soot.jimple.p" +
                                                "addle.bdddomains.ST> ret = jedd.internal.Jedd.v().falseBDD()" +
                                                "; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDDCflow" +
-                                               "Stack.jedd:88,23-26"),
+                                               "Stack.jedd:89,23-26"),
                                               jedd.internal.Jedd.v().falseBDD());
         for (Iterator shIt =
                new jedd.internal.RelationContainer(new jedd.Attribute[] { shadow.v() },
                                                    new jedd.PhysicalDomain[] { V1.v() },
                                                    ("shadows.iterator() at /tmp/olhotak/soot-trunk/src/soot/jimpl" +
-                                                    "e/paddle/BDDCflowStack.jedd:89,29-36"),
+                                                    "e/paddle/BDDCflowStack.jedd:90,29-36"),
                                                    shadows).iterator();
              shIt.hasNext();
              ) {
@@ -148,82 +151,101 @@ public class BDDCflowStack {
                                                    "domains.V1, soot.jimple.paddle.bdddomains.method:soot.jimple" +
                                                    ".paddle.bdddomains.MT> targets = targetsOfShadow(new jedd.in" +
                                                    "ternal.RelationContainer(...)); at /tmp/olhotak/soot-trunk/s" +
-                                                   "rc/soot/jimple/paddle/BDDCflowStack.jedd:94,29-36"),
+                                                   "rc/soot/jimple/paddle/BDDCflowStack.jedd:95,29-36"),
                                                   targetsOfShadow(new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), shadow.v() },
                                                                                                       new jedd.PhysicalDomain[] { ST.v(), V1.v() },
                                                                                                       ("targetsOfShadow(ret) at /tmp/olhotak/soot-trunk/src/soot/jim" +
-                                                                                                       "ple/paddle/BDDCflowStack.jedd:94,39-54"),
+                                                                                                       "ple/paddle/BDDCflowStack.jedd:95,39-54"),
                                                                                                       ret)));
             if (jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(ret),
                                               ret.eqUnion(stmtsInShadow(new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), shadow.v() },
                                                                                                             new jedd.PhysicalDomain[] { MT.v(), V1.v() },
                                                                                                             ("stmtsInShadow(targets) at /tmp/olhotak/soot-trunk/src/soot/j" +
-                                                                                                             "imple/paddle/BDDCflowStack.jedd:95,31-44"),
+                                                                                                             "imple/paddle/BDDCflowStack.jedd:96,31-44"),
                                                                                                             targets)))))
                 break;
         }
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), shadow.v() },
                                                    new jedd.PhysicalDomain[] { ST.v(), V1.v() },
                                                    ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
-                                                    "e/BDDCflowStack.jedd:97,8-14"),
+                                                    "e/BDDCflowStack.jedd:98,8-14"),
                                                    ret);
     }
     
     private jedd.internal.RelationContainer mustCflow() {
+        final jedd.internal.RelationContainer shadowStmts =
+          new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
+                                              new jedd.PhysicalDomain[] { ST.v() },
+                                              ("<soot.jimple.paddle.bdddomains.stmt:soot.jimple.paddle.bdddo" +
+                                               "mains.ST> shadowStmts = jedd.internal.Jedd.v().falseBDD(); a" +
+                                               "t /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDDCflowSta" +
+                                               "ck.jedd:119,15-26"),
+                                              jedd.internal.Jedd.v().falseBDD());
+        for (Iterator shIt =
+               new jedd.internal.RelationContainer(new jedd.Attribute[] { shadow.v() },
+                                                   new jedd.PhysicalDomain[] { V1.v() },
+                                                   ("shadows.iterator() at /tmp/olhotak/soot-trunk/src/soot/jimpl" +
+                                                    "e/paddle/BDDCflowStack.jedd:120,29-36"),
+                                                   shadows).iterator();
+             shIt.hasNext();
+             ) {
+            final Shadow sh = (Shadow) shIt.next();
+            if (sh.unconditional()) { shadowStmts.eqUnion(within(sh)); }
+        }
+        final jedd.internal.RelationContainer targets =
+          new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v() },
+                                              new jedd.PhysicalDomain[] { MT.v() },
+                                              ("<soot.jimple.paddle.bdddomains.method:soot.jimple.paddle.bdd" +
+                                               "domains.MT> targets = jedd.internal.Jedd.v().falseBDD(); at " +
+                                               "/tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDDCflowStack" +
+                                               ".jedd:126,17-24"),
+                                              jedd.internal.Jedd.v().falseBDD());
+        for (Iterator mIt = Scene.v().getEntryPoints().iterator(); mIt.hasNext(); ) {
+            final SootMethod m = (SootMethod) mIt.next();
+            targets.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { m },
+                                                           new jedd.Attribute[] { method.v() },
+                                                           new jedd.PhysicalDomain[] { MT.v() }));
+        }
         final jedd.internal.RelationContainer ret =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
                                               new jedd.PhysicalDomain[] { ST.v() },
                                               ("<soot.jimple.paddle.bdddomains.stmt:soot.jimple.paddle.bdddo" +
                                                "mains.ST> ret = jedd.internal.Jedd.v().falseBDD(); at /tmp/o" +
                                                "lhotak/soot-trunk/src/soot/jimple/paddle/BDDCflowStack.jedd:" +
-                                               "101,15-18"),
+                                               "131,15-18"),
                                               jedd.internal.Jedd.v().falseBDD());
-        for (Iterator shIt =
-               new jedd.internal.RelationContainer(new jedd.Attribute[] { shadow.v() },
-                                                   new jedd.PhysicalDomain[] { V1.v() },
-                                                   ("shadows.iterator() at /tmp/olhotak/soot-trunk/src/soot/jimpl" +
-                                                    "e/paddle/BDDCflowStack.jedd:102,29-36"),
-                                                   shadows).iterator();
-             shIt.hasNext();
-             ) {
-            final Shadow sh = (Shadow) shIt.next();
-            if (sh.unconditional()) { ret.eqUnion(within(sh)); }
-        }
-        while (true) {
-            final jedd.internal.RelationContainer methods =
-              new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v() },
-                                                  new jedd.PhysicalDomain[] { MT.v() },
-                                                  ("<soot.jimple.paddle.bdddomains.method:soot.jimple.paddle.bdd" +
-                                                   "domains.MT> methods = jedd.internal.Jedd.v().minus(jedd.inte" +
-                                                   "rnal.Jedd.v().read(targetsOf(new jedd.internal.RelationConta" +
-                                                   "iner(...))), targetsOf(new jedd.internal.RelationContainer(." +
-                                                   "..))); at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDD" +
-                                                   "CflowStack.jedd:109,21-28"),
-                                                  jedd.internal.Jedd.v().minus(jedd.internal.Jedd.v().read(targetsOf(new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
-                                                                                                                                                         new jedd.PhysicalDomain[] { ST.v() },
-                                                                                                                                                         ("targetsOf(ret) at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
-                                                                                                                                                          "ddle/BDDCflowStack.jedd:109,31-40"),
-                                                                                                                                                         ret))),
-                                                                               targetsOf(new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
-                                                                                                                             new jedd.PhysicalDomain[] { ST.v() },
-                                                                                                                             ("targetsOf(jedd.internal.Jedd.v().minus(jedd.internal.Jedd.v(" +
-                                                                                                                              ").read(jedd.internal.Jedd.v().trueBDD()), ret)) at /tmp/olho" +
-                                                                                                                              "tak/soot-trunk/src/soot/jimple/paddle/BDDCflowStack.jedd:109" +
-                                                                                                                              ",48-57"),
-                                                                                                                             jedd.internal.Jedd.v().minus(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().trueBDD()),
-                                                                                                                                                          ret)))));
-            if (jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(ret),
-                                              ret.eqUnion(stmtsIn(new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v() },
-                                                                                                      new jedd.PhysicalDomain[] { MT.v() },
-                                                                                                      ("stmtsIn(methods) at /tmp/olhotak/soot-trunk/src/soot/jimple/" +
-                                                                                                       "paddle/BDDCflowStack.jedd:110,31-38"),
-                                                                                                      methods)))))
-                break;
-        }
+        final jedd.internal.RelationContainer oldRet =
+          new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
+                                              new jedd.PhysicalDomain[] { ST.v() },
+                                              ("<soot.jimple.paddle.bdddomains.stmt:soot.jimple.paddle.bdddo" +
+                                               "mains.ST> oldRet; at /tmp/olhotak/soot-trunk/src/soot/jimple" +
+                                               "/paddle/BDDCflowStack.jedd:132,15-21"));
+        do  {
+            final jedd.internal.RelationContainer targetStmts =
+              new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
+                                                  new jedd.PhysicalDomain[] { ST.v() },
+                                                  ("<soot.jimple.paddle.bdddomains.stmt:soot.jimple.paddle.bdddo" +
+                                                   "mains.ST> targetStmts = stmtsIn(new jedd.internal.RelationCo" +
+                                                   "ntainer(...)); at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
+                                                   "ddle/BDDCflowStack.jedd:134,19-30"),
+                                                  stmtsIn(new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v() },
+                                                                                              new jedd.PhysicalDomain[] { MT.v() },
+                                                                                              ("stmtsIn(targets) at /tmp/olhotak/soot-trunk/src/soot/jimple/" +
+                                                                                               "paddle/BDDCflowStack.jedd:134,33-40"),
+                                                                                              targets)));
+            targetStmts.eqMinus(shadowStmts);
+            targets.eq(targetsOf(new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
+                                                                     new jedd.PhysicalDomain[] { ST.v() },
+                                                                     ("targetsOf(targetStmts) at /tmp/olhotak/soot-trunk/src/soot/j" +
+                                                                      "imple/paddle/BDDCflowStack.jedd:136,22-31"),
+                                                                     targetStmts)));
+            oldRet.eq(ret);
+            ret.eqUnion(targetStmts);
+        }while(!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(oldRet), ret)); 
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
                                                    new jedd.PhysicalDomain[] { ST.v() },
                                                    ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
-                                                    "e/BDDCflowStack.jedd:112,8-14"),
+                                                    "e/BDDCflowStack.jedd:140,8-14"),
                                                    ret);
     }
     
@@ -233,7 +255,16 @@ public class BDDCflowStack {
                                           ("private <soot.jimple.paddle.bdddomains.shadow:soot.jimple.pa" +
                                            "ddle.bdddomains.V1> shadows = jedd.internal.Jedd.v().falseBD" +
                                            "D() at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDDCfl" +
-                                           "owStack.jedd:115,12-23"),
+                                           "owStack.jedd:143,12-23"),
+                                          jedd.internal.Jedd.v().falseBDD());
+    
+    private final jedd.internal.RelationContainer pushes =
+      new jedd.internal.RelationContainer(new jedd.Attribute[] { shadow.v(), stmt.v() },
+                                          new jedd.PhysicalDomain[] { V1.v(), ST.v() },
+                                          ("private <soot.jimple.paddle.bdddomains.shadow, soot.jimple.p" +
+                                           "addle.bdddomains.stmt> pushes = jedd.internal.Jedd.v().false" +
+                                           "BDD() at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDDC" +
+                                           "flowStack.jedd:144,12-26"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer mustCflow =
@@ -241,7 +272,7 @@ public class BDDCflowStack {
                                           new jedd.PhysicalDomain[] { ST.v() },
                                           ("private <soot.jimple.paddle.bdddomains.stmt> mustCflow = jed" +
                                            "d.internal.Jedd.v().trueBDD() at /tmp/olhotak/soot-trunk/src" +
-                                           "/soot/jimple/paddle/BDDCflowStack.jedd:116,12-18"),
+                                           "/soot/jimple/paddle/BDDCflowStack.jedd:145,12-18"),
                                           jedd.internal.Jedd.v().trueBDD());
     
     private final jedd.internal.RelationContainer mayCflow =
@@ -250,7 +281,7 @@ public class BDDCflowStack {
                                           ("private <soot.jimple.paddle.bdddomains.shadow, soot.jimple.p" +
                                            "addle.bdddomains.stmt> mayCflow = jedd.internal.Jedd.v().tru" +
                                            "eBDD() at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDD" +
-                                           "CflowStack.jedd:117,12-26"),
+                                           "CflowStack.jedd:146,12-26"),
                                           jedd.internal.Jedd.v().trueBDD());
     
     private final jedd.internal.RelationContainer isValids =
@@ -258,7 +289,7 @@ public class BDDCflowStack {
                                           new jedd.PhysicalDomain[] { ST.v() },
                                           ("private <soot.jimple.paddle.bdddomains.stmt> isValids = jedd" +
                                            ".internal.Jedd.v().falseBDD() at /tmp/olhotak/soot-trunk/src" +
-                                           "/soot/jimple/paddle/BDDCflowStack.jedd:118,12-18"),
+                                           "/soot/jimple/paddle/BDDCflowStack.jedd:147,12-18"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer neverValid =
@@ -266,7 +297,7 @@ public class BDDCflowStack {
                                           new jedd.PhysicalDomain[] { ST.v() },
                                           ("private <soot.jimple.paddle.bdddomains.stmt> neverValid = je" +
                                            "dd.internal.Jedd.v().falseBDD() at /tmp/olhotak/soot-trunk/s" +
-                                           "rc/soot/jimple/paddle/BDDCflowStack.jedd:119,12-18"),
+                                           "rc/soot/jimple/paddle/BDDCflowStack.jedd:148,12-18"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer alwaysValid =
@@ -274,7 +305,7 @@ public class BDDCflowStack {
                                           new jedd.PhysicalDomain[] { ST.v() },
                                           ("private <soot.jimple.paddle.bdddomains.stmt> alwaysValid = j" +
                                            "edd.internal.Jedd.v().falseBDD() at /tmp/olhotak/soot-trunk/" +
-                                           "src/soot/jimple/paddle/BDDCflowStack.jedd:120,12-18"),
+                                           "src/soot/jimple/paddle/BDDCflowStack.jedd:149,12-18"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     public boolean neverValid(Stmt s) {
@@ -305,7 +336,7 @@ public class BDDCflowStack {
             return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
                                                        new jedd.PhysicalDomain[] { ST.v() },
                                                        ("return neverValid; at /tmp/olhotak/soot-trunk/src/soot/jimpl" +
-                                                        "e/paddle/BDDCflowStack.jedd:139,29-35"),
+                                                        "e/paddle/BDDCflowStack.jedd:168,29-35"),
                                                        neverValid);
         if (jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(mayCflow), jedd.internal.Jedd.v().trueBDD()))
             mayCflow.eq(mayCflow());
@@ -317,7 +348,7 @@ public class BDDCflowStack {
                                                "rnal.Jedd.v().read(jedd.internal.Jedd.v().project(mayCflow, " +
                                                "new jedd.PhysicalDomain[...])), isValids, new jedd.PhysicalD" +
                                                "omain[...]); at /tmp/olhotak/soot-trunk/src/soot/jimple/padd" +
-                                               "le/BDDCflowStack.jedd:141,15-25"),
+                                               "le/BDDCflowStack.jedd:170,15-25"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(mayCflow,
                                                                                                                                      new jedd.PhysicalDomain[] { V1.v() })),
                                                                           isValids,
@@ -326,7 +357,7 @@ public class BDDCflowStack {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
                                                    new jedd.PhysicalDomain[] { ST.v() },
                                                    ("return neverValid; at /tmp/olhotak/soot-trunk/src/soot/jimpl" +
-                                                    "e/paddle/BDDCflowStack.jedd:143,8-14"),
+                                                    "e/paddle/BDDCflowStack.jedd:172,8-14"),
                                                    neverValid);
     }
     
@@ -334,7 +365,7 @@ public class BDDCflowStack {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
                                                    new jedd.PhysicalDomain[] { ST.v() },
                                                    ("computeNeverValid().iterator() at /tmp/olhotak/soot-trunk/sr" +
-                                                    "c/soot/jimple/paddle/BDDCflowStack.jedd:149,35-43"),
+                                                    "c/soot/jimple/paddle/BDDCflowStack.jedd:178,35-43"),
                                                    computeNeverValid()).iterator();
     }
     
@@ -347,7 +378,7 @@ public class BDDCflowStack {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
                                                    new jedd.PhysicalDomain[] { ST.v() },
                                                    ("return alwaysValid; at /tmp/olhotak/soot-trunk/src/soot/jimp" +
-                                                    "le/paddle/BDDCflowStack.jedd:155,8-14"),
+                                                    "le/paddle/BDDCflowStack.jedd:184,8-14"),
                                                    alwaysValid);
     }
     
@@ -355,7 +386,7 @@ public class BDDCflowStack {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v() },
                                                    new jedd.PhysicalDomain[] { ST.v() },
                                                    ("computeAlwaysValid().iterator() at /tmp/olhotak/soot-trunk/s" +
-                                                    "rc/soot/jimple/paddle/BDDCflowStack.jedd:162,36-44"),
+                                                    "rc/soot/jimple/paddle/BDDCflowStack.jedd:191,36-44"),
                                                    computeAlwaysValid()).iterator();
     }
     
@@ -365,7 +396,7 @@ public class BDDCflowStack {
                                               new jedd.PhysicalDomain[] { ST.v() },
                                               ("<soot.jimple.paddle.bdddomains.stmt:soot.jimple.paddle.bdddo" +
                                                "mains.ST> interestingIsValids = isValids; at /tmp/olhotak/so" +
-                                               "ot-trunk/src/soot/jimple/paddle/BDDCflowStack.jedd:171,15-34"),
+                                               "ot-trunk/src/soot/jimple/paddle/BDDCflowStack.jedd:200,15-34"),
                                               isValids);
         interestingIsValids.eqMinus(computeAlwaysValid());
         interestingIsValids.eqMinus(computeNeverValid());
@@ -378,15 +409,18 @@ public class BDDCflowStack {
                                                "domains.V1> necessaryShadows = jedd.internal.Jedd.v().compos" +
                                                "e(jedd.internal.Jedd.v().read(mayCflow), interestingIsValids" +
                                                ", new jedd.PhysicalDomain[...]); at /tmp/olhotak/soot-trunk/" +
-                                               "src/soot/jimple/paddle/BDDCflowStack.jedd:175,17-33"),
+                                               "src/soot/jimple/paddle/BDDCflowStack.jedd:204,17-33"),
                                               jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(mayCflow),
                                                                              interestingIsValids,
                                                                              new jedd.PhysicalDomain[] { ST.v() }));
+        necessaryShadows.eqMinus(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(mustCflow),
+                                                                pushes,
+                                                                new jedd.PhysicalDomain[] { ST.v() }));
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { shadow.v() },
                                                    new jedd.PhysicalDomain[] { V1.v() },
                                                    ("jedd.internal.Jedd.v().minus(jedd.internal.Jedd.v().read(sha" +
                                                     "dows), necessaryShadows).iterator() at /tmp/olhotak/soot-tru" +
-                                                    "nk/src/soot/jimple/paddle/BDDCflowStack.jedd:176,44-52"),
+                                                    "nk/src/soot/jimple/paddle/BDDCflowStack.jedd:206,44-52"),
                                                    jedd.internal.Jedd.v().minus(jedd.internal.Jedd.v().read(shadows),
                                                                                 necessaryShadows)).iterator();
     }

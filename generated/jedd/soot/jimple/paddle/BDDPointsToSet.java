@@ -8,7 +8,7 @@ import jedd.*;
 public class BDDPointsToSet extends PointsToSetReadOnly {
     private final jedd.internal.RelationContainer bdd =
       new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v() },
-                                          new PhysicalDomain[] { C1.v(), H1.v() },
+                                          new PhysicalDomain[] { C2.v(), H1.v() },
                                           ("private final <soot.jimple.paddle.bdddomains.objc, soot.jimp" +
                                            "le.paddle.bdddomains.obj:soot.jimple.paddle.bdddomains.H1> b" +
                                            "dd at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPoin" +
@@ -33,7 +33,7 @@ public class BDDPointsToSet extends PointsToSetReadOnly {
     public boolean forall(P2SetVisitor v) {
         Iterator it =
           new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v() },
-                                              new PhysicalDomain[] { C1.v(), H1.v() },
+                                              new PhysicalDomain[] { C2.v(), H1.v() },
                                               ("bdd.iterator(new jedd.Attribute[...]) at /tmp/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/BDDPointsToSet.jedd:44,22-25"),
                                               bdd).iterator(new Attribute[] { objc.v(), obj.v() });

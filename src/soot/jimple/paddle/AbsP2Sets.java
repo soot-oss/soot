@@ -20,6 +20,7 @@
 package soot.jimple.paddle;
 import soot.*;
 import java.util.*;
+import soot.jimple.paddle.queue.*;
 
 /** Manages the points-to sets for nodes.
  * @author Ondrej Lhotak
@@ -54,4 +55,5 @@ public abstract class AbsP2Sets
     public PointsToSetInternal make( ContextAllocDotField cadf ) {
         return make(cadf.ctxt(), cadf.adf());
     }
+    public abstract Rvarc_var_objc_obj getReader( VarNode cvn );
 }

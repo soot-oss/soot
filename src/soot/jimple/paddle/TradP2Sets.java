@@ -18,7 +18,9 @@
  */
 
 package soot.jimple.paddle;
+import soot.jimple.paddle.queue.*;
 import soot.*;
+import java.util.*;
 
 /** Manages the points-to sets for nodes.
  * @author Ondrej Lhotak
@@ -38,6 +40,20 @@ public class TradP2Sets extends AbsP2Sets
     }
     public PointsToSetInternal make( ContextAllocDotField cadf ) {
         return adfToSet.make(cadf);
+    }
+    public Rvarc_var_objc_obj getReader( final VarNode var ) {
+        final Qvarc_var_objc_obj retq = new Qvarc_var_objc_objTrad("getReader");
+        Rvarc_var_objc_obj ret = retq.reader("getReader");
+        for( Iterator cvnIt = var.contexts(); cvnIt.hasNext(); ) {
+            final ContextVarNode cvn = (ContextVarNode) cvnIt.next();
+            PointsToSetReadOnly ptset = get(cvn);
+            ptset.forall( new P2SetVisitor() {
+            public final void visit( ContextAllocNode n ) {
+                ContextAllocNode can = (ContextAllocNode) n;
+                retq.add( cvn.ctxt(), var, can.ctxt(), can.obj() );
+            }} );
+        }
+        return ret;
     }
 }
 
