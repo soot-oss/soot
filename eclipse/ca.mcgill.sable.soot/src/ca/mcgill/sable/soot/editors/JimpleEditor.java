@@ -28,7 +28,7 @@ public class JimpleEditor extends TextEditor {
 		
 	}
 	
-	/*public Object getAdapter(Class key) {
+	public Object getAdapter(Class key) {
 		if (key.equals(IContentOutlinePage.class)) {
 			IEditorInput input = getEditorInput();
 			if (input instanceof IFileEditorInput) {
@@ -37,7 +37,7 @@ public class JimpleEditor extends TextEditor {
 			}
 		}
 		return super.getAdapter(key);
-	}*/
+	}
 		
 	public void dispose() {
 		colorManager.dispose();

@@ -7,14 +7,14 @@
 package ca.mcgill.sable.soot.editors;
 
 import java.io.*;
-import java.util.HashMap;
+//import java.util.HashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
+//import org.eclipse.ui.model.WorkbenchContentProvider;
+//import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.contentoutline.*;
 
 import ca.mcgill.sable.soot.editors.parser.JimpleFile;
@@ -38,12 +38,13 @@ public class JimpleContentOutlinePage extends ContentOutlinePage {
 		super.createControl(parent);
 		
 		TreeViewer viewer = getTreeViewer();
-		viewer.setContentProvider(new WorkbenchContentProvider());
-		viewer.setLabelProvider(new WorkbenchLabelProvider());
+		viewer.setContentProvider(new JimpleOutlineContentProvider());
+		viewer.setLabelProvider(new JimpleOutlineLabelProvider());
 		viewer.setInput(getContentOutline());
+		viewer.expandAll();
 	}
 	
-	private HashMap getContentOutline(){
+	private JimpleOutlineObject getContentOutline(){
 	
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(getInput().getContents()));

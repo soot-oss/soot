@@ -186,6 +186,8 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	
 	public void runFinish() {
 		getFileHandler().refreshFolder();
+		//for updating markers
+		SootPlugin.getDefault().getManager().updateSootRanFlag();
 		//getFileHandler().handleFilesChanged();
 		/*SootAttributesHandler temp = new SootAttributesHandler();
 		SootPlugin.getDefault().setSootAttributesHandler(temp); 	

@@ -349,7 +349,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		
 		tree.addSelectionChangedListener(this);
 		
-		tree.expandAll();
+		//tree.expandAll();
 		tree.getControl().addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				handleKeyPressed(e);

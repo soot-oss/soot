@@ -37,21 +37,21 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 	}
 	
 	public void setEditor(IEditorPart ed) {
-		System.out.println(ed.getClass().toString());
+		//System.out.println(ed.getClass().toString());
 		super.setEditor(ed);
 		if (ed instanceof AbstractTextEditor) {
 			IJavaElement jElem = getJavaElement((AbstractTextEditor)ed);
 			setSelectedProj(jElem.getResource().getProject().getName());
 			setRec(jElem.getResource());
-			System.out.println(jElem.getElementName()+" "+jElem.getElementType());
+			//System.out.println(jElem.getElementName()+" "+jElem.getElementType());
 			if (jElem.getElementType() == IJavaElement.COMPILATION_UNIT) {
 			
 				ICompilationUnit cu = (ICompilationUnit)jElem;//javaProj.findElement(rec.getLocation());
-				System.out.println("cu name: "+cu.getElementName());
+				//System.out.println("cu name: "+cu.getElementName());
 				try {
 					IPackageDeclaration [] pfs = cu.getPackageDeclarations();
 					if (pfs.length == 0) {
-						System.out.println("no package decls");
+						//System.out.println("no package decls");
 						setPackFileName(fileToNoExt(cu.getElementName()));
 					}
 					else {
@@ -69,7 +69,7 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 			}
 		
 		
-			SootAttributeFilesReader safr = new SootAttributeFilesReader();
+			/*SootAttributeFilesReader safr = new SootAttributeFilesReader();
 			AttributeDomProcessor adp = safr.readFile(createAttrFileName());
 			if (adp != null) {
 				//System.out.println(adp.getAttributes().size());
@@ -79,10 +79,24 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 				//getAttrsHandler().printAttrs();
 				//addSootAttributeMarkers();
 				
-			}
+			}*/
+			computeAttributes();
 			addSootAttributeMarkers();
 		}
 		
+	}
+	
+	private void computeAttributes() {
+		SootAttributeFilesReader safr = new SootAttributeFilesReader();
+		AttributeDomProcessor adp = safr.readFile(createAttrFileName());
+		if (adp != null) {
+			//System.out.println(adp.getAttributes().size());
+			setAttrsHandler(new SootAttributesHandler());
+			getAttrsHandler().setAttrList(adp.getAttributes());
+			//System.out.println(adp.getAttributes().size());
+			//getAttrsHandler().printAttrs();
+			//addSootAttributeMarkers();
+		}
 	}
 	private String createAttrFileName() {
 		StringBuffer sb = new StringBuffer();
@@ -90,13 +104,13 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 		sb.append("/sootOutput/attributes/");
 		sb.append(getPackFileName());
 		sb.append(".xml");
-		//System.out.println(sb.toString());
+		//System.out.println("Created attribute file name: "+sb.toString());
 		return sb.toString();
 	}
 	
 	private void addSootAttributeMarkers() {
 		
-		removeOldMarkers();
+		//removeOldMarkers();
 		
 		if (getAttrsHandler() == null)return;
 		
@@ -107,8 +121,8 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 			markerAttr.put(IMarker.MESSAGE, "Soot Attribute: "+sa.getText());
 			markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJava_ln()));
 			try {
-				//MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mgill.sable.soot.sootattributemarker");
-				MarkerUtilities.createMarker(getRec(), markerAttr, "org.eclipse.core.resources.bookmark");		
+				MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
+				//MarkerUtilities.createMarker(getRec(), markerAttr, "org.eclipse.core.resources.bookmark");		
 			}
 			catch(CoreException e) {
 				System.out.println(e.getMessage());
@@ -123,6 +137,33 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 	}
 	
 	protected String getAttributes() {
+		
+		if (SootPlugin.getDefault().getManager().isFileMarkersUpdate((IFile)getRec())){
+			SootPlugin.getDefault().getManager().setToFalseUpdate((IFile)getRec());
+			try {
+				//System.out.println("need to remove markers from: "+getRec().getFullPath().toOSString());
+				getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_ONE);
+				SootPlugin.getDefault().getManager().setToFalseRemove((IFile)getRec());
+			} 
+			catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//System.out.println("need to update markers from: "+getRec().getFullPath().toOSString());
+			computeAttributes();
+			addSootAttributeMarkers();
+		}
+		else if (SootPlugin.getDefault().getManager().isFileMarkersRemove((IFile)getRec())) {
+			SootPlugin.getDefault().getManager().setToFalseRemove((IFile)getRec());
+			try {
+				//System.out.println("need to remove markers from: "+getRec().getFullPath().toOSString());
+				getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_ONE);
+			}
+			catch(CoreException e){
+			}
+			return null;
+		}
+		
 		if (getAttrsHandler() != null) {
 		  	return getAttrsHandler().getJavaAttribute(getLineNum());
 		}

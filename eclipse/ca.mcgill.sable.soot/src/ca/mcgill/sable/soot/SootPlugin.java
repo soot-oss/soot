@@ -7,6 +7,7 @@ import java.util.*;
 
 //import ca.mcgill.sable.soot.attributes.SootAttributeFilesReader;
 import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
+import ca.mcgill.sable.soot.attributes.SootResourceManager;
 import ca.mcgill.sable.soot.launching.*;
 
 /**
@@ -85,12 +86,21 @@ public class SootPlugin extends AbstractUIPlugin {
 		//setSootAttributesHandler(new SootAttributesHandler());
 		//SootAttributeFilesReader safr = new SootAttributeFilesReader();
 		//safr.readFiles();
+		
 		try {
 			resourceBundle= ResourceBundle.getBundle("ca.mcgill.sable.soot.SootPluginResources");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
+		
+		// maybe should go in startUp method
+		// resource manager
+		setManager(new SootResourceManager());
+		getManager().initialize();
+		
 	}
+	
+	private SootResourceManager manager;
 
 	/**
 	 * Returns the shared instance.
@@ -159,6 +169,20 @@ public class SootPlugin extends AbstractUIPlugin {
 	 */
 	public void setSootAttributesHandler(SootAttributesHandler sootAttributesHandler) {
 		this.sootAttributesHandler = sootAttributesHandler;
+	}
+
+	/**
+	 * @return
+	 */
+	public SootResourceManager getManager() {
+		return manager;
+	}
+
+	/**
+	 * @param manager
+	 */
+	public void setManager(SootResourceManager manager) {
+		this.manager = manager;
 	}
 
 }

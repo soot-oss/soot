@@ -53,14 +53,14 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 			IResource rec = getResource((AbstractTextEditor)ed);
 			setRec(rec);
 			setSelectedProj(rec.getProject().getName());
-			System.out.println(rec.getProject().getFullPath().toOSString());
+			//System.out.println(rec.getProject().getFullPath().toOSString());
 			setFileName(rec.getFullPath().toOSString());
 			setPackFileName(fileToNoExt(rec.getName()));
-			System.out.println(getPackFileName());
-			System.out.println(getLineNum());
+			//System.out.println(getPackFileName());
+			//System.out.println(getLineNum());
 			
 			//createAttrFileName();
-			SootAttributeFilesReader safr = new SootAttributeFilesReader();
+			/*SootAttributeFilesReader safr = new SootAttributeFilesReader();
 			AttributeDomProcessor adp = safr.readFile(createAttrFileName());
 			if (adp != null) {
 				//System.out.println(adp.getAttributes().size());
@@ -69,10 +69,24 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 				//System.out.println(adp.getAttributes().size());
 				//getAttrsHandler().printAttrs();
 				//addSootAttributeMarkers();
-			}
+			}*/
+			computeAttributes();
 			addSootAttributeMarkers();
 		}
 		
+	}
+	
+	private void computeAttributes() {
+		SootAttributeFilesReader safr = new SootAttributeFilesReader();
+		AttributeDomProcessor adp = safr.readFile(createAttrFileName());
+		if (adp != null) {
+			//System.out.println(adp.getAttributes().size());
+			setAttrsHandler(new SootAttributesHandler());
+			getAttrsHandler().setAttrList(adp.getAttributes());
+			//System.out.println(adp.getAttributes().size());
+			//getAttrsHandler().printAttrs();
+			//addSootAttributeMarkers();
+		}
 	}
 	
 	private String createAttrFileName() {
@@ -81,13 +95,13 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 		sb.append("/sootOutput/attributes/");
 		sb.append(getPackFileName());
 		sb.append(".xml");
-		System.out.println(sb.toString());
+		//System.out.println("Created attribute file name: "+sb.toString());
 		return sb.toString();
 	}
 	
 	private void addSootAttributeMarkers() {
 		
-		removeOldMarkers();
+		//removeOldMarkers();
 		
 		if (getAttrsHandler() == null)return;
 		
@@ -98,20 +112,57 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 			markerAttr.put(IMarker.MESSAGE, "Soot Attribute: "+sa.getText());
 			markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJimple_ln()));
 			try {
-				//MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mgill.sable.soot.sootattributemarker");
-				System.out.println("made attributes marker");
-				MarkerUtilities.createMarker(getRec(), markerAttr, "org.eclipse.core.resources.bookmark");		
+				MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
+				//
+				//System.out.println("made attributes marker");
+				//MarkerUtilities.createMarker(getRec(), markerAttr, "org.eclipse.core.resources.bookmark");		
 			}
 			catch(CoreException e) {
 				System.out.println(e.getMessage());
 			}
 		}
+		/*try {
+			IMarker [] markers = getRec().findMarkers("ca.mcgill.sable.soot.sootattributemarker", false, IResource.DEPTH_INFINITE);
+			//System.out.println(markers.length+" sootattributemarkers were created");
+			//markers = getRec().findMarkers("org.eclipse.core.resources.marker", true, IResource.DEPTH_INFINITE);
+			//System.out.println(markers.length+" markers were created");
+			
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 		
 
 	}
 	
 	protected String getAttributes() {
+		
+		if (SootPlugin.getDefault().getManager().isFileMarkersUpdate((IFile)getRec())){
+			SootPlugin.getDefault().getManager().setToFalseUpdate((IFile)getRec());
+			try {
+				//System.out.println("need to remove markers from: "+getRec().getFullPath().toOSString());
+				getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_ONE);
+				SootPlugin.getDefault().getManager().setToFalseRemove((IFile)getRec());
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//System.out.println("need to update markers from: "+getRec().getFullPath().toOSString());
+			computeAttributes();
+			addSootAttributeMarkers();
+		}
+		else if (SootPlugin.getDefault().getManager().isFileMarkersRemove((IFile)getRec())) {
+			SootPlugin.getDefault().getManager().setToFalseRemove((IFile)getRec());
+			try {
+				//System.out.println("need to remove markers from: "+getRec().getFullPath().toOSString());
+				getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_ONE);
+			}
+			catch(CoreException e){
+			}
+			return null;
+		}
 		if (getAttrsHandler() != null) {
+			
 			return getAttrsHandler().getJimpleAttributes(
 			getLineNum());
 		}

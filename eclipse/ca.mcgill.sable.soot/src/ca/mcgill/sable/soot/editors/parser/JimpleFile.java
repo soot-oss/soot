@@ -8,6 +8,8 @@ package ca.mcgill.sable.soot.editors.parser;
 
 import java.util.*;
 
+import ca.mcgill.sable.soot.editors.JimpleOutlineObject;
+
 /**
  * @author jlhotak
  *
@@ -37,7 +39,16 @@ public class JimpleFile {
 		return true;
 	}
 	
-	public HashMap getOutline(){
+	public JimpleOutlineObject getOutline(){
+		
+		ArrayList list = new ArrayList();
+		list.add("method 1");
+		list.add("method 2");
+		
+		//HashMap outline = new HashMap();
+		
+		
+		
 		
 		StringBuffer sb = new StringBuffer(getFile());
 		int leftBracePos = getFile().indexOf(LEFT_BRACE);
@@ -55,12 +66,27 @@ public class JimpleFile {
 		}
 		System.out.println(className);
 		
+		JimpleOutlineObject outline = new JimpleOutlineObject("");
+		
+		JimpleOutlineObject file  = new JimpleOutlineObject(className);
+		outline.addChild(file);
+		
+		
+		//file.addChild(new JimpleOutlineObject("method 1"));
+		//file.addChild(new JimpleOutlineObject("method 2"));
+		//file.addChild(new JimpleOutlineObject("method 3"));
+		//file.addChild(new JimpleOutlineObject("method 4"));
+		
 		// gets methods
 		JimpleBody jBody = new JimpleBody(sb.substring(leftBracePos, rightBracePos));
 		ArrayList methods = jBody.getMethods();
 		
-		HashMap outline = new HashMap();
-		outline.put(className, methods);
+		Iterator it = methods.iterator();
+		while (it.hasNext()){
+			file.addChild(new JimpleOutlineObject(it.next().toString()));
+		}
+		/*HashMap outline = new HashMap();
+		outline.put(className, methods);*/
 		return outline;
 	}
 	
