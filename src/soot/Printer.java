@@ -101,7 +101,7 @@ public class Printer {
 
         // Print extension
         {
-            if (cl.hasSuperclass() && !cl.isInterface())
+            if (cl.hasSuperclass())
                 out.print(
                     " extends "
                         + Scene.v().quotedNameOf(cl.getSuperclass().getName())
@@ -113,7 +113,7 @@ public class Printer {
             Iterator interfaceIt = cl.getInterfaces().iterator();
 
             if (interfaceIt.hasNext()) {
-                out.print(cl.isInterface() ? " extends " : " implements ");
+                out.print(" implements ");
 
                 out.print(
                     ""
@@ -276,7 +276,9 @@ public class Printer {
         {
             out.println("    " + decl);
             incJimpleLnNum();
-            for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
+            for (Iterator tIt = b.getMethod().getTags().iterator();
+                tIt.hasNext();
+                ) {
                 final Tag t = (Tag) tIt.next();
                 out.println(t);
                 incJimpleLnNum();
