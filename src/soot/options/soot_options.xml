@@ -425,7 +425,7 @@ This phase eliminates assignment statements (to locals) with no uses.
 					</boolopt>
 				</sub_phase>
 			</phase>
-			<phase>
+			<radio_phase>
 				<name>Call Graph</name>
 				<alias>cg</alias>
                                 <long_desc>The purpose of this pack is to compute
@@ -939,7 +939,7 @@ cryptic statistics about the size of the points-to sets computed.
 						</boolopt>
 					</section>
 				</sub_phase>
-			</phase>
+			</radio_phase>
 			<phase>
 				<name>Whole Shimple Transformation Pack</name>
 				<alias>wstp</alias>
