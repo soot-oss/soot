@@ -101,4 +101,10 @@ public abstract class AbstractFlowAnalysis
     {
         return unitToBeforeFlow.get(s);
     }
+
+    protected void merge(Object inout, Object in) {
+        Object tmp = newInitialFlow();
+        merge(inout, in, tmp);
+        copy(tmp, inout);
+    }
 }

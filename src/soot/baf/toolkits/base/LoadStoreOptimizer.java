@@ -115,7 +115,8 @@ public class LoadStoreOptimizer extends BodyTransformer
     private void computeLocalDefsAndLocalUsesInfo() 
     {        
         mExceptionalUnitGraph =  new ExceptionalUnitGraph(mBody);
-        mLocalDefs = new SimpleLocalDefs(mExceptionalUnitGraph);
+        mLocalDefs = new SmartLocalDefs(mExceptionalUnitGraph,
+                new SimpleLiveLocals(mExceptionalUnitGraph));
         mLocalUses = new SimpleLocalUses(mExceptionalUnitGraph, mLocalDefs);            
     }
    

@@ -114,7 +114,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
 {
     FlowSet emptySet;
     Map unitToGenerateSet;
-    Map unitToPreserveSet;
+    Map unitToKillSet;
 
     SimpleLiveLocalsAnalysis(UnitGraph g)
     {
@@ -123,18 +123,11 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
         if(Options.v().time())
             Timers.v().liveSetupTimer.start();
 
-        // Generate list of locals and empty set
-        {
-            Chain locals = g.getBody().getLocals();
-            FlowUniverse localUniverse = new CollectionFlowUniverse(locals);
+        emptySet = new ArraySparseSet();
 
-            emptySet = new ArrayPackedSet(localUniverse);
-            
-        }
-
-        // Create preserve sets.
+        // Create kill sets.
         {
-            unitToPreserveSet = new HashMap(g.size() * 2 + 1, 0.7f);
+            unitToKillSet = new HashMap(g.size() * 2 + 1, 0.7f);
 
             Iterator unitIt = g.iterator();
 
@@ -142,7 +135,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
             {
                 Unit s = (Unit) unitIt.next();
 
-                BoundedFlowSet killSet = (BoundedFlowSet) emptySet.clone();
+                FlowSet killSet = (FlowSet) emptySet.clone();
 
                 Iterator boxIt = s.getDefBoxes().iterator();
 
@@ -154,9 +147,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
                         killSet.add(box.getValue(), killSet);
                 }
 
-                // Store complement
-                    killSet.complement(killSet);
-                    unitToPreserveSet.put(s, killSet);
+                    unitToKillSet.put(s, killSet);
             }
         }
 
@@ -214,7 +205,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
         // Perform kill
-            in.intersection((FlowSet) unitToPreserveSet.get(unit), out);
+            in.difference((FlowSet) unitToKillSet.get(unit), out);
 
         // Perform generation
             out.union((FlowSet) unitToGenerateSet.get(unit), out);

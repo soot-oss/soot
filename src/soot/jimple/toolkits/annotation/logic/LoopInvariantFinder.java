@@ -33,7 +33,8 @@ public class LoopInvariantFinder extends BodyTransformer {
     
     protected void internalTransform (Body b, String phaseName, Map options){
    
-        SimpleLocalDefs sld = new SimpleLocalDefs(new ExceptionalUnitGraph(b));
+        UnitGraph g = new ExceptionalUnitGraph(b);
+        LocalDefs sld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
         NaiveSideEffectTester nset = new NaiveSideEffectTester();
         
         LoopFinder lf = new LoopFinder();

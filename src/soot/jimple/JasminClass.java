@@ -113,7 +113,7 @@ public class JasminClass extends AbstractJasminClass
         if (!disablePeephole)
         {
             stmtGraph = new ExceptionalUnitGraph(body);
-            ld = new SimpleLocalDefs(stmtGraph);
+            ld = new SmartLocalDefs(stmtGraph, new SimpleLiveLocals(stmtGraph));
             lu = new SimpleLocalUses(stmtGraph, ld);
         }
 

@@ -58,7 +58,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
         ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(stmtBody);
         LocalDefs localDefs;
         
-        localDefs = new SimpleLocalDefs(unitGraph);
+        localDefs = new SmartLocalDefs(unitGraph, new SimpleLiveLocals(unitGraph));
 
         // Perform a constant/local propagation pass.
         Iterator stmtIt = (new PseudoTopologicalOrderer()).newList(unitGraph).iterator();

@@ -102,7 +102,7 @@ public class CopyPropagator extends BodyTransformer
 
         LocalDefs localDefs;
         
-        localDefs = new SimpleLocalDefs(graph);
+        localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
 
         LocalUses localUses = new SimpleLocalUses(graph, localDefs);
 

@@ -291,7 +291,7 @@ public class StaticMethodBinder extends SceneTransformer
     {
         JimpleBody b = (JimpleBody)m.getActiveBody();
         ExceptionalUnitGraph g = new ExceptionalUnitGraph(b);
-        LocalDefs ld = new SimpleLocalDefs(g);
+        LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
         LocalUses lu = new SimpleLocalUses(g, ld);
 
         // Look for the first identity stmt assigning from @this.

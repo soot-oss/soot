@@ -137,7 +137,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
         }
 
         ExceptionalUnitGraph graph = new ExceptionalUnitGraph(b);
-        LocalDefs defs = new SimpleLocalDefs(graph);
+        LocalDefs defs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
         LocalUses uses = new SimpleLocalUses(graph, defs);
         
         // Add all the statements which are used to compute values

@@ -62,7 +62,7 @@ public class ConstructorFolder extends BodyTransformer
       ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
               
         
-      LocalDefs localDefs = new SimpleLocalDefs(graph);
+      LocalDefs localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
       LocalUses localUses = new SimpleLocalUses(graph, localDefs);
 
       /* fold in NewExpr's with specialinvoke's */

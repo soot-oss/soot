@@ -230,7 +230,8 @@ public class ClassFieldAnalysis
 
 	/* build D/U web, find the value of each candidate */
 	{
-	    LocalDefs localDefs = new SimpleLocalDefs(new ExceptionalUnitGraph(body));
+            UnitGraph g = new ExceptionalUnitGraph(body);
+	    LocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 	    
 	    Set entries = stmtfield.entrySet();
 

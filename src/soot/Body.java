@@ -285,7 +285,8 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Verifies that each use in this Body has a def. */
     public void validateUses()
     {
-        LocalDefs ld = new SimpleLocalDefs(new ExceptionalUnitGraph(this));
+        UnitGraph g = new ExceptionalUnitGraph(this);
+        LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
         Iterator unitsIt = getUnits().iterator();
         while (unitsIt.hasNext())
@@ -301,8 +302,8 @@ public abstract class Body extends AbstractHost implements Serializable
                     // no def already; we check anyhow.
                     List l = ld.getDefsOfAt((Local)v, u);
                     if (l.size() == 0){
-                        for( Iterator uIt = getUnits().iterator(); uIt.hasNext(); ) {
-                            final Unit uu = (Unit) uIt.next();
+                        for( Iterator uuIt = getUnits().iterator(); uuIt.hasNext(); ) {
+                            final Unit uu = (Unit) uuIt.next();
                             System.err.println(""+uu);
                         }
                         throw new RuntimeException("no defs for value: "+v+"!"+" in "+getMethod());

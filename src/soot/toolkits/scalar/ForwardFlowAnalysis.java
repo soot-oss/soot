@@ -53,8 +53,22 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
 
     protected void doAnalysis()
     {
-        LinkedList changedUnits = new LinkedList();
-        HashSet changedUnitsSet = new HashSet();
+        final Map numbers = new HashMap();
+        List orderedUnits = new PseudoTopologicalOrderer().newList(graph);
+        int i = 1;
+        for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
+            final Unit u = (Unit) uIt.next();
+            numbers.put(u, new Integer(i));
+            i++;
+        }
+
+        TreeSet changedUnits = new TreeSet( new Comparator() {
+            public int compare(Object o1, Object o2) {
+                Integer i1 = (Integer) numbers.get(o1);
+                Integer i2 = (Integer) numbers.get(o2);
+                return i1.intValue() - i2.intValue();
+            }
+        } );
 
         int numNodes = graph.size();
         int numComputations = 0;
@@ -67,12 +81,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
             {
                 Object s = it.next();
 
-                // Strictly speaking, we only need to add
-                // the heads of the graph to changedUnits;
-                // however, Oksana Tkachuk reports that this
-                // results in a slowdown!
-                changedUnits.addLast(s);
-                changedUnitsSet.add(s);
+                changedUnits.add(s);
 
                 unitToBeforeFlow.put(s, newInitialFlow());
                 unitToAfterFlow.put(s, newInitialFlow());
@@ -101,9 +110,8 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                 Object beforeFlow;
                 Object afterFlow;
 
-                Object s = changedUnits.removeFirst();
-
-                changedUnitsSet.remove(s);
+                Object s = changedUnits.first();
+                changedUnits.remove(s);
 
                 copy(unitToAfterFlow.get(s), previousAfterFlow);
 
@@ -125,9 +133,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                         {
                             Object otherBranchFlow = unitToAfterFlow.get(predIt.
 next());
-                            Object newBeforeFlow = newInitialFlow();
-                            merge(beforeFlow, otherBranchFlow, newBeforeFlow);
-                            copy(newBeforeFlow, beforeFlow);
+                            merge(beforeFlow, otherBranchFlow);
                         }
                     }
                 }
@@ -176,11 +182,7 @@ next());
                         {
                             Object succ = succIt.next();
                             
-                            if(!changedUnitsSet.contains(succ))
-                            {
-                                changedUnits.addLast(succ);
-                                changedUnitsSet.add(succ);
-                            }
+                            changedUnits.add(succ);
                         }
                     }
             }

@@ -112,7 +112,7 @@ public class Aggregator extends BodyTransformer
       Chain units = body.getUnits();
       
       graph = new ExceptionalUnitGraph(body);
-      localDefs = new SimpleLocalDefs(graph);
+      localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
       localUses = new SimpleLocalUses(graph, localDefs);
           
       stmtIt = (new PseudoTopologicalOrderer()).newList(graph).iterator();

@@ -55,8 +55,23 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
 
     protected void doAnalysis()
     {
-        LinkedList changedUnits = new LinkedList();
-        HashSet changedUnitsSet = new HashSet();
+        final Map numbers = new HashMap();
+        List orderedUnits = new PseudoTopologicalOrderer().newList(graph);
+        int i = 1;
+        for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
+            final Unit u = (Unit) uIt.next();
+            numbers.put(u, new Integer(i));
+            i++;
+        }
+
+        TreeSet changedUnits = new TreeSet( new Comparator() {
+            public int compare(Object o1, Object o2) {
+                Integer i1 = (Integer) numbers.get(o1);
+                Integer i2 = (Integer) numbers.get(o2);
+                return -(i1.intValue() - i2.intValue());
+            }
+        } );
+
 
         // Set initial Flows and nodes to visit.
         {
@@ -66,12 +81,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
             {
                 Object s = it.next();
 
-                /* although only a DFS could really give a good result, it is
-                 * probably wiser to do begin at the bottom for
-                 * Backwards-analysis*/
-                // Starting at the tails, though, probably slows things down.
-                changedUnits.addFirst(s);
-                changedUnitsSet.add(s);
+                changedUnits.add(s);
 
                 unitToBeforeFlow.put(s, newInitialFlow());
                 unitToAfterFlow.put(s, newInitialFlow());
@@ -99,9 +109,9 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                 Object beforeFlow;
                 Object afterFlow;
 
-                Object s = changedUnits.removeFirst();
+                Object s = changedUnits.first();
 
-                changedUnitsSet.remove(s);
+                changedUnits.remove(s);
 
                 copy(unitToBeforeFlow.get(s), previousBeforeFlow);
 
@@ -122,9 +132,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                         while(succIt.hasNext())
                         {
                             Object otherBranchFlow = unitToBeforeFlow.get(succIt.next());
-                            Object newAfterFlow = newInitialFlow();
-                            merge(afterFlow, otherBranchFlow, newAfterFlow);
-                            copy(newAfterFlow, afterFlow);
+                            merge(afterFlow, otherBranchFlow);
                         }
                     }
                 }
@@ -171,11 +179,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                         {
                             Object pred = predIt.next();
                             
-                            if(!changedUnitsSet.contains(pred))
-                            {
-                                changedUnitsSet.add(pred);
-                                changedUnits.addLast(pred);
-                            }
+                            changedUnits.add(pred);
                         }
                     }
             }
