@@ -42,6 +42,7 @@ import org.eclipse.swt.layout.*;
 //import ca.mcgill.sable.soot.util.*;
 import ca.mcgill.sable.soot.ui.*;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 public class PhaseOptionsDialog extends AbstractOptionsDialog {
 
@@ -237,7 +238,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String stringRes = "";
 		boolean defBoolRes = false;
 		String defStringRes = "";
-		
+		StringTokenizer listOptTokens;
+		String nextListToken;
+	
 		
 		boolRes = getGeneral_Optionshelp_widget().getButton().getSelection();
 		
@@ -440,7 +443,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getjbjb_a1only_stack_locals_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -480,7 +483,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getjbjb_a2only_stack_locals_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -4641,7 +4644,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
-		new OptionData("Aggregated Baf File",
+		new OptionData("Abbreviated Baf File",
 		"b",
 		"produce .b (abbreviated .baf) files",
 		
@@ -4920,7 +4923,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
@@ -5044,7 +5047,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 

@@ -2,14 +2,23 @@
 <classpath>
     <classpathentry kind="src" path="src/"/>
     <classpathentry kind="lib" path="soot/classes"/>
+    <!--<classpathentry kind ="lib" path="sootclasses.jar"/>-->
     <classpathentry kind="lib" path="jasminclasses-sable-1.2.jar"/>
     <classpathentry kind="src" path="/org.eclipse.core.resources"/>
     <classpathentry kind="src" path="/org.eclipse.ui"/>
     <classpathentry kind="src" path="/org.eclipse.jdt.core"/>
     <classpathentry kind="src" path="/org.eclipse.jdt.ui"/>
+    <classpathentry kind="src" path="/org.eclipse.jdt.launching"/>
     <classpathentry kind="src" path="/org.eclipse.core.boot"/>
     <classpathentry kind="src" path="/org.eclipse.core.runtime"/>
+    <classpathentry kind="src" path="/org.eclipse.jface"/>
+    <classpathentry kind="src" path="/org.eclipse.jface.text"/>
+    <classpathentry kind="src" path="/org.eclipse.ui.views"/>
+    <classpathentry kind="src" path="/org.eclipse.ui.workbench"/>
+    <classpathentry kind="src" path="/org.eclipse.ui.workbench.texteditor"/>
+    <classpathentry kind="src" path="/org.eclipse.ui.editors"/>
+    <classpathentry kind="src" path="/org.eclipse.text"/>
+    <classpathentry kind="src" path="/org.eclipse.swt"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-    <!--<classpathentry kind="lib" path="myclasses"/>-->
     <classpathentry kind="output" path="bin"/>
 </classpath>

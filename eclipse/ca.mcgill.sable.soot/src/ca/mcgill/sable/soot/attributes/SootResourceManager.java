@@ -47,7 +47,7 @@ public class SootResourceManager implements IResourceChangeListener {
 		setProjects(new HashMap());
 		IProject [] projs = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projs.length; i++){
-			//System.out.println("adding to ResourceManger project: "+projs[i].getFullPath().toOSString());
+			System.out.println("adding to ResourceManger project: "+projs[i].getFullPath().toOSString());
 			getProjects().put(projs[i], getFilesForContainer(projs[i]));
 		}
 		
@@ -67,7 +67,9 @@ public class SootResourceManager implements IResourceChangeListener {
 				else if (members[i] instanceof IFile){
 					
 					IFile file = (IFile)members[i];
-					if ((file.getFileExtension().equals(JAVA_FILE_EXT)) ||
+					if (file.getFileExtension() == null){
+					}
+					else if ((file.getFileExtension().equals(JAVA_FILE_EXT)) ||
 						(file.getFileExtension().equals(JIMPLE_FILE_EXT))){
 							//System.out.println("adding to Resource Manager file: "+file.getFullPath().toOSString());
 							list.put(file, new BitSet(2));
