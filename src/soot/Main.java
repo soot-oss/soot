@@ -58,12 +58,6 @@ public class Main
     
 
 
-
-
-
-
-
-
     // The following lists are paired.  false is exclude in the first list.
     static List packageInclusionFlags = new ArrayList();
     static List packageInclusionMasks = new ArrayList();
@@ -443,7 +437,7 @@ public class Main
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.35");
+            System.out.println("Soot version 1.beta.6.dev.36");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -640,7 +634,7 @@ public class Main
                         }
                 }
                 else
-                {
+                {		    
                     cmdLineClasses.add(arg);
                 }
         }
@@ -728,16 +722,18 @@ public class Main
     public static void main(String[] args)
     {       
         totalTimer.start();
-	
+
+	cmdLineClasses = new HashChain();
         initApp();
         processCmdLine(args);
 
+	
         // Load necessary classes.
         {            
             Iterator it = cmdLineClasses.iterator();
 	
             while(it.hasNext())
-            {
+		{
                 String name = (String) it.next();
                 SootClass c;
 			    
