@@ -1,5 +1,5 @@
 tutorial.pdf: tutorial.tex flow.tex figs
-	latex tutorial && latex tutorial && ./dvi2pdf.pl tutorial
+	latex tutorial && latex tutorial && ./dvi2pdf.pl -t a4 tutorial
 
 figs:  rd.eepic rd-example.eepic rd-example-specific.eepic vocab.tex ecosystem.eepic body-ecosystem.eepic intra.tex lv.eepic lv-example.eepic lv-example-specific.eepic br-example.eepic br-example-specific.eepic copy-bkwd.eepic merge-bkwd.eepic flowthrough-bkwd.eepic flow-fwd.eepic flow-bkwd.eepic copy-fwd.eepic merge-fwd.eepic body-bare.eepic
 
