@@ -306,7 +306,7 @@ $$n\left\{ \begin{array}{c} Pascal\\C\\Fortran\\Java\\ML\\Scheme\\AspectJ \end{a
 
 \begin{slide} {Intermediate Representations - Exercise Notes}
 \begin{itemize}
-\item notice the expression in the if statement $if$ $x < \$i3$ and the array access is done in a previous statament
+\item notice the expression in the if statement $if$ $x < \$i3$ and the array access is done in a previous statement
 \item notice the expression $x = x + a[4] + 2$ has been split into three statements
 \end{itemize}
 \end{slide}
@@ -828,28 +828,28 @@ $out(S)_2 = gen(Sbody) \cup (in(S) \cup [ gen(Sbody) \cup (in(S) - kill(Sbody)] 
 \end{tiny}
 \end{slide}
 
-%\begin{slide} {Data Flow Analysis - CSE Exercise}
-%\begin{itemize}
-%\item switch to Eclipse
-%\item run Soot on the \texttt{CommonSubExp.java} sample code
-%\begin{itemize}
-%\item right click on file in Package Explorer
-%\item select Soot - Process Source File - Run Soot ...
-%\end{itemize}
-%\item enable the 
-%\begin{itemize}
-%\item select Phase Options - Jimple Annotation Pack - CSE Tagger
-%\item check the Enable box
-%\end{itemize}
-%\end{itemize}
-%\end{slide}
+\begin{slide} {Data Flow Analysis - CSE Exercise}
+\begin{itemize}
+\item switch to Eclipse
+\item run Soot on the \texttt{CommonSubExp.java} sample code
+\begin{itemize}
+\item right click on file in Package Explorer
+\item select Soot - Process Source File - Run Soot ...
+\end{itemize}
+\item enable the 
+\begin{itemize}
+\item select Phase Options - Jimple Annotation Pack - CSE Tagger
+\item check the Enable box
+\end{itemize}
+\end{itemize}
+\end{slide}
 
-%\begin{slide} {Intermediate Representations - Exercise Notes}
-%\begin{itemize}
-%\item notice the expression in the if statement $if$ $x < \$i3$ and the array access is done in a previous statament
-%\item notice the expression $x = x + a[4] + 2$ has been split into three statements
-%\end{itemize}
-%\end{slide}
+\begin{slide} {Intermediate Representations - Exercise Notes}
+\begin{itemize}
+\item notice the expression in the if statement $if$ $x < \$i3$ and the array access is done in a previous statement
+\item notice the expression $x = x + a[4] + 2$ has been split into three statements
+\end{itemize}
+\end{slide}
 
 
 \end{document}
