@@ -94,7 +94,7 @@ public class Scene extends AbstractHost
 
         packNameToPack.put("jop", p = new Pack());
         {
-            p.add(new Transform("jop.cp",   CopyPropagator.v(), "only-regular-locals"));
+            p.add(new Transform("jop.cp",   CopyPropagator.v()));
             p.add(new Transform("jop.cpf",  ConstantPropagatorAndFolder.v()));
             p.add(new Transform("jop.cbf",  ConditionalBranchFolder.v()));
             p.add(new Transform("jop.dae",  DeadAssignmentEliminator.v()));
