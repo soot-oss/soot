@@ -231,15 +231,9 @@ class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
         return out;
     }
 
-    protected void customizeInitialFlowGraph()
+    protected Object entryInitialFlow()
     {
-        // Initialize heads to {}
-        Iterator it = graph.getHeads().iterator();
-        while (it.hasNext())
-        {
-            Object head = it.next();
-            unitToBeforeFlow.put(head, emptySet.clone());
-        }
+        return emptySet.clone();
     }
 
     protected void flowThrough(Object inValue, Object unit, Object outValue)

@@ -154,31 +154,19 @@ class DominatorsAnalysis extends ForwardFlowAnalysis
     /**
      * OUT(Start) contains only Start at initialization time.
      **/
-    protected void customizeInitialFlowGraph()
+    protected Object entryInitialFlow()
     {
         List heads = graph.getHeads();
 
         if(heads.size() == 0)
-            return;
+            throw new RuntimeException("heads is empty, but entryInitalFlow() called!");
 
         if(heads.size() != 1)
             throw new RuntimeException("This version of Shimple was built against versions of CompleteBlockGraph and CompleteUnitGraph where only one head is possible.  If this has changed, then Shimple requires an update.");
 
-        Block entry = (Block) heads.get(0);
         BoundedFlowSet initSet = (BoundedFlowSet) emptySet.clone();
-        initSet.add(entry, initSet);
-        unitToBeforeFlow.put(entry, initSet);
-                    
-        /*
-        Iterator headsIt = graph.getHeads().iterator();
-
-        while(headsIt.hasNext()){
-            Object s = headsIt.next();
-            BoundedFlowSet initSet = (BoundedFlowSet) emptySet.clone();
-            initSet.add(s, initSet);
-            unitToBeforeFlow.put(s, initSet);
-        }
-        */
+        initSet.add((Block)heads.get(0));
+        return initSet;
     }
 
     /**

@@ -406,6 +406,11 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
         return emptySet.clone();
     }
 
+    protected Object entryInitialFlow()
+    {
+        return emptySet.clone();
+    }
+
     protected void flowThrough(Object inValue, Object d, Object outValue)
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;

@@ -22,7 +22,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
 
     /** Put the results of the analysis into tags in cast statements. */
     protected void tagCasts() {
-        for( Iterator it = graph.getBody().getUnits().iterator(); it.hasNext(); ) {
+        for( Iterator it = ((UnitGraph)graph).getBody().getUnits().iterator(); it.hasNext(); ) {
             Stmt s = (Stmt) it.next();
             if( s instanceof AssignStmt ) {
                 AssignStmt as = (AssignStmt) s;
@@ -46,7 +46,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
      * in LocalTypeSet. */
     protected void makeInitialSet() {
         // Find all locals of reference type
-        Chain locals = graph.getBody().getLocals();
+        Chain locals = ((UnitGraph)graph).getBody().getLocals();
         List refLocals = new ArrayList();
         for( Iterator it = locals.iterator(); it.hasNext(); ) {
             Local l = (Local) it.next();
@@ -57,7 +57,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
 
         // Find types of all casts
         List types = new ArrayList();
-        for( Iterator it = graph.getBody().getUnits().iterator(); it.hasNext(); ) {
+        for( Iterator it = ((UnitGraph)graph).getBody().getUnits().iterator(); it.hasNext(); ) {
             Stmt s = (Stmt) it.next();
             if( s instanceof AssignStmt ) {
                 AssignStmt as = (AssignStmt) s;
@@ -184,12 +184,10 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
         o.and( (LocalTypeSet) in2 );
     }
     
-    // The initial value of the start node is the empty set
-    protected void customizeInitialFlowGraph() {
-        for( Iterator it = graph.getHeads().iterator(); it.hasNext(); ) {
-            LocalTypeSet set = (LocalTypeSet) unitToBeforeFlow.get( it.next() );
-            set.clearAllBits();
-        }
+    /** Returns a new, aggressive (local,type) set. */
+    protected Object entryInitialFlow() {
+        LocalTypeSet ret = (LocalTypeSet) emptySet.clone();
+        return ret;
     }
 }
 

@@ -96,13 +96,8 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
     return set.topSet();
   }
 
-  protected void customizeInitialFlowGraph() {
-    // Initialize heads to {}
-    Iterator headIt = graph.getHeads().iterator();
-    while (headIt.hasNext()) {
-      Object newSet = unitToBeforeFlow.get(headIt.next());
-      ((BoundedFlowSet)newSet).complement();
-    }
+  protected Object entryInitialFlow() {
+    return set.emptySet();
   }
 
   protected void flowThrough(Object inValue, Object unit, Object outValue) {

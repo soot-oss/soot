@@ -679,10 +679,15 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
     }
 
     /* It is unsafe for normal units. */
-    /* It is safe for end units. */
     /* Since the initial value is safe, empty set. 
        we do not need to do it again. */
     protected Object newInitialFlow()
+    {
+        return new HashSet();
+    }
+
+    /* It is safe for end units. */
+    protected Object entryInitialFlow()
     {
         return new HashSet();
     }

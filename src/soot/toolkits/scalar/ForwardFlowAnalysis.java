@@ -89,9 +89,6 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
             }
         }
         
-        // optional 
-        customizeInitialFlowGraph();
-
         // Perform fixed point flow analysis
         {
             Object previousAfterFlow = newInitialFlow();
@@ -162,7 +159,6 @@ next());
         Timers.v().totalFlowNodes += numNodes;
         Timers.v().totalFlowComputations += numComputations;
     }
-
 }
 
 

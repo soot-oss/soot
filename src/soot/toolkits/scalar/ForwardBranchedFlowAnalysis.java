@@ -113,7 +113,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
         // Set initial values and nodes to visit.
         // WARNING: DO NOT HANDLE THE CASE OF THE TRAPS
         {
-            Chain sl = graph.getBody().getUnits();
+            Chain sl = ((UnitGraph)graph).getBody().getUnits();
             Iterator it = graph.iterator();
 
             while(it.hasNext())
@@ -132,7 +132,8 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                     fl.add((Object) (newInitialFlow()));
                     unitToAfterFallFlow.put(s, fl);
 
-                    List l = (List) (unitToIncomingFlowSets.get(sl.getSuccOf(s)));
+                    List l = (List) 
+                        (unitToIncomingFlowSets.get(sl.getSuccOf(s)));
                     l.addAll(fl);
                 }
                 else
@@ -175,9 +176,17 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                 unitToBeforeFlow.put(s, entryInitialFlow());
             }
         }
-        
-        // optional
-        customizeInitialFlowGraph();
+
+        if (treatTrapHandlersAsEntries())
+        {
+            Iterator trapIt = ((UnitGraph)graph).getBody().
+                                   getTraps().iterator();
+            while(trapIt.hasNext()) {
+                Trap trap = (Trap) trapIt.next();
+                Unit handler = trap.getHandlerUnit();
+                unitToBeforeFlow.put(handler, entryInitialFlow());
+            }
+        }
 
         // Perform fixed point flow analysis
         {

@@ -96,12 +96,8 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
     return set.topSet();
   }
 
-  protected void customizeInitialFlowGraph() {
-    // Initialize tails to {}
-    Iterator tailIt = graph.getTails().iterator();
-    while (tailIt.hasNext()) {
-      unitToAfterFlow.put(tailIt.next(), set.emptySet());
-    }
+  protected Object entryInitialFlow() {
+    return set.emptySet();
   }
 
   protected void flowThrough(Object inValue, Object unit, Object outValue) {

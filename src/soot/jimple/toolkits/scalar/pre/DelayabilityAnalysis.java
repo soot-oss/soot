@@ -108,12 +108,8 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis {
     return set.topSet();
   }
 
-  protected void customizeInitialFlowGraph() {
-    // Initialize heads to {}
-    Iterator headIt = graph.getHeads().iterator();
-    while (headIt.hasNext()) {
-      unitToBeforeFlow.put(headIt.next(), set.emptySet());
-    }
+  protected Object entryInitialFlow() {
+    return set.emptySet();
   }
 
   protected void flowThrough(Object inValue, Object unit, Object outValue) {

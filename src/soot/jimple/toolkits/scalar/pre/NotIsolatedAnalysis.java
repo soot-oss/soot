@@ -99,8 +99,11 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis {
   }
 
   protected Object newInitialFlow() {
-    Object newSet = set.emptySet();
-    return newSet;
+    return set.emptySet();
+  }
+
+  protected Object entryInitialFlow() {
+    return newInitialFlow();
   }
 
   protected void flowThrough(Object inValue, Object unit, Object outValue) {

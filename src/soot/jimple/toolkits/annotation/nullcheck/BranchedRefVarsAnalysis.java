@@ -297,7 +297,6 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
         
         genFS.add(nullPair, genFS);
         genFS.add(nullNonPair, genFS);
-        
     } // end uAddTopToFlowSet
     
     private  final void uAddTopToFlowSet(Value r, FlowSet genFS, FlowSet preFS)
@@ -400,7 +399,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
         refTypeValues = new ArrayList();
 
         // build list of locals
-        Iterator it = graph.getBody().getLocals().iterator();
+        Iterator it = ((UnitGraph)graph).getBody().getLocals().iterator();
         
         while (it.hasNext()) {
             Local l = (Local) (it.next());
@@ -430,7 +429,6 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
             }
             
         } // end build list of fields
-        
 
         refTypeValues.addAll(refTypeLocals);
         refTypeValues.addAll(refTypeInstFields);
@@ -646,7 +644,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
                 while(boxIt.hasNext()) {
                     Value boxValue = ((ValueBox) boxIt.next()).getValue();
                     Value base = null;
-
+                    
                     if(boxValue instanceof InstanceFieldRef) {
                         base = ((InstanceFieldRef) (boxValue)).getBase();
                         instanceFieldRefChecksSet.add(base);
@@ -655,7 +653,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
                         arrayRefChecksSet.add(base);
                     } else if (boxValue instanceof InstanceInvokeExpr) {
                         base = ((InstanceInvokeExpr) boxValue).getBase();
-                        instanceInvokeExprChecksSet.add(base);
+                        instanceInvokeExprChecksSet.add(base);                        
                     } else if (boxValue instanceof LengthExpr) {
                         base = ((LengthExpr) boxValue).getOp();
                         lengthExprChecksSet.add(base);
@@ -672,6 +670,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
                 }
                 boxIt = s.getDefBoxes().iterator();
                 while(boxIt.hasNext()) {
+                    
                     Value boxValue = ((ValueBox) boxIt.next()).getValue();
                     Value base = null;
                     
@@ -683,7 +682,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
                         arrayRefChecksSet.add(base);
                     } else if (boxValue instanceof InstanceInvokeExpr) {
                         base = ((InstanceInvokeExpr) boxValue).getBase();
-                        instanceInvokeExprChecksSet.add(base);
+                        instanceInvokeExprChecksSet.add(base);                        
                     } else if (boxValue instanceof LengthExpr) {
                         base = ((LengthExpr) boxValue).getOp();
                         lengthExprChecksSet.add(base);
@@ -699,7 +698,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
                     }
                 }
             } // done check use and def boxes
-            
+
             unitToGenerateSet.put(s, genSet);
             unitToPreserveSet.put(s, preSet);
             
@@ -717,7 +716,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
         FlowSet out = tempFlowSet;
         FlowSet pre = (FlowSet) unitToPreserveSet.get(stmt);
         FlowSet gen = (FlowSet) unitToGenerateSet.get(stmt);
-        
+
         // Perform perservation
         in.intersection(pre, out);
         
@@ -824,13 +823,13 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
                             uAddInfoToFlowSet(toGen, fInfo, fs);
                         }
                     }
-                    
+
                     if (bInfo !=  kBottom) {
                         Iterator it = outBranchValues.iterator();
 
                         while (it.hasNext()) {
                             FlowSet fs = (FlowSet) (it.next());
-                            
+
                             copy(out, fs);
                             uAddInfoToFlowSet(toGen, bInfo, fs);
                         }
@@ -894,28 +893,18 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
     } // end newInitialFlow
 
 
-    protected void customizeInitialFlowGraph()
+    protected Object entryInitialFlow()
     {
-        List gHeads = graph.getHeads();
+        return fullSet.clone();
+    }
 
-        Iterator it = gHeads.iterator();
-        
-        while(it.hasNext()) {
-            Unit head = (Unit) it.next();
-            unitToBeforeFlow.put(head, fullSet.clone());
-        }
-
-        // try to workaround exception limitation of the ForwardBranchedFlowAnalysis
-        // this will make for a very conservative analysys when exception handling
-        // statements are in the code :-(
-        Iterator trapIt = graph.getBody().getTraps().iterator();
-        while(trapIt.hasNext()) {
-            Trap trap = (Trap) trapIt.next();
-            Unit handler = trap.getHandlerUnit();
-            unitToBeforeFlow.put(handler, fullSet.clone());
-        }
-    } // end customizeInitialFlowGraph
-
+    // try to workaround exception limitation of ForwardBranchedFlowAnalysis
+    // this will make for a very conservative analysys when exception handling
+    // statements are in the code :-(
+    public boolean treatTrapHandlersAsEntries()
+    {
+        return true;
+    }
 
 } // end class BranchedRefVarsAnalysis
 

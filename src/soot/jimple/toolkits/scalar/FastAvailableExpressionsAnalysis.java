@@ -110,15 +110,9 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
         return newSet;
     }
 
-    protected void customizeInitialFlowGraph()
+    protected Object entryInitialFlow()
     {
-        // Initialize heads to {}
-        Iterator it = graph.getHeads().iterator();
-        while (it.hasNext())
-        {
-            Object newSet = unitToBeforeFlow.get(it.next());
-            ((ToppedSet)newSet).setTop(false);
-        }
+        return emptySet.clone();
     }
 
     protected void flowThrough(Object inValue, Object unit, Object outValue)

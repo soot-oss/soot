@@ -83,13 +83,10 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
             
             while (it.hasNext()) {
                 Object s = it.next();
-                // this is a forward flow analysis
+                // this is a backward flow analysis
                 unitToAfterFlow.put(s, entryInitialFlow());
             }
         }
-
-        // optional 
-        customizeInitialFlowGraph();
 
         // Perform fixed point flow analysis
         {

@@ -47,47 +47,25 @@ import java.util.*;
  * propagating information past a statement like <code>if(x &gt;
  * 0)</code>: one successor has <code>x &gt; 0</code> while the other
  * successor has <code>x &le; 0</code>. */
-public abstract class BranchedFlowAnalysis
+public abstract class BranchedFlowAnalysis extends AbstractFlowAnalysis
 {
-    /** Maps graph nodes to IN sets. */
-    protected Map unitToBeforeFlow;
-
     /** Maps graph nodes to OUT sets. */
     protected Map unitToAfterFallFlow;
     protected Map unitToAfterBranchFlow;
 
-    // BranchedFlowAnalysis only works on UnitGraphs
-    protected UnitGraph graph;
-
     public BranchedFlowAnalysis(UnitGraph graph)
     {
+        super(graph);
+
         unitToAfterFallFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
         unitToAfterBranchFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
-        unitToBeforeFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
-
-        this.graph = graph;
     }
 
-    protected abstract Object newInitialFlow();
-
-  /**
-   * For back compatibility, use the initial value of other nodes.
-   */
-  protected Object entryInitialFlow() { return newInitialFlow(); }
-
-    protected abstract boolean isForward();
-
-    protected abstract void flowThrough(Object in, Unit s, List fallOut, List branchOuts);
-                                  
-    protected abstract void merge(Object in1, Object in2, Object out);
-    protected abstract void copy(Object source, Object dest);
-    protected abstract void doAnalysis();
-
-
-    protected void customizeInitialFlowGraph()
-    {
-    }
-
+    /** Given the merge of the <code>in</code> sets, 
+     * compute the <code>fallOut</code> and <code>branchOuts</code>
+     * set for <code>s</code>. */
+    protected abstract void flowThrough(Object in, Unit s, 
+                                        List fallOut, List branchOuts);
 
     public Object getFallFlowAfter(Unit s)
     {
@@ -104,7 +82,6 @@ public abstract class BranchedFlowAnalysis
     {
         return (List) (unitToAfterBranchFlow.get(s));
     }
-
 
     public Object getFlowBefore(Unit s)
     {
