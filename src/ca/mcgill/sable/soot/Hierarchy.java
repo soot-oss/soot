@@ -1,5 +1,6 @@
 package ca.mcgill.sable.soot;
 
+import ca.mcgill.sable.util.*;
 import java.util.*;
 
 public class Hierarchy
@@ -95,7 +96,7 @@ public class Hierarchy
                     if (c.isInterface())
                     {
                         List imp = (List)interfaceToDirImplementers.get(c);
-                        Set s = new HashSet(imp.size() * 2 + 1, 0.7f);
+                        Set s = new ArraySet();
                         
                         Iterator impIt = imp.iterator();
                         while (impIt.hasNext())
@@ -172,7 +173,14 @@ public class Hierarchy
         return l;
     }
 
-    // Return all strict superclasses of c.
+    public List getSuperclassesOfIncluding(SootClass c)
+    {
+        List l = getSuperclassesOf(c);
+        ArrayList al = new ArrayList(); al.add(c); al.addAll(l);
+        return Collections.unmodifiableList(al);
+    }
+
+    /** Return all strict superclasses of c, starting with c's parent. */
     public List getSuperclassesOf(SootClass c)
     {
         if (c.isInterface())
@@ -311,7 +319,7 @@ public class Hierarchy
         checkState();
 
         Iterator it = getSubinterfacesOfIncluding(i).iterator();
-        HashSet set = new HashSet();
+        ArraySet set = new ArraySet();
 
         while (it.hasNext())
         {
@@ -359,21 +367,60 @@ public class Hierarchy
         throw new RuntimeException("Not implemented yet!");
     }
 
-    // what really gets called if you invoke method m on an object of class c
-    public SootClass resolveInvoke(SootClass c, SootMethod m)
+    // Questions about method invokation.
+
+    /** Given an object of actual type C (o = new C()), what method gets called
+        for an o.f() invocation? */
+    public SootMethod resolveConcreteDispatch(SootClass concreteType, SootMethod m)
     {
-        throw new RuntimeException("Not implemented yet!");
+        checkState();
+
+        if (concreteType.isInterface())
+            throw new RuntimeException("class needed!");
+
+        Iterator it = getSuperclassesOfIncluding(concreteType).iterator();
+        String methodSig = m.getSubSignature();
+
+        while (it.hasNext())
+        {
+            SootClass c = (SootClass)it.next();
+            if (c.declaresMethod(methodSig))
+                return c.getMethod(methodSig);
+        }
+        throw new RuntimeException("could not resolve concrete dispatch!");
     }
 
     // what can get called for c & all its subclasses
-    public List getTargetsOf(SootClass c, SootMethod m) 
+    public List resolveAbstractDispatch(SootClass c, SootMethod m) 
     {
-        throw new RuntimeException("Not implemented yet!");
+        checkState();
+
+        Iterator classesIt = null;
+
+        if (c.isInterface())
+            classesIt = getImplementersOf(c).iterator();
+        else
+            classesIt = getSubclassesOfIncluding(c).iterator();
+
+        ArraySet s = new ArraySet();
+        
+        while (classesIt.hasNext())
+            s.add(resolveConcreteDispatch((SootClass)classesIt.next(), m));
+
+        List l = new ArrayList(); l.addAll(s);
+        return Collections.unmodifiableList(l);
     }
 
     // what can get called if you have a set of possible receiver types
-    public List getTargetsOf(List classes, SootMethod m)
+    public List resolveAbstractDispatch(List classes, SootMethod m)
     {
-        throw new RuntimeException("Not implemented yet!");
+        ArraySet s = new ArraySet();
+        Iterator classesIt = classes.iterator();
+
+        while (classesIt.hasNext())
+            s.addAll(resolveAbstractDispatch((SootClass)classesIt.next(), m));
+
+        List l = new ArrayList(); l.addAll(s);
+        return Collections.unmodifiableList(l);
     }
 }
