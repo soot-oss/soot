@@ -780,7 +780,30 @@ public class Jimple
     {
         return new StmtBox((Stmt) unit);
     }
+
+    /** Returns an empty JimpleBody associated with method m. */
+    public JimpleBody newBody(SootMethod m)
+    {
+        return new JimpleBody(m);
+    }
+
+    /** Returns a JimpleBody constructed from b. */
+    public JimpleBody newBody(Body b)
+    {
+        return new JimpleBody(b, new HashMap());
+    }
+
+    /** Returns a JimpleBody constructed from b. */
+    public JimpleBody newBody(Body b, String phase)
+    {
+        Map options = Scene.v().computePhaseOptions(phase, "");
+        return new JimpleBody(b, options);
+    }
+
+    /** Returns a JimpleBody constructed from b. */
+    public JimpleBody newBody(Body b, String phase, String optionsString)
+    {
+        Map options = Scene.v().computePhaseOptions(phase, optionsString);
+        return new JimpleBody(b, options);
+    }
 }
-
-
-

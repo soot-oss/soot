@@ -60,7 +60,7 @@ public class Main
            
         // Create the method body
         {    
-            JimpleBody body = new JimpleBody(method);
+            JimpleBody body = Jimple.v().newBody(method);
             
             method.setActiveBody(body);
             Chain units = body.getUnits();

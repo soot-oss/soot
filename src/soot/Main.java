@@ -113,7 +113,6 @@ public class Main
         packStmtCount,
         cleanup2StmtCount;
 
-    static private int buildJimpleBodyOptions = 0;
     static private String outputDir = "";
 
     static private boolean isOptimizing;
@@ -180,7 +179,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.111");
+            System.out.println("Soot version 1.beta.4.dev.112");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -298,16 +297,6 @@ public class Main
                     Jimplifier.NOLIB = false;
                 } */
                 
-                else if(arg.equals("--no-typing"))
-                    buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_TYPING;
-                else if(arg.equals("--no-jimple-aggregating"))
-                    buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_AGGREGATING;
-                else if(arg.equals("--no-splitting"))
-                    buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_SPLITTING;
-                else if(arg.equals("--use-packing"))
-                    buildJimpleBodyOptions |= BuildJimpleBodyOption.USE_PACKING;
-//                else if(arg.equals("--use-original-names"))
-//                    buildJimpleBodyOptions |= BuildJimpleBodyOption.USE_ORIGINAL_NAMES;
                 else if(arg.equals("-t") || arg.equals("--time"))
                     isProfilingOptimization = true;
                 else if(arg.equals("--subtract-gc"))
@@ -546,20 +535,7 @@ public class Main
         }
         
         if(isOptimizingWhole)
-        {
-            System.out.print("Building InvokeGraph...");
-            System.out.flush();
-            
-            InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph();
-            Scene.v().setActiveInvokeGraph(invokeGraph);
-                                
-            System.out.println();
-            
-            System.out.print("Binding static methods...");
-            System.out.flush();
-            StaticMethodBinder.bindStaticMethods();
-            System.out.println();
-        }
+            WholeJimpleOptimizationPack.v().transform("wjop");
         
         // Handle each class individually
         {
@@ -766,31 +742,28 @@ public class Main
                 if(produceJimple)
                 {
                     if(!m.hasActiveBody())
-                        m.setActiveBody(new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions));
+                        m.setActiveBody(Jimple.v().newBody(new ClassFileBody(m), "jb"));
     
-
-                    if(isOptimizing) {
-                        BaseJimpleOptimizer.optimize((JimpleBody) m.getActiveBody());
-                    }
-
+                    if(isOptimizing) 
+                        JimpleOptimizationPack.v().transform((JimpleBody) m.getActiveBody(), "jop");
                 }
                 
                 if(produceGrimp)
                 {
                     if(isOptimizing)
-                        m.setActiveBody(new GrimpBody(m.getActiveBody(), BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING));
+                        m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb", "aggregate-all-locals"));
                     else
-                        m.setActiveBody(new GrimpBody(m.getActiveBody()));
+                        m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
                         
                     if(isOptimizing)
-                      BaseGrimpOptimizer.optimize((GrimpBody) m.getActiveBody());
+                        GrimpOptimizationPack.v().transform((GrimpBody) m.getActiveBody(), "gop");
                 }
                 else if(produceBaf)
                 {   
-                     m.setActiveBody(new BafBody((JimpleBody) m.getActiveBody()));
+                     m.setActiveBody(Baf.v().newBody((JimpleBody) m.getActiveBody()));
 
                      if(isOptimizing) 
-                        ;
+                        BafOptimizationPack.v().transform((BafBody) m.getActiveBody(), "bop");
                 } 
             }
         }

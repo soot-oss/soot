@@ -24,29 +24,44 @@
  */
 
 
-
-
-
-package soot.jimple;
+package soot.toolkits.scalar;
 
 import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public interface FlowSet 
+public class FlowUniverse
 {
-    public int size();
+    Object[] indexToObject;
+    Map objectToIndex;
 
-    public Object clone();
-    public void copy(FlowSet dest);
-    public boolean isEmpty();
-    public void clear();
-    public List toList();
-    public void add(Object obj, FlowSet dest);
-    public void remove(Object obj, FlowSet dest);
-    public void union(FlowSet other, FlowSet dest);
-    public void intersection(FlowSet other, FlowSet dest);
-    public void difference(FlowSet other, FlowSet dest);    
-    public boolean contains(Object obj);
+    public FlowUniverse(Object[] objects)
+    {
+        objectToIndex = new HashMap(objects.length * 2 + 1, 0.7f);
+
+        indexToObject = (Object[]) objects.clone();
+
+        for(int i = 0; i < objects.length; i++)
+            objectToIndex.put(objects[i], new Integer(i));
+    }
+
+    public int getSize()
+    {
+        return indexToObject.length;
+    }
+
+    public Object getObjectOf(int index)
+    {
+        return indexToObject[index];
+    }
+
+    public int getIndexOf(Object obj)
+    {
+        Integer index = (Integer) objectToIndex.get(obj);
+
+        if(index == null)
+            throw new RuntimeException("object not in universe");
+        else
+            return index.intValue();
+    }
 }
-

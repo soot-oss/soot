@@ -25,10 +25,6 @@
 
 package soot;
 
-
-
-
-
 import soot.baf.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
@@ -38,16 +34,26 @@ import java.util.*;
 import java.io.*;
 import soot.toolkits.scalar.*;
 
-
 public abstract class Body
 {
-    /* temp */
     SootMethod method;
 
     Chain localChain, trapChain;
     PatchingChain unitChain;
 
     abstract public Object clone();
+
+    /** Used by subclasses during initialization. 
+     *  Creation of a Body is triggered by e.g. Jimple.v().newBody(options).
+     */
+    protected Body(SootMethod m) 
+    {
+        localChain = new HashChain();
+        trapChain = new HashChain();
+        unitChain = new PatchingChain(new HashChain());
+
+        this.method = m;
+    }
 
     public SootMethod getMethod()
     {
@@ -62,15 +68,6 @@ public abstract class Body
     public int getLocalCount()
     {
         return localChain.size();
-    }
-
-    public Body(SootMethod m) 
-    {        
-        localChain = new HashChain();
-        trapChain = new HashChain();
-        unitChain = new PatchingChain(new HashChain());
-
-        this.method = m;
     }
 
     public void importBodyContentsFrom(Body b)

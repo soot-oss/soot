@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 1997-1999 Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,21 +24,24 @@
  */
 
 
+package soot.baf;
 
-
-
-
-package soot.grimp;
-
-import soot.jimple.toolkits.scalar.*;
 import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class BaseGrimpOptimizer
+public class BafOptimizationPack extends BodyTransformer
 {
-    public static void optimize(GrimpBody body)
+    private static BafOptimizationPack instance = new BafOptimizationPack();
+    private BafOptimizationPack() {}
+
+    public static BafOptimizationPack v() { return instance; }
+
+    protected void internalTransform(Body b, Map options)
     {
-        // ConstantFolder.foldConstants(body);
+        BafBody body = (BafBody)b;
+        if(Main.isVerbose)
+            System.out.println("[" + body.getMethod().getName() +
+                "] Starting base baf optimizations...");
     }
 }

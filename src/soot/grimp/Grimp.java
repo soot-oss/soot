@@ -991,4 +991,24 @@ public class Grimp
                 return value;
             }
     }
+
+    /** Returns an empty GrimpBody associated with method m. */
+    public GrimpBody newBody(SootMethod m)
+    {
+        return new GrimpBody(m);
+    }
+
+    /** Returns a GrimpBody constructed from b. */
+    public GrimpBody newBody(Body b, String phase)
+    {
+        Map options = Scene.v().computePhaseOptions(phase, "");
+        return new GrimpBody(b, options);
+    }
+
+    /** Returns a GrimpBody constructed from b. */
+    public GrimpBody newBody(Body b, String phase, String optionsString)
+    {
+        Map options = Scene.v().computePhaseOptions(phase, optionsString);
+        return new GrimpBody(b, options);
+    }
 }

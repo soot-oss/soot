@@ -32,12 +32,17 @@ import soot.toolkits.graph.*;
 import java.util.*;
 import soot.util.*;
 
-public class StaticMethodBinder
+public class StaticMethodBinder extends SceneTransformer
 {
-    private static boolean enableNullPointerCheckInsertion = true;
+    private static StaticMethodBinder instance = new StaticMethodBinder();
+    private StaticMethodBinder() {}
 
-    public static void bindStaticMethods()
+    public static StaticMethodBinder v() { return instance; }
+
+    protected void internalTransform(Map options)
     {
+        boolean enableNullPointerCheckInsertion = !Options.getBoolean(options, "no-insert-null-checks");
+
         HashMap instanceToStaticMap = new HashMap();
 
         InvokeGraph g = Scene.v().getActiveInvokeGraph();

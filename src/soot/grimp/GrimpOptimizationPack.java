@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 1997-1999 Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,17 +24,24 @@
  */
 
 
-
-
-
-
 package soot.grimp;
 
 import soot.*;
 import soot.util.*;
 import java.util.*;
-import soot.jimple.*;
 
-public class BuildGrimpBodyOption extends BuildJimpleBodyOption
+public class GrimpOptimizationPack extends BodyTransformer
 {
+    private static GrimpOptimizationPack instance = new GrimpOptimizationPack();
+    private GrimpOptimizationPack() {}
+
+    public static GrimpOptimizationPack v() { return instance; }
+
+    protected void internalTransform(Body b, Map options)
+    {
+        GrimpBody body = (GrimpBody)b;
+        if(Main.isVerbose)
+            System.out.println("[" + body.getMethod().getName() +
+                "] Starting base grimp optimizations...");
+    }
 }

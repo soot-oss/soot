@@ -527,8 +527,32 @@ public class Baf
         });
 
         return (String) sw.getResult();
-
     }
 
 
+    /** Returns an empty BafBody associated with method m. */
+    public BafBody newBody(SootMethod m)
+    {
+        return new BafBody(m);
+    }
+
+    /** Returns a BafBody constructed from b. */
+    public BafBody newBody(Body b)
+    {
+        return new BafBody(b, new HashMap());
+    }
+
+    /** Returns a BafBody constructed from b. */
+    public BafBody newBody(Body b, String phase)
+    {
+        Map options = Scene.v().computePhaseOptions(phase, "");
+        return new BafBody(b, options);
+    }
+
+    /** Returns a BafBody constructed from b. */
+    public BafBody newBody(Body b, String phase, String optionsString)
+    {
+        Map options = Scene.v().computePhaseOptions(phase, optionsString);
+        return new BafBody(b, options);
+    }
 }

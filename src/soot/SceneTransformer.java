@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 1997-1999 Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,39 +23,29 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
+package soot;
 
-
-
-
-package soot.jimple;
-
-import soot.jimple.toolkits.scalar.*;
-import soot.*;
-import soot.util.*;
 import java.util.*;
 
-public class BaseJimpleOptimizer
+public abstract class SceneTransformer
 {
-    public static void optimize(JimpleBody body)
+    /** Calls internalTransform with the optionsString properly set up.
+     *  That is, the options in optionsString override those in the Scene. */
+    public final void transform(String phaseName, String optionsString)
     {
-        if(Main.isVerbose)
-            System.out.println("[" + body.getMethod().getName() +
-                "] Starting base jimple optimizations...");
-
-        // This order is important.  Don't mess with it.
-        // Examples to demonstrate this are left as an exercise for the reader.
-        CopyPropagator.v().transform(body, "bjo.cp", "ignore-stack-locals");
-        
-//        ConstantPropagatorAndFolder.v().transform(body, "bjo.cpf");
-//        ConditionalBranchFolder.v().transform(body, "bjo.cbf");
-        DeadAssignmentEliminator.v().transform(body, "bjo.dae");
-//        UnreachableCodeEliminator.v().transform(body, "bjo.uce1");
-//        UnconditionalBranchFolder.v().transform(body, "bjo.ubf");
-//        UnreachableCodeEliminator.v().transform(body, "bjo.uce2");
+        Map options = Scene.v().computePhaseOptions(phaseName, optionsString);
+        internalTransform(options);
     }
+
+    public final void transform()
+    {
+        internalTransform(new HashMap());
+    }
+
+    public final void transform(String phaseName)
+    {
+        internalTransform(Scene.v().getPhaseOptions(phaseName));
+    }
+
+    protected abstract void internalTransform(Map options);
 }
-
-
-
-
-

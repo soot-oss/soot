@@ -45,19 +45,14 @@ public class GrimpBody extends StmtBody
         Construct an empty GrimpBody 
      **/
      
-    public GrimpBody(SootMethod m)
+    GrimpBody(SootMethod m)
     {
         super(m);
     }
 
-    public GrimpBody(Body body)
-    {   
-        this(body, 0);
-    }
-    
     public Object clone()
     {
-        Body b = new JimpleBody(getMethod());
+        Body b = Grimp.v().newBody(getMethod());
         b.importBodyContentsFrom(this);
         return b;
     }
@@ -66,22 +61,19 @@ public class GrimpBody extends StmtBody
         Constructs a GrimpBody from the given Body.
      */
 
-    public GrimpBody(Body body, int buildOptions)
+    GrimpBody(Body body, Map options)
     {
         super(body.getMethod());
+
+        boolean aggregateAllLocals = Options.getBoolean(options, "aggregate-all-locals");
+        boolean noAggregating = Options.getBoolean(options, "no-aggregating");
         
         JimpleBody jBody = null;
 
         if(body instanceof ClassFileBody)
-            {
-                /* we need to resolve conflicts between */
-                /* Jimple & Grimp buildOptions! */
-                jBody = new JimpleBody(body, buildOptions);
-            }
+            jBody = Jimple.v().newBody(body, "gb.jb");
         else if (body instanceof JimpleBody)
-            {
-                jBody = (JimpleBody)body;
-            }
+            jBody = (JimpleBody)body;
         else
             throw new RuntimeException("Can only construct GrimpBody's from ClassFileBody's or JimpleBody's (for now)");
 
@@ -253,14 +245,14 @@ public class GrimpBody extends StmtBody
                             (Unit)(oldToNew.get(oldTrap.getHandlerUnit()))));
         }
         
-        if(BuildGrimpBodyOption.aggressiveAggregating(buildOptions))
+        if(aggregateAllLocals)
         {
             Aggregator.v().transform(this, "gb.a");
             ConstructorFolder.v().transform(this, "gb.cf");
             Aggregator.v().transform(this, "gb.a");
             UnusedLocalEliminator.v().transform(this, "gb.ule");
         }
-        else if (!BuildGrimpBodyOption.noAggregating(buildOptions))
+        else if (!noAggregating)
         {
             Aggregator.v().transform(this, "gb.asv1", "only-stack-vars");
             ConstructorFolder.v().transform(this, "gb.cf");

@@ -24,20 +24,14 @@
  */
 
 
-package soot.jimple;
+package soot.toolkits.scalar;
 
 import soot.*;
 import soot.util.*;
 import java.util.*;
-import java.io.*;
 
-abstract public class StmtBody extends Body
+public interface BoundedFlowSet extends FlowSet
 {
-    protected StmtBody(SootMethod m)
-    {
-        super(m);
-    }
+    public List toList(int low, int high);
+    public void complement(FlowSet dest);
 }
-
-
-

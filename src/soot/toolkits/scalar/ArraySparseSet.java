@@ -24,10 +24,7 @@
  */
 
 
-
-
-
-package soot.jimple;
+package soot.toolkits.scalar;
 
 import soot.util.*;
 import java.util.*;

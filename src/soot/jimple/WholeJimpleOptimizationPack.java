@@ -24,17 +24,38 @@
  */
 
 
-
-
-
 package soot.jimple;
 
+import soot.*;
+import soot.jimple.toolkits.invoke.*;
 import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public interface BoundedFlowSet extends FlowSet
+public class WholeJimpleOptimizationPack extends SceneTransformer
 {
-    public List toList(int low, int high);
-    public void complement(FlowSet dest);
+    private static WholeJimpleOptimizationPack instance = new WholeJimpleOptimizationPack();
+    private WholeJimpleOptimizationPack() {}
+
+    public static WholeJimpleOptimizationPack v() { return instance; }
+
+    protected void internalTransform(Map options)
+    {
+        System.out.print("Building InvokeGraph...");
+        System.out.flush();
+            
+        InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph();
+        Scene.v().setActiveInvokeGraph(invokeGraph);
+                                
+        System.out.println();
+            
+        if(Main.isVerbose)
+            System.out.println("Starting whole-program jimple optimizations...");
+
+        System.out.print("Binding static methods...");
+        System.out.flush();
+
+        StaticMethodBinder.v().transform("wjop.smb");
+        System.out.println();
+    }
 }

@@ -44,7 +44,7 @@ public class ThisRef implements IdentityRef, ToBriefString
 
     public String toString()
     {
-        return "@this:"+thisType;
+        return "@this: "+thisType;
     }
 
     public String toBriefString()

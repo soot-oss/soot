@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 1999 Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,47 +24,17 @@
  */
 
 
+package soot;
 
-
-
-package soot.jimple;
-
-import soot.*;
-import soot.util.*;
 import java.util.*;
 
-public class FlowUniverse
+public class Options
 {
-    Object[] indexToObject;
-    Map objectToIndex;
-
-    public FlowUniverse(Object[] objects)
+    /** This method returns true iff key "name" is in options 
+        and maps to "true". */
+    public static boolean getBoolean(Map options, String name)
     {
-        objectToIndex = new HashMap(objects.length * 2 + 1, 0.7f);
-
-        indexToObject = (Object[]) objects.clone();
-
-        for(int i = 0; i < objects.length; i++)
-            objectToIndex.put(objects[i], new Integer(i));
-    }
-
-    public int getSize()
-    {
-        return indexToObject.length;
-    }
-
-    public Object getObjectOf(int index)
-    {
-        return indexToObject[index];
-    }
-
-    public int getIndexOf(Object obj)
-    {
-        Integer index = (Integer) objectToIndex.get(obj);
-
-        if(index == null)
-            throw new RuntimeException("object not in universe");
-        else
-            return index.intValue();
+        return options.containsKey(name) &&
+            options.get(name).equals("true");
     }
 }

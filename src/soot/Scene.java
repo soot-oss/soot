@@ -83,13 +83,6 @@ public class Scene extends AbstractHost
     public Map computePhaseOptions(String phaseName, String optionsString)
     {
         Map options = new HashMap();
-        Map oldOptions = Scene.v().getPhaseOptions(phaseName);
-        Iterator optionKeysIt = oldOptions.keySet().iterator();
-        while (optionKeysIt.hasNext())
-        {
-            String s = (String)optionKeysIt.next();
-            options.put(s, oldOptions.get(s));
-        }
 
         StringTokenizer tokenizer = new StringTokenizer(optionsString, " ");
         while(tokenizer.hasMoreElements()) 
@@ -111,6 +104,15 @@ public class Scene extends AbstractHost
 
             options.put(key, value);
         }
+
+        Map oldOptions = Scene.v().getPhaseOptions(phaseName);
+        Iterator optionKeysIt = oldOptions.keySet().iterator();
+        while (optionKeysIt.hasNext())
+        {
+            String s = (String)optionKeysIt.next();
+            options.put(s, oldOptions.get(s));
+        }
+
         return options;
     }
 

@@ -51,7 +51,7 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
     
     public String toString()
     {
-        return "@parameter" + n + ":" + paramType;
+        return "@parameter" + n + ": " + paramType;
     }
 
     public String toBriefString()

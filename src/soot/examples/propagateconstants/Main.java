@@ -59,7 +59,7 @@ public class Main
             {
                 SootMethod m = (SootMethod) methodIt.next();
                 
-                m.setActiveBody(new JimpleBody(new ClassFileBody(m)));
+                m.setActiveBody(Jimple.v().newBody(new ClassFileBody(m)));
             }
         }
            

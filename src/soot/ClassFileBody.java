@@ -32,6 +32,7 @@ package soot;
 import java.io.*;
 import java.util.*;
 
+/** This is somewhat of a hack; it provides a Soot interface to Coffi. */
 public class ClassFileBody extends Body
 {
     public soot.coffi.ClassFile coffiClass;

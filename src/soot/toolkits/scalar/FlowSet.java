@@ -24,20 +24,26 @@
  */
 
 
-package soot.jimple;
+package soot.toolkits.scalar;
 
 import soot.*;
 import soot.util.*;
 import java.util.*;
-import java.io.*;
 
-abstract public class StmtBody extends Body
+public interface FlowSet 
 {
-    protected StmtBody(SootMethod m)
-    {
-        super(m);
-    }
+    public int size();
+
+    public Object clone();
+    public void copy(FlowSet dest);
+    public boolean isEmpty();
+    public void clear();
+    public List toList();
+    public void add(Object obj, FlowSet dest);
+    public void remove(Object obj, FlowSet dest);
+    public void union(FlowSet other, FlowSet dest);
+    public void intersection(FlowSet other, FlowSet dest);
+    public void difference(FlowSet other, FlowSet dest);    
+    public boolean contains(Object obj);
 }
-
-
 

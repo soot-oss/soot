@@ -24,9 +24,6 @@
  */
 
 
-
-
-
 package soot.jimple;
 
 import soot.*;
@@ -44,15 +41,12 @@ public class JimpleBody extends StmtBody
         Construct an empty JimpleBody 
      **/
      
-    public JimpleBody(SootMethod m)
+    JimpleBody(SootMethod m)
     {
         super(m);
     }
 
-    public JimpleBody(Body body)
-    {
-        this(body, 0);
-    }
+    /** Clones the current body, making deep copies of the contents. */
 
     public Object clone()
     {
@@ -65,9 +59,17 @@ public class JimpleBody extends StmtBody
         Constructs a JimpleBody from the given Body.
      */
 
-    public JimpleBody(Body body, int buildOptions)
+    JimpleBody(Body body, Map options)
     {
         super(body.getMethod());
+
+        boolean noSplitting = Options.getBoolean(options, "no-splitting");
+        boolean noTyping = Options.getBoolean(options, "no-typing");
+        boolean aggregateAllLocals = Options.getBoolean(options, "aggregate-all-locals");
+        boolean noAggregating = Options.getBoolean(options, "no-aggregating");
+        boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
+        boolean usePacking = Options.getBoolean(options, "pack-locals");
+
         ClassFileBody fileBody;
 
         if(body instanceof ClassFileBody)
@@ -127,14 +129,14 @@ public class JimpleBody extends StmtBody
 
         // Jimple.printStmtList_debug(this, System.out);
 
-        if(!BuildJimpleBodyOption.noSplitting(buildOptions))
+        if(!noSplitting)
         {
             if(Main.isProfilingOptimization)
                 Main.splitTimer.start();
 
             LocalSplitter.v().transform(this, "jb.ls");
 
-            if(!BuildJimpleBodyOption.noTyping(buildOptions))
+            if(!noTyping)
             {
                 if(Main.isProfilingOptimization)
                     Main.assignTimer.start();
@@ -162,18 +164,18 @@ public class JimpleBody extends StmtBody
         
         //printTo(new PrintWriter(System.out, true));
         
-        if(BuildJimpleBodyOption.aggressiveAggregating(buildOptions))
+        if(aggregateAllLocals)
         {
             Aggregator.v().transform(this, "jb.a");
             UnusedLocalEliminator.v().transform(this, "jb.ule");
         }
-        else if(!BuildJimpleBodyOption.noAggregating(buildOptions))
+        else if(!noAggregating)
         {
             Aggregator.v().transform(this, "jb.asv", "only-stack-vars");
             UnusedLocalEliminator.v().transform(this, "jb.ule");
         }
 
-        if(!BuildJimpleBodyOption.useOriginalNames(buildOptions))
+        if(!useOriginalNames)
             LocalNameStandardizer.v().transform(this, "jb.lns");
         else
         {   
@@ -183,14 +185,13 @@ public class JimpleBody extends StmtBody
         
         //printDebugTo(new PrintWriter(System.out, true));
         
-        if(BuildJimpleBodyOption.usePacking(buildOptions))
+        if(usePacking)
         {
             LocalPacker.v().transform(this, "jb.lp");
         }
 
         if(soot.Main.isProfilingOptimization)
             soot.Main.stmtCount += getUnits().size();
-            
     }
 
     /** Temporary patch to get the typing algorithm working.
