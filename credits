@@ -24,12 +24,14 @@ Patrick Lam (plam@sable.mcgill.ca)
     - second implementation of inlining and devirtualization
 
 Feng Qian (fqian@sable.mcgill.ca)
+    - array bounds check and annotation
     - contributed to documentation writing
     
 Patrice Pominville (patrice@sable.mcgill.ca)
     - Soot infrastructure
     - Baf implementation & optimizations
     - Jimple parser
+    - annotation
     
 Vijay Sundaresan (vijay@sable.mcgill.ca)
     - first implementation of inlining and devirtualization
@@ -42,6 +44,9 @@ Clark Verbrugge (clarkv@ca.ibm.com)
     - coffi hacker
     - original Jimple hacker   
 
+Felix Kwok
+    - VTA re-implementation
+    
     
 -------------------- Funding Acknowledgements ------------------
                     
