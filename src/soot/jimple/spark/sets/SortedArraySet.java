@@ -60,8 +60,9 @@ public final class SortedArraySet extends PointsToSetInternal {
                         if( myhc < ohc ) {
                             newa[ newi++ ] = mya[ myi++ ];
                         } else if( myhc > ohc ) {
-                            if( fh == null || type == null || typeMask == null ||
-                              (0 != (typeMask[-ohc%64] & (1L<<((-ohc)%64)))) ) {
+                            if( ( fh == null || type == null || typeMask == null ||
+                              (0 != (typeMask[(-ohc)/64] & (1L<<((-ohc)%64))))  ) 
+                            && ( exclude == null || !exclude.contains( oa[oi] ) ) ) {
                                 newa[ newi++ ] = oa[ oi ];
                                 ret = true;
                             }
@@ -75,9 +76,10 @@ public final class SortedArraySet extends PointsToSetInternal {
                     }
                 } else { // myi >= size
                     if( oi < osize ) {
-                            int ohc = oa[oi].getId();
-                            if( fh == null || type == null || typeMask == null ||
-                              (0 != (typeMask[-ohc%64] & (1L<<((-ohc)%64)))) ) {
+                        int ohc = oa[oi].getId();
+                        if( ( fh == null || type == null || typeMask == null ||
+                          (0 != (typeMask[(-ohc)/64] & (1L<<((-ohc)%64))))  ) 
+                        && ( exclude == null || !exclude.contains( oa[oi] ) ) ) {
                             newa[ newi++ ] = oa[ oi ];
                             ret = true;
                         }

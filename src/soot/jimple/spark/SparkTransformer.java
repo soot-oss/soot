@@ -184,12 +184,19 @@ public class SparkTransformer extends SceneTransformer
 	System.out.println( "[Spark] Pointer Graph built in "+(startCompute.getTime() - startBuild.getTime() )/100+" deciseconds." );
         pag.getTypeManager().makeTypeMask( pag );
         Date endTypeMasks = new Date();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
 	System.out.println( "[Spark] Type masks built in "+(endTypeMasks.getTime() - startCompute.getTime() )/100+" deciseconds." );
+        endTypeMasks = new Date();
         if( opts.simplifySCCs() ) {
             new SCCCollapser( pag, opts.ignoreTypesForSCCs() ).collapse();
         }
         if( opts.simplifyOffline() ) new EBBCollapser( pag ).collapse();
-        if( true || opts.simplifySCCs() || opts.simplifyOffline() ) {
+        if( opts.simplifySCCs() || opts.simplifyOffline() ) {
             pag.cleanUpMerges();
         }
 	Date doneSimplify = new Date();

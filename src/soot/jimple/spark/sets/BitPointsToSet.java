@@ -48,18 +48,19 @@ public final class BitPointsToSet extends PointsToSetInternal {
             final PointsToSetInternal exclude ) {
         boolean ret = false;
         long[] mask = null;
+        if( !PointsToSetInternal.castNeverFails( 
+                    other.getType(), this.getType() ) ) {
+            mask = pag.getTypeManager().get( this.getType() );
+        }
         if( other instanceof BitPointsToSet ) {
             BitPointsToSet o = (BitPointsToSet) other;
             if( exclude == null || exclude.isEmpty() ) {
-                if( !PointsToSetInternal.castNeverFails( 
-                            other.getType(), this.getType() ) ) {
-                    mask = pag.getTypeManager().get( type );
-                }
                 if( mask == null ) {
                     for( int i=0; i < SIZE; i++ ) {
                         long l = o.bits[i] & ~bits[i];
                         if( l != 0L ) {
                             ret = true;
+                            empty = false;
                             bits[i] |= l;
                         }
                     }
@@ -68,6 +69,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
                         long l = o.bits[i] & ~bits[i] & mask[i];
                         if( l != 0L ) {
                             ret = true;
+                            empty = false;
                             bits[i] |= l;
                         }
                     }
@@ -75,15 +77,12 @@ public final class BitPointsToSet extends PointsToSetInternal {
                 return ret;
             } else if( exclude instanceof BitPointsToSet ) {
                 BitPointsToSet e = (BitPointsToSet) exclude;
-                if( !PointsToSetInternal.castNeverFails( 
-                            other.getType(), this.getType() ) ) {
-                    mask = pag.getTypeManager().get( type );
-                }
                 if( mask == null ) {
                     for( int i=0; i < SIZE; i++ ) {
                         long l = o.bits[i] & ~bits[i] & ~e.bits[i];
                         if( l != 0L ) {
                             ret = true;
+                            empty = false;
                             bits[i] |= l;
                         }
                     }
@@ -92,16 +91,13 @@ public final class BitPointsToSet extends PointsToSetInternal {
                         long l = o.bits[i] & ~bits[i] & ~e.bits[i] & mask[i];
                         if( l != 0L ) {
                             ret = true;
+                            empty = false;
                             bits[i] |= l;
                         }
                     }
                 }
                 return ret;
             } else {
-                if( !PointsToSetInternal.castNeverFails( 
-                            other.getType(), this.getType() ) ) {
-                    mask = pag.getTypeManager().get( type );
-                }
                 if( mask == null ) {
                     for( int i=0; i < SIZE; i++ ) {
                         long l = o.bits[i] & ~bits[i];
@@ -116,6 +112,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
                             }
                             if( l != 0L ) {
                                 ret = true;
+                                empty = false;
                                 bits[i] |= l;
                             }
                         }
@@ -134,6 +131,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
                             }
                             if( l != 0L ) {
                                 ret = true;
+                                empty = false;
                                 bits[i] |= l;
                             }
                         }

@@ -41,8 +41,6 @@ public final class TypeManager {
         }
         typeMask = new HashMap();
         if( PointsToSetInternal.getFastHierarchy() == null ) return;
-        System.gc();
-        Date start = new Date();
         HashSet declaredTypes = new HashSet();
         for( Iterator nIt = pag.allVarNodes().iterator(); nIt.hasNext(); ) {
             final VarNode n = (VarNode) nIt.next();
@@ -61,9 +59,6 @@ public final class TypeManager {
             }
             typeMask.put( t, mask );
         }
-        System.gc();
-        Date end = new Date();
-        System.out.println( "[Spark] Type masks created in "+((end.getTime()-start.getTime())/1000)+" seconds." );
     }
 
     private int SIZE = 0;

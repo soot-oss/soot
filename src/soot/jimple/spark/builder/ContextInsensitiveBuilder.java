@@ -55,12 +55,19 @@ public class ContextInsensitiveBuilder implements Builder {
 	    handleClass( c );
 	    addMiscEdges( c );
 	}
+        if( opts.verbose() ) {
+            System.out.println( "Statements analyzed: "+stmts );
+            System.out.println( "Total methods: "+totalMethods );
+            System.out.println( "Analyzed (CHA reachable) methods: "+analyzedMethods );
+            System.out.println( "Classes with at least one analyzed method: "+classes );
+        }
 	return pag;
     }
 
     /* End of public methods. */
     /* End of package methods. */
     protected void handleClass( SootClass c ) {
+        boolean incedClasses = false;
 	Iterator methodsIt = c.getMethods().iterator();
 	while( methodsIt.hasNext() ) 
 	{
@@ -70,12 +77,19 @@ public class ContextInsensitiveBuilder implements Builder {
 		buildNative( m );
 	    }
 	    if( !m.isConcrete() ) continue;
+            totalMethods++;
             if( !ig.mcg.isReachable(m)) continue;
+            analyzedMethods++;
+            if( !incedClasses ) {
+                incedClasses = true;
+                classes++;
+            }
 	    Body b = m.retrieveActiveBody();
 	    Iterator unitsIt = b.getUnits().iterator();
 	    while( unitsIt.hasNext() )
 	    {
 		parms.handleStmt( (Stmt) unitsIt.next() );
+                stmts++;
 	    }
             parms.setCurrentMethod( null );
 	}
@@ -128,8 +142,12 @@ public class ContextInsensitiveBuilder implements Builder {
         NativeMethodDriver.process( m, thisNode, retNode, args );
     }
 
-    InvokeGraph ig;
-    PAG pag;
-    Parms parms;
+    private InvokeGraph ig;
+    private PAG pag;
+    private Parms parms;
+    int classes = 0;
+    int totalMethods = 0;
+    int analyzedMethods = 0;
+    int stmts = 0;
 }
 

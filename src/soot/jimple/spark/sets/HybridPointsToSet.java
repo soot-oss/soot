@@ -39,7 +39,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     }
     /** Returns true if this set contains no run-time objects. */
     public final boolean isEmpty() {
-        return bits == null && n1 == null;
+        return empty;
     }
     /** Adds contents of other into this set, returns true if this set 
      * changed. */
@@ -47,9 +47,9 @@ public final class HybridPointsToSet extends PointsToSetInternal {
             final PointsToSetInternal exclude ) {
         boolean ret = false;
         long[] mask = null;
-        if( !PointsToSetInternal.castNeverFails( 
+        if( !PointsToSetInternal.castNeverFails(
                     other.getType(), this.getType() ) ) {
-            mask = pag.getTypeManager().get( type );
+            mask = (long[]) pag.getTypeManager().get( this.getType() );
         }
         if( other instanceof HybridPointsToSet ) {
             HybridPointsToSet o = (HybridPointsToSet) other;
@@ -61,6 +61,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
                             long l = o.bits[i] & ~bits[i];
                             if( l != 0L ) {
                                 ret = true;
+                                empty = false;
                                 bits[i] |= l;
                             }
                         }
@@ -69,6 +70,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
                             long l = o.bits[i] & ~bits[i] & mask[i];
                             if( l != 0L ) {
                                 ret = true;
+                                empty = false;
                                 bits[i] |= l;
                             }
                         }
@@ -82,6 +84,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
                             long l = o.bits[i] & ~bits[i] & ~e.bits[i];
                             if( l != 0L ) {
                                 ret = true;
+                                empty = false;
                                 bits[i] |= l;
                             }
                         }
@@ -90,6 +93,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
                             long l = o.bits[i] & ~bits[i] & ~e.bits[i] & mask[i];
                             if( l != 0L ) {
                                 ret = true;
+                                empty = false;
                                 bits[i] |= l;
                             }
                         }
@@ -110,6 +114,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
                                 }
                                 if( l != 0L ) {
                                     ret = true;
+                                    empty = false;
                                     bits[i] |= l;
                                 }
                             }
@@ -128,6 +133,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
                                 }
                                 if( l != 0L ) {
                                     ret = true;
+                                    empty = false;
                                     bits[i] |= l;
                                 }
                             }
@@ -138,67 +144,67 @@ public final class HybridPointsToSet extends PointsToSetInternal {
             } else {
                 if( o.n1 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n1 ) ) {
-                    ret = add( o.n1, mask ) | ret;
+                    ret = add( o.n1 ) | ret;
                 }
                 if( o.n2 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n2 ) ) {
-                    ret = add( o.n2, mask ) | ret;
+                    ret = add( o.n2 ) | ret;
                 }
                 if( o.n3 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n3 ) ) {
-                    ret = add( o.n3, mask ) | ret;
+                    ret = add( o.n3 ) | ret;
                 }
                 if( o.n4 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n4 ) ) {
-                    ret = add( o.n4, mask ) | ret;
+                    ret = add( o.n4 ) | ret;
                 }
                 if( o.n5 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n5 ) ) {
-                    ret = add( o.n5, mask ) | ret;
+                    ret = add( o.n5 ) | ret;
                 }
                 if( o.n6 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n6 ) ) {
-                    ret = add( o.n6, mask ) | ret;
+                    ret = add( o.n6 ) | ret;
                 }
                 if( o.n7 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n7 ) ) {
-                    ret = add( o.n7, mask ) | ret;
+                    ret = add( o.n7 ) | ret;
                 }
                 if( o.n8 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n8 ) ) {
-                    ret = add( o.n8, mask ) | ret;
+                    ret = add( o.n8 ) | ret;
                 }
                 if( o.n9 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n9 ) ) {
-                    ret = add( o.n9, mask ) | ret;
+                    ret = add( o.n9 ) | ret;
                 }
                 if( o.n10 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n10 ) ) {
-                    ret = add( o.n10, mask ) | ret;
+                    ret = add( o.n10 ) | ret;
                 }
                 if( o.n11 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n11 ) ) {
-                    ret = add( o.n11, mask ) | ret;
+                    ret = add( o.n11 ) | ret;
                 }
                 if( o.n12 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n12 ) ) {
-                    ret = add( o.n12, mask ) | ret;
+                    ret = add( o.n12 ) | ret;
                 }
                 if( o.n13 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n13 ) ) {
-                    ret = add( o.n13, mask ) | ret;
+                    ret = add( o.n13 ) | ret;
                 }
                 if( o.n14 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n14 ) ) {
-                    ret = add( o.n14, mask ) | ret;
+                    ret = add( o.n14 ) | ret;
                 }
                 if( o.n15 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n15 ) ) {
-                    ret = add( o.n15, mask ) | ret;
+                    ret = add( o.n15 ) | ret;
                 }
                 if( o.n16 == null ) return ret;
                 if( exclude == null || !exclude.contains( o.n16 ) ) {
-                    ret = add( o.n16, mask ) | ret;
+                    ret = add( o.n16 ) | ret;
                 }
                 return ret;
             }
@@ -237,10 +243,10 @@ public final class HybridPointsToSet extends PointsToSetInternal {
         return v.getReturnValue();
     }
     /** Adds n to this set, returns true if n was not already in this set. */
-    public final boolean add( Node n, long[] typeMask ) {
-        if( typeMask != null ) {
+    public final boolean add( Node n, long[] mask ) {
+        if( mask != null ) {
             int id = -n.getId();
-            if( (typeMask[id/64] & id%64) == 0 ) return false;
+            if( ( mask[id/64] & (id%64) ) == 0 ) return false;
         }
         return fastAdd( n );
     }
@@ -291,28 +297,29 @@ public final class HybridPointsToSet extends PointsToSetInternal {
 
     protected final boolean fastAdd( Node n ) {
         if( bits == null ) {
-            if( n1 == null ) { n1 = n; return true; } if( n1 == n ) return false;
-            if( n2 == null ) { n2 = n; return true; } if( n2 == n ) return false;
-            if( n3 == null ) { n3 = n; return true; } if( n3 == n ) return false;
-            if( n4 == null ) { n4 = n; return true; } if( n4 == n ) return false;
-            if( n5 == null ) { n5 = n; return true; } if( n5 == n ) return false;
-            if( n6 == null ) { n6 = n; return true; } if( n6 == n ) return false;
-            if( n7 == null ) { n7 = n; return true; } if( n7 == n ) return false;
-            if( n8 == null ) { n8 = n; return true; } if( n8 == n ) return false;
-            if( n9 == null ) { n9 = n; return true; } if( n9 == n ) return false;
-            if( n10 == null ) { n10 = n; return true; } if( n10 == n ) return false;
-            if( n11 == null ) { n11 = n; return true; } if( n11 == n ) return false;
-            if( n12 == null ) { n12 = n; return true; } if( n12 == n ) return false;
-            if( n13 == null ) { n13 = n; return true; } if( n13 == n ) return false;
-            if( n14 == null ) { n14 = n; return true; } if( n14 == n ) return false;
-            if( n15 == null ) { n15 = n; return true; } if( n15 == n ) return false;
-            if( n16 == null ) { n16 = n; return true; } if( n16 == n ) return false;
+            if( n1 == null ) { empty = false; n1 = n; return true; } if( n1 == n ) return false;
+            if( n2 == null ) { empty = false; n2 = n; return true; } if( n2 == n ) return false;
+            if( n3 == null ) { empty = false; n3 = n; return true; } if( n3 == n ) return false;
+            if( n4 == null ) { empty = false; n4 = n; return true; } if( n4 == n ) return false;
+            if( n5 == null ) { empty = false; n5 = n; return true; } if( n5 == n ) return false;
+            if( n6 == null ) { empty = false; n6 = n; return true; } if( n6 == n ) return false;
+            if( n7 == null ) { empty = false; n7 = n; return true; } if( n7 == n ) return false;
+            if( n8 == null ) { empty = false; n8 = n; return true; } if( n8 == n ) return false;
+            if( n9 == null ) { empty = false; n9 = n; return true; } if( n9 == n ) return false;
+            if( n10 == null ) { empty = false; n10 = n; return true; } if( n10 == n ) return false;
+            if( n11 == null ) { empty = false; n11 = n; return true; } if( n11 == n ) return false;
+            if( n12 == null ) { empty = false; n12 = n; return true; } if( n12 == n ) return false;
+            if( n13 == null ) { empty = false; n13 = n; return true; } if( n13 == n ) return false;
+            if( n14 == null ) { empty = false; n14 = n; return true; } if( n14 == n ) return false;
+            if( n15 == null ) { empty = false; n15 = n; return true; } if( n15 == n ) return false;
+            if( n16 == null ) { empty = false; n16 = n; return true; } if( n16 == n ) return false;
             convertToBits();
         }
         int id = -n.getId();
         if( nodes[id] == null ) nodes[id] = n;
         if( ( bits[id/64] & 1L<<(id%64) ) != 0 ) return false;
         bits[id/64] |= 1L<<(id%64);
+        empty = false;
         return true;
     }
 
@@ -357,5 +364,6 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     private static Node[] nodes = null;
     private long[] bits = null;
     private PAG pag;
+    private boolean empty = true;
 }
 
