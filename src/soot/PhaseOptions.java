@@ -61,7 +61,7 @@ public class PhaseOptions {
             PhaseOptions (which uses PackManager), and returns.  OK. */
     private PackManager pm;
     public void setPackManager(PackManager m) { this.pm = m; }
-    private PackManager getPM()
+    PackManager getPM()
     {
         if (pm == null)
             PackManager.v();

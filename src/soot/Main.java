@@ -87,13 +87,14 @@ public class Main {
                 CompilationDeathException.COMPILATION_ABORTED,
                 "Option parse error");
 
-        for( Iterator packIt = PackManager.v().allPacks().iterator(); packIt.hasNext(); ) {
-
-            final Pack pack = (Pack) packIt.next();
-            Options.v().warnForeignPhase(pack.getPhaseName());
-            for( Iterator trIt = pack.iterator(); trIt.hasNext(); ) {
-                final Transform tr = (Transform) trIt.next();
-                Options.v().warnForeignPhase(tr.getPhaseName());
+        if( PackManager.v().onlyStandardPacks() ) {
+            for( Iterator packIt = PackManager.v().allPacks().iterator(); packIt.hasNext(); ) {
+                final Pack pack = (Pack) packIt.next();
+                Options.v().warnForeignPhase(pack.getPhaseName());
+                for( Iterator trIt = pack.iterator(); trIt.hasNext(); ) {
+                    final Transform tr = (Transform) trIt.next();
+                    Options.v().warnForeignPhase(tr.getPhaseName());
+                }
             }
         }
         Options.v().warnNonexistentPhase();

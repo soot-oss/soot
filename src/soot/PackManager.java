@@ -60,6 +60,12 @@ import soot.xml.*;
 public class PackManager {
     public PackManager( Singletons.Global g ) { G.v().PhaseOptions().setPackManager(this); init(); }
 
+    public boolean onlyStandardPacks() { return onlyStandardPacks; }
+    private boolean onlyStandardPacks = false;
+    void notifyAddPack() {
+        onlyStandardPacks = false;
+    }
+
     private void init()
     {
         Pack p;
@@ -195,6 +201,8 @@ public class PackManager {
             p.add(new Transform("tag.dep", DependenceTagAggregator.v()));
             p.add(new Transform("tag.fieldrw", FieldTagAggregator.v()));
         }
+
+        onlyStandardPacks = true;
     }
 
     public static PackManager v() { 
