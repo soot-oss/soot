@@ -77,6 +77,8 @@
 \typeout{`mcgill' style for Prosper ---}
 \typeout{ }
 
+\RequirePackage{textpos}
+
 %% Color definitions
 \newrgbcolor{framebackground}{\mywhite}
 \newrgbcolor{textbackground}{\almostwhite}
@@ -200,7 +202,7 @@
 
 \titleSpacing{\vspace*{10pt}}
 
-\newcommand{\sablefootnote}[1]{\rput[l](0,-1){\footnotesize #1}}
+\newcommand{\sablefootnote}[1]{\begin{textblock*}{100mm}[0,0](-2mm,13.5mm){\footnotesize #1}\end{textblock*}}
 
 \endinput
 
