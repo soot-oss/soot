@@ -122,7 +122,7 @@ All Access should be Abstract!
 \vspace*{0.05in}
 Accessing data:
 \begin{itemize}
-\item {\tt \yellow getUseBoxes(), getDefBoxes(),\\
+\item {\tt \red getUseBoxes(), getDefBoxes(),\\
 \qquad \qquad  getUseAndDefBoxes()}
 \end{itemize}
 
@@ -155,7 +155,7 @@ Problem: Java doesn't expose pointers
 
 \vspace*{0.05in}
 \begin{tabbing}
-\qquad \= {\tt ValueBox b = s.getUseBoxes().get(0);}\\
+\quad \= {\tt ValueBox b = s.getUseBoxes().get(0);}\\
        \>{\tt b.setValue(new Local(...));}
 \end{tabbing}
 
