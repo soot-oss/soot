@@ -167,9 +167,15 @@ public class SiteInliner
                     SynchronizerManager.synchronizeStmtOn(toInline, containerB, (Local)((InstanceInvokeExpr)ie).getBase());
                 else
                 {
-                    // Whew!
-                    Local l = SynchronizerManager.addStmtsToFetchClassBefore(containerB, toInline);
-                    SynchronizerManager.synchronizeStmtOn(toInline, containerB, l);
+                    // If we're in an interface, we must be in a
+                    // <clinit> method, which surely needs no
+                    // synchronization.
+                    if (!container.getDeclaringClass().isInterface())
+                    {
+                        // Whew!
+                        Local l = SynchronizerManager.addStmtsToFetchClassBefore(containerB, toInline);
+                        SynchronizerManager.synchronizeStmtOn(toInline, containerB, l);
+                    }
                 }
             }
         }

@@ -11116,3 +11116,3713 @@ No prompt for project keyword `SootVersion'
 
 *** Merge complete
 
+
+*** Beginning merge of project soot
+
+User:             plam
+Date:             Thu, 23 Mar 2000 21:56:04 -0500
+Common version:   1.beta.6.dev.66
+Selected version: 1.beta.6.dev.68
+Working version:  1.beta.6.dev.66(w)
+
+*** Action on file `src/HierarchyBrowser.java'
+No prompt for file `src/HierarchyBrowser.java'
+
+*** Action on file `src/soot/TagManager.java'
+No prompt for file `src/soot/TagManager.java'
+
+*** Action on file `src/soot/AbstractHost.java'
+No prompt for file `src/soot/AbstractHost.java'
+
+*** Action on file `src/soot/Host.java'
+No prompt for file `src/soot/Host.java'
+
+*** Action on file `src/soot/Hierarchy.java'
+No prompt for file `src/soot/Hierarchy.java'
+
+*** Action on file `src/soot/AbstractTrap.java'
+No prompt for file `src/soot/AbstractTrap.java'
+
+*** Action on file `src/soot/PatchingChain.java'
+No prompt for file `src/soot/PatchingChain.java'
+
+*** Action on file `src/soot/Tag.java'
+No prompt for file `src/soot/Tag.java'
+
+*** Action on file `src/soot/IdentityUnit.java'
+No prompt for file `src/soot/IdentityUnit.java'
+
+*** Action on file `src/soot/Scene.java'
+No prompt for file `src/soot/Scene.java'
+
+*** Action on file `src/soot/ValueBox.java'
+No prompt for file `src/soot/ValueBox.java'
+
+*** Action on file `src/soot/AbstractValueBox.java'
+No prompt for file `src/soot/AbstractValueBox.java'
+
+*** Action on file `src/soot/AbstractUnit.java'
+No prompt for file `src/soot/AbstractUnit.java'
+
+*** Action on file `src/soot/AbstractUnitBox.java'
+No prompt for file `src/soot/AbstractUnitBox.java'
+
+*** Action on file `src/soot/Local.java'
+No prompt for file `src/soot/Local.java'
+
+*** Action on file `src/soot/Value.java'
+No prompt for file `src/soot/Value.java'
+
+*** Action on file `src/soot/Trap.java'
+No prompt for file `src/soot/Trap.java'
+
+*** Action on file `src/soot/UnitBox.java'
+No prompt for file `src/soot/UnitBox.java'
+
+*** Action on file `src/soot/Unit.java'
+No prompt for file `src/soot/Unit.java'
+
+*** Action on file `src/soot/Main.java'
+No prompt for file `src/soot/Main.java'
+
+*** Action on file `src/soot/Timer.java'
+No prompt for file `src/soot/Timer.java'
+
+*** Action on file `src/soot/ToBriefString.java'
+No prompt for file `src/soot/ToBriefString.java'
+
+*** Action on file `src/soot/Body.java'
+No prompt for file `src/soot/Body.java'
+
+*** Action on file `src/soot/SootField.java'
+No prompt for file `src/soot/SootField.java'
+
+*** Action on file `src/soot/ArrayType.java'
+No prompt for file `src/soot/ArrayType.java'
+
+*** Action on file `src/soot/BaseType.java'
+No prompt for file `src/soot/BaseType.java'
+
+*** Action on file `src/soot/BooleanType.java'
+No prompt for file `src/soot/BooleanType.java'
+
+*** Action on file `src/soot/ByteType.java'
+No prompt for file `src/soot/ByteType.java'
+
+*** Action on file `src/soot/CharType.java'
+No prompt for file `src/soot/CharType.java'
+
+*** Action on file `src/soot/DoubleType.java'
+No prompt for file `src/soot/DoubleType.java'
+
+*** Action on file `src/soot/ErroneousType.java'
+No prompt for file `src/soot/ErroneousType.java'
+
+*** Action on file `src/soot/FloatType.java'
+No prompt for file `src/soot/FloatType.java'
+
+*** Action on file `src/soot/IntType.java'
+No prompt for file `src/soot/IntType.java'
+
+*** Action on file `src/soot/LongType.java'
+No prompt for file `src/soot/LongType.java'
+
+*** Action on file `src/soot/NullType.java'
+No prompt for file `src/soot/NullType.java'
+
+*** Action on file `src/soot/ShortType.java'
+No prompt for file `src/soot/ShortType.java'
+
+*** Action on file `src/soot/RefType.java'
+No prompt for file `src/soot/RefType.java'
+
+*** Action on file `src/soot/StmtAddressType.java'
+No prompt for file `src/soot/StmtAddressType.java'
+
+*** Action on file `src/soot/Type.java'
+No prompt for file `src/soot/Type.java'
+
+*** Action on file `src/soot/UnknownType.java'
+No prompt for file `src/soot/UnknownType.java'
+
+*** Action on file `src/soot/VoidType.java'
+No prompt for file `src/soot/VoidType.java'
+
+*** Action on file `src/soot/TypeSwitch.java'
+No prompt for file `src/soot/TypeSwitch.java'
+
+*** Action on file `src/soot/Modifier.java'
+No prompt for file `src/soot/Modifier.java'
+
+*** Action on file `src/soot/SootClass.java'
+No prompt for file `src/soot/SootClass.java'
+
+*** Action on file `src/soot/SootMethod.java'
+No prompt for file `src/soot/SootMethod.java'
+
+*** Action on file `src/soot/grimp/PrintGrimpBodyOption.java'
+No prompt for file `src/soot/grimp/PrintGrimpBodyOption.java'
+
+*** Action on file `src/soot/grimp/Precedence.java'
+No prompt for file `src/soot/grimp/Precedence.java'
+
+*** Action on file `src/soot/grimp/GrimpExprSwitch.java'
+No prompt for file `src/soot/grimp/GrimpExprSwitch.java'
+
+*** Action on file `src/soot/grimp/GrimpBody.java'
+No prompt for file `src/soot/grimp/GrimpBody.java'
+
+*** Action on file `src/soot/grimp/Grimp.java'
+No prompt for file `src/soot/grimp/Grimp.java'
+
+*** Action on file `src/soot/grimp/internal/GAddExpr.java'
+No prompt for file `src/soot/grimp/internal/GAddExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GAndExpr.java'
+No prompt for file `src/soot/grimp/internal/GAndExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GArrayRef.java'
+No prompt for file `src/soot/grimp/internal/GArrayRef.java'
+
+*** Action on file `src/soot/grimp/internal/GAssignStmt.java'
+No prompt for file `src/soot/grimp/internal/GAssignStmt.java'
+
+*** Action on file `src/soot/grimp/internal/GCastExpr.java'
+No prompt for file `src/soot/grimp/internal/GCastExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GCmpExpr.java'
+No prompt for file `src/soot/grimp/internal/GCmpExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GCmpgExpr.java'
+No prompt for file `src/soot/grimp/internal/GCmpgExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GCmplExpr.java'
+No prompt for file `src/soot/grimp/internal/GCmplExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GDivExpr.java'
+No prompt for file `src/soot/grimp/internal/GDivExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GEnterMonitorStmt.java'
+No prompt for file `src/soot/grimp/internal/GEnterMonitorStmt.java'
+
+*** Action on file `src/soot/grimp/internal/GEqExpr.java'
+No prompt for file `src/soot/grimp/internal/GEqExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GExitMonitorStmt.java'
+No prompt for file `src/soot/grimp/internal/GExitMonitorStmt.java'
+
+*** Action on file `src/soot/grimp/internal/GGeExpr.java'
+No prompt for file `src/soot/grimp/internal/GGeExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GGtExpr.java'
+No prompt for file `src/soot/grimp/internal/GGtExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GIdentityStmt.java'
+No prompt for file `src/soot/grimp/internal/GIdentityStmt.java'
+
+*** Action on file `src/soot/grimp/internal/GIfStmt.java'
+No prompt for file `src/soot/grimp/internal/GIfStmt.java'
+
+*** Action on file `src/soot/grimp/internal/GInstanceFieldRef.java'
+No prompt for file `src/soot/grimp/internal/GInstanceFieldRef.java'
+
+*** Action on file `src/soot/grimp/internal/GInstanceOfExpr.java'
+No prompt for file `src/soot/grimp/internal/GInstanceOfExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GInterfaceInvokeExpr.java'
+No prompt for file `src/soot/grimp/internal/GInterfaceInvokeExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GInvokeStmt.java'
+No prompt for file `src/soot/grimp/internal/GInvokeStmt.java'
+
+*** Action on file `src/soot/grimp/internal/GLeExpr.java'
+No prompt for file `src/soot/grimp/internal/GLeExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GLengthExpr.java'
+No prompt for file `src/soot/grimp/internal/GLengthExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GLookupSwitchStmt.java'
+No prompt for file `src/soot/grimp/internal/GLookupSwitchStmt.java'
+
+*** Action on file `src/soot/grimp/internal/GLtExpr.java'
+No prompt for file `src/soot/grimp/internal/GLtExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GMulExpr.java'
+No prompt for file `src/soot/grimp/internal/GMulExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GNeExpr.java'
+No prompt for file `src/soot/grimp/internal/GNeExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GNegExpr.java'
+No prompt for file `src/soot/grimp/internal/GNegExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GNewArrayExpr.java'
+No prompt for file `src/soot/grimp/internal/GNewArrayExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GNewInvokeExpr.java'
+No prompt for file `src/soot/grimp/internal/GNewInvokeExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GNewMultiArrayExpr.java'
+No prompt for file `src/soot/grimp/internal/GNewMultiArrayExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GOrExpr.java'
+No prompt for file `src/soot/grimp/internal/GOrExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GRValueBox.java'
+No prompt for file `src/soot/grimp/internal/GRValueBox.java'
+
+*** Action on file `src/soot/grimp/internal/GRemExpr.java'
+No prompt for file `src/soot/grimp/internal/GRemExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GReturnStmt.java'
+No prompt for file `src/soot/grimp/internal/GReturnStmt.java'
+
+*** Action on file `src/soot/grimp/internal/GShlExpr.java'
+No prompt for file `src/soot/grimp/internal/GShlExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GShrExpr.java'
+No prompt for file `src/soot/grimp/internal/GShrExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GSpecialInvokeExpr.java'
+No prompt for file `src/soot/grimp/internal/GSpecialInvokeExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GStaticInvokeExpr.java'
+No prompt for file `src/soot/grimp/internal/GStaticInvokeExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GSubExpr.java'
+No prompt for file `src/soot/grimp/internal/GSubExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GTableSwitchStmt.java'
+No prompt for file `src/soot/grimp/internal/GTableSwitchStmt.java'
+
+*** Action on file `src/soot/grimp/internal/GThrowStmt.java'
+No prompt for file `src/soot/grimp/internal/GThrowStmt.java'
+
+*** Action on file `src/soot/grimp/internal/GTrap.java'
+No prompt for file `src/soot/grimp/internal/GTrap.java'
+
+*** Action on file `src/soot/grimp/internal/GUshrExpr.java'
+No prompt for file `src/soot/grimp/internal/GUshrExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GVirtualInvokeExpr.java'
+No prompt for file `src/soot/grimp/internal/GVirtualInvokeExpr.java'
+
+*** Action on file `src/soot/grimp/internal/GXorExpr.java'
+No prompt for file `src/soot/grimp/internal/GXorExpr.java'
+
+*** Action on file `src/soot/grimp/internal/AbstractGrimpBinopExpr.java'
+No prompt for file `src/soot/grimp/internal/AbstractGrimpBinopExpr.java'
+
+*** Action on file `src/soot/grimp/internal/AbstractGrimpFloatBinopExpr.java'
+No prompt for file `src/soot/grimp/internal/AbstractGrimpFloatBinopExpr.java'
+
+*** Action on file `src/soot/grimp/internal/AbstractGrimpIntBinopExpr.java'
+No prompt for file `src/soot/grimp/internal/AbstractGrimpIntBinopExpr.java'
+
+*** Action on file `src/soot/grimp/internal/AbstractGrimpIntLongBinopExpr.java'
+No prompt for file `src/soot/grimp/internal/AbstractGrimpIntLongBinopExpr.java'
+
+*** Action on file `src/soot/baf/Dup1Inst.java'
+No prompt for file `src/soot/baf/Dup1Inst.java'
+
+*** Action on file `src/soot/baf/Dup2Inst.java'
+No prompt for file `src/soot/baf/Dup2Inst.java'
+
+*** Action on file `src/soot/baf/Dup1_x1Inst.java'
+No prompt for file `src/soot/baf/Dup1_x1Inst.java'
+
+*** Action on file `src/soot/baf/Dup1_x2Inst.java'
+No prompt for file `src/soot/baf/Dup1_x2Inst.java'
+
+*** Action on file `src/soot/baf/Dup2_x1Inst.java'
+No prompt for file `src/soot/baf/Dup2_x1Inst.java'
+
+*** Action on file `src/soot/baf/Dup2_x2Inst.java'
+No prompt for file `src/soot/baf/Dup2_x2Inst.java'
+
+*** Action on file `src/soot/baf/JasminClass.java'
+No prompt for file `src/soot/baf/JasminClass.java'
+
+*** Action on file `src/soot/baf/PrimitiveCastInst.java'
+No prompt for file `src/soot/baf/PrimitiveCastInst.java'
+
+*** Action on file `src/soot/baf/ArrayWriteInst.java'
+No prompt for file `src/soot/baf/ArrayWriteInst.java'
+
+*** Action on file `src/soot/baf/ArrayReadInst.java'
+No prompt for file `src/soot/baf/ArrayReadInst.java'
+
+*** Action on file `src/soot/baf/InstanceCastInst.java'
+No prompt for file `src/soot/baf/InstanceCastInst.java'
+
+*** Action on file `src/soot/baf/IdentityInst.java'
+No prompt for file `src/soot/baf/IdentityInst.java'
+
+*** Action on file `src/soot/baf/FieldGetInst.java'
+No prompt for file `src/soot/baf/FieldGetInst.java'
+
+*** Action on file `src/soot/baf/InstBox.java'
+No prompt for file `src/soot/baf/InstBox.java'
+
+*** Action on file `src/soot/baf/PlaceholderInst.java'
+No prompt for file `src/soot/baf/PlaceholderInst.java'
+
+*** Action on file `src/soot/baf/FieldPutInst.java'
+No prompt for file `src/soot/baf/FieldPutInst.java'
+
+*** Action on file `src/soot/baf/InstSwitch.java'
+No prompt for file `src/soot/baf/InstSwitch.java'
+
+*** Action on file `src/soot/baf/PrintBafBodyOption.java'
+No prompt for file `src/soot/baf/PrintBafBodyOption.java'
+
+*** Action on file `src/soot/baf/WordType.java'
+No prompt for file `src/soot/baf/WordType.java'
+
+*** Action on file `src/soot/baf/DoubleWordType.java'
+No prompt for file `src/soot/baf/DoubleWordType.java'
+
+*** Action on file `src/soot/baf/VirtualInvokeInst.java'
+No prompt for file `src/soot/baf/VirtualInvokeInst.java'
+
+*** Action on file `src/soot/baf/StaticGetInst.java'
+No prompt for file `src/soot/baf/StaticGetInst.java'
+
+*** Action on file `src/soot/baf/StaticInvokeInst.java'
+No prompt for file `src/soot/baf/StaticInvokeInst.java'
+
+*** Action on file `src/soot/baf/SpecialInvokeInst.java'
+No prompt for file `src/soot/baf/SpecialInvokeInst.java'
+
+*** Action on file `src/soot/baf/ExitMonitorInst.java'
+No prompt for file `src/soot/baf/ExitMonitorInst.java'
+
+*** Action on file `src/soot/baf/InterfaceInvokeInst.java'
+No prompt for file `src/soot/baf/InterfaceInvokeInst.java'
+
+*** Action on file `src/soot/baf/StaticPutInst.java'
+No prompt for file `src/soot/baf/StaticPutInst.java'
+
+*** Action on file `src/soot/baf/EnterMonitorInst.java'
+No prompt for file `src/soot/baf/EnterMonitorInst.java'
+
+*** Action on file `src/soot/baf/ArrayLengthInst.java'
+No prompt for file `src/soot/baf/ArrayLengthInst.java'
+
+*** Action on file `src/soot/baf/AddInst.java'
+No prompt for file `src/soot/baf/AddInst.java'
+
+*** Action on file `src/soot/baf/AndInst.java'
+No prompt for file `src/soot/baf/AndInst.java'
+
+*** Action on file `src/soot/baf/CmpInst.java'
+No prompt for file `src/soot/baf/CmpInst.java'
+
+*** Action on file `src/soot/baf/CmpgInst.java'
+No prompt for file `src/soot/baf/CmpgInst.java'
+
+*** Action on file `src/soot/baf/CmplInst.java'
+No prompt for file `src/soot/baf/CmplInst.java'
+
+*** Action on file `src/soot/baf/DivInst.java'
+No prompt for file `src/soot/baf/DivInst.java'
+
+*** Action on file `src/soot/baf/DupInst.java'
+No prompt for file `src/soot/baf/DupInst.java'
+
+*** Action on file `src/soot/baf/FieldArgInst.java'
+No prompt for file `src/soot/baf/FieldArgInst.java'
+
+*** Action on file `src/soot/baf/GotoInst.java'
+No prompt for file `src/soot/baf/GotoInst.java'
+
+*** Action on file `src/soot/baf/IfCmpEqInst.java'
+No prompt for file `src/soot/baf/IfCmpEqInst.java'
+
+*** Action on file `src/soot/baf/IfCmpGeInst.java'
+No prompt for file `src/soot/baf/IfCmpGeInst.java'
+
+*** Action on file `src/soot/baf/IfCmpGtInst.java'
+No prompt for file `src/soot/baf/IfCmpGtInst.java'
+
+*** Action on file `src/soot/baf/IfCmpLeInst.java'
+No prompt for file `src/soot/baf/IfCmpLeInst.java'
+
+*** Action on file `src/soot/baf/IfCmpLtInst.java'
+No prompt for file `src/soot/baf/IfCmpLtInst.java'
+
+*** Action on file `src/soot/baf/IfCmpNeInst.java'
+No prompt for file `src/soot/baf/IfCmpNeInst.java'
+
+*** Action on file `src/soot/baf/IfEqInst.java'
+No prompt for file `src/soot/baf/IfEqInst.java'
+
+*** Action on file `src/soot/baf/IfGeInst.java'
+No prompt for file `src/soot/baf/IfGeInst.java'
+
+*** Action on file `src/soot/baf/IfGtInst.java'
+No prompt for file `src/soot/baf/IfGtInst.java'
+
+*** Action on file `src/soot/baf/IfLeInst.java'
+No prompt for file `src/soot/baf/IfLeInst.java'
+
+*** Action on file `src/soot/baf/IfLtInst.java'
+No prompt for file `src/soot/baf/IfLtInst.java'
+
+*** Action on file `src/soot/baf/IfNeInst.java'
+No prompt for file `src/soot/baf/IfNeInst.java'
+
+*** Action on file `src/soot/baf/IfNonNullInst.java'
+No prompt for file `src/soot/baf/IfNonNullInst.java'
+
+*** Action on file `src/soot/baf/IfNullInst.java'
+No prompt for file `src/soot/baf/IfNullInst.java'
+
+*** Action on file `src/soot/baf/IncInst.java'
+No prompt for file `src/soot/baf/IncInst.java'
+
+*** Action on file `src/soot/baf/Inst.java'
+No prompt for file `src/soot/baf/Inst.java'
+
+*** Action on file `src/soot/baf/InstanceOfInst.java'
+No prompt for file `src/soot/baf/InstanceOfInst.java'
+
+*** Action on file `src/soot/baf/LoadInst.java'
+No prompt for file `src/soot/baf/LoadInst.java'
+
+*** Action on file `src/soot/baf/LookupSwitchInst.java'
+No prompt for file `src/soot/baf/LookupSwitchInst.java'
+
+*** Action on file `src/soot/baf/MethodArgInst.java'
+No prompt for file `src/soot/baf/MethodArgInst.java'
+
+*** Action on file `src/soot/baf/MulInst.java'
+No prompt for file `src/soot/baf/MulInst.java'
+
+*** Action on file `src/soot/baf/NegInst.java'
+No prompt for file `src/soot/baf/NegInst.java'
+
+*** Action on file `src/soot/baf/NewArrayInst.java'
+No prompt for file `src/soot/baf/NewArrayInst.java'
+
+*** Action on file `src/soot/baf/NewInst.java'
+No prompt for file `src/soot/baf/NewInst.java'
+
+*** Action on file `src/soot/baf/NewMultiArrayInst.java'
+No prompt for file `src/soot/baf/NewMultiArrayInst.java'
+
+*** Action on file `src/soot/baf/NoArgInst.java'
+No prompt for file `src/soot/baf/NoArgInst.java'
+
+*** Action on file `src/soot/baf/NopInst.java'
+No prompt for file `src/soot/baf/NopInst.java'
+
+*** Action on file `src/soot/baf/OpTypeArgInst.java'
+No prompt for file `src/soot/baf/OpTypeArgInst.java'
+
+*** Action on file `src/soot/baf/OrInst.java'
+No prompt for file `src/soot/baf/OrInst.java'
+
+*** Action on file `src/soot/baf/PopInst.java'
+No prompt for file `src/soot/baf/PopInst.java'
+
+*** Action on file `src/soot/baf/PushInst.java'
+No prompt for file `src/soot/baf/PushInst.java'
+
+*** Action on file `src/soot/baf/RemInst.java'
+No prompt for file `src/soot/baf/RemInst.java'
+
+*** Action on file `src/soot/baf/RetInst.java'
+No prompt for file `src/soot/baf/RetInst.java'
+
+*** Action on file `src/soot/baf/ReturnInst.java'
+No prompt for file `src/soot/baf/ReturnInst.java'
+
+*** Action on file `src/soot/baf/ReturnVoidInst.java'
+No prompt for file `src/soot/baf/ReturnVoidInst.java'
+
+*** Action on file `src/soot/baf/ShlInst.java'
+No prompt for file `src/soot/baf/ShlInst.java'
+
+*** Action on file `src/soot/baf/ShrInst.java'
+No prompt for file `src/soot/baf/ShrInst.java'
+
+*** Action on file `src/soot/baf/StoreInst.java'
+No prompt for file `src/soot/baf/StoreInst.java'
+
+*** Action on file `src/soot/baf/SubInst.java'
+No prompt for file `src/soot/baf/SubInst.java'
+
+*** Action on file `src/soot/baf/SwapInst.java'
+No prompt for file `src/soot/baf/SwapInst.java'
+
+*** Action on file `src/soot/baf/TableSwitchInst.java'
+No prompt for file `src/soot/baf/TableSwitchInst.java'
+
+*** Action on file `src/soot/baf/TargetArgInst.java'
+No prompt for file `src/soot/baf/TargetArgInst.java'
+
+*** Action on file `src/soot/baf/ThrowInst.java'
+No prompt for file `src/soot/baf/ThrowInst.java'
+
+*** Action on file `src/soot/baf/UshrInst.java'
+No prompt for file `src/soot/baf/UshrInst.java'
+
+*** Action on file `src/soot/baf/XorInst.java'
+No prompt for file `src/soot/baf/XorInst.java'
+
+*** Action on file `src/soot/baf/BafBody.java'
+No prompt for file `src/soot/baf/BafBody.java'
+
+*** Action on file `src/soot/baf/Baf.java'
+No prompt for file `src/soot/baf/Baf.java'
+
+*** Action on file `src/soot/baf/internal/BAddInst.java'
+No prompt for file `src/soot/baf/internal/BAddInst.java'
+
+*** Action on file `src/soot/baf/internal/BAndInst.java'
+No prompt for file `src/soot/baf/internal/BAndInst.java'
+
+*** Action on file `src/soot/baf/internal/BArrayLengthInst.java'
+No prompt for file `src/soot/baf/internal/BArrayLengthInst.java'
+
+*** Action on file `src/soot/baf/internal/BArrayReadInst.java'
+No prompt for file `src/soot/baf/internal/BArrayReadInst.java'
+
+*** Action on file `src/soot/baf/internal/BArrayWriteInst.java'
+No prompt for file `src/soot/baf/internal/BArrayWriteInst.java'
+
+*** Action on file `src/soot/baf/internal/BCmpInst.java'
+No prompt for file `src/soot/baf/internal/BCmpInst.java'
+
+*** Action on file `src/soot/baf/internal/BCmpgInst.java'
+No prompt for file `src/soot/baf/internal/BCmpgInst.java'
+
+*** Action on file `src/soot/baf/internal/BCmplInst.java'
+No prompt for file `src/soot/baf/internal/BCmplInst.java'
+
+*** Action on file `src/soot/baf/internal/BDivInst.java'
+No prompt for file `src/soot/baf/internal/BDivInst.java'
+
+*** Action on file `src/soot/baf/internal/BDup1Inst.java'
+No prompt for file `src/soot/baf/internal/BDup1Inst.java'
+
+*** Action on file `src/soot/baf/internal/BDup1_x1Inst.java'
+No prompt for file `src/soot/baf/internal/BDup1_x1Inst.java'
+
+*** Action on file `src/soot/baf/internal/BDup2Inst.java'
+No prompt for file `src/soot/baf/internal/BDup2Inst.java'
+
+*** Action on file `src/soot/baf/internal/BDupInst.java'
+No prompt for file `src/soot/baf/internal/BDupInst.java'
+
+*** Action on file `src/soot/baf/internal/BEnterMonitorInst.java'
+No prompt for file `src/soot/baf/internal/BEnterMonitorInst.java'
+
+*** Action on file `src/soot/baf/internal/BExitMonitorInst.java'
+No prompt for file `src/soot/baf/internal/BExitMonitorInst.java'
+
+*** Action on file `src/soot/baf/internal/BFieldGetInst.java'
+No prompt for file `src/soot/baf/internal/BFieldGetInst.java'
+
+*** Action on file `src/soot/baf/internal/BFieldPutInst.java'
+No prompt for file `src/soot/baf/internal/BFieldPutInst.java'
+
+*** Action on file `src/soot/baf/internal/BGotoInst.java'
+No prompt for file `src/soot/baf/internal/BGotoInst.java'
+
+*** Action on file `src/soot/baf/internal/BIdentityInst.java'
+No prompt for file `src/soot/baf/internal/BIdentityInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfCmpEqInst.java'
+No prompt for file `src/soot/baf/internal/BIfCmpEqInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfCmpGeInst.java'
+No prompt for file `src/soot/baf/internal/BIfCmpGeInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfCmpGtInst.java'
+No prompt for file `src/soot/baf/internal/BIfCmpGtInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfCmpLeInst.java'
+No prompt for file `src/soot/baf/internal/BIfCmpLeInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfCmpLtInst.java'
+No prompt for file `src/soot/baf/internal/BIfCmpLtInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfCmpNeInst.java'
+No prompt for file `src/soot/baf/internal/BIfCmpNeInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfEqInst.java'
+No prompt for file `src/soot/baf/internal/BIfEqInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfGeInst.java'
+No prompt for file `src/soot/baf/internal/BIfGeInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfGtInst.java'
+No prompt for file `src/soot/baf/internal/BIfGtInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfLeInst.java'
+No prompt for file `src/soot/baf/internal/BIfLeInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfLtInst.java'
+No prompt for file `src/soot/baf/internal/BIfLtInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfNeInst.java'
+No prompt for file `src/soot/baf/internal/BIfNeInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfNonNullInst.java'
+No prompt for file `src/soot/baf/internal/BIfNonNullInst.java'
+
+*** Action on file `src/soot/baf/internal/BIfNullInst.java'
+No prompt for file `src/soot/baf/internal/BIfNullInst.java'
+
+*** Action on file `src/soot/baf/internal/BIncInst.java'
+No prompt for file `src/soot/baf/internal/BIncInst.java'
+
+*** Action on file `src/soot/baf/internal/BInstanceCastInst.java'
+No prompt for file `src/soot/baf/internal/BInstanceCastInst.java'
+
+*** Action on file `src/soot/baf/internal/BInstanceOfInst.java'
+No prompt for file `src/soot/baf/internal/BInstanceOfInst.java'
+
+*** Action on file `src/soot/baf/internal/BInterfaceInvokeInst.java'
+No prompt for file `src/soot/baf/internal/BInterfaceInvokeInst.java'
+
+*** Action on file `src/soot/baf/internal/BLoadInst.java'
+No prompt for file `src/soot/baf/internal/BLoadInst.java'
+
+*** Action on file `src/soot/baf/internal/BLookupSwitchInst.java'
+No prompt for file `src/soot/baf/internal/BLookupSwitchInst.java'
+
+*** Action on file `src/soot/baf/internal/BMulInst.java'
+No prompt for file `src/soot/baf/internal/BMulInst.java'
+
+*** Action on file `src/soot/baf/internal/BNegInst.java'
+No prompt for file `src/soot/baf/internal/BNegInst.java'
+
+*** Action on file `src/soot/baf/internal/BNewArrayInst.java'
+No prompt for file `src/soot/baf/internal/BNewArrayInst.java'
+
+*** Action on file `src/soot/baf/internal/BNewInst.java'
+No prompt for file `src/soot/baf/internal/BNewInst.java'
+
+*** Action on file `src/soot/baf/internal/BNewMultiArrayInst.java'
+No prompt for file `src/soot/baf/internal/BNewMultiArrayInst.java'
+
+*** Action on file `src/soot/baf/internal/BNopInst.java'
+No prompt for file `src/soot/baf/internal/BNopInst.java'
+
+*** Action on file `src/soot/baf/internal/BOrInst.java'
+No prompt for file `src/soot/baf/internal/BOrInst.java'
+
+*** Action on file `src/soot/baf/internal/BPopInst.java'
+No prompt for file `src/soot/baf/internal/BPopInst.java'
+
+*** Action on file `src/soot/baf/internal/BPrimitiveCastInst.java'
+No prompt for file `src/soot/baf/internal/BPrimitiveCastInst.java'
+
+*** Action on file `src/soot/baf/internal/BPushInst.java'
+No prompt for file `src/soot/baf/internal/BPushInst.java'
+
+*** Action on file `src/soot/baf/internal/BRemInst.java'
+No prompt for file `src/soot/baf/internal/BRemInst.java'
+
+*** Action on file `src/soot/baf/internal/BReturnInst.java'
+No prompt for file `src/soot/baf/internal/BReturnInst.java'
+
+*** Action on file `src/soot/baf/internal/BReturnVoidInst.java'
+No prompt for file `src/soot/baf/internal/BReturnVoidInst.java'
+
+*** Action on file `src/soot/baf/internal/BShlInst.java'
+No prompt for file `src/soot/baf/internal/BShlInst.java'
+
+*** Action on file `src/soot/baf/internal/BShrInst.java'
+No prompt for file `src/soot/baf/internal/BShrInst.java'
+
+*** Action on file `src/soot/baf/internal/BSpecialInvokeInst.java'
+No prompt for file `src/soot/baf/internal/BSpecialInvokeInst.java'
+
+*** Action on file `src/soot/baf/internal/BStaticGetInst.java'
+No prompt for file `src/soot/baf/internal/BStaticGetInst.java'
+
+*** Action on file `src/soot/baf/internal/BStaticInvokeInst.java'
+No prompt for file `src/soot/baf/internal/BStaticInvokeInst.java'
+
+*** Action on file `src/soot/baf/internal/BStaticPutInst.java'
+No prompt for file `src/soot/baf/internal/BStaticPutInst.java'
+
+*** Action on file `src/soot/baf/internal/BStoreInst.java'
+No prompt for file `src/soot/baf/internal/BStoreInst.java'
+
+*** Action on file `src/soot/baf/internal/BSubInst.java'
+No prompt for file `src/soot/baf/internal/BSubInst.java'
+
+*** Action on file `src/soot/baf/internal/BSwapInst.java'
+No prompt for file `src/soot/baf/internal/BSwapInst.java'
+
+*** Action on file `src/soot/baf/internal/BTableSwitchInst.java'
+No prompt for file `src/soot/baf/internal/BTableSwitchInst.java'
+
+*** Action on file `src/soot/baf/internal/BThrowInst.java'
+No prompt for file `src/soot/baf/internal/BThrowInst.java'
+
+*** Action on file `src/soot/baf/internal/BTrap.java'
+No prompt for file `src/soot/baf/internal/BTrap.java'
+
+*** Action on file `src/soot/baf/internal/BUshrInst.java'
+No prompt for file `src/soot/baf/internal/BUshrInst.java'
+
+*** Action on file `src/soot/baf/internal/BVirtualInvokeInst.java'
+No prompt for file `src/soot/baf/internal/BVirtualInvokeInst.java'
+
+*** Action on file `src/soot/baf/internal/BXorInst.java'
+No prompt for file `src/soot/baf/internal/BXorInst.java'
+
+*** Action on file `src/soot/baf/internal/AbstractBranchInst.java'
+No prompt for file `src/soot/baf/internal/AbstractBranchInst.java'
+
+*** Action on file `src/soot/baf/internal/AbstractInst.java'
+No prompt for file `src/soot/baf/internal/AbstractInst.java'
+
+*** Action on file `src/soot/baf/internal/AbstractInvokeInst.java'
+No prompt for file `src/soot/baf/internal/AbstractInvokeInst.java'
+
+*** Action on file `src/soot/baf/internal/AbstractOpTypeBranchInst.java'
+No prompt for file `src/soot/baf/internal/AbstractOpTypeBranchInst.java'
+
+*** Action on file `src/soot/baf/internal/AbstractOpTypeInst.java'
+No prompt for file `src/soot/baf/internal/AbstractOpTypeInst.java'
+
+*** Action on file `src/soot/baf/internal/AbstractRefTypeInst.java'
+No prompt for file `src/soot/baf/internal/AbstractRefTypeInst.java'
+
+*** Action on file `src/soot/coffi/BasicBlock.java'
+No prompt for file `src/soot/coffi/BasicBlock.java'
+
+*** Action on file `src/soot/coffi/ByteCode.java'
+No prompt for file `src/soot/coffi/ByteCode.java'
+
+*** Action on file `src/soot/coffi/CONSTANT_Double_info.java'
+No prompt for file `src/soot/coffi/CONSTANT_Double_info.java'
+
+*** Action on file `src/soot/coffi/CONSTANT_Fieldref_info.java'
+No prompt for file `src/soot/coffi/CONSTANT_Fieldref_info.java'
+
+*** Action on file `src/soot/coffi/CONSTANT_Class_info.java'
+No prompt for file `src/soot/coffi/CONSTANT_Class_info.java'
+
+*** Action on file `src/soot/coffi/CONSTANT_Float_info.java'
+No prompt for file `src/soot/coffi/CONSTANT_Float_info.java'
+
+*** Action on file `src/soot/coffi/CONSTANT_Integer_info.java'
+No prompt for file `src/soot/coffi/CONSTANT_Integer_info.java'
+
+*** Action on file `src/soot/coffi/CONSTANT_InterfaceMethodref_info.java'
+No prompt for file `src/soot/coffi/CONSTANT_InterfaceMethodref_info.java'
+
+*** Action on file `src/soot/coffi/CONSTANT_Long_info.java'
+No prompt for file `src/soot/coffi/CONSTANT_Long_info.java'
+
+*** Action on file `src/soot/coffi/CONSTANT_Methodref_info.java'
+No prompt for file `src/soot/coffi/CONSTANT_Methodref_info.java'
+
+*** Action on file `src/soot/coffi/CONSTANT_NameAndType_info.java'
+No prompt for file `src/soot/coffi/CONSTANT_NameAndType_info.java'
+
+*** Action on file `src/soot/coffi/CONSTANT_String_info.java'
+No prompt for file `src/soot/coffi/CONSTANT_String_info.java'
+
+*** Action on file `src/soot/coffi/CONSTANT_Utf8_info.java'
+No prompt for file `src/soot/coffi/CONSTANT_Utf8_info.java'
+
+*** Action on file `src/soot/coffi/ClassFile.java'
+No prompt for file `src/soot/coffi/ClassFile.java'
+
+*** Action on file `src/soot/coffi/Code_attribute.java'
+No prompt for file `src/soot/coffi/Code_attribute.java'
+
+*** Action on file `src/soot/coffi/ConstantValue_attribute.java'
+No prompt for file `src/soot/coffi/ConstantValue_attribute.java'
+
+*** Action on file `src/soot/coffi/Double2ndHalfType.java'
+No prompt for file `src/soot/coffi/Double2ndHalfType.java'
+
+*** Action on file `src/soot/coffi/Exception_attribute.java'
+No prompt for file `src/soot/coffi/Exception_attribute.java'
+
+*** Action on file `src/soot/coffi/FutureStmt.java'
+No prompt for file `src/soot/coffi/FutureStmt.java'
+
+*** Action on file `src/soot/coffi/Generic_attribute.java'
+No prompt for file `src/soot/coffi/Generic_attribute.java'
+
+*** Action on file `src/soot/coffi/Instruction.java'
+No prompt for file `src/soot/coffi/Instruction.java'
+
+*** Action on file `src/soot/coffi/Instruction_Aaload.java'
+No prompt for file `src/soot/coffi/Instruction_Aaload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Aastore.java'
+No prompt for file `src/soot/coffi/Instruction_Aastore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Aconst_null.java'
+No prompt for file `src/soot/coffi/Instruction_Aconst_null.java'
+
+*** Action on file `src/soot/coffi/Instruction_Aload.java'
+No prompt for file `src/soot/coffi/Instruction_Aload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Aload_0.java'
+No prompt for file `src/soot/coffi/Instruction_Aload_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Aload_1.java'
+No prompt for file `src/soot/coffi/Instruction_Aload_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Aload_2.java'
+No prompt for file `src/soot/coffi/Instruction_Aload_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Aload_3.java'
+No prompt for file `src/soot/coffi/Instruction_Aload_3.java'
+
+*** Action on file `src/soot/coffi/Instruction_Anewarray.java'
+No prompt for file `src/soot/coffi/Instruction_Anewarray.java'
+
+*** Action on file `src/soot/coffi/Instruction_Areturn.java'
+No prompt for file `src/soot/coffi/Instruction_Areturn.java'
+
+*** Action on file `src/soot/coffi/Instruction_Arraylength.java'
+No prompt for file `src/soot/coffi/Instruction_Arraylength.java'
+
+*** Action on file `src/soot/coffi/Instruction_Astore.java'
+No prompt for file `src/soot/coffi/Instruction_Astore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Astore_0.java'
+No prompt for file `src/soot/coffi/Instruction_Astore_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Astore_1.java'
+No prompt for file `src/soot/coffi/Instruction_Astore_1.java'
+
+*** Action on file `src/soot/coffi/BBQ.java'
+No prompt for file `src/soot/coffi/BBQ.java'
+
+*** Action on file `src/soot/coffi/Instruction_Astore_2.java'
+No prompt for file `src/soot/coffi/Instruction_Astore_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Astore_3.java'
+No prompt for file `src/soot/coffi/Instruction_Astore_3.java'
+
+*** Action on file `src/soot/coffi/Instruction_Athrow.java'
+No prompt for file `src/soot/coffi/Instruction_Athrow.java'
+
+*** Action on file `src/soot/coffi/Instruction_Baload.java'
+No prompt for file `src/soot/coffi/Instruction_Baload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Bastore.java'
+No prompt for file `src/soot/coffi/Instruction_Bastore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Bipush.java'
+No prompt for file `src/soot/coffi/Instruction_Bipush.java'
+
+*** Action on file `src/soot/coffi/Instruction_Breakpoint.java'
+No prompt for file `src/soot/coffi/Instruction_Breakpoint.java'
+
+*** Action on file `src/soot/coffi/Instruction_Caload.java'
+No prompt for file `src/soot/coffi/Instruction_Caload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Castore.java'
+No prompt for file `src/soot/coffi/Instruction_Castore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Checkcast.java'
+No prompt for file `src/soot/coffi/Instruction_Checkcast.java'
+
+*** Action on file `src/soot/coffi/Instruction_D2f.java'
+No prompt for file `src/soot/coffi/Instruction_D2f.java'
+
+*** Action on file `src/soot/coffi/Instruction_D2i.java'
+No prompt for file `src/soot/coffi/Instruction_D2i.java'
+
+*** Action on file `src/soot/coffi/Instruction_D2l.java'
+No prompt for file `src/soot/coffi/Instruction_D2l.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dadd.java'
+No prompt for file `src/soot/coffi/Instruction_Dadd.java'
+
+*** Action on file `src/soot/coffi/Instruction_Daload.java'
+No prompt for file `src/soot/coffi/Instruction_Daload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dastore.java'
+No prompt for file `src/soot/coffi/Instruction_Dastore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dcmpg.java'
+No prompt for file `src/soot/coffi/Instruction_Dcmpg.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dcmpl.java'
+No prompt for file `src/soot/coffi/Instruction_Dcmpl.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dconst_0.java'
+No prompt for file `src/soot/coffi/Instruction_Dconst_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dconst_1.java'
+No prompt for file `src/soot/coffi/Instruction_Dconst_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ddiv.java'
+No prompt for file `src/soot/coffi/Instruction_Ddiv.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dload.java'
+No prompt for file `src/soot/coffi/Instruction_Dload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dload_0.java'
+No prompt for file `src/soot/coffi/Instruction_Dload_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dload_1.java'
+No prompt for file `src/soot/coffi/Instruction_Dload_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dload_2.java'
+No prompt for file `src/soot/coffi/Instruction_Dload_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dload_3.java'
+No prompt for file `src/soot/coffi/Instruction_Dload_3.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dmul.java'
+No prompt for file `src/soot/coffi/Instruction_Dmul.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dneg.java'
+No prompt for file `src/soot/coffi/Instruction_Dneg.java'
+
+*** Action on file `src/soot/coffi/Instruction_Drem.java'
+No prompt for file `src/soot/coffi/Instruction_Drem.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dreturn.java'
+No prompt for file `src/soot/coffi/Instruction_Dreturn.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dstore.java'
+No prompt for file `src/soot/coffi/Instruction_Dstore.java'
+
+*** Action on file `src/soot/coffi/CFG.java'
+No prompt for file `src/soot/coffi/CFG.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dstore_0.java'
+No prompt for file `src/soot/coffi/Instruction_Dstore_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dstore_1.java'
+No prompt for file `src/soot/coffi/Instruction_Dstore_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dstore_2.java'
+No prompt for file `src/soot/coffi/Instruction_Dstore_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dstore_3.java'
+No prompt for file `src/soot/coffi/Instruction_Dstore_3.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dsub.java'
+No prompt for file `src/soot/coffi/Instruction_Dsub.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dup.java'
+No prompt for file `src/soot/coffi/Instruction_Dup.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dup2.java'
+No prompt for file `src/soot/coffi/Instruction_Dup2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dup2_x1.java'
+No prompt for file `src/soot/coffi/Instruction_Dup2_x1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dup2_x2.java'
+No prompt for file `src/soot/coffi/Instruction_Dup2_x2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dup_x1.java'
+No prompt for file `src/soot/coffi/Instruction_Dup_x1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Dup_x2.java'
+No prompt for file `src/soot/coffi/Instruction_Dup_x2.java'
+
+*** Action on file `src/soot/coffi/Instruction_F2d.java'
+No prompt for file `src/soot/coffi/Instruction_F2d.java'
+
+*** Action on file `src/soot/coffi/Instruction_F2i.java'
+No prompt for file `src/soot/coffi/Instruction_F2i.java'
+
+*** Action on file `src/soot/coffi/Instruction_F2l.java'
+No prompt for file `src/soot/coffi/Instruction_F2l.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fadd.java'
+No prompt for file `src/soot/coffi/Instruction_Fadd.java'
+
+*** Action on file `src/soot/coffi/Instruction_Faload.java'
+No prompt for file `src/soot/coffi/Instruction_Faload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fastore.java'
+No prompt for file `src/soot/coffi/Instruction_Fastore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fcmpg.java'
+No prompt for file `src/soot/coffi/Instruction_Fcmpg.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fcmpl.java'
+No prompt for file `src/soot/coffi/Instruction_Fcmpl.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fconst_0.java'
+No prompt for file `src/soot/coffi/Instruction_Fconst_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fconst_1.java'
+No prompt for file `src/soot/coffi/Instruction_Fconst_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fconst_2.java'
+No prompt for file `src/soot/coffi/Instruction_Fconst_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fdiv.java'
+No prompt for file `src/soot/coffi/Instruction_Fdiv.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fload.java'
+No prompt for file `src/soot/coffi/Instruction_Fload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fload_0.java'
+No prompt for file `src/soot/coffi/Instruction_Fload_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fload_1.java'
+No prompt for file `src/soot/coffi/Instruction_Fload_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fload_2.java'
+No prompt for file `src/soot/coffi/Instruction_Fload_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fload_3.java'
+No prompt for file `src/soot/coffi/Instruction_Fload_3.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fmul.java'
+No prompt for file `src/soot/coffi/Instruction_Fmul.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fneg.java'
+No prompt for file `src/soot/coffi/Instruction_Fneg.java'
+
+*** Action on file `src/soot/coffi/Instruction_Frem.java'
+No prompt for file `src/soot/coffi/Instruction_Frem.java'
+
+*** Action on file `src/soot/coffi/Instruction_Freturn.java'
+No prompt for file `src/soot/coffi/Instruction_Freturn.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fstore.java'
+No prompt for file `src/soot/coffi/Instruction_Fstore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fstore_0.java'
+No prompt for file `src/soot/coffi/Instruction_Fstore_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fstore_1.java'
+No prompt for file `src/soot/coffi/Instruction_Fstore_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fstore_2.java'
+No prompt for file `src/soot/coffi/Instruction_Fstore_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fstore_3.java'
+No prompt for file `src/soot/coffi/Instruction_Fstore_3.java'
+
+*** Action on file `src/soot/coffi/Instruction_Fsub.java'
+No prompt for file `src/soot/coffi/Instruction_Fsub.java'
+
+*** Action on file `src/soot/coffi/Instruction_Getfield.java'
+No prompt for file `src/soot/coffi/Instruction_Getfield.java'
+
+*** Action on file `src/soot/coffi/Instruction_Getstatic.java'
+No prompt for file `src/soot/coffi/Instruction_Getstatic.java'
+
+*** Action on file `src/soot/coffi/Instruction_Goto.java'
+No prompt for file `src/soot/coffi/Instruction_Goto.java'
+
+*** Action on file `src/soot/coffi/Instruction_Goto_w.java'
+No prompt for file `src/soot/coffi/Instruction_Goto_w.java'
+
+*** Action on file `src/soot/coffi/Instruction_I2d.java'
+No prompt for file `src/soot/coffi/Instruction_I2d.java'
+
+*** Action on file `src/soot/coffi/Instruction_I2f.java'
+No prompt for file `src/soot/coffi/Instruction_I2f.java'
+
+*** Action on file `src/soot/coffi/Instruction_I2l.java'
+No prompt for file `src/soot/coffi/Instruction_I2l.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iadd.java'
+No prompt for file `src/soot/coffi/Instruction_Iadd.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iaload.java'
+No prompt for file `src/soot/coffi/Instruction_Iaload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iand.java'
+No prompt for file `src/soot/coffi/Instruction_Iand.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iastore.java'
+No prompt for file `src/soot/coffi/Instruction_Iastore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iconst_0.java'
+No prompt for file `src/soot/coffi/Instruction_Iconst_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iconst_1.java'
+No prompt for file `src/soot/coffi/Instruction_Iconst_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iconst_2.java'
+No prompt for file `src/soot/coffi/Instruction_Iconst_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iconst_3.java'
+No prompt for file `src/soot/coffi/Instruction_Iconst_3.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iconst_4.java'
+No prompt for file `src/soot/coffi/Instruction_Iconst_4.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iconst_5.java'
+No prompt for file `src/soot/coffi/Instruction_Iconst_5.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iconst_m1.java'
+No prompt for file `src/soot/coffi/Instruction_Iconst_m1.java'
+
+*** Action on file `src/soot/coffi/Instruction_If_acmpeq.java'
+No prompt for file `src/soot/coffi/Instruction_If_acmpeq.java'
+
+*** Action on file `src/soot/coffi/Instruction_If_acmpne.java'
+No prompt for file `src/soot/coffi/Instruction_If_acmpne.java'
+
+*** Action on file `src/soot/coffi/Instruction_If_icmpeq.java'
+No prompt for file `src/soot/coffi/Instruction_If_icmpeq.java'
+
+*** Action on file `src/soot/coffi/Instruction_If_icmpge.java'
+No prompt for file `src/soot/coffi/Instruction_If_icmpge.java'
+
+*** Action on file `src/soot/coffi/Instruction_If_icmpgt.java'
+No prompt for file `src/soot/coffi/Instruction_If_icmpgt.java'
+
+*** Action on file `src/soot/coffi/Instruction_Idiv.java'
+No prompt for file `src/soot/coffi/Instruction_Idiv.java'
+
+*** Action on file `src/soot/coffi/Instruction_If_icmple.java'
+No prompt for file `src/soot/coffi/Instruction_If_icmple.java'
+
+*** Action on file `src/soot/coffi/Instruction_If_icmplt.java'
+No prompt for file `src/soot/coffi/Instruction_If_icmplt.java'
+
+*** Action on file `src/soot/coffi/Instruction_If_icmpne.java'
+No prompt for file `src/soot/coffi/Instruction_If_icmpne.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ifeq.java'
+No prompt for file `src/soot/coffi/Instruction_Ifeq.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ifge.java'
+No prompt for file `src/soot/coffi/Instruction_Ifge.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ifgt.java'
+No prompt for file `src/soot/coffi/Instruction_Ifgt.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ifle.java'
+No prompt for file `src/soot/coffi/Instruction_Ifle.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iflt.java'
+No prompt for file `src/soot/coffi/Instruction_Iflt.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ifne.java'
+No prompt for file `src/soot/coffi/Instruction_Ifne.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ifnonnull.java'
+No prompt for file `src/soot/coffi/Instruction_Ifnonnull.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ifnull.java'
+No prompt for file `src/soot/coffi/Instruction_Ifnull.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iinc.java'
+No prompt for file `src/soot/coffi/Instruction_Iinc.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iload.java'
+No prompt for file `src/soot/coffi/Instruction_Iload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iload_0.java'
+No prompt for file `src/soot/coffi/Instruction_Iload_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iload_1.java'
+No prompt for file `src/soot/coffi/Instruction_Iload_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iload_2.java'
+No prompt for file `src/soot/coffi/Instruction_Iload_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iload_3.java'
+No prompt for file `src/soot/coffi/Instruction_Iload_3.java'
+
+*** Action on file `src/soot/coffi/Instruction_Imul.java'
+No prompt for file `src/soot/coffi/Instruction_Imul.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ineg.java'
+No prompt for file `src/soot/coffi/Instruction_Ineg.java'
+
+*** Action on file `src/soot/coffi/Instruction_Instanceof.java'
+No prompt for file `src/soot/coffi/Instruction_Instanceof.java'
+
+*** Action on file `src/soot/coffi/Instruction_Int2byte.java'
+No prompt for file `src/soot/coffi/Instruction_Int2byte.java'
+
+*** Action on file `src/soot/coffi/Instruction_Int2char.java'
+No prompt for file `src/soot/coffi/Instruction_Int2char.java'
+
+*** Action on file `src/soot/coffi/Instruction_Int2short.java'
+No prompt for file `src/soot/coffi/Instruction_Int2short.java'
+
+*** Action on file `src/soot/coffi/Instruction_Invokeinterface.java'
+No prompt for file `src/soot/coffi/Instruction_Invokeinterface.java'
+
+*** Action on file `src/soot/coffi/Instruction_Invokenonvirtual.java'
+No prompt for file `src/soot/coffi/Instruction_Invokenonvirtual.java'
+
+*** Action on file `src/soot/coffi/Instruction_Invokestatic.java'
+No prompt for file `src/soot/coffi/Instruction_Invokestatic.java'
+
+*** Action on file `src/soot/coffi/Instruction_Invokevirtual.java'
+No prompt for file `src/soot/coffi/Instruction_Invokevirtual.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ior.java'
+No prompt for file `src/soot/coffi/Instruction_Ior.java'
+
+*** Action on file `src/soot/coffi/Instruction_Irem.java'
+No prompt for file `src/soot/coffi/Instruction_Irem.java'
+
+*** Action on file `src/soot/coffi/Info.java'
+No prompt for file `src/soot/coffi/Info.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ireturn.java'
+No prompt for file `src/soot/coffi/Instruction_Ireturn.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ishl.java'
+No prompt for file `src/soot/coffi/Instruction_Ishl.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ishr.java'
+No prompt for file `src/soot/coffi/Instruction_Ishr.java'
+
+*** Action on file `src/soot/coffi/Instruction_Istore.java'
+No prompt for file `src/soot/coffi/Instruction_Istore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Istore_0.java'
+No prompt for file `src/soot/coffi/Instruction_Istore_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Istore_1.java'
+No prompt for file `src/soot/coffi/Instruction_Istore_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Istore_2.java'
+No prompt for file `src/soot/coffi/Instruction_Istore_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Istore_3.java'
+No prompt for file `src/soot/coffi/Instruction_Istore_3.java'
+
+*** Action on file `src/soot/coffi/Instruction_Isub.java'
+No prompt for file `src/soot/coffi/Instruction_Isub.java'
+
+*** Action on file `src/soot/coffi/Instruction_Iushr.java'
+No prompt for file `src/soot/coffi/Instruction_Iushr.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ixor.java'
+No prompt for file `src/soot/coffi/Instruction_Ixor.java'
+
+*** Action on file `src/soot/coffi/Instruction_Jsr.java'
+No prompt for file `src/soot/coffi/Instruction_Jsr.java'
+
+*** Action on file `src/soot/coffi/Instruction_Jsr_w.java'
+No prompt for file `src/soot/coffi/Instruction_Jsr_w.java'
+
+*** Action on file `src/soot/coffi/Instruction_L2d.java'
+No prompt for file `src/soot/coffi/Instruction_L2d.java'
+
+*** Action on file `src/soot/coffi/Instruction_L2f.java'
+No prompt for file `src/soot/coffi/Instruction_L2f.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ladd.java'
+No prompt for file `src/soot/coffi/Instruction_Ladd.java'
+
+*** Action on file `src/soot/coffi/Instruction_Laload.java'
+No prompt for file `src/soot/coffi/Instruction_Laload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Land.java'
+No prompt for file `src/soot/coffi/Instruction_Land.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lastore.java'
+No prompt for file `src/soot/coffi/Instruction_Lastore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lcmp.java'
+No prompt for file `src/soot/coffi/Instruction_Lcmp.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lconst_0.java'
+No prompt for file `src/soot/coffi/Instruction_Lconst_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lconst_1.java'
+No prompt for file `src/soot/coffi/Instruction_Lconst_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ldc1.java'
+No prompt for file `src/soot/coffi/Instruction_Ldc1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ldc2.java'
+No prompt for file `src/soot/coffi/Instruction_Ldc2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ldc2w.java'
+No prompt for file `src/soot/coffi/Instruction_Ldc2w.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ldiv.java'
+No prompt for file `src/soot/coffi/Instruction_Ldiv.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lload.java'
+No prompt for file `src/soot/coffi/Instruction_Lload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lload_0.java'
+No prompt for file `src/soot/coffi/Instruction_Lload_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lload_1.java'
+No prompt for file `src/soot/coffi/Instruction_Lload_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lload_2.java'
+No prompt for file `src/soot/coffi/Instruction_Lload_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lload_3.java'
+No prompt for file `src/soot/coffi/Instruction_Lload_3.java'
+
+*** Action on file `src/soot/coffi/Instruction_L2i.java'
+No prompt for file `src/soot/coffi/Instruction_L2i.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lmul.java'
+No prompt for file `src/soot/coffi/Instruction_Lmul.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lneg.java'
+No prompt for file `src/soot/coffi/Instruction_Lneg.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lookupswitch.java'
+No prompt for file `src/soot/coffi/Instruction_Lookupswitch.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lor.java'
+No prompt for file `src/soot/coffi/Instruction_Lor.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lrem.java'
+No prompt for file `src/soot/coffi/Instruction_Lrem.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lreturn.java'
+No prompt for file `src/soot/coffi/Instruction_Lreturn.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lshl.java'
+No prompt for file `src/soot/coffi/Instruction_Lshl.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lshr.java'
+No prompt for file `src/soot/coffi/Instruction_Lshr.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lstore.java'
+No prompt for file `src/soot/coffi/Instruction_Lstore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lstore_0.java'
+No prompt for file `src/soot/coffi/Instruction_Lstore_0.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lstore_1.java'
+No prompt for file `src/soot/coffi/Instruction_Lstore_1.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lstore_2.java'
+No prompt for file `src/soot/coffi/Instruction_Lstore_2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lstore_3.java'
+No prompt for file `src/soot/coffi/Instruction_Lstore_3.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lsub.java'
+No prompt for file `src/soot/coffi/Instruction_Lsub.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lushr.java'
+No prompt for file `src/soot/coffi/Instruction_Lushr.java'
+
+*** Action on file `src/soot/coffi/Instruction_Lxor.java'
+No prompt for file `src/soot/coffi/Instruction_Lxor.java'
+
+*** Action on file `src/soot/coffi/Instruction_Monitorenter.java'
+No prompt for file `src/soot/coffi/Instruction_Monitorenter.java'
+
+*** Action on file `src/soot/coffi/Instruction_Monitorexit.java'
+No prompt for file `src/soot/coffi/Instruction_Monitorexit.java'
+
+*** Action on file `src/soot/coffi/Instruction_Multianewarray.java'
+No prompt for file `src/soot/coffi/Instruction_Multianewarray.java'
+
+*** Action on file `src/soot/coffi/Instruction_New.java'
+No prompt for file `src/soot/coffi/Instruction_New.java'
+
+*** Action on file `src/soot/coffi/Instruction_Newarray.java'
+No prompt for file `src/soot/coffi/Instruction_Newarray.java'
+
+*** Action on file `src/soot/coffi/Instruction_Nop.java'
+No prompt for file `src/soot/coffi/Instruction_Nop.java'
+
+*** Action on file `src/soot/coffi/Instruction_Pop.java'
+No prompt for file `src/soot/coffi/Instruction_Pop.java'
+
+*** Action on file `src/soot/coffi/Instruction_Pop2.java'
+No prompt for file `src/soot/coffi/Instruction_Pop2.java'
+
+*** Action on file `src/soot/coffi/Instruction_Putfield.java'
+No prompt for file `src/soot/coffi/Instruction_Putfield.java'
+
+*** Action on file `src/soot/coffi/Instruction_Putstatic.java'
+No prompt for file `src/soot/coffi/Instruction_Putstatic.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ret.java'
+No prompt for file `src/soot/coffi/Instruction_Ret.java'
+
+*** Action on file `src/soot/coffi/Instruction_Ret_w.java'
+No prompt for file `src/soot/coffi/Instruction_Ret_w.java'
+
+*** Action on file `src/soot/coffi/Instruction_Return.java'
+No prompt for file `src/soot/coffi/Instruction_Return.java'
+
+*** Action on file `src/soot/coffi/Instruction_Saload.java'
+No prompt for file `src/soot/coffi/Instruction_Saload.java'
+
+*** Action on file `src/soot/coffi/Instruction_Sastore.java'
+No prompt for file `src/soot/coffi/Instruction_Sastore.java'
+
+*** Action on file `src/soot/coffi/Instruction_Sipush.java'
+No prompt for file `src/soot/coffi/Instruction_Sipush.java'
+
+*** Action on file `src/soot/coffi/Instruction_Swap.java'
+No prompt for file `src/soot/coffi/Instruction_Swap.java'
+
+*** Action on file `src/soot/coffi/Instruction_Tableswitch.java'
+No prompt for file `src/soot/coffi/Instruction_Tableswitch.java'
+
+*** Action on file `src/soot/coffi/Instruction_Unknown.java'
+No prompt for file `src/soot/coffi/Instruction_Unknown.java'
+
+*** Action on file `src/soot/coffi/Instruction_Wide.java'
+No prompt for file `src/soot/coffi/Instruction_Wide.java'
+
+*** Action on file `src/soot/coffi/Instruction_byte.java'
+No prompt for file `src/soot/coffi/Instruction_byte.java'
+
+*** Action on file `src/soot/coffi/Instruction_byteindex.java'
+No prompt for file `src/soot/coffi/Instruction_byteindex.java'
+
+*** Action on file `src/soot/coffi/Instruction_bytevar.java'
+No prompt for file `src/soot/coffi/Instruction_bytevar.java'
+
+*** Action on file `src/soot/coffi/Instruction_int.java'
+No prompt for file `src/soot/coffi/Instruction_int.java'
+
+*** Action on file `src/soot/coffi/Instruction_intbranch.java'
+No prompt for file `src/soot/coffi/Instruction_intbranch.java'
+
+*** Action on file `src/soot/coffi/Instruction_intindex.java'
+No prompt for file `src/soot/coffi/Instruction_intindex.java'
+
+*** Action on file `src/soot/coffi/Instruction_intvar.java'
+No prompt for file `src/soot/coffi/Instruction_intvar.java'
+
+*** Action on file `src/soot/coffi/Instruction_longbranch.java'
+No prompt for file `src/soot/coffi/Instruction_longbranch.java'
+
+*** Action on file `src/soot/coffi/Instruction_noargs.java'
+No prompt for file `src/soot/coffi/Instruction_noargs.java'
+
+*** Action on file `src/soot/coffi/LineNumberTable_attribute.java'
+No prompt for file `src/soot/coffi/LineNumberTable_attribute.java'
+
+*** Action on file `src/soot/coffi/LocalVariableTable_attribute.java'
+No prompt for file `src/soot/coffi/LocalVariableTable_attribute.java'
+
+*** Action on file `src/soot/coffi/Long2ndHalfType.java'
+No prompt for file `src/soot/coffi/Long2ndHalfType.java'
+
+*** Action on file `src/soot/coffi/Main.java'
+No prompt for file `src/soot/coffi/Main.java'
+
+*** Action on file `src/soot/coffi/SourceFile_attribute.java'
+No prompt for file `src/soot/coffi/SourceFile_attribute.java'
+
+*** Action on file `src/soot/coffi/TypeArray.java'
+No prompt for file `src/soot/coffi/TypeArray.java'
+
+*** Action on file `src/soot/coffi/TypeStack.java'
+No prompt for file `src/soot/coffi/TypeStack.java'
+
+*** Action on file `src/soot/coffi/UnusuableType.java'
+No prompt for file `src/soot/coffi/UnusuableType.java'
+
+*** Action on file `src/soot/coffi/Utf8_Enumeration.java'
+No prompt for file `src/soot/coffi/Utf8_Enumeration.java'
+
+*** Action on file `src/soot/coffi/Util.java'
+No prompt for file `src/soot/coffi/Util.java'
+
+*** Action on file `src/soot/coffi/attribute_info.java'
+No prompt for file `src/soot/coffi/attribute_info.java'
+
+*** Action on file `src/soot/coffi/cp_info.java'
+No prompt for file `src/soot/coffi/cp_info.java'
+
+*** Action on file `src/soot/coffi/exception_table_entry.java'
+No prompt for file `src/soot/coffi/exception_table_entry.java'
+
+*** Action on file `src/soot/coffi/field_info.java'
+No prompt for file `src/soot/coffi/field_info.java'
+
+*** Action on file `src/soot/coffi/line_number_table_entry.java'
+No prompt for file `src/soot/coffi/line_number_table_entry.java'
+
+*** Action on file `src/soot/coffi/local_variable_table_entry.java'
+No prompt for file `src/soot/coffi/local_variable_table_entry.java'
+
+*** Action on file `src/soot/coffi/method_info.java'
+No prompt for file `src/soot/coffi/method_info.java'
+
+*** Action on file `src/soot/jimple/InstanceInvokeExpr.java'
+No prompt for file `src/soot/jimple/InstanceInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/ArithmeticConstant.java'
+No prompt for file `src/soot/jimple/ArithmeticConstant.java'
+
+*** Action on file `src/soot/jimple/NumericConstant.java'
+No prompt for file `src/soot/jimple/NumericConstant.java'
+
+*** Action on file `src/soot/jimple/RealConstant.java'
+No prompt for file `src/soot/jimple/RealConstant.java'
+
+*** Action on file `src/soot/jimple/MonitorStmt.java'
+No prompt for file `src/soot/jimple/MonitorStmt.java'
+
+*** Action on file `src/soot/jimple/PlaceholderStmt.java'
+No prompt for file `src/soot/jimple/PlaceholderStmt.java'
+
+*** Action on file `src/soot/jimple/JimpleToBafContext.java'
+No prompt for file `src/soot/jimple/JimpleToBafContext.java'
+
+*** Action on file `src/soot/jimple/ConvertToBaf.java'
+No prompt for file `src/soot/jimple/ConvertToBaf.java'
+
+*** Action on file `src/soot/jimple/EqualLocals.java'
+No prompt for file `src/soot/jimple/EqualLocals.java'
+
+*** Action on file `src/soot/jimple/FieldRef.java'
+No prompt for file `src/soot/jimple/FieldRef.java'
+
+*** Action on file `src/soot/jimple/GroupIntPair.java'
+No prompt for file `src/soot/jimple/GroupIntPair.java'
+
+*** Action on file `src/soot/jimple/StmtBody.java'
+No prompt for file `src/soot/jimple/StmtBody.java'
+
+*** Action on file `src/soot/jimple/LocalStmtPair.java'
+No prompt for file `src/soot/jimple/LocalStmtPair.java'
+
+*** Action on file `src/soot/jimple/PrintJimpleBodyOption.java'
+No prompt for file `src/soot/jimple/PrintJimpleBodyOption.java'
+
+*** Action on file `src/soot/jimple/AbstractStmtSwitch.java'
+No prompt for file `src/soot/jimple/AbstractStmtSwitch.java'
+
+*** Action on file `src/soot/jimple/JimpleValueSwitch.java'
+No prompt for file `src/soot/jimple/JimpleValueSwitch.java'
+
+*** Action on file `src/soot/jimple/RefSwitch.java'
+No prompt for file `src/soot/jimple/RefSwitch.java'
+
+*** Action on file `src/soot/jimple/ExprSwitch.java'
+No prompt for file `src/soot/jimple/ExprSwitch.java'
+
+*** Action on file `src/soot/jimple/AbstractJimpleValueSwitch.java'
+No prompt for file `src/soot/jimple/AbstractJimpleValueSwitch.java'
+
+*** Action on file `src/soot/jimple/AbstractExprSwitch.java'
+No prompt for file `src/soot/jimple/AbstractExprSwitch.java'
+
+*** Action on file `src/soot/jimple/AbstractRefSwitch.java'
+No prompt for file `src/soot/jimple/AbstractRefSwitch.java'
+
+*** Action on file `src/soot/jimple/ConstantSwitch.java'
+No prompt for file `src/soot/jimple/ConstantSwitch.java'
+
+*** Action on file `src/soot/jimple/AbstractConstantSwitch.java'
+No prompt for file `src/soot/jimple/AbstractConstantSwitch.java'
+
+*** Action on file `src/soot/jimple/ConditionExpr.java'
+No prompt for file `src/soot/jimple/ConditionExpr.java'
+
+*** Action on file `src/soot/jimple/NextNextStmtRef.java'
+No prompt for file `src/soot/jimple/NextNextStmtRef.java'
+
+*** Action on file `src/soot/jimple/IdentityRef.java'
+No prompt for file `src/soot/jimple/IdentityRef.java'
+
+*** Action on file `src/soot/jimple/ConcreteRef.java'
+No prompt for file `src/soot/jimple/ConcreteRef.java'
+
+*** Action on file `src/soot/jimple/JimpleBody.java'
+No prompt for file `src/soot/jimple/JimpleBody.java'
+
+*** Action on file `src/soot/jimple/AddExpr.java'
+No prompt for file `src/soot/jimple/AddExpr.java'
+
+*** Action on file `src/soot/jimple/AndExpr.java'
+No prompt for file `src/soot/jimple/AndExpr.java'
+
+*** Action on file `src/soot/jimple/ArrayRef.java'
+No prompt for file `src/soot/jimple/ArrayRef.java'
+
+*** Action on file `src/soot/jimple/AssignStmt.java'
+No prompt for file `src/soot/jimple/AssignStmt.java'
+
+*** Action on file `src/soot/jimple/BinopExpr.java'
+No prompt for file `src/soot/jimple/BinopExpr.java'
+
+*** Action on file `src/soot/jimple/BreakpointStmt.java'
+No prompt for file `src/soot/jimple/BreakpointStmt.java'
+
+*** Action on file `src/soot/jimple/CastExpr.java'
+No prompt for file `src/soot/jimple/CastExpr.java'
+
+*** Action on file `src/soot/jimple/CaughtExceptionRef.java'
+No prompt for file `src/soot/jimple/CaughtExceptionRef.java'
+
+*** Action on file `src/soot/jimple/CmpExpr.java'
+No prompt for file `src/soot/jimple/CmpExpr.java'
+
+*** Action on file `src/soot/jimple/CmpgExpr.java'
+No prompt for file `src/soot/jimple/CmpgExpr.java'
+
+*** Action on file `src/soot/jimple/CmplExpr.java'
+No prompt for file `src/soot/jimple/CmplExpr.java'
+
+*** Action on file `src/soot/jimple/Constant.java'
+No prompt for file `src/soot/jimple/Constant.java'
+
+*** Action on file `src/soot/jimple/DefinitionStmt.java'
+No prompt for file `src/soot/jimple/DefinitionStmt.java'
+
+*** Action on file `src/soot/jimple/DivExpr.java'
+No prompt for file `src/soot/jimple/DivExpr.java'
+
+*** Action on file `src/soot/jimple/DoubleConstant.java'
+No prompt for file `src/soot/jimple/DoubleConstant.java'
+
+*** Action on file `src/soot/jimple/EnterMonitorStmt.java'
+No prompt for file `src/soot/jimple/EnterMonitorStmt.java'
+
+*** Action on file `src/soot/jimple/EqExpr.java'
+No prompt for file `src/soot/jimple/EqExpr.java'
+
+*** Action on file `src/soot/jimple/ExitMonitorStmt.java'
+No prompt for file `src/soot/jimple/ExitMonitorStmt.java'
+
+*** Action on file `src/soot/jimple/Expr.java'
+No prompt for file `src/soot/jimple/Expr.java'
+
+*** Action on file `src/soot/jimple/FloatConstant.java'
+No prompt for file `src/soot/jimple/FloatConstant.java'
+
+*** Action on file `src/soot/jimple/GeExpr.java'
+No prompt for file `src/soot/jimple/GeExpr.java'
+
+*** Action on file `src/soot/jimple/GotoStmt.java'
+No prompt for file `src/soot/jimple/GotoStmt.java'
+
+*** Action on file `src/soot/jimple/GtExpr.java'
+No prompt for file `src/soot/jimple/GtExpr.java'
+
+*** Action on file `src/soot/jimple/IdentityStmt.java'
+No prompt for file `src/soot/jimple/IdentityStmt.java'
+
+*** Action on file `src/soot/jimple/IfStmt.java'
+No prompt for file `src/soot/jimple/IfStmt.java'
+
+*** Action on file `src/soot/jimple/InstanceFieldRef.java'
+No prompt for file `src/soot/jimple/InstanceFieldRef.java'
+
+*** Action on file `src/soot/jimple/InstanceOfExpr.java'
+No prompt for file `src/soot/jimple/InstanceOfExpr.java'
+
+*** Action on file `src/soot/jimple/IntConstant.java'
+No prompt for file `src/soot/jimple/IntConstant.java'
+
+*** Action on file `src/soot/jimple/InterfaceInvokeExpr.java'
+No prompt for file `src/soot/jimple/InterfaceInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/InvokeExpr.java'
+No prompt for file `src/soot/jimple/InvokeExpr.java'
+
+*** Action on file `src/soot/jimple/InvokeStmt.java'
+No prompt for file `src/soot/jimple/InvokeStmt.java'
+
+*** Action on file `src/soot/jimple/JasminClass.java'
+No prompt for file `src/soot/jimple/JasminClass.java'
+
+*** Action on file `src/soot/jimple/Jimple.java'
+No prompt for file `src/soot/jimple/Jimple.java'
+
+*** Action on file `src/soot/jimple/LengthExpr.java'
+No prompt for file `src/soot/jimple/LengthExpr.java'
+
+*** Action on file `src/soot/jimple/Ref.java'
+No prompt for file `src/soot/jimple/Ref.java'
+
+*** Action on file `src/soot/jimple/LeExpr.java'
+No prompt for file `src/soot/jimple/LeExpr.java'
+
+*** Action on file `src/soot/jimple/LongConstant.java'
+No prompt for file `src/soot/jimple/LongConstant.java'
+
+*** Action on file `src/soot/jimple/LookupSwitchStmt.java'
+No prompt for file `src/soot/jimple/LookupSwitchStmt.java'
+
+*** Action on file `src/soot/jimple/LtExpr.java'
+No prompt for file `src/soot/jimple/LtExpr.java'
+
+*** Action on file `src/soot/jimple/MulExpr.java'
+No prompt for file `src/soot/jimple/MulExpr.java'
+
+*** Action on file `src/soot/jimple/NeExpr.java'
+No prompt for file `src/soot/jimple/NeExpr.java'
+
+*** Action on file `src/soot/jimple/NegExpr.java'
+No prompt for file `src/soot/jimple/NegExpr.java'
+
+*** Action on file `src/soot/jimple/NewArrayExpr.java'
+No prompt for file `src/soot/jimple/NewArrayExpr.java'
+
+*** Action on file `src/soot/jimple/NewExpr.java'
+No prompt for file `src/soot/jimple/NewExpr.java'
+
+*** Action on file `src/soot/jimple/NewMultiArrayExpr.java'
+No prompt for file `src/soot/jimple/NewMultiArrayExpr.java'
+
+*** Action on file `src/soot/jimple/NoSuchLocalException.java'
+No prompt for file `src/soot/jimple/NoSuchLocalException.java'
+
+*** Action on file `src/soot/jimple/NopStmt.java'
+No prompt for file `src/soot/jimple/NopStmt.java'
+
+*** Action on file `src/soot/jimple/NullConstant.java'
+No prompt for file `src/soot/jimple/NullConstant.java'
+
+*** Action on file `src/soot/jimple/OrExpr.java'
+No prompt for file `src/soot/jimple/OrExpr.java'
+
+*** Action on file `src/soot/jimple/ParameterRef.java'
+No prompt for file `src/soot/jimple/ParameterRef.java'
+
+*** Action on file `src/soot/jimple/RemExpr.java'
+No prompt for file `src/soot/jimple/RemExpr.java'
+
+*** Action on file `src/soot/jimple/RetStmt.java'
+No prompt for file `src/soot/jimple/RetStmt.java'
+
+*** Action on file `src/soot/jimple/ReturnStmt.java'
+No prompt for file `src/soot/jimple/ReturnStmt.java'
+
+*** Action on file `src/soot/jimple/ReturnVoidStmt.java'
+No prompt for file `src/soot/jimple/ReturnVoidStmt.java'
+
+*** Action on file `src/soot/jimple/ShlExpr.java'
+No prompt for file `src/soot/jimple/ShlExpr.java'
+
+*** Action on file `src/soot/jimple/ShrExpr.java'
+No prompt for file `src/soot/jimple/ShrExpr.java'
+
+*** Action on file `src/soot/jimple/SpecialInvokeExpr.java'
+No prompt for file `src/soot/jimple/SpecialInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/StaticFieldRef.java'
+No prompt for file `src/soot/jimple/StaticFieldRef.java'
+
+*** Action on file `src/soot/jimple/StaticInvokeExpr.java'
+No prompt for file `src/soot/jimple/StaticInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/Stmt.java'
+No prompt for file `src/soot/jimple/Stmt.java'
+
+*** Action on file `src/soot/jimple/StmtSwitch.java'
+No prompt for file `src/soot/jimple/StmtSwitch.java'
+
+*** Action on file `src/soot/jimple/StringConstant.java'
+No prompt for file `src/soot/jimple/StringConstant.java'
+
+*** Action on file `src/soot/jimple/SubExpr.java'
+No prompt for file `src/soot/jimple/SubExpr.java'
+
+*** Action on file `src/soot/jimple/TableSwitchStmt.java'
+No prompt for file `src/soot/jimple/TableSwitchStmt.java'
+
+*** Action on file `src/soot/jimple/ThisRef.java'
+No prompt for file `src/soot/jimple/ThisRef.java'
+
+*** Action on file `src/soot/jimple/ThrowStmt.java'
+No prompt for file `src/soot/jimple/ThrowStmt.java'
+
+*** Action on file `src/soot/jimple/UnopExpr.java'
+No prompt for file `src/soot/jimple/UnopExpr.java'
+
+*** Action on file `src/soot/jimple/UshrExpr.java'
+No prompt for file `src/soot/jimple/UshrExpr.java'
+
+*** Action on file `src/soot/jimple/VirtualInvokeExpr.java'
+No prompt for file `src/soot/jimple/VirtualInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/XorExpr.java'
+No prompt for file `src/soot/jimple/XorExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractInstanceInvokeExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractInstanceInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JAddExpr.java'
+No prompt for file `src/soot/jimple/internal/JAddExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JAndExpr.java'
+No prompt for file `src/soot/jimple/internal/JAndExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JArrayRef.java'
+No prompt for file `src/soot/jimple/internal/JArrayRef.java'
+
+*** Action on file `src/soot/jimple/internal/JAssignStmt.java'
+No prompt for file `src/soot/jimple/internal/JAssignStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JBreakpointStmt.java'
+No prompt for file `src/soot/jimple/internal/JBreakpointStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JCastExpr.java'
+No prompt for file `src/soot/jimple/internal/JCastExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JCaughtExceptionRef.java'
+No prompt for file `src/soot/jimple/internal/JCaughtExceptionRef.java'
+
+*** Action on file `src/soot/jimple/internal/JCmpExpr.java'
+No prompt for file `src/soot/jimple/internal/JCmpExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JCmpgExpr.java'
+No prompt for file `src/soot/jimple/internal/JCmpgExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JCmplExpr.java'
+No prompt for file `src/soot/jimple/internal/JCmplExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JDivExpr.java'
+No prompt for file `src/soot/jimple/internal/JDivExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JEnterMonitorStmt.java'
+No prompt for file `src/soot/jimple/internal/JEnterMonitorStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JEqExpr.java'
+No prompt for file `src/soot/jimple/internal/JEqExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JExitMonitorStmt.java'
+No prompt for file `src/soot/jimple/internal/JExitMonitorStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JGeExpr.java'
+No prompt for file `src/soot/jimple/internal/JGeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JGotoStmt.java'
+No prompt for file `src/soot/jimple/internal/JGotoStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JGtExpr.java'
+No prompt for file `src/soot/jimple/internal/JGtExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JIdentityStmt.java'
+No prompt for file `src/soot/jimple/internal/JIdentityStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JIfStmt.java'
+No prompt for file `src/soot/jimple/internal/JIfStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JInstanceFieldRef.java'
+No prompt for file `src/soot/jimple/internal/JInstanceFieldRef.java'
+
+*** Action on file `src/soot/jimple/internal/JInstanceOfExpr.java'
+No prompt for file `src/soot/jimple/internal/JInstanceOfExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JInterfaceInvokeExpr.java'
+No prompt for file `src/soot/jimple/internal/JInterfaceInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JInvokeStmt.java'
+No prompt for file `src/soot/jimple/internal/JInvokeStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JLeExpr.java'
+No prompt for file `src/soot/jimple/internal/JLeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JLengthExpr.java'
+No prompt for file `src/soot/jimple/internal/JLengthExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JLookupSwitchStmt.java'
+No prompt for file `src/soot/jimple/internal/JLookupSwitchStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JLtExpr.java'
+No prompt for file `src/soot/jimple/internal/JLtExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JMulExpr.java'
+No prompt for file `src/soot/jimple/internal/JMulExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JNeExpr.java'
+No prompt for file `src/soot/jimple/internal/JNeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JNegExpr.java'
+No prompt for file `src/soot/jimple/internal/JNegExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JNewArrayExpr.java'
+No prompt for file `src/soot/jimple/internal/JNewArrayExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JNewExpr.java'
+No prompt for file `src/soot/jimple/internal/JNewExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JNewMultiArrayExpr.java'
+No prompt for file `src/soot/jimple/internal/JNewMultiArrayExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JNopStmt.java'
+No prompt for file `src/soot/jimple/internal/JNopStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JOrExpr.java'
+No prompt for file `src/soot/jimple/internal/JOrExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JRemExpr.java'
+No prompt for file `src/soot/jimple/internal/JRemExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JRetStmt.java'
+No prompt for file `src/soot/jimple/internal/JRetStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JReturnStmt.java'
+No prompt for file `src/soot/jimple/internal/JReturnStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JReturnVoidStmt.java'
+No prompt for file `src/soot/jimple/internal/JReturnVoidStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JShlExpr.java'
+No prompt for file `src/soot/jimple/internal/JShlExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JShrExpr.java'
+No prompt for file `src/soot/jimple/internal/JShrExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JSpecialInvokeExpr.java'
+No prompt for file `src/soot/jimple/internal/JSpecialInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JStaticInvokeExpr.java'
+No prompt for file `src/soot/jimple/internal/JStaticInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JSubExpr.java'
+No prompt for file `src/soot/jimple/internal/JSubExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JTableSwitchStmt.java'
+No prompt for file `src/soot/jimple/internal/JTableSwitchStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JThrowStmt.java'
+No prompt for file `src/soot/jimple/internal/JThrowStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JTrap.java'
+No prompt for file `src/soot/jimple/internal/JTrap.java'
+
+*** Action on file `src/soot/jimple/internal/JUshrExpr.java'
+No prompt for file `src/soot/jimple/internal/JUshrExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JVirtualInvokeExpr.java'
+No prompt for file `src/soot/jimple/internal/JVirtualInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractBinopExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractBinopExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractCastExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractCastExpr.java'
+
+*** Action on file `src/soot/jimple/internal/JimpleLocalBox.java'
+No prompt for file `src/soot/jimple/internal/JimpleLocalBox.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractDefinitionStmt.java'
+No prompt for file `src/soot/jimple/internal/AbstractDefinitionStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JXorExpr.java'
+No prompt for file `src/soot/jimple/internal/JXorExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractFloatBinopExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractFloatBinopExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractInstanceFieldRef.java'
+No prompt for file `src/soot/jimple/internal/AbstractInstanceFieldRef.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractInstanceOfExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractInstanceOfExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractIntBinopExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractIntBinopExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractIntLongBinopExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractIntLongBinopExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractInterfaceInvokeExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractInterfaceInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractInvokeExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractJimpleBinopExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractJimpleBinopExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractJimpleFloatBinopExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractJimpleFloatBinopExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractJimpleIntBinopExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractJimpleIntBinopExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractJimpleIntLongBinopExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractJimpleIntLongBinopExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractLengthExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractLengthExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractNegExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractNegExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractNewArrayExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractNewArrayExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractNewExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractNewExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractNewMultiArrayExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractNewMultiArrayExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractSpecialInvokeExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractSpecialInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractStaticInvokeExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractStaticInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractStmt.java'
+No prompt for file `src/soot/jimple/internal/AbstractStmt.java'
+
+*** Action on file `src/soot/jimple/internal/JimpleLocal.java'
+No prompt for file `src/soot/jimple/internal/JimpleLocal.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractUnopExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractUnopExpr.java'
+
+*** Action on file `src/soot/jimple/internal/AbstractVirtualInvokeExpr.java'
+No prompt for file `src/soot/jimple/internal/AbstractVirtualInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/internal/StmtBox.java'
+No prompt for file `src/soot/jimple/internal/StmtBox.java'
+
+*** Action on file `src/soot/jimple/internal/IdentityRefBox.java'
+No prompt for file `src/soot/jimple/internal/IdentityRefBox.java'
+
+*** Action on file `src/soot/jimple/internal/ConditionExprBox.java'
+No prompt for file `src/soot/jimple/internal/ConditionExprBox.java'
+
+*** Action on file `src/soot/jimple/internal/ImmediateBox.java'
+No prompt for file `src/soot/jimple/internal/ImmediateBox.java'
+
+*** Action on file `src/soot/jimple/internal/InvokeExprBox.java'
+No prompt for file `src/soot/jimple/internal/InvokeExprBox.java'
+
+*** Action on file `src/soot/jimple/internal/RValueBox.java'
+No prompt for file `src/soot/jimple/internal/RValueBox.java'
+
+*** Action on file `src/soot/jimple/internal/VariableBox.java'
+No prompt for file `src/soot/jimple/internal/VariableBox.java'
+
+*** Action on file `src/soot/BodyTransformer.java'
+No prompt for file `src/soot/BodyTransformer.java'
+
+*** Action on file `src/soot/toolkits/scalar/UnusedLocalEliminator.java'
+No prompt for file `src/soot/toolkits/scalar/UnusedLocalEliminator.java'
+
+*** Action on file `src/soot/toolkits/scalar/UnitValueBoxPair.java'
+No prompt for file `src/soot/toolkits/scalar/UnitValueBoxPair.java'
+
+*** Action on file `src/soot/toolkits/scalar/LocalUnitPair.java'
+No prompt for file `src/soot/toolkits/scalar/LocalUnitPair.java'
+
+*** Action on file `src/soot/toolkits/scalar/BackwardFlowAnalysis.java'
+No prompt for file `src/soot/toolkits/scalar/BackwardFlowAnalysis.java'
+
+*** Action on file `src/soot/toolkits/scalar/LocalUses.java'
+No prompt for file `src/soot/toolkits/scalar/LocalUses.java'
+
+*** Action on file `src/soot/toolkits/scalar/LocalDefs.java'
+No prompt for file `src/soot/toolkits/scalar/LocalDefs.java'
+
+*** Action on file `src/soot/toolkits/scalar/SimpleLocalDefs.java'
+No prompt for file `src/soot/toolkits/scalar/SimpleLocalDefs.java'
+
+*** Action on file `src/soot/toolkits/scalar/ForwardFlowAnalysis.java'
+No prompt for file `src/soot/toolkits/scalar/ForwardFlowAnalysis.java'
+
+*** Action on file `src/soot/toolkits/scalar/LiveLocals.java'
+No prompt for file `src/soot/toolkits/scalar/LiveLocals.java'
+
+*** Action on file `src/soot/toolkits/scalar/LocalSplitter.java'
+No prompt for file `src/soot/toolkits/scalar/LocalSplitter.java'
+
+*** Action on file `src/soot/toolkits/scalar/FlowAnalysis.java'
+No prompt for file `src/soot/toolkits/scalar/FlowAnalysis.java'
+
+*** Action on file `src/soot/toolkits/scalar/SimpleLiveLocals.java'
+No prompt for file `src/soot/toolkits/scalar/SimpleLiveLocals.java'
+
+*** Action on file `src/soot/toolkits/scalar/LocalPacker.java'
+No prompt for file `src/soot/toolkits/scalar/LocalPacker.java'
+
+*** Action on file `src/soot/toolkits/scalar/SimpleLocalUses.java'
+No prompt for file `src/soot/toolkits/scalar/SimpleLocalUses.java'
+
+*** Action on file `src/soot/toolkits/scalar/FastColorer.java'
+No prompt for file `src/soot/toolkits/scalar/FastColorer.java'
+
+*** Action on file `src/soot/toolkits/graph/BlockGraph.java'
+No prompt for file `src/soot/toolkits/graph/BlockGraph.java'
+
+*** Action on file `src/soot/toolkits/graph/BriefBlockGraph.java'
+No prompt for file `src/soot/toolkits/graph/BriefBlockGraph.java'
+
+*** Action on file `src/soot/toolkits/graph/BriefUnitGraph.java'
+No prompt for file `src/soot/toolkits/graph/BriefUnitGraph.java'
+
+*** Action on file `src/soot/toolkits/graph/CompleteBlockGraph.java'
+No prompt for file `src/soot/toolkits/graph/CompleteBlockGraph.java'
+
+*** Action on file `src/soot/toolkits/graph/CompleteUnitGraph.java'
+No prompt for file `src/soot/toolkits/graph/CompleteUnitGraph.java'
+
+*** Action on file `src/soot/toolkits/graph/DirectedGraph.java'
+No prompt for file `src/soot/toolkits/graph/DirectedGraph.java'
+
+*** Action on file `src/soot/toolkits/graph/UnitGraph.java'
+No prompt for file `src/soot/toolkits/graph/UnitGraph.java'
+
+*** Action on file `src/soot/toolkits/graph/PseudoTopologicalOrderer.java'
+No prompt for file `src/soot/toolkits/graph/PseudoTopologicalOrderer.java'
+
+*** Action on file `src/soot/toolkits/graph/ReversePseudoTopologicalOrderer.java'
+No prompt for file `src/soot/toolkits/graph/ReversePseudoTopologicalOrderer.java'
+
+*** Action on file `src/soot/toolkits/graph/Block.java'
+No prompt for file `src/soot/toolkits/graph/Block.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/ConstantPropagatorAndFolder.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/ConstantPropagatorAndFolder.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/UnconditionalBranchFolder.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/UnconditionalBranchFolder.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/UnreachableCodeEliminator.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/UnreachableCodeEliminator.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/DeadAssignmentEliminator.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/DeadAssignmentEliminator.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/LocalNameStandardizer.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/LocalNameStandardizer.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/ConditionalBranchFolder.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/ConditionalBranchFolder.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/Evaluator.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/Evaluator.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/CopyPropagator.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/CopyPropagator.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/ClassHierarchyAnalysis.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/ClassHierarchyAnalysis.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/ClosedInvokeGraph.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/ClosedInvokeGraph.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/InvokeGraph.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/InvokeGraph.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/ThrowManager.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/ThrowManager.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/StaticMethodBinder.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/StaticMethodBinder.java'
+
+*** Action on file `src/soot/jimple/toolkits/typing/TypeAssigner.java'
+No prompt for file `src/soot/jimple/toolkits/typing/TypeAssigner.java'
+
+*** Action on file `src/soot/jimple/toolkits/typing/ClassHierarchy.java'
+No prompt for file `src/soot/jimple/toolkits/typing/ClassHierarchy.java'
+
+*** Action on file `src/soot/jimple/toolkits/typing/TypeResolver.java'
+No prompt for file `src/soot/jimple/toolkits/typing/TypeResolver.java'
+
+*** Action on file `src/soot/util/IntSet.java'
+No prompt for file `src/soot/util/IntSet.java'
+
+*** Action on file `src/soot/util/StringTools.java'
+No prompt for file `src/soot/util/StringTools.java'
+
+*** Action on file `src/soot/util/HashChain.java'
+No prompt for file `src/soot/util/HashChain.java'
+
+*** Action on file `src/soot/util/Chain.java'
+No prompt for file `src/soot/util/Chain.java'
+
+*** Action on file `src/soot/util/Switchable.java'
+No prompt for file `src/soot/util/Switchable.java'
+
+*** Action on file `src/soot/util/Switch.java'
+No prompt for file `src/soot/util/Switch.java'
+
+*** Action on file `src/soot/util/ArraySet.java'
+No prompt for file `src/soot/util/ArraySet.java'
+
+*** Action on file `src/soot/SceneTransformer.java'
+No prompt for file `src/soot/SceneTransformer.java'
+
+*** Action on file `src/soot/Options.java'
+No prompt for file `src/soot/Options.java'
+
+*** Action on file `src/soot/toolkits/scalar/ArraySparseSet.java'
+No prompt for file `src/soot/toolkits/scalar/ArraySparseSet.java'
+
+*** Action on file `src/soot/toolkits/scalar/ArrayPackedSet.java'
+No prompt for file `src/soot/toolkits/scalar/ArrayPackedSet.java'
+
+*** Action on file `src/soot/toolkits/scalar/FlowUniverse.java'
+No prompt for file `src/soot/toolkits/scalar/FlowUniverse.java'
+
+*** Action on file `src/soot/toolkits/scalar/FlowSet.java'
+No prompt for file `src/soot/toolkits/scalar/FlowSet.java'
+
+*** Action on file `src/soot/toolkits/scalar/BoundedFlowSet.java'
+No prompt for file `src/soot/toolkits/scalar/BoundedFlowSet.java'
+
+*** Action on file `src/soot/util/DeterministicHashMap.java'
+No prompt for file `src/soot/util/DeterministicHashMap.java'
+
+*** Action on file `src/soot/baf/internal/BafLocal.java'
+No prompt for file `src/soot/baf/internal/BafLocal.java'
+
+*** Action on file `src/soot/baf/internal/BafLocalBox.java'
+No prompt for file `src/soot/baf/internal/BafLocalBox.java'
+
+*** Action on file `src/soot/grimp/internal/ObjExprBox.java'
+No prompt for file `src/soot/grimp/internal/ObjExprBox.java'
+
+*** Action on file `src/soot/grimp/internal/ExprBox.java'
+No prompt for file `src/soot/grimp/internal/ExprBox.java'
+
+*** Action on file `src/packageList'
+No prompt for file `src/packageList'
+
+*** Action on file `src/soot/TrapManager.java'
+No prompt for file `src/soot/TrapManager.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/SynchronizerManager.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/SynchronizerManager.java'
+
+*** Action on file `src/soot/jimple/toolkits/base/Zone.java'
+No prompt for file `src/soot/jimple/toolkits/base/Zone.java'
+
+*** Action on file `src/soot/jimple/toolkits/base/Zonation.java'
+No prompt for file `src/soot/jimple/toolkits/base/Zonation.java'
+
+*** Action on file `src/soot/jimple/toolkits/base/Aggregator.java'
+No prompt for file `src/soot/jimple/toolkits/base/Aggregator.java'
+
+*** Action on file `src/soot/baf/toolkits/base/LoadStoreOptimizer.java'
+Copied working file `src/soot/baf/toolkits/base/LoadStoreOptimizer.java' to `src/soot/baf/toolkits/base/obsolete/LoadStoreOptimizer.java.v0'
+Replace file `src/soot/baf/toolkits/base/LoadStoreOptimizer.java' by rule 3
+
+*** Action on file `src/soot/grimp/toolkits/base/ConstructorFolder.java'
+No prompt for file `src/soot/grimp/toolkits/base/ConstructorFolder.java'
+
+*** Action on file `src/soot/Transformer.java'
+No prompt for file `src/soot/Transformer.java'
+
+*** Action on file `src/soot/Transform.java'
+No prompt for file `src/soot/Transform.java'
+
+*** Action on file `src/soot/Pack.java'
+No prompt for file `src/soot/Pack.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/InvokeGraphBuilder.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/InvokeGraphBuilder.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/InlinerSafetyManager.java.disabled'
+No prompt for file `src/soot/jimple/toolkits/invoke/InlinerSafetyManager.java.disabled'
+
+*** Action on file `src/soot/dava/IfTrunk.java'
+No prompt for file `src/soot/dava/IfTrunk.java'
+
+*** Action on file `src/soot/dava/WhileTrunk.java'
+No prompt for file `src/soot/dava/WhileTrunk.java'
+
+*** Action on file `src/soot/dava/IfElseTrunk.java'
+No prompt for file `src/soot/dava/IfElseTrunk.java'
+
+*** Action on file `src/soot/dava/BlockTrunk.java'
+No prompt for file `src/soot/dava/BlockTrunk.java'
+
+*** Action on file [directory:src/soot/dava/internal]
+No prompt for file [directory:src/soot/dava/internal]
+
+*** Action on file `src/soot/dava/Trunk.java'
+No prompt for file `src/soot/dava/Trunk.java'
+
+*** Action on file `src/soot/dava/DavaBody.java'
+No prompt for file `src/soot/dava/DavaBody.java'
+
+*** Action on file `src/soot/dava/Dava.java'
+No prompt for file `src/soot/dava/Dava.java'
+
+*** Action on file `src/soot/dava/AbstractTrunk.java'
+No prompt for file `src/soot/dava/AbstractTrunk.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/NopEliminator.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/NopEliminator.java'
+
+*** Action on file `src/soot/grimp/AbstractGrimpValueSwitch.java'
+No prompt for file `src/soot/grimp/AbstractGrimpValueSwitch.java'
+
+*** Action on file `src/soot/grimp/GrimpValueSwitch.java'
+No prompt for file `src/soot/grimp/GrimpValueSwitch.java'
+
+*** Action on file `src/soot/grimp/NewInvokeExpr.java'
+No prompt for file `src/soot/grimp/NewInvokeExpr.java'
+
+*** Action on file `src/soot/ClassMember.java'
+No prompt for file `src/soot/ClassMember.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/AccessManager.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/AccessManager.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/InlinerSafetyManager.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/InlinerSafetyManager.java'
+
+*** Action on file `src/soot/dava/toolkits/base/IfThenElseMatcher.java'
+No prompt for file `src/soot/dava/toolkits/base/IfThenElseMatcher.java'
+
+*** Action on file `src/soot/dava/toolkits/base/BlockStructurer.java'
+No prompt for file `src/soot/dava/toolkits/base/BlockStructurer.java'
+
+*** Action on file `src/soot/toolkits/graph/StronglyConnectedComponents.java'
+No prompt for file `src/soot/toolkits/graph/StronglyConnectedComponents.java'
+
+*** Action on file `src/soot/toolkits/graph/HashMutableDirectedGraph.java'
+No prompt for file `src/soot/toolkits/graph/HashMutableDirectedGraph.java'
+
+*** Action on file `src/soot/toolkits/graph/MutableDirectedGraph.java'
+No prompt for file `src/soot/toolkits/graph/MutableDirectedGraph.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/SiteInliner.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/SiteInliner.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/StaticInliner.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/StaticInliner.java'
+
+*** Action on file `src/soot/toolkits/graph/ZonedBlockGraph.java'
+No prompt for file `src/soot/toolkits/graph/ZonedBlockGraph.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/VTATypeGraph.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/VTATypeGraph.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/TypeGraph.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/TypeGraph.java'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/VariableTypeAnalysis.java'
+No prompt for file `src/soot/jimple/toolkits/invoke/VariableTypeAnalysis.java'
+
+*** Action on file `src/baf.scc'
+No prompt for file `src/baf.scc'
+
+*** Action on file `src/jimple.scc'
+No prompt for file `src/jimple.scc'
+
+*** Action on file `src/soot/MethodSource.java'
+No prompt for file `src/soot/MethodSource.java'
+
+*** Action on file `src/soot/SootResolver.java'
+No prompt for file `src/soot/SootResolver.java'
+
+*** Action on file `src/soot/util/SourceLocator.java'
+No prompt for file `src/soot/util/SourceLocator.java'
+
+*** Action on file `src/soot/jimple/parser/BodyExtractorWalker.java'
+No prompt for file `src/soot/jimple/parser/BodyExtractorWalker.java'
+
+*** Action on file `src/soot/jimple/parser/Walker.java'
+No prompt for file `src/soot/jimple/parser/Walker.java'
+
+*** Action on file `src/soot/jimple/parser/Parse.java'
+No prompt for file `src/soot/jimple/parser/Parse.java'
+
+*** Action on file `src/soot/jimple/parser/parser/TokenIndex.java'
+No prompt for file `src/soot/jimple/parser/parser/TokenIndex.java'
+
+*** Action on file `src/soot/jimple/parser/parser/State.java'
+No prompt for file `src/soot/jimple/parser/parser/State.java'
+
+*** Action on file `src/soot/jimple/parser/parser/ParserException.java'
+No prompt for file `src/soot/jimple/parser/parser/ParserException.java'
+
+*** Action on file `src/soot/jimple/parser/parser/parser.dat'
+No prompt for file `src/soot/jimple/parser/parser/parser.dat'
+
+*** Action on file `src/soot/jimple/parser/parser/Parser.java'
+No prompt for file `src/soot/jimple/parser/parser/Parser.java'
+
+*** Action on file `src/soot/jimple/parser/lexer/lexer.dat'
+No prompt for file `src/soot/jimple/parser/lexer/lexer.dat'
+
+*** Action on file `src/soot/jimple/parser/lexer/Lexer.java'
+No prompt for file `src/soot/jimple/parser/lexer/Lexer.java'
+
+*** Action on file `src/soot/jimple/parser/lexer/LexerException.java'
+No prompt for file `src/soot/jimple/parser/lexer/LexerException.java'
+
+*** Action on file `src/soot/jimple/parser/analysis/ReversedDepthFirstAdapter.java'
+No prompt for file `src/soot/jimple/parser/analysis/ReversedDepthFirstAdapter.java'
+
+*** Action on file `src/soot/jimple/parser/analysis/DepthFirstAdapter.java'
+No prompt for file `src/soot/jimple/parser/analysis/DepthFirstAdapter.java'
+
+*** Action on file `src/soot/jimple/parser/analysis/AnalysisAdapter.java'
+No prompt for file `src/soot/jimple/parser/analysis/AnalysisAdapter.java'
+
+*** Action on file `src/soot/jimple/parser/analysis/Analysis.java'
+No prompt for file `src/soot/jimple/parser/analysis/Analysis.java'
+
+*** Action on file `src/soot/jimple/parser/node/Token.java'
+No prompt for file `src/soot/jimple/parser/node/Token.java'
+
+*** Action on file `src/soot/jimple/parser/node/NodeCast.java'
+No prompt for file `src/soot/jimple/parser/node/NodeCast.java'
+
+*** Action on file `src/soot/jimple/parser/node/Node.java'
+No prompt for file `src/soot/jimple/parser/node/Node.java'
+
+*** Action on file `src/soot/jimple/parser/node/AIdentName.java'
+No prompt for file `src/soot/jimple/parser/node/AIdentName.java'
+
+*** Action on file `src/soot/jimple/parser/node/AQuotedName.java'
+No prompt for file `src/soot/jimple/parser/node/AQuotedName.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFullIdentClassName.java'
+No prompt for file `src/soot/jimple/parser/node/AFullIdentClassName.java'
+
+*** Action on file `src/soot/jimple/parser/node/AIdentClassName.java'
+No prompt for file `src/soot/jimple/parser/node/AIdentClassName.java'
+
+*** Action on file `src/soot/jimple/parser/node/AQuotedClassName.java'
+No prompt for file `src/soot/jimple/parser/node/AQuotedClassName.java'
+
+*** Action on file `src/soot/jimple/parser/node/ANegUnop.java'
+No prompt for file `src/soot/jimple/parser/node/ANegUnop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ALengthofUnop.java'
+No prompt for file `src/soot/jimple/parser/node/ALengthofUnop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ADivBinop.java'
+No prompt for file `src/soot/jimple/parser/node/ADivBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/AMultBinop.java'
+No prompt for file `src/soot/jimple/parser/node/AMultBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/AMinusBinop.java'
+No prompt for file `src/soot/jimple/parser/node/AMinusBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/APlusBinop.java'
+No prompt for file `src/soot/jimple/parser/node/APlusBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/AUshrBinop.java'
+No prompt for file `src/soot/jimple/parser/node/AUshrBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/AShrBinop.java'
+No prompt for file `src/soot/jimple/parser/node/AShrBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/EOF.java'
+No prompt for file `src/soot/jimple/parser/node/EOF.java'
+
+*** Action on file `src/soot/jimple/parser/node/AShlBinop.java'
+No prompt for file `src/soot/jimple/parser/node/AShlBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACmpleBinop.java'
+No prompt for file `src/soot/jimple/parser/node/ACmpleBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACmpltBinop.java'
+No prompt for file `src/soot/jimple/parser/node/ACmpltBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACmpgeBinop.java'
+No prompt for file `src/soot/jimple/parser/node/ACmpgeBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACmpgtBinop.java'
+No prompt for file `src/soot/jimple/parser/node/ACmpgtBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACmpneBinop.java'
+No prompt for file `src/soot/jimple/parser/node/ACmpneBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACmpeqBinop.java'
+No prompt for file `src/soot/jimple/parser/node/ACmpeqBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACmplBinop.java'
+No prompt for file `src/soot/jimple/parser/node/ACmplBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACmpgBinop.java'
+No prompt for file `src/soot/jimple/parser/node/ACmpgBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACmpBinop.java'
+No prompt for file `src/soot/jimple/parser/node/ACmpBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/AModBinop.java'
+No prompt for file `src/soot/jimple/parser/node/AModBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/AXorBinop.java'
+No prompt for file `src/soot/jimple/parser/node/AXorBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/AOrBinop.java'
+No prompt for file `src/soot/jimple/parser/node/AOrBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/AAndBinop.java'
+No prompt for file `src/soot/jimple/parser/node/AAndBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/ANullConstant.java'
+No prompt for file `src/soot/jimple/parser/node/ANullConstant.java'
+
+*** Action on file `src/soot/jimple/parser/node/AStringConstant.java'
+No prompt for file `src/soot/jimple/parser/node/AStringConstant.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFloatConstant.java'
+No prompt for file `src/soot/jimple/parser/node/AFloatConstant.java'
+
+*** Action on file `src/soot/jimple/parser/node/AIntegerConstant.java'
+No prompt for file `src/soot/jimple/parser/node/AIntegerConstant.java'
+
+*** Action on file `src/soot/jimple/parser/node/AConstantImmediate.java'
+No prompt for file `src/soot/jimple/parser/node/AConstantImmediate.java'
+
+*** Action on file `src/soot/jimple/parser/node/ALocalImmediate.java'
+No prompt for file `src/soot/jimple/parser/node/ALocalImmediate.java'
+
+*** Action on file `src/soot/jimple/parser/node/AMultiArgList.java'
+No prompt for file `src/soot/jimple/parser/node/AMultiArgList.java'
+
+*** Action on file `src/soot/jimple/parser/node/ASingleArgList.java'
+No prompt for file `src/soot/jimple/parser/node/ASingleArgList.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFixedArrayDescriptor.java'
+No prompt for file `src/soot/jimple/parser/node/AFixedArrayDescriptor.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFieldSignature.java'
+No prompt for file `src/soot/jimple/parser/node/AFieldSignature.java'
+
+*** Action on file `src/soot/jimple/parser/node/ASigFieldRef.java'
+No prompt for file `src/soot/jimple/parser/node/ASigFieldRef.java'
+
+*** Action on file `src/soot/jimple/parser/node/ALocalFieldRef.java'
+No prompt for file `src/soot/jimple/parser/node/ALocalFieldRef.java'
+
+*** Action on file `src/soot/jimple/parser/node/AArrayRef.java'
+No prompt for file `src/soot/jimple/parser/node/AArrayRef.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFieldReference.java'
+No prompt for file `src/soot/jimple/parser/node/AFieldReference.java'
+
+*** Action on file `src/soot/jimple/parser/node/AArrayReference.java'
+No prompt for file `src/soot/jimple/parser/node/AArrayReference.java'
+
+*** Action on file `src/soot/jimple/parser/node/AMethodSignature.java'
+No prompt for file `src/soot/jimple/parser/node/AMethodSignature.java'
+
+*** Action on file `src/soot/jimple/parser/node/AInterfaceNonstaticInvoke.java'
+No prompt for file `src/soot/jimple/parser/node/AInterfaceNonstaticInvoke.java'
+
+*** Action on file `src/soot/jimple/parser/node/AVirtualNonstaticInvoke.java'
+No prompt for file `src/soot/jimple/parser/node/AVirtualNonstaticInvoke.java'
+
+*** Action on file `src/soot/jimple/parser/node/ASpecialNonstaticInvoke.java'
+No prompt for file `src/soot/jimple/parser/node/ASpecialNonstaticInvoke.java'
+
+*** Action on file `src/soot/jimple/parser/node/AUnopExpr.java'
+No prompt for file `src/soot/jimple/parser/node/AUnopExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/AStaticInvokeExpr.java'
+No prompt for file `src/soot/jimple/parser/node/AStaticInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/ANonstaticInvokeExpr.java'
+No prompt for file `src/soot/jimple/parser/node/ANonstaticInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/ABinopExpr.java'
+No prompt for file `src/soot/jimple/parser/node/ABinopExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/AUnopBoolExpr.java'
+No prompt for file `src/soot/jimple/parser/node/AUnopBoolExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/ABinopBoolExpr.java'
+No prompt for file `src/soot/jimple/parser/node/ABinopBoolExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/ALocalVariable.java'
+No prompt for file `src/soot/jimple/parser/node/ALocalVariable.java'
+
+*** Action on file `src/soot/jimple/parser/node/AReferenceVariable.java'
+No prompt for file `src/soot/jimple/parser/node/AReferenceVariable.java'
+
+*** Action on file `src/soot/jimple/parser/node/AArrayDescriptor.java'
+No prompt for file `src/soot/jimple/parser/node/AArrayDescriptor.java'
+
+*** Action on file `src/soot/jimple/parser/node/AMultiNewExpr.java'
+No prompt for file `src/soot/jimple/parser/node/AMultiNewExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/AArrayNewExpr.java'
+No prompt for file `src/soot/jimple/parser/node/AArrayNewExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/ASimpleNewExpr.java'
+No prompt for file `src/soot/jimple/parser/node/ASimpleNewExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/AImmediateExpression.java'
+No prompt for file `src/soot/jimple/parser/node/AImmediateExpression.java'
+
+*** Action on file `src/soot/jimple/parser/node/AUnopExpression.java'
+No prompt for file `src/soot/jimple/parser/node/AUnopExpression.java'
+
+*** Action on file `src/soot/jimple/parser/node/ABinopExpression.java'
+No prompt for file `src/soot/jimple/parser/node/ABinopExpression.java'
+
+*** Action on file `src/soot/jimple/parser/node/AReferenceExpression.java'
+No prompt for file `src/soot/jimple/parser/node/AReferenceExpression.java'
+
+*** Action on file `src/soot/jimple/parser/node/AInvokeExpression.java'
+No prompt for file `src/soot/jimple/parser/node/AInvokeExpression.java'
+
+*** Action on file `src/soot/jimple/parser/node/AInstanceofExpression.java'
+No prompt for file `src/soot/jimple/parser/node/AInstanceofExpression.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACastExpression.java'
+No prompt for file `src/soot/jimple/parser/node/ACastExpression.java'
+
+*** Action on file `src/soot/jimple/parser/node/ANewExpression.java'
+No prompt for file `src/soot/jimple/parser/node/ANewExpression.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACatchClause.java'
+No prompt for file `src/soot/jimple/parser/node/ACatchClause.java'
+
+*** Action on file `src/soot/jimple/parser/node/AGotoStmt.java'
+No prompt for file `src/soot/jimple/parser/node/AGotoStmt.java'
+
+*** Action on file `src/soot/jimple/parser/node/ADefaultCaseLabel.java'
+No prompt for file `src/soot/jimple/parser/node/ADefaultCaseLabel.java'
+
+*** Action on file `src/soot/jimple/parser/node/AConstantCaseLabel.java'
+No prompt for file `src/soot/jimple/parser/node/AConstantCaseLabel.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACaseStmt.java'
+No prompt for file `src/soot/jimple/parser/node/ACaseStmt.java'
+
+*** Action on file `src/soot/jimple/parser/node/ALabelName.java'
+No prompt for file `src/soot/jimple/parser/node/ALabelName.java'
+
+*** Action on file `src/soot/jimple/parser/node/AInvokeStatement.java'
+No prompt for file `src/soot/jimple/parser/node/AInvokeStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/AThrowStatement.java'
+No prompt for file `src/soot/jimple/parser/node/AThrowStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/AReturnStatement.java'
+No prompt for file `src/soot/jimple/parser/node/AReturnStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/ARetStatement.java'
+No prompt for file `src/soot/jimple/parser/node/ARetStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/ANopStatement.java'
+No prompt for file `src/soot/jimple/parser/node/ANopStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/AGotoStatement.java'
+No prompt for file `src/soot/jimple/parser/node/AGotoStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/AIfStatement.java'
+No prompt for file `src/soot/jimple/parser/node/AIfStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/AAssignStatement.java'
+No prompt for file `src/soot/jimple/parser/node/AAssignStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/AIdentityNoTypeStatement.java'
+No prompt for file `src/soot/jimple/parser/node/AIdentityNoTypeStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/AIdentityStatement.java'
+No prompt for file `src/soot/jimple/parser/node/AIdentityStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/ALookupswitchStatement.java'
+No prompt for file `src/soot/jimple/parser/node/ALookupswitchStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/Start.java'
+No prompt for file `src/soot/jimple/parser/node/Start.java'
+
+*** Action on file `src/soot/jimple/parser/node/ATableswitchStatement.java'
+No prompt for file `src/soot/jimple/parser/node/ATableswitchStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/AExitmonitorStatement.java'
+No prompt for file `src/soot/jimple/parser/node/AExitmonitorStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/AEntermonitorStatement.java'
+No prompt for file `src/soot/jimple/parser/node/AEntermonitorStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/ABreakpointStatement.java'
+No prompt for file `src/soot/jimple/parser/node/ABreakpointStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/ALabelStatement.java'
+No prompt for file `src/soot/jimple/parser/node/ALabelStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/AMultiLocalNameList.java'
+No prompt for file `src/soot/jimple/parser/node/AMultiLocalNameList.java'
+
+*** Action on file `src/soot/jimple/parser/node/ASingleLocalNameList.java'
+No prompt for file `src/soot/jimple/parser/node/ASingleLocalNameList.java'
+
+*** Action on file `src/soot/jimple/parser/node/ALocalName.java'
+No prompt for file `src/soot/jimple/parser/node/ALocalName.java'
+
+*** Action on file `src/soot/jimple/parser/node/ANonvoidJimpleType.java'
+No prompt for file `src/soot/jimple/parser/node/ANonvoidJimpleType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AUnknownJimpleType.java'
+No prompt for file `src/soot/jimple/parser/node/AUnknownJimpleType.java'
+
+*** Action on file `src/soot/jimple/parser/node/ADeclaration.java'
+No prompt for file `src/soot/jimple/parser/node/ADeclaration.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFullMethodBody.java'
+No prompt for file `src/soot/jimple/parser/node/AFullMethodBody.java'
+
+*** Action on file `src/soot/jimple/parser/node/AEmptyMethodBody.java'
+No prompt for file `src/soot/jimple/parser/node/AEmptyMethodBody.java'
+
+*** Action on file `src/soot/jimple/parser/node/AArrayBrackets.java'
+No prompt for file `src/soot/jimple/parser/node/AArrayBrackets.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFullIdentNonvoidType.java'
+No prompt for file `src/soot/jimple/parser/node/AFullIdentNonvoidType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AIdentNonvoidType.java'
+No prompt for file `src/soot/jimple/parser/node/AIdentNonvoidType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AQuotedNonvoidType.java'
+No prompt for file `src/soot/jimple/parser/node/AQuotedNonvoidType.java'
+
+*** Action on file `src/soot/jimple/parser/node/ABaseNonvoidType.java'
+No prompt for file `src/soot/jimple/parser/node/ABaseNonvoidType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AClassNameBaseType.java'
+No prompt for file `src/soot/jimple/parser/node/AClassNameBaseType.java'
+
+*** Action on file `src/soot/jimple/parser/node/ANullBaseType.java'
+No prompt for file `src/soot/jimple/parser/node/ANullBaseType.java'
+
+*** Action on file `src/soot/jimple/parser/node/ADoubleBaseType.java'
+No prompt for file `src/soot/jimple/parser/node/ADoubleBaseType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFloatBaseType.java'
+No prompt for file `src/soot/jimple/parser/node/AFloatBaseType.java'
+
+*** Action on file `src/soot/jimple/parser/node/ALongBaseType.java'
+No prompt for file `src/soot/jimple/parser/node/ALongBaseType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AIntBaseType.java'
+No prompt for file `src/soot/jimple/parser/node/AIntBaseType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AShortBaseType.java'
+No prompt for file `src/soot/jimple/parser/node/AShortBaseType.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACharBaseType.java'
+No prompt for file `src/soot/jimple/parser/node/ACharBaseType.java'
+
+*** Action on file `src/soot/jimple/parser/node/ABooleanBaseType.java'
+No prompt for file `src/soot/jimple/parser/node/ABooleanBaseType.java'
+
+*** Action on file `src/soot/jimple/parser/node/ANullBaseTypeNoName.java'
+No prompt for file `src/soot/jimple/parser/node/ANullBaseTypeNoName.java'
+
+*** Action on file `src/soot/jimple/parser/node/ADoubleBaseTypeNoName.java'
+No prompt for file `src/soot/jimple/parser/node/ADoubleBaseTypeNoName.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFloatBaseTypeNoName.java'
+No prompt for file `src/soot/jimple/parser/node/AFloatBaseTypeNoName.java'
+
+*** Action on file `src/soot/jimple/parser/node/ALongBaseTypeNoName.java'
+No prompt for file `src/soot/jimple/parser/node/ALongBaseTypeNoName.java'
+
+*** Action on file `src/soot/jimple/parser/node/AIntBaseTypeNoName.java'
+No prompt for file `src/soot/jimple/parser/node/AIntBaseTypeNoName.java'
+
+*** Action on file `src/soot/jimple/parser/node/AByteBaseType.java'
+No prompt for file `src/soot/jimple/parser/node/AByteBaseType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AShortBaseTypeNoName.java'
+No prompt for file `src/soot/jimple/parser/node/AShortBaseTypeNoName.java'
+
+*** Action on file `src/soot/jimple/parser/node/ACharBaseTypeNoName.java'
+No prompt for file `src/soot/jimple/parser/node/ACharBaseTypeNoName.java'
+
+*** Action on file `src/soot/jimple/parser/node/AByteBaseTypeNoName.java'
+No prompt for file `src/soot/jimple/parser/node/AByteBaseTypeNoName.java'
+
+*** Action on file `src/soot/jimple/parser/node/ABooleanBaseTypeNoName.java'
+No prompt for file `src/soot/jimple/parser/node/ABooleanBaseTypeNoName.java'
+
+*** Action on file `src/soot/jimple/parser/node/AThrowsClause.java'
+No prompt for file `src/soot/jimple/parser/node/AThrowsClause.java'
+
+*** Action on file `src/soot/jimple/parser/node/AParameter.java'
+No prompt for file `src/soot/jimple/parser/node/AParameter.java'
+
+*** Action on file `src/soot/jimple/parser/node/AMultiParameterList.java'
+No prompt for file `src/soot/jimple/parser/node/AMultiParameterList.java'
+
+*** Action on file `src/soot/jimple/parser/node/ASingleParameterList.java'
+No prompt for file `src/soot/jimple/parser/node/ASingleParameterList.java'
+
+*** Action on file `src/soot/jimple/parser/node/ANovoidType.java'
+No prompt for file `src/soot/jimple/parser/node/ANovoidType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AVoidType.java'
+No prompt for file `src/soot/jimple/parser/node/AVoidType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AMethodMember.java'
+No prompt for file `src/soot/jimple/parser/node/AMethodMember.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFieldMember.java'
+No prompt for file `src/soot/jimple/parser/node/AFieldMember.java'
+
+*** Action on file `src/soot/jimple/parser/node/AClassNameMultiClassNameList.java'
+No prompt for file `src/soot/jimple/parser/node/AClassNameMultiClassNameList.java'
+
+*** Action on file `src/soot/jimple/parser/node/AClassNameSingleClassNameList.java'
+No prompt for file `src/soot/jimple/parser/node/AClassNameSingleClassNameList.java'
+
+*** Action on file `src/soot/jimple/parser/node/AMultiNameList.java'
+No prompt for file `src/soot/jimple/parser/node/AMultiNameList.java'
+
+*** Action on file `src/soot/jimple/parser/node/ASingleNameList.java'
+No prompt for file `src/soot/jimple/parser/node/ASingleNameList.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFileBody.java'
+No prompt for file `src/soot/jimple/parser/node/AFileBody.java'
+
+*** Action on file `src/soot/jimple/parser/node/AImplementsClause.java'
+No prompt for file `src/soot/jimple/parser/node/AImplementsClause.java'
+
+*** Action on file `src/soot/jimple/parser/node/AExtendsClause.java'
+No prompt for file `src/soot/jimple/parser/node/AExtendsClause.java'
+
+*** Action on file `src/soot/jimple/parser/node/AInterfaceFileType.java'
+No prompt for file `src/soot/jimple/parser/node/AInterfaceFileType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AClassFileType.java'
+No prompt for file `src/soot/jimple/parser/node/AClassFileType.java'
+
+*** Action on file `src/soot/jimple/parser/node/AVolatileModifier.java'
+No prompt for file `src/soot/jimple/parser/node/AVolatileModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/ATransientModifier.java'
+No prompt for file `src/soot/jimple/parser/node/ATransientModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/ASynchronizedModifier.java'
+No prompt for file `src/soot/jimple/parser/node/ASynchronizedModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/AStaticModifier.java'
+No prompt for file `src/soot/jimple/parser/node/AStaticModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/APrivateModifier.java'
+No prompt for file `src/soot/jimple/parser/node/APrivateModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/AProtectedModifier.java'
+No prompt for file `src/soot/jimple/parser/node/AProtectedModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/APublicModifier.java'
+No prompt for file `src/soot/jimple/parser/node/APublicModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/ANativeModifier.java'
+No prompt for file `src/soot/jimple/parser/node/ANativeModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFinalModifier.java'
+No prompt for file `src/soot/jimple/parser/node/AFinalModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/AAbstractModifier.java'
+No prompt for file `src/soot/jimple/parser/node/AAbstractModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/AFile.java'
+No prompt for file `src/soot/jimple/parser/node/AFile.java'
+
+*** Action on file `src/soot/jimple/parser/node/PName.java'
+No prompt for file `src/soot/jimple/parser/node/PName.java'
+
+*** Action on file `src/soot/jimple/parser/node/PClassName.java'
+No prompt for file `src/soot/jimple/parser/node/PClassName.java'
+
+*** Action on file `src/soot/jimple/parser/node/PUnop.java'
+No prompt for file `src/soot/jimple/parser/node/PUnop.java'
+
+*** Action on file `src/soot/jimple/parser/node/PBinop.java'
+No prompt for file `src/soot/jimple/parser/node/PBinop.java'
+
+*** Action on file `src/soot/jimple/parser/node/PConstant.java'
+No prompt for file `src/soot/jimple/parser/node/PConstant.java'
+
+*** Action on file `src/soot/jimple/parser/node/PImmediate.java'
+No prompt for file `src/soot/jimple/parser/node/PImmediate.java'
+
+*** Action on file `src/soot/jimple/parser/node/PArgList.java'
+No prompt for file `src/soot/jimple/parser/node/PArgList.java'
+
+*** Action on file `src/soot/jimple/parser/node/PFixedArrayDescriptor.java'
+No prompt for file `src/soot/jimple/parser/node/PFixedArrayDescriptor.java'
+
+*** Action on file `src/soot/jimple/parser/node/PFieldSignature.java'
+No prompt for file `src/soot/jimple/parser/node/PFieldSignature.java'
+
+*** Action on file `src/soot/jimple/parser/node/PFieldRef.java'
+No prompt for file `src/soot/jimple/parser/node/PFieldRef.java'
+
+*** Action on file `src/soot/jimple/parser/node/PArrayRef.java'
+No prompt for file `src/soot/jimple/parser/node/PArrayRef.java'
+
+*** Action on file `src/soot/jimple/parser/node/PReference.java'
+No prompt for file `src/soot/jimple/parser/node/PReference.java'
+
+*** Action on file `src/soot/jimple/parser/node/PMethodSignature.java'
+No prompt for file `src/soot/jimple/parser/node/PMethodSignature.java'
+
+*** Action on file `src/soot/jimple/parser/node/PNonstaticInvoke.java'
+No prompt for file `src/soot/jimple/parser/node/PNonstaticInvoke.java'
+
+*** Action on file `src/soot/jimple/parser/node/PUnopExpr.java'
+No prompt for file `src/soot/jimple/parser/node/PUnopExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/PBinopExpr.java'
+No prompt for file `src/soot/jimple/parser/node/PBinopExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/PInvokeExpr.java'
+No prompt for file `src/soot/jimple/parser/node/PInvokeExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/PBoolExpr.java'
+No prompt for file `src/soot/jimple/parser/node/PBoolExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/PVariable.java'
+No prompt for file `src/soot/jimple/parser/node/PVariable.java'
+
+*** Action on file `src/soot/jimple/parser/node/PArrayDescriptor.java'
+No prompt for file `src/soot/jimple/parser/node/PArrayDescriptor.java'
+
+*** Action on file `src/soot/jimple/parser/node/X2PArrayDescriptor.java'
+No prompt for file `src/soot/jimple/parser/node/X2PArrayDescriptor.java'
+
+*** Action on file `src/soot/jimple/parser/node/X1PArrayDescriptor.java'
+No prompt for file `src/soot/jimple/parser/node/X1PArrayDescriptor.java'
+
+*** Action on file `src/soot/jimple/parser/node/XPArrayDescriptor.java'
+No prompt for file `src/soot/jimple/parser/node/XPArrayDescriptor.java'
+
+*** Action on file `src/soot/jimple/parser/node/PNewExpr.java'
+No prompt for file `src/soot/jimple/parser/node/PNewExpr.java'
+
+*** Action on file `src/soot/jimple/parser/node/PExpression.java'
+No prompt for file `src/soot/jimple/parser/node/PExpression.java'
+
+*** Action on file `src/soot/jimple/parser/node/PCatchClause.java'
+No prompt for file `src/soot/jimple/parser/node/PCatchClause.java'
+
+*** Action on file `src/soot/jimple/parser/node/PGotoStmt.java'
+No prompt for file `src/soot/jimple/parser/node/PGotoStmt.java'
+
+*** Action on file `src/soot/jimple/parser/node/PCaseLabel.java'
+No prompt for file `src/soot/jimple/parser/node/PCaseLabel.java'
+
+*** Action on file `src/soot/jimple/parser/node/PCaseStmt.java'
+No prompt for file `src/soot/jimple/parser/node/PCaseStmt.java'
+
+*** Action on file `src/soot/jimple/parser/node/PLabelName.java'
+No prompt for file `src/soot/jimple/parser/node/PLabelName.java'
+
+*** Action on file `src/soot/jimple/parser/node/X2PCaseStmt.java'
+No prompt for file `src/soot/jimple/parser/node/X2PCaseStmt.java'
+
+*** Action on file `src/soot/jimple/parser/node/X1PCaseStmt.java'
+No prompt for file `src/soot/jimple/parser/node/X1PCaseStmt.java'
+
+*** Action on file `src/soot/jimple/parser/node/XPCaseStmt.java'
+No prompt for file `src/soot/jimple/parser/node/XPCaseStmt.java'
+
+*** Action on file `src/soot/jimple/parser/node/PStatement.java'
+No prompt for file `src/soot/jimple/parser/node/PStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/PLocalNameList.java'
+No prompt for file `src/soot/jimple/parser/node/PLocalNameList.java'
+
+*** Action on file `src/soot/jimple/parser/node/PLocalName.java'
+No prompt for file `src/soot/jimple/parser/node/PLocalName.java'
+
+*** Action on file `src/soot/jimple/parser/node/PJimpleType.java'
+No prompt for file `src/soot/jimple/parser/node/PJimpleType.java'
+
+*** Action on file `src/soot/jimple/parser/node/PDeclaration.java'
+No prompt for file `src/soot/jimple/parser/node/PDeclaration.java'
+
+*** Action on file `src/soot/jimple/parser/node/X2PCatchClause.java'
+No prompt for file `src/soot/jimple/parser/node/X2PCatchClause.java'
+
+*** Action on file `src/soot/jimple/parser/node/X1PCatchClause.java'
+No prompt for file `src/soot/jimple/parser/node/X1PCatchClause.java'
+
+*** Action on file `src/soot/jimple/parser/node/XPCatchClause.java'
+No prompt for file `src/soot/jimple/parser/node/XPCatchClause.java'
+
+*** Action on file `src/soot/jimple/parser/node/X2PStatement.java'
+No prompt for file `src/soot/jimple/parser/node/X2PStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/X1PStatement.java'
+No prompt for file `src/soot/jimple/parser/node/X1PStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/XPStatement.java'
+No prompt for file `src/soot/jimple/parser/node/XPStatement.java'
+
+*** Action on file `src/soot/jimple/parser/node/X2PDeclaration.java'
+No prompt for file `src/soot/jimple/parser/node/X2PDeclaration.java'
+
+*** Action on file `src/soot/jimple/parser/node/X1PDeclaration.java'
+No prompt for file `src/soot/jimple/parser/node/X1PDeclaration.java'
+
+*** Action on file `src/soot/jimple/parser/node/XPDeclaration.java'
+No prompt for file `src/soot/jimple/parser/node/XPDeclaration.java'
+
+*** Action on file `src/soot/jimple/parser/node/PMethodBody.java'
+No prompt for file `src/soot/jimple/parser/node/PMethodBody.java'
+
+*** Action on file `src/soot/jimple/parser/node/PArrayBrackets.java'
+No prompt for file `src/soot/jimple/parser/node/PArrayBrackets.java'
+
+*** Action on file `src/soot/jimple/parser/node/X2PArrayBrackets.java'
+No prompt for file `src/soot/jimple/parser/node/X2PArrayBrackets.java'
+
+*** Action on file `src/soot/jimple/parser/node/X1PArrayBrackets.java'
+No prompt for file `src/soot/jimple/parser/node/X1PArrayBrackets.java'
+
+*** Action on file `src/soot/jimple/parser/node/XPArrayBrackets.java'
+No prompt for file `src/soot/jimple/parser/node/XPArrayBrackets.java'
+
+*** Action on file `src/soot/jimple/parser/node/PNonvoidType.java'
+No prompt for file `src/soot/jimple/parser/node/PNonvoidType.java'
+
+*** Action on file `src/soot/jimple/parser/node/PBaseType.java'
+No prompt for file `src/soot/jimple/parser/node/PBaseType.java'
+
+*** Action on file `src/soot/jimple/parser/node/PBaseTypeNoName.java'
+No prompt for file `src/soot/jimple/parser/node/PBaseTypeNoName.java'
+
+*** Action on file `src/soot/jimple/parser/node/PThrowsClause.java'
+No prompt for file `src/soot/jimple/parser/node/PThrowsClause.java'
+
+*** Action on file `src/soot/jimple/parser/node/PParameter.java'
+No prompt for file `src/soot/jimple/parser/node/PParameter.java'
+
+*** Action on file `src/soot/jimple/parser/node/PParameterList.java'
+No prompt for file `src/soot/jimple/parser/node/PParameterList.java'
+
+*** Action on file `src/soot/jimple/parser/node/PType.java'
+No prompt for file `src/soot/jimple/parser/node/PType.java'
+
+*** Action on file `src/soot/jimple/parser/node/PMember.java'
+No prompt for file `src/soot/jimple/parser/node/PMember.java'
+
+*** Action on file `src/soot/jimple/parser/node/PClassNameList.java'
+No prompt for file `src/soot/jimple/parser/node/PClassNameList.java'
+
+*** Action on file `src/soot/jimple/parser/node/PNameList.java'
+No prompt for file `src/soot/jimple/parser/node/PNameList.java'
+
+*** Action on file `src/soot/jimple/parser/node/X2PMember.java'
+No prompt for file `src/soot/jimple/parser/node/X2PMember.java'
+
+*** Action on file `src/soot/jimple/parser/node/X1PMember.java'
+No prompt for file `src/soot/jimple/parser/node/X1PMember.java'
+
+*** Action on file `src/soot/jimple/parser/node/XPMember.java'
+No prompt for file `src/soot/jimple/parser/node/XPMember.java'
+
+*** Action on file `src/soot/jimple/parser/node/PFileBody.java'
+No prompt for file `src/soot/jimple/parser/node/PFileBody.java'
+
+*** Action on file `src/soot/jimple/parser/node/PImplementsClause.java'
+No prompt for file `src/soot/jimple/parser/node/PImplementsClause.java'
+
+*** Action on file `src/soot/jimple/parser/node/PExtendsClause.java'
+No prompt for file `src/soot/jimple/parser/node/PExtendsClause.java'
+
+*** Action on file `src/soot/jimple/parser/node/PFileType.java'
+No prompt for file `src/soot/jimple/parser/node/PFileType.java'
+
+*** Action on file `src/soot/jimple/parser/node/PModifier.java'
+No prompt for file `src/soot/jimple/parser/node/PModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/X2PModifier.java'
+No prompt for file `src/soot/jimple/parser/node/X2PModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/X1PModifier.java'
+No prompt for file `src/soot/jimple/parser/node/X1PModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/XPModifier.java'
+No prompt for file `src/soot/jimple/parser/node/XPModifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/PFile.java'
+No prompt for file `src/soot/jimple/parser/node/PFile.java'
+
+*** Action on file `src/soot/jimple/parser/node/TStringConstant.java'
+No prompt for file `src/soot/jimple/parser/node/TStringConstant.java'
+
+*** Action on file `src/soot/jimple/parser/node/TFloatConstant.java'
+No prompt for file `src/soot/jimple/parser/node/TFloatConstant.java'
+
+*** Action on file `src/soot/jimple/parser/node/TIntegerConstant.java'
+No prompt for file `src/soot/jimple/parser/node/TIntegerConstant.java'
+
+*** Action on file `src/soot/jimple/parser/node/TBoolConstant.java'
+No prompt for file `src/soot/jimple/parser/node/TBoolConstant.java'
+
+*** Action on file `src/soot/jimple/parser/node/TAtIdentifier.java'
+No prompt for file `src/soot/jimple/parser/node/TAtIdentifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/TIdentifier.java'
+No prompt for file `src/soot/jimple/parser/node/TIdentifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/TQuotedName.java'
+No prompt for file `src/soot/jimple/parser/node/TQuotedName.java'
+
+*** Action on file `src/soot/jimple/parser/node/TFullIdentifier.java'
+No prompt for file `src/soot/jimple/parser/node/TFullIdentifier.java'
+
+*** Action on file `src/soot/jimple/parser/node/TDiv.java'
+No prompt for file `src/soot/jimple/parser/node/TDiv.java'
+
+*** Action on file `src/soot/jimple/parser/node/TMult.java'
+No prompt for file `src/soot/jimple/parser/node/TMult.java'
+
+*** Action on file `src/soot/jimple/parser/node/TMinus.java'
+No prompt for file `src/soot/jimple/parser/node/TMinus.java'
+
+*** Action on file `src/soot/jimple/parser/node/TPlus.java'
+No prompt for file `src/soot/jimple/parser/node/TPlus.java'
+
+*** Action on file `src/soot/jimple/parser/node/TUshr.java'
+No prompt for file `src/soot/jimple/parser/node/TUshr.java'
+
+*** Action on file `src/soot/jimple/parser/node/TShr.java'
+No prompt for file `src/soot/jimple/parser/node/TShr.java'
+
+*** Action on file `src/soot/jimple/parser/node/TShl.java'
+No prompt for file `src/soot/jimple/parser/node/TShl.java'
+
+*** Action on file `src/soot/jimple/parser/node/TCmple.java'
+No prompt for file `src/soot/jimple/parser/node/TCmple.java'
+
+*** Action on file `src/soot/jimple/parser/node/TCmplt.java'
+No prompt for file `src/soot/jimple/parser/node/TCmplt.java'
+
+*** Action on file `src/soot/jimple/parser/node/TCmpge.java'
+No prompt for file `src/soot/jimple/parser/node/TCmpge.java'
+
+*** Action on file `src/soot/jimple/parser/node/TCmpgt.java'
+No prompt for file `src/soot/jimple/parser/node/TCmpgt.java'
+
+*** Action on file `src/soot/jimple/parser/node/TCmpne.java'
+No prompt for file `src/soot/jimple/parser/node/TCmpne.java'
+
+*** Action on file `src/soot/jimple/parser/node/TCmpeq.java'
+No prompt for file `src/soot/jimple/parser/node/TCmpeq.java'
+
+*** Action on file `src/soot/jimple/parser/node/TMod.java'
+No prompt for file `src/soot/jimple/parser/node/TMod.java'
+
+*** Action on file `src/soot/jimple/parser/node/TXor.java'
+No prompt for file `src/soot/jimple/parser/node/TXor.java'
+
+*** Action on file `src/soot/jimple/parser/node/TOr.java'
+No prompt for file `src/soot/jimple/parser/node/TOr.java'
+
+*** Action on file `src/soot/jimple/parser/node/TAnd.java'
+No prompt for file `src/soot/jimple/parser/node/TAnd.java'
+
+*** Action on file `src/soot/jimple/parser/node/TEquals.java'
+No prompt for file `src/soot/jimple/parser/node/TEquals.java'
+
+*** Action on file `src/soot/jimple/parser/node/TColonEquals.java'
+No prompt for file `src/soot/jimple/parser/node/TColonEquals.java'
+
+*** Action on file `src/soot/jimple/parser/node/TQuote.java'
+No prompt for file `src/soot/jimple/parser/node/TQuote.java'
+
+*** Action on file `src/soot/jimple/parser/node/TDot.java'
+No prompt for file `src/soot/jimple/parser/node/TDot.java'
+
+*** Action on file `src/soot/jimple/parser/node/TColon.java'
+No prompt for file `src/soot/jimple/parser/node/TColon.java'
+
+*** Action on file `src/soot/jimple/parser/node/TRParen.java'
+No prompt for file `src/soot/jimple/parser/node/TRParen.java'
+
+*** Action on file `src/soot/jimple/parser/node/TLParen.java'
+No prompt for file `src/soot/jimple/parser/node/TLParen.java'
+
+*** Action on file `src/soot/jimple/parser/node/TRBracket.java'
+No prompt for file `src/soot/jimple/parser/node/TRBracket.java'
+
+*** Action on file `src/soot/jimple/parser/node/TLBracket.java'
+No prompt for file `src/soot/jimple/parser/node/TLBracket.java'
+
+*** Action on file `src/soot/jimple/parser/node/TSemicolon.java'
+No prompt for file `src/soot/jimple/parser/node/TSemicolon.java'
+
+*** Action on file `src/soot/jimple/parser/node/TRBrace.java'
+No prompt for file `src/soot/jimple/parser/node/TRBrace.java'
+
+*** Action on file `src/soot/jimple/parser/node/TLBrace.java'
+No prompt for file `src/soot/jimple/parser/node/TLBrace.java'
+
+*** Action on file `src/soot/jimple/parser/node/TComma.java'
+No prompt for file `src/soot/jimple/parser/node/TComma.java'
+
+*** Action on file `src/soot/jimple/parser/node/TNull.java'
+No prompt for file `src/soot/jimple/parser/node/TNull.java'
+
+*** Action on file `src/soot/jimple/parser/node/TVirtualinvoke.java'
+No prompt for file `src/soot/jimple/parser/node/TVirtualinvoke.java'
+
+*** Action on file `src/soot/jimple/parser/node/TThrows.java'
+No prompt for file `src/soot/jimple/parser/node/TThrows.java'
+
+*** Action on file `src/soot/jimple/parser/node/TThrow.java'
+No prompt for file `src/soot/jimple/parser/node/TThrow.java'
+
+*** Action on file `src/soot/jimple/parser/node/TTableswitch.java'
+No prompt for file `src/soot/jimple/parser/node/TTableswitch.java'
+
+*** Action on file `src/soot/jimple/parser/node/TStaticinvoke.java'
+No prompt for file `src/soot/jimple/parser/node/TStaticinvoke.java'
+
+*** Action on file `src/soot/jimple/parser/node/TSpecialinvoke.java'
+No prompt for file `src/soot/jimple/parser/node/TSpecialinvoke.java'
+
+*** Action on file `src/soot/jimple/parser/node/TReturn.java'
+No prompt for file `src/soot/jimple/parser/node/TReturn.java'
+
+*** Action on file `src/soot/jimple/parser/node/TRet.java'
+No prompt for file `src/soot/jimple/parser/node/TRet.java'
+
+*** Action on file `src/soot/jimple/parser/node/TNop.java'
+No prompt for file `src/soot/jimple/parser/node/TNop.java'
+
+*** Action on file `src/soot/jimple/parser/node/TNewmultiarray.java'
+No prompt for file `src/soot/jimple/parser/node/TNewmultiarray.java'
+
+*** Action on file `src/soot/jimple/parser/node/TNewarray.java'
+No prompt for file `src/soot/jimple/parser/node/TNewarray.java'
+
+*** Action on file `src/soot/jimple/parser/node/TNew.java'
+No prompt for file `src/soot/jimple/parser/node/TNew.java'
+
+*** Action on file `src/soot/jimple/parser/node/TNeg.java'
+No prompt for file `src/soot/jimple/parser/node/TNeg.java'
+
+*** Action on file `src/soot/jimple/parser/node/TLookupswitch.java'
+No prompt for file `src/soot/jimple/parser/node/TLookupswitch.java'
+
+*** Action on file `src/soot/jimple/parser/node/TLengthof.java'
+No prompt for file `src/soot/jimple/parser/node/TLengthof.java'
+
+*** Action on file `src/soot/jimple/parser/node/TInterfaceinvoke.java'
+No prompt for file `src/soot/jimple/parser/node/TInterfaceinvoke.java'
+
+*** Action on file `src/soot/jimple/parser/node/TInstanceof.java'
+No prompt for file `src/soot/jimple/parser/node/TInstanceof.java'
+
+*** Action on file `src/soot/jimple/parser/node/TIf.java'
+No prompt for file `src/soot/jimple/parser/node/TIf.java'
+
+*** Action on file `src/soot/jimple/parser/node/TGoto.java'
+No prompt for file `src/soot/jimple/parser/node/TGoto.java'
+
+*** Action on file `src/soot/jimple/parser/node/TExitmonitor.java'
+No prompt for file `src/soot/jimple/parser/node/TExitmonitor.java'
+
+*** Action on file `src/soot/jimple/parser/node/TEntermonitor.java'
+No prompt for file `src/soot/jimple/parser/node/TEntermonitor.java'
+
+*** Action on file `src/soot/jimple/parser/node/TDefault.java'
+No prompt for file `src/soot/jimple/parser/node/TDefault.java'
+
+*** Action on file `src/soot/jimple/parser/node/TCmpl.java'
+No prompt for file `src/soot/jimple/parser/node/TCmpl.java'
+
+*** Action on file `src/soot/jimple/parser/node/TCmpg.java'
+No prompt for file `src/soot/jimple/parser/node/TCmpg.java'
+
+*** Action on file `src/soot/jimple/parser/node/TCmp.java'
+No prompt for file `src/soot/jimple/parser/node/TCmp.java'
+
+*** Action on file `src/soot/jimple/parser/node/TCatch.java'
+No prompt for file `src/soot/jimple/parser/node/TCatch.java'
+
+*** Action on file `src/soot/jimple/parser/node/TCase.java'
+No prompt for file `src/soot/jimple/parser/node/TCase.java'
+
+*** Action on file `src/soot/jimple/parser/node/TBreakpoint.java'
+No prompt for file `src/soot/jimple/parser/node/TBreakpoint.java'
+
+*** Action on file `src/soot/jimple/parser/node/TImplements.java'
+No prompt for file `src/soot/jimple/parser/node/TImplements.java'
+
+*** Action on file `src/soot/jimple/parser/node/TExtends.java'
+No prompt for file `src/soot/jimple/parser/node/TExtends.java'
+
+*** Action on file `src/soot/jimple/parser/node/TUnknown.java'
+No prompt for file `src/soot/jimple/parser/node/TUnknown.java'
+
+*** Action on file `src/soot/jimple/parser/node/TNullType.java'
+No prompt for file `src/soot/jimple/parser/node/TNullType.java'
+
+*** Action on file `src/soot/jimple/parser/node/TDouble.java'
+No prompt for file `src/soot/jimple/parser/node/TDouble.java'
+
+*** Action on file `src/soot/jimple/parser/node/TFloat.java'
+No prompt for file `src/soot/jimple/parser/node/TFloat.java'
+
+*** Action on file `src/soot/jimple/parser/node/TLong.java'
+No prompt for file `src/soot/jimple/parser/node/TLong.java'
+
+*** Action on file `src/soot/jimple/parser/node/TInt.java'
+No prompt for file `src/soot/jimple/parser/node/TInt.java'
+
+*** Action on file `src/soot/jimple/parser/node/TChar.java'
+No prompt for file `src/soot/jimple/parser/node/TChar.java'
+
+*** Action on file `src/soot/jimple/parser/node/TShort.java'
+No prompt for file `src/soot/jimple/parser/node/TShort.java'
+
+*** Action on file `src/soot/jimple/parser/node/TByte.java'
+No prompt for file `src/soot/jimple/parser/node/TByte.java'
+
+*** Action on file `src/soot/jimple/parser/node/TBoolean.java'
+No prompt for file `src/soot/jimple/parser/node/TBoolean.java'
+
+*** Action on file `src/soot/jimple/parser/node/TVoid.java'
+No prompt for file `src/soot/jimple/parser/node/TVoid.java'
+
+*** Action on file `src/soot/jimple/parser/node/TInterface.java'
+No prompt for file `src/soot/jimple/parser/node/TInterface.java'
+
+*** Action on file `src/soot/jimple/parser/node/TClass.java'
+No prompt for file `src/soot/jimple/parser/node/TClass.java'
+
+*** Action on file `src/soot/jimple/parser/node/TVolatile.java'
+No prompt for file `src/soot/jimple/parser/node/TVolatile.java'
+
+*** Action on file `src/soot/jimple/parser/node/TTransient.java'
+No prompt for file `src/soot/jimple/parser/node/TTransient.java'
+
+*** Action on file `src/soot/jimple/parser/node/TSynchronized.java'
+No prompt for file `src/soot/jimple/parser/node/TSynchronized.java'
+
+*** Action on file `src/soot/jimple/parser/node/TStatic.java'
+No prompt for file `src/soot/jimple/parser/node/TStatic.java'
+
+*** Action on file `src/soot/jimple/parser/node/TPrivate.java'
+No prompt for file `src/soot/jimple/parser/node/TPrivate.java'
+
+*** Action on file `src/soot/jimple/parser/node/TProtected.java'
+No prompt for file `src/soot/jimple/parser/node/TProtected.java'
+
+*** Action on file `src/soot/jimple/parser/node/TPublic.java'
+No prompt for file `src/soot/jimple/parser/node/TPublic.java'
+
+*** Action on file `src/soot/jimple/parser/node/TNative.java'
+No prompt for file `src/soot/jimple/parser/node/TNative.java'
+
+*** Action on file `src/soot/jimple/parser/node/TFinal.java'
+No prompt for file `src/soot/jimple/parser/node/TFinal.java'
+
+*** Action on file `src/soot/jimple/parser/node/TAbstract.java'
+No prompt for file `src/soot/jimple/parser/node/TAbstract.java'
+
+*** Action on file `src/soot/coffi/CoffiMethodSource.java'
+No prompt for file `src/soot/coffi/CoffiMethodSource.java'
+
+*** Action on file `src/soot/UnknownMethodSource.java'
+No prompt for file `src/soot/UnknownMethodSource.java'
+
+*** Action on file `src/soot/util/ClassInputStream.java'
+No prompt for file `src/soot/util/ClassInputStream.java'
+
+*** Action on file `src/soot/util/BafInputStream.java'
+No prompt for file `src/soot/util/BafInputStream.java'
+
+*** Action on file `src/soot/util/JimpleInputStream.java'
+No prompt for file `src/soot/util/JimpleInputStream.java'
+
+*** Action on file `src/soot/util/SootInputStream.java'
+No prompt for file `src/soot/util/SootInputStream.java'
+
+*** Action on file `src/soot/jimple/parser/node/NoCast.java'
+No prompt for file `src/soot/jimple/parser/node/NoCast.java'
+
+*** Action on file `src/soot/jimple/parser/node/Cast.java'
+No prompt for file `src/soot/jimple/parser/node/Cast.java'
+
+*** Action on file `src/soot/jimple/parser/node/TypedLinkedList.java'
+No prompt for file `src/soot/jimple/parser/node/TypedLinkedList.java'
+
+*** Action on file `src/soot/jimple/parser/node/Switchable.java'
+No prompt for file `src/soot/jimple/parser/node/Switchable.java'
+
+*** Action on file `src/soot/jimple/parser/node/Switch.java'
+No prompt for file `src/soot/jimple/parser/node/Switch.java'
+
+*** Action on file `src/soot/ITypeSwitch.java'
+No prompt for file `src/soot/ITypeSwitch.java'
+
+*** Action on file `src/soot/util/BafInputRep.java'
+No prompt for file `src/soot/util/BafInputRep.java'
+
+*** Action on file `src/soot/util/JimpleInputRep.java'
+No prompt for file `src/soot/util/JimpleInputRep.java'
+
+*** Action on file `src/soot/util/SootInputRepresentation.java'
+No prompt for file `src/soot/util/SootInputRepresentation.java'
+
+*** Action on file `src/soot/util/ClassInputRep.java'
+No prompt for file `src/soot/util/ClassInputRep.java'
+
+*** Action on file `src/soot/util/EscapedReader.java'
+No prompt for file `src/soot/util/EscapedReader.java'
+
+*** Action on file `src/soot/util/EscapedWriter.java'
+No prompt for file `src/soot/util/EscapedWriter.java'
+
+*** Action on file `classes/soot/jimple/parser/lexer/lexer.dat'
+No prompt for file `classes/soot/jimple/parser/lexer/lexer.dat'
+
+*** Action on file `classes/soot/jimple/parser/parser/parser.dat'
+No prompt for file `classes/soot/jimple/parser/parser/parser.dat'
+
+*** Action on file `src/soot/jimple/parser/SkeletonExtractorWalker.java'
+No prompt for file `src/soot/jimple/parser/SkeletonExtractorWalker.java'
+
+*** Action on file `src/soot/jimple/parser/JimpleAST.java'
+No prompt for file `src/soot/jimple/parser/JimpleAST.java'
+
+*** Action on file `README'
+No prompt for file `README'
+
+*** Action on file `TODO'
+No prompt for file `TODO'
+
+*** Action on file `CHANGES'
+No prompt for file `CHANGES'
+
+*** Action on file `license.html'
+No prompt for file `license.html'
+
+*** Action on file `index.html'
+No prompt for file `index.html'
+
+*** Action on file `credits'
+No prompt for file `credits'
+
+*** Action on file `COPYING-LESSER.txt'
+No prompt for file `COPYING-LESSER.txt'
+
+*** Action on file `background5.gif'
+No prompt for file `background5.gif'
+
+*** Action on file `javac.def'
+No prompt for file `javac.def'
+
+*** Action on file `jikes.def'
+No prompt for file `jikes.def'
+
+*** Action on file `jams.def'
+Copied working file `jams.def' to `obsolete/jams.def.v0'
+Replace file `jams.def' by rule 3
+
+*** Action on file `src/soot/jimple/parser/node/TWith.java'
+No prompt for file `src/soot/jimple/parser/node/TWith.java'
+
+*** Action on file `src/soot/jimple/parser/node/TTo.java'
+No prompt for file `src/soot/jimple/parser/node/TTo.java'
+
+*** Action on file `src/soot/jimple/parser/node/TFrom.java'
+No prompt for file `src/soot/jimple/parser/node/TFrom.java'
+
+*** Action on file `src/soot/jimple/parser/node/TIgnored.java'
+No prompt for file `src/soot/jimple/parser/node/TIgnored.java'
+
+*** Action on file `src/soot/EquivTo.java'
+No prompt for file `src/soot/EquivTo.java'
+
+*** Action on file `src/soot/Directed.java'
+No prompt for file `src/soot/Directed.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/RedundantExprs.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/RedundantExprs.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/PartialRedundancyEliminator.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/PartialRedundancyEliminator.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/OptimalExprs.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/OptimalExprs.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/LocallyTransparentExprs.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/LocallyTransparentExprs.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/LocallyAnticipatableExprs.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/LocallyAnticipatableExprs.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/LatestExprs.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/LatestExprs.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/IsolatednessAnalysis.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/IsolatednessAnalysis.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/IsolatedExprs.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/IsolatedExprs.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/GlobalAnticipatabilityAnalysis.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/GlobalAnticipatabilityAnalysis.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/EarliestnessAnalysis.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/EarliestnessAnalysis.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/DelayednessAnalysis.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/DelayednessAnalysis.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/DelayedExprs.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/DelayedExprs.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/AnticipatableExprs.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/AnticipatableExprs.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/AnticipEarliestExprs.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/AnticipEarliestExprs.java'
+
+*** Action on file `src/soot/grimp/internal/package.html'
+No prompt for file `src/soot/grimp/internal/package.html'
+
+*** Action on file `src/soot/grimp/toolkits/base/package.html'
+No prompt for file `src/soot/grimp/toolkits/base/package.html'
+
+*** Action on file `src/soot/grimp/package.html'
+No prompt for file `src/soot/grimp/package.html'
+
+*** Action on file `src/soot/baf/internal/package.html'
+No prompt for file `src/soot/baf/internal/package.html'
+
+*** Action on file `src/soot/baf/toolkits/base/package.html'
+No prompt for file `src/soot/baf/toolkits/base/package.html'
+
+*** Action on file `src/soot/baf/package.html'
+No prompt for file `src/soot/baf/package.html'
+
+*** Action on file `src/soot/coffi/package.html'
+No prompt for file `src/soot/coffi/package.html'
+
+*** Action on file `src/soot/jimple/internal/package.html'
+No prompt for file `src/soot/jimple/internal/package.html'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/pre/package.html'
+No prompt for file `src/soot/jimple/toolkits/scalar/pre/package.html'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/package.html'
+No prompt for file `src/soot/jimple/toolkits/scalar/package.html'
+
+*** Action on file `src/soot/jimple/toolkits/invoke/package.html'
+No prompt for file `src/soot/jimple/toolkits/invoke/package.html'
+
+*** Action on file `src/soot/jimple/toolkits/typing/package.html'
+No prompt for file `src/soot/jimple/toolkits/typing/package.html'
+
+*** Action on file `src/soot/jimple/toolkits/base/package.html'
+No prompt for file `src/soot/jimple/toolkits/base/package.html'
+
+*** Action on file `src/soot/jimple/parser/package.html'
+No prompt for file `src/soot/jimple/parser/package.html'
+
+*** Action on file `src/soot/jimple/package.html'
+No prompt for file `src/soot/jimple/package.html'
+
+*** Action on file `src/soot/toolkits/scalar/package.html'
+No prompt for file `src/soot/toolkits/scalar/package.html'
+
+*** Action on file `src/soot/toolkits/graph/package.html'
+No prompt for file `src/soot/toolkits/graph/package.html'
+
+*** Action on file `src/soot/util/package.html'
+No prompt for file `src/soot/util/package.html'
+
+*** Action on file `src/soot/dava/toolkits/base/package.html'
+No prompt for file `src/soot/dava/toolkits/base/package.html'
+
+*** Action on file `src/soot/dava/package.html'
+No prompt for file `src/soot/dava/package.html'
+
+*** Action on file `src/soot/package.html'
+No prompt for file `src/soot/package.html'
+
+*** Action on file `src/soot/baf/toolkits/base/ExamplePeephole.java'
+No prompt for file `src/soot/baf/toolkits/base/ExamplePeephole.java'
+
+*** Action on file `src/soot/baf/toolkits/base/PeepholeOptimizer.java'
+No prompt for file `src/soot/baf/toolkits/base/PeepholeOptimizer.java'
+
+*** Action on file `src/soot/baf/toolkits/base/Peephole.java'
+No prompt for file `src/soot/baf/toolkits/base/Peephole.java'
+
+*** Action on file `src/soot/baf/toolkits/base/peephole.dat'
+No prompt for file `src/soot/baf/toolkits/base/peephole.dat'
+
+*** Action on file `src/soot/EquivalentValue.java'
+No prompt for file `src/soot/EquivalentValue.java'
+
+*** Action on file `src/soot/util/Debug.java'
+No prompt for file `src/soot/util/Debug.java'
+
+*** Action on file `src/soot/jimple/JimpleMethodSource.java'
+No prompt for file `src/soot/jimple/JimpleMethodSource.java'
+
+*** Action on file `src/soot/ICompilationListener.java'
+No prompt for file `src/soot/ICompilationListener.java'
+
+*** Action on file `src/soot/JMain.java'
+No prompt for file `src/soot/JMain.java'
+
+*** Action on file `src/soot/jimple/parser/CstPoolExtractor.java'
+No prompt for file `src/soot/jimple/parser/CstPoolExtractor.java'
+
+*** Action on file `soot.log'
+No prompt for file `soot.log'
+
+*** Action on file `src/soot/dava/TrunkTrunk.java'
+No prompt for file `src/soot/dava/TrunkTrunk.java'
+
+*** Action on file `src/soot/dava/toolkits/base/IfMatcher.java'
+No prompt for file `src/soot/dava/toolkits/base/IfMatcher.java'
+
+*** Action on file `src/soot/dava/toolkits/base/WhileMatcher.java'
+No prompt for file `src/soot/dava/toolkits/base/WhileMatcher.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/NaiveCommonSubexpressionEliminator.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/NaiveCommonSubexpressionEliminator.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/AvailableExpressionsAnalysis.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/AvailableExpressionsAnalysis.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/AvailableExpressions.java'
+No prompt for file `src/soot/jimple/toolkits/scalar/AvailableExpressions.java'
+
+*** Action on file `src/soot/jimple/toolkits/scalar/jams.def'
+No prompt for file `src/soot/jimple/toolkits/scalar/jams.def'
+
+*** Action on file `classes/soot/baf/toolkits/base/peephole.dat'
+No prompt for file `classes/soot/baf/toolkits/base/peephole.dat'
+
+*** Action on file `src/soot/gui/ICompilationListener.java'
+No prompt for file `src/soot/gui/ICompilationListener.java'
+
+*** Action on file `src/soot/jimple/DefaultStmtPrinter.java'
+No prompt for file `src/soot/jimple/DefaultStmtPrinter.java'
+
+*** Action on file `src/soot/StmtPrinter.java'
+No prompt for file `src/soot/StmtPrinter.java'
+
+*** Action on populate ignore element `.*\.class$'
+No prompt for populate ignore element `.*\.class$'
+
+*** Action on populate ignore element `.*~$'
+No prompt for populate ignore element `.*~$'
+
+*** Action on project keyword `SootVersion'
+No prompt for project keyword `SootVersion'
+
+
+*** Merge complete
+
