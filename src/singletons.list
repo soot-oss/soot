@@ -97,6 +97,7 @@ soot.jimple.Jimple
 soot.dava.toolkits.base.finders.LabeledBlockFinder
 soot.jimple.toolkits.scalar.pre.LazyCodeMotion
 soot.tagkit.LineNumberTagAggregator
+soot.tagkit.InnerClassTagAggregator
 soot.baf.toolkits.base.LoadStoreOptimizer
 soot.jimple.toolkits.scalar.LocalNameStandardizer
 soot.toolkits.scalar.LocalPacker

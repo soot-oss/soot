@@ -896,8 +896,8 @@ public class InitialResolver {
             soot.tagkit.OuterClassTag tag = (soot.tagkit.OuterClassTag)sootClass.getTag("OuterClassTag");
             sootClass.addTag(new soot.tagkit.InnerClassTag(
                 sootClass.getName(), 
-                tag.isAnon() ? "<not a member>" : tag.getOuterClass().getName(), 
-                tag.isAnon() ? "<anonymous>" : tag.getSimpleName(), 
+                tag.isAnon() ? null /*"<not a member>"*/ : tag.getOuterClass().getName(), 
+                tag.isAnon() ? null /*"<anonymous>"*/ : tag.getSimpleName(), 
                 soot.Modifier.isInterface(tag.getOuterClass().getModifiers()) ? soot.Modifier.STATIC | soot.Modifier.PUBLIC : sootClass.getModifiers()));
         
             // if this class is an inner class and enclosing class is also
@@ -907,8 +907,8 @@ public class InitialResolver {
                 soot.tagkit.OuterClassTag tag2 = (soot.tagkit.OuterClassTag)outerClass.getTag("OuterClassTag");
                 sootClass.addTag(new soot.tagkit.InnerClassTag(
                     outerClass.getName(), 
-                    tag2.isAnon() ? "<not a member>" : tag2.getOuterClass().getName(), 
-                    tag2.isAnon() ? "<anonymous>" : tag2.getSimpleName(), 
+                    tag2.isAnon() ? null /*"<not a member>"*/ : tag2.getOuterClass().getName(), 
+                    tag2.isAnon() ? null /*"<anonymous>"*/ : tag2.getSimpleName(), 
                     tag2.isAnon() && soot.Modifier.isInterface(tag2.getOuterClass().getModifiers()) ? soot.Modifier.STATIC | soot.Modifier.PUBLIC : outerClass.getModifiers()));
                 outerClass = tag2.getOuterClass();
             }
@@ -1342,4 +1342,5 @@ public class InitialResolver {
     public soot.FastHierarchy hierarchy(){
         return hierarchy;
     }
+
 }
