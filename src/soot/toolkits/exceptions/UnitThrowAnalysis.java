@@ -43,7 +43,7 @@ import soot.toolkits.exceptions.*;
  * with an implementation which returns the empty set instead of
  * all possible exceptions.
  */
-public class UnitThrowAnalysis implements ThrowAnalysis {
+public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     // Cache the response to mightThrowImplicitly():
     private final ThrowableSet implicitThrowExceptions 
@@ -79,41 +79,12 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	return sw.getResult();
     }
 
-    
-
-    public ThrowableSet mightThrowExplicitly(ThrowInst t) {
-	// Deducing the type at the top of the Baf stack is beyond me, so...
-	return ThrowableSet.Manager.v().ALL_THROWABLES;
-    }
-
 
     public ThrowableSet mightThrowImplicitly(ThrowInst t) {
 	return implicitThrowExceptions;
     }
 	
     
-    public ThrowableSet mightThrowExplicitly(ThrowStmt t) {
-	Value thrownExpression = t.getOp();
-	Type thrownType = thrownExpression.getType();
-	if (thrownType == null || thrownType instanceof UnknownType) {
-	    // We can't identify the type of thrownExpression, so...
-	    return ThrowableSet.Manager.v().ALL_THROWABLES;
-	} else if (! (thrownType instanceof RefType)) {
-	    throw new IllegalStateException("UnitThrowAnalysis StmtSwitch: type of throw argument is not a RefType!");
-	} else {
-	    ThrowableSet result = ThrowableSet.Manager.v().EMPTY;
-	    if (thrownExpression instanceof NewInvokeExpr) {
-		// In this case, we know the exact type of the 
-		// argument exception.
-		result = result.add((RefType) thrownType);
-	    } else {
-		result = result.add(AnySubType.v((RefType) thrownType));
-	    }
-	    return result;
-	}
-    }
-
-
     public ThrowableSet mightThrowImplicitly(ThrowStmt t) {
 	return implicitThrowExceptions;
     }

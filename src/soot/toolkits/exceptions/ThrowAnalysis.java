@@ -46,7 +46,7 @@ public interface ThrowAnalysis {
      *
      * @param u {@link Unit} whose exceptions are to be returned.
      *
-     * @return a representation of the {@link Throwable} types that
+     * @return a representation of the <code>Throwable</code> types that
      * <code>u</code> might throw.
      */
     ThrowableSet mightThrow(Unit u);
@@ -60,7 +60,7 @@ public interface ThrowAnalysis {
      *          to be returned.
      *
      * @return a representation of the possible types of
-     * <code>t</code>'s </code>Throwable</code> operand.
+     * <code>t</code>'s <code>Throwable</code> operand.
      */
     ThrowableSet mightThrowExplicitly(ThrowInst t);
 
@@ -73,7 +73,7 @@ public interface ThrowAnalysis {
      *          to be returned.
      *
      * @return a representation of the possible types of
-     * <code>t</code>'s </code>Throwable</code> operand.
+     * <code>t</code>'s <code>Throwable</code> operand.
      */
     ThrowableSet mightThrowExplicitly(ThrowStmt t);
 
@@ -88,7 +88,7 @@ public interface ThrowAnalysis {
      *          to be returned.
      *
      * @return a representation of the types of exceptions that 
-     * <code>t</code>'s micht throw implicitly.
+     * <code>t</code> might throw implicitly.
      */
     ThrowableSet mightThrowImplicitly(ThrowInst t);
 
@@ -103,7 +103,7 @@ public interface ThrowAnalysis {
      *          to be returned.
      *
      * @return a representation of the types of exceptions that 
-     * <code>t</code>'s micht throw implicitly.
+     * <code>t</code> might throw implicitly.
      */
     ThrowableSet mightThrowImplicitly(ThrowStmt t);
 
