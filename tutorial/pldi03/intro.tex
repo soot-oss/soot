@@ -132,7 +132,7 @@ Run intraprocedural optimizations and produce optimized {\tt A.class}.
 \item[\texttt{java soot.Main -O --app Foo}] \hspace{1in} \\
 Run intraprocedural optimizations on \texttt{Foo.class} and all
 application classes reachable from {\tt Foo.class}. 
-\item[\texttt{java soot.Main -W Foo}] \hspace{1in} \\
+\item[\texttt{java soot.Main -W --app Foo}] \hspace{1in} \\
 Perform whole program analysis and produce optimized classes for \texttt{Foo.class} and all application classes reachable from {\tt Foo}.
 \end{description}
 \end{slide}
@@ -140,7 +140,7 @@ Perform whole program analysis and produce optimized classes for \texttt{Foo.cla
 \begin{slide}{Command-line: a more complex example}
 
 \begin{small}
-\textbf{\red\texttt{java soot.Main -W -f jimple}}
+\textbf{\red\texttt{java soot.Main -W --app -f jimple}}
 
 \textbf{\texttt{     -p jb use-original-names:true }}
 
@@ -148,9 +148,9 @@ Perform whole program analysis and produce optimized classes for \texttt{Foo.cla
 
 \textbf{\texttt{     -p cg.spark simplify-offline:true}}
 
-\textbf{\texttt{     -p jop on -p jop.cse on   }}
+\textbf{\texttt{     -p jop.cse on   }}
 
-\textbf{\texttt{     -p wjop on  -p wjop.smb on }}
+\textbf{\texttt{     -p wjop.smb on  -p wjop.si off }}
 
 \textbf{\red\texttt{     Foo }}
 \end{small}
@@ -166,7 +166,7 @@ classes.
 \begin{slide}{Command-line: a more complex example}
 
 \begin{small}
-\textbf{\texttt{java soot.Main -W -f jimple}}
+\textbf{\texttt{java soot.Main -W --app -f jimple}}
 
 \textbf{\red\texttt{     -p jb use-original-names:true }}
 
@@ -174,9 +174,9 @@ classes.
 
 \textbf{\texttt{     -p cg.spark simplify-offline:true}}
 
-\textbf{\texttt{     -p jop on -p jop.cse on   }}
+\textbf{\texttt{     -p jop.cse on   }}
 
-\textbf{\texttt{     -p wjop on  -p wjop.smb on }}
+\textbf{\texttt{     -p wjop.smb on -p wjop.si off }}
 
 \textbf{\texttt{     Foo }}
 \end{small}
@@ -194,7 +194,7 @@ attributes (i.e. class file produced with \texttt{javac -g}).
 \begin{slide}{Command-line: a more complex example}
 
 \begin{small}
-\textbf{\texttt{java soot.Main -W -f jimple}}
+\textbf{\texttt{java soot.Main -W --app  -f jimple}}
 
 \textbf{\texttt{     -p jb use-original-names:true }}
 
@@ -202,9 +202,9 @@ attributes (i.e. class file produced with \texttt{javac -g}).
 
 \textbf{\red\texttt{     -p cg.spark simplify-offline:true}}
 
-\textbf{\texttt{     -p jop on -p jop.cse on   }}
+\textbf{\texttt{     -p jop.cse on   }}
 
-\textbf{\texttt{     -p wjop on  -p wjop.smb on }}
+\textbf{\texttt{     -p wjop.smb on  -p wjop.si off}}
 
 \textbf{\texttt{     Foo }}
 \end{small}
@@ -223,7 +223,7 @@ Note: \texttt{on} is a short form for \texttt{enabled:true}.
 \begin{slide}{Command-line: a more complex example}
 
 \begin{small}
-\textbf{\texttt{java soot.Main -W -f jimple}}
+\textbf{\texttt{java soot.Main \red{-W} --app -f jimple}}
 
 \textbf{\texttt{     -p jb use-original-names:true }}
 
@@ -231,9 +231,9 @@ Note: \texttt{on} is a short form for \texttt{enabled:true}.
 
 \textbf{\texttt{     -p cg.spark simplify-offline:true}}
 
-\textbf{\red\texttt{     -p jop on -p jop.cse on   }}
+\textbf{\red\texttt{     -p jop.cse on   }}
 
-\textbf{\red\texttt{     -p wjop on  -p wjop.smb on }}
+\textbf{\red\texttt{     -p wjop.smb on  -p wjop.si off}}
 
 \textbf{\texttt{     Foo }}
 \end{small}
@@ -242,11 +242,12 @@ Note: \texttt{on} is a short form for \texttt{enabled:true}.
 
 \begin{footnotesize}
 Turn on 
-the intraprocedural optimization phase and enable 
-\textit{common sub-expression elimination} (cse) within that phase.
+the intraprocedural optimization and interprocedural optimizations phases (-W). 
 
-Turn on the whole program optimization phase and
-turn on \textit{static method binding} (smb) within that phase.
+Enable \textit{common sub-expression elimination} (cse).
+
+Enable \textit{static method binding} (smb) and disable \textit{static
+inlining} (si). 
 \end{footnotesize}
 
 \end{slide}
@@ -280,7 +281,7 @@ Now we want to understand:
 
 To work with Soot in this way,  you should download the complete package
 \texttt{soot-2.0.jar} which contains the complete Java source, class files,
-Javadoc documentations, Soot tutorials, source and compiled forms of the plugin,and our modified jasmin assembler. 
+Javadoc documentation, Soot tutorials, source and compiled forms of the plugin,and our modified jasmin assembler. 
 \sablefootnote{www.sable.mcgill.ca/software/\#soot}
 \end{slide}
 
