@@ -46,7 +46,7 @@ public class GArrayRef extends JArrayRef implements Precedence
             Grimp.v().newExprBox(index));
     }
   
-  public int getPrecedence() { return 875; }
+  public int getPrecedence() { return 950; }
 
   private String toString(Value op1, 
                           String leftOp, String rightOp)

@@ -31,7 +31,7 @@ public class DLengthExpr extends AbstractLengthExpr implements Precedence
         super(Grimp.v().newObjExprBox(op));
     }
 
-    public int getPrecedence() { return 860; }
+    public int getPrecedence() { return 950; }
       
     public Object clone() 
     {
