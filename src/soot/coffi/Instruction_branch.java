@@ -87,6 +87,6 @@ abstract class Instruction_branch extends Instruction {
 
     public String toString()
     {
-	return super.toString()+ "     "+target.toString();
+	return super.toString()+ "\t"+target.label;
     }
 }

@@ -1131,7 +1131,7 @@ public class ClassFile {
     * @see ClassFile#parseMethod
     * @see CFG
     */
-    void parse() {
+    public void parse() {
       method_info mi;
       int i;
 

@@ -82,7 +82,7 @@ public class method_info {
     * @param constant_pool the constant_pool for this class.
     * @return the name of this method.
     */
-    String toName(cp_info constant_pool[]) {
+    public String toName(cp_info constant_pool[]) {
       CONSTANT_Utf8_info ci;
       ci = (CONSTANT_Utf8_info)(constant_pool[name_index]);
       return ci.convert();
@@ -108,7 +108,7 @@ public class method_info {
     * @param constant_pool the constant_pool for this class.
     * @return the prototype (access + return + name + parameters) of this method.
     */
-    String prototype(cp_info constant_pool[]) {
+    public String prototype(cp_info constant_pool[]) {
       String access,rt,name,params;
       Code_attribute c = locate_code_attribute();
 

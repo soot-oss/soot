@@ -424,6 +424,7 @@ public class CFG {
     private boolean eliminateJsrRets()
     {
 	Instruction insn = this.sentinel;
+
 	// find the last instruction, for copying blocks.
 	while (insn.next != null) {
 	    insn = insn.next;
@@ -496,11 +497,14 @@ public class CFG {
 		}
 		
 		Instruction ret = findMatchingRet(astore, insn, innerJsrs);
+
+		/*
 		if (ret == null)
 		{
 		    unusual = true;
 		    break;
 		}
+		*/
 
 		jsrorder.addLast(insn);
 		jsr2astore.put(insn, astore);
@@ -509,7 +513,7 @@ public class CFG {
  
 	    insn = insn.next;
 	   
-	} while (insn != end);
+	} while (insn != end.next);
 
 	if (unusual)
 	{
@@ -570,6 +574,7 @@ public class CFG {
 	{
 	    Instruction jsr = (Instruction)jsrorder.removeFirst();	    
 	    Instruction astore = (Instruction)jsr2astore.get(jsr);
+
 	    Instruction ret = (Instruction)astore2ret.get(astore);
 
 	    // make a copy of the code, append to the last instruction.     
@@ -590,7 +595,10 @@ public class CFG {
 
 	    replacedInsns.put(jsr, togo); 
 
-	    newblocks.put(newhead, this.lastInstruction);
+	    // just quick hack
+	    if (ret != null) {
+		newblocks.put(newhead, this.lastInstruction);
+	    }
 	}
 
 	return newblocks;
@@ -603,6 +611,11 @@ public class CFG {
 				   Instruction ret,
 				   Instruction target)
     {
+	// do a quick hacker for ret == null
+	if (ret == null) {
+	    return astore.next;
+	}
+
 	Instruction last = this.lastInstruction;
 	Instruction headbefore = last;
 
