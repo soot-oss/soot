@@ -62,6 +62,7 @@ import soot.jimple.toolkits.annotation.qualifiers.*;
 import soot.jimple.toolkits.annotation.profiling.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.annotation.defs.*;
+import soot.jimple.toolkits.annotation.liveVars.*;
 import soot.jimple.toolkits.base.*;
 import soot.jimple.toolkits.graph.*;
 import soot.jimple.toolkits.invoke.*;
@@ -82,6 +83,7 @@ import soot.util.queue.*;
 import soot.shimple.*;
 import soot.shimple.toolkits.scalar.*;
 import soot.relations.*;
+import soot.toolkits.graph.interaction.*;
 import soot.util.cfgcmd.*;
 import soot.toolkits.exceptions.*;
 
@@ -1052,10 +1054,22 @@ public class Singletons {
         return instanceReachingDefsTagger;
     }
 
+    private LiveVarsTagger instanceLiveVarsTagger;
+    public LiveVarsTagger LiveVarsTagger() {
+        if( instanceLiveVarsTagger == null ) instanceLiveVarsTagger = new LiveVarsTagger( g );
+        return instanceLiveVarsTagger;
+    }
+
     private CFGPrinter instanceCFGPrinter;
     public CFGPrinter CFGPrinter() {
         if( instanceCFGPrinter == null ) instanceCFGPrinter = new CFGPrinter( g );
         return instanceCFGPrinter;
+    }
+
+    private InteractionHandler instanceInteractionHandler;
+    public InteractionHandler InteractionHandler() {
+        if( instanceInteractionHandler == null ) instanceInteractionHandler = new InteractionHandler( g );
+        return instanceInteractionHandler;
     }
 
     private PhaseDumper instancePhaseDumper;

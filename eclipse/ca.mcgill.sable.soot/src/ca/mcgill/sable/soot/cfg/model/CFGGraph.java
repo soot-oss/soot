@@ -39,7 +39,7 @@ public class CFGGraph extends CFGElement implements IEditorInput {
 	
 	public void addChild(CFGNode child){
 		children.add(child);
-		System.out.println("added child to graph");
+		//System.out.println("added child to graph");
 		fireStructureChange(CHILDREN, child);
 	}
 		
@@ -146,6 +146,10 @@ public class CFGGraph extends CFGElement implements IEditorInput {
 	 */
 	public void setResource(IResource resource) {
 		this.resource = resource;
+	}
+	
+	public void newFlowData(){
+		firePropertyChange(CFGElement.NEW_FLOW_DATA, null);
 	}
 
 }

@@ -151,6 +151,14 @@ Provide detailed information about what Soot is doing as it runs.
 </long_desc>
 		</boolopt>
 		<boolopt>
+			<name>Interactive Mode</name>
+			<alias>interactive-mode</alias>
+			<short_desc>Run in interactive mode</short_desc>
+			<long_desc>
+Runs interactively, with Soot providing detailed information as it iterates through intra-procedural analyses.
+</long_desc>
+		</boolopt>
+		<boolopt>
 			<name>Application Mode</name>
 			<alias>app</alias>
 			<short_desc>Run in application mode</short_desc>
@@ -3596,6 +3604,17 @@ information in these tags.  For example, even variables (such as
 					<alias>jap.pat</alias>
 					<short_desc>Colour-codes method parameters that may be aliased</short_desc>
 					<long_desc>For each method with parameters of reference type, this tagger indicates the aliasing relationships between the parameters using colour tags. Parameters that may be aliased are the same colour. Parameters that may not be aliased are in different colours.</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+                </sub_phase>
+                <sub_phase>
+					<name>Live Variables Tagger</name>
+					<alias>jap.lvtagger</alias>
+					<short_desc>Creates color tags for live variables</short_desc>
+					<long_desc>Colors live variables.</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>

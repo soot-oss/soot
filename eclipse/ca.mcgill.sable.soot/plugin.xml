@@ -11,6 +11,7 @@
       <library name="soot/classes/"/>
       <library name="jasminclasses-sable-1.2.jar"/>
       <library name="polyglot-1.1.0.jar"/>
+      <library name="myclasses/"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
@@ -215,7 +216,24 @@
          </action>
       </actionSet>
    </extension>-->
-   <extension
+   
+  <!-- <extension
+   		point="org.eclipse.ui.actionSets">
+   		<actionSet
+   			label="Soot"
+   			visible="true"
+   			id="ca.mcgill.sable.soot.continue">
+   		<action
+   			label="Continue"
+   			style="push"
+   			icon="icons/soot.png"
+   			enablesFor="*"
+   			class="ca.mcgill.sable.soot.interaction.InteractionContinuer"
+   			id="ca.mcgill.sable.soot.continue">
+   		</action>
+   		</actionSet>
+   		</extension>-->
+   		   <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
             label="Soot"
@@ -252,6 +270,15 @@
                enablesFor="+"
                id="CFG Tests">
          </action>
+         <action
+   			label="Continue"
+   			style="push"
+   			icon="icons/resume_co.gif"
+   			enablesFor="*"
+   			toolbarPath="Normal/Soot"
+   			class="ca.mcgill.sable.soot.interaction.InteractionContinuer"
+   			id="ca.mcgill.sable.soot.continue">
+   		</action>
         <!-- <action
                label="Visualiztion Manipulations"
                class="ca.mcgill.sable.soot.attributes.VisManLauncher"

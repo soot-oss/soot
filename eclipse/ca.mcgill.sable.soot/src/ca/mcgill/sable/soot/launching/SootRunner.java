@@ -21,6 +21,7 @@ package ca.mcgill.sable.soot.launching;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import ca.mcgill.sable.soot.interaction.*;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.Display;
 //import soot.*;
 import ca.mcgill.sable.soot.util.*;
 import java.util.*;
+import org.eclipse.jface.dialogs.*;
 
 /**
  * Runs Soot and creates Handler for Soot output.
@@ -38,6 +40,7 @@ public class SootRunner implements IRunnableWithProgress {
 	String [] cmd;
 	String mainClass;
 	ArrayList cfgList;
+	private SootLauncher parent;
 	
 	/**
 	 * Constructor for SootRunner.
@@ -64,16 +67,26 @@ public class SootRunner implements IRunnableWithProgress {
       		
             final String [] cmdFinal = getCmd();
             
-            	
+            //InteractionController controller = new InteractionController();
+        	//controller.setDisplay(getDisplay());
+        	//controller.setParent(this);
+        	
             SootThread sootThread = new SootThread(getDisplay(), getMainClass());
             sootThread.setCmd(cmdFinal);
             sootThread.setSootOut(sootOut);
+            //sootThread.setListener(controller);
+            
+            //controller.setSootThread(sootThread);
+            
             //System.out.println("About to start sootThread");
             sootThread.start();
+            //controller.start();
              
         	StreamGobbler out = new StreamGobbler(getDisplay(), pis, StreamGobbler.OUTPUT_STREAM_TYPE);
         	out.start();
         	
+        	//InteractionController controller = new InteractionController();
+        	//controller.run();
         	
         	sootThread.join();
         	setCfgList(sootThread.getCfgList());
@@ -83,6 +96,15 @@ public class SootRunner implements IRunnableWithProgress {
       		System.out.println(e.getStackTrace());
       	}
 	}
+	
+	//public boolean handleNewAnalysis(String name){
+	//	return getParent().handleNewAnalysis(name);
+		/*MessageDialog msgDialog = new MessageDialog(getDisplay().getActiveShell(), "Interaction Question",  null,"Do you want to interact with analysis: "+name+" ?",0, new String []{"Yes", "No"}, 0);
+		msgDialog.open();
+		boolean result = msgDialog.getReturnCode() == 0 ? true: false;
+		return result;*/
+	//}
+	
 
 	/**
 	 * Returns the cmd.
@@ -142,6 +164,20 @@ public class SootRunner implements IRunnableWithProgress {
 	 */
 	public void setCfgList(ArrayList list) {
 		cfgList = list;
+	}
+
+	/**
+	 * @return
+	 */
+	public SootLauncher getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param launcher
+	 */
+	public void setParent(SootLauncher launcher) {
+		parent = launcher;
 	}
 
 }

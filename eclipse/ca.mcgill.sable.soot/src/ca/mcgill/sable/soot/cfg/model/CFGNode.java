@@ -29,6 +29,8 @@ public class CFGNode extends CFGElement {
 	private ArrayList text;
 	private ArrayList inputs = new ArrayList();
 	private ArrayList outputs = new ArrayList();
+	private String before;
+	private String after;
 	
 	
 	/**
@@ -210,6 +212,36 @@ public class CFGNode extends CFGElement {
 	 */
 	public void setOutputs(ArrayList list) {
 		outputs = list;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getAfter() {
+		return after;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getBefore() {
+		return before;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setAfter(String string) {
+		after = string;
+		firePropertyChange(AFTER_INFO, after);
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setBefore(String string) {
+		before = string;
+		firePropertyChange(BEFORE_INFO, after);
 	}
 
 }

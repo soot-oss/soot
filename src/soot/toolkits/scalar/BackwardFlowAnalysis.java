@@ -30,6 +30,8 @@ import soot.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
+import soot.options.*;
+import soot.toolkits.graph.interaction.*;
 
 
 
@@ -128,7 +130,21 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                 // Compute beforeFlow and store it.
                 {
                     beforeFlow = unitToBeforeFlow.get(s);
+                    if (Options.v().interactive_mode()){
+                        FlowInfo fi = new FlowInfo();
+                        fi.info(afterFlow);
+                        fi.unit(s);
+                        fi.setBefore(false);   
+                        InteractionHandler.v().handleAfterAnalysisEvent(fi);
+                    }
                     flowThrough(afterFlow, s, beforeFlow);
+                    if (Options.v().interactive_mode()){
+                        FlowInfo fi = new FlowInfo();
+                        fi.info(beforeFlow);
+                        fi.unit(s);
+                        fi.setBefore(true);   
+                        InteractionHandler.v().handleBeforeAnalysisEvent(fi);
+                    }
                 }
 
                 // Update queue appropriately

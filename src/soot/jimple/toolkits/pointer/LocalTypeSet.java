@@ -85,5 +85,24 @@ class LocalTypeSet extends java.util.BitSet {
 	    }
 	}
     }
+
+    public String toString(){
+        StringBuffer sb = new StringBuffer();
+        Iterator localsIt = locals.iterator();
+        while (localsIt.hasNext()){
+            Local l = (Local)localsIt.next();
+            Iterator typesIt = types.iterator();
+            while (typesIt.hasNext()){
+                RefType t = (RefType)typesIt.next();
+                int index = indexOf(l, t);
+                //G.v().out.println("for: "+l+" and type: "+t+" at: "+index);
+                if (get(index)) {
+                    sb.append("(("+l+","+t+") -> elim cast check) ");
+                }
+            }
+            
+        }
+        return sb.toString(); 
+    }
 }
 

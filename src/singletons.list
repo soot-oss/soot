@@ -158,7 +158,9 @@ UnreachableFieldsTagger
 TightestQualifiersTagger
 ParameterAliasTagger
 ReachingDefsTagger
+LiveVarsTagger
 CFGPrinter
+InteractionHandler
 PhaseDumper
 AltClassLoader
 ThrowableSet.Manager

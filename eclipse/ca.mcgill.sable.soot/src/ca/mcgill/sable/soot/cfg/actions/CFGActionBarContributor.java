@@ -10,6 +10,8 @@ import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.jface.action.*;
 import org.eclipse.gef.ui.actions.*;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import ca.mcgill.sable.soot.interaction.*;
+
 /**
  * @author jlhotak
  *
@@ -48,7 +50,7 @@ public class CFGActionBarContributor extends ActionBarContributor {
 		super.contributeToToolBar(toolBarManager);
 		
 		toolBarManager.add(new Separator());
-		toolBarManager.add(new ZoomComboContributionItem(getPage()));	
+		toolBarManager.add(new InteractionContinuer());	
 	}*/
 	
 	public void contributeToMenu(IMenuManager menuManager){

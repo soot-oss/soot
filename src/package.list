@@ -39,6 +39,7 @@ soot.jimple.toolkits.annotation.qualifiers
 soot.jimple.toolkits.annotation.profiling
 soot.jimple.toolkits.annotation.tags
 soot.jimple.toolkits.annotation.defs
+soot.jimple.toolkits.annotation.liveVars
 soot.jimple.toolkits.base
 soot.jimple.toolkits.graph
 soot.jimple.toolkits.invoke
@@ -59,5 +60,6 @@ soot.util.queue
 soot.shimple
 soot.shimple.toolkits.scalar
 soot.relations
+soot.toolkits.graph.interaction
 soot.util.cfgcmd
 soot.toolkits.exceptions

@@ -32,6 +32,10 @@ import org.eclipse.swt.widgets.Display;
 //import ca.mcgill.sable.soot.SootPlugin;
 
 //import soot.*;
+import soot.toolkits.graph.interaction.*;
+import ca.mcgill.sable.soot.interaction.*;
+
+
 /**
  * @author jlhotak
  *
@@ -55,7 +59,8 @@ public class SootThread extends Thread {
 	private Display display;
 	private String mainClass;
 	private ArrayList cfgList;
-	
+	private IInteractionListener listener;
+
 	/**
 	 * Constructor for SootThread.
 	 */
@@ -63,9 +68,23 @@ public class SootThread extends Thread {
 		super();
 		setDisplay(display);
 		setMainClass(mainClass);
+		
+		InteractionController controller = new InteractionController();
+       	controller.setDisplay(getDisplay());
+        controller.setSootThread(this);
+        setListener(controller);
+        this.setName("soot thread");
+        //controller.setParent(this);
+        	
 	}
 
 	
+	/*public synchronized void go(){
+		System.out.println("this in eclispe: "+this);
+		System.out.println("this alive: "+this.isAlive());
+		this.notify();
+		System.out.println("this was notified");
+	}*/
 	
 	private String [] cmd;
 	private PrintStream sootOut;
@@ -83,6 +102,7 @@ public class SootThread extends Thread {
 			
 			soot.G.v().reset();
 			soot.G.v().out = sootOutFinal;
+            InteractionHandler.v().setInteractionListener(getListener());
             
 			Class toRun = Class.forName(getMainClass());
 			Method [] meths = toRun.getDeclaredMethods();
@@ -182,6 +202,20 @@ public class SootThread extends Thread {
 	 */
 	public void setCfgList(ArrayList list) {
 		cfgList = list;
+	}
+
+	/**
+	 * @return
+	 */
+	public IInteractionListener getListener() {
+		return listener;
+	}
+
+	/**
+	 * @param listener
+	 */
+	public void setListener(IInteractionListener listener) {
+		this.listener = listener;
 	}
 
 }

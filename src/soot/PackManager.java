@@ -44,6 +44,7 @@ import soot.jimple.toolkits.annotation.qualifiers.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.annotation.defs.*;
+import soot.jimple.toolkits.annotation.liveVars.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.tagkit.*;
@@ -57,6 +58,7 @@ import soot.dava.*;
 import soot.dava.toolkits.base.misc.*;
 import soot.xml.*;
 import soot.toolkits.graph.*;
+import soot.toolkits.graph.interaction.*;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
@@ -189,6 +191,7 @@ public class PackManager {
             p.add(new Transform("jap.parity", ParityTagger.v()));
             p.add(new Transform("jap.pat", ParameterAliasTagger.v()));
             p.add(new Transform("jap.rdtagger", ReachingDefsTagger.v()));
+            p.add(new Transform("jap.lvtagger", LiveVarsTagger.v()));
             p.add(new Transform("jap.che", CastCheckEliminatorDumper.v()));
 	    
         }
@@ -284,6 +287,15 @@ public class PackManager {
             runWholeProgramPacks();
         }
         preProcessDAVA();
+        if (Options.v().interactive_mode()){
+            if (InteractionHandler.v().getInteractionListener() == null){
+                G.v().out.println("Cannot run in interactive mode. No listeners available. Continuing in regular mode.");
+                Options.v().set_interactive_mode(false);
+            }
+            else {
+                G.v().out.println("Running in interactive mode.");
+            }
+        }
         runBodyPacks( reachableClasses() );
     }
 

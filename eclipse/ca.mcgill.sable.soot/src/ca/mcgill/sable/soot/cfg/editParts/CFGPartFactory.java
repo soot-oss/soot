@@ -33,13 +33,13 @@ public class CFGPartFactory implements EditPartFactory {
 	public EditPart createEditPart(EditPart arg0, Object arg1) {
 		// TODO Auto-generated method stub
 		EditPart part = null;
-		System.out.println("in edit part factory create");
-		System.out.println("arg1: "+arg1.getClass());
+		//System.out.println("in edit part factory create");
+		//System.out.println("arg1: "+arg1.getClass());
 		if (arg1 instanceof CFGGraph){
 			part = new CFGGraphEditPart();
 		}
 		else if (arg1 instanceof CFGNode){
-			System.out.println("text is: "+((CFGNode)arg1).getText());
+			//System.out.println("text is: "+((CFGNode)arg1).getText());
 			part = new CFGNodeEditPart();
 		}
 		else if (arg1 instanceof CFGEdge){

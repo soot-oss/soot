@@ -24,8 +24,8 @@ import java.beans.*;
 public class CFGGraphEditPart extends AbstractGraphicalEditPart 
 	implements PropertyChangeListener {
 
-	private int figureWidth = 2000;
-	private int figureHeight = 2000;
+	private int figureWidth = 20000;
+	private int figureHeight = 20000;
 	
 	/**
 	 * 
@@ -107,7 +107,7 @@ public class CFGGraphEditPart extends AbstractGraphicalEditPart
 	}
 
 	public void applyGraphResults(DirectedGraph graph, HashMap map){
-		System.out.println("applying graph results");
+		//System.out.println("applying graph results");
 		Iterator it = getChildren().iterator();
 		while (it.hasNext()){
 			Object next = it.next();
@@ -116,6 +116,16 @@ public class CFGGraphEditPart extends AbstractGraphicalEditPart
 			}
 		}
 		determineGraphBounds(graph);
+	}
+	
+	public void resetChildColors(){
+		Iterator it = getChildren().iterator();
+		while (it.hasNext()){
+			Object next = it.next();
+			if (next instanceof CFGNodeEditPart){
+				((CFGNodeEditPart)next).resetColors();
+			}
+		}
 	}
 	
 	private void determineGraphBounds(DirectedGraph graph){
@@ -159,12 +169,9 @@ public class CFGGraphEditPart extends AbstractGraphicalEditPart
 		if (event.getPropertyName().equals(CFGElement.CHILDREN)){
 			refreshChildren();
 		}
-		/*else if (event.getPropertyName().equals(CFGElement.INPUTS)){
-			refreshTargetConnections();
+		else if (event.getPropertyName().equals(CFGElement.NEW_FLOW_DATA)){
+			resetChildColors();
 		}
-		else if (event.getPropertyName().equals(CFGElement.OUTPUTS)){
-			refreshSourceConnections();
-		}*/
 		((GraphicalEditPart)(getViewer().getContents())).getFigure().revalidate();
 	}
 	/**

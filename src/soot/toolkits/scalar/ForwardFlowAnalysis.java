@@ -30,6 +30,8 @@ import soot.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
+import soot.options.*;
+import soot.toolkits.graph.interaction.*;
 
 /**
  *   Abstract class that provides the fixed point iteration functionality
@@ -130,7 +132,23 @@ next());
                 // Compute afterFlow and store it.
                 {
                     afterFlow = unitToAfterFlow.get(s);
+                    //System.out.println("before flowThrough: beforeFlow: "+beforeFlow+" afterFlow: "+afterFlow);
+                    if (Options.v().interactive_mode()){
+                        FlowInfo fi = new FlowInfo();
+                        fi.info(beforeFlow);
+                        fi.unit(s);
+                        fi.setBefore(true);
+                        InteractionHandler.v().handleBeforeAnalysisEvent(fi);
+                    }
                     flowThrough(beforeFlow, s, afterFlow);
+                    if (Options.v().interactive_mode()){
+                        FlowInfo fi = new FlowInfo();
+                        fi.info(afterFlow);
+                        fi.unit(s);
+                        fi.setBefore(false);
+                        InteractionHandler.v().handleAfterAnalysisEvent(fi);
+                    }
+                    //System.out.println("after flowThrough: beforeFlow: "+beforeFlow+" afterFlow: "+afterFlow);
                     numComputations++;
                 }
 

@@ -19,6 +19,7 @@ import ca.mcgill.sable.soot.cfg.figures.*;
 import org.eclipse.draw2d.geometry.*;
 import ca.mcgill.sable.soot.*;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author jlhotak
@@ -49,10 +50,12 @@ public class CFGNodeEditPart
 	}
 
 	public void contributeNodesToGraph(DirectedGraph graph, HashMap map){
-		System.out.println("adding node to graph: "+getNode());
+		//System.out.println("adding node to graph: "+getNode());
 		Node node = new Node(this);
-		node.width = getNode().getWidth();
-		node.data = getNode().getText();
+		node.width = getFigure().getSize().width;//getNode().getWidth();
+		node.height = getFigure().getSize().height;
+		//node.data = getNode().getText();
+		//node.setPadding(new Insets(16,16,16,16));
 		graph.nodes.add(node);
 		map.put(this, node);
 	}
@@ -68,15 +71,27 @@ public class CFGNodeEditPart
 	public void applyGraphResults(DirectedGraph graph, HashMap map){
 		Node node = (Node)map.get(this);
 		//System.out.println("apply graph results to node: x: "+node.x+" y: "+node.y+" width: "+node.width+" height: "+node.height);
-		//((CFGNodeFigure)getFigure()).getRect().setBounds(new Rectangle(node.x, node.y, getNode().getWidth(), node.height));
+		//((CFGNodeFigure)getFigure()).getRect().getBounds().setSize(node.width, node.height+2);
+		//((CFGNodeFigure)getFigure()).getNodeFigure().setSize(node.width, node.height+2);
+		
 		//((CFGNodeFigure)getFigure()).getLabel().setBounds(new Rectangle(node.x, node.y, getNode().getWidth(), node.height));
-		((CFGNodeFigure)getFigure()).setBounds(new Rectangle(node.x, node.y, getNode().getWidth(), node.height));
+		//if (getFigure().getBounds().height == node.height){
+		((CFGNodeFigure)getFigure()).setBounds(new Rectangle(node.x, node.y, node.width, node.height));//getFigure().getBounds().height));//getFigure().getBounds().height));
+		//}
+		//else {
+		//	int y = (node.height - getFigure().getBounds().height); 
+		//	((CFGNodeFigure)getFigure()).setBounds(new Rectangle(node.x, node.y + y, getNode().getWidth(), getFigure().getBounds().height));//getFigure().getBounds().height));
+		//}
 		List outgoing = getSourceConnections();
 		for (int i = 0; i < outgoing.size(); i++){
 			CFGEdgeEditPart edge = (CFGEdgeEditPart)outgoing.get(i);
 			edge.applyGraphResults(graph, map);
 		}
 	
+	}
+	
+	public void resetColors(){
+		((CFGNodeFigure)getFigure()).resetColors();
 	}
 	
 	public CFGNode getNode(){
@@ -166,6 +181,31 @@ public class CFGNodeEditPart
 		else if (event.getPropertyName().equals(CFGElement.TAIL)){
 			((CFGNodeFigure)getFigure()).getRect().setBackgroundColor(SootPlugin.getDefault().getColorManager().getColor(new RGB(0,200,45)));
 		}
+		else if (event.getPropertyName().equals(CFGElement.BEFORE_INFO)){
+			
+			((CFGNodeFigure)getFigure()).setBefore(getNode().getBefore());
+			((CFGNodeFigure)getFigure()).addBeforeFigure();
+			final EditPartViewer viewer = getViewer();
+			final CFGNodeEditPart thisPart = this;
+			Display.getDefault().syncExec(new Runnable(){
+				public void run(){
+					viewer.reveal(thisPart);
+				};
+			});
+		}
+		else if (event.getPropertyName().equals(CFGElement.AFTER_INFO)){
+			((CFGNodeFigure)getFigure()).setAfter(getNode().getAfter());
+			((CFGNodeFigure)getFigure()).addAfterFigure();
+			//getViewer().reveal(this);
+			final EditPartViewer viewer = getViewer();
+			final CFGNodeEditPart thisPart = this;
+			Display.getDefault().syncExec(new Runnable(){
+				public void run(){
+					viewer.reveal(thisPart);
+				};
+			});
+			//refreshVisuals();
+		}
 		//((GraphicalEditPart)(getViewer().getContents())).getFigure().revalidate();
 	}
 	
@@ -173,6 +213,9 @@ public class CFGNodeEditPart
 		
 		((CFGNodeFigure)getFigure()).setWidth(getNode().getWidth());
 		((CFGNodeFigure)getFigure()).setData(getNode().getText());
+		
+		//((CFGNodeFigure)getFigure()).setAfter(getNode().getAfter());
+		//((CFGNodeFigure)getFigure()).setBefore(getNode().getBefore());
 		((CFGNodeFigure)getFigure()).updateFigure();
 		
 		//System.out.println("refreshing visuals for: "+getNode().getText());

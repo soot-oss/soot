@@ -13,7 +13,7 @@ import ca.mcgill.sable.soot.*;
 import org.eclipse.ui.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
-
+import soot.toolkits.graph.interaction.*;
 
 /**
  * @author jlhotak
@@ -27,6 +27,8 @@ public class ModelCreator {
 	private DirectedGraph sootGraph;
 	private CFGGraph model;
 	private IResource resource;
+	private String edName = "CFG Editor";
+	private HashMap nodeMap = new HashMap();
 	
 	/**
 	 * 
@@ -35,47 +37,47 @@ public class ModelCreator {
 	}
 	
 	public void buildModel(CFGGraph cfgGraph){
-		System.out.println("creating model");
+		//System.out.println("creating model");
 		cfgGraph.setResource(getResource());
 		Iterator nodesIt = getSootGraph().iterator();
-		HashMap nodeMap = new HashMap();
+		//HashMap nodeMap = new HashMap();
 		ArrayList nodeList = new ArrayList();
 		ArrayList edgeList = new ArrayList();
 		 
 		while (nodesIt.hasNext()){
 			Object node = nodesIt.next();
 			CFGNode cfgNode;
-			if (!nodeMap.containsKey(node)){
+			if (!getNodeMap().containsKey(node)){
 				cfgNode = new CFGNode();
 				//cfgGraph.addChild(cfgNode);
 				initializeNode(node, cfgNode);
 				//if (node instanceof soot.toolkits.graph.Block)
 				//cfgNode.setWidth(node.toString().length() * 7);
 				//cfgNode.setText(node.toString());
-				nodeMap.put(node, cfgNode);
+				getNodeMap().put(node, cfgNode);
 				cfgGraph.addChild(cfgNode);
 				//nodeList.add(cfgNode);
 			}
 			else {
-				cfgNode = (CFGNode)nodeMap.get(node);
+				cfgNode = (CFGNode)getNodeMap().get(node);
 			}
 			Iterator succIt = getSootGraph().getSuccsOf(node).iterator();
 			while (succIt.hasNext()){
 				Object succ = succIt.next();
 				CFGNode cfgSucc;
-				if (!nodeMap.containsKey(succ)){
+				if (!getNodeMap().containsKey(succ)){
 					cfgSucc = new CFGNode();
 					//cfgGraph.addChild(cfgSucc);
 					initializeNode(succ, cfgSucc);	
 					//cfgSucc.setWidth(succ.toString().length() * 7);
 					//System.out.println("succ text: "+succ.toString());
 					//cfgSucc.setText(succ.toString());
-					nodeMap.put(succ, cfgSucc);
+					getNodeMap().put(succ, cfgSucc);
 					cfgGraph.addChild(cfgSucc);
 					//nodeList.add(cfgSucc);
 				}
 				else {
-					cfgSucc = (CFGNode)nodeMap.get(succ);
+					cfgSucc = (CFGNode)getNodeMap().get(succ);
 				}
 				CFGEdge cfgEdge = new CFGEdge(cfgNode, cfgSucc);
 				//cfgGraph.getEdges().add(cfgEdge);
@@ -86,14 +88,14 @@ public class ModelCreator {
 		Iterator headsIt = getSootGraph().getHeads().iterator();
 		while (headsIt.hasNext()){
 			Object next = headsIt.next();
-			CFGNode node = (CFGNode)nodeMap.get(next);
+			CFGNode node = (CFGNode)getNodeMap().get(next);
 			node.setHead(true);
 		}
 		
 		Iterator tailsIt = getSootGraph().getTails().iterator();
 		while (tailsIt.hasNext()){
 			Object next = tailsIt.next();
-			CFGNode node = (CFGNode)nodeMap.get(next);
+			CFGNode node = (CFGNode)getNodeMap().get(next);
 			node.setTail(true);
 		}
 		
@@ -101,6 +103,27 @@ public class ModelCreator {
 		//cfgGraph.setEdges(edgeList);
 		setModel(cfgGraph);
 		
+	}
+	
+	public void updateNode(FlowInfo fi){
+		//System.out.println("updating node: for fi: "+fi.unit());
+		Iterator it = getNodeMap().keySet().iterator();
+		while (it.hasNext()){
+			Object next = it.next();
+			//System.out.println("next: "+next.toString());
+			//System.out.println("fi unit: "+fi.unit().toString());
+			if (next.equals(fi.unit())){
+				//System.out.println("mc match found");
+				CFGNode node = (CFGNode)getNodeMap().get(next);
+				getModel().newFlowData();
+				if (fi.isBefore()){
+					node.setBefore(fi.info().toString());
+				}
+				else{
+					node.setAfter(fi.info().toString());
+				}
+			}
+		}
 	}
 	
 	private void initializeNode(Object sootNode, CFGNode cfgNode){
@@ -126,11 +149,12 @@ public class ModelCreator {
 	}
 
 	public void displayModel(){
-		System.out.println("displaying model");
+		//System.out.println("displaying model");
 		IWorkbenchPage page = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		try{
 			CFGGraph cfgGraph = new CFGGraph();
 			IEditorPart part = page.openEditor(cfgGraph, "ca.mcgill.sable.soot.cfg.CFGEditor");
+			
 			buildModel(cfgGraph);
 			//page.activate(part);
 			//System.out.println(part.getEditorInput().getAdapter(IResource.class));
@@ -138,6 +162,14 @@ public class ModelCreator {
 		catch (CoreException e){
 			e.printStackTrace();
 		}
+	}
+	
+	public void setEditorName(String name){
+		edName = name;
+	}
+	
+	public String getEditorName(){
+		return edName;
 	}
 	
 	/**
@@ -180,6 +212,34 @@ public class ModelCreator {
 	 */
 	public void setResource(IResource resource) {
 		this.resource = resource;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getEdName() {
+		return edName;
+	}
+
+	/**
+	 * @return
+	 */
+	public HashMap getNodeMap() {
+		return nodeMap;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setEdName(String string) {
+		edName = string;
+	}
+
+	/**
+	 * @param map
+	 */
+	public void setNodeMap(HashMap map) {
+		nodeMap = map;
 	}
 
 }

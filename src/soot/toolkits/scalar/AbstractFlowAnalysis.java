@@ -30,6 +30,8 @@ import soot.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
+import soot.options.*;
+import soot.toolkits.graph.interaction.*;
 
 /** An abstract class providing a metaframework for carrying out
  * dataflow analysis.  This class provides common methods and fields
@@ -48,6 +50,9 @@ public abstract class AbstractFlowAnalysis
     {
         unitToBeforeFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
         this.graph = graph;
+        if (Options.v().interactive_mode()){
+            InteractionHandler.v().handleCfgEvent(graph);
+        }
     }
 
     /** 

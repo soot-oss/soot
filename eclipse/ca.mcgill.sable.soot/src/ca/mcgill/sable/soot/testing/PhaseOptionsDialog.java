@@ -244,6 +244,8 @@ Composite japjap_parityChild = japjap_parityCreate(getPageContainer());
 
 Composite japjap_patChild = japjap_patCreate(getPageContainer());
 
+Composite japjap_lvtaggerChild = japjap_lvtaggerCreate(getPageContainer());
+
 Composite japjap_rdtaggerChild = japjap_rdtaggerCreate(getPageContainer());
 
 Composite japjap_cheChild = japjap_cheCreate(getPageContainer());
@@ -1300,6 +1302,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getjapjap_patenabled_widget().getButton().addSelectionListener(this);
 		
 		
+		makeNewEnableGroup("jap", "jap.lvtagger");
+		
+		
+		addToEnableGroup("jap", "jap.lvtagger", getjapjap_lvtaggerenabled_widget(), "enabled");
+		
+		getjapjap_lvtaggerenabled_widget().getButton().addSelectionListener(this);
+		
+		
 		makeNewEnableGroup("jap", "jap.rdtagger");
 		
 		
@@ -1582,6 +1592,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsverbose_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getGeneral_Optionsinteractive_mode_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionsinteractive_mode_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getGeneral_Optionsapp_widget().getButton().getSelection();
@@ -3644,6 +3664,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_patenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getjapjap_lvtaggerenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjapjap_lvtaggerenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getjapjap_rdtaggerenabled_widget().getButton().getSelection();
 		
 		
@@ -4841,6 +4871,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jap_jap_pat_branch;
 			
 			
+			SootOption jap_jap_lvtagger_branch = new SootOption("Live Variables Tagger", "japjap_lvtagger");
+			subParent.addChild(jap_jap_lvtagger_branch);
+
+
+			
+
+			
+			subSectParent = jap_jap_lvtagger_branch;
+			
+			
 			SootOption jap_jap_rdtagger_branch = new SootOption("Reaching Defs Tagger", "japjap_rdtagger");
 			subParent.addChild(jap_jap_rdtagger_branch);
 
@@ -5096,6 +5136,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getGeneral_Optionsverbose_widget() {
 		return General_Optionsverbose_widget;
+	}	
+	
+	private BooleanOptionWidget General_Optionsinteractive_mode_widget;
+	
+	private void setGeneral_Optionsinteractive_mode_widget(BooleanOptionWidget widget) {
+		General_Optionsinteractive_mode_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionsinteractive_mode_widget() {
+		return General_Optionsinteractive_mode_widget;
 	}	
 	
 	private BooleanOptionWidget General_Optionsapp_widget;
@@ -7212,6 +7262,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return japjap_patenabled_widget;
 	}	
 	
+	private BooleanOptionWidget japjap_lvtaggerenabled_widget;
+	
+	private void setjapjap_lvtaggerenabled_widget(BooleanOptionWidget widget) {
+		japjap_lvtaggerenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjapjap_lvtaggerenabled_widget() {
+		return japjap_lvtaggerenabled_widget;
+	}	
+	
 	private BooleanOptionWidget japjap_rdtaggerenabled_widget;
 	
 	private void setjapjap_rdtaggerenabled_widget(BooleanOptionWidget widget) {
@@ -7772,6 +7832,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setGeneral_Optionsverbose_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Verbose", "", "","v", "\nProvide detailed information about what Soot is doing as it \nruns. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"interactive-mode";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionsinteractive_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Interactive Mode", "", "","interactive-mode", "\nRuns interactively, with Soot providing detailed information as \nit iterates through intra-procedural analyses. ", defaultBool)));
 		
 		
 		
@@ -13899,6 +13975,52 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupjapjap_pat;
+	}
+
+
+
+	private Composite japjap_lvtaggerCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjapjap_lvtagger = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjapjap_lvtagger.setLayout(layout);
+	
+	 	editGroupjapjap_lvtagger.setText("Live Variables Tagger");
+	 	
+		editGroupjapjap_lvtagger.setData("id", "japjap_lvtagger");
+		
+		String descjapjap_lvtagger = "Creates color tags for live variables";	
+		if (descjapjap_lvtagger.length() > 0) {
+			Label descLabeljapjap_lvtagger = new Label(editGroupjapjap_lvtagger, SWT.WRAP);
+			descLabeljapjap_lvtagger.setText(descjapjap_lvtagger);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jap.lvtagger"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjapjap_lvtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_lvtagger, SWT.NONE, new OptionData("Enabled", "p", "jap.lvtagger","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjapjap_lvtagger;
 	}
 
 

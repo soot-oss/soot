@@ -28,6 +28,8 @@ package soot;
 
 import soot.util.*;
 import java.util.*;
+import soot.toolkits.graph.interaction.*;
+import soot.options.*;
 
 /** A wrapper object for a pack of optimizations.
  * Provides chain-like operations, except that the key is the phase name. */
@@ -41,7 +43,12 @@ public class BodyPack extends Pack
     {
         for( Iterator tIt = this.iterator(); tIt.hasNext(); ) {
             final Transform t = (Transform) tIt.next();
+            if (Options.v().interactive_mode()){
+                //G.v().out.println("sending transform: "+t.getPhaseName()+" for body: "+b+" for body pack: "+this.getPhaseName());
+                InteractionHandler.v().handleNewAnalysis(t, b);
+            }
             t.apply(b);
         }
     }
+
 }

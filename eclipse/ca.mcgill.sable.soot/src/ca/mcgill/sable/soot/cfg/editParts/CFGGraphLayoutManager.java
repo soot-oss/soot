@@ -54,10 +54,10 @@ public class CFGGraphLayoutManager extends AbstractLayout {
 		getGraphPart().contributeNodesToGraph(graph, map);
 		getGraphPart().contributeEdgesToGraph(graph, map);
 		if (graph.nodes.size() != 0){
-			System.out.println("graph has nodes and doing layout");
+			//System.out.println("graph has nodes and doing layout");
 			DirectedGraphLayout layout = new DirectedGraphLayout();
 			layout.visit(graph);
-			System.out.println("graph is layed out");
+			//System.out.println("graph is layed out");
 		
 			getGraphPart().applyGraphResults(graph, map);
 		}

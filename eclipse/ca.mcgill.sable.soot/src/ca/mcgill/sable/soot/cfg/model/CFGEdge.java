@@ -56,5 +56,9 @@ public class CFGEdge extends CFGElement {
 		to = node;
 		//firePropertyChange(TO, to);
 	}
+	
+	public String toString(){
+		return "from: "+getFrom()+" to: "+getTo();
+	}
 
 }

@@ -77,6 +77,8 @@ public class Scene  //extends AbstractHost
 
     boolean allowsPhantomRefs = false;
 
+    // temporary for testing cfgs in plugin
+    
     public ArrayList cfgList = new ArrayList();
     
     SootClass mainClass;

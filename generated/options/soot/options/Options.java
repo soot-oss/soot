@@ -123,6 +123,11 @@ public class Options extends OptionsBase {
                 verbose = true;
   
             else if( false 
+            || option.equals( "interactive-mode" )
+            )
+                interactive_mode = true;
+  
+            else if( false 
             || option.equals( "app" )
             )
                 app = true;
@@ -794,6 +799,10 @@ public class Options extends OptionsBase {
     private boolean verbose = false;
     public void set_verbose( boolean setting ) { verbose = setting; }
   
+    public boolean interactive_mode() { return interactive_mode; }
+    private boolean interactive_mode = false;
+    public void set_interactive_mode( boolean setting ) { interactive_mode = setting; }
+  
     public boolean app() { return app; }
     private boolean app = false;
     public void set_app( boolean setting ) { app = setting; }
@@ -953,6 +962,7 @@ public class Options extends OptionsBase {
 +padOpt(" -ph PHASE -phase-help PHASE", "Print help for specified PHASE" )
 +padOpt(" -version", "Display version information and exit" )
 +padOpt(" -v -verbose", "Verbose mode" )
++padOpt(" -interactive-mode", "Run in interactive mode" )
 +padOpt(" -app", "Run in application mode" )
 +padOpt(" -w -whole-program", "Run in whole-program mode" )
 +padOpt(" -ws -whole-shimple", "Run in whole-shimple mode" )
@@ -1097,6 +1107,7 @@ public class Options extends OptionsBase {
         +padVal("jap.cgtagger", "Call graph tagger")
         +padVal("jap.parity", "Parity tagger")
         +padVal("jap.pat", "Colour-codes method parameters that may be aliased")
+        +padVal("jap.lvtagger", "Creates color tags for live variables")
         +padVal("jap.rdtagger", "Creates link tags for reaching defs")
         +padVal("jap.che", "Indicates whether cast checks can be eliminated")
         +padOpt("cfg", "Produces CFGs for viewing purposes")
@@ -1733,6 +1744,12 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
+        if( phaseName.equals( "jap.lvtagger" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nColors live variables."
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" );
+    
         if( phaseName.equals( "jap.rdtagger" ) )
             return "Phase "+phaseName+":\n"+
                 "\nFor each use of a local in a stmt creates a link to the reaching \ndef."
@@ -2285,6 +2302,10 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
+        if( phaseName.equals( "jap.lvtagger" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "jap.rdtagger" ) )
             return ""
                 +"enabled ";
@@ -2781,6 +2802,10 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:false ";
     
+        if( phaseName.equals( "jap.lvtagger" ) )
+            return ""
+              +"enabled:false ";
+    
         if( phaseName.equals( "jap.rdtagger" ) )
             return ""
               +"enabled:false ";
@@ -2951,6 +2976,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jap.cgtagger" ) ) return;
         if( phaseName.equals( "jap.parity" ) ) return;
         if( phaseName.equals( "jap.pat" ) ) return;
+        if( phaseName.equals( "jap.lvtagger" ) ) return;
         if( phaseName.equals( "jap.rdtagger" ) ) return;
         if( phaseName.equals( "jap.che" ) ) return;
         if( phaseName.equals( "cfg" ) ) return;
@@ -3117,6 +3143,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jap.parity" );
         if( !PackManager.v().hasPhase( "jap.pat" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jap.pat" );
+        if( !PackManager.v().hasPhase( "jap.lvtagger" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jap.lvtagger" );
         if( !PackManager.v().hasPhase( "jap.rdtagger" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jap.rdtagger" );
         if( !PackManager.v().hasPhase( "jap.che" ) )

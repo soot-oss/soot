@@ -49,7 +49,7 @@ public class CFGEditor extends GraphicalEditor {
 	
 	protected void configureGraphicalViewer() {
 		super.configureGraphicalViewer();
-		System.out.println("configuring graphical viewer");
+		//System.out.println("configuring graphical viewer");
 		//getGraphicalViewer().setRootEditPart(new ScalableRootEditPart());
 		ScalableRootEditPart root = new ScalableRootEditPart();
 		getGraphicalViewer().setRootEditPart(root);

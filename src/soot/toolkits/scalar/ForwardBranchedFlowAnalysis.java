@@ -47,6 +47,8 @@ import soot.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
+import soot.toolkits.graph.interaction.*;
+import soot.options.*;
 
 /** Abstract class providing an engine for branched forward flow analysis. */
 public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
@@ -235,7 +237,25 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                 {
                     Object afterFallFlow = unitToAfterFallFlow.get(s);
                     Object afterBranchFlow = unitToAfterBranchFlow.get(s);
+                    if (Options.v().interactive_mode()){
+                        FlowInfo fi = new FlowInfo();
+                        fi.info(beforeFlow);
+                        fi.unit(s);
+                        fi.setBefore(true);
+                        InteractionHandler.v().handleBeforeAnalysisEvent(fi);
+                    }
                     flowThrough(beforeFlow, s, (List) afterFallFlow, (List) afterBranchFlow);
+                    if (Options.v().interactive_mode()){
+                        List l = (List)afterFallFlow;
+                        if (s instanceof soot.jimple.IfStmt){
+                            l.addAll((List)afterBranchFlow);
+                        }
+                        FlowInfo fi = new FlowInfo();
+                        fi.info(l);
+                        fi.unit(s);
+                        fi.setBefore(false);
+                        InteractionHandler.v().handleAfterAnalysisEvent(fi);
+                    }
                     numComputations++;
                 }
 

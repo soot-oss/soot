@@ -29,6 +29,9 @@ public class CFGElement implements IPropertySource {
 	public static final String OUTPUTS = "outputs";
 	public static final String HEAD = "head";
 	public static final String TAIL = "tail";
+	public static final String BEFORE_INFO = "before";
+	public static final String AFTER_INFO = "after";
+	public static final String NEW_FLOW_DATA = "new_flow_data";
 	
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	
