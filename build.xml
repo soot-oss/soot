@@ -9,18 +9,28 @@
         />
     </target>
 
-    <target name="compile" depends="settings,sablecc,copypeephole,settings,options,jflex-lexer,ppg-parser">
+    <target name="compile" depends="settings,sablecc,copypeephole,settings,singletons,options,jflex-lexer,ppg-parser">
         <javac
             destdir="classes"
             classpath="classes:${polyglot.jar}:${jasmin.jar}"
             debug="true"
         >
             <src path="src"/>
+            <src path="generated/singletons"/>
             <src path="generated/sablecc"/>
             <src path="generated/options"/>
             <src path="generated/jedd"/>
             <src path="generated/jj"/>
         </javac>
+    </target>
+
+    <target name="singletons" depends="singletons-dep" unless="singletons-uptodate">
+        <exec executable="${basedir}/src/make_singletons" dir="${basedir}/src" output="${basedir}/generated/singletons/soot/Singletons.java"/>
+    </target>
+    <target name="singletons-dep">
+        <uptodate property="singletons-uptodate" targetfile="generated/singletons/soot/Singletons.java">
+            <srcfiles dir="src" includes="package.list,singletons.list"/>
+        </uptodate>
     </target>
 
     <target name="options" depends="settings">
@@ -60,20 +70,38 @@
     </target>
 
     <target name="clean">
-    <delete quiet="true">
-        <fileset dir="classes" includes="**/*.class" />
-        <fileset dir="testclasses" includes="**/*.class" />
-        <fileset dir="eclipse/ca.mcgill.sable.soot/classes" includes="**/*.class" />
-    </delete>
+        <delete quiet="true">
+            <fileset dir="classes" includes="**/*.class" />
+            <fileset dir="testclasses" includes="**/*.class" />
+            <fileset dir="eclipse/ca.mcgill.sable.soot/classes" includes="**/*.class" />
+        </delete>
     </target>
 
-    <target name="veryclean" depends="clean,settings">
-    <delete quiet="true">
-        <fileset dir="generated/jedd" includes="**/*" />
-        <fileset dir="generated/options" includes="**/*" />
-        <fileset dir="generated/sablecc" includes="**/*" />
-        <fileset dir="generated/jj" includes="**/*" />
-    </delete>
+    <target name="veryclean" depends="clean,veryclean-singletons,veryclean-jedd,veryclean-options,veryclean-sablecc,veryclean-jj"/>
+    <target name="veryclean-singletons">
+        <delete quiet="true">
+            <fileset dir="generated/singletons" includes="**/*" />
+        </delete>
+    </target>
+    <target name="veryclean-jedd">
+        <delete quiet="true">
+            <fileset dir="generated/jedd" includes="**/*" />
+        </delete>
+    </target>
+    <target name="veryclean-options">
+        <delete quiet="true">
+            <fileset dir="generated/options" includes="**/*" />
+        </delete>
+    </target>
+    <target name="veryclean-sablecc">
+        <delete quiet="true">
+            <fileset dir="generated/sablecc" includes="**/*" />
+        </delete>
+    </target>
+    <target name="veryclean-jj">
+        <delete quiet="true">
+            <fileset dir="generated/jj" includes="**/*" />
+        </delete>
     </target>
 
     <target name="badfields" depends="compile,settings">
