@@ -203,15 +203,9 @@ public class BlockGraph implements DirectedGraph
                 // A unit following a return unit is a leader. (note !branches && !fallsThrough => return)
                 else if(!currentUnit.branches() && !currentUnit.fallsThrough()) {
                     if(nextUnit != null) {
-                        List predecessors;
                         if(!leaders.containsKey(nextUnit)) {
-                            predecessors= new LinkedList();
-                            predecessors.add(currentUnit);
-                            leaders.put(nextUnit, predecessors);
-                        } else {
-                            predecessors = (List) leaders.get(nextUnit);
-                            predecessors.add(currentUnit);
-                        }                    
+			    leaders.put(nextUnit, new LinkedList());
+                        } 
                     }
 
                 }
