@@ -2095,6 +2095,9 @@ public class JimpleBodyBuilder {
     }
 
     private soot.jimple.Constant getReturnConstant(polyglot.ast.Field field){
+        System.out.println("field cons: "+field);
+        System.out.println("field type: "+field.type());
+        System.out.println("field cons type: "+field.fieldInstance().constantValue().getClass());
         if (field.fieldInstance().constantValue() instanceof String){
             return soot.jimple.StringConstant.v((String)field.constantValue());
         }
@@ -2108,6 +2111,7 @@ public class JimpleBodyBuilder {
         }
         else {//if (field.fieldInstance().constantValue() instanceof Number){
             Number num = (Number)field.fieldInstance().constantValue();
+            num = createConstantCast(field.type(), num);
             if (num instanceof Long) {
                 return soot.jimple.LongConstant.v(((Long)num).longValue());
             }
@@ -2121,6 +2125,21 @@ public class JimpleBodyBuilder {
                 return soot.jimple.IntConstant.v(((Integer)num).intValue());
             }
         }
+    }
+   
+    private Number createConstantCast(polyglot.types.Type fieldType, Number constant) {
+        if (constant instanceof Integer){
+            if (fieldType.isDouble()){
+                return new Double((double)((Integer)constant).intValue());
+            }
+            else if (fieldType.isFloat()){
+                return new Float((float)((Integer)constant).intValue());
+            }
+            else if (fieldType.isLong()){
+                return new Long((long)((Integer)constant).intValue());
+            }
+        }
+        return constant;
     }
     
     private boolean shouldReturnConstant(polyglot.ast.Field field){
