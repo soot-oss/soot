@@ -547,12 +547,12 @@ public class Main implements Runnable
 
     private static void printVersion()
     {
-         // $Format: "            System.out.println(\"Soot version 1.2.0 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.0 (build 1.2.1.dev.3)");
-            System.out.println("Copyright (C) 1997-2000 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
+         // $Format: "            System.out.println(\"Soot version 1.2.1 (build $ProjectVersion$)\");"$
+            System.out.println("Soot version 1.2.1 (build 1.2.1.dev.4)");
+            System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
-            System.out.println("Contributions are copyright (C) 1997-2000 by their respective contributors.");
+            System.out.println("Contributions are copyright (C) 1997-2001 by their respective contributors.");
             System.out.println("See individual source files for details.");
             System.out.println("");
             System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
