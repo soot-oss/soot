@@ -65,6 +65,9 @@
 
  B) Changes:
 
+ - Modified on June 2, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Added StringConstant to list of valid values.
+   
  - Modified on March 4, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Cleaned up the canContainValue() implementation, and added NullConstant to list of valid values.
    
@@ -97,6 +100,7 @@ public class ObjExprBox extends ExprBox
         value instanceof NewMultiArrayExpr ||
             value instanceof Local ||
         value instanceof NullConstant ||
+        value instanceof StringConstant ||
             (value instanceof CastExpr && 
                 canContainValue(((CastExpr)value).getOp()));
     }

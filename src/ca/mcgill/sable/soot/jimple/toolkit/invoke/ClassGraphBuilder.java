@@ -581,7 +581,7 @@ public class ClassGraphBuilder{
 
 	  //           if (!(method.getName().equals("<clinit>")))
 
-	  Jimplifier.getJimpleBody( method );
+         // Jimplifier.getJimpleBody( method );
 
 	  // in order to save space delete the jimplified method
 	  //Jimplifier.remove( method );
