@@ -405,7 +405,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
         return emptySet.clone();
 }
 
-    protected void flowThrough(Object inValue, Directed d, Object outValue)
+    protected void flowThrough(Object inValue, Object d, Object outValue)
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
         Unit unit = (Unit)d;

@@ -121,7 +121,7 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
         }
     }
 
-    protected void flowThrough(Object inValue, Directed unit, Object outValue)
+    protected void flowThrough(Object inValue, Object unit, Object outValue)
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 

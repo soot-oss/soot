@@ -93,7 +93,7 @@ class IsolatednessAnalysis extends BackwardFlowAnalysis
         inSet1.intersection(inSet2, outSet);
     }
 
-    protected void flowThrough(Object inValue, Directed b, Object outValue)
+    protected void flowThrough(Object inValue, Object b, Object outValue)
     {
         BoundedFlowSet in = (BoundedFlowSet) inValue, out = (BoundedFlowSet) outValue;
 

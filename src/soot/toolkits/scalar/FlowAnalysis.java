@@ -62,7 +62,7 @@ public abstract class FlowAnalysis
     protected abstract boolean isForward();
 
     /** Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s</code>. */
-    protected abstract void flowThrough(Object in, Directed d, Object out);
+    protected abstract void flowThrough(Object in, Object d, Object out);
 
     /** Compute the merge of the <code>in1</code> and <code>in2</code> sets, putting the result into <code>out</code>. 
       * Used by the doAnalysis method. */
@@ -82,13 +82,13 @@ public abstract class FlowAnalysis
     }
 
     /** Accessor function returning value of OUT set for s. */
-    public Object getFlowAfter(Directed s)
+    public Object getFlowAfter(Object s)
     {
         return unitToAfterFlow.get(s);
     }
 
     /** Accessor function returning value of IN set for s. */
-    public Object getFlowBefore(Directed s)
+    public Object getFlowBefore(Object s)
     {
         return unitToBeforeFlow.get(s);
     }

@@ -63,7 +63,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
 
             while(it.hasNext())
             {
-                Directed s = (Directed) it.next();
+                Object s = it.next();
 
                 changedUnits.addLast(s);
                 changedUnitsSet.add(s);
@@ -84,7 +84,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                 Object beforeFlow;
                 Object afterFlow;
 
-                Directed s = (Directed) changedUnits.removeFirst();
+                Object s = changedUnits.removeFirst();
 
                 changedUnitsSet.remove(s);
 
@@ -127,7 +127,7 @@ next());
 
                         while(succIt.hasNext())
                         {
-                            Directed succ = (Directed) succIt.next();
+                            Object succ = succIt.next();
                             
                             if(!changedUnitsSet.contains(succ))
                             {

@@ -62,7 +62,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
 
             while(it.hasNext())
             {
-                Directed s = (Directed) it.next();
+                Object s = it.next();
 
                 changedUnits.addLast(s);
                 changedUnitsSet.add(s);
@@ -83,7 +83,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                 Object beforeFlow;
                 Object afterFlow;
 
-                Directed s = (Directed) changedUnits.removeFirst();
+                Object s = changedUnits.removeFirst();
 
                 changedUnitsSet.remove(s);
 
@@ -124,7 +124,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
 
                         while(predIt.hasNext())
                         {
-                            Directed pred = (Directed) predIt.next();
+                            Object pred = predIt.next();
                             
                             if(!changedUnitsSet.contains(pred))
                             {

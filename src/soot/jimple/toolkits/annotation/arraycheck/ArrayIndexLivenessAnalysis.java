@@ -681,7 +681,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
     }
     */
 
-    protected void flowThrough(Object inValue, Directed unit, Object outValue)
+    protected void flowThrough(Object inValue, Object unit, Object outValue)
     {
 	HashSet inset = (HashSet)inValue;
 	HashSet outset = (HashSet)outValue;

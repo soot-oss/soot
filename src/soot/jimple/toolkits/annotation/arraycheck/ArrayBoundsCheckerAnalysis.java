@@ -153,7 +153,7 @@ class ArrayBoundsCheckerAnalysis
 	Iterator unitIt = dg.iterator();
 	while (unitIt.hasNext())
 	{
-	    Directed s = (Directed)unitIt.next();
+	    Object s = unitIt.next();
 
 	    List preds = graph.getPredsOf(s);
 	    List succs = graph.getSuccsOf(s);
@@ -183,13 +183,13 @@ class ArrayBoundsCheckerAnalysis
     }
     
     
-    public Object getFlowBefore(Directed s)
+    public Object getFlowBefore(Object s)
     {
         return unitToBeforeFlow.get(s);
     }
 
     /* merge all preds' out set */
-    private void mergebunch(Object ins[], Directed s, Object prevOut, Object out)
+    private void mergebunch(Object ins[], Object s, Object prevOut, Object out)
     {
         WeightedDirectedSparseGraph prevgraph = (WeightedDirectedSparseGraph)prevOut,
 	    outgraph = (WeightedDirectedSparseGraph)out;
@@ -275,7 +275,7 @@ class ArrayBoundsCheckerAnalysis
 	    {
 		Block block = (Block)allUnits.get(i);
 		{
-		    Directed tail = block.getTail();
+		    Object tail = block.getTail();
 
 		    HashSet livelocals = (HashSet)ailanalysis.getFlowAfter(tail);
 	
@@ -372,7 +372,7 @@ class ArrayBoundsCheckerAnalysis
 
             while(!changedUnits.isEmpty())
             {
-                Directed s = (Directed) changedUnits.removeFirst();
+                Object s = changedUnits.removeFirst();
                 changedUnitsSet.remove(s);
 
 		// DebugMsg.counter2++;
@@ -459,7 +459,7 @@ class ArrayBoundsCheckerAnalysis
 		{
 		    for (int i = 0; i < changedSuccs.size(); i++)
 		    {
-			Directed succ = (Directed) changedSuccs.get(i);
+			Object succ = changedSuccs.get(i);
 			if (!changedUnitsSet.contains(succ))
 			{
 			    changedUnits.add(succ);
@@ -490,7 +490,7 @@ class ArrayBoundsCheckerAnalysis
     /* Flow go through a node, the output will be put into edgeMap, and also
      * the changed succ will be in a list to return back.
      */
-    private List flowThrough(Object inValue, Directed unit)
+    private List flowThrough(Object inValue, Object unit)
     {	
         ArrayList changedSuccs = new ArrayList();
       
