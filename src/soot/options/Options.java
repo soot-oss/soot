@@ -731,7 +731,7 @@ public class Options extends OptionsBase {
 +padOpt(" -v -verbose", "Verbose Mode" )
 +padOpt(" -app", "Run in Application Mode" )
 +padOpt(" -w -whole-program", "Run in Whole-program Mode" )
-+padOpt(" -debug", "prints various Soot debugging info" )
++padOpt(" -debug", "Prints Various Soot Debugging Info" )
 +"\nInput Options:\n"
       
 +padOpt(" -cp ARG -soot-class-path ARG -soot-classpath ARG", "Uses given PATH as the classpath for finding classes for Soot processing." )
@@ -742,7 +742,7 @@ public class Options extends OptionsBase {
 +"\nOutput Options:\n"
       
 +padOpt(" -d ARG -output-dir ARG", "Store Produced Files in PATH" )
-+padOpt(" -f ARG -output-format ARG", "sets the output format for Soot" )
++padOpt(" -f ARG -output-format ARG", "Sets Output Format for Soot" )
 +padVal(" j jimp", "" )
 +padVal(" J jimple", "" )
 +padVal(" s shimp", "" )
@@ -756,7 +756,7 @@ public class Options extends OptionsBase {
 +padVal(" s jasmin", "" )
 +padVal(" c class", "" )
 +padVal(" d dava", "" )
-+padOpt(" -via-grimp", "convert jimple to bytecode via grimp instead of via baf" )
++padOpt(" -via-grimp", "Convert Jimple to Bytecode via Grimp Instead of via Baf" )
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +"\nProcessing Options:\n"
       
@@ -766,28 +766,28 @@ public class Options extends OptionsBase {
 +padOpt(" -via-shimple", "enables phases operating on Shimple SSA representation" )
 +"\nSingle File Mode Options:\n"
       
-+padOpt(" -process-path ARG", "process all classes on the PATH" )
++padOpt(" -process-path ARG", "Process all Classes on the PATH" )
 +"\nApplication Mode Options:\n"
       
-+padOpt(" -i ARG -include ARG", "marks classfiles in PACKAGE (e.g. java.util.)as application classes" )
-+padOpt(" -x ARG -exclude ARG", "marks classfiles in PACKAGE (e.g. java.) as context classes" )
-+padOpt(" -dynamic-classes ARG", "marks CLASSES (separated by colons) as potentially dynamic classes" )
-+padOpt(" -dynamic-path ARG", "marks all class files in PATH as potentially dynamic classes" )
-+padOpt(" -dynamic-package ARG", "marks classfiles in PACKAGES (separated by commas) as potentially dynamic classes" )
++padOpt(" -i ARG -include ARG", "Marks Classfiles in PACKAGE (e.g. java.util.) as Application Classes" )
++padOpt(" -x ARG -exclude ARG", "Marks Classfiles in PACKAGE (e.g. java.) as Context Classes" )
++padOpt(" -dynamic-classes ARG", "Marks CLASSES (separated by colons) as Potentially Dynamic Classes" )
++padOpt(" -dynamic-path ARG", "Marks all Class Files in PATH as Potentially Dynamic Classes" )
++padOpt(" -dynamic-package ARG", "Marks Class Files in PACKAGES (separated by commas) as Potentially Dynamic Classes" )
 +"\nInput Attribute Options:\n"
       
-+padOpt(" -keep-line-number", "keep line number tables" )
-+padOpt(" -keep-bytecode-offset -keep-offset", "attach bytecode offset to jimple statement" )
++padOpt(" -keep-line-number", "Keep Line Number Tables" )
++padOpt(" -keep-bytecode-offset -keep-offset", "Attach Bytecode Offset to Jimple Statement" )
 +"\nAnnotation Options:\n"
       
-+padOpt(" -annot-nullpointer", "turn on the annotation for null pointer" )
-+padOpt(" -annot-arraybounds", "turn on the annotation for array bounds check" )
-+padOpt(" -annot-side-effect", "turn on side-effect attributes" )
-+padOpt(" -annot-fieldrw", "turn on field read/write attributes" )
++padOpt(" -annot-nullpointer", "Turn on the Annotation for Null Pointer" )
++padOpt(" -annot-arraybounds", "Turn on the Annotation for Array Bounds Check" )
++padOpt(" -annot-side-effect", "Turn on Side-effect Attributes" )
++padOpt(" -annot-fieldrw", "Turn on Field Read/Write Attributes" )
 +"\nMiscellaneous Options:\n"
       
-+padOpt(" -time", "print out time statistics about tranformations" )
-+padOpt(" -subtract-gc", "attempt to subtract the gc from the time stats" )
++padOpt(" -time", "Print out Time Statistics about Tranformations" )
++padOpt(" -subtract-gc", "Attempt to Subtract the gc from the Time Stats" )
         + getPhaseUsage();
     }
 
