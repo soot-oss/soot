@@ -27,6 +27,7 @@ Laurie Hendren (hendren@sable.mcgill.ca)
     - project advisor
 
 John Jorgensen (jjorge1@sable.mcgill.ca)
+    - pruning unrealizable exceptions from CFGs
     - bug fixes
     - documentation
        
