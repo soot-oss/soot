@@ -113,7 +113,8 @@ classes/soot/baf/toolkits/base/peephole.dat: src/soot/baf/toolkits/base/peephole
 	cp src/soot/baf/toolkits/base/peephole.dat classes/soot/baf/toolkits/base/peephole.dat
 
 src/soot/options/Options.java: src/soot/options/*.xml src/soot/options/make-soot-options.xsl
-	xsltproc src/soot/options/make-soot-options.xsl src/soot/options/soot_options.xml > src/soot/options/Options.java
+	xsltproc src/soot/options/xalan-to-xsltproc.xsl src/soot/options/make-soot-options.xsl > src/soot/options/make-soot-options-xsltproc.xsl
+	xsltproc src/soot/options/make-soot-options-xsltproc.xsl src/soot/options/soot_options.xml > src/soot/options/Options.java
 
 foo: classes/soot/jimple/parser/parser/parser.dat classes/soot/jimple/parser/lexer/lexer.dat classes/soot/baf/toolkits/base/peephole.dat src/soot/options/Options.java
 

@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<project default="compile">
+    <target name="compile" depends="options">
+        <javac
+            srcdir="src"
+            destdir="classes"
+            classpath="classes:${java.class.path}"
+        >
+        </javac>
+    </target>
+
+    <target name="options">
+        <xslt
+            style="src/soot/options/make-soot-options.xsl"
+            in="src/soot/options/soot_options.xml"
+            out="src/soot/options/Options.java"
+        />
+    </target>
+
+    <target name="javadoc">
+        <javadoc
+            sourcepath="src"
+            destdir="doc"
+            maxmemory="200m"
+            windowtitle="Soot API"
+        >
+            <fileset dir="src" includes="**/*.java"/>
+        </javadoc>
+    </target>
+
+    <target name="clean">
+    <delete>
+        <fileset dir="classes" includes="**/*.class" />
+        <fileset dir="testclasses" includes="**/*.class" />
+    </delete>
+    </target>
+
+    <target name="badfields" depends="compile">
+        <java
+            classname="soot.tools.BadFields"
+            maxmemory="200m"
+            fork="true"
+            classpath="classes:${java.class.path}"
+        >
+            <arg value="-w"/>
+            <arg value="-f"/>
+            <arg value="none"/>
+            <arg value="-process-dir"/>
+            <arg value="classes"/>
+            <arg value="soot.Main"/>
+        </java>
+    </target>
+
+    <target name="buildtests" depends="compile">
+        <mkdir dir="testclasses"/>
+        <javac
+            srcdir="tests"
+            destdir="testclasses"
+            classpath="classes:${java.class.path}"
+            />
+    </target>
+</project>
