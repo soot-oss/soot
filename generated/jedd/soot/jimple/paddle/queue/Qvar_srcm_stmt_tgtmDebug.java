@@ -23,11 +23,11 @@ public class Qvar_srcm_stmt_tgtmDebug extends Qvar_srcm_stmt_tgtm {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), tgtm.v(), var.v(), srcm.v() },
-                                              new PhysicalDomain[] { ST.v(), MT.v(), V1.v(), MS.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), tgtm.v(), stmt.v(), var.v() },
+                                              new PhysicalDomain[] { MS.v(), MT.v(), ST.v(), V1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk2/src/soot/jimple/paddle/queue/Qvar_srcm_stm" +
-                                               "t_tgtmDebug.jedd:39,22-24"),
+                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvar_srcm_stmt" +
+                                               "_tgtmDebug.jedd:39,22-24"),
                                               in).iterator(new Attribute[] { var.v(), srcm.v(), stmt.v(), tgtm.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

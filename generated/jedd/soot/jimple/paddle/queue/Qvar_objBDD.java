@@ -19,8 +19,8 @@ public final class Qvar_objBDD extends Qvar_obj {
                                                      new PhysicalDomain[] { V1.v(), H1.v() },
                                                      ("this.add(jedd.internal.Jedd.v().literal(new java.lang.Object" +
                                                       "[...], new jedd.Attribute[...], new jedd.PhysicalDomain[...]" +
-                                                      ")) at /home/research/ccl/olhota/soot-trunk2/src/soot/jimple/" +
-                                                      "paddle/queue/Qvar_objBDD.jedd:34,8-11"),
+                                                      ")) at /home/research/ccl/olhota/soot-trunk/src/soot/jimple/p" +
+                                                      "addle/queue/Qvar_objBDD.jedd:34,8-11"),
                                                      jedd.internal.Jedd.v().literal(new Object[] { _var, _obj },
                                                                                     new Attribute[] { var.v(), obj.v() },
                                                                                     new PhysicalDomain[] { V1.v(), H1.v() })));
@@ -29,10 +29,10 @@ public final class Qvar_objBDD extends Qvar_obj {
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_objBDD reader = (Rvar_objBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
-                                                           new PhysicalDomain[] { V1.v(), H1.v() },
-                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk2/src/" +
-                                                            "soot/jimple/paddle/queue/Qvar_objBDD.jedd:39,12-18"),
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
+                                                           new PhysicalDomain[] { H1.v(), V1.v() },
+                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
+                                                            "oot/jimple/paddle/queue/Qvar_objBDD.jedd:39,12-18"),
                                                            in));
         }
     }

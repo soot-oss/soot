@@ -37,18 +37,18 @@ public class Rsrc_dstIter extends Rsrc_dst {
                                               ("<soot.jimple.paddle.bdddomains.src:soot.jimple.paddle.bdddom" +
                                                "ains.V1, soot.jimple.paddle.bdddomains.dst:soot.jimple.paddl" +
                                                "e.bdddomains.V2> ret = jedd.internal.Jedd.v().falseBDD(); at" +
-                                               " /home/research/ccl/olhota/soot-trunk2/src/soot/jimple/paddl" +
-                                               "e/queue/Rsrc_dstIter.jedd:46,25-28"),
+                                               " /home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle" +
+                                               "/queue/Rsrc_dstIter.jedd:46,25-28"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next() },
                                                        new Attribute[] { src.v(), dst.v() },
                                                        new PhysicalDomain[] { V1.v(), V2.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { src.v(), dst.v() },
-                                                   new PhysicalDomain[] { V1.v(), V2.v() },
-                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk2/src/soo" +
-                                                    "t/jimple/paddle/queue/Rsrc_dstIter.jedd:50,8-14"),
+        return new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v() },
+                                                   new PhysicalDomain[] { V2.v(), V1.v() },
+                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
+                                                    "/jimple/paddle/queue/Rsrc_dstIter.jedd:50,8-14"),
                                                    ret);
     }
     

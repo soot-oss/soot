@@ -46,7 +46,7 @@ public final class BDDHierarchy {
 
     private void updateTypes() {
         ArrayNumberer tn = Scene.v().getTypeNumberer();
-        for( int i = maxType+1; i < tn.size(); i++ ) {
+        for( int i = maxType+1; i <= tn.size(); i++ ) {
             processNewType( (Type) tn.get(i) );
         }
     }
@@ -76,6 +76,8 @@ public final class BDDHierarchy {
     private <subt:T1, supt:T2> array = 0B;
     public <subt, supt> array() { return array; }
 
+    private <arrayt:T3, elemt> arrayElem = 0B;
+
     /** If s is AnySubType(t), and u is a subtype of t, contains the pair
      *  s:anyst, u:type.
      */
@@ -83,11 +85,15 @@ public final class BDDHierarchy {
     public <anyst, type> anySub() { return anySub; }
     private <anyst, type> oldAnySub = 0B;
 
+    /** NullType is a subtype of everything. */
+    private <subt, supt> nullType = 0B;
+
     /** The computed subtype relation. Contains all pairs s:subt, t:supt
      *  for which s is a subtype of t.
      */
     private <subt:T1, supt:T2> closure = 0B;
 
+    private <type> concreteNonArray = 0B;
     private <type> concrete = 0B;
     public <type> concrete() {
         updateTypes();
@@ -96,12 +102,17 @@ public final class BDDHierarchy {
 
 
     private RefType jlo = RefType.v("java.lang.Object");
+    private RefType jis = RefType.v("java.io.Serializable");
+    private RefType jlc = RefType.v("java.lang.Cloneable");
     /** Return the array of Object with dimensions dimensions, or Object if
      *  dimensions is 0.
      */
-    private Type jloArray(int dimensions) {
-        if( dimensions == 0 ) return jlo;
-        return ArrayType.v(jlo, dimensions);
+    private Type array(int dimensions, Type base) {
+        Type ret;
+        if( dimensions == 0 ) ret = base;
+        else ret = ArrayType.v(base, dimensions);
+        Scene.v().getTypeNumberer().add(ret);
+        return ret;
     }
 
     private int maxType = 0;
@@ -122,23 +133,28 @@ public final class BDDHierarchy {
                 final SootClass iface = (SootClass) ifaceIt.next();
                 implement |= new{ rt=>subt, iface.getType()=>supt };
             }
-            if( sc.isConcrete() ) concrete |= new{rt=>type};
+            if( sc.isConcrete() ) {
+                concrete |= new{rt=>type};
+                concreteNonArray |= new{rt=>type};
+            }
         } else if( t instanceof ArrayType ) {
             identity |= new{ t=>subt, t=>supt };
             ArrayType at = (ArrayType) t;
             if( at.baseType instanceof PrimType ) {
-                array |= new{ at=>subt,
-                                 jloArray(at.numDimensions-1)=>supt };
+                array |= new{ at=>subt, array(at.numDimensions-1, jlo)=>supt }
+                        |new{ at=>subt, array(at.numDimensions-1, jis)=>supt }
+                        |new{ at=>subt, array(at.numDimensions-1, jlc)=>supt };
             } else if( at.baseType instanceof RefType ) {
                 RefType rt = (RefType) at.baseType;
                 if( rt.equals( jlo ) ) {
-                    array |= new{ at=>subt,
-                                     jloArray(at.numDimensions-1)=>supt };
+                    array |= new{ at=>subt, array(at.numDimensions-1, jlo)=>supt }
+                            |new{ at=>subt, array(at.numDimensions-1, jis)=>supt }
+                            |new{ at=>subt, array(at.numDimensions-1, jlc)=>supt };
                 } else {
-                    array |= new{ at=>subt,
-                                     jloArray(at.numDimensions)=>supt };
+                    array |= new{ at=>subt, array(at.numDimensions, jlo)=>supt };
                 }
             } else throw new RuntimeException( "unhandled: "+at.baseType );
+            arrayElem |= new{at=>arrayt, at.getArrayElementType()=>elemt};
             concrete |= new{at=>type};
         } else if( t instanceof AnySubType ) {
             AnySubType as = (AnySubType) t;
@@ -147,6 +163,7 @@ public final class BDDHierarchy {
         } else if( t instanceof NullType ) {
             identity |= new{ t=>subt, t=>supt };
         }
+        nullType |= new{NullType.v()=>subt, t=>supt};
         if( t.getNumber() > maxType ) maxType = t.getNumber();
     }
     
@@ -154,7 +171,7 @@ public final class BDDHierarchy {
     private void updateClosure() {
         // Add all base subtype relations into closure. 
         boolean closureChanged = (closure != 
-            (closure |= extend | implement | array | identity));
+            (closure |= extend | implement | array | identity | nullType));
 
         // Close closure.
         if( closureChanged )
@@ -166,14 +183,16 @@ public final class BDDHierarchy {
         // to anySub.
         if( anySub != oldAnySub || closureChanged ) {
             anySub |= anySub {type} <> (supt=>T3)(subt=>type) closure {supt};
-            anySub = anySub{type} >< concrete{type};
+            anySub = anySub{type} >< concreteNonArray{type};
 
             // Add anySub into closure, closing it with closure first.
             closure |= (anyst=>subt) anySub {type} <> (supt=>T3) closure {subt};
         }
         oldAnySub = anySub;
-
+        while(closure != (
+            closure |=            (closure{subt}
+                 <>(arrayt=>subt)arrayElem{elemt}){supt}
+                         <>(arrayt=>supt)arrayElem{elemt}));
     }
-
 }
 

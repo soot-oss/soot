@@ -43,8 +43,8 @@ public final class Rctxt_methodMerge extends Rctxt_method {
                                                    new PhysicalDomain[] { C1.v(), MS.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
                                                     "ead(in1.get()), in2.get()); at /home/research/ccl/olhota/soo" +
-                                                    "t-trunk2/src/soot/jimple/paddle/queue/Rctxt_methodMerge.jedd" +
-                                                    ":52,8-14"),
+                                                    "t-trunk/src/soot/jimple/paddle/queue/Rctxt_methodMerge.jedd:" +
+                                                    "52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

@@ -120,14 +120,25 @@ public class TradTypeManager extends AbsTypeManager
             return cachedVarObj;
         }
     }
+    //private BDDHierarchy bddh = new BDDHierarchy();
     public boolean castNeverFails( Type from, Type to ) {
         if( fh == null ) return true;
         if( to == null ) return true;
         if( to == from ) return true;
         if( from == null ) return false;
         if( to.equals( from ) ) return true;
+        boolean ret = castNeverFailsGuts(from, to);
+        /*
+        boolean ret1 = (bddh.subtypeRelation() & new{from=>subt, to=>supt}) != 0B;
+        if( ret != ret1 ) {
+            throw new RuntimeException( "hierarchies disagree on cast from "+from+" to "+to+";\nfh says "+ret+" while bddh says "+ret1);
+        }
+        */
+        return ret;
+    }
+    public boolean castNeverFailsGuts( Type from, Type to ) {
         if( from instanceof NullType ) return true;
-        if( from instanceof AnySubType ) return true;
+        //if( from instanceof AnySubType ) return true;
         if( to instanceof NullType ) return false;
         if( to instanceof AnySubType ) throw new RuntimeException( "oops from="+from+" to="+to );
         return fh.canStoreType( from, to );

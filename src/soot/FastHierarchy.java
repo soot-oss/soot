@@ -209,17 +209,23 @@ public class FastHierarchy
 	} else if( child instanceof AnySubType ) {
 	    if( !(parent instanceof RefLikeType ) ) {
 		throw new RuntimeException( "Unhandled type "+parent );
-	    } else {
-                RefType base = ((AnySubType)child).getBase();
-                if( parent instanceof RefType ) {
-                    if( ((RefType)parent).getSootClass().isInterface() ) 
-                        return true;
+	    } else if(parent instanceof ArrayType) {
+                return false;
+            } else {
+                SootClass base = ((AnySubType)child).getBase().getSootClass();
+                SootClass parentClass = ((RefType) parent).getSootClass();
+                LinkedList worklist = new LinkedList();
+                if( base.isInterface() ) worklist.addAll(getAllImplementersOfInterface(base));
+                else worklist.add(base);
+                Set workset = new HashSet();
+                while(!worklist.isEmpty()) {
+                    SootClass cl = (SootClass) worklist.removeFirst();
+                    if( !workset.add(cl) ) continue;
+                    if( cl.isConcrete() 
+                    &&  canStoreClass(cl, parentClass) ) return true;
+                    worklist.addAll(getSubclassesOf(cl));
                 }
-                if( base instanceof RefType ) {
-                    if( ((RefType)base).getSootClass().isInterface() ) 
-                        return true;
-                }
-		return canStoreType( parent, base ) || canStoreType( base, parent );
+                return false;
 	    }
 	} else {
 	    ArrayType achild = (ArrayType) child;
