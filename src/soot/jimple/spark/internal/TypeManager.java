@@ -34,6 +34,13 @@ public final class TypeManager {
     public TypeManager( PAG pag ) {
         this.pag = pag;
     }
+    public static boolean isUnresolved(Type type) {
+        if( !(type instanceof RefType) ) return false;
+        RefType rt = (RefType) type;
+        if( !rt.hasSootClass() ) return true;
+        SootClass cl = rt.getSootClass();
+        return cl.resolvingLevel() < SootClass.HIERARCHY;
+    }
     final public BitVector get( Type type ) {
         if( type == null ) return null;
         while(allocNodeListener.hasNext()) {
@@ -42,6 +49,7 @@ public final class TypeManager {
                 final Type t = (Type) tIt.next();
                 if( !(t instanceof RefLikeType) ) continue;
                 if( t instanceof AnySubType ) continue;
+                if( isUnresolved(t) ) continue;
                 if( castNeverFails( n.getType(), t ) ) {
                     BitVector mask = (BitVector) typeMask.get( t );
                     if( mask == null ) {
@@ -79,6 +87,7 @@ public final class TypeManager {
             final Type t = (Type) tIt.next();
             if( !(t instanceof RefLikeType) ) continue;
             if( t instanceof AnySubType ) continue;
+            if( isUnresolved(t) ) continue;
             BitVector mask = new BitVector( allocNodes.size() );
             for( Iterator nIt = allocNodes.iterator(); nIt.hasNext(); ) {
                 final Node n = (Node) nIt.next();

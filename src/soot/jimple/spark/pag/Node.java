@@ -25,6 +25,7 @@ import soot.Type;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.spark.sets.EmptyPointsToSet;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
+import soot.jimple.spark.internal.TypeManager;
 
 /** Represents every node in the pointer assignment graph.
  * @author Ondrej Lhotak
@@ -37,15 +38,18 @@ public class Node implements ReferenceVariable, Numberable {
     /** Returns the declared type of this node, null for unknown. */
     public Type getType() { return type; }
     /** Sets the declared type of this node, null for unknown. */
-    public void setType( Type type ) { this.type = type; }
+    public void setType( Type type ) {
+        if( TypeManager.isUnresolved(type) ) throw new RuntimeException("Unresolved type "+type );
+        this.type = type; 
+    }
     /** If this node has been merged with another, returns the new node to be
      * used as the representative of this node; returns this if the node has
      * not been merged. */
     public Node getReplacement() { 
-	if( replacement != replacement.replacement ) {
-	    replacement = replacement.getReplacement();
-	}
-	return replacement;
+        if( replacement != replacement.replacement ) {
+            replacement = replacement.getReplacement();
+        }
+        return replacement;
     }
     /** Merge with the node other. */
     public void mergeWith( Node other ) {
@@ -54,26 +58,26 @@ public class Node implements ReferenceVariable, Numberable {
         }
         Node myRep = getReplacement();
         if( other == myRep ) return;
-	other.replacement = myRep;
-	if( other.p2set != p2set 
-	&& other.p2set != null 
-	&& !other.p2set.isEmpty() ) {
-	    if( myRep.p2set == null || myRep.p2set.isEmpty() ) {
-		myRep.p2set = other.p2set;
-	    } else {
-		myRep.p2set.mergeWith( other.p2set );
-	    }
-	}
-	other.p2set = null;
+        other.replacement = myRep;
+        if( other.p2set != p2set 
+                && other.p2set != null 
+                && !other.p2set.isEmpty() ) {
+            if( myRep.p2set == null || myRep.p2set.isEmpty() ) {
+                myRep.p2set = other.p2set;
+            } else {
+                myRep.p2set.mergeWith( other.p2set );
+            }
+        }
+        other.p2set = null;
         pag.mergedWith( myRep, other );
         if( (other instanceof VarNode)
-        && (myRep instanceof VarNode )
-        && ((VarNode) other).isInterProcTarget() )
+                && (myRep instanceof VarNode )
+                && ((VarNode) other).isInterProcTarget() )
             ((VarNode) myRep).setInterProcTarget();
     }
     /** Returns the points-to set for this node. */
     public PointsToSetInternal getP2Set() {
-	if( p2set != null ) {
+        if( p2set != null ) {
             if( replacement != this ) throw new RuntimeException(
                     "Node "+this+" has replacement "+replacement+" but has p2set" );
             return p2set;
@@ -86,7 +90,7 @@ public class Node implements ReferenceVariable, Numberable {
     }
     /** Returns the points-to set for this node, makes it if necessary. */
     public PointsToSetInternal makeP2Set() {
-	if( p2set != null ) {
+        if( p2set != null ) {
             if( replacement != this ) throw new RuntimeException(
                     "Node "+this+" has replacement "+replacement+" but has p2set" );
             return p2set;
@@ -104,8 +108,9 @@ public class Node implements ReferenceVariable, Numberable {
 
     /** Creates a new node of pointer assignment graph pag, with type type. */
     Node( PAG pag, Type type ) {
-	this.type = type;
-	this.pag = pag;
+        if( TypeManager.isUnresolved(type) ) throw new RuntimeException("Unresolved type "+type );
+        this.type = type;
+        this.pag = pag;
         replacement = this;
     }
 

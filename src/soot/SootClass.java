@@ -81,6 +81,7 @@ public class SootClass extends AbstractHost implements Numberable
 
     public SootClass(String name, int modifiers)
     {
+        if( name.charAt(0) == '[' ) throw new RuntimeException( "Attempt to make a class whose name starts with [" );
 	setName( name);
         this.modifiers = modifiers;
         refType = RefType.v(name);
@@ -116,15 +117,19 @@ public class SootClass extends AbstractHost implements Numberable
     public void checkLevel( int level ) {
         if( !Scene.v().doneResolving() ) return;
         if( resolvingLevel < level ) {
+            /*
             try {
-            throw new RuntimeException(
+            */
+                throw new RuntimeException(
                     "This operation requires resolving level "+
                     levelToString(level)+" but "+name+
                     " is at resolving level "+levelToString(resolvingLevel) );
+                /*
             } catch( RuntimeException e ) {
                 System.out.println("RESOLVING ERROR: "+e.toString());
                 e.printStackTrace();
             }
+            */
         }
     }
 

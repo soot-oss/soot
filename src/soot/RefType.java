@@ -98,7 +98,7 @@ public class RefType extends RefLikeType implements Comparable
         return sootClass;
     }
 
-    boolean hasSootClass() {
+    public boolean hasSootClass() {
         return sootClass != null;
     }
 
