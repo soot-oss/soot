@@ -60,11 +60,12 @@ public class BlockGraph implements DirectedGraph
 
    
     /**
-     *  Constructs a BriefBlockGraph from a given Body instance.
+     *  Constructs a BlockGraph from a given Body instance.
      *
      *   @param aBody  The Body instance we want a graph for.
      *   @param type   Specifies the type of graph to build. 
-     *                 This can be  BRIEF, ZONED or COMPLETE.
+     *                 This can be  BRIEF, ZONED, COMPLETE, or
+     *		       ARRAYREF.
      *   @see CompleteBlockGraph
      *   @see BriefBlockGraph
      *   @see ZonedBlockGraph
