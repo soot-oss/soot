@@ -213,8 +213,6 @@ public class JAssignStmt extends AbstractDefinitionStmt
 
     public void apply(Switch sw)
     {
-        System.out.println(this);
-
         ((StmtSwitch) sw).caseAssignStmt(this);
     }
 
