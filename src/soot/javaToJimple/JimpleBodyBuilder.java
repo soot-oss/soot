@@ -10,6 +10,7 @@ public class JimpleBodyBuilder {
     ArrayList exceptionTable;
     Stack endControlNoop = new Stack();
     Stack condControlNoop = new Stack();
+    Stack monitorStack;
     
     HashMap labelBreakMap; 
     HashMap labelContinueMap; 
@@ -1148,6 +1149,12 @@ public class JimpleBodyBuilder {
         
         soot.jimple.EnterMonitorStmt enterMon = soot.jimple.Jimple.v().newEnterMonitorStmt(sootExpr);
         body.getUnits().add(enterMon);
+        
+        if (monitorStack == null){
+            monitorStack = new Stack();
+        }
+        monitorStack.push(sootExpr);
+        
         Util.addLnPosTags(enterMon.getOpBox(), synchStmt.expr().position());
         Util.addLnPosTags(enterMon, synchStmt.expr().position());
         
@@ -1158,6 +1165,8 @@ public class JimpleBodyBuilder {
 
         soot.jimple.ExitMonitorStmt exitMon = soot.jimple.Jimple.v().newExitMonitorStmt(sootExpr);
         body.getUnits().add(exitMon);
+
+        monitorStack.pop();
         Util.addLnPosTags(exitMon.getOpBox(), synchStmt.expr().position());
         Util.addLnPosTags(exitMon, synchStmt.expr().position());
         
@@ -1213,13 +1222,33 @@ public class JimpleBodyBuilder {
      */
     private void createReturn(polyglot.ast.Return retStmt) {
         polyglot.ast.Expr expr = retStmt.expr();
+        soot.Value sootLocal = null;
+        if (expr != null){
+            sootLocal = createExpr(expr);
+        }
+        
+        // handle monitor exits before return if necessary
+        if (monitorStack != null){
+            Stack putBack = new Stack();
+            while (!monitorStack.isEmpty()){
+                soot.Local exitVal = (soot.Local)monitorStack.pop();
+                putBack.push(exitVal);
+                soot.jimple.ExitMonitorStmt emStmt = soot.jimple.Jimple.v().newExitMonitorStmt(exitVal);
+                body.getUnits().add(emStmt);
+            }
+            while(!putBack.isEmpty()){
+                monitorStack.push(putBack.pop());
+            }
+        }
+        
+        // return
         if (expr == null) {
             soot.jimple.Stmt retStmtVoid = soot.jimple.Jimple.v().newReturnVoidStmt();
             body.getUnits().add(retStmtVoid);
             Util.addLnPosTags(retStmtVoid, retStmt.position());
         }
         else {
-            soot.Value sootLocal = createExpr(expr);
+            //soot.Value sootLocal = createExpr(expr);
             if (sootLocal instanceof soot.jimple.ConditionExpr) {
                 sootLocal = handleCondBinExpr((soot.jimple.ConditionExpr)sootLocal); 
             }
