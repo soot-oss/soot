@@ -109,6 +109,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import ca.mcgill.sable.soot.baf.*;
 import java.io.*;
 
@@ -308,16 +309,15 @@ public class JimpleBody implements StmtBody
     private void patchForTyping()
     {
         int localCount = 0;
-        ListIterator stmtIt = stmtList.listIterator();
         Local newObjectLocal = null;
-
         
         Transformations.cleanupCode(this);
         Transformations.removeUnusedLocals(this);
         
-        while(stmtIt.hasNext())
-        {
-            Stmt s = (Stmt) stmtIt.next();
+        int count = stmtList.size();
+        for (int ind = 0; ind < count; ind++)
+          {
+            Stmt s = (Stmt) stmtList.get(ind);
                     
             if(s instanceof AssignStmt)
             {
@@ -339,7 +339,7 @@ public class JimpleBody implements StmtBody
                     
                     // Find matching special invoke
                     {
-                        ListIterator matchIt = stmtList.listIterator(stmtIt.nextIndex());
+                        ListIterator matchIt = stmtList.listIterator(ind+1);
                         boolean foundMatch = false;
                                
                         while(matchIt.hasNext())
@@ -359,6 +359,7 @@ public class JimpleBody implements StmtBody
                                     // Add copy newObjectLocal = tmpLocal
                                     matchIt.add(Jimple.v().newAssignStmt(newObjectLocal,
                                         tmpLocal));
+                                    count++;
                                  
                                     foundMatch = true;
                                     break;       

@@ -1,6 +1,7 @@
 package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import ca.mcgill.sable.soot.*;
 
 public interface LookupSwitchInst extends Inst

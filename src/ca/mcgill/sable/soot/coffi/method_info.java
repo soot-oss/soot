@@ -110,8 +110,10 @@
 
 package ca.mcgill.sable.soot.coffi;
 
+import java.util.*;
 import java.io.*;
 import java.util.Vector;
+import ca.mcgill.sable.util.*;
 
 /** Represents a single method_info object.
  * @see ClassFile
@@ -150,7 +152,7 @@ public class method_info {
 
     ca.mcgill.sable.soot.SootMethod jmethod;
 
-    ca.mcgill.sable.util.List instructionList;
+    List instructionList;
 
    /** Returns the name of this method.
     * @param constant_pool the constant_pool for this class.

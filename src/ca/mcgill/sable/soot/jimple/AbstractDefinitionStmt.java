@@ -80,6 +80,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 
 abstract class AbstractDefinitionStmt extends AbstractStmt 
     implements DefinitionStmt

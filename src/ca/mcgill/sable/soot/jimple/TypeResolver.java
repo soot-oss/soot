@@ -99,6 +99,7 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
+import java.util.*;
 
 /**
  * This class resolves the type of local variables.

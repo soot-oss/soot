@@ -107,6 +107,9 @@ package ca.mcgill.sable.soot.coffi;
 
 import java.util.Enumeration;
 import java.util.Vector;
+import java.util.*;
+import ca.mcgill.sable.util.*;
+import java.util.*;
 
 /** Represents one basic block in a control flow graph.
  * @see CFG
@@ -163,8 +166,8 @@ class BasicBlock {
 
    private ca.mcgill.sable.soot.jimple.Stmt stmt;  // statement generated
 
-   ca.mcgill.sable.util.List statements;
-   ca.mcgill.sable.util.Set addressesToFixup = new ca.mcgill.sable.util.VectorSet();
+   List statements;
+   Set addressesToFixup = new ArraySet();
 
    ca.mcgill.sable.soot.jimple.Stmt getHeadJStmt()
    {

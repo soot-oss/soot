@@ -83,6 +83,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 
 public interface GtExpr extends ConditionExpr
 {

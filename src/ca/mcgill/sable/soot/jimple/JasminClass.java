@@ -143,6 +143,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import java.io.*;
 
 public class JasminClass
@@ -503,7 +504,7 @@ public class JasminClass
         LocalDefs ld = new SimpleLocalDefs(stmtGraph);
             LocalUses lu = new SimpleLocalUses(stmtGraph, ld);
 
-        int stackLimitIndex;
+        int stackLimitIndex = -1;
         
         // Emit prologue
             emit(".method " + Modifier.toString(method.getModifiers()) + " " +
@@ -654,10 +655,14 @@ public class JasminClass
                     }
                 }
 
-                emit("    .limit stack ?");
-                stackLimitIndex = code.size() - 1;
-                
-                emit("    .limit locals " + localCount);
+                if (!Modifier.isNative(method.getModifiers())
+                    && !Modifier.isAbstract(method.getModifiers()))
+                  {
+                    emit("    .limit stack ?");
+                    stackLimitIndex = code.size() - 1;
+                    
+                    emit("    .limit locals " + localCount);
+                  }
             }
         }
 
@@ -832,7 +837,9 @@ public class JasminClass
 
             isEmittingMethodCode = false;
             
-            code.set(stackLimitIndex, "    .limit stack " + maxStackHeight);
+            if (!Modifier.isNative(method.getModifiers())
+                && !Modifier.isAbstract(method.getModifiers()))
+              code.set(stackLimitIndex, "    .limit stack " + maxStackHeight);
         }
 
         // Emit epilogue

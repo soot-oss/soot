@@ -116,6 +116,7 @@
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.grimp.*;
 import ca.mcgill.sable.soot.baf.*;
@@ -215,7 +216,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.23");
+            System.out.println("Soot version 1.beta.4.dev.24");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");

@@ -114,6 +114,7 @@
 package ca.mcgill.sable.soot.coffi;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import ca.mcgill.sable.soot.*;
 
 class FutureStmt extends ca.mcgill.sable.soot.jimple.AbstractStmt

@@ -69,11 +69,16 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 
 public class BaseJimpleOptimizer
 {
     public static void optimize(JimpleBody body)
     {
+        if(Main.isVerbose)
+            System.out.println("[" + body.getMethod().getName() +
+                "] Starting base jimple optimizations...");
+
         ConstantAndCopyPropagator.propagateConstantsAndCopies(body);
         DeadCodeEliminator.eliminateDeadCode(body);
     }

@@ -1,15 +1,26 @@
 package ca.mcgill.sable.soot.jimple.parser.analysis;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.node.*;
 
 public class DepthFirstAdapter extends AnalysisAdapter
 {
     public void inStart(Start node)
     {
+        defaultIn(node);
     }
 
     public void outStart(Start node)
+    {
+        defaultOut(node);
+    }
+
+    public void defaultIn(Node node)
+    {
+    }
+
+    public void defaultOut(Node node)
     {
     }
 
@@ -23,10 +34,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAFile(AFile node)
     {
+        defaultIn(node);
     }
 
     public void outAFile(AFile node)
     {
+        defaultOut(node);
     }
 
     public void caseAFile(AFile node)
@@ -64,10 +77,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAAbstractModifier(AAbstractModifier node)
     {
+        defaultIn(node);
     }
 
     public void outAAbstractModifier(AAbstractModifier node)
     {
+        defaultOut(node);
     }
 
     public void caseAAbstractModifier(AAbstractModifier node)
@@ -82,10 +97,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAFinalModifier(AFinalModifier node)
     {
+        defaultIn(node);
     }
 
     public void outAFinalModifier(AFinalModifier node)
     {
+        defaultOut(node);
     }
 
     public void caseAFinalModifier(AFinalModifier node)
@@ -100,10 +117,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inANativeModifier(ANativeModifier node)
     {
+        defaultIn(node);
     }
 
     public void outANativeModifier(ANativeModifier node)
     {
+        defaultOut(node);
     }
 
     public void caseANativeModifier(ANativeModifier node)
@@ -118,10 +137,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAPublicModifier(APublicModifier node)
     {
+        defaultIn(node);
     }
 
     public void outAPublicModifier(APublicModifier node)
     {
+        defaultOut(node);
     }
 
     public void caseAPublicModifier(APublicModifier node)
@@ -136,10 +157,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAProtectedModifier(AProtectedModifier node)
     {
+        defaultIn(node);
     }
 
     public void outAProtectedModifier(AProtectedModifier node)
     {
+        defaultOut(node);
     }
 
     public void caseAProtectedModifier(AProtectedModifier node)
@@ -154,10 +177,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAPrivateModifier(APrivateModifier node)
     {
+        defaultIn(node);
     }
 
     public void outAPrivateModifier(APrivateModifier node)
     {
+        defaultOut(node);
     }
 
     public void caseAPrivateModifier(APrivateModifier node)
@@ -172,10 +197,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAStaticModifier(AStaticModifier node)
     {
+        defaultIn(node);
     }
 
     public void outAStaticModifier(AStaticModifier node)
     {
+        defaultOut(node);
     }
 
     public void caseAStaticModifier(AStaticModifier node)
@@ -190,10 +217,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inASynchronizedModifier(ASynchronizedModifier node)
     {
+        defaultIn(node);
     }
 
     public void outASynchronizedModifier(ASynchronizedModifier node)
     {
+        defaultOut(node);
     }
 
     public void caseASynchronizedModifier(ASynchronizedModifier node)
@@ -208,10 +237,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inATransientModifier(ATransientModifier node)
     {
+        defaultIn(node);
     }
 
     public void outATransientModifier(ATransientModifier node)
     {
+        defaultOut(node);
     }
 
     public void caseATransientModifier(ATransientModifier node)
@@ -226,10 +257,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAVolatileModifier(AVolatileModifier node)
     {
+        defaultIn(node);
     }
 
     public void outAVolatileModifier(AVolatileModifier node)
     {
+        defaultOut(node);
     }
 
     public void caseAVolatileModifier(AVolatileModifier node)
@@ -244,10 +277,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAClassFileType(AClassFileType node)
     {
+        defaultIn(node);
     }
 
     public void outAClassFileType(AClassFileType node)
     {
+        defaultOut(node);
     }
 
     public void caseAClassFileType(AClassFileType node)
@@ -262,10 +297,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAInterfaceFileType(AInterfaceFileType node)
     {
+        defaultIn(node);
     }
 
     public void outAInterfaceFileType(AInterfaceFileType node)
     {
+        defaultOut(node);
     }
 
     public void caseAInterfaceFileType(AInterfaceFileType node)
@@ -280,10 +317,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAExtendsClause(AExtendsClause node)
     {
+        defaultIn(node);
     }
 
     public void outAExtendsClause(AExtendsClause node)
     {
+        defaultOut(node);
     }
 
     public void caseAExtendsClause(AExtendsClause node)
@@ -302,10 +341,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAImplementsClause(AImplementsClause node)
     {
+        defaultIn(node);
     }
 
     public void outAImplementsClause(AImplementsClause node)
     {
+        defaultOut(node);
     }
 
     public void caseAImplementsClause(AImplementsClause node)
@@ -324,10 +365,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAFileBody(AFileBody node)
     {
+        defaultIn(node);
     }
 
     public void outAFileBody(AFileBody node)
     {
+        defaultOut(node);
     }
 
     public void caseAFileBody(AFileBody node)
@@ -353,10 +396,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inASingleNameList(ASingleNameList node)
     {
+        defaultIn(node);
     }
 
     public void outASingleNameList(ASingleNameList node)
     {
+        defaultOut(node);
     }
 
     public void caseASingleNameList(ASingleNameList node)
@@ -371,10 +416,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAMultiNameList(AMultiNameList node)
     {
+        defaultIn(node);
     }
 
     public void outAMultiNameList(AMultiNameList node)
     {
+        defaultOut(node);
     }
 
     public void caseAMultiNameList(AMultiNameList node)
@@ -397,10 +444,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAFieldMember(AFieldMember node)
     {
+        defaultIn(node);
     }
 
     public void outAFieldMember(AFieldMember node)
     {
+        defaultOut(node);
     }
 
     public void caseAFieldMember(AFieldMember node)
@@ -430,10 +479,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAMethodMember(AMethodMember node)
     {
+        defaultIn(node);
     }
 
     public void outAMethodMember(AMethodMember node)
     {
+        defaultOut(node);
     }
 
     public void caseAMethodMember(AMethodMember node)
@@ -479,10 +530,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAVoidType(AVoidType node)
     {
+        defaultIn(node);
     }
 
     public void outAVoidType(AVoidType node)
     {
+        defaultOut(node);
     }
 
     public void caseAVoidType(AVoidType node)
@@ -497,10 +550,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inANovoidType(ANovoidType node)
     {
+        defaultIn(node);
     }
 
     public void outANovoidType(ANovoidType node)
     {
+        defaultOut(node);
     }
 
     public void caseANovoidType(ANovoidType node)
@@ -515,10 +570,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inASingleParameterList(ASingleParameterList node)
     {
+        defaultIn(node);
     }
 
     public void outASingleParameterList(ASingleParameterList node)
     {
+        defaultOut(node);
     }
 
     public void caseASingleParameterList(ASingleParameterList node)
@@ -533,10 +590,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAMultiParameterList(AMultiParameterList node)
     {
+        defaultIn(node);
     }
 
     public void outAMultiParameterList(AMultiParameterList node)
     {
+        defaultOut(node);
     }
 
     public void caseAMultiParameterList(AMultiParameterList node)
@@ -559,10 +618,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAParameter(AParameter node)
     {
+        defaultIn(node);
     }
 
     public void outAParameter(AParameter node)
     {
+        defaultOut(node);
     }
 
     public void caseAParameter(AParameter node)
@@ -577,10 +638,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAThrowsClause(AThrowsClause node)
     {
+        defaultIn(node);
     }
 
     public void outAThrowsClause(AThrowsClause node)
     {
+        defaultOut(node);
     }
 
     public void caseAThrowsClause(AThrowsClause node)
@@ -599,10 +662,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inABooleanBaseType(ABooleanBaseType node)
     {
+        defaultIn(node);
     }
 
     public void outABooleanBaseType(ABooleanBaseType node)
     {
+        defaultOut(node);
     }
 
     public void caseABooleanBaseType(ABooleanBaseType node)
@@ -617,10 +682,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAByteBaseType(AByteBaseType node)
     {
+        defaultIn(node);
     }
 
     public void outAByteBaseType(AByteBaseType node)
     {
+        defaultOut(node);
     }
 
     public void caseAByteBaseType(AByteBaseType node)
@@ -635,10 +702,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACharBaseType(ACharBaseType node)
     {
+        defaultIn(node);
     }
 
     public void outACharBaseType(ACharBaseType node)
     {
+        defaultOut(node);
     }
 
     public void caseACharBaseType(ACharBaseType node)
@@ -653,10 +722,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAShortBaseType(AShortBaseType node)
     {
+        defaultIn(node);
     }
 
     public void outAShortBaseType(AShortBaseType node)
     {
+        defaultOut(node);
     }
 
     public void caseAShortBaseType(AShortBaseType node)
@@ -671,10 +742,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAIntBaseType(AIntBaseType node)
     {
+        defaultIn(node);
     }
 
     public void outAIntBaseType(AIntBaseType node)
     {
+        defaultOut(node);
     }
 
     public void caseAIntBaseType(AIntBaseType node)
@@ -689,10 +762,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inALongBaseType(ALongBaseType node)
     {
+        defaultIn(node);
     }
 
     public void outALongBaseType(ALongBaseType node)
     {
+        defaultOut(node);
     }
 
     public void caseALongBaseType(ALongBaseType node)
@@ -707,10 +782,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAFloatBaseType(AFloatBaseType node)
     {
+        defaultIn(node);
     }
 
     public void outAFloatBaseType(AFloatBaseType node)
     {
+        defaultOut(node);
     }
 
     public void caseAFloatBaseType(AFloatBaseType node)
@@ -725,10 +802,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inADoubleBaseType(ADoubleBaseType node)
     {
+        defaultIn(node);
     }
 
     public void outADoubleBaseType(ADoubleBaseType node)
     {
+        defaultOut(node);
     }
 
     public void caseADoubleBaseType(ADoubleBaseType node)
@@ -743,10 +822,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inANameBaseType(ANameBaseType node)
     {
+        defaultIn(node);
     }
 
     public void outANameBaseType(ANameBaseType node)
     {
+        defaultOut(node);
     }
 
     public void caseANameBaseType(ANameBaseType node)
@@ -761,10 +842,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inANonvoidType(ANonvoidType node)
     {
+        defaultIn(node);
     }
 
     public void outANonvoidType(ANonvoidType node)
     {
+        defaultOut(node);
     }
 
     public void caseANonvoidType(ANonvoidType node)
@@ -786,10 +869,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAArrayBrackets(AArrayBrackets node)
     {
+        defaultIn(node);
     }
 
     public void outAArrayBrackets(AArrayBrackets node)
     {
+        defaultOut(node);
     }
 
     public void caseAArrayBrackets(AArrayBrackets node)
@@ -808,10 +893,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAEmptyMethodBody(AEmptyMethodBody node)
     {
+        defaultIn(node);
     }
 
     public void outAEmptyMethodBody(AEmptyMethodBody node)
     {
+        defaultOut(node);
     }
 
     public void caseAEmptyMethodBody(AEmptyMethodBody node)
@@ -826,10 +913,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAFullMethodBody(AFullMethodBody node)
     {
+        defaultIn(node);
     }
 
     public void outAFullMethodBody(AFullMethodBody node)
     {
+        defaultOut(node);
     }
 
     public void caseAFullMethodBody(AFullMethodBody node)
@@ -869,10 +958,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inADeclaration(ADeclaration node)
     {
+        defaultIn(node);
     }
 
     public void outADeclaration(ADeclaration node)
     {
+        defaultOut(node);
     }
 
     public void caseADeclaration(ADeclaration node)
@@ -895,10 +986,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAUnknownJimpleType(AUnknownJimpleType node)
     {
+        defaultIn(node);
     }
 
     public void outAUnknownJimpleType(AUnknownJimpleType node)
     {
+        defaultOut(node);
     }
 
     public void caseAUnknownJimpleType(AUnknownJimpleType node)
@@ -913,10 +1006,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inANonvoidJimpleType(ANonvoidJimpleType node)
     {
+        defaultIn(node);
     }
 
     public void outANonvoidJimpleType(ANonvoidJimpleType node)
     {
+        defaultOut(node);
     }
 
     public void caseANonvoidJimpleType(ANonvoidJimpleType node)
@@ -931,10 +1026,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inALocalName(ALocalName node)
     {
+        defaultIn(node);
     }
 
     public void outALocalName(ALocalName node)
     {
+        defaultOut(node);
     }
 
     public void caseALocalName(ALocalName node)
@@ -949,10 +1046,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inASingleLocalNameList(ASingleLocalNameList node)
     {
+        defaultIn(node);
     }
 
     public void outASingleLocalNameList(ASingleLocalNameList node)
     {
+        defaultOut(node);
     }
 
     public void caseASingleLocalNameList(ASingleLocalNameList node)
@@ -967,10 +1066,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAMultiLocalNameList(AMultiLocalNameList node)
     {
+        defaultIn(node);
     }
 
     public void outAMultiLocalNameList(AMultiLocalNameList node)
     {
+        defaultOut(node);
     }
 
     public void caseAMultiLocalNameList(AMultiLocalNameList node)
@@ -993,10 +1094,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inALabelStatement(ALabelStatement node)
     {
+        defaultIn(node);
     }
 
     public void outALabelStatement(ALabelStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseALabelStatement(ALabelStatement node)
@@ -1015,10 +1118,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inABreakpointStatement(ABreakpointStatement node)
     {
+        defaultIn(node);
     }
 
     public void outABreakpointStatement(ABreakpointStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseABreakpointStatement(ABreakpointStatement node)
@@ -1037,10 +1142,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAEntermonitorStatement(AEntermonitorStatement node)
     {
+        defaultIn(node);
     }
 
     public void outAEntermonitorStatement(AEntermonitorStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseAEntermonitorStatement(AEntermonitorStatement node)
@@ -1063,10 +1170,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAExitmonitorStatement(AExitmonitorStatement node)
     {
+        defaultIn(node);
     }
 
     public void outAExitmonitorStatement(AExitmonitorStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseAExitmonitorStatement(AExitmonitorStatement node)
@@ -1089,10 +1198,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inASwitchStatement(ASwitchStatement node)
     {
+        defaultIn(node);
     }
 
     public void outASwitchStatement(ASwitchStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseASwitchStatement(ASwitchStatement node)
@@ -1138,10 +1249,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAIdentityStatement(AIdentityStatement node)
     {
+        defaultIn(node);
     }
 
     public void outAIdentityStatement(AIdentityStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseAIdentityStatement(AIdentityStatement node)
@@ -1168,10 +1281,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAAssignStatement(AAssignStatement node)
     {
+        defaultIn(node);
     }
 
     public void outAAssignStatement(AAssignStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseAAssignStatement(AAssignStatement node)
@@ -1198,10 +1313,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAIfStatement(AIfStatement node)
     {
+        defaultIn(node);
     }
 
     public void outAIfStatement(AIfStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseAIfStatement(AIfStatement node)
@@ -1224,10 +1341,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAGotoStatement(AGotoStatement node)
     {
+        defaultIn(node);
     }
 
     public void outAGotoStatement(AGotoStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseAGotoStatement(AGotoStatement node)
@@ -1242,10 +1361,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inANopStatement(ANopStatement node)
     {
+        defaultIn(node);
     }
 
     public void outANopStatement(ANopStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseANopStatement(ANopStatement node)
@@ -1264,10 +1385,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inARetStatement(ARetStatement node)
     {
+        defaultIn(node);
     }
 
     public void outARetStatement(ARetStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseARetStatement(ARetStatement node)
@@ -1290,10 +1413,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAReturnStatement(AReturnStatement node)
     {
+        defaultIn(node);
     }
 
     public void outAReturnStatement(AReturnStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseAReturnStatement(AReturnStatement node)
@@ -1316,10 +1441,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAThrowStatement(AThrowStatement node)
     {
+        defaultIn(node);
     }
 
     public void outAThrowStatement(AThrowStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseAThrowStatement(AThrowStatement node)
@@ -1342,10 +1469,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAInvokeStatement(AInvokeStatement node)
     {
+        defaultIn(node);
     }
 
     public void outAInvokeStatement(AInvokeStatement node)
     {
+        defaultOut(node);
     }
 
     public void caseAInvokeStatement(AInvokeStatement node)
@@ -1364,10 +1493,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inALabelName(ALabelName node)
     {
+        defaultIn(node);
     }
 
     public void outALabelName(ALabelName node)
     {
+        defaultOut(node);
     }
 
     public void caseALabelName(ALabelName node)
@@ -1382,10 +1513,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inALookupSwitch(ALookupSwitch node)
     {
+        defaultIn(node);
     }
 
     public void outALookupSwitch(ALookupSwitch node)
     {
+        defaultOut(node);
     }
 
     public void caseALookupSwitch(ALookupSwitch node)
@@ -1400,10 +1533,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inATableSwitch(ATableSwitch node)
     {
+        defaultIn(node);
     }
 
     public void outATableSwitch(ATableSwitch node)
     {
+        defaultOut(node);
     }
 
     public void caseATableSwitch(ATableSwitch node)
@@ -1418,10 +1553,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACaseStmt(ACaseStmt node)
     {
+        defaultIn(node);
     }
 
     public void outACaseStmt(ACaseStmt node)
     {
+        defaultOut(node);
     }
 
     public void caseACaseStmt(ACaseStmt node)
@@ -1444,10 +1581,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAConstantCaseLabel(AConstantCaseLabel node)
     {
+        defaultIn(node);
     }
 
     public void outAConstantCaseLabel(AConstantCaseLabel node)
     {
+        defaultOut(node);
     }
 
     public void caseAConstantCaseLabel(AConstantCaseLabel node)
@@ -1470,10 +1609,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inADefaultCaseLabel(ADefaultCaseLabel node)
     {
+        defaultIn(node);
     }
 
     public void outADefaultCaseLabel(ADefaultCaseLabel node)
     {
+        defaultOut(node);
     }
 
     public void caseADefaultCaseLabel(ADefaultCaseLabel node)
@@ -1488,10 +1629,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAGotoStmt(AGotoStmt node)
     {
+        defaultIn(node);
     }
 
     public void outAGotoStmt(AGotoStmt node)
     {
+        defaultOut(node);
     }
 
     public void caseAGotoStmt(AGotoStmt node)
@@ -1514,10 +1657,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACatchClause(ACatchClause node)
     {
+        defaultIn(node);
     }
 
     public void outACatchClause(ACatchClause node)
     {
+        defaultOut(node);
     }
 
     public void caseACatchClause(ACatchClause node)
@@ -1564,10 +1709,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inANewExpression(ANewExpression node)
     {
+        defaultIn(node);
     }
 
     public void outANewExpression(ANewExpression node)
     {
+        defaultOut(node);
     }
 
     public void caseANewExpression(ANewExpression node)
@@ -1582,10 +1729,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACastExpression(ACastExpression node)
     {
+        defaultIn(node);
     }
 
     public void outACastExpression(ACastExpression node)
     {
+        defaultOut(node);
     }
 
     public void caseACastExpression(ACastExpression node)
@@ -1612,10 +1761,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAInstanceofExpression(AInstanceofExpression node)
     {
+        defaultIn(node);
     }
 
     public void outAInstanceofExpression(AInstanceofExpression node)
     {
+        defaultOut(node);
     }
 
     public void caseAInstanceofExpression(AInstanceofExpression node)
@@ -1638,10 +1789,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAInvokeExpression(AInvokeExpression node)
     {
+        defaultIn(node);
     }
 
     public void outAInvokeExpression(AInvokeExpression node)
     {
+        defaultOut(node);
     }
 
     public void caseAInvokeExpression(AInvokeExpression node)
@@ -1656,10 +1809,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAReferenceExpression(AReferenceExpression node)
     {
+        defaultIn(node);
     }
 
     public void outAReferenceExpression(AReferenceExpression node)
     {
+        defaultOut(node);
     }
 
     public void caseAReferenceExpression(AReferenceExpression node)
@@ -1674,10 +1829,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inABinopExpression(ABinopExpression node)
     {
+        defaultIn(node);
     }
 
     public void outABinopExpression(ABinopExpression node)
     {
+        defaultOut(node);
     }
 
     public void caseABinopExpression(ABinopExpression node)
@@ -1692,10 +1849,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAUnopExpression(AUnopExpression node)
     {
+        defaultIn(node);
     }
 
     public void outAUnopExpression(AUnopExpression node)
     {
+        defaultOut(node);
     }
 
     public void caseAUnopExpression(AUnopExpression node)
@@ -1710,10 +1869,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAImmediateExpression(AImmediateExpression node)
     {
+        defaultIn(node);
     }
 
     public void outAImmediateExpression(AImmediateExpression node)
     {
+        defaultOut(node);
     }
 
     public void caseAImmediateExpression(AImmediateExpression node)
@@ -1728,10 +1889,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inASimpleNewExpr(ASimpleNewExpr node)
     {
+        defaultIn(node);
     }
 
     public void outASimpleNewExpr(ASimpleNewExpr node)
     {
+        defaultOut(node);
     }
 
     public void caseASimpleNewExpr(ASimpleNewExpr node)
@@ -1750,10 +1913,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAArrayNewExpr(AArrayNewExpr node)
     {
+        defaultIn(node);
     }
 
     public void outAArrayNewExpr(AArrayNewExpr node)
     {
+        defaultOut(node);
     }
 
     public void caseAArrayNewExpr(AArrayNewExpr node)
@@ -1784,10 +1949,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAMultiNewExpr(AMultiNewExpr node)
     {
+        defaultIn(node);
     }
 
     public void outAMultiNewExpr(AMultiNewExpr node)
     {
+        defaultOut(node);
     }
 
     public void caseAMultiNewExpr(AMultiNewExpr node)
@@ -1821,10 +1988,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAArrayDescriptor(AArrayDescriptor node)
     {
+        defaultIn(node);
     }
 
     public void outAArrayDescriptor(AArrayDescriptor node)
     {
+        defaultOut(node);
     }
 
     public void caseAArrayDescriptor(AArrayDescriptor node)
@@ -1847,10 +2016,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAReferenceVariable(AReferenceVariable node)
     {
+        defaultIn(node);
     }
 
     public void outAReferenceVariable(AReferenceVariable node)
     {
+        defaultOut(node);
     }
 
     public void caseAReferenceVariable(AReferenceVariable node)
@@ -1865,10 +2036,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inALocalVariable(ALocalVariable node)
     {
+        defaultIn(node);
     }
 
     public void outALocalVariable(ALocalVariable node)
     {
+        defaultOut(node);
     }
 
     public void caseALocalVariable(ALocalVariable node)
@@ -1883,10 +2056,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inABinopBoolExpr(ABinopBoolExpr node)
     {
+        defaultIn(node);
     }
 
     public void outABinopBoolExpr(ABinopBoolExpr node)
     {
+        defaultOut(node);
     }
 
     public void caseABinopBoolExpr(ABinopBoolExpr node)
@@ -1901,10 +2076,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAUnopBoolExpr(AUnopBoolExpr node)
     {
+        defaultIn(node);
     }
 
     public void outAUnopBoolExpr(AUnopBoolExpr node)
     {
+        defaultOut(node);
     }
 
     public void caseAUnopBoolExpr(AUnopBoolExpr node)
@@ -1919,10 +2096,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inANonstaticInvokeExpr(ANonstaticInvokeExpr node)
     {
+        defaultIn(node);
     }
 
     public void outANonstaticInvokeExpr(ANonstaticInvokeExpr node)
     {
+        defaultOut(node);
     }
 
     public void caseANonstaticInvokeExpr(ANonstaticInvokeExpr node)
@@ -1961,10 +2140,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAStaticInvokeExpr(AStaticInvokeExpr node)
     {
+        defaultIn(node);
     }
 
     public void outAStaticInvokeExpr(AStaticInvokeExpr node)
     {
+        defaultOut(node);
     }
 
     public void caseAStaticInvokeExpr(AStaticInvokeExpr node)
@@ -1995,10 +2176,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inABinopExpr(ABinopExpr node)
     {
+        defaultIn(node);
     }
 
     public void outABinopExpr(ABinopExpr node)
     {
+        defaultOut(node);
     }
 
     public void caseABinopExpr(ABinopExpr node)
@@ -2021,10 +2204,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAUnopExpr(AUnopExpr node)
     {
+        defaultIn(node);
     }
 
     public void outAUnopExpr(AUnopExpr node)
     {
+        defaultOut(node);
     }
 
     public void caseAUnopExpr(AUnopExpr node)
@@ -2043,10 +2228,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inASpecialNonstaticInvoke(ASpecialNonstaticInvoke node)
     {
+        defaultIn(node);
     }
 
     public void outASpecialNonstaticInvoke(ASpecialNonstaticInvoke node)
     {
+        defaultOut(node);
     }
 
     public void caseASpecialNonstaticInvoke(ASpecialNonstaticInvoke node)
@@ -2061,10 +2248,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAVirtualNonstaticInvoke(AVirtualNonstaticInvoke node)
     {
+        defaultIn(node);
     }
 
     public void outAVirtualNonstaticInvoke(AVirtualNonstaticInvoke node)
     {
+        defaultOut(node);
     }
 
     public void caseAVirtualNonstaticInvoke(AVirtualNonstaticInvoke node)
@@ -2079,10 +2268,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAInterfaceNonstaticInvoke(AInterfaceNonstaticInvoke node)
     {
+        defaultIn(node);
     }
 
     public void outAInterfaceNonstaticInvoke(AInterfaceNonstaticInvoke node)
     {
+        defaultOut(node);
     }
 
     public void caseAInterfaceNonstaticInvoke(AInterfaceNonstaticInvoke node)
@@ -2097,10 +2288,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAMethodSignature(AMethodSignature node)
     {
+        defaultIn(node);
     }
 
     public void outAMethodSignature(AMethodSignature node)
     {
+        defaultOut(node);
     }
 
     public void caseAMethodSignature(AMethodSignature node)
@@ -2155,10 +2348,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAArrayReference(AArrayReference node)
     {
+        defaultIn(node);
     }
 
     public void outAArrayReference(AArrayReference node)
     {
+        defaultOut(node);
     }
 
     public void caseAArrayReference(AArrayReference node)
@@ -2173,10 +2368,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAFieldReference(AFieldReference node)
     {
+        defaultIn(node);
     }
 
     public void outAFieldReference(AFieldReference node)
     {
+        defaultOut(node);
     }
 
     public void caseAFieldReference(AFieldReference node)
@@ -2191,10 +2388,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAArrayRef(AArrayRef node)
     {
+        defaultIn(node);
     }
 
     public void outAArrayRef(AArrayRef node)
     {
+        defaultOut(node);
     }
 
     public void caseAArrayRef(AArrayRef node)
@@ -2213,10 +2412,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inALocalFieldRef(ALocalFieldRef node)
     {
+        defaultIn(node);
     }
 
     public void outALocalFieldRef(ALocalFieldRef node)
     {
+        defaultOut(node);
     }
 
     public void caseALocalFieldRef(ALocalFieldRef node)
@@ -2239,10 +2440,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inASigFieldRef(ASigFieldRef node)
     {
+        defaultIn(node);
     }
 
     public void outASigFieldRef(ASigFieldRef node)
     {
+        defaultOut(node);
     }
 
     public void caseASigFieldRef(ASigFieldRef node)
@@ -2257,10 +2460,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAFieldSignature(AFieldSignature node)
     {
+        defaultIn(node);
     }
 
     public void outAFieldSignature(AFieldSignature node)
     {
+        defaultOut(node);
     }
 
     public void caseAFieldSignature(AFieldSignature node)
@@ -2299,10 +2504,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAFixedArrayDescriptor(AFixedArrayDescriptor node)
     {
+        defaultIn(node);
     }
 
     public void outAFixedArrayDescriptor(AFixedArrayDescriptor node)
     {
+        defaultOut(node);
     }
 
     public void caseAFixedArrayDescriptor(AFixedArrayDescriptor node)
@@ -2325,10 +2532,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inASingleArgList(ASingleArgList node)
     {
+        defaultIn(node);
     }
 
     public void outASingleArgList(ASingleArgList node)
     {
+        defaultOut(node);
     }
 
     public void caseASingleArgList(ASingleArgList node)
@@ -2343,10 +2552,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAMultiArgList(AMultiArgList node)
     {
+        defaultIn(node);
     }
 
     public void outAMultiArgList(AMultiArgList node)
     {
+        defaultOut(node);
     }
 
     public void caseAMultiArgList(AMultiArgList node)
@@ -2369,10 +2580,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inALocalImmediate(ALocalImmediate node)
     {
+        defaultIn(node);
     }
 
     public void outALocalImmediate(ALocalImmediate node)
     {
+        defaultOut(node);
     }
 
     public void caseALocalImmediate(ALocalImmediate node)
@@ -2387,10 +2600,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAConstantImmediate(AConstantImmediate node)
     {
+        defaultIn(node);
     }
 
     public void outAConstantImmediate(AConstantImmediate node)
     {
+        defaultOut(node);
     }
 
     public void caseAConstantImmediate(AConstantImmediate node)
@@ -2405,10 +2620,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAIntegerConstant(AIntegerConstant node)
     {
+        defaultIn(node);
     }
 
     public void outAIntegerConstant(AIntegerConstant node)
     {
+        defaultOut(node);
     }
 
     public void caseAIntegerConstant(AIntegerConstant node)
@@ -2427,10 +2644,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAFloatConstant(AFloatConstant node)
     {
+        defaultIn(node);
     }
 
     public void outAFloatConstant(AFloatConstant node)
     {
+        defaultOut(node);
     }
 
     public void caseAFloatConstant(AFloatConstant node)
@@ -2449,10 +2668,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAStringConstant(AStringConstant node)
     {
+        defaultIn(node);
     }
 
     public void outAStringConstant(AStringConstant node)
     {
+        defaultOut(node);
     }
 
     public void caseAStringConstant(AStringConstant node)
@@ -2467,10 +2688,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAAndBinop(AAndBinop node)
     {
+        defaultIn(node);
     }
 
     public void outAAndBinop(AAndBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseAAndBinop(AAndBinop node)
@@ -2485,10 +2708,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAOrBinop(AOrBinop node)
     {
+        defaultIn(node);
     }
 
     public void outAOrBinop(AOrBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseAOrBinop(AOrBinop node)
@@ -2503,10 +2728,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAXorBinop(AXorBinop node)
     {
+        defaultIn(node);
     }
 
     public void outAXorBinop(AXorBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseAXorBinop(AXorBinop node)
@@ -2521,10 +2748,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAModBinop(AModBinop node)
     {
+        defaultIn(node);
     }
 
     public void outAModBinop(AModBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseAModBinop(AModBinop node)
@@ -2539,10 +2768,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACmpBinop(ACmpBinop node)
     {
+        defaultIn(node);
     }
 
     public void outACmpBinop(ACmpBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseACmpBinop(ACmpBinop node)
@@ -2557,10 +2788,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACmpgBinop(ACmpgBinop node)
     {
+        defaultIn(node);
     }
 
     public void outACmpgBinop(ACmpgBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseACmpgBinop(ACmpgBinop node)
@@ -2575,10 +2808,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACmplBinop(ACmplBinop node)
     {
+        defaultIn(node);
     }
 
     public void outACmplBinop(ACmplBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseACmplBinop(ACmplBinop node)
@@ -2593,10 +2828,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACmpeqBinop(ACmpeqBinop node)
     {
+        defaultIn(node);
     }
 
     public void outACmpeqBinop(ACmpeqBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseACmpeqBinop(ACmpeqBinop node)
@@ -2611,10 +2848,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACmpneBinop(ACmpneBinop node)
     {
+        defaultIn(node);
     }
 
     public void outACmpneBinop(ACmpneBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseACmpneBinop(ACmpneBinop node)
@@ -2629,10 +2868,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACmpgtBinop(ACmpgtBinop node)
     {
+        defaultIn(node);
     }
 
     public void outACmpgtBinop(ACmpgtBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseACmpgtBinop(ACmpgtBinop node)
@@ -2647,10 +2888,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACmpgeBinop(ACmpgeBinop node)
     {
+        defaultIn(node);
     }
 
     public void outACmpgeBinop(ACmpgeBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseACmpgeBinop(ACmpgeBinop node)
@@ -2665,10 +2908,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACmpltBinop(ACmpltBinop node)
     {
+        defaultIn(node);
     }
 
     public void outACmpltBinop(ACmpltBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseACmpltBinop(ACmpltBinop node)
@@ -2683,10 +2928,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inACmpleBinop(ACmpleBinop node)
     {
+        defaultIn(node);
     }
 
     public void outACmpleBinop(ACmpleBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseACmpleBinop(ACmpleBinop node)
@@ -2701,10 +2948,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAShlBinop(AShlBinop node)
     {
+        defaultIn(node);
     }
 
     public void outAShlBinop(AShlBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseAShlBinop(AShlBinop node)
@@ -2719,10 +2968,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAShrBinop(AShrBinop node)
     {
+        defaultIn(node);
     }
 
     public void outAShrBinop(AShrBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseAShrBinop(AShrBinop node)
@@ -2737,10 +2988,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAUshrBinop(AUshrBinop node)
     {
+        defaultIn(node);
     }
 
     public void outAUshrBinop(AUshrBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseAUshrBinop(AUshrBinop node)
@@ -2755,10 +3008,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAPlusBinop(APlusBinop node)
     {
+        defaultIn(node);
     }
 
     public void outAPlusBinop(APlusBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseAPlusBinop(APlusBinop node)
@@ -2773,10 +3028,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAMinusBinop(AMinusBinop node)
     {
+        defaultIn(node);
     }
 
     public void outAMinusBinop(AMinusBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseAMinusBinop(AMinusBinop node)
@@ -2791,10 +3048,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inAMultBinop(AMultBinop node)
     {
+        defaultIn(node);
     }
 
     public void outAMultBinop(AMultBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseAMultBinop(AMultBinop node)
@@ -2809,10 +3068,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inADivBinop(ADivBinop node)
     {
+        defaultIn(node);
     }
 
     public void outADivBinop(ADivBinop node)
     {
+        defaultOut(node);
     }
 
     public void caseADivBinop(ADivBinop node)
@@ -2827,10 +3088,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inALengthofUnop(ALengthofUnop node)
     {
+        defaultIn(node);
     }
 
     public void outALengthofUnop(ALengthofUnop node)
     {
+        defaultOut(node);
     }
 
     public void caseALengthofUnop(ALengthofUnop node)
@@ -2845,10 +3108,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
 
     public void inANegUnop(ANegUnop node)
     {
+        defaultIn(node);
     }
 
     public void outANegUnop(ANegUnop node)
     {
+        defaultOut(node);
     }
 
     public void caseANegUnop(ANegUnop node)

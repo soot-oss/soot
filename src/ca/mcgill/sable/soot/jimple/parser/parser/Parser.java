@@ -3,9 +3,12 @@ package ca.mcgill.sable.soot.jimple.parser.parser;
 import ca.mcgill.sable.soot.jimple.parser.lexer.*;
 import ca.mcgill.sable.soot.jimple.parser.node.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
-import ca.mcgill.sable.util.*;
-
 import java.util.*;
+import ca.mcgill.sable.util.*;
+import java.util.*;
+
+import java.io.DataInputStream;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 
 public class Parser
@@ -34,6 +37,77 @@ public class Parser
     public Parser(Lexer lexer)
     {
         this.lexer = lexer;
+
+        if(actionTable == null)
+        {
+            try
+            {
+                DataInputStream s = new DataInputStream(
+                    new BufferedInputStream(
+                    Parser.class.getResourceAsStream("parser.dat")));
+
+                // read actionTable
+                int length = s.readInt();
+                actionTable = new int[length][][];
+                for(int i = 0; i < actionTable.length; i++)
+                {
+                    length = s.readInt();
+                    actionTable[i] = new int[length][3];
+                    for(int j = 0; j < actionTable[i].length; j++)
+                    {
+                        for(int k = 0; k < 3; k++)
+                        {
+                            actionTable[i][j][k] = s.readInt();
+                        }
+                    }
+                }
+
+                // read gotoTable
+                length = s.readInt();
+                gotoTable = new int[length][][];
+                for(int i = 0; i < gotoTable.length; i++)
+                {
+                    length = s.readInt();
+                    gotoTable[i] = new int[length][2];
+                    for(int j = 0; j < gotoTable[i].length; j++)
+                    {
+                        for(int k = 0; k < 2; k++)
+                        {
+                            gotoTable[i][j][k] = s.readInt();
+                        }
+                    }
+                }
+
+                // read errorMessages
+                length = s.readInt();
+                errorMessages = new String[length];
+                for(int i = 0; i < errorMessages.length; i++)
+                {
+                    length = s.readInt();
+                    StringBuffer buffer = new StringBuffer();
+
+                    for(int j = 0; j < length; j++)
+                    {
+                        buffer.append(s.readChar());
+                    }
+                    errorMessages[i] = buffer.toString();
+                }
+
+                // read errors
+                length = s.readInt();
+                errors = new int[length];
+                for(int i = 0; i < errors.length; i++)
+                {
+                    errors[i] = s.readInt();
+                }
+
+                s.close();
+            }
+            catch(Exception e)
+            {
+                throw new RuntimeException("Unable to read parser.dat.");
+            }
+        }
     }
 
     private int goTo(int index)
@@ -1879,8 +1953,8 @@ public class Parser
         return node;
     }
 
-    private final static int[][][] actionTable =
-        {
+    private static int[][][] actionTable;
+/*      {
 			{{-1, ERROR, 0}, {0, SHIFT, 1}, {1, SHIFT, 2}, {2, SHIFT, 3}, {3, SHIFT, 4}, {4, SHIFT, 5}, {5, SHIFT, 6}, {6, SHIFT, 7}, {7, SHIFT, 8}, {8, SHIFT, 9}, {9, SHIFT, 10}, {10, SHIFT, 11}, {11, SHIFT, 12}, },
 			{{-1, REDUCE, 10}, },
 			{{-1, REDUCE, 11}, },
@@ -2202,9 +2276,9 @@ public class Parser
 			{{-1, REDUCE, 136}, },
 			{{-1, ERROR, 319}, {74, SHIFT, 320}, },
 			{{-1, REDUCE, 137}, },
-        };
-    private final static int[][][] gotoTable =
-        {
+        };*/
+    private static int[][][] gotoTable;
+/*      {
 			{{-1, 13}, },
 			{{-1, 14}, {16, 18}, {45, 18}, },
 			{{-1, 15}, {16, 19}, },
@@ -2260,9 +2334,9 @@ public class Parser
 			{{-1, 126}, {124, 177}, {125, 180}, {176, 242}, },
 			{{-1, 284}, },
 			{{-1, 301}, },
-        };
-    private final static String[] errorMessages =
-        {
+        };*/
+    private static String[] errorMessages;
+/*      {
 			"TAbstract TFinal TNative TPublic TProtected TPrivate TStatic TSynchronized TTransient TVolatile TClass TInterface expected.",
 			"TAbstract TFinal TNative TPublic TProtected TPrivate TStatic TSynchronized TTransient TVolatile TClass TInterface TVoid TBoolean TByte TShort TChar TInt TLong TFloat TDouble TName expected.",
 			"TName expected.",
@@ -2326,9 +2400,9 @@ public class Parser
 			"TIntegerConstant expected.",
 			"TRBracket TMinus TIdentifier TIntegerConstant TFloatConstant TStringConstant expected.",
 			"TSemicolon TLBracket expected.",
-        };
-    private final static int[] errors =
-        {
+        };*/
+    private static int[] errors;
+/*      {
 			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 1, 2, 0, 4, 1, 2, 2, 2, 5, 6, 7, 3, 4, 6, 8, 7, 9, 10, 10, 10, 10, 10, 10, 10, 10, 3, 10, 5, 2, 10, 9, 11, 5, 7, 3, 3, 6, 7, 3, 2, 12, 13, 10, 10, 2, 3, 5, 3, 7, 3, 3, 14, 5, 15, 10, 10, 12, 3, 16, 17, 18, 18, 5, 15, 2, 19, 5, 14, 5, 16, 20, 16, 17, 14, 21, 22, 2, 23, 23, 21, 24, 21, 25, 22, 26, 26, 21, 27, 25, 23, 21, 5, 2, 28, 21, 19, 21, 29, 30, 31, 25, 30, 32, 33, 22, 21, 33, 34, 34, 34, 19, 30, 32, 5, 14, 5, 17, 14, 5, 16, 30, 35, 36, 37, 38, 38, 38, 39, 22, 38, 22, 40, 22, 23, 23, 41, 41, 41, 42, 23, 30, 30, 22, 30, 22, 2, 25, 22, 31, 43, 22, 23, 27, 44, 34, 30, 23, 45, 30, 46, 5, 19, 30, 32, 5, 30, 32, 5, 32, 5, 5, 14, 5, 21, 38, 38, 30, 30, 47, 30, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 48, 30, 30, 31, 49, 30, 2, 21, 19, 13, 34, 22, 17, 20, 25, 25, 20, 50, 22, 22, 22, 22, 22, 22, 51, 27, 5, 32, 5, 5, 5, 52, 48, 2, 22, 17, 18, 31, 22, 34, 30, 7, 22, 20, 20, 17, 30, 20, 25, 5, 21, 31, 22, 23, 53, 54, 17, 17, 21, 22, 49, 55, 25, 17, 56, 57, 31, 58, 31, 58, 59, 59, 22, 22, 17, 21, 15, 34, 60, 31, 41, 22, 58, 22, 61, 62, 62, 22, 22, 31, 17, 31, 58, 30, 62, 13, 62, 32, 53, 31, 62, 56, 53, 25, 56, 25, 
-        };
+        };*/
 }

@@ -7,6 +7,10 @@
  * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
  * rights reserved.                                                  *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam (plam@sable.mcgill.ca).  All       *
+ * rights reserved.                                                  *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -99,6 +103,9 @@
 
  B) Changes:
 
+ - Modified on May 6, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added ACC_STRICT access modifier for JDK 1.2 support.
+
  - Modified on March 29, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Renamed jimpleClassPath to sootClassPath.
    
@@ -127,6 +134,7 @@ import java.io.*;
 import java.util.Enumeration;
 import java.util.Vector;
 import ca.mcgill.sable.util.ClassLocator;
+import java.util.*;
 import ca.mcgill.sable.soot.Main;
 
 /**
@@ -160,8 +168,10 @@ public class ClassFile {
     static final short ACC_INTERFACE = 0x0200;
    /** Access bit flag. */
     static final short ACC_ABSTRACT =  0x0400;
+   /** Access bit flag. */
+    static final short ACC_STRICT =    0x0800;
    /** Remaining bits in the access bit flag. */
-    static final short ACC_UNKNOWN =   0x7800;
+    static final short ACC_UNKNOWN =   0x7000;
 
    /** Descriptor code string. */
     static final String DESC_BYTE =    "B";
@@ -433,6 +443,11 @@ public class ClassFile {
          else hasone = true;
          s = s + "abstract";
       }
+      if ((af & ACC_STRICT) != 0) {
+         if (hasone) s = s + separator;
+         else hasone = true;
+         s = s + "strict";
+      }
       if ((af & ACC_UNKNOWN) != 0) {
          if (hasone) s = s + separator;
          else hasone = true;
@@ -485,7 +500,7 @@ public class ClassFile {
          fields_count = d.readUnsignedShort();
          //System.out.println("Has " + fields_count + " field(s)");
          readFields(d);
-        fieldTimer.end();
+         fieldTimer.end();
         
          methodTimer.start();
          methods_count = d.readUnsignedShort();
@@ -812,12 +827,9 @@ public class ClassFile {
          mi.attributes_count = d.readUnsignedShort();
          
 
-         /*CONSTANT_Utf8_info ci;
+         CONSTANT_Utf8_info ci;
            ci = (CONSTANT_Utf8_info)(constant_pool[mi.name_index]);
-           System.out.println(" " + access_string(mi.access_flags," ").toLowerCase() +
-           " " + ci.convert());*/
-
-           //System.out.println("Has " + mi.attributes_count + " attribute(s)");
+          //System.out.println("Has " + mi.attributes_count + " attribute(s)");
          
          if (mi.attributes_count>0) {
             mi.attributes = new attribute_info[mi.attributes_count];

@@ -1,6 +1,7 @@
 package ca.mcgill.sable.soot.jimple.parser.node;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
 public final class EOF extends Token

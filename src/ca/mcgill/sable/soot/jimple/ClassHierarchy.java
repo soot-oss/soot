@@ -80,6 +80,7 @@ import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 import java.util.*;
+import java.util.*;
 
 /**
  * This class encapsulate the class hierarchy, as well as non-reference types.

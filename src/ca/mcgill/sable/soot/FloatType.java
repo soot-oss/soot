@@ -75,6 +75,7 @@
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 
 public class FloatType extends BaseType
 {

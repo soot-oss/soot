@@ -86,6 +86,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 
 class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr 
   implements VirtualInvokeExpr

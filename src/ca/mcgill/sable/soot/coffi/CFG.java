@@ -157,6 +157,7 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 
 /** A Control Flow Graph.
  * @author Clark Verbrugge
@@ -206,17 +207,14 @@ public class CFG {
 
         m.instructionList = new ArrayList();
  
-        while(ins.next != null)
+        while(ins != null && ins.next != null)
         {
-
             m.instructionList.add(ins);
 
-
-            if ( ins instanceof Instruction_Jsr )
-            JsrToNext.put ( ins, ins.next );
+             if (ins instanceof Instruction_Jsr)
+               JsrToNext.put (ins, ins.next);
 
            ins = ins.next;
-
         }
       }
 
@@ -533,7 +531,7 @@ public class CFG {
 
     boolean retNotFound = true;
 
-    Set successors = new VectorSet();
+    Set successors = new ArraySet();
 
     java.util.Vector succ = b.succ;
 
@@ -650,7 +648,7 @@ public class CFG {
           } // FOR
 
 
-          Iterator clonedstmtit = clonedstmtsHT.entries().iterator();
+          Iterator clonedstmtit = clonedstmtsHT.entrySet().iterator();
 
           while ( clonedstmtit.hasNext() )
           {
@@ -976,7 +974,7 @@ public class CFG {
 
   } 
 
-  Iterator keysit = clonedHT.entries().iterator();
+  Iterator keysit = clonedHT.entrySet().iterator();
   
   while ( keysit.hasNext() )
   {
@@ -1069,7 +1067,7 @@ public class CFG {
      if ( originstruction.labelled ) 
      b.head.labelled = true;
 
-     Iterator entriesIt = JsrToNext.entries().iterator();
+     Iterator entriesIt = JsrToNext.entrySet().iterator();
 
      while ( entriesIt.hasNext() )
      {
@@ -1116,7 +1114,7 @@ public class CFG {
      temp.next.labelled = true;
 
 
-     Iterator entriesIt = JsrToNext.entries().iterator();
+     Iterator entriesIt = JsrToNext.entrySet().iterator();
 
      while ( entriesIt.hasNext() )
      {
@@ -1162,7 +1160,7 @@ public class CFG {
 
 
 
-     Iterator entriesIt = JsrToNext.entries().iterator();
+     Iterator entriesIt = JsrToNext.entrySet().iterator();
 
      while ( entriesIt.hasNext() )
      {
@@ -1210,7 +1208,7 @@ public class CFG {
      temp.next.labelled = true;
 
 
-     Iterator entriesIt = JsrToNext.entries().iterator();
+     Iterator entriesIt = JsrToNext.entrySet().iterator();
 
      while ( entriesIt.hasNext() )
      {
@@ -1241,7 +1239,7 @@ public class CFG {
 
     temp = matchingjsrsuccBB.head;
 
-    Iterator entriesIt = JsrToNext.entries().iterator();
+    Iterator entriesIt = JsrToNext.entrySet().iterator();
 
     while ( entriesIt.hasNext() )
     {
@@ -1535,7 +1533,10 @@ public class CFG {
          }
          b = b.next;
       }
-      return cfg.head;
+      if (cfg != null)
+        return cfg.head;
+      else
+        return null;
    }
 
    /** Main entry point for converting list of Instructions to Jimple statements;
@@ -1566,7 +1567,7 @@ public class CFG {
         TypeArray.setClassManager(cm);
         TypeStack.setClassManager(cm);
 
-        Set initialLocals = new VectorSet();
+        Set initialLocals = new ArraySet();
 
         List parameterTypes = jmethod.getParameterTypes();
 
@@ -1667,7 +1668,7 @@ public class CFG {
     {
         Map instructionToSuccessors = new HashMap();
         Code_attribute codeAttribute = method.locate_code_attribute();
-        Set handlerInstructions = new VectorSet();
+        Set handlerInstructions = new ArraySet();
 
         Map handlerInstructionToException = new HashMap();
         Map instructionToTypeStack;
@@ -1697,7 +1698,7 @@ public class CFG {
                         
                         if(ins.next != null)
                         {
-                            Set successors = new VectorSet();
+                            Set successors = new ArraySet();
 
                             successors.add(ins.next);
 
@@ -1707,7 +1708,7 @@ public class CFG {
                         {
                             // The successors are the ones from the basic block.
 
-                            Set successors = new VectorSet();
+                            Set successors = new ArraySet();
                             java.util.Vector succ = b.succ;
 
                             for(int i = 0; i < succ.size(); i++)
@@ -1797,8 +1798,11 @@ public class CFG {
             while(!instructionsToVisit.isEmpty())
             {
                 Instruction ins = (Instruction) instructionsToVisit.removeLast();
+                Set s = (Set)instructionToSuccessors.get(ins);
+                if (s.size() == 0)
+                  continue;
                 
-                Iterator succIt = ((Set) instructionToSuccessors.get(ins)).iterator();
+                Iterator succIt = s.iterator();
                 
                 while(succIt.hasNext())
                 {
@@ -1841,7 +1845,7 @@ public class CFG {
             instructionToPostTypeStack = new HashMap();
 
             Set visitedInstructions = new HashSet();
-            List changedInstructions = new VectorList();
+            List changedInstructions = new ArrayList();
 
             TypeStack initialTypeStack;
 
@@ -4737,7 +4741,7 @@ public class CFG {
                     Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex()),
                     lowIndex,
                     highIndex,
-                    Arrays.toList(new FutureStmt[highIndex - lowIndex + 1]),
+                    Arrays.asList(new FutureStmt[highIndex - lowIndex + 1]),
                     new FutureStmt());
             break;
          }
@@ -4753,7 +4757,7 @@ public class CFG {
             stmt = Jimple.v().newLookupSwitchStmt(
                 Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex()),
                 matches,
-                Arrays.toList(new FutureStmt[npairs]),
+                Arrays.asList(new FutureStmt[npairs]),
                 new FutureStmt());
             break;
          }
@@ -4953,7 +4957,7 @@ public class CFG {
                 }
 
             rvalue = Jimple.v().newVirtualInvokeExpr(Util.getLocalForStackOp(listBody, typeStack,
-                typeStack.topIndex()), method, Arrays.toList(params));
+                typeStack.topIndex()), method, Arrays.asList(params));
 
             if(!returnType.equals(VoidType.v()))
             {
@@ -5027,7 +5031,7 @@ public class CFG {
                 }
 
             rvalue = Jimple.v().newSpecialInvokeExpr(Util.getLocalForStackOp(listBody, typeStack,
-                typeStack.topIndex()), method, Arrays.toList(params));
+                typeStack.topIndex()), method, Arrays.asList(params));
 
             if(!returnType.equals(VoidType.v()))
             {
@@ -5107,7 +5111,7 @@ public class CFG {
                       typeStack = typeStack.pop();
                 }
 
-            rvalue = Jimple.v().newStaticInvokeExpr(method, Arrays.toList(params));
+            rvalue = Jimple.v().newStaticInvokeExpr(method, Arrays.asList(params));
 
             if(!returnType.equals(VoidType.v()))
             {
@@ -5182,7 +5186,7 @@ public class CFG {
                 }
 
             rvalue = Jimple.v().newInterfaceInvokeExpr(Util.getLocalForStackOp(listBody, typeStack,
-                typeStack.topIndex()), method, Arrays.toList(params));
+                typeStack.topIndex()), method, Arrays.asList(params));
 
             if(!returnType.equals(VoidType.v()))
             {

@@ -72,6 +72,7 @@
 package ca.mcgill.sable.soot.grimp;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.*;
 

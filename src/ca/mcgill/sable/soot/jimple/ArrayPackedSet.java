@@ -75,6 +75,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 
 class ArrayPackedSet implements BoundedFlowSet
 {

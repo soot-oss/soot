@@ -68,6 +68,7 @@
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 
 public class DeterministicHashMap extends HashMap
 {
@@ -241,12 +242,6 @@ class TrustingMonotonicArraySet extends AbstractSet
         System.arraycopy(elements, 0, array, 0, numElements);
         return array;
     }
-
-    public void toArray(Object[] array)
-    {
-        System.arraycopy(elements, 0, array, 0, numElements);
-    }
-
 }
 
 

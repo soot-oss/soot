@@ -1,7 +1,9 @@
 package ca.mcgill.sable.soot.jimple.parser.lexer;
 
 import java.io.*;
+import java.util.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.node.*;
 
 public class Lexer
@@ -23,6 +25,51 @@ public class Lexer
     public Lexer(PushbackReader in)
     {
         this.in = in;
+
+        if(gotoTable == null)
+        {
+            try
+            {
+                DataInputStream s = new DataInputStream(
+                    new BufferedInputStream(
+                    Lexer.class.getResourceAsStream("lexer.dat")));
+
+                // read gotoTable
+                int length = s.readInt();
+                gotoTable = new int[length][][];
+                for(int i = 0; i < gotoTable.length; i++)
+                {
+                    length = s.readInt();
+                    gotoTable[i] = new int[length][3];
+                    for(int j = 0; j < gotoTable[i].length; j++)
+                    {
+                        for(int k = 0; k < 3; k++)
+                        {
+                            gotoTable[i][j][k] = s.readInt();
+                        }
+                    }
+                }
+
+                // read accept
+                length = s.readInt();
+                accept = new int[length][];
+                for(int i = 0; i < accept.length; i++)
+                {
+                    length = s.readInt();
+                    accept[i] = new int[length];
+                    for(int j = 0; j < accept[i].length; j++)
+                    {
+                        accept[i][j] = s.readInt();
+                    }
+                }
+
+                s.close();
+            }
+            catch(Exception e)
+            {
+                throw new RuntimeException("Unable to read lexer.dat.");
+            }
+        }
     }
 
     public Token peek() throws LexerException, IOException
@@ -49,7 +96,7 @@ public class Lexer
         return result;
     }
 
-    private Token getToken() throws IOException, LexerException
+    protected Token getToken() throws IOException, LexerException
     {
         int dfa_state = 0;
 
@@ -1241,6 +1288,22 @@ public class Lexer
         }
     }
 
+    protected void unread(Token token) throws IOException
+    {
+        String text = token.getText();
+        int length = text.length();
+
+        for(int i = length - 1; i >= 0; i--)
+        {
+            eof = false;
+
+            in.unread(text.charAt(i));
+        }
+
+        pos = token.getPos() - 1;
+        line = token.getLine() - 1;
+    }
+
     private String getText(int acceptLength)
     {
         StringBuffer s = new StringBuffer(acceptLength);
@@ -1252,8 +1315,8 @@ public class Lexer
         return s.toString();
     }
 
-    private static int[][][] gotoTable =
-    {
+    private static int[][][] gotoTable;
+/*  {
 		{{9, 9, 1}, {10, 10, 2}, {13, 13, 3}, {32, 32, 4}, {33, 33, 5}, {34, 34, 6}, {36, 36, 7}, {37, 37, 8}, {38, 38, 9}, {39, 39, 10}, {40, 40, 11}, {41, 41, 12}, {42, 42, 13}, {43, 43, 14}, {44, 44, 15}, {45, 45, 16}, {46, 46, 17}, {47, 47, 18}, {48, 48, 19}, {49, 57, 20}, {58, 58, 21}, {59, 59, 22}, {60, 60, 23}, {61, 61, 24}, {62, 62, 25}, {64, 64, 26}, {65, 90, 27}, {91, 91, 28}, {93, 93, 29}, {94, 94, 30}, {95, 95, 31}, {97, 97, 32}, {98, 98, 33}, {99, 99, 34}, {100, 100, 35}, {101, 101, 36}, {102, 102, 37}, {103, 103, 38}, {104, 104, 39}, {105, 105, 40}, {106, 107, 39}, {108, 108, 41}, {109, 109, 39}, {110, 110, 42}, {111, 111, 39}, {112, 112, 43}, {113, 113, 39}, {114, 114, 44}, {115, 115, 45}, {116, 116, 46}, {117, 117, 47}, {118, 118, 48}, {119, 119, 49}, {120, 122, 39}, {123, 123, 50}, {124, 124, 51}, {125, 125, 52}, },
 		{{9, 32, -2}, },
 		{{9, 32, -2}, },
@@ -1669,13 +1732,13 @@ public class Lexer
 		{{110, 110, 414}, },
 		{{36, 122, -9}, },
 		{},
-    };
+    };*/
 
-    private static int[][] accept =
-    {
+    private static int[][] accept;
+/*  {
 		{-1, 92, 92, 92, 92, -1, -1, 86, 71, 68, 65, 61, 62, 83, 81, 55, 82, 64, 84, 89, 89, 63, 58, 76, 67, 74, -1, 86, 59, 60, 70, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 56, 69, 57, 73, -1, 91, 86, 86, 86, 86, 86, -1, -1, 93, -1, 89, 89, -1, -1, 66, 78, 77, 72, 75, 79, -1, -1, -1, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 35, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 52, 86, 86, 86, 86, 86, 85, -1, -1, 93, 90, 89, 89, 89, 80, -1, -1, -1, 86, 86, 86, 86, 86, 86, 86, 86, 27, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 17, 86, 86, 86, 86, 40, 41, 44, 86, 86, 86, 45, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, -1, 93, -1, 90, -1, 90, -1, -1, -1, 86, 86, 86, 14, 25, 86, 16, 86, 28, 29, 86, 86, 86, 86, 86, 86, 86, 86, 33, 34, 86, 86, 86, 86, 18, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 12, 86, 54, -1, -1, -1, -1, 90, -1, -1, 87, 86, 86, 86, 26, 10, 86, 86, 86, 86, 86, 86, 1, 19, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 15, 86, 86, 86, 86, 50, 86, 86, 86, 86, -1, -1, 86, 86, 86, 86, 20, 86, 86, 86, 86, 86, 86, 86, 86, 2, 86, 86, 86, 86, 3, 46, 86, 6, 86, 86, 51, 86, 86, 86, 86, -1, -1, 86, 13, 86, 30, 86, 86, 22, 86, 86, 86, 86, 86, 86, 86, 5, 86, 86, 86, 86, 86, 86, 21, 86, 86, -1, -1, 0, 86, 86, 86, 86, 86, 86, 38, 86, 42, 86, 86, 86, 86, 86, 86, 86, 86, 9, -1, -1, 86, 86, 86, 86, 86, 11, 86, 86, 4, 86, 86, 86, 86, 8, 86, -1, -1, 24, 86, 86, 23, 36, 86, 86, 86, 86, 86, 86, 86, 86, -1, 87, 86, 32, 86, 86, 86, 86, 86, 86, 49, 86, -1, 31, 86, 39, 86, 86, 48, 7, 86, -1, 86, 43, 47, 53, -1, 86, -1, 37, 87, },
 
-    };
+    };*/
 
     public static class State
     {

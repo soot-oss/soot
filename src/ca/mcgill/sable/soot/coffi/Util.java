@@ -113,6 +113,7 @@ package ca.mcgill.sable.soot.coffi;
 
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.soot.*;
 
@@ -278,7 +279,7 @@ public class Util
                 for(int i = 0; i < coffiClass.methods_count; i++)
                 {
                     method_info methodInfo = coffiClass.methods[i];
-    
+
                     String methodName = ((CONSTANT_Utf8_info)
                         (coffiClass.constant_pool[methodInfo.name_index])).convert();
     

@@ -80,6 +80,7 @@ package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 
 public abstract class AbstractInst implements Inst
 {
@@ -199,7 +200,7 @@ public abstract class AbstractInst implements Inst
             return dest;
         }
         
-        public Collection entries()
+        public Set entrySet()
         {
             throw new UnsupportedOperationException();
         }

@@ -1,6 +1,8 @@
 package ca.mcgill.sable.soot.jimple.parser.node;
 
+import java.util.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
 public final class TCatch extends Token

@@ -78,6 +78,7 @@
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import ca.mcgill.sable.soot.baf.*;
 
 public class SootMethod
