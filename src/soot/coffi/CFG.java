@@ -924,7 +924,7 @@ public class CFG {
 		    newdefault.labelled = true;
 		}
 
-		for (int i=0; i<switchinsn.high-switchinsn.low; i++)
+		for (int i=0; i<=switchinsn.high-switchinsn.low; i++)
 		{
 		    Instruction newtgt = 
 			(Instruction)replacedInsns.get(switchinsn.jump_insts[i]);
