@@ -53,7 +53,8 @@ public class Modifier
     public static final int SYNCHRONIZED = 0x0020;
     public static final int TRANSIENT =    0x0080;
     public static final int VOLATILE =     0x0040;
-
+    public static final int STRICTFP =     0x0800; 
+    
     private Modifier()
     {
     }
@@ -113,6 +114,11 @@ public class Modifier
         return (m & VOLATILE) != 0;
     }
 
+    public static boolean isStrictFP(int m)
+    {
+        return (m & STRICTFP) != 0;
+    }
+    
     /**
      *  Converts the given modifiers to their string representation, in canonical form.
      *   @param m  a modifier set
@@ -153,10 +159,10 @@ public class Modifier
         if(isVolatile(m))
             buffer.append("volatile ");
 
+        if(isStrictFP(m))
+            buffer.append("strictfp ");
+        
         return (buffer.toString()).trim();
     }
 
 }
-
-
-

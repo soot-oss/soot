@@ -3149,9 +3149,9 @@ public class JimpleBodyBuilder {
         //System.out.println("castExpr.expr type: "+castExpr.expr().type());
         
         // if its already the right type
-        if (castExpr.expr().type().equals(castExpr.type())) {
-            return createExpr(castExpr.expr());
-        }
+        //if (castExpr.expr().type().equals(castExpr.type())) {
+        //    return createExpr(castExpr.expr());
+        //}
 
         //else
         soot.Value val;

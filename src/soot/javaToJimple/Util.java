@@ -473,7 +473,9 @@ public class Util {
 		if (flags.isInterface()){
 			modifier = modifier | soot.Modifier.INTERFACE;
 		}
-
+        if (flags.isStrictFP()) {
+            modifier = modifier | soot.Modifier.STRICTFP;
+        }
 		return modifier;
 	}
 }
