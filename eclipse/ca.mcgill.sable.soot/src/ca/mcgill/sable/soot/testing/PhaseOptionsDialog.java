@@ -1,22 +1,3 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Jennifer Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 
 
 /*
@@ -437,6 +418,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", getcgall_reachable_widget(), "all-reachable");
 		
 		
+		addToEnableGroup("cg", getcgtrim_clinit_widget(), "trim-clinit");
+		
+		
 		getcgenabled_widget().getButton().addSelectionListener(this);
 		
 		getcgsafe_forname_widget().getButton().addSelectionListener(this);
@@ -446,6 +430,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getcgverbose_widget().getButton().addSelectionListener(this);
 		
 		getcgall_reachable_widget().getButton().addSelectionListener(this);
+		
+		getcgtrim_clinit_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg", "cg.cha");
@@ -644,7 +630,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("shimple", getshimplephi_elim_opt_widget(), "phi-elim-opt");
 		
 		
+		addToEnableGroup("shimple", getshimplestandard_local_names_widget(), "standard-local-names");
+		
+		
 		getshimpleenabled_widget().getButton().addSelectionListener(this);
+		
+		getshimplestandard_local_names_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("stp");
@@ -1589,6 +1580,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgall_reachable_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getcgtrim_clinit_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgtrim_clinit_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getcgcg_chaenabled_widget().getButton().getSelection();
 		
 		
@@ -2074,6 +2075,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getshimpleenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getshimplestandard_local_names_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getshimplestandard_local_names_widget().getAlias(), new Boolean(boolRes));
 		}
 		 
 		stringRes = getshimplephi_elim_opt_widget().getSelectedAlias();
@@ -3386,7 +3397,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jap_jap_npc_branch;
 			
 			
-			SootOption jap_jap_npcolorer_branch = new SootOption("Null Pointer Coloring", "japjap_npcolorer");
+			SootOption jap_jap_npcolorer_branch = new SootOption("Null Pointer Colourer", "japjap_npcolorer");
 			subParent.addChild(jap_jap_npcolorer_branch);
 
 
@@ -4096,6 +4107,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgall_reachable_widget;
 	}	
 	
+	private BooleanOptionWidget cgtrim_clinit_widget;
+	
+	private void setcgtrim_clinit_widget(BooleanOptionWidget widget) {
+		cgtrim_clinit_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgtrim_clinit_widget() {
+		return cgtrim_clinit_widget;
+	}	
+	
 	private BooleanOptionWidget cgcg_chaenabled_widget;
 	
 	private void setcgcg_chaenabled_widget(BooleanOptionWidget widget) {
@@ -4602,6 +4623,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getshimpleenabled_widget() {
 		return shimpleenabled_widget;
+	}	
+	
+	private BooleanOptionWidget shimplestandard_local_names_widget;
+	
+	private void setshimplestandard_local_names_widget(BooleanOptionWidget widget) {
+		shimplestandard_local_names_widget = widget;
+	}
+	
+	public BooleanOptionWidget getshimplestandard_local_names_widget() {
+		return shimplestandard_local_names_widget;
 	}	
 	
 	
@@ -5595,7 +5626,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionswhole_program_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Program Mode", "", "","w", "\nRun in whole program mode, taking into consideration the whole \nprogram when performing analyses and transformations. Soot uses \nthe Call Graph Constructor to build a call graph for the \nprogram, then applies enabled transformations in the \nWhole-Jimple Transformation, Whole-Jimple Optimization, and \nWhole-Jimple Annotation packs before applying enabled \nintraprocedural transformations.", defaultBool)));
+		setGeneral_Optionswhole_program_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Program Mode", "", "","w", "\nRun in whole program mode, taking into consideration the whole \nprogram when performing analyses and transformations. Soot uses \nthe Call Graph Constructor to build a call graph for the \nprogram, then applies enabled transformations in the \nWhole-Jimple Transformation, Whole-Jimple Optimization, and \nWhole-Jimple Annotation packs before applying enabled \nintraprocedural transformations. Note that the Whole-Jimple \nOptimization pack is normally disabled (and thus not applied by \nwhole program mode), unless you also specify the Whole Program \nOptimize option.", defaultBool)));
 		
 		
 		
@@ -6000,7 +6031,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjb.setData("id", "jb");
 		
-		String descjb = "Create a JimpleBody for each method";	
+		String descjb = "Creates a JimpleBody for each method";	
 		if (descjb.length() > 0) {
 			Label descLabeljb = new Label(editGroupjb, SWT.WRAP);
 			descLabeljb.setText(descjb);
@@ -6060,7 +6091,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_ls.setData("id", "jbjb_ls");
 		
-		String descjbjb_ls = "Associates separate locals with each DU-UD web";	
+		String descjbjb_ls = "Local splitter: one local per DU-UD web";	
 		if (descjbjb_ls.length() > 0) {
 			Label descLabeljbjb_ls = new Label(editGroupjbjb_ls, SWT.WRAP);
 			descLabeljbjb_ls.setText(descjbjb_ls);
@@ -6104,7 +6135,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_a.setData("id", "jbjb_a");
 		
-		String descjbjb_a = "Removes some unnecessary copies";	
+		String descjbjb_a = "Aggregator: removes some unnecessary copies";	
 		if (descjbjb_a.length() > 0) {
 			Label descLabeljbjb_a = new Label(editGroupjbjb_a, SWT.WRAP);
 			descLabeljbjb_a.setText(descjbjb_a);
@@ -6164,7 +6195,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_ule.setData("id", "jbjb_ule");
 		
-		String descjbjb_ule = "Removes unused locals";	
+		String descjbjb_ule = "Unused local eliminator";	
 		if (descjbjb_ule.length() > 0) {
 			Label descLabeljbjb_ule = new Label(editGroupjbjb_ule, SWT.WRAP);
 			descLabeljbjb_ule.setText(descjbjb_ule);
@@ -6252,7 +6283,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_ulp.setData("id", "jbjb_ulp");
 		
-		String descjbjb_ulp = "Minimizes number of locals";	
+		String descjbjb_ulp = "Local packer: minimizes number of locals";	
 		if (descjbjb_ulp.length() > 0) {
 			Label descLabeljbjb_ulp = new Label(editGroupjbjb_ulp, SWT.WRAP);
 			descLabeljbjb_ulp.setText(descjbjb_ulp);
@@ -6312,7 +6343,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_lns.setData("id", "jbjb_lns");
 		
-		String descjbjb_lns = "Gives names to locals";	
+		String descjbjb_lns = "Local name standardizer";	
 		if (descjbjb_lns.length() > 0) {
 			Label descLabeljbjb_lns = new Label(editGroupjbjb_lns, SWT.WRAP);
 			descLabeljbjb_lns.setText(descjbjb_lns);
@@ -6372,7 +6403,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_cp.setData("id", "jbjb_cp");
 		
-		String descjbjb_cp = "Removes unnecessary copies";	
+		String descjbjb_cp = "Copy propagator";	
 		if (descjbjb_cp.length() > 0) {
 			Label descLabeljbjb_cp = new Label(editGroupjbjb_cp, SWT.WRAP);
 			descLabeljbjb_cp.setText(descjbjb_cp);
@@ -6448,7 +6479,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_dae.setData("id", "jbjb_dae");
 		
-		String descjbjb_dae = "";	
+		String descjbjb_dae = "Dead assignment eliminator";	
 		if (descjbjb_dae.length() > 0) {
 			Label descLabeljbjb_dae = new Label(editGroupjbjb_dae, SWT.WRAP);
 			descLabeljbjb_dae.setText(descjbjb_dae);
@@ -6508,7 +6539,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_cp_ule.setData("id", "jbjb_cp_ule");
 		
-		String descjbjb_cp_ule = "Removes unused locals";	
+		String descjbjb_cp_ule = "Post-copy propagation unused local eliminator";	
 		if (descjbjb_cp_ule.length() > 0) {
 			Label descLabeljbjb_cp_ule = new Label(editGroupjbjb_cp_ule, SWT.WRAP);
 			descLabeljbjb_cp_ule.setText(descjbjb_cp_ule);
@@ -6552,7 +6583,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_lp.setData("id", "jbjb_lp");
 		
-		String descjbjb_lp = "Minimizes number of locals";	
+		String descjbjb_lp = "Local packer: minimizes number of locals";	
 		if (descjbjb_lp.length() > 0) {
 			Label descLabeljbjb_lp = new Label(editGroupjbjb_lp, SWT.WRAP);
 			descLabeljbjb_lp.setText(descjbjb_lp);
@@ -6612,7 +6643,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_ne.setData("id", "jbjb_ne");
 		
-		String descjbjb_ne = "";	
+		String descjbjb_ne = "Nop eliminator";	
 		if (descjbjb_ne.length() > 0) {
 			Label descLabeljbjb_ne = new Label(editGroupjbjb_ne, SWT.WRAP);
 			descLabeljbjb_ne.setText(descjbjb_ne);
@@ -6656,7 +6687,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_uce.setData("id", "jbjb_uce");
 		
-		String descjbjb_uce = "";	
+		String descjbjb_uce = "Unreachable code eliminator";	
 		if (descjbjb_uce.length() > 0) {
 			Label descLabeljbjb_uce = new Label(editGroupjbjb_uce, SWT.WRAP);
 			descLabeljbjb_uce.setText(descjbjb_uce);
@@ -6700,7 +6731,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupcg.setData("id", "cg");
 		
-		String desccg = "Build a call graph";	
+		String desccg = "Call graph constructor";	
 		if (desccg.length() > 0) {
 			Label descLabelcg = new Label(editGroupcg, SWT.WRAP);
 			descLabelcg.setText(desccg);
@@ -6788,6 +6819,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		setcgall_reachable_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("All Application Class Methods Reachable", "p", "cg","all-reachable", "\nWhen this option is false, the call graph is built starting at a \nset of entry points, and only methods reachable from those entry \npoints are processed. Unreachable methods will not have any call \ngraph edges generated out of them. Setting this option to true \nmakes Soot consider all methods of application classes to be \nreachable, so call edges are generated for all of them. This \nleads to a larger call graph. For program visualization \npurposes, it is sometimes desirable to include edges from \nunreachable methods; although these methods are unreachable in \nthe version being analyzed, they may become reachable if the \nprogram is modified.", defaultBool)));
 		
 		
+		
+		defKey = "p"+" "+"cg"+" "+"trim-clinit";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgtrim_clinit_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Trim Static Initializer Edges", "p", "cg","trim-clinit", "\nThe call graph contains an edge from each statement that could \ntrigger execution of a static initializer to that static \ninitializer. However, each static initializer is triggered only \nonce. When this option is enabled, after the call graph is \nbuilt, an intra-procedural analysis is performed to detect \nstatic initializer edges leading to methods that must have \nalready been executed. Since these static initializers cannot be \nexecuted again, the corresponding call graph edges are removed \nfrom the call graph. ", defaultBool)));
+		
+		
 
 		
 		return editGroupcg;
@@ -6808,7 +6855,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupcgcg_cha.setData("id", "cgcg_cha");
 		
-		String desccgcg_cha = "Build a call graph using Class Hierarchy Analysis";	
+		String desccgcg_cha = "Builds call graph using Class Hierarchy Analysis";	
 		if (desccgcg_cha.length() > 0) {
 			Label descLabelcgcg_cha = new Label(editGroupcgcg_cha, SWT.WRAP);
 			descLabelcgcg_cha.setText(desccgcg_cha);
@@ -7672,7 +7719,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupwjtp.setData("id", "wjtp");
 		
-		String descwjtp = "";	
+		String descwjtp = "Whole-jimple transformation pack";	
 		if (descwjtp.length() > 0) {
 			Label descLabelwjtp = new Label(editGroupwjtp, SWT.WRAP);
 			descLabelwjtp.setText(descwjtp);
@@ -7716,7 +7763,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupwjop.setData("id", "wjop");
 		
-		String descwjop = "";	
+		String descwjop = "Whole-jimple optimization pack";	
 		if (descwjop.length() > 0) {
 			Label descLabelwjop = new Label(editGroupwjop, SWT.WRAP);
 			descLabelwjop.setText(descwjop);
@@ -7760,7 +7807,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupwjopwjop_smb.setData("id", "wjopwjop_smb");
 		
-		String descwjopwjop_smb = "";	
+		String descwjopwjop_smb = "Static method binder: Devirtualizes monomorphic calls";	
 		if (descwjopwjop_smb.length() > 0) {
 			Label descLabelwjopwjop_smb = new Label(editGroupwjopwjop_smb, SWT.WRAP);
 			descLabelwjopwjop_smb.setText(descwjopwjop_smb);
@@ -7872,7 +7919,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupwjopwjop_si.setData("id", "wjopwjop_si");
 		
-		String descwjopwjop_si = "";	
+		String descwjopwjop_si = "Static inliner: inlines monomorphic calls";	
 		if (descwjopwjop_si.length() > 0) {
 			Label descLabelwjopwjop_si = new Label(editGroupwjopwjop_si, SWT.WRAP);
 			descLabelwjopwjop_si.setText(descwjopwjop_si);
@@ -8029,7 +8076,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupwjap.setData("id", "wjap");
 		
-		String descwjap = "";	
+		String descwjap = "Whole-jimple annotation pack: adds interprocedural tags";	
 		if (descwjap.length() > 0) {
 			Label descLabelwjap = new Label(editGroupwjap, SWT.WRAP);
 			descLabelwjap.setText(descwjap);
@@ -8073,7 +8120,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupwjapwjap_ra.setData("id", "wjapwjap_ra");
 		
-		String descwjapwjap_ra = " Find array variables always pointing to rectangular two-dimensional array objects. ";	
+		String descwjapwjap_ra = "Rectangular array finder";	
 		if (descwjapwjap_ra.length() > 0) {
 			Label descLabelwjapwjap_ra = new Label(editGroupwjapwjap_ra, SWT.WRAP);
 			descLabelwjapwjap_ra.setText(descwjapwjap_ra);
@@ -8117,7 +8164,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupshimple.setData("id", "shimple");
 		
-		String descshimple = "";	
+		String descshimple = "Sets parameters for Shimple SSA form";	
 		if (descshimple.length() > 0) {
 			Label descLabelshimple = new Label(editGroupshimple, SWT.WRAP);
 			descLabelshimple.setText(descshimple);
@@ -8142,6 +8189,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = "p"+" "+"shimple"+" "+"standard-local-names";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setshimplestandard_local_names_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Local Name Standardization", "p", "shimple","standard-local-names", "\nIf enabled, the Local Name Standardizer is applied \nafter Shimple creates new locals. Normally, Shimple \nwill retain the original local names as far as \npossible and use an underscore notation to denote \nSSA subscripts. This transformation does not \notherwise affect Shimple behaviour. ", defaultBool)));
+		
+		
+		
 		data = new OptionData [] {
 		
 		new OptionData("No-optimize Phi Elimination",
@@ -8152,19 +8215,19 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Pre-optimize Phi elimination",
 		"pre",
-		"\nPerform some optimizations, such as dead code elimination and \nlocal packing, before eliminating Phi nodes. This appears to be \nless effective than post-optimization, but the option is \nprovided for future testing and investigation.",
+		"\nPerform some optimizations, such as dead code elimination and \nlocal aggregation, before eliminating Phi nodes. This appears \nto be less effective than post-optimization, but the option is \nprovided for future testing and investigation.",
 		
 		false),
 		
 		new OptionData("Post-optimize Phi Elimination",
 		"post",
-		"\nPerform some optimizations, such as dead code elimination and \nlocal packing, after eliminating Phi nodes. This appears to be \nmore effective than post-optimization.",
+		"\nPerform some optimizations, such as dead code elimination and \nlocal aggregation, after eliminating Phi nodes. This appears to \nbe more effective than post-optimization.",
 		
 		true),
 		
 		new OptionData("Pre- and Post- Optimize Phi Elimination",
 		"pre-and-post",
-		"\nIf enabled, applies recommended optimizations such \nas dead code elimination and local packing both \nbefore and after Phi node elimination. Provided for \nexperimentation.",
+		"\nIf enabled, applies recommended optimizations such \nas dead code elimination and local aggregation both \nbefore and after Phi node elimination. Provided for \nexperimentation.",
 		
 		false),
 		
@@ -8203,7 +8266,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupstp.setData("id", "stp");
 		
-		String descstp = "Apply Shimple-based transformations";	
+		String descstp = "Shimple transformation pack";	
 		if (descstp.length() > 0) {
 			Label descLabelstp = new Label(editGroupstp, SWT.WRAP);
 			descLabelstp.setText(descstp);
@@ -8247,7 +8310,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupsop.setData("id", "sop");
 		
-		String descsop = "Apply Shimple-based optimizations";	
+		String descsop = "Shimple optimization pack";	
 		if (descsop.length() > 0) {
 			Label descLabelsop = new Label(editGroupsop, SWT.WRAP);
 			descLabelsop.setText(descsop);
@@ -8291,7 +8354,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupsopsop_cpf.setData("id", "sopsop_cpf");
 		
-		String descsopsop_cpf = "Performs constant propagation and folding on Shimple.";	
+		String descsopsop_cpf = "Shimple constant propagator and folder";	
 		if (descsopsop_cpf.length() > 0) {
 			Label descLabelsopsop_cpf = new Label(editGroupsopsop_cpf, SWT.WRAP);
 			descLabelsopsop_cpf.setText(descsopsop_cpf);
@@ -8335,7 +8398,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjtp.setData("id", "jtp");
 		
-		String descjtp = "";	
+		String descjtp = "Jimple transformation pack: intraprocedural analyses added to Soot";	
 		if (descjtp.length() > 0) {
 			Label descLabeljtp = new Label(editGroupjtp, SWT.WRAP);
 			descLabeljtp.setText(descjtp);
@@ -8379,7 +8442,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjop.setData("id", "jop");
 		
-		String descjop = "";	
+		String descjop = "Jimple optimization pack (intraprocedural)";	
 		if (descjop.length() > 0) {
 			Label descLabeljop = new Label(editGroupjop, SWT.WRAP);
 			descLabeljop.setText(descjop);
@@ -8423,7 +8486,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_cse.setData("id", "jopjop_cse");
 		
-		String descjopjop_cse = "";	
+		String descjopjop_cse = "Common subexpression eliminator";	
 		if (descjopjop_cse.length() > 0) {
 			Label descLabeljopjop_cse = new Label(editGroupjopjop_cse, SWT.WRAP);
 			descLabeljopjop_cse.setText(descjopjop_cse);
@@ -8483,7 +8546,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_bcm.setData("id", "jopjop_bcm");
 		
-		String descjopjop_bcm = "";	
+		String descjopjop_bcm = "Busy code motion: unaggressive partial redundancy elimination";	
 		if (descjopjop_bcm.length() > 0) {
 			Label descLabeljopjop_bcm = new Label(editGroupjopjop_bcm, SWT.WRAP);
 			descLabeljopjop_bcm.setText(descjopjop_bcm);
@@ -8543,7 +8606,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_lcm.setData("id", "jopjop_lcm");
 		
-		String descjopjop_lcm = "";	
+		String descjopjop_lcm = "Lazy code motion: aggressive partial redundancy elimination";	
 		if (descjopjop_lcm.length() > 0) {
 			Label descLabeljopjop_lcm = new Label(editGroupjopjop_lcm, SWT.WRAP);
 			descLabeljopjop_lcm.setText(descjopjop_lcm);
@@ -8655,7 +8718,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_cp.setData("id", "jopjop_cp");
 		
-		String descjopjop_cp = "Removes unnecessary copies";	
+		String descjopjop_cp = "Copy propagator";	
 		if (descjopjop_cp.length() > 0) {
 			Label descLabeljopjop_cp = new Label(editGroupjopjop_cp, SWT.WRAP);
 			descLabeljopjop_cp.setText(descjopjop_cp);
@@ -8731,7 +8794,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_cpf.setData("id", "jopjop_cpf");
 		
-		String descjopjop_cpf = "";	
+		String descjopjop_cpf = "Constant propagator and folder";	
 		if (descjopjop_cpf.length() > 0) {
 			Label descLabeljopjop_cpf = new Label(editGroupjopjop_cpf, SWT.WRAP);
 			descLabeljopjop_cpf.setText(descjopjop_cpf);
@@ -8775,7 +8838,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_cbf.setData("id", "jopjop_cbf");
 		
-		String descjopjop_cbf = "";	
+		String descjopjop_cbf = "Conditional branch folder";	
 		if (descjopjop_cbf.length() > 0) {
 			Label descLabeljopjop_cbf = new Label(editGroupjopjop_cbf, SWT.WRAP);
 			descLabeljopjop_cbf.setText(descjopjop_cbf);
@@ -8819,7 +8882,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_dae.setData("id", "jopjop_dae");
 		
-		String descjopjop_dae = "";	
+		String descjopjop_dae = "Dead assignment eliminator";	
 		if (descjopjop_dae.length() > 0) {
 			Label descLabeljopjop_dae = new Label(editGroupjopjop_dae, SWT.WRAP);
 			descLabeljopjop_dae.setText(descjopjop_dae);
@@ -8879,7 +8942,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_uce1.setData("id", "jopjop_uce1");
 		
-		String descjopjop_uce1 = "";	
+		String descjopjop_uce1 = "Unreachable code eliminator, pass 1";	
 		if (descjopjop_uce1.length() > 0) {
 			Label descLabeljopjop_uce1 = new Label(editGroupjopjop_uce1, SWT.WRAP);
 			descLabeljopjop_uce1.setText(descjopjop_uce1);
@@ -8923,7 +8986,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_ubf1.setData("id", "jopjop_ubf1");
 		
-		String descjopjop_ubf1 = "";	
+		String descjopjop_ubf1 = "Unconditional branch folder, pass 1";	
 		if (descjopjop_ubf1.length() > 0) {
 			Label descLabeljopjop_ubf1 = new Label(editGroupjopjop_ubf1, SWT.WRAP);
 			descLabeljopjop_ubf1.setText(descjopjop_ubf1);
@@ -8967,7 +9030,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_uce2.setData("id", "jopjop_uce2");
 		
-		String descjopjop_uce2 = "";	
+		String descjopjop_uce2 = "Unreachable code eliminator, pass 2";	
 		if (descjopjop_uce2.length() > 0) {
 			Label descLabeljopjop_uce2 = new Label(editGroupjopjop_uce2, SWT.WRAP);
 			descLabeljopjop_uce2.setText(descjopjop_uce2);
@@ -9011,7 +9074,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_ubf2.setData("id", "jopjop_ubf2");
 		
-		String descjopjop_ubf2 = "";	
+		String descjopjop_ubf2 = "Unconditional branch folder, pass 2";	
 		if (descjopjop_ubf2.length() > 0) {
 			Label descLabeljopjop_ubf2 = new Label(editGroupjopjop_ubf2, SWT.WRAP);
 			descLabeljopjop_ubf2.setText(descjopjop_ubf2);
@@ -9055,7 +9118,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjopjop_ule.setData("id", "jopjop_ule");
 		
-		String descjopjop_ule = "Removes unused locals";	
+		String descjopjop_ule = "Unused local eliminator";	
 		if (descjopjop_ule.length() > 0) {
 			Label descLabeljopjop_ule = new Label(editGroupjopjop_ule, SWT.WRAP);
 			descLabeljopjop_ule.setText(descjopjop_ule);
@@ -9099,7 +9162,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjap.setData("id", "jap");
 		
-		String descjap = "";	
+		String descjap = "Jimple annotation pack: adds intraprocedural tags";	
 		if (descjap.length() > 0) {
 			Label descLabeljap = new Label(editGroupjap, SWT.WRAP);
 			descLabeljap.setText(descjap);
@@ -9143,7 +9206,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjapjap_npc.setData("id", "japjap_npc");
 		
-		String descjapjap_npc = "";	
+		String descjapjap_npc = "Null pointer checker";	
 		if (descjapjap_npc.length() > 0) {
 			Label descLabeljapjap_npc = new Label(editGroupjapjap_npc, SWT.WRAP);
 			descLabeljapjap_npc.setText(descjapjap_npc);
@@ -9215,11 +9278,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_npcolorer.setLayout(layout);
 	
-	 	editGroupjapjap_npcolorer.setText("Null Pointer Coloring");
+	 	editGroupjapjap_npcolorer.setText("Null Pointer Colourer");
 	 	
 		editGroupjapjap_npcolorer.setData("id", "japjap_npcolorer");
 		
-		String descjapjap_npcolorer = "Produce color tags for null and non-null references";	
+		String descjapjap_npcolorer = "Null pointer colourer: tags references for eclipse";	
 		if (descjapjap_npcolorer.length() > 0) {
 			Label descLabeljapjap_npcolorer = new Label(editGroupjapjap_npcolorer, SWT.WRAP);
 			descLabeljapjap_npcolorer.setText(descjapjap_npcolorer);
@@ -9263,7 +9326,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjapjap_abc.setData("id", "japjap_abc");
 		
-		String descjapjap_abc = "";	
+		String descjapjap_abc = "Array bound checker";	
 		if (descjapjap_abc.length() > 0) {
 			Label descLabeljapjap_abc = new Label(editGroupjapjap_abc, SWT.WRAP);
 			descLabeljapjap_abc.setText(descjapjap_abc);
@@ -9419,7 +9482,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjapjap_profiling.setData("id", "japjap_profiling");
 		
-		String descjapjap_profiling = "";	
+		String descjapjap_profiling = "Instruments null pointer and array checks";	
 		if (descjapjap_profiling.length() > 0) {
 			Label descLabeljapjap_profiling = new Label(editGroupjapjap_profiling, SWT.WRAP);
 			descLabeljapjap_profiling.setText(descjapjap_profiling);
@@ -9479,7 +9542,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjapjap_sea.setData("id", "japjap_sea");
 		
-		String descjapjap_sea = "";	
+		String descjapjap_sea = "Side effect tagger";	
 		if (descjapjap_sea.length() > 0) {
 			Label descLabeljapjap_sea = new Label(editGroupjapjap_sea, SWT.WRAP);
 			descLabeljapjap_sea.setText(descjapjap_sea);
@@ -9539,7 +9602,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjapjap_fieldrw.setData("id", "japjap_fieldrw");
 		
-		String descjapjap_fieldrw = "";	
+		String descjapjap_fieldrw = "Field read/write tagger";	
 		if (descjapjap_fieldrw.length() > 0) {
 			Label descLabeljapjap_fieldrw = new Label(editGroupjapjap_fieldrw, SWT.WRAP);
 			descLabeljapjap_fieldrw.setText(descjapjap_fieldrw);
@@ -9598,7 +9661,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjapjap_cgtagger.setData("id", "japjap_cgtagger");
 		
-		String descjapjap_cgtagger = "";	
+		String descjapjap_cgtagger = "Call graph tagger";	
 		if (descjapjap_cgtagger.length() > 0) {
 			Label descLabeljapjap_cgtagger = new Label(editGroupjapjap_cgtagger, SWT.WRAP);
 			descLabeljapjap_cgtagger.setText(descjapjap_cgtagger);
@@ -9619,7 +9682,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_cgtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_cgtagger, SWT.NONE, new OptionData("Enabled", "p", "jap.cgtagger","enabled", "\nProduces LinkTags based on the call graph. These tags and are \nused in the Eclipse plugin to produce linked popup lists which \nindicate the source and target methods of the statement. When a \nlink is selected in the popup list the cursor repositions to the \nindicated method.", defaultBool)));
+		setjapjap_cgtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_cgtagger, SWT.NONE, new OptionData("Enabled", "p", "jap.cgtagger","enabled", "\n", defaultBool)));
 		
 		
 
@@ -9642,7 +9705,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjapjap_parity.setData("id", "japjap_parity");
 		
-		String descjapjap_parity = "";	
+		String descjapjap_parity = "Parity tagger";	
 		if (descjapjap_parity.length() > 0) {
 			Label descLabeljapjap_parity = new Label(editGroupjapjap_parity, SWT.WRAP);
 			descLabeljapjap_parity.setText(descjapjap_parity);
@@ -9663,7 +9726,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_parityenabled_widget(new BooleanOptionWidget(editGroupjapjap_parity, SWT.NONE, new OptionData("Enabled", "p", "jap.parity","enabled", "\nProduces StringTags and ColorTags indicating the parity of a \nvariable (even, odd, top, bottom). These tags are used in the \nEclipse plugin to show tooltips about parity information and to \nhighlight the background tect color of the variables based on \ntheir parity. For example; even variables (eg: x = 2) are \ncolored yellow.", defaultBool)));
+		setjapjap_parityenabled_widget(new BooleanOptionWidget(editGroupjapjap_parity, SWT.NONE, new OptionData("Enabled", "p", "jap.parity","enabled", "\n", defaultBool)));
 		
 		
 
@@ -9686,7 +9749,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupgb.setData("id", "gb");
 		
-		String descgb = "";	
+		String descgb = "Creates a GrimpBody for each method";	
 		if (descgb.length() > 0) {
 			Label descLabelgb = new Label(editGroupgb, SWT.WRAP);
 			descLabelgb.setText(descgb);
@@ -9730,7 +9793,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupgbgb_a1.setData("id", "gbgb_a1");
 		
-		String descgbgb_a1 = "";	
+		String descgbgb_a1 = "Aggregator: removes some copies, pre-folding";	
 		if (descgbgb_a1.length() > 0) {
 			Label descLabelgbgb_a1 = new Label(editGroupgbgb_a1, SWT.WRAP);
 			descLabelgbgb_a1.setText(descgbgb_a1);
@@ -9790,7 +9853,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupgbgb_cf.setData("id", "gbgb_cf");
 		
-		String descgbgb_cf = "";	
+		String descgbgb_cf = "Constructor folder";	
 		if (descgbgb_cf.length() > 0) {
 			Label descLabelgbgb_cf = new Label(editGroupgbgb_cf, SWT.WRAP);
 			descLabelgbgb_cf.setText(descgbgb_cf);
@@ -9834,7 +9897,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupgbgb_a2.setData("id", "gbgb_a2");
 		
-		String descgbgb_a2 = "";	
+		String descgbgb_a2 = "Aggregator: removes some copies, post-folding";	
 		if (descgbgb_a2.length() > 0) {
 			Label descLabelgbgb_a2 = new Label(editGroupgbgb_a2, SWT.WRAP);
 			descLabelgbgb_a2.setText(descgbgb_a2);
@@ -9894,7 +9957,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupgbgb_ule.setData("id", "gbgb_ule");
 		
-		String descgbgb_ule = "Removes unused locals";	
+		String descgbgb_ule = "Unused local eliminator";	
 		if (descgbgb_ule.length() > 0) {
 			Label descLabelgbgb_ule = new Label(editGroupgbgb_ule, SWT.WRAP);
 			descLabelgbgb_ule.setText(descgbgb_ule);
@@ -9938,7 +10001,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupgop.setData("id", "gop");
 		
-		String descgop = "";	
+		String descgop = "Grimp optimization pack";	
 		if (descgop.length() > 0) {
 			Label descLabelgop = new Label(editGroupgop, SWT.WRAP);
 			descLabelgop.setText(descgop);
@@ -9982,7 +10045,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupbb.setData("id", "bb");
 		
-		String descbb = "";	
+		String descbb = "Creates Baf bodies";	
 		if (descbb.length() > 0) {
 			Label descLabelbb = new Label(editGroupbb, SWT.WRAP);
 			descLabelbb.setText(descbb);
@@ -10026,7 +10089,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupbbbb_lso.setData("id", "bbbb_lso");
 		
-		String descbbbb_lso = "";	
+		String descbbbb_lso = "Load store optimizer";	
 		if (descbbbb_lso.length() > 0) {
 			Label descLabelbbbb_lso = new Label(editGroupbbbb_lso, SWT.WRAP);
 			descLabelbbbb_lso.setText(descbbbb_lso);
@@ -10166,7 +10229,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupbbbb_pho.setData("id", "bbbb_pho");
 		
-		String descbbbb_pho = "";	
+		String descbbbb_pho = "Peephole optimizer";	
 		if (descbbbb_pho.length() > 0) {
 			Label descLabelbbbb_pho = new Label(editGroupbbbb_pho, SWT.WRAP);
 			descLabelbbbb_pho.setText(descbbbb_pho);
@@ -10210,7 +10273,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupbbbb_ule.setData("id", "bbbb_ule");
 		
-		String descbbbb_ule = "Removes unused locals";	
+		String descbbbb_ule = "Unused local eliminator";	
 		if (descbbbb_ule.length() > 0) {
 			Label descLabelbbbb_ule = new Label(editGroupbbbb_ule, SWT.WRAP);
 			descLabelbbbb_ule.setText(descbbbb_ule);
@@ -10254,7 +10317,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupbbbb_lp.setData("id", "bbbb_lp");
 		
-		String descbbbb_lp = "Minimizes number of locals";	
+		String descbbbb_lp = "Local packer: minimizes number of locals";	
 		if (descbbbb_lp.length() > 0) {
 			Label descLabelbbbb_lp = new Label(editGroupbbbb_lp, SWT.WRAP);
 			descLabelbbbb_lp.setText(descbbbb_lp);
@@ -10314,7 +10377,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupbop.setData("id", "bop");
 		
-		String descbop = "";	
+		String descbop = "Baf optimization pack";	
 		if (descbop.length() > 0) {
 			Label descLabelbop = new Label(editGroupbop, SWT.WRAP);
 			descLabelbop.setText(descbop);
@@ -10358,7 +10421,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGrouptag.setData("id", "tag");
 		
-		String desctag = "";	
+		String desctag = "Tag aggregator: turns tags into attributes";	
 		if (desctag.length() > 0) {
 			Label descLabeltag = new Label(editGrouptag, SWT.WRAP);
 			descLabeltag.setText(desctag);
@@ -10402,7 +10465,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGrouptagtag_ln.setData("id", "tagtag_ln");
 		
-		String desctagtag_ln = "";	
+		String desctagtag_ln = "Line number aggregator";	
 		if (desctagtag_ln.length() > 0) {
 			Label descLabeltagtag_ln = new Label(editGrouptagtag_ln, SWT.WRAP);
 			descLabeltagtag_ln.setText(desctagtag_ln);
@@ -10446,7 +10509,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGrouptagtag_an.setData("id", "tagtag_an");
 		
-		String desctagtag_an = "";	
+		String desctagtag_an = "Array bounds and null pointer check aggregator";	
 		if (desctagtag_an.length() > 0) {
 			Label descLabeltagtag_an = new Label(editGrouptagtag_an, SWT.WRAP);
 			descLabeltagtag_an.setText(desctagtag_an);
@@ -10490,7 +10553,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGrouptagtag_dep.setData("id", "tagtag_dep");
 		
-		String desctagtag_dep = "";	
+		String desctagtag_dep = "Dependence aggregator";	
 		if (desctagtag_dep.length() > 0) {
 			Label descLabeltagtag_dep = new Label(editGrouptagtag_dep, SWT.WRAP);
 			descLabeltagtag_dep.setText(desctagtag_dep);
@@ -10534,7 +10597,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGrouptagtag_fieldrw.setData("id", "tagtag_fieldrw");
 		
-		String desctagtag_fieldrw = "";	
+		String desctagtag_fieldrw = "Field read/write aggregator";	
 		if (desctagtag_fieldrw.length() > 0) {
 			Label descLabeltagtag_fieldrw = new Label(editGrouptagtag_fieldrw, SWT.WRAP);
 			descLabeltagtag_fieldrw.setText(desctagtag_fieldrw);
