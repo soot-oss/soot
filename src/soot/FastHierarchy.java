@@ -100,9 +100,9 @@ public class FastHierarchy
             }
         }
         r.upper = start++;
-	if( c.isInterface() ) {
-	    throw new RuntimeException( "Attempt to dfs visit interface "+c );
-	}
+        if( c.isInterface() ) {
+            throw new RuntimeException( "Attempt to dfs visit interface "+c );
+        }
         classToInterval.put( c, r );
         return start;
     }
@@ -112,25 +112,25 @@ public class FastHierarchy
     {
         this.sc = Scene.v();
 
-	/* First build the inverse maps. */
-	for( Iterator clIt = sc.getClasses().iterator(); clIt.hasNext(); ) {
-	    final SootClass cl = (SootClass) clIt.next();
+        /* First build the inverse maps. */
+        for( Iterator clIt = sc.getClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = (SootClass) clIt.next();
             if( cl.resolvingLevel() < SootClass.HIERARCHY ) continue;
-	    if( !cl.isInterface() && cl.hasSuperclass() ) {
-		put( classToSubclasses, cl.getSuperclass(), cl );
-	    }
-	    for( Iterator superclIt = cl.getInterfaces().iterator(); superclIt.hasNext(); ) {
-	        final SootClass supercl = (SootClass) superclIt.next();
-		if( cl.isInterface() ) {
-		    interfaceToSubinterfaces.put( supercl, cl );
-		} else {
-		    interfaceToImplementers.put( supercl, cl );
-		}
-	    }
-	}
+            if( !cl.isInterface() && cl.hasSuperclass() ) {
+                put( classToSubclasses, cl.getSuperclass(), cl );
+            }
+            for( Iterator superclIt = cl.getInterfaces().iterator(); superclIt.hasNext(); ) {
+                final SootClass supercl = (SootClass) superclIt.next();
+                if( cl.isInterface() ) {
+                    interfaceToSubinterfaces.put( supercl, cl );
+                } else {
+                    interfaceToImplementers.put( supercl, cl );
+                }
+            }
+        }
 
-	/* Now do a dfs traversal to get the Interval numbers. */
-	dfsVisit( 0, Scene.v().getSootClass( "java.lang.Object" ) );
+        /* Now do a dfs traversal to get the Interval numbers. */
+        dfsVisit( 0, Scene.v().getSootClass( "java.lang.Object" ) );
     }
 
     /** Return true if class child is a subclass of class parent, neither of
@@ -138,45 +138,45 @@ public class FastHierarchy
     public boolean isSubclass( SootClass child, SootClass parent ) {
         child.checkLevel(SootClass.HIERARCHY);
         parent.checkLevel(SootClass.HIERARCHY);
-	Interval parentInterval = (Interval) classToInterval.get( parent );
-	Interval childInterval = (Interval) classToInterval.get( child );
-	return parentInterval.isSubrange( childInterval );
+        Interval parentInterval = (Interval) classToInterval.get( parent );
+        Interval childInterval = (Interval) classToInterval.get( child );
+        return parentInterval.isSubrange( childInterval );
     }
 
     /** For an interface parent (MUST be an interface), returns set of all
      * implementers of it but NOT their subclasses. */
     public Set getAllImplementersOfInterface( SootClass parent ) {
         parent.checkLevel(SootClass.HIERARCHY);
-	Set subs;
-	if( interfaceToAllImplementers.containsKey( parent ) ) {
-	    subs = interfaceToAllImplementers.get( parent );
-	} else {
-	    subs = interfaceToAllImplementers.get( parent );
-	    for( Iterator subinterfaceIt = getAllSubinterfaces( parent ).iterator(); subinterfaceIt.hasNext(); ) {
-	        final SootClass subinterface = (SootClass) subinterfaceIt.next();
-		if( subinterface == parent ) continue;
-		subs.addAll( getAllImplementersOfInterface( subinterface ) );
-	    }
-	    subs.addAll( interfaceToImplementers.get( parent ) );
-	}
-	return subs;
+        Set subs;
+        if( interfaceToAllImplementers.containsKey( parent ) ) {
+            subs = interfaceToAllImplementers.get( parent );
+        } else {
+            subs = interfaceToAllImplementers.get( parent );
+            for( Iterator subinterfaceIt = getAllSubinterfaces( parent ).iterator(); subinterfaceIt.hasNext(); ) {
+                final SootClass subinterface = (SootClass) subinterfaceIt.next();
+                if( subinterface == parent ) continue;
+                subs.addAll( getAllImplementersOfInterface( subinterface ) );
+            }
+            subs.addAll( interfaceToImplementers.get( parent ) );
+        }
+        return subs;
     }
 
     /** For an interface parent (MUST be an interface), returns set of all
      * subinterfaces. */
     protected Set getAllSubinterfaces( SootClass parent ) {
         parent.checkLevel(SootClass.HIERARCHY);
-	Set subs;
-	if( interfaceToAllSubinterfaces.containsKey( parent ) ) {
-	    subs = interfaceToAllSubinterfaces.get( parent );
-	} else {
-	    subs = interfaceToAllSubinterfaces.get( parent );
-	    subs.add( parent );
-	    for( Iterator it = interfaceToSubinterfaces.get( parent ).iterator(); it.hasNext(); ) {
-		subs.addAll( getAllSubinterfaces( (SootClass) it.next() ) );
-	    }
-	}
-	return subs;
+        Set subs;
+        if( interfaceToAllSubinterfaces.containsKey( parent ) ) {
+            subs = interfaceToAllSubinterfaces.get( parent );
+        } else {
+            subs = interfaceToAllSubinterfaces.get( parent );
+            subs.add( parent );
+            for( Iterator it = interfaceToSubinterfaces.get( parent ).iterator(); it.hasNext(); ) {
+                subs.addAll( getAllSubinterfaces( (SootClass) it.next() ) );
+            }
+        }
+        return subs;
     }
 
     /** Given an object of declared type child, returns true if the object
@@ -186,11 +186,11 @@ public class FastHierarchy
      * implement the parent interface. */
     /*
     public boolean canStoreType( Type child, Type parent ) {
-	if( cacheSubtypes.get( parent ).contains( child ) ) return true;
-	if( cacheNonSubtypes.get( parent ).contains( child ) ) return false;
-	boolean ret = canStoreTypeInternal( child, parent );
-	( ret ? cacheSubtypes : cacheNonSubtypes ).put( parent, child );
-	return ret;
+        if( cacheSubtypes.get( parent ).contains( child ) ) return true;
+        if( cacheNonSubtypes.get( parent ).contains( child ) ) return false;
+        boolean ret = canStoreTypeInternal( child, parent );
+        ( ret ? cacheSubtypes : cacheNonSubtypes ).put( parent, child );
+        return ret;
     }
     */
 
@@ -204,17 +204,17 @@ public class FastHierarchy
         if( parent instanceof NullType ) {
             return false;
         }
-	if( child instanceof RefType ) {
-	    if( parent instanceof RefType) {
-		return canStoreClass( ((RefType) child).getSootClass(),
-		    ((RefType) parent).getSootClass() );
-	    } else {
-		return false;
-	    }
-	} else if( child instanceof AnySubType ) {
-	    if( !(parent instanceof RefLikeType ) ) {
-		throw new RuntimeException( "Unhandled type "+parent );
-	    } else if(parent instanceof ArrayType) {
+        if( child instanceof RefType ) {
+            if( parent instanceof RefType) {
+                return canStoreClass( ((RefType) child).getSootClass(),
+                    ((RefType) parent).getSootClass() );
+            } else {
+                return false;
+            }
+        } else if( child instanceof AnySubType ) {
+            if( !(parent instanceof RefLikeType ) ) {
+                throw new RuntimeException( "Unhandled type "+parent );
+            } else if(parent instanceof ArrayType) {
                 return false;
             } else {
                 SootClass base = ((AnySubType)child).getBase().getSootClass();
@@ -231,34 +231,34 @@ public class FastHierarchy
                     worklist.addAll(getSubclassesOf(cl));
                 }
                 return false;
-	    }
-	} else {
-	    ArrayType achild = (ArrayType) child;
-	    if( parent instanceof RefType ) {
-		// From Java Language Spec 2nd ed., Chapter 10, Arrays
-		return parent.equals( RefType.v( "java.lang.Object" ) )
-		|| parent.equals( RefType.v( "java.io.Serializable" ) )
-		|| parent.equals( RefType.v( "java.lang.Cloneable" ) );
-	    }
-	    ArrayType aparent = (ArrayType) parent;
-					        
-	    // You can store a int[][] in a Object[]. Yuck!
-	    // Also, you can store a Interface[] in a Object[]
-	    if( achild.numDimensions == aparent.numDimensions ) {
-		if( achild.baseType.equals( aparent.baseType ) ) return true;
-		if( !(achild.baseType instanceof RefType ) ) return false;
-		if( !(aparent.baseType instanceof RefType ) ) return false;
-		return canStoreType( achild.baseType, aparent.baseType );
-	    } else if( achild.numDimensions > aparent.numDimensions ) {
-		if( aparent.baseType.equals( RefType.v( "java.lang.Object" ) ) )
-		    return true;
-		if( aparent.baseType.equals( RefType.v( "java.io.Serializable" ) ) )
-		    return true;
-		if( aparent.baseType.equals( RefType.v( "java.lang.Cloneable" ) ) )
-		    return true;
-		return false;
-	    } else return false;
-	}
+            }
+        } else {
+            ArrayType achild = (ArrayType) child;
+            if( parent instanceof RefType ) {
+                // From Java Language Spec 2nd ed., Chapter 10, Arrays
+                return parent.equals( RefType.v( "java.lang.Object" ) )
+                || parent.equals( RefType.v( "java.io.Serializable" ) )
+                || parent.equals( RefType.v( "java.lang.Cloneable" ) );
+            }
+            ArrayType aparent = (ArrayType) parent;
+                                                
+            // You can store a int[][] in a Object[]. Yuck!
+            // Also, you can store a Interface[] in a Object[]
+            if( achild.numDimensions == aparent.numDimensions ) {
+                if( achild.baseType.equals( aparent.baseType ) ) return true;
+                if( !(achild.baseType instanceof RefType ) ) return false;
+                if( !(aparent.baseType instanceof RefType ) ) return false;
+                return canStoreType( achild.baseType, aparent.baseType );
+            } else if( achild.numDimensions > aparent.numDimensions ) {
+                if( aparent.baseType.equals( RefType.v( "java.lang.Object" ) ) )
+                    return true;
+                if( aparent.baseType.equals( RefType.v( "java.io.Serializable" ) ) )
+                    return true;
+                if( aparent.baseType.equals( RefType.v( "java.lang.Cloneable" ) ) )
+                    return true;
+                return false;
+            } else return false;
+        }
     }
 
     /** Given an object of declared type child, returns true if the object
@@ -269,66 +269,66 @@ public class FastHierarchy
     protected boolean canStoreClass( SootClass child, SootClass parent ) {
         parent.checkLevel(SootClass.HIERARCHY);
         child.checkLevel(SootClass.HIERARCHY);
-	Interval parentInterval = (Interval) classToInterval.get( parent );
-	Interval childInterval = (Interval) classToInterval.get( child );
-	if( parentInterval != null && childInterval != null ) {
-	    return parentInterval.isSubrange( childInterval );
-	}
-	if( childInterval == null ) { // child is interface
-	    if( parentInterval != null ) { // parent is not interface
-		return parent.equals( RefType.v("java.lang.Object").getSootClass() );
-	    } else {
-		return getAllSubinterfaces( parent ).contains( child );
-	    }
-	} else {
-	    Set impl = getAllImplementersOfInterface( parent );
-	    for( Iterator it = impl.iterator(); it.hasNext(); ) {
-		parentInterval = (Interval) classToInterval.get( it.next() );
-		if( parentInterval.isSubrange( childInterval ) ) {
-		    return true;
-		}
-	    }
-	    return false;
-	}
+        Interval parentInterval = (Interval) classToInterval.get( parent );
+        Interval childInterval = (Interval) classToInterval.get( child );
+        if( parentInterval != null && childInterval != null ) {
+            return parentInterval.isSubrange( childInterval );
+        }
+        if( childInterval == null ) { // child is interface
+            if( parentInterval != null ) { // parent is not interface
+                return parent.equals( RefType.v("java.lang.Object").getSootClass() );
+            } else {
+                return getAllSubinterfaces( parent ).contains( child );
+            }
+        } else {
+            Set impl = getAllImplementersOfInterface( parent );
+            for( Iterator it = impl.iterator(); it.hasNext(); ) {
+                parentInterval = (Interval) classToInterval.get( it.next() );
+                if( parentInterval.isSubrange( childInterval ) ) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public Collection resolveConcreteDispatchWithoutFailing(Collection concreteTypes, SootMethod m, RefType declaredTypeOfBase ) {
 
-	Set ret = new HashSet();
-	SootClass declaringClass = declaredTypeOfBase.getSootClass();
+        Set ret = new HashSet();
+        SootClass declaringClass = declaredTypeOfBase.getSootClass();
         declaringClass.checkLevel(SootClass.HIERARCHY);
-	for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
-	    final Type t = (Type) tIt.next();
-	    if( t instanceof AnySubType ) {
-		String methodSig = m.getSubSignature();
-		HashSet s = new HashSet();
-		s.add( declaringClass );
-		while( !s.isEmpty() ) {
-		    SootClass c = (SootClass) s.iterator().next();
-		    s.remove( c );
-		    if( !c.isInterface() && !c.isAbstract()
+        for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
+            final Type t = (Type) tIt.next();
+            if( t instanceof AnySubType ) {
+                String methodSig = m.getSubSignature();
+                HashSet s = new HashSet();
+                s.add( declaringClass );
+                while( !s.isEmpty() ) {
+                    SootClass c = (SootClass) s.iterator().next();
+                    s.remove( c );
+                    if( !c.isInterface() && !c.isAbstract()
                             && canStoreClass( c, declaringClass ) ) {
-			SootMethod concreteM = resolveConcreteDispatch( c, m );
+                        SootMethod concreteM = resolveConcreteDispatch( c, m );
                         if( concreteM != null )
                             ret.add( concreteM );
-		    }
-		    if( classToSubclasses.containsKey( c ) ) {
-			s.addAll( (Collection) classToSubclasses.get( c ) );
-		    }
-		    if( interfaceToSubinterfaces.containsKey( c ) ) {
-			s.addAll( interfaceToSubinterfaces.get( c ) );
-		    }
-		    if( interfaceToImplementers.containsKey( c ) ) {
-			s.addAll( interfaceToImplementers.get( c ) );
-		    }
-		}
-		return ret;
-	    } else if( t instanceof RefType ) {
-		RefType concreteType = (RefType) t;
-		SootClass concreteClass = concreteType.getSootClass();
-		if( !canStoreClass( concreteClass, declaringClass ) ) {
-		    continue;
-		}
+                    }
+                    if( classToSubclasses.containsKey( c ) ) {
+                        s.addAll( (Collection) classToSubclasses.get( c ) );
+                    }
+                    if( interfaceToSubinterfaces.containsKey( c ) ) {
+                        s.addAll( interfaceToSubinterfaces.get( c ) );
+                    }
+                    if( interfaceToImplementers.containsKey( c ) ) {
+                        s.addAll( interfaceToImplementers.get( c ) );
+                    }
+                }
+                return ret;
+            } else if( t instanceof RefType ) {
+                RefType concreteType = (RefType) t;
+                SootClass concreteClass = concreteType.getSootClass();
+                if( !canStoreClass( concreteClass, declaringClass ) ) {
+                    continue;
+                }
                 SootMethod concreteM = null;
                 try {
                     concreteM = resolveConcreteDispatch( concreteClass, m );
@@ -336,66 +336,66 @@ public class FastHierarchy
                     concreteM = null;
                 }
                 if( concreteM != null ) ret.add( concreteM );
-	    } else if( t instanceof ArrayType ) {
+            } else if( t instanceof ArrayType ) {
                 SootMethod concreteM = null;
                 try {
                     concreteM = resolveConcreteDispatch( 
-			RefType.v( "java.lang.Object" ).getSootClass(), m );
+                        RefType.v( "java.lang.Object" ).getSootClass(), m );
                 } catch( Exception e ) {
                     concreteM = null;
                 }
                 if( concreteM != null ) ret.add( concreteM );
-	    } else throw new RuntimeException( "Unrecognized reaching type "+t );
-	}
-	return ret;
+            } else throw new RuntimeException( "Unrecognized reaching type "+t );
+        }
+        return ret;
     }
 
     public Collection resolveConcreteDispatch(Collection concreteTypes, SootMethod m, RefType declaredTypeOfBase ) {
 
-	Set ret = new HashSet();
-	SootClass declaringClass = declaredTypeOfBase.getSootClass();
+        Set ret = new HashSet();
+        SootClass declaringClass = declaredTypeOfBase.getSootClass();
         declaringClass.checkLevel(SootClass.HIERARCHY);
-	for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
-	    final Type t = (Type) tIt.next();
-	    if( t instanceof AnySubType ) {
-		String methodSig = m.getSubSignature();
-		HashSet s = new HashSet();
-		s.add( declaringClass );
-		while( !s.isEmpty() ) {
-		    SootClass c = (SootClass) s.iterator().next();
-		    s.remove( c );
-		    if( !c.isInterface() && !c.isAbstract()
+        for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
+            final Type t = (Type) tIt.next();
+            if( t instanceof AnySubType ) {
+                String methodSig = m.getSubSignature();
+                HashSet s = new HashSet();
+                s.add( declaringClass );
+                while( !s.isEmpty() ) {
+                    SootClass c = (SootClass) s.iterator().next();
+                    s.remove( c );
+                    if( !c.isInterface() && !c.isAbstract()
                             && canStoreClass( c, declaringClass ) ) {
-			SootMethod concreteM = resolveConcreteDispatch( c, m );
+                        SootMethod concreteM = resolveConcreteDispatch( c, m );
                         if( concreteM != null )
                             ret.add( concreteM );
-		    }
-		    if( classToSubclasses.containsKey( c ) ) {
-			s.addAll( (Collection) classToSubclasses.get( c ) );
-		    }
-		    if( interfaceToSubinterfaces.containsKey( c ) ) {
-			s.addAll( interfaceToSubinterfaces.get( c ) );
-		    }
-		    if( interfaceToImplementers.containsKey( c ) ) {
-			s.addAll( interfaceToImplementers.get( c ) );
-		    }
-		}
-		return ret;
-	    } else if( t instanceof RefType ) {
-		RefType concreteType = (RefType) t;
-		SootClass concreteClass = concreteType.getSootClass();
-		if( !canStoreClass( concreteClass, declaringClass ) ) {
-		    continue;
-		}
-		SootMethod concreteM = resolveConcreteDispatch( concreteClass, m );
+                    }
+                    if( classToSubclasses.containsKey( c ) ) {
+                        s.addAll( (Collection) classToSubclasses.get( c ) );
+                    }
+                    if( interfaceToSubinterfaces.containsKey( c ) ) {
+                        s.addAll( interfaceToSubinterfaces.get( c ) );
+                    }
+                    if( interfaceToImplementers.containsKey( c ) ) {
+                        s.addAll( interfaceToImplementers.get( c ) );
+                    }
+                }
+                return ret;
+            } else if( t instanceof RefType ) {
+                RefType concreteType = (RefType) t;
+                SootClass concreteClass = concreteType.getSootClass();
+                if( !canStoreClass( concreteClass, declaringClass ) ) {
+                    continue;
+                }
+                SootMethod concreteM = resolveConcreteDispatch( concreteClass, m );
                 if( concreteM != null ) ret.add( concreteM );
-	    } else if( t instanceof ArrayType ) {
-		SootMethod concreteM = resolveConcreteDispatch( 
-			RefType.v( "java.lang.Object" ).getSootClass(), m );
+            } else if( t instanceof ArrayType ) {
+                SootMethod concreteM = resolveConcreteDispatch( 
+                        RefType.v( "java.lang.Object" ).getSootClass(), m );
                 if( concreteM != null ) ret.add( concreteM );
-	    } else throw new RuntimeException( "Unrecognized reaching type "+t );
-	}
-	return ret;
+            } else throw new RuntimeException( "Unrecognized reaching type "+t );
+        }
+        return ret;
     }
 
     // Questions about method invocation.
@@ -462,24 +462,24 @@ public class FastHierarchy
     public SootMethod resolveConcreteDispatch(SootClass concreteType, SootMethod m)
     {
         concreteType.checkLevel(SootClass.HIERARCHY);
-	if( concreteType.isInterface() ) {
-	    throw new RuntimeException(
-		"A concrete type cannot be an interface: "+concreteType );
-	}
-	if( concreteType.isAbstract() ) {
-	    throw new RuntimeException(
-		"A concrete type cannot be abstract: "+concreteType );
-	}
+        if( concreteType.isInterface() ) {
+            throw new RuntimeException(
+                "A concrete type cannot be an interface: "+concreteType );
+        }
+        if( concreteType.isAbstract() ) {
+            throw new RuntimeException(
+                "A concrete type cannot be abstract: "+concreteType );
+        }
 
         String methodSig = m.getSubSignature();
-	while( true ) {
-	    if( concreteType.declaresMethod( methodSig ) ) {
+        while( true ) {
+            if( concreteType.declaresMethod( methodSig ) ) {
                 if( isVisible( concreteType, m ) ) {
                     return concreteType.getMethod( methodSig );
                 }
-	    }
+            }
             if( !concreteType.hasSuperclass() ) break;
-	    concreteType = concreteType.getSuperclass();
+            concreteType = concreteType.getSuperclass();
         }
         throw new RuntimeException("could not resolve concrete dispatch!\nType: "+concreteType+"\nMethod: "+m);
     }
