@@ -30,7 +30,7 @@ import soot.options.PaddleOptions;
 public final class PropIter extends AbsPropagator {
     public PropIter(  Rsrcc_src_dstc_dst simple,
             Rsrcc_src_fld_dstc_dst load,
-            Rsrcc_src_fld_dstc_dst store,
+            Rsrcc_src_dstc_dst_fld store,
             Robjc_obj_varc_var alloc,
             Qvarc_var_objc_obj propout,
             AbsPAG pag

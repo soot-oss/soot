@@ -29,11 +29,11 @@ public abstract class AbsPAG implements DepItem
 { 
     protected Rsrcc_src_dstc_dst simple;
     protected Rsrcc_src_fld_dstc_dst load;
-    protected Rsrcc_src_fld_dstc_dst store;
+    protected Rsrcc_src_dstc_dst_fld store;
     protected Robjc_obj_varc_var alloc;
 
     AbsPAG( Rsrcc_src_dstc_dst simple, Rsrcc_src_fld_dstc_dst load,
-            Rsrcc_src_fld_dstc_dst store, Robjc_obj_varc_var alloc ) {
+            Rsrcc_src_dstc_dst_fld store, Robjc_obj_varc_var alloc ) {
         this.simple = simple;
         this.load = load;
         this.store = store;
@@ -86,7 +86,7 @@ public abstract class AbsPAG implements DepItem
 
     public abstract Rsrcc_src_dstc_dst allSimple();
     public abstract Rsrcc_src_fld_dstc_dst allLoad();
-    public abstract Rsrcc_src_fld_dstc_dst allStore();
+    public abstract Rsrcc_src_dstc_dst_fld allStore();
     public abstract Robjc_obj_varc_var allAlloc();
 }
 

@@ -29,32 +29,26 @@ import java.util.*;
  */
 public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier
 { 
+    private BDDNodeInfo ni;
     public BDDMethodPAGContextifier(
+        BDDNodeInfo ni,
         Rsrc_dst simple,
         Rsrc_fld_dst load,
-        Rsrc_fld_dst store,
+        Rsrc_dst_fld store,
         Robj_var alloc,
 
-        Rvar_method_type locals,
-        Rvar_type globals,
-        Robj_method_type localallocs,
-        Robj_type globalallocs,
-
         Rctxt_method rcout,
-        Rsrcm_stmt_kind_tgtm_src_dst parms,
-        Rsrcm_stmt_kind_tgtm_src_dst rets,
-        Rsrcc_srcm_stmt_kind_tgtc_tgtm calls,
 
         Qsrcc_src_dstc_dst csimple,
         Qsrcc_src_fld_dstc_dst cload,
-        Qsrcc_src_fld_dstc_dst cstore,
+        Qsrcc_src_dstc_dst_fld cstore,
         Qobjc_obj_varc_var calloc ) 
     {
         super(
             simple, load, store, alloc,
-            locals, globals, localallocs, globalallocs,
-            rcout, parms, rets, calls,
+            rcout,
             csimple, cload, cstore, calloc );
+        this.ni = ni;
     }
 
     public boolean update() {
@@ -63,44 +57,39 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier
         <srcc, src, fld, dstc, dst> storeOut = 0B;
         <objc, obj, varc, var> allocOut = 0B;
 
-        localMap |= (type=>) locals.get();
-        globalSet |= (type=>) globals.get();
-        localallocMap |= (type=>) localallocs.get();
-        globalallocSet |= (type=>) globalallocs.get();
-
         <src, dst> newSimple = simple.get();
         csimple.add  ((( newSimple{src}><
-                         globalSet{var}){dst}><
-                               globalSet{var}){}><
+                         ni.globalSet(){var}){dst}><
+                               ni.globalSet(){var}){}><
                    new{null=>srcc, null=>dstc}{} );
-        mpagSimple |= newSimple{src}><localMap{var};
-        mpagSimple |= newSimple{dst}><localMap{var};
+        mpagSimple |= newSimple{src}><ni.localMap(){var};
+        mpagSimple |= newSimple{dst}><ni.localMap(){var};
         
         <src, fld, dst> newStore = store.get();
         cstore.add  ((( newStore {src}><
-                        globalSet{var}){dst}><
-                              globalSet{var}){}><
+                        ni.globalSet(){var}){dst}><
+                              ni.globalSet(){var}){}><
                   new{null=>srcc, null=>dstc}{} );
-        mpagStore |= newStore{src}><localMap{var};
-        mpagStore |= newStore{dst}><localMap{var};
+        mpagStore |= newStore{src}><ni.localMap(){var};
+        mpagStore |= newStore{dst}><ni.localMap(){var};
         
         <src, fld, dst> newLoad = load.get();
         cload.add  ((( newLoad  {src}><
-                       globalSet{var}){dst}><
-                             globalSet{var}){}><
+                       ni.globalSet(){var}){dst}><
+                             ni.globalSet(){var}){}><
                  new{null=>srcc, null=>dstc}{} );
-        mpagLoad |= newLoad{src}><localMap{var};
-        mpagLoad |= newLoad{dst}><localMap{var};
+        mpagLoad |= newLoad{src}><ni.localMap(){var};
+        mpagLoad |= newLoad{dst}><ni.localMap(){var};
         
         <var, obj> newAlloc = alloc.get();
         calloc.add  ((( newAlloc{var}><
-                       globalSet{var}){obj}><
-                        globalallocSet{obj}){}><
+                       ni.globalSet(){var}){obj}><
+                        ni.globalallocSet(){obj}){}><
                     new{null=>varc, null=>objc}{} );
-        mpagAlloc |= newAlloc{var}><localMap{var};
-        mpagAlloc |= newAlloc{obj}><localallocMap{obj};
+        mpagAlloc |= newAlloc{var}><ni.localMap(){var};
+        mpagAlloc |= newAlloc{obj}><ni.localallocMap(){obj};
         
-        <var> localSet = (method=>) localMap;
+        <var> localSet = (method=>) ni.localMap();
 
         <ctxt, method> contexts = rcout.get();
 
@@ -116,62 +105,43 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier
         <ctxt, var, obj> ctxtAlloc = contexts{method}<>mpagAlloc{method};
         allocOut |= ( (ctxt=>varc, ctxt=>objc) ctxtAlloc );
 
-        allParms |= parms.get();
-        allRets |= rets.get();
-
-        <srcc, srcm, stmt, kind, tgtc, tgtm> newCalls = calls.get();
-        simpleOut |= (tgtc=>dstc) 
-            newCalls{srcm, stmt, kind, tgtm} <>
-            allParms{srcm, stmt, kind, tgtm};
-        simpleOut |= (srcc=>dstc, tgtc=>srcc)
-            newCalls{srcm, stmt, kind, tgtm} <>
-             allRets{srcm, stmt, kind, tgtm};
-
-        <srcc, src, dstc, dst> globalDsts = simpleOut{dst} >< globalSet{var};
+        <srcc, src, dstc, dst> globalDsts = simpleOut{dst} >< ni.globalSet(){var};
         simpleOut -= globalDsts;
         simpleOut |= ((dstc=>) globalDsts){} >< new{null=>dstc}{};
-        <srcc, src, dstc, dst> globalSrcs = simpleOut{src} >< globalSet{var};
+        <srcc, src, dstc, dst> globalSrcs = simpleOut{src} >< ni.globalSet(){var};
         simpleOut -= globalSrcs;
         simpleOut |= ((srcc=>) globalSrcs){} >< new{null=>srcc}{};
         csimple.add(simpleOut);
 
-        <srcc, src, fld, dstc, dst> globalStoreDsts = storeOut{dst} >< globalSet{var};
+        <srcc, src, fld, dstc, dst> globalStoreDsts = storeOut{dst} >< ni.globalSet(){var};
         storeOut -= globalStoreDsts;
         storeOut |= ((dstc=>) globalStoreDsts){} >< new{null=>dstc}{};
-        <srcc, src, fld, dstc, dst> globalStoreSrcs = storeOut{src} >< globalSet{var};
+        <srcc, src, fld, dstc, dst> globalStoreSrcs = storeOut{src} >< ni.globalSet(){var};
         storeOut -= globalStoreSrcs;
         storeOut |= ((srcc=>) globalStoreSrcs){} >< new{null=>srcc}{};
         cstore.add(storeOut);
 
-        <srcc, src, fld, dstc, dst> globalLoadDsts = loadOut{dst} >< globalSet{var};
+        <srcc, src, fld, dstc, dst> globalLoadDsts = loadOut{dst} >< ni.globalSet(){var};
         loadOut -= globalLoadDsts;
         loadOut |= ((dstc=>) globalLoadDsts){} >< new{null=>dstc}{};
-        <srcc, src, fld, dstc, dst> globalLoadSrcs = loadOut{src} >< globalSet{var};
+        <srcc, src, fld, dstc, dst> globalLoadSrcs = loadOut{src} >< ni.globalSet(){var};
         loadOut -= globalLoadSrcs;
         loadOut |= ((srcc=>) globalLoadSrcs){} >< new{null=>srcc}{};
         cload.add(loadOut);
 
-        <objc, obj, varc, var> globalAllocDsts = allocOut{var} >< globalSet{var};
+        <objc, obj, varc, var> globalAllocDsts = allocOut{var} >< ni.globalSet(){var};
         allocOut -= globalAllocDsts;
         allocOut |= ((varc=>) globalAllocDsts){} >< new{null=>varc}{};
-        <objc, obj, varc, var> globalAllocSrcs = allocOut{obj} >< globalallocSet{obj};
+        <objc, obj, varc, var> globalAllocSrcs = allocOut{obj} >< ni.globalallocSet(){obj};
         allocOut -= globalAllocSrcs;
         allocOut |= ((objc=>) globalAllocSrcs){} >< new{null=>objc}{};
         calloc.add(allocOut);
         return false;
     }
 
-    private <var, method> localMap = 0B;
-    private <var> globalSet = 0B;
-    private <obj, method> localallocMap = 0B;
-    private <obj> globalallocSet = 0B;
-
     private <method, src, dst> mpagSimple = 0B;
     private <method, src, fld, dst> mpagStore = 0B;
     private <method, src, fld, dst> mpagLoad = 0B;
     private <method, var, obj> mpagAlloc = 0B;
-
-    private <srcm, stmt, kind, tgtm, src, dst> allParms = 0B;
-    private <srcm, stmt, kind, tgtm, src, dst> allRets = 0B;
 }
 

@@ -28,43 +28,27 @@ public abstract class AbsMethodPAGContextifier implements DepItem
 { 
     protected Rsrc_dst simple;
     protected Rsrc_fld_dst load;
-    protected Rsrc_fld_dst store;
+    protected Rsrc_dst_fld store;
     protected Robj_var alloc;
 
-    protected Rvar_method_type locals;
-    protected Rvar_type globals;
-    protected Robj_method_type localallocs;
-    protected Robj_type globalallocs;
-
     protected Rctxt_method rcout;
-    protected Rsrcm_stmt_kind_tgtm_src_dst parms;
-    protected Rsrcm_stmt_kind_tgtm_src_dst rets;
-    protected Rsrcc_srcm_stmt_kind_tgtc_tgtm calls;
 
     protected Qsrcc_src_dstc_dst csimple;
     protected Qsrcc_src_fld_dstc_dst cload;
-    protected Qsrcc_src_fld_dstc_dst cstore;
+    protected Qsrcc_src_dstc_dst_fld cstore;
     protected Qobjc_obj_varc_var calloc;
 
     public AbsMethodPAGContextifier(
         Rsrc_dst simple,
         Rsrc_fld_dst load,
-        Rsrc_fld_dst store,
+        Rsrc_dst_fld store,
         Robj_var alloc,
 
-        Rvar_method_type locals,
-        Rvar_type globals,
-        Robj_method_type localallocs,
-        Robj_type globalallocs,
-
         Rctxt_method rcout,
-        Rsrcm_stmt_kind_tgtm_src_dst parms,
-        Rsrcm_stmt_kind_tgtm_src_dst rets,
-        Rsrcc_srcm_stmt_kind_tgtc_tgtm calls,
 
         Qsrcc_src_dstc_dst csimple,
         Qsrcc_src_fld_dstc_dst cload,
-        Qsrcc_src_fld_dstc_dst cstore,
+        Qsrcc_src_dstc_dst_fld cstore,
         Qobjc_obj_varc_var calloc ) 
     {
         this.simple = simple;
@@ -72,15 +56,7 @@ public abstract class AbsMethodPAGContextifier implements DepItem
         this.store = store;
         this.alloc = alloc;
 
-        this.locals = locals;
-        this.globals = globals;
-        this.localallocs = localallocs;
-        this.globalallocs = globalallocs;
-
         this.rcout = rcout;
-        this.parms = parms;
-        this.rets = rets;
-        this.calls = calls;
 
         this.csimple = csimple;
         this.cload = cload;

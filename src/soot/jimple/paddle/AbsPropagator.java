@@ -28,14 +28,14 @@ public abstract class AbsPropagator implements DepItem
 { 
     protected Rsrcc_src_dstc_dst newSimple;
     protected Rsrcc_src_fld_dstc_dst newLoad;
-    protected Rsrcc_src_fld_dstc_dst newStore;
+    protected Rsrcc_src_dstc_dst_fld newStore;
     protected Robjc_obj_varc_var newAlloc;
     protected Qvarc_var_objc_obj ptout;
     protected AbsPAG pag;
 
     AbsPropagator( Rsrcc_src_dstc_dst simple,
             Rsrcc_src_fld_dstc_dst load,
-            Rsrcc_src_fld_dstc_dst store,
+            Rsrcc_src_dstc_dst_fld store,
             Robjc_obj_varc_var alloc,
             Qvarc_var_objc_obj ptout,
             AbsPAG pag

@@ -30,7 +30,7 @@ import jedd.*;
 public class BDDPAG extends AbsPAG
 { 
     BDDPAG( Rsrcc_src_dstc_dst simple, Rsrcc_src_fld_dstc_dst load,
-            Rsrcc_src_fld_dstc_dst store, Robjc_obj_varc_var alloc ) {
+            Rsrcc_src_dstc_dst_fld store, Robjc_obj_varc_var alloc ) {
         super( simple, load, store, alloc );
     }
     public boolean update() {
@@ -107,7 +107,7 @@ public class BDDPAG extends AbsPAG
 
     public Rsrcc_src_dstc_dst allSimple() { return new Rsrcc_src_dstc_dstBDD(simpleBDD, "allsimple"); }
     public Rsrcc_src_fld_dstc_dst allLoad() { return new Rsrcc_src_fld_dstc_dstBDD(loadBDD, "allload"); }
-    public Rsrcc_src_fld_dstc_dst allStore() { return new Rsrcc_src_fld_dstc_dstBDD(storeBDD, "allstore"); }
+    public Rsrcc_src_dstc_dst_fld allStore() { return new Rsrcc_src_dstc_dst_fldBDD(storeBDD, "allstore"); }
     public Robjc_obj_varc_var allAlloc() { return new Robjc_obj_varc_varBDD(allocBDD, "allalloc"); }
 
     private static class FieldRefIterator implements Iterator {

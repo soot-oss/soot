@@ -24,8 +24,8 @@ public class Qobjc_obj_varc_varDebug extends Qobjc_obj_varc_var {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { var.v(), objc.v(), varc.v(), obj.v() },
-                                              new PhysicalDomain[] { V1.v(), C2.v(), C1.v(), H1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { varc.v(), objc.v(), obj.v(), var.v() },
+                                              new PhysicalDomain[] { C1.v(), C2.v(), H1.v(), V1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qobjc_obj_varc" +
                                                "_varDebug.jedd:40,22-24"),

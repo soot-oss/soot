@@ -28,12 +28,12 @@ digraph overview {
     globalallocs [label="globalallocs\nAT"];
 
     simple [label="simple\nLL"];
-    store [label="store\nLFL"];
+    store [label="store\nLLF"];
     load [label="load\nLFL"];
     alloc [label="alloc\nAL"];
 
     csimple [label="csimple\nCLCL"];
-    cstore [label="cstore\nCLFCL"];
+    cstore [label="cstore\nCLCLF"];
     cload [label="cload\nCLFCL"];
     calloc [label="calloc\nCACL"];
 
@@ -79,22 +79,29 @@ digraph overview {
     MPB -> load;
     MPB -> alloc;
 
+    locals -> NI;
+    globals -> NI;
+    localallocs -> NI;
+    globalallocs -> NI;
+
     simple -> MPC;
     store -> MPC;
     load -> MPC;
     alloc -> MPC;
-    locals -> MPC;
-    globals -> MPC;
-    localallocs -> MPC;
-    globalallocs -> MPC;
     rcout -> MPC;
-    parms -> MPC;
-    rets -> MPC;
-    cgout -> MPC;
+
     MPC -> csimple;
     MPC -> cstore;
     MPC -> cload;
     MPC -> calloc;
+
+    parms -> CEC;
+    rets -> CEC;
+    cgout -> CEC;
+    CEC -> csimple;
+
+    NI -> MPC [style=dotted];
+    NI -> CEC [style=dotted];
 
     csimple -> PAG;
     cload -> PAG;

@@ -28,8 +28,8 @@ public class BDDObjSensStaticContextManager extends AbsStaticContextManager {
                                                                                                          new jedd.PhysicalDomain[] { C2.v() }),
                                                                           new jedd.PhysicalDomain[] { C1.v() },
                                                                           new jedd.PhysicalDomain[] { C2.v() }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), tgtc.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v() },
-                                                    new jedd.PhysicalDomain[] { C1.v(), C2.v(), KD.v(), MS.v(), ST.v(), MT.v() },
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { srcm.v(), kind.v(), tgtc.v(), srcc.v(), tgtm.v(), stmt.v() },
+                                                    new jedd.PhysicalDomain[] { MS.v(), KD.v(), C2.v(), C1.v(), MT.v(), ST.v() },
                                                     ("out.add(newOut) at /home/research/ccl/olhota/soot-trunk/src/" +
                                                      "soot/jimple/paddle/BDDObjSensStaticContextManager.jedd:37,8-" +
                                                      "11"),

@@ -28,8 +28,8 @@ public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD extends Rsrcc_srcm_stmt_kin
     
     public Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        add(new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), tgtc.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v() },
-                                                new PhysicalDomain[] { C1.v(), C2.v(), KD.v(), MS.v(), ST.v(), MT.v() },
+        add(new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), kind.v(), tgtc.v(), srcc.v(), tgtm.v(), stmt.v() },
+                                                new PhysicalDomain[] { MS.v(), KD.v(), C2.v(), C1.v(), MT.v(), ST.v() },
                                                 ("add(bdd) at /home/research/ccl/olhota/soot-trunk/src/soot/ji" +
                                                  "mple/paddle/queue/Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD.jedd:33," +
                                                  "134-137"),
@@ -56,8 +56,8 @@ public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD extends Rsrcc_srcm_stmt_kin
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), tgtc.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v() },
-                                                          new PhysicalDomain[] { C1.v(), C2.v(), KD.v(), MS.v(), ST.v(), MT.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), kind.v(), tgtc.v(), srcc.v(), tgtm.v(), stmt.v() },
+                                                          new PhysicalDomain[] { MS.v(), KD.v(), C2.v(), C1.v(), MT.v(), ST.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /home/research/ccl/" +
                                                            "olhota/soot-trunk/src/soot/jimple/paddle/queue/Rsrcc_srcm_st" +
                                                            "mt_kind_tgtc_tgtmBDD.jedd:45,25-28"),
@@ -93,8 +93,8 @@ public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD extends Rsrcc_srcm_stmt_kin
                                                "66"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), tgtc.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v() },
-                                                   new PhysicalDomain[] { C1.v(), C2.v(), KD.v(), MS.v(), ST.v(), MT.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), kind.v(), tgtc.v(), srcc.v(), tgtm.v(), stmt.v() },
+                                                   new PhysicalDomain[] { MS.v(), KD.v(), C2.v(), C1.v(), MT.v(), ST.v() },
                                                    ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
                                                     "/jimple/paddle/queue/Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD.jedd:" +
                                                     "57,8-14"),

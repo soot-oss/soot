@@ -86,14 +86,14 @@ public class TradTypeManager extends AbsTypeManager {
                                                        jedd.internal.Jedd.v().trueBDD());
         if (bddGetter == null) bddGetter = this.new BDDGetter();
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), obj.v() },
-                                                   new jedd.PhysicalDomain[] { V2.v(), H2.v() },
+                                                   new jedd.PhysicalDomain[] { V1.v(), H2.v() },
                                                    ("return jedd.internal.Jedd.v().replace(bddGetter.get(), new j" +
                                                     "edd.PhysicalDomain[...], new jedd.PhysicalDomain[...]); at /" +
                                                     "home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle/T" +
                                                     "radTypeManager.jedd:94,8-14"),
                                                    jedd.internal.Jedd.v().replace(bddGetter.get(),
-                                                                                  new jedd.PhysicalDomain[] { V1.v(), H1.v() },
-                                                                                  new jedd.PhysicalDomain[] { V2.v(), H2.v() }));
+                                                                                  new jedd.PhysicalDomain[] { H1.v() },
+                                                                                  new jedd.PhysicalDomain[] { H2.v() }));
     }
     
     class BDDGetter {
@@ -165,8 +165,8 @@ public class TradTypeManager extends AbsTypeManager {
                                                                 varNodes,
                                                                 new jedd.PhysicalDomain[] { T1.v() }));
             cachedVarNodes.eqUnion(varNodes);
-            return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), obj.v() },
-                                                       new jedd.PhysicalDomain[] { V1.v(), H1.v() },
+            return new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), var.v() },
+                                                       new jedd.PhysicalDomain[] { H1.v(), V1.v() },
                                                        ("return cachedVarObj; at /home/research/ccl/olhota/soot-trunk" +
                                                         "/src/soot/jimple/paddle/TradTypeManager.jedd:125,12-18"),
                                                        cachedVarObj);

@@ -29,7 +29,7 @@ import soot.options.PaddleOptions;
  */
 
 public final class PropAlias extends AbsPropagator {
-    public PropAlias( Rsrcc_src_dstc_dst simple, Rsrcc_src_fld_dstc_dst load, Rsrcc_src_fld_dstc_dst store,
+    public PropAlias( Rsrcc_src_dstc_dst simple, Rsrcc_src_fld_dstc_dst load, Rsrcc_src_dstc_dst_fld store,
             Robjc_obj_varc_var alloc, Qvarc_var_objc_obj propout, AbsPAG pag ) {
         super( simple, load, store, alloc, propout, pag );
         inSets = new P2SetMap();

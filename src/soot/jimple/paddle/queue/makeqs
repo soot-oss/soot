@@ -4,10 +4,12 @@ $HOME/makeq VarNode var V1 SootMethod srcm MS Unit stmt ST NumberedString signat
 $HOME/makeq VarNode var V1 SootMethod srcm MS Unit stmt ST SootMethod tgtm MT
 $HOME/makeq VarNode src V1 VarNode dst V2
 $HOME/makeq VarNode src V1 PaddleField fld FD VarNode dst V2
+$HOME/makeq VarNode src V1 VarNode dst V2 PaddleField fld FD
 $HOME/makeq AllocNode obj H1 VarNode var V1
 $HOME/makeq VarNode var V1 AllocNode obj H1
 $HOME/makeq Context srcc C1 VarNode src V1 Context dstc C2 VarNode dst V2
 $HOME/makeq Context srcc C1 VarNode src V1 PaddleField fld FD Context dstc C2 VarNode dst V2
+$HOME/makeq Context srcc C1 VarNode src V1 Context dstc C2 VarNode dst V2 PaddleField fld FD
 $HOME/makeq Context objc C2 AllocNode obj H1 Context varc C1 VarNode var V1
 $HOME/makeq Context varc C1 VarNode var V1 Context objc C2 AllocNode obj H1
 $HOME/makeq AllocNode obj H1

@@ -28,120 +28,103 @@ import java.util.*;
  */
 public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
 { 
+    private TradNodeInfo ni;
     public TradMethodPAGContextifier(
+        TradNodeInfo ni,
         Rsrc_dst simple,
         Rsrc_fld_dst load,
-        Rsrc_fld_dst store,
+        Rsrc_dst_fld store,
         Robj_var alloc,
 
-        Rvar_method_type locals,
-        Rvar_type globals,
-        Robj_method_type localallocs,
-        Robj_type globalallocs,
-
         Rctxt_method rcout,
-        Rsrcm_stmt_kind_tgtm_src_dst parms,
-        Rsrcm_stmt_kind_tgtm_src_dst rets,
-        Rsrcc_srcm_stmt_kind_tgtc_tgtm calls,
 
         Qsrcc_src_dstc_dst csimple,
         Qsrcc_src_fld_dstc_dst cload,
-        Qsrcc_src_fld_dstc_dst cstore,
+        Qsrcc_src_dstc_dst_fld cstore,
         Qobjc_obj_varc_var calloc ) 
     {
         super(
             simple, load, store, alloc,
-            locals, globals, localallocs, globalallocs,
-            rcout, parms, rets, calls,
+            rcout,
             csimple, cload, cstore, calloc );
+        this.ni = ni;
     }
 
     public boolean update() {
+        boolean change = false;
         if( !PaddleScene.v().depMan.checkPrec(this) ) throw new RuntimeException();
-        for( Iterator tIt = locals.iterator(); tIt.hasNext(); ) {
-            final Rvar_method_type.Tuple t = (Rvar_method_type.Tuple) tIt.next();
-            localMap.put(t.var(), t.method());
-        }
-        for( Iterator tIt = globals.iterator(); tIt.hasNext(); ) {
-            final Rvar_type.Tuple t = (Rvar_type.Tuple) tIt.next();
-            globalSet.add(t.var());
-        }
-        for( Iterator tIt = localallocs.iterator(); tIt.hasNext(); ) {
-            final Robj_method_type.Tuple t = (Robj_method_type.Tuple) tIt.next();
-            localallocMap.put(t.obj(), t.method());
-        }
-        for( Iterator tIt = globalallocs.iterator(); tIt.hasNext(); ) {
-            final Robj_type.Tuple t = (Robj_type.Tuple) tIt.next();
-            globalallocSet.add(t.obj());
-        }
         for( Iterator tIt = simple.iterator(); tIt.hasNext(); ) {
             final Rsrc_dst.Tuple t = (Rsrc_dst.Tuple) tIt.next();
-            if( global(t.src()) ) {
-                if( global(t.dst()) ) {
+            if( ni.global(t.src()) ) {
+                if( ni.global(t.dst()) ) {
                     addSimple( null, t.src(), null, t.dst() );
+                    change = true;
                 } else {
-                    mpag( method( t.dst() ) ).simple.add(t);
+                    mpag( ni.method( t.dst() ) ).simple.add(t);
                 }
             } else {
-                if( global(t.dst()) ) {
-                    mpag( method( t.src() ) ).simple.add(t);
+                if( ni.global(t.dst()) ) {
+                    mpag( ni.method( t.src() ) ).simple.add(t);
                 } else {
-                    SootMethod m = method(t.src());
-                    if( m != method(t.dst()) ) throw new RuntimeException(t.toString());
+                    SootMethod m = ni.method(t.src());
+                    if( m != ni.method(t.dst()) ) throw new RuntimeException(t.toString());
                     mpag(m).simple.add(t);
                 }
             }
         }
         for( Iterator tIt = store.iterator(); tIt.hasNext(); ) {
-            final Rsrc_fld_dst.Tuple t = (Rsrc_fld_dst.Tuple) tIt.next();
-            if( global(t.src()) ) {
-                if( global(t.dst()) ) {
+            final Rsrc_dst_fld.Tuple t = (Rsrc_dst_fld.Tuple) tIt.next();
+            if( ni.global(t.src()) ) {
+                if( ni.global(t.dst()) ) {
                     addStore( null, t.src(), t.fld(), null, t.dst() );
+                    change = true;
                 } else {
-                    mpag( method( t.dst() ) ).store.add(t);
+                    mpag( ni.method( t.dst() ) ).store.add(t);
                 }
             } else {
-                if( global(t.dst()) ) {
-                    mpag( method( t.src() ) ).store.add(t);
+                if( ni.global(t.dst()) ) {
+                    mpag( ni.method( t.src() ) ).store.add(t);
                 } else {
-                    SootMethod m = method(t.src());
-                    if( m != method(t.dst()) ) throw new RuntimeException(t.toString());
+                    SootMethod m = ni.method(t.src());
+                    if( m != ni.method(t.dst()) ) throw new RuntimeException(t.toString());
                     mpag(m).store.add(t);
                 }
             }
         }
         for( Iterator tIt = load.iterator(); tIt.hasNext(); ) {
             final Rsrc_fld_dst.Tuple t = (Rsrc_fld_dst.Tuple) tIt.next();
-            if( global(t.src()) ) {
-                if( global(t.dst()) ) {
+            if( ni.global(t.src()) ) {
+                if( ni.global(t.dst()) ) {
                     addLoad( null, t.src(), t.fld(), null, t.dst() );
+                    change = true;
                 } else {
-                    mpag( method( t.dst() ) ).load.add(t);
+                    mpag( ni.method( t.dst() ) ).load.add(t);
                 }
             } else {
-                if( global(t.dst()) ) {
-                    mpag( method( t.src() ) ).load.add(t);
+                if( ni.global(t.dst()) ) {
+                    mpag( ni.method( t.src() ) ).load.add(t);
                 } else {
-                    SootMethod m = method(t.src());
-                    if( m != method(t.dst()) ) throw new RuntimeException(t.toString());
+                    SootMethod m = ni.method(t.src());
+                    if( m != ni.method(t.dst()) ) throw new RuntimeException(t.toString());
                     mpag(m).load.add(t);
                 }
             }
         }
         for( Iterator tIt = alloc.iterator(); tIt.hasNext(); ) {
             final Robj_var.Tuple t = (Robj_var.Tuple) tIt.next();
-            if( global(t.obj()) ) {
-                if( global(t.var()) ) {
+            if( ni.global(t.obj()) ) {
+                if( ni.global(t.var()) ) {
                     addAlloc( null, t.obj(), null, t.var() );
+                    change = true;
                 } else {
-                    mpag( method( t.var() ) ).alloc.add(t);
+                    mpag( ni.method( t.var() ) ).alloc.add(t);
                 }
             } else {
-                if( global(t.var()) ) {
-                    mpag( method( t.obj() ) ).alloc.add(t);
+                if( ni.global(t.var()) ) {
+                    mpag( ni.method( t.obj() ) ).alloc.add(t);
                 } else {
-                    SootMethod m = method(t.obj());
-                    if( m != method(t.var()) ) throw new RuntimeException(t.toString());
+                    SootMethod m = ni.method(t.obj());
+                    if( m != ni.method(t.var()) ) throw new RuntimeException(t.toString());
                     mpag(m).alloc.add(t);
                 }
             }
@@ -152,58 +135,25 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
             for( Iterator eIt = mpag.rsimple.copy().iterator(); eIt.hasNext(); ) {
                 final Rsrc_dst.Tuple e = (Rsrc_dst.Tuple) eIt.next();
                 addSimple( t.ctxt(), e.src(), t.ctxt(), e.dst() );
+                change = true;
             }
             for( Iterator eIt = mpag.rstore.copy().iterator(); eIt.hasNext(); ) {
-                final Rsrc_fld_dst.Tuple e = (Rsrc_fld_dst.Tuple) eIt.next();
+                final Rsrc_dst_fld.Tuple e = (Rsrc_dst_fld.Tuple) eIt.next();
                 addStore( t.ctxt(), e.src(), e.fld(), t.ctxt(), e.dst() );
+                change = true;
             }
             for( Iterator eIt = mpag.rload.copy().iterator(); eIt.hasNext(); ) {
                 final Rsrc_fld_dst.Tuple e = (Rsrc_fld_dst.Tuple) eIt.next();
                 addLoad( t.ctxt(), e.src(), e.fld(), t.ctxt(), e.dst() );
+                change = true;
             }
             for( Iterator eIt = mpag.ralloc.copy().iterator(); eIt.hasNext(); ) {
                 final Robj_var.Tuple e = (Robj_var.Tuple) eIt.next();
                 addAlloc( t.ctxt(), e.obj(), t.ctxt(), e.var() );
+                change = true;
             }
         }
-        for( Iterator tIt = parms.iterator(); tIt.hasNext(); ) {
-            final Rsrcm_stmt_kind_tgtm_src_dst.Tuple t = (Rsrcm_stmt_kind_tgtm_src_dst.Tuple) tIt.next();
-            Cons edge = new Cons(new Cons(t.srcm(), t.stmt()),
-                                 new Cons(t.kind(), t.tgtm()));
-            Collection parmColl = (Collection) parmMap.get(edge);
-            if( parmColl == null ) parmMap.put(edge, parmColl = new ArrayList());
-            parmColl.add( new Cons(t.src(), t.dst()));
-        }
-        for( Iterator tIt = rets.iterator(); tIt.hasNext(); ) {
-            final Rsrcm_stmt_kind_tgtm_src_dst.Tuple t = (Rsrcm_stmt_kind_tgtm_src_dst.Tuple) tIt.next();
-            Cons edge = new Cons(new Cons(t.srcm(), t.stmt()),
-                                 new Cons(t.kind(), t.tgtm()));
-            Collection retColl = (Collection) retMap.get(edge);
-            if( retColl == null ) retMap.put(edge, retColl = new ArrayList());
-            retColl.add( new Cons(t.src(), t.dst()));
-        }
-        for( Iterator tIt = calls.iterator(); tIt.hasNext(); ) {
-            final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
-            Cons edge = new Cons(new Cons(t.srcm(), t.stmt()),
-                                 new Cons(t.kind(), t.tgtm()));
-            Collection parmColl = (Collection) parmMap.get(edge);
-            if( parmColl != null ) {
-                for( Iterator callIt = parmColl.iterator(); callIt.hasNext(); ) {
-                    final Cons call = (Cons) callIt.next();
-                    addSimple( t.srcc(), (VarNode)call.car(),
-                                 t.tgtc(), (VarNode)call.cdr() );
-                }
-            }
-            Collection retColl = (Collection) retMap.get(edge);
-            if( retColl != null ) {
-                for( Iterator retIt = retColl.iterator(); retIt.hasNext(); ) {
-                    final Cons ret = (Cons) retIt.next();
-                    addSimple( t.tgtc(), (VarNode)ret.car(),
-                                 t.srcc(), (VarNode)ret.cdr() );
-                }
-            }
-        }
-        return true;
+        return change;
     }
 
     private void addSimple( Context srcc, VarNode src, Context dstc, VarNode dst ) {
@@ -215,7 +165,7 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
     private void addStore( Context srcc, VarNode src, PaddleField fld, Context dstc, VarNode dst ) {
         if( src instanceof GlobalVarNode ) srcc = null;
         if( dst instanceof GlobalVarNode ) dstc = null;
-        cstore.add( srcc, src, fld, dstc, dst );
+        cstore.add( srcc, src, dstc, dst, fld );
     }
 
     private void addLoad( Context srcc, VarNode src, PaddleField fld, Context dstc, VarNode dst ) {
@@ -230,24 +180,6 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
         calloc.add( objc, obj, varc, var );
     }
 
-    private SootMethod method(VarNode v) {
-        SootMethod ret = (SootMethod) localMap.get(v);
-        if( ret == null ) throw new RuntimeException("no method: "+v );
-        return ret;
-    }
-    private boolean global(VarNode v) {
-        return globalSet.contains(v);
-    }
-
-    private SootMethod method(AllocNode v) {
-        SootMethod ret = (SootMethod) localallocMap.get(v);
-        if( ret == null ) throw new RuntimeException("no method: "+v );
-        return ret;
-    }
-    private boolean global(AllocNode v) {
-        return globalallocSet.contains(v);
-    }
-
     private MethodPAG mpag(SootMethod m) {
         MethodPAG ret = (MethodPAG) methodPAGs.get(m);
         if( ret == null ) methodPAGs.put( m, ret = new MethodPAG() );
@@ -257,25 +189,14 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
     private static class MethodPAG {
         Qsrc_dstTrad simple = new Qsrc_dstTrad("mpagsimple");
         Qsrc_fld_dstTrad load = new Qsrc_fld_dstTrad("mpagload");
-        Qsrc_fld_dstTrad store = new Qsrc_fld_dstTrad("mpagstore");
+        Qsrc_dst_fldTrad store = new Qsrc_dst_fldTrad("mpagstore");
         Qobj_varTrad alloc = new Qobj_varTrad("mpagalloc");
         Rsrc_dstTrad rsimple = (Rsrc_dstTrad) simple.reader("mpag");
         Rsrc_fld_dstTrad rload = (Rsrc_fld_dstTrad) load.reader("mpag");
-        Rsrc_fld_dstTrad rstore = (Rsrc_fld_dstTrad) store.reader("mpag");
+        Rsrc_dst_fldTrad rstore = (Rsrc_dst_fldTrad) store.reader("mpag");
         Robj_varTrad ralloc = (Robj_varTrad) alloc.reader("mpag");
     }
 
-    private LargeNumberedMap localMap =
-        new LargeNumberedMap(PaddleNumberers.v().varNodeNumberer());
-    private NumberedSet globalSet =
-        new NumberedSet(PaddleNumberers.v().varNodeNumberer());
-    private LargeNumberedMap localallocMap =
-        new LargeNumberedMap(PaddleNumberers.v().allocNodeNumberer());
-    private NumberedSet globalallocSet =
-        new NumberedSet(PaddleNumberers.v().allocNodeNumberer());
-
     private LargeNumberedMap methodPAGs = new LargeNumberedMap(Scene.v().getMethodNumberer());
-    private Map parmMap = new HashMap();
-    private Map retMap = new HashMap();
 }
 

@@ -34,7 +34,7 @@ public class TradMethodPAGBuilder extends AbsMethodPAGBuilder
         Rctxt_method in,
         Qsrc_dst simple,
         Qsrc_fld_dst load,
-        Qsrc_fld_dst store,
+        Qsrc_dst_fld store,
         Qobj_var alloc ) {
         super(in, simple, load, store, alloc);
     }

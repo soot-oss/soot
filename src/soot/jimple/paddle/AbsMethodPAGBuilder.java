@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
+ * Copyright (C) 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,14 +29,14 @@ public abstract class AbsMethodPAGBuilder implements DepItem
     protected Rctxt_method in;
     protected Qsrc_dst simple;
     protected Qsrc_fld_dst load;
-    protected Qsrc_fld_dst store;
+    protected Qsrc_dst_fld store;
     protected Qobj_var alloc;
 
     AbsMethodPAGBuilder( 
         Rctxt_method in,
         Qsrc_dst simple,
         Qsrc_fld_dst load,
-        Qsrc_fld_dst store,
+        Qsrc_dst_fld store,
         Qobj_var alloc ) {
         this.in = in;
         this.simple = simple;

@@ -29,14 +29,14 @@ public abstract class AbsPAGBuilder implements DepItem
     protected Rsrcc_srcm_stmt_kind_tgtc_tgtm in;
     protected Qsrcc_src_dstc_dst simple;
     protected Qsrcc_src_fld_dstc_dst load;
-    protected Qsrcc_src_fld_dstc_dst store;
+    protected Qsrcc_src_dstc_dst_fld store;
     protected Qobjc_obj_varc_var alloc;
 
     AbsPAGBuilder( 
         Rsrcc_srcm_stmt_kind_tgtc_tgtm in,
         Qsrcc_src_dstc_dst simple,
         Qsrcc_src_fld_dstc_dst load,
-        Qsrcc_src_fld_dstc_dst store,
+        Qsrcc_src_dstc_dst_fld store,
         Qobjc_obj_varc_var alloc ) {
         this.in = in;
         this.simple = simple;

@@ -34,7 +34,7 @@ public class ContextNode extends Node {
             return ContextFieldRefNode.make( ctxt, (FieldRefNode) node );
         if( node instanceof AllocNode ) 
             return ContextAllocNode.make( ctxt, (AllocNode) node );
-        throw new RuntimeException();
+        throw new RuntimeException(node.getClass().toString());
     }
     protected ContextNode( Context ctxt, Node node ) {
         this.ctxt = ctxt;

@@ -28,7 +28,7 @@ import java.util.*;
 public class TradPAG extends AbsPAG
 { 
     TradPAG( Rsrcc_src_dstc_dst simple, Rsrcc_src_fld_dstc_dst load,
-            Rsrcc_src_fld_dstc_dst store, Robjc_obj_varc_var alloc ) {
+            Rsrcc_src_dstc_dst_fld store, Robjc_obj_varc_var alloc ) {
         super( simple, load, store, alloc);
     }
     public boolean update() {
@@ -42,7 +42,7 @@ public class TradPAG extends AbsPAG
             if( add( t.srcc(), t.src().dot( t.fld() ), t.dstc(), t.dst(), loadMap ) ) ret = true;
         }
         for( Iterator tIt = store.iterator(); tIt.hasNext(); ) {
-            final Rsrcc_src_fld_dstc_dst.Tuple t = (Rsrcc_src_fld_dstc_dst.Tuple) tIt.next();
+            final Rsrcc_src_dstc_dst_fld.Tuple t = (Rsrcc_src_dstc_dst_fld.Tuple) tIt.next();
             if( add( t.srcc(), t.src(), t.dstc(), t.dst().dot( t.fld() ), storeMap ) ) ret = true;
         }
         for( Iterator tIt = alloc.iterator(); tIt.hasNext(); ) {
@@ -128,15 +128,15 @@ public class TradPAG extends AbsPAG
         }
         return ret;
     }
-    public Rsrcc_src_fld_dstc_dst allStore() {
-        Qsrcc_src_fld_dstc_dst q = new Qsrcc_src_fld_dstc_dstTrad("allstore");
-        Rsrcc_src_fld_dstc_dst ret = q.reader("allstore");
+    public Rsrcc_src_dstc_dst_fld allStore() {
+        Qsrcc_src_dstc_dst_fld q = new Qsrcc_src_dstc_dst_fldTrad("allstore");
+        Rsrcc_src_dstc_dst_fld ret = q.reader("allstore");
         for( Iterator srcIt = storeSources(); srcIt.hasNext(); ) {
             final ContextVarNode src = (ContextVarNode) srcIt.next();
             Iterator dstIt = storeLookup(src);
             while( dstIt.hasNext() ) {
                 final ContextFieldRefNode dst = (ContextFieldRefNode) dstIt.next();
-                q.add( src.ctxt(), src.var(), dst.field(), dst.ctxt(), dst.base().var() );
+                q.add( src.ctxt(), src.var(), dst.ctxt(), dst.base().var(), dst.field() );
             }
         }
         return ret;

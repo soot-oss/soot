@@ -30,11 +30,11 @@ public class BDD1CFAVirtualContextManager extends AbsVirtualContextManager {
                                               jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().project(jedd.internal.Jedd.v().replace(in.get(),
                                                                                                                                         new jedd.PhysicalDomain[] { C2.v(), ST.v() },
                                                                                                                                         new jedd.PhysicalDomain[] { C1.v(), C2.v() }),
-                                                                                                         new jedd.PhysicalDomain[] { V1.v(), H1.v() }),
+                                                                                                         new jedd.PhysicalDomain[] { H1.v(), V1.v() }),
                                                                           new jedd.PhysicalDomain[] { C2.v() },
                                                                           new jedd.PhysicalDomain[] { ST.v() }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), tgtc.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v() },
-                                                    new jedd.PhysicalDomain[] { C1.v(), C2.v(), KD.v(), MS.v(), ST.v(), MT.v() },
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { srcm.v(), kind.v(), tgtc.v(), srcc.v(), tgtm.v(), stmt.v() },
+                                                    new jedd.PhysicalDomain[] { MS.v(), KD.v(), C2.v(), C1.v(), MT.v(), ST.v() },
                                                     ("out.add(newOut) at /home/research/ccl/olhota/soot-trunk/src/" +
                                                      "soot/jimple/paddle/BDD1CFAVirtualContextManager.jedd:37,8-11"),
                                                     newOut));

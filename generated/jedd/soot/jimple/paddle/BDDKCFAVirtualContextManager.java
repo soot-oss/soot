@@ -46,20 +46,20 @@ public class BDDKCFAVirtualContextManager extends AbsVirtualContextManager {
                                               jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().project(jedd.internal.Jedd.v().replace(in.get(),
                                                                                                                                         new PhysicalDomain[] { C2.v() },
                                                                                                                                         new PhysicalDomain[] { C1.v() }),
-                                                                                                         new PhysicalDomain[] { V1.v(), H1.v() }),
+                                                                                                         new PhysicalDomain[] { H1.v(), V1.v() }),
                                                                           new PhysicalDomain[] { ST.v() },
                                                                           new PhysicalDomain[] { C2.v() }));
         newEdges.eq(jedd.internal.Jedd.v().cast((jedd.internal.RelationContainer)
-                                                  new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), tgtc.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v() },
-                                                                                      new PhysicalDomain[] { C1.v(), C2.v(), KD.v(), MS.v(), ST.v(), MT.v() },
+                                                  new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), kind.v(), tgtc.v(), srcc.v(), tgtm.v(), stmt.v() },
+                                                                                      new PhysicalDomain[] { MS.v(), KD.v(), C2.v(), C1.v(), MT.v(), ST.v() },
                                                                                       ("newEdges.applyShifter(shifter) at /home/research/ccl/olhota/" +
                                                                                        "soot-trunk/src/soot/jimple/paddle/BDDKCFAVirtualContextManag" +
                                                                                        "er.jedd:52,12-20"),
                                                                                       newEdges).applyShifter(shifter),
                                                 new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() },
                                                 new PhysicalDomain[] { C1.v(), MS.v(), ST.v(), KD.v(), C2.v(), MT.v() }));
-        out.add(new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), tgtc.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v() },
-                                                    new PhysicalDomain[] { C1.v(), C2.v(), KD.v(), MS.v(), ST.v(), MT.v() },
+        out.add(new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), kind.v(), tgtc.v(), srcc.v(), tgtm.v(), stmt.v() },
+                                                    new PhysicalDomain[] { MS.v(), KD.v(), C2.v(), C1.v(), MT.v(), ST.v() },
                                                     ("out.add(newEdges) at /home/research/ccl/olhota/soot-trunk/sr" +
                                                      "c/soot/jimple/paddle/BDDKCFAVirtualContextManager.jedd:53,8-" +
                                                      "11"),

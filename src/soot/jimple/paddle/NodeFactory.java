@@ -30,7 +30,7 @@ public class NodeFactory {
     public NodeFactory( 
         Qsrc_dst simple,
         Qsrc_fld_dst load,
-        Qsrc_fld_dst store,
+        Qsrc_dst_fld store,
         Qobj_var alloc ) {
         this.simple = simple;
         this.load = load;
@@ -41,7 +41,7 @@ public class NodeFactory {
     protected NodeManager nm = PaddleScene.v().nodeManager();
     protected Qsrc_dst simple;
     protected Qsrc_fld_dst load;
-    protected Qsrc_fld_dst store;
+    protected Qsrc_dst_fld store;
     protected Qobj_var alloc;
     
     final public Node casePrivilegedActionException() {
@@ -156,7 +156,7 @@ public class NodeFactory {
                 simple.add( (VarNode) src, (VarNode) dst );
             } else if( dst instanceof FieldRefNode ) {
                 FieldRefNode fdst = (FieldRefNode) dst;
-                store.add( (VarNode) src, fdst.field(), fdst.base() );
+                store.add( (VarNode) src, fdst.base(), fdst.field() );
             } else throw new RuntimeException( "Bad PA edge "+src+" -> "+dst );
         } else if( src instanceof FieldRefNode ) {
             FieldRefNode fsrc = (FieldRefNode) src;
