@@ -3213,7 +3213,33 @@ public class JimpleBodyBuilder {
      * Gets the Soot Method form the given Soot Class
      */
     private soot.SootMethod getMethodFromClass(soot.SootClass sootClass, String name, ArrayList paramTypes, soot.Type returnType) {
-        return sootClass.getMethod(name, paramTypes, returnType);
+        //System.out.println("soot class: "+sootClass.getName());
+        //System.out.println("has meths: "+sootClass.getMethods());
+        //System.out.println("method name: "+name);
+        //System.out.println("method param types: "+paramTypes);
+        try {
+        //if (sootClass.declaresMethod(name, paramTypes, returnType)){
+            return sootClass.getMethod(name, paramTypes, returnType);
+        }
+        catch(Exception e){
+        //else {
+            // its possible we're looking for a init method for an inner
+            // class and we have a subclass as the outerclass this ref param
+            // type but the actually method uses the super class
+            if (paramTypes != null && !paramTypes.isEmpty()){
+                soot.SootClass firstParam = ((soot.RefType)paramTypes.get(0)).getSootClass();
+        
+                boolean foundMeth = false;
+                while (!foundMeth){
+                    paramTypes.set(0, firstParam.getSuperclass().getType());
+                    if (sootClass.declaresMethod(name, paramTypes, returnType)){
+                        return sootClass.getMethod(name, paramTypes, returnType);
+                    }
+                    firstParam = firstParam.getSuperclass();
+                }
+            }
+        }
+        return null;
     }
   
     /**
