@@ -106,7 +106,9 @@ public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExp
     {
         Value op = opBox.getValue();
 
-        if(op.getType().equals(IntType.v()))
+        if(op.getType().equals(IntType.v()) || op.getType().equals(ByteType.v()) ||
+            op.getType().equals(ShortType.v()) || op.getType().equals(BooleanType.v()) || 
+            op.getType().equals(CharType.v()))
             return IntType.v();
         else if(op.getType().equals(LongType.v()))
             return LongType.v();

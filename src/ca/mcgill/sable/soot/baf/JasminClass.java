@@ -1762,7 +1762,7 @@ public class JasminClass
                 SootMethod m = i.getMethod();
 
                 emit("invokeinterface " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m),
+                    m.getName() + jasminDescriptorOf(m) + " " + (argCountOf(m) + 1),
                     -(argCountOf(m) + 1) + sizeOfType(m.getReturnType()));
             }
 

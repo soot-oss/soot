@@ -2661,7 +2661,7 @@ public class JasminClass
                 });
             }
 
-            public void caseNegExpr(NegExpr v)
+            public void caseNegExpr(final NegExpr v)
             {
                 emitValue(v.getOp());
 
@@ -2695,7 +2695,7 @@ public class JasminClass
 
                     public void defaultCase(Type t)
                     {
-                        throw new RuntimeException("Invalid argument type for neg");
+                        throw new RuntimeException("Invalid argument type for neg: " + t + ": " + v);
                     }
                 });
 
