@@ -133,7 +133,7 @@ public class Main implements Runnable
             str = ".class";
             break;
         case DAVA:
-	    if (withPackages)
+	    if (withPackagedOutput)
 		str = ".java";
 	    else
 		str = ".dava";
@@ -161,7 +161,7 @@ public class Main implements Runnable
 	if ((path.length() > 0) && (path.charAt( path.length() - 1) != fileSeparator))
 	    path.append( fileSeparator);
 	
-	if (getWithPackages()) {
+	if (getWithPackagedOutput()) {
 
 	    int index = name.lastIndexOf( '.');
 	    
@@ -279,8 +279,8 @@ public class Main implements Runnable
     static private int targetExtension = CLASS;
     static private String xmlInputFile = null;
     static private boolean produceXmlOutput = false;
-    static private boolean withPackages = false;
-    static private boolean usedPackageSwitch = false;
+    static private boolean withPackagedOutput = false;
+    static private boolean usedPackagedOutputSwitch = false;
 
     static public int totalFlowNodes, totalFlowComputations;
 
@@ -447,13 +447,13 @@ public class Main implements Runnable
         return isVerbose;
     }
 
-    public static void setWithPackages(boolean val)
+    public static void setWithPackagedOutput(boolean val)
     {
-	withPackages = val;
+	withPackagedOutput = val;
     }
-    public static boolean getWithPackages()
+    public static boolean getWithPackagedOutput()
     {
-	return withPackages;
+	return withPackagedOutput;
     }
     
 
@@ -681,7 +681,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.31)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.32)");
 	System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -840,13 +840,13 @@ public class Main implements Runnable
 	    setProfiling(true);
 
 	while (cl.contains("no-packages")) {
-	    setWithPackages(false);
-	    usedPackageSwitch = true;
+	    setWithPackagedOutput(false);
+	    usedPackagedOutputSwitch = true;
 	}
 
 	while (cl.contains("with-packages")) {
-	    setWithPackages(true);
-	    usedPackageSwitch = true;
+	    setWithPackagedOutput(true);
+	    usedPackagedOutputSwitch = true;
 	}
 
 	while (cl.contains("subtract-gc"))
@@ -1260,12 +1260,12 @@ public class Main implements Runnable
 	    else if(arg.equals("-t") || arg.equals("--time"))
 		setProfiling(true);
 	    else if(arg.equals("--no-packages")) {
-		setWithPackages( false); 
-		usedPackageSwitch = true;
+		setWithPackagedOutput( false); 
+		usedPackagedOutputSwitch = true;
 	    }
 	    else if(arg.equals("--with-packages")) {
-		setWithPackages( true);
-		usedPackageSwitch = true;
+		setWithPackagedOutput( true);
+		usedPackagedOutputSwitch = true;
 	    }
 	    else if(arg.equals("--subtract-gc"))
 		setSubstractingGC(true);
@@ -1889,12 +1889,21 @@ public class Main implements Runnable
 	    produceBaf = true;
 	    break;
 	default:
+	    String endResult = getExtensionFor(finalRep).substring(1);
+	    if (endResult.equals( "baf"))
+		produceBaf = true;
+	    else if (endResult.equals( "grimp"))
+		produceGrimp = true;
+	    else if (endResult.equals( "dava")) {
+		produceGrimp = true;
+		produceDava  = true;
+	    }
 	    break;
 	}
 	
-	boolean buildPackages = getWithPackages();
-	if ((produceDava) && (!usedPackageSwitch))
-	    setWithPackages( true);
+	boolean buildPackages = getWithPackagedOutput();
+	if ((produceDava) && (!usedPackagedOutputSwitch))
+	    setWithPackagedOutput( true);
 
         String fileName = getFileNameFor( c.getName(), targetExtension);
       
@@ -2052,7 +2061,7 @@ public class Main implements Runnable
 			m.releaseActiveBody();
 		}
         }
-	setWithPackages( buildPackages);
+	setWithPackagedOutput( buildPackages);
     }
     
     public static double truncatedOf(double d, int numDigits)

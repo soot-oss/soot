@@ -825,7 +825,7 @@ public class SootClass extends AbstractHost
 	String tmpClassName = null;
 
 	// Optionally print the package info for Dava files.
-	if (Main.getWithPackages() && (packageRelativeClassNames)) {
+	if (Main.getWithPackagedOutput() && (packageRelativeClassNames)) {
 
 	    String name = this.getName();
 	    int index = name.lastIndexOf( '.');

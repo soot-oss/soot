@@ -32,7 +32,7 @@ public class DavaMethod extends SootMethod
     {
 	this.className = className;
 
-	if (Main.getWithPackages()) {
+	if (Main.getWithPackagedOutput()) {
 	    int index = className.lastIndexOf( '.');
 	    
 	    if (index == (className.length() - 1))
