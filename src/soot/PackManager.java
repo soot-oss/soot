@@ -53,7 +53,8 @@ import soot.xml.*;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
-    public PackManager( Singletons.Global g ) {}
+    public PackManager( Singletons.Global g ) { G.v().PhaseOptions().setPackManager(this); init(); }
+
     private void init()
     {
         Pack p;
@@ -187,14 +188,8 @@ public class PackManager {
         }
     }
 
-    private boolean initialized = false;
     public static PackManager v() { 
-        PackManager ret = G.v().PackManager();
-        if( !ret.initialized ) {
-            ret.initialized = true;
-            ret.init();
-        }
-        return ret;
+        return G.v().PackManager();
     }
 
     private Map packNameToPack = new HashMap();
