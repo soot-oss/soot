@@ -41,6 +41,9 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier
         Robj_type globalallocs,
 
         Rctxt_method rcout,
+        Rsrcm_stmt_kind_tgtm_src_dst parms,
+        Rsrcm_stmt_kind_tgtm_src_dst rets,
+        Rsrcc_srcm_stmt_kind_tgtc_tgtm calls,
 
         Qsrcc_src_dstc_dst csimple,
         Qsrcc_src_fld_dstc_dst cload,
@@ -50,86 +53,111 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier
         super(
             simple, load, store, alloc,
             locals, globals, localallocs, globalallocs,
-            rcout,
+            rcout, parms, rets, calls,
             csimple, cload, cstore, calloc );
     }
 
     public void update() {
+        <srcc, src, dstc, dst> simpleOut = 0B;
+        <srcc, src, fld, dstc, dst> loadOut = 0B;
+        <srcc, src, fld, dstc, dst> storeOut = 0B;
+        <objc, obj, varc, var> allocOut = 0B;
+
         localMap |= (type=>) locals.get();
         globalSet |= (type=>) globals.get();
         localallocMap |= (type=>) localallocs.get();
         globalallocSet |= (type=>) globalallocs.get();
 
         <src, dst> newSimple = simple.get();
-        csimple.add((( newSimple{src}><
-                       globalSet{var}){dst}><
-                             globalSet{var}){}><
-                 new{null=>srcc, null=>dstc}{} );
+        csimple.add  ((( newSimple{src}><
+                         globalSet{var}){dst}><
+                               globalSet{var}){}><
+                   new{null=>srcc, null=>dstc}{} );
         mpagSimple |= newSimple{src}><localMap{var};
         mpagSimple |= newSimple{dst}><localMap{var};
         
         <src, fld, dst> newStore = store.get();
-        cstore.add((( newStore {src}><
-                      globalSet{var}){dst}><
-                            globalSet{var}){}><
-                new{null=>srcc, null=>dstc}{} );
+        cstore.add  ((( newStore {src}><
+                        globalSet{var}){dst}><
+                              globalSet{var}){}><
+                  new{null=>srcc, null=>dstc}{} );
         mpagStore |= newStore{src}><localMap{var};
         mpagStore |= newStore{dst}><localMap{var};
         
         <src, fld, dst> newLoad = load.get();
-        cload.add((( newLoad  {src}><
-                     globalSet{var}){dst}><
-                           globalSet{var}){}><
-               new{null=>srcc, null=>dstc}{} );
+        cload.add  ((( newLoad  {src}><
+                       globalSet{var}){dst}><
+                             globalSet{var}){}><
+                 new{null=>srcc, null=>dstc}{} );
         mpagLoad |= newLoad{src}><localMap{var};
         mpagLoad |= newLoad{dst}><localMap{var};
         
         <var, obj> newAlloc = alloc.get();
-        calloc.add((( newAlloc{var}><
-                     globalSet{var}){obj}><
-                      globalallocSet{obj}){}><
-                  new{null=>varc, null=>objc}{} );
+        calloc.add  ((( newAlloc{var}><
+                       globalSet{var}){obj}><
+                        globalallocSet{obj}){}><
+                    new{null=>varc, null=>objc}{} );
         mpagAlloc |= newAlloc{var}><localMap{var};
         mpagAlloc |= newAlloc{obj}><localallocMap{obj};
         
         <var> localSet = (method=>) localMap;
-        <src, dst> localLocal = (var=>src)localSet{} >< (var=>dst)localSet{};
 
         <ctxt, method> contexts = rcout.get();
 
         <ctxt, src, dst> ctxtSimple = contexts{method}<>mpagSimple{method};
-        csimple.add( (ctxt=>srcc) ctxtSimple{dst}><globalSet{var}{} 
-                                               >< new{null=>dstc}{} );
-        csimple.add( (ctxt=>dstc) ctxtSimple{src}><globalSet{var}{} 
-                                               >< new{null=>srcc}{} );
-        csimple.add( (ctxt=>srcc, ctxt=>dstc) ctxtSimple{src,dst} 
-                                           >< localLocal{src,dst} );
+        simpleOut |= ( (ctxt=>srcc, ctxt=>dstc) ctxtSimple );
         
         <ctxt, src, fld, dst> ctxtStore = contexts{method}<>mpagStore{method};
-        cstore.add( (ctxt=>srcc) ctxtStore{dst}><globalSet{var}{} 
-                                             >< new{null=>dstc}{} );
-        cstore.add( (ctxt=>dstc) ctxtStore{src}><globalSet{var}{} 
-                                             >< new{null=>srcc}{} );
-        cstore.add( (ctxt=>srcc, ctxt=>dstc) ctxtStore{src,dst} 
-                                         >< localLocal{src,dst} );
+        storeOut |= ( (ctxt=>srcc, ctxt=>dstc) ctxtStore );
         
         <ctxt, src, fld, dst> ctxtLoad = contexts{method}<>mpagLoad{method};
-        cload.add( (ctxt=>srcc) ctxtLoad{dst}><globalSet{var}{} 
-                                           >< new{null=>dstc}{} );
-        cload.add( (ctxt=>dstc) ctxtLoad{src}><globalSet{var}{} 
-                                           >< new{null=>srcc}{} );
-        cload.add( (ctxt=>srcc, ctxt=>dstc) ctxtLoad{src,dst} 
-                                       >< localLocal{src,dst} );
+        loadOut |= ( (ctxt=>srcc, ctxt=>dstc) ctxtLoad );
         
-        <var, obj> localLocalalloc = 
-            (method=>)localMap{} >< (method=>)localallocMap{};
         <ctxt, var, obj> ctxtAlloc = contexts{method}<>mpagAlloc{method};
-        calloc.add( (ctxt=>objc) ctxtAlloc{var}><globalSet{var}{} 
-                                             >< new{null=>varc}{} );
-        calloc.add( (ctxt=>varc) ctxtAlloc{obj}><globalallocSet{obj}{} 
-                                                  >< new{null=>objc}{} );
-        calloc.add( (ctxt=>varc, ctxt=>objc) ctxtAlloc{var,obj} 
-                                    >< localLocalalloc{var,obj} );
+        allocOut |= ( (ctxt=>varc, ctxt=>objc) ctxtAlloc );
+
+        allParms |= parms.get();
+        allRets |= rets.get();
+
+        <srcc, srcm, stmt, kind, tgtc, tgtm> newCalls = calls.get();
+        simpleOut |= (tgtc=>dstc) 
+            newCalls{srcm, stmt, kind, tgtm} <>
+            allParms{srcm, stmt, kind, tgtm};
+        simpleOut |= (srcc=>dstc, tgtc=>srcc)
+            newCalls{srcm, stmt, kind, tgtm} <>
+             allRets{srcm, stmt, kind, tgtm};
+
+        <srcc, src, dstc, dst> globalDsts = simpleOut{dst} >< globalSet{var};
+        simpleOut -= globalDsts;
+        simpleOut |= ((dstc=>) globalDsts){} >< new{null=>dstc}{};
+        <srcc, src, dstc, dst> globalSrcs = simpleOut{src} >< globalSet{var};
+        simpleOut -= globalSrcs;
+        simpleOut |= ((srcc=>) globalSrcs){} >< new{null=>srcc}{};
+        csimple.add(simpleOut);
+
+        <srcc, src, fld, dstc, dst> globalStoreDsts = storeOut{dst} >< globalSet{var};
+        storeOut -= globalStoreDsts;
+        storeOut |= ((dstc=>) globalStoreDsts){} >< new{null=>dstc}{};
+        <srcc, src, fld, dstc, dst> globalStoreSrcs = storeOut{src} >< globalSet{var};
+        storeOut -= globalStoreSrcs;
+        storeOut |= ((srcc=>) globalStoreSrcs){} >< new{null=>srcc}{};
+        cstore.add(storeOut);
+
+        <srcc, src, fld, dstc, dst> globalLoadDsts = loadOut{dst} >< globalSet{var};
+        loadOut -= globalLoadDsts;
+        loadOut |= ((dstc=>) globalLoadDsts){} >< new{null=>dstc}{};
+        <srcc, src, fld, dstc, dst> globalLoadSrcs = loadOut{src} >< globalSet{var};
+        loadOut -= globalLoadSrcs;
+        loadOut |= ((srcc=>) globalLoadSrcs){} >< new{null=>srcc}{};
+        cload.add(loadOut);
+
+        <objc, obj, varc, var> globalAllocDsts = allocOut{var} >< globalSet{var};
+        allocOut -= globalAllocDsts;
+        allocOut |= ((varc=>) globalAllocDsts){} >< new{null=>varc}{};
+        <objc, obj, varc, var> globalAllocSrcs = allocOut{obj} >< globalallocSet{obj};
+        allocOut -= globalAllocSrcs;
+        allocOut |= ((objc=>) globalAllocSrcs){} >< new{null=>objc}{};
+        calloc.add(allocOut);
     }
 
     private <var, method> localMap = 0B;
@@ -141,5 +169,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier
     private <method, src, fld, dst> mpagStore = 0B;
     private <method, src, fld, dst> mpagLoad = 0B;
     private <method, var, obj> mpagAlloc = 0B;
+
+    private <srcm, stmt, kind, tgtm, src, dst> allParms = 0B;
+    private <srcm, stmt, kind, tgtm, src, dst> allRets = 0B;
 }
 

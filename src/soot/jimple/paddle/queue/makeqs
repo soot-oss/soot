@@ -17,3 +17,4 @@
 /home/olhotak/makeq VarNode var V1 Type type T2
 /home/olhotak/makeq AllocNode obj H1 SootMethod method T1 Type type T2
 /home/olhotak/makeq AllocNode obj H1 Type type T2
+/home/olhotak/makeq SootMethod srcm T1 Unit stmt ST Kind kind FD SootMethod tgtm T2 VarNode src V1 VarNode dst V2

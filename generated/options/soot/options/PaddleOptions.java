@@ -432,6 +432,17 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "set-mass" );
     }
     
+    /** Number nodes --
+    
+     * Print node numbers in dumps.
+    
+     * When printing debug information about nodes, this option causes 
+     * the node number of each node to be printed. 
+     */
+    public boolean number_nodes() {
+        return soot.PhaseOptions.getBoolean( options, "number-nodes" );
+    }
+    
     public static final int backend_buddy = 1;
     public static final int backend_cudd = 2;
     public static final int backend_sable = 3;

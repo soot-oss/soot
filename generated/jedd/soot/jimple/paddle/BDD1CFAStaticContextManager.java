@@ -19,20 +19,17 @@ public class BDD1CFAStaticContextManager extends AbsStaticContextManager {
                                                "nd:soot.jimple.paddle.bdddomains.FD, soot.jimple.paddle.bddd" +
                                                "omains.tgtc:soot.jimple.paddle.bdddomains.V2, soot.jimple.pa" +
                                                "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.T2> newOu" +
-                                               "t = jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().repla" +
-                                               "ce(jedd.internal.Jedd.v().project(in.get(), new jedd.Physica" +
-                                               "lDomain[...]), new jedd.PhysicalDomain[...], new jedd.Physic" +
-                                               "alDomain[...]), new jedd.PhysicalDomain[...], new jedd.Physi" +
-                                               "calDomain[...]); at /home/olhotak/soot-trunk/src/soot/jimple" +
-                                               "/paddle/BDD1CFAStaticContextManager.jedd:35,45-51"),
-                                              jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(in.get(),
-                                                                                                                                        new jedd.PhysicalDomain[] { V2.v() }),
-                                                                                                         new jedd.PhysicalDomain[] { ST.v() },
+                                               "t = jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().proje" +
+                                               "ct(in.get(), new jedd.PhysicalDomain[...]), new jedd.Physica" +
+                                               "lDomain[...], new jedd.PhysicalDomain[...]); at /home/olhota" +
+                                               "k/soot-trunk/src/soot/jimple/paddle/BDD1CFAStaticContextMana" +
+                                               "ger.jedd:35,45-51"),
+                                              jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().project(in.get(),
                                                                                                          new jedd.PhysicalDomain[] { V2.v() }),
-                                                                          new jedd.PhysicalDomain[] { V2.v() },
-                                                                          new jedd.PhysicalDomain[] { ST.v() }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { kind.v(), tgtm.v(), stmt.v(), tgtc.v(), srcm.v(), srcc.v() },
-                                                    new jedd.PhysicalDomain[] { FD.v(), T2.v(), ST.v(), V2.v(), T1.v(), V1.v() },
+                                                                          new jedd.PhysicalDomain[] { ST.v() },
+                                                                          new jedd.PhysicalDomain[] { V2.v() }));
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), tgtc.v(), stmt.v(), srcm.v(), kind.v(), srcc.v() },
+                                                    new jedd.PhysicalDomain[] { T2.v(), V2.v(), ST.v(), T1.v(), FD.v(), V1.v() },
                                                     ("out.add(newOut) at /home/olhotak/soot-trunk/src/soot/jimple/" +
                                                      "paddle/BDD1CFAStaticContextManager.jedd:37,8-11"),
                                                     newOut));

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
+ * Copyright (C) 2002, 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,7 +24,7 @@ import java.util.*;
 /** Represents an allocation site node (Blue) in the pointer assignment graph.
  * @author Ondrej Lhotak
  */
-public class AllocNode extends Node implements Context {
+public abstract class AllocNode extends Node implements Context {
     /** Returns all field ref nodes having this node as their base. */
     public Iterator fields() { 
         return new Iterator() {
@@ -61,19 +61,14 @@ public class AllocNode extends Node implements Context {
      * and field as its field; null if nonexistent. */
     public AllocDotField dot( PaddleField field ) 
     { return AllocDotField.get( this, field ); }
-    public String toString() {
-	return "AllocNode "+getNumber()+" "+newExpr+" in method "+method;
-	//return "AllocNode "+newExpr+" in method "+method;
-    }
 
     public Type getType() { return type; }
     protected Type type;
 
     /* End of public methods. */
 
-    AllocNode( Object newExpr, Type t, SootMethod m ) {
+    AllocNode( Object newExpr, Type t ) {
 	this.type = t;
-        this.method = m;
         if( t instanceof RefType ) {
             RefType rt = (RefType) t;
             if( rt.getSootClass().isAbstract() ) {
@@ -100,8 +95,5 @@ public class AllocNode extends Node implements Context {
     protected Object newExpr;
     protected ContextAllocNode contextNodes = null;
     protected AllocDotField fieldNodes = null;
-
-    private SootMethod method;
-    public SootMethod getMethod() { return method; }
 }
 

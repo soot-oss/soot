@@ -23,7 +23,7 @@ import soot.*;
 /** Represents an allocation site node the represents a constant string.
  * @author Ondrej Lhotak
  */
-public class StringConstantNode extends AllocNode {
+public class StringConstantNode extends GlobalAllocNode {
     public String toString() {
 	return "StringConstantNode "+getNumber()+" "+newExpr;
     }
@@ -35,7 +35,7 @@ public class StringConstantNode extends AllocNode {
     /* End of public methods. */
 
     StringConstantNode( String sc ) {
-        super( sc, RefType.v( "java.lang.String" ), null );
+        super( sc, RefType.v( "java.lang.String" ) );
     }
 }
 

@@ -40,6 +40,9 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
         Robj_type globalallocs,
 
         Rctxt_method rcout,
+        Rsrcm_stmt_kind_tgtm_src_dst parms,
+        Rsrcm_stmt_kind_tgtm_src_dst rets,
+        Rsrcc_srcm_stmt_kind_tgtc_tgtm calls,
 
         Qsrcc_src_dstc_dst csimple,
         Qsrcc_src_fld_dstc_dst cload,
@@ -49,7 +52,7 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
         super(
             simple, load, store, alloc,
             locals, globals, localallocs, globalallocs,
-            rcout,
+            rcout, parms, rets, calls,
             csimple, cload, cstore, calloc );
     }
 
@@ -74,7 +77,7 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
             final Rsrc_dst.Tuple t = (Rsrc_dst.Tuple) tIt.next();
             if( global(t.src()) ) {
                 if( global(t.dst()) ) {
-                    csimple.add( null, t.src(), null, t.dst() );
+                    addSimple( null, t.src(), null, t.dst() );
                 } else {
                     mpag( method( t.dst() ) ).simple.add(t);
                 }
@@ -92,7 +95,7 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
             final Rsrc_fld_dst.Tuple t = (Rsrc_fld_dst.Tuple) tIt.next();
             if( global(t.src()) ) {
                 if( global(t.dst()) ) {
-                    cstore.add( null, t.src(), t.fld(), null, t.dst() );
+                    addStore( null, t.src(), t.fld(), null, t.dst() );
                 } else {
                     mpag( method( t.dst() ) ).store.add(t);
                 }
@@ -110,7 +113,7 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
             final Rsrc_fld_dst.Tuple t = (Rsrc_fld_dst.Tuple) tIt.next();
             if( global(t.src()) ) {
                 if( global(t.dst()) ) {
-                    cload.add( null, t.src(), t.fld(), null, t.dst() );
+                    addLoad( null, t.src(), t.fld(), null, t.dst() );
                 } else {
                     mpag( method( t.dst() ) ).load.add(t);
                 }
@@ -128,7 +131,7 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
             final Robj_var.Tuple t = (Robj_var.Tuple) tIt.next();
             if( global(t.obj()) ) {
                 if( global(t.var()) ) {
-                    calloc.add( null, t.obj(), null, t.var() );
+                    addAlloc( null, t.obj(), null, t.var() );
                 } else {
                     mpag( method( t.var() ) ).alloc.add(t);
                 }
@@ -147,37 +150,82 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
             MethodPAG mpag = mpag(t.method());
             for( Iterator eIt = mpag.rsimple.copy().iterator(); eIt.hasNext(); ) {
                 final Rsrc_dst.Tuple e = (Rsrc_dst.Tuple) eIt.next();
-                Context srcc;
-                Context dstc;
-                if( global(e.src()) ) srcc = null; else srcc = t.ctxt();
-                if( global(e.dst()) ) dstc = null; else dstc = t.ctxt();
-                csimple.add( srcc, e.src(), dstc, e.dst() );
+                addSimple( t.ctxt(), e.src(), t.ctxt(), e.dst() );
             }
             for( Iterator eIt = mpag.rstore.copy().iterator(); eIt.hasNext(); ) {
                 final Rsrc_fld_dst.Tuple e = (Rsrc_fld_dst.Tuple) eIt.next();
-                Context srcc;
-                Context dstc;
-                if( global(e.src()) ) srcc = null; else srcc = t.ctxt();
-                if( global(e.dst()) ) dstc = null; else dstc = t.ctxt();
-                cstore.add( srcc, e.src(), e.fld(), dstc, e.dst() );
+                addStore( t.ctxt(), e.src(), e.fld(), t.ctxt(), e.dst() );
             }
             for( Iterator eIt = mpag.rload.copy().iterator(); eIt.hasNext(); ) {
                 final Rsrc_fld_dst.Tuple e = (Rsrc_fld_dst.Tuple) eIt.next();
-                Context srcc;
-                Context dstc;
-                if( global(e.src()) ) srcc = null; else srcc = t.ctxt();
-                if( global(e.dst()) ) dstc = null; else dstc = t.ctxt();
-                cload.add( srcc, e.src(), e.fld(), dstc, e.dst() );
+                addLoad( t.ctxt(), e.src(), e.fld(), t.ctxt(), e.dst() );
             }
             for( Iterator eIt = mpag.ralloc.copy().iterator(); eIt.hasNext(); ) {
                 final Robj_var.Tuple e = (Robj_var.Tuple) eIt.next();
-                Context objc;
-                Context varc;
-                if( global(e.obj()) ) objc = null; else objc = t.ctxt();
-                if( global(e.var()) ) varc = null; else varc = t.ctxt();
-                calloc.add( objc, e.obj(), varc, e.var() );
+                addAlloc( t.ctxt(), e.obj(), t.ctxt(), e.var() );
             }
         }
+        for( Iterator tIt = parms.iterator(); tIt.hasNext(); ) {
+            final Rsrcm_stmt_kind_tgtm_src_dst.Tuple t = (Rsrcm_stmt_kind_tgtm_src_dst.Tuple) tIt.next();
+            Cons edge = new Cons(new Cons(t.srcm(), t.stmt()),
+                                 new Cons(t.kind(), t.tgtm()));
+            Collection parmColl = (Collection) parmMap.get(edge);
+            if( parmColl == null ) parmMap.put(edge, parmColl = new ArrayList());
+            parmColl.add( new Cons(t.src(), t.dst()));
+        }
+        for( Iterator tIt = rets.iterator(); tIt.hasNext(); ) {
+            final Rsrcm_stmt_kind_tgtm_src_dst.Tuple t = (Rsrcm_stmt_kind_tgtm_src_dst.Tuple) tIt.next();
+            Cons edge = new Cons(new Cons(t.srcm(), t.stmt()),
+                                 new Cons(t.kind(), t.tgtm()));
+            Collection retColl = (Collection) retMap.get(edge);
+            if( retColl == null ) retMap.put(edge, retColl = new ArrayList());
+            retColl.add( new Cons(t.src(), t.dst()));
+        }
+        for( Iterator tIt = calls.iterator(); tIt.hasNext(); ) {
+            final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
+            Cons edge = new Cons(new Cons(t.srcm(), t.stmt()),
+                                 new Cons(t.kind(), t.tgtm()));
+            Collection parmColl = (Collection) parmMap.get(edge);
+            if( parmColl != null ) {
+                for( Iterator callIt = parmColl.iterator(); callIt.hasNext(); ) {
+                    final Cons call = (Cons) callIt.next();
+                    addSimple( t.srcc(), (VarNode)call.car(),
+                                 t.tgtc(), (VarNode)call.cdr() );
+                }
+            }
+            Collection retColl = (Collection) retMap.get(edge);
+            if( retColl != null ) {
+                for( Iterator retIt = retColl.iterator(); retIt.hasNext(); ) {
+                    final Cons ret = (Cons) retIt.next();
+                    addSimple( t.tgtc(), (VarNode)ret.car(),
+                                 t.srcc(), (VarNode)ret.cdr() );
+                }
+            }
+        }
+    }
+
+    private void addSimple( Context srcc, VarNode src, Context dstc, VarNode dst ) {
+        if( src instanceof GlobalVarNode ) srcc = null;
+        if( dst instanceof GlobalVarNode ) dstc = null;
+        csimple.add( srcc, src, dstc, dst );
+    }
+
+    private void addStore( Context srcc, VarNode src, PaddleField fld, Context dstc, VarNode dst ) {
+        if( src instanceof GlobalVarNode ) srcc = null;
+        if( dst instanceof GlobalVarNode ) dstc = null;
+        cstore.add( srcc, src, fld, dstc, dst );
+    }
+
+    private void addLoad( Context srcc, VarNode src, PaddleField fld, Context dstc, VarNode dst ) {
+        if( src instanceof GlobalVarNode ) srcc = null;
+        if( dst instanceof GlobalVarNode ) dstc = null;
+        cload.add( srcc, src, fld, dstc, dst );
+    }
+
+    private void addAlloc( Context objc, AllocNode obj, Context varc, VarNode var ) {
+        if( obj instanceof GlobalAllocNode ) objc = null;
+        if( var instanceof GlobalVarNode ) varc = null;
+        calloc.add( objc, obj, varc, var );
     }
 
     private SootMethod method(VarNode v) {
@@ -225,5 +273,7 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
         new NumberedSet(PaddleNumberers.v().allocNodeNumberer());
 
     private LargeNumberedMap methodPAGs = new LargeNumberedMap(Scene.v().getMethodNumberer());
+    private Map parmMap = new HashMap();
+    private Map retMap = new HashMap();
 }
 

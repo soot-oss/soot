@@ -28,7 +28,7 @@ public class PaddleNativeHelper extends NativeHelper {
         PaddleScene.v().nodeFactory().addEdge( (Node) rhs, (Node) lhs );
     }
     protected void assignObjectToImpl(ReferenceVariable lhs, AbstractObject obj) {
-	AllocNode objNode = PaddleScene.v().nodeManager().makeAllocNode( 
+	AllocNode objNode = PaddleScene.v().nodeManager().makeGlobalAllocNode( 
 		new Pair( "AbstractObject", obj.getType() ),
 		 obj.getType(), null );
 

@@ -16,6 +16,8 @@ digraph overview {
     cgout [label="cgout\n:CMSKCM"];
     rcout [label="rcout\n:CM"];
     csout [label="csout\n:M"];
+    parms [label="parms\n:MSKMVV"];
+    rets [label="rets\n:MSKMVV"];
 
     merge [label="merge\n:CMSKCM"];
 
@@ -85,6 +87,9 @@ digraph overview {
     localallocs -> MPC;
     globalallocs -> MPC;
     rcout -> MPC;
+    parms -> MPC;
+    rets -> MPC;
+    cgout -> MPC;
     MPC -> csimple;
     MPC -> cstore;
     MPC -> cload;
@@ -112,11 +117,8 @@ digraph overview {
 
     staticcalls -> SCM -> scmout;
 
-    cgout -> PAGB;
-    PAGB -> csimple;
-    PAGB -> cload;
-    PAGB -> cstore;
-    PAGB -> calloc;
+    cgout -> CEH -> parms;
+    CEH -> rets;
 
     NF -> simple;
     NF -> load;

@@ -45,9 +45,9 @@ public class NodeFactory {
     protected Qobj_var alloc;
     
     final public Node caseDefaultClassLoader() {
-	AllocNode a = nm.makeAllocNode( 
+	AllocNode a = nm.makeGlobalAllocNode( 
 		PointsToAnalysis.DEFAULT_CLASS_LOADER,
-		AnySubType.v( RefType.v( "java.lang.ClassLoader" ) ), null );
+		AnySubType.v( RefType.v( "java.lang.ClassLoader" ) ) );
 	VarNode v = nm.makeGlobalVarNode(
 		PointsToAnalysis.DEFAULT_CLASS_LOADER_LOCAL,
 		RefType.v( "java.lang.ClassLoader" ) );
@@ -55,9 +55,9 @@ public class NodeFactory {
 	return v;
     }
     final public Node caseMainClassNameString() {
-	AllocNode a = nm.makeAllocNode( 
+	AllocNode a = nm.makeGlobalAllocNode( 
 		PointsToAnalysis.MAIN_CLASS_NAME_STRING,
-		RefType.v( "java.lang.String" ), null );
+		RefType.v( "java.lang.String" ) );
 	VarNode v = nm.makeGlobalVarNode(
 		PointsToAnalysis.MAIN_CLASS_NAME_STRING_LOCAL,
 		RefType.v( "java.lang.String" ) );
@@ -65,9 +65,9 @@ public class NodeFactory {
 	return v;
     }
     final public Node caseMainThreadGroup() {
-	AllocNode threadGroupNode = nm.makeAllocNode( 
+	AllocNode threadGroupNode = nm.makeGlobalAllocNode( 
 		PointsToAnalysis.MAIN_THREAD_GROUP_NODE,
-		RefType.v("java.lang.ThreadGroup"), null );
+		RefType.v("java.lang.ThreadGroup") );
 	VarNode threadGroupNodeLocal = nm.makeGlobalVarNode(
 		PointsToAnalysis.MAIN_THREAD_GROUP_NODE_LOCAL,
 		RefType.v("java.lang.ThreadGroup") );
@@ -75,9 +75,9 @@ public class NodeFactory {
 	return threadGroupNodeLocal;
     }
     final public Node caseMainThread() {
-	AllocNode threadNode = nm.makeAllocNode( 
+	AllocNode threadNode = nm.makeGlobalAllocNode( 
 		PointsToAnalysis.MAIN_THREAD_NODE,
-		RefType.v("java.lang.Thread"), null );
+		RefType.v("java.lang.Thread") );
 	VarNode threadNodeLocal = nm.makeGlobalVarNode(
 		PointsToAnalysis.MAIN_THREAD_NODE_LOCAL,
 		RefType.v("java.lang.Thread") );
@@ -85,15 +85,15 @@ public class NodeFactory {
 	return threadNodeLocal;
     }
     final public Node caseArgv() {
-	AllocNode argv = nm.makeAllocNode( 
+	AllocNode argv = nm.makeGlobalAllocNode( 
 		PointsToAnalysis.STRING_ARRAY_NODE,
-		ArrayType.v(RefType.v( "java.lang.String" ), 1), null );
+		ArrayType.v(RefType.v( "java.lang.String" ), 1) );
         VarNode sanl = nm.makeGlobalVarNode(
                 PointsToAnalysis.STRING_ARRAY_NODE_LOCAL,
                 ArrayType.v(RefType.v( "java.lang.String" ), 1) );
-	AllocNode stringNode = nm.makeAllocNode( 
+	AllocNode stringNode = nm.makeGlobalAllocNode( 
 		PointsToAnalysis.STRING_NODE,
-		RefType.v( "java.lang.String" ), null );
+		RefType.v( "java.lang.String" ) );
 	VarNode stringNodeLocal = nm.makeGlobalVarNode(
 		PointsToAnalysis.STRING_NODE_LOCAL,
 		RefType.v( "java.lang.String" ) );
@@ -105,7 +105,7 @@ public class NodeFactory {
     }
 
     final public Node caseNewInstance( VarNode cls ) {
-        AllocNode site = nm.makeAllocNode( cls, AnySubType.v( RefType.v( "java.lang.Object" ) ), null );
+        AllocNode site = nm.makeGlobalAllocNode( cls, AnySubType.v( RefType.v( "java.lang.Object" ) ) );
 	VarNode local = nm.makeGlobalVarNode( site, RefType.v( "java.lang.Object" ) );
         addEdge( site, local );
         return local;

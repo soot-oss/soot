@@ -48,4 +48,6 @@ public final class Cons {
         }
         return true;
     }
+    public Object car() { return car; }
+    public Object cdr() { return cdr; }
 }

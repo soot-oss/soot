@@ -1529,7 +1529,8 @@ public class Options extends OptionsBase {
                 +padOpt( "class-method-var (true)", "In dump, label variables by class and method" )
                 +padOpt( "dump-answer (false)", "Dump computed reaching types for comparison with other solvers" )
                 +padOpt( "add-tags (false)", "Output points-to results in tags for viewing with the Jimple" )
-                +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" );
+                +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" )
+                +padOpt( "number-nodes (true)", "Print node numbers in dumps" );
     
         if( phaseName.equals( "wstp" ) )
             return "Phase "+phaseName+":\n"+
@@ -2210,7 +2211,8 @@ public class Options extends OptionsBase {
                 +"class-method-var "
                 +"dump-answer "
                 +"add-tags "
-                +"set-mass ";
+                +"set-mass "
+                +"number-nodes ";
     
         if( phaseName.equals( "wstp" ) )
             return ""
@@ -2727,7 +2729,8 @@ public class Options extends OptionsBase {
               +"class-method-var:true "
               +"dump-answer:false "
               +"add-tags:false "
-              +"set-mass:false ";
+              +"set-mass:false "
+              +"number-nodes:true ";
     
         if( phaseName.equals( "wstp" ) )
             return ""

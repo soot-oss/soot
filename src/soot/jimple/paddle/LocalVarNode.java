@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002,2003 Ondrej Lhotak
+ * Copyright (C) 2002, 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,8 +29,11 @@ public class LocalVarNode extends VarNode {
         return method;
     }
     public String toString() {
-	return "LocalVarNode "+getNumber()+" "+variable+" "+method+" type "+getType();
-	//return "LocalVarNode "+variable+" "+method+" type "+getType();
+        if( PaddleScene.v().options().number_nodes() ) {
+            return "LocalVarNode "+getNumber()+" "+variable+" "+method+" type "+getType();
+        } else {
+	    return "LocalVarNode "+variable+" "+method+" type "+getType();
+        }
     }
     /* End of public methods. */
 

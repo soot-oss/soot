@@ -47,7 +47,7 @@ public class PaddleScene
 
     public AbsMethodPAGBuilder mpb;
     public AbsMethodPAGContextifier mpc;
-    public AbsPAGBuilder pagb;
+    public AbsCallEdgeHandler ceh;
 
     public AbsPAG pag;
     public AbsPropagator prop;
@@ -69,6 +69,8 @@ public class PaddleScene
     public Qsrcc_srcm_stmt_kind_tgtc_tgtm cgout;
     public Qctxt_method rcout;
     public Qctxt_method csout;
+    public Qsrcm_stmt_kind_tgtm_src_dst parms;
+    public Qsrcm_stmt_kind_tgtm_src_dst rets;
 
     public Qvar_method_type locals;
     public Qvar_type globals;
@@ -239,6 +241,8 @@ public class PaddleScene
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("cgout");
         rcout = new Qctxt_methodSet("rcout");
         csout = new Qctxt_methodSet("csout");
+        parms = new Qsrcm_stmt_kind_tgtm_src_dstSet("parms");
+        rets = new Qsrcm_stmt_kind_tgtm_src_dstSet("rets");
 
         locals = new Qvar_method_typeSet("locals");
         globals = new Qvar_typeSet("globals");
@@ -273,6 +277,8 @@ public class PaddleScene
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("cgout");
         rcout = new Qctxt_methodBDD("rcout");
         csout = new Qctxt_methodBDD("csout");
+        parms = new Qsrcm_stmt_kind_tgtm_src_dstBDD("parms");
+        rets = new Qsrcm_stmt_kind_tgtm_src_dstBDD("rets");
 
         locals = new Qvar_method_typeBDD("locals");
         globals = new Qvar_typeBDD("globals");
@@ -322,8 +328,11 @@ public class PaddleScene
                 localallocs.reader("mpc"),
                 globalallocs.reader("mpc"),
                 rcout.reader("mpc"),
+                parms.reader("mpc"),
+                rets.reader("mpc"),
+                cgout.reader("mpc"),
                 csimple, cstore, cload, calloc );
-        pagb = new TradPAGBuilder( cgout.reader("pagb"), csimple, cload, cstore, calloc );
+        ceh = new TradCallEdgeHandler( cgout.reader("ceh"), parms, rets );
 
         pag = new BDDPAG( csimple.reader("pag"), cload.reader("pag"),
                 cstore.reader("pag"), calloc.reader("pag") );
@@ -376,6 +385,8 @@ public class PaddleScene
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("cgout");
         rcout = new Qctxt_methodTrad("rcout");
         csout = new Qctxt_methodTrad("csout");
+        parms = new Qsrcm_stmt_kind_tgtm_src_dstTrad("parms");
+        rets = new Qsrcm_stmt_kind_tgtm_src_dstTrad("rets");
 
         locals = new Qvar_method_typeTrad("locals");
         globals = new Qvar_typeTrad("globals");
@@ -411,6 +422,8 @@ public class PaddleScene
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("cgout");
         rcout = new Qctxt_methodDebug("rcout");
         csout = new Qctxt_methodDebug("csout");
+        parms = new Qsrcm_stmt_kind_tgtm_src_dstDebug("parms");
+        rets = new Qsrcm_stmt_kind_tgtm_src_dstDebug("rets");
 
         locals = new Qvar_method_typeDebug("locals");
         globals = new Qvar_typeDebug("globals");
@@ -444,6 +457,8 @@ public class PaddleScene
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("cgout");
         rcout = new Qctxt_methodTrace("rcout");
         csout = new Qctxt_methodTrace("csout");
+        parms = new Qsrcm_stmt_kind_tgtm_src_dstTrace("parms");
+        rets = new Qsrcm_stmt_kind_tgtm_src_dstTrace("rets");
 
         locals = new Qvar_method_typeTrace("locals");
         globals = new Qvar_typeTrace("globals");
@@ -478,6 +493,8 @@ public class PaddleScene
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("cgout");
         rcout = new Qctxt_methodNumTrace("rcout");
         csout = new Qctxt_methodNumTrace("csout");
+        parms = new Qsrcm_stmt_kind_tgtm_src_dstNumTrace("parms");
+        rets = new Qsrcm_stmt_kind_tgtm_src_dstNumTrace("rets");
 
         locals = new Qvar_method_typeNumTrace("locals");
         globals = new Qvar_typeNumTrace("globals");
@@ -535,8 +552,11 @@ public class PaddleScene
                 localallocs.reader("mpc"),
                 globalallocs.reader("mpc"),
                 rcout.reader("mpc"),
+                parms.reader("mpc"),
+                rets.reader("mpc"),
+                cgout.reader("mpc"),
                 csimple, cstore, cload, calloc );
-        pagb = new TradPAGBuilder( cgout.reader("pagb"), csimple, cload, cstore, calloc );
+        ceh = new TradCallEdgeHandler( cgout.reader("ceh"), parms, rets );
 
         pag = new TradPAG( csimple.reader("pag"), cload.reader("pag"),
                 cstore.reader("pag"), calloc.reader("pag") );
@@ -620,8 +640,8 @@ public class PaddleScene
             change = change | cg.update();
         } while( change );
         mpb.update();
+        ceh.update();
         mpc.update();
-        pagb.update();
         pag.update();
     }
 

@@ -37,6 +37,9 @@ public abstract class AbsMethodPAGContextifier
     protected Robj_type globalallocs;
 
     protected Rctxt_method rcout;
+    protected Rsrcm_stmt_kind_tgtm_src_dst parms;
+    protected Rsrcm_stmt_kind_tgtm_src_dst rets;
+    protected Rsrcc_srcm_stmt_kind_tgtc_tgtm calls;
 
     protected Qsrcc_src_dstc_dst csimple;
     protected Qsrcc_src_fld_dstc_dst cload;
@@ -55,6 +58,9 @@ public abstract class AbsMethodPAGContextifier
         Robj_type globalallocs,
 
         Rctxt_method rcout,
+        Rsrcm_stmt_kind_tgtm_src_dst parms,
+        Rsrcm_stmt_kind_tgtm_src_dst rets,
+        Rsrcc_srcm_stmt_kind_tgtc_tgtm calls,
 
         Qsrcc_src_dstc_dst csimple,
         Qsrcc_src_fld_dstc_dst cload,
@@ -72,6 +78,9 @@ public abstract class AbsMethodPAGContextifier
         this.globalallocs = globalallocs;
 
         this.rcout = rcout;
+        this.parms = parms;
+        this.rets = rets;
+        this.calls = calls;
 
         this.csimple = csimple;
         this.cload = cload;

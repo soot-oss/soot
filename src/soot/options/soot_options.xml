@@ -2633,6 +2633,16 @@ When this option is set to true, Paddle computes and prints various
 cryptic statistics about the size of the points-to sets computed.
         </long_desc>
 						</boolopt>
+						<boolopt>
+							<name>Number nodes</name>
+							<alias>number-nodes</alias>
+							<default>true</default>
+                                                        <short_desc>Print node numbers in dumps</short_desc>
+							<long_desc>
+When printing debug information about nodes, this option causes the node number
+of each node to be printed.
+        </long_desc>
+						</boolopt>
 					</section>
 				</sub_phase>
 			</radio_phase>

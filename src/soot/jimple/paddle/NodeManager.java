@@ -54,11 +54,14 @@ public class NodeManager {
             nodeToTag.put( node, tag );
         }
     }
-    public AllocNode makeAllocNode( Object newExpr, Type type, SootMethod m ) {
+    public AllocNode makeGlobalAllocNode( Object newExpr, Type type ) {
+        return makeGlobalAllocNode(newExpr, type, null);
+    }
+    public AllocNode makeGlobalAllocNode( Object newExpr, Type type, SootMethod m ) {
         if( PaddleScene.v().options().types_for_sites() || PaddleScene.v().options().vta() ) newExpr = type;
-	AllocNode ret = (AllocNode) valToAllocNode.get( newExpr );
+	AllocNode ret = (AllocNode) valToGlobalAllocNode.get( newExpr );
 	if( ret == null ) {
-	    valToAllocNode.put( newExpr, ret = new AllocNode( newExpr, type, m ) );
+	    valToGlobalAllocNode.put( newExpr, ret = new GlobalAllocNode( newExpr, type, m ) );
             globalallocs.add( ret, type );
             addNodeTag( ret, m );
 	} else if( !( ret.getType().equals( type ) ) ) {
@@ -70,10 +73,10 @@ public class NodeManager {
     public AllocNode makeStringConstantNode( String s ) {
         Type type = RefType.v( "java.lang.String" );
         if( PaddleScene.v().options().types_for_sites() || PaddleScene.v().options().vta() )
-            return makeAllocNode( type, type, null );
-        StringConstantNode ret = (StringConstantNode) valToAllocNode.get( s );
+            return makeGlobalAllocNode( type, type, null );
+        StringConstantNode ret = (StringConstantNode) valToGlobalAllocNode.get( s );
 	if( ret == null ) {
-	    valToAllocNode.put( s, ret = new StringConstantNode( s ) );
+	    valToGlobalAllocNode.put( s, ret = new StringConstantNode( s ) );
             globalallocs.add( ret, type );
             addNodeTag( ret, null );
 	}
@@ -236,7 +239,7 @@ public class NodeManager {
 
     private Map valToLocalVarNode = new HashMap(1000);
     private Map valToGlobalVarNode = new HashMap(1000);
-    private Map valToAllocNode = new HashMap(1000);
+    private Map valToGlobalAllocNode = new HashMap(1000);
     private LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
     public int maxFinishNumber = 0;
 

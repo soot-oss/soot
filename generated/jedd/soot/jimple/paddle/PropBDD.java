@@ -86,11 +86,11 @@ public final class PropBDD extends AbsPropagator {
                                               jedd.internal.Jedd.v().falseBDD());
         final jedd.internal.RelationContainer objectsBeingStored =
           new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v(), varc.v(), var.v(), fld.v() },
-                                              new PhysicalDomain[] { C3.v(), H1.v(), C2.v(), V2.v(), FD.v() },
+                                              new PhysicalDomain[] { C3.v(), H2.v(), C1.v(), V2.v(), FD.v() },
                                               ("<soot.jimple.paddle.bdddomains.objc:soot.jimple.paddle.bdddo" +
                                                "mains.C3, soot.jimple.paddle.bdddomains.obj:soot.jimple.padd" +
-                                               "le.bdddomains.H1, soot.jimple.paddle.bdddomains.varc:soot.ji" +
-                                               "mple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains.var" +
+                                               "le.bdddomains.H2, soot.jimple.paddle.bdddomains.varc:soot.ji" +
+                                               "mple.paddle.bdddomains.C1, soot.jimple.paddle.bdddomains.var" +
                                                ":soot.jimple.paddle.bdddomains.V2, soot.jimple.paddle.bdddom" +
                                                "ains.fld:soot.jimple.paddle.bdddomains.FD> objectsBeingStore" +
                                                "d; at /home/olhotak/soot-trunk/src/soot/jimple/paddle/PropBD" +
@@ -110,35 +110,31 @@ public final class PropBDD extends AbsPropagator {
         final AbsTypeManager typeManager = PaddleScene.v().tm;
         do  {
             veryOldPointsTo.eq(pointsTo);
-            pointsTo.eqUnion(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(newAlloc.get(),
-                                                                                                                         new PhysicalDomain[] { V1.v() },
-                                                                                                                         new PhysicalDomain[] { V2.v() })),
-                                                              jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(typeManager.get()),
+            pointsTo.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(newAlloc.get()),
+                                                                                             jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(typeManager.get()),
                                                                                                                          allContexts,
-                                                                                                                         new PhysicalDomain[] {  }),
-                                                                                             new PhysicalDomain[] { V1.v() },
-                                                                                             new PhysicalDomain[] { V2.v() })));
+                                                                                                                         new PhysicalDomain[] {  })),
+                                                            new PhysicalDomain[] { V1.v() },
+                                                            new PhysicalDomain[] { V2.v() }));
             do  {
                 oldPointsTo.eq(pointsTo);
-                pointsTo.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(typeManager.get()),
+                pointsTo.eqUnion(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(typeManager.get()),
                                                                                                                                                          allContexts,
-                                                                                                                                                         new PhysicalDomain[] {  })),
-                                                                                                 jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().replace(pag.allSimple().get(),
-                                                                                                                                                                                                                                                         new PhysicalDomain[] { C1.v() },
-                                                                                                                                                                                                                                                         new PhysicalDomain[] { C3.v() }),
-                                                                                                                                                                                                                          new PhysicalDomain[] { V2.v(), V1.v() },
-                                                                                                                                                                                                                          new PhysicalDomain[] { V1.v(), V2.v() }),
-                                                                                                                                                                                           new PhysicalDomain[] { C2.v() },
-                                                                                                                                                                                           new PhysicalDomain[] { C1.v() })),
-                                                                                                                                jedd.internal.Jedd.v().replace(pointsTo,
-                                                                                                                                                               new PhysicalDomain[] { C1.v() },
-                                                                                                                                                               new PhysicalDomain[] { C3.v() }),
-                                                                                                                                new PhysicalDomain[] { C3.v(), V2.v() })),
-                                                                new PhysicalDomain[] { V1.v() },
-                                                                new PhysicalDomain[] { V2.v() }));
+                                                                                                                                                         new PhysicalDomain[] {  }),
+                                                                                                                             new PhysicalDomain[] { V1.v() },
+                                                                                                                             new PhysicalDomain[] { V2.v() })),
+                                                                  jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().replace(pag.allSimple().get(),
+                                                                                                                                                                                           new PhysicalDomain[] { C1.v() },
+                                                                                                                                                                                           new PhysicalDomain[] { C3.v() }),
+                                                                                                                                                            new PhysicalDomain[] { C2.v() },
+                                                                                                                                                            new PhysicalDomain[] { C1.v() })),
+                                                                                                 jedd.internal.Jedd.v().replace(pointsTo,
+                                                                                                                                new PhysicalDomain[] { V2.v(), C1.v() },
+                                                                                                                                new PhysicalDomain[] { V1.v(), C3.v() }),
+                                                                                                 new PhysicalDomain[] { C3.v(), V1.v() })));
             }while(!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(pointsTo), oldPointsTo)); 
-            ptout.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), objc.v(), obj.v(), varc.v() },
-                                                          new PhysicalDomain[] { V1.v(), C2.v(), H1.v(), C1.v() },
+            ptout.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), objc.v(), varc.v(), obj.v() },
+                                                          new PhysicalDomain[] { V1.v(), C2.v(), C1.v(), H1.v() },
                                                           ("ptout.add(jedd.internal.Jedd.v().minus(jedd.internal.Jedd.v(" +
                                                            ").read(jedd.internal.Jedd.v().replace(pointsTo, new jedd.Phy" +
                                                            "sicalDomain[...], new jedd.PhysicalDomain[...])), jedd.inter" +
@@ -153,20 +149,18 @@ public final class PropBDD extends AbsPropagator {
                                                                                                                       new PhysicalDomain[] { V1.v() }))));
             outputtedPointsTo.eq(pointsTo);
             PaddleScene.v().updateCallGraph();
-            objectsBeingStored.eq(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(pag.allStore().get()),
-                                                                 jedd.internal.Jedd.v().replace(pointsTo,
-                                                                                                new PhysicalDomain[] { V2.v(), C2.v() },
-                                                                                                new PhysicalDomain[] { V1.v(), C3.v() }),
-                                                                 new PhysicalDomain[] { C1.v(), V1.v() }));
-            fieldPt.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(objectsBeingStored,
-                                                                                                                                                     new PhysicalDomain[] { H1.v() },
-                                                                                                                                                     new PhysicalDomain[] { H2.v() })),
-                                                                                          jedd.internal.Jedd.v().replace(pointsTo,
-                                                                                                                         new PhysicalDomain[] { C2.v(), C1.v() },
-                                                                                                                         new PhysicalDomain[] { C1.v(), C2.v() }),
-                                                                                          new PhysicalDomain[] { C2.v(), V2.v() }),
-                                                           new PhysicalDomain[] { C3.v() },
-                                                           new PhysicalDomain[] { C2.v() }));
+            objectsBeingStored.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(pag.allStore().get()),
+                                                                                                jedd.internal.Jedd.v().replace(pointsTo,
+                                                                                                                               new PhysicalDomain[] { V2.v(), C2.v(), H1.v() },
+                                                                                                                               new PhysicalDomain[] { V1.v(), C3.v(), H2.v() }),
+                                                                                                new PhysicalDomain[] { C1.v(), V1.v() }),
+                                                                 new PhysicalDomain[] { C2.v() },
+                                                                 new PhysicalDomain[] { C1.v() }));
+            fieldPt.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(objectsBeingStored),
+                                                                                          pointsTo,
+                                                                                          new PhysicalDomain[] { C1.v(), V2.v() }),
+                                                           new PhysicalDomain[] { C3.v(), C2.v() },
+                                                           new PhysicalDomain[] { C2.v(), C1.v() }));
             loadsFromHeap.eq(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(pag.allLoad().get(),
                                                                                                                        new PhysicalDomain[] { C2.v() },
                                                                                                                        new PhysicalDomain[] { C3.v() })),
@@ -186,8 +180,8 @@ public final class PropBDD extends AbsPropagator {
                                                                                             new PhysicalDomain[] {  }),
                                                                 new PhysicalDomain[] { V1.v() },
                                                                 new PhysicalDomain[] { V2.v() }));
-            ptout.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), objc.v(), obj.v(), varc.v() },
-                                                          new PhysicalDomain[] { V1.v(), C2.v(), H1.v(), C1.v() },
+            ptout.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), objc.v(), varc.v(), obj.v() },
+                                                          new PhysicalDomain[] { V1.v(), C2.v(), C1.v(), H1.v() },
                                                           ("ptout.add(jedd.internal.Jedd.v().minus(jedd.internal.Jedd.v(" +
                                                            ").read(jedd.internal.Jedd.v().replace(pointsTo, new jedd.Phy" +
                                                            "sicalDomain[...], new jedd.PhysicalDomain[...])), jedd.inter" +

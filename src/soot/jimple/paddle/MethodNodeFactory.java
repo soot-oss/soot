@@ -137,19 +137,19 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
 	setResult( nm.makeLocalVarNode( l,  l.getType(), method ) );
     }
     final public void caseNewArrayExpr( NewArrayExpr nae ) {
-        setResult( nm.makeAllocNode( nae, nae.getType(), method ) );
+        setResult( nm.makeGlobalAllocNode( nae, nae.getType(), method ) );
     }
     final public void caseNewExpr( NewExpr ne ) {
         if( PaddleScene.v().options().merge_stringbuffer() 
         && ne.getType().equals( RefType.v("java.lang.StringBuffer" ) ) ) {
-            setResult( nm.makeAllocNode( ne.getType(), ne.getType(), null ) );
+            setResult( nm.makeGlobalAllocNode( ne.getType(), ne.getType() ) );
         } else {
-            setResult( nm.makeAllocNode( ne, ne.getType(), method ) );
+            setResult( nm.makeGlobalAllocNode( ne, ne.getType(), method ) );
         }
     }
     final public void caseNewMultiArrayExpr( NewMultiArrayExpr nmae ) {
         ArrayType type = (ArrayType) nmae.getType();
-        AllocNode prevAn = nm.makeAllocNode(
+        AllocNode prevAn = nm.makeGlobalAllocNode(
             new Pair( nmae, new Integer( type.numDimensions ) ), type, method );
         VarNode prevVn = nm.makeLocalVarNode( prevAn, prevAn.getType(), method );
         gnf.addEdge( prevAn, prevVn );
@@ -158,7 +158,7 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
             Type t = type.getElementType();
             if( !( t instanceof ArrayType ) ) break;
             type = (ArrayType) t;
-            AllocNode an = nm.makeAllocNode(
+            AllocNode an = nm.makeGlobalAllocNode(
                 new Pair( nmae, new Integer( type.numDimensions ) ), type, method );
             VarNode vn = nm.makeLocalVarNode( an, an.getType(), method );
             gnf.addEdge( an, vn );
@@ -182,9 +182,9 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
         || ( sc.value.length() > 0 && sc.value.charAt(0) == '[' ) ) {
             stringConstant = nm.makeStringConstantNode( sc.value );
         } else {
-            stringConstant = nm.makeAllocNode(
+            stringConstant = nm.makeGlobalAllocNode(
                 PointsToAnalysis.STRING_NODE,
-                RefType.v( "java.lang.String" ), null );
+                RefType.v( "java.lang.String" ) );
         }
         VarNode stringConstantLocal = nm.makeGlobalVarNode(
             stringConstant,

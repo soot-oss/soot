@@ -29,8 +29,11 @@ public class GlobalVarNode extends VarNode {
 	super( variable, t );
     }
     public String toString() {
-	return "GlobalVarNode "+getNumber()+" "+variable;
-	//return "GlobalVarNode "+variable;
+        if( PaddleScene.v().options().number_nodes() ) {
+            return "GlobalVarNode "+getNumber()+" "+variable;
+        } else {
+	    return "GlobalVarNode "+variable;
+        }
     }
 }
 
