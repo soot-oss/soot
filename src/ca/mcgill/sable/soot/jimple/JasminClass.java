@@ -1666,8 +1666,16 @@ public class JasminClass
                     emit("dconst_0", 2);
                 else if(v.value == 1)
                     emit("dconst_1", 2);
-                else
-                    emit("ldc2_w " + v.toString(), 2);
+                else {
+                    String s = v.toString();
+                    
+                    if(s.equals("Infinity"))
+                        s="Inf";
+                    if(s.equals("-Infinity"))
+                        s="-Inf";
+                        
+                    emit("ldc2_w " + s, 2);
+                }
             }
 
             public void caseFloatConstant(FloatConstant v)
@@ -1678,8 +1686,16 @@ public class JasminClass
                     emit("fconst_1", 1);
                 else if(v.value == 2)
                     emit("fconst_2", 1);
-                else
-                    emit("ldc " + v.toString(), 1);
+                else {
+                    String s = v.toString();
+                    
+                    if(s.equals("Infinity"))
+                        s="Inf";
+                    if(s.equals("-Infinity"))
+                        s="-Inf";
+                        
+                    emit("ldc " + s, 1);
+                }
             }
 
 
@@ -2382,6 +2398,10 @@ public class JasminClass
                 {
                     if(src.charAt(i) == '\"')
                         dest.append("\\\"");
+                    else if(src.charAt(i) == '\'')
+                        dest.append("\\\'");
+                    else if(src.charAt(i) == '\\')
+                        dest.append("\\\\");
                     else
                         dest.append(src.charAt(i));
                 }

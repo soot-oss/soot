@@ -433,7 +433,8 @@ public class SootClass
             }
         }
 
-        throw new ca.mcgill.sable.soot.NoSuchMethodException();
+        throw new ca.mcgill.sable.soot.NoSuchMethodException(getName() + "." + name + "(" + 
+            parameterTypes + ")" + " : " + returnType);
     }
 
     /**

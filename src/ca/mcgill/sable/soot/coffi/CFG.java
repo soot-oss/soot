@@ -101,6 +101,9 @@
 
  B) Changes:
 
+ - Modified on February 22, by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+   Fixed a bug with the DUP2_x1 bytecode.
+   
  - Modified on February 19, 1999 by Vijay Sundaresan (vijay@sable.mcgill.ca) (*)
    Implemented a JSR eliminator/handler code duplicator.
    
@@ -3592,21 +3595,22 @@ public class CFG {
          case ByteCode.DUP2_X1:
             if(typeSize(typeStack.get(typeStack.topIndex() - 1)) == 2)
             {
-                l3 = Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex() - 2);
                 l2 = Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex() - 1);
+                l3 = Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex() - 2);
 
                 stmt = Jimple.v().newAssignStmt(Util.getLocalForStackOp(listBody, postTypeStack,
-                    postTypeStack.topIndex() - 4), l2);
+                    postTypeStack.topIndex() -1), l2);
 
                 statements.add(stmt);
 
                 stmt = Jimple.v().newAssignStmt(Util.getLocalForStackOp(listBody, postTypeStack,
                     postTypeStack.topIndex() - 2), l3);
-
+                
                 statements.add(stmt);
 
                 stmt = Jimple.v().newAssignStmt(Util.getLocalForStackOp(listBody, postTypeStack,
-                    postTypeStack.topIndex() -1), l2);
+                    postTypeStack.topIndex() - 4), 
+                    Util.getLocalForStackOp(listBody, postTypeStack, postTypeStack.topIndex() - 1));
 
                 statements.add(stmt);
 
