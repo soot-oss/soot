@@ -3,11 +3,11 @@
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:output method="text" indent="no"/>
 
-<xsl:template mode="to_latex" match="tt">{\tt <xsl:value-of select="."/>}</xsl:template>
+<xsl:template mode="to_latex" match="tt">{\tt <xsl:apply-templates mode="to_latex"/>}</xsl:template>
 
-<xsl:template mode="to_latex" match="b">{\bf <xsl:value-of select="."/>}</xsl:template>
+<xsl:template mode="to_latex" match="b">{\bf <xsl:apply-templates mode="to_latex"/>}</xsl:template>
 
-<xsl:template mode="to_latex" match="cite">\cite{<xsl:value-of select="."/>}</xsl:template>
+<xsl:template mode="to_latex" match="cite">\cite{<xsl:apply-templates mode="to_latex"/>}</xsl:template>
 
 <xsl:template mode="to_latex" match="uscore">\_</xsl:template>
 
@@ -19,13 +19,13 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template mode="to_latex" match="pre">
 \begin{quote}\begin{verbatim}
-<xsl:apply-templates/>
+<xsl:apply-templates mode="to_latex"/>
 \end{verbatim}\end{quote}
 </xsl:template>
 
 <xsl:template mode="to_latex" match="p">
 \par
-<xsl:apply-templates/>
+<xsl:apply-templates mode="to_latex"/>
 </xsl:template>
 
 <!-- HTML links like <a href="http://foo">bar</a> -->
