@@ -28,14 +28,27 @@ package soot.toolkits.graph;
 
 import java.util.*;
 
+
+
+
+/**
+ *  Orders in reverse pseudo-topological order
+ *  the nodes of a DirectedGraph instance.
+ */
 public class ReversePseudoTopologicalOrderer
 {
     private static ReversePseudoTopologicalOrderer instance = 
         new ReversePseudoTopologicalOrderer();
     private ReversePseudoTopologicalOrderer() {}
 
+    /** @return the unique instance of this singleton class */
     public static ReversePseudoTopologicalOrderer v() { return instance; }
 
+
+    /**
+     *  @param g a DirectedGraph instance whose nodes we which to order.
+     *   @return a reverse pseudo-topologically ordered list of the graph's nodes.
+     */
     public List newList(DirectedGraph g)
     {        
         return PseudoTopologicalOrderer.computeOrder(true, g);

@@ -669,8 +669,8 @@ public class LoadStoreOptimizer extends BodyTransformer
                      ((Inst) mUnits.getPredOf(to)).getInCount() == 0) {
                 
                 Object toPred =  mUnits.getPredOf(to);
-                block.remove(toPred);
-                block.insertAfter(toPred, to);
+                block.remove((Unit) toPred);
+                block.insertAfter((Unit) toPred, to);
                 return HAS_CHANGED; // return has changed
 	    } 
             else return FAILURE;

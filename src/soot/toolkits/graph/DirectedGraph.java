@@ -30,13 +30,43 @@ package soot.toolkits.graph;
 import java.util.*;
 import soot.*;
 
+
+/**
+ *   Interface to be implemented by classes that support the
+ *   notion of a CFG.
+ */
 public interface DirectedGraph
 {
+    /** 
+     *  @return   A list of the entry points for this CFG.
+     */
     public List getHeads();
+
+    /** @return  A list of the exit points for this CFG. */
     public List getTails();
+
+    /** 
+     *  @return  A list of the predessor for a node in the graph.
+     *  @see Directed
+     */
     public List getPredsOf(Directed s);
+
+    /**
+     *  @return  A list of the successor for a node in the graph.
+     *  @see Directed
+     */
     public List getSuccsOf(Directed s);
+
+    /**
+     *  @return  The node count for this graph.
+     *  @see Directed
+     */
     public int size();
+
+    /**
+     *  @return An iterator for the nodes in this graph. The ordering
+     *          of the nodes returned by the iterator is not determined.
+     */
     public Iterator iterator();
 }
 

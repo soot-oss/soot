@@ -28,13 +28,19 @@ package soot.toolkits.graph;
 
 
 
-
-
-
-
 import soot.*;
 import soot.util.*;
 import java.util.*;
+
+
+
+
+/**
+ *  Represents a CFG where the nodes are Unit instances.
+ *
+ *  @see Unit
+ *  @see BriefUnitGraph
+ */
 
 public class UnitGraph implements DirectedGraph
 {
@@ -46,16 +52,22 @@ public class UnitGraph implements DirectedGraph
     SootMethod method;
     int size;
 
-
     Body body;
     Chain unitChain;
+
     
-
-    public Body getBody()
-    {
-        return body;
-    }
-
+    /**
+     *   Constructs  a graph for the units found in the provided
+     *   Body instance. Each node in the graph corresponds to
+     *   a unit. The edges are derived from the control flow.
+     *   
+     *   @param body               The underlying body we want to make a
+     *                             graph for.
+     *   @param addExceptionEdges  If true then the control flow edges associated with
+     *                             exceptions are added.
+     *   @see Body
+     *   @see Unit
+     */
     UnitGraph(Body unitBody, boolean addExceptionEdges)
     {
         body = unitBody;
@@ -298,48 +310,32 @@ public class UnitGraph implements DirectedGraph
             Main.graphTimer.end();
     }
 
-    public List getHeads()
+
+    
+    /**
+     *   @return The underlying body instance this UnitGraph was build
+     *           from.
+     *
+     *  @see #UnitGraph
+     *  @see Body
+     */
+    public Body getBody()
     {
-        return heads;
+        return body;
     }
 
-    public List getTails()
-    {
-        return tails;
-    }
 
-    public List getPredsOf(Directed s)
-    {
-        if(!unitToPreds.containsKey(s))
-            throw new RuntimeException("Invalid stmt" + s);
 
-        return (List) unitToPreds.get(s);
-    }
-
-    public List getSuccsOf(Directed s)
-    {
-        if(!unitToSuccs.containsKey(s))
-            throw new RuntimeException("Invalid stmt" + s);
-
-        return (List) unitToSuccs.get(s);
-    }
-
-    public Iterator iterator()
-    {
-        return unitChain.iterator();
-    }
-
-    public int size()
-    {
-        return size;
-    }  
-
-  /** Look for a path, in g, from def to use. 
-   * This path has to lie inside an extended basic block 
-   * (and this property implies uniqueness.) */
-  /* The path returned includes from and to.
-     returns null if there is no such path */
-  
+  /**
+   *  Look for a path in graph,  from def to use. 
+   *  This path has to lie inside an extended basic block 
+   *  (and this property implies uniqueness.). The path returned 
+   *   includes from and to.
+   *
+   *  @param from start point for the path.
+   *  @param to   end point for the path. 
+   *  @return null if there is no such path.
+   */
   public List getExtendedBasicBlockPathBetween(Unit from, Unit to)
     {
         UnitGraph g = this;
@@ -399,4 +395,44 @@ public class UnitGraph implements DirectedGraph
         }
       return null;
     }       
+
+
+    
+    /* DirectedGraph implementation */
+    public List getHeads()
+    {
+        return heads;
+    }
+
+    public List getTails()
+    {
+        return tails;
+    }
+
+    public List getPredsOf(Directed s)
+    {
+        if(!unitToPreds.containsKey(s))
+            throw new RuntimeException("Invalid stmt" + s);
+
+        return (List) unitToPreds.get(s);
+    }
+
+    public List getSuccsOf(Directed s)
+    {
+        if(!unitToSuccs.containsKey(s))
+            throw new RuntimeException("Invalid stmt" + s);
+
+        return (List) unitToSuccs.get(s);
+    }
+    
+    public int size()
+    {
+        return size;
+    }  
+
+    public Iterator iterator()
+    {
+        return unitChain.iterator();
+    }
+
 }

@@ -34,8 +34,21 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
+
+
+/**
+ *  Represents a CFG for a Body instance where the nodes are Unit
+ *  instances, and where control flow associated with exceptions is taken into 
+ *  account. That is all units covered by an exception handler will have edges 
+ *  to the exception handler.
+ */
 public class CompleteUnitGraph extends UnitGraph
 {
+
+    /**
+     *  Constructs the graph from a given Body instance.
+     *  @param the Body instance from which the graph is built.
+     */
     public CompleteUnitGraph(Body body)
     {
         super(body, true);

@@ -29,6 +29,14 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
+
+
+/**
+ *  Identifies and provides an interface to query the strongly-connected
+ *  components of DirectedGraph instances.
+ *  @see DirectedGraph
+ */
+
 public class StronglyConnectedComponents
 {
     private HashMap nodeToColor = new HashMap();
@@ -42,6 +50,11 @@ public class StronglyConnectedComponents
     private HashMap nodeToComponent = new HashMap();
     MutableDirectedGraph sccGraph = new HashMutableDirectedGraph();
 
+    /**
+     *  @param g a graph for which we want to compute the strongly
+     *           connected components. 
+     *  @see DirectedGraph
+     */
     public StronglyConnectedComponents(DirectedGraph g)
     {
         // Color all nodes white
@@ -197,24 +210,46 @@ public class StronglyConnectedComponents
         }
     }
 
+
+    /** 
+     *  Checks if 2 nodes are in the same strongly-connnected component.
+     *  @param a some graph node.
+     *  @param b some graph node
+     *  @return true if both nodes are in the same strongly-connnected component.
+     *          false otherwise.
+     */
     public boolean equivalent(Object a, Object b)
     {
         return nodeToComponent.get(a) == nodeToComponent.get(b);
     }
 
+
+    /**
+     *   @return a list of the strongly-connnected components that make
+     *           up the computed strongly-connnect component graph.
+     */
     public List getComponents()
     {
         return componentList;
     }
 
+    /**
+     *  @param a a node of the original graph.
+     *  @return the strongly-connnected component node
+     *          to which the parameter node belongs.
+     */
     public List getComponentOf(Object a)
     {
         return (List)nodeToComponent.get(a);
     }
 
-    /* we should make this unmodifiable at some point. */
+    /** 
+     *  @return the computed strongly-connnected component graph. 
+     *  @see DirectedGraph
+     */
     public DirectedGraph getSuperGraph()
     {
+	/* we should make this unmodifiable at some point. */
         return sccGraph;
     }
 }

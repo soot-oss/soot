@@ -31,6 +31,13 @@ import java.util.*;
 import soot.*;
 import soot.util.*;
 
+
+
+
+/**
+ *   HashMap based implementation of a MutableBlockGraph.
+ */
+
 public class HashMutableDirectedGraph implements MutableDirectedGraph
 {
     class NodePair
@@ -63,14 +70,14 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
     {
     }
 
-    /** Returns an unbacked list of heads for this graph. */
+    /* Returns an unbacked list of heads for this graph. */
     public List getHeads()
     {
         ArrayList l = new ArrayList(); l.addAll(heads);
         return Collections.unmodifiableList(l);
     }
 
-    /** Returns an unbacked list of tails for this graph. */
+    /* Returns an unbacked list of tails for this graph. */
     public List getTails()
     {
         ArrayList l = new ArrayList(); l.addAll(tails);

@@ -31,8 +31,25 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
+
+
+
+/**
+ *  Represents a CFG where the nodes are Unit instances, and 
+ *  where no edges are included to account for  control flow
+ *  associated with exceptions.
+ *
+ *  @see Unit
+ *  @see UnitGraph
+ */
 public class BriefUnitGraph extends UnitGraph
 {
+
+    /**
+     *   Constructs a BriefUnitGraph given a Body instance.
+     *   @param body The underlying body we want to make a 
+     *               graph for.
+     */
     public BriefUnitGraph(Body body)
     {
         super(body, false);

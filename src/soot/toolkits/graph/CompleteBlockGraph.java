@@ -30,10 +30,32 @@ import java.util.*;
 import soot.*;
 import java.io.*;
 
+/**
+ *  Represents a CFG where the nodes are Block instances, and
+ *  where control flow associated with exceptions is taken into account.
+ *  That is, given a list of Units that have an exception handler in scope,
+ *  each one of these units will be considered a Block as control can jump to 
+ *  an exception handler at any point while going through the units.
+ *
+ *  @see Unit
+ *  @see Block
+ *  @see BlockGraph
+ *  @see ZonedBlockGraph
+ */
 
 public class CompleteBlockGraph extends BlockGraph 
 {
 
+
+    /**
+     *   Constructs  a graph for the blocks found by partitioning the 
+     *   the unit chain of  the provided
+     *   Body instance. Each node in the graph corresponds to
+     *   a block. The edges are derived from the control flow.
+     *
+     *   @param body               The underlying body we want to make a
+     *                             graph for.
+     */
     public CompleteBlockGraph(Body body)
     {
         super(body, COMPLETE);

@@ -30,9 +30,19 @@ import java.util.*;
 import java.io.*;
 import soot.*;
 
+
+/**
+ *  Represents a CFG for a Body instance where the nodes are Block 
+ *  instances, and where control flow associated with exceptions is ignored.
+ *  Hence the graph will in fact be a forest where each exception handler will
+ *  constitute a disjoint subgraph.
+ */
 public class BriefBlockGraph extends BlockGraph 
 {
-
+    /**
+     *  Constructs a BriefBlockGraph from a given Body instance.
+     *  @param the Body instance from which the graph is built.
+     */
     public  BriefBlockGraph(Body body)
     {
         super(body, BRIEF);

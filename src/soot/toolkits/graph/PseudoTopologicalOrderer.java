@@ -30,12 +30,16 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
+
+/**
+ *  Orders in pseudo-topological order, 
+ *  the nodes of a DirectedGraph instance.
+ */
+
 public class PseudoTopologicalOrderer
 {
     private static PseudoTopologicalOrderer instance = new PseudoTopologicalOrderer();
     private PseudoTopologicalOrderer() {}
-
-    public static PseudoTopologicalOrderer v() { return instance; }
 
     private static Map stmtToColor;
     private static final int 
@@ -45,14 +49,27 @@ public class PseudoTopologicalOrderer
 
     private static LinkedList order;
     private static boolean mIsReversed;
-  
     private static DirectedGraph graph;
+
+
+
+    public static PseudoTopologicalOrderer v() { return instance; }
         
+    /**
+     *  @param g a DirectedGraph instance whose nodes we which to order.
+     *  @return a pseudo-topologically ordered list of the graph's nodes.
+     */
     public List newList(DirectedGraph g)
     {        
         return computeOrder(false, g);
     }
 
+    /**
+     *  Orders in pseudo-topological order.
+     *  @param g a DirectedGraph instance we want to order the nodes for.
+     *  @param isReversed if true a reversed  ordering is produced.
+     *  @return an ordered list of the graph's nodes.
+     */
     static LinkedList computeOrder(boolean isReversed, DirectedGraph g)
     {
         stmtToColor = new HashMap();

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrice Pominville, Raja Vallee-Rai
+ * Copyright (C) 1999-2000 Patrice Pominville, Raja Vallee-Rai
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,6 +31,18 @@ import java.util.*;
 import soot.*;
 import soot.baf.*;
 
+
+
+
+/**
+ *    This class is used to represent BasicBlocks that partition
+ *    a method body. It is implemented as view on an
+ *    underlying Body instance; as a consequence changes made on a Block 
+ *    will be  automatically reflected  in it's enclosing method body. Blocks
+ *    also exists in the context of a BlockGraph, a CFG for a method  where 
+ *    Block instances are the nodes of the graph. Hence a Block can be queried
+ *    for it's successors and predessors Blocks as they are found in this graph.
+ */
 public class Block implements Directed
 {
     private Unit mHead, mTail;
@@ -39,12 +51,57 @@ public class Block implements Directed
     private int mPredCount = 0, mBlockLength = 0, mIndexInMethod = 0;
     private BlockGraph mBlockGraph;
 
+    /**
+     *   Constructs a Block in the context of a BlockGraph, and enclosing Body instances.
+     *  
+     *
+     *   @param aHead            The first unit ir this Block.
+     *   @param aTail            The last unit  in this Block.   
+     *   @param aBody            The Block's enclosing Body instance.
+     *   @param aIndexInMethod   The index of this Block in the list of
+     *                           Blocks that partition it's enclosing Body instance.
+     *   @param aBlockLength     The number of units that makeup this block.
+     *   @param aBlockGraph      The Graph of Blocks in which this block lives.
+     *
+     *   @see Body
+     *   @see Chain
+     *   @see BlockGraph
+     *   @see Unit
+     *   @see SootMethod
+     */
+    public Block(Unit aHead, Unit aTail, Body aBody, int aIndexInMethod, int aBlockLength, BlockGraph aBlockGraph)
+    {
+        mHead = aHead;        
+        mTail = aTail;
+        mBody = aBody;
+        mIndexInMethod = aIndexInMethod;
+        mBlockLength = aBlockLength;
+        mBlockGraph = aBlockGraph;
+    }
+
+
+
+    /** 
+     *  Returns the Block's enclosing Body instance.
+     *
+     *  @return      The block's chain of instructions.
+     *  @see         JimpleBody
+     *  @see         BafBody 
+     *  @see         Body
+     */
     public Body getBody() 
     {
         return mBody;
     }
        
-    // xxx can't call remove on first or last item!!!!!! tail/ head won't get ajusted
+    
+    /**
+     *  Returns an iterator for the linear chain of Units that make up the block.
+     *
+     *  @return      An iterator that iterates over the block's units.
+     *  @see Chain 
+     *  @see Unit
+     */
     public Iterator iterator() 
     {
         if(mBody != null) 
@@ -56,17 +113,53 @@ public class Block implements Directed
         }
     }
     
-    //    insertBefore(aLoadInst, candidate);
-    public void insertBefore(Object toInsert, Object point)
+    /**
+     *  Inserts a Unit before some other Unit in this block.
+     *
+     *
+     *  @param toInsert  A Unit to be inserted.
+     *  @param point     A Unit in the Block's body
+     *                   before which we wish to insert the Unit.           
+     *  @see Unit
+     *  @see Chain
+     */         
+    public void insertBefore(Unit toInsert, Unit point)
     {
         if(point == mHead) 
-            mHead = (Unit) toInsert;
+            mHead = toInsert;
 
         Chain methodBody = mBody.getUnits();
         methodBody.insertBefore(toInsert, point);
     }
 
-    public boolean remove(Object item) 
+
+     /**
+     *  Inserts a Unit after some other Unit in the Block.
+     *
+     *  @param toInsert  A Unit to be inserted.
+     *  @param point     A Unit in the Block  after which we wish to 
+     *                   insert the Unit.           
+     *  @see Unit
+     */         
+    public void insertAfter(Unit toInsert, Unit point)
+    {
+        if(point == mTail) 
+            mTail = toInsert;
+
+        Chain methodBody = mBody.getUnits();
+        methodBody.insertAfter(toInsert, point);
+    }
+
+
+
+    /**
+     *  Removes a Unit occuring before some other Unit in the Block.
+     *
+     *  @param item       A Unit to be remove from the Block's Unit Chain.         
+     *  @return           True if the item could be found and removed.
+     *
+     */         
+    public boolean remove(Unit item) 
     {
         Chain methodBody = mBody.getUnits();
         
@@ -77,58 +170,159 @@ public class Block implements Directed
         
         return methodBody.remove(item);
     }
-
-
-    public Object getSuccOf(Object aItem) 
+    
+    /**
+     *  Returns the  Unit occuring immediatly after some other Unit in the block.
+     *
+     *  @param aItem      The Unit from which we wish to get it's successor.
+     *  @return           The successor or null if <code>aItem</code> is the tail
+     *                    for this Block.     
+     *
+     */           
+    public Unit getSuccOf(Unit aItem) 
     {        
         Chain methodBody = mBody.getUnits();
         if(aItem != mTail)
-            return  methodBody.getSuccOf(aItem);
+            return  (Unit) methodBody.getSuccOf(aItem);
         else
             return null;
     }
-
-    public Object getPredOf(Object aItem) 
+    
+    /**
+     *  Returns the  Unit occuring immediatly before some other Unit in the block.
+     *
+     *  @param aItem      The Unit from which we wish to get it's predecessor.
+     *  @return           The predecessor or null if <code>aItem</code> is the head
+     *                    for this Block.     
+     */      
+    public Unit getPredOf(Unit aItem) 
     {
         Chain methodBody = mBody.getUnits();
         if(aItem != mHead)
-            return  methodBody.getPredOf(aItem);
+            return  (Unit) methodBody.getPredOf(aItem);
         else
             return null;        
     }
 
 
-    public void insertAfter(Object toInsert, Object point)
-    {
-        if(point == mTail) 
-            mTail = (Unit) toInsert;
-
-        Chain methodBody = mBody.getUnits();
-        methodBody.insertAfter(toInsert, point);
-    }
-
-
-
-
-
-
-    public Block(Unit aHead, Unit aTail, Body aBody, int aIndexInMethod, int aBlockLength, BlockGraph aBlockGraph)
-    {
-        mHead = aHead;        
-        mTail = aTail;
-        mBody = aBody;
-        mIndexInMethod = aIndexInMethod;
-        mBlockLength = aBlockLength;
-        mBlockGraph = aBlockGraph;
-    }
-        
-    
+    /**
+     *  Returns the index of this Block in the list of Blocks that partition it's
+     *  enclosing Body instance.
+     *   @return         The index of the block in it's enclosing Body instance.
+     */    
     public int getIndexInMethod()
     {
         return mIndexInMethod;
     }
     
-  
+
+    /**
+     * Returns the first unit in this block.
+     * @return The first unit in this block. 
+     */
+    public Unit getHead() 
+    {
+        return mHead;
+    }
+    
+    /**
+     * Returns the last unit in this block.
+     * @return The last unit in this block.
+     */
+    public Unit getTail()
+    {
+        return mTail;
+    }
+
+    /** 
+     *   Sets the list of Blocks that are predecessors of this block in it's enclosing
+     *   BlockGraph instance.
+     *   @param preds       The a List of Blocks that precede this block.
+     *
+     *   @see BlockGraph
+     */ 
+    void setPreds(List preds)
+    {
+        mPreds = preds;
+        return;
+    }
+
+    /** 
+     *   Returns the List of Block that are predecessors to this block, 
+     *   @return            A list of predecessor blocks.
+     *   @see BlockGraph
+     */     
+    public List getPreds()
+    {
+        return mPreds;
+    }
+
+
+
+    /**
+     *   Sets the list of Blocks that are successors of this block in it's enclosing
+     *   BlockGraph instance.
+     *   @param succs      The a List of Blocks that succede this block.
+     *
+     *   @see BlockGraph
+     */
+    void setSuccs(List succs)
+    {
+        mSuccessors = succs;
+    }
+
+
+
+    /**
+     *   Returns the List of Blocks that are successors to this block,
+     *   @return            A list of successorblocks.
+     *   @see BlockGraph
+     */
+    public List getSuccs()
+    {
+        return mSuccessors;
+    }
+
+
+
+    private Map buildMapForBlock() 
+    {
+        Map m = new HashMap();
+        List basicBlocks = mBlockGraph.getBlocks();
+        Iterator it = basicBlocks.iterator();
+        while(it.hasNext()) {
+            Block currentBlock = (Block) it.next();
+            m.put(currentBlock.getHead(),  "block" + (new Integer(currentBlock.getIndexInMethod()).toString()));
+        }        
+        return m;
+    }
+
+
+    static Map allMapToUnnamed = new AllMapTo("???");
+
+    static class AllMapTo extends AbstractMap
+    {
+        Object dest;
+        
+        public AllMapTo(Object dest)
+        {
+            this.dest = dest;
+        }
+        
+        public Object get(Object key)
+        {
+            return dest;
+        }
+        
+        public Set entrySet()
+        {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+
+    
+    public String toShortString() {return "Block #" + mIndexInMethod; }
 
     public String toBriefString()
     {
@@ -177,18 +371,11 @@ public class Block implements Directed
     {
         StringBuffer strBuf = new StringBuffer();
 
-        
-	//   xxx
-        /*
-        strBuf.append(toShortString() + " of method " + mBody.getMethod().getName() + ".\n");
-        strBuf.append("Head: " + mHead.toBriefString(stmtToName, indentation ) + '\n');
-        strBuf.append("Tail: " + mTail.toBriefString(stmtToName, indentation) + '\n');
-        strBuf.append("Predecessors: \n");*/
-        
+                
 
         // print out predecessors.
 
-	strBuf.append("Block " + mIndexInMethod + ":\n");
+	strBuf.append("Block " + mIndexInMethod + ":" + System.getProperty("line.separator"));
 	strBuf.append("[preds: ");
         int count = 0;
         if(mPreds != null) {
@@ -208,34 +395,34 @@ public class Block implements Directed
             
         }
             
-        strBuf.append("]\n");
+        strBuf.append("]" + System.getProperty("line.separator"));
         
 
         
-        //strBuf.append("     block" + mIndexInMethod + ":\n");
+        //strBuf.append("     block" + mIndexInMethod + ":" + System.getProperty("line.separator"));
 
         Chain methodUnits = mBody.getUnits();
         Iterator basicBlockIt = methodUnits.iterator(mHead, mTail);
         
         if(basicBlockIt.hasNext()) {
             Unit someUnit = (Unit) basicBlockIt.next();
-            strBuf.append(someUnit.toBriefString(stmtToName, indentation) + ";\n");
+            strBuf.append(someUnit.toBriefString(stmtToName, indentation) + ";" + System.getProperty("line.separator"));
             if(!isBrief) {
                 while(basicBlockIt.hasNext()){
                     someUnit = (Unit) basicBlockIt.next();
                     if(someUnit == mTail)
                         break;
-                    strBuf.append(someUnit.toBriefString(stmtToName, indentation) + ";\n");        
+                    strBuf.append(someUnit.toBriefString(stmtToName, indentation) + ";" + System.getProperty("line.separator"));        
                 }
             } else {
                 if(mBlockLength > 1)
-                    strBuf.append("          ...\n");
+                    strBuf.append("          ..." + System.getProperty("line.separator"));
         }
             someUnit = mTail;
             if(mTail == null) 
-                strBuf.append("error: null tail found; block length: " + mBlockLength +"\n");
+                strBuf.append("error: null tail found; block length: " + mBlockLength +"" + System.getProperty("line.separator"));
             else if(mHead != mTail)
-                strBuf.append(someUnit.toBriefString(stmtToName, indentation) + ";\n");        
+                strBuf.append(someUnit.toBriefString(stmtToName, indentation) + ";" + System.getProperty("line.separator"));        
         
 
         }  else 
@@ -244,72 +431,4 @@ public class Block implements Directed
         return strBuf.toString();
     }
 
-    public Unit getHead() 
-    {
-        return mHead;
-    }
-    
-    public Unit getTail()
-    {
-        return mTail;
-    }
-
-
-    void setPreds(List preds)
-    {
-        mPreds = preds;
-        return;
-    }
-
-    public List getPreds()
-    {
-        return mPreds;
-    }
-
-    void setSuccs(List successors)
-    {
-        mSuccessors = successors;
-    }
-
-    public List getSuccs()
-    {
-        return mSuccessors;
-    }
-
-    public String toShortString() {return "Block #" + mIndexInMethod; }
-
-    private Map buildMapForBlock() 
-    {
-        Map m = new HashMap();
-        List basicBlocks = mBlockGraph.getBlocks();
-        Iterator it = basicBlocks.iterator();
-        while(it.hasNext()) {
-            Block currentBlock = (Block) it.next();
-            m.put(currentBlock.getHead(),  "block" + (new Integer(currentBlock.getIndexInMethod()).toString()));
-        }        
-        return m;
-    }
-
-
-    static Map allMapToUnnamed = new AllMapTo("???");
-
-    static class AllMapTo extends AbstractMap
-    {
-        Object dest;
-        
-        public AllMapTo(Object dest)
-        {
-            this.dest = dest;
-        }
-        
-        public Object get(Object key)
-        {
-            return dest;
-        }
-        
-        public Set entrySet()
-        {
-            throw new UnsupportedOperationException();
-        }
-    }
 }

@@ -26,12 +26,24 @@
 
 package soot.toolkits.graph;
 
-import soot.util.*;
 import java.util.*;
+
 import soot.*;
 import soot.baf.*;
+import soot.util.*;
 
-public class BlockGraph implements DirectedGraph
+
+
+/**
+ *  Implements a CFG for a Body instance where the nodes are Block
+ *  instances. It is a generic implementation used by more specific
+ *   classes such as BriefBlockGraph.
+ *   @see BriefBlockGraph
+ *   @see CompleteBlockGraph
+ *   @see ZonedBlockGraph
+ */
+
+public class BlockGraph implements DirectedGraph  //xxx should have package scope
 {
     Body mBody;
     Chain mUnits;
@@ -45,25 +57,26 @@ public class BlockGraph implements DirectedGraph
 
     private Map blockToSuccs;
     private Map blockToPreds;
-    
-    public Body getBody()
-    {
-        return mBody;
-    }
-    public List getBlocks()
-    {
-        return mBlocks;
-    }
-
-
-    /* Technique used to compute basic blocks:
-     * 1) Identify basic block leaders: these are the units that mark
-     *    the start of a basic block (ex: target of branches)
-     * 2) Use the leaders found in step 1 to slice the linear chain of 
-     *    units into basic blocks, with the leaders as delimiters.
-     */ 
+   
+    /**
+     *  Constructs a BriefBlockGraph from a given Body instance.
+     *
+     *   @param aBody  The Body instance we want a graph for.
+     *   @param type   Specifies the type of graph to build. 
+     *                 This can be  BRIEF, ZONED or COMPLETE.
+     *   @see CompleteBlockGraph
+     *   @see BriedBlockGraph
+     *   @see ZonedBlockGraph 
+     */
     BlockGraph(Body aBody, int type) 
     {
+	/* Algorithm used to compute basic blocks:
+	 * 1) Identify basic block leaders: these are the units that mark
+	 *    the start of a basic block (ex: target of branches)
+	 * 2) Use the leaders found in step 1 to slice the linear chain of 
+	 *    units into basic blocks, with the leaders as delimiters.
+	 */ 
+
         mBody = aBody;
         mUnits = aBody.getUnits();
         
@@ -475,8 +488,32 @@ public class BlockGraph implements DirectedGraph
         }
     }   
     
-        
-        
+
+     
+    /**
+     *  Returns the underlying Body instance this BlockGraph is derived from.
+     *  @return The underlying Body instance this BlockGraph is derived from.
+     *  @see #BlockGraph
+     *  @see Body
+     */
+    public Body getBody()
+    {
+        return mBody;
+    }
+
+    /**
+     *   Returns a list of the Blocks composing this graph.
+     *   @return A list of the blocks composing this graph
+     *           in the same order as they partition underlying Body instance's
+     *           unitchain.
+     *  @see Block
+     */
+    public List getBlocks()
+    {
+        return mBlocks;
+    }
+
+               
     public String toString() {
        
         Iterator it = mBlocks.iterator();
@@ -490,15 +527,17 @@ public class BlockGraph implements DirectedGraph
         return buf.toString();
     }
 
-    // Directed graph implementation
+    /* DirectedGraph implementation   */
     public List getHeads()
     {
         return mHeads;
     }
+
     public List getTails()
     {
         throw new RuntimeException("not yet implemented");
     }
+
     public List getPredsOf(Directed s)
     {
         Block b = (Block) s;
@@ -515,6 +554,7 @@ public class BlockGraph implements DirectedGraph
     {
         return mBlocks.size();
     }
+
     public Iterator iterator()
     {
         return mBlocks.iterator();
