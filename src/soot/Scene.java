@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -273,6 +274,36 @@ public class Scene  //extends AbstractHost
         throw new RuntimeException("tried to get nonexistent method "+methodSignature);
     }
 
+    /** 
+     * Attempts to load the given class and all of the required support classes.
+     * Returns the original class if it was loaded, or null otherwise.
+     */
+     
+    public SootClass tryLoadClassAndSupport(String className) 
+    {   
+        /*
+        if(Options.v().time())
+            Main.v().resolveTimer.start();
+        */
+        
+        Scene.v().setPhantomRefs(true);
+        //SootResolver resolver = new SootResolver();
+        if( !getPhantomRefs() 
+        && SourceLocator.v().getClassSource(className) == null ) {
+            Scene.v().setPhantomRefs(false);
+            return null;
+        }
+        SootResolver resolver = SootResolver.v();
+        SootClass toReturn = resolver.resolveClassAndSupportClasses(className);
+        Scene.v().setPhantomRefs(false);
+
+        return toReturn;
+        
+        /*
+        if(Options.v().time())
+            Main.v().resolveTimer.end(); */
+    }
+    
     /** 
      * Loads the given class and all of the required support classes.  Returns the first class.
      */
@@ -757,7 +788,7 @@ public class Scene  //extends AbstractHost
 	Iterator it = basicclasses.iterator();
 	while(it.hasNext()) {
 	    String name=(String) it.next();
-	    loadClassAndSupport(name);
+	    tryLoadClassAndSupport(name);
 	}
     }
 
