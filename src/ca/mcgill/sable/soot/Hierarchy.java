@@ -176,7 +176,7 @@ public class Hierarchy
 
     public List getDirectImplementersOf(SootClass i)
     {
-        if (!c.isInterface())
+        if (!i.isInterface())
             throw new RuntimeException("interface needed!");
 
         checkState();
@@ -186,7 +186,7 @@ public class Hierarchy
 
     public List getImplementersOf(SootClass i)
     {
-        if (!c.isInterface())
+        if (!i.isInterface())
             throw new RuntimeException("interface needed!");
 
         checkState();
