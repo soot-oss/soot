@@ -96,19 +96,29 @@ public final class CallGraphBuilder
             MethodOrMethodContext momc = (MethodOrMethodContext) worklist.next();
             if( momc == null ) break;
             List receivers = (List) ofcgb.methodToReceivers().get(momc.method());
-            if( receivers != null) for( Iterator receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {     final Local receiver = (Local) receiverIt.next();
-                PointsToSet p2set = pa.reachingObjects( receiver );
+            if( receivers != null) for( Iterator receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {     
+                final Local receiver = (Local) receiverIt.next();
+                final PointsToSet p2set = pa.reachingObjects( receiver );
                 for( Iterator typeIt = p2set.possibleTypes().iterator(); typeIt.hasNext(); ) {
                     final Type type = (Type) typeIt.next();
                     ofcgb.addType( receiver, momc.context(), type, null );
                 }
             }
             List stringConstants = (List) ofcgb.methodToStringConstants().get(momc.method());
-            if( stringConstants != null ) for( Iterator stringConstantIt = stringConstants.iterator(); stringConstantIt.hasNext(); ) {     final Local stringConstant = (Local) stringConstantIt.next();
+            if( stringConstants != null ) for( Iterator stringConstantIt = stringConstants.iterator(); stringConstantIt.hasNext(); ) {     
+                final Local stringConstant = (Local) stringConstantIt.next();
                 PointsToSet p2set = pa.reachingObjects( stringConstant );
-                for( Iterator constantIt = p2set.possibleStringConstants().iterator(); constantIt.hasNext(); ) {
-                    final String constant = (String) constantIt.next();
-                    ofcgb.addStringConstant( stringConstant, momc.context(), constant, null );
+                // p2set_psc is legally allowed to be null according to the
+                // Javadoc in PointsToSet presumably the
+                // (stringConstants != null) test above is supposed to
+                // be redundant with this one, but not in my
+                // experience
+                final Set p2set_psc = p2set.possibleStringConstants();
+                if (p2set_psc != null) {
+                    for( Iterator constantIt = p2set_psc.iterator(); constantIt.hasNext(); ) {
+                        final String constant = (String) constantIt.next();
+                        ofcgb.addStringConstant( stringConstant, momc.context(), constant, null );
+                    }
                 }
             }
         }
