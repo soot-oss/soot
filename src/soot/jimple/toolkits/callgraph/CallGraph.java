@@ -74,8 +74,30 @@ public class CallGraph
     public boolean removeEdge( Edge e ) {
         if( !edges.remove( e ) ) return false;
         e.remove();
+        if( srcMethodToEdge.get(e.src()) == e ) {
+            if( e.nextBySrc().src() == e.src() ) {
+                srcMethodToEdge.put(e.src(), e.nextBySrc() );
+            } else {
+                srcMethodToEdge.put(e.src(), null);
+            }
+        }
+        if( srcUnitToEdge.get(e.srcUnit()) == e ) {
+            if( e.nextBySrc().srcUnit() == e.srcUnit() ) {
+                srcUnitToEdge.put(e.srcUnit(), e.nextBySrc() );
+            } else {
+                srcUnitToEdge.put(e.srcUnit(), null);
+            }
+        }
+        if( tgtToEdge.get(e.tgt()) == e ) {
+            if( e.nextByTgt().tgt() == e.tgt() ) {
+                tgtToEdge.put(e.tgt(), e.nextByTgt() );
+            } else {
+                tgtToEdge.put(e.tgt(), null);
+            }
+        }
         return true;
     }
+
     /** Returns an iterator over all methods that are the sources of at least
      * one edge. */
     public Iterator sourceMethods() {
