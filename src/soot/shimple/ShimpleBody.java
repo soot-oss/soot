@@ -91,8 +91,12 @@ public class ShimpleBody extends StmtBody
         unitChain = new SPatchingChain(this, new HashChain());
         importBodyContentsFrom(body);
 
-        // Shimplise body
-        rebuild(false);
+        /* Shimplise body */
+        
+        if(body instanceof ShimpleBody)
+            rebuild(true);
+        else
+            rebuild(false);
     }
     
     /**

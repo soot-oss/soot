@@ -276,7 +276,11 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
 
         doAnalysis();
     }
-    
+
+    // *** NOTE: this is here because ForwardBranchedFlowAnalysis does
+    // *** not handle exceptional control flow properly in the
+    // *** dataflow analysis.  this should be removed when
+    // *** ForwardBranchedFlowAnalysis is fixed.
     protected boolean treatTrapHandlersAsEntries()
     {
         return true;

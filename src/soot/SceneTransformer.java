@@ -45,8 +45,11 @@ public abstract class SceneTransformer extends Transformer
         transform(phaseName, dummyOptions);
     }
 
-
-
+    public final void transform()
+    {
+        transform("");
+    }
+    
     /** Performs the transformation on the Scene, under the given phaseName and with the given Options. */
     protected abstract void internalTransform(String phaseName, Map options);
 

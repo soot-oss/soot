@@ -806,6 +806,24 @@ public class Singletons {
         return instanceSequenceFinder;
     }
 
+    private Shimple instanceShimple;
+    public Shimple Shimple() {
+        if( instanceShimple == null ) instanceShimple = new Shimple( g );
+        return instanceShimple;
+    }
+
+    private ShimpleTransformer instanceShimpleTransformer;
+    public ShimpleTransformer ShimpleTransformer() {
+        if( instanceShimpleTransformer == null ) instanceShimpleTransformer = new ShimpleTransformer( g );
+        return instanceShimpleTransformer;
+    }
+
+    private SConstantPropagatorAndFolder instanceSConstantPropagatorAndFolder;
+    public SConstantPropagatorAndFolder SConstantPropagatorAndFolder() {
+        if( instanceSConstantPropagatorAndFolder == null ) instanceSConstantPropagatorAndFolder = new SConstantPropagatorAndFolder( g );
+        return instanceSConstantPropagatorAndFolder;
+    }
+
     private ShortType instanceShortType;
     public ShortType ShortType() {
         if( instanceShortType == null ) instanceShortType = new ShortType( g );
@@ -978,18 +996,6 @@ public class Singletons {
     public CallGraphTagger CallGraphTagger() {
         if( instanceCallGraphTagger == null ) instanceCallGraphTagger = new CallGraphTagger( g );
         return instanceCallGraphTagger;
-    }
-
-    private Shimple instanceShimple;
-    public Shimple Shimple() {
-        if( instanceShimple == null ) instanceShimple = new Shimple( g );
-        return instanceShimple;
-    }
-
-    private SConstantPropagatorAndFolder instanceSConstantPropagatorAndFolder;
-    public SConstantPropagatorAndFolder SConstantPropagatorAndFolder() {
-        if( instanceSConstantPropagatorAndFolder == null ) instanceSConstantPropagatorAndFolder = new SConstantPropagatorAndFolder( g );
-        return instanceSConstantPropagatorAndFolder;
     }
 
     private NullPointerColorer instanceNullPointerColorer;

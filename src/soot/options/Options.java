@@ -131,6 +131,12 @@ public class Options extends OptionsBase {
                 whole_program = true;
   
             else if( false 
+            || option.equals( "ws" )
+            || option.equals( "whole-shimple" )
+            )
+                whole_shimple = true;
+  
+            else if( false 
             || option.equals( "debug" )
             )
                 debug = true;
@@ -462,6 +468,9 @@ public class Options extends OptionsBase {
                 pushOptions( "-O" );
                 pushOptions( "-w" );
                 pushOptions( "enabled:true" );
+                pushOptions( "wsop" );
+                pushOptions( "-p" );
+                pushOptions( "enabled:true" );
                 pushOptions( "wjop" );
                 pushOptions( "-p" );
             }
@@ -688,6 +697,10 @@ public class Options extends OptionsBase {
     private boolean whole_program = false;
     public void set_whole_program( boolean setting ) { whole_program = setting; }
   
+    public boolean whole_shimple() { return whole_shimple; }
+    private boolean whole_shimple = false;
+    public void set_whole_shimple( boolean setting ) { whole_shimple = setting; }
+  
     public boolean debug() { return debug; }
     private boolean debug = false;
     public void set_debug( boolean setting ) { debug = setting; }
@@ -807,6 +820,7 @@ public class Options extends OptionsBase {
 +padOpt(" -v -verbose", "Verbose mode" )
 +padOpt(" -app", "Run in application mode" )
 +padOpt(" -w -whole-program", "Run in whole-program mode" )
++padOpt(" -ws -whole-shimple", "Run in whole-shimple mode" )
 +padOpt(" -debug", "Print various Soot debugging info" )
 +"\nInput Options:\n"
       
@@ -886,6 +900,8 @@ public class Options extends OptionsBase {
         +padVal("cg.cha", "Builds call graph using Class Hierarchy Analysis")
         +padVal("cg.spark", "Spark points-to analysis framework")
         +padVal("cg.bdd", "BDD Spark points-to analysis framework")
+        +padOpt("wstp", "Whole-shimple transformation pack")
+        +padOpt("wsop", "Whole-shimple optimization pack")
         +padOpt("wjtp", "Whole-jimple transformation pack")
         +padOpt("wjop", "Whole-jimple optimization pack")
         +padVal("wjop.smb", "Static method binder: Devirtualizes monomorphic calls")
@@ -1162,6 +1178,18 @@ public class Options extends OptionsBase {
                 +padOpt( "dump-answer (false)", "Dump computed reaching types for comparison with other solvers" )
                 +padOpt( "add-tags (false)", "Output points-to results in tags for viewing with the Jimple" )
                 +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" );
+    
+        if( phaseName.equals( "wstp" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nSoot can perform whole-program analyses. In whole-shimple \nmode, Soot applies the contents of the Whole-Shimple \nTransformation Pack to the scene as a whole after constructing a \ncall graph for the program. In an unmodified copy of Soot the \nWhole-Shimple Transformation Pack is empty."
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (true)", "" );
+    
+        if( phaseName.equals( "wsop" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nIf Soot is running in whole shimple mode and the Whole-Shimple \nOptimization Pack is enabled, the pack's transformations are \napplied to the scene as a whole after construction of the call \ngraph and application of any enabled Whole-Shimple \nTransformations. In an unmodified copy of Soot the Whole-Shimple \nOptimization Pack is empty."
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "wjtp" ) )
             return "Phase "+phaseName+":\n"+
@@ -1676,6 +1704,14 @@ public class Options extends OptionsBase {
                 +"add-tags "
                 +"set-mass ";
     
+        if( phaseName.equals( "wstp" ) )
+            return ""
+                +"enabled ";
+    
+        if( phaseName.equals( "wsop" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "wjtp" ) )
             return ""
                 +"enabled ";
@@ -2063,6 +2099,14 @@ public class Options extends OptionsBase {
               +"add-tags:false "
               +"set-mass:false ";
     
+        if( phaseName.equals( "wstp" ) )
+            return ""
+              +"enabled:true ";
+    
+        if( phaseName.equals( "wsop" ) )
+            return ""
+              +"enabled:false ";
+    
         if( phaseName.equals( "wjtp" ) )
             return ""
               +"enabled:true ";
@@ -2328,6 +2372,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg.cha" ) ) return;
         if( phaseName.equals( "cg.spark" ) ) return;
         if( phaseName.equals( "cg.bdd" ) ) return;
+        if( phaseName.equals( "wstp" ) ) return;
+        if( phaseName.equals( "wsop" ) ) return;
         if( phaseName.equals( "wjtp" ) ) return;
         if( phaseName.equals( "wjop" ) ) return;
         if( phaseName.equals( "wjop.smb" ) ) return;
@@ -2417,6 +2463,10 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase cg.spark" );
         if( !PackManager.v().hasPhase( "cg.bdd" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg.bdd" );
+        if( !PackManager.v().hasPhase( "wstp" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wstp" );
+        if( !PackManager.v().hasPhase( "wsop" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wsop" );
         if( !PackManager.v().hasPhase( "wjtp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjtp" );
         if( !PackManager.v().hasPhase( "wjop" ) )

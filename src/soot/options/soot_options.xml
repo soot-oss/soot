@@ -180,6 +180,25 @@ Note that the Whole-Jimple Optimization pack is normally disabled
 specify the Whole Program Optimize option.</p>
 </long_desc>
                 </boolopt>
+    <boolopt>
+      <name>Whole-Shimple Mode</name>
+      <alias>ws</alias>
+      <alias>whole-shimple</alias>
+      <short_desc>Run in whole-shimple mode</short_desc> 
+      <long_desc>
+<p>
+Run in whole shimple mode, taking into consideration the whole program
+when performing Shimple analyses and transformations. Soot uses the
+Call Graph Constructor to build a call graph for the program, then
+applies enabled transformations in the Whole-Shimple Transformation
+and Whole-Shimple Optimization before applying enabled intraprocedural
+transformations.</p>
+<p>
+Note that the Whole-Shimple Optimization pack is normally disabled
+(and thus not applied by whole shimple mode), unless you also
+specify the Whole Program Optimize option.</p>
+      </long_desc>
+    </boolopt>
                 <boolopt>
 			<name>Debug</name>
 			<alias>debug</alias>
@@ -1823,26 +1842,46 @@ cryptic statistics about the size of the points-to sets computed.
 				</sub_phase>
 			</radio_phase>
 
-<!-- DISABLED FOR NOW ++
-			<phase>
-				<name>Whole Shimple Transformation Pack</name>
-				<alias>wstp</alias>
-				<boolopt>
-					<name>Enabled</name>
-					<alias>enabled</alias>
+      <phase>
+        <name>Whole Shimple Transformation Pack</name>
+        <alias>wstp</alias>
+        <short_desc>Whole-shimple transformation pack</short_desc>
+        <long_desc>
+<p>
+Soot can perform whole-program analyses.  In whole-shimple mode, Soot
+applies the contents of the Whole-Shimple Transformation Pack to the
+scene as a whole after constructing a call graph for the program.</p>
+<p>
+In an unmodified copy of Soot the Whole-Shimple Transformation
+Pack is empty.</p>
+        </long_desc>
+        <boolopt>
+          <name>Enabled</name>
+          <alias>enabled</alias>
           <default>true</default>
-				</boolopt>
-			</phase>
-			<phase>
-				<name>Whole Shimple Optimization Pack</name>
-				<alias>wsop</alias>
-				<boolopt>
-					<name>Enabled</name>
-					<alias>enabled</alias>
+        </boolopt>
+      </phase>
+      <phase>
+        <name>Whole Shimple Optimization Pack</name>
+        <alias>wsop</alias>
+        <short_desc>Whole-shimple optimization pack</short_desc>
+        <long_desc>
+<p>
+If Soot is running in whole shimple mode and the Whole-Shimple
+Optimization Pack is enabled, the pack's transformations are
+applied to the scene as a whole after construction of the call
+graph and application of any enabled Whole-Shimple
+Transformations.</p>
+<p>
+In an unmodified copy of Soot the Whole-Shimple Optimization
+Pack is empty.</p>
+        </long_desc>        
+        <boolopt>
+          <name>Enabled</name>
+          <alias>enabled</alias>
           <default>false</default>
-				</boolopt>
-			</phase>
-++ DISABLED FOR NOW -->
+        </boolopt>
+      </phase>
 
 			<phase>
 				<name>Whole-Jimple Transformation Pack</name>
@@ -3530,6 +3569,9 @@ Perform intraprocedural optimizations on the application classes.
 			<alias>whole-optimize</alias>
 			<expansion>-p</expansion>
 			<expansion>wjop</expansion>
+			<expansion>enabled:true</expansion>
+      			<expansion>-p</expansion>
+			<expansion>wsop</expansion>
 			<expansion>enabled:true</expansion>
 			<expansion>-w</expansion>
 			<expansion>-O</expansion>

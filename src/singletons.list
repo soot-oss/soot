@@ -118,6 +118,9 @@ RectangularArrayFinder
 RefType
 Scene
 SequenceFinder
+Shimple    
+ShimpleTransformer
+SConstantPropagatorAndFolder
 ShortType
 SideEffectTagger
 SparkTransformer
@@ -147,7 +150,6 @@ FieldWriteTagAggregator
 FieldTagAggregator
 EntryPoints
 CallGraphTagger
-Shimple    
-SConstantPropagatorAndFolder
 NullPointerColorer
 ParityTagger
+
