@@ -185,6 +185,7 @@ public class Main {
             Scene.v().loadNecessaryClasses();
 
             PackManager.v().runPacks();
+            PackManager.v().writeOutput();
 
             Timers.v().totalTimer.end();
 

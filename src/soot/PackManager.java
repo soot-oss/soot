@@ -240,8 +240,16 @@ public class PackManager {
         }
         preProcessDAVA();
         runBodyPacks( reachableClasses() );
+    }
+
+    public void writeOutput() {
+        if( Options.v().output_format() == Options.output_format_dava ) {
+            postProcessDAVA();
+        } else {
+            writeOutput( reachableClasses() );
+        }
         postProcessXML( reachableClasses() );
-        postProcessDAVA();
+        releaseBodies( reachableClasses() );
     }
 
     private void runWholeProgramPacks() {
@@ -269,12 +277,23 @@ public class PackManager {
         }
     }
 
-    /* process classes in whole-program mode */
     private void runBodyPacks( Iterator classes ) {
         while( classes.hasNext() ) {
             SootClass cl = (SootClass) classes.next();
             runBodyPacks( cl );
+        }
+    }
+
+    private void writeOutput( Iterator classes ) {
+        while( classes.hasNext() ) {
+            SootClass cl = (SootClass) classes.next();
             writeClass( cl );
+        }
+    }
+
+    private void releaseBodies( Iterator classes ) {
+        while( classes.hasNext() ) {
+            SootClass cl = (SootClass) classes.next();
             releaseBodies( cl );
         }
     }
@@ -299,57 +318,43 @@ public class PackManager {
 
     /* post process for DAVA */
     private void postProcessDAVA() {
-        if (Options.v().output_format() == Options.output_format_dava) {
+        G.v().out.println();
+
+        Iterator classIt = Scene.v().getApplicationClasses().iterator();
+        while (classIt.hasNext()) {
+            SootClass s = (SootClass) classIt.next();
+
+            FileOutputStream streamOut = null;
+            PrintWriter writerOut = null;
+            String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
+
+            try {
+                streamOut = new FileOutputStream(fileName);
+                writerOut =
+                    new PrintWriter(new OutputStreamWriter(streamOut));
+            } catch (IOException e) {
+                G.v().out.println("Cannot output file " + fileName);
+            }
+
+            G.v().out.print("Generating " + fileName + "... ");
+            G.v().out.flush();
+
+            DavaPrinter.v().printTo(s, writerOut);
 
             G.v().out.println();
+            G.v().out.flush();
 
-            Iterator classIt = Scene.v().getApplicationClasses().iterator();
-            while (classIt.hasNext()) {
-                SootClass s = (SootClass) classIt.next();
-
-                FileOutputStream streamOut = null;
-                PrintWriter writerOut = null;
-                String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
-
+            {
                 try {
-                    streamOut = new FileOutputStream(fileName);
-                    writerOut =
-                        new PrintWriter(new OutputStreamWriter(streamOut));
+                    writerOut.flush();
+                    streamOut.close();
                 } catch (IOException e) {
-                    G.v().out.println("Cannot output file " + fileName);
-                }
-
-                G.v().out.print("Generating " + fileName + "... ");
-                G.v().out.flush();
-
-                DavaPrinter.v().printTo(s, writerOut);
-
-                G.v().out.println();
-                G.v().out.flush();
-
-                {
-                    try {
-                        writerOut.flush();
-                        streamOut.close();
-                    } catch (IOException e) {
-                        G.v().out.println(
-                            "Cannot close output file " + fileName);
-                    }
-                }
-
-                {
-                    Iterator methodIt = s.methodIterator();
-
-                    while (methodIt.hasNext()) {
-                        SootMethod m = (SootMethod) methodIt.next();
-
-                        if (m.hasActiveBody())
-                            m.releaseActiveBody();
-                    }
+                    G.v().out.println(
+                        "Cannot close output file " + fileName);
                 }
             }
-            G.v().out.println();
         }
+        G.v().out.println();
     }
 
     private void runBodyPacks(SootClass c) {
@@ -527,15 +532,12 @@ public class PackManager {
     }
 
     private void releaseBodies( SootClass cl ) {
-        if( Options.v().output_format() != Options.output_format_dava
-        && !Options.v().xml_attributes() ) {
-            Iterator methodIt = cl.methodIterator();
-            while (methodIt.hasNext()) {
-                SootMethod m = (SootMethod) methodIt.next();
+        Iterator methodIt = cl.methodIterator();
+        while (methodIt.hasNext()) {
+            SootMethod m = (SootMethod) methodIt.next();
 
-                if (m.hasActiveBody())
-                    m.releaseActiveBody();
-            }
+            if (m.hasActiveBody())
+                m.releaseActiveBody();
         }
     }
 }
