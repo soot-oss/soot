@@ -51,7 +51,8 @@ Improvements in current version
 	                                                (fqian)
 16. Fixed local variable name problem in coffi.LocalVariable....
     reported by Nathan Kitchen. See fix 12 also.    (fqian)
-
+17. Small improvement in ArraySparseSet and BackwardFlowAnalysis pointed
+    out by Florian Loitsch.                         (fqian)
 
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
