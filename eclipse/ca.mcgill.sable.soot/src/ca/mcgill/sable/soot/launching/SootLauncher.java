@@ -189,7 +189,11 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		sootClasspath.initialize();
 		
 		// platform location 
-		platform_location = Platform.getLocation().toOSString();
+		//platform_location = Platform.getLocation().toOSString();
+		platform_location = getSootSelection().getJavaProject().getProject().getLocation().toOSString();
+		System.out.println("platform_location: "+platform_location);
+		platform_location = platform_location.substring(0, platform_location.lastIndexOf(System.getProperty("file.separator")));
+        System.out.println("platform_location: "+platform_location);
 		// external jars location - may need to change don't think I use this anymore
 		external_jars_location = Platform.getLocation().removeLastSegments(2).toOSString();
 		setOutputLocation(platform_location+getFileHandler().getSootOutputFolder().getFullPath().toOSString());
