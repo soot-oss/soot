@@ -3,8 +3,8 @@ package soot.javaToJimple.jj;
 import polyglot.lex.Lexer;
 //import soot.javaToJimple.jj.parse.Lexer_c;
 //import soot.javaToJimple.jj.parse.Grm;
-import polyglot.ext.jl.parse.Lexer_c;
-import polyglot.ext.jl.parse.Grm;
+//import polyglot.ext.jl.parse.Lexer_c;
+//import polyglot.ext.jl.parse.Grm;
 import soot.javaToJimple.jj.ast.*;
 import soot.javaToJimple.jj.types.*;
 
@@ -35,11 +35,11 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
         return "jjc";
     }
 
-    public Parser parser(Reader reader, FileSource source, ErrorQueue eq) {
+    /*public Parser parser(Reader reader, FileSource source, ErrorQueue eq) {
         Lexer lexer = new Lexer_c(reader, source.name(), eq);
         Grm grm = new Grm(lexer, ts, nf, eq);
         return new CupParser(grm, source, eq);
-    }
+    }*/
 
     protected NodeFactory createNodeFactory() {
         return new JjNodeFactory_c();
