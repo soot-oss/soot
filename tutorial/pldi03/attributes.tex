@@ -46,22 +46,27 @@ attribute_info {
 \end{itemize}
 \end{slide}
 
+%% a picture shows mapping between soot internal objects to class file structures
+\begin{slide}{Tags in Soot Internals}
+{\bf picture here}
+\end{slide}
+
 \begin{slide}{Hosts}
 {\red Host}s are objects that can hold {\red Tag}s:
 {\small
 \begin{verbatim}
 package soot.tagkit;
 public interface Host {
-  public List getTags ();
-  public Tag getTag (String aName); 
   public void addTag (Tag t); 
+  public Tag getTag (String aName); 
+  public List getTags ();
   public void removeTag (String name); 
   public boolean hasTag (String aName); 
 }   
 \end{verbatim}
 }
 Implementations:\\
-\quad {\small SootClass, SootField, SootMethod, Body,} and {\small Unit}
+\quad {\small SootClass, SootField, SootMethod, Body} and {\small ValueBox}
 \end{slide}
 
 \begin{slide}{Tags}
@@ -78,13 +83,21 @@ public interface Tag {
 }
 \begin{itemize}
 \item {\red Attribute} attached to class file structures (class, field, method)
-\item Generic tags attached to {\em Unit}s
+\item Generic tags attached to {\em ValueBox}es
 \end{itemize}
 \end{slide}
+
+
 
 \begin{slide}{Tags in Soot}
 \epsfig{file=tag-hierarchy.eps, width=4.2in}
 \end{slide}
+
+%% how does soot produce tags and attributes in class file
+\begin{slide}{From Soot Tags to Class File Attributes}
+{\bf diagram here}
+\end{slide}
+
 
 \begin{slide}{Special case: attributes of Code\_attribute}
 \begin{itemize}
@@ -118,7 +131,6 @@ public abstract class TagAggregator
 \begin{itemize}
 \item Create a new Tag class, decide which structure is the host
 \item If the tag is for Units, write a tag aggregator by extending {\em TagAggregator}
-\item Choose the right attribute type (e.g., method or code)
 \item Parse attributes in bytecode consumer
 \end{itemize}
 \end{slide}
@@ -154,40 +166,21 @@ s.addTag(new NullCheckTag(needCheck));
 \end{slide}
 
 \begin{slide}{Example: nullness attribute}
-Step 3: create a tag aggregator, ArrayNullTagAggregator, and
+Step 3: create a tag aggregator, NullTagAggregator, and
 register it in ``{\em tag}'' pack with soot.PackManager
-{\scriptsize \verb$ p.add(new Transform(``tag.an'',$
-   \verb$         ArrayNullTagAggergator.v())); $}
+{\scriptsize \verb$ p.add(new Transform(``tag.null'',$
+   \verb$         NullTagAggergator.v())); $}
 
-\vspace{.1in}
-{\small Null check is integrated with bounds check:} 
-\footnotesize{
-\begin{verbatim}
-class ArrayNullCheckTag 
-  implements OneByteCodeTag {
-  public byte accumulate(byte other) {
-    value |= other; ......
-  }
-}
-\end{verbatim}
-}
-\end{slide}
-
-\begin{slide}{Example: nullness attribute}
 \scriptsize{
 \begin{verbatim}
-class ArrayNullTagAggregator extends TagAggregator {
+class NullTagAggregator extends TagAggregator {
   public boolean watTag(Tag t) {
-    return (t instanceof OneByteCodeTag);
+    return (t instanceof NullCheckTag);
   }
   public void considerTag(Tag t, Unit t) {
-    if (units.size() == 0 || units.getLast() != u) {
-      super.units.add( u );
-      super.tags.add( new ArrayNullCheckTag() );
-    }
-    ArrayNullCheckTag anct = 
-      (ArrayNullCheckTag)tags.getLast();
-    anct.accumulate(t.getValue()[0]);  
+    if ( ... ) return; // verify unit requires null check
+    super.units.add( u );
+    super.tags.add ( t );
   }
 }
 \end{verbatim}
@@ -202,13 +195,15 @@ class ArrayNullTagAggregator extends TagAggregator {
       which generates textual representation of (label, value)
       pairs:\\
 \footnotesize{\verb$ String getJasminValue(Map instToLabel); $} \\
-e.g. "ArrayNullCheckAttribute":
+e.g. "NullCheckAttribute":
 \footnotesize{
 \begin{verbatim}
-array_null_check_attribute {
+null_check_attribute {
   u2 attribute_name_index;
   u4 attribute_length;
-  u3 attribute[attribute_length/3];
+  { u2 pc;
+      u1 data;
+  } [attribute_length/3];
 }
 \end{verbatim}
 }
