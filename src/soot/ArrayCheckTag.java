@@ -6,14 +6,15 @@ import java.io.*;
 
 /** Represents a tag; these get attached to implementations of Host.
  */
-public class ArrayCheckTag implements Tag 
+public class ArrayCheckTag extends CodeAttribute
 {
 
     private final static String NAME = "ArrayCheckTag";
     private final static byte DO_LOWER = 1;
     private final static byte DO_UPPER = 2;
-
+    
     private byte value;
+    
 
     public ArrayCheckTag(boolean lowerCheck, boolean upperCheck)
     {
@@ -25,21 +26,32 @@ public class ArrayCheckTag implements Tag
 	}
     }
     
+    public ArrayCheckTag()
+    {}
+
     
     public String getName()
     {
 	return NAME;
     }
 
-    public byte[] getEncoding()
+    public byte[] getEncoding()    
     {
-	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	byte[] array = new byte[3];
+	byte[] pc = getPc();
+	array[0] = pc[0];
+	array[1] = pc[1];
+	array[2] = value;
+	return array; 
+    }
 
-	try {
-	    ObjectOutputStream oos = new ObjectOutputStream(baos);
-	    oos.write(value);
-	    return baos.toByteArray();	    
-	} catch (IOException e) {throw new RuntimeException("");}	
+    public void setValue(byte[] value)
+    {
+	if(value.length !=  3) {
+	    throw new RuntimeException();	    
+	}
+	setPc(value[0], value[1]);
+	this.value = value[2];
     }
 
     public String toString()
@@ -51,6 +63,6 @@ public class ArrayCheckTag implements Tag
 	if((value & DO_UPPER) != 0)
 	    doUpper = true;
 
-	return "// " + NAME + " "  + (doLower ? "[check lower bound]":"") + (doUpper ? "[check upper bound]":"");
+	return "// " + getPcAsInt() + ":" +  NAME + " "  + (doLower ? "[check lower bound]":"") + (doUpper ? "[check upper bound]":"");
     }
 }

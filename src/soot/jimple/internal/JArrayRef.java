@@ -158,8 +158,19 @@ public class JArrayRef implements ArrayRef, ConvertToBaf, EquivTo
     {
         ((ConvertToBaf)getBase()).convertToBaf(context, out);
         ((ConvertToBaf)getIndex()).convertToBaf(context, out);
+	
+	Unit currentUnit = context.getCurrentUnit();
 
-        out.add(Baf.v().newArrayReadInst(getType()));
+	Unit x;
+
+        out.add(x = Baf.v().newArrayReadInst(getType()));
+
+	Iterator it = currentUnit.getTags().iterator();
+	
+	while(it.hasNext()) {
+	    x.addTag((Tag) it.next());
+	}
+
     }
 }
 

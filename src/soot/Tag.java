@@ -31,11 +31,27 @@ import javax.swing.*;
 
 /** Represents a tag; these get attached to implementations of Host.
  */
-public interface Tag 
+public abstract class Tag 
 {
-    public String getName();
-    public byte[] getEncoding();        
-    public String toString();
+    public static Tag getTagFor(String tagName) {
+	try {
+	    Class cc = Class.forName("soot." + tagName);
+	    return (Tag)  cc.newInstance();
+	} 
+	catch (ClassNotFoundException e) {
+	    return null;
+	} catch(IllegalAccessException e) {
+	    throw new RuntimeException();
+	} catch (InstantiationException e) {
+	    throw new RuntimeException(e.toString());
+	}	
+    }
+
+    public abstract  String getName();
+    public abstract byte[] getEncoding();        
+    public abstract String toString();
+
+    public abstract void setValue(byte[] value);
 }
 
 

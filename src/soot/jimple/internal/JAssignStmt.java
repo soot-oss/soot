@@ -202,6 +202,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
                 }
             }
 
+	    context.setCurrentUnit(this);
 
             lvalue.apply(new AbstractJimpleValueSwitch()
             {
@@ -211,7 +212,13 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     ((ConvertToBaf)(v.getIndex())).convertToBaf(context, out);
                     ((ConvertToBaf) rvalue).convertToBaf(context, out);
                     
-                    out.add(Baf.v().newArrayWriteInst(v.getType()));
+		    Unit u = Baf.v().newArrayWriteInst(v.getType());
+		    Iterator it = getTags().iterator();
+		    while(it.hasNext()) {
+			u.addTag((Tag) it.next());
+		    }
+		    u.addTag(new ArrayCheckTag(true, false));
+                    out.add(u);
                 }
                 
                 public void defaultCase(Value v)

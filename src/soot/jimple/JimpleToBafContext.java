@@ -39,7 +39,8 @@ public class JimpleToBafContext
 {
     private Map jimpleLocalToBafLocal = new HashMap();
     private BafBody bafBody;
-    
+    private Unit mCurrentUnit;
+
     /**
        An approximation of the local count is required in order to allocate a reasonably sized hash map. 
      */
@@ -48,6 +49,18 @@ public class JimpleToBafContext
     {
        jimpleLocalToBafLocal = new HashMap(localCount * 2 + 1, 0.7f);
     }
+
+
+    public void setCurrentUnit(Unit u )
+    {
+	mCurrentUnit = u;
+    }
+
+    public Unit getCurrentUnit()
+    {
+	return mCurrentUnit;
+    }
+
     
     public Local getBafLocalOfJimpleLocal(Local jimpleLocal)
     {

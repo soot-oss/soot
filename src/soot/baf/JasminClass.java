@@ -251,6 +251,21 @@ public class JasminClass
                 emit("");
         }
 
+
+
+
+
+	// emit class attributes.
+	Iterator it =  sootClass.getTags().iterator(); 
+	while(it.hasNext()) {
+	    Tag tag = (Tag) it.next();
+	    emit(".class_attribute "  + tag.getName() + " " + Base64.encode(tag.getEncoding()));
+	}
+
+
+
+
+
         // Emit the fields
         {
             Iterator fieldIt = sootClass.getFields().iterator();
@@ -261,6 +276,14 @@ public class JasminClass
 
                 emit(".field " + Modifier.toString(field.getModifiers()) + " " +
                      "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType()));
+
+
+		Iterator attributeIt =  field.getTags().iterator(); 
+		while(attributeIt.hasNext()) {
+		    Tag tag = (Tag) attributeIt.next();
+		    emit(".field_attribute " + tag.getName() + " " + Base64.encode(tag.getEncoding()));
+		}
+
             }
 
             if(sootClass.getFieldCount() != 0)
@@ -371,6 +394,12 @@ public class JasminClass
        
        // Emit epilogue
             emit(".end method");
+
+	    Iterator it =  method.getTags().iterator();
+	    while(it.hasNext()) {
+		Tag tag = (Tag) it.next();
+		emit(".method_attribute "  + tag.getName() + " " + Base64.encode(tag.getEncoding()));
+	    }	    
     }
     
     void emitMethodBody(SootMethod method)
@@ -1954,6 +1983,12 @@ public class JasminClass
 
 
         });
+
+	Iterator it = inst.getTags().iterator();
+	while(it.hasNext()) {
+	    Tag t = (Tag) it.next();
+	    emit(".code_attribute " + t.getName() + " " + new String(Base64.encode(t.getEncoding())));
+	}
     }
    
 
