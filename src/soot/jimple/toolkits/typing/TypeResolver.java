@@ -171,7 +171,8 @@ public class TypeResolver
 	G.v().out.println(stmtBody.getMethod());
       }
 
-    if(soot.options.Options.v().use_old_type_assigner()) {
+    // Disable bit-vector type assigner completely until it works correctly.
+    if(true || soot.options.Options.v().use_old_type_assigner()) {
       try
         {
           TypeResolver resolver = new TypeResolver(stmtBody, scene);
