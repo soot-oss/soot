@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on June 14, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Made the AllMapTo a static variable.
+   
  - Modified on May 24, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Fixed a bug with getUseDefAndBoxes method.
    
@@ -90,7 +93,7 @@ import java.util.*;
 
 public abstract class AbstractUnit implements Unit
 {
-    Map allMapToUnnamed = new AllMapTo("<unnamed>");
+    static Map allMapToUnnamed = Collections.unmodifiableMap(new AllMapTo("<unnamed>"));
     
     /**
      * The list of boxes is dynamically updated as the structure changes.
@@ -189,7 +192,7 @@ public abstract class AbstractUnit implements Unit
     
     abstract protected String toString(boolean isBrief, Map stmtToName, String indentation);
 
-    class AllMapTo extends AbstractMap
+    static class AllMapTo extends AbstractMap
     {
         Object dest;
         
