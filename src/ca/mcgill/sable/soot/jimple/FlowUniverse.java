@@ -61,6 +61,10 @@
 
  B) Changes:
 
+ - Modified on November 15, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Made this class public.
+
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -77,7 +81,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-class FlowUniverse
+public class FlowUniverse
 {
     Object[] indexToObject;
     Map objectToIndex;
@@ -92,17 +96,17 @@ class FlowUniverse
             objectToIndex.put(objects[i], new Integer(i));
     }
 
-    int getSize()
+    public int getSize()
     {
         return indexToObject.length;
     }
 
-    Object getObjectOf(int index)
+    public Object getObjectOf(int index)
     {
         return indexToObject[index];
     }
 
-    int getIndexOf(Object obj)
+    public int getIndexOf(Object obj)
     {
         Integer index = (Integer) objectToIndex.get(obj);
 

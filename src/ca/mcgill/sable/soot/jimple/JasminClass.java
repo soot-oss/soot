@@ -65,9 +65,11 @@
 
  B) Changes:
 
- - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+ - Modified on November 18, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Fixed a jsr generation bug.
-
+   Fixed generation of 'and's.
+   Changed the output of constants.  (uses L and F)
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -1212,12 +1214,12 @@ public class JasminClass
                 {
                     public void caseIntType(IntType t)
                     {
-                        emit("iadd");
+                        emit("iand");
                     }
 
                     public void caseLongType(LongType t)
                     {
-                        emit("ladd");
+                        emit("land");
                     }
 
                     public void defaultCase(Type t)
@@ -1446,7 +1448,7 @@ public class JasminClass
                 else if(v.value == 1)
                     emit("dconst_1");
                 else
-                    emit("ldc2_w " + v.value);
+                    emit("ldc2_w " + v.toString());
             }
 
             public void caseFloatConstant(FloatConstant v)
@@ -1458,7 +1460,7 @@ public class JasminClass
                 else if(v.value == 2)
                     emit("fconst_2");
                 else
-                    emit("ldc " + v.value);
+                    emit("ldc " + v.toString());
             }
 
 
@@ -1484,7 +1486,7 @@ public class JasminClass
                 else if(v.value >= 0 && v.value <= 5)
                     emit("iconst_" + v.value);
                 else
-                    emit("ldc " + v.value);
+                    emit("ldc " + v.toString());
             }
 
             public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v)
@@ -1583,7 +1585,7 @@ public class JasminClass
                 else if(v.value == 1)
                     emit("lconst_1");
                 else
-                    emit("ldc2_w " + v.value);
+                    emit("ldc2_w " + v.toString());
             }
 
 

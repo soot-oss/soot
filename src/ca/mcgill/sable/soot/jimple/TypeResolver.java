@@ -65,6 +65,9 @@
 
  B) Changes:
 
+ - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Added type information for @caughtexception
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.

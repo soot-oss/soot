@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on November 18, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed the "f" to an "F".
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -99,7 +102,7 @@ public class FloatConstant extends Constant implements Switchable
 
     public String toString()
     {
-        return new Float(value).toString() + "f";
+        return new Float(value).toString() + "F";
     }
 
     public Type getType()

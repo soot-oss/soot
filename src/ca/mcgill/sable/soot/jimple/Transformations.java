@@ -172,7 +172,7 @@ class Transformations
 
         Map boxToSet = new HashMap(stmtList.size() * 2 + 1, 0.7f);
 
-        // Go through the definitions, building the boxToSet
+        // Go through the definitions, building the boxToSet 
         {
             List code = stmtList;
 

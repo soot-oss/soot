@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on November 18, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed the "l" to an "L".
+    
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -98,7 +101,7 @@ public class LongConstant extends Constant implements Switchable
 
     public String toString()
     {
-        return new Long(value).toString() + "l";
+        return new Long(value).toString() + "L";
     }
 
     public Type getType()

@@ -544,8 +544,9 @@ public class ClassFile {
             break;
          case cp_info.CONSTANT_Long:
             cp = new CONSTANT_Long_info();
-            ((CONSTANT_Long_info)cp).high = d.readInt();
-            ((CONSTANT_Long_info)cp).low = d.readInt();
+            ((CONSTANT_Long_info)cp).high = d.readInt() & 0xFFFFFFFFL;
+            ((CONSTANT_Long_info)cp).low = d.readInt() & 0xFFFFFFFFL;
+            
             if (debug) {
                String temp = cp.toString(constant_pool);
                System.out.println("Constant pool[" + i + "]: Long = " + temp);
