@@ -99,4 +99,12 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
         n = (ArrayInit)n.del(delFactory().delArrayInit());
         return n;
     }
+
+    public Return Return(Position pos, Expr expr) {
+        Return n = new JjReturn_c(pos, expr);
+        n = (Return)n.ext(extFactory().extReturn());
+        n = (Return)n.del(delFactory().delReturn());
+        return n;
+    }
+        
 }

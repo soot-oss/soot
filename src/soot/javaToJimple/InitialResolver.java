@@ -276,7 +276,9 @@ public class InitialResolver {
         String srcName = src.source().name();
         String srcFileName = null;
         if (src.package_() != null){
-            srcFileName = srcName.substring(srcName.lastIndexOf(src.package_().toString()));
+            String slashedPkg = soot.util.StringTools.replaceAll(src.package_().package_().fullName(), ".", System.getProperty("file.separator"));
+            //System.out.println("slashPkg: "+slashedPkg);
+            srcFileName = srcName.substring(srcName.lastIndexOf(slashedPkg));
         }
         else {
             srcFileName = srcName.substring(srcName.lastIndexOf(System.getProperty("file.separator"))+1);

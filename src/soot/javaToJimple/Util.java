@@ -259,10 +259,10 @@ public class Util {
             polyglot.types.ClassType classType = (polyglot.types.ClassType)type;
             String className;
             if (classType.isNested()) {
-                if (classType.isAnonymous()) {
+                if (classType.isAnonymous() && (soot.javaToJimple.InitialResolver.v().getAnonTypeMap() != null) && soot.javaToJimple.InitialResolver.v().getAnonTypeMap().containsKey(new polyglot.util.IdentityKey(classType))){
                     className = (String)soot.javaToJimple.InitialResolver.v().getAnonTypeMap().get(new polyglot.util.IdentityKey(classType));   
                 }
-                else if (classType.isLocal()) {
+                else if (classType.isLocal() && (soot.javaToJimple.InitialResolver.v().getLocalTypeMap() != null) && soot.javaToJimple.InitialResolver.v().getLocalTypeMap().containsKey(new polyglot.util.IdentityKey(classType))) {
                     className = (String)soot.javaToJimple.InitialResolver.v().getLocalTypeMap().get(new polyglot.util.IdentityKey(classType));    
                 }
                 else {
