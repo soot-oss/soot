@@ -1,30 +1,9 @@
 package soot.javaToJimple;
 
+import java.util.*;
+
 public class Util {
    
-    /*public static String getOuterClassName(soot.SootClass sc){
-        return getOuterClass(sc).getName();
-    }
-
-    public static soot.SootClass getOuterClass(soot.SootClass sc){
-        
-    }
-    
-    public static boolean isAnonInnerClass(soot.SootClass sc){
-        if (sc.indexOf("$") != -1
-    }
-
-    public static boolean isLocalInnerClass(soot.SootClass sc){
-    }
-
-    public static boolean isNested(soot.SootClass sc){
-    }
-
-    public static boolean isStaticInner(soot.SootClass sc){
-    }
-
-    public static boolean isDeeplyNested(soot.SootClass sc){
-    }*/
 
     public static String getSourceFileOfClass(soot.SootClass sootClass){
         String name = sootClass.getName();
@@ -99,6 +78,98 @@ public class Util {
                     
     }
     
+    public static soot.Local getThis(soot.Type sootType, soot.Body body, HashMap getThisMap, LocalGenerator lg){
+
+        // if this for type already created return it from map
+        if (getThisMap.containsKey(sootType)){
+            return (soot.Local)getThisMap.get(sootType);
+        }
+        //System.out.println("getThis: type: "+sootType);
+        //System.out.println("special this local type: "+specialThisLocal.getType());
+        soot.Local specialThisLocal = body.getThisLocal();
+        // if need this just return it
+        if (specialThisLocal.getType().equals(sootType)) {
+            //System.out.println("can just return this");
+            getThisMap.put(sootType, specialThisLocal);
+            return specialThisLocal;
+        }
+        
+        // otherwise get this$0 for one level up
+        soot.SootClass classToInvoke = ((soot.RefType)specialThisLocal.getType()).getSootClass();
+        soot.SootField outerThisField = classToInvoke.getFieldByName("this$0");
+        //System.out.println("outer This field: "+outerThisField);
+        soot.Local t1 = lg.generateLocal(outerThisField.getType());
+        
+        soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, outerThisField);
+        soot.jimple.AssignStmt fieldAssignStmt = soot.jimple.Jimple.v().newAssignStmt(t1, fieldRef);
+        body.getUnits().add(fieldAssignStmt);
+        
+        if (t1.getType().equals(sootType)){
+            //System.out.println("can just return this$0 field");
+            getThisMap.put(sootType, t1);
+            return t1;            
+        }
+        
+        // otherwise make a new access method
+        soot.Local t2 = t1;
+
+        return getThisGivenOuter(sootType, getThisMap, body, lg, t2);
+    }
+
+    public static soot.Local getThisGivenOuter(soot.Type sootType, HashMap getThisMap, soot.Body body, LocalGenerator lg, soot.Local t2){
+        
+        while (!t2.getType().equals(sootType)){
+            //System.out.println("t2 type: "+t2.getType());
+            soot.SootClass classToInvoke = ((soot.RefType)t2.getType()).getSootClass();
+            // make an access method and add it to that class for accessing 
+            // its private this$0 field
+            soot.SootMethod methToInvoke = makeOuterThisAccessMethod(classToInvoke);
+            
+            // generate a local that corresponds to the invoke of that meth
+            soot.Local t3 = lg.generateLocal(methToInvoke.getReturnType());
+            ArrayList methParams = new ArrayList();
+            methParams.add(t2);
+            soot.Local res = getPrivateAccessFieldInvoke(methToInvoke, methParams, body, lg);
+            soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(t3, res);
+            body.getUnits().add(assign);
+            //System.out.println("t3 type: "+t3.getType());
+            t2 = t3;
+            //System.out.println("created acces meth and t2's type is: "+t2.getType());
+        }
+            
+        getThisMap.put(sootType, t2);
+
+        return t2;        
+    }
+    
+
+    private static soot.SootMethod makeOuterThisAccessMethod(soot.SootClass classToInvoke){
+        String name = "access$"+soot.javaToJimple.InitialResolver.v().getNextPrivateAccessCounter()+"00";
+        ArrayList paramTypes = new ArrayList();
+        paramTypes.add(classToInvoke.getType());
+        
+        soot.SootMethod meth = new soot.SootMethod(name, paramTypes, classToInvoke.getFieldByName("this$0").getType(), soot.Modifier.STATIC);
+
+        classToInvoke.addMethod(meth);
+        PrivateFieldAccMethodSource src = new PrivateFieldAccMethodSource();
+        src.fieldName("this$0");
+        src.fieldType(classToInvoke.getFieldByName("this$0").getType());
+        meth.setActiveBody(src.getBody(meth, null));
+        return meth;
+    }
+    
+    public static soot.Local getPrivateAccessFieldInvoke(soot.SootMethod toInvoke, ArrayList params, soot.Body body, LocalGenerator lg){
+        soot.jimple.InvokeExpr invoke = soot.jimple.Jimple.v().newStaticInvokeExpr(toInvoke, params);
+
+        soot.Local retLocal = lg.generateLocal(toInvoke.getReturnType());
+
+        soot.jimple.AssignStmt stmt = soot.jimple.Jimple.v().newAssignStmt(retLocal, invoke);
+        body.getUnits().add(stmt);
+
+        return retLocal;
+    }
+
+    
     /**
      * Type handling
      */
@@ -149,22 +220,13 @@ public class Util {
 			sootType = soot.VoidType.v();
 		}
 		else if (type.isClass()){
-            //System.out.println("type: "+type);
             polyglot.types.ClassType classType = (polyglot.types.ClassType)type;
             String className;
-            /*if(soot.javaToJimple.InitialResolver.v().getAnonTypeMap().containsKey(new polyglot.util.IdentityKey(classType))){
-                
-                className = (String)soot.javaToJimple.InitialResolver.v().getAnonTypeMap().get(new polyglot.util.IdentityKey(classType));   
-                System.out.println("clas name in anon map: "+className);
-            }*/
             if (classType.isNested()) {
-                //System.out.println("is class type anon: "+classType.isAnonymous());
                 if (classType.isAnonymous()) {
                     className = (String)soot.javaToJimple.InitialResolver.v().getAnonTypeMap().get(new polyglot.util.IdentityKey(classType));   
-                    //System.out.println("anon type className: "+className);
                 }
                 else if (classType.isLocal()) {
-                    //System.out.println("type is local");
                     className = (String)soot.javaToJimple.InitialResolver.v().getLocalTypeMap().get(new polyglot.util.IdentityKey(classType));    
                 }
                 else {
@@ -173,7 +235,6 @@ public class Util {
                     if (classType.package_() != null){
                         pkgName = classType.package_().fullName();
                     }
-                    //System.out.println("pkgName: "+pkgName);
                     className = classType.name();
                     
                     if (classType.outer().isAnonymous() || classType.outer().isLocal()){
@@ -195,7 +256,6 @@ public class Util {
 			    className = classType.fullName();
             }
             
-            //System.out.println("className for type: "+className);
 			sootType = soot.RefType.v(className);
 		}
 		else{

@@ -20,4 +20,13 @@ public class AnonLocalClassInfo{
     public void finalLocals(ArrayList list){
         finalLocals = list;
     }
+
+    public String toString(){
+        StringBuffer sb = new StringBuffer();
+        sb.append("static: ");
+        sb.append(inStaticMethod);
+        sb.append(" finalLocals: ");
+        sb.append(finalLocals);
+        return sb.toString();
+    }
 }

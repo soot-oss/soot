@@ -68,6 +68,7 @@ public class AssertClassMethodSource implements soot.MethodSource {
 
         // throw            
         soot.jimple.Stmt throwStmt = soot.jimple.Jimple.v().newThrowStmt(throwLocal);
+        throwStmt.addTag(new soot.tagkit.ThrowCreatedByCompilerTag());
         classBody.getUnits().add(throwStmt);
         
         // trap
