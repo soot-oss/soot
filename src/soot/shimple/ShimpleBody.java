@@ -61,7 +61,7 @@ public class ShimpleBody extends StmtBody
     ShimpleBody(SootMethod m, Map options)
     {
         super(m);
-        unitChain = new SPatchingChain(new HashChain());
+        unitChain = new SPatchingChain(this, new HashChain());
         this.options = new ShimpleOptions(options);
         setIsSSA(true);
     }
@@ -84,7 +84,7 @@ public class ShimpleBody extends StmtBody
         if(Options.v().verbose())
             G.v().out.println("[" + getMethod().getName() + "] Constructing ShimpleBody...");
 
-        unitChain = new SPatchingChain(new HashChain());
+        unitChain = new SPatchingChain(this, new HashChain());
         this.options = new ShimpleOptions(options);
         importBodyContentsFrom(body);
 

@@ -183,8 +183,10 @@ public class DeadAssignmentEliminator extends BodyTransformer
             {
                 Stmt s = (Stmt) stmtIt.next();
                 
-                if(!essentialStmts.contains(s))
+                if(!essentialStmts.contains(s)){
                     stmtIt.remove();
+                    s.clearUnitBoxes();
+                }
                 else if(s instanceof AssignStmt &&
                     ((AssignStmt) s).getLeftOp() == ((AssignStmt) s).getRightOp() &&
                     ((AssignStmt) s).getLeftOp() instanceof Local)
@@ -192,6 +194,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
                     // Stmt is of the form a = a which is useless
                     
                     stmtIt.remove();
+                    s.clearUnitBoxes();
                 }   
             }
         }

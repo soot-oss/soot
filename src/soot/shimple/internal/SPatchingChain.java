@@ -32,9 +32,15 @@ import java.util.*;
  **/
 public class SPatchingChain extends PatchingChain
 {
-    public SPatchingChain(Chain aChain)
+    /**
+     * Needed to find non-trapped Units of the body.
+     **/
+    Body body = null;
+
+    public SPatchingChain(Body aBody, Chain aChain)
     {
         super(aChain);
+        this.body = aBody;
     }
 
     public boolean add(Object o)
@@ -60,6 +66,17 @@ public class SPatchingChain extends PatchingChain
             // no need to move the pointers
             if(!unit.fallsThrough())
                 break patchpointers;
+
+            // move pointers unconditionally, needed as a special case
+            if(!unit.branches()){
+                Set trappedUnits = Collections.EMPTY_SET;
+                if(body != null)
+                    trappedUnits = TrapManager.getTrappedUnitsOf(body);
+                if(!trappedUnits.contains(unit)){
+                    Shimple.redirectPointers(unit, (Unit) toInsert);
+                    break patchpointers;
+                }
+            }
             
             /* handle each UnitBox individually */
 
@@ -306,19 +323,21 @@ public class SPatchingChain extends PatchingChain
         
         public void remove()
         {
+            Unit victim = (Unit) lastObject;
+            
             if(!state)
                 throw new IllegalStateException("remove called before first next() call");
-            Shimple.redirectToPreds(SPatchingChain.this, (Unit) lastObject);
+            Shimple.redirectToPreds(SPatchingChain.this, victim);
 
             // work around for inadequate inner class support in javac 1.2
             // super.remove();
             Unit successor;
 
-            if((successor = (Unit)getSuccOf(lastObject)) == null)
-                successor = (Unit)getPredOf(lastObject);
+            if((successor = (Unit)getSuccOf(victim)) == null)
+                successor = (Unit)getPredOf(victim);
 
             innerIterator.remove();
-            ((Unit)lastObject).redirectJumpsToThisTo(successor);
+            victim.redirectJumpsToThisTo(successor);
         }
     }
 

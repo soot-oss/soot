@@ -829,6 +829,9 @@ public class ShimpleBodyBuilder
             AssignStmt stmt = (AssignStmt) equivStmts.get(i);
             Unit pred = ((UnitBox) predBoxes.get(i)).getUnit();
 
+            if(pred == null)
+                throw new RuntimeException("Assertion failed.");
+
             // if we need to insert the copy statement *before* an
             // instruction that happens to be *using* the Local being
             // defined, we need to do some extra work to make sure we
