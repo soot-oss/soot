@@ -59,24 +59,24 @@ public class SparkTransformer extends SceneTransformer
 
         // Build pointer assignment graph
         Builder b = new ContextInsensitiveBuilder();
-        if( opts.preJimplify() ) b.preJimplify();
-        if( opts.forceGCs() ) doGC();
+        if( opts.pre_jimplify() ) b.preJimplify();
+        if( opts.force_gc() ) doGC();
         Date startBuild = new Date();
         final PAG pag = b.setup( opts );
-        if( opts.trimInvokeGraph() ) {
+        if( opts.trim_invoke_graph() ) {
             b.getCallGraph().setInvokeGraph( new InvokeGraph() );
         }
         b.build();
         Date endBuild = new Date();
         reportTime( "Pointer Assignment Graph", startBuild, endBuild );
-        if( opts.forceGCs() ) doGC();
+        if( opts.force_gc() ) doGC();
 
         // Build type masks
         Date startTM = new Date();
         pag.getTypeManager().makeTypeMask( pag );
         Date endTM = new Date();
         reportTime( "Type masks", startTM, endTM );
-        if( opts.forceGCs() ) doGC();
+        if( opts.force_gc() ) doGC();
 
         if( opts.verbose() ) {
             G.v().out.println( "VarNodes: "+pag.getVarNodeNumberer().size() );
@@ -86,23 +86,23 @@ public class SparkTransformer extends SceneTransformer
 
         // Simplify pag
         Date startSimplify = new Date();
-        if( opts.simplifySCCs() || opts.VTA() ) {
-            new SCCCollapser( pag, opts.ignoreTypesForSCCs() ).collapse();
+        if( opts.simplify_sccs() || opts.vta() ) {
+            new SCCCollapser( pag, opts.ignore_types_for_sccs() ).collapse();
         }
-        if( opts.simplifyOffline() ) new EBBCollapser( pag ).collapse();
-        if( true || opts.simplifySCCs() || opts.VTA() || opts.simplifyOffline() ) {
+        if( opts.simplify_offline() ) new EBBCollapser( pag ).collapse();
+        if( true || opts.simplify_sccs() || opts.vta() || opts.simplify_offline() ) {
             pag.cleanUpMerges();
         }
         Date endSimplify = new Date();
         reportTime( "Pointer Graph simplified", startSimplify, endSimplify );
-        if( opts.forceGCs() ) doGC();
+        if( opts.force_gc() ) doGC();
 
         // Dump pag
         PAGDumper dumper = null;
-        if( opts.dumpPAG() || opts.dumpSolution() ) {
+        if( opts.dump_pag() || opts.dump_solution() ) {
             dumper = new PAGDumper( pag );
         }
-        if( opts.dumpPAG() ) dumper.dump();
+        if( opts.dump_pag() ) dumper.dump();
 
         // Propagate
         Date startProp = new Date();
@@ -128,7 +128,7 @@ public class SparkTransformer extends SceneTransformer
         if( propagator[0] != null ) propagator[0].propagate();
         Date endProp = new Date();
         reportTime( "Propagation", startProp, endProp );
-        if( opts.forceGCs() ) doGC();
+        if( opts.force_gc() ) doGC();
         reportTime( "Solution found", startSimplify, endProp );
 
 
@@ -147,14 +147,14 @@ public class SparkTransformer extends SceneTransformer
         }
         */
 
-        if( opts.dumpAnswer() ) new ReachingTypeDumper( pag ).dump();
-        if( opts.dumpSolution() ) dumper.dumpPointsToSets();
-        if( opts.dumpHTML() ) new PAG2HTML( pag ).dump();
+        if( opts.dump_answer() ) new ReachingTypeDumper( pag ).dump();
+        if( opts.dump_solution() ) dumper.dumpPointsToSets();
+        if( opts.dump_html() ) new PAG2HTML( pag ).dump();
         Scene.v().setActivePointsToAnalysis( pag );
-        if( opts.trimInvokeGraph() ) {
+        if( opts.trim_invoke_graph() ) {
             Scene.v().setActiveInvokeGraph( b.getCallGraph().getInvokeGraph() );
         }
-        if( opts.addTags() ) {
+        if( opts.add_tags() ) {
             addTags( pag );
         }
     }

@@ -50,11 +50,11 @@ public class ContextInsensitiveBuilder implements Builder {
     /** Creates an empty pointer assignment graph. */
     public PAG setup( SparkOptions opts ) {
 	pag = new PAG( opts );
-        if( opts.simulateNatives() ) {
+        if( opts.simulate_natives() ) {
             NativeHelper.register( new SparkNativeHelper( pag ) );
         }
 	parms = new StandardParms( pag, null );
-        if( opts.onFlyCallGraph() ) {
+        if( opts.on_fly_cg() ) {
             OnFlyCallGraph ofcg = new OnFlyCallGraph( pag,
                         Scene.v().getOrMakeFastHierarchy(), parms );
             pag.setOnFlyCallGraph( ofcg );

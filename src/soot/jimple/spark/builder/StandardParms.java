@@ -230,7 +230,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     }
 
     final public Node caseParm( SootMethod m, int index ) {
-	if( m.isStatic() || !pag.getOpts().parmsAsFields() ) {
+	if( m.isStatic() || !pag.getOpts().parms_as_fields() ) {
 	    VarNode ret = pag.makeVarNode(
 			new Pair( m, new Integer( index ) ),
 			m.getParameterType( index ), m );
@@ -245,7 +245,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     }
 
     final public Node caseRet( SootMethod m ) {
-	if( m.isStatic() || !pag.getOpts().returnsAsFields() ) {
+	if( m.isStatic() || !pag.getOpts().returns_as_fields() ) {
 	    return pag.makeVarNode(
 			Parm.v( m, PointsToAnalysis.RETURN_NODE ),
 			m.getReturnType(), m );
@@ -281,7 +281,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	setResult( caseThrow() );
     }
     final public void caseInstanceFieldRef( InstanceFieldRef ifr ) {
-	if( pag.getOpts().ignoreBaseObjects() || pag.getOpts().VTA() ) {
+	if( pag.getOpts().field_based() || pag.getOpts().vta() ) {
 	    setResult( pag.makeVarNode( 
 			ifr.getField(), 
 			ifr.getField().getType(), currentMethod ) );
@@ -300,7 +300,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
         setResult( pag.makeAllocNode( nae, nae.getType(), currentMethod ) );
     }
     final public void caseNewExpr( NewExpr ne ) {
-        if( pag.getOpts().mergeStringBuffer() 
+        if( pag.getOpts().merge_stringbuffer() 
         && ne.getType().equals( RefType.v("java.lang.StringBuffer" ) ) ) {
             setResult( pag.makeAllocNode( ne.getType(), ne.getType(), null ) );
         } else {

@@ -171,6 +171,7 @@
 			<phase>
 				<name>Jimple Body Creation</name>
 				<alias>jb</alias>
+                                <class>JBOptions</class>
 				<boolopt>
 					<name>Disabled</name>
 					<alias>disabled</alias>
@@ -525,8 +526,8 @@ listed at <a href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.
 				</boolopt>
 				<sub_phase>
 					<name>Spark</name>
-					<phaseopt_class>SparkOptions</phaseopt_class>
-					<alias>wjtp.Spark</alias>
+					<class>SparkOptions</class>
+					<alias>wjtp.spark</alias>
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>
@@ -546,7 +547,7 @@ When this option is set to true, Spark prints detailed information.
 						</boolopt>
 						<boolopt>
 							<name>Ignore Types Entirely</name>
-							<alias>ignoreTypesEntirely</alias>
+							<alias>ignore-types</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, all parts of Spark completely ignore
@@ -555,7 +556,7 @@ declared types of variables and casts.
 						</boolopt>
 						<boolopt>
 							<name>Force Garbages Collections</name>
-							<alias>forceGCs</alias>
+							<alias>force-gc</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, calls to System.gc() will be made at
@@ -564,7 +565,7 @@ various points to allow memory usage to be measured.
 						</boolopt>
 						<boolopt>
 							<name>Pre Jimplify</name>
-							<alias>preJimplify</alias>
+							<alias>pre-jimplify</alias>
 							<default>false</default>
 							<long_desc>
         When this option is set to true, convert all available methods to Jimple
@@ -579,7 +580,7 @@ rather than only those deemed reachable by the points-to analysis.
 						<name>Spark Pointer Assignment Graph Building Options</name>
 						<boolopt>
 							<name>VTA</name>
-							<alias>VTA</alias>
+							<alias>vta</alias>
 							<default>false</default>
 							<long_desc>
 Setting VTA to true has the effect of setting ignoreBaseObjects,
@@ -592,7 +593,7 @@ invoke graph, set the trimInvokeGraph option to true as well.
 						</boolopt>
 						<boolopt>
 							<name>RTA</name>
-							<alias>RTA</alias>
+							<alias>rta</alias>
 							<default>false</default>
 							<long_desc>
 Setting RTA to true sets typesForSites to true, and causes Spark to use
@@ -603,20 +604,20 @@ trimInvokeGraph option to true as well.
         </long_desc>
 						</boolopt>
 						<boolopt>
-							<name>Ignore Base Objects</name>
-							<alias>ignoreBaseObjects</alias>
+							<name>Field Based</name>
+							<alias>field-based</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, fields are represented by variable
 (Green) nodes, and the object that the field belongs to is ignored
-(all objects are lumped together). Otherwise, fields are represented by
+(all objects are lumped together), giving a field-based analysis. Otherwise, fields are represented by
 field reference (Red) nodes, and the objects that they belong to are
-distinguished.
+distinguished, giving a field-sensitive analysis.
         </long_desc>
 						</boolopt>
 						<boolopt>
 							<name>Types For Sites</name>
-							<alias>typesForSites</alias>
+							<alias>types-for-sites</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, types rather than allocation sites are
@@ -625,7 +626,7 @@ used as the elements of the points-to sets.
 						</boolopt>
 						<boolopt>
 							<name>Merge String Buffer</name>
-							<alias>mergeStringBuffer</alias>
+							<alias>merge-stringbuffer</alias>
 							<default>true</default>
 							<long_desc>
 When this option is set to true, all allocation sites creating
@@ -635,7 +636,7 @@ allocation site.
 						</boolopt>
 						<boolopt>
 							<name>Simulate Natives</name>
-							<alias>simulateNatives</alias>
+							<alias>simulate-natives</alias>
 							<default>true</default>
 							<long_desc>
 When this option is set to true, effects of native methods are simulated.
@@ -643,7 +644,7 @@ When this option is set to true, effects of native methods are simulated.
 						</boolopt>
 						<boolopt>
 							<name>Simple Edges Bidirectional</name>
-							<alias>simpleEdgesBidirectional</alias>
+							<alias>simple-edges-bidirectional</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, all edges connecting variable (Green)
@@ -652,7 +653,7 @@ nodes are made bidirectional, as in Steensgaard&apos;s analysis <cite>stee96*1</
 						</boolopt>
 						<boolopt>
 							<name>On Fly Call Graph</name>
-							<alias>onFlyCallGraph</alias>
+							<alias>on-fly-cg</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, the call graph is computed on-the-fly
@@ -662,7 +663,7 @@ approximation to the call graph is used.
 						</boolopt>
 						<boolopt>
 							<name>Parms As Fields</name>
-							<alias>parmsAsFields</alias>
+							<alias>parms-as-fields</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, parameters to methods are represented
@@ -672,7 +673,7 @@ represented as variable (Green) nodes.
 						</boolopt>
 						<boolopt>
 							<name>Returns As Fields</name>
-							<alias>returnsAsFields</alias>
+							<alias>returns-as-fields</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, return values from methods are
@@ -685,7 +686,7 @@ return values are represented as variable (Green) nodes.
 						<name>Spark Pointer Assignment Graph Simplification Options</name>
 						<boolopt>
 							<name>Simplify Offline</name>
-							<alias>simplifyOffline</alias>
+							<alias>simplify-offline</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, variable (Green) nodes which are
@@ -695,7 +696,7 @@ merged together.
 						</boolopt>
 						<boolopt>
 							<name>Simplify SCCs</name>
-							<alias>simplifySCCs</alias>
+							<alias>simplify-sccs</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, variable (Green) nodes which form
@@ -705,7 +706,7 @@ are merged together.
 						</boolopt>
 						<boolopt>
 							<name>Ignore Types For SCCs</name>
-							<alias>ignoreTypesForSCCs</alias>
+							<alias>ignore-types-for-sccs</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, when collapsing strongly-connected
@@ -768,7 +769,7 @@ simplified.
 						</multiopt>
 						<multiopt>
 							<name>Set Implementation</name>
-							<alias>setImpl</alias>
+							<alias>set-impl</alias>
 							<value>
 								<name>Hash</name>
 								<alias>hash</alias>
@@ -816,7 +817,7 @@ often speeding them up significantly.
 						</multiopt>
 						<multiopt>
 							<name>Double Set Old</name>
-							<alias>doubleSetOld</alias>
+							<alias>double-set-old</alias>
 							<value>
 								<name>Hash</name>
 								<alias>hash</alias>
@@ -843,7 +844,7 @@ This option has no effect unless setImpl is set to double.
 						</multiopt>
 						<multiopt>
 							<name>Double Set New</name>
-							<alias>doubleSetNew</alias>
+							<alias>double-set-new</alias>
 							<value>
 								<name>Hash</name>
 								<alias>hash</alias>
@@ -873,7 +874,7 @@ This option has no effect unless setImpl is set to double.
 						<name>Spark Output Options</name>
 						<boolopt>
 							<name>Dump HTML</name>
-							<alias>dumpHTML</alias>
+							<alias>dump-html</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, a browseable HTML representation of the
@@ -883,7 +884,7 @@ that this representation is typically very large.
 						</boolopt>
 						<boolopt>
 							<name>Dump PAG</name>
-							<alias>dumpPAG</alias>
+							<alias>dump-pag</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, a representation of the pointer assignment graph
@@ -893,7 +894,7 @@ output before the analysis begins.
 						</boolopt>
 						<boolopt>
 							<name>Dump Solution</name>
-							<alias>dumpSolution</alias>
+							<alias>dump-solution</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, a representation of the resulting points-to
@@ -904,7 +905,7 @@ solvers.
 						</boolopt>
 						<boolopt>
 							<name>Topological Sort</name>
-							<alias>topoSort</alias>
+							<alias>topo-sort</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, the representation dumped by the dumpPAG option
@@ -915,7 +916,7 @@ This option has no effect unless dumpPAG is true.
 						</boolopt>
 						<boolopt>
 							<name>Dump Types</name>
-							<alias>dumpTypes</alias>
+							<alias>dump-types</alias>
 							<default>true</default>
 							<long_desc>
 When this option is set to true, the representation dumped by the dumpPAG option
@@ -926,7 +927,7 @@ This option has no effect unless dumpPAG is true.
 						</boolopt>
 						<boolopt>
 							<name>Class Method Var</name>
-							<alias>classMethodVar</alias>
+							<alias>class-method-var</alias>
 							<default>true</default>
 							<long_desc>
 When this option is set to true, the representation dumped by the dumpPAG option
@@ -940,7 +941,7 @@ Setting classMethodVar to true has the effect of setting topoSort to false.
 						</boolopt>
 						<boolopt>
 							<name>Dump Answer</name>
-							<alias>dumpAnswer</alias>
+							<alias>dump-answer</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, the computed reaching types for each variable are
@@ -950,7 +951,7 @@ other analyses (such as the old VTA).
 						</boolopt>
 						<boolopt>
 							<name>Trim Invoke Graph</name>
-							<alias>trimInvokeGraph</alias>
+							<alias>trim-invoke-graph</alias>
 							<default>false</default>
 							<long_desc>
 When this option is set to true, the results of the analysis are used to make the invoke graph
@@ -959,7 +960,7 @@ more precise after the analysis completes.
 						</boolopt>
 						<boolopt>
 							<name>Add Tags</name>
-							<alias>addTags</alias>
+							<alias>add-tags</alias>
 							<default>false</default>
 							<long_desc>
         When this option is set to true, the results of the analysis are encoded inside
@@ -997,7 +998,7 @@ Analysis (VTA) once or several times rather than CHA.
 				</boolopt>
 				<sub_phase>
 					<name>Static Method Binding</name>
-					<phaseopt_class>SMBOptions</phaseopt_class>
+					<class>SMBOptions</class>
 					<alias>wjop.smb</alias>
 					<long_desc>
 Static method binding uses CHA or VTA to statically bind 
@@ -1081,7 +1082,7 @@ VTA to run one or more times as specified by the parameter.
 				</sub_phase>
 				<sub_phase>
 					<name>Static Inlining</name>
-					<phaseopt_class>SIOptions</phaseopt_class>
+					<class>SIOptions</class>
 					<alias>wjop.si</alias>
 					<long_desc>
 The StaticInliner talkes an call graph returned by CHA or VTA and visits
@@ -1187,18 +1188,11 @@ the parameter.
 				</boolopt>
 				<sub_phase>
 					<name>Rectangular Array Finder</name>
-					<phaseopt_class>RAOptions</phaseopt_class>
 					<alias>wjtp2.ra</alias>
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>
 						<default>true</default>
-						<short_desc/>
-						<long_desc/>
-					</boolopt>
-					<boolopt>
-						<name>With Whole Application</name>
-						<alias>with-wholeapp</alias>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1288,6 +1282,7 @@ disabled:false</tt> on the command line.
 				<sub_phase>
 					<name>Busy Code Motion</name>
 					<alias>jop.bcm</alias>
+					<class>BCMOptions</class>
 					<long_desc>
 Busy Code Motion is a straightforward implementation of Partial
 Redundancy Elimination. This implementation is not very aggressive.
@@ -1315,7 +1310,7 @@ Busy Code Motion is not enabled by default. To enable it, specify
 				</sub_phase>
 				<sub_phase>
 					<name>Lazy Code Motion</name>
-					<phaseopt_class>LCMOptions</phaseopt_class>
+					<class>LCMOptions</class>
 					<alias>jop.lcm</alias>
 					<long_desc>
 Lazy Code Motion is the enhanced version of the Busy Code Motion, a
@@ -1387,7 +1382,7 @@ transformation.
 				</sub_phase>
 				<sub_phase>
 					<name>Copy Propogator</name>
-					<phaseopt_class>CPOptions</phaseopt_class>
+					<class>CPOptions</class>
 					<alias>jop.cp</alias>
 					<long_desc>
 The default behaviour here is to propagate on all locals.
@@ -1549,7 +1544,7 @@ separate phases and phase options.
 				</boolopt>
 				<sub_phase>
 					<name>Null Pointer Check Options</name>
-					<phaseopt_class>NPCOptions</phaseopt_class>
+					<class>NPCOptions</class>
 					<alias>jap.npc</alias>
 					<long_desc>
 The null pointer check analysis has the phase name <tt>jtp.npc</tt>. 
@@ -1584,7 +1579,7 @@ It has one phase option (aside from the default <tt>disabled</tt> option).
 				</sub_phase>
 				<sub_phase>
 					<name>Array Bound Check Options</name>
-					<phaseopt_class>ABCOptions</phaseopt_class>
+					<class>ABCOptions</class>
 					<alias>jap.abc</alias>
 					<long_desc>
 The array bounds check analysis has the phase name <tt>jtp.abc</tt>. 
@@ -1679,18 +1674,11 @@ result.
 				<sub_phase>
 					<name>Profiling Generator</name>
 					<alias>jap.profiling</alias>
-					<phaseopt_class>ProfilingOptions</phaseopt_class>
+					<class>ProfilingOptions</class>
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>
 						<default>true</default>
-						<short_desc/>
-						<long_desc/>
-					</boolopt>
-					<boolopt>
-						<name>Enable</name>
-						<alias>enable</alias>
-						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
@@ -1920,7 +1908,9 @@ result.
 			<name>Optimize</name>
 			<alias>O</alias>
 			<alias>optimize</alias>
-			<expansion>-p jop enabled:true</expansion>
+			<expansion>-p</expansion>
+                        <expansion>jop</expansion>
+                        <expansion>enabled:true</expansion>
 			<short_desc>perform scalar optimizations on the classfiles</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
@@ -1928,7 +1918,9 @@ result.
 			<name>Whole Program Optimize</name>
 			<alias>W</alias>
 			<alias>whole-optimize</alias>
-			<expansion>-p wjop enabled:true</expansion>
+			<expansion>-p</expansion>
+                        <expansion>wjop</expansion>
+                        <expansion>enabled:true</expansion>
 			<short_desc>perform whole program optimizations on the classfiles</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
@@ -2005,14 +1997,33 @@ result.
 		<macroopt>
 			<name>Null Pointer Annotation</name>
 			<alias>annot-nullpointer</alias>
-			<expansion>-p jtp.npc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true</expansion>
+			<expansion>-p</expansion>
+                        <expansion>jtp.npc</expansion>
+                        <expansion>enabled:true</expansion>
+                        <expansion>-p</expansion>
+                        <expansion>jtp.profiling</expansion>
+                        <expansion>enabled:true</expansion>
+                        <expansion>-p</expansion>
+                        <expansion>agg.an</expansion>
+                        <expansion>enabled:true</expansion>
 			<short_desc>turn on the annotation for null pointer</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
 		<macroopt>
 			<name>Array Bounds Annotation</name>
 			<alias>annot-arraybounds</alias>
-			<expansion>-p wjtp2.ra enabled:true -p jtp.abc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true</expansion>
+			<expansion>-p</expansion>
+                        <expansion>wjtp2.ra</expansion>
+                        <expansion>enabled:true</expansion>
+                        <expansion>-p</expansion>
+                        <expansion>jtp.abc</expansion>
+                        <expansion>enabled:true</expansion>
+                        <expansion>-p</expansion>
+                        <expansion>jtp.profiling</expansion>
+                        <expansion>enabled:true</expansion>
+                        <expansion>-p</expansion>
+                        <expansion>agg.an</expansion>
+                        <expansion>enabled:true</expansion>
 			<short_desc>turn on the annotation for array bounds check</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>

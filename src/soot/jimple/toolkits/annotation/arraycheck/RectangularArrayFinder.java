@@ -31,7 +31,6 @@ import soot.toolkits.graph.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
 import soot.jimple.toolkits.invoke.*;
-
 import java.util.*;
 
 /** Interprocedural analysis to identify rectangular multi-dimension array
@@ -51,16 +50,8 @@ public class RectangularArrayFinder extends SceneTransformer
 
     private InvokeGraph ig;
 
-    private boolean enable = false;
-
-
-    protected void internalTransform(String phaseName, Map options)
+    protected void internalTransform(String phaseName, Map opts)
     {
-	enable = PackManager.getBoolean(options, "with-wholeapp");
-
-	if (!enable)
-	    return;
-
 	Scene sc = Scene.v();
 
 	if (!sc.hasActiveInvokeGraph())

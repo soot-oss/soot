@@ -43,128 +43,128 @@ public class SparkOptions
     }
     
     /** Ignore Types Entirely --  */
-    public boolean ignoreTypesEntirely() {
-        return soot.PackManager.getBoolean( options, "ignoreTypesEntirely" );
+    public boolean ignore_types() {
+        return soot.PackManager.getBoolean( options, "ignore-types" );
     }
     
     /** Force Garbages Collections --  */
-    public boolean forceGCs() {
-        return soot.PackManager.getBoolean( options, "forceGCs" );
+    public boolean force_gc() {
+        return soot.PackManager.getBoolean( options, "force-gc" );
     }
     
     /** Pre Jimplify --  */
-    public boolean preJimplify() {
-        return soot.PackManager.getBoolean( options, "preJimplify" );
+    public boolean pre_jimplify() {
+        return soot.PackManager.getBoolean( options, "pre-jimplify" );
     }
     
     /** VTA --  */
-    public boolean VTA() {
-        return soot.PackManager.getBoolean( options, "VTA" );
+    public boolean vta() {
+        return soot.PackManager.getBoolean( options, "vta" );
     }
     
     /** RTA --  */
-    public boolean RTA() {
-        return soot.PackManager.getBoolean( options, "RTA" );
+    public boolean rta() {
+        return soot.PackManager.getBoolean( options, "rta" );
     }
     
-    /** Ignore Base Objects --  */
-    public boolean ignoreBaseObjects() {
-        return soot.PackManager.getBoolean( options, "ignoreBaseObjects" );
+    /** Field Based --  */
+    public boolean field_based() {
+        return soot.PackManager.getBoolean( options, "field-based" );
     }
     
     /** Types For Sites --  */
-    public boolean typesForSites() {
-        return soot.PackManager.getBoolean( options, "typesForSites" );
+    public boolean types_for_sites() {
+        return soot.PackManager.getBoolean( options, "types-for-sites" );
     }
     
     /** Merge String Buffer --  */
-    public boolean mergeStringBuffer() {
-        return soot.PackManager.getBoolean( options, "mergeStringBuffer" );
+    public boolean merge_stringbuffer() {
+        return soot.PackManager.getBoolean( options, "merge-stringbuffer" );
     }
     
     /** Simulate Natives --  */
-    public boolean simulateNatives() {
-        return soot.PackManager.getBoolean( options, "simulateNatives" );
+    public boolean simulate_natives() {
+        return soot.PackManager.getBoolean( options, "simulate-natives" );
     }
     
     /** Simple Edges Bidirectional --  */
-    public boolean simpleEdgesBidirectional() {
-        return soot.PackManager.getBoolean( options, "simpleEdgesBidirectional" );
+    public boolean simple_edges_bidirectional() {
+        return soot.PackManager.getBoolean( options, "simple-edges-bidirectional" );
     }
     
     /** On Fly Call Graph --  */
-    public boolean onFlyCallGraph() {
-        return soot.PackManager.getBoolean( options, "onFlyCallGraph" );
+    public boolean on_fly_cg() {
+        return soot.PackManager.getBoolean( options, "on-fly-cg" );
     }
     
     /** Parms As Fields --  */
-    public boolean parmsAsFields() {
-        return soot.PackManager.getBoolean( options, "parmsAsFields" );
+    public boolean parms_as_fields() {
+        return soot.PackManager.getBoolean( options, "parms-as-fields" );
     }
     
     /** Returns As Fields --  */
-    public boolean returnsAsFields() {
-        return soot.PackManager.getBoolean( options, "returnsAsFields" );
+    public boolean returns_as_fields() {
+        return soot.PackManager.getBoolean( options, "returns-as-fields" );
     }
     
     /** Simplify Offline --  */
-    public boolean simplifyOffline() {
-        return soot.PackManager.getBoolean( options, "simplifyOffline" );
+    public boolean simplify_offline() {
+        return soot.PackManager.getBoolean( options, "simplify-offline" );
     }
     
     /** Simplify SCCs --  */
-    public boolean simplifySCCs() {
-        return soot.PackManager.getBoolean( options, "simplifySCCs" );
+    public boolean simplify_sccs() {
+        return soot.PackManager.getBoolean( options, "simplify-sccs" );
     }
     
     /** Ignore Types For SCCs --  */
-    public boolean ignoreTypesForSCCs() {
-        return soot.PackManager.getBoolean( options, "ignoreTypesForSCCs" );
+    public boolean ignore_types_for_sccs() {
+        return soot.PackManager.getBoolean( options, "ignore-types-for-sccs" );
     }
     
     /** Dump HTML --  */
-    public boolean dumpHTML() {
-        return soot.PackManager.getBoolean( options, "dumpHTML" );
+    public boolean dump_html() {
+        return soot.PackManager.getBoolean( options, "dump-html" );
     }
     
     /** Dump PAG --  */
-    public boolean dumpPAG() {
-        return soot.PackManager.getBoolean( options, "dumpPAG" );
+    public boolean dump_pag() {
+        return soot.PackManager.getBoolean( options, "dump-pag" );
     }
     
     /** Dump Solution --  */
-    public boolean dumpSolution() {
-        return soot.PackManager.getBoolean( options, "dumpSolution" );
+    public boolean dump_solution() {
+        return soot.PackManager.getBoolean( options, "dump-solution" );
     }
     
     /** Topological Sort --  */
-    public boolean topoSort() {
-        return soot.PackManager.getBoolean( options, "topoSort" );
+    public boolean topo_sort() {
+        return soot.PackManager.getBoolean( options, "topo-sort" );
     }
     
     /** Dump Types --  */
-    public boolean dumpTypes() {
-        return soot.PackManager.getBoolean( options, "dumpTypes" );
+    public boolean dump_types() {
+        return soot.PackManager.getBoolean( options, "dump-types" );
     }
     
     /** Class Method Var --  */
-    public boolean classMethodVar() {
-        return soot.PackManager.getBoolean( options, "classMethodVar" );
+    public boolean class_method_var() {
+        return soot.PackManager.getBoolean( options, "class-method-var" );
     }
     
     /** Dump Answer --  */
-    public boolean dumpAnswer() {
-        return soot.PackManager.getBoolean( options, "dumpAnswer" );
+    public boolean dump_answer() {
+        return soot.PackManager.getBoolean( options, "dump-answer" );
     }
     
     /** Trim Invoke Graph --  */
-    public boolean trimInvokeGraph() {
-        return soot.PackManager.getBoolean( options, "trimInvokeGraph" );
+    public boolean trim_invoke_graph() {
+        return soot.PackManager.getBoolean( options, "trim-invoke-graph" );
     }
     
     /** Add Tags --  */
-    public boolean addTags() {
-        return soot.PackManager.getBoolean( options, "addTags" );
+    public boolean add_tags() {
+        return soot.PackManager.getBoolean( options, "add-tags" );
     }
     
     public static final int propagator_iter = 1;
@@ -194,77 +194,77 @@ public class SparkOptions
         throw new RuntimeException( "Invalid value "+s+" of phase option propagator" );
     }
     
-    public static final int setImpl_hash = 1;
-    public static final int setImpl_bit = 2;
-    public static final int setImpl_hybrid = 3;
-    public static final int setImpl_array = 4;
-    public static final int setImpl_double = 5;
+    public static final int set_impl_hash = 1;
+    public static final int set_impl_bit = 2;
+    public static final int set_impl_hybrid = 3;
+    public static final int set_impl_array = 4;
+    public static final int set_impl_double = 5;
     /** Set Implementation --  */
-    public int setImpl() {
-        String s = soot.PackManager.getString( options, "setImpl" );
+    public int set_impl() {
+        String s = soot.PackManager.getString( options, "set-impl" );
         
         if( s.equalsIgnoreCase( "hash" ) )
-            return setImpl_hash;
+            return set_impl_hash;
         
         if( s.equalsIgnoreCase( "bit" ) )
-            return setImpl_bit;
+            return set_impl_bit;
         
         if( s.equalsIgnoreCase( "hybrid" ) )
-            return setImpl_hybrid;
+            return set_impl_hybrid;
         
         if( s.equalsIgnoreCase( "array" ) )
-            return setImpl_array;
+            return set_impl_array;
         
         if( s.equalsIgnoreCase( "double" ) )
-            return setImpl_double;
+            return set_impl_double;
         
-        throw new RuntimeException( "Invalid value "+s+" of phase option setImpl" );
+        throw new RuntimeException( "Invalid value "+s+" of phase option set-impl" );
     }
     
-    public static final int doubleSetOld_hash = 1;
-    public static final int doubleSetOld_bit = 2;
-    public static final int doubleSetOld_hybrid = 3;
-    public static final int doubleSetOld_array = 4;
+    public static final int double_set_old_hash = 1;
+    public static final int double_set_old_bit = 2;
+    public static final int double_set_old_hybrid = 3;
+    public static final int double_set_old_array = 4;
     /** Double Set Old --  */
-    public int doubleSetOld() {
-        String s = soot.PackManager.getString( options, "doubleSetOld" );
+    public int double_set_old() {
+        String s = soot.PackManager.getString( options, "double-set-old" );
         
         if( s.equalsIgnoreCase( "hash" ) )
-            return doubleSetOld_hash;
+            return double_set_old_hash;
         
         if( s.equalsIgnoreCase( "bit" ) )
-            return doubleSetOld_bit;
+            return double_set_old_bit;
         
         if( s.equalsIgnoreCase( "hybrid" ) )
-            return doubleSetOld_hybrid;
+            return double_set_old_hybrid;
         
         if( s.equalsIgnoreCase( "array" ) )
-            return doubleSetOld_array;
+            return double_set_old_array;
         
-        throw new RuntimeException( "Invalid value "+s+" of phase option doubleSetOld" );
+        throw new RuntimeException( "Invalid value "+s+" of phase option double-set-old" );
     }
     
-    public static final int doubleSetNew_hash = 1;
-    public static final int doubleSetNew_bit = 2;
-    public static final int doubleSetNew_hybrid = 3;
-    public static final int doubleSetNew_array = 4;
+    public static final int double_set_new_hash = 1;
+    public static final int double_set_new_bit = 2;
+    public static final int double_set_new_hybrid = 3;
+    public static final int double_set_new_array = 4;
     /** Double Set New --  */
-    public int doubleSetNew() {
-        String s = soot.PackManager.getString( options, "doubleSetNew" );
+    public int double_set_new() {
+        String s = soot.PackManager.getString( options, "double-set-new" );
         
         if( s.equalsIgnoreCase( "hash" ) )
-            return doubleSetNew_hash;
+            return double_set_new_hash;
         
         if( s.equalsIgnoreCase( "bit" ) )
-            return doubleSetNew_bit;
+            return double_set_new_bit;
         
         if( s.equalsIgnoreCase( "hybrid" ) )
-            return doubleSetNew_hybrid;
+            return double_set_new_hybrid;
         
         if( s.equalsIgnoreCase( "array" ) )
-            return doubleSetNew_array;
+            return double_set_new_array;
         
-        throw new RuntimeException( "Invalid value "+s+" of phase option doubleSetNew" );
+        throw new RuntimeException( "Invalid value "+s+" of phase option double-set-new" );
     }
     
 }

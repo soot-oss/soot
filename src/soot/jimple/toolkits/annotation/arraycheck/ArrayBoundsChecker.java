@@ -29,11 +29,10 @@ import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
-
 import soot.tagkit.*;
 import soot.jimple.toolkits.annotation.tags.*;
-
 import java.util.*;
+import soot.options.ABCOptions;
 
 public class ArrayBoundsChecker extends BodyTransformer
 {
@@ -46,11 +45,10 @@ public class ArrayBoundsChecker extends BodyTransformer
     protected boolean takeCSE = false;
     protected boolean takeRectArray = false;
 
-    private boolean isProfiling = false;
-
-    public void internalTransform(Body body, String phaseName, Map options)
+    public void internalTransform(Body body, String phaseName, Map opts)
     {
-	if (PackManager.getBoolean(options, "with-all"))
+        ABCOptions options = new ABCOptions( opts );
+	if (options.with_all())
 	{
 	    takeClassField = true;
 	    takeFieldRef = true;
@@ -60,14 +58,12 @@ public class ArrayBoundsChecker extends BodyTransformer
 	}
 	else
 	{
-	    takeClassField = PackManager.getBoolean(options, "with-classfield");
-	    takeFieldRef = PackManager.getBoolean(options, "with-fieldref");
-	    takeArrayRef = PackManager.getBoolean(options, "with-arrayref");
-	    takeCSE = PackManager.getBoolean(options, "with-cse");
-	    takeRectArray = PackManager.getBoolean(options, "with-rectarray");
+	    takeClassField = options.with_classfield();
+	    takeFieldRef = options.with_fieldref();
+	    takeArrayRef = options.with_arrayref();
+	    takeCSE = options.with_cse();
+	    takeRectArray = options.with_rectarray();
 	}
-
-	isProfiling = PackManager.getBoolean(options, "profiling");
 
 	{
 	    SootMethod m = body.getMethod();
@@ -96,7 +92,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 	    SootClass counterClass = null;
 	    SootMethod increase = null;
 	    
-	    if (isProfiling)
+	    if (options.profiling())
 	    {
 		counterClass = Scene.v().loadClassAndSupport("MultiCounter");
 		increase = counterClass.getMethod("void increase(int)") ;
@@ -170,7 +166,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 			    }
 			}
 
-			if (isProfiling)
+			if (options.profiling())
 			{
 			    int lowercounter = 0;
 			    if (!lowercheck)

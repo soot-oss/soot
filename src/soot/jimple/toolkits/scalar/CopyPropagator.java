@@ -36,6 +36,7 @@ import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
+import soot.options.CPOptions;
 
 public class CopyPropagator extends BodyTransformer
 {
@@ -54,13 +55,10 @@ public class CopyPropagator extends BodyTransformer
         
         Does not propagate stack locals when the "only-regular-locals" option is true.
     */
-    protected void internalTransform(Body b, String phaseName, Map options)
+    protected void internalTransform(Body b, String phaseName, Map opts)
     {
+        CPOptions options = new CPOptions( opts );
         StmtBody stmtBody = (StmtBody)b;
-        boolean propagateStackLocals = !PackManager.getBoolean(options, "only-regular-locals");
-        boolean propagateRegularLocals = !PackManager.getBoolean(options, "only-stack-locals");
-    
-
         int fastCopyPropagationCount = 0;
         int slowCopyPropagationCount = 0;
         
@@ -124,10 +122,10 @@ public class CopyPropagator extends BodyTransformer
                     {
                         Local l = (Local) useBox.getValue();
 
-                        if(!propagateStackLocals && l.getName().startsWith("$"))
+                        if(options.only_regular_locals() && l.getName().startsWith("$"))
                             continue;
        
-                        if(!propagateRegularLocals && !l.getName().startsWith("$"))
+                        if(options.only_stack_locals() && !l.getName().startsWith("$"))
                             continue;
                             
                         List defsOfUse = localDefs.getDefsOfAt(l, stmt);

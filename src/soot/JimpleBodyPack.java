@@ -32,6 +32,7 @@ import soot.toolkits.scalar.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.jimple.toolkits.typing.*;
 import soot.jimple.toolkits.base.*;
+import soot.options.JBOptions;
 
 
 /** A wrapper object for a pack of optimizations.
@@ -45,29 +46,17 @@ public class JimpleBodyPack extends BodyPack
 
 
     /** Applies the transformations corresponding to the given options. */
-    public void applyPhaseOptions(JimpleBody b, Map options) 
+    public void applyPhaseOptions(JimpleBody b, Map opts) 
     { 
-        boolean noSplitting = PackManager.getBoolean(options, "no-splitting");
-        boolean noTyping = PackManager.getBoolean(options, "no-typing");
-        boolean aggregateAllLocals = PackManager.getBoolean(options, "aggregate-all-locals");
-        boolean noAggregating = PackManager.getBoolean(options, "no-aggregating");
-        boolean useOriginalNames = PackManager.getBoolean(options, "use-original-names");
-        boolean usePacking = PackManager.getBoolean(options, "pack-locals");
-        boolean noCopyPropagating = PackManager.getBoolean(options, "no-cp");
-        
-        boolean noNopElimination = PackManager.getBoolean(options, "no-nop-elimination");
-        boolean noUcElimination = PackManager.getBoolean(options, "no-unreachable-code-elimination");
-
-        boolean verbatim = PackManager.getBoolean(options, "verbatim");
-
-        if (verbatim)
+        JBOptions options = new JBOptions( opts );
+        if (options.verbatim())
             return;
 
-        if(useOriginalNames)
+        if(options.use_original_names())
             PackManager.v().setPhaseOptionIfUnset( "jb.lns", "only-stack-locals");
 
         
-        if(!noSplitting)
+        if(!options.no_splitting())
         {
             if(Main.v().opts.time())
                 Timers.v().splitTimer.start();
@@ -77,14 +66,14 @@ public class JimpleBodyPack extends BodyPack
             if(Main.v().opts.time())
                 Timers.v().splitTimer.end();
 
-            if(!noTyping)
+            if(!options.no_typing())
             {
-	        if(aggregateAllLocals)
+	        if(options.aggregate_all_locals())
 		{
                     PackManager.v().getTransform( "jb.a" ).apply( b );
                     PackManager.v().getTransform( "jb.ule" ).apply( b );
 		}
-		else if (!noAggregating)
+		else if (!options.no_aggregating())
 		{
                     PackManager.v().getTransform( "jb.asv" ).apply( b );
                     PackManager.v().getTransform( "jb.ule" ).apply( b );
@@ -104,18 +93,18 @@ public class JimpleBodyPack extends BodyPack
         }
         
         
-        if(aggregateAllLocals)
+        if(options.aggregate_all_locals())
         {
             PackManager.v().getTransform( "jb.a" ).apply( b );
             PackManager.v().getTransform( "jb.ule" ).apply( b );
         }
-        else if(!noAggregating)
+        else if(!options.no_aggregating())
         {
             PackManager.v().getTransform( "jb.asv" ).apply( b );
             PackManager.v().getTransform( "jb.ule" ).apply( b );
         }
 
-        if(!useOriginalNames)
+        if(!options.use_original_names())
             PackManager.v().getTransform( "jb.lns" ).apply( b );
         else
         {   
@@ -123,22 +112,22 @@ public class JimpleBodyPack extends BodyPack
             PackManager.v().getTransform( "jb.lns" ).apply( b );
         }
 
-        if(!noCopyPropagating)
+        if(!options.no_cp())
         {
             PackManager.v().getTransform( "jb.cp" ).apply( b );
             PackManager.v().getTransform( "jb.dae" ).apply( b );
             PackManager.v().getTransform( "jb.cp-ule" ).apply( b );
         }
         
-        if(usePacking)
+        if(options.pack_locals())
         {
             PackManager.v().getTransform( "jb.lp" ).apply( b );
         }
 
-        if(!noNopElimination)
+        if(!options.no_nop_elimination())
             PackManager.v().getTransform( "jb.ne" ).apply( b );
 
-        if (!noUcElimination)
+        if (!options.no_unreachable_code_elimination())
             PackManager.v().getTransform( "jb.uce" ).apply( b );
                     
         if(soot.Main.v().opts.time())

@@ -33,6 +33,7 @@ import soot.util.*;
 import soot.tagkit.*;
 
 import java.util.*;
+import soot.options.ProfilingOptions;
 
 public class ProfilingGenerator extends BodyTransformer
 {
@@ -43,15 +44,10 @@ public class ProfilingGenerator extends BodyTransformer
 
     //    private String mainSignature = "long runBenchmark(java.lang.String[])";
 
-    public void internalTransform(Body body, String phaseName, Map options)
+    public void internalTransform(Body body, String phaseName, Map opts)
     {
-        boolean enable = PackManager.getBoolean(options, "enable");
-
-	if (!enable)
-	    return;
-
-	boolean notmainentry = PackManager.getBoolean(options, "notmainentry");
-	if (notmainentry)
+        ProfilingOptions options = new ProfilingOptions( opts );
+	if (options.notmainentry())
 	    mainSignature = "long runBenchmark(java.lang.String[])";
 
 	{

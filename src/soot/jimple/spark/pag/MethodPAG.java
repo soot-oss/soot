@@ -55,7 +55,7 @@ public final class MethodPAG {
         if( hasBeenBuilt ) return;
         hasBeenBuilt = true;
         if( method.isNative() ) {
-            if( pag.getOpts().simulateNatives() ) {
+            if( pag.getOpts().simulate_natives() ) {
                 buildNative();
             }
         } else {

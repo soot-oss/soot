@@ -34,6 +34,7 @@ import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
 import soot.jimple.toolkits.pointer.PASideEffectTester;
+import soot.options.LCMOptions;
 
 /** 
  * Performs a partial redundancy elimination (= code motion). This is done, by
@@ -60,16 +61,15 @@ public class LazyCodeMotion extends BodyTransformer {
   /**
    * performs the lazy code motion.
    */
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map opts) {
+    LCMOptions options = new LCMOptions( opts );
     HashMap expToHelper = new HashMap();
     Chain unitChain = b.getUnits();
-    String safe = PackManager.getString(options, "safe");
-    boolean unroll = PackManager.getBoolean(options, "unroll");
 
     if(Main.v().opts.verbose()) G.v().out.println("[" + b.getMethod().getName() +
                                           "] Performing Lazy Code Motion...");
 
-    if (unroll) new LoopConditionUnroller().transform(b, phaseName + ".lcu");
+    if (options.unroll()) new LoopConditionUnroller().transform(b, phaseName + ".lcu");
 
     CriticalEdgeRemover.v().transform(b, phaseName + ".cer");
 
@@ -99,8 +99,7 @@ public class LazyCodeMotion extends BodyTransformer {
 
     /* if a more precise sideeffect-tester comes out, please change it here! */
     SideEffectTester sideEffect;
-    if( Scene.v().hasActiveInvokeGraph() 
-    && !PackManager.getBoolean(options, "naive-side-effect") ) {
+    if( Scene.v().hasActiveInvokeGraph() && !options.naive_side_effect() ) {
         sideEffect = new PASideEffectTester();
     } else {
         sideEffect = new NaiveSideEffectTester();
@@ -113,13 +112,13 @@ public class LazyCodeMotion extends BodyTransformer {
     NotIsolatedAnalysis notIsolated;
     LatestComputation latest;
 
-    if ("safe".equals(safe))
+    if (options.safe() == LCMOptions.safe_safe)
       upSafe = new UpSafetyAnalysis(graph, unitToNoExceptionEquivRhs,
                                     sideEffect, set);
     else
       upSafe = new UpSafetyAnalysis(graph, unitToEquivRhs, sideEffect, set);
 
-    if ("unsafe".equals(safe))
+    if (options.safe() == LCMOptions.safe_unsafe)
       downSafe = new DownSafetyAnalysis(graph, unitToEquivRhs, sideEffect, set);
     else {
       downSafe = new DownSafetyAnalysis(graph, unitToNoExceptionEquivRhs,

@@ -36,52 +36,52 @@ public class PAG implements PointsToAnalysis {
     public PAG( final SparkOptions opts ) {
 	this.opts = opts;
         typeManager = new TypeManager();
-        if( !opts.ignoreTypesEntirely() ) {
+        if( !opts.ignore_types() ) {
             typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
         }
-        switch( opts.setImpl() ) {
-            case SparkOptions.setImpl_hash:
+        switch( opts.set_impl() ) {
+            case SparkOptions.set_impl_hash:
                 setFactory = HashPointsToSet.getFactory();
                 break;
-            case SparkOptions.setImpl_hybrid:
+            case SparkOptions.set_impl_hybrid:
                 setFactory = HybridPointsToSet.getFactory();
                 break;
-            case SparkOptions.setImpl_array:
+            case SparkOptions.set_impl_array:
                 setFactory = SortedArraySet.getFactory();
                 break;
-            case SparkOptions.setImpl_bit:
+            case SparkOptions.set_impl_bit:
                 setFactory = BitPointsToSet.getFactory();
                 break;
-            case SparkOptions.setImpl_double:
+            case SparkOptions.set_impl_double:
                 P2SetFactory oldF;
                 P2SetFactory newF;
-                switch( opts.doubleSetOld() ) {
-                    case SparkOptions.doubleSetOld_hash:
+                switch( opts.double_set_old() ) {
+                    case SparkOptions.double_set_old_hash:
                         oldF = HashPointsToSet.getFactory();
                         break;
-                    case SparkOptions.doubleSetOld_hybrid:
+                    case SparkOptions.double_set_old_hybrid:
                         oldF = HybridPointsToSet.getFactory();
                         break;
-                    case SparkOptions.doubleSetOld_array:
+                    case SparkOptions.double_set_old_array:
                         oldF = SortedArraySet.getFactory();
                         break;
-                    case SparkOptions.doubleSetOld_bit:
+                    case SparkOptions.double_set_old_bit:
                         oldF = BitPointsToSet.getFactory();
                         break;
                     default:
                         throw new RuntimeException();
                 }
-                switch( opts.doubleSetNew() ) {
-                    case SparkOptions.doubleSetNew_hash:
+                switch( opts.double_set_new() ) {
+                    case SparkOptions.double_set_new_hash:
                         newF = HashPointsToSet.getFactory();
                         break;
-                    case SparkOptions.doubleSetNew_hybrid:
+                    case SparkOptions.double_set_new_hybrid:
                         newF = HybridPointsToSet.getFactory();
                         break;
-                    case SparkOptions.doubleSetNew_array:
+                    case SparkOptions.double_set_new_array:
                         newF = SortedArraySet.getFactory();
                         break;
-                    case SparkOptions.doubleSetNew_bit:
+                    case SparkOptions.double_set_new_bit:
                         newF = BitPointsToSet.getFactory();
                         break;
                     default:
@@ -108,7 +108,7 @@ public class PAG implements PointsToAnalysis {
     /** Finds or creates the AllocNode for the new expression newExpr,
      * of type type. */
     public AllocNode makeAllocNode( Object newExpr, Type type, SootMethod m ) {
-        if( opts.typesForSites() || opts.VTA() ) newExpr = type;
+        if( opts.types_for_sites() || opts.vta() ) newExpr = type;
 	AllocNode ret = (AllocNode) valToAllocNode.get( newExpr );
 	if( ret == null ) {
 	    valToAllocNode.put( newExpr, ret = new AllocNode( this, newExpr, type, m ) );
@@ -120,7 +120,7 @@ public class PAG implements PointsToAnalysis {
 	return ret;
     }
     public AllocNode makeStringConstantNode( String s ) {
-        if( opts.typesForSites() || opts.VTA() )
+        if( opts.types_for_sites() || opts.vta() )
             return makeAllocNode( RefType.v( "java.lang.String" ),
                     RefType.v( "java.lang.String" ), null );
         StringConstantNode ret = (StringConstantNode) valToAllocNode.get( s );
@@ -131,7 +131,7 @@ public class PAG implements PointsToAnalysis {
 	return ret;
     }
     public AllocNode makeClassConstantNode( String s ) {
-        if( opts.typesForSites() || opts.VTA() )
+        if( opts.types_for_sites() || opts.vta() )
             return makeAllocNode( RefType.v( "java.lang.Class" ),
                     RefType.v( "java.lang.Class" ), null );
         ClassConstantNode ret = (ClassConstantNode) valToAllocNode.get( "$$"+s );
@@ -147,7 +147,7 @@ public class PAG implements PointsToAnalysis {
 
     /** Finds the VarNode for the variable value, or returns null. */
     public VarNode findVarNode( Object value ) {
-        if( opts.RTA() ) {
+        if( opts.rta() ) {
             value = null;
         } else if( value instanceof Local ) {
             return (VarNode) localToNodeMap.get( (Local) value );
@@ -156,7 +156,7 @@ public class PAG implements PointsToAnalysis {
     }
     /** Finds or creates the VarNode for the variable value, of type type. */
     public VarNode makeVarNode( Object value, Type type, SootMethod method ) {
-        if( opts.RTA() ) {
+        if( opts.rta() ) {
             value = null;
             type = RefType.v("java.lang.Object");
             method = null;
@@ -236,7 +236,7 @@ public class PAG implements PointsToAnalysis {
                     edgeQueue.add( to );
                     ret = true;
                 }
-                if( opts.simpleEdgesBidirectional() ) {
+                if( opts.simple_edges_bidirectional() ) {
                     boolean ret2 = addToMap( simple, to, from );
                     ret2 = addToMap( simpleInv, from, to ) | ret2;
                     if( ret2 ) {
@@ -250,7 +250,7 @@ public class PAG implements PointsToAnalysis {
                     throw new RuntimeException( "Attempt to add edge from "+
                         from+" to "+to );
                 }
-                if( !opts.RTA() ) {
+                if( !opts.rta() ) {
                     ret = addToMap( store, from, (FieldRefNode) to ) | ret;
                     ret = addToMap( storeInv, to, from ) | ret;
                     if( ret ) {
@@ -260,7 +260,7 @@ public class PAG implements PointsToAnalysis {
                 }
 	    }
 	} else if( from instanceof FieldRefNode ) {
-            if( !opts.RTA() ) {
+            if( !opts.rta() ) {
                 if( !( to instanceof VarNode ) ) {
                     throw new RuntimeException( "Attempt to add edge from "+
                         from+" to "+to );

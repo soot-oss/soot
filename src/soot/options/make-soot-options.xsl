@@ -207,7 +207,10 @@ public class Options extends OptionsBase {
             || option.equals( "<xsl:value-of select="."/>" )<!---->
     </xsl:for-each>
             ) {
-                pushOptions( "<xsl:value-of select="expansion"/>" );
+                <xsl:for-each select="expansion">
+                <xsl:sort select="position()" order="descending"/>
+                pushOptions( "<xsl:value-of select="."/>" );
+                </xsl:for-each>
             }
   </xsl:template>
 
@@ -328,8 +331,8 @@ public class Options extends OptionsBase {
 
   <xsl:template mode="phaseopts" match="phaseopt">
     <xsl:for-each select="phase|phase/sub_phase">
-      <xsl:if test="phaseopt_class">
-        <xsl:variable name="filename" select="phaseopt_class"/>
+      <xsl:if test="class">
+        <xsl:variable name="filename" select="class"/>
         <xsl:document href="src/soot/options/{$filename}.java" method="text" indent="no">
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Ondrej Lhotak

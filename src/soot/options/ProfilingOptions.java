@@ -37,11 +37,6 @@ public class ProfilingOptions
         return soot.PackManager.getBoolean( options, "disabled" );
     }
     
-    /** Enable --  */
-    public boolean enable() {
-        return soot.PackManager.getBoolean( options, "enable" );
-    }
-    
     /** Not Main Entry --  */
     public boolean notmainentry() {
         return soot.PackManager.getBoolean( options, "notmainentry" );

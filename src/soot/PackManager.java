@@ -122,7 +122,7 @@ public class PackManager {
         // Whole-Jimple transformation pack (--app)
         addPack(p = new ScenePack("wjtp"));
         {
-            p.add(new Transform("wjtp.Spark", SparkTransformer.v()));
+            p.add(new Transform("wjtp.spark", SparkTransformer.v()));
         }
 
         // Whole-Jimple Optimization pack (--app -W)

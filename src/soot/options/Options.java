@@ -352,14 +352,26 @@ public class Options extends OptionsBase {
             || option.equals( "O" )
             || option.equals( "optimize" )
             ) {
-                pushOptions( "-p jop enabled:true" );
+                
+                pushOptions( "enabled:true" );
+                
+                pushOptions( "jop" );
+                
+                pushOptions( "-p" );
+                
             }
   
             else if( false
             || option.equals( "W" )
             || option.equals( "whole-optimize" )
             ) {
-                pushOptions( "-p wjop enabled:true" );
+                
+                pushOptions( "enabled:true" );
+                
+                pushOptions( "wjop" );
+                
+                pushOptions( "-p" );
+                
             }
   
             else if( false
@@ -474,13 +486,55 @@ public class Options extends OptionsBase {
             else if( false
             || option.equals( "annot-nullpointer" )
             ) {
-                pushOptions( "-p jtp.npc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true" );
+                
+                pushOptions( "enabled:true" );
+                
+                pushOptions( "agg.an" );
+                
+                pushOptions( "-p" );
+                
+                pushOptions( "enabled:true" );
+                
+                pushOptions( "jtp.profiling" );
+                
+                pushOptions( "-p" );
+                
+                pushOptions( "enabled:true" );
+                
+                pushOptions( "jtp.npc" );
+                
+                pushOptions( "-p" );
+                
             }
   
             else if( false
             || option.equals( "annot-arraybounds" )
             ) {
-                pushOptions( "-p wjtp2.ra enabled:true -p jtp.abc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true" );
+                
+                pushOptions( "enabled:true" );
+                
+                pushOptions( "jtp.profiling" );
+                
+                pushOptions( "-p" );
+                
+                pushOptions( "enabled:true" );
+                
+                pushOptions( "jtp.abc" );
+                
+                pushOptions( "-p" );
+                
+                pushOptions( "enabled:true" );
+                
+                pushOptions( "wjtp2.ra" );
+                
+                pushOptions( "enabled:true" );
+                
+                pushOptions( "agg.an" );
+                
+                pushOptions( "-p" );
+                
+                pushOptions( "-p" );
+                
             }
   
             else if( false 
@@ -738,39 +792,39 @@ public class Options extends OptionsBase {
             return ""
                 +"disabled ";
     
-        if( phaseName.equals( "wjtp.Spark" ) )
+        if( phaseName.equals( "wjtp.spark" ) )
             return ""
                 +"disabled "
                 +"verbose "
-                +"ignoreTypesEntirely "
-                +"forceGCs "
-                +"preJimplify "
-                +"VTA "
-                +"RTA "
-                +"ignoreBaseObjects "
-                +"typesForSites "
-                +"mergeStringBuffer "
-                +"simulateNatives "
-                +"simpleEdgesBidirectional "
-                +"onFlyCallGraph "
-                +"parmsAsFields "
-                +"returnsAsFields "
-                +"simplifyOffline "
-                +"simplifySCCs "
-                +"ignoreTypesForSCCs "
+                +"ignore-types "
+                +"force-gc "
+                +"pre-jimplify "
+                +"vta "
+                +"rta "
+                +"field-based "
+                +"types-for-sites "
+                +"merge-stringbuffer "
+                +"simulate-natives "
+                +"simple-edges-bidirectional "
+                +"on-fly-cg "
+                +"parms-as-fields "
+                +"returns-as-fields "
+                +"simplify-offline "
+                +"simplify-sccs "
+                +"ignore-types-for-sccs "
                 +"propagator "
-                +"setImpl "
-                +"doubleSetOld "
-                +"doubleSetNew "
-                +"dumpHTML "
-                +"dumpPAG "
-                +"dumpSolution "
-                +"topoSort "
-                +"dumpTypes "
-                +"classMethodVar "
-                +"dumpAnswer "
-                +"trimInvokeGraph "
-                +"addTags ";
+                +"set-impl "
+                +"double-set-old "
+                +"double-set-new "
+                +"dump-html "
+                +"dump-pag "
+                +"dump-solution "
+                +"topo-sort "
+                +"dump-types "
+                +"class-method-var "
+                +"dump-answer "
+                +"trim-invoke-graph "
+                +"add-tags ";
     
         if( phaseName.equals( "wjop" ) )
             return ""
@@ -801,8 +855,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjtp2.ra" ) )
             return ""
-                +"disabled "
-                +"with-wholeapp ";
+                +"disabled ";
     
         if( phaseName.equals( "stp" ) )
             return ""
@@ -900,7 +953,6 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jap.profiling" ) )
             return ""
                 +"disabled "
-                +"enable "
                 +"notmainentry ";
     
         if( phaseName.equals( "gb" ) )
@@ -1048,39 +1100,39 @@ public class Options extends OptionsBase {
             return ""
               +"disabled:true ";
     
-        if( phaseName.equals( "wjtp.Spark" ) )
+        if( phaseName.equals( "wjtp.spark" ) )
             return ""
               +"disabled:true "
               +"verbose:false "
-              +"ignoreTypesEntirely:false "
-              +"forceGCs:false "
-              +"preJimplify:false "
-              +"VTA:false "
-              +"RTA:false "
-              +"ignoreBaseObjects:false "
-              +"typesForSites:false "
-              +"mergeStringBuffer:true "
-              +"simulateNatives:true "
-              +"simpleEdgesBidirectional:false "
-              +"onFlyCallGraph:false "
-              +"parmsAsFields:false "
-              +"returnsAsFields:false "
-              +"simplifyOffline:false "
-              +"simplifySCCs:false "
-              +"ignoreTypesForSCCs:false "
+              +"ignore-types:false "
+              +"force-gc:false "
+              +"pre-jimplify:false "
+              +"vta:false "
+              +"rta:false "
+              +"field-based:false "
+              +"types-for-sites:false "
+              +"merge-stringbuffer:true "
+              +"simulate-natives:true "
+              +"simple-edges-bidirectional:false "
+              +"on-fly-cg:false "
+              +"parms-as-fields:false "
+              +"returns-as-fields:false "
+              +"simplify-offline:false "
+              +"simplify-sccs:false "
+              +"ignore-types-for-sccs:false "
               +"propagator:worklist "
-              +"setImpl:double "
-              +"doubleSetOld:hybrid "
-              +"doubleSetNew:hybrid "
-              +"dumpHTML:false "
-              +"dumpPAG:false "
-              +"dumpSolution:false "
-              +"topoSort:false "
-              +"dumpTypes:true "
-              +"classMethodVar:true "
-              +"dumpAnswer:false "
-              +"trimInvokeGraph:false "
-              +"addTags:false ";
+              +"set-impl:double "
+              +"double-set-old:hybrid "
+              +"double-set-new:hybrid "
+              +"dump-html:false "
+              +"dump-pag:false "
+              +"dump-solution:false "
+              +"topo-sort:false "
+              +"dump-types:true "
+              +"class-method-var:true "
+              +"dump-answer:false "
+              +"trim-invoke-graph:false "
+              +"add-tags:false ";
     
         if( phaseName.equals( "wjop" ) )
             return ""
@@ -1178,7 +1230,6 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jap.profiling" ) )
             return ""
               +"disabled:true "
-              +"enable:false "
               +"notmainentry:false ";
     
         if( phaseName.equals( "gb" ) )
@@ -1263,7 +1314,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wstp" ) ) return;
         if( phaseName.equals( "wsop" ) ) return;
         if( phaseName.equals( "wjtp" ) ) return;
-        if( phaseName.equals( "wjtp.Spark" ) ) return;
+        if( phaseName.equals( "wjtp.spark" ) ) return;
         if( phaseName.equals( "wjop" ) ) return;
         if( phaseName.equals( "wjop.smb" ) ) return;
         if( phaseName.equals( "wjop.si" ) ) return;
@@ -1347,8 +1398,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase wsop" );
         if( !PackManager.v().hasPhase( "wjtp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjtp" );
-        if( !PackManager.v().hasPhase( "wjtp.Spark" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase wjtp.Spark" );
+        if( !PackManager.v().hasPhase( "wjtp.spark" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjtp.spark" );
         if( !PackManager.v().hasPhase( "wjop" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjop" );
         if( !PackManager.v().hasPhase( "wjop.smb" ) )

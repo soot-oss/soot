@@ -34,6 +34,7 @@ import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
 import soot.jimple.toolkits.pointer.PASideEffectTester;
+import soot.options.BCMOptions;
 
 /** 
  * Performs a partial redundancy elimination (= code motion). This is
@@ -60,7 +61,8 @@ public class BusyCodeMotion extends BodyTransformer {
   /**
    * performs the busy code motion.
    */
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map opts) {
+    BCMOptions options = new BCMOptions( opts );
     int counter = 0;
     HashMap expToHelper = new HashMap();
     Chain unitChain = b.getUnits();
@@ -94,8 +96,7 @@ public class BusyCodeMotion extends BodyTransformer {
 
     /* if a more precise sideeffect-tester comes out, please change it here! */
     SideEffectTester sideEffect;
-    if( Scene.v().hasActiveInvokeGraph() 
-    && !PackManager.getBoolean( options, "naive-side-effect" ) ) {
+    if( Scene.v().hasActiveInvokeGraph() && !options.naive_side_effect() ) {
         sideEffect = new PASideEffectTester();
     } else {
         sideEffect = new NaiveSideEffectTester();
