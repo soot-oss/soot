@@ -88,7 +88,16 @@ public class BNewInst extends AbstractRefTypeInst implements NewInst
     {
         super(opType);
     }
-
+    public int getInCount()
+    {
+	return 0;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
+    
     final String getName() { return "new"; }
 }
 

@@ -94,6 +94,16 @@ public class BIdentityInst extends AbstractInst
     {
         return leftBox.getValue();
     }
+  
+  public int getInCount()
+  {
+	return 0;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
 
     public Value getRightOp()
     {

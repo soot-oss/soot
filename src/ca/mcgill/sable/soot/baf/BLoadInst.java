@@ -93,6 +93,18 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst
         
         this.local = local;
     }
+    public int getInCount()
+    {
+	return 0;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
+    
+    
+
 
     final String getName() { return "load"; }
     final String getParameters(boolean isBrief, Map unitToName) 

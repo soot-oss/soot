@@ -89,6 +89,17 @@ public class BIfCmpLtInst extends AbstractOpTypeBranchInst
     {
         super(opType, Baf.v().newInstBox(target));
     }
+    public int getInCount()
+    {
+	return 2;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
+
+
 
     String getName() { return "ifcmplt"; }
 

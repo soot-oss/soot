@@ -6,6 +6,9 @@ import java.util.*;
 
 public interface Inst extends Unit
 {    
+    public int getInCount();
+    public int getOutCount();
+
     public String toBriefString();
     public String toBriefString(Map stmtToName);
     public String toBriefString(String indentation);

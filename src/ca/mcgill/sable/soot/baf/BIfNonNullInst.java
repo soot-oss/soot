@@ -89,6 +89,17 @@ public class BIfNonNullInst extends AbstractBranchInst implements IfNonNullInst
         super(Baf.v().newInstBox(target));
     }
 
+    public int getInCount()
+    {
+	return 1;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
+    
+    
     String getName() { return "ifnonnull"; }
 
     public void apply(Switch sw)

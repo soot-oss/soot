@@ -90,7 +90,19 @@ public class BArrayReadInst extends AbstractOpTypeInst implements ArrayReadInst
         super(opType);
     }
 
+    public int getInCount()
+    {
+	return 2;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
+    
+
     final String getName() { return "arrayread"; }
+
     
     public void apply(Switch sw)
     {

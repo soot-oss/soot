@@ -89,6 +89,16 @@ public class BIfGtInst extends AbstractBranchInst implements IfGtInst
         super(Baf.v().newInstBox(target));
     }
 
+    public int getInCount()
+    {
+	return 2;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
+
     String getName() { return "ifgt"; }
 
     public void apply(Switch sw)

@@ -89,6 +89,17 @@ public class BSubInst extends AbstractOpTypeInst implements SubInst
         super(opType);
     }
     
+    public int getInCount()
+    {
+	return 2;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
+    
+    
     public final String getName() { return "sub"; }
 }
 

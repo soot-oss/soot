@@ -87,7 +87,18 @@ public class BReturnVoidInst extends AbstractInst implements ReturnVoidInst
     BReturnVoidInst()
     {
     }
+    
 
+    public int getInCount()
+    {
+	return 0;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
+    
     final String getName() { return "return"; }
     
     public void apply(Switch sw)

@@ -89,6 +89,15 @@ public class BIfLeInst extends AbstractBranchInst implements IfLeInst
         super(Baf.v().newInstBox(target));
     }
 
+    public int getInCount()
+    {
+	return 2;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
     String getName() { return "ifle"; }
 
     public void apply(Switch sw)

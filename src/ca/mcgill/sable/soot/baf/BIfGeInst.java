@@ -89,6 +89,17 @@ public class BIfGeInst extends AbstractBranchInst implements IfGeInst
         super(Baf.v().newInstBox(target));
     }
 
+    public int getInCount()
+    {
+	return 2;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
+
+
     String getName() { return "ifge"; }
 
     public void apply(Switch sw)

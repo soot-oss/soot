@@ -88,7 +88,17 @@ public class BNegInst extends AbstractOpTypeInst implements NegInst
     {
         super(opType);
     }
+
+    public int getInCount()
+    {
+	return 1;
+    }
     
+    public int getOutCount()
+    {
+	return 1;
+    }
+       
     public final String getName() { return "neg"; }
 }
 

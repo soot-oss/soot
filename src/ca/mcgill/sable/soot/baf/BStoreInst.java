@@ -94,6 +94,16 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
         this.local = local;
     }
 
+    public int getInCount()
+    {
+	return 1;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
+
     final String getName() { return "store"; }
     final String getParameters(boolean isBrief, Map unitToName)
         { return " " + local.toString(); }

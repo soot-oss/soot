@@ -89,6 +89,20 @@ public class BAddInst extends AbstractOpTypeInst implements AddInst
         super(opType);
     }
     
+
+
+
+    public int getInCount()
+    {
+	return 2;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
+
+    
     public final String getName() { return "add"; }
 }
 

@@ -88,6 +88,16 @@ public class BGotoInst extends AbstractBranchInst implements GotoInst
     {
         super(Baf.v().newInstBox(target));
     }
+    
+    public int getInCount()
+    {
+	return 0;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
 
     String getName() { return "goto"; }
 

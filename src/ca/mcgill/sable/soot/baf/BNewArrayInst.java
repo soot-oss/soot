@@ -88,6 +88,17 @@ public class BNewArrayInst extends AbstractOpTypeInst implements NewArrayInst
     {
         super(opType);
     }
+    
+    public int getInCount()
+    {
+	return 1;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
+    
 
     final String getName() { return "newarray"; }
 

@@ -88,6 +88,16 @@ public class BDivInst extends AbstractOpTypeInst implements DivInst
     {
         super(opType);
     }
+
+    public int getInCount()
+    {
+	return 2;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
     
     public final String getName() { return "div"; }
 }

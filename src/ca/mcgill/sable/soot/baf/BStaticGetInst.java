@@ -91,6 +91,16 @@ public class BStaticGetInst extends AbstractInst implements StaticGetInst
     {
         this.field = field;
     }
+    
+    public int getInCount()
+    {
+	return 0;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
 
     final String getName() { return "staticget"; }
     final String getParameters(boolean isBrief, Map unitToName) 

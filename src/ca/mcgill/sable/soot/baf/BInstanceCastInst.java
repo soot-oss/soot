@@ -91,6 +91,17 @@ public class BInstanceCastInst extends AbstractOpTypeInst
         if (!(opType instanceof RefType) && !(opType instanceof ArrayType))
             throw new RuntimeException("invalid InstanceCastInst: "+ opType);
     }
+    
+    public int getInCount()
+    {
+	return 1;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
+    
 
     final String getName() { return "checkcast"; }
 

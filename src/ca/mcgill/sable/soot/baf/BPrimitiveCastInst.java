@@ -86,7 +86,18 @@ public class BPrimitiveCastInst extends AbstractOpTypeInst
                             implements PrimitiveCastInst
 {
     Type fromType;
+    
+    public int getInCount()
+    {
+	return 1;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
 
+    
     public BPrimitiveCastInst(Type fromType, Type toType) 
     { 
         super(toType); 

@@ -85,9 +85,23 @@ import java.util.*;
 public class BReturnInst extends AbstractOpTypeInst implements ReturnInst
 {
     BReturnInst(Type opType) { super(opType); }
+    
+    public int getInCount()
+    {
+	return 1;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
+
+
 
     final String getName() { return "return"; }
     
+
+
     public void apply(Switch sw)
     {
         ((InstSwitch) sw).caseReturnInst(this);

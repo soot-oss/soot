@@ -91,6 +91,16 @@ public class BArrayWriteInst extends AbstractOpTypeInst
         super(opType);
     }
 
+    public int getInCount()
+    {
+	return 3;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
+
     final String getName() { return "arraywrite"; }
     
     public void apply(Switch sw)

@@ -87,7 +87,19 @@ public class BCmpInst extends AbstractOpTypeInst implements CmpInst
     public BCmpInst(Type opType)
     {
         super(opType);
+	
     }
+    
+    public int getInCount()
+    {
+	return 1;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
+
     
     public final String getName() { return "cmp"; }
 }

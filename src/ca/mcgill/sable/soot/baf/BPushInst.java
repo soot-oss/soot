@@ -97,7 +97,18 @@ public class BPushInst extends AbstractInst implements PushInst
     {
         return " "+constant.toString(); 
     }
+
+    public int getInCount()
+    {
+	return 0;
+    }
     
+    public int getOutCount()
+    {
+	return 1;
+    }
+
+
     public void apply(Switch sw)
     {
         ((InstSwitch) sw).casePushInst(this);

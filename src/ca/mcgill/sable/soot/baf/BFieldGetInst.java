@@ -92,6 +92,17 @@ public class BFieldGetInst extends AbstractInst implements FieldGetInst
         this.field = field;
     }
 
+    public int getInCount()
+    {
+	return 0;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
+    
+
     final String getName() { return "get"; }
     final String getParameters(boolean isBrief, Map unitToName) 
     { 

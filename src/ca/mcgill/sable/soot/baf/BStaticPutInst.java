@@ -92,6 +92,16 @@ public class BStaticPutInst extends AbstractInst implements StaticPutInst
         this.field = field;
     }
 
+    public int getInCount()
+    {
+	return 1;
+    }
+    
+    public int getOutCount()
+    {
+	return 0;
+    }
+
     final String getName() { return "staticput"; }
     final String getParameters(boolean isBrief, Map unitToName) 
     { 

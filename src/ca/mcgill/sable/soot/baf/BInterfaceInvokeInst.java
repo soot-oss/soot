@@ -7,6 +7,23 @@ public class BInterfaceInvokeInst extends AbstractInvokeInst
                                   implements InterfaceInvokeInst
 {
     int argCount;
+    
+    public int getInCount()
+    {
+	return getMethod().getParameterCount() +1;
+	
+    }
+    
+    public int getOutCount()
+    {
+	if(getMethod().getReturnType() instanceof VoidType)
+	    return 0;
+	else
+	    return 1;
+    }
+
+    
+
 
     BInterfaceInvokeInst(SootMethod method, int argCount) 
         { setMethod(method); this.argCount = argCount; }

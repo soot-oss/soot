@@ -88,6 +88,16 @@ public class BLengthInst extends AbstractOpTypeInst implements LengthInst
     {
         super(opType);
     }
+
+    public int getInCount()
+    {
+	return 1;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
     
     public final String getName() { return "length"; }
 }

@@ -88,6 +88,19 @@ public class BShlInst extends AbstractOpTypeInst implements ShlInst
     {
         super(opType);
     }
+ 
+    
+    public int getInCount()
+    {
+	return 2;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
+    }
+
+
     
     public final String getName() { return "shl"; }
 }

@@ -87,6 +87,14 @@ public class BOrInst extends AbstractOpTypeInst implements OrInst
     public BOrInst(Type opType)
     {
         super(opType);
+    }public int getInCount()
+    {
+	return 2;
+    }
+    
+    public int getOutCount()
+    {
+	return 1;
     }
     
     public final String getName() { return "or"; }
