@@ -37,7 +37,12 @@ public class ReachableMethods
     private NumberedSet set = new NumberedSet( Scene.v().getMethodNumberer() );
     private QueueReader unprocessedMethods;
     private QueueReader allReachables = reachables.reader();
+    private Filter filter;
     public ReachableMethods( CallGraph graph, Iterator entryPoints ) {
+        this( graph, entryPoints, null );
+    }
+    public ReachableMethods( CallGraph graph, Iterator entryPoints, Filter filter ) {
+        this.filter = filter;
         this.cg = graph;
         addMethods( entryPoints );
         unprocessedMethods = reachables.reader();
@@ -64,7 +69,9 @@ public class ReachableMethods
         while(true) {
             SootMethod m = (SootMethod) unprocessedMethods.next();
             if( m == null ) break;
-            addMethods( new Targets( cg.targetsOf( m ) ) );
+            Iterator targets = cg.targetsOf( m );
+            if( filter != null ) targets = filter.wrap( targets );
+            addMethods( new Targets( targets ) );
         }
     }
     /** Returns a QueueReader object containing all methods found reachable

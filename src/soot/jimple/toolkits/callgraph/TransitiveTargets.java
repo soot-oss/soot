@@ -29,13 +29,19 @@ import java.util.*;
  */
 public class TransitiveTargets
 { 
-    CallGraph cg;
+    private CallGraph cg;
+    private Filter filter;
     public TransitiveTargets( CallGraph cg ) {
         this.cg = cg;
+    }
+    public TransitiveTargets( CallGraph cg, Filter filter ) {
+        this.cg = cg;
+        this.filter = filter;
     }
     public Iterator iterator( Unit u ) {
         ArrayList methods = new ArrayList();
         Iterator it = cg.targetsOf( u );
+        if( filter != null ) it = filter.wrap( it );
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
             methods.add( e.tgt() );
@@ -45,6 +51,7 @@ public class TransitiveTargets
     public Iterator iterator( SootMethod method ) {
         ArrayList methods = new ArrayList();
         Iterator it = cg.targetsOf( method );
+        if( filter != null ) it = filter.wrap( it );
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
             methods.add( e.tgt() );
@@ -64,6 +71,7 @@ public class TransitiveTargets
         for( int i = 0; i < worklist.size(); i++ ) {
             SootMethod method = (SootMethod) worklist.get(i);
             Iterator it = cg.targetsOf( method );
+            if( filter != null ) it = filter.wrap( it );
             while( it.hasNext() ) {
                 Edge e = (Edge) it.next();
                 if( s.add( e.tgt() ) ) worklist.add( e.tgt() );

@@ -31,10 +31,13 @@ public class Filter implements Iterator
     private Iterator source;
     private EdgePredicate pred;
     private Edge next = null;
-    public Filter( Iterator source, EdgePredicate pred ) {
-        this.source = source;
+    public Filter( EdgePredicate pred ) {
         this.pred = pred;
+    }
+    public Iterator wrap( Iterator source ) {
+        this.source = source;
         advance();
+        return this;
     }
     private void advance() {
         while( source.hasNext() ) {
