@@ -61,6 +61,16 @@ classes/soot/baf/toolkits/base/peephole.dat: src/soot/baf/toolkits/base/peephole
 
 foo: classes/soot/jimple/parser/parser/parser.dat classes/soot/jimple/parser/lexer/lexer.dat classes/soot/baf/toolkits/base/peephole.dat
 
+#
+#
+#########################################################################
+#
+# compile document files
+#
+#
+
+document: 
+	javadoc -d doc -sourcepath src @src/packageList
 
 #
 ##########################################################################

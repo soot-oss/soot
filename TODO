@@ -1,7 +1,7 @@
 Todo (as of 1.2.2)
 1. waiting for more improvements on speed and memory usage
    John is working on that.
-2. how soot work on other VMs ( such as Kaffe )
+2. how soot works on other VMs ( such as Kaffe )
 
 Todo (as of 1.2.1)
 1. test new command line options provided by Fabien

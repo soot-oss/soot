@@ -141,10 +141,6 @@ abstract class cp_info {
     * @param constant_pool constant pool of ClassFile.
     * @param i index of cp_info entry in question.
     * @return name of the associated class.
-    * @see CONSTANT_Class_info#toString(constant_pool)
-    * @see CONSTANT_Fieldref_info#class_index
-    * @see CONSTANT_Methodref_info#class_index
-    * @see CONSTANT_InterfaceMethodref_info#class_index
     */
    public static String getClassname(cp_info constant_pool[],int i) {
       cp_info c = constant_pool[i];
@@ -169,10 +165,6 @@ abstract class cp_info {
     * @param i index of cp_info entry in question.
     * @return name of the associated object.
     * @see CONSTANT_Utf8_info
-    * @see CONSTANT_NameAndType_info#name_index
-    * @see CONSTANT_Fieldref_info#name_and_type_index
-    * @see CONSTANT_Methodref_info#name_and_type_index
-    * @see CONSTANT_InterfaceMethodref_info#name_and_type_index
     */
    public static String getName(cp_info constant_pool[],int i) {
       cp_info c = constant_pool[i];
@@ -197,7 +189,6 @@ abstract class cp_info {
     * @param constant_pool constant pool of ClassFile.
     * @param m a constant pool index as accepted by getTypeDescr.
     * @return the number of parameters.
-    * @see ClassFile#parseMethodDesc_params
     * @see cp_info#getTypeDescr
     */
    public static int countParams(cp_info constant_pool[],int m) {
@@ -216,10 +207,6 @@ abstract class cp_info {
     * CONSTANT_NameAndType, CONSTANT_MethodRef, or CONSTANT_InterfaceMethodRef.
     * @return the type descriptor.
     * @see CONSTANT_Utf8_info
-    * @see CONSTANT_NameAndType_info#name_index
-    * @see CONSTANT_Fieldref_info#name_and_type_index
-    * @see CONSTANT_Methodref_info#name_and_type_index
-    * @see CONSTANT_InterfaceMethodref_info#name_and_type_index
     */
    public static String getTypeDescr(cp_info constant_pool[],int i) {
       cp_info c = constant_pool[i];
@@ -247,10 +234,7 @@ abstract class cp_info {
     * CONSTANT_NameAndType, or CONSTANT_FieldRef.
     * @return the type of the field.
     * @see CONSTANT_Utf8_info
-    * @see CONSTANT_NameAndType_info#name_index
-    * @see CONSTANT_Fieldref_info#name_and_type_index
     * @see cp_info#getTypeDescr
-    * @see ClassFile#parseDesc
     */
    public static String fieldType(cp_info constant_pool[],int i) {
       return ClassFile.parseDesc(getTypeDescr(constant_pool,i),"");
