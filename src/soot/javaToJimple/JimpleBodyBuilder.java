@@ -827,6 +827,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             //System.out.println("expr: "+expr+" get type: "+expr.getClass()); 
             soot.Value rhs;
             if (expr instanceof polyglot.ast.ArrayInit){
+                //System.out.println("creating array from localdecl: "+localInst.type());
                 rhs = getArrayInitLocal((polyglot.ast.ArrayInit)expr, localInst.type());
             }
             else {
@@ -4044,6 +4045,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
         soot.Type sootType = Util.getSootType(newArrExpr.type());
 
+        //System.out.println("creating new array of type: "+sootType);
         soot.jimple.Expr expr;
         if (newArrExpr.numDims() == 1) {
            
@@ -4054,7 +4056,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             else {
                 dimLocal = base().createExpr((polyglot.ast.Expr)newArrExpr.dims().get(0));
             }
-            
+            //System.out.println("creating new array: "+((soot.ArrayType)sootType).getElementType());
             soot.jimple.NewArrayExpr newArrayExpr = soot.jimple.Jimple.v().newNewArrayExpr(((soot.ArrayType)sootType).getElementType(), dimLocal);
             expr = newArrayExpr;
             if (newArrExpr.additionalDims() != 1){
@@ -4111,10 +4113,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      */
     private soot.Local getArrayInitLocal(polyglot.ast.ArrayInit arrInit, polyglot.types.Type lhsType) {
   
-        
+        //System.out.println("lhs type: "+lhsType);
+                
         soot.Local local = generateLocal(lhsType);
 
-        
+        //System.out.println("creating new array: "+((soot.ArrayType)local.getType()).getElementType()); 
         soot.jimple.NewArrayExpr arrExpr = soot.jimple.Jimple.v().newNewArrayExpr(((soot.ArrayType)local.getType()).getElementType(), soot.jimple.IntConstant.v(arrInit.elements().size()));
 
         soot.jimple.Stmt assign = soot.jimple.Jimple.v().newAssignStmt(local, arrExpr);
@@ -4134,15 +4137,19 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                
                 if (((polyglot.ast.ArrayInit)elemExpr).type() instanceof polyglot.types.NullType) {
                     if (lhsType instanceof polyglot.types.ArrayType){
-                    elem = getArrayInitLocal((polyglot.ast.ArrayInit)elemExpr, ((polyglot.types.ArrayType)lhsType).base());
+                        //System.out.println("coming from 1 in get arrayinitlocal"+((polyglot.types.ArrayType)lhsType).base());
+                        elem = getArrayInitLocal((polyglot.ast.ArrayInit)elemExpr, ((polyglot.types.ArrayType)lhsType).base());
                     }
                     else {
+                        //System.out.println("coming from 2 in get arrayinitlocal"+((polyglot.types.ArrayType)lhsType).base());
                         elem = getArrayInitLocal((polyglot.ast.ArrayInit)elemExpr, lhsType);
                         
                     }
                 }
                 else {
-                    elem = getArrayInitLocal((polyglot.ast.ArrayInit)elemExpr, ((polyglot.ast.ArrayInit)elemExpr).type());
+                    //System.out.println("coming from 3 in get arrayinitlocal"+((polyglot.types.ArrayType)lhsType).base());
+                    //elem = getArrayInitLocal((polyglot.ast.ArrayInit)elemExpr, ((polyglot.ast.ArrayInit)elemExpr).type());
+                    elem = getArrayInitLocal((polyglot.ast.ArrayInit)elemExpr, ((polyglot.types.ArrayType)lhsType).base());
                 }
             }
             else {
