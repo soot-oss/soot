@@ -113,7 +113,7 @@ public class CopyPropagator extends BodyTransformer
 
         // Perform a local propagation pass.
         {
-            Iterator stmtIt = PseudoTopologicalOrderer.v().newList(graph).iterator();
+            Iterator stmtIt = (new PseudoTopologicalOrderer()).newList(graph).iterator();
 
             while(stmtIt.hasNext())
             {

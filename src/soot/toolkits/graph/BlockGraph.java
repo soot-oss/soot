@@ -43,7 +43,7 @@ import soot.util.*;
  *   @see ZonedBlockGraph
  */
 
-public class BlockGraph implements DirectedGraph  //xxx should have package scope
+public class BlockGraph implements DirectedGraph 
 {
     Body mBody;
     Chain mUnits;

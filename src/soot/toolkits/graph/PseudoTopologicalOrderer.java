@@ -38,22 +38,20 @@ import java.util.*;
 
 public class PseudoTopologicalOrderer
 {
-    private static PseudoTopologicalOrderer instance = new PseudoTopologicalOrderer();
-    private PseudoTopologicalOrderer() {}
+    public static final boolean REVERSE = true;
+    public PseudoTopologicalOrderer() {}
+    public PseudoTopologicalOrderer(boolean isReversed) { mIsReversed = isReversed;}
 
-    private static Map stmtToColor;
+    private Map stmtToColor;
     private static final int 
         WHITE = 0,
         GRAY = 1,
         BLACK = 2;
 
-    private static LinkedList order;
-    private static boolean mIsReversed;
-    private static DirectedGraph graph;
+    private LinkedList order;
+    private boolean mIsReversed = false;
+    private DirectedGraph graph;
 
-
-
-    public static PseudoTopologicalOrderer v() { return instance; }
         
     /**
      *  @param g a DirectedGraph instance whose nodes we which to order.
@@ -61,20 +59,36 @@ public class PseudoTopologicalOrderer
      */
     public List newList(DirectedGraph g)
     {        
-        return computeOrder(false, g);
+        return computeOrder(g);
+    }
+
+    /**
+     *   Set the ordering for the orderer.
+     *   @param isReverse specify if we want reverse pseudo-topological ordering, or not.
+     */
+    public void setReverseOrder(boolean isReversed)
+    {
+	mIsReversed = isReversed;
+    }
+
+    /**
+     *   Check the ordering for the orderer.
+     *   @return true if we have reverse pseudo-topological ordering, false otherwise.
+     */
+    public boolean isReverseOrder()
+    {
+	return mIsReversed;
     }
 
     /**
      *  Orders in pseudo-topological order.
      *  @param g a DirectedGraph instance we want to order the nodes for.
-     *  @param isReversed if true a reversed  ordering is produced.
      *  @return an ordered list of the graph's nodes.
      */
-    static LinkedList computeOrder(boolean isReversed, DirectedGraph g)
+    LinkedList computeOrder(DirectedGraph g)
     {
         stmtToColor = new HashMap();
-    
-        mIsReversed = isReversed;
+            
         order = new LinkedList();
         graph = g;
         
@@ -114,7 +128,7 @@ public class PseudoTopologicalOrderer
     // list of statements starting at s.  Simulates recursion with a stack.
     
     
-    private static void visitNode(Object startStmt)
+    private void visitNode(Object startStmt)
     {
         LinkedList stmtStack = new LinkedList();
         LinkedList indexStack = new LinkedList();

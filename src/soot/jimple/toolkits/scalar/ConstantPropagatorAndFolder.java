@@ -61,7 +61,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
         localDefs = new SimpleLocalDefs(unitGraph);
 
         // Perform a constant/local propagation pass.
-        Iterator stmtIt = PseudoTopologicalOrderer.v().newList(unitGraph).iterator();
+        Iterator stmtIt = (new PseudoTopologicalOrderer()).newList(unitGraph).iterator();
 
         // go through each use box in each statement
         while (stmtIt.hasNext()) {

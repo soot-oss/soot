@@ -298,9 +298,9 @@ public class Block implements Directed
     }
 
 
-    static Map allMapToUnnamed = new AllMapTo("???");
+    Map allMapToUnnamed = new AllMapTo("???");
 
-    static class AllMapTo extends AbstractMap
+    class AllMapTo extends AbstractMap
     {
         Object dest;
         

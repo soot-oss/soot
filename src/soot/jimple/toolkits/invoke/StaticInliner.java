@@ -75,7 +75,7 @@ public class StaticInliner extends SceneTransformer
 
         // Visit each potential site in reverse pseudo topological order.
         {
-            Iterator it = ReversePseudoTopologicalOrderer.v().newList(mg).iterator();
+            Iterator it = (new PseudoTopologicalOrderer(PseudoTopologicalOrderer.REVERSE)).newList(mg).iterator();
     
             while (it.hasNext())
             {
