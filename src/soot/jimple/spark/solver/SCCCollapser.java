@@ -23,6 +23,7 @@ import soot.jimple.spark.pag.*;
 import soot.*;
 import java.util.*;
 import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.spark.internal.*;
 
 /** Collapses VarNodes (green) forming strongly-connected components in
  * the pointer assignment graph.
@@ -39,10 +40,6 @@ public class SCCCollapser {
 
         new TopoSorter( pag, ignoreTypes ).sort();
         TreeSet s = new TreeSet( pag.allVarNodes() );
-        LinkedList reverse = new LinkedList();
-        for( Iterator it = s.iterator(); it.hasNext(); ) {
-            reverse.addFirst( it.next() );
-        }
         for( Iterator vIt = s.iterator(); vIt.hasNext(); ) {
             final VarNode v = (VarNode) vIt.next();
             dfsVisit( v, v );
@@ -56,6 +53,7 @@ public class SCCCollapser {
     public SCCCollapser( PAG pag, boolean ignoreTypes ) {
         this.pag = pag;
         this.ignoreTypes = ignoreTypes;
+        this.typeManager = pag.getTypeManager();
     }
     
     /* End of public methods. */
@@ -65,31 +63,32 @@ public class SCCCollapser {
     protected PAG pag;
     protected HashSet visited = new HashSet();
     protected boolean ignoreTypes;
+    protected TypeManager typeManager;
 
-    protected void dfsVisit( VarNode v, VarNode rootOfSCC ) {
+    final protected void dfsVisit( VarNode v, VarNode rootOfSCC ) {
         if( visited.contains( v ) ) return;
         visited.add( v );
         Node[] succs = pag.simpleInvLookup( v );
         for( int i = 0; i < succs.length; i++ ) {
             if( ignoreTypes
-            || PointsToSetInternal.castNeverFails( succs[i].getType(), v.getType() ) ) {
+            || typeManager.castNeverFails( succs[i].getType(), v.getType() ) ) {
                 dfsVisit( (VarNode) succs[i], rootOfSCC );
             }
         }
         if( v != rootOfSCC ) {
             if( !ignoreTypes ) {
-                if( PointsToSetInternal.castNeverFails(
+                if( typeManager.castNeverFails(
                             v.getType(), rootOfSCC.getType() )
-                 && PointsToSetInternal.castNeverFails(
+                 && typeManager.castNeverFails(
                             rootOfSCC.getType(), v.getType() ) ) {
                     rootOfSCC.mergeWith( v );
                     numCollapsed++;
                 }
             } else /* ignoreTypes */ {
-                if( PointsToSetInternal.castNeverFails(
+                if( typeManager.castNeverFails(
                             v.getType(), rootOfSCC.getType() ) ) {
                     rootOfSCC.mergeWith( v );
-                } else if( PointsToSetInternal.castNeverFails(
+                } else if( typeManager.castNeverFails(
                             rootOfSCC.getType(), v.getType() ) ) {
                     v.mergeWith( rootOfSCC );
                 } else {

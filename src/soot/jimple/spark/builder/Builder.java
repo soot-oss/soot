@@ -25,6 +25,7 @@ import soot.jimple.spark.pag.PAG;
  * @author Ondrej Lhotak
  */
 public interface Builder {
+    public void preJimplify();
     /** Builds and returns a pointer assignment graph. */
     public PAG build( SparkOptions opts );
 }

@@ -19,6 +19,7 @@
 
 package soot.jimple.spark.sets;
 import soot.jimple.spark.*;
+import soot.jimple.spark.internal.*;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import java.util.*;
@@ -47,9 +48,9 @@ public final class HybridPointsToSet extends PointsToSetInternal {
             final PointsToSetInternal exclude ) {
         boolean ret = false;
         long[] mask = null;
-        if( !PointsToSetInternal.castNeverFails(
-                    other.getType(), this.getType() ) ) {
-            mask = (long[]) pag.getTypeManager().get( this.getType() );
+        TypeManager typeManager = pag.getTypeManager();
+        if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
+            mask = (long[]) typeManager.get( this.getType() );
         }
         if( other instanceof HybridPointsToSet ) {
             HybridPointsToSet o = (HybridPointsToSet) other;
@@ -252,9 +253,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     }
     /** Adds n to this set, returns true if n was not already in this set. */
     public final boolean add( Node n ) {
-        if( fh == null || type == null ||
-            fh.canStoreType( n.getType(), type ) ) {
-
+        if( pag.getTypeManager().castNeverFails( n.getType(), type ) ) {
             return fastAdd( n );
         }
         return false;
@@ -290,6 +289,10 @@ public final class HybridPointsToSet extends PointsToSetInternal {
                 return new HybridPointsToSet( type, pag );
             }
         };
+    }
+
+    public final static void delete() {
+        nodes = null;
     }
 
     /* End of public methods. */

@@ -44,11 +44,16 @@ public class ArraySet extends AbstractSet
     private int maxElements;
     private Object[] elements;
 
+    public ArraySet( int size )
+    {
+        maxElements = size;
+        elements = new Object[size];
+        numElements = 0;
+    }
+
     public ArraySet()
     {
-        maxElements = DEFAULT_SIZE;
-        elements = new Object[DEFAULT_SIZE];
-        numElements = 0;
+        this(DEFAULT_SIZE);
     }
 
     /**
@@ -63,12 +68,12 @@ public class ArraySet extends AbstractSet
             add(elements[i]);
     }
 
-    public void clear()
+    final public void clear()
     {
         numElements = 0;
     }
 
-    public boolean contains(Object obj)
+    final public boolean contains(Object obj)
     {
         for(int i = 0; i < numElements; i++)
             if(elements[i].equals(obj))
@@ -77,8 +82,23 @@ public class ArraySet extends AbstractSet
         return false;
     }
 
-    public boolean add(Object e)
+    /** Add an element without checking whether it is already in the set.
+     * It is up to the caller to guarantee that it isn't. */
+    final public boolean addElement(Object e)
     {
+        if(e==null) throw new RuntimeException( "oops" );
+        // Expand array if necessary
+            if(numElements == maxElements)
+                doubleCapacity();
+
+        // Add element
+            elements[numElements++] = e;
+            return true;
+    }
+
+    final public boolean add(Object e)
+    {
+        if(e==null) throw new RuntimeException( "oops" );
         if(contains(e))
             return false;
         else
@@ -93,12 +113,21 @@ public class ArraySet extends AbstractSet
         }
     }
 
-    public int size()
+    final public boolean addAll(Collection s) {
+        boolean ret = false;
+        if( !(s instanceof ArraySet) ) return super.addAll(s);
+        ArraySet as = (ArraySet) s;
+        for( int i = 0; i < as.elements.length; i++ )
+            ret = add( as.elements[i] ) | ret;
+        return ret;
+    }
+
+    final public int size()
     {
         return numElements;
     }
 
-    public Iterator iterator()
+    final public Iterator iterator()
     {
         return new ArrayIterator();
     }
@@ -112,12 +141,12 @@ public class ArraySet extends AbstractSet
             nextIndex = 0;
         }
 
-        public boolean hasNext()
+        final public boolean hasNext()
         {
             return nextIndex < numElements;
         }
 
-        public Object next() throws NoSuchElementException
+        final public Object next() throws NoSuchElementException
         {
             if(!(nextIndex < numElements))
                 throw new NoSuchElementException();
@@ -125,7 +154,7 @@ public class ArraySet extends AbstractSet
             return elements[nextIndex++];
         }
 
-        public void remove() throws NoSuchElementException
+        final public void remove() throws NoSuchElementException
         {
             if(nextIndex == 0)
                 throw new NoSuchElementException();
@@ -137,7 +166,7 @@ public class ArraySet extends AbstractSet
         }
     }
 
-    private void removeElementAt(int index)
+    final private void removeElementAt(int index)
     {
         // Handle simple case
             if(index  == numElements - 1)
@@ -152,7 +181,7 @@ public class ArraySet extends AbstractSet
     }
 
 
-    private void doubleCapacity()
+    final private void doubleCapacity()
     {
         int newSize = maxElements * 2;
 
@@ -163,12 +192,23 @@ public class ArraySet extends AbstractSet
         maxElements = newSize;
     }
 
-    public Object[] toArray()
+    final public Object[] toArray()
     {
         Object[] array = new Object[numElements];
 
         System.arraycopy(elements, 0, array, 0, numElements);
         return array;
+    }
+
+    final public Object[] toArray( Object[] array )
+    {
+        System.arraycopy(elements, 0, array, 0, numElements);
+        return array;
+    }
+
+    final public Object[] getUnderlyingArray()
+    {
+        return elements;
     }
 
     class Array
@@ -179,7 +219,7 @@ public class ArraySet extends AbstractSet
         private int maxElements;
         private Object[] elements;
     
-        public void clear()
+        final public void clear()
         {
             numElements = 0;
         }
@@ -191,7 +231,7 @@ public class ArraySet extends AbstractSet
             numElements = 0;
         }
     
-        private void doubleCapacity()
+        final private void doubleCapacity()
         {
             int newSize = maxElements * 2;
     
@@ -202,7 +242,7 @@ public class ArraySet extends AbstractSet
             maxElements = newSize;
         }
     
-        public void addElement(Object e)
+        final public void addElement(Object e)
         {
             // Expand array if necessary
                 if(numElements == maxElements)
@@ -212,7 +252,7 @@ public class ArraySet extends AbstractSet
                 elements[numElements++] = e;
         }
     
-        public void insertElementAt(Object e, int index)
+        final public void insertElementAt(Object e, int index)
         {
             // Expaxpand array if necessary
                 if(numElements == maxElements)
@@ -231,7 +271,7 @@ public class ArraySet extends AbstractSet
                 numElements++;
         }
     
-        public boolean contains(Object e)
+        final public boolean contains(Object e)
         {
             for(int i = 0; i < numElements; i++)
                 if(elements[i].equals(e))
@@ -240,17 +280,17 @@ public class ArraySet extends AbstractSet
             return false;
         }
     
-        public int size()
+        final public int size()
         {
             return numElements;
         }
     
-        public Object elementAt(int index)
+        final public Object elementAt(int index)
         {
             return elements[index];
         }
     
-        public void removeElementAt(int index)
+        final public void removeElementAt(int index)
         {
             // Handle simple case
                 if(index  == numElements - 1)

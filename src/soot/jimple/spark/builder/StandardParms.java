@@ -36,7 +36,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	ig = Scene.v().getActiveInvokeGraph();
     }
     /** Sets the method for which a graph is currently being built. */
-    public void setCurrentMethod( SootMethod m ) {
+    final public void setCurrentMethod( SootMethod m ) {
 	currentMethod = m;
         if( m != null ) {
             if( !m.isStatic() ) {
@@ -63,7 +63,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
      * TouchedNodes is an out parameter that is filled in with all the
      * nodes to which edges were added by adding the target. It may be
      * null if the caller does not need this information. */
-    public void addCallTarget( Stmt s, SootMethod target, Collection addedEdges ) {
+    final public void addCallTarget( Stmt s, SootMethod target, Collection addedEdges ) {
         InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
         int numArgs = ie.getArgCount();
         for( int i = 0; i < numArgs; i++ ) {
@@ -129,7 +129,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
         }
     }
     /** Adds the edges required for this statement to the graph. */
-    public void handleStmt( Stmt s ) {
+    final public void handleStmt( Stmt s ) {
 	if( s.containsInvokeExpr() ) {
 	    InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
             Iterator it = ig.getTargetsOf( s ).iterator();
@@ -178,15 +178,15 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	    }
 	} );
     }
-    public Node getNode() {
+    final public Node getNode() {
 	return (Node) getResult();
     }
-    public void addEdge( Node from, Node to ) {
+    final public void addEdge( Node from, Node to ) {
         if( from != null ) {
             pag.addEdge( from, to );
         }
     }
-    public Node caseArgv() {
+    final public Node caseArgv() {
 	AllocNode argv = pag.makeAllocNode( 
 		new Pair( currentMethod, PointsToAnalysis.STRING_ARRAY_NODE ),
 		strAr );
@@ -205,10 +205,10 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
                 pag.makeFieldRefNode( sanl, ArrayElement.v() ) );
 	return sanl;
     }
-    public Node caseAnyType() {
+    final public Node caseAnyType() {
 	return pag.makeAllocNode( AnyType.v(), AnyType.v() );
     }
-    public Node caseThis( SootMethod m ) {
+    final public Node caseThis( SootMethod m ) {
 	VarNode ret = pag.makeVarNode(
 		    new Pair( m, PointsToAnalysis.THIS_NODE ),
 		    m.getDeclaringClass().getType(), m );
@@ -216,7 +216,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
         return ret;
     }
 
-    public Node caseParm( SootMethod m, int index ) {
+    final public Node caseParm( SootMethod m, int index ) {
 	if( m.isStatic() || !pag.getOpts().parmsAsFields() ) {
 	    VarNode ret = pag.makeVarNode(
 			new Pair( m, new Integer( index ) ),
@@ -231,7 +231,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	}
     }
 
-    public Node caseRet( SootMethod m ) {
+    final public Node caseRet( SootMethod m ) {
 	if( m.isStatic() || !pag.getOpts().returnsAsFields() ) {
 	    return pag.makeVarNode(
 			Parm.v( m, PointsToAnalysis.RETURN_NODE ),
@@ -243,7 +243,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 			Parm.v( m, PointsToAnalysis.RETURN_NODE ), m );
 	}
     }
-    public Node caseArray( Object base, ArrayType arrayType ) {
+    final public Node caseArray( Object base, ArrayType arrayType ) {
 	return pag.makeFieldRefNode( base, arrayType,
 		    ArrayElement.v(), currentMethod );
     }
@@ -253,10 +253,10 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     // OK, these ones are public, but they really shouldn't be; it's just
     // that Java requires them to be, because they override those other
     // public methods.
-    public void caseArrayRef( ArrayRef ar ) {
+    final public void caseArrayRef( ArrayRef ar ) {
 	setResult( caseArray( ar.getBase(), (ArrayType) ar.getBase().getType() ) );
     }
-    public void caseCastExpr( CastExpr ce ) {
+    final public void caseCastExpr( CastExpr ce ) {
 	Pair castPair = new Pair( ce, PointsToAnalysis.CAST_NODE );
 	ce.getOp().apply( this );
 	Node opNode = getNode();
@@ -264,10 +264,10 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	addEdge( opNode, castNode );
 	setResult( castNode );
     }
-    public void caseCaughtExceptionRef( CaughtExceptionRef cer ) {
+    final public void caseCaughtExceptionRef( CaughtExceptionRef cer ) {
 	setResult( caseThrow() );
     }
-    public void caseInstanceFieldRef( InstanceFieldRef ifr ) {
+    final public void caseInstanceFieldRef( InstanceFieldRef ifr ) {
 	if( pag.getOpts().ignoreBaseObjects() ) {
 	    setResult( pag.makeVarNode( 
 			ifr.getField(), 
@@ -280,13 +280,13 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
                         currentMethod ) );
 	}
     }
-    public void caseLocal( Local l ) {
+    final public void caseLocal( Local l ) {
 	setResult( pag.makeVarNode( l,  l.getType(), currentMethod ) );
     }
-    public void caseNewArrayExpr( NewArrayExpr nae ) {
+    final public void caseNewArrayExpr( NewArrayExpr nae ) {
         setResult( pag.makeAllocNode( nae, nae.getType() ) );
     }
-    public void caseNewExpr( NewExpr ne ) {
+    final public void caseNewExpr( NewExpr ne ) {
         if( pag.getOpts().mergeStringBuffer() 
         && ne.getType().equals( RefType.v("java.lang.StringBuffer" ) ) ) {
             setResult( pag.makeAllocNode( ne.getType(), ne.getType() ) );
@@ -294,7 +294,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             setResult( pag.makeAllocNode( ne, ne.getType() ) );
         }
     }
-    public void caseNewMultiArrayExpr( NewMultiArrayExpr nmae ) {
+    final public void caseNewMultiArrayExpr( NewMultiArrayExpr nmae ) {
         ArrayType type = (ArrayType) nmae.getType();
         AllocNode prevAn = pag.makeAllocNode(
             new Pair( nmae, new Integer( type.numDimensions ) ), type );
@@ -313,15 +313,15 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             prevVn = vn;
         }
     }
-    public void caseParameterRef( ParameterRef pr ) {
+    final public void caseParameterRef( ParameterRef pr ) {
 	setResult( caseParm( currentMethod, pr.getIndex() ) );
     }
-    public void caseStaticFieldRef( StaticFieldRef sfr ) {
+    final public void caseStaticFieldRef( StaticFieldRef sfr ) {
 	setResult( pag.makeVarNode( 
 		    sfr.getField(), 
 		    sfr.getField().getType(), null ) );
     }
-    public void caseStringConstant( StringConstant sc ) {
+    final public void caseStringConstant( StringConstant sc ) {
         VarNode stringConstantLocal = pag.makeVarNode(
             PointsToAnalysis.STRING_NODE_LOCAL,
             RefType.v( "java.lang.String" ), null );
@@ -331,13 +331,13 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
         addEdge( stringConstant, stringConstantLocal );
         setResult( stringConstantLocal );
     }
-    public void caseThisRef( ThisRef tr ) {
+    final public void caseThisRef( ThisRef tr ) {
 	setResult( caseThis( currentMethod ) );
     }
-    public void caseNullConstant( NullConstant nr ) {
+    final public void caseNullConstant( NullConstant nr ) {
 	setResult( null );
     }
-    public void defaultCase( Object v ) {
+    final public void defaultCase( Object v ) {
 	throw new RuntimeException( "failed to handle "+v );
     }
     protected Node caseThrow() {

@@ -20,7 +20,7 @@
 package soot.jimple.spark.solver;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
-import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.spark.internal.*;
 import soot.*;
 import java.util.*;
 
@@ -78,18 +78,18 @@ public class EBBCollapser {
     protected void collapseSimple() {
         final boolean verbose = pag.getOpts().verbose();
         final boolean ofcg = (pag.getOnFlyCallGraph() != null);
+        final TypeManager typeManager = pag.getTypeManager();
         boolean change;
         do {
             change = false;
-            for( Iterator nIt = new LinkedList( pag.simpleSources() ).iterator(); nIt.hasNext(); ) {
+            for( Iterator nIt = new ArrayList( pag.simpleSources() ).iterator(); nIt.hasNext(); ) {
                 final VarNode n = (VarNode) nIt.next();
                 Type nType = n.getType();
                 Node[] succs = pag.simpleLookup( n );
                 for( int i = 0; i < succs.length; i++ ) {
                     VarNode succ = (VarNode) succs[i];
                     Type sType = succ.getType();
-                    if( !PointsToSetInternal
-                            .castNeverFails( nType, sType ) ) continue;
+                    if( !typeManager.castNeverFails( nType, sType ) ) continue;
                     if( pag.allocInvLookup( succ ).length > 0 ) continue;
                     if( pag.loadInvLookup( succ ).length > 0 ) continue;
                     if( pag.simpleInvLookup( succ ).length > 1 ) continue;
@@ -103,7 +103,8 @@ public class EBBCollapser {
     }
     protected void collapseLoad() {
         final boolean ofcg = (pag.getOnFlyCallGraph() != null);
-        for( Iterator nIt = new LinkedList( pag.loadSources() ).iterator(); nIt.hasNext(); ) {
+        final TypeManager typeManager = pag.getTypeManager();
+        for( Iterator nIt = new ArrayList( pag.loadSources() ).iterator(); nIt.hasNext(); ) {
             final FieldRefNode n = (FieldRefNode) nIt.next();
             Type nType = n.getType();
             Node[] succs = pag.loadLookup( n );
@@ -116,7 +117,7 @@ public class EBBCollapser {
                 if( pag.loadInvLookup( succ ).length > 1 ) continue;
                 if( pag.simpleInvLookup( succ ).length > 0 ) continue;
                 if( ofcg && succ.isInterProcTarget() ) continue;
-                if( PointsToSetInternal.castNeverFails( nType, sType ) ) {
+                if( typeManager.castNeverFails( nType, sType ) ) {
                     if( firstSucc == null ) {
                         firstSucc = succ;
                     } else {

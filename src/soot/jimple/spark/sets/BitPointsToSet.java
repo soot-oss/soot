@@ -48,9 +48,9 @@ public final class BitPointsToSet extends PointsToSetInternal {
             final PointsToSetInternal exclude ) {
         boolean ret = false;
         long[] mask = null;
-        if( !PointsToSetInternal.castNeverFails( 
-                    other.getType(), this.getType() ) ) {
-            mask = pag.getTypeManager().get( this.getType() );
+        TypeManager typeManager = pag.getTypeManager();
+        if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
+            mask = typeManager.get( this.getType() );
         }
         if( other instanceof BitPointsToSet ) {
             BitPointsToSet o = (BitPointsToSet) other;
@@ -158,9 +158,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
     }
     /** Adds n to this set, returns true if n was not already in this set. */
     public final boolean add( Node n ) {
-        if( fh == null || type == null ||
-            fh.canStoreType( n.getType(), type ) ) {
-
+        if( pag.getTypeManager().castNeverFails( n.getType(), type ) ) {
             return fastAdd( n );
         }
         return false;
@@ -176,6 +174,10 @@ public final class BitPointsToSet extends PointsToSetInternal {
                 return new BitPointsToSet( type, pag );
             }
         };
+    }
+
+    public final static void delete() {
+        nodes = null;
     }
 
     /* End of public methods. */

@@ -60,7 +60,7 @@ public final class SortedArraySet extends PointsToSetInternal {
                         if( myhc < ohc ) {
                             newa[ newi++ ] = mya[ myi++ ];
                         } else if( myhc > ohc ) {
-                            if( ( fh == null || type == null || typeMask == null ||
+                            if( ( type == null || typeMask == null ||
                               (0 != (typeMask[(-ohc)/64] & (1L<<((-ohc)%64))))  ) 
                             && ( exclude == null || !exclude.contains( oa[oi] ) ) ) {
                                 newa[ newi++ ] = oa[ oi ];
@@ -77,7 +77,7 @@ public final class SortedArraySet extends PointsToSetInternal {
                 } else { // myi >= size
                     if( oi < osize ) {
                         int ohc = oa[oi].getId();
-                        if( ( fh == null || type == null || typeMask == null ||
+                        if( ( type == null || typeMask == null ||
                           (0 != (typeMask[(-ohc)/64] & (1L<<((-ohc)%64))))  ) 
                         && ( exclude == null || !exclude.contains( oa[oi] ) ) ) {
                             newa[ newi++ ] = oa[ oi ];
@@ -104,9 +104,7 @@ public final class SortedArraySet extends PointsToSetInternal {
     }
     /** Adds n to this set, returns true if n was not already in this set. */
     public final boolean add( Node n ) {
-        if( fh == null || type == null ||
-            fh.canStoreType( n.getType(), type ) ) {
-
+        if( pag.getTypeManager().castNeverFails( n.getType(), type ) ) {
             if( contains(n) ) return false;
             int left = 0;
             int right = size;

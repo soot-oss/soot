@@ -46,44 +46,34 @@ public final class PropIter extends Propagator {
                 System.out.println( "Iteration "+(iteration++) );
             }
 	    change = false;
-            boolean ofcgChange = false;
-            do {
-                for( Iterator it = simpleSources.iterator(); it.hasNext(); ) {
-                    change = handleSimples( (VarNode) it.next() ) | change;
-                }
-                if( ofcg != null ) {
-                    final LinkedList addedEdges = new LinkedList();
-                    ofcgChange = false;
-                    for( Iterator recIt = ofcg.allReceivers().iterator(); recIt.hasNext(); ) {
-                        final VarNode rec = (VarNode) recIt.next();
-                        PointsToSetInternal recSet = rec.getP2Set();
-                        if( recSet != null ) {
-                            ofcgChange = rec.getP2Set().forall( new P2SetVisitor() {
-                            public final void visit( Node n ) {
-                                    returnValue = ofcg.addReachingType(
-                                        rec, n.getType(), addedEdges ) | returnValue;
-                                }
-                            } ) | ofcgChange;
-                        }
-                    }
-                    if( pag.getOpts().verbose() ) {
-                        System.out.println( "Added "+addedEdges.size()+" interprocedural edges" );
-                    }
-                    if( addedEdges.isEmpty() == ofcgChange ) {
-                        throw new RuntimeException(
-                                "addedEdges.isEmpty is "+addedEdges.isEmpty()+
-                                " and ofcgChange is "+ofcgChange );
-                    }
-                    change = ofcgChange | change;
-                    for( Iterator nIt = addedEdges.iterator(); nIt.hasNext(); ) {
-                        final Node[] n = (Node[]) nIt.next();
-                        VarNode src = (VarNode) n[0].getReplacement();
-                        VarNode tgt = (VarNode) n[1].getReplacement();
-                        PointsToSetInternal p2set = tgt.getP2Set();
-                        if( p2set != null ) p2set.unFlushNew();
+            for( Iterator it = simpleSources.iterator(); it.hasNext(); ) {
+                change = handleSimples( (VarNode) it.next() ) | change;
+            }
+            if( ofcg != null ) {
+                final ArrayList addedEdges = new ArrayList();
+                for( Iterator recIt = ofcg.allReceivers().iterator(); recIt.hasNext(); ) {
+                    final VarNode rec = (VarNode) recIt.next();
+                    PointsToSetInternal recSet = rec.getP2Set();
+                    if( recSet != null ) {
+                        change = rec.getP2Set().forall( new P2SetVisitor() {
+                        public final void visit( Node n ) {
+                                returnValue = ofcg.addReachingType(
+                                    rec, n.getType(), addedEdges ) | returnValue;
+                            }
+                        } ) | change;
                     }
                 }
-            } while( ofcgChange );
+                if( pag.getOpts().verbose() ) {
+                    System.out.println( "Added "+addedEdges.size()+" interprocedural edges" );
+                }
+                for( Iterator nIt = addedEdges.iterator(); nIt.hasNext(); ) {
+                    final Node[] n = (Node[]) nIt.next();
+                    VarNode src = (VarNode) n[0].getReplacement();
+                    VarNode tgt = (VarNode) n[1].getReplacement();
+                    PointsToSetInternal p2set = src.getP2Set();
+                    if( p2set != null ) p2set.unFlushNew();
+                }
+            }
 	    for( Iterator it = pag.loadSources().iterator(); it.hasNext(); ) {
                 change = handleLoads( (FieldRefNode) it.next() ) | change;
 	    }

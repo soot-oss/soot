@@ -25,6 +25,7 @@ import soot.*;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.jimple.spark.internal.*;
+import soot.util.*;
 
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
@@ -111,7 +112,7 @@ public class PAG implements PointsToAnalysis {
     }
     /** Adds an edge to the graph, returning false if it was already there. */
     public boolean addEdge( Node from, Node to ) {
-        FastHierarchy fh = PointsToSetInternal.getFastHierarchy();
+        FastHierarchy fh = typeManager.getFastHierarchy();
 	boolean ret = false;
         if( from.getReplacement() != from || to.getReplacement() != to )
             throw new RuntimeException( "Edge between merged nodes" );
@@ -184,11 +185,10 @@ public class PAG implements PointsToAnalysis {
     }
     public PAG( final SparkOptions opts ) {
 	this.opts = opts;
-        if( !opts.ignoreTypesEntirely() ) {
-            PointsToSetInternal.setFastHierarchy(
-                    Scene.v().getOrMakeFastHierarchy() );
-        }
         typeManager = new TypeManager();
+        if( !opts.ignoreTypesEntirely() ) {
+            typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
+        }
         opts.setImpl( new SparkOptions.Switch_setImpl() {
             public void case_hash() 
             { setFactory = HashPointsToSet.getFactory(); }
@@ -259,7 +259,7 @@ public class PAG implements PointsToAnalysis {
     }
 
     /** Returns list of dereferences variables. */
-    public LinkedList getDereferences() {
+    public List getDereferences() {
         return dereferences;
     }
 
@@ -282,30 +282,77 @@ public class PAG implements PointsToAnalysis {
     */
     /* End of public methods. */
 
+    static private int getSize( Object set ) {
+        if( set instanceof Set ) return ((Set) set).size();
+        else if( set == null ) return 0;
+        else return ((Object[]) set).length;
+    }
     /** Node uses this to notify PAG that n2 has been merged into n1. */
     void mergedWith( Node n1, Node n2 ) {
         if( n1.equals( n2 ) ) throw new RuntimeException( "oops" );
+
         somethingMerged = true;
+        if( ofcg != null ) ofcg.mergedWith( n1, n2 );
+
         Map[] maps = { simple, alloc, store, load,
             simpleInv, allocInv, storeInv, loadInv };
-        for( int i = 0; i < maps.length; i++ ) {
-            Map m = maps[i];
+        for( int mapi = 0; mapi < maps.length; mapi++ ) {
+            Map m = maps[mapi];
+
             if( !m.keySet().contains( n2 ) ) continue;
-            HashSet s = new HashSet();
+
             Object[] os = { m.get( n1 ), m.get( n2 ) };
-            for( int j = 0; j < os.length; j++ ) {
-                Object o = os[j];
-                if( o == null ) continue;
-                if( o instanceof Set ) {
-                    s.addAll( (Set) o );
+            int size1 = getSize(os[0]); int size2 = getSize(os[1]);
+            if( size1 == 0 ) {
+                if( os[1] != null ) m.put( n1, os[1] );
+            } else if( size2 == 0 ) {
+                // nothing needed
+            } else if( os[0] instanceof HashSet ) {
+                if( os[1] instanceof HashSet ) {
+                    ((HashSet) os[0]).addAll( (HashSet) os[1] );
                 } else {
-                    Node[] ar = (Node[]) o;
-                    for( int k = 0; k < ar.length; k++ ) {
-                        s.add( ar[k] );
+                    Node[] ar = (Node[]) os[1];
+                    for( int j = 0; j < ar.length; j++ ) {
+                        ( (HashSet) os[0] ).add( ar[j] );
                     }
                 }
+            } else if( os[1] instanceof HashSet ) {
+                Node[] ar = (Node[]) os[0];
+                for( int j = 0; j < ar.length; j++ ) {
+                    ((HashSet) os[1]).add( ar[j] );
+                }
+                m.put( n1, os[1] );
+            } else if( size1*size2 < 1000 ) {
+                Node[] a1 = (Node[]) os[0];
+                Node[] a2 = (Node[]) os[1];
+                Node[] ret = new Node[size1+size2];
+                System.arraycopy( a1, 0, ret, 0, a1.length ); 
+                int j = a1.length;
+                outer: for( int i = 0; i < a2.length; i++ ) {
+                    Node rep = a2[i];
+                    for( int k = 0; k < j; k++ )
+                        if( rep == ret[k] ) continue outer;
+                    ret[j++] = rep;
+                }
+                Node[] newArray = new Node[j];
+                System.arraycopy( ret, 0, newArray, 0, j );
+                m.put( n1, ret = newArray );
+            } else {
+                HashSet s = new HashSet( size1+size2 );
+                for( int j = 0; j < os.length; j++ ) {
+                    Object o = os[j];
+                    if( o == null ) continue;
+                    if( o instanceof Set ) {
+                        s.addAll( (Set) o );
+                    } else {
+                        Node[] ar = (Node[]) o;
+                        for( int k = 0; k < ar.length; k++ ) {
+                            s.add( ar[k] );
+                        }
+                    }
+                }
+                m.put( n1, s );
             }
-            m.put( n1, s );
             m.remove( n2 );
         }
     }
@@ -340,8 +387,15 @@ public class PAG implements PointsToAnalysis {
 	    m.put( key, valueList = new HashSet(4) );
 	} else if( !(valueList instanceof Set) ) {
 	    Node[] ar = (Node[]) valueList;
-	    m.put( key, valueList = new HashSet( ar.length ) );
-	    for( int i = 0; i < ar.length; i++ ) ( (Set) valueList ).add( ar[i] );
+            Node[] newar = new Node[ar.length+1];
+            for( int i = 0; i < ar.length; i++ ) {
+                Node n = ar[i];
+                if( n == value ) return false;
+                newar[i] = n;
+            }
+            newar[ar.length] = value;
+            m.put( key, newar );
+            return true;
 	}
 	return ((Set) valueList).add( value );
     }
@@ -369,15 +423,31 @@ public class PAG implements PointsToAnalysis {
                 Node reti = ret[i];
                 Node rep = reti.getReplacement();
                 if( rep != reti || rep == key ) {
-                    HashSet s = new HashSet( ret.length * 2 );
-                    for( int j = 0; j < i; j++ ) s.add( ret[j] );
-                    for( int j = i; j < ret.length; j++ ) {
-                        rep = ret[j].getReplacement();
-                        if( rep != key ) {
-                            s.add( rep );
+                    Set s;
+                    if( ret.length <= 75 ) {
+                        int j = i;
+                        outer: for( ; i < ret.length; i++ ) {
+                            reti = ret[i];
+                            rep = reti.getReplacement();
+                            if( rep == key ) continue;
+                            for( int k = 0; k < j; k++ )
+                                if( rep == ret[k] ) continue outer;
+                            ret[j++] = rep;
                         }
+                        Node[] newArray = new Node[j];
+                        System.arraycopy( ret, 0, newArray, 0, j );
+                        m.put( key, ret = newArray );
+                    } else {
+                        s = new HashSet( ret.length * 2 );
+                        for( int j = 0; j < i; j++ ) s.add( ret[j] );
+                        for( int j = i; j < ret.length; j++ ) {
+                            rep = ret[j].getReplacement();
+                            if( rep != key ) {
+                                s.add( rep );
+                            }
+                        }
+                        m.put( key, ret = (Node[]) s.toArray( EMPTY_NODE_ARRAY ) );
                     }
-                    m.put( key, ret = (Node[]) s.toArray( EMPTY_NODE_ARRAY ) );
                     break;
                 }
             }
@@ -389,7 +459,7 @@ public class PAG implements PointsToAnalysis {
     protected P2SetFactory setFactory;
     protected OnFlyCallGraph ofcg;
     protected static boolean somethingMerged = false;
-    protected LinkedList dereferences = new LinkedList();
+    protected ArrayList dereferences = new ArrayList();
     protected TypeManager typeManager;
 }
 

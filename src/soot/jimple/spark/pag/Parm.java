@@ -42,4 +42,7 @@ public class Parm implements SparkField {
         }
         return ret;
     }
+    public static final void delete() {
+        pairToElement = null;
+    }
 }

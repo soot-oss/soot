@@ -22,7 +22,7 @@ import soot.*;
 import soot.jimple.spark.builder.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.solver.*;
-import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.spark.sets.*;
 import soot.jimple.toolkits.invoke.InvokeGraph;
 import soot.jimple.toolkits.invoke.InvokeGraphBuilder;
 import soot.jimple.*;
@@ -163,35 +163,56 @@ public class SparkTransformer extends SceneTransformer
         return pag;
     }
 */
+    private static void reportTime( String desc, Date start, Date end ) {
+        System.out.println( "[Spark] "+desc+" in "+(end.getTime()-start.getTime())/100+" deciseconds." );
+    }
+    private static void doGC() {
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+    }
     protected void internalTransform( String phaseName, Map options )
     {
-	SparkOptions opts = new SparkOptions( options );
+        internalTransformGuts( this, phaseName, options );
+        BitPointsToSet.delete();
+        HybridPointsToSet.delete();
+        Parm.delete();
+        System.out.println( "[Spark] Dropping everything." );
+        doGC();
+    }
+    private static void internalTransformGuts( SparkTransformer ths,
+            String phaseName, Map options )
+    {
+        SparkOptions opts = new SparkOptions( options );
+
+        // Build invoke graph
         Date startIg = new Date();
-	InvokeGraphBuilder.v().transform( phaseName + ".igb" );
-	ig = Scene.v().getActiveInvokeGraph();
-	Date startBuild = new Date();
-	System.out.println( "[Spark] Invoke Graph built in "+(startBuild.getTime() - startIg.getTime() )/100+" deciseconds." );
-	Builder b = new ContextInsensitiveBuilder();
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
-        startBuild = new Date();
-	final PAG pag = b.build( opts );
-	Date startCompute = new Date();
-	System.out.println( "[Spark] Pointer Graph built in "+(startCompute.getTime() - startBuild.getTime() )/100+" deciseconds." );
+        InvokeGraphBuilder.v().transform( phaseName + ".igb" );
+        ths.ig = Scene.v().getActiveInvokeGraph();
+        Date endIg = new Date();
+        reportTime( "Invoke Graph", startIg, endIg );
+
+        // Build pointer assignment graph
+        Builder b = new ContextInsensitiveBuilder();
+        b.preJimplify();
+        doGC();
+        Date startBuild = new Date();
+        final PAG pag = b.build( opts );
+        Date endBuild = new Date();
+        reportTime( "Pointer Assignment Graph", startBuild, endBuild );
+        doGC();
+
+        // Build type masks
+        Date startTM = new Date();
         pag.getTypeManager().makeTypeMask( pag );
-        Date endTypeMasks = new Date();
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
-	System.out.println( "[Spark] Type masks built in "+(endTypeMasks.getTime() - startCompute.getTime() )/100+" deciseconds." );
-        endTypeMasks = new Date();
+        Date endTM = new Date();
+        reportTime( "Type masks", startTM, endTM );
+        doGC();
+
+        // Simplify pag
+        Date startSimplify = new Date();
         if( opts.simplifySCCs() ) {
             new SCCCollapser( pag, opts.ignoreTypesForSCCs() ).collapse();
         }
@@ -199,13 +220,18 @@ public class SparkTransformer extends SceneTransformer
         if( opts.simplifySCCs() || opts.simplifyOffline() ) {
             pag.cleanUpMerges();
         }
-	Date doneSimplify = new Date();
-	System.out.println( "[Spark] Pointer Graph simplified in "+(doneSimplify.getTime() - endTypeMasks.getTime() )/100+" deciseconds." );
+        Date endSimplify = new Date();
+        reportTime( "Pointer Graph simplified", startSimplify, endSimplify );
+
+        // Dump pag
         PAGDumper dumper = null;
         if( opts.dumpPAG() || opts.dumpSolution() ) {
             dumper = new PAGDumper( pag );
         }
         if( opts.dumpPAG() ) dumper.dump();
+
+        // Propagate
+        Date startProp = new Date();
         final Propagator[] propagator = new Propagator[1];
         opts.propagator( new SparkOptions.Switch_propagator() {
             public void case_iter() {
@@ -223,15 +249,12 @@ public class SparkTransformer extends SceneTransformer
             public void case_none() {
             }
         } );
-	if( propagator[0] != null ) propagator[0].propagate();
-	Date doneCompute = new Date();
-	System.out.println( "[Spark] Propagation done in "+(doneCompute.getTime() - doneSimplify.getTime() )/100+" deciseconds." );
-	System.out.println( "[Spark] Solution found in "+(doneCompute.getTime() - endTypeMasks.getTime() )/100+" deciseconds." );
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
+        if( propagator[0] != null ) propagator[0].propagate();
+        Date endProp = new Date();
+        reportTime( "Propagation", startProp, endProp );
+        doGC();
+        reportTime( "Solution found", startSimplify, endProp );
+
         /*
         if( propagator[0] instanceof PropMerge ) {
             new MergeChecker( pag ).check();
@@ -241,11 +264,11 @@ public class SparkTransformer extends SceneTransformer
         findSetMass( pag );
         pag.dumpNumbersOfEdges();
         */
-        findSetMass( pag );
+        ths.findSetMass( pag );
         if( opts.dumpAnswer() ) new ReachingTypeDumper( pag ).dump();
         if( opts.dumpSolution() ) dumper.dumpPointsToSets();
         if( opts.dumpHTML() ) new PAG2HTML( pag ).dump();
-        Scene.v().setActivePointsToAnalysis( pag );
+        //Scene.v().setActivePointsToAnalysis( pag );
     }
     protected void findSetMass( PAG pag ) {
         int mass = 0;
@@ -299,30 +322,32 @@ public class SparkTransformer extends SceneTransformer
         }
         // Compute points-to set sizes of dereference sites AFTER
         // trimming sets by declared type
-        pag.getTypeManager().clearTypeMask();
-        pag.getTypeManager().makeTypeMask( pag );
-        PointsToSetInternal.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
-        deRefCounts = new int[30001];
-        for( Iterator vIt = pag.getDereferences().iterator(); vIt.hasNext(); ) {
-            final VarNode v = (VarNode) vIt.next();
-            PointsToSetInternal set = 
-                pag.getSetFactory().newSet( v.getType(), pag );
-            int size = 0;
-            if( set != null ) {
-                v.getP2Set().setType( null );
-                v.getP2Set().getNewSet().setType( null );
-                v.getP2Set().getOldSet().setType( null );
-                set.addAll( v.getP2Set(), null );
-                size = set.size();
+        if( pag.getTypeManager().getFastHierarchy() == null ) {
+            pag.getTypeManager().clearTypeMask();
+            pag.getTypeManager().setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
+            pag.getTypeManager().makeTypeMask( pag );
+            deRefCounts = new int[30001];
+            for( Iterator vIt = pag.getDereferences().iterator(); vIt.hasNext(); ) {
+                final VarNode v = (VarNode) vIt.next();
+                PointsToSetInternal set = 
+                    pag.getSetFactory().newSet( v.getType(), pag );
+                int size = 0;
+                if( set != null ) {
+                    v.getP2Set().setType( null );
+                    v.getP2Set().getNewSet().setType( null );
+                    v.getP2Set().getOldSet().setType( null );
+                    set.addAll( v.getP2Set(), null );
+                    size = set.size();
+                }
+                deRefCounts[size]++;
             }
-            deRefCounts[size]++;
-        }
-        total = 0;
-        for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
-        System.out.println( "Dereference counts AFTER trimming (total = "+total+"):" );
-        for( int i=0; i < deRefCounts.length; i++ ) {
-            if( deRefCounts[i] > 0 ) {
-                System.out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
+            total = 0;
+            for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
+            System.out.println( "Dereference counts AFTER trimming (total = "+total+"):" );
+            for( int i=0; i < deRefCounts.length; i++ ) {
+                if( deRefCounts[i] > 0 ) {
+                    System.out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
+                }
             }
         }
     }

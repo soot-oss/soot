@@ -58,6 +58,7 @@ public class OnFlyCallGraph {
 
     public boolean addReachingType( VarNode receiver, Type type, Collection addedEdges ) {
         boolean ret = false;
+        if( !receiverToSite.containsKey( receiver ) ) return ret;
         if( receiverToType.put( receiver, type ) ) {
             for( Iterator siteIt = receiverToSite.get( receiver ).iterator(); siteIt.hasNext(); ) {
                 final Stmt site = (Stmt) siteIt.next();
@@ -92,6 +93,13 @@ public class OnFlyCallGraph {
             }
         }
         return ret;
+    }
+
+    /** Node uses this to notify PAG that n2 has been merged into n1. */
+    public void mergedWith( Node n1, Node n2 ) {
+        if( !receiverToSite.containsKey( n2 ) ) return;
+        receiverToSite.putAll( n1, receiverToSite.get( n2 ) );
+        receiverToType.putAll( n1, receiverToType.get( n2 ) );
     }
 
     public Set allReceivers() {

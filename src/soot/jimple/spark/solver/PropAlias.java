@@ -39,7 +39,7 @@ public final class PropAlias extends Propagator {
     public PropAlias( PAG pag ) { this.pag = pag; }
     /** Actually does the propagation. */
     public final void propagate() {
-        final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
+        ofcg = pag.getOnFlyCallGraph();
         new TopoSorter( pag, false ).sort();
         for( Iterator frIt = pag.loadSources().iterator(); frIt.hasNext(); ) {
             final FieldRefNode fr = (FieldRefNode) frIt.next();
@@ -61,34 +61,10 @@ public final class PropAlias extends Propagator {
             }
             aliasWorkList = new HashSet();
             while( !varNodeWorkList.isEmpty() ) {
-                while( !varNodeWorkList.isEmpty() ) {
-                    VarNode src = (VarNode) varNodeWorkList.iterator().next();
-                    varNodeWorkList.remove( src );
-                    aliasWorkList.add( src );
-                    handleVarNode( src );
-                }
-                if( ofcg != null ) {
-                    final LinkedList addedEdges = new LinkedList();
-                    for( Iterator recIt = ofcg.allReceivers().iterator(); recIt.hasNext(); ) {
-                        final VarNode rec = (VarNode) recIt.next();
-                        PointsToSetInternal recSet = rec.getP2Set();
-                        if( recSet != null ) {
-                            rec.getP2Set().forall( new P2SetVisitor() {
-                            public final void visit( Node n ) {
-                                    returnValue = ofcg.addReachingType(
-                                        rec, n.getType(), addedEdges ) | returnValue;
-                                }
-                            } );
-                        }
-                    }
-                    for( Iterator nIt = addedEdges.iterator(); nIt.hasNext(); ) {
-                        final Node[] n = (Node[]) nIt.next();
-                        VarNode src = (VarNode) n[0].getReplacement();
-                        VarNode tgt = (VarNode) n[1].getReplacement();
-                        if( tgt.makeP2Set().addAll( src.getP2Set(), null ) )
-                            addToWorklist( tgt );
-                    }
-                }
+                VarNode src = (VarNode) varNodeWorkList.iterator().next();
+                varNodeWorkList.remove( src );
+                aliasWorkList.add( src );
+                handleVarNode( src );
             }
             if( verbose ) {
                 System.out.println( "Now handling field references" );
@@ -195,6 +171,24 @@ public final class PropAlias extends Propagator {
 	final PointsToSetInternal newP2Set = src.getP2Set().getNewSet();
 	if( newP2Set.isEmpty() ) return false;
 
+        if( ofcg != null ) {
+            final ArrayList addedEdges = new ArrayList();
+            newP2Set.forall( new P2SetVisitor() {
+            public final void visit( Node n ) {
+                    returnValue = ofcg.addReachingType(
+                        src, n.getType(), addedEdges ) | returnValue;
+                }
+            } );
+            for( Iterator nIt = addedEdges.iterator(); nIt.hasNext(); ) {
+                final Node[] n = (Node[]) nIt.next();
+                ret = true;
+                VarNode edgeSrc = (VarNode) n[0].getReplacement();
+                VarNode edgeTgt = (VarNode) n[1].getReplacement();
+                if( edgeTgt.makeP2Set().addAll( edgeSrc.getP2Set(), null ) )
+                    varNodeWorkList.add( edgeTgt );
+            }
+        }
+
 	Node[] simpleTargets = pag.simpleLookup( src );
 	for( int i = 0; i < simpleTargets.length; i++ ) {
 	    if( simpleTargets[i].makeP2Set().addAll( newP2Set, null ) ) {
@@ -243,6 +237,7 @@ public final class PropAlias extends Propagator {
     protected MultiMap fieldToBase = new HashMultiMap();
     protected MultiMap aliasEdges = new HashMultiMap();
     protected Map loadSets = new HashMap();
+    protected OnFlyCallGraph ofcg;
 }
 
 

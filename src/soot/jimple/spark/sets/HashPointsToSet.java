@@ -28,8 +28,9 @@ import soot.Type;
  * @author Ondrej Lhotak
  */
 public final class HashPointsToSet extends PointsToSetInternal {
-    public HashPointsToSet( Type type ) {
+    public HashPointsToSet( Type type, PAG pag ) {
         super( type );
+        this.pag = pag;
     }
     /** Returns true if this set contains no run-time objects. */
     public final boolean isEmpty() {
@@ -41,7 +42,8 @@ public final class HashPointsToSet extends PointsToSetInternal {
             final PointsToSetInternal exclude ) {
         if( other instanceof HashPointsToSet
         && exclude == null
-        && ( fh == null || type == null || type.equals( other.type ) ) ) {
+        && ( pag.getTypeManager().getFastHierarchy() == null ||
+            type == null || type.equals( other.type ) ) ) {
             return s.addAll( ((HashPointsToSet) other).s );
         } else {
             return super.addAll( other, exclude );
@@ -49,15 +51,14 @@ public final class HashPointsToSet extends PointsToSetInternal {
     }
     /** Calls v's visit method on all nodes in this set. */
     public final boolean forall( P2SetVisitor v ) {
-        for( Iterator it = new LinkedList(s).iterator(); it.hasNext(); ) {
+        for( Iterator it = new ArrayList(s).iterator(); it.hasNext(); ) {
             v.visit( (Node) it.next() );
         }
         return v.getReturnValue();
     }
     /** Adds n to this set, returns true if n was not already in this set. */
     public final boolean add( Node n ) {
-        if( fh == null || type == null ||
-            fh.canStoreType( n.getType(), type ) ) {
+        if( pag.getTypeManager().castNeverFails( n.getType(), type ) ) {
 
             return s.add( n );
         }
@@ -70,7 +71,7 @@ public final class HashPointsToSet extends PointsToSetInternal {
     public static P2SetFactory getFactory() {
         return new P2SetFactory() {
             public PointsToSetInternal newSet( Type type, PAG pag ) {
-                return new HashPointsToSet( type );
+                return new HashPointsToSet( type, pag );
             }
         };
     }
@@ -79,5 +80,6 @@ public final class HashPointsToSet extends PointsToSetInternal {
     /* End of package methods. */
 
     private HashSet s = new HashSet(4);
+    private PAG pag = null;
 }
 

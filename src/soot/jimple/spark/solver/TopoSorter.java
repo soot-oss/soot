@@ -54,7 +54,8 @@ public class TopoSorter {
         Node[] succs = pag.simpleLookup( n );
         for( int i = 0; i < succs.length; i++ ) {
             if( ignoreTypes 
-            || PointsToSetInternal.castNeverFails( n.getType(), succs[i].getType() ) ) {
+            || pag.getTypeManager().castNeverFails(
+                    n.getType(), succs[i].getType() ) ) {
                 dfsVisit( (VarNode) succs[i] );
             }
         }

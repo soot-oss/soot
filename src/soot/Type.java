@@ -67,4 +67,6 @@ public abstract class Type implements Switchable, ToBriefString, Serializable
     public void apply(Switch sw)
     {
     }
+
+    public int typeNum = 0;
 }

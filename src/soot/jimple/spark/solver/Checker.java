@@ -64,7 +64,7 @@ public class Checker {
         if( upstream.getReplacement() != upstream )
             throw new RuntimeException( "upstream "+upstream+" is illegal" );
         PointsToSetInternal p2set = container.getP2Set();
-        FastHierarchy fh = PointsToSetInternal.getFastHierarchy();
+        FastHierarchy fh = pag.getTypeManager().getFastHierarchy();
         if( !container.getP2Set().contains( n ) 
                 && ( fh == null || container.getType() == null ||
                 fh.canStoreType( n.getType(), container.getType() ) ) ) {

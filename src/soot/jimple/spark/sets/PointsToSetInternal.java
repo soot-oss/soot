@@ -53,7 +53,7 @@ public abstract class PointsToSetInternal implements PointsToSet {
             warnedAlready = true;
         }
         return other.forall( new P2SetVisitor() {
-        public void visit( Node n ) {
+        public final void visit( Node n ) {
                 if( exclude == null || !exclude.contains( n ) )
                     returnValue = add( n ) | returnValue;
             }
@@ -111,27 +111,9 @@ public abstract class PointsToSetInternal implements PointsToSet {
         } );
         return ret[0];
     }
-    public static void setFastHierarchy( FastHierarchy h ) {
-        fh = h;
-    }
-    public static FastHierarchy getFastHierarchy() {
-        return fh;
-    }
-    /** Returns true iff dst is a supertype of src. */
-    public static boolean castNeverFails( Type src, Type dst ) {
-        if( dst == null ) return true;
-        if( dst == src ) return true;
-        if( dst.equals( src ) ) return true;
-        if( fh == null ) return true;
-        if( src == null ) return false;
-        if( src instanceof NullType ) return true;
-        if( dst instanceof NullType ) return false;
-        return fh.canStoreType( src, dst );
-    }
     /* End of public methods. */
     /* End of package methods. */
 
     protected Type type;
-    protected static FastHierarchy fh;
 }
 

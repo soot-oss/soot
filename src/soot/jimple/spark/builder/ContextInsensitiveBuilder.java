@@ -34,6 +34,18 @@ import soot.jimple.spark.solver.OnFlyCallGraph;
  * @author Ondrej Lhotak
  */
 public class ContextInsensitiveBuilder implements Builder {
+    public void preJimplify() {
+	ig = Scene.v().getActiveInvokeGraph();
+        for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
+            final SootClass c = (SootClass) cIt.next();
+            for( Iterator mIt = c.getMethods().iterator(); mIt.hasNext(); ) {
+                final SootMethod m = (SootMethod) mIt.next();
+                if( !m.isConcrete() ) continue;
+                if( !ig.mcg.isReachable(m)) continue;
+                m.retrieveActiveBody();
+            }
+        }
+    }
     /** Builds and returns a pointer assignment graph. */
     public PAG build( SparkOptions opts ) {
 	pag = new PAG( opts );
@@ -49,9 +61,8 @@ public class ContextInsensitiveBuilder implements Builder {
                         ig,
                         parms ) );
         }
-	Iterator classesIt = Scene.v().getClasses().iterator();
-	while( classesIt.hasNext() ) {
-	    SootClass c = (SootClass) classesIt.next();
+        for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
+            final SootClass c = (SootClass) cIt.next();
 	    handleClass( c );
 	    addMiscEdges( c );
 	}
@@ -60,6 +71,10 @@ public class ContextInsensitiveBuilder implements Builder {
             System.out.println( "Total methods: "+totalMethods );
             System.out.println( "Analyzed (CHA reachable) methods: "+analyzedMethods );
             System.out.println( "Classes with at least one analyzed method: "+classes );
+        }
+        // deregister NativeHelper
+        if( opts.simulateNatives() ) {
+            NativeHelper.register( null );
         }
 	return pag;
     }
