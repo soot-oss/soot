@@ -37,6 +37,7 @@ public class TradPAGBuilder extends AbsPAGBuilder
         super(in, simple, load, store, alloc);
     }
     private NodeFactory nf = PaddleScene.v().nodeFactory();
+    private NodeManager nm = PaddleScene.v().nodeManager();
 
     public void update() {
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
@@ -152,7 +153,8 @@ public class TradPAGBuilder extends AbsPAGBuilder
 
     private Node parm( Node n, Context c ) {
         if( c == null ) return n;
-        if( n instanceof LocalVarNode ) return ((LocalVarNode) n).context(c);
+        if( n instanceof LocalVarNode ) 
+            return nm.makeContextVarNode( (LocalVarNode) n, c );
         if( n instanceof FieldRefNode ) {
             FieldRefNode frn = (FieldRefNode) n;
             return ((VarNode) parm(frn.base(), c)).dot( frn.field() );

@@ -19,7 +19,7 @@ public class BDDObjSensVirtualContextManager extends AbsVirtualContextManager {
                                                      "ContextManager.jedd:35,8-11"),
                                                     jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(in.get(),
                                                                                                                   new jedd.PhysicalDomain[] { V1.v() }),
-                                                                                   new jedd.PhysicalDomain[] { H1.v(), V2.v() },
-                                                                                   new jedd.PhysicalDomain[] { V2.v(), V1.v() })));
+                                                                                   new jedd.PhysicalDomain[] { V2.v(), H1.v() },
+                                                                                   new jedd.PhysicalDomain[] { V1.v(), V2.v() })));
     }
 }

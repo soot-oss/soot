@@ -141,8 +141,8 @@ public class TradTypeManager extends AbsTypeManager {
                                                                 varNodes,
                                                                 new jedd.PhysicalDomain[] { T1.v() }));
             cachedVarNodes.eqUnion(varNodes);
-            return new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), var.v() },
-                                                       new jedd.PhysicalDomain[] { H1.v(), V1.v() },
+            return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), obj.v() },
+                                                       new jedd.PhysicalDomain[] { V1.v(), H1.v() },
                                                        ("return cachedVarObj; at /home/olhotak/soot-trunk/src/soot/ji" +
                                                         "mple/paddle/TradTypeManager.jedd:111,12-18"),
                                                        cachedVarObj);

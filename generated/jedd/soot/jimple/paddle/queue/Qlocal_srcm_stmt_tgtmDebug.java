@@ -23,8 +23,8 @@ public class Qlocal_srcm_stmt_tgtmDebug extends Qlocal_srcm_stmt_tgtm {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), tgtm.v(), local.v() },
-                                              new PhysicalDomain[] { ST.v(), T1.v(), T2.v(), V1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), local.v(), tgtm.v() },
+                                              new PhysicalDomain[] { ST.v(), T1.v(), V1.v(), T2.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/queue/Qlocal_srcm_stmt_tgtmDebug" +
                                                ".jedd:39,22-24"),

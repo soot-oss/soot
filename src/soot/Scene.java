@@ -606,7 +606,12 @@ public class Scene  //extends AbstractHost
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
     public ArrayNumberer getLocalNumberer() { return localNumberer; }
 
-    public void setContextNumberer( Numberer n ) { contextNumberer = n; }
+    public void setContextNumberer( Numberer n ) {
+        if( contextNumberer != null )
+            throw new RuntimeException(
+                    "Attempt to set context numberer when it is already set." );
+        contextNumberer = n;
+    }
 
     /**
      * Returns the {@link ThrowAnalysis} to be used by default when

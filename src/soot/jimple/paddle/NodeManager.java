@@ -155,6 +155,7 @@ public class NodeManager {
     /** Finds or creates the ContextVarNode for base variable base and context
      * context, of type type. */
     public ContextVarNode makeContextVarNode( LocalVarNode base, Context context ) {
+        if( base instanceof ContextVarNode ) throw new RuntimeException();
 	ContextVarNode ret = base.context( context );
 	if( ret == null ) {
 	    ret = new ContextVarNode( this, base, context );

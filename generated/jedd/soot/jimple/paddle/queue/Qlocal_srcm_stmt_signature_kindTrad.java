@@ -24,8 +24,8 @@ public class Qlocal_srcm_stmt_signature_kindTrad extends Qlocal_srcm_stmt_signat
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { kind.v(), stmt.v(), srcm.v(), local.v(), signature.v() },
-                                              new PhysicalDomain[] { FD.v(), ST.v(), T1.v(), V1.v(), H2.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), local.v(), kind.v(), signature.v() },
+                                              new PhysicalDomain[] { ST.v(), T1.v(), V1.v(), FD.v(), H2.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/queue/Qlocal_srcm_stmt_signature" +
                                                "_kindTrad.jedd:41,22-24"),

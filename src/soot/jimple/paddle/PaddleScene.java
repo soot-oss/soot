@@ -87,6 +87,7 @@ public class PaddleScene
     private NodeFactory nodeFactory;
     private NodeManager nodeManager = new NodeManager();
     private PaddleOptions options;
+    private PaddleNativeHelper nativeHelper;
     private CGOptions cgoptions = 
         new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
     public P2SetFactory setFactory;
@@ -96,6 +97,10 @@ public class PaddleScene
     public NodeFactory nodeFactory() { return nodeFactory; }
     public NodeManager nodeManager() { return nodeManager; }
     public PaddleOptions options() { return options; }
+    public PaddleNativeHelper nativeHelper() { 
+        if( nativeHelper == null ) nativeHelper = new PaddleNativeHelper();
+        return nativeHelper;
+    }
 
     public void setup( PaddleOptions opts ) {
         options = opts;
@@ -247,13 +252,21 @@ public class PaddleScene
             case CGOptions.context_1cfa:
                 scm = new BDD1CFAStaticContextManager( cscgbout.reader("scm"), cmout );
                 vcm = new BDD1CFAVirtualContextManager( vcrout.reader("vcm"), vcmout );
-                Scene.v().setContextNumberer( Scene.v().getUnitNumberer() );
                 break;
             case CGOptions.context_objsens:
                 scm = new BDDObjSensStaticContextManager( cscgbout.reader("scm"), cmout );
                 vcm = new BDDObjSensVirtualContextManager( vcrout.reader("vcm"), vcmout );
-                Scene.v().setContextNumberer( PaddleNumberers.v().allocNodeNumberer() );
                 break;
+            case CGOptions.context_kcfa:
+                scm = new TradKCFAStaticContextManager( cscgbout.reader("scm"), cmout, cgoptions.k() );
+                vcm = new TradKCFAVirtualContextManager( vcrout.reader("vcm"), vcmout, cgoptions.k() );
+                break;
+            case CGOptions.context_kobjsens:
+                scm = new TradKObjSensStaticContextManager( cscgbout.reader("scm"), cmout, cgoptions.k() );
+                vcm = new TradKObjSensVirtualContextManager( vcrout.reader("vcm"), vcmout, cgoptions.k() );
+                break;
+            default:
+                throw new RuntimeException( "Unhandled kind of context-sensitivity" );
         }
     }
 
@@ -322,7 +335,7 @@ public class PaddleScene
         cscgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("cscgbout");
         cmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("cmout");
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("cgout");
-        rcout = new Qctxt_methodSet("rcout");
+        rcout = new Qctxt_methodTrace("rcout");
 
         simple = new Qsrc_dstTrace("simple");
         load = new Qsrc_fld_dstTrace("load");
@@ -415,13 +428,21 @@ public class PaddleScene
             case CGOptions.context_1cfa:
                 scm = new Trad1CFAStaticContextManager( cscgbout.reader("scm"), cmout );
                 vcm = new Trad1CFAVirtualContextManager( vcrout.reader("vcm"), vcmout );
-                Scene.v().setContextNumberer( Scene.v().getUnitNumberer() );
                 break;
             case CGOptions.context_objsens:
                 scm = new TradObjSensStaticContextManager( cscgbout.reader("scm"), cmout );
                 vcm = new TradObjSensVirtualContextManager( vcrout.reader("vcm"), vcmout );
-                Scene.v().setContextNumberer( PaddleNumberers.v().allocNodeNumberer() );
                 break;
+            case CGOptions.context_kcfa:
+                scm = new TradKCFAStaticContextManager( cscgbout.reader("scm"), cmout, cgoptions.k() );
+                vcm = new TradKCFAVirtualContextManager( vcrout.reader("vcm"), vcmout, cgoptions.k() );
+                break;
+            case CGOptions.context_kobjsens:
+                scm = new TradKObjSensStaticContextManager( cscgbout.reader("scm"), cmout, cgoptions.k() );
+                vcm = new TradKObjSensVirtualContextManager( vcrout.reader("vcm"), vcmout, cgoptions.k() );
+                break;
+            default:
+                throw new RuntimeException( "Unhandled kind of context-sensitivity" );
         }
     }
 

@@ -1339,8 +1339,13 @@ public class Options extends OptionsBase {
                 
                 +padVal( "1cfa", "Builds a 1-CFA call graph" )
                 
+                +padVal( "kcfa", "Builds a k-CFA call graph" )
+                
                 +padVal( "objsens", "Builds an object-sensitive call graph" )
-                ;
+                
+                +padVal( "kobjsens", "Builds a k-object-sensitive call graph" )
+                
+                +padOpt( "k (2)", "" );
     
         if( phaseName.equals( "cg.cha" ) )
             return "Phase "+phaseName+":\n"+
@@ -2125,7 +2130,8 @@ public class Options extends OptionsBase {
                 +"verbose "
                 +"all-reachable "
                 +"trim-clinit "
-                +"context ";
+                +"context "
+                +"k ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
@@ -2640,7 +2646,8 @@ public class Options extends OptionsBase {
               +"verbose:false "
               +"all-reachable:false "
               +"trim-clinit:true "
-              +"context:insens ";
+              +"context:insens "
+              +"k:2 ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""

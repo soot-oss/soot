@@ -79,7 +79,9 @@ public class TradMethodPAGBuilder extends AbsMethodPAGBuilder
         }
     }
     private VarNode parm( VarNode vn, Context cn ) {
-        if( vn instanceof LocalVarNode ) return ((LocalVarNode) vn).context( cn );
+        if( cn == null ) return vn;
+        if( vn instanceof LocalVarNode ) 
+            return nm.makeContextVarNode( (LocalVarNode) vn, cn );
         return vn;
     }
 }

@@ -102,15 +102,17 @@ public final class PropBDD extends AbsPropagator {
                                                               typeManager.get()));
             do  {
                 oldPointsTo.eq(pointsTo);
-                pointsTo.eqUnion(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(typeManager.get()),
-                                                                  jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(pag.allSimple().get()),
+                pointsTo.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(typeManager.get(),
+                                                                                                                                                            new PhysicalDomain[] { V1.v() },
+                                                                                                                                                            new PhysicalDomain[] { V2.v() })),
+                                                                                                 jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(pag.allSimple().get()),
                                                                                                                                 pointsTo,
-                                                                                                                                new PhysicalDomain[] { V1.v() }),
-                                                                                                 new PhysicalDomain[] { V2.v() },
-                                                                                                 new PhysicalDomain[] { V1.v() })));
+                                                                                                                                new PhysicalDomain[] { V1.v() })),
+                                                                new PhysicalDomain[] { V2.v() },
+                                                                new PhysicalDomain[] { V1.v() }));
             }while(!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(pointsTo), oldPointsTo)); 
-            ptout.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                          new PhysicalDomain[] { H1.v(), V1.v() },
+            ptout.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                          new PhysicalDomain[] { V1.v(), H1.v() },
                                                           ("ptout.add(jedd.internal.Jedd.v().minus(jedd.internal.Jedd.v(" +
                                                            ").read(pointsTo), outputtedPointsTo)) at /home/olhotak/soot-" +
                                                            "trunk/src/soot/jimple/paddle/PropBDD.jedd:176,12-17"),
@@ -119,12 +121,10 @@ public final class PropBDD extends AbsPropagator {
             outputtedPointsTo.eq(pointsTo);
             PaddleScene.v().updateCallGraph();
             objectsBeingStored.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(pag.allStore().get()),
-                                                                                                jedd.internal.Jedd.v().replace(pointsTo,
-                                                                                                                               new PhysicalDomain[] { H1.v() },
-                                                                                                                               new PhysicalDomain[] { H2.v() }),
+                                                                                                pointsTo,
                                                                                                 new PhysicalDomain[] { V1.v() }),
-                                                                 new PhysicalDomain[] { V2.v() },
-                                                                 new PhysicalDomain[] { V1.v() }));
+                                                                 new PhysicalDomain[] { V2.v(), H1.v() },
+                                                                 new PhysicalDomain[] { V1.v(), H2.v() }));
             fieldPt.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(objectsBeingStored),
                                                            pointsTo,
                                                            new PhysicalDomain[] { V1.v() }));
@@ -137,8 +137,8 @@ public final class PropBDD extends AbsPropagator {
                                                             new PhysicalDomain[] { V2.v(), H2.v() },
                                                             new PhysicalDomain[] { V1.v(), H1.v() }));
             pointsTo.eqIntersect(typeManager.get());
-            ptout.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                          new PhysicalDomain[] { H1.v(), V1.v() },
+            ptout.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                          new PhysicalDomain[] { V1.v(), H1.v() },
                                                           ("ptout.add(jedd.internal.Jedd.v().minus(jedd.internal.Jedd.v(" +
                                                            ").read(pointsTo), outputtedPointsTo)) at /home/olhotak/soot-" +
                                                            "trunk/src/soot/jimple/paddle/PropBDD.jedd:193,12-17"),

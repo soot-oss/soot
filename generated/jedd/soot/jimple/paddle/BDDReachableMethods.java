@@ -55,7 +55,7 @@ public class BDDReachableMethods extends AbsReachableMethods {
                                                    "ak/soot-trunk/src/soot/jimple/paddle/BDDReachableMethods.jed" +
                                                    "d:41,27-37"),
                                                   jedd.internal.Jedd.v().project(newEdges,
-                                                                                 new jedd.PhysicalDomain[] { FD.v(), ST.v(), T1.v(), V1.v() }));
+                                                                                 new jedd.PhysicalDomain[] { ST.v(), T1.v(), V1.v(), FD.v() }));
             newTargets.eqMinus(reachables);
             out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), method.v() },
                                                         new jedd.PhysicalDomain[] { V1.v(), T1.v() },

@@ -52,11 +52,19 @@ public class PaddleTransformer extends SceneTransformer
             case CGOptions.context_objsens:
                 Scene.v().setContextNumberer( PaddleNumberers.v().allocNodeNumberer() );
                 break;
+            case CGOptions.context_kcfa:
+                Scene.v().setContextNumberer( new ContextStringNumberer(Scene.v().getUnitNumberer(), cgoptions.k()) );
+                break;
+            case CGOptions.context_kobjsens:
+                Scene.v().setContextNumberer( new ContextStringNumberer(PaddleNumberers.v().allocNodeNumberer(), cgoptions.k()) );
+                break;
+            default:
+                throw new RuntimeException( "Unhandled kind of context" );
         }
         PaddleOptions opts = new PaddleOptions( options );
 
         if( opts.simulate_natives() ) {
-            NativeHelper.register( new PaddleNativeHelper() );
+            NativeHelper.register( PaddleScene.v().nativeHelper() );
         }
 
         PaddleScene.v().setup( opts );
@@ -90,10 +98,11 @@ public class PaddleTransformer extends SceneTransformer
         CallGraph cg = new CallGraph();
         for( Iterator tIt = PaddleScene.v().cg.edges().iterator(); tIt.hasNext(); ) {
             final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
-            cg.addEdge( new Edge( MethodContext.v( t.srcm(), t.srcc() ),
+            Edge e = new Edge( MethodContext.v( t.srcm(), t.srcc() ),
                                   t.stmt(),
                                   MethodContext.v( t.tgtm(), t.tgtc() ),
-                                  t.kind() ) );
+                                  t.kind() );
+            cg.addEdge(e);
         }
         Scene.v().setCallGraph( cg );
 

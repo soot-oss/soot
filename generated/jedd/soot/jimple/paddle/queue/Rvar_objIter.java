@@ -45,8 +45,8 @@ public class Rvar_objIter extends Rvar_obj {
                                                        new Attribute[] { var.v(), obj.v() },
                                                        new PhysicalDomain[] { V1.v(), H1.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                   new PhysicalDomain[] { H1.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                   new PhysicalDomain[] { V1.v(), H1.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
                                                     "le/queue/Rvar_objIter.jedd:50,8-14"),
                                                    ret);

@@ -25,7 +25,7 @@ import soot.*;
 
 public class PaddleNativeHelper extends NativeHelper {
     protected void assignImpl(ReferenceVariable lhs, ReferenceVariable rhs) {
-        PaddleScene.v().nodeFactory().addEdge( (Node) rhs, (Node) lhs );
+        mpag.addEdge( (Node) rhs, (Node) lhs );
     }
     protected void assignObjectToImpl(ReferenceVariable lhs, AbstractObject obj) {
 	AllocNode objNode = PaddleScene.v().nodeManager().makeAllocNode( 
@@ -35,11 +35,11 @@ public class PaddleNativeHelper extends NativeHelper {
         VarNode var;
         if( lhs instanceof FieldRefNode ) {
 	    var = PaddleScene.v().nodeManager().makeGlobalVarNode( objNode, objNode.getType() );
-            PaddleScene.v().nodeFactory().addEdge( (Node) lhs, var );
+            mpag.addEdge( (Node) lhs, var );
         } else {
             var = (VarNode) lhs;
         }
-        PaddleScene.v().nodeFactory().addEdge( objNode, var );
+        mpag.addEdge( objNode, var );
     }
     protected ReferenceVariable arrayElementOfImpl(ReferenceVariable base) {
         Node n = (Node) base;
@@ -49,7 +49,7 @@ public class PaddleNativeHelper extends NativeHelper {
 	} else {
 	    FieldRefNode b = (FieldRefNode) base;
 	    l = PaddleScene.v().nodeManager().makeGlobalVarNode( b, b.getType() );
-	    PaddleScene.v().nodeFactory().addEdge( b, l );
+	    mpag.addEdge( b, l );
 	}
         return PaddleScene.v().nodeManager().makeFieldRefNode( l, ArrayElement.v() );
     }
@@ -71,5 +71,9 @@ public class PaddleNativeHelper extends NativeHelper {
     protected ReferenceVariable tempVariableImpl() {
 	return PaddleScene.v().nodeManager().makeGlobalVarNode( new Pair( "TempVar", new Integer( ++G.v().PaddleNativeHelper_tempVar ) ),
 		RefType.v( "java.lang.Object" ) );
+    }
+    private MethodPAG mpag;
+    public void setMPAG(MethodPAG mpag) {
+        this.mpag = mpag;
     }
 }

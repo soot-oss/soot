@@ -129,9 +129,23 @@ public class CGOptions
         return soot.PhaseOptions.getBoolean( options, "trim-clinit" );
     }
     
+    /** Context length (k) --
+    
+     * .
+    
+     * The maximum length of 
+     * call string or receiver object string used as context. 
+     * 
+     */
+    public int k() {
+        return soot.PhaseOptions.getInt( options, "k" );
+    }
+    
     public static final int context_insens = 1;
     public static final int context_1cfa = 2;
-    public static final int context_objsens = 3;
+    public static final int context_kcfa = 3;
+    public static final int context_objsens = 4;
+    public static final int context_kobjsens = 5;
     /** Context sensitivity --
     
      * Select context-sensitivity level.
@@ -148,8 +162,14 @@ public class CGOptions
         if( s.equalsIgnoreCase( "1cfa" ) )
             return context_1cfa;
         
+        if( s.equalsIgnoreCase( "kcfa" ) )
+            return context_kcfa;
+        
         if( s.equalsIgnoreCase( "objsens" ) )
             return context_objsens;
+        
+        if( s.equalsIgnoreCase( "kobjsens" ) )
+            return context_kobjsens;
         
         throw new RuntimeException( "Invalid value "+s+" of phase option context" );
     }

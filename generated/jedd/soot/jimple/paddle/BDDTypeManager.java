@@ -104,8 +104,8 @@ public class BDDTypeManager extends AbsTypeManager {
     
     public jedd.internal.RelationContainer get() {
         this.update();
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                   new PhysicalDomain[] { H1.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                   new PhysicalDomain[] { V1.v(), H1.v() },
                                                    ("return result; at /home/olhotak/soot-trunk/src/soot/jimple/p" +
                                                     "addle/BDDTypeManager.jedd:71,8-14"),
                                                    result);

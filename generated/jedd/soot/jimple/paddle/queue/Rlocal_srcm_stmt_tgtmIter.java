@@ -49,8 +49,8 @@ public class Rlocal_srcm_stmt_tgtmIter extends Rlocal_srcm_stmt_tgtm {
                                                        new Attribute[] { local.v(), srcm.v(), stmt.v(), tgtm.v() },
                                                        new PhysicalDomain[] { V1.v(), T1.v(), ST.v(), T2.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), tgtm.v(), local.v() },
-                                                   new PhysicalDomain[] { ST.v(), T1.v(), T2.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), local.v(), tgtm.v() },
+                                                   new PhysicalDomain[] { ST.v(), T1.v(), V1.v(), T2.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
                                                     "le/queue/Rlocal_srcm_stmt_tgtmIter.jedd:50,8-14"),
                                                    ret);

@@ -44,15 +44,18 @@ public class MethodPAG
     public Rsrc_fld_dst store() { return rstore.copy(); }
     public Robj_var alloc() { return ralloc.copy(); }
 
+    protected NodeFactory gnf;
     protected MethodNodeFactory nf;
     public MethodNodeFactory nodeFactory() { return nf; }
 
     MethodPAG( SootMethod method ) {
         this.method = method;
+        gnf = PaddleScene.v().nodeFactory();
     }
     public void build() {
         nf = new MethodNodeFactory() {
             public SootMethod method() { return method; }
+            public MethodPAG mpag() { return MethodPAG.this; }
         };
         if( method.isNative() ) {
             if( PaddleScene.v().options().simulate_natives() ) {
@@ -88,8 +91,38 @@ public class MethodPAG
             if( !( method.getParameterType(i) instanceof RefLikeType ) ) continue;
 	    args[i] = nf.caseParm(i);
         }
+        PaddleScene.v().nativeHelper().setMPAG(this);
         NativeMethodDriver.v().process( method, thisNode, retNode, args );
+        PaddleScene.v().nativeHelper().setMPAG(null);
     }
-
+    private boolean isLocal( Node n ) {
+        if( n instanceof LocalVarNode ) return true;
+        if( n instanceof FieldRefNode ) {
+            FieldRefNode frn = (FieldRefNode) n;
+            if( frn.getBase() instanceof LocalVarNode ) return true;
+        }
+        return false;
+    }
+    public void addEdge( Node src, Node dst ) {
+        if( src == null ) return;
+        if( dst == null ) return;
+        if( isLocal(src) || isLocal(dst) ) {
+            if( src instanceof VarNode ) {
+                if( dst instanceof VarNode ) {
+                    simple.add( (VarNode) src, (VarNode) dst );
+                } else if( dst instanceof FieldRefNode ) {
+                    FieldRefNode fdst = (FieldRefNode) dst;
+                    store.add( (VarNode) src, fdst.getField(), fdst.getBase() );
+                } else throw new RuntimeException( "Bad PA edge "+src+" -> "+dst );
+            } else if( src instanceof FieldRefNode ) {
+                FieldRefNode fsrc = (FieldRefNode) src;
+                load.add( fsrc.getBase(), fsrc.getField(), (VarNode) dst );
+            } else if( src instanceof AllocNode ) {
+                alloc.add( (AllocNode) src, (VarNode) dst );
+            } else throw new RuntimeException( "Bad PA edge "+src+" -> "+dst );
+        } else {
+            gnf.addEdge(src, dst);
+        }
+    }
 }
 
