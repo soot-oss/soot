@@ -79,7 +79,7 @@ public class ShimpleLocalDefs implements LocalDefs
                     if(!(type instanceof PrimType))
                         continue;
                         
-                    localToDefs.put(value, Collections.singletonList(unit));
+                    localToDefs.put(value, new SingletonList(unit));
                 }
             }
         }

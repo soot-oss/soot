@@ -2,6 +2,7 @@ package soot.jimple.toolkits.pointer;
 import soot.toolkits.graph.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.*;
+import soot.util.*;
 import soot.jimple.*;
 import java.util.*;
 import soot.jimple.internal.*;
@@ -374,7 +375,7 @@ public abstract class PointerPropagationGraph extends PointerStmtSwitch
 
     static final RefType string = RefType.v("java.lang.String");
     static final ArrayType strAr = ArrayType.v(string, 1);
-    static final List strArL = Collections.singletonList( strAr );
+    static final List strArL = new SingletonList( strAr );
     static final String main = SootMethod.getSubSignature( "main", strArL, VoidType.v() );
     static final String exit = SootMethod.getSubSignature( "exit", Collections.EMPTY_LIST, VoidType.v() );
     static final String run = SootMethod.getSubSignature( "run", Collections.EMPTY_LIST, VoidType.v() );

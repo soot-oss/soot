@@ -113,7 +113,7 @@ public final class MethodPAG {
 
     private static final RefType string = RefType.v("java.lang.String");
     private static final ArrayType strAr = ArrayType.v(string, 1);
-    private static final List strArL = Collections.singletonList( strAr );
+    private static final List strArL = new SingletonList( strAr );
     private static final String init =
 	SootMethod.getSubSignature( "<init>", Collections.EMPTY_LIST, VoidType.v() );
     private static final String main =

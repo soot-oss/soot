@@ -22,6 +22,7 @@ import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.*;
 import soot.*;
+import soot.util.*;
 import java.util.*;
 import soot.jimple.spark.internal.*;
 
@@ -360,7 +361,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     private static final RefType thread = RefType.v("java.lang.Thread");
     private static final RefType threadGroup = RefType.v("java.lang.ThreadGroup");
     private static final ArrayType strAr = ArrayType.v(string, 1);
-    private static final List strArL = Collections.singletonList( strAr );
+    private static final List strArL = new SingletonList( strAr );
     private static final String main = SootMethod.getSubSignature( "main", strArL, VoidType.v() );
     private static final String exit = SootMethod.getSubSignature( "exit", Collections.EMPTY_LIST, VoidType.v() );
     private static final String run = SootMethod.getSubSignature( "run", Collections.EMPTY_LIST, VoidType.v() );
