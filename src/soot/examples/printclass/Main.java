@@ -61,6 +61,7 @@ public class Main
         // Retrieve and print class.
         {
             SootClass sClass = Scene.v().loadClassAndSupport(args[0]);
+            sClass.setApplicationClass();
             PrintWriter out = new PrintWriter(System.out, true);
             
             Iterator methodIt = sClass.getMethods().iterator();

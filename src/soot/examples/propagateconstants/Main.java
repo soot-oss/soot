@@ -51,6 +51,8 @@ public class Main
         
         out.println("Before copy propagation: ");
         
+        sClass.setApplicationClass();
+        
         // Convert all methods to Jimple
         {
             Iterator methodIt = sClass.getMethods().iterator();

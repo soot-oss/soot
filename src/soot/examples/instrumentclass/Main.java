@@ -48,10 +48,11 @@ public class Main
     {
         Scene cm = Scene.v();
         SootClass sClass = cm.loadClassAndSupport(args[0]);
+        sClass.setApplicationClass();
+        
         boolean printClass = false;
         
-        System.out.println("Warning: This code does not work properly!");
-        
+                
         // Parse args
             if(args.length != 2)
             {
@@ -124,6 +125,9 @@ public class Main
             Local tmpLong = Jimple.v().newLocal("tmpLong", LongType.v()); 
             body.getLocals().add(tmpLong);
             
+            Unit ret = (Unit) units.getLast();
+            units.removeLast();
+
             // insert "tmpRef = java.lang.System.out;"
                 units.addLast(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
                     Scene.v().getField("<java.lang.System: java.io.PrintStream out>"))));
@@ -137,6 +141,8 @@ public class Main
                 SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(long)>");                    
                 units.addLast(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, tmpLong)));
             }
+            
+            units.addLast(ret);
         }
         
         // Write/Print out the instrumented class
