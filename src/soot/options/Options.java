@@ -1201,7 +1201,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "sop.cpf" ) )
             return "Phase "+phaseName+":\n"+
-                "\nAn example implementation of constant propagation \nusing Shimple. Informal tests show that this \nanalysis is already more powerful than the Jimple \nConstant Propagator and Folder, particularly when \ncontrol flow is involved. This optimization \ndemonstrates some of the benefits of SSA --- \nparticularly the fact that Phi nodes represent \nnatural merge points in the control flow. This \nimplementation also demonstrates how to access U/D \nand D/U chains in Shimple. "
+                "\nA powerful constant propagator and folder based \non an algorithm sketched by Cytron et al that \ntakes conditional control flow into account. This \noptimization demonstrates some of the benefits of \nSSA -- particularly the fact that Phi nodes \nrepresent natural merge points in the control \nflow. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "prune-cfg (true)", "Take advantage of CFG optimization             opportunities." );

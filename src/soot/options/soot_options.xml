@@ -1875,7 +1875,7 @@ more effective than post-optimization.</p>
           <long_desc>
             If enabled, Soot may print out warnings and messages
             useful for debugging the Shimple module.  Automatically
-            enabled by the global debugging option.
+            enabled by the global debug switch.
           </long_desc>
         </boolopt>
       </phase>
@@ -1919,15 +1919,12 @@ more effective than post-optimization.</p>
           <short_desc>Shimple constant propagator and folder</short_desc>
           <long_desc>
             <p>
-              An example implementation of constant propagation using
-              Shimple. Informal tests show that this analysis is
-              already more powerful than the Jimple Constant
-              Propagator and Folder, particularly when control flow is
-              involved.  This optimization demonstrates some of the
-              benefits of SSA --- particularly the fact that Phi nodes
-              represent natural merge points in the control flow.
-              This implementation also demonstrates how to access U/D
-              and D/U chains in Shimple.
+              A powerful constant propagator and folder based on an
+              algorithm sketched by Cytron et al that takes
+              conditional control flow into account.  This
+              optimization demonstrates some of the benefits of SSA
+              -- particularly the fact that Phi nodes represent
+              natural merge points in the control flow.
             </p>
           </long_desc>
           <alias>sop.cpf</alias>
@@ -1944,6 +1941,11 @@ more effective than post-optimization.</p>
             opportunities.</short_desc>
             <long_desc>
               <p>
+                Conditional branching statements that are found to
+                branch unconditionally (or fall through) are replaced
+                with unconditional branches (or removed).  This
+                transformation exposes more opportunities for dead
+                code removal.
               </p>
             </long_desc>
           </boolopt>

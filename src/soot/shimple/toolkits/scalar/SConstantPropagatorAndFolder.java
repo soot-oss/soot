@@ -31,6 +31,19 @@ import soot.shimple.toolkits.scalar.SEvaluator.MetaConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.TopConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.BottomConstant;
 
+/**
+ * A powerful constant propagator and folder based on an algorithm
+ * sketched by Cytron et al that takes conditional control flow into
+ * account.  This optimization demonstrates some of the benefits of
+ * SSA -- particularly the fact that Phi nodes represent natural merge
+ * points in the control flow.
+ *
+ * @author Navindra Umanee
+ * @see <a
+ * href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently
+ * Computing Static Single Assignment Form and the Control Dependence
+ * Graph</a>
+ **/
 public class SConstantPropagatorAndFolder extends BodyTransformer
 {
     public SConstantPropagatorAndFolder(Singletons.Global g) {}
@@ -60,14 +73,19 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
                               "] Propagating and folding constants (SSA)...");
 
         SCPFAnalysis scpf = new SCPFAnalysis(new CompleteUnitGraph(sb));
-        propagateResults(scpf.getResults());
 
+        propagateResults(scpf.getResults());
         if(pruneCFG){
             removeStmts(scpf.getDeadStmts());
             replaceStmts(scpf.getStmtsToReplace());
         }
     }
 
+    /**
+     * Propagates constants to the definition and uses of the relevant
+     * locals given a mapping.  Notice that we use the Shimple
+     * implementation of LocalDefs and LocalUses.
+     **/
     protected void propagateResults(Map localToConstant)
     {
         Chain units = sb.getUnits();
@@ -92,10 +110,11 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
                 Value defSrc = defSrcBox.getValue();
                 
                 if(defSrcBox.canContainValue(constant)){
-                    if(Shimple.isPhiNode(stmt))
-                        stmt.clearUnitBoxes();
-
                     defSrcBox.setValue(constant);
+
+                    // remove dangling pointers
+                    if(defSrc instanceof UnitBoxOwner)
+                        ((UnitBoxOwner)defSrc).clearUnitBoxes();
                 }
                 else if(debug)
                     G.v().out.println("Warning: Couldn't propagate constant " + constant + " to box " + defSrcBox.getValue() + " in unit " + stmt);
@@ -118,6 +137,9 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
         }
     }
 
+    /**
+     * Removes the given list of fall through IfStmts from the body.
+     **/
     protected void removeStmts(List deadStmts)
     {
         Chain units = sb.getUnits();
@@ -129,6 +151,10 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
         }
     }
 
+    /**
+     * Replaces conditional branches by unconditional branches as
+     * given by the mapping.
+     **/
     protected void replaceStmts(Map stmtsToReplace)
     {
         Chain units = sb.getUnits();
@@ -143,23 +169,87 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
     }
 }
 
+/**
+ * The actual branching flow analysis implementation.  Briefly, a
+ * sketch of the sketch from the Cytron et al paper:
+ *
+ * <p> Initially the algorithm assumes that each edge is unexecutable
+ * (the entry nodes are reachable) and that each variable is constant
+ * with an unknown value, Top.  Assumptions are corrected until they
+ * stabilise.
+ *
+ * <p> For example if x is found to be not a constant (Bottom) in
+ * <tt>if(q == 0) goto label1</tt> then both edges leaving the the
+ * statement are considered executable, if <tt>q</tt> is found to be a
+ * constant then only one of the edges are executable.
+ *
+ * <p> Whenever a reachable definition statement such as "x = 3" is
+ * found, the information is propagated to all uses of x (this works
+ * due to the SSA property).
+ *
+ * <p> Perhaps the crucial point is that if a node such as <tt>x =
+ * Phi(x_1, x_2)</tt> is ever found, information on <tt>x</tt> is
+ * assumed as follows:
+ *
+ * <ul>
+ *
+ *  <li>If <tt>x_1</tt> and <tt>x_2</tt> are the same assumed
+ *  constant, <tt>x</tt> is assumed to be that constant.  If they are
+ *  not the same constant, <tt>x</tt> is Bottom.</li>
+ *
+ *  <li>If either one is Top and the other is a constant, <tt>x</tt>
+ *  is assumed to be the same as the known constant.</li>
+ *
+ *  <li>If either is Bottom, <tt>x</tt> is assumed to be Bottom.</li>
+ * </ul>
+ *
+ * <p> The crucial point about the crucial point is that if
+ * definitions of <tt>x_1</tt> or <tt>x_2</tt> are never reached, the
+ * Phi node will still assume them to be Top and hence they will not
+ * influence the decision as to whether <tt>x</tt> is a constant or not.
+ **/
 class SCPFAnalysis extends ForwardBranchedFlowAnalysis
 {
-    FlowSet emptySet;
-    Map localToConstant;
-    Map stmtToReplacement;
-    List deadStmts;
-    
+    protected FlowSet emptySet;
+
+    /**
+     * A mapping of the locals to their current assumed constant value
+     * (which may be Top or Bottom).
+     **/
+    protected Map localToConstant;
+
+    /**
+     * A map from conditional branches that are found to be
+     * unconditional branches.
+     **/
+    protected Map stmtToReplacement;
+
+    /**
+     * A list of IfStmts that always fall through.
+     **/
+    protected List deadStmts;
+
+
+    /**
+     * Returns the localToConstant map.
+     **/
     public Map getResults()
     {
         return localToConstant;
     }
 
+    /**
+     * Returns the list of fall-through IfStmts.
+     **/
     public List getDeadStmts()
     {
         return deadStmts;
     }
 
+    /**
+     * Returns a Map from conditional branches to the unconditional branches
+     * that can replace them.
+     **/
     public Map getStmtsToReplace()
     {
         return stmtToReplacement;
@@ -200,6 +290,9 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         return entrySet;
     }
 
+    /**
+     * All nodes are assumed to be unreachable by default.
+     **/
     protected Object newInitialFlow()
     {
         return emptySet.emptySet();
@@ -222,6 +315,18 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         fource.copy(fest);
     }
 
+    /**
+     * If a node has an empty in set, it is considered unreachable.
+     * Otherwise the node is examined and if any assumptions have to
+     * be corrected, a Pair containing the corrected assumptions is
+     * flowed to the reachable nodes.  If no assumptions have to be
+     * corrected then no information other than the in set is
+     * propagated to the reachable nodes.
+     *
+     * <p> Pair serves no other purpose than to keep the analysis
+     * flowing for as long as needed.  The final results are
+     * accumulated in the localToConstant map.
+     **/
     protected void flowThrough(Object in, Unit s, List fallOut, List branchOuts)
     {
         FlowSet fin = (FlowSet) ((FlowSet)in).clone();
@@ -230,6 +335,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         if(fin.isEmpty())
             return;
         
+        // If s is a definition, check if any assumptions have to be
+        // corrected.
         Pair pair = processDefinitionStmt(s);
 
         if(pair != null)
@@ -246,6 +353,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
             return;
         }
 
+        /* determine which nodes are reachable. */
+        
         boolean conservative = true;
         boolean fall = false;
         boolean branch = false;
@@ -267,6 +376,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
             if(constant instanceof TopConstant)
                 return;
 
+            /* determine whether to flow through or branch */
+            
             conservative = false;
 
             Constant trueC = IntConstant.v(1);
@@ -305,6 +416,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
             // flow all branches
             if(!(keyC instanceof IntConstant))
                 break TABLESWITCHSTMT;
+
+            /* find the one branch we need to flow to */
 
             conservative = false;
             
@@ -347,6 +460,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
             // flow all branches
             if(!(keyC instanceof IntConstant))
                 break LOOKUPSWITCHSTMT;
+
+            /* find the one branch we need to flow to */
 
             conservative = false;
             
@@ -395,7 +510,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
     }
 
     /**
-     * Returns null or (Unit, Constant) pair if something has changed.
+     * Returns null or (Unit, Constant) pair if an assumption has
+     * changed due to the fact that u is reachable.
      **/
     protected Pair processDefinitionStmt(Unit u)
     {
@@ -426,8 +542,10 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
     }
     
     /**
-     * Returns true if the merge changed anything in the corrected
-     * assumptions about local, and false otherwise.
+     * Verifies if the given assumption "constant" changes the
+     * previous assumption about "local" and merges the information
+     * into the localToConstant map.  Returns true if something
+     * changed.
      **/
     protected boolean merge(Local local, Constant constant)
     {

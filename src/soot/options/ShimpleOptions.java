@@ -63,8 +63,8 @@ public class ShimpleOptions
     
      * If enabled, Soot may print out warnings and 
      * messages useful for debugging the Shimple module. 
-     * Automatically enabled by the global debugging 
-     * option. 
+     * Automatically enabled by the global debug switch. 
+     * 
      */
     public boolean debug() {
         return soot.PhaseOptions.getBoolean( options, "debug" );

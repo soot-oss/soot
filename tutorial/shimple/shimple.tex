@@ -55,15 +55,15 @@ class describes Shimple bodies and
 provides the interface to Phi expressions.
 
 Use/Definition and Definition/Use chains for Shimple bodies can be
-obtained either from the accessor methods in ShimpleBody or with
+obtained with
 \htmladdnormallink{ShimpleLocalDefs}{http://www.sable.mcgill.ca/soot/doc/soot/shimple/toolkits/scalar/ShimpleLocalDefs.html}
 or
 \htmladdnormallink{ShimpleLocalUses}{http://www.sable.mcgill.ca/soot/doc/soot/shimple/toolkits/scalar/ShimpleLocalUses.html}
-in package soot.shimple.toolkits.scalar.
+available in package soot.shimple.toolkits.scalar.
 
-Available example analyses for Shimple currently include
-ShimpleLocalDefs, SEvaluator and SConstantPropagatorAndFolder in
-package
+Currently, the only Shimple optimization available is the powerful,
+control flow aware, SConstantPropagatorAndFolder.  The latter as well
+as some simple Shimple analyses are available in package
 \htmladdnormallink{soot.shimple.toolkits.scalar}{http://www.sable.mcgill.ca/soot/doc/soot/shimple/toolkits/scalar/package-summary.html}.
 Please consult the Soot source for details.
 
@@ -80,20 +80,18 @@ For fun, you may wish to run Shimple from the command-line and study
 its output.  Consider the following (compiled) Java code:
 
 \begin{verbatim}
-public class ShimpleTest
+public int test()
 {
-   public boolean doIt;
+    int x = 100;
+        
+    while(doIt){
+        if(x < 200)
+            x = 100;
+        else
+            x = 200;
+    }
 
-   public int test(){
-     int i = 0;
-
-     if (doIt)
-         i = 1000;
-     else
-         i = 1000;
-
-     return i;
-   }
+    return x;
 }
 \end{verbatim}
 
@@ -104,16 +102,21 @@ If you produce Jimple with
 for the {\tt test()} method:
 
 \begin{verbatim}
-        z0 = 0;
-        if $z1 == 0 goto label0;
-
-        i0 = 1000;
-        goto label1;
+        i0 = 100;
+        goto label2;
 
      label0:
-        i0 = 1000;
+        if i0 >= 200 goto label1;
+
+        i0 = 100;
+        goto label2;
 
      label1:
+        i0 = 200;
+
+     label2:
+        if $z0 != 0 goto label0;
+
         return i0;
 \end{verbatim}
 
@@ -122,31 +125,36 @@ for the {\tt test()} method:
 To produce Shimple instead, use {\tt soot.Main -f shimple ShimpleTest}:
 
 \begin{verbatim}
-        z0 = 0;
-        if $z1 == 0 goto label0;
-
-        i0 = 1000;
-(0)     goto label1;
+        i0 = 100;
+(0)     goto label2;
 
      label0:
-(1)     i0_1 = 1000;
+        if i0_1 >= 200 goto label1;
+
+        i0_2 = 100;
+(1)     goto label2;
 
      label1:
-        i0_2 = Phi(i0 #0, i0_1 #1);
-        return i0_2;
+(2)     i0_3 = 200;
+
+     label2:
+        i0_1 = Phi(i0 #0, i0_3 #2, i0_2 #1);
+        if $z0 != 0 goto label0;
+
+        return i0_1;
 \end{verbatim}
 
 The difference between the Jimple and Shimple output is that the
 latter guarantees unique local definition points in the program (for
 scalars).  Notice here that the variable {\tt i0} has been split into
-the three variables {\tt i0}, {\tt i0\_1}, and {\tt i0\_2}, each with a
-unique definition point.
+the four variables {\tt i0}, {\tt i0\_1}, {\tt i0\_2} and {\tt i0\_3},
+each with a unique definition point.
 
-We have also introduced a Phi node.  You can read {\tt i0\_2 = Phi(i0
-\#0, i0\_1 \#1)} as saying that {\tt i0\_2} will be assigned {\tt i0}
-(that is, {\tt i0\_2 = i0}) if control flow comes from unit {\tt \#0},
-{\em or} it will be assigned {\tt i0\_1} (that is, {\tt i0\_2 = i1})
-if control flow comes from unit {\tt \#1}.
+We have also introduced a Phi node.  You can read {\tt i0\_1 = Phi(i0
+\#0, i0\_3 \#2, i0\_2 \#1)} as saying that {\tt i0\_1} will be assigned
+value {\tt i0} if control flow comes from unit {\tt \#0} {\em or} it
+will be assigned {\tt i0\_3} if control flow comes from unit {\tt
+\#2} {\em or}... and so on.
 
 If you have a prejudice against variable names with underscores, you
 may use {\tt soot.Main -f shimple -p shimple standard-local-names
@@ -159,8 +167,9 @@ subsection.
 \subsubsection{A Digression on Shimple Pointers}
 
 Because Soot represents the body of a method internally as a Unit
-chain, we need to store the explicit pointers {\tt \#0} and {\tt \#1} to
-keep track of the control flow predecessors of the Phi statements.
+chain, we need to store explicit pointers (such as {\tt \#0} and {\tt
+\#1} in the above example) to keep track of the control flow
+predecessors of the Phi statements.
 
 Shimple's internal implementation of PatchingChain attempts to move
 and maintain these pointers in a manner that will be as transparent as
@@ -196,16 +205,22 @@ Shimple and back again to Jimple.  Do this with {\tt java soot.Main -f
 jimple --via-shimple ShimpleTest}:
 
 \begin{verbatim}
-        if $z1 == 0 goto label0;
-
-        i0_2 = 1000;
-        goto label1;
+        i0_1 = 100;
+        goto label2;
 
      label0:
-        i0_2 = 1000;
+        if i0_1 >= 200 goto label1;
+
+        i0_1 = 100;
+        goto label2;
 
      label1:
-        return i0_2;
+        i0_1 = 200;
+
+     label2:
+        if $z0 != 0 goto label0;
+
+        return i0_1;
 \end{verbatim}
 
 Happily, in this case, the Jimple produced looks exactly like the
@@ -218,19 +233,25 @@ nodes, you can tell it to eliminate them naively with {\tt soot.Main
 -f jimple --via-shimple -p shimple phi-elim-opt:none ShimpleTest}:
 
 \begin{verbatim}
-        z0 = 0;
-        if $z1 == 0 goto label0;
-
-        i0 = 1000;
-        i0_2 = i0;
-        goto label1;
+        i0 = 100;
+        i0_1 = i0;
+        goto label2;
 
      label0:
-        i0_1 = 1000;
-        i0_2 = i0_1;
+        if i0_1 >= 200 goto label1;
+
+        i0_2 = 100;
+        i0_1 = i0_2;
+        goto label2;
 
      label1:
-        return i0_2;
+        i0_3 = 200;
+        i0_1 = i0_3;
+
+     label2:
+        if $z0 != 0 goto label0;
+
+        return i0_1;
 \end{verbatim}
 
 Now you can see that all Shimple did was to replace the Phi nodes
@@ -240,87 +261,93 @@ with equivalent copy statements.
 
 So, what good is Shimple?  
 
-If you were paying attention, you may have noticed that in this
-example, no matter which control flow path is taken, variable {\tt i}
-is assigned a value of 1000 and is used by a single {\tt return}
-statement.  In other words, {\tt i} is a constant and is otherwise
-quite useless.  Obviously, this needs to be optimized away.
+If you were paying attention, you may have noticed that despite the
+control flow and different assignments to {\tt x}, {\tt x} is in fact
+a constant 100 and is only ever used by a single return statement.  In
+other words, {\tt x} is a constant and all the computations are quite
+useless.  Obviously, this needs to be optimized away.
 
 Let's try to apply Jimple's Constant Propagator and Folder.  In fact,
 to be fair, let's try all the available  Jimple optimizations activated
-with {\tt soot.Main -f jimple -p jop on ShimpleTest}:
+with {\tt soot.Main -f jimple -O ShimpleTest}:
 
 \begin{verbatim}
-        if $z1 == 0 goto label0;
 
-        i0 = 1000;
-        goto label1;
+        i0 = 100;
+        goto label2;
 
      label0:
-        i0 = 1000;
+        if i0 >= 200 goto label1;
+
+        i0 = 100;
+        goto label2;
 
      label1:
+        i0 = 200;
+
+     label2:
+        if $z0 != 0 goto label0;
+
         return i0;
 \end{verbatim}
 
-As you can see in this case, the Jimple optimizations had trouble
-tracking the control flow and failed to deduce that {\tt i} is a
-constant.  Shimple, on the other hand, encodes control flow
-information explicitly in the Phi nodes thereby allowing optimizations
-to make use of the information.
+As you can see in this case, the Jimple optimizations failed to deduce
+that {\tt x} is a constant and that the assignments and computations
+are quite useless.  Jimple may be forgiven for this since reasoning
+about control flow is not always an easy task to automate.  Shimple,
+on the other hand, encodes control flow information explicitly in the
+Phi nodes thereby allowing optimizations to make use of the
+information.
 
-Currently, the only optimization we have specifically implemented for
-Shimple is a fairly naive and literal version of the constant
-propagation algorithm sketched by the Cytron et el.  Let's apply it
-with {\tt soot.Main -f jimple --via-shimple -p sop on ShimpleTest}:
+Currently, the only optimization we have implemented specifically for
+Shimple is a version of the powerful constant propagation algorithm
+sketched by the Cytron et el.  The implementation can reason about
+control flow and can currently handle the conditional branching
+statements {\tt IfStmt}, {\tt TableSwitchStmt} and {\tt
+LookupSwitchStmt}.
+
+Let's apply it with {\tt soot.Main -f jimple --via-shimple -O ShimpleTest}:
 
 \begin{verbatim}
-        if $z1 == 0 goto label0;
-
-        goto label0;
-
      label0:
-        return 1000;
+        if $z0 != 0 goto label0;
+
+        return 100;
 \end{verbatim}
 
-Et voila, Shimple optimized out the {\tt i} variable completely and
-replaced it with a constant.  What happened is that the optimization
-propagated the constants to the Phi node and then noticed that the
-Phi node was useless (because it made a selection from identical
-values) and therefore trimmed it out.
+Et voila, Shimple optimized out the {\tt x} variable completely. What
+happened is that the optimization propagated reachable definitions to
+the Phi node and then noticed that the Phi node was useless (because
+it made a selection from identical values) and therefore trimmed it
+out.  In the process, dead code was exposed which was ultimately
+eliminated.
 
 To understand what is really going on, you can look at the output from
-{\tt soot.Main -f shimple -p sop on} and {\tt soot.Main -f jimple
---via-shimple -p shimple phi-elim-opt:none -p sop on} on this and
-other examples.
-
-Although this example isn't sufficiently complex to be all that
-interesting (a Jimple-based analysis could easily detect and handle
-this particular case), once control flow gets more elaborate, the
-SSA-based analysis will really start to win out.  
-
-Perhaps you would like to experiment with slightly less simple 
-examples and see how well the Shimple optimization fares:
+{\tt soot.Main -f shimple -p sop on}, {\tt soot.Main -f shimple -p sop
+on -p sop.cpf prune-cfg:false} and {\tt soot.Main -f jimple
+--via-shimple -p shimple phi-elim-opt:none -p sop on -p
+prune-cfg:false} on this and other examples:
 
 \begin{verbatim}
-public class ShimpleTest
+public int test2()
 {
-   public boolean doIt, stopIt;
+    int i = 1000;
+    int j = 1000;
 
-   public int test(){
-     int i = 1000;
-     int j = 1000;
+    while(doIt){
+        if(i == j){
+            if(anotherIt)
+                i = j;
+            else
+                j = i;
+        }
+        else{
+            i = 5;
+            j = 6;
+        }
+    }
 
-     while(doIt != stopIt)
-     {
-        if (doIt)
-           i = j;
-        else
-           j = i;
-     }
-
-     return i + j;
-   }
+    return i + j;
 }
 \end{verbatim}
 
@@ -425,6 +452,12 @@ non-exceptional context to an exceptional context.
 This is not a big problem for most people unless an exotic code motion
 algorithm (currently non-existent in Soot) attempts to move the
 definition of {\tt value} below the if statement for some reason.
+
+\section*{History}
+\begin{itemize}
+\item June 6, 2003: Initial version.
+\item June 17, 2003: Updated for Soot 2.0.1.
+\end{itemize}
 
 \end{document}
 
