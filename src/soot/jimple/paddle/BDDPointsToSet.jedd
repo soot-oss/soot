@@ -21,13 +21,14 @@ package soot.jimple.paddle;
 import soot.*;
 import java.util.*;
 import soot.jimple.paddle.bdddomains.*;
+import jedd.*;
 
 /** Implementation of PointsToSet providing an interface to a BDD of AllocNodes.
  * @author Ondrej Lhotak
  */
 public class BDDPointsToSet extends PointsToSetReadOnly {
-    final private <obj:H1> bdd;
-    public BDDPointsToSet( <obj:H1> bdd ) {
+    final private <objc, obj:H1> bdd;
+    public BDDPointsToSet( <objc, obj:H1> bdd ) {
         super(null);
         this.bdd = bdd;
     }
@@ -40,17 +41,17 @@ public class BDDPointsToSet extends PointsToSetReadOnly {
     }
     /** Calls v's visit method on all nodes in this set. */
     public boolean forall(P2SetVisitor v) {
-        Iterator it = bdd.iterator();
+        Iterator it = bdd.iterator( new Attribute[] { objc.v(), obj.v() } );
         while( it.hasNext() ) {
-            AllocNode an = (AllocNode) it.next();
-            v.visit(an);
+            Object[] item = (Object[]) it.next();
+            v.visit(ContextAllocNode.make((Context) item[0], (AllocNode) item[1]));
         }
         return v.getReturnValue();
     }
 
     /** Returns true iff the set contains n. */
-    public boolean contains( Node n ) {
-        return 0B != new {n=>obj}{obj} >< bdd{obj};
+    public boolean contains( ContextAllocNode n ) {
+        return 0B != new{n=>obj}{obj} >< bdd{obj};
     }
 
     /* End of public methods. */

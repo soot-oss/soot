@@ -26,16 +26,20 @@ import soot.jimple.paddle.queue.*;
  */
 public abstract class AbsContextCallGraphBuilder 
 { 
-    protected Rctxt_method in;
+    protected Rctxt_method methodsIn;
+    protected Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesIn;
     protected Qsrcc_srcm_stmt_kind_tgtc_tgtm out;
     protected AbsCallGraph cicg;
-    AbsContextCallGraphBuilder( Rctxt_method in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out,
+    AbsContextCallGraphBuilder( Rctxt_method methodsIn,
+            Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesIn,
+            Qsrcc_srcm_stmt_kind_tgtc_tgtm out,
             AbsCallGraph cicg ) {
-        this.in = in;
+        this.edgesIn = edgesIn;
+        this.methodsIn = methodsIn;
         this.out = out;
         this.cicg = cicg;
     }
-    public abstract void update();
+    public abstract boolean update();
 }
 
 

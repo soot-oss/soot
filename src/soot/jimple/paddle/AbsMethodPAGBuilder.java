@@ -45,7 +45,6 @@ public abstract class AbsMethodPAGBuilder
         this.alloc = alloc;
     }
     public abstract void update();
-    public abstract MethodPAG v( SootMethod m );
 }
 
 

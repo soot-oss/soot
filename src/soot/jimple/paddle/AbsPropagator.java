@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
+ * Copyright (C) 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,18 +26,18 @@ import soot.jimple.paddle.queue.*;
  */
 public abstract class AbsPropagator
 { 
-    protected Rsrc_dst newSimple;
-    protected Rsrc_fld_dst newLoad;
-    protected Rsrc_fld_dst newStore;
-    protected Robj_var newAlloc;
-    protected Qvar_obj ptout;
+    protected Rsrcc_src_dstc_dst newSimple;
+    protected Rsrcc_src_fld_dstc_dst newLoad;
+    protected Rsrcc_src_fld_dstc_dst newStore;
+    protected Robjc_obj_varc_var newAlloc;
+    protected Qvarc_var_objc_obj ptout;
     protected AbsPAG pag;
 
-    AbsPropagator( Rsrc_dst simple,
-            Rsrc_fld_dst load,
-            Rsrc_fld_dst store,
-            Robj_var alloc,
-            Qvar_obj ptout,
+    AbsPropagator( Rsrcc_src_dstc_dst simple,
+            Rsrcc_src_fld_dstc_dst load,
+            Rsrcc_src_fld_dstc_dst store,
+            Robjc_obj_varc_var alloc,
+            Qvarc_var_objc_obj ptout,
             AbsPAG pag
         ) {
         this.newSimple = simple;

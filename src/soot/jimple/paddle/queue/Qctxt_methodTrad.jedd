@@ -44,6 +44,6 @@ public class Qctxt_methodTrad extends Qctxt_method {
         }
     }
     public Rctxt_method reader( String rname ) {
-        return new Rctxt_methodTrad( q.reader(), rname );
+        return new Rctxt_methodTrad( q.reader(), name+":"+rname );
     }
 }

@@ -41,7 +41,7 @@ public class EmptyPointsToSet extends PointsToSetReadOnly {
         return false;
     }
     /** Returns true iff the set contains n. */
-    public boolean contains( Node n ) {
+    public boolean contains( ContextAllocNode n ) {
         return false;
     }
 

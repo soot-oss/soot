@@ -31,19 +31,23 @@ import java.util.*;
  */
 public class TradStaticCallBuilder extends AbsStaticCallBuilder
 { 
-    TradStaticCallBuilder( Rctxt_method in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out, Qlocal_srcm_stmt_signature_kind receivers, Qlocal_srcm_stmt_tgtm specials ) {
+    TradStaticCallBuilder( Rctxt_method in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out, Qvar_srcm_stmt_signature_kind receivers, Qvar_srcm_stmt_tgtm specials ) {
         super( in, out, receivers, specials );
     }
-    public void update() {
+    private boolean change;
+    public boolean update() {
+        change = false;
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rctxt_method.Tuple t = (Rctxt_method.Tuple) tIt.next();
             SootMethod m = t.method();
             if( m.isNative() || m.isPhantom() ) continue;
             processMethod( m );
         }
+        return change;
     }
 
     protected void processMethod( SootMethod source ) {
+        MethodNodeFactory mnf = new MethodNodeFactory(source);
         final SootClass scl = source.getDeclaringClass();
         if( source.isNative() || source.isPhantom() ) return;
         if( source.getSubSignature().indexOf( "<init>" ) >= 0 ) {
@@ -62,20 +66,23 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                     Scene.v().getUnitNumberer().add(s);
 
                     InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-                    Local receiver = (Local) iie.getBase();
+                    VarNode receiver = (VarNode) mnf.getNode(iie.getBase());
                     if( ie instanceof SpecialInvokeExpr ) {
                         SootMethod tgt = VirtualCalls.v().resolveSpecial(
                                 (SpecialInvokeExpr) ie,
                                 ie.getMethod().getNumberedSubSignature(),
                                 source );
                         specials.add( receiver, source, s, tgt );
+                        change = true;
                     } else {
                         NumberedString subSig = 
                             iie.getMethod().getNumberedSubSignature();
 
                         receivers.add( receiver, source, s, subSig, Edge.ieToKind(iie) );
+                        change = true;
                         if( subSig == sigStart ) {
                             receivers.add( receiver, source, s, sigRun, Kind.THREAD ); 
+                            change = true;
                         }
                     }
 
@@ -88,8 +95,9 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                     ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>" )
                     ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>" ) ) {
 
-                        Local receiver = (Local) ie.getArg(0);
+                        VarNode receiver = (VarNode) mnf.getNode(ie.getArg(0));
                         receivers.add( receiver, source, s, sigObjRun, Kind.PRIVILEGED );
+                        change = true;
                     }
                 }
                 
@@ -137,7 +145,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                         String cls = ((StringConstant) className ).value;
                         constantForName( cls, source, s );
                     } else {
-                        Local constant = (Local) className;
+                        VarNode constant = (VarNode) mnf.getNode(className);
                         if( options.safe_forname() ) {
                             for( Iterator tgtIt = EntryPoints.v().clinits().iterator(); tgtIt.hasNext(); ) {
                                 final SootMethod tgt = (SootMethod) tgtIt.next();
@@ -145,6 +153,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                             }
                         } else {
                             receivers.add( constant, source, s, null, Kind.CLINIT );
+                            change = true;
                         }
                     }
                 }
@@ -186,6 +195,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
     protected void addEdge( SootMethod src, Stmt stmt, SootMethod tgt, Kind kind ) {
         Scene.v().getUnitNumberer().add(stmt);
         out.add( null, src, stmt, kind, null, tgt );
+        change = true;
     }
 
     protected void handleInit(SootMethod source, final SootClass scl) {

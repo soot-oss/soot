@@ -19,34 +19,62 @@
 
 package soot.jimple.paddle;
 import soot.*;
+import java.util.*;
 
 /** Represents an alloc-site-dot-field node (Yellow) in the pointer
  * assignment graph.
  * @author Ondrej Lhotak
  */
 public class AllocDotField extends Node {
+    /** Returns all context var nodes having this node as their base. */
+    public Iterator contexts() { 
+        return new Iterator() {
+            private ContextAllocDotField cvn = contextNodes;
+            public boolean hasNext() { return cvn != null; }
+            public Object next() { 
+                if( cvn == null ) throw new NoSuchElementException();
+                Object ret = cvn;
+                cvn = cvn.nextByContext;
+                return ret;
+            }
+            public void remove() { throw new UnsupportedOperationException(); }
+        };
+    }
     /** Returns the base AllocNode. */
-    public AllocNode getBase() { return base; }
+    public AllocNode base() { return base; }
     /** Returns the field of this node. */
-    public PaddleField getField() { return field; }
+    public PaddleField field() { return field; }
     public String toString() {
-	return "AllocDotField "+getNumber()+" "+base+"."+field;
+	return "AllocDotField "+base+"."+field;
     }
 
     /* End of public methods. */
 
+    public static AllocDotField get( AllocNode base, PaddleField field ) {
+        return PaddleScene.v().nodeManager().get(base, field);
+    }
+    public static AllocDotField make( AllocNode base, PaddleField field ) {
+        return PaddleScene.v().nodeManager().make(base, field);
+    }
     AllocDotField( AllocNode base, PaddleField field ) {
-	super( null );
 	if( field == null ) throw new RuntimeException( "null field" );
 	this.base = base;
 	this.field = field;
-	base.addField( this, field );
+	base.addField(this);
         PaddleNumberers.v().allocDotFieldNumberer().add( this );
+    }
+
+    public Type getType() { return null; }
+    void addContext( ContextAllocDotField cvn ) {
+        cvn.nextByContext = contextNodes;
+        contextNodes = cvn;
     }
 
     /* End of package methods. */
 
     protected AllocNode base;
     protected PaddleField field;
+    protected ContextAllocDotField contextNodes = null;
+    AllocDotField nextByField = null;
 }
 

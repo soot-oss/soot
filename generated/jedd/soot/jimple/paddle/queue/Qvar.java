@@ -26,4 +26,6 @@ public abstract class Qvar {
     public abstract Rvar reader(String rname);
     
     public Rvar revreader(String rname) { return this.reader(rname); }
+    
+    public void add(Rvar.Tuple in) { this.add(in.var()); }
 }

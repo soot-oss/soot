@@ -48,6 +48,6 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad extends Qsrcc_srcm_stmt_kind_tgt
         }
     }
     public Rsrcc_srcm_stmt_kind_tgtc_tgtm reader( String rname ) {
-        return new Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad( q.reader(), rname );
+        return new Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad( q.reader(), name+":"+rname );
     }
 }

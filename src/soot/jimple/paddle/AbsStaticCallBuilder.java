@@ -32,16 +32,16 @@ public abstract class AbsStaticCallBuilder
 { 
     protected Rctxt_method in;
     protected Qsrcc_srcm_stmt_kind_tgtc_tgtm out;
-    protected Qlocal_srcm_stmt_signature_kind receivers;
-    protected Qlocal_srcm_stmt_tgtm specials;
+    protected Qvar_srcm_stmt_signature_kind receivers;
+    protected Qvar_srcm_stmt_tgtm specials;
     protected CGOptions options;
-    AbsStaticCallBuilder( Rctxt_method in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out, Qlocal_srcm_stmt_signature_kind receivers, Qlocal_srcm_stmt_tgtm specials ) {
+    AbsStaticCallBuilder( Rctxt_method in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out, Qvar_srcm_stmt_signature_kind receivers, Qvar_srcm_stmt_tgtm specials ) {
         this.in = in;
         this.out = out;
         this.receivers = receivers;
         this.specials = specials;
         this.options = new CGOptions( PhaseOptions.v().getPhaseOptions( "cg" ) );
     }
-    public abstract void update();
+    public abstract boolean update();
 }
 

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,22 +21,59 @@ package soot.jimple.paddle;
 import soot.*;
 import java.util.*;
 
-/** Represents a simple variable node with context.
+/** A pair of a node with a context.
  * @author Ondrej Lhotak
  */
-public class ContextVarNode extends LocalVarNode {
-    private Context context;
-    public Context context() { return context; }
-    public String toString() {
-	return "ContextVarNode "+getNumber()+" "+variable+" "+method+" "+context;
+public class ContextVarNode extends ContextNode implements Comparable {
+    /** Returns all field ref nodes having this node as their base. */
+    public Iterator fields() { 
+        return new Iterator() {
+            private ContextFieldRefNode frn = fieldNodes;
+            public boolean hasNext() { return frn != null; }
+            public Object next() { 
+                if( frn == null ) throw new NoSuchElementException();
+                Object ret = frn;
+                frn = frn.nextByField;
+                return ret;
+            }
+            public void remove() { throw new UnsupportedOperationException(); }
+        };
+    }
+    public static ContextVarNode get( Context ctxt, VarNode node ) {
+        return PaddleScene.v().nodeManager().get(ctxt, node);
+    }
+    public static ContextVarNode make( Context ctxt, VarNode node ) {
+        return PaddleScene.v().nodeManager().make(ctxt, node);
+    }
+    ContextVarNode( Context ctxt, VarNode node ) {
+        super( ctxt, node );
+        setFinishingNumber( ++(PaddleScene.v().nodeManager().maxFinishNumber) );
+        node.addContextNode(this);
+        PaddleNumberers.v().contextVarNodeNumberer().add(this);
+    }
+    public VarNode var() { return (VarNode) node; }
+    public ContextFieldRefNode dot( PaddleField field ) {
+        return ContextFieldRefNode.get( ctxt, FieldRefNode.get( var(), field ) );
     }
 
-    /* End of public methods. */
-
-    ContextVarNode( NodeManager nm, LocalVarNode base, Context context ) {
-	super( nm, base.getVariable(), base.getType(), base.getMethod() );
-        this.context = context;
-        base.addContext( this, context );
+    public int compareTo( Object o ) {
+	ContextVarNode other = (ContextVarNode) o;
+        if( other.finishingNumber == finishingNumber && other != this ) {
+            G.v().out.println( "This is: "+this+" with id "+getNumber()+" and number "+finishingNumber );
+            G.v().out.println( "Other is: "+other+" with id "+other.getNumber()+" and number "+other.finishingNumber );
+            throw new RuntimeException("Comparison error" );
+        }
+	return other.finishingNumber - finishingNumber;
     }
+    public void setFinishingNumber( int i ) {
+        finishingNumber = i;
+        if( i > PaddleScene.v().nodeManager().maxFinishNumber ) PaddleScene.v().nodeManager().maxFinishNumber = i;
+    }
+    protected int finishingNumber = 0;
+    void addField( ContextFieldRefNode frn ) {
+        frn.nextByField = fieldNodes;
+        fieldNodes = frn;
+    }
+    protected ContextFieldRefNode fieldNodes;
+    ContextVarNode nextByContext = null;
 }
-

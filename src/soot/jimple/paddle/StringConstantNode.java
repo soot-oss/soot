@@ -19,7 +19,6 @@
 
 package soot.jimple.paddle;
 import soot.*;
-import java.util.*;
 
 /** Represents an allocation site node the represents a constant string.
  * @author Ondrej Lhotak

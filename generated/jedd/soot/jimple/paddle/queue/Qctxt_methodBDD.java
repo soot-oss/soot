@@ -29,8 +29,8 @@ public final class Qctxt_methodBDD extends Qctxt_method {
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rctxt_methodBDD reader = (Rctxt_methodBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
-                                                           new PhysicalDomain[] { V1.v(), T1.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { method.v(), ctxt.v() },
+                                                           new PhysicalDomain[] { T1.v(), V1.v() },
                                                            ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
                                                             "addle/queue/Qctxt_methodBDD.jedd:39,12-18"),
                                                            in));

@@ -25,25 +25,54 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public class AllocNode extends Node implements Context {
+    /** Returns all field ref nodes having this node as their base. */
+    public Iterator fields() { 
+        return new Iterator() {
+            private AllocDotField frn = fieldNodes;
+            public boolean hasNext() { return frn != null; }
+            public Object next() { 
+                if( frn == null ) throw new NoSuchElementException();
+                Object ret = frn;
+                frn = frn.nextByField;
+                return ret;
+            }
+            public void remove() { throw new UnsupportedOperationException(); }
+        };
+    }
+    /** Returns all context var nodes having this node as their base. */
+    public Iterator contexts() { 
+        return new Iterator() {
+            private ContextAllocNode cvn = contextNodes;
+            public boolean hasNext() { return cvn != null; }
+            public Object next() { 
+                if( cvn == null ) throw new NoSuchElementException();
+                Object ret = cvn;
+                cvn = cvn.nextByContext;
+                return ret;
+            }
+            public void remove() { throw new UnsupportedOperationException(); }
+        };
+    }
+
     /** Returns the new expression of this allocation site. */
     public Object getNewExpr() { return newExpr; }
-    /** Returns all field ref nodes having this node as their base. */
-    public Collection getAllFieldRefs() { 
-        if( fields == null ) return Collections.EMPTY_LIST;
-        return fields.values();
-    }
+    
     /** Returns the field ref node having this node as its base,
      * and field as its field; null if nonexistent. */
     public AllocDotField dot( PaddleField field ) 
-    { return fields == null ? null : (AllocDotField) fields.get( field ); }
+    { return AllocDotField.get( this, field ); }
     public String toString() {
-	return "AllocNode "+getNumber()+" "+newExpr+" in method "+method+" with type "+getType();
+	return "AllocNode "+getNumber()+" "+newExpr+" in method "+method;
+	//return "AllocNode "+newExpr+" in method "+method;
     }
+
+    public Type getType() { return type; }
+    protected Type type;
 
     /* End of public methods. */
 
     AllocNode( Object newExpr, Type t, SootMethod m ) {
-	super( t );
+	this.type = t;
         this.method = m;
         if( t instanceof RefType ) {
             RefType rt = (RefType) t;
@@ -56,20 +85,21 @@ public class AllocNode extends Node implements Context {
         PaddleNumberers.v().allocNodeNumberer().add( this );
     }
     /** Registers a AllocDotField as having this node as its base. */
-    void addField( AllocDotField adf, PaddleField field ) {
-	if( fields == null ) fields = new HashMap();
-        fields.put( field, adf );
+    void addField( AllocDotField adf ) {
+        adf.nextByField = fieldNodes;
+        fieldNodes = adf;
     }
 
-    public Set getFields() {
-        if( fields == null ) return Collections.EMPTY_SET;
-        return new HashSet( fields.values() );
+    void addContext( ContextAllocNode cvn ) {
+        cvn.nextByContext = contextNodes;
+        contextNodes = cvn;
     }
 
     /* End of package methods. */
 
     protected Object newExpr;
-    protected Map fields;
+    protected ContextAllocNode contextNodes = null;
+    protected AllocDotField fieldNodes = null;
 
     private SootMethod method;
     public SootMethod getMethod() { return method; }

@@ -26,13 +26,13 @@ import soot.jimple.paddle.queue.*;
  */
 public abstract class AbsVirtualContextManager 
 { 
-    protected Rctxt_local_obj_srcm_stmt_kind_tgtm in;
+    protected Rctxt_var_obj_srcm_stmt_kind_tgtm in;
     protected Qsrcc_srcm_stmt_kind_tgtc_tgtm out;
-    AbsVirtualContextManager( Rctxt_local_obj_srcm_stmt_kind_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
+    AbsVirtualContextManager( Rctxt_var_obj_srcm_stmt_kind_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
         this.in = in;
         this.out = out;
     }
-    abstract void update();
+    abstract boolean update();
 }
 
 

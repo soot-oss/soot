@@ -32,5 +32,5 @@ public class Qobj_varTrad extends Qobj_var {
         }
     }
     
-    public Robj_var reader(String rname) { return new Robj_varTrad(q.reader(), rname); }
+    public Robj_var reader(String rname) { return new Robj_varTrad(q.reader(), name + ":" + rname); }
 }

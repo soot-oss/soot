@@ -19,18 +19,18 @@
 
 package soot.jimple.paddle;
 import soot.*;
-import java.util.*;
 
 /** Represents a simple variable node (Green) in the pointer assignment graph
  * that is not associated with any particular method invocation.
  * @author Ondrej Lhotak
  */
 public class GlobalVarNode extends VarNode {
-    GlobalVarNode( NodeManager nm, Object variable, Type t ) {
-	super( nm, variable, t );
+    GlobalVarNode( Object variable, Type t ) {
+	super( variable, t );
     }
     public String toString() {
 	return "GlobalVarNode "+getNumber()+" "+variable;
+	//return "GlobalVarNode "+variable;
     }
 }
 

@@ -40,10 +40,10 @@ public final class SortedArraySet extends PointsToSetInternal {
         BitVector typeMask = PaddleScene.v().tm.get( type );
         if( other instanceof SortedArraySet ) {
             SortedArraySet o = (SortedArraySet) other;
-            Node[] mya = nodes;
-            Node[] oa = o.nodes;
+            ContextAllocNode[] mya = nodes;
+            ContextAllocNode[] oa = o.nodes;
             int osize = o.size;
-            Node[] newa = new Node[ size + osize ];
+            ContextAllocNode[] newa = new ContextAllocNode[ size + osize ];
             int myi = 0;
             int oi = 0;
             int newi = 0;
@@ -98,7 +98,7 @@ public final class SortedArraySet extends PointsToSetInternal {
         return v.getReturnValue();
     }
     /** Adds n to this set, returns true if n was not already in this set. */
-    public final boolean add( Node n ) {
+    public final boolean add( ContextAllocNode n ) {
         if( PaddleScene.v().tm.castNeverFails( n.getType(), type ) ) {
             if( contains(n) ) return false;
             int left = 0;
@@ -115,9 +115,9 @@ public final class SortedArraySet extends PointsToSetInternal {
                 } else break;
             }
             if( nodes == null ) {
-                nodes = new Node[size+4];
+                nodes = new ContextAllocNode[size+4];
             } else if( size == nodes.length ) {
-                Node[] newNodes = new Node[size+4];
+                ContextAllocNode[] newNodes = new ContextAllocNode[size+4];
                 System.arraycopy( nodes, 0, newNodes, 0, nodes.length );
                 nodes = newNodes;
             }
@@ -129,7 +129,7 @@ public final class SortedArraySet extends PointsToSetInternal {
         return false;
     }
     /** Returns true iff the set contains n. */
-    public final boolean contains( Node n ) {
+    public final boolean contains( ContextAllocNode n ) {
         int left = 0;
         int right = size;
         int hc = n.getNumber();
@@ -155,7 +155,7 @@ public final class SortedArraySet extends PointsToSetInternal {
     /* End of public methods. */
     /* End of package methods. */
 
-    private Node[] nodes = null;
+    private ContextAllocNode[] nodes = null;
     private int size = 0;
 }
 

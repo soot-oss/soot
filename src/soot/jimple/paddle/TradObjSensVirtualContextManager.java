@@ -28,14 +28,17 @@ import soot.*;
  */
 public class TradObjSensVirtualContextManager extends AbsVirtualContextManager
 { 
-    TradObjSensVirtualContextManager( Rctxt_local_obj_srcm_stmt_kind_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
+    TradObjSensVirtualContextManager( Rctxt_var_obj_srcm_stmt_kind_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
         super( in, out );
     }
-    public void update() {
+    public boolean update() {
+        boolean change = false;
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
-            final Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple t = (Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple) tIt.next();
+            final Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple t = (Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple) tIt.next();
             out.add( t.ctxt(), t.srcm(), t.stmt(), t.kind(), t.obj(), t.tgtm() );
+            change = true;
         }
+        return change;
     }
 }
 

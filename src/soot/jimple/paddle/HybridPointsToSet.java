@@ -158,20 +158,20 @@ public final class HybridPointsToSet extends PointsToSetInternal {
             if( n16 == null ) return v.getReturnValue(); v.visit( n16 );
         } else {
             for( BitSetIterator it = bits.iterator(); it.hasNext(); ) {
-                v.visit( (Node) PaddleNumberers.v().allocNodeNumberer().get( it.next() ) );
+                v.visit( (ContextAllocNode) PaddleNumberers.v().contextAllocNodeNumberer().get( it.next() ) );
             }
         }
         return v.getReturnValue();
     }
     /** Adds n to this set, returns true if n was not already in this set. */
-    public final boolean add( Node n ) {
+    public final boolean add( ContextAllocNode n ) {
         if( PaddleScene.v().tm.castNeverFails( n.getType(), type ) ) {
             return fastAdd( n );
         }
         return false;
     }
     /** Returns true iff the set contains n. */
-    public final boolean contains( Node n ) {
+    public final boolean contains( ContextAllocNode n ) {
         if( bits == null ) {
             if( n1 == n ) return true;
             if( n2 == n ) return true;
@@ -205,7 +205,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     /* End of public methods. */
     /* End of package methods. */
 
-    protected final boolean fastAdd( Node n ) {
+    protected final boolean fastAdd( ContextAllocNode n ) {
         if( bits == null ) {
             if( n1 == null ) { empty = false; n1 = n; return true; } if( n1 == n ) return false;
             if( n2 == null ) { empty = false; n2 = n; return true; } if( n2 == n ) return false;
@@ -232,7 +232,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
 
     protected final void convertToBits() {
         if( bits != null ) return;
-        bits = new BitVector( PaddleNumberers.v().allocNodeNumberer().size() );
+        bits = new BitVector( PaddleNumberers.v().contextAllocNodeNumberer().size() );
         if( n1 != null ) fastAdd( n1 );
         if( n2 != null ) fastAdd( n2 );
         if( n3 != null ) fastAdd( n3 );
@@ -251,22 +251,22 @@ public final class HybridPointsToSet extends PointsToSetInternal {
         if( n16 != null ) fastAdd( n16 );
     }
 
-    private Node n1 = null;
-    private Node n2 = null;
-    private Node n3 = null;
-    private Node n4 = null;
-    private Node n5 = null;
-    private Node n6 = null; 
-    private Node n7 = null; 
-    private Node n8 = null; 
-    private Node n9 = null; 
-    private Node n10 = null;
-    private Node n11 = null;
-    private Node n12 = null;
-    private Node n13 = null;
-    private Node n14 = null;
-    private Node n15 = null;
-    private Node n16 = null; 
+    private ContextAllocNode n1 = null;
+    private ContextAllocNode n2 = null;
+    private ContextAllocNode n3 = null;
+    private ContextAllocNode n4 = null;
+    private ContextAllocNode n5 = null;
+    private ContextAllocNode n6 = null; 
+    private ContextAllocNode n7 = null; 
+    private ContextAllocNode n8 = null; 
+    private ContextAllocNode n9 = null; 
+    private ContextAllocNode n10 = null;
+    private ContextAllocNode n11 = null;
+    private ContextAllocNode n12 = null;
+    private ContextAllocNode n13 = null;
+    private ContextAllocNode n14 = null;
+    private ContextAllocNode n15 = null;
+    private ContextAllocNode n16 = null; 
     private BitVector bits = null;
     private boolean empty = true;
 }

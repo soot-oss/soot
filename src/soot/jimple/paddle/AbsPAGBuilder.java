@@ -27,17 +27,17 @@ import soot.jimple.paddle.queue.*;
 public abstract class AbsPAGBuilder
 { 
     protected Rsrcc_srcm_stmt_kind_tgtc_tgtm in;
-    protected Qsrc_dst simple;
-    protected Qsrc_fld_dst load;
-    protected Qsrc_fld_dst store;
-    protected Qobj_var alloc;
+    protected Qsrcc_src_dstc_dst simple;
+    protected Qsrcc_src_fld_dstc_dst load;
+    protected Qsrcc_src_fld_dstc_dst store;
+    protected Qobjc_obj_varc_var alloc;
 
     AbsPAGBuilder( 
         Rsrcc_srcm_stmt_kind_tgtc_tgtm in,
-        Qsrc_dst simple,
-        Qsrc_fld_dst load,
-        Qsrc_fld_dst store,
-        Qobj_var alloc ) {
+        Qsrcc_src_dstc_dst simple,
+        Qsrcc_src_fld_dstc_dst load,
+        Qsrcc_src_fld_dstc_dst store,
+        Qobjc_obj_varc_var alloc ) {
         this.in = in;
         this.simple = simple;
         this.load = load;

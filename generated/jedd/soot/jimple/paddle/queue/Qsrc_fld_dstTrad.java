@@ -22,8 +22,8 @@ public class Qsrc_fld_dstTrad extends Qsrc_fld_dst {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v(), fld.v() },
-                                              new PhysicalDomain[] { V2.v(), V1.v(), FD.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { dst.v(), fld.v(), src.v() },
+                                              new PhysicalDomain[] { V2.v(), FD.v(), V1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/queue/Qsrc_fld_dstTrad.jedd:39,2" +
                                                "2-24"),
@@ -34,5 +34,5 @@ public class Qsrc_fld_dstTrad extends Qsrc_fld_dst {
         }
     }
     
-    public Rsrc_fld_dst reader(String rname) { return new Rsrc_fld_dstTrad(q.reader(), rname); }
+    public Rsrc_fld_dst reader(String rname) { return new Rsrc_fld_dstTrad(q.reader(), name + ":" + rname); }
 }

@@ -27,18 +27,20 @@ import soot.util.*;
  */
 public class ContextStringNumberer implements Numberer
 { 
-    private final static int SHIFT_WIDTH = 15;
+    private final static int SHIFT_WIDTH = 14;
     private final static int MAX_ITEM = 1<<SHIFT_WIDTH;
     private Numberer contextNumberer;
-    private int k;
+    private final int k;
+    private final int nullNum;
     public ContextStringNumberer( Numberer contextNumberer, int k ) {
         this.contextNumberer = contextNumberer;
         this.k = k;
+        nullNum = 1<<(k*SHIFT_WIDTH);
     }
     public void add( Object o ) {
     }
     public int get( Object o ) {
-        if( o == null ) return 0;
+        if( o == null ) return nullNum;
         ContextString cs = (ContextString) o;
         int ret = 0;
         for( int i = k-1; i >= 0; i-- ) {
@@ -50,6 +52,7 @@ public class ContextStringNumberer implements Numberer
         return ret;
     }
     public Object get( int num ) {
+        if( num == nullNum ) return null;
         Context[] ret = new Context[k];
         for( int i = 0; i < k; i++ ) {
             ret[i] = (Context) contextNumberer.get(num & MAX_ITEM-1);

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
+ * Copyright (C) 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,13 +31,13 @@ import jedd.*;
  */
 
 public final class PropBDD extends AbsPropagator {
-    public PropBDD(  Rsrc_dst simple, Rsrc_fld_dst load, Rsrc_fld_dst store,
-            Robj_var alloc, Qvar_obj propout, AbsPAG pag ) {
+    public PropBDD(  Rsrcc_src_dstc_dst simple, Rsrcc_src_fld_dstc_dst load, Rsrcc_src_fld_dstc_dst store,
+            Robjc_obj_varc_var alloc, Qvarc_var_objc_obj propout, AbsPAG pag ) {
         super( simple, load, store, alloc, propout, pag );
     }
 
-    <var:V1, obj:H1> pointsTo = 0B;
-    <base:H1, fld:FD, obj:H2> fieldPt = 0B;
+    <varc:C1, var, objc:C2, obj> pointsTo = 0B;
+    <basec:C1, base, fld, objc:C2, obj> fieldPt = 0B;
 
     /** Actually does the propagation. */
     /*
@@ -69,7 +69,7 @@ public final class PropBDD extends AbsPropagator {
 
             // repeat rule (1) in the inner loop
             do {
-                newPointsTo = (dst => var) pag.allSimple().get() {src} <> newPointsTo {var};
+                newPointsTo = (dst=>var) pag.allSimple().get() {src} <> newPointsTo {var};
                 newPointsTo -= pointsTo;
                 newPointsTo &= typeManager.get();
                 pointsTo |= newPointsTo;
@@ -92,14 +92,14 @@ public final class PropBDD extends AbsPropagator {
             PaddleScene.v().updateCallGraph();
 
             // apply rule (2)
-            objectsBeingStored = (dst => var) pag.allStore().get() {src} <> newPointsTo {var};
+            objectsBeingStored = (dst=>var) pag.allStore().get() {src} <> newPointsTo {var};
                                           
             newStorePt = objectsBeingStored - oldStorePt;
             oldStorePt |= newStorePt;
 
-            newFieldPt = oldStorePt {var} <> (obj => base) newPointsTo {var};
+            newFieldPt = oldStorePt {var} <> (obj=>base) newPointsTo {var};
 
-            tmpFieldPt = newStorePt {var} <> (obj => base) oldPointsTo {var};
+            tmpFieldPt = newStorePt {var} <> (obj=>base) oldPointsTo {var};
             newFieldPt |= tmpFieldPt;
                                   
             newFieldPt -= fieldPt;
@@ -107,12 +107,12 @@ public final class PropBDD extends AbsPropagator {
 
 
             // apply rule (3)
-            loadsFromHeap = pag.allLoad().get() {src} <> (obj => base) newPointsTo {var};
+            loadsFromHeap = pag.allLoad().get() {src} <> (obj=>base) newPointsTo {var};
 
             loadsFromHeap -= loadAss;
                                      
-            newPointsTo = (dst => var) loadAss {base,fld} <> newFieldPt {base,fld};
-            tmpPointsTo = (dst => var) loadsFromHeap {base,fld} <> fieldPt {base,fld};
+            newPointsTo = (dst=>var) loadAss {base,fld} <> newFieldPt {base,fld};
+            tmpPointsTo = (dst=>var) loadsFromHeap {base,fld} <> fieldPt {base,fld};
             newPointsTo |= tmpPointsTo;
 
             // cache loadAss
@@ -144,15 +144,15 @@ public final class PropBDD extends AbsPropagator {
     */
 
     public final void update() {
-        <var:V1, obj:H1> oldPointsTo = 0B;
-        <var:V1, obj:H1> veryOldPointsTo = 0B;
-        <var:V1, obj:H1> outputtedPointsTo = 0B;
+        final <varc, objc> allContexts = 1B;
+        <varc, var, objc, obj> oldPointsTo = 0B;
+        <varc, var, objc, obj> veryOldPointsTo = 0B;
+        <varc, var, objc, obj> outputtedPointsTo = 0B;
 
-        <obj:H2, var:V1, fld:FD> objectsBeingStored;
-        <obj:H2, var:V1, fld:FD> oldStorePt = 0B;
+        <objc:C3, obj, varc, var, fld> objectsBeingStored;
 
         // The objects pointed to by base.fld are being loaded into dst
-        <base:H1, fld:FD, dst:V2> loadsFromHeap = 0B;
+        <basec, base, fld, dstc:C3, dst> loadsFromHeap = 0B;
 
         final AbsTypeManager typeManager = PaddleScene.v().tm;
 
@@ -161,13 +161,15 @@ public final class PropBDD extends AbsPropagator {
 
             veryOldPointsTo = pointsTo;
 
-            pointsTo |= newAlloc.get() & typeManager.get();
+            pointsTo |= newAlloc.get() & (typeManager.get(){} >< allContexts{});
 
             // repeat rule (1) in the inner loop
             do {
                 oldPointsTo = pointsTo;
-                pointsTo |= typeManager.get() & (
-                (dst => var) pag.allSimple().get() {src} <> pointsTo {var} );
+                pointsTo |= (typeManager.get(){} >< allContexts{}) &
+                ((dstc=>varc, dst=>var) (srcc=>C3)
+                            pag.allSimple().get() {srcc, src} 
+                                      <> pointsTo {varc, var} );
 
 
             } while( pointsTo != oldPointsTo );
@@ -178,17 +180,20 @@ public final class PropBDD extends AbsPropagator {
             PaddleScene.v().updateCallGraph();
 
             // apply rule (2)
-            objectsBeingStored = (dst => var) pag.allStore().get() {src} <> pointsTo {var};
+            objectsBeingStored = (dstc=>varc, dst=>var)
+                pag.allStore().get() {srcc, src} <> pointsTo {varc, var};
                                           
-            fieldPt |= objectsBeingStored {var} <> (obj=>base) pointsTo {var};
+            fieldPt |=            objectsBeingStored {varc, var} 
+                <> (objc=>basec, obj=>base) pointsTo {varc, var};
 
             // apply rule (3)
-            loadsFromHeap = pag.allLoad().get() {src} <> (obj => base) pointsTo {var};
+            loadsFromHeap = pag.allLoad().get() {srcc, src} <> (objc=>basec, obj=>base) pointsTo {varc, var};
 
-            pointsTo |= (dst => var) loadsFromHeap {base,fld} <> fieldPt {base,fld};
+            pointsTo |= (dstc=>varc, dst=>var) loadsFromHeap {basec,base,fld} 
+                                                  <> fieldPt {basec,base,fld};
 
             // apply typeFilter
-            pointsTo &= typeManager.get();
+            pointsTo &= typeManager.get(){} >< allContexts{};
             
             ptout.add( pointsTo - outputtedPointsTo );
             outputtedPointsTo = pointsTo;

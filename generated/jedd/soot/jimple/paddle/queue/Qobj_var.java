@@ -26,4 +26,6 @@ public abstract class Qobj_var {
     public abstract Robj_var reader(String rname);
     
     public Robj_var revreader(String rname) { return this.reader(rname); }
+    
+    public void add(Robj_var.Tuple in) { this.add(in.obj(), in.var()); }
 }

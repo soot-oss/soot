@@ -27,19 +27,28 @@ import soot.jimple.paddle.bdddomains.*;
  */
 public class BDDContextCallGraphBuilder extends AbsContextCallGraphBuilder 
 { 
-    BDDContextCallGraphBuilder( Rctxt_method in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out,
-            AbsCallGraph cicg ) {
-        super( in, out, cicg );
+    BDDContextCallGraphBuilder( Rctxt_method methodsIn,
+        Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesIn,
+        Qsrcc_srcm_stmt_kind_tgtc_tgtm out,
+        AbsCallGraph cicg ) {
+        super( methodsIn, edgesIn, out, cicg );
     }
-    public void update() {
-        <ctxt, method> methods = in.get();
+    private <ctxt, method> m2c = 0B;
+    public boolean update() {
+        <srcc, srcm, stmt, kind, tgtc, tgtm> newEdges = edgesIn.get();
+        <srcc, srcm, stmt, kind, tgtc, tgtm> newOut =
+             (srcc=>) newEdges{srcm} >< (ctxt=>srcc) m2c{method};
+
+        <ctxt, method> methods = methodsIn.get();
         // get all edges out of all the methods, ignoring context
         Rsrcc_srcm_stmt_kind_tgtc_tgtm edges = cicg.edgesOutOf(
-            new Rctxt_methodBDD(
-                (ctxt=>) methods{} >< new { null=>ctxt } {},
-            "ccgb" ) );
+            new Rctxt_methodBDD( (ctxt=>) methods{} >< new{null=>ctxt}{},
+                "ccgb" ) );
         // add in the contexts as source contexts
-        out.add( (srcc=>) edges.get(){srcm} >< (ctxt=>srcc) methods{method} );
+        newOut |= (srcc=>) edges.get(){srcm} >< (ctxt=>srcc) methods{method};
+        out.add( newOut );
+        m2c |= methods;
+        return newOut != 0B;
     }
 }
 

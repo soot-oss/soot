@@ -32,7 +32,7 @@ public abstract class AbsStaticContextManager
         this.in = in;
         this.out = out;
     }
-    abstract void update();
+    abstract boolean update();
 }
 
 

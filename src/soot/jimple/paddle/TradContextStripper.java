@@ -28,14 +28,17 @@ import soot.*;
  */
 public class TradContextStripper extends AbsContextStripper 
 { 
-    TradContextStripper( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
+    TradContextStripper( Rctxt_method in, Qctxt_method out ) {
         super(in, out);
     }
-    void update() {
+    boolean update() {
+        boolean change = false;
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
-            final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
-            out.add( null, t.srcm(), t.stmt(), t.kind(), null, t.tgtm() );
+            final Rctxt_method.Tuple t = (Rctxt_method.Tuple) tIt.next();
+            out.add( null, t.method() );
+            change = true;
         }
+        return change;
     }
 }
 

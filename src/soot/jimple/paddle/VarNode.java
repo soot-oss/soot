@@ -18,65 +18,80 @@
  */
 
 package soot.jimple.paddle;
-import soot.jimple.paddle.*;
 import soot.*;
 import java.util.*;
 
 /** Represents a simple variable node (Green) in the pointer assignment graph.
  * @author Ondrej Lhotak
  */
-public abstract class VarNode extends Node implements Comparable {
-    public Context context() { return null; }
+public abstract class VarNode extends Node {
     /** Returns all field ref nodes having this node as their base. */
-    public Collection getAllFieldRefs() { 
-	if( fields == null ) return Collections.EMPTY_LIST;
-	return fields.values(); 
+    public Iterator fields() { 
+        return new Iterator() {
+            private FieldRefNode frn = fieldNodes;
+            public boolean hasNext() { return frn != null; }
+            public Object next() { 
+                if( frn == null ) throw new NoSuchElementException();
+                Object ret = frn;
+                frn = frn.nextByField;
+                return ret;
+            }
+            public void remove() { throw new UnsupportedOperationException(); }
+        };
     }
+    /** Returns all context var nodes having this node as their base. */
+    public Iterator contexts() { 
+        return new Iterator() {
+            private ContextVarNode cvn = contextNodes;
+            public boolean hasNext() { return cvn != null; }
+            public Object next() { 
+                if( cvn == null ) throw new NoSuchElementException();
+                Object ret = cvn;
+                cvn = cvn.nextByContext;
+                return ret;
+            }
+            public void remove() { throw new UnsupportedOperationException(); }
+        };
+    }
+
     /** Returns the field ref node having this node as its base,
      * and field as its field; null if nonexistent. */
     public FieldRefNode dot( PaddleField field ) 
-    { return fields == null ? null : (FieldRefNode) fields.get( field ); }
-    public int compareTo( Object o ) {
-	VarNode other = (VarNode) o;
-        if( other.finishingNumber == finishingNumber && other != this ) {
-            G.v().out.println( "This is: "+this+" with id "+getNumber()+" and number "+finishingNumber );
-            G.v().out.println( "Other is: "+other+" with id "+other.getNumber()+" and number "+other.finishingNumber );
-            throw new RuntimeException("Comparison error" );
-        }
-	return other.finishingNumber - finishingNumber;
-    }
-    public void setFinishingNumber( int i ) {
-        finishingNumber = i;
-        if( i > nm.maxFinishNumber ) nm.maxFinishNumber = i;
-    }
+    { return FieldRefNode.get( this, field ); }
     /** Returns the underlying variable that this node represents. */
     public Object getVariable() {
         return variable;
     }
 
+    public Type getType() { return type; }
+    protected Type type;
+
     /* End of public methods. */
 
-    VarNode( NodeManager nm, Object variable, Type t ) {
-	super( t );
+    VarNode( Object variable, Type t ) {
+	this.type = t;
 	if( !(t instanceof RefLikeType) || t instanceof AnySubType ) {
 	    throw new RuntimeException( "Attempt to create VarNode of type "+t );
 	}
 	this.variable = variable;
-	this.nm = nm;
         PaddleNumberers.v().varNodeNumberer().add(this);
-        setFinishingNumber( ++nm.maxFinishNumber );
     }
     /** Registers a frn as having this node as its base. */
-    void addField( FieldRefNode frn, PaddleField field ) {
-	if( fields == null ) fields = new HashMap();
-	fields.put( field, frn );
+    void addField( FieldRefNode frn ) {
+        frn.nextByField = fieldNodes;
+        fieldNodes = frn;
+    }
+
+
+    void addContextNode( ContextVarNode cvn ) {
+        cvn.nextByContext = contextNodes;
+        contextNodes = cvn;
     }
 
     /* End of package methods. */
 
     protected Object variable;
-    protected Map fields;
-    protected int finishingNumber = 0;
-    protected NodeManager nm;
+    protected ContextVarNode contextNodes = null;
+    protected FieldRefNode fieldNodes = null;
 }
 

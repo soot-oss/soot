@@ -46,7 +46,7 @@ public class BDDCallGraph extends AbsCallGraph
     public Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesOutOf( MethodOrMethodContext m ) {
         return new Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD(
             edges{srcm, srcc} ><
-            new {m.context()=>ctxt, m.method()=>method} {method, ctxt},
+            new{m.context()=>ctxt, m.method()=>method} {method, ctxt},
             "edgesOutOf"
         );
     }

@@ -1,44 +1,132 @@
 digraph overview {
     size="7.5,10";
-    mclimit=10.0;
-    nslimit=10.0;
+    mclimit=100.0;
+    nslimit=100.0;
     node [shape=box];
-    EP -> RM [style=dotted];
-    EP -> RC [style=dotted];
-    RM -> SCGB [label="rmout:M"];
-    SCGB -> CICG [label="scgbout:E"];
-    CICG -> A2 [label="cicgout:E"];
+
+
+    rmout [label="rmout\n:M"];
+    scgbout [label="scgbout\n:MSKM"];
+    receivers [label="receivers\n:LMSIK"];
+    specials [label="specials\n:LMSM"];
+    cicgout [label="cicgout\n:MSKM"];
+
+    staticcalls [label="staticcalls\n:CMSKCM"];
+    scmout [label="scmout\n:CMSKCM"];
+    cgout [label="cgout\n:CMSKCM"];
+    rcout [label="rcout\n:CM"];
+    csout [label="csout\n:M"];
+
+    merge [label="merge\n:CMSKCM"];
+
+    locals [label="locals\n:LMT"];
+    globals [label="globals\n:LT"];
+    localallocs [label="allocs\n:AMT"];
+    globalallocs [label="allocs\n:AT"];
+
+    simple [label="simple\n:LL"];
+    store [label="store\n:LFL"];
+    load [label="load\n:LFL"];
+    alloc [label="alloc\n:AL"];
+
+    csimple [label="csimple\n:CLCL"];
+    cstore [label="cstore\n:CLFCL"];
+    cload [label="cload\n:CLFCL"];
+    calloc [label="calloc\n:CACL"];
+
+    paout [label="paout\n:CACL"];
+
+    virtualcalls [label="virtualcalls\n:CLAMSKM"];
+
+    vcmout [label="vcmout\n:CMSKCM"];
+
+    node [shape=ellipse];
+
+    NM -> locals;
+    NM -> globals;
+    NM -> localallocs;
+    NM -> globalallocs;
+
+    scgbout -> CICG -> cicgout;
+    cicgout -> RM -> rmout;
     CICG -> RM [style=dotted];
-    RC -> CSCGB [label="rcout:MxC"];
-    CSCGB -> SCM [label="cscgbout:Ec"];
-    VCR -> SCM [label="cscgbout:Ec"];
-    SCM -> CG [label="cmout:Ec"];
-    CG -> RC [label="cgout:Ec"];
-    VCM -> CS [label="vcmout:Ec"];
-    VCM -> CG [label="cmout:Ec"];
-    VCR -> VCM [label="vcrout:CxLxOxE"];
-    LC -> VCR [label="lcout:CxLxO"];
-    PAG -> PROP [label="pagsimple:VxV, pagalloc:AxV"];
-    PAGB -> PAG [label="simple:VxV, load:VxFxV, store:VxVxF, alloc:AxV"];
-    NF -> PAG [label="simple:VxV, load:VxFxV, store:VxVxF, alloc:AxV"];
-    CG -> PAGB [label="cgout:Ec"];
-    PROP -> LC [label="propout:VxO"];
-    LC -> VC [label="lcout:CxLxO"];
-    SCGB -> VC [label="receivers:LxMxStxSixK"];
-    SCGB -> VC [label="specials:LxMxStxM"];
-    CS -> A2 [label="E"];
-    A2 -> RM [label="E"];
+
+    rmout -> SCGB -> scgbout;
+    SCGB -> receivers;
+    SCGB -> specials;
+
+    scmout -> merge;
+    vcmout -> merge;
+    merge -> CG -> cgout;
+    CICG -> CG [style=dotted];
+
+    cgout -> RC -> rcout;
+    CG -> RC [style=dotted];
+
+    rcout -> CS -> csout;
+    csout -> RM;
+
+    rcout -> CSCGB -> staticcalls;
+    cicgout -> CSCGB;
     CICG -> CSCGB [style=dotted];
-    VC -> VCR [style=dotted];
+
+    rmout -> MPB;
+    MPB -> simple;
+    MPB -> store;
+    MPB -> load;
+    MPB -> alloc;
+
+    simple -> MPC;
+    store -> MPC;
+    load -> MPC;
+    alloc -> MPC;
+    locals -> MPC;
+    globals -> MPC;
+    localallocs -> MPC;
+    globalallocs -> MPC;
+    rcout -> MPC;
+    MPC -> csimple;
+    MPC -> cstore;
+    MPC -> cload;
+    MPC -> calloc;
+
+    csimple -> PAG;
+    cload -> PAG;
+    cstore -> PAG;
+    calloc -> PAG;
+
+    csimple -> PROP;
+    cload -> PROP;
+    cstore -> PROP;
+    calloc -> PROP;
+    PROP -> paout;
     PAG -> PROP [style=dotted];
-    H -> VC [style=dotted];
-    A2 [shape=point];
-    MPA -> PAG [label="simple:VxV, load:VxFxV, store:VxVxF, alloc:AxV"];
-    GNF -> PAG [label="simple:VxV, load:VxFxV, store:VxVxF, alloc:AxV"];
-    RM -> MPB [label="M"];
-    RC -> MPA [label="MxC"];
-    MPB -> MPA [style=dotted];
-    NM -> TM [label="V, A"];
+
+    receivers -> VCR;
+    specials -> VCR;
+    paout -> VCR;
+    VCR -> virtualcalls;
+    VCR -> staticcalls;
+
+    virtualcalls -> VCM -> vcmout;
+
+    staticcalls -> SCM -> scmout;
+
+    cgout -> PAGB;
+    PAGB -> csimple;
+    PAGB -> cload;
+    PAGB -> cstore;
+    PAGB -> calloc;
+
+    NF -> simple;
+    NF -> load;
+    NF -> store;
+    NF -> alloc;
+
+    locals -> TM;
+    globals -> TM;
+    localallocs -> TM;
+    globalallocs -> TM;
     TM -> PROP [style=dotted];
 }
 

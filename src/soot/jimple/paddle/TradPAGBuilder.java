@@ -22,6 +22,7 @@ import soot.*;
 import soot.jimple.paddle.queue.*;
 import soot.jimple.*;
 import java.util.*;
+import soot.util.*;
 
 /** Creates inter-procedural pointer assignment edges.
  * @author Ondrej Lhotak
@@ -30,10 +31,10 @@ public class TradPAGBuilder extends AbsPAGBuilder
 { 
     TradPAGBuilder( 
         Rsrcc_srcm_stmt_kind_tgtc_tgtm in,
-        Qsrc_dst simple,
-        Qsrc_fld_dst load,
-        Qsrc_fld_dst store,
-        Qobj_var alloc ) {
+        Qsrcc_src_dstc_dst simple,
+        Qsrcc_src_fld_dstc_dst load,
+        Qsrcc_src_fld_dstc_dst store,
+        Qobjc_obj_varc_var alloc ) {
         super(in, simple, load, store, alloc);
     }
     private NodeFactory nf = PaddleScene.v().nodeFactory();
@@ -43,10 +44,10 @@ public class TradPAGBuilder extends AbsPAGBuilder
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
             if( !t.kind().passesParameters() ) continue;
-            MethodPAG srcmpag = PaddleScene.v().mpb.v( t.srcm() );
-            MethodPAG tgtmpag = PaddleScene.v().mpb.v( t.tgtm() );
+            MethodNodeFactory srcnf = new MethodNodeFactory(t.srcm());
+            MethodNodeFactory tgtnf = new MethodNodeFactory(t.tgtm());
             if( t.kind().isExplicit() || t.kind() == Kind.THREAD ) {
-                addCallTarget( srcmpag, tgtmpag, (Stmt) t.stmt(),
+                addCallTarget( srcnf, tgtnf, (Stmt) t.stmt(),
                             t.srcc(), t.tgtc() );
             } else {
                 if( t.kind() == Kind.PRIVILEGED ) {
@@ -55,46 +56,24 @@ public class TradPAGBuilder extends AbsPAGBuilder
                     // return of doPrivileged()
 
                     InvokeExpr ie = ((Stmt) t.stmt()).getInvokeExpr();
-
-                    Node parm = srcmpag.nodeFactory().getNode( ie.getArg(0) );
-                    parm = parm( parm, t.srcc() );
-
-                    Node thiz = tgtmpag.nodeFactory().caseThis();
-                    thiz = parm( thiz, t.tgtc() );
-
-                    addEdge( parm, thiz );
+                    addEdge( t.srcc(), srcnf.getNode(ie.getArg(0)),
+                             t.tgtc(), tgtnf.caseThis() );
 
                     if( t.stmt() instanceof AssignStmt ) {
                         AssignStmt as = (AssignStmt) t.stmt();
-
-                        Node ret = tgtmpag.nodeFactory().caseRet();
-                        ret = parm( ret, t.tgtc() );
-
-                        Node lhs = srcmpag.nodeFactory().getNode(as.getLeftOp());
-                        lhs = parm( lhs, t.srcc() );
-
-                        addEdge( ret, lhs );
+                        addEdge( t.tgtc(), tgtnf.caseRet(),
+                                 t.srcc(), srcnf.getNode(as.getLeftOp()) );
                     }
                 } else if( t.kind() == Kind.FINALIZE ) {
-                    Node srcThis = srcmpag.nodeFactory().caseThis();
-                    srcThis = parm( srcThis, t.srcc() );
-
-                    Node tgtThis = tgtmpag.nodeFactory().caseThis();
-                    tgtThis = parm( tgtThis, t.tgtc() );
-
-                    addEdge( srcThis, tgtThis );
+                    addEdge( t.srcc(), srcnf.caseThis(),
+                             t.tgtc(), tgtnf.caseThis() );
                 } else if( t.kind() == Kind.NEWINSTANCE ) {
                     Stmt s = (Stmt) t.stmt();
                     InstanceInvokeExpr iie = (InstanceInvokeExpr) s.getInvokeExpr();
+                    VarNode cls = (VarNode) srcnf.getNode( iie.getBase() );
+                    Node newObject = nf.caseNewInstance( cls );
 
-                    Node cls = srcmpag.nodeFactory().getNode( iie.getBase() );
-                    cls = parm( cls, t.srcc() );
-                    Node newObject = nf.caseNewInstance( (VarNode) cls );
-
-                    Node initThis = tgtmpag.nodeFactory().caseThis();
-                    initThis = parm( initThis, t.tgtc() );
-
-                    addEdge( newObject, initThis );
+                    addEdge( t.srcc(), newObject, t.tgtc(), tgtnf.caseThis() );
                 } else {
                     throw new RuntimeException( "Unhandled edge "+t );
                 }
@@ -104,13 +83,11 @@ public class TradPAGBuilder extends AbsPAGBuilder
 
     /** Adds method target as a possible target of the invoke expression in s.
      **/
-    final private void addCallTarget( MethodPAG srcmpag,
-                                     MethodPAG tgtmpag,
+    final private void addCallTarget( MethodNodeFactory srcnf,
+                                     MethodNodeFactory tgtnf,
                                      Stmt s,
                                      Context srcContext,
                                      Context tgtContext ) {
-        MethodNodeFactory srcnf = srcmpag.nodeFactory();
-        MethodNodeFactory tgtnf = tgtmpag.nodeFactory();
         InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
         int numArgs = ie.getArgCount();
         for( int i = 0; i < numArgs; i++ ) {
@@ -118,52 +95,62 @@ public class TradPAGBuilder extends AbsPAGBuilder
             if( !( arg.getType() instanceof RefLikeType ) ) continue;
             if( arg instanceof NullConstant ) continue;
 
-            Node argNode = srcnf.getNode( arg );
-            argNode = parm( argNode, srcContext );
-
-            Node parm = tgtnf.caseParm( i );
-            parm = parm( parm, tgtContext );
-
-            addEdge( argNode, parm );
+            addEdge( srcContext, srcnf.getNode(arg),
+                     tgtContext, tgtnf.caseParm(i) );
         }
         if( ie instanceof InstanceInvokeExpr ) {
             InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
 
-            Node baseNode = srcnf.getNode( iie.getBase() );
-            baseNode = parm( baseNode, srcContext );
-
-            Node thisRef = tgtnf.caseThis();
-            thisRef = parm( thisRef, tgtContext );
-            addEdge( baseNode, thisRef );
+            addEdge( srcContext, srcnf.getNode(iie.getBase()),
+                     tgtContext, tgtnf.caseThis() );
         }
         if( s instanceof AssignStmt ) {
             Value dest = ( (AssignStmt) s ).getLeftOp();
             if( dest.getType() instanceof RefLikeType && !(dest instanceof NullConstant) ) {
 
-                Node destNode = srcnf.getNode( dest );
-                destNode = parm( destNode, srcContext );
-
-                Node retNode = tgtnf.caseRet();
-                retNode = parm( retNode, tgtContext );
-
-                addEdge( retNode, destNode );
+                addEdge( tgtContext, tgtnf.caseRet(),
+                         srcContext, srcnf.getNode(dest) );
             }
         }
     }
 
-    private Node parm( Node n, Context c ) {
-        if( c == null ) return n;
-        if( n instanceof LocalVarNode ) 
-            return nm.makeContextVarNode( (LocalVarNode) n, c );
+    private Context parm( Node n, Context c ) {
+        if( n instanceof VarNode ) {
+            if( n instanceof LocalVarNode ) return c;
+            else return null;
+        }
         if( n instanceof FieldRefNode ) {
             FieldRefNode frn = (FieldRefNode) n;
-            return ((VarNode) parm(frn.base(), c)).dot( frn.field() );
+            if( frn.base() instanceof LocalVarNode ) return c;
+            else return null;
         }
-        return n;
+        throw new RuntimeException( "NYI: "+n );
     }
 
-    private void addEdge( Node src, Node dst ) {
-        nf.addEdge( src, dst );
+    private Set seenEdges = new HashSet();
+    private void addEdge( Context srcc, Node src, Context dstc, Node dst ) {
+        srcc = parm(src, srcc);
+        dstc = parm(dst, dstc);
+        if( !seenEdges.add(new Cons(new Cons(srcc, src),
+                                    new Cons(dstc, dst)))) return;
+        if( src instanceof VarNode ) {
+            VarNode srcvn = (VarNode) src;
+            if( dst instanceof VarNode ) {
+                VarNode dstvn = (VarNode) dst;
+                simple.add( srcc, srcvn, dstc, dstvn );
+            } else if( dst instanceof FieldRefNode ) {
+                FieldRefNode fdst = (FieldRefNode) dst;
+                store.add( srcc, srcvn, fdst.field(), dstc, fdst.base() );
+            } else throw new RuntimeException( "Bad PA edge "+src+" -> "+dst );
+        } else if( src instanceof FieldRefNode ) {
+            FieldRefNode srcfrn = (FieldRefNode) src;
+            VarNode dstvn = (VarNode) dst;
+            load.add( srcc, srcfrn.base(), srcfrn.field(), dstc, dstvn );
+        } else if( src instanceof AllocNode ) {
+            AllocNode srcan = (AllocNode) src;
+            VarNode dstvn = (VarNode) dst;
+            alloc.add( srcc, srcan, dstc, dstvn );
+        } else throw new RuntimeException( "Bad PA edge "+src+" -> "+dst );
     }
 }
 

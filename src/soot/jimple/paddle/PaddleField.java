@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.paddle;
-import soot.Type;
 import soot.util.*;
 
 /** Represents a field.

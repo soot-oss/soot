@@ -31,11 +31,14 @@ public class TradInsensitiveStaticContextManager extends AbsStaticContextManager
     TradInsensitiveStaticContextManager( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
         super( in, out );
     }
-    public void update() {
+    public boolean update() {
+        boolean change = false;
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
             out.add( t.srcc(), t.srcm(), t.stmt(), t.kind(), t.tgtc(), t.tgtm() );
+            change = true;
         }
+        return change;
     }
 }
 

@@ -32,7 +32,8 @@ public class TradKCFAStaticContextManager extends AbsStaticContextManager
         this.k = k;
     }
     private int k;
-    public void update() {
+    public boolean update() {
+        boolean change = false;
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
             ContextString cs = (ContextString) t.srcc();
@@ -43,7 +44,9 @@ public class TradKCFAStaticContextManager extends AbsStaticContextManager
                     t.kind(),
                     cs.push(t.stmt()),
                     t.tgtm() );
+            change = true;
         }
+        return change;
     }
 }
 

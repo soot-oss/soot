@@ -30,11 +30,14 @@ public class Trad1CFAStaticContextManager extends AbsStaticContextManager
     Trad1CFAStaticContextManager( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
         super( in, out );
     }
-    public void update() {
+    public boolean update() {
+        boolean change = false;
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
             out.add( t.srcc(), t.srcm(), t.stmt(), t.kind(), t.stmt(), t.tgtm() );
+            change = true;
         }
+        return change;
     }
 }
 

@@ -32,14 +32,14 @@ public abstract class PointsToSetReadOnly implements PointsToSet {
     /** Returns set of nodes already present before last call to flushNew. */
     public PointsToSetReadOnly getOldSet() { return EmptyPointsToSet.v(); }
     /** Returns true iff the set contains n. */
-    public abstract boolean contains( Node n );
+    public abstract boolean contains( ContextAllocNode n );
 
     public PointsToSetReadOnly( Type type ) { this.type = type; }
 
     public boolean hasNonEmptyIntersection( PointsToSet other ) {
         final PointsToSetReadOnly o = (PointsToSetReadOnly) other;
         return forall( new P2SetVisitor() {
-            public void visit( Node n ) {
+            public void visit( ContextAllocNode n ) {
                 if( o.contains( n ) ) returnValue = true;
             }
         } );
@@ -47,7 +47,7 @@ public abstract class PointsToSetReadOnly implements PointsToSet {
     public Set possibleTypes() {
         final HashSet ret = new HashSet();
         forall( new P2SetVisitor() {
-            public void visit( Node n ) {
+            public void visit( ContextAllocNode n ) {
                 Type t = n.getType();
                 if( t instanceof RefType ) {
                     RefType rt = (RefType) t;
@@ -61,13 +61,10 @@ public abstract class PointsToSetReadOnly implements PointsToSet {
     public Type getType() {
         return type;
     }
-    public void setType( Type type ) {
-        this.type = type;
-    }
     public int size() {
         final int[] ret = new int[1];
         forall( new P2SetVisitor() {
-            public void visit( Node n ) {
+            public void visit( ContextAllocNode n ) {
                 ret[0]++;
             }
         } );
@@ -76,7 +73,7 @@ public abstract class PointsToSetReadOnly implements PointsToSet {
     public String toString() {
         final StringBuffer ret = new StringBuffer();
         this.forall( new P2SetVisitor() {
-        public final void visit( Node n ) {
+        public final void visit( ContextAllocNode n ) {
             ret.append( ""+n+"," );
         }} );
         return ret.toString();
@@ -85,9 +82,9 @@ public abstract class PointsToSetReadOnly implements PointsToSet {
     public Set possibleStringConstants() { 
         final HashSet ret = new HashSet();
         return this.forall( new P2SetVisitor() {
-        public final void visit( Node n ) {
-            if( n instanceof StringConstantNode ) {
-                ret.add( ((StringConstantNode)n).getString() );
+        public final void visit( ContextAllocNode n ) {
+            if( n.obj() instanceof StringConstantNode ) {
+                ret.add( ((StringConstantNode)n.obj()).getString() );
             } else {
                 returnValue = true;
             }

@@ -28,11 +28,14 @@ import soot.*;
  */
 public class BDDObjSensVirtualContextManager extends AbsVirtualContextManager
 { 
-    BDDObjSensVirtualContextManager( Rctxt_local_obj_srcm_stmt_kind_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
+    BDDObjSensVirtualContextManager( Rctxt_var_obj_srcm_stmt_kind_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
         super( in, out );
     }
-    public void update() {
-        out.add( (ctxt=>srcc, local=>, obj=>tgtc)in.get() );
+    public boolean update() {
+        <srcc, srcm, stmt, kind, tgtm, tgtc> newOut = 
+            (ctxt=>srcc, var=>, obj=>tgtc)in.get();
+        out.add( newOut );
+        return newOut != 0B;
     }
 }
 

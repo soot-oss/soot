@@ -37,5 +37,9 @@ public class PaddleNumberers {
     public ArrayNumberer fieldRefNodeNumberer() { return fieldRefNodeNumberer; }
     private ArrayNumberer allocDotFieldNumberer = new ArrayNumberer();
     public ArrayNumberer allocDotFieldNumberer() { return allocDotFieldNumberer; }
+    private ArrayNumberer contextVarNodeNumberer = new ArrayNumberer();
+    public ArrayNumberer contextVarNodeNumberer() { return contextVarNodeNumberer; }
+    private ArrayNumberer contextAllocNodeNumberer = new ArrayNumberer();
+    public ArrayNumberer contextAllocNodeNumberer() { return contextAllocNodeNumberer; }
 }
 

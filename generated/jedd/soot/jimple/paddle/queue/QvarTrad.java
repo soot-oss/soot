@@ -29,5 +29,5 @@ public class QvarTrad extends Qvar {
         }
     }
     
-    public Rvar reader(String rname) { return new RvarTrad(q.reader(), rname); }
+    public Rvar reader(String rname) { return new RvarTrad(q.reader(), name + ":" + rname); }
 }

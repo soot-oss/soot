@@ -21,7 +21,6 @@ package soot.jimple.paddle;
 import java.util.*;
 import soot.*;
 import soot.toolkits.scalar.Pair;
-import soot.jimple.paddle.*;
 
 /** Represents a method parameter.
  * @author Ondrej Lhotak

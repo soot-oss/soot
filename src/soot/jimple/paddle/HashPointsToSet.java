@@ -48,12 +48,12 @@ public final class HashPointsToSet extends PointsToSetInternal {
     /** Calls v's visit method on all nodes in this set. */
     public final boolean forall( P2SetVisitor v ) {
         for( Iterator it = new ArrayList(s).iterator(); it.hasNext(); ) {
-            v.visit( (Node) it.next() );
+            v.visit( (ContextAllocNode) it.next() );
         }
         return v.getReturnValue();
     }
     /** Adds n to this set, returns true if n was not already in this set. */
-    public final boolean add( Node n ) {
+    public final boolean add( ContextAllocNode n ) {
         if( PaddleScene.v().tm.castNeverFails( n.getType(), type ) ) {
 
             return s.add( n );
@@ -61,7 +61,7 @@ public final class HashPointsToSet extends PointsToSetInternal {
         return false;
     }
     /** Returns true iff the set contains n. */
-    public final boolean contains( Node n ) {
+    public final boolean contains( ContextAllocNode n ) {
         return s.contains( n );
     }
     public static P2SetFactory getFactory() {

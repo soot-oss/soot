@@ -60,7 +60,7 @@ public class DoublePointsToSet extends PointsToSetInternal {
         return v.getReturnValue();
     }
     /** Adds n to this set, returns true if n was not already in this set. */
-    public boolean add( Node n ) {
+    public boolean add( ContextAllocNode n ) {
         if( oldSet.contains( n ) ) return false;
         return newSet.add( n );
     }
@@ -93,7 +93,7 @@ public class DoublePointsToSet extends PointsToSetInternal {
         final PointsToSetInternal newNewSet = PaddleScene.v().newSetFactory.newSet( type );
         final PointsToSetInternal newOldSet = PaddleScene.v().oldSetFactory.newSet( type );
         oldSet.forall( new P2SetVisitor() {
-        public final void visit( Node n ) {
+        public final void visit( ContextAllocNode n ) {
             if( o.oldSet.contains( n ) ) newOldSet.add( n );
         }} );
         newNewSet.addAll( this, newOldSet );
@@ -102,7 +102,7 @@ public class DoublePointsToSet extends PointsToSetInternal {
         oldSet = newOldSet;
     }
     /** Returns true iff the set contains n. */
-    public boolean contains( Node n ) {
+    public boolean contains( ContextAllocNode n ) {
         return oldSet.contains( n ) || newSet.contains( n );
     }
 

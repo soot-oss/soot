@@ -39,7 +39,7 @@ public class Robj_varDebug extends Robj_var{
             Set bddSet = new HashSet();
             public boolean hasNext() {
                 if( tradIt.hasNext() != bddIt.hasNext() ) throw new RuntimeException( "they don't match: tradIt="+tradIt.hasNext()+" bddIt="+bddIt.hasNext() );
-                if(!tradIt.hasNext() && !tradSet.equals(bddSet)) throw new RuntimeException( "tradSet="+tradSet+"\nbddSet="+bddSet );
+                if(!tradIt.hasNext() && !tradSet.equals(bddSet)) throw new RuntimeException( name+"\ntradSet="+tradSet+"\nbddSet="+bddSet );
                 return tradIt.hasNext();
             }
             public Object next() {

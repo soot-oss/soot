@@ -27,7 +27,7 @@ import soot.Type;
 public final class BitPointsToSet extends PointsToSetInternal {
     public BitPointsToSet( Type type ) {
         super( type );
-        bits = new BitVector( PaddleNumberers.v().allocNodeNumberer().size() );
+        bits = new BitVector( PaddleNumberers.v().contextAllocNodeNumberer().size() );
     }
     /** Returns true if this set contains no run-time objects. */
     public final boolean isEmpty() {
@@ -66,19 +66,19 @@ public final class BitPointsToSet extends PointsToSetInternal {
     /** Calls v's visit method on all nodes in this set. */
     public final boolean forall( P2SetVisitor v ) {
         for( BitSetIterator it = bits.iterator(); it.hasNext(); ) {
-            v.visit( (Node) PaddleNumberers.v().allocNodeNumberer().get( it.next() ) );
+            v.visit( (ContextAllocNode) PaddleNumberers.v().contextAllocNodeNumberer().get( it.next() ) );
         }
         return v.getReturnValue();
     }
     /** Adds n to this set, returns true if n was not already in this set. */
-    public final boolean add( Node n ) {
+    public final boolean add( ContextAllocNode n ) {
         if( PaddleScene.v().tm.castNeverFails( n.getType(), type ) ) {
             return fastAdd( n );
         }
         return false;
     }
     /** Returns true iff the set contains n. */
-    public final boolean contains( Node n ) {
+    public final boolean contains( ContextAllocNode n ) {
         return bits.get( n.getNumber() );
     }
     public static P2SetFactory getFactory() {
@@ -92,7 +92,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
     /* End of public methods. */
     /* End of package methods. */
 
-    private boolean fastAdd( Node n ) {
+    private boolean fastAdd( ContextAllocNode n ) {
         boolean ret = bits.set( n.getNumber() );
         if( ret ) empty = false;
         return ret;

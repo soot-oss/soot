@@ -19,7 +19,6 @@
 
 package soot.jimple.paddle;
 import soot.*;
-import soot.util.*;
 import java.util.*;
 
 /** Performs a pseudo-topological sort on the VarNodes in a PAG.
@@ -29,8 +28,8 @@ import java.util.*;
 public class TopoSorter {
     /** Actually perform the topological sort on the PAG. */
     public void sort() {
-        for( Iterator it = PaddleNumberers.v().varNodeNumberer().iterator(); it.hasNext(); ) {
-            dfsVisit( (VarNode) it.next() );
+        for( Iterator it = PaddleNumberers.v().contextVarNodeNumberer().iterator(); it.hasNext(); ) {
+            dfsVisit( (ContextVarNode) it.next() );
         }
         visited = null;
     }
@@ -48,11 +47,11 @@ public class TopoSorter {
     protected AbsPAG pag;
     protected int nextFinishNumber = 1;
     protected HashSet visited;
-    protected void dfsVisit( VarNode n ) {
+    protected void dfsVisit( ContextVarNode n ) {
         if( visited.contains( n ) ) return;
         visited.add( n );
         for( Iterator succIt = pag.simpleLookup(n); succIt.hasNext(); ) {
-            final VarNode succ = (VarNode) succIt.next();
+            final ContextVarNode succ = (ContextVarNode) succIt.next();
             if( ignoreTypes 
             || PaddleScene.v().tm.castNeverFails(
                     n.getType(), succ.getType() ) ) {

@@ -101,37 +101,37 @@ public final class BDDHierarchy {
             RefType rt = (RefType) t;
             SootClass sc = rt.getSootClass();
             if( sc == null ) return;
-            identity |= new { rt => subt, rt => supt };
+            identity |= new{ rt=>subt, rt=>supt };
             if( sc.hasSuperclass() ) {
-                extend |= new { rt => subt,
-                                  sc.getSuperclass().getType() => supt };
+                extend |= new{ rt=>subt,
+                                  sc.getSuperclass().getType()=>supt };
             }
             for( Iterator ifaceIt = sc.getInterfaces().iterator(); ifaceIt.hasNext(); ) {
                 final SootClass iface = (SootClass) ifaceIt.next();
-                implement |= new { rt => subt, iface.getType() => supt };
+                implement |= new{ rt=>subt, iface.getType()=>supt };
             }
         } else if( t instanceof ArrayType ) {
-            identity |= new { t => subt, t => supt };
+            identity |= new{ t=>subt, t=>supt };
             ArrayType at = (ArrayType) t;
             if( at.baseType instanceof PrimType ) {
-                array |= new { at => subt,
-                                 jloArray(at.numDimensions-1) => supt };
+                array |= new{ at=>subt,
+                                 jloArray(at.numDimensions-1)=>supt };
             } else if( at.baseType instanceof RefType ) {
                 RefType rt = (RefType) at.baseType;
                 if( rt.equals( jlo ) ) {
-                    array |= new { at => subt,
-                                     jloArray(at.numDimensions-1) => supt };
+                    array |= new{ at=>subt,
+                                     jloArray(at.numDimensions-1)=>supt };
                 } else {
-                    array |= new { at => subt,
-                                     jloArray(at.numDimensions) => supt };
+                    array |= new{ at=>subt,
+                                     jloArray(at.numDimensions)=>supt };
                 }
             } else throw new RuntimeException( "unhandled: "+at.baseType );
         } else if( t instanceof AnySubType ) {
             AnySubType as = (AnySubType) t;
-            anySub |= new { as => anyst, as.getBase() => type };
-            anySub |= new { as => anyst, NullType.v() => type };
+            anySub |= new{ as=>anyst, as.getBase()=>type };
+            anySub |= new{ as=>anyst, NullType.v()=>type };
         } else if( t instanceof NullType ) {
-            identity |= new { t => subt, t => supt };
+            identity |= new{ t=>subt, t=>supt };
         }
         if( t.getNumber() > maxType ) maxType = t.getNumber();
     }

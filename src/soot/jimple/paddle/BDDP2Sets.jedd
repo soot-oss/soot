@@ -35,18 +35,20 @@ public class BDDP2Sets extends AbsP2Sets
         this.prop = prop;
     }
 
-    public PointsToSetReadOnly get( VarNode v ) {
-        return new BDDPointsToSet( prop.pointsTo{var} <> new {v=>var}{var} );
+    public PointsToSetReadOnly get( Context ctxt, VarNode v ) {
+        return new BDDPointsToSet( prop.pointsTo{varc, var} 
+                     <> new{ctxt=>varc, v=>var}{varc, var} );
     }
-    public PointsToSetReadOnly get( AllocDotField adf ) {
+    public PointsToSetReadOnly get( Context ctxt, AllocDotField adf ) {
         return new BDDPointsToSet( (obj=>H1) ( (obj=>H2) (
-                prop.fieldPt{base,fld} <>
-                new {adf.getBase()=>base, adf.getField()=>fld }{base,fld} ) ) );
+                prop.fieldPt{basec, base,fld} <>
+                new{ctxt=>basec, adf.base()=>base, adf.field()=>fld }
+                            {basec, base,fld} ) ) );
     }
-    public PointsToSetInternal make( VarNode v ) {
+    public PointsToSetInternal make( Context c, VarNode v ) {
         throw new RuntimeException( "Not implemented" );
     }
-    public PointsToSetInternal make( AllocDotField adf ) {
+    public PointsToSetInternal make( Context c, AllocDotField adf ) {
         throw new RuntimeException( "Not implemented" );
     }
 }

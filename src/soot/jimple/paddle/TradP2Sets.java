@@ -19,27 +19,25 @@
 
 package soot.jimple.paddle;
 import soot.*;
-import soot.jimple.paddle.queue.*;
-import java.util.*;
 
 /** Manages the points-to sets for nodes.
  * @author Ondrej Lhotak
  */
 public class TradP2Sets extends AbsP2Sets
 { 
-    private P2SetMap vnToSet = new P2SetMap( PaddleNumberers.v().varNodeNumberer() );
-    private P2SetMap adfToSet = new P2SetMap( PaddleNumberers.v().allocDotFieldNumberer() );
-    public PointsToSetReadOnly get( VarNode v ) {
-        return vnToSet.get(v);
+    private P2SetMap vnToSet = new P2SetMap();
+    private P2SetMap adfToSet = new P2SetMap();
+    public PointsToSetReadOnly get( ContextVarNode cvn ) {
+        return vnToSet.get(cvn);
     }
-    public PointsToSetReadOnly get( AllocDotField adf ) {
-        return adfToSet.get(adf);
+    public PointsToSetReadOnly get( ContextAllocDotField cadf ) {
+        return adfToSet.get(cadf);
     }
-    public PointsToSetInternal make( VarNode v ) {
-        return vnToSet.make(v);
+    public PointsToSetInternal make( ContextVarNode cvn ) {
+        return vnToSet.make(cvn);
     }
-    public PointsToSetInternal make( AllocDotField adf ) {
-        return adfToSet.make(adf);
+    public PointsToSetInternal make( ContextAllocDotField cadf ) {
+        return adfToSet.make(cadf);
     }
 }
 

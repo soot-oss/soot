@@ -26,14 +26,16 @@ import soot.*;
  */
 public abstract class AbsReachableMethods 
 { 
-    protected Rsrcc_srcm_stmt_kind_tgtc_tgtm in;
+    protected Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesIn;
+    protected Rctxt_method methodsIn;
     protected Qctxt_method out;
-    AbsReachableMethods( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qctxt_method out ) {
-        this.in = in;
+    AbsReachableMethods( Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesIn, Rctxt_method methodsIn, Qctxt_method out ) {
+        this.edgesIn = edgesIn;
+        this.methodsIn = methodsIn;
         this.out = out;
     }
-    abstract void update();
-    abstract void add( MethodOrMethodContext m );
+    abstract boolean update();
+    abstract boolean add( MethodOrMethodContext m );
     abstract int size();
     abstract boolean contains( MethodOrMethodContext m );
 }

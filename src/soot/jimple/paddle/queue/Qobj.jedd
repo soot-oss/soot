@@ -35,4 +35,9 @@ public abstract class Qobj {
     public abstract void add( <obj:H1> in );
     public abstract Robj reader( String rname );
     public Robj revreader( String rname ) { return reader( rname ); }
+    public void add( Robj.Tuple in ) {
+        add(
+            in.obj() 
+        );
+    }
 }

@@ -2028,6 +2028,15 @@ Turns on JeddProfiler for profiling BDD operations.
                                                         Print the contents of all internal Paddle queues for debugging.
         </long_desc>
 						</boolopt>
+						<boolopt>
+							<name>Number Trace</name>
+							<alias>numtrace</alias>
+							<default>false</default>
+                                                        <short_desc>Trace Paddle queues for debugging.</short_desc>
+							<long_desc>
+                                                        Print the sizes of all internal Paddle queues for debugging.
+        </long_desc>
+						</boolopt>
 						<multiopt>
 							<name>Backend</name>
 							<alias>backend</alias>

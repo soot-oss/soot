@@ -56,7 +56,7 @@ public class PaddleTransformer extends SceneTransformer
                 Scene.v().setContextNumberer( new ContextStringNumberer(Scene.v().getUnitNumberer(), cgoptions.k()) );
                 break;
             case CGOptions.context_kobjsens:
-                Scene.v().setContextNumberer( new ContextStringNumberer(PaddleNumberers.v().allocNodeNumberer(), cgoptions.k()) );
+                Scene.v().setContextNumberer( new ContextStringNumberer(PaddleNumberers.v().contextAllocNodeNumberer(), cgoptions.k()) );
                 break;
             default:
                 throw new RuntimeException( "Unhandled kind of context" );
@@ -71,8 +71,6 @@ public class PaddleTransformer extends SceneTransformer
 
         if( opts.pre_jimplify() ) preJimplify();
 
-        Rctxt_method reachableMethods = PaddleScene.v().rcout.reader("paddletransformer");
-
         Date startSolve = new Date();
 
         PaddleScene.v().solve();
@@ -83,16 +81,6 @@ public class PaddleTransformer extends SceneTransformer
             reportTime( "Propagation", startSolve, endSolve );
         }
 
-        if( opts.verbose() ) {
-            G.v().out.println( "[Paddle] Number of reachable methods: "
-                    +PaddleScene.v().rm.size() );
-            G.v().out.println( "[Paddle] Number of reachable method contexts: "
-                    +PaddleScene.v().rc.size() );
-            G.v().out.println( "[Paddle] Number of call edges: "
-                    +PaddleScene.v().cicg.size() );
-            G.v().out.println( "[Paddle] Number of context call edges: "
-                    +PaddleScene.v().cg.size() );
-        }
         if( opts.set_mass() ) findSetMass();
 
         CallGraph cg = new CallGraph();
@@ -105,6 +93,16 @@ public class PaddleTransformer extends SceneTransformer
             cg.addEdge(e);
         }
         Scene.v().setCallGraph( cg );
+        if( opts.verbose() ) {
+            G.v().out.println( "[Paddle] Number of reachable methods: "
+                    +Scene.v().getReachableMethods().size() );
+            G.v().out.println( "[Paddle] Number of reachable method contexts: "
+                    +PaddleScene.v().rc.size() );
+            G.v().out.println( "[Paddle] Number of call edges: "
+                    +Scene.v().getCallGraph().size() );
+            G.v().out.println( "[Paddle] Number of context call edges: "
+                    +PaddleScene.v().cg.size() );
+        }
 
         //Readers.v().checkEmptiness();
 
@@ -234,6 +232,8 @@ public class PaddleTransformer extends SceneTransformer
         h.addTag( t );
     }
     private void addTags() {
+        throw new RuntimeException( "NYI" );
+        /*
         final NodeManager nm = PaddleScene.v().nodeManager();
         final AbsPAG pag = PaddleScene.v().pag;
 
@@ -254,7 +254,7 @@ public class PaddleTransformer extends SceneTransformer
                         if( lhs instanceof Local ) {
                             v = nm.findLocalVarNode( (Local) lhs );
                         } else if( lhs instanceof FieldRef ) {
-                            v = nm.findGlobalVarNode( ((FieldRef) lhs).getField() );
+                            v = nm.findGlobalVarNode( ((FieldRef) lhs).field() );
                         }
                         if( v != null ) {
                             PointsToSetReadOnly p2set = 
@@ -281,6 +281,7 @@ public class PaddleTransformer extends SceneTransformer
                 }
             }
         }
+        */
     }
     private void preJimplify() {
         boolean change = true;
@@ -311,18 +312,19 @@ public class PaddleTransformer extends SceneTransformer
         int adfs = 0;
         int scalars = 0;
 
-        for( Iterator vIt = PaddleNumberers.v().varNodeNumberer().iterator(); vIt.hasNext(); ) {
+        for( Iterator vIt = PaddleNumberers.v().contextVarNodeNumberer().iterator(); vIt.hasNext(); ) {
 
-            final VarNode v = (VarNode) vIt.next();
+            final ContextVarNode v = (ContextVarNode) vIt.next();
             scalars++;
             PointsToSetReadOnly set = PaddleScene.v().p2sets.get(v);
             if( set != null ) mass += set.size();
             if( set != null ) varMass += set.size();
         }
-        for( Iterator anIt = PaddleScene.v().pag.allocSources(); anIt.hasNext(); ) {
-            final AllocNode an = (AllocNode) anIt.next();
-            for( Iterator adfIt = an.getFields().iterator(); adfIt.hasNext(); ) {
-                final AllocDotField adf = (AllocDotField) adfIt.next();
+        for( Iterator anIt = PaddleNumberers.v().contextAllocNodeNumberer().iterator(); anIt.hasNext(); ) {
+            final ContextAllocNode an = (ContextAllocNode) anIt.next();
+            Iterator it = an.fields();
+            while( it.hasNext() ) {
+                ContextAllocDotField adf = (ContextAllocDotField) it.next();
                 PointsToSetReadOnly set = PaddleScene.v().p2sets.get(adf);
                 if( set != null ) mass += set.size();
                 if( set != null && set.size() > 0 ) {

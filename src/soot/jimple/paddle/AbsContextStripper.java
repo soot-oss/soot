@@ -26,13 +26,13 @@ import soot.jimple.paddle.queue.*;
  */
 public abstract class AbsContextStripper 
 { 
-    protected Rsrcc_srcm_stmt_kind_tgtc_tgtm in;
-    protected Qsrcc_srcm_stmt_kind_tgtc_tgtm out;
-    AbsContextStripper( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
+    protected Rctxt_method in;
+    protected Qctxt_method out;
+    AbsContextStripper( Rctxt_method in, Qctxt_method out ) {
         this.in = in;
         this.out = out;
     }
-    abstract void update();
+    abstract boolean update();
 }
 
 

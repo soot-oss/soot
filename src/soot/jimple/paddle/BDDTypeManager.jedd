@@ -30,8 +30,8 @@ import jedd.*;
  */
 public class BDDTypeManager extends AbsTypeManager
 { 
-    BDDTypeManager( Rvar vars, Robj allocs, BDDHierarchy fh ) {
-        super( vars, allocs );
+    BDDTypeManager( Rvar_method_type locals, Rvar_type globals, Robj_method_type localallocs, Robj_type globalallocs, BDDHierarchy fh ) {
+        super( locals, globals, localallocs, globalallocs );
         this.fh = fh;
     }
     <var, obj> result = 0B;
@@ -43,20 +43,14 @@ public class BDDTypeManager extends AbsTypeManager
             return;
         }
 
-        <var, type> newVars = 0B;
-        for( Iterator tIt = vars.iterator(); tIt.hasNext(); ) {
-            final Rvar.Tuple t = (Rvar.Tuple) tIt.next();
-            VarNode vn = t.var();
-            newVars |= new { vn=>var, vn.getType()=>type };
-        }
+        <var, type> newVars;
+        newVars = (method=>) locals.get();
+        newVars |= globals.get();
         allVars |= newVars;
 
-        <obj, type> newObjs = 0B;
-        for( Iterator tIt = allocs.iterator(); tIt.hasNext(); ) {
-            final Robj.Tuple t = (Robj.Tuple) tIt.next();
-            AllocNode an = t.obj();
-            newObjs |= new { an=>obj, an.getType()=>type };
-        }
+        <obj, type> newObjs;
+        newObjs = (method=>) localallocs.get();
+        newObjs |= globalallocs.get();
         allObjs |= newObjs;
 
         <subt, supt> subtypeRelation = fh.subtypeRelation();
@@ -80,7 +74,7 @@ public class BDDTypeManager extends AbsTypeManager
         //if( from instanceof AnySubType ) return true;
         //if( to instanceof NullType ) return false;
         if( to instanceof AnySubType ) throw new RuntimeException( "oops from="+from+" to="+to );
-        return 0B != (fh.subtypeRelation() & new {from=>subt, to=>supt});
+        return 0B != (fh.subtypeRelation() & new{from=>subt, to=>supt});
     }
 
     private BDDHierarchy fh;

@@ -30,31 +30,44 @@ public class TradReachableMethods extends AbsReachableMethods
     private Set reachables = new HashSet();
     private AbsCallGraph cg;
     private Rctxt_method newMethods;
-    TradReachableMethods( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qctxt_method out, AbsCallGraph cg ) {
-        super( in, out );
+    TradReachableMethods( Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesIn, Rctxt_method methodsIn, Qctxt_method out, AbsCallGraph cg ) {
+        super( edgesIn, methodsIn, out );
         this.cg = cg;
         newMethods = out.reader("tradrm");
     }
-    private void processEdge( Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t ) {
-        if( !reachables.contains( MethodContext.v( t.srcm(), t.srcc() ) ) ) return;
-        add( MethodContext.v( t.tgtm(), t.tgtc() ) );
+    private boolean processEdge( Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t ) {
+        if( !reachables.contains( MethodContext.v( t.srcm(), t.srcc() ) ) ) return false;
+        return add( MethodContext.v( t.tgtm(), t.tgtc() ) );
     }
-    void update() {
-        for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
+    boolean update() {
+        boolean change = false;
+
+        if( methodsIn != null ) {
+            for( Iterator tIt = methodsIn.iterator(); tIt.hasNext(); ) {
+                final Rctxt_method.Tuple t = (Rctxt_method.Tuple) tIt.next();
+                change = change | add( MethodContext.v( t.method(), t.ctxt() ) );
+            }
+        }
+        
+        for( Iterator tIt = edgesIn.iterator(); tIt.hasNext(); ) {
+        
             final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
-            processEdge( t );
+            change = change | processEdge( t );
         }
         while( newMethods.hasNext() ) {
             for( Iterator tIt = cg.edgesOutOf( newMethods ).iterator(); tIt.hasNext(); ) {
                 final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
-                processEdge( t );
+                change = change | processEdge( t );
             }
         }
+        return change;
     }
-    void add( MethodOrMethodContext m ) {
+    boolean add( MethodOrMethodContext m ) {
         if( reachables.add( m ) ) {
             out.add( m.context(), m.method() );
+            return true;
         }
+        return false;
     }
     int size() {
         return reachables.size();

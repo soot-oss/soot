@@ -26,4 +26,8 @@ public abstract class Qsrcc_srcm_stmt_kind_tgtc_tgtm {
     public abstract Rsrcc_srcm_stmt_kind_tgtc_tgtm reader(String rname);
     
     public Rsrcc_srcm_stmt_kind_tgtc_tgtm revreader(String rname) { return this.reader(rname); }
+    
+    public void add(Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple in) {
+        this.add(in.srcc(), in.srcm(), in.stmt(), in.kind(), in.tgtc(), in.tgtm());
+    }
 }

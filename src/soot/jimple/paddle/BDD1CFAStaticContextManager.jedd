@@ -30,9 +30,12 @@ public class BDD1CFAStaticContextManager extends AbsStaticContextManager
     BDD1CFAStaticContextManager( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
         super(in, out);
     }
-    public void update() {
+    public boolean update() {
         // get rid of tgt context, then copy src unit to target context
-        out.add( (stmt=>stmt, stmt=>tgtc) (tgtc=>) in.get() );
+        <srcc, srcm, stmt, kind, tgtc, tgtm> newOut =
+            (stmt=>stmt, stmt=>tgtc) (tgtc=>) in.get();
+        out.add( newOut );
+        return newOut != 0B;
     }
 }
 

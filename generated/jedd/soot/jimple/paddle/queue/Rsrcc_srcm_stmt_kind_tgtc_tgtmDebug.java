@@ -37,7 +37,7 @@ public class Rsrcc_srcm_stmt_kind_tgtc_tgtmDebug extends Rsrcc_srcm_stmt_kind_tg
                     throw new RuntimeException("they don\'t match: tradIt=" + tradIt.hasNext() + " bddIt=" +
                                                bddIt.hasNext());
                 if (!tradIt.hasNext() && !tradSet.equals(bddSet))
-                    throw new RuntimeException("tradSet=" + tradSet + "\nbddSet=" + bddSet);
+                    throw new RuntimeException(name + "\ntradSet=" + tradSet + "\nbddSet=" + bddSet);
                 return tradIt.hasNext();
             }
             

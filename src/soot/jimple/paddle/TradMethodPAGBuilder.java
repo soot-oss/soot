@@ -19,7 +19,10 @@
 
 package soot.jimple.paddle;
 import soot.*;
+import soot.jimple.*;
 import soot.jimple.paddle.queue.*;
+import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
+
 import java.util.*;
 
 /** Creates intra-procedural pointer assignment edges.
@@ -35,55 +38,50 @@ public class TradMethodPAGBuilder extends AbsMethodPAGBuilder
         Qobj_var alloc ) {
         super(in, simple, load, store, alloc);
     }
-    private Map mpags = new HashMap();
     protected NodeManager nm = PaddleScene.v().nodeManager();
-    public MethodPAG v( SootMethod m ) {
-        MethodPAG mpag = (MethodPAG) mpags.get( m );
-        if( mpag == null ) {
-            mpag = new MethodPAG( m );
-            mpag.build();
-            mpags.put( m, mpag );
-        }
-        return mpag;
-    }
     public void update() {
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rctxt_method.Tuple t = (Rctxt_method.Tuple) tIt.next();
-            MethodPAG mpag = v( t.method() );
-            for( Iterator eIt = mpag.simple().iterator(); eIt.hasNext(); ) {
-                final Rsrc_dst.Tuple e = (Rsrc_dst.Tuple) eIt.next();
-                simple.add( parm( e.src(), t.ctxt() ),
-                            parm( e.dst(), t.ctxt() ) );
-            }
-            for( Iterator eIt = mpag.load().iterator(); eIt.hasNext(); ) {
-                final Rsrc_fld_dst.Tuple e = (Rsrc_fld_dst.Tuple) eIt.next();
-                if( e.fld() == null ) throw new RuntimeException( ""+e );
-                VarNode base = parm( e.src(), t.ctxt() );
-                nm.makeFieldRefNode( base, e.fld() );
-                load.add( base,
-                          e.fld(),
-                          parm( e.dst(), t.ctxt() ) );
-            }
-            for( Iterator eIt = mpag.store().iterator(); eIt.hasNext(); ) {
-                final Rsrc_fld_dst.Tuple e = (Rsrc_fld_dst.Tuple) eIt.next();
-                VarNode base = parm( e.dst(), t.ctxt() );
-                nm.makeFieldRefNode( base, e.fld() );
-                store.add( parm( e.src(), t.ctxt() ),
-                          e.fld(),
-                          base );
-            }
-            for( Iterator eIt = mpag.alloc().iterator(); eIt.hasNext(); ) {
-                final Robj_var.Tuple e = (Robj_var.Tuple) eIt.next();
-                alloc.add( e.obj(), parm( e.var(), t.ctxt() ) );
-            }
+            build(t.method());
         }
     }
-    private VarNode parm( VarNode vn, Context cn ) {
-        if( cn == null ) return vn;
-        if( vn instanceof LocalVarNode ) 
-            return nm.makeContextVarNode( (LocalVarNode) vn, cn );
-        return vn;
+    protected void build(SootMethod method) {
+        MethodNodeFactory nf = new MethodNodeFactory(method);
+        if( method.isNative() ) {
+            if( PaddleScene.v().options().simulate_natives() ) {
+                buildNative(method, nf);
+            }
+        } else {
+            if( method.isConcrete() && !method.isPhantom() ) {
+                buildNormal(method, nf);
+            }
+        }
+        nf.addMiscEdges();
+    }
+    protected void buildNormal( SootMethod method, MethodNodeFactory nf ) {
+        Body b = method.retrieveActiveBody();
+        Iterator unitsIt = b.getUnits().iterator();
+        while( unitsIt.hasNext() )
+        {
+            Stmt s = (Stmt) unitsIt.next();
+            nf.handleStmt( s );
+        }
+    }
+    protected void buildNative( SootMethod method, MethodNodeFactory nf ) {
+        Node thisNode = null;
+        Node retNode = null; 
+        if( !method.isStatic() ) { 
+	    thisNode = nf.caseThis();
+        }
+        if( method.getReturnType() instanceof RefLikeType ) {
+	    retNode = nf.caseRet();
+	}
+        Node[] args = new Node[ method.getParameterCount() ];
+        for( int i = 0; i < method.getParameterCount(); i++ ) {
+            if( !( method.getParameterType(i) instanceof RefLikeType ) ) continue;
+	    args[i] = nf.caseParm(i);
+        }
+        NativeMethodDriver.v().process( method, thisNode, retNode, args );
     }
 }
-
 

@@ -387,7 +387,7 @@
             <arg value="-Xincgc"/>
             <arg value="-cp"/>
             <arg path="${jedd.translator.jar}:${polyglot.jedd.jar}"/>
-            <arg value="-Xmx800m"/>
+            <arg value="-Xmx400m"/>
             <arg value="jedd.Main"/>
             <arg value="-sourcepath"/>
             <arg path="src:generated/options:generated/sablecc:generated/singletons:generated/jj"/>

@@ -19,7 +19,6 @@
 
 package soot.jimple.paddle;
 import soot.*;
-import soot.jimple.paddle.queue.*;
 import java.util.*;
 
 /** Manages the points-to sets for nodes.
@@ -27,8 +26,32 @@ import java.util.*;
  */
 public abstract class AbsP2Sets
 { 
-    public abstract PointsToSetReadOnly get( VarNode v );
-    public abstract PointsToSetReadOnly get( AllocDotField adf );
-    public abstract PointsToSetInternal make( VarNode v );
-    public abstract PointsToSetInternal make( AllocDotField adf );
+    public PointsToSetReadOnly get( Context c, VarNode v ) {
+        ContextVarNode cvn = ContextVarNode.get(c, v);
+        if( cvn == null ) return EmptyPointsToSet.v();
+        return get(cvn);
+    }
+    public PointsToSetReadOnly get( Context c, AllocDotField adf ) {
+        ContextAllocDotField cadf = ContextAllocDotField.get(c, adf);
+        if( cadf == null ) return EmptyPointsToSet.v();
+        return get(cadf);
+    }
+    public PointsToSetInternal make( Context c, VarNode v ) {
+        return make( ContextVarNode.make(c, v) );
+    }
+    public PointsToSetInternal make( Context c, AllocDotField adf ) {
+        return make( ContextAllocDotField.make(c, adf) );
+    }
+    public PointsToSetReadOnly get( ContextVarNode cvn ) {
+        return get(cvn.ctxt(), cvn.var());
+    }
+    public PointsToSetReadOnly get( ContextAllocDotField cadf ) {
+        return get(cadf.ctxt(), cadf.adf());
+    }
+    public PointsToSetInternal make( ContextVarNode cvn ) {
+        return make(cvn.ctxt(), cvn.var());
+    }
+    public PointsToSetInternal make( ContextAllocDotField cadf ) {
+        return make(cadf.ctxt(), cadf.adf());
+    }
 }

@@ -19,8 +19,6 @@
 
 package soot.jimple.paddle;
 import soot.*;
-import soot.util.*;
-import soot.jimple.paddle.queue.*;
 import java.util.*;
 
 /** Manages the points-to sets for nodes.
@@ -28,9 +26,9 @@ import java.util.*;
  */
 public class P2SetMap
 { 
-    private LargeNumberedMap map;
-    public P2SetMap( ArrayNumberer n ) {
-        map = new LargeNumberedMap(n);
+    private Map map;
+    public P2SetMap() {
+        map = new HashMap();
     }
     public PointsToSetReadOnly get( Node n ) {
         PointsToSetInternal ret = (PointsToSetInternal) map.get(n);

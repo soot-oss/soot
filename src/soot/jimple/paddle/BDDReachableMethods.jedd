@@ -30,34 +30,53 @@ public class BDDReachableMethods extends AbsReachableMethods
     private <ctxt, method> reachables;
     private AbsCallGraph cg;
     private Rctxt_method newMethods;
-    BDDReachableMethods( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qctxt_method out, AbsCallGraph cg ) {
-        super( in, out );
+    BDDReachableMethods( Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesIn, Rctxt_method methodsIn, Qctxt_method out, AbsCallGraph cg ) {
+        super( edgesIn, methodsIn, out );
         this.cg = cg;
         newMethods = out.reader("bddrm");
     }
-    void update() {
-        <srcc, srcm, stmt, kind, tgtc, tgtm> newEdges = in.get() {srcc, srcm} >< reachables {ctxt, method};
+    boolean update() {
+        boolean change = false;
+
+        if( methodsIn != null ) {
+            <ctxt, method> newMethodsIn = methodsIn.get();
+            newMethodsIn -= reachables;
+            if( newMethodsIn != 0B ) change = true;
+            reachables |= newMethodsIn;
+            out.add( newMethodsIn );
+        }
+
+        <srcc, srcm, stmt, kind, tgtc, tgtm> newEdges =
+            edgesIn.get() {srcc, srcm} >< reachables {ctxt, method};
+
+        newEdges |= cg.edgesOutOf( newMethods ).get();
+
         while( newEdges != 0B ) {
-            <ctxt, method> newTargets = (srcc=>, srcm=>, stmt=>, kind=>, tgtc=>ctxt, tgtm=>method) newEdges;
+            <ctxt, method> newTargets =
+                (srcc=>, srcm=>, stmt=>, kind=>, tgtc=>ctxt, tgtm=>method) newEdges;
             newTargets -= reachables;
             out.add( newTargets );
+            if( newTargets != 0B ) change = true;
             reachables |= newTargets;
             newEdges = cg.edgesOutOf( newMethods ).get();
         }
+        return change;
     }
-    void add( MethodOrMethodContext m ) {
-        <ctxt, method> newM = new { m.context()=>ctxt, m.method()=>method };
+    boolean add( MethodOrMethodContext m ) {
+        <ctxt, method> newM = new{ m.context()=>ctxt, m.method()=>method };
         <ctxt, method> newReachables = reachables | newM;
         if( newReachables != reachables ) {
             reachables = newReachables;
             out.add( newM );
+            return true;
         }
+        return false;
     }
     int size() {
         return (int) reachables.size();
     }
     boolean contains( MethodOrMethodContext m ) {
-        <ctxt, method> newM = new { m.context()=>ctxt, m.method()=>method };
+        <ctxt, method> newM = new{ m.context()=>ctxt, m.method()=>method };
         return (reachables & newM) != 0B;
     }
 }

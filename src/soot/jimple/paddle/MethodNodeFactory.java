@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002, 2003 Ondrej Lhotak
+ * Copyright (C) 2002, 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,22 +22,19 @@ import soot.jimple.*;
 import soot.*;
 import soot.util.*;
 import soot.toolkits.scalar.Pair;
-import java.util.*;
 
 /** Class implementing builder parameters (this decides
  * what kinds of nodes should be built for each kind of Soot value).
  * @author Ondrej Lhotak
  */
-public abstract class MethodNodeFactory extends AbstractJimpleValueSwitch {
-    public abstract SootMethod method();
-    public abstract MethodPAG mpag();
-
-    protected NodeFactory gnf;
-    protected NodeManager nm;
-    public MethodNodeFactory() {
-        gnf = PaddleScene.v().nodeFactory();
-        nm = PaddleScene.v().nodeManager();
+public class MethodNodeFactory extends AbstractJimpleValueSwitch {
+    public MethodNodeFactory( SootMethod method ) {
+        this.method = method;
     }
+
+    private SootMethod method;
+    private NodeFactory gnf = PaddleScene.v().nodeFactory();
+    private NodeManager nm = PaddleScene.v().nodeManager();
 
     public Node getNode( Value v ) {
         v.apply( this );
@@ -57,13 +54,13 @@ public abstract class MethodNodeFactory extends AbstractJimpleValueSwitch {
 		Node dest = getNode();
 		r.apply( MethodNodeFactory.this );
 		Node src = getNode();
-		mpag().addEdge( src, dest );
+		gnf.addEdge( src, dest );
 	    }
 	    final public void caseReturnStmt(ReturnStmt rs) {
 		if( !( rs.getOp().getType() instanceof RefLikeType ) ) return;
 		rs.getOp().apply( MethodNodeFactory.this );
                 Node retNode = getNode();
-                mpag().addEdge( retNode, caseRet() );
+                gnf.addEdge( retNode, caseRet() );
 	    }
 	    final public void caseIdentityStmt(IdentityStmt is) {
 		if( !( is.getLeftOp().getType() instanceof RefLikeType ) ) return;
@@ -71,11 +68,11 @@ public abstract class MethodNodeFactory extends AbstractJimpleValueSwitch {
 		Node dest = getNode();
 		is.getRightOp().apply( MethodNodeFactory.this );
 		Node src = getNode();
-		mpag().addEdge( src, dest );
+		gnf.addEdge( src, dest );
 	    }
 	    final public void caseThrowStmt(ThrowStmt ts) {
 		ts.getOp().apply( MethodNodeFactory.this );
-		mpag().addEdge( getNode(), gnf.caseThrow() );
+		gnf.addEdge( getNode(), gnf.caseThrow() );
 	    }
 	} );
     }
@@ -84,26 +81,26 @@ public abstract class MethodNodeFactory extends AbstractJimpleValueSwitch {
     }
     final public Node caseThis() {
 	VarNode ret = nm.makeLocalVarNode(
-		    new Pair( method(), PointsToAnalysis.THIS_NODE ),
-		    method().getDeclaringClass().getType(), method() );
+		    new Pair( method, PointsToAnalysis.THIS_NODE ),
+		    method.getDeclaringClass().getType(), method );
         return ret;
     }
 
     final public Node caseParm( int index ) {
         VarNode ret = nm.makeLocalVarNode(
-                    new Pair( method(), new Integer( index ) ),
-                    method().getParameterType( index ), method() );
+                    new Pair( method, new Integer( index ) ),
+                    method.getParameterType( index ), method );
         return ret;
     }
 
     final public Node caseRet() {
         VarNode ret = nm.makeLocalVarNode(
-                    Parm.v( method(), PointsToAnalysis.RETURN_NODE ),
-                    method().getReturnType(), method() );
+                    Parm.v( method, PointsToAnalysis.RETURN_NODE ),
+                    method.getReturnType(), method );
         return ret;
     }
     final public Node caseArray( VarNode base ) {
-	return nm.makeFieldRefNode( base, ArrayElement.v() );
+	return FieldRefNode.make( base, ArrayElement.v() );
     }
     /* End of public methods. */
     /* End of package methods. */
@@ -119,8 +116,8 @@ public abstract class MethodNodeFactory extends AbstractJimpleValueSwitch {
 	Pair castPair = new Pair( ce, PointsToAnalysis.CAST_NODE );
 	ce.getOp().apply( this );
 	Node opNode = getNode();
-	Node castNode = nm.makeLocalVarNode( castPair, ce.getCastType(), method() );
-	mpag().addEdge( opNode, castNode );
+	Node castNode = nm.makeLocalVarNode( castPair, ce.getCastType(), method );
+	gnf.addEdge( opNode, castNode );
 	setResult( castNode );
     }
     final public void caseCaughtExceptionRef( CaughtExceptionRef cer ) {
@@ -132,43 +129,40 @@ public abstract class MethodNodeFactory extends AbstractJimpleValueSwitch {
 			ifr.getField(), 
 			ifr.getField().getType() ) );
 	} else {
-	    setResult( nm.makeLocalFieldRefNode( 
-			ifr.getBase(), 
-			ifr.getBase().getType(),
-			ifr.getField(),
-                        method() ) );
+	    setResult( FieldRefNode.make( nm.makeLocalVarNode( 
+			ifr.getBase(), ifr.getBase().getType(), method ), ifr.getField() ) );
 	}
     }
     final public void caseLocal( Local l ) {
-	setResult( nm.makeLocalVarNode( l,  l.getType(), method() ) );
+	setResult( nm.makeLocalVarNode( l,  l.getType(), method ) );
     }
     final public void caseNewArrayExpr( NewArrayExpr nae ) {
-        setResult( nm.makeAllocNode( nae, nae.getType(), method() ) );
+        setResult( nm.makeAllocNode( nae, nae.getType(), method ) );
     }
     final public void caseNewExpr( NewExpr ne ) {
         if( PaddleScene.v().options().merge_stringbuffer() 
         && ne.getType().equals( RefType.v("java.lang.StringBuffer" ) ) ) {
             setResult( nm.makeAllocNode( ne.getType(), ne.getType(), null ) );
         } else {
-            setResult( nm.makeAllocNode( ne, ne.getType(), method() ) );
+            setResult( nm.makeAllocNode( ne, ne.getType(), method ) );
         }
     }
     final public void caseNewMultiArrayExpr( NewMultiArrayExpr nmae ) {
         ArrayType type = (ArrayType) nmae.getType();
         AllocNode prevAn = nm.makeAllocNode(
-            new Pair( nmae, new Integer( type.numDimensions ) ), type, method() );
-        VarNode prevVn = nm.makeLocalVarNode( prevAn, prevAn.getType(), null );
-        mpag().addEdge( prevAn, prevVn );
+            new Pair( nmae, new Integer( type.numDimensions ) ), type, method );
+        VarNode prevVn = nm.makeLocalVarNode( prevAn, prevAn.getType(), method );
+        gnf.addEdge( prevAn, prevVn );
         setResult( prevAn );
         while( true ) {
             Type t = type.getElementType();
             if( !( t instanceof ArrayType ) ) break;
             type = (ArrayType) t;
             AllocNode an = nm.makeAllocNode(
-                new Pair( nmae, new Integer( type.numDimensions ) ), type, method() );
-            VarNode vn = nm.makeLocalVarNode( an, an.getType(), null );
-            mpag().addEdge( an, vn );
-            mpag().addEdge( vn, nm.makeFieldRefNode( prevVn, ArrayElement.v() ) );
+                new Pair( nmae, new Integer( type.numDimensions ) ), type, method );
+            VarNode vn = nm.makeLocalVarNode( an, an.getType(), method );
+            gnf.addEdge( an, vn );
+            gnf.addEdge( vn, FieldRefNode.make( prevVn, ArrayElement.v() ) );
             prevAn = an;
             prevVn = vn;
         }
@@ -195,7 +189,7 @@ public abstract class MethodNodeFactory extends AbstractJimpleValueSwitch {
         VarNode stringConstantLocal = nm.makeGlobalVarNode(
             stringConstant,
             RefType.v( "java.lang.String" ) );
-        mpag().addEdge( stringConstant, stringConstantLocal );
+        gnf.addEdge( stringConstant, stringConstantLocal );
         setResult( stringConstantLocal );
     }
     final public void caseThisRef( ThisRef tr ) {
@@ -209,19 +203,19 @@ public abstract class MethodNodeFactory extends AbstractJimpleValueSwitch {
     }
     public void addMiscEdges() {
         // Add node for parameter (String[]) in main method
-        if( method().getSubSignature().equals( SootMethod.getSubSignature( "main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() ) ) ) {
-            mpag().addEdge( gnf.caseArgv(), caseParm(0) );
+        if( method.getSubSignature().equals( SootMethod.getSubSignature( "main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() ) ) ) {
+            gnf.addEdge( gnf.caseArgv(), caseParm(0) );
         }
 
-        if( method().getSignature().equals(
+        if( method.getSignature().equals(
                     "<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.String)>" ) ) {
-            mpag().addEdge( gnf.caseMainThread(), caseThis() );
-            mpag().addEdge( gnf.caseMainThreadGroup(), caseParm( 0 ) );
+            gnf.addEdge( gnf.caseMainThread(), caseThis() );
+            gnf.addEdge( gnf.caseMainThreadGroup(), caseParm( 0 ) );
         }
 
-        if( method().getSubSignature().equals(
+        if( method.getSubSignature().equals(
             "java.lang.Class loadClass(java.lang.String)" ) ) {
-            SootClass c = method().getDeclaringClass();
+            SootClass c = method.getDeclaringClass();
 outer:      do {
                 while( !c.getName().equals( "java.lang.ClassLoader" ) ) {
                     if( !c.hasSuperclass() ) {
@@ -229,9 +223,9 @@ outer:      do {
                     }
                     c = c.getSuperclass();
                 }
-                mpag().addEdge( gnf.caseDefaultClassLoader(),
+                gnf.addEdge( gnf.caseDefaultClassLoader(),
                         caseThis() );
-                mpag().addEdge( gnf.caseMainClassNameString(),
+                gnf.addEdge( gnf.caseMainClassNameString(),
                         caseParm(0) );
             } while( false );
         }

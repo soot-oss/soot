@@ -27,33 +27,17 @@ import java.util.*;
  */
 public abstract class AbsPAG
 { 
-    protected Rsrc_dst simple;
-    protected Rsrc_fld_dst load;
-    protected Rsrc_fld_dst store;
-    protected Robj_var alloc;
-    protected Qsrc_dst simpleout;
-    protected Qsrc_fld_dst loadout;
-    protected Qsrc_fld_dst storeout;
-    protected Qobj_var allocout;
+    protected Rsrcc_src_dstc_dst simple;
+    protected Rsrcc_src_fld_dstc_dst load;
+    protected Rsrcc_src_fld_dstc_dst store;
+    protected Robjc_obj_varc_var alloc;
 
-    AbsPAG( 
-            Rsrc_dst simple,
-            Rsrc_fld_dst load,
-            Rsrc_fld_dst store,
-            Robj_var alloc,
-            Qsrc_dst simpleout,
-            Qsrc_fld_dst loadout,
-            Qsrc_fld_dst storeout,
-            Qobj_var allocout
-        ) {
+    AbsPAG( Rsrcc_src_dstc_dst simple, Rsrcc_src_fld_dstc_dst load,
+            Rsrcc_src_fld_dstc_dst store, Robjc_obj_varc_var alloc ) {
         this.simple = simple;
         this.load = load;
         this.store = store;
         this.alloc = alloc;
-        this.simpleout = simpleout;
-        this.loadout = loadout;
-        this.storeout = storeout;
-        this.allocout = allocout;
     }
     public abstract void update();
 
@@ -66,18 +50,43 @@ public abstract class AbsPAG
     public abstract Iterator storeInvSources();
     public abstract Iterator allocInvSources();
     
-    public abstract Iterator simpleLookup( VarNode key );
-    public abstract Iterator loadLookup( FieldRefNode key );
-    public abstract Iterator storeLookup( VarNode key );
-    public abstract Iterator allocLookup( AllocNode key );
-    public abstract Iterator simpleInvLookup( VarNode key );
-    public abstract Iterator loadInvLookup( VarNode key );
-    public abstract Iterator storeInvLookup( FieldRefNode key );
-    public abstract Iterator allocInvLookup( VarNode key );
+    public Iterator simpleLookup( Context ctxt, VarNode key )
+    { return simpleLookup( ContextVarNode.make(ctxt, key) ); }
+    public Iterator loadLookup( Context ctxt, FieldRefNode key )
+    { return loadLookup( ContextFieldRefNode.make(ctxt, key) ); }
+    public Iterator storeLookup( Context ctxt, VarNode key )
+    { return storeLookup( ContextVarNode.make(ctxt, key) ); }
+    public Iterator allocLookup( Context ctxt, AllocNode key )
+    { return allocLookup( ContextAllocNode.make(ctxt, key) ); }
+    public Iterator simpleInvLookup( Context ctxt, VarNode key )
+    { return simpleInvLookup( ContextVarNode.make(ctxt, key) ); }
+    public Iterator loadInvLookup( Context ctxt, VarNode key )
+    { return loadInvLookup( ContextVarNode.make(ctxt, key) ); }
+    public Iterator storeInvLookup( Context ctxt, FieldRefNode key )
+    { return storeInvLookup( ContextFieldRefNode.make(ctxt, key) ); }
+    public Iterator allocInvLookup( Context ctxt, VarNode key )
+    { return allocInvLookup( ContextVarNode.make(ctxt, key) ); }
 
-    public abstract Rsrc_dst allSimple();
-    public abstract Rsrc_fld_dst allLoad();
-    public abstract Rsrc_fld_dst allStore();
-    public abstract Robj_var allAlloc();
+    public Iterator simpleLookup( ContextVarNode key ) 
+    { return simpleLookup( key.ctxt(), key.var() ); }
+    public Iterator loadLookup( ContextFieldRefNode key )
+    { return loadLookup( key.ctxt(), key.frn() ); }
+    public Iterator storeLookup( ContextVarNode key )
+    { return storeLookup( key.ctxt(), key.var() ); }
+    public Iterator allocLookup( ContextAllocNode key )
+    { return allocLookup( key.ctxt(), key.obj() ); }
+    public Iterator simpleInvLookup( ContextVarNode key )
+    { return simpleInvLookup( key.ctxt(), key.var() ); }
+    public Iterator loadInvLookup( ContextVarNode key )
+    { return loadInvLookup( key.ctxt(), key.var() ); }
+    public Iterator storeInvLookup( ContextFieldRefNode key )
+    { return storeInvLookup( key.ctxt(), key.frn() ); }
+    public Iterator allocInvLookup( ContextVarNode key )
+    { return allocInvLookup( key.ctxt(), key.var() ); }
+
+    public abstract Rsrcc_src_dstc_dst allSimple();
+    public abstract Rsrcc_src_fld_dstc_dst allLoad();
+    public abstract Rsrcc_src_fld_dstc_dst allStore();
+    public abstract Robjc_obj_varc_var allAlloc();
 }
 

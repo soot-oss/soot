@@ -18,6 +18,7 @@
  */
 
 package soot.jimple.paddle;
+import soot.*;
 import soot.jimple.paddle.queue.*;
 import java.util.*;
 
@@ -27,12 +28,25 @@ import java.util.*;
  */
 public class TradContextCallGraphBuilder extends AbsContextCallGraphBuilder 
 { 
-    TradContextCallGraphBuilder( Rctxt_method in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out,
+    TradContextCallGraphBuilder( Rctxt_method methodsIn,
+            Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesIn,
+            Qsrcc_srcm_stmt_kind_tgtc_tgtm out,
             AbsCallGraph cicg ) {
-        super( in, out, cicg );
+        super( methodsIn, edgesIn, out, cicg );
     }
-    public void update() {
-        for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
+    private MethodToContexts m2c = new MethodToContexts();
+    public boolean update() {
+        boolean change = false;
+        for( Iterator eIt = edgesIn.iterator(); eIt.hasNext(); ) {
+            final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple e = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) eIt.next();
+            for( Iterator mcIt = m2c.get(e.srcm()).iterator(); mcIt.hasNext(); ) {
+                final MethodContext mc = (MethodContext) mcIt.next();
+                out.add( mc.context(), mc.method(), e.stmt(), e.kind(),
+                        e.tgtc(), e.tgtm() );
+                change = true;
+            }
+        }
+        for( Iterator tIt = methodsIn.iterator(); tIt.hasNext(); ) {
             final Rctxt_method.Tuple t = (Rctxt_method.Tuple) tIt.next();
             Rsrcc_srcm_stmt_kind_tgtc_tgtm edges = cicg.edgesOutOf(t.method());
             Iterator it = edges.iterator();
@@ -41,8 +55,11 @@ public class TradContextCallGraphBuilder extends AbsContextCallGraphBuilder
                     (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) it.next();
                 out.add( t.ctxt(), t.method(), e.stmt(), e.kind(),
                     e.tgtc(), e.tgtm() );
+                change = true;
             }
+            m2c.add( MethodContext.v( t.method(), t.ctxt() ) );
         }
+        return change;
     }
 }
 

@@ -6,14 +6,20 @@ import soot.jimple.paddle.queue.*;
 import soot.jimple.paddle.bdddomains.*;
 
 public abstract class AbsTypeManager {
-    protected Rvar vars;
+    protected Rvar_method_type locals;
     
-    protected Robj allocs;
+    protected Rvar_type globals;
     
-    AbsTypeManager(Rvar vars, Robj allocs) {
+    protected Robj_method_type localallocs;
+    
+    protected Robj_type globalallocs;
+    
+    AbsTypeManager(Rvar_method_type locals, Rvar_type globals, Robj_method_type localallocs, Robj_type globalallocs) {
         super();
-        this.vars = vars;
-        this.allocs = allocs;
+        this.locals = locals;
+        this.globals = globals;
+        this.localallocs = localallocs;
+        this.globalallocs = globalallocs;
     }
     
     public abstract void update();

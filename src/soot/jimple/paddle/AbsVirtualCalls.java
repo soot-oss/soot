@@ -26,16 +26,16 @@ import soot.jimple.paddle.queue.*;
  */
 public abstract class AbsVirtualCalls
 { 
-    protected Rvar_obj pt;
-    protected Rlocal_srcm_stmt_signature_kind receivers;
-    protected Rlocal_srcm_stmt_tgtm specials;
-    protected Qctxt_local_obj_srcm_stmt_kind_tgtm out;
+    protected Rvarc_var_objc_obj pt;
+    protected Rvar_srcm_stmt_signature_kind receivers;
+    protected Rvar_srcm_stmt_tgtm specials;
+    protected Qctxt_var_obj_srcm_stmt_kind_tgtm out;
     protected Qsrcc_srcm_stmt_kind_tgtc_tgtm statics;
 
-    AbsVirtualCalls( Rvar_obj pt,
-            Rlocal_srcm_stmt_signature_kind receivers,
-            Rlocal_srcm_stmt_tgtm specials,
-            Qctxt_local_obj_srcm_stmt_kind_tgtm out,
+    AbsVirtualCalls( Rvarc_var_objc_obj pt,
+            Rvar_srcm_stmt_signature_kind receivers,
+            Rvar_srcm_stmt_tgtm specials,
+            Qctxt_var_obj_srcm_stmt_kind_tgtm out,
             Qsrcc_srcm_stmt_kind_tgtc_tgtm statics
         ) {
         this.pt = pt;
@@ -44,7 +44,7 @@ public abstract class AbsVirtualCalls
         this.out = out;
         this.statics = statics;
     }
-    public abstract void update();
+    public abstract boolean update();
 }
 
 

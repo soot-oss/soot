@@ -30,7 +30,8 @@ public class TradKObjSensStaticContextManager extends AbsStaticContextManager
     TradKObjSensStaticContextManager( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out, int k ) {
         super( in, out );
     }
-    public void update() {
+    public boolean update() {
+        boolean change = false;
         // just keep the old context (copy srcc into tgtc)
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
@@ -40,7 +41,9 @@ public class TradKObjSensStaticContextManager extends AbsStaticContextManager
                     t.kind(),
                     t.srcc(),
                     t.tgtm() );
+            change = true;
         }
+        return change;
     }
 }
 

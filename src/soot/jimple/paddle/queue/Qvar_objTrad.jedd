@@ -44,6 +44,6 @@ public class Qvar_objTrad extends Qvar_obj {
         }
     }
     public Rvar_obj reader( String rname ) {
-        return new Rvar_objTrad( q.reader(), rname );
+        return new Rvar_objTrad( q.reader(), name+":"+rname );
     }
 }

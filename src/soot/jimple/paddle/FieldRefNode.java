@@ -18,38 +18,61 @@
  */
 
 package soot.jimple.paddle;
-import soot.jimple.paddle.*;
 import soot.*;
-import soot.jimple.paddle.PointsToSetInternal;
+import java.util.*;
 
 /** Represents a field reference node (Red) in the pointer assignment graph.
  * @author Ondrej Lhotak
  */
 public class FieldRefNode extends Node {
-    /** Returns the base of this field reference. */
-    public VarNode getBase() { return base; }
-    public VarNode base() { return base; }
-    /** Returns the field of this field reference. */
-    public PaddleField getField() { return field; }
-    public PaddleField field() { return field; }
-    public String toString() {
-	return "FieldRefNode "+getNumber()+" "+base+"."+field;
+    public static FieldRefNode get( VarNode var, PaddleField field ) {
+        return PaddleScene.v().nodeManager().get( var, field );
+    }
+    public static FieldRefNode make( VarNode var, PaddleField field ) {
+        return PaddleScene.v().nodeManager().make( var, field );
+    }
+    /** Returns all context var nodes having this node as their base. */
+    public Iterator contexts() { 
+        return new Iterator() {
+            private ContextFieldRefNode cvn = contextNodes;
+            public boolean hasNext() { return cvn != null; }
+            public Object next() { 
+                if( cvn == null ) throw new NoSuchElementException();
+                Object ret = cvn;
+                cvn = cvn.nextByContext;
+                return ret;
+            }
+            public void remove() { throw new UnsupportedOperationException(); }
+        };
     }
 
-    /* End of public methods. */
+    /** Returns the base of this field reference. */
+    public VarNode base() { return base; }
+    /** Returns the field of this field reference. */
+    public PaddleField field() { return field; }
+    public String toString() {
+	return "FieldRefNode "+base+"."+field;
+    }
+
+    public Type getType() { return null; }
 
     FieldRefNode( VarNode base, PaddleField field ) {
-	super( null );
 	if( field == null ) throw new RuntimeException( "null field" );
 	this.base = base;
 	this.field = field;
-	base.addField( this, field );
+	base.addField( this );
         PaddleNumberers.v().fieldRefNodeNumberer().add( this );
+    }
+    void addContext( ContextFieldRefNode cvn ) {
+        cvn.nextByContext = contextNodes;
+        contextNodes = cvn;
     }
 
     /* End of package methods. */
 
     protected VarNode base;
     protected PaddleField field;
+    protected ContextFieldRefNode contextNodes = null;
+    FieldRefNode nextByField = null;
 }
 

@@ -18,14 +18,11 @@
  */
 
 package soot.jimple.paddle;
-import soot.jimple.*;
+import soot.jimple.paddle.queue.*;
 import soot.*;
 import soot.util.*;
-import soot.toolkits.scalar.Pair;
 import java.util.*;
-import soot.util.queue.*;
 import soot.tagkit.*;
-import soot.options.*;
 
 /** Class implementing builder parameters (this decides
  * what kinds of nodes should be built for each kind of Soot value).
@@ -33,6 +30,18 @@ import soot.options.*;
  */
 
 public class NodeManager {
+    public NodeManager( Qvar_method_type locals, Qvar_type globals, Qobj_method_type localallocs, Qobj_type globalallocs ) {
+        this.locals = locals;
+        this.globals = globals;
+        this.localallocs = localallocs;
+        this.globalallocs = globalallocs;
+    }
+
+    private Qvar_method_type locals;
+    private Qvar_type globals;
+    private Qobj_method_type localallocs;
+    private Qobj_type globalallocs;
+
     private Map nodeToTag = new HashMap();
     private void addNodeTag( Node node, SootMethod m ) {
         if( nodeToTag != null ) {
@@ -50,7 +59,7 @@ public class NodeManager {
 	AllocNode ret = (AllocNode) valToAllocNode.get( newExpr );
 	if( ret == null ) {
 	    valToAllocNode.put( newExpr, ret = new AllocNode( newExpr, type, m ) );
-            newAllocNodes.add( ret );
+            globalallocs.add( ret, type );
             addNodeTag( ret, m );
 	} else if( !( ret.getType().equals( type ) ) ) {
 	    throw new RuntimeException( "NewExpr "+newExpr+" of type "+type+
@@ -59,20 +68,17 @@ public class NodeManager {
 	return ret;
     }
     public AllocNode makeStringConstantNode( String s ) {
+        Type type = RefType.v( "java.lang.String" );
         if( PaddleScene.v().options().types_for_sites() || PaddleScene.v().options().vta() )
-            return makeAllocNode( RefType.v( "java.lang.String" ),
-                    RefType.v( "java.lang.String" ), null );
+            return makeAllocNode( type, type, null );
         StringConstantNode ret = (StringConstantNode) valToAllocNode.get( s );
 	if( ret == null ) {
 	    valToAllocNode.put( s, ret = new StringConstantNode( s ) );
-            newAllocNodes.add( ret );
+            globalallocs.add( ret, type );
             addNodeTag( ret, null );
 	}
 	return ret;
     }
-
-    ChunkedQueue newAllocNodes = new ChunkedQueue();
-    public QueueReader allocNodeListener() { return newAllocNodes.reader(); }
 
     /** Finds the GlobalVarNode for the variable value, or returns null. */
     public GlobalVarNode findGlobalVarNode( Object value ) {
@@ -99,7 +105,8 @@ public class NodeManager {
         GlobalVarNode ret = (GlobalVarNode) valToGlobalVarNode.get( value );
         if( ret == null ) {
             valToGlobalVarNode.put( value, 
-                    ret = new GlobalVarNode( this, value, type ) );
+                    ret = new GlobalVarNode( value, type ) );
+            globals.add( ret, type );
             addNodeTag( ret, null );
         } else if( !( ret.getType().equals( type ) ) ) {
             throw new RuntimeException( "Value "+value+" of type "+type+
@@ -119,7 +126,8 @@ public class NodeManager {
             LocalVarNode ret = (LocalVarNode) localToNodeMap.get( val );
             if( ret == null ) {
                 localToNodeMap.put( (Local) value,
-                    ret = new LocalVarNode( this, value, type, method ) );
+                    ret = new LocalVarNode( value, type, method ) );
+                locals.add( ret, method, type );
                 addNodeTag( ret, method );
             } else if( !( ret.getType().equals( type ) ) ) {
                 throw new RuntimeException( "Value "+value+" of type "+type+
@@ -130,7 +138,8 @@ public class NodeManager {
         LocalVarNode ret = (LocalVarNode) valToLocalVarNode.get( value );
         if( ret == null ) {
             valToLocalVarNode.put( value, 
-                    ret = new LocalVarNode( this, value, type, method ) );
+                    ret = new LocalVarNode( value, type, method ) );
+            locals.add( ret, method, type );
             addNodeTag( ret, method );
         } else if( !( ret.getType().equals( type ) ) ) {
             throw new RuntimeException( "Value "+value+" of type "+type+
@@ -138,91 +147,98 @@ public class NodeManager {
         }
 	return ret;
     }
-    /** Finds the ContextVarNode for base variable value and context
-     * context, or returns null. */
-    public ContextVarNode findContextVarNode( Object baseValue, Object context ) {
-	LocalVarNode base = findLocalVarNode( baseValue );
-	if( base == null ) return null;
-	return base.context( context );
+
+    private Map contextMap = new HashMap(1000);
+
+    public AllocDotField get( AllocNode var, PaddleField field ) {
+        Cons c = new Cons(var, field);
+        AllocDotField ret = (AllocDotField) contextMap.get(c);
+        return ret;
     }
-    /** Finds or creates the ContextVarNode for base variable baseValue and context
-     * context, of type type. */
-    public ContextVarNode makeContextVarNode( Object baseValue, Type baseType,
-	    Context context, SootMethod method ) {
-	LocalVarNode base = makeLocalVarNode( baseValue, baseType, method );
-        return makeContextVarNode( base, context );
+    public AllocDotField make( AllocNode var, PaddleField field ) {
+        Cons c = new Cons(var, field);
+        AllocDotField ret = (AllocDotField) contextMap.get(c);
+        if( ret == null ) {
+            contextMap.put( c, ret = new AllocDotField(var, field) );
+        }
+        return ret;
     }
-    /** Finds or creates the ContextVarNode for base variable base and context
-     * context, of type type. */
-    public ContextVarNode makeContextVarNode( LocalVarNode base, Context context ) {
-        if( base instanceof ContextVarNode ) throw new RuntimeException();
-	ContextVarNode ret = base.context( context );
-	if( ret == null ) {
-	    ret = new ContextVarNode( this, base, context );
-            addNodeTag( ret, base.getMethod() );
-	}
-	return ret;
+
+    public FieldRefNode get( VarNode var, PaddleField field ) {
+        Cons c = new Cons(var, field);
+        FieldRefNode ret = (FieldRefNode) contextMap.get(c);
+        return ret;
     }
-    /** Finds the FieldRefNode for base variable value and field
-     * field, or returns null. */
-    public FieldRefNode findLocalFieldRefNode( Object baseValue, PaddleField field ) {
-	VarNode base = findLocalVarNode( baseValue );
-	if( base == null ) return null;
-	return base.dot( field );
+    public FieldRefNode make( VarNode var, PaddleField field ) {
+        Cons c = new Cons(var, field);
+        FieldRefNode ret = (FieldRefNode) contextMap.get(c);
+        if( ret == null ) {
+            contextMap.put( c, ret = new FieldRefNode(var, field) );
+        }
+        return ret;
     }
-    /** Finds the FieldRefNode for base variable value and field
-     * field, or returns null. */
-    public FieldRefNode findGlobalFieldRefNode( Object baseValue, PaddleField field ) {
-	VarNode base = findGlobalVarNode( baseValue );
-	if( base == null ) return null;
-	return base.dot( field );
+
+    public ContextVarNode get( Context ctxt, VarNode var ) {
+        Cons c = new Cons(ctxt, var);
+        ContextVarNode ret = (ContextVarNode) contextMap.get(c);
+        return ret;
     }
-    /** Finds or creates the FieldRefNode for base variable baseValue and field
-     * field, of type type. */
-    public FieldRefNode makeLocalFieldRefNode( Object baseValue, Type baseType,
-	    PaddleField field, SootMethod method ) {
-	VarNode base = makeLocalVarNode( baseValue, baseType, method );
-        return makeFieldRefNode( base, field );
+    public ContextVarNode make( Context ctxt, VarNode var ) {
+        Cons c = new Cons(ctxt, var);
+        ContextVarNode ret = (ContextVarNode) contextMap.get(c);
+        if( ret == null ) {
+            contextMap.put( c, ret = new ContextVarNode(ctxt, var) );
+        }
+        return ret;
     }
-    /** Finds or creates the FieldRefNode for base variable baseValue and field
-     * field, of type type. */
-    public FieldRefNode makeGlobalFieldRefNode( Object baseValue, Type baseType,
-	    PaddleField field ) {
-	VarNode base = makeGlobalVarNode( baseValue, baseType );
-        return makeFieldRefNode( base, field );
+
+    public ContextFieldRefNode get( Context ctxt, FieldRefNode var ) {
+        Cons c = new Cons(ctxt, var);
+        ContextFieldRefNode ret = (ContextFieldRefNode) contextMap.get(c);
+        return ret;
     }
-    /** Finds or creates the FieldRefNode for base variable base and field
-     * field, of type type. */
-    public FieldRefNode makeFieldRefNode( VarNode base, PaddleField field ) {
-	FieldRefNode ret = base.dot( field );
-	if( ret == null ) {
-	    ret = new FieldRefNode( base, field );
-	    if( base instanceof LocalVarNode ) {
-	    	addNodeTag( ret, ((LocalVarNode) base).getMethod() );
-	    } else {
-	    	addNodeTag( ret, null );
-	    }
-	}
-	return ret;
+    public ContextFieldRefNode make( Context ctxt, FieldRefNode var ) {
+        Cons c = new Cons(ctxt, var);
+        ContextFieldRefNode ret = (ContextFieldRefNode) contextMap.get(c);
+        if( ret == null ) {
+            contextMap.put( c, ret = new ContextFieldRefNode(ctxt, var) );
+        }
+        return ret;
     }
-    /** Finds the AllocDotField for base AllocNode an and field
-     * field, or returns null. */
-    public AllocDotField findAllocDotField( AllocNode an, PaddleField field ) {
-	return an.dot( field );
+
+    public ContextAllocNode get( Context ctxt, AllocNode var ) {
+        Cons c = new Cons(ctxt, var);
+        ContextAllocNode ret = (ContextAllocNode) contextMap.get(c);
+        return ret;
     }
-    /** Finds or creates the AllocDotField for base variable baseValue and field
-     * field, of type t. */
-    public AllocDotField makeAllocDotField( AllocNode an, PaddleField field ) {
-	AllocDotField ret = an.dot( field );
-	if( ret == null ) {
-	    ret = new AllocDotField( an, field );
-	}
-	return ret;
+    public ContextAllocNode make( Context ctxt, AllocNode var ) {
+        Cons c = new Cons(ctxt, var);
+        ContextAllocNode ret = (ContextAllocNode) contextMap.get(c);
+        if( ret == null ) {
+            contextMap.put( c, ret = new ContextAllocNode(ctxt, var) );
+        }
+        return ret;
     }
+
+    public ContextAllocDotField get( Context ctxt, AllocDotField var ) {
+        Cons c = new Cons(ctxt, var);
+        ContextAllocDotField ret = (ContextAllocDotField) contextMap.get(c);
+        return ret;
+    }
+    public ContextAllocDotField make( Context ctxt, AllocDotField var ) {
+        Cons c = new Cons(ctxt, var);
+        ContextAllocDotField ret = (ContextAllocDotField) contextMap.get(c);
+        if( ret == null ) {
+            contextMap.put( c, ret = new ContextAllocDotField(ctxt, var) );
+        }
+        return ret;
+    }
+
     private Map valToLocalVarNode = new HashMap(1000);
     private Map valToGlobalVarNode = new HashMap(1000);
     private Map valToAllocNode = new HashMap(1000);
     private LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
     public int maxFinishNumber = 0;
+
 }
 

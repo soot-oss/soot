@@ -25,8 +25,8 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad extends Qsrcc_srcm_stmt_kind_tgt
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), tgtc.v(), srcc.v(), tgtm.v(), kind.v() },
-                                              new PhysicalDomain[] { ST.v(), T1.v(), V2.v(), V1.v(), T2.v(), FD.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { tgtc.v(), srcc.v(), tgtm.v(), kind.v(), stmt.v(), srcm.v() },
+                                              new PhysicalDomain[] { V2.v(), V1.v(), T2.v(), FD.v(), ST.v(), T1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/queue/Qsrcc_srcm_stmt_kind_tgtc_" +
                                                "tgtmTrad.jedd:42,22-24"),
@@ -45,6 +45,6 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad extends Qsrcc_srcm_stmt_kind_tgt
     }
     
     public Rsrcc_srcm_stmt_kind_tgtc_tgtm reader(String rname) {
-        return new Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad(q.reader(), rname);
+        return new Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad(q.reader(), name + ":" + rname);
     }
 }

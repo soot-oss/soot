@@ -35,4 +35,10 @@ public abstract class Qctxt_method {
     public abstract void add( <ctxt:V1, method:T1> in );
     public abstract Rctxt_method reader( String rname );
     public Rctxt_method revreader( String rname ) { return reader( rname ); }
+    public void add( Rctxt_method.Tuple in ) {
+        add(
+            in.ctxt(),
+            in.method() 
+        );
+    }
 }

@@ -5,23 +5,32 @@ import soot.jimple.paddle.bdddomains.*;
 import soot.*;
 
 public class BDDContextStripper extends AbsContextStripper {
-    BDDContextStripper(Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out) { super(in, out); }
+    BDDContextStripper(Rctxt_method in, Qctxt_method out) { super(in, out); }
     
-    void update() {
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), srcm.v(), tgtm.v(), kind.v(), tgtc.v(), srcc.v() },
-                                                    new jedd.PhysicalDomain[] { ST.v(), T1.v(), T2.v(), FD.v(), V2.v(), V1.v() },
-                                                    ("out.add(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().r" +
-                                                     "ead(jedd.internal.Jedd.v().project(in.get(), new jedd.Physic" +
-                                                     "alDomain[...])), jedd.internal.Jedd.v().literal(new java.lan" +
-                                                     "g.Object[...], new jedd.Attribute[...], new jedd.PhysicalDom" +
-                                                     "ain[...]), new jedd.PhysicalDomain[...])) at /home/olhotak/s" +
-                                                     "oot-trunk/src/soot/jimple/paddle/BDDContextStripper.jedd:35," +
-                                                     "8-11"),
-                                                    jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(in.get(),
-                                                                                                                                           new jedd.PhysicalDomain[] { V2.v(), V1.v() })),
-                                                                                jedd.internal.Jedd.v().literal(new Object[] { null, null },
-                                                                                                               new jedd.Attribute[] { srcc.v(), tgtc.v() },
-                                                                                                               new jedd.PhysicalDomain[] { V1.v(), V2.v() }),
-                                                                                new jedd.PhysicalDomain[] {  })));
+    boolean update() {
+        final jedd.internal.RelationContainer answer =
+          new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), method.v() },
+                                              new jedd.PhysicalDomain[] { V1.v(), T1.v() },
+                                              ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
+                                               "mains.V1, soot.jimple.paddle.bdddomains.method:soot.jimple.p" +
+                                               "addle.bdddomains.T1> answer = jedd.internal.Jedd.v().join(je" +
+                                               "dd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(in." +
+                                               "get(), new jedd.PhysicalDomain[...])), jedd.internal.Jedd.v(" +
+                                               ").literal(new java.lang.Object[...], new jedd.Attribute[...]" +
+                                               ", new jedd.PhysicalDomain[...]), new jedd.PhysicalDomain[..." +
+                                               "]); at /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDCo" +
+                                               "ntextStripper.jedd:35,23-29"),
+                                              jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(in.get(),
+                                                                                                                                     new jedd.PhysicalDomain[] { V1.v() })),
+                                                                          jedd.internal.Jedd.v().literal(new Object[] { null },
+                                                                                                         new jedd.Attribute[] { ctxt.v() },
+                                                                                                         new jedd.PhysicalDomain[] { V1.v() }),
+                                                                          new jedd.PhysicalDomain[] {  }));
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), ctxt.v() },
+                                                    new jedd.PhysicalDomain[] { T1.v(), V1.v() },
+                                                    ("out.add(answer) at /home/olhotak/soot-trunk/src/soot/jimple/" +
+                                                     "paddle/BDDContextStripper.jedd:36,8-11"),
+                                                    answer));
+        return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(answer), jedd.internal.Jedd.v().falseBDD());
     }
 }

@@ -29,110 +29,125 @@ import jedd.*;
  */
 public class BDDPAG extends AbsPAG
 { 
-    BDDPAG( Rsrc_dst simple,
-            Rsrc_fld_dst load,
-            Rsrc_fld_dst store,
-            Robj_var alloc,
-            Qsrc_dst simpleout,
-            Qsrc_fld_dst loadout,
-            Qsrc_fld_dst storeout,
-            Qobj_var allocout
-        ) {
-        super( simple, load, store, alloc, simpleout, loadout, storeout, allocout );
+    BDDPAG( Rsrcc_src_dstc_dst simple, Rsrcc_src_fld_dstc_dst load,
+            Rsrcc_src_fld_dstc_dst store, Robjc_obj_varc_var alloc ) {
+        super( simple, load, store, alloc );
     }
     public void update() {
-        <src, dst> newSimple = simple.get() - simpleBDD;
-        simpleout.add( newSimple );
-        simpleBDD |= newSimple;
-
-        <obj, var> newAlloc = alloc.get() - allocBDD;
-        allocout.add( newAlloc );
-        allocBDD |= newAlloc;
-
-        <src, fld, dst> newLoad = load.get() - loadBDD;
-        loadout.add( newLoad );
-        loadBDD |= newLoad;
-
-        <src, fld, dst> newStore = store.get() - storeBDD;
-        storeout.add( newStore );
-        storeBDD |= newStore;
+        simpleBDD |= simple.get();
+        allocBDD |= alloc.get();
+        loadBDD |= load.get();
+        storeBDD |= store.get();
     }
 
     public Iterator simpleSources() {
-        return ((dst=>) simpleBDD).iterator();
+        return new ContextVarNodeIterator((dstc=>, dst=>, srcc=>varc, src=>var) simpleBDD);
     }
     public Iterator loadSources() {
-        return new FieldRefIterator((dst=>, src=>var) loadBDD);
+        return new FieldRefIterator((dstc=>, dst=>, srcc=>varc, src=>var) loadBDD);
     }
     public Iterator storeSources() {
-        return ((dst=>, fld=>) storeBDD ).iterator();
+        return new ContextVarNodeIterator((dstc=>, dst=>, fld=>, srcc=>varc, src=>var) storeBDD );
     }
     public Iterator allocSources() {
-        return ((var=>) allocBDD).iterator();
+        return new ContextAllocNodeIterator((varc=>, var=>) allocBDD);
     }
     public Iterator simpleInvSources() {
-        return ((src=>) simpleBDD).iterator();
+        return new ContextVarNodeIterator((srcc=>, src=>, dstc=>varc, dst=>var) simpleBDD);
     }
     public Iterator loadInvSources() {
-        return ((src=>, fld=>) loadBDD).iterator();
+        return new ContextVarNodeIterator((srcc=>, src=>, fld=>, dstc=>varc, dst=>var) loadBDD);
     }
     public Iterator storeInvSources() {
-        return new FieldRefIterator((src=>, dst=>var) storeBDD);
+        return new FieldRefIterator((srcc=>, src=>, dstc=>varc, dst=>var) storeBDD);
     }
     public Iterator allocInvSources() {
-        return ((obj=>) allocBDD).iterator();
+        return new ContextVarNodeIterator((objc=>, obj=>) allocBDD);
     }
     
-    public Iterator simpleLookup( VarNode key ) {
-        return (simpleBDD{src} <> new {key=>src}{src}).iterator();
+    public Iterator simpleLookup( Context ctxt, VarNode key ) {
+        return (simpleBDD{srcc, src} 
+            <> new{ctxt=>srcc, key=>src}{srcc, src}).iterator();
     }
-    public Iterator loadLookup( FieldRefNode key ) {
-        return (loadBDD{src, fld} <>
-            new {key.getBase()=>src, key.getField()=>fld}{src, fld}).iterator();
+    public Iterator loadLookup( Context ctxt, FieldRefNode key ) {
+        return (loadBDD{srcc, src, fld} <>
+            new{ctxt=>srcc, key.base()=>src, key.field()=>fld}{srcc, src, fld}).iterator();
     }
-    public Iterator storeLookup( VarNode key ) {
-        return new FieldRefIterator((dst=>var)
-            (storeBDD{src} <> new {key=>src}{src}));
+    public Iterator storeLookup( Context ctxt, VarNode key ) {
+        return new FieldRefIterator((dstc=>varc, dst=>var)
+            (storeBDD{srcc, src} <> new{ctxt=>srcc, key=>src}{srcc, src}));
     }
-    public Iterator allocLookup( AllocNode key ) {
-        return (allocBDD{obj} <> new {key=>obj}{obj}).iterator();
+    public Iterator allocLookup( Context ctxt, AllocNode key ) {
+        return (allocBDD{objc, obj} 
+            <> new{ctxt=>objc, key=>obj}{objc, obj}).iterator();
     }
-    public Iterator simpleInvLookup( VarNode key ) {
-        return (simpleBDD{dst} <> new {key=>dst}{dst}).iterator();
+    public Iterator simpleInvLookup( Context ctxt, VarNode key ) {
+        return (simpleBDD{dstc, dst}
+            <> new{ctxt=>dstc, key=>dst}{dstc, dst}).iterator();
     }
-    public Iterator loadInvLookup( VarNode key ) {
-        return new FieldRefIterator((src=>var)
-            (loadBDD{dst} <> new {key=>dst}{dst}));
+    public Iterator loadInvLookup( Context ctxt, VarNode key ) {
+        return new FieldRefIterator((srcc=>varc, src=>var)
+            (loadBDD{dstc, dst} 
+            <> new{ctxt=>dstc, key=>dst}{dstc, dst}));
     }
-    public Iterator storeInvLookup( FieldRefNode key ) {
-        return (storeBDD{dst, fld} <> 
-            new {key.getBase()=>dst, key.getField()=>fld}{dst, fld}).iterator();
+    public Iterator storeInvLookup( Context ctxt, FieldRefNode key ) {
+        return (storeBDD{dstc, dst, fld} 
+            <> new{ctxt=>dstc, key.base()=>dst, key.field()=>fld}
+                        {dstc, dst, fld}).iterator();
     }
-    public Iterator allocInvLookup( VarNode key ) {
-        return (allocBDD{var} <> new {key=>var}{var}).iterator();
+    public Iterator allocInvLookup( Context ctxt, VarNode key ) {
+        return (allocBDD{varc, var} 
+            <> new{ctxt=>varc, key=>var}{varc, var}).iterator();
     }
 
-    public Rsrc_dst allSimple() { return new Rsrc_dstBDD(simpleBDD, "allsimple"); }
-    public Rsrc_fld_dst allLoad() { return new Rsrc_fld_dstBDD(loadBDD, "allload"); }
-    public Rsrc_fld_dst allStore() { return new Rsrc_fld_dstBDD(storeBDD, "allstore"); }
-    public Robj_var allAlloc() { return new Robj_varBDD(allocBDD, "allalloc"); }
+    public Rsrcc_src_dstc_dst allSimple() { return new Rsrcc_src_dstc_dstBDD(simpleBDD, "allsimple"); }
+    public Rsrcc_src_fld_dstc_dst allLoad() { return new Rsrcc_src_fld_dstc_dstBDD(loadBDD, "allload"); }
+    public Rsrcc_src_fld_dstc_dst allStore() { return new Rsrcc_src_fld_dstc_dstBDD(storeBDD, "allstore"); }
+    public Robjc_obj_varc_var allAlloc() { return new Robjc_obj_varc_varBDD(allocBDD, "allalloc"); }
 
     private static class FieldRefIterator implements Iterator {
-        FieldRefIterator( <var, fld> bdd ) {
-            this.it = bdd.iterator( new Attribute[] { var.v(), fld.v() } );
+        FieldRefIterator( <varc, var, fld> bdd ) {
+            this.it = bdd.iterator( new Attribute[] { ctxt.v(), var.v(), fld.v() } );
         }
         private Iterator it;
         public boolean hasNext() { return it.hasNext(); }
         public Object next() {
             Object[] ret = (Object[]) it.next();
-            return ((VarNode)ret[0]).dot((PaddleField)ret[1]);
+            return ContextFieldRefNode.make( (Context) ret[0],
+                ((VarNode)ret[1]).dot((PaddleField)ret[2]) );
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    private <src, dst> simpleBDD = 0B;
-    private <src, fld, dst> loadBDD = 0B;
-    private <src, fld, dst> storeBDD = 0B;
-    private <obj, var> allocBDD = 0B;
+    private static class ContextVarNodeIterator implements Iterator {
+        ContextVarNodeIterator( <varc, var> bdd ) {
+            this.it = bdd.iterator( new Attribute[] { varc.v(), var.v() } );
+        }
+        private Iterator it;
+        public boolean hasNext() { return it.hasNext(); }
+        public Object next() {
+            Object[] ret = (Object[]) it.next();
+            return ContextVarNode.make( (Context) ret[0], (Node) ret[1] );
+        }
+        public void remove() { throw new UnsupportedOperationException(); }
+    }
+
+    private static class ContextAllocNodeIterator implements Iterator {
+        ContextAllocNodeIterator( <objc, obj> bdd ) {
+            this.it = bdd.iterator( new Attribute[] { objc.v(), obj.v() } );
+        }
+        private Iterator it;
+        public boolean hasNext() { return it.hasNext(); }
+        public Object next() {
+            Object[] ret = (Object[]) it.next();
+            return ContextAllocNode.make( (Context) ret[0], (Node) ret[1] );
+        }
+        public void remove() { throw new UnsupportedOperationException(); }
+    }
+
+    private <srcc, src, dstc, dst> simpleBDD = 0B;
+    private <srcc, src, fld, dstc, dst> loadBDD = 0B;
+    private <srcc, src, fld, dstc, dst> storeBDD = 0B;
+    private <objc, obj, varc, var> allocBDD = 0B;
 }
 

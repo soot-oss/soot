@@ -19,11 +19,8 @@
 
 package soot.jimple.paddle;
 import soot.*;
-import soot.util.*;
 import soot.jimple.paddle.queue.*;
 import java.util.*;
-import soot.util.queue.*;
-import soot.jimple.*;
 
 /** Resolves virtual calls based on the actual type of the receiver.
  * @author Ondrej Lhotak
@@ -31,27 +28,27 @@ import soot.jimple.*;
 public class TestVirtualCalls extends AbsVirtualCalls
 { 
     TradVirtualCalls tradcalls;
-    Qvar_obj tradpt = new Qvar_objTrad("tradpt");
-    Qlocal_srcm_stmt_signature_kind tradrcv = new Qlocal_srcm_stmt_signature_kindTrad("tradrcv");
-    Qlocal_srcm_stmt_tgtm tradspc = new Qlocal_srcm_stmt_tgtmTrad("tradspc");
-    Rctxt_local_obj_srcm_stmt_kind_tgtm tradoutrdr;
+    Qvarc_var_objc_obj tradpt = new Qvarc_var_objc_objTrad("tradpt");
+    Qvar_srcm_stmt_signature_kind tradrcv = new Qvar_srcm_stmt_signature_kindTrad("tradrcv");
+    Qvar_srcm_stmt_tgtm tradspc = new Qvar_srcm_stmt_tgtmTrad("tradspc");
+    Rctxt_var_obj_srcm_stmt_kind_tgtm tradoutrdr;
     Rsrcc_srcm_stmt_kind_tgtc_tgtm tradstatrdr;
 
 
     BDDVirtualCalls bddcalls;
-    Qvar_obj bddpt = new Qvar_objTrad("bddpt");
-    Qlocal_srcm_stmt_signature_kind bddrcv = new Qlocal_srcm_stmt_signature_kindTrad("bddrcv");
-    Qlocal_srcm_stmt_tgtm bddspc = new Qlocal_srcm_stmt_tgtmTrad("bddspc");
-    Qctxt_local_obj_srcm_stmt_kind_tgtm bddout = new Qctxt_local_obj_srcm_stmt_kind_tgtmTrad("bddout");
+    Qvarc_var_objc_obj bddpt = new Qvarc_var_objc_objTrad("bddpt");
+    Qvar_srcm_stmt_signature_kind bddrcv = new Qvar_srcm_stmt_signature_kindTrad("bddrcv");
+    Qvar_srcm_stmt_tgtm bddspc = new Qvar_srcm_stmt_tgtmTrad("bddspc");
+    Qctxt_var_obj_srcm_stmt_kind_tgtm bddout = new Qctxt_var_obj_srcm_stmt_kind_tgtmTrad("bddout");
     Qsrcc_srcm_stmt_kind_tgtc_tgtm bddstat = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("bddstat");
-    Rctxt_local_obj_srcm_stmt_kind_tgtm bddoutrdr;
+    Rctxt_var_obj_srcm_stmt_kind_tgtm bddoutrdr;
     Rsrcc_srcm_stmt_kind_tgtc_tgtm bddstatrdr;
 
 
-    TestVirtualCalls( Rvar_obj pt,
-            Rlocal_srcm_stmt_signature_kind receivers,
-            Rlocal_srcm_stmt_tgtm specials,
-            Qctxt_local_obj_srcm_stmt_kind_tgtm out,
+    TestVirtualCalls( Rvarc_var_objc_obj pt,
+            Rvar_srcm_stmt_signature_kind receivers,
+            Rvar_srcm_stmt_tgtm specials,
+            Qctxt_var_obj_srcm_stmt_kind_tgtm out,
             Qsrcc_srcm_stmt_kind_tgtc_tgtm statics
         ) {
         super( pt, receivers, specials, out, statics );
@@ -65,32 +62,31 @@ public class TestVirtualCalls extends AbsVirtualCalls
         bddstatrdr = bddstat.reader("tradcalls");
     }
 
-    public void update() {
+    public boolean update() {
+        boolean change = false;
         for( Iterator tupleIt = receivers.iterator(); tupleIt.hasNext(); ) {
-            final Rlocal_srcm_stmt_signature_kind.Tuple tuple = (Rlocal_srcm_stmt_signature_kind.Tuple) tupleIt.next();
-            tradrcv.add( tuple.local(), tuple.srcm(), tuple.stmt(), tuple.signature(), tuple.kind() );
-            bddrcv.add( tuple.local(), tuple.srcm(), tuple.stmt(), tuple.signature(), tuple.kind() );
+            final Rvar_srcm_stmt_signature_kind.Tuple tuple = (Rvar_srcm_stmt_signature_kind.Tuple) tupleIt.next();
+            tradrcv.add( tuple.var(), tuple.srcm(), tuple.stmt(), tuple.signature(), tuple.kind() );
+            bddrcv.add( tuple.var(), tuple.srcm(), tuple.stmt(), tuple.signature(), tuple.kind() );
         }
 
         for( Iterator tupleIt = specials.iterator(); tupleIt.hasNext(); ) {
 
-            final Rlocal_srcm_stmt_tgtm.Tuple tuple = (Rlocal_srcm_stmt_tgtm.Tuple) tupleIt.next();
-            tradspc.add( tuple.local(), tuple.srcm(), tuple.stmt(), tuple.tgtm() );
-            bddspc.add( tuple.local(), tuple.srcm(), tuple.stmt(), tuple.tgtm() );
+            final Rvar_srcm_stmt_tgtm.Tuple tuple = (Rvar_srcm_stmt_tgtm.Tuple) tupleIt.next();
+            tradspc.add( tuple.var(), tuple.srcm(), tuple.stmt(), tuple.tgtm() );
+            bddspc.add( tuple.var(), tuple.srcm(), tuple.stmt(), tuple.tgtm() );
         }
 
         for( Iterator tupleIt = pt.iterator(); tupleIt.hasNext(); ) {
 
-            final Rvar_obj.Tuple tuple = (Rvar_obj.Tuple) tupleIt.next();
-            //if( tuple.obj().getType() instanceof AnySubType ) continue;
-
+            final Rvarc_var_objc_obj.Tuple tuple = (Rvarc_var_objc_obj.Tuple) tupleIt.next();
             Set tradTuples = new HashSet();
             Set bddTuples = new HashSet();
 
-            tradpt.add( tuple.var(), tuple.obj() );
-            tradcalls.update();
+            tradpt.add( tuple.varc(), tuple.var(), tuple.objc(), tuple.obj() );
+            boolean tradret = tradcalls.update();
             for( Iterator t2It = tradoutrdr.iterator(); t2It.hasNext(); ) {
-                final Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple t2 = (Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple) t2It.next();
+                final Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple t2 = (Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple) t2It.next();
                 tradTuples.add(t2);
             }
             for( Iterator t2It = tradstatrdr.iterator(); t2It.hasNext(); ) {
@@ -98,10 +94,10 @@ public class TestVirtualCalls extends AbsVirtualCalls
                 //System.out.println( ""+t2 );
             }
 
-            bddpt.add( tuple.var(), tuple.obj() );
-            bddcalls.update();
+            bddpt.add( tuple.varc(), tuple.var(), tuple.objc(), tuple.obj() );
+            boolean bddret = bddcalls.update();
             for( Iterator t2It = bddoutrdr.iterator(); t2It.hasNext(); ) {
-                final Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple t2 = (Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple) t2It.next();
+                final Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple t2 = (Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple) t2It.next();
                 bddTuples.add(t2);
             }
             for( Iterator t2It = bddstatrdr.iterator(); t2It.hasNext(); ) {
@@ -113,20 +109,25 @@ public class TestVirtualCalls extends AbsVirtualCalls
                 System.out.println( "Pt pair: "+tuple );
                 System.out.println( "<<<<< TRAD" );
                 for( Iterator t2It = tradTuples.iterator(); t2It.hasNext(); ) {
-                    final Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple t2 = (Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple) t2It.next();
+                    final Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple t2 = (Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple) t2It.next();
                     System.out.println( ""+t2 );
                     System.out.println( t2.tgtm().getNumber() );
                 }
                 System.out.println( ">>>>> TRAD" );
                 System.out.println( "<<<<< BDD" );
                 for( Iterator t2It = bddTuples.iterator(); t2It.hasNext(); ) {
-                    final Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple t2 = (Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple) t2It.next();
+                    final Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple t2 = (Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple) t2It.next();
                     System.out.println( ""+t2 );
                     System.out.println( t2.tgtm().getNumber() );
                 }
                 System.out.println( ">>>>> BDD" );
             }
+            if( tradret != bddret ) {
+                throw new RuntimeException( "Returns from update are not equal: tradret="+tradret+" bddret="+bddret );
+            }
+            change = change | tradret;
         }
+        return change;
     }
 }
 

@@ -29,5 +29,5 @@ public class QobjTrad extends Qobj {
         }
     }
     
-    public Robj reader(String rname) { return new RobjTrad(q.reader(), rname); }
+    public Robj reader(String rname) { return new RobjTrad(q.reader(), name + ":" + rname); }
 }

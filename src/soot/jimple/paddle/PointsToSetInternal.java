@@ -50,14 +50,20 @@ public abstract class PointsToSetInternal extends PointsToSetReadOnly {
             G.v().PointsToSetInternal_warnedAlready = true;
         }
         return other.forall( new P2SetVisitor() {
-        public final void visit( Node n ) {
+        public final void visit( ContextAllocNode n ) {
                 if( exclude == null || !exclude.contains( n ) )
                     returnValue = add( n ) | returnValue;
             }
         } );
     }
     /** Adds n to this set, returns true if n was not already in this set. */
-    public abstract boolean add( Node n );
+    public abstract boolean add( ContextAllocNode n );
+    public boolean add( Context c, AllocNode n ) {
+        return add( ContextAllocNode.make(c, n) );
+    }
+    public boolean contains( Context c, AllocNode n ) {
+        return contains( ContextAllocNode.make(c, n) );
+    }
     /** Sets all newly-added nodes to old nodes. */
     public void flushNew() {}
     /** Sets all nodes to newly-added nodes. */

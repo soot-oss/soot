@@ -35,4 +35,10 @@ public abstract class Qobj_var {
     public abstract void add( <obj:H1, var:V1> in );
     public abstract Robj_var reader( String rname );
     public Robj_var revreader( String rname ) { return reader( rname ); }
+    public void add( Robj_var.Tuple in ) {
+        add(
+            in.obj(),
+            in.var() 
+        );
+    }
 }

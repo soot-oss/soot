@@ -29,10 +29,10 @@ import java.util.*;
  */
 public class BDDVirtualCalls extends AbsVirtualCalls
 { 
-    BDDVirtualCalls( Rvar_obj pt,
-            Rlocal_srcm_stmt_signature_kind receivers,
-            Rlocal_srcm_stmt_tgtm specials,
-            Qctxt_local_obj_srcm_stmt_kind_tgtm out,
+    BDDVirtualCalls( Rvarc_var_objc_obj pt,
+            Rvar_srcm_stmt_signature_kind receivers,
+            Rvar_srcm_stmt_tgtm specials,
+            Qctxt_var_obj_srcm_stmt_kind_tgtm out,
             Qsrcc_srcm_stmt_kind_tgtc_tgtm statics
         ) {
         super( pt, receivers, specials, out, statics );
@@ -41,38 +41,32 @@ public class BDDVirtualCalls extends AbsVirtualCalls
             for( Iterator mIt = cl.getMethods().iterator(); mIt.hasNext(); ) {
                 final SootMethod m = (SootMethod) mIt.next();
                 if( m.isAbstract() ) continue;
-                declaresMethod |= new {
-                        m.getDeclaringClass().getType() => type,
-                        m.getNumberedSubSignature() => signature,
-                        m => method };
+                declaresMethod |= new{
+                        m.getDeclaringClass().getType()=>type,
+                        m.getNumberedSubSignature()=>signature,
+                        m=>method };
             }
         }
     }
 
     private int lastVarNode = 1;
     private int lastAllocNode = 1;
-    private <ctxt:V3, local:V2, var:V1, type> varNodes;
+    private <var:V1, type> varNodes;
     private <obj, type> allocNodes;
-    private <kind> virtual = new {Kind.VIRTUAL=>kind} | new {Kind.INTERFACE=>kind};
+    private <kind> virtual = new{Kind.VIRTUAL=>kind} | new{Kind.INTERFACE=>kind};
     private <type> threads = 0B;
     private void updateNodes() {
         // update varnodes
         for( ; lastVarNode <= PaddleNumberers.v().varNodeNumberer().size();
             lastVarNode++ ) {
             VarNode vn = (VarNode) PaddleNumberers.v().varNodeNumberer().get(lastVarNode);
-            if( vn.getVariable() instanceof Local ) {
-                varNodes |= 
-                    new { vn.context()=>ctxt,
-                          vn.getVariable()=>local,
-                          vn=>var,
-                          vn.getType()=>type };
-            }
+            varNodes |= new{ vn=>var, vn.getType()=>type };
         }
 
         for( ; lastAllocNode <= PaddleNumberers.v().allocNodeNumberer().size();
             lastAllocNode++ ) {
             AllocNode an = (AllocNode) PaddleNumberers.v().allocNodeNumberer().get(lastAllocNode);
-            allocNodes |= new { an=>obj, an.getType()=>type };
+            allocNodes |= new{ an=>obj, an.getType()=>type };
 
             if( an instanceof StringConstantNode ) {
                 StringConstantNode scn = (StringConstantNode) an;
@@ -87,15 +81,15 @@ public class BDDVirtualCalls extends AbsVirtualCalls
                     SootClass cls = Scene.v().getSootClass(constant);
                     for( Iterator methodIt = EntryPoints.v().clinitsOf(cls).iterator(); methodIt.hasNext(); ) {
                         final SootMethod method = (SootMethod) methodIt.next();
-                        stringConstants |= new { an=>obj, method=>tgtm };
+                        stringConstants |= new{ an=>obj, method=>tgtm };
                     }
                 }
             } else {
-                nonStringConstants |= new {an=>obj};
+                nonStringConstants |= new{an=>obj};
             }
         }
         threads = (subt=>type)
-            hier.subtypeRelation(){supt} <> new {clRunnable=>type}{type};
+            hier.subtypeRelation(){supt} <> new{clRunnable=>type}{type};
     }
     protected final RefType clRunnable = RefType.v("java.lang.Runnable");
         
@@ -108,17 +102,20 @@ public class BDDVirtualCalls extends AbsVirtualCalls
     private <type, signature, method:T3> declaresMethod = 0B;
     private BDDHierarchy hier = new BDDHierarchy();
 
-    private <var, obj> newPt = 0B;
-    private <var, obj> allPt = 0B;
-    private <local, srcm, stmt, signature, kind> newRcv = 0B;
-    private <local, srcm, stmt, signature, kind> allRcv = 0B;
-    private <local, srcm, stmt, tgtm> newSpc = 0B;
-    private <local, srcm, stmt, tgtm> allSpc = 0B;
+    private <ctxt, var, obj> newPt = 0B;
+    private <ctxt, var, obj> allPt = 0B;
+    private <var, srcm, stmt, signature, kind> newRcv = 0B;
+    private <var, srcm, stmt, signature, kind> allRcv = 0B;
+    private <var, srcm, stmt, tgtm> newSpc = 0B;
+    private <var, srcm, stmt, tgtm> allSpc = 0B;
 
-    public void update() {
+    private boolean change;
+    public boolean update() {
+        change = false;
+
         updateNodes();
 
-        newPt = pt.get();
+        newPt = (objc=>, varc=>ctxt) pt.get();
         allPt |= newPt;
 
         newRcv = receivers.get();
@@ -132,48 +129,51 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         updateVirtuals();
 
         updateSpecials();
+
+        return change;
     }
 
     private void updateClinits() {
-        <local, srcm, stmt, kind> clinits = (signature=>)
-            allRcv{kind} >< new {Kind.CLINIT=>kind}{kind};
+        <var, srcm, stmt, kind> clinits = (signature=>)
+            allRcv{kind} >< new{Kind.CLINIT=>kind}{kind};
 
-        <srcc, local, obj> ctxtLocalPt = newPt{var} <> (ctxt=>srcc, type=>) varNodes{var};
+        <srcc, var, tgtm> tgtMethods =
+            (ctxt=>srcc) newPt{obj} <> stringConstants{obj};
 
-        <srcc, local, tgtm> tgtMethods = ctxtLocalPt{obj} <> stringConstants{obj};
-
-        statics.add( tgtMethods{local} <> clinits{local}
-            {} >< new {null=>tgtc}{} );
+        <srcc, srcm, stmt, kind, tgtc, tgtm> newStatics =
+            tgtMethods{var} <> clinits{var}{} 
+                            >< new{null=>tgtc}{};
+        statics.add( newStatics );
+        if( newStatics != 0B ) change = true;
     }
-    private <ctxt, local, obj, srcm, stmt, tgtm> resolvedSpecials = 0B;
+    private <ctxt, var, obj, srcm, stmt, tgtm> resolvedSpecials = 0B;
     private void updateSpecials() {
 
-        <ctxt, local, obj> ctxtLocalPt = newPt{var} <> (type=>)varNodes{var};
-        <ctxt, local, obj, srcm, stmt, tgtm> newSpecials =
-            ctxtLocalPt{local} >< allSpc{local};
+        <ctxt, var, obj, srcm, stmt, tgtm> newSpecials =
+            newPt{var} >< allSpc{var};
 
         newSpecials -= resolvedSpecials;
         resolvedSpecials |= newSpecials;
 
-        out.add( newSpecials{} >< new {Kind.SPECIAL=>kind}{} );
+        out.add( newSpecials{} >< new{Kind.SPECIAL=>kind}{} );
+        if( newSpecials != 0B ) change = true;
     }
 
     private void updateVirtuals() {
-        <local, srcm, stmt, signature, kind> rcv =
+        <var, srcm, stmt, signature, kind> rcv =
             allRcv{kind} >< virtual{kind};
         
-        <local, srcm, stmt, signature, kind> threadRcv =
+        <var, srcm, stmt, signature, kind> threadRcv =
             allRcv{kind} >< new{Kind.THREAD=>kind}{kind};
 
         // resolve new points-to sets
-        <local, type> ptTypes = (allocNodes{obj} <> newPt{obj}) {var}
-                                    <> (ctxt=>, type=>)varNodes {var};
+        <var, type> ptTypes = allocNodes{obj} <> (ctxt=>) newPt{obj}; 
 
-        <type, signature> newTypes = ptTypes{local} 
-                <> (stmt=>,srcm=>,kind=>)rcv{local};
+        <type, signature> newTypes = ptTypes{var} 
+                <> (stmt=>,srcm=>,kind=>)rcv{var};
 
-        newTypes |= (ptTypes{type} >< threads{type}) {local}
-                  <> (stmt=>,srcm=>,kind=>)threadRcv {local};
+        newTypes |= (ptTypes{type} >< threads{type}) {var}
+                  <> (stmt=>,srcm=>,kind=>)threadRcv {var};
 
         // close under AnySubType; that is, if the receiver is AnySubType(t),
         // replace it with all subtypes of t
@@ -202,26 +202,29 @@ public class BDDVirtualCalls extends AbsVirtualCalls
             toResolve = toResolve {supt} <> (supt=>T3) hier.extend() {subt};
         } while( toResolve != 0B );
 
-        <var, obj, type> typedPt = allocNodes{obj}><newPt{obj};
+        <var, obj, type, ctxt> typedPt = allocNodes{obj}><newPt{obj};
 
 
         // close typedPt under AnySubType
         typedPt |= typedPt{type} <> (hier.anySub()){anyst};
 
-        <ctxt, local, supt, obj, type> localCtxtPt =
-            typedPt{var} <> (type=>supt) varNodes{var};
+        <ctxt, var, supt, obj, type> varCtxtPt =
+            typedPt{var} >< (type=>supt) varNodes{var};
 
         // Weed out types coming from AnySubType that are not compatible
         // with the declared type of the variable.
-        localCtxtPt =     localCtxtPt{type, supt} 
+        varCtxtPt =     varCtxtPt{type, supt} 
             >< hier.subtypeRelation(){subt, supt};
 
-        <local, srcm, stmt, type, kind, tgtm> callSiteTargets =
+        <var, srcm, stmt, type, kind, tgtm> callSiteTargets =
             (rcv|threadRcv){signature} <> (method=>tgtm) targets{signature};
 
-        out.add( (type=>) (
-                   (supt=>) localCtxtPt{type, local}
-                    >< callSiteTargets {type, local} ) );
+        <ctxt, var, obj, srcm, stmt, kind, tgtm> newVirtuals =
+            (type=>) (
+                   (supt=>) varCtxtPt{type, var}
+                    >< callSiteTargets {type, var} );
+        out.add( newVirtuals );
+        if( newVirtuals != 0B ) change = true;
     }
 }
      

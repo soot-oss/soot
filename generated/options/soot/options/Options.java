@@ -1444,6 +1444,7 @@ public class Options extends OptionsBase {
                 +padOpt( "bddq (false)", "Force BDD versions of queues" )
                 +padOpt( "debugq (false)", "Force debug versions of queues" )
                 +padOpt( "trace (false)", "Trace Paddle queues for debugging." )
+                +padOpt( "numtrace (false)", "Trace Paddle queues for debugging." )
                 +padOpt( "backend", "Select BDD backend" )
                 +padVal( "buddy (default)", "BuDDy backend" )
                 
@@ -2180,6 +2181,7 @@ public class Options extends OptionsBase {
                 +"bddq "
                 +"debugq "
                 +"trace "
+                +"numtrace "
                 +"backend "
                 +"ignore-types "
                 +"force-gc "
@@ -2696,6 +2698,7 @@ public class Options extends OptionsBase {
               +"bddq:false "
               +"debugq:false "
               +"trace:false "
+              +"numtrace:false "
               +"backend:buddy "
               +"ignore-types:false "
               +"force-gc:false "

@@ -28,11 +28,15 @@ import soot.jimple.paddle.bdddomains.*;
  */
 public abstract class AbsTypeManager
 { 
-    protected Rvar vars;
-    protected Robj allocs;
-    AbsTypeManager( Rvar vars, Robj allocs ) {
-        this.vars = vars;
-        this.allocs = allocs;
+    protected Rvar_method_type locals;
+    protected Rvar_type globals;
+    protected Robj_method_type localallocs;
+    protected Robj_type globalallocs;
+    AbsTypeManager( Rvar_method_type locals, Rvar_type globals, Robj_method_type localallocs, Robj_type globalallocs ) {
+        this.locals = locals;
+        this.globals = globals;
+        this.localallocs = localallocs;
+        this.globalallocs = globalallocs;
     }
     public abstract void update();
     public abstract BitVector get( Type type );

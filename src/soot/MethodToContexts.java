@@ -27,13 +27,20 @@ import java.util.*;
 public final class MethodToContexts
 { 
     private Map map = new HashMap();
+    public void add( MethodOrMethodContext momc ) {
+        SootMethod m = momc.method();
+        List l = (List) map.get(m);
+        if( l == null ) map.put(m, l = new ArrayList() );
+        l.add(momc);
+    }
+    public MethodToContexts() {
+    }
     public MethodToContexts( Iterator it ) {
+    	add(it);
+    }
+    public void add( Iterator it ) {
         while( it.hasNext() ) {
             MethodOrMethodContext momc = (MethodOrMethodContext) it.next();
-            SootMethod m = momc.method();
-            List l = (List) map.get(m);
-            if( l == null ) map.put(m, l = new ArrayList() );
-            l.add(momc);
         }
     }
     public List get( SootMethod m ) {

@@ -19,39 +19,29 @@
 
 package soot.jimple.paddle;
 import soot.*;
-import java.util.*;
 
 /** Represents a simple variable node (Green) in the pointer assignment graph
  * that is specific to a particular method invocation.
  * @author Ondrej Lhotak
  */
 public class LocalVarNode extends VarNode {
-    public ContextVarNode context( Object context ) {
-        return cvns == null ? null : (ContextVarNode) cvns.get( context );
-    }
-
     public SootMethod getMethod() {
         return method;
     }
     public String toString() {
 	return "LocalVarNode "+getNumber()+" "+variable+" "+method+" type "+getType();
+	//return "LocalVarNode "+variable+" "+method+" type "+getType();
     }
     /* End of public methods. */
 
-    LocalVarNode( NodeManager nm, Object variable, Type t, SootMethod m ) {
-	super( nm, variable, t );
+    LocalVarNode( Object variable, Type t, SootMethod m ) {
+	super( variable, t );
         this.method = m;
-        //if( m == null ) throw new RuntimeException( "method shouldn't be null" );
-    }
-    /** Registers a cvn as having this node as its base. */
-    void addContext( ContextVarNode cvn, Object context ) {
-	if( cvns == null ) cvns = new HashMap();
-	cvns.put( context, cvn );
+        if( m == null ) throw new RuntimeException( "method shouldn't be null" );
     }
 
     /* End of package methods. */
 
-    protected Map cvns;
     protected SootMethod method;
 }
 

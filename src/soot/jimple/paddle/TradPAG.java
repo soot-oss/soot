@@ -27,42 +27,26 @@ import java.util.*;
  */
 public class TradPAG extends AbsPAG
 { 
-    TradPAG( 
-            Rsrc_dst simple,
-            Rsrc_fld_dst load,
-            Rsrc_fld_dst store,
-            Robj_var alloc,
-            Qsrc_dst simpleout,
-            Qsrc_fld_dst loadout,
-            Qsrc_fld_dst storeout,
-            Qobj_var allocout
-        ) {
-        super( simple, load, store, alloc, simpleout, loadout, storeout, allocout );
+    TradPAG( Rsrcc_src_dstc_dst simple, Rsrcc_src_fld_dstc_dst load,
+            Rsrcc_src_fld_dstc_dst store, Robjc_obj_varc_var alloc ) {
+        super( simple, load, store, alloc);
     }
     public void update() {
         for( Iterator tIt = simple.iterator(); tIt.hasNext(); ) {
-            final Rsrc_dst.Tuple t = (Rsrc_dst.Tuple) tIt.next();
-            if( add( t.src(), t.dst(), simpleMap ) ) {
-                simpleout.add( t.src(), t.dst() );
-            }
+            final Rsrcc_src_dstc_dst.Tuple t = (Rsrcc_src_dstc_dst.Tuple) tIt.next();
+            add( t.srcc(), t.src(), t.dstc(), t.dst(), simpleMap );
         }
         for( Iterator tIt = load.iterator(); tIt.hasNext(); ) {
-            final Rsrc_fld_dst.Tuple t = (Rsrc_fld_dst.Tuple) tIt.next();
-            if( add( t.src().dot( t.fld() ), t.dst(), loadMap ) ) {
-                loadout.add( t.src(), t.fld(), t.dst() );
-            }
+            final Rsrcc_src_fld_dstc_dst.Tuple t = (Rsrcc_src_fld_dstc_dst.Tuple) tIt.next();
+            add( t.srcc(), t.src().dot( t.fld() ), t.dstc(), t.dst(), loadMap );
         }
         for( Iterator tIt = store.iterator(); tIt.hasNext(); ) {
-            final Rsrc_fld_dst.Tuple t = (Rsrc_fld_dst.Tuple) tIt.next();
-            if( add( t.src(), t.dst().dot( t.fld() ), storeMap ) ) {
-                storeout.add( t.src(), t.fld(), t.dst() );
-            }
+            final Rsrcc_src_fld_dstc_dst.Tuple t = (Rsrcc_src_fld_dstc_dst.Tuple) tIt.next();
+            add( t.srcc(), t.src(), t.dstc(), t.dst().dot( t.fld() ), storeMap );
         }
         for( Iterator tIt = alloc.iterator(); tIt.hasNext(); ) {
-            final Robj_var.Tuple t = (Robj_var.Tuple) tIt.next();
-            if( add( t.obj(), t.var(), allocMap ) ) {
-                allocout.add( t.obj(), t.var() );
-            }
+            final Robjc_obj_varc_var.Tuple t = (Robjc_obj_varc_var.Tuple) tIt.next();
+            add( t.objc(), t.obj(), t.varc(), t.var(), allocMap );
         }
     }
 
@@ -91,101 +75,105 @@ public class TradPAG extends AbsPAG
         return allocMap.inv.keySet().iterator();
     }
     
-    public Iterator simpleLookup( VarNode key ) {
+    public Iterator simpleLookup( ContextVarNode key ) {
         return simpleMap.fwd.iterator(key);
     }
-    public Iterator loadLookup( FieldRefNode key ) {
+    public Iterator loadLookup( ContextFieldRefNode key ) {
         return loadMap.fwd.iterator(key);
     }
-    public Iterator storeLookup( VarNode key ) {
+    public Iterator storeLookup( ContextVarNode key ) {
         return storeMap.fwd.iterator(key);
     }
-    public Iterator allocLookup( AllocNode key ) {
+    public Iterator allocLookup( ContextAllocNode key ) {
         return allocMap.fwd.iterator(key);
     }
-    public Iterator simpleInvLookup( VarNode key ) {
+    public Iterator simpleInvLookup( ContextVarNode key ) {
         return simpleMap.inv.iterator(key);
     }
-    public Iterator loadInvLookup( VarNode key ) {
+    public Iterator loadInvLookup( ContextVarNode key ) {
         return loadMap.inv.iterator(key);
     }
-    public Iterator storeInvLookup( FieldRefNode key ) {
+    public Iterator storeInvLookup( ContextFieldRefNode key ) {
         return storeMap.inv.iterator(key);
     }
-    public Iterator allocInvLookup( VarNode key ) {
+    public Iterator allocInvLookup( ContextVarNode key ) {
         return allocMap.inv.iterator(key);
     }
 
-    public Rsrc_dst allSimple() {
-        Qsrc_dst q = new Qsrc_dstTrad("allsimple");
-        Rsrc_dst ret = q.reader("allsimple");
+    public Rsrcc_src_dstc_dst allSimple() {
+        Qsrcc_src_dstc_dst q = new Qsrcc_src_dstc_dstTrad("allsimple");
+        Rsrcc_src_dstc_dst ret = q.reader("allsimple");
         for( Iterator srcIt = simpleSources(); srcIt.hasNext(); ) {
-            final VarNode src = (VarNode) srcIt.next();
+            final ContextVarNode src = (ContextVarNode) srcIt.next();
             Iterator dstIt = simpleLookup(src);
             while( dstIt.hasNext() ) {
-                final VarNode dst = (VarNode) dstIt.next();
-                q.add( src, dst );
+                final ContextVarNode dst = (ContextVarNode) dstIt.next();
+                q.add( src.ctxt(), src.var(), dst.ctxt(), dst.var() );
             }
         }
         return ret;
     }
-    public Rsrc_fld_dst allLoad() {
-        Qsrc_fld_dst q = new Qsrc_fld_dstTrad("allload");
-        Rsrc_fld_dst ret = q.reader("allload");
+    public Rsrcc_src_fld_dstc_dst allLoad() {
+        Qsrcc_src_fld_dstc_dst q = new Qsrcc_src_fld_dstc_dstTrad("allload");
+        Rsrcc_src_fld_dstc_dst ret = q.reader("allload");
         for( Iterator srcIt = loadSources(); srcIt.hasNext(); ) {
-            final FieldRefNode src = (FieldRefNode) srcIt.next();
+            final ContextFieldRefNode src = (ContextFieldRefNode) srcIt.next();
             Iterator dstIt = loadLookup(src);
             while( dstIt.hasNext() ) {
-                final VarNode dst = (VarNode) dstIt.next();
-                q.add( src.getBase(), src.getField(), dst );
+                final ContextVarNode dst = (ContextVarNode) dstIt.next();
+                q.add( src.ctxt(), src.base().var(), src.field(), dst.ctxt(), dst.var() );
             }
         }
         return ret;
     }
-    public Rsrc_fld_dst allStore() {
-        Qsrc_fld_dst q = new Qsrc_fld_dstTrad("allstore");
-        Rsrc_fld_dst ret = q.reader("allstore");
+    public Rsrcc_src_fld_dstc_dst allStore() {
+        Qsrcc_src_fld_dstc_dst q = new Qsrcc_src_fld_dstc_dstTrad("allstore");
+        Rsrcc_src_fld_dstc_dst ret = q.reader("allstore");
         for( Iterator srcIt = storeSources(); srcIt.hasNext(); ) {
-            final VarNode src = (VarNode) srcIt.next();
+            final ContextVarNode src = (ContextVarNode) srcIt.next();
             Iterator dstIt = storeLookup(src);
             while( dstIt.hasNext() ) {
-                final FieldRefNode dst = (FieldRefNode) dstIt.next();
-                q.add( src, dst.getField(), dst.getBase() );
+                final ContextFieldRefNode dst = (ContextFieldRefNode) dstIt.next();
+                q.add( src.ctxt(), src.var(), dst.field(), dst.ctxt(), dst.base().var() );
             }
         }
         return ret;
     }
-    public Robj_var allAlloc() {
-        Qobj_var q = new Qobj_varTrad("allalloc");
-        Robj_var ret = q.reader("allalloc");
+    public Robjc_obj_varc_var allAlloc() {
+        Qobjc_obj_varc_var q = new Qobjc_obj_varc_varTrad("allalloc");
+        Robjc_obj_varc_var ret = q.reader("allalloc");
         for( Iterator objIt = allocSources(); objIt.hasNext(); ) {
-            final AllocNode obj = (AllocNode) objIt.next();
+            final ContextAllocNode obj = (ContextAllocNode) objIt.next();
             Iterator varIt = allocLookup(obj);
             while( varIt.hasNext() ) {
-                final VarNode var = (VarNode) varIt.next();
-                q.add( obj, var );
+                final ContextVarNode var = (ContextVarNode) varIt.next();
+                q.add( obj.ctxt(), obj.obj(), var.ctxt(), var.var() );
             }
         }
         return ret;
     }
 
-    private boolean add( Node src, Node dst, EdgePair map ) {
-        if( !allEdges.add( new Pair( src, dst ) ) ) return false;
-        map.fwd.add( src, dst );
-        map.inv.add( dst, src );
+    private boolean add( Context srcc, Node src, Context dstc, Node dst, EdgePair map ) {
+        ContextNode srccn = ContextNode.make(srcc, src);
+        ContextNode dstcn = ContextNode.make(dstc, dst);
+        if( !allEdges.add( new Pair( srccn, dstcn ) ) ) return false;
+        map.fwd.add( srccn, dstcn );
+        map.inv.add( dstcn, srccn );
         return true;
     }
 
     private Set allEdges = new HashSet();
 
     private static class Pair {
-        public Pair( Node src, Node dst ) {
+        public Pair( ContextNode src, ContextNode dst ) {
             this.src = src;
             this.dst = dst;
         }
-        private Node src;
-        private Node dst;
-        public int hashCode() { return src.hashCode() + dst.hashCode(); }
+        private ContextNode src;
+        private ContextNode dst;
+        public int hashCode() { 
+            return src.hashCode() + dst.hashCode();
+        }
         public boolean equals( Object o ) {
             if( !( o instanceof Pair ) ) return false;
             Pair p = (Pair) o;
@@ -195,7 +183,7 @@ public class TradPAG extends AbsPAG
         }
     }
     private static class EdgeMap extends HashMap {
-        public void add( Node key, Node val ) {
+        public void add( ContextNode key, ContextNode val ) {
             ArrayList bucket = (ArrayList) get(key);
             if( bucket == null ) {
                 bucket = new ArrayList();
@@ -203,13 +191,15 @@ public class TradPAG extends AbsPAG
             }
             bucket.add( val );
         }
-        public Iterator iterator( Node key ) {
+        public Iterator iterator( ContextNode key ) {
             Object o = get(key);
-            if( o == null ) return new Iterator() {
-                public boolean hasNext() { return false; }
-                public Object next() { throw new NoSuchElementException(); }
-                public void remove() { throw new UnsupportedOperationException(); }
-            };
+            if( o == null ) {
+                return new Iterator() {
+                    public boolean hasNext() { return false; }
+                    public Object next() { throw new NoSuchElementException(); }
+                    public void remove() { throw new UnsupportedOperationException(); }
+                };
+            }
             ArrayList ar = (ArrayList) o;
             return ar.iterator();
         }

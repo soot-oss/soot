@@ -18,11 +18,9 @@
  */
 
 package soot.jimple.paddle;
-import soot.jimple.*;
 import soot.*;
-import soot.util.*;
-import soot.toolkits.scalar.Pair;
 import soot.jimple.paddle.queue.*;
+import soot.util.*;
 import java.util.*;
 
 /** Factory for nodes not specific to a given method.
@@ -102,12 +100,11 @@ public class NodeFactory {
 	addEdge( argv, sanl );
 	addEdge( stringNode, stringNodeLocal );
 	addEdge( stringNodeLocal, 
-                nm.makeFieldRefNode( sanl, ArrayElement.v() ) );
+                FieldRefNode.make( sanl, ArrayElement.v() ) );
 	return sanl;
     }
 
     final public Node caseNewInstance( VarNode cls ) {
-        if( cls instanceof ContextVarNode ) cls = nm.findLocalVarNode( cls.getVariable() );
         AllocNode site = nm.makeAllocNode( cls, AnySubType.v( RefType.v( "java.lang.Object" ) ), null );
 	VarNode local = nm.makeGlobalVarNode( site, RefType.v( "java.lang.Object" ) );
         addEdge( site, local );
@@ -121,19 +118,26 @@ public class NodeFactory {
 		    RefType.v("java.lang.Throwable") );
         return ret;
     }
+    private Set seenEdges = new HashSet();
     public void addEdge( Node src, Node dst ) {
         if( src == null ) return;
         if( dst == null ) return;
+        if( !seenEdges.add(new Cons(src, dst)) ) return;
         if( src instanceof VarNode ) {
             if( dst instanceof VarNode ) {
+                if( src instanceof LocalVarNode && dst instanceof LocalVarNode ) {
+                    LocalVarNode lsrc = (LocalVarNode) src;
+                    LocalVarNode ldst = (LocalVarNode) dst;
+                    if( ldst.getMethod() != lsrc.getMethod() ) throw new RuntimeException( ""+lsrc+" and "+ldst+" are in different methods!" );
+                }
                 simple.add( (VarNode) src, (VarNode) dst );
             } else if( dst instanceof FieldRefNode ) {
                 FieldRefNode fdst = (FieldRefNode) dst;
-                store.add( (VarNode) src, fdst.getField(), fdst.getBase() );
+                store.add( (VarNode) src, fdst.field(), fdst.base() );
             } else throw new RuntimeException( "Bad PA edge "+src+" -> "+dst );
         } else if( src instanceof FieldRefNode ) {
             FieldRefNode fsrc = (FieldRefNode) src;
-            load.add( fsrc.getBase(), fsrc.getField(), (VarNode) dst );
+            load.add( fsrc.base(), fsrc.field(), (VarNode) dst );
         } else if( src instanceof AllocNode ) {
             alloc.add( (AllocNode) src, (VarNode) dst );
         } else throw new RuntimeException( "Bad PA edge "+src+" -> "+dst );

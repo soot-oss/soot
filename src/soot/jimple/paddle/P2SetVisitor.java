@@ -24,7 +24,7 @@ package soot.jimple.paddle;
  * @author Ondrej Lhotak
  */
 public abstract class P2SetVisitor {
-    public abstract void visit( Node n );
+    public abstract void visit( ContextAllocNode n );
     public boolean getReturnValue() { return returnValue; }
     protected boolean returnValue = false;
 }

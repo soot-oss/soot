@@ -28,11 +28,14 @@ import soot.*;
  */
 public class BDD1CFAVirtualContextManager extends AbsVirtualContextManager
 { 
-    BDD1CFAVirtualContextManager( Rctxt_local_obj_srcm_stmt_kind_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
+    BDD1CFAVirtualContextManager( Rctxt_var_obj_srcm_stmt_kind_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
         super( in, out );
     }
-    public void update() {
-        out.add( (ctxt=>srcc, local=>, obj=>, stmt=>stmt, stmt=>tgtc)in.get() );
+    public boolean update() {
+        <srcc, srcm, stmt, kind, tgtc, tgtm> newOut = 
+            (ctxt=>srcc, var=>, obj=>, stmt=>stmt, stmt=>tgtc)in.get();
+        out.add( newOut );
+        return newOut != 0B;
     }
 }
 

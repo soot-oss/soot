@@ -42,7 +42,7 @@ public class BDDCflow
         }
     }
     public void addEntryPoint( MethodOrMethodContext m ) {
-        entryPoints |= new { m.method()=>method };
+        entryPoints |= new{ m.method()=>method };
     }
 
     // tgtm MAY be in cflow of srcm
@@ -56,7 +56,7 @@ public class BDDCflow
         <srcc, srcm, stmt, kind, tgtc, tgtm> edges = cg.edges().get();
 
         <kind> wantedKinds = 1B;
-        wantedKinds -= new { Kind.THREAD=>kind };
+        wantedKinds -= new{ Kind.THREAD=>kind };
 
         <srcm:T1, tgtm:T2> wantedEdges = (srcc=>, stmt=>, tgtc=>) edges{kind}
                                 <> wantedKinds{kind};
@@ -128,10 +128,10 @@ public class BDDCflow
     }
 
     public boolean mustCflow( SootMethod src, SootMethod tgt ) {
-        return (new {src=>srcm, tgt=>tgtm} & mustCflow) != 0B;
+        return (new{src=>srcm, tgt=>tgtm} & mustCflow) != 0B;
     }
     public boolean mayCflow( SootMethod src, SootMethod tgt ) {
-        return (new {src=>srcm, tgt=>tgtm} & mayCflow) != 0B;
+        return (new{src=>srcm, tgt=>tgtm} & mayCflow) != 0B;
     }
 }
 

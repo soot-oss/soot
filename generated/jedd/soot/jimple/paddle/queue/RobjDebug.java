@@ -35,7 +35,7 @@ public class RobjDebug extends Robj {
                     throw new RuntimeException("they don\'t match: tradIt=" + tradIt.hasNext() + " bddIt=" +
                                                bddIt.hasNext());
                 if (!tradIt.hasNext() && !tradSet.equals(bddSet))
-                    throw new RuntimeException("tradSet=" + tradSet + "\nbddSet=" + bddSet);
+                    throw new RuntimeException(name + "\ntradSet=" + tradSet + "\nbddSet=" + bddSet);
                 return tradIt.hasNext();
             }
             

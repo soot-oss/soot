@@ -110,6 +110,17 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "trace" );
     }
     
+    /** Number Trace --
+    
+     * Trace Paddle queues for debugging..
+    
+     * Print 
+     * the sizes of all internal Paddle queues for debugging. 
+     */
+    public boolean numtrace() {
+        return soot.PhaseOptions.getBoolean( options, "numtrace" );
+    }
+    
     /** Ignore Types Entirely --
     
      * Make Paddle completely ignore declared types of variables.

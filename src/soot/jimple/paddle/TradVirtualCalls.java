@@ -19,51 +19,62 @@
 
 package soot.jimple.paddle;
 import soot.*;
-import soot.util.*;
 import soot.jimple.paddle.queue.*;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
-
 import java.util.*;
 import soot.util.queue.*;
-import soot.jimple.*;
 
 /** Resolves virtual calls based on the actual type of the receiver.
  * @author Ondrej Lhotak
  */
 public class TradVirtualCalls extends AbsVirtualCalls
 { 
-    TradVirtualCalls( Rvar_obj pt,
-            Rlocal_srcm_stmt_signature_kind receivers,
-            Rlocal_srcm_stmt_tgtm specials,
-            Qctxt_local_obj_srcm_stmt_kind_tgtm out,
+    TradVirtualCalls( Rvarc_var_objc_obj pt,
+            Rvar_srcm_stmt_signature_kind receivers,
+            Rvar_srcm_stmt_tgtm specials,
+            Qctxt_var_obj_srcm_stmt_kind_tgtm out,
             Qsrcc_srcm_stmt_kind_tgtc_tgtm statics
         ) {
         super( pt, receivers, specials, out, statics );
     }
 
     private Map receiverMap = new HashMap();
+    private void receiverMapPut( VarNode receiver, LinkedList sites ) {
+        receiverMap.put(receiver, sites);
+    }
+    private LinkedList receiverMapGet( VarNode receiver ) {
+        return (LinkedList) receiverMap.get(receiver);
+    }
     private Map specialMap = new HashMap();
-    public void update() {
+    private void specialMapPut( VarNode receiver, LinkedList sites ) {
+        specialMap.put(receiver, sites);
+    }
+    private LinkedList specialMapGet( VarNode receiver ) {
+        return (LinkedList) specialMap.get(receiver);
+    }
+    private boolean change;
+    public boolean update() {
+        change = false;
         FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
 
         for( Iterator receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {
 
-            final Rlocal_srcm_stmt_signature_kind.Tuple receiver = (Rlocal_srcm_stmt_signature_kind.Tuple) receiverIt.next();
-            LinkedList l = (LinkedList) receiverMap.get( receiver.local() );
+            final Rvar_srcm_stmt_signature_kind.Tuple receiver = (Rvar_srcm_stmt_signature_kind.Tuple) receiverIt.next();
+            LinkedList l = (LinkedList) receiverMapGet( receiver.var() );
             if( l == null ) {
                 l = new LinkedList();
-                receiverMap.put( receiver.local(), l );
+                receiverMapPut( receiver.var(), l );
             }
             l.addFirst( receiver );
         }
 
         for( Iterator specialIt = specials.iterator(); specialIt.hasNext(); ) {
 
-            final Rlocal_srcm_stmt_tgtm.Tuple special = (Rlocal_srcm_stmt_tgtm.Tuple) specialIt.next();
-            LinkedList l = (LinkedList) specialMap.get( special.local() );
+            final Rvar_srcm_stmt_tgtm.Tuple special = (Rvar_srcm_stmt_tgtm.Tuple) specialIt.next();
+            LinkedList l = (LinkedList) specialMapGet( special.var() );
             if( l == null ) {
                 l = new LinkedList();
-                specialMap.put( special.local(), l );
+                specialMapPut( special.var(), l );
             }
             l.addFirst( special );
         }
@@ -73,12 +84,12 @@ public class TradVirtualCalls extends AbsVirtualCalls
 
         for( Iterator ptpairIt = pt.iterator(); ptpairIt.hasNext(); ) {
 
-            final Rvar_obj.Tuple ptpair = (Rvar_obj.Tuple) ptpairIt.next();
+            final Rvarc_var_objc_obj.Tuple ptpair = (Rvarc_var_objc_obj.Tuple) ptpairIt.next();
             Collection sites = (Collection)
-                receiverMap.get(ptpair.var().getVariable());
+                receiverMapGet(ptpair.var());
             if( sites != null ) {
                 for( Iterator siteIt = sites.iterator(); siteIt.hasNext(); ) {
-                    final Rlocal_srcm_stmt_signature_kind.Tuple site = (Rlocal_srcm_stmt_signature_kind.Tuple) siteIt.next();
+                    final Rvar_srcm_stmt_signature_kind.Tuple site = (Rvar_srcm_stmt_signature_kind.Tuple) siteIt.next();
                     if( site.kind() == Kind.CLINIT ) {
                         handleStringConstants( ptpair, site );
                         continue;
@@ -90,11 +101,12 @@ public class TradVirtualCalls extends AbsVirtualCalls
                     && !fh.canStoreType( type, clRunnable ) )
                         continue;
 
-                    VirtualCalls.v().resolve( type, site.local().getType(), site.signature(), site.srcm(), targetsQueue );
+                    VirtualCalls.v().resolve( type, site.var().getType(), site.signature(), site.srcm(), targetsQueue );
                     while( targets.hasNext() ) {
                         SootMethod target = (SootMethod) targets.next();
-                        out.add( ptpair.var().context(),
-                                (Local) ptpair.var().getVariable(),
+                        change = true;
+                        out.add( ptpair.varc(),
+                                ptpair.var(),
                                 ptpair.obj(),
                                 site.srcm(),
                                 site.stmt(),
@@ -103,12 +115,13 @@ public class TradVirtualCalls extends AbsVirtualCalls
                     }
                 }
             }
-            sites = (Collection) specialMap.get(ptpair.var().getVariable());
+            sites = (Collection) specialMapGet(ptpair.var());
             if( sites != null ) {
                 for( Iterator siteIt = sites.iterator(); siteIt.hasNext(); ) {
-                    final Rlocal_srcm_stmt_tgtm.Tuple site = (Rlocal_srcm_stmt_tgtm.Tuple) siteIt.next();
-                    out.add( ptpair.var().context(),
-                            (Local) ptpair.var().getVariable(),
+                    final Rvar_srcm_stmt_tgtm.Tuple site = (Rvar_srcm_stmt_tgtm.Tuple) siteIt.next();
+                    change = true;
+                    out.add( ptpair.varc(),
+                            ptpair.var(),
                             ptpair.obj(),
                             site.srcm(),
                             site.stmt(),
@@ -117,10 +130,11 @@ public class TradVirtualCalls extends AbsVirtualCalls
                 }
             }
         }
+        return change;
     }
 
-    private void handleStringConstants( Rvar_obj.Tuple ptpair,
-            Rlocal_srcm_stmt_signature_kind.Tuple site ) {
+    private void handleStringConstants( Rvarc_var_objc_obj.Tuple ptpair,
+            Rvar_srcm_stmt_signature_kind.Tuple site ) {
         AllocNode obj = ptpair.obj();
         if( !( obj instanceof StringConstantNode ) ) {
             if( PaddleScene.v().options().verbose() ) {
@@ -151,7 +165,8 @@ public class TradVirtualCalls extends AbsVirtualCalls
                 }
                 for( Iterator clinitIt = EntryPoints.v().clinitsOf(sootcls).iterator(); clinitIt.hasNext(); ) {
                     final SootMethod clinit = (SootMethod) clinitIt.next();
-                    statics.add(ptpair.var().context(),
+                    change = true;
+                    statics.add(ptpair.varc(),
                                 site.srcm(),
                                 site.stmt(),
                                 Kind.CLINIT,

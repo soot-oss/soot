@@ -45,6 +45,6 @@ public class Qsrc_fld_dstTrad extends Qsrc_fld_dst {
         }
     }
     public Rsrc_fld_dst reader( String rname ) {
-        return new Rsrc_fld_dstTrad( q.reader(), rname );
+        return new Rsrc_fld_dstTrad( q.reader(), name+":"+rname );
     }
 }

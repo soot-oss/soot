@@ -7,42 +7,58 @@ import soot.jimple.paddle.bdddomains.*;
 import java.util.*;
 
 public class TradTypeManager extends AbsTypeManager {
-    TradTypeManager(Rvar vars, Robj allocs, FastHierarchy fh) {
-        super(vars, allocs);
+    TradTypeManager(Rvar_method_type locals,
+                    Rvar_type globals,
+                    Robj_method_type localallocs,
+                    Robj_type globalallocs,
+                    FastHierarchy fh) {
+        super(locals, globals, localallocs, globalallocs);
         this.fh = fh;
     }
     
-    public void update() {
-        for (Iterator tIt = vars.iterator(); tIt.hasNext(); ) {
-            final Rvar.Tuple t = (Rvar.Tuple) tIt.next();
-            VarNode vn = t.var();
-            Type type = vn.getType();
-            if (typeMask.get(type) != null) continue;
-            BitVector bv = new BitVector(allocNodes.size());
-            typeMask.put(type, bv);
-            for (Iterator anIt = allocNodes.iterator(); anIt.hasNext(); ) {
-                final AllocNode an = (AllocNode) anIt.next();
-                if (this.castNeverFails(an.getType(), type)) {
-                    bv.set(an.getNumber());
-                    change = true;
-                }
+    private void handleVarType(Type type) {
+        if (typeMask.get(type) != null) return;
+        BitVector bv = new BitVector(PaddleNumberers.v().contextAllocNodeNumberer().size());
+        typeMask.put(type, bv);
+        for (Iterator canIt = PaddleNumberers.v().contextAllocNodeNumberer().iterator(); canIt.hasNext(); ) {
+            final ContextAllocNode can = (ContextAllocNode) canIt.next();
+            if (this.castNeverFails(can.getType(), type)) {
+                bv.set(can.getNumber());
+                change = true;
             }
         }
-        for (Iterator tIt = allocs.iterator(); tIt.hasNext(); ) {
-            final Robj.Tuple t = (Robj.Tuple) tIt.next();
-            AllocNode an = t.obj();
-            allocNodes.add(an);
-            for (Iterator typeIt = Scene.v().getTypeNumberer().iterator(); typeIt.hasNext(); ) {
-                final Type type = (Type) typeIt.next();
-                if (!(type instanceof RefLikeType)) continue;
-                if (type instanceof AnySubType) continue;
-                BitVector bv = (BitVector) typeMask.get(type);
-                if (bv == null) continue;
-                if (this.castNeverFails(an.getType(), type)) {
-                    bv.set(an.getNumber());
-                    change = true;
-                }
+    }
+    
+    private void handleAllocNode(AllocNode an, Type antype) {
+        for (Iterator typeIt = Scene.v().getTypeNumberer().iterator(); typeIt.hasNext(); ) {
+            final Type type = (Type) typeIt.next();
+            if (!(type instanceof RefLikeType)) continue;
+            if (type instanceof AnySubType) continue;
+            BitVector bv = (BitVector) typeMask.get(type);
+            if (bv == null) continue;
+            if (this.castNeverFails(antype, type)) {
+                bv.set(an.getNumber());
+                change = true;
             }
+        }
+    }
+    
+    public void update() {
+        for (Iterator tIt = locals.iterator(); tIt.hasNext(); ) {
+            final Rvar_method_type.Tuple t = (Rvar_method_type.Tuple) tIt.next();
+            this.handleVarType(t.type());
+        }
+        for (Iterator tIt = globals.iterator(); tIt.hasNext(); ) {
+            final Rvar_type.Tuple t = (Rvar_type.Tuple) tIt.next();
+            this.handleVarType(t.type());
+        }
+        for (Iterator tIt = localallocs.iterator(); tIt.hasNext(); ) {
+            final Robj_method_type.Tuple t = (Robj_method_type.Tuple) tIt.next();
+            this.handleAllocNode(t.obj(), t.type());
+        }
+        for (Iterator tIt = globalallocs.iterator(); tIt.hasNext(); ) {
+            final Robj_type.Tuple t = (Robj_type.Tuple) tIt.next();
+            this.handleAllocNode(t.obj(), t.type());
         }
     }
     
@@ -61,14 +77,14 @@ public class TradTypeManager extends AbsTypeManager {
             return new jedd.internal.RelationContainer(new jedd.Attribute[] {  },
                                                        new jedd.PhysicalDomain[] {  },
                                                        ("return jedd.internal.Jedd.v().trueBDD(); at /home/olhotak/so" +
-                                                        "ot-trunk/src/soot/jimple/paddle/TradTypeManager.jedd:78,25-3" +
+                                                        "ot-trunk/src/soot/jimple/paddle/TradTypeManager.jedd:88,25-3" +
                                                         "1"),
                                                        jedd.internal.Jedd.v().trueBDD());
         if (bddGetter == null) bddGetter = this.new BDDGetter();
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), obj.v() },
                                                    new jedd.PhysicalDomain[] { V1.v(), H1.v() },
                                                    ("return bddGetter.get(); at /home/olhotak/soot-trunk/src/soot" +
-                                                    "/jimple/paddle/TradTypeManager.jedd:80,8-14"),
+                                                    "/jimple/paddle/TradTypeManager.jedd:90,8-14"),
                                                    bddGetter.get());
     }
     
@@ -79,7 +95,7 @@ public class TradTypeManager extends AbsTypeManager {
                                               ("private <soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
                                                "le.bdddomains.T1, soot.jimple.paddle.bdddomains.obj> cachedT" +
                                                "ypeMasks = jedd.internal.Jedd.v().falseBDD() at /home/olhota" +
-                                               "k/soot-trunk/src/soot/jimple/paddle/TradTypeManager.jedd:83," +
+                                               "k/soot-trunk/src/soot/jimple/paddle/TradTypeManager.jedd:93," +
                                                "16-30"),
                                               jedd.internal.Jedd.v().falseBDD());
         
@@ -89,7 +105,7 @@ public class TradTypeManager extends AbsTypeManager {
                                               ("private <soot.jimple.paddle.bdddomains.var, soot.jimple.padd" +
                                                "le.bdddomains.type> cachedVarNodes = jedd.internal.Jedd.v()." +
                                                "falseBDD() at /home/olhotak/soot-trunk/src/soot/jimple/paddl" +
-                                               "e/TradTypeManager.jedd:84,16-27"),
+                                               "e/TradTypeManager.jedd:94,16-27"),
                                               jedd.internal.Jedd.v().falseBDD());
         
         private final jedd.internal.RelationContainer cachedVarObj =
@@ -98,7 +114,7 @@ public class TradTypeManager extends AbsTypeManager {
                                               ("private <soot.jimple.paddle.bdddomains.var, soot.jimple.padd" +
                                                "le.bdddomains.obj> cachedVarObj = jedd.internal.Jedd.v().fal" +
                                                "seBDD() at /home/olhotak/soot-trunk/src/soot/jimple/paddle/T" +
-                                               "radTypeManager.jedd:85,16-26"),
+                                               "radTypeManager.jedd:95,16-26"),
                                               jedd.internal.Jedd.v().falseBDD());
         
         public jedd.internal.RelationContainer get() {
@@ -109,7 +125,7 @@ public class TradTypeManager extends AbsTypeManager {
                     BitVector mask = (BitVector) typeMask.get(t);
                     if (mask == null) continue;
                     BitSetIterator bsi = mask.iterator();
-                    Numberer objNumberer = PaddleNumberers.v().allocNodeNumberer();
+                    Numberer objNumberer = PaddleNumberers.v().contextAllocNodeNumberer();
                     while (bsi.hasNext()) {
                         int objNum = bsi.next();
                         cachedTypeMasks.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { t, objNumberer.get(objNum) },
@@ -129,7 +145,7 @@ public class TradTypeManager extends AbsTypeManager {
                                                    "ains.V1, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
                                                    "le.bdddomains.T1> varNodes = jedd.internal.Jedd.v().falseBDD" +
                                                    "(); at /home/olhotak/soot-trunk/src/soot/jimple/paddle/TradT" +
-                                                   "ypeManager.jedd:104,24-32"),
+                                                   "ypeManager.jedd:114,24-32"),
                                                   jedd.internal.Jedd.v().falseBDD());
             while (newVarNodes.hasNext()) {
                 VarNode vn = (VarNode) newVarNodes.next();
@@ -141,10 +157,10 @@ public class TradTypeManager extends AbsTypeManager {
                                                                 varNodes,
                                                                 new jedd.PhysicalDomain[] { T1.v() }));
             cachedVarNodes.eqUnion(varNodes);
-            return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), obj.v() },
-                                                       new jedd.PhysicalDomain[] { V1.v(), H1.v() },
+            return new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), var.v() },
+                                                       new jedd.PhysicalDomain[] { H1.v(), V1.v() },
                                                        ("return cachedVarObj; at /home/olhotak/soot-trunk/src/soot/ji" +
-                                                        "mple/paddle/TradTypeManager.jedd:111,12-18"),
+                                                        "mple/paddle/TradTypeManager.jedd:121,12-18"),
                                                        cachedVarObj);
         }
         
@@ -166,8 +182,6 @@ public class TradTypeManager extends AbsTypeManager {
     }
     
     private LargeNumberedMap typeMask = new LargeNumberedMap(Scene.v().getTypeNumberer());
-    
-    private NumberedSet allocNodes = new NumberedSet(PaddleNumberers.v().allocNodeNumberer());
     
     private Iterator newVarNodes = PaddleNumberers.v().varNodeNumberer().iterator();
     

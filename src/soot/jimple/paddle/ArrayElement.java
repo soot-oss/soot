@@ -19,8 +19,6 @@
 
 package soot.jimple.paddle;
 import soot.*;
-import soot.Type;
-import java.util.*;
 
 /** Represents an array element.
  * @author Ondrej Lhotak
@@ -44,4 +42,5 @@ public class ArrayElement implements PaddleField {
         if( number == 0 ) throw new RuntimeException();
         this.number = number;
     }
+    public String toString() { return "ARRAY_ELEMENT"; }
 }
