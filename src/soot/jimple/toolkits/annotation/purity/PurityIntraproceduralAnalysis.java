@@ -364,7 +364,7 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis
 	    label.setLabel(stmt.toString());
 	    label.setAttribute("fontsize","18");
 	    label.setShape("box");
-	    ref.g.fillGraph("X"+id,sub);
+	    ref.g.fillDotGraph("X"+id,sub);
 	    node.put(stmt,new Integer(id));
 	    id++;
 	}
@@ -403,6 +403,8 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis
 	    PurityGraphBox ref = (PurityGraphBox) getFlowAfter(stmt);
 	    r.union(ref.g);
 	}
+	r.simplifyLoad();
+	r.simplifyInside();
 	((PurityGraphBox)dst).g = r;
     }
 

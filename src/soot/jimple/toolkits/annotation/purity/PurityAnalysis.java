@@ -49,6 +49,12 @@ public class PurityAnalysis extends SceneTransformer
 	// Filter: for now, keep everything
 	class Filter implements SootMethodFilter {
 	    public boolean want(SootMethod m) { 
+		String s = m.toString();
+		if (s.indexOf("<sun.")!=-1 ||
+		    s.indexOf("<com.")!=-1 ||
+		    s.indexOf("<org.")!=-1 ||
+		    s.indexOf("<javax.")!=-1)
+		    return false;
 		return true; 
 	    }
 	}

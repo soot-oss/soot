@@ -1755,7 +1755,7 @@ public class Options extends OptionsBase {
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "dump-summaries (true)", "" )
                 +padOpt( "dump-cg (true)", "" )
-                +padOpt( "dump-intra (false)", "" );
+                +padOpt( "dump-intra (true)", "" );
     
         if( phaseName.equals( "shimple" ) )
             return "Phase "+phaseName+":\n"+
@@ -2949,7 +2949,7 @@ public class Options extends OptionsBase {
               +"enabled:false "
               +"dump-summaries:true "
               +"dump-cg:true "
-              +"dump-intra:false ";
+              +"dump-intra:true ";
     
         if( phaseName.equals( "shimple" ) )
             return ""

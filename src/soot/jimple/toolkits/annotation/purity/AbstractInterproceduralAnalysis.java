@@ -8,7 +8,7 @@
 
 package soot.jimple.toolkits.annotation.purity;
 import java.util.*;
-import java.io.File;
+import java.io.*;
 import soot.*;
 import soot.util.*;
 import soot.util.dot.*;
@@ -114,8 +114,8 @@ public abstract class AbstractInterproceduralAnalysis {
      * @param prefix gives you a unique string to prefix your node names
      * and avoid name-clash
      */
-    protected void fillGraph(String prefix, Object o, DotGraph out)
-    { throw new Error("abstract function AbstractInterproceduralAnalysis.fillGraph called but not implemented."); }
+    protected void fillDotGraph(String prefix, Object o, DotGraph out)
+    { throw new Error("abstract function AbstractInterproceduralAnalysis.fillDotGraph called but not implemented."); }
  
 
    /**
@@ -186,7 +186,7 @@ public abstract class AbstractInterproceduralAnalysis {
      * BUG: this graph does not show filtered-out methods for which a 
      * conservative summary was needed.
      *
-     * @see fillGraph
+     * @see fillDotGraph
      */
     public void drawAsOneDot(String name)
     {
@@ -209,7 +209,7 @@ public abstract class AbstractInterproceduralAnalysis {
 	    label.setAttribute("fontsize","18");
 	    label.setShape("box");
 	    if (data.containsKey(m))
-		fillGraph("X"+id, data.get(m), sub);
+		fillDotGraph("X"+id, data.get(m), sub);
 	    id++;
 	}
 
@@ -234,7 +234,6 @@ public abstract class AbstractInterproceduralAnalysis {
 	dot.plot(f.getPath());
     }
 
-
     /**
      * Dump the each summary computed by the interprocedural analysis as
      * a seperate graph.
@@ -244,7 +243,7 @@ public abstract class AbstractInterproceduralAnalysis {
      *
      * @param prefix is prepended before the method name.
      *
-     * @see fillGraph
+     * @see fillDotGraph
      */
     public void drawAsManyDot(String prefix)
     {
@@ -253,7 +252,7 @@ public abstract class AbstractInterproceduralAnalysis {
 	    SootMethod m = (SootMethod)it.next();
 	    DotGraph dot = new DotGraph(m.toString());
 	    dot.setGraphLabel(m.toString());
-	    fillGraph("X", data.get(m), dot);
+	    fillDotGraph("X", data.get(m), dot);
 	    File f = new File (SourceLocator.v().getOutputDir(),
 			       prefix+m.toString()+DotGraph.DOT_EXTENSION);
 	    dot.plot(f.getPath());
@@ -264,7 +263,7 @@ public abstract class AbstractInterproceduralAnalysis {
 	    SootMethod m = (SootMethod)it.next();
 	    DotGraph dot = new DotGraph(m.toString());
 	    dot.setGraphLabel(m.toString());
-	    fillGraph("X", unanalysed.get(m), dot);
+	    fillDotGraph("X", unanalysed.get(m), dot);
 	    File f = new File (SourceLocator.v().getOutputDir(),
 			       prefix+m.toString()+DotGraph.DOT_EXTENSION);
 	    dot.plot(f.getPath());
@@ -322,7 +321,7 @@ public abstract class AbstractInterproceduralAnalysis {
 	    queue.add(o);
 	}
 
-	//Map nb = new HashMap();
+	Map nb = new HashMap(); // only for debug pretty-printing
 
 	// fixpoint iterations
 	while (!queue.isEmpty()) {
@@ -331,11 +330,9 @@ public abstract class AbstractInterproceduralAnalysis {
 	    Object newSummary = newInitialSummary();
 	    Object oldSummary = data.get(m);
 
-	    /*
 	      if (nb.containsKey(m)) nb.put(m,new Integer(((Integer)nb.get(m)).intValue()+1));
 	      else nb.put(m,new Integer(1));
 	      G.v().out.println(" |- processing "+m.toString()+" ("+nb.get(m)+"-st time)");
-	    */
 
 	    analyseMethod(m, newSummary);
 	    if (!oldSummary.equals(newSummary)) {

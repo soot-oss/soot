@@ -3217,7 +3217,7 @@ Alexandru Salcianu and Martin Rinard.
    	   	    <boolopt>
   		       <name>Dump one .dot for each intra-procedural method analysis</name>
 		       <alias>dump-intra</alias>
-		       <default>false</default>
+		       <default>true</default>
 		    </boolopt>
                 </sub_phase>
 			</phase>

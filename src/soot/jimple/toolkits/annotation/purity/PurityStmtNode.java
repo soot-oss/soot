@@ -8,6 +8,7 @@
 
 package soot.jimple.toolkits.annotation.purity;
 import soot.jimple.*;
+import java.util.*;
 
 /**
  * A node created dynamically and attached to a statement Stmt.
@@ -24,11 +25,21 @@ public class PurityStmtNode implements PurityNode
     /** true if an inside node, false if an load node */
     private boolean inside;
 
+    /** gives a unique id, for pretty-printing purposes */
+    private static Map nMap = new HashMap();
+    private static int n = 0;
+
     PurityStmtNode(Stmt id, boolean inside)
-    { this.id = id; this.inside = inside; }
+    { 
+	this.id = id; this.inside = inside;
+	if (!nMap.containsKey(id)) { nMap.put(id,new Integer(n)); n++; }
+    }
 
     public String toString() 
-    { if (inside) return "I_"+id; else return "L_"+id; }
+    { 
+	if (inside) return "I_"+nMap.get(id); else return "L_"+nMap.get(id);
+	//if (inside) return "I_"+id; else return "L_"+id; 
+    }
 
     public int hashCode() 
     { return id.hashCode(); }

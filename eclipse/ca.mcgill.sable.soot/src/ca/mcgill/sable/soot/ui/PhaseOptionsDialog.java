@@ -202,6 +202,8 @@ Composite wjapwjap_tqtChild = wjapwjap_tqtCreate(getPageContainer());
 
 Composite wjapwjap_cggChild = wjapwjap_cggCreate(getPageContainer());
 
+Composite wjapwjap_purityChild = wjapwjap_purityCreate(getPageContainer());
+
 Composite sopsop_cpfChild = sopsop_cpfCreate(getPageContainer());
 
 Composite jopjop_cseChild = jopjop_cseCreate(getPageContainer());
@@ -1033,6 +1035,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getwjapwjap_cggenabled_widget().getButton().addSelectionListener(this);
 		
 		getwjapwjap_cggshow_lib_meths_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("wjap", "wjap.purity");
+		
+		
+		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_purityenabled_widget(), "enabled");
+		
+		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_puritydump_summaries_widget(), "dump-summaries");
+		
+		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_puritydump_cg_widget(), "dump-cg");
+		
+		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_puritydump_intra_widget(), "dump-intra");
+		
+		getwjapwjap_purityenabled_widget().getButton().addSelectionListener(this);
+		
+		getwjapwjap_puritydump_summaries_widget().getButton().addSelectionListener(this);
+		
+		getwjapwjap_puritydump_cg_widget().getButton().addSelectionListener(this);
+		
+		getwjapwjap_puritydump_intra_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("shimple");
@@ -3477,6 +3499,46 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getwjapwjap_cggshow_lib_meths_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getwjapwjap_purityenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_purityenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjapwjap_puritydump_summaries_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_puritydump_summaries_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjapwjap_puritydump_cg_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_puritydump_cg_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjapwjap_puritydump_intra_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_puritydump_intra_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getshimpleenabled_widget().getButton().getSelection();
 		
 		
@@ -4451,6 +4513,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getInput_Attribute_Optionskeep_offset_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getAnnotation_Optionsannot_purity_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getAnnotation_Optionsannot_purity_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getAnnotation_Optionsannot_nullpointer_widget().getButton().getSelection();
 		
 		
@@ -5005,6 +5077,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 			subSectParent = wjap_wjap_cgg_branch;
+			
+			
+			SootOption wjap_wjap_purity_branch = new SootOption("Purity Analysis [AM]", "wjapwjap_purity");
+			subParent.addChild(wjap_wjap_purity_branch);
+
+
+			
+
+			
+			subSectParent = wjap_wjap_purity_branch;
 			
 			
 			//Shimple Control
@@ -7423,6 +7505,46 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return wjapwjap_cggshow_lib_meths_widget;
 	}	
 	
+	private BooleanOptionWidget wjapwjap_purityenabled_widget;
+	
+	private void setwjapwjap_purityenabled_widget(BooleanOptionWidget widget) {
+		wjapwjap_purityenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_purityenabled_widget() {
+		return wjapwjap_purityenabled_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_puritydump_summaries_widget;
+	
+	private void setwjapwjap_puritydump_summaries_widget(BooleanOptionWidget widget) {
+		wjapwjap_puritydump_summaries_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_puritydump_summaries_widget() {
+		return wjapwjap_puritydump_summaries_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_puritydump_cg_widget;
+	
+	private void setwjapwjap_puritydump_cg_widget(BooleanOptionWidget widget) {
+		wjapwjap_puritydump_cg_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_puritydump_cg_widget() {
+		return wjapwjap_puritydump_cg_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_puritydump_intra_widget;
+	
+	private void setwjapwjap_puritydump_intra_widget(BooleanOptionWidget widget) {
+		wjapwjap_puritydump_intra_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_puritydump_intra_widget() {
+		return wjapwjap_puritydump_intra_widget;
+	}	
+	
 	private BooleanOptionWidget shimpleenabled_widget;
 	
 	private void setshimpleenabled_widget(BooleanOptionWidget widget) {
@@ -8419,6 +8541,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getInput_Attribute_Optionskeep_offset_widget() {
 		return Input_Attribute_Optionskeep_offset_widget;
+	}	
+	
+	private BooleanOptionWidget Annotation_Optionsannot_purity_widget;
+	
+	private void setAnnotation_Optionsannot_purity_widget(BooleanOptionWidget widget) {
+		Annotation_Optionsannot_purity_widget = widget;
+	}
+	
+	public BooleanOptionWidget getAnnotation_Optionsannot_purity_widget() {
+		return Annotation_Optionsannot_purity_widget;
 	}	
 	
 	private BooleanOptionWidget Annotation_Optionsannot_nullpointer_widget;
@@ -13650,6 +13782,100 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 
+	private Composite wjapwjap_purityCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupwjapwjap_purity = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupwjapwjap_purity.setLayout(layout);
+	
+	 	editGroupwjapwjap_purity.setText("Purity Analysis [AM]");
+	 	
+		editGroupwjapwjap_purity.setData("id", "wjapwjap_purity");
+		
+		String descwjapwjap_purity = "Emit purity attributes";	
+		if (descwjapwjap_purity.length() > 0) {
+			Label descLabelwjapwjap_purity = new Label(editGroupwjapwjap_purity, SWT.WRAP);
+			descLabelwjapwjap_purity.setText(descwjapwjap_purity);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"wjap.purity"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwjapwjap_purityenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Enabled", "p", "wjap.purity","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjap.purity"+" "+"dump-summaries";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setwjapwjap_puritydump_summaries_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump one .dot files for each method summary", "p", "wjap.purity","dump-summaries", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjap.purity"+" "+"dump-cg";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setwjapwjap_puritydump_cg_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump .dot call-graph annotated with method summaries", "p", "wjap.purity","dump-cg", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjap.purity"+" "+"dump-intra";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setwjapwjap_puritydump_intra_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump one .dot for each intra-procedural method analysis", "p", "wjap.purity","dump-intra", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupwjapwjap_purity;
+	}
+
+
+
 	private Composite shimpleCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -16913,6 +17139,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
+		
+		
+		
+		defKey = ""+" "+""+" "+"annot-purity";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setAnnotation_Optionsannot_purity_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Purity Annotation [AM]", "", "","annot-purity", "\nPurity anaysis implemented by Antoine Mine and based on the \npaper A Combined Pointer and Purity Analysis Java Programs by \nAlexandru Salcianu and Martin Rinard. ", defaultBool)));
 		
 		
 		
