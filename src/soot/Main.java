@@ -58,11 +58,12 @@ public class Main {
         G.v().out.println("Soot version " + versionString);
 
         G.v().out.println(
-            "Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
+            "Copyright (C) 1997-2003 Raja Vallee-Rai and others.");
         G.v().out.println("All rights reserved.");
         G.v().out.println("");
         G.v().out.println(
             "Contributions are copyright (C) 1997-2003 by their respective contributors.");
+        G.v().out.println("See the file 'credits' for a list of contributors.");
         G.v().out.println("See individual source files for details.");
         G.v().out.println("");
         G.v().out.println(
@@ -70,7 +71,7 @@ public class Main {
         G.v().out.println(
             "and you are welcome to redistribute it under certain conditions.");
         G.v().out.println(
-            "See the accompanying file 'license.html' for details.");
+            "See the accompanying file 'COPYING-LESSER.txt' for details.");
         G.v().out.println();
         G.v().out.println("Visit the Soot website:");
         G.v().out.println("  http://www.sable.mcgill.ca/soot/");
