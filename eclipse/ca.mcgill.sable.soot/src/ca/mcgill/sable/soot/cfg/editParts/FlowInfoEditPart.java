@@ -94,6 +94,7 @@ public class FlowInfoEditPart
 			//org.eclipse.draw2d.geometry.Rectangle rect = new org.eclipse.draw2d.geometry.Rectangle(getFigure().getBounds().x, getFigure().getBounds().y, getFigure().getBounds().width, getFigure().getBounds().height);
 			//((FlowDataEditPart)getParent()).updateSize(this, getFigure(), rect);//.updateSize(getFigure(), getFigure().getBounds());
 			((PartialFlowDataEditPart)getParent()).updateSize(evt.getNewValue().toString().length()*7+10);
+			
 		}
 	}
 	

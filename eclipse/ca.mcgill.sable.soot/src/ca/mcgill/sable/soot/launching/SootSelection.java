@@ -24,7 +24,7 @@ import java.util.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.jdt.core.*;
 import org.eclipse.jface.viewers.*;
-
+import ca.mcgill.sable.soot.*;
 /**
  * @author jlhotak
  *
@@ -65,12 +65,15 @@ public class SootSelection {
 		if (temp instanceof IResource) {
 			setResource((IResource)temp);
 			setProject(getResource().getProject());
+			SootPlugin.getDefault().setCurrentProject(getProject());
 			setJavaProject(JavaCore.create(getProject()));
 		}
 		else if (temp instanceof IJavaElement) {
 			IJavaElement jElem = (IJavaElement)temp;
 			setJavaProject(jElem.getJavaProject()); 
 			setProject(javaProject.getProject());
+			SootPlugin.getDefault().setCurrentProject(getProject());
+			
 		}
 		
 		if (temp instanceof IFolder) {

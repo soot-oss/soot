@@ -25,7 +25,7 @@
  */
 package ca.mcgill.sable.soot.cfg;
 
-import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.*;
 import org.eclipse.gef.ui.parts.*;
@@ -36,6 +36,7 @@ import ca.mcgill.sable.soot.cfg.editParts.*;
 import org.eclipse.gef.palette.*;
 import org.eclipse.jface.action.*;
 import org.eclipse.gef.ui.actions.*;
+import ca.mcgill.sable.soot.*;
 
 import java.util.*;
 
@@ -48,6 +49,7 @@ import java.util.*;
 public class CFGEditor extends GraphicalEditor {
 
 	private CFGGraph cfgGraph;
+	private boolean isSaved = false;
 	//private PaletteRoot root; 
 	/**
 	 * 
@@ -92,6 +94,12 @@ public class CFGEditor extends GraphicalEditor {
 		getActionRegistry().registerAction(print);
 		getSite().getKeyBindingService().registerAction(print);
 		
+		/*IAction save = new SaveAction(this);
+		save.setEnabled(true);
+		getActionRegistry().registerAction(save);
+		getSite().getKeyBindingService().registerAction(save);
+		this.getPropertyActions().add(save.getId());
+		*/
 		getGraphicalViewer().setEditPartFactory(new CFGPartFactory());
 		getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()));
 		
@@ -108,14 +116,15 @@ public class CFGEditor extends GraphicalEditor {
 		getGraphicalViewer().setContextMenu(menuProvider);
 		getSite().registerContextMenu(menuProvider, getGraphicalViewer());
 	
+		//this.firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 	
 	// this is for zoom
-	/*protected void createActions(){
+	protected void createActions(){
 	
 		super.createActions();
 		
-		System.out.println("creating actions");
+	/*	System.out.println("creating actions");
 		ScrollingGraphicalViewer viewer = (ScrollingGraphicalViewer)getGraphicalViewer();
 		ScalableRootEditPart root = ((ScalableRootEditPart)viewer.getRootEditPart());
 		ZoomManager zManager = root.getZoomManager();
@@ -128,13 +137,17 @@ public class CFGEditor extends GraphicalEditor {
 		
 		getSite().getKeyBindingService().registerAction(zoomIn);
 		getSite().getKeyBindingService().registerAction(zoomOut);
-	}*/
+	*/
+	
+	}
 
 	protected void setInput(IEditorInput input){
 		super.setInput(input);
 		if (input instanceof CFGGraph){
 			setCfgGraph((CFGGraph)input);
 		}
+		// could also read from a dot file
+		
 	}
 	
 	/* (non-Javadoc)
@@ -142,9 +155,21 @@ public class CFGEditor extends GraphicalEditor {
 	 */
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
-
+		System.out.println("saving cfgs");
+		// idea is to save to dot file
+		String fileNameBase = SootPlugin.getDefault().getCurrentProject().getFolder("sootOutput").getLocation().toOSString();
+		
+		AnnotatedCFGSaver saver = new AnnotatedCFGSaver(getCfgGraph(), fileNameBase, this.getTitle());
+		saver.saveGraph();
+		isSaved = true;
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+	
 	}
 
+	public void setContentsChanged(){
+		isSaved = false;
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
@@ -166,7 +191,7 @@ public class CFGEditor extends GraphicalEditor {
 	 */
 	public boolean isDirty() {
 		// TODO Auto-generated method stub
-		return false;
+		return !isSaved;
 	}
 
 	/* (non-Javadoc)

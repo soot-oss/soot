@@ -132,14 +132,19 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		IRunnableWithProgress op; 
 		try {   
         	newProcessStarting();
+        	System.out.println("new process starting");
             op = new SootRunner(temp, Display.getCurrent(), mainClass);
+           	System.out.println("op:"+op);
            	((SootRunner)op).setParent(this);
+           	System.out.println("setting parent to this");
             ModalContext.run(op, true, new NullProgressMonitor(), Display.getCurrent());
             //setCfgList(((SootRunner)op).getCfgList());
  		} 
  		catch (InvocationTargetException e1) {
     		// handle exception
     		System.out.println("InvocationTargetException: "+e1.getMessage());
+    		System.out.println("InvocationTargetException: "+e1.getTargetException());
+            System.out.println(e1.getStackTrace());
  		} 
  		catch (InterruptedException e2) {
     		// handle cancelation

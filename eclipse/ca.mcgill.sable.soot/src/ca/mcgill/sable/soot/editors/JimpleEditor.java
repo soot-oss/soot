@@ -24,7 +24,7 @@ package ca.mcgill.sable.soot.editors;
 //import org.eclipse.core.resources.IResource;
 //import org.eclipse.core.runtime.CoreException;
 //import org.eclipse.core.runtime.IAdaptable;
-//import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.*;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.swt.widgets.Composite;

@@ -12042,6 +12042,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
+		new OptionData("Incrementalized BDD",
+		"incbdd",
+		"\nA propagator that stores points-to sets in binary decision \ndiagrams, and propagates them incrementally. ",
+		
+		false),
+		
 		new OptionData("None",
 		"none",
 		"\nNone means that propagation is not done; the graph is only \nbuilt and simplified. This is useful if an external solver is \nbeing used to perform the propagation. ",

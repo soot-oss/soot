@@ -71,15 +71,16 @@ public class SootRunner implements IRunnableWithProgress {
             //InteractionController controller = new InteractionController();
         	//controller.setDisplay(getDisplay());
         	//controller.setParent(this);
-        	
+        	System.out.println("about to create soot thread");
             SootThread sootThread = new SootThread(getDisplay(), getMainClass(), this);
+            
             sootThread.setCmd(cmdFinal);
             sootThread.setSootOut(sootOut);
             //sootThread.setListener(controller);
             
             //controller.setSootThread(sootThread);
             
-            //System.out.println("About to start sootThread");
+            System.out.println("About to start sootThread");
             sootThread.start();
             //controller.start();
              

@@ -25,7 +25,7 @@
  */
 package ca.mcgill.sable.soot.cfg;
 
-import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.*;
 import ca.mcgill.sable.soot.cfg.model.*;
 import java.util.*;
 import ca.mcgill.sable.soot.*;
@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
 import soot.toolkits.graph.interaction.*;
 import soot.toolkits.scalar.*;
+import soot.*;
 
 /**
  * @author jlhotak
@@ -62,6 +63,18 @@ public class ModelCreator {
 		ArrayList nodeList = new ArrayList();
 		ArrayList edgeList = new ArrayList();
 		 
+		boolean isExceptions = false; 
+		ArrayList exceptHeads = null;
+		if (getSootGraph().getHeads().size() > 1) {
+			isExceptions = true;
+		} 
+		// handle graphs that have exceptions
+		if (getSootGraph() instanceof UnitGraph){
+			UnitGraph unitGraph = (UnitGraph)getSootGraph();
+			if (isExceptions){
+				exceptHeads = findExceptionBlockHeads(unitGraph.getBody());
+			}
+		}
 		while (nodesIt.hasNext()){
 			Object node = nodesIt.next();
 			CFGNode cfgNode;
@@ -97,6 +110,7 @@ public class ModelCreator {
 		while (headsIt.hasNext()){
 			Object next = headsIt.next();
 			CFGNode node = (CFGNode)getNodeMap().get(next);
+			if ((exceptHeads != null) && exceptHeads.contains(next)) continue;
 			node.getData().setHead(true);
 		}
 		
@@ -131,6 +145,16 @@ public class ModelCreator {
 				node.handleHighlightEvent(next);
 			}
 		}
+	}
+	
+	public ArrayList findExceptionBlockHeads(Body b){
+		ArrayList exceptHeads = new ArrayList();
+		Iterator trapsIt = b.getTraps().iterator();
+		while (trapsIt.hasNext()){
+			Trap trap = (Trap)trapsIt.next();
+			exceptHeads.add(trap.getBeginUnit());
+		}		
+		return exceptHeads;
 	}
 	
 	public void updateNode(FlowInfo fi){
@@ -219,6 +243,7 @@ public class ModelCreator {
 				
 			}
 		}
+		((CFGEditor)part).setContentsChanged();
 	}
 	
 	private void initializeNode(Object sootNode, CFGNode cfgNode, CFGGraph cfgGraph){
@@ -254,12 +279,14 @@ public class ModelCreator {
 		//cfgNode.setText(textList);
 		//cfgNode.setWidth(width*7);
 	}
+	
+	IEditorPart part;
 
 	public void displayModel(){
 		IWorkbenchPage page = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		try{
 			CFGGraph cfgGraph = new CFGGraph();
-			IEditorPart part = page.openEditor(cfgGraph, "ca.mcgill.sable.soot.cfg.CFGEditor");
+			part = page.openEditor(cfgGraph, "ca.mcgill.sable.soot.cfg.CFGEditor");
 			((CFGEditor)part).setTitle(getEdName());
 			((CFGEditor)part).setTitleTooltip(getEdName());
 			

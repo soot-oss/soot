@@ -65,6 +65,7 @@ public class SootPlugin extends AbstractUIPlugin {
 	
 	private Font sootFont = new Font(null, "Arial", 8, SWT.NORMAL);
 	
+	private IProject currentProject;
 	
 	/**
 	 * Method addSootOutputEventListener.
@@ -288,6 +289,20 @@ public class SootPlugin extends AbstractUIPlugin {
 	 */
 	public void setSootFont(Font font) {
 		sootFont = font;
+	}
+
+	/**
+	 * @return
+	 */
+	public IProject getCurrentProject() {
+		return currentProject;
+	}
+
+	/**
+	 * @param project
+	 */
+	public void setCurrentProject(IProject project) {
+		currentProject = project;
 	}
 
 }

@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Display;
 
 //import ca.mcgill.sable.soot.SootPlugin;
 
-//import soot.*;
+import soot.*;
 import soot.toolkits.graph.interaction.*;
 import ca.mcgill.sable.soot.interaction.*;
 
@@ -67,16 +67,22 @@ public class SootThread extends Thread {
 	 */
 	public SootThread(Display display, String mainClass, SootRunner parent) {
 		super();
-		setDisplay(display);
+        System.out.println("creating SootThread");
+        setDisplay(display);
+        
 		setMainClass(mainClass);
 		
+        System.out.println("about to create controller");
 		InteractionController controller = new InteractionController();
+        System.out.println("about to set controller display");
        	controller.setDisplay(getDisplay());
+        System.out.println("about to save controller");
         controller.setSootThread(this);
         setListener(controller);
-        
+        System.out.println("controller stuff done");
         setParent(parent);
         this.setName("soot thread");
+        System.out.println("creating soot thread");
         //controller.setParent(this);
         	
 	}
@@ -98,9 +104,10 @@ public class SootThread extends Thread {
 		//String className = store.getString("selected");
 		
 		//System.out.println("about to run: "+className);
-		
+	    //((InteractionController)getListener()).setSootThread(this);	
 		final String [] cmdFinal = getCmd();
 		final PrintStream sootOutFinal = getSootOut();
+		System.out.println("soot will run in SootThread");
 		try {
 			
 			soot.G.v().reset();
@@ -109,6 +116,8 @@ public class SootThread extends Thread {
             InteractionHandler.v().setInteractionListener(getListener());
             
 			Class toRun = Class.forName(getMainClass());
+			System.out.println("main class: "+getMainClass());
+			System.out.println("toRun: "+toRun);
 			Method [] meths = toRun.getDeclaredMethods();
 			Object [] args = new Object [1];
 			args[0] = cmdFinal;
@@ -129,8 +138,9 @@ public class SootThread extends Thread {
 			//Main.main(cmdFinal, sootOutFinal);
 		}
 		catch (Exception e) {
-            System.out.println("Soot exception");
+            System.out.println("Soot exception: "+e);
 			e.printStackTrace(sootOutFinal);
+			System.out.println(e.getCause());
             //this.interrupt();
        	}
 	}

@@ -95,6 +95,8 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 		IEditorReference [] refs = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
 		for (int i = 0; i < refs.length; i++){
 			//System.out.println(refs[i].getName());
+			if (refs[i] == null) continue;
+			if (refs[i].getName() == null) continue;
 			if (refs[i].getName().equals(file.getName())){
 				JimpleEditor ed = (JimpleEditor) refs[i].getEditor(true).getAdapter(JimpleEditor.class);
 				if (ed != null){
