@@ -42,5 +42,10 @@ public class CGOptions
         return soot.PackManager.getBoolean( options, "safe-forname" );
     }
     
+    /** Verbose --  */
+    public boolean verbose() {
+        return soot.PackManager.getBoolean( options, "verbose" );
+    }
+    
 }
         

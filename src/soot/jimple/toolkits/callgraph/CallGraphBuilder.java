@@ -46,6 +46,9 @@ public final class CallGraphBuilder
         Scene.v().setCallGraph( cg );
         reachables = Scene.v().getReachableMethods();
         worklist = reachables.listener();
+        if( !options.verbose() ) {
+            G.v().out.println( "[Call Graph] For information on where the call graph may be incomplete, use the verbose option to the cg phase." );
+        }
     }
     public CallGraphBuilder() {
         G.v().out.println( "Warning: using incomplete callgraph containing "+
@@ -77,10 +80,12 @@ public final class CallGraphBuilder
 
     private void handleClassName( VirtualCallSite vcs, String name ) {
         if( name == null ) {
-            G.v().out.println( "Warning: Method "+vcs.getContainer()+
-                " is reachable, and calls Class.forName on a"+
-                " non-constant String; graph will be incomplete!"+
-                " Use safe-forname option for a conservative result." );
+            if( options.verbose() ) {
+                G.v().out.println( "Warning: Method "+vcs.getContainer()+
+                    " is reachable, and calls Class.forName on a"+
+                    " non-constant String; graph will be incomplete!"+
+                    " Use safe-forname option for a conservative result." );
+            }
         } else {
             constantForName( name, vcs.getContainer(), vcs.getStmt() );
         }
@@ -242,9 +247,11 @@ public final class CallGraphBuilder
             }
         } else {
             if( !Scene.v().containsClass( cls ) ) {
-                G.v().out.println( "Warning: Class "+cls+" is"+
-                    " a dynamic class, and you did not specify"+
-                    " it as such; graph will be incomplete!" );
+                if( options.verbose() ) {
+                    G.v().out.println( "Warning: Class "+cls+" is"+
+                        " a dynamic class, and you did not specify"+
+                        " it as such; graph will be incomplete!" );
+                }
             } else {
                 SootClass sootcls = Scene.v().getSootClass( cls );
                 if( !sootcls.isApplicationClass() ) {
@@ -268,9 +275,11 @@ public final class CallGraphBuilder
                 InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
                 if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
                     if( !warnedAlready ) {
-                        G.v().out.println( "Warning: call to "+
-                            "java.lang.reflect.Method: invoke() from "+source+
-                            "; graph will be incomplete!" );
+                        if( options.verbose() ) {
+                            G.v().out.println( "Warning: call to "+
+                                "java.lang.reflect.Method: invoke() from "+source+
+                                "; graph will be incomplete!" );
+                        }
                         warnedAlready = true;
                     }
                 }

@@ -456,6 +456,11 @@ If no phases are enabled, the Old Class Hierarchy Analysis phase
                                         <alias>safe-forname</alias>
                                         <default>false</default>
                                 </boolopt>
+                                <boolopt>
+                                        <name>Verbose</name>
+                                        <alias>verbose</alias>
+                                        <default>false</default>
+                                </boolopt>
 				<sub_phase>
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>

@@ -837,7 +837,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg" ) )
             return ""
                 +"enabled "
-                +"safe-forname ";
+                +"safe-forname "
+                +"verbose ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
@@ -1183,7 +1184,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg" ) )
             return ""
               +"enabled:true "
-              +"safe-forname:false ";
+              +"safe-forname:false "
+              +"verbose:false ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
