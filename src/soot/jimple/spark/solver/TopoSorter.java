@@ -34,6 +34,7 @@ public class TopoSorter {
         for( Iterator it = pag.allVarNodes().iterator(); it.hasNext(); ) {
             dfsVisit( (VarNode) it.next() );
         }
+        visited = null;
     }
     public TopoSorter( PAG pag, boolean ignoreTypes ) {
         this.pag = pag;

@@ -229,6 +229,9 @@ public class SparkOptions {
      * 16 elements, and switches to using a bit-vector when the set gets
      * larger than this.
      * 
+     * FastType is a variation of Hybrid that uses a bit vector to perform fast
+     * subtype tests.
+     * 
      * Array is an implementation that keeps the elements of the points-to set
      * in an array that is always maintained in sorted order. Set membership is
      * tested using binary search, and set union and intersection are computed
@@ -243,19 +246,21 @@ public class SparkOptions {
     public void setImpl( Switch_setImpl sw ) {
         String s = Options.getString( options, "setImpl" );
         if( false );
+        else if( s.equalsIgnoreCase("double") ) sw.case_double();
         else if( s.equalsIgnoreCase("hash") ) sw.case_hash();
         else if( s.equalsIgnoreCase("bit") ) sw.case_bit();
         else if( s.equalsIgnoreCase("hybrid") ) sw.case_hybrid();
+        else if( s.equalsIgnoreCase("fasttype") ) sw.case_fasttype();
         else if( s.equalsIgnoreCase("array") ) sw.case_array();
-        else if( s.equalsIgnoreCase("double") ) sw.case_double();
         else throw new RuntimeException( "Invalid value \""+s+"\" of option setImpl" );
     }
     public static abstract class Switch_setImpl {
+        public abstract void case_double();
         public abstract void case_hash();
         public abstract void case_bit();
         public abstract void case_hybrid();
+        public abstract void case_fasttype();
         public abstract void case_array();
-        public abstract void case_double();
     }
 
     /**
@@ -271,6 +276,7 @@ public class SparkOptions {
         else if( s.equalsIgnoreCase("hash") ) sw.case_hash();
         else if( s.equalsIgnoreCase("bit") ) sw.case_bit();
         else if( s.equalsIgnoreCase("hybrid") ) sw.case_hybrid();
+        else if( s.equalsIgnoreCase("fasttype") ) sw.case_fasttype();
         else if( s.equalsIgnoreCase("array") ) sw.case_array();
         else throw new RuntimeException( "Invalid value \""+s+"\" of option doubleSetOld" );
     }
@@ -278,6 +284,7 @@ public class SparkOptions {
         public abstract void case_hash();
         public abstract void case_bit();
         public abstract void case_hybrid();
+        public abstract void case_fasttype();
         public abstract void case_array();
     }
 
@@ -291,17 +298,19 @@ public class SparkOptions {
     public void doubleSetNew( Switch_doubleSetNew sw ) {
         String s = Options.getString( options, "doubleSetNew" );
         if( false );
+        else if( s.equalsIgnoreCase("array") ) sw.case_array();
         else if( s.equalsIgnoreCase("hash") ) sw.case_hash();
         else if( s.equalsIgnoreCase("bit") ) sw.case_bit();
         else if( s.equalsIgnoreCase("hybrid") ) sw.case_hybrid();
-        else if( s.equalsIgnoreCase("array") ) sw.case_array();
+        else if( s.equalsIgnoreCase("fasttype") ) sw.case_fasttype();
         else throw new RuntimeException( "Invalid value \""+s+"\" of option doubleSetNew" );
     }
     public static abstract class Switch_doubleSetNew {
+        public abstract void case_array();
         public abstract void case_hash();
         public abstract void case_bit();
         public abstract void case_hybrid();
-        public abstract void case_array();
+        public abstract void case_fasttype();
     }
 
 

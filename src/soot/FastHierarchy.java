@@ -65,8 +65,8 @@ public class FastHierarchy
     protected Map classToInterval = new HashMap();
 
     /** These maps cache subtype queries, so they can be re-done quickly. */
-    protected MultiMap cacheSubtypes = new HashMultiMap();
-    protected MultiMap cacheNonSubtypes = new HashMultiMap();
+    //protected MultiMap cacheSubtypes = new HashMultiMap();
+    //protected MultiMap cacheNonSubtypes = new HashMultiMap();
 
     protected Scene sc;
 
@@ -104,13 +104,13 @@ public class FastHierarchy
         this.sc = Scene.v();
 
 	/* First build the inverse maps. */
-	for( Iterator it = sc.getClasses().iterator(); it.hasNext(); ) {
-	    SootClass cl = (SootClass) it.next();
+	for( Iterator clIt = sc.getClasses().iterator(); clIt.hasNext(); ) {
+	    final SootClass cl = (SootClass) clIt.next();
 	    if( !cl.isInterface() && cl.hasSuperclass() ) {
 		classToSubclasses.put( cl.getSuperclass(), cl );
 	    }
-	    for( Iterator ifs = cl.getInterfaces().iterator(); ifs.hasNext(); ) {
-		SootClass supercl = (SootClass) ifs.next();
+	    for( Iterator superclIt = cl.getInterfaces().iterator(); superclIt.hasNext(); ) {
+	        final SootClass supercl = (SootClass) superclIt.next();
 		if( cl.isInterface() ) {
 		    interfaceToSubinterfaces.put( supercl, cl );
 		} else {
@@ -139,8 +139,8 @@ public class FastHierarchy
 	    subs = interfaceToAllImplementers.get( parent );
 	} else {
 	    subs = interfaceToAllImplementers.get( parent );
-	    for( Iterator it = getAllSubinterfaces( parent ).iterator(); it.hasNext(); ) {
-		SootClass subinterface = (SootClass) it.next();
+	    for( Iterator subinterfaceIt = getAllSubinterfaces( parent ).iterator(); subinterfaceIt.hasNext(); ) {
+	        final SootClass subinterface = (SootClass) subinterfaceIt.next();
 		if( subinterface == parent ) continue;
 		subs.addAll( getAllImplementersOfInterface( subinterface ) );
 	    }
@@ -170,6 +170,7 @@ public class FastHierarchy
      * that is not a subinterface of parent, this method will return false
      * even though some objects implementing the child interface may also
      * implement the parent interface. */
+    /*
     public boolean canStoreType( Type child, Type parent ) {
 	if( cacheSubtypes.get( parent ).contains( child ) ) return true;
 	if( cacheNonSubtypes.get( parent ).contains( child ) ) return false;
@@ -177,13 +178,15 @@ public class FastHierarchy
 	( ret ? cacheSubtypes : cacheNonSubtypes ).put( parent, child );
 	return ret;
     }
+    */
 
     /** Given an object of declared type child, returns true if the object
      * can be stored in a variable of type parent. If child is an interface
      * that is not a subinterface of parent, this method will return false
      * even though some objects implementing the child interface may also
      * implement the parent interface. */
-    protected boolean canStoreTypeInternal( Type child, Type parent ) {
+    public boolean canStoreType( Type child, Type parent ) {
+        if( child.equals( parent ) ) return true;
         if( parent instanceof NullType ) {
             return false;
         }
@@ -262,8 +265,8 @@ public class FastHierarchy
 
 	Set ret = new HashSet();
 	SootClass declaringClass = declaredTypeOfBase.getSootClass();
-	for( Iterator it = concreteTypes.iterator(); it.hasNext(); ) {
-	    Type t = (Type) it.next();
+	for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
+	    final Type t = (Type) tIt.next();
 	    if( t instanceof AnyType ) {
 		String methodSig = m.getSubSignature();
 		HashSet s = new HashSet();

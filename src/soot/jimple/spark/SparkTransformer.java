@@ -163,25 +163,35 @@ public class SparkTransformer extends SceneTransformer
         return pag;
     }
 */
-    protected void internalTransform( String phaseName, Map options)
+    protected void internalTransform( String phaseName, Map options )
     {
-	Date startIg = new Date();
+	SparkOptions opts = new SparkOptions( options );
+        Date startIg = new Date();
 	InvokeGraphBuilder.v().transform( phaseName + ".igb" );
 	ig = Scene.v().getActiveInvokeGraph();
-	SparkOptions opts = new SparkOptions( options );
 	Date startBuild = new Date();
 	System.out.println( "[Spark] Invoke Graph built in "+(startBuild.getTime() - startIg.getTime() )/1000+" seconds." );
-        System.gc();
 	Builder b = new ContextInsensitiveBuilder();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        startBuild = new Date();
 	final PAG pag = b.build( opts );
 	Date startCompute = new Date();
 	System.out.println( "[Spark] Pointer Graph built in "+(startCompute.getTime() - startBuild.getTime() )/1000+" seconds." );
-        System.gc();
         if( opts.collapseSCCs() ) {
             new SCCCollapser( pag, opts.ignoreTypesForSCCs() ).collapse();
         }
         if( opts.collapseEBBs() ) new EBBCollapser( pag ).collapse();
-        if( opts.collapseSCCs() || opts.collapseEBBs() ) {
+        if( true || opts.collapseSCCs() || opts.collapseEBBs() ) {
             pag.cleanUpMerges();
         }
 	Date doneSimplify = new Date();
@@ -213,6 +223,15 @@ public class SparkTransformer extends SceneTransformer
 	System.out.println( "[Spark] Propagation done in "+(doneCompute.getTime() - doneSimplify.getTime() )/1000+" seconds." );
 	System.out.println( "[Spark] Solution found in "+(doneCompute.getTime() - startCompute.getTime() )/1000+" seconds." );
         System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
         /*
         if( propagator[0] instanceof PropMerge ) {
             new MergeChecker( pag ).check();
@@ -222,17 +241,18 @@ public class SparkTransformer extends SceneTransformer
         findSetMass( pag );
         pag.dumpNumbersOfEdges();
         */
+        findSetMass( pag );
         if( opts.dumpAnswer() ) new ReachingTypeDumper( pag ).dump();
         if( opts.dumpSolution() ) dumper.dumpPointsToSets();
         if( opts.dumpHTML() ) new PAG2HTML( pag ).dump();
         Scene.v().setActivePointsToAnalysis( pag );
     }
-/*
     protected void findSetMass( PAG pag ) {
         int mass = 0;
         int varMass = 0;
         int adfs = 0;
         int scalars = 0;
+        int[] deRefCounts = new int[30001];
         for( Iterator vIt = pag.allVarNodes().iterator(); vIt.hasNext(); ) {
             final VarNode v = (VarNode) vIt.next();
                 scalars++;
@@ -260,8 +280,23 @@ public class SparkTransformer extends SceneTransformer
         System.out.println( "Variable mass: " + varMass );
         System.out.println( "Scalars: "+scalars );
         System.out.println( "adfs: "+adfs );
+        for( Iterator vIt = pag.getDereferences().iterator(); vIt.hasNext(); ) {
+            final VarNode v = (VarNode) vIt.next();
+            PointsToSetInternal set = v.getP2Set();
+            int size = 0;
+            if( set != null ) size = set.size();
+            deRefCounts[size]++;
+            System.out.println( ""+size+" "+v );
+        }
+        int total = 0;
+        for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
+        System.out.println( "Dereference counts (total = "+total+"):" );
+        for( int i=0; i < deRefCounts.length; i++ ) {
+            if( deRefCounts[i] > 0 ) {
+                System.out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
+            }
+        }
     }
-    */
 }
 
 

@@ -38,10 +38,28 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     /** Sets the method for which a graph is currently being built. */
     public void setCurrentMethod( SootMethod m ) {
 	currentMethod = m;
+        if( m != null ) {
+            if( !m.isStatic() ) {
+                SootClass c = m.getDeclaringClass();
+                if( c == null ) {
+                    throw new RuntimeException( "Method "+m+" has no dclaring lass" );
+                }
+                caseThis( m );
+            }
+            for( int i = 0; i < m.getParameterCount(); i++ ) {
+                if( m.getParameterType(i) instanceof RefLikeType ) {
+                    caseParm( m, i );
+                }
+            }
+            Type retType = m.getReturnType();
+            if( retType instanceof RefLikeType ) {
+                caseRet( m );
+            }
+        }
     }
     /** Adds method target as a possible target of the invoke expression in s.
      * If target is null, only creates the nodes for the call site,
-     * without actually connectings them to any target method.
+     * without actually connecting them to any target method.
      * TouchedNodes is an out parameter that is filled in with all the
      * nodes to which edges were added by adding the target. It may be
      * null if the caller does not need this information. */
@@ -54,25 +72,24 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             arg.apply( this );
             Node argNode = getNode();
             if( argNode == null ) continue;
+            argNode = argNode.getReplacement();
             if( target != null ) {
-                Node parm = caseParm( target, i );
+                Node parm = caseParm( target, i ).getReplacement();
                 addEdge( argNode, parm );
                 if( touchedNodes != null ) {
                     touchedNodes.add( argNode );
-                    touchedNodes.add( parm );
                 }
             }
         }
         if( ie instanceof InstanceInvokeExpr ) {
             InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
             iie.getBase().apply( this );
-            Node baseNode = getNode();
+            Node baseNode = getNode().getReplacement();
             if( target != null ) {
-                Node thisRef = caseThis( target );
+                Node thisRef = caseThis( target ).getReplacement();
                 addEdge( baseNode, thisRef );
                 if( touchedNodes != null ) {
                     touchedNodes.add( baseNode );
-                    touchedNodes.add( thisRef );
                 }
             }
         }
@@ -80,13 +97,15 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             Value dest = ( (AssignStmt) s ).getLeftOp();
             if( dest.getType() instanceof RefLikeType ) {
                 dest.apply( this );
-                Node destNode = getNode();
+                Node destNode = getNode().getReplacement();
+                if( destNode instanceof VarNode ) {
+                    ((VarNode) destNode).setInterProcTarget();
+                }
                 if( target != null ) {
-                    Node retNode = caseRet( target );
+                    Node retNode = caseRet( target ).getReplacement();
                     addEdge( retNode, destNode );
                     if( touchedNodes != null ) {
                         touchedNodes.add( retNode );
-                        touchedNodes.add( destNode );
                     }
                 }
             }
@@ -94,15 +113,15 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
         if( ie instanceof InstanceInvokeExpr ) {
             InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
             Local base = (Local) iie.getBase();
-            if( Scene.v().getOrMakeFastHierarchy().
-                    canStoreType( base.getType(), RefType.v("java.lang.Runnable") ) ) {
-                if( target.getSignature().equals( "void start()" ) ) {
-                    if( target.getDeclaringClass().declaresMethod( "void run()" ) ) {
-                        addCallTarget( s,
-                            target.getDeclaringClass().getMethod( "void run()" ),
-                            touchedNodes );
-                    }
-                }
+            if( target != null
+            && Scene.v().getOrMakeFastHierarchy().
+                    canStoreType( base.getType(), RefType.v("java.lang.Runnable") ) 
+            && target.getSignature().equals( "void start()" )  
+            && target.getDeclaringClass().declaresMethod( "void run()" ) ) {
+
+                addCallTarget( s,
+                    target.getDeclaringClass().getMethod( "void run()" ),
+                    touchedNodes );
             }
         }
     }
@@ -119,11 +138,21 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	}
 	s.apply( new AbstractStmtSwitch() {
 	    final public void caseAssignStmt(AssignStmt as) {
-		if( !( as.getLeftOp().getType() instanceof RefLikeType ) ) return;
-		as.getLeftOp().apply( StandardParms.this );
+                Value l = as.getLeftOp();
+                Value r = as.getRightOp();
+		if( !( l.getType() instanceof RefLikeType ) ) return;
+		l.apply( StandardParms.this );
 		Node dest = getNode();
-		as.getRightOp().apply( StandardParms.this );
+		r.apply( StandardParms.this );
 		Node src = getNode();
+                if( l instanceof InstanceFieldRef ) {
+                    ((InstanceFieldRef) l).getBase().apply( StandardParms.this );
+                    pag.addDereference( (VarNode) getNode() );
+                }
+                if( r instanceof InstanceFieldRef ) {
+                    ((InstanceFieldRef) r).getBase().apply( StandardParms.this );
+                    pag.addDereference( (VarNode) getNode() );
+                }
 		addEdge( src, dest );
 	    }
 	    final public void caseReturnStmt(ReturnStmt rs) {
@@ -177,16 +206,20 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	return pag.makeAllocNode( AnyType.v(), AnyType.v() );
     }
     public Node caseThis( SootMethod m ) {
-	return pag.makeVarNode(
+	VarNode ret = pag.makeVarNode(
 		    new Pair( m, PointsToAnalysis.THIS_NODE ),
 		    m.getDeclaringClass().getType(), m );
+        ret.setInterProcTarget();
+        return ret;
     }
 
     public Node caseParm( SootMethod m, int index ) {
 	if( m.isStatic() || !pag.getOpts().parmsAsFields() ) {
-	    return pag.makeVarNode(
+	    VarNode ret = pag.makeVarNode(
 			new Pair( m, new Integer( index ) ),
 			m.getParameterType( index ), m );
+            ret.setInterProcTarget();
+            return ret;
 	} else { 
 	    return pag.makeFieldRefNode(
 			new Pair( m, PointsToAnalysis.THIS_NODE ),

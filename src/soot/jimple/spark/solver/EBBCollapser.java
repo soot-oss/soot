@@ -53,6 +53,7 @@ public class EBBCollapser {
     protected int numCollapsed = 0;
     protected PAG pag;
     protected void collapseAlloc() {
+        final boolean ofcg = (pag.getOnFlyCallGraph() != null);
         for( Iterator nIt = pag.allocSources().iterator(); nIt.hasNext(); ) {
             final AllocNode n = (AllocNode) nIt.next();
             Node[] succs = pag.allocLookup( n );
@@ -62,6 +63,7 @@ public class EBBCollapser {
                 if( pag.allocInvLookup( succ ).length > 1 ) continue;
                 if( pag.loadInvLookup( succ ).length > 0 ) continue;
                 if( pag.simpleInvLookup( succ ).length > 0 ) continue;
+                if( ofcg && succ.isInterProcTarget() ) continue;
                 if( firstSucc == null ) {
                     firstSucc = succ;
                 } else {
@@ -74,7 +76,8 @@ public class EBBCollapser {
         }
     }
     protected void collapseSimple() {
-        boolean verbose = pag.getOpts().verbose();
+        final boolean verbose = pag.getOpts().verbose();
+        final boolean ofcg = (pag.getOnFlyCallGraph() != null);
         boolean change;
         do {
             change = false;
@@ -90,6 +93,7 @@ public class EBBCollapser {
                     if( pag.allocInvLookup( succ ).length > 0 ) continue;
                     if( pag.loadInvLookup( succ ).length > 0 ) continue;
                     if( pag.simpleInvLookup( succ ).length > 1 ) continue;
+                    if( ofcg && succ.isInterProcTarget() ) continue;
                     n.mergeWith( succ );
                     change = true;
                     numCollapsed++;
@@ -98,6 +102,7 @@ public class EBBCollapser {
         } while( change );
     }
     protected void collapseLoad() {
+        final boolean ofcg = (pag.getOnFlyCallGraph() != null);
         for( Iterator nIt = new LinkedList( pag.loadSources() ).iterator(); nIt.hasNext(); ) {
             final FieldRefNode n = (FieldRefNode) nIt.next();
             Type nType = n.getType();
@@ -110,6 +115,7 @@ public class EBBCollapser {
                 if( pag.allocInvLookup( succ ).length > 0 ) continue;
                 if( pag.loadInvLookup( succ ).length > 1 ) continue;
                 if( pag.simpleInvLookup( succ ).length > 0 ) continue;
+                if( ofcg && succ.isInterProcTarget() ) continue;
                 if( PointsToSetInternal.castNeverFails( nType, sType ) ) {
                     if( firstSucc == null ) {
                         firstSucc = succ;

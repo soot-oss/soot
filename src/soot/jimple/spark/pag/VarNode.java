@@ -49,6 +49,7 @@ public class VarNode extends ValNode implements Comparable {
     }
     public void setFinishingNumber( int i ) {
         finishingNumber = i;
+        finishingNumbersSet = true;
     }
     /** NOTE: The method is here only for dumping the graph; not all VarNodes
      * will have a method so don't rely on it.
@@ -61,6 +62,19 @@ public class VarNode extends ValNode implements Comparable {
         return value;
     }
 
+    /** Designates this node as the potential target of a interprocedural 
+     * assignment edge which may be added during on-the-fly call graph 
+     * updating. */
+    public void setInterProcTarget() {
+        interProcTarget = true;
+    }
+    /** Returns true if this node is the potential target of a interprocedural 
+     * assignment edge which may be added during on-the-fly call graph 
+     * updating. */
+    public boolean isInterProcTarget() {
+        return interProcTarget;
+    }
+
     /* End of public methods. */
 
     VarNode( PAG pag, Object value, Type t, SootMethod m ) {
@@ -68,6 +82,9 @@ public class VarNode extends ValNode implements Comparable {
 	if( !(t instanceof RefLikeType) ) {
 	    throw new RuntimeException( "Attempt to create VarNode of type "+t );
 	}
+        if( finishingNumbersSet ) {
+	    throw new RuntimeException( "Attempt to create VarNode after toposort for "+value+" of type "+t+" in method "+m );
+        }
 	this.value = value;
         this.method = m;
     }
@@ -82,6 +99,9 @@ public class VarNode extends ValNode implements Comparable {
     protected Object value;
     protected Map fields;
     protected int finishingNumber = 0;
+    static protected boolean finishingNumbersSet = false;
     protected SootMethod method;
+    protected boolean interProcTarget = false;
+    protected int numDerefs = 0;
 }
 

@@ -43,14 +43,15 @@ public class SCCCollapser {
         for( Iterator it = s.iterator(); it.hasNext(); ) {
             reverse.addFirst( it.next() );
         }
-        for( Iterator it = s.iterator(); it.hasNext(); ) {
-            VarNode v = (VarNode) it.next();
+        for( Iterator vIt = s.iterator(); vIt.hasNext(); ) {
+            final VarNode v = (VarNode) vIt.next();
             dfsVisit( v, v );
         }
 
         if( verbose ) {
             System.out.println( ""+numCollapsed+" nodes were collapsed." );
         }
+        visited = null;
     }
     public SCCCollapser( PAG pag, boolean ignoreTypes ) {
         this.pag = pag;

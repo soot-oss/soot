@@ -39,6 +39,7 @@ public final class PropAlias extends Propagator {
     public PropAlias( PAG pag ) { this.pag = pag; }
     /** Actually does the propagation. */
     public final void propagate() {
+        final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
         new TopoSorter( pag, false ).sort();
         for( Iterator frIt = pag.loadSources().iterator(); frIt.hasNext(); ) {
             final FieldRefNode fr = (FieldRefNode) frIt.next();
@@ -135,10 +136,39 @@ public final class PropAlias extends Propagator {
                 for( int i = 0; i < targets.length; i++ ) {
                     VarNode target = (VarNode) targets[i];
                     if( target.makeP2Set().addAll( set, null ) ) {
-                        varNodeWorkList.add( target );
+                        addToWorklist( target );
                     }
                 }
                 getP2Set( src ).flushNew();
+            }
+            if( ofcg != null ) {
+                final LinkedList touchedNodes = new LinkedList();
+                for( Iterator recIt = ofcg.allReceivers().iterator(); recIt.hasNext(); ) {
+                    final VarNode rec = (VarNode) recIt.next();
+                    PointsToSetInternal recSet = rec.getP2Set();
+                    if( recSet != null ) {
+                        rec.getP2Set().forall( new P2SetVisitor() {
+                        public final void visit( Node n ) {
+                                returnValue = ofcg.addReachingType(
+                                    rec, n.getType(), touchedNodes ) | returnValue;
+                            }
+                        } );
+                    }
+                }
+                for( Iterator nIt = touchedNodes.iterator(); nIt.hasNext(); ) {
+                    final Node n = (Node) nIt.next();
+                    VarNode nodeToAdd = null;
+                    if( n instanceof VarNode ) {
+                        nodeToAdd = (VarNode) n.getReplacement();
+                    } else if( n instanceof FieldRefNode ) {
+                        nodeToAdd = (VarNode) ((FieldRefNode) n).getBase().getReplacement();
+                    } else {
+                        throw new RuntimeException( "Unhandled node type\n"+n );
+                    }
+                    PointsToSetInternal p2set = nodeToAdd.getP2Set();
+                    if( p2set != null ) p2set.unFlushNew();
+                    addToWorklist( nodeToAdd );
+                }
             }
 	} while( !varNodeWorkList.isEmpty() );
     }
@@ -153,7 +183,7 @@ public final class PropAlias extends Propagator {
 	Node[] targets = pag.allocLookup( src );
 	for( int i = 0; i < targets.length; i++ ) {
 	    if( targets[i].makeP2Set().add( src ) ) {
-                varNodeWorkList.add( targets[i] );
+                addToWorklist( (VarNode) targets[i] );
                 ret = true;
             }
 	}
@@ -173,7 +203,7 @@ public final class PropAlias extends Propagator {
 	Node[] simpleTargets = pag.simpleLookup( src );
 	for( int i = 0; i < simpleTargets.length; i++ ) {
 	    if( simpleTargets[i].makeP2Set().addAll( newP2Set, null ) ) {
-                varNodeWorkList.add( simpleTargets[i] );
+                addToWorklist( (VarNode) simpleTargets[i] );
                 ret = true;
             }
 	}
@@ -206,6 +236,12 @@ public final class PropAlias extends Propagator {
             return EmptyPointsToSet.v();
         }
         return ret;
+    }
+
+    protected boolean addToWorklist( VarNode n ) {
+        if( n.getReplacement() != n ) throw new RuntimeException(
+                "Adding bad node "+n+" with rep "+n.getReplacement() );
+        return varNodeWorkList.add( n );
     }
 
     protected PAG pag;

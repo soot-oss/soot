@@ -40,8 +40,8 @@ public final class PropIter extends Propagator {
 
         int iteration = 1;
 	boolean change;
-        TreeSet simpleSources = new TreeSet( pag.simpleSources() );
 	do {
+            TreeSet simpleSources = new TreeSet( pag.simpleSources() );
             if( pag.getOpts().verbose() ) {
                 System.out.println( "Iteration "+(iteration++) );
             }
@@ -56,17 +56,41 @@ public final class PropIter extends Propagator {
                 change = handleStores( (VarNode) it.next() ) | change;
 	    }
             if( ofcg != null ) {
+                final LinkedList touchedNodes = new LinkedList();
+                boolean ofcgChange = false;
                 for( Iterator recIt = ofcg.allReceivers().iterator(); recIt.hasNext(); ) {
                     final VarNode rec = (VarNode) recIt.next();
                     PointsToSetInternal recSet = rec.getP2Set();
                     if( recSet != null ) {
-                        change = rec.getP2Set().forall( new P2SetVisitor() {
+                        ofcgChange = rec.getP2Set().forall( new P2SetVisitor() {
                         public final void visit( Node n ) {
                                 returnValue = ofcg.addReachingType(
-                                    rec, n.getType(), null ) | returnValue;
+                                    rec, n.getType(), touchedNodes ) | returnValue;
                             }
-                        } ) | change;
+                        } ) | ofcgChange;
                     }
+                }
+                if( pag.getOpts().verbose() ) {
+                    System.out.println( "Added "+touchedNodes.size()+" interprocedural nodes" );
+                }
+                if( touchedNodes.isEmpty() == ofcgChange ) {
+                    throw new RuntimeException(
+                            "touchedNodes.isEmpty is "+touchedNodes.isEmpty()+
+                            " and ofcgChange is "+ofcgChange );
+                }
+                change = ofcgChange | change;
+                for( Iterator nIt = touchedNodes.iterator(); nIt.hasNext(); ) {
+                    final Node n = (Node) nIt.next();
+                    VarNode nodeToAdd = null;
+                    if( n instanceof VarNode ) {
+                        nodeToAdd = (VarNode) n.getReplacement();
+                    } else if( n instanceof FieldRefNode ) {
+                        nodeToAdd = (VarNode) ((FieldRefNode) n).getBase().getReplacement();        
+                    } else {
+                        throw new RuntimeException( "Unhandled node type\n"+n );
+                    }
+                    PointsToSetInternal p2set = nodeToAdd.getP2Set();
+                    if( p2set != null ) p2set.unFlushNew();
                 }
             }
 	} while( change );

@@ -112,6 +112,8 @@ public class PAG implements PointsToAnalysis {
     public boolean addEdge( Node from, Node to ) {
         FastHierarchy fh = PointsToSetInternal.getFastHierarchy();
 	boolean ret = false;
+        if( from.getReplacement() != from || to.getReplacement() != to )
+            throw new RuntimeException( "Edge between merged nodes" );
 	if( from instanceof VarNode ) {
 	    if( to instanceof VarNode ) {
 		ret = addToMap( simple, from, to ) | ret;
@@ -190,6 +192,8 @@ public class PAG implements PointsToAnalysis {
             { setFactory = HashPointsToSet.getFactory(); }
             public void case_hybrid() 
             { setFactory = HybridPointsToSet.getFactory(); }
+            public void case_fasttype() 
+            { setFactory = FastTypePointsToSet.getFactory(); }
             public void case_array() 
             { setFactory = SortedArraySet.getFactory(); }
             public void case_bit() 
@@ -202,6 +206,8 @@ public class PAG implements PointsToAnalysis {
                     { oldF[0] = HashPointsToSet.getFactory(); }
                     public void case_hybrid() 
                     { oldF[0] = HybridPointsToSet.getFactory(); }
+                    public void case_fasttype() 
+                    { oldF[0] = FastTypePointsToSet.getFactory(); }
                     public void case_array() 
                     { oldF[0] = SortedArraySet.getFactory(); }
                     public void case_bit() 
@@ -212,6 +218,8 @@ public class PAG implements PointsToAnalysis {
                     { newF[0] = HashPointsToSet.getFactory(); }
                     public void case_hybrid() 
                     { newF[0] = HybridPointsToSet.getFactory(); }
+                    public void case_fasttype() 
+                    { newF[0] = FastTypePointsToSet.getFactory(); }
                     public void case_array() 
                     { newF[0] = SortedArraySet.getFactory(); }
                     public void case_bit() 
@@ -243,6 +251,17 @@ public class PAG implements PointsToAnalysis {
         if( opts.verbose() ) {
             System.out.println( "Done cleaning up graph for merged nodes" );
         }
+    }
+
+    /** Adds the base of a dereference to the list of dereferenced 
+     * variables. */
+    public void addDereference( VarNode base ) {
+        dereferences.add( base );
+    }
+
+    /** Returns list of dereferences variables. */
+    public LinkedList getDereferences() {
+        return dereferences;
     }
 
     /*
@@ -371,5 +390,6 @@ public class PAG implements PointsToAnalysis {
     protected P2SetFactory setFactory;
     protected OnFlyCallGraph ofcg;
     protected static boolean somethingMerged = false;
+    protected LinkedList dereferences = new LinkedList();
 }
 

@@ -65,18 +65,19 @@ public class ContextInsensitiveBuilder implements Builder {
 	while( methodsIt.hasNext() ) 
 	{
 	    SootMethod m = (SootMethod) methodsIt.next();
+	    parms.setCurrentMethod( m );
 	    if( pag.getOpts().simulateNatives() && m.isNative() ) {
 		buildNative( m );
 	    }
 	    if( !m.isConcrete() ) continue;
             if( !ig.mcg.isReachable(m)) continue;
 	    Body b = m.retrieveActiveBody();
-	    parms.setCurrentMethod( m );
 	    Iterator unitsIt = b.getUnits().iterator();
 	    while( unitsIt.hasNext() )
 	    {
 		parms.handleStmt( (Stmt) unitsIt.next() );
 	    }
+            parms.setCurrentMethod( null );
 	}
     }
 

@@ -120,7 +120,7 @@ None means that propagation is not done; the graph is only built and
 simplified.
 END
 
-MOPT setImpl hash bit hybrid array double
+MOPT setImpl hash bit hybrid fasttype array double
 double
 Selects an implementation of a points-to set that Spark should use.
 
@@ -131,6 +131,9 @@ Bit is an implementation using a bit vector.
 Hybrid is an implementation that keeps an explicit list of up to
 16 elements, and switches to using a bit-vector when the set gets
 larger than this.
+
+FastType is a variation of Hybrid that uses a bit vector to perform fast
+subtype tests.
 
 Array is an implementation that keeps the elements of the points-to set
 in an array that is always maintained in sorted order. Set membership is
@@ -143,7 +146,7 @@ that have not yet been propagated, while the second set stores old
 pointed-to objects that have been propagated and need not be reconsidered.
 END
 
-MOPT doubleSetOld hash bit hybrid array
+MOPT doubleSetOld hash bit hybrid fasttype array
 hybrid
 Selects an implementation for the sets of old objects in the double
 points-to set implementation.
@@ -151,7 +154,7 @@ points-to set implementation.
 This option has no effect if setImpl is not set to double.
 END
 
-MOPT doubleSetNew hash bit hybrid array
+MOPT doubleSetNew hash bit hybrid fasttype array
 hybrid
 Selects an implementation for the sets of new objects in the double
 points-to set implementation.

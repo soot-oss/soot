@@ -74,6 +74,10 @@ public class Node implements ReferenceVariable {
 	}
 	other.p2set = null;
         pag.mergedWith( myRep, other );
+        if( (other instanceof VarNode)
+        && (myRep instanceof VarNode )
+        && ((VarNode) other).isInterProcTarget() )
+            ((VarNode) myRep).setInterProcTarget();
     }
     /** Returns the points-to set for this node. */
     public PointsToSetInternal getP2Set() {
