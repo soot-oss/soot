@@ -54,11 +54,6 @@ public class RectangularArrayFinder extends SceneTransformer
     private boolean enable = false;
 
 
-    public String getDeclaredOptions()
-    {
-	return super.getDeclaredOptions()+" with-wholeapp";
-    }
-
     protected void internalTransform(String phaseName, Map options)
     {
 	enable = PackManager.getBoolean(options, "with-wholeapp");

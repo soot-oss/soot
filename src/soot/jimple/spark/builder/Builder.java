@@ -21,6 +21,7 @@ package soot.jimple.spark.builder;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.callgraph.CallGraph;
+import soot.options.SparkOptions;
 
 /** Generic interface to a pointer assignment graph builder.
  * @author Ondrej Lhotak

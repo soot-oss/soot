@@ -57,13 +57,6 @@ public class LazyCodeMotion extends BodyTransformer {
 
   private static final String PREFIX = "$lcm";
 
-  public String getDeclaredOptions() {
-    return super.getDeclaredOptions() + " safe unroll naive-side-effect ";
-  }
-
-  // safe is one out of "safe" "medium" "unsafe"
-  public String getDefaultOptions() { return "disabled safe:safe unroll:true"; }
-        
   /**
    * performs the lazy code motion.
    */

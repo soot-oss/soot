@@ -21,11 +21,6 @@ public class FieldRWTagger extends BodyTransformer
     boolean optionDontTag = false;
     boolean optionNaive = false;
 
-    public String getDeclaredOptions() { return super.getDeclaredOptions() +
-	" dont-tag max-size "; }
-
-    public String getDefaultOptions() { return " max-size:1000000 "; }
-
     protected class UniqueRWSets {
 	protected ArrayList l = new ArrayList();
 	RWSet getUnique( RWSet s ) {

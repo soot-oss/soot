@@ -42,8 +42,6 @@ public class CopyPropagator extends BodyTransformer
     public CopyPropagator( Singletons.Global g ) {}
     public static CopyPropagator v() { return G.v().CopyPropagator(); }
 
-    public String getDeclaredOptions() { return super.getDeclaredOptions() + " only-regular-locals only-stack-locals"; }
-    
     /** Cascaded copy propagator.
     
         If it encounters situations of the form: A: a = ...; B: ... x = a; C:... use (x); 

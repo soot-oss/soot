@@ -26,6 +26,7 @@ import soot.*;
 import soot.util.*;
 import soot.util.queue.*;
 import java.util.*;
+import soot.options.SparkOptions;
 
 /** Propagates points-to sets along pointer assignment graph using a relevant
  * aliases.

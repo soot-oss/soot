@@ -27,6 +27,7 @@ import soot.*;
 import java.util.*;
 import soot.util.*;
 import soot.util.queue.*;
+import soot.options.SparkOptions;
 
 /** The interface between the pointer analysis engine and the on-the-fly
  * call graph builder.

@@ -25,6 +25,7 @@ import soot.util.*;
 import java.util.Iterator;
 import soot.util.queue.*;
 import soot.Type;
+import soot.options.SparkOptions;
 
 /** A map of bit-vectors representing subtype relationships.
  * @author Ondrej Lhotak

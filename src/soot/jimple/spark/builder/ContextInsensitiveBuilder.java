@@ -31,6 +31,7 @@ import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.jimple.spark.callgraph.*;
 import soot.util.queue.*;
+import soot.options.SparkOptions;
 
 /** A context insensitive pointer assignment graph builder.
  * @author Ondrej Lhotak

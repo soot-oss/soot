@@ -27,6 +27,7 @@ import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.jimple.spark.internal.*;
 import soot.util.*;
 import soot.util.queue.*;
+import soot.options.SparkOptions;
 
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
@@ -38,41 +39,59 @@ public class PAG implements PointsToAnalysis {
         if( !opts.ignoreTypesEntirely() ) {
             typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
         }
-        opts.setImpl( new SparkOptions.Switch_setImpl() {
-            public void case_hash() 
-            { setFactory = HashPointsToSet.getFactory(); }
-            public void case_hybrid() 
-            { setFactory = HybridPointsToSet.getFactory(); }
-            public void case_array() 
-            { setFactory = SortedArraySet.getFactory(); }
-            public void case_bit() 
-            { setFactory = BitPointsToSet.getFactory(); }
-            public void case_double() {
-                final P2SetFactory[] oldF = new P2SetFactory[1];
-                final P2SetFactory[] newF = new P2SetFactory[1];
-                opts.doubleSetOld( new SparkOptions.Switch_doubleSetOld() {
-                    public void case_hash() 
-                    { oldF[0] = HashPointsToSet.getFactory(); }
-                    public void case_hybrid() 
-                    { oldF[0] = HybridPointsToSet.getFactory(); }
-                    public void case_array() 
-                    { oldF[0] = SortedArraySet.getFactory(); }
-                    public void case_bit() 
-                    { oldF[0] = BitPointsToSet.getFactory(); }
-                } );
-                opts.doubleSetNew( new SparkOptions.Switch_doubleSetNew() {
-                    public void case_hash() 
-                    { newF[0] = HashPointsToSet.getFactory(); }
-                    public void case_hybrid() 
-                    { newF[0] = HybridPointsToSet.getFactory(); }
-                    public void case_array() 
-                    { newF[0] = SortedArraySet.getFactory(); }
-                    public void case_bit() 
-                    { newF[0] = BitPointsToSet.getFactory(); }
-                } );
-                setFactory = DoublePointsToSet.getFactory( newF[0], oldF[0] );
-            }
-        } );
+        switch( opts.setImpl() ) {
+            case SparkOptions.setImpl_hash:
+                setFactory = HashPointsToSet.getFactory();
+                break;
+            case SparkOptions.setImpl_hybrid:
+                setFactory = HybridPointsToSet.getFactory();
+                break;
+            case SparkOptions.setImpl_array:
+                setFactory = SortedArraySet.getFactory();
+                break;
+            case SparkOptions.setImpl_bit:
+                setFactory = BitPointsToSet.getFactory();
+                break;
+            case SparkOptions.setImpl_double:
+                P2SetFactory oldF;
+                P2SetFactory newF;
+                switch( opts.doubleSetOld() ) {
+                    case SparkOptions.doubleSetOld_hash:
+                        oldF = HashPointsToSet.getFactory();
+                        break;
+                    case SparkOptions.doubleSetOld_hybrid:
+                        oldF = HybridPointsToSet.getFactory();
+                        break;
+                    case SparkOptions.doubleSetOld_array:
+                        oldF = SortedArraySet.getFactory();
+                        break;
+                    case SparkOptions.doubleSetOld_bit:
+                        oldF = BitPointsToSet.getFactory();
+                        break;
+                    default:
+                        throw new RuntimeException();
+                }
+                switch( opts.doubleSetNew() ) {
+                    case SparkOptions.doubleSetNew_hash:
+                        newF = HashPointsToSet.getFactory();
+                        break;
+                    case SparkOptions.doubleSetNew_hybrid:
+                        newF = HybridPointsToSet.getFactory();
+                        break;
+                    case SparkOptions.doubleSetNew_array:
+                        newF = SortedArraySet.getFactory();
+                        break;
+                    case SparkOptions.doubleSetNew_bit:
+                        newF = BitPointsToSet.getFactory();
+                        break;
+                    default:
+                        throw new RuntimeException();
+                }
+                setFactory = DoublePointsToSet.getFactory( newF, oldF );
+                break;
+            default:
+                throw new RuntimeException();
+        }
     }
     /** Returns the set of objects reaching variable l before stmt in method. */
     public PointsToSet reachingObjects( SootMethod method, Stmt stmt,

@@ -24,6 +24,7 @@ import soot.jimple.spark.sets.*;
 import soot.*;
 import soot.util.queue.*;
 import java.util.*;
+import soot.options.SparkOptions;
 
 /** Propagates points-to sets along pointer assignment graph using iteration.
  * @author Ondrej Lhotak

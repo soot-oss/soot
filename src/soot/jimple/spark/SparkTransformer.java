@@ -30,6 +30,7 @@ import soot.jimple.toolkits.invoke.InvokeGraph;
 import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
+import soot.options.SparkOptions;
 
 /** Main entry point for Spark.
  * @author Ondrej Lhotak
@@ -38,11 +39,6 @@ public class SparkTransformer extends SceneTransformer
 { 
     public SparkTransformer( Singletons.Global g ) {}
     public static SparkTransformer v() { return G.v().SparkTransformer(); }
-
-    public String getDeclaredOptions() { return super.getDeclaredOptions() +
-	SparkOptions.getDeclaredOptions(); }
-
-    public String getDefaultOptions() { return "disabled "+SparkOptions.getDefaultOptions(); }
 
     private static void reportTime( String desc, Date start, Date end ) {
         long time = end.getTime()-start.getTime();
@@ -111,22 +107,24 @@ public class SparkTransformer extends SceneTransformer
         // Propagate
         Date startProp = new Date();
         final Propagator[] propagator = new Propagator[1];
-        opts.propagator( new SparkOptions.Switch_propagator() {
-            public void case_iter() {
+        switch( opts.propagator() ) {
+            case SparkOptions.propagator_iter:
                 propagator[0] = new PropIter( pag );
-            }
-            public void case_worklist() {
+                break;
+            case SparkOptions.propagator_worklist:
                 propagator[0] = new PropWorklist( pag );
-            }
-            public void case_merge() {
+                break;
+            case SparkOptions.propagator_merge:
                 propagator[0] = new PropMerge( pag );
-            }
-            public void case_alias() {
+                break;
+            case SparkOptions.propagator_alias:
                 propagator[0] = new PropAlias( pag );
-            }
-            public void case_none() {
-            }
-        } );
+                break;
+            case SparkOptions.propagator_none:
+                break;
+            default:
+                throw new RuntimeException();
+        }
         if( propagator[0] != null ) propagator[0].propagate();
         Date endProp = new Date();
         reportTime( "Propagation", startProp, endProp );

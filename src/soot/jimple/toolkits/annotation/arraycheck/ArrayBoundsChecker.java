@@ -48,12 +48,6 @@ public class ArrayBoundsChecker extends BodyTransformer
 
     private boolean isProfiling = false;
 
-    public String getDeclaredOptions()
-    {
-	return super.getDeclaredOptions()+" with-all with-fieldref with-arrayref"
-	    +" with-cse with-classfield with-rectarray profiling";
-    }
-
     public void internalTransform(Body body, String phaseName, Map options)
     {
 	if (PackManager.getBoolean(options, "with-all"))

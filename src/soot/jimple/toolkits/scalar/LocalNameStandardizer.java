@@ -40,8 +40,6 @@ public class LocalNameStandardizer extends BodyTransformer
     public LocalNameStandardizer( Singletons.Global g ) {}
     public static LocalNameStandardizer v() { return G.v().LocalNameStandardizer(); }
 
-    public String getDeclaredOptions() { return super.getDeclaredOptions() + " only-stack-locals"; }
-
     protected void internalTransform(Body body, String phaseName, Map options)
     {
         boolean onlyStackName = PackManager.getBoolean(options, "only-stack-locals");

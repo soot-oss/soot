@@ -24,6 +24,7 @@ import soot.jimple.spark.sets.*;
 import soot.jimple.spark.internal.*;
 import soot.*;
 import java.util.*;
+import soot.options.SparkOptions;
 
 /** Propagates points-to sets along pointer assignment graph using a merging
  * of field reference (Red) nodes to improve scalability.

@@ -39,16 +39,6 @@ public class StaticMethodBinder extends SceneTransformer
     public StaticMethodBinder( Singletons.Global g ) {}
     public static StaticMethodBinder v() { return G.v().StaticMethodBinder(); }
 
-    public String getDefaultOptions() 
-    {
-        return "disabled insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe VTA-passes:0";
-    }
-
-    public String getDeclaredOptions() 
-    { 
-        return super.getDeclaredOptions() + " insert-null-checks insert-redundant-casts allowed-modifier-changes VTA-passes";
-    }
-    
     protected void internalTransform(String phaseName, Map options)
     {
         Date start = new Date();

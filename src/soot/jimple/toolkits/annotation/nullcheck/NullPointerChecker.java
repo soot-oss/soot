@@ -61,11 +61,6 @@ public class NullPointerChecker extends BodyTransformer
  
     private boolean enableOther = true;
     
-    public String getDeclaredOptions()
-    {
-	return super.getDeclaredOptions()+" profiling onlyarrayref";
-    }
-
     public void internalTransform(Body body, String phaseName, Map options)
     {
 	isProfiling = PackManager.getBoolean(options, "profiling");

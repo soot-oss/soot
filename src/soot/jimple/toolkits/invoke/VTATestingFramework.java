@@ -39,16 +39,6 @@ public class VTATestingFramework extends SceneTransformer
     public VTATestingFramework( Singletons.Global g ) {}
     public static VTATestingFramework v() { return G.v().VTATestingFramework(); }
 
-    public String getDefaultOptions() 
-    {
-        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe";
-    }
-
-    public String getDeclaredOptions() 
-    { 
-        return super.getDeclaredOptions() + " insert-null-checks insert-redundant-casts allowed-modifier-changes";
-    }
-    
     protected void internalTransform(String phaseName, Map options)
     {
         Date start = new Date();

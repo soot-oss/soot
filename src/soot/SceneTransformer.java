@@ -44,12 +44,4 @@ public abstract class SceneTransformer extends Transformer
     /** Performs the transformation on the Scene, under the given phaseName and with the given Options. */
     protected abstract void internalTransform(String phaseName, Map options);
 
-    /** Returns the list of the default phase options for this transformer. */
-    public String getDefaultOptions() 
-    {
-        return "";
-    }
-
-    /* Returns a String containing the list of phase options understood here. */
-    public String getDeclaredOptions() { return "disabled"; }
 }

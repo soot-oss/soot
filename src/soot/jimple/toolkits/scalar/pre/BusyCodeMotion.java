@@ -57,11 +57,6 @@ public class BusyCodeMotion extends BodyTransformer {
 
   private static final String PREFIX = "$bcm";
 
-  public String getDeclaredOptions() { return super.getDeclaredOptions()+
-      " naive-side-effect "; }
-
-  public String getDefaultOptions() { return "disabled"; }
-
   /**
    * performs the busy code motion.
    */

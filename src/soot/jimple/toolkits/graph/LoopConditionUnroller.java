@@ -47,12 +47,6 @@ import soot.jimple.internal.*;
  * <code>BriefUnitGraph</code>.
  */
 public class LoopConditionUnroller extends BodyTransformer {
-  public String getDeclaredOptions() {
-    return super.getDeclaredOptions() + " maxSize";
-  }
-
-  public String getDefaultOptions() { return "maxSize:15"; }
-
   /**
    * contained blocks are currently visiting successors. We need this to find
    * back-edges. The "visitedBlocks" is not enough, as Java Bytecodes migth not

@@ -23,6 +23,7 @@ import soot.jimple.spark.pag.*;
 import soot.jimple.spark.internal.*;
 import soot.*;
 import java.util.*;
+import soot.options.SparkOptions;
 
 /** Collapses nodes that are members of simple trees (EBBs)
  * in the pointer assignment graph.

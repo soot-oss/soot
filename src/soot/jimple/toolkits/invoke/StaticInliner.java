@@ -38,18 +38,6 @@ public class StaticInliner extends SceneTransformer
     public StaticInliner( Singletons.Global g ) {}
     public static StaticInliner v() { return G.v().StaticInliner(); }
 
-    public String getDefaultOptions() 
-    {
-        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe "+
-            "expansion-factor:3 max-container-size:5000 max-inlinee-size:20 VTA-passes:0";
-    }
-
-    public String getDeclaredOptions() 
-    {
-        return super.getDeclaredOptions() + " insert-null-checks insert-redundant-casts allowed-modifier-changes"+
-            " expansion-factor max-container-size max-inlinee-size VTA-passes"; 
-    }
-    
     protected void internalTransform(String phaseName, Map options)
     {
         if(Main.v().opts.verbose())

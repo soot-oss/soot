@@ -39,9 +39,6 @@ public class Aggregator extends BodyTransformer
     public Aggregator( Singletons.Global g ) {}
     public static Aggregator v() { return G.v().Aggregator(); }
 
-    public String getDeclaredOptions() 
-    { return super.getDeclaredOptions() + " only-stack-locals"; }
-
     /** Traverse the statements in the given body, looking for
       *  aggregation possibilities; that is, given a def d and a use u,
       *  d has no other uses, u has no other defs, collapse d and u. 

@@ -119,17 +119,6 @@ public class LoadStoreOptimizer extends BodyTransformer
     }
    
 
-    public String getDefaultOptions() 
-    {
-        return "sl sll inter:false sl2:false sll2:false debug:false";
-    }
- 
-
-    public String getDeclaredOptions()
-    {
-        return super.getDeclaredOptions() + " debug inter sl sl2 sll sll2";
-    }
-
     /** The method that drives the optimizations. */
     /* This is the public interface to LoadStoreOptimizer */
   

@@ -24,6 +24,7 @@ import soot.*;
 import java.util.*;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.spark.internal.*;
+import soot.options.SparkOptions;
 
 /** Collapses VarNodes (green) forming strongly-connected components in
  * the pointer assignment graph.

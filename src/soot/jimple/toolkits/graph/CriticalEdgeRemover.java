@@ -49,12 +49,6 @@ public class CriticalEdgeRemover extends BodyTransformer {
     public CriticalEdgeRemover( Singletons.Global g ) {}
     public static CriticalEdgeRemover v() { return G.v().CriticalEdgeRemover(); }
 
-  public String getDeclaredOptions() {
-    return super.getDeclaredOptions();
-  }
-
-  public String getDefaultOptions() { return ""; }
-        
   /**
    * performs critical edge-removing.
    */

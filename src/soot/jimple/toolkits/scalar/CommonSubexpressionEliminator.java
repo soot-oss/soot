@@ -50,11 +50,6 @@ public class CommonSubexpressionEliminator extends BodyTransformer
     public CommonSubexpressionEliminator( Singletons.Global g ) {}
     public static CommonSubexpressionEliminator v() { return G.v().CommonSubexpressionEliminator(); }
 
-    public String getDeclaredOptions() { return super.getDeclaredOptions()+
-        " naive-side-effect "; }
-
-    public String getDefaultOptions() { return "disabled"; }
-
     /** Common subexpression eliminator. */
     protected void internalTransform(Body b, String phaseName, Map options)
     {
