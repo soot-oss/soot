@@ -48,10 +48,17 @@ public interface Unit extends Switchable, Directed
 
     /** Returns a list of Boxes pointing to this Unit. */
     public List getBoxesPointingToThis();
+
+    /** Returns a list of Boxes containing any Value either used or defined
+     * in this Unit. */
     public List getUseAndDefBoxes();
+
     public Object clone();
 
-    public boolean fallsThrough();        
+    /** Returns true if execution after this statement may continue at the following statement.
+     * GotoStmt will return false. */
+    public boolean fallsThrough();
+    /** Returns true if execution after this statement is not the following statement. */
     public boolean branches();        
     
     public String toBriefString();
@@ -59,5 +66,4 @@ public interface Unit extends Switchable, Directed
     public String toString(Map stmtToName, String indentation);
 
     public void redirectJumpsToThisTo(Unit newLocation);
-
 }
