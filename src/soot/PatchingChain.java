@@ -113,9 +113,10 @@ public class PatchingChain extends AbstractCollection implements Chain {
 
     public void addFirst(Object u)
     {
-        insertBefore(u, innerChain.getFirst());
+        innerChain.addFirst(u);
     }
     
+
 
     public void addLast(Object u)
     {

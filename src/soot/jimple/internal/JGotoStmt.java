@@ -45,12 +45,20 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
 
     public JGotoStmt(Unit target)
     {
-        this.targetBox = Jimple.v().newStmtBox(target);
+        this(Jimple.v().newStmtBox(target));
+    }
+
+    public JGotoStmt(UnitBox box)
+    {
+        this.targetBox = box;
 
         targetBoxes = new ArrayList();
         targetBoxes.add(this.targetBox);
         targetBoxes = Collections.unmodifiableList(targetBoxes);
     }
+
+
+
 
     // xxx
     public Object clone() 

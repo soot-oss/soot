@@ -42,23 +42,23 @@ import soot.util.*;
  */
 public class method_info {
    /** Access flags for this field. */
-    int access_flags;
+    public int access_flags;
    /** Constant pool index of the name of this method.
     * @see ClassFile#constant_pool
     * @see CONSTANT_Utf8_info
     */
-    int name_index;
+    public int name_index;
    /** Constant pool index of the type descriptor of this method.
     * @see ClassFile#constant_pool
     * @see CONSTANT_Utf8_info
     */
-    int descriptor_index;
+    public int descriptor_index;
    /** Count of attributes this method contains. */
-    int attributes_count;
+    public int attributes_count;
    /** Array of attribute_info objects for this method.
     * @see attribute_info
     */
-    attribute_info attributes[];
+    public attribute_info attributes[];
    /** List of Instructions constructed when the method is parsed.
     * @see ClassFile@parse
     * @see ClassFile@parseMethod
@@ -71,7 +71,7 @@ public class method_info {
     */
     public CFG cfg;
 
-    soot.SootMethod jmethod;
+    public soot.SootMethod jmethod;
 
     List instructionList;
 

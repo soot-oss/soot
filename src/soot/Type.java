@@ -52,6 +52,40 @@ public abstract class Type implements Switchable, ToBriefString
             return t;
     }
 
+    public String getXML() 
+    {
+	return XMLManager.getXML(this);
+    }
+
+    /*
+    public static Type v(String aType)
+    {
+	Type t;
+	
+	if(aType.equals("boolean")) {
+	    t = BooleanType.v();
+	} else if(aType.equals("byte")) {
+	    t = ByteType.v();
+	} else if(aType.equals("char")) {
+	    t = CharType.v();
+	} else if(aType.equals("short")) {
+	    t = ShortType.v();
+	} else if(aType.equals("int")) {
+	    t= IntType.v();
+	} else if(aType.equals("long")) {
+	    t = LongType.v();
+	} else if(aType.equals("float")) {
+	    t = FloatType.v();
+	} else if(aType.equals("double")) {
+	    t = DoubleType.v();
+	} else
+	    t = RefType.v(aType);	
+	
+	return t;
+    }
+    */
+
+
     public Type merge(Type other, Scene cm)
     {
         if(this.equals(UnknownType.v()))

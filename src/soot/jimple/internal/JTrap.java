@@ -45,6 +45,14 @@ public class JTrap extends AbstractTrap
               Jimple.v().newStmtBox(handlerStmt));
     }
 
+    public JTrap(SootClass exception, UnitBox beginStmt, UnitBox endStmt, UnitBox handlerStmt)
+    {
+        super(exception, beginStmt,
+              endStmt,
+              handlerStmt);
+    }
+
+
     public Object clone() 
     {
         return new JTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());

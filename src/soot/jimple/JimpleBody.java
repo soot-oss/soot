@@ -41,10 +41,13 @@ public class JimpleBody extends StmtBody
     /**
         Construct an empty JimpleBody 
      **/
-     
-    JimpleBody(SootMethod m)
+    
+    public JimpleBody(SootMethod m)
     {
         super(m);
+    }
+    public JimpleBody() 
+    {
     }
 
     /** Clones the current body, making deep copies of the contents. */
@@ -60,13 +63,14 @@ public class JimpleBody extends StmtBody
         Constructs a JimpleBody from the given Body.
      */
 
-    JimpleBody(Body body, Map options)
-    {
-        super(body.getMethod());
 
-        boolean noSplitting = Options.getBoolean(options, "no-splitting");
-        boolean noTyping = Options.getBoolean(options, "no-typing");
-        boolean aggregateAllLocals = Options.getBoolean(options, "aggregate-all-locals");
+  
+    
+    public void applyPhaseOptions(Map options) 
+    { 
+	boolean noSplitting = Options.getBoolean(options, "no-splitting");
+	boolean noTyping = Options.getBoolean(options, "no-typing");
+	boolean aggregateAllLocals = Options.getBoolean(options, "aggregate-all-locals");
         boolean noAggregating = Options.getBoolean(options, "no-aggregating");
         boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
         boolean usePacking = Options.getBoolean(options, "pack-locals");
@@ -74,7 +78,90 @@ public class JimpleBody extends StmtBody
         
         boolean noNopElimination = Options.getBoolean(options, "no-nop-elimination");
         
+
+	if(!noSplitting)
+        {
+            if(Main.isProfilingOptimization)
+                Main.splitTimer.start();
+
+            LocalSplitter.v().transform(this, "jb.ls");
+
+            if(!noTyping)
+            {
+                if(Main.isProfilingOptimization)
+                    Main.assignTimer.start();
+
+                // Jimple.printStmtListBody_debug(this, System.out);
+                //System.out.println("before typing");
+                //printTo(new PrintWriter(System.out, true));
+                TypeAssigner.v().transform(this, "jb.tr");
+
+                //System.out.println("after typing");
+                //printTo(new PrintWriter(System.out, true));
+                
+                if(typingFailed())
+                {
+                    patchForTyping();
+                    
+                    TypeAssigner.v().transform(this, "jb.trp");
+                    
+                    if(typingFailed())
+                        throw new RuntimeException("type inference failed!");
+                        
+                }
+            }
+        }
+	
+        
+        if(aggregateAllLocals)
+        {
+            Aggregator.v().transform(this, "jb.a");
+            UnusedLocalEliminator.v().transform(this, "jb.ule");
+        }
+        else if(!noAggregating)
+        {
+            Aggregator.v().transform(this, "jb.asv", "only-stack-locals");
+            UnusedLocalEliminator.v().transform(this, "jb.ule");
+        }
+
+        if(!useOriginalNames)
+            LocalNameStandardizer.v().transform(this, "jb.lns");
+        else
+        {   
+            LocalPacker.v().transform(this, "jb.ulp", "unsplit-original-locals");
+            LocalNameStandardizer.v().transform(this, "jb.lns", "only-stack-locals");
+        }
+
+        if(!noCopyPropagating)
+        {
+            CopyPropagator.v().transform(this, "jb.cp", "only-stack-locals");
+            DeadAssignmentEliminator.v().transform(this, "jp.dae", "only-stack-locals");
+            UnusedLocalEliminator.v().transform(this, "jb.cp-ule");
+        }
+        
+        //printDebugTo(new PrintWriter(System.out, true));
+        
+        if(usePacking)
+        {
+            LocalPacker.v().transform(this, "jb.lp");
+        }
+
+
+        if(!noNopElimination)
+            NopEliminator.v().transform(this, "jb.ne");
+                    
+        if(soot.Main.isProfilingOptimization)
+            soot.Main.stmtCount += getUnits().size();
+    }
+
+
+    public JimpleBody(Body body, Map options)
+    {
+        super(body.getMethod());
+
         ClassFileBody fileBody;
+	
+	boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
 
         if(useOriginalNames)
             soot.coffi.Util.setFaithfulNaming(true);
@@ -133,87 +220,12 @@ public class JimpleBody extends StmtBody
          Scene.v().setPhantomRefs(false);
 
          coffiMethod.instructions = null;
-         coffiMethod.cfg = null;
-            // don't need these structures anymore.
-
-        // Jimple.printStmtList_debug(this, System.out);
-
-        if(!noSplitting)
-        {
-            if(Main.isProfilingOptimization)
-                Main.splitTimer.start();
-
-            LocalSplitter.v().transform(this, "jb.ls");
-
-            if(!noTyping)
-            {
-                if(Main.isProfilingOptimization)
-                    Main.assignTimer.start();
-
-                // Jimple.printStmtListBody_debug(this, System.out);
-                //System.out.println("before typing");
-                //printTo(new PrintWriter(System.out, true));
-                TypeAssigner.v().transform(this, "jb.tr");
-
-                //System.out.println("after typing");
-                //printTo(new PrintWriter(System.out, true));
-                
-                if(typingFailed())
-                {
-                    patchForTyping();
-                    
-                    TypeAssigner.v().transform(this, "jb.trp");
-                    
-                    if(typingFailed())
-                        throw new RuntimeException("type inference failed!");
-                        
-                }
-            }
-        }
-        
-        //printTo(new PrintWriter(System.out, true));
-        
-        
-        if(aggregateAllLocals)
-        {
-            Aggregator.v().transform(this, "jb.a");
-            UnusedLocalEliminator.v().transform(this, "jb.ule");
-        }
-        else if(!noAggregating)
-        {
-            Aggregator.v().transform(this, "jb.asv", "only-stack-locals");
-            UnusedLocalEliminator.v().transform(this, "jb.ule");
-        }
-
-        if(!useOriginalNames)
-            LocalNameStandardizer.v().transform(this, "jb.lns");
-        else
-        {   
-            LocalPacker.v().transform(this, "jb.ulp", "unsplit-original-locals");
-            LocalNameStandardizer.v().transform(this, "jb.lns", "only-stack-locals");
-        }
-
-        if(!noCopyPropagating)
-        {
-            CopyPropagator.v().transform(this, "jb.cp", "only-stack-locals");
-            DeadAssignmentEliminator.v().transform(this, "jp.dae", "only-stack-locals");
-            UnusedLocalEliminator.v().transform(this, "jb.cp-ule");
-        }
-        
-        //printDebugTo(new PrintWriter(System.out, true));
-        
-        if(usePacking)
-        {
-            LocalPacker.v().transform(this, "jb.lp");
-        }
-
-
-        if(!noNopElimination)
-            NopEliminator.v().transform(this, "jb.ne");
-                    
-        if(soot.Main.isProfilingOptimization)
-            soot.Main.stmtCount += getUnits().size();
+         coffiMethod.cfg = null;	
+	 
+	 applyPhaseOptions(options);
     }
+
+
 
     /** Make sure that the JimpleBody is well formed.  If not, throw an exception.
         Right now, performs only a handful of checks.
@@ -232,8 +244,11 @@ public class JimpleBody extends StmtBody
                 
                 Stmt s = (Stmt) t.getHandlerUnit();
                 
-                if(!(s instanceof IdentityStmt) || !(((IdentityStmt) s).getRightOp() instanceof CaughtExceptionRef))
+		
+                if(!(s instanceof IdentityStmt) || !(((IdentityStmt) s).getRightOp() instanceof CaughtExceptionRef)){
+		    System.out.println(s);
                     throw new RuntimeException("Trap handler is not of the form x := caughtexceptionref");
+		}
             }
         }
     }

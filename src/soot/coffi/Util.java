@@ -102,8 +102,8 @@ public class Util
 
         soot.Main.resolverTimer.start();
         
-       setActiveClassManager(cm);
-
+	setActiveClassManager(cm);
+	
         classesToResolve = new LinkedList();
         markedClasses = new HashSet();
         
@@ -125,30 +125,44 @@ public class Util
             // Load up class file, and retrieve bclass from class manager.
             {
                 boolean success = coffiClass.loadClassFile();
-    
+		
+	       
                 timer.end();
+
+		
 
                 if(!success)
                 {
                     if(!Scene.v().allowsPhantomRefs())
                         throw new RuntimeException("Could not load classfile: " + bclass.getName());
-                    else
-                    {
-                        System.out.println("Warning: " + className + " is a phantom class!");
-                        bclass.setPhantom(true);
-                        continue;
-                    }
+                    else {
+
+			/*
+			try {
+			    XMLParser xmlParser = new XMLParser();
+			    bclass = xmlParser.parseJimple(ClassLocator.getInputStreamOf(soot.Scene.v().getSootClassPath(), fn));			    
+			    System.out.prinln("Loading class from jimple");
+			    
+			} catch(ClassNotFoundException e) {
+			    System.out.println("Warning: " + className + " is a phantom class!");
+			    bclass.setPhantom(true);			
+			    }	*/
+			System.out.println("Warning: " + className + " is a phantom class!");
+			bclass.setPhantom(true);								
+			continue;
+		    } 
+
                 }
                 buildTimer.start();
-                        
+		
                 
                 CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.this_class];
     
                 String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
                 name = name.replace('/', '.');
-    
+		
                 bclass.setName(name);
-                    // replace this classes name with its fully qualified version.
+		// replace this classes name with its fully qualified version.
     
             }
       
@@ -237,16 +251,16 @@ public class Util
                         }
                         
                         returnType = types[types.length - 1];
-                         assertResolvedClassForType(returnType);
+			assertResolvedClassForType(returnType);
                     }
     
                     int modifiers = methodInfo.access_flags;
     
                     SootMethod method;
     
-                     method = new SootMethod(methodName,
-                        parameterTypes, returnType, modifiers);
-                        bclass.addMethod(method);
+		    method = new SootMethod(methodName,
+					    parameterTypes, returnType, modifiers);
+		    bclass.addMethod(method);
     
                     methodInfo.jmethod = method;
     
@@ -272,7 +286,7 @@ public class Util
                             }
                     }
                     
-                // Go through the constant pool, forcing all mentioned classes to be resolved.
+                // Go through the constant pool, forcing all mentioned classes to be resolved. 
                 {
                     for(int k = 0; k < coffiClass.constant_pool_count; k++)
                         if(coffiClass.constant_pool[k] instanceof CONSTANT_Class_info)
@@ -294,7 +308,8 @@ public class Util
             for(int i = 0; i < coffiClass.methods_count; i++)
             {
                 method_info methodInfo = coffiClass.methods[i];
-                methodInfo.jmethod.setSource(coffiClass, methodInfo);
+		//                methodInfo.jmethod.setSource(coffiClass, methodInfo);
+		methodInfo.jmethod.setSource(new CoffiMethodSource(coffiClass, methodInfo));
             }
             
             buildTimer.end();
@@ -318,7 +333,7 @@ public class Util
 
     static private ArrayList conversionTypes = new ArrayList();
     
-    static Type[] jimpleTypesOfFieldOrMethodDescriptor(Scene cm,
+    static public Type[] jimpleTypesOfFieldOrMethodDescriptor(Scene cm,
         String descriptor)
     {
         conversionTypes.clear();
@@ -420,7 +435,7 @@ public class Util
         return (Type[]) conversionTypes.toArray(new Type[0]);
     }
 
-    static Type jimpleTypeOfFieldDescriptor(Scene cm,
+    public static Type jimpleTypeOfFieldDescriptor(Scene cm,
         String descriptor)
     {
         boolean isArray = false;
@@ -448,6 +463,8 @@ public class Util
                 baseType = IntType.v();
             else if(descriptor.equals("J"))
                 baseType = LongType.v();
+	    else if(descriptor.equals("V"))
+                baseType = VoidType.v();
             else if(descriptor.startsWith("L"))
             {
                 if(!descriptor.endsWith(";"))

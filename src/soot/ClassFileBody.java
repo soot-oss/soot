@@ -32,6 +32,8 @@ package soot;
 import java.io.*;
 import java.util.*;
 
+import soot.coffi.*;
+
 /** This is somewhat of a hack; it provides a Soot interface to Coffi. */
 public class ClassFileBody extends Body
 {
@@ -43,10 +45,16 @@ public class ClassFileBody extends Body
         super(method);
         
         if(!method.isConcrete())
+
             throw new NullPointerException("there is no ClassFileBody associated with non-concrete methods!");
-            
-        this.coffiClass = method.coffiClass;
-        this.coffiMethod = method.coffiMethod;
+        
+
+	// xxx  fix api here for MethodSource
+	MethodSource ms = method.getSource();
+	if(ms instanceof CoffiMethodSource) {
+	    this.coffiClass =  ((CoffiMethodSource)ms).coffiClass;
+	    this.coffiMethod = ((CoffiMethodSource)ms).coffiMethod;
+	}       
     }
 
     public Object clone() 

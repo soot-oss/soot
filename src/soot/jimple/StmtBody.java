@@ -37,6 +37,7 @@ abstract public class StmtBody extends Body
     {
         super(m);
     }
+    protected StmtBody(){}
 }
 
 

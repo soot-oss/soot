@@ -58,7 +58,7 @@ public class NullType extends Type
 
     public String toString()
     {
-        return "null";
+        return "null_type";
     }
 
     public void apply(Switch sw)

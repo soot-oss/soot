@@ -51,7 +51,9 @@ public class Scene extends AbstractHost
 
     Hierarchy activeHierarchy;
     InvokeGraph activeInvokeGraph;
+
     boolean allowsPhantomRefs = false;
+    private boolean allowsLazyResolving = false;
 
     Map packNameToPack = new HashMap();
     SootClass mainClass;
@@ -192,6 +194,7 @@ public class Scene extends AbstractHost
             throw new DuplicateNameException(c.getName());
 
         classes.add(c);
+
         nameToClass.put(c.getName(), c);
         c.isInScene = true;
         c.scene = this;
@@ -229,7 +232,8 @@ public class Scene extends AbstractHost
         SootField f = (SootField) fieldSignatureToField.get(fieldSignature);
         if (f != null)
             return f;
-        throw new RuntimeException("tried to get nonexistent field!");
+
+	throw new RuntimeException("tried to get nonexistent field!");
     }
 
     public SootMethod getMethod(String methodSignature)
@@ -273,16 +277,24 @@ public class Scene extends AbstractHost
         SootClass toReturn = (SootClass) nameToClass.get(className);
         
         if(toReturn == null)
-        {
-            if(Scene.v().allowsPhantomRefs())
+        {	 
+	    if(allowsLazyResolving)
+		toReturn = SootResolver.resolve(className);
+	    
+	    if(toReturn != null) {
+		return toReturn;
+	    }
+
+            else if(Scene.v().allowsPhantomRefs())
             {
                 SootClass c = new SootClass(className);
                 c.setPhantom(true);
                 addClass(c);
                 return c;
             }
-            else
-                throw new ClassFileNotFoundException();
+            else { System.out.println("can find classfile" + className );
+	    throw new ClassFileNotFoundException();
+	    }
         }
         else
             return toReturn;
@@ -416,10 +428,23 @@ public class Scene extends AbstractHost
         allowsPhantomRefs = value;
     }
     
+    public void setLazyResolving(boolean value) 
+    {
+	allowsLazyResolving = value;
+    }
+
+
     public boolean allowsPhantomRefs()
     {
         return allowsPhantomRefs;
     }
+    public boolean allowsLazyResolving() 
+    {
+	return allowsLazyResolving;
+    }
+    
+
+
 }
 
 

@@ -157,6 +157,12 @@ public class SootField extends AbstractHost implements ClassMember
         else
             return qualifiers + " " + name + "";
     }
+
+
+    public String getXML() 
+    {
+	return XMLManager.getXML(this);
+    }
 }
 
 

@@ -223,8 +223,14 @@ public class UnitGraph implements DirectedGraph
 
                     while(succIt.hasNext())
                     {
-                        List predList = (List) stmtToPredList.get(succIt.next());
-                        predList.add(s);
+			Unit successor = (Unit) succIt.next();
+                        List predList = (List) stmtToPredList.get(successor);
+			try {
+			    predList.add(s);
+			} catch(NullPointerException e) {
+			    System.out.println(s + "successor: " + successor);
+			    throw e;
+			}
                     }
                 }
             }

@@ -36,10 +36,11 @@ import soot.toolkits.scalar.*;
 
 public abstract class Body
 {
-    SootMethod method;
+    SootMethod method = null;
 
-    Chain localChain, trapChain;
-    PatchingChain unitChain;
+    Chain localChain =  new HashChain();
+    Chain  trapChain = new HashChain();
+    PatchingChain unitChain = new PatchingChain(new HashChain());
 
     abstract public Object clone();
 
@@ -47,16 +48,18 @@ public abstract class Body
      *  Creation of a Body is triggered by e.g. Jimple.v().newBody(options).
      */
     protected Body(SootMethod m) 
-    {
-        localChain = new HashChain();
-        trapChain = new HashChain();
-        unitChain = new PatchingChain(new HashChain());
-
+    {       
         this.method = m;
+    }
+
+    protected Body() 
+    {       	
     }
 
     public SootMethod getMethod()
     {
+	if(method == null)
+	    throw new RuntimeException("no method associated w/ body");
         return method;
     }
 
@@ -327,10 +330,10 @@ public abstract class Body
             if(!typeToLocals.isEmpty())
                 out.println();
         }
-
         // Print out statements
-            printStatementsInBody(out, isPrecise, isNumbered);
+	printStatementsInBody(out, isPrecise, isNumbered);
 
+	
         out.println("    }");
     }
 
@@ -339,7 +342,8 @@ public abstract class Body
         
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
         UnitGraph unitGraph = new BriefUnitGraph(this);
-        
+
+
         // Create statement name table
         {
             Iterator boxIt = this.getUnitBoxes().iterator();
@@ -366,7 +370,8 @@ public abstract class Body
                 int labelCount = 0;
 
                 Iterator stmtIt = unitChain.iterator();
-
+		
+		
                 while(stmtIt.hasNext())
                 {
                     Unit s = (Unit) stmtIt.next();
@@ -380,7 +385,8 @@ public abstract class Body
                     }
                 }
             }
-        }
+        }	
+
 
         
         Iterator unitIt = unitChain.iterator();
@@ -401,7 +407,7 @@ public abstract class Body
                     //   or the previous statement does not have this statement as a successor, or if
                     //   this statement has a label on it
 
-                        if(currentStmt != unitChain.getFirst()) 
+		    if(currentStmt != unitChain.getFirst()) 
                         {       
                             if(unitGraph.getSuccsOf(previousStmt).size() != 1 ||
                                unitGraph.getPredsOf(currentStmt).size() != 1 ||
@@ -418,18 +424,20 @@ public abstract class Body
                         }
                     
                      if(stmtToName.containsKey(currentStmt))
-                        out.println("     " + stmtToName.get(currentStmt) + ":");
+			 out.println("     " + stmtToName.get(currentStmt) + ":");
                 }
                    
               
-            if(isPrecise)
-                out.print(currentStmt.toString(stmtToName, indent));
+		if(isPrecise)
+		    out.print(currentStmt.toString(stmtToName, indent));
             else
                 out.print(currentStmt.toBriefString(stmtToName, indent));
 
             out.print(";"); 
             out.println();
         }
+	
+
 
         // Print out exceptions
         {
@@ -447,6 +455,7 @@ public abstract class Body
                     " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
             }
         }
+
     }
 
     public void printDebugTo(PrintWriter out, int printBodyOptions)

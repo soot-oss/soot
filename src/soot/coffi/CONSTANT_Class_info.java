@@ -37,7 +37,7 @@ import java.io.*;
  * @see cp_info
  * @author Clark Verbrugge
  */
-class CONSTANT_Class_info extends cp_info {
+public class CONSTANT_Class_info extends cp_info {
    /** Constant pool index of name of this class. */
    public int name_index;
 

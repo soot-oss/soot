@@ -36,6 +36,7 @@ import soot.baf.toolkits.base.*;
 import soot.jimple.toolkits.base.*;
 import soot.*;
 
+
 /*
  * Incomplete and inefficient implementation.
  *
@@ -253,7 +254,6 @@ public class SootClass extends AbstractHost
     public SootMethod getMethod(String subsignature) throws soot.NoSuchMethodException
     {
         SootMethod toReturn = (SootMethod) scene.methodSignatureToMethod.get("<" + getName() + ": " + subsignature + ">");
-        
         if(toReturn == null)
             throw new soot.NoSuchMethodException("No method " + subsignature + " in class " + getName());
         else
@@ -522,8 +522,11 @@ public class SootClass extends AbstractHost
         m.isDeclared = true;
         m.declaringClass = this;
         
-        scene.methodSignatureToMethod.put(m.getSignature(), m);
-        
+	if(scene == null) {
+	    System.out.println("sootclass::addMethod   -- fix me"); //xxx
+	    scene = Scene.v();
+	}
+        scene.methodSignatureToMethod.put(m.getSignature(), m);        
     }
 
     /**
@@ -645,7 +648,7 @@ public class SootClass extends AbstractHost
 
     public SootClass getSuperclass() throws NoSuperclassException
     {
-        if(superClass == null)
+        if(superClass == null) 
             throw new NoSuperclassException();
         else
             return superClass;
@@ -1031,5 +1034,11 @@ public class SootClass extends AbstractHost
     {
         isPhantom = value;
     }
+
+    public String getXML()
+    {
+	return XMLManager.getXML(this);
+    }
+
 
 }

@@ -545,6 +545,12 @@ public class Jimple
         return new JGotoStmt(target);
     }
 
+    public GotoStmt newGotoStmt(UnitBox stmtBox)
+    {
+        return new JGotoStmt(stmtBox);
+    }
+
+
 
     /**
         Constructs a NopStmt() grammar chunk.
@@ -594,6 +600,11 @@ public class Jimple
     {
         return new JIfStmt(condition, target);
     }
+    
+    public IfStmt newIfStmt(Value condition, UnitBox target)
+    {
+	return new JIfStmt(condition, target);
+    }
 
 
     /**
@@ -636,6 +647,11 @@ public class Jimple
     }
 
 
+    public TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, List targets, UnitBox defaultTarget)
+    {		
+        return new JTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
+    }
+
     /**
         Constructs a LookupSwitchStmt(Immediate, List of Immediate, List of Unit, Stmt) grammar chunk.
      */
@@ -644,6 +660,12 @@ public class Jimple
     {
         return new JLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
     }
+    
+    public LookupSwitchStmt newLookupSwitchStmt(Value key, List lookupValues, List targets, UnitBox defaultTarget)
+    {
+        return new JLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
+    }
+    
 
     /**
         Constructs a Local with the given name and type.
@@ -661,6 +683,11 @@ public class Jimple
     public Trap newTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
     {
         return new JTrap(exception, beginStmt, endStmt, handlerStmt);
+    }
+
+    public Trap newTrap(SootClass exception, UnitBox beginStmt, UnitBox endStmt, UnitBox handlerStmt)
+    {
+	return new JTrap(exception, beginStmt, endStmt, handlerStmt);
     }
 
 
@@ -793,12 +820,30 @@ public class Jimple
         return new JimpleBody(b, new HashMap());
     }
 
+
+
+
     /** Returns a JimpleBody constructed from b. */
     public JimpleBody newBody(Body b, String phase)
     {
         Map options = Scene.v().computePhaseOptions(phase, "");
+	if(b instanceof JimpleBody) {
+	    ((JimpleBody)b).applyPhaseOptions(options);
+	    return (JimpleBody) b;
+	}
         return new JimpleBody(b, options);
     }
+
+    /*
+     public JimpleBody newBody(JimpleBody b, String phase)
+    {
+        //Map options = Scene.v().computePhaseOptions(phase, "");
+	
+	// xxx patrice - deal with phase options
+        return b;
+    }
+    */
+   
 
     /** Returns a JimpleBody constructed from b. */
     public JimpleBody newBody(Body b, String phase, String optionsString)

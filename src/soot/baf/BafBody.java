@@ -52,7 +52,7 @@ public class BafBody extends Body
         super(m);
     }
 
-    BafBody(Body body, Map options)
+    public BafBody(Body body, Map options)
     {
         super(body.getMethod());
 

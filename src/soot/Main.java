@@ -42,6 +42,8 @@ import java.text.*;
 
 public class Main
 {
+
+
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
 
     static boolean naiveJimplification;
@@ -57,6 +59,7 @@ public class Main
     static boolean isTestingPerformance;
 
     static private String targetExtension = ".class";
+    static private String xmlFile = null;
 
     static public int totalFlowNodes,
            totalFlowComputations;
@@ -117,6 +120,7 @@ public class Main
     static private boolean isUsingVTA;
     static private boolean isUsingRTA;
     static private boolean isApplication = false;
+    static private SootClass mainClass = null;        
     
     static public long stmtCount;
     static String finalRep = "grimp";
@@ -152,6 +156,7 @@ public class Main
     
     public static void main(String[] args)
     {
+        // DEBUG
         boolean isAnalyzingLibraries = false;
 
         // The following lists are paired.  false is exclude in the first list.
@@ -176,7 +181,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.60");
+            System.out.println("Soot version 1.beta.5.dev.61");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -191,6 +196,7 @@ public class Main
             System.out.println("        (application mode) soot --app [option]* mainClassName");
             System.out.println("");
             System.out.println("Output options:");
+            System.out.println("  -X, --XML                  produce a monster .xml skeleton file");
             System.out.println("  -b, --b                    produce .b (abbreviated .baf) files");
             System.out.println("  -B, --baf                  produce .baf code");
             System.out.println("  -j, --jimp                 produce .jimp (abbreviated .jimple) files");
@@ -233,6 +239,7 @@ public class Main
             System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
             System.out.println("  -t, --time                 print out time statistics about tranformations");
             System.out.println("  --subtract-gc              attempt to subtract the gc from the time stats");
+	    System.out.println("  -h FILE                    read XML headers from FILE");
             System.out.println("  -v, --verbose              verbose mode");
             System.out.println("  --debug                    avoid catching exceptions");
             System.out.println("  -p, --phase-option PHASE-NAME KEY[:VALUE]");
@@ -264,6 +271,15 @@ public class Main
                     targetExtension = ".jimple";
                 else if(arg.equals("-B") || arg.equals("--baf"))
                     targetExtension = ".baf";
+		else if(arg.equals("--lazy"))
+                    Scene.v().setLazyResolving(true);
+		else if(arg.equals("-h")) {
+		    Scene.v().setLazyResolving(true);
+		    xmlFile = args[++i];
+		}
+		    
+		
+
                 else if(arg.equals("-b") || arg.equals("--b"))
                     targetExtension = ".b";
                 else if(arg.equals("-g") || arg.equals("--grimp"))
@@ -272,6 +288,8 @@ public class Main
                     targetExtension = ".grimple";
                 else if(arg.equals("-c") || arg.equals("--class"))
                     targetExtension = ".class";
+                else if(arg.equals("-X") || arg.equals("--xml"))
+                    targetExtension = ".xml";
                 else if(arg.equals("--dava"))
                     targetExtension = ".dava";
                 else if(arg.equals("-O") || arg.equals("--optimize"))
@@ -431,8 +449,6 @@ public class Main
                 }
             }
 
-        SootClass mainClass = null;
-        
         if(cmdLineClasses.isEmpty())
         {
             System.out.println("Nothing to do!");
@@ -450,22 +466,42 @@ public class Main
                     System.out.println("(Did you mean to use single-file mode?)");
                     System.exit(1);
                 }
+     
+		if(xmlFile != null) {
+		    try {
+			XMLParser p = new XMLParser();
+			String file = "file:///auto/gloom/export/acaps/u0/patrice/testarea/" + xmlFile;
+		   
+			p.parseJimple(file);
+		    
+		    } catch (Exception e ) {
+			throw new RuntimeException("error parsing xml file");
+		    }
+		}
 
-                Iterator it = cmdLineClasses.iterator();
-
-                while(it.hasNext())
-                {
-                    String name = (String) it.next();
-                    SootClass c = Scene.v().loadClassAndSupport(name);
-
-                    if(mainClass == null)
-                    {
-                        mainClass = c;
-                        Scene.v().setMainClass(c);
-                    }   
-                    c.setApplicationClass();
-                }
-                
+		Iterator it = cmdLineClasses.iterator();
+	
+		while(it.hasNext())
+		    {
+			String name = (String) it.next();
+			SootClass c;
+			    
+			if(!Scene.v().allowsLazyResolving()) {
+			    System.out.println("doing batch resolution");
+			    c = Scene.v().loadClassAndSupport(name);						  
+			} else { 
+			    c  = Scene.v().getSootClass(name);
+			    
+			}
+			if(mainClass == null)
+			    {
+				mainClass = c;
+				Scene.v().setMainClass(c);
+			    }   
+			c.setApplicationClass();
+		    }
+	
+               
             // Dynamic & process classes
                 it = dynamicClasses.iterator();
                 
@@ -483,7 +519,7 @@ public class Main
         }
 
         // Generate classes to process
-        {
+        { 
             if(isApplication)
             {
                 List cc = new ArrayList(); cc.addAll(Scene.v().getContextClasses());
@@ -541,12 +577,58 @@ public class Main
         if(isOptimizingWhole)
             Scene.v().getPack("wjop").apply();
         
-        // Handle each class individually
-        {
-            Iterator classIt = Scene.v().getApplicationClasses().iterator();
+        // If creating xml file, first remove old file.
+        String fileName = null;
+
+        if (targetExtension.equals(".xml")) {
+
+            if(!outputDir.equals(""))
+                fileName = outputDir + fileSeparator;
+            else
+                fileName = "";
             
-            while(classIt.hasNext())
-            {
+            fileName = mainClass.getName() + targetExtension;
+
+            try {
+		
+                FileOutputStream streamOut = new FileOutputStream(fileName);
+                PrintWriter writerOut = new EscapedPrintWriter(streamOut);
+                writerOut.println("<?xml version=\"1.0\"?>");
+                writerOut.println("<document>");
+
+		Iterator it = Scene.v().getClasses().iterator();
+		SootClass sc = null;
+		
+		try {
+		    while(it.hasNext()) {
+			sc = (SootClass) it.next();
+			writerOut.println(sc.getXML());
+		    }
+		} catch (NoSuperclassException e) {
+		    System.out.println("class " + sc.getName());
+		    throw e;
+		}
+		
+                writerOut.println("</document>");
+                writerOut.flush();
+                streamOut.close();
+            }
+            catch (IOException e) {
+		
+                System.out.println("Couldn't write output file!");
+                System.exit(1);
+	    }
+        }
+    
+	
+    
+    
+    // Handle each class individually
+
+	Iterator classIt = Scene.v().getApplicationClasses().iterator();
+
+	while(classIt.hasNext())
+		{
                 SootClass s = (SootClass) classIt.next();
                 
                 System.out.print("Transforming " + s.getName() + "... " );
@@ -567,10 +649,11 @@ public class Main
                 }
                 
                 System.out.println();
-            }
-        }
+		}
+
+
                     
-        // Print out time stats.
+	    // Print out time stats.
             if(isProfilingOptimization)
             {
                 totalTimer.end();
@@ -678,7 +761,6 @@ public class Main
     private static void handleClass(SootClass c)
     {
         FileOutputStream streamOut = null;
-        OutputStreamWriter osw = null;
         PrintWriter writerOut = null;
         
         String fileName;
@@ -688,12 +770,18 @@ public class Main
         else
             fileName = "";
         
-        fileName += c.getName() + targetExtension;
+        if(targetExtension.equals(".xml"))
+            fileName = mainClass.getName() + targetExtension;
+        else
+            fileName += c.getName() + targetExtension;
         
         if(!targetExtension.equals(".class"))
         {   
             try {
-                streamOut = new FileOutputStream(fileName);
+                if (targetExtension.equals(".xml"))
+                    streamOut = new FileOutputStream(fileName, true);
+                else
+                    streamOut = new FileOutputStream(fileName);
                 writerOut = new EscapedPrintWriter(streamOut);
             }
             catch (IOException e)
@@ -702,6 +790,7 @@ public class Main
             }
         }
 
+        boolean produceXml = false;
         boolean produceJimple = false;
         boolean produceBaf = false;
         boolean produceGrimp = false;
@@ -720,6 +809,8 @@ public class Main
                 endResult = "dava";
             else if(targetExtension.startsWith(".baf"))
                 endResult = "baf";
+            else if(targetExtension.startsWith(".xml"))
+                endResult = "xml";
             else
                 endResult = finalRep;
         
@@ -742,24 +833,32 @@ public class Main
                 produceGrimp = true;
                 produceDava = true;
             }
+            else if (endResult.equals("xml"))
+            {
+                produceXml = true;
+            }
         }
-            
+
         // Build all necessary bodies
         {
             Iterator methodIt = c.getMethods().iterator();
-            
+	    
+	   
             while(methodIt.hasNext())
             {   
                 SootMethod m = (SootMethod) methodIt.next();
-                
+	
                 if(!m.isConcrete())
                     continue;
-                    
+				
                 if(produceJimple)
-                {
-                    if(!m.hasActiveBody())
-                        m.setActiveBody(Jimple.v().newBody(new ClassFileBody(m), "jb"));
-    
+                {		
+                    if(!m.hasActiveBody()) {
+			//                        m.setActiveBody(Jimple.v().newBody(m.getInputBody(), "jb"));
+			m.getInputBody(); // options jb????
+		    }
+		    
+
                     Scene.v().getPack("jtp").apply(m.getActiveBody());
                     if(isOptimizing) 
                         Scene.v().getPack("jop").apply(m.getActiveBody());

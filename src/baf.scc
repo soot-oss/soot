@@ -1,0 +1,415 @@
+Package soot.baf.parser;
+
+Helpers
+  all = [0 .. 0xffff];
+
+  dec_digit = ['0' .. '9'];
+  dec_nonzero = ['1' .. '9'];
+  dec_constant = dec_digit+;
+
+  hex_digit = dec_digit | ['a' .. 'f'] | ['A' .. 'F'];
+  hex_constant = '0' ('x' | 'X') hex_digit+;
+
+  oct_digit = ['0' .. '7'];
+  oct_constant = '0' oct_digit+;
+
+  escapable_char = '\' | ' ' | ''' | '.' | '#' | '"';
+  escape_code = 'u' hex_digit hex_digit hex_digit hex_digit;
+  escape_char = '\' (escapable_char | escape_code);  
+
+  not_cr_lf = [all - [10 + 13]];
+  not_star = [all - '*'];
+  not_star_slash = [not_star - '/'];
+
+  alpha_char = ['a' .. 'z'] | ['A' .. 'Z']; 
+  
+  quote = ''';
+  simple_id_char = alpha_char | dec_digit | '_' | '$';
+
+  first_id_char = alpha_char | '_' | '$';
+  
+  quotable_char = [not_cr_lf - '''];
+
+  // string_char = [not_cr_lf - '"'];
+  string_char = [35 .. 126] | [32 + 33] | [10 + 13] | escape_char;
+
+  line_comment = '//' not_cr_lf*;
+  long_comment = '/*' not_star* '*'+ (not_star_slash not_star* '*'+)* '/';
+ 
+Tokens
+  abstract = 'abstract';
+  final = 'final';
+  native = 'native';
+  public = 'public';
+  protected = 'protected';
+  private = 'private';
+  static = 'static';
+  synchronized = 'synchronized';
+  transient = 'transient';
+  volatile = 'volatile';
+  
+  class = 'class';
+  interface = 'interface';
+
+  void = 'void';
+  boolean = 'boolean';
+  byte = 'byte';
+  short = 'short';
+  char = 'char';
+  int = 'int';
+  long = 'long';
+  float = 'float';
+  double = 'double';
+  null_type = 'null_type';
+  unknown = 'unknown';
+
+  extends = 'extends';
+  implements = 'implements';
+ 
+  breakpoint = 'breakpoint';
+  case = 'case';
+  catch = 'catch';
+  cmp = 'cmp';
+  cmpg = 'cmpg';
+  cmpl = 'cmpl';
+  default = 'default';
+  entermonitor = 'entermonitor';
+  exitmonitor = 'exitmonitor';
+  from = 'from';
+  goto = 'goto';
+  if = 'if';
+  instanceof = 'instanceof';
+  interfaceinvoke = 'interfaceinvoke';
+  lengthof = 'lengthof';
+  lookupswitch = 'lookupswitch';
+  neg = 'neg';
+  new = 'new';
+  newarray = 'newarray';
+  newmultiarray = 'newmultiarray';
+  nop = 'nop';
+  ret = 'ret';
+  return = 'return';
+  specialinvoke = 'specialinvoke';
+  staticinvoke = 'staticinvoke';
+  tableswitch = 'tableswitch';
+  throw = 'throw';
+  throws = 'throws';
+  to   = 'to';
+  virtualinvoke = 'virtualinvoke';
+  with = 'with';
+  null = 'null';
+
+  comma = ',';
+  l_brace = '{';
+  r_brace = '}';
+  semicolon = ';';
+  l_bracket = '[';
+  r_bracket = ']';
+  l_paren = '(';
+  r_paren = ')';
+  colon = ':';
+  dot = '.';
+  quote = ''';
+  colon_equals = ':=';
+  equals = '=';
+  and = '&';
+  or = '|';
+  xor = '^';
+  mod = '%';
+  cmpeq = '==';
+  cmpne = '!=';
+  cmpgt = '>';
+  cmpge = '>=';
+  cmplt = '<';
+  cmple = '<=';
+  shl = '<<';
+  shr = '>>';
+  ushr = '>>>';
+  plus = '+';
+  minus = '-';
+  mult = '*';
+  div = '/';
+
+
+  quoted_name = quote quotable_char+ quote;  
+  identifier = first_id_char simple_id_char* | '<clinit>' | '<init>';
+  full_identifier = (first_id_char+ '.')+ simple_id_char+;
+ 
+  at_identifier = '@' (('parameter' dec_digit+ ':') | 'this' ':' | 'caughtexception');
+	
+  bool_constant = 'true' | 'false';
+  integer_constant = (dec_constant | hex_constant | oct_constant) 'L'?;
+  float_constant = ((dec_constant '.' dec_constant) (('e'|'E') ('+'|'-')? dec_constant)? ('f'|'F')?)  | ('#' (('-'? 'Infinity') | 'NaN') ('f' | 'F')? ) ; 
+  string_constant = '"' string_char* '"';
+
+  blank = (' ' | 9 | 13 | 10)+;  
+  comment = line_comment | long_comment; 
+
+
+
+
+Ignored Tokens
+  blank, comment;
+
+Productions
+  file = 
+    modifier* file_type class_name extends_clause? implements_clause? file_body; 
+
+  modifier =
+    {abstract}     abstract |
+    {final}        final |
+    {native}       native |
+    {public}       public |
+    {protected}    protected |
+    {private}      private |
+    {static}       static |
+    {synchronized} synchronized |
+    {transient}    transient |
+    {volatile}     volatile;
+
+  file_type =
+    {class}     [theclass]:class |
+    {interface} interface;
+
+  extends_clause =
+    extends class_name;
+
+  implements_clause =
+    implements class_name_list;
+
+  file_body =
+    l_brace member* r_brace;
+
+  name_list =
+    {single} name | 
+    {multi}  name comma name_list;
+ 
+class_name_list =
+    {class_name_single} class_name | 
+    {class_name_multi}  class_name comma class_name_list;
+
+  member =
+    {field}  modifier* type name semicolon |
+    {method} modifier* type name l_paren parameter_list? r_paren throws_clause? method_body;
+
+  type =
+    {void}   void |
+    {novoid} nonvoid_type;
+
+  parameter_list =
+    {single} parameter |
+    {multi}  parameter comma parameter_list;
+
+  parameter =
+    nonvoid_type;
+
+  throws_clause =
+    throws class_name_list;
+
+   
+
+
+  base_type_no_name =
+    {boolean} boolean |
+    {byte}    byte |
+    {char}    char |
+    {short}   short |
+    {int}     int |
+    {long}    long |
+    {float}   float |
+    {double}  double |
+    {null}    null_type;
+
+
+  base_type =
+    {boolean} boolean |
+    {byte}    byte |
+    {char}    char |
+    {short}   short |
+    {int}     int |
+    {long}    long |
+    {float}   float |
+    {double}  double |
+    {null}    null_type | 
+    {class_name}    class_name;
+  
+  nonvoid_type =
+    {base}   base_type_no_name array_brackets* |
+    {quoted} quoted_name array_brackets* |
+    {ident}  identifier array_brackets* |
+    {full_ident} full_identifier array_brackets*;
+
+
+
+
+
+  array_brackets =
+    l_bracket r_bracket;
+
+  method_body =
+    {empty} semicolon |
+    {full}  l_brace declaration* statement* catch_clause* r_brace;
+
+  declaration =
+    jimple_type local_name_list semicolon;
+
+  jimple_type =
+    {unknown} unknown |
+    {nonvoid} nonvoid_type;
+
+  local_name =
+    identifier;
+
+
+
+
+  local_name_list =
+    {single} local_name |
+    {multi}  local_name comma local_name_list;
+
+  statement =
+    {label}        label_name colon |
+    {breakpoint}   breakpoint semicolon |
+    {entermonitor} entermonitor immediate semicolon |
+    {exitmonitor}  exitmonitor immediate semicolon |
+    {switch}       switch l_paren immediate r_paren l_brace case_stmt+ r_brace semicolon |
+    {identity}     local_name colon_equals at_identifier type semicolon |
+    {identity_no_type}  local_name colon_equals at_identifier semicolon |
+    {assign}       variable equals expression semicolon |
+    {if}           if bool_expr goto_stmt |
+    {goto}         goto_stmt |
+    {nop}          nop semicolon |
+    {ret}          ret immediate? semicolon |
+    {return}       return immediate? semicolon |
+    {throw}        throw immediate semicolon |
+    {invoke}       invoke_expr semicolon;
+
+  label_name =
+    identifier;
+
+  switch =
+    {lookup} lookupswitch |
+    {table}  tableswitch;
+
+  case_stmt =
+    case_label colon goto_stmt;
+
+  case_label =
+    {constant} case minus? integer_constant |
+    {default}  default;
+
+  goto_stmt =
+    goto label_name semicolon;
+
+  catch_clause =
+    catch [name]:class_name from [from_label]:label_name to [to_label]:label_name with [with_label]:label_name semicolon;
+
+  expression =
+    {new}         new_expr |
+    {cast}        l_paren nonvoid_type r_paren local_name |
+    {instanceof}  immediate instanceof nonvoid_type |
+    {invoke}      invoke_expr |
+    {reference}   reference |
+    {binop}       binop_expr |
+    {unop}        unop_expr |
+    {immediate}   immediate;
+
+  new_expr =
+    {simple} new base_type |
+    {array}  newarray l_paren nonvoid_type r_paren fixed_array_descriptor |
+    {multi}  newmultiarray l_paren base_type r_paren array_descriptor+;
+
+  array_descriptor =
+    l_bracket immediate? r_bracket;
+
+  variable =
+    {reference} reference |
+    {local}     local_name;
+
+  bool_expr =
+    {binop} binop_expr |
+    {unop}  unop_expr;
+
+  invoke_expr = 
+    {nonstatic} nonstatic_invoke local_name dot method_signature l_paren arg_list? r_paren |
+    {static}    staticinvoke method_signature l_paren arg_list? r_paren;
+
+  binop_expr =
+    [left]:immediate binop [right]:immediate;
+
+  unop_expr =
+    unop immediate;
+
+  nonstatic_invoke =   
+    {special}   specialinvoke |
+    {virtual}   virtualinvoke |
+    {interface} interfaceinvoke;
+
+  method_signature =
+    cmplt [class_name]:class_name [first]:colon type [method_name]:name  l_paren parameter_list? r_paren cmpgt;
+
+  reference =	
+    {array} array_ref |
+    {field} field_ref;
+
+  array_ref =
+    identifier fixed_array_descriptor;
+
+  field_ref =
+    {local} local_name dot field_signature |
+    {sig}   field_signature;
+
+  field_signature =
+    cmplt [class_name]:class_name [first]:colon type [field_name]:name cmpgt;
+
+  fixed_array_descriptor =
+    l_bracket immediate r_bracket;
+
+  arg_list =
+    {single} immediate |
+    {multi}  immediate comma arg_list;
+
+  immediate =
+    {local}    local_name |
+    {constant} constant;
+
+  constant =
+    {integer} minus? integer_constant |
+    {float}   minus? float_constant |
+    {string}  string_constant |
+    {null}    null;
+
+  binop =
+    {and}   and |
+    {or}    or |
+    {xor}   xor |
+    {mod}   mod |
+    {cmp}   cmp |
+    {cmpg}  cmpg |
+    {cmpl}  cmpl |
+    {cmpeq} cmpeq |
+    {cmpne} cmpne |
+    {cmpgt} cmpgt |
+    {cmpge} cmpge |
+    {cmplt} cmplt |
+    {cmple} cmple |
+    {shl}   shl |
+    {shr}   shr |
+    {ushr}  ushr |
+    {plus}  plus |
+    {minus} minus |
+    {mult}  mult |
+    {div}   div;
+
+  unop =
+    {lengthof} lengthof |
+    {neg}      neg;
+
+class_name =
+    {quoted} quoted_name |
+    {ident}  identifier |
+    {full_ident} full_identifier;
+
+name =
+    {quoted} quoted_name |
+    {ident}  identifier;

@@ -43,23 +43,28 @@ public class SootMethod extends AbstractHost implements ClassMember
     SootClass declaringClass;
 
     int modifiers;
-    boolean isPhantom;
+    boolean isPhantom = false;
     
     List exceptions = new ArrayList();
 
     Body activeBody;
     
-    /**
-     * Hooks for coffi.  Do not use!
-     */
 
-    public soot.coffi.ClassFile coffiClass;
+    /** Tells this method how to find out where its body lives. */
+    protected MethodSource ms;
+    public Body getInputBody() 
+    {
+        return ms.getInputBody(this);
+    }
 
-    /**
-     * Hooks for coffi.  Do not use!
-     */
-
-    public soot.coffi.method_info coffiMethod;
+    public void setSource(MethodSource ms)
+    {
+        this.ms = ms;
+    }
+    public MethodSource getSource() 
+    {
+	return ms;
+    }
 
 
     public SootMethod(String name, List parameterTypes, Type returnType)
@@ -92,13 +97,15 @@ public class SootMethod extends AbstractHost implements ClassMember
 
         this.exceptions.addAll(thrownExceptions);
     }
-
+    /*
     public void setSource(soot.coffi.ClassFile coffiClass,
         soot.coffi.method_info coffiMethod)
     {
         this.coffiClass = coffiClass;
         this.coffiMethod = coffiMethod;
     }
+    */
+   
 
     public String getName()
     {
@@ -134,6 +141,8 @@ public class SootMethod extends AbstractHost implements ClassMember
     
     public void setPhantom(boolean value)
     {
+	System.out.println("setting is phantom" );
+	//	Thread.dumpStack();
         isPhantom = value;
     }
     
@@ -197,7 +206,7 @@ public class SootMethod extends AbstractHost implements ClassMember
             
         return activeBody;
     }
-    
+
     /**
         Sets the active body for this method. 
      */
@@ -366,6 +375,41 @@ public class SootMethod extends AbstractHost implements ClassMember
         return buffer.toString();
     }
 
+
+
+
+    public static String getSubSignature(String name, List params, Type returnType)
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(returnType.toString() + " " + name);
+        buffer.append("(");
+
+        Iterator typeIt = params.iterator();
+
+        if(typeIt.hasNext())
+        {
+            buffer.append(typeIt.next());
+
+            while(typeIt.hasNext())
+            {
+                buffer.append(",");
+                buffer.append(typeIt.next());
+            }
+        }
+
+        buffer.append(")");
+
+        return buffer.toString();
+    }
+
+
+
+
+
+
+
+
     public String toString()
     {
         return getSignature();
@@ -422,6 +466,12 @@ public class SootMethod extends AbstractHost implements ClassMember
         }
 
         return buffer.toString();
+    }
+    
+    
+    public String getXML() 
+    {
+	return XMLManager.getXML(this);
     }
 
 }

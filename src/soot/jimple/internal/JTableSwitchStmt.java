@@ -72,12 +72,34 @@ public class JTableSwitchStmt extends AbstractStmt
              getTargetBoxesArray(targets), 
              Jimple.v().newStmtBox(defaultTarget));
     }
+    
+    
+    
+    public JTableSwitchStmt(Value key, int lowIndex, int highIndex, List targets, UnitBox defaultTarget)
+    {
+        this(Jimple.v().newImmediateBox(key), lowIndex, highIndex, 
+             unitBoxListToArray(targets), 
+             defaultTarget);
+    }
+   
+    private static UnitBox[] unitBoxListToArray(List targets) {
+	UnitBox[] targetBoxes = new UnitBox[targets.size()];
+	
+	for(int i = 0; i < targetBoxes.length; i++)
+	    targetBoxes[i] = (UnitBox) targets.get(i);
+	return targetBoxes;
+    }
+    
 
     protected JTableSwitchStmt(ValueBox keyBox, int lowIndex, int highIndex, 
                                UnitBox[] targetBoxes, UnitBox defaultTargetBox)
     {
         this.keyBox = keyBox;
         this.defaultTargetBox = defaultTargetBox;
+
+	if(lowIndex > highIndex)
+	    throw new RuntimeException("Error creating tableswitch: lowIndex(" 
+				       + lowIndex +  ") can't be greater than highIndex(" + highIndex + ").");
 
         this.lowIndex = lowIndex;
         this.highIndex = highIndex;

@@ -50,6 +50,14 @@ public class JIfStmt extends AbstractStmt implements IfStmt
              Jimple.v().newStmtBox(target));
     }
 
+    public JIfStmt(Value condition, UnitBox target)
+    {
+        this(Jimple.v().newConditionExprBox(condition),
+             target);
+    }
+
+
+
     protected JIfStmt(ValueBox conditionBox, UnitBox targetBox)
     {
         this.conditionBox = conditionBox;

@@ -115,14 +115,14 @@ public class ClassFile {
    /** Major version. */
     int major_version;
    /** Number of items in the constant pool. */
-    int constant_pool_count;
+    public int constant_pool_count;
    /** Array of constant pool items.
     * @see cp_info
     */
     public cp_info constant_pool[];
    /** Access flags for this Class.
     */
-    int access_flags;
+    public int access_flags;
    /** Constant pool index of the Class constant describing <i>this</i>.
     * @see CONSTANT_Class_info
     */
@@ -130,29 +130,29 @@ public class ClassFile {
    /** Constant pool index of the Class constant describing <i>super</i>.
     * @see CONSTANT_Class_info
     */
-    int super_class;
+    public int super_class;
    /** Count of interfaces implemented. */
-    int interfaces_count;
+    public int interfaces_count;
    /** Array of constant pool indices of Class constants describing each
     * interace implemented by this class, as given in the source for this
     * class.
     * @see CONSTANT_Class_info
     */
-    int interfaces[];
+    public int interfaces[];
    /** Count of fields this Class contains. */
-    int fields_count;
+    public int fields_count;
    /** Array of field_info objects describing each field.
     * @see field_info
     */
-    field_info fields[];
+    public field_info fields[];
    /** Count of methods this Class contains. */
-    int methods_count;
+    public int methods_count;
    /** Array of method_info objects describing each field.
     * @see method_info
     */
-    method_info methods[];
+    public method_info methods[];
    /** Count of attributes this class contains. */
-    int attributes_count;
+    public int attributes_count;
    /** Array of attribute_info objects for this class.
     * @see attribute_info
     */
@@ -161,7 +161,7 @@ public class ClassFile {
    /** Creates a new ClassFile object given the name of the file.
     * @param nfn file name which this ClassFile will represent.
     */
-    ClassFile(String nfn) { fn = nfn; }
+    public ClassFile(String nfn) { fn = nfn; }
 
     static soot.Timer fieldTimer = new soot.Timer();
     static soot.Timer methodTimer = new soot.Timer();
@@ -179,7 +179,7 @@ public class ClassFile {
     * file and reads in the contents, building the representation.
     * @return <i>true</i> on success.
     */
-    boolean loadClassFile() {
+    public boolean loadClassFile() {
       InputStream f = null;
       InputStream classFileStream;
       DataInputStream d;

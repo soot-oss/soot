@@ -43,7 +43,7 @@ import java.util.Enumeration;
  * @see Utf8_Enumeration#nextElement
  * @author Clark Verbrugge
  */
-class Utf8_Enumeration implements Enumeration {
+public class Utf8_Enumeration implements Enumeration {
 
    /** The latest character, as determined by nextElement.
     * @see Utf8_Enumeration#nextElement
