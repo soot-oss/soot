@@ -50,7 +50,7 @@ public class PropBDD extends AbsPropagator {
         if( toOutput == 0B ) return;
         ptout.add( toOutput );
         outputtedPt |= toOutput;
-        PaddleScene.v().updateCallGraph();
+    //    PaddleScene.v().updateCallGraph();
     }
 
     /** Propagate points-to relation pt over assignments simple. */
@@ -101,26 +101,22 @@ public class PropBDD extends AbsPropagator {
 
 
     public boolean update() {
-        // start solving 
-        while(true) {
-            <varc, var, objc, obj> veryOldPt = pt;
+        <varc, var, objc, obj> veryOldPt = pt;
 
-            pt |= newAlloc.get() & typeFilter();
-            pt |= propSimple( pt, pag.allSimple().get() ) & typeFilter();
-            outputPt( pt );
+        pt |= newAlloc.get() & typeFilter();
+        pt |= propSimple( pt, pag.allSimple().get() ) & typeFilter();
+        outputPt( pt );
 
-            fieldPt |= propStore( pt, pag.allStore().get(), pt );
-            pt |= propLoad( fieldPt, pag.allLoad().get(), pt ) & typeFilter();
+        fieldPt |= propStore( pt, pag.allStore().get(), pt );
+        pt |= propLoad( fieldPt, pag.allLoad().get(), pt ) & typeFilter();
 
-            outputPt( pt );
+        outputPt( pt );
 
-            if( PaddleScene.v().options().verbose() ) {
-                    G.v().out.println( "Major iteration: " );
-            }
-
-            if( pt == veryOldPt ) break;
+        if( PaddleScene.v().options().verbose() ) {
+                G.v().out.println( "Major iteration: " );
         }
-        return true;
+
+        return pt != veryOldPt;
     }
 
     /* End of public methods. */

@@ -199,8 +199,8 @@ public final class PropAlias extends AbsPropagator {
         	ContextAllocNode can = (ContextAllocNode) n;
             ptout.add( src.ctxt(), src.var(), can.ctxt(), can.obj() );
         }} );
-        PaddleScene.v().updateCallGraph();
-        if( newEdges() ) ret = true;
+        //PaddleScene.v().updateCallGraph();
+        //if( newEdges() ) ret = true;
 
         for( Iterator simpleTargetIt = pag.simpleLookup(src); simpleTargetIt.hasNext(); ) {
 

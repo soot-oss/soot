@@ -38,52 +38,41 @@ public final class PropIter extends AbsPropagator {
         super( simple, load, store, alloc, propout, pag );
     }
     private AbsP2Sets p2sets;
+    int iteration = 1;
     /** Actually does the propagation. */
     public final boolean update() {
         p2sets = PaddleScene.v().p2sets;
-        new TopoSorter( pag, false ).sort();
-        for( Iterator it = pag.allocSources(); it.hasNext(); ) {
-            handleContextAllocNode( (ContextAllocNode) it.next() );
-        }
-        newEdges();
-        int iteration = 1;
 	boolean change;
-	do {
-	    change = false;
-            TreeSet simpleSources = new TreeSet();
-            for( Iterator sourceIt = pag.simpleSources(); sourceIt.hasNext(); ) {
-            	simpleSources.add(sourceIt.next());
-            }
-            if( PaddleScene.v().options().verbose() ) {
-                G.v().out.println( "Iteration "+(iteration++) );
-            }
-            for( Iterator it = simpleSources.iterator(); it.hasNext(); ) {
-                change = handleSimples( (ContextVarNode) it.next() ) | change;
-            }
-            
-            for( Iterator srcIt = PaddleNumberers.v().contextVarNodeNumberer().iterator(); srcIt.hasNext(); ) {
-            
-                final ContextVarNode src = (ContextVarNode) srcIt.next();
-                p2sets.get(src).getNewSet().forall( new P2SetVisitor() {
-                public final void visit( ContextAllocNode n ) {
-                	ContextAllocNode can = (ContextAllocNode) n;
-                    ptout.add( src.ctxt(), src.var(), can.ctxt(), can.obj() );
-                }} );
-            }
-            PaddleScene.v().updateCallGraph();
-            if( newEdges() ) change = true;
-
-            if( change ) {
-                new TopoSorter( pag, false ).sort();
-            }
-	    for( Iterator it = pag.loadSources(); it.hasNext(); ) {
-                change = handleLoads( (ContextFieldRefNode) it.next() ) | change;
-	    }
-	    for( Iterator it = pag.storeSources(); it.hasNext(); ) {
-                change = handleStores( (ContextVarNode) it.next() ) | change;
-	    }
-	} while( change );
-        return true;
+        if( newEdges() ) change = true;
+        new TopoSorter( pag, false ).sort();
+        change = false;
+        TreeSet simpleSources = new TreeSet();
+        for( Iterator sourceIt = pag.simpleSources(); sourceIt.hasNext(); ) {
+            simpleSources.add(sourceIt.next());
+        }
+        if( PaddleScene.v().options().verbose() ) {
+            G.v().out.println( "Iteration "+(iteration++) );
+        }
+        for( Iterator it = simpleSources.iterator(); it.hasNext(); ) {
+            change = handleSimples( (ContextVarNode) it.next() ) | change;
+        }
+        
+        for( Iterator srcIt = PaddleNumberers.v().contextVarNodeNumberer().iterator(); srcIt.hasNext(); ) {
+        
+            final ContextVarNode src = (ContextVarNode) srcIt.next();
+            p2sets.get(src).getNewSet().forall( new P2SetVisitor() {
+            public final void visit( ContextAllocNode n ) {
+                    ContextAllocNode can = (ContextAllocNode) n;
+                ptout.add( src.ctxt(), src.var(), can.ctxt(), can.obj() );
+            }} );
+        }
+        for( Iterator it = pag.loadSources(); it.hasNext(); ) {
+            change = handleLoads( (ContextFieldRefNode) it.next() ) | change;
+        }
+        for( Iterator it = pag.storeSources(); it.hasNext(); ) {
+            change = handleStores( (ContextVarNode) it.next() ) | change;
+        }
+        return change;
     }
     private boolean newEdges() {
         boolean change = false;

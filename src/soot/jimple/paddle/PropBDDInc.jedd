@@ -38,36 +38,33 @@ public final class PropBDDInc extends PropBDD {
 
     public final boolean update() {
         <varc, var, objc, obj> ptFromLoad = 0B;
-        // start solving 
-        while(true) {
-            <varc, var, objc, obj> veryOldPt = pt;
 
-            <varc,var,objc,obj>
-                ptFromAlloc = newAlloc.get() & typeFilter();
-            <varc,var,objc,obj>
-                ptFromSimple1 = propSimple( pt, newSimple.get() ) & typeFilter();
-            <varc,var,objc,obj>
-                ptFromAllocAndSimple1 = ptFromAlloc|ptFromSimple1;
-            <varc,var,objc,obj>
-                ptFromSimple2 = propSimple( ptFromAllocAndSimple1|ptFromLoad,
-                    pag.allSimple().get() ) & typeFilter();
-            <varc,var,objc,obj>
-                ptFromAllocAndSimple = ptFromAllocAndSimple1|ptFromSimple2;
-            pt |= ptFromAllocAndSimple;
-            outputPt( ptFromAllocAndSimple );
+        <varc, var, objc, obj> veryOldPt = pt;
 
-            fieldPt |= propStore( pt, pag.allStore().get(), pt );
-            ptFromLoad = propLoad( fieldPt, pag.allLoad().get(), pt ) & typeFilter();
-            pt |= ptFromLoad;
-            outputPt( ptFromLoad );
+        <varc,var,objc,obj>
+            ptFromAlloc = newAlloc.get() & typeFilter();
+        <varc,var,objc,obj>
+            ptFromSimple1 = propSimple( pt, newSimple.get() ) & typeFilter();
+        <varc,var,objc,obj>
+            ptFromAllocAndSimple1 = ptFromAlloc|ptFromSimple1;
+        <varc,var,objc,obj>
+            ptFromSimple2 = propSimple( ptFromAllocAndSimple1|ptFromLoad,
+                pag.allSimple().get() ) & typeFilter();
+        <varc,var,objc,obj>
+            ptFromAllocAndSimple = ptFromAllocAndSimple1|ptFromSimple2;
+        pt |= ptFromAllocAndSimple;
+        outputPt( ptFromAllocAndSimple );
 
-            if( PaddleScene.v().options().verbose() ) {
-                G.v().out.println( "Major iteration: " );
-            }
+        fieldPt |= propStore( pt, pag.allStore().get(), pt );
+        ptFromLoad = propLoad( fieldPt, pag.allLoad().get(), pt ) & typeFilter();
+        pt |= ptFromLoad;
+        outputPt( ptFromLoad );
 
-            if( pt == veryOldPt ) break;
+        if( PaddleScene.v().options().verbose() ) {
+            G.v().out.println( "Major iteration: " );
         }
-        return true;
+
+        return pt != veryOldPt;
     }
 
     /* End of public methods. */
