@@ -118,8 +118,8 @@ abstract class AbstractDefinitionStmt extends AbstractStmt
     {
         List list = new ArrayList();
 
-        list.add(rightBox);
         list.addAll(rightBox.getValue().getUseBoxes());
+        list.add(rightBox);
         list.addAll(leftBox.getValue().getUseBoxes());
 
         return list;

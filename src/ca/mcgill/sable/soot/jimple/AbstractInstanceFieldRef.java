@@ -137,8 +137,8 @@ public class AbstractInstanceFieldRef implements InstanceFieldRef
     {
         List useBoxes = new ArrayList();
 
-        useBoxes.add(baseBox);
         useBoxes.addAll(baseBox.getValue().getUseBoxes());
+        useBoxes.add(baseBox);
 
         return useBoxes;
     }

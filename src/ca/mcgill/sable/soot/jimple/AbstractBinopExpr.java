@@ -120,10 +120,10 @@ public abstract class AbstractBinopExpr implements Expr, ToBriefString
     {
         List list = new ArrayList();
 
-        list.add(op1Box);
-        list.add(op2Box);
         list.addAll(op1Box.getValue().getUseBoxes());
+        list.add(op1Box);
         list.addAll(op2Box.getValue().getUseBoxes());
+        list.add(op2Box);
 
         return list;
     }

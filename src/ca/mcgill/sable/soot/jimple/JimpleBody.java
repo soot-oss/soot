@@ -200,7 +200,7 @@ public class JimpleBody implements StmtBody
             if(Main.isProfilingOptimization)
                 Main.splitTimer.start();
 
-            Transformations.splitLocals(this);
+            LocalSplitter.splitLocals(this);
 
             if(Main.isProfilingOptimization)
             {

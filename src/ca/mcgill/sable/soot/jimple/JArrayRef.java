@@ -164,11 +164,11 @@ public class JArrayRef implements ArrayRef
     {
         List useBoxes = new ArrayList();
 
-        useBoxes.add(baseBox);
         useBoxes.addAll(baseBox.getValue().getUseBoxes());
+        useBoxes.add(baseBox);
 
-        useBoxes.add(indexBox);
         useBoxes.addAll(indexBox.getValue().getUseBoxes());
+        useBoxes.add(indexBox);
 
         return useBoxes;
     }

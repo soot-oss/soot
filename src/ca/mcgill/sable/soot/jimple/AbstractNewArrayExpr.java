@@ -144,8 +144,8 @@ public class AbstractNewArrayExpr implements NewArrayExpr
     {
         List useBoxes = new ArrayList();
 
-        useBoxes.add(sizeBox);
         useBoxes.addAll(sizeBox.getValue().getUseBoxes());
+        useBoxes.add(sizeBox);
 
         return useBoxes;
     }

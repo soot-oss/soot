@@ -480,6 +480,9 @@ public class StmtGraph
         return order;
     }
     
+    // Unfortunately, the nice recursive solution fails
+    // because of stack overflows
+    /*
     private void visitStmt(Stmt s)
     {
         stmtToColor.put(s, new Integer(GRAY));
@@ -500,12 +503,65 @@ public class StmtGraph
             order.addLast(s);
         else
             order.addFirst(s); 
+    }*/
+    
+    // Fill in the 'order' list with a pseudo topological order (possibly reversed)
+    // list of statements starting at s.  Simulates recursion with a stack.
+    
+    private void visitStmt(Stmt startStmt)
+    {
+        LinkedList stmtStack = new LinkedList();
+        LinkedList indexStack = new LinkedList();
+        
+        stmtToColor.put(startStmt, new Integer(GRAY));
+        
+        stmtStack.addLast(startStmt);
+        indexStack.addLast(new Integer(-1));
+        
+        while(!stmtStack.isEmpty())
+        {
+            int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
+            Stmt toVisitStmt = (Stmt) stmtStack.getLast();
+            
+            toVisitIndex++;
+            
+            indexStack.addLast(new Integer(toVisitIndex));
+            
+            if(toVisitIndex >= getSuccsOf(toVisitStmt).size())
+            {
+                // Visit this node now that we ran out of children 
+                    if(isReversed)
+                        order.addLast(toVisitStmt);
+                    else
+                        order.addFirst(toVisitStmt);
+                           
+                    stmtToColor.put(toVisitStmt, new Integer(BLACK));                
+                
+                // Pop this node off
+                    stmtStack.removeLast();
+                    indexStack.removeLast();
+            }
+            else
+            {
+                Stmt childStmt = (Stmt) getSuccsOf(toVisitStmt).get(toVisitIndex);
+                
+                // Visit this child next if not already visited (or on stack)
+                    if(((Integer) stmtToColor.get(childStmt)).intValue() == WHITE)
+                    {
+                        stmtToColor.put(childStmt, new Integer(GRAY));
+                        
+                        stmtStack.addLast(childStmt);
+                        indexStack.addLast(new Integer(-1));
+                    }
+            }
+        }
     }
+    
 
   /** Look for a path, in g, from def to use. 
    * This path has to lie inside an extended basic block 
    * (and this property implies uniqueness.) */
-  /* This path does not include the to
+  /* The path returned includes from and to.
      returns null if there is no such path */
   
   public List getExtendedBasicBlockPathBetween(Stmt from, Stmt to)
@@ -549,6 +605,7 @@ public class StmtGraph
           // we win!
           if (betweenStmt == to)
             {
+              pathStack.add(to);
               return pathStack;
             }
 

@@ -191,7 +191,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.3.dev.25");
+            System.out.println("Jimple version 1.beta.3.dev.26");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -430,27 +430,25 @@ public class Main
                 {
                     float timeInSecs;
 
-                    System.out.println(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime) + 
-                        "\t" + conversionLocalCount + " locals  " + conversionStmtCount + " stmts");
-                        
+                    System.out.println(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime)); 
+                    System.out.println("        Splitting variables: " + toTimeString(splitTimer, totalTime));
+                    System.out.println("            Assigning types: " + toTimeString(assignTimer, totalTime));
+                    System.out.println("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
+                    System.out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
+                    System.out.println("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
+                    System.out.println("            Coloring locals: " + toTimeString(packTimer, totalTime));
+
+                                            
 //                    System.out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
 //                        "\t" + cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
                     
-                    System.out.println("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
 
-                    System.out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
-                    System.out.println("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
                        
-                    System.out.println("        Splitting variables: " + toTimeString(splitTimer, totalTime) + 
-                        "\t" + splitLocalCount + " locals  " + splitStmtCount + " stmts");
-                        
+                       
 //                    System.out.println("               Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
 //                    System.out.println("               Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
                     
-                    System.out.println("            Assigning types: " + toTimeString(assignTimer, totalTime) +
-                        "\t" + assignLocalCount + " locals  " + assignStmtCount + " stmts");
                         
-                    System.out.println("            Coloring locals: " + toTimeString(packTimer, totalTime));
                 
                         /*
                     System.out.println("cleanup2Timer:   " + cleanup2Time +

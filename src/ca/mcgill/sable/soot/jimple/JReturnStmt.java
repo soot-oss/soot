@@ -127,8 +127,8 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
     {
         List useBoxes = new ArrayList();
 
-        useBoxes.add(returnValueBox);
         useBoxes.addAll(returnValueBox.getValue().getUseBoxes());
+        useBoxes.add(returnValueBox);
 
         return useBoxes;
     }

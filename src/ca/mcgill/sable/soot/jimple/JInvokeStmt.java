@@ -127,8 +127,8 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
     {
         List list = new ArrayList();
 
-        list.add(invokeExprBox);
         list.addAll(invokeExprBox.getValue().getUseBoxes());
+        list.add(invokeExprBox);
 
         return list;
     }

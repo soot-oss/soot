@@ -243,8 +243,8 @@ public class JTableSwitchStmt extends AbstractStmt implements TableSwitchStmt
     {
         List list = new ArrayList();
 
-        list.add(keyBox);
         list.addAll(keyBox.getValue().getUseBoxes());
+        list.add(keyBox);
 
         return list;
     }

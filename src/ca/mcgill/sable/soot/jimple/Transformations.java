@@ -67,8 +67,10 @@
  *                                                                   *
 
  B) Changes:
- 
- - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+
+ - Modified on March 17, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Corrected some aggregation bugs.
+   Moved the local splitting code into its own file.
    Eliminated the multi-pass dead code elimination.  Calls a
    cascaded dead code eliminator.
 
@@ -192,177 +194,6 @@ public class Transformations
         }
     }
 
-    public static void splitLocals(JimpleBody listBody)
-    {
-        StmtList stmtList = listBody.getStmtList();
-
-        if(Main.isVerbose)
-            System.out.println("[" + listBody.getMethod().getName() + "] Splitting locals...");
-
-        Map boxToSet = new HashMap(stmtList.size() * 2 + 1, 0.7f);
-
-        if(Main.isProfilingOptimization)
-                Main.splitPhase1Timer.start();
-
-        // Go through the definitions, building the boxToSet 
-        {
-            List code = stmtList;
-
-            CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
-
-            LocalDefs localDefs;
-            
-            if(Main.usePackedDefs) 
-            {
-                localDefs = new SimpleLocalDefs(graph);
-            }
-            else {
-                LiveLocals liveLocals;
-            
-                if(Main.usePackedLive) 
-                    liveLocals = new SimpleLiveLocals(graph);
-                else
-                    liveLocals = new SparseLiveLocals(graph);
-
-                localDefs = new SparseLocalDefs(graph, liveLocals);                
-            }            
-
-            LocalUses localUses = new SimpleLocalUses(graph, localDefs);
-
-            Iterator codeIt = stmtList.iterator();
-
-            while(codeIt.hasNext())
-            {
-                Stmt s = (Stmt) codeIt.next();
-
-                if(!(s instanceof DefinitionStmt))
-                    continue;
-
-                DefinitionStmt def = (DefinitionStmt) s;
-
-                if(def.getLeftOp() instanceof Local && !boxToSet.containsKey(def.getLeftOpBox()))
-                {
-                    Set visitedBoxes = new ArraySet(); // set of uses
-                    Set visitedDefs = new ArraySet();
-
-                    LinkedList defsToVisit = new LinkedList();
-                    LinkedList boxesToVisit = new LinkedList();
-
-                    Map boxToStmt = new HashMap(stmtList.size() * 2 + 1, 0.7f);
-                    Set equivClass = new ArraySet();
-
-                    defsToVisit.add(def);
-
-                    while(!boxesToVisit.isEmpty() || !defsToVisit.isEmpty())
-                    {
-                        if(!defsToVisit.isEmpty())
-                        {
-                            DefinitionStmt d = (DefinitionStmt) defsToVisit.removeFirst();
-
-                            equivClass.add(d.getLeftOpBox());
-                            boxToSet.put(d.getLeftOpBox(), equivClass);
-
-                            visitedDefs.add(d);
-
-                            List uses = localUses.getUsesOf(d);
-                            Iterator useIt = uses.iterator();
-
-                            while(useIt.hasNext())
-                            {
-                                StmtValueBoxPair use = (StmtValueBoxPair) useIt.next();
-
-                                if(!visitedBoxes.contains(use.valueBox) &&
-                                    !boxesToVisit.contains(use.valueBox))
-                                {
-                                    boxesToVisit.addLast(use.valueBox);
-                                    boxToStmt.put(use.valueBox, use.stmt);
-                                }
-                            }
-                        }
-                        else {
-                            ValueBox box = (ValueBox) boxesToVisit.removeFirst();
-
-                            equivClass.add(box);
-                            boxToSet.put(box, equivClass);
-                            visitedBoxes.add(box);
-
-                            List defs = localDefs.getDefsOfAt((Local) box.getValue(),
-                                (Stmt) boxToStmt.get(box));
-                            Iterator defIt = defs.iterator();
-
-                            while(defIt.hasNext())
-                            {
-                                DefinitionStmt d = (DefinitionStmt) defIt.next();
-
-                                if(!visitedDefs.contains(d) && !defsToVisit.contains(d))
-                                    defsToVisit.addLast(d);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if(Main.isProfilingOptimization)
-            Main.splitPhase1Timer.end();
-
-        if(Main.isProfilingOptimization)
-            Main.splitPhase2Timer.start();
-
-        // Assign locals appropriately.
-        {
-            Map localToUseCount = new HashMap(listBody.getLocalCount() * 2 + 1, 0.7f);
-            Set visitedSets = new HashSet();
-            Iterator it = boxToSet.values().iterator();
-
-            while(it.hasNext())
-            {
-                Set equivClass = (Set) it.next();
-
-                if(visitedSets.contains(equivClass))
-                    continue;
-                else
-                    visitedSets.add(equivClass);
-
-                ValueBox rep = (ValueBox) equivClass.iterator().next();
-                Local desiredLocal = (Local) rep.getValue();
-
-                if(!localToUseCount.containsKey(desiredLocal))
-                {
-                    // claim this local for this set
-
-                    localToUseCount.put(desiredLocal, new Integer(1));
-                }
-                else {
-                    // generate a new local
-
-                    int useCount = ((Integer) localToUseCount.get(desiredLocal)).intValue() + 1;
-                    localToUseCount.put(desiredLocal, new Integer(useCount));
-
-                    Local local = new Local(desiredLocal.getName() + "$" + useCount, desiredLocal.getType());
-
-                    listBody.addLocal(local);
-
-                    // Change all boxes to point to this new local
-                    {
-                        Iterator j = equivClass.iterator();
-
-                        while(j.hasNext())
-                        {
-                            ValueBox box = (ValueBox) j.next();
-
-                            box.setValue(local);
-                        }
-                    }
-                }
-            }
-        }
-        
-        if(Main.isProfilingOptimization)
-            Main.splitPhase2Timer.end();
-
-    }
-
     public static void removeUnusedLocals(StmtBody listBody)
     {
         StmtList stmtList = listBody.getStmtList();
@@ -441,7 +272,7 @@ public class Transformations
         //stmtBody.printDebugTo(new java.io.PrintWriter(System.out, true));
     }
 
-    public static void renameLocals(JimpleBody body)
+    public static void renameLocals(StmtBody body)
     {
         StmtList stmtList = body.getStmtList();
 
@@ -550,6 +381,7 @@ public class Transformations
             
           StmtValueBoxPair usepair = (StmtValueBoxPair)lu.get(0);
           Stmt use = usepair.stmt;
+          ValueBox useBox = usepair.valueBox;
               
           List ld = localDefs.getDefsOfAt((Local)lhs, use);
           if (ld.size() != 1)
@@ -564,117 +396,137 @@ public class Transformations
              calls and (as usual) writes to a, b, c. */
           
           boolean cantAggr = false;
-      boolean propagatingInvokeExpr = false;
-      boolean propagatingFieldRef = false;
+          boolean propagatingInvokeExpr = false;
+          boolean propagatingFieldRef = false;
           FieldRef fieldRef = null;
       
-	  Value rhs = ((AssignStmt)s).getRightOp();
-	  LinkedList localsUsed = new LinkedList();
-	  for (Iterator useIt = (s.getUseBoxes()).iterator();
-	       useIt.hasNext(); )
-	    {
-	      Value v = ((ValueBox)(useIt.next())).getValue();
-	      if (v instanceof Local)
-		localsUsed.add(v);
-	        if (v instanceof InvokeExpr)
+          Value rhs = ((AssignStmt)s).getRightOp();
+          LinkedList localsUsed = new LinkedList();
+          for (Iterator useIt = (s.getUseBoxes()).iterator();
+               useIt.hasNext(); )
+            {
+              Value v = ((ValueBox)(useIt.next())).getValue();
+              if (v instanceof Local)
+                localsUsed.add(v);
+                if (v instanceof InvokeExpr)
                 propagatingInvokeExpr = true;
             else if(v instanceof FieldRef)
             {
                 propagatingFieldRef = true;
                 fieldRef = (FieldRef) v;
             }
-	    }
-	  
-	  // look for a path from s to use in graph.
-	  // only look in an extended basic block, though.
+            }
+          
+          // look for a path from s to use in graph.
+          // only look in an extended basic block, though.
 
-	  List path = graph.getExtendedBasicBlockPathBetween(s, use);
+          List path = graph.getExtendedBasicBlockPathBetween(s, use);
       
-	  if (path == null)
-	    continue;
+          if (path == null)
+            continue;
 
-	  Iterator pathIt = path.iterator();
+          Iterator pathIt = path.iterator();
 
           // skip s.
           if (pathIt.hasNext())
             pathIt.next();
 
-	  while (pathIt.hasNext() && !cantAggr)
-	    {
-	      Stmt between = (Stmt)(pathIt.next());
-	      for (Iterator it = between.getDefBoxes().iterator();
-		   it.hasNext(); )
-		{
-		  Value v = ((ValueBox)(it.next())).getValue();
-		  if (localsUsed.contains(v))
-		    { cantAggr = true; break; }
-		  if (propagatingInvokeExpr || propagatingFieldRef)
-		    {
-		        if (v instanceof FieldRef)
-			    {
-                    if(propagatingInvokeExpr)
+          while (pathIt.hasNext() && !cantAggr)
+          {
+              Stmt between = (Stmt)(pathIt.next());
+          
+              if(between != use)    
+              {
+                // Check for killing definitions
+                
+                for (Iterator it = between.getDefBoxes().iterator();
+                       it.hasNext(); )
+                  {
+                      Value v = ((ValueBox)(it.next())).getValue();
+                      if (localsUsed.contains(v))
+                      { 
+                            cantAggr = true; 
+                            break; 
+                      }
+                      
+                      if (propagatingInvokeExpr || propagatingFieldRef)
+                      {
+                          if (v instanceof FieldRef)
+                          {
+                              if(propagatingInvokeExpr)
+                              {
+                                  cantAggr = true; 
+                                  break;
+                              }
+                              else {
+                                  // Can't aggregate a field access if passing a definition of a field 
+                                  // with the same name, because they might be aliased
+                            
+                                  if(((FieldRef) v).getField() == fieldRef.getField())
+                                  {
+                                      cantAggr = true;
+                                      break;
+                                  } 
+                              } 
+                           }
+                      }
+                  }
+              }  
+              
+              // Check for intervening side effects
+                if(propagatingInvokeExpr || propagatingFieldRef)
                     {
-                        cantAggr = true; 
-                        break;
-                    }
-                    else {
-                        // Can't aggregate a field access if passing a definition of a field 
-                        // with the same name, because they might be aliased
-                        
-                        if(((FieldRef) v).getField() == fieldRef.getField())
+                      for (Iterator useIt = (between.getUseBoxes()).iterator();
+                           useIt.hasNext(); )
                         {
+                          ValueBox box = (ValueBox) useIt.next();
+                          
+                          if(between == use && box == useBox)
+                          {
+                                // Reached use point, stop looking for
+                                // side effects
+                                break;
+                          }
+                          
+                          Value v = box.getValue();
+                          
+                          if (v instanceof InvokeExpr)
                             cantAggr = true;
-                            break;
                         }
                     }
-                     
-                }
-		    }
-		}
-	      
-	      if(propagatingInvokeExpr || propagatingFieldRef)
-		{
-		  for (Iterator useIt = (s.getUseBoxes()).iterator();
-		       useIt.hasNext(); )
-		    {
-		      Value v = ((ValueBox)(useIt.next())).getValue();
-		      if (v instanceof InvokeExpr)
-			cantAggr = true;
-		    }
-		}
-	    }
+            }
 
-	  // we give up: can't aggregate.
-	  if (cantAggr)
+          // we give up: can't aggregate.
+          if (cantAggr)
           {
-	    continue;
-	  }
-	  /* assuming that the d-u chains are correct, */
-	  /* we need not check the actual contents of ld */
-	  
-	  Value aggregatee = ((AssignStmt)s).getRightOp();
+            continue;
+          }
+          /* assuming that the d-u chains are correct, */
+          /* we need not check the actual contents of ld */
           
-	  if (usepair.valueBox.canContainValue(aggregatee))
-	    {
-	      usepair.valueBox.setValue(aggregatee);
-	      body.eliminateBackPointersTo(s);
-	      stmtIt.remove();
-	      hadAggregation = true;
+          Value aggregatee = ((AssignStmt)s).getRightOp();
+          
+          if (usepair.valueBox.canContainValue(aggregatee))
+            {
+              usepair.valueBox.setValue(aggregatee);
+              body.eliminateBackPointersTo(s);
+              stmtIt.remove();
+              hadAggregation = true;
               aggrCount++;
-	    }
-	  else
-	    {/*
+            }
+          else
+            {/*
             if(Main.isVerbose)
             {
-	        System.out.println("[debug] failed aggregation");
-	          System.out.println("[debug] tried to put "+aggregatee+
-		    		 " into "+usepair.stmt + 
-		    		 ": in particular, "+usepair.valueBox);
-	          System.out.println("[debug] aggregatee instanceof Expr: "
-		    		 +(aggregatee instanceof Expr));
+                System.out.println("[debug] failed aggregation");
+                  System.out.println("[debug] tried to put "+aggregatee+
+                                 " into "+usepair.stmt + 
+                                 ": in particular, "+usepair.valueBox);
+                  System.out.println("[debug] aggregatee instanceof Expr: "
+                                 +(aggregatee instanceof Expr));
             }*/
-	    }
-	}
+            }
+        }
       return hadAggregation;
     }
     

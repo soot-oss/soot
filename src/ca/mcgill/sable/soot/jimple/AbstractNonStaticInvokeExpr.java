@@ -104,19 +104,16 @@ public abstract class AbstractNonStaticInvokeExpr extends AbstractInvokeExpr imp
     {
         List list = new ArrayList();
 
+        list.addAll(baseBox.getValue().getUseBoxes());
         list.add(baseBox);
 
         for(int i = 0; i < argBoxes.length; i++)
-            list.add(argBoxes[i]);
-
-        // Add the boxes within the boxes
         {
-            list.addAll(baseBox.getValue().getUseBoxes());
-
-            for(int i = 0; i < argBoxes.length; i++)
-                list.addAll(argBoxes[i].getValue().getUseBoxes());
+            list.addAll(argBoxes[i].getValue().getUseBoxes());
+            list.add(argBoxes[i]);
+            
         }
-
+        
         return list;
     }
 

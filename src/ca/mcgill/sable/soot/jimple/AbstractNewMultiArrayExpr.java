@@ -166,10 +166,10 @@ public class AbstractNewMultiArrayExpr implements NewMultiArrayExpr
         List list = new ArrayList();
 
         for(int i = 0; i < sizeBoxes.length; i++)
-            list.add(sizeBoxes[i]);
-
-        for(int i = 0; i < sizeBoxes.length; i++)
+        {
             list.addAll(sizeBoxes[i].getValue().getUseBoxes());
+            list.add(sizeBoxes[i]);
+        }
 
         return list;
     }

@@ -127,8 +127,8 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
     {
         List useBoxes = new ArrayList();
 
-        useBoxes.add(opBox);
         useBoxes.addAll(opBox.getValue().getUseBoxes());
+        useBoxes.add(opBox);
 
         return useBoxes;
     }

@@ -72,19 +72,55 @@ import ca.mcgill.sable.util.*;
 
 public class ConstantAndCopyPropagator
 {
-    /** Propagates constants and copies in extended basic blocks. */
+    /** Cascaded constant/copy propagator.
+    
+        If it encounters situations of the form: A: a = ...; B: ... x = a; C:... use (x); 
+        where a has only one definition, and x has only one definition (B), then it can 
+        propagate immediately without checking between B and C for redefinitions
+        of a (namely) A because they cannot occur.  In this case the propagator is global.
+        
+        Otherwise, if a has multiple definitions then it only checks for redefinitions of
+        Propagates constants and copies in extended basic blocks. */
     
     public static void propagateConstantsAndCopies(StmtBody stmtBody)
     {
+        int fastCopyPropagationCount = 0;
+        int slowCopyPropagationCount = 0;
+        int constantPropagationCount = 0;
+        
         if(Main.isVerbose)
             System.out.println("[" + stmtBody.getMethod().getName() +
-                "] Propagating constants and copies ...");
+                "] Propagating constants and copies...");
 
         if(Main.isProfilingOptimization)
             Main.propagatorTimer.start();                
                 
         StmtList stmtList = stmtBody.getStmtList();
-            
+
+        Map localToDefCount = new HashMap();
+        
+        // Count number of definitions for each local.
+        {
+            Iterator stmtIt = stmtList.iterator();
+        
+            while(stmtIt.hasNext())
+            {
+                Stmt s = (Stmt) stmtIt.next();
+                
+                if(s instanceof DefinitionStmt &&
+                    ((DefinitionStmt) s).getLeftOp() instanceof Local)
+                {
+                    Local l = (Local) ((DefinitionStmt) s).getLeftOp();
+                     
+                    if(!localToDefCount.containsKey(l))
+                        localToDefCount.put(l, new Integer(1));
+                    else 
+                        localToDefCount.put(l, new Integer(((Integer) localToDefCount.get(l)).intValue() + 1));
+                }
+                
+            }
+        }
+        
 //            ((JimpleBody) stmtBody).printDebugTo(new java.io.PrintWriter(System.out, true));
             
         CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
@@ -140,6 +176,7 @@ public class ConstantAndCopyPropagator
                                     // a constant.  (bases can't)
 
                                      useBox.setValue(def.getRightOp());
+                                     constantPropagationCount++;
                                 }
                             }
                             else if(def.getRightOp() instanceof Local)
@@ -147,7 +184,18 @@ public class ConstantAndCopyPropagator
                                 Local m = (Local) def.getRightOp();
 
                                 if(l != m)
-                                {
+                                {   
+                                    int defCount = ((Integer) localToDefCount.get(m)).intValue();
+                                    
+                                    if(defCount == 0)
+                                        throw new RuntimeException("Variable " + m + " used without definition!");
+                                    else if(defCount == 1)
+                                    {
+                                        useBox.setValue(m);
+                                        fastCopyPropagationCount++;
+                                        continue;
+                                    }
+
                                     List path = graph.getExtendedBasicBlockPathBetween(def, stmt);
                                     
                                     if(path == null)
@@ -169,6 +217,13 @@ public class ConstantAndCopyPropagator
                                         {
                                             Stmt s = (Stmt) pathIt.next();
                                             
+                                            if(stmt == s)
+                                            {
+                                                // Don't look at the last statement 
+                                                // since it is evaluated after the uses
+                                                
+                                                break;
+                                            }   
                                             if(s instanceof DefinitionStmt)
                                             {
                                                 if(((DefinitionStmt) s).getLeftOp() == m)
@@ -185,6 +240,7 @@ public class ConstantAndCopyPropagator
                                     }
                                     
                                     useBox.setValue(m);
+                                    slowCopyPropagationCount++;
                                 }
                             }
                         }
@@ -194,6 +250,12 @@ public class ConstantAndCopyPropagator
             }
         }
 
+
+        if(Main.isVerbose)
+            System.out.println("[" + stmtBody.getMethod().getName() +
+                "] Propagated: " + constantPropagationCount + " constants  " +
+                fastCopyPropagationCount + " fast copies  " +
+                slowCopyPropagationCount + " slow copies");
      
         if(Main.isProfilingOptimization)
             Main.propagatorTimer.end();

@@ -157,8 +157,8 @@ public class JIfStmt extends AbstractStmt implements IfStmt
     {
         List useBoxes = new ArrayList();
 
-        useBoxes.add(conditionBox);
         useBoxes.addAll(conditionBox.getValue().getUseBoxes());
+        useBoxes.add(conditionBox);
 
         return useBoxes;
     }

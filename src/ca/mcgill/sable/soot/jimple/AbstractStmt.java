@@ -86,19 +86,21 @@ public abstract class AbstractStmt implements Stmt
     Map allMapToUnnamed = new AllMapTo("<unnamed>");
     
     /**
-     * The list of boxes is not dynamically updated as the structure changes.
+     * The list of boxes is dynamically updated as the structure changes.
+     * Note that they are returned in usual evaluation order.
+     * (this is important for aggregation)
      */
 
     public abstract List getUseBoxes();
 
     /**
-     * The list of boxes is not dynamically updated as the structure changes.
+     * The list of boxes is dynamically updated as the structure changes.
      */
 
     public abstract List getDefBoxes();
 
     /**
-     * The list of boxes is not dynamically updated as the structure changes.
+     * The list of boxes is dynamically updated as the structure changes.
      */
 
     public abstract List getUnitBoxes();

@@ -250,8 +250,8 @@ public class JLookupSwitchStmt extends AbstractStmt implements LookupSwitchStmt
     {
         List list = new ArrayList();
 
-        list.add(keyBox);
         list.addAll(keyBox.getValue().getUseBoxes());
+        list.add(keyBox);
 
         return list;
     }

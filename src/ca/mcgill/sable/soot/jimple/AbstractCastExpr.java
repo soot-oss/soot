@@ -126,8 +126,8 @@ public class AbstractCastExpr implements CastExpr
     {
         List list = new ArrayList();
 
-        list.add(opBox);
         list.addAll(opBox.getValue().getUseBoxes());
+        list.add(opBox);
 
         return list;
     }

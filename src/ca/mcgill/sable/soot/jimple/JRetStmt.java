@@ -127,8 +127,8 @@ public class JRetStmt extends AbstractStmt implements RetStmt
     {
         List useBoxes = new ArrayList();
 
-        useBoxes.add(stmtAddressBox);
         useBoxes.addAll(stmtAddressBox.getValue().getUseBoxes());
+        useBoxes.add(stmtAddressBox);
 
         return useBoxes;
     }
