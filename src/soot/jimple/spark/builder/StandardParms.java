@@ -363,6 +363,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
         AllocNode prevAn = pag.makeAllocNode(
             new Pair( nmae, new Integer( type.numDimensions ) ), type, currentMethod );
         VarNode prevVn = pag.makeVarNode( prevAn, prevAn.getType(), currentMethod );
+        addEdge( prevAn, prevVn );
         setResult( prevAn );
         while( true ) {
             Type t = type.getElementType();
