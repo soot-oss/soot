@@ -56,37 +56,41 @@ public class UnitThrowAnalysisTest extends TestCase {
 	// Ensure the Exception classes we need are represented in Soot:
 	utility = new ExceptionTestUtility(jdkLocation);
 
-	SootField nanField = new SootField("<java.lang.Float: float NaN>", FloatType.v());
-	floatStaticFieldRef = Grimp.v().newStaticFieldRef(nanField);
+	SootClass bogusClass = new SootClass("BogusClass");
+	SootFieldRef nanFieldRef = Scene.v().makeFieldRef(Scene.v().getSootClass("java.lang.Float"),
+							  "NaN", FloatType.v(),
+							  true);
+	floatStaticFieldRef = Grimp.v().newStaticFieldRef(nanFieldRef);
 	floatLocal = Grimp.v().newLocal("local", FloatType.v());
 	floatConstant = FloatConstant.v(33.42f);
 	floatConstantLocal = Grimp.v().newLocal("local", RefType.v("soot.jimple.FloatConstant"));
-	SootField valueField = new SootField("value", FloatType.v());
+	SootFieldRef valueFieldRef 
+	  = Scene.v().makeFieldRef(bogusClass, "value", FloatType.v(), false);
 	floatInstanceFieldRef = Grimp.v().newInstanceFieldRef(floatConstantLocal,
-							      valueField);
+							      valueFieldRef);
 	floatArrayRef = Grimp.v().newArrayRef(
 	    Jimple.v().newLocal("local1", FloatType.v()), 
 	    IntConstant.v(0));
 	List voidList = new ArrayList();
 	floatVirtualInvoke = Grimp.v().newVirtualInvokeExpr(
 	    floatConstantLocal, 
-	    new SootMethod("floatFunction", voidList, FloatType.v()), 
+	    Scene.v().makeMethodRef(bogusClass, "floatFunction", voidList, 
+				    FloatType.v(), false), 
 	    voidList);
 	floatStaticInvoke = Grimp.v().newStaticInvokeExpr(
-	    new SootMethod("floatFunction", 
-			   new ArrayList(Arrays.asList(new Type[] {
-			       FloatType.v(), FloatType.v(),
-			   })),
-			   FloatType.v()),
-	    new ArrayList(Arrays.asList(new Value[] {
-		floatStaticFieldRef, floatArrayRef,
-	    })));
+	    Scene.v().makeMethodRef(bogusClass, "floatFunction", 
+				    Arrays.asList(new Type[] {
+						    FloatType.v(), FloatType.v(),}),
+				    FloatType.v(), true),
+	    Arrays.asList(new Value[] {
+			    floatStaticFieldRef, floatArrayRef,})
+	    );
     }
 
 
     public void testJBreakpointStmt() {
 	Stmt s = Grimp.v().newBreakpointStmt();
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -94,7 +98,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 
     public void testGBreakpointStmt() {
 	Stmt s = Grimp.v().newBreakpointStmt();
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -104,7 +108,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 	List voidList = new ArrayList();
 	Stmt s = Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(
 	    Jimple.v().newLocal("local1", RefType.v("java.lang.Object")), 
-	    new SootMethod("java.lang.Object.wait", voidList, VoidType.v()),
+	    Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Object"),
+				    "wait", voidList, VoidType.v(), false),
 	    voidList));
 	ExceptionHashSet expectedRep = new ExceptionHashSet(utility.VM_AND_RESOLVE_METHOD_ERRORS_REP);
 	expectedRep.add(utility.NULL_POINTER_EXCEPTION);
@@ -112,22 +117,27 @@ public class UnitThrowAnalysisTest extends TestCase {
 	expectedCatch.add(utility.NULL_POINTER_EXCEPTION);
 	expectedCatch.add(utility.RUNTIME_EXCEPTION);
 	expectedCatch.add(utility.EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep, 
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       immaculateAnalysis.mightThrow(s)));
 	assertEquals(expectedCatch, 
 		     utility.catchableSubset(immaculateAnalysis.mightThrow(s)));
-	assertTrue(utility.sameMembers(utility.ALL_THROWABLES_REP,
+	assertTrue(utility.sameMembers(utility.ALL_THROWABLES_REP, 
+				       Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.ALL_TEST_THROWABLES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s))); 
 
 	s = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(
-	   new SootMethod("no.such.method", voidList, VoidType.v()), voidList));
-	assertTrue(utility.sameMembers(utility.ALL_ERRORS_REP,
+	    Scene.v().makeMethodRef(new SootClass("BogusClass"), "no.such.method", 
+				    voidList, VoidType.v(), false), 
+	    voidList));
+	assertTrue(utility.sameMembers(utility.ALL_ERRORS_REP, 
+				       Collections.EMPTY_SET,
 				       immaculateAnalysis.mightThrow(s)));
 	assertEquals(utility.ALL_TEST_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(immaculateAnalysis.mightThrow(s)));
 	assertTrue(utility.sameMembers(utility.ALL_THROWABLES_REP,
+				       Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.ALL_TEST_THROWABLES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s))); 
@@ -137,7 +147,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 	List voidList = new ArrayList();
 	Stmt s = Grimp.v().newInvokeStmt(Grimp.v().newVirtualInvokeExpr(
 	    Grimp.v().newLocal("local1", RefType.v("java.lang.Object")),
-	    new SootMethod("java.lang.Object.wait", voidList, VoidType.v()),
+	    Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Object"),
+				    "wait", voidList, VoidType.v(), false),
 	    voidList));
 	ExceptionHashSet expectedRep = new ExceptionHashSet(utility.VM_AND_RESOLVE_METHOD_ERRORS_REP);
 	expectedRep.add(utility.NULL_POINTER_EXCEPTION);
@@ -145,22 +156,27 @@ public class UnitThrowAnalysisTest extends TestCase {
 	expectedCatch.add(utility.NULL_POINTER_EXCEPTION);
 	expectedCatch.add(utility.RUNTIME_EXCEPTION);
 	expectedCatch.add(utility.EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep, 
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       immaculateAnalysis.mightThrow(s)));
 	assertEquals(expectedCatch, 
 		     utility.catchableSubset(immaculateAnalysis.mightThrow(s)));
-	assertTrue(utility.sameMembers(utility.ALL_THROWABLES_REP,
+	assertTrue(utility.sameMembers(utility.ALL_THROWABLES_REP, 
+				       Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.ALL_TEST_THROWABLES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
 
 	s = Grimp.v().newInvokeStmt(Grimp.v().newStaticInvokeExpr(
-	   new SootMethod("no.such.method", voidList, VoidType.v()), voidList));
+	    Scene.v().makeMethodRef(new SootClass("BogusClass"), "no.such.method",
+				   voidList, VoidType.v(), true), 
+	    voidList));
 	assertTrue(utility.sameMembers(utility.ALL_ERRORS_REP,
+				       Collections.EMPTY_SET,
 				       immaculateAnalysis.mightThrow(s)));
 	assertEquals(utility.ALL_TEST_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(immaculateAnalysis.mightThrow(s)));
 	assertTrue(utility.sameMembers(utility.ALL_THROWABLES_REP,
+				       Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.ALL_TEST_THROWABLES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -172,7 +188,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Stmt s = Jimple.v().newAssignStmt(Jimple.v().newLocal("local0",
 							    IntType.v()),
 					 IntConstant.v(0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -190,7 +206,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	expectedRep.add(utility.NULL_POINTER_EXCEPTION);
 	expectedRep.add(utility.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep, 
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 
 	Set expectedCatch = 
@@ -206,7 +222,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 	// local1[0] = local2
 	s = Jimple.v().newAssignStmt(arrayRef, scalarRef);
 	expectedRep.add(utility.ARRAY_STORE_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep, unitAnalysis.mightThrow(s)));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
+				       unitAnalysis.mightThrow(s)));
 	expectedCatch.add(utility.ARRAY_STORE_EXCEPTION);
 	assertEquals(expectedCatch, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -218,7 +235,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Stmt s = Grimp.v().newAssignStmt(Grimp.v().newLocal("local0",
 							    IntType.v()),
 					 IntConstant.v(0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -236,7 +253,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	expectedRep.add(utility.NULL_POINTER_EXCEPTION);
 	expectedRep.add(utility.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep, 
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	Set expectedCatch = 
 	    new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
@@ -251,7 +268,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 	// local1[0] = local2
 	s = Grimp.v().newAssignStmt(arrayRef, scalarRef);
 	expectedRep.add(utility.ARRAY_STORE_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep, unitAnalysis.mightThrow(s)));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET, 
+				       unitAnalysis.mightThrow(s)));
 	expectedCatch.add(utility.ARRAY_STORE_EXCEPTION);
 	assertEquals(expectedCatch, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -262,7 +280,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Stmt s = Jimple.v().newIdentityStmt(Grimp.v().newLocal("local0", 
 							       IntType.v()),
 					    Jimple.v().newCaughtExceptionRef());
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -270,7 +288,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	s = Jimple.v().newIdentityStmt(Grimp.v().newLocal("local0",
 							  RefType.v("java.lang.NullPointerException")),
 				       Jimple.v().newThisRef(RefType.v("java.lang.NullPointerException")));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -279,7 +297,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 							  RefType.v("java.lang.NullPointerException")),
 				       Jimple.v().newParameterRef(RefType.v("java.lang.NullPointerException"), 
 								  0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -290,7 +308,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Stmt s = Grimp.v().newIdentityStmt(Grimp.v().newLocal("local0", 
 							       IntType.v()),
 					    Grimp.v().newCaughtExceptionRef());
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -298,7 +316,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	s = Grimp.v().newIdentityStmt(Grimp.v().newLocal("local0",
 							 RefType.v("java.lang.NullPointerException")),
 				      Grimp.v().newThisRef(RefType.v("java.lang.NullPointerException")));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -307,7 +325,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 							 RefType.v("java.lang.NullPointerException")),
 				      Grimp.v().newParameterRef(RefType.v("java.lang.NullPointerException"),
 								0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -319,7 +337,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
 	expectedRep.add(utility.NULL_POINTER_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep,
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 
 	expectedCatch.add(utility.NULL_POINTER_EXCEPTION);
@@ -336,7 +354,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
 
 	expectedRep.add(utility.NULL_POINTER_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep,
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 
 	expectedCatch.add(utility.NULL_POINTER_EXCEPTION);
@@ -352,7 +370,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	expectedRep.add(utility.ILLEGAL_MONITOR_STATE_EXCEPTION);
 	expectedRep.add(utility.NULL_POINTER_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep,
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 
 	Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
@@ -371,7 +389,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	expectedRep.add(utility.ILLEGAL_MONITOR_STATE_EXCEPTION);
 	expectedRep.add(utility.NULL_POINTER_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep,
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 
 	Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
@@ -387,7 +405,7 @@ public class UnitThrowAnalysisTest extends TestCase {
     public void testJGotoStmt() {
 	Stmt nop = Jimple.v().newNopStmt();
 	Stmt s = Jimple.v().newGotoStmt(nop);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -396,7 +414,7 @@ public class UnitThrowAnalysisTest extends TestCase {
     public void testGGotoStmt() {
 	Stmt nop = Grimp.v().newNopStmt();
 	Stmt s = Grimp.v().newGotoStmt(nop);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -407,7 +425,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 							     IntConstant.v(1)),
 				       (Unit) null);
 	s.setTarget(s);		// A very tight infinite loop.
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -418,7 +436,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 							   IntConstant.v(1)),
 				       (Unit) null);
 	s.setTarget(s);		// A very tight infinite loop.
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -436,7 +454,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 						   target
 					       }),
 					       target);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -454,7 +472,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 						   target
 					       }),
 					       target);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -463,14 +481,14 @@ public class UnitThrowAnalysisTest extends TestCase {
     public void testJNopStmt() {
 	Stmt s = Jimple.v().newNopStmt();
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
-	assertTrue(utility.sameMembers(expectedRep,
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
     }
 
     public void testGNopStmt() {
 	Stmt s = Grimp.v().newNopStmt();
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
-	assertTrue(utility.sameMembers(expectedRep,
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
     }
 
@@ -479,7 +497,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	expectedRep.add(utility.ILLEGAL_MONITOR_STATE_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep,
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 
 	Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
@@ -495,7 +513,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	expectedRep.add(utility.ILLEGAL_MONITOR_STATE_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep,
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 
 	Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
@@ -511,7 +529,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	expectedRep.add(utility.ILLEGAL_MONITOR_STATE_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep,
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 
 	Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
@@ -527,7 +545,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	expectedRep.add(utility.ILLEGAL_MONITOR_STATE_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep,
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 
 	Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
@@ -547,7 +565,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 						   target
 					       }),
 					       target);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS, 
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -562,7 +580,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 						   target
 					       }),
 					       target);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS, 
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -577,7 +595,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Set expectedRep = new ExceptionHashSet(utility.PERENNIAL_THROW_EXCEPTIONS);
 	expectedRep.remove(utility.NULL_POINTER_EXCEPTION);
 	expectedRep.add(AnySubType.v(utility.NULL_POINTER_EXCEPTION));
-	assertTrue(utility.sameMembers(expectedRep, unitAnalysis.mightThrow(s)));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
+				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.PERENNIAL_THROW_EXCEPTIONS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
 
@@ -588,7 +607,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 	expectedRep = new ExceptionHashSet(utility.THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE);
 	expectedRep.remove(utility.INCOMPATIBLE_CLASS_CHANGE_ERROR);
 	expectedRep.add(AnySubType.v(utility.INCOMPATIBLE_CLASS_CHANGE_ERROR));
-	assertTrue(utility.sameMembers(expectedRep, unitAnalysis.mightThrow(s)));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
+				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUBTYPES_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
 
@@ -596,6 +616,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	local = Jimple.v().newLocal("local1", soot.UnknownType.v());
 	s.setOp(local);
 	assertTrue(utility.sameMembers(utility.ALL_THROWABLES_REP, 
+				       Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.ALL_TEST_THROWABLES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -607,7 +628,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 
 	Set expectedRep = new ExceptionHashSet(utility.PERENNIAL_THROW_EXCEPTIONS);
 	expectedRep.add(AnySubType.v(Scene.v().getRefType("java.util.zip.ZipException")));
-	assertTrue(utility.sameMembers(expectedRep, unitAnalysis.mightThrow(s)));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
+				       unitAnalysis.mightThrow(s)));
 
 	Set expectedCatch = new ExceptionHashSet(utility.PERENNIAL_THROW_EXCEPTIONS_PLUS_SUPERTYPES);
 	// We don't need to add java.util.zip.ZipException, since it is not
@@ -619,11 +641,14 @@ public class UnitThrowAnalysisTest extends TestCase {
 	s = Grimp.v().newThrowStmt(
 		Grimp.v().newNewInvokeExpr(
 		    utility.INCOMPATIBLE_CLASS_CHANGE_ERROR,
-		    utility.INCOMPATIBLE_CLASS_CHANGE_ERROR.getSootClass().getMethod("void <init>()"),
+		    Scene.v().makeMethodRef(utility.INCOMPATIBLE_CLASS_CHANGE_ERROR.getSootClass(),
+					    "void <init>", Collections.EMPTY_LIST, 
+					    VoidType.v(), false),
 		    new ArrayList()
 		)
 	    );
 	assertTrue(utility.sameMembers(utility.THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE, 
+				       Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -635,7 +660,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 	expectedRep = new ExceptionHashSet(utility.PERENNIAL_THROW_EXCEPTIONS);
 	expectedRep.remove(utility.INCOMPATIBLE_CLASS_CHANGE_ERROR);
 	expectedRep.add(AnySubType.v(utility.INCOMPATIBLE_CLASS_CHANGE_ERROR));
-	assertTrue(utility.sameMembers(expectedRep, unitAnalysis.mightThrow(s)));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
+				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUBTYPES_PLUS_SUPERTYPES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
 
@@ -643,6 +669,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	local = Jimple.v().newLocal("local1", soot.UnknownType.v());
 	s.setOp(local);
 	assertTrue(utility.sameMembers(utility.ALL_THROWABLES_REP, 
+				       Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(s)));
 	assertEquals(utility.ALL_TEST_THROWABLES, 
 		     utility.catchableSubset(unitAnalysis.mightThrow(s)));
@@ -658,7 +685,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	expectedRep.add(utility.NULL_POINTER_EXCEPTION);
 	expectedRep.add(utility.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep, 
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(arrayRef)));
 
 	Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
@@ -680,7 +707,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	expectedRep.add(utility.NULL_POINTER_EXCEPTION);
 	expectedRep.add(utility.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep, 
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(arrayRef)));
 
 	Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
@@ -708,97 +735,97 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Local doubleLocal = Jimple.v().newLocal("doubleLocal", DoubleType.v());
 
 	DivExpr v = Jimple.v().newDivExpr(intLocal, IntConstant.v(0));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(intLocal, IntConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(IntConstant.v(0), IntConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(intLocal, intLocal);
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(longLocal, LongConstant.v(0));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(longLocal, LongConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(LongConstant.v(0), LongConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(longLocal, longLocal);
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(floatLocal, FloatConstant.v(0.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(floatLocal, FloatConstant.v(2.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(FloatConstant.v(0), FloatConstant.v(2.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(floatLocal, floatLocal);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(doubleLocal, DoubleConstant.v(0.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(doubleLocal, DoubleConstant.v(2.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(DoubleConstant.v(0), DoubleConstant.v(2.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newDivExpr(doubleLocal, doubleLocal);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
@@ -819,111 +846,111 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Local doubleLocal = Grimp.v().newLocal("doubleLocal", DoubleType.v());
 
 	DivExpr v = Grimp.v().newDivExpr(intLocal, IntConstant.v(0));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(intLocal, IntConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(IntConstant.v(0), IntConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(intLocal, intLocal);
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(Grimp.v().newAddExpr(intLocal, intLocal),
 				 Grimp.v().newMulExpr(intLocal, intLocal));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(longLocal, LongConstant.v(0));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(longLocal, LongConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(LongConstant.v(0), LongConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(longLocal, longLocal);
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(Grimp.v().newAddExpr(longLocal, longLocal),
 				 Grimp.v().newMulExpr(longLocal, longLocal));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(floatLocal, FloatConstant.v(0.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(floatLocal, FloatConstant.v(2.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(FloatConstant.v(0), FloatConstant.v(2.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(floatLocal, floatLocal);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(doubleLocal, DoubleConstant.v(0.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(doubleLocal, DoubleConstant.v(2.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(DoubleConstant.v(0), DoubleConstant.v(2.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newDivExpr(doubleLocal, doubleLocal);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
@@ -944,97 +971,97 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Local doubleLocal = Jimple.v().newLocal("doubleLocal", DoubleType.v());
 
 	RemExpr v = Jimple.v().newRemExpr(intLocal, IntConstant.v(0));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(intLocal, IntConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(IntConstant.v(0), IntConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(intLocal, intLocal);
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(longLocal, LongConstant.v(0));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(longLocal, LongConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(LongConstant.v(0), LongConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(longLocal, longLocal);
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(floatLocal, FloatConstant.v(0.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(floatLocal, FloatConstant.v(2.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(FloatConstant.v(0), FloatConstant.v(2.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(floatLocal, floatLocal);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(doubleLocal, DoubleConstant.v(0.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(doubleLocal, DoubleConstant.v(2.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(DoubleConstant.v(0), DoubleConstant.v(2.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newRemExpr(doubleLocal, doubleLocal);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
@@ -1055,111 +1082,111 @@ public class UnitThrowAnalysisTest extends TestCase {
 	Local doubleLocal = Grimp.v().newLocal("doubleLocal", DoubleType.v());
 
 	RemExpr v = Grimp.v().newRemExpr(intLocal, IntConstant.v(0));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(intLocal, IntConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(IntConstant.v(0), IntConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(intLocal, intLocal);
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(Grimp.v().newAddExpr(intLocal, intLocal),
 				 Grimp.v().newMulExpr(intLocal, intLocal));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(longLocal, LongConstant.v(0));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(longLocal, LongConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(LongConstant.v(0), LongConstant.v(2));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(longLocal, longLocal);
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(Grimp.v().newAddExpr(longLocal, longLocal),
 				 Grimp.v().newMulExpr(longLocal, longLocal));
-	assertTrue(utility.sameMembers(vmAndArithmetic,
+	assertTrue(utility.sameMembers(vmAndArithmetic, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(vmAndArithmeticAndSupertypes,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(floatLocal, FloatConstant.v(0.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(floatLocal, FloatConstant.v(2.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(FloatConstant.v(0), FloatConstant.v(2.0f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(floatLocal, floatLocal);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(doubleLocal, DoubleConstant.v(0.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(doubleLocal, DoubleConstant.v(2.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(DoubleConstant.v(0), DoubleConstant.v(2.0));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newRemExpr(doubleLocal, doubleLocal);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
@@ -1168,28 +1195,28 @@ public class UnitThrowAnalysisTest extends TestCase {
     public void testJBinOpExp() {
 	Value v = Jimple.v().newAddExpr(IntConstant.v(456), 
 					Jimple.v().newLocal("local", IntType.v()));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newOrExpr(Jimple.v().newLocal("local", LongType.v()),
 				 LongConstant.v(33));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newLeExpr(Jimple.v().newLocal("local", FloatType.v()),
 				 FloatConstant.v(33.42f));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Jimple.v().newEqExpr(DoubleConstant.v(-33.45e-3),
 				 Jimple.v().newLocal("local", DoubleType.v()));
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
@@ -1198,12 +1225,14 @@ public class UnitThrowAnalysisTest extends TestCase {
     public void testGBinOpExp() {
 	Value v = Grimp.v().newAddExpr(floatStaticFieldRef, floatConstant);
 	assertTrue(utility.sameMembers(utility.ALL_ERRORS_REP,
+				       Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.ALL_TEST_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newOrExpr(v, floatConstant);
-	assertTrue(utility.sameMembers(utility.ALL_ERRORS_REP,
+	assertTrue(utility.sameMembers(utility.ALL_ERRORS_REP, 
+				       Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.ALL_TEST_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
@@ -1217,16 +1246,18 @@ public class UnitThrowAnalysisTest extends TestCase {
 	expectedCatch.add(utility.EXCEPTION);
 
 	v = Grimp.v().newLeExpr(floatInstanceFieldRef, v);
-	assertTrue(utility.sameMembers(expectedRep, unitAnalysis.mightThrow(v)));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
+				       unitAnalysis.mightThrow(v)));
 	assertEquals(expectedCatch,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
 	v = Grimp.v().newEqExpr(v, floatVirtualInvoke);
-	assertTrue(utility.sameMembers(expectedRep, 
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       immaculateAnalysis.mightThrow(v)));
 	assertEquals(expectedCatch,
 		     utility.catchableSubset(immaculateAnalysis.mightThrow(v)));
 	assertTrue(utility.sameMembers(utility.ALL_THROWABLES_REP,
+				       Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.ALL_TEST_THROWABLES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
@@ -1241,6 +1272,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	assertEquals(expectedCatch,
 		     utility.catchableSubset(immaculateAnalysis.mightThrow(v)));
 	assertTrue(utility.sameMembers(utility.ALL_THROWABLES_REP,
+				       Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.ALL_TEST_THROWABLES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
@@ -1253,7 +1285,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 					 utility.LINKAGE_ERROR);
 	Set expectedRep = new ExceptionHashSet(utility.VM_AND_RESOLVE_CLASS_ERRORS_REP);
 	Set expectedCatch = new ExceptionHashSet(utility.VM_AND_RESOLVE_CLASS_ERRORS_PLUS_SUPERTYPES);
-	assertTrue(utility.sameMembers(expectedRep, unitAnalysis.mightThrow(v)));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
+				       unitAnalysis.mightThrow(v)));
 	assertEquals(expectedCatch,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
@@ -1262,7 +1295,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 	v = Jimple.v().newCastExpr(Jimple.v().newLocal("local",
 						       utility.LINKAGE_ERROR),
 				   utility.LINKAGE_ERROR);
-	assertTrue(utility.sameMembers(expectedRep, unitAnalysis.mightThrow(v)));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
+				       unitAnalysis.mightThrow(v)));
 	assertEquals(expectedCatch,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
@@ -1272,7 +1306,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 				   utility.INCOMPATIBLE_CLASS_CHANGE_ERROR);
 
 	expectedRep.add(utility.CLASS_CAST_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep, 
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 
 	expectedCatch.add(utility.CLASS_CAST_EXCEPTION);
@@ -1290,7 +1324,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 					 utility.LINKAGE_ERROR);
 	Set expectedRep = new ExceptionHashSet(utility.VM_AND_RESOLVE_CLASS_ERRORS_REP);
 	Set expectedCatch = new ExceptionHashSet(utility.VM_AND_RESOLVE_CLASS_ERRORS_PLUS_SUPERTYPES);
-	assertTrue(utility.sameMembers(expectedRep, unitAnalysis.mightThrow(v)));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
+				       unitAnalysis.mightThrow(v)));
 	assertEquals(expectedCatch,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
@@ -1299,7 +1334,8 @@ public class UnitThrowAnalysisTest extends TestCase {
 	v = Jimple.v().newCastExpr(Jimple.v().newLocal("local",
 						       utility.LINKAGE_ERROR),
 				   utility.LINKAGE_ERROR);
-	assertTrue(utility.sameMembers(expectedRep, unitAnalysis.mightThrow(v)));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
+				       unitAnalysis.mightThrow(v)));
 	assertEquals(expectedCatch,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
 
@@ -1309,7 +1345,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 				   utility.INCOMPATIBLE_CLASS_CHANGE_ERROR);
 
 	expectedRep.add(utility.CLASS_CAST_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep, 
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 
 	expectedCatch.add(utility.CLASS_CAST_EXCEPTION);
@@ -1332,9 +1368,10 @@ public class UnitThrowAnalysisTest extends TestCase {
 	expectedCatch.add(utility.RUNTIME_EXCEPTION);
 	expectedCatch.add(utility.EXCEPTION);
 
-	SootField field = utility.THROWABLE.getSootClass().getFieldByName("detailMessage");
-	Value v = Grimp.v().newInstanceFieldRef(local, field);
-	assertTrue(utility.sameMembers(expectedRep, 
+	Value v = Grimp.v().newInstanceFieldRef(local, 
+	    Scene.v().makeFieldRef(utility.THROWABLE.getSootClass(), "detailMessage", 
+				   RefType.v("java.lang.String"), false));
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(expectedCatch,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
@@ -1343,7 +1380,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 
     public void testStringConstant() {
 	Value v = StringConstant.v("test");
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(v)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(v)));
@@ -1352,7 +1389,7 @@ public class UnitThrowAnalysisTest extends TestCase {
     public void testJLocal() {
 	Local local = Jimple.v().newLocal("local1", 
 					  utility.INCOMPATIBLE_CLASS_CHANGE_ERROR);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(local)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(local)));
@@ -1361,7 +1398,7 @@ public class UnitThrowAnalysisTest extends TestCase {
     public void testGLocal() {
 	Local local = Grimp.v().newLocal("local1", 
 					 utility.INCOMPATIBLE_CLASS_CHANGE_ERROR);
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(local)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(local)));
@@ -1369,7 +1406,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 
     public void testBAddInst() {
 	soot.baf.AddInst i = soot.baf.Baf.v().newAddInst(IntType.v());
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(i)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(i)));
@@ -1377,7 +1414,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	
     public void testBAndInst() {
 	soot.baf.AndInst i = soot.baf.Baf.v().newAndInst(IntType.v());
-	assertTrue(utility.sameMembers(utility.VM_ERRORS,
+	assertTrue(utility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(i)));
 	assertEquals(utility.VM_ERRORS_PLUS_SUPERTYPES,
 		     utility.catchableSubset(unitAnalysis.mightThrow(i)));
@@ -1387,7 +1424,7 @@ public class UnitThrowAnalysisTest extends TestCase {
 	soot.baf.ArrayLengthInst i = soot.baf.Baf.v().newArrayLengthInst();
 	Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
 	expectedRep.add(utility.NULL_POINTER_EXCEPTION);
-	assertTrue(utility.sameMembers(expectedRep,
+	assertTrue(utility.sameMembers(expectedRep, Collections.EMPTY_SET,
 				       unitAnalysis.mightThrow(i)));
 	Set expectedCatch = new ExceptionHashSet(utility.VM_ERRORS_PLUS_SUPERTYPES);
 	expectedCatch.add(utility.NULL_POINTER_EXCEPTION);

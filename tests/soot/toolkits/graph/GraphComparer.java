@@ -862,7 +862,7 @@ public class GraphComparer {
 	    for (Iterator it = exceptional.getExceptionDests(head).iterator(); 
 		 it.hasNext(); ) {
 		ExceptionDest dest = (ExceptionDest) it.next();
-		headsCatchers.add(dest.trap());
+		headsCatchers.add(dest.getTrap());
 	    }
 
 	    // Now ensure that one of the possibleThrowers might throw
@@ -875,7 +875,7 @@ public class GraphComparer {
 		Collection dests = exceptional.getExceptionDests(thrower);
 		for (Iterator destIt = dests.iterator(); destIt.hasNext(); ) {
 		    ExceptionDest dest = (ExceptionDest) destIt.next();
-		    Trap trap = dest.trap();
+		    Trap trap = dest.getTrap();
 		    if (tailsTraps.contains(trap)) {
 			if (headsCatchers.contains(trap)) {
 			    throw new RuntimeException("trapsReachedViaEdge(): somehow there is no TrapUnitGraph edge from " + head + " to " + tail + " even though the former throws an exception caught by the latter!");
@@ -1010,7 +1010,7 @@ public class GraphComparer {
     private static boolean destCollectionIncludes(Collection dests, Trap trap) {
 	for (Iterator destIt = dests.iterator(); destIt.hasNext(); ) {
 	    ExceptionDest dest = (ExceptionDest) destIt.next();
-	    if (dest.trap() == trap) {
+	    if (dest.getTrap() == trap) {
 		return true;
 	    }
 	}

@@ -49,7 +49,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
     // We follow two conventions to save space (and runtime, if no client ever 
     // asks for the exceptional information):  if the graph contains no
     // exceptional edges (e.g. there are no traps in the method) we leave
-    // all these maps as NULL, while if an individual block has only 
+    // all these map references as NULL, while if an individual block has only 
     // unexceptional successors or predecessors, it is not added to the 
     // relevant map. When the access methods are asked about such blocks, 
     // they return empty lists for the exceptional predecessors and successors,
@@ -67,15 +67,15 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
     ThrowAnalysis throwAnalysis ;
 
     /**
-     *   <p> Constructs a <code>ExceptionalBlockGraph</code> for the blocks
-     *   found by partitioning the the units of the provided
+     *   <p>Constructs an <code>ExceptionalBlockGraph</code> for the
+     *   blocks found by partitioning the the units of the provided
      *   <code>Body</code> instance into basic blocks.</p>
      *
-     *   <p> Note that this constructor builds a {@link
+     *   <p>Note that this constructor builds an {@link
      *   ExceptionalUnitGraph} internally when splitting <code>body</code>'s
      *   {@link Unit}s into {@link Block}s.  Callers who already have
-     *   a <code>ExceptionalUnitGraph</code> to hand can use the constructor
-     *   taking a <code>ExceptionalUnitGraph</code> as a parameter, as a
+     *   an <code>ExceptionalUnitGraph</code> to hand can use the constructor
+     *   taking an <code>ExceptionalUnitGraph</code> as a parameter, as a
      *   minor optimization.
      *
      *   @param body    The underlying body we want to make a graph for.
@@ -88,9 +88,9 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 
     /**
      *   Constructs a graph for the blocks found by partitioning the
-     *   the {@link Unit}s in a {@link ExceptionalUnitGraph}.  
+     *   the {@link Unit}s in an {@link ExceptionalUnitGraph}.  
      *
-     *   @param unitGraph The {@link ExceptionalUnitGraph} whose
+     *   @param unitGraph The <code>ExceptionalUnitGraph</code> whose
      *                    <code>Unit</code>s are to be split into blocks.
      */
     public ExceptionalBlockGraph(ExceptionalUnitGraph unitGraph)
@@ -160,7 +160,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 		    List exceptionalSuccs = mappedValues(exceptionalSuccUnits,
 							 unitToBlock);
 		    exceptionalSuccs = Collections.unmodifiableList(exceptionalSuccs);
-		    blockToExceptionalSuccs.put(block, exceptionalSuccs);
+		      blockToExceptionalSuccs.put(block, exceptionalSuccs);
 		    List unexceptionalSuccUnits = unitGraph.getUnexceptionalSuccsOf(blockTail);
 		    List unexceptionalSuccs = null;
 		    if (unexceptionalSuccUnits.size() == 0) {
@@ -205,6 +205,17 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
     }
 
 
+    private Map buildExceptionDests(ExceptionalUnitGraph unitGraph, 
+				    Map unitToBlock) {
+	Map result = new HashMap(mBlocks.size() * 2 + 1, 0.7f);
+	for (Iterator blockIt = mBlocks.iterator(); blockIt.hasNext(); ) {
+	    Block block = (Block) blockIt.next();
+	    result.put(block, collectDests(block, unitGraph, unitToBlock));
+	}
+	return result;
+    }
+
+
     /**
      * Utility method which, given a {@link Block} and the 
      * {@link ExceptionalUnitGraph} from which it was constructed,
@@ -227,9 +238,11 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 				    Map unitToBlock) {
 	Unit blockHead = block.getHead();
 	Unit blockTail = block.getTail();
+	ArrayList blocksDests = null;
 	ThrowableSet escapingThrowables = ThrowableSet.Manager.v().EMPTY;
 	Map trapToThrowables = null;	// Don't allocate unless we need it.
 	int caughtCount = 0;
+
 	for (Iterator unitIt = block.iterator(); unitIt.hasNext(); ) {
 	    Unit unit = (Unit) unitIt.next();
 	    Collection unitDests = unitGraph.getExceptionDests(unit);
@@ -240,8 +253,32 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 		ExceptionalUnitGraph.ExceptionDest unitDest 
 		    = (ExceptionalUnitGraph.ExceptionDest) destIt.next();
 		if (unitDest.getTrap() == null) {
-		    escapingThrowables = escapingThrowables.add(unitDest.getThrowables());
+		    try {
+			escapingThrowables = escapingThrowables.add(unitDest.getThrowables());
+		    } catch (ThrowableSet.AlreadyHasExclusionsException e) {
+			if (escapingThrowables != ThrowableSet.Manager.v().EMPTY) {
+			    // Return multiple escaping ExceptionDests,
+			    // since ThrowableSet's limitations do not permit us
+			    // to add all the escaping type descriptions together.
+			    if (blocksDests == null) {
+				blocksDests = new ArrayList(10);
+			    }
+			    blocksDests.add(new ExceptionDest(null, 
+							      escapingThrowables,
+							      null));
+			}
+			escapingThrowables = unitDest.getThrowables();
+		    }
 		} else {
+		    if (unit != blockHead && unit != blockTail) {
+			// Assertion failure.
+			throw new IllegalStateException("Unit " 
+							+ unit.toString() 
+							+ " is not a block head or tail, yet it throws " 
+							+ unitDest.getThrowables() 
+							+ " to "
+							+ unitDest.getTrap());
+		    }
 		    caughtCount++;
 		    if (trapToThrowables == null) {
 			trapToThrowables = new HashMap(unitDests.size() * 2);
@@ -258,7 +295,12 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 	    }
 	}
 	
-	Collection blocksDests = new ArrayList(caughtCount + 1);
+	if (blocksDests == null) {
+	    blocksDests = new ArrayList(caughtCount + 1);
+	} else {
+	    blocksDests.ensureCapacity(blocksDests.size() + caughtCount);
+	}
+
 	if (escapingThrowables != ThrowableSet.Manager.v().EMPTY) {
 	    ExceptionDest escapingDest = new ExceptionDest(null, escapingThrowables, 
 							   null);
@@ -279,17 +321,6 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 	    }
 	}
 	return blocksDests;
-    }
-
-	
-    private Map buildExceptionDests(ExceptionalUnitGraph unitGraph, 
-				    Map unitToBlock) {
-	Map result = new HashMap(mBlocks.size() * 2 + 1, 0.7f);
-	for (Iterator blockIt = mBlocks.iterator(); blockIt.hasNext(); ) {
-	    Block block = (Block) blockIt.next();
-	    result.put(block, collectDests(block, unitGraph, unitToBlock));
-	}
-	return result;
     }
 
 								  

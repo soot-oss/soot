@@ -82,41 +82,32 @@ public class ExceptionTestUtility {
     ExceptionTestUtility(String pathToJavaLib) {
 	Scene.v().setSootClassPath(pathToJavaLib);
 
-	Scene.v().loadClassAndSupport("java.lang.Throwable");
 	THROWABLE = Scene.v().getRefType("java.lang.Throwable");
 
-	Scene.v().loadClassAndSupport("java.lang.Error");
 	ERROR = Scene.v().getRefType("java.lang.Error");
 
 	Scene.v().loadClassAndSupport("java.lang.Exception");
 	EXCEPTION = Scene.v().getRefType("java.lang.Exception");
 
 	// runtime exceptions.
-	Scene.v().loadClassAndSupport("java.lang.RuntimeException");
 	RUNTIME_EXCEPTION 
 	    = Scene.v().getRefType("java.lang.RuntimeException");
 
-	Scene.v().loadClassAndSupport("java.lang.ArithmeticException");
 	ARITHMETIC_EXCEPTION
 	    = Scene.v().getRefType("java.lang.ArithmeticException");
 
-	Scene.v().loadClassAndSupport("java.lang.ArrayStoreException");
 	ARRAY_STORE_EXCEPTION
 	    = Scene.v().getRefType("java.lang.ArrayStoreException");
 
-	Scene.v().loadClassAndSupport("java.lang.ClassCastException");
 	CLASS_CAST_EXCEPTION 
 	    = Scene.v().getRefType("java.lang.ClassCastException");
 
-	Scene.v().loadClassAndSupport("java.lang.IllegalMonitorStateException");
 	ILLEGAL_MONITOR_STATE_EXCEPTION
 	    = Scene.v().getRefType("java.lang.IllegalMonitorStateException");
 
-	Scene.v().loadClassAndSupport("java.lang.IndexOutOfBoundsException");
 	INDEX_OUT_OF_BOUNDS_EXCEPTION
 	    = Scene.v().getRefType("java.lang.IndexOutOfBoundsException");
 
-	Scene.v().loadClassAndSupport("java.lang.ArrayIndexOutOfBoundsException");
 	ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION
 	    = Scene.v().getRefType("java.lang.ArrayIndexOutOfBoundsException");
 
@@ -124,23 +115,18 @@ public class ExceptionTestUtility {
 	STRING_INDEX_OUT_OF_BOUNDS_EXCEPTION
 	    = Scene.v().getRefType("java.lang.StringIndexOutOfBoundsException");
 
-	Scene.v().loadClassAndSupport("java.lang.NegativeArraySizeException");
 	NEGATIVE_ARRAY_SIZE_EXCEPTION
 	    = Scene.v().getRefType("java.lang.NegativeArraySizeException");
 
-	Scene.v().loadClassAndSupport("java.lang.NullPointerException");
 	NULL_POINTER_EXCEPTION
 	    = Scene.v().getRefType("java.lang.NullPointerException");
 
 	// linkage errors.
-	Scene.v().loadClassAndSupport("java.lang.LinkageError");
 	LINKAGE_ERROR = Scene.v().getRefType("java.lang.LinkageError");
 
-	Scene.v().loadClassAndSupport("java.lang.ClassCircularityError");
 	CLASS_CIRCULARITY_ERROR
 	    = Scene.v().getRefType("java.lang.ClassCircularityError");
 
-	Scene.v().loadClassAndSupport("java.lang.ClassFormatError");
 	CLASS_FORMAT_ERROR
 	    = Scene.v().getRefType("java.lang.ClassFormatError");
 
@@ -148,43 +134,33 @@ public class ExceptionTestUtility {
 	UNSUPPORTED_CLASS_VERSION_ERROR
     	    = Scene.v().getRefType("java.lang.UnsupportedClassVersionError");
 
-	Scene.v().loadClassAndSupport("java.lang.ExceptionInInitializerError");
 	EXCEPTION_IN_INITIALIZER_ERROR
 	    = Scene.v().getRefType("java.lang.ExceptionInInitializerError");
 
-	Scene.v().loadClassAndSupport("java.lang.IncompatibleClassChangeError");
 	INCOMPATIBLE_CLASS_CHANGE_ERROR
 	    = Scene.v().getRefType("java.lang.IncompatibleClassChangeError");
 
-	Scene.v().loadClassAndSupport("java.lang.AbstractMethodError");
 	ABSTRACT_METHOD_ERROR 
 	    = Scene.v().getRefType("java.lang.AbstractMethodError");
 
-	Scene.v().loadClassAndSupport("java.lang.IllegalAccessError");
 	ILLEGAL_ACCESS_ERROR
 	    = Scene.v().getRefType("java.lang.IllegalAccessError");
 
-	Scene.v().loadClassAndSupport("java.lang.InstantiationError");
 	INSTANTIATION_ERROR
 	    = Scene.v().getRefType("java.lang.InstantiationError");
 
-	Scene.v().loadClassAndSupport("java.lang.NoSuchFieldError");
 	NO_SUCH_FIELD_ERROR
 	    = Scene.v().getRefType("java.lang.NoSuchFieldError");
 
-	Scene.v().loadClassAndSupport("java.lang.NoSuchMethodError");
 	NO_SUCH_METHOD_ERROR
 	    = Scene.v().getRefType("java.lang.NoSuchMethodError");
 
-	Scene.v().loadClassAndSupport("java.lang.NoClassDefFoundError");
 	NO_CLASS_DEF_FOUND_ERROR
 	    = Scene.v().getRefType("java.lang.NoClassDefFoundError");
 
-	Scene.v().loadClassAndSupport("java.lang.UnsatisfiedLinkError");
 	UNSATISFIED_LINK_ERROR
 	    = Scene.v().getRefType("java.lang.UnsatisfiedLinkError");
 
-	Scene.v().loadClassAndSupport("java.lang.VerifyError");
 	VERIFY_ERROR
 	    = Scene.v().getRefType("java.lang.VerifyError");
 
@@ -196,23 +172,18 @@ public class ExceptionTestUtility {
 	AWT_ERROR = Scene.v().getRefType("java.awt.AWTError");
 
 	// VM errors:
-	Scene.v().loadClassAndSupport("java.lang.InternalError");
 	INTERNAL_ERROR
 	    = Scene.v().getRefType("java.lang.InternalError");
 
-	Scene.v().loadClassAndSupport("java.lang.OutOfMemoryError");
 	OUT_OF_MEMORY_ERROR
 	    = Scene.v().getRefType("java.lang.OutOfMemoryError");
 
-	Scene.v().loadClassAndSupport("java.lang.StackOverflowError");
 	STACK_OVERFLOW_ERROR
 	    = Scene.v().getRefType("java.lang.StackOverflowError");
 
-	Scene.v().loadClassAndSupport("java.lang.UnknownError");
 	UNKNOWN_ERROR
 	    = Scene.v().getRefType("java.lang.UnknownError");
 
-	Scene.v().loadClassAndSupport("java.lang.ThreadDeath");
 	THREAD_DEATH
 	    = Scene.v().getRefType("java.lang.ThreadDeath");
 
@@ -493,31 +464,31 @@ public class ExceptionTestUtility {
      * @param thrownSet {@link ThrowableSet} whose contents are being
      * checked.
      *
-     * @param expected contains the collection of {@link RefType} and {@link AnySubType} objects that are expected to be in <code>thrownSet</code>.
+     * @param expectedIncludes contains the collection of {@link
+     * RefType} and {@link AnySubType} objects that are expected to be
+     * included in <code>thrownSet</code>.
+     *
+     * @param expectedExcludes contains the collection of {@link
+     * RefType} and {@link AnySubType} objects that are expected to be
+     * excluded from <code>thrownSet</code>.
      *
      * @return <code>true</code> if <code>thrownSet</code> and
      * <code>expected</code> have the same members.
      */
-    public static boolean sameMembers(Set expected, ThrowableSet thrownSet) {
-	int thrownSize = 0;
-	boolean result = true;
-	for (Iterator i = thrownSet.types().iterator(); i.hasNext(); ) {
-	    RefLikeType type = (RefLikeType) i.next();
-	    thrownSize++;
-	    if (! expected.contains(type)) {
-		result = false;
-	    }
+    public static boolean sameMembers(Set expectedIncluded, Set expectedExcluded, 
+				      ThrowableSet thrownSet) {
+	if (   (expectedIncluded.size() != thrownSet.typesIncluded().size())
+	    || (expectedExcluded.size() != thrownSet.typesExcluded().size())
+	    || (! expectedIncluded.containsAll(thrownSet.typesIncluded()))
+	    || (! expectedExcluded.containsAll(thrownSet.typesExcluded()))) {
+	    System.out.println("\nExpected included:" + expectedIncluded.toString() 
+			       + "\nExpected excluded:" + expectedExcluded.toString()
+			       + "\nActual:\n" + thrownSet.toString()); 
+	    return false;
+	} else {
+	    return true;
 	}
-	if (thrownSize != expected.size()) {
-	    result = false;
-	}
-	if (result != true) {
-	    System.out.println("\nExpected:" + expected.toString() + 
-			       "\nActual:\n" + thrownSet.toString());
-	}
-	return result;
     }
-
 
 
     public static class ExceptionHashSet extends HashSet {

@@ -327,10 +327,29 @@ public class HashChain extends AbstractCollection
         return new LinkIterator(item);
     }
 
-    /** Returns an iterator ranging from head to tail, inclusive. */
+    /** <p>Returns an iterator ranging from <code>head</code> to
+     *  <code>tail</code>, inclusive.</p>
+
+        <p>If <code>tail</code> is the element immediately preceding
+        <code>head</code> in this <code>HashChain</code>, the returned
+        iterator will iterate 0 times (a special case to allow the
+        specification of an empty range of elements). Otherwise if
+        <code>tail</code> is not one of the elements following
+        <code>head</code>, the returned iterator will iterate past the
+        end of the <code>HashChain</code>, provoking a
+        {@link NoSuchElementException}.</p>
+
+	@throws NoSuchElementException if <code>head</code> is not
+	an element of the chain.
+     */
     public Iterator iterator(Object head, Object tail)
     {
-        return new LinkIterator(head, tail);
+	if (head != null && this.getPredOf(head) == tail) { 
+	    // special case hack, so empty ranges iterate 0 times
+	    return new LinkIterator(null, null);
+	} else {
+	    return new LinkIterator(head, tail);
+	}
     }
 
     public int size(){ return map.size(); }               
@@ -436,17 +455,18 @@ public class HashChain extends AbstractCollection
         boolean state;    // only when this is true can remove() be called 
         // (in accordance w/ iterator semantics)
             
-        boolean stop;
         private Object destination;
         private long iteratorStateCount;
 
 
         public LinkIterator(Object item) 
         {
+	    Link nextLink = (Link) map.get(item);
+	    if (nextLink == null && item != null) 
+		throw new NoSuchElementException("HashChain.LinkIterator(obj) with obj that is not in the chain: " + item.toString() );
             currentLink = new Link(null);
-            currentLink.setNext((Link) map.get(item));
+            currentLink.setNext(nextLink);
             state = false;
-            stop = false;
             destination = null;
             iteratorStateCount = stateCount;
         }
@@ -463,11 +483,14 @@ public class HashChain extends AbstractCollection
             if(stateCount != iteratorStateCount) {
                 throw new ConcurrentModificationException();
             }
-            
-            if(currentLink.getNext() == null)
-                return false;
-            else
-                return !stop;
+
+	    if(destination == null)
+		return (currentLink.getNext() != null);
+	    else
+		// Ignore whether (currentLink.getNext() == null), so
+		// next() will produce a NoSuchElementException if
+		// destination is not in the chain.
+		return (destination != currentLink.getItem());
         }
             
         public Object next()
@@ -477,14 +500,15 @@ public class HashChain extends AbstractCollection
                 throw new ConcurrentModificationException();
                         
             Link temp = currentLink.getNext();
-            if(temp == null || stop)
-                throw new NoSuchElementException(temp + " " + stop);
-
+            if(temp == null) {
+		String exceptionMsg;
+		if(destination != null && destination != currentLink.getItem())
+		    exceptionMsg = "HashChain.LinkIterator.next() reached end of chain without reaching specified tail unit";
+	        else 
+		    exceptionMsg = "HashChain.LinkIterator.next() called past the end of the Chain";
+                throw new NoSuchElementException(exceptionMsg);
+	    }
             currentLink = temp;
-
-            if(destination != null)
-                if(destination == currentLink.getItem()) 
-                    stop = true;
 
             state = true;
             return currentLink.getItem();
