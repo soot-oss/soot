@@ -34,7 +34,7 @@
 <center>
 <a name="top"><b><font face="helvetica,arial" size="+2">Soot: a Java Optimization Framework</font></b></center></a> <br>
 <center>
-<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 1.2.1 (January 29, 2001)</font></b></center></a> <br><br>
+<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 1.2.3 (May 8, 2002)</font></b></center></a> <br><br>
 
 Need help using Soot?  See the Soot <a href="tutorial"> tutorials</a>.<br><br>
 
@@ -65,7 +65,7 @@ as a framework to develop optimizations or transformations on Java
 bytecode.
 
 <p>Soot is free software and is licensed under the <a
-href="http://www.gnu.org/copyleft/lgpl.html">GNU Library General Public
+href="http://www.gnu.org/copyleft/lesser.html">GNU Lesser General Public
 License</a>.
 
 </blockquote>
@@ -81,13 +81,27 @@ License</a>.
 <blockquote>
 
 <p>The Soot Framework is an evolving research project. Our goal is to produce a
-highly robust framework for optimizing Java which is easy to use.  
+highly robust research framework for optimizing Java which is easy to use.  
+
+<!-- Release 1.2.3 --> <p>
+The latest release is version 1.2.3, which fixes a few bugs from release 1.2.2 and incorporates
+some improvements of memory usage. Some other enhancements are an option for preserving line
+number tables, re-implementation of partial redundency elimination, some utility classes for 
+viewing CFGs, and XML output of Jimple bodies. 
+Jasmin has been upgraded to sable-1.2, which allows the length of a token more than 64K 
+(this is often necessary for annotation).
+
+<!-- Release 1.2.2 --> <p>
+The release 1.2.2 fixes a few bugs from release
+1.2.1. It also improves its performance and stability over former versions.
+Jasmin has been upgraded to 1.06-s10, which fixes a bug in the grammar dealing
+with attribute data.
 
 <!-- Release 1.2.1 --> <p>
-The latest release is version 1.2.1, which fixes a few bugs from
+The release 1.2.1 fixes a few bugs from
 release 1.2.0.  A big improvement is that the release 1.2.1 can accept
-.jar file in the --soot-class-path command option. Also Jasmin has
-been upgraded to 1.06-s9; which no longer depends on Soot.  (Note that
+.jar file in the --soot-classpath command option. Also Jasmin has
+been upgraded to 1.06-s9, which no longer depends on Soot.  (Note that
 versions prior to 1.06-s8 also did not depend on Soot.)
 
 <!-- Release 1.2.0 --> <p>
@@ -97,14 +111,18 @@ annotation (courtesy of Feng Qian and Patrice Pominville). There is
 also an improved typing system, due to Etienne Gagnon. Variable-Type
 Analysis was cleanly reimplemented by Felix Kwok and we have included
 it in our release of Soot for the first time.  We also fixed a few
-bugs reported against version 1.0.0.
+bugs reported against version 1.0.0.<p>
 
-<p>In the future, we will develop a mechanism to support
-whole-program analysis based on a program's call graph.
+We plan the following <b>releases</b> for the near future:
+<ul>
+<li>The Dava decompiler is planned to have separate releases. 
+<li>A points-to analysis package is in our release schedule. 
+<li>Several new features will be included in our next major release, 1.3.0, 
+    which is scheduled for the end of the summer.
+</ul>
 
 <!-- Release 1.0.0
-<p>This release is our first official release.  We believe it to be quite solid,
-and have tested it on a set of 266 benchmarks.
+<p>This release is our first official release.  We believe it to be quite solid, and have tested it on a set of 266 benchmarks.
 
 <p>In the future, we hope to improve support for whole-program analysis.
 We will also develop more transformations for use with Soot.
@@ -115,19 +133,51 @@ We will also develop more transformations for use with Soot.
 <br>
 
 <!--ProjectStatus-->
+<a name="projectStatus"> 
 
-<a name="projectStatus"> <table width=100%> <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Improvements in version 1.2.1</b></font></td></a>
+<table width=100%> 
+<tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Improvements in version 1.2.3</b></font></td>
 <td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</tr>
 </table>
-
+<blockquote>
+Major improvements in version 1.2.3 are:
+<ul>
+<li> Improvements of memory usage reported by Michael Pan (pan@math.tau.ac.il).
+<li> Re-implementation of partial redundency elimination by Florian Loitsch (florian@loitsch.net).
+<li> Some utility classes helping SOOT produce Dot graphs.
+<li> An option (-A LineNumber) to preserve line number tables.
+</ul>
+Jasmin sable-1.2 allows the length of a token more than 64K.
+A complete list of changes is in the <a href="CHANGES.1.2.3">CHANGES</a> file.
+</blockquote>
+<p>
+<!-- status of 1.2.2 -->
+<table width=100%> 
+<tr>
+<td width=97% align=left><b>Major improvements in version 1.2.2</b></td>
+</table>
+<blockquote>
+   The release 1.2.2 improves the JSR eliminator to handle nested JSR/RETs, 
+   and corrects a misused method call in the method for building call graphs.
+   Jasmin 1.06-s10 fixes a bug in the grammar. 
+</blockquote>
+<p>
+<!-- status of 1.2.1 -->
+<table width=100%><tr>
+<td width=97% align=left><b>Major improvements in version 1.2.1</b></td>
+</tr>
+</table>
+<p>
 <blockquote>
 The release 1.2.1 fixed the jar bug in older versions. Now Soot can accept `rt.jar' in the --soot-class-path 
 command-line option.
 </blockquote>
 <p>
+<!-- status of 1.2.0 -->
 <table width=100%><tr>
-<td width=97% aligh=left><b>Major improvements in version 1.2.0</b></td>
+<td width=97% align=left><b>Major improvements in version 1.2.0</b></td>
 </tr>
 </table>
 <p>
@@ -141,9 +191,8 @@ This is a subset of changes in version 1.2.0; a more complete listing is in the 
 </blockquote>
 
 <!-- Status of release 1.0.0
-
-<a name="projectStatus"> <table width=100%> <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Improvements in version 1.0.0</b></font></td></a>
+<table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Improvements in version 1.0.0</b></font></td>
 <td width=3% align=left><font size="-2"><a href="#top">top</a></td>
 </table>
 
@@ -177,8 +226,8 @@ href="http://www.sable.mcgill.ca/software">http://www.sable.mcgill.ca/software</
 
 <p>
 To install it you must unjar(untar) it, and add the classes directories
-<tt>soot-1.2.1/soot/classes</tt> and
-<tt>soot-1.2.1/jasmin/classes</tt> to your CLASSPATH.  
+<tt>soot-1.2.3/soot/classes</tt> and
+<tt>soot-1.2.3/jasmin/classes</tt> to your CLASSPATH.  
 
 To test your installation of Soot, try:
 
@@ -191,9 +240,12 @@ java soot.Main
 <a href="tutorial/usage">usage document</a>.<p>
 
 Note that Soot requires at least JDK 1.2 (Java 2), as it uses Java Collections.
+Release 1.2.3 has been tested on Sun's JDK 1.3.1_01 for Linux.
+<!-- old story
 We have experienced some problems with the sunwjit JIT compiler; we do
 not recommend the use of this JIT.  In particular, common subexpression 
 elimination has triggered JIT problems with sunwjit.
+-->
 
 </blockquote>
 
@@ -206,12 +258,23 @@ elimination has triggered JIT problems with sunwjit.
 </table>
 <blockquote>
 
+Soot is already compiled in the distribution. To recompile Soot, we
+use <tt>make</tt> using the <tt>Makefile</tt> in the main
+<tt>soot</tt> directory.  The second choice is to use the
+<tt>SootCompiler</tt> class in the main <tt>soot/src</tt> directory.
+Note that in either case, <tt>jasmin</tt> must be in your <tt>classpath</tt>
+to compile Soot. Jasmin can be recompiled by using the script <tt>./bin/compile_all.sh</tt> in the main Jasmin directory. Release 1.2.3 uses a new version
+of Jasmin, sable-1.2.
+
+<!-- 1.2.2
 Soot is already compiled in the distribution.  To recompile Soot, 
 we recommend the use of the <tt>SootCompiler</tt> class in the main <tt>soot/src</tt> directory.
 However, we use <tt>make</tt> using the <tt>Makefile</tt> in the main <tt>soot</tt> directory.
 Note that in either case, jasmin must be in your classpath to compile Soot.
-Release 1.2.1 uses a new version of Jasmin, 1.06-s9, which has no dependence on
+Release 1.2.2 uses a new version of Jasmin, 1.06-s10, which has no dependence on
 Soot.
+-->
+
 <!--
 Invoking jams from the <tt>soot-1.2.1/soot</tt> will recompile Soot as necessary.
 It may be tricky to compile both Soot and jasmin at the same time
@@ -245,11 +308,10 @@ We have developed a number of documents describing Soot.  Your main
 current sources of information are:
 
 <ul>
-<li>There are 2 accepted <a
-href="http://www.sable.mcgill.ca/publications">conference papers</a>
-describing Soot.  
+<li>Our <a href="http://www.sable.mcgill.ca/publications">publication page</a> 
+has several conference papers describing Soot.  
 
-<li>A set of <a href="tutorial">documents</a> describing Soot, both as a Java application optimizer and
+<li>A set of <a href="tutorial">tutorials</a> describing Soot, both as a Java application optimizer and
 as a compiler framework.
 
 <li><a href="doc/index.html">The Soot API.</a> Most of the
@@ -273,16 +335,23 @@ well as browse the archive.  </ul>
 
 <blockquote>
 
-The mailing list <tt>soot-list@sable.mcgill.ca</tt> is the primary forum
+The mailing list 
+<tt><a href="mailto:soot-list@sable.mcgill.ca">soot-list@sable.mcgill.ca</a></tt> 
+is the primary forum
 for questions, discussions and comments on the Soot framework.  
 
-<blockquote>
-<p>To subscribe, send an e-mail to <tt>majordomo@sable.mcgill.ca</tt> with
-<tt>subscribe soot-list</tt> in the body. 
+<p>To subscribe, send an e-mail to 
+<tt><a href="mailto:majordomo@sable.mcgill.ca">majordomo@sable.mcgill.ca</A></tt> with
+<blockquote><pre>
+subscribe soot-list
+</blockquote></pre> 
+in the body. 
 
-<p>To unsubscribe, send an e-mail to <tt>majordomo@sable.mcgill.ca</tt> with
-<tt>unsubscribe soot-list</tt> in the body. 
-</blockquote>
+<p>To unsubscribe, send an e-mail to <tt><a href="mailto:majordomo@sable.mcgill.ca">majordomo@sable.mcgill.ca</a></tt> with
+<blockquote><PRE>
+unsubscribe soot-list
+</blockquote></pre> 
+in the body. 
 
 <p>You can also <a href="http://www.sable.mcgill.ca/listarchives/soot-list">view the mailing list archive</a>.
 
@@ -299,9 +368,11 @@ for questions, discussions and comments on the Soot framework.
 <blockquote>
  
 The official Soot maintainers are 
-<a href="mailto:rvalleerai@sable.mcgill.ca"> Raja Vallee-Rai</a>, 
-<a href="mailto:plam@sable.mcgill.ca">Patrick Lam</a>, and
-<a href="mailto:fqian@sable.mcgill.ca">Feng Qian</a>.
+<!-- Raja Vallee-Rai, -->
+Patrick Lam,
+Feng Qian, and
+Ondrej Lhotak.  For Soot support, write to the Soot mailing list at
+<A href="mailto:soot-list@sable.mcgill.ca">soot-list@sable.mcgill.ca</A>.
 
 <br>
 <br><b>Click <a href="./credits">here</a> for the complete list of contributors and acknowledgements.</b>
@@ -313,7 +384,7 @@ The official Soot maintainers are
 <center>
 <blockquote>
 
-<font face="Arial, Helvetica" size=-2> <i>Last updated on January 29, 2001</i><br></font>
+<font face="Arial, Helvetica"> <i>Last updated on May 8, 2002</i><br></font>
           
 </blockquote>
 
