@@ -124,8 +124,12 @@ public final class Edge
         if( o.type != type ) return false;
         return true;
     }
+    
+    public static String typeToString(int type) {
+        return types[type];
+    }
     public String toString() {
-        return types[type]+" edge: "+srcUnit+" in "+src+" ==> "+tgt;
+        return typeToString(type)+" edge: "+srcUnit+" in "+src+" ==> "+tgt;
     }
 
     private Edge nextBySrc = this;

@@ -24,22 +24,25 @@ public class CallGraphTagger extends BodyTransformer {
 			while (stmtIt.hasNext()){
 			
 				Stmt s = (Stmt) stmtIt.next();
-				Iterator targets = new Targets(cg.targetsOf(s));
+
+				Iterator edges = cg.targetsOf(s); 
 				
-				while (targets.hasNext()){
-					SootMethod m = (SootMethod)targets.next();
+				while (edges.hasNext()){
+					Edge e = (Edge)edges.next();
+					SootMethod m = e.tgt();
 					//G.v().out.println("Target Method: "+m.toString());
-					s.addTag(new StringTag("CallGraph: Target Method: "+m.toString()));
+					s.addTag(new StringTag("CallGraph: Type: "+e.typeToString(e.type())+" Target Method: "+m.toString()));
 				}
 			
 			}
 
 			SootMethod m = b.getMethod();
-			Iterator callers = new Sources(cg.callersOf(m));
-			while (callers.hasNext()){
-				SootMethod methodCaller = (SootMethod)callers.next();			
+			Iterator callerEdges = cg.callersOf(m);
+			while (callerEdges.hasNext()){
+				Edge callEdge = (Edge)callerEdges.next();
+				SootMethod methodCaller = callEdge.src();			
 				//G.v().out.println("Source Method: "+methodCaller.toString());
-				m.addTag(new StringTag("CallGraph: Source Method: "+methodCaller.toString()));
+				m.addTag(new StringTag("CallGraph: Source Type: "+callEdge.typeToString(callEdge.type())+" Source Method: "+methodCaller.toString()));
 			}
 		}
 		else {
