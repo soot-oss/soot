@@ -57,11 +57,6 @@ public class SIOptions
         return soot.PackManager.getInt( options, "max-inlinee-size" );
     }
     
-    /** VTA Passes --  */
-    public int VTA_passes() {
-        return soot.PackManager.getInt( options, "VTA-passes" );
-    }
-    
     /** Expansion Factor --  */
     public float expansion_factor() {
         return soot.PackManager.getFloat( options, "expansion-factor" );

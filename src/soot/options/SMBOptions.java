@@ -47,11 +47,6 @@ public class SMBOptions
         return soot.PackManager.getBoolean( options, "insert-redundant-casts" );
     }
     
-    /** VTA Passes --  */
-    public int VTA_passes() {
-        return soot.PackManager.getInt( options, "VTA-passes" );
-    }
-    
     public static final int allowed_modifier_changes_unsafe = 1;
     public static final int allowed_modifier_changes_safe = 2;
     public static final int allowed_modifier_changes_none = 3;

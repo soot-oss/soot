@@ -54,23 +54,6 @@ public class RectangularArrayFinder extends SceneTransformer
     {
 	Scene sc = Scene.v();
 
-	if (!sc.hasActiveInvokeGraph())
-	{
-	    Date start = new Date();
-	    if (soot.Main.v().opts.verbose())
-		G.v().out.println("[ra] Building InvokeGraph, start on "+start);
-
-	    InvokeGraphBuilder.v().transform(phaseName+".ra");
-
-	    Date finish = new Date();
-	    long runtime = finish.getTime()-start.getTime();
-	    long mins = runtime/60000;
-	    long secs = (runtime%60000)/1000;
-	    if (soot.Main.v().opts.verbose())
-		G.v().out.println("[ra] Finished InvokeGraph building."
-				   +" It took "+mins+" mins and "+secs+" secs.");
-	}
-
 	Date start = new Date();
 	if (soot.Main.v().opts.verbose())
 	    G.v().out.println("[ra] Finding rectangular arrays, start on "+start);

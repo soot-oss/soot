@@ -18,7 +18,6 @@
  */
 
 package soot;
-import soot.*;
 import java.util.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.base.*;
@@ -36,6 +35,7 @@ import soot.tagkit.*;
 import soot.options.Options;
 import soot.toolkits.scalar.*;
 import soot.jimple.spark.SparkTransformer;
+import soot.jimple.spark.callgraph.CHATransformer;
 import soot.jimple.spark.fieldrw.*;
 
 /** Manages the Packs containing the various phases and their options. */
@@ -119,6 +119,9 @@ public class PackManager {
         // Call graph pack
         addPack(p = new ScenePack("cg"));
         {
+            p.add(new Transform("cg.oldcha", OldCHATransformer.v()));
+            p.add(new Transform("cg.vta", VTATransformer.v()));
+            p.add(new Transform("cg.cha", CHATransformer.v()));
             p.add(new Transform("cg.spark", SparkTransformer.v()));
         }
 

@@ -70,9 +70,15 @@ public class Transform implements HasPhaseOptions
     }
 
     public void apply() {
+        if( Main.v().opts.verbose() ) {
+            G.v().out.println( "Applying phase "+phaseName+" to the scene." );
+        }
         ((SceneTransformer) t).transform( phaseName, PackManager.v().getPhaseOptions( phaseName ) );
     }
     public void apply(Body b) {
+        if( Main.v().opts.verbose() ) {
+            G.v().out.println( "Applying phase "+phaseName+" to "+b.getMethod()+"." );
+        }
         ((BodyTransformer) t).transform( b, phaseName, PackManager.v().getPhaseOptions( phaseName ) );
     }
 }

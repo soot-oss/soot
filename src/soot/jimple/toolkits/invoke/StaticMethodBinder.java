@@ -42,7 +42,6 @@ public class StaticMethodBinder extends SceneTransformer
     protected void internalTransform(String phaseName, Map options)
     {
         Date start = new Date();
-        InvokeGraphBuilder.v().transform(phaseName + ".igb");
 
         Date finish = new Date();
         if (Main.v().opts.verbose()) {
@@ -54,25 +53,12 @@ public class StaticMethodBinder extends SceneTransformer
         boolean enableNullPointerCheckInsertion = PackManager.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = PackManager.getBoolean(options, "insert-redundant-casts");
         String modifierOptions = PackManager.getString(options, "allowed-modifier-changes");
-        int VTApasses = PackManager.getInt(options, "VTA-passes");
-
         HashMap instanceToStaticMap = new HashMap();
 
         InvokeGraph graph = Scene.v().getActiveInvokeGraph();
 
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 
-        VariableTypeAnalysis vta = null;
-
-        for (int i = 0; i < VTApasses; i++)
-        {
-            if (Main.v().opts.verbose())
-                G.v().out.println(graph.computeStats());
-            vta = new VariableTypeAnalysis(graph);
-            vta.trimActiveInvokeGraph();
-            graph.refreshReachableMethods();
-        }
-                
         if (Main.v().opts.verbose())
             G.v().out.println(graph.computeStats());
 

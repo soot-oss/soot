@@ -815,6 +815,20 @@ public class Options extends OptionsBase {
             return ""
                 +"disabled ";
     
+        if( phaseName.equals( "cg.oldcha" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "cg.cha" ) )
+            return ""
+                +"disabled "
+                +"verbose ";
+    
+        if( phaseName.equals( "cg.vta" ) )
+            return ""
+                +"disabled "
+                +"passes ";
+    
         if( phaseName.equals( "cg.spark" ) )
             return ""
                 +"disabled "
@@ -870,8 +884,7 @@ public class Options extends OptionsBase {
                 +"disabled "
                 +"insert-null-checks "
                 +"insert-redundant-casts "
-                +"allowed-modifier-changes "
-                +"VTA-passes ";
+                +"allowed-modifier-changes ";
     
         if( phaseName.equals( "wjop.si" ) )
             return ""
@@ -881,8 +894,7 @@ public class Options extends OptionsBase {
                 +"allowed-modifier-changes "
                 +"expansion-factor "
                 +"max-container-size "
-                +"max-inlinee-size "
-                +"VTA-passes ";
+                +"max-inlinee-size ";
     
         if( phaseName.equals( "wjtp2" ) )
             return ""
@@ -1132,6 +1144,16 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg" ) )
             return "";
     
+        if( phaseName.equals( "cg.oldcha" ) )
+            return "";
+    
+        if( phaseName.equals( "cg.cha" ) )
+            return "";
+    
+        if( phaseName.equals( "cg.vta" ) )
+            return ""
+              +"passes:1 ";
+    
         if( phaseName.equals( "cg.spark" ) )
             return ""
               +"disabled:true "
@@ -1185,8 +1207,7 @@ public class Options extends OptionsBase {
               +"disabled:true "
               +"insert-null-checks:true "
               +"insert-redundant-casts:true "
-              +"allowed-modifier-changes:unsafe "
-              +"VTA-passes:0 ";
+              +"allowed-modifier-changes:unsafe ";
     
         if( phaseName.equals( "wjop.si" ) )
             return ""
@@ -1195,8 +1216,7 @@ public class Options extends OptionsBase {
               +"allowed-modifier-changes:unsafe "
               +"expansion-factor:3 "
               +"max-container-size:5000 "
-              +"max-inlinee-size:20 "
-              +"VTA-passes:0 ";
+              +"max-inlinee-size:20 ";
     
         if( phaseName.equals( "wjtp2" ) )
             return "";
@@ -1364,6 +1384,9 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.ne" ) ) return;
         if( phaseName.equals( "jb.uce" ) ) return;
         if( phaseName.equals( "cg" ) ) return;
+        if( phaseName.equals( "cg.oldcha" ) ) return;
+        if( phaseName.equals( "cg.cha" ) ) return;
+        if( phaseName.equals( "cg.vta" ) ) return;
         if( phaseName.equals( "cg.spark" ) ) return;
         if( phaseName.equals( "wstp" ) ) return;
         if( phaseName.equals( "wsop" ) ) return;
@@ -1447,6 +1470,12 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jb.uce" );
         if( !PackManager.v().hasPhase( "cg" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg" );
+        if( !PackManager.v().hasPhase( "cg.oldcha" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase cg.oldcha" );
+        if( !PackManager.v().hasPhase( "cg.cha" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase cg.cha" );
+        if( !PackManager.v().hasPhase( "cg.vta" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase cg.vta" );
         if( !PackManager.v().hasPhase( "cg.spark" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg.spark" );
         if( !PackManager.v().hasPhase( "wstp" ) )

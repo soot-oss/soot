@@ -47,9 +47,6 @@ public class FieldRWTagger extends BodyTransformer
     }
 
     protected void initializationStuff( String phaseName ) {
-	if( !Scene.v().hasActiveInvokeGraph() ) {
-	    InvokeGraphBuilder.v().transform( phaseName + ".igb" );
-	}
 	if( G.v().Union_factory == null ) {
 	    G.v().Union_factory = new UnionFactory() {
 		public Union newUnion() { return FullObjectSet.v(); }

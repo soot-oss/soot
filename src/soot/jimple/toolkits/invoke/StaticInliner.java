@@ -43,15 +43,12 @@ public class StaticInliner extends SceneTransformer
         if(Main.v().opts.verbose())
             G.v().out.println("[] Inlining methods...");
 
-        InvokeGraphBuilder.v().transform(phaseName + ".igb");
-        
         boolean enableNullPointerCheckInsertion = PackManager.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = PackManager.getBoolean(options, "insert-redundant-casts");
         String modifierOptions = PackManager.getString(options, "allowed-modifier-changes");
         float expansionFactor = PackManager.getFloat(options, "expansion-factor");
         int maxContainerSize = PackManager.getInt(options, "max-container-size");
         int maxInlineeSize = PackManager.getInt(options, "max-inlinee-size");
-        int VTApasses = PackManager.getInt(options, "VTA-passes");
 
         HashMap instanceToStaticMap = new HashMap();
 
@@ -59,18 +56,6 @@ public class StaticInliner extends SceneTransformer
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 
         DirectedGraph mg;
-
-	        VariableTypeAnalysis vta = null;
-	//VariableTypeAnalysis2 vta = null;
-
-        for (int i = 0; i < VTApasses; i++)
-        {
-	              vta = new VariableTypeAnalysis(graph);
-	  //vta = new VariableTypeAnalysis2(graph);
-
-            vta.trimActiveInvokeGraph();
-            graph.refreshReachableMethods();
-        }
 
         mg = graph.mcg;
 

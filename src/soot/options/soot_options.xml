@@ -487,6 +487,41 @@ This phase eliminates assignment statements (to locals) with no uses.
 					<alias>disabled</alias>
 				</boolopt>
 				<sub_phase>
+					<name>Old Class Hierarchy Analysis</name>
+					<alias>cg.oldcha</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Spark Class Hierarchy Analysis</name>
+					<alias>cg.cha</alias>
+                                        <class>CHAOptions</class>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+					<boolopt>
+						<name>Verbose</name>
+						<alias>verbose</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Variable Type Analysis</name>
+					<alias>cg.vta</alias>
+                                        <class>VTAOptions</class>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+                                        <intopt>
+                                            <name>Number of passes</name>
+                                            <alias>passes</alias>
+                                            <default>1</default>
+                                        </intopt>
+				</sub_phase>
+				<sub_phase>
 					<name>Spark</name>
 					<class>SparkOptions</class>
 					<alias>cg.spark</alias>
@@ -990,11 +1025,6 @@ The default behaviour of this Pack has static method binding disabled
 and static inlining enabled.  To reverse this, give the options
 <tt>-p wjop.smb disabled:false -p wjop.si disabled</tt>.
 
-By default, static method binding  and static inlining uses Class
-Hierarchy Analysis (CHA) to identify monomophic call sites. Changing
-the <tt>VTA-passes</tt> option can cause them to use Variable-Type 
-Analysis (VTA) once or several times rather than CHA.
-
                         </long_desc>
 				<boolopt>
 					<name>Disabled</name>
@@ -1076,16 +1106,6 @@ all inlining is permitted; some IllegalAccessErrors may be missed.
 and ``none&apos;&apos; changes no modifiers whatsoever.
                         </long_desc>
 					</multiopt>
-					<intopt>
-						<name>VTA Passes</name>
-						<alias>VTA-passes</alias>
-						<default>0</default>
-						<short_desc/>
-						<long_desc>
-By defult, static method binding uses CHA. This option can cause
-VTA to run one or more times as specified by the parameter. 
-                        </long_desc>
-					</intopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Static Inlining</name>
@@ -1172,16 +1192,6 @@ then no methods will be inlined into it.
 Determines the maximum number of Jimple statements for an inlinee
 method.  If a method has more than this number of Jimple statements,
 then it will not be inlined into other methods.
-                        </long_desc>
-					</intopt>
-					<intopt>
-						<name>VTA Passes</name>
-						<alias>VTA-passes</alias>
-						<default>0</default>
-						<short_desc/>
-						<long_desc>
-This option can cause VTA to run one or more times as specified by 
-the parameter.
                         </long_desc>
 					</intopt>
 				</sub_phase>

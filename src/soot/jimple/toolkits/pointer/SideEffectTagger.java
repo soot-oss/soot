@@ -46,9 +46,6 @@ public class SideEffectTagger extends BodyTransformer
     }
 
     protected void initializationStuff( String phaseName ) {
-	if( !Scene.v().hasActiveInvokeGraph() ) {
-	    InvokeGraphBuilder.v().transform( phaseName + ".igb" );
-	}
         G.v().Union_factory = new UnionFactory() {
 	    //ReallyCheapRasUnion ru =  new ReallyCheapRasUnion();
 	    //public Union newUnion() { return new RasUnion(); }
