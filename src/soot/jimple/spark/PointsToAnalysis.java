@@ -46,8 +46,7 @@ public interface PointsToAnalysis {
     public static final Integer DEFAULT_CLASS_LOADER = new Integer( -18 );
     public static final Integer DEFAULT_CLASS_LOADER_LOCAL = new Integer( -19 );
 
-    /** Returns the set of objects reaching variable l before stmt in method. */
-    public PointsToSet reachingObjects( SootMethod method, Stmt stmt,
-            Local l );
+    /** Returns the set of objects reaching variable l. */
+    public PointsToSet reachingObjects( Local l );
 }
 

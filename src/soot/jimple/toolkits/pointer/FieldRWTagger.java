@@ -3,7 +3,7 @@ import soot.tagkit.*;
 import soot.*;
 import java.util.*;
 import soot.toolkits.graph.*;
-import soot.jimple.toolkits.invoke.*;
+import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.*;
 import java.io.*;
 
@@ -20,6 +20,7 @@ public class FieldRWTagger extends BodyTransformer
     public Date startTime = null;
     boolean optionDontTag = false;
     boolean optionNaive = false;
+    private CallGraph cg;
 
     protected class UniqueRWSets {
 	protected ArrayList l = new ArrayList();
@@ -55,15 +56,20 @@ public class FieldRWTagger extends BodyTransformer
 	if( startTime == null ) {
 	    startTime = new Date();
 	}
+        cg = Scene.v().getCallGraph();
     }
     protected Object keyFor( Stmt s ) {
 	if( s.containsInvokeExpr() ) {
 	    if( optionNaive ) throw new RuntimeException( "shouldn't get here" );
-	    InvokeGraph ig = Scene.v().getActiveInvokeGraph();
-	    if( !ig.containsSite( s ) ) {
+            Iterator it = cg.targetsOf( s );
+	    if( !it.hasNext() ) {
 		return Collections.EMPTY_LIST;
 	    }
-	    return Scene.v().getActiveInvokeGraph().getTargetsOf( s );
+            ArrayList ret = new ArrayList();
+            while( it.hasNext() ) {
+                ret.add( it.next() );
+            }
+            return ret;
 	} else {
 	    return s;
 	}
@@ -72,7 +78,7 @@ public class FieldRWTagger extends BodyTransformer
     {
 	initializationStuff( phaseName );
 	SideEffectAnalysis sea = new SideEffectAnalysis( 
-                DumbPointerAnalysis.v(), Scene.v().getActiveInvokeGraph() );
+                DumbPointerAnalysis.v(), Scene.v().getCallGraph() );
         sea.findNTRWSets( body.getMethod() );
 	HashMap stmtToReadSet = new HashMap();
 	HashMap stmtToWriteSet = new HashMap();

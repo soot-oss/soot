@@ -66,8 +66,6 @@ public class PackManager {
         // Call graph pack
         addPack(p = new RadioScenePack("cg"));
         {
-            p.add(new Transform("cg.oldcha", OldCHATransformer.v()));
-            p.add(new Transform("cg.vta", VTATransformer.v()));
             p.add(new Transform("cg.cha", CHATransformer.v()));
             p.add(new Transform("cg.spark", SparkTransformer.v()));
         }

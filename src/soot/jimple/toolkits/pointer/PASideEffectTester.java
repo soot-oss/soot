@@ -16,8 +16,8 @@ import soot.jimple.spark.*;
 
 public class PASideEffectTester implements SideEffectTester
 {
-    PointsToAnalysis pa = Scene.v().getActivePointsToAnalysis();
-    SideEffectAnalysis sea = Scene.v().getActiveSideEffectAnalysis();
+    PointsToAnalysis pa = Scene.v().getPointsToAnalysis();
+    SideEffectAnalysis sea = Scene.v().getSideEffectAnalysis();
     HashMap unitToRead;
     HashMap unitToWrite;
     HashMap localToReachingObjects;
@@ -60,7 +60,7 @@ public class PASideEffectTester implements SideEffectTester
 	PointsToSet ret = (PointsToSet) localToReachingObjects.get( l );
 	if( ret == null ) {
 	    localToReachingObjects.put( l, 
-		    ret = pa.reachingObjects( currentMethod, null, l ) );
+		    ret = pa.reachingObjects( l ) );
 	}
 	return ret;
     }

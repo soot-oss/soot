@@ -21,16 +21,16 @@ package soot.jimple.spark.callgraph;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.spark.*;
+import soot.jimple.toolkits.callgraph.*;
 import java.util.*;
 import soot.util.*;
 import soot.util.queue.*;
 import soot.jimple.spark.pag.*;
-import soot.jimple.toolkits.invoke.InvokeGraph;
 
 /** Models the call graph.
  * @author Ondrej Lhotak
  */
-public final class CallGraph
+public final class CallGraphBuilder
 { 
     private NumberedSet reachable = new NumberedSet( Scene.v().getMethodNumberer() );
     private HashMap invokeExprToVCS = new HashMap();
@@ -44,16 +44,16 @@ public final class CallGraph
     private boolean verbose;
     private boolean allClinit;
 
-    public CallGraph( PointsToAnalysis pa, boolean verbose, boolean allClinit ) {
+    public CallGraphBuilder( PointsToAnalysis pa, boolean verbose, boolean allClinit ) {
         this.verbose = verbose;
         this.allClinit = allClinit;
         this.pa = pa;
         reachableQueue = new ChunkedQueue();
         worklist = reachables();
     }
-    /** Specifies an InvokeGraph that will be filled in as this CallGraph
+    /** Specifies a CallGraph that will be filled in as this CallGraphBuilder
      * is built. */
-    public void setInvokeGraph( InvokeGraph ig ) { this.ig = ig; }
+    public void setCallGraph( CallGraph cg ) { this.cg = cg; }
     private boolean setReachable( SootMethod cur, SootMethod m ) {
         if( reachable.add( m ) ) {
             reachableQueue.add( m );
@@ -124,7 +124,10 @@ public final class CallGraph
                 pag.addEdge( an, vn );
             }
             if( sootcls.declaresMethod( ImplicitMethodInvocation.v().sigClinit ) ) {
-                setReachable( m, sootcls.getMethod( ImplicitMethodInvocation.v().sigClinit ) );
+                SootMethod clinit = 
+                    sootcls.getMethod( ImplicitMethodInvocation.v().sigClinit );
+                setReachable( m, clinit );
+                cg.addEdge( new Edge( m, s, clinit, Edge.CLINIT ) );
             }
         }
     }
@@ -132,7 +135,7 @@ public final class CallGraph
         Value nameVal = ie.getBase();
         wantedClassConstants.put( nameVal, s );
         stmtToMethod.put( s, m );
-        Set classes = pa.reachingObjects( m, s, (Local) nameVal ).possibleClassConstants();
+        Set classes = pa.reachingObjects( (Local) nameVal ).possibleClassConstants();
         if( classes == null ) {
             if( verbose ) {
                 G.v().out.println( "WARNING: Method "+m+
@@ -155,7 +158,7 @@ public final class CallGraph
             String name = ((StringConstant) nameVal ).value;
             handleClassName( m, s, name );
         } else if( nameVal instanceof Local ) {
-            Set names = pa.reachingObjects( m, s, (Local) nameVal ).possibleStringConstants();
+            Set names = pa.reachingObjects( (Local) nameVal ).possibleStringConstants();
             if( names == null ) {
                 if( verbose ) {
                     G.v().out.println( "WARNING: Method "+m+
@@ -177,16 +180,16 @@ public final class CallGraph
         }
         Body b = m.retrieveActiveBody();
         HashSet receivers = new HashSet();
-        for( Iterator tgtIt = ImplicitMethodInvocation.v().getImplicitTargets( m, verbose ).iterator(); tgtIt.hasNext(); ) {
-            final SootMethod tgt = (SootMethod) tgtIt.next();
-            setReachable( m, tgt );
+        for( Iterator eIt = ImplicitMethodInvocation.v().getImplicitTargets( m, verbose ).iterator(); eIt.hasNext(); ) {
+            final Edge e = (Edge) eIt.next();
+            cg.addEdge( e );
+            setReachable( e.src(), e.tgt() );
         }
         for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
 
-                if( ig != null ) ig.addSite( s, m );
                 if( ie instanceof InstanceInvokeExpr ) {
                     VirtualCallSite vcs = new VirtualCallSite( s, m );
                     invokeExprToVCS.put( ie, vcs );
@@ -211,7 +214,7 @@ public final class CallGraph
                     callEdgeQueue.add( s );
                     callEdgeQueue.add( tgt );
                     setReachable( m, tgt );
-                    if( ig != null ) ig.addTarget( s, tgt );
+                    if( cg != null ) cg.addEdge( new Edge( m, s, tgt ) );
                     //tgt.addTag( new soot.tagkit.StringTag( "SCS: "+s.getInvokeExpr()+" in "+m ) );
 
                     /*
@@ -226,7 +229,7 @@ public final class CallGraph
         }
         for( Iterator receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {
             final Local receiver = (Local) receiverIt.next();
-            Set types = pa.reachingObjects( m, null, receiver ).possibleTypes();
+            Set types = pa.reachingObjects( receiver ).possibleTypes();
             HashSet vcss = (HashSet) localToVCS.get( receiver );
             for( Iterator vcsIt = vcss.iterator(); vcsIt.hasNext(); ) {
                 final VirtualCallSite vcs = (VirtualCallSite) vcsIt.next();
@@ -240,7 +243,8 @@ public final class CallGraph
                     SootMethod target = (SootMethod) targets.next();
                     if( target == null ) break;
                     setReachable( m, target );
-                    if( ig != null ) ig.addTarget( vcs.getStmt(), target );
+                    if( cg != null ) cg.addEdge( new Edge(
+                            vcs.getContainer(), vcs.getStmt(), target ) );
                 }
                 if( !(pa instanceof PAG) ) {
                     vcs.noMoreTypes();
@@ -264,6 +268,8 @@ public final class CallGraph
                 SootMethod target = (SootMethod) targets.next();
                 if( target == null ) break;
                 setReachable( vcs.getContainer(), target );
+                cg.addEdge(
+                    new Edge( vcs.getContainer(), vcs.getStmt(), target ) );
             }
         }
     }
@@ -311,21 +317,19 @@ public final class CallGraph
         }
     }
 
-    public InvokeGraph getInvokeGraph() {
+    public CallGraph getCallGraph() {
         HashSet r = new HashSet();
         for( Iterator mIt = reachable.iterator(); mIt.hasNext(); ) {
             final SootMethod m = (SootMethod) mIt.next();
             r.add(m);
         }
-        ig.setReachableMethods( r );
-        ig.mcg = ig.newMethodGraph( r );
-        return ig;
+        return cg;
     }
 
     private HashMultiMap wantedStringConstants = new HashMultiMap();
     private HashMap stmtToMethod = new HashMap();
     private HashMultiMap wantedClassConstants = new HashMultiMap();
-    private InvokeGraph ig;
+    private CallGraph cg;
 
     public HashMultiMap graph = new HashMultiMap();
 }

@@ -22,6 +22,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
+import soot.jimple.toolkits.callgraph.*;
 
 
 /** Given a method, returns the set of methods that may be invoked implicitly
@@ -62,6 +63,18 @@ public class ImplicitMethodInvocation
             set.add( Scene.v().getMethod( methodSig ) );
         }
     }
+    private final void addEdge( List edges, SootMethod src, Stmt stmt, SootClass cls, NumberedString methodSubSig, int type ) {
+        if( cls.declaresMethod( methodSubSig ) ) {
+            edges.add(
+                new Edge( src, stmt, cls.getMethod( methodSubSig ), type ) );
+        }
+    }
+    private final void addEdge( List edges, SootMethod src, Stmt stmt, String methodSig, int type ) {
+        if( Scene.v().containsMethod( methodSig ) ) {
+            edges.add(
+                new Edge( src, stmt, Scene.v().getMethod( methodSig ), type ) );
+        }
+    }
     public NumberedSet getEntryPoints() {
         NumberedSet ret = new NumberedSet( Scene.v().getMethodNumberer() );
         addMethod( ret, Scene.v().getMainClass(), sigMain );
@@ -81,19 +94,19 @@ public class ImplicitMethodInvocation
         addMethod( ret, "<java.lang.String: byte[] getBytes()>");
         return ret;
     }
-    public NumberedSet getImplicitTargets( SootMethod source, boolean verbose ) {
-        final NumberedSet ret = new NumberedSet( Scene.v().getMethodNumberer() );
+    public List getImplicitTargets( SootMethod source, boolean verbose ) {
+        final List ret = new ArrayList();
         final SootClass scl = source.getDeclaringClass();
         if( source.isNative() ) return ret;
         if( source.getSubSignature().indexOf( "<init>" ) >= 0 ) {
-            addMethod( ret, scl, sigFinalize );
+            addEdge( ret, source, null, scl, sigFinalize, Edge.FINALIZE );
             FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
             if( fh.canStoreType( scl.getType(), clPrivilegedAction )
             ||  fh.canStoreType( scl.getType(), clPrivilegedExceptionAction ) ) {
-                addMethod( ret, scl, sigObjRun );
+                addEdge( ret, source, null, scl, sigObjRun, Edge.PRIVILEGED );
             }
             if( fh.canStoreType( scl.getType(), clRunnable ) ) {
-                addMethod( ret, scl, sigExit );
+                addEdge( ret, source, null, scl, sigExit, Edge.EXIT );
             }
         }
         Body b = source.retrieveActiveBody();
@@ -128,7 +141,7 @@ public class ImplicitMethodInvocation
                                 if( !sootcls.isApplicationClass() ) {
                                     sootcls.setLibraryClass();
                                 }
-                                addMethod( ret, sootcls, sigClinit );
+                                addEdge( ret, source, s, scl, sigClinit, Edge.CLINIT );
                             }
                         }
                     } else {
@@ -139,26 +152,28 @@ public class ImplicitMethodInvocation
                         }
                     }
                 }
-                addMethod( ret, ie.getMethod().getDeclaringClass(), sigClinit );
+                addEdge( ret, source, s, ie.getMethod().getDeclaringClass(),
+                        sigClinit, Edge.CLINIT );
             }
             if( s.containsFieldRef() ) {
                 FieldRef fr = (FieldRef) s.getFieldRef();
                 if( fr instanceof StaticFieldRef ) {
                     SootClass cl = fr.getField().getDeclaringClass();
-                    if( cl.declaresMethod( sigClinit ) )
-                        ret.add( cl.getMethod( sigClinit ) );
+                    addEdge( ret, source, s, cl, sigClinit, Edge.CLINIT );
                 }
             }
             if( s instanceof AssignStmt ) {
                 Value rhs = ((AssignStmt)s).getRightOp();
                 if( rhs instanceof NewExpr ) {
                     NewExpr r = (NewExpr) rhs;
-                    addMethod( ret, r.getBaseType().getSootClass(), sigClinit );
+                    addEdge( ret, source, s, r.getBaseType().getSootClass(),
+                            sigClinit, Edge.CLINIT );
                 } else if( rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr ) {
                     Type t = rhs.getType();
                     if( t instanceof ArrayType ) t = ((ArrayType)t).baseType;
                     if( t instanceof RefType ) {
-                        addMethod( ret, ((RefType) t).getSootClass(), sigClinit );
+                        addEdge( ret, source, s, ((RefType) t).getSootClass(),
+                                sigClinit, Edge.CLINIT );
                     }
                 }
             }

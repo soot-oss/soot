@@ -33,6 +33,7 @@ import soot.util.*;
 import java.util.*;
 import soot.jimple.spark.PointsToAnalysis;
 import soot.jimple.toolkits.invoke.*;
+import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.*;
 
 /** Manages the SootClasses of the application being analyzed. */
@@ -63,12 +64,13 @@ public class Scene  //extends AbstractHost
     StringNumberer subSigNumberer = new StringNumberer();
     Numberer localNumberer = new Numberer();
 
-    Hierarchy activeHierarchy;
-    FastHierarchy activeFastHierarchy;
-    InvokeGraph activeInvokeGraph;
-    PointsToAnalysis activePointsToAnalysis;
-    SideEffectAnalysis activeSideEffectAnalysis;
-
+    private Hierarchy activeHierarchy;
+    private FastHierarchy activeFastHierarchy;
+    private CallGraph activeCallGraph;
+    private ReachableMethods reachableMethods;
+    private PointsToAnalysis activePointsToAnalysis;
+    private SideEffectAnalysis activeSideEffectAnalysis;
+    
     boolean allowsPhantomRefs = false;
     private boolean allowsLazyResolving = false;
 
@@ -349,12 +351,12 @@ public class Scene  //extends AbstractHost
         Retrieves the active side-effect analysis
      */
 
-    public SideEffectAnalysis getActiveSideEffectAnalysis() 
+    public SideEffectAnalysis getSideEffectAnalysis() 
     {
-        if(!hasActiveSideEffectAnalysis()) {
-	    setActiveSideEffectAnalysis( new SideEffectAnalysis(
-			getActivePointsToAnalysis(),
-			getActiveInvokeGraph() ) );
+        if(!hasSideEffectAnalysis()) {
+	    setSideEffectAnalysis( new SideEffectAnalysis(
+			getPointsToAnalysis(),
+			getCallGraph() ) );
 	}
             
         return activeSideEffectAnalysis;
@@ -364,17 +366,17 @@ public class Scene  //extends AbstractHost
         Sets the active side-effect analysis
      */
      
-    public void setActiveSideEffectAnalysis(SideEffectAnalysis sea)
+    public void setSideEffectAnalysis(SideEffectAnalysis sea)
     {
         activeSideEffectAnalysis = sea;
     }
 
-    public boolean hasActiveSideEffectAnalysis()
+    public boolean hasSideEffectAnalysis()
     {
         return activeSideEffectAnalysis != null;
     }
     
-    public void releaseActiveSideEffectAnalysis()
+    public void releaseSideEffectAnalysis()
     {
         activeSideEffectAnalysis = null;
     }
@@ -384,9 +386,9 @@ public class Scene  //extends AbstractHost
         Retrieves the active pointer analysis
      */
 
-    public PointsToAnalysis getActivePointsToAnalysis() 
+    public PointsToAnalysis getPointsToAnalysis() 
     {
-        if(!hasActivePointsToAnalysis()) {
+        if(!hasPointsToAnalysis()) {
 	    return DumbPointerAnalysis.v();
 	}
             
@@ -397,17 +399,17 @@ public class Scene  //extends AbstractHost
         Sets the active pointer analysis
      */
      
-    public void setActivePointsToAnalysis(PointsToAnalysis pa)
+    public void setPointsToAnalysis(PointsToAnalysis pa)
     {
         activePointsToAnalysis = pa;
     }
 
-    public boolean hasActivePointsToAnalysis()
+    public boolean hasPointsToAnalysis()
     {
         return activePointsToAnalysis != null;
     }
     
-    public void releaseActivePointsToAnalysis()
+    public void releasePointsToAnalysis()
     {
         activePointsToAnalysis = null;
     }
@@ -416,18 +418,18 @@ public class Scene  //extends AbstractHost
     /** Makes a new fast hierarchy is none is active, and returns the active
      * fast hierarchy. */
     public FastHierarchy getOrMakeFastHierarchy() {
-	if(!hasActiveFastHierarchy() ) {
-	    setActiveFastHierarchy( new FastHierarchy() );
+	if(!hasFastHierarchy() ) {
+	    setFastHierarchy( new FastHierarchy() );
 	}
-	return getActiveFastHierarchy();
+	return getFastHierarchy();
     }
     /**
         Retrieves the active fast hierarchy
      */
 
-    public FastHierarchy getActiveFastHierarchy() 
+    public FastHierarchy getFastHierarchy() 
     {
-        if(!hasActiveFastHierarchy())
+        if(!hasFastHierarchy())
             throw new RuntimeException("no active FastHierarchy present for scene");
             
         return activeFastHierarchy;
@@ -437,17 +439,17 @@ public class Scene  //extends AbstractHost
         Sets the active hierarchy
      */
      
-    public void setActiveFastHierarchy(FastHierarchy hierarchy)
+    public void setFastHierarchy(FastHierarchy hierarchy)
     {
         activeFastHierarchy = hierarchy;
     }
 
-    public boolean hasActiveFastHierarchy()
+    public boolean hasFastHierarchy()
     {
         return activeFastHierarchy != null;
     }
     
-    public void releaseActiveFastHierarchy()
+    public void releaseFastHierarchy()
     {
         activeFastHierarchy = null;
     }
@@ -485,40 +487,47 @@ public class Scene  //extends AbstractHost
         activeHierarchy = null;
     }
 
-    /****************************************************************************/
-    /**
-        Retrieves the active invokeGraph for this method.
-     */
-
-    public InvokeGraph getActiveInvokeGraph() 
+    public CallGraph getCallGraph() 
     {
-        if(!hasActiveInvokeGraph()) {
-            setActiveInvokeGraph(
-                    ClassHierarchyAnalysis.newInvokeGraph(true,false) );
+        if(!hasCallGraph()) {
+            throw new RuntimeException( "no active call graph in scene" );
         }
             
-        return activeInvokeGraph;
+        return activeCallGraph;
     }
     
-    /**
-        Sets the active invokeGraph for this method. 
-     */
-     
-    public void setActiveInvokeGraph(InvokeGraph invokeGraph)
+    public void setCallGraph(CallGraph cg)
     {
-        activeInvokeGraph = invokeGraph;
+        activeCallGraph = cg;
     }
 
-    public boolean hasActiveInvokeGraph()
+    public boolean hasCallGraph()
     {
-        return activeInvokeGraph != null;
+        return activeCallGraph != null;
     }
     
-    public void releaseActiveInvokeGraph()
+    public void releaseCallGraph()
     {
-        activeInvokeGraph = null;
+        activeCallGraph = null;
+        reachableMethods = null;
     }
-    
+    public ReachableMethods getReachableMethods() {
+        if( reachableMethods == null ) {
+            reachableMethods = new ReachableMethods(
+                    getCallGraph(), EntryPoints.v().all() );
+        }
+        return reachableMethods;
+    }
+    public void setReachableMethods( ReachableMethods rm ) {
+        reachableMethods = rm;
+    }
+    public boolean hasReachableMethods() {
+        return reachableMethods != null;
+    }
+    public void releaseReachableMethods() {
+        reachableMethods = null;
+    }
+   
     public boolean getPhantomRefs()
     {
         if( !Options.v().allow_phantom_refs() ) return false;

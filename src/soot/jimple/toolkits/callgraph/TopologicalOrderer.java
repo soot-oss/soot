@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2003 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,14 +23,41 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.toolkits.invoke;
 
-import java.util.*;
+package soot.jimple.toolkits.callgraph;
+
 import soot.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
+import soot.util.*;
+import java.util.*;
 
-/** A graph which contains types as nodes; used in VTA. */
-public interface TypeGraph extends MutableDirectedGraph
+
+public class TopologicalOrderer
 {
+    CallGraph cg;
+    List order = new ArrayList();
+    NumberedSet visited = new NumberedSet( Scene.v().getMethodNumberer() );
+    public TopologicalOrderer( CallGraph cg ) {
+        this.cg = cg;
+    }
+
+    public void go() {
+        Iterator methods = cg.sourceMethods();
+        while( methods.hasNext() ) {
+            SootMethod m = (SootMethod) methods.next();
+            dfsVisit( m );
+        }
+    }
+
+    private void dfsVisit( SootMethod m ) {
+        if( visited.contains( m ) ) return;
+        visited.add( m );
+        Iterator targets = new Targets( cg.targetsOf(m) );
+        while( targets.hasNext() ) {
+            SootMethod target = (SootMethod) targets.next();
+            dfsVisit( target );
+        }
+        order.add( m );
+    }
+
+    public List order() { return order; }
 }

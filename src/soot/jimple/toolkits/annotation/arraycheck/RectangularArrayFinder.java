@@ -31,7 +31,7 @@ import soot.util.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
-import soot.jimple.toolkits.invoke.*;
+import soot.jimple.toolkits.callgraph.*;
 import java.util.*;
 
 /** Interprocedural analysis to identify rectangular multi-dimension array
@@ -48,18 +48,17 @@ public class RectangularArrayFinder extends SceneTransformer
 
     private Set falseSet = new HashSet();
     private Set trueSet = new HashSet();
-
-    private InvokeGraph ig;
+    private CallGraph cg;
 
     protected void internalTransform(String phaseName, Map opts)
     {
 	Scene sc = Scene.v();
 
+        cg = sc.getCallGraph();
+
 	Date start = new Date();
 	if (Options.v().verbose())
 	    G.v().out.println("[ra] Finding rectangular arrays, start on "+start);
-
-	ig = sc.getActiveInvokeGraph();
 
 	Chain appClasses = sc.getApplicationClasses();
 
@@ -78,7 +77,7 @@ public class RectangularArrayFinder extends SceneTransformer
 		if (!method.isConcrete())
 		    continue;
 		
-		if (!ig.mcg.isReachable(method.toString()))
+		if (!sc.getReachableMethods().contains(method))
 		    continue;
 
 		recoverRectArray(method);
@@ -221,8 +220,6 @@ public class RectangularArrayFinder extends SceneTransformer
 	    }
 	}
 	
-	ig = null;
-
 	Date finish = new Date();
 	if (Options.v().verbose()) 
 	{
@@ -296,8 +293,6 @@ public class RectangularArrayFinder extends SceneTransformer
 	    {
 		InvokeExpr iexpr = (InvokeExpr)s.getInvokeExpr();
 		
-		List targets = ig.getTargetsOf(s);
-
 		int argnum = iexpr.getArgCount();
 		
 		for (int i=0; i<argnum; i++)
@@ -311,7 +306,7 @@ public class RectangularArrayFinder extends SceneTransformer
 		    /* from node, it is a local */
 		    MethodLocal ml = new MethodLocal(method, (Local)arg);
 
-		    Iterator targetIt = targets.iterator();
+                    Iterator targetIt = new Targets( cg.targetsOf(s) );
 		    
 		    while (targetIt.hasNext())
 		    {
@@ -452,9 +447,7 @@ public class RectangularArrayFinder extends SceneTransformer
 		    {
 			to = new MethodLocal(method, (Local)leftOp);
 
-			List targets = ig.getTargetsOf(s);
-
-			Iterator targetIt = targets.iterator();
+			Iterator targetIt = new Targets( cg.targetsOf(s) );
 			
 			while (targetIt.hasNext())
 			{

@@ -29,6 +29,7 @@ import soot.options.*;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.scalar.*;
+import soot.jimple.toolkits.callgraph.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
@@ -42,26 +43,13 @@ public class StaticMethodBinder extends SceneTransformer
 
     protected void internalTransform(String phaseName, Map options)
     {
-        Date start = new Date();
-
-        Date finish = new Date();
-        if (Options.v().verbose()) {
-            G.v().out.println("[stb] Done building invoke graph.");
-            long runtime = finish.getTime() - start.getTime();
-            G.v().out.println("[stb] Invoke graph building took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
-        }
-
         boolean enableNullPointerCheckInsertion = PackManager.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = PackManager.getBoolean(options, "insert-redundant-casts");
         String modifierOptions = PackManager.getString(options, "allowed-modifier-changes");
         HashMap instanceToStaticMap = new HashMap();
 
-        InvokeGraph graph = Scene.v().getActiveInvokeGraph();
-
+        CallGraph cg = Scene.v().getCallGraph();
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
-
-        if (Options.v().verbose())
-            G.v().out.println(graph.computeStats());
 
         Iterator classesIt = Scene.v().getApplicationClasses().iterator();
         while (classesIt.hasNext())
@@ -80,7 +68,7 @@ public class StaticMethodBinder extends SceneTransformer
                 if (!container.isConcrete())
                     continue;
 
-                if (graph.getSitesOf(container).size() == 0)
+                if (!cg.targetsOf(container).hasNext())
                     continue;
 
                 JimpleBody b = (JimpleBody)container.getActiveBody();
@@ -101,14 +89,13 @@ public class StaticMethodBinder extends SceneTransformer
                         ie instanceof SpecialInvokeExpr)
                         continue;
 
-                    List targets = graph.getTargetsOf(s);
-
-                    if (targets.size() != 1)
-                        continue;
+                    Iterator targets = new Targets( cg.targetsOf(s) );
+                    if( !targets.hasNext() ) continue;
+                    SootMethod target = (SootMethod)targets.next();
+                    if( targets.hasNext() ) continue;
 
                     // Ok, we have an Interface or VirtualInvoke going to 1.
 
-                    SootMethod target = (SootMethod)targets.get(0);
                     
                     if (!AccessManager.ensureAccess(container, target, modifierOptions))
                         continue;
@@ -159,18 +146,12 @@ public class StaticMethodBinder extends SceneTransformer
                                 oldStmt = (Stmt)oldUnits.next(); 
                                 newStmt = (Stmt)newUnits.next();
 
-                                if (newStmt.containsInvokeExpr())
-                                {
-                                    InvokeExpr newIE = (InvokeExpr)newStmt.getInvokeExpr();
-                                    InvokeExpr oldIE = (InvokeExpr)oldStmt.getInvokeExpr();
-
-                                    if(!(newIE instanceof SpecialInvokeExpr))
-                                    {
-                                        // Might have been added by the ThrowManager without patching graph
-                                        
-                                        graph.addSite(newStmt, ct);
-                                        graph.copyTargets(oldStmt, newStmt);
-                                    }
+                                Iterator edges = cg.targetsOf( oldStmt );
+                                while( edges.hasNext() ) {
+                                    Edge e = (Edge) edges.next();
+                                    cg.addEdge( new Edge(
+                                        ct, newStmt, e.tgt(), e.type() ) );
+                                    cg.removeEdge( e );                                        
                                 }
                             }
                         }
@@ -254,9 +235,7 @@ public class StaticMethodBinder extends SceneTransformer
                         ValueBox ieBox = s.getInvokeExprBox();
                         ieBox.setValue(sie);
 
-                        graph.removeSite(s);
-                        graph.addSite(s, container);
-                        graph.addTarget(s, clonedTarget);
+                        cg.addEdge( new Edge( container, s, clonedTarget ) );
                     }
 
                     // (If enabled), add a null pointer check.
@@ -305,8 +284,6 @@ public class StaticMethodBinder extends SceneTransformer
                 }
             }
         }
-        
-        Scene.v().releaseActiveInvokeGraph();
     }
 
     private static boolean methodUsesThis(SootMethod m)

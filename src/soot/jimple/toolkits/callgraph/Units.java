@@ -19,22 +19,26 @@
 
 package soot.jimple.toolkits.callgraph;
 import soot.*;
-import soot.util.queue.*;
 import java.util.*;
 
-/** Provides access to the call graph edges calling specific methods.
+/** Adapts an iterator over a collection of Edge's to be an iterator
+ * over the source units of the edges.
  * @author Ondrej Lhotak
  */
-public class CallersOfMethod extends Selector
+public final class Units implements Iterator
 { 
-    public CallersOfMethod( GraphView graph ) {
-        super( graph );
+    Iterator edges;
+    public Units( Iterator edges ) {
+        this.edges = edges;
     }
-    protected void addEdge( Edge e ) {
-        Collection l = (Collection) map.get( e.src );
-        if( l == null ) map.put( e.tgt, l = new ArrayList() );
-        l.add( e );
+    public boolean hasNext() {
+        return edges.hasNext();
     }
+    public Object next() {
+        Edge e = (Edge) edges.next();
+        return e.srcUnit();
+    }
+    public void remove() { throw new UnsupportedOperationException(); }
 }
 
 

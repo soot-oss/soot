@@ -25,11 +25,11 @@
 
 package soot.jimple.spark.callgraph;
 
-import soot.jimple.toolkits.invoke.InvokeGraph;
 import soot.options.*;
 import soot.*;
 import java.util.*;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
+import soot.jimple.toolkits.callgraph.*;
 
 /** Builds an invoke graph using Class Hierarchy Analysis. */
 public class CHATransformer extends SceneTransformer
@@ -40,10 +40,10 @@ public class CHATransformer extends SceneTransformer
     protected void internalTransform(String phaseName, Map opts)
     {
         CHAOptions options = new CHAOptions( opts );
-        CallGraph cg = new CallGraph( DumbPointerAnalysis.v(), options.verbose(), options.all_clinit() );
-        cg.setInvokeGraph( new InvokeGraph() );
+        CallGraphBuilder cg = new CallGraphBuilder( DumbPointerAnalysis.v(), options.verbose(), options.all_clinit() );
+        cg.setCallGraph( new CallGraph() );
         cg.build();
-        Scene.v().setActiveInvokeGraph( cg.getInvokeGraph() );
+        Scene.v().setCallGraph( cg.getCallGraph() );
     }
 }
 

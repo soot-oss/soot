@@ -162,11 +162,6 @@ public class SparkOptions
         return soot.PackManager.getBoolean( options, "dump-answer" );
     }
     
-    /** Trim Invoke Graph --  */
-    public boolean trim_invoke_graph() {
-        return soot.PackManager.getBoolean( options, "trim-invoke-graph" );
-    }
-    
     /** Add Tags --  */
     public boolean add_tags() {
         return soot.PackManager.getBoolean( options, "add-tags" );

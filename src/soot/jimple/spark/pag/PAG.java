@@ -103,8 +103,7 @@ public class PAG implements PointsToAnalysis {
         }
     }
     /** Returns the set of objects reaching variable l before stmt in method. */
-    public PointsToSet reachingObjects( SootMethod method, Stmt stmt,
-                            Local l ) {
+    public PointsToSet reachingObjects( Local l ) {
         VarNode n = findVarNode( l );
         if( n == null ) {
             return EmptyPointsToSet.v();

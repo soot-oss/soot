@@ -19,25 +19,26 @@
 
 package soot.jimple.toolkits.callgraph;
 import soot.*;
-import soot.util.queue.*;
 import java.util.*;
 
-/** Represents a view of (possibly a subset of) the edges in a call graph.
+/** Adapts an iterator over a collection of Edge's to be an iterator
+ * over the source methods of the edges.
  * @author Ondrej Lhotak
  */
-public interface GraphView
+public final class Sources implements Iterator
 { 
-    /** Returns a QueueReader object containing all edges added so far, and
-     * which will be informed of any new edges that are later added to
-     * the graph. */
-    public QueueReader listener();
-    /** Returns a QueueReader object which will contain ONLY NEW edges
-     * which will be added to the graph.
-     */
-    public QueueReader newListener();
-    /** Causes the QueueReader objects to be filled up with any edges
-     * that have been added since the last call. */
-    public void pollForEdges();
+    Iterator edges;
+    public Sources( Iterator edges ) {
+        this.edges = edges;
+    }
+    public boolean hasNext() {
+        return edges.hasNext();
+    }
+    public Object next() {
+        Edge e = (Edge) edges.next();
+        return e.src();
+    }
+    public void remove() { throw new UnsupportedOperationException(); }
 }
 
 

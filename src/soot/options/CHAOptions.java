@@ -23,7 +23,7 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Spark Class Hierarchy Analysis. */
+/** Option parser for Class Hierarchy Analysis. */
 public class CHAOptions
 {
     private Map options;

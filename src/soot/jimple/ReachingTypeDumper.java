@@ -66,7 +66,7 @@ public class ReachingTypeDumper {
                 final Local l = (Local) lIt.next();
                 out.println( "V "+m+l );
                 if( l.getType() instanceof RefLikeType ) {
-                    Set types = pa.reachingObjects( m, null, l ).possibleTypes();
+                    Set types = pa.reachingObjects( l ).possibleTypes();
                     TreeSet sortedTypes = new TreeSet( new StringComparator() );
                     sortedTypes.addAll( types );
                     for( Iterator tIt = sortedTypes.iterator(); tIt.hasNext(); ) {

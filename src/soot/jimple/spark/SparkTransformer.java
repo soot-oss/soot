@@ -26,7 +26,7 @@ import soot.jimple.spark.solver.*;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.callgraph.*;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
-import soot.jimple.toolkits.invoke.InvokeGraph;
+import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
@@ -63,9 +63,7 @@ public class SparkTransformer extends SceneTransformer
         if( opts.force_gc() ) doGC();
         Date startBuild = new Date();
         final PAG pag = b.setup( opts );
-        if( opts.trim_invoke_graph() ) {
-            b.getCallGraph().setInvokeGraph( new InvokeGraph() );
-        }
+        b.getCallGraphBuilder().setCallGraph( new CallGraph() );
         b.build();
         Date endBuild = new Date();
         reportTime( "Pointer Assignment Graph", startBuild, endBuild );
@@ -137,7 +135,7 @@ public class SparkTransformer extends SceneTransformer
 
         if( opts.verbose() ) {
             G.v().out.println( "[Spark] Number of reachable methods: "
-                    +b.getCallGraph().numReachableMethods() );
+                    +b.getCallGraphBuilder().numReachableMethods() );
         }
 
         if( opts.set_mass() ) findSetMass( pag, b );
@@ -153,10 +151,8 @@ public class SparkTransformer extends SceneTransformer
         if( opts.dump_answer() ) new ReachingTypeDumper( pag ).dump();
         if( opts.dump_solution() ) dumper.dumpPointsToSets();
         if( opts.dump_html() ) new PAG2HTML( pag ).dump();
-        Scene.v().setActivePointsToAnalysis( pag );
-        if( opts.trim_invoke_graph() ) {
-            Scene.v().setActiveInvokeGraph( b.getCallGraph().getInvokeGraph() );
-        }
+        Scene.v().setPointsToAnalysis( pag );
+        Scene.v().setCallGraph( b.getCallGraphBuilder().getCallGraph() );
         if( opts.add_tags() ) {
             addTags( pag );
         }
@@ -206,7 +202,7 @@ public class SparkTransformer extends SceneTransformer
         int varMass = 0;
         int adfs = 0;
         int scalars = 0;
-        HashMultiMap graph = b.getCallGraph().graph;
+        HashMultiMap graph = b.getCallGraphBuilder().graph;
         if( false ) {
             for( Iterator srcIt = graph.keySet().iterator(); srcIt.hasNext(); ) {
                 final SootMethod src = (SootMethod) srcIt.next();
@@ -231,7 +227,7 @@ public class SparkTransformer extends SceneTransformer
             } while( change );
         }
         if( false ) {
-            for( Iterator it = b.getCallGraph().reachableMethods(); it.hasNext(); ) {
+            for( Iterator it = b.getCallGraphBuilder().reachableMethods(); it.hasNext(); ) {
                 SootMethod m = (SootMethod) it.next();
                 G.v().out.println( m.getBytecodeSignature() );
             }

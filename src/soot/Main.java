@@ -34,7 +34,7 @@ import soot.grimp.*;
 import soot.baf.*;
 import soot.dava.*;
 import soot.dava.toolkits.base.misc.*;
-
+import soot.util.queue.*;
 import soot.options.Options;
 
 import java.io.*;
@@ -472,13 +472,21 @@ public class Main {
 
     /* process classes in whole-program mode */
     private void wholeProcessClasses() {
-        Iterator classIt =
-            Scene.v().getActiveInvokeGraph().getReachableClasses().iterator();
-
-        // process each class 
-        while (classIt.hasNext()) {
-            SootClass s = (SootClass) classIt.next();
-            handleClass(s);
+        QueueReader methods =
+            Scene.v().getReachableMethods().listener();
+        HashSet reachableClasses = new HashSet();
+        
+        while(true) {
+        	SootMethod m = (SootMethod) methods.next();
+        	if(m == null) break;
+                SootClass c = m.getDeclaringClass();
+                if( !c.isApplicationClass() ) continue;
+        	reachableClasses.add( c );
+        }
+        // process each class
+        for( Iterator clIt = reachableClasses.iterator(); clIt.hasNext(); ) {
+            final SootClass cl = (SootClass) clIt.next();
+            handleClass(cl);
 
         }
     }

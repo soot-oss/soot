@@ -29,6 +29,7 @@ import soot.options.*;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.scalar.*;
+import soot.jimple.toolkits.callgraph.*;
 import soot.toolkits.graph.*;
 import java.util.*;
 import soot.util.*;
@@ -53,29 +54,28 @@ public class StaticInliner extends SceneTransformer
 
         HashMap instanceToStaticMap = new HashMap();
 
-        InvokeGraph graph = Scene.v().getActiveInvokeGraph();
+        CallGraph cg = Scene.v().getCallGraph();
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
-
-        DirectedGraph mg;
-
-        mg = graph.mcg;
 
         ArrayList sitesToInline = new ArrayList();
 
         computeAverageMethodSizeAndSaveOriginalSizes();
         // Visit each potential site in reverse pseudo topological order.
         {
-            Iterator it = (new PseudoTopologicalOrderer(PseudoTopologicalOrderer.REVERSE)).newList(mg).iterator();
+            TopologicalOrderer orderer = new TopologicalOrderer(cg);
+            orderer.go();
+            List order = orderer.order();
+            ListIterator it = order.listIterator(order.size());
     
-            while (it.hasNext())
+            while (it.hasPrevious())
             {
-                SootMethod container = (SootMethod)it.next();
+                SootMethod container = (SootMethod)it.previous();
                 if( methodToOriginalSize.get(container) == null ) continue;
     
                 if (!container.isConcrete())
                     continue;
     
-                if (graph.getSitesOf(container).size() == 0)
+                if (!cg.targetsOf(container).hasNext())
                     continue;
     
                 JimpleBody b = (JimpleBody)container.retrieveActiveBody();
@@ -89,12 +89,10 @@ public class StaticInliner extends SceneTransformer
                     if (!s.containsInvokeExpr())
                         continue;
                     
-                    List targets = graph.getTargetsOf(s);
-    
-                    if (targets.size() != 1)
-                        continue;
-    
-                    SootMethod target = (SootMethod)targets.get(0);
+                    Iterator targets = new Targets( cg.targetsOf(s) );
+                    if( !targets.hasNext() ) continue;
+                    SootMethod target = (SootMethod)targets.next();
+                    if( targets.hasNext() ) continue;
     
                     if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete())
                         continue;

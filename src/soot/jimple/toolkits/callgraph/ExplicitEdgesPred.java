@@ -19,21 +19,15 @@
 
 package soot.jimple.toolkits.callgraph;
 import soot.*;
-import soot.util.queue.*;
-import java.util.*;
 
-/** Provides access to the call graph edges originating at specific methods.
+/** A predicate that accepts edges that are the result of an explicit invoke.
  * @author Ondrej Lhotak
  */
-public class TargetsOfMethod extends Selector
+public class ExplicitEdgesPred implements EdgePredicate
 { 
-    public TargetsOfMethod( GraphView graph ) {
-        super( graph );
-    }
-    protected void addEdge( Edge e ) {
-        Collection l = (Collection) map.get( e.src );
-        if( l == null ) map.put( e.src, l = new ArrayList() );
-        l.add( e );
+    /** Returns true iff the edge e is wanted. */
+    public boolean want( Edge e ) {
+        return e.isExplicit();
     }
 }
 

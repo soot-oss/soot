@@ -10,8 +10,7 @@ public class DumbPointerAnalysis implements PointerAnalysis {
     public static DumbPointerAnalysis v() { return G.v().DumbPointerAnalysis(); }
 
     /** Returns the set of objects reaching variable l before stmt in method. */
-    public PointsToSet reachingObjects( SootMethod method, Stmt stmt,
-	    Local l ) {
+    public PointsToSet reachingObjects( Local l ) {
 	return FullObjectSet.v();
     }
 }

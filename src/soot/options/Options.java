@@ -838,15 +838,6 @@ public class Options extends OptionsBase {
             return ""
                 +"disabled ";
     
-        if( phaseName.equals( "cg.oldcha" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "cg.vta" ) )
-            return ""
-                +"disabled "
-                +"passes ";
-    
         if( phaseName.equals( "cg.cha" ) )
             return ""
                 +"disabled "
@@ -885,7 +876,6 @@ public class Options extends OptionsBase {
                 +"dump-types "
                 +"class-method-var "
                 +"dump-answer "
-                +"trim-invoke-graph "
                 +"add-tags "
                 +"set-mass ";
     
@@ -1175,15 +1165,6 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg" ) )
             return "";
     
-        if( phaseName.equals( "cg.oldcha" ) )
-            return ""
-              +"disabled:true ";
-    
-        if( phaseName.equals( "cg.vta" ) )
-            return ""
-              +"disabled:true "
-              +"passes:1 ";
-    
         if( phaseName.equals( "cg.cha" ) )
             return ""
               +"disabled:true "
@@ -1221,7 +1202,6 @@ public class Options extends OptionsBase {
               +"dump-types:true "
               +"class-method-var:true "
               +"dump-answer:false "
-              +"trim-invoke-graph:true "
               +"add-tags:false "
               +"set-mass:false ";
     
@@ -1426,8 +1406,6 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.ne" ) ) return;
         if( phaseName.equals( "jb.uce" ) ) return;
         if( phaseName.equals( "cg" ) ) return;
-        if( phaseName.equals( "cg.oldcha" ) ) return;
-        if( phaseName.equals( "cg.vta" ) ) return;
         if( phaseName.equals( "cg.cha" ) ) return;
         if( phaseName.equals( "cg.spark" ) ) return;
         if( phaseName.equals( "wstp" ) ) return;
@@ -1514,10 +1492,6 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jb.uce" );
         if( !PackManager.v().hasPhase( "cg" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg" );
-        if( !PackManager.v().hasPhase( "cg.oldcha" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase cg.oldcha" );
-        if( !PackManager.v().hasPhase( "cg.vta" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase cg.vta" );
         if( !PackManager.v().hasPhase( "cg.cha" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg.cha" );
         if( !PackManager.v().hasPhase( "cg.spark" ) )

@@ -35,15 +35,15 @@ import soot.options.SparkOptions;
  */
 
 public class OnFlyCallGraph {
-    CallGraph cg;
+    CallGraphBuilder cg;
     QueueReader reachables;
     QueueReader callEdges;
-    public CallGraph getCallGraph() { return cg; }
+    public CallGraphBuilder getCallGraph() { return cg; }
     public OnFlyCallGraph( PAG pag, FastHierarchy fh, Parms parms ) {
         this.pag = pag;
         this.fh = fh;
         this.parms = parms;
-        cg = new CallGraph( pag, pag.getOpts().verbose(), pag.getOpts().all_clinit() );
+        cg = new CallGraphBuilder( pag, pag.getOpts().verbose(), pag.getOpts().all_clinit() );
         reachables = cg.reachables();
         callEdges = cg.callEdges();
     }

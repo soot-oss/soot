@@ -61,27 +61,12 @@ public class G extends Singletons
     public Set MethodRWSet_allFields = new HashSet();
     public int GeneralConstObject_counter = 0;
     public UnionFactory Union_factory = null;
-    public HashMap TypeSet_typeToNumber = null;
-    public RefType[] TypeSet_numberToType = null;
-    public TypeSet TypeSet_allTypes = null;
-    public TypeSet TypeSet_libraryTypes = null;
-    public TypeSet TypeSet_benchTypes = null;
     public HashMap Array2ndDimensionSymbol_pool = new HashMap();
     public Map AbstractUnit_allMapToUnnamed = Collections.unmodifiableMap(new AbstractUnitAllMapTo("<unnamed>"));
     public List Timer_outstandingTimers = new ArrayList();
     public boolean Timer_isGarbageCollecting;
     public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
     public int Timer_count;
-    public HashMap TypeGraphNode2_nameToNode = new HashMap(10000);
-    public int TypeGraphNode2_counter = 0;
-    public int TypeGraphNode2_tmpcount=0;
-    public HashMap TypeSet2_typeToNumber = null;
-    public TypeElement2[] TypeSet2_numberToType = null;
-    public TypeSet2 TypeSet2_allTypes = null;
-    public TypeSet2 TypeSet2_libraryTypes = null;
-    public TypeSet2 TypeSet2_benchTypes = null;
-    public HashMap TypeElement2_nameToType = new HashMap(500);
-    public int TypeElement2_id;
     public final Map ClassHierarchy_classHierarchyMap = new HashMap();
 }
 

@@ -4,7 +4,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 import soot.toolkits.graph.*;
-import soot.jimple.toolkits.invoke.*;
+import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.*;
 import java.io.*;
 
@@ -42,18 +42,14 @@ public class FieldTagger extends BodyTransformer
 
         ensureProcessed( body.getMethod() );
 
-        InvokeGraph ig = Scene.v().getActiveInvokeGraph();
-statement: for( Iterator sIt = ig.getSitesOf( body.getMethod() ).iterator(); sIt.hasNext(); ) {     final Stmt s = (Stmt) sIt.next();
-            HashSet transitiveTargets = new HashSet();
-            for( Iterator targetIt = ig.getTargetsOf( s ).iterator(); targetIt.hasNext(); ) {
-                final SootMethod target = (SootMethod) targetIt.next();
-                transitiveTargets.add( target );
-                transitiveTargets.addAll( ig.getTransitiveTargetsOf( target ) );
-            }
+        CallGraph cg = Scene.v().getCallGraph();
+        TransitiveTargets tt = new TransitiveTargets( cg );
+statement: for( Iterator sIt = body.getUnits().iterator(); sIt.hasNext(); ) {     final Stmt s = (Stmt) sIt.next();
             HashSet read = new HashSet();
             HashSet write = new HashSet();
-            for( Iterator targetIt = transitiveTargets.iterator(); targetIt.hasNext(); ) {
-                final SootMethod target = (SootMethod) targetIt.next();
+            Iterator it = tt.iterator( s );
+            while( it.hasNext() ) {
+                SootMethod target = (SootMethod) it.next();
                 ensureProcessed( target );
                 if( target.isNative() ) continue statement;
                 read.addAll( methodToRead.get( target ) );

@@ -1,7 +1,7 @@
 package soot.jimple.toolkits.pointer;
 import soot.*;
 import soot.jimple.*;
-import soot.jimple.toolkits.invoke.*;
+import soot.jimple.toolkits.callgraph.*;
 import java.util.*;
 import soot.util.*;
 import soot.jimple.spark.*;
@@ -9,7 +9,7 @@ import soot.jimple.spark.*;
 /** Generates side-effect information from a PointsToAnalysis. */
 public class SideEffectAnalysis {
     PointsToAnalysis pa;
-    InvokeGraph ig;
+    CallGraph cg;
     Map methodToNTReadSet = new HashMap();
     Map methodToNTWriteSet = new HashMap();
     int rwsetcount = 0;
@@ -45,28 +45,25 @@ public class SideEffectAnalysis {
 	return (RWSet) methodToNTWriteSet.get( method );
     }
 
-    public SideEffectAnalysis( PointsToAnalysis pa, InvokeGraph ig ) {
+    public SideEffectAnalysis( PointsToAnalysis pa, CallGraph cg ) {
 	this.pa = pa;
-	this.ig = ig;
+	this.cg = cg;
     }
 
     public RWSet readSet( SootMethod method, Stmt stmt ) {
 	RWSet ret = null;
-	if( stmt.containsInvokeExpr() ) {
-	    if( ig.containsSite( stmt ) ) {
-		for( Iterator targetIt = ig.mcg.getMethodsReachableFrom(
-			ig.getTargetsOf( stmt ) ).iterator(); targetIt.hasNext(); ) {
-		    final SootMethod target = (SootMethod) targetIt.next();
-		    if( target.isNative() ) {
-			if( ret == null ) ret = new SiteRWSet();
-			ret.setCallsNative();
-		    } else if( target.isConcrete() ) {
-			if( ret == null ) ret = new SiteRWSet();
-			ret.union( nonTransitiveReadSet( target ) );
-		    }
-		}
-	    }
-	} else if( stmt instanceof AssignStmt ) {
+        Iterator targets = new Targets( cg.targetsOf( stmt ) );
+        while( targets.hasNext() ) {
+            SootMethod target = (SootMethod) targets.next();
+            if( target.isNative() ) {
+                if( ret == null ) ret = new SiteRWSet();
+                ret.setCallsNative();
+            } else if( target.isConcrete() ) {
+                if( ret == null ) ret = new SiteRWSet();
+                ret.union( nonTransitiveReadSet( target ) );
+            }
+        }
+	if( stmt instanceof AssignStmt ) {
 	    AssignStmt a = (AssignStmt) stmt;
 	    Value r = a.getRightOp();
 	    ret = addValue( r, method, stmt );
@@ -76,21 +73,18 @@ public class SideEffectAnalysis {
 
     public RWSet writeSet( SootMethod method, Stmt stmt ) {
 	RWSet ret = null;
-	if( stmt.containsInvokeExpr() ) {
-	    if( ig.containsSite( stmt ) ) {
-		for( Iterator targetIt = ig.mcg.getMethodsReachableFrom(
-			ig.getTargetsOf( stmt ) ).iterator(); targetIt.hasNext(); ) {
-		    final SootMethod target = (SootMethod) targetIt.next();
-		    if( target.isNative() ) {
-			if( ret == null ) ret = new SiteRWSet();
-			ret.setCallsNative();
-		    } else if( target.isConcrete() ) {
-			if( ret == null ) ret = new SiteRWSet();
-			ret.union( nonTransitiveWriteSet( target ) );
-		    }
-		}
-	    }
-	} else if( stmt instanceof AssignStmt ) {
+        Iterator targets = new Targets( cg.targetsOf( stmt ) );
+        while( targets.hasNext() ) {
+            SootMethod target = (SootMethod) targets.next();
+            if( target.isNative() ) {
+                if( ret == null ) ret = new SiteRWSet();
+                ret.setCallsNative();
+            } else if( target.isConcrete() ) {
+                if( ret == null ) ret = new SiteRWSet();
+                ret.union( nonTransitiveWriteSet( target ) );
+            }
+	}
+        if( stmt instanceof AssignStmt ) {
 	    AssignStmt a = (AssignStmt) stmt;
 	    Value l = a.getLeftOp();
 	    ret = addValue( l, method, stmt );
@@ -102,7 +96,7 @@ public class SideEffectAnalysis {
 	RWSet ret = null;
 	if( v instanceof InstanceFieldRef ) {
 	    InstanceFieldRef ifr = (InstanceFieldRef) v;
-	    PointsToSet base = pa.reachingObjects( m, s, (Local) ifr.getBase() );
+	    PointsToSet base = pa.reachingObjects( (Local) ifr.getBase() );
 	    ret = new StmtRWSet();
 	    ret.addFieldRef( base, ifr.getField() );
 	} else if( v instanceof StaticFieldRef ) {
@@ -111,7 +105,7 @@ public class SideEffectAnalysis {
 	    ret.addGlobal( sfr.getField() );
 	} else if( v instanceof ArrayRef ) {
 	    ArrayRef ar = (ArrayRef) v;
-	    PointsToSet base = pa.reachingObjects( m, s, (Local) ar.getBase() );
+	    PointsToSet base = pa.reachingObjects( (Local) ar.getBase() );
 	    ret = new StmtRWSet();
 	    ret.addFieldRef( base, PointsToAnalysis.ARRAY_ELEMENTS_NODE );
 	}
@@ -119,7 +113,7 @@ public class SideEffectAnalysis {
     }
 
     public String toString() {
-        return "SideEffectAnalysis: PA="+pa+" IG="+ig;
+        return "SideEffectAnalysis: PA="+pa+" CG="+cg;
     }
 }
 

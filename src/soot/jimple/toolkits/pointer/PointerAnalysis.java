@@ -20,7 +20,6 @@ public interface PointerAnalysis extends PointsToAnalysis {
     */
 
     /** Returns the set of objects reaching variable l before stmt in method. */
-    public PointsToSet reachingObjects( SootMethod method, Stmt stmt,
-	    Local l );
+    public PointsToSet reachingObjects( Local l );
 }
 

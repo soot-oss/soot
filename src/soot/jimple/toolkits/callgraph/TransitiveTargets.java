@@ -19,6 +19,7 @@
 
 package soot.jimple.toolkits.callgraph;
 import soot.*;
+import soot.util.*;
 import soot.util.queue.*;
 import java.util.*;
 
@@ -28,32 +29,44 @@ import java.util.*;
  */
 public class TransitiveTargets
 { 
-    TargetsOfMethod tom;
-    public TransitiveTargets( TargetsOfMethod tom ) {
-        this.tom = tom;
+    CallGraph cg;
+    public TransitiveTargets( CallGraph cg ) {
+        this.cg = cg;
     }
-    public Iterator iterator( Selector base, Object src ) {
+    public Iterator iterator( Unit u ) {
         ArrayList methods = new ArrayList();
-        Iterator it = base.iterator( src );
+        Iterator it = cg.targetsOf( u );
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
-            methods.add( e.tgt );
+            methods.add( e.tgt() );
+        }
+        return iterator( methods.iterator() );
+    }
+    public Iterator iterator( SootMethod method ) {
+        ArrayList methods = new ArrayList();
+        Iterator it = cg.targetsOf( method );
+        while( it.hasNext() ) {
+            Edge e = (Edge) it.next();
+            methods.add( e.tgt() );
         }
         return iterator( methods.iterator() );
     }
     public Iterator iterator( Iterator methods ) {
-        HashSet s = new HashSet();
+        NumberedSet s = new NumberedSet( Scene.v().getMethodNumberer() );
         ArrayList worklist = new ArrayList();
         while( methods.hasNext() ) {
             SootMethod method = (SootMethod) methods.next();
             if( s.add( method ) ) worklist.add( method );
         }
+        return iterator( s, worklist );
+    }
+    private Iterator iterator( NumberedSet s, ArrayList worklist ) {
         for( int i = 0; i < worklist.size(); i++ ) {
             SootMethod method = (SootMethod) worklist.get(i);
-            Iterator it = tom.iterator( method );
+            Iterator it = cg.targetsOf( method );
             while( it.hasNext() ) {
                 Edge e = (Edge) it.next();
-                if( s.add( e.tgt ) ) worklist.add( e.tgt );
+                if( s.add( e.tgt() ) ) worklist.add( e.tgt() );
             }
         }
         return worklist.iterator();

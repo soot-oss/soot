@@ -20,7 +20,7 @@
 package soot.jimple.spark.builder;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.PAG;
-import soot.jimple.spark.callgraph.CallGraph;
+import soot.jimple.spark.callgraph.CallGraphBuilder;
 import soot.options.SparkOptions;
 
 /** Generic interface to a pointer assignment graph builder.
@@ -32,6 +32,6 @@ public interface Builder {
     public PAG setup( SparkOptions opts );
     /** Fills in the pointer assignment graph returned by setup. */
     public void build();
-    public CallGraph getCallGraph();
+    public CallGraphBuilder getCallGraphBuilder();
 }
 

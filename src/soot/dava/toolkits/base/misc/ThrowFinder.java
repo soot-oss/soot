@@ -4,7 +4,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 import soot.jimple.*;
-import soot.jimple.toolkits.invoke.*;
+import soot.jimple.toolkits.callgraph.*;
 
 public class ThrowFinder
 {
@@ -21,7 +21,7 @@ public class ThrowFinder
 	registeredMethods = new HashSet();
 	protectionSet = new HashMap();
 
-	InvokeGraph invokeGraph = Scene.v().getActiveInvokeGraph();
+        CallGraph cg = Scene.v().getCallGraph();
 
 	IterableSet worklist = new IterableSet();
 
@@ -125,25 +125,24 @@ public class ThrowFinder
 		    }
 		}
 
-		it = invokeGraph.getSitesOf( m).iterator();
+		it = cg.targetsOf(m);
 		while (it.hasNext()) {
-		    Stmt callSite = (Stmt) it.next();
+                    Edge e = (Edge) it.next();
+		    Stmt callSite = e.srcStmt();
+                    if( callSite == null ) continue;
 		    HashSet handled = (HashSet) protectionSet.get( callSite);
 
-		    Iterator targetIt = invokeGraph.getTargetsOf( callSite).iterator();
-		    while (targetIt.hasNext()) {
-			SootMethod target = (SootMethod) targetIt.next();
+                    SootMethod target = e.tgt();
 
-			Iterator exceptionIt = target.getExceptions().iterator();
-			while (exceptionIt.hasNext()) {
-			    SootClass exception = (SootClass) exceptionIt.next();
+                    Iterator exceptionIt = target.getExceptions().iterator();
+                    while (exceptionIt.hasNext()) {
+                        SootClass exception = (SootClass) exceptionIt.next();
 
-			    if ((handled_Exception( handled, exception) == false) && (exceptionSet.contains( exception) == false)) {
-				exceptionSet.add( exception);
-				changed = true;
-			    }
-			}
-		    }
+                        if ((handled_Exception( handled, exception) == false) && (exceptionSet.contains( exception) == false)) {
+                            exceptionSet.add( exception);
+                            changed = true;
+                        }
+                    }
 		}
 		
 		if (changed) {
@@ -193,11 +192,12 @@ public class ThrowFinder
 		}
 	    }
 
-	    Iterator callingSiteIt = invokeGraph.getCallingSitesOf( m).iterator();
-	    while (callingSiteIt.hasNext()) {
-
-		Stmt callingSite = (Stmt) callingSiteIt.next();
-		SootMethod callingMethod = invokeGraph.getDeclaringMethod( callingSite);
+            Iterator it = cg.targetsOf(m);
+            while (it.hasNext()) {
+                Edge e = (Edge) it.next();
+		Stmt callingSite = e.srcStmt();
+                if( callingSite == null ) continue;
+		SootMethod callingMethod = e.src();
 		List exceptionList = callingMethod.getExceptions();
 		IterableSet exceptionSet = new IterableSet( exceptionList);
 		HashSet handled = (HashSet) protectionSet.get( callingSite);

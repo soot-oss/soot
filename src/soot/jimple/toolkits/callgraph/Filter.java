@@ -26,41 +26,33 @@ import java.util.*;
  * predicate.
  * @author Ondrej Lhotak
  */
-public class Filter implements GraphView
+public class Filter implements Iterator
 { 
-    private ChunkedQueue stream = new ChunkedQueue();
-    private QueueReader reader = stream.reader();
-    private EdgePredicate ef;
-    private GraphView source;
-    private QueueReader sourceReader;
-    public Filter( GraphView source, EdgePredicate ef ) {
+    private Iterator source;
+    private EdgePredicate pred;
+    private Edge next = null;
+    public Filter( Iterator source, EdgePredicate pred ) {
         this.source = source;
-        sourceReader = source.listener();
-        this.ef = ef;
+        this.pred = pred;
+        advance();
     }
-    /** Returns a QueueReader object containing all edges added so far, and
-     * which will be informed of any new edges that are later added to
-     * the graph. */
-    public QueueReader listener() {
-        return (QueueReader) reader.clone();
-    }
-    /** Returns a QueueReader object which will contain ONLY NEW edges
-     * which will be added to the graph.
-     */
-    public QueueReader newListener() {
-        return stream.reader();
-    }
-    /** Causes the QueueReader objects to be filled up with any edges
-     * that have been added since the last call. */
-    public void pollForEdges() {
-        source.pollForEdges();
-        while(true) {
-            Edge e = (Edge) sourceReader.next();
-            if( e == null ) break;
-            if( !ef.want(e) ) continue;
-            stream.add(e);
+    private void advance() {
+        while( source.hasNext() ) {
+            next = (Edge) source.next();
+            if( pred.want( next ) ) {
+                return;
+            }
         }
+        next = null;
+    }
+    public boolean hasNext() {
+        return next != null;
+    }
+    public Object next() {
+        return next();
+    }
+    public void remove() {
+        throw new UnsupportedOperationException(); 
     }
 }
-
 

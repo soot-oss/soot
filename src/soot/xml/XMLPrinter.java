@@ -160,6 +160,7 @@ public class XMLPrinter {
         Vector xmlLabelsList = new Vector();
         long maxStmtCount = 0;
 
+        /*
         // for invokes, add a list of potential targets
         if (!Scene.v().hasActiveInvokeGraph()) {
             InvokeGraphBuilder.v().transform("jil.igb");
@@ -184,6 +185,7 @@ public class XMLPrinter {
             // G.v().out.println( "JIL VTA FAILED: " + re );
             igVTA = null;
         }
+        */
 
         // add method node
         XMLNode methodNode =
@@ -348,6 +350,7 @@ public class XMLPrinter {
                 }
             }
 
+            /*
             // for invokes, add a list of potential targets
             if (stmtCurrentStmt.containsInvokeExpr()) {
                 // default analysis is CHA
@@ -405,6 +408,7 @@ public class XMLPrinter {
                     }
                 }
             }
+            */
 
             // simple live locals            
             List liveLocalsIn = sll.getLiveLocalsBefore(currentStmt);
@@ -715,7 +719,7 @@ public class XMLPrinter {
             "count",
             exceptionsNode.getNumberOfChildren() + "");
 
-        Scene.v().releaseActiveInvokeGraph();
+        //Scene.v().releaseActiveInvokeGraph();
 
         return;
     }

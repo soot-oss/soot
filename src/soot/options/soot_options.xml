@@ -419,37 +419,13 @@ an invoke graph. When this pack finishes, the Scene should have an active invoke
 graph. The different phases represent different ways to construct the invoke
 graph. Only one phase may be enabled; Soot will raise an error otherwise.
 If no phases are enabled, the Old Class Hierarchy Analysis phase
-<tt>cg.oldcha</tt> is used as the default.</long_desc>
+<tt>cg.cha</tt> is used as the default.</long_desc>
 				<boolopt>
 					<name>Disabled</name>
 					<alias>disabled</alias>
 				</boolopt>
 				<sub_phase>
-					<name>Old Class Hierarchy Analysis</name>
-					<alias>cg.oldcha</alias>
-					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-                                                <default>true</default>
-					</boolopt>
-				</sub_phase>
-				<sub_phase>
-					<name>Variable Type Analysis</name>
-					<alias>cg.vta</alias>
-                                        <class>VTAOptions</class>
-					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-                                                <default>true</default>
-					</boolopt>
-                                        <intopt>
-                                            <name>Number of passes</name>
-                                            <alias>passes</alias>
-                                            <default>1</default>
-                                        </intopt>
-				</sub_phase>
-				<sub_phase>
-					<name>Spark Class Hierarchy Analysis</name>
+					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>
                                         <class>CHAOptions</class>
 					<boolopt>
@@ -925,15 +901,6 @@ Setting classMethodVar to true has the effect of setting topoSort to false.
 When this option is set to true, the computed reaching types for each variable are
 dumped to a file, so that they can be compared with the results of
 other analyses (such as the old VTA).
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Trim Invoke Graph</name>
-							<alias>trim-invoke-graph</alias>
-							<default>true</default>
-							<long_desc>
-When this option is set to true, the results of the analysis are used to make the invoke graph
-more precise after the analysis completes.
         </long_desc>
 						</boolopt>
 						<boolopt>

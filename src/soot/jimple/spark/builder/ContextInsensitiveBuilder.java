@@ -60,11 +60,11 @@ public class ContextInsensitiveBuilder implements Builder {
             pag.setOnFlyCallGraph( ofcg );
             cg = ofcg.getCallGraph();
         } else {
-            cg = new CallGraph( DumbPointerAnalysis.v(), opts.verbose(), opts.all_clinit() );
+            cg = new CallGraphBuilder( DumbPointerAnalysis.v(), opts.verbose(), opts.all_clinit() );
         }
         return pag;
     }
-    public CallGraph getCallGraph() { return cg; }
+    public CallGraphBuilder getCallGraphBuilder() { return cg; }
     /** Fills in the pointer assignment graph returned by setup. */
     public void build() {
         QueueReader callEdges = cg.callEdges();
@@ -127,7 +127,7 @@ public class ContextInsensitiveBuilder implements Builder {
 
     private PAG pag;
     private Parms parms;
-    private CallGraph cg;
+    private CallGraphBuilder cg;
     int classes = 0;
     int totalMethods = 0;
     int analyzedMethods = 0;

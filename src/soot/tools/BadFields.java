@@ -3,7 +3,7 @@ import soot.*;
 import java.io.*;
 import java.util.*;
 import soot.jimple.*;
-import soot.jimple.toolkits.invoke.*;
+import soot.jimple.toolkits.callgraph.*;
 
 public class BadFields extends SceneTransformer {
     public static void main(String[] args) 
@@ -29,7 +29,7 @@ public class BadFields extends SceneTransformer {
                 handleMethod( (SootMethod) it.next() );
             }
         }
-        Scene.v().setActiveInvokeGraph( new InvokeGraph() );
+        Scene.v().setCallGraph( new CallGraph() );
     }
 
     private void handleClass( SootClass cl ) {

@@ -67,6 +67,7 @@ import soot.jimple.toolkits.pointer.util.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.jimple.toolkits.scalar.pre.*;
 import soot.jimple.toolkits.typing.integer.*;
+import soot.jimple.toolkits.callgraph.*;
 import soot.options.*;
 import soot.tagkit.*;
 import soot.toolkits.graph.*;
@@ -97,18 +98,6 @@ public class Singletons {
     public Options Options() {
         if( instanceOptions == null ) instanceOptions = new Options( g );
         return instanceOptions;
-    }
-
-    private OldCHATransformer instanceOldCHATransformer;
-    public OldCHATransformer OldCHATransformer() {
-        if( instanceOldCHATransformer == null ) instanceOldCHATransformer = new OldCHATransformer( g );
-        return instanceOldCHATransformer;
-    }
-
-    private VTATransformer instanceVTATransformer;
-    public VTATransformer VTATransformer() {
-        if( instanceVTATransformer == null ) instanceVTATransformer = new VTATransformer( g );
-        return instanceVTATransformer;
     }
 
     private CHATransformer instanceCHATransformer;
@@ -445,12 +434,6 @@ public class Singletons {
     public IntType IntType() {
         if( instanceIntType == null ) instanceIntType = new IntType( g );
         return instanceIntType;
-    }
-
-    private InvokeGraphBuilder instanceInvokeGraphBuilder;
-    public InvokeGraphBuilder InvokeGraphBuilder() {
-        if( instanceInvokeGraphBuilder == null ) instanceInvokeGraphBuilder = new InvokeGraphBuilder( g );
-        return instanceInvokeGraphBuilder;
     }
 
     private JavaIoFileDescriptorNative instanceJavaIoFileDescriptorNative;
@@ -951,12 +934,6 @@ public class Singletons {
         return instanceVoidType;
     }
 
-    private VTATestingFramework instanceVTATestingFramework;
-    public VTATestingFramework VTATestingFramework() {
-        if( instanceVTATestingFramework == null ) instanceVTATestingFramework = new VTATestingFramework( g );
-        return instanceVTATestingFramework;
-    }
-
     private WordType instanceWordType;
     public WordType WordType() {
         if( instanceWordType == null ) instanceWordType = new WordType( g );
@@ -979,6 +956,12 @@ public class Singletons {
     public FieldTagAggregator FieldTagAggregator() {
         if( instanceFieldTagAggregator == null ) instanceFieldTagAggregator = new FieldTagAggregator( g );
         return instanceFieldTagAggregator;
+    }
+
+    private EntryPoints instanceEntryPoints;
+    public EntryPoints EntryPoints() {
+        if( instanceEntryPoints == null ) instanceEntryPoints = new EntryPoints( g );
+        return instanceEntryPoints;
     }
 
 }
