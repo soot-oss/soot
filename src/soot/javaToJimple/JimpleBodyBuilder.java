@@ -4219,7 +4219,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             Util.addLnPosTags(ifStmt.getConditionBox(), condition.position());
         }
        
-        soot.Local retLocal = generateLocal(condExpr.alternative().type());
+        soot.Local retLocal = generateLocal(condExpr.type());
         
 		// handle consequence
 		polyglot.ast.Expr consequence = condExpr.consequent();
