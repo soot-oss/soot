@@ -68,6 +68,9 @@
 
  B) Changes:
 
+ - Modified on June 2, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*) 
+   Fixed a problem with moving invoke's past field reads.
+   
  - Modified on May 24, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*) 
    Added support for zone checking.
    
@@ -387,8 +390,13 @@ public class Aggregator
                           
                           Value v = box.getValue();
                           
-                          if (v instanceof InvokeExpr)
-                            cantAggr = true;
+                            if (v instanceof InvokeExpr || 
+                                (propagatingInvokeExpr && (v instanceof FieldRef || v instanceof ArrayRef)))
+                            {
+                                cantAggr = true;
+                                break;
+                            }
+                            
                         }
                     }
             }
