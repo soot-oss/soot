@@ -167,6 +167,18 @@
         </jar>
     </target>
 
+    <!--not done yet
+    <target name="quickstart" depends="settings,eclipse-plugin,classesjar">
+        <property file="ant.settings"/>
+        <jar destfile="${eclipse.loc}/plugins/soot-eclipse-quickstart-${soot.version}.jar">
+            <includesfile name="${polyglot.jar}"/>
+            <fileset dir="eclipse/ca.mcgill.sable.soot/" includes="soot-plugin.jar,plugin.xml,plugin.properties"/>
+            <fileset dir="${release.loc}/" includes="sootclasses-${soot.version}.jar"/>
+            <fileset dir="eclipse/ca.mcgill.sable.soot/" includes="icons/*.png,icons/*.jpg,icons/*.gif"/>
+            <fileset dir="${jasmin.jar}"/>
+        </jar>
+    </target>-->
+    
     <target name="eclipse-plugin" depends="compile,settings">
         <xslt
             style="src/soot/options/phase_options_dialog.xsl"
@@ -185,6 +197,7 @@
         </javac>
         <jar destfile="eclipse/ca.mcgill.sable.soot/soot-plugin.jar">
             <fileset dir="eclipse/ca.mcgill.sable.soot/classes"/>
+            <fileset dir="eclipse/ca.mcgill.sable.soot/src" includes="**/*.properties"/>
         </jar>
     </target>
 
