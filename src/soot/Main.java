@@ -60,7 +60,7 @@ public class Main implements Runnable
 {   
     // TODO: the following string should be updated by the source control
     //   $Format: "            public static final String versionString = \"1.2.4 (build $ProjectVersion$)\";"$
-            public static final String versionString = "1.2.4 (build 1.2.4.dev.2)";
+            public static final String versionString = "1.2.4 (build 1.2.4.dev.3)";
 
     public Date start;
     public Date finish;
@@ -503,6 +503,19 @@ public class Main implements Runnable
         packageInclusionMasks.add(str);
     }
 
+    public static void addDynamicClasses(String path)
+        throws CompilationDeathException
+    {
+        if (!isApplication)
+            {
+                throw new CompilationDeathException(COMPILATION_ABORTED, "Dynamic-classes flag only valid in application mode!");
+            }
+                     
+        StringTokenizer tokenizer = new StringTokenizer(path, ":");
+        while(tokenizer.hasMoreTokens())
+            dynamicClasses.add(tokenizer.nextToken());
+    }
+
     public static void addDynamicPath(String path)
         throws CompilationDeathException
     {
@@ -538,8 +551,8 @@ public class Main implements Runnable
 
             // For jimple files
             List l = getClassesUnder(path);
-            for (Iterator it = l.iterator(); it.hasNext(); ) {
-                String filename = (String)it.next();
+            for( Iterator filenameIt = l.iterator(); filenameIt.hasNext(); ) {
+                final String filename = (String) filenameIt.next();
                 if (filename.startsWith(str))
                     set.add(filename);
             }
@@ -695,7 +708,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.4 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.2)");
+            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.3)");
 	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -742,6 +755,8 @@ public class Main implements Runnable
 	System.out.println("                               potentially dynamic classes");
 	System.out.println("  --dynamic-packages PACKAGES  marks classfiles in PACKAGES (separated by");
 	System.out.println("                               commas) as potentially dynamic classes");
+	System.out.println("  --dynamic-classes CLASSES    marks CLASSES (separated by");
+	System.out.println("                               colons) as potentially dynamic classes");
 	System.out.println("");
 	System.out.println("Single-file mode options:");
 	System.out.println("  --process-path PATH          process all classes on the PATH");
@@ -940,6 +955,10 @@ public class Main implements Runnable
 	while (cl.contains("debug"))
 	    setDebug(true);
 				
+	while (cl.contains("dynamic-classes")) {
+	    addDynamicClasses(cl.getValueOf("dynamic-classes"));
+	}
+				
 	while (cl.contains("dynamic-path")) {
 	    addDynamicPath(cl.getValueOf("dynamic-path"));
 	}
@@ -1042,6 +1061,7 @@ public class Main implements Runnable
 	addGetoptOption('h', "help", LongOpt.NO_ARGUMENT);
 	addGetoptOption(-22, "with-cache", LongOpt.NO_ARGUMENT);
 	addGetoptOption('k', "cache-dir", LongOpt.REQUIRED_ARGUMENT);
+	addGetoptOption(-23, "dynamic-classes", LongOpt.REQUIRED_ARGUMENT);
 
 	// options handled elsewhere
 	addGetoptOption('-', "use-Getopt", LongOpt.NO_ARGUMENT);
@@ -1341,6 +1361,10 @@ public class Main implements Runnable
 	    }
 	    else if (arg.equals("--debug"))
 		setDebug(true);
+	    else if (arg.equals("--dynamic-classes")) {
+		if(++i < args.length) 
+		    addDynamicClasses(args[i]);
+	    }
 	    else if (arg.equals("--dynamic-path")) {
 		if(++i < args.length) 
 		    addDynamicPath(args[i]);
@@ -1833,7 +1857,10 @@ public class Main implements Runnable
 	it = dynamicClasses.iterator();
                 
 	while(it.hasNext())
-	    Scene.v().loadClassAndSupport((String) it.next());
+        {
+            Object o = it.next();
+	    Scene.v().loadClassAndSupport((String) o);
+        }
 
 	it = processClasses.iterator();
             

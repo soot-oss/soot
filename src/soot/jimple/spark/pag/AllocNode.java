@@ -41,7 +41,7 @@ public class AllocNode extends Node {
 	return "AllocNode "+id+" "+newExpr;
     }
 
-    /* End of public methods. Nothing to see here; move along. */
+    /* End of public methods. */
 
     AllocNode( PAG pag, Object newExpr, Type t ) {
 	super( pag, t );
@@ -53,7 +53,12 @@ public class AllocNode extends Node {
         fields.put( field, adf );
     }
 
-    /* End of package methods. Nothing to see here; move along. */
+    public Set getFields() {
+        if( fields == null ) return Collections.EMPTY_SET;
+        return new HashSet( fields.values() );
+    }
+
+    /* End of package methods. */
 
     protected void assignId() {
 	id = pag.getNextAllocNodeId();

@@ -3,7 +3,7 @@ package soot.jimple.toolkits.pointer;
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
-import soot.jimple.spark.PointsToSet;
+import soot.jimple.spark.*;
 
 //  ArrayRef, 
 //  CaughtExceptionRef, 
@@ -16,7 +16,7 @@ import soot.jimple.spark.PointsToSet;
 
 public class PASideEffectTester implements SideEffectTester
 {
-    PointerAnalysis pa = Scene.v().getActivePointerAnalysis();
+    PointsToAnalysis pa = Scene.v().getActivePointsToAnalysis();
     SideEffectAnalysis sea = Scene.v().getActiveSideEffectAnalysis();
     HashMap unitToRead;
     HashMap unitToWrite;
@@ -81,8 +81,8 @@ public class PASideEffectTester implements SideEffectTester
 
     protected boolean valueTouchesRWSet(RWSet s, Value v, List boxes)
     {
-        for( Iterator it = v.getUseBoxes().iterator(); it.hasNext(); ) {
-            ValueBox use = (ValueBox) it.next();
+        for( Iterator useIt = v.getUseBoxes().iterator(); useIt.hasNext(); ) {
+            final ValueBox use = (ValueBox) useIt.next();
             if( valueTouchesRWSet( s, use.getValue(), boxes ) ) return true;
         }
         // This doesn't really make any sense, but we need to return something.
@@ -92,8 +92,9 @@ public class PASideEffectTester implements SideEffectTester
         if (v instanceof Expr)
             throw new RuntimeException("can't deal with expr");
 
-	for( Iterator it = boxes.iterator(); it.hasNext(); ) {
-	    ValueBox box = (ValueBox) it.next();
+	for( Iterator boxIt = boxes.iterator(); boxIt.hasNext(); ) {
+
+	    final ValueBox box = (ValueBox) boxIt.next();
 	    Value boxed = box.getValue();
 	    if( boxed.equivTo( v ) ) return true;
 	}
@@ -115,7 +116,7 @@ public class PASideEffectTester implements SideEffectTester
 	if( v instanceof ArrayRef ) {
 	    ArrayRef ar = (ArrayRef) v;
 	    if( s == null ) return false;
-	    PointsToSet o1 = s.getBaseForField( PointerAnalysis.ARRAY_ELEMENTS_NODE );
+	    PointsToSet o1 = s.getBaseForField( PointsToAnalysis.ARRAY_ELEMENTS_NODE );
 	    if( o1 == null ) return false;
 	    PointsToSet o2 = reachingObjects( (Local) ar.getBase() );
 	    if( o2 == null ) return false;

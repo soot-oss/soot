@@ -53,6 +53,10 @@ public class VarNode extends ValNode implements Comparable
 	this.m = m;
     }
     void addField( FieldRefNode frn, Object field ) {
+        Object old = fields.get( field );
+        if( old != null && old != frn ) {
+            throw new RuntimeException( "attempt to add two copies of field" );
+        }
 	fields.put( field, frn );
     }
     public Object getVal() {
@@ -64,6 +68,10 @@ public class VarNode extends ValNode implements Comparable
     public int compareTo( Object o ) {
 	VarNode other = (VarNode) o;
 	return finishingNumber - other.finishingNumber;
+    }
+    public int refCount = 0;
+    public void incRefCount() {
+        refCount++;
     }
     public int finishingNumber = 0;
     /*

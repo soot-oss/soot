@@ -57,10 +57,7 @@ public class SparkNativeHelper extends NativeHelper {
 	    l = pag.makeVarNode( b, b.getType(), null );
 	    pag.addEdge( b, l );
 	}
-        return pag.makeFieldRefNode(
-                l,
-                ArrayElement.v(
-                ( (RefLikeType) n.getType() ).getArrayElementType() ) );
+        return pag.makeFieldRefNode( l, ArrayElement.v() );
     }
     protected ReferenceVariable cloneObjectImpl(ReferenceVariable source) {
 	return source;

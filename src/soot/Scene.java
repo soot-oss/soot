@@ -34,6 +34,7 @@ import soot.jimple.toolkits.scalar.*;
 import soot.jimple.toolkits.scalar.pre.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.toolkits.scalar.*;
+import soot.jimple.spark.PointsToAnalysis;
 import soot.jimple.spark.SparkTransformer;
 
 /** Manages the SootClasses of the application being analyzed. */
@@ -56,7 +57,7 @@ public class Scene  //extends AbstractHost
     Hierarchy activeHierarchy;
     FastHierarchy activeFastHierarchy;
     InvokeGraph activeInvokeGraph;
-    PointerAnalysis activePointerAnalysis;
+    PointsToAnalysis activePointsToAnalysis;
     SideEffectAnalysis activeSideEffectAnalysis;
 
     boolean allowsPhantomRefs = false;
@@ -381,10 +382,8 @@ public class Scene  //extends AbstractHost
 	    return c;
 	}
 	else {          
-	    System.out.println(System.getProperty("line.separator") + "Aborting: can't find classfile" + className );            
-	    System.exit(1);
+	    throw new RuntimeException( System.getProperty("line.separator") + "Aborting: can't find classfile" + className );            
 	}
-	return null;
     }
 
     /**
@@ -457,7 +456,7 @@ public class Scene  //extends AbstractHost
     {
         if(!hasActiveSideEffectAnalysis()) {
 	    setActiveSideEffectAnalysis( new SideEffectAnalysis(
-			getActivePointerAnalysis(),
+			getActivePointsToAnalysis(),
 			getActiveInvokeGraph() ) );
 	}
             
@@ -488,32 +487,32 @@ public class Scene  //extends AbstractHost
         Retrieves the active pointer analysis
      */
 
-    public PointerAnalysis getActivePointerAnalysis() 
+    public PointsToAnalysis getActivePointsToAnalysis() 
     {
-        if(!hasActivePointerAnalysis()) {
+        if(!hasActivePointsToAnalysis()) {
 	    return new DumbPointerAnalysis();
 	}
             
-        return activePointerAnalysis;
+        return activePointsToAnalysis;
     }
     
     /**
         Sets the active pointer analysis
      */
      
-    public void setActivePointerAnalysis(PointerAnalysis pa)
+    public void setActivePointsToAnalysis(PointsToAnalysis pa)
     {
-        activePointerAnalysis = pa;
+        activePointsToAnalysis = pa;
     }
 
-    public boolean hasActivePointerAnalysis()
+    public boolean hasActivePointsToAnalysis()
     {
-        return activePointerAnalysis != null;
+        return activePointsToAnalysis != null;
     }
     
-    public void releaseActivePointerAnalysis()
+    public void releaseActivePointsToAnalysis()
     {
-        activePointerAnalysis = null;
+        activePointsToAnalysis = null;
     }
 
     /****************************************************************************/

@@ -25,19 +25,8 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public class ArrayElement implements SparkField {
-    private Type type;
-    private static HashMap typeToElement = new HashMap();
-    private ArrayElement( Type t ) {
-        type = t;
-    }
-    public static ArrayElement v( Type t ) {
-        ArrayElement ret = (ArrayElement) typeToElement.get( t );
-        if( ret == null ) {
-            typeToElement.put( t, ret = new ArrayElement( t ) );
-        }
-        return ret;
-    }
-    public Type getType() {
-        return type;
+    private static ArrayElement ae = new ArrayElement();
+    public static ArrayElement v() {
+        return ae;
     }
 }

@@ -27,17 +27,17 @@ import soot.Type;
 /** HashSet implementation of points-to set.
  * @author Ondrej Lhotak
  */
-public class HashPointsToSet extends PointsToSetInternal {
+public final class HashPointsToSet extends PointsToSetInternal {
     public HashPointsToSet( Type type ) {
         super( type );
     }
     /** Returns true if this set contains no run-time objects. */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return s.isEmpty();
     }
     /** Adds contents of other into this set, returns true if this set 
      * changed. */
-    public boolean addAll( final PointsToSetInternal other,
+    public final boolean addAll( final PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
         if( other instanceof HashPointsToSet
         && exclude == null
@@ -48,14 +48,14 @@ public class HashPointsToSet extends PointsToSetInternal {
         }
     }
     /** Calls v's visit method on all nodes in this set. */
-    public boolean forall( P2SetVisitor v ) {
+    public final boolean forall( P2SetVisitor v ) {
         for( Iterator it = new LinkedList(s).iterator(); it.hasNext(); ) {
             v.visit( (Node) it.next() );
         }
         return v.getReturnValue();
     }
     /** Adds n to this set, returns true if n was not already in this set. */
-    public boolean add( Node n ) {
+    public final boolean add( Node n ) {
         if( fh == null || type == null ||
             fh.canStoreType( n.getType(), type ) ) {
 
@@ -64,7 +64,7 @@ public class HashPointsToSet extends PointsToSetInternal {
         return false;
     }
     /** Returns true iff the set contains n. */
-    public boolean contains( Node n ) {
+    public final boolean contains( Node n ) {
         return s.contains( n );
     }
     public static P2SetFactory getFactory() {

@@ -40,7 +40,7 @@ public class SparkOptions {
 
     /**
      * If set to true, Spark prints detailed information.
-     * Default value is true
+     * Default value is false
      */
     public boolean verbose() {
         return Options.getBoolean( options, "verbose" );
@@ -194,6 +194,8 @@ public class SparkOptions {
      * Merge is an algorithm that merges all yellow nodes with their corresponding
      * red nodes.
      * 
+     * Alias is a relevant aliases based algorithm.
+     * 
      * None means that propagation is not done; the graph is only built and
      * simplified.
      * Default value is worklist
@@ -204,6 +206,7 @@ public class SparkOptions {
         else if( s.equalsIgnoreCase("iter") ) sw.case_iter();
         else if( s.equalsIgnoreCase("worklist") ) sw.case_worklist();
         else if( s.equalsIgnoreCase("merge") ) sw.case_merge();
+        else if( s.equalsIgnoreCase("alias") ) sw.case_alias();
         else if( s.equalsIgnoreCase("none") ) sw.case_none();
         else throw new RuntimeException( "Invalid value \""+s+"\" of option propagator" );
     }
@@ -211,6 +214,7 @@ public class SparkOptions {
         public abstract void case_iter();
         public abstract void case_worklist();
         public abstract void case_merge();
+        public abstract void case_alias();
         public abstract void case_none();
     }
 
@@ -264,17 +268,17 @@ public class SparkOptions {
     public void doubleSetOld( Switch_doubleSetOld sw ) {
         String s = Options.getString( options, "doubleSetOld" );
         if( false );
+        else if( s.equalsIgnoreCase("hash") ) sw.case_hash();
         else if( s.equalsIgnoreCase("bit") ) sw.case_bit();
         else if( s.equalsIgnoreCase("hybrid") ) sw.case_hybrid();
         else if( s.equalsIgnoreCase("array") ) sw.case_array();
-        else if( s.equalsIgnoreCase("hash") ) sw.case_hash();
         else throw new RuntimeException( "Invalid value \""+s+"\" of option doubleSetOld" );
     }
     public static abstract class Switch_doubleSetOld {
+        public abstract void case_hash();
         public abstract void case_bit();
         public abstract void case_hybrid();
         public abstract void case_array();
-        public abstract void case_hash();
     }
 
     /**
@@ -373,7 +377,7 @@ public class SparkOptions {
     }
     public static String getDefaultOptions() {
         return
-        " verbose:true ignoreTypesEntirely:false parmsAsFields:false returnsAsFields:false collapseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false collapseEBBs:true collapseSCCs:true ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true dumpAnswer:false";
+        " verbose:false ignoreTypesEntirely:false parmsAsFields:false returnsAsFields:false collapseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false collapseEBBs:true collapseSCCs:true ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true dumpAnswer:false";
     }
 
     protected Map options;

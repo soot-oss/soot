@@ -28,12 +28,11 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 
-public class PropIter extends Propagator {
+public final class PropIter extends Propagator {
     public PropIter( PAG pag ) { this.pag = pag; }
     /** Actually does the propagation. */
-    public void propagate() {
- //       final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
-        final OnFlyCallGraph ofcg = null;
+    public final void propagate() {
+        final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
         new TopoSorter( pag, false ).sort();
 	for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
 	    handleAllocNode( (AllocNode) it.next() );
@@ -42,7 +41,6 @@ public class PropIter extends Propagator {
         int iteration = 1;
 	boolean change;
         TreeSet simpleSources = new TreeSet( pag.simpleSources() );
-        TreeSet storeSources = new TreeSet( pag.storeSources() );
 	do {
             if( pag.getOpts().verbose() ) {
                 System.out.println( "Iteration "+(iteration++) );
@@ -51,19 +49,19 @@ public class PropIter extends Propagator {
 	    for( Iterator it = simpleSources.iterator(); it.hasNext(); ) {
                 change = handleSimples( (VarNode) it.next() ) | change;
 	    }
-	    for( Iterator it = storeSources.iterator(); it.hasNext(); ) {
-                change = handleStores( (VarNode) it.next() ) | change;
-	    }
 	    for( Iterator it = pag.loadSources().iterator(); it.hasNext(); ) {
                 change = handleLoads( (FieldRefNode) it.next() ) | change;
 	    }
+	    for( Iterator it = pag.storeSources().iterator(); it.hasNext(); ) {
+                change = handleStores( (VarNode) it.next() ) | change;
+	    }
             if( ofcg != null ) {
-                for( Iterator it = ofcg.allReceivers().iterator(); it.hasNext(); ) {
-                    final VarNode rec = (VarNode) it.next();
+                for( Iterator recIt = ofcg.allReceivers().iterator(); recIt.hasNext(); ) {
+                    final VarNode rec = (VarNode) recIt.next();
                     PointsToSetInternal recSet = rec.getP2Set();
                     if( recSet != null ) {
                         change = rec.getP2Set().forall( new P2SetVisitor() {
-                            public void visit( Node n ) {
+                        public final void visit( Node n ) {
                                 returnValue = ofcg.addReachingType(
                                     rec, n.getType(), null ) | returnValue;
                             }
@@ -74,12 +72,12 @@ public class PropIter extends Propagator {
 	} while( change );
     }
 
-    /* End of public methods. Nothing to see here; move along. */
-    /* End of package methods. Nothing to see here; move along. */
+    /* End of public methods. */
+    /* End of package methods. */
 
     /** Propagates new points-to information of node src to all its
      * successors. */
-    protected boolean handleAllocNode( AllocNode src ) {
+    protected final boolean handleAllocNode( AllocNode src ) {
 	boolean ret = false;
 	Node[] targets = pag.allocLookup( src );
 	for( int i = 0; i < targets.length; i++ ) {
@@ -88,7 +86,7 @@ public class PropIter extends Propagator {
 	return ret;
     }
 
-    protected boolean handleSimples( VarNode src ) {
+    protected final boolean handleSimples( VarNode src ) {
 	boolean ret = false;
 	PointsToSetInternal srcSet = src.getP2Set();
 	if( srcSet.isEmpty() ) return false;
@@ -99,7 +97,7 @@ public class PropIter extends Propagator {
         return ret;
     }
 
-    protected boolean handleStores( VarNode src ) {
+    protected final boolean handleStores( VarNode src ) {
 	boolean ret = false;
 	final PointsToSetInternal srcSet = src.getP2Set();
 	if( srcSet.isEmpty() ) return false;
@@ -108,7 +106,7 @@ public class PropIter extends Propagator {
             final FieldRefNode fr = (FieldRefNode) storeTargets[i];
             final SparkField f = fr.getField();
             ret = fr.getBase().getP2Set().forall( new P2SetVisitor() {
-                public void visit( Node n ) {
+            public final void visit( Node n ) {
                     AllocDotField nDotF = pag.makeAllocDotField( 
                         (AllocNode) n, f );
                     if( nDotF.makeP2Set().addAll( srcSet, null ) ) {
@@ -120,14 +118,16 @@ public class PropIter extends Propagator {
         return ret;
     }
 
-    protected boolean handleLoads( FieldRefNode src ) {
+    protected final boolean handleLoads( FieldRefNode src ) {
 	boolean ret = false;
 	final Node[] loadTargets = pag.loadLookup( src );
         final SparkField f = src.getField();
         ret = src.getBase().getP2Set().forall( new P2SetVisitor() {
-            public void visit( Node n ) {
-                AllocDotField nDotF = pag.makeAllocDotField( (AllocNode) n, f );
+        public final void visit( Node n ) {
+                AllocDotField nDotF = ((AllocNode)n).dot( f );
+                if( nDotF == null ) return;
                 PointsToSetInternal set = nDotF.getP2Set();
+                if( set.isEmpty() ) return;
                 for( int i = 0; i < loadTargets.length; i++ ) {
                     VarNode target = (VarNode) loadTargets[i];
                     if( target.makeP2Set().addAll( set, null ) ) {

@@ -56,7 +56,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
     public static CommonSubexpressionEliminator v() { return instance; }
 
     public String getDeclaredOptions() { return super.getDeclaredOptions()+
-        "naive-side-effect"; }
+        " naive-side-effect "; }
 
     public String getDefaultOptions() { return ""; }
 

@@ -27,7 +27,6 @@ import soot.jimple.spark.*;
  * @author Ondrej Lhotak
  */
 public class Parm implements SparkField {
-    private Type type;
     private int index;
     private SootMethod method;
     private static HashMap pairToElement = new HashMap();
@@ -42,10 +41,5 @@ public class Parm implements SparkField {
             pairToElement.put( p, ret = new Parm( m, index ) );
         }
         return ret;
-    }
-    public Type getType() {
-        if( index >= 0 ) return method.getParameterType( index );
-        if( index == PointsToAnalysis.RETURN_NODE ) return method.getReturnType();
-        throw new RuntimeException( "Unhandled "+method+" "+index );
     }
 }

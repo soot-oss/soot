@@ -28,8 +28,18 @@ import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
  * @author Ondrej Lhotak
  */
 public class Node implements ReferenceVariable {
-    public int hashCode() { return id; }
-    public boolean equals( Object other ) { return id == ( (Node) other ).id; }
+    public final int hashCode() { return id; }
+    public final boolean equals( Object other ) { 
+        /*
+        Node o = (Node) other;
+        if( (this == o) != (this.id == o.id ) ) {
+            System.out.println( "this is "+this+" with id "+id );
+            System.out.println( "other is "+o+" with id "+o.id );
+            throw new RuntimeException( "equality error" );
+        }
+        */
+        return this == other;
+    }
     /** Returns an integer unique to this node. */
     public int getId() { return id; }
     /** Returns the declared type of this node, null for unknown. */
@@ -47,18 +57,23 @@ public class Node implements ReferenceVariable {
     }
     /** Merge with the node other. */
     public void mergeWith( Node other ) {
-	other.replacement = getReplacement();
+        if( other.replacement != other ) {
+            throw new RuntimeException( "Shouldn't happen" );
+        }
+        Node myRep = getReplacement();
+        if( other == myRep ) return;
+	other.replacement = myRep;
 	if( other.p2set != p2set 
 	&& other.p2set != null 
 	&& !other.p2set.isEmpty() ) {
-	    if( p2set == null || p2set.isEmpty() ) {
-		p2set = other.p2set;
+	    if( myRep.p2set == null || myRep.p2set.isEmpty() ) {
+		myRep.p2set = other.p2set;
 	    } else {
-		p2set.mergeWith( other.p2set );
+		myRep.p2set.mergeWith( other.p2set );
 	    }
 	}
 	other.p2set = null;
-        pag.mergedWith( this, other );
+        pag.mergedWith( myRep, other );
     }
     /** Returns the points-to set for this node. */
     public PointsToSetInternal getP2Set() {
@@ -84,12 +99,12 @@ public class Node implements ReferenceVariable {
         if( rep == this ) {
             p2set = pag.getSetFactory().newSet( type, pag );
         }
-        return rep.getP2Set();
+        return rep.makeP2Set();
     }
     /** Returns the pointer assignment graph that this node is a part of. */
     public PAG getPag() { return pag; }
 
-    /* End of public methods. Nothing to see here; move along. */
+    /* End of public methods. */
 
     /** Creates a new node of pointer assignment graph pag, with type type. */
     Node( PAG pag, Type type ) {
@@ -99,7 +114,7 @@ public class Node implements ReferenceVariable {
         replacement = this;
     }
 
-    /* End of package methods. Nothing to see here; move along. */
+    /* End of package methods. */
 
     protected void assignId() {
 	id = pag.getNextNodeId();

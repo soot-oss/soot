@@ -88,16 +88,18 @@ public class DoublePointsToSet extends PointsToSetInternal {
             throw new RuntimeException( "NYI" );
         }
         final DoublePointsToSet o = (DoublePointsToSet) other;
-        if( !( other.type.equals( type ) ) ) {
+        if( other.type != null && !( other.type.equals( type ) ) ) {
+            throw new RuntimeException( "different types "+type+" and "+other.type );
+        }
+        if( other.type == null && type != null ) {
             throw new RuntimeException( "different types "+type+" and "+other.type );
         }
         final PointsToSetInternal newNewSet = newSetFactory.newSet( type, pag );
         final PointsToSetInternal newOldSet = newSetFactory.newSet( type, pag );
         oldSet.forall( new P2SetVisitor() {
-            public void visit( Node n ) {
-                if( o.oldSet.contains( n ) ) newOldSet.add( n );
-            }
-        } );
+        public void visit( Node n ) {
+            if( o.oldSet.contains( n ) ) newOldSet.add( n );
+        }} );
         newNewSet.addAll( this, newOldSet );
         newNewSet.addAll( o, newOldSet );
         newSet = newNewSet;

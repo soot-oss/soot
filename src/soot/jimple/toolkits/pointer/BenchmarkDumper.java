@@ -55,6 +55,7 @@ public class BenchmarkDumper extends NodePPG
         Object dest, Type destType ) 
     {
 	news.put( allocSites.getNum( newExpr ), variables.getNum( dest ) );
+        countNews++;
     }
     public BenchmarkDumper( InvokeGraph ig ) {
 	super( ig );

@@ -24,5 +24,4 @@ import soot.Type;
  * @author Ondrej Lhotak
  */
 public interface SparkField {
-    public Type getType();
 }

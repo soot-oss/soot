@@ -48,8 +48,9 @@ public class AllocNode extends Node
 	RefType rt = (RefType) t;
 	return rt.getSootClass();
     }
+    public Object getNewExpr() { return newExpr; }
     public String toString() {
-	return "Alloc "+newExpr+" "+m;
+	return "Alloc "+id+" "+newExpr+" "+m;
     }
     /*
     public boolean equals( Object o ) {

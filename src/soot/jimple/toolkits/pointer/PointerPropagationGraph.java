@@ -331,11 +331,15 @@ public abstract class PointerPropagationGraph extends PointerStmtSwitch
 
     public void build()
     {
+        int countMethods = 0;
+        int countClasses = 0;
+        int countStmts = 0;
 
 	Iterator classesIt = Scene.v().getClasses().iterator();
 	while( classesIt.hasNext() )
 	{
 	    SootClass c = (SootClass) classesIt.next();
+            boolean cHasReachableMethods = false;
 	    Iterator methodsIt = c.getMethods().iterator();
 	    while( methodsIt.hasNext() )
 	    {
@@ -344,13 +348,18 @@ public abstract class PointerPropagationGraph extends PointerStmtSwitch
 		    buildNative( m );
 		}
 		if( !m.isConcrete() ) continue;
+                if( !ig.mcg.isReachable(m) ) continue;
+                countMethods++;
+                cHasReachableMethods = true;
 		Body b = m.retrieveActiveBody();
+                countStmts += b.getUnits().size();
 		Iterator unitsIt = b.getUnits().iterator();
 		while( unitsIt.hasNext() )
 		{
 		    handleStmt( (Stmt) unitsIt.next(), m );
 		}
 	    }
+            if( cHasReachableMethods ) countClasses++;
 
 	    addMiscEdges( c );
 
@@ -358,6 +367,9 @@ public abstract class PointerPropagationGraph extends PointerStmtSwitch
 	
 	System.out.println( "Casts same type as dest: "+castsSameAsDest );
 	System.out.println( "Casts different type from dest: "+castsDifferentFromDest );
+        System.out.println( "Reachable methods: " + countMethods );
+        System.out.println( "Reachable classes: " + countClasses );
+        System.out.println( "Reachable stmts: " + countStmts );
     }
 
     static final RefType string = RefType.v("java.lang.String");

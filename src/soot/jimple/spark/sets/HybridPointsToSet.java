@@ -28,7 +28,7 @@ import soot.Type;
  * small sets, and a bit vector for large sets.
  * @author Ondrej Lhotak
  */
-public class HybridPointsToSet extends PointsToSetInternal {
+public final class HybridPointsToSet extends PointsToSetInternal {
     public HybridPointsToSet( Type type, PAG pag ) {
         super( type );
         if( nodes == null ) {
@@ -37,24 +37,37 @@ public class HybridPointsToSet extends PointsToSetInternal {
         }
     }
     /** Returns true if this set contains no run-time objects. */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return bits == null && n1 == null;
     }
     /** Adds contents of other into this set, returns true if this set 
      * changed. */
-    public boolean addAll( final PointsToSetInternal other,
+    public final boolean addAll( final PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
         boolean ret = false;
         if( other instanceof HybridPointsToSet ) {
             HybridPointsToSet o = (HybridPointsToSet) other;
             if( o.bits != null ) {
                 convertToBits();
-                if( exclude == null ) {
-                    for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i];
-                        if( l != 0 ) for( int j=0; j<64; j++ ) {
-                            if( ( l & (1L<<j) ) != 0  ) {
-                                ret = add( nodes[i*64+j] ) | ret;
+                if( exclude == null || exclude.isEmpty() ) {
+                    if( PointsToSetInternal.castNeverFails( 
+                                other.getType(), this.getType() ) ) {
+                        for( int i=0; i < SIZE; i++ ) {
+                            long l = o.bits[i] & ~bits[i];
+                            if( l != 0L ) {
+                                ret = true;
+                                bits[i] |= l;
+                            }
+                        }
+                    } else {
+                        for( int i=0; i < SIZE; i++ ) {
+                            long l = o.bits[i] & ~bits[i];
+                            if( l != 0L ) {
+                                for( int j=0; j<64; j++ ) {
+                                    if( ( l & (1L<<j) ) != 0  ) {
+                                        ret = add( nodes[i*64+j] ) | ret;
+                                    }
+                                }
                             }
                         }
                     }
@@ -62,35 +75,135 @@ public class HybridPointsToSet extends PointsToSetInternal {
                 } else if( exclude instanceof HybridPointsToSet
                         && ((HybridPointsToSet)exclude).bits != null ) {
                     HybridPointsToSet e = (HybridPointsToSet) exclude;
-                    for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i] & ~e.bits[i];
-                        if( l != 0 ) for( int j=0; j<64; j++ ) {
-                            if( ( l & (1L<<j) ) != 0  ) {
-                                ret = add( nodes[i*64+j] ) | ret;
+                    if( PointsToSetInternal.castNeverFails( 
+                                other.getType(), this.getType() ) ) {
+                        for( int i=0; i < SIZE; i++ ) {
+                            long l = o.bits[i] & ~bits[i] & ~e.bits[i];
+                            if( l != 0L ) {
+                                ret = true;
+                                bits[i] |= l;
+                            }
+                        }
+                    } else {
+                        for( int i=0; i < SIZE; i++ ) {
+                            long l = o.bits[i] & ~bits[i] & ~e.bits[i];
+                            if( l != 0L ) {
+                                for( int j=0; j<64; j++ ) {
+                                    if( ( l & (1L<<j) ) != 0  ) {
+                                        ret = add( nodes[i*64+j] ) | ret;
+                                    }
+                                }
                             }
                         }
                     }
                     return ret;
                 } else {
-                    for( int i=0; i < SIZE; i++ ) {
-                        long l = o.bits[i] & ~bits[i];
-                        if( l != 0 ) for( int j=0; j<64; j++ ) {
-                            if( ( l & (1L<<j) ) != 0  ) {
-                                Node n = nodes[i*64+j];
-                                if( !exclude.contains( n ) ) {
-                                    ret = add( n ) | ret;
+                    if( PointsToSetInternal.castNeverFails( 
+                                other.getType(), this.getType() ) ) {
+                        for( int i=0; i < SIZE; i++ ) {
+                            long l = o.bits[i] & ~bits[i];
+                            if( l != 0L ) {
+                                for( int j=0; j<64; j++ ) {
+                                    if( ( l & (1L<<j) ) != 0  ) {
+                                        Node n = nodes[i*64+j];
+                                        if( exclude.contains( n ) ) {
+                                            l &= ~(1L<<j);
+                                        }
+                                    }
+                                }
+                                if( l != 0L ) {
+                                    ret = true;
+                                    bits[i] |= l;
+                                }
+                            }
+                        }
+                    } else {
+                        for( int i=0; i < SIZE; i++ ) {
+                            long l = o.bits[i] & ~bits[i];
+                            if( l != 0L ) for( int j=0; j<64; j++ ) {
+                                if( ( l & (1L<<j) ) != 0  ) {
+                                    Node n = nodes[i*64+j];
+                                    if( !exclude.contains( n ) ) {
+                                        ret = add( n ) | ret;
+                                    }
                                 }
                             }
                         }
                     }
                     return ret;
                 }
+            } else {
+                if( o.n1 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n1 ) ) {
+                    ret = add( o.n1 ) | ret;
+                }
+                if( o.n2 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n2 ) ) {
+                    ret = add( o.n2 ) | ret;
+                }
+                if( o.n3 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n3 ) ) {
+                    ret = add( o.n3 ) | ret;
+                }
+                if( o.n4 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n4 ) ) {
+                    ret = add( o.n4 ) | ret;
+                }
+                if( o.n5 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n5 ) ) {
+                    ret = add( o.n5 ) | ret;
+                }
+                if( o.n6 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n6 ) ) {
+                    ret = add( o.n6 ) | ret;
+                }
+                if( o.n7 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n7 ) ) {
+                    ret = add( o.n7 ) | ret;
+                }
+                if( o.n8 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n8 ) ) {
+                    ret = add( o.n8 ) | ret;
+                }
+                if( o.n9 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n9 ) ) {
+                    ret = add( o.n9 ) | ret;
+                }
+                if( o.n10 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n10 ) ) {
+                    ret = add( o.n10 ) | ret;
+                }
+                if( o.n11 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n11 ) ) {
+                    ret = add( o.n11 ) | ret;
+                }
+                if( o.n12 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n12 ) ) {
+                    ret = add( o.n12 ) | ret;
+                }
+                if( o.n13 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n13 ) ) {
+                    ret = add( o.n13 ) | ret;
+                }
+                if( o.n14 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n14 ) ) {
+                    ret = add( o.n14 ) | ret;
+                }
+                if( o.n15 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n15 ) ) {
+                    ret = add( o.n15 ) | ret;
+                }
+                if( o.n16 == null ) return ret;
+                if( exclude == null || !exclude.contains( o.n16 ) ) {
+                    ret = add( o.n16 ) | ret;
+                }
+                return ret;
             }
         }
         return super.addAll( other, exclude );
     }
     /** Calls v's visit method on all nodes in this set. */
-    public boolean forall( P2SetVisitor v ) {
+    public final boolean forall( P2SetVisitor v ) {
        if( bits == null ) {
             if( n1 == null ) return v.getReturnValue(); v.visit( n1 );
             if( n2 == null ) return v.getReturnValue(); v.visit( n2 );
@@ -121,7 +234,7 @@ public class HybridPointsToSet extends PointsToSetInternal {
         return v.getReturnValue();
     }
     /** Adds n to this set, returns true if n was not already in this set. */
-    public boolean add( Node n ) {
+    public final boolean add( Node n ) {
         if( fh == null || type == null ||
             fh.canStoreType( n.getType(), type ) ) {
 
@@ -130,7 +243,7 @@ public class HybridPointsToSet extends PointsToSetInternal {
         return false;
     }
     /** Returns true iff the set contains n. */
-    public boolean contains( Node n ) {
+    public final boolean contains( Node n ) {
         if( bits == null ) {
             if( n1 == n ) return true;
             if( n2 == n ) return true;
@@ -154,9 +267,9 @@ public class HybridPointsToSet extends PointsToSetInternal {
             return ( bits[ id/64 ] & 1L<<(id%64 ) ) != 0;
         }
     }
-    public static P2SetFactory getFactory() {
+    public final static P2SetFactory getFactory() {
         return new P2SetFactory() {
-            public PointsToSetInternal newSet( Type type, PAG pag ) {
+            public final PointsToSetInternal newSet( Type type, PAG pag ) {
                 return new HybridPointsToSet( type, pag );
             }
         };
@@ -165,7 +278,7 @@ public class HybridPointsToSet extends PointsToSetInternal {
     /* End of public methods. */
     /* End of package methods. */
 
-    protected boolean fastAdd( Node n ) {
+    protected final boolean fastAdd( Node n ) {
         if( bits == null ) {
             if( n1 == null ) { n1 = n; return true; } if( n1 == n ) return false;
             if( n2 == null ) { n2 = n; return true; } if( n2 == n ) return false;
@@ -192,7 +305,7 @@ public class HybridPointsToSet extends PointsToSetInternal {
         return true;
     }
 
-    protected void convertToBits() {
+    protected final void convertToBits() {
         if( bits != null ) return;
         bits = new long[SIZE];
         if( n1 != null ) fastAdd( n1 );

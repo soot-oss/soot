@@ -36,6 +36,7 @@ public interface PointsToAnalysis {
     public static final Integer STRING_NODE_LOCAL = new Integer( -8 );
     public static final Integer EXCEPTION_NODE = new Integer( -9 );
     public static final Integer RETURN_STRING_CONSTANT_NODE = new Integer( -10 );
+    public static final Integer STRING_ARRAY_NODE_LOCAL = new Integer( -11 );
 
     /** Returns the set of objects reaching variable l before stmt in method. */
     public PointsToSet reachingObjects( SootMethod method, Stmt stmt,

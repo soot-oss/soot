@@ -33,16 +33,14 @@ public class PAG implements PointsToAnalysis {
     public PointsToSet reachingObjects( SootMethod method, Stmt stmt,
                             Local l ) {
         VarNode n = findVarNode( l );
-        if( n == null ) return EmptyPointsToSet.v();
+        if( n == null ) {
+            return EmptyPointsToSet.v();
+        }
         return n.getP2Set();
     }
 
     /** Returns SparkOptions for this graph. */
     public SparkOptions getOpts() { return opts; }
-    /** Finds the AllocNode for the new expression newExpr, or returns null. */
-    public AllocNode findAllocNode( Object newExpr ) {
-	return (AllocNode) valToAllocNode.get( newExpr );
-    }
     /** Finds or creates the AllocNode for the new expression newExpr,
      * of type type. */
     public AllocNode makeAllocNode( Object newExpr, Type type ) {
@@ -144,7 +142,7 @@ public class PAG implements PointsToAnalysis {
                     from+" to "+to );
             }
             if( fh == null || to.getType() == null 
-            || fh.canStoreType( to.getType(), from.getType() ) ) {
+            || fh.canStoreType( from.getType(), to.getType() ) ) {
                 ret = addToMap( alloc, from, to ) | ret;
                 ret = addToMap( allocInv, to, from ) | ret;
             }
@@ -229,11 +227,47 @@ public class PAG implements PointsToAnalysis {
 
     public void setOnFlyCallGraph( OnFlyCallGraph ofcg ) { this.ofcg = ofcg; }
     public OnFlyCallGraph getOnFlyCallGraph() { return ofcg; }
+    public void cleanUpMerges() {
+        if( opts.verbose() ) {
+            System.out.println( "Cleaning up graph for merged nodes" );
+        }
+        Map[] maps = { simple, alloc, store, load,
+            simpleInv, allocInv, storeInv, loadInv };
+        for( int i = 0; i < maps.length; i++ ) {
+            Map m = maps[i];
+            for( Iterator it = m.keySet().iterator(); it.hasNext(); ) {
+                lookup( m, it.next() );
+            }
+        }
+        somethingMerged = false;
+        if( opts.verbose() ) {
+            System.out.println( "Done cleaning up graph for merged nodes" );
+        }
+    }
 
-    /* End of public methods. Nothing to see here; move along. */
+    /*
+    public void dumpNumbersOfEdges() {
+        Map[] maps = { simple, alloc, store, load,
+            simpleInv, allocInv, storeInv, loadInv };
+        String[] names = { "simple", "alloc", "store", "load",
+            "simpleInv", "allocInv", "storeInv", "loadInv" };
+        for( int i = 0; i < maps.length; i++ ) {
+            Map m = maps[i];
+            int size = 0;
+            for( Iterator it = m.keySet().iterator(); it.hasNext(); ) {
+                size += lookup( m, it.next() ).length;
+            }
+            System.out.println( ""+names[i]+" "+size );
+        }
+        System.out.println( "valToVarNodeSize: "+valToVarNode.size() );
+    }
+    */
+    /* End of public methods. */
 
     /** Node uses this to notify PAG that n2 has been merged into n1. */
     void mergedWith( Node n1, Node n2 ) {
+        if( n1.equals( n2 ) ) throw new RuntimeException( "oops" );
+        somethingMerged = true;
         Map[] maps = { simple, alloc, store, load,
             simpleInv, allocInv, storeInv, loadInv };
         for( int i = 0; i < maps.length; i++ ) {
@@ -247,7 +281,7 @@ public class PAG implements PointsToAnalysis {
                 if( o instanceof Set ) {
                     s.addAll( (Set) o );
                 } else {
-                    Object[] ar = (Object[]) o;
+                    Node[] ar = (Node[]) o;
                     for( int k = 0; k < ar.length; k++ ) {
                         s.add( ar[k] );
                     }
@@ -266,7 +300,7 @@ public class PAG implements PointsToAnalysis {
 	return nextAllocNodeId--;
     }
 
-    /* End of package methods. Nothing to see here; move along. */
+    /* End of package methods. */
 
     protected SparkOptions opts;
 
@@ -312,26 +346,30 @@ public class PAG implements PointsToAnalysis {
             }
 	}
 	Node[] ret = (Node[]) valueList;
-	for( int i = 0; i < ret.length; i++ ) {
-	    Node reti = ret[i];
-	    Node rep = reti.getReplacement();
-	    if( rep != reti || rep == key ) {
-		HashSet s = new HashSet( ret.length * 2 );
-		for( int j = 0; j < i; j++ ) s.add( ret[j] );
-		for( int j = i; j < ret.length; j++ ) {
-                    rep = ret[j].getReplacement();
-                    if( rep != key ) {
-                        s.add( rep );
+        if( somethingMerged ) {
+            for( int i = 0; i < ret.length; i++ ) {
+                Node reti = ret[i];
+                Node rep = reti.getReplacement();
+                if( rep != reti || rep == key ) {
+                    HashSet s = new HashSet( ret.length * 2 );
+                    for( int j = 0; j < i; j++ ) s.add( ret[j] );
+                    for( int j = i; j < ret.length; j++ ) {
+                        rep = ret[j].getReplacement();
+                        if( rep != key ) {
+                            s.add( rep );
+                        }
                     }
-		}
-		m.put( key, ret = (Node[]) s.toArray( EMPTY_NODE_ARRAY ) );
-	    }
-	}
+                    m.put( key, ret = (Node[]) s.toArray( EMPTY_NODE_ARRAY ) );
+                    break;
+                }
+            }
+        }
 	return ret;
     }
     protected Map valToVarNode = new HashMap(1000);
     protected Map valToAllocNode = new HashMap(1000);
     protected P2SetFactory setFactory;
     protected OnFlyCallGraph ofcg;
+    protected static boolean somethingMerged = false;
 }
 

@@ -14,12 +14,14 @@ public class MethodRWSet extends RWSet {
     final static PointsToSet fullObjectSet = new FullObjectSet();
     public static int MAX_SIZE = Integer.MAX_VALUE;
 
-    static int count = 0;
+    //static int count = 0;
     public MethodRWSet() {
+        /*
 	count++;
 	if( 0 == (count % 1000) ) {
 	    System.out.println( "Created "+count+"th MethodRWSet" );
 	}
+        */
     }
     public boolean getCallsNative() {
 	return callsNative;
@@ -66,8 +68,8 @@ public class MethodRWSet extends RWSet {
 	}
 	if( fields != null && other.fields != null
 		&& !fields.isEmpty() && !other.fields.isEmpty() ) {
-	    for( Iterator it = other.fields.keySet().iterator(); it.hasNext(); ) {
-		Object field = it.next();
+	    for( Iterator fieldIt = other.fields.keySet().iterator(); fieldIt.hasNext(); ) {
+	        final Object field = (Object) fieldIt.next();
 		if( fields.containsKey( field ) ) {
 		    if( getBaseForField( field ).hasNonEmptyIntersection(
 				other.getBaseForField( field ) ) ) {
@@ -106,8 +108,8 @@ public class MethodRWSet extends RWSet {
 		}
 	    }
 	    if( o.fields != null ) {
-		for( Iterator it = o.fields.keySet().iterator(); it.hasNext(); ) {
-		    Object field = it.next();
+		for( Iterator fieldIt = o.fields.keySet().iterator(); fieldIt.hasNext(); ) {
+		    final Object field = (Object) fieldIt.next();
 		    PointsToSet os = o.getBaseForField( field );
 		    ret = addFieldRef( os, field ) | ret;
 		}

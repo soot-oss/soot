@@ -38,8 +38,8 @@ public class PAGDumper {
         try {
             final PrintWriter file = new PrintWriter(
                     new FileOutputStream( "solution" ) );
-            for( Iterator gnIt = pag.allVarNodes().iterator(); gnIt.hasNext(); ) {
-                VarNode vn = (VarNode) gnIt.next();
+            for( Iterator vnIt = pag.allVarNodes().iterator(); vnIt.hasNext(); ) {
+                final VarNode vn = (VarNode) vnIt.next();
                 if( vn.getReplacement() != vn ) continue;
                 file.print( "Node: " );
                 dumpNode( vn, file );
@@ -47,7 +47,7 @@ public class PAGDumper {
                 PointsToSetInternal p2set = vn.getP2Set();
                 if( p2set == null ) continue;
                 p2set.forall( new P2SetVisitor() {
-                    public void visit( Node n ) {
+                public final void visit( Node n ) {
                         try {
                             dumpNode( n, file );
                             file.println( "" );
@@ -72,8 +72,8 @@ public class PAGDumper {
                 new TopoSorter( pag, false ).sort();
             }
             file.println( "Allocations:" );
-            for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
-                AllocNode n = (AllocNode) it.next();
+            for( Iterator nIt = pag.allocSources().iterator(); nIt.hasNext(); ) {
+                final AllocNode n = (AllocNode) nIt.next();
                 if( n.getReplacement() != n ) continue;
                 Node[] succs = pag.allocLookup( n );
                 for( int i = 0; i < succs.length; i++ ) {
@@ -85,8 +85,8 @@ public class PAGDumper {
             }
 
             file.println( "Assignments:" );
-            for( Iterator it = pag.simpleSources().iterator(); it.hasNext(); ) {
-                VarNode n = (VarNode) it.next();
+            for( Iterator nIt = pag.simpleSources().iterator(); nIt.hasNext(); ) {
+                final VarNode n = (VarNode) nIt.next();
                 if( n.getReplacement() != n ) continue;
                 Node[] succs = pag.simpleLookup( n );
                 for( int i = 0; i < succs.length; i++ ) {
@@ -98,8 +98,8 @@ public class PAGDumper {
             }
             
             file.println( "Loads:" );
-            for( Iterator it = pag.loadSources().iterator(); it.hasNext(); ) {
-                FieldRefNode n = (FieldRefNode) it.next();
+            for( Iterator nIt = pag.loadSources().iterator(); nIt.hasNext(); ) {
+                final FieldRefNode n = (FieldRefNode) nIt.next();
                 Node[] succs = pag.loadLookup( n );
                 for( int i = 0; i < succs.length; i++ ) {
                     dumpNode( n, file );
@@ -109,8 +109,8 @@ public class PAGDumper {
                 }
             }
             file.println( "Stores:" );
-            for( Iterator it = pag.storeSources().iterator(); it.hasNext(); ) {
-                VarNode n = (VarNode) it.next();
+            for( Iterator nIt = pag.storeSources().iterator(); nIt.hasNext(); ) {
+                final VarNode n = (VarNode) nIt.next();
                 if( n.getReplacement() != n ) continue;
                 Node[] succs = pag.storeLookup( n );
                 for( int i = 0; i < succs.length; i++ ) {
@@ -130,8 +130,8 @@ public class PAGDumper {
     }
 
 
-    /* End of public methods. Nothing to see here; move along. */
-    /* End of package methods. Nothing to see here; move along. */
+    /* End of public methods. */
+    /* End of package methods. */
 
     protected PAG pag;
     protected int fieldNum = 0;
@@ -142,27 +142,27 @@ public class PAGDumper {
         HashSet declaredTypes = new HashSet();
         HashSet actualTypes = new HashSet();
         HashSet allFields = new HashSet();
-        for( Iterator it = pag.allVarNodes().iterator(); it.hasNext(); ) {
-            Node n = (Node) it.next();
+        for( Iterator nIt = pag.allVarNodes().iterator(); nIt.hasNext(); ) {
+            final Node n = (Node) nIt.next();
             Type t = n.getType();
             if( t != null ) declaredTypes.add( t );
         }
-        for( Iterator it = pag.loadSources().iterator(); it.hasNext(); ) {
-            Node n = (Node) it.next();
+        for( Iterator nIt = pag.loadSources().iterator(); nIt.hasNext(); ) {
+            final Node n = (Node) nIt.next();
             if( n.getReplacement() != n ) continue;
             Type t = n.getType();
             if( t != null ) declaredTypes.add( t );
             allFields.add( ((FieldRefNode) n ).getField() );
         }
-        for( Iterator it = pag.storeInvSources().iterator(); it.hasNext(); ) {
-            Node n = (Node) it.next();
+        for( Iterator nIt = pag.storeInvSources().iterator(); nIt.hasNext(); ) {
+            final Node n = (Node) nIt.next();
             if( n.getReplacement() != n ) continue;
             Type t = n.getType();
             if( t != null ) declaredTypes.add( t );
             allFields.add( ((FieldRefNode) n ).getField() );
         }
-        for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
-            Node n = (Node) it.next();
+        for( Iterator nIt = pag.allocSources().iterator(); nIt.hasNext(); ) {
+            final Node n = (Node) nIt.next();
             if( n.getReplacement() != n ) continue;
             Type t = n.getType();
             if( t != null ) actualTypes.add( t );
@@ -172,25 +172,25 @@ public class PAGDumper {
         for( Iterator it = declaredTypes.iterator(); it.hasNext(); ) {
             typeToInt.put( it.next(), new Integer( nextint++ ) );
         }
-        for( Iterator it = actualTypes.iterator(); it.hasNext(); ) {
-            Type t = (Type) it.next();
+        for( Iterator tIt = actualTypes.iterator(); tIt.hasNext(); ) {
+            final Type t = (Type) tIt.next();
             if( !typeToInt.containsKey( t ) ) {
                 typeToInt.put( t, new Integer( nextint++ ) );
             }
         }
         file.println( "Declared Types:" );
-        for( Iterator it = declaredTypes.iterator(); it.hasNext(); ) {
-            Type declType = (Type) it.next();
-            for( Iterator it2 = actualTypes.iterator(); it2.hasNext(); ) {
-                Type actType = (Type) it2.next();
+        for( Iterator declTypeIt = declaredTypes.iterator(); declTypeIt.hasNext(); ) {
+            final Type declType = (Type) declTypeIt.next();
+            for( Iterator actTypeIt = actualTypes.iterator(); actTypeIt.hasNext(); ) {
+                final Type actType = (Type) actTypeIt.next();
                 if( fh.canStoreType( actType, declType ) ) {
                     file.println( ""+typeToInt.get( declType )+" "+typeToInt.get( actType ) );
                 }
             }
         }
         file.println( "Allocation Types:" );
-        for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
-            Node n = (Node) it.next();
+        for( Iterator nIt = pag.allocSources().iterator(); nIt.hasNext(); ) {
+            final Node n = (Node) nIt.next();
             if( n.getReplacement() != n ) continue;
             Type t = n.getType();
             dumpNode( n, file );
@@ -202,22 +202,11 @@ public class PAGDumper {
             }
         }
         file.println( "Variable Types:" );
-        for( Iterator it = pag.allVarNodes().iterator(); it.hasNext(); ) {
-            Node n = (Node) it.next();
+        for( Iterator nIt = pag.allVarNodes().iterator(); nIt.hasNext(); ) {
+            final Node n = (Node) nIt.next();
             if( n.getReplacement() != n ) continue;
             Type t = n.getType();
             dumpNode( n, file );
-            if( t == null ) {
-                file.println( " 0" );
-            } else {
-                file.println( " "+typeToInt.get( t ) );
-            }
-        }
-        file.println( "Field Types:" );
-        for( Iterator it = allFields.iterator(); it.hasNext(); ) {
-            SparkField n = (SparkField) it.next();
-            Type t = n.getType();
-            file.print( fieldToNum( n ) );
             if( t == null ) {
                 file.println( " 0" );
             } else {

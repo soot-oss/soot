@@ -29,12 +29,12 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 
-public class PropWorklist extends Propagator {
+public final class PropWorklist extends Propagator {
     protected final Set varNodeWorkList = new TreeSet();
 
     public PropWorklist( PAG pag ) { this.pag = pag; }
     /** Actually does the propagation. */
-    public void propagate() {
+    public final void propagate() {
         new TopoSorter( pag, false ).sort();
 	for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
 	    handleAllocNode( (AllocNode) it.next() );
@@ -52,17 +52,29 @@ public class PropWorklist extends Propagator {
 		handleVarNode( src );
             }
             if( verbose ) {
-                System.out.println( "Worklist has "+
-                    varNodeWorkList.size()+" nodes." );
-                System.out.println( "Now handling loads" );
+                System.out.println( "Now handling field references" );
+            }
+            for( Iterator srcIt = pag.storeSources().iterator(); srcIt.hasNext(); ) {
+                final VarNode src = (VarNode) srcIt.next();
+                Node[] targets = pag.storeLookup( src );
+                for( int i = 0; i < targets.length; i++ ) {
+                    final FieldRefNode target = (FieldRefNode) targets[i];
+                    target.getBase().makeP2Set().forall( new P2SetVisitor() {
+                    public final void visit( Node n ) {
+                            AllocDotField nDotF = pag.makeAllocDotField( 
+                                (AllocNode) n, target.getField() );
+                            nDotF.makeP2Set().addAll( src.getP2Set(), null );
+                        }
+                    } );
+                }
             }
             HashSet edgesToPropagate = new HashSet();
 	    for( Iterator it = pag.loadSources().iterator(); it.hasNext(); ) {
                 handleFieldRefNode( (FieldRefNode) it.next(), edgesToPropagate );
 	    }
             HashSet nodesToFlush = new HashSet();
-            for( Iterator it = edgesToPropagate.iterator(); it.hasNext(); ) {
-                Pair p = (Pair) it.next();
+            for( Iterator pIt = edgesToPropagate.iterator(); pIt.hasNext(); ) {
+                final Pair p = (Pair) pIt.next();
                 PointsToSetInternal nDotF = (PointsToSetInternal) p.getO1();
 		PointsToSetInternal newP2Set = nDotF.getNewSet();
                 VarNode loadTarget = (VarNode) p.getO2();
@@ -71,19 +83,19 @@ public class PropWorklist extends Propagator {
                 }
                 nodesToFlush.add( nDotF );
             }
-            for( Iterator it = nodesToFlush.iterator(); it.hasNext(); ) {
-                PointsToSetInternal nDotF = (PointsToSetInternal) it.next();
+            for( Iterator nDotFIt = nodesToFlush.iterator(); nDotFIt.hasNext(); ) {
+                final PointsToSetInternal nDotF = (PointsToSetInternal) nDotFIt.next();
                 nDotF.flushNew();
             }
 	} while( !varNodeWorkList.isEmpty() );
     }
 
-    /* End of public methods. Nothing to see here; move along. */
-    /* End of package methods. Nothing to see here; move along. */
+    /* End of public methods. */
+    /* End of package methods. */
 
     /** Propagates new points-to information of node src to all its
      * successors. */
-    protected boolean handleAllocNode( AllocNode src ) {
+    protected final boolean handleAllocNode( AllocNode src ) {
 	boolean ret = false;
 	Node[] targets = pag.allocLookup( src );
 	for( int i = 0; i < targets.length; i++ ) {
@@ -96,26 +108,11 @@ public class PropWorklist extends Propagator {
     }
     /** Propagates new points-to information of node src to all its
      * successors. */
-    protected boolean handleVarNode( final VarNode src ) {
+    protected final boolean handleVarNode( final VarNode src ) {
 	boolean ret = false;
 
-        final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
-        if( ofcg != null ) {
-            final LinkedList touchedNodes = new LinkedList();
-            ret = src.getP2Set().getNewSet().forall( new P2SetVisitor() {
-                public void visit( Node n ) {
-                    returnValue = ofcg.addReachingType(
-                        src, n.getType(), touchedNodes ) | returnValue;
-                }
-            } ) | ret;
-            for( Iterator it = touchedNodes.iterator(); it.hasNext(); ) {
-                Node n = (Node) it.next();
-                PointsToSetInternal p2set = n.getP2Set();
-                if( p2set != null ) p2set.unFlushNew();
-                if( n instanceof VarNode ) varNodeWorkList.add( n );
-                ret = true;
-            }
-        }
+        if( src.getReplacement() != src ) throw new RuntimeException(
+                "Got bad node "+src+" with rep "+src.getReplacement() );
 
 	final PointsToSetInternal newP2Set = src.getP2Set().getNewSet();
 	if( newP2Set.isEmpty() ) return false;
@@ -133,7 +130,7 @@ public class PropWorklist extends Propagator {
             final FieldRefNode fr = (FieldRefNode) storeTargets[i];
             final SparkField f = fr.getField();
             ret = fr.getBase().getP2Set().forall( new P2SetVisitor() {
-		public void visit( Node n ) {
+            public final void visit( Node n ) {
                     AllocDotField nDotF = pag.makeAllocDotField( 
                         (AllocNode) n, f );
                     if( nDotF.makeP2Set().addAll( newP2Set, null ) ) {
@@ -146,13 +143,13 @@ public class PropWorklist extends Propagator {
         final HashSet storesToPropagate = new HashSet();
         final HashSet loadsToPropagate = new HashSet();
 	Collection fieldRefs = src.getAllFieldRefs();
-	for( Iterator it = fieldRefs.iterator(); it.hasNext(); ) {
-	    final FieldRefNode fr = (FieldRefNode) it.next();
+	for( Iterator frIt = fieldRefs.iterator(); frIt.hasNext(); ) {
+	    final FieldRefNode fr = (FieldRefNode) frIt.next();
 	    final SparkField field = fr.getField();
 	    final Node[] storeSources = pag.storeInvLookup( fr );
             if( storeSources.length > 0 ) {
                 newP2Set.forall( new P2SetVisitor() {
-                    public void visit( Node n ) {
+                public final void visit( Node n ) {
                         AllocDotField nDotF = pag.makeAllocDotField(
                             (AllocNode) n, field );
                         for( int i = 0; i < storeSources.length; i++ ) {
@@ -166,7 +163,7 @@ public class PropWorklist extends Propagator {
 	    final Node[] loadTargets = pag.loadLookup( fr );
             if( loadTargets.length > 0 ) {
                 newP2Set.forall( new P2SetVisitor() {
-                    public void visit( Node n ) {
+                public final void visit( Node n ) {
                         AllocDotField nDotF = pag.findAllocDotField(
                             (AllocNode) n, field );
                         if( nDotF != null ) {
@@ -180,16 +177,16 @@ public class PropWorklist extends Propagator {
             }
 	}
 	src.getP2Set().flushNew();
-        for( Iterator it = storesToPropagate.iterator(); it.hasNext(); ) {
-            Pair p = (Pair) it.next();
+        for( Iterator pIt = storesToPropagate.iterator(); pIt.hasNext(); ) {
+            final Pair p = (Pair) pIt.next();
             VarNode storeSource = (VarNode) p.getO1();
             AllocDotField nDotF = (AllocDotField) p.getO2();
             if( nDotF.makeP2Set().addAll( storeSource.getP2Set(), null ) ) {
                 ret = true;
             }
         }
-        for( Iterator it = loadsToPropagate.iterator(); it.hasNext(); ) {
-            Pair p = (Pair) it.next();
+        for( Iterator pIt = loadsToPropagate.iterator(); pIt.hasNext(); ) {
+            final Pair p = (Pair) pIt.next();
             AllocDotField nDotF = (AllocDotField) p.getO1();
             VarNode loadTarget = (VarNode) p.getO2();
             if( loadTarget.makeP2Set().
@@ -203,14 +200,15 @@ public class PropWorklist extends Propagator {
 
     /** Propagates new points-to information of node src to all its
      * successors. */
-    protected void handleFieldRefNode( FieldRefNode src, 
+    protected final void handleFieldRefNode( FieldRefNode src, 
             final HashSet edgesToPropagate ) {
 	final Node[] loadTargets = pag.loadLookup( src );
 	if( loadTargets.length == 0 ) return;
         final SparkField field = src.getField();
 
 	src.getBase().getP2Set().forall( new P2SetVisitor() {
-	    public void visit( Node n ) {
+
+	public final void visit( Node n ) {
                 AllocDotField nDotF = pag.findAllocDotField( 
                     (AllocNode) n, field );
                 if( nDotF != null ) {

@@ -2,7 +2,7 @@ SECTION General options
 #######################
 
 BOPT verbose
-true
+false
 If set to true, Spark prints detailed information.
 END
 
@@ -101,7 +101,7 @@ END
 SECTION Points-to set flowing options
 #####################################
 
-MOPT propagator iter worklist merge none
+MOPT propagator iter worklist merge alias none
 worklist
 Tells Spark which propagation algorithm to use.
 
@@ -113,6 +113,8 @@ to do as little work as possible.
 
 Merge is an algorithm that merges all yellow nodes with their corresponding
 red nodes.
+
+Alias is a relevant aliases based algorithm.
 
 None means that propagation is not done; the graph is only built and
 simplified.

@@ -27,17 +27,17 @@ import soot.Type;
 /** Implementation of points-to set using a sorted array.
  * @author Ondrej Lhotak
  */
-public class SortedArraySet extends PointsToSetInternal {
+public final class SortedArraySet extends PointsToSetInternal {
     public SortedArraySet( Type type, PAG pag ) {
         super( type );
     }
     /** Returns true if this set contains no run-time objects. */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return size == 0;
     }
     /** Adds contents of other into this set, returns true if this set 
      * changed. */
-    public boolean addAll( final PointsToSetInternal other,
+    public final boolean addAll( final PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
         boolean ret = false;
         if( other instanceof SortedArraySet ) {
@@ -52,8 +52,8 @@ public class SortedArraySet extends PointsToSetInternal {
             for( ;; ) {
                 if( myi < size ) {
                     if( oi < osize ) {
-                        int myhc = System.identityHashCode( mya[myi] );
-                        int ohc = System.identityHashCode( oa[oi] );
+                        int myhc = mya[myi].getId();
+                        int ohc = oa[oi].getId();
                         if( myhc < ohc ) {
                             newa[ newi++ ] = mya[ myi++ ];
                         } else if( myhc > ohc ) {
@@ -84,19 +84,20 @@ public class SortedArraySet extends PointsToSetInternal {
                 }
             }
             nodes = newa;
+            size = newi;
             return ret;
         }
         return super.addAll( other, exclude );
     }
     /** Calls v's visit method on all nodes in this set. */
-    public boolean forall( P2SetVisitor v ) {
+    public final boolean forall( P2SetVisitor v ) {
         for( int i = 0; i < size; i++ ) {
             v.visit( nodes[i] );
         }
         return v.getReturnValue();
     }
     /** Adds n to this set, returns true if n was not already in this set. */
-    public boolean add( Node n ) {
+    public final boolean add( Node n ) {
         if( fh == null || type == null ||
             fh.canStoreType( n.getType(), type ) ) {
 
@@ -104,17 +105,19 @@ public class SortedArraySet extends PointsToSetInternal {
             int left = 0;
             int right = size;
             int mid;
-            int hc = System.identityHashCode( n );
+            int hc = n.getId();
             while( left < right ) {
                 mid = (left + right)/2;
-                int midhc = System.identityHashCode( nodes[mid] );
+                int midhc = nodes[mid].getId();
                 if( midhc < hc ) {
                     left = mid+1;
                 } else if( midhc > hc ) {
                     right = mid;
                 } else break;
             }
-            if( size == nodes.length ) {
+            if( nodes == null ) {
+                nodes = new Node[size+4];
+            } else if( size == nodes.length ) {
                 Node[] newNodes = new Node[size+4];
                 System.arraycopy( nodes, 0, newNodes, 0, nodes.length );
                 nodes = newNodes;
@@ -122,17 +125,18 @@ public class SortedArraySet extends PointsToSetInternal {
             System.arraycopy( nodes, left, nodes, left+1, size-left );
             nodes[left] = n;
             size++;
+            return true;
         }
         return false;
     }
     /** Returns true iff the set contains n. */
-    public boolean contains( Node n ) {
+    public final boolean contains( Node n ) {
         int left = 0;
         int right = size;
-        int hc = System.identityHashCode( n );
+        int hc = n.getId();
         while( left < right ) {
             int mid = (left + right)/2;
-            int midhc = System.identityHashCode( nodes[mid] );
+            int midhc = nodes[mid].getId();
             if( midhc < hc ) {
                 left = mid+1;
             } else if( midhc > hc ) {
@@ -141,9 +145,9 @@ public class SortedArraySet extends PointsToSetInternal {
         }
         return false;
     }
-    public static P2SetFactory getFactory() {
+    public final static P2SetFactory getFactory() {
         return new P2SetFactory() {
-            public PointsToSetInternal newSet( Type type, PAG pag ) {
+            public final PointsToSetInternal newSet( Type type, PAG pag ) {
                 return new SortedArraySet( type, pag );
             }
         };

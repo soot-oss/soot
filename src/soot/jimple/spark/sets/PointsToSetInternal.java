@@ -35,6 +35,10 @@ public abstract class PointsToSetInternal implements PointsToSet {
         if( other instanceof DoublePointsToSet ) {
             return addAll( other.getNewSet(), exclude )
                 | addAll( other.getOldSet(), exclude );
+        } else if( other instanceof EmptyPointsToSet ) {
+            return false;
+        } else if( exclude instanceof EmptyPointsToSet ) { 
+            return addAll( other, null );
         }
         if( !warnedAlready ) {
             System.out.println( "Warning: using default implementation of addAll. You should implement a faster specialized implementation." );
@@ -49,9 +53,9 @@ public abstract class PointsToSetInternal implements PointsToSet {
             warnedAlready = true;
         }
         return other.forall( new P2SetVisitor() {
-            public void visit( Node n ) {
-                if( exclude != null && exclude.contains( n ) ) return;
-                returnValue = add( n ) | returnValue;
+        public void visit( Node n ) {
+                if( exclude == null || !exclude.contains( n ) )
+                    returnValue = add( n ) | returnValue;
             }
         } );
     }
@@ -92,6 +96,9 @@ public abstract class PointsToSetInternal implements PointsToSet {
         } );
         return ret;
     }
+    public Type getType() {
+        return type;
+    }
     public void setType( Type type ) {
         this.type = type;
     }
@@ -113,11 +120,13 @@ public abstract class PointsToSetInternal implements PointsToSet {
     /** Returns true iff dst is a supertype of src. */
     public static boolean castNeverFails( Type src, Type dst ) {
         if( dst == null ) return true;
+        if( dst == src ) return true;
         if( dst.equals( src ) ) return true;
         if( fh == null ) return true;
+        if( src == null ) return false;
         if( src instanceof NullType ) return true;
         if( dst instanceof NullType ) return false;
-        return fh.canStoreType( dst, src );
+        return fh.canStoreType( src, dst );
     }
     /* End of public methods. */
     /* End of package methods. */

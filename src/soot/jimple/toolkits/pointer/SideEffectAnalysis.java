@@ -4,11 +4,11 @@ import soot.jimple.*;
 import soot.jimple.toolkits.invoke.*;
 import java.util.*;
 import soot.util.*;
-import soot.jimple.spark.PointsToSet;
+import soot.jimple.spark.*;
 
-/** Generates side-effect information from a PointerAnalysis. */
+/** Generates side-effect information from a PointsToAnalysis. */
 public class SideEffectAnalysis {
-    PointerAnalysis pa;
+    PointsToAnalysis pa;
     InvokeGraph ig;
     Map methodToNTReadSet = new HashMap();
     Map methodToNTWriteSet = new HashMap();
@@ -20,9 +20,8 @@ public class SideEffectAnalysis {
 	
 	MethodRWSet read = new MethodRWSet();
 	MethodRWSet write = new MethodRWSet();
-	for( Iterator sIt = method.retrieveActiveBody().getUnits().iterator();
-		sIt.hasNext(); ) {
-	    Stmt s = (Stmt) sIt.next();
+	for( Iterator sIt = method.retrieveActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
+	    final Stmt s = (Stmt) sIt.next();
 	    if( !s.containsInvokeExpr() ) {
 		read.union( readSet( method, s ) );
 		write.union( writeSet( method, s ) );
@@ -46,7 +45,7 @@ public class SideEffectAnalysis {
 	return (RWSet) methodToNTWriteSet.get( method );
     }
 
-    public SideEffectAnalysis( PointerAnalysis pa, InvokeGraph ig ) {
+    public SideEffectAnalysis( PointsToAnalysis pa, InvokeGraph ig ) {
 	this.pa = pa;
 	this.ig = ig;
     }
@@ -55,10 +54,9 @@ public class SideEffectAnalysis {
 	RWSet ret = null;
 	if( stmt.containsInvokeExpr() ) {
 	    if( ig.containsSite( stmt ) ) {
-		for( Iterator targets = ig.mcg.getMethodsReachableFrom(
-			ig.getTargetsOf( stmt ) ).iterator();
-			targets.hasNext(); ) {
-		    SootMethod target = (SootMethod) targets.next();
+		for( Iterator targetIt = ig.mcg.getMethodsReachableFrom(
+			ig.getTargetsOf( stmt ) ).iterator(); targetIt.hasNext(); ) {
+		    final SootMethod target = (SootMethod) targetIt.next();
 		    if( target.isNative() ) {
 			if( ret == null ) ret = new SiteRWSet();
 			ret.setCallsNative();
@@ -80,10 +78,9 @@ public class SideEffectAnalysis {
 	RWSet ret = null;
 	if( stmt.containsInvokeExpr() ) {
 	    if( ig.containsSite( stmt ) ) {
-		for( Iterator targets = ig.mcg.getMethodsReachableFrom(
-			ig.getTargetsOf( stmt ) ).iterator();
-			targets.hasNext(); ) {
-		    SootMethod target = (SootMethod) targets.next();
+		for( Iterator targetIt = ig.mcg.getMethodsReachableFrom(
+			ig.getTargetsOf( stmt ) ).iterator(); targetIt.hasNext(); ) {
+		    final SootMethod target = (SootMethod) targetIt.next();
 		    if( target.isNative() ) {
 			if( ret == null ) ret = new SiteRWSet();
 			ret.setCallsNative();
@@ -116,7 +113,7 @@ public class SideEffectAnalysis {
 	    ArrayRef ar = (ArrayRef) v;
 	    PointsToSet base = pa.reachingObjects( m, s, (Local) ar.getBase() );
 	    ret = new StmtRWSet();
-	    ret.addFieldRef( base, PointerAnalysis.ARRAY_ELEMENTS_NODE );
+	    ret.addFieldRef( base, PointsToAnalysis.ARRAY_ELEMENTS_NODE );
 	}
 	return ret;
     }

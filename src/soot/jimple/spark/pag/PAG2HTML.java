@@ -36,8 +36,8 @@ public class PAG2HTML {
     }
     public void dump() {
         Set allNodes = pag.allVarNodes();
-        for( Iterator it = allNodes.iterator(); it.hasNext(); ) {
-            VarNode v = (VarNode) it.next();
+        for( Iterator vIt = allNodes.iterator(); vIt.hasNext(); ) {
+            final VarNode v = (VarNode) vIt.next();
             mergedNodes.put( v.getReplacement(), v );
             if( v.getMethod() != null ) {
                 methodToNodes.put( v.getMethod(), v );
@@ -46,12 +46,12 @@ public class PAG2HTML {
         try {
             JarOutputStream jarOut = new JarOutputStream(
                     new FileOutputStream( "pag.jar" ) );
-            for( Iterator it = mergedNodes.keySet().iterator(); it.hasNext(); ) {
-                VarNode v = (VarNode) it.next();
+            for( Iterator vIt = mergedNodes.keySet().iterator(); vIt.hasNext(); ) {
+                final VarNode v = (VarNode) vIt.next();
                 dumpVarNode( v, jarOut );
             }
-            for( Iterator it = methodToNodes.keySet().iterator(); it.hasNext(); ) {
-                SootMethod m = (SootMethod) it.next();
+            for( Iterator mIt = methodToNodes.keySet().iterator(); mIt.hasNext(); ) {
+                final SootMethod m = (SootMethod) mIt.next();
                 dumpMethod( m, jarOut );
             }
             addSymLinks( allNodes, jarOut );
@@ -62,8 +62,8 @@ public class PAG2HTML {
     }
 
 
-    /* End of public methods. Nothing to see here; move along. */
-    /* End of package methods. Nothing to see here; move along. */
+    /* End of public methods. */
+    /* End of package methods. */
 
     protected PAG pag;
     protected MultiMap mergedNodes = new HashMultiMap();
@@ -82,7 +82,7 @@ public class PAG2HTML {
         out.println( "<hr>Reaching blue nodes:" );
         out.println( "<ul>" );
         v.getP2Set().forall( new P2SetVisitor() {
-            public void visit( Node n ) {
+        public final void visit( Node n ) {
                 out.println( "<li>"+htmlify(n.toString()) );
             }
         } );
@@ -108,8 +108,8 @@ public class PAG2HTML {
     protected String varNodeReps( VarNode v ) {
         StringBuffer ret = new StringBuffer();
         ret.append( "<ul>\n" );
-        for( Iterator it = mergedNodes.get( v ).iterator(); it.hasNext(); ) {
-            VarNode vv = (VarNode) it.next();
+        for( Iterator vvIt = mergedNodes.get( v ).iterator(); vvIt.hasNext(); ) {
+            final VarNode vv = (VarNode) vvIt.next();
             ret.append( varNode( vv ) );
         }
         ret.append( "</ul>\n" );
@@ -157,8 +157,8 @@ public class PAG2HTML {
         jarOut.putNextEntry( new ZipEntry( "symlinks.sh" ) );
         final PrintWriter out = new PrintWriter( jarOut );
         out.println( "#!/bin/sh" );
-        for( Iterator it = nodes.iterator(); it.hasNext(); ) {
-            VarNode v = (VarNode) it.next();
+        for( Iterator vIt = nodes.iterator(); vIt.hasNext(); ) {
+            final VarNode v = (VarNode) vIt.next();
             VarNode rep = (VarNode) v.getReplacement();
             if( v != rep ) {
                 out.println( "ln -s n"+rep.getId()+".html n"+v.getId()+".html" );

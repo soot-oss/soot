@@ -36,10 +36,15 @@ public class VarNode extends ValNode implements Comparable {
     public FieldRefNode dot( SparkField field ) 
     { return fields == null ? null : (FieldRefNode) fields.get( field ); }
     public String toString() {
-	return "VarNode "+id+" "+value;
+	return "VarNode "+id+" "+value+" "+method;
     }
     public int compareTo( Object o ) {
 	VarNode other = (VarNode) o;
+        if( other.finishingNumber == finishingNumber && other != this ) {
+            System.out.println( "This is: "+this+" with id "+getId()+" and number "+finishingNumber );
+            System.out.println( "Other is: "+other+" with id "+other.getId()+" and number "+other.finishingNumber );
+            throw new RuntimeException("Comparison error" );
+        }
 	return other.finishingNumber - finishingNumber;
     }
     public void setFinishingNumber( int i ) {
@@ -56,7 +61,7 @@ public class VarNode extends ValNode implements Comparable {
         return value;
     }
 
-    /* End of public methods. Nothing to see here; move along. */
+    /* End of public methods. */
 
     VarNode( PAG pag, Object value, Type t, SootMethod m ) {
 	super( pag, t );
@@ -72,7 +77,7 @@ public class VarNode extends ValNode implements Comparable {
 	fields.put( field, frn );
     }
 
-    /* End of package methods. Nothing to see here; move along. */
+    /* End of package methods. */
 
     protected Object value;
     protected Map fields;

@@ -53,11 +53,10 @@ public class EBBCollapser {
     protected int numCollapsed = 0;
     protected PAG pag;
     protected void collapseAlloc() {
-        for( Iterator it = pag.allocSources().iterator();
-                it.hasNext(); ) {
-            AllocNode n = (AllocNode) it.next();
+        for( Iterator nIt = pag.allocSources().iterator(); nIt.hasNext(); ) {
+            final AllocNode n = (AllocNode) nIt.next();
             Node[] succs = pag.allocLookup( n );
-            Node firstSucc = null;
+            VarNode firstSucc = null;
             for( int i = 0; i < succs.length; i++ ) {
                 VarNode succ = (VarNode) succs[i];
                 if( pag.allocInvLookup( succ ).length > 1 ) continue;
@@ -66,8 +65,10 @@ public class EBBCollapser {
                 if( firstSucc == null ) {
                     firstSucc = succ;
                 } else {
-                    firstSucc.mergeWith( succ );
-                    numCollapsed++;
+                    if( firstSucc.getType().equals( succ.getType() ) ) {
+                        firstSucc.mergeWith( succ );
+                        numCollapsed++;
+                    }
                 }
             }
         }
@@ -77,9 +78,8 @@ public class EBBCollapser {
         boolean change;
         do {
             change = false;
-            for( Iterator it = new LinkedList( pag.simpleSources() ).iterator();
-                    it.hasNext(); ) {
-                VarNode n = (VarNode) it.next();
+            for( Iterator nIt = new LinkedList( pag.simpleSources() ).iterator(); nIt.hasNext(); ) {
+                final VarNode n = (VarNode) nIt.next();
                 Type nType = n.getType();
                 Node[] succs = pag.simpleLookup( n );
                 for( int i = 0; i < succs.length; i++ ) {
@@ -98,9 +98,8 @@ public class EBBCollapser {
         } while( change );
     }
     protected void collapseLoad() {
-        for( Iterator it = pag.loadSources().iterator();
-                it.hasNext(); ) {
-            FieldRefNode n = (FieldRefNode) it.next();
+        for( Iterator nIt = new LinkedList( pag.loadSources() ).iterator(); nIt.hasNext(); ) {
+            final FieldRefNode n = (FieldRefNode) nIt.next();
             Type nType = n.getType();
             Node[] succs = pag.loadLookup( n );
             Node firstSucc = null;

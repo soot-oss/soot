@@ -27,7 +27,7 @@ import soot.Type;
 /** Implementation of points-to set using a bit vector.
  * @author Ondrej Lhotak
  */
-public class BitPointsToSet extends PointsToSetInternal {
+public final class BitPointsToSet extends PointsToSetInternal {
     public BitPointsToSet( Type type, PAG pag ) {
         super( type );
         if( nodes == null ) {
@@ -37,33 +37,61 @@ public class BitPointsToSet extends PointsToSetInternal {
         bits = new long[ SIZE ];
     }
     /** Returns true if this set contains no run-time objects. */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return empty;
     }
     /** Adds contents of other into this set, returns true if this set 
      * changed. */
-    public boolean addAll( final PointsToSetInternal other,
+    public final boolean addAll( final PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
         boolean ret = false;
         if( other instanceof BitPointsToSet ) {
             BitPointsToSet o = (BitPointsToSet) other;
-            if( exclude == null ) {
-                for( int i=0; i < SIZE; i++ ) {
-                    long l = o.bits[i] & ~bits[i];
-                    if( l != 0 ) for( int j=0; j<64; j++ ) {
-                        if( ( l & (1L<<j) ) != 0  ) {
-                            ret = add( nodes[i*64+j] ) | ret;
+            if( exclude == null || exclude.isEmpty() ) {
+                if( PointsToSetInternal.castNeverFails(
+                            other.getType(), this.getType() ) ) {
+                    for( int i=0; i < SIZE; i++ ) {
+                        long l = o.bits[i] & ~bits[i]; 
+                        if( l != 0 ) {
+                            ret = true;
+                            empty = false;
+                            bits[i] |= l;
+                        }
+                    }
+                } else {
+                    for( int i=0; i < SIZE; i++ ) {
+                        long l = o.bits[i] & ~bits[i];
+                        if( l != 0 ) {
+                            for( int j=0; j<64; j++ ) {
+                                if( ( l & (1L<<j) ) != 0  ) {
+                                    ret = add( nodes[i*64+j] ) | ret;
+                                }
+                            }
                         }
                     }
                 }
                 return ret;
             } else if( exclude instanceof BitPointsToSet ) {
                 BitPointsToSet e = (BitPointsToSet) exclude;
-                for( int i=0; i < SIZE; i++ ) {
-                    long l = o.bits[i] & ~bits[i] & ~e.bits[i];
-                    if( l != 0 ) for( int j=0; j<64; j++ ) {
-                        if( ( l & (1L<<j) ) != 0  ) {
-                            ret = add( nodes[i*64+j] ) | ret;
+                if( PointsToSetInternal.castNeverFails(
+                            other.getType(), this.getType() ) ) {
+                    for( int i=0; i < SIZE; i++ ) {
+                        long l = o.bits[i] & ~bits[i] & ~e.bits[i];
+                        if( l != 0 ) {
+                            ret = true;
+                            empty = false;
+                            bits[i] |= l;
+                        }
+                    }
+                } else {
+                    for( int i=0; i < SIZE; i++ ) {
+                        long l = o.bits[i] & ~bits[i] & ~e.bits[i];
+                        if( l != 0 ) {
+                            for( int j=0; j<64; j++ ) {
+                                if( ( l & (1L<<j) ) != 0  ) {
+                                    ret = add( nodes[i*64+j] ) | ret;
+                                }
+                            }
                         }
                     }
                 }
@@ -86,7 +114,7 @@ public class BitPointsToSet extends PointsToSetInternal {
         return super.addAll( other, exclude );
     }
     /** Calls v's visit method on all nodes in this set. */
-    public boolean forall( P2SetVisitor v ) {
+    public final boolean forall( P2SetVisitor v ) {
         for( int i=0; i < SIZE; i++ ) {
             long bitsi = bits[i];
             if( bitsi != 0 ) for( int j=0; j<64; j++ ) {
@@ -100,7 +128,7 @@ public class BitPointsToSet extends PointsToSetInternal {
         return ret;
     }
     /** Adds n to this set, returns true if n was not already in this set. */
-    public boolean add( Node n ) {
+    public final boolean add( Node n ) {
         if( fh == null || type == null ||
             fh.canStoreType( n.getType(), type ) ) {
 
@@ -109,7 +137,7 @@ public class BitPointsToSet extends PointsToSetInternal {
         return false;
     }
     /** Returns true iff the set contains n. */
-    public boolean contains( Node n ) {
+    public final boolean contains( Node n ) {
         int id = -n.getId();
         return ( bits[ id/64 ] & 1L<<(id%64 ) ) != 0;
     }

@@ -16,6 +16,7 @@ public class NodePPG extends PointerPropagationGraph
     protected MultiMap stores = new HashMultiMap();
     protected MultiMap news = new HashMultiMap();
     protected Map ebbMap = null;
+    public Map getEbbMap() { return ebbMap; }
 
     public MultiMap getSimple() { return simple; }
     public MultiMap getLoads() { return loads; }
@@ -54,6 +55,7 @@ public class NodePPG extends PointerPropagationGraph
 		to );
     }
     public void addLoadEdge( FieldRefNode src, VarNode dest ) {
+        src.getBase().incRefCount();
 	if( loads.put( src, dest ) ) {
 	    countLoads++;
 	    dest.edgesIn++;
@@ -72,6 +74,7 @@ public class NodePPG extends PointerPropagationGraph
 		    field, fieldType, method  ) );
     }
     public void addStoreEdge( VarNode src, FieldRefNode dest ) {
+        dest.getBase().incRefCount();
 	if( stores.put( src, dest ) ) {
 	    countStores++;
 	}
@@ -153,6 +156,7 @@ public class NodePPG extends PointerPropagationGraph
 			    }
 			}
 			fromSuccessors.addAll( toSuccessors );
+                        simple.remove( to );
 		    }
 		    fromSuccessors.remove( to );
 
@@ -204,6 +208,32 @@ public class NodePPG extends PointerPropagationGraph
 	}
 	System.out.println( "Total locals: "+VarNode.nodeMap.size() );
 	System.out.println( "Total EBBs: "+( VarNode.nodeMap.size() - ebbMap.keySet().size() ) );
+        {
+            Set s = new HashSet();
+            s.addAll( loads.keySet() );
+            for( Iterator it = stores.keySet().iterator(); it.hasNext(); ) {
+                s.addAll( (Set) stores.get( it.next() ) );
+            }
+            boolean blowup = false;
+            for( Iterator it = s.iterator(); it.hasNext(); ) {
+                FieldRefNode frn = (FieldRefNode) it.next();
+                if( ebbMap.get( frn.getBase() ) != null ) {
+                    System.out.println( "found incorrectly collapsed frn: "+frn+
+                            " with base representative "+ebbMap.get( frn.getBase() ) );
+                    blowup = true;
+                }
+            }
+            for( Iterator it = ebbMap.keySet().iterator(); it.hasNext(); ) {
+                VarNode vn = (VarNode) it.next();
+                if( ebbMap.containsKey( ebbMap.get( vn ) ) ) {
+                    System.out.println( "found collapsed node whose representative is also collapsed\n" +
+                            vn+"\n"+ebbMap.get( vn )+"\n"+ebbMap.get( ebbMap.get( vn ) ) );
+                    blowup = true;
+
+                }
+            }
+            if( blowup ) throw new RuntimeException( "Incorrectly collapsed ebbs" );
+        }
     }
 
     private void dumpEdgeSet( PrintStream out, MultiMap m ) {

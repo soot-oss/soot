@@ -58,8 +58,8 @@ public class ContextInsensitiveBuilder implements Builder {
 	return pag;
     }
 
-    /* End of public methods. Nothing to see here; move along. */
-    /* End of package methods. Nothing to see here; move along. */
+    /* End of public methods. */
+    /* End of package methods. */
     protected void handleClass( SootClass c ) {
 	Iterator methodsIt = c.getMethods().iterator();
 	while( methodsIt.hasNext() ) 
@@ -69,6 +69,7 @@ public class ContextInsensitiveBuilder implements Builder {
 		buildNative( m );
 	    }
 	    if( !m.isConcrete() ) continue;
+            if( !ig.mcg.isReachable(m)) continue;
 	    Body b = m.retrieveActiveBody();
 	    parms.setCurrentMethod( m );
 	    Iterator unitsIt = b.getUnits().iterator();
@@ -85,10 +86,6 @@ public class ContextInsensitiveBuilder implements Builder {
     private static final List strArL = Collections.singletonList( strAr );
     private static final String main =
 	SootMethod.getSubSignature( "main", strArL, VoidType.v() );
-    private static final String exit =
-	SootMethod.getSubSignature( "exit", Collections.EMPTY_LIST, VoidType.v() );
-    private static final String run =
-	SootMethod.getSubSignature( "run", Collections.EMPTY_LIST, VoidType.v() );
     private static final String finalize =
 	SootMethod.getSubSignature( "finalize", Collections.EMPTY_LIST, VoidType.v() );
     protected void addMiscEdges( SootClass c ) {
@@ -99,28 +96,12 @@ public class ContextInsensitiveBuilder implements Builder {
             parms.addEdge( parms.caseArgv(), parms.caseParm( m, 0 ) );
         }
 
-        // Add objects reaching this of run() methods
-        if( Scene.v().getOrMakeFastHierarchy().canStoreType(
-            c.getType(), RefType.v("java.lang.Runnable") ) ) {
-            if( c.declaresMethod( run ) ) {
-                SootMethod runM = c.getMethod( run );
-                parms.setCurrentMethod( runM );
-                parms.addEdge( parms.caseAnyType(),
-                        parms.caseThis( runM ) );
-                if( c.declaresMethod( exit ) ) {
-                    SootMethod exitM = c.getMethod( exit );
-                    parms.addEdge(
-                            parms.caseThis( runM ),
-                            parms.caseThis( exitM ) );
-                }
-            }
-        }
         // Add objects reaching this of finalize() methods
         if( c.declaresMethod( finalize ) ) {
             // In VTA, there was the comment:
             // I have no clue whether or not this is right.
-            for( Iterator mIt = c.getMethods().iterator(); mIt.hasNext(); ){
-                SootMethod m = (SootMethod) mIt.next();
+            for( Iterator mIt = c.getMethods().iterator(); mIt.hasNext(); ) {
+                final SootMethod m = (SootMethod) mIt.next();
                 if( !m.getName().equals("<init>") ) continue;
                 parms.addEdge( parms.caseThis( m ),
                         parms.caseThis( c.getMethod( finalize ) ) );

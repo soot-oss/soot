@@ -34,17 +34,17 @@ public class AllocDotField extends Node {
 	return "AllocDotField "+id+" "+base+"."+field;
     }
 
-    /* End of public methods. Nothing to see here; move along. */
+    /* End of public methods. */
 
     AllocDotField( PAG pag, AllocNode base, SparkField field ) {
-	super( pag, field.getType() );
+	super( pag, null );
 	if( field == null ) throw new RuntimeException( "null field" );
 	this.base = base;
 	this.field = field;
 	base.addField( this, field );
     }
 
-    /* End of package methods. Nothing to see here; move along. */
+    /* End of package methods. */
 
     protected AllocNode base;
     protected SparkField field;

@@ -43,27 +43,28 @@ public class ReachingTypeDumper {
                     it.hasNext(); ) {
                 handleClass( file, (SootClass) it.next() );
             }
+            file.close();
         } catch( IOException e ) {
             throw new RuntimeException( "Couldn't dump reaching types."+e );
         }
     }
 
 
-    /* End of public methods. Nothing to see here; move along. */
-    /* End of package methods. Nothing to see here; move along. */
+    /* End of public methods. */
+    /* End of package methods. */
 
     protected PointsToAnalysis pa;
 
     protected void handleClass( PrintWriter out, SootClass c ) {
-        for( Iterator it = c.getMethods().iterator(); it.hasNext(); ) {
-            SootMethod m = (SootMethod) it.next();
+        for( Iterator mIt = c.getMethods().iterator(); mIt.hasNext(); ) {
+            final SootMethod m = (SootMethod) mIt.next();
             if( !m.isConcrete() ) continue;
             Body b = m.retrieveActiveBody();
             TreeSet sortedLocals = new TreeSet( new StringComparator() );
             sortedLocals.addAll( b.getLocals() );
             for( Iterator lIt = sortedLocals.iterator(); lIt.hasNext(); ) {
-                Local l = (Local) lIt.next();
-                out.println( "V "+l );
+                final Local l = (Local) lIt.next();
+                out.println( "V "+m+l );
                 if( l.getType() instanceof RefLikeType ) {
                     Set types = pa.reachingObjects( m, null, l ).possibleTypes();
                     TreeSet sortedTypes = new TreeSet( new StringComparator() );
