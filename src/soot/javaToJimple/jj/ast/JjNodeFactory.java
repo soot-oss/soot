@@ -33,4 +33,5 @@ import java.util.*;
  */
 public interface JjNodeFactory extends NodeFactory {
     // TODO: Declare any factory methods for new AST nodes.
+    public JjComma_c JjComma(Position pos, Expr first, Expr second);
 }

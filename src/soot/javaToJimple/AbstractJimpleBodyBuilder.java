@@ -28,7 +28,7 @@ import soot.SootFieldRef;
 public abstract class AbstractJimpleBodyBuilder {
     
     protected abstract AbstractJimpleBodyBuilder ext();
-    protected void ext(AbstractJimpleBodyBuilder ext){
+    public void ext(AbstractJimpleBodyBuilder ext){
         this.ext = ext;
     }
     protected AbstractJimpleBodyBuilder ext;
