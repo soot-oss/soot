@@ -8,6 +8,8 @@ public abstract class ASTLabeledNode extends ASTNode
     
     public ASTLabeledNode( SETNodeLabel label)
     {
+	super();
+
 	set_Label( label);
     }
 

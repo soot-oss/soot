@@ -107,12 +107,23 @@ public class RefType extends BaseType implements ToBriefString, Comparable
 
     public String toString()
     {
-        return Scene.v().quotedNameOf(className);
+	if (Main.getShortClassNames())
+	    return toBriefString();
+	else
+	    return Scene.v().quotedNameOf(className);
     }
 
     public String toBriefString()
     {
-        return className;
+	if (Main.getShortClassNames())
+	    return toVeryBriefString();
+	else
+	    return className;
+    }
+
+    public String toVeryBriefString()
+    {
+	return Scene.v().getSootClass( className).getShortName();
     }
 
     public int hashCode()

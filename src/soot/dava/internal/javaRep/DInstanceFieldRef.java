@@ -22,7 +22,7 @@ public class DInstanceFieldRef extends GInstanceFieldRef
 
     public String toString()
     {
-	if (thisLocals.contains( getBase()))
+	if (thisLocals.contains( getBase())) 
 	    return getField().getName();
 
 	return super.toBriefString();

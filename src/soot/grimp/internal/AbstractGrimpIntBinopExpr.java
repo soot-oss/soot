@@ -32,6 +32,7 @@ import soot.util.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
+import soot.dava.internal.javaRep.*;
 
 abstract public class AbstractGrimpIntBinopExpr
     extends AbstractIntBinopExpr implements Precedence
@@ -62,7 +63,9 @@ abstract public class AbstractGrimpIntBinopExpr
 		myPrec = getPrecedence();
 	    
 	    if ((opPrec < myPrec) ||
-		((opPrec == myPrec) && ((this instanceof SubExpr) || (this instanceof DivExpr))))		
+		((opPrec == myPrec) && ((this instanceof SubExpr) || (this instanceof DivExpr) ||
+					(this instanceof DCmpExpr) || (this instanceof DCmpgExpr) || (this instanceof DCmplExpr))))
+
 		rightOp = "(" + rightOp + ")";
 	}
 

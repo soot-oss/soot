@@ -4,6 +4,7 @@ import soot.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
+import soot.dava.toolkits.base.AST.*;
 
 public class ASTSwitchNode extends ASTLabeledNode
 {
@@ -18,6 +19,14 @@ public class ASTSwitchNode extends ASTLabeledNode
 	this.key = key;
 	this.indexList = indexList;
 	this.index2BodyList = index2BodyList;
+
+	Iterator it = indexList.iterator();
+	while (it.hasNext()) {
+	    List body = (List) index2BodyList.get( it.next());
+	    
+	    if (body != null)
+		subBodies.add( body);
+	}
     }
 
 

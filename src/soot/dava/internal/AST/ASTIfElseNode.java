@@ -4,6 +4,7 @@ import soot.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
+import soot.dava.toolkits.base.AST.*;
 
 public class ASTIfElseNode extends ASTControlFlowNode
 {
@@ -14,6 +15,9 @@ public class ASTIfElseNode extends ASTControlFlowNode
 	super( label, condition);
 	this.ifBody = ifBody;
 	this.elseBody = elseBody;
+
+	subBodies.add( ifBody);
+	subBodies.add( elseBody);
     }
 
     public Object clone()

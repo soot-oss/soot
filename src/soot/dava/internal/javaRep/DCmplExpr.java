@@ -10,7 +10,7 @@ public class DCmplExpr extends AbstractGrimpIntBinopExpr implements CmplExpr
 {
     public DCmplExpr(Value op1, Value op2) { super(op1, op2); }
     public final String getSymbol() { return " - "; }
-    public final int getPrecedence() { return 600; }
+    public final int getPrecedence() { return 700; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseCmplExpr(this); }
 
     public Object clone() 

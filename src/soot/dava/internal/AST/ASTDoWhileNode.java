@@ -3,6 +3,7 @@ package soot.dava.internal.AST;
 import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
+import soot.dava.toolkits.base.AST.*;
 
 public class ASTDoWhileNode extends ASTControlFlowNode
 {
@@ -12,6 +13,8 @@ public class ASTDoWhileNode extends ASTControlFlowNode
     {
 	super( label, ce);
 	this.body = body;
+
+	subBodies.add( body);
     }
 
     public Object clone()

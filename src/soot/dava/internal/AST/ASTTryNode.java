@@ -4,20 +4,52 @@ import soot.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
+import soot.dava.toolkits.base.AST.*;
 
 public class ASTTryNode extends ASTLabeledNode
 {
     private List tryBody, catchList;
     private Map exceptionMap, paramMap;
 
+    private class container
+    {
+	public Object o;
+
+	public container( Object o)
+	{
+	    this.o = o;
+	}
+    }
+
     public ASTTryNode( SETNodeLabel label, List tryBody, List catchList, Map exceptionMap, Map paramMap)
     {
 	super( label);
 
 	this.tryBody = tryBody;
-	this.catchList = catchList;
-	this.exceptionMap = exceptionMap;
-	this.paramMap = paramMap;
+
+	this.catchList = new ArrayList();
+	Iterator cit = catchList.iterator();
+	while (cit.hasNext())
+	    this.catchList.add( new container( cit.next()));
+	
+	this.exceptionMap = new HashMap();
+	cit = this.catchList.iterator();
+	while (cit.hasNext()) {
+	    container c = (container) cit.next();
+	    this.exceptionMap.put( c, exceptionMap.get( c.o));
+	}
+
+	this.paramMap = new HashMap();
+	cit = this.catchList.iterator();
+	while (cit.hasNext()) {
+	    container c = (container) cit.next();
+	    this.paramMap.put( c, paramMap.get( c.o));
+	}
+	
+	subBodies.add( tryBody);
+	cit = catchList.iterator();
+	while (cit.hasNext())
+	    subBodies.add( cit.next());
     }
 
     public boolean isEmpty()
@@ -52,7 +84,7 @@ public class ASTTryNode extends ASTLabeledNode
 
 	Iterator cit = catchList.iterator();
 	while (cit.hasNext()) {
-	    List catchBody = (List) cit.next();
+	    container catchBody = (container) cit.next();
 
 	    b.append( indentation);
 	    b.append( "catch (");
@@ -66,7 +98,7 @@ public class ASTTryNode extends ASTLabeledNode
 	    b.append( "{");
 	    b.append( NEWLINE);
 
-	    b.append( body_toString( stmtToName, indentation + TAB, catchBody));
+	    b.append( body_toString( stmtToName, indentation + TAB, (List) catchBody.o));
 
 	    b.append( indentation);
 	    b.append( "}");

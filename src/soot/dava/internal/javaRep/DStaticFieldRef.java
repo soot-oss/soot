@@ -17,10 +17,7 @@ public class DStaticFieldRef extends StaticFieldRef
 
     public String toString()
     {
-	if (supressDeclaringClass)
-	    return toBriefString();
-	else
-	    return super.toString();
+	return toBriefString();
     }
 
     public DStaticFieldRef( SootField field, String myClassName)

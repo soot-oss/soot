@@ -34,6 +34,7 @@ import soot.util.*;
 import java.util.*;
 import soot.baf.*;
 import soot.jimple.*;
+import soot.dava.*;
 
 /**
     Soot representation of a Java method.  Can be declared to belong to a SootClass. 
@@ -42,6 +43,9 @@ import soot.jimple.*;
 */
 public class SootMethod extends AbstractHost implements ClassMember
 {
+    public static final String constructorName = "<init>";
+    public static final String staticInitializerName = "<clinit>";
+
     /** Name of the current method. */
     String name;
 
@@ -507,6 +511,9 @@ public class SootMethod extends AbstractHost implements ClassMember
      */
     public String getDeclaration()
     {
+	if ((Main.getShortClassNames()) && (getName().equals( staticInitializerName)))
+	    return "static";
+
         StringBuffer buffer = new StringBuffer();
 
         // modifiers
@@ -520,30 +527,62 @@ public class SootMethod extends AbstractHost implements ClassMember
         if(buffer.length() != 0)
             buffer.append(" ");
 
-        // return type
-        Type t = this.getReturnType();
-	buffer.append(t + " ");
+        // return type + name
 
-        // name
-        buffer.append(Scene.v().quotedNameOf(this.getName()) + "(");            
+	if ((Main.getShortClassNames()) && (getName().equals( constructorName)))
+	    buffer.append( getDeclaringClass().getName());
+	else {
+	    Type t = this.getReturnType();
+
+	    buffer.append(t + " ");
+	    buffer.append(Scene.v().quotedNameOf(this.getName()));
+	}
+
+	buffer.append("(");
 
         // parameters
         Iterator typeIt = this.getParameterTypes().iterator();
+	int count = 0;
+	while (typeIt.hasNext()) {
+	    Type t = (Type) typeIt.next();
+	    
+	    buffer.append( t);
+	    buffer.append( " ");
 
-        if(typeIt.hasNext())
-        {
-            t = (Type) typeIt.next();
+	    if (Main.getShortClassNames()) {
+		if (hasActiveBody()) 
+		    buffer.append( ((DavaBody) getActiveBody()).get_ParamMap().get( new Integer( count++)));
+		else {
+		    if (t ==BooleanType.v())
+			buffer.append( "z" + count++);
+		    else if (t == ByteType.v())
+			buffer.append( "b" + count++);
+		    else if (t == ShortType.v())
+			buffer.append( "s" + count++);
+		    else if (t == CharType.v())
+			buffer.append( "c" + count++);
+		    else if (t == IntType.v())
+			buffer.append( "i" + count++);
+		    else if (t == LongType.v())
+			buffer.append( "l" + count++);
+		    else if (t == DoubleType.v())
+			buffer.append( "d" + count++);
+		    else if (t == FloatType.v())
+			buffer.append( "f" + count++);
+		    else if (t == StmtAddressType.v())
+			buffer.append( "a" + count++);
+		    else if (t == ErroneousType.v())
+			buffer.append( "e" + count++);
+		    else if (t == NullType.v())
+			buffer.append( "n" + count++);
+		    else 
+			buffer.append( "r" + count++);
+		}
 
-            buffer.append(t);
-                       
-            while(typeIt.hasNext())
-            {
-                buffer.append(", ");
-                t = (Type) typeIt.next();
-
-                buffer.append(t);
-            }
-        }
+		if (typeIt.hasNext())
+		    buffer.append( ", ");
+	    }
+	}
 
         buffer.append(")");
 
@@ -554,7 +593,7 @@ public class SootMethod extends AbstractHost implements ClassMember
             
             if(exceptionIt.hasNext())
             {
-                buffer.append(" throws "+((SootClass) exceptionIt.next()).getName() + " ");
+                buffer.append(" throws "+((SootClass) exceptionIt.next()).getName());
 
                 while(exceptionIt.hasNext())
                 {

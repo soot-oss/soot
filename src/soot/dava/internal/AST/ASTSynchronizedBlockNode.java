@@ -3,6 +3,7 @@ package soot.dava.internal.AST;
 import soot.*;
 import java.util.*;
 import soot.dava.internal.SET.*;
+import soot.dava.toolkits.base.AST.*;
 
 public class ASTSynchronizedBlockNode extends ASTLabeledNode
 {
@@ -14,6 +15,8 @@ public class ASTSynchronizedBlockNode extends ASTLabeledNode
 	super( label);
 	this.body = body;
 	this.local = local;
+
+	subBodies.add( body);
     }
 
     public int size()

@@ -36,6 +36,7 @@ import java.io.*;
 import soot.baf.toolkits.base.*;
 import soot.jimple.toolkits.base.*;
 import soot.*;
+import soot.dava.*;
 
 
 /*
@@ -62,7 +63,7 @@ public class SootClass extends AbstractHost
 {
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
 
-    String name;
+    String name, shortName, packageName, naturalPackageName;
     int modifiers;
     Chain fields = new HashChain();
     Chain methods = new HashChain();
@@ -79,9 +80,8 @@ public class SootClass extends AbstractHost
 
     public SootClass(String name, int modifiers)
     {
-        this.name = name;
+	setName( name);
         this.modifiers = modifiers;
-
     }
 
     /**
@@ -90,8 +90,7 @@ public class SootClass extends AbstractHost
 
     public SootClass(String name)
     {
-        this.name = name;
-        this.modifiers = 0;
+	this( name, 0);
     }
 
     /**
@@ -665,7 +664,30 @@ public class SootClass extends AbstractHost
 
     public String getName()
     {
-        return name;
+	if (Main.getShortClassNames())
+	    return getShortName();
+	else
+	    return name;
+    }
+
+    public String getFullName()
+    {
+	return name;
+    }
+
+    public String getShortName()
+    {
+	if (Scene.v().isForbiddenName( shortName, this)) {
+	    for (int i=0;; i++) {
+		String alteredShortName = shortName + "_c" + i;
+		if (Scene.v().isForbiddenName( alteredShortName, this) == false) {
+		    shortName = alteredShortName;
+		    break;
+		}
+	    }
+	}
+       
+	return shortName;
     }
 
     /**
@@ -674,12 +696,17 @@ public class SootClass extends AbstractHost
 
     public String getPackageName()
     {
-        int index = getName().lastIndexOf(".");
-        
-        if(index == -1)
-            return "";
-        else
-            return name.substring(0, index);
+	if (Scene.v().isForbiddenName( packageName, naturalPackageName)) {
+	    for (int i=0;; i++) {
+		String newName = packageName + "_p" + i;
+		if (Scene.v().isForbiddenName( newName, naturalPackageName) == false) {
+		    packageName = newName;
+		    break;
+		}
+	    }
+	}
+
+	return packageName;
     }
 
     /**
@@ -689,6 +716,17 @@ public class SootClass extends AbstractHost
     public void setName(String name)
     {
         this.name = name;
+	
+	shortName = name;
+	packageName = "";
+
+	int index = name.lastIndexOf( '.');
+	if (index > 0) {
+	    shortName = name.substring( index + 1);
+	    packageName = name.substring( 0, index);
+	}
+
+	naturalPackageName = packageName;
     }
 
     /** Convenience method; returns true if this class is an interface. */
@@ -820,26 +858,130 @@ public class SootClass extends AbstractHost
 	printTo( out, printBodyOptions, false);
     }
 
-    public void printTo( PrintWriter out, int printBodyOptions, boolean packageRelativeClassNames)
+    public void printTo( PrintWriter out, int printBodyOptions, boolean produceDava)
     {
-	String tmpClassName = null;
-
 	// Optionally print the package info for Dava files.
-	if (Main.getWithPackagedOutput() && (packageRelativeClassNames)) {
+	if ((Main.getWithPackagedOutput()) && (produceDava)) {
 
-	    String name = this.getName();
+	    boolean shortClassNames = Main.getShortClassNames();
+	    if (shortClassNames)
+		Main.setShortClassNames( false);
+	    
+	    String 
+		name = this.getName(),
+		curPackage= "";
+
 	    int index = name.lastIndexOf( '.');
 	    
 	    if (index == (name.length() - 1))
 		throw new RuntimeException( "Malformed class name for packaging: " + name);
 	    
 	    if (index > 0) {
-		out.println( "package " + name.substring( 0, index) + ";");
+		curPackage = getPackageName();
+
+		out.println( "package " + curPackage + ";");
 		out.println();
 	    }
 	    
-	    if (index != -1)
-		tmpClassName = name.substring( index + 1);
+	    IterableSet packagesUsed = new IterableSet();
+
+	    if (this.hasSuperclass()) {
+		SootClass superClass = this.getSuperclass();
+		packagesUsed.add( superClass.getPackageName());
+		superClass.getShortName();
+	    }
+	    
+	    Iterator interfaceIt = this.getInterfaces().iterator();
+	    while (interfaceIt.hasNext()) {
+		SootClass sootInterface = (SootClass) interfaceIt.next();
+
+		String interfacePackage = sootInterface.getPackageName();
+		sootInterface.getShortName();
+
+		if (packagesUsed.contains( interfacePackage) == false)
+		    packagesUsed.add( interfacePackage);
+	    }
+
+	    Iterator methodIt = this.getMethods().iterator();
+	    while (methodIt.hasNext()) {
+		SootMethod dm = (SootMethod) methodIt.next();
+		
+		if (dm.hasActiveBody())
+		    packagesUsed = packagesUsed.union( ((DavaBody) dm.getActiveBody()).get_PackagesUsed());
+		    
+		Iterator eit = dm.getExceptions().iterator();
+		while (eit.hasNext()) {
+		    SootClass thrownClass = (SootClass) eit.next();
+
+		    String thrownPackage = thrownClass.getPackageName();
+		    thrownClass.getShortName();
+
+		    if (packagesUsed.contains( thrownPackage) == false)
+			packagesUsed.add( thrownPackage);
+		}
+
+		Iterator pit = dm.getParameterTypes().iterator();
+		while (pit.hasNext()) {
+		    Type t = (Type) pit.next();
+
+		    if (t instanceof RefType) {
+			SootClass paramClass = ((RefType) t).getSootClass();
+
+			String paramPackage = paramClass.getPackageName();
+			paramClass.getShortName();
+
+			if (packagesUsed.contains( paramPackage) == false)
+			    packagesUsed.add( paramPackage);
+		    }
+		}
+
+		Type t = dm.getReturnType();
+		if (t instanceof RefType) {
+		    SootClass returnClass = ((RefType) t).getSootClass();
+		    
+		    String returnPackage = returnClass.getPackageName();
+		    returnClass.getShortName();
+
+		    if (packagesUsed.contains( returnPackage) == false)
+			packagesUsed.add( returnPackage);
+		}
+	    }
+	    
+	    Iterator fieldIt = this.getFields().iterator();
+	    while (fieldIt.hasNext()) {
+		SootField f = (SootField) fieldIt.next();
+
+		if (f.isPhantom())
+		    continue;
+
+		Type t = f.getType();
+
+		if (t instanceof RefType) {
+		    RefType rt = (RefType) t;
+
+		    String fieldPackage = rt.getSootClass().getPackageName();
+		    rt.getSootClass().getShortName();
+
+		    if (packagesUsed.contains( fieldPackage) == false)
+			packagesUsed.add( fieldPackage);
+		}
+	    }
+
+
+	    if (packagesUsed.contains( curPackage))
+		packagesUsed.remove( curPackage);
+
+	    if (packagesUsed.contains( "java.lang"))
+		packagesUsed.remove( "java.lang");
+
+	    Iterator pit = packagesUsed.iterator();
+	    while (pit.hasNext())
+		out.println( "import " + (String) pit.next() + ".*;");
+
+	    if (packagesUsed.isEmpty() == false)
+		out.println();
+
+	    Main.setShortClassNames( shortClassNames);
 	}
 
 
@@ -856,19 +998,26 @@ public class SootClass extends AbstractHost
                 classPrefix = classPrefix.trim();
             }
 
-            out.print(classPrefix + " ");
-
-	    if (tmpClassName != null)
-		out.print( tmpClassName + "");
-	    else
-		out.print( this.getName() + "");
+            out.print(classPrefix + " " + this.getName());
         }
 
         // Print extension
         {
-            if(this.hasSuperclass())
-                out.print(" extends " + this.getSuperclass().getName() + "");
-        }
+	extension_block:
+            if (this.hasSuperclass()) {
+		boolean shortClassNames = Main.getShortClassNames();
+		if (shortClassNames) 
+		    Main.setShortClassNames( false);
+		
+		if ((produceDava) && (this.getSuperclass().getName().equals( "java.lang.Object"))) {
+		    Main.setShortClassNames( shortClassNames);
+		    break extension_block;
+		}
+		Main.setShortClassNames( shortClassNames);
+
+		out.print(" extends " + this.getSuperclass().getName() + "");
+	    }
+	}
 
         // Print interfaces
         {
@@ -881,10 +1030,7 @@ public class SootClass extends AbstractHost
                 out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
                 
                 while(interfaceIt.hasNext())
-                {
-                    out.print(",");
-                    out.print(" " + ((SootClass) interfaceIt.next()).getName() + "");
-                }
+                    out.print(", " + ((SootClass) interfaceIt.next()).getName() + "");
             }
         }
         

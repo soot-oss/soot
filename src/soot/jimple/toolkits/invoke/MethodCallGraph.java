@@ -64,8 +64,7 @@ public class MethodCallGraph extends MemoryEfficientGraph {
          initialize();
          Date finish = new Date();
          long runtime = finish.getTime() - start.getTime();
-         System.out.println("Computing reachable methods took "+(runtime/60000)+" min. "+
-                            ((runtime%60000)/1000)+" sec.");
+         // System.out.println("Computing reachable methods took "+(runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
          
       }
 
@@ -81,8 +80,7 @@ public class MethodCallGraph extends MemoryEfficientGraph {
           initialize();
           Date finish = new Date();
           long runtime = finish.getTime() - start.getTime();
-          System.out.println("Computing reachable methods took "+(runtime/60000)+" min. "+
-                             ((runtime%60000)/1000)+" sec.");
+          // System.out.println("Computing reachable methods took "+(runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
       }
 
       /** Recomputes the call graph, based on the entry points specified by the current set
@@ -96,8 +94,7 @@ public class MethodCallGraph extends MemoryEfficientGraph {
           initialize();
           Date finish = new Date();
           long runtime = finish.getTime() - start.getTime();
-          System.out.println("Computing reachable methods took "+(runtime/60000)+" min. "+
-                             ((runtime%60000)/1000)+" sec.");
+          // System.out.println("Computing reachable methods took "+(runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
       }
 
       /** Adds an entry point to the current set of entry points. */

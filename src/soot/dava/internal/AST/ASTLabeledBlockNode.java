@@ -2,6 +2,7 @@ package soot.dava.internal.AST;
 
 import java.util.*;
 import soot.dava.internal.SET.*;
+import soot.dava.toolkits.base.AST.*;
 
 public class ASTLabeledBlockNode extends ASTLabeledNode
 {
@@ -12,6 +13,8 @@ public class ASTLabeledBlockNode extends ASTLabeledNode
     {
 	super( label);
 	this.body = body;
+
+	subBodies.add( body);
     }
 
     public int size()

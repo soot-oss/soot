@@ -11,6 +11,7 @@ import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
 import soot.dava.internal.SET.*;
 import soot.dava.internal.javaRep.*;
+import soot.dava.toolkits.base.AST.*;
 import soot.dava.toolkits.base.misc.*;
 import soot.dava.toolkits.base.finders.*;
 
@@ -19,7 +20,7 @@ public class DavaBody extends Body
 {
     private Map pMap;
     private HashSet consumedConditions, thisLocals;
-    private IterableSet synchronizedBlockFacts, exceptionFacts, monitorFacts;
+    private IterableSet synchronizedBlockFacts, exceptionFacts, monitorFacts, packagesUsed;
     private Local controlLocal;
     private InstanceInvokeExpr constructorExpr;
     private Unit constructorUnit;
@@ -39,6 +40,7 @@ public class DavaBody extends Body
 	synchronizedBlockFacts = new IterableSet();
 	exceptionFacts = new IterableSet();
 	monitorFacts = new IterableSet();
+	packagesUsed = new IterableSet();
 	caughtrefs = new LinkedList();
 
 	controlLocal = null;
@@ -111,7 +113,12 @@ public class DavaBody extends Body
     {
 	return monitorFacts;
     }
-    
+
+    public IterableSet get_PackagesUsed()
+    {
+	return packagesUsed;
+    }
+
 
     /**
      * Constructs a DavaBody from the given Body.
@@ -135,39 +142,11 @@ public class DavaBody extends Body
 	while (true) {
 	    try {
 		CycleFinder.v().find( this, asg, SET);
-
-		/*
-		if (getMethod().getName().equals("foo"))
-		    System.out.println( "-----------------------------------");
-		// SET.dump();
-		*/
-
 		IfFinder.v().find( this, asg, SET);
 		SwitchFinder.v().find( this, asg, SET);
 		SynchronizedBlockFinder.v().find( this, asg, SET);
 		ExceptionFinder.v().find( this, asg, SET);
 		SequenceFinder.v().find( this, asg, SET);
-
-		/*
-		if (getMethod().getName().equals("foo"))
-		    System.out.println( "===================================");
-		// SET.dump();
-		*/
-
-		/*
-		if (getMethod().getName().equals("foo")) {
-		    
-		    System.out.println( asg);
-		    SET.dump( System.err);
-
-		    // Iterator it = get_ExceptionFacts().iterator();
-		    // while (it.hasNext())
-		    // ((ExceptionNode) it.next()).dump();
-
-		    System.exit(0);
-		}
-		*/
-
 		LabeledBlockFinder.v().find( this, asg, SET);
 		AbruptEdgeFinder.v().find( this, asg, SET);
 	    }
@@ -180,16 +159,25 @@ public class DavaBody extends Body
 	}
 
 	MonitorConverter.v().convert( this);
+	ThrowNullConverter.v().convert( this);
 
 	ASTNode AST = SET.emit_AST();
 	
-	// get rid of the grimp representation
+	// get rid of the grimp representation, put in the new AST
 	getTraps().clear();
 	getUnits().clear();
-	
-	// put in a new AST representation
 	getUnits().addLast( AST);
 
+	// perform transformations on the AST	
+	do {
+	    ASTAnalysis.modified = false;
+
+	    AST.perform( UselessTryRemover.v());
+	    // AST.perform( UselessLabeledBlockRemover.v());
+	    // AST.perform( UselessBreakRemover.v());
+
+	} while (ASTAnalysis.modified);
+	
 	Dava.v().log( "end method " + body.getMethod().toString());
     }
 
@@ -385,7 +373,23 @@ public class DavaBody extends Body
 	 */
 
 	{
-	    Iterator it = getUnits().iterator();
+	    boolean shortClassNames = Main.getShortClassNames();
+	    if (shortClassNames)
+		Main.setShortClassNames( false);
+	    
+	    Iterator it = getLocals().iterator();
+	    while (it.hasNext()) {
+		Type t = ((Local) it.next()).getType();
+
+		if (t instanceof RefType) {
+		    RefType rt = (RefType) t;
+
+		    addPackage( rt.getSootClass().getPackageName());
+		    rt.getSootClass().getShortName();
+		}
+	    }
+
+	    it = getUnits().iterator();
 	    while (it.hasNext()) {
 		Unit u = (Unit) it.next();		
 		Stmt s = (Stmt) u;
@@ -424,6 +428,8 @@ public class DavaBody extends Body
 		else if (s instanceof InvokeStmt)
 		    javafy( ((InvokeStmt) s).getInvokeExprBox());
 	    }
+
+	    Main.setShortClassNames( shortClassNames);
 	}
 
 
@@ -486,7 +492,7 @@ public class DavaBody extends Body
 			    SootMethod m = iie.getMethod();
 			    String name = m.getName();
 
-			    if ((name.equals( DavaMethod.constructorName)) || (name.equals( DavaMethod.staticInitializerName))) {
+			    if ((name.equals( SootMethod.constructorName)) || (name.equals( SootMethod.staticInitializerName))) {
 
 				if (constructorUnit != null)
 				    throw new RuntimeException( "More than one candidate for constructor found.");
@@ -506,7 +512,6 @@ public class DavaBody extends Body
     /*
      *  The following set of routines takes care of converting the syntax of single grimp 
      *  statements to java.
-     *
      */
 
 
@@ -552,7 +557,7 @@ public class DavaBody extends Body
 	Ref r = (Ref) vb.getValue();
 
 	if (r instanceof StaticFieldRef)
-	    vb.setValue( new DStaticFieldRef( ((StaticFieldRef) r).getField(), ((DavaMethod) getMethod()).getClassName()));
+	    vb.setValue( new DStaticFieldRef( ((StaticFieldRef) r).getField(), getMethod().getDeclaringClass().getName()));
 
 	else if (r instanceof ArrayRef) {
 	    ArrayRef ar = (ArrayRef) r;
@@ -598,20 +603,33 @@ public class DavaBody extends Body
 	if (rightOp instanceof IntConstant) {
 	    if ((leftOp instanceof IntConstant) == false) {
 		javafy( leftOpBox);
+		leftOp = leftOpBox.getValue();
+
 		rightOpBox.setValue( DIntConstant.v( ((IntConstant) rightOp).value, leftOp.getType()));
 	    }
 	}
 	else if (leftOp instanceof IntConstant) {
 	    javafy( rightOpBox);
+	    rightOp = rightOpBox.getValue();
+
 	    leftOpBox.setValue( DIntConstant.v( ((IntConstant) leftOp).value, rightOp.getType()));
 	}
 	else {
 	    javafy( rightOpBox);
+	    rightOp = rightOpBox.getValue();
+
 	    javafy( leftOpBox);
+	    leftOp = leftOpBox.getValue();
 	}
 
-	if (boe instanceof CmplExpr)
+	if (boe instanceof CmpExpr)
+	    vb.setValue( new DCmpExpr( leftOp, rightOp));
+	
+	else if (boe instanceof CmplExpr)
 	    vb.setValue( new DCmplExpr( leftOp, rightOp));
+	
+	else if (boe instanceof CmpgExpr) 
+	    vb.setValue( new DCmpgExpr( leftOp, rightOp));
     }
 
     private void javafy_unop_expr( ValueBox vb)
@@ -662,8 +680,18 @@ public class DavaBody extends Body
     {
 	InvokeExpr ie = (InvokeExpr) vb.getValue();
 
-	for (int i=0; i<ie.getArgCount(); i++)
-	    javafy( ie.getArgBox( i));
+	addPackage( ie.getMethod().getDeclaringClass().getPackageName());
+	ie.getMethod().getDeclaringClass().getShortName();
+
+	for (int i=0; i<ie.getArgCount(); i++) {
+	    Value arg = ie.getArg( i);
+
+	    if (arg instanceof IntConstant) 
+		ie.getArgBox( i).setValue( DIntConstant.v( ((IntConstant) arg).value, ie.getMethod().getParameterType( i)));
+
+	    else 
+		javafy( ie.getArgBox( i));
+	}
 
 	if (ie instanceof InstanceInvokeExpr) {
 	    javafy( ((InstanceInvokeExpr) ie).getBaseBox());
@@ -691,10 +719,14 @@ public class DavaBody extends Body
 	}
 
 	else if (ie instanceof StaticInvokeExpr) {
-	    StaticInvokeExpr sie = (StaticInvokeExpr) ie;
+	    StaticInvokeExpr sie = (StaticInvokeExpr) ie;	    
 	    
 	    if (sie instanceof NewInvokeExpr) {
 		NewInvokeExpr nie = (NewInvokeExpr) sie;
+		
+		RefType rt = nie.getBaseType();
+		addPackage( rt.getSootClass().getPackageName());
+		rt.getSootClass().getShortName();
 		
 		vb.setValue( new DNewInvokeExpr( (RefType) nie.getType(), nie.getMethod(), nie.getArgs()));
 	    }
@@ -708,6 +740,19 @@ public class DavaBody extends Body
     }
 
     private void javafy_new_expr( ValueBox vb)
-    {	
+    {
+	NewExpr ne = (NewExpr) vb.getValue();
+
+	addPackage( ne.getBaseType().getSootClass().getPackageName());
+	ne.getBaseType().getSootClass().getShortName();
+    }
+
+    public void addPackage( String newPackage)
+    {
+	if (newPackage.equals( ""))
+	    return;
+
+	if (packagesUsed.contains( newPackage) == false)
+	    packagesUsed.add( newPackage);
     }
 }

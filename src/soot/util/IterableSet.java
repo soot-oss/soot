@@ -4,6 +4,17 @@ import java.util.*;
 
 public class IterableSet extends HashChain implements Set
 {
+    public IterableSet( Collection c)
+    {
+	super();
+	addAll( c);
+    }
+
+    public IterableSet()
+    {
+	super();
+    }
+
     public boolean equals( Object o)
     {
 	if (this == o)

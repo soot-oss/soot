@@ -10,7 +10,6 @@ import soot.dava.internal.asg.*;
 
 public class MonitorConverter
 {
-    private MonitorConverter() {}
     private static MonitorConverter instance = new MonitorConverter();
 
     public static MonitorConverter v()
@@ -18,12 +17,16 @@ public class MonitorConverter
 	return instance;
     }
 
-    public void convert( DavaBody body)
+    private SootClass davaMonitor;
+    private SootMethod v, enter, exit;
+
+    private MonitorConverter()
     {
+	SootClass davaMonitor = new SootClass( "DavaMonitor");
+
 	ArrayList parameterTypes = new ArrayList();
 	parameterTypes.add( RefType.v());
 
-	SootClass davaMonitor = new SootClass( "DavaMonitor");
 
 	SootMethod 
 	    v     = new SootMethod( "v", new ArrayList(), RefType.v()),
@@ -33,11 +36,16 @@ public class MonitorConverter
 	davaMonitor.addMethod( v);
 	davaMonitor.addMethod( enter);
 	davaMonitor.addMethod( exit);
+    }
 
+    public void convert( DavaBody body)
+    {
 	Iterator mfit = body.get_MonitorFacts().iterator();
 	while (mfit.hasNext()) {
 	    AugmentedStmt mas = (AugmentedStmt) mfit.next();
 	    MonitorStmt ms = (MonitorStmt) mas.get_Stmt();
+
+	    body.addPackage( "soot.dava.toolkits.base.misc");
 
 	    ArrayList args = new ArrayList();
 	    args.add( ms.getOp());

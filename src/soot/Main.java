@@ -42,6 +42,7 @@ import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.profiling.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.tagkit.*;
+import soot.dava.toolkits.base.misc.*;
 
 import java.io.*;
 import java.text.*;
@@ -147,8 +148,10 @@ public class Main implements Runnable
 	return str;
     }
 
-    public static String getFileNameFor( String name, int rep)
+    public static String getFileNameFor( SootClass c, int rep)
     {
+	String name = c.getName();
+
 	StringBuffer 
 	    path  = new StringBuffer(),
 	    fname = new StringBuffer();
@@ -220,24 +223,19 @@ public class Main implements Runnable
 	    path.append( fileSeparator);
 
 	    if (index > 0) {
-		path.append( name.substring( 0, index).replace( '.', fileSeparator));
+		path.append( c.getPackageName().replace( '.', fileSeparator));
 		path.append( fileSeparator);
 	    }
 
 	    pathStr = path.toString();
 
-	    fname.append( pathStr);
-
-	    if (index == -1)
-		fname.append( name);
-	    else 
-		fname.append( name.substring( index + 1));
+	    fname.append( pathStr + c.getShortName());
 	}
 	else {
 	    pathStr = path.toString();
 
 	    fname.append( pathStr);
-	    fname.append( name);
+	    fname.append( c.getName());
 	}
 
 	fname.append( getExtensionFor( targetExtension));
@@ -281,6 +279,7 @@ public class Main implements Runnable
     static private boolean produceXmlOutput = false;
     static private boolean withPackagedOutput = false;
     static private boolean usedPackagedOutputSwitch = false;
+    static private boolean useShortClassNames = false;
 
     static public int totalFlowNodes, totalFlowComputations;
 
@@ -461,9 +460,20 @@ public class Main implements Runnable
     {
         isApplication = val;
     }
+
     public static boolean isAppMode()
     {
         return isApplication;
+    }
+
+    public static void setShortClassNames( boolean val)
+    {
+	useShortClassNames = val;
+    }
+
+    public static boolean getShortClassNames()
+    {
+	return useShortClassNames;
     }
 
 
@@ -681,7 +691,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.35)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.36)");
 	System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -1699,7 +1709,10 @@ public class Main implements Runnable
 				
 				// System.gc();
 
-				// Handle each class individually
+	    if ((targetExtension == DAVA) || (finalRep == DAVA))
+		ThrowFinder.v().find();
+
+	    // Handle each class individually
 	    {
 		Iterator classIt = Scene.v().getApplicationClasses().iterator();
 						
@@ -1709,7 +1722,7 @@ public class Main implements Runnable
 										
 			System.out.print("Transforming " + s.getName() + "... " );
 			System.out.flush();
-										
+							
 			if(!isInDebugMode)
 			    {
 				try 
@@ -1905,12 +1918,12 @@ public class Main implements Runnable
 	    default:
 	    }
 	}
-	
+
 	boolean buildPackages = getWithPackagedOutput();
 	if ((produceDava) && (!usedPackagedOutputSwitch))
 	    setWithPackagedOutput( true);
 
-        String fileName = getFileNameFor( c.getName(), targetExtension);
+        String fileName = getFileNameFor( c, targetExtension);
       
         if(targetExtension != CLASS)
 	    {
@@ -1931,21 +1944,6 @@ public class Main implements Runnable
 	
         // Build all necessary bodies
         {
-	    if (produceDava) {
-		Iterator methodIt = c.getMethods().snapshotIterator();
-
-		while (methodIt.hasNext()) {
-		    SootMethod m = (SootMethod) methodIt.next();
-		    DavaMethod dm = new DavaMethod( m.getName(), m.getParameterTypes(), m.getReturnType());
-
-		    dm.copy( m);
-		    dm.setClassName( c.getName());
-
-		    c.removeMethod( m);
-		    c.addMethod( dm);
-		}
-	    }
-
             Iterator methodIt = c.getMethods().iterator();
            
             while(methodIt.hasNext())
@@ -2000,15 +1998,18 @@ public class Main implements Runnable
 		methodIt = c.getMethods().iterator();
 		
 		while (methodIt.hasNext()) {
-		    DavaMethod dm = (DavaMethod) methodIt.next();
+		    SootMethod m = (SootMethod) methodIt.next();
 		    
-		    if (!dm.isConcrete())
+		    if (!m.isConcrete())
 			continue;
 
-		    dm.setActiveBody( Dava.v().newBody( dm.getActiveBody(), "db"));
+		    m.setActiveBody( Dava.v().newBody( m.getActiveBody(), "db"));
 		}
 	    }
         }
+
+	 if ((produceDava) && (getWithPackagedOutput()))
+	    setShortClassNames( true);
 
         switch(targetExtension) {
         case JASMIN:
@@ -2044,6 +2045,8 @@ public class Main implements Runnable
         default:
             throw new RuntimeException();
         }
+
+	setShortClassNames( false);
         
         if(targetExtension != CLASS)
 	    {

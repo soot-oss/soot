@@ -1,6 +1,7 @@
 package soot.dava.internal.AST;
 
 import java.util.*;
+import soot.dava.toolkits.base.AST.*;
 
 public class ASTMethodNode extends ASTNode
 {
@@ -8,7 +9,10 @@ public class ASTMethodNode extends ASTNode
 
     public ASTMethodNode( List body)
     {
+	super();
 	this.body = body;
+
+	subBodies.add( body);
     }
 
     public Object clone()

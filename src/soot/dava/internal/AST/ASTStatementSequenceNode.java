@@ -3,6 +3,7 @@ package soot.dava.internal.AST;
 import soot.*;
 import java.util.*;
 import soot.dava.internal.asg.*;
+import soot.dava.toolkits.base.AST.*;
 
 public class ASTStatementSequenceNode extends ASTNode
 {

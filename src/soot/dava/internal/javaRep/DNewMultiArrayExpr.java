@@ -37,6 +37,9 @@ public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr implements New
 	while (it.hasNext())
 	    buffer.append( "[" + it.next().toString() + "]");
 
+	for (int i=getSizeCount(); i<getBaseType().numDimensions; i++)
+	    buffer.append( "[]");
+
 	return buffer.toString();
     }
 

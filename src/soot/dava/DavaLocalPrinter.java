@@ -65,7 +65,7 @@ public class DavaLocalPrinter implements LocalPrinter
 	    InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr(); 
 	    if (constructorExpr != null) {
 
-		if (((DavaMethod) davaBody.getMethod()).getClassName().equals( constructorExpr.getMethod().getDeclaringClass().toString()))
+		if (davaBody.getMethod().getDeclaringClass().getName().equals( constructorExpr.getMethod().getDeclaringClass().toString()))
 		    out.print("        this(");
 		else
 		    out.print("        super(");
@@ -92,7 +92,12 @@ public class DavaLocalPrinter implements LocalPrinter
 
                     List localList = (List) typeToLocals.get(type);
                     Object[] locals = localList.toArray();
-                    out.print("        "  + type + " ");
+                    out.print("        ");
+		    if (type.equals( "null_type"))
+			out.print( "Object");
+		    else 
+			out.print(type);
+		    out.print( " ");
                     
                     for(int k = 0; k < locals.length; k++)
                     {

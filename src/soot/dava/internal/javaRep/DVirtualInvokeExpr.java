@@ -20,27 +20,39 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr
     {
 	return toString();
     }
-    
 
     public String toString()
     {
-        StringBuffer buffer = new StringBuffer();
-	
-	if (thisLocals.contains( getBase()) == false)
-	    buffer.append( ((ToBriefString) getBase()).toBriefString() + "." );
+	if (getBase().getType() instanceof NullType) {
+	    StringBuffer b = new StringBuffer();
 
-	buffer.append( getMethod().getName() + "(");
-	
-        for(int i = 0; i < argBoxes.length; i++) {
-	    if(i != 0)
-		buffer.append(", ");
+	    b.append( "((");
+	    b.append( getMethod().getDeclaringClass().getShortName());
+	    b.append( ") ");
 	    
-	    buffer.append( ((ToBriefString) argBoxes[i].getValue()).toBriefString());
+	    String baseStr = ((ToBriefString) getBase()).toBriefString();
+	    if ((getBase() instanceof Precedence) && ( ((Precedence) getBase()).getPrecedence() < getPrecedence()))
+		baseStr = "(" + baseStr + ")";
+
+	    b.append( baseStr);
+	    b.append( ").");
+
+	    b.append( getMethod().getName());
+	    b.append( "(");
+
+	    for (int i=0; i<argBoxes.length; i++) {
+		if(i != 0)
+		    b.append(", ");
+		
+		b.append( ((ToBriefString) argBoxes[i].getValue()).toBriefString());
+	    }
+
+	    b.append(")");
+
+	    return b.toString();
 	}
-	
-        buffer.append(")");
-	
-        return buffer.toString();
+
+	return super.toBriefString();
     }
 
     public Object clone() 
