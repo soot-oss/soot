@@ -308,6 +308,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
 		}
 	    }
 	    else setActiveBody( this.getBodyFromMethodSource("jb"));
+            ms = null;
         }
         return getActiveBody();
     }

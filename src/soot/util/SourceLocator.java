@@ -107,8 +107,11 @@ public class SourceLocator
             int sepIndex;
             boolean absolutePath;
 
-            if(classPath.equals("<external-class-path>"))
-                classPath = System.getProperty("java.class.path");
+            if(classPath.equals("<external-class-path>")) {
+                classPath = System.getProperty("java.class.path")+
+                    pathSeparator+System.getProperty("java.home")+fileSeparator+
+                    "lib"+fileSeparator+"rt.jar";
+            }
 
             String userDir = System.getProperty("user.dir");
             for(boolean done = false; !done;)

@@ -59,8 +59,11 @@ import gnu.getopt.*;
 public class Main implements Runnable
 {   
     // TODO: the following string should be updated by the source control
-    //   $Format: "            public static final String versionString = \"1.2.4 (build $ProjectVersion$)\";"$
-            public static final String versionString = "1.2.4 (build 1.2.4.dev.52)";
+    // No it shouldn't. Prcs is horribly borken in this respect, and causes
+    // the code to not compile all the time.
+    public static final String versionString = "1.2.5";
+
+
     
     public Date start;
     public Date finish;
@@ -70,6 +73,7 @@ public class Main implements Runnable
     static boolean isAnalyzingLibraries = false;
 
     public static boolean keepLineNumberAttribute = false;
+    public static boolean definitelyForbidPhantomRefs = true;
  
   // should soot keep approximated bytecode offset for each jimple instruction?
     public static boolean keepBytecodeOffsetInfo = false;
@@ -715,7 +719,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.4 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.52)");
+            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.53)");
 	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -783,7 +787,7 @@ public class Main implements Runnable
 	System.out.println("  -t, --time                   print out time statistics about tranformations");
 	System.out.println("  --subtract-gc                attempt to subtract the gc from the time stats");
 	System.out.println("  -v, --verbose                verbose mode");
-	System.out.println("  --debug                      avoid catching exceptions");
+	System.out.println("  --allow-phantom-refs         allow unresolved classes; may cause errors");
 	System.out.println("  -p, --phase-option PHASE-NAME KEY1[:VALUE1],KEY2[:VALUE2],...,KEYn[:VALUEn]");
 	System.out.println("                               set run-time option KEY to VALUE for PHASE-NAME");
 	System.out.println("                               (default for VALUE is true)");
@@ -1290,6 +1294,8 @@ public class Main implements Runnable
 	    if(arg.equals("--app"))
 		continue; // ignore
 
+	    else if(arg.equals("--allow-phantom-refs")) 
+                definitelyForbidPhantomRefs = false;
 	    else if(arg.equals("--lazy")) 
 		setLazyInvocation(true);
 	    else if(arg.equals("--nooutput"))

@@ -21,7 +21,7 @@
 #
 # Compiler
 #
-JC=javac -d classes -classpath classes:src:$$CLASSPATH
+JC=javac -target 1.2 -d classes -classpath classes:src:$$CLASSPATH
 
 #
 # Virtual machine

@@ -154,7 +154,6 @@ public class SootClass extends AbstractHost implements Numberable
         f.isDeclared = true;
         f.declaringClass = this;
         
-        Scene.v().fieldSignatureToField.put(f.getSignature(), f);        
     }
 
     /**
@@ -254,12 +253,12 @@ public class SootClass extends AbstractHost implements Numberable
 
     public SootField getField(String subsignature)
     {
-        SootField toReturn = (SootField) Scene.v().fieldSignatureToField.get("<" + getName() + ": " + subsignature + ">");
-        
-        if(toReturn == null)
-            throw new RuntimeException("No field " + subsignature + " in class " + getName());
-        else
-            return toReturn;
+        for( Iterator fieldIt = this.getFields().iterator(); fieldIt.hasNext(); ) {
+            final SootField field = (SootField) fieldIt.next();
+            if( field.getSubSignature().equals( subsignature ) ) return field;
+        }
+
+        throw new RuntimeException("No field " + subsignature + " in class " + getName());
     }
 
     
@@ -269,7 +268,11 @@ public class SootClass extends AbstractHost implements Numberable
 
     public boolean declaresField(String subsignature)
     {
-        return Scene.v().fieldSignatureToField.containsKey("<" + getName() + ": " + subsignature + ">");
+        for( Iterator fieldIt = this.getFields().iterator(); fieldIt.hasNext(); ) {
+            final SootField field = (SootField) fieldIt.next();
+            if( field.getSubSignature().equals( subsignature ) ) return true;
+        }
+        return false;
     }
 
     
@@ -591,7 +594,6 @@ public class SootClass extends AbstractHost implements Numberable
         m.isDeclared = true;
         m.declaringClass = this;
         
-        Scene.v().methodSignatureToMethod.put(m.getSignature(), m);        
     }
 
     /**

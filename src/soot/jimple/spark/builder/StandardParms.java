@@ -334,10 +334,14 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 		    sfr.getField().getType(), null ) );
     }
     final public void caseStringConstant( StringConstant sc ) {
-        //AllocNode stringConstant = pag.makeStringConstantNode( sc.value );
-        AllocNode stringConstant = pag.makeAllocNode(
-            PointsToAnalysis.STRING_NODE,
-            RefType.v( "java.lang.String" ), null );
+        AllocNode stringConstant;
+        if( Scene.v().containsClass(sc.value) ) {
+            stringConstant = pag.makeStringConstantNode( sc.value );
+        } else {
+            stringConstant = pag.makeAllocNode(
+                PointsToAnalysis.STRING_NODE,
+                RefType.v( "java.lang.String" ), null );
+        }
         VarNode stringConstantLocal = pag.makeVarNode(
             stringConstant,
             RefType.v( "java.lang.String" ), null );

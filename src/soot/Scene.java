@@ -49,8 +49,6 @@ public class Scene  //extends AbstractHost
     Chain phantomClasses = new HashChain();
     
     private Map nameToClass = new HashMap();
-    Map methodSignatureToMethod = new HashMap();
-    Map fieldSignatureToField = new HashMap();
 
     Map phaseToOptionMaps = new HashMap();
 
@@ -192,6 +190,12 @@ public class Scene  //extends AbstractHost
             setSootClassPath(scp);
     }
 
+    public boolean hasPack(String phaseName)
+    {
+        Pack p = (Pack)packNameToPack.get(phaseName);
+        return p != null;
+    }
+
     public Pack getPack(String phaseName)
     {
         Pack p = (Pack)packNameToPack.get(phaseName);
@@ -326,37 +330,72 @@ public class Scene  //extends AbstractHost
         return c.isInScene();
     }
 
+    public String signatureToClass(String sig) {
+        if( sig.charAt(0) != '<' ) throw new RuntimeException("oops "+sig);
+        if( sig.charAt(sig.length()-1) != '>' ) throw new RuntimeException("oops "+sig);
+        int index = sig.indexOf( ":" );
+        if( index < 0 ) throw new RuntimeException("oops "+sig);
+        return sig.substring(1,index);
+    }
+
+    public String signatureToSubsignature(String sig) {
+        if( sig.charAt(0) != '<' ) throw new RuntimeException("oops "+sig);
+        if( sig.charAt(sig.length()-1) != '>' ) throw new RuntimeException("oops "+sig);
+        int index = sig.indexOf( ":" );
+        if( index < 0 ) throw new RuntimeException("oops "+sig);
+        return sig.substring(index+2,sig.length()-1);
+    }
+
+    private SootField grabField(String fieldSignature)
+    {
+        String cname = signatureToClass( fieldSignature );
+        String fname = signatureToSubsignature( fieldSignature );
+        if( !containsClass(cname) ) return null;
+        SootClass c = getSootClass(cname);
+        if( !c.declaresField( fname ) ) return null;
+        return c.getField( fname );
+    }
+
     public boolean containsField(String fieldSignature)
     {
-        return fieldSignatureToField.containsKey(fieldSignature);
+        return grabField(fieldSignature) != null;
     }
     
+    private SootMethod grabMethod(String methodSignature)
+    {
+        String cname = signatureToClass( methodSignature );
+        String mname = signatureToSubsignature( methodSignature );
+        if( !containsClass(cname) ) return null;
+        SootClass c = getSootClass(cname);
+        if( !c.declaresMethod( mname ) ) return null;
+        return c.getMethod( mname );
+    }
+
     public boolean containsMethod(String methodSignature)
     {
-        return methodSignatureToMethod.containsKey(methodSignature);
+        return grabMethod(methodSignature) != null;
     }
 
     public SootField getField(String fieldSignature)
     {
-        SootField f = (SootField) fieldSignatureToField.get(fieldSignature);
+        SootField f = grabField( fieldSignature );
         if (f != null)
             return f;
 
-        throw new RuntimeException("tried to get nonexistent field!");
+        throw new RuntimeException("tried to get nonexistent field "+fieldSignature);
     }
 
+        /** This method appears to be only used by some lazy VTA developer. */
 	public SootMethod forceGetMethod(String methodSignature) {
-		SootMethod m = 
-			(SootMethod)methodSignatureToMethod.get(methodSignature);
-		return m;
+            return grabMethod( methodSignature );
 	}
 	
     public SootMethod getMethod(String methodSignature)
     {
-        SootMethod m = (SootMethod) methodSignatureToMethod.get(methodSignature);
+        SootMethod m = grabMethod( methodSignature );
         if (m != null)
             return m;
-        throw new RuntimeException("tried to get nonexistent method!");
+        throw new RuntimeException("tried to get nonexistent method "+methodSignature);
     }
 
     /** 
@@ -657,6 +696,7 @@ public class Scene  //extends AbstractHost
     
     public boolean getPhantomRefs()
     {
+        if( soot.Main.definitelyForbidPhantomRefs ) return false;
         return allowsPhantomRefs;
     }
 
@@ -673,7 +713,7 @@ public class Scene  //extends AbstractHost
 
     public boolean allowsPhantomRefs()
     {
-        return allowsPhantomRefs;
+        return getPhantomRefs();
     }
     public boolean allowsLazyResolving() 
     {
