@@ -33,13 +33,13 @@ public class AccessManager
 {
     /** Returns true iff target is legally accessible from container.
      *  Illegal access occurs when any of the following cases holds:
-     *    1. container is private, but container.declaringClass() != 
-     *              container.declaringClass(); or,
-     *    2. container is package-visible, and its package differs from
+     *    1. target is private, but container.declaringClass() != 
+     *              target.declaringClass(); or,
+     *    2. target is package-visible, and its package differs from
      *              that of container; or,
-     *    3. container is protected, and either:
-     *          a. container doesn't belong to container.declaringClass,
-     *                 or any superclass of container; 
+     *    3. target is protected, and either:
+     *          a. container doesn't belong to target.declaringClass,
+     *                 or any subclass of ; 
      */
     public static boolean isAccessLegal(SootMethod container, ClassMember target)
     {
