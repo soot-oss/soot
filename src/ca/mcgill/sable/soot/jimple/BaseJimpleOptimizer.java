@@ -83,6 +83,7 @@ public class BaseJimpleOptimizer
         // This order is important.  Don't mess with it.
         // Examples to demonstrate this are left as an exercise for the reader.
         ConstantAndCopyPropagator.propagateConstantsAndCopies(body);
+        
 //        ConstantOptimizer.optimizeConstants(body);
 //          BranchFolder.foldBranches(body);
 //          DeadCodeEliminator.eliminateDeadCode(body);

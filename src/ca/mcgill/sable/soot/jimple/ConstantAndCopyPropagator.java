@@ -82,24 +82,17 @@ public class ConstantAndCopyPropagator
         of a (namely) A because they cannot occur.  In this case the propagator is global.
         
         Otherwise, if a has multiple definitions then it only checks for redefinitions of
-        Propagates constants and copies in extended basic blocks. */
+        Propagates constants and copies in extended basic blocks. 
+        
+        Does not propagate stack locals.
+    */
     
     public static void propagateConstantsAndCopies(StmtBody stmtBody)
     {
         propagateConstantsAndCopies_internal(stmtBody, false);
     }
 
-    /** 
-       Only propagate stack locals, that is, those which start with $.
-      */    
-      
-    public static void conservativelyPropagateConstantsAndCopies(StmtBody stmtBody)
-    {
-        propagateConstantsAndCopies_internal(stmtBody, true);    
-    }
-    
-    
-    private static void propagateConstantsAndCopies_internal(StmtBody stmtBody, boolean isConservative)
+    private static void propagateConstantsAndCopies_internal(StmtBody stmtBody, boolean propagateStackLocals)
     {
         int fastCopyPropagationCount = 0;
         int slowCopyPropagationCount = 0;
@@ -165,7 +158,7 @@ public class ConstantAndCopyPropagator
                     {
                         Local l = (Local) useBox.getValue();
 
-                        if(isConservative && !l.getName().startsWith("$"))
+                        if(!propagateStackLocals && l.getName().startsWith("$"))
                             continue;
                             
                         List defsOfUse = localDefs.getDefsOfAt(l, stmt);
