@@ -64,7 +64,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
             {
                 Object s = it.next();
 
-                changedUnits.addLast(s);
+                changedUnits.addFirst(s);
                 changedUnitsSet.add(s);
 
                 unitToBeforeFlow.put(s, newInitialFlow());
