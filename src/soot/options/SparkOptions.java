@@ -64,7 +64,7 @@ public class SparkOptions
         return soot.PhaseOptions.getBoolean( options, "ignore-types" );
     }
     
-    /** Force Garbages Collections --
+    /** Force Garbage Collections --
     
      * Force garbage collection for measuring memory usage.
     
@@ -95,11 +95,11 @@ public class SparkOptions
     
      * Emulate Variable Type Analysis.
     
-     * Setting VTA to true has the effect of setting 
-     * ignoreBaseObjects, typesForSites, and simplifySCCs to true to 
-     * simulate Variable Type Analysis, described in our OOPSLA 2000 
-     * paper. Note that the algorithm differs from the original VTA in 
-     * that it handles array elements more precisely. 
+     * Setting VTA to true has the effect of setting field-based, 
+     * types-for-sites, and simplify-sccs to true to simulate Variable 
+     * Type Analysis, described in our OOPSLA 2000 paper. Note that the 
+     * algorithm differs from the original VTA in that it handles array 
+     * elements more precisely. 
      */
     public boolean vta() {
         return soot.PhaseOptions.getBoolean( options, "vta" );
