@@ -42,9 +42,7 @@ public class VariableBox extends AbstractValueBox
 
     public boolean canContainValue(Value value)
     {
-        return value instanceof Local ||
-            (value instanceof ConcreteRef && !(value instanceof
-                NextNextStmtRef));
+        return value instanceof Local || value instanceof ConcreteRef;
     }
 }
 

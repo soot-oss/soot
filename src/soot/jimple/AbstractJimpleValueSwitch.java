@@ -242,11 +242,6 @@ public abstract class AbstractJimpleValueSwitch implements JimpleValueSwitch
         defaultCase(v);
     }
 
-    public void caseNextNextStmtRef(NextNextStmtRef v)
-    {
-        defaultCase(v);
-    }
-
     public void caseCaughtExceptionRef(CaughtExceptionRef v)
     {
         defaultCase(v);

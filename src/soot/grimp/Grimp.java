@@ -627,19 +627,6 @@ public class Grimp
         return Jimple.v().newParameterRef(paramType, number);
     }
 
-
-    /**
-        Constructs a NextNextStmtRef() grammar chunk.
-     */
-
-/*
-    public NextNextStmtRef newNextNextStmtRef()
-    {
-        return Jimple.v().newNextNextStmtRef();
-    }
-*/
-
-
     /**
         Constructs a InstanceFieldRef(Value, SootField) grammar chunk.
      */

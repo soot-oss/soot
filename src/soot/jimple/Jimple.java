@@ -793,17 +793,6 @@ public class Jimple
 
 
     /**
-        Constructs a NextNextStmtRef() grammar chunk.
-     */
-
-     /*
-    public NextNextStmtRef newNextNextStmtRef()
-    {
-        return new NextNextStmtRef();
-    }
-*/
-
-    /**
         Constructs a InstanceFieldRef(Local, SootField) grammar chunk.
      */
 

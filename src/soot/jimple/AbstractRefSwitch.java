@@ -51,11 +51,6 @@ public abstract class AbstractRefSwitch implements RefSwitch
         defaultCase(v);
     }
 
-    public void caseNextNextStmtRef(NextNextStmtRef v)
-    {
-        defaultCase(v);
-    }
-
     public void caseCaughtExceptionRef(CaughtExceptionRef v)
     {
         defaultCase(v);
