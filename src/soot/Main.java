@@ -451,7 +451,7 @@ public class Main implements Runnable, ICompilationListener
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.60");
+            System.out.println("Soot version 1.beta.6.dev.61");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -491,7 +491,6 @@ public class Main implements Runnable, ICompilationListener
             System.out.println("Construction options:");
             System.out.println("  --final-rep REP            produce classfile/jasmin from REP ");
             System.out.println("                                  (jimple, grimp, or baf)");
-            System.out.println();
             System.out.println("");
             System.out.println("Optimization options:");
             System.out.println("  -O  --optimize             perform scalar optimizations on the classfiles");
@@ -499,7 +498,8 @@ public class Main implements Runnable, ICompilationListener
             System.out.println("                             classfiles");
             System.out.println("");
             System.out.println("Miscellaneous options:");
-            System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
+            System.out.println("  --soot-classpath PATH      uses PATH as the classpath for finding classes");
+            System.out.println("  --src-prec [jimple|class]  sets the source precedence for Soot");
             System.out.println("  -t, --time                 print out time statistics about tranformations");
             System.out.println("  --subtract-gc              attempt to subtract the gc from the time stats");
             System.out.println("  -v, --verbose              verbose mode");
@@ -564,7 +564,7 @@ public class Main implements Runnable, ICompilationListener
                 setSubstractingGC(true);
             else if(arg.equals("-v") || arg.equals("--verbose"))
                 setVerbose(true);
-             else if(arg.equals("--soot-class-path"))
+            else if(arg.equals("--soot-class-path") || arg.equals("--soot-classpath"))
             {
                 if(++i < args.length)
                     Scene.v().setSootClassPath(args[i]);

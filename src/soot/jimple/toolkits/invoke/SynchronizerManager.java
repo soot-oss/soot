@@ -60,7 +60,7 @@ public class SynchronizerManager
         if (classCacher == null)
         {
             // Add a unique field named [__]class$name
-            String n = "class$"+sc.getName();
+            String n = "class$"+sc.getName().replace('.', '$');
             while (sc.declaresFieldByName(n))
                 n = "_" + n;
 
@@ -129,7 +129,7 @@ public class SynchronizerManager
 
             // Check signature.
             if (!m.getSignature().equals
-                     ("<"+c.getName()+": java.lang.Class "+
+                     ("<"+c.getName().replace('.', '$')+": java.lang.Class "+
                       methodName+"(java.lang.String)>"))
                 continue;
 
@@ -292,6 +292,12 @@ public class SynchronizerManager
                 units.add(Jimple.v().newAssignStmt(l_r4,
                     Jimple.v().newNewExpr(RefType.v
                               ("java.lang.NoClassDefFoundError"))));
+
+            // add "$r5 = virtualinvoke r1.<java.lang.Throwable: java.lang.String getMessage()>();"
+                units.add(Jimple.v().newAssignStmt(l_r5,
+                    Jimple.v().newVirtualInvokeExpr(l_r1,
+                          Scene.v().getMethod("<java.lang.Throwable: java.lang.String getMessage()>"),
+                          new LinkedList())));
 
             // add .specialinvoke $r4.<java.lang.NoClassDefFoundError: .void <init>(java.lang.String)>($r5);
                 units.add(Jimple.v().newInvokeStmt(

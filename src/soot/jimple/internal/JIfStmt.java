@@ -68,7 +68,6 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         targetBoxes = Collections.unmodifiableList(targetBoxes);
     }
     
-    // xxx
     public Object clone()
     {
         return new JIfStmt(Jimple.cloneIfNecessary(getCondition()), getTarget());

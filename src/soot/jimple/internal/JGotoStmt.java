@@ -57,10 +57,6 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
         targetBoxes = Collections.unmodifiableList(targetBoxes);
     }
 
-
-
-
-    // xxx
     public Object clone() 
     {
         return new JGotoStmt(getTarget());

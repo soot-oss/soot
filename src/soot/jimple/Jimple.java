@@ -913,7 +913,6 @@ public class Jimple
     {
         //Map options = Scene.v().computePhaseOptions(phase, "");
         
-        // xxx patrice - deal with phase options
         return b;
     }
     */

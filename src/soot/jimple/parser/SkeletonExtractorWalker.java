@@ -138,10 +138,6 @@ public class SkeletonExtractorWalker extends Walker
         }
         
         mProductions.push(mSootClass);
-        
-        /* xxx take this junk out of the scene; then delete the following
-        Iterator it = Scene.v().getClassesToResolve().iterator();        
-        */
     } 
 
 
