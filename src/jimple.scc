@@ -13,8 +13,8 @@ Helpers
   oct_digit = ['0' .. '7'];
   oct_constant = '0' oct_digit+;
 
-  escapable_char = '\' | ' ' | ''' | '.' | '#';
-  escape_code = hex_digit hex_digit hex_digit hex_digit;
+  escapable_char = '\' | ' ' | ''' | '.' | '#' | '"';
+  escape_code = 'u' hex_digit hex_digit hex_digit hex_digit;
   escape_char = '\' (escapable_char | escape_code);  
 
   not_cr_lf = [all - [10 + 13]];
@@ -24,13 +24,14 @@ Helpers
   alpha_char = ['a' .. 'z'] | ['A' .. 'Z']; 
   
   quote = ''';
-  simple_id_char = alpha_char | dec_digit | '_' | '$' | '.';
+  simple_id_char = alpha_char | dec_digit | '_' | '$';
+
   first_id_char = alpha_char | '_' | '$';
   
   quotable_char = [not_cr_lf - '''];
 
   // string_char = [not_cr_lf - '"'];
-  string_char = [all - '"'];
+  string_char = [35 .. 126] | [32 + 33] | [10 + 13] | escape_char;
 
   line_comment = '//' not_cr_lf*;
   long_comment = '/*' not_star* '*'+ (not_star_slash not_star* '*'+)* '/';
@@ -96,6 +97,7 @@ Tokens
   virtualinvoke = 'virtualinvoke';
   with = 'with';
 
+
   comma = ',';
   l_brace = '{';
   r_brace = '}';
@@ -127,10 +129,16 @@ Tokens
   mult = '*';
   div = '/';
 
+
+  
+ float_degenerate = '#' (('-'? 'Infinity') | 'NaN') ('f' | 'F')?;
+
   quoted_name = quote quotable_char+ quote;
   
   identifier = first_id_char simple_id_char* | '<clinit>' | '<init>';
-  at_identifier = '@' (('parameter' dec_digit+) | 'this' | 'caughtexception');
+  full_identifier = (first_id_char+ '.')+ simple_id_char+;
+ 
+  at_identifier = '@' (('parameter' dec_digit+ ':') | 'this' ':' | 'caughtexception');
 
   bool_constant = 'true' | 'false';
   integer_constant = (dec_constant | hex_constant | oct_constant) 'L'?;
@@ -140,12 +148,15 @@ Tokens
   blank = (' ' | 9 | 13 | 10)+;  
   comment = line_comment | long_comment; 
 
+
+
+
 Ignored Tokens
   blank, comment;
 
 Productions
   file = 
-    modifier* file_type name extends_clause? implements_clause? file_body; 
+    modifier* file_type class_name extends_clause? implements_clause? file_body; 
 
   modifier =
     {abstract}     abstract |
@@ -164,10 +175,10 @@ Productions
     {interface} interface;
 
   extends_clause =
-    extends name;
+    extends class_name;
 
   implements_clause =
-    implements name_list;
+    implements class_name_list;
 
   file_body =
     l_brace member* r_brace;
@@ -175,6 +186,10 @@ Productions
   name_list =
     {single} name | 
     {multi}  name comma name_list;
+ 
+class_name_list =
+    {class_name_single} class_name | 
+    {class_name_multi}  class_name comma class_name_list;
 
   member =
     {field}  modifier* type name semicolon |
@@ -192,7 +207,7 @@ Productions
     nonvoid_type;
 
   throws_clause =
-    throws name_list;
+    throws class_name_list;
 
   base_type_no_name =
     {boolean} boolean |
@@ -213,12 +228,13 @@ Productions
     {long}    long |
     {float}   float |
     {double}  double |
-    {name}    name;
+    {class_name}    class_name;
   
   nonvoid_type =
     {base}   base_type_no_name array_brackets* |
     {quoted} quoted_name array_brackets* |
-    {ident}  identifier array_brackets*;
+    {ident}  identifier array_brackets* |
+    {full_ident} full_identifier array_brackets*;
 
   array_brackets =
     l_bracket r_bracket;
@@ -237,6 +253,9 @@ Productions
   local_name =
     identifier;
 
+
+
+
   local_name_list =
     {single} local_name |
     {multi}  local_name comma local_name_list;
@@ -247,7 +266,8 @@ Productions
     {entermonitor} entermonitor immediate semicolon |
     {exitmonitor}  exitmonitor immediate semicolon |
     {switch}       switch l_paren immediate r_paren l_brace case_stmt+ r_brace semicolon |
-    {identity}     local_name colon_equals at_identifier semicolon |
+    {identity}     local_name colon_equals at_identifier type semicolon |
+    {identity_no_type}  local_name colon_equals at_identifier semicolon |
     {assign}       variable equals expression semicolon |
     {if}           if bool_expr goto_stmt |
     {goto}         goto_stmt |
@@ -275,7 +295,7 @@ Productions
     goto label_name semicolon;
 
   catch_clause =
-    catch [name]:name from [from_label]:label_name to [to_label]:label_name with [with_label]:label_name semicolon;
+    catch [name]:class_name from [from_label]:label_name to [to_label]:label_name with [with_label]:label_name semicolon;
 
   expression =
     {new}         new_expr |
@@ -319,7 +339,7 @@ Productions
     {interface} interfaceinvoke;
 
   method_signature =
-    cmplt [class_name]:name [first]:colon [method_name]:name [second]:colon l_paren parameter_list? r_paren [third]:colon type cmpgt;
+    cmplt [class_name]:class_name [first]:colon type [method_name]:name  l_paren parameter_list? r_paren cmpgt;
 
   reference =
     {array} array_ref |
@@ -333,7 +353,7 @@ Productions
     {sig}   field_signature;
 
   field_signature =
-    cmplt [class_name]:name [first]:colon [field_name]:name [second]:colon type cmpgt;
+    cmplt [class_name]:class_name [first]:colon type [field_name]:name cmpgt;
 
   fixed_array_descriptor =
     l_bracket immediate r_bracket;
@@ -348,8 +368,13 @@ Productions
 
   constant =
     {integer} minus? integer_constant |
-    {float}   minus? float_constant |
+    {float}   minus? float_ext |
     {string}  string_constant;
+
+float_ext = 
+  {float_cst} float_constant |
+  {float_degenerate} float_degenerate;
+
 
   binop =
     {and}   and |
@@ -376,6 +401,11 @@ Productions
   unop =
     {lengthof} lengthof |
     {neg}      neg;
+
+class_name =
+    {quoted} quoted_name |
+    {ident}  identifier |
+    {full_ident} full_identifier;
 
   name =
     {quoted} quoted_name |

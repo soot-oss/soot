@@ -15,14 +15,22 @@ public class Compiler
                 new Parser(
                 new Lexer(
                 new PushbackReader(
-                new InputStreamReader(System.in), 1024)));
+                new InputStreamReader(System.in), 65536)));
 
             Start tree = p.parse();
 
             tree.apply(new Walker());
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     } // main
 } // Compiler
+
+
+
+
+
+
+
+
