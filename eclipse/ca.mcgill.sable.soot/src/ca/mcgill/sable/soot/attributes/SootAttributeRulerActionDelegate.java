@@ -44,7 +44,7 @@ public class SootAttributeRulerActionDelegate extends AbstractRulerActionDelegat
 	 * @see org.eclipse.ui.texteditor.AbstractRulerActionDelegate#createAction(org.eclipse.ui.texteditor.ITextEditor, org.eclipse.jface.text.source.IVerticalRulerInfo)
 	 */
 	protected IAction createAction(ITextEditor editor, IVerticalRulerInfo rulerInfo) {
-		// TODO Auto-generated method stub
+		
 		try {
 			ResourceBundle rb = SootPlugin.getDefault().getResourceBundle();
 			if (rb == null){

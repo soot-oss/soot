@@ -66,13 +66,13 @@ public class SootAttribute {
 		getTextList().add(text);
 	}
 	
-	public StringBuffer getAllTextAttrs(){
+	public StringBuffer getAllTextAttrs(String lineSep){
 		StringBuffer sb = new StringBuffer();
 		if (getTextList() != null){
 			Iterator it = getTextList().iterator();
 			while (it.hasNext()){
 				sb.append((String)it.next());
-				sb.append(NEWLINE);
+				sb.append(lineSep);
 			}
 		}
 		return sb;

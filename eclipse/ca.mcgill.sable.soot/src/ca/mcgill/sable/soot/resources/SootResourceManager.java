@@ -69,7 +69,7 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 		while (it.hasNext()){
 			BitSet bits = (BitSet)getChangedResources().get(it.next());
 			bits.set(SOOT_RAN_BIT);
-			
+			bits.clear(CHANGED_BIT);
 		}
 	}
 	

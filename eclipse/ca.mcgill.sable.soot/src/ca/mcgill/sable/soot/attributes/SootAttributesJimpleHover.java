@@ -150,9 +150,9 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 			
 		}
 		else if (SootPlugin.getDefault().getManager().isFileMarkersRemove((IFile)getRec())) {
-			SootPlugin.getDefault().getManager().setToFalseRemove((IFile)getRec());
+			//SootPlugin.getDefault().getManager().setToFalseRemove((IFile)getRec());
 			try {
-				//System.out.println("need to remove markers from: "+getRec().getFullPath().toOSString());
+				System.out.println("need to remove markers from: "+getRec().getFullPath().toOSString());
 				getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_ONE);
 			}
 			catch(CoreException e){

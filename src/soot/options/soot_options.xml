@@ -26,14 +26,14 @@
 		<boolopt>
 			<name>Application Mode</name>
 			<alias>app</alias>
-			<short_desc>runs in application mode</short_desc>
-			<long_desc>This option ...</long_desc>
+			<short_desc>Run in Application Mode</short_desc>
+			<long_desc>This option causes Soot to process application classes referred to by the given class as well as the given class.</long_desc>
 		</boolopt>
                 <boolopt>
 			<name>Whole-Program Mode</name>
 			<alias>w</alias>
 			<alias>whole-program</alias>
-			<short_desc>runs in whole-program mode</short_desc>
+			<short_desc>Run in Whole-program Mode</short_desc>
 			<long_desc>This option ...</long_desc>
                 </boolopt>
                 <boolopt>
@@ -50,7 +50,7 @@
 			<alias>cp</alias>
 			<alias>soot-class-path</alias>
 			<alias>soot-classpath</alias>
-			<short_desc>uses given PATH as the classpath for finding classes for Soot processing</short_desc>
+			<short_desc>Uses given PATH as the classpath for finding classes for Soot processing.</short_desc>
 			<long_desc>Use PATH to resolve types.</long_desc>
 		</stropt>
 		<multiopt>
@@ -60,23 +60,23 @@
 				<name>Class File</name>
 				<alias>c</alias>
 				<alias>class</alias>
-				<short_desc>Use class for source of Soot</short_desc>
+				<short_desc>Use class for source of Soot.</short_desc>
 				<default/>
 			</value>
 			<value>
 				<name>Jimple File</name>
 				<alias>J</alias>
 				<alias>jimple</alias>
-				<short_desc>Use Jimple for source of Soot</short_desc>
+				<short_desc>Use Jimple for source of Soot.</short_desc>
 			</value>
-			<short_desc>sets the source precedence for Soot</short_desc>
+			<short_desc>Sets Source Precedence for Soot</short_desc>
 			<long_desc>By default, Soot will resolve classes from .class files. If a class cannot be resolved from a .class file, Soot will attempt to resolve it from a .jimple file. Setting this option to jimple specifies the opposite policy: classes are resolved from .jimple files, and only if this fails will an attempt be made to resolve them from .class files.</long_desc>
 		</multiopt>
 		<boolopt>
 			<name>Allow Phantom References</name>
 			<alias>allow-phantom-refs</alias>
-			<short_desc>allow unresolved classes; may cause errors</short_desc>
-			<long_desc>This option ...</long_desc>
+			<short_desc>Allow unresolved classes: may cause errors</short_desc>
+			<long_desc>This option allows Soot to process a class allowing references to be phantoms. This may produce incorrect results.</long_desc>
 		</boolopt>
 	</section>
 	<section>
@@ -85,7 +85,7 @@
 			<name>Output Directory</name>
 			<alias>d</alias>
 			<alias>output-dir</alias>
-			<short_desc>store produced files in PATH</short_desc>
+			<short_desc>Store Produced Files in PATH</short_desc>
 			<long_desc>Specifies that the outputted files are to be stored in PATH. This may be relative to the working directory.</long_desc>
 		</stropt>
 		<multiopt>
@@ -96,7 +96,7 @@
 				<name>Jimp File</name>
 				<alias>j</alias>
 				<alias>jimp</alias>
-				<short_desc>produce .jimp (abbreviated .jimple) files</short_desc>
+				<short_desc>Produce .jimp (abbreviated .jimple) Files</short_desc>
                                 <long_desc>Produces .jimp files. These contain an abbreviated textual form for soot's Jimple internal representation. Can contain ambiguous references.</long_desc>
 			</value>
 			<value>

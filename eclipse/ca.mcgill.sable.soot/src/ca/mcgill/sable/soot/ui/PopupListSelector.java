@@ -133,7 +133,7 @@ public class PopupListSelector {//extends PopupList {
 			System.out.println(spaceAbove - spaceAbove);
 		}
 		
-		y = (rect.y * 15) + 88;
+		y = (rect.y * 16) + 88;
 	
 	
 		getShell().setBounds(rect.x, y, listSize.x, listSize.y);

@@ -38,56 +38,6 @@ public class SootAttributesHandler {
 		this.attrList = attrList;
 	}
 
-
-	/*public void printAttrs() {
-		System.out.println(getAttrList());
-		if (getAttrList() == null) return;
-		
-		Iterator it = getAttrList().iterator();
-		while (it.hasNext()) {
-			SootAttribute sa = (SootAttribute)it.next();
-			System.out.println("New Attribute");
-			System.out.println("Java Line: "+sa.getJava_ln());
-			System.out.println("Jimple Line: "+sa.getJimple_ln());
-			System.out.println("Text: "+sa.getText());
-			System.out.println();
-		}
-	}
-	 
-	public void printAttributes() {
-		Set s = getProjList().keySet();
-		Collection c = getProjList().values();
-		Iterator it1 = s.iterator();
-		Iterator it2 = c.iterator();
-		while (it1.hasNext()) {
-			String proj = (String)it1.next();
-			System.out.println("AttributeHandler"+proj);
-			Object files = getProjList().get(proj);
-			if (files == null) System.out.println("files is null");
-			
-			Set s2 = ((HashMap)files).keySet();
-			Collection c2 = ((HashMap)files).values();
-			Iterator it5 = s2.iterator();
-			Iterator it6 = c2.iterator();
-			
-			while (it5.hasNext()) {
-				String filename = (String)it5.next();
-				System.out.println("AttributeHandler"+filename);
-				Vector attrList = (Vector)it6.next();
-				//System.out.println(attrList.toString());
-				Iterator it3 = attrList.iterator();
-				while (it3.hasNext()) {
-					SootAttribute sa = (SootAttribute)it3.next();
-					System.out.println("New Attribute");
-					System.out.println("Java Line: "+sa.getJava_ln());
-					System.out.println("Jimple Line: "+sa.getJimple_ln());
-					System.out.println("Text: "+sa.getText());
-					System.out.println();
-				}
-			}
-		}
-	}*/
-	
 	public String getJimpleAttributes(int lnNum) {
 		Iterator it = getAttrList().iterator();
 		StringBuffer sb = new StringBuffer();
@@ -95,8 +45,7 @@ public class SootAttributesHandler {
 			SootAttribute sa = (SootAttribute)it.next();
 			if (sa.attrForJimpleLn(lnNum)) {
 				//if (sa.getTextList() == null) return null;
-				sb.append(sa.getAllTextAttrs());
-				sb.append(NEWLINE);
+				sb.append(sa.getAllTextAttrs("\n"));
 			}
 		}	
 		String result = sb.toString();
@@ -124,8 +73,7 @@ public class SootAttributesHandler {
 			SootAttribute sa = (SootAttribute)it.next();
 			if (sa.attrForJavaLn(lnNum)) {
 				if (sa.getTextList() == null) return null;
-				sb.append(sa.getAllTextAttrs());
-				sb.append(NEWLINE);
+				sb.append(sa.getAllTextAttrs("<br>"));
 			}
 		}	
 		return sb.toString();

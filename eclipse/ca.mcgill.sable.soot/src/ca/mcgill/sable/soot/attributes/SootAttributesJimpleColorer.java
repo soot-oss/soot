@@ -40,76 +40,49 @@ public class SootAttributesJimpleColorer {
 		setEditorPart(editorPart);
 		Iterator it = handler.getAttrList().iterator();
 		while (it.hasNext()) {
+			// sets colors for stmts
 			SootAttribute sa = (SootAttribute)it.next();
-			if ((sa.getRed() == 0) && (sa.getGreen() == 0) && (sa.getBlue() == 0)){
-				// no color set
-			}
-			else {
+			if (!((sa.getRed() == 0) && (sa.getGreen() == 0) && (sa.getBlue() == 0))){
 				setAttributeTextColor(sa.getJimple_ln(), sa.getJimpleOffsetStart()+1, sa.getJimpleOffsetEnd()+1, sa.getRGBColor());
 			}
+			// sets colors for valueboxes
 			if (sa.getValueAttrs() != null){
 				Iterator valIt = sa.getValueAttrs().iterator();
 				while (valIt.hasNext()){
 					PosColAttribute vba = (PosColAttribute)valIt.next();
-					if ((vba.getRed() == 0) && (vba.getGreen() == 0) && (vba.getBlue() == 0)){
-						// no color set	
-					}
-					else {
+					if (!((vba.getRed() == 0) && (vba.getGreen() == 0) && (vba.getBlue() == 0))){
 						setAttributeTextColor(sa.getJimple_ln(), vba.getStartOffset()+1, vba.getEndOffset()+1, vba.getRGBColor());
 					}
 				}
-			
 			}
-			
-			
 		}
 					
 	}
 	
 	private void setAttributeTextColor(int line, int start, int end, RGB colorKey){
 		Display display = getEditorPart().getSite().getShell().getDisplay();
-		//Display display = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay();
 		TextPresentation tp = new TextPresentation();
 		ColorManager colorManager = new ColorManager();
 		int lineOffset = 0;
 		try {
-		
 			lineOffset = getViewer().getDocument().getLineOffset((line-1));
 		}
 		catch(Exception e){	
 		}
-		System.out.println("lineOffset: "+lineOffset);
-		System.out.println("start: "+(lineOffset+start));
-		System.out.println("start: "+start+" end: "+end);
-		System.out.println("length: "+(end-start));
+		
 		StyleRange sr = new StyleRange((lineOffset + start - 1	), (end - start), colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT), colorManager.getColor(colorKey));
 		tp.addStyleRange(sr);
 		Color c = tp.getFirstStyleRange().background;
-		System.out.println("default background color is: "+c.getRed()+" "+c.getGreen()+" "+c.getBlue());
+		
 		final TextPresentation newPresentation = tp;
-		if (getViewer() == null){
-			System.out.println("viewer is null");
-		}
-		else {
-			System.out.println("viewer is not null");
-			display.asyncExec( new Runnable() {
-				public void run() {
-					
-					//((JimpleEditor)getEditor()).getViewer().setTextColor(colorManager.getColor(IJimpleColorConstants.JIMPLE_ATTRIBUTE_GOOD), 0, 10, false);
-					//((JimpleEditor)getEditor()).getViewer().changeTextPresentation(tp, false);
-					System.out.println("about to run change text presentation");
-					getViewer().changeTextPresentation(newPresentation, false);
-				};
-			});
-			//display.asyncExec( new Runnable() {
-			//	public void run() {
-					//((JimpleEditor)getEditor()).getViewer().setTextColor(colorManager.getColor(IJimpleColorConstants.JIMPLE_ATTRIBUTE_GOOD), 0, 10, false);
-					//((JimpleEditor)getEditor()).getViewer().changeTextPresentation(tp, false);
-			//		System.out.println("about to run change text presentation");
-					tp.clear();
-			//	};
-			//});
-		}
+		
+		display.asyncExec( new Runnable() {
+			public void run() {
+				getViewer().changeTextPresentation(newPresentation, false);
+			};
+		});
+			
+		
 	}
 	
 

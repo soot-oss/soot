@@ -289,7 +289,7 @@ public class Printer {
        
         if (addJimpleLn()) {
             setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), b.getMethod()));		
-            //G.v().out.println("added jimple ln tag for method");
+            //G.v().out.println("added jimple ln tag for method: "+b.getMethod().toString()+" "+b.getMethod().getDeclaringClass().getName());
         }
 
         out.println("    {");

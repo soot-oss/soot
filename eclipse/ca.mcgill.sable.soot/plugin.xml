@@ -116,7 +116,21 @@
         </action>
 	</editorContribution>
    </extension>
-  
+   
+   <!--<extension point="org.eclipse.ui.editorActions">
+	<editorContribution
+		id="ca.mcgill.sable.soot.ruler.actions"
+		targetID="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorr">
+
+        <action
+           id="ca.mcgill.sable.soot.editors.sootattributesselectaction"
+           actionID="RulerClick"
+           label="none"
+           class="ca.mcgill.sable.soot.attributes.SootAttributeRulerActionDelegate">
+        </action>
+	</editorContribution>
+   </extension>-->
+ 
    <extension
          point="org.eclipse.ui.views">
       <category
@@ -180,13 +194,13 @@
                   name="slot1">
             </separator>
          </menu>
-         <action
+         <!--<action
                label="Test"
                class="ca.mcgill.sable.soot.launching.Test"
                menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.launchingactiontest">
-         </action>
+         </action>-->
          <action
                label="%PopupMenus.action11"
                class="ca.mcgill.sable.soot.launching.SootConfigProjectLauncher"

@@ -30,6 +30,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.*;
 
 
@@ -39,7 +40,8 @@ import ca.mcgill.sable.soot.*;
 
 public class SootAttributeSelectAction extends ResourceAction {
 
-	JimpleEditor editor;
+	AbstractTextEditor editor;
+	AbstractTextEditor linkToEditor;
 	IVerticalRulerInfo rulerInfo;
 	AbstractMarkerAnnotationModel model;
 	int lineNumber;
@@ -51,11 +53,10 @@ public class SootAttributeSelectAction extends ResourceAction {
 	public SootAttributeSelectAction(ResourceBundle bundle, String prefix, ITextEditor editor, IVerticalRulerInfo rulerInfo) {
 		
 		super(bundle, prefix);
-		// TODO Auto-generated constructor stub
+		
 		System.out.println("called SootAttributeSelectAction constr");
-		if (editor instanceof JimpleEditor){
-			setEditor((JimpleEditor)editor);
-		}
+		setEditor((AbstractTextEditor)editor);
+		
 		setRulerInfo(rulerInfo);
 	}
 	
@@ -71,8 +72,7 @@ public class SootAttributeSelectAction extends ResourceAction {
 	}
 	
 	public void run() {
-		System.out.println("Running SootAttributeSelectAction");
-		
+	
 		// need to get list of texts
 		IAnnotationModel model = getEditor().getDocumentProvider().getAnnotationModel(getEditor().getEditorInput());
 		if (model instanceof AbstractMarkerAnnotationModel){
@@ -80,17 +80,14 @@ public class SootAttributeSelectAction extends ResourceAction {
 		}
 		
 		int markerLine = getRulerInfo().getLineOfLastMouseButtonActivity();
-		System.out.println("markerLine: "+markerLine);
-		
+	
 		IResource rec = getResource(getEditor());
 		try {
 			IMarker [] markers = rec.findMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
 			for (int i = 0; i < markers.length; i++){
 				setLineNumber(getDocument().getLineOfOffset(getModel().getMarkerPosition(markers[i]).getOffset()));
 				if (getLineNumber() == markerLine){
-					System.out.println("selected marker at line: "+getLineNumber());
-					System.out.println("offset: "+getDocument().getLineOffset(getLineNumber()));
-					//getMarkerResolutions(markers[i]);
+					
 					
 					ArrayList links = getMarkerLinks();
 					String [] list = getMarkerLabels(links);
@@ -106,19 +103,13 @@ public class SootAttributeSelectAction extends ResourceAction {
 						popup.setItems(list);
 						
 						if (getEditor() instanceof JimpleEditor){
-							int startOffset = ((JimpleEditor)getEditor()).getViewer().getTopIndexStartOffset();
-							System.out.println("startOffset: "+startOffset);
-							int lineOffset = getDocument().getLineOffset(getLineNumber());
-							System.out.println("lineOffset: "+lineOffset);
 							int topIndex = ((JimpleEditor)getEditor()).getViewer().getTopIndex();
-							System.out.println("topIndex: "+topIndex);
-							int bottomOffset = ((JimpleEditor)getEditor()).getViewer().getBottomIndexEndOffset();
-							System.out.println("bottom offset: "+ bottomOffset);
-							int markerOffset = getModel().getMarkerPosition(markers[i]).getOffset();
-							System.out.println("marker Offset: "+markerOffset);
 							popup.open(new Rectangle(400, (getLineNumber()+1-topIndex), 600, 30 ));
 						}	
-						System.out.println(popup.getSelected());
+						else {
+							popup.open(new Rectangle(400, 400, 600, 30 ));
+						}
+						
 						handleSelection(popup.getSelected(), links);
 					}
 				}			
@@ -143,22 +134,54 @@ public class SootAttributeSelectAction extends ResourceAction {
 				if (la.getLabel().equals(selected)){
 					toShow = la.getLink() - 1;
 					className = la.getClassName();
-					System.out.println("className: "+className);
+					findClass(className);
 				}
 			}
 		
-			System.out.println("toLookUp: "+toShow);
+			
 			int selOffset = getDocument().getLineOffset(toShow);
 			if ((selOffset != -1) && (selOffset != 0)){
-				System.out.println("toLookUp offset:"+selOffset);
-				if (getEditor() instanceof JimpleEditor){
-					//((JimpleEditor)getEditor()).getViewer().setSelectedRange(selOffset+1, toLookUp.length()-1);
-					((JimpleEditor)getEditor()).getViewer().setRangeIndication(selOffset, 1, true);
+				
+				if (getLinkToEditor() instanceof JimpleEditor){
+					
+					((JimpleEditor)getLinkToEditor()).getViewer().setRangeIndication(selOffset, 1, true);
 				}
 			}
 		}
 		catch(BadLocationException e){
 		}
+	}
+	
+	public void findClass(String className){
+		System.out.println("className: "+className);
+		System.out.println("rec: "+getResource(getEditor()).getName());
+		
+		String resource = removeExt(getResource(getEditor()).getName());
+		System.out.println(resource);
+		
+		if (!resource.equals(className)){
+			IContainer parent = getResource(getEditor()).getParent();
+			IResource file = parent.findMember(className+".jimple");
+			if (file == null){
+				// link to file doesn't exist
+			}
+			else {
+				try {
+					setLinkToEditor((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor((IFile)file));
+					SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
+				}
+				catch (PartInitException e){
+					
+				}
+			}
+		}
+		else {
+			setLinkToEditor(getEditor());
+		}
+	}
+	
+	public String removeExt(String fileName){
+		return fileName.substring(0, fileName.lastIndexOf("."));
 	}
 	
 	public ArrayList getMarkerLinks(){
@@ -194,14 +217,14 @@ public class SootAttributeSelectAction extends ResourceAction {
 	/**
 	 * @return
 	 */
-	public JimpleEditor getEditor() {
+	public AbstractTextEditor getEditor() {
 		return editor;
 	}
 
 	/**
 	 * @param editor
 	 */
-	public void setEditor(JimpleEditor editor) {
+	public void setEditor(AbstractTextEditor editor) {
 		this.editor = editor;
 	}
 
@@ -245,6 +268,20 @@ public class SootAttributeSelectAction extends ResourceAction {
 	 */
 	public void setLineNumber(int i) {
 		lineNumber = i;
+	}
+
+	/**
+	 * @return
+	 */
+	public AbstractTextEditor getLinkToEditor() {
+		return linkToEditor;
+	}
+
+	/**
+	 * @param editor
+	 */
+	public void setLinkToEditor(AbstractTextEditor editor) {
+		linkToEditor = editor;
 	}
 
 }
