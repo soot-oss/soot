@@ -157,7 +157,7 @@
 				<alias>dava</alias>
 				<short_desc>produce dava decompiled .java files</short_desc>
 			</value>
-			<short_desc>sets the source precedence for Soot</short_desc>
+			<short_desc>sets the output format for Soot</short_desc>
 			<long_desc>This option ...</long_desc>
 		</multiopt>
 		<boolopt>
