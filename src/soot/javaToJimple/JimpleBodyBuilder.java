@@ -1186,6 +1186,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         soot.jimple.SpecialInvokeExpr invokeExpr = soot.jimple.Jimple.v().newSpecialInvokeExpr(failureLocal, methToInvoke, params);
         soot.jimple.InvokeStmt invokeStmt = soot.jimple.Jimple.v().newInvokeStmt(invokeExpr);
         body.getUnits().add(invokeStmt);
+        
+        
+        if (assertStmt.errorMessage() != null){
+            Util.addLnPosTags(invokeExpr.getArgBox(0), assertStmt.errorMessage().position());
+        }
 
         soot.jimple.ThrowStmt throwStmt = soot.jimple.Jimple.v().newThrowStmt(failureLocal);
         body.getUnits().add(throwStmt);
@@ -1760,7 +1765,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         ArrayList paramTypes = new ArrayList();
         if (!call.methodInstance().flags().isStatic()){
             // add this param type
-            paramTypes.add(Util.getSootType(call.methodInstance().container()));
+            //paramTypes.add(Util.getSootType(call.methodInstance().container()));
+            paramTypes.add(conClass.getType());
         }
         ArrayList sootParamsTypes = getSootParamsTypes(call);
         paramTypes.addAll(sootParamsTypes);
@@ -2016,32 +2022,48 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     }
 
     protected boolean needsAccessor(polyglot.ast.Expr expr){
-        if (!(expr instanceof polyglot.ast.Field)) return false;
+        if (!(expr instanceof polyglot.ast.Field) && !(expr instanceof polyglot.ast.Call)) return false;
         else {
-            polyglot.ast.Field field = (polyglot.ast.Field)expr;
-            if (field.fieldInstance().flags().isPrivate()){
-                if (!Util.getSootType(field.fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
+            if (expr instanceof polyglot.ast.Field){
+                return needsAccessor(((polyglot.ast.Field)expr).fieldInstance());
+            }
+            else {
+                return needsAccessor(((polyglot.ast.Call)expr).methodInstance());
+            }
+        }
+    }
+
+    /**
+     * needs accessors:
+     * when field or meth is private and in some other class
+     * when field or meth is protected and in 
+     */
+    protected boolean needsAccessor(polyglot.types.MemberInstance inst){
+        if (inst.flags().isPrivate()){
+            if (!Util.getSootType(inst.container()).equals(body.getMethod().getDeclaringClass().getType())){
+                return true;
+            }
+        }
+        else if (inst.flags().isProtected()){
+            if (Util.getSootType(inst.container()).equals(body.getMethod().getDeclaringClass().getType())){
+                return false;
+            }
+            soot.SootClass currentClass = body.getMethod().getDeclaringClass();
+            if (currentClass.getSuperclass().getType().equals(Util.getSootType(inst.container()))){
+                return false;
+            }
+            while (currentClass.hasOuterClass()){
+                currentClass = currentClass.getOuterClass();
+                if (Util.getSootType(inst.container()).equals(currentClass.getType())){
+                    return false;
+                }
+                else if (Util.getSootType(inst.container()).equals(currentClass.getSuperclass().getType())){
                     return true;
                 }
             }
-            else if (field.fieldInstance().flags().isProtected()){
-                if (Util.getSootType(field.fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
-                    return false;
-                }
-                soot.SootClass currentClass = body.getMethod().getDeclaringClass();
-                while (currentClass.hasOuterClass()){
-                    currentClass = currentClass.getOuterClass();
-                    if (Util.getSootType(field.fieldInstance().container()).equals(currentClass.getType())){
-                        return false;
-                    }
-                    else if (Util.getSootType(field.fieldInstance().container()).equals(currentClass.getSuperclass().getType())){
-                        return true;
-                    }
-                }
-                return false;
-            }
-        
+            return false;
         }
+        
         return false;
     }
 
@@ -3786,10 +3808,44 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             callMethod = callMethod.resolve().makeRef();
         }
         boolean isPrivateAccess = false;
-        if (call.methodInstance().flags().isPrivate() && !Util.getSootType(call.methodInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
-            callMethod = addGetMethodAccessMeth(((soot.RefType)Util.getSootType(call.methodInstance().container())).getSootClass(), call).makeRef();
+        //if (call.methodInstance().flags().isPrivate() && !Util.getSootType(call.methodInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
+        if (needsAccessor(call)){
+            
+            soot.SootClass containingClass = ((soot.RefType)Util.getSootType(call.methodInstance().container())).getSootClass();
+            soot.SootClass classToAddMethTo = containingClass;
+            
+            if (call.methodInstance().flags().isProtected()){
+                
+                if (InitialResolver.v().hierarchy() == null){
+                    InitialResolver.v().hierarchy(new soot.FastHierarchy());
+                }
+                soot.SootClass addToClass;
+                if (body.getMethod().getDeclaringClass().hasOuterClass()){
+                    addToClass = body.getMethod().getDeclaringClass().getOuterClass();
+            
+                    while (!InitialResolver.v().hierarchy().canStoreType(containingClass.getType(), addToClass.getType())){
+                        if (addToClass.hasOuterClass()){
+                            addToClass = addToClass.getOuterClass();
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                else{
+                    addToClass = containingClass;
+                }
+                classToAddMethTo = addToClass;
+            }
+            
+            callMethod = addGetMethodAccessMeth(classToAddMethTo, call).makeRef();
             if (!call.methodInstance().flags().isStatic()){
-                if (body.getMethod().getDeclaringClass().declaresFieldByName("this$0")){
+            
+                if (call.target() instanceof polyglot.ast.Expr){
+                    sootParams.add(0, baseLocal);
+                }
+            
+                else if (body.getMethod().getDeclaringClass().declaresFieldByName("this$0")){
                     sootParams.add(0, getThis(Util.getSootType(call.methodInstance().container())));//baseLocal);
                 }
                 else {
