@@ -169,6 +169,11 @@ public class Util {
         return retLocal;
     }
 
+    public static boolean isSubType(polyglot.types.ClassType type, polyglot.types.ClassType superType){
+        if (type.equals(superType)) return true;
+        if (type.superType() == null) return false;
+        return isSubType((polyglot.types.ClassType)type.superType(), superType);
+    }
     
     /**
      * Type handling

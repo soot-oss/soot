@@ -3,6 +3,27 @@ package soot.javaToJimple;
 import java.util.*;
 public class PrivateMethodAccMethodSource implements soot.MethodSource {
 
+    /*private ArrayList formalTypes;
+    private soot.Type returnType;
+    private String name;
+    private int flags;
+
+    public void formalTypes(List list){
+        formalTypes = (ArrayList)list;
+    }
+    
+    public void returnType(soot.Type t){
+        returnType = t;
+    }
+    
+    public void name(String s){
+        name = s;
+    }
+    
+    public void flags(int f){
+        flags = f;
+    }*/
+    
     private polyglot.types.MethodInstance methodInst;
 
     public void setMethodInst(polyglot.types.MethodInstance mi) {

@@ -34,15 +34,27 @@ public class CallGraphGrapher extends SceneTransformer
                 SootMethod sm = e.tgt();
                 if (sm.getDeclaringClass().isLibraryClass()){
                     if (isShowLibMeths()){
-                        list.add(sm);
+                        list.add(new MethInfo(sm, hasTgtMethods(sm) | hasSrcMethods(sm)));
                     }
                 }
                 else {
-                    list.add(sm);
+                    list.add(new MethInfo(sm, hasTgtMethods(sm) | hasSrcMethods(sm)));
                 }
             }
         }
         return list;
+    }
+
+    private boolean hasTgtMethods(SootMethod meth){
+        ArrayList list = getTgtMethods(meth);
+        if (!list.isEmpty()) return true;
+        else return false;
+    }
+
+    private boolean hasSrcMethods(SootMethod meth){
+        ArrayList list = getSrcMethods(meth);
+        if (list.size() > 1) return true;
+        else return false;
     }
     
     private ArrayList getSrcMethods(SootMethod method){
@@ -57,11 +69,11 @@ public class CallGraphGrapher extends SceneTransformer
                 SootMethod methodCaller = callEdge.src();
                 if (methodCaller.getDeclaringClass().isLibraryClass()){
                     if (isShowLibMeths()){
-                        list.add(methodCaller);
+                        list.add(new MethInfo(methodCaller, hasTgtMethods(methodCaller) | hasSrcMethods(methodCaller)));
                     }
                 }
                 else {
-                    list.add(methodCaller);
+                    list.add(new MethInfo(methodCaller, hasTgtMethods(methodCaller) | hasSrcMethods(methodCaller)));
                 }
             } 
         }
@@ -130,6 +142,7 @@ public class CallGraphGrapher extends SceneTransformer
     public boolean isShowLibMeths(){
         return showLibMeths;
     }
+
 }
 
 

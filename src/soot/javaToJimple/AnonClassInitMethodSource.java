@@ -17,6 +17,11 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
         fields = list;
     }
 
+    private boolean isSubType = false;
+    public void isSubType(boolean b){
+        isSubType = b;
+    }
+    
     private soot.Type superOuterType = null;
     private soot.Type thisOuterType = null;
 
@@ -103,10 +108,13 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
         }
         SootMethod callMethod = sootMethod.getDeclaringClass().getSuperclass().getMethod("<init>",  invokeTypeList, VoidType.v());
         if ((superClass.getName().indexOf("$") != -1) && !soot.Modifier.isStatic(superClass.getModifiers())){
-            if (superOuterType.equals(thisOuterType)){
+            //if (superOuterType.equals(thisOuterType)){
+            if (isSubType){
                 invokeList.add(0, outerLocal);
             }
             else {
+                System.out.println("super outer type: "+superOuterType);
+                System.out.println("outer local: "+outerLocal);
                 invokeList.add(0, Util.getThisGivenOuter(superOuterType, new HashMap(), body, new LocalGenerator(body), outerLocal));
             }
         }

@@ -1766,7 +1766,13 @@ public class JimpleBodyBuilder {
             fieldRef = soot.jimple.Jimple.v().newStaticFieldRef(receiverField);
         }
         else {
-            soot.Local base = (soot.Local)getBaseLocal(field.target());
+            soot.Local base;
+            if ((field.target() instanceof polyglot.ast.Special) && (((polyglot.ast.Special)field.target()).kind() == polyglot.ast.Special.SUPER) && (((polyglot.ast.Special)field.target()).qualifier() != null)){
+                base = getSpecialSuperQualifierLocal(field);
+            }
+            else {
+                base = (soot.Local)getBaseLocal(field.target());
+            }
             fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(base, receiverField);
         }
             
@@ -2362,6 +2368,11 @@ public class JimpleBodyBuilder {
                         appendType = soot.RefType.v("java.lang.Object");
                     }
                 }
+                else {
+                    // this is for arrays
+                    appendType = soot.RefType.v("java.lang.Object");
+                    //System.out.println("appending a non prim and non ref: it is a : "+((soot.Local)toApp).getType());
+                }
             }
             else if (toApp instanceof soot.jimple.ConditionExpr) {
                 toApp = handleCondBinExpr((soot.jimple.ConditionExpr)toApp);
@@ -2638,9 +2649,15 @@ public class JimpleBodyBuilder {
     /**
      * Cast Expression Creation
      */
-    private soot.Local getCastLocal(polyglot.ast.Cast castExpr){
+    private soot.Value getCastLocal(polyglot.ast.Cast castExpr){
    
 
+        // if its already the right type
+        if (castExpr.expr().type().equals(castExpr.type())) {
+            return createExpr(castExpr.expr());
+        }
+
+        //else
         soot.Value val;
         if (castExpr.expr() instanceof polyglot.ast.Cast) {
             val = createExpr(((polyglot.ast.Cast)castExpr.expr()).expr());
@@ -2698,6 +2715,7 @@ public class JimpleBodyBuilder {
      * Gets the Soot Method form the given Soot Class
      */
     private soot.SootMethod getMethodFromClass(soot.SootClass sootClass, String name, ArrayList paramTypes, soot.Type returnType) {
+        //System.out.println("class: "+sootClass+" has meths: "+sootClass.getMethods());
         return sootClass.getMethod(name, paramTypes, returnType);
     }
   
@@ -2913,7 +2931,8 @@ public class JimpleBodyBuilder {
      
         //System.out.println("method to invoke: params: "+sootParamsTypes);
         soot.SootMethod methodToInvoke = getMethodFromClass(classToInvoke, "<init>", sootParamsTypes, soot.VoidType.v());
-        
+       
+        //System.out.println("method to invoke: "+methodToInvoke);
         if (!methodToInvoke.getDeclaringClass().getType().equals(classToInvoke.getType())){
             throw new RuntimeException("created new for type: "+classToInvoke.getType()+" but didn't find needed initializer there instead found initializer in "+methodToInvoke.getDeclaringClass().getType());
         }
@@ -2944,7 +2963,14 @@ public class JimpleBodyBuilder {
 		String name = call.name();
         // handle receiver/target
 		polyglot.ast.Receiver receiver = call.target();
-        soot.Local baseLocal = (soot.Local)getBaseLocal(receiver);
+        soot.Local baseLocal;
+        if ((receiver instanceof polyglot.ast.Special) && (((polyglot.ast.Special)receiver).kind() == polyglot.ast.Special.SUPER) && (((polyglot.ast.Special)receiver).qualifier() != null)){
+            baseLocal = getSpecialSuperQualifierLocal(call);
+
+        }
+        else {
+            baseLocal = (soot.Local)getBaseLocal(receiver);
+        }
        
         soot.SootClass receiverTypeClass = ((soot.RefType)Util.getSootType(receiver.type())).getSootClass();
         
@@ -3233,14 +3259,56 @@ public class JimpleBodyBuilder {
         return retLocal;
     }
     
-   
+  
+    private soot.Local getSpecialSuperQualifierLocal(polyglot.ast.Expr expr){
+        soot.SootClass classToInvoke;
+        ArrayList methodParams = new ArrayList();
+        if (expr instanceof polyglot.ast.Call){
+            classToInvoke = ((soot.RefType)Util.getSootType(((polyglot.ast.Call)expr).target().type())).getSootClass();
+            methodParams = getSootParams((polyglot.ast.Call)expr);
+        }
+        else if (expr instanceof polyglot.ast.Field){
+            classToInvoke = ((soot.RefType)Util.getSootType(((polyglot.ast.Field)expr).target().type())).getSootClass();
+        }
+        else {
+            throw new RuntimeException("Trying to create special super qualifier for: "+expr+" which is not a field or call");
+        }
+        // make an access method 
+        soot.SootMethod methToInvoke = makeSuperAccessMethod(classToInvoke, expr); 
+        // invoke it
+        soot.Local classToInvokeLocal = Util.getThis(classToInvoke.getType(), body, getThisMap, lg);
+        methodParams.add(0, classToInvokeLocal);
+        soot.jimple.InvokeExpr invokeExpr = soot.jimple.Jimple.v().newStaticInvokeExpr(methToInvoke, methodParams);
+        
+        // return the local of return type
+        soot.Local retLocal = lg.generateLocal(methToInvoke.getReturnType());
+        soot.jimple.AssignStmt stmt = soot.jimple.Jimple.v().newAssignStmt(retLocal, invokeExpr);
+        body.getUnits().add(stmt);
+        
+        return retLocal;
+    }
+    
     /**
      * Special Expression Creation
      */
     private soot.Local getSpecialLocal(polyglot.ast.Special specialExpr) {
        
         if (specialExpr.kind() == polyglot.ast.Special.SUPER) {
-           return specialThisLocal;
+            if (specialExpr.qualifier() == null){
+                return specialThisLocal;
+            }
+            else {
+                // this isn't enough
+                // need to getThis for the type which may be several levels up
+                // add access$N method to class of the type which returns
+                // field or method wanted
+                // invoke it
+                // and it needs to be called specially when getting fields 
+                // or calls because need to know field or method to access
+                // as it access' a field or meth in the super class of the 
+                // outer class refered to by the qualifier
+                return getThis(Util.getSootType(specialExpr.qualifier().type()));
+            }
         }
         else if (specialExpr.kind() == polyglot.ast.Special.THIS) {
             if (specialExpr.qualifier() == null) {
@@ -3253,6 +3321,40 @@ public class JimpleBodyBuilder {
         else {
             throw new RuntimeException("Unknown Special");
         }
+    }
+    
+
+    private soot.SootMethod makeSuperAccessMethod(soot.SootClass classToInvoke, Object memberToAccess){
+        String name = "access$"+soot.javaToJimple.InitialResolver.v().getNextPrivateAccessCounter()+"00";
+        ArrayList paramTypes = new ArrayList();
+        paramTypes.add(classToInvoke.getType());
+
+        soot.SootMethod meth;
+        soot.MethodSource src;
+        if (memberToAccess instanceof polyglot.ast.Field){
+            polyglot.ast.Field fieldToAccess = (polyglot.ast.Field)memberToAccess;
+            meth = new soot.SootMethod(name, paramTypes, Util.getSootType(fieldToAccess.type()), soot.Modifier.STATIC);
+            PrivateFieldAccMethodSource fSrc = new PrivateFieldAccMethodSource();
+            fSrc.fieldName(fieldToAccess.name());
+            fSrc.fieldType(Util.getSootType(fieldToAccess.type()));
+            src = fSrc;
+        }
+        else if (memberToAccess instanceof polyglot.ast.Call){
+            polyglot.ast.Call methToAccess = (polyglot.ast.Call)memberToAccess;
+            meth = new soot.SootMethod(name, paramTypes, Util.getSootType(methToAccess.methodInstance().returnType()), soot.Modifier.STATIC);
+            PrivateMethodAccMethodSource mSrc = new PrivateMethodAccMethodSource();
+            mSrc.setMethodInst(methToAccess.methodInstance());
+            /*mSrc.returnType(Util.getmethToAccess.getReturnType());
+            mSrc.name(methToAccess.getName());
+            mSrc.formalTypes(methToAccess.getParameterTypes());*/
+            src = mSrc;
+        }
+        else {
+            throw new RuntimeException("trying to access unhandled member type: "+memberToAccess);
+        }
+        classToInvoke.addMethod(meth);
+        meth.setActiveBody(src.getBody(meth, null));
+        return meth;
     }
     
     /**

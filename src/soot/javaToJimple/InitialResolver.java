@@ -375,8 +375,11 @@ public class InitialResolver {
     private int getLocalClassNum(String realName, String simpleName){
         // a local inner class is named outer$NsimpleName where outer 
         // is the very outer most class
+        //System.out.println("realName: "+realName);
+        //System.out.println("simpleName: "+simpleName);
         int dIndex = realName.indexOf("$");
-        int nIndex = realName.indexOf(simpleName);
+        int nIndex = realName.indexOf(simpleName, dIndex);
+        //System.out.println("dIndex: "+dIndex+" nIndex: "+nIndex);
         if (nIndex == -1) return NO_MATCH;
         if (dIndex == -1) {
             throw new RuntimeException("Matching an incorrectly named local inner class: "+realName);
@@ -387,6 +390,7 @@ public class InitialResolver {
     private int getAnonClassNum(String realName){
         // a anon inner class is named outer$N where outer 
         // is the very outer most class
+        //System.out.println("realName: "+realName);
         int dIndex = realName.indexOf("$");
         if (dIndex == -1) {
             throw new RuntimeException("Matching an incorrectly named anon inner class: "+realName);
@@ -539,7 +543,8 @@ public class InitialResolver {
         sootClass.addMethod(method);
    
         AnonLocalClassInfo info = (AnonLocalClassInfo)finalLocalInfo.get(aNew);
-        
+       
+        //System.out.println("new : "+aNew);
         if (!info.inStaticMethod()){
             addOuterClassThisRefToInit(aNew.anonType().outer());
             addOuterClassThisRefField(aNew.anonType().outer());
@@ -552,6 +557,7 @@ public class InitialResolver {
         src.outerClassType(Util.getSootType(aNew.anonType().outer()));
         if (((polyglot.types.ClassType)aNew.objectType().type()).isNested()){
             src.superOuterType(Util.getSootType(((polyglot.types.ClassType)aNew.objectType().type()).outer()));
+            src.isSubType(Util.isSubType(aNew.anonType().outer(), ((polyglot.types.ClassType)aNew.objectType().type()).outer())); 
         }
     }
         
@@ -600,7 +606,7 @@ public class InitialResolver {
        
         // modifiers
         polyglot.types.Flags flags = cDecl.flags();
-        addModifiers(flags);
+        addModifiers(flags, cDecl);
 	    
         // super class
         if (cDecl.superClass() == null) {
@@ -618,7 +624,8 @@ public class InitialResolver {
         Iterator interfacesIt = cDecl.interfaces().iterator();
         while (interfacesIt.hasNext()) {
             polyglot.ast.TypeNode next = (polyglot.ast.TypeNode)interfacesIt.next();
-            sootClass.addInterface(soot.Scene.v().getSootClass(next.toString()));
+            //sootClass.addInterface(soot.Scene.v().getSootClass(next.toString()));
+            sootClass.addInterface(((soot.RefType)Util.getSootType(next.type())).getSootClass());
         }
 	    
         currentClassDeclPos = cDecl.position();
@@ -707,8 +714,16 @@ public class InitialResolver {
     /**
      * adds modifiers
      */
-	private void addModifiers(polyglot.types.Flags flags){
-		int modifiers = Util.getModifier(flags);
+	private void addModifiers(polyglot.types.Flags flags, polyglot.ast.ClassDecl cDecl){
+		int modifiers = 0;
+        /*if (cDecl.type().isNested()){
+            if (flags.isPublic() || flags.isProtected() || flags.isPrivate()){
+                modifiers = soot.Modifier.PUBLIC;
+            }
+        }
+        else {*/
+		    modifiers = Util.getModifier(flags);
+        //}
 		sootClass.setModifiers(modifiers);
 	}
 	
@@ -828,6 +843,15 @@ public class InitialResolver {
             if (inst instanceof polyglot.types.MethodInstance) {
                 PrivateMethodAccMethodSource pmams = new PrivateMethodAccMethodSource();
                 pmams.setMethodInst((polyglot.types.MethodInstance)inst);
+                /*ArrayList formalTypes = new ArrayList();
+                Iterator fIt = ((polyglot.types.MethodInstance)inst).formalTypes().iterator();
+                while (fIt.hasNext()){
+                    formalTypes.add(Util.getSootType((polyglot.types.Type)fIt.next()));
+                }
+                pmams.formalTypes(formalTypes);
+                pmams.returnType(Util.getSootType(((polyglot.types.MethodInstance)inst).returnType()));
+                pmams.name(((polyglot.types.MethodInstance)inst).name());
+                pmams.flags(Util.getModifier(((polyglot.types.MethodInstance)inst).flags()));*/
                 accessMeth.setSource(pmams);
             }
             else {
@@ -897,12 +921,21 @@ public class InitialResolver {
         }
 
         //handle final local map for local and anon classes
-        MethodFinalsChecker mfc = new MethodFinalsChecker();
+        handleFinalLocals(procedure);
+        /*MethodFinalsChecker mfc = new MethodFinalsChecker();
         procedure.visit(mfc);
         AnonLocalClassInfo alci = new AnonLocalClassInfo();
-        alci.finalLocals(getFinalLocalsAvail(procedure));
+        if (mem instanceof polyglot.ast.ProcedureDecl){
+            polyglot.ast.ProcedureDecl procedure = (polyglot.ast.ProcedureDecl)mem;
+            alci.finalLocals(getFinalLocalsAvail(procedure));
+            if (procedure.flags().isStatic()){
+                alci.inStaticMethod(true);
+            }
+        }
         //System.out.println("alci creation: "+mfc.finalLocals());
-        if (soot.Modifier.isStatic(sootMethod.getModifiers())){
+        //if (soot.Modifier.isStatic(sootMethod.getModifiers())){
+        if (
+        if (memsoot.Modifier.isStatic(sootMethod.getModifiers())){
             alci.inStaticMethod(true);
         }
         if (finalLocalInfo == null){
@@ -914,7 +947,7 @@ public class InitialResolver {
             info.inStaticMethod(alci.inStaticMethod());
             info.finalLocals(alci.finalLocals());
             finalLocalInfo.put(it.next(), info);
-        }
+        }*/
        
         //System.out.println("finalLocalInfo: "+finalLocalInfo);
 
@@ -925,6 +958,36 @@ public class InitialResolver {
         sootMethod.setSource(mSrc);
         
 	}
+
+    private void handleFinalLocals(polyglot.ast.ClassMember member){
+        MethodFinalsChecker mfc = new MethodFinalsChecker();
+        member.visit(mfc);
+        AnonLocalClassInfo alci = new AnonLocalClassInfo();
+        //System.out.println("alci creation: "+mfc.finalLocals());
+        if (member instanceof polyglot.ast.ProcedureDecl){
+            polyglot.ast.ProcedureDecl procedure = (polyglot.ast.ProcedureDecl)member;
+            alci.finalLocals(getFinalLocalsAvail(procedure));
+            if (procedure.flags().isStatic()){
+                alci.inStaticMethod(true);
+            }
+        }
+        else if (member instanceof polyglot.ast.FieldDecl){
+            alci.finalLocals(new ArrayList());
+            if (((polyglot.ast.FieldDecl)member).flags().isStatic()){
+                alci.inStaticMethod(true);
+            }
+        }
+        if (finalLocalInfo == null){
+            finalLocalInfo = new HashMap();
+        }
+        Iterator it = mfc.inners().iterator();
+        while (it.hasNext()){
+            AnonLocalClassInfo info = new AnonLocalClassInfo();
+            info.inStaticMethod(alci.inStaticMethod());
+            info.finalLocals(alci.finalLocals());
+            finalLocalInfo.put(it.next(), info);
+        }
+    }
 
     private ArrayList getFinalLocalsAvail(polyglot.ast.ProcedureDecl proc){
         ArrayList finalsAvail = new ArrayList();
@@ -1018,6 +1081,9 @@ public class InitialResolver {
                 fieldInits.add(field);
             }
         }
+
+        handleFinalLocals(field);
+
         Util.addLnPosTags(sootField, field.position());
 	}
 
