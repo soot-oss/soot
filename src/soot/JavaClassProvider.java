@@ -46,7 +46,7 @@ public class JavaClassProvider implements ClassProvider
             }
         }
 
-        String fileName = javaClassName.replace('.', File.separatorChar) + ".java";
+        String fileName = javaClassName.replace('.', '/') + ".java";
         SourceLocator.FoundFile file = 
             SourceLocator.v().lookupInClassPath(fileName);
         if( file == null ) return null;
