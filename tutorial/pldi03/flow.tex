@@ -325,7 +325,7 @@ In code:
    FlowSet src = (FlowSet)srcValue,
            dest = (FlowSet)destValue;
    Unit ut = (Unit)u;
-   dest.copy( src );
+   src.copy (dest);
 \end{verbatim}
 \end{slide}
 
@@ -418,21 +418,22 @@ in {\tt ut}, a {\tt Unit}.
 \end{slide}
 
 \begin{slide}{Step 3: Implementing {\tt flowThrough}: adding gens}
-\vspace*{-0.1in}
+\vspace*{-0.2in}
 \begin{verbatim}
 // Add gen set
 //  for each local v used in 
 //  this stmt, add v to dest
 boxIt = ut.getUseBoxes().iterator();
-while( boxIt.hasNext() ) 
-{
+while (boxIt.hasNext()) {
     ValueBox box = 
          (ValueBox) boxIt.next();
     Value value = box.getValue();
-    if( value instanceof Local )
-        dest.add( value );
+    if (value instanceof Local)
+        dest.add(value);
 }
 \end{verbatim}
+
+\vspace*{0.05in}
 
 N.B. our analysis is generic, not restricted to Jimple.
 \end{slide}
@@ -472,11 +473,11 @@ $\bullet$ Soundly initialize IN, OUT sets prior to analysis.
 \vspace*{-0.1in}
 \begin{itemize}
 \item Create initial sets for exit nodes\\
-{\tt void entryInitialFlow() \\ 
+{\tt Object entryInitialFlow() \\ 
 \qquad \{return new ArraySparseSet();\} }
 
 \item Create initial sets\\
-{\tt void newInitialFlow()}\\
+{\tt Object newInitialFlow()}\\
 \qquad {\tt \{return new ArraySparseSet();\} }
 
 \end{itemize}
@@ -548,12 +549,12 @@ sensitive to branches
 
 \qquad
 
-In Soot, we subclass {\tt \red BranchedForwardFlowAnalysis}.
+In Soot, we subclass {\tt \red ForwardBranchedFlowAnalysis}.
 
 \qquad
 
 {\small \red \tt class NullnessAnalysis \\ 
-           \qquad extends BranchedForwardFlowAnalysis \{ }
+           \qquad extends ForwardBranchedFlowAnalysis \{ }
 \end{slide}
 
 \begin{slide}{Step 2: Abstraction domain}
@@ -701,17 +702,70 @@ Initialize IN, OUT sets.
 \begin{itemize}
 
 \item Create initial sets ($\top$ from constr.)\\
-{\tt void newInitialFlow() \{\\
+{\tt Object newInitialFlow() \{\\
 \qquad \tt \{ return fullSet.clone(); \} }
 
 \vspace*{0.1in}
 
 \item Create entry sets ({\tt emptySet} from constr.)\\
-{\tt void entryInitialFlow()}\\
+{\tt Object entryInitialFlow()}\\
 \qquad {\tt \{ return emptySet.clone(); \} }
 \end{itemize}
+
+(To be created in constructor!)
 \end{slide}
 
+\begin{slide}{Step 5: Constructor: Finding All Locals}
+\vspace*{-0.1in}
+Find all locals in body.
+
+\vspace*{-0.1in}
+\begin{verbatim}
+
+Iterator localIt = 
+  b.getLocals().iterator();
+
+while (localIt.hasNext())
+{
+    Local l = (Local)localIt.next();
+    if (l.getType() 
+             instanceof RefType)
+        refLocals.add(l);
+}
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Step 5: Constructor: Creating sets}
+\vspace*{-0.1in}
+Create {\tt FlowUniverse}, etc.
+
+\vspace*{0.05in}
+\begin{verbatim}
+allRefLocals = 
+       new ArrayFlowUniverse
+             (refLocals.toArray());
+
+emptySet = new ArrayPackedSet
+             (allRefLocals);
+
+fullSet = (ArrayPackedSet)emptySet.clone();
+((ArrayPackedSet)fullSet).complement();
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Step 5: Constructor: Doing work}
+\vspace*{-0.1in}
+Don't forget to call {\tt doAnalysis()}!
+
+\vspace*{0.05in}
+\begin{verbatim}
+        ...
+
+        doAnalysis();
+    }
+}
+\end{verbatim}
+\end{slide}
 
 % do we really need 'copy'?  I wonder how much time is spent on that.
 % if our flow set implementation has immutability, then 'copy' can be
