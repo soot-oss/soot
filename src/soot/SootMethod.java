@@ -244,13 +244,14 @@ public class SootMethod
      */
     public void setParameterTypes( List l ) {
         boolean wasDeclared = isDeclared;
-        if( wasDeclared ) declaringClass.removeMethod(this);
+        SootClass oldDeclaringClass = declaringClass;
+        if( wasDeclared ) oldDeclaringClass.removeMethod(this);
         List al = new ArrayList();
         al.addAll(l);
         this.parameterTypes = Collections.unmodifiableList(al);
-        if( wasDeclared) declaringClass.addMethod(this);
         subsignature =
             Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+        if( wasDeclared) oldDeclaringClass.addMethod(this);
     }
 
     /**
