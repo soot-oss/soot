@@ -168,7 +168,21 @@ public class JimpleBodyBuilder {
                 else {
                     sootExpr = createExpr(initExpr);
                 }
-                soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(fieldRef, sootExpr);
+                System.out.println("sootExpr: "+sootExpr+" is: "+sootExpr.getClass());
+                if (sootExpr instanceof soot.jimple.ConditionExpr) {
+                    sootExpr = handleCondBinExpr((soot.jimple.ConditionExpr)sootExpr); 
+                }
+                
+                soot.jimple.AssignStmt assign;
+                if (sootExpr instanceof soot.Local){
+                    assign = soot.jimple.Jimple.v().newAssignStmt(fieldRef, (soot.Local)sootExpr);
+                }
+                else if (sootExpr instanceof soot.jimple.Constant){
+                    assign = soot.jimple.Jimple.v().newAssignStmt(fieldRef, (soot.jimple.Constant)sootExpr);
+                }
+                else {
+                    throw new RuntimeException("fields must assign to local or constant only");
+                }
                 body.getUnits().add(assign);
                 Util.addLnPosTags(assign, initExpr.position());
                 Util.addLnPosTags(assign.getRightOpBox(), initExpr.position());

@@ -28,6 +28,10 @@ public class ExceptionChecker extends BodyTransformer{
                 InvokeStmt is = (InvokeStmt)s;
                 checkInvoke(b, is);
             }
+            else if ((s instanceof AssignStmt) && (((AssignStmt)s).getRightOp() instanceof InvokeExpr)){
+                InvokeExpr ie = (InvokeExpr)((AssignStmt)s).getRightOp();
+                checkInvokeExpr(b, ie, s);
+            }
         }
     }
 
@@ -74,13 +78,17 @@ public class ExceptionChecker extends BodyTransformer{
     }
 
     private void checkInvoke(Body b, InvokeStmt is){
-        SootMethod meth = is.getInvokeExpr().getMethod();
+        checkInvokeExpr(b, is.getInvokeExpr(), is);
+    }
+
+    private void checkInvokeExpr(Body b, InvokeExpr ie, Stmt s){
+        SootMethod meth = ie.getMethod();
         Iterator it = meth.getExceptions().iterator();
         while (it.hasNext()){
             SootClass sc = (SootClass)it.next();
-            if (isThrowDeclared(b, sc) || isExceptionCaught(b, is, sc.getType())) continue;
+            if (isThrowDeclared(b, sc) || isExceptionCaught(b, s, sc.getType())) continue;
             if (reporter != null){
-                reporter.reportError(new ExceptionCheckerError(b.getMethod(), sc, is));
+                reporter.reportError(new ExceptionCheckerError(b.getMethod(), sc, s));
             }
         }
     }
