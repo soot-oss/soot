@@ -61,6 +61,7 @@ public class CFG {
     Scene cm;
 
     Instruction firstInstruction;
+    Instruction lastInstruction;
 
     private short wide;                 // convert indices when parsing jimple
 
@@ -81,10 +82,11 @@ public class CFG {
 	m.instructions.prev = this.sentinel;
 
 	eliminateJsrRets();
-
+	
 	buildBBCFG();
 
-	//       	printBBCFGSucc();
+	//	printBBCFGSucc();
+	//	printBBs();
 
 	cfg.beginCode = true;
 
@@ -94,8 +96,6 @@ public class CFG {
 	    firstInstruction = cfg.head;
 	else
 	    firstInstruction = null;
-
-	//       	printBBs();
     }
 
     private void printBBCFGSucc()
@@ -114,9 +114,9 @@ public class CFG {
 	}
     }
 
-    private void printBBCFGPred(BasicBlock fb)
+    private void printBBCFGPred()
     {
-	BasicBlock b = fb;
+	BasicBlock b = this.cfg;
 	while ( b!= null )
 	{
 	    System.out.print(b.id +" <- ");
@@ -158,20 +158,17 @@ public class CFG {
 
     private void printBBs()
     {
-	Set reachablebb = getReachableBBs();
-
 	BasicBlock bb = this.cfg;
 	while (bb != null)
 	{
-	    if (reachablebb.contains(bb))
-		printOneBasicBlock(bb);
+	    printOneBasicBlock(bb);
 	    bb = bb.next;
 	}
     }
 
-    private void printInstructions(Instruction from)
+    private void printInstructions()
     {
-	Instruction insn = from;
+	Instruction insn = method.instructions;
 	while (insn != null)
 	{
 	    System.out.println(insn + "\t <- "+ insn.prev + "\t -> "+insn.next);
@@ -179,6 +176,17 @@ public class CFG {
 	}
     }
 
+    private void printExceptionTable()
+    {
+	Code_attribute ca = this.method.locate_code_attribute();
+	
+	System.out.println("\nException table :");
+	for (int i=0; i<ca.exception_table.length; i++)
+	{
+	    exception_table_entry ete = ca.exception_table[i];
+	    System.out.println(ete.start_inst + " \t " + ete.end_inst + " \t "+ete.handler_inst);
+	}
+    }
     // Constructs the actual control flow graph. Assumes the hash table
     // currently associates leaders with BasicBlocks, this function
     // builds the next[] and prev[] pointer arrays.
@@ -330,47 +338,61 @@ public class CFG {
 	return insn;
     }
 
-    private Set getReachableBBs()
+    /* get a set of reachable instructions from an astore to matching ret. 
+     * it does not consider the exception handler as reachable now.
+     */     
+    private Set getReachableInsns(Instruction from, Instruction to)
     {
 	Code_attribute codeAttribute = method.locate_code_attribute();
 
 	/* find all reachable blocks. */
-	Set reachablebb = new HashSet();
+	Set reachableinsns = new HashSet();
 	LinkedList tovisit = new LinkedList();
 
-	tovisit.add(this.cfg);
+	reachableinsns.add(from);
+	tovisit.add(from);
 	
-	for (int i=0; i<codeAttribute.exception_table.length; i++)
-	{
-	    Instruction handler = codeAttribute.exception_table[i].handler_inst;
-	    BasicBlock hbb = (BasicBlock)h2bb.get(handler);
-	    tovisit.add(hbb);
-	}
-
 	while (!tovisit.isEmpty())
 	{
-	    BasicBlock bb = (BasicBlock)tovisit.removeFirst();
-	    reachablebb.add(bb);
+	    Instruction insn = (Instruction)tovisit.removeFirst();
 
-	    Vector succs = bb.succ;
-	    for (int i=0; i<succs.size(); i++)
+	    if (insn == to)
+		continue;
+
+	    Instruction[] bps = null;
+	    if (insn.branches)
 	    {
-		Object succ = succs.get(i);
-		if (succ != null 
-		    && ! reachablebb.contains(succ))
-		{
-		    tovisit.add(succ);
-		}
+		bps = insn.branchpoints(insn.next);	
 	    }
+	    else
+	    {
+		bps = new Instruction[1];
+		bps[0] = insn.next;
+	    }
+
+	    if (bps != null)
+	    {
+		for (int i=0; i<bps.length; i++)
+		{
+		    Instruction bp = bps[i];
+
+		    if (bp != null
+			&& !reachableinsns.contains(bp))
+		    {
+			reachableinsns.add(bp);
+			tovisit.add(bp);
+		    }
+		}
+	    }	    
 	}
 
-	return reachablebb;
+	return reachableinsns;
     }
 
     /* We only handle simple cases. */
     Map jsr2astore = new HashMap();
     Map astore2ret = new HashMap();
-
+    
     LinkedList jsrorder = new LinkedList();
 
     /* Eliminate subroutines ( JSR/RET instructions ) by inlining the routine bodies. 
@@ -380,11 +402,12 @@ public class CFG {
 	boolean unusual = false;
 
 	// go through instructions, find all jsr/astore/ret pair.
+	Instruction insn = this.sentinel;
 
-	Instruction insn = this.sentinel.next;
-
-	while (insn != null)
+	do 
 	{
+	    insn = insn.next;
+
 	    if (insn instanceof Instruction_Jsr
 		|| insn instanceof Instruction_Jsr_w)
 	    {
@@ -408,10 +431,10 @@ public class CFG {
 		jsr2astore.put(insn, astore);
 		astore2ret.put(astore, ret);
 	    }
-	    
-	    insn = insn.next;
-	}
+	} while (insn.next != null);
 	
+	this.lastInstruction = insn;
+
 	if (unusual)
 	{
 	    System.err.println("Sorry, I cannot handle this method.");
@@ -480,35 +503,47 @@ public class CFG {
 	    Instruction astore = (Instruction)jsr2astore.get(jsr);
 	    Instruction ret = (Instruction)astore2ret.get(astore);
 
-	    // skip jsr, astore, and ret, reuse jsr's label
-	    Instruction newhead = makeCopyOf(astore, ret, jsr.prev, jsr.next, jsr.label);	
+	    // make a copy of the code, append to the last instruction.     
+	    Instruction newhead = makeCopyOf(astore, ret, jsr.next);	
 
-	    replacedInsns.put(jsr, newhead); 
+	    // jsr is replaced by goto newhead
+	    // astore has been removed
+	    // ret is replaced by goto jsr.next
+	    Instruction_Goto togo = new Instruction_Goto();
+	    togo.target = newhead;
+	    newhead.labelled = true;
+	    togo.label = jsr.label;
+	    togo.labelled = jsr.labelled;
+	    togo.prev = jsr.prev;
+	    togo.next = jsr.next;
+	    togo.prev.next = togo;
+	    togo.next.prev = togo;
+
+	    replacedInsns.put(jsr, togo); 
 	}
     }
 
-    /* make a copy of code between astore and ret, 
+    /* make a copy of code between from and to exclusively, 
      * fixup targets of branch instructions in the code.
      */
     private Instruction makeCopyOf(Instruction astore,
 				   Instruction ret,
-				   Instruction after,
-				   Instruction before,
-				   int label)
+				   Instruction target)
     {
-	Instruction stop = ret;
-	Instruction last = after;
+	Instruction last = this.lastInstruction;
+	Instruction headbefore = last;
+
+	int curlabel = this.lastInstruction.label;
 
 	HashMap insnmap = new HashMap(); // mapping from original instructions to new instructions.
-
 	Instruction insn = astore.next;
 	
-	while (insn != stop && insn != null)
+	while (insn != ret && insn != null)
 	{
 	    try {
 		Instruction newone = (Instruction)insn.clone();
 
-		newone.label = label;
+		newone.label = ++curlabel;
 		newone.prev = last;
 		last.next = newone;
 		last = newone;
@@ -521,23 +556,35 @@ public class CFG {
 	    insn = insn.next;   
 	}
 
-	last.next = before;
-	before.prev = last;
+	// replace ret by a goto
+	Instruction_Goto togo = new Instruction_Goto();
+	togo.target = target;
+	target.labelled = true;
+	togo.label = ++curlabel;
+	last.next = togo;
+	togo.prev = last;
+	last = togo;
+
+	this.lastInstruction = last;
 
 	// The ret instruction is removed, 
-	insnmap.put(astore, after.next);
-	insnmap.put(ret, before);
+	insnmap.put(astore, headbefore.next);
+	insnmap.put(ret, togo);
 
 	// fixup targets in new instruction (only in the scope of new instructions).
-	insn = after.next;
-	while (insn != before)
+	// do not forget set target labelled as TRUE
+	insn = headbefore.next;
+	while (insn != last)
 	{
 	    if (insn instanceof Instruction_branch)
 	    {
 		Instruction oldtgt = ((Instruction_branch)insn).target;
 		Instruction newtgt = (Instruction)insnmap.get(oldtgt);
 		if (newtgt != null)
+		{
 		    ((Instruction_branch)insn).target = newtgt;
+		    newtgt.labelled = true;
+		}
 	    }
 	    else
 	    if (insn instanceof Instruction_Lookupswitch)
@@ -547,13 +594,19 @@ public class CFG {
 		
 		Instruction newdefault = (Instruction)insnmap.get(switchinsn.default_inst);
 		if (newdefault != null)
+		{
 		    switchinsn.default_inst = newdefault;
+		    newdefault.labelled = true;
+		}
 
 		for (int i=0; i<switchinsn.match_insts.length; i++)
 		{
 		    Instruction newtgt = (Instruction)insnmap.get(switchinsn.match_insts[i]);
 		    if (newtgt != null)
+		    {
 			switchinsn.match_insts[i] = newtgt;
+			newtgt.labelled = true;
+		    }
 		}
 	    }
 	    else
@@ -564,20 +617,70 @@ public class CFG {
 		
 		Instruction newdefault = (Instruction)insnmap.get(switchinsn.default_inst);
 		if (newdefault != null)
+		{
 		    switchinsn.default_inst = newdefault;
+		    newdefault.labelled = true;
+		}
 
 		for (int i=0; i<switchinsn.jump_insts.length; i++)
 		{
 		    Instruction newtgt = (Instruction)insnmap.get(switchinsn.jump_insts[i]);
 		    if (newtgt != null)
+		    {
 			switchinsn.jump_insts[i] = newtgt;
+			newtgt.labelled = true;
+		    }
 		}
 	    }
 
 	    insn = insn.next;
 	}
+	
+	// do we need to copy a new exception table entry? 
+	// new exception table has new exception range, but use old handler
+	{
+	    Code_attribute ca = method.locate_code_attribute();
 
-	return after.next;
+	    LinkedList newentries = new LinkedList();
+
+	    for (int i=0; i<ca.exception_table_length; i++) 
+	    {
+		exception_table_entry etentry =
+		    ca.exception_table[i];
+
+		if ( insnmap.containsKey(etentry.start_inst))
+		{
+		    exception_table_entry newone 
+			= new exception_table_entry();
+		    newone.start_inst = (Instruction)insnmap.get(etentry.start_inst);
+       		    if (etentry.end_inst == null)
+			newone.end_inst = null;
+		    else
+			newone.end_inst = (Instruction)insnmap.get(etentry.end_inst);
+
+		    newone.handler_inst = (Instruction)insnmap.get(etentry.handler_inst);
+		    if (newone.handler_inst == null)
+			newone.handler_inst = etentry.handler_inst;
+
+		    newentries.add(newone);
+		}
+	    }
+
+	    if (newentries.size() > 0)
+	    {
+		ca.exception_table_length += newentries.size();
+		exception_table_entry[] newtable = new exception_table_entry[ca.exception_table_length];
+		System.arraycopy(ca.exception_table, 0, newtable, 0, ca.exception_table.length);
+		for (int i=0, j=ca.exception_table.length; i<newentries.size(); i++, j++)
+		{
+		    newtable[j] = (exception_table_entry)newentries.get(i);
+		}
+		
+		ca.exception_table = newtable;
+	    }
+	}
+	
+	return headbefore.next;
     }
 
 
@@ -596,6 +699,7 @@ public class CFG {
 	}
     }
 
+    /* do not forget set the target labelled as TRUE.*/
     private void adjustBranchTargets()
     {
 	Instruction insn = this.sentinel.next;
@@ -677,9 +781,12 @@ public class CFG {
 		entry.start_inst = newinsn;
 
 	    oldinsn = entry.end_inst;
-	    newinsn = (Instruction)replacedInsns.get(oldinsn);	    
-	    if (newinsn != null)
-		entry.end_inst = newinsn;
+	    if (entry.end_inst != null)
+	    {
+		newinsn = (Instruction)replacedInsns.get(oldinsn);	    
+		if (newinsn != null)
+		    entry.end_inst = newinsn;
+	    }
 
 	    oldinsn = entry.handler_inst;
 	    newinsn = (Instruction)replacedInsns.get(oldinsn);
