@@ -20,7 +20,7 @@
 \item Why did we build it?
 \item Soot Overview
 \item IRs: Baf, {\red Jimple}, Shimple, Grimp, Dava
-\item Soot as an end-user tool 
+\item Soot as an end-user tool and Soot as an Eclipse plugin
 \end{itemize}
 \begin{center}
 {\em ... switching gears .... }
@@ -41,51 +41,170 @@
 
 \begin{slide}{Soot IRs}
 \begin{description}
-\item[Baf:] a compact rep. of bytecode (stack-based)
-\item[Jimple:]  simple, typed,  3-addr (stackless) representation
-\item[Shimple:]  SSA-version of Jimple
-\item[Grimple:] like Jimple, but with expressions aggregated 
-\item[Dava:] structured represenation used for Decompilation 
+\item[Baf:] is a compact rep. of {\red B}ytecode (stack-based)
+\item[Jimple:]  is {\red J}ava's s{\red imple}, typed,  3-addr (stackless) representation 
+\item[Shimple:]  is a {\red S}SA-version of {\red Jimple}
+\item[Grimple:] is like J{\red imple}, but with expressions ag{\red GR}egated 
+\item[Dava:] structured representation used for {\red D}ecompiling J{\red ava}
 \end{description}
 \end{slide}
 
 \begin{slide}{Soot as an end-user tool: Command-line}
-\begin{description}
-\item[Install:]
 \begin{enumerate}
 \item Install Java.
 \item Download two .jar files and put them on your CLASSPATH.
 \end{enumerate}
-\item[{\tt java Soot.main --help}]  Lists options.
-\item[{\tt java Soot.main A}]     Processes {\tt A.class} in current directory
-                        and places produces a new class file in
-                        {\tt sootOutput/A.class}.
-\item[{\tt java Soot.main -o jimple A}]  Same as above, but produces 
-{\tt sootOutput/A.jimple}.
-\item[{\tt java Soot.main -O A}] Produces an optimized {\tt A.class}.
-\item[{\tt java Soot.main -o dava A}] Decompiles {\tt A.class} and produces
-{\tt A.java} in {\tt sootOutput/dava/src/A.java}. 
-\item[{\tt java Soot.main -O -app A}]
+\begin{description}
+\item[\texttt{java soot.Main --help}] \hspace{1in} \\
+ List options.
+\item[\texttt{java soot.Main --version}] \hspace{1in} \\
+ Print version information.
 \end{description}
 \end{slide}
 
-\begin{slide}{Soot as an end-user tool:  Eclipse plugin}
+\begin{slide}{Command-line: processing classes}
 \begin{description}
-\item[Install:]
+\item[\texttt{java soot.Main Foo}] \hspace{1in} \\   
+ Process \texttt{Foo.class} in the current directory
+ and produce a new class file in
+\texttt{sootOutput/Foo.class}.
+\item[\texttt{java soot.Main -f jimple Foo}] \hspace{1in} \\
+Same as above, but produce Jimple in  \texttt{sootOutput/Foo.jimple}.
+\item[\texttt{java soot.Main -f dava Foo}] \hspace{1in} \\
+Decompile \texttt{Foo.class} and produce \texttt{Foo.java} in 
+\texttt{sootOutput/dava/src/Foo.java}.
+\end{description}
+\end{slide}
+
+\begin{slide}{Command-line: optimizing classes}
+\begin{description}
+\item[\texttt{java soot.Main -O Foo}] \hspace{1in} \\
+Run intraprocedural optimizations and produce optimized {\tt A.class}.
+\item[\texttt{java soot.Main -O --app Foo}] \hspace{1in} \\
+Run intraprocedural optimizations on \texttt{Foo.class} and all
+application classes reachable from {\tt Foo.class}. 
+\item[\texttt{java soot.Main -W Foo}] \hspace{1in} \\
+Perform whole program analysis and produce optimized classes for \texttt{Foo.class} and all application classes reachable from {\tt Foo}.
+\end{description}
+\end{slide}
+
+\begin{slide}{Command-line: a more complex example}
+
+\begin{small}
+\textbf{\texttt{\red java soot.Main -W -f jimple}}
+
+\textbf{\texttt{     -p jb use-original-names:true }}
+
+\textbf{\texttt{     -p cg.spark on }}
+
+\textbf{\texttt{     -p cg.spark simplify-offline:true}}
+
+\textbf{\texttt{     -p jop on -p jop.cse on   }}
+
+\textbf{\texttt{     -p wjop on  -p wjop.smb on }}
+
+\textbf{\texttt{\red     Foo }}
+\end{small}
+
+Starting at \texttt{Foo.class}, process all reachable classes in an
+interprocedural fashion and produce jimple as output for all application
+classes.   
+\end{slide}
+
+
+\begin{slide}{Command-line: a more complex example}
+
+\begin{small}
+\textbf{\texttt{java soot.Main -W -f jimple}}
+
+\textbf{\texttt{\red      -p jb use-original-names:true }}
+
+\textbf{\texttt{     -p cg.spark on }}
+
+\textbf{\texttt{     -p cg.spark simplify-offline:true}}
+
+\textbf{\texttt{     -p jop on -p jop.cse on   }}
+
+\textbf{\texttt{     -p wjop on  -p wjop.smb on }}
+
+\textbf{\texttt{     Foo }}
+\end{small}
+
+
+When producing
+the original Jimple from the class files, 
+keep the original variable names, if available in attributes.
+
+\end{slide}
+
+
+\begin{slide}{Command-line: a more complex example}
+
+\begin{small}
+\textbf{\texttt{java soot.Main -W -f jimple}}
+
+\textbf{\texttt{     -p jb use-original-names:true }}
+
+\textbf{\texttt{\red      -p cg.spark on }}
+
+\textbf{\texttt{\red      -p cg.spark simplify-offline:true}}
+
+\textbf{\texttt{     -p jop on -p jop.cse on   }}
+
+\textbf{\texttt{     -p wjop on  -p wjop.smb on }}
+
+\textbf{\texttt{     Foo }}
+\end{small}
+
+Use Spark for points-to analysis and
+call graph,  with Spark simplifying the problem by collapsing
+equivalent variables.  
+
+\end{slide}
+
+
+\begin{slide}{Command-line: a more complex example}
+
+\begin{small}
+\textbf{\texttt{java soot.Main -W -f jimple}}
+
+\textbf{\texttt{     -p jb use-original-names:true }}
+
+\textbf{\texttt{     -p cg.spark on }}
+
+\textbf{\texttt{     -p cg.spark simplify-offline:true}}
+
+\textbf{\texttt{\red      -p jop on -p jop.cse on   }}
+
+\textbf{\texttt{\red      -p wjop on  -p wjop.smb on }}
+
+\textbf{\texttt{     Foo }}
+\end{small}
+
+\begin{footnotesize}
+Turn on 
+the intraprocedural optimization phase and enable 
+\textit{common sub-expression elimination} (cse) within that phase.
+
+Turn on the whole program optimization phase and
+turn on \textit{static method binding} (smb) within that phase.
+\end{footnotesize}
+
+\end{slide}
+
+\begin{slide}{Soot as an end-user tool:  Eclipse plugin}
 \begin{enumerate}
 \item Install Java
 \item Install Eclipse {\tt www.eclipse.org}
-\item Download one .jar file and unjar it into your Eclipse plugin directory.
-\item Make some project settings inside Eclipse.
+\item Download one .jar file and unjar it into your Eclipse plugin directory 
+\item Start Eclipse 
 \end{enumerate}
 
-\item[Use it:]
 \begin{itemize}
 \item IDE-based optimization, decompilation and visualization
 \item GUI for setting and storing Soot option configurations
 \item Eclipse views for Soot IRs
 \end{itemize}
-\end{description}
 \end{slide}
 
 \begin{slide}{Jimple and Soot Implementation Basics}
