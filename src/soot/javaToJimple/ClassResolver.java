@@ -430,8 +430,8 @@ public class ClassResolver {
         while ((InitialResolver.v().getInnerClassInfoMap() != null) && (InitialResolver.v().getInnerClassInfoMap().containsKey(addClassToClass))){
             addClassToClass = ((InnerClassInfo)InitialResolver.v().getInnerClassInfoMap().get(addClassToClass)).getOuterClass();
         }
-        if (!addClassToClass.declaresField("class$"+addClassToClass.getName(), soot.RefType.v("java.lang.Class"))){
-            addClassToClass.addField(new soot.SootField("class$"+addClassToClass.getName(), soot.RefType.v("java.lang.Class"), soot.Modifier.STATIC));
+        if (!addClassToClass.declaresField("class$"+soot.util.StringTools.replaceAll(addClassToClass.getName(), ".", "$"), soot.RefType.v("java.lang.Class"))){
+            addClassToClass.addField(new soot.SootField("class$"+soot.util.StringTools.replaceAll(addClassToClass.getName(), ".", "$"), soot.RefType.v("java.lang.Class"), soot.Modifier.STATIC));
         }
         // two extra methods
         String methodName = "class$";

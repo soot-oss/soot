@@ -113,9 +113,9 @@ public class PolyglotMethodSource implements MethodSource {
         while ((innerMap != null) && (innerMap.containsKey(assertStatusClass))){
             assertStatusClass = ((InnerClassInfo)innerMap.get(assertStatusClass)).getOuterClass();
         }
-        
+       
         // field ref
-        soot.SootFieldRef field = soot.Scene.v().makeFieldRef(assertStatusClass, "class$"+assertStatusClass.getName(), soot.RefType.v("java.lang.Class"), true);
+        soot.SootFieldRef field = soot.Scene.v().makeFieldRef(assertStatusClass, "class$"+soot.util.StringTools.replaceAll(assertStatusClass.getName(), ".", "$"), soot.RefType.v("java.lang.Class"), true);
 
         soot.Local fieldLocal = soot.jimple.Jimple.v().newLocal("$r0", soot.RefType.v("java.lang.Class"));
 
