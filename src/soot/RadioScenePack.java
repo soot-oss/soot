@@ -42,9 +42,9 @@ public class RadioScenePack extends ScenePack
             enableds.add( t );
         }
         if( enableds.size() == 0 ) {
-            Transform deflt = (Transform) iterator().next();
-            PackManager.v().setPhaseOption( deflt.getPhaseName(), "enabled:true" );
-            enableds.add( deflt );
+            G.v().out.println( "Exactly one phase in the pack "+getPhaseName()+
+                    " must be enabled. Currently, none of them are." );
+            throw new CompilationDeathException( Main.COMPILATION_ABORTED );
         }
         if( enableds.size() > 1 ) {
             G.v().out.println( "Only one phase in the pack "+getPhaseName()+

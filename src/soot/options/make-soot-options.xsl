@@ -331,7 +331,7 @@ public class Options extends OptionsBase {
 <!--*************************************************************************-->
 
   <xsl:template mode="phaseopts" match="phaseopt">
-    <xsl:for-each select="phase|phase/sub_phase">
+    <xsl:for-each select="phase|radio_phase|phase/sub_phase|radio_phase/sub_phase">
       <xsl:if test="class">
         <xsl:variable name="filename" select="class"/>
         <xsl:document href="src/soot/options/{$filename}.java" method="text" indent="no">
@@ -418,7 +418,7 @@ public class <xsl:copy-of select="$filename"/>
 
   <xsl:template mode="declphaseopts" match="phaseopt">
     public static String getDeclaredOptionsForPhase( String phaseName ) {
-    <xsl:for-each select="phase|phase/sub_phase">
+    <xsl:for-each select="phase|radio_phase|phase/sub_phase|radio_phase/sub_phase">
         if( phaseName.equals( "<xsl:value-of select="alias|alias"/>" ) )
             return ""<!---->
       <xsl:for-each select="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt"><!---->
@@ -430,7 +430,7 @@ public class <xsl:copy-of select="$filename"/>
     }
 
     public static String getDefaultOptionsForPhase( String phaseName ) {
-    <xsl:for-each select="phase|phase/sub_phase">
+    <xsl:for-each select="phase|radio_phase|phase/sub_phase|radio_phase/sub_phase">
         if( phaseName.equals( "<xsl:value-of select="alias|alias"/>" ) )
             return ""<!---->
       <xsl:for-each select="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt"><!---->
@@ -456,14 +456,14 @@ public class <xsl:copy-of select="$filename"/>
 
   <xsl:template mode="warnforeign" match="phaseopt">
     public void warnForeignPhase( String phaseName ) {
-    <xsl:for-each select="phase|phase/sub_phase"><!---->
+    <xsl:for-each select="phase|radio_phase|phase/sub_phase|radio_phase/sub_phase"><!---->
         if( phaseName.equals( "<xsl:value-of select="alias|alias"/>" ) ) return;<!---->
     </xsl:for-each>
         G.v().out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
     }
 
     public void warnNonexistentPhase() {
-    <xsl:for-each select="phase|phase/sub_phase"><!---->
+    <xsl:for-each select="phase|radio_phase|phase/sub_phase|radio_phase/sub_phase"><!---->
         if( !PackManager.v().hasPhase( "<xsl:value-of select="alias|alias"/>" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase <xsl:value-of select="alias|alias"/>" );<!---->
     </xsl:for-each>

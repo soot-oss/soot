@@ -297,6 +297,17 @@ public class PackManager {
             return option.substring(delimLoc+1);
         }
     }
+    private void resetRadioPack( String phaseName ) {
+        for( Iterator pIt = packList.iterator(); pIt.hasNext(); ) {
+            final Pack p = (Pack) pIt.next();
+            if( !(p instanceof RadioScenePack) ) continue;
+            if( p.get(phaseName) == null ) continue;
+            for( Iterator tIt = p.iterator(); tIt.hasNext(); ) {
+                final Transform t = (Transform) tIt.next();
+                setPhaseOption( t.getPhaseName(), "enabled:false" );
+            }
+        }
+    }
     public boolean setPhaseOption( String phaseName, String option ) {
         Map optionMap = mapForPhase( phaseName );
         if( optionMap == null ) {
@@ -305,6 +316,9 @@ public class PackManager {
             return false;
         }
         String key = getKey( option );
+        if( key.equals( "enabled" ) && getValue( option ).equals( "true" ) ) {
+            resetRadioPack( phaseName );
+        }
         if( declaresOption( phaseName, key ) ) {
             optionMap.put( key, getValue( option ) );
             return true;
