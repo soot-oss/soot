@@ -252,8 +252,9 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     
                     if(isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE)
                     {
-			Unit u;
-                        out.add(u = Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l),  IntConstant.v((expr instanceof AddExpr) ? x : -x)));    
+			Unit u = Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l), 
+                                                    IntConstant.v((expr instanceof AddExpr) ? x : -x));
+                        out.add(u);
 			Iterator it = getTags().iterator();
 			while(it.hasNext()) {
 			    u.addTag((Tag) it.next());
@@ -301,17 +302,15 @@ public class JAssignStmt extends AbstractDefinitionStmt
 		    }
 
                     out.add(u);
-
-
-                    
                 }
                 
                 public void caseLocal(final Local v)
                 {
                     ((ConvertToBaf) rvalue).convertToBaf(context, out);
-                    Unit u;
-                    out.add(u=Baf.v().newStoreInst(v.getType(), 
-                        context.getBafLocalOfJimpleLocal(v)));
+                    Unit u = Baf.v().newStoreInst(v.getType(), 
+                                        context.getBafLocalOfJimpleLocal(v));
+                    out.add(u);
+
 		    Iterator it = getTags().iterator();
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
@@ -329,9 +328,6 @@ public class JAssignStmt extends AbstractDefinitionStmt
 		    }
 
                     out.add(u);
-
-
-                    
                 }
             }); 
     }    

@@ -79,7 +79,6 @@ public class SkeletonExtractorWalker extends Walker
         }
         
 
-        //String className = (String) mProductions.pop();
 	String className = (String) mProductions.removeLast();
         
         if(mSootClass == null) {
@@ -113,15 +112,12 @@ public class SkeletonExtractorWalker extends Walker
         String classType = null;
         
         if(node.getImplementsClause() != null) {           
-            //implementsList = (List) mProductions.pop();
 	    implementsList = (List) mProductions.removeLast();
         }
         if(node.getExtendsClause() != null) {
-            //superClass = (String) mProductions.pop();
 	    superClass = (String) mProductions.removeLast();
 
         }
-        //classType = (String) mProductions.pop();
 	classType = (String) mProductions.removeLast();
                 
         int modifierFlags = processModifiers(node.getModifier());
@@ -144,7 +140,6 @@ public class SkeletonExtractorWalker extends Walker
             }
         }
         
-        //mProductions.push(mSootClass);
 	mProductions.addLast(mSootClass);
     } 
 
@@ -211,23 +206,19 @@ public class SkeletonExtractorWalker extends Walker
         */
         
         if(node.getThrowsClause() != null)
-            //throwsClause = (List) mProductions.pop();
 	    throwsClause = (List) mProductions.removeLast();
         
         if(node.getParameterList() != null) {
-            //parameterList = (List) mProductions.pop();
 	    parameterList = (List) mProductions.removeLast();
         }
         else {
             parameterList = new ArrayList();
         } 
 
-        //Object o = mProductions.pop();
 	Object o = mProductions.removeLast();
 
 
         name = (String) o;
-        //type = (Type) mProductions.pop();
 	type = (Type) mProductions.removeLast();
         modifier = processModifiers(node.getModifier());
 
@@ -248,7 +239,6 @@ public class SkeletonExtractorWalker extends Walker
     */    
     public void outAThrowsClause(AThrowsClause node)
     {
-        //List l = (List) mProductions.pop();
 	List l = (List) mProductions.removeLast();
 
         Iterator it = l.iterator();
@@ -260,7 +250,6 @@ public class SkeletonExtractorWalker extends Walker
             exceptionClasses.add(mResolver.getResolvedClass(className));
         }
 
-        //mProductions.push(exceptionClasses);
 	mProductions.addLast(exceptionClasses);
     }
 } 

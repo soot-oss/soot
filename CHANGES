@@ -30,7 +30,11 @@ Improvements in current version
     specify '--time' without crashing soot, the accuracy of the
     reported times remains questionable. (jjorge1)
 11. Improved Psuedotopological ordering, replaced deprecated code 
-    (Vectors and Stacks), fixed line numbering, fixed a minor UnitGraph bug
+    (Vectors and Stacks), fixed line numbering, 
+    fixed a minor UnitGraph bug (berndl)
+12. Kludged together a bug fix for Alex Warshavsky (walex@il.ibm.com) where
+    use-original-names sometimes produced Jimple Locals with #'s 
+    in their names. (plam)
     
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 

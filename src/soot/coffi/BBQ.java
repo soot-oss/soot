@@ -31,8 +31,8 @@
 
 package soot.coffi;
 
-import java.util.*;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /** A queue of BasicBlocks.

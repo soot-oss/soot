@@ -139,8 +139,8 @@ public class JimpleLocal implements Local, ConvertToBaf
 
     public void convertToBaf(JimpleToBafContext context, List out)
     {
-	Unit u;
-        out.add(u=Baf.v().newLoadInst(getType(),context.getBafLocalOfJimpleLocal(this)));
+	Unit u = Baf.v().newLoadInst(getType(),context.getBafLocalOfJimpleLocal(this));
+        out.add(u);
 	Iterator it = context.getCurrentUnit().getTags().iterator();
 	while(it.hasNext()) {
 	    u.addTag((Tag) it.next());

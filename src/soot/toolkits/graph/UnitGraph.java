@@ -42,7 +42,7 @@ import java.util.*;
  *  @see BriefUnitGraph
  */
 
-/* Updated By Marc Berndl May 13 */
+/* Updated by Marc Berndl (berndl@sable.mcgill.ca) May 13, 2001 */
 
 public class UnitGraph implements DirectedGraph
 {
@@ -263,7 +263,7 @@ public class UnitGraph implements DirectedGraph
 
         // Build tails
         {
-          List tailList = new ArrayList();
+            List tailList = new ArrayList();
 
             // Build the set
             {

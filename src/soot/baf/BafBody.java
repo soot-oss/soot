@@ -103,8 +103,8 @@ public class BafBody extends Body
             {
                 Stmt s = (Stmt) stmtIt.next();
                 List conversionList = new ArrayList();
-		
-		context.setCurrentUnit(s);
+
+                context.setCurrentUnit(s);
                 ((ConvertToBaf) s).convertToBaf(context, conversionList);
                
                 stmtToFirstInstruction.put(s, conversionList.get(0));

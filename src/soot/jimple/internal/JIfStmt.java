@@ -144,7 +144,7 @@ public class JIfStmt extends AbstractStmt implements IfStmt
 
         final Value op1 = ((BinopExpr) cond).getOp1();
         final Value op2 = ((BinopExpr) cond).getOp2();
-	
+
 	context.setCurrentUnit(this);
 
         // Handle simple subcase where op1 is null
@@ -154,15 +154,18 @@ public class JIfStmt extends AbstractStmt implements IfStmt
               ((ConvertToBaf)op1).convertToBaf(context, out);
             else
               ((ConvertToBaf)op2).convertToBaf(context, out);
-            Unit u;     
+            Unit u;
+
             if(cond instanceof EqExpr)
-              out.add(u=Baf.v().newIfNullInst
-                      (Baf.v().newPlaceholderInst(getTarget())));
+              u = Baf.v().newIfNullInst
+                      (Baf.v().newPlaceholderInst(getTarget()));
             else if (cond instanceof NeExpr)
-              out.add(u=Baf.v().newIfNonNullInst
-                      (Baf.v().newPlaceholderInst(getTarget())));
+              u = Baf.v().newIfNonNullInst
+                      (Baf.v().newPlaceholderInst(getTarget()));
             else
               throw new RuntimeException("invalid condition");
+
+            out.add(u);
 	    Iterator it = getTags().iterator();
 	    while(it.hasNext()) {
 		u.addTag((Tag) it.next());
@@ -177,64 +180,43 @@ public class JIfStmt extends AbstractStmt implements IfStmt
                 
               cond.apply(new AbstractJimpleValueSwitch()
               {
-                    public void caseEqExpr(EqExpr expr)
+                    private void add(Unit u)
                     {
-			Unit u;
-			out.add(u=Baf.v().newIfEqInst(Baf.v().newPlaceholderInst(getTarget())));
+		        out.add(u);
 			Iterator it = getTags().iterator();
 			while(it.hasNext()) {
 			    u.addTag((Tag) it.next());
-			}
+                        }
+                    }
+
+                    public void caseEqExpr(EqExpr expr)
+                    {
+			add(Baf.v().newIfEqInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
         
                     public void caseNeExpr(NeExpr expr)
                     {
-			Unit u;
-			out.add(u=Baf.v().newIfNeInst(Baf.v().newPlaceholderInst(getTarget())));
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-			}
+			add(Baf.v().newIfNeInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
         
                     public void caseLtExpr(LtExpr expr)
                     {
-			Unit u;
-			out.add(u=Baf.v().newIfLtInst(Baf.v().newPlaceholderInst(getTarget())));
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-			}
+			add(Baf.v().newIfLtInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
                     
                     public void caseLeExpr(LeExpr expr)
                     {
-			Unit u;
-			out.add(u=Baf.v().newIfLeInst(Baf.v().newPlaceholderInst(getTarget())));
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-			}
+			add(Baf.v().newIfLeInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
         
                     public void caseGtExpr(GtExpr expr)
                     {
-			Unit u;
-			out.add(u=Baf.v().newIfGtInst(Baf.v().newPlaceholderInst(getTarget())));
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-			}
+			add(Baf.v().newIfGtInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
         
                     public void caseGeExpr(GeExpr expr)
                     {
-			Unit u;
-			out.add(u=Baf.v().newIfGeInst(Baf.v().newPlaceholderInst(getTarget())));
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-			}
+			add(Baf.v().newIfGeInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
         
                     public void defaultCase(Value v)
@@ -253,64 +235,43 @@ public class JIfStmt extends AbstractStmt implements IfStmt
                 
                 cond.apply(new AbstractJimpleValueSwitch()
                 {
-                    public void caseEqExpr(EqExpr expr)
-                    { 
-			Unit u;
-			out.add(u=Baf.v().newIfEqInst(Baf.v().newPlaceholderInst(getTarget())));
+                    private void add(Unit u)
+                    {
+		        out.add(u);
 			Iterator it = getTags().iterator();
 			while(it.hasNext()) {
 			    u.addTag((Tag) it.next());
-			}
+                        }
+                    }
+
+                    public void caseEqExpr(EqExpr expr)
+                    { 
+			add(Baf.v().newIfEqInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
         
                     public void caseNeExpr(NeExpr expr)
                     {
-			Unit u;
-			out.add(u=Baf.v().newIfNeInst(Baf.v().newPlaceholderInst(getTarget())));
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-			}
+			add(Baf.v().newIfNeInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
         
                     public void caseLtExpr(LtExpr expr)
                     {
-			Unit u;
-			out.add(u=Baf.v().newIfGtInst(Baf.v().newPlaceholderInst(getTarget())));
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-			}
+			add(Baf.v().newIfGtInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
                     
                     public void caseLeExpr(LeExpr expr)
                     {
-			Unit u;
-			out.add(u=Baf.v().newIfGeInst (Baf.v().newPlaceholderInst(getTarget())));
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-			}
+			add(Baf.v().newIfGeInst (Baf.v().newPlaceholderInst(getTarget())));
                     }
         
                     public void caseGtExpr(GtExpr expr)
                     {
-			Unit u;
-			out.add(u=Baf.v().newIfLtInst(Baf.v().newPlaceholderInst(getTarget())));
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-			}
+			add(Baf.v().newIfLtInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
         
                     public void caseGeExpr(GeExpr expr)
                     {
-			Unit u;
-			out.add(u=Baf.v().newIfLeInst(Baf.v().newPlaceholderInst(getTarget())));
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-			}
+			add(Baf.v().newIfLeInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
         
                     public void defaultCase(Value v)
@@ -326,91 +287,50 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         ((ConvertToBaf)op2).convertToBaf(context, out);
 	
 
-        cond.apply(new AbstractJimpleValueSwitch()
-		   {
-		       public void caseEqExpr(EqExpr expr)
-		{
-		   Unit u;
-		    out.add( u = Baf.v().newIfCmpEqInst(op1.getType(), 
-							Baf.v().newPlaceholderInst(getTarget())));
-		    
-		    Iterator it = getTags().iterator();
-		    while(it.hasNext()) {
-			u.addTag((Tag) it.next());
-		    }
+        cond.apply(new AbstractJimpleValueSwitch() {
+            private void add(Unit u)
+            {
+                out.add(u);
+                Iterator it = getTags().iterator();
+                while(it.hasNext()) {
+                    u.addTag((Tag) it.next());
+                }
+            }
 
-                    
-
-		    
+            public void caseEqExpr(EqExpr expr)
+	    {
+                add(Baf.v().newIfCmpEqInst(op1.getType(), 
+                          Baf.v().newPlaceholderInst(getTarget())));
             }
 
             public void caseNeExpr(NeExpr expr)
             {
-		Unit u;
-              out.add(u = Baf.v().newIfCmpNeInst(op1.getType(), 
+                add(Baf.v().newIfCmpNeInst(op1.getType(), 
                        Baf.v().newPlaceholderInst(getTarget())));
-	      Iterator it = getTags().iterator();
-		    while(it.hasNext()) {
-			u.addTag((Tag) it.next());
-		    }
-
-                    
-	      
             }
 
             public void caseLtExpr(LtExpr expr)
             {
-		Unit u;
-              out.add(u = Baf.v().newIfCmpLtInst(op1.getType(), 
+                add(Baf.v().newIfCmpLtInst(op1.getType(), 
                        Baf.v().newPlaceholderInst(getTarget())));
-	      Iterator it = getTags().iterator();
-		    while(it.hasNext()) {
-			u.addTag((Tag) it.next());
-		    }
-
-                    
-
             }
 
             public void caseLeExpr(LeExpr expr)
             {
-		Unit u;
-              out.add(u = Baf.v().newIfCmpLeInst(op1.getType(), 
+                add(Baf.v().newIfCmpLeInst(op1.getType(), 
                        Baf.v().newPlaceholderInst(getTarget())));
-	      Iterator it = getTags().iterator();
-		    while(it.hasNext()) {
-			u.addTag((Tag) it.next());
-		    }
-
-                    
             }
 
             public void caseGtExpr(GtExpr expr)
             {
-		Unit u;
-              out.add(u = Baf.v().newIfCmpGtInst(op1.getType(), 
+                add(Baf.v().newIfCmpGtInst(op1.getType(), 
                        Baf.v().newPlaceholderInst(getTarget())));
-	      Iterator it = getTags().iterator();
-		    while(it.hasNext()) {
-			u.addTag((Tag) it.next());
-		    }
-
-                    
-
             }
 
             public void caseGeExpr(GeExpr expr)
             {
-		Unit u;
-              out.add(u = Baf.v().newIfCmpGeInst(op1.getType(), 
+                add(Baf.v().newIfCmpGeInst(op1.getType(), 
                        Baf.v().newPlaceholderInst(getTarget())));
-	      Iterator it = getTags().iterator();
-		    while(it.hasNext()) {
-			u.addTag((Tag) it.next());
-		    }
-
-
-
             }
         });
 	

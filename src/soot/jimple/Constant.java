@@ -45,11 +45,14 @@ public abstract class Constant implements Value, ConvertToBaf
     /** Adds a Baf instruction pushing this constant to the stack onto <code>out</code>. */
     public void convertToBaf(JimpleToBafContext context, List out)
     {
-	Unit u;
-        out.add(u=Baf.v().newPushInst(this));
-	Iterator it = context.getCurrentUnit().getTags().iterator();
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
+        Unit u = Baf.v().newPushInst(this);
+        out.add(u);
+
+        Iterator it = context.getCurrentUnit().getTags().iterator();
+
+	while(it.hasNext()) 
+        {
+            u.addTag((Tag) it.next());
 	}
     }
 

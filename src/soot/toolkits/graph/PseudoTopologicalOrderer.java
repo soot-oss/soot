@@ -89,7 +89,7 @@ public class PseudoTopologicalOrderer
     {
         stmtToColor = new HashMap((3*g.size())/2,0.7f);
         indexStack = new int[g.size()];
-	stmtStack = new Object[g.size()];
+        stmtStack = new Object[g.size()];
         order = new LinkedList();
         graph = g;
         
@@ -104,8 +104,8 @@ public class PseudoTopologicalOrderer
             }
         }
         indexStack = null;
-	stmtStack = null;
-	stmtToColor = null;
+        stmtStack = null;
+        stmtToColor = null;
         return order;
     }
 
@@ -118,13 +118,13 @@ public class PseudoTopologicalOrderer
     
     private void visitNode(Object startStmt)
     {
-	last=0;
+        last = 0;
         
         stmtToColor.put(startStmt, GRAY);
         
-        stmtStack[last]=startStmt;
+        stmtStack[last] = startStmt;
         indexStack[last++]= -1;
-        while(last>0)
+        while(last > 0)
 	{
             int toVisitIndex = ++indexStack[last-1];
             Object toVisitNode = stmtStack[last-1];

@@ -42,8 +42,8 @@ public abstract class AbstractStmt extends AbstractUnit implements Stmt, Convert
 {
     public void convertToBaf(JimpleToBafContext context, List out)
     {
-	Unit u;
-        out.add(u=Baf.v().newNopInst());
+	Unit u = Baf.v().newNopInst();
+        out.add(u);
 	Iterator it = getTags().iterator();
 	while(it.hasNext()) {
 	    u.addTag((Tag) it.next());

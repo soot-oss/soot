@@ -49,8 +49,9 @@ abstract public class AbstractJimpleIntBinopExpr extends AbstractIntBinopExpr
     {
         ((ConvertToBaf) this.getOp1()).convertToBaf(context, out);
         ((ConvertToBaf) this.getOp2()).convertToBaf(context, out);
-        Unit u;
-        out.add(u=(Unit)makeBafInst(this.getOp1().getType()));
+
+        Unit u = (Unit)makeBafInst(this.getOp1().getType());
+        out.add(u);
 	Iterator it = context.getCurrentUnit().getTags().iterator();
 	while(it.hasNext()) {
 	    u.addTag((Tag) it.next());

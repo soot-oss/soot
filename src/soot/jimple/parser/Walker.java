@@ -45,7 +45,6 @@ public class Walker extends DepthFirstAdapter
 {
     boolean debug = false;
     LinkedList mProductions = new LinkedList();
-    //Stack mProductions = new Stack();
     SootClass mSootClass = null;
     Map mLocals = null;
     Value mValue = IntConstant.v(1);
@@ -61,17 +60,16 @@ public class Walker extends DepthFirstAdapter
     public Walker(SootResolver resolver) 
     {        
         mResolver = resolver;
-	//       if(debug) {
-            //mProductions = new Stack() {
-	//   mProductions = new LinkedList(){
-	//   public Object pop(){                    
-	///	Object o = super.pop();
-	//	if(debug) 
-	//	    System.out.println("popped: " + o );   
-	//	return o;
-	//    }
-	//};
-        //}        
+        if(debug) {
+            mProductions = new LinkedList(){
+                    public Object removeLast(){
+                        Object o = super.removeLast();
+                        if(debug) 
+                            System.out.println("popped: " + o );   
+                        return o;
+                    }
+                };
+        }        
     }
 
 
@@ -84,10 +82,7 @@ public class Walker extends DepthFirstAdapter
     
     public void outStart(Start node)
     {
-        //SootClass c = (SootClass)  mProductions.pop();
         SootClass c = (SootClass)  mProductions.removeLast();
-        //        c.printTo(new PrintWriter(System.out, true));        
-        //mSootClass = c;
     }
 
 
@@ -130,7 +125,6 @@ public class Walker extends DepthFirstAdapter
             node.getClassName().apply(this);
         }
         
-        //String className = (String) mProductions.pop();
 	String className = (String) mProductions.removeLast();
  
 
@@ -140,11 +134,6 @@ public class Walker extends DepthFirstAdapter
             if(!mSootClass.getName().equals(className))
                 throw new RuntimeException("Invalid SootClass for this JimpleAST. The SootClass provided is of type: >" + mSootClass.getName() + "< whereas this parse tree is for type: >" + className +  "<");            
         }
-
-        //Scene.v().getSootClass(className);
-
-
-
 
         if(node.getExtendsClause() != null)
         {
@@ -171,15 +160,12 @@ public class Walker extends DepthFirstAdapter
         String classType = null;
         
         if(node.getImplementsClause() != null) {           
-            //implementsList = (List) mProductions.pop();
 	    implementsList = (List) mProductions.removeLast();
         }
         if(node.getExtendsClause() != null) {
-            //superClass = (String) mProductions.pop();
 	    superClass = (String) mProductions.removeLast();
         }
 
-        //classType = (String) mProductions.pop();
         classType = (String) mProductions.removeLast();
 
         
@@ -207,7 +193,6 @@ public class Walker extends DepthFirstAdapter
             }
         }
         
-        //mProductions.push(mSootClass);
 	mProductions.addLast(mSootClass);
     } 
     
@@ -222,9 +207,7 @@ public class Walker extends DepthFirstAdapter
         Type type = null;
         String name = null;
 
-        //name = (String) mProductions.pop();
 	name = (String) mProductions.removeLast();
-        //type = (Type) mProductions.pop();
 	type = (Type) mProductions.removeLast();
 
         modifier = processModifiers(node.getModifier());
@@ -243,27 +226,21 @@ public class Walker extends DepthFirstAdapter
         JimpleBody methodBody = null;
 
         if(node.getMethodBody() instanceof AFullMethodBody)
-	    // methodBody = (JimpleBody) mProductions.pop();
 	    methodBody = (JimpleBody) mProductions.removeLast();
 
         if(node.getThrowsClause() != null)
-            //throwsClause = (List) mProductions.pop();
 	    throwsClause = (List) mProductions.removeLast();
 
         if(node.getParameterList() != null) {
-	    // parameterList = (List) mProductions.pop();
 	    parameterList = (List) mProductions.removeLast();
         }
         else {
             parameterList = new ArrayList();
         } 
 
-        //Object o = mProductions.pop();
 	Object o = mProductions.removeLast();
 
-
         name = (String) o;
-        //type = (Type) mProductions.pop();
 	type = (Type) mProductions.removeLast();
         modifier = processModifiers(node.getModifier());
 
@@ -294,7 +271,6 @@ public class Walker extends DepthFirstAdapter
 
     public void outAVoidType(AVoidType node)
     {
-        //mProductions.push(VoidType.v());
 	mProductions.addLast(VoidType.v());
     }
     
@@ -308,51 +284,43 @@ public class Walker extends DepthFirstAdapter
     */
     public void outABaseNonvoidType(ABaseNonvoidType node)
     {
-        //Type t = (Type) mProductions.pop();
 	Type t = (Type) mProductions.removeLast();
         int dim = node.getArrayBrackets().size();
         if(dim > 0) 
             t = ArrayType.v((BaseType) t, dim);
-        //mProductions.push(t);
 	mProductions.addLast(t);
     }
 
     
     public void outAQuotedNonvoidType(AQuotedNonvoidType node)
     {        
-	//String typeName = (String) mProductions.pop();
 	String typeName = (String) mProductions.removeLast();
 	Type t = RefType.v(typeName);
        
         int dim = node.getArrayBrackets().size();
         if(dim > 0) 
             t = ArrayType.v((BaseType) t, dim);
-        //mProductions.push(t);
 	mProductions.addLast(t);
     }
 
     public void outAIdentNonvoidType(AIdentNonvoidType node)
     {        	  
-	//String typeName = (String) mProductions.pop();
 	String typeName = (String) mProductions.removeLast();
 	Type t = RefType.v(typeName);
         int dim = node.getArrayBrackets().size();
         if(dim > 0)
             t = ArrayType.v((BaseType) t, dim);
-	//mProductions.push(t);
 	mProductions.addLast(t);
     }
 
 
     public void outAFullIdentNonvoidType(AFullIdentNonvoidType node)
     {                	  
-	//String typeName = (String) mProductions.pop();
 	String typeName = (String) mProductions.removeLast();
 	Type t = RefType.v(typeName);
         int dim = node.getArrayBrackets().size();
         if(dim > 0)
             t = ArrayType.v((BaseType)t, dim);                
-        //mProductions.push(t);
 	mProductions.addLast(t);
     }
     
@@ -375,26 +343,22 @@ public class Walker extends DepthFirstAdapter
 
     public void outABooleanBaseTypeNoName(ABooleanBaseTypeNoName node)
     {
-        //mProductions.push(BooleanType.v());
 	mProductions.addLast(BooleanType.v());
     }
     
     public void outAByteBaseTypeNoName(AByteBaseTypeNoName node)
     {
-        //mProductions.push(ByteType.v());
 	mProductions.addLast(ByteType.v());
     }
         
 
     public void outACharBaseTypeNoName(ACharBaseTypeNoName node)
     {
-        //mProductions.push(CharType.v());
 	mProductions.addLast(CharType.v());
     }
     
     public void outAShortBaseTypeNoName(AShortBaseTypeNoName node)
     {
-        //mProductions.push(ShortType.v());
 	mProductions.addLast(ShortType.v());
     }
 
@@ -402,31 +366,26 @@ public class Walker extends DepthFirstAdapter
     
     public void outAIntBaseTypeNoName(AIntBaseTypeNoName node)
     {
-        //mProductions.push(IntType.v());
 	mProductions.addLast(IntType.v());
     }
     
     public void outALongBaseTypeNoName(ALongBaseTypeNoName node)
     {
-        //mProductions.push(LongType.v());
 	mProductions.addLast(LongType.v());
     }
         
 
     public void outAFloatBaseTypeNoName(AFloatBaseTypeNoName node)
     {
-        //mProductions.push(FloatType.v());
 	mProductions.addLast(FloatType.v());
     }
     
     public void outADoubleBaseTypeNoName(ADoubleBaseTypeNoName node)
     {
-        //mProductions.push(DoubleType.v());
 	mProductions.addLast(DoubleType.v());
     }
     public void outANullBaseTypeNoName(ANullBaseTypeNoName node)
     {
-        //mProductions.push(NullType.v());
 	mProductions.addLast(NullType.v());
     }
     
@@ -448,26 +407,22 @@ public class Walker extends DepthFirstAdapter
     
     public void outABooleanBaseType(ABooleanBaseType node)
     {
-        //mProductions.push(BooleanType.v());
 	mProductions.addLast(BooleanType.v());
     }
     
     public void outAByteBaseType(AByteBaseType node)
     {
-	// mProductions.push(ByteType.v());
 	mProductions.addLast(ByteType.v());
     }
         
 
     public void outACharBaseType(ACharBaseType node)
     {
-        //mProductions.push(CharType.v());
 	mProductions.addLast(CharType.v());
     }
     
     public void outAShortBaseType(AShortBaseType node)
     {
-        //mProductions.push(ShortType.v());
 	mProductions.addLast(ShortType.v());
     }
 
@@ -475,45 +430,35 @@ public class Walker extends DepthFirstAdapter
     
     public void outAIntBaseType(AIntBaseType node)
     {
-        //mProductions.push(IntType.v());
 	mProductions.addLast(IntType.v());
     }
     
     public void outALongBaseType(ALongBaseType node)
     {
-        //mProductions.push(LongType.v());
 	mProductions.addLast(LongType.v());
     }
         
 
     public void outAFloatBaseType(AFloatBaseType node)
     {
-        //mProductions.push(FloatType.v());
 	mProductions.addLast(FloatType.v());
     }
     
     public void outADoubleBaseType(ADoubleBaseType node)
     {
-        //mProductions.push(DoubleType.v());
 	mProductions.addLast(DoubleType.v());
     }
     
     public void outANullBaseType(ANullBaseType node)
     {
-        //mProductions.push(NullType.v());
 	mProductions.addLast(NullType.v());
     }
 
-
-
     public void outAClassNameBaseType(AClassNameBaseType node)
     {
-        //String type = (String) mProductions.pop();
 	String type = (String) mProductions.removeLast();
-        if(type.equals("int"))throw new RuntimeException();
-        //mProductions.push(RefType.v(type));
+        if(type.equals("int")) throw new RuntimeException();
 	mProductions.addLast(RefType.v(type));
-        //        Scene.v().addClassToResolve(type);
     }
 
 
@@ -539,7 +484,6 @@ public class Walker extends DepthFirstAdapter
         if(node.getCatchClause() != null) {
             int size = node.getCatchClause().size();
             for(int i =0; i < size; i++)             
-                //jBody.getTraps().addFirst((Trap) mProductions.pop());
 		jBody.getTraps().addFirst((Trap) mProductions.removeLast());
         }
                                 
@@ -547,7 +491,6 @@ public class Walker extends DepthFirstAdapter
             int size = node.getStatement().size();
             Unit lastStmt = null;
             for(int i = 0; i < size; i++) {
-                //Object o =  mProductions.pop();
 		Object o =  mProductions.removeLast();
                 if(o  instanceof Unit) {
                     jBody.getUnits().addFirst(o);
@@ -566,7 +509,6 @@ public class Walker extends DepthFirstAdapter
         if(node.getDeclaration() != null) {
             int size = node.getDeclaration().size();
             for(int i = 0; i < size; i++) {
-                //List localList = (List) mProductions.pop();
 		List localList = (List) mProductions.removeLast();
                 
                 int listSize = localList.size();
@@ -606,19 +548,14 @@ public class Walker extends DepthFirstAdapter
             }
         }
         */
-        
-        //mProductions.push(jBody);
+
 	mProductions.addLast(jBody);
     }
-
-
 
     public void outANovoidType(ANovoidType node)
     {
     }
 
-
-    
     /*
       parameter_list =
       {single} parameter |
@@ -628,19 +565,14 @@ public class Walker extends DepthFirstAdapter
     public void outASingleParameterList(ASingleParameterList node)
     {
         List l = new ArrayList();
-        //l.add((Type) mProductions.pop());
 	l.add((Type) mProductions.removeLast());
-        //mProductions.push(l);
 	mProductions.addLast(l);
     }
 
     public void outAMultiParameterList(AMultiParameterList node)
     {
-        //List l = (List) mProductions.pop();
 	List l = (List) mProductions.removeLast();
-        //l.add(0,(Type) mProductions.pop());
 	l.add(0,(Type) mProductions.removeLast());
-        //mProductions.push(l);
 	mProductions.addLast(l);
     }
 
@@ -653,25 +585,16 @@ public class Walker extends DepthFirstAdapter
     {
         List l = new ArrayList();
 
-        //l.add((Value) mProductions.pop()); 
 	l.add((Value) mProductions.removeLast()); 
-        //mProductions.push(l);
 	mProductions.addLast(l);
     }
 
     public void outAMultiArgList(AMultiArgList node)
     {
-        //List l = (List) mProductions.pop();
 	List l = (List) mProductions.removeLast();
-        //l.add(0,(Value) mProductions.pop());
 	l.add(0,(Value) mProductions.removeLast());
-        //mProductions.push(l);
 	mProductions.addLast(l);
     }
-
-        
-
-
 
     /*  
         class_name_list =
@@ -682,19 +605,14 @@ public class Walker extends DepthFirstAdapter
     public void outAClassNameSingleClassNameList(AClassNameSingleClassNameList node)
     {
         List l = new ArrayList();
-        //l.add((String) mProductions.pop());
 	l.add((String) mProductions.removeLast());
-        //mProductions.push(l);
 	mProductions.addLast(l);
     }
 
     public void outAClassNameMultiClassNameList(AClassNameMultiClassNameList node)
     {
-        //List l = (List) mProductions.pop();
 	List l = (List) mProductions.removeLast();
-        //l.add(0,(String) mProductions.pop());
 	l.add(0,(String) mProductions.removeLast());
-        //mProductions.push(l);  
 	mProductions.addLast(l);  
     }
    
@@ -706,13 +624,11 @@ public class Walker extends DepthFirstAdapter
     
     public void outAClassFileType(AClassFileType node)
     {
-        //mProductions.push("class");
 	mProductions.addLast("class");
     }
     
     public void outAInterfaceFileType(AInterfaceFileType node)
     {
-        //mProductions.push("interface");
 	mProductions.addLast("interface");
     }
 
@@ -731,22 +647,17 @@ public class Walker extends DepthFirstAdapter
         UnitBox withUnit, fromUnit, toUnit;
         
         withUnit = Jimple.v().newStmtBox(null);
-        //addBoxToPatch((String) mProductions.pop(), withUnit);
 	addBoxToPatch((String) mProductions.removeLast(), withUnit);
 
         toUnit = Jimple.v().newStmtBox(null);
-        //addBoxToPatch((String) mProductions.pop(), toUnit);
 	addBoxToPatch((String) mProductions.removeLast(), toUnit);
 
         fromUnit = Jimple.v().newStmtBox(null);
-        //addBoxToPatch((String) mProductions.pop(), fromUnit);
 	addBoxToPatch((String) mProductions.removeLast(), fromUnit);
 
-        //exceptionName = (String) mProductions.pop();
 	exceptionName = (String) mProductions.removeLast();
                                 
         Trap trap = Jimple.v().newTrap(mResolver.getResolvedClass(exceptionName), fromUnit, toUnit, withUnit);          
-        //mProductions.push(trap);
 	mProductions.addLast(trap);
     }
 
@@ -758,9 +669,7 @@ public class Walker extends DepthFirstAdapter
 
     public void outADeclaration(ADeclaration node)
     {
-        //List localNameList = (List) mProductions.pop();
 	List localNameList = (List) mProductions.removeLast();
-        //Type type = (Type) mProductions.pop();
 	Type type = (Type) mProductions.removeLast();
         Iterator it = localNameList.iterator();
         List localList = new ArrayList();
@@ -770,7 +679,6 @@ public class Walker extends DepthFirstAdapter
             mLocals.put(l.getName(), l);        
             localList.add(l);
         }                        
-        //mProductions.push(localList);
 	mProductions.addLast(localList);
     }
 
@@ -785,7 +693,6 @@ public class Walker extends DepthFirstAdapter
     */
     public void outAUnknownJimpleType(AUnknownJimpleType node)
     {
-        //mProductions.push(UnknownType.v());
 	mProductions.addLast(UnknownType.v());
     }
 
@@ -799,19 +706,14 @@ public class Walker extends DepthFirstAdapter
     public void outASingleLocalNameList(ASingleLocalNameList node)
     {
         List l = new ArrayList();
-        //l.add((String) mProductions.pop());
 	l.add((String) mProductions.removeLast());
-        //mProductions.push(l);
 	mProductions.addLast(l);
     }
 
     public void outAMultiLocalNameList(AMultiLocalNameList node)
     {
-        //List l = (List) mProductions.pop();
 	List l = (List) mProductions.removeLast();
-        //l.add(0,(String) mProductions.pop());
 	l.add(0,(String) mProductions.removeLast());
-        //mProductions.push(l);
 	mProductions.addLast(l);
     }
 
@@ -842,28 +744,23 @@ public class Walker extends DepthFirstAdapter
     public void outABreakpointStatement(ABreakpointStatement node)
     {        
         Unit u = Jimple.v().newBreakpointStmt();
-        //mProductions.push(u);
 	mProductions.addLast(u);
     }
 
 
     public void outAEntermonitorStatement(AEntermonitorStatement node)
     {
-        //Value op = (Value) mProductions.pop();
 	Value op = (Value) mProductions.removeLast();
 
         Unit u = Jimple.v().newEnterMonitorStmt(op);
-        //mProductions.push(u);
 	mProductions.addLast(u);
     }
 
     public void outAExitmonitorStatement(AExitmonitorStatement node)
     {
-        //Value op = (Value) mProductions.pop();
 	Value op = (Value) mProductions.removeLast();
 
         Unit u = Jimple.v().newExitMonitorStmt(op);
-        //mProductions.push(u);
 	mProductions.addLast(u);
     }
 
@@ -879,7 +776,6 @@ public class Walker extends DepthFirstAdapter
     */    
     public void outACaseStmt(ACaseStmt node)
     {        
-        //String labelName = (String) mProductions.pop();
 	String labelName = (String) mProductions.removeLast();
         UnitBox box = Jimple.v().newStmtBox(null);
 
@@ -887,18 +783,15 @@ public class Walker extends DepthFirstAdapter
         
         Value labelValue = null;
         if(node.getCaseLabel() instanceof AConstantCaseLabel)
-            //labelValue = (Value) mProductions.pop();
 	    labelValue = (Value) mProductions.removeLast();
 
         // if labelValue == null, this is the default label.
         if(labelValue == null)
-            //mProductions.push(box);
 	    mProductions.addLast(box);
         else {            
             Object[] valueTargetPair = new Object[2];
             valueTargetPair[0] = labelValue;
             valueTargetPair[1] = box;
-            //mProductions.push(valueTargetPair);
 	    mProductions.addLast(valueTargetPair);
         }        
     }
@@ -916,7 +809,6 @@ public class Walker extends DepthFirstAdapter
             int size = node.getCaseStmt().size();
             
             for(int i = 0; i < size; i++) {
-                //Object valueTargetPair = mProductions.pop();
 		Object valueTargetPair = mProductions.removeLast();
                 if(valueTargetPair instanceof UnitBox) {
                     if(defaultTarget != null)
@@ -939,12 +831,10 @@ public class Walker extends DepthFirstAdapter
         }
         
 
-        //Value key = (Value) mProductions.pop();
          Value key = (Value) mProductions.removeLast();
         Unit switchStmt  = Jimple.v().newTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
         
         
-        //mProductions.push(switchStmt); 
 	mProductions.addLast(switchStmt); 
     }
     
@@ -960,7 +850,6 @@ public class Walker extends DepthFirstAdapter
             int size = node.getCaseStmt().size();
             
             for(int i = 0; i < size; i++) {
-                //Object valueTargetPair = mProductions.pop();
 		Object valueTargetPair = mProductions.removeLast();
                 if(valueTargetPair instanceof UnitBox) {
                     if(defaultTarget != null)
@@ -979,11 +868,9 @@ public class Walker extends DepthFirstAdapter
         }
         
 
-        //Value key = (Value) mProductions.pop();  
 	Value key = (Value) mProductions.removeLast();  
         Unit switchStmt  = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
         
-        //mProductions.push(switchStmt);  
 	mProductions.addLast(switchStmt);  
     }
     
@@ -992,11 +879,8 @@ public class Walker extends DepthFirstAdapter
 
     public void outAIdentityStatement(AIdentityStatement node)
     {
-        //Type identityRefType = (Type) mProductions.pop();
 	Type identityRefType = (Type) mProductions.removeLast();
-        //String atClause = (String) mProductions.pop();
 	String atClause = (String) mProductions.removeLast();
-        //Value local = (Value)  mLocals.get(mProductions.pop()); // the local ref from it's identifier
 	Value local = (Value)  mLocals.get(mProductions.removeLast()); // the local ref from it's identifier
         
         Value ref = null;
@@ -1010,52 +894,42 @@ public class Walker extends DepthFirstAdapter
             throw new RuntimeException("shouldn't @caughtexception be handled by outAIdentityNoTypeStatement: got" + atClause);
         
         Unit u = Jimple.v().newIdentityStmt(local, ref);
-        //mProductions.push(u);
 	mProductions.addLast(u);
     }
     
     
     public void outAIdentityNoTypeStatement(AIdentityNoTypeStatement node)
     {
-        //mProductions.pop();  // get rid of @caughtexception string presently on top of the stack
 	mProductions.removeLast();  // get rid of @caughtexception string presently on top of the stack
-        //Value local = (Value)  mLocals.get(mProductions.pop()); // the local ref from it's identifier
 	Value local = (Value)  mLocals.get(mProductions.removeLast()); // the local ref from it's identifier
     
 
         Unit u = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef());
-        //mProductions.push(u);
 	mProductions.addLast(u);
     }
 
     
     public void outAAssignStatement(AAssignStatement node)
     {
-        //Value rvalue = (Value) mProductions.pop();
 	Value rvalue = (Value) mProductions.removeLast();
-        //Value variable =(Value)mProductions.pop();
 	Value variable =(Value)mProductions.removeLast();
 
 
         Unit u = Jimple.v().newAssignStmt(variable, rvalue);
-        //mProductions.push(u);
 	mProductions.addLast(u);
     }
 
     public void outAIfStatement(AIfStatement node)
     { 
-        //String targetLabel = (String) mProductions.pop();   
          String targetLabel = (String) mProductions.removeLast();   
-	 //Value condition =(Value) mProductions.pop();
 	 Value condition =(Value) mProductions.removeLast();
         
-        UnitBox box = Jimple.v().newStmtBox(null);
-        Unit u = Jimple.v().newIfStmt(condition, box); 
+         UnitBox box = Jimple.v().newStmtBox(null);
+         Unit u = Jimple.v().newIfStmt(condition, box); 
         
-        addBoxToPatch(targetLabel, box);
+         addBoxToPatch(targetLabel, box);
        
-        //mProductions.push(u);
-	mProductions.addLast(u);
+         mProductions.addLast(u);
     }
 
     public void outAReturnStatement(AReturnStatement node) 
@@ -1063,21 +937,17 @@ public class Walker extends DepthFirstAdapter
         Value v;
         Stmt s = null;
         if(node.getImmediate() != null) {
-            //v = (Value) mProductions.pop();
 	    v = (Value) mProductions.removeLast();
             s = Jimple.v().newReturnStmt(v);
         } else {
             s = Jimple.v().newReturnVoidStmt();
         }
 
-        
-        //mProductions.push(s);    
 	mProductions.addLast(s);    
     }
     
     public void outAGotoStatement(AGotoStatement node)
     {            
-        //String targetLabel = (String) mProductions.pop();
 	String targetLabel = (String) mProductions.removeLast();
 
         UnitBox box = Jimple.v().newStmtBox(null);
@@ -1085,7 +955,6 @@ public class Walker extends DepthFirstAdapter
             
         addBoxToPatch(targetLabel, box);
         
-        //mProductions.push(branch);
 	mProductions.addLast(branch);
     }
         
@@ -1093,7 +962,6 @@ public class Walker extends DepthFirstAdapter
     public void outANopStatement(ANopStatement node)
     {
         Unit u = Jimple.v().newNopStmt(); 
-        //mProductions.push(u);
 	mProductions.addLast(u);
     }
 
@@ -1105,22 +973,18 @@ public class Walker extends DepthFirstAdapter
     
     public void outAThrowStatement(AThrowStatement node)
     {
-        //Value op = (Value) mProductions.pop();
 	Value op = (Value) mProductions.removeLast();
 
         Unit u = Jimple.v().newThrowStmt(op);
-        //mProductions.push(u);
 	mProductions.addLast(u);
     }
 
     public void outAInvokeStatement(AInvokeStatement node)
     {
-        //Value op = (Value) mProductions.pop();
 	Value op = (Value) mProductions.removeLast();
 
         Unit u = Jimple.v().newInvokeStmt(op);
         
-        //mProductions.push(u);
 	mProductions.addLast(u);
     }
 
@@ -1133,29 +997,16 @@ public class Walker extends DepthFirstAdapter
     */
     public void outAConstantCaseLabel(AConstantCaseLabel node)
     {
-
-        //String s = (String) mProductions.pop();
 	String s = (String) mProductions.removeLast();
         int sign = 1;
         if(node.getMinus() != null)
             sign = -1;
         
         if(s.endsWith("L")) {            
-            
-            //mProductions.push(LongConstant.v(sign * Long.parseLong(s.substring(0, s.length()-1))));
 	    mProductions.addLast(LongConstant.v(sign * Long.parseLong(s.substring(0, s.length()-1))));
         } else
-            //mProductions.push(IntConstant.v(sign * Integer.parseInt(s)));
 	    mProductions.addLast(IntConstant.v(sign * Integer.parseInt(s)));
     }
-    
-
-    
-
-
-
-
-
 
     /*
       immediate =
@@ -1165,12 +1016,10 @@ public class Walker extends DepthFirstAdapter
     
     public void outALocalImmediate(ALocalImmediate node)
     {
-        //String local = (String) mProductions.pop();
 	String local = (String) mProductions.removeLast();
         
         Local l = (Local) mLocals.get(local);
         if(l == null) throw new RuntimeException("did not find local: " + local);
-        //mProductions.push(l);
 	mProductions.addLast(l);
     }
     
@@ -1187,14 +1036,12 @@ public class Walker extends DepthFirstAdapter
     
     public void outANullConstant(ANullConstant node)
     {
-        //mProductions.push(NullConstant.v());
 	mProductions.addLast(NullConstant.v());
     }
 
 
     public void outAIntegerConstant(AIntegerConstant node)
     {
-        //String s = (String) mProductions.pop();
 	String s = (String) mProductions.removeLast();
         
         StringBuffer buf = new StringBuffer();
@@ -1204,18 +1051,14 @@ public class Walker extends DepthFirstAdapter
         
         s = buf.toString();
         if(s.endsWith("L")) {                        
-            //mProductions.push(LongConstant.v(Long.parseLong(s.substring(0, s.length()-1))));
 	    mProductions.addLast(LongConstant.v(Long.parseLong(s.substring(0, s.length()-1))));
         } else
-            //mProductions.push(IntConstant.v(Integer.parseInt(s)));
 	    mProductions.addLast(IntConstant.v(Integer.parseInt(s)));
     }
     
     public void outAStringConstant(AStringConstant node)
     {
-        //String s = (String) mProductions.pop();
 	String s = (String) mProductions.removeLast();
-        //mProductions.push(StringConstant.v(s));
 	mProductions.addLast(StringConstant.v(s));
         /*
           try {
@@ -1234,7 +1077,6 @@ public class Walker extends DepthFirstAdapter
   /* ('#' (('-'? 'Infinity') | 'NaN') ('f' | 'F')? ) ; */
     public void outAFloatConstant(AFloatConstant node)
     {
-        //String s = (String) mProductions.pop();
 	String s = (String) mProductions.removeLast();
 
         boolean isDouble = true;
@@ -1283,7 +1125,6 @@ public class Walker extends DepthFirstAdapter
         else
           res = FloatConstant.v(value);
 
-        //mProductions.push(res);
 	mProductions.addLast(res);
     }
 
@@ -1296,17 +1137,13 @@ public class Walker extends DepthFirstAdapter
 
     public void outABinopExpr(ABinopExpr node)
     {
-        //Value right = (Value) mProductions.pop();
 	Value right = (Value) mProductions.removeLast();
-        //BinopExpr expr = (BinopExpr) mProductions.pop();
 	BinopExpr expr = (BinopExpr) mProductions.removeLast();
-        //Value left = (Value) mProductions.pop();
 	Value left = (Value) mProductions.removeLast();
 
 
         expr.setOp1(left);
         expr.setOp2(right);
-        //mProductions.push(expr);
 	mProductions.addLast(expr);
     }
 
@@ -1352,121 +1189,99 @@ public class Walker extends DepthFirstAdapter
 
     public void outAAndBinop(AAndBinop node)
     {
-        //mProductions.push(Jimple.v().newAndExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newAndExpr(mValue, mValue));
     }
     public void outAOrBinop(AOrBinop node)
     {
-        //mProductions.push(Jimple.v().newOrExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newOrExpr(mValue, mValue));
     }
 
     public void outAXorBinop(AXorBinop node)
     {
-        //mProductions.push(Jimple.v().newXorExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newXorExpr(mValue, mValue));
     }
     public void outAModBinop(AModBinop node)
     {
-        //mProductions.push(Jimple.v().newRemExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newRemExpr(mValue, mValue));
     }
 
     public void outACmpBinop(ACmpBinop node)
     {
-        //mProductions.push(Jimple.v().newCmpExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newCmpExpr(mValue, mValue));
     }
 
     public void outACmpgBinop(ACmpgBinop node)
     {
-        //mProductions.push(Jimple.v().newCmpgExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newCmpgExpr(mValue, mValue));
     }
 
     public void outACmplBinop(ACmplBinop node)
     {
-        //mProductions.push(Jimple.v().newCmplExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newCmplExpr(mValue, mValue));
     }
 
     public void outACmpeqBinop(ACmpeqBinop node)
     {
-        //mProductions.push(Jimple.v().newEqExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newEqExpr(mValue, mValue));
     }
 
 
     public void outACmpneBinop(ACmpneBinop node)
     {
-        //mProductions.push(Jimple.v().newNeExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newNeExpr(mValue, mValue));
     }
 
     public void outACmpgtBinop(ACmpgtBinop node)
     {
-        //mProductions.push(Jimple.v().newGtExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newGtExpr(mValue, mValue));
     }
 
     public void outACmpgeBinop(ACmpgeBinop node)
     {
-        //mProductions.push(Jimple.v().newGeExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newGeExpr(mValue, mValue));
     }
 
     public void outACmpltBinop(ACmpltBinop node)
     {
-        //mProductions.push(Jimple.v().newLtExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newLtExpr(mValue, mValue));
     }
 
     public void outACmpleBinop(ACmpleBinop node)
     {
-        //mProductions.push(Jimple.v().newLeExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newLeExpr(mValue, mValue));
     }
 
     public void outAShlBinop(AShlBinop node)
     {
-        //mProductions.push(Jimple.v().newShlExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newShlExpr(mValue, mValue));
     }
 
     public void outAShrBinop(AShrBinop node)
     {
-        //mProductions.push(Jimple.v().newShrExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newShrExpr(mValue, mValue));
     }
 
     public void outAUshrBinop(AUshrBinop node)
     {
-        //mProductions.push(Jimple.v().newUshrExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newUshrExpr(mValue, mValue));
     }
 
-
-
     public void outAPlusBinop(APlusBinop node)
     {
-        //mProductions.push(Jimple.v().newAddExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newAddExpr(mValue, mValue));
     }
 
     public void outAMinusBinop(AMinusBinop node)
     {
-        //mProductions.push(Jimple.v().newSubExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newSubExpr(mValue, mValue));
     }
 
     public void outAMultBinop(AMultBinop node)
     {
-        //mProductions.push(Jimple.v().newMulExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newMulExpr(mValue, mValue));
     }
     public void outADivBinop(ADivBinop node)
     {
-        //mProductions.push(Jimple.v().newDivExpr(mValue, mValue));
 	mProductions.addLast(Jimple.v().newDivExpr(mValue, mValue));
     }
 
@@ -1476,7 +1291,6 @@ public class Walker extends DepthFirstAdapter
     */    
     public void outAThrowsClause(AThrowsClause node)
     {
-        //List l = (List) mProductions.pop();
 	List l = (List) mProductions.removeLast();
 
         Iterator it = l.iterator();
@@ -1488,7 +1302,6 @@ public class Walker extends DepthFirstAdapter
             exceptionClasses.add(mResolver.getResolvedClass(className));
         }
 
-        //mProductions.push(exceptionClasses);
 	mProductions.addLast(exceptionClasses);
     }
 
@@ -1503,12 +1316,10 @@ public class Walker extends DepthFirstAdapter
     
     public void outALocalVariable(ALocalVariable node)
     {
-        //String local = (String) mProductions.pop();
 	String local = (String) mProductions.removeLast();
 
         Local l = (Local) mLocals.get(local);
         if(l == null) throw new RuntimeException("did not find local: " + local);
-        //mProductions.push(l);
 	mProductions.addLast(l);
     }
 
@@ -1524,31 +1335,18 @@ public class Walker extends DepthFirstAdapter
       identifier fixed_array_descriptor;
     */
 
-    /*
-      public void caseAArrayRef(AArrayRef node)
-      {
-      mProductions.push(Jimple.v().newLocal("dummy array reference", IntType.v()));
-      }*/
-
     public void outAArrayRef(AArrayRef node)
     {
-        //Value immediate = (Value) mProductions.pop();
 	Value immediate = (Value) mProductions.removeLast();
-        //String identifier = (String) mProductions.pop();
 	String identifier = (String) mProductions.removeLast();
         
         Local l = (Local) mLocals.get(identifier);
         if(l == null) throw new RuntimeException("did not find local: " + identifier);
         
-        //mProductions.push(Jimple.v().newArrayRef(l, immediate));
 	mProductions.addLast(Jimple.v().newArrayRef(l, immediate));   
       
     }
     
-
-
-
-
     /*
       field_ref =
       {local} local_name dot field_signature |
@@ -1557,25 +1355,20 @@ public class Walker extends DepthFirstAdapter
 
     public void outALocalFieldRef(ALocalFieldRef node)
     {
-        //SootField field = (SootField) mProductions.pop();
 	SootField field = (SootField) mProductions.removeLast();
 
-        //String local = (String) mProductions.pop();
-String local = (String) mProductions.removeLast();
+        String local = (String) mProductions.removeLast();
         
         Local l = (Local) mLocals.get(local);
         if(l == null) throw new RuntimeException("did not find local: " + local);
         
-        //mProductions.push(Jimple.v().newInstanceFieldRef(l, field));
 	mProductions.addLast(Jimple.v().newInstanceFieldRef(l, field));
     }
 
     
     public void outASigFieldRef(ASigFieldRef node)
     {
-        //SootField field = (SootField) mProductions.pop();
 	SootField field = (SootField) mProductions.removeLast();
-        //mProductions.push(Jimple.v().newStaticFieldRef(field));  
 	mProductions.addLast(Jimple.v().newStaticFieldRef(field));  
     }
 
@@ -1590,23 +1383,15 @@ String local = (String) mProductions.removeLast();
         String className, fieldName;
         Type t;
         
-        //fieldName = (String) mProductions.pop();
 	fieldName = (String) mProductions.removeLast();
-        //t = (Type) mProductions.pop();
 	t = (Type) mProductions.removeLast();
-        //className  = (String) mProductions.pop();      
 	className  = (String) mProductions.removeLast();      
 
         SootClass cl = mResolver.getResolvedClass(className);
         SootField field = cl.getField(fieldName, t);
         
-        //mProductions.push(field);
 	mProductions.addLast(field);
     }
-
-
-
-
 
     /*
       expression =
@@ -1620,15 +1405,11 @@ String local = (String) mProductions.removeLast();
       {unop}        unop_expr |
       {immediate}   immediate;
     */
-
     public void outACastExpression(ACastExpression node)
     {
-        //Value val = (Value) mProductions.pop();
 	Value val = (Value) mProductions.removeLast();
         
-        //Type type = (Type) mProductions.pop();
 	Type type = (Type) mProductions.removeLast();
-        //mProductions.push(Jimple.v().newCastExpr(val, type));
 	mProductions.addLast(Jimple.v().newCastExpr(val, type));
     }
 
@@ -1636,11 +1417,8 @@ String local = (String) mProductions.removeLast();
 
     public void outAInstanceofExpression(AInstanceofExpression node)
     {
-        //Type nonvoidType = (Type) mProductions.pop();
 	Type nonvoidType = (Type) mProductions.removeLast();
-        //Value immediate = (Value) mProductions.pop();  
 	Value immediate = (Value) mProductions.removeLast();  
-        //mProductions.push(Jimple.v().newInstanceOfExpr(immediate, nonvoidType));
 	mProductions.addLast(Jimple.v().newInstanceOfExpr(immediate, nonvoidType));
 
     }
@@ -1652,12 +1430,9 @@ String local = (String) mProductions.removeLast();
     */
     public void outAUnopExpr(AUnopExpr node)
     {
-        //Value v = (Value) mProductions.pop();
 	Value v = (Value) mProductions.removeLast();
-        //UnopExpr expr = (UnopExpr) mProductions.pop();
 	UnopExpr expr = (UnopExpr) mProductions.removeLast();
         expr.setOp(v);
-        //mProductions.push(expr);
 	mProductions.addLast(expr);
     }
     
@@ -1669,13 +1444,11 @@ String local = (String) mProductions.removeLast();
     */
     public void outALengthofUnop(ALengthofUnop node)
     {
-        //mProductions.push(Jimple.v().newLengthExpr(mValue));
 	mProductions.addLast(Jimple.v().newLengthExpr(mValue));
     }
 
     public void outANegUnop(ANegUnop node)
     {
-	//mProductions.push(Jimple.v().newNegExpr(mValue));
 	mProductions.addLast(Jimple.v().newNegExpr(mValue));
     }
 
@@ -1691,15 +1464,12 @@ String local = (String) mProductions.removeLast();
         List args;
         
         if(node.getArgList() != null)                           
-            //args = (List) mProductions.pop();
 	    args = (List) mProductions.removeLast();
         else
             args = new ArrayList();
         
-        //SootMethod method = (SootMethod) mProductions.pop();
 	SootMethod method = (SootMethod) mProductions.removeLast();
 
-        //String local = (String) mProductions.pop();
 	String local = (String) mProductions.removeLast();
         
                
@@ -1719,7 +1489,6 @@ String local = (String) mProductions.removeLast();
             invokeExpr = Jimple.v().newInterfaceInvokeExpr(l, method, args);
         }
 
-        //mProductions.push(invokeExpr); 
 	mProductions.addLast(invokeExpr);  
         
     }        
@@ -1731,15 +1500,12 @@ String local = (String) mProductions.removeLast();
         List args;
         
         if(node.getArgList() != null)                           
-            //args = (List) mProductions.pop();
 	    args = (List) mProductions.removeLast();
         else
             args = new ArrayList();
         
-        //SootMethod method = (SootMethod) mProductions.pop();
 	SootMethod method = (SootMethod) mProductions.removeLast();
         
-        //mProductions.push(Jimple.v().newStaticInvokeExpr(method, args));   
 	mProductions.addLast(Jimple.v().newStaticInvokeExpr(method, args));   
     }
 
@@ -1754,25 +1520,18 @@ String local = (String) mProductions.removeLast();
         Type returnType;
 
         if(node.getParameterList() != null)
-            //parameterList =  (List) mProductions.pop();
 	    parameterList =  (List) mProductions.removeLast();
         
-        //methodName = (String) mProductions.pop();
 	methodName = (String) mProductions.removeLast();
-        //Type type = (Type) mProductions.pop();
 	Type type = (Type) mProductions.removeLast();
-        //className = (String) mProductions.pop();
 	className = (String) mProductions.removeLast();
 
         SootClass sootClass =  mResolver.getResolvedClass(className);
         SootMethod sootMethod = sootClass.getMethod(methodName, parameterList, type);
 
-        //mProductions.push(sootMethod);
 	mProductions.addLast(sootMethod);
-
     }
 
-    
     /*    
           new_expr =
           {simple} new base_type |
@@ -1781,20 +1540,15 @@ String local = (String) mProductions.removeLast();
     */
     public void outASimpleNewExpr(ASimpleNewExpr node)
     {
-        //mProductions.push(Jimple.v().newNewExpr((RefType)mProductions.pop()));
 	mProductions.addLast(Jimple.v().newNewExpr((RefType)mProductions.removeLast()));
     }
     
     public void outAArrayNewExpr(AArrayNewExpr node)
     {
-        //Value size = (Value) mProductions.pop();
 	Value size = (Value) mProductions.removeLast();
-        //Type type = (Type) mProductions.pop();
 	Type type = (Type) mProductions.removeLast();
-        //mProductions.push(Jimple.v().newNewArrayExpr(type, size));
 	mProductions.addLast(Jimple.v().newNewArrayExpr(type, size));
     }
-
 
     public void outAMultiNewExpr(AMultiNewExpr node)
     {
@@ -1808,17 +1562,14 @@ String local = (String) mProductions.removeLast();
         while(it.hasNext()) {
             AArrayDescriptor o = (AArrayDescriptor) it.next();
             if(o.getImmediate() != null)
-                //sizes.add(0,(Value) mProductions.pop());
 		sizes.add(0,(Value) mProductions.removeLast());
             else 
                 break;
         }
                             
-        //BaseType type = (BaseType) mProductions.pop();
 	BaseType type = (BaseType) mProductions.removeLast();
         ArrayType arrayType = ArrayType.v(type, descCnt);
         
-        //mProductions.push(Jimple.v().newNewMultiArrayExpr(arrayType, sizes));   
 	mProductions.addLast(Jimple.v().newNewMultiArrayExpr(arrayType, sizes));   
     }
 
@@ -1851,7 +1602,6 @@ String local = (String) mProductions.removeLast();
               }
             }
 	    	  
-            //mProductions.push(tokenString);
 	    mProductions.addLast(tokenString);
         } 
     }

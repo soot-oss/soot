@@ -99,11 +99,12 @@ public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf, Eq
 
     public void convertToBaf(JimpleToBafContext context, List out)
     {
-	Unit u;
-        out.add(u=Baf.v().newStaticGetInst(field));
-	Iterator it = context.getCurrentUnit().getTags().iterator();
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
+        Unit u = Baf.v().newStaticGetInst(field);
+        out.add(u);
+
+        Iterator it = context.getCurrentUnit().getTags().iterator();
+        while(it.hasNext()) {
+            u.addTag((Tag) it.next());
+        }
     }
 }

@@ -83,7 +83,6 @@ public class BodyExtractorWalker extends Walker
             node.getClassName().apply(this);
         }
         
-        //String className = (String) mProductions.pop();
 	String className = (String) mProductions.removeLast();
         if(!className.equals(mSootClass.getName()))
             throw new RuntimeException("expected:  " + className + ", but got: " + mSootClass.getName());
@@ -106,18 +105,12 @@ public class BodyExtractorWalker extends Walker
     public void outAFile(AFile node)
     {        
         if(node.getImplementsClause() != null) 
-            //mProductions.pop(); // implements_clause
 	    mProductions.removeLast(); // implements_clause
         
         if(node.getExtendsClause() != null) 
-            //mProductions.pop(); // extends_clause
 	    mProductions.removeLast(); // extends_clause
-
         
-        //mProductions.pop(); // file_type
 	mProductions.removeLast(); // file_type
-        
-        //mProductions.push(mSootClass);
 	mProductions.addLast(mSootClass);
     } 
 
@@ -129,9 +122,7 @@ public class BodyExtractorWalker extends Walker
     */    
     public void outAFieldMember(AFieldMember node)
     {
-        //mProductions.pop(); // name
 	mProductions.removeLast(); // name
-        //mProductions.pop(); // type
 	mProductions.removeLast(); // type
     }
 
@@ -145,21 +136,15 @@ public class BodyExtractorWalker extends Walker
         JimpleBody methodBody = null;
 
         if(node.getMethodBody() instanceof AFullMethodBody)
-            //methodBody = (JimpleBody) mProductions.pop();
 	    methodBody = (JimpleBody) mProductions.removeLast();
         
         if(node.getThrowsClause() != null)
-            //throwsClause = (List) mProductions.pop();
 	    throwsClause = (List) mProductions.removeLast();
         
-        if(node.getParameterList() != null) {
-            //parameterList = (List) mProductions.pop();
+        if(node.getParameterList() != null)
 	    parameterList = (List) mProductions.removeLast();
-        }
 
-        //name = (String) mProductions.pop(); // name
 	name = (String) mProductions.removeLast(); // name
-        //type = (Type) mProductions.pop(); // type
 	type = (Type) mProductions.removeLast(); // type
         SootMethod sm = null;
         if (mSootClass.declaresMethod(SootMethod.getSubSignature(name, parameterList, type)))
