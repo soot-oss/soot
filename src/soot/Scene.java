@@ -196,6 +196,12 @@ public class Scene  //extends AbstractHost
 
     private int stateCount;
     public int getState() { return this.stateCount; }
+    private void modifyHierarchy() {
+        stateCount++;
+        activeFastHierarchy = null;
+        activeSideEffectAnalysis = null;
+        activePointsToAnalysis = null;
+    }
 
     /** Returns the options map associated with phaseName. 
       * If a leading . is present in phaseName, strip it! */
@@ -290,7 +296,7 @@ public class Scene  //extends AbstractHost
 
         nameToClass.put(c.getName(), c);
         c.setInScene(true);
-        this.stateCount++;
+        modifyHierarchy();
     }
 
     public void removeClass(SootClass c)
@@ -301,7 +307,7 @@ public class Scene  //extends AbstractHost
         classes.remove(c);
         nameToClass.remove(c.getName());
         c.setInScene(false);
-        this.stateCount++;
+        modifyHierarchy();
     }
 
     public boolean containsClass(String className)
