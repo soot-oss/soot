@@ -394,23 +394,13 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
         Type returnType = getReturnType();
         
         StringBuffer buffer = new StringBuffer();
-        buffer.append("<" + getDeclaringClass().getName() + ": ");
+        buffer.append("<" + Scene.v().quotedNameOf(getDeclaringClass().getName()) + ": ");
         buffer.append(getSubSignatureImpl(name, params, returnType));
         buffer.append(">");
         
         return buffer.toString();
     }
 
-    // xxx temporary stufff
-    public String getJimpleStyleSignature()
-    {
-        int mode = Scene.v().getOutputMode();
-        Scene.v().setOutputMode(Scene.v().OUTPUT_JIMPLE);
-        String res = getSignature();
-        Scene.v().setOutputMode(mode);
-        return res;        
-    }
-    
     /**
         Returns the Soot subsignature of this method.  Used to refer to methods unambiguously.
      */
@@ -432,16 +422,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
     {
         StringBuffer buffer = new StringBuffer();
         
-        boolean isJimpleOutput = false;
-        if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
-            isJimpleOutput = true;
-        
         Type t = returnType;
-        if(isJimpleOutput && Jimple.isJavaKeywordType(t))
-            buffer.append(".");
-        
-        buffer.append(t.toString() + " " + name);
-
+        buffer.append(t.toString() + " " + Scene.v().quotedNameOf(name));
         buffer.append("(");
         
         Iterator typeIt = params.iterator();
@@ -449,8 +431,6 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
         if(typeIt.hasNext())
         {
             t = (Type) typeIt.next();
-            if(isJimpleOutput && Jimple.isJavaKeywordType(t))
-                buffer.append(".");
             
             buffer.append(t);
             
@@ -459,8 +439,6 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
                 buffer.append(",");
                 
                 t = (Type) typeIt.next();
-                if(isJimpleOutput && Jimple.isJavaKeywordType(t))
-                    buffer.append(".");                
                 buffer.append(t);
             }
         }
@@ -487,29 +465,24 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
     {
         StringBuffer buffer = new StringBuffer();
 
-        boolean isJimpleOutput = false;
-        if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
-            isJimpleOutput = true;
-
         // modifiers
         StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
         if (st.hasMoreTokens())
-            buffer.append("." + st.nextToken());
+            buffer.append(st.nextToken());
 
         while(st.hasMoreTokens())
-            buffer.append(" ." + st.nextToken());
+            buffer.append(" " + st.nextToken());
 
         if(buffer.length() != 0)
             buffer.append(" ");
 
         // return type
         Type t = this.getReturnType();
-        if(isJimpleOutput && Jimple.isJavaKeywordType(t))
-            buffer.append(".");
+
         buffer.append(t);
 
         // name
-        buffer.append(" " + this.getName() + "(");            
+        buffer.append(" " + Scene.v().quotedNameOf(this.getName()) + "(");            
 
         // parameters
         Iterator typeIt = this.getParameterTypes().iterator();
@@ -517,16 +490,14 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
         if(typeIt.hasNext())
         {
             t = (Type) typeIt.next();
-            if(isJimpleOutput && Jimple.isJavaKeywordType(t))
-                buffer.append(".");
+
             buffer.append(t);
                        
             while(typeIt.hasNext())
             {
                 buffer.append(", ");
                 t = (Type) typeIt.next();
-                if(isJimpleOutput && Jimple.isJavaKeywordType(t))
-                    buffer.append(".");
+
                 buffer.append(t);
             }
         }
@@ -539,7 +510,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
             
             if(exceptionIt.hasNext())
             {
-                buffer.append(" .throws "+((SootClass) exceptionIt.next()).getName() + " ");
+                buffer.append(" throws "+((SootClass) exceptionIt.next()).getName() + " ");
 
                 while(exceptionIt.hasNext())
                 {

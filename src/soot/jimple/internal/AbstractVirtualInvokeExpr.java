@@ -77,8 +77,8 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(Jimple.v().VIRTUALINVOKE + " " + baseBox.getValue().toString() +
-            "." + method.getJimpleStyleSignature() + "(");
+        buffer.append(Jimple.VIRTUALINVOKE + " " + baseBox.getValue().toString() +
+            "." + method.getSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {

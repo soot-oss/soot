@@ -83,33 +83,17 @@ public class SootField extends AbstractHost implements ClassMember, EquivTo
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("<" + getDeclaringClass().getName() + ": ");
-        buffer.append(getType() + " " + getName() + ">");
+        buffer.append("<" + Scene.v().quotedNameOf(getDeclaringClass().getName()) + ": ");
+        buffer.append(getType() + " " + Scene.v().quotedNameOf(getName()) + ">");
 
         return buffer.toString();
 
     }
   
-    public String getJimpleStyleSignature()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("<" + getDeclaringClass().getName() + ": ");
-        Type t = getType();
-
-        if(Jimple.isJavaKeywordType(t))
-          buffer.append("." + t  + " " + getName() + ">");
-        else
-          buffer.append(getType() + " " + getName() + ">");
-
-        return buffer.toString();
-
-    }
-    
     public String getSubSignature()
     {
         StringBuffer buffer = new StringBuffer();
-        buffer.append(getType() + " " + getName());
+        buffer.append(getType() + " " + Scene.v().quotedNameOf(getName()));
         return buffer.toString();
     }
     
@@ -185,43 +169,21 @@ public class SootField extends AbstractHost implements ClassMember, EquivTo
     }
 
 
-  private String getJimpleStyleDeclaration()
-  {
-    StringBuffer buf = new StringBuffer();
-    StringTokenizer st = new StringTokenizer(Modifier.toString(modifiers));
-    while(st.hasMoreTokens()){
-      buf.append("." + st.nextToken()+ " ");      
-    }
-    if(Jimple.isJavaKeywordType(type))
-      buf.append(".");
-
-    buf.append(type);
-
-    buf.append(" " + name);
-    return buf.toString();
-  }
-
-
-
-  private String getOriginalStyleDeclaration()
-  {
-         String qualifiers = Modifier.toString(modifiers) + " " + type.toString();
+    private String getOriginalStyleDeclaration()
+    {
+        String qualifiers = Modifier.toString(modifiers) + " " + type.toString();
         qualifiers = qualifiers.trim();
 
         if(qualifiers.equals(""))
-            return name;
+            return Scene.v().quotedNameOf(name);
         else
-            return qualifiers + " " + name + "";
+            return qualifiers + " " + Scene.v().quotedNameOf(name) + "";
 
-  }
+    }
 
 
-  public String getDeclaration()
+    public String getDeclaration()
     {
-      int outputMode = Scene.v().getOutputMode();
-      if(outputMode == Scene.v().OUTPUT_JIMPLE)
-        return getJimpleStyleDeclaration();
-      else
         return getOriginalStyleDeclaration();
     }
 }

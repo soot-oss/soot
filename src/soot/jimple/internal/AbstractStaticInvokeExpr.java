@@ -76,7 +76,7 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(Jimple.v().STATICINVOKE + " " + method.getJimpleStyleSignature() + "(");
+        buffer.append(Jimple.v().STATICINVOKE + " " + method.getSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {

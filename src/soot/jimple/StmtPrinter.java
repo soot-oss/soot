@@ -152,9 +152,9 @@ public class StmtPrinter
             {
                 Trap trap = (Trap) trapIt.next();
 
-                out.println("        .catch " + trap.getException().getName() + " .from " +
-                    stmtToName.get(trap.getBeginUnit()) + " .to " + stmtToName.get(trap.getEndUnit()) +
-                    " .with " + stmtToName.get(trap.getHandlerUnit()) + ";");
+                out.println("        catch " + Scene.v().quotedNameOf(trap.getException().getName()) + " from " +
+                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
+                    " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
             }
         }
 

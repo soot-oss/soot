@@ -52,7 +52,7 @@ public class JNopStmt extends AbstractStmt implements NopStmt
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return indentation +  Jimple.v().NOP;
+        return indentation + Jimple.v().NOP;
     }
     
     public void apply(Switch sw)
@@ -70,3 +70,7 @@ public class JNopStmt extends AbstractStmt implements NopStmt
     public boolean branches(){return false;}
 
 }
+
+
+
+

@@ -715,23 +715,23 @@ public class SootClass extends AbstractHost
         {
             StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
             while(st.hasMoreTokens())
-                out.print("." + st.nextToken() + " ");
+                out.print(st.nextToken() + " ");
 
             String classPrefix = "";
 
             if(!isInterface())
              {
-                 classPrefix = classPrefix + " .class";
+                 classPrefix = classPrefix + " class";
                  classPrefix = classPrefix.trim();
              }
 
-            out.print(classPrefix + " " + this.getName() + "");
+            out.print(classPrefix + " " + Scene.v().quotedNameOf(this.getName()) + "");
         }
 
         // Print extension
         {
             if(this.hasSuperclass())
-                out.print(" .extends " + this.getSuperclass().getName() + "");
+                out.print(" extends " + Scene.v().quotedNameOf(this.getSuperclass().getName()) + "");
         }
 
         // Print interfaces
@@ -740,14 +740,14 @@ public class SootClass extends AbstractHost
             
             if(interfaceIt.hasNext())
             {
-                out.print(" .implements ");
+                out.print(" implements ");
                     
-                out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
+                out.print("" + Scene.v().quotedNameOf(((SootClass) interfaceIt.next()).getName()) + "");
                 
                 while(interfaceIt.hasNext())
                 {
                     out.print(",");
-                    out.print(" " + ((SootClass) interfaceIt.next()).getName() + "");
+                    out.print(" " + Scene.v().quotedNameOf(((SootClass) interfaceIt.next()).getName()) + "");
                 }
             }
         }

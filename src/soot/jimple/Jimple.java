@@ -49,86 +49,124 @@ public class Jimple
 {
     private static Jimple jimpleRepresentation = new Jimple();
 
-
-
-    public static String NEWARRAY = ".newarray";
-    public static String NEWMULTIARRAY = ".newmultiarray";
-    public static String NOP = ".nop";
-    public static String RET = ".ret";
-    public static String SPECIALINVOKE = ".specialinvoke";
-    public static String STATICINVOKE = ".staticinvoke";
-    public static String TABLESWITCH = ".tableswitch";
-    public static String VIRTUALINVOKE = ".virtualinvoke";
-    public static String NULL_TYPE = ".null_type";
-    public static String UNKNOWN = ".unknown";
-    public static String CMP = ".cmp";
-    public static String CMPG = ".cmpg";
-    public static String CMPL = ".cmpl";
-    public static String ENTERMONITOR = ".entermonitor";
-    public static String EXITMONITOR = ".exitmonitor";
-    public static String INTERFACEINVOKE = ".interfaceinvoke";
-    public static String LENGTHOF = ".lengthof";
-    public static String LOOKUPSWITCH = ".lookupswitch";
-    public static String NEG = ".neg";    
-    public static String IF = ".if";
-
-
-    public static String ABSTRACT = ".abstract";
-    public static String BOOLEAN = ".boolean";
-    public static String BREAK = ".break";
-    public static String BYTE = ".byte";
-    public static String CASE = ".case";
-    public static String CATCH = ".catch";
-    public static String CHAR = ".char";
-    public static String CLASS = ".class";
-
-
-    public static String FINAL = ".final";
-    public static String NATIVE = ".native";
-    public static String PUBLIC = ".public";
-    public static String PROTECTED = ".protected";
-    public static String PRIVATE = ".private";
-    public static String STATIC = ".static";
-    public static String SYNCHRONIZED = ".synchronized";
-    public static String TRANSIENT = ".transient";
-    public static String VOLATILE = ".volatile";
-
-    public static String INTERFACE = ".interface";
-
-    public static String VOID = ".void";
-
-
-    public static String SHORT = ".short";
-
-    public static String INT = ".int";
-    public static String LONG = ".long";
-    public static String FLOAT = ".float";
-    public static String DOUBLE = ".double";
-
-
-    public static String EXTENDS = ".extends";
-    public static String IMPLEMENTS = ".implements";
- 
-    public static String BREAKPOINT = ".breakpoint";
-
-
-    public static String DEFAULT = ".default";
-
-    public static String GOTO = ".goto";
-
-    public static String INSTANCEOF = ".instanceof";
-
-    public static String NEW = ".new";
     
-    public static String RETURN = ".return";
-   
-   
+    public final static String NEWARRAY = "newarray";
+    public final static String NEWMULTIARRAY = "newmultiarray";
+    public final static String NOP = "nop";
+    public final static String RET = "ret";
+    public final static String SPECIALINVOKE = "specialinvoke";
+    public final static String STATICINVOKE = "staticinvoke";
+    public final static String TABLESWITCH = "tableswitch";
+    public final static String VIRTUALINVOKE = "virtualinvoke";
+    public final static String NULL_TYPE = "null_type";
+    public final static String UNKNOWN = "unknown";
+    public final static String CMP = "cmp";
+    public final static String CMPG = "cmpg";
+    public final static String CMPL = "cmpl";
+    public final static String ENTERMONITOR = "entermonitor";
+    public final static String EXITMONITOR = "exitmonitor";
+    public final static String INTERFACEINVOKE = "interfaceinvoke";
+    public final static String LENGTHOF = "lengthof";
+    public final static String LOOKUPSWITCH = "lookupswitch";
+    public final static String NEG = "neg";    
+    public final static String IF = "if";
+    public final static String ABSTRACT = "abstract";
+    public final static String BOOLEAN = "boolean";
+    public final static String BREAK = "break";
+    public final static String BYTE = "byte";
+    public final static String CASE = "case";
+    public final static String CATCH = "catch";
+    public final static String CHAR = "char";
+    public final static String CLASS = "class";
+    public final static String FINAL = "final";
+    public final static String NATIVE = "native";
+    public final static String PUBLIC = "public";
+    public final static String PROTECTED = "protected";
+    public final static String PRIVATE = "private";
+    public final static String STATIC = "static";
+    public final static String SYNCHRONIZED = "synchronized";
+    public final static String TRANSIENT = "transient";
+    public final static String VOLATILE = "volatile";
+    public final static String INTERFACE = "interface";
+    public final static String VOID = "void";
+    public final static String SHORT = "short";
+    public final static String INT = "int";
+    public final static String LONG = "long";
+    public final static String FLOAT = "float";
+    public final static String DOUBLE = "double";
+    public final static String EXTENDS = "extends";
+    public final static String IMPLEMENTS = "implements";
+    public final static String BREAKPOINT = "breakpoint";
+    public final static String DEFAULT = "default";
+    public final static String GOTO = "goto";
+    public final static String INSTANCEOF = "instanceof";
+    public final static String NEW = "new";
+    public final static String RETURN = "return";
+    public final static String THROW = "throw";
+    public final static String THROWS = "throws";
+    public final static String NULL = "null";
 
-    public static String THROW = ".throw";
-    public static String THROWS = ".throws";
-
-    public static String NULL = ".null";
-
+    static {
+        Set rn = Scene.v().getReservedNames();
+        
+        rn.add("newarray");
+        rn.add("newmultiarray");
+        rn.add("nop");
+        rn.add("ret");
+        rn.add("specialinvoke");
+        rn.add("staticinvoke");
+        rn.add("tableswitch");
+        rn.add("virtualinvoke");
+        rn.add("null_type");
+        rn.add("unknown");
+        rn.add("cmp");
+        rn.add("cmpg");
+        rn.add("cmpl");
+        rn.add("entermonitor");
+        rn.add("exitmonitor");
+        rn.add("interfaceinvoke");
+        rn.add("lengthof");
+        rn.add("lookupswitch");
+        rn.add("neg");
+        rn.add("if");
+        rn.add("abstract");
+        rn.add("boolean");
+        rn.add("break");
+        rn.add("byte");
+        rn.add("case");
+        rn.add("catch");
+        rn.add("char");
+        rn.add("class");
+        rn.add("final");
+        rn.add("native");
+        rn.add("public");
+        rn.add("protected");
+        rn.add("private");
+        rn.add("static");
+        rn.add("synchronized");
+        rn.add(TRANSIENT);
+        rn.add(VOLATILE);
+        rn.add(INTERFACE);
+        rn.add(VOID);
+        rn.add(SHORT);
+        rn.add(INT);
+        rn.add(LONG);
+        rn.add(FLOAT);
+        rn.add(DOUBLE);
+        rn.add(EXTENDS);
+        rn.add(IMPLEMENTS);
+        rn.add(BREAKPOINT);
+        rn.add(DEFAULT);
+        rn.add(GOTO);
+        rn.add(INSTANCEOF);
+        rn.add(NEW);
+        rn.add(RETURN);
+        rn.add(THROW);
+        rn.add(THROWS);
+        rn.add(NULL);
+        
+    }
+    
 
   
   

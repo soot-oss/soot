@@ -48,7 +48,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
 
     public String toString()
     {
-        return baseBox.getValue().toString() + "." + field.getJimpleStyleSignature();
+        return baseBox.getValue().toString() + "." + field.getSignature();
     }
 
     public String toBriefString()

@@ -101,12 +101,12 @@ public class RefType extends BaseType implements ToBriefString
 
     public String toString()
     {
-        return className;
+        return Scene.v().quotedNameOf(className);
     }
 
     public String toBriefString()
     {
-            return className;
+        return className;
     }
 
     public int hashCode()

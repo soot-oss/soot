@@ -466,10 +466,8 @@ public abstract class Body
  
                     String typeName;
                     Type t = local.getType();
-                    if(Jimple.isJavaKeywordType(t))                   
-                      typeName = (isPrecise) ? "." + t.toString() : "." + t.toBriefString();
-                    else
-                      typeName = (isPrecise) ?  t.toString() :  t.toBriefString();
+
+                    typeName = (isPrecise) ?  t.toString() :  t.toBriefString();
 
                     if(typeToLocals.containsKey(typeName))
                         localList = (List) typeToLocals.get(typeName);

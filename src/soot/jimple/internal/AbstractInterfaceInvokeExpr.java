@@ -72,8 +72,8 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(Jimple.v().INTERFACEINVOKE + " " + baseBox.getValue().toString() +
-            "." + method.getJimpleStyleSignature() + "(");
+        buffer.append(Jimple.INTERFACEINVOKE + " " + baseBox.getValue().toString() +
+            "." + method.getSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {

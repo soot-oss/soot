@@ -39,9 +39,6 @@ public class Scene extends AbstractHost
 {
     private static Scene constant = new Scene();
 
-    public final int OUTPUT_JIMPLE = 1;
-    private int outputMode = OUTPUT_JIMPLE;
-
     Chain classes = new HashChain();
     Chain applicationClasses = new HashChain();
     Chain libraryClasses = new HashChain();
@@ -66,15 +63,6 @@ public class Scene extends AbstractHost
 
     private Vector classesToResolve = new Vector();
 
-    public int getOutputMode()
-    {
-        return outputMode;
-    }
-
-    public void setOutputMode(int mode)
-    {
-        outputMode = mode;
-    }
 
     public void addClassToResolve(String c) 
     {
@@ -102,6 +90,29 @@ public class Scene extends AbstractHost
     public void setMainClass(SootClass m)
     {
         mainClass = m;
+    }
+    
+    Set reservedNames = new HashSet();
+    
+    /**
+        Returns a set of tokens which are reserved.  Any field, class, method, or local variable with such a name will be quoted.
+     */
+     
+    public Set getReservedNames()
+    {
+        return reservedNames;
+    }
+    
+    /**
+        If this name is in the set of reserved names, then return a quoted version of it.  Else pass it through.
+     */
+    
+    public String quotedNameOf(String s)
+    {
+        if(reservedNames.contains(s))
+            return "\'" + s + "\'";
+        else
+            return s;
     }
     
     public SootClass getMainClass()
