@@ -1239,6 +1239,7 @@ public class Options extends OptionsBase {
                 "\nThe Static Inliner visits all call sites in the call graph in a \nbottom-up fashion, replacing monomorphic calls with inlined \ncopies of the invoked methods. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
+                +padOpt( "rerun-jb (true)", "" )
                 +padOpt( "insert-null-checks (true)", "" )
                 +padOpt( "insert-redundant-casts (true)", "" )
                 +padOpt( "allowed-modifier-changes", "" )
@@ -1775,6 +1776,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjop.si" ) )
             return ""
                 +"enabled "
+                +"rerun-jb "
                 +"insert-null-checks "
                 +"insert-redundant-casts "
                 +"allowed-modifier-changes "
@@ -2189,6 +2191,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjop.si" ) )
             return ""
               +"enabled:true "
+              +"rerun-jb:true "
               +"insert-null-checks:true "
               +"insert-redundant-casts:true "
               +"allowed-modifier-changes:unsafe "

@@ -42,6 +42,21 @@ public class SIOptions
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
+    /** Reconstruct Jimple body after inlining --
+    
+     * .
+    
+     * When a method with array parameters is inlined, its variables 
+     * may need to be assigned different types than they had in the 
+     * original method to produce compilable code. When this option is 
+     * set, Soot re-runs the Jimple Body pack on each method body which 
+     * has had another method inlined into it so that the typing 
+     * algorithm can reassign the types. 
+     */
+    public boolean rerun_jb() {
+        return soot.PhaseOptions.getBoolean( options, "rerun-jb" );
+    }
+    
     /** Insert Null Checks --
     
      * .

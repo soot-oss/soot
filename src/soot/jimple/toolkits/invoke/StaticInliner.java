@@ -52,6 +52,7 @@ public class StaticInliner extends SceneTransformer
         float expansionFactor = PhaseOptions.getFloat(options, "expansion-factor");
         int maxContainerSize = PhaseOptions.getInt(options, "max-container-size");
         int maxInlineeSize = PhaseOptions.getInt(options, "max-inlinee-size");
+        boolean rerunJb = PhaseOptions.getBoolean(options, "rerun-jb");
 
         HashMap instanceToStaticMap = new HashMap();
 
@@ -141,6 +142,9 @@ public class StaticInliner extends SceneTransformer
                     // Not that it is important to check right before inlining if the site is still valid.
                     
                     SiteInliner.inlineSite(inlinee, invokeStmt, container, options);
+                    if( rerunJb ) {
+                        PackManager.v().getPack("jb").apply(container.getActiveBody());
+                    }
                 }
             }
         }

@@ -2029,6 +2029,19 @@ copies of the invoked methods.
 						<long_desc/>
 					</boolopt>
 					<boolopt>
+						<name>Reconstruct Jimple body after inlining</name>
+						<alias>rerun-jb</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>
+When a method with array parameters is inlined, its variables may need to
+be assigned different types than they had in the original method to produce
+compilable code. When this option is set, Soot re-runs the Jimple Body pack
+on each method body which has had another method inlined into it so that
+the typing algorithm can reassign the types.
+</long_desc>
+					</boolopt>
+					<boolopt>
 						<name>Insert Null Checks</name>
 						<alias>insert-null-checks</alias>
 						<default>true</default>
