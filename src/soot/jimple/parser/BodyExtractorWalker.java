@@ -125,7 +125,7 @@ public class BodyExtractorWalker extends Walker
 	type = (Type) mProductions.pop(); // type
 	SootMethod sm = null;
 	try {	
-	  sm = mSootClass.getMethod(SootMethod.getSubSignature(name, parameterList, type));
+	    sm = mSootClass.getMethod(SootMethod.getSubSignature(name, parameterList, type));
           if (soot.Main.isVerbose)
               System.out.println("[Jimple parser] " + SootMethod.getSubSignature(name, parameterList, type));
 	} catch (soot.NoSuchMethodException e) {

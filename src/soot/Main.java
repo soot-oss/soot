@@ -58,6 +58,67 @@ public class Main
     static Chain cmdLineClasses = new HashChain();
     // <-------------
 
+     public static final int BAF = 0;
+    public static final int B = 1;
+
+    public static final int JIMPLE = 2;
+    public static final int JIMP = 3;
+    
+    public static final int NJIMPLE = 4;
+    public static final int GRIMP = 5;
+
+    public static final int GRIMPLE = 6;
+    public static final int CLASS = 7;
+    
+    public static final int DAVA = 8;
+    public static final int JASMIN = 9;
+    
+
+
+
+    public static String getExtensionFor(int rep)
+    {
+        String str = null;
+
+        switch(rep) {
+        case BAF:
+            str = ".baf";
+            break;
+        case B:
+            str = ".b";
+            break;
+            
+        case JIMPLE: 
+            str = ".jimple";
+            break;                        
+        case JIMP:    
+            str = ".jimp";
+            break;
+        case NJIMPLE:
+            str = ".njimple";
+            break;
+       
+        case GRIMP:
+            str = ".grimp";
+            break;
+        case GRIMPLE:
+            str = ".grimple";
+            break;
+            
+        case CLASS:
+            str = ".class";
+            break;
+        case DAVA:
+            str = ".dava";
+            break;
+        case JASMIN:
+            str = ".jasmin";
+            break;
+        default:
+            throw new RuntimeException();
+        }
+         return str;
+    }
 
 
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
@@ -73,8 +134,8 @@ public class Main
     static public boolean usePackedLive;
     static public boolean usePackedDefs = true;
     static boolean isTestingPerformance;
-
-    static private String targetExtension = ".class";
+    
+    static private int targetExtension = CLASS;
     static private String xmlInputFile = null;
     static private boolean produceXmlOutput = false;
 
@@ -140,7 +201,8 @@ public class Main
     static private SootClass mainClass = null;        
     
     static public long stmtCount;
-    static String finalRep = "grimp";
+    static int finalRep = GRIMP;
+ 
 
     private static List getClassesUnder(String aPath) 
     {
@@ -177,12 +239,212 @@ public class Main
         return fileNames;
     }
 
-    private static void processCmdLine(String[] args)
+    /* NEW! */        
+    public static void setTargetRep(int rep)
     {
-        if(args.length == 0)
-        {
-            // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.11");
+        targetExtension = rep;
+    }
+
+    public static int getTargetRep()
+    {
+        return targetExtension;
+    }
+
+
+    public static void setOptimizing(boolean val)
+    {
+        isOptimizing = val;
+    }
+    public static  boolean isOptimizing()
+    {
+        return isOptimizing;
+    }
+
+
+    public static void setOptimizingWhole(boolean val)
+    {
+        if (!isApplication && val){
+            System.out.println("Can only whole-program optimize in application mode!");
+            System.exit(1);
+        }
+  
+        isOptimizingWhole = val;
+        isOptimizing = val;
+    }
+    public static boolean isOptimizingWhole()
+    {
+        return isOptimizingWhole;
+    }
+
+
+
+
+
+    public static void setProfiling(boolean val)
+    {
+        isProfilingOptimization = val;
+    }
+    public static boolean isProfiling()
+    {
+        return isProfilingOptimization;
+    }
+
+
+    public static void setVerbose(boolean val)
+    {
+        isVerbose = val;
+    }
+    public static boolean isVerbose()
+    {
+        return isVerbose;
+    }
+
+    public static void setAppMode(boolean val)
+    {
+        isApplication = val;
+    }
+    public static boolean isAppMode()
+    {
+        return isApplication;
+    }
+
+
+    public static void addExclude(String str)
+    {
+        if (!isApplication) {    
+            System.out.println("Exclude flag only valid in application mode!");
+            System.exit(1);
+        }
+  
+        packageInclusionFlags.add(new Boolean(false));
+        packageInclusionMasks.add(str);
+  
+    }
+
+    public static void addInclude(String str)
+    {
+        if (!isApplication) {
+            System.out.println("Include flag only valid in application mode!");
+            System.exit(1);
+        }
+        packageInclusionFlags.add(new Boolean(true));
+        packageInclusionMasks.add(str);
+    }
+
+    public static void addDynamicPath(String path)
+    {
+        if (!isApplication)
+            {
+                System.out.println("Dynamic-path flag only valid in application mode!");
+                System.exit(1);
+            }
+                     
+        StringTokenizer tokenizer = new StringTokenizer(path, ":");
+        while(tokenizer.hasMoreTokens())
+            dynamicClasses.addAll(getClassesUnder(tokenizer.nextToken()));
+    }
+
+
+    public static void addProcessPath(String path)
+    {
+        if (isApplication)
+            {
+                System.out.println("Process-path flag only valid in single-file mode!");
+                System.exit(1);
+            }
+
+        StringTokenizer tokenizer = new StringTokenizer(path, ":");
+        while(tokenizer.hasMoreTokens())
+            processClasses.addAll(getClassesUnder(tokenizer.nextToken()));
+    }
+
+    public static void setDebug(boolean val)
+    {
+        isInDebugMode = val;
+    }
+
+    public static boolean isDebug()
+    {
+        return isInDebugMode;
+    }
+
+    public static void setOutputDir(String dir)
+    {
+        outputDir = dir;
+    }
+
+    public static String getOutputDir()
+    {
+        return outputDir;
+    }
+
+
+
+    public static void setSrcPrecedence(String prec)
+    {
+        if(prec.equals("jimple"))
+            SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_JIMPLE);
+        else if(prec.equals("class"))
+            SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_CLASS);
+        else {                    
+            System.out.println("Illegal --src-prec arg: " + prec);
+            System.out.println("Valid args are: \"jimple\" or \"class\"");
+            System.exit(1);
+        }
+    }
+
+
+
+
+    public static void setFinalRep(String rep)
+    {
+        if(rep.equals("jimple"))
+            finalRep = JIMPLE;
+        else if(rep.equals("grimp"))
+            finalRep = GRIMP;
+        else if(rep.equals("baf"))
+            finalRep = BAF;
+        else {                    
+            System.out.println("Illegal --final-rep arg: " + rep);
+            System.out.println("valid args are: [baf|grimp|jimple]" );
+            System.exit(1);
+        }
+    }
+
+    public static int getFinalRep() 
+    {
+        return finalRep;
+    }
+
+
+
+    public static void setAnalyzingLibraries(boolean val)
+    {
+        isAnalyzingLibraries = val;
+    }
+    public static boolean isAnalyzingLibraries()
+    {
+        return isAnalyzingLibraries;
+    }
+
+
+
+    public static void setSubstractingGC(boolean val)
+    {
+        isSubtractingGC = val;
+    }
+    public static boolean isSubstractingGC()
+    {
+        return isSubtractingGC;
+    }
+
+
+
+
+    private static void printHelp()
+    {
+         // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
+            System.out.println("Soot version 1.beta.6.dev.12");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -255,76 +517,56 @@ public class Main
                
             
             System.exit(0);
+    }
+
+
+
+    private static void processCmdLine(String[] args)
+    {
+        if(args.length == 0)
+        {
+            printHelp();
         }
 
         // Handle all the options
         for(int i = 0; i < args.length; i++)
         {
             String arg = args[i];
-            
-            if(arg.equals("-j") || arg.equals("--jimp"))
-                targetExtension = ".jimp";
+             if(arg.equals("-j") || arg.equals("--jimp"))
+                setTargetRep(JIMP);
             else if(arg.equals("--njimple"))
-                targetExtension = ".njimple";
+                setTargetRep(NJIMPLE);
             else if(arg.equals("-s") || arg.equals("--jasmin"))
-                targetExtension = ".jasmin";
+                setTargetRep(JASMIN);
             else if(arg.equals("-J") || arg.equals("--jimple"))
-                targetExtension = ".jimple";
+                setTargetRep(JIMPLE);
             else if(arg.equals("-B") || arg.equals("--baf"))
-                targetExtension = ".baf";
-            else if(arg.equals("--lazy"))
-                Scene.v().setLazyResolving(true);
-            else if(arg.equals("-h")) 
-            {
-                Scene.v().setLazyResolving(true);
-                xmlInputFile = args[++i];
-            }
+                setTargetRep(BAF);
             else if(arg.equals("-b") || arg.equals("--b"))
-                targetExtension = ".b";
+                setTargetRep(B);
             else if(arg.equals("-g") || arg.equals("--grimp"))
-                targetExtension = ".grimp";
+                setTargetRep(GRIMP);
             else if(arg.equals("-G") || arg.equals("--grimple"))
-                targetExtension = ".grimple";
+                setTargetRep(GRIMPLE);
             else if(arg.equals("-c") || arg.equals("--class"))
-                targetExtension = ".class";
+                setTargetRep(CLASS);
+            else if(arg.equals("--dava"))
+                setTargetRep(DAVA);
+
             else if(arg.equals("-X") || arg.equals("--xml"))
                 produceXmlOutput = true;
-            else if(arg.equals("--dava"))
-                targetExtension = ".dava";
             else if(arg.equals("-O") || arg.equals("--optimize"))
-                isOptimizing = true;
-            else if(arg.equals("-W") || arg.equals("--whole-optimize"))
-            {
-                if (!isApplication)
-                {
-                    System.out.println("Can only whole-program optimize in application mode!");
-                    System.exit(1);
-                }
-                isOptimizingWhole = true;
-                isOptimizing = true;
-            } 
-            /*
-              else if(arg.equals("--use-vta"))
-              {
-              isUsingVTA = true;
-              Jimplifier.NOLIB = false;
-              }
-              else if(arg.equals("--use-rta"))
-              {
-              isUsingRTA = true;
-              Jimplifier.NOLIB = false;
-              } */
-            
-            else if(arg.equals("-t") || arg.equals("--time"))
-                isProfilingOptimization = true;
+                setOptimizing(true);
+            else if(arg.equals("-W") || arg.equals("--whole-optimize"))            
+                setOptimizingWhole(true);
+           
+             else if(arg.equals("-t") || arg.equals("--time"))
+                setProfiling(true);
             else if(arg.equals("--subtract-gc"))
-            {
-                Timer.setSubtractingGC(true);
-                isSubtractingGC = true;
-            }    
+                setSubstractingGC(true);
             else if(arg.equals("-v") || arg.equals("--verbose"))
-                isVerbose = true;
-            else if(arg.equals("--soot-class-path"))
+                setVerbose(true);
+             else if(arg.equals("--soot-class-path"))
             {
                 if(++i < args.length)
                     Scene.v().setSootClassPath(args[i]);
@@ -337,135 +579,61 @@ public class Main
                     System.out.println("eg. java soot.Main --app Simulator");
                     System.exit(1);
                 }
-                isApplication = true;
+                setAppMode(true);
             }
             else if(arg.equals("-d"))
             {
                 if(++i < args.length)
                     outputDir = args[i];
             }
-            else if(arg.equals("-x") || arg.equals("--exclude"))
+             else if(arg.equals("-x") || arg.equals("--exclude"))
+            {            
+                if(++i < args.length)
+                    addExclude(args[i]);
+            }
+            else if(arg.equals("-i") || arg.equals("--include"))
+            {                 
+                if(++i < args.length)
+                    addInclude(args[i]);
+            }
+            else if(arg.equals("-A") || arg.equals("--analyze-context"))
+                setAnalyzingLibraries(true);
+            else if(arg.equals("--final-rep"))
             {
-                if (!isApplication)
-                    {
-                        System.out.println("Exclude flag only valid in application mode!");
-                        System.exit(1);
-                    }
-                    if(++i < args.length)
-                    {
-                        packageInclusionFlags.add(new Boolean(false));
-                        packageInclusionMasks.add(args[i]);
-                    }
-                }
-                else if(arg.equals("-i") || arg.equals("--include"))
-                {
-                    if (!isApplication)
-                    {
-                        System.out.println("Include flag only valid in application mode!");
-                        System.exit(1);
-                    }
-                    if(++i < args.length)
-                    {
-                        packageInclusionFlags.add(new Boolean(true));
-                        packageInclusionMasks.add(args[i]);
-                    }
-                }
-                else if(arg.equals("-A") || arg.equals("--analyze-context"))
-                    isAnalyzingLibraries = true;
-                else if(arg.equals("--final-rep"))
-                {
-                    if(++i < args.length)
-                        finalRep = args[i];
-                        
-                    if(!finalRep.equals("jimple") &&
-                        !finalRep.equals("grimp") &&
-                        !finalRep.equals("baf"))
-                    {
-                        System.out.println("Illegal --final-rep arg: " + finalRep);
-                    }
-                    
-                }
-                else if (arg.equals("-p") || arg.equals("--phase-option"))
-                {
-                    String phaseName = args[++i];
-                    String option = args[++i];
-                    int colonLoc = option.indexOf(':');
-                    String key = null, value = null;
-
-                    if (colonLoc == -1)
-                    {
-                        key = option;
-                        value = "true";
-                    }
-                    else 
-                    {
-                        key = option.substring(0, option.indexOf(':'));
-                        value = option.substring(option.indexOf(':')+1);
-                    }
-
-                    Scene.v().getPhaseOptions(phaseName).put(key, value);
-                }
-                else if (arg.equals("--debug"))
-                    isInDebugMode = true;
+                if(++i < args.length)
+                    setFinalRep(args[i]);
+            }
+            else if (arg.equals("-p") || arg.equals("--phase-option"))
+            {
+                if(i+2 < args.length)
+                    processPhaseOption(args[++i], args[++i]);                
+            }
+            else if (arg.equals("--debug"))
+                setDebug(true);
                
-                else if (arg.equals("--dynamic-path"))
-                {
-                    if (!isApplication)
-                    {
-                        System.out.println("Dynamic-path flag only valid in application mode!");
-                        System.exit(1);
-                    }
-
-                    if(++i < args.length) 
-                    {
-                        StringTokenizer tokenizer = new StringTokenizer(args[i], ":");
-                        while(tokenizer.hasMoreTokens()) 
-                            dynamicClasses.addAll(getClassesUnder(tokenizer.nextToken()));
-                    }                    
-                }
-                else if (arg.equals("--process-path")) 
-                {
-                    if (isApplication)
-                    {
-                        System.out.println("Process-path flag only valid in single-file mode!");
-                        System.exit(1);
-                    }
-
-                    if(++i < args.length) {                        
-                        StringTokenizer tokenizer = new StringTokenizer(args[i], ":");
-                        while(tokenizer.hasMoreTokens())
-                            processClasses.addAll(getClassesUnder(tokenizer.nextToken()));
-                    }                    
-                } // undocumented option 
-                else if(arg.equals("--src-prec"))
-                {
-                    if(++i < args.length)
-                    { 
-                        if(args[i].equals("jimple"))
-                            SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_JIMPLE);
-                        else if(args[i].equals("class"))
-                            SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_CLASS);
-                        else
-                        {
-                            System.out.println("Illegal arg for option --src-prec: " + args[i]);
-                            System.out.println("Valid args are: \"jimple\" or \"class\"");
-                            System.exit(1);
-                        }     
-                    } 
-                    else 
-                    {
-                        System.out.println("Must specify an argument for option --src-prec");
-                        System.out.println("Valid args are: \"jimple\" or \"class\"");
-                        System.exit(1);                        
-                    }
-                }
-                else if(arg.startsWith("-"))
-                {
-                    System.out.println("Unrecognized option: " + arg);
-                    System.exit(1);
-                }
-                else if(arg.startsWith("@"))
-                {
+            else if (arg.equals("--dynamic-path"))
+            {
+                if(++i < args.length) 
+                    addDynamicPath(args[i]);
+            }
+            else if (arg.equals("--process-path")) 
+            {
+                if(++i < args.length)
+                    addProcessPath(args[i]);                    
+            }                    
+            else if(arg.equals("--src-prec"))
+            {                    
+                if(++i < args.length)                    
+                    setSrcPrecedence(args[i]);
+            }  
+             else if(arg.startsWith("-"))
+             {
+                 System.out.println("Unrecognized option: " + arg);
+                 printHelp();
+                 System.exit(0);
+             }  
+             else if(arg.startsWith("@"))
+             {
                     try
                     {
                         File fn = new File(arg.substring(1));
@@ -486,22 +654,48 @@ public class Main
                 {
                     cmdLineClasses.add(arg);
                 }
+        }
+        postCmdLineCheck();	   
+    }
+
+    
+
+    private static void processPhaseOption(String phaseName, String option)
+    {
+        int colonLoc = option.indexOf(':');
+        String key = null, value = null;
+
+        if (colonLoc == -1)
+            {
+                key = option;
+                value = "true";
+            }
+        else 
+            {
+                key = option.substring(0, option.indexOf(':'));
+                value = option.substring(option.indexOf(':')+1);
             }
 
+        Scene.v().getPhaseOptions(phaseName).put(key, value);
+    }
+
+    private static void postCmdLineCheck()
+    {
 	    if(cmdLineClasses.isEmpty())
-		{
-		    System.out.println("Nothing to do!");
-		    System.exit(0);
-		}
+            {
+                System.out.println("Nothing to do!");
+                System.exit(0);
+            }
 	    // Command line classes
 	    if (isApplication && cmdLineClasses.size() > 1)
-        {
-                    System.out.println("Can only specify one class in application mode!");
-                    System.out.println("The transitive closure of the specified class gets loaded.");
-                    System.out.println("(Did you mean to use single-file mode?)");
-                    System.exit(1);
-        }
+            {
+                System.out.println("Can only specify one class in application mode!");
+                System.out.println("The transitive closure of the specified class gets loaded.");
+                System.out.println("(Did you mean to use single-file mode?)");
+                System.exit(1);
+            }
     }
+
 
 
 
@@ -838,6 +1032,202 @@ public class Main
         return paddedLeftOf(new Double(truncatedOf(value, 2)).toString(), 5);
     }
     
+
+    private static void handleClass(SootClass c)
+    {
+        FileOutputStream streamOut = null;
+        PrintWriter writerOut = null;
+        
+        String fileName;
+        
+        if(!outputDir.equals(""))
+            fileName = outputDir + fileSeparator;
+        else
+            fileName = "";
+        
+        fileName += c.getName() + getExtensionFor(targetExtension);
+        
+      
+        if(targetExtension != CLASS)
+        {   
+            try {
+                streamOut = new FileOutputStream(fileName);
+                writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+            }
+            catch (IOException e)
+            {
+                System.out.println("Cannot output file " + c.getName() + getExtensionFor(targetExtension));
+            }
+        }
+
+        boolean produceJimple = false;
+        boolean produceBaf = false;
+        boolean produceGrimp = false;
+        boolean produceDava = false;
+        
+        // Determine paths
+        
+        {
+            String endResult;
+                               
+            switch(targetExtension) {
+            case JIMPLE:
+            case NJIMPLE:
+            case JIMP:                   
+                endResult = "jimple";
+                break;
+            case GRIMP:
+            case GRIMPLE:
+                endResult = "grimp";
+                break;
+            case DAVA:
+                endResult = "dava";
+                break;
+            case BAF:
+            case B:
+                endResult = "baf";
+                break;
+            default:
+                endResult = getExtensionFor(finalRep).substring(1);
+            }
+        
+    
+            if(endResult.equals("jimple"))
+                produceJimple = true;
+            else if(endResult.equals("baf"))
+            {
+                produceBaf = true; 
+                produceJimple = true;
+            }
+            else if(endResult.equals("grimp"))
+            {
+                produceJimple = true; 
+                produceGrimp = true;
+            }
+            else if(endResult.equals("dava"))
+            {
+                produceJimple = true; 
+                produceGrimp = true;
+                produceDava = true;
+            }
+        }
+
+        // Build all necessary bodies
+        {
+            Iterator methodIt = c.getMethods().iterator();
+	    
+	   
+            while(methodIt.hasNext())
+            {   
+                SootMethod m = (SootMethod) methodIt.next();
+	
+                if(!m.isConcrete())
+                    continue;
+				
+                if(produceJimple)
+                {		
+                    if(!m.hasActiveBody()) {
+                        m.getBodyFromMethodSource("jb");                        
+                    }
+		    
+
+                    Scene.v().getPack("jtp").apply(m.getActiveBody());
+                    if(isOptimizing) 
+                        Scene.v().getPack("jop").apply(m.getActiveBody());
+                }
+                
+                if(produceGrimp)
+                {
+                    if(isOptimizing)
+                        m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb", "aggregate-all-locals"));
+                    else
+                        m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
+                        
+                    if(isOptimizing)
+                        Scene.v().getPack("gop").apply(m.getActiveBody());
+                        
+                }
+                else if(produceBaf)
+                {   
+                     m.setActiveBody(Baf.v().newBody((JimpleBody) m.getActiveBody()));
+
+                     if(isOptimizing) 
+                        Scene.v().getPack("bop").apply(m.getActiveBody());
+                } 
+                
+                if(produceDava)
+                {
+                    m.setActiveBody(Dava.v().newBody(m.getActiveBody(), "db"));
+                }    
+            }
+            
+        }
+
+
+        switch(targetExtension) {
+        case JASMIN:
+            if(c.containsBafBody())
+                new soot.baf.JasminClass(c).print(writerOut);            
+            else
+                new soot.jimple.JasminClass(c).print(writerOut);
+            break;
+        case JIMP:            
+            c.printTo(writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
+            break;
+        case NJIMPLE:
+            c.printTo(writerOut, PrintJimpleBodyOption.NUMBERED);
+            break;
+        case B:
+            c.printTo(writerOut, soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
+            break;
+        case BAF:
+        case JIMPLE:
+        case GRIMPLE:
+            writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
+            c.printJimpleStyleTo(writerOut, 0);
+            break;
+        case DAVA:
+            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+            break;
+        case GRIMP:
+            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+            break;
+        case CLASS:
+            c.write(outputDir);
+            break;
+        default:
+            throw new RuntimeException();
+        }
+        
+        if(targetExtension != CLASS)
+        {
+            try {
+                writerOut.flush();
+                streamOut.close();
+            }
+            catch(IOException e)
+            {
+                System.out.println("Cannot close output file " + fileName);
+            }
+        }
+
+        // Release bodies
+        {
+            Iterator methodIt = c.getMethods().iterator();
+                
+            while(methodIt.hasNext())
+            {   
+                SootMethod m = (SootMethod) methodIt.next();
+                
+                if(m.hasActiveBody())
+                    m.releaseActiveBody();
+            }
+        }
+    }
+
+
+
+    /*
     private static void handleClass(SootClass c)
     {
         FileOutputStream streamOut = null;
@@ -1006,7 +1396,7 @@ public class Main
                     m.releaseActiveBody();
             }
         }
-    }
+        }*/
     
     public static double truncatedOf(double d, int numDigits)
     {

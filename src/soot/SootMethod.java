@@ -381,152 +381,89 @@ public class SootMethod extends AbstractHost implements ClassMember
      */
     public String getSignature()
     {
-        if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
-            return getJimpleStyleSignature();
-
-        StringBuffer buffer = new StringBuffer();
-
+	String name = getName();
+	List params =  getParameterTypes();
+	Type returnType = getReturnType();
+	
+	StringBuffer buffer = new StringBuffer();
         buffer.append("<" + getDeclaringClass().getName() + ": ");
-        buffer.append(getReturnType().toString() + " " + getName());
-        buffer.append("(");
-
-        Iterator typeIt = getParameterTypes().iterator();
-
-        if(typeIt.hasNext())
-        {
-            buffer.append(typeIt.next());
-
-            while(typeIt.hasNext())
-            {
-                buffer.append(",");
-                buffer.append(typeIt.next());
-            }
-        }
-
-        buffer.append(")>");
-
-        return buffer.toString();
+	buffer.append(getSubSignatureImpl(name, params, returnType));
+        buffer.append(">");
+	
+	return buffer.toString();
     }
 
-    /** Returns the Jimple-style signature of this method (for Jimple output). */
+    // xxx temporary stufff
     public String getJimpleStyleSignature()
     {
-        StringBuffer buffer = new StringBuffer();
-        
-        buffer.append("<" + getDeclaringClass().getName() + ": ");
-        Type t = getReturnType();
-        if(Jimple.isJavaKeywordType(t))
-            buffer.append(".");
-        
-        buffer.append(t.toString() + " " + getName());
-        buffer.append("(");
-        
-        Iterator typeIt = getParameterTypes().iterator();
-	
-        if(typeIt.hasNext())
-        {
-            t = (Type) typeIt.next();
-            if(Jimple.isJavaKeywordType(t))
-                buffer.append(".");    		  
-            buffer.append(t);
-            
-            while(typeIt.hasNext())
-            {
-                buffer.append(",");
-                t = (Type) typeIt.next();
-                if(Jimple.isJavaKeywordType(t))
-                    buffer.append(".");    		  
-                buffer.append(t);
-                
-            }
-        }
-	
-        buffer.append(")>");
-        
-        return buffer.toString();
+	int mode = Scene.v().getOutputMode();
+	Scene.v().setOutputMode(Scene.v().OUTPUT_JIMPLE);
+	String res = getSignature();
+	Scene.v().setOutputMode(mode);
+	return res;	
     }
     
     /**
         Returns the Soot subsignature of this method.  Used to refer to methods unambiguously.
      */
-
     public String getSubSignature()
     {
-        StringBuffer buffer = new StringBuffer();
+	String name = getName();
+	List params =  getParameterTypes();
+	Type returnType = getReturnType();
 
-	Type t = getReturnType();
-	if(Jimple.isJavaKeywordType(t))
-	  buffer.append("." + t.toString() + " " + getName());
-	else
-	  buffer.append(t.toString() + " " + getName());
-
-        buffer.append("(");
-
-        Iterator typeIt = getParameterTypes().iterator();
-
-        if(typeIt.hasNext())
-        {
-	  t = (Type) typeIt.next();
-	  if(Jimple.isJavaKeywordType(t))
-            buffer.append("." + t);
-	  else
-            buffer.append(t);
-
-            while(typeIt.hasNext())
-            {
-	      buffer.append(",");
-	      t = (Type ) typeIt.next();
-	      if(Jimple.isJavaKeywordType(t))
-		buffer.append("." + t);
-	      else
-		buffer.append(t);
-	 
-            }
-        }
-
-        buffer.append(")");
-
-        return buffer.toString();
+	return getSubSignatureImpl(name, params, returnType);
     }
 
-    /** Given a name, parameter list and return type, gives the corresponding signature. */
     public static String getSubSignature(String name, List params, Type returnType)
     {
-        StringBuffer buffer = new StringBuffer();
+	return getSubSignatureImpl(name, params, returnType); 
+    }
+    
+    public static String getSubSignatureImpl(String name, List params, Type returnType) 
+    {
+	StringBuffer buffer = new StringBuffer();
+	
+	boolean isJimpleOutput = false;
+	if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
+            isJimpleOutput = true;
 	
 	Type t = returnType;
-	if(Jimple.isJavaKeywordType(t))
-            buffer.append("." + t.toString() + " " + name);
-	else
-            buffer.append(t.toString() + " " + name);
+	if(isJimpleOutput && Jimple.isJavaKeywordType(t))
+            buffer.append(".");
+	
+	buffer.append(t.toString() + " " + name);
 
         buffer.append("(");
-
+	
         Iterator typeIt = params.iterator();
 
         if(typeIt.hasNext())
         {
             t = (Type) typeIt.next();
-            if(Jimple.isJavaKeywordType(t))
-                buffer.append("." + t);
-            else
-                buffer.append(t);
+            if(isJimpleOutput && Jimple.isJavaKeywordType(t))
+                buffer.append(".");
+	    
+	    buffer.append(t);
             
             while(typeIt.hasNext())
             {
                 buffer.append(",");
 		
                 t = (Type) typeIt.next();
-                if(Jimple.isJavaKeywordType(t))
-                    buffer.append("." + t);
-                else
-                    buffer.append(t);
+                if(isJimpleOutput && Jimple.isJavaKeywordType(t))
+                    buffer.append(".");		
+		buffer.append(t);
             }
         }
         buffer.append(")");
-
+	
         return buffer.toString();
     }
+    
+    
+
+
 
     /** Returns the signature of this method. */
     public String toString()
@@ -538,10 +475,13 @@ public class SootMethod extends AbstractHost implements ClassMember
      * Returns the declaration of this method, as used at the top of textual body representations 
      *  (before the {}'s containing the code for representation.)
      */
-
-    private String getJimpleStyleDeclaration()
+    public String getDeclaration()
     {
         StringBuffer buffer = new StringBuffer();
+
+	boolean isJimpleOutput = false;
+	if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
+            isJimpleOutput = true;
 
         // modifiers
         StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
@@ -556,7 +496,7 @@ public class SootMethod extends AbstractHost implements ClassMember
 
         // return type
         Type t = this.getReturnType();
-        if(Jimple.isJavaKeywordType(t))
+        if(isJimpleOutput && Jimple.isJavaKeywordType(t))
             buffer.append(".");
         buffer.append(t);
 
@@ -569,7 +509,7 @@ public class SootMethod extends AbstractHost implements ClassMember
         if(typeIt.hasNext())
         {
             t = (Type) typeIt.next();
-            if(Jimple.isJavaKeywordType(t))
+            if(isJimpleOutput && Jimple.isJavaKeywordType(t))
                 buffer.append(".");
             buffer.append(t);
 		       
@@ -577,7 +517,7 @@ public class SootMethod extends AbstractHost implements ClassMember
             {
                 buffer.append(", ");
                 t = (Type) typeIt.next();
-                if(Jimple.isJavaKeywordType(t))
+                if(isJimpleOutput && Jimple.isJavaKeywordType(t))
                     buffer.append(".");
                 buffer.append(t);
             }
@@ -592,64 +532,6 @@ public class SootMethod extends AbstractHost implements ClassMember
             if(exceptionIt.hasNext())
             {
                 buffer.append(" .throws "+((SootClass) exceptionIt.next()).getName() + " ");
-
-                while(exceptionIt.hasNext())
-                {
-                    buffer.append(", " + ((SootClass) exceptionIt.next()).getName());
-                }
-            }
-        }
-
-        return buffer.toString();
-    }
-
-    /**
-     * Returns the declaration of this method.
-     */
-    public String getDeclaration()
-    {
-	if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
-            return getJimpleStyleDeclaration();
-      
-	StringBuffer buffer = new StringBuffer();
-
-        // modifiers
-      	buffer.append(Modifier.toString(this.getModifiers()));
-        if(buffer.length() != 0)
-            buffer.append(" ");
-
-        // return type
-	Type t = this.getReturnType();
-	buffer.append(t);
-
-        // name
-	buffer.append(" " + this.getName() + "(");
-
-        // parameters
-        Iterator typeIt = this.getParameterTypes().iterator();
-
-        if(typeIt.hasNext())
-        {
-            t = (Type) typeIt.next();
-            buffer.append(t);
-		       
-            while(typeIt.hasNext())
-            {
-                buffer.append(", ");
-                t = (Type) typeIt.next();
-                buffer.append(t);
-            }
-        }
-
-        buffer.append(")");
-
-        // Print exceptions
-        {
-            Iterator exceptionIt = this.getExceptions().iterator();
-
-            if(exceptionIt.hasNext())
-            {
-                buffer.append(" .throws " + ((SootClass) exceptionIt.next()).getName() + " ");
 
                 while(exceptionIt.hasNext())
                 {

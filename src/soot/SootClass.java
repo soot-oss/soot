@@ -825,7 +825,6 @@ public class SootClass extends AbstractHost
 	}
     }
     out.println("}");
-
   }
 
 
@@ -917,10 +916,9 @@ public class SootClass extends AbstractHost
 		    throw new RuntimeException("method " + method.getName() + " has no active body!");
 		  else
 		    method.getActiveBody().printTo(out, printBodyOptions);
-		  // ((soot.jimple.GrimpBody) method.getActiveBody()).printDebugTo(out);
+
 			    
                             
-
 		  if(methodIt.hasNext())
 		    out.println();
 		}

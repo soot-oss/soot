@@ -70,6 +70,10 @@ public class Scene extends AbstractHost
         return outputMode;
     }
 
+    public void setOutputMode(int mode)
+    {
+	outputMode = mode;
+    }
 
     public void addClassToResolve(String c) 
     {
