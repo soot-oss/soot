@@ -10,8 +10,8 @@ import java.util.*;
 
 public class UnreachablePruner {
 
-    static boolean debug = false;
-    static boolean verbose = false;
+    static boolean debug = ca.mcgill.sable.soot.Main.isInDebugMode;
+    static boolean verbose = ca.mcgill.sable.soot.Main.isVerbose;
 
     static CompleteUnitGraph stmtGraph;
     static HashSet visited;
@@ -22,11 +22,8 @@ public class UnreachablePruner {
 	stmtGraph = new CompleteUnitGraph(body);
 	visited = new HashSet();
 
-	verbose = ca.mcgill.sable.soot.Main.isVerbose;
-	debug = ca.mcgill.sable.soot.Main.isInDebugMode;
-
-	if (verbose)
-	    System.out.println("    ... starting unreachable pruner ...");
+	if (verbose) 
+            System.out.println("[" + body.getMethod().getName() + "] Starting unreachable pruner...");
 
 	// mark first statement and all its successors, recursively
 	if (!body.getUnits().isEmpty())

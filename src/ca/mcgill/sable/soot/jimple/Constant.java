@@ -99,5 +99,3 @@ public abstract class Constant implements ca.mcgill.sable.util.ValueObject, Valu
         throw new RuntimeException();
     }
 }
-
-

@@ -80,9 +80,14 @@ public class BaseJimpleOptimizer
             System.out.println("[" + body.getMethod().getName() +
                 "] Starting base jimple optimizations...");
 
+        // This order is important.  Don't mess with it.
+        // Examples to demonstrate this are left as an exercise for the reader.
         ConstantAndCopyPropagator.propagateConstantsAndCopies(body);
-        DeadCodeEliminator.eliminateDeadCode(body);
-//            JumpOptimizer.optimizeJumps(body);
-//            UnreachablePruner.pruneUnreachables(body);
+        ConstantOptimizer.optimizeConstants(body);
+//          BranchFolder.foldBranches(body);
+//          DeadCodeEliminator.eliminateDeadCode(body);
+//          UnreachablePruner.pruneUnreachables(body);
+//          JumpOptimizer.optimizeJumps(body);
+        UnreachablePruner.pruneUnreachables(body);
     }
 }

@@ -10,21 +10,20 @@ import java.util.*;
 
 public class JumpOptimizer {
 
-    static boolean debug = false;
-    static boolean verbose = false;
+    static boolean debug = ca.mcgill.sable.soot.Main.isInDebugMode;
+    static boolean verbose = ca.mcgill.sable.soot.Main.isVerbose;
 
     static final int JUMPOPT_TYPES = 6;
     static int numFound[], numFixed[];
 
     static HashMap stmtMap;
     
-    public static void optimizeJumps(StmtBody body) {
-
-	verbose = ca.mcgill.sable.soot.Main.isVerbose;
-	debug = ca.mcgill.sable.soot.Main.isInDebugMode;
-
-	if (verbose)
-	    System.out.println("    ... starting jump optimizer ...");
+    public static void optimizeJumps(StmtBody body) 
+    {
+	if (verbose) 
+        {
+            System.out.println("[" + body.getMethod().getName() + "] Starting jump optimizer...");
+	}
 
 	// allocate counters once only
 	if (numFound == null) {
@@ -37,11 +36,11 @@ public class JumpOptimizer {
 	    numFixed[i] = 0;
 	}
 
-	Chain units = body.getUnits();
+        Chain units = body.getUnits();
 	stmtMap = new HashMap();
 
 	// find goto and if-goto statements
-	ListIterator stmtIt = units.listIterator();
+	Iterator stmtIt = units.iterator();
 	Stmt stmt, target, newTarget;
 	while (stmtIt.hasNext()) {
 	    stmt = (Stmt)stmtIt.next();
@@ -51,21 +50,14 @@ public class JumpOptimizer {
 
 		if (stmtIt.hasNext()) {
 		    // check for goto -> next statement
-		    int nextIndex = stmtIt.nextIndex();
-		    Stmt nextStmt = (Stmt)stmtList.get(nextIndex);
- 		    if (nextStmt == target) {
-	 		if (verbose)
-		 	    System.out.println("    found Type 6 " +
-			 		       "(goto -> next statement)");
+                    if (units.getSuccOf(stmt) == target)
+                    {
 			stmtIt.remove();
 			updateCounters(6, true);
 		    }
 		}
 
 		if (target instanceof GotoStmt) {
-		    if (verbose)
-			System.out.println("      found Type 1 " +
-					   "(goto -> goto)");
 		    newTarget = getFinalTarget(target);
 		    if (newTarget == null)
 			newTarget = stmt;
@@ -73,9 +65,6 @@ public class JumpOptimizer {
 		    updateCounters(1, true);
 		}
 		else if (target instanceof IfStmt) {
-		    if (verbose)
-			System.out.println("      found Type 3 " +
-					   "(goto -> ifgoto)");
 		    updateCounters(3, false);
 		}
 	    }
@@ -83,9 +72,6 @@ public class JumpOptimizer {
 		target = (Stmt)((IfStmt)stmt).getTarget();
 
 		if (target instanceof GotoStmt) {
-		    if (verbose)
-			System.out.println("        found Type 2 " +
-					   "(ifgoto -> goto)");
 		    newTarget = getFinalTarget(target);
 		    if (newTarget == null)
 			newTarget = stmt;
@@ -93,20 +79,14 @@ public class JumpOptimizer {
 		    updateCounters(2, true);
 		}
 		else if (target instanceof IfStmt) {
-		    if (verbose)
-			System.out.println("      found Type 4 " +
-					   " (ifgoto -> ifgoto)");
 		    updateCounters(4, false);
 		}
 	    }
 	}
 	if (verbose) {
-	    if (numFound[0] == 0)
-		System.out.println("    --- no branch optimization opportunities ---");
-	    else
-		System.out.println("    --- found " + numFound[0] +
-				   " branch optimization opportunities, " +
-				   numFixed[0] + " fixed ---");
+            System.out.println("[" + body.getMethod().getName() + "] Found " + numFound[0] +
+                               " branch optimization opportunities, " +
+                               numFixed[0] + " fixed.");
 	}
     } // optimizeJumps
 
