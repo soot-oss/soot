@@ -74,14 +74,41 @@ public class SimpleDominatorsFinder implements DominatorsFinder
         return ((FlowSet) nodeToDominators.get(node)).toList();
     }
 
+    public Object getImmediateDominator(Object node)
+    {
+        // root node
+        if(getGraph().getHeads().contains(node))
+            return null;
+
+	// could be memoised, I guess
+
+        List dominatorsList = getDominators(node);
+        dominatorsList.remove(node);
+
+        Iterator dominatorsIt = dominatorsList.iterator();
+        Object immediateDominator = null;
+
+        while((immediateDominator == null) && dominatorsIt.hasNext()){
+            Object dominator = dominatorsIt.next();
+
+            if(isDominatedByAll(dominator, dominatorsList))
+                immediateDominator = dominator;
+        }
+
+        if(immediateDominator == null)
+            throw new RuntimeException("Assertion failed.");
+        
+        return immediateDominator;
+    }
+
     public boolean isDominatedBy(Object node, Object dominator)
     {
-        return ((FlowSet) nodeToDominators.get(node)).contains(dominator);
+        return getDominators(node).contains(dominator);
     }
 
     public boolean isDominatedByAll(Object node, Collection dominators)
     {
-        return (((FlowSet) nodeToDominators.get(node)).toList()).containsAll(dominators);
+        return getDominators(node).containsAll(dominators);
     }
 }
 

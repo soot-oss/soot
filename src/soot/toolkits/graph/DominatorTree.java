@@ -34,14 +34,6 @@ import soot.util.*;
  *
  * <p>
  *
- * More efficient algorithms may build the DominatorTree progressively
- * instead of first computing dominators (and hence using the
- * DominatorsFinder interface).  This is currently not directly
- * supported although it may be conceivable to subclass DominatorTree
- * to implement such an algorithm.
- *
- * <p>
- *
  * Note: DominatorTree does not currently implement DirectedGraph
  * since it provides 4 methods of navigating the nodes where the
  * meaning of getPredsOf and getSuccsOf diverge from the usual meaning
@@ -166,7 +158,8 @@ public class DominatorTree
      **/
     public boolean isImmediateDominatorOf(DominatorNode idom, DominatorNode node)
     {
-        return node.getParent().equals(idom);
+        // node.getParent() could be null
+        return (node.getParent() == idom);
     }
 
     /**
@@ -265,40 +258,13 @@ public class DominatorTree
         return dode;
     }
 
-    /**
-     * Has most of the intelligence necessary to build the tree.
-     *
-     * <p> In fact, it's not that smart and can be improved, we try to
-     * identify the most dominated dominator and deduce that that
-     * dominator is our parent.
-     **/
     protected DominatorNode fetchParent(Object gode)
     {
-        // identify all the root nodes
-        if(graph.getHeads().contains(gode))
-            return null;
-
-        List dominatorsList = dominators.getDominators(gode);
-        List dominatorsListClone = (List) ((ArrayList) dominatorsList).clone();
-        dominatorsListClone.remove(gode);
-
-        Iterator dominatorsIt = dominatorsList.iterator();
-        DominatorNode immediateDominator = null;
-
-        while((immediateDominator == null) && dominatorsIt.hasNext()){
-            Object dominator = dominatorsIt.next();
-
-            // we want a tree, we're not interested in self domination
-            if(dominator == gode)
-                continue;
-
-            if(dominators.isDominatedByAll(dominator, dominatorsListClone))
-                immediateDominator = fetchDode(dominator);
-        }
+        Object immediateDominator = dominators.getImmediateDominator(gode);
 
         if(immediateDominator == null)
-            throw new RuntimeException("Assertion failed.");
+            return null;
         
-        return immediateDominator;
+        return fetchDode(immediateDominator);
     }
 }

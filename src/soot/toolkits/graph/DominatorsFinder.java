@@ -45,6 +45,12 @@ public interface DominatorsFinder
     public List getDominators(Object node);
 
     /**
+     * Returns the immediate dominator of node or null if the node has
+     * no immediate dominator.
+     **/
+    public Object getImmediateDominator(Object node);
+
+    /**
      * True if "node" is dominated by "dominator" in the graph.
      **/
     public boolean isDominatedBy(Object node, Object dominator);
