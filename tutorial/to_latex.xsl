@@ -14,7 +14,34 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:template mode="to_latex" match="dollar">\$</xsl:template>
 
 <!-- HTML links like <a href="http://foo">bar</a> -->
-<xsl:template mode="to_latex" match="a">\htmladdnormallink{<xsl:value-of select="@href"/>}{<xsl:value-of select="."/>}</xsl:template>
+<xsl:template mode="to_latex" match="a">\htmladdnormallink{<xsl:value-of select="."/>}{<xsl:call-template name="string-replace"><xsl:with-param name="text" select="@href"/><xsl:with-param name="from" select="'#'"/><xsl:with-param name="to" select="'\#'"/></xsl:call-template>}</xsl:template>
+
+ <!-- reusable replace-string function -->
+ <xsl:template name="string-replace">
+    <xsl:param name="text"/>
+    <xsl:param name="from"/>
+    <xsl:param name="to"/>
+
+    <xsl:choose>
+      <xsl:when test="contains($text, $from)">
+
+	<xsl:variable name="before" select="substring-before($text, $from)"/>
+	<xsl:variable name="after" select="substring-after($text, $from)"/>
+	<xsl:variable name="prefix" select="concat($before, $to)"/>
+
+	<xsl:value-of select="$before"/>
+	<xsl:value-of select="$to"/>
+        <xsl:call-template name="string-replace">
+	  <xsl:with-param name="text" select="$after"/>
+	  <xsl:with-param name="from" select="$from"/>
+	  <xsl:with-param name="to" select="$to"/>
+	</xsl:call-template>
+      </xsl:when> 
+      <xsl:otherwise>
+        <xsl:value-of select="$text"/>  
+      </xsl:otherwise>
+    </xsl:choose>            
+ </xsl:template>
 
 </xsl:stylesheet>
 

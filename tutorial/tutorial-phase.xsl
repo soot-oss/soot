@@ -98,7 +98,7 @@ belonging to the various Packs of Soot, and their corresponding phase options.
 <xsl:template name="phase_section">
 <xsl:apply-templates mode="to_latex" select="long_desc|short_desc"/>
 
-\paragraph{Options} 
+\paragraph{Accepted phase options:} 
 
 \begin{description}
 <xsl:apply-templates mode="opt" select="boolopt|multiopt|intopt|flopt|stropt"/>
@@ -116,24 +116,24 @@ belonging to the various Packs of Soot, and their corresponding phase options.
 <xsl:text>
 
 </xsl:text>
+<xsl:apply-templates mode="to_latex" select="long_desc"/>
+<xsl:text>
+
+</xsl:text>
 <xsl:if test="value">
 
 Allowed values:\\
-\begin{tabular}{lll}
+\begin{tabular}{p{1in}p{1.5in}p{3in}}
 <xsl:for-each select="value">
 {\tt <xsl:for-each select="alias"><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>}
 &amp;
 <xsl:value-of select="name"/>
 &amp;
-<xsl:apply-templates mode="to_latex" select="long_desc|short_desc"/>\\
+<xsl:apply-templates mode="to_latex" select="long_desc"/>\\
 </xsl:for-each>
 \end{tabular}
 
 </xsl:if>
-<xsl:text>
-
-</xsl:text>
-<xsl:apply-templates mode="to_latex" select="long_desc"/>
 </xsl:template>
 </xsl:stylesheet>
 

@@ -499,7 +499,7 @@ static initializers.
 					<class>SparkOptions</class>
 					<alias>cg.spark</alias>
                                         <short_desc>Spark points-to analysis framework</short_desc>
-                                        <long_desc>Spark is a flexible points-to analysis framework. Aside from building a call graph, it also generates information about the targets of pointers. For details about Spark, please see <a href="http://www.sable.mcgill.ca/publications/thesis/">Ondrej Lhotak's M.Sc. thesis</a>.</long_desc>
+                                        <long_desc>Spark is a flexible points-to analysis framework. Aside from building a call graph, it also generates information about the targets of pointers. For details about Spark, please see <a href="http://www.sable.mcgill.ca/publications/thesis/#olhotakMastersThesis">Ondrej Lhotak's M.Sc. thesis</a>.</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -562,7 +562,7 @@ rather than only those deemed reachable by the points-to analysis.
 							<long_desc>
 Setting VTA to true has the effect of setting ignoreBaseObjects,
 typesForSites, and simplifySCCs to true to simulate Variable Type
-Analysis, described in <a href="http://www.sable.mcgill.ca/publications/papers/">our OOPSLA 2000 paper</a>. Note that the
+Analysis, described in <a href="http://www.sable.mcgill.ca/publications/papers/#oopsla2000">our OOPSLA 2000 paper</a>. Note that the
 algorithm differs from the original VTA in that it handles array
 elements more precisely.
         </long_desc>
@@ -1843,7 +1843,7 @@ result.
 					<alias>jap.sea</alias>
 					<class>SETOptions</class>
                                         <long_desc>Uses the active invoke graph to
-produce side-effect attributes as described in the Spark thesis, chapter 6.
+produce side-effect attributes as described in the <a href="http://www.sable.mcgill.ca/publications/thesis/#olhotakMastersThesis">Spark thesis</a>, chapter 6.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
