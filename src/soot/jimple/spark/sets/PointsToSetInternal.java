@@ -29,7 +29,6 @@ import java.util.*;
 public abstract class PointsToSetInternal implements PointsToSet {
     /** Adds contents of other minus the contents of exclude into this set;
      * returns true if this set changed. */
-    static private boolean warnedAlready = false;
     public boolean addAll( PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
         if( other instanceof DoublePointsToSet ) {
@@ -40,7 +39,7 @@ public abstract class PointsToSetInternal implements PointsToSet {
         } else if( exclude instanceof EmptyPointsToSet ) { 
             return addAll( other, null );
         }
-        if( !warnedAlready ) {
+        if( !G.v().PointsToSetInternal_warnedAlready ) {
             G.v().out.println( "Warning: using default implementation of addAll. You should implement a faster specialized implementation." );
             G.v().out.println( "this is of type "+getClass().getName() );
             G.v().out.println( "other is of type "+other.getClass().getName() );
@@ -50,7 +49,7 @@ public abstract class PointsToSetInternal implements PointsToSet {
                 G.v().out.println( "exclude is of type "+
                         exclude.getClass().getName() );
             }
-            warnedAlready = true;
+            G.v().PointsToSetInternal_warnedAlready = true;
         }
         return other.forall( new P2SetVisitor() {
         public final void visit( Node n ) {

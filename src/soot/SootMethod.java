@@ -309,8 +309,6 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
     }
         
 
-    private static String cachePathName = null;
-
     private String classFileAttr = null;
 
     private String getCacheFileAttr()
@@ -387,10 +385,10 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
     public void setActiveBody(Body body)
     {
         if ((declaringClass != null) && (declaringClass.isContextClass() || declaringClass.isPhantomClass()))
-            throw new RuntimeException("cannot set active body for context or phantom class!");
+            throw new RuntimeException("cannot set active body for context or phantom class! "+this);
 
         if(!isConcrete())
-            throw new RuntimeException("cannot set body for non-concrete method!");
+            throw new RuntimeException("cannot set body for non-concrete method! "+this);
             
         if (body.getMethod() != this)
             body.setMethod(this);
@@ -624,7 +622,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
      */
     public String getDeclaration()
     {
-	if ((Main.getJavaStyle()) && (getName().equals( staticInitializerName)))
+	if ((Main.v().getJavaStyle()) && (getName().equals( staticInitializerName)))
 	    return "static";
 
         StringBuffer buffer = new StringBuffer();
@@ -642,7 +640,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
 
         // return type + name
 
-	if ((Main.getJavaStyle()) && (getName().equals( constructorName)))
+	if ((Main.v().getJavaStyle()) && (getName().equals( constructorName)))
 	    buffer.append( getDeclaringClass().getShortJavaStyleName());
 	else {
 	    Type t = this.getReturnType();
@@ -662,7 +660,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
 	    buffer.append( t);
 	    buffer.append( " ");
 
-	    if (Main.getJavaStyle()) {
+	    if (Main.v().getJavaStyle()) {
 		if (hasActiveBody()) 
 		    buffer.append( ((DavaBody) getActiveBody()).get_ParamMap().get( new Integer( count++)));
 		else {

@@ -137,7 +137,7 @@ public class Util
         className = bclass.getName();
             
             
-        if(soot.Main.opts.verbose())
+        if(soot.Main.v().opts.verbose())
             G.v().out.println("Resolving " + className + "...");
     
         ClassFile coffiClass = new ClassFile(className);
@@ -537,7 +537,7 @@ public class Util
             
             timer.start();
             
-            if(soot.Main.opts.verbose())
+            if(soot.Main.v().opts.verbose())
                 G.v().out.println("Resolving " + className + "...");
     
             ClassFile coffiClass = new ClassFile(className);

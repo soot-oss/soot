@@ -36,11 +36,6 @@ import soot.util.BitSet;
 
 public class TypeSet implements Set 
 {
-    static HashMap typeToNumber = null;
-    static RefType[] numberToType = null;
-    static TypeSet allTypes = null;
-    static TypeSet libraryTypes = null;
-    static TypeSet benchTypes = null;
 
   
     private BitSet types;
@@ -49,46 +44,46 @@ public class TypeSet implements Set
     {
         Chain allClasses = Scene.v().getClasses();
         LinkedList l = new LinkedList();
-        for (Iterator clsIt = allClasses.iterator(); clsIt.hasNext(); ) {
-            SootClass cls = (SootClass)clsIt.next();
+        for( Iterator clsIt = allClasses.iterator(); clsIt.hasNext(); ) {
+            final SootClass cls = (SootClass) clsIt.next();
             if (!cls.isInterface())
                 l.add(RefType.v(cls));
         }
-        numberToType = new RefType[1];
-        numberToType = (RefType[])l.toArray(numberToType);
-        typeToNumber = new HashMap();
-        libraryTypes = new TypeSet();
-        benchTypes = new TypeSet();
-        for (int i = 0; i < numberToType.length; i++) {
-            RefType t = numberToType[i];
-            typeToNumber.put(t, new Integer(i));
+        G.v().TypeSet_numberToType = new RefType[1];
+        G.v().TypeSet_numberToType = (RefType[])l.toArray(G.v().TypeSet_numberToType);
+        G.v().TypeSet_typeToNumber = new HashMap();
+        G.v().TypeSet_libraryTypes = new TypeSet();
+        G.v().TypeSet_benchTypes = new TypeSet();
+        for (int i = 0; i < G.v().TypeSet_numberToType.length; i++) {
+            RefType t = G.v().TypeSet_numberToType[i];
+            G.v().TypeSet_typeToNumber.put(t, new Integer(i));
             String name = t.toString();
             if (name.startsWith("java.") || name.startsWith("sun.") || name.startsWith("sunw.") ||
                 name.startsWith("javax.")|| name.startsWith("org.") || name.startsWith("com."))
-                libraryTypes.types.set(i);
+                G.v().TypeSet_libraryTypes.types.set(i);
             else
-                benchTypes.types.set(i);
+                G.v().TypeSet_benchTypes.types.set(i);
         }
-        allTypes = new TypeSet();
-        allTypes.addAll(benchTypes);
-        allTypes.addAll(libraryTypes);
+        G.v().TypeSet_allTypes = new TypeSet();
+        G.v().TypeSet_allTypes.addAll(G.v().TypeSet_benchTypes);
+        G.v().TypeSet_allTypes.addAll(G.v().TypeSet_libraryTypes);
     }
 
     /** Creates an empty TypeSet. */
     public TypeSet() {
         types = new BitSet();
-        if (typeToNumber == null)
+        if (G.v().TypeSet_typeToNumber == null)
             initialize();
     }
 
     /** Creates a TypeSet which contains a types specified in the collection <code>c</code>. */
     public TypeSet(Collection c) {
         types = new BitSet();
-        if (typeToNumber == null)
+        if (G.v().TypeSet_typeToNumber == null)
             initialize();
-        for (Iterator it = c.iterator(); it.hasNext(); ) {
-            RefType t = (RefType)it.next();
-            int index = ((Integer)typeToNumber.get(t)).intValue();
+        for( Iterator tIt = c.iterator(); tIt.hasNext(); ) {
+            final RefType t = (RefType) tIt.next();
+            int index = ((Integer)G.v().TypeSet_typeToNumber.get(t)).intValue();
             types.set(index);
         }
     }
@@ -96,7 +91,7 @@ public class TypeSet implements Set
     /** Adds a type to this set. */
     public boolean add(Object o) {
         RefType t = (RefType)o;
-        int index = ((Integer)typeToNumber.get(t)).intValue();
+        int index = ((Integer)G.v().TypeSet_typeToNumber.get(t)).intValue();
         boolean retVal = !types.get(index);
         types.set(index);
         return retVal;
@@ -105,9 +100,9 @@ public class TypeSet implements Set
     /** Adds all the types in <code>c</code> to this set. */
     public boolean addAll(Collection c) {
         boolean retVal = false;
-        for (Iterator it = c.iterator(); it.hasNext(); ) {
-            RefType t = (RefType)it.next();
-            int index = ((Integer)typeToNumber.get(t)).intValue();
+        for( Iterator tIt = c.iterator(); tIt.hasNext(); ) {
+            final RefType t = (RefType) tIt.next();
+            int index = ((Integer)G.v().TypeSet_typeToNumber.get(t)).intValue();
             retVal = retVal || (!types.get(index));
             types.set(index);
         }
@@ -143,16 +138,16 @@ public class TypeSet implements Set
     /** Returns true if the type <code>o</code> is in this set, false otherwise. */
     public boolean contains(Object o) {
         RefType t = (RefType)o;
-        int index = ((Integer)typeToNumber.get(t)).intValue();
+        int index = ((Integer)G.v().TypeSet_typeToNumber.get(t)).intValue();
         return types.get(index);
     }
 
     /** Returns true if all the types in <code>c</code> are in this set, false otherwise. */
     public boolean containsAll(Collection c) {
         boolean retValue = true;
-        for (Iterator it = c.iterator(); it.hasNext(); ) {
-            RefType t = (RefType)it.next();
-            int index = ((Integer)typeToNumber.get(t)).intValue();
+        for( Iterator tIt = c.iterator(); tIt.hasNext(); ) {
+            final RefType t = (RefType) tIt.next();
+            int index = ((Integer)G.v().TypeSet_typeToNumber.get(t)).intValue();
             retValue = retValue && types.get(index);
         }
         return retValue;
@@ -176,7 +171,7 @@ public class TypeSet implements Set
     private List toList() { 
         LinkedList l = new LinkedList();
 	for (BitSetIterator it = types.iterator(); it.hasNext(); )
-	    l.add(numberToType[it.next()]);
+	    l.add(G.v().TypeSet_numberToType[it.next()]);
         return l;
     }
 
@@ -213,7 +208,7 @@ public class TypeSet implements Set
     /** Removes the object <code>o</code> from this set. */
     public boolean remove(Object o) {
         RefType t = (RefType)o;
-        int index = ((Integer)typeToNumber.get(t)).intValue();
+        int index = ((Integer)G.v().TypeSet_typeToNumber.get(t)).intValue();
         boolean retVal = types.get(index);
         types.clear(index);
         return retVal;

@@ -52,7 +52,7 @@ public class StaticInliner extends SceneTransformer
     
     protected void internalTransform(String phaseName, Map options)
     {
-        if(Main.opts.verbose())
+        if(Main.v().opts.verbose())
             G.v().out.println("[] Inlining methods...");
 
         InvokeGraphBuilder.v().transform(phaseName + ".igb");

@@ -40,7 +40,7 @@ public  class AbstractHost implements Host
 {
     // avoid creating an empty list for each element, when it is not used
     // use lazy instantation (in addTag) instead
-    private static List emptyList = Collections.EMPTY_LIST;
+    private final static List emptyList = Collections.EMPTY_LIST;
     private List mTagList = emptyList;
     
     /** get the list of tags. This list should not be modified! */

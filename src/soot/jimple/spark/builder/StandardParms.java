@@ -23,6 +23,7 @@ import soot.jimple.spark.pag.*;
 import soot.jimple.*;
 import soot.*;
 import soot.util.*;
+
 import java.util.*;
 import soot.jimple.spark.internal.*;
 
@@ -174,46 +175,46 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     final public Node caseMainClassNameString() {
 	AllocNode a = pag.makeAllocNode( 
 		PointsToAnalysis.MAIN_CLASS_NAME_STRING,
-		string, null );
+		RefType.v( "java.lang.String" ), null );
 	VarNode v = pag.makeVarNode(
 		PointsToAnalysis.MAIN_CLASS_NAME_STRING_LOCAL,
-		string, null );
+		RefType.v( "java.lang.String" ), null );
 	addEdge( a, v );
 	return v;
     }
     final public Node caseMainThreadGroup() {
 	AllocNode threadGroupNode = pag.makeAllocNode( 
 		PointsToAnalysis.MAIN_THREAD_GROUP_NODE,
-		threadGroup, null );
+		RefType.v("java.lang.ThreadGroup"), null );
 	VarNode threadGroupNodeLocal = pag.makeVarNode(
 		PointsToAnalysis.MAIN_THREAD_GROUP_NODE_LOCAL,
-		threadGroup, null );
+		RefType.v("java.lang.ThreadGroup"), null );
 	addEdge( threadGroupNode, threadGroupNodeLocal );
 	return threadGroupNodeLocal;
     }
     final public Node caseMainThread() {
 	AllocNode threadNode = pag.makeAllocNode( 
 		PointsToAnalysis.MAIN_THREAD_NODE,
-		thread, null );
+		RefType.v("java.lang.Thread"), null );
 	VarNode threadNodeLocal = pag.makeVarNode(
 		PointsToAnalysis.MAIN_THREAD_NODE_LOCAL,
-		thread, null );
+		RefType.v("java.lang.Thread"), null );
 	addEdge( threadNode, threadNodeLocal );
 	return threadNodeLocal;
     }
     final public Node caseArgv() {
 	AllocNode argv = pag.makeAllocNode( 
 		PointsToAnalysis.STRING_ARRAY_NODE,
-		strAr, null );
+		ArrayType.v(RefType.v( "java.lang.String" ), 1), null );
         VarNode sanl = pag.makeVarNode(
                 PointsToAnalysis.STRING_ARRAY_NODE_LOCAL,
-                strAr, null );
+                ArrayType.v(RefType.v( "java.lang.String" ), 1), null );
 	AllocNode stringNode = pag.makeAllocNode( 
 		PointsToAnalysis.STRING_NODE,
-		string, null );
+		RefType.v( "java.lang.String" ), null );
 	VarNode stringNodeLocal = pag.makeVarNode(
 		PointsToAnalysis.STRING_NODE_LOCAL,
-		string, null );
+		RefType.v( "java.lang.String" ), null );
 	addEdge( argv, sanl );
 	addEdge( stringNode, stringNodeLocal );
 	addEdge( stringNodeLocal, 
@@ -361,17 +362,6 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
 	return pag.makeVarNode( PointsToAnalysis.EXCEPTION_NODE,
 		    RefType.v("java.lang.Throwable"), null );
     }
-    private static final RefType string = RefType.v("java.lang.String");
-    private static final RefType thread = RefType.v("java.lang.Thread");
-    private static final RefType threadGroup = RefType.v("java.lang.ThreadGroup");
-    private static final ArrayType strAr = ArrayType.v(string, 1);
-    private static final List strArL = new SingletonList( strAr );
-    private static final String main = SootMethod.getSubSignature( "main", strArL, VoidType.v() );
-    private static final String exit = SootMethod.getSubSignature( "exit", Collections.EMPTY_LIST, VoidType.v() );
-    private static final String run = SootMethod.getSubSignature( "run", Collections.EMPTY_LIST, VoidType.v() );
-    private static final String finalize = SootMethod.getSubSignature( "finalize", Collections.EMPTY_LIST, VoidType.v() );
-
-
     protected PAG pag;
     protected MethodPAG mpag;
     protected SootMethod currentMethod;

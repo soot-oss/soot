@@ -142,7 +142,7 @@ public class LoadStoreOptimizer extends BodyTransformer
         
         debug = PackManager.getBoolean(gOptions, "debug");
         
-        if(soot.Main.opts.verbose())
+        if(soot.Main.v().opts.verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
 
         if(debug) { G.v().out.println("\n\nOptimizing Method: " + body.getMethod().getName());}

@@ -55,7 +55,7 @@ public class JavaLangRuntimeNative extends NativeMethodClass {
 					ReferenceVariable thisVar,
 					ReferenceVariable returnVar,
 					ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getProcessObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getProcessObject());
   }
 
   /**

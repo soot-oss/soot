@@ -19,6 +19,7 @@
 
 package soot.jimple.spark.pag;
 import java.util.*;
+
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.spark.*;
@@ -35,12 +36,11 @@ public final class MethodPAG {
     SootMethod method;
     PAG pag;
     Parms parms;
-    static HashMap methodToPag = new HashMap();
     public static MethodPAG v( PAG pag, SootMethod m ) {
-        MethodPAG ret = (MethodPAG) methodToPag.get( m );
+        MethodPAG ret = (MethodPAG) G.v().MethodPAG_methodToPag.get( m );
         if( ret == null ) { 
             ret = new MethodPAG( pag, m );
-            methodToPag.put( m, ret );
+            G.v().MethodPAG_methodToPag.put( m, ret );
         }
         return ret;
     }
@@ -108,21 +108,12 @@ public final class MethodPAG {
             if( !( method.getParameterType(i) instanceof RefLikeType ) ) continue;
 	    args[i] = (ValNode) parms.caseParm( method, i );
         }
-        NativeMethodDriver.process( method, thisNode, retNode, args );
+        NativeMethodDriver.v().process( method, thisNode, retNode, args );
     }
 
-    private static final RefType string = RefType.v("java.lang.String");
-    private static final ArrayType strAr = ArrayType.v(string, 1);
-    private static final List strArL = new SingletonList( strAr );
-    private static final String init =
-	SootMethod.getSubSignature( "<init>", Collections.EMPTY_LIST, VoidType.v() );
-    private static final String main =
-	SootMethod.getSubSignature( "main", strArL, VoidType.v() );
-    private static final String finalize =
-	SootMethod.getSubSignature( "finalize", Collections.EMPTY_LIST, VoidType.v() );
     protected void addMiscEdges() {
         // Add node for parameter (String[]) in main method
-        if( method.getSubSignature().equals( main ) ) {
+        if( method.getSubSignature().equals( SootMethod.getSubSignature( "main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() ) ) ) {
             parms.addEdge( parms.caseArgv(), parms.caseParm( method, 0 ) );
         }
 
@@ -130,14 +121,14 @@ public final class MethodPAG {
         if( method.getName().equals( "<init>" ) ) {
             SootClass c = method.getDeclaringClass();
 outer:      do {
-                while( !c.declaresMethod( finalize ) ) {
+                while( !c.declaresMethod( SootMethod.getSubSignature( "finalize", Collections.EMPTY_LIST, VoidType.v() ) ) ) {
                     if( !c.hasSuperclass() ) {
                         break outer;
                     }
                     c = c.getSuperclass();
                 }
                 parms.addEdge( parms.caseThis( method ),
-                        parms.caseThis( c.getMethod( finalize ) ) );
+                        parms.caseThis( c.getMethod( SootMethod.getSubSignature( "finalize", Collections.EMPTY_LIST, VoidType.v() ) ) ) );
             } while( false );
         }
 

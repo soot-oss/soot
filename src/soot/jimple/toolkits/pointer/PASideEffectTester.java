@@ -24,8 +24,8 @@ public class PASideEffectTester implements SideEffectTester
     SootMethod currentMethod;
 
     public PASideEffectTester() {
-	if( Union.factory == null ) {
-	    Union.factory = new UnionFactory() {
+	if( G.v().Union_factory == null ) {
+	    G.v().Union_factory = new UnionFactory() {
 		public Union newUnion() { return FullObjectSet.v(); }
 	    };
 	}

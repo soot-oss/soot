@@ -9,10 +9,7 @@ public class MethodRWSet extends RWSet {
     public Map fields;
     protected boolean callsNative = false;
     protected boolean isFull = false;
-    static Set allGlobals = new HashSet();
-    static Set allFields = new HashSet();
-    final static PointsToSet fullObjectSet = FullObjectSet.v();
-    public static int MAX_SIZE = Integer.MAX_VALUE;
+    public static final int MAX_SIZE = Integer.MAX_VALUE;
 
     public String toString() {
         StringBuffer ret = new StringBuffer();
@@ -44,21 +41,21 @@ public class MethodRWSet extends RWSet {
 
     /** Returns an iterator over any globals read/written. */
     public Set getGlobals() {
-	if( isFull ) return allGlobals;
+	if( isFull ) return G.v().MethodRWSet_allGlobals;
 	if( globals == null ) return Collections.EMPTY_SET;
 	return globals;
     }
 
     /** Returns an iterator over any fields read/written. */
     public Set getFields() {
-	if( isFull ) return allFields;
+	if( isFull ) return G.v().MethodRWSet_allFields;
 	if( fields == null ) return Collections.EMPTY_SET;
 	return fields.keySet();
     }
 
     /** Returns a set of base objects whose field f is read/written. */
     public PointsToSet getBaseForField( Object f ) {
-	if( isFull ) return fullObjectSet;
+	if( isFull ) return FullObjectSet.v();
 	if( fields == null ) return null;
 	return (PointsToSet) fields.get( f );
     }
@@ -163,7 +160,7 @@ public class MethodRWSet extends RWSet {
 	if( otherBase.equals( base ) ) return false;
 	Union u;
 	if( base == null || !(base instanceof Union) ) {
-	    u = Union.factory.newUnion();
+	    u = G.v().Union_factory.newUnion();
 	    if( base != null) u.addAll( base );
 	    fields.put( field, u );
 	    if( base == null ) addedField( fields.size() );
@@ -180,14 +177,7 @@ public class MethodRWSet extends RWSet {
 	ret = u.addAll( otherBase ) | ret;
 	return ret;
     }
-    static int fieldCount = 0;
     static void addedField( int size ) {
-	fieldCount++;
-	//if( 0 == ( fieldCount % 1000 ) ) G.v().out.println( "Added "+fieldCount+"th field" );
-
-	if( size > 1000 && (( size & (size-1) )== 0 ) ) {
-	    G.v().out.println( "This method has reached "+size+" fields" );
-	}
     }
     public boolean isEquivTo( RWSet other ) {
 	return other == this;

@@ -45,7 +45,7 @@ public class ConditionalBranchFolder  extends BodyTransformer
 
         int numTrue = 0, numFalse = 0;
 
-        if (soot.Main.opts.verbose())
+        if (soot.Main.v().opts.verbose())
             G.v().out.println("[" + stmtBody.getMethod().getName() +
                                "] Folding conditional branches...");
 
@@ -79,7 +79,7 @@ public class ConditionalBranchFolder  extends BodyTransformer
             }
         }
 
-       if (soot.Main.opts.verbose())
+       if (soot.Main.v().opts.verbose())
             G.v().out.println("[" + stmtBody.getMethod().getName() +
                 "]     Folded " + numTrue + " true, " + numFalse +
                                " conditional branches");

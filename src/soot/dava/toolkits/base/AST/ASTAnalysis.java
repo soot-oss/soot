@@ -6,7 +6,6 @@ import soot.dava.internal.AST.*;
 
 public abstract class ASTAnalysis
 {
-    public static boolean modified;
     public static final int
 
 	ANALYSE_AST    = 0,

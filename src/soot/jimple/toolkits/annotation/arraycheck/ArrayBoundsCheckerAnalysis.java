@@ -90,7 +90,7 @@ class ArrayBoundsCheckerAnalysis
 
 	SootMethod thismethod = body.getMethod();
 
-	if (soot.Main.isInDebugMode) 
+	if (soot.Main.v().isInDebugMode) 
 	    G.v().out.println("ArrayBoundsCheckerAnalysis started on  "+thismethod.getName());
 	
 	ailanalysis = new ArrayIndexLivenessAnalysis(new CompleteUnitGraph(body), fieldin, arrayin, csin, rectarray);
@@ -148,7 +148,7 @@ class ArrayBoundsCheckerAnalysis
 	
 	convertToUnitEntry();
 
-	if (soot.Main.isInDebugMode) 
+	if (soot.Main.v().isInDebugMode) 
 	    G.v().out.println("ArrayBoundsCheckerAnalysis finished.");
 
     }
@@ -267,7 +267,7 @@ class ArrayBoundsCheckerAnalysis
     private void doAnalysis()
     {
 	Date start = new Date();
-	if (soot.Main.isInDebugMode)
+	if (soot.Main.v().isInDebugMode)
 	    G.v().out.println("Building PseudoTopological order list on "+start);
 
         LinkedList allUnits = (LinkedList)SlowPseudoTopologicalOrderer.v().newList(this.graph);
@@ -278,7 +278,7 @@ class ArrayBoundsCheckerAnalysis
 	//       	LinkedList changedUnits = new LinkedList(allUnits);	
 
 	Date finish = new Date();
-	if (soot.Main.isInDebugMode)
+	if (soot.Main.v().isInDebugMode)
 	{
 	    long runtime = finish.getTime()-start.getTime();
 	    long mins = runtime/60000;
@@ -288,7 +288,7 @@ class ArrayBoundsCheckerAnalysis
 	}
 
 	start = new Date();
-	if (soot.Main.isInDebugMode)
+	if (soot.Main.v().isInDebugMode)
 	    G.v().out.println("Doing analysis started on "+start);
 
 	{
@@ -301,7 +301,7 @@ class ArrayBoundsCheckerAnalysis
 		    HashSet livelocals = (HashSet)ailanalysis.getFlowAfter(tail);
 	
 		    /*	
-		    if (soot.Main.isInDebugMode)
+		    if (soot.Main.v().isInDebugMode)
 		    {
 			G.v().out.println(tail);
 			G.v().out.println(livelocals);
@@ -498,7 +498,7 @@ class ArrayBoundsCheckerAnalysis
         }
 
 	finish = new Date();
-	if (soot.Main.isInDebugMode)
+	if (soot.Main.v().isInDebugMode)
 	{
 	    long runtime = finish.getTime()-start.getTime();
 	    long mins = runtime/60000;

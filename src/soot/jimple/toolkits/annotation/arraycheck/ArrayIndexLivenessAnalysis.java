@@ -83,7 +83,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
 	csin = takeCSE;
 	rectarray = takeRectArray;
 
-	if (soot.Main.isInDebugMode) 
+	if (soot.Main.v().isInDebugMode) 
 	    G.v().out.println("Enter ArrayIndexLivenessAnalysis");
 
 	cug = (CompleteUnitGraph)dg;
@@ -128,7 +128,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
 
       	doAnalysis();
 
-	if (soot.Main.isInDebugMode) 
+	if (soot.Main.v().isInDebugMode) 
 	    G.v().out.println("Leave ArrayIndexLivenessAnalysis");
     }
 

@@ -69,7 +69,7 @@ public class JavaIoObjectInputStreamNative extends NativeMethodClass {
 					ReferenceVariable thisVar,
 					ReferenceVariable returnVar,
 					ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassLoaderObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
   }
 
   /**

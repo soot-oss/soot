@@ -38,9 +38,6 @@ public class Aggregator extends BodyTransformer
     public Aggregator( Singletons.Global g ) {}
     public static Aggregator v() { return G.v().Aggregator(); }
 
-    public static int nodeCount = 0;
-    public static int aggrCount = 0;
-
     public String getDeclaredOptions() 
     { return super.getDeclaredOptions() + " only-stack-locals"; }
 
@@ -57,7 +54,7 @@ public class Aggregator extends BodyTransformer
 
         int aggregateCount = 1;
 
-        if(Main.opts.time())
+        if(Main.v().opts.time())
             Timers.v().aggregationTimer.start();
          boolean changed = false;
 
@@ -91,7 +88,7 @@ public class Aggregator extends BodyTransformer
         
                      
         do {
-            if(Main.opts.verbose())
+            if(Main.v().opts.verbose())
                 G.v().out.println("[" + body.getMethod().getName() + "] Aggregating iteration " + aggregateCount + "...");
         
             // body.printTo(new java.io.PrintWriter(G.v().out, true));
@@ -101,7 +98,7 @@ public class Aggregator extends BodyTransformer
             aggregateCount++;
         } while(changed);
         
-        if(Main.opts.time())
+        if(Main.v().opts.time())
             Timers.v().aggregationTimer.end();
             
     }
@@ -311,7 +308,6 @@ public class Aggregator extends BodyTransformer
               usepair.valueBox.setValue(aggregatee);
               units.remove(s);
               hadAggregation = true;
-              aggrCount++;
               // clean up the tags. If s was not a simple copy, the new statement should get
               // the tags of s.
               if( !( aggregatee instanceof Local ) ) {
@@ -321,7 +317,7 @@ public class Aggregator extends BodyTransformer
             }
           else
             {/*
-            if(Main.opts.verbose())
+            if(Main.v().opts.verbose())
             {
                 G.v().out.println("[debug] failed aggregation");
                   G.v().out.println("[debug] tried to put "+aggregatee+

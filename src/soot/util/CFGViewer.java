@@ -45,19 +45,23 @@ public class CFGViewer {
   public final static int BLOCKGRAPH = 1;
   public final static int ARRAYBLOCK = 2;
 
-  public static int graphtype = UNITGRAPH;
+  public int graphtype = UNITGRAPH;
 
-  public static String clsname;
-  public static String methname;
+  public String clsname;
+  public String methname;
 
-  public static boolean isBrief      = false;
+  public boolean isBrief      = false;
  
-  private static int meth_count = 0;
+  private int meth_count = 0;
 
   /* in one page or several pages of 8.5x11 */
-  public static boolean onepage      = true;
+  public boolean onepage      = true;
 
   public static void main(String[] args) {
+      new CFGViewer().run( args );
+  }
+
+  public void run(String[] args) {
 
     /* check the arguments */
     if (args.length ==0) {
@@ -87,7 +91,7 @@ public class CFGViewer {
     }
   }
 
-  private static void usage(){
+  private void usage(){
       G.v().out.println("Usage:");
       G.v().out.println("   java soot.util.CFGViewer [options] class[:method]");
       G.v().out.println("   options:");
@@ -99,7 +103,7 @@ public class CFGViewer {
   }
 
 
-  private static void parse_options(String[] args){
+  private void parse_options(String[] args){
     for (int i=0, n=args.length; i<n; i++) {
       if (args[i].equals("--unit")) {
 	graphtype = UNITGRAPH;
@@ -125,7 +129,7 @@ public class CFGViewer {
     }
   }
 
-  protected static void print_cfg(Body body) {
+  protected void print_cfg(Body body) {
     SootMethod method = body.getMethod();
     SootClass  sclass = method.getDeclaringClass();
 
@@ -149,7 +153,7 @@ public class CFGViewer {
   }
 
 
-  private static int nodecount = 0;
+  private int nodecount = 0;
 
   /**
    * Generates a dot format file for a DirectedGraph
@@ -157,7 +161,7 @@ public class CFGViewer {
    * @param graph, a directed control flow graph (UnitGraph, BlockGraph ...)
    * @param graphname, the title of the graph
    */
-  public static void toDotFile(String methodname, 
+  public void toDotFile(String methodname, 
 				DirectedGraph graph, 
 				String graphname) {
 
@@ -221,7 +225,7 @@ public class CFGViewer {
     canvas.plot();
   } 
 
-  private static int getNodeOrder(Hashtable nodeindex, Object node){
+  private int getNodeOrder(Hashtable nodeindex, Object node){
     Integer index = (Integer)nodeindex.get(node);
     if (index == null) {
       index = new Integer(nodecount++);
@@ -230,7 +234,7 @@ public class CFGViewer {
     return index.intValue();
   }
 
-  private static String makeNodeName(int index){
+  private String makeNodeName(int index){
     return "N"+index;
   }
 }

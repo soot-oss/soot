@@ -166,7 +166,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
 					 ReferenceVariable thisVar,
 					 ReferenceVariable returnVar,
 					 ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getStringObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 
   /**
@@ -179,7 +179,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
 					 ReferenceVariable thisVar,
 					 ReferenceVariable returnVar,
 					 ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**

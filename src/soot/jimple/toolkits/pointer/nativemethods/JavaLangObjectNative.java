@@ -52,7 +52,7 @@ public class JavaLangObjectNative extends NativeMethodClass {
 					       ReferenceVariable thisVar,
 					       ReferenceVariable returnVar,
 					       ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**

@@ -75,7 +75,7 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
 					    ReferenceVariable thisVar,
 					    ReferenceVariable returnVar,
 					    ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**
@@ -93,7 +93,7 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
                                          ReferenceVariable thisVar,
 					 ReferenceVariable returnVar,
 					 ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**
@@ -109,7 +109,7 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
 					       ReferenceVariable thisVar,
 					       ReferenceVariable returnVar,
 					       ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**
@@ -123,7 +123,7 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
 				    ReferenceVariable thisVar,
 				    ReferenceVariable returnVar,
 				    ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassLoaderObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
   }
 
   /**

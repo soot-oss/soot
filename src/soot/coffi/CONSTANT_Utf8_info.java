@@ -37,8 +37,6 @@ import java.util.Enumeration;
  */
 public class CONSTANT_Utf8_info extends cp_info {
    // Some local private objects to help with efficient comparisons.
-   private static Utf8_Enumeration e1 = new Utf8_Enumeration();
-   private static Utf8_Enumeration e2 = new Utf8_Enumeration();
    private int sHashCode;
    // for caching the conversion.
    private String s;
@@ -140,16 +138,16 @@ public class CONSTANT_Utf8_info extends cp_info {
    public int compareTo(cp_info cp) {
       if (tag!=cp.tag) return tag-cp.tag;
       CONSTANT_Utf8_info cu = (CONSTANT_Utf8_info)cp;
-      e1.reset(bytes);
-      e2.reset(cu.bytes);
-      for (;e1.hasMoreElements() && e2.hasMoreElements();) {
-         e1.nextElement();
-         e2.nextElement();
-         if (e1.c<e2.c) return -1;
-         if (e2.c<e1.c) return 1;
+      G.v().coffi_CONSTANT_Utf8_info_e1.reset(bytes);
+      G.v().coffi_CONSTANT_Utf8_info_e2.reset(cu.bytes);
+      for (;G.v().coffi_CONSTANT_Utf8_info_e1.hasMoreElements() && G.v().coffi_CONSTANT_Utf8_info_e2.hasMoreElements();) {
+         G.v().coffi_CONSTANT_Utf8_info_e1.nextElement();
+         G.v().coffi_CONSTANT_Utf8_info_e2.nextElement();
+         if (G.v().coffi_CONSTANT_Utf8_info_e1.c<G.v().coffi_CONSTANT_Utf8_info_e2.c) return -1;
+         if (G.v().coffi_CONSTANT_Utf8_info_e2.c<G.v().coffi_CONSTANT_Utf8_info_e1.c) return 1;
       }
-      if (e1.hasMoreElements()) return -1;
-      if (e2.hasMoreElements()) return 1;
+      if (G.v().coffi_CONSTANT_Utf8_info_e1.hasMoreElements()) return -1;
+      if (G.v().coffi_CONSTANT_Utf8_info_e2.hasMoreElements()) return 1;
       return 0;
    }
    /** Utility method; converts the given String into a utf8 encoded array

@@ -1,4 +1,16 @@
+SlowPseudoTopologicalOrderer
+SynchronizerManager
+NodeCast
+NoCast
+ClassHierarchy
+Main
+TagManager
+Environment
+TypeConstants
+NativeMethodDriver
 Util
+SourceLocator
+CONSTANT_Utf8_collector
 AbruptEdgeFinder
 Aggregator
 ArrayBoundsChecker

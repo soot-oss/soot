@@ -43,10 +43,6 @@ import soot.jimple.toolkits.pointer.representations.*;
 public class TypeElement2 implements AbstractObject {
 
   /* pooling all seen classes */
-  private static HashMap nameToType = new HashMap(500);
-  private static int counter = 0;
-  private static int id;
-
   private String className;
 
   private TypeElement2(String cname){
@@ -54,10 +50,10 @@ public class TypeElement2 implements AbstractObject {
   }
 
   public static TypeElement2 v(String className) {
-    TypeElement2 type = (TypeElement2)nameToType.get(className);
+    TypeElement2 type = (TypeElement2)G.v().TypeElement2_nameToType.get(className);
     if (type == null) {
       type = new TypeElement2(className);
-      nameToType.put(className, type);
+      G.v().TypeElement2_nameToType.put(className, type);
     }
     
     return type;
@@ -73,7 +69,7 @@ public class TypeElement2 implements AbstractObject {
 
   /* overriding hashCode and equals */
   public int hashCode() {
-    return this.id;
+    return G.v().TypeElement2_id;
   }
 
   public boolean equals(Object other){

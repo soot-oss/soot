@@ -54,25 +54,27 @@ import java.text.*;
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main implements Runnable
 {   
+    public Main( Singletons.Global g ) {}
+    public static Main v() { return G.v().Main(); }
     // TODO: the following string should be updated by the source control
     // No it shouldn't. Prcs is horribly borken in this respect, and causes
     // the code to not compile all the time.
-    public static final String versionString = "2.0";
+    public final String versionString = "2.0";
 
-    public static Options opts;
+    public Options opts;
     
     private Date start;
     private Date finish;
 
-    private static List compilationListeners = new ArrayList(1);
-    public static void addCompilationListener(ICompilationListener l)
+    private List compilationListeners = new ArrayList(1);
+    public void addCompilationListener(ICompilationListener l)
     {
         compilationListeners.add(l);
     }
     public static final int COMPILATION_ABORTED = 0;
     public static final int COMPILATION_SUCCEDED = 1;
     
-    public static String getExtensionFor(int rep)
+    public String getExtensionFor(int rep)
     {
         String str = null;
 
@@ -116,7 +118,7 @@ public class Main implements Runnable
 	return str;
     }
 
-    public static String getFileNameFor( SootClass c, int rep)
+    public String getFileNameFor( SootClass c, int rep)
     {
 	// add an option for no output
 	if (rep == Options.output_format_none) return null;
@@ -182,15 +184,15 @@ public class Main implements Runnable
     }
 
 
-    private static char fileSeparator = System.getProperty("file.separator").charAt(0);
-    private static String pathSeparator = System.getProperty("path.separator");
+    private final char fileSeparator = System.getProperty("file.separator").charAt(0);
+    private final String pathSeparator = System.getProperty("path.separator");
 
-    public static boolean isInDebugMode;
+    public boolean isInDebugMode;
    
-    static private boolean useJavaStyle = false;
+    private boolean useJavaStyle = false;
 
-    static private boolean isOptimizing = false;
-    static private boolean isOptimizingWhole = false;
+    private boolean isOptimizing = false;
+    private boolean isOptimizingWhole = false;
 
   // hack for J2ME, patch provided by Stephen Chen
   // by default, this is set as false, to use SOOT with J2ME library
@@ -200,11 +202,11 @@ public class Main implements Runnable
   //           soot/jimple/toolkits/typing/TypeResolver.java
   //           soot/jimple/toolkits/typing/TypeVariable.java
   //           soot/jimple/toolkits/typing/TypeNode.java
-  final static private boolean isJ2ME = false;
+  final public boolean isJ2ME = false;
 
-    static private SootClass mainClass = null;        
+    private SootClass mainClass = null;        
     
-    private static List getClassesUnder(String aPath) 
+    private List getClassesUnder(String aPath) 
     {
         File file = new File(aPath);
         List fileNames = new ArrayList();
@@ -242,18 +244,18 @@ public class Main implements Runnable
         return fileNames;
     }
 
-    public static void setOptimizing(boolean val)
+    public void setOptimizing(boolean val)
     {
         isOptimizing = val;
     }
 
-    public static  boolean isOptimizing()
+    public boolean isOptimizing()
     {
         return isOptimizing;
     }
 
 
-    public static void setOptimizingWhole(boolean val)
+    public void setOptimizingWhole(boolean val)
 	throws CompilationDeathException
     {
         if (!opts.app() && val){            
@@ -264,29 +266,29 @@ public class Main implements Runnable
         isOptimizing = val;
     }
 
-    public static boolean isOptimizingWhole()
+    public boolean isOptimizingWhole()
     {
         return isOptimizingWhole;
     }
 
   /* hack for J2ME */
-  public static boolean isJ2ME(){
+  public boolean isJ2ME(){
     return isJ2ME;
   }
 
-    public static void setJavaStyle( boolean val)
+    public void setJavaStyle( boolean val)
     {
 	useJavaStyle = val;
     }
 
-    public static boolean getJavaStyle()
+    public boolean getJavaStyle()
     {
 	return useJavaStyle;
     }
 
 
         /* This is called after sootClassPath has been defined. */
-    private static Set classesInDynamicPackage(String str)
+    private Set classesInDynamicPackage(String str)
     {
         HashSet set = new HashSet(0);
         StringTokenizer strtok = new StringTokenizer(Scene.v().getSootClassPath(), pathSeparator);
@@ -317,17 +319,17 @@ public class Main implements Runnable
     }
 
 
-    public static void setDebug(boolean val)
+    public void setDebug(boolean val)
     {
         isInDebugMode = val;
     }
 
-    public static boolean isDebug()
+    public boolean isDebug()
     {
         return isInDebugMode;
     }
 
-    private static void printVersion()
+    private void printVersion()
     {
 	G.v().out.println("Soot version "+versionString);
 
@@ -348,13 +350,13 @@ public class Main implements Runnable
 	G.v().out.println("  java soot.Main --help");
     }
 
-    private static void printHelp()
+    private void printHelp()
     {
         G.v().out.println( opts.getUsage() );
     }
 
 
-    private static void processCmdLine(String[] args)
+    private void processCmdLine(String[] args)
         throws CompilationDeathException
     {
         opts = new Options( args );
@@ -388,12 +390,12 @@ public class Main implements Runnable
     }
 		
 
-    private static void exitCompilation(int status)
+    private void exitCompilation(int status)
     {
         exitCompilation(status, "") ;
     }
 
-    private static void exitCompilation(int status, String msg)
+    private void exitCompilation(int status, String msg)
     {
 	G.v().reset();
         Iterator it = compilationListeners.iterator();
@@ -403,7 +405,7 @@ public class Main implements Runnable
 				
     }
 
-    private static void postCmdLineCheck()
+    private void postCmdLineCheck()
         throws CompilationDeathException
     {
 	if(opts.classes().isEmpty() && opts.process_path().isEmpty())
@@ -421,17 +423,19 @@ public class Main implements Runnable
             }
     }
 
-    public static String[] cmdLineArgs;
+    public String[] cmdLineArgs;
     /**
      *   Entry point for cmd line invocation of soot.
      */
     public static void main(String[] args)
     {
+        Main.v().go( args );
+    }
+    public void go( String[] args ) {
         cmdLineArgs = args;
-        Main m = new Main();
         ConsoleCompilationListener ccl = new ConsoleCompilationListener();
         addCompilationListener(ccl);
-        m.run();
+        run();
     }
     /**
      *   Entry point for Eclipse line invocation of soot.
@@ -439,7 +443,7 @@ public class Main implements Runnable
     public static void main(String[] args, PrintStream out)
     {
         G.v().out = out;
-        main( args );
+        Main.v().go( args );
     }
 
   /** 
@@ -452,9 +456,9 @@ public class Main implements Runnable
     start = new Date();
 
     try {
-      Timers.v().totalTimer.start();
 
       processCmdLine(cmdLineArgs);
+      Timers.v().totalTimer.start();
 
       G.v().out.println("Soot started on "+start);
 
@@ -506,7 +510,7 @@ public class Main implements Runnable
   }        
 
   /* preprocess classes for DAVA */
-  private static void preProcessDAVA() {
+  private void preProcessDAVA() {
     if (opts.output_format() == Options.output_format_dava) {
       ThrowFinder.v().find();
       PackageNamer.v().fixNames();
@@ -516,7 +520,7 @@ public class Main implements Runnable
   }
 
       /* process classes */
-  private static void processClasses() {
+  private void processClasses() {
     Iterator classIt = Scene.v().getApplicationClasses().iterator();
     
     // process each class 
@@ -537,7 +541,7 @@ public class Main implements Runnable
   }
 
   /* post process for DAVA */
-  private static void postProcessDAVA() {
+  private void postProcessDAVA() {
     if (opts.output_format() == Options.output_format_dava) {
 
       // ThrowFinder.v().find();
@@ -596,7 +600,7 @@ public class Main implements Runnable
     }
   }
   
-    private static void loadNecessaryClasses() {
+    private void loadNecessaryClasses() {
         Iterator it = opts.classes().iterator();
 
         while (it.hasNext()) {
@@ -645,7 +649,7 @@ public class Main implements Runnable
   /* Generate classes to process, adding or removing package marked by
    * command line options.
    */
-  private static void prepareClasses() {
+  private void prepareClasses() {
       
       LinkedList excludedPackages = new LinkedList();
       if( opts.exclude() != null )
@@ -705,7 +709,7 @@ public class Main implements Runnable
   }
 
     /** Attach JimpleBodies to the methods of c. */
-  private static void attachJimpleBodiesFor(SootClass c) {
+  private void attachJimpleBodiesFor(SootClass c) {
     Iterator methodIt = c.methodIterator();
            
     while(methodIt.hasNext()) {   
@@ -727,7 +731,7 @@ public class Main implements Runnable
   /* lazyHandleClass only processes methods reachable from the entry points
    * by the call graph, it does not have any output.
    */
-  private static void lazyHandleClass(SootClass c) {
+  private void lazyHandleClass(SootClass c) {
     Iterator methodIt = c.methodIterator();
     
     while(methodIt.hasNext()) {   
@@ -751,7 +755,7 @@ public class Main implements Runnable
 
   /* normal approach to handle each class by analyzing every method.
    */
-  private static void handleClass(SootClass c)
+  private void handleClass(SootClass c)
   {
     FileOutputStream streamOut = null;
     PrintWriter writerOut = null;

@@ -33,25 +33,25 @@ public class ImplicitMethodInvocation
     public ImplicitMethodInvocation( Singletons.Global g ) {}
     public static ImplicitMethodInvocation v() { return G.v().ImplicitMethodInvocation(); }
 
-    private static final NumberedString sigMain = Scene.v().getSubSigNumberer().
+    final NumberedString sigMain = Scene.v().getSubSigNumberer().
         findOrAdd( "void main(java.lang.String[])" );
-    private static final NumberedString sigFinalize = Scene.v().getSubSigNumberer().
+    final NumberedString sigFinalize = Scene.v().getSubSigNumberer().
         findOrAdd( "void finalize()" );
-    private static final NumberedString sigExit = Scene.v().getSubSigNumberer().
+    final NumberedString sigExit = Scene.v().getSubSigNumberer().
         findOrAdd( "void exit()" );
-    private static final NumberedString sigClinit = Scene.v().getSubSigNumberer().
+    final NumberedString sigClinit = Scene.v().getSubSigNumberer().
         findOrAdd( "void <clinit>()" );
-    private static final NumberedString sigStart = Scene.v().getSubSigNumberer().
+    final NumberedString sigStart = Scene.v().getSubSigNumberer().
         findOrAdd( "void start()" );
-    private static final NumberedString sigRun = Scene.v().getSubSigNumberer().
+    final NumberedString sigRun = Scene.v().getSubSigNumberer().
         findOrAdd( "void run()" );
-    private static final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
+    final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Object run()" );
-    private static final NumberedString sigForName = Scene.v().getSubSigNumberer().
+    final NumberedString sigForName = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Class forName(java.lang.String)" );
-    private static final RefType clPrivilegedAction = RefType.v("java.security.PrivilegedAction");
-    private static final RefType clPrivilegedExceptionAction = RefType.v("java.security.PrivilegedExceptionAction");
-    private static final RefType clRunnable = RefType.v("java.lang.Runnable");
+    final RefType clPrivilegedAction = RefType.v("java.security.PrivilegedAction");
+    final RefType clPrivilegedExceptionAction = RefType.v("java.security.PrivilegedExceptionAction");
+    final RefType clRunnable = RefType.v("java.lang.Runnable");
     private final void addMethod( NumberedSet set, SootClass cls, NumberedString methodSubSig ) {
         if( cls.declaresMethod( methodSubSig ) ) {
             set.add( cls.getMethod( methodSubSig ) );

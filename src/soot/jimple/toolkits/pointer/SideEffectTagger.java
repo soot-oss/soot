@@ -12,12 +12,12 @@ public class SideEffectTagger extends BodyTransformer
     public SideEffectTagger( Singletons.Global g ) {}
     public static SideEffectTagger v() { return G.v().SideEffectTagger(); }
 
-    public static int numRWs = 0;
-    public static int numWRs = 0;
-    public static int numRRs = 0;
-    public static int numWWs = 0;
-    public static int numNatives = 0;
-    public static Date startTime = null;
+    public int numRWs = 0;
+    public int numWRs = 0;
+    public int numRRs = 0;
+    public int numWWs = 0;
+    public int numNatives = 0;
+    public Date startTime = null;
     boolean optionDontTag = false;
     boolean optionNaive = false;
 
@@ -55,7 +55,7 @@ public class SideEffectTagger extends BodyTransformer
 	if( !Scene.v().hasActiveInvokeGraph() ) {
 	    InvokeGraphBuilder.v().transform( phaseName + ".igb" );
 	}
-        Union.factory = new UnionFactory() {
+        G.v().Union_factory = new UnionFactory() {
 	    //ReallyCheapRasUnion ru =  new ReallyCheapRasUnion();
 	    //public Union newUnion() { return new RasUnion(); }
 	    public Union newUnion() { return new MemoryEfficientRasUnion(); }

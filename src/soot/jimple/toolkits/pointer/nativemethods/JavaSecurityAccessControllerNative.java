@@ -94,7 +94,7 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
 				 ReferenceVariable thisVar,
 				 ReferenceVariable returnVar,
 				 ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getLeastObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastObject());
   }
 
   /**
@@ -109,7 +109,7 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
 					    ReferenceVariable thisVar,
 					    ReferenceVariable returnVar,
 					    ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getLeastObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastObject());
       //    throw new NativeMethodNotSupportedException(method);
   }
 
@@ -126,7 +126,7 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
 					   ReferenceVariable thisVar,
 					   ReferenceVariable returnVar,
 					   ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getLeastObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastObject());
     //    throw new NativeMethodNotSupportedException(method);
   }
 }

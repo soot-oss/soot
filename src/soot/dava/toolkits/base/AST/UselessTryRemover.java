@@ -53,7 +53,7 @@ public class UselessTryRemover extends ASTAnalysis
 	    }
 
 	    if (toRemove.isEmpty() == false)
-		modified = true;
+		G.v().ASTAnalysis_modified = true;
 	}
     }
 }

@@ -45,7 +45,7 @@ public class PseudoTopologicalOrderer
     public PseudoTopologicalOrderer(boolean isReversed) { mIsReversed = isReversed;}
 
     private Map stmtToColor;
-    private static Object GRAY = new Object();
+    private static final Object GRAY = new Object();
     private LinkedList order;
     private boolean mIsReversed = false;
     private DirectedGraph graph;

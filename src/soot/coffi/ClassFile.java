@@ -33,11 +33,12 @@ package soot.coffi;
 import soot.*;
 
 import java.io.*;
+import java.util.*;
 import java.util.Enumeration;
 import java.util.Vector;
 import soot.util.SourceLocator;
 import java.util.*;
-import soot.Main;
+import soot.*;
 
 /**
  * A ClassFile object represents the contents of a <tt>.class</tt> file.
@@ -164,12 +165,6 @@ public class ClassFile {
     */
     public ClassFile(String nfn) { fn = nfn; }
 
-    static soot.Timer fieldTimer = new soot.Timer();
-    static soot.Timer methodTimer = new soot.Timer();
-    static soot.Timer attributeTimer = new soot.Timer();
-    static soot.Timer locatorTimer = new soot.Timer();
-    static soot.Timer readTimer = new soot.Timer();
-
     /** Returns the name of this Class. */
     public String toString() {
 	return (constant_pool[this_class].toString(constant_pool));
@@ -186,28 +181,28 @@ public class ClassFile {
 	DataInputStream d;
 	boolean b;
 
-	locatorTimer.start();
+	Timers.v().locatorTimer.start();
       
 	try
 	{   
 	    if(!soot.Scene.v().getSootClassPath().
 	       equals("<external-class-path>"))
 	    {   
-		classFileStream = SourceLocator.
+		classFileStream = SourceLocator.v().
 		    getInputStreamOf(soot.Scene.v().getSootClassPath(), fn);
 	    }
 	    else
 	    {   
-		classFileStream = SourceLocator.getInputStreamOf(fn);
+		classFileStream = SourceLocator.v().getInputStreamOf(fn);
 	    }
 	}
 	catch(ClassNotFoundException e)
 	{   
-	    locatorTimer.end();
+	    Timers.v().locatorTimer.end();
 	    return false;      
 	}
 	
-	locatorTimer.end();
+	Timers.v().locatorTimer.end();
 
 	return loadClassFile(classFileStream);
     }
@@ -224,7 +219,7 @@ public class ClassFile {
       byte[]  data;
       
       
-      readTimer.start();
+      Timers.v().readTimer.start();
       
       try 
       {
@@ -236,7 +231,7 @@ public class ClassFile {
       {
       }
       
-      readTimer.end();
+      Timers.v().readTimer.end();
       
       d = new DataInputStream(f);
       b = readClass(d);
@@ -433,20 +428,20 @@ public class ClassFile {
          }
          //G.v().out.println("Implements " + interfaces_count + " interface(s)");
 
-         fieldTimer.start();
+         Timers.v().fieldTimer.start();
          
          fields_count = d.readUnsignedShort();
          //G.v().out.println("Has " + fields_count + " field(s)");
          readFields(d);
-         fieldTimer.end();
+         Timers.v().fieldTimer.end();
         
-         methodTimer.start();
+         Timers.v().methodTimer.start();
          methods_count = d.readUnsignedShort();
          //G.v().out.println("Has " + methods_count + " method(s)");
          readMethods(d);
-         methodTimer.end();
+         Timers.v().methodTimer.end();
         
-         attributeTimer.start();
+         Timers.v().attributeTimer.start();
          
          attributes_count = d.readUnsignedShort();
          //G.v().out.println("Has " + attributes_count + " attribute(s)");
@@ -454,7 +449,7 @@ public class ClassFile {
             attributes =  new attribute_info[attributes_count];
             readAttributes(d,attributes_count,attributes);
          }
-         attributeTimer.end();
+         Timers.v().attributeTimer.end();
          
       } catch(IOException e) {
          throw new RuntimeException("IOException with " + fn + ": " + e.getMessage());
@@ -570,7 +565,7 @@ public class ClassFile {
             CONSTANT_Utf8_info cputf8 = new CONSTANT_Utf8_info(d);
             // If an equivalent CONSTANT_Utf8 already exists, we return
             // the pre-existing one and allow cputf8 to be GC'd.
-            cp = (cp_info) CONSTANT_Utf8_collector.add(cputf8);
+            cp = (cp_info) G.v().CONSTANT_Utf8_collector().add(cputf8);
             if (debug)
                G.v().out.println("Constant pool[" + i + "]: Utf8 = \"" +
                                   cputf8.convert() + "\"");

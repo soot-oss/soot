@@ -31,8 +31,6 @@ import java.text.*;
 /** Utility methods for string manipulations commonly used in Soot. */
 public class StringTools
 {
-    static StringBuffer whole = new StringBuffer();
-    static StringBuffer mini = new StringBuffer();
 
     /** Returns fromString, but with non-isalpha() characters printed as
      * <code>'\\unnnn'</code>.  Used by SootClass to generate output. */
@@ -40,9 +38,8 @@ public class StringTools
     {
        char[] fromStringArray;
        int cr, lf, ch;
-
-       whole.setLength(0);
-       mini.setLength(0);
+        StringBuffer whole = new StringBuffer();
+        StringBuffer mini = new StringBuffer();
 
        fromStringArray = fromString.toCharArray();
 

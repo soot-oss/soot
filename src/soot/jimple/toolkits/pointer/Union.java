@@ -17,6 +17,5 @@ public abstract class Union implements PointsToSet {
     public Set possibleStringConstants() { return null; }
     public Set possibleClassConstants() { return null; }
 
-    public static UnionFactory factory = null;
 }
 

@@ -54,9 +54,6 @@ public class TypeResolver
   private final TypeNode OBJECT;
 
   private static final boolean DEBUG = false;
-  // flag for J2ME library
-  private final static boolean J2ME = soot.Main.isJ2ME();
-
 
   // categories for type variables (solved = hard, unsolved = soft)
   private List unsolved;
@@ -161,7 +158,7 @@ public class TypeResolver
     typeVariable(NULL);
     
     // hack for J2ME library, reported by Stephen Cheng 
-    if (!J2ME) {
+    if (!soot.Main.v().isJ2ME) {
       typeVariable(hierarchy.CLONEABLE);
       typeVariable(hierarchy.SERIALIZABLE);
     }
@@ -225,9 +222,8 @@ public class TypeResolver
       {
 	int count = 0;
 	G.v().out.println("**** START:" + message);
-	for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
-	  {
-	    TypeVariable var = (TypeVariable) i.next();
+	for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+	    final TypeVariable var = (TypeVariable) varIt.next();
 	    G.v().out.println(count++ + " " + var);
 	  }
 	G.v().out.println("**** END:" + message);
@@ -239,9 +235,8 @@ public class TypeResolver
     if(DEBUG)
       {
 	G.v().out.println("-- Body Start --");
-	for(Iterator i = stmtBody.getUnits().iterator(); i.hasNext();)
-	  {
-	    Stmt stmt = (Stmt) i.next();
+	for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+	    final Stmt stmt = (Stmt) stmtIt.next();
 	    G.v().out.println(stmt);
 	  }
 	G.v().out.println("-- Body End --");
@@ -320,9 +315,9 @@ public class TypeResolver
   {
     ConstraintCollector collector = new ConstraintCollector(this, true);
 
-    for(Iterator i = stmtBody.getUnits().iterator(); i.hasNext();)
-      {
-	Stmt stmt = (Stmt) i.next();
+    for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+
+        final Stmt stmt = (Stmt) stmtIt.next();
 	if(DEBUG)
 	  {
 	    G.v().out.print("stmt: ");
@@ -339,9 +334,9 @@ public class TypeResolver
   {
     ConstraintCollector collector = new ConstraintCollector(this, false);
 
-    for(Iterator i = stmtBody.getUnits().iterator(); i.hasNext();)
-      {
-	Stmt stmt = (Stmt) i.next();
+    for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+
+        final Stmt stmt = (Stmt) stmtIt.next();
 	if(DEBUG)
 	  {
 	    G.v().out.print("stmt: ");
@@ -371,9 +366,8 @@ public class TypeResolver
   {
     // find max depth
     int max = 0;
-    for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
-      {
-	TypeVariable var = (TypeVariable) i.next();
+    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+        final TypeVariable var = (TypeVariable) varIt.next();
 	int depth = var.depth();
 
 	if(depth > max)
@@ -384,7 +378,7 @@ public class TypeResolver
 
     if(max > 1) {
       // hack for J2ME library, reported by Stephen Cheng 
-      if (!J2ME) {
+      if (!soot.Main.v().isJ2ME) {
 	typeVariable(ArrayType.v(RefType.v("java.lang.Cloneable"), max - 1));
 	typeVariable(ArrayType.v(RefType.v("java.io.Serializable"), max - 1));
       }
@@ -398,9 +392,8 @@ public class TypeResolver
       }
 
     // initialize lists
-    for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
-      {
-	TypeVariable var = (TypeVariable) i.next();
+    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+        final TypeVariable var = (TypeVariable) varIt.next();
 	int depth = var.depth();
 	
 	lists[depth].add(var);
@@ -409,9 +402,8 @@ public class TypeResolver
     // propagate constraints, starting with highest depth
     for(int i = max; i >= 0; i--)
       {
-	for(Iterator j = typeVariableList.iterator(); j.hasNext(); )
-	  {
-	    TypeVariable var = (TypeVariable) j.next();
+	for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+	    final TypeVariable var = (TypeVariable) varIt.next();
 
 	    var.propagate();
 	  }
@@ -423,9 +415,9 @@ public class TypeResolver
     // merge primitive types with all parents/children
     compute_solved();
 
-    for(Iterator i = solved.iterator(); i.hasNext();)
-      {
-	TypeVariable var = (TypeVariable) i.next();
+    Iterator varIt = solved.iterator();
+    while( varIt.hasNext() ) {
+        TypeVariable var = (TypeVariable) varIt.next();
 
 	if(var.type().type() instanceof IntType ||
 	   var.type().type() instanceof LongType ||
@@ -496,9 +488,9 @@ public class TypeResolver
     list.addAll(solved);
     list.addAll(unsolved);
 
-    for(Iterator i = list.iterator(); i.hasNext(); )
-      {
-	TypeVariable var = (TypeVariable) i.next();
+    for( Iterator varIt = list.iterator(); varIt.hasNext(); ) {
+
+        final TypeVariable var = (TypeVariable) varIt.next();
 	
 	var.removeIndirectRelations();
       }
@@ -517,9 +509,9 @@ public class TypeResolver
 	    finished = false;
 	    modified = true;
 	    
-	    for(Iterator i = single_child_not_null.iterator(); i.hasNext(); )
-	      {
-		TypeVariable var = (TypeVariable) i.next();
+            Iterator i = single_child_not_null.iterator();
+            while( i.hasNext() ) {
+                TypeVariable var = (TypeVariable) i.next();
 
 		if(single_child_not_null.contains(var))
 		  {
@@ -537,9 +529,9 @@ public class TypeResolver
 		finished = false;
 		modified = true;
 		
-		for(Iterator i = single_soft_parent.iterator(); i.hasNext(); )
-		  {
-		    TypeVariable var = (TypeVariable) i.next();
+                Iterator i = single_soft_parent.iterator();
+                while( i.hasNext() ) {
+                    TypeVariable var = (TypeVariable) i.next();
 		    
 		    if(single_soft_parent.contains(var))
 		      {
@@ -555,9 +547,9 @@ public class TypeResolver
 		finished = false;
 		modified = true;
 		
-		for(Iterator i = single_hard_parent.iterator(); i.hasNext(); )
-		  {
-		    TypeVariable var = (TypeVariable) i.next();
+                Iterator i = single_hard_parent.iterator();
+                while( i.hasNext() ) {
+                    TypeVariable var = (TypeVariable) i.next();
 		    
 		    if(single_hard_parent.contains(var))
 		      {
@@ -574,9 +566,9 @@ public class TypeResolver
 		finished = false;
 		modified = true;
 		
-		for(Iterator i = single_null_child.iterator(); i.hasNext(); )
-		  {
-		    TypeVariable var = (TypeVariable) i.next();
+                Iterator i = single_null_child.iterator();
+                while( i.hasNext() ) {
+                    TypeVariable var = (TypeVariable) i.next();
 		    
 		    if(single_null_child.contains(var))
 		      {
@@ -604,17 +596,16 @@ public class TypeResolver
 	finished = true;
 	
       multiple_children:
-	for(Iterator i = multiple_children.iterator(); i.hasNext(); )
-	  {
-	    TypeVariable var = (TypeVariable) i.next();
+	for( Iterator varIt = multiple_children.iterator(); varIt.hasNext(); ) {
+	    final TypeVariable var = (TypeVariable) varIt.next();
 	    TypeNode lca = null;
 	    List children_to_remove = new LinkedList();
 	    
 	    var.fixChildren();
 	    
-	    for(Iterator j = var.children().iterator(); j.hasNext(); )
-	      {
-		TypeVariable child = (TypeVariable) j.next();
+	    for( Iterator childIt = var.children().iterator(); childIt.hasNext(); ) {
+	    
+	        final TypeVariable child = (TypeVariable) childIt.next();
 		TypeNode type = child.type();
 
 		if(type != null && type.isNull())
@@ -651,9 +642,8 @@ public class TypeResolver
 	    
 	    if(lca != null)
 	      {
-		for(Iterator j = children_to_remove.iterator(); j.hasNext();)
-		  {
-		    TypeVariable child = (TypeVariable) j.next();
+		for( Iterator childIt = children_to_remove.iterator(); childIt.hasNext(); ) {
+		    final TypeVariable child = (TypeVariable) childIt.next();
 		    var.removeChild(child);
 		  }
 
@@ -661,23 +651,23 @@ public class TypeResolver
 	      }
 	  }
 	
-	for(Iterator i = multiple_parents.iterator(); i.hasNext(); )
-	  {
-	    TypeVariable var = (TypeVariable) i.next();
+	for( Iterator varIt = multiple_parents.iterator(); varIt.hasNext(); ) {
+	
+	    final TypeVariable var = (TypeVariable) varIt.next();
 	    LinkedList hp = new LinkedList(); // hard parents
 	    
 	    var.fixParents();
 	    
-	    for(Iterator j = var.parents().iterator(); j.hasNext(); )
-	      {
-		TypeVariable parent = (TypeVariable) j.next();
+	    for( Iterator parentIt = var.parents().iterator(); parentIt.hasNext(); ) {
+	    
+	        final TypeVariable parent = (TypeVariable) parentIt.next();
 		TypeNode type = parent.type();
 		
 		if(type != null)
 		  {
-		    for(Iterator k = hp.iterator(); k.hasNext();)
-		      {
-			TypeVariable otherparent = (TypeVariable) k.next();
+                    Iterator k = hp.iterator();
+                    while( k.hasNext() ) {
+                        TypeVariable otherparent = (TypeVariable) k.next();
 			TypeNode othertype = otherparent.type();
 			
 			if(type.hasDescendant(othertype))
@@ -706,9 +696,8 @@ public class TypeResolver
 
   private void assign_types_1_2() throws TypeException
   {
-    for(Iterator i = stmtBody.getLocals().iterator(); i.hasNext(); )
-      {
-	Local local = (Local) i.next();
+    for( Iterator localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
+        final Local local = (Local) localIt.next();
 	TypeVariable var = typeVariable(local);
 	
 	if(var == null)
@@ -774,9 +763,8 @@ public class TypeResolver
 
   private void assign_types_3() throws TypeException
   {
-    for(Iterator i = stmtBody.getLocals().iterator(); i.hasNext(); )
-      {
-	Local local = (Local) i.next();
+    for( Iterator localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
+        final Local local = (Local) localIt.next();
 	TypeVariable var = typeVariable(local);
 	
 	if(var == null ||
@@ -802,9 +790,9 @@ public class TypeResolver
 	s = new StringBuffer("Checking:\n");
       }
 
-    for(Iterator i = stmtBody.getUnits().iterator(); i.hasNext();)
-      {
-	Stmt stmt = (Stmt) i.next();
+    for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+
+        final Stmt stmt = (Stmt) stmtIt.next();
 	if(DEBUG)
 	  {
 	    s.append(" " + stmt + "\n");
@@ -864,9 +852,9 @@ public class TypeResolver
   {
     TreeSet workList = new TreeSet();
 
-    for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
-      {
-	TypeVariable var = (TypeVariable) i.next();
+    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+
+        final TypeVariable var = (TypeVariable) varIt.next();
 
 	if(var.type() != null)
 	  {
@@ -876,9 +864,9 @@ public class TypeResolver
 
     TypeVariable.computeApprox(workList);
 
-    for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
-      {
-	TypeVariable var = (TypeVariable) i.next();
+    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+
+        final TypeVariable var = (TypeVariable) varIt.next();
 
 	if(var.approx() == NULL)
 	  {
@@ -896,9 +884,9 @@ public class TypeResolver
     Set unsolved_set = new TreeSet();
     Set solved_set = new TreeSet();
     
-    for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
-      {
-	TypeVariable var = (TypeVariable) i.next();
+    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+    
+        final TypeVariable var = (TypeVariable) varIt.next();
 	
 	if(var.depth() == 0)
 	  {
@@ -922,9 +910,9 @@ public class TypeResolver
     Set unsolved_set = new TreeSet();
     Set solved_set = new TreeSet(solved);
     
-    for(Iterator i = unsolved.iterator(); i.hasNext(); )
-      {
-	TypeVariable var = (TypeVariable) i.next();
+    for( Iterator varIt = unsolved.iterator(); varIt.hasNext(); ) {
+    
+        final TypeVariable var = (TypeVariable) varIt.next();
 	
 	if(var.depth() == 0)
 	  {
@@ -1022,9 +1010,8 @@ public class TypeResolver
 
   private void validate() throws TypeException
   {
-    for(Iterator i = solved.iterator(); i.hasNext(); )
-      {
-	TypeVariable var = (TypeVariable) i.next();
+    for( Iterator varIt = solved.iterator(); varIt.hasNext(); ) {
+        final TypeVariable var = (TypeVariable) varIt.next();
 	
 	try
 	  {

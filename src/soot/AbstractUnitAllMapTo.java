@@ -24,45 +24,32 @@
  */
 
 
-package soot.jimple.toolkits.scalar;
 
+
+
+package soot;
+
+import soot.tagkit.*;
 import soot.*;
-import soot.jimple.*;
-import soot.toolkits.scalar.*;
 import soot.util.*;
-import soot.toolkits.graph.*;
 import java.util.*;
 
-public class NopEliminator extends BodyTransformer
+public class AbstractUnitAllMapTo extends AbstractMap
 {
-    public NopEliminator( Singletons.Global g ) {}
-    public static NopEliminator v() { return G.v().NopEliminator(); }
-
-    /** Eliminates dead code in a linear fashion.  Complexity is linear 
-        with respect to the statements.
-    */
+    Object dest;
     
-    protected void internalTransform(Body b, String phaseName, Map options)
+    public AbstractUnitAllMapTo(Object dest)
     {
-        JimpleBody body = (JimpleBody)b;
-        
-        if(Main.v().opts.verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
-                "] Removing nops...");
-                
-        Chain units = body.getUnits();
-        
-        // Just do one trivial pass.
-        {
-            Iterator stmtIt = units.snapshotIterator();
-            
-            while(stmtIt.hasNext()) 
-            {
-                Stmt s = (Stmt) stmtIt.next();
-                
-                if(s instanceof NopStmt)
-                    units.remove(s);
-            }
-        }
+        this.dest = dest;
+    }
+    
+    public Object get(Object key)
+    {
+        return dest;
+    }
+    
+    public Set entrySet()
+    {
+        throw new UnsupportedOperationException();
     }
 }

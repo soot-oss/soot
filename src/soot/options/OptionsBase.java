@@ -27,8 +27,6 @@ import soot.PackManager;
  */
 
 abstract class OptionsBase {
-    public static final String PATH_SEPARATOR = System.getProperty( "path.separator" );
-
     private String pad( int initial, String opts, int tab, String desc ) {
         StringBuffer b = new StringBuffer();
         for( int i = 0; i < initial; i++ ) b.append( " " );

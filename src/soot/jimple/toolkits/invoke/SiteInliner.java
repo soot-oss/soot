@@ -164,7 +164,7 @@ public class SiteInliner
             {
                 // Need to get the class object if ie is a static invoke.
                 if (ie instanceof InstanceInvokeExpr)
-                    SynchronizerManager.synchronizeStmtOn(toInline, containerB, (Local)((InstanceInvokeExpr)ie).getBase());
+                    SynchronizerManager.v().synchronizeStmtOn(toInline, containerB, (Local)((InstanceInvokeExpr)ie).getBase());
                 else
                 {
                     // If we're in an interface, we must be in a
@@ -173,8 +173,8 @@ public class SiteInliner
                     if (!container.getDeclaringClass().isInterface())
                     {
                         // Whew!
-                        Local l = SynchronizerManager.addStmtsToFetchClassBefore(containerB, toInline);
-                        SynchronizerManager.synchronizeStmtOn(toInline, containerB, l);
+                        Local l = SynchronizerManager.v().addStmtsToFetchClassBefore(containerB, toInline);
+                        SynchronizerManager.v().synchronizeStmtOn(toInline, containerB, l);
                     }
                 }
             }
@@ -187,10 +187,8 @@ public class SiteInliner
         HashMap oldUnitsToNew = new HashMap();
         {
             Stmt cursor = toInline;
-            for (Iterator it = inlineeUnits.iterator();
-                 it.hasNext(); )
-            {
-                Stmt curr = (Stmt)it.next();
+            for( Iterator currIt = inlineeUnits.iterator(); currIt.hasNext(); ) {
+                final Stmt curr = (Stmt) currIt.next();
                 Stmt currPrime = (Stmt)curr.clone();
                 if (currPrime == null)
                     throw new RuntimeException("getting null from clone!");
@@ -201,10 +199,9 @@ public class SiteInliner
                 oldUnitsToNew.put(curr, currPrime);
             }
 
-            for (Iterator it = inlineeB.getLocals().iterator(); 
-                 it.hasNext(); )
-            {
-                Local l = (Local)it.next();
+            for( Iterator lIt = inlineeB.getLocals().iterator(); lIt.hasNext(); ) {
+
+                final Local l = (Local) lIt.next();
                 Local lPrime = (Local)l.clone();
                 if (lPrime == null)
                     throw new RuntimeException("getting null from local clone!");

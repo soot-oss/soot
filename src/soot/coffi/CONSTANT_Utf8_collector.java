@@ -25,7 +25,7 @@
 
 
 package soot.coffi;
-
+import soot.*;
 import java.lang.*;
 import java.util.*;
 
@@ -34,9 +34,11 @@ import java.util.*;
 
 public class CONSTANT_Utf8_collector 
 {
-    static HashMap hash = null;
+    public CONSTANT_Utf8_collector( Singletons.Global g ) {}
+    public static CONSTANT_Utf8_collector v() { return G.v().CONSTANT_Utf8_collector(); }
+    HashMap hash = null;
 
-    static synchronized CONSTANT_Utf8_info add(CONSTANT_Utf8_info _Utf8_info) 
+    synchronized CONSTANT_Utf8_info add(CONSTANT_Utf8_info _Utf8_info) 
     {
         if (hash == null) 
         {

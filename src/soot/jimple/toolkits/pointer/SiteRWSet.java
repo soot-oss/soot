@@ -55,7 +55,7 @@ public class SiteRWSet extends RWSet {
 	    PointsToSet os = s.getBaseForField( f );
 	    if( os == null ) continue;
 	    if( os.isEmpty() ) continue;
-	    if( ret == null ) ret = Union.factory.newUnion();
+	    if( ret == null ) ret = G.v().Union_factory.newUnion();
 	    ret.addAll( os );
 	}
 	return ret;

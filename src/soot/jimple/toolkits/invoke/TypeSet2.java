@@ -36,58 +36,52 @@ import soot.util.BitSet;
 
 public class TypeSet2 implements Set 
 {
-    static HashMap typeToNumber = null;
-    static TypeElement2[] numberToType = null;
-    static TypeSet2 allTypes = null;
-    static TypeSet2 libraryTypes = null;
-    static TypeSet2 benchTypes = null;
-  
     private BitSet types;
 
     private static void initialize() 
     {
         Chain allClasses = Scene.v().getClasses();
         LinkedList l = new LinkedList();
-        for (Iterator clsIt = allClasses.iterator(); clsIt.hasNext(); ) {
-            SootClass cls = (SootClass)clsIt.next();
+        for( Iterator clsIt = allClasses.iterator(); clsIt.hasNext(); ) {
+            final SootClass cls = (SootClass) clsIt.next();
             if (!cls.isInterface())
                 l.add(TypeElement2.v(cls));
         }
-        numberToType = new TypeElement2[1];
-        numberToType = (TypeElement2[])l.toArray(numberToType);
-        typeToNumber = new HashMap();
-        libraryTypes = new TypeSet2();
-        benchTypes = new TypeSet2();
-        for (int i = 0; i < numberToType.length; i++) {
-            TypeElement2 t = numberToType[i];
-            typeToNumber.put(t, new Integer(i));
+        G.v().TypeSet2_numberToType = new TypeElement2[1];
+        G.v().TypeSet2_numberToType = (TypeElement2[])l.toArray(G.v().TypeSet2_numberToType);
+        G.v().TypeSet2_typeToNumber = new HashMap();
+        G.v().TypeSet2_libraryTypes = new TypeSet2();
+        G.v().TypeSet2_benchTypes = new TypeSet2();
+        for (int i = 0; i < G.v().TypeSet2_numberToType.length; i++) {
+            TypeElement2 t = G.v().TypeSet2_numberToType[i];
+            G.v().TypeSet2_typeToNumber.put(t, new Integer(i));
             String name = t.toString();
             if (name.startsWith("java.") || name.startsWith("sun.") || name.startsWith("sunw.") ||
                 name.startsWith("javax.")|| name.startsWith("org.") || name.startsWith("com."))
-                libraryTypes.types.set(i);
+                G.v().TypeSet2_libraryTypes.types.set(i);
             else
-                benchTypes.types.set(i);
+                G.v().TypeSet2_benchTypes.types.set(i);
         }
-        allTypes = new TypeSet2();
-        allTypes.addAll(benchTypes);
-        allTypes.addAll(libraryTypes);
+        G.v().TypeSet2_allTypes = new TypeSet2();
+        G.v().TypeSet2_allTypes.addAll(G.v().TypeSet2_benchTypes);
+        G.v().TypeSet2_allTypes.addAll(G.v().TypeSet2_libraryTypes);
     }
 
     /** Creates an empty TypeSet2. */
     public TypeSet2() {
         types = new BitSet();
-        if (typeToNumber == null)
+        if (G.v().TypeSet2_typeToNumber == null)
             initialize();
     }
 
     /** Creates a TypeSet2 which contains a types specified in the collection <code>c</code>. */
     public TypeSet2(Collection c) {
         types = new BitSet();
-        if (typeToNumber == null)
+        if (G.v().TypeSet2_typeToNumber == null)
             initialize();
-        for (Iterator it = c.iterator(); it.hasNext(); ) {
-            TypeElement2 t = (TypeElement2)it.next();
-            int index = ((Integer)typeToNumber.get(t)).intValue();
+        for( Iterator tIt = c.iterator(); tIt.hasNext(); ) {
+            final TypeElement2 t = (TypeElement2) tIt.next();
+            int index = ((Integer)G.v().TypeSet2_typeToNumber.get(t)).intValue();
             types.set(index);
         }
     }
@@ -95,7 +89,7 @@ public class TypeSet2 implements Set
     /** Adds a type to this set. */
     public boolean add(Object o) {
         TypeElement2 t = (TypeElement2)o;
-        int index = ((Integer)typeToNumber.get(t)).intValue();
+        int index = ((Integer)G.v().TypeSet2_typeToNumber.get(t)).intValue();
         boolean retVal = !types.get(index);
         types.set(index);
         return retVal;
@@ -104,9 +98,9 @@ public class TypeSet2 implements Set
     /** Adds all the types in <code>c</code> to this set. */
     public boolean addAll(Collection c) {
         boolean retVal = false;
-        for (Iterator it = c.iterator(); it.hasNext(); ) {
-            TypeElement2 t = (TypeElement2)it.next();
-            int index = ((Integer)typeToNumber.get(t)).intValue();
+        for( Iterator tIt = c.iterator(); tIt.hasNext(); ) {
+            final TypeElement2 t = (TypeElement2) tIt.next();
+            int index = ((Integer)G.v().TypeSet2_typeToNumber.get(t)).intValue();
             retVal = retVal || (!types.get(index));
             types.set(index);
         }
@@ -142,16 +136,16 @@ public class TypeSet2 implements Set
     /** Returns true if the type <code>o</code> is in this set, false otherwise. */
     public boolean contains(Object o) {
         TypeElement2 t = (TypeElement2)o;
-        int index = ((Integer)typeToNumber.get(t)).intValue();
+        int index = ((Integer)G.v().TypeSet2_typeToNumber.get(t)).intValue();
         return types.get(index);
     }
 
     /** Returns true if all the types in <code>c</code> are in this set, false otherwise. */
     public boolean containsAll(Collection c) {
         boolean retValue = true;
-        for (Iterator it = c.iterator(); it.hasNext(); ) {
-            TypeElement2 t = (TypeElement2)it.next();
-            int index = ((Integer)typeToNumber.get(t)).intValue();
+        for( Iterator tIt = c.iterator(); tIt.hasNext(); ) {
+            final TypeElement2 t = (TypeElement2) tIt.next();
+            int index = ((Integer)G.v().TypeSet2_typeToNumber.get(t)).intValue();
             retValue = retValue && types.get(index);
         }
         return retValue;
@@ -175,7 +169,7 @@ public class TypeSet2 implements Set
     private List toList() { 
         LinkedList l = new LinkedList();
 	for (BitSetIterator it = types.iterator(); it.hasNext(); )
-	    l.add(numberToType[it.next()]);
+	    l.add(G.v().TypeSet2_numberToType[it.next()]);
         return l;
     }
 
@@ -213,7 +207,7 @@ public class TypeSet2 implements Set
     /** Removes the object <code>o</code> from this set. */
     public boolean remove(Object o) {
         TypeElement2 t = (TypeElement2)o;
-        int index = ((Integer)typeToNumber.get(t)).intValue();
+        int index = ((Integer)G.v().TypeSet2_typeToNumber.get(t)).intValue();
         boolean retVal = types.get(index);
         types.clear(index);
         return retVal;

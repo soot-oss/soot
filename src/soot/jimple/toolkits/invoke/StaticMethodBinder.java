@@ -55,7 +55,7 @@ public class StaticMethodBinder extends SceneTransformer
         InvokeGraphBuilder.v().transform(phaseName + ".igb");
 
         Date finish = new Date();
-        if (Main.opts.verbose()) {
+        if (Main.v().opts.verbose()) {
             G.v().out.println("[stb] Done building invoke graph.");
             long runtime = finish.getTime() - start.getTime();
             G.v().out.println("[stb] Invoke graph building took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
@@ -76,14 +76,14 @@ public class StaticMethodBinder extends SceneTransformer
 
         for (int i = 0; i < VTApasses; i++)
         {
-            if (Main.opts.verbose())
+            if (Main.v().opts.verbose())
                 G.v().out.println(graph.computeStats());
             vta = new VariableTypeAnalysis(graph);
             vta.trimActiveInvokeGraph();
             graph.refreshReachableMethods();
         }
                 
-        if (Main.opts.verbose())
+        if (Main.v().opts.verbose())
             G.v().out.println(graph.computeStats());
 
         Iterator classesIt = Scene.v().getApplicationClasses().iterator();
@@ -319,7 +319,7 @@ public class StaticMethodBinder extends SceneTransformer
                         if (target.isSynchronized())
                         {
                             clonedTarget.setModifiers(clonedTarget.getModifiers() & ~Modifier.SYNCHRONIZED);
-                            SynchronizerManager.synchronizeStmtOn(s, b, (Local)((InstanceInvokeExpr)ie).getBase());
+                            SynchronizerManager.v().synchronizeStmtOn(s, b, (Local)((InstanceInvokeExpr)ie).getBase());
                         }
                     }
 

@@ -167,6 +167,14 @@ public class SootField extends AbstractHost implements ClassMember, SparkField
         return Modifier.isStatic(this.getModifiers());
     }
 
+    /**
+     * Convenience method returning true if this field is final.
+     */
+    public boolean isFinal()
+    {
+        return Modifier.isFinal(this.getModifiers());
+    }
+
 
 
     public void setModifiers(int modifiers)

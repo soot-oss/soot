@@ -69,12 +69,12 @@ public class JimpleBodyPack extends BodyPack
         
         if(!noSplitting)
         {
-            if(Main.opts.time())
+            if(Main.v().opts.time())
                 Timers.v().splitTimer.start();
 
             PackManager.v().getTransform( "jb.ls" ).apply( b );
 
-            if(Main.opts.time())
+            if(Main.v().opts.time())
                 Timers.v().splitTimer.end();
 
             if(!noTyping)
@@ -90,12 +90,12 @@ public class JimpleBodyPack extends BodyPack
                     PackManager.v().getTransform( "jb.ule" ).apply( b );
 		}
 
-                if(Main.opts.time())
+                if(Main.v().opts.time())
                     Timers.v().assignTimer.start();
 
                 PackManager.v().getTransform( "jb.tr" ).apply( b );
 		
-                if(Main.opts.time())
+                if(Main.v().opts.time())
                     Timers.v().assignTimer.end();
 
 		if(typingFailed(b))
@@ -141,7 +141,7 @@ public class JimpleBodyPack extends BodyPack
         if (!noUcElimination)
             PackManager.v().getTransform( "jb.uce" ).apply( b );
                     
-        if(soot.Main.opts.time())
+        if(soot.Main.v().opts.time())
             Timers.v().stmtCount += b.getUnits().size();
     }
 

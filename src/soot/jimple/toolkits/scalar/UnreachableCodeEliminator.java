@@ -39,15 +39,15 @@ public class UnreachableCodeEliminator extends BodyTransformer
     public UnreachableCodeEliminator( Singletons.Global g ) {}
     public static UnreachableCodeEliminator v() { return G.v().UnreachableCodeEliminator(); }
 
-    static CompleteUnitGraph stmtGraph;
-    static HashSet visited;
-    static int numPruned;
+    CompleteUnitGraph stmtGraph;
+    HashSet visited;
+    int numPruned;
 
     protected void internalTransform(Body b, String phaseName, Map options) 
     {
         StmtBody body = (StmtBody)b;
         
-        if (soot.Main.opts.verbose()) 
+        if (soot.Main.v().opts.verbose()) 
             G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
 
         numPruned = 0;
@@ -73,7 +73,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
                 numPruned++;
             }
         }
-        if (soot.Main.opts.verbose())
+        if (soot.Main.v().opts.verbose())
             G.v().out.println("[" + body.getMethod().getName() + "]     Removed " + numPruned + " statements...");
             
         // Now eliminate empty traps.
@@ -91,7 +91,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
         
   } // pruneUnreachables
 
-    private static void visitStmts(Stmt head) {
+    private void visitStmts(Stmt head) {
 
         // Do DFS of the unit graph, starting at the head node.
 

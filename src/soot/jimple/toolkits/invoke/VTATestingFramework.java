@@ -52,7 +52,7 @@ public class VTATestingFramework extends SceneTransformer
     protected void internalTransform(String phaseName, Map options)
     {
         Date start = new Date();
-        if(Main.opts.verbose()) {
+        if(Main.v().opts.verbose()) {
             G.v().out.println("[] Starting VTA...");
             G.v().out.println("[vta] Invoke graph builder started on "+start);
         }
@@ -60,7 +60,7 @@ public class VTATestingFramework extends SceneTransformer
         InvokeGraphBuilder.v().transform(phaseName + ".igb");
 
         Date finish = new Date();
-        if (Main.opts.verbose()) {
+        if (Main.v().opts.verbose()) {
             G.v().out.println("[vta] Done building invoke graph.");
             long runtime = finish.getTime() - start.getTime();
             G.v().out.println("[stb] This took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
@@ -161,7 +161,7 @@ public class VTATestingFramework extends SceneTransformer
                     continue;
 
                 if (excludeSet.contains(container)) {
-                    if (Main.opts.verbose())
+                    if (Main.v().opts.verbose())
                         excludeCount++;
                         G.v().out.println(container+" is excluded from profiling.");
                     continue;
@@ -250,7 +250,7 @@ public class VTATestingFramework extends SceneTransformer
             }
         }
   
-        if (Main.opts.verbose()) {
+        if (Main.v().opts.verbose()) {
             G.v().out.println(excludeCount+" methods have been excluded from profiling.");
         }
         Scene.v().releaseActiveInvokeGraph();

@@ -159,7 +159,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 					      ReferenceVariable thisVar,
 					      ReferenceVariable returnVar,
 					      ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**
@@ -186,7 +186,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 					     ReferenceVariable thisVar,
 					     ReferenceVariable returnVar,
 					     ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getStringObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 
   /**
@@ -204,7 +204,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 					 ReferenceVariable thisVar,
 					 ReferenceVariable returnVar,
 					 ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassLoaderObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
   }
 
   /**
@@ -217,7 +217,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 				       ReferenceVariable thisVar,
 				       ReferenceVariable returnVar,
 				       ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**
@@ -232,7 +232,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 				       ReferenceVariable returnVar,
 				       ReferenceVariable params[]) {
     /* currently, we do not distinguish array object and scalar object.*/
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**
@@ -247,7 +247,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 					  ReferenceVariable thisVar,
 					  ReferenceVariable returnVar,
 					  ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**
@@ -303,7 +303,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 					   ReferenceVariable thisVar,
 					   ReferenceVariable returnVar,
 					   ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**
@@ -348,7 +348,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 					   ReferenceVariable thisVar,
 					   ReferenceVariable returnVar,
 					   ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**
@@ -363,7 +363,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 				    ReferenceVariable thisVar,
 				    ReferenceVariable returnVar,
 				    ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getLeastArrayObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
   }
 
   /**
@@ -380,7 +380,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 				     ReferenceVariable thisVar,
 				     ReferenceVariable returnVar,
 				     ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getLeastArrayObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
   }
 
   /**
@@ -397,7 +397,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 					  ReferenceVariable thisVar,
 					  ReferenceVariable returnVar,
 					  ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getLeastArrayObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
   }
 
   /**
@@ -418,7 +418,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 				   ReferenceVariable thisVar,
 				   ReferenceVariable returnVar,
 				   ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getFieldObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getFieldObject());
   }
 
   /**
@@ -437,7 +437,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 				    ReferenceVariable thisVar,
 				    ReferenceVariable returnVar,
 				    ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getMethodObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getMethodObject());
   }
 
   /**
@@ -451,7 +451,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 					 ReferenceVariable thisVar,
 					 ReferenceVariable returnVar,
 					 ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getConstructorObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getConstructorObject());
   }
 
   /**
@@ -466,7 +466,7 @@ public class JavaLangClassNative extends NativeMethodClass {
 					     ReferenceVariable thisVar,
 					     ReferenceVariable returnVar,
 					     ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getLeastArrayObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
   }
 
   /**

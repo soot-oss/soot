@@ -84,7 +84,6 @@ public final class CallGraph
         }
     }
 
-    private static final NumberedString sigClinit = Scene.v().getSubSigNumberer().findOrAdd( "void <clinit>()" );
     private void handleClassName( SootMethod m, AssignStmt s, String name ) {
         if( name.length() == 0 ) return;
         if( name.charAt(0) == '[' ) return;
@@ -112,8 +111,8 @@ public final class CallGraph
                 VarNode vn = pag.makeVarNode( s.getLeftOp(), s.getLeftOp().getType(), m );
                 pag.addEdge( an, vn );
             }
-            if( sootcls.declaresMethod( sigClinit ) ) {
-                setReachable( m, sootcls.getMethod( sigClinit ) );
+            if( sootcls.declaresMethod( ImplicitMethodInvocation.v().sigClinit ) ) {
+                setReachable( m, sootcls.getMethod( ImplicitMethodInvocation.v().sigClinit ) );
             }
         }
     }

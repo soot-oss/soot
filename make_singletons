@@ -26,6 +26,7 @@ cat <<EOF
  */
 
 package soot;
+import soot.jimple.toolkits.typing.TypeAssigner;
 EOF
 
 sed 's/^/import /g' package.list | sed 's/$/.*;/g'

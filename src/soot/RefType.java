@@ -115,7 +115,7 @@ public class RefType extends RefLikeType implements ToBriefString, Comparable
 
     public String toString()
     {
-	if (Main.getJavaStyle())
+	if (Main.v().getJavaStyle())
 	    return toBriefString();
 	else
 	    return Scene.v().quotedNameOf(className);
@@ -123,7 +123,7 @@ public class RefType extends RefLikeType implements ToBriefString, Comparable
 
     public String toBriefString()
     {
-	if (Main.getJavaStyle())
+	if (Main.v().getJavaStyle())
 	    return toVeryBriefString();
 	else
 	    return className;

@@ -34,12 +34,14 @@ import java.io.*;
 /** Utility functions for tags. */
 public class TagManager
 {
-    private static TagPrinter tagPrinter = new StdTagPrinter();
+    public TagManager( Singletons.Global g ) {}
+    public static TagManager v() { return G.v().TagManager(); }
+    private TagPrinter tagPrinter = new StdTagPrinter();
 
     /** Returns the Tag class with the given name. 
      *
      * (This does not seem to be necessary.) */
-    public static Tag getTagFor(String tagName) {
+    public Tag getTagFor(String tagName) {
 	try {
 	    Class cc = Class.forName("soot.tagkit." + tagName);
 	    return (Tag) cc.newInstance();
@@ -54,13 +56,13 @@ public class TagManager
     }
 
     /** Sets the default tag printer. */
-    public static void setTagPrinter(TagPrinter p) 
+    public void setTagPrinter(TagPrinter p) 
     {
 	tagPrinter = p;
     }
 
     /** Prints the given Tag, assuming that it belongs to the given class and field or method. */
-    public static String print(String aClassName, String aFieldOrMtdSignature,
+    public String print(String aClassName, String aFieldOrMtdSignature,
                                Tag aTag)
     {
 	return tagPrinter.print(aClassName, aFieldOrMtdSignature,  aTag);

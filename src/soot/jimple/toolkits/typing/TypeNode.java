@@ -38,7 +38,6 @@ import soot.util.BitSet;
 class TypeNode
 {
   private static final boolean DEBUG = false;
-  private static final boolean J2ME  = soot.Main.isJ2ME();
 
   private final int id;
   private final Type type;
@@ -158,7 +157,7 @@ class TypeNode
 	      plist.add(hierarchy.OBJECT);
 
 	      // hack for J2ME library, reported by Stephen Cheng
-	      if (!J2ME) {
+	      if (!soot.Main.v().isJ2ME) {
 		plist.add(hierarchy.CLONEABLE);
 		plist.add(hierarchy.SERIALIZABLE);
 	      }
@@ -170,7 +169,7 @@ class TypeNode
 	      plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.OBJECT.type(), type.numDimensions - 1)));
 
 	      // hack for J2ME library, reported by Stephen Cheng
-	      if (!J2ME) {
+	      if (!soot.Main.v().isJ2ME) {
 		plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
 		plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
 	      }
@@ -189,7 +188,7 @@ class TypeNode
 	  plist.add(hierarchy.OBJECT);
 
 	  // hack for J2ME library, reported by Stephen Cheng
-	  if (!J2ME) {
+	  if (!soot.Main.v().isJ2ME) {
 	    plist.add(hierarchy.CLONEABLE);
 	    plist.add(hierarchy.SERIALIZABLE);
 	  }
@@ -200,7 +199,7 @@ class TypeNode
 	{
 	  plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.OBJECT.type(), type.numDimensions - 1)));
 	  // hack for J2ME library, reported by Stephen Cheng
-	  if (!J2ME) {
+	  if (!soot.Main.v().isJ2ME) {
 	    plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
 	    plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
 	  }

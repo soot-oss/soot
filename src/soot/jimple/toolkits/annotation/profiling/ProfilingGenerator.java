@@ -39,7 +39,7 @@ public class ProfilingGenerator extends BodyTransformer
     public ProfilingGenerator( Singletons.Global g ) {}
     public static ProfilingGenerator v() { return G.v().ProfilingGenerator(); }
 
-    public static String mainSignature = "void main(java.lang.String[])";
+    public String mainSignature = "void main(java.lang.String[])";
 
     //    private String mainSignature = "long runBenchmark(java.lang.String[])";
 

@@ -6,7 +6,6 @@ import soot.util.*;
 
 public class SETBasicBlock implements Comparable
 {
-    private static final HashMap binding = new HashMap();
     
     private SETNode entryNode, exitNode;
     private IterableSet predecessors, successors, body;
@@ -70,7 +69,7 @@ public class SETBasicBlock implements Comparable
 	    entryNode = sn;
 
 	body.add( sn);
-	binding.put( sn, this);
+	G.v().SETBasicBlock_binding.put( sn, this);
 
 	exitNode = sn;	
     }
@@ -102,7 +101,7 @@ public class SETBasicBlock implements Comparable
     
     public static SETBasicBlock get_SETBasicBlock( SETNode o)
     {
-	return (SETBasicBlock) binding.get( o);
+	return (SETBasicBlock) G.v().SETBasicBlock_binding.get( o);
     }
 
 

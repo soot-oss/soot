@@ -36,6 +36,6 @@ public class VTANativeMethodWrapper2 {
       }
     }
 
-    NativeMethodDriver.process(method, thisVar, returnVar, params);
+    NativeMethodDriver.v().process(method, thisVar, returnVar, params);
   }
 }

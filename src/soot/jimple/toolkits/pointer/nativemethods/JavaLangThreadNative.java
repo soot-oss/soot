@@ -50,7 +50,7 @@ public class JavaLangThreadNative extends NativeMethodClass {
 					ReferenceVariable thisVar,
 					ReferenceVariable returnVar,
 					ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getThreadObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getThreadObject());
   }
 
   /**

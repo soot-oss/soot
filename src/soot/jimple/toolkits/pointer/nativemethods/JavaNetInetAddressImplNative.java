@@ -63,7 +63,7 @@ public class JavaNetInetAddressImplNative extends NativeMethodClass {
                                           ReferenceVariable thisVar,
 					  ReferenceVariable returnVar,
 					  ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getStringObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
   
   /**
@@ -77,7 +77,7 @@ public class JavaNetInetAddressImplNative extends NativeMethodClass {
 						ReferenceVariable thisVar,
 						ReferenceVariable returnVar,
 						ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getStringObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 
   /**

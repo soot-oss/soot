@@ -15,7 +15,7 @@ public class FullObjectSet extends Union implements PointsToSet {
     public boolean hasNonEmptyIntersection( PointsToSet other ) {
 	return other != null;
     }
-    private static final Set types = 
+    private final Set types = 
         Collections.singleton( AnySubType.v( RefType.v( "java.lang.Object" ) ) );
     /** Set of all possible run-time types of objects in the set. */
     public Set possibleTypes() {

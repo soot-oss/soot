@@ -34,22 +34,14 @@ public class VirtualCallSite
     private InstanceInvokeExpr iie;
     private Stmt stmt;
     private SootMethod container;
-    private static FastHierarchy fh;
     private NumberedString subSig;
     private boolean seenInvokeSpecial = false;
-    private static final NumberedString sigRun = Scene.v().getSubSigNumberer().
-        findOrAdd( "void run()" );
-    private static final NumberedString sigStart = Scene.v().getSubSigNumberer().
-        findOrAdd( "void start()" );
-    private static final NumberedString sigClinit = Scene.v().getSubSigNumberer().
-        findOrAdd( "void <clinit>()" );
 
     public VirtualCallSite( Stmt stmt, SootMethod container ) {
         this.stmt = stmt;
         this.iie = (InstanceInvokeExpr) stmt.getInvokeExpr();
         this.container = container;
         this.subSig = iie.getMethod().getNumberedSubSignature();
-        fh = Scene.v().getOrMakeFastHierarchy();
     }
 
     public void addType( Type t, ChunkedQueue targets ) {
@@ -57,12 +49,13 @@ public class VirtualCallSite
             if( iie instanceof SpecialInvokeExpr ) {
                 SootMethod target = iie.getMethod();
                 /* cf. JVM spec, invokespecial instruction */
-                if( fh.canStoreType( container.getDeclaringClass().getType(),
-                        target.getDeclaringClass().getType() )
+                if( Scene.v().getOrMakeFastHierarchy()
+                        .canStoreType( container.getDeclaringClass().getType(),
+                            target.getDeclaringClass().getType() )
                     && container.getDeclaringClass().getType() !=
                         target.getDeclaringClass().getType() 
                     && !target.getName().equals( "<init>" ) 
-                    && subSig != sigClinit ) {
+                    && subSig != ImplicitMethodInvocation.v().sigClinit ) {
 
                     t = container.getDeclaringClass().getSuperclass().getType();
                 } else {
@@ -73,7 +66,8 @@ public class VirtualCallSite
                     }
                     return;
                 }
-            } else if( !fh.canStoreType( t, iie.getBase().getType() ) ) {
+            } else if( !Scene.v().getOrMakeFastHierarchy()
+                    .canStoreType( t, iie.getBase().getType() ) ) {
                 return;
             }
             SootClass cls = ((RefType)t).getSootClass();
@@ -87,11 +81,12 @@ public class VirtualCallSite
                     }
                     break;
                 }
-                if( subSig == sigStart && cls.declaresMethod( sigRun ) 
-                && fh.canStoreType( t, RefType.v( "java.lang.Runnable" ) ) ) {
-                    SootMethod m = cls.getMethod( sigRun );
+                if( subSig == ImplicitMethodInvocation.v().sigStart && cls.declaresMethod( ImplicitMethodInvocation.v().sigRun ) 
+                && Scene.v().getOrMakeFastHierarchy()
+                .canStoreType( t, RefType.v( "java.lang.Runnable" ) ) ) {
+                    SootMethod m = cls.getMethod( ImplicitMethodInvocation.v().sigRun );
                     if( m.isConcrete() || m.isNative() ) {
-                        SootMethod target = cls.getMethod( sigRun );
+                        SootMethod target = cls.getMethod( ImplicitMethodInvocation.v().sigRun );
                         targets.add( target );
                     }
                     break;
@@ -107,13 +102,15 @@ public class VirtualCallSite
             if( seenAllSubtypes.add( base ) ) {
                 SootClass cl = base.getSootClass();
                 if( cl.isInterface() ) {
-                    for( Iterator cIt = fh.getAllImplementersOfInterface(cl).iterator(); cIt.hasNext(); ) {
+                    for( Iterator cIt = Scene.v().getOrMakeFastHierarchy()
+                            .getAllImplementersOfInterface(cl).iterator(); cIt.hasNext(); ) {
                         final SootClass c = (SootClass) cIt.next();
                         addType( AnySubType.v( c.getType() ), targets );
                     }
                 }
                 addType( base, targets );
-                for( Iterator cIt = fh.getSubclassesOf( cl ).iterator(); cIt.hasNext(); ) {
+                for( Iterator cIt = Scene.v().getOrMakeFastHierarchy()
+                        .getSubclassesOf( cl ).iterator(); cIt.hasNext(); ) {
                     final SootClass c = (SootClass) cIt.next();
                     addType( AnySubType.v( c.getType() ), targets );
                 }

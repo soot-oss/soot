@@ -24,7 +24,6 @@
  */
 
 package soot;
-import soot.*;
 
 import java.text.DecimalFormat;
 
@@ -133,6 +132,16 @@ public class Timers
 
      public long stmtCount;
 
+	public Timer fieldTimer = new soot.Timer();
+
+	public Timer methodTimer = new soot.Timer();
+
+	public Timer attributeTimer = new soot.Timer();
+
+	public Timer locatorTimer = new soot.Timer();
+
+	public Timer readTimer = new soot.Timer();
+
 
      void printProfilingInformation()
     {                                                   
@@ -196,11 +205,11 @@ public class Timers
             
             G.v().out.println("totalTime:" + toTimeString(totalTimer, totalTime));
             
-            if(Main.opts.subtract_gc())
+            if(Main.v().opts.subtract_gc())
 		{
 		    G.v().out.println("Garbage collection was subtracted from these numbers.");
 		    G.v().out.println("           forcedGC:" + 
-				       toTimeString(Timer.forcedGarbageCollectionTimer, totalTime));
+				       toTimeString(G.v().Timer_forcedGarbageCollectionTimer, totalTime));
 		}
 
             G.v().out.println("stmtCount: " + stmtCount + "(" + toFormattedString(stmtCount / timeInSecs) + " stmt/s)");

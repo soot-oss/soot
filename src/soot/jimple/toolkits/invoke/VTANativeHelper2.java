@@ -13,7 +13,7 @@ import soot.jimple.toolkits.pointer.util.*;
 import java.util.*;
 
 public class VTANativeHelper2 
-  extends NativeHelper implements TypeConstants{
+  extends NativeHelper {
 
   /* class hierarchy set by the caller */
   Hierarchy h;
@@ -51,9 +51,9 @@ public class VTANativeHelper2
     ReferenceVariable newInstanceOfImpl(ReferenceVariable cls) {
     /* all types are possible */
     TypeGraphNode2 tempNode = TypeGraphNode2.makeTempNode();
-    vtg.addNode(tempNode, OBJECTCLASS);
+    vtg.addNode(tempNode, TypeConstants.v().OBJECTCLASS);
     includeSubtypesOf(tempNode.getTypeSet2(), 
-		      ((RefType) OBJECTCLASS).getSootClass());
+		      ((RefType) TypeConstants.v().OBJECTCLASS).getSootClass());
     return tempNode;
   }
 
@@ -74,7 +74,7 @@ public class VTANativeHelper2
   protected 
     ReferenceVariable staticFieldImpl(String clsname, String fieldsig) {
     TypeGraphNode2 tempNode = TypeGraphNode2.v(clsname+fieldsig);
-    vtg.addNode(tempNode, OBJECTCLASS);
+    vtg.addNode(tempNode, TypeConstants.v().OBJECTCLASS);
     return tempNode;
   }
 
@@ -83,7 +83,7 @@ public class VTANativeHelper2
   protected 
     ReferenceVariable tempFieldImpl(String fieldsig){
     TypeGraphNode2 tempNode = TypeGraphNode2.v(fieldsig);
-    vtg.addNode(tempNode, OBJECTCLASS);
+    vtg.addNode(tempNode, TypeConstants.v().OBJECTCLASS);
     return tempNode;
   } 
 
@@ -92,7 +92,7 @@ public class VTANativeHelper2
   protected
     ReferenceVariable tempVariableImpl(){
     TypeGraphNode2 tempNode = TypeGraphNode2.makeTempNode();
-    vtg.addNode(tempNode, OBJECTCLASS);  
+    vtg.addNode(tempNode, TypeConstants.v().OBJECTCLASS);  
     return tempNode;
   }
 

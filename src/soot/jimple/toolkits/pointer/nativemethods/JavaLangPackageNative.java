@@ -56,7 +56,7 @@ public class JavaLangPackageNative extends NativeMethodClass {
 					     ReferenceVariable thisVar,
 					     ReferenceVariable returnVar,
 					     ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getStringObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 
   /**
@@ -67,7 +67,7 @@ public class JavaLangPackageNative extends NativeMethodClass {
 					      ReferenceVariable thisVar,
 					      ReferenceVariable returnVar,
 					      ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getLeastArrayObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
   }
 
 

@@ -55,17 +55,17 @@ public class SimpleLiveLocals implements LiveLocals
      */
     public SimpleLiveLocals(CompleteUnitGraph graph)
     {
-        if(Main.opts.time())
+        if(Main.v().opts.time())
             Timers.v().liveTimer.start();
         
-        if(Main.opts.verbose())
+        if(Main.v().opts.verbose())
             G.v().out.println("[" + graph.getBody().getMethod().getName() +
                 "]     Constructing SimpleLiveLocals...");
 
                         
         SimpleLiveLocalsAnalysis analysis = new SimpleLiveLocalsAnalysis(graph);
 
-        if(Main.opts.time())
+        if(Main.v().opts.time())
                 Timers.v().livePostTimer.start();
 
         // Build unitToLocals map
@@ -87,10 +87,10 @@ public class SimpleLiveLocals implements LiveLocals
             }            
         }
         
-        if(Main.opts.time())
+        if(Main.v().opts.time())
             Timers.v().livePostTimer.end();
         
-        if(Main.opts.time())
+        if(Main.v().opts.time())
             Timers.v().liveTimer.end();
     }
 
@@ -115,7 +115,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
     {
         super(g);
 
-        if(Main.opts.time())
+        if(Main.v().opts.time())
             Timers.v().liveSetupTimer.start();
 
         // Generate list of locals and empty set
@@ -181,15 +181,15 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
             }
         }
 
-        if(Main.opts.time())
+        if(Main.v().opts.time())
             Timers.v().liveSetupTimer.end();
 
-        if(Main.opts.time())
+        if(Main.v().opts.time())
             Timers.v().liveAnalysisTimer.start();
 
         doAnalysis();
         
-        if(Main.opts.time())
+        if(Main.v().opts.time())
             Timers.v().liveAnalysisTimer.end();
 
     }

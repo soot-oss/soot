@@ -12,12 +12,12 @@ public class FieldRWTagger extends BodyTransformer
     public FieldRWTagger( Singletons.Global g ) {}
     public static FieldRWTagger v() { return G.v().FieldRWTagger(); }
 
-    public static int numRWs = 0;
-    public static int numWRs = 0;
-    public static int numRRs = 0;
-    public static int numWWs = 0;
-    public static int numNatives = 0;
-    public static Date startTime = null;
+    public int numRWs = 0;
+    public int numWRs = 0;
+    public int numRRs = 0;
+    public int numWWs = 0;
+    public int numNatives = 0;
+    public Date startTime = null;
     boolean optionDontTag = false;
     boolean optionNaive = false;
 
@@ -55,8 +55,8 @@ public class FieldRWTagger extends BodyTransformer
 	if( !Scene.v().hasActiveInvokeGraph() ) {
 	    InvokeGraphBuilder.v().transform( phaseName + ".igb" );
 	}
-	if( Union.factory == null ) {
-	    Union.factory = new UnionFactory() {
+	if( G.v().Union_factory == null ) {
+	    G.v().Union_factory = new UnionFactory() {
 		public Union newUnion() { return FullObjectSet.v(); }
 	    };
 	}

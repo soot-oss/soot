@@ -148,7 +148,7 @@ public class VariableTypeAnalysis implements PointsToAnalysis
 
     start = new Date();
     VTAStart = start;
-    //    if (Main.opts.verbose()) 
+    //    if (Main.v().opts.verbose()) 
     {
       G.v().out.println("[vta] VTA started on "+start);
       G.v().out.println("[vta] Constructing Variable Type Analysis graph.");
@@ -158,7 +158,7 @@ public class VariableTypeAnalysis implements PointsToAnalysis
     vtg = new VTATypeGraph(ig);
 
     finish = new Date();
-    //    if (Main.opts.verbose()) 
+    //    if (Main.v().opts.verbose()) 
     {
       G.v().out.println("[vta] VTA graph has "+vtg.size()+" nodes and "+vtg.numEdges()+" edges.");
       long runtime = finish.getTime()-start.getTime();
@@ -173,7 +173,7 @@ public class VariableTypeAnalysis implements PointsToAnalysis
     scc = new StronglyConnectedComponents(vtg);
 
     finish = new Date();
-    //    if (Main.opts.verbose()) 
+    //    if (Main.v().opts.verbose()) 
     {
       long runtime = finish.getTime()-start.getTime();
       G.v().out.println("[vta] SCC took "+
@@ -190,7 +190,7 @@ public class VariableTypeAnalysis implements PointsToAnalysis
     visitNodes(h, superGraph);
 
     finish = new Date();
-    //    if (Main.opts.verbose()) 
+    //    if (Main.v().opts.verbose()) 
     {
       long runtime = finish.getTime()-start.getTime();
       G.v().out.println("[vta] Type propagation took "+
@@ -198,14 +198,14 @@ public class VariableTypeAnalysis implements PointsToAnalysis
 			 ((runtime%60000)/1000)+" sec.");
       G.v().out.println("[vta] Done constructing Variable Type Analysis graph.");
     }
-    if (Main.opts.verbose())
+    if (Main.v().opts.verbose())
       G.v().out.println("[vta] Done constructing Variable Type Analysis graph.");
   }
 
   /** Uses the results of this analysis to trim the active invoke graph. */
   public void trimActiveInvokeGraph()
   {
-        if (Main.opts.verbose())
+        if (Main.v().opts.verbose())
             G.v().out.println("[vta] Trimming active invoke graph.");
 
 	Date trimStart = new Date();
@@ -231,7 +231,7 @@ public class VariableTypeAnalysis implements PointsToAnalysis
         {
             SootClass c = (SootClass)classesIt.next();
 
-            if (Main.opts.verbose()) {
+            if (Main.v().opts.verbose()) {
                 Iterator fieldsIt = c.getFields().iterator();
                 while (fieldsIt.hasNext()) {
                     SootField f = (SootField)fieldsIt.next();
@@ -289,7 +289,7 @@ public class VariableTypeAnalysis implements PointsToAnalysis
                             // the ones that VTA doesn't rule out.)
                             ig.removeAllTargets(s);
 
-                            if (Main.opts.verbose()) {
+                            if (Main.v().opts.verbose()) {
                                 G.v().out.println("stmt "+s);
                                 G.v().out.println("local: "+VTATypeGraph.getVTALabel(m, base));
                                 G.v().out.println("reaching types: "+getReachingTypesOf(VTATypeGraph.getVTALabel(m, base)));
@@ -336,7 +336,7 @@ public class VariableTypeAnalysis implements PointsToAnalysis
 
         long runtime = VTAFinish.getTime() - VTAStart.getTime();
         
-	if (Main.opts.verbose()) {
+	if (Main.v().opts.verbose()) {
 	    G.v().out.println("[vta] VTA has run for "+(runtime/60000)+" min. "+
 			       ((runtime%60000)/1000)+" sec.");
 	    G.v().out.println();

@@ -36,24 +36,34 @@ import java.util.*;
  *
  * <P> This class is primarily used by the TypeResolver class, to optimize its computation.
  **/
-class ClassHierarchy
+public class ClassHierarchy
 {
-  public static final TypeNode BOOLEAN = new TypeNode(0, BooleanType.v());
-  public static final TypeNode BYTE = new TypeNode(1, ByteType.v());
-  public static final TypeNode SHORT = new TypeNode(2, ShortType.v());
-  public static final TypeNode CHAR = new TypeNode(3, CharType.v());
-  public static final TypeNode INT = new TypeNode(4, IntType.v());
-  public static final TypeNode TOP = new TypeNode(5, null);
-  public static final TypeNode R0_1 = new TypeNode(6, null);
-  public static final TypeNode R0_127 = new TypeNode(7, null);
-  public static final TypeNode R0_32767 = new TypeNode(8, null);
+    public ClassHierarchy( Singletons.Global g )
+  {
+    typeNodeMap.put(BooleanType.v(), BOOLEAN);
+    typeNodeMap.put(ByteType.v(), BYTE);
+    typeNodeMap.put(ShortType.v(), SHORT);
+    typeNodeMap.put(CharType.v(), CHAR);
+    typeNodeMap.put(IntType.v(), INT);
+  }
 
-  private static final TypeNode[] typeNodes =
+    public static ClassHierarchy v() { return G.v().ClassHierarchy(); }
+  public final TypeNode BOOLEAN = new TypeNode(0, BooleanType.v());
+  public final TypeNode BYTE = new TypeNode(1, ByteType.v());
+  public final TypeNode SHORT = new TypeNode(2, ShortType.v());
+  public final TypeNode CHAR = new TypeNode(3, CharType.v());
+  public final TypeNode INT = new TypeNode(4, IntType.v());
+  public final TypeNode TOP = new TypeNode(5, null);
+  public final TypeNode R0_1 = new TypeNode(6, null);
+  public final TypeNode R0_127 = new TypeNode(7, null);
+  public final TypeNode R0_32767 = new TypeNode(8, null);
+
+  private final TypeNode[] typeNodes =
   {
     BOOLEAN, BYTE, SHORT, CHAR, INT, TOP, R0_1, R0_127, R0_32767,
   };
 
-  private static final boolean[][] ancestors_1 =
+  private final boolean[][] ancestors_1 =
   {
     { false, false, false, false, false,  true, false, false, false, },
     { false, false,  true, false,  true,  true, false, false, false, },
@@ -66,7 +76,7 @@ class ClassHierarchy
     { false, false,  true,  true,  true,  true, false, false, false, },
   };
 
-  private static final boolean[][] ancestors_2 =
+  private final boolean[][] ancestors_2 =
   {
     { false,  true,  true,  true,  true, false, false,  true,  true, },
     { false, false,  true, false,  true, false, false, false, false, },
@@ -79,7 +89,7 @@ class ClassHierarchy
     { false, false,  true,  true,  true, false, false, false, false, },
   };
 
-  private static final boolean[][] descendants_1 =
+  private final boolean[][] descendants_1 =
   {
     { false, false, false, false, false, false,  true, false, false, },
     { false, false, false, false, false, false,  true,  true, false, },
@@ -92,7 +102,7 @@ class ClassHierarchy
     { false, false, false, false, false, false,  true,  true, false, },
   };
 
-  private static final boolean[][] descendants_2 =
+  private final boolean[][] descendants_2 =
   {
     { false, false, false, false, false, false, false, false, false, },
     {  true, false, false, false, false, false, false,  true, false, },
@@ -105,7 +115,7 @@ class ClassHierarchy
     {  true, false, false, false, false, false, false,  true, false, },
   };
 
-  private static final TypeNode[][] lca_1 =
+  private final TypeNode[][] lca_1 =
   {
     {  BOOLEAN,      TOP,      TOP,      TOP,      TOP,      TOP,  BOOLEAN,      TOP,      TOP, },
     {      TOP,     BYTE,    SHORT,      INT,      INT,      TOP,     BYTE,     BYTE,    SHORT, },
@@ -118,7 +128,7 @@ class ClassHierarchy
     {      TOP,    SHORT,    SHORT,     CHAR,      INT,      TOP, R0_32767, R0_32767, R0_32767, },
   };
   
-  private static final TypeNode[][] lca_2 =
+  private final TypeNode[][] lca_2 =
   {
     {  BOOLEAN,     BYTE,    SHORT,     CHAR,      INT,     null,     null,   R0_127, R0_32767, },
     {     BYTE,     BYTE,    SHORT,      INT,      INT,     null,     null,     BYTE,    SHORT, },
@@ -131,7 +141,7 @@ class ClassHierarchy
     { R0_32767,    SHORT,    SHORT,     CHAR,      INT,     null,     null, R0_32767, R0_32767, },
   };
   
-  private static final TypeNode[][] gcd_1 =
+  private final TypeNode[][] gcd_1 =
   {
     {  BOOLEAN,     R0_1,     R0_1,     R0_1,     R0_1,  BOOLEAN,     R0_1,     R0_1,     R0_1, },
     {     R0_1,     BYTE,     BYTE,   R0_127,     BYTE,     BYTE,     R0_1,   R0_127,   R0_127, },
@@ -144,7 +154,7 @@ class ClassHierarchy
     {     R0_1,   R0_127, R0_32767, R0_32767, R0_32767, R0_32767,     R0_1,   R0_127, R0_32767, },
   };
   
-  private static final TypeNode[][] gcd_2 =
+  private final TypeNode[][] gcd_2 =
   {
     {  BOOLEAN,  BOOLEAN,  BOOLEAN,  BOOLEAN,  BOOLEAN,     null,     null,  BOOLEAN,  BOOLEAN, },
     {  BOOLEAN,     BYTE,     BYTE,   R0_127,     BYTE,     null,     null,   R0_127,   R0_127, },
@@ -158,19 +168,10 @@ class ClassHierarchy
   };
   
   /** Map: Type -> TypeNode **/
-  private static final HashMap typeNodeMap = new HashMap();
+  private final HashMap typeNodeMap = new HashMap();
   
-  static
-  {
-    typeNodeMap.put(BooleanType.v(), BOOLEAN);
-    typeNodeMap.put(ByteType.v(), BYTE);
-    typeNodeMap.put(ShortType.v(), SHORT);
-    typeNodeMap.put(CharType.v(), CHAR);
-    typeNodeMap.put(IntType.v(), INT);
-  }
-
   /** Get the type node for the given type. **/
-  public static TypeNode typeNode(Type type)
+  public TypeNode typeNode(Type type)
   {
     if(type == null || !(type instanceof PrimType || type instanceof RefType))
       {
@@ -187,32 +188,32 @@ class ClassHierarchy
     return typeNode;
   }
 
-  public static boolean hasAncestor_1(int t1, int t2)
+  public boolean hasAncestor_1(int t1, int t2)
   {
     return ancestors_1[t1][t2];
   }
 
-  public static boolean hasAncestor_2(int t1, int t2)
+  public boolean hasAncestor_2(int t1, int t2)
   {
     return ancestors_2[t1][t2];
   }
 
-  public static boolean hasDescendant_1(int t1, int t2)
+  public boolean hasDescendant_1(int t1, int t2)
   {
     return descendants_1[t1][t2];
   }
 
-  public static boolean hasDescendant_2(int t1, int t2)
+  public boolean hasDescendant_2(int t1, int t2)
   {
     return descendants_2[t1][t2];
   }
 
-  public static TypeNode lca_1(int t1, int t2)
+  public TypeNode lca_1(int t1, int t2)
   {
     return lca_1[t1][t2];
   }
 
-  private static int convert(int n)
+  private int convert(int n)
   {
     switch(n)
       {
@@ -222,17 +223,17 @@ class ClassHierarchy
       }
   }
 
-  public static TypeNode lca_2(int t1, int t2)
+  public TypeNode lca_2(int t1, int t2)
   {
     return lca_2[convert(t1)][convert(t2)];
   }
 
-  public static TypeNode gcd_1(int t1, int t2)
+  public TypeNode gcd_1(int t1, int t2)
   {
     return gcd_1[t1][t2];
   }
 
-  public static TypeNode gcd_2(int t1, int t2)
+  public TypeNode gcd_2(int t1, int t2)
   {
     return gcd_2[convert(t1)][convert(t2)];
   }

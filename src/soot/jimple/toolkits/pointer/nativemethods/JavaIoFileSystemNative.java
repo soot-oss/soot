@@ -49,6 +49,6 @@ public class JavaIoFileSystemNative extends NativeMethodClass {
 					  ReferenceVariable thisVar,
 					  ReferenceVariable returnVar,
 					  ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getFileSystemObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getFileSystemObject());
   }
 }

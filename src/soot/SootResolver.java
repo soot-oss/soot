@@ -85,7 +85,7 @@ public class SootResolver
             
             try 
             {
-                is = SourceLocator.getInputStreamOf(className);
+                is = SourceLocator.v().getInputStreamOf(className);
             } catch(ClassNotFoundException e) 
             {
                 if(!Scene.v().allowsPhantomRefs())
@@ -100,11 +100,11 @@ public class SootResolver
                 
             Set s = null;
             if(is instanceof ClassInputStream) {
-                if(soot.Main.opts.verbose())
+                if(soot.Main.v().opts.verbose())
                     G.v().out.println("resolving [from .class]: " + className );
                 soot.coffi.Util.v().resolveFromClassFile(sc, is, this, Scene.v());
             } else if(is instanceof JimpleInputStream) {
-                if(soot.Main.opts.verbose())
+                if(soot.Main.v().opts.verbose())
                     G.v().out.println("resolving [from .jimple]: " + className );
                 if(sc == null) throw new RuntimeException("sc is null!!");
                 

@@ -49,7 +49,7 @@ public class VarNode extends ValNode implements Comparable {
     }
     public void setFinishingNumber( int i ) {
         finishingNumber = i;
-        if( i > maxFinishNumber ) maxFinishNumber = i;
+        if( i > pag.maxFinishNumber ) pag.maxFinishNumber = i;
     }
     /** NOTE: The method is here only for dumping the graph; not all VarNodes
      * will have a method so don't rely on it.
@@ -85,7 +85,7 @@ public class VarNode extends ValNode implements Comparable {
 	this.variable = variable;
         this.method = m;
         pag.getVarNodeNumberer().add(this);
-        setFinishingNumber( ++maxFinishNumber );
+        setFinishingNumber( ++pag.maxFinishNumber );
     }
     /** Registers a frn as having this node as its base. */
     void addField( FieldRefNode frn, SparkField field ) {
@@ -98,7 +98,6 @@ public class VarNode extends ValNode implements Comparable {
     protected Object variable;
     protected Map fields;
     protected int finishingNumber = 0;
-    static protected int maxFinishNumber = 0;
     protected SootMethod method;
     protected boolean interProcTarget = false;
     protected int numDerefs = 0;

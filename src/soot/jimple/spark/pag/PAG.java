@@ -535,9 +535,10 @@ public class PAG implements PointsToAnalysis {
     private Map valToAllocNode = new HashMap(1000);
     private P2SetFactory setFactory;
     private OnFlyCallGraph ofcg;
-    private static boolean somethingMerged = false;
+    private boolean somethingMerged = false;
     private ArrayList dereferences = new ArrayList();
     private TypeManager typeManager;
     private LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
+    public int maxFinishNumber = 0;
 }
 

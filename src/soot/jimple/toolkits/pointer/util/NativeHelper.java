@@ -6,18 +6,17 @@
 
 
 package soot.jimple.toolkits.pointer.util;
-
+import soot.*;
 import soot.jimple.toolkits.pointer.representations.*;
 
 public abstract class NativeHelper {
 
-  private static NativeHelper _helper = null;
 
   /**
    * Somewhere should register an instance of this sub class.
    */
   public static final void register(NativeHelper impl){
-    _helper = impl;
+    G.v().NativeHelper_helper = impl;
   }
 
 
@@ -25,7 +24,7 @@ public abstract class NativeHelper {
    * Regular assignment such as "a = b".
    */
   public static void assign(ReferenceVariable lhs, ReferenceVariable rhs){
-    _helper.assignImpl(lhs, rhs);
+    G.v().NativeHelper_helper.assignImpl(lhs, rhs);
   }  
 
   /**
@@ -37,7 +36,7 @@ public abstract class NativeHelper {
    * an environmental constant object such as 'getClass'.
    */
   public static void assignObjectTo(ReferenceVariable lhs, AbstractObject obj){
-    _helper.assignObjectToImpl(lhs, obj);
+    G.v().NativeHelper_helper.assignObjectToImpl(lhs, obj);
   }
 
   /**
@@ -45,7 +44,7 @@ public abstract class NativeHelper {
    * this variable. Now it does not look at the array index.
    */
   public static ReferenceVariable arrayElementOf(ReferenceVariable base){
-    return _helper.arrayElementOfImpl(base);
+    return G.v().NativeHelper_helper.arrayElementOfImpl(base);
   }
 
   /**
@@ -57,7 +56,7 @@ public abstract class NativeHelper {
    *       Va = Vr;
    */
   public static ReferenceVariable cloneObject(ReferenceVariable source){
-    return _helper.cloneObjectImpl(source);
+    return G.v().NativeHelper_helper.cloneObjectImpl(source);
   }
 
   /**
@@ -70,7 +69,7 @@ public abstract class NativeHelper {
    * To verify, @this variable mush have CLASSCLASS type.
    */
   public static ReferenceVariable newInstanceOf(ReferenceVariable cls){
-    return _helper.newInstanceOfImpl(cls);
+    return G.v().NativeHelper_helper.newInstanceOfImpl(cls);
   }
   
   /** 
@@ -81,7 +80,7 @@ public abstract class NativeHelper {
    * @param field, must be a static field
    */
   public static ReferenceVariable staticField(String className, String fieldName ){
-    return _helper.staticFieldImpl(className, fieldName);
+    return G.v().NativeHelper_helper.staticFieldImpl(className, fieldName);
   }
 
   /**
@@ -95,7 +94,7 @@ public abstract class NativeHelper {
    * The temporary fields are uniquely indexed by signatures.
    */
   public static ReferenceVariable tempField(String fieldsig){
-    return _helper.tempFieldImpl(fieldsig);
+    return G.v().NativeHelper_helper.tempFieldImpl(fieldsig);
   }
 
   /**
@@ -110,7 +109,7 @@ public abstract class NativeHelper {
    * The temporary variable has to be unique.
    */
   public static ReferenceVariable tempVariable(){
-    return _helper.tempVariableImpl();
+    return G.v().NativeHelper_helper.tempVariableImpl();
   }
 
   /**

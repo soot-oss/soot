@@ -1,9 +1,9 @@
 package soot.dava.internal.SET;
+import soot.*;
 
 public class SETNodeLabel
 {
     private String name;
-    private static int uniqueId = 0;
 
     public SETNodeLabel()
     {
@@ -13,7 +13,7 @@ public class SETNodeLabel
     public void set_Name()
     {
 	if (name == null) 
-	    name = "label_" + Integer.toString( SETNodeLabel.uniqueId++);
+	    name = "label_" + Integer.toString( G.v().SETNodeLabel_uniqueId++);
     }
 
     public void set_Name( String name)

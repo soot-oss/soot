@@ -253,7 +253,7 @@ public class VTANativeAdjustor
             for (Iterator clsIt = h.getSubclassesOfIncluding(Scene.v().getSootClass("java.io.InputStream")).iterator(); 
                  clsIt.hasNext(); )
                 temp.add(RefType.v((SootClass)clsIt.next()));
-            temp.retainAll(TypeSet.libraryTypes);
+            temp.retainAll(G.v().TypeSet_libraryTypes);
             types.addAll(temp);
         }
 

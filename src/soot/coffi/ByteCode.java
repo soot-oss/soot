@@ -300,7 +300,7 @@ class ByteCode {
    /** Constructor---does nothing. */
    ByteCode() {  }
 
-   /** Main entry point for disassembling bytecode into Instructions; this
+   /** Main.v() entry point for disassembling bytecode into Instructions; this
     * method converts the given single bytecode into an Instruction (with
     * label set to index).
     * @param bc complete array of bytecode.

@@ -39,14 +39,6 @@ public class Timer
 		
     private String name;
 		
-    private static List outstandingTimers = new ArrayList();
-    private static boolean isGarbageCollecting;
-		
-    /** Timer for garbage collection. */
-    public static Timer forcedGarbageCollectionTimer = new Timer("gc");
-    private static boolean isSubtractingGC;
-    
-    private static int count;
     
     /** Creates a new timer with the given name. */
     public Timer(String name)
@@ -61,27 +53,21 @@ public class Timer
         this("unnamed");
     }
     
-    /** Enables or disables the GC timer. */
-    public static void setSubtractingGC(boolean value)
-    {
-        isSubtractingGC = value;
-    }
-    
     /** Starts the given timer. */
     public void start()
     {
         // Subtract garbage collection time
-				if(!isGarbageCollecting && isSubtractingGC && ((count++ % 4) == 0))
+				if(!G.v().Timer_isGarbageCollecting && Main.v().opts.subtract_gc() && ((G.v().Timer_count++ % 4) == 0))
             {
                 // garbage collects only every 4 calls to avoid round off errors
                 
-                isGarbageCollecting = true;
+                G.v().Timer_isGarbageCollecting = true;
             
-                forcedGarbageCollectionTimer.start();
+                G.v().Timer_forcedGarbageCollectionTimer.start();
                 
                 // Stop all outstanding timers
                 {
-                    Iterator timerIt = outstandingTimers.iterator();
+                    Iterator timerIt = G.v().Timer_outstandingTimers.iterator();
                     
                     while(timerIt.hasNext())
                     {
@@ -95,7 +81,7 @@ public class Timer
         
                 // Start all outstanding timers
                 {
-                    Iterator timerIt = outstandingTimers.iterator();
+                    Iterator timerIt = G.v().Timer_outstandingTimers.iterator();
                     
                     while(timerIt.hasNext())
                     {
@@ -105,9 +91,9 @@ public class Timer
                     }
                 }
                 
-                forcedGarbageCollectionTimer.end();
+                G.v().Timer_forcedGarbageCollectionTimer.end();
                 
-                isGarbageCollecting = false;
+                G.v().Timer_isGarbageCollecting = false;
             }
                         
         
@@ -119,9 +105,9 @@ public class Timer
             hasStarted = true;
         
         
-        if(!isGarbageCollecting) 
+        if(!G.v().Timer_isGarbageCollecting) 
         {
-            outstandingTimers.add(this);
+            G.v().Timer_outstandingTimers.add(this);
         }
             
     }
@@ -143,9 +129,9 @@ public class Timer
         duration += System.currentTimeMillis() - startTime;
         
         
-        if(!isGarbageCollecting)
+        if(!G.v().Timer_isGarbageCollecting)
         {
-            outstandingTimers.remove(this);
+            G.v().Timer_outstandingTimers.remove(this);
         }
     }
 

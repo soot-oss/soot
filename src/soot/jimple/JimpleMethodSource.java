@@ -46,7 +46,7 @@ public class JimpleMethodSource implements MethodSource
     {  
         JimpleBody jb = (JimpleBody)mJimpleAST.getBody(m);
 
-        if(soot.Main.opts.verbose())
+        if(soot.Main.v().opts.verbose())
             G.v().out.println("[" + m.getName() + "] Retrieving JimpleBody from AST...");
     
 

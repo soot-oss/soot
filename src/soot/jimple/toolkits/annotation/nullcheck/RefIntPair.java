@@ -33,12 +33,14 @@ public class RefIntPair
 {
     private EquivalentValue _ref;
     private int _val;
+    private BranchedRefVarsAnalysis brva;
     
     // constructor is not public so that people go throught the ref pair constants factory on the analysis
-    RefIntPair(EquivalentValue r, int v)
+    RefIntPair(EquivalentValue r, int v, BranchedRefVarsAnalysis brva)
     {
 	this._ref = r;
 	this._val = v;
+        this.brva = brva;
     }
 
     public EquivalentValue ref ()
@@ -50,13 +52,13 @@ public class RefIntPair
     public String toString()
     {
 	String prefix = "("+_ref+", ";
-	if (_val == BranchedRefVarsAnalysis.kNull)
+	if (_val == brva.kNull)
 	    return prefix+"null)";
-	else if (_val == BranchedRefVarsAnalysis.kNonNull)
+	else if (_val == brva.kNonNull)
 	    return prefix+"non-null)";
-	else if (_val == BranchedRefVarsAnalysis.kTop)
+	else if (_val == brva.kTop)
 	    return prefix+"top)";
-	else if (_val == BranchedRefVarsAnalysis.kBottom)
+	else if (_val == brva.kBottom)
 	    return prefix+"bottom)";
 	else
 	    return prefix+_val+")";

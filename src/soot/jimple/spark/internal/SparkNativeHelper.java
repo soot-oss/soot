@@ -77,9 +77,8 @@ public class SparkNativeHelper extends NativeHelper {
 	return pag.makeVarNode( new Pair( "tempField", fieldsig ),
             RefType.v( "java.lang.Object" ), null );
     }
-    static int tempVar = 0;
     protected ReferenceVariable tempVariableImpl() {
-	return pag.makeVarNode( new Pair( "TempVar", new Integer( ++tempVar ) ),
+	return pag.makeVarNode( new Pair( "TempVar", new Integer( ++G.v().SparkNativeHelper_tempVar ) ),
 		RefType.v( "java.lang.Object" ), null );
     }
 }

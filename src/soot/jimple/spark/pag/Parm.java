@@ -29,21 +29,20 @@ import soot.jimple.spark.*;
 public class Parm implements SparkField {
     private int index;
     private SootMethod method;
-    private static HashMap pairToElement = new HashMap();
     private Parm( SootMethod m, int i ) {
         index = i;
         method = m;
     }
     public static Parm v( SootMethod m, int index ) {
         Pair p = new Pair( m, new Integer(index) );
-        Parm ret = (Parm) pairToElement.get( p );
+        Parm ret = (Parm) G.v().Parm_pairToElement.get( p );
         if( ret == null ) {
-            pairToElement.put( p, ret = new Parm( m, index ) );
+            G.v().Parm_pairToElement.put( p, ret = new Parm( m, index ) );
         }
         return ret;
     }
     public static final void delete() {
-        pairToElement = null;
+        G.v().Parm_pairToElement = null;
     }
     public String toString() {
         return "Parm "+index+" to "+method;

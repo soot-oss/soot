@@ -56,10 +56,7 @@ public class MemoryEfficientRasUnion extends Union {
 	}
 	return ret;
     }
-    static int count = 0;
     public MemoryEfficientRasUnion() {
-	count++;
-	if( ( count % 1000 ) == 0 ) G.v().out.println( "Made "+count+"th MemoryEffcientRasunion" );
     }
 
 

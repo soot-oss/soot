@@ -80,7 +80,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 
 	    Date start = new Date();
 
-	    if (soot.Main.opts.verbose())
+	    if (soot.Main.v().opts.verbose())
 	    {
 		G.v().out.println("[abc] Analyzing array bounds information for "+m.getName());
 		G.v().out.println("[abc] Started on "+start);
@@ -130,7 +130,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 			boolean uppercheck = true;
 	    
 			{
-			    if (soot.Main.isInDebugMode)
+			    if (soot.Main.v().isInDebugMode)
 			    {
 				if (!vgraph.makeShortestPathGraph())
 				{
@@ -221,7 +221,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 	    }
 
 	    Date finish = new Date();
-	    if (soot.Main.opts.verbose()) 
+	    if (soot.Main.v().opts.verbose()) 
 	    {
 		long runtime = finish.getTime() - start.getTime();
 		G.v().out.println("[abc] ended on "+finish

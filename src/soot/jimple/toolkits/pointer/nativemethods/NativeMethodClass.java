@@ -10,7 +10,7 @@ import soot.jimple.toolkits.pointer.util.*;
 
 public abstract class NativeMethodClass {
 
-  private static boolean DEBUG = false;
+  private static final boolean DEBUG = false;
 
   /* If a native method has no side effect, call this method.
    * Currently, it does nothing.

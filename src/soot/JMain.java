@@ -48,30 +48,33 @@ import java.net.*;
 /** Provides a Swing interface to Soot. */
 public class JMain 
 {
-    static JTextField classField = new JTextField(20);
-    static JCheckBox appModeCheckBox = new JCheckBox("Run in app mode");
-    static JComboBox inputRepComboBox = new JComboBox();
-    static JComboBox outputRepComboBox = new JComboBox();
+    JTextField classField = new JTextField(20);
+    JCheckBox appModeCheckBox = new JCheckBox("Run in app mode");
+    JComboBox inputRepComboBox = new JComboBox();
+    JComboBox outputRepComboBox = new JComboBox();
 
     // optimization options
-    static JCheckBox dash_O =  new JCheckBox("[-O]");
-    static JCheckBox dash_W =  new JCheckBox("[-W]");
-    static JComboBox finalRepBox = new JComboBox();
+    JCheckBox dash_O =  new JCheckBox("[-O]");
+    JCheckBox dash_W =  new JCheckBox("[-W]");
+    JComboBox finalRepBox = new JComboBox();
 
     // miscelaneous options
-    static JTextField sootClasspath = new JTextField();
-    static JCheckBox verboseCheckBox =  new JCheckBox("verbose");
-    static JCheckBox debugCheckBox = new JCheckBox("debug");
+    JTextField sootClasspath = new JTextField();
+    JCheckBox verboseCheckBox =  new JCheckBox("verbose");
+    JCheckBox debugCheckBox = new JCheckBox("debug");
 
     // execution output
-    static JTextArea ref = new JTextArea();
+    JTextArea ref = new JTextArea();
 
     //runtime options
-    static JButton sootifyButton = new JButton("Sootify Now");
+    JButton sootifyButton = new JButton("Sootify Now");
 
 
     public static void main(String[] args)
     {
+        new JMain().run( args );
+    }
+    public void run( String[] args ) {
         
         
         JFrame mainFrame = new JFrame("Soot Bytecode Optimizer");
@@ -337,7 +340,7 @@ public class JMain
                     final String[] cmdLine = getCmdLine();
                     
 
-                    Main.addCompilationListener( new ICompilationListener(){
+                    Main.v().addCompilationListener( new ICompilationListener(){
                         public void compilationTerminated(int status, String msg)
                             {
                                 compilationTerminated(status);
@@ -376,7 +379,7 @@ public class JMain
                     
     }
 
-    public static String[] getCmdLine()
+    public String[] getCmdLine()
     {
         
         String mainClass = classField.getText();

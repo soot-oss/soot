@@ -113,7 +113,7 @@ public class ClassHierarchyAnalysis
       g.mcg = (MethodCallGraph)g.newMethodGraph();
     }
 
-    if (Main.opts.verbose()) {
+    if (Main.v().opts.verbose()) {
       G.v().out.println("  processed "+appAndLibClasses.size()+" classes");
       G.v().out.println("  processed "+visitedMethods.size()+" methods");
     }
@@ -234,7 +234,7 @@ public class ClassHierarchyAnalysis
       g.mcg = (MethodCallGraph)g.newMethodGraph();
     }
 
-//    if (Main.opts.verbose()) 
+//    if (Main.v().opts.verbose()) 
     {
       G.v().out.println("  processed "+visitedClasses.size()+" classes");
       G.v().out.println("  processed "+visitedMethods.size()+" methods");
@@ -259,7 +259,7 @@ public class ClassHierarchyAnalysis
     }
   }
 
-  private static String[] smsig = {"void start()",
+  private final static String[] smsig = {"void start()",
 				   "void run()",
 				   "void finalize()",
 				   "void <clinit>()",

@@ -43,6 +43,9 @@ import java.util.*;
 
 public class SlowPseudoTopologicalOrderer
 {
+    public SlowPseudoTopologicalOrderer( Singletons.Global g ) {}
+    public static SlowPseudoTopologicalOrderer v() { return G.v().SlowPseudoTopologicalOrderer(); }
+
     public static final boolean REVERSE = true;
     public SlowPseudoTopologicalOrderer() {}
     public SlowPseudoTopologicalOrderer(boolean isReversed) { mIsReversed = isReversed;}
@@ -60,14 +63,6 @@ public class SlowPseudoTopologicalOrderer
     private List reverseOrder;
     private HashMap succsMap = new HashMap();
 
-    private static SlowPseudoTopologicalOrderer instance =
-    	new SlowPseudoTopologicalOrderer();
-
-    public static SlowPseudoTopologicalOrderer v()
-    {
-    	return instance;
-    }
-    
     /**
      *  @param g a DirectedGraph instance whose nodes we which to order.
      *  @return a pseudo-topologically ordered list of the graph's nodes.

@@ -37,8 +37,6 @@ import soot.util.BitSet;
 class TypeVariable implements Comparable
 {
   private static final boolean DEBUG = false;
-  // flag for J2ME library
-  private final static boolean J2ME = soot.Main.isJ2ME();
 
   private final int id;
   private final TypeResolver resolver;
@@ -71,9 +69,9 @@ class TypeVariable implements Comparable
     this.type = type;
     approx = type;
     
-    for(Iterator i = type.parents().iterator(); i.hasNext();)
-      {
-	TypeNode parent = (TypeNode) i.next();
+    for( Iterator parentIt = type.parents().iterator(); parentIt.hasNext(); ) {
+    
+        final TypeNode parent = (TypeNode) parentIt.next();
 	
 	addParent(resolver.typeVariable(parent));
       }
@@ -288,18 +286,18 @@ class TypeVariable implements Comparable
 
     List parentsToRemove = new LinkedList();
 
-    for(Iterator i = parents.iterator(); i.hasNext();)
-      {
-	TypeVariable parent = (TypeVariable) i.next();
+    for( Iterator parentIt = parents.iterator(); parentIt.hasNext(); ) {
+
+        final TypeVariable parent = (TypeVariable) parentIt.next();
 	if(indirectAncestors.get(parent.id()))
 	  {
 	    parentsToRemove.add(parent);
 	  }
       }
 
-    for(Iterator i = parentsToRemove.iterator(); i.hasNext();)
-      {
-	TypeVariable parent = (TypeVariable) i.next();
+    for( Iterator parentIt = parentsToRemove.iterator(); parentIt.hasNext(); ) {
+
+        final TypeVariable parent = (TypeVariable) parentIt.next();
 
 	removeParent(parent);
       }
@@ -745,7 +743,7 @@ class TypeVariable implements Comparable
 	  {
 	    if(var.type() == null) {
 	      // hack for J2ME library, reported by Stephen Cheng
-	      if (!J2ME) {
+	      if (!soot.Main.v().isJ2ME) {
 		var.addChild(resolver.typeVariable(resolver.hierarchy().CLONEABLE));
 		var.addChild(resolver.typeVariable(resolver.hierarchy().SERIALIZABLE));
 	      }
@@ -755,7 +753,7 @@ class TypeVariable implements Comparable
 	  {
 	    if(var.type() == null) {
 	      // hack for J2ME library, reported by Stephen Cheng
-	      if (!J2ME) {
+	      if (!soot.Main.v().isJ2ME) {
 		var.addChild(resolver.typeVariable(ArrayType.v(RefType.v("java.lang.Cloneable"), var.depth())));
 		var.addChild(resolver.typeVariable(ArrayType.v(RefType.v("java.io.Serializable"), var.depth())));
 	      }
@@ -763,9 +761,9 @@ class TypeVariable implements Comparable
 	  }
       }
 
-    for(Iterator i = parents.iterator(); i.hasNext(); )
-      {
-	TypeVariable var = (TypeVariable) i.next();
+    for( Iterator varIt = parents.iterator(); varIt.hasNext(); ) {
+
+        final TypeVariable var = (TypeVariable) varIt.next();
 	removeParent(var);
       }
   }

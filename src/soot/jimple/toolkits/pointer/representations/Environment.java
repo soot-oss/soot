@@ -25,104 +25,106 @@ package soot.jimple.toolkits.pointer.representations;
 import soot.*;
 import java.util.*;
 
-public class Environment implements TypeConstants{
+public class Environment {
+    public Environment( Singletons.Global g ) {}
+    public static Environment v() { return G.v().Environment(); }
 
-  private static ConstantObject clsloaders =
-    new GeneralConstObject(CLASSLOADERCLASS, "classloader");
+  private ConstantObject clsloaders =
+    new GeneralConstObject(TypeConstants.v().CLASSLOADERCLASS, "classloader");
   
-  private static ConstantObject processes  =
-    new GeneralConstObject(PROCESSCLASS, "process");
+  private ConstantObject processes  =
+    new GeneralConstObject(TypeConstants.v().PROCESSCLASS, "process");
 
-  private static ConstantObject threads    =
-    new GeneralConstObject(THREADCLASS, "thread");
+  private ConstantObject threads    =
+    new GeneralConstObject(TypeConstants.v().THREADCLASS, "thread");
 
-  private static ConstantObject filesystem =
-    new GeneralConstObject(FILESYSTEMCLASS, "filesystem");
+  private ConstantObject filesystem =
+    new GeneralConstObject(TypeConstants.v().FILESYSTEMCLASS, "filesystem");
 
   /* representing all possible java.lang.Class type objects,
    * mostly used by reflection.
    */
-  private static ConstantObject classobject =
-    new GeneralConstObject(CLASSCLASS, "unknownclass");
+  private ConstantObject classobject =
+    new GeneralConstObject(TypeConstants.v().CLASSCLASS, "unknownclass");
 
   /* representing all possible java.lang.String objects, used by
    * any getName() or similiar methods.
    */
-  private static ConstantObject stringobject =
-    new GeneralConstObject(STRINGCLASS, "unknownstring");
+  private ConstantObject stringobject =
+    new GeneralConstObject(TypeConstants.v().STRINGCLASS, "unknownstring");
 
   /* to get finer resolution, it is worth to distinguish arrays and general
    * scalars.
    * WARNING: making array with java.lang.Object type may be a problem!
    */
-  private static ConstantObject leastarray =
-    new GeneralConstObject(LEASTCLASS, "leastarray");
+  private ConstantObject leastarray =
+    new GeneralConstObject(TypeConstants.v().LEASTCLASS, "leastarray");
 
   /* makes a general unknown object,
    * WARNING: unknown object must have the least type, it won't be
    *          useful when resolve virtual calls.
    *          Null type is a good candidate for this.
    */
-  private static ConstantObject leastobject =
-    new GeneralConstObject(LEASTCLASS, "leastobject");
+  private ConstantObject leastobject =
+    new GeneralConstObject(TypeConstants.v().LEASTCLASS, "leastobject");
 
   /* provides an abstract java.lang.reflect.Field object.
    */
-  private static ConstantObject fieldobject =
-    new GeneralConstObject(FIELDCLASS, "field");
+  private ConstantObject fieldobject =
+    new GeneralConstObject(TypeConstants.v().FIELDCLASS, "field");
 
   /* provides an abstract java.lang.reflect.Method object
    */
-  private static ConstantObject methodobject =
-    new GeneralConstObject(METHODCLASS, "method");
+  private ConstantObject methodobject =
+    new GeneralConstObject(TypeConstants.v().METHODCLASS, "method");
   
   /* provides an abstract java.lang.reflect.Constructor object
    */
-  private static ConstantObject constructorobject =
-    new GeneralConstObject(CONSTRUCTORCLASS, "constructor");
+  private ConstantObject constructorobject =
+    new GeneralConstObject(TypeConstants.v().CONSTRUCTORCLASS, "constructor");
 
   /********************* INTERFACE to NATIVE METHODS *******************/
-  public static ConstantObject getClassLoaderObject(){
+  public ConstantObject getClassLoaderObject(){
     return clsloaders;
   }
 
-  public static ConstantObject getProcessObject(){
+  public ConstantObject getProcessObject(){
     return processes;
   }
 
-  public static ConstantObject getThreadObject(){
+  public ConstantObject getThreadObject(){
     return threads;
   }
 
-  public static ConstantObject getClassObject(){
+  public ConstantObject getClassObject(){
     return classobject;
   }
 
-  public static ConstantObject getStringObject(){
+  public ConstantObject getStringObject(){
     return stringobject;
   }
 
-  public static ConstantObject getLeastArrayObject(){
+  public ConstantObject getLeastArrayObject(){
     return leastarray;
   }
   
-  public static ConstantObject getLeastObject(){
+  public ConstantObject getLeastObject(){
     return leastobject;
   }
 
-  public static ConstantObject getFieldObject(){
+  public ConstantObject getFieldObject(){
     return fieldobject;
   }
 
-  public static ConstantObject getMethodObject(){
+  public ConstantObject getMethodObject(){
     return methodobject;
   }
 
-  public static ConstantObject getConstructorObject(){
+  public ConstantObject getConstructorObject(){
     return constructorobject;
   }
 
-  public static ConstantObject getFileSystemObject(){
+  public ConstantObject getFileSystemObject(){
     return filesystem;
   }
 }

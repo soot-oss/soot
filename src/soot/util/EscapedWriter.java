@@ -33,9 +33,9 @@ import java.io.*;
 public class EscapedWriter extends FilterWriter
 {
     /** Convenience field containing the system's line separator. */
-    public final static String lineSeparator = System.getProperty("line.separator");
-    private final static int cr = lineSeparator.charAt(0);
-    private final static int lf = (lineSeparator.length() == 2) ? lineSeparator.charAt(1) : -1;
+    public final String lineSeparator = System.getProperty("line.separator");
+    private final int cr = lineSeparator.charAt(0);
+    private final int lf = (lineSeparator.length() == 2) ? lineSeparator.charAt(1) : -1;
 
     /** Constructs an EscapedWriter around the given Writer. */
     public EscapedWriter(Writer fos)
@@ -43,10 +43,7 @@ public class EscapedWriter extends FilterWriter
         super(fos);
     }
 
-    private final static ThreadLocal miniTL = new ThreadLocal() 
-    {
-        protected Object initialValue() { return new StringBuffer(); }
-    };
+    private final StringBuffer mini = new StringBuffer();
 
     /** Print a single character (unsupported). */
     public void print(int ch) throws IOException
@@ -68,7 +65,6 @@ public class EscapedWriter extends FilterWriter
         if (ch >= 32 && ch <= 126 || ch == cr || ch == lf || ch == ' ')
             { super.write(ch); return; }
         
-        StringBuffer mini = (StringBuffer)miniTL.get();
         mini.setLength(0);
         mini.append(Integer.toHexString(ch));
 

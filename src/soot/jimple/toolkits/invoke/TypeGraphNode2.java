@@ -44,8 +44,6 @@ public class TypeGraphNode2 implements ReferenceVariable {
   /* Static structure for pooling the nodes 
    * Make this pool accessible from NewVTATypeGraph
    */
-  protected static HashMap nameToNode = new HashMap(10000);
-  protected static int counter = 0;
 
   private String name;
   private int id;
@@ -54,7 +52,7 @@ public class TypeGraphNode2 implements ReferenceVariable {
   /* disallow direct instantiation */
   private TypeGraphNode2(String name, TypeSet2 types){
     this.name = name;
-    this.id   = counter++;
+    this.id   = G.v().TypeGraphNode2_counter++;
     this.reachingTypes = types;
   }
 
@@ -63,11 +61,11 @@ public class TypeGraphNode2 implements ReferenceVariable {
    *  otherwise, create a new node and returns it.
    */
   public static TypeGraphNode2 v(String name) {
-    TypeGraphNode2 node = (TypeGraphNode2)nameToNode.get(name);
+    TypeGraphNode2 node = (TypeGraphNode2)G.v().TypeGraphNode2_nameToNode.get(name);
     if (node == null) {
       node = new TypeGraphNode2(name, 
 			       new TypeSet2());
-      nameToNode.put(name, node);
+      G.v().TypeGraphNode2_nameToNode.put(name, node);
     }
     return node;
   }
@@ -75,14 +73,14 @@ public class TypeGraphNode2 implements ReferenceVariable {
   /** Check if the node for the name exists
    */
   public boolean exists(String name){
-    return nameToNode.containsKey(name);
+    return G.v().TypeGraphNode2_nameToNode.containsKey(name);
   }
 
   /* Return the node representing the name. 
    * returns null if the node does not exists.
    */
   public TypeGraphNode2 getNode(String name){
-    return (TypeGraphNode2)nameToNode.get(name);
+    return (TypeGraphNode2)G.v().TypeGraphNode2_nameToNode.get(name);
   }
 
   /* get reaching types. */
@@ -113,9 +111,8 @@ public class TypeGraphNode2 implements ReferenceVariable {
   }
 
   /* methods for create temporary graph node */
-  private static int tmpcount=0;
 
   public static TypeGraphNode2 makeTempNode() {
-    return v("tmp"+tmpcount++);
+    return v("tmp"+G.v().TypeGraphNode2_tmpcount++);
   }
 }

@@ -37,7 +37,7 @@ import java.util.*;
  */
 public class LocalCreation {
   /** if no prefix is given, this one's used */
-  public static String DEFAULT_PREFIX = "soot";
+  public static final String DEFAULT_PREFIX = "soot";
   private String prefix;
   private int counter;
   private Set locals;

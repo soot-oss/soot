@@ -3,7 +3,9 @@ package soot.jimple.toolkits.pointer.representations;
 import soot.*;
 import soot.jimple.*;
 
-public interface TypeConstants {
+public class TypeConstants {
+    public TypeConstants( Singletons.Global g ) {}
+    public static TypeConstants v() { return G.v().TypeConstants(); }
   
   public Type OBJECTCLASS = 
     RefType.v("java.lang.Object");

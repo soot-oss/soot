@@ -32,8 +32,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
     public BitPointsToSet( Type type, PAG pag ) {
         super( type );
         this.pag = pag;
-        if( allocNodeNumberer == null ) allocNodeNumberer = pag.getAllocNodeNumberer();
-        bits = new BitSet( allocNodeNumberer.size() );
+        bits = new BitSet( pag.getAllocNodeNumberer().size() );
     }
     /** Returns true if this set contains no run-time objects. */
     public final boolean isEmpty() {
@@ -74,7 +73,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
     /** Calls v's visit method on all nodes in this set. */
     public final boolean forall( P2SetVisitor v ) {
         for( BitSetIterator it = bits.iterator(); it.hasNext(); ) {
-            v.visit( (Node) allocNodeNumberer.get( it.next() ) );
+            v.visit( (Node) pag.getAllocNodeNumberer().get( it.next() ) );
         }
         return v.getReturnValue();
     }
@@ -109,6 +108,5 @@ public final class BitPointsToSet extends PointsToSetInternal {
     private BitSet bits = null;
     private boolean empty = true;
     private PAG pag = null;
-    private static Numberer allocNodeNumberer = null;
 }
 

@@ -47,30 +47,29 @@ import soot.options.Options;
  * a classfile, or jimple or baf output files. */
 public class SourceLocator
 {
-    private static char pathSeparator = System.getProperty("path.separator").charAt(0);
-    private static char fileSeparator = System.getProperty("file.separator").charAt(0);
+    public SourceLocator( Singletons.Global g ) {}
+    public static SourceLocator v() { return G.v().SourceLocator(); }
 
-    private static List zipFileList = Collections.synchronizedList(new LinkedList()); 
+    private char pathSeparator = System.getProperty("path.separator").charAt(0);
+    private char fileSeparator = System.getProperty("file.separator").charAt(0);
 
-    private SourceLocator() // No instances.
-    {
-    }
+    private List zipFileList = Collections.synchronizedList(new LinkedList()); 
 
     /** Given a class name, uses the default soot-class-path to return an input stream for the given class. */
-    public static InputStream getInputStreamOf(String className) throws ClassNotFoundException
+    public InputStream getInputStreamOf(String className) throws ClassNotFoundException
     {
         return getInputStreamOf(Scene.v().getSootClassPath(), className);
     }
 
-    private static Map nameToZipFile = new HashMap();
-    private static List previousLocations = null;
-    private static String previousCP = null;
-    private static int previousCPHashCode = 0;
-    private static boolean isRunningUnderBraindeadOS = System.getProperty("os.name").startsWith("Windows");
+    private Map nameToZipFile = new HashMap();
+    private List previousLocations = null;
+    private String previousCP = null;
+    private int previousCPHashCode = 0;
+    private boolean isRunningUnderBraindeadOS = System.getProperty("os.name").startsWith("Windows");
 
-    private static int  count = 0;
+    private int  count = 0;
     /** Given a class name and class-path, returns an input stream for the given class. */
-    public static InputStream getInputStreamOf(String classPath, String className) throws ClassNotFoundException
+    public InputStream getInputStreamOf(String classPath, String className) throws ClassNotFoundException
     {
         List locations = null;
 
@@ -148,7 +147,7 @@ public class SourceLocator
             reps.add(ClassInputRep.v());
             reps.add(JimpleInputRep.v());
 
-            if( Main.opts.src_prec() == Options.src_prec_class ) {
+            if( Main.v().opts.src_prec() == Options.src_prec_class ) {
                 List lst = new LinkedList();
                 lst.add(ClassInputRep.v());
                 if( (res = getFileInputStream(locations, lst, className)) != null) {
@@ -157,7 +156,7 @@ public class SourceLocator
                 if( (res = getFileInputStream(locations, reps, className)) != null) {
                     return res;
 		}
-            } else if( Main.opts.src_prec() == Options.src_prec_jimple ) {
+            } else if( Main.v().opts.src_prec() == Options.src_prec_jimple ) {
                 List lst = new LinkedList();
                 lst.add(JimpleInputRep.v());
                 if( (res = getFileInputStream(locations, lst, className)) != null)
@@ -173,7 +172,7 @@ public class SourceLocator
     }
 
 
-    static private InputStream getFileInputStream(List locations, List reps, String className)
+    private InputStream getFileInputStream(List locations, List reps, String className)
     {    
         Iterator it = locations.iterator();
         //className = className.replace('/','.');  // so that you can give for example either spec.bench.main or spec/bench/main
@@ -247,7 +246,7 @@ public class SourceLocator
         return null;
     }    
     
-    private static boolean isArchive(String path) {
+    private boolean isArchive(String path) {
 	File f = new File(path);	
 	if(f.isFile() && f.canRead()) { 		
 	    if(path.endsWith("zip") || path.endsWith("jar")) {
@@ -259,7 +258,7 @@ public class SourceLocator
 	return false;
     }
 
-    private static void addArchive(String fileName) {
+    private void addArchive(String fileName) {
 	try {
 	    ZipFile zipFile = new ZipFile(fileName);
 	    zipFileList.add(zipFile);	
@@ -268,7 +267,7 @@ public class SourceLocator
 	}
     }    
     
-    private static InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
+    private InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
 	
 	int sz = (int) size;
 	byte[] buf = new byte[sz];					

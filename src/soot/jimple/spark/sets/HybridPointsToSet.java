@@ -33,7 +33,6 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     public HybridPointsToSet( Type type, PAG pag ) {
         super( type );
         this.pag = pag;
-        if( allocNodeNumberer == null ) allocNodeNumberer = pag.getAllocNodeNumberer();
     }
     /** Returns true if this set contains no run-time objects. */
     public final boolean isEmpty() {
@@ -165,7 +164,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
             if( n16 == null ) return v.getReturnValue(); v.visit( n16 );
         } else {
             for( BitSetIterator it = bits.iterator(); it.hasNext(); ) {
-                v.visit( (Node) allocNodeNumberer.get( it.next() ) );
+                v.visit( (Node) pag.getAllocNodeNumberer().get( it.next() ) );
             }
         }
         return v.getReturnValue();
@@ -239,7 +238,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
 
     protected final void convertToBits() {
         if( bits != null ) return;
-        bits = new BitSet( allocNodeNumberer.size() );
+        bits = new BitSet( pag.getAllocNodeNumberer().size() );
         if( n1 != null ) fastAdd( n1 );
         if( n2 != null ) fastAdd( n2 );
         if( n3 != null ) fastAdd( n3 );
@@ -277,6 +276,5 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     private BitSet bits = null;
     private PAG pag;
     private boolean empty = true;
-    private static Numberer allocNodeNumberer = null;
 }
 

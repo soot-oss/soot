@@ -37,7 +37,6 @@ import java.util.*;
 /** Provides default implementations for the methods in Unit. */
 public abstract class AbstractUnit extends AbstractHost implements Unit 
 {
-    static Map allMapToUnnamed = Collections.unmodifiableMap(new AllMapTo("<unnamed>"));
 
     /** Returns a deep clone of this object. */
     public abstract Object clone();
@@ -130,7 +129,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     /** Returns a brief description of this object. */
     public String toBriefString()
     {
-        return toString(true, allMapToUnnamed, "");
+        return toString(true, G.v().AbstractUnit_allMapToUnnamed, "");
     }
     
     /** Returns a brief description of this object, using the given Map. */
@@ -142,7 +141,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     /** Returns a brief description of this object, using the given indentation. */
     public String toBriefString(String indentation)
     {
-        return toString(true, allMapToUnnamed, indentation);
+        return toString(true, G.v().AbstractUnit_allMapToUnnamed, indentation);
     }
     
     /** Returns a brief description of this object, using the given Map and indentation. */
@@ -154,7 +153,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     /** Returns a textual representation of this object. */
     public String toString()
     {
-        return toString(false, allMapToUnnamed, "");
+        return toString(false, G.v().AbstractUnit_allMapToUnnamed, "");
     }
     
     /** Returns a textual representation of this object, using the given Map. */
@@ -166,7 +165,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     /** Returns a textual representation of this object, using the given indentation. */
     public String toString(String indentation)
     {
-        return toString(false, allMapToUnnamed, indentation);
+        return toString(false, G.v().AbstractUnit_allMapToUnnamed, indentation);
     }
     
     /** Returns a textual representation of this object, using the given Map and indentation. */
@@ -177,26 +176,6 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     
     /** Returns a textual representation of this object, with the given briefness, Map and indentation. */
     abstract protected String toString(boolean isBrief, Map stmtToName, String indentation);
-
-    static class AllMapTo extends AbstractMap
-    {
-        Object dest;
-        
-        public AllMapTo(Object dest)
-        {
-            this.dest = dest;
-        }
-        
-        public Object get(Object key)
-        {
-            return dest;
-        }
-        
-        public Set entrySet()
-        {
-            throw new UnsupportedOperationException();
-        }
-    }
 
     /** Adjusts UnitBoxes pointing to this Unit to a newLocation. */
     public void redirectJumpsToThisTo(Unit newLocation)

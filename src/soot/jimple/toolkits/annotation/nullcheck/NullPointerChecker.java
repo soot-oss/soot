@@ -59,7 +59,7 @@ public class NullPointerChecker extends BodyTransformer
 
     private boolean isProfiling = false;
  
-    private static boolean enableOther = true;
+    private boolean enableOther = true;
     
     public String getDeclaredOptions()
     {
@@ -74,7 +74,7 @@ public class NullPointerChecker extends BodyTransformer
 	{
 	    Date start = new Date();
 
-	    if (soot.Main.opts.verbose())
+	    if (soot.Main.v().opts.verbose())
 		G.v().out.println("[npc] Null pointer check for "+body.getMethod().getName()
 				   +" started on "+start);
 		
@@ -186,10 +186,10 @@ public class NullPointerChecker extends BodyTransformer
 		{
 		    FlowSet beforeSet = (FlowSet)analysis.getFlowBefore(s);
 			
-		    int vInfo = BranchedRefVarsAnalysis.anyRefInfo(obj, beforeSet);
+		    int vInfo = analysis.anyRefInfo(obj, beforeSet);
 			
 		    boolean needCheck = 
-			(vInfo != BranchedRefVarsAnalysis.kNonNull);
+			(vInfo != analysis.kNonNull);
 
 		    if (isProfiling)
 		    {
@@ -210,7 +210,7 @@ public class NullPointerChecker extends BodyTransformer
 	    }
 
 	    Date finish = new Date();
-	    if (soot.Main.opts.verbose())
+	    if (soot.Main.v().opts.verbose())
 	    {
 		long runtime = finish.getTime()-start.getTime();
 		long mins = runtime/60000;

@@ -61,7 +61,7 @@ import soot.jimple.*;
 */
 public class SootClass extends AbstractHost implements Numberable
 {
-    private static char fileSeparator = System.getProperty("file.separator").charAt(0);
+    final private static char fileSeparator = System.getProperty("file.separator").charAt(0);
 
     String name, shortName, fixedShortName, packageName, fixedPackageName;
     int modifiers;
@@ -754,7 +754,7 @@ public class SootClass extends AbstractHost implements Numberable
 
     public String getName()
     {
-	if (Main.getJavaStyle())
+	if (Main.v().getJavaStyle())
 	    return getJavaStyleName();
 	else
 	    return name;
@@ -798,7 +798,7 @@ public class SootClass extends AbstractHost implements Numberable
 
     public String getPackageName()
     {
-	if (Main.getJavaStyle())
+	if (Main.v().getJavaStyle())
 	    return getJavaPackageName();
 
 	return packageName;
@@ -871,14 +871,14 @@ public class SootClass extends AbstractHost implements Numberable
 	    // add history node
 	    // TODO: grab the software version and command line
 	    String cmdlineStr = "";
-	    for( int i = 0; i < Main.cmdLineArgs.length; i++ )
+	    for( int i = 0; i < Main.v().cmdLineArgs.length; i++ )
 	    {
-		cmdlineStr += Main.cmdLineArgs[ i ] + " ";
+		cmdlineStr += Main.v().cmdLineArgs[ i ] + " ";
 	    }
 	    String dateStr = new Date().toString();
 	    xmlHistoryNode = xmlRootNode.addChild("history");
 	    xmlHistoryNode.addAttribute("created", dateStr );
-	    xmlHistoryNode.addChild("soot",new String[] {"version", "command", "timestamp"},new String[] {Main.versionString, cmdlineStr.trim(), dateStr});
+	    xmlHistoryNode.addChild("soot",new String[] {"version", "command", "timestamp"},new String[] {Main.v().versionString, cmdlineStr.trim(), dateStr});
             
 	    // add class root node
             xmlClassNode = xmlRootNode.addChild("class",new String[] {"name"},new String[] {Scene.v().quotedNameOf(this.getName()).toString()});
@@ -1120,7 +1120,7 @@ public class SootClass extends AbstractHost implements Numberable
     public void printTo( PrintWriter out, int printBodyOptions)
     {
 	// Optionally print the package info for Dava files.
-	if (Main.getJavaStyle()) {
+	if (Main.v().getJavaStyle()) {
 
 	    String curPackage = getJavaPackageName();
 
@@ -1227,7 +1227,7 @@ public class SootClass extends AbstractHost implements Numberable
                 classPrefix = classPrefix.trim();
             }
 
-	    if (Main.getJavaStyle())
+	    if (Main.v().getJavaStyle())
 		out.print(classPrefix + " " + this.getShortJavaStyleName());
 	    else 
 		out.print(classPrefix + " " + this.getName());
@@ -1235,7 +1235,7 @@ public class SootClass extends AbstractHost implements Numberable
 
         // Print extension
 	if ((hasSuperclass()) && 
-	    ((Main.getJavaStyle() == false) || (getSuperclass().getFullName().equals( "java.lang.Object") == false)))
+	    ((Main.v().getJavaStyle() == false) || (getSuperclass().getFullName().equals( "java.lang.Object") == false)))
 	    out.print(" extends " + this.getSuperclass().getName() + "");
 
         // Print interfaces
@@ -1367,7 +1367,7 @@ public class SootClass extends AbstractHost implements Numberable
 
             writerOut.close();
 
-            if(soot.Main.opts.time())
+            if(soot.Main.v().opts.time())
                 Timers.v().assembleJasminTimer.start(); 
 
             // Invoke jasmin
@@ -1394,7 +1394,7 @@ public class SootClass extends AbstractHost implements Numberable
             
             tempFile.delete();
             
-            if(soot.Main.opts.time())
+            if(soot.Main.v().opts.time())
                 Timers.v().assembleJasminTimer.end(); 
             
         } catch(IOException e)

@@ -24,6 +24,7 @@
  */
 
 package soot;
+import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.baf.*;
 import soot.baf.internal.*;
 import soot.baf.toolkits.base.*;
@@ -68,7 +69,6 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.jimple.toolkits.scalar.pre.*;
-import soot.jimple.toolkits.typing.*;
 import soot.jimple.toolkits.typing.integer.*;
 import soot.options.*;
 import soot.tagkit.*;
@@ -84,10 +84,82 @@ public class Singletons {
     }
     private Global g = new Global();
 
+    private SlowPseudoTopologicalOrderer instanceSlowPseudoTopologicalOrderer;
+    public SlowPseudoTopologicalOrderer SlowPseudoTopologicalOrderer() {
+        if( instanceSlowPseudoTopologicalOrderer == null ) instanceSlowPseudoTopologicalOrderer = new SlowPseudoTopologicalOrderer( g );
+        return instanceSlowPseudoTopologicalOrderer;
+    }
+
+    private SynchronizerManager instanceSynchronizerManager;
+    public SynchronizerManager SynchronizerManager() {
+        if( instanceSynchronizerManager == null ) instanceSynchronizerManager = new SynchronizerManager( g );
+        return instanceSynchronizerManager;
+    }
+
+    private NodeCast instanceNodeCast;
+    public NodeCast NodeCast() {
+        if( instanceNodeCast == null ) instanceNodeCast = new NodeCast( g );
+        return instanceNodeCast;
+    }
+
+    private NoCast instanceNoCast;
+    public NoCast NoCast() {
+        if( instanceNoCast == null ) instanceNoCast = new NoCast( g );
+        return instanceNoCast;
+    }
+
+    private ClassHierarchy instanceClassHierarchy;
+    public ClassHierarchy ClassHierarchy() {
+        if( instanceClassHierarchy == null ) instanceClassHierarchy = new ClassHierarchy( g );
+        return instanceClassHierarchy;
+    }
+
+    private Main instanceMain;
+    public Main Main() {
+        if( instanceMain == null ) instanceMain = new Main( g );
+        return instanceMain;
+    }
+
+    private TagManager instanceTagManager;
+    public TagManager TagManager() {
+        if( instanceTagManager == null ) instanceTagManager = new TagManager( g );
+        return instanceTagManager;
+    }
+
+    private Environment instanceEnvironment;
+    public Environment Environment() {
+        if( instanceEnvironment == null ) instanceEnvironment = new Environment( g );
+        return instanceEnvironment;
+    }
+
+    private TypeConstants instanceTypeConstants;
+    public TypeConstants TypeConstants() {
+        if( instanceTypeConstants == null ) instanceTypeConstants = new TypeConstants( g );
+        return instanceTypeConstants;
+    }
+
+    private NativeMethodDriver instanceNativeMethodDriver;
+    public NativeMethodDriver NativeMethodDriver() {
+        if( instanceNativeMethodDriver == null ) instanceNativeMethodDriver = new NativeMethodDriver( g );
+        return instanceNativeMethodDriver;
+    }
+
     private Util instanceUtil;
     public Util Util() {
         if( instanceUtil == null ) instanceUtil = new Util( g );
         return instanceUtil;
+    }
+
+    private SourceLocator instanceSourceLocator;
+    public SourceLocator SourceLocator() {
+        if( instanceSourceLocator == null ) instanceSourceLocator = new SourceLocator( g );
+        return instanceSourceLocator;
+    }
+
+    private CONSTANT_Utf8_collector instanceCONSTANT_Utf8_collector;
+    public CONSTANT_Utf8_collector CONSTANT_Utf8_collector() {
+        if( instanceCONSTANT_Utf8_collector == null ) instanceCONSTANT_Utf8_collector = new CONSTANT_Utf8_collector( g );
+        return instanceCONSTANT_Utf8_collector;
     }
 
     private AbruptEdgeFinder instanceAbruptEdgeFinder;

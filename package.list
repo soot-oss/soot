@@ -42,7 +42,6 @@ soot.jimple.toolkits.pointer.representations
 soot.jimple.toolkits.pointer.util
 soot.jimple.toolkits.scalar
 soot.jimple.toolkits.scalar.pre
-soot.jimple.toolkits.typing
 soot.jimple.toolkits.typing.integer
 soot.options
 soot.tagkit

@@ -33,8 +33,10 @@ import java.util.*;
 /** Utility methods for dealing with synchronization. */
 public class SynchronizerManager
 {
+    public SynchronizerManager( Singletons.Global g ) {}
+    public static SynchronizerManager v() { return G.v().SynchronizerManager(); }
     /** Maps classes to class$ fields.  Don't trust default. */
-    public static HashMap classToClassField = new HashMap();
+    public HashMap classToClassField = new HashMap();
 
     /** Adds code to fetch the static Class object to the given JimpleBody
      * before the target Stmt.
@@ -53,7 +55,7 @@ public class SynchronizerManager
      label2:
 </pre>
      */
-    public static Local addStmtsToFetchClassBefore(JimpleBody jb, Stmt target)
+    public Local addStmtsToFetchClassBefore(JimpleBody jb, Stmt target)
     {
         SootClass sc = jb.getMethod().getDeclaringClass();
         SootField classCacher = (SootField)classToClassField.get(sc);
@@ -117,7 +119,7 @@ public class SynchronizerManager
      *
      * Uses dumb matching to do search.  Not worth doing symbolic
      * analysis for this! */
-    public static SootMethod getClassFetcherFor(SootClass c)
+    public SootMethod getClassFetcherFor(SootClass c)
     {
         String methodName = "class$";
         for ( ; true; methodName = "_" + methodName)
@@ -224,7 +226,7 @@ public class SynchronizerManager
          }
 </pre>
     */
-    public static SootMethod createClassFetcherFor(SootClass c, 
+    public SootMethod createClassFetcherFor(SootClass c, 
                                                    String methodName)
     {
         // Create the method
@@ -321,7 +323,7 @@ public class SynchronizerManager
     /** Wraps stmt around a monitor associated with local lock. 
      * When inlining or static method binding, this is the former
      * base of the invoke expression. */
-    public static void synchronizeStmtOn(Stmt stmt, JimpleBody b, Local lock)
+    public void synchronizeStmtOn(Stmt stmt, JimpleBody b, Local lock)
     {
         Chain units = b.getUnits();
 

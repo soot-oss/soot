@@ -170,13 +170,13 @@ public class DavaBody extends Body
 
 	// perform transformations on the AST	
 	do {
-	    ASTAnalysis.modified = false;
+	    G.v().ASTAnalysis_modified = false;
 
 	    AST.perform_Analysis( UselessTryRemover.v());
 	    // AST.perform( UselessLabeledBlockRemover.v());
 	    // AST.perform( UselessBreakRemover.v());
 
-	} while (ASTAnalysis.modified);
+	} while (G.v().ASTAnalysis_modified);
 
 	Dava.v().log( "end method " + body.getMethod().toString());
     }

@@ -943,7 +943,7 @@ public class CFG {
 
     private void adjustLineNumberTable()
     {
-	if (!soot.Main.opts.keep_line_number())
+	if (!soot.Main.v().opts.keep_line_number())
 	    return;
 	if (method.code_attr == null)
 	    return;
@@ -984,7 +984,7 @@ public class CFG {
 	    return null;
     }
 
-   /** Main entry point for converting list of Instructions to Jimple statements;
+   /** Main.v() entry point for converting list of Instructions to Jimple statements;
     * performs flow analysis, constructs Jimple statements, and fixes jumps.
     * @param constant_pool constant pool of ClassFile.
     * @param this_class constant pool index of the CONSTANT_Class_info object for
@@ -1149,7 +1149,7 @@ public class CFG {
 	return buf;
     }
 
-    /** Main entry point for converting list of Instructions to Jimple statements;
+    /** Main.v() entry point for converting list of Instructions to Jimple statements;
      * performs flow analysis, constructs Jimple statements, and fixes jumps.
      * @param constant_pool constant pool of ClassFile.
      * @param this_class constant pool index of the CONSTANT_Class_info object for
@@ -1592,7 +1592,7 @@ public class CFG {
         }
 
 	/* covert line number table to tags attached to statements */
-	if (soot.Main.opts.keep_line_number())
+	if (soot.Main.v().opts.keep_line_number())
 	{
 	    HashMap stmtstags = new HashMap();
 	    LinkedList startstmts = new LinkedList();
@@ -4748,7 +4748,7 @@ public class CFG {
         }
 
       if(stmt != null) {
-	if (soot.Main.opts.keep_offset()) {
+	if (soot.Main.v().opts.keep_offset()) {
 	  stmt.addTag(new BytecodeOffsetTag(ins.label));
 	}
         statements.add(stmt);

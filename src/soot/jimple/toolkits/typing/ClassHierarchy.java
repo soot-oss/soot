@@ -39,7 +39,6 @@ import java.util.*;
 class ClassHierarchy
 {
   /** Map: Scene -> ClassHierarchy **/
-  private static final Map classHierarchyMap = new HashMap();
   
   public final TypeNode OBJECT;
   public final TypeNode CLONEABLE;
@@ -72,14 +71,14 @@ class ClassHierarchy
       }
 
     this.scene = scene;
-    classHierarchyMap.put(scene, this);
+    G.v().ClassHierarchy_classHierarchyMap.put(scene, this);
 
     NULL = typeNode(NullType.v());
     OBJECT = typeNode(RefType.v("java.lang.Object"));
 
     // hack for J2ME library which does not have Cloneable and Serializable
     // reported by Stephen Chen
-    if (!soot.Main.isJ2ME()) {
+    if (!soot.Main.v().isJ2ME()) {
       CLONEABLE = typeNode(RefType.v("java.lang.Cloneable"));
       SERIALIZABLE = typeNode(RefType.v("java.io.Serializable"));
     } else {
@@ -99,7 +98,7 @@ class ClassHierarchy
       }
     
     ClassHierarchy classHierarchy =
-      (ClassHierarchy) classHierarchyMap.get(scene);
+      (ClassHierarchy) G.v().ClassHierarchy_classHierarchyMap.get(scene);
 
     if(classHierarchy == null)
       {

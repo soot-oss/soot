@@ -195,7 +195,7 @@ public abstract class Body extends AbstractHost implements Serializable
         validateLocals();
         validateTraps();
         validateUnitBoxes();
-        if (Main.isInDebugMode)
+        if (Main.v().isInDebugMode)
             validateUses();
     }
 

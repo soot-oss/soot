@@ -35,6 +35,7 @@ import java.util.Enumeration;
 import java.util.Vector;
 import java.util.*;
 import soot.util.*;
+import soot.*;
 import java.util.*;
 
 /** Represents one basic block in a control flow graph.
@@ -84,8 +85,6 @@ class BasicBlock {
 
    private short wide;                 // convert indices when parsing jimple
 
-   private static long ids;           // for generating unique ids
-
    /** Constructs a BasicBlock consisting of the given list of Instructions.
     * @param insts list of instructions composing this basic block.
     */
@@ -106,7 +105,7 @@ class BasicBlock {
    }
 
    public BasicBlock(Instruction insts) {
-      id = ids++;
+      id = G.v().coffi_BasicBlock_ids++;
       head = insts;
       tail = head;
       size = 0;
@@ -123,7 +122,7 @@ class BasicBlock {
 
     public BasicBlock(Instruction headinsn, Instruction tailinsn)
     {
-	id = ids++;
+	id = G.v().coffi_BasicBlock_ids++;
 	head = headinsn;
 	tail = tailinsn;
 	succ = new Vector(2,10);

@@ -65,7 +65,7 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
 						   ReferenceVariable thisVar,
 						   ReferenceVariable returnVar,
 						   ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.getLeastArrayObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
   }
 
   /**
@@ -85,7 +85,7 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
 			    ReferenceVariable thisVar,
 			    ReferenceVariable returnVar,
 			    ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassLoaderObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
   }
 
   /**
@@ -99,7 +99,7 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
 					 ReferenceVariable thisVar,
 					 ReferenceVariable returnVar,
 					 ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.getClassObject());
+    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**

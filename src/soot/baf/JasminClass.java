@@ -208,10 +208,10 @@ public class JasminClass
     
     public JasminClass(SootClass sootClass)
     {
-        if(soot.Main.opts.time())
+        if(soot.Main.v().opts.time())
             Timers.v().buildJasminTimer.start();
         
-        if(soot.Main.opts.verbose())
+        if(soot.Main.v().opts.verbose())
             G.v().out.println("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
 
         code = new LinkedList();
@@ -304,17 +304,17 @@ public class JasminClass
             }
         }
         
-        if(soot.Main.opts.time())
+        if(soot.Main.v().opts.time())
             Timers.v().buildJasminTimer.end();
     }
 
     void assignColorsToLocals(BafBody body)
     {
-        if(Main.opts.verbose())
+        if(Main.v().opts.verbose())
             G.v().out.println("[" + body.getMethod().getName() +
                 "] Assigning colors to locals...");
         
-        if(Main.opts.time())
+        if(Main.v().opts.time())
             Timers.v().packTimer.start();
 
         localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
@@ -373,7 +373,7 @@ public class JasminClass
 //              FastColorer.assignColorsToLocals(body, localToGroup,
 //                  localToColor, groupToColorCount);
 
-        if(Main.opts.time())
+        if(Main.v().opts.time())
             Timers.v().packTimer.end();
                     
     }
@@ -408,7 +408,7 @@ public class JasminClass
     
     void emitMethodBody(SootMethod method)
     {
-        if(soot.Main.opts.time())
+        if(soot.Main.v().opts.time())
             Timers.v().buildJasminTimer.end();
         
         Body activeBody = method.getActiveBody();
@@ -421,7 +421,7 @@ public class JasminClass
         if(body == null)
             throw new RuntimeException("method: " + method.getName() + " has no active body!");
             
-        if(soot.Main.opts.time())
+        if(soot.Main.v().opts.time())
             Timers.v().buildJasminTimer.start();
         
         Chain instList = body.getUnits();

@@ -72,7 +72,7 @@ public class LoopConditionUnroller extends BodyTransformer {
   /* this implementation still fails in finding all possible while-loops, but
    * does a good job. */
   protected void internalTransform(Body body, String phaseName, Map options) {
-    if(Main.opts.verbose())
+    if(Main.v().opts.verbose())
       G.v().out.println("[" + body.getMethod().getName() +
                          "]     Unrolling Loop Conditions...");
 
@@ -88,7 +88,7 @@ public class LoopConditionUnroller extends BodyTransformer {
 
     UnitGraph cug = new CompleteUnitGraph(body);
 
-    if(Main.opts.verbose())
+    if(Main.v().opts.verbose())
       G.v().out.println("[" + body.getMethod().getName() +
                          "]     Unrolling Loop Conditions done.");
   }

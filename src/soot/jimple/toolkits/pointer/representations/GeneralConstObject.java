@@ -13,7 +13,6 @@ import soot.*;
 
 public class GeneralConstObject extends ConstantObject {
 
-  private static int counter = 0;
 
   /* what's the soot class */
   private Type      type;
@@ -23,7 +22,7 @@ public class GeneralConstObject extends ConstantObject {
   public GeneralConstObject(Type t, String n){
     this.type = t;
     this.name = n;
-    this.id   = counter++;
+    this.id   = G.v().GeneralConstObject_counter++;
   }
   
   public Type getType() {

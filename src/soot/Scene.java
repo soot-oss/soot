@@ -263,8 +263,8 @@ public class Scene  //extends AbstractHost
     public SootClass loadClassAndSupport(String className) 
     {   
         /*
-        if(Main.opts.time())
-            Main.resolveTimer.start();
+        if(Main.v().opts.time())
+            Main.v().resolveTimer.start();
         */
         
         Scene.v().setPhantomRefs(true);
@@ -275,8 +275,8 @@ public class Scene  //extends AbstractHost
         return toReturn;
         
         /*
-        if(Main.opts.time())
-            Main.resolveTimer.end(); */
+        if(Main.v().opts.time())
+            Main.v().resolveTimer.end(); */
     }
     
     /**
@@ -554,7 +554,7 @@ public class Scene  //extends AbstractHost
     
     public boolean getPhantomRefs()
     {
-        if( !soot.Main.opts.allow_phantom_refs() ) return false;
+        if( !soot.Main.v().opts.allow_phantom_refs() ) return false;
         return allowsPhantomRefs;
     }
 

@@ -40,15 +40,15 @@ public class ClassFieldAnalysis
     public ClassFieldAnalysis( Singletons.Global g ) {}
     public static ClassFieldAnalysis v() { return G.v().ClassFieldAnalysis(); }
 
-    private static boolean final_in = true;
-    private static boolean private_in = true;
+    private boolean final_in = true;
+    private boolean private_in = true;
 
     /* A map hold class object to other information
      * 
      * SootClass --> FieldInfoTable
      */
  
-    private static Map classToFieldInfoMap = new HashMap();	
+    private Map classToFieldInfoMap = new HashMap();	
   
     public void internalTransform(SootClass c)
     {
@@ -57,7 +57,7 @@ public class ClassFieldAnalysis
      
 	/* Summerize class information here. */
 	Date start = new Date();
- 	if (soot.Main.opts.verbose()) 
+ 	if (soot.Main.v().opts.verbose()) 
 	    G.v().out.println("[] ClassFieldAnalysis started on : "
 			       +start+" for "
 			       +c.getPackageName()+c.getName());
@@ -94,7 +94,7 @@ public class ClassFieldAnalysis
 
 	if (arrayTypeFieldNum == 0)
 	{
-	    if (Main.opts.verbose()) 
+	    if (Main.v().opts.verbose()) 
 		G.v().out.println("[] ClassFieldAnalysis finished with nothing");
 	    return;
 	}
@@ -119,7 +119,7 @@ public class ClassFieldAnalysis
 	}
 
 	Date finish = new Date();
-	if (Main.opts.verbose()) 
+	if (Main.v().opts.verbose()) 
 	{
 	    long runtime=finish.getTime()-start.getTime();
 	    long mins=runtime/60000;
@@ -149,7 +149,7 @@ public class ClassFieldAnalysis
        fieldinfo, keep the field -> value.
     */
 
-    public static void ScanMethod (SootMethod method, 
+    public void ScanMethod (SootMethod method, 
 				   Set candidates,
 				   Hashtable fieldinfo)
     {
@@ -222,7 +222,7 @@ public class ClassFieldAnalysis
 	}
 
 
-	if (soot.Main.opts.verbose())
+	if (soot.Main.v().opts.verbose())
 	{
 	    G.v().out.println("[] ScanMethod for field started.");
 	}
@@ -258,7 +258,7 @@ public class ClassFieldAnalysis
 			{
 			    usestmt = (DefinitionStmt)defs.get(0);
 
-			    if (soot.Main.isInDebugMode)
+			    if (soot.Main.v().isInDebugMode)
 				G.v().out.println("        "+usestmt);
 
 			    Value tmp_rhs = usestmt.getRightOp();
@@ -342,7 +342,7 @@ public class ClassFieldAnalysis
 	    }
 	}	
 	
-	if (soot.Main.opts.verbose())
+	if (soot.Main.v().opts.verbose())
 	{
 	    G.v().out.println("[] ScanMethod finished.");
 	}

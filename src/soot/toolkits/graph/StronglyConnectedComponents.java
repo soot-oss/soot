@@ -40,8 +40,8 @@ import java.util.*;
 public class StronglyConnectedComponents
 {
     private HashMap nodeToColor;
-    private static Object Visited=new Object();
-    private static Object Black=new Object();
+    private static final Object Visited=new Object();
+    private static final Object Black=new Object();
     private LinkedList finishingOrder;
     private List componentList = new ArrayList();
     private HashMap nodeToComponent = new HashMap();
@@ -101,7 +101,7 @@ public class StronglyConnectedComponents
         }
         componentList = Collections.unmodifiableList(componentList);
 
-        if (Main.opts.verbose()) 
+        if (Main.v().opts.verbose()) 
         {
             G.v().out.println("Done computing scc components");
             G.v().out.println("number of nodes in underlying graph: "+g.size());
