@@ -1,0 +1,420 @@
+class Cat1Cat2 extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        Cat1Cat2 r0;
+
+        r0 := @this: Cat1Cat2;
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+        return;
+    }
+
+    public static java.lang.Long testCaseHart()
+    {
+        java.lang.Long $r0;
+        long $l0;
+
+        $r0 = new java.lang.Long;
+        $l0 = staticinvoke <Cat1Cat2: long f()>();
+        specialinvoke $r0.<java.lang.Long: void <init>(long)>($l0);
+        return $r0;
+    }
+
+    private static long f()
+    {
+        return 1L;
+    }
+
+    private static float g()
+    {
+        return 1.0F;
+    }
+
+    public static void test_dup_x2_cat1(float, float, int)
+    {
+        float f0, f1;
+        int i0;
+
+        f0 := @parameter0: float;
+        f1 := @parameter1: float;
+        i0 := @parameter2: int;
+        staticinvoke <Cat1Cat2: void printStack(int,float,float,int)>(i0, f0, f1, i0);
+        return;
+    }
+
+    public static void test_dup_x2_cat2(long, int)
+    {
+        long l0;
+        int i1;
+
+        l0 := @parameter0: long;
+        i1 := @parameter1: int;
+        staticinvoke <Cat1Cat2: void printStack(int,long,int)>(i1, l0, i1);
+        return;
+    }
+
+    public static void test_pop2_cat1(int, float, float)
+    {
+        int i0;
+        float f0, f1;
+
+        i0 := @parameter0: int;
+        f0 := @parameter1: float;
+        f1 := @parameter2: float;
+        staticinvoke <Cat1Cat2: void printStack(int)>(i0);
+        staticinvoke <Cat1Cat2: float g()>();
+        staticinvoke <Cat1Cat2: float g()>();
+        staticinvoke <Cat1Cat2: void printStack(int)>(i0);
+        return;
+    }
+
+    public static void test_pop2_cat2(int, long)
+    {
+        int i0;
+        long l1;
+
+        i0 := @parameter0: int;
+        l1 := @parameter1: long;
+        staticinvoke <Cat1Cat2: void printStack(int)>(i0);
+        staticinvoke <Cat1Cat2: long f()>();
+        staticinvoke <Cat1Cat2: void printStack(int)>(i0);
+        return;
+    }
+
+    public static void test_dup2_cat1(int, float, float)
+    {
+        int i0;
+        float f0, f1;
+
+        i0 := @parameter0: int;
+        f0 := @parameter1: float;
+        f1 := @parameter2: float;
+        staticinvoke <Cat1Cat2: void printStack(int,float,float,float,float)>(i0, f0, f1, f0, f1);
+        return;
+    }
+
+    public static void test_dup2_cat2(int, double)
+    {
+        int i0;
+        double d0;
+
+        i0 := @parameter0: int;
+        d0 := @parameter1: double;
+        staticinvoke <Cat1Cat2: void printStack(int,double,double)>(i0, d0, d0);
+        return;
+    }
+
+    public static void test_dup2_x1_cat1(int, float, float)
+    {
+        int i0;
+        float f0, f1;
+
+        i0 := @parameter0: int;
+        f0 := @parameter1: float;
+        f1 := @parameter2: float;
+        staticinvoke <Cat1Cat2: void printStack(float,float,int,float,float)>(f0, f1, i0, f0, f1);
+        return;
+    }
+
+    public static void test_dup2_x1_cat2(int, double)
+    {
+        int i0;
+        double d0;
+
+        i0 := @parameter0: int;
+        d0 := @parameter1: double;
+        staticinvoke <Cat1Cat2: void printStack(double,int,double)>(d0, i0, d0);
+        return;
+    }
+
+    public static void test_dup2_x2_cat1cat1(int, float, float, int, int)
+    {
+        int i0, i1, i2;
+        float f0, f1;
+
+        i0 := @parameter0: int;
+        f0 := @parameter1: float;
+        f1 := @parameter2: float;
+        i1 := @parameter3: int;
+        i2 := @parameter4: int;
+        staticinvoke <Cat1Cat2: void printStack(int,int,int,float,float,int,int)>(i0, i1, i2, f0, f1, i1, i2);
+        return;
+    }
+
+    public static void test_dup2_x2_cat1cat2(int, float, float, double)
+    {
+        int i0;
+        float f0, f1;
+        double d0;
+
+        i0 := @parameter0: int;
+        f0 := @parameter1: float;
+        f1 := @parameter2: float;
+        d0 := @parameter3: double;
+        staticinvoke <Cat1Cat2: void printStack(int,double,float,float,double)>(i0, d0, f0, f1, d0);
+        return;
+    }
+
+    public static void test_dup2_x2_cat2cat1(int, long, float, float)
+    {
+        int i0;
+        long l1;
+        float f0, f1;
+
+        i0 := @parameter0: int;
+        l1 := @parameter1: long;
+        f0 := @parameter2: float;
+        f1 := @parameter3: float;
+        staticinvoke <Cat1Cat2: void printStack(int,float,float,long,float,float)>(i0, f0, f1, l1, f0, f1);
+        return;
+    }
+
+    public static void test_dup2_x2_cat2cat2(int, long, double)
+    {
+        int i0;
+        long l1;
+        double d0;
+
+        i0 := @parameter0: int;
+        l1 := @parameter1: long;
+        d0 := @parameter2: double;
+        staticinvoke <Cat1Cat2: void printStack(int,double,long,double)>(i0, d0, l1, d0);
+        return;
+    }
+
+    public static void printStack(int, float, float, int)
+    {
+        int i0, i1;
+        float f0, f1;
+        java.io.PrintStream r0;
+
+        i0 := @parameter0: int;
+        f0 := @parameter1: float;
+        f1 := @parameter2: float;
+        i1 := @parameter3: int;
+        r0 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i0);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f0);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f1);
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i1);
+        virtualinvoke r0.<java.io.PrintStream: void println()>();
+        return;
+    }
+
+    public static void printStack(int, long, int)
+    {
+        int i0, i2;
+        long l1;
+        java.io.PrintStream r0;
+
+        i0 := @parameter0: int;
+        l1 := @parameter1: long;
+        i2 := @parameter2: int;
+        r0 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i0);
+        virtualinvoke r0.<java.io.PrintStream: void println(long)>(l1);
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i2);
+        virtualinvoke r0.<java.io.PrintStream: void println()>();
+        return;
+    }
+
+    public static void printStack(int)
+    {
+        int i0;
+        java.io.PrintStream r0;
+
+        i0 := @parameter0: int;
+        r0 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i0);
+        virtualinvoke r0.<java.io.PrintStream: void println()>();
+        return;
+    }
+
+    public static void printStack(int, float, float, float, float)
+    {
+        int i0;
+        float f0, f1, f2, f3;
+        java.io.PrintStream r0;
+
+        i0 := @parameter0: int;
+        f0 := @parameter1: float;
+        f1 := @parameter2: float;
+        f2 := @parameter3: float;
+        f3 := @parameter4: float;
+        r0 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i0);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f0);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f1);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f2);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f3);
+        virtualinvoke r0.<java.io.PrintStream: void println()>();
+        return;
+    }
+
+    public static void printStack(int, double, double)
+    {
+        int i0;
+        double d0, d1;
+        java.io.PrintStream r0;
+
+        i0 := @parameter0: int;
+        d0 := @parameter1: double;
+        d1 := @parameter2: double;
+        r0 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i0);
+        virtualinvoke r0.<java.io.PrintStream: void println(double)>(d0);
+        virtualinvoke r0.<java.io.PrintStream: void println(double)>(d1);
+        virtualinvoke r0.<java.io.PrintStream: void println()>();
+        return;
+    }
+
+    public static void printStack(float, float, int, float, float)
+    {
+        float f0, f1, f2, f3;
+        int i0;
+        java.io.PrintStream r0;
+
+        f0 := @parameter0: float;
+        f1 := @parameter1: float;
+        i0 := @parameter2: int;
+        f2 := @parameter3: float;
+        f3 := @parameter4: float;
+        r0 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f0);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f1);
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i0);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f2);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f3);
+        virtualinvoke r0.<java.io.PrintStream: void println()>();
+        return;
+    }
+
+    public static void printStack(double, int, double)
+    {
+        double d0, d1;
+        int i0;
+        java.io.PrintStream r0;
+
+        d0 := @parameter0: double;
+        i0 := @parameter1: int;
+        d1 := @parameter2: double;
+        r0 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke r0.<java.io.PrintStream: void println(double)>(d0);
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i0);
+        virtualinvoke r0.<java.io.PrintStream: void println(double)>(d1);
+        virtualinvoke r0.<java.io.PrintStream: void println()>();
+        return;
+    }
+
+    public static void printStack(int, int, int, float, float, int, int)
+    {
+        int i0, i1, i2, i3, i4;
+        float f0, f1;
+        java.io.PrintStream r0;
+
+        i0 := @parameter0: int;
+        i1 := @parameter1: int;
+        i2 := @parameter2: int;
+        f0 := @parameter3: float;
+        f1 := @parameter4: float;
+        i3 := @parameter5: int;
+        i4 := @parameter6: int;
+        r0 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i0);
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i1);
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i2);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f0);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f1);
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i3);
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i4);
+        virtualinvoke r0.<java.io.PrintStream: void println()>();
+        return;
+    }
+
+    public static void printStack(int, double, float, float, double)
+    {
+        int i0;
+        double d0, d1;
+        float f0, f1;
+        java.io.PrintStream r0;
+
+        i0 := @parameter0: int;
+        d0 := @parameter1: double;
+        f0 := @parameter2: float;
+        f1 := @parameter3: float;
+        d1 := @parameter4: double;
+        r0 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i0);
+        virtualinvoke r0.<java.io.PrintStream: void println(double)>(d0);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f0);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f1);
+        virtualinvoke r0.<java.io.PrintStream: void println(double)>(d1);
+        virtualinvoke r0.<java.io.PrintStream: void println()>();
+        return;
+    }
+
+    public static void printStack(int, float, float, long, float, float)
+    {
+        int i0;
+        float f0, f1, f2, f3;
+        long l1;
+        java.io.PrintStream r0;
+
+        i0 := @parameter0: int;
+        f0 := @parameter1: float;
+        f1 := @parameter2: float;
+        l1 := @parameter3: long;
+        f2 := @parameter4: float;
+        f3 := @parameter5: float;
+        r0 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i0);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f0);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f1);
+        virtualinvoke r0.<java.io.PrintStream: void println(long)>(l1);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f2);
+        virtualinvoke r0.<java.io.PrintStream: void println(float)>(f3);
+        virtualinvoke r0.<java.io.PrintStream: void println()>();
+        return;
+    }
+
+    public static void printStack(int, double, long, double)
+    {
+        int i0;
+        double d0, d1;
+        long l1;
+        java.io.PrintStream r0;
+
+        i0 := @parameter0: int;
+        d0 := @parameter1: double;
+        l1 := @parameter2: long;
+        d1 := @parameter3: double;
+        r0 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke r0.<java.io.PrintStream: void println(int)>(i0);
+        virtualinvoke r0.<java.io.PrintStream: void println(double)>(d0);
+        virtualinvoke r0.<java.io.PrintStream: void println(long)>(l1);
+        virtualinvoke r0.<java.io.PrintStream: void println(double)>(d1);
+        virtualinvoke r0.<java.io.PrintStream: void println()>();
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+
+        r0 := @parameter0: java.lang.String[];
+        staticinvoke <Cat1Cat2: void test_dup_x2_cat1(float,float,int)>(1.1111F, 2.2222F, 3);
+        staticinvoke <Cat1Cat2: void test_dup_x2_cat2(long,int)>(11111L, 2);
+        staticinvoke <Cat1Cat2: void test_pop2_cat1(int,float,float)>(1, 2.2222F, 3.3333F);
+        staticinvoke <Cat1Cat2: void test_pop2_cat2(int,long)>(1, 22222L);
+        staticinvoke <Cat1Cat2: void test_dup2_cat1(int,float,float)>(1, 2.2222F, 3.3333F);
+        staticinvoke <Cat1Cat2: void test_dup2_cat2(int,double)>(1, 2.2222);
+        staticinvoke <Cat1Cat2: void test_dup2_x1_cat1(int,float,float)>(1, 2.2222F, 3.3333F);
+        staticinvoke <Cat1Cat2: void test_dup2_x1_cat2(int,double)>(1, 2.2222);
+        staticinvoke <Cat1Cat2: void test_dup2_x2_cat1cat1(int,float,float,int,int)>(1, 2.222F, 3.333F, 4, 5);
+        staticinvoke <Cat1Cat2: void test_dup2_x2_cat1cat2(int,float,float,double)>(1, 2.222F, 3.333F, 4444.44444);
+        staticinvoke <Cat1Cat2: void test_dup2_x2_cat2cat1(int,long,float,float)>(1, 2222222L, 3.3333F, 4.4444F);
+        staticinvoke <Cat1Cat2: void test_dup2_x2_cat2cat2(int,long,double)>(1, 2222222L, 3333.3333);
+        return;
+    }
+}
