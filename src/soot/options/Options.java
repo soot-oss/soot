@@ -34,20 +34,33 @@ public class Options extends OptionsBase {
     public static Options v() { return G.v().Options(); }
 
 
+    public static final int src_prec_c = 1;
     public static final int src_prec_class = 1;
+    public static final int src_prec_J = 2;
     public static final int src_prec_jimple = 2;
+    public static final int output_format_j = 1;
     public static final int output_format_jimp = 1;
+    public static final int output_format_J = 2;
     public static final int output_format_jimple = 2;
     public static final int output_format_shimp = 3;
+    public static final int output_format_S = 4;
     public static final int output_format_shimple = 4;
+    public static final int output_format_B = 5;
     public static final int output_format_baf = 5;
     public static final int output_format_b = 6;
+    public static final int output_format_g = 7;
     public static final int output_format_grimp = 7;
+    public static final int output_format_G = 8;
     public static final int output_format_grimple = 8;
+    public static final int output_format_X = 9;
     public static final int output_format_xml = 9;
+    public static final int output_format_n = 10;
     public static final int output_format_none = 10;
+    public static final int output_format_s = 11;
     public static final int output_format_jasmin = 11;
+    public static final int output_format_c = 12;
     public static final int output_format_class = 12;
+    public static final int output_format_d = 13;
     public static final int output_format_dava = 13;
 
     public boolean parse( String[] argv ) {
@@ -218,7 +231,6 @@ public class Options extends OptionsBase {
                 }
     
                 else if( false
-                || value.equals( "s" )
                 || value.equals( "shimp" )
                 ) {
                     if( output_format != 0
@@ -745,7 +757,7 @@ public class Options extends OptionsBase {
 +padOpt(" -f ARG -output-format ARG", "Sets Output Format for Soot" )
 +padVal(" j jimp", "" )
 +padVal(" J jimple", "" )
-+padVal(" s shimp", "" )
++padVal(" shimp", "" )
 +padVal(" S shimple", "" )
 +padVal(" B baf", "" )
 +padVal(" b", "" )

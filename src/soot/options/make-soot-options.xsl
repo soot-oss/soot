@@ -280,7 +280,10 @@ public class Options extends OptionsBase {
   <xsl:template mode="constants" match="multiopt">
     <xsl:variable name="name" select="translate(alias[last()],'-. ','___')"/>
     <xsl:for-each select="value">
-    public static final int <xsl:copy-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/> = <xsl:number/>;<!---->
+      <xsl:variable name="number"><xsl:number/></xsl:variable>
+      <xsl:for-each select="alias">
+    public static final int <xsl:copy-of select="$name"/>_<xsl:value-of select="translate(.,'-. ','___')"/> = <xsl:value-of select="$number"/>;<!---->
+      </xsl:for-each>
     </xsl:for-each>
   </xsl:template>
 
@@ -406,7 +409,10 @@ public class <xsl:copy-of select="$filename"/>
     <xsl:for-each select="multiopt|section/multiopt"><!---->
       <xsl:variable name="name" select="translate(alias[last()],'-. ','___')"/>
         <xsl:for-each select="value"><!---->
-    public static final int <xsl:value-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/> = <xsl:number/>;<!---->
+          <xsl:variable name="number"><xsl:number/></xsl:variable>
+          <xsl:for-each select="alias">
+    public static final int <xsl:value-of select="$name"/>_<xsl:value-of select="translate(.,'-. ','___')"/> = <xsl:value-of select="$number"/>;<!---->
+          </xsl:for-each>
         </xsl:for-each>
     /** <xsl:value-of select="name"/> --
     <xsl:call-template name="wrap-comment"><xsl:with-param name="text" select="short_desc"/></xsl:call-template>.

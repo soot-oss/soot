@@ -108,7 +108,7 @@
 			</value>
 			<value>
 				<name>Shimp File</name>
-				<alias>s</alias>
+				<!-- <alias>s</alias> CONFLICTS with jasmin -->
 				<alias>shimp</alias>
 				<short_desc>produce .shimp (abbreviated .shimple) files</short_desc>
                                 <long_desc>Produces .shimp files. These contain an abbreviated textual form for soot's Shimple internal representation. Can contain ambiguous references.</long_desc>
