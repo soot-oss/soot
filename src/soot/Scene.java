@@ -838,9 +838,6 @@ public class Scene  //extends AbstractHost
 		tryLoadClass(name,i);
 	    }
 	}
-        if(Options.v().main_class() != null && Options.v().main_class().length() > 0) {
-            loadNecessaryClass(Options.v().main_class());
-        }
     }
 
     private List dynamicClasses;
@@ -885,6 +882,7 @@ public class Scene  //extends AbstractHost
         }
 
         prepareClasses();
+        setMainClassFromOptions();
         setDoneResolving();
     }
 
@@ -1022,5 +1020,11 @@ public class Scene  //extends AbstractHost
     private boolean doneResolving = false;
     public boolean doneResolving() { return doneResolving; }
     public void setDoneResolving() { doneResolving = true; }
+    public void setMainClassFromOptions() {
+        if( Options.v().main_class() != null
+                && Options.v().main_class().length() > 0 ) {
+            setMainClass(getSootClass(Options.v().main_class()));
+        }
+    }
 }
 

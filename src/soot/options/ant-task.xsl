@@ -317,7 +317,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOpt<xsl:value-of select="translate(alias[last()],'-. ','___')"/> {
+        public class PhaseOpt<xsl:value-of select="translate(alias[last()],'-. ','___')"/> {
       <xsl:for-each select="boolopt|section/boolopt"><xsl:text/>
           public void set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>(boolean arg) {
             addArg("-p");

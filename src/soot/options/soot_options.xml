@@ -208,6 +208,16 @@ specify the Whole Program Optimize option.</p>
       </long_desc>
     </boolopt>
                 <boolopt>
+			<name>Validate</name>
+			<alias>validate</alias>
+			<short_desc>Run internal validation on bodies</short_desc>
+			<long_desc>
+Causes internal checks to be done on bodies in the various Soot IRs,
+to make sure the transformations have not done something strange.
+This option may degrade Soot's performance.
+</long_desc>
+                </boolopt>
+                <boolopt>
 			<name>Debug</name>
 			<alias>debug</alias>
 			<short_desc>Print various Soot debugging info</short_desc>

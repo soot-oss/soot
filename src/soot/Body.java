@@ -201,9 +201,13 @@ public abstract class Body extends AbstractHost implements Serializable
         validateLocals();
         validateTraps();
         validateUnitBoxes();
-        validateValueBoxes();
-        if (Options.v().debug())
+        if (Options.v().debug() || Options.v().validate()) {
             validateUses();
+            validateValueBoxes();
+            checkInit();
+            checkTypes();
+            checkLocals();
+        }
     }
 
     /** Verifies that a ValueBox is not used in more than one place. */
@@ -219,8 +223,6 @@ public abstract class Body extends AbstractHost implements Serializable
                         final Unit u = (Unit) uIt.next();
                         System.err.println(""+u);
                     }
-                    soot.Printer.v().setOption(Printer.USE_ABBREVIATIONS);
-                    soot.Printer.v().printTo(this, new PrintWriter(System.err));
                     throw new RuntimeException("Aliased value box : "+l.get(i)+" in "+getMethod());
                 }
             }

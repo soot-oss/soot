@@ -147,6 +147,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-whole-shimple");
         }
   
+        public void setvalidate(boolean arg) {
+            if(arg) addArg("-validate");
+        }
+  
         public void setdebug(boolean arg) {
             if(arg) addArg("-debug");
         }
@@ -431,7 +435,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb {
+        public class PhaseOptjb {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -452,7 +456,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_ls {
+        public class PhaseOptjb_ls {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -467,7 +471,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_a {
+        public class PhaseOptjb_a {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -488,7 +492,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_ule {
+        public class PhaseOptjb_ule {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -503,7 +507,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_tr {
+        public class PhaseOptjb_tr {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -518,7 +522,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_ulp {
+        public class PhaseOptjb_ulp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -539,7 +543,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_lns {
+        public class PhaseOptjb_lns {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -560,7 +564,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_cp {
+        public class PhaseOptjb_cp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -587,7 +591,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_dae {
+        public class PhaseOptjb_dae {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -608,7 +612,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_cp_ule {
+        public class PhaseOptjb_cp_ule {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -623,7 +627,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_lp {
+        public class PhaseOptjb_lp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -644,7 +648,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_ne {
+        public class PhaseOptjb_ne {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -659,7 +663,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_uce {
+        public class PhaseOptjb_uce {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -680,7 +684,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjb_tt {
+        public class PhaseOptjb_tt {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -695,7 +699,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj {
+        public class PhaseOptjj {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -716,7 +720,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_ls {
+        public class PhaseOptjj_ls {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -731,7 +735,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_a {
+        public class PhaseOptjj_a {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -752,7 +756,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_ule {
+        public class PhaseOptjj_ule {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -767,7 +771,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_tr {
+        public class PhaseOptjj_tr {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -782,7 +786,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_ulp {
+        public class PhaseOptjj_ulp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -803,7 +807,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_lns {
+        public class PhaseOptjj_lns {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -824,7 +828,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_cp {
+        public class PhaseOptjj_cp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -851,7 +855,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_dae {
+        public class PhaseOptjj_dae {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -872,7 +876,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_cp_ule {
+        public class PhaseOptjj_cp_ule {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -887,7 +891,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_lp {
+        public class PhaseOptjj_lp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -908,7 +912,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_ne {
+        public class PhaseOptjj_ne {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -923,7 +927,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjj_uce {
+        public class PhaseOptjj_uce {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -938,7 +942,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptcg {
+        public class PhaseOptcg {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -995,7 +999,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptcg_cha {
+        public class PhaseOptcg_cha {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1016,7 +1020,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptcg_spark {
+        public class PhaseOptcg_spark {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1205,7 +1209,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptcg_paddle {
+        public class PhaseOptcg_paddle {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1442,7 +1446,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwstp {
+        public class PhaseOptwstp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1457,7 +1461,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwsop {
+        public class PhaseOptwsop {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1472,7 +1476,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwjtp {
+        public class PhaseOptwjtp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1487,7 +1491,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwjop {
+        public class PhaseOptwjop {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1502,7 +1506,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwjop_smb {
+        public class PhaseOptwjop_smb {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1535,7 +1539,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwjop_si {
+        public class PhaseOptwjop_si {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1592,7 +1596,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwjap {
+        public class PhaseOptwjap {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1607,7 +1611,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwjap_ra {
+        public class PhaseOptwjap_ra {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1622,7 +1626,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwjap_umt {
+        public class PhaseOptwjap_umt {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1637,7 +1641,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwjap_uft {
+        public class PhaseOptwjap_uft {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1652,7 +1656,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwjap_tqt {
+        public class PhaseOptwjap_tqt {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1667,7 +1671,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptwjap_cgg {
+        public class PhaseOptwjap_cgg {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1688,7 +1692,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptshimple {
+        public class PhaseOptshimple {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1721,7 +1725,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptstp {
+        public class PhaseOptstp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1736,7 +1740,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptsop {
+        public class PhaseOptsop {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1751,7 +1755,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptsop_cpf {
+        public class PhaseOptsop_cpf {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1772,7 +1776,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjtp {
+        public class PhaseOptjtp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1787,7 +1791,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop {
+        public class PhaseOptjop {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1802,7 +1806,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_cse {
+        public class PhaseOptjop_cse {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1823,7 +1827,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_bcm {
+        public class PhaseOptjop_bcm {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1844,7 +1848,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_lcm {
+        public class PhaseOptjop_lcm {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1877,7 +1881,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_cp {
+        public class PhaseOptjop_cp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1904,7 +1908,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_cpf {
+        public class PhaseOptjop_cpf {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1919,7 +1923,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_cbf {
+        public class PhaseOptjop_cbf {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1934,7 +1938,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_dae {
+        public class PhaseOptjop_dae {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1955,7 +1959,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_uce1 {
+        public class PhaseOptjop_uce1 {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1976,7 +1980,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_ubf1 {
+        public class PhaseOptjop_ubf1 {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -1991,7 +1995,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_uce2 {
+        public class PhaseOptjop_uce2 {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2012,7 +2016,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_ubf2 {
+        public class PhaseOptjop_ubf2 {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2027,7 +2031,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjop_ule {
+        public class PhaseOptjop_ule {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2042,7 +2046,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap {
+        public class PhaseOptjap {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2057,7 +2061,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_npc {
+        public class PhaseOptjap_npc {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2084,7 +2088,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_npcolorer {
+        public class PhaseOptjap_npcolorer {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2099,7 +2103,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_abc {
+        public class PhaseOptjap_abc {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2162,7 +2166,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_profiling {
+        public class PhaseOptjap_profiling {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2183,7 +2187,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_sea {
+        public class PhaseOptjap_sea {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2204,7 +2208,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_fieldrw {
+        public class PhaseOptjap_fieldrw {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2225,7 +2229,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_cgtagger {
+        public class PhaseOptjap_cgtagger {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2240,7 +2244,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_parity {
+        public class PhaseOptjap_parity {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2255,7 +2259,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_pat {
+        public class PhaseOptjap_pat {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2270,7 +2274,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_lvtagger {
+        public class PhaseOptjap_lvtagger {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2285,7 +2289,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_rdtagger {
+        public class PhaseOptjap_rdtagger {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2300,7 +2304,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptjap_che {
+        public class PhaseOptjap_che {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2315,7 +2319,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptgb {
+        public class PhaseOptgb {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2330,7 +2334,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptgb_a1 {
+        public class PhaseOptgb_a1 {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2351,7 +2355,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptgb_cf {
+        public class PhaseOptgb_cf {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2366,7 +2370,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptgb_a2 {
+        public class PhaseOptgb_a2 {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2387,7 +2391,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptgb_ule {
+        public class PhaseOptgb_ule {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2402,7 +2406,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptgop {
+        public class PhaseOptgop {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2417,7 +2421,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptbb {
+        public class PhaseOptbb {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2432,7 +2436,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptbb_lso {
+        public class PhaseOptbb_lso {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2483,7 +2487,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptbb_pho {
+        public class PhaseOptbb_pho {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2498,7 +2502,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptbb_ule {
+        public class PhaseOptbb_ule {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2513,7 +2517,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptbb_lp {
+        public class PhaseOptbb_lp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2534,7 +2538,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOptbop {
+        public class PhaseOptbop {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2549,7 +2553,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOpttag {
+        public class PhaseOpttag {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2564,7 +2568,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOpttag_ln {
+        public class PhaseOpttag_ln {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2579,7 +2583,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOpttag_an {
+        public class PhaseOpttag_an {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2594,7 +2598,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOpttag_dep {
+        public class PhaseOpttag_dep {
       
           public void setenabled(boolean arg) {
             addArg("-p");
@@ -2609,7 +2613,7 @@ public class AntTask extends MatchingTask {
             phaseopts.add(ret);
             return ret;
         }
-        class PhaseOpttag_fieldrw {
+        public class PhaseOpttag_fieldrw {
       
           public void setenabled(boolean arg) {
             addArg("-p");
