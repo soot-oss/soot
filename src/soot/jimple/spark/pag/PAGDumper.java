@@ -42,7 +42,6 @@ public class PAGDumper {
             for( Iterator vnIt = pag.allVarNodes().iterator(); vnIt.hasNext(); ) {
                 final VarNode vn = (VarNode) vnIt.next();
                 if( vn.getReplacement() != vn ) {
-                    System.out.println( "Skipping merged node" );
                     continue;
                 }
                 PointsToSetInternal p2set = vn.getP2Set();
@@ -141,6 +140,7 @@ public class PAGDumper {
     protected int fieldNum = 0;
     protected HashMap fieldMap = new HashMap();
     protected FastHierarchy fh;
+    protected ObjectNumberer root = new ObjectNumberer( null, 0 );
 
     protected void dumpTypes( PrintWriter file ) throws IOException {
         HashSet declaredTypes = new HashSet();
@@ -230,7 +230,17 @@ public class PAGDumper {
         if( n.getReplacement() != n ) throw new RuntimeException( "Attempt to dump collapsed node." );
         if( n instanceof FieldRefNode ) {
             FieldRefNode fn = (FieldRefNode) n;
-            out.print( ""+fn.getBase().getId()+" "+fieldToNum( fn.getField() ) );
+            dumpNode( fn.getBase(), out );
+            out.print( " "+fieldToNum( fn.getField() ) );
+        } else if( pag.getOpts().classMethodVar() && n instanceof VarNode ) {
+            VarNode vn = (VarNode) n;
+            SootMethod m = vn.getMethod();
+            SootClass c = null;
+            if( m != null ) c = m.getDeclaringClass();
+            ObjectNumberer cl = root.findOrAdd( c );
+            ObjectNumberer me = cl.findOrAdd( m );
+            ObjectNumberer vr = me.findOrAdd( vn );
+            out.print( ""+cl.num+" "+me.num+" "+vr.num );
         } else if( pag.getOpts().topoSort() && n instanceof VarNode ) {
             out.print( ""+((VarNode) n).finishingNumber );
         } else {
@@ -238,5 +248,25 @@ public class PAGDumper {
         }
     }
 
+    class ObjectNumberer {
+        Object o = null;
+        int num = 0;
+        int nextChildNum = 1;
+        HashMap children = null;
+
+        ObjectNumberer( Object o, int num ) {
+            this.o = o; this.num = num;
+        }
+
+        ObjectNumberer findOrAdd( Object child ) {
+            if( children == null ) children = new HashMap();
+            ObjectNumberer ret = (ObjectNumberer) children.get( child );
+            if( ret == null ) {
+                ret = new ObjectNumberer( child, nextChildNum++ );
+                children.put( child, ret );
+            }
+            return ret;
+        }
+    }
 }
 

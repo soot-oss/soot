@@ -55,6 +55,15 @@ public class SparkOptions {
         return Options.getBoolean( options, "ignoreTypesEntirely" );
     }
 
+    /**
+     * If set to true, calls to System.gc() will be done at various points to
+     * allow memory usage to be measured.
+     * Default value is false
+     */
+    public boolean forceGCs() {
+        return Options.getBoolean( options, "forceGCs" );
+    }
+
 
 /*********************************************************************
 *** Pointer assignment graph building options
@@ -365,6 +374,20 @@ public class SparkOptions {
     }
 
     /**
+     * If set to true, the representation dumped by the dumpPAG option
+     * represents nodes by numbering each class, method, and variable within
+     * the method separately, rather than assigning a single integer to each
+     * node.
+     * 
+     * This option has no effect if dumpPAG is false.
+     * Setting classMethodVar to true has the effect of setting topoSort to false.
+     * Default value is true
+     */
+    public boolean classMethodVar() {
+        return Options.getBoolean( options, "classMethodVar" );
+    }
+
+    /**
      * If set to true, the computed reaching types for each variable are
      * dumped to a file, so that they can be compared with the results of
      * other analyses.
@@ -376,11 +399,11 @@ public class SparkOptions {
 
     public static String getDeclaredOptions() {
         return
-        " verbose ignoreTypesEntirely parmsAsFields returnsAsFields ignoreBaseObjects typesForSites mergeStringBuffer simulateNatives simpleEdgesBidirectional onFlyCallGraph simplifyOffline simplifySCCs ignoreTypesForSCCs propagator setImpl doubleSetOld doubleSetNew dumpHTML dumpPAG dumpSolution topoSort dumpTypes dumpAnswer";
+        " verbose ignoreTypesEntirely forceGCs parmsAsFields returnsAsFields ignoreBaseObjects typesForSites mergeStringBuffer simulateNatives simpleEdgesBidirectional onFlyCallGraph simplifyOffline simplifySCCs ignoreTypesForSCCs propagator setImpl doubleSetOld doubleSetNew dumpHTML dumpPAG dumpSolution topoSort dumpTypes classMethodVar dumpAnswer";
     }
     public static String getDefaultOptions() {
         return
-        " verbose:false ignoreTypesEntirely:false parmsAsFields:false returnsAsFields:false ignoreBaseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false simplifyOffline:true simplifySCCs:true ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true dumpAnswer:false";
+        " verbose:false ignoreTypesEntirely:false forceGCs:false parmsAsFields:false returnsAsFields:false ignoreBaseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false simplifyOffline:true simplifySCCs:true ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true classMethodVar:true dumpAnswer:false";
     }
 
     protected Map options;

@@ -12,6 +12,12 @@ If set to true, all parts of Spark completely ignore declared types of
 variables and casts.
 END
 
+BOPT forceGCs
+false
+If set to true, calls to System.gc() will be done at various points to
+allow memory usage to be measured.
+END
+
 
 SECTION Pointer assignment graph building options
 #################################################
@@ -202,9 +208,21 @@ includes type information for all nodes.
 This option has no effect if dumpPAG is false.
 END
 
+BOPT classMethodVar
+true
+If set to true, the representation dumped by the dumpPAG option
+represents nodes by numbering each class, method, and variable within
+the method separately, rather than assigning a single integer to each
+node.
+
+This option has no effect if dumpPAG is false.
+Setting classMethodVar to true has the effect of setting topoSort to false.
+END
+
 BOPT dumpAnswer
 false
 If set to true, the computed reaching types for each variable are
 dumped to a file, so that they can be compared with the results of
 other analyses.
 END
+

@@ -69,19 +69,19 @@ public class SparkTransformer extends SceneTransformer
         // Build pointer assignment graph
         Builder b = new ContextInsensitiveBuilder();
         b.preJimplify();
-        doGC();
+        if( opts.forceGCs() ) doGC();
         Date startBuild = new Date();
         final PAG pag = b.build( opts );
         Date endBuild = new Date();
         reportTime( "Pointer Assignment Graph", startBuild, endBuild );
-        doGC();
+        if( opts.forceGCs() ) doGC();
 
         // Build type masks
         Date startTM = new Date();
         pag.getTypeManager().makeTypeMask( pag );
         Date endTM = new Date();
         reportTime( "Type masks", startTM, endTM );
-        doGC();
+        if( opts.forceGCs() ) doGC();
 
         // Simplify pag
         Date startSimplify = new Date();
@@ -94,7 +94,7 @@ public class SparkTransformer extends SceneTransformer
         }
         Date endSimplify = new Date();
         reportTime( "Pointer Graph simplified", startSimplify, endSimplify );
-        doGC();
+        if( opts.forceGCs() ) doGC();
 
         // Dump pag
         PAGDumper dumper = null;
@@ -125,7 +125,7 @@ public class SparkTransformer extends SceneTransformer
         if( propagator[0] != null ) propagator[0].propagate();
         Date endProp = new Date();
         reportTime( "Propagation", startProp, endProp );
-        doGC();
+        if( opts.forceGCs() ) doGC();
         reportTime( "Solution found", startSimplify, endProp );
 
         findSetMass( pag );
