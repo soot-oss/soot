@@ -73,7 +73,7 @@ public class InlinerSafetyManager
      *                 of container's declaringClass. 
      *   The base class may be null, in which case 3b is omitted. 
      *     (for instance, for a static method invocation.) */
-    private static boolean invokeOfThrowsAccessErrorIn(SootClass base,
+/*    private static boolean invokeOfThrowsAccessErrorIn(SootClass base,
                                                      SootMethod inlinee,
                                                      SootMethod container)
     {
@@ -113,10 +113,11 @@ public class InlinerSafetyManager
 
         return false;
     }
+/*
 
     // m is the method being called; container is the class from which m
     // is being called.
-    private static specialInvokeOfInPerformsLookup
+    private static boolean specialInvokeOfInPerformsLookup
         (SootMethod m, SootClass container)
     {
         // If all of the conditions are true, a lookup is performed.
@@ -137,7 +138,7 @@ public class InlinerSafetyManager
 
         return true;
     }
-
+*/
     // Where does this go?
     private static String getPackageName(String className)
     {
