@@ -62,13 +62,35 @@
 
  B) Changes:
 
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on November 1, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
-public interface BodyRepresentation
+public class BuildBody implements BodyExpr
 {
-    public Body buildBodyOfFrom(SootMethod m, Body b, int buildBodyOptions);
+    public final BodyRepresentation bodyRep;
+    public final BodyExpr sourceBuilder;
+    public final int buildBodyOptions;
+    
+    public BuildBody(BodyRepresentation bodyRep, BodyExpr sourceBuilder)
+    {
+        this.bodyRep = bodyRep;
+        this.sourceBuilder = sourceBuilder;    
+        this.buildBodyOptions = 0;
+    }
+    
+    public BuildBody(BodyRepresentation bodyRep, BodyExpr sourceBuilder, int buildBodyOptions)
+    {
+        this.bodyRep = bodyRep;
+        this.sourceBuilder = sourceBuilder;    
+        this.buildBodyOptions = buildBodyOptions;
+    }
+    
+    public Body resolveFor(SootMethod method)
+    {        
+        return bodyRep.buildBodyOfFrom(method, sourceBuilder.resolveFor(method), buildBodyOptions);
+    }
 }
+

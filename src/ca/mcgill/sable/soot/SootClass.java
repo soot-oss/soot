@@ -69,7 +69,7 @@
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
-import java.io.PrintStream;
+import java.io.*;
 
 /*
  * Incomplete and inefficient implementation.
@@ -573,6 +573,102 @@ public class SootClass
         this.name = name;
     }
 
+    public void printTo(BodyExpr bodyExpr, PrintWriter out)
+    {
+        printTo(bodyExpr, out, 0);
+    }
+    
+    public void printTo(BodyExpr bodyExpr, PrintWriter out, int printBodyOptions)
+    {   
+        // Print class name + modifiers
+        {
+            String classPrefix = "";
+            
+            classPrefix = classPrefix + " " + Modifier.toString(this.getModifiers());
+            classPrefix = classPrefix.trim();            
+            
+            if(!Modifier.isInterface(this.getModifiers()))
+            {
+                classPrefix = classPrefix + " class";
+                classPrefix = classPrefix.trim();
+            }   
+        
+            out.print(classPrefix + " " + this.getName());
+        }
+        
+        // Print extension
+        {
+            if(this.hasSuperClass())
+                out.print(" extends " + this.getSuperClass().getName());
+        }
+        
+        // Print interfaces
+        {
+            Iterator interfaceIt = this.getInterfaces().iterator();
+            
+            if(interfaceIt.hasNext())
+            {
+                out.print(" implements ");
+            
+                out.print(((SootClass) interfaceIt.next()).getName());
+                    
+                while(interfaceIt.hasNext())
+                {
+                    out.print(",");           
+                    out.print(" " + ((SootClass) interfaceIt.next()).getName());
+                }
+            }
+        }
+        
+        out.println();
+        out.println("{");
+        
+        // Print fields
+        {
+            Iterator fieldIt = this.getFields().iterator();
+            
+            if(fieldIt.hasNext())
+            {
+                while(fieldIt.hasNext())
+                    out.println("    " + ((SootField) fieldIt.next()).toString() + ";");
+            }
+        }
+
+        // Print methods
+        {
+            Iterator methodIt = this.getMethods().iterator();
+            
+            if(methodIt.hasNext())
+            { 
+                if(this.getMethods().size() != 0)
+                    out.println();
+
+                while(methodIt.hasNext())
+                {
+                    SootMethod method = (SootMethod) methodIt.next();
+                    
+                    if(!Modifier.isAbstract(method.getModifiers()) && 
+                        !Modifier.isNative(method.getModifiers()))
+                    {
+                        bodyExpr.resolveFor(method).printTo(out, printBodyOptions);
+                        
+                        if(methodIt.hasNext())
+                            out.println();
+                    }
+                    else {
+                        out.print("    ");
+                        out.print(method.getDeclaration());
+                        out.println(";");
+                        
+                        if(methodIt.hasNext())
+                            out.println();
+                    }
+                }                    
+            }    
+        }        
+        out.println("}");
+        
+    }    
 }
 
 

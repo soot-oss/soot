@@ -105,19 +105,13 @@ import java.io.*;
 public class Main
 {
     static boolean naiveJimplification;
-    static boolean noLocalSplitting;
-    static boolean noLocalRenaming;
-    static boolean typelessJimple;
-    static boolean noLocalPacking;
     static boolean onlyJimpleOutput;
     public static boolean isVerbose;
     static boolean onlyJasminOutput;
     static boolean isProfilingOptimization;
-    static boolean noCleanUp;
-    static boolean noSplitting;
     static boolean oldTyping;
     static boolean isInDebugMode;
-    
+        
     public static String jimpleClassPath;
 
     static boolean produceJimpleFile,
@@ -158,6 +152,7 @@ public class Main
     {
         int firstNonOption = 0;
         long stmtCount = 0;
+        int buildBodyOptions = 0;
         
         totalTimer.start();
         
@@ -166,7 +161,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version dev0pt0.9");
+            System.out.println("Jimple version dev0pt0.10");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");  
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -217,17 +212,17 @@ public class Main
                 else if(args[i].equals("-jimp"))
                     produceJimpFile = true;
                 else if(args[i].equals("-nocleanup"))
-                    noCleanUp = true;
+                    buildBodyOptions |= BuildJimpleBodyOption.NO_CLEANUP;
                 else if(args[i].equals("-typeless"))
-                    typelessJimple = true;
+                    buildBodyOptions |= BuildJimpleBodyOption.NO_TYPING;
                 else if(args[i].equals("-nolocalpacking"))
-                    noLocalPacking = true;
+                    buildBodyOptions |= BuildJimpleBodyOption.NO_PACKING;
                 else if(args[i].equals("-timetransform"))
                     isProfilingOptimization = true;
                 else if(args[i].equals("-verbose"))
                     isVerbose = true;
                 else if(args[i].equals("-nosplitting"))
-                    noSplitting = true;
+                    buildBodyOptions |= BuildJimpleBodyOption.NO_SPLITTING;
                 else if(args[i].equals("-oldtyping"))
                     oldTyping = true;
                 else if(args[i].equals("-jimpleClassPath"))
@@ -317,7 +312,7 @@ public class Main
                     if(!isInDebugMode)
                     {
                         try {
-                            handleClass(c, postFix, writerOut);
+                            handleClass(c, postFix, writerOut, buildBodyOptions);
                         }
                         catch(Exception e)
                         {
@@ -325,7 +320,7 @@ public class Main
                         }                    
                     }
                     else {
-                        handleClass(c, postFix, writerOut);
+                        handleClass(c, postFix, writerOut, buildBodyOptions);
                     }
                     
                     try {
@@ -417,14 +412,17 @@ public class Main
 
     }
         
-    private static void handleClass(SootClass c, String postFix, PrintWriter writerOut)
+    private static void handleClass(SootClass c, String postFix, PrintWriter writerOut, int buildBodyOptions)
     {
         if(postFix.equals(".jasmin"))
             new JasminClass(c).print(writerOut);
         else if(postFix.equals(".jimp"))
-            Jimple.printClass(c, writerOut, false);
+        {
+            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions), 
+                writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS); 
+        }
         else 
-            Jimple.printClass(c, writerOut, true);
-    
+            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions), 
+                writerOut);
     }
 }

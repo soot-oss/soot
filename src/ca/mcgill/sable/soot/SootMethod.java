@@ -97,7 +97,8 @@ public class SootMethod
      */
      
     public ca.mcgill.sable.soot.coffi.method_info coffiMethod;
-            
+
+                
     public SootMethod(String name, List parameterTypes, Type returnType)
     {
         this.name = name;
@@ -166,7 +167,7 @@ public class SootMethod
         return isDeclared;
     }
     
-    
+
     public void setName(String name) 
     {
         this.name = name;
@@ -211,16 +212,25 @@ public class SootMethod
         return parameterTypes;
     }
 
-    public Body getBody(BodyRepresentation rep)
+    /**
+        Retrieves a stored representation for the body of the method.
+     */
+     
+    public Body getBody(BodyRepresentation bodyRep)
     {
-        if(repToBody.containsKey(rep))
-            return (Body) repToBody.get(rep);
-        else {
-            return rep.getBodyOf(this);
-        }
+        if(bodyRep.equals(ClassFile.v()))
+            return new ClassFileBody(this);
+        else if(repToBody.containsKey(bodyRep))
+            return (Body) repToBody.get(bodyRep);
+        else
+            throw new RuntimeException("Method does not have a stored representation for" + bodyRep);    
     }
-    
-    public void setBody(BodyRepresentation r, Body b)
+
+    /**
+        Stores a representation for the body of the method. 
+     */    
+     
+    public void storeBody(BodyRepresentation r, Body b)
     {
         repToBody.put(r, b);
     }
@@ -287,6 +297,10 @@ public class SootMethod
         return Modifier.isStatic(this.getModifiers());
     }
     
+    /**
+        Returns the Soot signature of this method.  Used to refer to methods unambiguously.
+     */
+    
     public String getSignature()
     {
         StringBuffer buffer = new StringBuffer();
@@ -315,6 +329,60 @@ public class SootMethod
         
         return buffer.toString();
     }
+    
+    /**
+        Returns the declaration of this method.  Used at the tops of textual body representations (before the {}'s containing the code
+        for representation.)
+     */
+     
+    public String getDeclaration()
+    {
+        StringBuffer buffer = new StringBuffer();
+        
+        buffer.append(Modifier.toString(this.getModifiers()));
+        
+        if(buffer.length() != 0)
+            buffer.append(" ");
+            
+        buffer.append(this.getReturnType().toString() + " " + this.getName());
+        buffer.append("(");
+
+        Iterator typeIt = this.getParameterTypes().iterator();
+        
+        if(typeIt.hasNext())
+        {
+            buffer.append(typeIt.next());
+            
+            while(typeIt.hasNext())
+            {
+                buffer.append(", ");
+                buffer.append(typeIt.next());
+            }
+        }
+        
+        buffer.append(")");
+
+        // Print exceptions
+        {
+            Iterator exceptionIt = this.getExceptions().iterator();
+
+            if(exceptionIt.hasNext())
+            {
+                buffer.append(" throws ");
+                buffer.append(((SootClass) exceptionIt.next()).getName());  
+                
+                while(exceptionIt.hasNext())
+                {
+                    buffer.append(", ");
+                    buffer.append(((SootClass) exceptionIt.next()).getName());  
+                }
+            }
+            
+        }        
+        
+        return buffer.toString();
+    }
+    
 }
 
 

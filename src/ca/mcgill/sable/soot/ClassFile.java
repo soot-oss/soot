@@ -62,13 +62,37 @@
 
  B) Changes:
 
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on November 1, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
-public interface BodyRepresentation
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.util.*;
+
+public class ClassFile implements BodyRepresentation
 {
-    public Body buildBodyOfFrom(SootMethod m, Body b, int buildBodyOptions);
+    private static ClassFile classFileRepresentation = new ClassFile();
+    
+    private ClassFile()
+    {
+    }
+    
+    public static ClassFile v()
+    {
+        return classFileRepresentation;
+    }
+    
+    /**
+        Returns a Body representing the ClassFile body.  Only 'null' can be passed as the source.
+     */
+     
+    public Body buildBodyOfFrom(SootMethod m, Body sourceBody, int options)
+    {
+        if(sourceBody != null)
+            throw new RuntimeException("Illegal source for the ClassFile body.");
+        else
+            return new ClassFileBody(m);
+    }
 }

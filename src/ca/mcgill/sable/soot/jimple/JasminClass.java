@@ -334,7 +334,9 @@ class JasminClass
         
     void emitMethod(SootMethod method)
     {
-        JimpleBody body = (JimpleBody) method.getBody(Jimple.v());
+        JimpleBody body = (JimpleBody) new BuildBody(Jimple.v(), new StoredBody(ClassFile.v())).
+            resolveFor(method);
+        
         StmtList stmtList = body.getStmtList();
         
         // Emit prologue

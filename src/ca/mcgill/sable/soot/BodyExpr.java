@@ -62,13 +62,17 @@
 
  B) Changes:
 
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on November 1, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
-public interface BodyRepresentation
+public interface BodyExpr
 {
-    public Body buildBodyOfFrom(SootMethod m, Body b, int buildBodyOptions);
+    Body resolveFor(SootMethod method);
 }
+
+
+
+

@@ -62,13 +62,41 @@
 
  B) Changes:
 
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on November 1, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
-public interface BodyRepresentation
+import java.io.*;
+
+public class ClassFileBody implements Body
 {
-    public Body buildBodyOfFrom(SootMethod m, Body b, int buildBodyOptions);
+    SootMethod method; 
+    
+    public ca.mcgill.sable.soot.coffi.ClassFile coffiClass;
+    public ca.mcgill.sable.soot.coffi.method_info coffiMethod;
+
+    ClassFileBody(SootMethod method)
+    {
+        this.method = method;
+        this.coffiClass = method.coffiClass;
+        this.coffiMethod = method.coffiMethod;
+    }
+    
+    public SootMethod getMethod()
+    {
+        return method;
+    }
+    
+    public void printTo(PrintWriter out)
+    {
+    }
+    
+    public void printTo(PrintWriter out, int printBodyOptions)
+    {
+    }
 }
+
+
+

@@ -69,10 +69,13 @@
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
+import java.io.*;
 
 public interface Body
 {
     public SootMethod getMethod();
+    public void printTo(PrintWriter out);
+    public void printTo(PrintWriter out, int printBodyOptions);
 }
 
 

@@ -84,7 +84,7 @@ public class Baf implements BodyRepresentation
         return bafRepresentation;
     }
     
-    public Body getBodyOf(SootMethod m)
+    public Body buildBodyOfFrom(SootMethod m, Body sourceBody, int options)
     {
         return new BafBody(m);
     }

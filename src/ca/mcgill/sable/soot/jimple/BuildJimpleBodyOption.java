@@ -1,18 +1,17 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Soot, a Java(TM) classfile optimization framework.                *
+ * Jimple, a 3-address code Java(TM) bytecode representation.        *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
+ *                                                                   *
+ * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
+ * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
+ * rights reserved.                                                  *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
  * modification not identified as such is not covered by the         *
  * preceding statement.                                              *
- *                                                                   *
- * This work is free software; you can redistribute it and/or        *
- * modify it under the terms of the GNU Library General Public       *
- * License as published by the Free Software Foundation; either      *
- * version 2 of the License, or (at your option) any later version.  *
  *                                                                   *
  * This work is distributed in the hope that it will be useful,      *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of    *
@@ -35,7 +34,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $BafVersion: 0.4 $
+ The reference version is: $JimpleVersion: 0.5 $
 
  Change History
  --------------
@@ -62,13 +61,47 @@
 
  B) Changes:
 
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
  
-package ca.mcgill.sable.soot;
+package ca.mcgill.sable.soot.jimple;
 
-public interface BodyRepresentation
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.util.*;
+import java.io.*;
+
+public class BuildJimpleBodyOption
 {
-    public Body buildBodyOfFrom(SootMethod m, Body b, int buildBodyOptions);
+    public static final int NO_TYPING    = 0x0001,
+                            NO_RENAMING  = 0x0002,
+                            NO_SPLITTING = 0x0004,
+                            NO_CLEANUP   = 0x0008,
+                            NO_PACKING   = 0x0010;
+    
+    public static boolean noTyping(int m)
+    {
+        return (m & NO_TYPING) != 0;
+    }
+    
+    public static boolean noRenaming(int m)
+    {
+        return (m & NO_RENAMING) != 0;
+    }
+    
+    public static boolean noSplitting(int m)
+    {
+        return (m & NO_SPLITTING) != 0;
+    }
+    
+    public static boolean noCleanup(int m)
+    {
+        return (m & NO_CLEANUP) != 0;
+    }
+    
+    public static boolean noPacking(int m)
+    {
+        return (m & NO_PACKING) != 0;
+    }
 }
+

@@ -70,24 +70,28 @@ package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import java.io.*;
 
 public class BafBody implements Body
 {
     SootMethod method; 
     
-    public ca.mcgill.sable.soot.coffi.ClassFile coffiClass;
-    public ca.mcgill.sable.soot.coffi.method_info coffiMethod;
-
     BafBody(SootMethod method)
     {
         this.method = method;
-        this.coffiClass = method.coffiClass;
-        this.coffiMethod = method.coffiMethod;
     }
     
     public SootMethod getMethod()
     {
         return method;
+    }
+    
+    public void printTo(PrintWriter out)
+    {
+    }
+    
+    public void printTo(PrintWriter out, int printBodyOptions)
+    {
     }
 }
 
