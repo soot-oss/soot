@@ -76,11 +76,8 @@ public class RadioScenePack extends ScenePack
     private void checkEnabled(Transform t) {
         Map options = PhaseOptions.v().getPhaseOptions(t);
         if( PhaseOptions.v().getBoolean( options, "enabled" ) ) {
-            for( Iterator otherIt = this.iterator(); otherIt.hasNext(); ) {
-                final Transform other = (Transform) otherIt.next();
-                if( other == t ) continue;
-                PhaseOptions.v().setPhaseOptionWithoutChecks( other, "enabled:false" );
-            }
+            // Enabling this one will disable all the others
+            PhaseOptions.v().setPhaseOption( t, "enabled:true" );
         }
     }
 }

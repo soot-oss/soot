@@ -52,7 +52,8 @@ import soot.xml.*;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
-    public PackManager( Singletons.Global g ) 
+    public PackManager( Singletons.Global g ) {}
+    private void init()
     {
         Pack p;
 
@@ -184,7 +185,16 @@ public class PackManager {
             p.add(new Transform("tag.fieldrw", FieldTagAggregator.v()));
         }
     }
-    public static PackManager v() { return G.v().PackManager(); }
+
+    private boolean initialized = false;
+    public static PackManager v() { 
+        PackManager ret = G.v().PackManager();
+        if( !ret.initialized ) {
+            ret.initialized = true;
+            ret.init();
+        }
+        return ret;
+    }
 
     private Map packNameToPack = new HashMap();
     private List packList = new LinkedList();

@@ -189,11 +189,6 @@ public class PhaseOptions {
         }
         return setPhaseOption( phase, option );
     }
-    public void setPhaseOptionWithoutChecks( HasPhaseOptions phase, String option ) {
-        Map optionMap = mapForPhase( phase );
-        String key = getKey( option );
-        optionMap.put( key, getValue( option ) );
-    }
     public boolean setPhaseOption( HasPhaseOptions phase, String option ) {
         Map optionMap = mapForPhase( phase );
         if( !checkParentEnabled( phase.getPhaseName() ) ) return false;
