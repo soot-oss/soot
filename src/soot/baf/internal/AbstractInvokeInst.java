@@ -70,13 +70,13 @@ abstract class AbstractInvokeInst extends AbstractInst
   
   public int getInCount()
   {
-    return getMethod().getParameterCount();
+    return getMethodRef().parameterTypes().size();
   }
   
 
   public int getOutCount()
   {
-    if(getMethod().getReturnType() instanceof VoidType) 
+    if(getMethodRef().returnType() instanceof VoidType) 
       return 0;
     else
       return 1;
@@ -88,7 +88,7 @@ abstract class AbstractInvokeInst extends AbstractInst
   {
     int count = 0;
     
-    Iterator it = getMethod().getParameterTypes().iterator();
+    Iterator it = getMethodRef().parameterTypes().iterator();
     while(it.hasNext()) {
       count += JasminClass.sizeOfType((Type) it.next());            
     }
@@ -98,10 +98,10 @@ abstract class AbstractInvokeInst extends AbstractInst
 
   public int getOutMachineCount()
   {
-    if(getMethod().getReturnType() instanceof VoidType) 
+    if(getMethodRef().returnType() instanceof VoidType) 
       return 0;
     else
-      return JasminClass.sizeOfType(getMethod().getReturnType());
+      return JasminClass.sizeOfType(getMethodRef().returnType());
   } 
 
   public boolean containsInvokeExpr() { return true; }

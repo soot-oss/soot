@@ -291,6 +291,7 @@ public class SootMethod
      */
 
     public Body retrieveActiveBody() {
+        declaringClass.checkLevel(SootClass.BODIES);
         if (declaringClass.isPhantomClass())
             throw new RuntimeException(
                 "cannot get resident body for phantom class : "

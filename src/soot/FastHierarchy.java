@@ -115,6 +115,7 @@ public class FastHierarchy
 	/* First build the inverse maps. */
 	for( Iterator clIt = sc.getClasses().iterator(); clIt.hasNext(); ) {
 	    final SootClass cl = (SootClass) clIt.next();
+            if( cl.resolvingLevel() < SootClass.HIERARCHY ) continue;
 	    if( !cl.isInterface() && cl.hasSuperclass() ) {
 		put( classToSubclasses, cl.getSuperclass(), cl );
 	    }
@@ -135,6 +136,8 @@ public class FastHierarchy
     /** Return true if class child is a subclass of class parent, neither of
      * them being allowed to be interfaces. */
     public boolean isSubclass( SootClass child, SootClass parent ) {
+        child.checkLevel(SootClass.HIERARCHY);
+        parent.checkLevel(SootClass.HIERARCHY);
 	Interval parentInterval = (Interval) classToInterval.get( parent );
 	Interval childInterval = (Interval) classToInterval.get( child );
 	return parentInterval.isSubrange( childInterval );
@@ -143,6 +146,7 @@ public class FastHierarchy
     /** For an interface parent (MUST be an interface), returns set of all
      * implementers of it but NOT their subclasses. */
     public Set getAllImplementersOfInterface( SootClass parent ) {
+        parent.checkLevel(SootClass.HIERARCHY);
 	Set subs;
 	if( interfaceToAllImplementers.containsKey( parent ) ) {
 	    subs = interfaceToAllImplementers.get( parent );
@@ -161,6 +165,7 @@ public class FastHierarchy
     /** For an interface parent (MUST be an interface), returns set of all
      * subinterfaces. */
     protected Set getAllSubinterfaces( SootClass parent ) {
+        parent.checkLevel(SootClass.HIERARCHY);
 	Set subs;
 	if( interfaceToAllSubinterfaces.containsKey( parent ) ) {
 	    subs = interfaceToAllSubinterfaces.get( parent );
@@ -262,6 +267,8 @@ public class FastHierarchy
      * even though some objects implementing the child interface may also
      * implement the parent interface. */
     protected boolean canStoreClass( SootClass child, SootClass parent ) {
+        parent.checkLevel(SootClass.HIERARCHY);
+        child.checkLevel(SootClass.HIERARCHY);
 	Interval parentInterval = (Interval) classToInterval.get( parent );
 	Interval childInterval = (Interval) classToInterval.get( child );
 	if( parentInterval != null && childInterval != null ) {
@@ -289,6 +296,7 @@ public class FastHierarchy
 
 	Set ret = new HashSet();
 	SootClass declaringClass = declaredTypeOfBase.getSootClass();
+        declaringClass.checkLevel(SootClass.HIERARCHY);
 	for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
 	    final Type t = (Type) tIt.next();
 	    if( t instanceof AnySubType ) {
@@ -346,6 +354,7 @@ public class FastHierarchy
 
 	Set ret = new HashSet();
 	SootClass declaringClass = declaredTypeOfBase.getSootClass();
+        declaringClass.checkLevel(SootClass.HIERARCHY);
 	for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
 	    final Type t = (Type) tIt.next();
 	    if( t instanceof AnySubType ) {
@@ -393,6 +402,7 @@ public class FastHierarchy
 
     /** Returns true if the method m is visible from code in the class from. */
     private boolean isVisible( SootClass from, SootMethod m ) {
+        from.checkLevel(SootClass.HIERARCHY);
         if( m.isPublic() ) return true;
         if( m.isPrivate() ) {
             return from.equals( m.getDeclaringClass() );
@@ -451,6 +461,7 @@ public class FastHierarchy
         on an o.f() invocation. */
     public SootMethod resolveConcreteDispatch(SootClass concreteType, SootMethod m)
     {
+        concreteType.checkLevel(SootClass.HIERARCHY);
 	if( concreteType.isInterface() ) {
 	    throw new RuntimeException(
 		"A concrete type cannot be an interface: "+concreteType );
@@ -489,6 +500,7 @@ public class FastHierarchy
     }
 
     public Collection getSubclassesOf( SootClass c ) {
+        c.checkLevel(SootClass.HIERARCHY);
         Collection ret = (Collection) classToSubclasses.get(c);
         if( ret == null ) return Collections.EMPTY_LIST;
         return ret;

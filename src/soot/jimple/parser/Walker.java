@@ -128,9 +128,10 @@ public class Walker extends DepthFirstAdapter
 	String className = (String) mProductions.removeLast();
  
 
-        if(mSootClass == null)
+        if(mSootClass == null) {
             mSootClass = new SootClass(className);
-        else {
+            mSootClass.setResolvingLevel(SootClass.BODIES);
+        } else {
             if(!mSootClass.getName().equals(className))
                 throw new RuntimeException("Invalid SootClass for this JimpleAST. The SootClass provided is of type: >" + mSootClass.getName() + "< whereas this parse tree is for type: >" + className +  "<");            
         }

@@ -901,6 +901,7 @@ public class Scene  //extends AbstractHost
         }
 
         prepareClasses();
+        setDoneResolving();
     }
 
     /* Generate classes to process, adding or removing package marked by
@@ -1009,5 +1010,8 @@ public class Scene  //extends AbstractHost
         }
         return ret;
     }
+    private boolean doneResolving = false;
+    public boolean doneResolving() { return doneResolving; }
+    public void setDoneResolving() { doneResolving = true; }
 }
 

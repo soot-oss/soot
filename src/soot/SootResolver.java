@@ -55,7 +55,8 @@ public class SootResolver
     
     /** Returns true if we are resolving all class refs recursively. */
     private boolean resolveEverything() {
-        return( Options.v().whole_program() || Options.v().full_resolver() );
+        return( Options.v().whole_program() || Options.v().full_resolver()
+        || Options.v().output_format() == Options.v().output_format_dava );
     }
 
     /** Returns a (possibly not yet resolved) SootClass to be used in references
@@ -69,6 +70,7 @@ public class SootResolver
 
         SootClass newClass;
         newClass = new SootClass(className);
+        newClass.setResolvingLevel(SootClass.DANGLING);
         Scene.v().addClass(newClass);
 
         return newClass;
@@ -184,6 +186,14 @@ public class SootResolver
                 final SootClass exception = (SootClass) exceptionIt.next();
                 addToResolveWorklist( exception, SootClass.HIERARCHY );
             }
+        }
+
+        // Bring superclasses to signatures
+        if(sc.hasSuperclass()) 
+            addToResolveWorklist(sc.getSuperclass(), SootClass.SIGNATURES);
+        for( Iterator ifaceIt = sc.getInterfaces().iterator(); ifaceIt.hasNext(); ) {
+            final SootClass iface = (SootClass) ifaceIt.next();
+            addToResolveWorklist(iface, SootClass.SIGNATURES);
         }
     }
 
