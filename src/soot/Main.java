@@ -55,7 +55,7 @@ public class Main {
     private Date finish;
 
     public static final int COMPILATION_ABORTED = 0;
-    public static final int COMPILATION_SUCCEDED = 1;
+    public static final int COMPILATION_SUCCEEDED = 1;
 
     public String getExtensionFor(int rep) {
         String str = null;
@@ -327,12 +327,12 @@ public class Main {
 
         if (Options.v().help()) {
             printHelp();
-            throw new CompilationDeathException(COMPILATION_SUCCEDED);
+            throw new CompilationDeathException(COMPILATION_SUCCEEDED);
         }
 
         if (args.length == 0 || Options.v().version()) {
             printVersion();
-            throw new CompilationDeathException(COMPILATION_SUCCEDED);
+            throw new CompilationDeathException(COMPILATION_SUCCEEDED);
         }
 
         postCmdLineCheck();
@@ -434,8 +434,8 @@ public class Main {
                 + ((runtime % 60000) / 1000)
                 + " sec.");
 
-        exitCompilation(COMPILATION_SUCCEDED);
-        return COMPILATION_SUCCEDED;
+        exitCompilation(COMPILATION_SUCCEEDED);
+        return COMPILATION_SUCCEEDED;
     }
 
     private void runPacks() {
