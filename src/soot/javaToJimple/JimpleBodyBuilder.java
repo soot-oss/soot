@@ -1199,7 +1199,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      * Synchronized Stmt Creation
      */
     private void createSynchronized(polyglot.ast.Synchronized synchStmt) {
-        System.out.println("synchStmt pos: "+synchStmt.position());
+        //System.out.println("synchStmt pos: "+synchStmt.position());
         soot.Value sootExpr = base().createExpr(synchStmt.expr());
         
         soot.jimple.EnterMonitorStmt enterMon = soot.jimple.Jimple.v().newEnterMonitorStmt(sootExpr);
@@ -1698,7 +1698,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         ArrayList paramTypes = new ArrayList();
         if (!field.flags().isStatic()){
             // add this param type
-            paramTypes.add(Util.getSootType(field.target().type()));
+            paramTypes.add(conClass.getType());
+            //paramTypes.add(Util.getSootType(field.target().type()));
         }
         paramTypes.add(param.getType());
         soot.SootMethod meth = new soot.SootMethod(name, paramTypes, param.getType(), soot.Modifier.STATIC);
@@ -1724,7 +1725,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         ArrayList paramTypes = new ArrayList();
         if (!field.flags().isStatic()){
             // add this param type
-            paramTypes.add(Util.getSootType(field.target().type()));
+            paramTypes.add(conClass.getType());//(soot.Local)getBaseLocal(field.target()));
+            //paramTypes.add(Util.getSootType(field.target().type()));
         }
         soot.SootMethod meth = new soot.SootMethod(name, paramTypes, Util.getSootType(field.type()),  soot.Modifier.STATIC);
         PrivateFieldAccMethodSource pfams = new PrivateFieldAccMethodSource(
@@ -1752,6 +1754,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             // add this param type
             paramTypes.add(Util.getSootType(call.methodInstance().container()));
         }
+        ArrayList sootParamsTypes = getSootParamsTypes(call);
+        paramTypes.addAll(sootParamsTypes);
         soot.SootMethod meth = new soot.SootMethod(name, paramTypes, Util.getSootType(call.methodInstance().returnType()),  soot.Modifier.STATIC);
         PrivateMethodAccMethodSource pmams = new PrivateMethodAccMethodSource(
 		    call.methodInstance()
@@ -2016,6 +2020,25 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      * the field (ie not in self or in outer of self)
      */
     private boolean needsProtectedAccessor(polyglot.ast.Field field){
+        //return false;
+        if (field.fieldInstance().flags().isProtected()){
+            if (Util.getSootType(field.fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
+                return false;
+            }
+            soot.SootClass currentClass = body.getMethod().getDeclaringClass();
+            while (currentClass.hasOuterClass()){
+                currentClass = currentClass.getOuterClass();
+                if (Util.getSootType(field.fieldInstance().container()).equals(currentClass.getType())){
+                    return false;
+                }
+                else if (Util.getSootType(field.fieldInstance().container()).equals(currentClass.getSuperclass().getType())){
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
+        /*
         if (field.fieldInstance().flags().isProtected()){
             if (!Util.getSootType(field.fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
                 soot.SootClass checkClass = body.getMethod().getDeclaringClass();
@@ -2029,7 +2052,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 return true;
             }
         }
-        return false;
+        return false;*/
     }
        
 
@@ -2130,32 +2153,69 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         // if private add to the containing class
         // but if its protected then add to outer class - not containing
         // class because in this case the containing class is the super class
-        
+       
+        System.out.println("field: "+field);
+        System.out.println("field target: "+field.target().getClass());
         soot.SootMethod toInvoke;
+        soot.SootClass invokeClass;
         if (field.fieldInstance().flags().isPrivate()){
             toInvoke = addGetFieldAccessMeth(((soot.RefType)Util.getSootType(field.fieldInstance().container())).getSootClass(), field);
+            invokeClass = ((soot.RefType)Util.getSootType(field.fieldInstance().container())).getSootClass();
         }
         else {
             if (InitialResolver.v().hierarchy() == null){
                 InitialResolver.v().hierarchy(new soot.FastHierarchy());
             }
-            soot.SootClass addToClass = body.getMethod().getDeclaringClass().getOuterClass();
+            //System.out.println("current class: "+body.getMethod().getDeclaringClass());
+            //System.out.println("containing class: "+field.fieldInstance().container());
             soot.SootClass containingClass = ((soot.RefType)Util.getSootType(field.fieldInstance().container())).getSootClass();
-            while (!InitialResolver.v().hierarchy().canStoreType(containingClass.getType(), addToClass.getType())){
-                if (addToClass.hasOuterClass()){
-                    addToClass = addToClass.getOuterClass();
-                }
-                else {
-                    break;
+            soot.SootClass addToClass;
+            if (body.getMethod().getDeclaringClass().hasOuterClass()){
+                addToClass = body.getMethod().getDeclaringClass().getOuterClass();
+            
+                while (!InitialResolver.v().hierarchy().canStoreType(containingClass.getType(), addToClass.getType())){
+                    if (addToClass.hasOuterClass()){
+                        addToClass = addToClass.getOuterClass();
+                    }
+                    else {
+                        break;
+                    }
                 }
             }
-           
+            else{
+                addToClass = containingClass;
+            }
+            invokeClass = addToClass;
             toInvoke = addGetFieldAccessMeth(addToClass, field);
         }
         
         ArrayList params = new ArrayList();
         if (!field.fieldInstance().flags().isStatic()) {
-            params.add((soot.Local)getBaseLocal(field.target()));
+            if (field.target() instanceof polyglot.ast.Expr){
+                params.add((soot.Local)getBaseLocal(field.target()));
+            }
+            else if (body.getMethod().getDeclaringClass().declaresFieldByName("this$0")){ 
+                params.add(getThis(invokeClass.getType()));
+            }
+            else {
+                soot.Local local = (soot.Local)getBaseLocal(field.target());
+                params.add(local);
+            }
+            
+            //(soot.Local)getBaseLocal(field.target()));
+            /*if (Util.getSootType(field.target().type()).equals(invokeClass.getType())){
+               */
+            //params.add(getThis(invokeClass.getType()));//(soot.Local)getBaseLocal(field.target()));
+            //}
+            /*else {*/
+                
+            //soot.Local local = (soot.Local)getBaseLocal(field.target());
+            
+            //params.add(getThis(invokeClass.getType()));//(soot.Local)getBaseLocal(field.target()));
+            //soot.Local local = (soot.Local)getBaseLocal(field.target());
+            //System.out.println("adding field param type: "+local.getType()+" for field access of: "+invokeClass.getType());
+            //params.add(local);
+            //}
         }
      
         return Util.getPrivateAccessFieldInvoke(toInvoke.makeRef(), params, body, lg);
@@ -3564,7 +3624,12 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         if (call.methodInstance().flags().isPrivate() && !Util.getSootType(call.methodInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
             callMethod = addGetMethodAccessMeth(((soot.RefType)Util.getSootType(call.methodInstance().container())).getSootClass(), call).makeRef();
             if (!call.methodInstance().flags().isStatic()){
-                sootParams.add(baseLocal);
+                if (body.getMethod().getDeclaringClass().declaresFieldByName("this$0")){
+                    sootParams.add(0, getThis(Util.getSootType(call.methodInstance().container())));//baseLocal);
+                }
+                else {
+                    sootParams.add(0, baseLocal);
+                }
             }
             isPrivateAccess = true;
         }

@@ -144,6 +144,15 @@ public class Printer {
         }*/
         out.println("{");
         incJimpleLnNum();
+        if (Options.v().print_tags_in_output()){
+            Iterator cTagIterator = cl.getTags().iterator();
+            while (cTagIterator.hasNext()) {
+                Tag t = (Tag) cTagIterator.next();
+                out.print("/*");
+                out.print(t.toString());
+                out.println("*/");
+            }
+        }
 
         // Print fields
         {

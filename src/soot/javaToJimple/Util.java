@@ -162,6 +162,7 @@ public class Util {
     
     public static void addLnPosTags(soot.tagkit.Host host, int sline, int eline, int spos, int epos) {
         if (soot.options.Options.v().keep_line_number()){
+            //System.out.println("adding pos tag to : "+host);
             host.addTag(new soot.tagkit.SourceLnPosTag(sline, eline, spos, epos));
         }
     }
@@ -254,8 +255,9 @@ public class Util {
         soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, outerThisField.makeRef());
         soot.jimple.AssignStmt fieldAssignStmt = soot.jimple.Jimple.v().newAssignStmt(t1, fieldRef);
         body.getUnits().add(fieldAssignStmt);
-        
+         
         if (fh.canStoreType(t1.getType(), sootType)){
+            //System.out.println("get this wanted for type: "+t1.getType()+" found: "+sootType);
             getThisMap.put(sootType, t1);
             return t1;            
         }
@@ -293,7 +295,7 @@ public class Util {
 
     
     public static soot.Local getThisGivenOuter(soot.Type sootType, HashMap getThisMap, soot.Body body, LocalGenerator lg, soot.Local t2){
-        
+       
         if (InitialResolver.v().hierarchy() == null){
             InitialResolver.v().hierarchy(new soot.FastHierarchy());
         }

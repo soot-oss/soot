@@ -375,6 +375,7 @@ public class InitialResolver {
             info.finalLocals(alci.finalLocals());
             finalLocalInfo.put(new polyglot.util.IdentityKey(cType), info);
         }
+        //System.out.println("init build of final local map: "+finalLocalInfo);
     }
     
     

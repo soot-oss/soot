@@ -23,6 +23,7 @@ import java.util.*;
 public class LocalUsesChecker extends polyglot.visit.NodeVisitor{
 
     private ArrayList locals;
+    private ArrayList localDecls;
     private ArrayList news;
     
     public ArrayList getLocals() {
@@ -33,8 +34,13 @@ public class LocalUsesChecker extends polyglot.visit.NodeVisitor{
         return news;
     }
 
+    public ArrayList getLocalDecls(){
+        return localDecls;
+    }
+    
     public LocalUsesChecker(){
         locals = new ArrayList();
+        localDecls = new ArrayList();
         news = new ArrayList();
     }
 
@@ -46,6 +52,14 @@ public class LocalUsesChecker extends polyglot.visit.NodeVisitor{
             }
         }
 
+        if (n instanceof polyglot.ast.LocalDecl){
+            localDecls.add(new polyglot.util.IdentityKey(((polyglot.ast.LocalDecl)n).localInstance()));
+        }
+        
+        if (n instanceof polyglot.ast.Formal){
+            localDecls.add(new polyglot.util.IdentityKey(((polyglot.ast.Formal)n).localInstance()));
+        }
+        
         if (n instanceof polyglot.ast.New){
             news.add(n);
         }

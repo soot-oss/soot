@@ -151,7 +151,7 @@ public class ClassResolver {
             addOuterClassThisRefField(outerType);
         }
         
-        Util.addLineTag(sootClass, cDecl);
+        Util.addLnPosTags(sootClass, cDecl.position());
     }
 
     private void findReferences(polyglot.ast.Node node) {
@@ -251,6 +251,7 @@ public class ClassResolver {
         }
                 
         // add field
+        //System.out.println("add field: val$"+li.name()+" to: "+sootClass.getName());
         soot.SootField sf = new soot.SootField("val$"+li.name(), Util.getSootType(li.type()), soot.Modifier.FINAL | soot.Modifier.PRIVATE);
         sootClass.addField(sf);
         finalFields.add(sf);
@@ -265,8 +266,18 @@ public class ClassResolver {
         ArrayList localsUsed = new ArrayList();
         while (localsNeededIt.hasNext()){
             polyglot.types.LocalInstance li = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)localsNeededIt.next()).object();
-            if (finalLocals.contains(new polyglot.util.IdentityKey(li))){
-                
+            //System.out.println("testing class: "+Util.getSootType(nodeKeyType));
+            //System.out.println("for local inst: "+li);
+            //System.out.println("luc localdecls: "+luc.getLocalDecls());
+            //if (luc.getLocalDecls().contains(new polyglot.util.IdentityKey(li))){
+              //  System.out.println("contains decl"+li);
+            //}
+            //else {
+              //  System.out.println("doesn't contain decl: "+li);
+            //}
+            if (finalLocals.contains(new polyglot.util.IdentityKey(li)) && !luc.getLocalDecls().contains(new polyglot.util.IdentityKey(li))){
+               
+                //System.out.println("how does it get here??");
                 addFinals(li,finalFields);
                 
                 localsUsed.add(new polyglot.util.IdentityKey(li));
@@ -276,14 +287,17 @@ public class ClassResolver {
         while (newsIt.hasNext()){
             polyglot.ast.New tempNew = (polyglot.ast.New)newsIt.next();
             polyglot.types.ClassType tempNewType = (polyglot.types.ClassType)tempNew.objectType().type();
+            //System.out.println("checking new of class: "+Util.getSootType(tempNewType));
             if (InitialResolver.v().finalLocalInfo().containsKey(new polyglot.util.IdentityKey(tempNewType))){
                 AnonLocalClassInfo lInfo = (AnonLocalClassInfo)InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(tempNewType));
                 Iterator it = lInfo.finalLocals().iterator();
                 while (it.hasNext()){
                     polyglot.types.LocalInstance li2 = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)it.next()).object();
                     if (!sootClass.declaresField("val$"+li2.name(), Util.getSootType(li2.type()))){
-                        addFinals(li2, finalFields);
-                        localsUsed.add(new polyglot.util.IdentityKey(li2));
+                        if (!luc.getLocalDecls().contains(new polyglot.util.IdentityKey(li2))){
+                            addFinals(li2, finalFields);
+                            localsUsed.add(new polyglot.util.IdentityKey(li2));
+                        }
                     }
                 }
             }
@@ -486,6 +500,9 @@ public class ClassResolver {
                     if (procedure.body().position() != null) {
                         Util.addLnPosTags(sootMethod, procedure.position().line(), procedure.body().position().endLine(), procedure.position().column(), procedure.body().position().endColumn());
                     }
+                }
+                else {
+                    Util.addLnPosTags(sootMethod, procedure.position());
                 }
                 
         }
