@@ -36,6 +36,12 @@ import java.util.*;
 public abstract class FirstTagAggregator extends TagAggregator
 {    
     /** Decide whether this tag should be aggregated by this aggregator. */
+    public abstract boolean wantTag( Tag t );
+
+    /** Return name of the resulting aggregated tag. */
+    public abstract String aggregatedName();
+
+    /** Decide whether this tag should be aggregated by this aggregator. */
     public void considerTag(Tag t, Unit u)
     {
         if( units.size() > 0 && units.getLast() == u ) return;

@@ -66,7 +66,7 @@ public interface Host {
 \end{verbatim}
 }
 Implementations:\\
-\quad {\small SootClass, SootField, SootMethod, Body} and {\small ValueBox}
+{\small SootClass, SootField, SootMethod, Body, Unit, ValueBox}
 \end{slide}
 
 \begin{slide}{Tags}
@@ -101,6 +101,46 @@ public interface Tag {
 \end{itemize}
 \end{slide}
 
+\begin{slide}{Choosing an Aggregator}
+\begin{itemize}
+\item One Jimple statement may translate to multiple bytecode instructions\\
+\ \\
+\begin{minipage}[t]{45mm}
+Jimple
+\begin{alltt}
+x = y.f
+\end{alltt}
+\end{minipage}
+\begin{minipage}[t]{45mm}
+Bytecode
+\begin{alltt}
+load y
+getfield f
+store x
+\end{alltt}
+\end{minipage}
+\item Which instruction(s) should get the tags?
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Choosing an Aggregator}
+\begin{description}
+\item [ImportantTagAggregator]\ \\
+attaches tag to the {\bf ``most important''} instruction
+(field reference, array reference, method invocation)
+\begin{itemize}
+\item Used for array bounds check, null pointer check, side-effect attributes
+\end{itemize}
+\item [FirstTagAggregator]\ \\
+attaches tag to the {\bf first} instruction
+\begin{itemize}
+\item Used for line number table attribute
+\end{itemize}
+\item Easy to make your own \ldots
+\end{description}
+\end{slide}
+
+
 \begin{slide}{TagAggregator}
 {\small
 \begin{verbatim}
@@ -118,10 +158,29 @@ public abstract class TagAggregator
 }
 \end{slide}
 
+\begin{slide}{ImportantTagAggregator}
+\vspace*{-6mm}
+\begin{verbatim}
+abstract class ImportantTagAggregator 
+extends TagAggregator {    
+    /** Decide whether this tag
+     *  should be aggregated by
+     *  this aggregator. */
+    public abstract boolean
+                    wantTag( Tag t );
+
+    /** Return name of the resulting
+     *  aggregated tag. */
+    public abstract String 
+                    aggregatedName();
+}
+\end{verbatim}
+\end{slide}
+
 \begin{slide}{Todo list for creating new attributes}
 \begin{itemize}
 \item Create a new Tag class, decide which structure is the host
-\item If the tag is for Units, write a tag aggregator by extending {\em TagAggregator}
+\item If the tag is for Units, write a tag aggregator by extending {\em TagAggregator} or one of its subclasses
 \item Parse attributes in bytecode consumer
 \end{itemize}
 \end{slide}
@@ -132,7 +191,7 @@ Step 1: create NullCheckTag
 \begin{verbatim}
 package soot.jimple.toolkits.annotation.tags;
 class NullCheckTag implements OneByteCodeTag {
-  private static String NANE =''NullCheckTag'';
+  private static String NAME = "NullCheckTag";
   private byte value = 0;
   public NullCheckTag(boolean needCheck) {
     if (needCheck) value = 0x04;
@@ -158,21 +217,20 @@ s.addTag(new NullCheckTag(needCheck));
 
 \begin{slide}{Example: nullness attribute}
 Step 3: create a NullTagAggregator
-{\scriptsize \verb$ p.add(new Transform(``tag.null'',$
+{\scriptsize \verb$ p.add(new Transform("tag.null",$
    \verb$         NullTagAggergator.v())); $}
 
 {\scriptsize
 \begin{verbatim}
-class NullTagAggregator extends TagAggregator {
-  public boolean watTag(Tag t) {
-    return (t instanceof NullCheckTag);
-  }
-  public void considerTag(Tag t, Unit t) {
-    // verify unit requires null check
-    if ( ... ) return; 
-    super.units.add( u );
-    super.tags.add ( t );
-  }
+class NullTagAggregator
+        extends ImportantTagAggregator {
+
+    public boolean wantTag(Tag t) {
+        return (t instanceof NullCheckTag);
+    }
+    public String aggregatedName() {
+        return "NullCheckAttribute"; 
+    }
 }
 \end{verbatim}
 }
@@ -189,7 +247,7 @@ e.g. "NullCheckAttribute":
 null_check_attribute {
   u2 attribute_name_index;
   u4 attribute_length;
-  { u2 pc;
+  {   u2 pc;
       u1 data;
   } [attribute_length/3];
 }
