@@ -153,53 +153,53 @@ public class SourceLocator
         setLocationsFound(locations);
         InputStream res = null;
         { // for now types are found on the filesystem.
-            List reps = new ArrayList(4);
-            reps.add(ClassInputRep.v());
-            reps.add(JimpleInputRep.v());
+            List jimple = new SingletonList(JimpleInputRep.v());
+            List java = new SingletonList(JavaInputRep.v());
+            List clss = new SingletonList(ClassInputRep.v());
 
-            if( Options.v().src_prec() == Options.src_prec_class ) {
-                List lst = new LinkedList();
-                lst.add(ClassInputRep.v());
-                if( (res = getFileInputStream(locations, lst, className)) != null) {
-                    return res;
-		}
-                if( (res = getFileInputStream(locations, reps, className)) != null) {
-                    return res;
-		}
-            } else if( Options.v().src_prec() == Options.src_prec_jimple ) {
-                List lst = new LinkedList();
-                lst.add(JimpleInputRep.v());
-                if( (res = getFileInputStream(locations, lst, className)) != null)
-                    return res;
-                if( (res = getFileInputStream(locations, reps, className)) != null)
-                    return res;
+            String javaClassName = className;
+            if (className.indexOf("$") != -1) {
+                // class is an inner class and will be in
+                // Outer of Outer$Inner
+                javaClassName = className.substring(0, className.indexOf("$"));
+                
+            }
+            if (sourceToClassMap != null) {
+                if (sourceToClassMap.get(javaClassName) != null) {
+                    javaClassName = (String)sourceToClassMap.get(javaClassName);
+                }
+            }
 
-            }else if (Options.v().src_prec() == Options.src_prec_java) {
-                List lst = new LinkedList();
-                lst.add(JavaInputRep.v());
-              
-                String javaClassName = className;
-                if (className.indexOf("$") != -1) {
-                    // class is an inner class and will be in
-                    // Outer of Outer$Inner
-                    javaClassName = className.substring(0, className.indexOf("$"));
-                    
-                }
-                if (sourceToClassMap != null) {
-                    if (sourceToClassMap.get(javaClassName) != null) {
-                        javaClassName = (String)sourceToClassMap.get(javaClassName);
-                    }
-                }
-                if ((res = getFileInputStream(locations, lst, javaClassName)) != null) {
-                    return res;
-                }
-                if ((res = getFileInputStream(locations, reps, className)) != null) 
-                    return res;
-            }else
-                throw new RuntimeException("Other source precedences are not currently supported.");
+            switch( Options.v().src_prec() ) {
+                case Options.src_prec_class:
+                    if( (res = getFileInputStream(locations, clss, className)) != null) 
+                        return res;
+                    if( (res = getFileInputStream(locations, jimple, className)) != null) 
+                        return res;
+                    if( (res = getFileInputStream(locations, java, javaClassName)) != null) 
+                        return res;
+                    break;
+                case Options.src_prec_java:
+                    if( (res = getFileInputStream(locations, java, javaClassName)) != null) 
+                        return res;
+                    if( (res = getFileInputStream(locations, clss, className)) != null) 
+                        return res;
+                    if( (res = getFileInputStream(locations, jimple, className)) != null) 
+                        return res;
+                    break;
+                case Options.src_prec_jimple:
+                    if( (res = getFileInputStream(locations, jimple, className)) != null) 
+                        return res;
+                    if( (res = getFileInputStream(locations, clss, className)) != null) 
+                        return res;
+                    if( (res = getFileInputStream(locations, java, javaClassName)) != null) 
+                        return res;
+                    break;
+                default:
+                    throw new RuntimeException("Other source precedences are not currently supported.");
+            }
             throw new ClassNotFoundException();
         }
-        
     }
 
 
