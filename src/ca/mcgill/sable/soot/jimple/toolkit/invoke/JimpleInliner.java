@@ -1,4 +1,4 @@
-package ca.mcgill.sable.soot.jimple.toolkit.temp;
+package ca.mcgill.sable.soot.jimple.toolkit.invoke;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.jimple.*;

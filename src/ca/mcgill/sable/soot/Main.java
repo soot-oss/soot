@@ -232,7 +232,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.98");
+            System.out.println("Soot version 1.beta.4.dev.99");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -475,7 +475,8 @@ public class Main
                     ((SootClass)contextClassesIt.next()).setLibraryClass();
             }
         }
-        
+
+        /*        
         System.out.println("printing application chain.");
         System.out.println(cm.getApplicationClasses());
         System.out.println("-----------------------------------");
@@ -491,7 +492,7 @@ public class Main
         System.out.println("printing signature chain.");
         System.out.println(cm.getSignatureClasses());
         System.exit(1);
-
+*/
         /*
         if(isOptimizingWhole)
         {
