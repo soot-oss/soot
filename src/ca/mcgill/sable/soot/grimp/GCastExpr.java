@@ -86,23 +86,23 @@ class GCastExpr extends AbstractCastExpr implements CastExpr, Precedence
 
     private String toString(String leftString, Value op, String opString)
     {
-	String rightOp = opString;
+        String rightOp = opString;
 
-	if (op instanceof Precedence && 
-	    ((Precedence)op).getPrecedence() < getPrecedence()) 
-	    rightOp = "(" + rightOp + ")";
-	return leftString + rightOp;
+        if (op instanceof Precedence && 
+            ((Precedence)op).getPrecedence() < getPrecedence()) 
+            rightOp = "(" + rightOp + ")";
+        return leftString + rightOp;
     }
 
     public String toString()
     {
-	return toString("(" + getCastType().toString() + ") ", getOp(),
-			getOp().toString());
+        return toString("(" + getCastType().toString() + ") ", getOp(),
+                        getOp().toString());
     }
 
     public String toBriefString()
     {
-  	return toString("(" + getCastType().toString() + ") ", getOp(),
-  			((ToBriefString)getOp()).toBriefString());
+          return toString("(" + getCastType().toString() + ") ", getOp(),
+                          ((ToBriefString)getOp()).toBriefString());
     }
 }

@@ -77,13 +77,13 @@ abstract public class AbstractGrimpFloatBinopExpr
 {
     AbstractGrimpFloatBinopExpr(Value op1, Value op2)
     {
-	this(Grimp.v().newArgBox(op1),
-	     Grimp.v().newArgBox(op2));
+        this(Grimp.v().newArgBox(op1),
+             Grimp.v().newArgBox(op2));
     }
 
     protected AbstractGrimpFloatBinopExpr(ValueBox op1Box, ValueBox op2Box)
     {
         this.op1Box = op1Box;
-	this.op2Box = op2Box;
+        this.op2Box = op2Box;
     }
 }

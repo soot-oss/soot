@@ -82,14 +82,13 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.baf.*;
 
-public interface Stmt extends Unit
+public interface Stmt extends Unit, ToBriefString
 {
     public List getUseBoxes();
     public List getDefBoxes();
     public List getUnitBoxes();
     public List getBoxesPointingToThis();
     public List getUseAndDefBoxes();
-    public void apply(Switch sw);
     public String toBriefString();
     public String toBriefString(Map stmtToName);
     public String toBriefString(String indentation);
@@ -98,6 +97,5 @@ public interface Stmt extends Unit
     public String toString(Map stmtToName);
     public String toString(String indentation);
     public String toString(Map stmtToName, String indentation);
-    // public void convertToBaf(JimpleToBafContext context, List out);      
 }
 

@@ -80,17 +80,17 @@ public class GArrayRef extends JArrayRef implements ArrayRef, Precedence
   GArrayRef(Value base, Value index)
     {
       super(Grimp.v().newObjExprBox(base),
-	    Grimp.v().newExprBox(index));
+            Grimp.v().newExprBox(index));
     }
   
   public int getPrecedence() { return 875; }
 
   private String toString(Value op1, 
-			  String leftOp, String rightOp)
+                          String leftOp, String rightOp)
     {
       if (op1 instanceof Precedence && 
-	  ((Precedence)op1).getPrecedence() < getPrecedence()) 
-	leftOp = "(" + leftOp + ")";
+          ((Precedence)op1).getPrecedence() < getPrecedence()) 
+        leftOp = "(" + leftOp + ")";
       
       return leftOp + "[" + rightOp + "]";
     }
@@ -107,7 +107,7 @@ public class GArrayRef extends JArrayRef implements ArrayRef, Precedence
     {
       Value op1 = getBase(), op2 = getIndex();
       String leftOp = ((ToBriefString)op1).toBriefString(), 
-	rightOp = ((ToBriefString)op2).toBriefString();
+        rightOp = ((ToBriefString)op2).toBriefString();
       
       return toString(op1, leftOp, rightOp);
     }    

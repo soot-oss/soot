@@ -75,8 +75,8 @@ public class GTrap extends JTrap implements Trap
 {
     GTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
     {
-	super(exception, Grimp.v().newStmtBox(beginStmt),
-	      Grimp.v().newStmtBox(endStmt),
-	      Grimp.v().newStmtBox(handlerStmt));
+        super(exception, Grimp.v().newStmtBox(beginStmt),
+              Grimp.v().newStmtBox(endStmt),
+              Grimp.v().newStmtBox(handlerStmt));
     }
 }

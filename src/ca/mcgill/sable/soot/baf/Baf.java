@@ -88,12 +88,6 @@ public class Baf implements BodyRepresentation
         return bafRepresentation;
     }
 
-    public Body buildBodyOfFrom(SootMethod m, Body sourceBody, int options)
-    {
-        return new BafBody(m, sourceBody);
-    }
-    
-    
     /**
         Constructs a Local with the given name and type.
     */
@@ -103,6 +97,15 @@ public class Baf implements BodyRepresentation
         return new BafLocal(name, t);
     }
 
+    public ReturnVoidInst newReturnVoidInst()
+    {
+        return new BReturnVoidInst();
+    }
+    
+    public NopInst newNopInst()
+    {
+        return new BNopInst();
+    }
 }
 
 

@@ -91,19 +91,28 @@ public abstract class AbstractInst implements Inst
      * (this is important for aggregation)
      */
 
-    public abstract List getUseBoxes();
+    public List getUseBoxes()
+    {
+        return emptyList;
+    }
 
     /**
      * The list of boxes is dynamically updated as the structure changes.
      */
 
-    public abstract List getDefBoxes();
+    public List getDefBoxes()
+    {
+        return emptyList;
+    }
 
     /**
      * The list of boxes is dynamically updated as the structure changes.
      */
 
-    public abstract List getUnitBoxes();
+    public List getUnitBoxes()
+    {
+        return emptyList;
+    }
 
     static List emptyList = Collections.unmodifiableList(new ArrayList());
 
@@ -113,6 +122,21 @@ public abstract class AbstractInst implements Inst
     public List getBoxesPointingToThis()
     {
         return boxesPointingToThis;
+    }
+
+    public List getUseAndDefBoxes()
+    {
+        if(valueBoxes == null)
+        {
+            valueBoxes = new ArrayList();
+
+            valueBoxes.addAll(getUseBoxes());
+            valueBoxes.addAll(getDefBoxes());
+
+            valueBoxes = Collections.unmodifiableList(valueBoxes);
+        }
+
+        return valueBoxes;
     }
 
     public void apply(Switch sw)

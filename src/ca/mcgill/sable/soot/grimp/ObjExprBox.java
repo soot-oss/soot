@@ -92,12 +92,12 @@ public class ObjExprBox extends ExprBox
     public boolean canContainValue(Value value)
     {
         return value instanceof ConcreteRef ||
-	    value instanceof InvokeExpr || 
+            value instanceof InvokeExpr || 
         value instanceof NewArrayExpr ||
         value instanceof NewMultiArrayExpr ||
-	    value instanceof Local ||
+            value instanceof Local ||
         value instanceof NullConstant ||
-	    (value instanceof CastExpr && 
-	        canContainValue(((CastExpr)value).getOp()));
+            (value instanceof CastExpr && 
+                canContainValue(((CastExpr)value).getOp()));
     }
 }

@@ -198,7 +198,9 @@ public class Main
 
     static private int buildJimpleBodyOptions = 0;
     static private String outputDir = "";
-    
+
+    static private boolean isOptimizing;
+        
     public static void main(String[] args) throws RuntimeException
     {
         int firstNonOption = 0;
@@ -213,7 +215,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.22");
+            System.out.println("Soot version 1.beta.4.dev.23");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -242,12 +244,14 @@ public class Main
             System.out.println("                             from transformation");
             System.out.println("");
             System.out.println("Jimple construction options:");
-            System.out.println("  --no-cleanup               do not perform constant or copy propagation");
             System.out.println("  --no-splitting             do not split local variables");
             System.out.println("  --use-packing              pack locals after conversion");
             System.out.println("  --no-typing                do not assign types to the local variables");
             System.out.println("  --no-jimple-aggregating    do not perform any Jimple-level aggregation");
             System.out.println("  --use-original-names       retain variables name from local variable table");
+            System.out.println("");
+            System.out.println("Optimization options:");
+            System.out.println("  -O  --optimize             perform scalar optimizations on the classfiles");
             System.out.println("");
             System.out.println("Misc. options:");
             System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
@@ -287,9 +291,9 @@ public class Main
                     targetExtension = ".grimple";
                 else if(arg.equals("-c") || arg.equals("--class"))
                     targetExtension = ".class";
-        
-                else if(arg.equals("--no-cleanup"))
-                    buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_CLEANUP;
+                else if(arg.equals("-O") || arg.equals("--optimize"))
+                    isOptimizing = true;
+                            
                 else if(arg.equals("--no-typing"))
                     buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_TYPING;
                 else if(arg.equals("--no-jimple-aggregating"))
@@ -551,34 +555,62 @@ public class Main
             }
         }
 
+        // Build all necessary bodies
+        {
+            Iterator methodIt = c.getMethods().iterator();
+            
+            while(methodIt.hasNext())
+            {   
+                SootMethod m = (SootMethod) methodIt.next();
+                   
+                if(targetExtension.equals(".jimp") || targetExtension.equals(".jimple"))
+                {
+                    JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions);
+                    
+                    if(isOptimizing) 
+                        BaseJimpleOptimizer.optimize(jimpleBody);
+                    
+                    m.setActiveBody(jimpleBody);
+                }
+                else if(targetExtension.equals(".b") || targetExtension.equals(".baf"))
+                {
+                    m.setActiveBody(new BafBody(new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions)));
+                }
+                else if(targetExtension.equals(".grimple") || targetExtension.equals(".grimp") || targetExtension.equals(".class") || 
+                    targetExtension.equals(".jasmin"))
+                {
+                    JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions | BuildJimpleBodyOption.NO_AGGREGATING);
+                    
+                    if(isOptimizing) 
+                        BaseJimpleOptimizer.optimize(jimpleBody);
+                    
+                    GrimpBody grimpBody;
+                    
+                    if(isOptimizing)
+                        grimpBody = new GrimpBody(jimpleBody, BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING);
+                    else
+                        grimpBody = new GrimpBody(jimpleBody);
+                         
+                    if(isOptimizing)
+                        BaseGrimpOptimizer.optimize(grimpBody);
+                    
+                    m.setActiveBody(grimpBody);
+                }
+            }
+        }
+            
         if(targetExtension.equals(".jasmin"))
-            new JasminClass(c, new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions))).print(writerOut);
+            new JasminClass(c).print(writerOut);
         else if(targetExtension.equals(".jimp"))
-        {
-            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions),
-                writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
-        }
+            c.printTo(writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
         else if(targetExtension.equals(".b"))
-        {
-            c.printTo(new BuildBody(Baf.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions)),
-                writerOut, ca.mcgill.sable.soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
-        }
-        else if(targetExtension.equals(".baf"))
-        {
-            c.printTo(new BuildBody(Baf.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions)),
-                writerOut);
-        }
-        else if(targetExtension.equals(".jimple"))
-            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions), writerOut);
-        else if(targetExtension.equals(".grimple"))
-            c.printTo(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions | 
-                BuildJimpleBodyOption.NO_AGGREGATING)), writerOut);
+            c.printTo(writerOut, ca.mcgill.sable.soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
+        else if(targetExtension.equals(".baf") || targetExtension.equals(".jimple") || targetExtension.equals(".grimple"))
+            c.printTo(writerOut);
         else if(targetExtension.equals(".grimp"))
-            c.printTo(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions | 
-            BuildJimpleBodyOption.NO_AGGREGATING)), writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
         else if(targetExtension.equals(".class"))
-            c.write(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions |
-            BuildJimpleBodyOption.NO_AGGREGATING )), outputDir);
+            c.write(outputDir);
         
         if(!targetExtension.equals(".class"))
         {
@@ -589,6 +621,18 @@ public class Main
             catch(IOException e )
             {
                 System.out.println("Cannot close output file " + fileName);
+            }
+        }
+        
+        
+        // Release bodies       
+        {
+            Iterator methodIt = c.getMethods().iterator();
+            
+            while(methodIt.hasNext())
+            {   
+                SootMethod m = (SootMethod) methodIt.next();
+                m.releaseActiveBody();
             }
         }
     }

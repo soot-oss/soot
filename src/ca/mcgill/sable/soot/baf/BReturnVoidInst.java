@@ -1,7 +1,10 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Soot, a Java(TM) classfile optimization framework.                *
+ * Baf, a Java(TM) bytecode analyzer framework.                      *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
+ *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -61,29 +64,36 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
 
- - Modified on November 1, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot;
+package ca.mcgill.sable.soot.baf;
 
-public class StoredBody implements BodyExpr
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.util.*;
+
+public class BReturnVoidInst extends AbstractInst implements ReturnVoidInst
 {
-    public final BodyRepresentation bodyRep;
-
-    public StoredBody(BodyRepresentation rep)
+    BReturnVoidInst()
     {
-        this.bodyRep = rep;
     }
 
-    public Body resolveFor(SootMethod method)
+    protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
-        return method.getBody(bodyRep);
+        return indentation + "return";
     }
+    
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseReturnVoidInst(this);
+    }   
 }
-
-

@@ -83,10 +83,11 @@ public class BafBody implements Body
     List instList;
     List traps = new ArrayList();
 
-    public BafBody(SootMethod method, Body body)
+    public BafBody(Body body)
     {
         JimpleBody jimpleBody;
-        
+        SootMethod method = body.getMethod();
+           
         if(body instanceof JimpleBody)
             jimpleBody = (JimpleBody) body;
         else
@@ -95,7 +96,9 @@ public class BafBody implements Body
        
         this.method = method;
         instList = new ArrayList();
-        
+     
+        JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
+           
         // Convert all locals
         {
             Iterator localIt = jimpleBody.getLocals().iterator();
@@ -112,11 +115,14 @@ public class BafBody implements Body
                     newLocal.setType(DoubleWordType.v());
                 else
                     newLocal.setType(WordType.v());
-                    
+        
+                context.setBafLocalOfJimpleLocal(l, newLocal);            
                 addLocal(newLocal);
             }
         }
-        
+    
+        Map stmtToFirstInstruction = new HashMap();
+            
         // Convert all jimple instructions
         {
             Iterator stmtIt = jimpleBody.getStmtList().iterator();
@@ -125,7 +131,7 @@ public class BafBody implements Body
             {
                 Stmt s = (Stmt) stmtIt.next();
                 
-//                s.convertToBaf(null, instList);
+                ((ConvertToBaf) s).convertToBaf(context, instList);
             }
         }
     }
@@ -215,7 +221,7 @@ public class BafBody implements Body
                         out.print(((Local) locals[k]).getName());
                     }
 
-                    out.println(";");
+                    out.println("");
                 }
             }
 
@@ -294,7 +300,7 @@ public class BafBody implements Body
             else
                 out.print(s.toBriefString(instToName, "        "));
 
-            out.print(";");
+            out.print("");
             out.println();
         }
 

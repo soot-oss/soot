@@ -73,5 +73,4 @@ package ca.mcgill.sable.soot;
 
 public interface BodyRepresentation
 {
-    public Body buildBodyOfFrom(SootMethod m, Body b, int buildBodyOptions);
 }

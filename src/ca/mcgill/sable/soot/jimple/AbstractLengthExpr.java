@@ -93,7 +93,7 @@ public class AbstractLengthExpr extends AbstractUnopExpr implements LengthExpr
     public String toBriefString()
     {
         return ((ToBriefString) opBox.getValue()).toBriefString() + 
-	    ".length";
+            ".length";
     }
 
     public Type getType()

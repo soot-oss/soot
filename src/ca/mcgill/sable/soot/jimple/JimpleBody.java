@@ -135,8 +135,9 @@ public class JimpleBody implements StmtBody
         Constructs a JimpleBody from the given Body.
      */
 
-    public JimpleBody(SootMethod m, Body body, int buildOptions)
+    public JimpleBody(Body body, int buildOptions)
     {
+        SootMethod m = body.getMethod();
         ClassFileBody fileBody;
 
         if(body instanceof ClassFileBody)
@@ -254,18 +255,16 @@ public class JimpleBody implements StmtBody
         
         //printTo(new PrintWriter(System.out, true));
         
-        if(!BuildJimpleBodyOption.noCleanup(buildOptions))
+        if(BuildJimpleBodyOption.aggressiveAggregating(buildOptions))
         {
-            //ConstantAndCopyPropagator.conservativelyPropagateConstantsAndCopies(this);
-            //DeadCodeEliminator.eliminateDeadCode(this);
-            //Transformations.removeUnusedLocals(this);
+            Aggregator.aggregate(this);
+            Transformations.removeUnusedLocals(this);
         }
-
-	    if(!BuildJimpleBodyOption.noAggregating(buildOptions))
-	    {
- 	        Aggregator.aggregateStackVariables(this);
- 	        Transformations.removeUnusedLocals(this);            
-	    }
+        else if(!BuildJimpleBodyOption.noAggregating(buildOptions))
+        {
+            Aggregator.aggregateStackVariables(this);
+            Transformations.removeUnusedLocals(this);            
+        }
 
         if(!BuildJimpleBodyOption.useOriginalNames(buildOptions))
             Transformations.standardizeLocalNames(this);

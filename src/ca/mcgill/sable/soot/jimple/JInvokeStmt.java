@@ -92,7 +92,7 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
 
     protected JInvokeStmt(ValueBox invokeExprBox)
     {
-	this.invokeExprBox = invokeExprBox;
+        this.invokeExprBox = invokeExprBox;
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
@@ -118,11 +118,6 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
         return invokeExprBox;
     }
 
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
     public List getUseBoxes()
     {
         List list = new ArrayList();
@@ -133,13 +128,12 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
         return list;
     }
 
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseInvokeStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }

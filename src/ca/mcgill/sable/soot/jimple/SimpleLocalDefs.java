@@ -407,15 +407,15 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
         }
 
         if(Main.isProfilingOptimization)
-	  Main.defsSetupTimer.end();
+          Main.defsSetupTimer.end();
 
         if(Main.isProfilingOptimization)
-	  Main.defsAnalysisTimer.start();
+          Main.defsAnalysisTimer.start();
 
         doAnalysis();
         
         if(Main.isProfilingOptimization)
-	  Main.defsAnalysisTimer.end();
+          Main.defsAnalysisTimer.end();
     }
 
     protected Object newInitialFlow()

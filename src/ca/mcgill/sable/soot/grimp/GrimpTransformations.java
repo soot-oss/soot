@@ -92,74 +92,74 @@ public class GrimpTransformations
       
 
       CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
-	
-      LocalDefs localDefs = new SimpleLocalDefs(graph);	
+        
+      LocalDefs localDefs = new SimpleLocalDefs(graph);        
       LocalUses localUses = new SimpleLocalUses(graph, localDefs);
 
       Iterator stmtIt = stmtList.iterator();
-	
+        
       /* fold in NewExpr's with specialinvoke's */
       while (stmtIt.hasNext())
-	{
-	  Stmt s = (Stmt)(stmtIt.next());
-	    
-	  if (!(s instanceof AssignStmt))
-	    continue;
-	    
-	  /* this should be generalized to ArrayRefs */
-	  Value lhs = ((AssignStmt)s).getLeftOp();
-	  if (!(lhs instanceof Local))
-	    continue;
-	    
-	  Value rhs = ((AssignStmt)s).getRightOp();
-	  if (!(rhs instanceof NewExpr))
-	    continue;
+        {
+          Stmt s = (Stmt)(stmtIt.next());
+            
+          if (!(s instanceof AssignStmt))
+            continue;
+            
+          /* this should be generalized to ArrayRefs */
+          Value lhs = ((AssignStmt)s).getLeftOp();
+          if (!(lhs instanceof Local))
+            continue;
+            
+          Value rhs = ((AssignStmt)s).getRightOp();
+          if (!(rhs instanceof NewExpr))
+            continue;
 
-	  /* TO BE IMPLEMENTED LATER: move any copy of the object reference
-	     for lhs down beyond the NewInvokeExpr, with the rationale
-	     being that you can't modify the object before the constructor
-	     call in any case.
+          /* TO BE IMPLEMENTED LATER: move any copy of the object reference
+             for lhs down beyond the NewInvokeExpr, with the rationale
+             being that you can't modify the object before the constructor
+             call in any case.
 
-	     Also, do note that any new's (object creation) without
-	     corresponding constructors must be dead. */
-	    
-	  List lu = localUses.getUsesOf((DefinitionStmt)s);
-	  Iterator luIter = lu.iterator();
-	  boolean MadeNewInvokeExpr = false;
-	  
-	  while (luIter.hasNext())
-	    {
-	      Stmt use = ((StmtValueBoxPair)(luIter.next())).stmt;
-	      if (!(use instanceof InvokeStmt))
-		break;
-	      InvokeStmt is = (InvokeStmt)use;
-	      if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr) ||
-		  lhs != ((SpecialInvokeExpr)is.getInvokeExpr()).getBase())
-		break;
-	      
-	      SpecialInvokeExpr oldInvoke = 
-		((SpecialInvokeExpr)is.getInvokeExpr());
-	      LinkedList invokeArgs = new LinkedList();
-	      for (int i = 0; i < oldInvoke.getArgCount(); i++)
-		invokeArgs.add(oldInvoke.getArg(i));
-	      
-	      AssignStmt constructStmt = Grimp.v().newAssignStmt
-		((AssignStmt)s);
-	      constructStmt.setRightOp
-		(Grimp.v().newNewInvokeExpr
-		 (((NewExpr)rhs).getBaseType(), oldInvoke.getMethod(), invokeArgs));
-	      MadeNewInvokeExpr = true;
-	      
-	      body.redirectJumps(use, constructStmt);
-	      body.eliminateBackPointersTo(use);
-	      stmtList.add(stmtList.indexOf(use), constructStmt);
-	      stmtList.remove(use);
-	    }
-	  if (MadeNewInvokeExpr)
-	    {
-	      body.eliminateBackPointersTo(s);
-	      stmtIt.remove();
-	    }
-	}
+             Also, do note that any new's (object creation) without
+             corresponding constructors must be dead. */
+            
+          List lu = localUses.getUsesOf((DefinitionStmt)s);
+          Iterator luIter = lu.iterator();
+          boolean MadeNewInvokeExpr = false;
+          
+          while (luIter.hasNext())
+            {
+              Stmt use = ((StmtValueBoxPair)(luIter.next())).stmt;
+              if (!(use instanceof InvokeStmt))
+                break;
+              InvokeStmt is = (InvokeStmt)use;
+              if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr) ||
+                  lhs != ((SpecialInvokeExpr)is.getInvokeExpr()).getBase())
+                break;
+              
+              SpecialInvokeExpr oldInvoke = 
+                ((SpecialInvokeExpr)is.getInvokeExpr());
+              LinkedList invokeArgs = new LinkedList();
+              for (int i = 0; i < oldInvoke.getArgCount(); i++)
+                invokeArgs.add(oldInvoke.getArg(i));
+              
+              AssignStmt constructStmt = Grimp.v().newAssignStmt
+                ((AssignStmt)s);
+              constructStmt.setRightOp
+                (Grimp.v().newNewInvokeExpr
+                 (((NewExpr)rhs).getBaseType(), oldInvoke.getMethod(), invokeArgs));
+              MadeNewInvokeExpr = true;
+              
+              body.redirectJumps(use, constructStmt);
+              body.eliminateBackPointersTo(use);
+              stmtList.add(stmtList.indexOf(use), constructStmt);
+              stmtList.remove(use);
+            }
+          if (MadeNewInvokeExpr)
+            {
+              body.eliminateBackPointersTo(s);
+              stmtIt.remove();
+            }
+        }
     }  
 }

@@ -79,7 +79,7 @@ public class GIdentityStmt extends JIdentityStmt implements IdentityStmt
 {
     GIdentityStmt(Value local, Value identityValue)
     {
-	super(Grimp.v().newLocalBox(local),
-	     Grimp.v().newIdentityRefBox(identityValue));
+        super(Grimp.v().newLocalBox(local),
+             Grimp.v().newIdentityRefBox(identityValue));
     }
 }

@@ -86,8 +86,8 @@ public class JAssignStmt extends AbstractDefinitionStmt
 {
     JAssignStmt(Value variable, Value rvalue)
     {
-	this(Jimple.v().newVariableBox(variable),
-	     Jimple.v().newRValueBox(rvalue));
+        this(Jimple.v().newVariableBox(variable),
+             Jimple.v().newRValueBox(rvalue));
     }
 
     protected JAssignStmt(ValueBox variableBox, ValueBox rvalueBox)
@@ -124,6 +124,10 @@ public class JAssignStmt extends AbstractDefinitionStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseAssignStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }
 

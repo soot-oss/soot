@@ -125,20 +125,6 @@ public class Jimple implements BodyRepresentation
         return jimpleRepresentation;
     }
 
-    /**
-        Constructs an empty JimpleBody for the given method.
-     */
-     
-    public Body newBody(SootMethod m)
-    {
-        return new JimpleBody(m);
-    }
-    
-    public Body buildBodyOfFrom(SootMethod m, Body b, int buildBodyOptions)
-    {
-        return new JimpleBody(m, b, buildBodyOptions);
-    }
-
 
     /**
         Constructs a XorExpr(Immediate, Immediate) grammar chunk.

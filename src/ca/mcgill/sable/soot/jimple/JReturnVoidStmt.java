@@ -80,6 +80,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.baf.*;
 
 public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
 {
@@ -92,23 +93,14 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
         return indentation + "return";
     }
     
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUseBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseReturnVoidStmt(this);
     }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        out.add(Baf.v().newReturnVoidInst());
+    }
 }
+

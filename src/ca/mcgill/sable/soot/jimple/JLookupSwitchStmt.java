@@ -93,28 +93,28 @@ public class JLookupSwitchStmt extends AbstractStmt implements LookupSwitchStmt
     // This method is necessary to deal with constructor-must-be-first-ism.
     private static UnitBox[] getTargetBoxesArray(List targets)
     {
-	UnitBox[] targetBoxes = new UnitBox[targets.size()];
+        UnitBox[] targetBoxes = new UnitBox[targets.size()];
 
         for(int i = 0; i < targetBoxes.length; i++)
             targetBoxes[i] = Jimple.v().newStmtBox((Stmt) targets.get(i));
 
-	return targetBoxes;
+        return targetBoxes;
     }
 
     JLookupSwitchStmt(Value key, List lookupValues, List targets, Unit defaultTarget)
     {
-	this(Jimple.v().newImmediateBox(key),
-	     lookupValues, getTargetBoxesArray(targets),
-	     Jimple.v().newStmtBox(defaultTarget));
+        this(Jimple.v().newImmediateBox(key),
+             lookupValues, getTargetBoxesArray(targets),
+             Jimple.v().newStmtBox(defaultTarget));
     }
 
     protected JLookupSwitchStmt(ValueBox keyBox, List lookupValues, 
-			        UnitBox[] targetBoxes, 
-				UnitBox defaultTargetBox)
+                                UnitBox[] targetBoxes, 
+                                UnitBox defaultTargetBox)
     {
         this.keyBox = keyBox;
         this.defaultTargetBox = defaultTargetBox;
-	this.targetBoxes = targetBoxes;
+        this.targetBoxes = targetBoxes;
 
         this.lookupValues = new ArrayList();
         this.lookupValues.addAll(lookupValues);
@@ -240,12 +240,6 @@ public class JLookupSwitchStmt extends AbstractStmt implements LookupSwitchStmt
             targetBoxes[i].setUnit(targets[i]);
     }
 
-
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
     public List getUseBoxes()
     {
         List list = new ArrayList();
@@ -264,6 +258,10 @@ public class JLookupSwitchStmt extends AbstractStmt implements LookupSwitchStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseLookupSwitchStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }
 

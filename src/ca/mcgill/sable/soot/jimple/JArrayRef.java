@@ -98,8 +98,8 @@ public class JArrayRef implements ArrayRef
 
     JArrayRef(Value base, Value index)
     {
-	this(Jimple.v().newLocalBox(base),
-	     Jimple.v().newImmediateBox(index));
+        this(Jimple.v().newLocalBox(base),
+             Jimple.v().newImmediateBox(index));
     }
 
     protected JArrayRef(ValueBox baseBox, ValueBox indexBox)

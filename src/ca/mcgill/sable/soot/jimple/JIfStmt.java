@@ -91,7 +91,7 @@ public class JIfStmt extends AbstractStmt implements IfStmt
     JIfStmt(Value condition, Unit target)
     {
         this(Jimple.v().newConditionExprBox(condition),
-	     Jimple.v().newStmtBox(target));
+             Jimple.v().newStmtBox(target));
     }
 
     protected JIfStmt(ValueBox conditionBox, UnitBox targetBox)
@@ -148,11 +148,6 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         return targetBox;
     }
 
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
     public List getUseBoxes()
     {
         List useBoxes = new ArrayList();
@@ -171,5 +166,9 @@ public class JIfStmt extends AbstractStmt implements IfStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseIfStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }

@@ -75,4 +75,9 @@ import ca.mcgill.sable.util.*;
 
 public interface Unit extends Switchable
 {
+    public List getUseBoxes();
+    public List getDefBoxes();
+    public List getUnitBoxes();
+    public List getBoxesPointingToThis();
+    public List getUseAndDefBoxes();
 }

@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Soot, a Java(TM) classfile optimization framework.                *
- * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
+ * Grimp, an aggregated-expression Java(TM) bytecode representation. *
+ * Copyright (C) 1999 Raja Vallee-Rai (kor@sable.mcgill.ca)          *
  * All rights reserved.                                              *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
@@ -61,21 +61,18 @@
 
  B) Changes:
 
- - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
-
- - Modified on November 1, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   First internal release (Version 0.1).
+ - Modified on March 14, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   First release.
 */
 
-package ca.mcgill.sable.soot;
+package ca.mcgill.sable.soot.grimp;
 
-public interface BodyExpr
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.util.*;
+
+public class BaseGrimpOptimizer
 {
-    Body resolveFor(SootMethod method);
+    public static void optimize(GrimpBody body)
+    {
+    }
 }
-
-
-
-

@@ -80,6 +80,6 @@ public class GIfStmt extends JIfStmt implements IfStmt
     GIfStmt(Value condition, Unit target)
     {
         super(Grimp.v().newConditionExprBox(condition),
-	     Grimp.v().newStmtBox(target));
+             Grimp.v().newStmtBox(target));
     }
 }

@@ -92,7 +92,7 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
 
     protected JReturnStmt(ValueBox returnValueBox)
     {
-	this.returnValueBox = returnValueBox;
+        this.returnValueBox = returnValueBox;
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
@@ -118,11 +118,6 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
         return returnValueBox.getValue();
     }
 
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
     public List getUseBoxes()
     {
         List useBoxes = new ArrayList();
@@ -133,16 +128,13 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
         return useBoxes;
     }
 
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseReturnStmt(this);
     }
 
-
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+    }
 }
 

@@ -132,18 +132,18 @@ public abstract class AbstractBinopExpr implements Expr, ToBriefString
 
     public String toString()
     {
-	Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
-	String leftOp = op1.toString(), rightOp = op2.toString();
+        Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
+        String leftOp = op1.toString(), rightOp = op2.toString();
 
-	return leftOp + getSymbol() + rightOp;
+        return leftOp + getSymbol() + rightOp;
     }
 
     public String toBriefString()
     {
-	Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
-	String leftOp = ((ToBriefString)op1).toBriefString(), 
-	    rightOp = ((ToBriefString)op2).toBriefString();
+        Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
+        String leftOp = ((ToBriefString)op1).toBriefString(), 
+            rightOp = ((ToBriefString)op2).toBriefString();
 
-	return leftOp + getSymbol() + rightOp;
+        return leftOp + getSymbol() + rightOp;
     }
 }

@@ -1,7 +1,11 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Soot, a Java(TM) classfile optimization framework.                *
- * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
- * All rights reserved.                                              *
+ * Baf, a Java(TM) bytecode analyzer framework.                      *
+ * Copyright (C) 1997-1999 Raja Vallee-Rai                           *
+ * (rvalleerai@sable.mcgill.ca) All rights reserved.                 *
+ *                                                                   *
+ * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
+ * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
+ * rights reserved.                                                  *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -65,35 +69,21 @@
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
 
- - Modified on November 1, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on July 5, 1998 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
+   Changed caseDefault to defaultCase, to avoid name conflicts (and conform
+   to the standard).
+
+ - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot;
+package ca.mcgill.sable.soot.baf;
 
-public class BuildBody implements BodyExpr
+import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.*;
+
+public interface InstSwitch 
 {
-    public final BodyRepresentation bodyRep;
-    public final BodyExpr sourceBuilder;
-    public final int buildBodyOptions;
-
-    public BuildBody(BodyRepresentation bodyRep, BodyExpr sourceBuilder)
-    {
-        this.bodyRep = bodyRep;
-        this.sourceBuilder = sourceBuilder;
-        this.buildBodyOptions = 0;
-    }
-
-    public BuildBody(BodyRepresentation bodyRep, BodyExpr sourceBuilder, int buildBodyOptions)
-    {
-        this.bodyRep = bodyRep;
-        this.sourceBuilder = sourceBuilder;
-        this.buildBodyOptions = buildBodyOptions;
-    }
-
-    public Body resolveFor(SootMethod method)
-    {
-        return bodyRep.buildBodyOfFrom(method, sourceBuilder.resolveFor(method), buildBodyOptions);
-    }
+    public void caseReturnVoidInst(ReturnVoidInst i);
+    public void caseNopInst(NopInst i);
 }
-

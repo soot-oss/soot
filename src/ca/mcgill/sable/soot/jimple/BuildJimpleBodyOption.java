@@ -83,13 +83,13 @@ import java.io.*;
 
 public class BuildJimpleBodyOption
 {
-    public static final int NO_TYPING       = 0x0001,
-                            NO_RENAMING     = 0x0002,
-                            NO_SPLITTING    = 0x0004,
-                            NO_CLEANUP      = 0x0008,
-                            USE_PACKING      = 0x0010,
-                            NO_AGGREGATING  = 0x0020,
-                            USE_ORIGINAL_NAMES = 0x0040;
+    public static final int NO_TYPING               = 0x0001,
+                            NO_RENAMING             = 0x0002,
+                            NO_SPLITTING            = 0x0004,
+                            USE_PACKING             = 0x0010,
+                            NO_AGGREGATING          = 0x0020,
+                            USE_ORIGINAL_NAMES      = 0x0040,
+                            AGGRESSIVE_AGGREGATING  = 0x0008;
 
     public static boolean noTyping(int m)
     {
@@ -106,11 +106,6 @@ public class BuildJimpleBodyOption
         return (m & NO_SPLITTING) != 0;
     }
 
-    public static boolean noCleanup(int m)
-    {
-        return (m & NO_CLEANUP) != 0;
-    }
-
     public static boolean usePacking(int m)
     {
         return (m & USE_PACKING) != 0;
@@ -119,6 +114,11 @@ public class BuildJimpleBodyOption
     public static boolean noAggregating(int m)
     {
         return (m & NO_AGGREGATING) != 0;
+    }
+
+    public static boolean aggressiveAggregating(int m)
+    {
+        return (m & AGGRESSIVE_AGGREGATING) != 0;
     }
     
     public static boolean useOriginalNames(int m)

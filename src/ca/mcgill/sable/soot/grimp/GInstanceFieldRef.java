@@ -85,29 +85,29 @@ class GInstanceFieldRef extends AbstractInstanceFieldRef
 
     private String toString(Value op, String opString, String rightString)
     {
-	String leftOp = opString;
+        String leftOp = opString;
 
-	if (op instanceof Precedence && 
-	    ((Precedence)op).getPrecedence() < getPrecedence()) 
-	    leftOp = "(" + leftOp + ")";
-	return leftOp + rightString;
+        if (op instanceof Precedence && 
+            ((Precedence)op).getPrecedence() < getPrecedence()) 
+            leftOp = "(" + leftOp + ")";
+        return leftOp + rightString;
     }
 
     public String toString()
     {
         return toString(getBase(), getBase().toString(),
-			".[" + getField().getSignature() + "]");
+                        ".[" + getField().getSignature() + "]");
     }
 
     public String toBriefString()
     {
         return toString(getBase(), 
-			((ToBriefString)getBase()).toBriefString(), 
-			"." + getField().getName());
+                        ((ToBriefString)getBase()).toBriefString(), 
+                        "." + getField().getName());
     }
 
     public int getPrecedence()
     {
-	return 950;
+        return 950;
     }
 }

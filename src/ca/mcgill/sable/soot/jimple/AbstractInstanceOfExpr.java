@@ -92,7 +92,7 @@ public class AbstractInstanceOfExpr implements InstanceOfExpr
 
     protected AbstractInstanceOfExpr(ValueBox opBox, Type checkType)
     {
-	this.opBox = opBox; this.checkType = checkType;
+        this.opBox = opBox; this.checkType = checkType;
     }
     
     public String toString()

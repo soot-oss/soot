@@ -80,8 +80,8 @@ class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
 {
     GInterfaceInvokeExpr(Value base, SootMethod method, List args)
     {
-	super(Grimp.v().newObjExprBox(base), method,
-	     new ValueBox[args.size()]);
+        super(Grimp.v().newObjExprBox(base), method,
+             new ValueBox[args.size()]);
 
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
@@ -91,12 +91,12 @@ class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
 
     private String toString(Value op, String opString, String rightString)
     {
-	String leftOp = opString;
+        String leftOp = opString;
 
-	if (getBase() instanceof Precedence && 
-	    ((Precedence)getBase()).getPrecedence() < getPrecedence()) 
-	    leftOp = "(" + leftOp + ")";
-	return leftOp + rightString;
+        if (getBase() instanceof Precedence && 
+            ((Precedence)getBase()).getPrecedence() < getPrecedence()) 
+            leftOp = "(" + leftOp + ")";
+        return leftOp + rightString;
     }
 
     public String toString()
@@ -116,7 +116,7 @@ class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
         buffer.append(")");
 
         return toString(getBase(), getBase().toString(), 
-			buffer.toString());
+                        buffer.toString());
     }
 
     
@@ -137,7 +137,7 @@ class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
         buffer.append(")");
 
         return toString(getBase(), 
-			((ToBriefString)getBase()).toBriefString(),
-			buffer.toString());
+                        ((ToBriefString)getBase()).toBriefString(),
+                        buffer.toString());
     }
 }

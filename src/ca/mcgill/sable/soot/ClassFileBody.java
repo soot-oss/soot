@@ -80,7 +80,7 @@ public class ClassFileBody implements Body
     public ca.mcgill.sable.soot.coffi.ClassFile coffiClass;
     public ca.mcgill.sable.soot.coffi.method_info coffiMethod;
 
-    ClassFileBody(SootMethod method)
+    public ClassFileBody(SootMethod method)
     {
         this.method = method;
         this.coffiClass = method.coffiClass;

@@ -87,15 +87,5 @@ public class ClassFile implements BodyRepresentation
         return classFileRepresentation;
     }
 
-    /**
-        Returns a Body representing the ClassFile body.  Only 'null' can be passed as the source.
-     */
-
-    public Body buildBodyOfFrom(SootMethod m, Body sourceBody, int options)
-    {
-        if(sourceBody != null)
-            throw new RuntimeException("Illegal source for the ClassFile body.");
-        else
-            return new ClassFileBody(m);
-    }
 }
+

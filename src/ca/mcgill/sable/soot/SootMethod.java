@@ -93,8 +93,8 @@ public class SootMethod
 
     List exceptions = new ArrayList();
 
-    Map repToBody = new HashMap();
-
+    Body activeBody;
+    
     /**
      * Hooks for coffi.  Do not use!
      */
@@ -176,7 +176,6 @@ public class SootMethod
         return isDeclared;
     }
 
-
     public void setName(String name)
     {
         this.name = name;
@@ -222,65 +221,33 @@ public class SootMethod
     }
 
     /**
-        Determines if a representation of the given type is stored for the body.
+        Retrieves the active body for this method.
      */
 
-    public boolean isBodyStored(BodyRepresentation bodyRep)
+    public Body getActiveBody() 
     {
-        return repToBody.containsKey(bodyRep);
+        return activeBody;
     }
     
     /**
-        Retrieves a stored representation for the body of the method.
-     */
-
-    public Body getBody(BodyRepresentation bodyRep)
-    {
-        if(bodyRep.equals(ClassFile.v()))
-            return new ClassFileBody(this);
-        else if(repToBody.containsKey(bodyRep))
-            return (Body) repToBody.get(bodyRep);
-        else
-            throw new RuntimeException("Method does not have a stored representation for" + bodyRep);
-    }
-
-    /**
-        Stores a representation for the body of the method.
-     */
-
-    public void storeBody(BodyRepresentation r, Body b)
-    {
-        repToBody.put(r, b);
-    }
-
-    /**
-        Releases a representation for the body of the method.
+        Sets the active body for this method. 
      */
      
-    public void releaseBody(BodyRepresentation r)
+    public void setActiveBody(Body body)
     {
-        if(repToBody.containsKey(r))
-            repToBody.remove(r);
+        activeBody = body;
+    }
+
+    public boolean hasActiveBody()
+    {
+        return activeBody != null;
     }
     
-    /*
-    public void setInstListBody(InstListBody instListBody)
+    public void releaseActiveBody()
     {
-        this.instListBody = instListBody;
+        activeBody = null;
     }
-
-    public InstListBody getInstListBody()
-    {
-        if(instListBody == null)
-        {
-            instListBody = new InstListBody(this, coffiClass, coffiMethod);
-            coffiClass = null;
-            coffiMethod = null;
-        }
-
-        return instListBody;
-    }
-*/
+    
     public void addException(SootClass e) throws AlreadyThrowsException
     {
         if(exceptions.contains(e))

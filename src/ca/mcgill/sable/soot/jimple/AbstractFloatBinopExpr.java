@@ -89,23 +89,23 @@ public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr
         Value op2 = op1Box.getValue();
 
         if((op1.getType().equals(IntType.v()) || 
-	    op1.getType().equals(ByteType.v()) ||
-	    op1.getType().equals(ShortType.v()) ||
-	    op1.getType().equals(CharType.v()) ||
-	    op1.getType().equals(BooleanType.v())) &&
-	   (op2.getType().equals(IntType.v()) ||
-	    op2.getType().equals(ByteType.v()) ||
-	    op2.getType().equals(ShortType.v()) ||
-	    op2.getType().equals(CharType.v()) ||
-	    op2.getType().equals(BooleanType.v())))
-	  return IntType.v();
+            op1.getType().equals(ByteType.v()) ||
+            op1.getType().equals(ShortType.v()) ||
+            op1.getType().equals(CharType.v()) ||
+            op1.getType().equals(BooleanType.v())) &&
+           (op2.getType().equals(IntType.v()) ||
+            op2.getType().equals(ByteType.v()) ||
+            op2.getType().equals(ShortType.v()) ||
+            op2.getType().equals(CharType.v()) ||
+            op2.getType().equals(BooleanType.v())))
+          return IntType.v();
         else if(op1.getType().equals(LongType.v()) || op2.getType().equals(LongType.v()))
-	  return LongType.v();
+          return LongType.v();
         else if(op1.getType().equals(DoubleType.v()) || op2.getType().equals(DoubleType.v()))
-	  return DoubleType.v();
+          return DoubleType.v();
         else if(op1.getType().equals(FloatType.v()) || op2.getType().equals(FloatType.v()))
-	  return FloatType.v();
+          return FloatType.v();
         else
-	  return UnknownType.v();
+          return UnknownType.v();
     }
 }

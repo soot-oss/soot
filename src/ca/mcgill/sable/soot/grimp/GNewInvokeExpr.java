@@ -90,7 +90,7 @@ class GNewInvokeExpr extends AbstractStaticInvokeExpr
 
     GNewInvokeExpr(RefType type, SootMethod method, List args)
     {
-	    super(method, new ExprBox[args.size()]);
+            super(method, new ExprBox[args.size()]);
 
         this.type = type;
         
@@ -101,8 +101,8 @@ class GNewInvokeExpr extends AbstractStaticInvokeExpr
     /*
     protected GNewInvokeExpr(RefType type, ExprBox[] argBoxes)
     {
-	this.type = type;
-	this.argBoxes = argBoxes;
+        this.type = type;
+        this.argBoxes = argBoxes;
     }
     */
     
@@ -148,7 +148,7 @@ class GNewInvokeExpr extends AbstractStaticInvokeExpr
         StringBuffer buffer = new StringBuffer();
 
         buffer.append("new " + 
-		      ((ToBriefString) type).toBriefString() + "(");
+                      ((ToBriefString) type).toBriefString() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
@@ -178,6 +178,6 @@ class GNewInvokeExpr extends AbstractStaticInvokeExpr
 
     public void apply(Switch sw)
     {
-	((ExprSwitch) sw).caseNewInvokeExpr(this);
+        ((ExprSwitch) sw).caseNewInvokeExpr(this);
     }
 }

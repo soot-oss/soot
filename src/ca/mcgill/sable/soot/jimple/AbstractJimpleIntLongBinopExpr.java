@@ -85,7 +85,7 @@ abstract class AbstractJimpleIntLongBinopExpr extends AbstractIntLongBinopExpr
 {
     protected AbstractJimpleIntLongBinopExpr(Value op1, Value op2)
     {
-	this.op1Box = Jimple.v().newArgBox(op1);
-	this.op2Box = Jimple.v().newArgBox(op2);
+        this.op1Box = Jimple.v().newArgBox(op1);
+        this.op2Box = Jimple.v().newArgBox(op2);
     }
 }

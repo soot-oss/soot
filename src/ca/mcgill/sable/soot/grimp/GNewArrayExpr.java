@@ -76,7 +76,7 @@ import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 
 class GNewArrayExpr extends AbstractNewArrayExpr implements NewArrayExpr,
-							    Precedence
+                                                            Precedence
 {
   GNewArrayExpr(Type type, Value size)
     {

@@ -80,6 +80,6 @@ public class GAssignStmt extends JAssignStmt implements AssignStmt
     public GAssignStmt(Value variable, Value rvalue)
     {
         super(Grimp.v().newVariableBox(variable),
-	     Grimp.v().newRValueBox(rvalue));
+             Grimp.v().newRValueBox(rvalue));
     }
 }

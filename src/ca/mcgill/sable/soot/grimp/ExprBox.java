@@ -89,7 +89,7 @@ public class ExprBox extends AbstractValueBox
     {
         return value instanceof Local ||
             value instanceof Constant || 
-	    value instanceof Expr ||
-	    value instanceof ConcreteRef;
+            value instanceof Expr ||
+            value instanceof ConcreteRef;
     }
 }

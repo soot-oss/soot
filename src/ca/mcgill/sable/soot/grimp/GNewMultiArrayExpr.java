@@ -80,7 +80,7 @@ class GNewMultiArrayExpr extends AbstractNewMultiArrayExpr
 {
     GNewMultiArrayExpr(ArrayType type, List sizes)
     {
-	super(type, new ValueBox[sizes.size()]);
+        super(type, new ValueBox[sizes.size()]);
 
         for(int i = 0; i < sizes.size(); i++)
             sizeBoxes[i] = Grimp.v().newExprBox((Value) sizes.get(i));

@@ -65,16 +65,39 @@
    First release.
 */
 
-package ca.mcgill.sable.soot.baf;
+package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.soot.jimple.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.io.*;
 
 public class JimpleToBafContext
 {
-    public Map jimpleLocalToBafLocal;
+    private Map jimpleLocalToBafLocal = new HashMap();
+ 
+    /**
+       An approximation of the local count is required in order to allocate a reasonably sized hash map. 
+     */
+     
+    public JimpleToBafContext(int localCount)
+    {
+       jimpleLocalToBafLocal = new HashMap(localCount * 2 + 1, 0.7f);
+    }
     
+    public Local getBafLocalOfJimpleLocal(Local jimpleLocal)
+    {
+        return (Local) jimpleLocalToBafLocal.get(jimpleLocal);
+    }
+    
+    public void setBafLocalOfJimpleLocal(Local jimpleLocal, Local bafLocal)
+    {
+        jimpleLocalToBafLocal.put(jimpleLocal, bafLocal);
+    }   
+    
+    public Stmt newFutureBafStmt(Stmt jimpleStmt)
+    {
+        return null;
+    }
 }
 

@@ -269,7 +269,8 @@ public class ClassFile {
     * @return <i>true</i> on success.
     */
     boolean loadClassFile() {
-      InputStream f;
+      InputStream f = null;
+      InputStream classFileStream;
       DataInputStream d;
       boolean b;
 
@@ -277,10 +278,10 @@ public class ClassFile {
       
       try
       {   if(Main.sootClassPath != null)
-          {   f = ClassLocator.getInputStreamOf(Main.sootClassPath, fn);
+          {   classFileStream = ClassLocator.getInputStreamOf(Main.sootClassPath, fn);
           }
           else
-          {   f = ClassLocator.getInputStreamOf(fn);
+          {   classFileStream = ClassLocator.getInputStreamOf(fn);
           }
           
       }
@@ -296,8 +297,8 @@ public class ClassFile {
       
       try 
       {
-        data = new byte[f.available()];
-        f.read(data);
+        data = new byte[classFileStream.available()];
+        classFileStream.read(data);
         f = new ByteArrayInputStream(data);
          
       } catch(IOException e)
@@ -310,6 +311,7 @@ public class ClassFile {
       b = readClass(d);
       
       try {
+        classFileStream.close();
         d.close(); 
         f.close();
       } catch(IOException e) {

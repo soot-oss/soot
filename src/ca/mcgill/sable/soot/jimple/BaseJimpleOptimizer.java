@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Grimp, an aggregated-expression Java(TM) bytecode representation. *
- * Copyright (C) 1998 Patrick Lam (plam@sable.mcgill.ca)             *
+ * Jimple, a 3-address code Java(TM) bytecode representation.        *
+ * Copyright (C) 1999 Raja Vallee-Rai (kor@sable.mcgill.ca)          *
  * All rights reserved.                                              *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
@@ -61,56 +61,20 @@
 
  B) Changes:
 
- - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca). (*)
-   First release of Grimp.
+ - Modified on March 14, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   First release.
 */
 
-package ca.mcgill.sable.soot.grimp;
+package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
-import ca.mcgill.sable.soot.jimple.*;
 
-public abstract class AbstractGrimpBinopExpr 
-    extends AbstractBinopExpr
-    implements Precedence
+public class BaseJimpleOptimizer
 {
-    protected AbstractGrimpBinopExpr (Value op1, Value op2)
+    public static void optimize(JimpleBody body)
     {
-        op1Box = Grimp.v().newArgBox(op1); 
-        op2Box = Grimp.v().newArgBox(op2);
+        ConstantAndCopyPropagator.propagateConstantsAndCopies(body);
+        DeadCodeEliminator.eliminateDeadCode(body);
     }
-
-    abstract public int getPrecedence();
-
-    private String toString(Value op1, Value op2, 
-                            String leftOp, String rightOp)
-    {
-        if (op1 instanceof Precedence && 
-            ((Precedence)op1).getPrecedence() < getPrecedence()) 
-            leftOp = "(" + leftOp + ")";
-
-        if (op2 instanceof Precedence &&
-            ((Precedence)op2).getPrecedence() < getPrecedence())
-            rightOp = "(" + rightOp + ")";
-
-        return leftOp + getSymbol() + rightOp;
-    }
-
-    public String toString()
-    {
-        Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
-        String leftOp = op1.toString(), rightOp = op2.toString();
-
-        return toString(op1, op2, leftOp, rightOp);
-    }
-
-    public String toBriefString()
-    {
-        Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
-        String leftOp = ((ToBriefString)op1).toBriefString(), 
-            rightOp = ((ToBriefString)op2).toBriefString();
-
-        return toString(op1, op2, leftOp, rightOp);
-    }    
 }

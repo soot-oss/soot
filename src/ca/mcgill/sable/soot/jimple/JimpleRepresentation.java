@@ -115,13 +115,6 @@ import java.io.*;
 public interface JimpleRepresentation extends BodyRepresentation
 {
   /**
-     Constructs an empty JimpleBody for the given method.
-  */
-     
-  public Body newBody(SootMethod m);
-  public Body buildBodyOfFrom(SootMethod m, Body b, int buildBodyOptions);
-
-  /**
      Constructs an empty ArgBox for a grammar chunk.
   */
   public ValueBox newArgBox(Value op);

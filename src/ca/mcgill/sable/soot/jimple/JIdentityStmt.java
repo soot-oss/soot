@@ -87,12 +87,12 @@ public class JIdentityStmt extends AbstractDefinitionStmt
     JIdentityStmt(Value local, Value identityValue)
     {
         this(Jimple.v().newLocalBox(local),
-	     Jimple.v().newIdentityRefBox(identityValue));
+             Jimple.v().newIdentityRefBox(identityValue));
     }
 
     protected JIdentityStmt(ValueBox localBox, ValueBox identityValueBox)
     {
-	this.leftBox = localBox; this.rightBox = identityValueBox;
+        this.leftBox = localBox; this.rightBox = identityValueBox;
 
         defBoxes = new ArrayList();
         defBoxes.add(leftBox);
@@ -123,5 +123,9 @@ public class JIdentityStmt extends AbstractDefinitionStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseIdentityStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }

@@ -116,16 +116,6 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
         return targetBox;
     }
 
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUseBoxes()
-    {
-        return emptyList;
-    }
-
     public List getUnitBoxes()
     {
         return targetBoxes;
@@ -134,5 +124,9 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseGotoStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }

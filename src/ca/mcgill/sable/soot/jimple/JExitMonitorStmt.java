@@ -92,7 +92,7 @@ public class JExitMonitorStmt extends AbstractStmt implements ExitMonitorStmt
 
     protected JExitMonitorStmt(ValueBox opBox)
     {
-	this.opBox = opBox;
+        this.opBox = opBox;
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
@@ -118,11 +118,6 @@ public class JExitMonitorStmt extends AbstractStmt implements ExitMonitorStmt
         return opBox;
     }
 
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
     public List getUseBoxes()
     {
         List list = new ArrayList();
@@ -133,13 +128,12 @@ public class JExitMonitorStmt extends AbstractStmt implements ExitMonitorStmt
         return list;
     }
 
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseExitMonitorStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }

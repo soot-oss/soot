@@ -76,19 +76,19 @@ public class GTableSwitchStmt extends JTableSwitchStmt implements TableSwitchStm
     // This method is necessary to deal with constructor-must-be-first-ism.
     private static UnitBox[] getTargetBoxesArray(List targets)
     {
-	UnitBox[] targetBoxes = new UnitBox[targets.size()];
+        UnitBox[] targetBoxes = new UnitBox[targets.size()];
 
         for(int i = 0; i < targetBoxes.length; i++)
             targetBoxes[i] = Grimp.v().newStmtBox((Stmt) targets.get(i));
 
-	return targetBoxes;
+        return targetBoxes;
     }
 
     GTableSwitchStmt(Value key, int lowIndex, int highIndex, List targets,
-		    Unit defaultTarget)
+                    Unit defaultTarget)
     {
-	super(Grimp.v().newExprBox(key), lowIndex, highIndex,
-	      getTargetBoxesArray(targets), 
-	      Grimp.v().newStmtBox(defaultTarget));
+        super(Grimp.v().newExprBox(key), lowIndex, highIndex,
+              getTargetBoxesArray(targets), 
+              Grimp.v().newStmtBox(defaultTarget));
     }
 }

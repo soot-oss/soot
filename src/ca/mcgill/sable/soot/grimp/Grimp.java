@@ -102,21 +102,6 @@ public class Grimp implements JimpleRepresentation
     }
 
     /**
-        Constructs an empty GrimpBody for the given method.
-     */
-     
-    public Body newBody(SootMethod m)
-    {
-        return new GrimpBody(m);
-    }
-    
-    public Body buildBodyOfFrom(SootMethod m, Body b, int buildBodyOptions)
-    {
-        return new GrimpBody(m, b, buildBodyOptions);
-    }
-
-
-    /**
         Constructs a XorExpr(Expr, Expr) grammar chunk.
      */
 
@@ -360,7 +345,7 @@ public class Grimp implements JimpleRepresentation
 
     NewExpr newNewExpr(RefType type)
     {
-	return Jimple.v().newNewExpr(type);
+        return Jimple.v().newNewExpr(type);
     }
 
 
@@ -442,7 +427,7 @@ public class Grimp implements JimpleRepresentation
 
     public ThrowStmt newThrowStmt(ThrowStmt s)
     {
-	return new GThrowStmt(s.getOp());
+        return new GThrowStmt(s.getOp());
     }
 
     /**
@@ -456,7 +441,7 @@ public class Grimp implements JimpleRepresentation
 
     public ExitMonitorStmt newExitMonitorStmt(ExitMonitorStmt s)
     {
-	return new GExitMonitorStmt(s.getOp());
+        return new GExitMonitorStmt(s.getOp());
     }
 
     /**
@@ -470,7 +455,7 @@ public class Grimp implements JimpleRepresentation
 
     public EnterMonitorStmt newEnterMonitorStmt(EnterMonitorStmt s)
     {
-	return new GEnterMonitorStmt(s.getOp());
+        return new GEnterMonitorStmt(s.getOp());
     }
 
     /**
@@ -484,7 +469,7 @@ public class Grimp implements JimpleRepresentation
     
     public BreakpointStmt newBreakpointStmt(BreakpointStmt s)
     {
-	return Jimple.v().newBreakpointStmt();
+        return Jimple.v().newBreakpointStmt();
     }
 
     /**
@@ -498,7 +483,7 @@ public class Grimp implements JimpleRepresentation
 
     public GotoStmt newGotoStmt(GotoStmt s)
     {
-	return Jimple.v().newGotoStmt(s.getTarget());
+        return Jimple.v().newGotoStmt(s.getTarget());
     }
 
     /**
@@ -540,7 +525,7 @@ public class Grimp implements JimpleRepresentation
 
     public ReturnStmt newReturnStmt(ReturnStmt s)
     {
-	return new GReturnStmt(s.getReturnValue());
+        return new GReturnStmt(s.getReturnValue());
     }
 
     /**
@@ -554,7 +539,7 @@ public class Grimp implements JimpleRepresentation
 
     public RetStmt newRetStmt(RetStmt s)
     {
-	return new GRetStmt(s.getStmtAddress());
+        return new GRetStmt(s.getStmtAddress());
     }
 
     /**
@@ -568,7 +553,7 @@ public class Grimp implements JimpleRepresentation
 
     public IfStmt newIfStmt(IfStmt s)
     {
-	return new GIfStmt(s.getCondition(), s.getTarget());
+        return new GIfStmt(s.getCondition(), s.getTarget());
     }
 
     /**
@@ -582,7 +567,7 @@ public class Grimp implements JimpleRepresentation
 
     public IdentityStmt newIdentityStmt(IdentityStmt s)
     {
-	return new GIdentityStmt(s.getLeftOp(), s.getRightOp());
+        return new GIdentityStmt(s.getLeftOp(), s.getRightOp());
     }
 
     /**
@@ -596,7 +581,7 @@ public class Grimp implements JimpleRepresentation
 
     public AssignStmt newAssignStmt(AssignStmt s)
     {
-	return new GAssignStmt(s.getLeftOp(), s.getRightOp());
+        return new GAssignStmt(s.getLeftOp(), s.getRightOp());
     }
 
     /**
@@ -610,7 +595,7 @@ public class Grimp implements JimpleRepresentation
 
     public InvokeStmt newInvokeStmt(InvokeStmt s)
     {
-	return new GInvokeStmt(s.getInvokeExpr());
+        return new GInvokeStmt(s.getInvokeExpr());
     }
 
     /**
@@ -624,9 +609,9 @@ public class Grimp implements JimpleRepresentation
 
     public TableSwitchStmt newTableSwitchStmt(TableSwitchStmt s)
     {
-	return new GTableSwitchStmt(s.getKey(), s.getLowIndex(), 
-				    s.getHighIndex(), s.getTargets(),
-				    s.getDefaultTarget());
+        return new GTableSwitchStmt(s.getKey(), s.getLowIndex(), 
+                                    s.getHighIndex(), s.getTargets(),
+                                    s.getDefaultTarget());
     }
 
     /**
@@ -640,8 +625,8 @@ public class Grimp implements JimpleRepresentation
 
     public LookupSwitchStmt newLookupSwitchStmt(LookupSwitchStmt s)
     {
-	return new GLookupSwitchStmt(s.getKey(), s.getLookupValues(),
-				     s.getTargets(), s.getDefaultTarget());
+        return new GLookupSwitchStmt(s.getKey(), s.getLookupValues(),
+                                     s.getTargets(), s.getDefaultTarget());
     }
 
     /**
@@ -664,8 +649,8 @@ public class Grimp implements JimpleRepresentation
 
     public Trap newTrap(Trap trap)
     {
-	return new GTrap(trap.getException(), trap.getBeginUnit(),
-			 trap.getEndUnit(), trap.getHandlerUnit());
+        return new GTrap(trap.getException(), trap.getBeginUnit(),
+                         trap.getEndUnit(), trap.getHandlerUnit());
     }
 
     /**
@@ -766,7 +751,7 @@ public class Grimp implements JimpleRepresentation
 
     public ValueBox newArgBox(Value value)
     {
-	return new ExprBox(value);
+        return new ExprBox(value);
     }
 
     public ValueBox newObjExprBox(Value value)
@@ -797,254 +782,254 @@ public class Grimp implements JimpleRepresentation
     /** Carries out the mapping from other Value's to Grimp Value's */
     public Value newExpr(Value value)
     {
-	if (value instanceof Expr)
-	    {
-		final ExprBox returnedExpr = new ExprBox(IntConstant.v(0));
-		((Expr)value).apply(new AbstractExprSwitch()
-		{
-		    public void caseAddExpr(AddExpr v)
-		    {
-			returnedExpr.setValue
-			    (newAddExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+        if (value instanceof Expr)
+            {
+                final ExprBox returnedExpr = new ExprBox(IntConstant.v(0));
+                ((Expr)value).apply(new AbstractExprSwitch()
+                {
+                    public void caseAddExpr(AddExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newAddExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseAndExpr(AndExpr v)
-		    {
-			returnedExpr.setValue
-			    (newAndExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseAndExpr(AndExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newAndExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseCmpExpr(CmpExpr v)
-		    {
-			returnedExpr.setValue
-			    (newCmpExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseCmpExpr(CmpExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newCmpExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseCmpgExpr(CmpgExpr v)
-		    {
-			returnedExpr.setValue
-			    (newCmpgExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseCmpgExpr(CmpgExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newCmpgExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseCmplExpr(CmplExpr v)
-		    {
-			returnedExpr.setValue
-			    (newCmplExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseCmplExpr(CmplExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newCmplExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseDivExpr(DivExpr v)
-		    {
-			returnedExpr.setValue
-			    (newDivExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseDivExpr(DivExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newDivExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseEqExpr(EqExpr v)
-		    {
-			returnedExpr.setValue
-			    (newEqExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseEqExpr(EqExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newEqExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseNeExpr(NeExpr v)
-		    {
-			returnedExpr.setValue
-			    (newNeExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseNeExpr(NeExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newNeExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseGeExpr(GeExpr v)
-		    {
-			returnedExpr.setValue
-			    (newGeExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseGeExpr(GeExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newGeExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseGtExpr(GtExpr v)
-		    {
-			returnedExpr.setValue
-			    (newGtExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseGtExpr(GtExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newGtExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseLeExpr(LeExpr v)
-		    {
-			returnedExpr.setValue
-			    (newLeExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseLeExpr(LeExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newLeExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseLtExpr(LtExpr v)
-		    {
-			returnedExpr.setValue
-			    (newLtExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseLtExpr(LtExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newLtExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseMulExpr(MulExpr v)
-		    {
-			returnedExpr.setValue
-			    (newMulExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseMulExpr(MulExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newMulExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseOrExpr(OrExpr v)
-		    {
-			returnedExpr.setValue
-			    (newOrExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseOrExpr(OrExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newOrExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseRemExpr(RemExpr v)
-		    {
-			returnedExpr.setValue
-			    (newRemExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseRemExpr(RemExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newRemExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseShlExpr(ShlExpr v)
-		    {
-			returnedExpr.setValue
-			    (newShlExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseShlExpr(ShlExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newShlExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseShrExpr(ShrExpr v)
-		    {
-			returnedExpr.setValue
-			    (newShrExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseShrExpr(ShrExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newShrExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseUshrExpr(UshrExpr v)
-		    {
-			returnedExpr.setValue
-			    (newUshrExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseUshrExpr(UshrExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newUshrExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseSubExpr(SubExpr v)
-		    {
-			returnedExpr.setValue
-			    (newSubExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseSubExpr(SubExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newSubExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseXorExpr(XorExpr v)
-		    {
-			returnedExpr.setValue
-			    (newXorExpr(newExpr(v.getOp1()),
-					newExpr(v.getOp2())));
-		    }
+                    public void caseXorExpr(XorExpr v)
+                    {
+                        returnedExpr.setValue
+                            (newXorExpr(newExpr(v.getOp1()),
+                                        newExpr(v.getOp2())));
+                    }
 
-		    public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v)
-		    {
-			ArrayList newArgList = new ArrayList();
-			for (int i = 0; i < v.getArgCount(); i++)
-			    newArgList.add(newExpr(v.getArg(i)));
-			returnedExpr.setValue
-			    (newInterfaceInvokeExpr((Local)(v.getBase()),
-						    v.getMethod(),
-						    newArgList));
-		    }
+                    public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v)
+                    {
+                        ArrayList newArgList = new ArrayList();
+                        for (int i = 0; i < v.getArgCount(); i++)
+                            newArgList.add(newExpr(v.getArg(i)));
+                        returnedExpr.setValue
+                            (newInterfaceInvokeExpr((Local)(v.getBase()),
+                                                    v.getMethod(),
+                                                    newArgList));
+                    }
 
-		    public void caseSpecialInvokeExpr(SpecialInvokeExpr v)
-		    {
-			ArrayList newArgList = new ArrayList();
-			for (int i = 0; i < v.getArgCount(); i++)
-			    newArgList.add(newExpr(v.getArg(i)));
-			returnedExpr.setValue
-			    (newSpecialInvokeExpr((Local)(v.getBase()),
-						    v.getMethod(),
-						    newArgList));
-		    }
+                    public void caseSpecialInvokeExpr(SpecialInvokeExpr v)
+                    {
+                        ArrayList newArgList = new ArrayList();
+                        for (int i = 0; i < v.getArgCount(); i++)
+                            newArgList.add(newExpr(v.getArg(i)));
+                        returnedExpr.setValue
+                            (newSpecialInvokeExpr((Local)(v.getBase()),
+                                                    v.getMethod(),
+                                                    newArgList));
+                    }
 
-		    public void caseStaticInvokeExpr(StaticInvokeExpr v)
-		    {
-			ArrayList newArgList = new ArrayList();
-			for (int i = 0; i < v.getArgCount(); i++)
-			    newArgList.add(newExpr(v.getArg(i)));
-			returnedExpr.setValue
-			    (newStaticInvokeExpr(v.getMethod(),
-						 newArgList));
-		    }
+                    public void caseStaticInvokeExpr(StaticInvokeExpr v)
+                    {
+                        ArrayList newArgList = new ArrayList();
+                        for (int i = 0; i < v.getArgCount(); i++)
+                            newArgList.add(newExpr(v.getArg(i)));
+                        returnedExpr.setValue
+                            (newStaticInvokeExpr(v.getMethod(),
+                                                 newArgList));
+                    }
 
-		    public void caseVirtualInvokeExpr(VirtualInvokeExpr v)
-		    {
-			ArrayList newArgList = new ArrayList();
-			for (int i = 0; i < v.getArgCount(); i++)
-			    newArgList.add(newExpr(v.getArg(i)));
-			returnedExpr.setValue
-			    (newVirtualInvokeExpr((Local)(v.getBase()),
-						  v.getMethod(),
-						  newArgList));
-		    }
+                    public void caseVirtualInvokeExpr(VirtualInvokeExpr v)
+                    {
+                        ArrayList newArgList = new ArrayList();
+                        for (int i = 0; i < v.getArgCount(); i++)
+                            newArgList.add(newExpr(v.getArg(i)));
+                        returnedExpr.setValue
+                            (newVirtualInvokeExpr((Local)(v.getBase()),
+                                                  v.getMethod(),
+                                                  newArgList));
+                    }
 
-		    public void caseCastExpr(CastExpr v)
-		    {
-			returnedExpr.setValue(newCastExpr(newExpr(v.getOp()),
-							  v.getType()));
-		    }
+                    public void caseCastExpr(CastExpr v)
+                    {
+                        returnedExpr.setValue(newCastExpr(newExpr(v.getOp()),
+                                                          v.getType()));
+                    }
 
-		    public void caseInstanceOfExpr(InstanceOfExpr v)
-		    {
-			returnedExpr.setValue(newInstanceOfExpr
-					      (newExpr(v.getOp()),
-					       v.getCheckType()));
-		    }
+                    public void caseInstanceOfExpr(InstanceOfExpr v)
+                    {
+                        returnedExpr.setValue(newInstanceOfExpr
+                                              (newExpr(v.getOp()),
+                                               v.getCheckType()));
+                    }
 
-		    public void caseNewArrayExpr(NewArrayExpr v)
-		    {
-			returnedExpr.setValue(newNewArrayExpr(v.getBaseType(),
-					      v.getSize()));
-		    }
+                    public void caseNewArrayExpr(NewArrayExpr v)
+                    {
+                        returnedExpr.setValue(newNewArrayExpr(v.getBaseType(),
+                                              v.getSize()));
+                    }
 
-		    public void caseNewMultiArrayExpr(NewMultiArrayExpr v)
- 		    {
-			returnedExpr.setValue(newNewMultiArrayExpr
-					      (v.getBaseType(),
-					      v.getSizes()));
-		    }
+                    public void caseNewMultiArrayExpr(NewMultiArrayExpr v)
+                     {
+                        returnedExpr.setValue(newNewMultiArrayExpr
+                                              (v.getBaseType(),
+                                              v.getSizes()));
+                    }
 
-		    public void caseNewExpr(NewExpr v)
-		    {
-			returnedExpr.setValue(newNewExpr(v.getBaseType()));
-		    }
+                    public void caseNewExpr(NewExpr v)
+                    {
+                        returnedExpr.setValue(newNewExpr(v.getBaseType()));
+                    }
 
-		    public void caseLengthExpr(LengthExpr v)
-  		    {
-			returnedExpr.setValue(newLengthExpr
-					      (newExpr(v.getOp())));
-		    }
+                    public void caseLengthExpr(LengthExpr v)
+                      {
+                        returnedExpr.setValue(newLengthExpr
+                                              (newExpr(v.getOp())));
+                    }
 
-		    public void caseNegExpr(NegExpr v)
-		    {
-			returnedExpr.setValue(newNegExpr(newExpr(v.getOp())));
-		    }
+                    public void caseNegExpr(NegExpr v)
+                    {
+                        returnedExpr.setValue(newNegExpr(newExpr(v.getOp())));
+                    }
 
-		    public void defaultCase(Object v)
-		    {
-			returnedExpr.setValue((Expr)v);
-		    }			
-		});
-		return returnedExpr.getValue();
-	    }
-	else 
-	    {
-		if (value instanceof ArrayRef)
-		    return newArrayRef(((ArrayRef)value).getBase(), 
-				       newExpr(((ArrayRef)value).getIndex()));
-		if (value instanceof InstanceFieldRef)
-		    return newInstanceFieldRef
-			(newExpr((((InstanceFieldRef)value).getBase())),
-			 ((InstanceFieldRef)value).getField());
-		/* have Ref/Value, which is fine -- not Jimple-specific. */
-		return value;
-	    }
+                    public void defaultCase(Object v)
+                    {
+                        returnedExpr.setValue((Expr)v);
+                    }                        
+                });
+                return returnedExpr.getValue();
+            }
+        else 
+            {
+                if (value instanceof ArrayRef)
+                    return newArrayRef(((ArrayRef)value).getBase(), 
+                                       newExpr(((ArrayRef)value).getIndex()));
+                if (value instanceof InstanceFieldRef)
+                    return newInstanceFieldRef
+                        (newExpr((((InstanceFieldRef)value).getBase())),
+                         ((InstanceFieldRef)value).getField());
+                /* have Ref/Value, which is fine -- not Jimple-specific. */
+                return value;
+            }
     }
 }

@@ -125,10 +125,6 @@ abstract class AbstractDefinitionStmt extends AbstractStmt
         return list;
     }
 
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
 }
 
 

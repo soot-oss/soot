@@ -681,12 +681,12 @@ public class SootClass
         this.name = name;
     }
 
-    public void printTo(BodyExpr bodyExpr, PrintWriter out)
+    public void printTo(PrintWriter out)
     {
-        printTo(bodyExpr, out, 0);
+        printTo(out, 0);
     }
 
-    public void printTo(BodyExpr bodyExpr, PrintWriter out, int printBodyOptions)
+    public void printTo(PrintWriter out, int printBodyOptions)
     {
         // Print class name + modifiers
         {
@@ -758,7 +758,10 @@ public class SootClass
                     if(!Modifier.isAbstract(method.getModifiers()) &&
                         !Modifier.isNative(method.getModifiers()))
                     {
-                        bodyExpr.resolveFor(method).printTo(out, printBodyOptions);
+                        if(!method.hasActiveBody())
+                            throw new RuntimeException("method " + method.getName() + " has no active body!");
+                        else
+                            method.getActiveBody().printTo(out, printBodyOptions);
 
                         if(methodIt.hasNext())
                             out.println();
@@ -783,19 +786,18 @@ public class SootClass
      */
 
 
-    public void write(BodyExpr bodyExpr)
+    public void write()
     {
-        write(bodyExpr, "");
+        write("");
     }
 
     /**
         Writes the class out to a file.
      */
 
-    public void write(BodyExpr bodyExpr, String outputDir)
+    public void write(String outputDir)
     {
         String outputDirWithSep = "";
-        
             
         if(!outputDir.equals(""))
             outputDirWithSep = outputDir + fileSeparator;
@@ -806,7 +808,7 @@ public class SootClass
             FileOutputStream streamOut = new FileOutputStream(tempFile);
             PrintWriter writerOut = new PrintWriter(streamOut);
 
-            new ca.mcgill.sable.soot.jimple.JasminClass(this, bodyExpr).print(writerOut);
+            new ca.mcgill.sable.soot.jimple.JasminClass(this).print(writerOut);
 
             writerOut.close();
 

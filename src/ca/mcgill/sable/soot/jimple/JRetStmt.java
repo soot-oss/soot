@@ -96,7 +96,7 @@ public class JRetStmt extends AbstractStmt implements RetStmt
 
     protected JRetStmt(ValueBox stmtAddressBox)
     {
-	    this.stmtAddressBox = stmtAddressBox;
+            this.stmtAddressBox = stmtAddressBox;
 
     }
 
@@ -133,18 +133,12 @@ public class JRetStmt extends AbstractStmt implements RetStmt
         return useBoxes;
     }
 
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseRetStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }

@@ -1,7 +1,10 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Grimp, an aggregated-expression Java(TM) bytecode representation. *
- * Copyright (C) 1998 Patrick Lam (plam@sable.mcgill.ca)             *
+ * Baf, a Java(TM) bytecode analyzer framework.                      *
+ * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
+ *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -61,56 +64,36 @@
 
  B) Changes:
 
- - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca). (*)
-   First release of Grimp.
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
+ - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Repackaged all source files and performed extensive modifications.
+   First initial release of Soot.
+
+ - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+   First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.grimp;
+package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
-import ca.mcgill.sable.soot.jimple.*;
 
-public abstract class AbstractGrimpBinopExpr 
-    extends AbstractBinopExpr
-    implements Precedence
+public class BNopInst extends AbstractInst implements NopInst
 {
-    protected AbstractGrimpBinopExpr (Value op1, Value op2)
+    BNopInst()
     {
-        op1Box = Grimp.v().newArgBox(op1); 
-        op2Box = Grimp.v().newArgBox(op2);
     }
 
-    abstract public int getPrecedence();
-
-    private String toString(Value op1, Value op2, 
-                            String leftOp, String rightOp)
+    protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
-        if (op1 instanceof Precedence && 
-            ((Precedence)op1).getPrecedence() < getPrecedence()) 
-            leftOp = "(" + leftOp + ")";
-
-        if (op2 instanceof Precedence &&
-            ((Precedence)op2).getPrecedence() < getPrecedence())
-            rightOp = "(" + rightOp + ")";
-
-        return leftOp + getSymbol() + rightOp;
+        return indentation + "return";
     }
-
-    public String toString()
+    
+    public void apply(Switch sw)
     {
-        Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
-        String leftOp = op1.toString(), rightOp = op2.toString();
-
-        return toString(op1, op2, leftOp, rightOp);
-    }
-
-    public String toBriefString()
-    {
-        Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
-        String leftOp = ((ToBriefString)op1).toBriefString(), 
-            rightOp = ((ToBriefString)op2).toBriefString();
-
-        return toString(op1, op2, leftOp, rightOp);
-    }    
+        ((InstSwitch) sw).caseNopInst(this);
+    }   
 }

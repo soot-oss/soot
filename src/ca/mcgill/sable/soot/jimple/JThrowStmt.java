@@ -92,7 +92,7 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
 
     protected JThrowStmt(ValueBox opBox)
     {
-	this.opBox = opBox;
+        this.opBox = opBox;
     }
 
     public ValueBox getOpBox()
@@ -118,11 +118,6 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
             return indentation + "throw " + opBox.getValue().toString();
     }
 
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
     public List getUseBoxes()
     {
         List useBoxes = new ArrayList();
@@ -133,13 +128,12 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
         return useBoxes;
     }
 
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseThrowStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }

@@ -155,12 +155,12 @@ public class AbstractInstanceFieldRef implements InstanceFieldRef
     
     public boolean equals(Object o)
     {
-	    if (o instanceof AbstractInstanceFieldRef)
-	    {
-		    AbstractInstanceFieldRef fr = (AbstractInstanceFieldRef)o;
-		    return fr.field.equals(field) &&
-		        fr.baseBox.getValue().equals(baseBox.getValue());
-	    }
-	    return false;
+            if (o instanceof AbstractInstanceFieldRef)
+            {
+                    AbstractInstanceFieldRef fr = (AbstractInstanceFieldRef)o;
+                    return fr.field.equals(field) &&
+                        fr.baseBox.getValue().equals(baseBox.getValue());
+            }
+            return false;
     }
 }

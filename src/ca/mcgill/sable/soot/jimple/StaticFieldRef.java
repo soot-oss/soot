@@ -131,13 +131,13 @@ public class StaticFieldRef implements FieldRef, ToBriefString
     
     public boolean equals(Object o)
     {
-	    if (o instanceof StaticFieldRef)
-	    {
+            if (o instanceof StaticFieldRef)
+            {
             StaticFieldRef fr = (StaticFieldRef) o;
             
             return fr.field.equals(field);
-	    }
+            }
         
-	    return false;
+            return false;
     }
 }

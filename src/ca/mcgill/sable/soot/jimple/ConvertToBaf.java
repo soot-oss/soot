@@ -61,43 +61,16 @@
 
  B) Changes:
 
- - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
-
- - Modified on November 1, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   First internal release (Version 0.1).
+ - Modified on May 6, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   First release.
 */
 
-package ca.mcgill.sable.soot;
+package ca.mcgill.sable.soot.jimple;
 
-public class BuildAndStoreBody implements BodyExpr
+import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.*;
+
+public interface ConvertToBaf
 {
-    public final BodyRepresentation bodyRep;
-    public final BodyExpr sourceExpr;
-    public final int buildBodyOptions;
-
-    public BuildAndStoreBody(BodyRepresentation bodyRep, BodyExpr sourceExpr)
-    {
-        this.bodyRep = bodyRep;
-        this.sourceExpr = sourceExpr;
-        this.buildBodyOptions = 0;
-    }
-
-
-    public BuildAndStoreBody(BodyRepresentation bodyRep, BodyExpr sourceExpr, int buildBodyOptions)
-    {
-        this.bodyRep = bodyRep;
-        this.sourceExpr = sourceExpr;
-        this.buildBodyOptions = buildBodyOptions;
-    }
-
-    public Body resolveFor(SootMethod method)
-    {
-        Body body = bodyRep.buildBodyOfFrom(method, sourceExpr.resolveFor(method), buildBodyOptions);
-
-        method.storeBody(bodyRep, body);
-
-        return body;
-    }
+    public void convertToBaf(JimpleToBafContext context, List out);
 }

@@ -78,10 +78,11 @@
 
 package ca.mcgill.sable.soot.jimple;
 
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public abstract class AbstractStmt implements Stmt
+public abstract class AbstractStmt implements Stmt, ConvertToBaf
 {
     Map allMapToUnnamed = new AllMapTo("<unnamed>");
     
@@ -91,19 +92,33 @@ public abstract class AbstractStmt implements Stmt
      * (this is important for aggregation)
      */
 
-    public abstract List getUseBoxes();
+    public List getUseBoxes()
+    {
+        return emptyList;
+    }
 
     /**
      * The list of boxes is dynamically updated as the structure changes.
      */
 
-    public abstract List getDefBoxes();
+    public List getDefBoxes()
+    {
+        return emptyList;
+    }
 
     /**
      * The list of boxes is dynamically updated as the structure changes.
      */
 
-    public abstract List getUnitBoxes();
+    public List getUnitBoxes()
+    {
+        return emptyList;
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        out.add(Baf.v().newNopInst());
+    }
 
     static List emptyList = Collections.unmodifiableList(new ArrayList());
 

@@ -94,23 +94,23 @@ public class JTableSwitchStmt extends AbstractStmt implements TableSwitchStmt
     // This method is necessary to deal with constructor-must-be-first-ism.
     private static UnitBox[] getTargetBoxesArray(List targets)
     {
-	UnitBox[] targetBoxes = new UnitBox[targets.size()];
+        UnitBox[] targetBoxes = new UnitBox[targets.size()];
 
         for(int i = 0; i < targetBoxes.length; i++)
             targetBoxes[i] = Jimple.v().newStmtBox((Stmt) targets.get(i));
 
-	return targetBoxes;
+        return targetBoxes;
     }
 
     JTableSwitchStmt(Value key, int lowIndex, int highIndex, List targets, Unit defaultTarget)
     {
-	this(Jimple.v().newImmediateBox(key), lowIndex, highIndex, 
-	     getTargetBoxesArray(targets), 
-	     Jimple.v().newStmtBox(defaultTarget));
+        this(Jimple.v().newImmediateBox(key), lowIndex, highIndex, 
+             getTargetBoxesArray(targets), 
+             Jimple.v().newStmtBox(defaultTarget));
     }
 
     protected JTableSwitchStmt(ValueBox keyBox, int lowIndex, int highIndex, 
-			       UnitBox[] targetBoxes, UnitBox defaultTargetBox)
+                               UnitBox[] targetBoxes, UnitBox defaultTargetBox)
     {
         this.keyBox = keyBox;
         this.defaultTargetBox = defaultTargetBox;
@@ -234,11 +234,6 @@ public class JTableSwitchStmt extends AbstractStmt implements TableSwitchStmt
         return targetBoxes[index];
     }
 
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
     public List getUseBoxes()
     {
         List list = new ArrayList();
@@ -257,6 +252,10 @@ public class JTableSwitchStmt extends AbstractStmt implements TableSwitchStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseTableSwitchStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }
 

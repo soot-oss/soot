@@ -92,23 +92,12 @@ public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt
         return indentation + "breakpoint";
     }
     
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUseBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseBreakpointStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }

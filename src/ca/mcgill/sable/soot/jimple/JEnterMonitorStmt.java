@@ -94,7 +94,7 @@ public class JEnterMonitorStmt extends AbstractStmt implements EnterMonitorStmt
 
     protected JEnterMonitorStmt(ValueBox opBox)
     {
-	this.opBox = opBox;
+        this.opBox = opBox;
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
@@ -120,11 +120,6 @@ public class JEnterMonitorStmt extends AbstractStmt implements EnterMonitorStmt
         return opBox;
     }
 
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
     public List getUseBoxes()
     {
         List list = new ArrayList();
@@ -135,13 +130,13 @@ public class JEnterMonitorStmt extends AbstractStmt implements EnterMonitorStmt
         return list;
     }
 
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseEnterMonitorStmt(this);
     }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+    }
 }
+

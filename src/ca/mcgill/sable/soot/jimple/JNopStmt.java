@@ -92,23 +92,12 @@ public class JNopStmt extends AbstractStmt implements NopStmt
         return indentation + "nop";
     }
     
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUseBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseNopStmt(this);
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
     }
 }

@@ -89,7 +89,7 @@ import ca.mcgill.sable.util.*;
 
 public class AbstractVirtualInvokeExpr extends AbstractNonStaticInvokeExpr
   implements VirtualInvokeExpr
-					       
+                                               
 {
     protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethod method,
                                 ValueBox[] argBoxes)

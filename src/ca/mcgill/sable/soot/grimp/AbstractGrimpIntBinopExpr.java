@@ -77,13 +77,13 @@ abstract public class AbstractGrimpIntBinopExpr
 {
     AbstractGrimpIntBinopExpr(Value op1, Value op2)
     {
-	this(Grimp.v().newArgBox(op1),
-	     Grimp.v().newArgBox(op2));
+        this(Grimp.v().newArgBox(op1),
+             Grimp.v().newArgBox(op2));
     }
 
     protected AbstractGrimpIntBinopExpr(ValueBox op1Box, ValueBox op2Box)
     {
         this.op1Box = op1Box;
-	this.op2Box = op2Box;
+        this.op2Box = op2Box;
     }
 }
