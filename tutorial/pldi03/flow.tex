@@ -1,4 +1,50 @@
 \begin{slide}{Flow Analysis in Soot}
+\vspace*{0.2in}
+\begin{itemize}
+\item Flow analysis is key part of compiler framework
+\item Soot has easy-to-use framework for intraprocedural flow analysis
+\item Soot itself, and its flow analysis framework, are object-oriented.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Flow Analysis Hierarchy}
+\Tree [.AbstractFlowAnalysis [.BranchedFlowAnalysis Fwd ] [.FlowAnalysis Fwd Bkwd ] ]
+
+\end{slide}
+
+\begin{slide}{Soot Flow Analyses}
+\begin{center}
+{\small 
+\Tree [.AbstractFlowAnalysis 
+[.BranchedFlowAnalysis [.Fwd Casts Nullness ] ] 
+[.FlowAnalysis [.Fwd {PRE analy's\\Avail. Expr.\\Array Bds} ] [.Bkwd { PRE analy's \\ Liveness }  ] ] 
+]
+}
+\end{center}
+\end{slide}
+
+\begin{slide}{HOWTO: Soot Flow Analysis}
+A checklist of your obligations:
+\begin{enumerate}
+\item Subclass \verb+*FlowAnalysis+
+\item Implement constructor
+\item Implement abstraction: {\tt merge()}, {\tt copy()}
+\item Implement flow function {\tt flowThrough()}
+\item Implement initial valuess: {\tt entryInitialFlow()} and {\tt
+newInitialFlow()}
+\end{enumerate}
+\end{slide}
+
+\begin{slide}{HOWTO: Soot Flow Analysis II}
+Soot rewards you with:
+\begin{itemize}
+\item checklist-able implementation of flow analysis
+\item {\tt doAnalysis()} methods to carry out flow analysis
+\item several impls of abstraction domains (flow sets).
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Outline: Soot Flow Analysis Examples}
 Will describe how to implement a flow analysis in Soot and present examples:
 \begin{itemize}
 \item live locals

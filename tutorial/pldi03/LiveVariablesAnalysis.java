@@ -18,11 +18,9 @@ import soot.toolkits.scalar.*;
 //
 class LiveVariablesAnalysis extends BackwardFlowAnalysis
 {
-    private UnitGraph g;
     LiveVariablesAnalysis(UnitGraph g)
     {
         super(g);
-        this.g = g;
 
         doAnalysis();
         
