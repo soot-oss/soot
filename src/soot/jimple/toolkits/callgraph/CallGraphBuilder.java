@@ -24,7 +24,6 @@ import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
 import soot.util.queue.*;
-import soot.jimple.spark.pag.*;
 
 /** Models the call graph.
  * @author Ondrej Lhotak
@@ -80,58 +79,77 @@ public final class CallGraphBuilder
         Body b = m.retrieveActiveBody();
         HashSet receivers = new HashSet();
         getImplicitTargets( m );
-        for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
-            final Stmt s = (Stmt) sIt.next();
-            if( s.containsInvokeExpr() ) {
-                InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
+        findReceivers(m, b, receivers);
+        processReceivers(receivers);
+    }
 
-                if( ie instanceof InstanceInvokeExpr ) {
-                    VirtualCallSite vcs = new VirtualCallSite( s, m );
-                    invokeExprToVCS.put( ie, vcs );
-                    Local receiver = (Local) ((InstanceInvokeExpr)ie).getBase();
-                    HashSet vcss = (HashSet) localToVCS.get( receiver );
-                    if( vcss == null ) {
-                        localToVCS.put( receiver, vcss = new HashSet() );
-                    }
-                    vcss.add( vcs );
-                    receivers.add( receiver );
-
-                } else {
-                    SootMethod tgt = ((StaticInvokeExpr)ie).getMethod();
-                    cg.addEdge( new Edge( m, s, tgt ) );
-                }
-            }
-        }
+    private void processReceivers(HashSet receivers) {
         for( Iterator receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {
             final Local receiver = (Local) receiverIt.next();
             Set types = pa.reachingObjects( receiver ).possibleTypes();
             HashSet vcss = (HashSet) localToVCS.get( receiver );
             for( Iterator vcsIt = vcss.iterator(); vcsIt.hasNext(); ) {
                 final VirtualCallSite vcs = (VirtualCallSite) vcsIt.next();
-                for( Iterator tIt = types.iterator(); tIt.hasNext(); ) {
-                    final Type t = (Type) tIt.next();
-                    VirtualCalls.v().resolve( t, vcs.getInstanceInvokeExpr(), vcs.getContainer(),
-                            targetsQueue );
-                }
-                while(true) {
-                    SootMethod target = (SootMethod) targets.next();
-                    if( target == null ) break;
-                    cg.addEdge(
-                        new Edge( vcs.getContainer(), vcs.getStmt(), target ) );
-                }
+                final Type t;
+                SootMethod target;
+                resolveInvokes(types, vcs);
                 if( vcs.getInstanceInvokeExpr().getMethod().getNumberedSubSignature() == sigStart ) {
-                    for( Iterator tIt = types.iterator(); tIt.hasNext(); ) {
-                        final Type t = (Type) tIt.next();
-                        VirtualCalls.v().resolve( t, vcs.getInstanceInvokeExpr(), vcs.getContainer(),
-                                targetsQueue );
+                    resolveThreadInvokes(types, vcs);
+                }
+            }
+        }
+    }
+
+    private void resolveThreadInvokes(Set types, final VirtualCallSite vcs) {
+        for( Iterator tIt = types.iterator(); tIt.hasNext(); ) {
+            final Type t = (Type) tIt.next();
+            VirtualCalls.v().resolveThread( t, vcs.getInstanceInvokeExpr(), vcs.getContainer(),
+                    targetsQueue );
+        }
+        while(true) {
+            SootMethod target = (SootMethod) targets.next();
+            if( target == null ) break;
+            cg.addEdge(
+                new Edge( vcs.getContainer(), vcs.getStmt(), target,
+                    Edge.THREAD ) );
+        }
+    }
+
+    private void resolveInvokes(Set types, final VirtualCallSite vcs) {
+        for( Iterator tIt = types.iterator(); tIt.hasNext(); ) {
+            final Type t = (Type) tIt.next();
+            VirtualCalls.v().resolve( t, vcs.getInstanceInvokeExpr(), vcs.getContainer(),
+                    targetsQueue );
+        }
+        while(true) {
+            SootMethod target = (SootMethod) targets.next();
+            if( target == null ) break;
+            cg.addEdge(
+                new Edge( vcs.getContainer(), vcs.getStmt(), target ) );
+        }
+    }
+
+    private void findReceivers(SootMethod m, Body b, HashSet receivers) {
+        for (Iterator sIt = b.getUnits().iterator(); sIt.hasNext();) {
+            final Stmt s = (Stmt) sIt.next();
+            if (s.containsInvokeExpr()) {
+                InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
+
+                if (ie instanceof InstanceInvokeExpr) {
+                    VirtualCallSite vcs = new VirtualCallSite(s, m);
+                    invokeExprToVCS.put(ie, vcs);
+                    Local receiver =
+                        (Local) ((InstanceInvokeExpr) ie).getBase();
+                    HashSet vcss = (HashSet) localToVCS.get(receiver);
+                    if (vcss == null) {
+                        localToVCS.put(receiver, vcss = new HashSet());
                     }
-                    while(true) {
-                        SootMethod target = (SootMethod) targets.next();
-                        if( target == null ) break;
-                        cg.addEdge(
-                            new Edge( vcs.getContainer(), vcs.getStmt(), target,
-                                Edge.THREAD ) );
-                    }
+                    vcss.add(vcs);
+                    receivers.add(receiver);
+
+                } else {
+                    SootMethod tgt = ((StaticInvokeExpr) ie).getMethod();
+                    cg.addEdge(new Edge(m, s, tgt));
                 }
             }
         }
@@ -226,15 +244,7 @@ public final class CallGraphBuilder
         final SootClass scl = source.getDeclaringClass();
         if( source.isNative() ) return;
         if( source.getSubSignature().indexOf( "<init>" ) >= 0 ) {
-            addEdge( source, null, scl, sigFinalize, Edge.FINALIZE );
-            FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
-            if( fh.canStoreType( scl.getType(), clPrivilegedAction )
-            ||  fh.canStoreType( scl.getType(), clPrivilegedExceptionAction ) ) {
-                addEdge( source, null, scl, sigObjRun, Edge.PRIVILEGED );
-            }
-            if( fh.canStoreType( scl.getType(), clRunnable ) ) {
-                addEdge( source, null, scl, sigExit, Edge.EXIT );
-            }
+            handleInit(source, scl);
         }
         Body b = source.retrieveActiveBody();
         boolean warnedAlready = false;
@@ -303,6 +313,18 @@ public final class CallGraphBuilder
                     }
                 }
             }
+        }
+    }
+
+    private void handleInit(SootMethod source, final SootClass scl) {
+        addEdge( source, null, scl, sigFinalize, Edge.FINALIZE );
+        FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
+        if( fh.canStoreType( scl.getType(), clPrivilegedAction )
+        ||  fh.canStoreType( scl.getType(), clPrivilegedExceptionAction ) ) {
+            addEdge( source, null, scl, sigObjRun, Edge.PRIVILEGED );
+        }
+        if( fh.canStoreType( scl.getType(), clRunnable ) ) {
+            addEdge( source, null, scl, sigExit, Edge.EXIT );
         }
     }
 
