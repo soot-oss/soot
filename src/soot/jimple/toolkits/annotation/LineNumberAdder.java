@@ -20,6 +20,7 @@ public class LineNumberAdder extends SceneTransformer {
             Iterator methIt = sc.getMethods().iterator();
             while (methIt.hasNext()){
                 SootMethod meth = (SootMethod)methIt.next();
+                if (!meth.isConcrete()) continue;
                 Body body = meth.retrieveActiveBody();
                 Stmt s = (Stmt)body.getUnits().getFirst();
                 while (s instanceof IdentityStmt){
@@ -33,6 +34,7 @@ public class LineNumberAdder extends SceneTransformer {
             Iterator methIt2 = sc.getMethods().iterator();
             while (methIt2.hasNext()){
                 SootMethod meth = (SootMethod)methIt2.next();
+                if (!meth.isConcrete()) continue;
                 Body body = meth.retrieveActiveBody();
                 Stmt s = (Stmt)body.getUnits().getFirst();
                 while (s instanceof IdentityStmt){
