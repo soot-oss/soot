@@ -80,7 +80,7 @@
 package soot.jimple;
 
 import soot.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public interface StmtSwitch extends Switch

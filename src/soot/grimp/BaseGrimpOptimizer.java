@@ -67,9 +67,9 @@
 
 package soot.grimp;
 
-import soot.jimple.toolkit.scalar.*;
+import soot.jimple.toolkits.scalar.*;
 import soot.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class BaseGrimpOptimizer

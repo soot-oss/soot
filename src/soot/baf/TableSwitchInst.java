@@ -1,7 +1,7 @@
 package soot.baf;
 
 import soot.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public interface TableSwitchInst extends Inst

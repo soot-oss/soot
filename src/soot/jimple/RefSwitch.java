@@ -75,7 +75,7 @@
 
 package soot.jimple;
 
-public interface RefSwitch extends ca.mcgill.sable.util.Switch
+public interface RefSwitch extends soot.util.Switch
 {
     public abstract void caseArrayRef(ArrayRef v);
     public abstract void caseStaticFieldRef(StaticFieldRef v);

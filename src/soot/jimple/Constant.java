@@ -80,10 +80,10 @@ package soot.jimple;
 
 import soot.baf.*;
 import soot.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
-public abstract class Constant implements ca.mcgill.sable.util.ValueObject, Value, ConvertToBaf
+public abstract class Constant implements Value, ConvertToBaf
 {
     public List getUseBoxes()
     {

@@ -81,7 +81,7 @@ package soot.baf.internal;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class BIncInst extends AbstractInst implements IncInst

@@ -78,7 +78,8 @@ package soot.grimp;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
-import ca.mcgill.sable.util.*;
+import soot.toolkits.scalar.*;
+import soot.util.*;
 import java.util.*;
 import soot.baf.*;
 import java.io.*;
@@ -299,17 +300,17 @@ public class GrimpBody extends StmtBody
         
         if(BuildGrimpBodyOption.aggressiveAggregating(buildOptions))
         {
-            Aggregator.aggregate(this);
-            GrimpTransformations.foldConstructors(this);
-            Aggregator.aggregate(this);   
-            Transformations.removeUnusedLocals(this);
+            Aggregator.v().transform(this, "gb.a");
+            ConstructorFolder.v().transform(this, "gb.cf");
+            Aggregator.v().transform(this, "gb.a");
+            UnusedLocalEliminator.v().transform(this, "gb.ule");
         }
         else if (!BuildGrimpBodyOption.noAggregating(buildOptions))
         {
-            Aggregator.aggregateStackVariables(this);
-            GrimpTransformations.foldConstructors(this);
-            Aggregator.aggregateStackVariables(this);   
-            Transformations.removeUnusedLocals(this);
+            Aggregator.v().transform(this, "gb.asv1", "only-stack-vars");
+            ConstructorFolder.v().transform(this, "gb.cf");
+            Aggregator.v().transform(this, "gb.asv2", "only-stack-vars");
+            UnusedLocalEliminator.v().transform(this, "gb.ule");
         }    
     }
 

@@ -85,7 +85,7 @@ import soot.jimple.internal.*;
 import soot.jimple.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class GNewInvokeExpr extends AbstractStaticInvokeExpr

@@ -113,7 +113,7 @@
 
 package soot.coffi;
 
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 import soot.*;
 

@@ -108,8 +108,10 @@
 package soot.jimple;
 
 import soot.*;
-import soot.toolkit.scalar.*;
-import ca.mcgill.sable.util.*;
+import soot.toolkits.scalar.*;
+import soot.jimple.toolkits.scalar.*;
+import soot.jimple.toolkits.typing.*;
+import soot.util.*;
 import java.util.*;
 import soot.baf.*;
 import java.io.*;
@@ -208,7 +210,7 @@ public class JimpleBody extends StmtBody
             if(Main.isProfilingOptimization)
                 Main.splitTimer.start();
 
-            LocalSplitter.splitLocals(this);
+            LocalSplitter.v().transform(this, "jb.ls");
 
             if(!BuildJimpleBodyOption.noTyping(buildOptions))
             {
@@ -218,7 +220,7 @@ public class JimpleBody extends StmtBody
                 // Jimple.printStmtListBody_debug(this, System.out);
                 //System.out.println("before typing");
                 //printTo(new PrintWriter(System.out, true));
-                Transformations.assignTypesToLocals(this);
+                TypeAssigner.v().transform(this, "jb.tr");
 
                 //System.out.println("after typing");
                 //printTo(new PrintWriter(System.out, true));
@@ -227,7 +229,7 @@ public class JimpleBody extends StmtBody
                 {
                     patchForTyping();
                     
-                    Transformations.assignTypesToLocals(this);
+                    TypeAssigner.v().transform(this, "jb.trp");
                     
                     if(typingFailed())
                         throw new RuntimeException("type inference failed!");
@@ -240,28 +242,28 @@ public class JimpleBody extends StmtBody
         
         if(BuildJimpleBodyOption.aggressiveAggregating(buildOptions))
         {
-            Aggregator.aggregate(this);
-            Transformations.removeUnusedLocals(this);
+            Aggregator.v().transform(this, "jb.a");
+            UnusedLocalEliminator.v().transform(this, "jb.ule");
         }
         else if(!BuildJimpleBodyOption.noAggregating(buildOptions))
         {
-            Aggregator.aggregateStackVariables(this);
-            Transformations.removeUnusedLocals(this);            
+            Aggregator.v().transform(this, "jb.asv", "only-stack-vars");
+            UnusedLocalEliminator.v().transform(this, "jb.ule");
         }
 
         if(!BuildJimpleBodyOption.useOriginalNames(buildOptions))
-            Transformations.standardizeLocalNames(this);
+            LocalNameStandardizer.v().transform(this, "jb.lns");
         else
         {   
-            LocalPacker.unsplitOriginalLocals(this);
-            Transformations.standardizeStackLocalNames(this);
+            LocalPacker.v().transform(this, "jb.ulp", "unsplit-original-locals");
+            LocalNameStandardizer.v().transform(this, "jb.lns", "only-stack-names");
         }
         
         //printDebugTo(new PrintWriter(System.out, true));
         
         if(BuildJimpleBodyOption.usePacking(buildOptions))
         {
-            LocalPacker.packLocals(this);
+            LocalPacker.v().transform(this, "jb.lp");
         }
 
         if(soot.Main.isProfilingOptimization)
@@ -277,11 +279,10 @@ public class JimpleBody extends StmtBody
         int localCount = 0;
         Local newObjectLocal = null;
         
-        ConstantAndCopyPropagator.aggressivelyPropagateConstantsAndCopies(this);
-        DeadCodeEliminator.eliminateDeadCode(this);
-        
-        Transformations.removeUnusedLocals(this);
-        
+        CopyPropagator.v().transform(this, "jb.pft.cp");
+        DeadAssignmentEliminator.v().transform(this, "jb.pft.dae");
+        UnusedLocalEliminator.v().transform(this, "jb.pft.ule");
+     
         List unitList = new ArrayList(); 
         unitList.addAll(getUnits());
 

@@ -75,7 +75,7 @@
 
 package soot.jimple;
 
-public interface ConstantSwitch extends ca.mcgill.sable.util.Switch
+public interface ConstantSwitch extends soot.util.Switch
 {
     public abstract void caseDoubleConstant(DoubleConstant v);
     public abstract void caseFloatConstant(FloatConstant v);

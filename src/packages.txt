@@ -1,16 +1,17 @@
 soot
+soot.util
 soot.jimple
 soot.jimple.parser
-soot.jimple.toolkit.scalar
-soot.jimple.toolkit.invoke
-soot.jimple.toolkit.typing
+soot.jimple.toolkits.scalar
+soot.jimple.toolkits.invoke
+soot.jimple.toolkits.typing
 soot.jimple.internal
 soot.coffi
 soot.baf
-soot.baf.toolkit.scalar
+soot.baf.toolkits.scalar
 soot.baf.internal
 soot.grimp
 soot.grimp.internal
-soot.toolkit.scalar
-soot.toolkit.graph
+soot.toolkits.scalar
+soot.toolkits.graph
 

@@ -80,7 +80,7 @@ package soot.baf.internal;
 
 import soot.*;
 import soot.baf.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class BDup1_x1Inst extends BDupInst implements Dup1_x1Inst

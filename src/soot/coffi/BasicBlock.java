@@ -108,7 +108,7 @@ package soot.coffi;
 import java.util.Enumeration;
 import java.util.Vector;
 import java.util.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 /** Represents one basic block in a control flow graph.

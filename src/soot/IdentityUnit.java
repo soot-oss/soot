@@ -79,7 +79,7 @@
 package soot;
 
 import soot.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public interface IdentityUnit extends Unit

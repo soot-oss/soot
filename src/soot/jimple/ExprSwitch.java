@@ -71,7 +71,7 @@
 
 package soot.jimple;
 
-public interface ExprSwitch extends ca.mcgill.sable.util.Switch
+public interface ExprSwitch extends soot.util.Switch
 {
     public abstract void caseAddExpr(AddExpr v);
     public abstract void caseAndExpr(AndExpr v);

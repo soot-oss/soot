@@ -75,7 +75,7 @@ import soot.*;
 import soot.grimp.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class GAssignStmt extends JAssignStmt implements AssignStmt

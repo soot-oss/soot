@@ -115,14 +115,14 @@
 
 package soot;
 
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.grimp.*;
 import soot.baf.*;
-import soot.jimple.toolkit.invoke.*;
-import soot.baf.toolkit.scalar.*;
-import soot.toolkit.scalar.*;
+import soot.jimple.toolkits.invoke.*;
+import soot.baf.toolkits.scalar.*;
+import soot.toolkits.scalar.*;
 import java.io.*;
 
 import java.text.*;
@@ -241,14 +241,16 @@ public class Main
     
     public static void main(String[] args) throws RuntimeException
     {
-        boolean isRecursing = false;
+        boolean isApplication = false;
         boolean isAnalyzingLibraries = false;
 
         // The following lists are paired.  false is exclude in the first list.
         List packageInclusionFlags = new ArrayList();
         List packageInclusionMasks = new ArrayList();
 
-        List forcedClasses = new ArrayList();
+        List dynamicClasses = new ArrayList();
+        List processClasses = new ArrayList();
+
         Chain cmdLineClasses = new HashChain();
         packageInclusionFlags.add(new Boolean(false));
         packageInclusionMasks.add("java.");
@@ -264,7 +266,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.108");
+            System.out.println("Soot version 1.beta.4.dev.109");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -275,35 +277,41 @@ public class Main
             System.out.println("and you are welcome to redistribute it under certain conditions.");
             System.out.println("See the accompanying file 'license.html' for details.");
             System.out.println("");
-            System.out.println("Syntax: soot [option]* classname ...  ");
+            System.out.println("Syntax: (single-file mode) soot [option]* classname ...  ");
+            System.out.println("        (application mode) soot --app [option]* mainClassName");
             System.out.println("");
             System.out.println("Output options:");
             System.out.println("  -b, --b                    produce .b (abbreviated .baf) files");
             System.out.println("  -B, --baf                  produce .baf code");
             System.out.println("  -j, --jimp                 produce .jimp (abbreviated .jimple) files");
-            System.out.println("  -J, --jimple               produce .jimple code");
+           System.out.println("  -J, --jimple               produce .jimple code");
             System.out.println("  -g, --grimp                produce .grimp (abbreviated .grimple) files");
             System.out.println("  -G, --grimple              produce .grimple files");
             System.out.println("  -s, --jasmin               produce .jasmin files");
             System.out.println("  -c, --class                produce .class files");
-            System.out.println("");
             System.out.println("  -d PATH                    store produced files in PATH");
-            System.out.println("  -r, --recurse              process dependent classfiles as well");
+            System.out.println("");
+            System.out.println("Application mode options:");
             System.out.println("  -x, --exclude PACKAGE      marks classfiles in PACKAGE (e.g. java.)"); 
-            System.out.println("                             as library classes");
+            System.out.println("                             as context classes");
             System.out.println("  -i, --include PACKAGE      marks classfiles in PACKAGE (e.g. java.util.)");
             System.out.println("                             as application classes");
-            System.out.println("  -a, --analyze-libraries    permit analysis of library classes");
+            System.out.println("  -a, --analyze-context      label context classes as library");
+            System.out.println("  --dynamic-path PATH        mark all class files in PATH as ");
+            System.out.println("                             potentially dynamic classes");
+            System.out.println("");
+            System.out.println("Single-file mode options:");
+            System.out.println("  --process-path PATH        process all classes on the PATH");
             System.out.println("");
             System.out.println("Construction options:");
             System.out.println("  --final-rep REP            produce classfile/jasmin from REP ");
             System.out.println("                                  (jimple, grimp, or baf)");
             System.out.println();
-            System.out.println("Jimple construction options:");
-            System.out.println("  --no-splitting             do not split local variables");
-            System.out.println("  --use-packing              pack locals after conversion");
-            System.out.println("  --no-typing                do not assign types to the local variables");
-            System.out.println("  --no-jimple-aggregating    do not perform any Jimple-level aggregation");
+//            System.out.println("Jimple construction options:");
+//            System.out.println("  --no-splitting             do not split local variables");
+//            System.out.println("  --use-packing              pack locals after conversion");
+//            System.out.println("  --no-typing                do not assign types to the local variables");
+//            System.out.println("  --no-jimple-aggregating    do not perform any Jimple-level aggregation");
 //            System.out.println("  --use-original-names       retain variables name from local variable table");
             System.out.println("");
             System.out.println("Optimization options:");
@@ -311,19 +319,21 @@ public class Main
             System.out.println("  -W  --whole-optimize       perform whole program optimizations on the ");
             System.out.println("                             classfiles");
             System.out.println("");
-            System.out.println("Misc. options:");
+            System.out.println("Miscellaneous options:");
             System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
-            System.out.println("  --force-include PATH       include all class files in PATH for processing");
             System.out.println("  -t, --time                 print out time statistics about tranformations");
             System.out.println("  --subtract-gc              attempt to subtract the gc from the time stats");
             System.out.println("  -v, --verbose              verbose mode");
             System.out.println("  --debug                    avoid catching exceptions");
+            System.out.println("  -p, --phase-option PHASE-NAME KEY[:VALUE]");
+            System.out.println("                             set run-time option KEY to VALUE for PHASE-NAME");
+            System.out.println("                             (default for VALUE is true)");
             System.out.println("");
             System.out.println("Examples:");
             System.out.println("");
-            System.out.println("  soot -x java -x sun -r -d newClasses Simulator");
-            System.out.println("         Transforms all classes starting with Simulator, excluding ");
-            System.out.println("         those in java.*, sun.*, and stores them in newClasses. ");
+            System.out.println("  soot --app -d newClasses Simulator");
+            System.out.println("         Transforms all classes starting with Simulator, ");
+            System.out.println("         and stores them in newClasses. ");
                
             
             System.exit(0);
@@ -354,6 +364,11 @@ public class Main
                     isOptimizing = true;
                 else if(arg.equals("-W") || arg.equals("--whole-optimize"))
                 {
+                    if (!isApplication)
+                    {
+                        System.out.println("Can only whole-program optimize in application mode!");
+                        System.exit(1);
+                    }
                     isOptimizingWhole = true;
                     isOptimizing = true;
                 }
@@ -393,8 +408,16 @@ public class Main
                     if(++i < args.length)
                         sootClassPath = args[i];
                 }
-                else if(arg.equals("-r") || arg.equals("--recurse"))
-                    isRecursing=true;
+                else if(arg.equals("--app"))
+                {
+                    if (i != 0)
+                    {
+                        System.out.println("Application mode (--app) must be set as first argument to Soot!");
+                        System.out.println("eg. java soot.Main --app Simulator");
+                        System.exit(1);
+                    }
+                    isApplication=true;
+                }
                 else if(arg.equals("-d"))
                 {
                     if(++i < args.length)
@@ -402,6 +425,11 @@ public class Main
                 }
                 else if(arg.equals("-x") || arg.equals("--exclude"))
                 {
+                    if (!isApplication)
+                    {
+                        System.out.println("Exclude flag only valid in application mode!");
+                        System.exit(1);
+                    }
                     if(++i < args.length)
                     {
                         packageInclusionFlags.add(new Boolean(false));
@@ -410,13 +438,18 @@ public class Main
                 }
                 else if(arg.equals("-i") || arg.equals("--include"))
                 {
+                    if (!isApplication)
+                    {
+                        System.out.println("Include flag only valid in application mode!");
+                        System.exit(1);
+                    }
                     if(++i < args.length)
                     {
                         packageInclusionFlags.add(new Boolean(true));
                         packageInclusionMasks.add(args[i]);
                     }
                 }
-                else if(arg.equals("-A") || arg.equals("--analyze-libraries"))
+                else if(arg.equals("-A") || arg.equals("--analyze-context"))
                     isAnalyzingLibraries = true;
                 else if(arg.equals("--final-rep"))
                 {
@@ -431,16 +464,56 @@ public class Main
                     }
                     
                 }
-                
-                else if(arg.equals("--debug"))
+                else if (arg.equals("-p") || arg.equals("--phase-option"))
+                {
+                    String phaseName = args[++i];
+                    String option = args[++i];
+                    int colonLoc = option.indexOf(':');
+                    String key = null, value = null;
+
+                    if (colonLoc == -1)
+                    {
+                        key = option;
+                        value = "true";
+                    }
+                    else 
+                    {
+                        key = option.substring(0, option.indexOf(':'));
+                        value = option.substring(option.indexOf(':')+1);
+                    }
+
+                    Scene.v().getPhaseOptions(phaseName).put(key, value);
+                }
+                else if (arg.equals("--debug"))
                     isInDebugMode = true;
                
-                else if (arg.equals("--force-include")) {
+                else if (arg.equals("--dynamic-path"))
+                {
+                    if (!isApplication)
+                    {
+                        System.out.println("Dynamic-path flag only valid in application mode!");
+                        System.exit(1);
+                    }
+
+                    if(++i < args.length) 
+                    {
+                        StringTokenizer tokenizer = new StringTokenizer(args[i], ":");
+                        while(tokenizer.hasMoreTokens()) 
+                            dynamicClasses.addAll(getClassesUnder(tokenizer.nextToken()));
+                    }                    
+                }
+                else if (arg.equals("--process-path")) 
+                {
+                    if (isApplication)
+                    {
+                        System.out.println("Process-path flag only valid in single-file mode!");
+                        System.exit(1);
+                    }
+
                     if(++i < args.length) {                        
                         StringTokenizer tokenizer = new StringTokenizer(args[i], ":");
-                        while(tokenizer.hasMoreTokens()) {
-                            forcedClasses.addAll(getClassesUnder(tokenizer.nextToken()));
-                        }                        
+                        while(tokenizer.hasMoreTokens())
+                            processClasses.addAll(getClassesUnder(tokenizer.nextToken()));
                     }                    
                 }
                 else if(arg.startsWith("-"))
@@ -466,29 +539,46 @@ public class Main
         {
             
             // Command line classes
+                if (isApplication && cmdLineClasses.size() > 1)
+                {
+                    System.out.println("Can only specify one class in application mode!");
+                    System.out.println("The transitive closure of the specified class gets loaded.");
+                    System.out.println("(Did you mean to use single-file mode?)");
+                    System.exit(1);
+                }
+
                 Iterator it = cmdLineClasses.iterator();
-                    
+
                 while(it.hasNext())
                 {
                     String name = (String) it.next();
                     SootClass c = Scene.v().loadClassAndSupport(name);
-                    
+
                     if(mainClass == null)
                         mainClass = c;
                         
                     c.setApplicationClass();
                 }
                 
-            // Forced classes
-                it = forcedClasses.iterator();
+            // Dynamic & process classes
+                it = dynamicClasses.iterator();
                 
                 while(it.hasNext())
                     Scene.v().loadClassAndSupport((String) it.next());                 
+
+                it = processClasses.iterator();
+                
+                while(it.hasNext())
+                {
+                    String s = (String)it.next();
+                    Scene.v().loadClassAndSupport(s);
+                    Scene.v().getSootClass(s).setApplicationClass();
+                }
         }
 
         // Generate classes to process
         {
-            if(isRecursing)
+            if(isApplication)
             {
                 List cc = new ArrayList(); cc.addAll(Scene.v().getContextClasses());
                 Iterator contextClassesIt = cc.iterator();
@@ -799,7 +889,7 @@ public class Main
                 SootMethod m = (SootMethod) methodIt.next();
                 Body body = m.getActiveBody();
 
-                soot.jimple.toolkit.temp.JimpleInliner.inlineAll(body);
+                soot.jimple.toolkits.temp.JimpleInliner.inlineAll(body);
             }
         }
 */
@@ -873,6 +963,3 @@ public class Main
     }
 
 }
-
-
-

@@ -77,8 +77,8 @@
 
 package soot;
 
-import soot.jimple.toolkit.invoke.*;
-import ca.mcgill.sable.util.*;
+import soot.jimple.toolkits.invoke.*;
+import soot.util.*;
 import java.util.*;
 
 public class Scene extends AbstractHost
@@ -95,6 +95,8 @@ public class Scene extends AbstractHost
     Map methodSignatureToMethod = new HashMap();
     Map fieldSignatureToField = new HashMap();
 
+    Map phaseToOptionMaps = new HashMap();
+
     Hierarchy activeHierarchy;
     InvokeGraph activeInvokeGraph;
     boolean allowsPhantomRefs = false;
@@ -110,6 +112,55 @@ public class Scene extends AbstractHost
 
     private int stateCount;
     int getState() { return this.stateCount; }
+
+    /** Returns the default options map associated with phaseName.
+     * Note that this map is special and will not return 'null' 
+     * if the option does not exist.  Instead, it returns the string "false". */
+    public Map getPhaseOptions(String phaseName)
+    {
+        Map m = (Map)phaseToOptionMaps.get(phaseName);
+        if (m == null)
+        {
+            HashMap newMap = new HashMap();
+            phaseToOptionMaps.put(phaseName, newMap);
+            return newMap;
+        }
+        return m;
+    }
+
+    public Map computePhaseOptions(String phaseName, String optionsString)
+    {
+        Map options = new HashMap();
+        Map oldOptions = Scene.v().getPhaseOptions(phaseName);
+        Iterator optionKeysIt = oldOptions.keySet().iterator();
+        while (optionKeysIt.hasNext())
+        {
+            String s = (String)optionKeysIt.next();
+            options.put(s, oldOptions.get(s));
+        }
+
+        StringTokenizer tokenizer = new StringTokenizer(optionsString, " ");
+        while(tokenizer.hasMoreElements()) 
+        {
+            String option = tokenizer.nextToken();
+            int colonLoc = option.indexOf(':');
+            String key = null, value = null;
+
+            if (colonLoc == -1)
+            {
+                key = option;
+                value = "true";
+            }
+            else 
+            {
+                key = option.substring(0, option.indexOf(':'));
+                value = option.substring(option.indexOf(':')+1);
+            }
+
+            options.put(key, value);
+        }
+        return options;
+    }
 
     public void addClass(SootClass c) throws AlreadyManagedException, DuplicateNameException
     {

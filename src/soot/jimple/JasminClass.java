@@ -143,9 +143,9 @@ package soot.jimple;
 
 import soot.*;
 import soot.jimple.internal.*;
-import soot.toolkit.graph.*;
-import soot.toolkit.scalar.*;
-import ca.mcgill.sable.util.*;
+import soot.toolkits.graph.*;
+import soot.toolkits.scalar.*;
+import soot.util.*;
 import java.util.*;
 import java.io.*;
 

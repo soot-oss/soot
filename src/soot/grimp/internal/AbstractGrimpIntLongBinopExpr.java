@@ -69,7 +69,7 @@ package soot.grimp.internal;
 
 import soot.*;
 import soot.grimp.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;

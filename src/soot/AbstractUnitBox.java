@@ -71,7 +71,7 @@
 
 package soot;
 
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public abstract class AbstractUnitBox implements UnitBox

@@ -133,7 +133,7 @@ package soot.coffi;
 import java.io.*;
 import java.util.Enumeration;
 import java.util.Vector;
-import ca.mcgill.sable.util.ClassLocator;
+import soot.util.ClassLocator;
 import java.util.*;
 import soot.Main;
 

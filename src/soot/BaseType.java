@@ -75,7 +75,7 @@
 package soot;
 
 public
-abstract class BaseType extends Type implements ca.mcgill.sable.util.ValueObject
+abstract class BaseType extends Type 
 {
     public abstract String toString();
 }

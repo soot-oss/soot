@@ -85,7 +85,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.jimple.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf

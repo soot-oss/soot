@@ -1,13 +1,9 @@
-
-
 package soot;
 
-
 import java.util.*;
-import soot.*;
+import soot.util.*;
 
-
-class PatchingChain extends AbstractCollection implements Chain {
+public class PatchingChain extends AbstractCollection implements Chain {
 
 
     private Chain innerChain;

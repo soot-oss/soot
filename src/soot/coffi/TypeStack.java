@@ -120,7 +120,7 @@ import soot.*;
  * 'sub-stacks' instead of copying the entire array around.
  */
 
-class TypeStack implements ca.mcgill.sable.util.ValueObject
+class TypeStack
 {
     private static Scene cm;
 

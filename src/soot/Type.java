@@ -71,10 +71,10 @@
 
 package soot;
 
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
-public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchable, ToBriefString
+public abstract class Type implements Switchable, ToBriefString
 {
     public abstract String toString();
     

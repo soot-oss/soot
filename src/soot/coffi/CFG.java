@@ -156,7 +156,7 @@ import java.util.NoSuchElementException;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 /** A Control Flow Graph.

@@ -143,8 +143,8 @@ package soot.baf;
 
 import soot.*;
 import soot.jimple.*;
-import soot.toolkit.graph.*;
-import ca.mcgill.sable.util.*;
+import soot.toolkits.graph.*;
+import soot.util.*;
 import java.util.*;
 import java.io.*;
 

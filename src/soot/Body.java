@@ -96,12 +96,12 @@ package soot;
 
 import soot.baf.*;
 import soot.jimple.*;
-import soot.toolkit.graph.*;
+import soot.toolkits.graph.*;
 import soot.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 import java.io.*;
-import soot.toolkit.scalar.*;
+import soot.toolkits.scalar.*;
 
 
 public abstract class Body
@@ -234,7 +234,7 @@ public abstract class Body
         
     public Chain getLocals() {return localChain;} 
     public Chain getTraps() {return trapChain;}
-    public Chain getUnits() {return unitChain;}
+    public PatchingChain getUnits() {return unitChain;}
                  
     public List getUnitBoxes() 
     {

@@ -72,7 +72,7 @@
 package soot;
 
 import soot.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class ClassFile

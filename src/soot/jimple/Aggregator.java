@@ -137,37 +137,33 @@
 package soot.jimple;
 
 import soot.*;
-import soot.toolkit.scalar.*;
-import soot.toolkit.graph.*;
-import ca.mcgill.sable.util.*;
+import soot.toolkits.scalar.*;
+import soot.toolkits.graph.*;
+import soot.util.*;
 import java.util.*;
 
-public class Aggregator
+public class Aggregator extends BodyTransformer
 {
+   private static Aggregator instance = new Aggregator();
+   private Aggregator() {}
+
+   public static Aggregator v() { return instance; }
+
    public static int nodeCount = 0;
    public static int aggrCount = 0;
 
-   /**
-      Only aggregate stack variables (those which start with $)
-    */
-    
-    public static void aggregateStackVariables(StmtBody body)
-    {
-        aggregate_facade(body, true);
-    } 
-  
     /** Traverse the statements in the given body, looking for
       *  aggregation possibilities; that is, given a def d and a use u,
-      *  d has no other uses, u has no other defs, collapse d and u. */
-    
-    public static void aggregate(StmtBody body)
+      *  d has no other uses, u has no other defs, collapse d and u. 
+      * 
+      * option: only-stack-vars; if this is true, only aggregate variables
+                        starting with $ */
+    protected void internalTransform(Body b, Map options)
     {
-        aggregate_facade(body, false);
-    } 
-    
-   
-    private static void aggregate_facade(StmtBody body, boolean isConservative)
-    {
+        StmtBody body = (StmtBody)b;
+        boolean onlyStackVars = options.containsKey("only-stack-vars") &&
+            options.get("only-stack-vars").equals("true");
+
         int aggregateCount = 1;
 
         if(Main.isProfilingOptimization)
@@ -205,7 +201,7 @@ public class Aggregator
         
             // body.printTo(new java.io.PrintWriter(System.out, true));
             
-            changed = internalAggregate(body, boxToZone, isConservative);
+            changed = internalAggregate(body, boxToZone, onlyStackVars);
             
             aggregateCount++;
         } while(changed);
@@ -215,7 +211,7 @@ public class Aggregator
             
     }
   
-  private static boolean internalAggregate(StmtBody body, Map boxToZone, boolean isConservative)
+  private static boolean internalAggregate(StmtBody body, Map boxToZone, boolean onlyStackVars)
     {
       Iterator stmtIt;
       LocalUses localUses;
@@ -241,7 +237,7 @@ public class Aggregator
           if (!(lhs instanceof Local))
             continue;
     
-          if(isConservative && !((Local) lhs).getName().startsWith("$"))
+          if(onlyStackVars && !((Local) lhs).getName().startsWith("$"))
             continue;
             
           List lu = localUses.getUsesOf((AssignStmt)s);

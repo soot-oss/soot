@@ -113,7 +113,7 @@ package soot.coffi;
 import java.util.*;
 import java.io.*;
 import java.util.Vector;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 
 /** Represents a single method_info object.
  * @see ClassFile

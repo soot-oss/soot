@@ -1,6 +1,6 @@
 package soot.baf.internal;
 
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 import soot.*;
 import soot.baf.*;

@@ -111,7 +111,7 @@ package soot.coffi;
 import java.io.*;
 import soot.*;
 
-class TypeArray implements ca.mcgill.sable.util.ValueObject
+class TypeArray
 {
     private static Scene cm;
 

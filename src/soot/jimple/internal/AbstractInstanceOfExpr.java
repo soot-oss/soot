@@ -84,7 +84,7 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public abstract class AbstractInstanceOfExpr implements InstanceOfExpr

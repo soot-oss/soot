@@ -83,7 +83,7 @@ package soot.baf.internal;
 
 import soot.*;
 import soot.baf.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class BSwapInst extends AbstractInst implements SwapInst

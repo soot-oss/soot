@@ -81,7 +81,7 @@ package soot.baf.internal;
 import soot.*;
 import soot.baf.*;
 import soot.jimple.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class BPushInst extends AbstractInst implements PushInst

@@ -81,7 +81,7 @@
 
  package soot;
 
-public class TypeSwitch implements ca.mcgill.sable.util.Switch
+public class TypeSwitch implements soot.util.Switch
 {
     Object result;
 

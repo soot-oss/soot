@@ -78,7 +78,7 @@
 
 package soot.jimple.internal;
 
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 import soot.*;
 import soot.jimple.*;

@@ -68,11 +68,11 @@
 
 package soot.examples.propagateconstants;
 
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import soot.*;
-import soot.toolkit.scalar.*;
+import soot.toolkits.scalar.*;
 import soot.jimple.*;
-import soot.toolkit.graph.*;
+import soot.toolkits.graph.*;
 import java.io.*;
 import java.util.*;
 

@@ -77,7 +77,7 @@ import soot.jimple.*;
 import soot.grimp.*;
 import soot.grimp.*;
 import soot.grimp.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class GAddExpr extends AbstractGrimpFloatBinopExpr implements AddExpr

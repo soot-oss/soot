@@ -79,7 +79,7 @@
 package soot.baf;
 
 import soot.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class InstBox extends AbstractUnitBox

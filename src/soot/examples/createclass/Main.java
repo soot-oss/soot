@@ -70,7 +70,7 @@ package soot.examples.createclass;
 
 import soot.*;
 import soot.jimple.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.io.*;
 import java.util.*;
 

@@ -70,7 +70,7 @@ package soot.baf;
 
 import soot.*;
 
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import soot.baf.internal.*;
 import java.util.*;
 import java.io.*;

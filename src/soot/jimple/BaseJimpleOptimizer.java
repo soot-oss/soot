@@ -67,9 +67,9 @@
 
 package soot.jimple;
 
-import soot.jimple.toolkit.scalar.*;
+import soot.jimple.toolkits.scalar.*;
 import soot.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class BaseJimpleOptimizer
@@ -82,14 +82,14 @@ public class BaseJimpleOptimizer
 
         // This order is important.  Don't mess with it.
         // Examples to demonstrate this are left as an exercise for the reader.
-        ConstantAndCopyPropagator.propagateConstantsAndCopies(body);
+        CopyPropagator.v().transform(body, "bjo.cp", "ignore-stack-locals");
         
-//        ConstantOptimizer.optimizeConstants(body);
-//          BranchFolder.foldBranches(body);
-            DeadCodeEliminator.eliminateDeadCode(body);
-//          UnreachablePruner.pruneUnreachables(body);
-//          JumpOptimizer.optimizeJumps(body);
-//        UnreachablePruner.pruneUnreachables(body);
+//        ConstantPropagatorAndFolder.v().transform(body, "bjo.cpf");
+//        ConditionalBranchFolder.v().transform(body, "bjo.cbf");
+        DeadAssignmentEliminator.v().transform(body, "bjo.dae");
+//        UnreachableCodeEliminator.v().transform(body, "bjo.uce1");
+//        UnconditionalBranchFolder.v().transform(body, "bjo.ubf");
+//        UnreachableCodeEliminator.v().transform(body, "bjo.uce2");
     }
 }
 

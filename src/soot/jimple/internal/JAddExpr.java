@@ -82,7 +82,7 @@ import soot.baf.*;
 import soot.jimple.*;
 import soot.*;
 import soot.jimple.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 public class JAddExpr extends AbstractJimpleFloatBinopExpr implements AddExpr

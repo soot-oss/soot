@@ -73,10 +73,10 @@ package soot.baf;
 
 import soot.*;
 import soot.jimple.*;
-import soot.baf.toolkit.scalar.*;
-import soot.toolkit.scalar.*;
+import soot.baf.toolkits.scalar.*;
+import soot.toolkits.scalar.*;
 
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 import java.io.*;
 
@@ -175,9 +175,9 @@ public class BafBody extends Body
         
         // Perform some optimizations on the naive baf code
         {
-             LoadStoreOptimizer.v().optimize(this);
-             UnusedLocalRemover.removeUnusedLocals(this);
-             LocalPacker.packLocals(this);
+             LoadStoreOptimizer.v().transform(this, "bb.lso");
+             UnusedLocalEliminator.v().transform(this, "bb.ule");
+             LocalPacker.v().transform(this, "bb.lp");
         }
     }
 }

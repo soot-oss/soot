@@ -86,7 +86,7 @@
 package soot.baf;
 
 import soot.*;
-import ca.mcgill.sable.util.*;
+import soot.util.*;
 import java.util.*;
 
 class BafLocal implements Local
