@@ -79,6 +79,14 @@ public class TestOptionsDialogHandler {
 		<xsl:apply-templates mode="handle" select="sub_phase">
 		<xsl:with-param name="parentAlias" select="$phaseAlias"/>
 		</xsl:apply-templates>
+	
+		<xsl:variable name="sectionAlias" select="translate(alias[last()],'-. ','___')"/>
+		<xsl:for-each select="sub_phase">
+		<xsl:apply-templates mode="handle" select="section">
+		<xsl:with-param name="parentAlias" select="$sectionAlias"/>
+		</xsl:apply-templates>
+		
+		</xsl:for-each>
 		
 		</xsl:for-each>
 		</xsl:for-each>
