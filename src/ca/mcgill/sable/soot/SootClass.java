@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on March 27, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Changed the way classes are retrieved and loaded in.  
+
  - Modified on March 2, 1999 by Patrick Lam (plam@sable.mcgill.ca)
    Added a toString method.
    
@@ -115,7 +118,6 @@ public class SootClass
     boolean isManaged;
 
     SootClass superClass;
-    boolean isResolved;
 
     /**
         Constructs an empty SootClass with the given name and modifiers.
@@ -125,7 +127,6 @@ public class SootClass
     {
         this.name = name;
         this.modifiers = modifiers;
-        isResolved = true;
 
     }
 
@@ -137,77 +138,6 @@ public class SootClass
     {
         this.name = name;
         this.modifiers = 0;
-        isResolved = true;
-    }
-
-    /*
-    public void jimplifyMethods()
-    {
-        resolveIfNecessary();
-
-        Iterator methodIt = getMethods().iterator();
-
-        while(methodIt.hasNext())
-        {
-            SootMethod m = (SootMethod) methodIt.next();
-
-            if(!m.isJimplified())
-                m.jimplify();
-        }
-    }
-    */
-
-    /**
-        Have the methods and fields for this class been loaded? False indicates that the class has been referred
-        to but is not resolved in this sense.
-    */
-
-    public boolean isResolved()
-    {
-        return isResolved;
-    }
-
-    /**
-        Establishes the resolution state of the class (see isResolved()).  This is useful when
-        constructing the class such as with Coffi.
-    */
-
-    public void setResolved(boolean flag)
-    {
-        isResolved = flag;
-    }
-
-    /**
-        Resolves the class by loading the fields and methods from the original class file.  This creates SootFields and SootMethods.
-    */
-
-    public void resolve()
-    {
-        if(isResolved)
-            throw new RuntimeException("SootClass " + getName() + " already resolved!");
-
-        isResolved = true;
-
-        /*
-        if(Main.isProfilingOptimization)
-            Main.resolveTimer.start();
-          */
-
-        ca.mcgill.sable.soot.coffi.Util.resolveClass(this);
-
-        /*
-        if(Main.isProfilingOptimization)
-            Main.resolveTimer.end(); */
-    }
-
-    /**
-        Resolves the class if it has not been resolved yet.
-    */
-
-    public void resolveIfNecessary()
-    {
-        if(!isResolved)
-            resolve();
     }
 
     /**
@@ -243,8 +173,6 @@ public class SootClass
 
     public List getFields()
     {
-        resolveIfNecessary();
-
         return fields;
     }
 
@@ -261,8 +189,6 @@ public class SootClass
 
     public void addField(SootField f) throws AlreadyDeclaredException 
     {
-        resolveIfNecessary();
-
         if(f.isDeclared())
             throw new AlreadyDeclaredException(f.getName());
 
@@ -283,8 +209,6 @@ public class SootClass
 
     public void removeField(SootField f) throws IncorrectDeclarerException
     {
-        resolveIfNecessary();
-
         if(!f.isDeclared() || f.getDeclaringClass() != this)
             throw new IncorrectDeclarerException(f.getName());
 
@@ -298,8 +222,6 @@ public class SootClass
 
     public SootField getField(String name, Type type) throws ca.mcgill.sable.soot.NoSuchFieldException
     {
-        resolveIfNecessary();
-
         Iterator fieldIt = getFields().iterator();
 
         while(fieldIt.hasNext())
@@ -322,7 +244,6 @@ public class SootClass
     {
         boolean found = false;
         SootField foundField = null;
-        resolveIfNecessary();
 
         Iterator fieldIt = getFields().iterator();
 
@@ -353,8 +274,6 @@ public class SootClass
 
     public boolean declaresField(String name)
     {
-        resolveIfNecessary();
-
         Iterator fieldIt = getFields().iterator();
 
         while(fieldIt.hasNext())
@@ -374,8 +293,6 @@ public class SootClass
 
     public boolean declaresField(String name, Type type)
     {
-        resolveIfNecessary();
-
         Iterator fieldIt = getFields().iterator();
 
         while(fieldIt.hasNext())
@@ -405,8 +322,6 @@ public class SootClass
 
     public List getMethods()
     {
-        resolveIfNecessary();
-
         return methods;
     }
 
@@ -419,8 +334,6 @@ public class SootClass
     public SootMethod getMethod(String name, List parameterTypes, Type returnType) throws
         ca.mcgill.sable.soot.NoSuchMethodException
     {
-        resolveIfNecessary();
-        // inefficient
 
         Iterator methodIt = getMethods().iterator();
 
@@ -452,9 +365,6 @@ public class SootClass
         boolean found = false;
         SootMethod foundMethod = null;
         
-        resolveIfNecessary();
-        // inefficient
-
         Iterator methodIt = getMethods().iterator();
 
         while(methodIt.hasNext())
@@ -492,9 +402,6 @@ public class SootClass
         boolean found = false;
         SootMethod foundMethod = null;
         
-        resolveIfNecessary();
-        // inefficient
-
         Iterator methodIt = getMethods().iterator();
 
         while(methodIt.hasNext())
@@ -524,9 +431,6 @@ public class SootClass
 
     public boolean declaresMethod(String name, List parameterTypes)
     {
-        resolveIfNecessary();
-        // inefficient
-
         Iterator methodIt = getMethods().iterator();
 
         while(methodIt.hasNext())
@@ -547,9 +451,6 @@ public class SootClass
 
     public boolean declaresMethod(String name, List parameterTypes, Type returnType)
     {
-        resolveIfNecessary();
-        // inefficient
-
         Iterator methodIt = getMethods().iterator();
 
         while(methodIt.hasNext())
@@ -572,9 +473,6 @@ public class SootClass
 
     public boolean declaresMethod(String name)
     {
-        resolveIfNecessary();
-        // inefficient
-
         Iterator methodIt = getMethods().iterator();
 
         while(methodIt.hasNext())
@@ -601,8 +499,6 @@ public class SootClass
 
     public void addMethod(SootMethod m) throws AlreadyDeclaredException
     {
-        resolveIfNecessary();
-
         if(m.isDeclared())
             throw new AlreadyDeclaredException(m.getName());
 
@@ -622,8 +518,6 @@ public class SootClass
 
     public void removeMethod(SootMethod m) throws IncorrectDeclarerException
     {
-        resolveIfNecessary();
-
         if(!m.isDeclared() || m.getDeclaringClass() != this)
             throw new IncorrectDeclarerException(m.getName());
 
@@ -637,7 +531,6 @@ public class SootClass
 
     public int getModifiers()
     {
-        resolveIfNecessary();
         return modifiers;
     }
 
@@ -647,7 +540,6 @@ public class SootClass
 
     public void setModifiers(int modifiers)
     {
-        resolveIfNecessary();
         this.modifiers = modifiers;
     }
 
@@ -669,8 +561,6 @@ public class SootClass
 
     public List getInterfaces()
     {
-        resolveIfNecessary();
-
         return interfaces;
     }
 
@@ -680,8 +570,6 @@ public class SootClass
 
     public boolean implementsInterface(String name)
     {
-        resolveIfNecessary();
-
         Iterator interfaceIt = getInterfaces().iterator();
 
         while(interfaceIt.hasNext())
@@ -701,7 +589,6 @@ public class SootClass
 
     public void addInterface(SootClass interfaceClass) throws DuplicateNameException
     {
-        resolveIfNecessary();
         if(implementsInterface(interfaceClass.getName()))
             throw new DuplicateNameException(interfaceClass.getName());
 
@@ -735,8 +622,6 @@ public class SootClass
 
     public boolean hasSuperClass()
     {
-        resolveIfNecessary();
-
         return superClass != null;
     }
 
@@ -746,7 +631,6 @@ public class SootClass
 
     public SootClass getSuperClass() throws NoSuperClassException
     {
-        resolveIfNecessary();
         if(superClass == null)
             throw new NoSuperClassException();
         else
@@ -759,7 +643,6 @@ public class SootClass
 
     public void setSuperClass(SootClass c)
     {
-        resolveIfNecessary();
         superClass = c;
     }
 

@@ -169,6 +169,9 @@ public class Main
         deadCodeTimer = new Timer("deadCode"),
         propagatorTimer = new Timer("propagator");
         
+    static public Timer
+        resolverTimer = new Timer("resolver");
+        
     static int conversionLocalCount,
         cleanup1LocalCount,
         splitLocalCount,
@@ -197,7 +200,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.4.dev.8");
+            System.out.println("Jimple version 1.beta.4.dev.9");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -305,7 +308,7 @@ public class Main
 
             for(int i = firstNonOption; i < args.length; i++)
             {
-                SootClass c = cm.getClass(args[i]);
+                SootClass c = cm.loadClassAndSupport(args[i]);
                 String postFix;
                 PrintWriter writerOut = null;
                 FileOutputStream streamOut = null;
@@ -426,9 +429,9 @@ public class Main
 //                System.out.println("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
 //                System.out.println("                 post: " + toTimeString(defsPostTimer, totalTime));
                 System.out.println("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
-                System.out.println("            Use phase1: " + toTimeString(usePhase1Timer, totalTime));
-                System.out.println("            Use phase2: " + toTimeString(usePhase2Timer, totalTime));
-                System.out.println("            Use phase3: " + toTimeString(usePhase3Timer, totalTime));
+//                System.out.println("            Use phase1: " + toTimeString(usePhase1Timer, totalTime));
+//                System.out.println("            Use phase2: " + toTimeString(usePhase2Timer, totalTime));
+//                System.out.println("            Use phase3: " + toTimeString(usePhase3Timer, totalTime));
 
                 System.out.println("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
                 System.out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
@@ -446,6 +449,7 @@ public class Main
                 {
                     float timeInSecs;
 
+                    System.out.println("       Resolving classfiles: " + toTimeString(resolverTimer, totalTime)); 
                     System.out.println(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime)); 
                     System.out.println("        Splitting variables: " + toTimeString(splitTimer, totalTime));
                     System.out.println("            Assigning types: " + toTimeString(assignTimer, totalTime));
@@ -506,8 +510,8 @@ public class Main
 
     private static String toTimeString(Timer timer, long totalTime)
     {
-        DecimalFormat format = new DecimalFormat("0.000");
-        DecimalFormat percFormat = new DecimalFormat("0.0");
+        DecimalFormat format = new DecimalFormat("00.0");
+        DecimalFormat percFormat = new DecimalFormat("00.0");
         
         long time = timer.getTime();
         

@@ -141,7 +141,7 @@ public class method_info {
     * @see ClassFile@parseMethod
     * @see Instruction
     */
-    Instruction instructions;
+    public Instruction instructions;
    /** Control Flow Graph constructed when the method is parsed.
     * @see ClassFile@parse
     * @see CFG

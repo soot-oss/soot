@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 27, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Changed the way classes are retrieved and loaded in.  
+ 
  - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Changed the default resolution state of new classes.
    
@@ -87,7 +90,8 @@ import ca.mcgill.sable.util.*;
 public class SootClassManager
 {
     List classes = new ArrayList();
-
+    Map nameToClass = new HashMap();
+    
     public SootClassManager()
     {
     }
@@ -101,6 +105,7 @@ public class SootClassManager
             throw new DuplicateNameException(c.getName());
 
         classes.add(c);
+        nameToClass.put(c.getName(), c);
         c.isManaged = true;
         c.manager = this;
     }
@@ -111,51 +116,47 @@ public class SootClassManager
             throw new IncorrectManagerException(c.getName());
 
         classes.remove(c);
+        nameToClass.remove(c.getName());
         c.isManaged = false;
     }
 
     public boolean managesClass(String className)
     {
-        Object[] elements = classes.toArray();
-
-        for(int i = 0; i < elements.length; i++)
-        {
-            SootClass c = (SootClass) elements[i];
-
-            if(c.getName().equals(className))
-                return true;
-        }
-
-        return false;
+        return nameToClass.containsKey(className);
     }
 
-    /**
-     * Returns the SootClass with the given className.  Loads it if it is not present.
+    /** 
+     * Loads the given class and all of the required support classes.  Returns the first class.
      */
-
-    public SootClass getClass(String className) throws ClassFileNotFoundException,
+     
+    public SootClass loadClassAndSupport(String className) throws ClassFileNotFoundException,
                                              CorruptClassFileException,
                                              DuplicateNameException
-    {
-        Object[] elements = classes.toArray();
+    {   
+        /*
+        if(Main.isProfilingOptimization)
+            Main.resolveTimer.start();
+        */
+        
+        return ca.mcgill.sable.soot.coffi.Util.resolveClassAndSupportClasses(className, this);
 
-        for(int i = 0; i < elements.length; i++)
-        {
-            SootClass c = (SootClass) elements[i];
+        /*
+        if(Main.isProfilingOptimization)
+            Main.resolveTimer.end(); */
+    }
+    
+    /**
+     * Returns the SootClass with the given className.  
+     */
 
-            if(c.getName().equals(className))
-                return c;
-        }
-
-        // Not there, create an unresolved class.
-        {
-            SootClass sootClass = new SootClass(className);
-
-            sootClass.setResolved(false);
-            addClass(sootClass);
-
-            return sootClass;
-        }
+    public SootClass getClass(String className) throws ClassFileNotFoundException
+    {   
+        SootClass toReturn = (SootClass) nameToClass.get(className);
+        
+        if(toReturn == null)
+            throw new ClassFileNotFoundException();
+        else
+            return toReturn;
     }
 
     public List getClasses()

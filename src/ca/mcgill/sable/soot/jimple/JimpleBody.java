@@ -164,7 +164,16 @@ public class JimpleBody implements StmtBody
             
         if(Main.isProfilingOptimization)
             Main.conversionTimer.start();
-        
+
+        if(coffiMethod.instructions == null)
+        {
+            if(Main.isVerbose)
+                System.out.println("[" + method.getName() +
+                    "]     Parsing Coffi instructions...");
+
+             coffiClass.parseMethod(coffiMethod);
+        }
+                
         if(coffiMethod.cfg == null)
         {
             if(Main.isVerbose)
@@ -173,28 +182,25 @@ public class JimpleBody implements StmtBody
 
              new ca.mcgill.sable.soot.coffi.CFG(coffiMethod);
 
-             if(Main.isVerbose)
-                System.out.println("[" + method.getName() +
-                    "]     Coffi CFG complete.");
-
          }
 
          if(Main.isVerbose)
              System.out.println("[" + method.getName() +
-                "]      Producing naive Jimple...");
+                    "]     Producing naive Jimple...");
+                    
          coffiMethod.cfg.jimplify(coffiClass.constant_pool,
              coffiClass.this_class, this);
-        
+
+         coffiMethod.instructions = null;
+         coffiMethod.cfg = null;
+            // don't need these structures anymore.
+                    
          if(Main.isProfilingOptimization)
          {
              Main.conversionTimer.end();
              Main.conversionLocalCount += getLocalCount();
              Main.conversionStmtCount += stmtList.size();
          }
-
-         if(Main.isVerbose)
-             System.out.println("[" + method.getName() +
-                "]      Naive typeless Jimple produced.");
 
         // Jimple.printStmtList_debug(this, System.out);
 
