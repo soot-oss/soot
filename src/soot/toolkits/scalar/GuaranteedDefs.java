@@ -17,25 +17,23 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.shimple.internal.analysis;
+package soot.toolkits.scalar;
 
-import soot.*;
-import soot.util.*;
 import java.util.*;
-import soot.jimple.*;
+import soot.*;
 import soot.options.*;
 import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
+import soot.util.*;
 
 /**
- * Wrapper class for a flow analysis to find all the definitions
- * guaranteed to exist at any program point.
+ * Find all locals guaranteed to be defined at (just before) a given
+ * program point.
  *
  * @author Navindra Umanee
  **/
-public class GuaranteedDefs 
+public class GuaranteedDefs
 {
-    Map unitToGuaranteedDefs;
+    protected Map unitToGuaranteedDefs;
 
     public GuaranteedDefs(UnitGraph graph)
     {
@@ -45,7 +43,7 @@ public class GuaranteedDefs
 
         GuaranteedDefsAnalysis analysis = new GuaranteedDefsAnalysis(graph);
 
-        // build unit to guaranteed definitions map
+        // build map
         {
             unitToGuaranteedDefs = new HashMap(graph.size() * 2 + 1, 0.7f);
             Iterator unitIt = graph.iterator();
@@ -59,6 +57,10 @@ public class GuaranteedDefs
         }
     }
 
+    /**
+     * Returns a list of locals guaranteed to be defined at (just
+     * before) program point <tt>s</tt>.
+     **/
     public List getGuaranteedDefs(Unit s)
     {
         return (List) unitToGuaranteedDefs.get(s);
@@ -66,52 +68,17 @@ public class GuaranteedDefs
 }
 
 /**
- * Flow analysis to find guaranteed to be available definitions at
- * every program point.
- *
- * <p> Fairly self-documenting.
+ * Flow analysis to determine all locals guaranteed to be defined at a
+ * given program point.
  **/
 class GuaranteedDefsAnalysis extends ForwardFlowAnalysis
 {
-    FlowSet emptySet;
+    FlowSet emptySet = new ArraySparseSet();
     Map unitToGenerateSet;
-    Map unitToPreserveSet;  // complement of killSet 
 
     GuaranteedDefsAnalysis(UnitGraph graph)
     {
         super(graph);
-
-        // define empty set, with proper universe for complementation
-        {
-            Chain locals = graph.getBody().getLocals();
-            FlowUniverse localUniverse = new CollectionFlowUniverse(locals);
-            emptySet = new ArrayPackedSet(localUniverse);
-        }
-
-        // pre-compute preserve sets
-        {
-            unitToPreserveSet = new HashMap(graph.size() * 2 + 1, 0.7f);
-            Iterator unitIt = graph.iterator();
-
-            while(unitIt.hasNext()){
-                Unit s = (Unit) unitIt.next();
-                BoundedFlowSet killSet = (BoundedFlowSet) emptySet.clone();
-                Iterator boxIt = s.getDefBoxes().iterator();
-
-                // calculate kill set
-                while(boxIt.hasNext()){
-                    ValueBox box = (ValueBox) boxIt.next();
-                    
-                    if(box.getValue() instanceof Local)
-                        killSet.add(box.getValue(), killSet);
-                }
-
-                // get preserve set from complement
-                killSet.complement(killSet);
-                unitToPreserveSet.put(s, killSet);
-            }
-            
-        }
 
         // pre-compute generate sets
         {
@@ -138,18 +105,15 @@ class GuaranteedDefsAnalysis extends ForwardFlowAnalysis
     }
 
     /**
-     * all OUTs are initialized to the full set of definitions
-     * OUT(Start) is tweaked in customizeInitialFlowGraph
+     * All INs are initialized to the empty set.
      **/
     protected Object newInitialFlow()
     {
-        BoundedFlowSet initSet = (BoundedFlowSet) emptySet.clone();
-        initSet.complement(initSet);
-        return initSet;
+        return emptySet.clone();
     }
 
     /**
-     * OUT(Start) is the empty set
+     * IN(Start) is the empty set
      **/
     protected Object entryInitialFlow()
     {
@@ -157,17 +121,16 @@ class GuaranteedDefsAnalysis extends ForwardFlowAnalysis
     }
 
     /**
-     * We compute OUT straightforwardly.
+     * OUT is the same as IN plus the genSet.
      **/
     protected void flowThrough(Object inValue, Object unit, Object outValue)
     {
-        FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
+        FlowSet
+            in = (FlowSet) inValue,
+            out = (FlowSet) outValue;
 
-        // Perform kill
-        in.intersection((FlowSet) unitToPreserveSet.get(unit), out);
-
-        // Perform generation
-        out.union((FlowSet) unitToGenerateSet.get(unit), out);
+        // perform generation (kill set is empty)
+        in.union((FlowSet) unitToGenerateSet.get(unit), out);
     }
 
     /**
@@ -175,17 +138,18 @@ class GuaranteedDefsAnalysis extends ForwardFlowAnalysis
      **/
     protected void merge(Object in1, Object in2, Object out)
     {
-        FlowSet inSet1 = (FlowSet) in1,
-            inSet2 = (FlowSet) in2;
-
-        FlowSet outSet = (FlowSet) out;
+        FlowSet
+            inSet1 = (FlowSet) in1,
+            inSet2 = (FlowSet) in2,
+            outSet = (FlowSet) out;
 
         inSet1.intersection(inSet2, outSet);
     }
 
     protected void copy(Object source, Object dest)
     {
-        FlowSet sourceSet = (FlowSet) source,
+        FlowSet
+            sourceSet = (FlowSet) source,
             destSet = (FlowSet) dest;
 
         sourceSet.copy(destSet);

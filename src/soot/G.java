@@ -31,6 +31,7 @@ import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.spark.sets.P2SetFactory;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.pointer.UnionFactory;
+import soot.shimple.*;
 
 /** A class to group together all the global variables in Soot. */
 public class G extends Singletons 
@@ -71,6 +72,8 @@ public class G extends Singletons
     public final Map ClassHierarchy_classHierarchyMap = new HashMap();
     public final Map MethodContext_map = new HashMap();
 
+    public ShimpleFactory shimpleFactory = new DefaultShimpleFactory();
+    
     // hack for J2ME, patch provided by Stephen Chen
     // by default, this is set as false, to use SOOT with J2ME library
     // flag isJ2ME true. Type system works around Clonable, Serializeable.

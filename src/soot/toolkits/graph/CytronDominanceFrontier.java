@@ -17,7 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.shimple.internal.analysis;
+package soot.toolkits.graph;
 
 import soot.*;
 import soot.toolkits.scalar.*;
@@ -36,46 +36,58 @@ import soot.util.*;
  * Computing Static Single Assignment Form and the Control Dependence
  * Graph</a>
  **/
-public class DominanceFrontier
+public class CytronDominanceFrontier implements DominanceFrontier
 {
-    public DominanceFrontier()
+    protected DominatorTree dt;
+    protected Map nodeToFrontier;
+    
+    public CytronDominanceFrontier(DominatorTree dt)
     {
-        super();
+        this.dt = dt;
+        nodeToFrontier = new HashMap();
+        bottomUpDispatch(dt.getHead());
     }
 
-    public DominanceFrontier(List dominatorNodeHeads)
+    public List getDominanceFrontierOf(DominatorNode node)
     {
-        Iterator headsIt = dominatorNodeHeads.iterator();
-        while(headsIt.hasNext())
-            bottomUpDispatch((DominatorNode)headsIt.next());
+        ArrayList frontier = (ArrayList) nodeToFrontier.get(node);
+
+        if(frontier == null)
+            throw new RuntimeException("Frontier not defined for node: " + node);
+
+        return (List) frontier.clone();
     }
 
-    // *** TODO: We should do something more efficient like
-    // *** Topological Sorting.  Soot actually has a implementation
-    // *** available.
+    protected boolean isFrontierKnown(DominatorNode node)
+    {
+        return nodeToFrontier.containsKey(node);
+    }
     
     /**
-     * Make sure we visit children first.
+     * Make sure we visit children first.  This is reverse topological
+     * order.
      **/
-    public void bottomUpDispatch(DominatorNode node)
+    protected void bottomUpDispatch(DominatorNode node)
     {
-        if(node.isFrontierKnown())
+        // *** FIXME: It's annoying that this algorithm is so
+        // *** inefficient in that in traverses the tree from the head
+        // *** to the tail before it does anything.
+        
+        if(isFrontierKnown(node))
             return;
 
-        Iterator children = node.getChildren().iterator();
+        Iterator children = dt.getChildrenOf(node).iterator();
 
         while(children.hasNext()){
             DominatorNode child = (DominatorNode) children.next();
 
-            if(!child.isFrontierKnown())
+            if(!isFrontierKnown(child))
                 bottomUpDispatch(child);
-            else
-                processNode(child);
         }
 
         processNode(node);
     }
-
+    
     /**
      * Calculate dominance frontier for a set of basic blocks.
      *
@@ -95,39 +107,41 @@ public class DominanceFrontier
      *      end
      * </pre>
      **/
-    public void processNode(DominatorNode node)
+    protected void processNode(DominatorNode node)
     {
+        List dominanceFrontier = new ArrayList();
+        
         // local
         {
-            Iterator succsIt = node.getSuccs().iterator();
-
+            Iterator succsIt = dt.getSuccsOf(node).iterator();
+            
             while(succsIt.hasNext()){
                 DominatorNode succ = (DominatorNode) succsIt.next();
-
-                if(!succ.isImmediateDominator(node)){
-                    node.addToDominanceFrontier(succ);
-                }
+                
+                if(!dt.isImmediateDominatorOf(node, succ))
+                    dominanceFrontier.add(succ);
             }
         }
 
         // up
         {
-            Iterator childIt = node.getChildren().iterator();
+            Iterator childIt = dt.getChildrenOf(node).iterator();
+            
             while(childIt.hasNext()){
                 DominatorNode child = (DominatorNode) childIt.next();
+                
+                Iterator childFrontIt = getDominanceFrontierOf(child).iterator();
 
-                Iterator childFrontIt = child.getDominanceFrontier().iterator();
                 while(childFrontIt.hasNext()){
                     DominatorNode childFront = (DominatorNode) childFrontIt.next();
-
-                    if(!childFront.isImmediateDominator(node)){
-                        node.addToDominanceFrontier(childFront);
-                    }
+                    
+                    if(!dt.isImmediateDominatorOf(node, childFront))
+                        dominanceFrontier.add(childFront);
                 }
             }
         }
-
-        node.setFrontierKnown();
+        
+        nodeToFrontier.put(node, dominanceFrontier);
     }
 }
 

@@ -388,8 +388,10 @@ public class Block
                 strBuf.append(someUnit.toString() + ";" + System.getProperty("line.separator"));        
         
 
-        }  else 
-            G.v().out.println("No basic blocks found; must be interface class.");
+        }
+        // Or, it could be an empty block (e.g. Start or Stop Block) --NU
+        // else 
+        // G.v().out.println("No basic blocks found; must be interface class.");
 
         return strBuf.toString();
     }

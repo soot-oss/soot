@@ -23,7 +23,6 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 import soot.shimple.*;
-import soot.shimple.internal.analysis.*;
 import soot.shimple.toolkits.scalar.*;
 import soot.options.*;
 import soot.jimple.*;
@@ -61,7 +60,9 @@ import soot.toolkits.scalar.*;
 public class ShimpleBodyBuilder
 {
     protected ShimpleBody body;
+    protected ShimpleFactory sf;
     protected DominatorTree dt;
+    protected DominanceFrontier df;
     protected BlockGraph cfg;
 
     /**
@@ -89,21 +90,21 @@ public class ShimpleBodyBuilder
     public ShimpleBodyBuilder(ShimpleBody body)
     {
         this.body = body;
+        sf = G.v().shimpleFactory;
+        sf.setBody(body);
         initialize();
         transform();
     }
     
     public void initialize()
     {
-	// Compute a UnitGraph first, so we can feed it to the
-	// BlockGraph constructor and use it ourselves later.
-	ExceptionalUnitGraph ucfg = new ExceptionalUnitGraph(body);
-        cfg = new ExceptionalBlockGraph(ucfg);
-        OneHeadBlockGraph.convert(cfg);
-
-        dt = new DominatorTree(cfg, true);
-        gd = new GuaranteedDefs(ucfg);
+        sf.clearCache();
+        cfg = sf.getBlockGraph();
+        dt = sf.getDominatorTree();
+        df = sf.getDominanceFrontier();
+        gd = new GuaranteedDefs(sf.getUnitGraph());
         origLocals = new ArrayList(body.getLocals());
+
         newPhiNodes = new HashSet();
     }
 
@@ -209,16 +210,16 @@ public class ShimpleBodyBuilder
 
                 while(!workList.empty()){
                     Block block = (Block) workList.pop();
-                    DominatorNode node = dt.fetchNode(block);
-                    Iterator frontierNodes = node.getDominanceFrontier().iterator();
+                    DominatorNode node = dt.getDode(block);
+                    Iterator frontierNodes = df.getDominanceFrontierOf(node).iterator();
 
                     while(frontierNodes.hasNext()){
-                        Block frontierBlock = ((DominatorNode) frontierNodes.next()).getBlock();
+                        Block frontierBlock = (Block) ((DominatorNode) frontierNodes.next()).getGode();
                         int fBIndex = frontierBlock.getIndexInMethod();
                         
                         if(hasAlreadyFlags[fBIndex] < iterCount){
                             // Make sure we don't add useless Phi nodes
-                            if(isLocalDefinedOnEntry(local, frontierBlock))
+                            if(needsPhiNode(local, frontierBlock))
                                 prependTrivialPhiNode(local, frontierBlock);
 
                             hasAlreadyFlags[fBIndex] = iterCount;
@@ -259,12 +260,17 @@ public class ShimpleBodyBuilder
      *
      * <p> Temporary implementation, with much room for improvement.
      **/
-    protected boolean isLocalDefinedOnEntry(Local local, Block block)
+    protected boolean needsPhiNode(Local local, Block block)
     {
         Iterator unitsIt = block.iterator();
 
-        if(!unitsIt.hasNext())
-            throw new RuntimeException("Empty block in CFG?");
+        if(!unitsIt.hasNext()){
+            if(!block.getSuccs().isEmpty())
+                throw new RuntimeException("Empty block in CFG?");
+            
+            // tail block
+            return false;
+        }
 
         Unit unit = (Unit) unitsIt.next();
         
@@ -483,16 +489,16 @@ public class ShimpleBodyBuilder
 
         // Step 3 of 4 -- Recurse over children.
         {
-            DominatorNode node = dt.fetchNode(block);
+            DominatorNode node = dt.getDode(block);
 
             // now we recurse over children
 
-            Iterator childrenIt = node.getChildren().iterator();
+            Iterator childrenIt = dt.getChildrenOf(node).iterator();
 
             while(childrenIt.hasNext()){
                 DominatorNode childNode = (DominatorNode) childrenIt.next();
 
-                renameLocalsSearch(childNode.getBlock());
+                renameLocalsSearch((Block) childNode.getGode());
             }
         }
 
@@ -656,7 +662,7 @@ public class ShimpleBodyBuilder
                     if(challenger.equals(champ))
                         continue;
                     Unit challengerU = challenger.getUnit();
-                
+
                     // kill the challenger
                     if(dominates(champU, challengerU))
                         phiExpr.removeArg(challenger);
@@ -728,8 +734,12 @@ public class ShimpleBodyBuilder
      **/
     public boolean dominates(Unit champ, Unit challenger)
     {
-        if(champ == null || challenger == null)
+        if(champ == null || challenger == null){
+            System.out.println(champ + " " + challenger);
+            System.out.println(body.getMethod());
             throw new RuntimeException("Assertion failed.");
+        }
+        
         
         // self-domination
         if(champ.equals(challenger))
@@ -755,10 +765,10 @@ public class ShimpleBodyBuilder
             throw new RuntimeException("Assertion failed.");
         }
 
-        DominatorNode champNode = dt.fetchNode(champBlock);
-        DominatorNode challengerNode = dt.fetchNode(challengerBlock);
+        DominatorNode champNode = dt.getDode(champBlock);
+        DominatorNode challengerNode = dt.getDode(challengerBlock);
 
-        return(champNode.dominates(challengerNode));
+        return(dt.isDominatorOf(champNode, challengerNode));
     }
     
     /**

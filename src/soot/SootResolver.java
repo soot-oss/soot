@@ -55,8 +55,9 @@ public class SootResolver
     
     /** Returns true if we are resolving all class refs recursively. */
     private boolean resolveEverything() {
-        return( Options.v().whole_program() || Options.v().full_resolver()
-        || Options.v().output_format() == Options.v().output_format_dava );
+        return( Options.v().whole_program() || Options.v().whole_shimple()
+	|| Options.v().full_resolver() 
+	|| Options.v().output_format() == Options.v().output_format_dava );
     }
 
     /** Returns a (possibly not yet resolved) SootClass to be used in references

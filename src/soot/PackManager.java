@@ -336,13 +336,13 @@ public class PackManager {
     }
 
     private void runWholeProgramPacks() {
-        getPack("cg").apply();
-
         if (Options.v().whole_shimple()) {
             ShimpleTransformer.v().transform();
+            getPack("cg").apply();
             getPack("wstp").apply();
             getPack("wsop").apply();
         } else {
+            getPack("cg").apply();
             getPack("wjtp").apply();
             getPack("wjop").apply();
             getPack("wjap").apply();

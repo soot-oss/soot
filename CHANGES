@@ -1,3 +1,9 @@
+Improvements in version 3.0
+
+9. minor fixes and cleanup of Shimple, including:
+ a) made dominator analysis and structure classes public 
+ b) Shimple factory added for finer grained control
+
 Improvements in version 2.1 (Wed, 17 Dec 2003)
 1. bug fixes
 2. switched from make to ant

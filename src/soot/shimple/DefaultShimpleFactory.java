@@ -1,0 +1,122 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2004 Navindra Umanee <navindra@cs.mcgill.ca>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.shimple;
+
+import soot.*;
+import soot.util.*;
+import java.util.*;
+import soot.shimple.*;
+import soot.shimple.internal.*;
+import soot.shimple.toolkits.scalar.*;
+import soot.options.*;
+import soot.jimple.*;
+import soot.jimple.internal.*;
+import soot.jimple.toolkits.base.*;
+import soot.jimple.toolkits.callgraph.*;
+import soot.jimple.toolkits.pointer.*;
+import soot.jimple.toolkits.scalar.*;
+import soot.toolkits.graph.*;
+import soot.toolkits.scalar.*;
+
+/**
+ * @author Navindra Umanee
+ **/
+public class DefaultShimpleFactory implements ShimpleFactory
+{
+    protected Body body;
+    protected BlockGraph bg;
+    protected UnitGraph ug;
+    protected DominatorsFinder dFinder;
+    protected DominatorTree dTree;
+    protected DominanceFrontier dFrontier;
+
+    public DefaultShimpleFactory()
+    {
+    }
+    
+    public void clearCache()
+    {
+        bg = null;
+        ug = null;
+        dFinder = null;
+        dTree = null;
+        dFrontier = null;
+    }
+    
+    public void setBody(Body body)
+    {
+        this.body = body;
+        clearCache();
+    }
+
+    public Body getBody()
+    {
+        if(body == null)
+            throw new RuntimeException("Assertion failed: Call setBody() first.");
+
+        return body;
+    }
+
+    public BlockGraph getBlockGraph()
+    {
+        if(bg != null)
+            return bg;
+
+        bg = new ExceptionalBlockGraph((ExceptionalUnitGraph)getUnitGraph());
+        BlockGraphConverter.addStartStopNodesTo(bg);
+        return bg;
+    }
+
+    public UnitGraph getUnitGraph()
+    {
+        if(ug != null)
+            return ug;
+
+        ug = new ExceptionalUnitGraph(getBody());
+        return ug;
+    }
+    
+    public DominatorsFinder getDominatorsFinder()
+    {
+        if(dFinder != null)
+            return dFinder;
+
+        dFinder = new SimpleDominatorsFinder(getBlockGraph());
+        return dFinder;
+    }
+
+    public DominatorTree getDominatorTree()
+    {
+        if(dTree != null)
+            return dTree;
+
+        dTree = new DominatorTree(getDominatorsFinder());
+        return dTree;
+    }
+    
+    public DominanceFrontier getDominanceFrontier()
+    {
+        if(dFrontier != null)
+            return dFrontier;
+
+        dFrontier = new CytronDominanceFrontier(getDominatorTree());
+        return dFrontier;
+    }
+}
