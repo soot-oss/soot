@@ -783,7 +783,7 @@ public class SootClass extends AbstractHost implements Numberable
         Sets the name of this class.
     */
 
-    public void setName(String name)
+    private void setName(String name)
     {
         this.name = name;
 	

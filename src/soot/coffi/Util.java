@@ -169,8 +169,10 @@ public class Util
             String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
             name = name.replace('/', '.');
                 
-            bclass.setName(name);
-            // replace this classes name with its fully qualified version.
+            if( !name.equals( bclass.getName() ) ) {
+                throw new RuntimeException( 
+                        "Error: class "+name+" read in from a classfile in which "+bclass.getName()+" was expected." );
+            }
     
         }
       
@@ -348,8 +350,10 @@ public class Util
             String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
             name = name.replace('/', '.');
                 	    
-            bclass.setName(name);
-            // replace this classe'ss name with its fully qualified version.    
+            if( !name.equals( bclass.getName() ) ) {
+                throw new RuntimeException( 
+                        "Error: class "+name+" read in from a classfile in which "+bclass.getName()+" was expected." );
+            }
         }
       
         // Set modifier
@@ -566,9 +570,10 @@ public class Util
                 String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
                 name = name.replace('/', '.');
                 
-                bclass.setName(name);
-                // replace this classes name with its fully qualified version.
-    
+                if( !name.equals( bclass.getName() ) ) {
+                    throw new RuntimeException( 
+                            "Error: class "+name+" read in from a classfile in which "+bclass.getName()+" was expected." );
+                }
             }
       
             // Set modifier
