@@ -121,8 +121,10 @@ public class Scene extends AbstractHost
     {
         Pack p;
 
+        // Jimple transformation pack
         packNameToPack.put("jtp", p = new Pack());
 
+        // Jimple optimization pack (-O)
         packNameToPack.put("jop", p = new Pack());
         {
             p.add(new Transform("jop.cp",   CopyPropagator.v()));
@@ -137,13 +139,20 @@ public class Scene extends AbstractHost
             p.add(new Transform("jop.ule",  UnusedLocalEliminator.v()));
         }
 
+        // Whole-Jimple transformation pack (--app)
         packNameToPack.put("wjtp", p = new Pack());
+
+        // Whole-Jimple Optimization pack (--app -W)
         packNameToPack.put("wjop", p = new Pack());
         {
             p.add(new Transform("wjop.smb", StaticMethodBinder.v(), "disabled"));
             p.add(new Transform("wjop.si", StaticInliner.v()));
         }
+
+        // Baf optimization pack
         packNameToPack.put("bop", p = new Pack());
+
+        // Grimp optimization pack
         packNameToPack.put("gop", p = new Pack());
     }
 

@@ -424,6 +424,7 @@ public class JasminClass
             System.out.println("[" + body.getMethod().getName() +
                 "] Performing peephole optimizations...");
 
+        Options.checkOptions(options, "Jimple.JasminClass", "no-peephole");
         boolean disablePeephole = Options.getBoolean(options, "no-peephole");
         disablePeephole = true;
 

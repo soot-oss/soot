@@ -77,6 +77,11 @@ public class JimpleBody extends StmtBody
 
     public void applyPhaseOptions(Map options) 
     { 
+        Options.checkOptions(options, "jb", "no-splitting no-typing "+
+                             "aggregate-all-locals no-aggregating "+
+                             "use-original-names pack-locals no-cp "+
+                             "no-nop-elimination verbatim");
+
 	boolean noSplitting = Options.getBoolean(options, "no-splitting");
 	boolean noTyping = Options.getBoolean(options, "no-typing");
 	boolean aggregateAllLocals = Options.getBoolean(options, "aggregate-all-locals");
