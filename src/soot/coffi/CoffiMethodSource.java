@@ -58,7 +58,7 @@ public class CoffiMethodSource implements MethodSource
 
         */
         if(soot.Main.isVerbose)
-            System.out.println("[" + m.getName() + "] Constructing JimpleBody...");
+            System.out.println("[" + m.getName() + "] Constructing JimpleBody from coffi...");
 
         if(m.isAbstract() || m.isNative() || m.isPhantom())
             return jb;

@@ -177,8 +177,9 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
     }
     
     /**
-     *  Returns true if this method is not phantom, abstract or native.
+     *  Returns true if this method is not phantom, abstract or native, i.e. this method can have a body.
      */
+     
     public boolean isConcrete()
     {
         return !isPhantom() && !isAbstract() && !isNative();
@@ -258,6 +259,21 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
         return activeBody;
     }
 
+    /**
+        Returns the active body if present, else constructs an active body and returns that.
+     */
+     
+    public Body retrieveActiveBody()
+    {
+        if (declaringClass.isContextClass() || declaringClass.isPhantomClass())
+            throw new RuntimeException("cannot get resident body for context or phantom class!");
+
+        if(!hasActiveBody())
+            setActiveBody(this.getBodyFromMethodSource("jb"));
+        
+        return getActiveBody();
+    }
+        
     /**
         Sets the active body for this method. 
      */

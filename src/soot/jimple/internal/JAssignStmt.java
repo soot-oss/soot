@@ -88,10 +88,11 @@ public class JAssignStmt extends AbstractDefinitionStmt
         ((LinkedVariableBox)leftBox).setOtherBox(rightBox); 
         ((LinkedRValueBox)rightBox).setOtherBox(leftBox);
 
-        if (!leftBox.canContainValue(variable) || 
+        if(!leftBox.canContainValue(variable) ||
             !rightBox.canContainValue(rvalue))
-            throw new RuntimeException("illegal assignstmt!");
-
+            throw new RuntimeException("Illegal assignment statement.  Make sure that either left side or right hand side has a local or constant.");
+                    
+        
         defBoxes = new ArrayList();
         defBoxes.add(leftBox);
         defBoxes = Collections.unmodifiableList(defBoxes);

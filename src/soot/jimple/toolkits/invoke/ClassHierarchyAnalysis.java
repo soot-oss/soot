@@ -63,12 +63,13 @@ public class ClassHierarchyAnalysis
                 if(!m.isConcrete())
                     continue;
 
-                Body b = null;
-
+                Body b = m.retrieveActiveBody();
+/*                
                 if (!m.hasActiveBody())
                     b = m.getBodyFromMethodSource("cha.jb");
                 else
                     b = m.getActiveBody();
+*/
 
                 Iterator unitsIt = b.getUnits().iterator();
                 while (unitsIt.hasNext())
