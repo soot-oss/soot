@@ -42,7 +42,7 @@ public class StaticInliner extends SceneTransformer
     public String getDefaultOptions() 
     {
         return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe "+
-            "expansion-factor:3 max-container-size:5000 inlinee-size-factor:1";
+            "expansion-factor:3 max-container-size:5000";
     }
     
     protected void internalTransform(String phaseName, Map options)
@@ -57,7 +57,6 @@ public class StaticInliner extends SceneTransformer
         String modifierOptions = Options.getString(options, "allowed-modifier-changes");
         float expansionFactor = Options.getFloat(options, "expansion-factor");
         int maxContainerSize = Options.getInt(options, "max-container-size");
-        float inlineeFactor = Options.getFloat(options, "inlinee-size-factor");
 
         HashMap instanceToStaticMap = new HashMap();
 
@@ -184,9 +183,7 @@ public class StaticInliner extends SceneTransformer
                 SootMethod container = (SootMethod)l.get(2);
                 int containerSize = ((JimpleBody)(container.getActiveBody())).getUnits().size();
                 
-                System.out.println("inlinee size: " + inlineeSize + "   avgSize: " + avgSize);
 
-//
 //                if (inlineeSize > avgSize * inlineeFactor)
 //                    continue;
 
