@@ -188,10 +188,20 @@ revision control.</p>
 
 <p>With a Subversion client, you can obtain a copy of the
 development version of Soot, as well as any old versions. To obtain the
-latest development version of Soot, use the command:<br>
+latest development version of Soot, use one of the following commands:<br>
+<tt>svn checkout https://svn.sable.mcgill.ca/soot/soot/trunk soot-dev</tt><br>
 <tt>svn export https://svn.sable.mcgill.ca/soot/soot/trunk soot-dev</tt></p>
 
-<p>You can also browse our latest version, as well as a ViewCVS history, using
+<p>The <tt>checkout</tt> version records additional information required
+to update your checked out version of Soot with the repository at a
+later time (with the <tt>svn update</tt> command). The <tt>export</tt>
+version provides a "clean" copy of only the Soot files themselves.</p>
+
+<p>In order to compile Soot from source, you will also need a copy of
+the Jasmin and Polyglot classes, available from the
+<a href="http://www.sable.mcgill.ca/software/">download page</a>.</p>
+
+<p>You can also browse our latest version of the Soot repository, as well as a ViewCVS history, using
 just a web browser. For further instructions, please see
 <a href="http://svn.sable.mcgill.ca/">http://svn.sable.mcgill.ca/</a>.</p>
 </blockquote>
