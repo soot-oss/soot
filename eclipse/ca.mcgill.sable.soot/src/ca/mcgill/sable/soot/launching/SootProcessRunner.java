@@ -29,22 +29,8 @@ import org.eclipse.swt.widgets.*;
 //import ca.mcgill.sable.soot.*;
 
 /**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Handles launching Soot as a separate J*ava process. 
+ * Not currently used.
  */
 public class SootProcessRunner implements IRunnableWithProgress {
 
@@ -74,28 +60,7 @@ public class SootProcessRunner implements IRunnableWithProgress {
             //newProcessStarting();
             setProc(Runtime.getRuntime().exec(exec1));
             
-            /*try {
-        	(new Thread() {
-            	public void run() {
-              		monitor.isCanceled()
-                }
-        	    }).start();
-      		}
-      		catch (Exception e1) {
-      			System.out.println(e1.getMessage());
-      		}*/
-            
-            //StreamGobbler outputGobbler = new StreamGobbler(getProc().getInputStream(), StreamGobbler.OUTPUT_STREAM_TYPE);
-            //StreamGobbler errorGobbler = new StreamGobbler(getProc().getErrorStream(), StreamGobbler.ERROR_STREAM_TYPE);
-                        
-            //getDisplay().asyncExec(
-    		//	outputGobbler
-    	    //);
-            //getDisplay().asyncExec(
-            //	errorGobbler
-            //);
-            
-            //System.out.println("just before wait for");
+           
 			getProc().waitFor();
 		}
         catch (Exception e1) {

@@ -27,12 +27,8 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.testing.PhaseOptionsDialog;
 
 /**
- * @author jlhotak
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Displays the Soot Options dialog and launches Soot with
+ * selected options on selected file.
  */
 public class SootOptionsFileLauncher extends SootFileLauncher {
 
@@ -65,15 +61,9 @@ public class SootOptionsFileLauncher extends SootFileLauncher {
       		ssc.toSaveArray();
       		
       		
-      		//HashMap temp = dialog.getOkMap();
-      		//System.out.println("ok map: "+temp.get("test"));
-      		//TestOptionsDialogHandler handler = new TestOptionsDialogHandler();
       		
-      		// TODO switch these 2 lines
       		setCmd(ssc.toRunArray());
-      		//setCmd(ssc.toRunString());
-      		//System.out.println("to run String: "+ssc.toRunString());
-			String mainClass = dialog.getSootMainClass();
+      		String mainClass = dialog.getSootMainClass();
 			if ((mainClass == null) || (mainClass.length() == 0)){
 				runSootDirectly();
 			}
@@ -87,26 +77,8 @@ public class SootOptionsFileLauncher extends SootFileLauncher {
 			scm.setEditMap(dialog.getEditMap());
 			scm.handleEdits();
       	}
-		/*window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
-			System.out.println("window is null");
-		}
-		else {
-			System.out.println("window not null");
-		}*/
+		
 			
-		/*SootOptionsLauncherDialog dialog = new SootOptionsLauncherDialog(window.getShell(),
-         getSootSelection().getProject());
-      	dialog.open();*/
-      	
-      	/*if (dialog.getReturnCode() == Dialog.CANCEL) {	
-      	}
-      	else {
-			IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-			String cmd = getCmd(settings.get("text_input"));
-			runSootAsProcess(cmd);
-			runFinish();
-      	}*/
 		
 		
 	}
@@ -129,22 +101,7 @@ public class SootOptionsFileLauncher extends SootFileLauncher {
 	}
 	private void setCmd(String user_cmd) {
 		
-		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
-		classpath.append(getSootClasspath().getSootClasspath());
-		classpath.append(getSootClasspath().getSeparator());
-		classpath.append(getClasspathAppend());
 		
-		
-		String output_path = LaunchCommands.OUTPUT_DIR+getOutputLocation();
-				
-		*/
-		//StringBuffer cmd = new StringBuffer();
-		/*cmd.append(classpath+" ");
-		cmd.append(output_path+" ");
-		cmd.append(getToProcess()+" ");
-		if (isExtraCmd()) {
-			cmd.append(getExtraCmd()+" ");
-		}*/
 		getSootCommandList().addSingleOpt(user_cmd);
 		ArrayList commands = new ArrayList();
 		commands.add(getToProcess());

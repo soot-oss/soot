@@ -34,12 +34,8 @@ import org.eclipse.swt.widgets.*;
 import java.util.*;
 
 /**
- * @author jlhotak
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Main Soot Launcher. Handles running Soot directly (or as a 
+ * process) 
  */
 public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	

@@ -19,7 +19,7 @@
 
 package ca.mcgill.sable.soot.launching;
 
-import java.util.Iterator;
+import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.jdt.core.*;
@@ -41,8 +41,11 @@ public class SootSelection {
 	private IJavaProject javaProject;
 	private IFolder folder;
 	private IFile file;
+    private ArrayList fileList;
 	private IClassFile classFile;
+    private ArrayList classFileList;
 	private ICompilationUnit javaFile;
+    private ArrayList javaFileList;
 	private IPackageFragmentRoot packageFragmentRoot;
 	private int type;
 	
@@ -91,7 +94,13 @@ public class SootSelection {
 			setType(CU_SELECTED_TYPE);
 		}
 		
-		
+        Iterator allFilesIt  = getStructured().iterator();
+        while (allFilesIt.hasNext()){
+            if (getFileList() == null) {
+                setFileList(new ArrayList());
+            }
+            getFileList().add(allFilesIt.next());
+        }
 		
 	}
 	
@@ -252,5 +261,47 @@ public class SootSelection {
 	public void setJavaFile(ICompilationUnit unit) {
 		javaFile = unit;
 	}
+
+    /**
+     * @return
+     */
+    public ArrayList getClassFileList() {
+        return classFileList;
+    }
+
+    /**
+     * @return
+     */
+    public ArrayList getFileList() {
+        return fileList;
+    }
+
+    /**
+     * @return
+     */
+    public ArrayList getJavaFileList() {
+        return javaFileList;
+    }
+
+    /**
+     * @param list
+     */
+    public void setClassFileList(ArrayList list) {
+        classFileList = list;
+    }
+
+    /**
+     * @param list
+     */
+    public void setFileList(ArrayList list) {
+        fileList = list;
+    }
+
+    /**
+     * @param list
+     */
+    public void setJavaFileList(ArrayList list) {
+        javaFileList = list;
+    }
 
 }

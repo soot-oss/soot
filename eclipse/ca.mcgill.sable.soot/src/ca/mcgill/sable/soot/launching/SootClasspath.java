@@ -24,12 +24,7 @@ import org.eclipse.jdt.core.*;
 
 
 /**
- * @author jlhotak
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Determines the soot-classpath for running Soot
  */
 public class SootClasspath {
 

@@ -20,12 +20,7 @@
 package ca.mcgill.sable.soot.launching;
 
 /**
- * @author jlhotak
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Listener interface for handling a Soot Output Event
  */
 public interface ISootOutputEventListener {
 

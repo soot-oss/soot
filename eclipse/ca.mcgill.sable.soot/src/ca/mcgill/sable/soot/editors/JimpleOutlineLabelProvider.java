@@ -163,6 +163,7 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
 	public void dispose() {
+        System.out.println("disposing images");
 		if (getImageCache() != null){
 			Iterator it = getImageCache().values().iterator();
 			while (it.hasNext()){

@@ -28,12 +28,9 @@ import org.eclipse.jface.dialogs.*;
 //import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.testing.*;
 /**
- * @author jlhotak
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Displays the Soot Options dialog and launches Soot with
+ * selected options on all class files in output dir of 
+ * selected project.
  */
 public class SootOptionsProjectLauncher extends SootProjectLauncher {
 
@@ -41,40 +38,7 @@ public class SootOptionsProjectLauncher extends SootProjectLauncher {
 		
 		super.run(action);
 		
-		/*SootOptionsLauncherDialog dialog = new SootOptionsLauncherDialog(window.getShell(),
-         getSootSelection().getProject());
-      	dialog.open();
-      	*/
-      	/*TestDialog dialog = new TestDialog(window.getShell(),
-         getSootSelection().getProject());
-        dialog.open();
-        
-        IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-        System.out.println(settings.get("jimple_button_select")); 
-        System.out.println(settings.get("jimp_button_select"));
-        System.out.println(settings.get("grimp_button_select"));
-        System.out.println(settings.get("b_button_select"));
-        System.out.println(settings.get("baf_button_select"));
-         */
-      	/*if (dialog.getReturnCode() == Dialog.CANCEL) {	
-      	}
-      	else {
-			IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-			String cmd = getCmd(settings.get("text_input"));
-			runSootAsProcess(cmd);
-			runFinish();
-      	}*/
-      	
-      	/*OptionsDialog dialog = new OptionsDialog(window.getShell());
-        dialog.open();
-        if (dialog.getReturnCode() == Dialog.CANCEL) {	
-      	}
-      	else {
-      		TestOptionsDialogHandler handler = new TestOptionsDialogHandler();
-      		String cmd = getCmd(handler.getCmdLine());
-			runSootAsProcess(cmd);
-			runFinish();
-      	}*/
+		
       	PhaseOptionsDialog dialog = new PhaseOptionsDialog(window.getShell());
         setSdc(new SootDefaultCommands(dialog));
         presetDialog();
@@ -88,11 +52,6 @@ public class SootOptionsProjectLauncher extends SootProjectLauncher {
       		SootSavedConfiguration ssc = new SootSavedConfiguration("Temp", dialog.getConfig());
       		ssc.toSaveArray();
       		
-      		
-      		//HashMap temp = dialog.getOkMap();
-      		//System.out.println("ok map: "+temp.get("test"));
-      		//TestOptionsDialogHandler handler = new TestOptionsDialogHandler();
-      		// TODO switch these 2 lines
       		
       		setCmd(ssc.toRunArray());
       		//setCmd(ssc.toRunString());
@@ -136,21 +95,7 @@ public class SootOptionsProjectLauncher extends SootProjectLauncher {
 	
 	private void setCmd(String user_cmd) {
 		
-		
-		//String output_path = LaunchCommands.OUTPUT_DIR+getOutputLocation();
-		//getSootCommandList().addDoubleOpt(LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
-		//StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
-		//classpath.append(getSootClasspath().getSootClasspath());
-		//classpath.append(getSootClasspath().getSeparator());
- 		//classpath.append(getProcess_path());
- 	 		
-		//StringBuffer cmd = new StringBuffer();
-		//cmd.append(classpath+" ");
 		getSootCommandList().addSingleOpt(user_cmd);
-		//cmd.append(user_cmd+" ");
-		//cmd.append(output_path+" ");
-		//getSootCommandList().addDoubleOpt(LaunchCommands.PROCESS_PATH,getProcess_path());
-		
-	  	//return cmd.toString();
+	
 	}
 }

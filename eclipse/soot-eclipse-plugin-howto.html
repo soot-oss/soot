@@ -26,19 +26,35 @@ This isn't actually necessary to use Soot, but it is if you want to demonstrate 
 
 <p>
 As Soot runs on java classes, you must create or import some.
-Follow the Eclipse guidelines on creating a Java Project found at www.eclipse.org (look for Online Help section)
+
+<h5>Example</h5>
+Step 1: click <b>File</b> -&gt; <b>New</b> -&gt; <b>Project</b><br>
+This brings up the New Project Dialog<br>
+Step 2: click <b>Java</b> then <b>Java Project</b> then <b>Next</b><br>
+Step 3: enter a name for your project and click <b>Next</b><br>
+This brings you to New Java Project Dialog and the Source Tab<br>
+Step 4: click <b>Add Folder</b><br>
+This brings you to the Source Folder Selection Dialog<br>
+Step 5: click <b>Create New Folder</b><br>
+Step 6: enter src for Folder Name and click <b>OK</b><br>
+Step 7: click <b>OK</b><br>
+Step 8: click <b>Yes</b> in response to the question about changing folders<br>
+Step 9: click <b>Finish</b><br>
+<br>
+You now have a project with a src folder ready for use. For more information about Eclipse Help see <a href="http://www.eclipse.org">www.eclipse.org</a> (look for Online Help section).
 <br><br><b>
+<h4>Caveat: source folders</h4> 
 One note, currently there are problems with the soot plugin in you don't make a src folder in your Java project and instead use the project as the source folder. What happens is the first time you run Soot everything works fine, except that the sootOutput folder automatically becaomes a package (as the project output folder is the project folder). The second time you run Soot (at the project level) it tries to process files inside the sootOutput folder which are not on the class path and all sorts of errors occur. So don't do this. </b>
 <p>
 <hr>
 
-<h4>Caveat: source folders</h4> 
+<!--<h4>Caveat: source folders</h4> 
 
 <p>Currently, there are problems with the
 soot plugin if you don't make a <code>src</code> folder in your Java
 project and put your source files there.  You cannot use the project
 as the source folder yet.
-</p>
+</p>-->
 
 <h4>
 Running Soot on all the classes in the output folder of your project:

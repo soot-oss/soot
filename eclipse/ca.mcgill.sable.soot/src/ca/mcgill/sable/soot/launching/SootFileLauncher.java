@@ -29,16 +29,13 @@ import soot.coffi.*;
 
 
 import java.io.*;
+import java.util.*;
 
 import ca.mcgill.sable.soot.SootPlugin;
 
 /**
- * @author jlhotak
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Soot Launcher for files. Determines file type, project
+ * classpath, src-precedence
  */
 public class SootFileLauncher extends SootLauncher {
 
@@ -51,6 +48,17 @@ public class SootFileLauncher extends SootLauncher {
 	private boolean isSrcPrec;
 	private boolean doNotContinue = false;
 	
+    public void handleMultipleFiles(IAction action) {
+        super.run(action);
+        setDoNotContinue(false);
+        
+        Iterator it = getSootSelection().getFileList().iterator();
+        while (it.hasNext()){
+            // must set multiple toProcess but also classpaths and 
+            // ouptut directories
+        }
+    }
+    
 	public void run(IAction action){
 		super.run(action);
 		

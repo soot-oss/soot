@@ -29,22 +29,7 @@ import org.eclipse.swt.widgets.Display;
 import ca.mcgill.sable.soot.util.*;
 
 /**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Runs Soot and creates Handler for Soot output.
  */
 public class SootRunner implements IRunnableWithProgress {
 
@@ -70,82 +55,26 @@ public class SootRunner implements IRunnableWithProgress {
 		try {
 		
 			final PipedInputStream pis = new PipedInputStream();
-			//System.out.println("created inputstream");
-			//StreamGobbler sootIn = new StreamGobbler(new PipedInputStream(),0);
+			
       		final PipedOutputStream pos = new PipedOutputStream(pis);
       		//System.out.println("created outputstream");
       		final PrintStream sootOut = new PrintStream(pos);
-      		//System.out.println("created printstream");
       		
-      		//StreamGobbler out = new StreamGobbler(pis,0);
-      		//out.run();
-        	//(new Thread() {
-            	//public void run() {
             final String [] cmdFinal = getCmd();
-            //System.out.println("made cmd final");
             
-            //try {
             	
             SootThread sootThread = new SootThread(getDisplay(), getMainClass());
             sootThread.setCmd(cmdFinal);
             sootThread.setSootOut(sootOut);
             //System.out.println("About to start sootThread");
             sootThread.start();
-            //sootThread.join();
-            //System.out.println("About to start sootThread");
-            
-            /* {
-            	public void run() {
-            			Main.main(cmdFinal, sootOut);
-            			//System.out.println("called Soot");
-            		}
-        		};
-        		sootThread
-            }
-            
-           
-            
-        		(new Thread() {
-            		public void run() {
-            			Main.main(cmdFinal, sootOut);
-            			//System.out.println("called Soot");
-            		}
-        		}).start();*/
-            //}
-            //catch(Exception e) {
-            	//System.out.println(e.getMessage());
-            //}
-            //StreamGobbler out = new StreamGobbler(pis, StreamGobbler.OUTPUT_STREAM_TYPE);
-        
+             
         	StreamGobbler out = new StreamGobbler(getDisplay(), pis, StreamGobbler.OUTPUT_STREAM_TYPE);
         	out.start();
-        	//getDisplay().asyncExec(
-        	//out);
+        	
         	
         	sootThread.join();
-            //System.out.println("After sootThread join");
             
-        	
-        	//out.run();	
-        	//System.out.println("tried to run streamgobbler");
-        	
-            /*    	try {
-                	BufferedReader br = new BufferedReader(new InputStreamReader(pis));
-                	while (true) {
-                	
-                	String temp = (String)br.readLine();
-                	if (temp == null) break;
-                	System.out.println(temp);
-                	}
-                	}
-                	catch(IOException e1) {
-                		System.out.println(e1.getMessage());
-                	}
-        		}
-            }).start();
-            //StreamGobbler out = new StreamGobbler(pis,0);        	
-              
-      	*/
       	}
       	catch (Exception e) {
       		System.out.println(e.getStackTrace());
