@@ -27,6 +27,7 @@ package soot.jimple.toolkits.invoke;
 
 import soot.*;
 import soot.jimple.*;
+import soot.jimple.toolkits.scalar.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
@@ -46,8 +47,9 @@ public class StaticMethodBinder extends SceneTransformer
 
         HashMap instanceToStaticMap = new HashMap();
 
-        InvokeGraph g = Scene.v().getActiveInvokeGraph();
-
+        InvokeGraph graph = Scene.v().getActiveInvokeGraph();
+        Hierarchy hierarchy = Scene.v().getActiveHierarchy();
+                
         Iterator classesIt = Scene.v().getApplicationClasses().iterator();
         while (classesIt.hasNext())
         {
@@ -60,8 +62,8 @@ public class StaticMethodBinder extends SceneTransformer
             {
                 SootMethod container = (SootMethod)methodsList.removeFirst();
                 JimpleBody b = (JimpleBody)container.getActiveBody();
-
-                if (g.getSitesOf(container).size() == 0)
+                
+                if (graph.getSitesOf(container).size() == 0)
                     continue;
 
                 List unitList = new ArrayList(); unitList.addAll(b.getUnits());
@@ -73,22 +75,24 @@ public class StaticMethodBinder extends SceneTransformer
                     if (!s.containsInvokeExpr())
                         continue;
 
+
                     InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
 
-                    List targets = g.getTargetsOf(ie);
-
-                    if (targets.size() != 1 || 
-                        ie instanceof StaticInvokeExpr || 
+                    if (ie instanceof StaticInvokeExpr || 
                         ie instanceof SpecialInvokeExpr)
+                        continue;
+
+                    List targets = graph.getTargetsOf(ie);
+
+                    if (targets.size() != -1)
                         continue;
 
                     // Ok, we have an Interface or VirtualInvoke going to 1.
 
                     SootMethod target = (SootMethod)targets.get(0);
+                    
                     if (!target.getDeclaringClass().isApplicationClass())
                         continue;
-                    System.out.println("DEBUG: trying to statically bind "+target);
-                    System.out.println("invoke expr was "+ie);
 
                     boolean targetUsesThis = methodUsesThis(target);
 
@@ -132,8 +136,13 @@ public class StaticMethodBinder extends SceneTransformer
                                     InvokeExpr newIE = (InvokeExpr)newStmt.getInvokeExpr();
                                     InvokeExpr oldIE = (InvokeExpr)oldStmt.getInvokeExpr();
 
-                                    g.addSite(newIE, ct);
-                                    g.copyTargets(oldIE, newIE);
+                                    if(!(newIE instanceof SpecialInvokeExpr))
+                                    {
+                                        // Might have been added by the ThrowManager without patching graph
+                                        
+                                        graph.addSite(newIE, ct);
+                                        graph.copyTargets(oldIE, newIE);
+                                    }
                                 }
                             }
                         }
@@ -193,7 +202,7 @@ public class StaticMethodBinder extends SceneTransformer
                         parameterType = target.getDeclaringClass();
 
                         if (localType.isInterface() ||
-                             Scene.v().getActiveHierarchy().isClassSuperclassOf(localType, parameterType))
+                             hierarchy.isClassSuperclassOf(localType, parameterType))
                         {
                             Local castee = Jimple.v().newLocal("__castee", parameterType.getType());
                             b.getLocals().add(castee);
@@ -217,9 +226,9 @@ public class StaticMethodBinder extends SceneTransformer
                         ValueBox ieBox = s.getInvokeExprBox();
                         ieBox.setValue(sie);
 
-                        g.removeSite(ie);
-                        g.addSite(sie, container);
-                        g.addTarget(sie, clonedTarget);
+                        graph.removeSite(ie);
+                        graph.addSite(sie, container);
+                        graph.addTarget(sie, clonedTarget);
                     }
 
                     // Finally, (if enabled), add a null pointer check.
@@ -253,9 +262,15 @@ public class StaticMethodBinder extends SceneTransformer
                                  s);
                         }
                     }
+                    
+                    // Resolve name collisions.
+                        LocalNameStandardizer.v().transform(b, "smb.lns");
+                    
                 }
             }
         }
+        
+        Scene.v().releaseActiveInvokeGraph();
     }
 
     private static boolean methodUsesThis(SootMethod m)
@@ -280,3 +295,5 @@ public class StaticMethodBinder extends SceneTransformer
         throw new RuntimeException("couldn't find identityref!");
     }
 }
+
+

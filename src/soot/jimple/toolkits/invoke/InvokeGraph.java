@@ -114,6 +114,7 @@ public class InvokeGraph
     /** This method is to be called after the imitator has been addInvokeExpr'd. */
     public void copyTargets(InvokeExpr roleModel, InvokeExpr imitator)
     {
+        System.out.println("copy for: " + roleModel);
         Iterator it = getTargetsOf(roleModel).iterator();
         while (it.hasNext())
             addTarget(imitator, (SootMethod)it.next());
