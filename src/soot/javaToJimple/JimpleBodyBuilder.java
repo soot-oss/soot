@@ -270,8 +270,9 @@ public class JimpleBodyBuilder {
         
         // **** this is weird because the formals actually come from the 
         // method signaturere in the source and don't have there own line
-        Util.addLineTag(stmt, formal);
-        Util.addPosTag(((soot.jimple.IdentityStmt) stmt).getRightOpBox(), formal.position());
+        //Util.addLineTag(stmt, formal);
+        //Util.addPosTag(((soot.jimple.IdentityStmt) stmt).getRightOpBox(), formal.position());
+        Util.addLnPosTags(((soot.jimple.IdentityStmt) stmt).getRightOpBox(), formal.position());
     }
 
     /**
