@@ -125,6 +125,12 @@ public class DeadAssignmentEliminator extends BodyTransformer
                                 isEssential = true;    
                             }        
                         }
+
+                        else if(rhs instanceof CastExpr)
+                        {
+                            // Can trigger ClassCastException
+                            isEssential = true;
+                        }
                     }
                 }
                 
