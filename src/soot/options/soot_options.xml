@@ -21,7 +21,7 @@
 			<alias>v</alias>
 			<alias>verbose</alias>
 			<short_desc>verbose mode</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Verbose mode.</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Application Mode</name>
@@ -51,7 +51,7 @@
 			<alias>soot-class-path</alias>
 			<alias>soot-classpath</alias>
 			<short_desc>uses given PATH as the classpath for finding classes for Soot processing</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Use PATH to resolve types.</long_desc>
 		</stropt>
 		<multiopt>
 			<name>Input Source Precedence</name>
@@ -70,7 +70,7 @@
 				<short_desc>Use Jimple for source of Soot</short_desc>
 			</value>
 			<short_desc>sets the source precedence for Soot</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>By default, Soot will resolve classes from .class files. If a class cannot be resolved from a .class file, Soot will attempt to resolve it from a .jimple file. Setting this option to jimple specifies the opposite policy: classes are resolved from .jimple files, and only if this fails will an attempt be made to resolve them from .class files.</long_desc>
 		</multiopt>
 		<boolopt>
 			<name>Allow Phantom References</name>
@@ -86,7 +86,7 @@
 			<alias>d</alias>
 			<alias>output-dir</alias>
 			<short_desc>store produced files in PATH</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Specifies that the outputted files are to be stored in PATH. This may be relative to the working directory.</long_desc>
 		</stropt>
 		<multiopt>
 			<name>Output Format</name>
@@ -97,41 +97,48 @@
 				<alias>j</alias>
 				<alias>jimp</alias>
 				<short_desc>produce .jimp (abbreviated .jimple) files</short_desc>
+                                <long_desc>Produces .jimp files. These contain an abbreviated textual form for soot's Jimple internal representation. Can contain ambiguous references.</long_desc>
 			</value>
 			<value>
 				<name>Jimple File</name>
 				<alias>J</alias>
 				<alias>jimple</alias>
 				<short_desc>produce .jimple code</short_desc>
+                                <long_desc>Produces .jimple files that contain a textual representation for types in soot's Jimple internal representation.</long_desc>
 			</value>
 			<value>
 				<name>Baf File</name>
 				<alias>B</alias>
 				<alias>baf</alias>
 				<short_desc>produce .baf code</short_desc>
+                                <long_desc>Produces .baf files that contain a textual representation for types in soot's Baf internal representation.</long_desc>
 			</value>
 			<value>
 				<name>Abbreviated Baf File</name>
 				<alias>b</alias>
 				<short_desc>produce .b (abbreviated .baf) files</short_desc>
+                                <long_desc>Produces .b files. These contain an abbreviated textual form for soot's Baf internal representation. It is easier to read than its non-abbreviated counterpart, but can also contain ambiguities; for instance, method signatures are not uniquely determined.</long_desc>
 			</value>
 			<value>
 				<name>Grimp File</name>
 				<alias>g</alias>
 				<alias>grimp</alias>
 				<short_desc>produce .grimp (abbreviated .grimple) files</short_desc>
+                                <long_desc>Produces .grimp files. These contain an abbreviated textual form for soot's Grimp internal representation. Can contain ambiguous references.</long_desc>
 			</value>
 			<value>
 				<name>Grimple File</name>
 				<alias>G</alias>
 				<alias>grimple</alias>
 				<short_desc>produce .grimple files</short_desc>
+                                <long_desc>Produces .grimple files that contain a textual representation for types in soot's Grimp internal representation.</long_desc>
 			</value>
 			<value>
 				<name>Xml File</name>
 				<alias>X</alias>
 				<alias>xml</alias>
 				<short_desc>produce .xml files</short_desc>
+                                <long_desc>Produces .xml files of classes based on the Jimple statements.</long_desc>
 			</value>
 			<value>
 				<name>No Output File</name>
@@ -144,6 +151,7 @@
 				<alias>s</alias>
 				<alias>jasmin</alias>
 				<short_desc>produce .jasmin files</short_desc>
+                                <long_desc>Produces .jasmin files as output. These can be understood by the jasmin bytecode assembler tool.</long_desc>
 			</value>
 			<value>
 				<name>Class File</name>
@@ -151,6 +159,7 @@
 				<alias>class</alias>
 				<default/>
 				<short_desc>produce .class files</short_desc>
+                                <long_desc>Produces Java .class files executable under any Java Virtual Machine.</long_desc>
 			</value>
 			<value>
 				<name>Dava Decompiled File</name>
@@ -181,11 +190,12 @@
 			<alias>p</alias>
 			<alias>phase-option</alias>
 			<short_desc>set run-time option KEY to VALUE for PHASE-NAME</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Sets run-time option KEY to VALUE for PHASE-NAME (default for VALUE is true).</long_desc>
 			<phase>
 				<name>Jimple Body Creation</name>
 				<alias>jb</alias>
                                 <class>JBOptions</class>
+                                <long_desc>This phase is active during JimpleBody creation; Soot will always start by creating JimpleBody's from a method source - either coffi, for reading .class files, or the jimple parser, for reading .jimple files.</long_desc>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
@@ -214,6 +224,7 @@ standard names to local variables, according to the variable type.
 				<sub_phase>
 					<name>Pre-typing Aggregator</name>
 					<alias>jb.a1</alias>
+                                        <long_desc>This phase handles the aggregation of stack variables for Jimple. For a full description of aggregation, see [VRGH$^+$00]. Briefly, aggregation finds instances where some expression has a single use; it replaces the use with the expression itself.</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -590,7 +601,7 @@ nodes are made bidirectional, as in Steensgaard&apos;s analysis <cite>stee96*1</
 						<boolopt>
 							<name>On Fly Call Graph</name>
 							<alias>on-fly-cg</alias>
-							<default>false</default>
+							<default>true</default>
 							<long_desc>
 When this option is set to true, the call graph is computed on-the-fly
 as points-to information is computed. Otherwise, an initial
@@ -1216,7 +1227,6 @@ then it will not be inlined into other methods.
 Soot will always apply the contents of the Jimple transformation pack
 to each method under analysis.  This pack is called <tt>jtp</tt>.  There are
 no transformations in this pack in an unmodified version of Soot.
-
                     </long_desc>
 				</boolopt>
 			</phase>
@@ -1993,7 +2003,7 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>sop</expansion>
                         <expansion>enabled:true</expansion>
 			<short_desc>perform scalar optimizations on the classfiles</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Perform scalar optimizations on the classfiles.</long_desc>
 		</macroopt>
 		<macroopt>
 			<name>Whole Program Optimize</name>
@@ -2004,7 +2014,7 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>enabled:true</expansion>
                         <expansion>-w</expansion>
 			<short_desc>perform whole program optimizations on the classfiles</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Perform whole program optimizations on the classfiles; this also enables -O.</long_desc>
 		</macroopt>
 		<boolopt>
 			<name>Via Shimple</name>
@@ -2019,7 +2029,8 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<name>Process Path</name>
 			<alias>process-path</alias>
 			<short_desc>process all classes on the PATH</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Process all classes in PATH. All the classes found in PATH will be loaded and transformed in single-file mode.
+</long_desc>
 		</listopt>
 	</section>
 	<section>
@@ -2029,14 +2040,14 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<alias>i</alias>
 			<alias>include</alias>
 			<short_desc>marks classfiles in PACKAGE (e.g. java.util.)as application classes</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Marks the classfiles in PACKAGE (e.g. java.util.) as application classes. This option can be used to transform library types which by default are not transformed by soot.</long_desc>
 		</listopt>
 		<listopt>
 			<name>Exclude Package</name>
 			<alias>x</alias>
 			<alias>exclude</alias>
 			<short_desc>marks classfiles in PACKAGE (e.g. java.) as context classes</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Marks classfiles in PACKAGE (e.g. java.) as context classes. Jimple is not produced for context classes, but the SootClass, SootField and SootMethod signature objects are created.</long_desc>
 		</listopt>
 		<listopt>
 			<name>Dynamic Classes</name>
@@ -2048,13 +2059,13 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<name>Dynamic Path</name>
 			<alias>dynamic-path</alias>
 			<short_desc>marks all class files in PATH as potentially dynamic classes</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Marks all class files in PATH as potentially dynamic classes. This allows aggressive optimization of applications for which the set of dynamic classes that can be loaded is known at compile time.</long_desc>
 		</listopt>
 		<listopt>
 			<name>Dynamic Package</name>
 			<alias>dynamic-package</alias>
 			<short_desc>marks classfiles in PACKAGES (separated by commas) as potentially dynamic classes</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Marks all class files belonging to a package listed in PACKAGES (or one of its subpackages) as potentially dynamic classes.</long_desc>
 		</listopt>
 	</section>
 	<section>
@@ -2063,14 +2074,14 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<name>Keep Line Number</name>
 			<alias>keep-line-number</alias>
 			<short_desc>keep line number tables</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Preserves the line number tables of class files through transformations.</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Keep Bytecode Offset</name>
 			<alias>keep-bytecode-offset</alias>
 			<alias>keep-offset</alias>
 			<short_desc>attach bytecode offset to jimple statement</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Preserves the bytecode offset tables of class files through transformations.</long_desc>
 		</boolopt>
 	</section>
 	<section>
@@ -2135,13 +2146,13 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<name>Time</name>
 			<alias>time</alias>
 			<short_desc>print out time statistics about tranformations</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Print out time statistics about transformations.</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Subtract Garbage Collection Time</name>
 			<alias>subtract-gc</alias>
 			<short_desc>attempt to subtract the gc from the time stats</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>Attempt to subtract garbage-collection time from the time stats.</long_desc>
 		</boolopt>
 	</section>
 </options>

@@ -1204,7 +1204,7 @@ public class Options extends OptionsBase {
               +"merge-stringbuffer:true "
               +"simulate-natives:true "
               +"simple-edges-bidirectional:false "
-              +"on-fly-cg:false "
+              +"on-fly-cg:true "
               +"parms-as-fields:false "
               +"returns-as-fields:false "
               +"all-clinit:false "
