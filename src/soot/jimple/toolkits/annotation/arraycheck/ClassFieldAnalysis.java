@@ -334,7 +334,8 @@ public class ClassFieldAnalysis
 		    }
 		    else
 		    {
-			if (oldv.getValue() != length.getValue())
+			if (oldv.isInteger()
+			  && oldv.getValue() != length.getValue())
 			{
 			    oldv.setTop();
 			    candidates.remove(which);
