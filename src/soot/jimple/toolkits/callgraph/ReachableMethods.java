@@ -32,7 +32,7 @@ public class ReachableMethods
 { 
     private CallGraph cg;
     private List entryPoints = new ArrayList(); 
-    private QueueReader edgeSource;
+    private Iterator edgeSource;
     private ChunkedQueue reachables = new ChunkedQueue();
     private Set set = new HashSet();
     private QueueReader unprocessedMethods;
