@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,6 +30,6 @@ import soot.*;
 
 public interface FieldArgInst extends Inst
 {
+    public SootFieldRef getFieldRef();
     public SootField getField();
-    public void setField(SootField f);
 }

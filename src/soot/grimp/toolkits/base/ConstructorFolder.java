@@ -114,7 +114,7 @@ public class ConstructorFolder extends BodyTransformer
                 ((AssignStmt)s);
               constructStmt.setRightOp
                 (Grimp.v().newNewInvokeExpr
-                 (((NewExpr)rhs).getBaseType(), oldInvoke.getMethod(), invokeArgs));
+                 (((NewExpr)rhs).getBaseType(), oldInvoke.getMethodRef(), invokeArgs));
               MadeNewInvokeExpr = true;
               
               use.redirectJumpsToThisTo(constructStmt);

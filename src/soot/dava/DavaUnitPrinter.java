@@ -25,13 +25,13 @@ import soot.jimple.*;
 * UnitPrinter implementation for Dava.
 */
 public class DavaUnitPrinter extends AbstractUnitPrinter {
-    public void method( SootMethod m ) {
+    public void methodRef( SootMethodRef m ) {
         handleIndent();
-        output.append( m.getName() );
+        output.append( m.name() );
     }
-    public void fieldRef( SootField f ) { 
+    public void fieldRef( SootFieldRef f ) { 
         handleIndent();
-        output.append(f.getName());
+        output.append(f.name());
     }
     public void identityRef( IdentityRef r ) {
         handleIndent();

@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,9 +45,9 @@ public class GNewInvokeExpr extends AbstractStaticInvokeExpr
 {
     RefType type;
 
-    public GNewInvokeExpr(RefType type, SootMethod method, List args)
+    public GNewInvokeExpr(RefType type, SootMethodRef methodRef, List args)
     {
-            super(method, new ExprBox[args.size()]);
+            super(methodRef, new ExprBox[args.size()]);
 
         this.type = type;
         
@@ -144,7 +145,7 @@ public class GNewInvokeExpr extends AbstractStaticInvokeExpr
             
         }
         
-        return new  GNewInvokeExpr(getBaseType(), getMethod(), clonedArgs);
+        return new  GNewInvokeExpr(getBaseType(), methodRef, clonedArgs);
     }
 
 }

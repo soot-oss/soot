@@ -590,7 +590,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
                     // so we'd better kill 'g.x' for all g.
                     
                     String lhsName = 
-                        ((InstanceFieldRef) lhs).getField().getName();
+                        ((InstanceFieldRef) lhs).XgetField().getName();
                     
                     Iterator refTypeInstFieldsIt = refTypeInstFields.iterator();
                     
@@ -598,7 +598,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
                         EquivalentValue eifr = (EquivalentValue) refTypeInstFieldsIt.next();
                         InstanceFieldRef ifr = (InstanceFieldRef) eifr.getValue();
                         
-                        String name = ifr.getField().getName();
+                        String name = ifr.XgetField().getName();
                         
                         if (name.equals(lhsName)) {
                             uAddTopToFlowSet(eifr, genSet, preSet);

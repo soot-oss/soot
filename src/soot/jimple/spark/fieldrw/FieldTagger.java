@@ -47,11 +47,11 @@ public class FieldTagger extends BodyTransformer
                 AssignStmt as = (AssignStmt) s;
                 Value l = as.getLeftOp();
                 if( l instanceof FieldRef ) {
-                    methodToWrite.put( m, ((FieldRef) l).getField() );
+                    methodToWrite.put( m, ((FieldRef) l).XgetField() );
                 }
                 Value r = as.getRightOp();
                 if( r instanceof FieldRef ) {
-                    methodToRead.put( m, ((FieldRef) r).getField() );
+                    methodToRead.put( m, ((FieldRef) r).XgetField() );
                 }
             }
         }

@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,13 +27,13 @@ import soot.grimp.internal.*;
 
 public class DStaticInvokeExpr extends GStaticInvokeExpr
 {
-    public DStaticInvokeExpr( SootMethod method, java.util.List args) 
+    public DStaticInvokeExpr( SootMethodRef methodRef, java.util.List args) 
     {
-	super( method, args);
+	super( methodRef, args);
     }
 
     public void toString( UnitPrinter up ) {
-        up.type( getMethod().getDeclaringClass().getType() );
+        up.type( methodRef.declaringClass().getType() );
         up.literal( "." );
         super.toString(up);
     }
@@ -44,6 +45,6 @@ public class DStaticInvokeExpr extends GStaticInvokeExpr
         for(int i = 0; i < getArgCount(); i++) 
             clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
         
-        return new DStaticInvokeExpr( getMethod(), clonedArgs);
+        return new DStaticInvokeExpr( methodRef, clonedArgs);
     }
 }

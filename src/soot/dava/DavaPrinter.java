@@ -90,8 +90,8 @@ public class DavaPrinter {
                     .getName()
                     .equals(
                         constructorExpr
-                            .getMethod()
-                            .getDeclaringClass()
+                            .getMethodRef()
+                            .declaringClass()
                             .toString()))
                     out.print("        this(");
                 else

@@ -38,6 +38,10 @@ class AbstractSootMethodRef implements SootMethodRef {
         this.parameterTypes = new ArrayList();
         this.parameterTypes.addAll(parameterTypes);
         this.returnType = returnType;
+        if( declaringClass == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null class" );
+        if( name == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null name" );
+        if( parameterTypes == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null parameterTypes" );
+        if( returnType == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null returnType" );
     }
 
     private final SootClass declaringClass;
@@ -76,8 +80,8 @@ class AbstractSootMethodRef implements SootMethodRef {
         }
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            resolve(ret);
             ret.append(super.toString());
+            resolve(ret);
             return ret.toString();
         }
     }
@@ -118,6 +122,7 @@ class AbstractSootMethodRef implements SootMethodRef {
             if( cl.hasSuperclass() ) cl = cl.getSuperclass();
             else break;
         }
-        throw new ClassResolutionFailedException();
+        if( trace == null )throw new ClassResolutionFailedException();
+        return null;
     }
 }

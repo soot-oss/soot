@@ -11,13 +11,14 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
        
         lg = new LocalGenerator(body);
 
-        ArrayList fields = ((AnonClassInitMethodSource)body.getMethod().getSource()).getFinalsList();
-        boolean inStaticMethod = ((AnonClassInitMethodSource)body.getMethod().getSource()).inStaticMethod();
-        boolean isSubType = ((AnonClassInitMethodSource)body.getMethod().getSource()).isSubType();
-        soot.Type superOuterType = ((AnonClassInitMethodSource)body.getMethod().getSource()).superOuterType();
-        soot.Type thisOuterType = ((AnonClassInitMethodSource)body.getMethod().getSource()).thisOuterType();
-        ArrayList fieldInits = ((AnonClassInitMethodSource)body.getMethod().getSource()).getFieldInits();
-        soot.Type outerClassType = ((AnonClassInitMethodSource)body.getMethod().getSource()).outerClassType();
+        AnonClassInitMethodSource acims = (AnonClassInitMethodSource) body.getMethod().getSource();
+        ArrayList fields = acims.getFinalsList();
+        boolean inStaticMethod = acims.inStaticMethod();
+        boolean isSubType = acims.isSubType();
+        soot.Type superOuterType = acims.superOuterType();
+        soot.Type thisOuterType = acims.thisOuterType();
+        ArrayList fieldInits = acims.getFieldInits();
+        soot.Type outerClassType = acims.outerClassType();
 
         boolean hasOuterRef = ((AnonClassInitMethodSource)body.getMethod().getSource()).hasOuterRef();
         boolean hasQualifier = ((AnonClassInitMethodSource)body.getMethod().getSource()).hasQualifier();
@@ -109,8 +110,7 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         if ((needsRef != null) && (needsRef.contains(superClass.getType())) ){
             invokeTypeList.add(0, superOuterType);
         }
-        //System.out.println("type list invoke: "+invokeTypeList);
-        SootMethod callMethod = sootMethod.getDeclaringClass().getSuperclass().getMethod("<init>",  invokeTypeList, VoidType.v());
+        SootMethodRef callMethod = Scene.v().makeMethodRef( sootMethod.getDeclaringClass().getSuperclass(), "<init>",  invokeTypeList, VoidType.v());
         if ((!hasQualifier) && (needsRef != null) && (needsRef.contains(superClass.getType()))){
             if (isSubType){
                 invokeList.add(0, outerLocal);
@@ -131,7 +131,7 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         
         // field assign
         if (!inStaticMethod){
-            soot.SootField field = sootMethod.getDeclaringClass().getField("this$0", outerClassType);
+            soot.SootFieldRef field = Scene.v().makeFieldRef( sootMethod.getDeclaringClass(), "this$0", outerClassType);
             soot.jimple.InstanceFieldRef ref = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, field);
             soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(ref, outerLocal);
             body.getUnits().add(assign);
@@ -144,7 +144,7 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
                 soot.Local pLocal = (soot.Local)finalsIt.next();
                 soot.SootField pField = (soot.SootField)fieldsIt.next();
             
-                soot.jimple.FieldRef pRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, pField);
+                soot.jimple.FieldRef pRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, pField.makeRef());
             
                 soot.jimple.AssignStmt pAssign = soot.jimple.Jimple.v().newAssignStmt(pRef, pLocal);
                 body.getUnits().add(pAssign);

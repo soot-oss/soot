@@ -169,7 +169,7 @@ public class SparkTransformer extends SceneTransformer
                         if( lhs instanceof Local ) {
                             v = pag.findLocalVarNode( (Local) lhs );
                         } else if( lhs instanceof FieldRef ) {
-                            v = pag.findGlobalVarNode( ((FieldRef) lhs).getField() );
+                            v = pag.findGlobalVarNode( ((FieldRef) lhs).XgetField() );
                         }
                         if( v != null ) {
                             PointsToSetInternal p2set = v.getP2Set();

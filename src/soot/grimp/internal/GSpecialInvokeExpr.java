@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,9 +43,9 @@ import java.util.*;
 public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
     implements Precedence
 {
-    public GSpecialInvokeExpr(Value base, SootMethod method, List args)
+    public GSpecialInvokeExpr(Value base, SootMethodRef methodRef, List args)
     {
-        super((ExprBox)Grimp.v().newObjExprBox(base), method, 
+        super((ExprBox)Grimp.v().newObjExprBox(base), methodRef, 
              (ExprBox[]) new ExprBox[args.size()]);
 
         for(int i = 0; i < args.size(); i++)
@@ -67,7 +68,7 @@ public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("." + getMethod().getSignature() + "(");
+        buffer.append("." + methodRef.getSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
@@ -89,7 +90,7 @@ public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
         baseBox.toString(up);
         if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal(")");
         up.literal(".");
-        up.method(getMethod());
+        up.methodRef(methodRef);
         up.literal("(");
 
         for(int i = 0; i < argBoxes.length; i++)
@@ -113,7 +114,7 @@ public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
         }
         
         return new GSpecialInvokeExpr(Grimp.cloneIfNecessary(getBase()), 
-            getMethod(), clonedArgs);
+            methodRef, clonedArgs);
     }
 }
  

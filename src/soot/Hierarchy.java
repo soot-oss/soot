@@ -543,7 +543,7 @@ public class Hierarchy
     /** Returns the target for the given SpecialInvokeExpr. */
     public SootMethod resolveSpecialDispatch(SpecialInvokeExpr ie, SootMethod container)
     {
-        SootMethod target = ie.getMethod();
+        SootMethod target = ie.XgetMethod();
 
         /* This is a bizarre condition!  Hopefully the implementation is correct.
            See VM Spec, 2nd Edition, Chapter 6, in the definition of invokespecial. */

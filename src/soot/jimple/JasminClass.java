@@ -624,9 +624,9 @@ public class JasminClass extends AbstractJasminClass
                         emitValue(v.getBase());
                         emitValue(rvalue);
                         
-                        emit("putfield " + slashify(v.getField().getDeclaringClass().getName()) + "/" +
-                             v.getField().getName() + " " + jasminDescriptorOf(v.getField().getType()), 
-                             -1 + -sizeOfType(v.getField().getType()));
+                        emit("putfield " + slashify(v.getFieldRef().declaringClass().getName()) + "/" +
+                             v.getFieldRef().name() + " " + jasminDescriptorOf(v.getFieldRef().type()), 
+                             -1 + -sizeOfType(v.getFieldRef().type()));
                     }
                 
                 public void caseLocal(final Local v)
@@ -754,12 +754,12 @@ public class JasminClass extends AbstractJasminClass
                 
                 public void caseStaticFieldRef(StaticFieldRef v)
                     {
-                        SootField field = v.getField();
+                        SootFieldRef field = v.getFieldRef();
                         
                         emitValue(rvalue);
-                        emit("putstatic " + slashify(field.getDeclaringClass().getName()) + "/" +
-                             field.getName() + " " + jasminDescriptorOf(field.getType()),
-                             -sizeOfType(v.getField().getType()));
+                        emit("putstatic " + slashify(field.declaringClass().getName()) + "/" +
+                             field.name() + " " + jasminDescriptorOf(field.type()),
+                             -sizeOfType(v.getFieldRef().type()));
                     }
             });
     }
@@ -1284,7 +1284,7 @@ public class JasminClass extends AbstractJasminClass
             {
                 emitValue(s.getInvokeExpr());
 
-                Type returnType = ((InvokeExpr) s.getInvokeExpr()).getMethod().getReturnType();
+                Type returnType = ((InvokeExpr) s.getInvokeExpr()).getMethodRef().returnType();
 
                 if(!returnType.equals(VoidType.v()))
                 {
@@ -2013,9 +2013,9 @@ public class JasminClass extends AbstractJasminClass
             {
                 emitValue(v.getBase());
 
-                emit("getfield " + slashify(v.getField().getDeclaringClass().getName()) + "/" +
-                    v.getField().getName() + " " + jasminDescriptorOf(v.getField().getType()), 
-                    -1 + sizeOfType(v.getField().getType()));
+                emit("getfield " + slashify(v.getFieldRef().declaringClass().getName()) + "/" +
+                    v.getFieldRef().name() + " " + jasminDescriptorOf(v.getFieldRef().type()), 
+                    -1 + sizeOfType(v.getFieldRef().type()));
             }
 
             public void caseInstanceOfExpr(InstanceOfExpr v)
@@ -2048,16 +2048,16 @@ public class JasminClass extends AbstractJasminClass
 
             public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v)
             {
-                SootMethod m = v.getMethod();
+                SootMethodRef m = v.getMethodRef();
 
                 emitValue(v.getBase());
 
-                for(int i = 0; i < m.getParameterCount(); i++)
+                for(int i = 0; i < m.parameterTypes().size(); i++)
                     emitValue(v.getArg(i));
 
-                emit("invokeinterface " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m) + " " + (argCountOf(m) + 1),
-                    -(argCountOf(m) + 1) + sizeOfType(m.getReturnType()));
+                emit("invokeinterface " + slashify(m.declaringClass().getName()) + "/" +
+                    m.name() + jasminDescriptorOf(m) + " " + (argCountOf(m) + 1),
+                    -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
             }
 
             public void caseLengthExpr(LengthExpr v)
@@ -2481,17 +2481,17 @@ public class JasminClass extends AbstractJasminClass
                 emit("new " + slashify(v.getBaseType().toString()), 1);
                 emit("dup", 1);
                 
-                SootMethod m = v.getMethod();
+                SootMethodRef m = v.getMethodRef();
 
                 // emitValue(v.getBase());
                 // already on the stack
                 
-                for(int i = 0; i < m.getParameterCount(); i++)
+                for(int i = 0; i < m.parameterTypes().size(); i++)
                     emitValue(v.getArg(i));
 
-                emit("invokespecial " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m),
-                    -(argCountOf(m) + 1) + sizeOfType(m.getReturnType()));
+                emit("invokespecial " + slashify(m.declaringClass().getName()) + "/" +
+                    m.name() + jasminDescriptorOf(m),
+                    -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
             }
 
             public void caseNullConstant(NullConstant v)
@@ -2631,35 +2631,35 @@ public class JasminClass extends AbstractJasminClass
 
             public void caseSpecialInvokeExpr(SpecialInvokeExpr v)
             {
-                SootMethod m = v.getMethod();
+                SootMethodRef m = v.getMethodRef();
 
                 emitValue(v.getBase());
 
-                for(int i = 0; i < m.getParameterCount(); i++)
+                for(int i = 0; i < m.parameterTypes().size(); i++)
                     emitValue(v.getArg(i));
 
-                emit("invokespecial " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m),
-                    -(argCountOf(m) + 1) + sizeOfType(m.getReturnType()));
+                emit("invokespecial " + slashify(m.declaringClass().getName()) + "/" +
+                    m.name() + jasminDescriptorOf(m),
+                    -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
             }
 
             public void caseStaticInvokeExpr(StaticInvokeExpr v)
             {
-                SootMethod m = v.getMethod();
+                SootMethodRef m = v.getMethodRef();
 
-                for(int i = 0; i < m.getParameterCount(); i++)
+                for(int i = 0; i < m.parameterTypes().size(); i++)
                     emitValue(v.getArg(i));
 
-                emit("invokestatic " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m),
-                    -(argCountOf(m)) + sizeOfType(m.getReturnType()));
+                emit("invokestatic " + slashify(m.declaringClass().getName()) + "/" +
+                    m.name() + jasminDescriptorOf(m),
+                    -(argCountOf(m)) + sizeOfType(m.returnType()));
             }
 
             public void caseStaticFieldRef(StaticFieldRef v)
             {
-                emit("getstatic " + slashify(v.getField().getDeclaringClass().getName()) + "/" +
-                    v.getField().getName() + " " + jasminDescriptorOf(v.getField().getType()),
-                    sizeOfType(v.getField().getType()));
+                emit("getstatic " + slashify(v.getFieldRef().declaringClass().getName()) + "/" +
+                    v.getFieldRef().name() + " " + jasminDescriptorOf(v.getFieldRef().type()),
+                    sizeOfType(v.getFieldRef().type()));
             }
 
             public void caseStringConstant(StringConstant v)
@@ -2740,16 +2740,16 @@ public class JasminClass extends AbstractJasminClass
 
             public void caseVirtualInvokeExpr(VirtualInvokeExpr v)
             {
-                SootMethod m = v.getMethod();
+                SootMethodRef m = v.getMethodRef();
 
                 emitValue(v.getBase());
 
-                for(int i = 0; i < m.getParameterCount(); i++)
+                for(int i = 0; i < m.parameterTypes().size(); i++)
                     emitValue(v.getArg(i));
 
-                emit("invokevirtual " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m),
-                    -(argCountOf(m) + 1) + sizeOfType(m.getReturnType()));
+                emit("invokevirtual " + slashify(m.declaringClass().getName()) + "/" +
+                    m.name() + jasminDescriptorOf(m),
+                    -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
             }
 
             public void caseXorExpr(XorExpr v)

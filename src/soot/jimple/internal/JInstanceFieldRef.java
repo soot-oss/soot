@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,13 +34,13 @@ import java.util.*;
 
 public class JInstanceFieldRef extends AbstractInstanceFieldRef
 {
-    public JInstanceFieldRef(Value base, SootField field)
+    public JInstanceFieldRef(Value base, SootFieldRef fieldRef)
     {
-        super(Jimple.v().newLocalBox(base), field);
+        super(Jimple.v().newLocalBox(base), fieldRef);
     }
    
     public Object clone() 
     {
-        return new JInstanceFieldRef( Jimple.cloneIfNecessary(getBase()), getField());
+        return new JInstanceFieldRef( Jimple.cloneIfNecessary(getBase()), fieldRef);
     }
 }

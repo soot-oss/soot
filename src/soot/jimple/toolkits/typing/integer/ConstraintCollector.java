@@ -57,7 +57,7 @@ class ConstraintCollector extends AbstractStmtSwitch
     if(ie instanceof InterfaceInvokeExpr)
       {
 	InterfaceInvokeExpr invoke = (InterfaceInvokeExpr) ie;
-	SootMethod method = invoke.getMethod();
+	SootMethodRef method = invoke.getMethodRef();
 	int count = invoke.getArgCount();
 	
 	for(int i = 0; i < count; i++)
@@ -70,7 +70,7 @@ class ConstraintCollector extends AbstractStmtSwitch
 		  {
 		    TypeVariable localType = resolver.typeVariable(local);
 		    
-		    localType.addParent(resolver.typeVariable(method.getParameterType(i)));
+		    localType.addParent(resolver.typeVariable(method.parameterType(i)));
 		  }
 	      }
 	  }
@@ -78,7 +78,7 @@ class ConstraintCollector extends AbstractStmtSwitch
     else if(ie instanceof SpecialInvokeExpr)
       {
 	SpecialInvokeExpr invoke = (SpecialInvokeExpr) ie;
-	SootMethod method = invoke.getMethod();
+	SootMethodRef method = invoke.getMethodRef();
 	int count = invoke.getArgCount();
 	
 	for(int i = 0; i < count; i++)
@@ -91,7 +91,7 @@ class ConstraintCollector extends AbstractStmtSwitch
 		  {
 		    TypeVariable localType = resolver.typeVariable(local);
 		    
-		    localType.addParent(resolver.typeVariable(method.getParameterType(i)));
+		    localType.addParent(resolver.typeVariable(method.parameterType(i)));
 		  }
 	      }
 	  }
@@ -99,7 +99,7 @@ class ConstraintCollector extends AbstractStmtSwitch
     else if(ie instanceof VirtualInvokeExpr)
       {
 	VirtualInvokeExpr invoke = (VirtualInvokeExpr) ie;
-	SootMethod method = invoke.getMethod();
+	SootMethodRef method = invoke.getMethodRef();
 	int count = invoke.getArgCount();
 	
 	for(int i = 0; i < count; i++)
@@ -112,7 +112,7 @@ class ConstraintCollector extends AbstractStmtSwitch
 		  {
 		    TypeVariable localType = resolver.typeVariable(local);
 		    
-		    localType.addParent(resolver.typeVariable(method.getParameterType(i)));
+		    localType.addParent(resolver.typeVariable(method.parameterType(i)));
 		  }
 	      }
 	  }
@@ -120,7 +120,7 @@ class ConstraintCollector extends AbstractStmtSwitch
     else if(ie instanceof StaticInvokeExpr)
       {
 	StaticInvokeExpr invoke = (StaticInvokeExpr) ie;
-	SootMethod method = invoke.getMethod();
+	SootMethodRef method = invoke.getMethodRef();
 	int count = invoke.getArgCount();
 	
 	for(int i = 0; i < count; i++)
@@ -133,7 +133,7 @@ class ConstraintCollector extends AbstractStmtSwitch
 		  {
 		    TypeVariable localType = resolver.typeVariable(local);
 		    
-		    localType.addParent(resolver.typeVariable(method.getParameterType(i)));
+		    localType.addParent(resolver.typeVariable(method.parameterType(i)));
 		  }
 	      }
 	  }
@@ -201,11 +201,11 @@ class ConstraintCollector extends AbstractStmtSwitch
 	  {
 	    InstanceFieldRef ref = (InstanceFieldRef) l;
 	    
-	    Type fieldType = ref.getField().getType();
+	    Type fieldType = ref.XgetField().getType();
 	    
 	    if(fieldType instanceof IntegerType)
 	      {
-		left = resolver.typeVariable(ref.getField().getType());
+		left = resolver.typeVariable(ref.XgetField().getType());
 	      }
 	  }
       }
@@ -215,11 +215,11 @@ class ConstraintCollector extends AbstractStmtSwitch
 	  {
 	    StaticFieldRef ref = (StaticFieldRef) l;
 	    
-	    Type fieldType = ref.getField().getType();
+	    Type fieldType = ref.XgetField().getType();
 	    
 	    if(fieldType instanceof IntegerType)
 	      {
-		left = resolver.typeVariable(ref.getField().getType());
+		left = resolver.typeVariable(ref.XgetField().getType());
 	      }
 	  }
       }
@@ -568,9 +568,9 @@ class ConstraintCollector extends AbstractStmtSwitch
 
 	handleInvokeExpr(ie);
 	
-	if(ie.getMethod().getReturnType() instanceof IntegerType)
+	if(ie.getMethodRef().returnType() instanceof IntegerType)
 	  {
-	    right = resolver.typeVariable(ie.getMethod().getReturnType());
+	    right = resolver.typeVariable(ie.getMethodRef().returnType());
 	  }
       }
     else if(r instanceof NewArrayExpr)
@@ -698,18 +698,18 @@ class ConstraintCollector extends AbstractStmtSwitch
       {
 	InstanceFieldRef ref = (InstanceFieldRef) r;
 
-	if(ref.getField().getType() instanceof IntegerType)
+	if(ref.XgetField().getType() instanceof IntegerType)
 	  {
-	    right = resolver.typeVariable(ref.getField().getType());
+	    right = resolver.typeVariable(ref.XgetField().getType());
 	  }
       }
     else if(r instanceof StaticFieldRef)
       {
 	StaticFieldRef ref = (StaticFieldRef) r;
 
-	if(ref.getField().getType() instanceof IntegerType)
+	if(ref.XgetField().getType() instanceof IntegerType)
 	  {
-	    right = resolver.typeVariable(ref.getField().getType());
+	    right = resolver.typeVariable(ref.XgetField().getType());
 	  }
       }
     else

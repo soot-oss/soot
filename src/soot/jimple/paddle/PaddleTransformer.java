@@ -251,7 +251,7 @@ public class PaddleTransformer extends SceneTransformer
                     if( lhs instanceof Local ) {
                         v = nm.findLocalVarNode( (Local) lhs );
                     } else if( lhs instanceof FieldRef ) {
-                        v = nm.findGlobalVarNode( ((FieldRef) lhs).getField() );
+                        v = nm.findGlobalVarNode( ((FieldRef) lhs).XgetField() );
                     }
                     if( v != null ) {
                         ContextVarNode cvn = ContextVarNode.make(momc.context(), v);

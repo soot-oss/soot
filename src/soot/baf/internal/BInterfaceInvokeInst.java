@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,7 +38,7 @@ public class BInterfaceInvokeInst extends AbstractInvokeInst
     
     public int getInCount()
     {
-        return getMethod().getParameterCount() +1;
+        return methodRef.parameterTypes().size()+1;
         
     }
 
@@ -47,13 +48,13 @@ public class BInterfaceInvokeInst extends AbstractInvokeInst
     }
     
 
-    public BInterfaceInvokeInst(SootMethod method, int argCount) 
-        { setMethod(method); this.argCount = argCount; }
+    public BInterfaceInvokeInst(SootMethodRef methodRef, int argCount) 
+        { this.methodRef = methodRef; this.argCount = argCount; }
 
 
     public Object clone() 
     {
-        return new  BInterfaceInvokeInst(getMethod(), getArgCount());
+        return new  BInterfaceInvokeInst(methodRef, getArgCount());
     }
 
     

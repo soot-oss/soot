@@ -233,11 +233,11 @@ public class Util {
         
         // otherwise get this$0 for one level up
         soot.SootClass classToInvoke = ((soot.RefType)specialThisLocal.getType()).getSootClass();
-        soot.SootField outerThisField = classToInvoke.getFieldByName("this$0");
+        soot.SootField outerThisField = classToInvoke.XgetFieldByName("this$0");
         //System.out.println("outer This field: "+outerThisField);
         soot.Local t1 = lg.generateLocal(outerThisField.getType());
         
-        soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, outerThisField);
+        soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, outerThisField.makeRef());
         soot.jimple.AssignStmt fieldAssignStmt = soot.jimple.Jimple.v().newAssignStmt(t1, fieldRef);
         body.getUnits().add(fieldAssignStmt);
         
@@ -308,7 +308,7 @@ public class Util {
             soot.Local t3 = lg.generateLocal(methToInvoke.getReturnType());
             ArrayList methParams = new ArrayList();
             methParams.add(t2);
-            soot.Local res = getPrivateAccessFieldInvoke(methToInvoke, methParams, body, lg);
+            soot.Local res = getPrivateAccessFieldInvoke(methToInvoke.makeRef(), methParams, body, lg);
             soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(t3, res);
             body.getUnits().add(assign);
             //System.out.println("t3 type: "+t3.getType());
@@ -327,21 +327,23 @@ public class Util {
         ArrayList paramTypes = new ArrayList();
         paramTypes.add(classToInvoke.getType());
         
-        soot.SootMethod meth = new soot.SootMethod(name, paramTypes, classToInvoke.getFieldByName("this$0").getType(), soot.Modifier.STATIC);
+        soot.SootMethod meth = new soot.SootMethod(name, paramTypes, classToInvoke.XgetFieldByName("this$0").getType(), soot.Modifier.STATIC);
 
         classToInvoke.addMethod(meth);
-        PrivateFieldAccMethodSource src = new PrivateFieldAccMethodSource();
-        src.fieldName("this$0");
-        src.fieldType(classToInvoke.getFieldByName("this$0").getType());
-        src.classToInvoke(classToInvoke);
+        PrivateFieldAccMethodSource src = new PrivateFieldAccMethodSource(
+            classToInvoke.XgetFieldByName("this$0").getType(),
+            "this$0",
+            classToInvoke.XgetFieldByName("this$0").isStatic(),
+            classToInvoke
+            );
         meth.setActiveBody(src.getBody(meth, null));
         return meth;
     }
     
-    public static soot.Local getPrivateAccessFieldInvoke(soot.SootMethod toInvoke, ArrayList params, soot.Body body, LocalGenerator lg){
+    public static soot.Local getPrivateAccessFieldInvoke(soot.SootMethodRef toInvoke, ArrayList params, soot.Body body, LocalGenerator lg){
         soot.jimple.InvokeExpr invoke = soot.jimple.Jimple.v().newStaticInvokeExpr(toInvoke, params);
 
-        soot.Local retLocal = lg.generateLocal(toInvoke.getReturnType());
+        soot.Local retLocal = lg.generateLocal(toInvoke.returnType());
 
         soot.jimple.AssignStmt stmt = soot.jimple.Jimple.v().newAssignStmt(retLocal, invoke);
         body.getUnits().add(stmt);

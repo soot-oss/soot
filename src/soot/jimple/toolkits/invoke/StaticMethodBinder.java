@@ -122,7 +122,7 @@ public class StaticMethodBinder extends SceneTransformer
 
                         // Check for signature conflicts.
                         String newName = target.getName() + "_static";
-                        while (target.getDeclaringClass().declaresMethod(newName, 
+                        while (target.getDeclaringClass().XdeclaresMethod(newName, 
                                                 newParameterTypes,
                                                 target.getReturnType()))
                             newName = newName + "_static";
@@ -231,7 +231,7 @@ public class StaticMethodBinder extends SceneTransformer
                         newArgs.addAll(ie.getArgs());
 
                         StaticInvokeExpr sie = Jimple.v().newStaticInvokeExpr
-                            (clonedTarget, newArgs);
+                            (clonedTarget.makeRef(), newArgs);
                         
                         ValueBox ieBox = s.getInvokeExprBox();
                         ieBox.setValue(sie);

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
+ * Copyright (C) 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,21 +39,21 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
         }
     }
 
-    public void method( SootMethod m ) {
+    public void methodRef( SootMethodRef m ) {
         handleIndent();
-        if( !baf && m.isStatic() ){
-            output.append( m.getDeclaringClass().getName() );
+        if( !baf && m.resolve().isStatic() ){
+            output.append( m.declaringClass().getName() );
             literal(".");
         }
-        output.append( m.getName() );
+        output.append( m.name() );
     }
-    public void fieldRef( SootField f ) { 
+    public void fieldRef( SootFieldRef f ) { 
         handleIndent();
-        if( baf || f.isStatic() ){
-            output.append( f.getDeclaringClass().getName() );
+        if( baf || f.resolve().isStatic() ){
+            output.append( f.declaringClass().getName() );
             literal(".");
         }
-        output.append(f.getName());
+        output.append(f.name());
     }
     public void identityRef( IdentityRef r ) {
         handleIndent();

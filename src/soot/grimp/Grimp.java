@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -322,7 +323,7 @@ public class Grimp
         Constructs a NewInvokeExpr(Local base, List of Expr) grammar chunk.
      */
 
-    public NewInvokeExpr newNewInvokeExpr(RefType base, SootMethod method, List args)
+    public NewInvokeExpr newNewInvokeExpr(RefType base, SootMethodRef method, List args)
     {
         return new GNewInvokeExpr(base, method, args);
     }
@@ -331,37 +332,37 @@ public class Grimp
         Constructs a StaticInvokeExpr(ArrayType, List of Expr) grammar chunk.
      */
 
-    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, List args)
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, List args)
     {
         return new GStaticInvokeExpr(method, args);
     }
 
 
     /**
-        Constructs a SpecialInvokeExpr(Local base, SootMethod method, List of Expr) grammar chunk.
+        Constructs a SpecialInvokeExpr(Local base, SootMethodRef method, List of Expr) grammar chunk.
      */
 
-    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, List args)
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, List args)
     {
         return new GSpecialInvokeExpr(base, method, args);
     }
 
 
     /**
-        Constructs a VirtualInvokeExpr(Local base, SootMethod method, List of Expr) grammar chunk.
+        Constructs a VirtualInvokeExpr(Local base, SootMethodRef method, List of Expr) grammar chunk.
      */
 
-    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, List args)
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, List args)
     {
         return new GVirtualInvokeExpr(base, method, args);
     }
 
 
     /**
-        Constructs a InterfaceInvokeExpr(Local base, SootMethod method, List of Expr) grammar chunk.
+        Constructs a InterfaceInvokeExpr(Local base, SootMethodRef method, List of Expr) grammar chunk.
      */
 
-    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, List args)
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, List args)
     {
         return new GInterfaceInvokeExpr(base, method, args);
     }
@@ -591,10 +592,10 @@ public class Grimp
     }
 
     /**
-        Constructs a StaticFieldRef(SootField) grammar chunk.
+        Constructs a StaticFieldRef(SootFieldRef) grammar chunk.
      */
 
-    public StaticFieldRef newStaticFieldRef(SootField f)
+    public StaticFieldRef newStaticFieldRef(SootFieldRef f)
     {
         return Jimple.v().newStaticFieldRef(f);
     }
@@ -620,10 +621,10 @@ public class Grimp
     }
 
     /**
-        Constructs a InstanceFieldRef(Value, SootField) grammar chunk.
+        Constructs a InstanceFieldRef(Value, SootFieldRef) grammar chunk.
      */
 
-    public InstanceFieldRef newInstanceFieldRef(Value base, SootField f)
+    public InstanceFieldRef newInstanceFieldRef(Value base, SootFieldRef f)
     {
         return new GInstanceFieldRef(base, f);
     }
@@ -858,7 +859,7 @@ public class Grimp
                             newArgList.add(newExpr(v.getArg(i)));
                         returnedExpr.setValue
                             (newInterfaceInvokeExpr((Local)(v.getBase()),
-                                                    v.getMethod(),
+                                                    v.getMethodRef(),
                                                     newArgList));
                     }
 
@@ -869,7 +870,7 @@ public class Grimp
                             newArgList.add(newExpr(v.getArg(i)));
                         returnedExpr.setValue
                             (newSpecialInvokeExpr((Local)(v.getBase()),
-                                                    v.getMethod(),
+                                                    v.getMethodRef(),
                                                     newArgList));
                     }
 
@@ -879,7 +880,7 @@ public class Grimp
                         for (int i = 0; i < v.getArgCount(); i++)
                             newArgList.add(newExpr(v.getArg(i)));
                         returnedExpr.setValue
-                            (newStaticInvokeExpr(v.getMethod(),
+                            (newStaticInvokeExpr(v.getMethodRef(),
                                                  newArgList));
                     }
 
@@ -890,7 +891,7 @@ public class Grimp
                             newArgList.add(newExpr(v.getArg(i)));
                         returnedExpr.setValue
                             (newVirtualInvokeExpr((Local)(v.getBase()),
-                                                  v.getMethod(),
+                                                  v.getMethodRef(),
                                                   newArgList));
                     }
 
@@ -951,7 +952,7 @@ public class Grimp
                 if (value instanceof InstanceFieldRef)
                     return newInstanceFieldRef
                         (newExpr((((InstanceFieldRef)value).getBase())),
-                         ((InstanceFieldRef)value).getField());
+                         ((InstanceFieldRef)value).getFieldRef());
                 /* have Ref/Value, which is fine -- not Jimple-specific. */
                 return value;
             }

@@ -124,7 +124,7 @@ public class PASideEffectTester implements SideEffectTester
 	if( v instanceof InstanceFieldRef ) {
 	    InstanceFieldRef ifr = (InstanceFieldRef) v;
 	    if( s == null ) return false;
-	    PointsToSet o1 = s.getBaseForField( ifr.getField() );
+	    PointsToSet o1 = s.getBaseForField( ifr.XgetField() );
 	    if( o1 == null ) return false;
 	    PointsToSet o2 = reachingObjects( (Local) ifr.getBase() );
 	    if( o2 == null ) return false;
@@ -144,7 +144,7 @@ public class PASideEffectTester implements SideEffectTester
 	if( v instanceof StaticFieldRef ) {
 	    StaticFieldRef sfr = (StaticFieldRef) v;
 	    if( s == null ) return false;
-	    return s.getGlobals().contains( sfr.getField() );
+	    return s.getGlobals().contains( sfr.XgetField() );
 	}
 
 	throw new RuntimeException( "Forgot to handle value "+v );

@@ -37,11 +37,11 @@ import java.util.*;
 
 public class BFieldGetInst extends AbstractInst implements FieldGetInst
 {
-    SootField field;
+    SootFieldRef fieldRef;
 
-    public BFieldGetInst(SootField field)
+    public BFieldGetInst(SootFieldRef fieldRef)
     {
-        this.field = field;
+        this.fieldRef = fieldRef;
     }
 
     public int getInCount()
@@ -52,7 +52,7 @@ public class BFieldGetInst extends AbstractInst implements FieldGetInst
 
     public Object clone() 
     {
-        return new BFieldGetInst(getField());
+        return new BFieldGetInst(fieldRef);
     }
 
     public int getInMachineCount()
@@ -67,22 +67,22 @@ public class BFieldGetInst extends AbstractInst implements FieldGetInst
 
     public int getOutMachineCount()
     {
-        return JasminClass.sizeOfType(field.getType());
+        return JasminClass.sizeOfType(fieldRef.type());
     }
     
 
     final public String getName() { return "fieldget"; }
     final String getParameters()
     { 
-        return " " + field.getSignature(); 
+        return " " + fieldRef.getSignature(); 
     }
     protected void getParameters(UnitPrinter up) {
         up.literal(" ");
-        up.fieldRef(field);
+        up.fieldRef(fieldRef);
     }
     
-    public SootField getField() { return field; }
-    public void setField(SootField f) { this.field = f; }
+    public SootFieldRef getFieldRef() { return fieldRef; }
+    public SootField getField() { return fieldRef.resolve(); }
     
     public void apply(Switch sw)
     {

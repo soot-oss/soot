@@ -232,7 +232,7 @@ public class ArrayBoundsChecker extends BodyTransformer
                                 lowercounter = 1;
                             
                             units.insertBefore (Jimple.v().newInvokeStmt( 
-                                 Jimple.v().newStaticInvokeExpr(increase, 
+                                 Jimple.v().newStaticInvokeExpr(increase.makeRef(), 
                                         IntConstant.v(lowercounter))), stmt);
 
                             int uppercounter = 2;
@@ -240,7 +240,7 @@ public class ArrayBoundsChecker extends BodyTransformer
                                 uppercounter = 3;
                             
                             units.insertBefore (Jimple.v().newInvokeStmt( 
-                                 Jimple.v().newStaticInvokeExpr(increase, 
+                                 Jimple.v().newStaticInvokeExpr(increase.makeRef(), 
                                         IntConstant.v(uppercounter))), stmt) ;
 
                             /*

@@ -126,11 +126,11 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
     final public void caseInstanceFieldRef( InstanceFieldRef ifr ) {
 	if( PaddleScene.v().options().field_based() || PaddleScene.v().options().vta() ) {
 	    setResult( nm.makeGlobalVarNode( 
-			ifr.getField(), 
-			ifr.getField().getType() ) );
+			ifr.XgetField(), 
+			ifr.XgetField().getType() ) );
 	} else {
 	    setResult( FieldRefNode.make( nm.makeLocalVarNode( 
-			ifr.getBase(), ifr.getBase().getType(), method ), ifr.getField() ) );
+			ifr.getBase(), ifr.getBase().getType(), method ), ifr.XgetField() ) );
 	}
     }
     final public void caseLocal( Local l ) {
@@ -172,8 +172,8 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
     }
     final public void caseStaticFieldRef( StaticFieldRef sfr ) {
 	setResult( nm.makeGlobalVarNode( 
-		    sfr.getField(), 
-		    sfr.getField().getType() ) );
+		    sfr.XgetField(), 
+		    sfr.XgetField().getType() ) );
     }
     final public void caseStringConstant( StringConstant sc ) {
         AllocNode stringConstant;

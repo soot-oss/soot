@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,9 +29,9 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr
 {
     private HashSet thisLocals;
 
-    public DVirtualInvokeExpr( Value base, SootMethod method, java.util.List args, HashSet thisLocals) 
+    public DVirtualInvokeExpr( Value base, SootMethodRef methodRef, java.util.List args, HashSet thisLocals) 
     {
-	super( base, method, args);
+	super( base, methodRef, args);
 
 	this.thisLocals = thisLocals;
     }
@@ -40,7 +41,7 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr
         // OL: I don't know what this is for; I'm just refactoring the
         // original code. An explanation here would be welcome.
             up.literal( "((" );
-            up.type( getMethod().getDeclaringClass().getType() );
+            up.type( methodRef.declaringClass().getType() );
             up.literal( ") " );
 	    
             if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal("(");
@@ -50,7 +51,7 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr
 	    up.literal( ")" );
             up.literal( "." );
 
-            up.method( getMethod() );
+            up.methodRef( methodRef );
             up.literal( "(" );
 
 	    for (int i=0; i<argBoxes.length; i++) {
@@ -73,7 +74,7 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr
 	    StringBuffer b = new StringBuffer();
 
 	    b.append( "((");
-	    b.append( getMethod().getDeclaringClass().getJavaStyleName());
+	    b.append( methodRef.declaringClass().getJavaStyleName());
 	    b.append( ") ");
 	    
 	    String baseStr = ( getBase()).toString();
@@ -83,7 +84,7 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr
 	    b.append( baseStr);
 	    b.append( ").");
 
-	    b.append( getMethod().getName());
+	    b.append( methodRef.name());
 	    b.append( "(");
 
 	    for (int i=0; i<argBoxes.length; i++) {
@@ -108,6 +109,6 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr
         for(int i = 0; i < getArgCount(); i++) 
             clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
         
-        return new  DVirtualInvokeExpr(Grimp.cloneIfNecessary(getBase()), getMethod(), clonedArgs, thisLocals);
+        return new  DVirtualInvokeExpr(Grimp.cloneIfNecessary(getBase()), methodRef, clonedArgs, thisLocals);
     }
 }

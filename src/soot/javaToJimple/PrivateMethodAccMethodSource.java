@@ -78,7 +78,7 @@ public class PrivateMethodAccMethodSource implements soot.MethodSource {
 
         //System.out.println("meth param types: "+methParamsTypes);
         // assign local to meth
-        soot.SootMethod meth = ((soot.RefType)Util.getSootType(methodInst.container())).getSootClass().getMethod(methodInst.name(), methParamsTypes, Util.getSootType(methodInst.returnType()));
+        soot.SootMethodRef meth = soot.Scene.v().makeMethodRef(((soot.RefType)Util.getSootType(methodInst.container())).getSootClass(), methodInst.name(), methParamsTypes, Util.getSootType(methodInst.returnType()));
 
         soot.jimple.InvokeExpr invoke = null;
         if (methodInst.flags().isStatic()) {

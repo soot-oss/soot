@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,10 +37,10 @@ import java.util.*;
 public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeExpr 
            implements SpecialInvokeExpr, ConvertToBaf
 {
-    protected AbstractSpecialInvokeExpr(ValueBox baseBox, SootMethod method,
+    protected AbstractSpecialInvokeExpr(ValueBox baseBox, SootMethodRef methodRef,
                                 ValueBox[] argBoxes)
     {
-        this.baseBox = baseBox; this.method = method;
+        this.baseBox = baseBox; this.methodRef = methodRef;
         this.argBoxes = argBoxes;
     }
 
@@ -49,7 +50,7 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
         {
             AbstractSpecialInvokeExpr ie = (AbstractSpecialInvokeExpr)o;
             if (!(baseBox.getValue().equivTo(ie.baseBox.getValue()) &&
-                    method.equals(ie.method) && 
+                    XgetMethod().equals(ie.XgetMethod()) && 
                     argBoxes.length == ie.argBoxes.length))
                 return false;
             for (int i = 0; i < argBoxes.length; i++)
@@ -63,7 +64,7 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
     /** Returns a hash code for this object, consistent with structural equality. */
     public int equivHashCode() 
     {
-        return baseBox.getValue().equivHashCode() * 101 + method.equivHashCode() * 17;
+        return baseBox.getValue().equivHashCode() * 101 + XgetMethod().equivHashCode() * 17;
     }
 
     public abstract Object clone();
@@ -73,7 +74,7 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
         StringBuffer buffer = new StringBuffer();
 
         buffer.append(Jimple.SPECIALINVOKE + " " + baseBox.getValue().toString() +
-            "." + method.getSignature() + "(");
+            "." + methodRef.getSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
@@ -94,7 +95,7 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
         up.literal(" ");
         baseBox.toString(up);
         up.literal(".");
-        up.method(method);
+        up.methodRef(methodRef);
         up.literal("(");
 
         for(int i = 0; i < argBoxes.length; i++)
@@ -125,7 +126,7 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
         }
        
        Unit u;
-       out.add(u = Baf.v().newSpecialInvokeInst(method));
+       out.add(u = Baf.v().newSpecialInvokeInst(methodRef));
 
        Unit currentUnit = context.getCurrentUnit();
 

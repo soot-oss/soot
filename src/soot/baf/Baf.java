@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -170,24 +171,24 @@ public class Baf
         return new BArrayReadInst(opType);
     }
 
-    public StaticGetInst newStaticGetInst(SootField field)
+    public StaticGetInst newStaticGetInst(SootFieldRef fieldRef)
     {
-        return new BStaticGetInst(field);
+        return new BStaticGetInst(fieldRef);
     }
     
-    public StaticPutInst newStaticPutInst(SootField field)
+    public StaticPutInst newStaticPutInst(SootFieldRef fieldRef)
     {
-        return new BStaticPutInst(field);
+        return new BStaticPutInst(fieldRef);
     }
 
-    public FieldGetInst newFieldGetInst(SootField field)
+    public FieldGetInst newFieldGetInst(SootFieldRef fieldRef)
     {
-        return new BFieldGetInst(field);
+        return new BFieldGetInst(fieldRef);
     }
     
-    public FieldPutInst newFieldPutInst(SootField field)
+    public FieldPutInst newFieldPutInst(SootFieldRef fieldRef)
     {
-        return new BFieldPutInst(field);
+        return new BFieldPutInst(fieldRef);
     }
     
     public AddInst newAddInst(Type opType)
@@ -294,24 +295,24 @@ public class Baf
         return new BNewMultiArrayInst(opType, dimensions);
     }
 
-    public StaticInvokeInst newStaticInvokeInst(SootMethod method)
+    public StaticInvokeInst newStaticInvokeInst(SootMethodRef methodRef)
     {
-        return new BStaticInvokeInst(method);
+        return new BStaticInvokeInst(methodRef);
     }
 
-    public SpecialInvokeInst newSpecialInvokeInst(SootMethod method)
+    public SpecialInvokeInst newSpecialInvokeInst(SootMethodRef methodRef)
     {
-        return new BSpecialInvokeInst(method);
+        return new BSpecialInvokeInst(methodRef);
     }
 
-    public VirtualInvokeInst newVirtualInvokeInst(SootMethod method)
+    public VirtualInvokeInst newVirtualInvokeInst(SootMethodRef methodRef)
     {
-        return new BVirtualInvokeInst(method);
+        return new BVirtualInvokeInst(methodRef);
     }
 
-    public InterfaceInvokeInst newInterfaceInvokeInst(SootMethod method, int argCount)
+    public InterfaceInvokeInst newInterfaceInvokeInst(SootMethodRef methodRef, int argCount)
     {
-        return new BInterfaceInvokeInst(method, argCount);
+        return new BInterfaceInvokeInst(methodRef, argCount);
     }
 
     public ReturnInst newReturnInst(Type opType)

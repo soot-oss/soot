@@ -97,7 +97,7 @@ public class JimpleConstructorFolder extends BodyTransformer
                     InvokeStmt invoke = (InvokeStmt)next;
                 
                     if (invoke.getInvokeExpr() instanceof SpecialInvokeExpr &&
-			invoke.getInvokeExpr().getMethod().getName().equals(SootMethod.constructorName)) {
+			invoke.getInvokeExpr().getMethodRef().name().equals(SootMethod.constructorName)) {
                         SpecialInvokeExpr invokeExpr = (SpecialInvokeExpr)invoke.getInvokeExpr();
                         if (invokeExpr.getBase() == lhs){
                             continue;
@@ -117,7 +117,7 @@ public class JimpleConstructorFolder extends BodyTransformer
                     continue;
                 InvokeStmt is = (InvokeStmt)use;
                 if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr) ||
-		    !(is.getInvokeExpr().getMethod().getName().equals(SootMethod.constructorName)) ||
+		    !(is.getInvokeExpr().getMethodRef().name().equals(SootMethod.constructorName)) ||
                   lhs != ((SpecialInvokeExpr)is.getInvokeExpr()).getBase())
                     continue;
               

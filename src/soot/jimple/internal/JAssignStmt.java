@@ -301,7 +301,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
 
 
 		    
-		    Unit u = Baf.v().newFieldPutInst(v.getField());
+		    Unit u = Baf.v().newFieldPutInst(v.getFieldRef());
 		    Iterator it = getTags().iterator();
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());
@@ -339,7 +339,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
                 {
                     ((ConvertToBaf) rvalue).convertToBaf(context, out);
 
-		    Unit u = Baf.v().newStaticPutInst(v.getField());
+		    Unit u = Baf.v().newStaticPutInst(v.getFieldRef());
 		    Iterator it = getTags().iterator();
 		    while(it.hasNext()) {
 			u.addTag((Tag) it.next());

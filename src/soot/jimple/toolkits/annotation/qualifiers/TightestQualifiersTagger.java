@@ -321,7 +321,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
                     Value v = vBox.getValue();
                     if (v instanceof FieldRef) {
                         FieldRef fieldRef = (FieldRef)v;
-                        SootField f = fieldRef.getField();
+                        SootField f = fieldRef.XgetField();
                         if (f.equals(sf)) {
                             if (Modifier.isPublic(sf.getModifiers())) {
                                 if (analyzePublicField(sf, appClass)) return;

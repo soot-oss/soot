@@ -179,52 +179,21 @@ public class SootClass extends AbstractHost implements Numberable
         Returns the field of this class with the given name and type. 
     */
 
-    private SootField findFieldInClass( String name, Type type ) {
+    public SootField XgetField( String name, Type type ) {
         for( Iterator fieldIt = this.getFields().iterator(); fieldIt.hasNext(); ) {
             final SootField field = (SootField) fieldIt.next();
             if(field.name.equals(name) && field.type.equals(type))
                 return field;
         }
-        return null;
+        throw new RuntimeException("No field " + name + " in class " + getName());
     }
-    /**
-        Returns the field of this class with the given name and type. 
-    */
-
-    public SootField getField(String name, Type type) 
-    {
-        SootField ret = null;
-        ret = findFieldInClass( name, type );
-        if( ret != null ) return ret;
-
-        if(Scene.v().allowsPhantomRefs() && this.isPhantom())
-        {
-            SootField f = new SootField(name, type);
-            f.setPhantom(true);
-            addField(f);
-            return f;
-        } else {
-            LinkedList queue = new LinkedList();
-            queue.addAll( this.getInterfaces() );
-            while( !queue.isEmpty() ) {
-                SootClass iface = (SootClass) queue.removeFirst();
-                ret = iface.findFieldInClass( name, type );
-                if( ret != null ) return ret;
-                queue.addAll( iface.getInterfaces() );
-            }
-            if( this.hasSuperclass() ) 
-                return this.getSuperclass().getField( name, type );
-            throw new RuntimeException("No field " + name + " in class " + getName());
-        }
-    }
-
     
     /**
         Returns the field of this class with the given name.  Throws a RuntimeException if there
         are more than one.
     */
 
-    public SootField getFieldByName(String name)
+    public SootField XgetFieldByName(String name)
     {
         boolean found = false;
         SootField foundField = null;
@@ -329,7 +298,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a field with the given name?
     */
 
-    public boolean declaresFieldByName(String name)
+    public boolean XdeclaresFieldByName(String name)
     {
         Iterator fieldIt = getFields().iterator();
 
@@ -349,7 +318,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a field with the given name and type.
     */
 
-    public boolean declaresField(String name, Type type)
+    public boolean XdeclaresField(String name, Type type)
     {
         Iterator fieldIt = getFields().iterator();
 
@@ -390,7 +359,7 @@ public class SootClass extends AbstractHost implements Numberable
         return ret;
     }
 
-    private SootMethod findMethodInClass( String name, List parameterTypes,
+    public SootMethod XgetMethod( String name, List parameterTypes,
             Type returnType )
     {
         for( Iterator methodIt = methodIterator(); methodIt.hasNext(); ) {
@@ -402,47 +371,13 @@ public class SootClass extends AbstractHost implements Numberable
                 return method;
             }
         }
-        return null;
+        throw new RuntimeException(
+                "Class "+getName()+" doesn't have method "+
+            name + "(" + parameterTypes + ")" + " : " + returnType );
     }
     /**
         Attempts to retrieve the method with the given name, parameters and return type.  
     */
-
-    public SootMethod getMethod(String name, List parameterTypes, Type returnType) 
-    {
-        SootMethod ret = null;
-        SootClass cl = this;
-        while(true) {
-            ret = cl.findMethodInClass( name, parameterTypes, returnType );
-            if( ret != null ) return ret;
-            if(Scene.v().allowsPhantomRefs() && cl.isPhantom())
-            {
-                SootMethod m = new SootMethod(name, parameterTypes, returnType);
-                m.setPhantom(true);
-                cl.addMethod(m);
-                return m;
-            }
-            if( cl.hasSuperclass() ) cl = cl.getSuperclass();
-            else break;
-        }
-        cl = this;
-        while(true) {
-            LinkedList queue = new LinkedList();
-            queue.addAll( cl.getInterfaces() );
-            while( !queue.isEmpty() ) {
-                SootClass iface = (SootClass) queue.removeFirst();
-                ret = iface.findMethodInClass( name, parameterTypes, returnType );
-                if( ret != null ) return ret;
-                queue.addAll( iface.getInterfaces() );
-            }
-            if( cl.hasSuperclass() ) cl = cl.getSuperclass();
-            else break;
-        }
-        throw new RuntimeException(
-                "Class "+getName()+" doesn't have method "+
-            name + "(" + parameterTypes + ")" + " : " + returnType +
-            "; failed to resolve in superclasses and interfaces" );
-    }
 
     /**
         Attempts to retrieve the method with the given name and parameters.  This method
@@ -450,7 +385,7 @@ public class SootClass extends AbstractHost implements Numberable
         given name and parameter.
     */
 
-    public SootMethod getMethod(String name, List parameterTypes) 
+    public SootMethod XgetMethod(String name, List parameterTypes) 
     {
         boolean found = false;
         SootMethod foundMethod = null;
@@ -477,7 +412,6 @@ public class SootClass extends AbstractHost implements Numberable
             return foundMethod;
         else
             throw new RuntimeException("couldn't find method "+name+"("+parameterTypes+") in "+this);
-
     }
 
     
@@ -487,7 +421,7 @@ public class SootClass extends AbstractHost implements Numberable
         given name.
     */
 
-    public SootMethod getMethodByName(String name) 
+    public SootMethod XgetMethodByName(String name) 
     {
         boolean found = false;
         SootMethod foundMethod = null;
@@ -518,7 +452,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a method with the given name and parameter types?
     */
 
-    public boolean declaresMethod(String name, List parameterTypes)
+    public boolean XdeclaresMethod(String name, List parameterTypes)
     {
         Iterator methodIt = methodIterator();
 
@@ -538,7 +472,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a method with the given name, parameter types, and return type?
     */
 
-    public boolean declaresMethod(String name, List parameterTypes, Type returnType)
+    public boolean XdeclaresMethod(String name, List parameterTypes, Type returnType)
     {
         Iterator methodIt = methodIterator();
 
@@ -560,7 +494,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a method with the given name?
     */
 
-    public boolean declaresMethodByName(String name)
+    public boolean XdeclaresMethodByName(String name)
     {
         Iterator methodIt = methodIterator();
 
@@ -1022,38 +956,5 @@ public class SootClass extends AbstractHost implements Numberable
     public final void setNumber( int number ) { this.number = number; }
 
     private int number = 0;
-
-    // temporary abc stubs
-    public SootField XgetField( String name, Type type ) {
-        return getField(name, type);
-    }
-    public SootField XgetFieldByName(String name) {
-        return getFieldByName(name);
-    }
-    public boolean XdeclaresFieldByName(String name) {
-        return declaresFieldByName(name);
-    }
-    public boolean XdeclaresField(String name, Type type) {
-        return declaresField(name, type);
-    }
-    public SootMethod XgetMethod( String name, List parameterTypes, Type returnType ) {
-        return getMethod(name, parameterTypes, returnType);
-    }
-    public SootMethod XgetMethod(String name, List parameterTypes) {
-        return getMethod(name, parameterTypes);
-    }
-    public SootMethod XgetMethodByName(String name) {
-        return getMethodByName(name);
-    }
-    public boolean XdeclaresMethod(String name, List parameterTypes) {
-        return declaresMethod(name, parameterTypes);
-    }
-    public boolean XdeclaresMethod(String name, List parameterTypes, Type returnType) {
-        return declaresMethod(name, parameterTypes, returnType);
-    }
-    public boolean XdeclaresMethodByName(String name) {
-        return declaresMethodByName(name);
-    }
-
 }
 

@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,9 +27,9 @@ import soot.grimp.internal.*;
 
 public class DSpecialInvokeExpr extends GSpecialInvokeExpr
 {
-    public DSpecialInvokeExpr( Value base, SootMethod method, java.util.List args) 
+    public DSpecialInvokeExpr( Value base, SootMethodRef methodRef, java.util.List args) 
     {
-	super( base, method, args);
+	super( base, methodRef, args);
     }
 
     public void toString( UnitPrinter up ) {
@@ -36,7 +37,7 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr
         // OL: I don't know what this is for; I'm just refactoring the
         // original code. An explanation here would be welcome.
             up.literal( "((" );
-            up.type( getMethod().getDeclaringClass().getType() );
+            up.type( methodRef.declaringClass().getType() );
             up.literal( ") " );
 	    
             if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal("(");
@@ -46,7 +47,7 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr
 	    up.literal( ")" );
             up.literal( "." );
 
-            up.method( getMethod() );
+            up.methodRef( methodRef );
             up.literal( "(" );
 
 	    for (int i=0; i<argBoxes.length; i++) {
@@ -69,7 +70,7 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr
 	    StringBuffer b = new StringBuffer();
 
 	    b.append( "((");
-	    b.append( getMethod().getDeclaringClass().getJavaStyleName());
+	    b.append( methodRef.declaringClass().getJavaStyleName());
 	    b.append( ") ");
 	    
 	    String baseStr = ( getBase()).toString();
@@ -79,7 +80,7 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr
 	    b.append( baseStr);
 	    b.append( ").");
 
-	    b.append( getMethod().getName());
+	    b.append( methodRef.name());
 	    b.append( "(");
 
 	    for (int i=0; i<argBoxes.length; i++) {
@@ -104,6 +105,6 @@ public class DSpecialInvokeExpr extends GSpecialInvokeExpr
         for(int i = 0; i < getArgCount(); i++) 
             clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
         
-        return new DSpecialInvokeExpr( getBase(), getMethod(), clonedArgs);
+        return new DSpecialInvokeExpr( getBase(), methodRef, clonedArgs);
     }
 }

@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,9 +38,9 @@ import java.util.*;
 
 public class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr 
 {
-    public JSpecialInvokeExpr(Local base, SootMethod method, List args)
+    public JSpecialInvokeExpr(Local base, SootMethodRef methodRef, List args)
     {
-        super(Jimple.v().newLocalBox(base), method,
+        super(Jimple.v().newLocalBox(base), methodRef,
              (ValueBox[]) new ImmediateBox[args.size()]);
 
         for(int i = 0; i < args.size(); i++) {
@@ -47,9 +48,9 @@ public class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr
         }
     }
     
-    JSpecialInvokeExpr(Local base, SootMethod method, ValueBox[] args)
+    JSpecialInvokeExpr(Local base, SootMethodRef methodRef, ValueBox[] args)
     {
-        super(Jimple.v().newLocalBox(base), method, args);
+        super(Jimple.v().newLocalBox(base), methodRef, args);
     }
     
  
@@ -61,6 +62,6 @@ public class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr
             clonedArgs.add(i, getArg(i));
         }
         
-        return new  JSpecialInvokeExpr((Local) getBase(), method, clonedArgs);
+        return new  JSpecialInvokeExpr((Local) getBase(), methodRef, clonedArgs);
     }
 }

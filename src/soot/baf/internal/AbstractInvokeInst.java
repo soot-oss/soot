@@ -35,21 +35,21 @@ import java.util.*;
 
 abstract class AbstractInvokeInst extends AbstractInst
 {
-    SootMethod method;
+    SootMethodRef methodRef;
+
+    public SootMethodRef getMethodRef()
+    {
+        return methodRef;
+    }
 
     public SootMethod getMethod()
     {
-        return method;
-    }
-
-    public void setMethod(SootMethod m)
-    {
-        method = m;
+        return methodRef.resolve();
     }
 
     public Type getType()
     {
-        return method.getReturnType();
+        return methodRef.returnType();
     }
 
     public String toString()
@@ -59,10 +59,10 @@ abstract class AbstractInvokeInst extends AbstractInst
 
     abstract public String getName();
     String getParameters()
-        { return " " + method.getSignature(); }
+        { return " " + methodRef.getSignature(); }
     protected void getParameters(UnitPrinter up) {
         up.literal(" ");
-        up.method(method);
+        up.methodRef(methodRef);
     }
 
     

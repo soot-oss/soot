@@ -399,37 +399,37 @@ public class Jimple
         Constructs a NewStaticInvokeExpr(ArrayType, List of Immediate) grammar chunk.
      */
 
-    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, List args)
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, List args)
     {
         return new JStaticInvokeExpr(method, args);
     }
 
 
     /**
-        Constructs a NewSpecialInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+        Constructs a NewSpecialInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
      */
 
-    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, List args)
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, List args)
     {
         return new JSpecialInvokeExpr(base, method, args);
     }
 
 
     /**
-        Constructs a NewVirtualInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+        Constructs a NewVirtualInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
      */
 
-    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, List args)
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, List args)
     {
         return new JVirtualInvokeExpr(base, method, args);
     }
 
 
     /**
-        Constructs a NewInterfaceInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+        Constructs a NewInterfaceInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
      */
 
-    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, List args)
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, List args)
     {
         return new JInterfaceInvokeExpr(base, method, args);
     }
@@ -440,37 +440,37 @@ public class Jimple
         Constructs a NewStaticInvokeExpr(ArrayType, List of Immediate) grammar chunk. (no args)
      */
 
-    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method)
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method)
     {
         return new JStaticInvokeExpr(method, new ArrayList());
     }
 
 
     /**
-        Constructs a NewSpecialInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk. (no args)
+        Constructs a NewSpecialInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk. (no args)
      */
 
-    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method)
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method)
     {
         return new JSpecialInvokeExpr(base, method, new ArrayList());
     }
 
 
     /**
-        Constructs a NewVirtualInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk. (no args)
+        Constructs a NewVirtualInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk. (no args)
      */
 
-    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method)
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method)
     {
         return new JVirtualInvokeExpr(base, method, new ArrayList());
     }
 
 
     /**
-        Constructs a NewInterfaceInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk. (no args)
+        Constructs a NewInterfaceInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk. (no args)
      */
 
-    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method)
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method)
     {
         return new JInterfaceInvokeExpr(base, method, new ArrayList());
     }
@@ -480,37 +480,37 @@ public class Jimple
         Constructs a NewStaticInvokeExpr(ArrayType, List of Immediate) grammar chunk.
      */
      
-    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, Value arg)
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, Value arg)
     {
         return new JStaticInvokeExpr(method, Arrays.asList(new Value[] {arg}));
     }
 
 
     /**
-        Constructs a NewSpecialInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+        Constructs a NewSpecialInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
      */
 
-    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, Value arg)
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, Value arg)
     {
         return new JSpecialInvokeExpr(base, method, Arrays.asList(new Value[] {arg}));
     }
 
 
     /**
-        Constructs a NewVirtualInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+        Constructs a NewVirtualInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
      */
 
-    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, Value arg)
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, Value arg)
     {
         return new JVirtualInvokeExpr(base, method, Arrays.asList(new Value[] {arg}));
     }
 
 
     /**
-        Constructs a NewInterfaceInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+        Constructs a NewInterfaceInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
      */
 
-    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, Value arg)
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, Value arg)
     {
         return new JInterfaceInvokeExpr(base, method, Arrays.asList(new Value[] {arg}));
     }
@@ -520,37 +520,37 @@ public class Jimple
         Constructs a NewStaticInvokeExpr(ArrayType, List of Immediate) grammar chunk.
      */
      
-    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, Value arg1, Value arg2)
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, Value arg1, Value arg2)
     {
         return new JStaticInvokeExpr(method, Arrays.asList(new Value[] {arg1, arg2}));
     }
 
 
     /**
-        Constructs a NewSpecialInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+        Constructs a NewSpecialInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
      */
 
-    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2)
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, Value arg1, Value arg2)
     {
         return new JSpecialInvokeExpr(base, method, Arrays.asList(new Value[] {arg1, arg2}));
     }
 
 
     /**
-        Constructs a NewVirtualInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+        Constructs a NewVirtualInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
      */
 
-    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2)
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, Value arg1, Value arg2)
     {
         return new JVirtualInvokeExpr(base, method, Arrays.asList(new Value[] {arg1, arg2}));
     }
 
 
     /**
-        Constructs a NewInterfaceInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+        Constructs a NewInterfaceInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
      */
 
-    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2)
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, Value arg1, Value arg2)
     {
         return new JInterfaceInvokeExpr(base, method, Arrays.asList(new Value[] {arg1, arg2}));
     }
@@ -753,10 +753,10 @@ public class Jimple
 
 
     /**
-        Constructs a StaticFieldRef(SootField) grammar chunk.
+        Constructs a StaticFieldRef(SootFieldRef) grammar chunk.
      */
 
-    public StaticFieldRef newStaticFieldRef(SootField f)
+    public StaticFieldRef newStaticFieldRef(SootFieldRef f)
     {
         return new StaticFieldRef(f);
     }
@@ -782,10 +782,10 @@ public class Jimple
     }
 
     /**
-        Constructs a InstanceFieldRef(Local, SootField) grammar chunk.
+        Constructs a InstanceFieldRef(Local, SootFieldRef) grammar chunk.
      */
 
-    public InstanceFieldRef newInstanceFieldRef(Value base, SootField f)
+    public InstanceFieldRef newInstanceFieldRef(Value base, SootFieldRef f)
     {
         return new JInstanceFieldRef(base, f);
     }
@@ -869,64 +869,70 @@ public class Jimple
         return new JimpleBody();
     }
 
-    public StaticFieldRef newStaticFieldRef(SootFieldRef f) {
-        return newStaticFieldRef(f.resolve());
+    /*
+     * Uncomment these stubs to make it compile with old code using Soot
+     * that does not know about SootField/MethodRefs.
+     */
+    /*
+    public StaticFieldRef newStaticFieldRef(SootField f) {
+        return newStaticFieldRef(f.makeRef());
     }
-    public InstanceFieldRef newInstanceFieldRef(Value base, SootFieldRef f) {
-        return newInstanceFieldRef(base, f.resolve());
-    }
-
-    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, List args) {
-        return newStaticInvokeExpr(method.resolve(), args);
-    }
-    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, List args) {
-        return newSpecialInvokeExpr(base, method.resolve(), args);
-    }
-    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, List args) {
-        return newVirtualInvokeExpr(base, method.resolve(), args);
+    public InstanceFieldRef newInstanceFieldRef(Value base, SootField f) {
+        return newInstanceFieldRef(base, f.makeRef());
     }
 
-    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, List args) {
-        return newInterfaceInvokeExpr(base, method.resolve(), args);
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, List args) {
+        return newStaticInvokeExpr(method.makeRef(), args);
+    }
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, List args) {
+        return newSpecialInvokeExpr(base, method.makeRef(), args);
+    }
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, List args) {
+        return newVirtualInvokeExpr(base, method.makeRef(), args);
     }
 
-    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method) {
-        return newStaticInvokeExpr(method.resolve());
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, List args) {
+        return newInterfaceInvokeExpr(base, method.makeRef(), args);
     }
-    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method) {
-        return newSpecialInvokeExpr(base, method.resolve());
+
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method) {
+        return newStaticInvokeExpr(method.makeRef());
     }
-    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method) {
-        return newVirtualInvokeExpr(base, method.resolve());
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method) {
+        return newSpecialInvokeExpr(base, method.makeRef());
     }
-    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method) {
-        return newInterfaceInvokeExpr(base, method.resolve());
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method) {
+        return newVirtualInvokeExpr(base, method.makeRef());
+    }
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method) {
+        return newInterfaceInvokeExpr(base, method.makeRef());
     }
 
 
-    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, Value arg) {
-        return newStaticInvokeExpr(method.resolve(), arg);
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, Value arg) {
+        return newStaticInvokeExpr(method.makeRef(), arg);
     } 
-    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, Value arg) {
-        return newSpecialInvokeExpr(base, method.resolve(), arg);
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, Value arg) {
+        return newSpecialInvokeExpr(base, method.makeRef(), arg);
     }
-    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, Value arg) {
-        return newVirtualInvokeExpr(base, method.resolve(), arg);
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, Value arg) {
+        return newVirtualInvokeExpr(base, method.makeRef(), arg);
     }
-    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, Value arg) {
-        return newInterfaceInvokeExpr(base, method.resolve(), arg);
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, Value arg) {
+        return newInterfaceInvokeExpr(base, method.makeRef(), arg);
     }
 
-    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, Value arg1, Value arg2) {
-        return newStaticInvokeExpr(method.resolve(), arg1, arg2);
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, Value arg1, Value arg2) {
+        return newStaticInvokeExpr(method.makeRef(), arg1, arg2);
     }
-    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, Value arg1, Value arg2) {
-        return newSpecialInvokeExpr(base, method.resolve(), arg1, arg2);
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2) {
+        return newSpecialInvokeExpr(base, method.makeRef(), arg1, arg2);
     }
-    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, Value arg1, Value arg2) {
-        return newVirtualInvokeExpr(base, method.resolve(), arg1, arg2);
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2) {
+        return newVirtualInvokeExpr(base, method.makeRef(), arg1, arg2);
     }
-    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, Value arg1, Value arg2) {
-        return newInterfaceInvokeExpr(base, method.resolve(), arg1, arg2);
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2) {
+        return newInterfaceInvokeExpr(base, method.makeRef(), arg1, arg2);
     }
+    */
 }

@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,45 +39,34 @@ import java.io.*;
 
 public class StaticFieldRef implements FieldRef, ConvertToBaf
 {
-    SootField field;
+    protected SootFieldRef fieldRef;
 
-    private void readObject( ObjectInputStream in) throws IOException, ClassNotFoundException
+    protected StaticFieldRef(SootFieldRef fieldRef)
     {
-	field = Scene.v().getField( (String) in.readObject());
-    }
-
-    private void writeObject( ObjectOutputStream out) throws IOException
-    {
-	out.writeObject( field.getSignature());
-    }
-
-    protected StaticFieldRef(SootField field)
-    {
-        this.field = field;
+        this.fieldRef = fieldRef;
     }
 
     public Object clone() 
     {
-        return new StaticFieldRef(field);
+        return new StaticFieldRef(fieldRef);
     }
 
     public String toString()
     {
-        return field.getSignature();
+        return fieldRef.getSignature();
     }
 
     public void toString( UnitPrinter up ) {
-        up.fieldRef(field);
+        up.fieldRef(fieldRef);
     }
 
-    public SootField getField()
+    public SootFieldRef getFieldRef()
     {
-        return field;
+        return fieldRef;
     }
-
-    public void setField(SootField field)
+    public SootField XgetField()
     {
-        this.field = field;
+        return fieldRef.resolve();
     }
 
     public List getUseBoxes()
@@ -86,7 +76,7 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf
 
     public Type getType()
     {
-        return field.getType();
+        return fieldRef.type();
     }
 
     public void apply(Switch sw)
@@ -97,19 +87,19 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf
     public boolean equivTo(Object o)
     {
         if (o instanceof StaticFieldRef)
-            return ((StaticFieldRef)o).field.equals(field);
+            return ((StaticFieldRef)o).XgetField().equals(XgetField());
         
         return false;
     }
 
     public int equivHashCode()
     {
-        return field.equivHashCode();
+        return XgetField().equivHashCode();
     }
 
     public void convertToBaf(JimpleToBafContext context, List out)
     {
-        Unit u = Baf.v().newStaticGetInst(field);
+        Unit u = Baf.v().newStaticGetInst(fieldRef);
         out.add(u);
 
         Iterator it = context.getCurrentUnit().getTags().iterator();
@@ -117,12 +107,4 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf
             u.addTag((Tag) it.next());
         }
     }
-	public SootField XgetField() { return getField(); }
-
-    // temporary stub
-    public SootFieldRef getFieldRef()
-    {
-        return getField().makeRef();
-    }
-
 }

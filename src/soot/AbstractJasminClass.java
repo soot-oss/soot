@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
+ * Copyright (C) 2004 Jennifer Lhotak, Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -78,10 +79,10 @@ public abstract class AbstractJasminClass
             return 1;
     }
 
-    public static int argCountOf(SootMethod m)
+    public static int argCountOf(SootMethodRef m)
     {
         int argCount = 0;
-        Iterator typeIt = m.getParameterTypes().iterator();
+        Iterator typeIt = m.parameterTypes().iterator();
 
         while(typeIt.hasNext())
         {
@@ -169,7 +170,7 @@ public abstract class AbstractJasminClass
 
     }
 
-    public static String jasminDescriptorOf(SootMethod m)
+    public static String jasminDescriptorOf(SootMethodRef m)
     {
         StringBuffer buffer = new StringBuffer();
 
@@ -177,7 +178,7 @@ public abstract class AbstractJasminClass
 
         // Add methods parameters
         {
-            Iterator typeIt = m.getParameterTypes().iterator();
+            Iterator typeIt = m.parameterTypes().iterator();
 
             while(typeIt.hasNext())
             {
@@ -189,7 +190,7 @@ public abstract class AbstractJasminClass
 
         buffer.append(")");
 
-        buffer.append(jasminDescriptorOf(m.getReturnType()));
+        buffer.append(jasminDescriptorOf(m.returnType()));
 
         return buffer.toString();
     }
@@ -407,7 +408,7 @@ public abstract class AbstractJasminClass
 
        // Emit prologue
             emit(".method " + Modifier.toString(method.getModifiers()) + " " +
-                 method.getName() + jasminDescriptorOf(method));
+                 method.getName() + jasminDescriptorOf(method.makeRef()));
 
             Iterator throwsIt = method.getExceptions().iterator();
             while (throwsIt.hasNext()){

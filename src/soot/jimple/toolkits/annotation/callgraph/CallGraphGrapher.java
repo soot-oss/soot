@@ -105,8 +105,8 @@ public class CallGraphGrapher extends SceneTransformer
     private SootMethod getFirstMethod(SootClass sc){
         ArrayList paramTypes = new ArrayList();
         paramTypes.add(soot.ArrayType.v(soot.RefType.v("java.lang.String"), 1));
-        if (sc.declaresMethod("main", paramTypes, soot.VoidType.v())){
-            return sc.getMethod("main", paramTypes, soot.VoidType.v());
+        if (sc.XdeclaresMethod("main", paramTypes, soot.VoidType.v())){
+            return sc.XgetMethod("main", paramTypes, soot.VoidType.v());
         }
         else {
             return (SootMethod)sc.getMethods().get(0);

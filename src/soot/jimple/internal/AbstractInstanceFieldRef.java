@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,32 +38,20 @@ import soot.grimp.PrecedenceTest;
 
 public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf
 {
-    transient SootField field;
+    protected SootFieldRef fieldRef;
     ValueBox baseBox;
 
-    protected AbstractInstanceFieldRef(ValueBox baseBox, SootField field)
+    protected AbstractInstanceFieldRef(ValueBox baseBox, SootFieldRef fieldRef)
     {
         this.baseBox = baseBox;
-        this.field = field;
+        this.fieldRef = fieldRef;
     }
 
     public abstract Object clone();
 
-    private void readObject( ObjectInputStream in) throws IOException, ClassNotFoundException
-    {
-	in.defaultReadObject();
-	field = Scene.v().getField( (String) in.readObject());
-    }
-
-    private void writeObject( ObjectOutputStream out) throws IOException
-    {
-	out.defaultWriteObject();
-	out.writeObject( field.getSignature());
-    }
-
     public String toString()
     {
-        return baseBox.getValue().toString() + "." + field.getSignature();
+        return baseBox.getValue().toString() + "." + fieldRef.getSignature();
     }
     
     public void toString( UnitPrinter up ) {
@@ -70,7 +59,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
         baseBox.toString(up);
         if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal(")");
         up.literal(".");
-        up.fieldRef(field);
+        up.fieldRef(fieldRef);
     }
 
     public Value getBase()
@@ -88,14 +77,14 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
         baseBox.setValue(base);
     }
 
-    public SootField getField()
+    public SootFieldRef getFieldRef()
     {
-        return field;
+        return fieldRef;
     }
 
-    public void setField(SootField field)
+    public SootField XgetField()
     {
-        this.field = field;
+        return fieldRef.resolve();
     }
 
     public List getUseBoxes()
@@ -110,7 +99,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
 
     public Type getType()
     {
-        return field.getType();
+        return fieldRef.type();
     }
 
     public void apply(Switch sw)
@@ -123,7 +112,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
         if (o instanceof AbstractInstanceFieldRef)
         {
             AbstractInstanceFieldRef fr = (AbstractInstanceFieldRef)o;
-            return fr.field.equals(field) &&
+            return fr.XgetField().equals(XgetField()) &&
                 fr.baseBox.getValue().equivTo(baseBox.getValue());
         }
         return false;
@@ -132,14 +121,14 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
     /** Returns a hash code for this object, consistent with structural equality. */
     public int equivHashCode() 
     {
-        return field.equivHashCode() * 101 + baseBox.getValue().equivHashCode() + 17;
+        return XgetField().equivHashCode() * 101 + baseBox.getValue().equivHashCode() + 17;
     }
 
     public void convertToBaf(JimpleToBafContext context, List out)
     {
         ((ConvertToBaf)getBase()).convertToBaf(context, out);
 	Unit u;
-        out.add(u = Baf.v().newFieldGetInst(field));
+        out.add(u = Baf.v().newFieldGetInst(fieldRef));
 
 	
 	Unit currentUnit = context.getCurrentUnit();
@@ -148,7 +137,4 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
 	    u.addTag((Tag) it.next());
 	}
     }
-    public SootField XgetField() { return getField(); }
-    // temporary stub
-    public SootFieldRef getFieldRef() { return getField().makeRef(); }
 }

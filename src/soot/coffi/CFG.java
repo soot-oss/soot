@@ -4295,11 +4295,11 @@ public class CFG {
                 
             SootClass bclass = cm.getSootClass(className);
 
-            SootField field = bclass.getField(fieldName, fieldType);
+            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType);
 
             InstanceFieldRef fr =
                 Jimple.v().newInstanceFieldRef(Util.v().getLocalForStackOp(listBody,
-                typeStack, typeStack.topIndex() - typeSize(typeStack.top())), field);
+                typeStack, typeStack.topIndex() - typeSize(typeStack.top())), fieldRef);
 
             rvalue = Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex());
             stmt = Jimple.v().newAssignStmt(fr,rvalue);
@@ -4333,10 +4333,10 @@ public class CFG {
 
             
             Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
-            SootField field = bclass.getField(fieldName, fieldType);
+            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType);
 
             fr = Jimple.v().newInstanceFieldRef(Util.v().getLocalForStackOp(listBody, typeStack,
-                typeStack.topIndex()), field);
+                typeStack.topIndex()), fieldRef);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), fr);
@@ -4367,9 +4367,9 @@ public class CFG {
             Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
             
             SootClass bclass = cm.getSootClass(className);
-            SootField field = bclass.getField(fieldName, fieldType);
+            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType);
 
-            fr = Jimple.v().newStaticFieldRef(field);
+            fr = Jimple.v().newStaticFieldRef(fieldRef);
 
             stmt = Jimple.v().newAssignStmt(fr, Util.v().getLocalForStackOp(listBody, typeStack,
                 typeStack.topIndex()));
@@ -4399,9 +4399,9 @@ public class CFG {
             Type fieldType = Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
             
             SootClass bclass = cm.getSootClass(className);
-            SootField field = bclass.getField(fieldName, fieldType);
+            SootFieldRef fieldRef = Scene.v().makeFieldRef(bclass, fieldName, fieldType);
 
-            fr = Jimple.v().newStaticFieldRef(field);
+            fr = Jimple.v().newStaticFieldRef(fieldRef);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), fr);
@@ -4414,7 +4414,7 @@ public class CFG {
             Instruction_Invokevirtual iv = (Instruction_Invokevirtual)ins;
             args = cp_info.countParams(constant_pool,iv.arg_i);
 
-            SootMethod method = null;
+            SootMethodRef methodRef = null;
 
             CONSTANT_Methodref_info methodInfo =
                 (CONSTANT_Methodref_info) constant_pool[iv.arg_i];
@@ -4455,7 +4455,7 @@ public class CFG {
                 returnType = types[types.length - 1];
             }
 
-            method = bclass.getMethod(methodName, parameterTypes, returnType);
+            methodRef = Scene.v().makeMethodRef(bclass, methodName, parameterTypes, returnType);
 
             // build array of parameters
                 params = new Value[args];
@@ -4473,7 +4473,7 @@ public class CFG {
                 }
 
             rvalue = Jimple.v().newVirtualInvokeExpr(Util.v().getLocalForStackOp(listBody, typeStack,
-                typeStack.topIndex()), method, Arrays.asList(params));
+                typeStack.topIndex()), methodRef, Arrays.asList(params));
 
             if(!returnType.equals(VoidType.v()))
             {
@@ -4490,7 +4490,7 @@ public class CFG {
             Instruction_Invokenonvirtual iv = (Instruction_Invokenonvirtual)ins;
             args = cp_info.countParams(constant_pool,iv.arg_i);
 
-            SootMethod method = null;
+            SootMethodRef methodRef = null;
 
                 CONSTANT_Methodref_info methodInfo =
                     (CONSTANT_Methodref_info) constant_pool[iv.arg_i];
@@ -4528,7 +4528,7 @@ public class CFG {
                     returnType = types[types.length - 1];
                 }
 
-                method = bclass.getMethod(methodName, parameterTypes, returnType);
+                methodRef = Scene.v().makeMethodRef( bclass, methodName, parameterTypes, returnType);
 
             // build array of parameters
                 params = new Value[args];
@@ -4546,7 +4546,7 @@ public class CFG {
                 }
 
             rvalue = Jimple.v().newSpecialInvokeExpr(Util.v().getLocalForStackOp(listBody, typeStack,
-                typeStack.topIndex()), method, Arrays.asList(params));
+                typeStack.topIndex()), methodRef, Arrays.asList(params));
 
             if(!returnType.equals(VoidType.v()))
             {
@@ -4563,7 +4563,7 @@ public class CFG {
             Instruction_Invokestatic is = (Instruction_Invokestatic)ins;
             args = cp_info.countParams(constant_pool,is.arg_i);
 
-            SootMethod method = null;
+            SootMethodRef methodRef = null;
 
                 CONSTANT_Methodref_info methodInfo =
                     (CONSTANT_Methodref_info) constant_pool[is.arg_i];
@@ -4604,7 +4604,7 @@ public class CFG {
                     returnType = types[types.length - 1];
                 }
 
-                method = bclass.getMethod(methodName, parameterTypes, returnType);
+                methodRef = Scene.v().makeMethodRef(bclass, methodName, parameterTypes, returnType);
 
             // build Vector of parameters
                    params = new Value[args];
@@ -4628,7 +4628,7 @@ public class CFG {
                       typeStack = typeStack.pop();
                 }
 
-            rvalue = Jimple.v().newStaticInvokeExpr(method, Arrays.asList(params));
+            rvalue = Jimple.v().newStaticInvokeExpr(methodRef, Arrays.asList(params));
 
             if(!returnType.equals(VoidType.v()))
             {
@@ -4646,7 +4646,7 @@ public class CFG {
             Instruction_Invokeinterface ii = (Instruction_Invokeinterface)ins;
             args = cp_info.countParams(constant_pool,ii.arg_i);
 
-            SootMethod method = null;
+            SootMethodRef methodRef = null;
 
                 CONSTANT_InterfaceMethodref_info methodInfo =
                     (CONSTANT_InterfaceMethodref_info) constant_pool[ii.arg_i];
@@ -4687,7 +4687,7 @@ public class CFG {
                     returnType = types[types.length - 1];
                 }
 
-                method = bclass.getMethod(methodName, parameterTypes, returnType);
+                methodRef = Scene.v().makeMethodRef(bclass, methodName, parameterTypes, returnType);
 
             // build Vector of parameters
                 params = new Value[args];
@@ -4705,7 +4705,7 @@ public class CFG {
                 }
 
             rvalue = Jimple.v().newInterfaceInvokeExpr(Util.v().getLocalForStackOp(listBody, typeStack,
-                typeStack.topIndex()), method, Arrays.asList(params));
+                typeStack.topIndex()), methodRef, Arrays.asList(params));
 
             if(!returnType.equals(VoidType.v()))
             {

@@ -84,18 +84,18 @@ class ConstraintChecker extends AbstractStmtSwitch
       {
 	InterfaceInvokeExpr invoke = (InterfaceInvokeExpr) ie;
 	
-	SootMethod method = invoke.getMethod();
+	SootMethodRef method = invoke.getMethodRef();
 	Value base = invoke.getBase();
 	
 	if(base instanceof Local)
 	  {
 	    Local local = (Local) base;
 	    
-	    if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.getDeclaringClass().getType())))
+	    if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.declaringClass().getType())))
 	      {
 		if(fix)
 		  {
-		    invoke.setBase(insertCast(local, method.getDeclaringClass().getType(), invokestmt));
+		    invoke.setBase(insertCast(local, method.declaringClass().getType(), invokestmt));
 		  }
 		else
 		  {
@@ -112,11 +112,11 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      {
 		Local local = (Local) invoke.getArg(i);
 
-		if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.getParameterType(i))))
+		if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.parameterType(i))))
 		  {
 		    if(fix)
 		      {
-			invoke.setArg(i, insertCast(local, method.getParameterType(i), invokestmt));
+			invoke.setArg(i, insertCast(local, method.parameterType(i), invokestmt));
 		      }
 		    else
 		      {
@@ -130,18 +130,18 @@ class ConstraintChecker extends AbstractStmtSwitch
       {
 	SpecialInvokeExpr invoke = (SpecialInvokeExpr) ie;
 
-	SootMethod method = invoke.getMethod();
+	SootMethodRef method = invoke.getMethodRef();
 	Value base = invoke.getBase();
 
 	if(base instanceof Local)
 	  {
 	    Local local = (Local) base;
 
-	    if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.getDeclaringClass().getType())))
+	    if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.declaringClass().getType())))
 	      {
 		if(fix)
 		  {
-		    invoke.setBase(insertCast(local, method.getDeclaringClass().getType(), invokestmt));
+		    invoke.setBase(insertCast(local, method.declaringClass().getType(), invokestmt));
 		  }
 		else
 		  {
@@ -158,11 +158,11 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      {
 		Local local = (Local) invoke.getArg(i);
 
-		if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.getParameterType(i))))
+		if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.parameterType(i))))
 		  {
 		    if(fix)
 		      {
-			invoke.setArg(i, insertCast(local, method.getParameterType(i), invokestmt));
+			invoke.setArg(i, insertCast(local, method.parameterType(i), invokestmt));
 		      }
 		    else
 		      {
@@ -176,18 +176,18 @@ class ConstraintChecker extends AbstractStmtSwitch
       {
 	VirtualInvokeExpr invoke = (VirtualInvokeExpr) ie;
 
-	SootMethod method = invoke.getMethod();
+	SootMethodRef method = invoke.getMethodRef();
 	Value base = invoke.getBase();
 
 	if(base instanceof Local)
 	  {
 	    Local local = (Local) base;
 
-	    if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.getDeclaringClass().getType())))
+	    if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.declaringClass().getType())))
 	      {
 		if(fix)
 		  {
-		    invoke.setBase(insertCast(local, method.getDeclaringClass().getType(), invokestmt));
+		    invoke.setBase(insertCast(local, method.declaringClass().getType(), invokestmt));
 		  }
 		else
 		  {
@@ -204,11 +204,11 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      {
 		Local local = (Local) invoke.getArg(i);
 
-		if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.getParameterType(i))))
+		if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.parameterType(i))))
 		  {
 		    if(fix)
 		      {
-			invoke.setArg(i, insertCast(local, method.getParameterType(i), invokestmt));
+			invoke.setArg(i, insertCast(local, method.parameterType(i), invokestmt));
 		      }
 		    else
 		      {
@@ -222,7 +222,7 @@ class ConstraintChecker extends AbstractStmtSwitch
       {
 	StaticInvokeExpr invoke = (StaticInvokeExpr) ie;
 
-	SootMethod method = invoke.getMethod();
+	SootMethodRef method = invoke.getMethodRef();
 
 	int count = invoke.getArgCount();
 
@@ -232,11 +232,11 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      {
 		Local local = (Local) invoke.getArg(i);
 
-		if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.getParameterType(i))))
+		if(!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.parameterType(i))))
 		  {
 		    if(fix)
 		      {
-			invoke.setArg(i, insertCast(local, method.getParameterType(i), invokestmt));
+			invoke.setArg(i, insertCast(local, method.parameterType(i), invokestmt));
 		      }
 		    else
 		      {
@@ -311,11 +311,11 @@ class ConstraintChecker extends AbstractStmtSwitch
 	
 	TypeNode base = hierarchy.typeNode(((Local) ref.getBase()).getType());
 	
-	if(!base.hasAncestorOrSelf(hierarchy.typeNode(ref.getField().getDeclaringClass().getType())))
+	if(!base.hasAncestorOrSelf(hierarchy.typeNode(ref.XgetField().getDeclaringClass().getType())))
 	  {
 	    if(fix)
 	      {
-		ref.setBase(insertCast((Local) ref.getBase(), ref.getField().getDeclaringClass().getType(), stmt));
+		ref.setBase(insertCast((Local) ref.getBase(), ref.XgetField().getDeclaringClass().getType(), stmt));
 	      }
 	    else
 	      {
@@ -323,12 +323,12 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      }
 	  }
 
-	left = hierarchy.typeNode(ref.getField().getType());
+	left = hierarchy.typeNode(ref.XgetField().getType());
       }
     else if(l instanceof StaticFieldRef)
       {
 	StaticFieldRef ref = (StaticFieldRef) l;
-	left = hierarchy.typeNode(ref.getField().getType());
+	left = hierarchy.typeNode(ref.XgetField().getType());
       }
     else
       {
@@ -614,7 +614,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 
 	handleInvokeExpr(ie, stmt);
 
-	if(!left.hasDescendantOrSelf(hierarchy.typeNode(ie.getMethod().getReturnType())))
+	if(!left.hasDescendantOrSelf(hierarchy.typeNode(ie.getMethodRef().returnType())))
 	  {
 	    error("Type Error(32)");
 	  }
@@ -756,11 +756,11 @@ class ConstraintChecker extends AbstractStmtSwitch
 	InstanceFieldRef ref = (InstanceFieldRef) r;
 
 	TypeNode baseType = hierarchy.typeNode(((Local) ref.getBase()).getType());
-	if(!baseType.hasAncestorOrSelf(hierarchy.typeNode(ref.getField().getDeclaringClass().getType())))
+	if(!baseType.hasAncestorOrSelf(hierarchy.typeNode(ref.XgetField().getDeclaringClass().getType())))
 	  {
 	    if(fix)
 	      {
-		ref.setBase(insertCast((Local) ref.getBase(), ref.getField().getDeclaringClass().getType(), stmt));
+		ref.setBase(insertCast((Local) ref.getBase(), ref.XgetField().getDeclaringClass().getType(), stmt));
 	      }
 	    else
 	      {
@@ -768,7 +768,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      }	    
 	  }
 	
-	if(!left.hasDescendantOrSelf(hierarchy.typeNode(ref.getField().getType())))
+	if(!left.hasDescendantOrSelf(hierarchy.typeNode(ref.XgetField().getType())))
 	  {
 	    error("Type Error(43)");
 	  }
@@ -777,7 +777,7 @@ class ConstraintChecker extends AbstractStmtSwitch
       {
 	StaticFieldRef ref = (StaticFieldRef) r;
 
-	if(!left.hasDescendantOrSelf(hierarchy.typeNode(ref.getField().getType())))
+	if(!left.hasDescendantOrSelf(hierarchy.typeNode(ref.XgetField().getType())))
 	  {
 	    error("Type Error(44)");
 	  }

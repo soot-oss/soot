@@ -29,6 +29,6 @@ import soot.*;
 
 public interface MethodArgInst extends Inst
 {
+    public SootMethodRef getMethodRef();
     public SootMethod getMethod();
-    public void setMethod(SootMethod m);
 }

@@ -1428,34 +1428,34 @@ public class JasminClass extends AbstractJasminClass
 
             public void caseStaticInvokeInst(StaticInvokeInst i)
             {
-                SootMethod m = i.getMethod();
+                SootMethodRef m = i.getMethodRef();
 
-                emit("invokestatic " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m));
+                emit("invokestatic " + slashify(m.declaringClass().getName()) + "/" +
+                    m.name() + jasminDescriptorOf(m));
             }
             
             public void caseVirtualInvokeInst(VirtualInvokeInst i)
             {
-                SootMethod m = i.getMethod();
+                SootMethodRef m = i.getMethodRef();
 
-                emit("invokevirtual " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m));
+                emit("invokevirtual " + slashify(m.declaringClass().getName()) + "/" +
+                    m.name() + jasminDescriptorOf(m));
             }
 
             public void caseInterfaceInvokeInst(InterfaceInvokeInst i)
             {
-                SootMethod m = i.getMethod();
+                SootMethodRef m = i.getMethodRef();
 
-                emit("invokeinterface " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m) + " " + (argCountOf(m) + 1));
+                emit("invokeinterface " + slashify(m.declaringClass().getName()) + "/" +
+                    m.name() + jasminDescriptorOf(m) + " " + (argCountOf(m) + 1));
             }
 
             public void caseSpecialInvokeInst(SpecialInvokeInst i)
             {
-                SootMethod m = i.getMethod();
+                SootMethodRef m = i.getMethodRef();
 
-                emit("invokespecial " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m));
+                emit("invokespecial " + slashify(m.declaringClass().getName()) + "/" +
+                    m.name() + jasminDescriptorOf(m));
             }
 
             public void caseThrowInst(ThrowInst i)

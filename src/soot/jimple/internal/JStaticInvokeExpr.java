@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,17 +38,17 @@ import java.util.*;
 
 public class JStaticInvokeExpr extends AbstractStaticInvokeExpr 
 {
-    public JStaticInvokeExpr(SootMethod method, List args)
+    public JStaticInvokeExpr(SootMethodRef methodRef, List args)
     {
-        super(method, new ValueBox[args.size()]);
+        super(methodRef, new ValueBox[args.size()]);
 
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
     }  
 
-    JStaticInvokeExpr(SootMethod method, ValueBox[] args)
+    JStaticInvokeExpr(SootMethodRef methodRef, ValueBox[] args)
     {
-        super(method, args);
+        super(methodRef, args);
     }  
 
    
@@ -59,7 +60,7 @@ public class JStaticInvokeExpr extends AbstractStaticInvokeExpr
             clonedArgs.add(i, getArg(i));
         }
         
-        return new  JStaticInvokeExpr(method, clonedArgs);
+        return new  JStaticInvokeExpr(methodRef, clonedArgs);
     }
 }
 

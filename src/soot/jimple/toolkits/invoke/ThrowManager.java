@@ -78,7 +78,7 @@ public class ThrowManager
                     continue;
 
                 if (((SpecialInvokeExpr)ie).getBase() != throwee || 
-                    !ie.getMethod().getName().equals("<init>"))
+                    !ie.getMethodRef().name().equals("<init>"))
                     continue;
 
                 Value lo = ((AssignStmt)prosNew).getLeftOp();
@@ -131,7 +131,7 @@ public class ThrowManager
             (l, Jimple.v().newNewExpr(RefType.v("java.lang.NullPointerException")));
 
         Stmt invStmt = Jimple.v().newInvokeStmt
-            (Jimple.v().newSpecialInvokeExpr(l, Scene.v().getMethod("<java.lang.NullPointerException: void <init>()>")));
+            (Jimple.v().newSpecialInvokeExpr(l, Scene.v().getMethod("<java.lang.NullPointerException: void <init>()>").makeRef()));
         
         Stmt throwStmt = Jimple.v().newThrowStmt(l);
 

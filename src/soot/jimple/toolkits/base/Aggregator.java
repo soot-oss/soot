@@ -232,7 +232,7 @@ public class Aggregator extends BodyTransformer
                                   while (frIt.hasNext())
                                   {
                                       FieldRef fieldRef = (FieldRef) frIt.next();
-                                      if(((FieldRef) v).getField() == fieldRef.getField())
+                                      if(((FieldRef) v).XgetField() == fieldRef.XgetField())
                                       {
                                           cantAggr = true;
                                           break;

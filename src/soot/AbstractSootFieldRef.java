@@ -35,6 +35,9 @@ class AbstractSootFieldRef implements SootFieldRef {
         this.declaringClass = declaringClass;
         this.name = name;
         this.type = type;
+        if( declaringClass == null ) throw new RuntimeException( "Attempt to create SootFieldRef with null class" );
+        if( name == null ) throw new RuntimeException( "Attempt to create SootFieldRef with null name" );
+        if( type == null ) throw new RuntimeException( "Attempt to create SootFieldRef with null type" );
     }
 
     private final SootClass declaringClass;
@@ -57,8 +60,8 @@ class AbstractSootFieldRef implements SootFieldRef {
         }
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            resolve(ret);
             ret.append(super.toString());
+            resolve(ret);
             return ret.toString();
         }
     }
@@ -72,8 +75,8 @@ class AbstractSootFieldRef implements SootFieldRef {
         while(true) {
             if(trace != null) trace.append(
                     "Looking in "+cl+" which has fields "+cl.getFields()+"\n" );
-            if( cl.declaresField(name, type) ) {
-                return cl.getField(name, type);
+            if( cl.XdeclaresField(name, type) ) {
+                return cl.XgetField(name, type);
             }
 
             if(Scene.v().allowsPhantomRefs() && cl.isPhantom())
@@ -89,8 +92,8 @@ class AbstractSootFieldRef implements SootFieldRef {
                     SootClass iface = (SootClass) queue.removeFirst();
                     if(trace != null) trace.append(
                             "Looking in "+iface+" which has fields "+iface.getFields()+"\n" );
-                    if( iface.declaresField(name, type) ) {
-                        return iface.getField( name, type );
+                    if( iface.XdeclaresField(name, type) ) {
+                        return iface.XgetField( name, type );
                     }
                     queue.addAll( iface.getInterfaces() );
                 }
@@ -98,6 +101,7 @@ class AbstractSootFieldRef implements SootFieldRef {
                 else break;
             }
         }
-        throw new FieldResolutionFailedException();
+        if( trace == null ) throw new FieldResolutionFailedException();
+        return null;
     }
 }

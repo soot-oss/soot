@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,9 +39,9 @@ import soot.tagkit.*;
 
 public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements StaticInvokeExpr, ConvertToBaf
 {
-    AbstractStaticInvokeExpr(SootMethod method, List args)
+    AbstractStaticInvokeExpr(SootMethodRef methodRef, List args)
     {
-        this(method, new ValueBox[args.size()]);
+        this(methodRef, new ValueBox[args.size()]);
 
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
@@ -51,7 +52,7 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
         if (o instanceof AbstractStaticInvokeExpr)
         {
             AbstractStaticInvokeExpr ie = (AbstractStaticInvokeExpr)o;
-            if (!(method.equals(ie.method) && 
+            if (!(XgetMethod().equals(ie.XgetMethod()) && 
                   argBoxes.length == ie.argBoxes.length))
                 return false;
             for (int i = 0; i < argBoxes.length; i++)
@@ -65,21 +66,21 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
     /** Returns a hash code for this object, consistent with structural equality. */
     public int equivHashCode() 
     {
-        return method.equivHashCode();
+        return XgetMethod().equivHashCode();
     }
 
     public abstract Object clone();
     
-    protected AbstractStaticInvokeExpr(SootMethod method, ValueBox[] argBoxes)
+    protected AbstractStaticInvokeExpr(SootMethodRef methodRef, ValueBox[] argBoxes)
     {
-        this.method = method; this.argBoxes = argBoxes;
+        this.methodRef = methodRef; this.argBoxes = argBoxes;
     }
 
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(Jimple.v().STATICINVOKE + " " + method.getSignature() + "(");
+        buffer.append(Jimple.v().STATICINVOKE + " " + methodRef.getSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
@@ -98,7 +99,7 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
     {
         up.literal(Jimple.v().STATICINVOKE);
         up.literal(" ");
-        up.method(method);
+        up.methodRef(methodRef);
         up.literal("(");
 
         for(int i = 0; i < argBoxes.length; i++)
@@ -138,7 +139,7 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
         }
        
        Unit u;
-       out.add(u = Baf.v().newStaticInvokeInst(method));
+       out.add(u = Baf.v().newStaticInvokeInst(methodRef));
 
        Unit currentUnit = context.getCurrentUnit();
 

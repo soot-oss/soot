@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,7 +33,7 @@ import java.util.*;
 
 public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInvokeInst
 {
-    public BSpecialInvokeInst(SootMethod method) { setMethod(method); }
+    public BSpecialInvokeInst(SootMethodRef methodRef) { this.methodRef = methodRef; }
 
   public int getInCount()
   {         
@@ -49,7 +50,7 @@ public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInv
 
     public Object clone() 
     {
-        return new  BSpecialInvokeInst(getMethod());
+        return new  BSpecialInvokeInst(methodRef);
     }
            
     public String getName() { return "specialinvoke"; }

@@ -1,29 +1,23 @@
 package soot.javaToJimple;
 
 import java.util.*;
+
+import soot.SootFieldRef;
 public class PrivateFieldAccMethodSource implements soot.MethodSource {
 
-    private polyglot.types.FieldInstance fieldInst;
-    private soot.Type fieldType;
-    private String fieldName;
-    private soot.SootClass classToInvoke;
+    private final soot.Type fieldType;
+    private final String fieldName;
+    private final boolean isStatic;
+    private final soot.SootClass classToInvoke;
     
-    public void fieldName(String n){
-        fieldName = n;
-    }
-    
-    public void fieldType(soot.Type type){
-        fieldType = type;
-    }
-
-    public void classToInvoke(soot.SootClass sc){
-        classToInvoke = sc;
-    }
-        
-    public void setFieldInst(polyglot.types.FieldInstance fi) {
-        fieldInst = fi;
+    public PrivateFieldAccMethodSource(soot.Type fieldType, String fieldName, boolean isStatic, soot.SootClass classToInvoke ) {
+    	this.fieldType = fieldType;
+    	this.fieldName = fieldName;
+    	this.isStatic = isStatic;
+        this.classToInvoke = classToInvoke;
     }
     
+ 
     public soot.Body getBody(soot.SootMethod sootMethod, String phaseName){
         
         soot.Body body = soot.jimple.Jimple.v().newBody(sootMethod);
@@ -45,10 +39,10 @@ public class PrivateFieldAccMethodSource implements soot.MethodSource {
         // create field type local
         soot.Local fieldLocal = lg.generateLocal(fieldType);
         // assign local to fieldRef
-        soot.SootField field = classToInvoke.getField(fieldName, fieldType);
+        soot.SootFieldRef field = soot.Scene.v().makeFieldRef( classToInvoke, fieldName, fieldType);
 
         soot.jimple.FieldRef fieldRef = null;
-        if (field.isStatic()) {
+        if (isStatic) {
             fieldRef = soot.jimple.Jimple.v().newStaticFieldRef(field);
         }
         else {

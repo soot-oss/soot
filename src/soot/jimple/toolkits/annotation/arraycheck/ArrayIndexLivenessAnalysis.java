@@ -267,7 +267,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
                     if (v instanceof InstanceFieldRef)
                     {
                         Value base = ((InstanceFieldRef)v).getBase();
-                        SootField field = ((InstanceFieldRef)v).getField();
+                        SootField field = ((InstanceFieldRef)v).XgetField();
                         
                         HashSet baseset = (HashSet)localToFieldRef.get(base);
                         if (baseset == null)
@@ -400,7 +400,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
                 else
                     if (lhs instanceof InstanceFieldRef)
                     {
-                        SootField field = ((InstanceFieldRef)lhs).getField();
+                        SootField field = ((InstanceFieldRef)lhs).XgetField();
                         HashSet related = (HashSet)fieldToFieldRef.get(field);
                         if (related != null)
                             killset.addAll(related);

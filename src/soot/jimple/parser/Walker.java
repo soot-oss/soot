@@ -1355,7 +1355,7 @@ public class Walker extends DepthFirstAdapter
 
     public void outALocalFieldRef(ALocalFieldRef node)
     {
-	SootField field = (SootField) mProductions.removeLast();
+	SootFieldRef field = (SootFieldRef) mProductions.removeLast();
 
         String local = (String) mProductions.removeLast();
         
@@ -1368,7 +1368,7 @@ public class Walker extends DepthFirstAdapter
     
     public void outASigFieldRef(ASigFieldRef node)
     {
-	SootField field = (SootField) mProductions.removeLast();
+	SootFieldRef field = (SootFieldRef) mProductions.removeLast();
 	mProductions.addLast(Jimple.v().newStaticFieldRef(field));  
     }
 
@@ -1388,7 +1388,7 @@ public class Walker extends DepthFirstAdapter
 	className  = (String) mProductions.removeLast();      
 
         SootClass cl = mResolver.makeClassRef(className);
-        SootField field = cl.getField(fieldName, t);
+        SootFieldRef field = Scene.v().makeFieldRef(cl, fieldName, t);
         
 	mProductions.addLast(field);
     }
@@ -1468,7 +1468,7 @@ public class Walker extends DepthFirstAdapter
         else
             args = new ArrayList();
         
-	SootMethod method = (SootMethod) mProductions.removeLast();
+	SootMethodRef method = (SootMethodRef) mProductions.removeLast();
 
 	String local = (String) mProductions.removeLast();
         
@@ -1504,7 +1504,7 @@ public class Walker extends DepthFirstAdapter
         else
             args = new ArrayList();
         
-	SootMethod method = (SootMethod) mProductions.removeLast();
+	SootMethodRef method = (SootMethodRef) mProductions.removeLast();
         
 	mProductions.addLast(Jimple.v().newStaticInvokeExpr(method, args));   
     }
@@ -1527,7 +1527,7 @@ public class Walker extends DepthFirstAdapter
 	className = (String) mProductions.removeLast();
 
         SootClass sootClass =  mResolver.makeClassRef(className);
-        SootMethod sootMethod = sootClass.getMethod(methodName, parameterList, type);
+        SootMethodRef sootMethod = Scene.v().makeMethodRef(sootClass, methodName, parameterList, type);
 
 	mProductions.addLast(sootMethod);
     }

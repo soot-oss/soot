@@ -108,9 +108,9 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
 	context.setCurrentUnit(this);
 	
         ((ConvertToBaf) ie).convertToBaf(context, out);
-        if(!ie.getMethod().getReturnType().equals(VoidType.v()))
+        if(!ie.getMethodRef().returnType().equals(VoidType.v()))
         {
-            Unit u = Baf.v().newPopInst(ie.getMethod().getReturnType());
+            Unit u = Baf.v().newPopInst(ie.getMethodRef().returnType());
             out.add(u);
 
 	    Iterator it = getTags().iterator();

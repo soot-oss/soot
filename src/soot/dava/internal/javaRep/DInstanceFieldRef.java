@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,16 +28,16 @@ public class DInstanceFieldRef extends GInstanceFieldRef
 {
     private HashSet thisLocals;
 
-    public DInstanceFieldRef( Value base, SootField field, HashSet thisLocals)
+    public DInstanceFieldRef( Value base, SootFieldRef fieldRef, HashSet thisLocals)
     {
-	super( base, field);
+	super( base, fieldRef);
 
 	this.thisLocals = thisLocals;
     }
 
     public void toString( UnitPrinter up ) {
         if( thisLocals.contains(getBase()) ) {
-            up.fieldRef( getField() );
+            up.fieldRef( fieldRef );
         } else {
             super.toString( up );
         }
@@ -45,13 +46,13 @@ public class DInstanceFieldRef extends GInstanceFieldRef
     public String toString()
     {
 	if (thisLocals.contains( getBase())) 
-	    return getField().getName();
+	    return fieldRef.name();
 
 	return super.toString();
     }
 
     public Object clone()
     {
-	return new DInstanceFieldRef( getBase(), getField(), thisLocals);
+	return new DInstanceFieldRef( getBase(), fieldRef, thisLocals);
     }
 }

@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,9 +42,9 @@ import java.util.*;
 
 public class GStaticInvokeExpr extends AbstractStaticInvokeExpr 
 {
-    public GStaticInvokeExpr(SootMethod method, List args)
+    public GStaticInvokeExpr(SootMethodRef methodRef, List args)
     {
-        super(method, new ValueBox[args.size()]);
+        super(methodRef, new ValueBox[args.size()]);
 
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
@@ -58,7 +59,7 @@ public class GStaticInvokeExpr extends AbstractStaticInvokeExpr
             clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
         }
         
-        return new  GStaticInvokeExpr(getMethod(), clonedArgs);
+        return new  GStaticInvokeExpr(methodRef, clonedArgs);
     }
     
 }

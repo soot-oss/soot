@@ -70,13 +70,13 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                     if( ie instanceof SpecialInvokeExpr ) {
                         SootMethod tgt = VirtualCalls.v().resolveSpecial(
                                 (SpecialInvokeExpr) ie,
-                                ie.getMethod().getNumberedSubSignature(),
+                                ie.getMethodRef().getSubSignature(),
                                 source );
                         specials.add( receiver, source, s, tgt );
                         change = true;
                     } else {
                         NumberedString subSig = 
-                            iie.getMethod().getNumberedSubSignature();
+                            iie.getMethodRef().getSubSignature();
 
                         receivers.add( receiver, source, s, subSig, Edge.ieToKind(iie) );
                         change = true;
@@ -88,7 +88,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
 
                 // Deal with PRIVILEGED calls
                 } else {
-                    SootMethod tgt = ((StaticInvokeExpr) ie).getMethod();
+                    SootMethod tgt = ((StaticInvokeExpr) ie).XgetMethod();
                     addEdge(source, s, tgt);
                     if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
                     ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
@@ -103,7 +103,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                 
 
                 // Deal with calls to Method.invoke()
-                if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
+                if( ie.XgetMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
                     if( !warnedAlready ) {
                         if( options.verbose() ) {
                             G.v().out.println( "Warning: call to "+
@@ -115,7 +115,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                 }
                 
                 // Deal with Class.newInstance() calls
-                if( ie.getMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
+                if( ie.XgetMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
                     if( options.safe_newinstance() ) {
                         for( Iterator tgtIt = EntryPoints.v().inits().iterator(); tgtIt.hasNext(); ) {
                             final SootMethod tgt = (SootMethod) tgtIt.next();
@@ -133,13 +133,13 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
 
                 // Deal with other CLINIT calls
                 if( ie instanceof StaticInvokeExpr ) {
-                    SootClass cl = ie.getMethod().getDeclaringClass();
+                    SootClass cl = ie.getMethodRef().declaringClass();
                     for( Iterator clinitIt = EntryPoints.v().clinitsOf(cl).iterator(); clinitIt.hasNext(); ) {
                         final SootMethod clinit = (SootMethod) clinitIt.next();
                         addEdge( source, s, clinit, Kind.CLINIT );
                     }
                 }
-                if( ie.getMethod().getNumberedSubSignature() == sigForName ) {
+                if( ie.getMethodRef().getSubSignature() == sigForName ) {
                     Value className = ie.getArg(0);
                     if( className instanceof StringConstant ) {
                         String cls = ((StringConstant) className ).value;
@@ -161,7 +161,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
             if( s.containsFieldRef() ) {
                 FieldRef fr = (FieldRef) s.getFieldRef();
                 if( fr instanceof StaticFieldRef ) {
-                    SootClass cl = fr.getField().getDeclaringClass();
+                    SootClass cl = fr.getFieldRef().declaringClass();
                     for( Iterator clinitIt = EntryPoints.v().clinitsOf(cl).iterator(); clinitIt.hasNext(); ) {
                         final SootMethod clinit = (SootMethod) clinitIt.next();
                         addEdge( source, s, clinit, Kind.CLINIT );

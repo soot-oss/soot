@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,26 +29,26 @@ public class DStaticFieldRef extends StaticFieldRef
 
     public void toString( UnitPrinter up ) {
         if( !supressDeclaringClass ) {
-            up.type( getField().getDeclaringClass().getType() );
+            up.type( fieldRef.declaringClass().getType() );
             up.literal( "." );
         }
-        up.fieldRef( getField() );
+        up.fieldRef( fieldRef );
     }
 
-    public DStaticFieldRef( SootField field, String myClassName)
+    public DStaticFieldRef( SootFieldRef fieldRef, String myClassName)
     {
-	super( field);
-	supressDeclaringClass = myClassName.equals( getField().getDeclaringClass().getName());
+	super( fieldRef);
+	supressDeclaringClass = myClassName.equals( fieldRef.declaringClass().getName());
     }
 
-    public DStaticFieldRef( SootField field, boolean supressDeclaringClass)
+    public DStaticFieldRef( SootFieldRef fieldRef, boolean supressDeclaringClass)
     {
-	super( field);
+	super( fieldRef);
 	this.supressDeclaringClass = supressDeclaringClass;
     }
 
     public Object clone()
     {
-	return new DStaticFieldRef( getField(), supressDeclaringClass);
+	return new DStaticFieldRef( fieldRef, supressDeclaringClass);
     }
 }

@@ -1111,7 +1111,7 @@ public class TypeResolver
 	      {
 		SpecialInvokeExpr special = (SpecialInvokeExpr) invoke.getInvokeExpr();
 		
-		if(special.getMethod().getName().equals("<init>"))
+		if(special.getMethodRef().name().equals("<init>"))
 		  {
 		    List deflist = defs.getDefsOfAt((Local) special.getBase(), invoke);
 		    

@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,11 +38,11 @@ import java.util.*;
 
 public class BFieldPutInst extends AbstractInst implements FieldPutInst
 {
-    SootField field;
+    SootFieldRef fieldRef;
 
-    public BFieldPutInst(SootField field)
+    public BFieldPutInst(SootFieldRef fieldRef)
     {
-        this.field = field;
+        this.fieldRef = fieldRef;
     }
     
     public int getInCount()
@@ -58,12 +59,12 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst
 
     public Object clone() 
     {
-        return new BFieldPutInst(getField());
+        return new BFieldPutInst(fieldRef);
     }
 
     public int getInMachineCount()
     {
-        return JasminClass.sizeOfType(field.getType()) + 1;
+        return JasminClass.sizeOfType(fieldRef.type()) + 1;
     }
 
     public int getOutMachineCount()
@@ -75,15 +76,15 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst
     final public String getName() { return "fieldput"; }
     final String getParameters()
     { 
-        return " " + field.getSignature(); 
+        return " " + fieldRef.getSignature(); 
     }
     protected void getParameters( UnitPrinter up ) {
         up.literal(" ");
-        up.fieldRef(field);
+        up.fieldRef(fieldRef);
     }
     
-    public SootField getField() { return field; }
-    public void setField(SootField f) { this.field = f; }
+    public SootFieldRef getFieldRef() { return fieldRef; }
+    public SootField getField() { return fieldRef.resolve(); }
     
     public void apply(Switch sw)
     {

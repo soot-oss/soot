@@ -64,7 +64,7 @@ public class ProfilingGenerator extends BodyTransformer
 	    if (isMainMethod)
 	    {
 	        units.addFirst(Jimple.v().newInvokeStmt(
-			       Jimple.v().newStaticInvokeExpr(reset)));		
+			       Jimple.v().newStaticInvokeExpr(reset.makeRef())));		
 	    }
 
 	    Iterator stmtIt = body.getUnits().snapshotIterator();
@@ -79,13 +79,13 @@ public class ProfilingGenerator extends BodyTransformer
 		
 		    if (iexpr instanceof StaticInvokeExpr)
 		    {
-		        SootMethod tempm = ((StaticInvokeExpr)iexpr).getMethod() ;
+		        SootMethod tempm = ((StaticInvokeExpr)iexpr).XgetMethod() ;
 			
 			if (tempm.getSignature().equals(
 				"<java.lang.System: void exit(int)>"))
 			{
 			    units.insertBefore (Jimple.v().newInvokeStmt( 
-				    Jimple.v().newStaticInvokeExpr(report)), stmt) ;
+				    Jimple.v().newStaticInvokeExpr(report.makeRef())), stmt) ;
 
 			}
 		    }
@@ -96,7 +96,7 @@ public class ProfilingGenerator extends BodyTransformer
 			 || stmt instanceof ReturnVoidStmt))
 		{
 		    units.insertBefore(Jimple.v().newInvokeStmt(
-			    Jimple.v().newStaticInvokeExpr(report)), stmt);				 
+			    Jimple.v().newStaticInvokeExpr(report.makeRef())), stmt);				 
 		}
 	    }
 	}

@@ -41,9 +41,9 @@ public interface UnitPrinter {
     public void newline();
     public void local( Local l );
     public void type( Type t );
-    public void method( SootMethod m );
+    public void methodRef( SootMethodRef m );
     public void constant( Constant c );
-    public void fieldRef( SootField f );
+    public void fieldRef( SootFieldRef f );
     public void unitRef( Unit u, boolean branchTarget );
     public void identityRef( IdentityRef r );
 

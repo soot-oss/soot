@@ -614,7 +614,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	    for (int i = 0; i < expr.getArgCount(); i++) {
 		result = result.add(mightThrow(expr.getArg(i)));
 	    }
-	    result = result.add(mightThrow(expr.getMethod()));
+	    result = result.add(mightThrow(expr.XgetMethod()));
 	}
 
 	public void caseVirtualInvokeExpr(VirtualInvokeExpr expr) {
@@ -767,7 +767,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 		result = result.add(mightThrow(expr.getArg(i)));
 	    }
 	    result = result.add(mightThrow(expr.getBase()));
-	    result = result.add(mightThrow(expr.getMethod()));
+	    result = result.add(mightThrow(expr.XgetMethod()));
 	}
     }
 }

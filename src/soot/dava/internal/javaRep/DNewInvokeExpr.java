@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,9 +27,9 @@ import soot.grimp.internal.*;
 
 public class DNewInvokeExpr extends GNewInvokeExpr
 {
-    public DNewInvokeExpr( RefType type, SootMethod method, java.util.List args) 
+    public DNewInvokeExpr( RefType type, SootMethodRef methodRef, java.util.List args) 
     {
-	super( type, method, args);
+	super( type, methodRef, args);
     }
 
     public Object clone() 
@@ -38,6 +39,6 @@ public class DNewInvokeExpr extends GNewInvokeExpr
         for(int i = 0; i < getArgCount(); i++) 
             clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
         
-        return new DNewInvokeExpr( (RefType) getType(), getMethod(), clonedArgs);
+        return new DNewInvokeExpr( (RefType) getType(), methodRef, clonedArgs);
     }
 }

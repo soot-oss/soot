@@ -83,7 +83,7 @@ public class BadFields extends SceneTransformer {
             Value v = b.getValue();
             if( !(v instanceof StaticFieldRef) ) continue;
             StaticFieldRef sfr = (StaticFieldRef) v;
-            SootField f = sfr.getField();
+            SootField f = sfr.XgetField();
             if( !f.getDeclaringClass().getName().equals( "java.lang.System" ) )
                 continue;
             if( f.getName().equals( "err" ) ) {
@@ -97,7 +97,7 @@ public class BadFields extends SceneTransformer {
             final Stmt s = (Stmt) sIt.next();
             if( !s.containsInvokeExpr() ) continue;
             InvokeExpr ie = s.getInvokeExpr();
-            SootMethod target = ie.getMethod();
+            SootMethod target = ie.XgetMethod();
             if( target.getDeclaringClass().getName().equals( "java.lang.System" )
                     && target.getName().equals( "exit" ) ) {
                 warn( ""+m+" calls System.exit" );
@@ -115,7 +115,7 @@ public class BadFields extends SceneTransformer {
                 }
                 if( !s.containsInvokeExpr() ) continue;
                 InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
-                SootMethod target = ie.getMethod();
+                SootMethod target = ie.XgetMethod();
                 calls( target );
             }
         }

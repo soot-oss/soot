@@ -36,7 +36,7 @@ public final class VirtualCalls
         new LargeNumberedMap( Scene.v().getTypeNumberer() );
 
     public SootMethod resolveSpecial( SpecialInvokeExpr iie, NumberedString subSig, SootMethod container ) {
-        SootMethod target = iie.getMethod();
+        SootMethod target = iie.XgetMethod();
         /* cf. JVM spec, invokespecial instruction */
         if( Scene.v().getOrMakeFastHierarchy()
                 .canStoreType( container.getDeclaringClass().getType(),

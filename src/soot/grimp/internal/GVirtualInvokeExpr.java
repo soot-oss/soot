@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,9 +43,9 @@ import java.util.*;
 public class GVirtualInvokeExpr extends AbstractVirtualInvokeExpr
     implements Precedence
 {
-    public GVirtualInvokeExpr(Value base, SootMethod method, List args)
+    public GVirtualInvokeExpr(Value base, SootMethodRef methodRef, List args)
     {
-        super(Grimp.v().newObjExprBox(base), method,
+        super(Grimp.v().newObjExprBox(base), methodRef,
               new ValueBox[args.size()]);
 
         for(int i = 0; i < args.size(); i++)
@@ -68,7 +69,7 @@ public class GVirtualInvokeExpr extends AbstractVirtualInvokeExpr
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("." + getMethod().getSignature() + "(");
+        buffer.append("." + methodRef.getSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
@@ -90,7 +91,7 @@ public class GVirtualInvokeExpr extends AbstractVirtualInvokeExpr
         baseBox.toString(up);
         if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal(")");
         up.literal(".");
-        up.method(getMethod());
+        up.methodRef(methodRef);
         up.literal("(");
 
         for(int i = 0; i < argBoxes.length; i++)
@@ -113,7 +114,7 @@ public class GVirtualInvokeExpr extends AbstractVirtualInvokeExpr
             clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
         }
         
-        return new  GVirtualInvokeExpr(Grimp.cloneIfNecessary(getBase()), getMethod(), 
+        return new  GVirtualInvokeExpr(Grimp.cloneIfNecessary(getBase()), methodRef, 
             clonedArgs);
     }
 

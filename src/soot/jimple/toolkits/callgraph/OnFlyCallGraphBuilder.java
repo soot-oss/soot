@@ -193,7 +193,7 @@ public final class OnFlyCallGraphBuilder
                     InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
                     Local receiver = (Local) iie.getBase();
                     NumberedString subSig = 
-                        iie.getMethod().getNumberedSubSignature();
+                        iie.getMethodRef().getSubSignature();
                     addVirtualCallSite( s, m, receiver, iie, subSig,
                             Edge.ieToKind(iie) );
                     if( subSig == sigStart ) {
@@ -201,7 +201,7 @@ public final class OnFlyCallGraphBuilder
                                 Kind.THREAD );
                     }
                 } else {
-                    SootMethod tgt = ((StaticInvokeExpr) ie).getMethod();
+                    SootMethod tgt = ((StaticInvokeExpr) ie).XgetMethod();
                     addEdge(m, s, tgt);
                     if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
                     ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
@@ -232,7 +232,7 @@ public final class OnFlyCallGraphBuilder
             final Stmt s = (Stmt) sIt.next();
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
-                if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
+                if( ie.XgetMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
                     if( !warnedAlready ) {
                         if( options.verbose() ) {
                             G.v().out.println( "Warning: call to "+
@@ -242,7 +242,7 @@ public final class OnFlyCallGraphBuilder
                         warnedAlready = true;
                     }
                 }
-                if( ie.getMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
+                if( ie.XgetMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
                     if( options.safe_newinstance() ) {
                         for( Iterator tgtIt = EntryPoints.v().inits().iterator(); tgtIt.hasNext(); ) {
                             final SootMethod tgt = (SootMethod) tgtIt.next();
@@ -258,13 +258,13 @@ public final class OnFlyCallGraphBuilder
                     } 
                 }
                 if( ie instanceof StaticInvokeExpr ) {
-                    SootClass cl = ie.getMethod().getDeclaringClass();
+                    SootClass cl = ie.getMethodRef().declaringClass();
                     for( Iterator clinitIt = EntryPoints.v().clinitsOf(cl).iterator(); clinitIt.hasNext(); ) {
                         final SootMethod clinit = (SootMethod) clinitIt.next();
                         addEdge( source, s, clinit, Kind.CLINIT );
                     }
                 }
-                if( ie.getMethod().getNumberedSubSignature() == sigForName ) {
+                if( ie.getMethodRef().getSubSignature() == sigForName ) {
                     Value className = ie.getArg(0);
                     if( className instanceof StringConstant ) {
                         String cls = ((StringConstant) className ).value;
@@ -291,7 +291,7 @@ public final class OnFlyCallGraphBuilder
             if( s.containsFieldRef() ) {
                 FieldRef fr = (FieldRef) s.getFieldRef();
                 if( fr instanceof StaticFieldRef ) {
-                    SootClass cl = fr.getField().getDeclaringClass();
+                    SootClass cl = fr.getFieldRef().declaringClass();
                     for( Iterator clinitIt = EntryPoints.v().clinitsOf(cl).iterator(); clinitIt.hasNext(); ) {
                         final SootMethod clinit = (SootMethod) clinitIt.next();
                         addEdge( source, s, clinit, Kind.CLINIT );

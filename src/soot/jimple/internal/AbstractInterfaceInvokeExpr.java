@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,10 +40,10 @@ import soot.tagkit.*;
 public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvokeExpr 
                              implements InterfaceInvokeExpr, ConvertToBaf
 {
-    protected AbstractInterfaceInvokeExpr(ValueBox baseBox, SootMethod method,
+    protected AbstractInterfaceInvokeExpr(ValueBox baseBox, SootMethodRef methodRef,
                                   ValueBox[] argBoxes)
     {
-        this.baseBox = baseBox; this.method = method;
+        this.baseBox = baseBox; this.methodRef = methodRef;
         this.argBoxes = argBoxes;
     }
 
@@ -52,7 +53,7 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
         {
             AbstractInterfaceInvokeExpr ie = (AbstractInterfaceInvokeExpr)o;
             if (!(baseBox.getValue().equivTo(ie.baseBox.getValue()) &&
-                    method.equals(ie.method) && 
+                    XgetMethod().equals(ie.XgetMethod()) && 
                     argBoxes.length == ie.argBoxes.length))
                 return false;
             for (int i = 0; i < argBoxes.length; i++)
@@ -66,7 +67,7 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
     /** Returns a hash code for this object, consistent with structural equality. */
     public int equivHashCode() 
     {
-        return baseBox.getValue().equivHashCode() * 101 + method.equivHashCode() * 17;
+        return baseBox.getValue().equivHashCode() * 101 + XgetMethod().equivHashCode() * 17;
     }
 
     public abstract Object clone();
@@ -76,7 +77,7 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
         StringBuffer buffer = new StringBuffer();
 
         buffer.append(Jimple.INTERFACEINVOKE + " " + baseBox.getValue().toString() +
-            "." + method.getSignature() + "(");
+            "." + methodRef.getSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
@@ -97,7 +98,7 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
         up.literal(" ");
         baseBox.toString(up);
         up.literal(".");
-        up.method(method);
+        up.methodRef(methodRef);
         up.literal("(");
         
         for(int i = 0; i < argBoxes.length; i++)
@@ -117,7 +118,7 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
         ((ExprSwitch) sw).caseInterfaceInvokeExpr(this);
     }
 
-    int sizeOfType(Type t)
+    private static int sizeOfType(Type t)
     {
         if(t instanceof DoubleType || t instanceof LongType)
             return 2;
@@ -127,10 +128,10 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
             return 1;
     }
 
-    int argCountOf(SootMethod m)
+    private static int argCountOf(SootMethodRef m)
     {
         int argCount = 0;
-        Iterator typeIt = m.getParameterTypes().iterator();
+        Iterator typeIt = m.parameterTypes().iterator();
 
         while(typeIt.hasNext())
         {
@@ -152,7 +153,7 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
         }
        
        Unit u;
-       out.add(u = Baf.v().newInterfaceInvokeInst(method, argCountOf(method)));
+       out.add(u = Baf.v().newInterfaceInvokeInst(methodRef, argCountOf(methodRef)));
 
 	Unit currentUnit = context.getCurrentUnit();
 

@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,10 +38,10 @@ import soot.tagkit.*;
 public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeExpr
   implements VirtualInvokeExpr, ConvertToBaf                                               
 {
-    protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethod method,
+    protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethodRef methodRef,
                                 ValueBox[] argBoxes)
     {
-        this.baseBox = baseBox; this.method = method;
+        this.baseBox = baseBox; this.methodRef = methodRef;
         this.argBoxes = argBoxes;
     }
 
@@ -50,7 +51,7 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
         {
             AbstractVirtualInvokeExpr ie = (AbstractVirtualInvokeExpr)o;
             if (!(baseBox.getValue().equivTo(ie.baseBox.getValue()) &&
-                    method.equals(ie.method) && 
+                    XgetMethod().equals(ie.XgetMethod()) && 
                     argBoxes.length == ie.argBoxes.length))
                 return false;
             for (int i = 0; i < argBoxes.length; i++)
@@ -64,7 +65,7 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
     /** Returns a hash code for this object, consistent with structural equality. */
     public int equivHashCode() 
     {
-        return baseBox.getValue().equivHashCode() * 101 + method.equivHashCode() * 17;
+        return baseBox.getValue().equivHashCode() * 101 + XgetMethod().equivHashCode() * 17;
     }
 
     public abstract Object clone();
@@ -79,7 +80,7 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
         StringBuffer buffer = new StringBuffer();
 
         buffer.append(Jimple.VIRTUALINVOKE + " " + baseBox.getValue().toString() +
-            "." + method.getSignature() + "(");
+            "." + methodRef.getSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
@@ -100,7 +101,7 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
         up.literal(" ");
         baseBox.toString(up);
         up.literal(".");
-        up.method(method);
+        up.methodRef(methodRef);
         up.literal("(");
         
         for(int i = 0; i < argBoxes.length; i++)
@@ -124,7 +125,7 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
         }
 
        Unit u;
-       out.add(u = Baf.v().newVirtualInvokeInst(method));
+       out.add(u = Baf.v().newVirtualInvokeInst(methodRef));
 
        Unit currentUnit = context.getCurrentUnit();
 

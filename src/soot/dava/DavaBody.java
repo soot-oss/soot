@@ -504,8 +504,8 @@ public class DavaBody extends Body
 			Value base = iie.getBase();
 			
 			if ((base instanceof Local) && (((Local) base).getName().equals( "this"))) {
-			    SootMethod m = iie.getMethod();
-			    String name = m.getName();
+			    SootMethodRef m = iie.getMethodRef();
+			    String name = m.name();
 
 			    if ((name.equals( SootMethod.constructorName)) || (name.equals( SootMethod.staticInitializerName))) {
 
@@ -572,9 +572,9 @@ public class DavaBody extends Body
 	Ref r = (Ref) vb.getValue();
 
 	if (r instanceof StaticFieldRef) {
-            SootField field = ((StaticFieldRef) r).getField();
-            addPackage(field.getDeclaringClass().getJavaPackageName());
-	    vb.setValue( new DStaticFieldRef( field, getMethod().getDeclaringClass().getName()));
+            SootFieldRef fieldRef = ((StaticFieldRef) r).getFieldRef();
+            addPackage(fieldRef.declaringClass().getJavaPackageName());
+	    vb.setValue( new DStaticFieldRef( fieldRef, getMethod().getDeclaringClass().getName()));
         } else if (r instanceof ArrayRef) {
 	    ArrayRef ar = (ArrayRef) r;
 
@@ -587,7 +587,7 @@ public class DavaBody extends Body
 
 	    javafy( ifr.getBaseBox());
 
-	    vb.setValue( new DInstanceFieldRef( ifr.getBase(), ifr.getField(), thisLocals));
+	    vb.setValue( new DInstanceFieldRef( ifr.getBase(), ifr.getFieldRef(), thisLocals));
 	}
 
 	else if (r instanceof ThisRef) {
@@ -704,13 +704,13 @@ public class DavaBody extends Body
     {
 	InvokeExpr ie = (InvokeExpr) vb.getValue();
 
-	addPackage( ie.getMethod().getDeclaringClass().getJavaPackageName());
+	addPackage( ie.getMethodRef().declaringClass().getJavaPackageName());
 
 	for (int i=0; i<ie.getArgCount(); i++) {
 	    Value arg = ie.getArg( i);
 
 	    if (arg instanceof IntConstant) 
-		ie.getArgBox( i).setValue( DIntConstant.v( ((IntConstant) arg).value, ie.getMethod().getParameterType( i)));
+		ie.getArgBox( i).setValue( DIntConstant.v( ((IntConstant) arg).value, ie.getMethodRef().parameterType( i)));
 
 	    else 
 		javafy( ie.getArgBox( i));
@@ -722,19 +722,19 @@ public class DavaBody extends Body
 	    if (ie instanceof VirtualInvokeExpr) {
 		VirtualInvokeExpr vie = (VirtualInvokeExpr) ie;
 
-		vb.setValue( new DVirtualInvokeExpr( vie.getBase(), vie.getMethod(), vie.getArgs(), thisLocals));
+		vb.setValue( new DVirtualInvokeExpr( vie.getBase(), vie.getMethodRef(), vie.getArgs(), thisLocals));
 	    }
 	    
 	    else if (ie instanceof SpecialInvokeExpr) {
 		SpecialInvokeExpr sie = (SpecialInvokeExpr) ie;
 		
-		vb.setValue( new DSpecialInvokeExpr( sie.getBase(), sie.getMethod(), sie.getArgs()));
+		vb.setValue( new DSpecialInvokeExpr( sie.getBase(), sie.getMethodRef(), sie.getArgs()));
 	    }
 	    
 	    else if (ie instanceof InterfaceInvokeExpr) {
 		InterfaceInvokeExpr iie = (InterfaceInvokeExpr) ie;
 		
-		vb.setValue( new DInterfaceInvokeExpr( iie.getBase(), iie.getMethod(), iie.getArgs()));
+		vb.setValue( new DInterfaceInvokeExpr( iie.getBase(), iie.getMethodRef(), iie.getArgs()));
 	    }
 
 	    else 
@@ -750,13 +750,13 @@ public class DavaBody extends Body
 		RefType rt = nie.getBaseType();
 		addPackage( rt.getSootClass().getJavaPackageName());
 		
-		vb.setValue( new DNewInvokeExpr( (RefType) nie.getType(), nie.getMethod(), nie.getArgs()));
+		vb.setValue( new DNewInvokeExpr( (RefType) nie.getType(), nie.getMethodRef(), nie.getArgs()));
 	    }
 	    
 	    else {
-                SootMethod method = sie.getMethod();
-                addPackage(method.getDeclaringClass().getJavaPackageName());
-		vb.setValue( new DStaticInvokeExpr( method, sie.getArgs()));
+                SootMethodRef methodRef = sie.getMethodRef();
+                addPackage(methodRef.declaringClass().getJavaPackageName());
+		vb.setValue( new DStaticInvokeExpr( methodRef, sie.getArgs()));
             }
 	}
 

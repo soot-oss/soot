@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,33 +38,21 @@ import java.io.*;
 
 abstract public class AbstractInvokeExpr implements InvokeExpr
 {
-    transient SootMethod method;
+    protected SootMethodRef methodRef;
     protected ValueBox[] argBoxes;
 
-    private void readObject( ObjectInputStream in) throws IOException, ClassNotFoundException
+    public SootMethodRef getMethodRef()
     {
-	in.defaultReadObject();
-	method = Scene.v().getMethod( (String) in.readObject());
+        return methodRef;
     }
 
-    private void writeObject( ObjectOutputStream out) throws IOException
+    public SootMethod XgetMethod()
     {
-	out.defaultWriteObject();
-	out.writeObject( method.getSignature());
-    }
-
-    public SootMethod getMethod()
-    {
-        return method;
+        return methodRef.resolve();
     }
 
     public abstract Object clone();
     
-    public void setMethod(SootMethod m)
-    {
-        method = m;
-    }
-
     public Value getArg(int index)
     {
         return argBoxes[index].getValue();
@@ -95,13 +84,6 @@ abstract public class AbstractInvokeExpr implements InvokeExpr
 
     public Type getType()
     {
-        return method.getReturnType();
+        return methodRef.returnType();
     }
-	public SootMethod XgetMethod() { return getMethod(); }
-    //temporary stub
-    public SootMethodRef getMethodRef()
-    {
-        return getMethod().makeRef();
-    }
-
 }

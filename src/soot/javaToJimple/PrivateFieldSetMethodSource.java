@@ -3,20 +3,13 @@ package soot.javaToJimple;
 import java.util.*;
 public class PrivateFieldSetMethodSource implements soot.MethodSource {
 
-    private polyglot.types.FieldInstance fieldInst;
-    private soot.Type fieldType;
-    private String fieldName;
-    
-    public void fieldName(String n){
-        fieldName = n;
-    }
-    
-    public void fieldType(soot.Type type){
-        fieldType = type;
-    }
-        
-    public void setFieldInst(polyglot.types.FieldInstance fi) {
-        fieldInst = fi;
+    private final soot.Type fieldType;
+    private final String fieldName;
+    private final boolean isStatic;
+    public PrivateFieldSetMethodSource( soot.Type fieldType, String fieldName, boolean isStatic ) {
+    	this.fieldType = fieldType;
+    	this.fieldName = fieldName;
+    	this.isStatic = isStatic;
     }
     
     public soot.Body getBody(soot.SootMethod sootMethod, String phaseName){
@@ -47,10 +40,10 @@ public class PrivateFieldSetMethodSource implements soot.MethodSource {
         // create field type local
         //soot.Local fieldLocal = lg.generateLocal(fieldType);
         // assign local to fieldRef
-        soot.SootField field = sootMethod.getDeclaringClass().getField(fieldName, fieldType);
+        soot.SootFieldRef field = soot.Scene.v().makeFieldRef( sootMethod.getDeclaringClass(), fieldName, fieldType);
 
         soot.jimple.FieldRef fieldRef = null;
-        if (field.isStatic()) {
+        if (isStatic) {
             fieldRef = soot.jimple.Jimple.v().newStaticFieldRef(field);
         }
         else {

@@ -70,7 +70,7 @@ public class TryContentsFinder extends ASTAnalysis
 
     public void analyseInvokeExpr( InvokeExpr ie)
     {
-	curExceptionSet.addAll( ie.getMethod().getExceptions());
+	curExceptionSet.addAll( ie.XgetMethod().getExceptions());
     }
 
     public void analyseInstanceInvokeExpr( InstanceInvokeExpr iie) 

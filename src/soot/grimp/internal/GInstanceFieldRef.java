@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,9 +43,9 @@ import soot.jimple.internal.*;
 public class GInstanceFieldRef extends AbstractInstanceFieldRef
     implements Precedence
 {
-    public GInstanceFieldRef(Value base, SootField field)
+    public GInstanceFieldRef(Value base, SootFieldRef fieldRef)
     {
-        super(Grimp.v().newObjExprBox(base), field);
+        super(Grimp.v().newObjExprBox(base), fieldRef);
     }
 
     private String toString(Value op, String opString, String rightString)
@@ -60,7 +61,7 @@ public class GInstanceFieldRef extends AbstractInstanceFieldRef
     public String toString()
     {
         return toString(getBase(), getBase().toString(),
-                        "." + getField().getSignature());
+                        "." + fieldRef.getSignature());
     }
 
     public int getPrecedence()
@@ -71,7 +72,7 @@ public class GInstanceFieldRef extends AbstractInstanceFieldRef
     public Object  clone() 
     {
         return new GInstanceFieldRef(Grimp.cloneIfNecessary(getBase()), 
-            getField());
+            fieldRef);
     }
 
     

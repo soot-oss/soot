@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,15 +35,12 @@ import java.util.*;
 
 public interface InvokeExpr extends Expr
 {
-    public SootMethod getMethod();
+    public SootMethodRef getMethodRef();
     public SootMethod XgetMethod();
-    public void setMethod(SootMethod m);
     public List getArgs();
     public Value getArg(int index);
     public int getArgCount();
     public void setArg(int index, Value arg);
     public ValueBox getArgBox(int index);
     public Type getType();
-    // temporary stub
-    public SootMethodRef getMethodRef();
 }
