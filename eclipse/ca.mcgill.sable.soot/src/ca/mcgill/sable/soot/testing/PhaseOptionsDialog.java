@@ -1768,14 +1768,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getProcessing_Optionsvia_shimple_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getProcessing_Optionsalways_add_edges_from_excepting_units_widget().getButton().getSelection();
+		boolRes = getProcessing_Optionsomit_excepting_unit_edges_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getProcessing_Optionsalways_add_edges_from_excepting_units_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getProcessing_Optionsomit_excepting_unit_edges_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getProcessing_Optionstrim_cfgs_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getProcessing_Optionstrim_cfgs_widget().getAlias(), new Boolean(boolRes));
 		}
 		 
 		stringRes = getProcessing_Optionsthrow_analysis_widget().getSelectedAlias();
@@ -5294,14 +5304,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return Processing_Optionsvia_shimple_widget;
 	}	
 	
-	private BooleanOptionWidget Processing_Optionsalways_add_edges_from_excepting_units_widget;
+	private BooleanOptionWidget Processing_Optionsomit_excepting_unit_edges_widget;
 	
-	private void setProcessing_Optionsalways_add_edges_from_excepting_units_widget(BooleanOptionWidget widget) {
-		Processing_Optionsalways_add_edges_from_excepting_units_widget = widget;
+	private void setProcessing_Optionsomit_excepting_unit_edges_widget(BooleanOptionWidget widget) {
+		Processing_Optionsomit_excepting_unit_edges_widget = widget;
 	}
 	
-	public BooleanOptionWidget getProcessing_Optionsalways_add_edges_from_excepting_units_widget() {
-		return Processing_Optionsalways_add_edges_from_excepting_units_widget;
+	public BooleanOptionWidget getProcessing_Optionsomit_excepting_unit_edges_widget() {
+		return Processing_Optionsomit_excepting_unit_edges_widget;
+	}	
+	
+	private BooleanOptionWidget Processing_Optionstrim_cfgs_widget;
+	
+	private void setProcessing_Optionstrim_cfgs_widget(BooleanOptionWidget widget) {
+		Processing_Optionstrim_cfgs_widget = widget;
+	}
+	
+	public BooleanOptionWidget getProcessing_Optionstrim_cfgs_widget() {
+		return Processing_Optionstrim_cfgs_widget;
 	}	
 	
 	
@@ -8243,7 +8263,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
-		defKey = ""+" "+""+" "+"always-add-edges-from-excepting-units";
+		defKey = ""+" "+""+" "+"omit-excepting-unit-edges";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8251,11 +8271,27 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setProcessing_Optionsalways_add_edges_from_excepting_units_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Always Add Edges from Excepting Units", "", "","always-add-edges-from-excepting-units", "\nIf this option is true, then when an instruction may throw an \nexception that would be caught by a handler in the same method, \nthe CFGs produced by Soot's ExceptionalUnitGraph and \nExceptionalBlockGraph classes will always include an edge to the \nhandler from the excepting instruction itself, as well as from \nthe instruction's predecessors. If this option is false, the \nexceptional CFGs will include an edge to the handler from the \nexcepting unit itself only if that unit has potential side \neffects. Omitting edges from excepting units allows more \naccurate flow analyses (since if an instruction without side \neffects throws an exception, it has not changed the state of the \ncomputation). This accuracy, though, could cause optimizations \nto generate unverifiable code, since the dataflow analyses \nperformed by bytecode verifiers might include paths to exception \nhandlers from all protected instructions, regardless of whether \nthe instructions have side effects. (In practice, the pedantic \nthrow analysis suffices to pass verification in all VMs we have \ntested, but the JVM specification does allow for less \ndiscriminating verifiers which would reject some code that could \nbe generated using the pedantic throw analysis without also \nadding edges from all excepting units.)", defaultBool)));
+		setProcessing_Optionsomit_excepting_unit_edges_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Omit Excepting Unit Edges", "", "","omit-excepting-unit-edges", "\nWhen constructing ExceptionalUnitGraph and \nExceptionalBlockGraph include edges to an exception handler only \nfrom the predecessors of an instruction which may throw an \nexceptions to the handler, and not from the excepting \ninstruction itself, unless the excepting instruction has \npotential side effects. Omitting edges from excepting units \nallows more accurate flow analyses (since if an instruction \nwithout side effects throws an exception, it has not changed the \nstate of the computation). This accuracy, though, could lead \noptimizations to generate unverifiable code, since the dataflow \nanalyses performed by bytecode verifiers might include paths to \nexception handlers from all protected instructions, regardless \nof whether the instructions have side effects. (In practice, \nthe pedantic throw analysis suffices to pass verification in all \nVMs tested with Soot to date, but the JVM specification does \nallow for less discriminating verifiers which would reject some \ncode that could be generated using the pedantic throw analysis \nwithout also adding edges from all excepting units.)", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"trim-cfgs";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setProcessing_Optionstrim_cfgs_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Trim CFGs", "", "","trim-cfgs", "\nWhen constructing CFGs which include exceptional edges, do not \ninclude assume that every instruction protected by an exception \nhandler has the potential to throw an exception to the handler. \nInstead, minimize the number of edges to the handler by \nanalyzing which instructions may actually throw instructions to \nit.-trim-cfgs is shorthand for -throw-analysis unit \n-omit-excepting-unit-edges -p jb.tt enabled:true.", defaultBool)));
 		
 		
 		

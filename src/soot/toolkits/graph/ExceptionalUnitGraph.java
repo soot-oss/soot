@@ -95,34 +95,38 @@ public class ExceptionalUnitGraph extends UnitGraph
      *  @param throwAnalysis the source of information about the exceptions
      *                       which each {@link Unit} may throw.
      *
-     *  @param alwaysAddEdgesFromExceptingUnits indicates whether the CFG
-     *			     should always include edges to a handler
-     *			     from all trapped <tt>Unit</tt>s which may throw an
-     *			     exception which the handler catches.
-     *			     The CFG will contain edges to the
-     *			     handler from all predecessors of the
+     *  @param omitExceptingUnitEdges indicates whether the CFG should
+     *			     omit edges to a handler from trapped
+     *			     <tt>Unit</tt>s which may throw an
+     *			     exception which the handler catches but
+     *			     which have no potential side effects.
+     *			     The CFG will contain edges to the handler
+     *			     from all predecessors of the
      *			     <tt>Unit</tt>s which may throw a caught
      *			     exception regardless of the setting for
      *			     this parameter. If this parameter is
-     *			     <code>true</code>, there will also be edges to the
-     *			     handler from all the potentially
-     *			     excepting <tt>Unit</tt>s themselves. If
-     *			     this parameter is <code>false</code>, there will be
-     *			     edges to the handler from the 
-     *			     excepting <tt>Unit</tt>s themselves only if 
-     *			     they have potential side effects (or if they 
-     *                       are also the predecessors of other potentially
-     *                       excepting <tt>Unit</tt>s).
-     *			     A setting of <code>false</code> produces
-     *			     CFGs which allow for more precise analyses, since
-     *			     a <tt>Unit</tt> without side effects has no
-     *			     effect on the computational state when it throws
-     *			     an exception.  Use settings of <code>true</code>
-     *			     for compatibility with more conservative analyses,
-     *			     or to cater to conservative bytecode verifiers.
+     *			     <code>false</code>, there will also be
+     *			     edges to the handler from all the
+     *			     potentially excepting <tt>Unit</tt>s
+     *			     themselves. If this parameter is
+     *			     <code>true</code>, there will be edges to
+     *			     the handler from the excepting
+     *			     <tt>Unit</tt>s themselves only if they
+     *			     have potential side effects (or if they 
+     *			     are themselves the predecessors of other
+     *			     potentially excepting <tt>Unit</tt>s).
+     *			     A setting of <code>true</code> produces
+     *			     CFGs which allow for more precise
+     *			     analyses, since a <tt>Unit</tt> without
+     *			     side effects has no effect on the
+     *			     computational state when it throws an
+     *			     exception.  Use settings of
+     *			     <code>false</code> for compatibility with
+     *			     more conservative analyses, or to cater
+     *			     to conservative bytecode verifiers.
      */
     public ExceptionalUnitGraph(Body body, ThrowAnalysis throwAnalysis,
-				boolean alwaysAddEdgesFromExceptingUnits) {
+				boolean omitExceptingUnitEdges) {
 	super(body);
 
 	int size = unitChain.size();
@@ -158,7 +162,7 @@ public class ExceptionalUnitGraph extends UnitGraph
 	    trapsThatAreHeads = buildExceptionalEdges(unitToExceptionDests,
 						      unitToExceptionalSuccs, 
 						      unitToExceptionalPreds,
-						      alwaysAddEdgesFromExceptingUnits);
+						      omitExceptingUnitEdges);
 	    makeMappedListsUnmodifiable(unitToExceptionalSuccs);
 	    makeMappedListsUnmodifiable(unitToExceptionalPreds);
 
@@ -185,10 +189,10 @@ public class ExceptionalUnitGraph extends UnitGraph
 
 
     /**
-     *  Constructs the graph from a given Body instance.
-     *  This constructor variant uses a default value for the 
-     *  <code>alwaysAddEdgesFromExceptingUnits</code> parameter provided
-     *  by the {@link Options} class.
+     *  Constructs the graph from a given Body instance.  This
+     *  constructor variant uses a default value, provided by the
+     *  {@link Options} class, for the
+     *  <code>omitExceptingUnitEdges</code> parameter.
      *
      *  @param body the {@link Body} from which to build a graph.
      *
@@ -197,23 +201,22 @@ public class ExceptionalUnitGraph extends UnitGraph
      *
      */
     public ExceptionalUnitGraph(Body body, ThrowAnalysis throwAnalysis) {
-	this(body, throwAnalysis, Options.v().always_add_edges_from_excepting_units());
+	this(body, throwAnalysis, Options.v().omit_excepting_unit_edges());
     }
 
     /**
      *  Constructs the graph from a given Body instance, using the
      *  {@link Scene}'s default {@link ThrowAnalysis} to estimate the
      *  set of exceptions that each {@link Unit} might throw and a
-     *  default value for the 
-     *  <code>alwaysAddEdgesFromExceptingUnits</code> parameter provided
-     *  by the {@link Options} class.
+     *  default value, provided by the {@link Options} class, for the
+     *  <code>omitExceptingUnitEdges</code> parameter.
      *
      *  @param body the <tt>Body</tt> from which to build a graph.
      *
      */
     public ExceptionalUnitGraph(Body body) {
 	this(body, Scene.v().getDefaultThrowAnalysis(),
-	     Options.v().always_add_edges_from_excepting_units());
+	     Options.v().omit_excepting_unit_edges());
     }
 
 
@@ -440,7 +443,7 @@ public class ExceptionalUnitGraph extends UnitGraph
      *                    catch an exception to the list of
      *                    <tt>Unit</tt>s whose exceptions it may
      *                    catch.
-     * @param alwaysAddEdgesFromExceptingUnits Indicates whether to add
+     * @param omitExceptingUnitEdges Indicates whether to omit
      *			  exceptional edges from excepting units which
      *			  lack side effects
      *
@@ -454,7 +457,7 @@ public class ExceptionalUnitGraph extends UnitGraph
      */
     protected Set buildExceptionalEdges(Map unitToDests, 
 					Map unitToSuccs, Map unitToPreds,
-					boolean alwaysAddEdgesFromExceptingUnits) {
+					boolean omitExceptingUnitEdges) {
 	Set trapsThatAreHeads = new ArraySet();
 
 	// Add exceptional edges from each predecessor of units that
@@ -480,7 +483,7 @@ public class ExceptionalUnitGraph extends UnitGraph
 			    addEdge(unitToSuccs, unitToPreds, pred, catcher);
 			}
 		    }
-		    if (alwaysAddEdgesFromExceptingUnits ||
+		    if ((! omitExceptingUnitEdges) ||
 			thrower instanceof ThrowInst ||
 			thrower instanceof ThrowStmt || 
 			mightHaveSideEffects(thrower)) {
@@ -700,7 +703,7 @@ public class ExceptionalUnitGraph extends UnitGraph
 
     /**
      * Returns a collection of 
-     * {@link * ExceptionalUnitGraph.ExceptionDest ExceptionDest}
+     * {@link ExceptionalUnitGraph.ExceptionDest ExceptionDest}
      * objects which represent how exceptions thrown by a specified
      * unit will be handled.
      *

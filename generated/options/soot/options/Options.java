@@ -574,9 +574,21 @@ public class Options extends OptionsBase {
            }
   
             else if( false 
-            || option.equals( "always-add-edges-from-excepting-units" )
+            || option.equals( "omit-excepting-unit-edges" )
             )
-                always_add_edges_from_excepting_units = true;
+                omit_excepting_unit_edges = true;
+  
+            else if( false
+            || option.equals( "trim-cfgs" )
+            ) {
+                
+                pushOptions( "enabled:true" );
+                pushOptions( "jb.tt" );
+                pushOptions( "-p" );
+                pushOptions( "-omit-excepting-unit-edges" );
+                pushOptions( "unit" );
+                pushOptions( "-throw-analysis" );
+            }
   
             else if( false
             || option.equals( "i" )
@@ -866,9 +878,9 @@ public class Options extends OptionsBase {
     }
     public void set_throw_analysis( int setting ) { throw_analysis = setting; }
     private int throw_analysis = 0;
-    public boolean always_add_edges_from_excepting_units() { return always_add_edges_from_excepting_units; }
-    private boolean always_add_edges_from_excepting_units = false;
-    public void set_always_add_edges_from_excepting_units( boolean setting ) { always_add_edges_from_excepting_units = setting; }
+    public boolean omit_excepting_unit_edges() { return omit_excepting_unit_edges; }
+    private boolean omit_excepting_unit_edges = false;
+    public void set_omit_excepting_unit_edges( boolean setting ) { omit_excepting_unit_edges = setting; }
   
     public List include() { 
         if( include == null )
@@ -974,7 +986,7 @@ public class Options extends OptionsBase {
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +padOpt(" -dump-body PHASENAME", "Dump the internal representation of each method before and after phase PHASENAME" )
 +padOpt(" -dump-cfg PHASENAME", "Dump the internal representation of each CFG constructed during phase PHASENAME" )
-+padOpt(" -show-exception-dests", "Include exception destination edges as well as CFG edges in dumped CFG." )
++padOpt(" -show-exception-dests", "Include exception destination edges as well as CFG edges in dumped CFGs" )
 +"\nProcessing Options:\n"
       
 +padOpt(" -p PHASE OPT:VAL -phase-option PHASE OPT:VAL", "Set PHASE's OPT option to VALUE" )
@@ -985,7 +997,8 @@ public class Options extends OptionsBase {
 +padOpt(" -throw-analysis ARG", "" )
 +padVal(" pedantic (default)", "Pedantically conservative throw analysis" )
 +padVal(" unit", "Unit Throw Analysis" )
-+padOpt(" -always-add-edges-from-excepting-units", "Always add CFG edges from an exceptioning unit itself as well as its predecessors." )
++padOpt(" -omit-excepting-unit-edges", "Omit CFG edges to handlers from excepting units which lack side effects" )
++padOpt(" -trim-cfgs", "Trim unrealizable exceptional edges from CFGs" )
 +"\nApplication Mode Options:\n"
       
 +padOpt(" -i PKG -include PKG", "Include classes in PKG as application classes" )
@@ -1198,7 +1211,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.tt" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Trap Tightener changes the area protected by each exception \nhandler, so that it begins with the first instruction in the old \nprotected area which is actually capable of throwing the \nexception caught by the handler, and ends just after the last \ninstruction in the old protected area which can throw an \nexception caught by the handler. This reduces the chance of \nproducing unverifiable code as a byproduct of pruning \nexceptional control flow within CFGs. "
+                "\nThe Trap Tightener changes the area protected by each exception \nhandler, so that it begins with the first instruction in the old \nprotected area which is actually capable of throwing an \nexception caught by the handler, and ends just after the last \ninstruction in the old protected area which can throw an \nexception caught by the handler. This reduces the chance of \nproducing unverifiable code as a byproduct of pruning \nexceptional control flow within CFGs. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
