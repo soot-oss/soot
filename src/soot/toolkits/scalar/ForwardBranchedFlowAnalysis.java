@@ -29,15 +29,15 @@
                             <plam@sable.mcgill.ca>
                      from 1.beta.4.dev.60
                      to 1.beta.6.dev.34
-		     Plus some bug fixes.
+                     Plus some bug fixes.
                      -- Janus <janus@place.org>
 
 
      KNOWN LIMITATION: the analysis doesn't handle traps since traps
-		       handler statements have predecessors, but they
-		       don't have the trap handler as successor.  This
-		       might be a limitation of the CompleteUnitGraph
-		       tho.
+               handler statements have predecessors, but they
+               don't have the trap handler as successor.  This
+               might be a limitation of the CompleteUnitGraph
+               tho.
 */
 
 
@@ -51,7 +51,6 @@ import java.util.*;
 /** Abstract class providing an engine for branched forward flow analysis. */
 public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 {
-
     public ForwardBranchedFlowAnalysis(UnitGraph graph)
     {
         super(graph);
@@ -77,9 +76,9 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
         if (s.branches())
         {
             List l = (List)(unitToAfterBranchFlow.get(s));
-	    Iterator it = l.iterator();
-	    
-	    while (it.hasNext())
+            Iterator it = l.iterator();
+
+            while (it.hasNext())
             {
                 Object fs = (Object) (it.next());
                 copy(fs, flowRepositories[repCount]);
@@ -112,14 +111,14 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
         }
 
         // Set initial values and nodes to visit.
-	// WARNING: DO NOT HANDLE THE CASE OF THE TRAPS
+        // WARNING: DO NOT HANDLE THE CASE OF THE TRAPS
         {
-	    Chain sl = graph.getBody().getUnits();
+            Chain sl = graph.getBody().getUnits();
             Iterator it = graph.iterator();
 
             while(it.hasNext())
             {
-		Unit s = (Unit) it.next();
+                Unit s = (Unit) it.next();
 
                 changedUnits.addLast(s);
                 changedUnitsSet.add(s);
@@ -133,9 +132,8 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                     fl.add((Object) (newInitialFlow()));
                     unitToAfterFallFlow.put(s, fl);
 
-		    List l = (List) (unitToIncomingFlowSets.get(sl.getSuccOf(s)));
+                    List l = (List) (unitToIncomingFlowSets.get(sl.getSuccOf(s)));
                     l.addAll(fl);
-		    
                 }
                 else
                     unitToAfterFallFlow.put(s, new ArrayList());
@@ -144,14 +142,14 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                 {
                     ArrayList l = new ArrayList();
                     List incList;
-		    Iterator boxIt = s.getUnitBoxes().iterator();
+                    Iterator boxIt = s.getUnitBoxes().iterator();
 
-		    while (boxIt.hasNext())
+                    while (boxIt.hasNext())
                     {
                         Object f = (Object) (newInitialFlow());
 
                         l.add(f);
-			Unit ss = ((UnitBox) (boxIt.next())).getUnit();
+                        Unit ss = ((UnitBox) (boxIt.next())).getUnit();
                         incList = (List) (unitToIncomingFlowSets.get(ss));
                                           
                         incList.add(f);
@@ -166,25 +164,25 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
             }
         }
 
-	// Feng Qian: March 07, 2002
-	// init entry points
-	{
-	  Iterator it = graph.getHeads().iterator();
-	  
-	  while (it.hasNext()) {
-	    Object s = it.next();
-	    // this is a forward flow analysis
-	    unitToBeforeFlow.put(s, entryInitialFlow());
-	  }
-	}
+        // Feng Qian: March 07, 2002
+        // init entry points
+        {
+            Iterator it = graph.getHeads().iterator();
 
-	// optional 	
-	customizeInitialFlowGraph();
+            while (it.hasNext()) {
+                Object s = it.next();
+                // this is a forward flow analysis
+                unitToBeforeFlow.put(s, entryInitialFlow());
+            }
+        }
+        
+        // optional
+        customizeInitialFlowGraph();
 
         // Perform fixed point flow analysis
         {
             List previousAfterFlows = new ArrayList(); 
-	    List afterFlows = new ArrayList();
+            List afterFlows = new ArrayList();
             Object[] flowRepositories = new Object[maxBranchSize+1];
             for (int i = 0; i < maxBranchSize+1; i++)
                 flowRepositories[i] = (Object) newInitialFlow();
@@ -196,7 +194,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
             {
                 Object beforeFlow;
 
-		Unit s = (Unit) changedUnits.removeFirst();
+                Unit s = (Unit) changedUnits.removeFirst();
 
                 changedUnitsSet.remove(s);                
 
@@ -215,12 +213,12 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                         Iterator predIt = preds.iterator();
 
                         copy(predIt.next(), beforeFlow);
-			
+
                         while(predIt.hasNext())
                         {
                             Object otherBranchFlow = predIt.next();
                             merge(beforeFlow, otherBranchFlow, beforeFlow);
-			}
+                        }
                     }
                 }
 
@@ -233,7 +231,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                 }
 
                 accumulateAfterFlowSets(s, flowRepositories, afterFlows);
-		
+
                 // Update queue appropriately
                 if(!afterFlows.equals(previousAfterFlows))
                 {

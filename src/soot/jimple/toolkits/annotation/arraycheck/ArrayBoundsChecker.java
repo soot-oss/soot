@@ -49,190 +49,189 @@ public class ArrayBoundsChecker extends BodyTransformer
     public void internalTransform(Body body, String phaseName, Map opts)
     {
         ABCOptions options = new ABCOptions( opts );
-	if (options.with_all())
-	{
-	    takeClassField = true;
-	    takeFieldRef = true;
-	    takeArrayRef = true;
-	    takeCSE = true;
-	    takeRectArray = true;
-	}
-	else
-	{
-	    takeClassField = options.with_classfield();
-	    takeFieldRef = options.with_fieldref();
-	    takeArrayRef = options.with_arrayref();
-	    takeCSE = options.with_cse();
-	    takeRectArray = options.with_rectarray();
-	}
+        if (options.with_all())
+        {
+            takeClassField = true;
+            takeFieldRef = true;
+            takeArrayRef = true;
+            takeCSE = true;
+            takeRectArray = true;
+        }
+        else
+        {
+            takeClassField = options.with_classfield();
+            takeFieldRef = options.with_fieldref();
+            takeArrayRef = options.with_arrayref();
+            takeCSE = options.with_cse();
+            takeRectArray = options.with_rectarray();
+        }
 
-	{
-	    SootMethod m = body.getMethod();
+        {
+            SootMethod m = body.getMethod();
+        
+            Date start = new Date();
 
-	    Date start = new Date();
+            if (Options.v().verbose())
+            {
+                G.v().out.println("[abc] Analyzing array bounds information for "+m.getName());
+                G.v().out.println("[abc] Started on "+start);
+            }
 
-	    if (Options.v().verbose())
-	    {
-		G.v().out.println("[abc] Analyzing array bounds information for "+m.getName());
-		G.v().out.println("[abc] Started on "+start);
-	    }
+            ArrayBoundsCheckerAnalysis analysis = null;
 
-	    ArrayBoundsCheckerAnalysis analysis = null;
-
-	    if (hasArrayLocals(body))
-	    {
-		 analysis = 
-		    new ArrayBoundsCheckerAnalysis(body, 
-						   takeClassField, 
-						   takeFieldRef, 
-						   takeArrayRef, 
-						   takeCSE, 
-						   takeRectArray);
-	    }
-
-	    SootClass counterClass = null;
-	    SootMethod increase = null;
-	    
-	    if (options.profiling())
-	    {
-		counterClass = Scene.v().loadClassAndSupport("MultiCounter");
-		increase = counterClass.getMethod("void increase(int)") ;
-	    }
-	    
-	    Chain units = body.getUnits();
-
-	    IntContainer zero = new IntContainer(0);
-	    
-	    Iterator unitIt = units.snapshotIterator();
-
-	    while (unitIt.hasNext())
-	    {
-		Stmt stmt = (Stmt)unitIt.next();
+            if (hasArrayLocals(body))
+            {
+                analysis = 
+                    new ArrayBoundsCheckerAnalysis(body, 
+                                                   takeClassField, 
+                                                   takeFieldRef, 
+                                                   takeArrayRef, 
+                                                   takeCSE, 
+                                                   takeRectArray);
+            }
+            
+            SootClass counterClass = null;
+            SootMethod increase = null;
+            
+            if (options.profiling())
+            {
+                counterClass = Scene.v().loadClassAndSupport("MultiCounter");
+                increase = counterClass.getMethod("void increase(int)") ;
+            }
+            
+            Chain units = body.getUnits();
+            
+            IntContainer zero = new IntContainer(0);
+            
+            Iterator unitIt = units.snapshotIterator();
+            
+            while (unitIt.hasNext())
+            {
+                Stmt stmt = (Stmt)unitIt.next();
 	   
-		if (stmt.containsArrayRef())
-		{
-		    ArrayRef aref = (ArrayRef)stmt.getArrayRef();
+                if (stmt.containsArrayRef())
+                {
+                    ArrayRef aref = (ArrayRef)stmt.getArrayRef();
+                    
+                    {
+                        WeightedDirectedSparseGraph vgraph = 
+                            (WeightedDirectedSparseGraph)analysis.getFlowBefore(stmt);
+                        
+                        boolean lowercheck = true;
+                        boolean uppercheck = true;
+                        
+                        {
+                            if (Options.v().debug())
+                            {
+                                if (!vgraph.makeShortestPathGraph())
+                                {
+                                    G.v().out.println(stmt+" :");
+                                    G.v().out.println(vgraph);
+                                }
+                            }
+                            
+                            Value base = aref.getBase();
+                            Value index = aref.getIndex();
+                            
+                            if (index instanceof IntConstant)
+                            {
+                                int indexv = ((IntConstant)index).value;
+                                
+                                if (vgraph.hasEdge(base, zero))
+                                {
+                                    int alength = vgraph.edgeWeight(base, zero);
+                                    
+                                    if (-alength > indexv)
+                                        uppercheck = false;
+                                }
+                                
+                                if (indexv >= 0)
+                                    lowercheck = false;			
+                            }
+                            else
+                            {
+                                if (vgraph.hasEdge(base, index))
+                                {
+                                    int upperdistance = vgraph.edgeWeight(base, index);
+                                    if (upperdistance < 0)
+                                        uppercheck = false;
+                                }
+                                
+                                if (vgraph.hasEdge(index, zero))
+                                {
+                                    int lowerdistance = vgraph.edgeWeight(index, zero);
 
-		    {
-			WeightedDirectedSparseGraph vgraph = 
-			    (WeightedDirectedSparseGraph)analysis.getFlowBefore(stmt);
+                                    if (lowerdistance <= 0)
+                                        lowercheck = false;
+                                }
+                            }
+                        }
+                        
+                        if (options.profiling())
+                        {
+                            int lowercounter = 0;
+                            if (!lowercheck)
+                                lowercounter = 1;
+                            
+                            units.insertBefore (Jimple.v().newInvokeStmt( 
+                                 Jimple.v().newStaticInvokeExpr(increase, 
+                                        IntConstant.v(lowercounter))), stmt);
 
-			boolean lowercheck = true;
-			boolean uppercheck = true;
-	    
-			{
-			    if (Options.v().debug())
-			    {
-				if (!vgraph.makeShortestPathGraph())
-				{
-				    G.v().out.println(stmt+" :");
-				    G.v().out.println(vgraph);
-				}
-			    }
+                            int uppercounter = 2;
+                            if (!uppercheck)
+                                uppercounter = 3;
+                            
+                            units.insertBefore (Jimple.v().newInvokeStmt( 
+                                 Jimple.v().newStaticInvokeExpr(increase, 
+                                        IntConstant.v(uppercounter))), stmt) ;
 
-			    Value base = aref.getBase();
-			    Value index = aref.getIndex();
+                            /*
+                            if (!lowercheck && !uppercheck)
+                            {
+                                units.insertBefore(Jimple.v().newInvokeStmt(
+                                  Jimple.v().newStaticInvokeExpr(increase,
+                                        IntConstant.v(4))), stmt);
 
-			    if (index instanceof IntConstant)
-			    {
-				int indexv = ((IntConstant)index).value;
-				
-				if (vgraph.hasEdge(base, zero))
-				{
-				    int alength = vgraph.edgeWeight(base, zero);
-			
-				    if (-alength > indexv)
-					uppercheck = false;
-				}
+                                NullCheckTag nullTag = (NullCheckTag)stmt.getTag("NullCheckTag");
 			    
-				if (indexv >= 0)
-				    lowercheck = false;			
-			    }
-			    else
-			    {
-				if (vgraph.hasEdge(base, index))
-				{
-				    int upperdistance = vgraph.edgeWeight(base, index);
-				    if (upperdistance < 0)
-					uppercheck = false;
-				}
-				
-				if (vgraph.hasEdge(index, zero))
-				{
-				    int lowerdistance = vgraph.edgeWeight(index, zero);
+                                if (nullTag != null && !nullTag.needCheck())
+                                    units.insertBefore(Jimple.v().newInvokeStmt(
+                                        Jimple.v().newStaticInvokeExpr(increase,
+                                            IntConstant.v(7))), stmt);
+                            }
+                            */
+                        }
+                        else
+                        {
+                            Tag checkTag = new ArrayCheckTag(lowercheck, uppercheck);
+                            stmt.addTag(checkTag);
+                        }
+                    }
+                }
+            }
 
-				    if (lowerdistance <= 0)
-					lowercheck = false;
-				}
-			    }
-			}
-
-			if (options.profiling())
-			{
-			    int lowercounter = 0;
-			    if (!lowercheck)
-				lowercounter = 1;
-
-			    units.insertBefore (Jimple.v().newInvokeStmt( 
-					Jimple.v().newStaticInvokeExpr(increase, 
-					IntConstant.v(lowercounter))), stmt) ;
-
-			    int uppercounter = 2;
-			    if (!uppercheck)
-				uppercounter = 3;
-		    
-			    units.insertBefore (Jimple.v().newInvokeStmt( 
-					Jimple.v().newStaticInvokeExpr(increase, 
-					IntConstant.v(uppercounter))), stmt) ;
-
-			    /*
-			    if (!lowercheck && !uppercheck)
-			    {
-				units.insertBefore(Jimple.v().newInvokeStmt(
-				   Jimple.v().newStaticInvokeExpr(increase,
-			           IntConstant.v(4))), stmt);
-
-				NullCheckTag nullTag = (NullCheckTag)stmt.getTag("NullCheckTag");
-			    
-				if (nullTag != null && !nullTag.needCheck())
-				    units.insertBefore(Jimple.v().newInvokeStmt(
-				    Jimple.v().newStaticInvokeExpr(increase,
-			     	    IntConstant.v(7))), stmt);
-			    }
-			    */
-
-			}
-			else
-			{
-			    Tag checkTag = new ArrayCheckTag(lowercheck, uppercheck);
-			    stmt.addTag(checkTag);
-			}
-		    }
-		}
-	    }
-
-	    Date finish = new Date();
-	    if (Options.v().verbose()) 
-	    {
-		long runtime = finish.getTime() - start.getTime();
-		G.v().out.println("[abc] ended on "+finish
-				   +". It took "+(runtime/60000)+" min. "
-				   +((runtime%60000)/1000)+" sec.");
-	    }
-	}
+            Date finish = new Date();
+            if (Options.v().verbose()) 
+            {
+                long runtime = finish.getTime() - start.getTime();
+                G.v().out.println("[abc] ended on "+finish
+                                  +". It took "+(runtime/60000)+" min. "
+                                  +((runtime%60000)/1000)+" sec.");
+            }
+        }
     }
 
     private boolean hasArrayLocals(Body body)
     {
-	Iterator localIt = body.getLocals().iterator();
-
-	while (localIt.hasNext())
-	{
-	    Local local = (Local)localIt.next();
-	    if (local.getType() instanceof ArrayType)
-		return true;
-	}
-
-	return false;
+        Iterator localIt = body.getLocals().iterator();
+        
+        while (localIt.hasNext())
+        {
+            Local local = (Local)localIt.next();
+            if (local.getType() instanceof ArrayType)
+                return true;
+        }
+        
+        return false;
     }
 }

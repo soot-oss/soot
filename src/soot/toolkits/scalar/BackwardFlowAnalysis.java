@@ -76,19 +76,19 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
             }
         }
 
-	// Feng Qian: March 07, 2002
-	// init entry points
-	{
-	  Iterator it = graph.getTails().iterator();
-	  
-	  while (it.hasNext()) {
-	    Object s = it.next();
-	    // this is a forward flow analysis
-	    unitToAfterFlow.put(s, entryInitialFlow());
-	  }
-	}
+        // Feng Qian: March 07, 2002
+        // init entry points
+        {
+            Iterator it = graph.getTails().iterator();
+            
+            while (it.hasNext()) {
+                Object s = it.next();
+                // this is a forward flow analysis
+                unitToAfterFlow.put(s, entryInitialFlow());
+            }
+        }
 
-	// optional 
+        // optional 
         customizeInitialFlowGraph();
 
         // Perform fixed point flow analysis

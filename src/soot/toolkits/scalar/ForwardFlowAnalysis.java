@@ -77,19 +77,19 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
             }
         }
 
-	// Feng Qian: March 07, 2002
-	// Set initial values for entry points
-	{
-	  Iterator it = graph.getHeads().iterator();
-	  
-	  while (it.hasNext()) {
-	    Object s = it.next();
-	    // this is a forward flow analysis
-	    unitToBeforeFlow.put(s, entryInitialFlow());
-	  }
-	}
-
-	// optional 
+        // Feng Qian: March 07, 2002
+        // Set initial values for entry points
+        {
+            Iterator it = graph.getHeads().iterator();
+            
+            while (it.hasNext()) {
+                Object s = it.next();
+                // this is a forward flow analysis
+                unitToBeforeFlow.put(s, entryInitialFlow());
+            }
+        }
+        
+        // optional 
         customizeInitialFlowGraph();
 
         // Perform fixed point flow analysis

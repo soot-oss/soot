@@ -33,8 +33,6 @@
                      -- Janus (Richard Godard)
 */
 
-
-
 package soot.toolkits.scalar;
 
 import soot.*;
@@ -93,12 +91,12 @@ public abstract class BranchedFlowAnalysis
 
     public Object getFallFlowAfter(Unit s)
     {
-	List fl = (List) unitToAfterFallFlow.get(s);
-	
-	if (fl.isEmpty())
-	    return newInitialFlow();
-	else
-	    return fl.get(0);
+        List fl = (List) unitToAfterFallFlow.get(s);
+
+        if (fl.isEmpty())
+            return newInitialFlow();
+        else
+            return fl.get(0);
     }
 
 
