@@ -42,7 +42,7 @@ public class SparkTransformer extends AbstractSparkTransformer
     protected void internalTransform( String phaseName, Map options )
     {
         SparkOptions opts = new SparkOptions( options );
-        final String output_dir = Options.v().output_dir();
+        final String output_dir = SourceLocator.v().getOutputDir();
 
         // Build pointer assignment graph
         ContextInsensitiveBuilder b = new ContextInsensitiveBuilder();
