@@ -45,7 +45,6 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.layout.*;
 import ca.mcgill.sable.soot.SootPlugin;
 
-
 public class PhaseOptionsDialog extends AbstractOptionsDialog {
 
 	public PhaseOptionsDialog(Shell parentShell) {
