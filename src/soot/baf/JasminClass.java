@@ -1,143 +1,31 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
- * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
- * All rights reserved.                                              *
- *                                                                   *
- * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
- * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
- * rights reserved.                                                  *
- *                                                                   *
- * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
- * Copyright (C) 1999 Patrick Lam (plam@sable.mcgill.ca).  All       *
- * rights reserved.                                                  *
- *                                                                   *
- * This work was done as a project of the Sable Research Group,      *
- * School of Computer Science, McGill University, Canada             *
- * (http://www.sable.mcgill.ca/).  It is understood that any         *
- * modification not identified as such is not covered by the         *
- * preceding statement.                                              *
- *                                                                   *
- * This work is free software; you can redistribute it and/or        *
- * modify it under the terms of the GNU Library General Public       *
- * License as published by the Free Software Foundation; either      *
- * version 2 of the License, or (at your option) any later version.  *
- *                                                                   *
- * This work is distributed in the hope that it will be useful,      *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of    *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU *
- * Library General Public License for more details.                  *
- *                                                                   *
- * You should have received a copy of the GNU Library General Public *
- * License along with this library; if not, write to the             *
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,      *
- * Boston, MA  02111-1307, USA.                                      *
- *                                                                   *
- * Java is a trademark of Sun Microsystems, Inc.                     *
- *                                                                   *
- * To submit a bug report, send a comment, or get the latest news on *
- * this project and other Sable Research Group projects, please      *
- * visit the web site: http://www.sable.mcgill.ca/                   *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
 
 /*
- Reference Version
- -----------------
- This is the latest official version on which this file is based.
+ * Modified by the Sable Research Group and others 1997-1999.  
+ * See the 'credits' file distributed with Soot for the complete list of
+ * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ */
 
- Change History
- --------------
- A) Notes:
 
- Please use the following template.  Most recent changes should
- appear at the top of the list.
 
- - Modified on [date (March 1, 1900)] by [name]. [(*) if appropriate]
-   [description of modification].
 
- Any Modification flagged with "(*)" was done as a project of the
- Sable Research Group, School of Computer Science,
- McGill University, Canada (http://www.sable.mcgill.ca/).
-
- You should add your copyright, using the following template, at
- the top of this file, along with other copyrights.
-
- *                                                                   *
- * Modifications by [name] are                                       *
- * Copyright (C) [year(s)] [your name (or company)].  All rights     *
- * reserved.                                                         *
- *                                                                   *
-
- B) Changes:
-
- - Modified on March 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
-   Added a correction to the peephole optimizer.
-   Fixed a bug with the instanceof code generation.
-   Fixed a bug with floating point infinities.
-         
- - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
-   Re-organized the timers.
-
- - Modified on March 4, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
-   Added peephole optimizations for the code generation of ++ like structures.
-      
- - Modified on February 19, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Uses bipush & sipush instead of ldc
-   More efficient branch generation.
-   Uses the iinc bytecode instruction to generate more efficient code.
-   
- - Modified on February 17, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Added the emitting of stack height.
-   
- - Modified on February 15, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
-   Fixed bug with booleans, chars, bytes and shorts and if_cmpxx.
-   Fixed bug with type casts of bytes/chars/booleans/shorts to ints.
-
- - Modified on November 18, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Fixed a jsr generation bug.
-   Fixed generation of 'and's.
-   Changed the output of constants.  (uses L and F)
-   
- - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
-
- - Modified on October 4, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca (*)
-   Method names in the .jasmin format now are output as strings.
-   Class which has no superclass should indicate in its .jasmin file
-   that it is its own superclass.
-
- - Modified on October 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca (*)
-   Fixed the generation of code for acmp_ifne and acmp_ifeq, aload, astore
-    when nulls are involved.
-
- - Modified on September 25, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca (*)
-   Does not output empty exception ranges.  (verifier doesn't like that)
-   Fixed the generation of invokeinterface.
-   Fixed the generation of array references.
-   Fixed the generation of bastores.
-   Fixed the generation of castores.
-
- - Modified on September 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca (*)
-   Fixed the generation of jsr code.
-   Added support for casts.
-   Fixed a bug with the return instruction.
-
- - Modified on September 15, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca (*)
-   Implemented the jsr jump. (needs some type checks however)
-
- - Modified on September 12, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca (*)
-   Changed PrintStream to PrintWriter.
-
- - Modified on 23-Jul-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca (*)
-   Renamed Hashtable to Hashmap, and minor changes.
-
- - Modified on July 5, 1998 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
-   Changed caseDefault to defaultCase, to avoid name conflicts (and conform
-   to the standard).
-
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   First internal release (Version 0.1).
-*/
 
 package soot.baf;
 
