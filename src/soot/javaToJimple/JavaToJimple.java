@@ -81,7 +81,11 @@ public class JavaToJimple {
 		SourceLoader source_loader = compiler.sourceExtension().sourceLoader();
 
 		try {
-			FileSource source = new FileSource(fileName);
+            FileSource source = new FileSource(new File(fileName));
+            // This hack is to stop the catch block at the bottom causing an error
+            // with versions of Polyglot where the constructor above can't throw IOException
+            // It should be removed as soon as Polyglot 1.3 is no longer supported.
+            if(false) throw new IOException("Bogus exception");
 
             SourceJob job = null;
 
