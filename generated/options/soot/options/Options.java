@@ -441,6 +441,7 @@ public class Options extends OptionsBase {
            }
   
             else if( false 
+            || option.equals( "outjar" )
             || option.equals( "output-jar" )
             )
                 output_jar = true;
@@ -1059,7 +1060,7 @@ public class Options extends OptionsBase {
 +padVal(" jasmin", "Produce .jasmin files" )
 +padVal(" c class (default)", "Produce .class Files" )
 +padVal(" d dava", "Produce dava-decompiled .java files" )
-+padOpt(" -output-jar", "Make output dir a Jar file instead of dir" )
++padOpt(" -outjar -output-jar", "Make output dir a Jar file instead of dir" )
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +padOpt(" -print-tags -print-tags-in-output", "Print tags in output files after stmt" )
 +padOpt(" -no-output-source-file-attribute", "Don't output Source File Attribute when producing class files" )
