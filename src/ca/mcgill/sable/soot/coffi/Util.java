@@ -95,6 +95,9 @@
 
  B) Changes:
 
+ - Modified on March 2, 1999 by Patrick Lam (plam@sable.mcgill.ca)
+   Fixed interface modifiers bug.
+       
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -180,8 +183,6 @@ public class Util
                 interfaceName = interfaceName.replace('/', '.');
 
                 SootClass interfaceClass = cm.getClass(interfaceName);
-
-                interfaceClass.setModifiers(Modifier.INTERFACE);
                 bclass.addInterface(interfaceClass);
             }
         }
