@@ -38,7 +38,7 @@ import soot.options.ABCOptions;
 public class ArrayBoundsChecker extends BodyTransformer
 {
     public ArrayBoundsChecker( Singletons.Global g ) {}
-    public static ArrayBoundsChecker v() { return G.v().ArrayBoundsChecker(); }
+    public static ArrayBoundsChecker v() { return G.v().soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker(); }
 
     protected boolean takeClassField = false;
     protected boolean takeFieldRef = false;

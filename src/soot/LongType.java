@@ -40,7 +40,7 @@ import java.util.*;
 public class LongType extends PrimType
 {
     public LongType( Singletons.Global g ) {}
-    public static LongType v() { return G.v().LongType(); }
+    public static LongType v() { return G.v().soot_LongType(); }
 
     public boolean equals(Object t)
     {

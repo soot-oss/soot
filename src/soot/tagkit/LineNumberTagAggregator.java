@@ -35,7 +35,7 @@ import java.util.*;
 public class LineNumberTagAggregator extends FirstTagAggregator
 {    
     public LineNumberTagAggregator( Singletons.Global g ) {}
-    public static LineNumberTagAggregator v() { return G.v().LineNumberTagAggregator(); }
+    public static LineNumberTagAggregator v() { return G.v().soot_tagkit_LineNumberTagAggregator(); }
 
     /** Decide whether this tag should be aggregated by this aggregator. */
     public boolean wantTag(Tag t)

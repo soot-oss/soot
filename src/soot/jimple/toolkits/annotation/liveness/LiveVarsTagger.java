@@ -11,7 +11,7 @@ public class LiveVarsTagger extends BodyTransformer {
 
 
     public LiveVarsTagger(Singletons.Global g) {}
-    public static LiveVarsTagger v() { return G.v().LiveVarsTagger();}
+    public static LiveVarsTagger v() { return G.v().soot_jimple_toolkits_annotation_liveness_LiveVarsTagger();}
 
     protected void internalTransform(Body b, String phaseName, Map options){
     

@@ -45,7 +45,7 @@ import java.util.*;
 public class UnusedLocalEliminator extends BodyTransformer
 { 
     public UnusedLocalEliminator( Singletons.Global g ) {}
-    public static UnusedLocalEliminator v() { return G.v().UnusedLocalEliminator(); }
+    public static UnusedLocalEliminator v() { return G.v().soot_toolkits_scalar_UnusedLocalEliminator(); }
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {

@@ -40,7 +40,7 @@ import java.util.*;
 public class IntType extends PrimType implements IntegerType
 {
     public IntType( Singletons.Global g ) {}
-    public static IntType v() { return G.v().IntType(); }
+    public static IntType v() { return G.v().soot_IntType(); }
 
     /** Returns true if the given object is equal to this one.
      * Since IntType is a singleton, object equality is fine. */

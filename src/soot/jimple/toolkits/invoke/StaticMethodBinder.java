@@ -39,7 +39,7 @@ import soot.util.*;
 public class StaticMethodBinder extends SceneTransformer
 {
     public StaticMethodBinder( Singletons.Global g ) {}
-    public static StaticMethodBinder v() { return G.v().StaticMethodBinder(); }
+    public static StaticMethodBinder v() { return G.v().soot_jimple_toolkits_invoke_StaticMethodBinder(); }
 
     protected void internalTransform(String phaseName, Map opts)
     {

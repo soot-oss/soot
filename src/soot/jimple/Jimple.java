@@ -48,7 +48,7 @@ import java.io.*;
 public class Jimple
 {
     public Jimple( Singletons.Global g ) {}
-    public static Jimple v() { return G.v().Jimple(); }
+    public static Jimple v() { return G.v().soot_jimple_Jimple(); }
     
     public final static String NEWARRAY = "newarray";
     public final static String NEWMULTIARRAY = "newmultiarray";

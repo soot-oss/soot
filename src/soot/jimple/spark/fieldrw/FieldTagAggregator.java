@@ -27,7 +27,7 @@ import soot.tagkit.*;
 public class FieldTagAggregator extends TagAggregator
 {    
     public FieldTagAggregator( Singletons.Global g ) {}
-    public static FieldTagAggregator v() { return G.v().FieldTagAggregator(); }
+    public static FieldTagAggregator v() { return G.v().soot_jimple_spark_fieldrw_FieldTagAggregator(); }
 
     protected void internalTransform( Body b, String phaseName, Map options ) {
         FieldReadTagAggregator.v().transform( b, phaseName, options );

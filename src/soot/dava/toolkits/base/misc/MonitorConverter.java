@@ -62,7 +62,7 @@ public class MonitorConverter
         Scene.v().addClass( davaMonitor );
     }
 
-    public static MonitorConverter v() { return G.v().MonitorConverter(); }
+    public static MonitorConverter v() { return G.v().soot_dava_toolkits_base_misc_MonitorConverter(); }
 
     private SootMethod v, enter, exit; 
 

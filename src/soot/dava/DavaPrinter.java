@@ -33,7 +33,7 @@ public class DavaPrinter {
     public DavaPrinter(Singletons.Global g) {
     }
     public static DavaPrinter v() {
-        return G.v().DavaPrinter();
+        return G.v().soot_dava_DavaPrinter();
     }
 
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */

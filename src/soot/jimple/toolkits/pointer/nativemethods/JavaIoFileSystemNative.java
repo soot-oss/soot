@@ -32,7 +32,7 @@ import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaIoFileSystemNative extends NativeMethodClass {
     public JavaIoFileSystemNative( Singletons.Global g ) {}
-    public static JavaIoFileSystemNative v() { return G.v().JavaIoFileSystemNative(); }
+    public static JavaIoFileSystemNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaIoFileSystemNative(); }
 
 
   /**

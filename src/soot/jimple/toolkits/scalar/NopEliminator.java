@@ -37,7 +37,7 @@ import java.util.*;
 public class NopEliminator extends BodyTransformer
 {
     public NopEliminator( Singletons.Global g ) {}
-    public static NopEliminator v() { return G.v().NopEliminator(); }
+    public static NopEliminator v() { return G.v().soot_jimple_toolkits_scalar_NopEliminator(); }
 
     /** Removes {@link NopStmt}s from the passed body (which must be
 	a {@link JimpleBody}).  Complexity is linear 

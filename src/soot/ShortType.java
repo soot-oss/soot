@@ -40,7 +40,7 @@ import java.util.*;
 public class ShortType extends PrimType implements IntegerType
 {
     public ShortType( Singletons.Global g ) {}
-    public static ShortType v() { return G.v().ShortType(); }
+    public static ShortType v() { return G.v().soot_ShortType(); }
 
     public int hashCode()
     {

@@ -34,7 +34,7 @@ import java.util.*;
 public class SynchronizerManager
 {
     public SynchronizerManager( Singletons.Global g ) {}
-    public static SynchronizerManager v() { return G.v().SynchronizerManager(); }
+    public static SynchronizerManager v() { return G.v().soot_jimple_toolkits_invoke_SynchronizerManager(); }
     /** Maps classes to class$ fields.  Don't trust default. */
     public HashMap classToClassField = new HashMap();
 

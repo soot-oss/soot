@@ -38,7 +38,7 @@ import soot.options.ProfilingOptions;
 public class ProfilingGenerator extends BodyTransformer
 {
     public ProfilingGenerator( Singletons.Global g ) {}
-    public static ProfilingGenerator v() { return G.v().ProfilingGenerator(); }
+    public static ProfilingGenerator v() { return G.v().soot_jimple_toolkits_annotation_profiling_ProfilingGenerator(); }
 
     public String mainSignature = "void main(java.lang.String[])";
 

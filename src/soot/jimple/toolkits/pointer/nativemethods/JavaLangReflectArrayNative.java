@@ -32,7 +32,7 @@ import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangReflectArrayNative extends NativeMethodClass {
     public JavaLangReflectArrayNative( Singletons.Global g ) {}
-    public static JavaLangReflectArrayNative v() { return G.v().JavaLangReflectArrayNative(); }
+    public static JavaLangReflectArrayNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangReflectArrayNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

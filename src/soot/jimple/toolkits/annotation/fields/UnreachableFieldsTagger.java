@@ -11,7 +11,7 @@ import soot.util.queue.*;
 public class UnreachableFieldsTagger extends SceneTransformer
 { 
     public UnreachableFieldsTagger (Singletons.Global g) {}
-    public static UnreachableFieldsTagger v() { return G.v().UnreachableFieldsTagger();}
+    public static UnreachableFieldsTagger v() { return G.v().soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger();}
 
     protected void internalTransform(String phaseName, Map options){
 

@@ -32,7 +32,7 @@ import soot.jimple.toolkits.pointer.util.*;
 
 public class SunMiscSignalNative extends NativeMethodClass {
     public SunMiscSignalNative( Singletons.Global g ) {}
-    public static SunMiscSignalNative v() { return G.v().SunMiscSignalNative(); }
+    public static SunMiscSignalNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_SunMiscSignalNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

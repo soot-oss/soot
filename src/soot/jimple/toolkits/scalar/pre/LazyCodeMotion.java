@@ -55,7 +55,7 @@ import soot.options.LCMOptions;
  */
 public class LazyCodeMotion extends BodyTransformer {
     public LazyCodeMotion( Singletons.Global g ) {}
-    public static LazyCodeMotion v() { return G.v().LazyCodeMotion(); }
+    public static LazyCodeMotion v() { return G.v().soot_jimple_toolkits_scalar_pre_LazyCodeMotion(); }
 
   private static final String PREFIX = "$lcm";
 

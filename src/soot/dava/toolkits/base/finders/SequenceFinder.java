@@ -30,7 +30,7 @@ import soot.dava.internal.AST.*;
 public class SequenceFinder implements FactFinder
 {
     public SequenceFinder( Singletons.Global g ) {}
-    public static SequenceFinder v() { return G.v().SequenceFinder(); }
+    public static SequenceFinder v() { return G.v().soot_dava_toolkits_base_finders_SequenceFinder(); }
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {

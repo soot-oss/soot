@@ -24,7 +24,7 @@ import soot.*;
  * to any object. */
 public class DumbPointerAnalysis implements PointsToAnalysis {
     public DumbPointerAnalysis( Singletons.Global g ) {}
-    public static DumbPointerAnalysis v() { return G.v().DumbPointerAnalysis(); }
+    public static DumbPointerAnalysis v() { return G.v().soot_jimple_toolkits_pointer_DumbPointerAnalysis(); }
 
     /** Returns the set of objects pointed to by variable l. */
     public PointsToSet reachingObjects( Local l ) {

@@ -113,7 +113,7 @@ public class PhaseDumper {
      * @return Soot's <code>PhaseDumper</code>.
      */
     public static PhaseDumper v() { 
-	return G.v().PhaseDumper(); 
+	return G.v().soot_util_PhaseDumper(); 
     }
 
 

@@ -32,7 +32,7 @@ import soot.options.Options;
 public class Timers
 {
     public Timers( Singletons.Global g ) {}
-    public static Timers v() { return G.v().Timers(); }
+    public static Timers v() { return G.v().soot_Timers(); }
 
      public int totalFlowNodes;
 

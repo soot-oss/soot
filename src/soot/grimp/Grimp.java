@@ -50,7 +50,7 @@ import java.io.*;
 public class Grimp
 {
     public Grimp( Singletons.Global g ) {}
-    public static Grimp v() { return G.v().Grimp(); }
+    public static Grimp v() { return G.v().soot_grimp_Grimp(); }
 
     /**
         Constructs a XorExpr(Expr, Expr) grammar chunk.

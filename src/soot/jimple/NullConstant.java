@@ -36,11 +36,11 @@ import java.util.*;
 public class NullConstant extends Constant
 {
     public NullConstant( Singletons.Global g ) {}
-    public static NullConstant v() { return G.v().NullConstant(); }
+    public static NullConstant v() { return G.v().soot_jimple_NullConstant(); }
 
     public boolean equals(Object c)
     {
-        return c == G.v().NullConstant();
+        return c == G.v().soot_jimple_NullConstant();
     }
 
     public int hashCode() 

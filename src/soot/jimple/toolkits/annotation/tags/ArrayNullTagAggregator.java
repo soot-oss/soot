@@ -31,7 +31,7 @@ import soot.tagkit.*;
 public class ArrayNullTagAggregator extends TagAggregator
 {    
     public ArrayNullTagAggregator( Singletons.Global g ) {}
-    public static ArrayNullTagAggregator v() { return G.v().ArrayNullTagAggregator(); }
+    public static ArrayNullTagAggregator v() { return G.v().soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator(); }
 
     public boolean wantTag( Tag t ) {
 	return (t instanceof OneByteCodeTag);

@@ -11,7 +11,7 @@ import soot.util.queue.*;
 public class UnreachableMethodsTagger extends SceneTransformer
 { 
     public UnreachableMethodsTagger(Singletons.Global g){}
-    public static UnreachableMethodsTagger v() { return G.v().UnreachableMethodsTagger();}
+    public static UnreachableMethodsTagger v() { return G.v().soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger();}
 
     protected void internalTransform(String phaseName, Map options){
 

@@ -30,7 +30,7 @@ import java.util.*;
 public class EntryPoints
 { 
     public EntryPoints( Singletons.Global g ) {}
-    public static EntryPoints v() { return G.v().EntryPoints(); }
+    public static EntryPoints v() { return G.v().soot_jimple_toolkits_callgraph_EntryPoints(); }
 
     final NumberedString sigMain = Scene.v().getSubSigNumberer().
         findOrAdd( "void main(java.lang.String[])" );

@@ -26,7 +26,7 @@ import java.util.*;
 /** Adds colour tags to indicate potential aliasing between method parameters. */
 public class ParameterAliasTagger extends BodyTransformer {
     public ParameterAliasTagger( Singletons.Global g ) {}
-    public static ParameterAliasTagger v() { return G.v().ParameterAliasTagger(); }
+    public static ParameterAliasTagger v() { return G.v().soot_jimple_toolkits_pointer_ParameterAliasTagger(); }
 
     protected void internalTransform(
             Body b, String phaseName, Map options)

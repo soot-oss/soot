@@ -49,7 +49,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
     public SConstantPropagatorAndFolder(Singletons.Global g) {}
 
     public static SConstantPropagatorAndFolder v()
-    { return G.v().SConstantPropagatorAndFolder(); }
+    { return G.v().soot_shimple_toolkits_scalar_SConstantPropagatorAndFolder(); }
 
     protected ShimpleBody sb;
     protected boolean debug;

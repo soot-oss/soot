@@ -30,7 +30,7 @@ import soot.util.queue.*;
 public final class VirtualCalls
 { 
     public VirtualCalls( Singletons.Global g ) {}
-    public static VirtualCalls v() { return G.v().VirtualCalls(); }
+    public static VirtualCalls v() { return G.v().soot_jimple_toolkits_callgraph_VirtualCalls(); }
 
     private LargeNumberedMap typeToVtbl =
         new LargeNumberedMap( Scene.v().getTypeNumberer() );

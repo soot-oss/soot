@@ -32,7 +32,7 @@ import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangShutdownNative extends NativeMethodClass {
     public JavaLangShutdownNative( Singletons.Global g ) {}
-    public static JavaLangShutdownNative v() { return G.v().JavaLangShutdownNative(); }
+    public static JavaLangShutdownNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangShutdownNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

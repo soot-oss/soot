@@ -31,7 +31,7 @@ import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangSystemNative extends NativeMethodClass {
     public JavaLangSystemNative( Singletons.Global g ) {}
-    public static JavaLangSystemNative v() { return G.v().JavaLangSystemNative(); }
+    public static JavaLangSystemNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangSystemNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

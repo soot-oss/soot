@@ -32,7 +32,7 @@ import soot.dava.internal.AST.*;
 public class SwitchFinder implements FactFinder
 {
     public SwitchFinder( Singletons.Global g ) {}
-    public static SwitchFinder v() { return G.v().SwitchFinder(); }
+    public static SwitchFinder v() { return G.v().soot_dava_toolkits_base_finders_SwitchFinder(); }
 
     private IterableSet junkBody;
     private HashSet targetSet;

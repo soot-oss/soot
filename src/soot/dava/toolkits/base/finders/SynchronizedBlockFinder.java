@@ -32,7 +32,7 @@ import soot.dava.internal.AST.*;
 public class SynchronizedBlockFinder implements FactFinder
 {
     public SynchronizedBlockFinder( Singletons.Global g ) {}
-    public static SynchronizedBlockFinder v() { return G.v().SynchronizedBlockFinder(); }
+    public static SynchronizedBlockFinder v() { return G.v().soot_dava_toolkits_base_finders_SynchronizedBlockFinder(); }
 
     private HashMap as2ml;
     private IterableSet monitorLocalSet, monitorEnterSet;

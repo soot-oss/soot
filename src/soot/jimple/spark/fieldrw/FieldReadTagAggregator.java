@@ -27,7 +27,7 @@ import soot.tagkit.*;
 public class FieldReadTagAggregator extends ImportantTagAggregator
 {    
     public FieldReadTagAggregator( Singletons.Global g ) {}
-    public static FieldReadTagAggregator v() { return G.v().FieldReadTagAggregator(); }
+    public static FieldReadTagAggregator v() { return G.v().soot_jimple_spark_fieldrw_FieldReadTagAggregator(); }
 
     /** Decide whether this tag should be aggregated by this aggregator. */
     public boolean wantTag(Tag t)

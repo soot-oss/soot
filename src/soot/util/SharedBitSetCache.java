@@ -22,7 +22,7 @@ import soot.*;
 
 public final class SharedBitSetCache {
     public SharedBitSetCache( Singletons.Global g ) {}
-    public static SharedBitSetCache v() { return G.v().SharedBitSetCache(); }
+    public static SharedBitSetCache v() { return G.v().soot_util_SharedBitSetCache(); }
 
     public static final int size = 32749; // a nice prime about 32k
 

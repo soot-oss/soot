@@ -34,7 +34,7 @@ import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
 public class CHATransformer extends SceneTransformer
 {
     public CHATransformer( Singletons.Global g ) {}
-    public static CHATransformer v() { return G.v().CHATransformer(); }
+    public static CHATransformer v() { return G.v().soot_jimple_toolkits_callgraph_CHATransformer(); }
 
     protected void internalTransform(String phaseName, Map opts)
     {

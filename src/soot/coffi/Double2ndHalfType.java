@@ -36,7 +36,7 @@ import soot.*;
 public class Double2ndHalfType extends Type
 {
     public Double2ndHalfType( Singletons.Global g ) {}
-    public static Double2ndHalfType v() { return G.v().Double2ndHalfType(); }
+    public static Double2ndHalfType v() { return G.v().soot_coffi_Double2ndHalfType(); }
 
     public boolean equals(Type otherType)
     {

@@ -31,7 +31,7 @@ import soot.PackManager;
 
 public class Options extends OptionsBase {
     public Options(Singletons.Global g) { }
-    public static Options v() { return G.v().Options(); }
+    public static Options v() { return G.v().soot_options_Options(); }
 
 
     public static final int src_prec_c = 1;

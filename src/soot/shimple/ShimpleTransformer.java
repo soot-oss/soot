@@ -33,7 +33,7 @@ import java.util.*;
 public class ShimpleTransformer extends SceneTransformer
 {
     public ShimpleTransformer( Singletons.Global g ) {}
-    public static ShimpleTransformer v() { return G.v().ShimpleTransformer(); }
+    public static ShimpleTransformer v() { return G.v().soot_shimple_ShimpleTransformer(); }
 
     protected void internalTransform(String phaseName, Map options)
     {

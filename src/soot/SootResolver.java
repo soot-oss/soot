@@ -40,7 +40,7 @@ public class SootResolver
 {
     public SootResolver (Singletons.Global g) {}
 
-    public static SootResolver v() { return G.v().SootResolver();}
+    public static SootResolver v() { return G.v().soot_SootResolver();}
     
     private Set markedClasses = new HashSet();
     private LinkedList classesToResolve = new LinkedList();

@@ -42,7 +42,7 @@ import java.util.*;
 public class FloatType extends PrimType
 {
     public FloatType( Singletons.Global g ) {}
-    public static FloatType v() { return G.v().FloatType(); }
+    public static FloatType v() { return G.v().soot_FloatType(); }
 
     public boolean equals(Object t)
     {

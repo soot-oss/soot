@@ -42,7 +42,7 @@ import soot.options.CPOptions;
 public class CopyPropagator extends BodyTransformer
 {
     public CopyPropagator( Singletons.Global g ) {}
-    public static CopyPropagator v() { return G.v().CopyPropagator(); }
+    public static CopyPropagator v() { return G.v().soot_jimple_toolkits_scalar_CopyPropagator(); }
 
     /** Cascaded copy propagator.
     

@@ -42,7 +42,7 @@ import java.util.*;
 public class ConstructorFolder extends BodyTransformer
 {
     public ConstructorFolder( Singletons.Global g ) {}
-    public static ConstructorFolder v() { return G.v().ConstructorFolder(); }
+    public static ConstructorFolder v() { return G.v().soot_grimp_toolkits_base_ConstructorFolder(); }
 
     /** This method change all new Obj/<init>(args) pairs to new Obj(args) idioms. */
     protected void internalTransform(Body b, String phaseName, Map options)

@@ -38,7 +38,7 @@ import soot.baf.internal.*;
 public class LoadStoreOptimizer extends BodyTransformer
 {
     public LoadStoreOptimizer( Singletons.Global g ) {}
-    public static LoadStoreOptimizer v() { return G.v().LoadStoreOptimizer(); }
+    public static LoadStoreOptimizer v() { return G.v().soot_baf_toolkits_base_LoadStoreOptimizer(); }
 
     // Constants
     boolean debug = false;

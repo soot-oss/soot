@@ -52,7 +52,7 @@ public class Scene  //extends AbstractHost
         if (scp != null)
             setSootClassPath(scp);
     }
-    public static Scene  v() { return G.v().Scene (); }
+    public static Scene  v() { return G.v().soot_Scene (); }
 
     Chain classes = new HashChain();
     Chain applicationClasses = new HashChain();

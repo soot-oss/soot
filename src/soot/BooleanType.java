@@ -41,7 +41,7 @@ import java.util.*;
 public class BooleanType extends PrimType implements IntegerType
 {
     public BooleanType( Singletons.Global g ) {}
-    public static BooleanType v() { return G.v().BooleanType(); }
+    public static BooleanType v() { return G.v().soot_BooleanType(); }
 
     public boolean equals(Object t)
     {

@@ -112,7 +112,7 @@ public class NativeMethodDriver {
                        SunMiscSignalHandlerNative.v());
     }
 
-    public static NativeMethodDriver v() { return G.v().NativeMethodDriver(); }
+    public static NativeMethodDriver v() { return G.v().soot_jimple_toolkits_pointer_util_NativeMethodDriver(); }
 
   private HashMap cnameToSim = new HashMap(100);
   private boolean DEBUG = false;

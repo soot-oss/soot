@@ -55,7 +55,7 @@ import soot.options.BCMOptions;
  */
 public class BusyCodeMotion extends BodyTransformer {
     public BusyCodeMotion( Singletons.Global g ) {}
-    public static BusyCodeMotion v() { return G.v().BusyCodeMotion(); }
+    public static BusyCodeMotion v() { return G.v().soot_jimple_toolkits_scalar_pre_BusyCodeMotion(); }
 
   private static final String PREFIX = "$bcm";
 

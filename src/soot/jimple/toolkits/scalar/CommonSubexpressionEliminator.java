@@ -50,7 +50,7 @@ import soot.jimple.toolkits.pointer.PASideEffectTester;
 public class CommonSubexpressionEliminator extends BodyTransformer
 { 
     public CommonSubexpressionEliminator( Singletons.Global g ) {}
-    public static CommonSubexpressionEliminator v() { return G.v().CommonSubexpressionEliminator(); }
+    public static CommonSubexpressionEliminator v() { return G.v().soot_jimple_toolkits_scalar_CommonSubexpressionEliminator(); }
 
     /** Common subexpression eliminator. */
     protected void internalTransform(Body b, String phaseName, Map options)

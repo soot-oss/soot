@@ -49,7 +49,7 @@ import soot.baf.internal.*;
 public class PeepholeOptimizer extends BodyTransformer
 {
     public PeepholeOptimizer( Singletons.Global g ) {}
-    public static PeepholeOptimizer v() { return G.v().PeepholeOptimizer(); }
+    public static PeepholeOptimizer v() { return G.v().soot_baf_toolkits_base_PeepholeOptimizer(); }
 
     private InputStream peepholeListingStream = null;
     private final String packageName = "soot.baf.toolkits.base";

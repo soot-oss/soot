@@ -40,7 +40,7 @@ import java.util.*;
 public class CharType extends PrimType implements IntegerType
 {
     public CharType( Singletons.Global g ) {}
-    public static CharType v() { return G.v().CharType(); }
+    public static CharType v() { return G.v().soot_CharType(); }
 
     public boolean equals(Object t)
     {

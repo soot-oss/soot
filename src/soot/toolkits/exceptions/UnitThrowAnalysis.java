@@ -64,7 +64,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
      *
      * @return Soot's <code>UnitThrowAnalysis</code>.
      */
-    public static UnitThrowAnalysis v() { return G.v().UnitThrowAnalysis(); }
+    public static UnitThrowAnalysis v() { return G.v().soot_toolkits_exceptions_UnitThrowAnalysis(); }
 
     /**
      * Returns the set of types that the specified unit

@@ -69,7 +69,7 @@ public class PhaseOptions {
     }
 
     public PhaseOptions( Singletons.Global g ) { }
-    public static PhaseOptions v() { return G.v().PhaseOptions(); }
+    public static PhaseOptions v() { return G.v().soot_PhaseOptions(); }
 
     private Map phaseToOptionMap = new HashMap();
 

@@ -43,7 +43,7 @@ import soot.*;
 public class Util
 {
     public Util( Singletons.Global g ) {}
-    public static Util v() { return G.v().Util(); }
+    public static Util v() { return G.v().soot_coffi_Util(); }
 
 
     Map classNameToAbbreviation;

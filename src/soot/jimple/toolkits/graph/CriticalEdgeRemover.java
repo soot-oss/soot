@@ -48,7 +48,7 @@ import soot.jimple.internal.*;
  */
 public class CriticalEdgeRemover extends BodyTransformer {
     public CriticalEdgeRemover( Singletons.Global g ) {}
-    public static CriticalEdgeRemover v() { return G.v().CriticalEdgeRemover(); }
+    public static CriticalEdgeRemover v() { return G.v().soot_jimple_toolkits_graph_CriticalEdgeRemover(); }
 
   /**
    * performs critical edge-removing.

@@ -41,7 +41,7 @@ import java.util.*;
 public class ByteType extends PrimType implements IntegerType
 {
     public ByteType( Singletons.Global g ) {}
-    public static ByteType v() { return G.v().ByteType(); }
+    public static ByteType v() { return G.v().soot_ByteType(); }
 
     public int hashCode()
     {

@@ -37,7 +37,7 @@ import soot.tagkit.*;
 public class SparkTransformer extends AbstractSparkTransformer
 { 
     public SparkTransformer( Singletons.Global g ) {}
-    public static SparkTransformer v() { return G.v().SparkTransformer(); }
+    public static SparkTransformer v() { return G.v().soot_jimple_spark_SparkTransformer(); }
 
     protected void internalTransform( String phaseName, Map options )
     {

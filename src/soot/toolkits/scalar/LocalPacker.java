@@ -62,7 +62,7 @@ import soot.jimple.*;
 public class LocalPacker extends BodyTransformer
 {
     public LocalPacker( Singletons.Global g ) {}
-    public static LocalPacker v() { return G.v().LocalPacker(); }
+    public static LocalPacker v() { return G.v().soot_toolkits_scalar_LocalPacker(); }
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {

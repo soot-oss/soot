@@ -29,7 +29,7 @@ import java.io.*;
 public class SideEffectTagger extends BodyTransformer
 { 
     public SideEffectTagger( Singletons.Global g ) {}
-    public static SideEffectTagger v() { return G.v().SideEffectTagger(); }
+    public static SideEffectTagger v() { return G.v().soot_jimple_toolkits_pointer_SideEffectTagger(); }
 
     public int numRWs = 0;
     public int numWRs = 0;

@@ -44,7 +44,7 @@ public class Main {
     public Main(Singletons.Global g) {
     }
     public static Main v() {
-        return G.v().Main();
+        return G.v().soot_Main();
     }
     // TODO: the following string should be updated by the source control
     // No it shouldn't. Prcs is horribly borken in this respect, and causes

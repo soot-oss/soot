@@ -28,7 +28,7 @@ import java.util.*;
  */
 public class EmptyPointsToSet extends PointsToSetInternal {
     public EmptyPointsToSet( Singletons.Global g ) { super(null); }
-    public static EmptyPointsToSet v() { return G.v().EmptyPointsToSet(); }
+    public static EmptyPointsToSet v() { return G.v().soot_jimple_spark_sets_EmptyPointsToSet(); }
 
     /** Returns true if this set contains no run-time objects. */
     public boolean isEmpty() { return true; }

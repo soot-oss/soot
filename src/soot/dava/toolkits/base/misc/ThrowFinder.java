@@ -28,7 +28,7 @@ import soot.jimple.toolkits.callgraph.*;
 public class ThrowFinder
 {
     public ThrowFinder( Singletons.Global g ) {}
-    public static ThrowFinder v() { return G.v().ThrowFinder(); }
+    public static ThrowFinder v() { return G.v().soot_dava_toolkits_base_misc_ThrowFinder(); }
 
     private HashSet registeredMethods;
     private HashMap protectionSet;

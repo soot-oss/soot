@@ -36,7 +36,7 @@ import soot.*;
 public class Long2ndHalfType extends Type
 {
     public Long2ndHalfType( Singletons.Global g ) {}
-    public static Long2ndHalfType v() { return G.v().Long2ndHalfType(); }
+    public static Long2ndHalfType v() { return G.v().soot_coffi_Long2ndHalfType(); }
 
     public boolean equals(Type otherType)
     {

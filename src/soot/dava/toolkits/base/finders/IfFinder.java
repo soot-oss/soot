@@ -32,7 +32,7 @@ import soot.dava.toolkits.base.misc.*;
 public class IfFinder implements FactFinder
 {
     public IfFinder( Singletons.Global g ) {}
-    public static IfFinder v() { return G.v().IfFinder(); }
+    public static IfFinder v() { return G.v().soot_dava_toolkits_base_finders_IfFinder(); }
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {

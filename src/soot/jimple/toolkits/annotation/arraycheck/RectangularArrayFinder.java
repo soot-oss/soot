@@ -41,7 +41,7 @@ import java.util.*;
 public class RectangularArrayFinder extends SceneTransformer
 {
     public RectangularArrayFinder( Singletons.Global g ) {}
-    public static RectangularArrayFinder v() { return G.v().RectangularArrayFinder(); }
+    public static RectangularArrayFinder v() { return G.v().soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder(); }
 
     private ExtendedHashMutableDirectedGraph agraph =
 	new ExtendedHashMutableDirectedGraph();

@@ -29,7 +29,7 @@ import java.util.jar.*;
 public class PackageNamer
 {
     public PackageNamer( Singletons.Global g ) {}
-    public static PackageNamer v() { return G.v().PackageNamer(); }
+    public static PackageNamer v() { return G.v().soot_dava_toolkits_base_misc_PackageNamer(); }
 
     public boolean has_FixedNames()
     {

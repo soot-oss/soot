@@ -31,7 +31,7 @@ import soot.options.*;
 public class ParityTagger extends BodyTransformer
 { 
 	public ParityTagger( Singletons.Global g ) {}
-    public static ParityTagger v() { return G.v().ParityTagger(); }
+    public static ParityTagger v() { return G.v().soot_jimple_toolkits_annotation_parity_ParityTagger(); }
 
     protected void internalTransform(
             Body b, String phaseName, Map options)

@@ -41,7 +41,7 @@ import java.util.*;
 public class NullType extends RefLikeType
 {
     public NullType( Singletons.Global g ) {}
-    public static NullType v() { return G.v().NullType(); }
+    public static NullType v() { return G.v().soot_NullType(); }
 
     public int hashCode()
     {

@@ -30,7 +30,7 @@ import java.io.*;
 public class FieldTagger extends BodyTransformer
 { 
     public FieldTagger( Singletons.Global g ) {}
-    public static FieldTagger v() { return G.v().FieldTagger(); }
+    public static FieldTagger v() { return G.v().soot_jimple_spark_fieldrw_FieldTagger(); }
 
     private HashSet processedMethods = new HashSet();
     private HashMultiMap methodToWrite = new HashMultiMap();

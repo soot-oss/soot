@@ -7,7 +7,7 @@ import soot.jimple.toolkits.annotation.callgraph.*;
 public class InteractionHandler {
    
     public InteractionHandler(Singletons.Global g){}
-    public static InteractionHandler v() { return G.v().InteractionHandler();}
+    public static InteractionHandler v() { return G.v().soot_toolkits_graph_interaction_InteractionHandler();}
 
     public void handleNewAnalysis(Transform t, Body b){
         // here save current phase name and only send if actual data flow analysis exists

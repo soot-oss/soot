@@ -29,7 +29,7 @@ import java.io.*;
 public class FieldRWTagger extends BodyTransformer
 { 
     public FieldRWTagger( Singletons.Global g ) {}
-    public static FieldRWTagger v() { return G.v().FieldRWTagger(); }
+    public static FieldRWTagger v() { return G.v().soot_jimple_toolkits_pointer_FieldRWTagger(); }
 
     public int numRWs = 0;
     public int numWRs = 0;

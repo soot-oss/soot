@@ -35,7 +35,7 @@ import java.util.*;
 public class CONSTANT_Utf8_collector 
 {
     public CONSTANT_Utf8_collector( Singletons.Global g ) {}
-    public static CONSTANT_Utf8_collector v() { return G.v().CONSTANT_Utf8_collector(); }
+    public static CONSTANT_Utf8_collector v() { return G.v().soot_coffi_CONSTANT_Utf8_collector(); }
     HashMap hash = null;
 
     synchronized CONSTANT_Utf8_info add(CONSTANT_Utf8_info _Utf8_info) 

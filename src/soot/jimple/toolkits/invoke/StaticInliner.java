@@ -38,7 +38,7 @@ import soot.util.*;
 public class StaticInliner extends SceneTransformer
 {
     public StaticInliner( Singletons.Global g ) {}
-    public static StaticInliner v() { return G.v().StaticInliner(); }
+    public static StaticInliner v() { return G.v().soot_jimple_toolkits_invoke_StaticInliner(); }
 
     protected void internalTransform(String phaseName, Map options)
     {

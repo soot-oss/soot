@@ -29,7 +29,7 @@ import soot.jimple.*;
 public class NullPointerColorer extends BodyTransformer {
 
 	public NullPointerColorer( Singletons.Global g ) {}
-    public static NullPointerColorer v() { return G.v().NullPointerColorer(); }
+    public static NullPointerColorer v() { return G.v().soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer(); }
 
 	protected void internalTransform (Body b, String phaseName, Map options) {
 		

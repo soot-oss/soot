@@ -26,7 +26,7 @@ import soot.toolkits.graph.*;
 public class CastCheckEliminatorDumper extends BodyTransformer
 { 
     public CastCheckEliminatorDumper( Singletons.Global g ) {}
-    public static CastCheckEliminatorDumper v() { return G.v().CastCheckEliminatorDumper(); }
+    public static CastCheckEliminatorDumper v() { return G.v().soot_jimple_toolkits_pointer_CastCheckEliminatorDumper(); }
 
     public String getDefaultOptions() { return ""; }
 

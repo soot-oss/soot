@@ -28,7 +28,7 @@ import soot.jimple.*;
 public class CallGraphTagger extends BodyTransformer {
 
     public CallGraphTagger( Singletons.Global g ) {}
-    public static CallGraphTagger v() { return G.v().CallGraphTagger(); }
+    public static CallGraphTagger v() { return G.v().soot_jimple_toolkits_annotation_callgraph_CallGraphTagger(); }
     
     private MethodToContexts methodToContexts;
     protected void internalTransform(

@@ -32,7 +32,7 @@ import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangThreadNative extends NativeMethodClass {
     public JavaLangThreadNative( Singletons.Global g ) {}
-    public static JavaLangThreadNative v() { return G.v().JavaLangThreadNative(); }
+    public static JavaLangThreadNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangThreadNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

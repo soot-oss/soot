@@ -39,7 +39,7 @@ import java.util.*;
 public class ClassFieldAnalysis 
 {
     public ClassFieldAnalysis( Singletons.Global g ) {}
-    public static ClassFieldAnalysis v() { return G.v().ClassFieldAnalysis(); }
+    public static ClassFieldAnalysis v() { return G.v().soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis(); }
 
     private boolean final_in = true;
     private boolean private_in = true;

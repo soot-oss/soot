@@ -7,7 +7,7 @@ import soot.options.*;
 public class CFGPrinter extends BodyTransformer {
 
     public CFGPrinter(Singletons.Global g) {}
-    public static CFGPrinter v() { return G.v().CFGPrinter();}
+    public static CFGPrinter v() { return G.v().soot_toolkits_graph_CFGPrinter();}
 
     private DirectedGraph graph;
     

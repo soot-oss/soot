@@ -26,7 +26,7 @@ import soot.dava.internal.AST.*;
 public class UselessTryRemover extends ASTAnalysis
 {
     public UselessTryRemover( Singletons.Global g ) {}
-    public static UselessTryRemover v() { return G.v().UselessTryRemover(); }
+    public static UselessTryRemover v() { return G.v().soot_dava_toolkits_base_AST_UselessTryRemover(); }
 
     public int getAnalysisDepth()
     {

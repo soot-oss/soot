@@ -40,7 +40,7 @@ import java.util.*;
 public class DoubleType extends PrimType
 {
     public DoubleType( Singletons.Global g ) {}
-    public static DoubleType v() { return G.v().DoubleType(); }
+    public static DoubleType v() { return G.v().soot_DoubleType(); }
 
     public boolean equals(Object t)
     {

@@ -47,7 +47,7 @@ public class ClassHierarchy
     typeNodeMap.put(IntType.v(), INT);
   }
 
-    public static ClassHierarchy v() { return G.v().ClassHierarchy(); }
+    public static ClassHierarchy v() { return G.v().soot_jimple_toolkits_typing_integer_ClassHierarchy(); }
   public final TypeNode BOOLEAN = new TypeNode(0, BooleanType.v());
   public final TypeNode BYTE = new TypeNode(1, ByteType.v());
   public final TypeNode SHORT = new TypeNode(2, ShortType.v());

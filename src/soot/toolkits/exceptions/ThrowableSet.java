@@ -255,7 +255,7 @@ public final class ThrowableSet {
 	 * @return Soot's <code>ThrowableSet.Manager</code>.
 	 */
 	public static Manager v() { 
-	    return G.v().ThrowableSetManager(); 
+	    return G.v().soot_toolkits_exceptions_ThrowableSet_Manager(); 
 	}
 
 

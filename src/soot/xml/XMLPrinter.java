@@ -86,7 +86,7 @@ public class XMLPrinter {
     public XMLPrinter(Singletons.Global g) {
     }
     public static XMLPrinter v() {
-        return G.v().XMLPrinter();
+        return G.v().soot_xml_XMLPrinter();
     }
 
     private XMLNode xmlNode = null;

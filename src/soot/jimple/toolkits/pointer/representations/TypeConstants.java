@@ -24,7 +24,7 @@ import soot.jimple.*;
 
 public class TypeConstants {
     public TypeConstants( Singletons.Global g ) {}
-    public static TypeConstants v() { return G.v().TypeConstants(); }
+    public static TypeConstants v() { return G.v().soot_jimple_toolkits_pointer_representations_TypeConstants(); }
   
   public Type OBJECTCLASS = 
     RefType.v("java.lang.Object");

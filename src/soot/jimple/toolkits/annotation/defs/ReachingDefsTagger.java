@@ -11,7 +11,7 @@ public class ReachingDefsTagger extends BodyTransformer {
 
 
     public ReachingDefsTagger(Singletons.Global g) {}
-    public static ReachingDefsTagger v() { return G.v().ReachingDefsTagger();}
+    public static ReachingDefsTagger v() { return G.v().soot_jimple_toolkits_annotation_defs_ReachingDefsTagger();}
 
     protected void internalTransform(Body b, String phaseName, Map options){
     

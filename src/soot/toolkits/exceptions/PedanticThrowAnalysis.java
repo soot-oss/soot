@@ -49,7 +49,7 @@ public class PedanticThrowAnalysis implements ThrowAnalysis {
      * @return Soot's <code>PedanticThrowAnalysis</code>.
      */
     public static PedanticThrowAnalysis v() { 
-	return G.v().PedanticThrowAnalysis(); 
+	return G.v().soot_toolkits_exceptions_PedanticThrowAnalysis(); 
     }
 
 

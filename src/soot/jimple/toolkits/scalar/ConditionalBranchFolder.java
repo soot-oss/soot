@@ -38,7 +38,7 @@ import java.util.*;
 public class ConditionalBranchFolder  extends BodyTransformer
 {
     public ConditionalBranchFolder ( Singletons.Global g ) {}
-    public static ConditionalBranchFolder  v() { return G.v().ConditionalBranchFolder (); }
+    public static ConditionalBranchFolder  v() { return G.v().soot_jimple_toolkits_scalar_ConditionalBranchFolder (); }
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {

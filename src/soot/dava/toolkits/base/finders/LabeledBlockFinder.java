@@ -30,7 +30,7 @@ import soot.dava.internal.AST.*;
 public class LabeledBlockFinder implements FactFinder
 {
     public LabeledBlockFinder( Singletons.Global g ) {}
-    public static LabeledBlockFinder v() { return G.v().LabeledBlockFinder(); }
+    public static LabeledBlockFinder v() { return G.v().soot_dava_toolkits_base_finders_LabeledBlockFinder(); }
 
     private HashMap orderNumber = new HashMap();
 

@@ -32,7 +32,7 @@ import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangStringNative extends NativeMethodClass {
     public JavaLangStringNative( Singletons.Global g ) {}
-    public static JavaLangStringNative v() { return G.v().JavaLangStringNative(); }
+    public static JavaLangStringNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangStringNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

@@ -38,7 +38,7 @@ public class Printer {
     public Printer(Singletons.Global g) {
     }
     public static Printer v() {
-        return G.v().Printer();
+        return G.v().soot_Printer();
     }
 
     final private static char fileSeparator =

@@ -58,7 +58,7 @@ import java.util.*;
 public class LocalSplitter extends BodyTransformer
 {
     public LocalSplitter( Singletons.Global g ) {}
-    public static LocalSplitter v() { return G.v().LocalSplitter(); }
+    public static LocalSplitter v() { return G.v().soot_toolkits_scalar_LocalSplitter(); }
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {

@@ -41,7 +41,7 @@ import java.util.*;
 public class RefType extends RefLikeType implements Comparable
 {
     public RefType( Singletons.Global g ) { className = ""; }
-    public static RefType v() { return G.v().RefType(); }
+    public static RefType v() { return G.v().soot_RefType(); }
 
     /** the class name that parametrizes this RefType */
     private final String className;

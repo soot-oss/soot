@@ -35,7 +35,7 @@ import java.io.*;
 public class TagManager
 {
     public TagManager( Singletons.Global g ) {}
-    public static TagManager v() { return G.v().TagManager(); }
+    public static TagManager v() { return G.v().soot_tagkit_TagManager(); }
     private TagPrinter tagPrinter = new StdTagPrinter();
 
     /** Returns the Tag class with the given name. 

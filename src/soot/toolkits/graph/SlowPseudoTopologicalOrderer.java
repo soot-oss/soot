@@ -44,7 +44,7 @@ import java.util.*;
 public class SlowPseudoTopologicalOrderer
 {
     public SlowPseudoTopologicalOrderer( Singletons.Global g ) {}
-    public static SlowPseudoTopologicalOrderer v() { return G.v().SlowPseudoTopologicalOrderer(); }
+    public static SlowPseudoTopologicalOrderer v() { return G.v().soot_toolkits_graph_SlowPseudoTopologicalOrderer(); }
 
     public static final boolean REVERSE = true;
     public SlowPseudoTopologicalOrderer() {}

@@ -55,7 +55,7 @@ public class Shimple
     public Shimple(Singletons.Global g) {}
 
     public static Shimple v()
-    { return G.v().Shimple(); }
+    { return G.v().soot_shimple_Shimple(); }
 
     /**
      * Returns an empty ShimpleBody associated with method m, using

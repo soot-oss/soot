@@ -40,7 +40,7 @@ import java.util.*;
 public class UnknownType extends Type
 {
     public UnknownType( Singletons.Global g ) {}
-    public static UnknownType v() { return G.v().UnknownType(); }
+    public static UnknownType v() { return G.v().soot_UnknownType(); }
 
     public int hashCode()
     {

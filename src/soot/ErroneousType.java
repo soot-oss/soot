@@ -40,7 +40,7 @@ import java.util.*;
 public class ErroneousType extends Type
 {
     public ErroneousType( Singletons.Global g ) {}
-    public static ErroneousType v() { return G.v().ErroneousType(); }
+    public static ErroneousType v() { return G.v().soot_ErroneousType(); }
 
     public int hashCode()
     {

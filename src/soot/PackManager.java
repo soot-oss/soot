@@ -62,7 +62,7 @@ import soot.toolkits.graph.interaction.*;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
-    public PackManager( Singletons.Global g ) { G.v().PhaseOptions().setPackManager(this); init(); }
+    public PackManager( Singletons.Global g ) { PhaseOptions.v().setPackManager(this); init(); }
 
     public boolean onlyStandardPacks() { return onlyStandardPacks; }
     private boolean onlyStandardPacks = false;
@@ -240,7 +240,7 @@ public class PackManager {
     }
 
     public static PackManager v() { 
-        return G.v().PackManager();
+        return G.v().soot_PackManager();
     }
 
     private Map packNameToPack = new HashMap();

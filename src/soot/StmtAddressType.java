@@ -37,7 +37,7 @@ import java.util.*;
 public class StmtAddressType extends Type
 {
     public StmtAddressType( Singletons.Global g ) {}
-    public static StmtAddressType v() { return G.v().StmtAddressType(); }
+    public static StmtAddressType v() { return G.v().soot_StmtAddressType(); }
 
     public boolean equals(Object t)
     {

@@ -56,7 +56,7 @@ import soot.toolkits.scalar.*;
 public class NullPointerChecker extends BodyTransformer 
 {
     public NullPointerChecker( Singletons.Global g ) {}
-    public static NullPointerChecker v() { return G.v().NullPointerChecker(); }
+    public static NullPointerChecker v() { return G.v().soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker(); }
 
     private boolean isProfiling = false;
  

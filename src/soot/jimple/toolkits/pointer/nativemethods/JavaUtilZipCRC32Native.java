@@ -32,7 +32,7 @@ import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilZipCRC32Native extends NativeMethodClass {
     public JavaUtilZipCRC32Native( Singletons.Global g ) {}
-    public static JavaUtilZipCRC32Native v() { return G.v().JavaUtilZipCRC32Native(); }
+    public static JavaUtilZipCRC32Native v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaUtilZipCRC32Native(); }
 
   /**
    * Implements the abstract method simulateMethod.

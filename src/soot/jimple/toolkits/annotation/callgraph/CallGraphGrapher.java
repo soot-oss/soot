@@ -15,7 +15,7 @@ import soot.options.*;
 public class CallGraphGrapher extends SceneTransformer
 { 
     public CallGraphGrapher(Singletons.Global g){}
-    public static CallGraphGrapher v() { return G.v().CallGraphGrapher();}
+    public static CallGraphGrapher v() { return G.v().soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher();}
 
     private MethodToContexts methodToContexts;
     private CallGraph cg;

@@ -43,7 +43,7 @@ import soot.PackManager;
 
 public class Options extends OptionsBase {
     public Options(Singletons.Global g) { }
-    public static Options v() { return G.v().Options(); }
+    public static Options v() { return G.v().soot_options_Options(); }
 
 <xsl:apply-templates mode="constants" select="/options/section"/>
 

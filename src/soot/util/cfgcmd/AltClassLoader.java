@@ -81,7 +81,7 @@ public class AltClassLoader extends ClassLoader {
    * @return Soot's <tt>AltClassLoader</tt>.
    */
   public static AltClassLoader v() {
-    return G.v().AltClassLoader();
+    return G.v().soot_util_cfgcmd_AltClassLoader();
   }
 
 

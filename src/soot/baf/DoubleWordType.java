@@ -36,7 +36,7 @@ import soot.*;
 public class DoubleWordType extends Type
 {
     public DoubleWordType( Singletons.Global g ) {}
-    public static DoubleWordType v() { return G.v().DoubleWordType(); }
+    public static DoubleWordType v() { return G.v().soot_baf_DoubleWordType(); }
 
     public boolean equals(Object t)
     {

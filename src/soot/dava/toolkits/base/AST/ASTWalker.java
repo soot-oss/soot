@@ -25,7 +25,7 @@ import soot.jimple.*;
 public class ASTWalker
 {
     public ASTWalker( Singletons.Global g ) {}
-    public static ASTWalker v() { return G.v().ASTWalker(); }
+    public static ASTWalker v() { return G.v().soot_dava_toolkits_base_AST_ASTWalker(); }
     
     public void walk_stmt( ASTAnalysis a, Stmt s)
     {

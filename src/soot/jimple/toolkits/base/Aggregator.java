@@ -38,7 +38,7 @@ import java.util.*;
 public class Aggregator extends BodyTransformer
 {
     public Aggregator( Singletons.Global g ) {}
-    public static Aggregator v() { return G.v().Aggregator(); }
+    public static Aggregator v() { return G.v().soot_jimple_toolkits_base_Aggregator(); }
 
     /** Traverse the statements in the given body, looking for
       *  aggregation possibilities; that is, given a def d and a use u,

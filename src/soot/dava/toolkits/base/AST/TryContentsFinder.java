@@ -28,7 +28,7 @@ import soot.dava.internal.AST.*;
 public class TryContentsFinder extends ASTAnalysis
 {
     public TryContentsFinder( Singletons.Global g ) {}
-    public static TryContentsFinder v() { return G.v().TryContentsFinder(); }
+    public static TryContentsFinder v() { return G.v().soot_dava_toolkits_base_AST_TryContentsFinder(); }
 
     private IterableSet curExceptionSet = new IterableSet();
     private HashMap node2ExceptionSet = new HashMap();

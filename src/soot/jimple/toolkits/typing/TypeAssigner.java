@@ -39,7 +39,7 @@ import java.util.*;
 public class TypeAssigner extends BodyTransformer
 {
     public TypeAssigner( Singletons.Global g ) {}
-    public static TypeAssigner v() { return G.v().TypeAssigner(); }
+    public static TypeAssigner v() { return G.v().soot_jimple_toolkits_typing_TypeAssigner(); }
 
   /** Assign types to local variables. **/
   protected void internalTransform(Body b, String phaseName, Map options)

@@ -46,7 +46,7 @@ import java.util.*;
 
 public class Environment {
     public Environment( Singletons.Global g ) {}
-    public static Environment v() { return G.v().Environment(); }
+    public static Environment v() { return G.v().soot_jimple_toolkits_pointer_representations_Environment(); }
 
   private ConstantObject clsloaders =
     new GeneralConstObject(TypeConstants.v().CLASSLOADERCLASS, "classloader");

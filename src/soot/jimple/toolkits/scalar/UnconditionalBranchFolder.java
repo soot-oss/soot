@@ -38,7 +38,7 @@ import java.util.*;
 public class UnconditionalBranchFolder extends BodyTransformer
 {
     public UnconditionalBranchFolder( Singletons.Global g ) {}
-    public static UnconditionalBranchFolder v() { return G.v().UnconditionalBranchFolder(); }
+    public static UnconditionalBranchFolder v() { return G.v().soot_jimple_toolkits_scalar_UnconditionalBranchFolder(); }
 
     static final int JUMPOPT_TYPES = 6;
     int numFound[], numFixed[];

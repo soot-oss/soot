@@ -27,7 +27,7 @@ import java.io.*;
 public class JBuddyProfiler
 { 
     public JBuddyProfiler( Singletons.Global g ) {}
-    public static JBuddyProfiler v() { return G.v().JBuddyProfiler(); }
+    public static JBuddyProfiler v() { return G.v().soot_relations_JBuddyProfiler(); }
 
     Map stackTraceToTime = new HashMap();
     LinkedList stack = new LinkedList();

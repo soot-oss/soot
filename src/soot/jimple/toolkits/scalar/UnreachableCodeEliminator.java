@@ -38,7 +38,7 @@ import soot.toolkits.graph.*;
 public class UnreachableCodeEliminator extends BodyTransformer
 {
     public UnreachableCodeEliminator( Singletons.Global g ) {}
-    public static UnreachableCodeEliminator v() { return G.v().UnreachableCodeEliminator(); }
+    public static UnreachableCodeEliminator v() { return G.v().soot_jimple_toolkits_scalar_UnreachableCodeEliminator(); }
 
     ExceptionalUnitGraph stmtGraph;
     HashSet visited;

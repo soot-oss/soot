@@ -28,7 +28,7 @@ import java.io.*;
 public class SourceLocator
 {
     public SourceLocator( Singletons.Global g ) {}
-    public static SourceLocator v() { return G.v().SourceLocator(); }
+    public static SourceLocator v() { return G.v().soot_SourceLocator(); }
 
     /** Given a class name, uses the soot-class-path to return a ClassSource for the given class. */
     public ClassSource getClassSource(String className) 

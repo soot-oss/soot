@@ -38,7 +38,7 @@ import java.util.*;
 public class LocalNameStandardizer extends BodyTransformer
 {
     public LocalNameStandardizer( Singletons.Global g ) {}
-    public static LocalNameStandardizer v() { return G.v().LocalNameStandardizer(); }
+    public static LocalNameStandardizer v() { return G.v().soot_jimple_toolkits_scalar_LocalNameStandardizer(); }
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {

@@ -36,7 +36,7 @@ import java.util.*;
 public class WordType extends Type
 {
     public WordType( Singletons.Global g ) {}
-    public static WordType v() { return G.v().WordType(); }
+    public static WordType v() { return G.v().soot_baf_WordType(); }
 
     public boolean equals(Object t)
     {

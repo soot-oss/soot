@@ -39,7 +39,7 @@ import java.util.*;
 public class Baf
 {
     public Baf( Singletons.Global g ) {}
-    public static Baf v() { return G.v().Baf(); }
+    public static Baf v() { return G.v().soot_baf_Baf(); }
 
     public static Type getDescriptorTypeOf(Type opType) 
     {        

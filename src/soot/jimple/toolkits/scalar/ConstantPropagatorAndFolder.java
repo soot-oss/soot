@@ -42,7 +42,7 @@ import soot.toolkits.graph.*;
 public class ConstantPropagatorAndFolder extends BodyTransformer
 {
     public ConstantPropagatorAndFolder( Singletons.Global g ) {}
-    public static ConstantPropagatorAndFolder v() { return G.v().ConstantPropagatorAndFolder(); }
+    public static ConstantPropagatorAndFolder v() { return G.v().soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder(); }
 
     protected void internalTransform(Body b, String phaseName, Map options)
     {

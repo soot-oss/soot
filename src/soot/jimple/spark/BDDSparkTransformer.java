@@ -37,7 +37,7 @@ import soot.relations.*;
 public class BDDSparkTransformer extends AbstractSparkTransformer
 { 
     public BDDSparkTransformer( Singletons.Global g ) {}
-    public static BDDSparkTransformer v() { return G.v().BDDSparkTransformer(); }
+    public static BDDSparkTransformer v() { return G.v().soot_jimple_spark_BDDSparkTransformer(); }
 
     protected void internalTransform( String phaseName, Map options )
     {

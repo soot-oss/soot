@@ -15,7 +15,7 @@ import soot.jimple.toolkits.callgraph.*;
 public class TightestQualifiersTagger extends SceneTransformer {
     
     public TightestQualifiersTagger(Singletons.Global g) {}
-    public static TightestQualifiersTagger v() { return G.v().TightestQualifiersTagger();}
+    public static TightestQualifiersTagger v() { return G.v().soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger();}
 
     public final static int RESULT_PUBLIC = 0;
     public final static int RESULT_PACKAGE = 1;

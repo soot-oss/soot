@@ -52,7 +52,7 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 public final class TrapTightener extends BodyTransformer {
 
     public TrapTightener( Singletons.Global g ) {}
-    public static TrapTightener v() { return soot.G.v().TrapTightener(); }
+    public static TrapTightener v() { return soot.G.v().soot_toolkits_exceptions_TrapTightener(); }
 
     protected void internalTransform(Body body, String phaseName, Map options) {
         if(Options.v().verbose())

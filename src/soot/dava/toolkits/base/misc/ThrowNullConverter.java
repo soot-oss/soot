@@ -31,7 +31,7 @@ import soot.dava.internal.javaRep.*;
 public class ThrowNullConverter
 {
     public ThrowNullConverter( Singletons.Global g ) {}
-    public static ThrowNullConverter v() { return G.v().ThrowNullConverter(); }
+    public static ThrowNullConverter v() { return G.v().soot_dava_toolkits_base_misc_ThrowNullConverter(); }
 
     private RefType npeRef = RefType.v( Scene.v().loadClassAndSupport( "java.lang.NullPointerException"));
 
