@@ -45,6 +45,9 @@ public class CFGPartFactory implements EditPartFactory {
 		else if (arg1 instanceof CFGFlowData){
 			part = new FlowDataEditPart();
 		}
+		else if (arg1 instanceof CFGPartialFlowData){
+			part = new PartialFlowDataEditPart();
+		}
 		else if (arg1 instanceof CFGFlowInfo){
 			part = new FlowInfoEditPart();
 		}

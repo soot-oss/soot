@@ -15,21 +15,21 @@ import java.util.*;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class CFGFlowData extends CFGElement {
+public class CFGPartialFlowData extends CFGElement {
 
 	private ArrayList children = new ArrayList();
 	
 	/**
 	 * 
 	 */
-	public CFGFlowData() {
+	public CFGPartialFlowData() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void addChild(CFGPartialFlowData child){
+	public void addChild(CFGFlowInfo child){
 		children.add(child);
-		fireStructureChange(FLOW_CHILDREN, child);
+		fireStructureChange(PART_FLOW_CHILDREN, child);
 	}
 
 	/**

@@ -23,7 +23,7 @@ import org.eclipse.draw2d.geometry.*;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class FlowDataEditPart
+public class PartialFlowDataEditPart
 	extends AbstractGraphicalEditPart
 	implements PropertyChangeListener {
 
@@ -33,7 +33,7 @@ public class FlowDataEditPart
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub
-		if (evt.getPropertyName().equals(CFGElement.FLOW_CHILDREN)){
+		if (evt.getPropertyName().equals(CFGElement.PART_FLOW_CHILDREN)){
 			refreshChildren();
 			refreshVisuals();
 		}
@@ -49,8 +49,8 @@ public class FlowDataEditPart
 		while (it.hasNext()){
 			Object next = it.next();
 			//System.out.println("next child: "+next.getClass());
-			if (next instanceof PartialFlowDataEditPart){
-				((CFGFlowFigure)getFigure()).add(((PartialFlowDataEditPart)next).getFigure());
+			if (next instanceof FlowInfoEditPart){
+				((CFGPartialFlowFigure)getFigure()).add(((FlowInfoEditPart)next).getFigure());
 				//height = ((FlowInfoEditPart)next).getFigure().getBounds().height;
 				//width += ((FlowInfoEditPart)next).getFigure().getBounds().width;
 			}
@@ -59,21 +59,17 @@ public class FlowDataEditPart
 		//((CFGFlowFigure)getFigure()).setSize(width, height);
 	}
 	
-	public void updateSize(FlowInfoEditPart childEdit, IFigure child, Rectangle rect){
+	/*public void updateSize(FlowInfoEditPart childEdit, IFigure child, Rectangle rect){
 		this.setLayoutConstraint(childEdit, child, rect);
 		((CFGNodeEditPart)getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(getFigure().getBounds().x, getFigure().getBounds().y, getFigure().getBounds().width, getFigure().getBounds().height));//.updateSize(getFigure(), getFigure().getBounds());
-	}
+	}*/
 	
 	public void updateSize(int width){
 		System.out.println("flow data bounds width: "+getFigure().getBounds().width);
 		System.out.println("flow data size width: "+getFigure().getSize().width);
-		int w = ((CFGFlowFigure)getFigure()).getBounds().width;
+		int w = ((CFGPartialFlowFigure)getFigure()).getBounds().width;
 		
-		if (width > w){
-			w = width;
-		}
-		
-		int height = getChildren().size() * 20;
+		w += width;
 		//System.out.println("width: "+w);
 		//if (width > w){
 		//	((CFGFlowFigure)getFigure()).setSize(w, getFigure().getBounds().height);
@@ -95,8 +91,8 @@ public class FlowDataEditPart
 		}
 		getFigure().setSize(w, height/2);*/
 		//getFigure().revalidate();
-		((CFGNodeEditPart)getParent()).updateSize(w+10, height);
-		((CFGFlowFigure)getFigure()).setSize(w+10, height);
+		((FlowDataEditPart)getParent()).updateSize(w+10);
+		((CFGPartialFlowFigure)getFigure()).setSize(w+10, getFigure().getBounds().height);
 			
 		//getFigure().validate();
 	}
@@ -105,8 +101,8 @@ public class FlowDataEditPart
 		Iterator it = getChildren().iterator();
 		while (it.hasNext()){
 			Object next = it.next();
-			if (next instanceof PartialFlowDataEditPart){
-				((PartialFlowDataEditPart)next).resetChildColors();
+			if (next instanceof FlowInfoEditPart){
+				((FlowInfoEditPart)next).resetColors();
 			}
 		}
 	}
@@ -116,7 +112,7 @@ public class FlowDataEditPart
 	 */
 	protected IFigure createFigure() {
 		// TODO Auto-generated method stub
-		return new CFGFlowFigure();
+		return new CFGPartialFlowFigure();
 	}
 
 	/* (non-Javadoc)
@@ -128,23 +124,23 @@ public class FlowDataEditPart
 	}
 
 	public List getModelChildren(){
-		return getFlowData().getChildren();
+		return getPartialFlowData().getChildren();
 	}
 	
 	public void activate(){
 		super.activate();
-		getFlowData().addPropertyChangeListener(this);
+		getPartialFlowData().addPropertyChangeListener(this);
 	}
 	
 	public void deactivate(){
 		super.deactivate();
-		getFlowData().removePropertyChangeListener(this);
+		getPartialFlowData().removePropertyChangeListener(this);
 	}
 	/**
 	 * @return
 	 */
-	public CFGFlowData getFlowData() {
-		return (CFGFlowData)getModel();
+	public CFGPartialFlowData getPartialFlowData() {
+		return (CFGPartialFlowData)getModel();
 	}
 
 	

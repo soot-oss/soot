@@ -63,6 +63,7 @@ public class FlowInfoEditPart
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub
 		if (evt.getPropertyName().equals(CFGElement.FLOW_INFO)){
+			
 			((Label)getFigure()).setText(evt.getNewValue().toString());
 			((Label)getFigure()).setFont(f);
 			((Label)getFigure()).setForegroundColor(SootPlugin.getDefault().getColorManager().getColor(new RGB(0,153,0)));
@@ -73,7 +74,7 @@ public class FlowInfoEditPart
 			//getFigure().revalidate();
 			//org.eclipse.draw2d.geometry.Rectangle rect = new org.eclipse.draw2d.geometry.Rectangle(getFigure().getBounds().x, getFigure().getBounds().y, getFigure().getBounds().width, getFigure().getBounds().height);
 			//((FlowDataEditPart)getParent()).updateSize(this, getFigure(), rect);//.updateSize(getFigure(), getFigure().getBounds());
-			((FlowDataEditPart)getParent()).updateSize(evt.getNewValue().toString().length()*7+10);
+			((PartialFlowDataEditPart)getParent()).updateSize(evt.getNewValue().toString().length()*7+10);
 		}
 	}
 	

@@ -1,4 +1,4 @@
-/*
+	/*
  * Created on Jan 15, 2004
  *
  * To change the template for this generated file go to
@@ -92,6 +92,17 @@ public class ModelCreator {
 		
 	}
 	
+	private boolean canFit(CFGPartialFlowData pFlow, int length){
+		Iterator it = pFlow.getChildren().iterator();
+		int total = 0;
+		while (it.hasNext()){
+			String next = ((CFGFlowInfo)it.next()).getText();
+			total += next.length();
+		}
+		if (total + length < 60) return true;
+		return false;
+	}
+	
 	public void updateNode(FlowInfo fi){
 		Iterator it = getNodeMap().keySet().iterator();
 		while (it.hasNext()){
@@ -111,28 +122,69 @@ public class ModelCreator {
 					FlowSet fs = (FlowSet)fi.info();
 					Iterator fsIt = fs.iterator();
 					CFGFlowInfo startBrace = new CFGFlowInfo();
-					data.addChild(startBrace);
+					CFGPartialFlowData nextFlow = new CFGPartialFlowData();
+					data.addChild(nextFlow);
+					nextFlow.addChild(startBrace);
+					//data.addChild(startBrace);
 					startBrace.setText("{");
 					
 					while (fsIt.hasNext()){
 						Object elem = fsIt.next();
 						CFGFlowInfo info = new CFGFlowInfo();
-						data.addChild(info);
+						if (canFit(nextFlow, elem.toString().length())){
+							nextFlow.addChild(info);
+						}
+						else {
+							nextFlow = new CFGPartialFlowData();
+							data.addChild(nextFlow);
+							nextFlow.addChild(info);
+						}
+						
+						//data.addChild(info);
 						info.setText(elem.toString());
 						if(fsIt.hasNext()){
 							CFGFlowInfo comma = new CFGFlowInfo();
-							data.addChild(comma);
-							comma.setText(" , ");
+							nextFlow.addChild(comma);
+							//data.addChild(comma);
+							comma.setText(", ");
 						}
 					}
 					CFGFlowInfo endBrace = new CFGFlowInfo();
-					data.addChild(endBrace);
+					nextFlow.addChild(endBrace);
+					//data.addChild(endBrace);
 					endBrace.setText("}");
 				}
 				else {
-					CFGFlowInfo info = new CFGFlowInfo();
-					data.addChild(info);
-					info.setText(fi.info().toString());
+					String text = fi.info().toString();
+					ArrayList textGroups = new ArrayList();
+					int last = 0;
+					for (int i = 0; i < text.length()/50; i++){
+						if (last+50 < text.length()){
+							int nextComma = text.indexOf(",", last+50);
+							if (nextComma != -1){
+								textGroups.add(text.substring(last, nextComma+1));
+								last = nextComma+2;
+							}
+						}
+					}
+					if (last < text.length()){
+						textGroups.add(text.substring(last));
+					}
+					
+					Iterator itg = textGroups.iterator();
+					while (itg.hasNext()){
+						String nextGroup = (String)itg.next();
+						CFGFlowInfo info = new CFGFlowInfo();
+						CFGPartialFlowData pFlow = new CFGPartialFlowData();
+						data.addChild(pFlow);
+						pFlow.addChild(info);
+						info.setText(nextGroup);
+					}
+					
+					
+					//CFGFlowInfo info = new CFGFlowInfo();
+					//data.addChild(info);
+					//info.setText(fi.info().toString());
 				}
 				
 			}

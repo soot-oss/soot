@@ -15,20 +15,18 @@ import org.eclipse.draw2d.*;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class CFGFlowFigure extends Figure {
+public class CFGPartialFlowFigure extends Figure {
 
 	Panel background;
 	/**
 	 * 
 	 */
-	public CFGFlowFigure() {
+	public CFGPartialFlowFigure() {
 		super();
 		//background = new Panel();
 		//this.add(background);
-		FlowLayout layout = new FlowLayout(false);
+		FlowLayout layout = new FlowLayout(true);
 		layout.setMinorAlignment(FlowLayout.ALIGN_CENTER);
-		layout.setMajorAlignment(FlowLayout.ALIGN_CENTER);
-		
 		//layout.setMinorAlignment(ToolbarLayout.ALIGN_CENTER);
 		//layout.setStretchMinorAxis(true);
 		this.setLayoutManager(layout);

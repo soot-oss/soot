@@ -30,6 +30,8 @@ public class CFGElement implements IPropertySource {
 	public static final String NEW_FLOW_DATA = "new_flow_data";
 	public static final String FLOW_INFO = "flow_info";
 	public static final String FLOW_CHILDREN = "flow_children";
+	public static final String PART_FLOW_CHILDREN = "part flow_children";
+	
 	public static final String NODE_DATA = "node_data";
 	
 	public static final String REVEAL = "reveal";

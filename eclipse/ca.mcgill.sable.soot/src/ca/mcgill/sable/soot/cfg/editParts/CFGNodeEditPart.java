@@ -52,12 +52,12 @@ public class CFGNodeEditPart
 		Node node = new Node(this);
 		node.width = getFigure().getBounds().width;//getNode().getWidth();
 		//System.out.println("contrib nodes to graph: height: "+getFigure().getBounds().height);
-		int height = 60;
-		if (((CFGNode)getModel()).getBefore() == null){
-			height -= 20;
+		int height = 22;
+		if (((CFGNode)getModel()).getBefore() != null){
+			height += ((CFGNode)getModel()).getBefore().getChildren().size() * 22;
 		}
-		if (((CFGNode)getModel()).getAfter() == null){
-			height -= 20;
+		if (((CFGNode)getModel()).getAfter() != null){
+			height += ((CFGNode)getModel()).getAfter().getChildren().size() * 22;
 		}
 		node.height = height;//getFigure().getBounds().height;
 		graph.nodes.add(node);
