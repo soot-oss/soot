@@ -119,7 +119,7 @@ public final class Edge
 
     public boolean passesParameters() {
         return isExplicit() || kind == THREAD || kind == EXIT ||
-            kind == FINALIZE || kind == PRIVILEGED;
+            kind == FINALIZE || kind == PRIVILEGED || kind == NEWINSTANCE;
     }
 
     public int hashCode() {
