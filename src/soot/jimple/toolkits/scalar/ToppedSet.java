@@ -121,8 +121,27 @@ public class ToppedSet implements FlowSet
 
     public void difference(FlowSet o, FlowSet d)
     {
-        ToppedSet other = (ToppedSet)o, dest = (ToppedSet)d;
+      ToppedSet other = (ToppedSet)o, dest = (ToppedSet)d;
 
+      if (isTop()) {
+        if (other.isTop())
+          dest.clear();
+        else if (other.underlyingSet instanceof BoundedFlowSet)
+          ((BoundedFlowSet)other.underlyingSet).complement(dest);
+        else
+          throw new RuntimeException("can't take difference!");
+      } else {
+        if (other.isTop())
+          dest.clear();
+        else
+          underlyingSet.difference(other.underlyingSet, dest.underlyingSet);
+      }
+        /* not very helpful...
+        if (isTop() && other.isTop())
+          dest.clear();
+        else if (isTop())
+        if (!(other.underlyingSet instanceof BoundedFlowSet) &&
+            othe
         if (other.underlyingSet instanceof BoundedFlowSet)
         {
             FlowSet temp = (FlowSet)other.underlyingSet.clone();
@@ -131,6 +150,7 @@ public class ToppedSet implements FlowSet
             return;
         }
         throw new RuntimeException("can't take difference!");
+        */
     }
 
     public boolean isEmpty()

@@ -49,21 +49,13 @@ public class UnitGraph implements DirectedGraph
     List heads;
     List tails;
 
-    private Map unitToSuccs;
-    private Map unitToPreds;        
-    SootMethod method;
-    int size;
+    protected Map unitToSuccs;
+    protected Map unitToPreds;        
+    protected SootMethod method;
+    protected int size;
+    protected Body body;
+    protected Chain unitChain;
 
-    Body body;
-    Chain unitChain;
-
-
-    public UnitGraph( Body unitBody, boolean addExceptionEdges) {
-	this( unitBody, addExceptionEdges, false);
-    }
-
-
-    
     /**
      *   Constructs  a graph for the units found in the provided
      *   Body instance. Each node in the graph corresponds to
@@ -76,9 +68,30 @@ public class UnitGraph implements DirectedGraph
      *   @see Body
      *   @see Unit
      */
+    public UnitGraph( Body unitBody, boolean addExceptionEdges) {
+        this( unitBody, addExceptionEdges, false);
+    }
+
+    
+    /**
+     *   Constructs  a graph for the units found in the provided
+     *   Body instance. Each node in the graph corresponds to
+     *   a unit. The edges are derived from the control flow.
+     *   
+     *   @param body               The underlying body we want to make a
+     *                             graph for.
+     *   @param addExceptionEdges  If true then the control flow edges associated with
+     *                             exceptions are added.
+     *   @param dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock This was added for Dava.
+     *                             If true, edges are not added from statement before area of
+     *                             protection to catch. If false, edges ARE added. For Dava,
+     *                             it should be true. For flow analyses, it should be false.
+     *   @see Body
+     *   @see Unit
+     */
     public UnitGraph(Body unitBody, 
 		     boolean addExceptionEdges, 
-		     boolean firstStmtWorkaround) {
+		     boolean dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock) {
         body = unitBody;
         unitChain = body.getUnits();
         method = getBody().getMethod();
@@ -173,7 +186,8 @@ public class UnitGraph implements DirectedGraph
                     // Add edges from the predecessors of begin statements directly to the handlers
                     // This is necessary because sometimes the first statement of try block
                     // is not even fully executed before an exception is thrown
-		    if (firstStmtWorkaround == false)
+                    // WARNING: double negative!
+		    if (!dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock)
                     {
                         Iterator unitIt = body.getUnits().iterator();
                         

@@ -91,21 +91,14 @@ public class ArraySparseSet implements FlowSet
    */
     public void add(Object e)
     {
-      /*
-	if (numElements == maxElements) 
-	  doubleCapacity();
-
-	if (!contains(e))
-	  elements[numElements++] = e;
-       */
-
-      if (!contains(e)) {
-        // Expand array if necessary
-	if(numElements == maxElements)
-	  doubleCapacity();
-	
-	elements[numElements++] = e;
-      }
+      /* Expand only if necessary! and removes one if too:) */
+        // Add element
+            if(!contains(e)) {
+              // Expand array if necessary
+              if(numElements == maxElements)
+                doubleCapacity();
+              elements[numElements++] = e;
+            }
     }
 
     public void add(Object obj, FlowSet destFlow)
@@ -136,12 +129,21 @@ public class ArraySparseSet implements FlowSet
         if(this != dest)
             copy(dest);
 
+        int i = 0;
+        while (i < this.numElements) {
+          if (dest.elements[i].equals(obj))
+            elements[i]=elements[--numElements];
+          else
+            i++;
+        }
+        /* would not find multiple occurances
         for(int i = 0; i < this.numElements; i++)
             if(dest.elements[i].equals(obj))
             {
                 dest.removeElementAt(i);
                 break;
             }
+         */
     }
 
   /* copy last element to the position of deleted element, and
@@ -150,19 +152,7 @@ public class ArraySparseSet implements FlowSet
    */
     private void removeElementAt(int index)
     {
-      /*
-        // Handle simple case
-            if(index  == numElements - 1)
-            {
-                numElements--;
-                return;
-            }
-            
-        // Else, shift over elements
-            System.arraycopy(elements, index + 1, elements, index, numElements - (index + 1));
-            numElements--;
-      */
-      elements[index] = elements[numElements--];
+      elements[index] = elements[--numElements];
     }
     
     public void union(FlowSet otherFlow, FlowSet destFlow)
@@ -252,21 +242,19 @@ public class ArraySparseSet implements FlowSet
         int size = this.numElements;
              
         // Make sure that thisFlow is contained in otherFlow  
-	for(int i = 0; i < size; i++)
-	  if(!other.contains(this.elements[i]))
-	    return false;
+            for(int i = 0; i < size; i++)
+                if(!other.contains(this.elements[i]))
+                    return false;
 
-	/* both arrays have the same size, no element appears
-	 * twice in one array, all elements of ThisFlow are in
-	 * otherFlow -> they are equal!  we don't need to test
-	 * again!  Pointed out by Florian Loitsch*/
-	// Make sure that otherFlow is contained in	ThisFlow 
-	/*
-	for(int i = 0; i < size; i++)
-	  if(!this.contains(other.elements[i])) 
-	    return false;
-	*/
-
+            /* both arrays have the same size, no element appears twice in one
+             * array, all elements of ThisFlow are in otherFlow -> they are
+             * equal!  we don't need to test again!
+        // Make sure that otherFlow is contained in ThisFlow        
+            for(int i = 0; i < size; i++)
+                if(!this.contains(other.elements[i]))
+                    return false;
+             */
+        
         return true;
     }
 
