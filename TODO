@@ -1,3 +1,7 @@
+Toto (as of 1.2.1)
+1. test new command line options provided by Fabien
+2. move from jams to gmake?
+
 Open problems (as of 1.2.0):
 
 1. improve our naming scheme to make Soot run on Macintosh.

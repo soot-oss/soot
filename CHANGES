@@ -1,3 +1,13 @@
+Improvements in version 1.2.1 (Fri Jan 12 15:22:59 EST 2001)
+
+1. permissions changes and fix to Baf/JasminClass for BooleanType.
+2. removal of a UnitGraph hack that shouldn't have been there.
+3. internal changes to cmdline parsing, watch for bigger changes coming
+4. fix by patrice to work around stupid jar bug
+5. minor changes to jar bug workaround
+6. fix for grimp precedence
+
+
 Improvements in version 1.2.0 (Thu Sep 28 21:41:16 EDT 2000)
 
 1. An annotation framework is included in this release.
