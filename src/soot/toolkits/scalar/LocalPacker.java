@@ -165,6 +165,17 @@ public class LocalPacker extends BodyTransformer
                 else {
                     newLocal = (Local) original.clone();
                     newLocal.setType((Type) group);
+
+		    // Icky fix.  But I guess it works. -PL
+		    // It is no substitute for really understanding the
+		    // problem, though.  I'll leave that to someone
+		    // who really understands the local naming stuff.
+		    // Does such a person exist?
+
+		    int signIndex = newLocal.getName().indexOf("#");
+                
+		    if(signIndex != -1)
+			newLocal.setName(newLocal.getName().substring(0, signIndex));
                     
                     groupIntToLocal.put(pair, newLocal);
                     body.getLocals().add(newLocal);

@@ -854,7 +854,7 @@ public class CFG {
 	    return cfg.head;
 	else
 	    return null;
-   }
+    }
 
    /** Main entry point for converting list of Instructions to Jimple statements;
     * performs flow analysis, constructs Jimple statements, and fixes jumps.
@@ -910,7 +910,11 @@ public class CFG {
                     if(!Util.useFaithfulNaming || la == null)
                         name = "l0";
                     else
-                        name = la.getLocalVariableName(constant_pool, 0);
+		    {
+                        name = la.getLocalVariableName(constant_pool, currentLocalIndex);
+			if (!Util.isValidJimpleName(name))
+			    name = "l0";
+		    }
                         
                     Local local = Jimple.v().newLocal(name, UnknownType.v());
 
@@ -935,7 +939,11 @@ public class CFG {
                     if(!Util.useFaithfulNaming || la == null)
                         name = "l" + currentLocalIndex;
                     else
+		    {
                         name = la.getLocalVariableName(constant_pool, currentLocalIndex);
+			if (!Util.isValidJimpleName(name))
+			    name = "l" + currentLocalIndex;
+		    }
 
                     Local local = Jimple.v().newLocal(name, UnknownType.v());
                     initialLocals.add(local);

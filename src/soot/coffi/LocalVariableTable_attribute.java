@@ -76,8 +76,15 @@ class LocalVariableTable_attribute extends attribute_info {
             // found the variable, now find its name.
             
             //System.out.println("found entry: " + i);
+
             if (constant_pool[e.name_index] instanceof CONSTANT_Utf8_info)
-               return ((CONSTANT_Utf8_info)(constant_pool[e.name_index])).convert();
+	    {
+	       String n = ((CONSTANT_Utf8_info)(constant_pool[e.name_index])).convert();
+	       if (Util.isValidJimpleName(n))
+		   return n;
+	       else
+		   return null;
+	    }
             else {
                System.out.println("What? A local variable table name_index isn't" +
                                   " a UTF8 entry?");

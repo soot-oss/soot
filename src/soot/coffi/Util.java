@@ -1107,25 +1107,30 @@ public class Util
         throw new RuntimeException("required and actual types do not match: " + type.toString() +
                 " with " + local.getType().toString());
     }    */
+
+    /** Verifies the prospective name for validity as a Jimple name.
+     * In particular, first-char is alpha | _ | $, subsequent-chars 
+     * are alphanum | _ | $. 
+     *
+     * We could use isJavaIdentifier, except that Jimple's grammar
+     * doesn't support all of those, just ASCII.
+     *
+     * I'd put this in soot.Local, but that's an interface.
+     *
+     * @author Patrick Lam
+     */
+    static boolean isValidJimpleName(String prospectiveName) {
+	for (int i = 0; i < prospectiveName.length(); i++) {
+	    char c = prospectiveName.charAt(i);
+	    if (i == 0 && c >= '0' && c <= '9')
+		return false;
+
+	    if (!((c >= '0' && c <= '9') ||
+		  (c >= 'a' && c <= 'z') ||
+		  (c >= 'A' && c <= 'Z') ||
+		  (c == '_' || c == '$')))
+		return false;
+	}
+	return true;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -70,7 +70,8 @@ public class JimpleBody extends StmtBody
         Options.checkOptions(options, "jb", "no-splitting no-typing "+
                              "aggregate-all-locals no-aggregating "+
                              "use-original-names pack-locals no-cp "+
-                             "no-nop-elimination verbatim");
+                             "no-nop-elimination verbatim "+
+			     "no-unreachable-code-elimination");
 
         boolean noSplitting = Options.getBoolean(options, "no-splitting");
         boolean noTyping = Options.getBoolean(options, "no-typing");
@@ -147,7 +148,7 @@ public class JimpleBody extends StmtBody
         if(!noCopyPropagating)
         {
             CopyPropagator.v().transform(this, "jb.cp", "only-stack-locals");
-            DeadAssignmentEliminator.v().transform(this, "jp.dae", "only-stack-locals");
+            DeadAssignmentEliminator.v().transform(this, "jb.dae", "only-stack-locals");
             UnusedLocalEliminator.v().transform(this, "jb.cp-ule");
         }
         
