@@ -71,10 +71,10 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     }
 
     /** Canonical AbstractUnit.emptyList list. */
-    static final public List emptyList = Collections.unmodifiableList(new ArrayList());
+    static final public List emptyList = Collections.EMPTY_LIST;
 
     /** List of UnitBoxes pointing to this Unit. */
-    List boxesPointingToThis = new ArrayList();
+    List boxesPointingToThis = null;
 
     /** List of ValueBoxes contained in this Unit. */
     List valueBoxes = null;
@@ -82,6 +82,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     /** Returns a list of Boxes pointing to this Unit. */
     public List getBoxesPointingToThis()
     {
+        if( boxesPointingToThis == null ) return emptyList;
         return Collections.unmodifiableList( boxesPointingToThis );
     }
 

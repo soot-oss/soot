@@ -48,7 +48,7 @@ class TypeNode
   private TypeNode element;
   private TypeNode array;
 
-  private List parents = Collections.unmodifiableList(new LinkedList());
+  private List parents = Collections.EMPTY_LIST;
   private final BitSet ancestors = new BitSet(0);
   private final BitSet descendants = new BitSet(0);
 	
@@ -104,9 +104,9 @@ class TypeNode
     descendants.set(hierarchy.NULL.id);
     hierarchy.NULL.ancestors.set(id);
 
-    for(Iterator i = parents.iterator(); i.hasNext(); )
-      {
-	TypeNode parent = (TypeNode) i.next();
+    for( Iterator parentIt = parents.iterator(); parentIt.hasNext(); ) {
+
+        final TypeNode parent = (TypeNode) parentIt.next();
 	ancestors.set(parent.id);
 	ancestors.or(parent.ancestors);
 	parent.fixDescendants(id);
@@ -214,9 +214,9 @@ class TypeNode
     descendants.set(hierarchy.NULL.id);
     hierarchy.NULL.ancestors.set(id);
 
-    for(Iterator i = parents.iterator(); i.hasNext(); )
-      {
-	TypeNode parent = (TypeNode) i.next();
+    for( Iterator parentIt = parents.iterator(); parentIt.hasNext(); ) {
+
+        final TypeNode parent = (TypeNode) parentIt.next();
 	ancestors.set(parent.id);
 	ancestors.or(parent.ancestors);
 	parent.fixDescendants(id);
@@ -231,9 +231,9 @@ class TypeNode
 	return;
       }
 
-    for(Iterator i = parents.iterator(); i.hasNext();)
-      {
-	TypeNode parent = (TypeNode) i.next();
+    for( Iterator parentIt = parents.iterator(); parentIt.hasNext(); ) {
+
+        final TypeNode parent = (TypeNode) parentIt.next();
 	parent.fixDescendants(id);
       }
 

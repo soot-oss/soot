@@ -94,9 +94,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
             throw new RuntimeException("Illegal assignment statement.  Make sure that either left side or right hand side has a local or constant.");
                     
         
-        defBoxes = new ArrayList();
-        defBoxes.add(leftBox);
-        defBoxes = Collections.unmodifiableList(defBoxes);
+        defBoxes = Collections.singletonList(leftBox);
     }
 
     protected JAssignStmt(ValueBox variableBox, ValueBox rvalueBox)
@@ -104,9 +102,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
         this.leftBox = variableBox;
         this.rightBox = rvalueBox;
 
-        defBoxes = new ArrayList();
-        defBoxes.add(leftBox);
-        defBoxes = Collections.unmodifiableList(defBoxes);
+        defBoxes = Collections.singletonList(leftBox);
     }
 
     public boolean containsInvokeExpr()

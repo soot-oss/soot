@@ -53,8 +53,9 @@ public class BitSetIterator {
 
     /** Creates a new BitSetIterator */
     BitSetIterator(long[] bits) {
-	this.bits = new long[bits.length];
-	System.arraycopy(bits,0,this.bits,0,bits.length);
+	//this.bits = new long[bits.length];
+	//System.arraycopy(bits,0,this.bits,0,bits.length);
+        this.bits = bits;
 	index = 0;
 
         /* Zip through empty blocks */

@@ -103,6 +103,9 @@ public class CoffiMethodSource implements MethodSource
 
          coffiMethod.instructions = null;
          coffiMethod.cfg = null;
+
+         coffiMethod = null;
+         coffiClass = null;
          
          jb.applyPhaseOptions(options);
          return jb;

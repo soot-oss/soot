@@ -44,9 +44,7 @@ public abstract class AbstractBranchInst extends AbstractInst
     {
         this.targetBox = targetBox;
 
-        targetBoxes = new ArrayList();
-        targetBoxes.add(this.targetBox);
-        targetBoxes = Collections.unmodifiableList(targetBoxes);
+        targetBoxes = Collections.singletonList(this.targetBox);
     }
 
     abstract public String getName();
