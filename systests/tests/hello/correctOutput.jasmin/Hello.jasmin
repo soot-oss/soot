@@ -1,3 +1,4 @@
+.source Hello.java
 .class public Hello
 .super java/lang/Object
 
