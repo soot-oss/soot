@@ -135,16 +135,21 @@ public class SootAttributeSelectAction extends ResourceAction {
 					toShow = la.getLink() - 1;
 					className = la.getClassName();
 					findClass(className);
+					System.out.println("return from findClass");
 				}
 			}
 		
 			
-			int selOffset = getDocument().getLineOffset(toShow);
+			int selOffset = getLinkToEditor().getDocumentProvider().getDocument(getLinkToEditor().getEditorInput()).getLineOffset(toShow);
+			System.out.println("line to show: "+toShow);
+			System.out.println("offset of line to show: "+selOffset);
 			if ((selOffset != -1) && (selOffset != 0)){
 				
 				if (getLinkToEditor() instanceof JimpleEditor){
 					
 					((JimpleEditor)getLinkToEditor()).getViewer().setRangeIndication(selOffset, 1, true);
+					SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
+			
 				}
 			}
 		}
@@ -164,11 +169,12 @@ public class SootAttributeSelectAction extends ResourceAction {
 			IResource file = parent.findMember(className+".jimple");
 			if (file == null){
 				// link to file doesn't exist
+				setLinkToEditor(getEditor());
 			}
 			else {
 				try {
 					setLinkToEditor((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor((IFile)file));
-					SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
+					System.out.println("after setting link to editor - diff file");
 				}
 				catch (PartInitException e){
 					

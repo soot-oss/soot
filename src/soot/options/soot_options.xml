@@ -27,20 +27,20 @@
 			<name>Application Mode</name>
 			<alias>app</alias>
 			<short_desc>Run in Application Mode</short_desc>
-			<long_desc>This option causes Soot to process application classes referred to by the given class as well as the given class.</long_desc>
+			<long_desc>This option causes Soot to process application classes used by the given class as well as the given class.</long_desc>
 		</boolopt>
                 <boolopt>
 			<name>Whole-Program Mode</name>
 			<alias>w</alias>
 			<alias>whole-program</alias>
 			<short_desc>Run in Whole-program Mode</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>This option causes Soot to run in whole program, taking into consideration the whole program when performing optimizations.</long_desc>
                 </boolopt>
                 <boolopt>
 			<name>Debug</name>
 			<alias>debug</alias>
-			<short_desc>prints various Soot debugging info</short_desc>
-			<long_desc>This option ...</long_desc>
+			<short_desc>Prints Various Soot Debugging Info</short_desc>
+			<long_desc>This option causes Soot to print various debugging info. In particular, in the Baf Body Phase and the Jimple Annotation Pack Phase.</long_desc>
                 </boolopt>
 	</section>
 	<section>
@@ -51,7 +51,7 @@
 			<alias>soot-class-path</alias>
 			<alias>soot-classpath</alias>
 			<short_desc>Uses given PATH as the classpath for finding classes for Soot processing.</short_desc>
-			<long_desc>Use PATH to resolve types.</long_desc>
+			<long_desc>Uses given PATH as the classpath for finding classes for Soot processing.</long_desc>
 		</stropt>
 		<multiopt>
 			<name>Input Source Precedence</name>
@@ -86,7 +86,7 @@
 			<alias>d</alias>
 			<alias>output-dir</alias>
 			<short_desc>Store Produced Files in PATH</short_desc>
-			<long_desc>Specifies that the outputted files are to be stored in PATH. This may be relative to the working directory.</long_desc>
+			<long_desc>Specifies that the outputted files are to be stored in PATH. This may be relative to the working directory. This PATH must already exist before running Soot.</long_desc>
 		</stropt>
 		<multiopt>
 			<name>Output Format</name>
@@ -97,14 +97,14 @@
 				<alias>j</alias>
 				<alias>jimp</alias>
 				<short_desc>Produce .jimp (abbreviated .jimple) Files</short_desc>
-                                <long_desc>Produces .jimp files. These contain an abbreviated textual form for soot's Jimple internal representation. Can contain ambiguous references.</long_desc>
+                <long_desc>Produces .jimp files. These contain an abbreviated textual form for Soot's Jimple internal representation. Can contain ambiguous references.</long_desc>
 			</value>
 			<value>
 				<name>Jimple File</name>
 				<alias>J</alias>
 				<alias>jimple</alias>
-				<short_desc>produce .jimple code</short_desc>
-                                <long_desc>Produces .jimple files that contain a textual representation for types in soot's Jimple internal representation.</long_desc>
+				<short_desc>Produce .jimple Files</short_desc>
+                <long_desc>Produces .jimple files that contain a textual representation for types in Soot's Jimple internal representation.</long_desc>
 			</value>
 			<value>
 				<name>Shimp File</name>
@@ -125,77 +125,79 @@
 				<name>Baf File</name>
 				<alias>B</alias>
 				<alias>baf</alias>
-				<short_desc>produce .baf code</short_desc>
-                                <long_desc>Produces .baf files that contain a textual representation for types in soot's Baf internal representation.</long_desc>
+				<short_desc>Produce .baf Files</short_desc>
+                <long_desc>Produces .baf files that contain a textual representation for types in Soot's Baf internal representation.</long_desc>
 			</value>
 			<value>
 				<name>Abbreviated Baf File</name>
 				<alias>b</alias>
-				<short_desc>produce .b (abbreviated .baf) files</short_desc>
-                                <long_desc>Produces .b files. These contain an abbreviated textual form for soot's Baf internal representation. It is easier to read than its non-abbreviated counterpart, but can also contain ambiguities; for instance, method signatures are not uniquely determined.</long_desc>
+				<short_desc>Produce .b (abbreviated .baf) Files</short_desc>
+                <long_desc>Produces .b files. These contain an abbreviated textual form for Soot's Baf internal representation. It is easier to read than its non-abbreviated counterpart, but can also contain ambiguities; for instance, method signatures are not uniquely determined.</long_desc>
 			</value>
 			<value>
 				<name>Grimp File</name>
 				<alias>g</alias>
 				<alias>grimp</alias>
-				<short_desc>produce .grimp (abbreviated .grimple) files</short_desc>
-                                <long_desc>Produces .grimp files. These contain an abbreviated textual form for soot's Grimp internal representation. Can contain ambiguous references.</long_desc>
+				<short_desc>Produce .grimp (abbreviated .grimple) Files</short_desc>
+                <long_desc>Produces .grimp files. These contain an abbreviated textual form for Soot's Grimp internal representation. Can contain ambiguous references.</long_desc>
 			</value>
 			<value>
 				<name>Grimple File</name>
 				<alias>G</alias>
 				<alias>grimple</alias>
-				<short_desc>produce .grimple files</short_desc>
-                                <long_desc>Produces .grimple files that contain a textual representation for types in soot's Grimp internal representation.</long_desc>
+				<short_desc>Produce .grimple Files</short_desc>
+                <long_desc>Produces .grimple files that contain a textual representation for types in Soot's Grimp internal representation.</long_desc>
 			</value>
 			<value>
 				<name>Xml File</name>
 				<alias>X</alias>
 				<alias>xml</alias>
-				<short_desc>produce .xml files</short_desc>
-                                <long_desc>Produces .xml files of classes based on the Jimple statements.</long_desc>
+				<short_desc>Produce .xml Files</short_desc>
+               <long_desc>Produces .xml files of classes based on the Jimple statements.</long_desc>
 			</value>
 			<value>
 				<name>No Output File</name>
 				<alias>n</alias>
 				<alias>none</alias>
-				<short_desc>produces no output</short_desc>
+				<short_desc>Produces No Output</short_desc>
+               <long_desc>This option causes Soot to produces no output files.</long_desc>
 			</value>
 			<value>
 				<name>Jasmin File</name>
 				<alias>s</alias>
 				<alias>jasmin</alias>
-				<short_desc>produce .jasmin files</short_desc>
-                                <long_desc>Produces .jasmin files as output. These can be understood by the jasmin bytecode assembler tool.</long_desc>
+				<short_desc>Produce .jasmin Files</short_desc>
+                <long_desc>Produces .jasmin files as output. These can be understood by the jasmin bytecode assembler tool.</long_desc>
 			</value>
 			<value>
 				<name>Class File</name>
 				<alias>c</alias>
 				<alias>class</alias>
 				<default/>
-				<short_desc>produce .class files</short_desc>
-                                <long_desc>Produces Java .class files executable under any Java Virtual Machine.</long_desc>
+				<short_desc>Produce .class Files</short_desc>
+                <long_desc>Produces Java .class files executable under any Java Virtual Machine.</long_desc>
 			</value>
 			<value>
 				<name>Dava Decompiled File</name>
 				<alias>d</alias>
 				<alias>dava</alias>
-				<short_desc>produce dava decompiled .java files</short_desc>
+				<short_desc>Produce dava decompiled .java files</short_desc>
+				<long_desc>Produces dava decompiled .java files.</long_desc>
 			</value>
-			<short_desc>sets the output format for Soot</short_desc>
-			<long_desc>This option ...</long_desc>
+			<short_desc>Sets Output Format for Soot</short_desc>
+			<long_desc>This option sets the ouptut format of files Soot will produce or no output.</long_desc>
 		</multiopt>
 		<boolopt>
 			<name>Via Grimp</name>
 			<alias>via-grimp</alias>
-			<short_desc>convert jimple to bytecode via grimp instead of via baf</short_desc>
-			<long_desc>This option ...</long_desc>
+			<short_desc>Convert Jimple to Bytecode via Grimp Instead of via Baf</short_desc>
+			<long_desc>This option converts Jimple to bytecode via Grimp instead of via Baf.</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Save Tags to XML</name>
 			<alias>xml-attributes</alias>
 			<short_desc>Save tags to XML attributes for Eclipse</short_desc>
-			<long_desc>This option ...</long_desc>
+			<long_desc>This option saves a variety of tags which are attached to hosts to an XML file that is later read by Eclipse to show program understanding annotations within Eclipse.</long_desc>
 		</boolopt>
 	</section>
 	<section>
@@ -2254,7 +2256,7 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 		<listopt>
 			<name>Process Path</name>
 			<alias>process-path</alias>
-			<short_desc>process all classes on the PATH</short_desc>
+			<short_desc>Process all Classes on the PATH</short_desc>
 			<long_desc>Process all classes in PATH. All the classes found in PATH will be loaded and transformed in single-file mode.
 </long_desc>
 		</listopt>
@@ -2265,32 +2267,32 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<name>Include Package</name>
 			<alias>i</alias>
 			<alias>include</alias>
-			<short_desc>marks classfiles in PACKAGE (e.g. java.util.)as application classes</short_desc>
-			<long_desc>Marks the classfiles in PACKAGE (e.g. java.util.) as application classes. This option can be used to transform library types which by default are not transformed by soot.</long_desc>
+			<short_desc>Marks Classfiles in PACKAGE (e.g. java.util.) as Application Classes</short_desc>
+			<long_desc>Marks the classfiles in PACKAGE (e.g. java.util.) as application classes. This option can be used to transform library types which by default are not transformed by Soot.</long_desc>
 		</listopt>
 		<listopt>
 			<name>Exclude Package</name>
 			<alias>x</alias>
 			<alias>exclude</alias>
-			<short_desc>marks classfiles in PACKAGE (e.g. java.) as context classes</short_desc>
+			<short_desc>Marks Classfiles in PACKAGE (e.g. java.) as Context Classes</short_desc>
 			<long_desc>Marks classfiles in PACKAGE (e.g. java.) as context classes. Jimple is not produced for context classes, but the SootClass, SootField and SootMethod signature objects are created.</long_desc>
 		</listopt>
 		<listopt>
 			<name>Dynamic Classes</name>
 			<alias>dynamic-classes</alias>
-			<short_desc>marks CLASSES (separated by colons) as potentially dynamic classes</short_desc>
-			<long_desc>This option ...</long_desc>
+			<short_desc>Marks CLASSES (separated by colons) as Potentially Dynamic Classes</short_desc>
+			<long_desc>This option marks CLASSES (separated by colons) as potentially dynamic classes. </long_desc>
 		</listopt>
 		<listopt>
 			<name>Dynamic Path</name>
 			<alias>dynamic-path</alias>
-			<short_desc>marks all class files in PATH as potentially dynamic classes</short_desc>
+			<short_desc>Marks all Class Files in PATH as Potentially Dynamic Classes</short_desc>
 			<long_desc>Marks all class files in PATH as potentially dynamic classes. This allows aggressive optimization of applications for which the set of dynamic classes that can be loaded is known at compile time.</long_desc>
 		</listopt>
 		<listopt>
 			<name>Dynamic Package</name>
 			<alias>dynamic-package</alias>
-			<short_desc>marks classfiles in PACKAGES (separated by commas) as potentially dynamic classes</short_desc>
+			<short_desc>Marks Class Files in PACKAGES (separated by commas) as Potentially Dynamic Classes</short_desc>
 			<long_desc>Marks all class files belonging to a package listed in PACKAGES (or one of its subpackages) as potentially dynamic classes.</long_desc>
 		</listopt>
 	</section>
@@ -2299,15 +2301,15 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 		<boolopt>
 			<name>Keep Line Number</name>
 			<alias>keep-line-number</alias>
-			<short_desc>keep line number tables</short_desc>
-			<long_desc>Preserves the line number tables of class files through transformations.</long_desc>
+			<short_desc>Keep Line Number Tables</short_desc>
+			<long_desc>Preserves the line number tables of class files throughout the  transformations.</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Keep Bytecode Offset</name>
 			<alias>keep-bytecode-offset</alias>
 			<alias>keep-offset</alias>
-			<short_desc>attach bytecode offset to jimple statement</short_desc>
-			<long_desc>Preserves the bytecode offset tables of class files through transformations.</long_desc>
+			<short_desc>Attach Bytecode Offset to Jimple Statement</short_desc>
+			<long_desc>Preserves the bytecode offset tables of class files throughout the transformations.</long_desc>
 		</boolopt>
 	</section>
 	<section>
@@ -2321,8 +2323,8 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>-p</expansion>
                         <expansion>tag.an</expansion>
                         <expansion>enabled:true</expansion>
-			<short_desc>turn on the annotation for null pointer</short_desc>
-			<long_desc>This option ...</long_desc>
+			<short_desc>Turn on the Annotation for Null Pointer</short_desc>
+			<long_desc>This option turns on annotations for Null Pointer. This creates annotations that can be added to class files and later used by the JVM.</long_desc>
 		</macroopt>
 		<macroopt>
 			<name>Array Bounds Annotation</name>
@@ -2336,8 +2338,8 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>-p</expansion>
                         <expansion>tag.an</expansion>
                         <expansion>enabled:true</expansion>
-			<short_desc>turn on the annotation for array bounds check</short_desc>
-			<long_desc>This option ...</long_desc>
+			<short_desc>Turn on the Annotation for Array Bounds Check</short_desc>
+			<long_desc>This option turns on annotations for Array Bound Check. This creates annotations that can be added to class files and later used by the JVM.</long_desc>
 		</macroopt>
 		<macroopt>
 			<name>Side effect annotation</name>
@@ -2349,8 +2351,8 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>-p</expansion>
                         <expansion>tag.dep</expansion>
                         <expansion>enabled:true</expansion>
-			<short_desc>turn on side-effect attributes</short_desc>
-			<long_desc>This option ...</long_desc>
+			<short_desc>Turn on Side-effect Attributes</short_desc>
+			<long_desc>This option turns on the generation of side-effect attributes.</long_desc>
 		</macroopt>
 		<macroopt>
 			<name>Field read/write annotation</name>
@@ -2362,8 +2364,8 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>-p</expansion>
                         <expansion>tag.fieldrw</expansion>
                         <expansion>enabled:true</expansion>
-			<short_desc>turn on field read/write attributes</short_desc>
-			<long_desc>This option ...</long_desc>
+			<short_desc>Turn on Field Read/Write Attributes</short_desc>
+			<long_desc>This option turns on the generation of field read/write attributes.</long_desc>
 		</macroopt>
 	</section>
 	<section>
@@ -2371,13 +2373,13 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 		<boolopt>
 			<name>Time</name>
 			<alias>time</alias>
-			<short_desc>print out time statistics about tranformations</short_desc>
+			<short_desc>Print out Time Statistics about Tranformations</short_desc>
 			<long_desc>Print out time statistics about transformations.</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Subtract Garbage Collection Time</name>
 			<alias>subtract-gc</alias>
-			<short_desc>attempt to subtract the gc from the time stats</short_desc>
+			<short_desc>Attempt to Subtract the gc from the Time Stats</short_desc>
 			<long_desc>Attempt to subtract garbage-collection time from the time stats.</long_desc>
 		</boolopt>
 	</section>
