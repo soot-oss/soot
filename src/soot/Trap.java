@@ -33,7 +33,7 @@ import java.util.*;
  * classes.  Intermediate representations must use an implementation
  * of Trap to describe caught exceptions.
  *  */
-public interface Trap
+public interface Trap extends UnitBoxOwner
 {
     /** Returns the first trapped unit. */
     public Unit getBeginUnit();

@@ -86,8 +86,10 @@ public class UnreachableCodeEliminator extends BodyTransformer
             {
                 Trap t = (Trap) trapIt.next();
                 
-                if(t.getBeginUnit() == t.getEndUnit())
+                if(t.getBeginUnit() == t.getEndUnit()){
+                    t.clearUnitBoxes();
                     trapIt.remove();
+                }
             }
         }
         

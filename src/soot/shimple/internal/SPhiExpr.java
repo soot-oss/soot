@@ -377,7 +377,7 @@ public class SPhiExpr implements PhiExpr
 
     public void clearUnitBoxes()
     {
-        Iterator boxesIt = argPairs.iterator();
+        Iterator boxesIt = getUnitBoxes().iterator();
         while(boxesIt.hasNext()){
             UnitBox box = (UnitBox) boxesIt.next();
             box.setUnit(null);

@@ -113,6 +113,15 @@ public class AbstractTrap implements Trap, Serializable
         return unitBoxes;
     }
 
+    public void clearUnitBoxes()
+    {
+        Iterator boxesIt = getUnitBoxes().iterator();
+        while(boxesIt.hasNext()){
+            UnitBox box = (UnitBox) boxesIt.next();
+            box.setUnit(null);
+        }
+    }
+    
     public SootClass getException()
     {
         return exception;
