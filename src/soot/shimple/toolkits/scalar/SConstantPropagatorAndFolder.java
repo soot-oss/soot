@@ -27,7 +27,7 @@ import soot.shimple.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
-import soot.shimple.toolkits.scalar.SEvaluator.BogusConstant;
+import soot.shimple.toolkits.scalar.SEvaluator.MetaConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.TopConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.BottomConstant;
 
@@ -69,7 +69,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
                 Local local = (Local) localsIt.next();
                 Constant constant = (Constant) localToConstant.get(local);
 
-                if(!(constant instanceof BogusConstant)){
+                if(!(constant instanceof MetaConstant)){
                     DefinitionStmt stmt =
                         (DefinitionStmt) localDefs.getDefsOf(local).get(0);
 
@@ -324,8 +324,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         else if(rightOp instanceof Local)
             constant = (Constant) localToConstant.get(rightOp); 
         else if(rightOp instanceof Expr)
-            constant =
-                SEvaluator.getConstantValueOf((Expr)rightOp, localToConstant);
+            constant = SEvaluator.getFuzzyConstantValueOf((Expr)rightOp,
+                                                          localToConstant);
         
         if(!merge(local, constant))
             return null;

@@ -27,12 +27,12 @@ import soot.jimple.toolkits.scalar.*;
 import java.util.*;
 
 /**
- * "Extension" of soot.jimple.toolkits.scalar.Evaluator to handle Phi
- * expressions.  Basically a dumping ground for functionality found
- * useful in SConstantPropagatorAndFolder.
+ * Extension of soot.jimple.toolkits.scalar.Evaluator to handle Phi
+ * expressions. 
  *
  * @author Navindra Umanee.
  * @see soot.jimple.toolkits.scalar.Evaluator
+ * @see SConstantPropagatorAndFolder
  **/
 public class SEvaluator
 {
@@ -76,143 +76,116 @@ public class SEvaluator
         if(!(isValueConstantValued(op)))
             return null;
         
-        return (Value) ((PhiExpr) op).getValues().get(0);
+        return (Value) ((PhiExpr) op).getValue(0);
     }
 
     /**
-     * Convenience function...  Checks if all constant args in a
-     * PhiExpr are the same (local args are ignored) if present.
-     **/
-    public static boolean isPhiFuzzyConstantValued(PhiExpr op)
-    {
-        Iterator argsIt = op.getValues().iterator();
-        Constant firstConstant = null;
-
-        while(argsIt.hasNext()){
-            Value arg = (Value) argsIt.next();
-
-            if(!(arg instanceof Constant))
-                continue;
-
-            if(firstConstant == null)
-                firstConstant = (Constant) arg;
-            else if(!firstConstant.equals(arg))
-                return false;
-        }
-        
-        return true;
-    }
-
-    /**
-     * Gets the first constant argument in a PhiExpr, returns null if
-     * not found.  Convenience function can be used in conjunction
-     * with isPhiFuzzyConstantValued()
+     * If a normal expression contains Bottom, always return Bottom.
+     * Otherwise, if a normal expression contains Top, returns Top.
+     * Else determine the constant value of the expression if
+     * possible, if not return Bottom.
      *
-     * @see #isPhiFuzzyConstantValued(PhiExpr)
+     * <p> If a Phi expression contains Bottom, always return Bottom.
+     * Otherwise, if all the constant arguments are the same (ignoring
+     * Top and locals) return that constant or Top if no concrete
+     * constant is present, else return Bottom.
+     *
+     * @see SEvaluator.TopConstant
+     * @see SEvaluator.BottomConstant
      **/
-    public static Constant getFirstConstantInPhi(PhiExpr op)
+    public static Constant getFuzzyConstantValueOf(Expr expr)
     {
-        Iterator argsIt = op.getValues().iterator();
+        Constant constant = null;
 
-        while(argsIt.hasNext()){
-            Value arg = (Value) argsIt.next();
+        if(expr instanceof PhiExpr){
+            PhiExpr phi = (PhiExpr) expr;
+            Iterator argsIt = phi.getValues().iterator();
 
-            if(!(arg instanceof Constant))
-                continue;
+            while(argsIt.hasNext()){
+                Value arg = (Value) argsIt.next();
+            
+                if(!(arg instanceof Constant))
+                    continue;
 
-            return (Constant) arg;
+                if(arg instanceof TopConstant)
+                    continue;
+
+                if(constant == null)
+                    constant = (Constant) arg;
+                else if(!constant.equals(arg)){
+                    constant = BottomConstant.v();
+                    break;
+                }
+            }
+
+            if(constant == null)
+                constant = TopConstant.v();
+        }
+        else{
+            Iterator valueBoxesIt = expr.getUseBoxes().iterator();
+            while(valueBoxesIt.hasNext()){
+                Value value = ((ValueBox)valueBoxesIt.next()).getValue();
+
+                if(value instanceof BottomConstant){
+                    constant = BottomConstant.v();
+                    break;
+                }
+                
+                if(value instanceof TopConstant)
+                    constant = TopConstant.v();
+            }
+
+            if(constant == null)
+                constant = (Constant) getConstantValueOf(expr);
+
+            if(constant == null)
+                constant = BottomConstant.v();
         }
         
-        return null;
+        return constant;
     }
 
     /**
-     * Get the constant value of the expression given the assumptions in
-     * the localToConstant map.  Does not change expression.
+     * Get the constant value of the expression given the assumptions
+     * in the localToConstant map (may contain Top and Bottom).  Does
+     * not change expression.
+     *
+     * @see SEvaluator.TopConstant
+     * @see SEvaluator.BottomConstant
      **/
-    public static Constant getConstantValueOf(Expr e, Map localToConstant)
+    public static Constant getFuzzyConstantValueOf(Expr e, Map localToConstant)
     {
-        Constant ret = null;
-        
-        EVALUATE:
-        {
-        // weed out expressions we can't handle
-        if(!(e instanceof UnopExpr ||
-             e instanceof BinopExpr ||
-             e instanceof PhiExpr)){
-            ret = BottomConstant.v();
-            break EVALUATE;
-        }
-         
         /* clone expr and update the clone with our assumptions */
 
         Expr expr = (Expr) e.clone();
         Iterator useBoxIt = expr.getUseBoxes().iterator();
-        boolean cannotfold = false;
 
         while(useBoxIt.hasNext()){
             ValueBox useBox = (ValueBox) useBoxIt.next();
             Value use = useBox.getValue();
             if(use instanceof Local){
-                Constant assumedConstant = (Constant) localToConstant.get(use);
-
-                // we can't do anything with Bottom
-                if(assumedConstant instanceof BottomConstant){
-                    ret = BottomConstant.v();
-                    break EVALUATE;
-                }
-                // expressions containing Top need special treatment
-                else if(assumedConstant instanceof TopConstant)
-                    cannotfold = true;
-                // normal case
-                else
-                    if(useBox.canContainValue(assumedConstant))
-                        useBox.setValue(assumedConstant);
+                Constant constant = (Constant) localToConstant.get(use);
+                if(useBox.canContainValue(constant))
+                    useBox.setValue(constant);
             }
         }
 
-        /* evalute the expr */
-
-        // cannotfold means Top is present in the expression.  Hence
-        // the expression resolves to Top, except for PhiExpr which
-        // needs special handling.
-        if(cannotfold){
-            if(expr instanceof PhiExpr){
-                PhiExpr pe = (PhiExpr) expr;
-                if(isPhiFuzzyConstantValued(pe)){
-                    Constant first = getFirstConstantInPhi(pe);
-                    if(first != null)
-                        ret = first;
-                    else
-                        ret = TopConstant.v();
-                    break EVALUATE;
-                }
-                else{
-                    ret = BottomConstant.v();
-                    break EVALUATE;
-                }
-            }
-        }
-        else{
-            Constant constant = (Constant) getConstantValueOf(expr);
-            if(constant != null)
-                ret = constant;
-            else
-                ret = BottomConstant.v();
-            break EVALUATE;
-        }
-        } // end EVALUATE
-
-        if(ret == null)
-            throw new RuntimeException("Assertion failed.");
+        /* evaluate the expression */
         
-        return ret;
+        return(getFuzzyConstantValueOf(expr));
     }
 
     /**
+     * Head of a new hierarchy of constants -- Top and Bottom.
+     **/
+    public static abstract class MetaConstant extends Constant
+    {
+    }
+    
+    /**
      * Top i.e. assumed to be a constant, but of unknown value.
      **/
-    public static class TopConstant extends BogusConstant
+    public static class TopConstant extends MetaConstant
     {
         private static final TopConstant constant = new TopConstant();
         
@@ -222,7 +195,7 @@ public class SEvaluator
         {
             return constant;
         }
-    
+
         public Type getType()
         {
             return UnknownType.v();
@@ -237,7 +210,7 @@ public class SEvaluator
     /**
      * Bottom i.e. known not to be a constant.
      **/
-    public static class BottomConstant extends BogusConstant
+    public static class BottomConstant extends MetaConstant
     {
         private static final BottomConstant constant = new BottomConstant();
         
@@ -257,13 +230,6 @@ public class SEvaluator
         {
             throw new RuntimeException("Not implemented.");
         }
-    }
-
-    /**
-     * Create a new bogus hierarchy of constants -- Top and Bottom.
-     **/
-    public static abstract class BogusConstant extends Constant
-    {
     }
 }
 
