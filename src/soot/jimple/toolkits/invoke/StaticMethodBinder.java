@@ -73,7 +73,21 @@ public class StaticMethodBinder extends SceneTransformer
         InvokeGraph graph = Scene.v().getActiveInvokeGraph();
 
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
+
+        VariableTypeAnalysis vta = null;
+
+        for (int i = 0; i < VTApasses; i++)
+        {
+            if (Main.isVerbose)
+                System.out.println(graph.computeStats());
+            vta = new VariableTypeAnalysis(graph);
+            vta.trimActiveInvokeGraph();
+            graph.refreshReachableMethods();
+        }
                 
+        if (Main.isVerbose)
+            System.out.println(graph.computeStats());
+
         Iterator classesIt = Scene.v().getApplicationClasses().iterator();
         while (classesIt.hasNext())
         {
