@@ -621,13 +621,6 @@ public class Main {
         excludedPackages.add("org.w3c.");
         excludedPackages.add("org.apache.");
 
-        if (Options.v().app()) {
-            Iterator contextClassesIt =
-                Scene.v().getContextClasses().snapshotIterator();
-            while (contextClassesIt.hasNext())
-                 ((SootClass) contextClassesIt.next()).setApplicationClass();
-        }
-
         // Remove/add all classes from packageInclusionMask as per -i option
         for( Iterator sIt = Scene.v().getClasses().iterator(); sIt.hasNext(); ) {
             final SootClass s = (SootClass) sIt.next();
@@ -642,11 +635,7 @@ public class Main {
                 final String pkg = (String) pkgIt.next();
                 if (s.isApplicationClass()
                 && s.getPackageName().startsWith(pkg)) {
-                    if( Options.v().whole_program() ) {
                         s.setLibraryClass();
-                    } else {
-                        s.setContextClass();
-                    }
                 }
             }
             for( Iterator pkgIt = Options.v().include().iterator(); pkgIt.hasNext(); ) {
@@ -654,13 +643,6 @@ public class Main {
                 if (s.getPackageName().startsWith(pkg))
                     s.setApplicationClass();
             }
-        }
-
-        if (Options.v().analyze_context()) {
-            Iterator contextClassesIt =
-                Scene.v().getContextClasses().snapshotIterator();
-            while (contextClassesIt.hasNext())
-                 ((SootClass) contextClassesIt.next()).setLibraryClass();
         }
     }
 

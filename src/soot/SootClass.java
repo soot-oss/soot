@@ -938,25 +938,6 @@ public class SootClass extends AbstractHost implements Numberable
         isPhantom = false;
     }
 
-    /** Convenience method returning true if this class is a context class.
-     *
-     * @see Scene#getContextClasses() */
-    public boolean isContextClass()
-    {
-        return Scene.v().getContextClasses().contains(this);
-    }
-
-    /** Makes this class a context class. */
-    public void setContextClass()
-    {
-        Chain c = Scene.v().getContainingChain(this);
-        if (c != null)
-            c.remove(this);
-        Scene.v().getContextClasses().add(this);
-
-        isPhantom = false;
-    }
-
     /** Convenience method returning true if this class is a phantom class.
      *
      * @see Scene#getPhantomClasses() */

@@ -37,54 +37,9 @@ public class JBOptions
         return soot.PackManager.getBoolean( options, "disabled" );
     }
     
-    /** No Splitting --  */
-    public boolean no_splitting() {
-        return soot.PackManager.getBoolean( options, "no-splitting" );
-    }
-    
-    /** No Typing --  */
-    public boolean no_typing() {
-        return soot.PackManager.getBoolean( options, "no-typing" );
-    }
-    
-    /** Aggregate All Locals --  */
-    public boolean aggregate_all_locals() {
-        return soot.PackManager.getBoolean( options, "aggregate-all-locals" );
-    }
-    
-    /** No Aggregating --  */
-    public boolean no_aggregating() {
-        return soot.PackManager.getBoolean( options, "no-aggregating" );
-    }
-    
     /** Use Original Names --  */
     public boolean use_original_names() {
         return soot.PackManager.getBoolean( options, "use-original-names" );
-    }
-    
-    /** Pack Locals --  */
-    public boolean pack_locals() {
-        return soot.PackManager.getBoolean( options, "pack-locals" );
-    }
-    
-    /** No Copy Propogator --  */
-    public boolean no_cp() {
-        return soot.PackManager.getBoolean( options, "no-cp" );
-    }
-    
-    /** No Nop Elimination --  */
-    public boolean no_nop_elimination() {
-        return soot.PackManager.getBoolean( options, "no-nop-elimination" );
-    }
-    
-    /** No Unreachable Code Elimination --  */
-    public boolean no_unreachable_code_elimination() {
-        return soot.PackManager.getBoolean( options, "no-unreachable-code-elimination" );
-    }
-    
-    /** Verbatim --  */
-    public boolean verbatim() {
-        return soot.PackManager.getBoolean( options, "verbatim" );
     }
     
 }

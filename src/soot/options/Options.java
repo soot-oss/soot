@@ -179,7 +179,7 @@ public class Options extends OptionsBase {
             }
   
             else if( false
-            || option.equals( "o" )
+            || option.equals( "f" )
             || option.equals( "output-format" )
             ) {
                 if( !hasMoreOptions() ) {
@@ -444,12 +444,6 @@ public class Options extends OptionsBase {
                 exclude.add( value );
             }
   
-            else if( false 
-            || option.equals( "a" )
-            || option.equals( "analyze-context" )
-            )
-                analyze_context = true;
-  
             else if( false
             || option.equals( "dynamic-classes" )
             ) {
@@ -544,7 +538,7 @@ public class Options extends OptionsBase {
             ) {
                 
                 pushOptions( "disabled:false" );
-                pushOptions( "tag.sea" );
+                pushOptions( "tag.dep" );
                 pushOptions( "-p" );
                 pushOptions( "disabled:false" );
                 pushOptions( "jap.sea" );
@@ -665,10 +659,6 @@ public class Options extends OptionsBase {
     }
     public void set_exclude( List setting ) { exclude = setting; }
     private List exclude = null;
-    public boolean analyze_context() { return analyze_context; }
-    private boolean analyze_context = false;
-    public void set_analyze_context( boolean setting ) { analyze_context = setting; }
-  
     public List dynamic_classes() { 
         if( dynamic_classes == null )
             return java.util.Collections.EMPTY_LIST;
@@ -731,7 +721,7 @@ public class Options extends OptionsBase {
 +"\nOutput Options:\n"
       
 +padOpt(" -d ARG -output-dir ARG", "store produced files in PATH" )
-+padOpt(" -o ARG -output-format ARG", "sets the source precedence for Soot" )
++padOpt(" -f ARG -output-format ARG", "sets the source precedence for Soot" )
 +padVal(" j jimp", "" )
 +padVal(" J jimple", "" )
 +padVal(" B baf", "" )
@@ -758,7 +748,6 @@ public class Options extends OptionsBase {
       
 +padOpt(" -i ARG -include ARG", "marks classfiles in PACKAGE (e.g. java.util.)as application classes" )
 +padOpt(" -x ARG -exclude ARG", "marks classfiles in PACKAGE (e.g. java.) as context classes" )
-+padOpt(" -a -analyze-context", "label context classes as library" )
 +padOpt(" -dynamic-classes ARG", "marks CLASSES (separated by colons) as potentially dynamic classes" )
 +padOpt(" -dynamic-path ARG", "marks all class files in PATH as potentially dynamic classes" )
 +padOpt(" -dynamic-package ARG", "marks classfiles in PACKAGES (separated by commas) as potentially dynamic classes" )
@@ -784,21 +773,33 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb" ) )
             return ""
                 +"disabled "
-                +"no-splitting "
-                +"no-typing "
-                +"aggregate-all-locals "
-                +"no-aggregating "
-                +"use-original-names "
-                +"pack-locals "
-                +"no-cp "
-                +"no-nop-elimination "
-                +"no-unreachable-code-elimination "
-                +"verbatim ";
+                +"use-original-names ";
     
-        if( phaseName.equals( "jb.asv" ) )
+        if( phaseName.equals( "jb.ls" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jb.a1" ) )
             return ""
                 +"disabled "
                 +"only-stack-locals ";
+    
+        if( phaseName.equals( "jb.ule1" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jb.tr" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "jb.a2" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
+    
+        if( phaseName.equals( "jb.ule2" ) )
+            return ""
+                +"disabled ";
     
         if( phaseName.equals( "jb.ulp" ) )
             return ""
@@ -820,23 +821,6 @@ public class Options extends OptionsBase {
             return ""
                 +"disabled "
                 +"only-stack-locals ";
-    
-        if( phaseName.equals( "jb.ls" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "jb.a" ) )
-            return ""
-                +"disabled "
-                +"only-stack-locals ";
-    
-        if( phaseName.equals( "jb.ule" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "jb.tr" ) )
-            return ""
-                +"disabled ";
     
         if( phaseName.equals( "jb.cp-ule" ) )
             return ""
@@ -1142,9 +1126,23 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb" ) )
             return "";
     
-        if( phaseName.equals( "jb.asv" ) )
-            return ""
-              +"only-stack-locals:true ";
+        if( phaseName.equals( "jb.ls" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.a1" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.ule1" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.tr" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.a2" ) )
+            return "";
+    
+        if( phaseName.equals( "jb.ule2" ) )
+            return "";
     
         if( phaseName.equals( "jb.ulp" ) )
             return ""
@@ -1161,23 +1159,12 @@ public class Options extends OptionsBase {
             return ""
               +"only-stack-locals:true ";
     
-        if( phaseName.equals( "jb.ls" ) )
-            return "";
-    
-        if( phaseName.equals( "jb.a" ) )
-            return "";
-    
-        if( phaseName.equals( "jb.ule" ) )
-            return "";
-    
-        if( phaseName.equals( "jb.tr" ) )
-            return "";
-    
         if( phaseName.equals( "jb.cp-ule" ) )
             return "";
     
         if( phaseName.equals( "jb.lp" ) )
-            return "";
+            return ""
+              +"disabled:true ";
     
         if( phaseName.equals( "jb.ne" ) )
             return "";
@@ -1421,15 +1408,16 @@ public class Options extends OptionsBase {
     public void warnForeignPhase( String phaseName ) {
     
         if( phaseName.equals( "jb" ) ) return;
-        if( phaseName.equals( "jb.asv" ) ) return;
+        if( phaseName.equals( "jb.ls" ) ) return;
+        if( phaseName.equals( "jb.a1" ) ) return;
+        if( phaseName.equals( "jb.ule1" ) ) return;
+        if( phaseName.equals( "jb.tr" ) ) return;
+        if( phaseName.equals( "jb.a2" ) ) return;
+        if( phaseName.equals( "jb.ule2" ) ) return;
         if( phaseName.equals( "jb.ulp" ) ) return;
         if( phaseName.equals( "jb.lns" ) ) return;
         if( phaseName.equals( "jb.cp" ) ) return;
         if( phaseName.equals( "jb.dae" ) ) return;
-        if( phaseName.equals( "jb.ls" ) ) return;
-        if( phaseName.equals( "jb.a" ) ) return;
-        if( phaseName.equals( "jb.ule" ) ) return;
-        if( phaseName.equals( "jb.tr" ) ) return;
         if( phaseName.equals( "jb.cp-ule" ) ) return;
         if( phaseName.equals( "jb.lp" ) ) return;
         if( phaseName.equals( "jb.ne" ) ) return;
@@ -1493,8 +1481,18 @@ public class Options extends OptionsBase {
     
         if( !PackManager.v().hasPhase( "jb" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jb" );
-        if( !PackManager.v().hasPhase( "jb.asv" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase jb.asv" );
+        if( !PackManager.v().hasPhase( "jb.ls" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.ls" );
+        if( !PackManager.v().hasPhase( "jb.a1" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.a1" );
+        if( !PackManager.v().hasPhase( "jb.ule1" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.ule1" );
+        if( !PackManager.v().hasPhase( "jb.tr" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.tr" );
+        if( !PackManager.v().hasPhase( "jb.a2" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.a2" );
+        if( !PackManager.v().hasPhase( "jb.ule2" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.ule2" );
         if( !PackManager.v().hasPhase( "jb.ulp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jb.ulp" );
         if( !PackManager.v().hasPhase( "jb.lns" ) )
@@ -1503,14 +1501,6 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jb.cp" );
         if( !PackManager.v().hasPhase( "jb.dae" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jb.dae" );
-        if( !PackManager.v().hasPhase( "jb.ls" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase jb.ls" );
-        if( !PackManager.v().hasPhase( "jb.a" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase jb.a" );
-        if( !PackManager.v().hasPhase( "jb.ule" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase jb.ule" );
-        if( !PackManager.v().hasPhase( "jb.tr" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase jb.tr" );
         if( !PackManager.v().hasPhase( "jb.cp-ule" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jb.cp-ule" );
         if( !PackManager.v().hasPhase( "jb.lp" ) )

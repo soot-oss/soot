@@ -178,9 +178,6 @@ public class SootMethod
      */
 
     public boolean isConcrete() {
-        if ((declaringClass != null) && (declaringClass.isContextClass()))
-            return false;
-
         return !isPhantom() && !isAbstract() && !isNative();
     }
 
@@ -245,9 +242,6 @@ public class SootMethod
         Retrieves the active body for this method.
      */
     public Body getActiveBody() {
-        if (declaringClass.isContextClass())
-            throw new RuntimeException(
-                "cannot get active body for context class: " + getSignature());
         if (declaringClass.isPhantomClass())
             throw new RuntimeException(
                 "cannot get active body for phantom class: " + getSignature());
@@ -268,11 +262,6 @@ public class SootMethod
      */
 
     public Body retrieveActiveBody() {
-        if (declaringClass.isContextClass())
-            throw new RuntimeException(
-                "cannot get resident body for context class : "
-                    + getSignature()
-                    + "; maybe you want to call c.setApplicationClass() on this class!");
         if (declaringClass.isPhantomClass())
             throw new RuntimeException(
                 "cannot get resident body for phantom class : "
@@ -293,10 +282,9 @@ public class SootMethod
      */
     public void setActiveBody(Body body) {
         if ((declaringClass != null)
-            && (declaringClass.isContextClass()
-                || declaringClass.isPhantomClass()))
+            && declaringClass.isPhantomClass())
             throw new RuntimeException(
-                "cannot set active body for context or phantom class! " + this);
+                "cannot set active body for phantom class! " + this);
 
         if (!isConcrete())
             throw new RuntimeException(

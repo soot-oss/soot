@@ -370,11 +370,7 @@ public class PackageNamer
 	for (int i=0; i<keywordArray.length; i++)
 	    keywords.add( keywordArray[i]);
 
-	Iterator classIt = Scene.v().getContextClasses().iterator();
-	while (classIt.hasNext())
-	    add_ClassName( ((SootClass) classIt.next()).getFullName(), otherRoots);
-
-	classIt = Scene.v().getLibraryClasses().iterator();
+	Iterator classIt = Scene.v().getLibraryClasses().iterator();
 	while (classIt.hasNext())
 	    add_ClassName( ((SootClass) classIt.next()).getFullName(), otherRoots);
 

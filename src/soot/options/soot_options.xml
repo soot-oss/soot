@@ -89,7 +89,7 @@
 		</stropt>
 		<multiopt>
 			<name>Output Format</name>
-			<alias>o</alias>
+			<alias>f</alias>
 			<alias>output-format</alias>
 			<value>
 				<name>Jimp File</name>
@@ -192,46 +192,6 @@
 					<long_desc/>
 				</boolopt>
 				<boolopt>
-					<name>No Splitting</name>
-					<alias>no-splitting</alias>
-					<short_desc/>
-					<long_desc>
-                    Soot will not split the 
-locals by use-def webs while generating the 
-Jimple body. 
-</long_desc>
-				</boolopt>
-				<boolopt>
-					<name>No Typing</name>
-					<alias>no-typing</alias>
-					<short_desc/>
-					<long_desc>
-                   Soot will not resolve 
-the types of local variables.
- </long_desc>
-				</boolopt>
-				<boolopt>
-					<name>Aggregate All Locals</name>
-					<alias>aggregate-all-locals</alias>
-					<short_desc/>
-					<long_desc>Soot will aggregate
-both regular locals and stack locals.
-(See the <tt>jop.cp</tt>    phase for more information). 
-This options will suppress the `no-aggregating&apos; 
-option.
-</long_desc>
-				</boolopt>
-				<boolopt>
-					<name>No Aggregating</name>
-					<alias>no-aggregating</alias>
-					<short_desc/>
-					<long_desc> If <tt>`aggregate-all-locals&apos;</tt> is not
-specified, then disable the aggregation of locals for Jimple
-Body&apos;s. This subsumes <tt>`only-stack-locals&apos;</tt> in the `jb.asv&apos;
-phase.
-</long_desc>
-				</boolopt>
-				<boolopt>
 					<name>Use Original Names</name>
 					<alias>use-original-names</alias>
 					<short_desc/>
@@ -240,63 +200,62 @@ names from the method source.  If this is not specified, Soot gives
 standard names to local variables, according to the variable type.
 </long_desc>
 				</boolopt>
-				<boolopt>
-					<name>Pack Locals</name>
-					<alias>pack-locals</alias>
-					<short_desc/>
-					<long_desc>Soot will pack local 
-names tightly, using a graph coloring algorithm. 
-</long_desc>
-				</boolopt>
-				<boolopt>
-					<name>No Copy Propogator</name>
-					<alias>no-cp</alias>
-					<short_desc/>
-					<long_desc>Soot will not apply the copy propagator to Jimple Body&apos;s.</long_desc>
-				</boolopt>
-				<boolopt>
-					<name>No Nop Elimination</name>
-					<alias>no-nop-elimination</alias>
-					<short_desc/>
-					<long_desc>Soot will not remove nop instructions.</long_desc>
-				</boolopt>
-				<boolopt>
-					<name>No Unreachable Code Elimination</name>
-					<alias>no-unreachable-code-elimination</alias>
-					<short_desc/>
-					<long_desc>Soot will not remove unreachable code.</long_desc>
-				</boolopt>
-				<boolopt>
-					<name>Verbatim</name>
-					<alias>verbatim</alias>
-					<short_desc/>
-					<long_desc>Do not apply any options.</long_desc>
-				</boolopt>
 				<sub_phase>
-					<name>Stack Variable Aggregation</name>
-					<alias>jb.asv</alias>
-					<long_desc>
-This phase handles the aggregation of stack variables for Jimple.
-For a full description of aggregation, see <cite>ccPaper</cite>.  Briefly, 
-aggregation finds instances where some expression has a single use; it replaces
-the use with the expression itself.
-
-This phase is deactivated by the <tt>`no-aggregating&apos;</tt> option in the <tt>jb</tt> 
-phase.
-                        
-                        </long_desc>
+					<name>Local Splitter</name>
+					<alias>jb.ls</alias>
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>
-						<short_desc/>
-						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Pre-typing Aggregator</name>
+					<alias>jb.a1</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
 					</boolopt>
 					<boolopt>
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
-						<default>true</default>
-						<short_desc/>
 						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Pre-typing Unused Local Eliminator</name>
+					<alias>jb.ule1</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Type Assigner</name>
+					<alias>jb.tr</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Post-typing Aggregator</name>
+					<alias>jb.a2</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Post-typing Unused Local Eliminator</name>
+					<alias>jb.ule2</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -412,43 +371,6 @@ This phase eliminates assignment statements (to locals) with no uses.
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Local Splitter</name>
-					<alias>jb.ls</alias>
-					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-					</boolopt>
-				</sub_phase>
-				<sub_phase>
-					<name>Aggregator</name>
-					<alias>jb.a</alias>
-					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-					</boolopt>
-					<boolopt>
-						<name>Only Stack Locals</name>
-						<alias>only-stack-locals</alias>
-						<long_desc>Aggregate values stored in stack locals only.</long_desc>
-					</boolopt>
-				</sub_phase>
-				<sub_phase>
-					<name>Unused Local Eliminator</name>
-					<alias>jb.ule</alias>
-					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-					</boolopt>
-				</sub_phase>
-				<sub_phase>
-					<name>Type Assigner</name>
-					<alias>jb.tr</alias>
-					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-					</boolopt>
-				</sub_phase>
-				<sub_phase>
 					<name>Unused Local Eliminator</name>
 					<alias>jb.cp-ule</alias>
 					<boolopt>
@@ -462,6 +384,7 @@ This phase eliminates assignment statements (to locals) with no uses.
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>
+                                                <default>true</default>
 					</boolopt>
 					<boolopt>
 						<name>Unsplit Original Locals</name>
@@ -2048,13 +1971,6 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<short_desc>marks classfiles in PACKAGE (e.g. java.) as context classes</short_desc>
 			<long_desc>This option ...</long_desc>
 		</listopt>
-		<boolopt>
-			<name>Analyze Context</name>
-			<alias>a</alias>
-			<alias>analyze-context</alias>
-			<short_desc>label context classes as library</short_desc>
-			<long_desc>This option ...</long_desc>
-		</boolopt>
 		<listopt>
 			<name>Dynamic Classes</name>
 			<alias>dynamic-classes</alias>
@@ -2133,7 +2049,7 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>jap.sea</expansion>
                         <expansion>disabled:false</expansion>
                         <expansion>-p</expansion>
-                        <expansion>tag.sea</expansion>
+                        <expansion>tag.dep</expansion>
                         <expansion>disabled:false</expansion>
 			<short_desc>turn on side-effect attributes</short_desc>
 			<long_desc>This option ...</long_desc>

@@ -48,12 +48,13 @@ public class PackManager {
         addPack(p = new JimpleBodyPack());
         {
             p.add(new Transform("jb.ls", LocalSplitter.v()));
-            p.add(new Transform("jb.a", Aggregator.v()));
-            p.add(new Transform("jb.asv", Aggregator.v()));
-            p.add(new Transform("jb.ule", UnusedLocalEliminator.v()));
+            p.add(new Transform("jb.a1", Aggregator.v()));
+            p.add(new Transform("jb.ule1", UnusedLocalEliminator.v()));
             p.add(new Transform("jb.tr", TypeAssigner.v()));
-            p.add(new Transform("jb.lns", LocalNameStandardizer.v()));
+            p.add(new Transform("jb.a2", Aggregator.v()));
+            p.add(new Transform("jb.ule2", UnusedLocalEliminator.v()));
             p.add(new Transform("jb.ulp", LocalPacker.v()));
+            p.add(new Transform("jb.lns", LocalNameStandardizer.v()));
             p.add(new Transform("jb.cp", CopyPropagator.v()));
             p.add(new Transform("jb.dae", DeadAssignmentEliminator.v()));
             p.add(new Transform("jb.cp-ule", UnusedLocalEliminator.v()));

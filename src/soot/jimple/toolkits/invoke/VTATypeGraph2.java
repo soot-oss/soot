@@ -240,11 +240,6 @@ public class VTATypeGraph2 extends MemoryEfficientGraph
 	if (c.isInterface())
 	  continue;
 
-	/* solution, report to user that needs -a switch */
-	if (c.isContextClass()) {
-	  throw new RuntimeException("VTA needs '-a' or '--analyze-context' switch to run correctly.");
-	}
-
 	// The following are entry points that have to be treated specially
 	SootMethod finalizer = null;
 	if (c.declaresMethod("void finalize()"))
@@ -625,9 +620,8 @@ public class VTATypeGraph2 extends MemoryEfficientGraph
 	if (!nodeToColor.containsKey(o)) {
 	  // NODE IS WHITE
 	  nodeToColor.put(o, GREY);
-	  for (Iterator succsIt = ((List)getSuccsOf(o)).iterator(); 
-	       succsIt.hasNext(); ) {
-	    Object child = succsIt.next();
+	  for( Iterator childIt = ((List)getSuccsOf(o)).iterator(); childIt.hasNext(); ) {
+	      final Object child = (Object) childIt.next();
 	    Type t = (Type)nodeToDeclaredType.get(child);
 	    if (t instanceof ArrayType 
 		|| t.equals(TypeElement2.v("java.lang.Object"))) {

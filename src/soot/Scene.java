@@ -53,7 +53,6 @@ public class Scene  //extends AbstractHost
     Chain classes = new HashChain();
     Chain applicationClasses = new HashChain();
     Chain libraryClasses = new HashChain();
-    Chain contextClasses = new HashChain();
     Chain phantomClasses = new HashChain();
     
     private Map nameToClass = new HashMap();
@@ -142,11 +141,7 @@ public class Scene  //extends AbstractHost
             throw new RuntimeException("duplicate class: "+c.getName());
 
         classes.add(c);
-        if( Options.v().whole_program() ) {
-            c.setLibraryClass();
-        } else {
-            c.setContextClass();
-        }
+        c.setLibraryClass();
 
         nameToClass.put(c.getName(), c.getType());
         c.getType().setSootClass(c);
@@ -329,15 +324,6 @@ public class Scene  //extends AbstractHost
     }
 
     /**
-     * Returns a chain of the context classes in this scene.
-     * These classes may not be analysed, typically for speed reasons.
-     */
-    public Chain getContextClasses()
-    {
-        return contextClasses;
-    }
-
-    /**
      * Returns a chain of the phantom classes in this scene.
      * These classes are referred to by other classes, but cannot be loaded.
      */
@@ -352,8 +338,6 @@ public class Scene  //extends AbstractHost
             return getApplicationClasses();
         else if (c.isLibraryClass())
             return getLibraryClasses();
-        else if (c.isContextClass())
-            return getContextClasses();
         else if (c.isPhantomClass())
             return getPhantomClasses();
 

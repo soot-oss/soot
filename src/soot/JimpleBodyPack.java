@@ -50,86 +50,42 @@ public class JimpleBodyPack extends BodyPack
     private void applyPhaseOptions(JimpleBody b, Map opts) 
     { 
         JBOptions options = new JBOptions( opts );
-        if (options.verbatim())
-            return;
-
+        
         if(options.use_original_names())
             PackManager.v().setPhaseOptionIfUnset( "jb.lns", "only-stack-locals");
-
         
-        if(!options.no_splitting())
-        {
-            if(Options.v().time())
-                Timers.v().splitTimer.start();
+        if(Options.v().time()) Timers.v().splitTimer.start();
 
-            PackManager.v().getTransform( "jb.ls" ).apply( b );
+        PackManager.v().getTransform( "jb.ls" ).apply( b );
 
-            if(Options.v().time())
-                Timers.v().splitTimer.end();
+        if(Options.v().time()) Timers.v().splitTimer.end();
 
-            if(!options.no_typing())
-            {
-	        if(options.aggregate_all_locals())
-		{
-                    PackManager.v().getTransform( "jb.a" ).apply( b );
-                    PackManager.v().getTransform( "jb.ule" ).apply( b );
-		}
-		else if (!options.no_aggregating())
-		{
-                    PackManager.v().getTransform( "jb.asv" ).apply( b );
-                    PackManager.v().getTransform( "jb.ule" ).apply( b );
-		}
+        PackManager.v().getTransform( "jb.a1" ).apply( b );
+        PackManager.v().getTransform( "jb.ule1" ).apply( b );
 
-                if(Options.v().time())
-                    Timers.v().assignTimer.start();
+        if(Options.v().time()) Timers.v().assignTimer.start();
 
-                PackManager.v().getTransform( "jb.tr" ).apply( b );
-		
-                if(Options.v().time())
-                    Timers.v().assignTimer.end();
-
-		if(typingFailed(b))
-		  throw new RuntimeException("type inference failed!");
-            }
-        }
+        PackManager.v().getTransform( "jb.tr" ).apply( b );
         
-        
-        if(options.aggregate_all_locals())
-        {
-            PackManager.v().getTransform( "jb.a" ).apply( b );
-            PackManager.v().getTransform( "jb.ule" ).apply( b );
-        }
-        else if(!options.no_aggregating())
-        {
-            PackManager.v().getTransform( "jb.asv" ).apply( b );
-            PackManager.v().getTransform( "jb.ule" ).apply( b );
-        }
+        if(Options.v().time()) Timers.v().assignTimer.end();
 
-        if(!options.use_original_names())
-            PackManager.v().getTransform( "jb.lns" ).apply( b );
-        else
+        if(typingFailed(b))
+          throw new RuntimeException("type inference failed!");
+        
+        PackManager.v().getTransform( "jb.a2" ).apply( b );
+        PackManager.v().getTransform( "jb.ule2" ).apply( b );
+
+        if(options.use_original_names())
         {   
             PackManager.v().getTransform( "jb.ulp" ).apply( b );
-            PackManager.v().getTransform( "jb.lns" ).apply( b );
         }
-
-        if(!options.no_cp())
-        {
-            PackManager.v().getTransform( "jb.cp" ).apply( b );
-            PackManager.v().getTransform( "jb.dae" ).apply( b );
-            PackManager.v().getTransform( "jb.cp-ule" ).apply( b );
-        }
-        
-        if(options.pack_locals())
-        {
-            PackManager.v().getTransform( "jb.lp" ).apply( b );
-        }
-
-        if(!options.no_nop_elimination())
-            PackManager.v().getTransform( "jb.ne" ).apply( b );
-
-        if (!options.no_unreachable_code_elimination())
-            PackManager.v().getTransform( "jb.uce" ).apply( b );
+        PackManager.v().getTransform( "jb.lns" ).apply( b );
+        PackManager.v().getTransform( "jb.cp" ).apply( b );
+        PackManager.v().getTransform( "jb.dae" ).apply( b );
+        PackManager.v().getTransform( "jb.cp-ule" ).apply( b );
+        PackManager.v().getTransform( "jb.lp" ).apply( b );
+        PackManager.v().getTransform( "jb.ne" ).apply( b );
+        PackManager.v().getTransform( "jb.uce" ).apply( b );
                     
         if(Options.v().time())
             Timers.v().stmtCount += b.getUnits().size();
