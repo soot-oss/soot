@@ -91,7 +91,8 @@ public class SootMethod
     SootClass declaringClass;
 
     int modifiers;
-
+    boolean isPhantom;
+    
     List exceptions = new ArrayList();
 
     Body activeBody;
@@ -177,6 +178,16 @@ public class SootMethod
         return isDeclared;
     }
 
+    public boolean isPhantom()
+    {
+        return isPhantom();
+    }
+    
+    public void setPhantom(boolean value)
+    {
+        isPhantom = value;
+    }
+    
     public void setName(String name)
     {
         this.name = name;
@@ -227,7 +238,7 @@ public class SootMethod
 
     public Body getActiveBody() 
     {
-        if (declaringClass.isContextClass() || declaringClass.isSignatureClass())
+        if (declaringClass.isContextClass() || declaringClass.isPhantomClass())
             throw new RuntimeException("cannot get active body for context or signature class!");
 
         if(!hasActiveBody())
@@ -242,8 +253,12 @@ public class SootMethod
      
     public void setActiveBody(Body body)
     {
-        if (declaringClass.isContextClass() || declaringClass.isSignatureClass())
+        if (declaringClass.isContextClass() || declaringClass.isPhantomClass())
             throw new RuntimeException("cannot set active body for context or signature class!");
+
+        if(isPhantom())
+            throw new RuntimeException("cannot set body for phantom method!");
+            
         if (body.getMethod() != this)
             body.setMethod(this);
 

@@ -192,8 +192,10 @@ public class JimpleBody extends StmtBody
              System.out.println("[" + getMethod().getName() +
                     "]     Producing naive Jimple...");
                     
+         Scene.v().setPhantomRefs(true);
          coffiMethod.cfg.jimplify(coffiClass.constant_pool,
              coffiClass.this_class, this);
+         Scene.v().setPhantomRefs(false);
 
          coffiMethod.instructions = null;
          coffiMethod.cfg = null;

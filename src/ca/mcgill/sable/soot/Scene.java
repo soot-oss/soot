@@ -89,7 +89,7 @@ public class Scene
     Chain applicationClasses = new HashChain();
     Chain libraryClasses = new HashChain();
     Chain contextClasses = new HashChain();
-    Chain signatureClasses = new HashChain();
+    Chain phantomClasses = new HashChain();
     
     Map nameToClass = new HashMap();
     Map methodSignatureToMethod = new HashMap();
@@ -97,6 +97,7 @@ public class Scene
 
     Hierarchy activeHierarchy;
     InvokeGraph activeInvokeGraph;
+    boolean allowsPhantomRefs = false;
 
     public static Scene v()
     {
@@ -196,7 +197,17 @@ public class Scene
         SootClass toReturn = (SootClass) nameToClass.get(className);
         
         if(toReturn == null)
-            throw new ClassFileNotFoundException();
+        {
+            if(Scene.v().allowsPhantomRefs())
+            {
+                SootClass c = new SootClass(className);
+                c.setPhantom(true);
+                addClass(c);
+                return c;
+            }
+            else
+                throw new ClassFileNotFoundException();
+        }
         else
             return toReturn;
     }
@@ -243,9 +254,9 @@ public class Scene
      * Returns a chain of the signature classes in this scene.
      * These classes are referred to by other classes, but cannot be loaded.
      */
-    public Chain getSignatureClasses()
+    public Chain getPhantomClasses()
     {
-        return signatureClasses;
+        return phantomClasses;
     }
 
     Chain getContainingChain(SootClass c)
@@ -256,8 +267,8 @@ public class Scene
             return getLibraryClasses();
         else if (c.isContextClass())
             return getContextClasses();
-        else if (c.isSignatureClass())
-            return getSignatureClasses();
+        else if (c.isPhantomClass())
+            return getPhantomClasses();
 
         return null;
     }
@@ -323,4 +334,24 @@ public class Scene
     {
         activeInvokeGraph = null;
     }
+    
+    public void setPhantomRefs(boolean value)
+    {
+        allowsPhantomRefs = value;
+    }
+    
+    public boolean allowsPhantomRefs()
+    {
+        return allowsPhantomRefs;
+    }
 }
+
+
+
+
+
+
+
+
+
+

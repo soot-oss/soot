@@ -79,7 +79,8 @@ public class SootField
 
     boolean isDeclared = false;
     SootClass declaringClass;
-
+    boolean isPhantom = false;
+    
     public SootField(String name, Type type, int modifiers)
     {
         this.name = name;
@@ -123,6 +124,16 @@ public class SootField
             throw new NotDeclaredException();
 
         return declaringClass;
+    }
+
+    public boolean isPhantom()
+    {
+        return isPhantom();
+    }
+    
+    public void setPhantom(boolean value)
+    {
+        isPhantom = value;
     }
 
     public boolean isDeclared()

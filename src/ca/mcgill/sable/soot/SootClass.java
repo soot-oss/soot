@@ -123,6 +123,8 @@ public class SootClass
 
     SootClass superClass;
 
+    boolean isPhantom;
+    
     /**
         Constructs an empty SootClass with the given name and modifiers.
     */
@@ -197,8 +199,7 @@ public class SootClass
         f.isDeclared = true;
         f.declaringClass = this;
         
-        scene.fieldSignatureToField.put(f.getSignature(), f);
-        
+        scene.fieldSignatureToField.put(f.getSignature(), f);        
     }
 
     /**
@@ -230,7 +231,15 @@ public class SootClass
                 return field;
         }
 
-        throw new ca.mcgill.sable.soot.NoSuchFieldException("No field " + name + " in class " + getName());
+        if(Scene.v().allowsPhantomRefs())
+        {
+            SootField f = new SootField(name, type);
+            f.setPhantom(true);
+            addField(f);
+            return f;
+        }
+        else
+            throw new ca.mcgill.sable.soot.NoSuchFieldException("No field " + name + " in class " + getName());
     }
 
     
@@ -399,7 +408,15 @@ public class SootClass
             }
         }
 
-        throw new ca.mcgill.sable.soot.NoSuchMethodException(getName() + "." + name + "(" + 
+        if(Scene.v().allowsPhantomRefs())
+        {
+            SootMethod m = new SootMethod(name, parameterTypes, returnType);
+            m.setPhantom(true);
+            this.addMethod(m);
+            return m;
+        }
+        else
+            throw new ca.mcgill.sable.soot.NoSuchMethodException(getName() + "." + name + "(" + 
             parameterTypes + ")" + " : " + returnType);
     }
 
@@ -793,7 +810,14 @@ public class SootClass
             if(fieldIt.hasNext())
             {
                 while(fieldIt.hasNext())
-                    out.println("    " + ((SootField) fieldIt.next()).getDeclaration() + ";");
+                {
+                    SootField f = (SootField) fieldIt.next();
+                    
+                    if(f.isPhantom())
+                        continue;
+                        
+                    out.println("    " + f.getDeclaration() + ";");
+                }
             }
         }
 
@@ -810,6 +834,9 @@ public class SootClass
                 {
                     SootMethod method = (SootMethod) methodIt.next();
 
+                    if(method.isPhantom())
+                        continue;
+                        
                     if(!Modifier.isAbstract(method.getModifiers()) &&
                         !Modifier.isNative(method.getModifiers()))
                     {
@@ -1030,16 +1057,28 @@ public class SootClass
         Scene.v().getContextClasses().add(this);
     }
 
-    public boolean isSignatureClass()
+    public boolean isPhantomClass()
     {
-        return Scene.v().getSignatureClasses().contains(this);
+        return Scene.v().getPhantomClasses().contains(this);
     }
 
-    public void setSignatureClass()
+    public void setPhantomClass()
     {
         Chain c = Scene.v().getContainingChain(this);
         if (c != null)
             c.remove(this);
-        Scene.v().getSignatureClasses().add(this);
+        Scene.v().getPhantomClasses().add(this);
     }
+    
+    
+    public boolean isPhantom()
+    {
+        return isPhantom();
+    }
+    
+    public void setPhantom(boolean value)
+    {
+        isPhantom = value;
+    }
+
 }
