@@ -1,4 +1,4 @@
-ECLIPSE_HOME=/home/research/ccl/jlhotak/eclipseR2/eclipse/plugins/
+ECLIPSE_HOME=/home/research/ccl/jlhotak/eclipseR3/eclipse/plugins/
 SOOT_DIR=/home/research/ccl/jlhotak/soot/classes
 
 all:

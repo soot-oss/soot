@@ -1,7 +1,6 @@
 Soot in Eclipse Plugin
 
-The plugin currently works with version 2.0.2 of Eclipse and the development
-version of Soot.
+The plugin currently works with the release candidate version R3 of Eclipse and the development version of Soot.
 
 The plugin is set up to find Soot in a Soot classes directory containing
 class files. If you use a sootclasses jar instead of a directory of
@@ -43,6 +42,8 @@ cp to eclipse/plugins/ca.mcgill.sable.soot/  dir:
 soot-plugin.jar
 plugin.xml
 plugin.properties
+icons/*.jpg 
+icons/*.gif
 
 Restart Eclipse
 
