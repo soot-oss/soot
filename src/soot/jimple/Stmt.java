@@ -32,7 +32,6 @@ package soot.jimple;
 import soot.*;
 import soot.util.*;
 import java.util.*;
-import soot.baf.*;
 
 public interface Stmt extends Unit
 {

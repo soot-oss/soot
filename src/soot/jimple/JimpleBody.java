@@ -33,7 +33,6 @@ import soot.jimple.toolkits.typing.*;
 import soot.jimple.toolkits.base.*;
 import soot.util.*;
 import java.util.*;
-import soot.baf.*;
 import java.io.*;
 
 /** Implementation of the Body class for the Jimple IR. */
