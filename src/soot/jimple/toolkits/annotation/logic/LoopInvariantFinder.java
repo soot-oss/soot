@@ -32,8 +32,8 @@ public class LoopInvariantFinder extends BodyTransformer {
             Iterator bIt = loopStmts.iterator();
             while (bIt.hasNext()){
                 Stmt tStmt = (Stmt)bIt.next();
-                System.out.println("will test stmt: "+tStmt+" for loop header: "+header);
-                System.out.println("will test with loop stmts: "+loopStmts);
+                //System.out.println("will test stmt: "+tStmt+" for loop header: "+header);
+                //System.out.println("will test with loop stmts: "+loopStmts);
                 handleLoopBodyStmt(tStmt, nset, loopStmts);
             }
         }
@@ -50,7 +50,7 @@ public class LoopInvariantFinder extends BodyTransformer {
         // ignore invoke stmts
         if (s instanceof InvokeStmt) return; 
        
-        System.out.println("s : "+s+" use boxes: "+s.getUseBoxes());
+        //System.out.println("s : "+s+" use boxes: "+s.getUseBoxes());
         // just use boxes here 
         Iterator useBoxesIt = s.getUseBoxes().iterator();
         boolean result = true;
@@ -62,18 +62,18 @@ public class LoopInvariantFinder extends BodyTransformer {
             // new's are not invariant
             if (v instanceof NewExpr) {
                 result = false;
-                System.out.println("break uses: due to new expr");
+                //System.out.println("break uses: due to new expr");
                 break uses;
             }
             // invokes are not invariant
             if (v instanceof InvokeExpr) {
                 result = false;
-                System.out.println("break uses: due to invoke expr");
+                //System.out.println("break uses: due to invoke expr");
                 break uses;
             }
             // array refs with non-constant indexes - need to check 
             // index box
-            System.out.println("v : "+v+" is a "+v.getClass());
+            //.System.out.println("v : "+v+" is a "+v.getClass());
             /*if (v instanceof ArrayRef){
                 System.out.println("loop stmts: "+loopStmts);
                 Iterator arrLoopStmtsIt = loopStmts.iterator();
@@ -99,14 +99,14 @@ public class LoopInvariantFinder extends BodyTransformer {
                 if (nset.unitCanWriteTo(next, v)){
                     result = false;
                     //System.out.println("not loop invariant due to use: "+s);
-                    System.out.println("break uses: due to side effect tester");
+                    //System.out.println("break uses: due to side effect tester");
                     break uses;
                 }
             }
             
         }
 
-        System.out.println("after uses: result: "+result);
+        //System.out.println("after uses: result: "+result);
         // def boxes - don't check self
         Iterator defBoxesIt = s.getDefBoxes().iterator(); 
         defs: while (defBoxesIt.hasNext()){
@@ -137,7 +137,7 @@ public class LoopInvariantFinder extends BodyTransformer {
             }
             
         }
-        System.out.println("result afte defs: "+result);
+        //System.out.println("result afte defs: "+result);
         if (result){
             s.addTag(new LoopInvariantTag("is loop invariant"));
         }

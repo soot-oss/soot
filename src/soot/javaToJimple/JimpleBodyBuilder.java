@@ -2593,6 +2593,7 @@ public class JimpleBodyBuilder {
         return newExpr;
     }
    
+    
     /**
      * Special conditions for doubles and floats and longs
      */
@@ -2780,13 +2781,14 @@ public class JimpleBodyBuilder {
         soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
             
         soot.Value newVal;
-        
-        newVal = handleDFLCond(condExpr);
+       
+        newVal = reverseCondition(condExpr);
+        newVal = handleDFLCond((soot.jimple.ConditionExpr)newVal);
 
         soot.jimple.Stmt ifStmt = soot.jimple.Jimple.v().newIfStmt(newVal, noop1);
         body.getUnits().add(ifStmt);
 
-        body.getUnits().add(soot.jimple.Jimple.v().newAssignStmt(boolLocal, soot.jimple.IntConstant.v(0)));
+        body.getUnits().add(soot.jimple.Jimple.v().newAssignStmt(boolLocal, soot.jimple.IntConstant.v(1)));
 
         soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
         
@@ -2796,7 +2798,7 @@ public class JimpleBodyBuilder {
 
         body.getUnits().add(noop1);
         
-        body.getUnits().add(soot.jimple.Jimple.v().newAssignStmt(boolLocal, soot.jimple.IntConstant.v(1)));
+        body.getUnits().add(soot.jimple.Jimple.v().newAssignStmt(boolLocal, soot.jimple.IntConstant.v(0)));
 
         body.getUnits().add(noop2);
 
