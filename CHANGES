@@ -1,3 +1,9 @@
+Improvements in version 2.0.1 (Fri, 18 Jun 2003)
+1. bug fixes
+2. minor improvements and cleanup of Shimple
+3. ant build file
+4. new framework for adding Soot system tests
+
 Improvements in version 2.0 (Fri, 6 Jun 2003)
 1. a true whole-program mode
 2. rewrite of the call graph code to provide more information (particularly
