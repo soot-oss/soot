@@ -632,6 +632,11 @@ public class PaddleScene
                     cstore.reader("prop"), calloc.reader("prop"), paout, pag );
                 p2sets = new BDDP2Sets( (PropBDD) prop );
                 break;
+            case PaddleOptions.propagator_incbdd:
+                prop = new PropBDDInc( csimple.reader("prop"), cload.reader("prop"),
+                    cstore.reader("prop"), calloc.reader("prop"), paout, pag );
+                p2sets = new BDDP2Sets( (PropBDDInc) prop );
+                break;
             default:
                 throw new RuntimeException( "Unimplemented propagator specified" );
         }

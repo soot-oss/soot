@@ -31,9 +31,9 @@ public abstract class Qctxt_var_obj_srcm_stmt_kind_tgtm {
     
     public abstract Rctxt_var_obj_srcm_stmt_kind_tgtm reader(String rname);
     
-    public Rctxt_var_obj_srcm_stmt_kind_tgtm revreader(String rname) { return this.reader(rname); }
+    public Rctxt_var_obj_srcm_stmt_kind_tgtm revreader(String rname) { return reader(rname); }
     
     public void add(Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple in) {
-        this.add(in.ctxt(), in.var(), in.obj(), in.srcm(), in.stmt(), in.kind(), in.tgtm());
+        add(in.ctxt(), in.var(), in.obj(), in.srcm(), in.stmt(), in.kind(), in.tgtm());
     }
 }

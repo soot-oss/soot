@@ -65,13 +65,13 @@ public abstract class Robjc_obj_varc_var implements Readers.Reader {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.objc());
+            ret.append(objc());
             ret.append(", ");
-            ret.append(this.obj());
+            ret.append(obj());
             ret.append(", ");
-            ret.append(this.varc());
+            ret.append(varc());
             ret.append(", ");
-            ret.append(this.var());
+            ret.append(var());
             ret.append(", ");
             return ret.toString();
         }

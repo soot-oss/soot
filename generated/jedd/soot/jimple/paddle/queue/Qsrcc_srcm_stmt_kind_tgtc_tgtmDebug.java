@@ -23,21 +23,21 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug extends Qsrcc_srcm_stmt_kind_tg
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), srcc.v(), tgtm.v(), kind.v(), stmt.v(), tgtc.v() },
-                                              new PhysicalDomain[] { MS.v(), C1.v(), MT.v(), KD.v(), ST.v(), C2.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), stmt.v(), tgtm.v(), tgtc.v(), kind.v(), srcc.v() },
+                                              new PhysicalDomain[] { MS.v(), ST.v(), MT.v(), C2.v(), KD.v(), C1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qsrcc_srcm_stm" +
-                                               "t_kind_tgtc_tgtmDebug.jedd:39,22-24"),
+                                               "lhota/soot-trunk2/src/soot/jimple/paddle/queue/Qsrcc_srcm_st" +
+                                               "mt_kind_tgtc_tgtmDebug.jedd:39,22-24"),
                                               in).iterator(new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
             for (int i = 0; i < 6; i++) {
-                this.add((Context) tuple[0],
-                         (SootMethod) tuple[1],
-                         (Unit) tuple[2],
-                         (Kind) tuple[3],
-                         (Context) tuple[4],
-                         (SootMethod) tuple[5]);
+                add((Context) tuple[0],
+                    (SootMethod) tuple[1],
+                    (Unit) tuple[2],
+                    (Kind) tuple[3],
+                    (Context) tuple[4],
+                    (SootMethod) tuple[5]);
             }
         }
     }

@@ -53,9 +53,9 @@ public abstract class Robj_type implements Readers.Reader {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.obj());
+            ret.append(obj());
             ret.append(", ");
-            ret.append(this.type());
+            ret.append(type());
             ret.append(", ");
             return ret.toString();
         }

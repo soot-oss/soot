@@ -24,20 +24,20 @@ public class Qvar_srcm_stmt_signature_kindTrad extends Qvar_srcm_stmt_signature_
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), signature.v(), kind.v(), stmt.v(), var.v() },
-                                              new PhysicalDomain[] { MS.v(), SG.v(), KD.v(), ST.v(), V1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), signature.v(), var.v(), stmt.v(), kind.v() },
+                                              new PhysicalDomain[] { MS.v(), SG.v(), V1.v(), ST.v(), KD.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvar_srcm_stmt" +
-                                               "_signature_kindTrad.jedd:41,22-24"),
+                                               "lhota/soot-trunk2/src/soot/jimple/paddle/queue/Qvar_srcm_stm" +
+                                               "t_signature_kindTrad.jedd:41,22-24"),
                                               in).iterator(new Attribute[] { var.v(), srcm.v(), stmt.v(), signature.v(), kind.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
             for (int i = 0; i < 5; i++) {
-                this.add((VarNode) tuple[0],
-                         (SootMethod) tuple[1],
-                         (Unit) tuple[2],
-                         (NumberedString) tuple[3],
-                         (Kind) tuple[4]);
+                add((VarNode) tuple[0],
+                    (SootMethod) tuple[1],
+                    (Unit) tuple[2],
+                    (NumberedString) tuple[3],
+                    (Kind) tuple[4]);
             }
         }
     }

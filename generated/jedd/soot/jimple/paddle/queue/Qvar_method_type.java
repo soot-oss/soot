@@ -25,7 +25,7 @@ public abstract class Qvar_method_type {
     
     public abstract Rvar_method_type reader(String rname);
     
-    public Rvar_method_type revreader(String rname) { return this.reader(rname); }
+    public Rvar_method_type revreader(String rname) { return reader(rname); }
     
-    public void add(Rvar_method_type.Tuple in) { this.add(in.var(), in.method(), in.type()); }
+    public void add(Rvar_method_type.Tuple in) { add(in.var(), in.method(), in.type()); }
 }

@@ -21,15 +21,15 @@ public class Qobj_varTrad extends Qobj_var {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                              new PhysicalDomain[] { H1.v(), V1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                              new PhysicalDomain[] { V1.v(), H1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qobj_varTrad.j" +
-                                               "edd:38,22-24"),
+                                               "lhota/soot-trunk2/src/soot/jimple/paddle/queue/Qobj_varTrad." +
+                                               "jedd:38,22-24"),
                                               in).iterator(new Attribute[] { obj.v(), var.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
-            for (int i = 0; i < 2; i++) { this.add((AllocNode) tuple[0], (VarNode) tuple[1]); }
+            for (int i = 0; i < 2; i++) { add((AllocNode) tuple[0], (VarNode) tuple[1]); }
         }
     }
     

@@ -482,7 +482,8 @@ public class PaddleOptions
     public static final int propagator_merge = 4;
     public static final int propagator_alias = 5;
     public static final int propagator_bdd = 6;
-    public static final int propagator_none = 7;
+    public static final int propagator_incbdd = 7;
+    public static final int propagator_none = 8;
     /** Propagator --
     
      * Select propagation algorithm.
@@ -510,6 +511,9 @@ public class PaddleOptions
         
         if( s.equalsIgnoreCase( "bdd" ) )
             return propagator_bdd;
+        
+        if( s.equalsIgnoreCase( "incbdd" ) )
+            return propagator_incbdd;
         
         if( s.equalsIgnoreCase( "none" ) )
             return propagator_none;

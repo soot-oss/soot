@@ -71,15 +71,15 @@ public abstract class Rvar_srcm_stmt_signature_kind implements Readers.Reader {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.var());
+            ret.append(var());
             ret.append(", ");
-            ret.append(this.srcm());
+            ret.append(srcm());
             ret.append(", ");
-            ret.append(this.stmt());
+            ret.append(stmt());
             ret.append(", ");
-            ret.append(this.signature());
+            ret.append(signature());
             ret.append(", ");
-            ret.append(this.kind());
+            ret.append(kind());
             ret.append(", ");
             return ret.toString();
         }

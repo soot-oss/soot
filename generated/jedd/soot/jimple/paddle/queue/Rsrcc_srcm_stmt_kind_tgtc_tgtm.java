@@ -77,17 +77,17 @@ public abstract class Rsrcc_srcm_stmt_kind_tgtc_tgtm implements Readers.Reader {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.srcc());
+            ret.append(srcc());
             ret.append(", ");
-            ret.append(this.srcm());
+            ret.append(srcm());
             ret.append(", ");
-            ret.append(this.stmt());
+            ret.append(stmt());
             ret.append(", ");
-            ret.append(this.kind());
+            ret.append(kind());
             ret.append(", ");
-            ret.append(this.tgtc());
+            ret.append(tgtc());
             ret.append(", ");
-            ret.append(this.tgtm());
+            ret.append(tgtm());
             ret.append(", ");
             return ret.toString();
         }

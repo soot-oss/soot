@@ -25,7 +25,7 @@ public abstract class Qsrcc_src_dstc_dst {
     
     public abstract Rsrcc_src_dstc_dst reader(String rname);
     
-    public Rsrcc_src_dstc_dst revreader(String rname) { return this.reader(rname); }
+    public Rsrcc_src_dstc_dst revreader(String rname) { return reader(rname); }
     
-    public void add(Rsrcc_src_dstc_dst.Tuple in) { this.add(in.srcc(), in.src(), in.dstc(), in.dst()); }
+    public void add(Rsrcc_src_dstc_dst.Tuple in) { add(in.srcc(), in.src(), in.dstc(), in.dst()); }
 }

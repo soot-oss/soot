@@ -2377,6 +2377,14 @@ BDD is a propagator that stores points-to sets in binary decision diagrams.
 </long_desc>
 							</value>
 							<value>
+								<name>Incrementalized BDD</name>
+								<alias>incbdd</alias>
+                                                                <short_desc>Incrementalized BDD-based propagator</short_desc>
+<long_desc>
+A propagator that stores points-to sets in binary decision diagrams, and propagates them incrementally.
+</long_desc>
+							</value>
+							<value>
 								<name>None</name>
 								<alias>none</alias>
                                                                 <short_desc>Disable propagation</short_desc>

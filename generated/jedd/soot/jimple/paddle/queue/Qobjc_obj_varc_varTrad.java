@@ -23,16 +23,16 @@ public class Qobjc_obj_varc_varTrad extends Qobjc_obj_varc_var {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v(), varc.v(), var.v() },
-                                              new PhysicalDomain[] { C2.v(), H1.v(), C1.v(), V1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v(), objc.v(), varc.v() },
+                                              new PhysicalDomain[] { V1.v(), H1.v(), C2.v(), C1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qobjc_obj_varc" +
-                                               "_varTrad.jedd:40,22-24"),
+                                               "lhota/soot-trunk2/src/soot/jimple/paddle/queue/Qobjc_obj_var" +
+                                               "c_varTrad.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { objc.v(), obj.v(), varc.v(), var.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
             for (int i = 0; i < 4; i++) {
-                this.add((Context) tuple[0], (AllocNode) tuple[1], (Context) tuple[2], (VarNode) tuple[3]);
+                add((Context) tuple[0], (AllocNode) tuple[1], (Context) tuple[2], (VarNode) tuple[3]);
             }
         }
     }

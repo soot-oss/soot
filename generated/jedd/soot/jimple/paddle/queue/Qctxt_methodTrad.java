@@ -21,15 +21,15 @@ public class Qctxt_methodTrad extends Qctxt_method {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
-                                              new PhysicalDomain[] { C1.v(), MS.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { method.v(), ctxt.v() },
+                                              new PhysicalDomain[] { MS.v(), C1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qctxt_methodTr" +
-                                               "ad.jedd:38,22-24"),
+                                               "lhota/soot-trunk2/src/soot/jimple/paddle/queue/Qctxt_methodT" +
+                                               "rad.jedd:38,22-24"),
                                               in).iterator(new Attribute[] { ctxt.v(), method.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
-            for (int i = 0; i < 2; i++) { this.add((Context) tuple[0], (SootMethod) tuple[1]); }
+            for (int i = 0; i < 2; i++) { add((Context) tuple[0], (SootMethod) tuple[1]); }
         }
     }
     

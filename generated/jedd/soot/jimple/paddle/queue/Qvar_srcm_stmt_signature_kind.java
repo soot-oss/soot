@@ -25,9 +25,9 @@ public abstract class Qvar_srcm_stmt_signature_kind {
     
     public abstract Rvar_srcm_stmt_signature_kind reader(String rname);
     
-    public Rvar_srcm_stmt_signature_kind revreader(String rname) { return this.reader(rname); }
+    public Rvar_srcm_stmt_signature_kind revreader(String rname) { return reader(rname); }
     
     public void add(Rvar_srcm_stmt_signature_kind.Tuple in) {
-        this.add(in.var(), in.srcm(), in.stmt(), in.signature(), in.kind());
+        add(in.var(), in.srcm(), in.stmt(), in.signature(), in.kind());
     }
 }

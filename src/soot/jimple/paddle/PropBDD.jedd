@@ -30,179 +30,96 @@ import jedd.*;
  * @author Ondrej Lhotak
  */
 
-public final class PropBDD extends AbsPropagator {
+public class PropBDD extends AbsPropagator {
     public PropBDD(  Rsrcc_src_dstc_dst simple, Rsrcc_src_fld_dstc_dst load, Rsrcc_src_fld_dstc_dst store,
             Robjc_obj_varc_var alloc, Qvarc_var_objc_obj propout, AbsPAG pag ) {
         super( simple, load, store, alloc, propout, pag );
     }
 
-    <varc:C1, var, objc:C2, obj> pointsTo = 0B;
-    <basec:C1, base, fld, objc:C2, obj> fieldPt = 0B;
+    /*package*/ <varc:C1, var, objc:C2, obj> pt = 0B;
+    /*package*/ <basec:C1, base, fld, objc:C2, obj> fieldPt = 0B;
 
-    /** Actually does the propagation. */
-    /*
-    public final void update() {
-        <var:V1, obj:H1> oldPointsTo = 0B;
-        <var:V1, obj:H1> newPointsTo = 0B;
-        <var:V1, obj:H1> tmpPointsTo = 0B;
-
-        <obj:H2, var:V1, fld:FD> objectsBeingStored;
-        <obj:H2, var:V1, fld:FD> oldStorePt = 0B;
-        <obj:H2, var:V1, fld:FD> newStorePt = 0B;
-
-        <base:H1, fld:FD, obj:H2> newFieldPt = 0B;
-        <base:H1, fld:FD, obj:H2> tmpFieldPt = 0B;
-
-        // The objects pointed to by base.fld are being loaded into dst
-        <base:H1, fld:FD, dst:V2> loadsFromHeap = 0B;
-        <base:H1, fld:FD, dst:V2> loadAss = 0B;
-
-        <var, obj> newPtFromNewEdges = 0B;
-
-        final AbsTypeManager typeManager = PaddleScene.v().tm;
-
-        pointsTo = pag.allAlloc().get();
-        newPointsTo = pointsTo;
-
-        // start solving 
-        do {
-
-            // repeat rule (1) in the inner loop
-            do {
-                newPointsTo = (dst=>var) pag.allSimple().get() {src} <> newPointsTo {var};
-                newPointsTo -= pointsTo;
-                newPointsTo &= typeManager.get();
-                pointsTo |= newPointsTo;
-
-                if( PaddleScene.v().options().verbose() ) {
-                    G.v().out.println( "Minor iteration: "+
-                        ((obj=>)newPointsTo).size()+" changed p2sets" );
-                }
-
-            } while( newPointsTo != 0B );
-
-            newPointsTo = pointsTo - oldPointsTo;
-
-            if( PaddleScene.v().options().verbose() ) {
-                G.v().out.println( "newPointsTo contains "+
-                    ((obj=>)newPointsTo).size()+" nodes" );
-            }
-            
-            ptout.add( newPointsTo );
-            PaddleScene.v().updateCallGraph();
-
-            // apply rule (2)
-            objectsBeingStored = (dst=>var) pag.allStore().get() {src} <> newPointsTo {var};
-                                          
-            newStorePt = objectsBeingStored - oldStorePt;
-            oldStorePt |= newStorePt;
-
-            newFieldPt = oldStorePt {var} <> (obj=>base) newPointsTo {var};
-
-            tmpFieldPt = newStorePt {var} <> (obj=>base) oldPointsTo {var};
-            newFieldPt |= tmpFieldPt;
-                                  
-            newFieldPt -= fieldPt;
-            fieldPt |= newFieldPt;
-
-
-            // apply rule (3)
-            loadsFromHeap = pag.allLoad().get() {src} <> (obj=>base) newPointsTo {var};
-
-            loadsFromHeap -= loadAss;
-                                     
-            newPointsTo = (dst=>var) loadAss {base,fld} <> newFieldPt {base,fld};
-            tmpPointsTo = (dst=>var) loadsFromHeap {base,fld} <> fieldPt {base,fld};
-            newPointsTo |= tmpPointsTo;
-
-            // cache loadAss
-            loadAss |= loadsFromHeap;
-            
-            // update oldPointsTo
-            oldPointsTo = pointsTo;
-
-            // convert new points-to relation to normal type
-            newPointsTo -= pointsTo;
-    
-            // apply typeFilter
-            newPointsTo &= typeManager.get();
-            
-            ptout.add( newPointsTo );
-            PaddleScene.v().updateCallGraph();
-
-            pointsTo |= newPointsTo;
-
-            newPointsTo |= newPtFromNewEdges;
-            newPtFromNewEdges = 0B;
-
-            if( PaddleScene.v().options().verbose() ) {
-                    G.v().out.println( "Major iteration: "+
-                        ((obj=>)newPointsTo).size()+" changed p2sets" );
-            }
-        } while(newPointsTo != 0B);
-    }
-    */
-
-    public final void update() {
+    protected <varc, var, objc, obj> typeFilter() {
         final <varc, objc> allContexts = 1B;
-        <varc, var, objc, obj> oldPointsTo = 0B;
-        <varc, var, objc, obj> veryOldPointsTo = 0B;
-        <varc, var, objc, obj> outputtedPointsTo = 0B;
+        return PaddleScene.v().tm.get(){} >< allContexts{};
+    }
 
-        <objc:C3, obj, varc, var, fld> objectsBeingStored;
+    protected <varc, var, objc, obj> outputtedPt = 0B;
+    protected void outputPt( <varc, var, objc, obj> pt ) {
+        <varc, var, objc, obj> toOutput = pt - outputtedPt;
+        if( toOutput == 0B ) return;
+        ptout.add( toOutput );
+        outputtedPt |= toOutput;
+        PaddleScene.v().updateCallGraph();
+    }
 
-        // The objects pointed to by base.fld are being loaded into dst
-        <basec, base, fld, dstc:C3, dst> loadsFromHeap = 0B;
+    /** Propagate points-to relation pt over assignments simple. */
+    protected <varc, var, objc, obj> propSimple(
+        <varc, var, objc, obj> pt,
+        <srcc, src, dstc, dst> simple ) {
 
-        final AbsTypeManager typeManager = PaddleScene.v().tm;
-
-        // start solving 
-        do {
-
-            veryOldPointsTo = pointsTo;
-
-            pointsTo |= newAlloc.get() & (typeManager.get(){} >< allContexts{});
-
-            // repeat rule (1) in the inner loop
-            do {
-                oldPointsTo = pointsTo;
-                pointsTo |= (typeManager.get(){} >< allContexts{}) &
+        <varc, var, objc, obj> ret = 0B;
+        while( true ) {
+            pt = typeFilter() &
                 ((dstc=>varc, dst=>var) (srcc=>C3)
-                            pag.allSimple().get() {srcc, src} 
-                                      <> pointsTo {varc, var} );
+                                       simple {srcc, src} 
+                                        <> pt {varc, var} );
+            pt -= ret;
+            if(pt == 0B) break;
+            ret |= pt;
+        }
+        return ret;
+    }
+
+    /** Propagate points-to relation pt over stores stores pointing to storePt. */
+    protected <basec:C1, base:H1, fld, objc:C2, obj:H2> propStore(
+        <varc, var, objc, obj> pt,
+        <srcc, src, fld, dstc, dst> store,
+        <varc, var, objc, obj> storePt ) {
+
+        <objc:C3, obj, varc, var, fld> objectsBeingStored =
+            (dstc=>varc, dst=>var) store {srcc, src} 
+                                   <> pt {varc, var};
+                                        
+        return               objectsBeingStored {varc, var} 
+            <> (objc=>basec, obj=>base) storePt {varc, var};
+    }
+
+    /** Propagate points-to relation fpt over loads pointing to loadPt. */
+    protected <varc, var, objc, obj> propLoad(
+        <basec, base, fld, objc, obj> fpt,
+        <srcc, src, fld, dstc, dst> load,
+        <varc, var, objc, obj> loadPt ) {
+
+        <basec, base, fld, dstc:C3, dst> loadsFromHeap;
+        loadsFromHeap =                   load{srcc, src} 
+            <> (objc=>basec, obj=>base) loadPt{varc, var};
+
+        return (dstc=>varc, dst=>var) loadsFromHeap {basec,base,fld} 
+                                             <> fpt {basec,base,fld};
+    }
 
 
-            } while( pointsTo != oldPointsTo );
+    public void update() {
+        // start solving 
+        while(true) {
+            <varc, var, objc, obj> veryOldPt = pt;
 
+            pt |= newAlloc.get() & typeFilter();
+            pt |= propSimple( pt, pag.allSimple().get() ) & typeFilter();
+            outputPt( pt );
 
-            ptout.add( pointsTo - outputtedPointsTo );
-            outputtedPointsTo = pointsTo;
-            PaddleScene.v().updateCallGraph();
+            fieldPt |= propStore( pt, pag.allStore().get(), pt );
+            pt |= propLoad( fieldPt, pag.allLoad().get(), pt ) & typeFilter();
 
-            // apply rule (2)
-            objectsBeingStored = (dstc=>varc, dst=>var)
-                pag.allStore().get() {srcc, src} <> pointsTo {varc, var};
-                                          
-            fieldPt |=            objectsBeingStored {varc, var} 
-                <> (objc=>basec, obj=>base) pointsTo {varc, var};
-
-            // apply rule (3)
-            loadsFromHeap = pag.allLoad().get() {srcc, src} <> (objc=>basec, obj=>base) pointsTo {varc, var};
-
-            pointsTo |= (dstc=>varc, dst=>var) loadsFromHeap {basec,base,fld} 
-                                                  <> fieldPt {basec,base,fld};
-
-            // apply typeFilter
-            pointsTo &= typeManager.get(){} >< allContexts{};
-            
-            ptout.add( pointsTo - outputtedPointsTo );
-            outputtedPointsTo = pointsTo;
-            PaddleScene.v().updateCallGraph();
+            outputPt( pt );
 
             if( PaddleScene.v().options().verbose() ) {
                     G.v().out.println( "Major iteration: " );
             }
-        } while(pointsTo != veryOldPointsTo);
+
+            if( pt == veryOldPt ) break;
+        }
     }
 
     /* End of public methods. */

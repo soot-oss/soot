@@ -25,7 +25,7 @@ public abstract class Qobj_type {
     
     public abstract Robj_type reader(String rname);
     
-    public Robj_type revreader(String rname) { return this.reader(rname); }
+    public Robj_type revreader(String rname) { return reader(rname); }
     
-    public void add(Robj_type.Tuple in) { this.add(in.obj(), in.type()); }
+    public void add(Robj_type.Tuple in) { add(in.obj(), in.type()); }
 }

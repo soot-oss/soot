@@ -25,7 +25,7 @@ public abstract class Qvarc_var_objc_obj {
     
     public abstract Rvarc_var_objc_obj reader(String rname);
     
-    public Rvarc_var_objc_obj revreader(String rname) { return this.reader(rname); }
+    public Rvarc_var_objc_obj revreader(String rname) { return reader(rname); }
     
-    public void add(Rvarc_var_objc_obj.Tuple in) { this.add(in.varc(), in.var(), in.objc(), in.obj()); }
+    public void add(Rvarc_var_objc_obj.Tuple in) { add(in.varc(), in.var(), in.objc(), in.obj()); }
 }

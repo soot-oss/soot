@@ -65,13 +65,13 @@ public abstract class Rvar_srcm_stmt_tgtm implements Readers.Reader {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.var());
+            ret.append(var());
             ret.append(", ");
-            ret.append(this.srcm());
+            ret.append(srcm());
             ret.append(", ");
-            ret.append(this.stmt());
+            ret.append(stmt());
             ret.append(", ");
-            ret.append(this.tgtm());
+            ret.append(tgtm());
             ret.append(", ");
             return ret.toString();
         }

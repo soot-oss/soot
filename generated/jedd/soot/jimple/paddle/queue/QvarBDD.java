@@ -15,15 +15,15 @@ public final class QvarBDD extends Qvar {
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _var) {
-        this.add(new jedd.internal.RelationContainer(new Attribute[] { var.v() },
-                                                     new PhysicalDomain[] { V1.v() },
-                                                     ("this.add(jedd.internal.Jedd.v().literal(new java.lang.Object" +
-                                                      "[...], new jedd.Attribute[...], new jedd.PhysicalDomain[...]" +
-                                                      ")) at /home/research/ccl/olhota/soot-trunk/src/soot/jimple/p" +
-                                                      "addle/queue/QvarBDD.jedd:34,8-11"),
-                                                     jedd.internal.Jedd.v().literal(new Object[] { _var },
-                                                                                    new Attribute[] { var.v() },
-                                                                                    new PhysicalDomain[] { V1.v() })));
+        add(new jedd.internal.RelationContainer(new Attribute[] { var.v() },
+                                                new PhysicalDomain[] { V1.v() },
+                                                ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
+                                                 ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
+                                                 " /home/research/ccl/olhota/soot-trunk2/src/soot/jimple/paddl" +
+                                                 "e/queue/QvarBDD.jedd:34,8-11"),
+                                                jedd.internal.Jedd.v().literal(new Object[] { _var },
+                                                                               new Attribute[] { var.v() },
+                                                                               new PhysicalDomain[] { V1.v() })));
     }
     
     public void add(final jedd.internal.RelationContainer in) {
@@ -31,8 +31,8 @@ public final class QvarBDD extends Qvar {
             RvarBDD reader = (RvarBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v() },
                                                            new PhysicalDomain[] { V1.v() },
-                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
-                                                            "oot/jimple/paddle/queue/QvarBDD.jedd:39,12-18"),
+                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk2/src/" +
+                                                            "soot/jimple/paddle/queue/QvarBDD.jedd:39,12-18"),
                                                            in));
         }
     }

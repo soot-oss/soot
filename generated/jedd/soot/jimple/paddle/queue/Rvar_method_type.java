@@ -59,11 +59,11 @@ public abstract class Rvar_method_type implements Readers.Reader {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.var());
+            ret.append(var());
             ret.append(", ");
-            ret.append(this.method());
+            ret.append(method());
             ret.append(", ");
-            ret.append(this.type());
+            ret.append(type());
             ret.append(", ");
             return ret.toString();
         }

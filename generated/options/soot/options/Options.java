@@ -1532,6 +1532,8 @@ public class Options extends OptionsBase {
                 
                 +padVal( "bdd", "BDD-based propagator" )
                 
+                +padVal( "incbdd", "Incrementalized BDD-based propagator" )
+                
                 +padVal( "none", "Disable propagation" )
                 
                 +padOpt( "set-impl", "Select points-to set implementation" )

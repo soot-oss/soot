@@ -65,13 +65,13 @@ public abstract class Rsrcc_src_dstc_dst implements Readers.Reader {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.srcc());
+            ret.append(srcc());
             ret.append(", ");
-            ret.append(this.src());
+            ret.append(src());
             ret.append(", ");
-            ret.append(this.dstc());
+            ret.append(dstc());
             ret.append(", ");
-            ret.append(this.dst());
+            ret.append(dst());
             ret.append(", ");
             return ret.toString();
         }

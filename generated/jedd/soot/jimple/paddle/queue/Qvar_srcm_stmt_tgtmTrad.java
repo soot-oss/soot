@@ -23,16 +23,16 @@ public class Qvar_srcm_stmt_tgtmTrad extends Qvar_srcm_stmt_tgtm {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), tgtm.v(), stmt.v(), var.v() },
-                                              new PhysicalDomain[] { MS.v(), MT.v(), ST.v(), V1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), var.v(), stmt.v(), tgtm.v() },
+                                              new PhysicalDomain[] { MS.v(), V1.v(), ST.v(), MT.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvar_srcm_stmt" +
-                                               "_tgtmTrad.jedd:40,22-24"),
+                                               "lhota/soot-trunk2/src/soot/jimple/paddle/queue/Qvar_srcm_stm" +
+                                               "t_tgtmTrad.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { var.v(), srcm.v(), stmt.v(), tgtm.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
             for (int i = 0; i < 4; i++) {
-                this.add((VarNode) tuple[0], (SootMethod) tuple[1], (Unit) tuple[2], (SootMethod) tuple[3]);
+                add((VarNode) tuple[0], (SootMethod) tuple[1], (Unit) tuple[2], (SootMethod) tuple[3]);
             }
         }
     }

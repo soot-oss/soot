@@ -47,7 +47,7 @@ public abstract class Rvar implements Readers.Reader {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.var());
+            ret.append(var());
             ret.append(", ");
             return ret.toString();
         }

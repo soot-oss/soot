@@ -25,7 +25,7 @@ public abstract class Qctxt_method {
     
     public abstract Rctxt_method reader(String rname);
     
-    public Rctxt_method revreader(String rname) { return this.reader(rname); }
+    public Rctxt_method revreader(String rname) { return reader(rname); }
     
-    public void add(Rctxt_method.Tuple in) { this.add(in.ctxt(), in.method()); }
+    public void add(Rctxt_method.Tuple in) { add(in.ctxt(), in.method()); }
 }
