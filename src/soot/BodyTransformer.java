@@ -36,9 +36,9 @@ public abstract class BodyTransformer extends Transformer
         Map options = Scene.v().computePhaseOptions(phaseName, 
                                                     getDefaultOptions() + " " + optionsString);
 
-        if (Options.getBoolean(options, "disabled"))
+        if(Options.getBoolean(options, "disabled"))
             return;
-
+            
         internalTransform(b, phaseName, options);
     }
 

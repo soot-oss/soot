@@ -42,7 +42,6 @@ public class UnreachableCodeEliminator extends BodyTransformer
     public static UnreachableCodeEliminator v() { return instance; }
 
     static boolean debug = soot.Main.isInDebugMode;
-    static boolean verbose = soot.Main.isVerbose;
 
     static CompleteUnitGraph stmtGraph;
     static HashSet visited;
@@ -56,7 +55,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
         stmtGraph = new CompleteUnitGraph(body);
         visited = new HashSet();
 
-        if (verbose) 
+        if (soot.Main.isVerbose) 
             System.out.println("[" + body.getMethod().getName() + "] Starting unreachable pruner...");
 
         // mark first statement and all its successors, recursively
@@ -72,7 +71,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
                 numPruned++;
             }
         }
-        if (verbose)
+        if (soot.Main.isVerbose)
         {
             if (numPruned == 0) {
                 System.out.println("    --- no unreachable blocks ---");

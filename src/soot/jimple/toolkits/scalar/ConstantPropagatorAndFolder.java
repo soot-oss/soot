@@ -43,7 +43,6 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
     public static ConstantPropagatorAndFolder v() { return instance; }
 
     static boolean debug = soot.Main.isInDebugMode;
-    static boolean verbose = soot.Main.isVerbose;
 
     protected void internalTransform(Body b, String phaseName, Map options)
     {
@@ -51,7 +50,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
         int numFolded = 0;
         int numPropagated = 0;
 
-        if (verbose)
+        if (soot.Main.isVerbose)
             System.out.println("[" + stmtBody.getMethod().getName() +
                                "] Propagating and folding constants...");
 
@@ -109,7 +108,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
             }
         }
 
-       if (verbose)
+       if (soot.Main.isVerbose)
             System.out.println("[" + stmtBody.getMethod().getName() +
                 "] Propagated: " + numPropagated + ", Folded:  " + numFolded);
 

@@ -42,7 +42,6 @@ public class UnconditionalBranchFolder extends BodyTransformer
     public static UnconditionalBranchFolder v() { return instance; }
 
     static boolean debug = soot.Main.isInDebugMode;
-    static boolean verbose = soot.Main.isVerbose;
 
     static final int JUMPOPT_TYPES = 6;
     static int numFound[], numFixed[];
@@ -53,10 +52,8 @@ public class UnconditionalBranchFolder extends BodyTransformer
     {
         StmtBody body = (StmtBody)b;
 
-        if (verbose) 
-        {
+        if (soot.Main.isVerbose) 
             System.out.println("[" + body.getMethod().getName() + "] Starting jump optimizer...");
-        }
 
         // allocate counters once only
         if (numFound == null) {
@@ -116,11 +113,10 @@ public class UnconditionalBranchFolder extends BodyTransformer
                 }
             }
         }
-        if (verbose) {
+        if (soot.Main.isVerbose) 
             System.out.println("[" + body.getMethod().getName() + "] Found " + numFound[0] +
                                " branch optimization opportunities, " +
                                numFixed[0] + " fixed.");
-        }
     } // optimizeJumps
 
     private static void updateCounters(int type, boolean fixed) {

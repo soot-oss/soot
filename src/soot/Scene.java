@@ -171,6 +171,7 @@ public class Scene extends AbstractHost
         while (optionKeysIt.hasNext())
         {
             String s = (String)optionKeysIt.next();
+            
             options.put(s, oldOptions.get(s));
         }
 
