@@ -54,7 +54,7 @@ public class PseudoTopologicalOrderer
     private int last;
         
     /**
-     *  @param g a DirectedGraph instance whose nodes we which to order.
+     *  @param g a DirectedGraph instance whose nodes we wish to order.
      *  @return a pseudo-topologically ordered list of the graph's nodes.
      */
     public List newList(DirectedGraph g)
