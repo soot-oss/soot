@@ -79,7 +79,7 @@ document:
 	javadoc -d doc -sourcepath src -windowtitle "Soot API" @src/packageList
 
 badfields: all
-	java -Xmx200m soot.BadFields -w -f none -process-path classes
+	java -Xmx200m soot.tools.BadFields -w -f none -process-path classes
 #
 ##########################################################################
 #

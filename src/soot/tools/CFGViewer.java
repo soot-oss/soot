@@ -24,8 +24,9 @@
  */
 
 
-package soot.util;
+package soot.tools;
 
+import soot.util.dot.*;
 import soot.*;
 import soot.toolkits.graph.*;
 import soot.util.*;

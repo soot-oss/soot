@@ -24,32 +24,27 @@
  */
 
 
-/* @author Feng Qian */
-
-package soot.util;
-
-import java.io.*;
+package soot.util.dot;
 
 /**
- * Encodes general Dot commands.
+ * A class for specifying Dot graph attributes.
+ *
+ * @author Feng Qian 
  */
-public class DotGraphCommand implements Renderable{
-  String command;
+public class DotGraphAttribute {
+  String id;
+  String value;
 
-  /**
-   * @param cmd a dot dommand string
-   */
-  public DotGraphCommand(String cmd) {
-    this.command = cmd;
+  public DotGraphAttribute(String id, String v){
+    this.id = id;
+    this.value = v;
   }
-
-  /**
-   * Implements Renderable interface.
-   * @param out the output stream
-   * @param indent the number of indent space 
-   * @see Renderable
-   */
-  public void render(OutputStream out, int indent) throws IOException {
-    DotGraphUtility.renderLine(out, command, indent);
+  
+  public String toString(){
+    StringBuffer line = new StringBuffer();
+    line.append(this.id);
+    line.append("=");
+    line.append(this.value);
+    return new String(line);
   }
 }

@@ -26,7 +26,7 @@
 
 /* @author Feng Qian */
 
-package soot.util;
+package soot.util.dot;
 
 import java.io.*;
 import java.util.*;

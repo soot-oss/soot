@@ -1,4 +1,5 @@
-package soot;
+package soot.tools;
+import soot.*;
 import java.io.*;
 import java.util.*;
 import soot.jimple.*;

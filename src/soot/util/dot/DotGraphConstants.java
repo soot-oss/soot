@@ -24,7 +24,7 @@
  */
 
 
-package soot.util;
+package soot.util.dot;
 
 /**
  * Defines several constants used to generate a Dot graph.

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Feng Qian
+ * Copyright (C) 2002 Sable Research Group
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,10 +23,33 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.util;
+
+/* @author Feng Qian */
+
+package soot.util.dot;
 
 import java.io.*;
 
-public interface Renderable {
-  public void render(OutputStream device, int indent) throws IOException;
+/**
+ * Encodes general Dot commands.
+ */
+public class DotGraphCommand implements Renderable{
+  String command;
+
+  /**
+   * @param cmd a dot dommand string
+   */
+  public DotGraphCommand(String cmd) {
+    this.command = cmd;
+  }
+
+  /**
+   * Implements Renderable interface.
+   * @param out the output stream
+   * @param indent the number of indent space 
+   * @see Renderable
+   */
+  public void render(OutputStream out, int indent) throws IOException {
+    DotGraphUtility.renderLine(out, command, indent);
+  }
 }

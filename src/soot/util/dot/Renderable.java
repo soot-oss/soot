@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Sable Research Group
+ * Copyright (C) 2002 Feng Qian
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,28 +23,10 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
+package soot.util.dot;
 
-package soot.util;
+import java.io.*;
 
-/**
- * A class for specifying Dot graph attributes.
- *
- * @author Feng Qian 
- */
-public class DotGraphAttribute {
-  String id;
-  String value;
-
-  public DotGraphAttribute(String id, String v){
-    this.id = id;
-    this.value = v;
-  }
-  
-  public String toString(){
-    StringBuffer line = new StringBuffer();
-    line.append(this.id);
-    line.append("=");
-    line.append(this.value);
-    return new String(line);
-  }
+public interface Renderable {
+  public void render(OutputStream device, int indent) throws IOException;
 }

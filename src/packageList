@@ -1,4 +1,5 @@
 soot
+soot.tools
 soot.baf
 soot.baf.internal
 soot.baf.toolkits.base
@@ -23,6 +24,7 @@ soot.toolkits.graph
 soot.toolkits.scalar
 soot.util
 soot.util.queue
+soot.util.dot
 soot.jimple.spark
 soot.jimple.spark.fieldrw
 soot.jimple.spark.builder
