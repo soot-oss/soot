@@ -68,9 +68,9 @@ public class BlockGraph implements DirectedGraph
         mUnits = aBody.getUnits();
         
 
-        Map trapBeginUnits = new HashMap();  // Map a unit to all 
-        List trapsInScope = null;    // List of Trap that can be invoked at a given unit
-        Chain traps = null;          // Traps for this Body
+        Map trapBeginUnits = new HashMap(); // Maps a unit to a list of traps whose scopes start at that unit.
+        List trapsInScope = null;           //  List of Traps that can catch an exception at a given unit.
+        Chain traps = null;                 // All traps for this Body
 
 
         /*
@@ -78,20 +78,16 @@ public class BlockGraph implements DirectedGraph
          */
         Map leaders = new HashMap();
         
-        
-            
-        // if(type == COMPLETE) {
+                    
         // Get the list of all traps for this Body
         traps = mBody.getTraps();
-        trapsInScope = new ArrayList(traps.size());
+        trapsInScope = new ArrayList(traps.size());   // no more than traps.size() traps can be in scope for any given unit.
             
         // Populate the trapBeginUnits Map
         Iterator trapIt = traps.iterator();
         while(trapIt.hasNext()) {
             Trap someTrap = (Trap) trapIt.next();
             Unit firstUnit = someTrap.getBeginUnit();
-            
-
                     
             List trapList = (List) trapBeginUnits.get(firstUnit);
             if(trapList == null) {
@@ -101,11 +97,22 @@ public class BlockGraph implements DirectedGraph
             } else {
                 trapList.add(someTrap);
             }
+	    
+
+	    // Get the leaders that bound exception contexts.
+	    if(type == ZONED) {	      
+	      List predList = new ArrayList();
+	      predList.add(mUnits.getPredOf(someTrap.getBeginUnit()));
+	      leaders.put(someTrap.getBeginUnit(), predList);
+
+	      predList = new ArrayList();
+	      predList.add(mUnits.getPredOf(someTrap.getEndUnit()));
+	      leaders.put(someTrap.getEndUnit(), predList);      	      
+	    }	    
         }
         
 
-
-            
+	/*            
         List trapHeads = new ArrayList();
         trapIt = trapBeginUnits.values().iterator();
         while(trapIt.hasNext() ) {
@@ -114,9 +121,8 @@ public class BlockGraph implements DirectedGraph
             Trap someTrap = (Trap) l.get(0);
             trapHeads.add(someTrap.getHandlerUnit());
             trapHeads.add(someTrap.getBeginUnit());
-        }
-        
-                
+        }        
+	*/      
 
 
 
@@ -480,7 +486,6 @@ public class BlockGraph implements DirectedGraph
         
         return buf.toString();
     }
-
 
     // Directed graph implementation
     public List getHeads()

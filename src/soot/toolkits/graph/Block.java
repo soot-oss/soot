@@ -180,7 +180,7 @@ public class Block
         StringBuffer strBuf = new StringBuffer();
 
         
-   
+	//   xxx
         /*
         strBuf.append(toShortString() + " of method " + mBody.getMethod().getName() + ".\n");
         strBuf.append("Head: " + mHead.toBriefString(stmtToName, indentation ) + '\n');
@@ -189,6 +189,9 @@ public class Block
         
 
         // print out predecessors.
+
+	strBuf.append("Block " + mIndexInMethod + ":\n");
+	strBuf.append("[preds: ");
         int count = 0;
         if(mPreds != null) {
             Iterator it = mPreds.iterator();
