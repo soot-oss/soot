@@ -1030,4 +1030,10 @@ public class Singletons {
         return instance_soot_SootResolver;
     }
 
+    private soot.javaToJimple.InitialResolver instance_soot_javaToJimple_InitialResolver;
+    public soot.javaToJimple.InitialResolver soot_javaToJimple_InitialResolver() {
+        if( instance_soot_javaToJimple_InitialResolver == null ) instance_soot_javaToJimple_InitialResolver = new soot.javaToJimple.InitialResolver( g );
+        return instance_soot_javaToJimple_InitialResolver;
+    }
+
 }
