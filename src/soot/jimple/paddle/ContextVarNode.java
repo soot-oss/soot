@@ -70,6 +70,7 @@ public class ContextVarNode extends ContextNode implements Comparable {
         if( i > PaddleScene.v().nodeManager().maxFinishNumber ) PaddleScene.v().nodeManager().maxFinishNumber = i;
     }
     protected int finishingNumber = 0;
+    public int finishingNumber() { return finishingNumber; }
     void addField( ContextFieldRefNode frn ) {
         frn.nextByField = fieldNodes;
         fieldNodes = frn;

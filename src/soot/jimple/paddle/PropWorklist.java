@@ -21,6 +21,7 @@ package soot.jimple.paddle;
 import soot.jimple.paddle.queue.*;
 import soot.*;
 import java.util.*;
+import soot.util.*;
 import soot.options.PaddleOptions;
 
 /** Propagates points-to sets along pointer assignment graph using a worklist.
@@ -28,7 +29,12 @@ import soot.options.PaddleOptions;
  */
 
 public final class PropWorklist extends AbsPropagator {
-    protected final Set varNodeWorkList = new TreeSet();
+    protected Heap varNodeWorkList = new Heap(new Heap.Keys() {
+        public int key(Object o) {
+            ContextVarNode cvn = (ContextVarNode) o;
+            return cvn.finishingNumber();
+        }
+    });
     private NodeManager nm = PaddleScene.v().nodeManager();
 
     public PropWorklist( Rsrcc_src_dstc_dst simple,
@@ -57,62 +63,61 @@ public final class PropWorklist extends AbsPropagator {
     }
     /** Actually does the propagation. */
     public final boolean update() {
+        if( !PaddleScene.v().depMan.worklistEmpty() ) return true;
         p2sets = PaddleScene.v().p2sets;
-        new TopoSorter( pag, false ).sort();
-	for( Iterator it = pag.allocSources(); it.hasNext(); ) {
-	    handleContextAllocNode( (ContextAllocNode) it.next() );
-	}
 
         newEdges();
 
+        // have to reheapify the worklist because the sort may change the
+        // node numbers
+        new TopoSorter( pag, false ).sort();
+        varNodeWorkList.heapify();
+
         boolean verbose = PaddleScene.v().options().verbose();
-	do {
-            if( verbose ) {
-                G.v().out.println( "Worklist has "+varNodeWorkList.size()+
-                        " nodes." );
+        if( verbose ) {
+            G.v().out.println( "Worklist has "+varNodeWorkList.size()+
+                    " nodes." );
+        }
+        while( !varNodeWorkList.isEmpty() ) {
+            ContextVarNode src = (ContextVarNode) varNodeWorkList.removeMin();
+            handleContextVarNode( src );
+        }
+        if( verbose ) {
+            G.v().out.println( "Now handling field references" );
+        }
+        for( Iterator srcIt = pag.storeSources(); srcIt.hasNext(); ) {
+            final ContextVarNode src = (ContextVarNode) srcIt.next();
+            for( Iterator targetIt = pag.storeLookup(src); targetIt.hasNext(); ) {
+                final ContextFieldRefNode target = (ContextFieldRefNode) targetIt.next();
+                p2sets.make(target.base()).forall( new P2SetVisitor() {
+                public final void visit( ContextAllocNode n ) {
+                        ContextAllocDotField nDotF = ContextAllocDotField.make( 
+                            (ContextAllocNode) n, target.field() );
+                        p2sets.make(nDotF).addAll( p2sets.get(src), null );
+                    }
+                } );
             }
-            while( !varNodeWorkList.isEmpty() ) {
-                ContextVarNode src = (ContextVarNode) varNodeWorkList.iterator().next();
-                varNodeWorkList.remove( src );
-                handleContextVarNode( src );
+        }
+        HashSet edgesToPropagate = new HashSet();
+        for( Iterator it = pag.loadSources(); it.hasNext(); ) {
+            handleContextFieldRefNode( (ContextFieldRefNode) it.next(), edgesToPropagate );
+        }
+        HashSet nodesToFlush = new HashSet();
+        for( Iterator pairIt = edgesToPropagate.iterator(); pairIt.hasNext(); ) {
+            final Object[] pair = (Object[]) pairIt.next();
+            PointsToSetInternal nDotF = (PointsToSetInternal) pair[0];
+            PointsToSetReadOnly newP2Set = nDotF.getNewSet();
+            ContextVarNode loadTarget = (ContextVarNode) pair[1];
+            if( p2sets.make(loadTarget).addAll( newP2Set, null ) ) {
+                varNodeWorkList.add( loadTarget );
             }
-            if( verbose ) {
-                G.v().out.println( "Now handling field references" );
-            }
-            for( Iterator srcIt = pag.storeSources(); srcIt.hasNext(); ) {
-                final ContextVarNode src = (ContextVarNode) srcIt.next();
-                for( Iterator targetIt = pag.storeLookup(src); targetIt.hasNext(); ) {
-                    final ContextFieldRefNode target = (ContextFieldRefNode) targetIt.next();
-                    p2sets.make(target.base()).forall( new P2SetVisitor() {
-                    public final void visit( ContextAllocNode n ) {
-                            ContextAllocDotField nDotF = ContextAllocDotField.make( 
-                                (ContextAllocNode) n, target.field() );
-                            p2sets.make(nDotF).addAll( p2sets.get(src), null );
-                        }
-                    } );
-                }
-            }
-            HashSet edgesToPropagate = new HashSet();
-	    for( Iterator it = pag.loadSources(); it.hasNext(); ) {
-                handleContextFieldRefNode( (ContextFieldRefNode) it.next(), edgesToPropagate );
-	    }
-            HashSet nodesToFlush = new HashSet();
-            for( Iterator pairIt = edgesToPropagate.iterator(); pairIt.hasNext(); ) {
-                final Object[] pair = (Object[]) pairIt.next();
-                PointsToSetInternal nDotF = (PointsToSetInternal) pair[0];
-		PointsToSetReadOnly newP2Set = nDotF.getNewSet();
-                ContextVarNode loadTarget = (ContextVarNode) pair[1];
-                if( p2sets.make(loadTarget).addAll( newP2Set, null ) ) {
-                    varNodeWorkList.add( loadTarget );
-                }
-                nodesToFlush.add( nDotF );
-            }
-            for( Iterator nDotFIt = nodesToFlush.iterator(); nDotFIt.hasNext(); ) {
-                final PointsToSetInternal nDotF = (PointsToSetInternal) nDotFIt.next();
-                nDotF.flushNew();
-            }
-	} while( !varNodeWorkList.isEmpty() );
-        return true;
+            nodesToFlush.add( nDotF );
+        }
+        for( Iterator nDotFIt = nodesToFlush.iterator(); nDotFIt.hasNext(); ) {
+            final PointsToSetInternal nDotF = (PointsToSetInternal) nDotFIt.next();
+            nDotF.flushNew();
+        }
+        return !varNodeWorkList.isEmpty();
     }
 
     /* End of public methods. */
@@ -138,7 +143,9 @@ public final class PropWorklist extends AbsPropagator {
 
         
 	final PointsToSetReadOnly newP2Set = p2sets.get(src).getNewSet();
-	if( newP2Set.isEmpty() ) return false;
+	if( newP2Set.isEmpty() ) {
+            return false;
+        }
 	p2sets.make(src).flushNew();
 
         newP2Set.forall( new P2SetVisitor() {
@@ -148,7 +155,9 @@ public final class PropWorklist extends AbsPropagator {
             ptout.add( src.ctxt(), src.var(), can.ctxt(), can.obj() );
         }} );
         PaddleScene.v().updateCallGraph();
-        if( newEdges() ) ret = true;
+        if( newEdges() ) {
+            ret = true;
+        }
 
         for( Iterator simpleTargetIt = pag.simpleLookup(src); simpleTargetIt.hasNext(); ) {
 

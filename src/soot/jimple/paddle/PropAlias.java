@@ -39,8 +39,12 @@ public final class PropAlias extends AbsPropagator {
     private AbsP2Sets p2sets;
     /** Actually does the propagation. */
     public final boolean update() {
+        boolean ret = false;
+
         p2sets = PaddleScene.v().p2sets;
         new TopoSorter( pag, false ).sort();
+        varNodeWorkList.heapify();
+        /*
         for( Iterator frIt = pag.loadSources(); frIt.hasNext(); ) {
             final ContextFieldRefNode fr = (ContextFieldRefNode) frIt.next();
             fieldToBase.put( fr.field(), fr.base() );
@@ -52,78 +56,82 @@ public final class PropAlias extends AbsPropagator {
 	for( Iterator it = pag.allocSources(); it.hasNext(); ) {
 	    handleContextAllocNode( (ContextAllocNode) it.next() );
 	}
-        newEdges();
+        */
+        if( newEdges() ) {
+            ret = true;
+        }
 
         boolean verbose = PaddleScene.v().options().verbose();
-	do {
-            if( verbose ) {
-                G.v().out.println( "Worklist has "+varNodeWorkList.size()+
-                        " nodes." );
+        if( verbose ) {
+            G.v().out.println( "Worklist has "+varNodeWorkList.size()+
+                    " nodes." );
+        }
+        aliasWorkList = new HashSet();
+        while( !varNodeWorkList.isEmpty() ) {
+            ContextVarNode src = (ContextVarNode) varNodeWorkList.removeMin();
+            addToAliasWorkList( src );
+            if( handleContextVarNode( src ) ) {
+                ret = true;
             }
-            aliasWorkList = new HashSet();
-            while( !varNodeWorkList.isEmpty() ) {
-                ContextVarNode src = (ContextVarNode) varNodeWorkList.iterator().next();
-                varNodeWorkList.remove( src );
-                addToAliasWorkList( src );
-                handleContextVarNode( src );
-            }
-            if( verbose ) {
-                G.v().out.println( "Now handling field references" );
-            }
+        }
+        if( verbose ) {
+            G.v().out.println( "Now handling field references" );
+        }
 
-            for( Iterator srcIt = aliasWorkList.iterator(); srcIt.hasNext(); ) {
+        for( Iterator srcIt = aliasWorkList.iterator(); srcIt.hasNext(); ) {
 
-                final ContextVarNode src = (ContextVarNode) srcIt.next();
-                for( Iterator srcFrIt = src.fields(); srcFrIt.hasNext(); ) {
-                    final ContextFieldRefNode srcFr = (ContextFieldRefNode) srcFrIt.next();
-                    PaddleField field = srcFr.field();
-                    for( Iterator dstIt = fieldToBase.get( field ).iterator(); dstIt.hasNext(); ) {
-                        final ContextVarNode dst = (ContextVarNode) dstIt.next();
-                        if( p2setsGet(src).hasNonEmptyIntersection(
-                                    p2setsGet(dst) ) ) {
-                            ContextFieldRefNode dstFr = dst.dot( field );
-                            aliasEdges.put( srcFr, dstFr );
-                            aliasEdges.put( dstFr, srcFr );
-                            addToFieldRefWorkList( srcFr );
-                            addToFieldRefWorkList( dstFr );
-                            if( outSetsMake(dstFr).addAll( 
-                                    inSetsGet(srcFr).getOldSet(), null ) ) {
-                                addToOutFieldRefWorkList( dstFr );
-                            }
-                            if( outSetsMake(srcFr).addAll( 
-                                    inSetsGet(dstFr).getOldSet(), null ) ) {
-                                addToOutFieldRefWorkList( srcFr );
-                            }
+            final ContextVarNode src = (ContextVarNode) srcIt.next();
+            for( Iterator srcFrIt = src.fields(); srcFrIt.hasNext(); ) {
+                final ContextFieldRefNode srcFr = (ContextFieldRefNode) srcFrIt.next();
+                PaddleField field = srcFr.field();
+                for( Iterator dstIt = fieldToBase.get( field ).iterator(); dstIt.hasNext(); ) {
+                    final ContextVarNode dst = (ContextVarNode) dstIt.next();
+                    if( p2setsGet(src).hasNonEmptyIntersection(
+                                p2setsGet(dst) ) ) {
+                        ret = true;
+                        ContextFieldRefNode dstFr = dst.dot( field );
+                        aliasEdges.put( srcFr, dstFr );
+                        aliasEdges.put( dstFr, srcFr );
+                        addToFieldRefWorkList( srcFr );
+                        addToFieldRefWorkList( dstFr );
+                        if( outSetsMake(dstFr).addAll( 
+                                inSetsGet(srcFr).getOldSet(), null ) ) {
+                            addToOutFieldRefWorkList( dstFr );
+                        }
+                        if( outSetsMake(srcFr).addAll( 
+                                inSetsGet(dstFr).getOldSet(), null ) ) {
+                            addToOutFieldRefWorkList( srcFr );
                         }
                     }
                 }
             }
-            for( Iterator srcIt = fieldRefWorkList.iterator(); srcIt.hasNext(); ) {
-                final ContextFieldRefNode src = (ContextFieldRefNode) srcIt.next();
-                for( Iterator dstIt = aliasEdges.get( src ).iterator(); dstIt.hasNext(); ) {
-                    final ContextFieldRefNode dst = (ContextFieldRefNode) dstIt.next();
-                    if( outSetsMake( dst ).addAll( inSetsGet(src).getNewSet(), null ) ) {
-                        addToOutFieldRefWorkList( dst );
-                    }
-                }
-                inSetsMake(src).flushNew();
-            }
-            fieldRefWorkList = new HashSet();
-            for( Iterator srcIt = outFieldRefWorkList.iterator(); srcIt.hasNext(); ) {
-                final ContextFieldRefNode src = (ContextFieldRefNode) srcIt.next();
-                PointsToSetReadOnly set = outSetsGet(src).getNewSet();
-                if( set.isEmpty() ) continue;
-                outSetsMake( src ).flushNew();
-                for( Iterator targetIt = pag.loadLookup(src); targetIt.hasNext(); ) {
-                    final ContextVarNode target = (ContextVarNode) targetIt.next();
-                    if( p2setsMake(target).addAll( set, null ) ) {
-                        addToVarNodeWorkList( target );
-                    }
+        }
+        for( Iterator srcIt = fieldRefWorkList.iterator(); srcIt.hasNext(); ) {
+            final ContextFieldRefNode src = (ContextFieldRefNode) srcIt.next();
+            for( Iterator dstIt = aliasEdges.get( src ).iterator(); dstIt.hasNext(); ) {
+                final ContextFieldRefNode dst = (ContextFieldRefNode) dstIt.next();
+                if( outSetsMake( dst ).addAll( inSetsGet(src).getNewSet(), null ) ) {
+                    addToOutFieldRefWorkList( dst );
                 }
             }
-            outFieldRefWorkList = new HashSet();
-	} while( !varNodeWorkList.isEmpty() );
-        return true;
+            inSetsMake(src).flushNew();
+        }
+        fieldRefWorkList = new HashSet();
+        for( Iterator srcIt = outFieldRefWorkList.iterator(); srcIt.hasNext(); ) {
+            final ContextFieldRefNode src = (ContextFieldRefNode) srcIt.next();
+            PointsToSetReadOnly set = outSetsGet(src).getNewSet();
+            if( set.isEmpty() ) continue;
+            outSetsMake( src ).flushNew();
+            for( Iterator targetIt = pag.loadLookup(src); targetIt.hasNext(); ) {
+                final ContextVarNode target = (ContextVarNode) targetIt.next();
+                if( p2setsMake(target).addAll( set, null ) ) {
+                    addToVarNodeWorkList( target );
+                    ret = true;
+                }
+            }
+        }
+        outFieldRefWorkList = new HashSet();
+        return ret;
     }
 
     /* End of public methods. */
@@ -231,7 +239,12 @@ public final class PropAlias extends AbsPropagator {
         return outSets.get(cfrn);
     }
     protected P2SetMap outSets;
-    protected final Set varNodeWorkList = new TreeSet();
+    protected final Heap varNodeWorkList = new Heap(new Heap.Keys() {
+        public int key(Object o) {
+            ContextVarNode cvn = (ContextVarNode) o;
+            return cvn.finishingNumber();
+        }
+    });
     private boolean addToVarNodeWorkList( ContextVarNode cvn ) {
         return varNodeWorkList.add(cvn); 
     }

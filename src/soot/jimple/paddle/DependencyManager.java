@@ -30,21 +30,20 @@ import soot.util.*;
 public class DependencyManager 
 { 
     private static final boolean DEBUG = false;
-    private LinkedList worklist = new LinkedList();
-    private Set workset = new HashSet();
+    private Map countMap = new HashMap();
+    private Heap worklist = new Heap(new Heap.Keys() {
+        public int key(Object o) {
+            Integer i = (Integer) countMap.get(o);
+            if(i == null) return 0;
+            return i.intValue();
+        }
+    });
     private MultiMap deps = new HashMultiMap();
     private MultiMap precs = new HashMultiMap();
     public DependencyManager() {
     }
     public void invalidate( DepItem item ) {
-        if( workset.add(item) ) {
-            worklist.addFirst(item);
-        }
-    }
-    public void invalidateAtEnd( DepItem item ) {
-        if( workset.add(item) ) {
-            worklist.addLast(item);
-        }
+        worklist.add(item);
     }
     private boolean incflow = false;
     public void update() {
@@ -52,11 +51,11 @@ public class DependencyManager
         incflow = true;
 worklist:
         while( !worklist.isEmpty() ) {
-            DepItem item = (DepItem) worklist.removeFirst();
-            workset.remove(item);
+            DepItem item = (DepItem) worklist.removeMin();
+            increment(item);
             if( !checkPrec(item) ) {
                 if(DEBUG) System.out.println( "not updating "+item.getClass() );
-                invalidateAtEnd(item);
+                invalidate(item);
             } else {
                 if(DEBUG) System.out.println( "updating "+item.getClass() );
                 if( item.update() ) {
@@ -73,7 +72,7 @@ worklist:
     public boolean checkPrec( DepItem item ) {
         for( Iterator precIt = precs.get(item).iterator(); precIt.hasNext(); ) {
             final DepItem prec = (DepItem) precIt.next();
-            if( workset.contains(prec) ) {
+            if( worklist.contains(prec) ) {
                 return false;
             }
         }
@@ -85,4 +84,14 @@ worklist:
     public void addPrec( DepItem from, DepItem to ) {
         precs.put(from, to);
     }
+    private void increment(DepItem item) {
+        Integer i = (Integer) countMap.get(item);
+        if( i == null ) {
+            i = new Integer(1);
+        } else {
+            i = new Integer(i.intValue()+1);
+        }
+        countMap.put(item, i);
+    }
+    public boolean worklistEmpty() { return worklist.isEmpty(); }
 }

@@ -224,6 +224,7 @@ public class PaddleScene
         depMan.addDep(cicg, rm);
         depMan.addDep(tm, prop);
         depMan.addDep(pag, prop);
+        depMan.addDep(prop, prop);
         depMan.addDep(cg, rc);
 
         depMan.addPrec(cec, globalallocs);
@@ -265,6 +266,7 @@ public class PaddleScene
         depMan.addPrec(vcr, specials);
         depMan.addPrec(vcr, scgb);
         depMan.addPrec(vcr, rmout);
+
     }
     private void makeSetFactories() {
         switch( options.set_impl() ) {
