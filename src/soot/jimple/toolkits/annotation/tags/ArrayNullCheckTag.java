@@ -5,9 +5,12 @@ package soot.jimple.toolkits.annotation.tags;
  * the check information. The right-most two bits stand for
  * the array bounds checks, and the right third bit represents
  * the null check. 
- * <p>
- * For array references, right-most three bits are meaningful;
+ * 
+ * For array references, the right three bits are meaningful;
  * for other object refrences, only null check bit should be used.
+ * 
+ * @see ArrayCheckTag
+ * @see NullCheckTag
  */
 public class ArrayNullCheckTag implements OneByteCodeTag
 {
@@ -40,6 +43,7 @@ public class ArrayNullCheckTag implements OneByteCodeTag
 	return Byte.toString(value);
     }
 
+  /** Accumulates another byte value by OR. */
     public byte accumulate(byte other)
     {
 	byte oldv = value;

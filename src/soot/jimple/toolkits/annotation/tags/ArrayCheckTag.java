@@ -5,6 +5,8 @@ import soot.*;
 import java.util.*;
 import java.io.*;
 
+/** Implementation of the Tag interface for the array bounds check.
+ */
 public class ArrayCheckTag implements OneByteCodeTag
 {
     private final static String NAME = "ArrayCheckTag";
@@ -13,8 +15,8 @@ public class ArrayCheckTag implements OneByteCodeTag
     private boolean upperCheck = true;
 
     /** 
-     * Tag represents two bounds checks of an array reference.
-     * Value 'true' indicates check needed.
+     * A tag represents two bounds checks of an array reference.
+     * The value 'true' indicates check needed.
      */
     public ArrayCheckTag(boolean lower, boolean upper)
     {
@@ -23,7 +25,7 @@ public class ArrayCheckTag implements OneByteCodeTag
     }
 
     /** 
-     * Return back the check information in binary form, which
+     * Returns back the check information in binary form, which
      * will be written into the class file.
      */    
     public byte[] getValue()
@@ -40,17 +42,20 @@ public class ArrayCheckTag implements OneByteCodeTag
 
 	return value;
     }
-    
+   
+  /** Needs upper bound check?
+   */ 
     public boolean isCheckUpper()
     {
 	return upperCheck;
     }
-    
+   
+  /** Needs lower bound check?
+   */ 
     public boolean isCheckLower()
     {
 	return lowerCheck;
     }
-
 
     public String getName()
     {
@@ -62,3 +67,5 @@ public class ArrayCheckTag implements OneByteCodeTag
 	return   (lowerCheck ? "": "[safe lower bound]") +"" +  (upperCheck ? "":"[safe upper bound]");
     }
 }
+
+

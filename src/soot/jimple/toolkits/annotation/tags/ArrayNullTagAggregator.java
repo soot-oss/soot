@@ -6,6 +6,8 @@ import java.util.*;
 
 import soot.tagkit.*;
 
+/** The aggregator for ArrayNullCheckAttribute. */
+
 public class ArrayNullTagAggregator implements TagAggregator
 {    
     private boolean status = false;
@@ -14,7 +16,7 @@ public class ArrayNullTagAggregator implements TagAggregator
 
     private Unit lastUnit = null;
     private ArrayNullCheckTag lastTag = null;
-    
+
     public ArrayNullTagAggregator(boolean active)
     {
 	this.status = active;
@@ -25,6 +27,7 @@ public class ArrayNullTagAggregator implements TagAggregator
 	return this.status;
     }
 
+  /** Clears accumulated tags. */
     public void refresh()
     {
         tags.clear();
@@ -33,6 +36,7 @@ public class ArrayNullTagAggregator implements TagAggregator
 	lastTag = null;
     }
 
+  /** Adds a new (unit, tag) pair. */
     public void aggregateTag(Tag t, Unit u)
     {
 	if(t instanceof OneByteCodeTag) 
@@ -54,6 +58,7 @@ public class ArrayNullTagAggregator implements TagAggregator
 	}
     }
     
+  /** Returns a CodeAttribute with all tags aggregated. */ 
     public Tag produceAggregateTag()
     {
 	if(units.size() == 0)

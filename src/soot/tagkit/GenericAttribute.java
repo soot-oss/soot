@@ -23,6 +23,9 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
+/* This program is designed by Patrice Pominville and Feng Qian
+ */
+
 package soot.tagkit;
 
 import soot.*;
@@ -32,7 +35,11 @@ import java.util.*;
 import javax.swing.*;
 
 
-/** Represents a tag; these get attached to implementations of Host.
+/** Represents a general attribute which can be attached to
+ * implementations of Host. It can be directly used to add
+ * attributes of class files, fields, and methods.
+ *
+ * @see CodeAttribute
  */
 public class GenericAttribute implements Attribute
 {

@@ -5,5 +5,4 @@ import soot.*;
 
 public class AttributeValueException extends RuntimeException
 {
-
 }

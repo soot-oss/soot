@@ -1,12 +1,15 @@
+/* This program is designed by Patrice Pominville and Feng Qian
+ */
+
 package soot.tagkit;
 
 import java.util.*;
 import soot.baf.*;
 import soot.*;
 
-/** The CodeAttribute holds the PC -> Tag pairs.
- */
 
+/** A CodeAttribute object holds PC -> Tag pairs.
+ */
 public class CodeAttribute extends JasminAttribute
 {
     private List mUnits;
@@ -18,13 +21,13 @@ public class CodeAttribute extends JasminAttribute
 
     public CodeAttribute(){}
     
-    /* Define the code attribute with name. */
+  /** Creates an attribute object with the given name. */
     public CodeAttribute(String name)
     {
     	this.name = name;
     }
 
-    /* Define the code attribute with name and lists of unit-tag pairs. */
+  /** Create an attribute object with the name and lists of unit-tag pairs. */
     public CodeAttribute(String name, List units, List tags)
     {
     	this.name = name;
@@ -32,23 +35,25 @@ public class CodeAttribute extends JasminAttribute
 	this.mTags = tags;
     }
 
+  /** Returns the name.*/
     public String toString()
     {
 	return name;
     }
 
+  /** Returns the attribute name. */
     public String getName()
     {
 	return name;
     }
 
-    /* Only used by SOOT to read in an existing attribute without interpret it.*/
+  /** Only used by SOOT to read in an existing attribute without interpret it.*/
     public void setValue(byte[] v)
     {
     	this.value = v;
     }
     
-    /* Also only as setValue(). */
+  /** Also only used as setValue(). */
     public byte[] getValue() throws AttributeValueException
     {
 	if (value == null)
@@ -57,7 +62,7 @@ public class CodeAttribute extends JasminAttribute
 	    return value;
     }
 
-    /* Generate Jasmin Value String */
+  /** Generates Jasmin Value String */
     public String getJasminValue(Map instToLabel)
     {
 	StringBuffer buf = new StringBuffer();
@@ -80,6 +85,7 @@ public class CodeAttribute extends JasminAttribute
 	return buf.toString();
     }
 
+  /** Returns a list of unit boxes that have tags attached. */
     public List getUnitBoxes()
     {
 	List unitBoxes = new ArrayList(mUnits.size());

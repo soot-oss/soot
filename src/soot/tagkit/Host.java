@@ -38,18 +38,21 @@ import java.util.*;
  *
  * One example of a tag would be to store Boolean values, associated with
  * array accesses, indicating whether bounds checks can be omitted.
+ *
+ * @see Tag
  */
 public interface Host
 {
-    /** Get a list of tags associated with the current object. */
+    /** Gets a list of tags associated with the current object. */
     public List getTags();
     
     /** Returns the tag with the given name. */
     public Tag getTag(String aName);
 
+  /** Adds a tag. */
     public void addTag(Tag t);
 
-    /** Remove the tag with the given name. */
+    /** Removes the first tag with the given name. */
     public void removeTag(String name);
    
     /** Returns true if this host has a tag with the given name. */

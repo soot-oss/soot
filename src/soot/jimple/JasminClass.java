@@ -958,7 +958,7 @@ public class JasminClass
                         
                     v.getType().apply(new TypeSwitch()
                     {
-		        public void caseBooleanType(BooleanType t)
+		        private void handleIntegerType(IntegerType t)
 			{
                                 emitValue(rvalue);
                                 
@@ -966,39 +966,32 @@ public class JasminClass
                                     emit("istore_" + slot, -1);
                                 else
                                     emit("istore " + slot, -1);
+			}
 
+		        public void caseBooleanType(BooleanType t)
+			{
+			    handleIntegerType(t);
 			}
 
 			public void caseByteType(ByteType t)
 			{
-			    emitValue(rvalue);
-                                
-			    if(slot >= 0 && slot <= 3)
-			      emit("istore_" + slot, -1);
-			    else
-			      emit("istore " + slot, -1);
+			    handleIntegerType(t);
 			}
 
 			public void caseShortType(ShortType t)
 			{
-			    emitValue(rvalue);
-                                
-			    if(slot >= 0 && slot <= 3)
-			      emit("istore_" + slot, -1);
-			    else
-			      emit("istore " + slot, -1);
+			    handleIntegerType(t);
 			}
 
 			public void caseCharType(CharType t)
 			{
-			    emitValue(rvalue);
-                                
-			    if(slot >= 0 && slot <= 3)
-			      emit("istore_" + slot, -1);
-			    else
-			      emit("istore " + slot, -1);
-
+			    handleIntegerType(t);
 			}
+			
+			public void caseIntType(IntType t)
+			  {
+			    handleIntegerType(t);
+			  }
 
                         public void caseArrayType(ArrayType t)
                         {
@@ -1030,16 +1023,6 @@ public class JasminClass
                                 emit("fstore " + slot, -1);
                         }
 
-			public void caseIntType(IntType t)
-			  {
-			    emitValue(rvalue);
-                                
-			    if(slot >= 0 && slot <= 3)
-			      emit("istore_" + slot, -1);
-			    else
-			      emit("istore " + slot, -1);
-			  }
-			
                         public void caseLongType(LongType t)
                             {
                                 emitValue(rvalue);
@@ -1840,36 +1823,35 @@ public class JasminClass
                 else
                     emit("fload " + slot, 1);
             }
-
-            
+          
 	    // add boolean, byte, short, and char type
 	    public void caseBooleanType(BooleanType t)
 	      {
-		caseIntegerType(t);
+		handleIntegerType(t);
 	      }
 
 	    public void caseByteType(ByteType t)
 	      {
-		caseIntegerType(t);
+		handleIntegerType(t);
 	      }
 
 	    public void caseShortType(ShortType t)
 	      {
-		caseIntegerType(t);
+		handleIntegerType(t);
 	      }
 
 	    public void caseCharType(CharType t)
 	      {
-		caseIntegerType(t);
+		handleIntegerType(t);
 	      }
 
             public void caseIntType(IntType t)
             {
-                caseIntegerType(t);
+                handleIntegerType(t);
 	    }
 
             // peephole stuff appears here.
-	    public void caseIntegerType(IntegerType t)
+	    public void handleIntegerType(IntegerType t)
 	    {
                 if (vAlias.equals(plusPlusHolder))
                 {

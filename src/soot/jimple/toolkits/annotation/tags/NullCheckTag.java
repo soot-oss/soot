@@ -1,4 +1,10 @@
+
 package soot.jimple.toolkits.annotation.tags;
+
+/** NullCheckTag contains the null pointer check information. 
+ * The right third bit of a byte is used to represent whether
+ * the null check is needed.
+ */
 
 public class NullCheckTag implements OneByteCodeTag
 {

@@ -173,3 +173,25 @@ Best regards,
 
 Raja Vallee-Rai
 Sable Research Group
+
+
+-----------------------------------------------------------------------------
+
+Improvements in the second release (version 1.1.0)
+Thu Sep 28 21:41:16 EDT 2000
+
+1) An annotation framework is added to this release.
+2) New implementation of VTA.
+3) New implementation of typing system, which has a nice interger typing system.
+4) HashChain has a fast 'contains' method.
+5) Fix some other minor bugs.
+6) We have branched flow analysis framework now.
+7) Implement an Array Bounds Check and a Null Pointer Check algorithm.
+   A new option '-A' can annotate class files with analysis results.
+ 
+Feng Qian
+
+
+
+
+

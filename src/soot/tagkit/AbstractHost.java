@@ -31,9 +31,11 @@ import java.util.*;
 
 // extended by SootClass, SootField, SootMethod, Scene
 
-/** This class is the reference implementation for
+/** 
+ * This class is the reference implementation for
  * the Host interface, which allows arbitrary taggable
- * data to be stored with Soot objects. */
+ * data to be stored with Soot objects. 
+ */
 public  class AbstractHost implements Host 
 {
     List mTagList = new ArrayList(1);
@@ -71,7 +73,6 @@ public  class AbstractHost implements Host
             return (Tag) mTagList.get(tagIndex);
         }
         
-//        throw new RuntimeException("Host doesn't have tag named:" + aName);
 	return null;
     }
 

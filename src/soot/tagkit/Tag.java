@@ -32,10 +32,10 @@ import soot.*;
 
 public interface  Tag
 {
-    /** Return the tag name. */
+    /** Returns the tag name. */
     public String getName();
 
-    /** Return the tag raw data. */
+    /** Returns the tag raw data. */
     public byte[] getValue() throws AttributeValueException;
 }
 

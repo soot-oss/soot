@@ -34,7 +34,7 @@ package soot.tagkit;
 public class Base64 {
 
 /**
-* returns an array of base64-encoded characters to represent the
+* Returns an array of base64-encoded characters to represent the
 * passed data array.
 *
 * @param data the array of bytes to encode

@@ -2,6 +2,7 @@ soot
 soot.util
 soot.jimple
 soot.jimple.parser
+soot.jimple.toolkits.annotation.tags
 soot.jimple.toolkits.base
 soot.jimple.toolkits.scalar
 soot.jimple.toolkits.invoke
@@ -16,4 +17,5 @@ soot.grimp.toolkits.base
 soot.grimp.internal
 soot.toolkits.scalar
 soot.toolkits.graph
-
+soot.tagkit
+soot.gui
