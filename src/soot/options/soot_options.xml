@@ -4246,6 +4246,17 @@ information in these tags.  For example, even variables (such as
                             </value>
                     </multiopt>
                 </sub_phase>
+                <sub_phase>
+					<name>Dominators Tagger</name>
+					<alias>jap.dmt</alias>
+					<short_desc>Tags dominators of statement</short_desc>
+					<long_desc>Provides link tags at a statement to all of the satements dominators.</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+                </sub_phase>
 			</phase>
             <!--<phase>
                 <name>CFG Viewer</name>

@@ -1227,6 +1227,7 @@ public class Options extends OptionsBase {
         +padVal("jap.umt", "Inserts assertions into unreachable methods")
         +padVal("jap.lit", "Tags loop invariants")
         +padVal("jap.aet", "Tags statements with sets of available expressions")
+        +padVal("jap.dmt", "Tags dominators of statement")
         +padOpt("gb", "Creates a GrimpBody for each method")
         +padVal("gb.a1", "Aggregator: removes some copies, pre-folding")
         +padVal("gb.cf", "Constructor folder")
@@ -1985,6 +1986,12 @@ public class Options extends OptionsBase {
                 +padVal( "pessimistic", "" )
                 ;
     
+        if( phaseName.equals( "jap.dmt" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nProvides link tags at a statement to all of the satements \ndominators."
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" );
+    
         if( phaseName.equals( "gb" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThe Grimp Body Creation phase creates a GrimpBody for each \nsource method. It is run only if the output format is grimp or \ngrimple, or if class files are being output and the Via Grimp \noption has been specified. "
@@ -2543,6 +2550,10 @@ public class Options extends OptionsBase {
                 +"enabled "
                 +"kind ";
     
+        if( phaseName.equals( "jap.dmt" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "gb" ) )
             return ""
                 +"enabled ";
@@ -3067,6 +3078,10 @@ public class Options extends OptionsBase {
               +"enabled:false "
               +"kind:optimistic ";
     
+        if( phaseName.equals( "jap.dmt" ) )
+            return ""
+              +"enabled:false ";
+    
         if( phaseName.equals( "gb" ) )
             return ""
               +"enabled:true ";
@@ -3227,6 +3242,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jap.umt" ) ) return;
         if( phaseName.equals( "jap.lit" ) ) return;
         if( phaseName.equals( "jap.aet" ) ) return;
+        if( phaseName.equals( "jap.dmt" ) ) return;
         if( phaseName.equals( "gb" ) ) return;
         if( phaseName.equals( "gb.a1" ) ) return;
         if( phaseName.equals( "gb.cf" ) ) return;
@@ -3403,6 +3419,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jap.lit" );
         if( !PackManager.v().hasPhase( "jap.aet" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jap.aet" );
+        if( !PackManager.v().hasPhase( "jap.dmt" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jap.dmt" );
         if( !PackManager.v().hasPhase( "gb" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase gb" );
         if( !PackManager.v().hasPhase( "gb.a1" ) )

@@ -9,7 +9,7 @@
 
    <runtime>
       <library name="soot-plugin.jar"/>
-      <library name="sootclasses-2.1.0-custom.jar"/>
+      <library name="sootclasses-2.2.1.jar"/>
       <library name="soot/classes/"/>
       <library name="jasminclasses-2.2.0.jar"/>
       <library name="jasmin/classes/"/>

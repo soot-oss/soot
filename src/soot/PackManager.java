@@ -200,6 +200,7 @@ public class PackManager {
             p.add(new Transform("jap.umt", new UnreachableMethodTransformer()));
             p.add(new Transform("jap.lit", LoopInvariantFinder.v()));
             p.add(new Transform("jap.aet", AvailExprTagger.v()));
+            p.add(new Transform("jap.dmt", DominatorsTagger.v()));
 	       
         }
 

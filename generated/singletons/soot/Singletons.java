@@ -1048,4 +1048,10 @@ public class Singletons {
         return instance_soot_jimple_paddle_PaddleHook;
     }
 
+    private soot.jimple.toolkits.annotation.DominatorsTagger instance_soot_jimple_toolkits_annotation_DominatorsTagger;
+    public soot.jimple.toolkits.annotation.DominatorsTagger soot_jimple_toolkits_annotation_DominatorsTagger() {
+        if( instance_soot_jimple_toolkits_annotation_DominatorsTagger == null ) instance_soot_jimple_toolkits_annotation_DominatorsTagger = new soot.jimple.toolkits.annotation.DominatorsTagger( g );
+        return instance_soot_jimple_toolkits_annotation_DominatorsTagger;
+    }
+
 }

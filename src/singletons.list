@@ -168,3 +168,4 @@ soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher
 soot.SootResolver
 soot.javaToJimple.InitialResolver
 soot.jimple.paddle.PaddleHook
+soot.jimple.toolkits.annotation.DominatorsTagger

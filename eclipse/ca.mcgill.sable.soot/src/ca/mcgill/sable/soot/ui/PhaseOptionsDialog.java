@@ -258,6 +258,8 @@ Composite japjap_litChild = japjap_litCreate(getPageContainer());
 
 Composite japjap_aetChild = japjap_aetCreate(getPageContainer());
 
+Composite japjap_dmtChild = japjap_dmtCreate(getPageContainer());
+
 Composite gbgb_a1Child = gbgb_a1Create(getPageContainer());
 
 Composite gbgb_cfChild = gbgb_cfCreate(getPageContainer());
@@ -1417,6 +1419,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("jap", "jap.aet", getjapjap_aetkind_widget(), "kind");
 		
 		getjapjap_aetenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jap", "jap.dmt");
+		
+		
+		addToEnableGroup("jap", "jap.dmt", getjapjap_dmtenabled_widget(), "enabled");
+		
+		getjapjap_dmtenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("gb");
@@ -4084,6 +4094,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_aetkind_widget().getAlias(), stringRes);
 		}
 		
+		boolRes = getjapjap_dmtenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjapjap_dmtenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getgbenabled_widget().getButton().getSelection();
 		
 		
@@ -5295,6 +5315,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 			subSectParent = jap_jap_aet_branch;
+			
+			
+			SootOption jap_jap_dmt_branch = new SootOption("Dominators Tagger", "japjap_dmt");
+			subParent.addChild(jap_jap_dmt_branch);
+
+
+			
+
+			
+			subSectParent = jap_jap_dmt_branch;
 			
 			
 			//Grimp Body Creation
@@ -8006,6 +8036,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return japjap_aetkind_widget;
 	}	
 	
+	
+	private BooleanOptionWidget japjap_dmtenabled_widget;
+	
+	private void setjapjap_dmtenabled_widget(BooleanOptionWidget widget) {
+		japjap_dmtenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjapjap_dmtenabled_widget() {
+		return japjap_dmtenabled_widget;
+	}	
 	
 	private BooleanOptionWidget gbenabled_widget;
 	
@@ -15654,6 +15694,52 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupjapjap_aet;
+	}
+
+
+
+	private Composite japjap_dmtCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjapjap_dmt = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjapjap_dmt.setLayout(layout);
+	
+	 	editGroupjapjap_dmt.setText("Dominators Tagger");
+	 	
+		editGroupjapjap_dmt.setData("id", "japjap_dmt");
+		
+		String descjapjap_dmt = "Tags dominators of statement";	
+		if (descjapjap_dmt.length() > 0) {
+			Label descLabeljapjap_dmt = new Label(editGroupjapjap_dmt, SWT.WRAP);
+			descLabeljapjap_dmt.setText(descjapjap_dmt);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jap.dmt"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjapjap_dmtenabled_widget(new BooleanOptionWidget(editGroupjapjap_dmt, SWT.NONE, new OptionData("Enabled", "p", "jap.dmt","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjapjap_dmt;
 	}
 
 
