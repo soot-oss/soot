@@ -3498,12 +3498,12 @@ public class CFG {
                 l1 = Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex());
 
                 stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
-                    postTypeStack.topIndex() - 3), l1);
+                    postTypeStack.topIndex() - 2), l3);
 
                 statements.add(stmt);
 
                 stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
-                    postTypeStack.topIndex() - 2), l3);
+                    postTypeStack.topIndex() - 3), l1);
 
                 statements.add(stmt);
 
