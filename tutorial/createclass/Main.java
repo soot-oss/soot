@@ -24,10 +24,11 @@
  */
 
 
-package ashes.examples.createclass;
+//package ashes.examples.createclass;
 
 import soot.*;
 import soot.jimple.*;
+import soot.options.Options;
 import soot.util.*;
 import java.io.*;
 import java.util.*;
@@ -49,13 +50,14 @@ import java.util.*;
 
 public class Main
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws FileNotFoundException, IOException
     {
         SootClass sClass;
         SootMethod method;
         
-        // Create the class
+        // Resolve dependencies
            Scene.v().loadClassAndSupport("java.lang.Object");
+           Scene.v().loadClassAndSupport("java.lang.System");
            
         // Declare 'public class HelloWorld'   
            sClass = new SootClass("HelloWorld", Modifier.PUBLIC);
@@ -94,12 +96,12 @@ public class Main
             
             // add "tmpRef = java.lang.System.out"
                 units.add(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
-                    Scene.v().getField("<java.lang.System: java.io.PrintStream out>"))));
+                    Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef())));
             
             // insert "tmpRef.println("Hello world!")"
             {
                 SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
-                units.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, StringConstant.v("Hello world!"))));
+                units.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), StringConstant.v("Hello world!"))));
             }                        
             
             // insert "return"
@@ -107,7 +109,15 @@ public class Main
                      
         }
 
-        sClass.write();
+        String fileName = SourceLocator.v().getFileNameFor(sClass, Options.output_format_class);
+        OutputStream streamOut = new JasminOutputStream(
+                                    new FileOutputStream(fileName));
+        PrintWriter writerOut = new PrintWriter(
+                                    new OutputStreamWriter(streamOut));
+        JasminClass jasminClass = new soot.jimple.JasminClass(sClass);
+        jasminClass.print(writerOut);
+        writerOut.flush();
+        streamOut.close();
     }
         
 }
