@@ -1707,51 +1707,9 @@ result.
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
-				<boolopt>
-					<name>No Aggregating</name>
-					<alias>no-aggregating</alias>
-					<short_desc/>
-					<long_desc/>
-				</boolopt>
-				<boolopt>
-					<name>Aggregate All Locals</name>
-					<alias>aggregate-all-locals</alias>
-					<short_desc/>
-					<long_desc/>
-				</boolopt>
 				<sub_phase>
-					<name>Aggregator</name>
-					<alias>gb.a</alias>
-					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-					</boolopt>
-					<boolopt>
-						<name>Only Stack Locals</name>
-						<alias>only-stack-locals</alias>
-						<long_desc>Aggregate values stored in stack locals only.</long_desc>
-					</boolopt>
-				</sub_phase>
-				<sub_phase>
-					<name>Aggregate Stack Variables 1</name>
-					<alias>gb.asv1</alias>
-					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-						<short_desc/>
-						<long_desc/>
-					</boolopt>
-					<boolopt>
-						<name>Only Stack Locals</name>
-						<alias>only-stack-locals</alias>
-						<default>true</default>
-						<short_desc/>
-						<long_desc>Aggregate values stored in stack locals only.</long_desc>
-					</boolopt>
-				</sub_phase>
-				<sub_phase>
-					<name>Aggregate Stack Variables 2</name>
-					<alias>gb.asv2</alias>
+					<name>Aggregator 1</name>
+					<alias>gb.a1</alias>
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>
@@ -1772,6 +1730,23 @@ result.
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Aggregator 2</name>
+					<alias>gb.a2</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>Aggregate values stored in stack locals only.</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>

@@ -992,21 +992,9 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "gb" ) )
             return ""
-                +"disabled "
-                +"no-aggregating "
-                +"aggregate-all-locals ";
+                +"disabled ";
     
-        if( phaseName.equals( "gb.a" ) )
-            return ""
-                +"disabled "
-                +"only-stack-locals ";
-    
-        if( phaseName.equals( "gb.asv1" ) )
-            return ""
-                +"disabled "
-                +"only-stack-locals ";
-    
-        if( phaseName.equals( "gb.asv2" ) )
+        if( phaseName.equals( "gb.a1" ) )
             return ""
                 +"disabled "
                 +"only-stack-locals ";
@@ -1014,6 +1002,11 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "gb.cf" ) )
             return ""
                 +"disabled ";
+    
+        if( phaseName.equals( "gb.a2" ) )
+            return ""
+                +"disabled "
+                +"only-stack-locals ";
     
         if( phaseName.equals( "gb.ule" ) )
             return ""
@@ -1270,19 +1263,16 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "gb" ) )
             return "";
     
-        if( phaseName.equals( "gb.a" ) )
-            return "";
-    
-        if( phaseName.equals( "gb.asv1" ) )
-            return ""
-              +"only-stack-locals:true ";
-    
-        if( phaseName.equals( "gb.asv2" ) )
+        if( phaseName.equals( "gb.a1" ) )
             return ""
               +"only-stack-locals:true ";
     
         if( phaseName.equals( "gb.cf" ) )
             return "";
+    
+        if( phaseName.equals( "gb.a2" ) )
+            return ""
+              +"only-stack-locals:true ";
     
         if( phaseName.equals( "gb.ule" ) )
             return "";
@@ -1376,10 +1366,9 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jap.abc" ) ) return;
         if( phaseName.equals( "jap.profiling" ) ) return;
         if( phaseName.equals( "gb" ) ) return;
-        if( phaseName.equals( "gb.a" ) ) return;
-        if( phaseName.equals( "gb.asv1" ) ) return;
-        if( phaseName.equals( "gb.asv2" ) ) return;
+        if( phaseName.equals( "gb.a1" ) ) return;
         if( phaseName.equals( "gb.cf" ) ) return;
+        if( phaseName.equals( "gb.a2" ) ) return;
         if( phaseName.equals( "gb.ule" ) ) return;
         if( phaseName.equals( "gop" ) ) return;
         if( phaseName.equals( "bb" ) ) return;
@@ -1487,14 +1476,12 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jap.profiling" );
         if( !PackManager.v().hasPhase( "gb" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase gb" );
-        if( !PackManager.v().hasPhase( "gb.a" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase gb.a" );
-        if( !PackManager.v().hasPhase( "gb.asv1" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase gb.asv1" );
-        if( !PackManager.v().hasPhase( "gb.asv2" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase gb.asv2" );
+        if( !PackManager.v().hasPhase( "gb.a1" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase gb.a1" );
         if( !PackManager.v().hasPhase( "gb.cf" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase gb.cf" );
+        if( !PackManager.v().hasPhase( "gb.a2" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase gb.a2" );
         if( !PackManager.v().hasPhase( "gb.ule" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase gb.ule" );
         if( !PackManager.v().hasPhase( "gop" ) )

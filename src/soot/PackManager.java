@@ -62,12 +62,11 @@ public class PackManager {
         }
 
         // Grimp body creation
-        addPack(p = new GrimpBodyPack());
+        addPack(p = new BodyPack("gb"));
         {
-            p.add(new Transform("gb.a", Aggregator.v()));
-            p.add(new Transform("gb.asv1", Aggregator.v()));
+            p.add(new Transform("gb.a1", Aggregator.v()));
             p.add(new Transform("gb.cf", ConstructorFolder.v()));
-            p.add(new Transform("gb.asv2", Aggregator.v()));
+            p.add(new Transform("gb.a2", Aggregator.v()));
             p.add(new Transform("gb.ule", UnusedLocalEliminator.v()));
         }
 
