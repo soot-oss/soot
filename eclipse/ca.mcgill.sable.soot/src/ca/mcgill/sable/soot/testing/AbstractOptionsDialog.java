@@ -57,6 +57,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		if (getDefList() == null) {
 			setDefList(new HashMap());
 		}
+		System.out.println("adding to defList: key: "+key+" val: "+val);
 		getDefList().put(key, val);
 	} 
 

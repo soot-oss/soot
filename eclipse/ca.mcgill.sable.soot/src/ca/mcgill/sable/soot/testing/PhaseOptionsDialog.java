@@ -85,7 +85,7 @@ Composite wjtpChild = wjtpCreate(getPageContainer());
 
 Composite wjopChild = wjopCreate(getPageContainer());
 
-Composite wjtp2Child = wjtp2Create(getPageContainer());
+Composite wjapChild = wjapCreate(getPageContainer());
 
 Composite stpChild = stpCreate(getPageContainer());
 
@@ -155,7 +155,7 @@ Composite wjopwjop_smbChild = wjopwjop_smbCreate(getPageContainer());
 
 Composite wjopwjop_siChild = wjopwjop_siCreate(getPageContainer());
 
-Composite wjtp2wjtp2_raChild = wjtp2wjtp2_raCreate(getPageContainer());
+Composite wjapwjap_raChild = wjapwjap_raCreate(getPageContainer());
 
 Composite jopjop_cseChild = jopjop_cseCreate(getPageContainer());
 
@@ -276,6 +276,10 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		settings.put(getAnnotation_Optionsannot_arraybounds_widget().getAlias(), getAnnotation_Optionsannot_arraybounds_widget().getButton().getSelection());
 		
+		settings.put(getAnnotation_Optionsannot_side_effect_widget().getAlias(), getAnnotation_Optionsannot_side_effect_widget().getButton().getSelection());
+		
+		settings.put(getAnnotation_Optionsannot_fieldrw_widget().getAlias(), getAnnotation_Optionsannot_fieldrw_widget().getButton().getSelection());
+		
 		settings.put(getMiscellaneous_Optionstime_widget().getAlias(), getMiscellaneous_Optionstime_widget().getButton().getSelection());
 		
 		settings.put(getMiscellaneous_Optionssubtract_gc_widget().getAlias(), getMiscellaneous_Optionssubtract_gc_widget().getButton().getSelection());
@@ -312,7 +316,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		settings.put(getwjopdisabled_widget().getAlias(), getwjopdisabled_widget().getButton().getSelection());
 		
-		settings.put(getwjtp2disabled_widget().getAlias(), getwjtp2disabled_widget().getButton().getSelection());
+		settings.put(getwjapdisabled_widget().getAlias(), getwjapdisabled_widget().getButton().getSelection());
 		
 		settings.put(getstpdisabled_widget().getAlias(), getstpdisabled_widget().getButton().getSelection());
 		
@@ -470,7 +474,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		 
 		settings.put(getwjopwjop_siallowed_modifier_changes_widget().getAlias(), getwjopwjop_siallowed_modifier_changes_widget().getSelectedAlias());
 		
-		settings.put(getwjtp2wjtp2_radisabled_widget().getAlias(), getwjtp2wjtp2_radisabled_widget().getButton().getSelection());
+		settings.put(getwjapwjap_radisabled_widget().getAlias(), getwjapwjap_radisabled_widget().getButton().getSelection());
 		
 		settings.put(getjopjop_csedisabled_widget().getAlias(), getjopjop_csedisabled_widget().getButton().getSelection());
 		
@@ -840,6 +844,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			config.put(getAnnotation_Optionsannot_arraybounds_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
 		}
 		
+		boolRes = getAnnotation_Optionsannot_side_effect_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			config.put(getAnnotation_Optionsannot_side_effect_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+		}
+		
+		boolRes = getAnnotation_Optionsannot_fieldrw_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			config.put(getAnnotation_Optionsannot_fieldrw_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+		}
+		
 		boolRes = getMiscellaneous_Optionstime_widget().getButton().getSelection();
 		
 		
@@ -993,7 +1017,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getwsopdisabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -1003,7 +1027,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getwjtpdisabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
@@ -1020,14 +1044,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			config.put(getwjopdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
 		}
 		
-		boolRes = getwjtp2disabled_widget().getButton().getSelection();
+		boolRes = getwjapdisabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getwjtp2disabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			config.put(getwjapdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
 		}
 		
 		boolRes = getstpdisabled_widget().getButton().getSelection();
@@ -1043,7 +1067,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getsopdisabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -1063,7 +1087,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getjopdisabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -1093,7 +1117,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getgopdisabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -1113,7 +1137,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getbopdisabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -1794,14 +1818,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			config.put(getwjopwjop_siallowed_modifier_changes_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
 		}
 		
-		boolRes = getwjtp2wjtp2_radisabled_widget().getButton().getSelection();
+		boolRes = getwjapwjap_radisabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getwjtp2wjtp2_radisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			config.put(getwjapwjap_radisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
 		}
 		
 		boolRes = getjopjop_csedisabled_widget().getButton().getSelection();
@@ -2598,16 +2622,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = wjop_wjop_si_branch;
 			
 			
-			//Whole Jimple Transformation Pack 2
-			SootOption wjtp2_branch = new SootOption("Whole Jimple Transformation Pack 2");
-			parent.addChild(wjtp2_branch);
-			subParent = wjtp2_branch;
+			//Whole Jimple Annotation Pack
+			SootOption wjap_branch = new SootOption("Whole Jimple Annotation Pack");
+			parent.addChild(wjap_branch);
+			subParent = wjap_branch;
 
-			SootOption wjtp2_wjtp2_ra_branch = new SootOption("Rectangular Array Finder");
-			subParent.addChild(wjtp2_wjtp2_ra_branch);
+			SootOption wjap_wjap_ra_branch = new SootOption("Rectangular Array Finder");
+			subParent.addChild(wjap_wjap_ra_branch);
 
 			
-			subSectParent = wjtp2_wjtp2_ra_branch;
+			subSectParent = wjap_wjap_ra_branch;
 			
 			
 			//Shimple Transformation Pack
@@ -3169,6 +3193,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return Annotation_Optionsannot_arraybounds_widget;
 	}	
 	
+	private BooleanOptionWidget Annotation_Optionsannot_side_effect_widget;
+	
+	private void setAnnotation_Optionsannot_side_effect_widget(BooleanOptionWidget widget) {
+		Annotation_Optionsannot_side_effect_widget = widget;
+	}
+	
+	public BooleanOptionWidget getAnnotation_Optionsannot_side_effect_widget() {
+		return Annotation_Optionsannot_side_effect_widget;
+	}	
+	
+	private BooleanOptionWidget Annotation_Optionsannot_fieldrw_widget;
+	
+	private void setAnnotation_Optionsannot_fieldrw_widget(BooleanOptionWidget widget) {
+		Annotation_Optionsannot_fieldrw_widget = widget;
+	}
+	
+	public BooleanOptionWidget getAnnotation_Optionsannot_fieldrw_widget() {
+		return Annotation_Optionsannot_fieldrw_widget;
+	}	
+	
 	private BooleanOptionWidget Miscellaneous_Optionstime_widget;
 	
 	private void setMiscellaneous_Optionstime_widget(BooleanOptionWidget widget) {
@@ -3349,14 +3393,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return wjopdisabled_widget;
 	}	
 	
-	private BooleanOptionWidget wjtp2disabled_widget;
+	private BooleanOptionWidget wjapdisabled_widget;
 	
-	private void setwjtp2disabled_widget(BooleanOptionWidget widget) {
-		wjtp2disabled_widget = widget;
+	private void setwjapdisabled_widget(BooleanOptionWidget widget) {
+		wjapdisabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwjtp2disabled_widget() {
-		return wjtp2disabled_widget;
+	public BooleanOptionWidget getwjapdisabled_widget() {
+		return wjapdisabled_widget;
 	}	
 	
 	private BooleanOptionWidget stpdisabled_widget;
@@ -4159,14 +4203,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 	
-	private BooleanOptionWidget wjtp2wjtp2_radisabled_widget;
+	private BooleanOptionWidget wjapwjap_radisabled_widget;
 	
-	private void setwjtp2wjtp2_radisabled_widget(BooleanOptionWidget widget) {
-		wjtp2wjtp2_radisabled_widget = widget;
+	private void setwjapwjap_radisabled_widget(BooleanOptionWidget widget) {
+		wjapwjap_radisabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwjtp2wjtp2_radisabled_widget() {
-		return wjtp2wjtp2_radisabled_widget;
+	public BooleanOptionWidget getwjapwjap_radisabled_widget() {
+		return wjapwjap_radisabled_widget;
 	}	
 	
 	private BooleanOptionWidget jopjop_csedisabled_widget;
@@ -4903,6 +4947,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 										
 		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "sets the source precedence for Soot")));
 		
+		defKey = ""+" "+""+" "+"src-prec";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getInput_Optionssrc_prec_widget().setDef(defaultString);
+		}
+		
+		
 		
 		defKey = ""+" "+""+" "+"cp";
 		defKey = defKey.trim();
@@ -5043,6 +5097,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 										
 		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Output Format", "", "","o", "sets the source precedence for Soot")));
+		
+		defKey = ""+" "+""+" "+"o";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getOutput_Optionsoutput_format_widget().setDef(defaultString);
+		}
+		
 		
 		
 		defKey = ""+" "+""+" "+"d";
@@ -6520,6 +6584,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 										
 		setcgSpark_Points_To_Set_Flowing_Optionspropagator_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Propagator", "p", "cg.spark","propagator", "\nThis option tells Spark which propagation algorithm to use.\n\nIter is a simple, iterative algorithm, which propagates everything until the\ngraph does not change.\n\nWorklist is a worklist-based algorithm that tries\nto do as little work as possible. This is currently the fastest algorithm.\n\nAlias is an alias-edge based algorithm. This algorithm tends to take\nthe least memory for very large problems, because it does not represent\nexplicitly points-to sets of fields of heap objects.\n\nMerge is an algorithm that merges all yellow nodes with their corresponding\nred nodes. This algorithm is not yet finished.\n\nNone means that propagation is not done; the graph is only built and\nsimplified.\n        ")));
 		
+		defKey = "p"+" "+"cg.spark"+" "+"propagator";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgSpark_Points_To_Set_Flowing_Optionspropagator_widget().setDef(defaultString);
+		}
+		
+		
 		
 		data = new OptionData [] {
 		
@@ -6558,6 +6632,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 										
 		setcgSpark_Points_To_Set_Flowing_Optionsset_impl_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.spark","set-impl", "\nSelects an implementation of a points-to set that Spark should use.\n\nHash is an implementation based on Java's built-in hash-set.\n\nBit is an implementation using a bit vector.\n\nHybrid is an implementation that keeps an explicit list of up to\n16 elements, and switches to using a bit-vector when the set gets\nlarger than this.\n\nArray is an implementation that keeps the elements of the points-to set\nin an array that is always maintained in sorted order. Set membership is\ntested using binary search, and set union and intersection are computed\nusing an algorithm based on the merge step from merge sort.\n\nDouble is an implementation that itself uses a pair of sets for\neach points-to set. The first set in the pair stores new pointed-to\nobjects that have not yet been propagated, while the second set stores\nold pointed-to objects that have been propagated and need not be\nreconsidered. This allows the propagation algorithms to be incremental,\noften speeding them up significantly.\n        ")));
 		
+		defKey = "p"+" "+"cg.spark"+" "+"set-impl";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgSpark_Points_To_Set_Flowing_Optionsset_impl_widget().setDef(defaultString);
+		}
+		
+		
 		
 		data = new OptionData [] {
 		
@@ -6590,6 +6674,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 										
 		setcgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.spark","double-set-old", "\nSelects an implementation for the sets of old objects in the double\npoints-to set implementation.\n\nThis option has no effect unless setImpl is set to double.\n        ")));
 		
+		defKey = "p"+" "+"cg.spark"+" "+"double-set-old";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget().setDef(defaultString);
+		}
+		
+		
 		
 		data = new OptionData [] {
 		
@@ -6621,6 +6715,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 										
 		setcgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.spark","double-set-new", "\nSelects an implementation for the sets of new objects in the double\npoints-to set implementation.\n\nThis option has no effect unless setImpl is set to double.\n        ")));
+		
+		defKey = "p"+" "+"cg.spark"+" "+"double-set-new";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget().setDef(defaultString);
+		}
+		
 		
 
 		
@@ -6851,7 +6955,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
@@ -6887,7 +6991,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
@@ -7024,6 +7128,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 										
 		setwjopwjop_smballowed_modifier_changes_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Allow Modifier Changes", "p", "wjop.smb","allowed-modifier-changes", "")));
 		
+		defKey = "p"+" "+"wjop.smb"+" "+"allowed-modifier-changes";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getwjopwjop_smballowed_modifier_changes_widget().setDef(defaultString);
+		}
+		
+		
 
 		
 		return editGroup;
@@ -7118,6 +7232,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 										
 		setwjopwjop_siallowed_modifier_changes_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Allow Modifier Changes", "p", "wjop.si","allowed-modifier-changes", "")));
 		
+		defKey = "p"+" "+"wjop.si"+" "+"allowed-modifier-changes";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getwjopwjop_siallowed_modifier_changes_widget().setDef(defaultString);
+		}
+		
+		
 		
 		defKey = "p"+" "+"wjop.si"+" "+"expansion-factor";
 		defKey = defKey.trim();
@@ -7170,7 +7294,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 
-	private Composite wjtp2Create(Composite parent) {
+	private Composite wjapCreate(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
@@ -7179,12 +7303,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroup.setLayout(layout);
 	
-	 	editGroup.setText("Whole Jimple Transformation Pack 2");
+	 	editGroup.setText("Whole Jimple Annotation Pack");
 	 	OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"wjtp2"+" "+"disabled";
+		defKey = "p"+" "+"wjap"+" "+"disabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7196,7 +7320,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjtp2disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wjtp2","disabled", "", defaultBool)));
+		setwjapdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wjap","disabled", "", defaultBool)));
 		
 		
 
@@ -7206,7 +7330,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 
-	private Composite wjtp2wjtp2_raCreate(Composite parent) {
+	private Composite wjapwjap_raCreate(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
@@ -7220,7 +7344,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		
-		defKey = "p"+" "+"wjtp2.ra"+" "+"disabled";
+		defKey = "p"+" "+"wjap.ra"+" "+"disabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7232,7 +7356,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjtp2wjtp2_radisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wjtp2.ra","disabled", "", defaultBool)));
+		setwjapwjap_radisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wjap.ra","disabled", "", defaultBool)));
 		
 		
 
@@ -7300,7 +7424,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
@@ -7372,7 +7496,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
@@ -7576,6 +7700,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 										
 		setjopjop_lcmsafe_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Safe", "p", "jop.lcm","safe", "")));
+		
+		defKey = "p"+" "+"jop.lcm"+" "+"safe";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getjopjop_lcmsafe_widget().setDef(defaultString);
+		}
+		
 		
 
 		
@@ -8597,7 +8731,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
@@ -8925,7 +9059,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
@@ -9360,6 +9494,38 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setAnnotation_Optionsannot_arraybounds_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Array Bounds Annotation", "", "","annot-arraybounds", "turn on the annotation for array bounds check", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"annot-side-effect";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setAnnotation_Optionsannot_side_effect_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Side effect annotation", "", "","annot-side-effect", "turn on side-effect attributes", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"annot-fieldrw";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setAnnotation_Optionsannot_fieldrw_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Field read/write annotation", "", "","annot-fieldrw", "turn on field read/write attributes", defaultBool)));
 		
 		
 

@@ -1,6 +1,7 @@
 package ca.mcgill.sable.soot.launching;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -9,6 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.jface.dialogs.*;
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.testing.*;
 
 /**
  * @author jlhotak
@@ -70,11 +72,29 @@ public class EditSavedConfigDialog extends ElementListSelectionDialog {
 	}
 	
 	private void editPressed() {
-		String result = (String)getFirstResult();
+		Object [] temp = this.getSelectedElements();
+		String result = (String)temp[0];
+		System.out.println("result selected: "+result);
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		String saved = settings.get(result);
+		System.out.println("saved: "+saved);
 		SootSavedConfiguration ssc = new SootSavedConfiguration(result, saved);
 		HashMap structConfig = ssc.toHashMap();
+		PhaseOptionsDialog dialog = new PhaseOptionsDialog(getShell());
+		System.out.println("created dialog");
+		Iterator it = structConfig.keySet().iterator();
+		while (it.hasNext()) {
+			String key = (String)it.next();
+			String val = (String)structConfig.get(key);
+			if ((val.equals("true")) || (val.equals("false"))) {
+				dialog.addToDefList(key, new Boolean(val));
+			}
+			else {
+				dialog.addToDefList(key, val);
+			}
+		}
+		System.out.println("added defaults to dialog");
+		dialog.open();
 		
 		// use hashmap to set init vals in phaseoptionsdialog and open dialog
 		

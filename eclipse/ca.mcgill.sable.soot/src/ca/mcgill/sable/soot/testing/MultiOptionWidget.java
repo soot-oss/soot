@@ -30,7 +30,7 @@ public class MultiOptionWidget {//extends Composite {
 	private String [] values;
 	private String [] aliases;
 	private Button [] buttons;
-	private String defaultVal;
+	//private String defaultVal;
 	
 	/**
 	 * Constructor for MultiOptionWidget.
@@ -105,13 +105,24 @@ public class MultiOptionWidget {//extends Composite {
         categories.setLayoutData(gridData);*/
 	}
 	
+	public void setDef(String id) {
+		for (int i = 0; i < buttons.length; i++) {
+			if (dataVals[i].getAlias().equals(id)) {
+				buttons[i].setSelection(true);
+			}
+			else {
+				buttons[i].setSelection(false);
+			}
+		}
+	}
+	
 	public String getSelectedAlias() {
 		for (int i = 0; i < buttons.length; i++) {
 			if (buttons[i].getSelection()) {
 				return dataVals[i].getAlias();
 			}
 		}
-		return getDefaultVal();
+		return "";
 	}
 
 	/**
@@ -182,7 +193,7 @@ public class MultiOptionWidget {//extends Composite {
 	 * Returns the defaultVal.
 	 * @return String
 	 */
-	public String getDefaultVal() {
+	/*public String getDefaultVal() {
 		return defaultVal;
 	}
 
@@ -190,7 +201,7 @@ public class MultiOptionWidget {//extends Composite {
 	 * Sets the defaultVal.
 	 * @param defaultVal The defaultVal to set
 	 */
-	public void setDefaultVal(String defaultVal) {
+	/*public void setDefaultVal(String defaultVal) {
 		this.defaultVal = defaultVal;
 	}
 

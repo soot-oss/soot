@@ -491,6 +491,16 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 		
 										
 		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="string-replace"><xsl:with-param name="text" select="(short_desc|long_desc)"/><xsl:with-param name="from" select="'&#10;'"/><xsl:with-param name="to" select="'&#92;n'"/></xsl:call-template>")));
+		
+		defKey = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().setDef(defaultString);
+		}
+		
 		</xsl:for-each>
 		
 <!--Path Widget-->

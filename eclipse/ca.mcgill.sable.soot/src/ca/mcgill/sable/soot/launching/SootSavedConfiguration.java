@@ -49,16 +49,26 @@ public class SootSavedConfiguration {
 	
 	public HashMap toHashMap() {
 		HashMap config = new HashMap();
-		StringTokenizer st = new StringTokenizer(getSaved(), DASH);
+		String temp = getSaved();
+		temp = temp.replaceAll("--", "&&");
+		//System.
+		StringTokenizer st = new StringTokenizer(temp, "&&");
 		while (st.hasMoreTokens()) {
 			StringTokenizer next = new StringTokenizer((String)st.nextToken());
 			switch (next.countTokens()) {
 				case 2: {
 					// simple key value 
+					/*String simpleKey = next.nextToken();
+					String simpleVal = next.nextToken();
+					if ((simpleVal.equals("true")) || (simpleVal.equals("false"))) {
+						config.put(simpleKey, new Boolean(simpleVal));
+					}*/
+					//else {
 					config.put(next.nextToken(), next.nextToken());
+					//}
 					break;	
 				}
-				case 4: {
+				case 3: {
 					// phase options
 					String key = next.nextToken()+SPACE+next.nextToken();
 					StringTokenizer valTemp = new StringTokenizer(next.nextToken(), ":");
