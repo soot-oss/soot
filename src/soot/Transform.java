@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Patrick Lam
+ * Copyright (C) 1997-1999 Raja Vallee-Rai and Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,39 +23,33 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
+
 package soot;
 
 import java.util.*;
+import soot.util.*;
 
-public abstract class BodyTransformer extends Transformer
+/** Maintains the triple (phaseName, singleton, options) needed for a
+ * transformation. */
+public class Transform
 {
-    /** Calls internalTransform with the optionsString properly set up.
-     *  That is, the options in optionsString override those in the Scene. */
-    public final void transform(Body b, String phaseName, String optionsString)
+    String phaseName;
+    Transformer t;
+    String options;
+    
+    public Transform(String phaseName, Transformer t, String options)
     {
-        Map options = Scene.v().computePhaseOptions(phaseName, 
-                                                    getDefaultOptions() + " " + optionsString);
-
-        if (Options.getBoolean(options, "disabled"))
-            return;
-
-        internalTransform(b, phaseName, options);
+        this.phaseName = phaseName;
+        this.t = t;
+        this.options = options;
     }
 
-    public final void transform(Body b)
+    public Transform(String phaseName, Transformer t)
     {
-        transform(b, "", "");
+        this(phaseName, t, "");
     }
 
-    public final void transform(Body b, String phaseName)
-    {
-        transform(b, phaseName, "");
-    }
-
-    public String getDefaultOptions() 
-    {
-        return "";
-    }
-
-    protected abstract void internalTransform(Body b, String phaseName, Map options);
+    public String getPhaseName() { return phaseName; }
+    public Transformer getTransformer() { return t; }
+    public String getOptions() { return options; }
 }

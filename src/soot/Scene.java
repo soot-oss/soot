@@ -24,14 +24,13 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.jimple.toolkits.invoke.*;
 import soot.util.*;
 import java.util.*;
+import soot.jimple.toolkits.invoke.*;
+import soot.jimple.toolkits.scalar.*;
 
 public class Scene extends AbstractHost
 {
@@ -53,6 +52,8 @@ public class Scene extends AbstractHost
     InvokeGraph activeInvokeGraph;
     boolean allowsPhantomRefs = false;
 
+    Map packNameToPack = new HashMap();
+
     public static Scene v()
     {
         return constant;
@@ -60,6 +61,36 @@ public class Scene extends AbstractHost
     
     private Scene()
     {
+        Pack p;
+
+        packNameToPack.put("jtp", p = new Pack());
+
+        packNameToPack.put("jop", p = new Pack());
+        {
+            p.add(new Transform("jop.cp", CopyPropagator.v(), "ignore-stack-locals"));
+            p.add(new Transform("jop.cpf", ConstantPropagatorAndFolder.v(), "disabled"));
+            p.add(new Transform("jop.cbf", ConditionalBranchFolder.v(), "disabled"));
+            p.add(new Transform("jop.dae", DeadAssignmentEliminator.v()));
+            p.add(new Transform("jop.uce1", UnreachableCodeEliminator.v(), "disabled"));
+            p.add(new Transform("jop.ubf", UnconditionalBranchFolder.v(), "disabled"));
+            p.add(new Transform("jop.uce2", UnreachableCodeEliminator.v(), "disabled"));
+        }
+
+        packNameToPack.put("wjtp", p = new Pack());
+        packNameToPack.put("wjop", p = new Pack());
+        {
+            p.add(new Transform("wjop.smb", StaticMethodBinder.v()));
+        }
+        packNameToPack.put("bop", p = new Pack());
+        packNameToPack.put("gop", p = new Pack());
+    }
+
+    public Pack getPack(String phaseName)
+    {
+        Pack p = (Pack)packNameToPack.get(phaseName);
+        if (p == null)
+            throw new RuntimeException("tried to get nonexistant pack "+phaseName);
+        return p;
     }
 
     private int stateCount;

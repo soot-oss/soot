@@ -24,9 +24,6 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.util.*;
@@ -153,7 +150,7 @@ public class Main
 
 
     
-    public static void main(String[] args) throws RuntimeException
+    public static void main(String[] args)
     {
         boolean isAnalyzingLibraries = false;
 
@@ -179,7 +176,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.14");
+            System.out.println("Soot version 1.beta.5.dev.15");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -534,8 +531,9 @@ public class Main
             }
         }
         
+        Scene.v().getPack("wjtp").apply();
         if(isOptimizingWhole)
-            WholeJimpleOptimizationPack.v().transform("wjop");
+            Scene.v().getPack("wjop").apply();
         
         // Handle each class individually
         {
@@ -747,9 +745,9 @@ public class Main
                     if(!m.hasActiveBody())
                         m.setActiveBody(Jimple.v().newBody(new ClassFileBody(m), "jb"));
     
+                    Scene.v().getPack("jtp").apply(m.getActiveBody());
                     if(isOptimizing) 
-                        JimpleOptimizationPack.v().transform((JimpleBody) m.getActiveBody(), "jop", 
-                            "");
+                        Scene.v().getPack("jop").apply(m.getActiveBody());
                 }
                 
                 if(produceGrimp)
@@ -760,14 +758,14 @@ public class Main
                         m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
                         
                     if(isOptimizing)
-                        GrimpOptimizationPack.v().transform((GrimpBody) m.getActiveBody(), "gop");
+                        Scene.v().getPack("gop").apply(m.getActiveBody());
                 }
                 else if(produceBaf)
                 {   
                      m.setActiveBody(Baf.v().newBody((JimpleBody) m.getActiveBody()));
 
                      if(isOptimizing) 
-                        BafOptimizationPack.v().transform((BafBody) m.getActiveBody(), "bop");
+                        Scene.v().getPack("bop").apply(m.getActiveBody());
                 } 
             }
         }

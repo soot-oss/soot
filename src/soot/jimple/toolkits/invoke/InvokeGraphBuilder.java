@@ -24,24 +24,22 @@
  */
 
 
-package soot.grimp;
+package soot.jimple.toolkits.invoke;
 
 import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class GrimpOptimizationPack extends BodyTransformer
+public class InvokeGraphBuilder extends SceneTransformer
 {
-    private static GrimpOptimizationPack instance = new GrimpOptimizationPack();
-    private GrimpOptimizationPack() {}
+    private static InvokeGraphBuilder instance = new InvokeGraphBuilder();
+    private InvokeGraphBuilder() {}
 
-    public static GrimpOptimizationPack v() { return instance; }
+    public static InvokeGraphBuilder v() { return instance; }
 
-    protected void internalTransform(Body b, String phaseName, Map options)
+    protected void internalTransform(String phaseName, Map options)
     {
-        GrimpBody body = (GrimpBody)b;
-        if(Main.isVerbose)
-            System.out.println("[" + body.getMethod().getName() +
-                "] Starting base grimp optimizations...");
+        InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph();
+        Scene.v().setActiveInvokeGraph(invokeGraph);
     }
 }

@@ -27,7 +27,7 @@ package soot;
 
 import java.util.*;
 
-public abstract class SceneTransformer
+public abstract class SceneTransformer extends Transformer
 {
     /** Calls internalTransform with the optionsString properly set up.
      *  That is, the options in optionsString override those in the Scene. */
@@ -35,6 +35,10 @@ public abstract class SceneTransformer
     {
         Map options = Scene.v().computePhaseOptions(phaseName, 
                                                     getDefaultOptions() + " " + optionsString);
+
+        if (Options.getBoolean(options, "disabled"))
+            return;
+
         internalTransform(phaseName, options);
     }
 

@@ -23,25 +23,11 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
+package soot;
 
-package soot.baf;
-
-import soot.*;
-import soot.util.*;
 import java.util.*;
 
-public class BafOptimizationPack extends BodyTransformer
+/** Expected to supply some sort of transform() method. */
+public abstract class Transformer
 {
-    private static BafOptimizationPack instance = new BafOptimizationPack();
-    private BafOptimizationPack() {}
-
-    public static BafOptimizationPack v() { return instance; }
-
-    protected void internalTransform(Body b, String phaseName, Map options)
-    {
-        BafBody body = (BafBody)b;
-        if(Main.isVerbose)
-            System.out.println("[" + body.getMethod().getName() +
-                "] Starting base baf optimizations...");
-    }
 }

@@ -47,6 +47,8 @@ public class StaticMethodBinder extends SceneTransformer
     
     protected void internalTransform(String phaseName, Map options)
     {
+        InvokeGraphBuilder.v().transform(phaseName + ".igb");
+
         boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
 
