@@ -100,7 +100,7 @@ public class GrimpTransformations
 	
       if(Main.isProfilingOptimization)
 	Main.defsTimer.end();
-		
+ 
       if(Main.isProfilingOptimization)
 	Main.usesTimer.start();
 	

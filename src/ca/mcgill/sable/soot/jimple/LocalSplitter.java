@@ -86,7 +86,7 @@ public class LocalSplitter
         if(Main.isProfilingOptimization)
                 Main.splitPhase1Timer.start();
 
-        // Go through the definitions, building the boxToSet 
+        // Go through the definitions, building the webs
         {
             List code = stmtList;
 
@@ -183,9 +183,9 @@ public class LocalSplitter
                                 {
                                     DefinitionStmt d = (DefinitionStmt) defIt.next();
     
-                                    if(!markedBoxes.contains(d.getLeftOp()))
+                                    if(!markedBoxes.contains(d.getLeftOpBox()))
                                     {
-                                        markedBoxes.add(d.getLeftOp());
+                                        markedBoxes.add(d.getLeftOpBox());
                                         defsToVisit.addLast(d);
                                     }    
                                 }

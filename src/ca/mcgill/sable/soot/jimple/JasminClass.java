@@ -468,6 +468,10 @@ public class JasminClass
 
         // let's create a u-d web for the ++ peephole optimization.
 
+        if(Main.isVerbose)
+            System.out.println("[" + body.getMethod().getName() +
+                "] Performing peephole optimizations...");
+
         CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
 
         LocalDefs ld = new SimpleLocalDefs(stmtGraph);

@@ -105,6 +105,7 @@ public class GrimpBody implements StmtBody
 
     GrimpBody(SootMethod m, Body body, int buildOptions)
     {
+
 	JimpleBody jBody = null;
 
         if(body instanceof ClassFileBody)
