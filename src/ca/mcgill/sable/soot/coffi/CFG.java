@@ -1,3 +1,4 @@
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Jimple, a 3-address code Java(TM) bytecode representation.        *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
@@ -101,12 +102,15 @@
 
  B) Changes:
 
+ - Modified on March 17, 1999 by Vijay Sundaresan (vijay@sable.mcgill.ca) (*)
+   Fixed the JSR code duplicator.
+ 
  - Modified on March 2, by Patrick Lam (plam@sable.mcgill.ca). (*)
    Commented out JSR bytecode code for now.
    
  - Modified on February 22, by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   Fixed a bug with the DUP2_x1 bytecode.
-   
+   Fixed a bug with the DUP2_x1 bytecode.   
+ 
  - Modified on February 19, 1999 by Vijay Sundaresan (vijay@sable.mcgill.ca) (*)
    Implemented a JSR eliminator/handler code duplicator.
    
@@ -195,14 +199,16 @@ public class CFG {
         Instruction ins = m.instructions;
 
         m.instructionList = new ArrayList();
-
+ 
         while(ins.next != null)
         {
+
             m.instructionList.add(ins);
+
 
             if ( ins instanceof Instruction_Jsr )
             JsrToNext.put ( ins, ins.next );
- 
+
            ins = ins.next;
 
         }
@@ -211,15 +217,18 @@ public class CFG {
       h = new java.util.Hashtable(100,25);
       if (m.instructions!=null) {
          i = buildBasicBlock(m.instructions);
+
          cfg = new BasicBlock(m.instructions);
          blast = cfg;
          h.put(m.instructions,cfg);
          while (i != null) {
             head = buildBasicBlock(i);
+
             bb = new BasicBlock(i);
             blast.next = bb;
             blast = bb;
             h.put(i,bb);
+    
             i = head;
          }
 
@@ -236,7 +245,9 @@ public class CFG {
             fixupJsrRets();
     
             JsrEliminate();
-    
+  
+            fixupTargets();
+  
             adjustExceptionTable();    
 
             prepareForGC();
@@ -325,9 +336,12 @@ public class CFG {
    RetToOrigJsrBB = null;
    RetToOrigRetBB = null;
    JsrToNext = null;
+   replacedinstructionHT = null;
    clonedHT = null;
    endofBBList = null;
    highestBlock = null;
+
+   // reconstructInstructions();
 
   }
 
@@ -365,6 +379,10 @@ public class CFG {
 
 
 
+
+
+
+
  private void adjustExceptionTable() {
 
    Code_attribute codeAttribute = method.locate_code_attribute();
@@ -389,6 +407,105 @@ public class CFG {
    }
 
  }
+
+
+
+
+
+
+
+ private void fixupTargets() {
+
+  BasicBlock b = cfg;
+
+  Instruction i = null;
+
+  while ( b != null )
+  {
+
+   i = b.head;
+
+   while ( i != null ) 
+   {
+
+    if ( i.branches )
+    {
+
+     Instruction tgt = null;
+
+     if ( i instanceof Instruction_intbranch )
+     tgt = (( Instruction_intbranch ) i ).target; 
+     else if ( i instanceof Instruction_longbranch )
+     tgt = (( Instruction_longbranch ) i ).target; 
+
+     if ( tgt != null )
+     {
+
+      if ( ( ( Instruction ) replacedinstructionHT.get ( tgt ) ) != null ) 
+      {
+
+       if ( i instanceof Instruction_intbranch )
+       {
+         ( ( Instruction_intbranch ) i ).target = ( Instruction ) replacedinstructionHT.get ( tgt );
+         // ( ( Instruction_intbranch ) i ) = ( Instruction ) replacedinstructionHT.get ( tgt );
+
+       }
+       else if ( i instanceof Instruction_longbranch )
+       ( ( Instruction_longbranch ) i ).target = ( Instruction ) replacedinstructionHT.get ( tgt );
+
+      }
+
+     }
+
+     if ( i instanceof Instruction_Lookupswitch )
+     {
+      
+      Instruction_Lookupswitch ilookup = ( Instruction_Lookupswitch ) i;
+
+      if ( ( ( Instruction ) replacedinstructionHT.get ( ilookup.default_inst ) ) != null )
+      ilookup.default_inst = ( Instruction ) replacedinstructionHT.get ( ilookup.default_inst );
+
+      for(int cnt=0;cnt<ilookup.npairs;cnt++)
+      {
+
+       if ( ( ( Instruction ) replacedinstructionHT.get ( ilookup.match_insts[cnt]) ) != null )
+       ilookup.match_insts[cnt] = ( Instruction ) replacedinstructionHT.get ( ilookup.match_insts[cnt] );
+
+      }
+
+     }
+
+     if ( i instanceof Instruction_Tableswitch )
+     {
+      
+      Instruction_Tableswitch tlookup = ( Instruction_Tableswitch ) i;
+
+      if ( ( ( Instruction ) replacedinstructionHT.get ( tlookup.default_inst ) ) != null )
+      tlookup.default_inst = ( Instruction ) replacedinstructionHT.get ( tlookup.default_inst );
+
+      for(int cnt=0;cnt<(tlookup.high - tlookup.low + 1);cnt++)
+      {
+
+       if ( ( ( Instruction ) replacedinstructionHT.get ( tlookup.jump_insts[cnt]) ) != null )
+       tlookup.jump_insts[cnt] = ( Instruction ) replacedinstructionHT.get ( tlookup.jump_insts[cnt] );
+
+      }
+
+     }
+
+    }
+
+    i = i.next;
+
+   }
+
+   b = b.next;
+
+  }
+
+ }
+
+
 
 
 
@@ -455,12 +572,149 @@ public class CFG {
 
           setHighestBlock ( ( BasicBlock ) b.succ.elementAt(0) );
 
+          endofBBList = getEndOfBBList();
+
           highestBlock.next = endofBBList.next;
 
           endofBBList.next = highestBlock;    
 
           BasicBlock clonedjsrtargetBB = cloneJsrTargetBB( succBB, ( BasicBlock ) b.succ.elementAt(0) );
+
+          arrangeclonedBBinorder();
+
+          Code_attribute codeAttribute = method.locate_code_attribute();
+
+          int nextind = codeAttribute.exception_table_length;
+
+          for(int j = 0; j < codeAttribute.exception_table_length; j++)
+          {
+
+           Instruction startIns = codeAttribute.exception_table[j].start_inst;
+
+           Instruction endIns = codeAttribute.exception_table[j].end_inst;
+
+           Instruction targetIns = codeAttribute.exception_table[j].handler_inst;
+
+           if ( ( ( ( Instruction ) clonedstmtsHT.get ( startIns ) ) != null ) 
+              ||( ( ( Instruction ) clonedstmtsHT.get ( endIns ) ) != null )  
+              ||( ( ( Instruction ) clonedstmtsHT.get ( targetIns ) ) != null ) ) 
+
+           {
+
+            exception_table_entry[] newexception_table = new exception_table_entry[nextind+1];
+
+            for(int k = 0; k < nextind; k++)
+            newexception_table[k] = codeAttribute.exception_table[k]; 
+
+            newexception_table[nextind] = new exception_table_entry();
+
+            codeAttribute.exception_table = newexception_table;
+
+            codeAttribute.exception_table_length++;
+
+            codeAttribute.exception_table[nextind].catch_type = codeAttribute.exception_table[j].catch_type;
+
+            if ( ( ( Instruction ) clonedstmtsHT.get ( startIns ) ) != null ) 
+            codeAttribute.exception_table[nextind].start_inst = ( Instruction ) clonedstmtsHT.get ( startIns );
+            else
+            codeAttribute.exception_table[nextind].start_inst = startIns;
+
+            if ( ( ( Instruction ) clonedstmtsHT.get ( endIns ) ) != null ) 
+            codeAttribute.exception_table[nextind].end_inst = ( Instruction ) clonedstmtsHT.get ( endIns );
+            else
+            codeAttribute.exception_table[nextind].end_inst = endIns;
+
+            if ( ( ( Instruction ) clonedstmtsHT.get ( targetIns ) ) != null ) 
+            {
+             codeAttribute.exception_table[nextind].handler_inst = ( Instruction ) clonedstmtsHT.get ( targetIns );
+
+             codeAttribute.exception_table[nextind].b = (BasicBlock) h.get ( ( Instruction ) clonedstmtsHT.get ( targetIns ) );
+            }
+            else
+            {
+             codeAttribute.exception_table[nextind].handler_inst = targetIns;
+
+             codeAttribute.exception_table[nextind].b = (BasicBlock) h.get ( targetIns );
+            }
+
+            nextind++;
+
+           }
+
+          } // FOR
+
+
+          Iterator clonedstmtit = clonedstmtsHT.entries().iterator();
+
+          while ( clonedstmtit.hasNext() )
+          {
+
+           Instruction instrn = ( Instruction ) ( ( Map.Entry ) clonedstmtit.next() ).getKey();
+
+           Instruction tgt = null;
+
+           if ( instrn instanceof Instruction_intbranch )
+           tgt = (( Instruction_intbranch ) instrn ).target; 
+           else if ( i instanceof Instruction_longbranch )
+           tgt = (( Instruction_longbranch ) instrn ).target; 
+
+           if ( tgt != null )
+           {
+
+            Instruction clonedinstrn = ( Instruction ) clonedstmtsHT.get ( instrn );
       
+            if ( clonedstmtsHT.get ( tgt ) != null )
+            {
+
+             Instruction clonedtgt = ( Instruction ) clonedstmtsHT.get ( tgt ); 
+
+             if ( instrn instanceof Instruction_intbranch )
+             (( Instruction_intbranch ) clonedinstrn ).target = clonedtgt; 
+             else if ( i instanceof Instruction_longbranch )
+             (( Instruction_longbranch ) clonedinstrn ).target = clonedtgt; 
+
+            }
+
+           }
+
+           if ( instrn instanceof Instruction_Lookupswitch )
+           {
+      
+            Instruction_Lookupswitch ilookup = ( Instruction_Lookupswitch ) instrn;
+
+            if ( ( ( Instruction ) clonedstmtsHT.get ( ilookup.default_inst ) ) != null )
+            ilookup.default_inst = ( Instruction ) clonedstmtsHT.get ( ilookup.default_inst );
+
+            for(int cnt=0;cnt<ilookup.npairs;cnt++)
+            {
+
+             if ( ( ( Instruction ) clonedstmtsHT.get ( ilookup.match_insts[cnt]) ) != null )
+             ilookup.match_insts[cnt] = ( Instruction ) clonedstmtsHT.get ( ilookup.match_insts[cnt] );
+
+            }
+
+           }
+
+           if ( instrn instanceof Instruction_Tableswitch )
+           {
+      
+            Instruction_Tableswitch tlookup = ( Instruction_Tableswitch ) instrn;
+
+            if ( ( ( Instruction ) clonedstmtsHT.get ( tlookup.default_inst ) ) != null )
+            tlookup.default_inst = ( Instruction ) clonedstmtsHT.get ( tlookup.default_inst );
+
+            for(int cnt=0;cnt<(tlookup.high - tlookup.low + 1);cnt++)
+            {
+
+             if ( ( ( Instruction ) clonedstmtsHT.get ( tlookup.jump_insts[cnt]) ) != null )
+             tlookup.jump_insts[cnt] = ( Instruction ) clonedstmtsHT.get ( tlookup.jump_insts[cnt] );
+
+            }
+
+           }
+
+          } // WHILE
+   
           RetToOrigJsr.put ( clonedjsrtargetBB.tail, ( Instruction ) RetToJsr.get ( BBtail ) );
           
           RetToOrigJsrBB.put ( clonedjsrtargetBB.tail, ( BasicBlock ) RetToJsrBB.get ( BBtail ) );
@@ -513,7 +767,7 @@ public class CFG {
 
 
 
-
+  private HashMap clonedstmtsHT = new HashMap(); 
 
 
 
@@ -523,9 +777,13 @@ public class CFG {
 
    clonedHT = new HashMap();
 
+   clonedstmtsHT = new HashMap();
+
    Instruction prev = highestBB.head;
 
    Instruction clonedprev = ( Instruction ) prev.clone();
+
+   clonedstmtsHT.put ( prev, clonedprev );
 
    Instruction clonedhead = clonedprev;
 
@@ -539,6 +797,8 @@ public class CFG {
     Instruction current = prev.next;
    
     clonedcurrent = ( Instruction ) current.clone();
+
+    clonedstmtsHT.put ( current, clonedcurrent );
 
     // System.out.println ( "CLONED "+ clonedcurrent );
 
@@ -560,6 +820,8 @@ public class CFG {
 
    clonedHT.put ( highestBB, highestBlock );
 
+   orighighestBlock = highestBB;
+
   }
 
 
@@ -571,8 +833,7 @@ public class CFG {
 
   Map clonedHT = new HashMap(); 
 
-
-
+  BasicBlock orighighestBlock;
 
 
 
@@ -598,6 +859,8 @@ public class CFG {
 
     Instruction clonedprev = ( Instruction ) prev.clone();
 
+    clonedstmtsHT.put ( prev, clonedprev );
+
     Instruction clonedhead = clonedprev;
 
     // System.out.println ( "CLONED "+ clonedhead );
@@ -612,6 +875,8 @@ public class CFG {
      Instruction current = prev.next;
    
      clonedcurrent = ( Instruction ) current.clone();
+
+     clonedstmtsHT.put ( current, clonedcurrent );
 
      method.instructionList.add ( clonedcurrent );
 
@@ -629,9 +894,11 @@ public class CFG {
 
     h.put ( clonedhead, clonedBB );
 
+/*
     clonedBB.next = highestBlock.next;
 
     highestBlock.next = clonedBB;
+*/
    
     clonedHT.put ( lowestBB, clonedBB );
 
@@ -671,6 +938,66 @@ public class CFG {
 
 
 
+
+
+
+
+
+ private void arrangeclonedBBinorder() {
+
+  ArrayList alreadyarranged = new ArrayList();
+
+  BasicBlock nextBB = orighighestBlock.next; 
+ 
+  BasicBlock nextclonedBB = ( BasicBlock ) clonedHT.get ( nextBB ); 
+
+  BasicBlock currentclonedBB = highestBlock;
+
+  alreadyarranged.add ( orighighestBlock );
+
+  while ( nextclonedBB != null )
+  {
+
+   alreadyarranged.add ( nextBB );
+
+   currentclonedBB.next = nextclonedBB;
+
+   currentclonedBB = currentclonedBB.next;
+
+   nextBB = nextBB.next;
+   
+   nextclonedBB = ( BasicBlock ) clonedHT.get ( nextBB ); 
+
+  } 
+
+  Iterator keysit = clonedHT.entries().iterator();
+  
+  while ( keysit.hasNext() )
+  {
+
+   BasicBlock bb = ( BasicBlock ) (( Map.Entry ) keysit.next()).getKey(); 
+  
+   if ( ! alreadyarranged.contains ( bb ) )
+   {
+
+    nextclonedBB = ( BasicBlock ) clonedHT.get ( bb );
+  
+    currentclonedBB.next = nextclonedBB;
+
+    currentclonedBB = currentclonedBB.next;
+
+   }
+
+  }
+
+ }
+
+
+
+
+
+
+ 
 
 
 
@@ -729,6 +1056,13 @@ public class CFG {
 
      b.head = new Instruction_Goto();
  
+     b.head.branchpoints ( matchingjsrnextBB.head );
+
+     ( ( Instruction_Goto ) b.head).target = matchingjsrnextBB.head;
+
+     if ( originstruction.labelled ) 
+     b.head.labelled = true;
+
      Iterator entriesIt = JsrToNext.entries().iterator();
 
      while ( entriesIt.hasNext() )
@@ -768,6 +1102,14 @@ public class CFG {
 
      temp.next = new Instruction_Goto();
 
+     temp.next.branchpoints ( matchingjsrnextBB.head );
+
+     ((Instruction_Goto) temp.next).target = matchingjsrnextBB.head;
+
+     if ( originstruction.labelled ) 
+     temp.next.labelled = true;
+
+
      Iterator entriesIt = JsrToNext.entries().iterator();
 
      while ( entriesIt.hasNext() )
@@ -804,6 +1146,15 @@ public class CFG {
      originstruction = matchingjsrBB.tail;
 
      matchingjsrBB.head = new Instruction_Goto();
+
+     matchingjsrBB.head.branchpoints ( matchingjsrsuccBB.head.next );
+
+     ((Instruction_Goto)matchingjsrBB.head).target = matchingjsrsuccBB.head.next;
+
+     if ( originstruction.labelled ) 
+     matchingjsrBB.head.labelled = true;
+
+
 
      Iterator entriesIt = JsrToNext.entries().iterator();
 
@@ -844,6 +1195,15 @@ public class CFG {
 
      temp.next = new Instruction_Goto();
 
+     temp.next.branchpoints ( matchingjsrsuccBB.head.next );
+
+
+     ((Instruction_Goto)temp.next).target = matchingjsrsuccBB.head.next;
+
+     if ( originstruction.labelled ) 
+     temp.next.labelled = true;
+
+
      Iterator entriesIt = JsrToNext.entries().iterator();
 
      while ( entriesIt.hasNext() )
@@ -875,22 +1235,21 @@ public class CFG {
 
     temp = matchingjsrsuccBB.head;
 
-     Iterator entriesIt = JsrToNext.entries().iterator();
+    Iterator entriesIt = JsrToNext.entries().iterator();
 
-     while ( entriesIt.hasNext() )
+    while ( entriesIt.hasNext() )
+    {
+
+     Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
+
+     if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
      {
 
-      Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
-
-      if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
-      {
-
-       JsrToNext.put ( entryins, temp.next );
-
-      }
+      JsrToNext.put ( entryins, temp.next );
 
      }
 
+    }
 
     replacedinstructionHT.put ( temp, temp.next );
 
@@ -907,6 +1266,7 @@ public class CFG {
   }
 
  }
+
 
 
 
@@ -961,47 +1321,47 @@ public class CFG {
 
      OrigjsrnextBB = ( BasicBlock) h.get ( (Instruction ) JsrToNext.get ( OrigjsrBB.tail) );
 
-    BasicBlock matchingjsrnextBB = null;
+     BasicBlock matchingjsrnextBB = null;
 
-    matchingjsrnextBB = ( BasicBlock) h.get ( (Instruction ) JsrToNext.get ( matchingjsrBB.tail ) );
+     matchingjsrnextBB = ( BasicBlock) h.get ( (Instruction ) JsrToNext.get ( matchingjsrBB.tail ) );
 
-    OrigsuccBB.pred.removeElement ( matchingjsrBB );
+     OrigsuccBB.pred.removeElement ( matchingjsrBB );
     
-    OrigretBB.succ.removeElement ( matchingjsrnextBB );
+     OrigretBB.succ.removeElement ( matchingjsrnextBB );
 
-    matchingjsrBB.succ.addElement ( NewsuccBB );
+     matchingjsrBB.succ.addElement ( NewsuccBB );
 
-    matchingjsrBB.succ.removeElement ( OrigsuccBB );
+     matchingjsrBB.succ.removeElement ( OrigsuccBB );
 
-    matchingjsrnextBB.pred.addElement ( b );
+     matchingjsrnextBB.pred.addElement ( b );
 
-    matchingjsrnextBB.pred.removeElement ( OrigretBB );
+     matchingjsrnextBB.pred.removeElement ( OrigretBB );
 
-    for ( int k=NewsuccBB.pred.size() -1; k > -1;k-- ) 
-    { 
+     for ( int k=NewsuccBB.pred.size() -1; k > -1;k-- ) 
+     { 
 
-     BasicBlock tempBB = ( BasicBlock ) NewsuccBB.pred.elementAt ( k );
+      BasicBlock tempBB = ( BasicBlock ) NewsuccBB.pred.elementAt ( k );
 
-     if ( tempBB.tail instanceof Instruction_Jsr )
-     NewsuccBB.pred.removeElement ( tempBB );
+      if ( tempBB.tail instanceof Instruction_Jsr )
+      NewsuccBB.pred.removeElement ( tempBB );
+
+     }
+
+     NewsuccBB.pred.addElement ( matchingjsrBB );
+
+     b.succ.removeAllElements();
+
+     b.succ.addElement ( matchingjsrnextBB );
 
     }
 
-    NewsuccBB.pred.addElement ( matchingjsrBB );
-
-    b.succ.removeAllElements();
-
-    b.succ.addElement ( matchingjsrnextBB );
-
    }
+
+   b = b.next;
 
   }
 
-  b = b.next;
-
  }
-
-}
 
 
 
@@ -1074,7 +1434,9 @@ public class CFG {
                }
             } else {
                nexti = (i.next==null) ? ((b.next==null) ? null : b.next.head) : i.next;
+
                branches = i.branchpoints(nexti);
+              
             }
             if (i.calls) numb = 1;
             else numb = 0;
@@ -1089,10 +1451,17 @@ public class CFG {
             if (branches!=null) {
                int j;
                for (j=0;j<branches.length;j++) {
+ 
                   if (branches[j]!=null) {
                      bb = (BasicBlock)(h.get(branches[j]));
+                 
                      if (bb==null)
+                     {
+                 
                         System.out.println("Warning: target of a branch is null");
+                        System.out.println ( i );
+
+                     }
                      else {
                         b.succ.addElement(bb);
                         bb.pred.addElement(b);
@@ -1127,11 +1496,13 @@ public class CFG {
       Instruction newhead,i;
       i = head;
       while (i!=null) {
+
          if (i.branches || (i.next!=null && i.next.labelled)) {
             newhead = i.next;
             i.next = null;
             return newhead;
          }
+
          i = i.next;
       }
       return null;
@@ -1301,6 +1672,7 @@ public class CFG {
 
                     while(ins != null)
                     {
+
                         //System.out.println("ins:" + ins.toString());
                         
                         //if(ins instanceof Instruction_Goto)
@@ -1327,8 +1699,6 @@ public class CFG {
                             {
                                  successors.add(((BasicBlock) succ.elementAt(i)).head);
 
-                                 //System.out.println ( "HEAD "+( ( BasicBlock ) succ.elementAt(i) ).head );
-                                 
                              }    
                             instructionToSuccessors.put(ins, successors);
                         }
@@ -1475,6 +1845,7 @@ public class CFG {
                         System.out.println();
                       */
 
+
                     for(int i = 0; i < successors.length; i++)
                     {
                         Instruction s = (Instruction) successors[i];
@@ -1580,6 +1951,8 @@ public class CFG {
                 {
                     List statementsForIns = new VectorList();
 
+//                    System.out.println ( ins ); 
+
                     generateJimple(ins, (TypeStack) instructionToTypeStack.get(ins),
                         (TypeStack) instructionToPostTypeStack.get(ins), constant_pool,
                         statementsForIns, b);
@@ -1614,7 +1987,6 @@ public class CFG {
             {
                 Instruction ins = b.head;
 
-                System.out.println("BASIC BLOCK: ");
                 System.out.println();
 
                 while(ins != null)
@@ -3072,7 +3444,6 @@ public class CFG {
 
       int x = ((int)(ins.code))&0xff;
 
-      // System.out.println(ins);
       switch(x)
       {
          case ByteCode.BIPUSH:
@@ -3594,8 +3965,8 @@ public class CFG {
                 stmt = null;
             }
             break;
-
-         case ByteCode.DUP2_X1:
+            
+        case ByteCode.DUP2_X1:
             if(typeSize(typeStack.get(typeStack.topIndex() - 1)) == 2)
             {
                 l2 = Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex() - 1);
@@ -4212,8 +4583,7 @@ public class CFG {
          case ByteCode.GOTO_W:
             stmt = Jimple.v().newGotoStmt(new FutureStmt());
             break;
-
-            /*
+/*
          case ByteCode.JSR:
          case ByteCode.JSR_W:
          {
@@ -4228,8 +4598,8 @@ public class CFG {
              stmt = null;
              break;
          }
-        */
-        
+*/
+
          case ByteCode.RET:
          {
             Local local =
