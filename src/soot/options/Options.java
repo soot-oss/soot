@@ -88,6 +88,12 @@ public class Options extends OptionsBase {
             )
                 app = true;
   
+            else if( false 
+            || option.equals( "w" )
+            || option.equals( "whole-program" )
+            )
+                whole_program = true;
+  
             else if( false
             || option.equals( "cp" )
             || option.equals( "soot-classpath" )
@@ -355,7 +361,25 @@ public class Options extends OptionsBase {
                 
                 pushOptions( "enabled:true" );
                 
+                pushOptions( "gop" );
+                
+                pushOptions( "-p" );
+                
+                pushOptions( "enabled:true" );
+                
+                pushOptions( "bop" );
+                
+                pushOptions( "-p" );
+                
+                pushOptions( "aggregate-all-locals:true" );
+                
+                pushOptions( "gb" );
+                
+                pushOptions( "enabled:true" );
+                
                 pushOptions( "jop" );
+                
+                pushOptions( "-p" );
                 
                 pushOptions( "-p" );
                 
@@ -373,6 +397,11 @@ public class Options extends OptionsBase {
                 pushOptions( "-p" );
                 
             }
+  
+            else if( false 
+            || option.equals( "via-shimple" )
+            )
+                via_shimple = true;
   
             else if( false
             || option.equals( "process-path" )
@@ -563,6 +592,8 @@ public class Options extends OptionsBase {
     private boolean verbose = false;
     public boolean app() { return app; }
     private boolean app = false;
+    public boolean whole_program() { return whole_program; }
+    private boolean whole_program = false;
     public String soot_classpath() { return soot_classpath; }
     private String soot_classpath = "";
     public int src_prec() {
@@ -583,6 +614,8 @@ public class Options extends OptionsBase {
     private boolean via_grimp = false;
     public boolean xml_attributes() { return xml_attributes; }
     private boolean xml_attributes = false;
+    public boolean via_shimple() { return via_shimple; }
+    private boolean via_shimple = false;
     public List process_path() { 
         if( process_path == null )
             return java.util.Collections.EMPTY_LIST;
@@ -645,6 +678,7 @@ public class Options extends OptionsBase {
 +padOpt(" -version", "output version information and exit" )
 +padOpt(" -v -verbose", "verbose mode" )
 +padOpt(" -app", "runs in application mode" )
++padOpt(" -w -whole-program", "runs in whole-program mode" )
 +"\nInput Options:\n"
       
 +padOpt(" -cp ARG -soot-classpath ARG", "uses given PATH as the classpath for finding classes for Soot processing" )
@@ -674,6 +708,7 @@ public class Options extends OptionsBase {
 +padOpt(" -p PHASE-NAME PHASE-OPTIONS -phase-option PHASE-NAME PHASE-OPTIONS", "set run-time option KEY to VALUE for PHASE-NAME" )
 +padOpt(" -O -optimize", "perform scalar optimizations on the classfiles" )
 +padOpt(" -W -whole-optimize", "perform whole program optimizations on the classfiles" )
++padOpt(" -via-shimple", "enables phases operating on Shimple SSA representation" )
 +"\nSingle File Mode Options:\n"
       
 +padOpt(" -process-path ARG", "process all classes on the PATH" )
@@ -780,19 +815,7 @@ public class Options extends OptionsBase {
             return ""
                 +"disabled ";
     
-        if( phaseName.equals( "wstp" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "wsop" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "wjtp" ) )
-            return ""
-                +"disabled ";
-    
-        if( phaseName.equals( "wjtp.spark" ) )
+        if( phaseName.equals( "cg.spark" ) )
             return ""
                 +"disabled "
                 +"verbose "
@@ -825,6 +848,18 @@ public class Options extends OptionsBase {
                 +"dump-answer "
                 +"trim-invoke-graph "
                 +"add-tags ";
+    
+        if( phaseName.equals( "wstp" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wsop" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "wjtp" ) )
+            return ""
+                +"disabled ";
     
         if( phaseName.equals( "wjop" ) )
             return ""
@@ -1090,17 +1125,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg" ) )
             return "";
     
-        if( phaseName.equals( "wstp" ) )
-            return "";
-    
-        if( phaseName.equals( "wsop" ) )
-            return "";
-    
-        if( phaseName.equals( "wjtp" ) )
-            return ""
-              +"disabled:true ";
-    
-        if( phaseName.equals( "wjtp.spark" ) )
+        if( phaseName.equals( "cg.spark" ) )
             return ""
               +"disabled:true "
               +"verbose:false "
@@ -1131,8 +1156,18 @@ public class Options extends OptionsBase {
               +"dump-types:true "
               +"class-method-var:true "
               +"dump-answer:false "
-              +"trim-invoke-graph:false "
+              +"trim-invoke-graph:true "
               +"add-tags:false ";
+    
+        if( phaseName.equals( "wstp" ) )
+            return "";
+    
+        if( phaseName.equals( "wsop" ) )
+            return "";
+    
+        if( phaseName.equals( "wjtp" ) )
+            return ""
+              +"disabled:true ";
     
         if( phaseName.equals( "wjop" ) )
             return ""
@@ -1311,10 +1346,10 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.ne" ) ) return;
         if( phaseName.equals( "jb.uce" ) ) return;
         if( phaseName.equals( "cg" ) ) return;
+        if( phaseName.equals( "cg.spark" ) ) return;
         if( phaseName.equals( "wstp" ) ) return;
         if( phaseName.equals( "wsop" ) ) return;
         if( phaseName.equals( "wjtp" ) ) return;
-        if( phaseName.equals( "wjtp.spark" ) ) return;
         if( phaseName.equals( "wjop" ) ) return;
         if( phaseName.equals( "wjop.smb" ) ) return;
         if( phaseName.equals( "wjop.si" ) ) return;
@@ -1392,14 +1427,14 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jb.uce" );
         if( !PackManager.v().hasPhase( "cg" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg" );
+        if( !PackManager.v().hasPhase( "cg.spark" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase cg.spark" );
         if( !PackManager.v().hasPhase( "wstp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wstp" );
         if( !PackManager.v().hasPhase( "wsop" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wsop" );
         if( !PackManager.v().hasPhase( "wjtp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjtp" );
-        if( !PackManager.v().hasPhase( "wjtp.spark" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase wjtp.spark" );
         if( !PackManager.v().hasPhase( "wjop" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjop" );
         if( !PackManager.v().hasPhase( "wjop.smb" ) )

@@ -314,6 +314,23 @@ public class InvokeGraph
     reachableMethods = methods;
   }
 
+  /** Return list of classes in which at least one method is reachable. */
+  public List getReachableClasses() {
+      ArrayList ret = new ArrayList();
+      for( Iterator clIt = G.v().Scene().getApplicationClasses().iterator(); clIt.hasNext(); ) {
+          final SootClass cl = (SootClass) clIt.next();
+          Iterator it = cl.methodIterator();
+          while( it.hasNext() ) {
+              SootMethod m = (SootMethod) it.next();
+              if( reachableMethods.contains(m) ) {
+                  ret.add(cl);
+                  break;
+              }
+          }
+      }
+      return ret;
+  }
+
   public int numOfMethods() {
     return reachableMethods.size();
   }

@@ -29,6 +29,13 @@
 			<short_desc>runs in application mode</short_desc>
 			<long_desc>This option ...</long_desc>
 		</boolopt>
+                <boolopt>
+			<name>Whole-Program Mode</name>
+			<alias>w</alias>
+			<alias>whole-program</alias>
+			<short_desc>runs in whole-program mode</short_desc>
+			<long_desc>This option ...</long_desc>
+                </boolopt>
 	</section>
 	<section>
 		<name>Input Options</name>
@@ -479,55 +486,10 @@ This phase eliminates assignment statements (to locals) with no uses.
 					<name>Disabled</name>
 					<alias>disabled</alias>
 				</boolopt>
-			</phase>
-			<phase>
-				<name>Whole Shimple Transformation Pack</name>
-				<alias>wstp</alias>
-				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
-				</boolopt>
-			</phase>
-			<phase>
-				<name>Whole Shimple Optimization Pack</name>
-				<alias>wsop</alias>
-				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
-				</boolopt>
-			</phase>
-			<phase>
-				<name>Whole-Jimple Transformation Pack</name>
-				<alias>wjtp</alias>
-				<long_desc>
-Soot can do whole-program analyses.  For the current version of Soot,
-this means that Jimple bodies are created for each method in the
-application, and analyses run on this set of Jimple bodies.  The
-application consists of one class, specified on the command-line, plus
-all classes referenced (directly or indirectly) by it.  It excludes
-classes in <tt>java.*</tt>, <tt>javax.*</tt>, and <tt>sun.*</tt>.  This mode is
-triggered by the <tt>-</tt><tt>-app</tt> option.
-
-In whole-program mode, Soot will always apply the contents of the
-Whole-Jimple transformation pack to each method under analysis.  This
-occurs after all Jimple bodies have been created.  This pack is called
-<tt>wjtp</tt>.  In an
-unmodified version of Soot, the only transformation in <tt>wjtp</tt> is the
-Spark pointer analysis kit. Spark has many options, which are
-listed at <a href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps">spark.ps</a>.
-
-                        </long_desc>
-				<boolopt>
-					<name>Disabled</name>
-					<alias>disabled</alias>
-					<default>true</default>
-					<short_desc/>
-					<long_desc/>
-				</boolopt>
 				<sub_phase>
 					<name>Spark</name>
 					<class>SparkOptions</class>
-					<alias>wjtp.spark</alias>
+					<alias>cg.spark</alias>
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>
@@ -952,7 +914,7 @@ other analyses (such as the old VTA).
 						<boolopt>
 							<name>Trim Invoke Graph</name>
 							<alias>trim-invoke-graph</alias>
-							<default>false</default>
+							<default>true</default>
 							<long_desc>
 When this option is set to true, the results of the analysis are used to make the invoke graph
 more precise after the analysis completes.
@@ -970,6 +932,51 @@ tags, and printed with the resulting Jimple code.
 						</boolopt>
 					</section>
 				</sub_phase>
+			</phase>
+			<phase>
+				<name>Whole Shimple Transformation Pack</name>
+				<alias>wstp</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+			</phase>
+			<phase>
+				<name>Whole Shimple Optimization Pack</name>
+				<alias>wsop</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+			</phase>
+			<phase>
+				<name>Whole-Jimple Transformation Pack</name>
+				<alias>wjtp</alias>
+				<long_desc>
+Soot can do whole-program analyses.  For the current version of Soot,
+this means that Jimple bodies are created for each method in the
+application, and analyses run on this set of Jimple bodies.  The
+application consists of one class, specified on the command-line, plus
+all classes referenced (directly or indirectly) by it.  It excludes
+classes in <tt>java.*</tt>, <tt>javax.*</tt>, and <tt>sun.*</tt>.  This mode is
+triggered by the <tt>-</tt><tt>-app</tt> option.
+
+In whole-program mode, Soot will always apply the contents of the
+Whole-Jimple transformation pack to each method under analysis.  This
+occurs after all Jimple bodies have been created.  This pack is called
+<tt>wjtp</tt>.  In an
+unmodified version of Soot, the only transformation in <tt>wjtp</tt> is the
+Spark pointer analysis kit. Spark has many options, which are
+listed at <a href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps">spark.ps</a>.
+
+                        </long_desc>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+					<default>true</default>
+					<short_desc/>
+					<long_desc/>
+				</boolopt>
 			</phase>
 			<phase>
 				<name>Whole-Jimple Optimization Pack</name>
@@ -1909,6 +1916,15 @@ result.
 			<alias>O</alias>
 			<alias>optimize</alias>
 			<expansion>-p</expansion>
+                        <expansion>gb</expansion>
+                        <expansion>aggregate-all-locals:true</expansion>
+			<expansion>-p</expansion>
+                        <expansion>bop</expansion>
+                        <expansion>enabled:true</expansion>
+			<expansion>-p</expansion>
+                        <expansion>gop</expansion>
+                        <expansion>enabled:true</expansion>
+			<expansion>-p</expansion>
                         <expansion>jop</expansion>
                         <expansion>enabled:true</expansion>
 			<short_desc>perform scalar optimizations on the classfiles</short_desc>
@@ -1924,6 +1940,12 @@ result.
 			<short_desc>perform whole program optimizations on the classfiles</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
+		<boolopt>
+			<name>Via Shimple</name>
+			<alias>via-shimple</alias>
+			<short_desc>enables phases operating on Shimple SSA representation</short_desc>
+			<long_desc>This option ... </long_desc>
+		</boolopt>
 	</section>
 	<section>
 		<name>Single File Mode Options</name>

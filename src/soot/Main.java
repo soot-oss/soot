@@ -467,24 +467,8 @@ public class Main implements Runnable
       }
       
       loadNecessaryClasses();
-
       prepareClasses();
 
-      // Run the whole-program packs.
-      PackManager.v().getPack("wjtp").apply();
-      if(isOptimizingWhole)
-	PackManager.v().getPack("wjop").apply();
-				
-      // Give one more chance
-      PackManager.v().getPack("wjtp2").apply();
-				
-      // System.gc();
-
-      preProcessDAVA();
-
-	processClasses();
-
-      postProcessDAVA();
 	    
       Timers.v().totalTimer.end();            
 				
@@ -509,6 +493,28 @@ public class Main implements Runnable
     exitCompilation(COMPILATION_SUCCEDED);            
   }        
 
+  private void runPacks() {
+      if( opts.whole_program() ) {
+          // Run the whole-program packs.
+          PackManager.v().getPack("cg").apply();
+          if( opts.via_shimple() ) {
+              PackManager.v().getPack("wstp").apply();
+              PackManager.v().getPack("wsop").apply();
+          } else {
+              PackManager.v().getPack("wjtp").apply();
+              PackManager.v().getPack("wjop").apply();
+              PackManager.v().getPack("wjtp2").apply();
+          }
+          preProcessDAVA();
+          wholeProcessClasses();
+          postProcessDAVA();
+      } else {
+        preProcessDAVA();
+	processClasses();
+        postProcessDAVA();
+      }
+  }
+
   /* preprocess classes for DAVA */
   private void preProcessDAVA() {
     if (opts.output_format() == Options.output_format_dava) {
@@ -516,6 +522,18 @@ public class Main implements Runnable
       PackageNamer.v().fixNames();
 
       G.v().out.println();
+    }
+  }
+
+      /* process classes in whole-program mode */
+  private void wholeProcessClasses() {
+    Iterator classIt = Scene.v().getActiveInvokeGraph().getReachableClasses().iterator();
+    
+    // process each class 
+    while(classIt.hasNext()) {
+      SootClass s = (SootClass) classIt.next();
+      handleClass(s);
+				
     }
   }
 
@@ -527,16 +545,7 @@ public class Main implements Runnable
     while(classIt.hasNext()) {
       SootClass s = (SootClass) classIt.next();
 				
-      if (opts.output_format() == Options.output_format_dava) {
-	G.v().out.print( "Decompiling ");
-      } else {
-	G.v().out.print( "Transforming ");
-      }
-      G.v().out.print( s.getName() + "... " );
-      G.v().out.flush();
-							
       handleClass(s);
-      G.v().out.println();
     }
   }
 
@@ -708,51 +717,6 @@ public class Main implements Runnable
     }
   }
 
-    /** Attach JimpleBodies to the methods of c. */
-  private void attachJimpleBodiesFor(SootClass c) {
-    Iterator methodIt = c.methodIterator();
-           
-    while(methodIt.hasNext()) {   
-      SootMethod m = (SootMethod) methodIt.next();
-        
-      if(!m.isConcrete())
-	continue;
-                                
-      if(!m.hasActiveBody()) {
-	m.setActiveBody(m.getBodyFromMethodSource("jb"));
-
-	PackManager.v().getPack("jtp").apply(m.getActiveBody());
-	if(isOptimizing) 
-	  PackManager.v().getPack("jop").apply(m.getActiveBody());
-      }            
-    }
-  }
-
-  /* lazyHandleClass only processes methods reachable from the entry points
-   * by the call graph, it does not have any output.
-   */
-  private void lazyHandleClass(SootClass c) {
-    Iterator methodIt = c.methodIterator();
-    
-    while(methodIt.hasNext()) {   
-      SootMethod m = (SootMethod) methodIt.next();
-        
-      if(!m.isConcrete())
-	continue;
-
-      if (m.hasActiveBody()) {
-	JimpleBody body = (JimpleBody) m.getActiveBody();
-		    
-	PackManager.v().getPack("jtp").apply(body);
-                    
-	if(isOptimizing) 
-	  PackManager.v().getPack("jop").apply(body);
-
-	m.releaseActiveBody();
-      }
-    }
-  }
-
   /* normal approach to handle each class by analyzing every method.
    */
   private void handleClass(SootClass c)
@@ -760,6 +724,14 @@ public class Main implements Runnable
     FileOutputStream streamOut = null;
     PrintWriter writerOut = null;
         
+      if (opts.output_format() == Options.output_format_dava) {
+	G.v().out.print( "Decompiling ");
+      } else {
+	G.v().out.print( "Transforming ");
+      }
+      G.v().out.print( c.getName() + "... " );
+      G.v().out.flush();
+							
     boolean 
       produceBaf   = false,
       produceGrimp = false,
@@ -818,39 +790,25 @@ public class Main implements Runnable
                                 
 	// Build Jimple body and transform it.
 	{
-	  boolean wasOptimizing = isOptimizing;
-	  if (produceDava)
-	    isOptimizing = true;
-
 	  JimpleBody body = (JimpleBody) m.retrieveActiveBody();
 		    
+          if( opts.via_shimple() ) {
+              PackManager.v().getPack("stp").apply(body);
+              PackManager.v().getPack("sop").apply(body);
+          }
 	  PackManager.v().getPack("jtp").apply(body);
-                    
-	  if(isOptimizing) 
-	    PackManager.v().getPack("jop").apply(body);
-
-	  isOptimizing = wasOptimizing;
+	  PackManager.v().getPack("jop").apply(body);
+	  PackManager.v().getPack("jap").apply(body);
 	}
 
 	if(produceGrimp) {
-	  boolean wasOptimizing = isOptimizing;
-	  if (produceDava)
-	    isOptimizing = true;
-
-	  if(isOptimizing)
-            PackManager.v().setPhaseOptionIfUnset("gb", "aggregate-all-locals");
 	  m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
-                        
-	  if(isOptimizing)
-	    PackManager.v().getPack("gop").apply(m.getActiveBody());
-
-	  isOptimizing = wasOptimizing;
+          PackManager.v().getPack("gop").apply(m.getActiveBody());
 	}
         else if(produceBaf) {   
 	  m.setActiveBody(Baf.v().newBody((JimpleBody) m.getActiveBody()));
-
-	  if(isOptimizing) 
-	    PackManager.v().getPack("bop").apply(m.getActiveBody());
+	  PackManager.v().getPack("bop").apply(m.getActiveBody());
+	  PackManager.v().getPack("tag").apply(m.getActiveBody());
 	} 
       }
 
@@ -938,6 +896,7 @@ public class Main implements Runnable
 	  m.releaseActiveBody();
       }
     }
+    G.v().out.println();
   }
     
 }

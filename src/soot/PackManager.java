@@ -117,12 +117,12 @@ public class PackManager {
         // Call graph pack
         addPack(p = new ScenePack("cg"));
         {
+            p.add(new Transform("cg.spark", SparkTransformer.v()));
         }
 
         // Whole-Jimple transformation pack (--app)
         addPack(p = new ScenePack("wjtp"));
         {
-            p.add(new Transform("wjtp.spark", SparkTransformer.v()));
         }
 
         // Whole-Jimple Optimization pack (--app -W)
