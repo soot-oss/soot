@@ -582,10 +582,10 @@ We do the following things in our flow function:
 
 \begin{itemstep}
 \item Create clone of src set.
-\item Add gen set.\\
-\qquad \qquad {\tt x} in {\tt x.foo()};
 \item Remove kill set (defined {\tt Local}s).\\
 \qquad \qquad {\tt y} in {\tt y = y.next};
+\item Add gen set.\\
+\qquad \qquad {\tt x} in {\tt x.foo()};
 \item Handle copy statements.
 \item Copy to branch and fallthrough lists.
 \item Patch sets for {\tt if} statements.
@@ -628,7 +628,7 @@ public NullnessAnalysis(UnitGraph g)
 
 \begin{slide}{Step 5: Constructor: Finding All Locals}
 \vspace*{-0.2in}
-Find all locals in body \& create flowsets:
+Create flowsets, finding all locals in body:
 
 \vspace*{-0.05in}
 \begin{verbatim}
@@ -640,8 +640,7 @@ Iterator localIt =
 
 while (localIt.hasNext()) {
     Local l = (Local)localIt.next();
-    if (l.getType() 
-             instanceof RefType)
+    if (isRefOrArrayType(l.getType()))
         fullSet.add(l);
 }
 \end{verbatim}
