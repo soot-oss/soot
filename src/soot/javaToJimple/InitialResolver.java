@@ -94,7 +94,7 @@ public class InitialResolver {
             
             if (!className.equals("java.lang.String[]")) {
                     
-                    
+                //System.out.println("Will resolve class: "+className);    
                 resolver.assertResolvedClass(className);
             }
             
@@ -251,7 +251,8 @@ public class InitialResolver {
         if (sootClass.getPackageName() != null) {
             simpleName = simpleName.substring(simpleName.lastIndexOf(".")+1, simpleName.length());
         }
-        
+       
+        //System.out.println("soot class name: " +simpleName);
         Iterator declsIt = source.decls().iterator();
        
         boolean found = false;
@@ -259,6 +260,7 @@ public class InitialResolver {
 		while (declsIt.hasNext()){
 			Object next = declsIt.next();
 			if (next instanceof polyglot.ast.ClassDecl) {
+                //System.out.println("source decl: "+next);
                 if (((polyglot.ast.ClassDecl)next).name().equals(simpleName)){
 				    createClassDecl((polyglot.ast.ClassDecl)next);
                     found = true;
@@ -279,7 +281,9 @@ public class InitialResolver {
             while (nestedDeclsIt.hasNext() && !found){
                 
                 polyglot.ast.ClassDecl nextDecl = (polyglot.ast.ClassDecl)nestedDeclsIt.next();
+                //System.out.println("nextDecl: "+nextDecl);
                 polyglot.types.ClassType type = (polyglot.types.ClassType)nextDecl.type();
+                //System.out.println("nested class type: "+type);
                 if (type.isLocal() && !type.isAnonymous()) {
                    
                     if (localClassMap.containsKey(sootClass.getName())){
@@ -295,6 +299,7 @@ public class InitialResolver {
                         type = type.outer();
                     }
                     String realName = outerName+"$"+nextDecl.name();
+                    //System.out.println("realName: "+realName);
                     if (realName.equals(sootClass.getName())){
                         createClassDecl(nextDecl);
                         found = true;
@@ -304,6 +309,7 @@ public class InitialResolver {
 
             if (!found) {
                 // assume its anon class (only option left) 
+                //System.out.println("sootClass name: "+sootClass.getName());
                 int index = sootClass.getName().indexOf("$");
                 int length = sootClass.getName().length();
                 int count = (new Integer(sootClass.getName().substring(index+1, length))).intValue();

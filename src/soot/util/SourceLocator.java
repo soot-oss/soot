@@ -162,13 +162,19 @@ public class SourceLocator
                 // class is an inner class and will be in
                 // Outer of Outer$Inner
                 javaClassName = className.substring(0, className.indexOf("$"));
+
                 
+                //System.out.println("java class name: "+javaClassName); 
             }
-            else if (sourceToClassMap != null) {
+            // always do this because an inner class could be in a class
+            // thats in the map
+            if (sourceToClassMap != null) {
                 if (sourceToClassMap.get(javaClassName) != null) {
                     javaClassName = (String)sourceToClassMap.get(javaClassName);
                 }
             }
+                
+            //System.out.println("java class name: "+javaClassName); 
 
             switch( Options.v().src_prec() ) {
                 case Options.src_prec_class:

@@ -133,6 +133,7 @@ public class SootResolver
                     initSourceResolver = new soot.javaToJimple.InitialResolver();
                 }
                 initSourceResolver.formAst(SourceLocator.v().getFullPathFound(), SourceLocator.v().getLocationsFound());
+                //System.out.println("about to call initial resolver in j2j: "+sc.getName());
                 initSourceResolver.resolveFromJavaFile(sc, this);
             }
             else {

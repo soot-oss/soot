@@ -354,6 +354,8 @@ public class JimpleBodyBuilder {
         String name = localInst.name();
         soot.Local sootLocal = createLocal(name, sootType);
         
+        //System.out.println("creating local: "+localInst); 
+        //System.out.println("create hash code: "+System.identityHashCode(localInst));
         localsMap.put(new polyglot.util.IdentityKey(localInst), sootLocal);
         return sootLocal;
     }
@@ -380,7 +382,18 @@ public class JimpleBodyBuilder {
      * Local Retreival
      */
     private soot.Local getLocal(polyglot.types.LocalInstance li) {
+        //System.out.println("get hash code: "+System.identityHashCode(li));
+        //System.out.println("get local inst: "+li);
 
+        /*Iterator it = localsMap.keySet().iterator();
+        while (it.hasNext()){
+            if (it.next().equals(new polyglot.util.IdentityKey(li))){
+                System.out.println("equals");
+            }
+        }
+        System.out.println("localsMap: "+localsMap);
+        System.out.println("li to look up: "+li.name());
+        System.out.println("li idkey to look up: "+new polyglot.util.IdentityKey(li));*/
         if (localsMap.containsKey(new polyglot.util.IdentityKey(li))){
             soot.Local sootLocal = (soot.Local)localsMap.get(new polyglot.util.IdentityKey(li));
             return sootLocal;
@@ -399,7 +412,9 @@ public class JimpleBodyBuilder {
      * Stmt creation
      */
     private void createStmt(polyglot.ast.Stmt stmt) {
+        //System.out.println("Stmt: "+stmt);
         if (stmt instanceof polyglot.ast.Eval) {
+            //System.out.println("Eval: "+((polyglot.ast.Eval)stmt).expr().getClass());
 			createExpr(((polyglot.ast.Eval)stmt).expr());  
         }
         else if (stmt instanceof polyglot.ast.If) {
@@ -1185,9 +1200,11 @@ public class JimpleBodyBuilder {
         polyglot.ast.Block finallyBlock = tryStmt.finallyBlock();
         
         if (finallyBlock == null) {
+            //System.out.println("creating try-catch for method: "+body.getMethod().getName());
             createTryCatch(tryStmt);
         }
         else {
+            //System.out.println("creating try-catch-finally");
             createTryCatchFinally(tryStmt);
         }
     }
@@ -1396,7 +1413,7 @@ public class JimpleBodyBuilder {
      * Expression Creation
      */
     private soot.Value createExpr(polyglot.ast.Expr expr){
-
+        //System.out.println("Expr at start of createExpr: "+expr);
         if (expr instanceof polyglot.ast.Assign) {
             return getAssignLocal((polyglot.ast.Assign)expr);
         }
@@ -1443,7 +1460,8 @@ public class JimpleBodyBuilder {
             return getFieldLocal((polyglot.ast.Field)expr);
         }
         else {
-            throw new RuntimeException("Unhandled Expression");
+            System.out.println("Expr: "+expr);
+            throw new RuntimeException("Unhandled Expression: ");
         }
        
     }
@@ -2905,6 +2923,7 @@ public class JimpleBodyBuilder {
 		String name = call.name();
         // handle receiver/target
 		polyglot.ast.Receiver receiver = call.target();
+        //System.out.println("in getCallLocal: call.target(): "+call.target());
         soot.Local baseLocal = (soot.Local)getBaseLocal(receiver);
        
         String receiverTypeClassName;
@@ -2938,7 +2957,10 @@ public class JimpleBodyBuilder {
         soot.Type sootRetType = Util.getSootType(methodInstance.returnType());
         ArrayList sootParamsTypes = getSootParamsTypes(call);
         ArrayList sootParams = getSootParams(call);
-      
+     
+        //System.out.println("class to get meth from: "+receiverTypeClass.getName());
+        //System.out.println("methods in class: :"+receiverTypeClass.getMethods());
+        //System.out.println("meth to get: "+methodInstance.name());
         soot.SootMethod callMethod = getMethodFromClass(receiverTypeClass, methodInstance.name(), sootParamsTypes, sootRetType);
 
         boolean isPrivateAccess = false;

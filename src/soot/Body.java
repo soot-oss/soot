@@ -193,6 +193,7 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Verifies a few sanity conditions on the contents on this body. */
     public void validate()
     {
+        //System.out.println("body: "+this.getUnits());
         validateLocals();
         validateTraps();
         validateUnitBoxes();
@@ -216,6 +217,7 @@ public abstract class Body extends AbstractHost implements Serializable
     private void validateLocal( ValueBox vb ) {
         Value value;
         if( (value = vb.getValue()) instanceof Local) {
+            //System.out.println("localChain: "+localChain);
             if(!localChain.contains(value))
                 throw new RuntimeException("Local not in chain : "+value);                
         }
