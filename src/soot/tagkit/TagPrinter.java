@@ -29,7 +29,7 @@ import soot.*;
 import java.util.*;
 import java.io.*;
 
-
+/** Interface to allow display of tags. */
 public interface TagPrinter
 {
     public String print(String aClassName, String aFieldOrMtdSignature, Tag aTag);
