@@ -13,30 +13,16 @@ public class ArrayNullTagAggregator extends TagAggregator
     public ArrayNullTagAggregator( Singletons.Global g ) {}
     public static ArrayNullTagAggregator v() { return G.v().ArrayNullTagAggregator(); }
 
-    private Unit lastUnit = null;
-    private ArrayNullCheckTag lastTag = null;
-
-    public void internalTransform( Body b, String phaseName, Map options )
+    public void wantTag(Tag t, Unit u)
     {
-	lastUnit = null;
-	lastTag = null;
-        super.internalTransform( b, phaseName, options );
-    }
-
-    public Tag wantTag(Tag t, Unit u)
-    {
-	if(t instanceof OneByteCodeTag) 
-	{	
-            OneByteCodeTag obct = (OneByteCodeTag) t;
-	    if (lastUnit == u) {
-	    	lastTag.accumulate(obct.getValue()[0]);
-            } else {
-		lastUnit = u;
-		lastTag = new ArrayNullCheckTag(obct.getValue()[0]);
-                return lastTag;
-	    }
-	}
-        return null;
+	if(!(t instanceof OneByteCodeTag)) return; 
+        OneByteCodeTag obct = (OneByteCodeTag) t;
+        if( units.size() == 0 || units.getLast() != u ) {
+            units.add( u );
+            tags.add( new ArrayNullCheckTag() );
+        }
+        ArrayNullCheckTag anct = (ArrayNullCheckTag) tags.getLast();
+        anct.accumulate(obct.getValue()[0]);
     }
     
     public String aggregatedName()

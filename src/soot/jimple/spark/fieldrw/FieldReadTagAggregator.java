@@ -29,16 +29,14 @@ public class FieldReadTagAggregator extends TagAggregator
     public FieldReadTagAggregator( Singletons.Global g ) {}
     public static FieldReadTagAggregator v() { return G.v().FieldReadTagAggregator(); }
 
-    /** Decide whether this tag should be aggregated by this aggregator.
-     *  Return the tag to be attached to this unit, or null if nothing should
-     *  be attached. */
-    public Tag wantTag(Tag t, Unit u)
+    /** Decide whether this tag should be aggregated by this aggregator. */
+    public void wantTag(Tag t, Unit u)
     {
 	if(t instanceof FieldReadTag) 
 	{
-            return t;
+            units.add(u);
+            tags.add(t);
 	}
-        return null;
     }
     
     public String aggregatedName()

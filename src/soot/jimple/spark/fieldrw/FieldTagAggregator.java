@@ -34,10 +34,8 @@ public class FieldTagAggregator extends TagAggregator
         FieldWriteTagAggregator.v().transform( b, phaseName, options );
     }
 
-    /** Decide whether this tag should be aggregated by this aggregator.
-     *  Return the tag to be attached to this unit, or null if nothing should
-     *  be attached. */
-    public Tag wantTag(Tag t, Unit u)
+    /** Decide whether this tag should be aggregated by this aggregator. */
+    public void wantTag(Tag t, Unit u)
     {
         throw new RuntimeException();
     }

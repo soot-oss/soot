@@ -11,16 +11,16 @@ public class DependenceTagAggregator extends TagAggregator
     public DependenceTagAggregator( Singletons.Global g ) {}
     public static DependenceTagAggregator v() { return G.v().DependenceTagAggregator(); }
 
-    /** Decide whether this tag should be aggregated by this aggregator.
-     *  Return the tag to be attached to this unit, or null if nothing should
-     *  be attached. */
-    public Tag wantTag( Tag t, Unit u ) {
-        if( tags.size() > 0 && tags.getLast() == t ) {
+    /** Decide whether this tag should be aggregated by this aggregator. */
+    public void wantTag( Tag t, Unit u ) {
+        if(!( t instanceof DependenceTag )) return;
+        if( tags.size() == 0 || tags.getLast() != t ) {
+            tags.add( t );
+            units.add( u );
+        } else {
             units.removeLast();
-            tags.removeLast();
+            units.add( u );
         }
-        if( t instanceof DependenceTag ) return t;
-        return null;
     }
 
     /** Return name of the resulting aggregated tag. */
