@@ -249,8 +249,8 @@ with a single local.
 </long_desc>
 				</sub_phase>
 				<sub_phase>
-					<name>Pre-typing Aggregator</name>
-					<alias>jb.a1</alias>
+					<name>Aggregator</name>
+					<alias>jb.a</alias>
                                         <long_desc>
 This phase aggregates Jimple local variables. Essentially, it
 finds definitions which have only a single use and, if it is safe
@@ -272,8 +272,8 @@ Aggregate only values stored in stack locals.
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Pre-typing Unused Local Eliminator</name>
-					<alias>jb.ule1</alias>
+					<name>Unused Local Eliminator</name>
+					<alias>jb.ule</alias>
                                         <long_desc>
 This phase removes any unused locals.
 </long_desc>
@@ -289,42 +289,6 @@ This phase assigns types to local variables.
 </long_desc>
 					<name>Type Assigner</name>
 					<alias>jb.tr</alias>
-					<boolopt>
-						<name>Enabled</name>
-						<alias>enabled</alias>
-                                                <default>true</default>
-					</boolopt>
-				</sub_phase>
-				<sub_phase>
-					<name>Post-typing Aggregator</name>
-					<alias>jb.a2</alias>
-                                        <long_desc>
-This phase aggregates Jimple local variables after they have been
-typed. Essentially, it finds definitions which have only a single
-use and, if it is safe to do so, removes the original definition
-after replacing the use with the definition's right-hand
-side. MAY BE ELIMINATED?
-</long_desc>
-					<boolopt>
-						<name>Enabled</name>
-						<alias>enabled</alias>
-                                                <default>true</default>
-					</boolopt>
-					<boolopt>
-						<name>Only Stack Locals</name>
-						<alias>only-stack-locals</alias>
-						<long_desc>
-Aggregate only values stored in stack locals.
-</long_desc>
-                                                <default>true</default>
-					</boolopt>
-				</sub_phase>
-				<sub_phase>
-					<name>Post-typing Unused Local Eliminator</name>
-					<alias>jb.ule2</alias>
-                                        <long_desc>
-This phase removes any unused locals. MAY BE ELIMINATED?
-</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -621,7 +585,7 @@ declared types of variables and casts.
         </long_desc>
 						</boolopt>
 						<boolopt>
-							<name>Force Garbages Collections</name>
+							<name>Force Garbage Collections</name>
 							<alias>force-gc</alias>
 							<default>false</default>
                                                         <short_desc>Force garbage collection for measuring memory usage</short_desc>
@@ -652,8 +616,8 @@ rather than only those deemed reachable by the points-to analysis.
 							<default>false</default>
                                                         <short_desc>Emulate Variable Type Analysis</short_desc>
 							<long_desc>
-Setting VTA to true has the effect of setting ignoreBaseObjects,
-typesForSites, and simplifySCCs to true to simulate Variable Type
+Setting VTA to true has the effect of setting field-based,
+types-for-sites, and simplify-sccs to true to simulate Variable Type
 Analysis, described in <a href="http://www.sable.mcgill.ca/publications/papers/#oopsla2000">our OOPSLA 2000 paper</a>. Note that the
 algorithm differs from the original VTA in that it handles array
 elements more precisely.

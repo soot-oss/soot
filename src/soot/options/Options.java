@@ -814,25 +814,16 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
-        if( phaseName.equals( "jb.a1" ) )
+        if( phaseName.equals( "jb.a" ) )
             return ""
                 +"enabled "
                 +"only-stack-locals ";
     
-        if( phaseName.equals( "jb.ule1" ) )
+        if( phaseName.equals( "jb.ule" ) )
             return ""
                 +"enabled ";
     
         if( phaseName.equals( "jb.tr" ) )
-            return ""
-                +"enabled ";
-    
-        if( phaseName.equals( "jb.a2" ) )
-            return ""
-                +"enabled "
-                +"only-stack-locals ";
-    
-        if( phaseName.equals( "jb.ule2" ) )
             return ""
                 +"enabled ";
     
@@ -1166,25 +1157,16 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true ";
     
-        if( phaseName.equals( "jb.a1" ) )
+        if( phaseName.equals( "jb.a" ) )
             return ""
               +"enabled:true "
               +"only-stack-locals:true ";
     
-        if( phaseName.equals( "jb.ule1" ) )
+        if( phaseName.equals( "jb.ule" ) )
             return ""
               +"enabled:true ";
     
         if( phaseName.equals( "jb.tr" ) )
-            return ""
-              +"enabled:true ";
-    
-        if( phaseName.equals( "jb.a2" ) )
-            return ""
-              +"enabled:true "
-              +"only-stack-locals:true ";
-    
-        if( phaseName.equals( "jb.ule2" ) )
             return ""
               +"enabled:true ";
     
@@ -1490,11 +1472,9 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb" ) ) return;
         if( phaseName.equals( "jb.ls" ) ) return;
-        if( phaseName.equals( "jb.a1" ) ) return;
-        if( phaseName.equals( "jb.ule1" ) ) return;
+        if( phaseName.equals( "jb.a" ) ) return;
+        if( phaseName.equals( "jb.ule" ) ) return;
         if( phaseName.equals( "jb.tr" ) ) return;
-        if( phaseName.equals( "jb.a2" ) ) return;
-        if( phaseName.equals( "jb.ule2" ) ) return;
         if( phaseName.equals( "jb.ulp" ) ) return;
         if( phaseName.equals( "jb.lns" ) ) return;
         if( phaseName.equals( "jb.cp" ) ) return;
@@ -1563,16 +1543,12 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jb" );
         if( !PackManager.v().hasPhase( "jb.ls" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jb.ls" );
-        if( !PackManager.v().hasPhase( "jb.a1" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase jb.a1" );
-        if( !PackManager.v().hasPhase( "jb.ule1" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase jb.ule1" );
+        if( !PackManager.v().hasPhase( "jb.a" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.a" );
+        if( !PackManager.v().hasPhase( "jb.ule" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.ule" );
         if( !PackManager.v().hasPhase( "jb.tr" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jb.tr" );
-        if( !PackManager.v().hasPhase( "jb.a2" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase jb.a2" );
-        if( !PackManager.v().hasPhase( "jb.ule2" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase jb.ule2" );
         if( !PackManager.v().hasPhase( "jb.ulp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jb.ulp" );
         if( !PackManager.v().hasPhase( "jb.lns" ) )

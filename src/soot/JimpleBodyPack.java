@@ -60,8 +60,8 @@ public class JimpleBodyPack extends BodyPack
 
         if(Options.v().time()) Timers.v().splitTimer.end();
 
-        PackManager.v().getTransform( "jb.a1" ).apply( b );
-        PackManager.v().getTransform( "jb.ule1" ).apply( b );
+        PackManager.v().getTransform( "jb.a" ).apply( b );
+        PackManager.v().getTransform( "jb.ule" ).apply( b );
 
         if(Options.v().time()) Timers.v().assignTimer.start();
 
@@ -72,9 +72,6 @@ public class JimpleBodyPack extends BodyPack
         if(typingFailed(b))
           throw new RuntimeException("type inference failed!");
         
-        PackManager.v().getTransform( "jb.a2" ).apply( b );
-        PackManager.v().getTransform( "jb.ule2" ).apply( b );
-
         if(options.use_original_names())
         {   
             PackManager.v().getTransform( "jb.ulp" ).apply( b );
