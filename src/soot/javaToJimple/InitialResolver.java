@@ -37,6 +37,10 @@ public class InitialResolver {
         // build ast
         astNode = jtj.compile(compiler, fullPath, extInfo);
     }
+
+    public void setAst(polyglot.ast.Node ast) {
+	astNode = ast;
+    }
    
     // resolves all types and deals with .class literals and asserts
     public void resolveFromJavaFile(soot.SootClass sc, soot.SootResolver resolver) {
