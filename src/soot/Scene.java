@@ -63,11 +63,6 @@ public class Scene extends AbstractHost
 
     private Vector classesToResolve = new Vector();
 
-    public static void reset()
-    {
-	constant = new Scene();
-    }
-
     public void addClassToResolve(String c) 
     {
         classesToResolve.add(c);
@@ -86,6 +81,16 @@ public class Scene extends AbstractHost
         return classesToResolve;
     }
 
+    
+    /**
+        Resets this scene to zero.
+        
+     */    
+    public void reset()
+    {
+        Scene.constant = new Scene();
+    }
+    
     public static Scene v()
     {
         return constant;
