@@ -1,5 +1,4 @@
 package soot.jimple.toolkits.pointer;
-import soot.jimple.spark.PointsToSet;
 import java.util.*;
 import soot.*;
 

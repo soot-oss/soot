@@ -66,6 +66,25 @@ public final class PropIter extends Propagator {
                     }
                 }
                 ofcg.doneReachingTypes();
+
+                for( Iterator recIt = pag.getVarNodeNumberer().iterator(); recIt.hasNext(); ) {
+
+                    final VarNode rec = (VarNode) recIt.next();
+                    PointsToSetInternal recSet = rec.getP2Set();
+                    if( ofcg.wantStringConstants( rec ) ) {
+                        Set constants = recSet.possibleStringConstants();
+                        if( constants == null ) {
+                            ofcg.newStringConstant( rec, null );
+                        } else {
+                            for( Iterator constantIt = constants.iterator(); constantIt.hasNext(); ) {
+                                final String constant = (String) constantIt.next();
+                                ofcg.newStringConstant( rec, constant );
+                            }
+                        }
+                    }
+                }
+                ofcg.doneStringConstants();
+
                 while(true) {
                     Node addedSrc = (Node) addedEdges.next();
                     if( addedSrc == null ) break;

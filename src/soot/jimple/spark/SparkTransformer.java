@@ -24,7 +24,6 @@ import soot.jimple.spark.builder.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.solver.*;
 import soot.jimple.spark.sets.*;
-import soot.jimple.spark.callgraph.*;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.*;

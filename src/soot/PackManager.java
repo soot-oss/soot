@@ -36,7 +36,7 @@ import soot.tagkit.*;
 import soot.options.Options;
 import soot.toolkits.scalar.*;
 import soot.jimple.spark.SparkTransformer;
-import soot.jimple.spark.callgraph.CHATransformer;
+import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.jimple.spark.fieldrw.*;
 
 /** Manages the Packs containing the various phases and their options. */

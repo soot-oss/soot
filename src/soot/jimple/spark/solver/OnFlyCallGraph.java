@@ -22,7 +22,6 @@ import soot.jimple.*;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.builder.*;
-import soot.jimple.spark.callgraph.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.*;
 import java.util.*;
@@ -105,6 +104,10 @@ public class OnFlyCallGraph {
 
     public void newStringConstant( VarNode v, String name ) {
         cgb.newStringConstant( (Local) v.getVariable(), name );
+    }
+
+    public void doneStringConstants() {
+        cgb.doneStringConstants();
     }
       
     /* End of public methods. */

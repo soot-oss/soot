@@ -381,7 +381,8 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     }
     final public void caseStringConstant( StringConstant sc ) {
         AllocNode stringConstant;
-        if( Scene.v().containsClass(sc.value) ) {
+        if( Scene.v().containsClass(sc.value) 
+        || ( sc.value.length() > 0 && sc.value.charAt(0) == '[' ) ) {
             stringConstant = pag.makeStringConstantNode( sc.value );
         } else {
             stringConstant = pag.makeAllocNode(

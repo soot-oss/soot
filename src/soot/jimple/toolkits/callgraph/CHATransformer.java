@@ -23,13 +23,12 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.spark.callgraph;
+package soot.jimple.toolkits.callgraph;
 
 import soot.options.*;
 import soot.*;
 import java.util.*;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
-import soot.jimple.toolkits.callgraph.*;
 
 /** Builds an invoke graph using Class Hierarchy Analysis. */
 public class CHATransformer extends SceneTransformer

@@ -1,7 +1,6 @@
 package soot.jimple.toolkits.pointer;
 import java.util.*;
 import soot.*;
-import soot.jimple.spark.PointsToSet;
 
 public class FullRWSet extends RWSet {
     public boolean getCallsNative() {

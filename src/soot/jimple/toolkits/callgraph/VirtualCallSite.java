@@ -17,7 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.jimple.spark.callgraph;
+package soot.jimple.toolkits.callgraph;
 import soot.*;
 import soot.jimple.*;
 
@@ -37,9 +37,12 @@ public class VirtualCallSite
 
     public VirtualCallSite( Stmt stmt, SootMethod container ) {
         this.stmt = stmt;
-        this.iie = (InstanceInvokeExpr) stmt.getInvokeExpr();
         this.container = container;
-        this.subSig = iie.getMethod().getNumberedSubSignature();
+        InvokeExpr ie = stmt.getInvokeExpr();
+        if( ie instanceof InstanceInvokeExpr ) {
+            this.iie = (InstanceInvokeExpr) ie;
+            this.subSig = iie.getMethod().getNumberedSubSignature();
+        }
     }
     public Stmt getStmt() { return stmt; }
     public SootMethod getContainer() { return container; }

@@ -17,7 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.jimple.spark;
+package soot;
 import java.util.*;
 
 /** A generic interface to some set of runtime objects computed by a

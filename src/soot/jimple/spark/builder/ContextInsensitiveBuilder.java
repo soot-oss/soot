@@ -20,7 +20,7 @@
 package soot.jimple.spark.builder;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
-import soot.jimple.toolkits.callgraph.Edge;
+import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
@@ -30,7 +30,6 @@ import soot.jimple.*;
 import soot.jimple.spark.internal.*;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.spark.solver.OnFlyCallGraph;
-import soot.jimple.spark.callgraph.*;
 import soot.util.queue.*;
 import soot.options.SparkOptions;
 

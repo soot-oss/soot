@@ -170,6 +170,19 @@ public final class PropAlias extends Propagator {
             }
             ofcg.doneReachingTypes();
 
+            if( ofcg.wantStringConstants( src ) ) {
+                Set constants = newP2Set.possibleStringConstants();
+                if( constants == null ) {
+                    ofcg.newStringConstant( src, null );
+                } else {
+                    for( Iterator constantIt = constants.iterator(); constantIt.hasNext(); ) {
+                        final String constant = (String) constantIt.next();
+                        ofcg.newStringConstant( src, constant );
+                    }
+                }
+            }
+            ofcg.doneStringConstants();
+
             while(true) {
                 Node addedSrc = (Node) addedEdges.next();
                 if( addedSrc == null ) break;

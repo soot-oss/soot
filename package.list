@@ -24,7 +24,6 @@ soot.jimple.parser.node
 soot.jimple.parser.parser
 soot.jimple.spark
 soot.jimple.spark.builder
-soot.jimple.spark.callgraph
 soot.jimple.spark.internal
 soot.jimple.spark.pag
 soot.jimple.spark.sets

@@ -142,6 +142,7 @@ public final class PropWorklist extends Propagator {
                     }
                 }
             }
+            ofcg.doneStringConstants();
 
             while(true) {
                 Node addedSrc = (Node) addedEdges.next();

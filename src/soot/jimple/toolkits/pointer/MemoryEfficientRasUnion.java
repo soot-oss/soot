@@ -1,7 +1,6 @@
 package soot.jimple.toolkits.pointer;
 import soot.*;
 import java.util.*;
-import soot.jimple.spark.PointsToSet;
 
 public class MemoryEfficientRasUnion extends Union {
     HashSet subsets;

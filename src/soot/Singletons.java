@@ -47,7 +47,6 @@ import soot.jimple.parser.node.*;
 import soot.jimple.parser.parser.*;
 import soot.jimple.spark.*;
 import soot.jimple.spark.builder.*;
-import soot.jimple.spark.callgraph.*;
 import soot.jimple.spark.internal.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
@@ -429,12 +428,6 @@ public class Singletons {
     public IfFinder IfFinder() {
         if( instanceIfFinder == null ) instanceIfFinder = new IfFinder( g );
         return instanceIfFinder;
-    }
-
-    private ImplicitMethodInvocation instanceImplicitMethodInvocation;
-    public ImplicitMethodInvocation ImplicitMethodInvocation() {
-        if( instanceImplicitMethodInvocation == null ) instanceImplicitMethodInvocation = new ImplicitMethodInvocation( g );
-        return instanceImplicitMethodInvocation;
     }
 
     private IntType instanceIntType;

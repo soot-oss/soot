@@ -45,7 +45,7 @@ public final class VirtualCalls
                 && container.getDeclaringClass().getType() !=
                     target.getDeclaringClass().getType() 
                 && !target.getName().equals( "<init>" ) 
-                && subSig != ImplicitMethodInvocation.v().sigClinit ) {
+                && subSig != sigClinit ) {
 
                 t = container.getDeclaringClass().getSuperclass().getType();
             } else {
@@ -123,13 +123,18 @@ public final class VirtualCalls
     }
 
     public void resolveThread( Type t, InstanceInvokeExpr iie, SootMethod container, ChunkedQueue targets ) {
-        if( iie.getMethod().getNumberedSubSignature() !=
-                ImplicitMethodInvocation.v().sigStart ) return;
+        if( iie.getMethod().getNumberedSubSignature() != sigStart ) return;
         if( !Scene.v().getOrMakeFastHierarchy()
                 .canStoreType( t, RefType.v( "java.lang.Runnable" ) ) ) return;
-        resolve( t, iie, ImplicitMethodInvocation.v().sigRun,
-                container, targets );
+        resolve( t, iie, sigRun, container, targets );
     }
+    
+    public final NumberedString sigClinit =
+        Scene.v().getSubSigNumberer().findOrAdd("void <clinit>()");
+    public final NumberedString sigStart =
+        Scene.v().getSubSigNumberer().findOrAdd("void start()");
+    public final NumberedString sigRun =
+        Scene.v().getSubSigNumberer().findOrAdd("void run()");
 }
 
 

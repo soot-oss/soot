@@ -1,7 +1,6 @@
 package soot.jimple.toolkits.pointer;
 import java.util.*;
 import soot.*;
-import soot.jimple.spark.PointsToSet;
 
 /** Represents the read or write set of a statement. */
 public class SiteRWSet extends RWSet {

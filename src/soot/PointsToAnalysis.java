@@ -17,9 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.jimple.spark;
-import soot.*;
-import soot.jimple.*;
+package soot;
 
 /** A generic interface to any type of pointer analysis.
  * @author Ondrej Lhotak

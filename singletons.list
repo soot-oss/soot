@@ -56,7 +56,6 @@ FloatType
 FullObjectSet
 Grimp
 IfFinder
-ImplicitMethodInvocation
 IntType
 JavaIoFileDescriptorNative
 JavaIoFileInputStreamNative

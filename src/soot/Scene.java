@@ -31,7 +31,6 @@ import soot.options.*;
 
 import soot.util.*;
 import java.util.*;
-import soot.jimple.spark.PointsToAnalysis;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.*;
