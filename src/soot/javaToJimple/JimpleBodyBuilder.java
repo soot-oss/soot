@@ -3900,9 +3900,6 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      
         soot.SootMethodRef callMethod = soot.Scene.v().makeMethodRef(receiverTypeClass, methodInstance.name(), sootParamsTypes, sootRetType, methodInstance.flags().isStatic());*/
 
-        if (receiverTypeClass.isInterface()){
-            callMethod = callMethod.resolve().makeRef();
-        }
         boolean isPrivateAccess = false;
         //if (call.methodInstance().flags().isPrivate() && !Util.getSootType(call.methodInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
         if (needsAccessor(call)){
