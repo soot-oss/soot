@@ -137,7 +137,7 @@ public abstract class AbstractAttributesColorer {
         if (len > 0){
             if (sline == eline){
                 if (fg){
-                    sr = new StyleRange(sOffset, len, color, getBgColor());
+                    sr = new StyleRange(sOffset-1, len+1, color, getBgColor());
                 }
                 else {
                     sr = new StyleRange(sOffset, len, oldBgColor, color);
@@ -148,7 +148,7 @@ public abstract class AbstractAttributesColorer {
             else {
                 for (int i = 0; i < starts.length; i++){
                     if (fg){
-                        sr = new StyleRange(starts[i], lengths[i], color, getBgColor());
+                        sr = new StyleRange(starts[i]-1, lengths[i]+1, color, getBgColor());
                     }
                     else {
                         sr = new StyleRange(starts[i], lengths[i], oldBgColor, color);
