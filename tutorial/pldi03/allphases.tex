@@ -24,8 +24,10 @@ To add a {\tt Transformer} to the {\tt jtp} {\tt Pack}:
 \begin{verbatim}
   Pack jtp = G.v().PackManager().
                      getPack("jtp");
-  jtp.add(new Transform("jtp", 
+  jtp.add(new Transform("jtp.nt", 
             new NullTransformer()));
+  jtp.add(new Transform("jtp.nac", 
+            new NullnessAnalysisColorer()));
 \end{verbatim}
 
 On {\tt Pack}, also have {\tt insertBefore()}, {\tt insertAfter()},

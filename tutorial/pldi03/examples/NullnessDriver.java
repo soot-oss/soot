@@ -15,7 +15,8 @@ public class NullnessDriver
     public static void main(String[] argv)
     {
         Pack jtp = soot.G.v().PackManager().getPack("jtp");
-        jtp.add(new Transform("jtp", new NullTransformer()));
+        jtp.add(new Transform("jtp.nt", new NullTransformer()));
+        jtp.add(new Transform("jtp.nac", new NullnessAnalysisColorer()));
 
         soot.Main.main(argv);
     }
