@@ -181,7 +181,7 @@ points.  We look for specific statements by iterating over the
 {\tt Unit}s chain; in Jimple, this chain is filled with {\tt Stmt}s.
 
 \begin{verbatim}
-    Iterator stmtIt = body.getUnits().snapshortIterator();
+    Iterator stmtIt = body.getUnits().snapshotIterator();
     while (stmtIt.hasNext())
     {
         Stmt s = (Stmt) stmtIt.next();
@@ -226,18 +226,20 @@ counter. The instructions in Jimple are:
 \end{verbatim}
 
 Creating a reference to a static field is done via a call to
-{\tt Jimple.v().newStaticFieldRef(gotoCounter)}. The entire
+{\tt Jimple.v().newStaticFieldRef(gotoCounter.makeRef())}. The entire
 assignment statement is created with the {\tt newAssignStmt} method.
 
 \begin{verbatim}
     AssignStmt toAdd1 = Jimple.v().newAssignStmt(tmpLong,
-                                Jimple.v().newStaticFieldRef(gotoCounter));
+                                Jimple.v().newStaticFieldRef(gotoCounter.makeRef()));
 \end{verbatim}
 
 The new statements can then be added to the body by invoking the {\tt
 insertBefore()} method.  There are also some other methods that can
 add statements to a body.  We have seen one of them in {\tt
-createclass} example, {\tt add()}.
+createclass} example, {\tt add()}.  Note that above, we need to get a
+SootFieldRef from the SootField gotoCounter, in order to construct the
+Jimple StaticFieldRef grammar chunk properly.
 
 \begin{verbatim}
     units.insertBefore(toAdd1, s);
@@ -315,6 +317,9 @@ Full class names are {\tt ashes.examples.countgotos.Main} and
 
 \item March 23, 2000: Changes reflecting that the gotocounter is
 distributed with ashes now.
+
+\item Feb 7, 2005: Update calls to Jimple constructors to pass
+  SootFieldRef's and SootMethodRef's where appropriate, using makeRef().
 \end{itemize}
 
 \end{document}

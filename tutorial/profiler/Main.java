@@ -90,16 +90,16 @@ class GotoInstrumenter extends BodyTransformer
         // insert "tmpRef = java.lang.System.out;" 
         units.insertBefore(Jimple.v().newAssignStmt( 
                       tmpRef, Jimple.v().newStaticFieldRef( 
-                      Scene.v().getField("<java.lang.System: java.io.PrintStream out>"))), s);
+                      Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef())), s);
 
         // insert "tmpLong = gotoCounter;" 
         units.insertBefore(Jimple.v().newAssignStmt(tmpLong, 
-                      Jimple.v().newStaticFieldRef(gotoCounter)), s);
+                      Jimple.v().newStaticFieldRef(gotoCounter.makeRef())), s);
             
         // insert "tmpRef.println(tmpLong);" 
         SootMethod toCall = javaIoPrintStream.getMethod("void println(long)");                    
         units.insertBefore(Jimple.v().newInvokeStmt(
-                      Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, tmpLong)), s);
+                      Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), tmpLong)), s);
     }
 
     protected void internalTransform(Body body, String phaseName, Map options)
@@ -151,10 +151,10 @@ class GotoInstrumenter extends BodyTransformer
                 if(s instanceof GotoStmt)
                 {
                     AssignStmt toAdd1 = Jimple.v().newAssignStmt(tmpLocal, 
-                                 Jimple.v().newStaticFieldRef(gotoCounter));
+                                 Jimple.v().newStaticFieldRef(gotoCounter.makeRef()));
                     AssignStmt toAdd2 = Jimple.v().newAssignStmt(tmpLocal,
                                  Jimple.v().newAddExpr(tmpLocal, LongConstant.v(1L)));
-                    AssignStmt toAdd3 = Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(gotoCounter), 
+                    AssignStmt toAdd3 = Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(gotoCounter.makeRef()), 
                                                                  tmpLocal);
 
                     // insert "tmpLocal = gotoCounter;"
