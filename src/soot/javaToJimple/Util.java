@@ -176,23 +176,18 @@ public class Util {
                     //System.out.println("pkgName: "+pkgName);
                     className = classType.name();
                     
-                    while (classType.outer() != null){
-                        className = classType.outer().name()+"$"+className;
-                        classType = classType.outer();
+                    if (classType.outer().isAnonymous() || classType.outer().isLocal()){
+                        className = getSootType(classType.outer()).toString()+"$"+className;
                     }
+                    else {
+                        while (classType.outer() != null){
+                            className = classType.outer().name()+"$"+className;
+                            classType = classType.outer();
+                        }
 
-                    //System.out.println("nested class: "+className);
-                    //StringBuffer sb = new StringBuffer(className);
-                    //int lastDot = className.lastIndexOf(".");
-                    //if (lastDot != -1){
-                        //sb.replace(lastDot, lastDot+1, "$");
-                       //className =  className.replace('.', '$');
-                        //className = sb.toString();
-                    //}
-                       //className =  className.replace('.', '$');
-                    //String pkg = fullName.substring(0, fullName.indexOf(classType.name()));
-                    if (!pkgName.equals("")){
-                        className = pkgName+"."+className;
+                        if (!pkgName.equals("")){
+                            className = pkgName+"."+className;
+                        }
                     }
                 }
             }

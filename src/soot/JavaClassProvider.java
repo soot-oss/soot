@@ -29,15 +29,21 @@ public class JavaClassProvider implements ClassProvider
      * or null if it was not found. */
     public ClassSource find( String className ) {
 
-        String javaClassName = SourceLocator.v().getSourceForClass(className);
-        String fileName = javaClassName.replace('.', '/') + ".java";
-        SourceLocator.FoundFile file = 
-            SourceLocator.v().lookupInClassPath(fileName);
-        if( file == null ) return null;
-        if( file.file == null ) {
-            throw new RuntimeException( "Class "+className+" was found in a .jar, but Polyglot doesn't support reading source files out of a .jar" );
+        if (soot.javaToJimple.InitialResolver.v().hasASTForSootName(className)){
+            soot.javaToJimple.InitialResolver.v().setASTForSootName(className);
+            return new JavaClassSource(className);
         }
-        return new JavaClassSource(className, file.file);
+        else {
+            String javaClassName = SourceLocator.v().getSourceForClass(className);
+            String fileName = javaClassName.replace('.', '/') + ".java";
+            SourceLocator.FoundFile file = 
+                SourceLocator.v().lookupInClassPath(fileName);
+            if( file == null ) return null;
+            if( file.file == null ) {
+                throw new RuntimeException( "Class "+className+" was found in a .jar, but Polyglot doesn't support reading source files out of a .jar" );
+            }
+            return new JavaClassSource(className, file.file);
+        }
     }
 }
 

@@ -29,12 +29,18 @@ public class JavaClassSource extends ClassSource
         super( className );
         this.fullPath = fullPath;
     }
+    public JavaClassSource( String className ) {
+        super( className );
+    }
+    
     public void resolve( SootClass sc ) {
         if (Options.v().verbose())
             G.v().out.println("resolving [from .java]: " + className);
                     
 
-        SootResolver.v().getInitSourceResolver().formAst(fullPath.getPath(), SourceLocator.v().sourcePath());
+        if (fullPath != null){
+            SootResolver.v().getInitSourceResolver().formAst(fullPath.getPath(), SourceLocator.v().sourcePath());
+        }
         //System.out.println("about to call initial resolver in j2j: "+sc.getName());
         SootResolver.v().getInitSourceResolver().resolveFromJavaFile(sc);
     }
