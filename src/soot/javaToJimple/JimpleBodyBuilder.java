@@ -2996,11 +2996,14 @@ public class JimpleBodyBuilder {
             return val;
         }*/
         soot.jimple.CastExpr cast = soot.jimple.Jimple.v().newCastExpr(val, type);
-        Util.addLnPosTags(cast.getOpBox(), castExpr.position().line(), castExpr.position().line(), castExpr.position().column() + castExpr.toString().indexOf(')') , castExpr.position().endColumn());
+        Util.addLnPosTags(cast.getOpBox(), castExpr.expr().position());
+        //System.out.println("expr pos: "+castExpr.expr().position());
+        //Util.addLnPosTags(cast.getOpBox(), castExpr.position().line(), castExpr.position().line(), castExpr.position().column() + castExpr.toString().indexOf(')') , castExpr.position().endColumn());
         soot.Local retLocal = lg.generateLocal(cast.getCastType());
         //System.out.println("cast ret type: "+retLocal.getType());
         soot.jimple.Stmt castAssign = soot.jimple.Jimple.v().newAssignStmt(retLocal, cast);
         body.getUnits().add(castAssign);
+        //System.out.println("pos: "+castExpr.position());
         Util.addLnPosTags(castAssign, castExpr.position());
 
         return retLocal;

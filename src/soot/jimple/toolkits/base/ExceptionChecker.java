@@ -49,9 +49,21 @@ public class ExceptionChecker extends BodyTransformer{
         if (hierarchy == null){
             hierarchy = new FastHierarchy();
         }
+
+        // handles case when exception is RuntimeException or Error
         if (throwClass.equals(Scene.v().getSootClass("java.lang.RuntimeException")) || throwClass.equals(Scene.v().getSootClass("java.lang.Error"))) return true;
+        // handles case when exception is a subclass of RuntimeException or Error
         if (hierarchy.isSubclass(throwClass, Scene.v().getSootClass("java.lang.RuntimeException")) || hierarchy.isSubclass(throwClass, Scene.v().getSootClass("java.lang.Error"))) return true;
+
+        // handles case when exact exception is thrown
         if (b.getMethod().throwsException(throwClass)) return true;
+
+        // handles case when a super type of the exception is thrown
+        Iterator it = b.getMethod().getExceptions().iterator();
+        while (it.hasNext()){
+            SootClass nextEx = (SootClass)it.next();
+            if (hierarchy.isSubclass(throwClass, nextEx)) return true;
+        }
         return false;
     }
 
