@@ -433,7 +433,7 @@ public class Main
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.25");
+            System.out.println("Soot version 1.beta.6.dev.26");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -448,7 +448,6 @@ public class Main
             System.out.println("        (application mode) soot --app [option]* mainClassName");
             System.out.println("");
             System.out.println("Output options:");
-//              System.out.println("  -X, --XML                  produce a monster .xml skeleton file");
             System.out.println("  -b, --b                    produce .b (abbreviated .baf) files");
             System.out.println("  -B, --baf                  produce .baf code");
             System.out.println("  -j, --jimp                 produce .jimp (abbreviated .jimple) files");
@@ -485,7 +484,6 @@ public class Main
             System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
             System.out.println("  -t, --time                 print out time statistics about tranformations");
             System.out.println("  --subtract-gc              attempt to subtract the gc from the time stats");
-//  	    System.out.println("  -h FILE                    read XML headers from FILE");
             System.out.println("  -v, --verbose              verbose mode");
             System.out.println("  --debug                    avoid catching exceptions");
             System.out.println("  -p, --phase-option PHASE-NAME KEY[:VALUE]");
@@ -694,22 +692,6 @@ public class Main
         packageInclusionMasks.add("javax.");	
 	
     }
-    
-    private static void readXMLInFile()
-    {
-// XML disabled temporarily.
-//  	try {
-//  	       XMLParser p = new XMLParser();
-//  			String file = "file://" + new File(xmlInputFile).getCanonicalPath();
-		   
-//  			p.parseJimple(file);
-		    
-//  	} catch (Exception e ) {
-//  	    throw new RuntimeException("error parsing xml file");
-//  	}	
-    }
-    
-
 
     public static void main(String[] args)
     {       
@@ -720,9 +702,6 @@ public class Main
 
         // Load necessary classes.
         {            
-            if(xmlInputFile != null) 
-                readXMLInFile();		 
-
             Iterator it = cmdLineClasses.iterator();
 	
             while(it.hasNext())
@@ -844,10 +823,6 @@ public class Main
         Scene.v().getPack("wjtp").apply();
         if(isOptimizingWhole)
             Scene.v().getPack("wjop").apply();
-
-    // (Don't) produce XML output.
-        if (produceXmlOutput)
-            produceXMLOutFile();
     
     // Handle each class individually
         classIt = Scene.v().getApplicationClasses().iterator();
@@ -884,48 +859,6 @@ public class Main
 	if(isProfilingOptimization)
 	    printProfilingInformation();
     }        
-
-    private static void produceXMLOutFile() 
-    {
-        // If creating xml file, first remove old file.
-        String fileName = null;
-
-        if(!outputDir.equals(""))
-            fileName = outputDir + fileSeparator;
-        else
-            fileName = "";
-        
-        fileName = mainClass.getName() + ".xml";
-        
-        try 
-        {
-            FileOutputStream streamOut = new FileOutputStream(fileName);
-            PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-            writerOut.println("<?xml version=\"1.0\"?>");
-            writerOut.println("<document>");
-            
-            Iterator it = Scene.v().getContextClasses().iterator();
-            SootClass sc = null;
-            
-            try {
-                while(it.hasNext()) {
-                    sc = (SootClass) it.next();
-                    writerOut.println(sc.getXML());
-                }
-            } catch (NoSuperclassException e) {
-                System.out.println("class " + sc.getName());
-                throw e;
-            }
-            
-            writerOut.println("</document>");
-            writerOut.flush();
-            streamOut.close();
-        }
-        catch (IOException e) {
-            System.out.println("Couldn't write XML output file!");
-            System.exit(1);
-	    }
-    }
 
     private static void printProfilingInformation()
     {		                                   

@@ -222,12 +222,6 @@ public class SootField extends AbstractHost implements ClassMember, EquivTo
       else
 	return getOriginalStyleDeclaration();
     }
-
-
-    public String getXML() 
-    {
-	return XMLManager.getXML(this);
-    }
 }
 
 

@@ -53,12 +53,6 @@ public abstract class Type implements Switchable, ToBriefString
             return t;
     }
 
-    /** Returns the XML representation of this type. */
-    public String getXML() 
-    {
-	return XMLManager.getXML(this);
-    }
-
     /** Returns the least common superclass of this type and other. */
     public Type merge(Type other, Scene cm)
     {

@@ -1155,11 +1155,4 @@ public class SootClass extends AbstractHost
     {
         isPhantom = value;
     }
-
-    public String getXML()
-    {
-	return XMLManager.getXML(this);
-    }
-
-
 }

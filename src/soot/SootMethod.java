@@ -550,10 +550,4 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
 
         return buffer.toString();
     }
-
-    /** Returns an XML string representing this method's signature. */
-    public String getXML() 
-    {
-	return XMLManager.getXML(this);
-    }
 }

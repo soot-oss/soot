@@ -545,17 +545,6 @@ public class Util
                     if(!Scene.v().allowsPhantomRefs())
                         throw new RuntimeException("Could not load classfile: " + bclass.getName());
                     else {
-
-			/*
-			try {
-			    XMLParser xmlParser = new XMLParser();
-			    bclass = xmlParser.parseJimple(ClassLocator.getInputStreamOf(soot.Scene.v().getSootClassPath(), fn));			    
-			    System.out.prinln("Loading class from jimple");
-			    
-			} catch(ClassNotFoundException e) {
-			    System.out.println("Warning: " + className + " is a phantom class!");
-			    bclass.setPhantom(true);			
-			    }	*/
 			System.out.println("Warning: " + className + " is a phantom class!");
 			bclass.setPhantom(true);								
 			continue;
