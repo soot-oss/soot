@@ -116,7 +116,7 @@ public class Main
     static boolean isInDebugMode;
     static boolean usePackedLive;
     static boolean usePackedDefs = true;
-    
+    static boolean isTestingPerformance;    
 
     public static String jimpleClassPath;
 
@@ -176,7 +176,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.1.dev.8");
+            System.out.println("Jimple version 1.beta.1.dev.9");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -213,6 +213,7 @@ public class Main
             System.out.println("    -timetransform            perform full transformation and print timings");
             System.out.println("    -verbose                  print out jimplification process");
             System.out.println("    -debug                    avoid catching errors during jimplification");
+            System.out.println("    -testperf                 jimplify all classes & methods and gather stats");
             System.out.println("                              does not throw exception if error in typing");
             System.exit(0);
         }
@@ -244,6 +245,11 @@ public class Main
                     usePackedLive = true;
                 else if(args[i].equals("-usepackeddefs"))
                     usePackedDefs = true;    
+                else if(args[i].equals("-testperf"))
+                {
+                    isProfilingOptimization = true;
+                    isTestingPerformance = true;
+                }
                 else if(args[i].equals("-jimpleClassPath"))
                 {   if(++i < args.length)
                         jimpleClassPath = args[i];
@@ -297,8 +303,7 @@ public class Main
                     }
                 }
 
-                /*
-                if(isProfilingOptimization)
+                if(isTestingPerformance)
                 {
                     Iterator methodIt = c.getMethods().iterator();
                     long localStmtCount = 0;
@@ -307,8 +312,8 @@ public class Main
                         while(methodIt.hasNext())
                         {
                             SootMethod m = (SootMethod) methodIt.next();
-                            StmtListBody listBody = new StmtListBody(m.getInstListBody());
-
+                            JimpleBody listBody = (JimpleBody) new BuildBody(Jimple.v(), new StoredBody(ClassFile.v())).resolveFor(m);
+                            
                             listBodies.add(listBody);
                             localStmtCount += listBody.getStmtList().size();
                         }
@@ -324,59 +329,60 @@ public class Main
                         numFailed++;
                     }
                 }
-                */
-
-                // Produce the file
+                else
                 {
-                    if(!isInDebugMode)
+                    // Produce the file
                     {
-                        try {
+                        if(!isInDebugMode)
+                        {
+                            try {
+                                handleClass(c, postFix, writerOut, buildBodyOptions);
+                            }
+                            catch(Exception e)
+                            {
+                                System.out.println("failed due to: " + e);
+                            }
+                        }
+                        else {
                             handleClass(c, postFix, writerOut, buildBodyOptions);
                         }
-                        catch(Exception e)
-                        {
-                            System.out.println("failed due to: " + e);
+    
+                        try {
+                            writerOut.flush();
+                            streamOut.close();
                         }
+                        catch(IOException e )
+                        {
+                            System.out.println("Cannot close output file " + c.getName() + postFix);
+                        }
+    
+                        System.out.println();
                     }
-                    else {
-                        handleClass(c, postFix, writerOut, buildBodyOptions);
-                    }
-
-                    try {
-                        writerOut.flush();
-                        streamOut.close();
-                    }
-                    catch(IOException e )
-                    {
-                        System.out.println("Cannot close output file " + c.getName() + postFix);
-                    }
-
-                    System.out.println();
                 }
             }
-        }
-
             
             if(isProfilingOptimization)
             {
-                /*
-                System.out.println("Successfully jimplified " + numSuccess + " classfiles; failed on " + numFailed + ".");
-
-                // Count number of statements stored
+                if(isTestingPerformance)
                 {
-                    Iterator bodyIt = listBodies.iterator();
-                    long storedStmtCount = 0;
-
-                    while(bodyIt.hasNext())
+                    System.out.println("Successfully jimplified " + numSuccess + " classfiles; failed on " + numFailed + ".");
+    
+                    // Count number of statements stored
                     {
-                        StmtListBody listBody = (StmtListBody) bodyIt.next();
-                        storedStmtCount += listBody.getStmtList().size();
+                        Iterator bodyIt = listBodies.iterator();
+                        long storedStmtCount = 0;
+    
+                        while(bodyIt.hasNext())
+                        {
+                            JimpleBody listBody = (JimpleBody) bodyIt.next();
+                            storedStmtCount += listBody.getStmtList().size();
+                        }
+    
+                        System.out.println("Confirmed " + storedStmtCount + " stored statements.");
+                        System.out.println();
                     }
-
-                    System.out.println("Confirmed " + storedStmtCount + " stored statements.");
-                    System.out.println();
                 }
-                */
+                
                 totalTimer.end();
                     
                 long totalTime = totalTimer.getTime();
@@ -430,14 +436,23 @@ public class Main
 */
 
                     timeInSecs = (float) totalTime / 1000.0f;
-//                    float memoryUsed = (float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
+                    float memoryUsed = (float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
 
                     System.out.println("totalTime:" + toTimeString(totalTimer, totalTime));
-//                    System.out.println("totalMemory:" + memoryUsed + "k  " + (float) memoryUsed / stmtCount+ " (k/stmt)");
+                    System.out.println("totalMemory:" + memoryUsed + "k  ");
 
+                    if(isTestingPerformance)
+                    {
+                        System.out.println("Time/Space performance");
+                        System.out.println();
+                        
+                        System.out.println(toFormattedString(stmtCount / timeInSecs) + " stmt/s");
+                        System.out.println(toFormattedString((float) memoryUsed / stmtCount) + " k/stmt");
+                        
+                    }
                 }
             }
-
+        }
     }
 
     private static String toTimeString(Timer timer, long totalTime)
@@ -446,6 +461,11 @@ public class Main
         String timeString = paddedLeftOf(new Double(truncatedOf(time / 1000.0, 1)).toString(), 5);
         
         return (timeString + "s" + paddedLeftOf(" (" + (time * 100 / totalTime) + "%" + ")", 5));   
+    }
+    
+    private static String toFormattedString(double value)
+    {
+        return paddedLeftOf(new Double(truncatedOf(value, 2)).toString(), 5);
     }
     
     private static void handleClass(SootClass c, String postFix, PrintWriter writerOut, int buildBodyOptions)

@@ -175,6 +175,9 @@ public class JimpleBody implements Body
             coffiMethod.cfg.jimplify(coffiClass.constant_pool,
                 coffiClass.this_class, this);
 
+            coffiMethod.cfg.reconstructInstructions();
+            coffiMethod.cfg = null;
+ 
             if(Main.isProfilingOptimization)
             {
                 Main.conversionTimer.end();

@@ -382,7 +382,7 @@ public class CFG {
     * @see BasicBlock#head
     * @see BasicBlock#tail
     */
-    Instruction reconstructInstructions() {
+    public Instruction reconstructInstructions() {
       BasicBlock b;
       Instruction last = null;
       b = cfg;
@@ -3526,9 +3526,11 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                     convert();
 
+            Type fieldType = Util.jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+                
             SootClass bclass = cm.getClass(className);
 
-            SootField field = bclass.getField(fieldName);
+            SootField field = bclass.getField(fieldName, fieldType);
 
             InstanceFieldRef fr =
                 Jimple.v().newInstanceFieldRef(Util.getLocalForStackOp(listBody,
@@ -3561,7 +3563,9 @@ public class CFG {
 
             SootClass bclass = cm.getClass(className);
 
-            SootField field = bclass.getField(fieldName);
+            
+            Type fieldType = Util.jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+            SootField field = bclass.getField(fieldName, fieldType);
 
             fr = Jimple.v().newInstanceFieldRef(Util.getLocalForStackOp(listBody, typeStack,
                 typeStack.topIndex()), field);
@@ -3592,8 +3596,10 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                 convert();
 
+            Type fieldType = Util.jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+            
             SootClass bclass = cm.getClass(className);
-            SootField field = bclass.getField(fieldName);
+            SootField field = bclass.getField(fieldName, fieldType);
 
             fr = Jimple.v().newStaticFieldRef(field);
 
@@ -3622,8 +3628,10 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                 convert();
 
+            Type fieldType = Util.jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+            
             SootClass bclass = cm.getClass(className);
-            SootField field = bclass.getField(fieldName);
+            SootField field = bclass.getField(fieldName, fieldType);
 
             fr = Jimple.v().newStaticFieldRef(field);
 
@@ -3677,7 +3685,7 @@ public class CFG {
                 returnType = types[types.length - 1];
             }
 
-            method = bclass.getMethod(methodName, parameterTypes);
+            method = bclass.getMethod(methodName, parameterTypes, returnType);
 
             // build array of parameters
                 params = new Value[args];
@@ -3751,7 +3759,7 @@ public class CFG {
                     returnType = types[types.length - 1];
                 }
 
-                method = bclass.getMethod(methodName, parameterTypes);
+                method = bclass.getMethod(methodName, parameterTypes, returnType);
 
             // build array of parameters
                 params = new Value[args];
@@ -3825,7 +3833,7 @@ public class CFG {
                     returnType = types[types.length - 1];
                 }
 
-                method = bclass.getMethod(methodName, parameterTypes);
+                method = bclass.getMethod(methodName, parameterTypes, returnType);
 
             // build Vector of parameters
                    params = new Value[args];
@@ -3906,7 +3914,7 @@ public class CFG {
                     returnType = types[types.length - 1];
                 }
 
-                method = bclass.getMethod(methodName, parameterTypes);
+                method = bclass.getMethod(methodName, parameterTypes, returnType);
 
             // build Vector of parameters
                 params = new Value[args];

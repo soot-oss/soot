@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Vijay Sundaresan (vijay@sable.mcgill.ca) are     *
+ * Copyright (C) 1999 Vijay Sundaresan.  All rights reserved.        *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on January 26, 1998 by Vijay Sundaresan (vija@sable.mcgill.ca) (*)
+   Made the write() method name the output jasmin files according to the classfile
+   being output.
+   
  - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Changed the default resolution state of new classes.
 
@@ -249,16 +256,18 @@ public class SootClass
         Adds the given field to this class.
     */
 
-    public void addField(SootField f) throws AlreadyDeclaredException, DuplicateNameException
+    public void addField(SootField f) throws AlreadyDeclaredException 
     {
         resolveIfNecessary();
 
         if(f.isDeclared())
             throw new AlreadyDeclaredException(f.getName());
 
+            /*
         if(declaresField(f.getName()))
             throw new DuplicateNameException(f.getName());
-
+ */
+ 
         fields.add(f);
 
         f.isDeclared = true;
@@ -281,10 +290,10 @@ public class SootClass
     }
 
     /**
-        Returns the field of this class with the given name.
+        Returns the field of this class with the given name and type. 
     */
 
-    public SootField getField(String name) throws ca.mcgill.sable.soot.NoSuchFieldException
+    public SootField getField(String name, Type type) throws ca.mcgill.sable.soot.NoSuchFieldException
     {
         resolveIfNecessary();
 
@@ -294,11 +303,45 @@ public class SootClass
         {
             SootField field = (SootField) fieldIt.next();
 
-            if(field.name.equals(name))
+            if(field.name.equals(name) && field.type.equals(type))
                 return field;
         }
 
         throw new ca.mcgill.sable.soot.NoSuchFieldException("No field " + name + " in class " + getName());
+    }
+
+    /**
+        Returns the field of this class with the given name.  May throw an AmbiguousFieldException if there
+        are more than one.
+    */
+
+    public SootField getField(String name) throws ca.mcgill.sable.soot.NoSuchFieldException, ca.mcgill.sable.soot.AmbiguousFieldException
+    {
+        boolean found = false;
+        SootField foundField = null;
+        resolveIfNecessary();
+
+        Iterator fieldIt = getFields().iterator();
+
+        while(fieldIt.hasNext())
+        {
+            SootField field = (SootField) fieldIt.next();
+
+            if(field.name.equals(name))
+            {
+                if(found)
+                    throw new AmbiguousFieldException();
+                else {
+                    found = true;
+                    foundField = field;
+                }
+            }
+        }
+
+        if(found)
+            return foundField;
+        else
+            throw new ca.mcgill.sable.soot.NoSuchFieldException("No field " + name + " in class " + getName());
     }
 
     /**
@@ -316,6 +359,28 @@ public class SootClass
             SootField field = (SootField) fieldIt.next();
 
             if(field.name.equals(name))
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+        Does this class declare a field with the given name and type.
+    */
+
+    public boolean declaresField(String name, Type type)
+    {
+        resolveIfNecessary();
+
+        Iterator fieldIt = getFields().iterator();
+
+        while(fieldIt.hasNext())
+        {
+            SootField field = (SootField) fieldIt.next();
+
+            if(field.name.equals(name) &&
+                field.type.equals(type))
                 return true;
         }
 
@@ -342,12 +407,13 @@ public class SootClass
         return methods;
     }
 
+    
     /**
-        Returns the method of this class with the given signature.  The signature consists of a name
-        and a list of parameter types.
+        Attempts to retrieve the method with the given name, parameters and return type.  
+        
     */
 
-    public SootMethod getMethod(String name, List parameterTypes) throws
+    public SootMethod getMethod(String name, List parameterTypes, Type returnType) throws
         ca.mcgill.sable.soot.NoSuchMethodException
     {
         resolveIfNecessary();
@@ -360,15 +426,96 @@ public class SootClass
             SootMethod method = (SootMethod) methodIt.next();
 
             if(method.getName().equals(name) &&
-                parameterTypes.equals(method.getParameterTypes()))
+                parameterTypes.equals(method.getParameterTypes()) &&
+                returnType.equals(method.getReturnType()))
+            {
                 return method;
+            }
         }
 
         throw new ca.mcgill.sable.soot.NoSuchMethodException();
     }
 
     /**
-        Does this class declare a method with the given signature? (see getMethod(String, List))
+        Attempts to retrieve the method with the given name and parameters.  This method
+        may throw an AmbiguousMethodException if there are more than one method with the
+        given name and parameter.
+    */
+
+    public SootMethod getMethod(String name, List parameterTypes) throws
+        ca.mcgill.sable.soot.NoSuchMethodException, ca.mcgill.sable.soot.AmbiguousMethodException
+    {
+        boolean found = false;
+        SootMethod foundMethod = null;
+        
+        resolveIfNecessary();
+        // inefficient
+
+        Iterator methodIt = getMethods().iterator();
+
+        while(methodIt.hasNext())
+        {
+            SootMethod method = (SootMethod) methodIt.next();
+
+            if(method.getName().equals(name) &&
+                parameterTypes.equals(method.getParameterTypes()))
+            {
+                if(found)
+                    throw new ca.mcgill.sable.soot.AmbiguousMethodException();
+                else {                    
+                    found = true;
+                    foundMethod = method;
+                }
+            }
+        }
+
+        if(found)
+            return foundMethod;
+        else
+            throw new ca.mcgill.sable.soot.NoSuchMethodException();
+    }
+
+    
+     /**
+        Attempts to retrieve the method with the given name.  This method
+        may throw an AmbiguousMethodException if there are more than one method with the
+        given name.
+    */
+
+    public SootMethod getMethod(String name) throws
+        ca.mcgill.sable.soot.NoSuchMethodException, ca.mcgill.sable.soot.AmbiguousMethodException
+    {
+        boolean found = false;
+        SootMethod foundMethod = null;
+        
+        resolveIfNecessary();
+        // inefficient
+
+        Iterator methodIt = getMethods().iterator();
+
+        while(methodIt.hasNext())
+        {
+            SootMethod method = (SootMethod) methodIt.next();
+
+            if(method.getName().equals(name))
+            {
+                if(found)
+                    throw new ca.mcgill.sable.soot.AmbiguousMethodException();
+                else {                    
+                    found = true;
+                    foundMethod = method;
+                }
+            }
+        }
+
+        if(found)
+            return foundMethod;
+        else
+            throw new ca.mcgill.sable.soot.NoSuchMethodException();
+    }
+
+    /**
+        Does this class declare a method with the given name and parameter types?
     */
 
     public boolean declaresMethod(String name, List parameterTypes)
@@ -386,6 +533,54 @@ public class SootClass
                 method.getParameterTypes().equals(parameterTypes))
                 return true;
         }
+        
+        return false;
+    }
+
+    /**
+        Does this class declare a method with the given name, parameter types, and return type?
+    */
+
+    public boolean declaresMethod(String name, List parameterTypes, Type returnType)
+    {
+        resolveIfNecessary();
+        // inefficient
+
+        Iterator methodIt = getMethods().iterator();
+
+        while(methodIt.hasNext())
+        {
+            SootMethod method = (SootMethod) methodIt.next();
+
+            if(method.getName().equals(name) &&
+                method.getParameterTypes().equals(parameterTypes) &&
+                method.getReturnType().equals(returnType))
+                
+                return true;
+        }
+        
+        return false;
+    }
+
+    /**
+        Does this class declare a method with the given name?
+    */
+
+    public boolean declaresMethod(String name)
+    {
+        resolveIfNecessary();
+        // inefficient
+
+        Iterator methodIt = getMethods().iterator();
+
+        while(methodIt.hasNext())
+        {
+            SootMethod method = (SootMethod) methodIt.next();
+
+            if(method.getName().equals(name))
+                return true;
+        }
+        
         return false;
     }
 
@@ -400,16 +595,18 @@ public class SootClass
         Adds the given method to this class.
     */
 
-    public void addMethod(SootMethod m) throws AlreadyDeclaredException, DuplicateNameException
+    public void addMethod(SootMethod m) throws AlreadyDeclaredException
     {
         resolveIfNecessary();
 
         if(m.isDeclared())
             throw new AlreadyDeclaredException(m.getName());
 
+        /*
         if(declaresMethod(m.getName(), m.getParameterTypes()))
             throw new DuplicateNameException("duplicate signature for: " + m.getName());
-
+        */
+        
         methods.add(m);
         m.isDeclared = true;
         m.declaringClass = this;
@@ -684,8 +881,9 @@ public class SootClass
     public void write(BodyExpr bodyExpr)
     {
         try {
-            File tempFile = new File("jimpleClass.jasmin");
-
+            //File tempFile = new File("jimpleClass.jasmin");
+            File tempFile = new File(this.getName() + ".jasmin");
+ 
             FileOutputStream streamOut = new FileOutputStream(tempFile);
             PrintWriter writerOut = new PrintWriter(streamOut);
 
@@ -693,8 +891,8 @@ public class SootClass
 
             writerOut.close();
 
-            Runtime.getRuntime().exec("jasmin jimpleClass.jasmin");
-            //tempFile.delete();
+            Runtime.getRuntime().exec("jasmin " + this.getName() + ".jasmin");
+            tempFile.delete();
         } catch(IOException e)
         {
             throw new RuntimeException("Could not produce new classfile! (" + e + ")");

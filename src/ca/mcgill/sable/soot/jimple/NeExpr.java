@@ -89,7 +89,7 @@ public class NeExpr extends BinopExpr implements ConditionExpr, ToBriefString
 
      public String toBriefString()
     {
-        return ((ToBriefString) op1Box.getValue()).toBriefString() + " / " + 
+        return ((ToBriefString) op1Box.getValue()).toBriefString() + " != " + 
                ((ToBriefString) op2Box.getValue()).toBriefString();
     }
     

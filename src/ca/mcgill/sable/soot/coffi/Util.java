@@ -198,17 +198,18 @@ public class Util
                     (coffiClass.constant_pool[fieldInfo.descriptor_index])).convert();
 
                 int modifiers = fieldInfo.access_flags;
-
-                if(bclass.declaresField(fieldName))
+                Type fieldType = jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
+                
+                if(bclass.declaresField(fieldName, fieldType))
                 {
-                    SootField field = bclass.getField(fieldName);
+                    SootField field = bclass.getField(fieldName, fieldType);
 
-                    field.setType(jimpleTypeOfFieldDescriptor(cm, fieldDescriptor));
+                    field.setType(fieldType);
                     field.setModifiers(modifiers);
                 }
                 else {
                     bclass.addField(new SootField(fieldName,
-                        jimpleTypeOfFieldDescriptor(cm, fieldDescriptor), modifiers));
+                        fieldType, modifiers));
                 }
             }
 
@@ -243,9 +244,9 @@ public class Util
 
                 SootMethod method;
 
-                if(bclass.declaresMethod(methodName, parameterTypes))
+                if(bclass.declaresMethod(methodName, parameterTypes, returnType))
                 {
-                    method = bclass.getMethod(methodName, parameterTypes);
+                    method = bclass.getMethod(methodName, parameterTypes, returnType);
                     method.setParameterTypes(parameterTypes);
                     method.setReturnType(returnType);
                     method.setModifiers(modifiers);

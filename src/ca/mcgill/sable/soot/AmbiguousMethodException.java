@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
+ * Soot, a Java(TM) classfile optimization framework.                *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -70,40 +69,17 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot;
 
-import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.util.*;
-
-public class LeExpr extends BinopExpr implements ConditionExpr, ToBriefString
+public
+class AmbiguousMethodException extends RuntimeException
 {
-    LeExpr(Value op1, Value op2)
+    public AmbiguousMethodException(String s)
     {
-        op1Box = Jimple.v().newImmediateBox(op1);
-        op2Box = Jimple.v().newImmediateBox(op2);
+        super(s);
     }
 
-    public String toString()
+    public AmbiguousMethodException()
     {
-        return op1Box.getValue().toString() + " <= " + op2Box.getValue().toString();
-    }
-
-    
-    public String toBriefString()
-    {
-        return ((ToBriefString) op1Box.getValue()).toBriefString() + " <= " + 
-               ((ToBriefString) op2Box.getValue()).toBriefString();
-    }
-
-    public Type getType()
-    {
-        return IntType.v();
-    }
-
-    public void apply(Switch sw)
-    {
-        ((ExprSwitch) sw).caseLeExpr(this);
     }
 }
-
-

@@ -35,6 +35,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
+ The reference version is: $SootVersion$
 
  Change History
  --------------

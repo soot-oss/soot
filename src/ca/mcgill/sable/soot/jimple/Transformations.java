@@ -65,6 +65,9 @@
 
  B) Changes:
 
+ - Modified on January 25, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
+   Made transformations class public.
+   
  - Modified on January 20, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
    Moved packLocals method to ChaitinAllocator.java
    
@@ -90,7 +93,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-class Transformations
+public class Transformations
 {
     public static void assignTypesToLocals(JimpleBody listBody)
     {
