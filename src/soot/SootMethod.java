@@ -306,6 +306,11 @@ public class SootMethod
         activeBody = null;
     }
 
+    /** Adds the given exception to the list of exceptions thrown by this method
+     * unless the exception is already in the list. */
+    public void addExceptionIfAbsent(SootClass e) {
+        if( !throwsException(e) ) addException(e);
+    }
     /** Adds the given exception to the list of exceptions thrown by this method. */
     public void addException(SootClass e) {
         if (exceptions == null)

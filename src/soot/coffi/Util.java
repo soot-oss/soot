@@ -293,7 +293,7 @@ public class Util
     
                                         exceptionName = exceptionName.replace('/', '.');
     
-                                        method.addException(getResolvedClass2(exceptionName));
+                                        method.addExceptionIfAbsent(getResolvedClass2(exceptionName));
                                     }
                             }
                 }
@@ -477,7 +477,7 @@ public class Util
     
                                         exceptionName = exceptionName.replace('/', '.');
     
-                                        method.addException(sootResolver.getResolvedClass(exceptionName));
+                                        method.addExceptionIfAbsent(sootResolver.getResolvedClass(exceptionName));
                                     }
                             }
                 }
@@ -691,7 +691,7 @@ public class Util
     
                                     exceptionName = exceptionName.replace('/', '.');
     
-                                    method.addException(getResolvedClass(exceptionName));
+                                    method.addExceptionIfAbsent(getResolvedClass(exceptionName));
                                 }
                             }
                     }
