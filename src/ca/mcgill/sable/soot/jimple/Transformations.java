@@ -786,7 +786,7 @@ public class Transformations
    
     public static void aggregate(StmtBody body)
     {
-        int aggregateCount = 0;
+        int aggregateCount = 1;
         
         while(internalAggregate(body))
         {
