@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <project default="compile">
+    <property file="ant.settings"/>
     <target name="settings">
-        <property file="ant.settings"/>
         <fail
             message="Please copy ant.settings.template to ant.settings, and set the variables in it."
             unless="jasmin.jar"
@@ -147,11 +147,9 @@
     </target>
 
     <target name="release" depends="barebones,settings">
-        <property file="ant.settings"/>
     </target>
 
     <target name="barebones" depends="clean,options,sablecc,settings">
-        <property file="ant.settings"/>
         <tar destfile="${release.loc}/soot-${soot.version}-barebones.tar.gz" compression="gzip" longfile="gnu">
             <tarfileset dir="."/>
         </tar>
@@ -161,7 +159,6 @@
     </target>
 
     <target name="classesjar" depends="settings,compile">
-        <property file="ant.settings"/>
         <jar destfile="${release.loc}/sootclasses-${soot.version}.jar">
             <fileset dir="classes"/>
         </jar>
@@ -169,17 +166,12 @@
 
     
     <target name="quickstart" depends="settings,eclipse-plugin,classesjar">
-        <property file="ant.settings"/>
-        <basename property="polyglot.name" file="${polyglot.jar}"/>
-        <dirname property="polyglot.dir" file="${polyglot.jar}"/>
-        <basename property="jasmin.name" file="${jasmin.jar}"/>
-        <dirname property="jasmin.dir" file="${jasmin.jar}"/>
         <jar destfile="${release.loc}/soot-eclipse-quickstart-${soot.version}.jar">
             <zipfileset dir="eclipse/ca.mcgill.sable.soot/" includes="soot-plugin.jar,plugin.xml,plugin.properties" prefix="ca.mcgill.sable.soot"/>
             <zipfileset dir="${release.loc}/" includes="sootclasses-${soot.version}.jar" prefix="ca.mcgill.sable.soot"/>
             <zipfileset dir="eclipse/ca.mcgill.sable.soot/" includes="icons/*.png,icons/*.jpg,icons/*.gif" prefix="ca.mcgill.sable.soot"/>
-            <zipfileset dir="${polyglot.dir}" includes="${polyglot.name}" prefix="ca.mcgill.sable.soot"/>
-            <zipfileset dir="${jasmin.dir}" includes="${jasmin.name}" prefix="ca.mcgill.sable.soot"/>
+            <zipfileset file="${polyglot.jar}" prefix="ca.mcgill.sable.soot"/>
+            <zipfileset file="${jasmin.jar}" prefix="ca.mcgill.sable.soot"/>
         </jar>
     </target>
     
