@@ -62,7 +62,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
                 "] Eliminating dead code...");
         
         if(Main.opts.time())
-            Timers.deadCodeTimer.start();
+            Timers.v().deadCodeTimer.start();
 
         Set essentialStmts = new HashSet();
         LinkedList toVisit = new LinkedList();
@@ -245,7 +245,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
         }
         
         if(Main.opts.time())
-            Timers.deadCodeTimer.end();
+            Timers.v().deadCodeTimer.end();
 
     }
 }

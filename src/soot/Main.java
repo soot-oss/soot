@@ -456,7 +456,7 @@ public class Main implements Runnable
     start = new Date();
 
     try {
-      Timers.totalTimer.start();
+      Timers.v().totalTimer.start();
 
       processCmdLine(cmdLineArgs);
 
@@ -486,14 +486,14 @@ public class Main implements Runnable
 
       postProcessDAVA();
 	    
-      Timers.totalTimer.end();            
+      Timers.v().totalTimer.end();            
 				
       // Print out time stats.				
       if(opts.time())
-	Timers.printProfilingInformation();
+	Timers.v().printProfilingInformation();
         
     } catch (CompilationDeathException e) {
-      Timers.totalTimer.end();            
+      Timers.v().totalTimer.end();            
       exitCompilation(e.getStatus(), e.getMessage());
       return;
     }   

@@ -256,8 +256,8 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
         // System.out.println(graph.getBody().getMethod().getSignature() + " numNodes: " + numNodes + 
         //    " numComputations: " + numComputations + " avg: " + Main.truncatedOf((double) numComputations / numNodes, 2));
         
-        Timers.totalFlowNodes += numNodes;
-        Timers.totalFlowComputations += numComputations;
+        Timers.v().totalFlowNodes += numNodes;
+        Timers.v().totalFlowComputations += numComputations;
 
     } // end doAnalysis
 

@@ -64,7 +64,7 @@ public class CoffiMethodSource implements MethodSource
             return jb;
             
         if(soot.Main.opts.time())
-            Timers.conversionTimer.start();
+            Timers.v().conversionTimer.start();
 
         if (coffiMethod == null)
             System.out.println(m);
@@ -99,7 +99,7 @@ public class CoffiMethodSource implements MethodSource
          Scene.v().setPhantomRefs(oldPhantomValue);
 
         if(soot.Main.opts.time())
-            Timers.conversionTimer.end();
+            Timers.v().conversionTimer.end();
 
          coffiMethod.instructions = null;
          coffiMethod.cfg = null;

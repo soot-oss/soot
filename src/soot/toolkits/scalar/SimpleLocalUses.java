@@ -68,10 +68,10 @@ public class SimpleLocalUses implements LocalUses
     public SimpleLocalUses(Body body, LocalDefs localDefs)
     {
         if(Main.opts.time())
-           Timers.usesTimer.start();
+           Timers.v().usesTimer.start();
     
         if(Main.opts.time())
-           Timers.usePhase1Timer.start();
+           Timers.v().usePhase1Timer.start();
         
         if(Main.opts.verbose())
             System.out.println("[" + body.getMethod().getName() +
@@ -93,10 +93,10 @@ public class SimpleLocalUses implements LocalUses
         }
 
         if(Main.opts.time())
-           Timers.usePhase1Timer.end();
+           Timers.v().usePhase1Timer.end();
     
         if(Main.opts.time())
-           Timers.usePhase2Timer.start();
+           Timers.v().usePhase2Timer.start();
     
         // Traverse units and associate uses with definitions
         {
@@ -132,10 +132,10 @@ public class SimpleLocalUses implements LocalUses
         }
 
         if(Main.opts.time())
-           Timers.usePhase2Timer.end();
+           Timers.v().usePhase2Timer.end();
     
         if(Main.opts.time())
-           Timers.usePhase3Timer.start();
+           Timers.v().usePhase3Timer.start();
     
         // Store the map as a bunch of unmodifiable lists.
         {
@@ -151,10 +151,10 @@ public class SimpleLocalUses implements LocalUses
         }
         
         if(Main.opts.time())
-           Timers.usePhase3Timer.end();
+           Timers.v().usePhase3Timer.end();
     
         if(Main.opts.time())
-            Timers.usesTimer.end();
+            Timers.v().usesTimer.end();
     }
 
     /**

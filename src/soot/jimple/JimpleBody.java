@@ -91,12 +91,12 @@ public class JimpleBody extends StmtBody implements Serializable
         if(!noSplitting)
         {
             if(Main.opts.time())
-                Timers.splitTimer.start();
+                Timers.v().splitTimer.start();
 
             LocalSplitter.v().transform(this, "jb.ls");
 
             if(Main.opts.time())
-                Timers.splitTimer.end();
+                Timers.v().splitTimer.end();
 
             if(!noTyping)
             {
@@ -112,12 +112,12 @@ public class JimpleBody extends StmtBody implements Serializable
 		}
 
                 if(Main.opts.time())
-                    Timers.assignTimer.start();
+                    Timers.v().assignTimer.start();
 
                 TypeAssigner.v().transform(this, "jb.tr");
 		
                 if(Main.opts.time())
-                    Timers.assignTimer.end();
+                    Timers.v().assignTimer.end();
 
 		if(typingFailed())
 		  throw new RuntimeException("type inference failed!");
@@ -165,7 +165,7 @@ public class JimpleBody extends StmtBody implements Serializable
             UnreachableCodeEliminator.v().transform(this, "jb.uce");
                     
         if(soot.Main.opts.time())
-            Timers.stmtCount += getUnits().size();
+            Timers.v().stmtCount += getUnits().size();
     }
 
     /** Make sure that the JimpleBody is well formed.  If not, throw

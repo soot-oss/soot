@@ -72,7 +72,7 @@ public class LocalSplitter extends BodyTransformer
         Map boxToSet = new HashMap(units.size() * 2 + 1, 0.7f);
 
         if(Main.opts.time())
-                Timers.splitPhase1Timer.start();
+                Timers.v().splitPhase1Timer.start();
 
         // Go through the definitions, building the webs
         {
@@ -85,10 +85,10 @@ public class LocalSplitter extends BodyTransformer
             LocalUses localUses = new SimpleLocalUses(graph, localDefs);
             
             if(Main.opts.time())
-                Timers.splitPhase1Timer.end();
+                Timers.v().splitPhase1Timer.end();
     
             if(Main.opts.time())
-                Timers.splitPhase2Timer.start();
+                Timers.v().splitPhase2Timer.start();
 
             Set markedBoxes = new HashSet();
             Map boxToUnit = new HashMap(units.size() * 2 + 1, 0.7f);
@@ -225,7 +225,7 @@ public class LocalSplitter extends BodyTransformer
         }
         
         if(Main.opts.time())
-            Timers.splitPhase2Timer.end();
+            Timers.v().splitPhase2Timer.end();
 
     }   
 }

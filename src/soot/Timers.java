@@ -31,106 +31,110 @@ import soot.options.Options;
 
 public class Timers
 {
-    static public int totalFlowNodes;
+    private static Timers instance = new Timers();
+    private Timers() {}
+    public static Timers v() { return instance; }
 
-    static public int totalFlowComputations;
+     public int totalFlowNodes;
+
+     public int totalFlowComputations;
 
 
-    static public Timer copiesTimer = new Timer("copies");
+     public Timer copiesTimer = new Timer("copies");
 
-    static public Timer defsTimer = new Timer("defs");
+     public Timer defsTimer = new Timer("defs");
 
-    static public Timer usesTimer = new Timer("uses");
+     public Timer usesTimer = new Timer("uses");
 
-    static public Timer liveTimer = new Timer("live");
+     public Timer liveTimer = new Timer("live");
 
-    static public Timer splitTimer = new Timer("split");
+     public Timer splitTimer = new Timer("split");
 
-    static public Timer packTimer = new Timer("pack");
+     public Timer packTimer = new Timer("pack");
 
-    static public Timer cleanup1Timer = new Timer("cleanup1");
+     public Timer cleanup1Timer = new Timer("cleanup1");
 
-    static public Timer cleanup2Timer = new Timer("cleanup2");
+     public Timer cleanup2Timer = new Timer("cleanup2");
 
-    static public Timer conversionTimer = new Timer("conversion");
+     public Timer conversionTimer = new Timer("conversion");
 
-    static public Timer cleanupAlgorithmTimer = new Timer("cleanupAlgorithm");
+     public Timer cleanupAlgorithmTimer = new Timer("cleanupAlgorithm");
 
-    static public Timer graphTimer = new Timer("graphTimer");
+     public Timer graphTimer = new Timer("graphTimer");
 
-    static public Timer assignTimer = new Timer("assignTimer");
+     public Timer assignTimer = new Timer("assignTimer");
 
-    static public Timer resolveTimer = new Timer("resolveTimer");
+     public Timer resolveTimer = new Timer("resolveTimer");
 
-    static public Timer totalTimer = new Timer("totalTimer");
+     public Timer totalTimer = new Timer("totalTimer");
 
-    static public Timer splitPhase1Timer = new Timer("splitPhase1");
+     public Timer splitPhase1Timer = new Timer("splitPhase1");
 
-    static public Timer splitPhase2Timer = new Timer("splitPhase2");
+     public Timer splitPhase2Timer = new Timer("splitPhase2");
 
-    static public Timer usePhase1Timer = new Timer("usePhase1");
+     public Timer usePhase1Timer = new Timer("usePhase1");
 
-    static public Timer usePhase2Timer = new Timer("usePhase2");
+     public Timer usePhase2Timer = new Timer("usePhase2");
 
-    static public Timer usePhase3Timer = new Timer("usePhase3");
+     public Timer usePhase3Timer = new Timer("usePhase3");
 
-    static public Timer defsSetupTimer = new Timer("defsSetup");
+     public Timer defsSetupTimer = new Timer("defsSetup");
 
-    static public Timer defsAnalysisTimer = new Timer("defsAnalysis");
+     public Timer defsAnalysisTimer = new Timer("defsAnalysis");
 
-    static public Timer defsPostTimer = new Timer("defsPost");
+     public Timer defsPostTimer = new Timer("defsPost");
 
-    static public Timer liveSetupTimer = new Timer("liveSetup");
+     public Timer liveSetupTimer = new Timer("liveSetup");
 
-    static public Timer liveAnalysisTimer = new Timer("liveAnalysis");
+     public Timer liveAnalysisTimer = new Timer("liveAnalysis");
 
-    static public Timer livePostTimer = new Timer("livePost");
+     public Timer livePostTimer = new Timer("livePost");
 
-    static public Timer aggregationTimer = new Timer("aggregation");
+     public Timer aggregationTimer = new Timer("aggregation");
 
-    static public Timer grimpAggregationTimer = new Timer("grimpAggregation");
+     public Timer grimpAggregationTimer = new Timer("grimpAggregation");
 
-    static public Timer deadCodeTimer = new Timer("deadCode");
+     public Timer deadCodeTimer = new Timer("deadCode");
 
-    static public Timer propagatorTimer = new Timer("propagator");
+     public Timer propagatorTimer = new Timer("propagator");
 
-    static public Timer buildJasminTimer = new Timer("buildjasmin");
+     public Timer buildJasminTimer = new Timer("buildjasmin");
 
-    static public Timer assembleJasminTimer = new Timer("assembling jasmin");
+     public Timer assembleJasminTimer = new Timer("assembling jasmin");
 
-    static public Timer resolverTimer = new Timer("resolver");
+     public Timer resolverTimer = new Timer("resolver");
         
 
-    static public int conversionLocalCount;
+     public int conversionLocalCount;
 
-    static public int cleanup1LocalCount;
+     public int cleanup1LocalCount;
 
-    static public int splitLocalCount;
+     public int splitLocalCount;
 
-    static public int assignLocalCount;
+     public int assignLocalCount;
 
-    static public int packLocalCount;
+     public int packLocalCount;
 
-    static public int cleanup2LocalCount;
-
-
-    static public int conversionStmtCount;
-
-    static public int cleanup1StmtCount;
-
-    static public int splitStmtCount;
-
-    static public int assignStmtCount;
-
-    static public int packStmtCount;
-
-    static public int cleanup2StmtCount;
+     public int cleanup2LocalCount;
 
 
-    static public long stmtCount;
+     public int conversionStmtCount;
+
+     public int cleanup1StmtCount;
+
+     public int splitStmtCount;
+
+     public int assignStmtCount;
+
+     public int packStmtCount;
+
+     public int cleanup2StmtCount;
 
 
-    static void printProfilingInformation()
+     public long stmtCount;
+
+
+     void printProfilingInformation()
     {                                                   
         long totalTime = totalTimer.getTime();
                 
@@ -208,7 +212,7 @@ public class Timers
     }
 
 
-    private static String toTimeString(Timer timer, long totalTime)
+    private  String toTimeString(Timer timer, long totalTime)
     {
         DecimalFormat format = new DecimalFormat("00.0");
         DecimalFormat percFormat = new DecimalFormat("00.0");
@@ -221,13 +225,13 @@ public class Timers
     }
     
 
-    private static String toFormattedString(double value)
+    private  String toFormattedString(double value)
     {
         return paddedLeftOf(new Double(truncatedOf(value, 2)).toString(), 5);
     }
 
 
-    public static double truncatedOf(double d, int numDigits)
+    public  double truncatedOf(double d, int numDigits)
     {
         double multiplier = 1;
         
@@ -238,7 +242,7 @@ public class Timers
     }
     
 
-    public static String paddedLeftOf(String s, int length)
+    public  String paddedLeftOf(String s, int length)
     {
         if(s.length() >= length)
             return s;

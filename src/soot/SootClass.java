@@ -1310,7 +1310,7 @@ public class SootClass extends AbstractHost implements Numberable
             writerOut.close();
 
             if(soot.Main.opts.time())
-                Timers.assembleJasminTimer.start(); 
+                Timers.v().assembleJasminTimer.start(); 
 
             // Invoke jasmin
             {
@@ -1337,7 +1337,7 @@ public class SootClass extends AbstractHost implements Numberable
             tempFile.delete();
             
             if(soot.Main.opts.time())
-                Timers.assembleJasminTimer.end(); 
+                Timers.v().assembleJasminTimer.end(); 
             
         } catch(IOException e)
         {
