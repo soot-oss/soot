@@ -796,6 +796,72 @@ public final class ThrowableSet {
 
 
     /**
+     * Returns an {@link Iterator} over a {@link Collection} of
+     * Throwable types which iterates over its elements in a
+     * consistent order (maintaining an ordering that is consistent
+     * across different runs makes it easier to compare sets generated
+     * by different implementations of the CFG classes).
+     *
+     * @param coll The collection to iterate over.
+     *
+     * @return An iterator which presents the elements of <code>coll</code> 
+     * in order.
+     */
+    private static Iterator sortedThrowableIterator(Collection coll) {
+	if (coll.size() <= 1) {
+	    return coll.iterator();
+	} else {
+	    Object array[] = coll.toArray();
+	    Arrays.sort(array, new ThrowableComparator());
+	    return Arrays.asList(array).iterator();
+	}
+    }
+
+
+    /**
+     * Comparator used to implement sortedThrowableIterator().
+     * 
+     */
+    private static class ThrowableComparator implements java.util.Comparator {
+
+	private static RefType baseType(Object o) {
+	    if (o instanceof AnySubType) {
+		return ((AnySubType) o).getBase();
+	    } else {
+		return (RefType) o; // ClassCastException if o is not a RefType.
+	    }
+	}
+
+	public int compare(Object o1, Object o2) {
+	    RefType t1 = baseType(o1);
+	    RefType t2 = baseType(o2);
+	    if (t1.equals(t2)) {
+		// There should never be both AnySubType(t) and
+		// t in a ThrowableSet, but if it happens, put 
+		// AnySubType(t) first:
+		if (o1 instanceof AnySubType) {
+		    if (o2 instanceof AnySubType) {
+			return 0;
+		    } else {
+			return -1;
+		    }
+		} else if (o2 instanceof AnySubType) {
+		    return 1;
+		} else {
+		    return 0;
+		}
+	    } else {
+		return t1.toString().compareTo(t2.toString());
+	    }
+	}
+
+	public boolean equal(Object o1, Object o2) {
+	    return (o1.equals(o2));
+	}
+    }
+
+
+    /**
      * <p>Produce an abbreviated representation of this
      * <code>ThrowableSet</code>, suitable for human consumption.  The
      * abbreviations include:</p>
@@ -833,7 +899,8 @@ public final class ThrowableSet {
 	    buf.append("+vmErrors");
 	}
 
-	for (Iterator it = this.types().iterator(); it.hasNext(); ) {
+	for (Iterator it = sortedThrowableIterator(this.types()); 
+	     it.hasNext(); ) {
 	    RefLikeType reflikeType = (RefLikeType) it.next();
 	    RefType baseType = null;
 	    if (reflikeType instanceof RefType) {
