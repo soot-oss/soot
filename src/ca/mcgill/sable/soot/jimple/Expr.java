@@ -73,6 +73,6 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public interface Expr extends Value
+public interface Expr extends Value, ToBriefString
 {
 }

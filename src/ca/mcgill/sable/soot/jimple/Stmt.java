@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,117 +81,20 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public abstract class Stmt implements Unit
+public interface Stmt extends Unit
 {
-    Map allMapToUnnamed = new AllMapTo("<unnamed>");
-    
-    /**
-     * The list of boxes is not dynamically updated as the structure changes.
-     */
-
-    public abstract List getUseBoxes();
-
-    /**
-     * The list of boxes is not dynamically updated as the structure changes.
-     */
-
+    public List getUseBoxes();
     public abstract List getDefBoxes();
-
-    /**
-     * The list of boxes is not dynamically updated as the structure changes.
-     */
-
     public abstract List getUnitBoxes();
-
-    static List emptyList = Collections.unmodifiableList(new ArrayList());
-
-    List boxesPointingToThis = new ArrayList();
-    List valueBoxes = null;
-
-    List getBoxesPointingToThis()
-    {
-        return boxesPointingToThis;
-    }
-
-    public List getUseAndDefBoxes()
-    {
-        if(valueBoxes == null)
-        {
-            valueBoxes = new ArrayList();
-
-            valueBoxes.addAll(getUseBoxes());
-            valueBoxes.addAll(getDefBoxes());
-
-            valueBoxes = Collections.unmodifiableList(valueBoxes);
-        }
-
-        return valueBoxes;
-    }
-
-    public void apply(Switch sw)
-    {
-    }
-
-    public String toBriefString()
-    {
-        return toString(true, allMapToUnnamed, "");
-    }
-    
-    public String toBriefString(Map stmtToName)
-    {
-        return toString(true, stmtToName, "");
-    }
-    
-    public String toBriefString(String indentation)
-    {
-        return toString(true, allMapToUnnamed, indentation);
-    }
-    
-    public String toBriefString(Map stmtToName, String indentation)
-    {
-        return toString(true, stmtToName, indentation);
-    }
-    
-    public String toString()
-    {
-        return toString(false, allMapToUnnamed, "");
-    }
-    
-    public String toString(Map stmtToName)
-    {
-        return toString(false, stmtToName, "");
-    }
-    
-    public String toString(String indentation)
-    {
-        return toString(false, allMapToUnnamed, indentation);
-    }
-    
-    public String toString(Map stmtToName, String indentation)
-    {
-        return toString(false, stmtToName, indentation);
-    }
-    
-    abstract protected String toString(boolean isBrief, Map stmtToName, String indentation);
-
-    class AllMapTo extends AbstractMap
-    {
-        Object dest;
-        
-        public AllMapTo(Object dest)
-        {
-            this.dest = dest;
-        }
-        
-        public Object get(Object key)
-        {
-            return dest;
-        }
-        
-        public Collection entries()
-        {
-            throw new UnsupportedOperationException();
-        }
-    }
-    
+    public List getBoxesPointingToThis();
+    public List getUseAndDefBoxes();
+    public void apply(Switch sw);
+    public String toBriefString();
+    public String toBriefString(Map stmtToName);
+    public String toBriefString(String indentation);
+    public String toBriefString(Map stmtToName, String indentation);
+    public String toString();
+    public String toString(Map stmtToName);
+    public String toString(String indentation);
+    public String toString(Map stmtToName, String indentation);
 }

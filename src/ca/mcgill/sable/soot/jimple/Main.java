@@ -7,6 +7,9 @@
  * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
  * rights reserved.                                                  *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -65,6 +68,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -116,7 +123,7 @@ public class Main
     static boolean isInDebugMode;
     static boolean usePackedLive;
     static boolean usePackedDefs = true;
-    static boolean isTestingPerformance;    
+    static boolean isTestingPerformance;
 
     public static String jimpleClassPath;
 
@@ -176,7 +183,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.3.dev.1");
+            System.out.println("Jimple version 1.beta.3.dev.2");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -208,6 +215,7 @@ public class Main
             System.out.println("    -typeless                 do not assign types.  Cannot be used with -jasmin");
             System.out.println("                              or -nolocalpacking ");
             System.out.println("    -nolocalpacking           do not re-use locals after jimplification");
+            System.out.println("    -noaggregating            do not perform any Jimple-level aggregation");
             System.out.println("");
             System.out.println("Profiling/Debugging Options:");
             System.out.println("    -timetransform            perform full transformation and print timings");
@@ -233,6 +241,8 @@ public class Main
                     buildBodyOptions |= BuildJimpleBodyOption.NO_TYPING;
                 else if(args[i].equals("-nolocalpacking"))
                     buildBodyOptions |= BuildJimpleBodyOption.NO_PACKING;
+                else if(args[i].equals("-noaggregating"))
+                    buildBodyOptions |= BuildJimpleBodyOption.NO_AGGREGATING;
                 else if(args[i].equals("-timetransform"))
                     isProfilingOptimization = true;
                 else if(args[i].equals("-verbose"))

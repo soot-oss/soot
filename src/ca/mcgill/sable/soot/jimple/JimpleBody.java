@@ -7,6 +7,9 @@
  * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
  * rights reserved.                                                  *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -65,6 +68,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Added a constructor and handling of debug option.
    
@@ -99,7 +106,7 @@ import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.baf.*;
 import java.io.*;
 
-public class JimpleBody implements Body
+public class JimpleBody implements StmtBody
 {
     List locals = new ArrayList();
     SootMethod method;
@@ -122,7 +129,7 @@ public class JimpleBody implements Body
         Constructs a JimpleBody from the given Body.
      */
 
-    JimpleBody(SootMethod m, Body body, int buildOptions)
+    public JimpleBody(SootMethod m, Body body, int buildOptions)
     {
         ClassFileBody fileBody;
 
@@ -175,9 +182,6 @@ public class JimpleBody implements Body
             coffiMethod.cfg.jimplify(coffiClass.constant_pool,
                 coffiClass.this_class, this);
 
-            coffiMethod.cfg.reconstructInstructions();
-            coffiMethod.cfg = null;
- 
             if(Main.isProfilingOptimization)
             {
                 Main.conversionTimer.end();
@@ -190,7 +194,6 @@ public class JimpleBody implements Body
                     "]      Naive typeless Jimple produced.");
         }
 
-        
         // Jimple.printStmtList_debug(this, System.out);
 
         if(!BuildJimpleBodyOption.noCleanup(buildOptions))
@@ -208,9 +211,12 @@ public class JimpleBody implements Body
                 Main.cleanup1StmtCount += stmtList.size();
             }
         }
-        
-        //this.print_debug(new PrintWriter(System.out, true));
-        
+
+	if(!BuildJimpleBodyOption.noAggregating(buildOptions))
+	{
+	  Transformations.aggregate(this);
+	  Transformations.removeUnusedLocals(this);
+	}
 
         if(!BuildJimpleBodyOption.noSplitting(buildOptions))
         {
@@ -227,7 +233,7 @@ public class JimpleBody implements Body
             }
 
             if(!BuildJimpleBodyOption.noTyping(buildOptions))
-            { 
+            {
                 if(Main.isProfilingOptimization)
                     Main.assignTimer.start();
 
@@ -245,8 +251,7 @@ public class JimpleBody implements Body
                         if(l.getType().equals(UnknownType.v()) ||
                             l.getType().equals(ErroneousType.v()))
                         {
-                            if(!Main.isInDebugMode)
-                                throw new RuntimeException("type inference failed!");
+			  throw new RuntimeException("type inference failed!");
                         }
                     }
                 }
@@ -307,7 +312,7 @@ public class JimpleBody implements Body
         return stmtList;
     }
 
-    void redirectJumps(Stmt oldLocation, Stmt newLocation)
+    public void redirectJumps(Stmt oldLocation, Stmt newLocation)
     {
         List boxesPointing = oldLocation.getBoxesPointingToThis();
 
@@ -326,7 +331,7 @@ public class JimpleBody implements Body
 
     }
 
-    void eliminateBackPointersTo(Stmt oldLocation)
+    public void eliminateBackPointersTo(Stmt oldLocation)
     {
         Iterator boxIt = oldLocation.getUnitBoxes().iterator();
 
@@ -679,10 +684,9 @@ public class JimpleBody implements Body
 
         
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
-        
-
-        CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
-        
+/*
+        StmtGraph stmtGraph = new BriefStmtGraph(stmtList);
+*/
         /*
         System.out.println("Constructing LocalDefs of " + this.getMethod().getName() + "...");
 
@@ -691,14 +695,12 @@ public class JimpleBody implements Body
         System.out.println("Constructing LocalUses of " + getName() + "...");
 
         LocalUses localUses = new LocalUses(stmtGraph, localDefs);
-        */
-        
-        LocalCopies localCopies = new SimpleLocalCopies(stmtGraph);
+
+        LocalCopies localCopies = new LocalCopies(stmtGraph);
 
         System.out.println("Constructing LiveLocals of " + this.getMethod().getName() + " ...");
-        
-        // LiveLocals liveLocals = new LiveLocals(stmtGraph);
-        
+        LiveLocals liveLocals = new LiveLocals(stmtGraph);
+        */
 
         // Create statement name table
         {
@@ -742,16 +744,6 @@ public class JimpleBody implements Body
                 out.print("]");
             }
         */
-        
-
-            // Print info about copies
-            {
-                
-                List copies = localCopies.getCopiesBefore(s);
-
-                out.print(copies);
-            }
-
 
 
              /*

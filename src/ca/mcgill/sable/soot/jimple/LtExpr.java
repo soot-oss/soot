@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,33 +81,6 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class LtExpr extends BinopExpr implements ConditionExpr, ToBriefString
+public interface LtExpr extends BinopExpr, ConditionExpr
 {
-    LtExpr(Value op1, Value op2)
-    {
-        op1Box = Jimple.v().newImmediateBox(op1);
-        op2Box = Jimple.v().newImmediateBox(op2);
-    }
-
-    public String toString()
-    {
-        return op1Box.getValue().toString() + " < " + op2Box.getValue().toString();
-    }
-
-    
-    public String toBriefString()
-    {
-        return ((ToBriefString) op1Box.getValue()).toBriefString() + " < " + 
-               ((ToBriefString) op2Box.getValue()).toBriefString();
-    }
-
-    public Type getType()
-    {
-        return IntType.v();
-    }
-
-    public void apply(Switch sw)
-    {
-        ((ExprSwitch) sw).caseLtExpr(this);
-    }
 }

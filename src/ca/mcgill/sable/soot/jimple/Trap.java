@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,86 +81,18 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class Trap
+public interface Trap
 {
-    SootClass exception;
-    UnitBox beginStmtBox;
-    UnitBox endStmtBox;
-    UnitBox handlerStmtBox;
-    List stmtBoxes;
-
-    Trap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
-    {
-        this.exception = exception;
-
-        this.beginStmtBox = Jimple.v().newStmtBox(beginStmt);
-        this.endStmtBox = Jimple.v().newStmtBox(endStmt);
-        this.handlerStmtBox = Jimple.v().newStmtBox(handlerStmt);
-
-        stmtBoxes = new ArrayList();
-        stmtBoxes.add(beginStmtBox);
-        stmtBoxes.add(endStmtBox);
-        stmtBoxes.add(handlerStmtBox);
-        stmtBoxes = Collections.unmodifiableList(stmtBoxes);
-    }
-
-    public Unit getBeginUnit()
-    {
-        return  beginStmtBox.getUnit();
-    }
-
-    public Unit getEndUnit()
-    {
-        return endStmtBox.getUnit();
-    }
-
-    public Unit getHandlerUnit()
-    {
-        return handlerStmtBox.getUnit();
-    }
-
-    public UnitBox getHandlerUnitBox()
-    {
-        return beginStmtBox;
-    }
-
-    public UnitBox getBeginUnitBox()
-    {
-        return beginStmtBox;
-    }
-
-    public UnitBox getEndUnitBox()
-    {
-        return endStmtBox;
-    }
-
-    public List getUnitBoxes()
-    {
-        return stmtBoxes;
-    }
-
-    public SootClass getException()
-    {
-        return exception;
-    }
-
-    public void setBeginUnit(Unit beginUnit)
-    {
-        beginStmtBox.setUnit(beginUnit);
-    }
-
-    public void setEndUnit(Unit endUnit)
-    {
-        endStmtBox.setUnit(endUnit);
-    }
-
-    public void setHandlerUnit(Unit handlerUnit)
-    {
-        handlerStmtBox.setUnit(handlerUnit);
-    }
-
-    public void setException(SootClass exception)
-    {
-        this.exception = exception;
-    }
+    public Unit getBeginUnit();
+    public Unit getEndUnit();
+    public Unit getHandlerUnit();
+    public UnitBox getHandlerUnitBox();
+    public UnitBox getBeginUnitBox();
+    public UnitBox getEndUnitBox();
+    public List getUnitBoxes();
+    public SootClass getException();
+    public void setBeginUnit(Unit beginUnit);
+    public void setEndUnit(Unit endUnit);
+    public void setHandlerUnit(Unit handlerUnit);
+    public void setException(SootClass exception);
 }

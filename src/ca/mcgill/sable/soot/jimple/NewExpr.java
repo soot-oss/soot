@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,48 +81,11 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NewExpr implements Expr, ToBriefString
+public interface NewExpr extends Expr, ToBriefString
 {
-    RefType type;
-
-    public NewExpr(RefType type)
-    {
-        this.type = type;
-    }
-
-    public String toString()
-    {
-        return "new " + type.toString();
-    }
-
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
-    public RefType getBaseType()
-    {
-        return type;
-    }
-
-    public void setBaseType(RefType type)
-    {
-        this.type = type;
-    }
-
-    public Type getType()
-    {
-        return type;
-    }
-
-
-    public List getUseBoxes()
-    {
-        return Stmt.emptyList;
-    }
-
-    public void apply(Switch sw)
-    {
-        ((ExprSwitch) sw).caseNewExpr(this);
-    }
+    public RefType getBaseType();
+    public void setBaseType(RefType type);
+    public Type getType();
+    public List getUseBoxes();
+    public void apply(Switch sw);
 }

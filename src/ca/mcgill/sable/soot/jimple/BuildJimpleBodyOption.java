@@ -7,6 +7,9 @@
  * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
  * rights reserved.                                                  *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -60,6 +63,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -76,11 +83,12 @@ import java.io.*;
 
 public class BuildJimpleBodyOption
 {
-    public static final int NO_TYPING    = 0x0001,
-                            NO_RENAMING  = 0x0002,
-                            NO_SPLITTING = 0x0004,
-                            NO_CLEANUP   = 0x0008,
-                            NO_PACKING   = 0x0010;
+    public static final int NO_TYPING      = 0x0001,
+                            NO_RENAMING    = 0x0002,
+                            NO_SPLITTING   = 0x0004,
+                            NO_CLEANUP     = 0x0008,
+                            NO_PACKING     = 0x0010,
+                            NO_AGGREGATING = 0x0020;
 
     public static boolean noTyping(int m)
     {
@@ -105,6 +113,11 @@ public class BuildJimpleBodyOption
     public static boolean noPacking(int m)
     {
         return (m & NO_PACKING) != 0;
+    }
+
+    public static boolean noAggregating(int m)
+    {
+        return (m & NO_AGGREGATING) != 0;
     }
 }
 

@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,60 +81,10 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class CaughtExceptionRef implements IdentityRef, ToBriefString
+public interface CaughtExceptionRef extends IdentityRef, ToBriefString
 {
-    JimpleBody body;
-    
-    CaughtExceptionRef(JimpleBody b)
-    {
-        this.body = b;
-    }
-
-    public String toString()
-    {
-        return "@caughtexception";
-    }
-
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
-    public List getUseBoxes()
-    {
-        return Stmt.emptyList;
-    }
-
-    public List getExceptionTypes()
-    {
-        List possibleTypes = new ArrayList();
-        
-        Iterator trapIt = body.getTraps().iterator();
-        
-        while(trapIt.hasNext())
-        {
-            Trap trap = (Trap) trapIt.next();
-            
-            Unit handler = trap.getHandlerUnit();
-             
-            if(handler instanceof IdentityStmt
-                && ((IdentityStmt) handler).getRightOp() == this)
-            {
-                possibleTypes.add(RefType.v(trap.getException().
-                    getName()));
-            }
-        }
-        
-        return possibleTypes;
-    }
-    
-    public Type getType()
-    {
-        return RefType.v("java.lang.Throwable");
-    }
-
-    public void apply(Switch sw)
-    {
-        ((RefSwitch) sw).caseCaughtExceptionRef(this);
-    }
+    public List getUseBoxes();
+    public List getExceptionTypes();
+    public Type getType();
+    public void apply(Switch sw);
 }

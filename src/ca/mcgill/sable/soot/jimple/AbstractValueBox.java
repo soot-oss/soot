@@ -73,7 +73,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-abstract class AbstractValueBox implements ValueBox
+public abstract class AbstractValueBox implements ValueBox
 {
     Value value;
 
@@ -89,7 +89,6 @@ abstract class AbstractValueBox implements ValueBox
     {
         return value;
     }
-
 }
 
 

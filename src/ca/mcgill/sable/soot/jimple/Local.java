@@ -7,6 +7,9 @@
  * Copyright (C) 1998 Madeleine Mony.  All                           *
  * rights reserved.                                                  *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -64,6 +67,10 @@
  *                                                                   *
 
  B) Changes:
+
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
 
  - Modified on November 13, 1998 by Madeleine Mony
    Implemented fixed hash code idea.
@@ -153,7 +160,7 @@ public class Local implements Value, ToBriefString
     
     public List getUseBoxes()
     {
-        return Stmt.emptyList;
+        return AbstractStmt.emptyList;
     }
 
     public void apply(Switch sw)

@@ -61,9 +61,6 @@
 
  B) Changes:
 
- - Modified on February 4, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
-   Replaced getLiveLocalsAfter() with getLiveLocalsBefore().
-
  - Modified on February 2, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
    Improved the interference graph builder.
    
@@ -333,7 +330,7 @@ public class ChaitinAllocator
                 {
                     Stmt stmt = (Stmt) codeIt.next();
     
-                    List liveLocalsAtStmt = liveLocals.getLiveLocalsBefore(stmt);
+                    List liveLocalsAtStmt = liveLocals.getLiveLocalsAfter(stmt);
                     
                     // Note interferences if this statement is a definition
                     {

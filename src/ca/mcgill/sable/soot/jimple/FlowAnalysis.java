@@ -99,7 +99,6 @@ public abstract class FlowAnalysis
     protected abstract void flowThrough(Object in, Stmt s, Object out);
     protected abstract void merge(Object in1, Object in2, Object out);
     protected abstract void copy(Object source, Object dest);
-    
     protected abstract void doAnalysis();
 
     public Object getFlowAfterStmt(Stmt s)

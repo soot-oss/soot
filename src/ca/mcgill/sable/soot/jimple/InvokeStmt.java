@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,60 +81,9 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class InvokeStmt extends Stmt
+public interface InvokeStmt extends Stmt
 {
-    ValueBox invokeExprBox;
-
-    InvokeStmt(Value c)
-    {
-        invokeExprBox = Jimple.v().newInvokeExprBox(c);
-    }
-
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
-    {
-        if(isBrief)
-            return indentation + ((ToBriefString) invokeExprBox.getValue()).toBriefString();
-        else
-            return indentation + invokeExprBox.getValue().toString();
-    }
-    
-    public void setInvokeExpr(Value invokeExpr)
-    {
-        invokeExprBox.setValue(invokeExpr);
-    }
-
-    public Value getInvokeExpr()
-    {
-        return invokeExprBox.getValue();
-    }
-
-    public ValueBox getInvokeExprBox()
-    {
-        return invokeExprBox;
-    }
-
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUseBoxes()
-    {
-        List list = new ArrayList();
-
-        list.add(invokeExprBox);
-        list.addAll(invokeExprBox.getValue().getUseBoxes());
-
-        return list;
-    }
-
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseInvokeStmt(this);
-    }
+    public void setInvokeExpr(Value invokeExpr);
+    public Value getInvokeExpr();
+    public ValueBox getInvokeExprBox();
 }

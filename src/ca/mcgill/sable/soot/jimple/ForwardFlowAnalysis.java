@@ -85,7 +85,6 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
     {
         return true;
     }
-
     protected void doAnalysis()
     {
         LinkedList changedStmts = new LinkedList();
@@ -138,7 +137,8 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
 
                         while(predIt.hasNext())
                         {
-                            Object otherBranchFlow = stmtToAfterFlow.get(predIt.next());
+                            Object otherBranchFlow = stmtToAfterFlow.get(predIt.
+next());
                             merge(beforeFlow, otherBranchFlow, beforeFlow);
                         }
                     }
@@ -164,6 +164,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
             }
         }
     }
+
 }
 
 

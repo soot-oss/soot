@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -77,92 +84,17 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ArrayRef implements ConcreteRef, Switchable, ToBriefString
+public interface ArrayRef extends ConcreteRef, Switchable, ToBriefString
 {
-    ValueBox baseBox;
-    ValueBox indexBox;
-
-    List useBoxes;
-
-    ArrayRef(Value base, Value index)
-    {
-        this.baseBox = Jimple.v().newLocalBox(base);
-        this.indexBox = Jimple.v().newImmediateBox(index);
-
-        useBoxes = new ArrayList();
-        useBoxes.add(baseBox);
-        useBoxes.add(indexBox);
-        useBoxes = Collections.unmodifiableList(useBoxes);
-    }
-
-    public String toString()
-    {
-        return baseBox.getValue().toString() + "[" + indexBox.getValue().toString() + "]";
-    }
-
-    public String toBriefString()
-    {
-        return ((ToBriefString) baseBox.getValue()).toBriefString() + 
-            "[" + ((ToBriefString) indexBox.getValue()).toBriefString() 
-            + "]";
-    }
-
-    public Value getBase()
-    {
-        return baseBox.getValue();
-    }
-
-    public void setBase(Local base)
-    {
-        baseBox.setValue(base);
-    }
-
-    public ValueBox getBaseBox()
-    {
-        return baseBox;
-    }
-
-    public Value getIndex()
-    {
-        return indexBox.getValue();
-    }
-
-    public void setIndex(Value index)
-    {
-        indexBox.setValue(index);
-    }
-
-    public ValueBox getIndexBox()
-    {
-        return indexBox;
-    }
-
-    public List getUseBoxes()
-    {
-        return useBoxes;
-    }
-
-    public Type getType()
-    {
-        Local base = (Local) baseBox.getValue();
-        Type type = base.getType();
-
-        if(type.equals(UnknownType.v()))
-            return UnknownType.v();
-        else {
-            ArrayType arrayType = (ArrayType) type;
-
-            if(arrayType.numDimensions == 1)
-                return arrayType.baseType;
-            else
-                return ArrayType.v(arrayType.baseType, arrayType.numDimensions - 1);
-        }
-    }
-
-    public void apply(Switch sw)
-    {
-        ((RefSwitch) sw).caseArrayRef(this);
-    }
+    public Value getBase();
+    public void setBase(Local base);
+    public ValueBox getBaseBox();
+    public Value getIndex();
+    public void setIndex(Value index);
+    public ValueBox getIndexBox();
+    public List getUseBoxes();
+    public Type getType();
+    public void apply(Switch sw);
 }
 
 

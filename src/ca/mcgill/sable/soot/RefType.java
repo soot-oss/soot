@@ -76,7 +76,7 @@ package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
 
-public class RefType extends BaseType
+public class RefType extends BaseType implements ToBriefString
 {
     public final String className;
 
@@ -98,6 +98,12 @@ public class RefType extends BaseType
     public String toString()
     {
         return className;
+    }
+
+    /* eventually this could return the shortest-unambiguous-className */
+    public String toBriefString()
+    {
+	return className;
     }
 
     public int hashCode()

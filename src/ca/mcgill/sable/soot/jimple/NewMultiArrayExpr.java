@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,9 +64,10 @@
 
  B) Changes:
 
- - Modified on January 19, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
-   NewMultiArrayExpr implements ToBriefString now.
-    
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -77,110 +81,16 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NewMultiArrayExpr implements Expr, ToBriefString
+public interface NewMultiArrayExpr extends Expr, ToBriefString
 {
-    ArrayType baseType;
-    ValueBox[] sizeBoxes;
-
-    NewMultiArrayExpr(ArrayType type, List sizes)
-    {
-        this.baseType = type;
-        this.sizeBoxes = new ValueBox[sizes.size()];
-
-        for(int i = 0; i < sizes.size(); i++)
-            sizeBoxes[i] = Jimple.v().newImmediateBox((Value) sizes.get(i));
-    }
-
-    public String toString()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("newmulti " + baseType.baseType.toString());
-
-        for(int i = 0; i < sizeBoxes.length; i++)
-            buffer.append("[" + sizeBoxes[i].getValue().toString() + "]");
-
-        for(int i = 0; i < baseType.numDimensions - sizeBoxes.length; i++)
-            buffer.append("[]");
-
-        return buffer.toString();
-    }
-
-    public String toBriefString()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("newmulti " + baseType.baseType.toString());
-
-        for(int i = 0; i < sizeBoxes.length; i++)
-            buffer.append("[" + ((ToBriefString) sizeBoxes[i].getValue()).toBriefString() + "]");
-
-        for(int i = 0; i < baseType.numDimensions - sizeBoxes.length; i++)
-            buffer.append("[]");
-
-        return buffer.toString();
-    }
-
-    public ArrayType getBaseType()
-    {
-        return baseType;
-    }
-
-    public void setBaseType(ArrayType baseType)
-    {
-        this.baseType = baseType;
-    }
-
-    public ValueBox getSizeBox(int index)
-    {
-        return sizeBoxes[index];
-    }
-
-    public int getSizeCount()
-    {
-        return sizeBoxes.length;
-    }
-
-    public Value getSize(int index)
-    {
-        return sizeBoxes[index].getValue();
-    }
-
-    public List getSizes()
-    {
-        List toReturn = new ArrayList();
-
-        for(int i = 0; i < sizeBoxes.length; i++)
-            toReturn.add(sizeBoxes[i].getValue());
-
-        return toReturn;
-    }
-
-    public void setSize(int index, Value size)
-    {
-        sizeBoxes[index].setValue(size);
-    }
-
-    public List getUseBoxes()
-    {
-        List list = new ArrayList();
-
-        for(int i = 0; i < sizeBoxes.length; i++)
-            list.add(sizeBoxes[i]);
-
-        for(int i = 0; i < sizeBoxes.length; i++)
-            list.addAll(sizeBoxes[i].getValue().getUseBoxes());
-
-        return list;
-    }
-
-    public Type getType()
-    {
-        return baseType;
-    }
-
-    public void apply(Switch sw)
-    {
-        ((ExprSwitch) sw).caseNewMultiArrayExpr(this);
-    }
+    public ArrayType getBaseType();
+    public void setBaseType(ArrayType baseType);
+    public ValueBox getSizeBox(int index);
+    public int getSizeCount();
+    public Value getSize(int index);
+    public List getSizes();
+    public void setSize(int index, Value size);
+    public List getUseBoxes();
+    public Type getType();
+    public void apply(Switch sw);
 }

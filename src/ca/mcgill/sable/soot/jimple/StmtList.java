@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -76,16 +83,16 @@ import ca.mcgill.sable.util.*;
 
 public class StmtList extends ArrayList
 {
-    JimpleBody body;
+    StmtBody body;
 
-    public StmtList(JimpleBody body)
+    public StmtList(StmtBody body)
     {
         super();
 
         this.body = body;
     }
 
-    public JimpleBody getBody()
+    public StmtBody getBody()
     {
         return body;
     }
@@ -145,7 +152,7 @@ public class StmtList extends ArrayList
         throw new UnsupportedOperationException();
     }
 
-    void testIntegrity(String message)
+    public void testIntegrity(String message)
     {
         Iterator stmtIt = iterator();
 

@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,62 +81,9 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class RetStmt extends Stmt
+public interface RetStmt extends Stmt
 {
-    ValueBox stmtAddressBox;
-    List useBoxes;
-
-    RetStmt(Value stmtAddress)
-    {
-        stmtAddressBox = Jimple.v().newLocalBox(stmtAddress);
-
-        useBoxes = new ArrayList();
-
-        useBoxes.add(stmtAddressBox);
-        useBoxes = Collections.unmodifiableList(useBoxes);
-    }
-
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
-    {
-        if(isBrief)
-            return indentation + "ret " + ((ToBriefString) stmtAddressBox.getValue()).toBriefString();
-        else
-            return indentation + "ret " + stmtAddressBox.getValue().toString();
-    }
-
-    public Value getStmtAddress()
-    {
-        return stmtAddressBox.getValue();
-    }
-
-    public ValueBox getStmtAddressBox()
-    {
-        return stmtAddressBox;
-    }
-
-    public void setStmtAddress(Value stmtAddress)
-    {
-        stmtAddressBox.setValue(stmtAddress);
-    }
-
-
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUseBoxes()
-    {
-        return useBoxes;
-    }
-
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseRetStmt(this);
-    }
+    public Value getStmtAddress();
+    public ValueBox getStmtAddressBox();
+    public void setStmtAddress(Value stmtAddress);
 }

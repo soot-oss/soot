@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,41 +81,6 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class IdentityStmt extends DefinitionStmt
+public interface IdentityStmt extends DefinitionStmt
 {
-    IdentityStmt(Value local, Value identityValue)
-    {
-        this.leftBox = Jimple.v().newLocalBox(local);
-        this.rightBox = Jimple.v().newIdentityRefBox(identityValue);
-
-        defBoxes = new ArrayList();
-        defBoxes.add(leftBox);
-        defBoxes = Collections.unmodifiableList(defBoxes);
-    }
-
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
-    {
-        if(isBrief)
-        {
-            return indentation + ((ToBriefString) leftBox.getValue()).toBriefString() + " := " + 
-                ((ToBriefString) rightBox.getValue()).toBriefString();
-        }
-        else
-            return indentation + leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
-    }
-
-    public void setLeftOp(Value local)
-    {
-        leftBox.setValue(local);
-    }
-
-    public void setRightOp(Value identityRef)
-    {
-        rightBox.setValue(identityRef);
-    }
-
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseIdentityStmt(this);
-    }
 }

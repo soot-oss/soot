@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Soot, a Java(TM) classfile optimization framework.                *
- * Copyright (C) 1997-1999 Raja Vallee-Rai (kor@sable.mcgill.ca)     *
+ * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
@@ -61,10 +61,6 @@
 
  B) Changes:
 
- - Modified on January 18, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Moved classfile to ca.mcgill.sable.soot and changed permissions
-   to public.
-   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.

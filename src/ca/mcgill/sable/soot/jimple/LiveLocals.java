@@ -61,9 +61,6 @@
 
  B) Changes:
 
- - Modified on February 4, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Added getLiveLocalsAfter();
-
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -83,7 +80,6 @@ import ca.mcgill.sable.util.*;
 public interface LiveLocals
 {
     public List getLiveLocalsAfter(Stmt s);
-    public List getLiveLocalsBefore(Stmt s);
 }
 
 

@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,32 +81,10 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public abstract class UnopExpr implements Expr
+public interface UnopExpr extends Expr, ToBriefString
 {
-    ValueBox opBox;
-
-    public Value getOp()
-    {
-        return (Value) opBox.getValue();
-    }
-
-    public void setOp(Value op)
-    {
-        opBox.setValue(op);
-    }
-
-    public ValueBox getOpBox()
-    {
-        return opBox;
-    }
-
-    public List getUseBoxes()
-    {
-        List list = new ArrayList();
-
-        list.add(opBox);
-        list.addAll(opBox.getValue().getUseBoxes());
-
-        return list;
-    }
+    public Value getOp();
+    public void setOp(Value op);
+    public ValueBox getOpBox();
+    public List getUseBoxes();
 }

@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -77,69 +84,11 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class InstanceFieldRef implements ConcreteRef, ToBriefString
+public interface InstanceFieldRef extends ConcreteRef, ToBriefString
 {
-    SootField field;
-    ValueBox baseBox;
-    List useBoxes;
-
-    InstanceFieldRef(Value base, SootField field)
-    {
-        this.baseBox = Jimple.v().newLocalBox(base);
-        this.field = field;
-
-        useBoxes = new ArrayList();
-        useBoxes.add(baseBox);
-        useBoxes = Collections.unmodifiableList(useBoxes);
-    }
-
-    public String toString()
-    {
-        return baseBox.getValue().toString() + ".[" + field.getSignature() + "]";
-    }
-
-    public String toBriefString()
-    {
-        return ((ToBriefString) baseBox.getValue()).toBriefString() + "." + field.getName();
-    }
-    
-    public Value getBase()
-    {
-        return (Local) baseBox.getValue();
-    }
-
-    public ValueBox getBaseBox()
-    {
-        return baseBox;
-    }
-
-    public void setBase(Value base)
-    {
-        baseBox.setValue(base);
-    }
-
-    public SootField getField()
-    {
-        return field;
-    }
-
-    public void setField(SootField field)
-    {
-        this.field = field;
-    }
-
-    public List getUseBoxes()
-    {
-        return useBoxes;
-    }
-
-    public Type getType()
-    {
-        return field.getType();
-    }
-
-    public void apply(Switch sw)
-    {
-        ((RefSwitch) sw).caseInstanceFieldRef(this);
-    }
+    public Value getBase();
+    public ValueBox getBaseBox();
+    public void setBase(Value base);
+    public SootField getField();
+    public void setField(SootField field);
 }

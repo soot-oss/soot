@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,89 +81,12 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class IfStmt extends Stmt
+public interface IfStmt extends Stmt
 {
-    ValueBox conditionBox;
-    UnitBox targetBox;
-
-    List targetBoxes;
-
-    IfStmt(Value condition, Unit target)
-    {
-        this.conditionBox = Jimple.v().newConditionExprBox(condition);
-        this.targetBox = Jimple.v().newStmtBox(target);
-
-        targetBoxes = new ArrayList();
-        targetBoxes.add(this.targetBox);
-        targetBoxes = Collections.unmodifiableList(targetBoxes);
-    }
-
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
-    {
-        if(isBrief)
-            return indentation + "if " + 
-                ((ToBriefString) getCondition()).toBriefString() + " goto " + (String) stmtToName.get(getTarget());
-        else
-            return indentation + "if " + getCondition().toString() + " goto " + (String) stmtToName.get(getTarget());
-    }
-    
-    public String toString()
-    {
-        return "if " + conditionBox.getValue().toString() + " goto ?";
-    }
-
-    public Value getCondition()
-    {
-        return conditionBox.getValue();
-    }
-
-    public void setCondition(Value condition)
-    {
-        conditionBox.setValue(condition);
-    }
-
-    public ValueBox getConditionBox()
-    {
-        return conditionBox;
-    }
-
-    public Stmt getTarget()
-    {
-        return (Stmt) targetBox.getUnit();
-    }
-
-    public void setTarget(Unit target)
-    {
-        targetBox.setUnit(target);
-    }
-
-    public UnitBox getTargetBox()
-    {
-        return targetBox;
-    }
-
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUseBoxes()
-    {
-        List useBoxes = new ArrayList();
-
-        useBoxes.add(conditionBox);
-        useBoxes.addAll(conditionBox.getValue().getUseBoxes());
-
-        return useBoxes;
-    }
-
-    public List getUnitBoxes()
-    {
-        return targetBoxes;
-    }
-
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseIfStmt(this);
-    }
+    public Value getCondition();
+    public void setCondition(Value condition);
+    public ValueBox getConditionBox();
+    public Stmt getTarget();
+    public void setTarget(Unit target);
+    public UnitBox getTargetBox();
 }

@@ -7,6 +7,9 @@
  * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
  * rights reserved.                                                  *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -65,12 +68,16 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on January 25, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
    Made transformations class public.
-   
+    
  - Modified on January 20, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
    Moved packLocals method to ChaitinAllocator.java
-   
+    
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -193,10 +200,7 @@ public class Transformations
             if(Main.isProfilingOptimization)
                 Main.graphTimer.end();
 
-            
-            
             LocalDefs localDefs;
-
             if(Main.usePackedDefs) 
             {
                 if(Main.isProfilingOptimization)
@@ -228,10 +232,9 @@ public class Transformations
                 
                 if(Main.isProfilingOptimization)
                     Main.defsTimer.end();
-            }
-            
-    
-            if(Main.isProfilingOptimization)
+            }            
+
+	    if(Main.isProfilingOptimization)
                 Main.usesTimer.start();
 
             LocalUses localUses = new SimpleLocalUses(graph, localDefs);
@@ -481,11 +484,10 @@ public class Transformations
             
                 if(Main.isProfilingOptimization)
                     Main.liveTimer.start();
-    
                 if(Main.usePackedLive) 
                     liveLocals = new SimpleLiveLocals(graph);
                 else
-                    liveLocals = new SparseLiveLocals(graph);
+                    liveLocals = new SparseLiveLocals(graph);    
 
                 if(Main.isProfilingOptimization)
                     Main.liveTimer.end();
@@ -497,10 +499,7 @@ public class Transformations
                 
                 if(Main.isProfilingOptimization)
                     Main.defsTimer.end();
-            }
-            
-                            
-
+            }           
 
             if(Main.isVerbose)
                 System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Constructing LocalUses...");
@@ -521,10 +520,9 @@ public class Transformations
 
             LocalCopies localCopies = new SimpleLocalCopies(graph);
 
-            
             if(Main.isProfilingOptimization)
                 Main.copiesTimer.end();
-            
+
             if(Main.isProfilingOptimization)
                 Main.cleanupAlgorithmTimer.start();
 
@@ -676,4 +674,169 @@ public class Transformations
         }
     }
 
-}
+
+  /** Traverse the statements in the given body, looking for
+   *  aggregation possibilities; that is, given a def d and a use u,
+   *  d has no other uses, u has no other defs, collapse d and u. */
+  /** @returns true iff aggregation was done on body */
+  public static boolean aggregate(StmtBody body)
+    {
+      Iterator stmtIt;
+      LocalUses localUses;
+      LocalDefs localDefs;
+      CompleteStmtGraph graph;
+      boolean hadAggregation = false;
+      StmtList stmtList = body.getStmtList();
+      
+      if(Main.isVerbose)
+	System.out.println("[" + body.getMethod().getName() + "] Aggregating");
+
+      if(Main.isVerbose)
+	System.out.println("[" + body.getMethod().getName() + "] Constructing StmtGraph...");
+      
+      if(Main.isProfilingOptimization)
+	Main.graphTimer.start();
+	  
+      graph = new CompleteStmtGraph(stmtList);
+      
+      if(Main.isProfilingOptimization)
+	Main.graphTimer.end();
+	  
+      if(Main.isVerbose)
+	System.out.println("[" + body.getMethod().getName() + "] Constructing LocalDefs...");
+	  
+      if(Main.isProfilingOptimization)
+	Main.defsTimer.start();
+	  
+      localDefs = new SimpleLocalDefs(graph);
+
+      if(Main.isProfilingOptimization)
+	Main.defsTimer.end();
+	  
+      if(Main.isVerbose)
+	System.out.println("[" + body.getMethod().getName() + "] Constructing LocalUses...");
+	  
+      if(Main.isProfilingOptimization)
+	Main.usesTimer.start();
+	  
+      localUses = new SimpleLocalUses(graph, localDefs);
+	  
+      if(Main.isProfilingOptimization)
+	Main.usesTimer.end();
+      stmtIt = stmtList.iterator();
+      
+      while (stmtIt.hasNext())
+	{
+	  Stmt s = (Stmt)(stmtIt.next());
+	  
+	  /* could this be definitionStmt instead? */
+	  if (!(s instanceof AssignStmt))
+	    continue;
+	  Value lhs = ((AssignStmt)s).getLeftOp();
+	  if (!(lhs instanceof Local))
+	    continue;
+	  
+	  List lu = localUses.getUsesOf((AssignStmt)s);
+	  if (lu.size() != 1)
+	    continue;
+	  
+	  StmtValueBoxPair usepair = (StmtValueBoxPair)lu.get(0);
+	  Stmt use = usepair.stmt;
+	      
+	  List ld = localDefs.getDefsOfAt((Local)lhs, use);
+	  if (ld.size() != 1)
+	    continue;
+	      
+	  /* we need to check the path between def and use */
+	  /* to see if there are any intervening re-defs of RHS */
+	  /* in fact, we should check that this path is unique. */
+	  /* if the RHS uses only locals, then we know what
+	     to do; if RHS has a method invocation f(a, b,
+	     c) we must ban field writes and other method
+	     calls and (as usual) writes to a, b, c. */
+	  
+	  boolean cantAggr = false;
+	  boolean foundInvokation = false;
+	  
+	  Value rhs = ((AssignStmt)s).getRightOp();
+	  LinkedList localsUsed = new LinkedList();
+	  for (Iterator useIt = (s.getUseBoxes()).iterator();
+	       useIt.hasNext(); )
+	    {
+	      Value v = ((ValueBox)(useIt.next())).getValue();
+	      if (v instanceof Local)
+		localsUsed.add(v);
+	      if (v instanceof InvokeExpr)
+		foundInvokation = true;
+	    }
+	  
+	  // look for a path from s to use in graph.
+	  // only look in a basic block, though.
+	  
+	  Stmt between = s;
+	  while(!cantAggr)
+	    {
+	      List l = graph.getSuccsOf(between);
+	      if (l.size() != 1)
+		{ cantAggr = true; break; }
+	      
+	      between = (Stmt)l.get(0);
+	      if (between == use)
+		break;
+	      
+	      for (Iterator it = between.getDefBoxes().iterator();
+		   it.hasNext(); )
+		{
+		  Value v = ((ValueBox)(it.next())).getValue();
+		  if (localsUsed.contains(v))
+		    { cantAggr = true; break; }
+		  if (foundInvokation)
+		    {
+		      if (v instanceof StaticFieldRef ||
+			  v instanceof InstanceFieldRef)
+			{ cantAggr = true; break; }
+		    }
+		}
+	      
+	      if (foundInvokation)
+		{
+		  for (Iterator useIt = (s.getUseBoxes()).iterator();
+		       useIt.hasNext(); )
+		    {
+		      Value v= ((ValueBox)(useIt.next())).getValue();
+		      if (v instanceof InvokeExpr)
+			cantAggr = true;
+		    }
+		}
+	    }
+	  
+	  if (cantAggr)
+	    continue;
+	  
+	  /* assuming that the d-u chains are correct, */
+	  /* we need not check the actual contents of ld */
+	  
+	  Value aggregatee = ((AssignStmt)s).getRightOp();
+	  if (usepair.valueBox.canContainValue(aggregatee))
+	    {
+	      usepair.valueBox.setValue(aggregatee);
+	      body.eliminateBackPointersTo(s);
+	      stmtIt.remove();
+	      hadAggregation = true;
+	    }
+	  else
+	    {
+            if(Main.isVerbose)
+            {
+	        System.out.println("[debug] failed aggregation");
+	          System.out.println("[debug] tried to put "+aggregatee+
+		    		 " into "+usepair.stmt + 
+		    		 ": in particular, "+usepair.valueBox);
+	          System.out.println("[debug] aggregatee instanceof Expr: "
+		    		 +(aggregatee instanceof Expr));
+            }
+	    }
+	}
+      return hadAggregation;
+    }
+ }

@@ -87,7 +87,7 @@ public class PrintJimpleBodyOption
     public static final int USE_ABBREVIATIONS = 0x0001,
                             DEBUG_MODE        = 0x0002;
 
-    private PrintJimpleBodyOption()
+    protected PrintJimpleBodyOption()
     {
     }
 

@@ -4,7 +4,8 @@
  * All rights reserved.                                              *
  *                                                                   *
  * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
- * Copyright (C) 1998 Etienne Gagnon.  All rights reserved.          *
+ * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
+ * rights reserved.                                                  *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -131,8 +132,6 @@ public class JasminClass
     boolean isNextGotoAJsr;
     int returnAddressSlot;
 
-    Set dyingLocals;
-    
     String slashify(String s)
     {
         return s.replace('.', '/');
@@ -264,42 +263,15 @@ public class JasminClass
 
     void emit(String s)
     {
-        emit(s, false);
-    }
-
-    void emit(String s, boolean localDies)
-    {
         if(isEmittingMethodCode && !s.endsWith(":"))
-            s = "    " + s;
+            code.add("    " + s);
+        else
+            code.add(s);
 
-        JasminInst inst = new JasminInst(s, localDies);
-        
-        code.add(inst);
-        
         if(Main.isVerbose)
             System.out.println(s);
     }
 
-    class JasminInst
-    {
-        String string;
-        boolean localDies;
-        
-        JasminInst(String s, boolean localDies)
-        {
-            this.string = s;
-            this.localDies = localDies;
-        }
-        
-        public String toString()
-        {
-            if(localDies)
-                return string; //"*";
-            else
-                return string;
-        }
-    }
-    
     public JasminClass(SootClass SootClass, BodyExpr bodyExpr)
     {
         code = new LinkedList();
@@ -535,25 +507,11 @@ public class JasminClass
 
         // Emit code in one pass
         {
-            LiveLocals liveLocals;
-            
-            // Generate liveLocals
-            {
-                CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
-                
-                if(Main.usePackedLive) 
-                    liveLocals = new SimpleLiveLocals(graph);
-                else
-                    liveLocals = new SparseLiveLocals(graph);
-            }
-            
             Iterator codeIt = stmtList.iterator();
 
             isEmittingMethodCode = true;
             isNextGotoAJsr = false;
 
-            dyingLocals = new HashSet();
-            
             while(codeIt.hasNext())
             {
                 Stmt s = (Stmt) codeIt.next();
@@ -564,46 +522,17 @@ public class JasminClass
 
                 if(subroutineToReturnAddressSlot.containsKey(s))
                 {
-                    AssignStmt assignStmt = (AssignStmt) s;
-                    
-                    emit("astore " + localToSlot.get(assignStmt.getLeftOp()));
+                    // AssignStmt assignStmt = (AssignStmt) s;
+
+                    // emit("astore " + localToSlot.get(assignStmt.getLeftOp()));
+
+                    emit("astore " + ( ( Integer ) subroutineToReturnAddressSlot.get( s ) ).intValue() );
+
                 }   
-                else 
-                {
-                    // Determine dying set.
-                    
-                    List liveLocalsAfter = liveLocals.getLiveLocalsAfter(s);
-                    Iterator useBoxIt = s.getUseBoxes().iterator();
-                    Set usedLocals = new ArraySet();
-                    
-                    dyingLocals.clear();
-                    
-                    while(useBoxIt.hasNext())
-                    {
-                        ValueBox useBox = (ValueBox) useBoxIt.next();
-                        
-                        if(useBox.getValue() instanceof Local)
-                        {
-                            Local l = (Local) useBox.getValue();
-                            
-                            if(usedLocals.contains(l))
-                            {
-                                // Used at least twice in same stmt, so it does not qualify as 
-                                // a "dying" local
-                                
-                                dyingLocals.remove(l);
-                            }
-                            else {
-                                usedLocals.add(l);
-                                
-                                if(!liveLocalsAfter.contains(l))
-                                    dyingLocals.add(l);
-                            }
-                        }
-                    }
-                    
-                    emitStmt(s);
-                }                
+
+//               else 
+
+                   emitStmt(s);                
             }
 
             isEmittingMethodCode = false;
@@ -778,6 +707,15 @@ public class JasminClass
                     {
                         isNextGotoAJsr = true;
                         returnAddressSlot = slot;
+
+/*
+                        if ( slot >= 0 && slot <= 3)
+                             emit("astore_" + slot );
+                        else
+                             emit("astore " + slot );
+
+*/
+                         
                     }
 
                     public void caseNullType(NullType t)
@@ -1588,16 +1526,14 @@ public class JasminClass
             {
                 final int slot = ((Integer) localToSlot.get(v)).intValue();
 
-                final boolean localDies = dyingLocals.contains(v);
-                
                 v.getType().apply(new TypeSwitch()
                 {
                     public void caseArrayType(ArrayType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("aload_" + slot, localDies);
+                            emit("aload_" + slot);
                         else
-                            emit("aload " + slot, localDies);
+                            emit("aload " + slot);
                     }
 
                     public void defaultCase(Type t)
@@ -1608,49 +1544,49 @@ public class JasminClass
                     public void caseDoubleType(DoubleType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("dload_" + slot, localDies);
+                            emit("dload_" + slot);
                         else
-                            emit("dload " + slot, localDies);
+                            emit("dload " + slot);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("fload_" + slot, localDies);
+                            emit("fload_" + slot);
                         else
-                            emit("fload " + slot, localDies);
+                            emit("fload " + slot);
                     }
 
                     public void caseIntType(IntType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("iload_" + slot, localDies);
+                            emit("iload_" + slot);
                         else
-                            emit("iload " + slot, localDies);
+                            emit("iload " + slot);
                     }
 
                     public void caseLongType(LongType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("lload_" + slot, localDies);
+                            emit("lload_" + slot);
                         else
-                            emit("lload " + slot, localDies);
+                            emit("lload " + slot);
                     }
 
                     public void caseRefType(RefType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("aload_" + slot, localDies);
+                            emit("aload_" + slot);
                         else
-                            emit("aload " + slot, localDies);
+                            emit("aload " + slot);
                     }
 
                     public void caseNullType(NullType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("aload_" + slot, localDies);
+                            emit("aload_" + slot);
                         else
-                            emit("aload " + slot, localDies);
+                            emit("aload " + slot);
                     }
                 });
 

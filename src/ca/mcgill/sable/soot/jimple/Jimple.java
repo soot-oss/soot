@@ -7,6 +7,9 @@
  * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
  * rights reserved.                                                  *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -65,6 +68,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -106,7 +113,7 @@ public class Jimple implements BodyRepresentation
 {
     private static Jimple jimpleRepresentation = new Jimple();
 
-    private Jimple()
+    protected Jimple()
     {
     }
 
@@ -136,7 +143,7 @@ public class Jimple implements BodyRepresentation
 
     public XorExpr newXorExpr(Value op1, Value op2)
     {
-        return new XorExpr(op1, op2);
+        return new JXorExpr(op1, op2);
     }
 
 
@@ -146,7 +153,7 @@ public class Jimple implements BodyRepresentation
 
     public UshrExpr newUshrExpr(Value op1, Value op2)
     {
-        return new UshrExpr(op1, op2);
+        return new JUshrExpr(op1, op2);
     }
 
 
@@ -156,7 +163,7 @@ public class Jimple implements BodyRepresentation
 
     public SubExpr newSubExpr(Value op1, Value op2)
     {
-        return new SubExpr(op1, op2);
+        return new JSubExpr(op1, op2);
     }
 
 
@@ -166,7 +173,7 @@ public class Jimple implements BodyRepresentation
 
     public ShrExpr newShrExpr(Value op1, Value op2)
     {
-        return new ShrExpr(op1, op2);
+        return new JShrExpr(op1, op2);
     }
 
 
@@ -176,7 +183,7 @@ public class Jimple implements BodyRepresentation
 
     public ShlExpr newShlExpr(Value op1, Value op2)
     {
-        return new ShlExpr(op1, op2);
+        return new JShlExpr(op1, op2);
     }
 
 
@@ -186,7 +193,7 @@ public class Jimple implements BodyRepresentation
 
     public RemExpr newRemExpr(Value op1, Value op2)
     {
-        return new RemExpr(op1, op2);
+        return new JRemExpr(op1, op2);
     }
 
 
@@ -196,7 +203,7 @@ public class Jimple implements BodyRepresentation
 
     public OrExpr newOrExpr(Value op1, Value op2)
     {
-        return new OrExpr(op1, op2);
+        return new JOrExpr(op1, op2);
     }
 
 
@@ -206,7 +213,7 @@ public class Jimple implements BodyRepresentation
 
     public NeExpr newNeExpr(Value op1, Value op2)
     {
-        return new NeExpr(op1, op2);
+        return new JNeExpr(op1, op2);
     }
 
 
@@ -216,7 +223,7 @@ public class Jimple implements BodyRepresentation
 
     public MulExpr newMulExpr(Value op1, Value op2)
     {
-        return new MulExpr(op1, op2);
+        return new JMulExpr(op1, op2);
     }
 
 
@@ -226,7 +233,7 @@ public class Jimple implements BodyRepresentation
 
     public LeExpr newLeExpr(Value op1, Value op2)
     {
-        return new LeExpr(op1, op2);
+        return new JLeExpr(op1, op2);
     }
 
 
@@ -236,7 +243,7 @@ public class Jimple implements BodyRepresentation
 
     public GeExpr newGeExpr(Value op1, Value op2)
     {
-        return new GeExpr(op1, op2);
+        return new JGeExpr(op1, op2);
     }
 
 
@@ -246,7 +253,7 @@ public class Jimple implements BodyRepresentation
 
     public EqExpr newEqExpr(Value op1, Value op2)
     {
-        return new EqExpr(op1, op2);
+        return new JEqExpr(op1, op2);
     }
 
     /**
@@ -255,7 +262,7 @@ public class Jimple implements BodyRepresentation
 
     public DivExpr newDivExpr(Value op1, Value op2)
     {
-        return new DivExpr(op1, op2);
+        return new JDivExpr(op1, op2);
     }
 
 
@@ -265,7 +272,7 @@ public class Jimple implements BodyRepresentation
 
     public CmplExpr newCmplExpr(Value op1, Value op2)
     {
-        return new CmplExpr(op1, op2);
+        return new JCmplExpr(op1, op2);
     }
 
 
@@ -275,7 +282,7 @@ public class Jimple implements BodyRepresentation
 
     public CmpgExpr newCmpgExpr(Value op1, Value op2)
     {
-        return new CmpgExpr(op1, op2);
+        return new JCmpgExpr(op1, op2);
     }
 
 
@@ -285,7 +292,7 @@ public class Jimple implements BodyRepresentation
 
     public CmpExpr newCmpExpr(Value op1, Value op2)
     {
-        return new CmpExpr(op1, op2);
+        return new JCmpExpr(op1, op2);
     }
 
 
@@ -295,7 +302,7 @@ public class Jimple implements BodyRepresentation
 
     public GtExpr newGtExpr(Value op1, Value op2)
     {
-        return new GtExpr(op1, op2);
+        return new JGtExpr(op1, op2);
     }
 
 
@@ -305,7 +312,7 @@ public class Jimple implements BodyRepresentation
 
     public LtExpr newLtExpr(Value op1, Value op2)
     {
-        return new LtExpr(op1, op2);
+        return new JLtExpr(op1, op2);
     }
 
     /**
@@ -314,7 +321,7 @@ public class Jimple implements BodyRepresentation
 
     public AddExpr newAddExpr(Value op1, Value op2)
     {
-        return new AddExpr(op1, op2);
+        return new JAddExpr(op1, op2);
     }
 
 
@@ -324,7 +331,7 @@ public class Jimple implements BodyRepresentation
 
     public AndExpr newAndExpr(Value op1, Value op2)
     {
-        return new AndExpr(op1, op2);
+        return new JAndExpr(op1, op2);
     }
 
 
@@ -334,7 +341,7 @@ public class Jimple implements BodyRepresentation
 
     public NegExpr newNegExpr(Value op)
     {
-        return new NegExpr(op);
+        return new JNegExpr(op);
     }
 
 
@@ -344,7 +351,7 @@ public class Jimple implements BodyRepresentation
 
     public LengthExpr newLengthExpr(Value op)
     {
-        return new LengthExpr(op);
+        return new JLengthExpr(op);
     }
 
 
@@ -354,7 +361,7 @@ public class Jimple implements BodyRepresentation
 
     public CastExpr newCastExpr(Value op1, Type t)
     {
-        return new CastExpr(op1, t);
+        return new JCastExpr(op1, t);
     }
 
     /**
@@ -364,7 +371,7 @@ public class Jimple implements BodyRepresentation
 
     public InstanceOfExpr newInstanceOfExpr(Value op1, Type t)
     {
-        return new InstanceOfExpr(op1, t);
+        return new JInstanceOfExpr(op1, t);
     }
 
 
@@ -374,7 +381,7 @@ public class Jimple implements BodyRepresentation
 
     public NewExpr newNewExpr(RefType type)
     {
-        return new NewExpr(type);
+        return new JNewExpr(type);
     }
 
 
@@ -384,7 +391,7 @@ public class Jimple implements BodyRepresentation
 
     public NewArrayExpr newNewArrayExpr(Type type, Value size)
     {
-        return new NewArrayExpr(type, size);
+        return new JNewArrayExpr(type, size);
     }
 
     /**
@@ -393,7 +400,7 @@ public class Jimple implements BodyRepresentation
 
     public NewMultiArrayExpr newNewMultiArrayExpr(ArrayType type, List sizes)
     {
-        return new NewMultiArrayExpr(type, sizes);
+        return new JNewMultiArrayExpr(type, sizes);
     }
 
 
@@ -403,7 +410,7 @@ public class Jimple implements BodyRepresentation
 
     public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, List args)
     {
-        return new StaticInvokeExpr(method, args);
+        return new JStaticInvokeExpr(method, args);
     }
 
 
@@ -413,7 +420,7 @@ public class Jimple implements BodyRepresentation
 
     public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, List args)
     {
-        return new SpecialInvokeExpr(base, method, args);
+        return new JSpecialInvokeExpr(base, method, args);
     }
 
 
@@ -423,7 +430,7 @@ public class Jimple implements BodyRepresentation
 
     public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, List args)
     {
-        return new VirtualInvokeExpr(base, method, args);
+        return new JVirtualInvokeExpr(base, method, args);
     }
 
 
@@ -433,7 +440,7 @@ public class Jimple implements BodyRepresentation
 
     public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, List args)
     {
-        return new InterfaceInvokeExpr(base, method, args);
+        return new JInterfaceInvokeExpr(base, method, args);
     }
 
 
@@ -443,7 +450,7 @@ public class Jimple implements BodyRepresentation
 
     public ThrowStmt newThrowStmt(Value op)
     {
-        return new ThrowStmt(op);
+        return new JThrowStmt(op);
     }
 
 
@@ -453,7 +460,7 @@ public class Jimple implements BodyRepresentation
 
     public ExitMonitorStmt newExitMonitorStmt(Value op)
     {
-        return new ExitMonitorStmt(op);
+        return new JExitMonitorStmt(op);
     }
 
 
@@ -463,7 +470,7 @@ public class Jimple implements BodyRepresentation
 
     public EnterMonitorStmt newEnterMonitorStmt(Value op)
     {
-        return new EnterMonitorStmt(op);
+        return new JEnterMonitorStmt(op);
     }
 
 
@@ -473,7 +480,7 @@ public class Jimple implements BodyRepresentation
 
     public BreakpointStmt newBreakpointStmt()
     {
-        return new BreakpointStmt();
+        return new JBreakpointStmt();
     }
 
 
@@ -483,7 +490,7 @@ public class Jimple implements BodyRepresentation
 
     public GotoStmt newGotoStmt(Unit target)
     {
-        return new GotoStmt(target);
+        return new JGotoStmt(target);
     }
 
 
@@ -493,7 +500,7 @@ public class Jimple implements BodyRepresentation
 
     public NopStmt newNopStmt()
     {
-        return new NopStmt();
+        return new JNopStmt();
     }
 
 
@@ -503,7 +510,7 @@ public class Jimple implements BodyRepresentation
 
     public ReturnVoidStmt newReturnVoidStmt()
     {
-        return new ReturnVoidStmt();
+        return new JReturnVoidStmt();
     }
 
 
@@ -513,7 +520,7 @@ public class Jimple implements BodyRepresentation
 
     public ReturnStmt newReturnStmt(Value op)
     {
-        return new ReturnStmt(op);
+        return new JReturnStmt(op);
     }
 
 
@@ -523,7 +530,7 @@ public class Jimple implements BodyRepresentation
 
     public RetStmt newRetStmt(Value stmtAddress)
     {
-        return new RetStmt(stmtAddress);
+        return new JRetStmt(stmtAddress);
     }
 
 
@@ -533,7 +540,7 @@ public class Jimple implements BodyRepresentation
 
     public IfStmt newIfStmt(Value condition, Unit target)
     {
-        return new IfStmt(condition, target);
+        return new JIfStmt(condition, target);
     }
 
 
@@ -543,7 +550,7 @@ public class Jimple implements BodyRepresentation
 
     public IdentityStmt newIdentityStmt(Value local, Value identityRef)
     {
-        return new IdentityStmt(local, identityRef);
+        return new JIdentityStmt(local, identityRef);
     }
 
 
@@ -553,7 +560,7 @@ public class Jimple implements BodyRepresentation
 
     public AssignStmt newAssignStmt(Value variable, Value rvalue)
     {
-        return new AssignStmt(variable, rvalue);
+        return new JAssignStmt(variable, rvalue);
     }
 
 
@@ -563,7 +570,7 @@ public class Jimple implements BodyRepresentation
 
     public InvokeStmt newInvokeStmt(Value op)
     {
-        return new InvokeStmt(op);
+        return new JInvokeStmt(op);
     }
 
 
@@ -573,7 +580,7 @@ public class Jimple implements BodyRepresentation
 
     public TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, List targets, Unit defaultTarget)
     {
-        return new TableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
+        return new JTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
     }
 
 
@@ -583,7 +590,7 @@ public class Jimple implements BodyRepresentation
 
     public LookupSwitchStmt newLookupSwitchStmt(Value key, List lookupValues, List targets, Unit defaultTarget)
     {
-        return new LookupSwitchStmt(key, lookupValues, targets, defaultTarget);
+        return new JLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
     }
 
     /**
@@ -596,12 +603,12 @@ public class Jimple implements BodyRepresentation
     }
 
     /**
-        Constructs a new Trap for the given exception on the given Stmt range with the given Stmt handler.
+        Constructs a new JTrap for the given exception on the given Stmt range with the given Stmt handler.
     */
 
     public Trap newTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
     {
-        return new Trap(exception, beginStmt, endStmt, handlerStmt);
+        return new JTrap(exception, beginStmt, endStmt, handlerStmt);
     }
 
 
@@ -651,7 +658,7 @@ public class Jimple implements BodyRepresentation
 
     public InstanceFieldRef newInstanceFieldRef(Value base, SootField f)
     {
-        return new InstanceFieldRef(base, f);
+        return new JInstanceFieldRef(base, f);
     }
 
 
@@ -661,7 +668,7 @@ public class Jimple implements BodyRepresentation
 
     public CaughtExceptionRef newCaughtExceptionRef(JimpleBody b)
     {
-        return new CaughtExceptionRef(b);
+        return new JCaughtExceptionRef(b);
     }
 
 
@@ -671,7 +678,7 @@ public class Jimple implements BodyRepresentation
 
     public ArrayRef newArrayRef(Value base, Value index)
     {
-        return new ArrayRef(base, index);
+        return new JArrayRef(base, index);
     }
 
     public ValueBox newVariableBox(Value value)
@@ -690,6 +697,11 @@ public class Jimple implements BodyRepresentation
     }
 
     public ValueBox newImmediateBox(Value value)
+    {
+        return new ImmediateBox(value);
+    }
+
+    public ValueBox newArgBox(Value value)
     {
         return new ImmediateBox(value);
     }

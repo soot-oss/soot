@@ -79,36 +79,6 @@ import ca.mcgill.sable.util.*;
 
 // FSet version
 
-class LocalStmtPair
-{
-    Local local;
-    Stmt stmt;
-
-    LocalStmtPair(Local local, Stmt stmt)
-    {
-        this.local = local;
-        this.stmt = stmt;
-    }
-
-    public boolean equals(Object other)
-    {
-        if(other instanceof LocalStmtPair &&
-            ((LocalStmtPair) other).local == this.local &&
-            ((LocalStmtPair) other).stmt == this.stmt)
-        {
-            return true;
-        }
-        else
-            return false;
-    }
-
-    public int hashCode()
-    {
-        return local.hashCode() * 101 + stmt.hashCode() + 17;
-    }
-
-}
-
 public class SimpleLocalDefs implements LocalDefs
 {
     Map localStmtPairToDefs;
@@ -116,7 +86,6 @@ public class SimpleLocalDefs implements LocalDefs
     public SimpleLocalDefs(CompleteStmtGraph g)
     {
         LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(g);
-
         if(Main.isProfilingOptimization)
                 Main.defsPostTimer.start();
 
@@ -154,9 +123,6 @@ public class SimpleLocalDefs implements LocalDefs
                 }
             }
         }
-
-        if(Main.isProfilingOptimization)
-                Main.defsPostTimer.end();
 
     }
 
@@ -389,7 +355,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
 
                     if(d.getLeftOp() instanceof Local)
                     {
-                        FlowSet killSet = (FlowSet) localToKillSet.get(d.getLeftOp());
+                        BoundedFlowSet killSet = (BoundedFlowSet) localToKillSet.get(d.getLeftOp());
 
                         killSet.add(d, killSet);
                     }
@@ -413,16 +379,15 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
         }
 
         if(Main.isProfilingOptimization)
-                Main.defsSetupTimer.end();
+	  Main.defsSetupTimer.end();
 
         if(Main.isProfilingOptimization)
-                Main.defsAnalysisTimer.start();
+	  Main.defsAnalysisTimer.start();
 
         doAnalysis();
         
         if(Main.isProfilingOptimization)
-                Main.defsAnalysisTimer.end();
-
+	  Main.defsAnalysisTimer.end();
     }
 
     protected Object newInitialFlow()

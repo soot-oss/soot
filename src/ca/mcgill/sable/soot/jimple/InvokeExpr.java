@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -73,43 +80,13 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-public abstract class InvokeExpr implements Expr
+public interface InvokeExpr extends Expr
 {
-    SootMethod method;
-    ValueBox[] argBoxes;
-
-    public SootMethod getMethod()
-    {
-        return method;
-    }
-
-    public void setMethod(SootMethod m)
-    {
-        method = m;
-    }
-
-    public Value getArg(int index)
-    {
-        return argBoxes[index].getValue();
-    }
-
-    public int getArgCount()
-    {
-        return argBoxes.length;
-    }
-
-    public void setArg(int index, Value arg)
-    {
-        argBoxes[index].setValue(arg);
-    }
-
-    public ValueBox getArgBox(int index)
-    {
-        return argBoxes[index];
-    }
-
-    public Type getType()
-    {
-        return method.getReturnType();
-    }
+    public SootMethod getMethod();
+    public void setMethod(SootMethod m);
+    public Value getArg(int index);
+    public int getArgCount();
+    public void setArg(int index, Value arg);
+    public ValueBox getArgBox(int index);
+    public Type getType();
 }

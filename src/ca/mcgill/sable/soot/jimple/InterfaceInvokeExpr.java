@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -77,64 +84,8 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class InterfaceInvokeExpr extends NonStaticInvokeExpr implements ToBriefString
+public interface InterfaceInvokeExpr extends NonStaticInvokeExpr
 {
-    InterfaceInvokeExpr(Value base, SootMethod method, List args)
-    {
-        this.baseBox = Jimple.v().newLocalBox(base);
-        this.method = method;
-
-        this.argBoxes = new ValueBox[args.size()];
-
-        for(int i = 0; i < args.size(); i++)
-            this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
-    }
-
-    public String toString()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append(baseBox.getValue().toString() +
-            ".[" + method.getSignature() + "](");
-
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            if(i != 0)
-                buffer.append(", ");
-
-            buffer.append(argBoxes[i].getValue().toString());
-        }
-
-        buffer.append(")");
-
-        return buffer.toString();
-    }
-
-    
-    public String toBriefString()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("interfaceinvoke " + ((ToBriefString) baseBox.getValue()).toBriefString() +
-            "." + method.getName() + "(");
-
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            if(i != 0)
-                buffer.append(", ");
-
-            buffer.append(((ToBriefString) argBoxes[i].getValue()).toBriefString());
-        }
-
-        buffer.append(")");
-
-        return buffer.toString();
-    }
-
-    public void apply(Switch sw)
-    {
-        ((ExprSwitch) sw).caseInterfaceInvokeExpr(this);
-    }
 }
 
 

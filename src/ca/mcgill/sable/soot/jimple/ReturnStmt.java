@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,63 +81,10 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ReturnStmt extends Stmt
+public interface ReturnStmt extends Stmt
 {
-    ValueBox returnValueBox;
-
-    ReturnStmt(Value returnValue)
-    {
-        this.returnValueBox = Jimple.v().newImmediateBox(returnValue);
-    }
-
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
-    {
-        if(isBrief)
-            return indentation + "return " + ((ToBriefString) returnValueBox.getValue()).toBriefString();
-        else
-            return indentation + "return " + returnValueBox.getValue().toString();
-    }
-    
-    public ValueBox getReturnValueBox()
-    {
-        return returnValueBox;
-    }
-
-    public void setReturnValue(Value returnValue)
-    {
-        returnValueBox.setValue(returnValue);
-    }
-
-    public Value getReturnValue()
-    {
-        return returnValueBox.getValue();
-    }
-
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUseBoxes()
-    {
-        List useBoxes = new ArrayList();
-
-        useBoxes.add(returnValueBox);
-        useBoxes.addAll(returnValueBox.getValue().getUseBoxes());
-
-        return useBoxes;
-    }
-
-    public List getUnitBoxes()
-    {
-        return emptyList;
-    }
-
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseReturnStmt(this);
-    }
-
-
+    public ValueBox getReturnValueBox();
+    public void setReturnValue(Value returnValue);
+    public Value getReturnValue();
 }
 

@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,166 +81,23 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class TableSwitchStmt extends Stmt
+public interface TableSwitchStmt extends Stmt
 {
-    UnitBox defaultTargetBox;
-    ValueBox keyBox;
-    int lowIndex;
-    int highIndex;
-    UnitBox[] targetBoxes;
-
-    List stmtBoxes;
-
-    TableSwitchStmt(Value key, int lowIndex, int highIndex, List targets, Unit defaultTarget)
-    {
-        this.keyBox = Jimple.v().newImmediateBox(key);
-        this.defaultTargetBox = Jimple.v().newStmtBox(defaultTarget);
-        this.lowIndex = lowIndex;
-        this.highIndex = highIndex;
-
-        this.targetBoxes = new UnitBox[targets.size()];
-
-        for(int i = 0; i < targetBoxes.length; i++)
-            targetBoxes[i] = Jimple.v().newStmtBox((Stmt) targets.get(i));
-
-        // Build up stmtBoxes
-        {
-            stmtBoxes = new ArrayList();
-
-            for(int i = 0; i < targetBoxes.length; i++)
-                stmtBoxes.add(targetBoxes[i]);
-
-            stmtBoxes.add(defaultTargetBox);
-            stmtBoxes = Collections.unmodifiableList(stmtBoxes);
-        }
-    }
-
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
-    {
-        StringBuffer buffer = new StringBuffer();
-        String endOfLine = (indentation.equals("")) ? " " : "\n";
-        
-        buffer.append(indentation + "tableswitch(" + ((isBrief) ? ((ToBriefString) keyBox.getValue()).toBriefString() :
-            keyBox.getValue().toString()) + ")" + endOfLine);
-            
-        buffer.append(indentation + "{" + endOfLine);
-        
-        for(int i = lowIndex; i <= highIndex; i++)
-        {
-            buffer.append(indentation + "    case " + i + ": goto " + (String) stmtToName.get(getTarget(i - lowIndex)) + ";" + endOfLine);
-        }
-
-        buffer.append(indentation + "    default: goto " + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
-        buffer.append(indentation + "}");
-
-        return buffer.toString();
-    }
-
-    public Unit getDefaultTarget()
-    {
-        return defaultTargetBox.getUnit();
-    }
-
-    public void setDefaultTarget(Unit defaultTarget)
-    {
-        defaultTargetBox.setUnit(defaultTarget);
-    }
-
-    public UnitBox getDefaultTargetBox()
-    {
-        return defaultTargetBox;
-    }
-
-    public Value getKey()
-    {
-        return keyBox.getValue();
-    }
-
-    public void setKey(Value key)
-    {
-        keyBox.setValue(key);
-    }
-
-    public ValueBox getKeyBox()
-    {
-        return keyBox;
-    }
-
-    public void setLowIndex(int lowIndex)
-    {
-        this.lowIndex = lowIndex;
-    }
-
-    public void setHighIndex(int highIndex)
-    {
-        this.highIndex = highIndex;
-    }
-
-    public int getLowIndex()
-    {
-        return lowIndex;
-    }
-
-    public int getHighIndex()
-    {
-        return highIndex;
-    }
-
-    public List getTargets()
-    {
-        List targets = new ArrayList();
-
-        for(int i = 0; i < targetBoxes.length; i++)
-            targets.add(targetBoxes[i].getUnit());
-
-        return targets;
-    }
-
-    public Unit getTarget(int index)
-    {
-        return targetBoxes[index].getUnit();
-    }
-
-    public void setTarget(int index, Unit target)
-    {
-        targetBoxes[index].setUnit(target);
-    }
-
-    public void setTargets(List targets)
-    {
-        for(int i = 0; i < targets.size(); i++)
-            targetBoxes[i].setUnit((Stmt) targets.get(i));
-    }
-
-    public UnitBox getTargetBox(int index)
-    {
-        return targetBoxes[index];
-    }
-
-    public List getDefBoxes()
-    {
-        return emptyList;
-    }
-
-    public List getUseBoxes()
-    {
-        List list = new ArrayList();
-
-        list.add(keyBox);
-        list.addAll(keyBox.getValue().getUseBoxes());
-
-        return list;
-    }
-
-    public List getUnitBoxes()
-    {
-        return stmtBoxes;
-    }
-
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseTableSwitchStmt(this);
-    }
+    public Unit getDefaultTarget();
+    public void setDefaultTarget(Unit defaultTarget);
+    public UnitBox getDefaultTargetBox();
+    public Value getKey();
+    public void setKey(Value key);
+    public ValueBox getKeyBox();
+    public void setLowIndex(int lowIndex);
+    public void setHighIndex(int highIndex);
+    public int getLowIndex();
+    public int getHighIndex();
+    public List getTargets();
+    public Unit getTarget(int index);
+    public void setTarget(int index, Unit target);
+    public void setTargets(List targets);
+    public UnitBox getTargetBox(int index);
 }
 
 
