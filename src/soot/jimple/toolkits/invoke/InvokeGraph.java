@@ -39,6 +39,9 @@ public class InvokeGraph
     HashMap siteToTargetMethods = new HashMap();
     HashMap methodToContainedSites = new HashMap();
     HashMap targetToCallingSites = new HashMap();
+    public Set getAllSites() {
+        return siteToDeclaringMethod.keySet();
+    }
 
     public MethodCallGraph mcg;
 
@@ -242,9 +245,10 @@ public class InvokeGraph
 
     /** Add an InvokeGraph target to an Stmt site. 
       * Note that site must previously have been addSite'd. */
-    public void addTarget(Stmt site, SootMethod target) 
+    public boolean addTarget(Stmt site, SootMethod target) 
     {
         List l = (List)siteToTargetMethods.get(site);
+        if( l.contains( target ) ) return false;
         l.add(target);
 
 	l = (List)targetToCallingSites.get(target);
@@ -254,6 +258,7 @@ public class InvokeGraph
 	    targetToCallingSites.put(target, l);
 	}
 	l.add(site);
+        return true;
     }
 
     public void addSite(Stmt site, SootMethod container) 

@@ -1,0 +1,44 @@
+/**
+ * ClassConstObject models class objects in a JVM. Each class has a
+ * java.lang.Class object representation.
+ *
+ * @author Feng Qian
+ */
+
+
+package soot.jimple.toolkits.pointer.representations;
+
+import soot.*;
+
+public class ClassConstObject extends ConstantObject {
+
+  private SootClass cls;
+
+  /* Limited access for Environment, all instantiation should be
+   * performed by Environment which will ensure a SootClass object
+   * only creates one ClassConstant.
+   */
+  ClassConstObject(SootClass sootcls) {
+    this.cls = sootcls;
+  }
+  
+  /**
+   * The type of this constant is fixed as java.lang.Class.
+   * Do not be confused with getSootClass(), which returns 
+   * the represented SootClass.
+   */ 
+  public SootClass getType() {
+    return CLASSCLASS;
+  }
+
+  /**
+   * Returns the represented SootClass.
+   */
+  public SootClass getSootClass() {
+    return this.cls;
+  }
+
+  public String toString() {
+    return "ClassConstant("+cls.toString()+")";
+  }
+}

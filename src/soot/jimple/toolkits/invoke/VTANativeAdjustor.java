@@ -35,7 +35,7 @@ import soot.toolkits.graph.*;
 public class VTANativeAdjustor 
 {
     private VTATypeGraph vtagraph;
-    private HashMap nodeToReachingTypes;
+    private HashMap labelToReachingTypes;
     private Hierarchy h;
     private Set arrayNodes;
     
@@ -44,12 +44,12 @@ public class VTANativeAdjustor
         vtagraph = g;
         this.h = h;
         arrayNodes = g.arrayNodes;
-        nodeToReachingTypes = g.nodeToReachingTypes;
+        labelToReachingTypes = g.labelToReachingTypes;
     }
 
     void includeType(String node, String type) 
     {
-        TypeSet types = (TypeSet)nodeToReachingTypes.get(node);
+        TypeSet types = (TypeSet)labelToReachingTypes.get(node);
         if (types !=null) {
             RefType t = RefType.v(type);
             if (!types.contains(t)) 
@@ -61,7 +61,7 @@ public class VTANativeAdjustor
 
     void includeSubtypesOf(String node, String type) 
     {
-        TypeSet types = (TypeSet)nodeToReachingTypes.get(node);
+        TypeSet types = (TypeSet)labelToReachingTypes.get(node);
         if (types!=null) {
             for (Iterator clsIt = h.getSubclassesOfIncluding(RefType.v(type).getSootClass()).iterator(); 
                  clsIt.hasNext(); )
@@ -115,11 +115,11 @@ public class VTANativeAdjustor
         s1 = "<java.lang.Class: java.lang.Class[] getInterfaces()>$return";
         s2 = "java.lang.Class";
         includeType(s1, s2);
-        l = (TypeSet)nodeToReachingTypes.get(s1);
+        l = (TypeSet)labelToReachingTypes.get(s1);
         if (l!=null) {
             if (!l.contains(RefType.v("java.lang.Object")))
                 l.add(RefType.v("java.lang.Object"));
-            nodeToReachingTypes.put(s1, l);
+            labelToReachingTypes.put(s1, l);
         }
 
         s1 = "<java.lang.Class: java.lang.Class getComponentType()>$return";
@@ -140,31 +140,31 @@ public class VTANativeAdjustor
         s1 = "<java.lang.Class: java.lang.reflect.Field[] getFields0()>$return";
         s2 = "java.lang.reflect.Field";
         includeType(s1, s2);
-        l = (TypeSet)nodeToReachingTypes.get(s1);
+        l = (TypeSet)labelToReachingTypes.get(s1);
         if (l!=null) {
             if (!l.contains(RefType.v("java.lang.Object")))
                 l.add(RefType.v("java.lang.Object"));
-            nodeToReachingTypes.put(s1, l);
+            labelToReachingTypes.put(s1, l);
         }
 
         s1 = "<java.lang.Class: java.lang.reflect.Method[] getMethods0()>$return";
         s2 = "java.lang.reflect.Method";
         includeType(s1, s2);
-        l = (TypeSet)nodeToReachingTypes.get(s1);
+        l = (TypeSet)labelToReachingTypes.get(s1);
         if (l!=null) {
             if (!l.contains(RefType.v("java.lang.Object")))
                 l.add(RefType.v("java.lang.Object"));
-            nodeToReachingTypes.put(s1, l);
+            labelToReachingTypes.put(s1, l);
         }
 
         s1 = "<java.lang.Class: java.lang.reflect.Constructor[] getConstructors0()>$return";
         s2 = "java.lang.reflect.Constructor";
         includeType(s1, s2);
-        l = (TypeSet)nodeToReachingTypes.get(s1);
+        l = (TypeSet)labelToReachingTypes.get(s1);
         if (l!=null) {
             if (!l.contains(RefType.v("java.lang.Object")))
                 l.add(RefType.v("java.lang.Object"));
-            nodeToReachingTypes.put(s1, l);
+            labelToReachingTypes.put(s1, l);
         }
 
         s1 = "<java.lang.Class: java.lang.reflect.Field getField0(java.lang.String)>$return";
@@ -247,7 +247,7 @@ public class VTANativeAdjustor
 
         // NATIVE METHOD <java.lang.ClassLoader: java.io.InputStream getSystemResourceAsStream0(java.lang.String)>
         s1 = "<java.lang.ClassLoader: java.io.InputStream getSystemResourceAsStream0(java.lang.String)>$return";
-        TypeSet types = (TypeSet)nodeToReachingTypes.get(s1);
+        TypeSet types = (TypeSet)labelToReachingTypes.get(s1);
         if (types!=null) {
             TypeSet temp = new TypeSet();
             for (Iterator clsIt = h.getSubclassesOfIncluding(Scene.v().getSootClass("java.io.InputStream")).iterator(); 
@@ -260,11 +260,11 @@ public class VTANativeAdjustor
         s1 = "<java.lang.SecurityManager: java.lang.Class[] getClassContext()>$return";
         s2 = "java.lang.Class";
         includeType(s1, s2);
-        l = (TypeSet)nodeToReachingTypes.get(s1);
+        l = (TypeSet)labelToReachingTypes.get(s1);
         if (l!=null) {
             if (!l.contains(RefType.v("java.lang.Object")))
                 l.add(RefType.v("java.lang.Object"));
-            nodeToReachingTypes.put(s1, l);
+            labelToReachingTypes.put(s1, l);
         }
 
         s1 = "<java.lang.SecurityManager: java.lang.ClassLoader currentClassLoader()>$return";
@@ -316,21 +316,21 @@ public class VTANativeAdjustor
         s1 = "<java.util.ResourceBundle: java.lang.Class[] getClassContext()>$return";
         s2 = "java.lang.Class";
         includeType(s1, s2);
-        l = (TypeSet)nodeToReachingTypes.get(s1);
+        l = (TypeSet)labelToReachingTypes.get(s1);
         if (l!=null) {
             if (!l.contains(RefType.v("java.lang.Object")))
                 l.add(RefType.v("java.lang.Object"));
-            nodeToReachingTypes.put(s1, l);
+            labelToReachingTypes.put(s1, l);
         }        
 
         s1 = "<java.io.File: java.lang.String[] list0()>$return";
         s2 = "java.lang.String";
         includeType(s1, s2);
-        l = (TypeSet)nodeToReachingTypes.get(s1);
+        l = (TypeSet)labelToReachingTypes.get(s1);
         if (l!=null) {
             if (!l.contains(RefType.v("java.lang.Object")))
                 l.add(RefType.v("java.lang.Object"));
-            nodeToReachingTypes.put(s1, l);
+            labelToReachingTypes.put(s1, l);
         }
 
         s1 = "<java.io.File: java.lang.String canonPath(java.lang.String)>$return";
@@ -340,31 +340,31 @@ public class VTANativeAdjustor
         s1 = "<java.io.ObjectStreamClass: java.lang.String[] getMethodSignatures(java.lang.Class)>$return";
         s2 = "java.lang.String";
         includeType(s1, s2);
-        l = (TypeSet)nodeToReachingTypes.get(s1);
+        l = (TypeSet)labelToReachingTypes.get(s1);
         if (l!=null) {
             if (!l.contains(RefType.v("java.lang.Object")))
                 l.add(RefType.v("java.lang.Object"));
-            nodeToReachingTypes.put(s1, l);
+            labelToReachingTypes.put(s1, l);
         }
 
         s1 = "<java.io.ObjectStreamClass: java.lang.String[] getFieldSignatures(java.lang.Class)>$return";
         s2 = "java.lang.String";
         includeType(s1, s2);
-        l = (TypeSet)nodeToReachingTypes.get(s1);
+        l = (TypeSet)labelToReachingTypes.get(s1);
         if (l!=null) {
             if (!l.contains(RefType.v("java.lang.Object")))
                 l.add(RefType.v("java.lang.Object"));
-            nodeToReachingTypes.put(s1, l);
+            labelToReachingTypes.put(s1, l);
         }
 
         s1 = "<java.io.ObjectStreamClass: java.io.ObjectStreamField[] getFields0(java.lang.Class)>$return";
         s2 = "java.io.ObjectStreamField";
         includeSubtypesOf(s1, s2);
-                l = (TypeSet)nodeToReachingTypes.get(s1);
+                l = (TypeSet)labelToReachingTypes.get(s1);
         if (l!=null) {
             if (!l.contains(RefType.v("java.lang.Object")))
                 l.add(RefType.v("java.lang.Object"));
-            nodeToReachingTypes.put(s1, l);
+            labelToReachingTypes.put(s1, l);
         }
         
         s1 = "<java.net.InetAddressImpl: java.lang.String getLocalHostName()>$return";
@@ -376,11 +376,11 @@ public class VTANativeAdjustor
         includeType(s1, s2);
 
         s1 = "<java.net.InetAddressImpl: byte[][] lookupAllHostAddr(java.lang.String)>$return";
-        l = (TypeSet)nodeToReachingTypes.get(s1);
+        l = (TypeSet)labelToReachingTypes.get(s1);
         if (l!=null) {
             if (!l.contains(RefType.v("java.lang.Object")))
                 l.add(RefType.v("java.lang.Object"));
-            nodeToReachingTypes.put(s1, l);
+            labelToReachingTypes.put(s1, l);
         }
 
         // The following nodes correspond to fields that are filled in directly by the VM.
@@ -403,7 +403,7 @@ public class VTANativeAdjustor
             for (Iterator localsIt = locals.iterator(); localsIt.hasNext(); ) {
 
                 String local = (String)localsIt.next();
-                types = (TypeSet)vtagraph.nodeToReachingTypes.get(local);
+                types = (TypeSet)vtagraph.labelToReachingTypes.get(local);
 
                 HashSet visited = new HashSet(0);
                 LinkedList typeStack = new LinkedList();

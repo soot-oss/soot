@@ -60,21 +60,6 @@ public class EarliestnessComputation {
   /**
    * given an UpSafetyAnalysis and a DownSafetyAnalysis, performs the
    * earliest-computation.<br>
-   * the naive side-effect tester will be used to decide if a node is
-   * transparent.
-   *
-   * @param unitGraph the Unitgraph we'll work on.
-   * @param upSafe a UpSafetyAnalysis of <code>unitGraph</code>
-   * @param downSafe a DownSafetyAnalysis of <code>unitGraph</code>
-   */
-  public EarliestnessComputation(UnitGraph unitGraph, UpSafetyAnalysis upSafe,
-      DownSafetyAnalysis downSafe) {
-    this(unitGraph, upSafe, downSafe, new NaiveSideEffectTester());
-  }
-
-  /**
-   * given an UpSafetyAnalysis and a DownSafetyAnalysis, performs the
-   * earliest-computation.<br>
    *
    * @param unitGraph the Unitgraph we'll work on.
    * @param upSafe a UpSafetyAnalysis of <code>unitGraph</code>

@@ -59,20 +59,6 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
    * this constructor automaticly performs the UpSafety-analysis.<br>
    * the result of the analysis is as usual in FlowBefore (getFlowBefore())
    * and FlowAfter (getFlowAfter()).<br>
-   * the naive side-effect tester is used to perform kills.
-   *
-   * @param dg a CompleteUnitGraph
-   * @param unitToGen the EquivalentValue of each unit.
-   */
-  public UpSafetyAnalysis(DirectedGraph dg, Map unitToGen) {
-    this(dg, unitToGen, new NaiveSideEffectTester());
-  }
-
-  /**
-   * this constructor automaticly performs the UpSafety-analysis.<br>
-   * the result of the analysis is as usual in FlowBefore (getFlowBefore())
-   * and FlowAfter (getFlowAfter()).<br>
-   * As default, BoundedArraySparseSets will be used.
    *
    * @param dg a CompleteUnitGraph
    * @param unitToGen the EquivalentValue of each unit.

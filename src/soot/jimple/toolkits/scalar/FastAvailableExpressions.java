@@ -42,14 +42,15 @@ public class FastAvailableExpressions implements AvailableExpressions
     Map unitToEquivsBefore;
 
     /** Wrapper for AvailableExpressionsAnalysis. */ 
-    public FastAvailableExpressions(Body b)
+    public FastAvailableExpressions(Body b, SideEffectTester st)
     {
         if(Main.isVerbose)
             System.out.println("[" + b.getMethod().getName() +
                 "] Finding available expressions...");
 
         FastAvailableExpressionsAnalysis analysis = 
-            new FastAvailableExpressionsAnalysis(new CompleteUnitGraph(b));
+            new FastAvailableExpressionsAnalysis(new CompleteUnitGraph(b),
+		    b.getMethod(), st);
 
         // Build unitToExprs map
         {

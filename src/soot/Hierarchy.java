@@ -433,6 +433,21 @@ public class Hierarchy
 
     // Questions about method invocation.
 
+    /** Returns true if the method m is visible from code in the class from. */
+    private boolean isVisible( SootClass from, SootMethod m ) {
+        if( m.isPublic() ) return true;
+        if( m.isPrivate() ) {
+            return from.equals( m.getDeclaringClass() );
+        }
+        if( m.isProtected() ) {
+            return isClassSubclassOfIncluding( from, m.getDeclaringClass() );
+        }
+        // m is package
+        return from.getJavaPackageName().equals(
+                m.getDeclaringClass().getJavaPackageName() );
+            //|| isClassSubclassOfIncluding( from, m.getDeclaringClass() );
+    }
+
     /** Given an object of actual type C (o = new C()), returns the method which will be called
         on an o.f() invocation. */
     public SootMethod resolveConcreteDispatch(SootClass concreteType, SootMethod m)
@@ -448,8 +463,11 @@ public class Hierarchy
         while (it.hasNext())
         {
             SootClass c = (SootClass)it.next();
-            if (c.declaresMethod(methodSig))
+            if (c.declaresMethod(methodSig) 
+            && isVisible( c, m )
+            ) {
                 return c.getMethod(methodSig);
+            }
         }
         throw new RuntimeException("could not resolve concrete dispatch!\nType: "+concreteType+"\nMethod: "+m);
     }

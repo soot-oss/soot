@@ -460,8 +460,9 @@ public class HashChain extends AbstractCollection
             
         public boolean hasNext() 
         {
-            if(stateCount != iteratorStateCount)
+            if(stateCount != iteratorStateCount) {
                 throw new ConcurrentModificationException();
+            }
             
             if(currentLink.getNext() == null)
                 return false;

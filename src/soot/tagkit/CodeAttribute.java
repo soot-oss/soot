@@ -37,8 +37,8 @@ import soot.*;
  */
 public class CodeAttribute extends JasminAttribute
 {
-    private List mUnits;
-    private List mTags;
+    protected List mUnits;
+    protected List mTags;
 
     private byte[] value;
     

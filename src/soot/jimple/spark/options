@@ -1,0 +1,205 @@
+SECTION General options
+#######################
+
+BOPT verbose
+true
+If set to true, Spark prints detailed information.
+END
+
+BOPT ignoreTypesEntirely
+false
+If set to true, all parts of Spark completely ignore declared types of
+variables and casts.
+END
+
+
+SECTION Pointer assignment graph building options
+#################################################
+
+BOPT parmsAsFields
+false
+If set to true, parameters to methods are represented as fields (Red
+nodes) of the 'this' object; otherwise, parameters are represented as
+variable (Green) nodes.
+END
+
+BOPT returnsAsFields
+false
+If set to true, return values from methods are represented as fields
+(Red nodes) of the 'this' object; otherwise, return values are
+represented as variable (Green) nodes.
+END
+
+BOPT collapseObjects
+false
+If set to true, fields are represented by variable (Green) nodes, and
+the object that the field belongs to is ignored (all fields are lumped
+together). Otherwise, fields are represented by field reference (Red)
+nodes, and the objects that they belong to are distinguished.
+END
+
+BOPT typesForSites
+false
+If set to true, types rather than allocation sites are used as the
+elements of the points-to sets.
+END
+
+BOPT mergeStringBuffer
+true
+If set to true, all allocation sites creating java.lang.StringBuffer
+objects are grouped together as a single allocation site.
+END
+
+BOPT simulateNatives
+false
+If set to true, effects of native methods are simulated.
+END
+
+BOPT simpleEdgesBidirectional
+false
+If set to true, all edges connecting variable (Green) nodes are made
+bidirectional, as in Steensgaard's analysis.
+END
+
+BOPT onFlyCallGraph
+false
+If set to true, the call graph is computed on-the-fly as points-to
+information is computed. Otherwise, an initial approximation
+to the call graph is used.
+END
+
+SECTION Pointer assignment graph simplification options
+#######################################################
+
+BOPT collapseEBBs
+true
+If set to true, variable (Green) nodes which are connected by simple paths
+(so they must have the same points-to set) are merged together.
+END
+
+BOPT collapseSCCs
+true
+If set to true, variable (Green) nodes which are form strongly-connected
+components (so they must have the same points-to set) are merged
+together.
+END
+
+BOPT ignoreTypesForSCCs
+false
+If set to true, when collapsing strongly-connected components, nodes
+forming SCCs are collapsed regardless of their type. The collapsed SCC
+is given the most general type of all the nodes in the component. If no
+node has the most general type, then the SCC is given no type, and may
+point to objects of any type.
+
+If set to false, only edges connecting nodes of the same type are
+considered when detecting SCCs.
+
+This option has no effect if collapseSCCs is false.
+END
+
+SECTION Points-to set flowing options
+#####################################
+
+MOPT propagator iter worklist merge none
+worklist
+Tells Spark which propagation algorithm to use.
+
+Iter is a dumb, iterative algorithm, that propagates everything until the
+graph does not change.
+
+Worklist is a worklist-based algorithm that tries
+to do as little work as possible.
+
+Merge is an algorithm that merges all yellow nodes with their corresponding
+red nodes.
+
+None means that propagation is not done; the graph is only built and
+simplified.
+END
+
+MOPT setImpl hash bit hybrid array double
+double
+Selects an implementation of a points-to set that Spark should use.
+
+Hash is an implementation based on Java's built-in hash-set.
+
+Bit is an implementation using a bit vector.
+
+Hybrid is an implementation that keeps an explicit list of up to
+16 elements, and switches to using a bit-vector when the set gets
+larger than this.
+
+Array is an implementation that keeps the elements of the points-to set
+in an array that is always maintained in sorted order. Set membership is
+tested using binary search, and set union and intersection are computed
+using an algorithm based on the merge step from merge sort.
+
+Double is an implementation that itself uses a pair of sets for each
+points-to set. The first set in the pair stores new pointed-to objects
+that have not yet been propagated, while the second set stores old
+pointed-to objects that have been propagated and need not be reconsidered.
+END
+
+MOPT doubleSetOld hash bit hybrid array
+hybrid
+Selects an implementation for the sets of old objects in the double
+points-to set implementation.
+
+This option has no effect if setImpl is not set to double.
+END
+
+MOPT doubleSetNew hash bit hybrid array
+hybrid
+Selects an implementation for the sets of new objects in the double
+points-to set implementation.
+
+This option has no effect if setImpl is not set to double.
+END
+
+SECTION Output options
+######################
+
+BOPT dumpHTML
+false
+If set to true, a browseable HTML representation of the pointer assignment
+graph is output after the analysis completes.
+END
+
+BOPT dumpPAG
+false
+If set to true, a representation of the pointer assignment graph
+suitable for processing with other solvers (such as the BDD one) is
+output before the analysis begins.
+END
+
+BOPT dumpSolution
+false
+If set to true, a representation of the resulting points-to
+sets is dumped. The format is similar to that of the dumpPAG
+option, and is therefore suitable for comparison with the results of other
+solvers.
+END
+
+BOPT topoSort
+false
+If set to true, the representation dumped by the dumpPAG option
+is dumped with the green nodes in (pseudo-)topological order.
+
+This option has no effect if dumpPAG is false.
+END
+
+BOPT dumpTypes
+true
+If set to true, the representation dumped by the dumpPAG option
+includes type information for all nodes.
+
+This option has no effect if dumpPAG is false.
+END
+
+BOPT dumpAnswer
+false
+If set to true, the computed reaching types for each variable are
+dumped to a file, so that they can be compared with the results of
+other analyses.
+END

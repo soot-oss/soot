@@ -1,0 +1,76 @@
+NOTES on native methods side-effect simulation:
+
+1. Environment:
+
+   Since JVM allows multi class loaders and dynamic class loading, 
+   a static analysis may not be about to figure out exact classes 
+   get loaded. This should be rear cases in our analyzed benchmarks.
+
+   Our analysis assumes a closed world environment which means all
+   classes will be loaded are presented in our environment when
+   being analyzed. 
+
+   We list known environmental constants assumed by native methods.
+   This is not a complete list. Each of following classes has one 
+   abstract object existing:
+   
+    java.lang.ClassLoader 	Environment.getClassLoaderObject();
+    java.lang.Process		Environment.getProcessObject();
+    java.lang.Thread		Environment.getThreadObject();
+    java.io.FileSystem		Environment.getFileSystemObject();
+    java.lang.Class             Environment.getClassObject();
+    java.lang.reflect.Field     Environment.getFieldObject();
+    java.lang.reflect.Method    Environment.getMethodObject();
+    java.lang.reflect.Constructor
+				Environment.getConstructorObject();
+    
+   Allowing only one abstract object exist means any 'new xxx()' expression
+   should return the only object of the class 'xxx'.
+        
+   The field of above constant object should have one object also. (TODO!)
+
+   There are some other constants need to be considered separately.
+
+2. Strings:
+
+   Many native methods return strings. Since java.lang.String is final,
+   we can use a single 'String' object for any string from unknown sources.
+  
+   Environment.getStringObject(); 
+   
+3. Reflections:
+
+   Reflections make static analyses almost unrealistic because each field
+   can be accessed without unveiling static information, and each 
+   method may be invoked without knowing receiver and targets statically.
+
+   Current, the simulator warns the user by throwing a runtime exception
+   that the analysis is not able to handle these features.
+
+4. Serializations:
+
+   The ObjectInputStream/ObjectOutputStream read/write fields of objects 
+   by field IDs through native calls.
+   
+   The caller is warned by throwing an exception.
+
+   java.io.ObjectInputStream
+   java.io.ObjectOutputStream
+
+5. Exceptions:
+
+   Some native methods may throw exceptions. It is not considered right now.
+
+6. Objects created with unknown types:
+
+   There are a few native methods which may create objects for statically 
+   unknown classes. In this situation, we suggest the class hierarchy add
+   a least class type (which can be understood as NULL type). The least type
+   won't affect the type information and virtual call resolution. But it
+   does not block the flow information.
+
+7. Other methods called by JVM directly:
+   
+   Non-trivial finilizer should be passed in all possible instantiations.
+   There may be other methods called by VM directly, but which change 
+   points information.

@@ -791,7 +791,6 @@ public class Jimple
         return new ParameterRef(paramType, number);
     }
 
-
     /**
         Constructs a InstanceFieldRef(Local, SootField) grammar chunk.
      */

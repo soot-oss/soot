@@ -39,7 +39,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
     int edges;
     Scene sc;
 
-    HashMap nodeToReachingTypes = new HashMap();
+    HashMap labelToReachingTypes = new HashMap();
     HashMap labelToDeclaredType = new HashMap();
     HashMap castEdges = new HashMap();
     HashSet arrayNodes = new HashSet(0);
@@ -47,7 +47,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
     public void addNode(Object o)
     {
         super.addNode(o);
-        nodeToReachingTypes.put(o, new TypeSet());
+        labelToReachingTypes.put(o, new TypeSet());
     }
 
     public void addEdge(Object o, Object p) {
@@ -151,7 +151,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
                         addNode(getVTALabel(m, "this"));
                         labelToDeclaredType.put(getVTALabel(m, "this"),RefType.v(m.getDeclaringClass()));
                         if (m.getSubSignature().equals("void <init>()")) {
-                            TypeSet t = (TypeSet)nodeToReachingTypes.get(getVTALabel(m, "this"));
+                            TypeSet t = (TypeSet)labelToReachingTypes.get(getVTALabel(m, "this"));
                             t.add(RefType.v(m.getDeclaringClass()));
                         }
                     }
@@ -236,7 +236,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
                     if (c.declaresMethod(SootMethod.getSubSignature("main", l, VoidType.v()))) {
                         SootMethod m = c.getMethod("main", l, VoidType.v());
                         String label = getVTALabel(m, "p0");
-                        TypeSet rt = (TypeSet)nodeToReachingTypes.get(label);
+                        TypeSet rt = (TypeSet)labelToReachingTypes.get(label);
                         rt.add(RefType.v("java.lang.Object"));
                         rt.add(RefType.v("java.lang.String"));
                         arrayNodes.add(label);
@@ -283,7 +283,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
                                 SootMethod meth = h.resolveConcreteDispatch(clazz, 
                                                                             Scene.v().getMethod("<java.lang.Runnable: void run()>"));
                                 if (meth.equals(m)) {
-                                    TypeSet l = (TypeSet)nodeToReachingTypes.get(getVTALabel(m, "this"));
+                                    TypeSet l = (TypeSet)labelToReachingTypes.get(getVTALabel(m, "this"));
                                     l.add(RefType.v(clazz));
                                 }
                             }
@@ -311,7 +311,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
                             }
                         }
                         String label = getVTALabel(m, "throw");
-                        TypeSet rt = (TypeSet)nodeToReachingTypes.get(label);
+                        TypeSet rt = (TypeSet)labelToReachingTypes.get(label);
                         
                         LinkedList st = new LinkedList((Collection)labelToDeclaredType.get(label));
                         while(!st.isEmpty()) {
@@ -375,7 +375,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
                                                 target.getSignature() + "$p"+paramCount);
                                         }
                                         else if (ie.getArg(paramCount) instanceof StringConstant)
-                                            ((Collection)nodeToReachingTypes.get
+                                            ((Collection)labelToReachingTypes.get
                                                 (target.getSignature()+"$p"+paramCount)).add(RefType.v("java.lang.String"));
                                     }
 				    paramCount++;
@@ -423,7 +423,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
                             // Include all subtypes of RuntimeException and Error in CaughtExceptionRefs.
 
                             else if (rhs instanceof CaughtExceptionRef) {
-                                TypeSet set = (TypeSet)nodeToReachingTypes.get(getVTALabel(m, lhs));
+                                TypeSet set = (TypeSet)labelToReachingTypes.get(getVTALabel(m, lhs));
                                 for (Iterator clsIt = h.getSubclassesOfIncluding(
                                      Scene.v().getSootClass("java.lang.Error")).iterator(); clsIt.hasNext(); )
                                     set.add(RefType.v((SootClass)clsIt.next()));
@@ -461,19 +461,19 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
 
 			      // add to the reachingTypes sets.
                               if (rhs instanceof StringConstant) {
-                                  TypeSet l = (TypeSet)nodeToReachingTypes.get(lhsRep);
+                                  TypeSet l = (TypeSet)labelToReachingTypes.get(lhsRep);
                                   if (!l.contains(RefType.v("java.lang.String")))
                                       l.add(RefType.v("java.lang.String"));
                               }
 
 			      if (rhs instanceof NewExpr)
 				{
-				  TypeSet l = (TypeSet)nodeToReachingTypes.get(lhsRep);
+				  TypeSet l = (TypeSet)labelToReachingTypes.get(lhsRep);
 				  l.add(((NewExpr)rhs).getType());
 				}
 			      else if (rhs instanceof NewArrayExpr)
 				{
-				  TypeSet l = (TypeSet)nodeToReachingTypes.get(lhsRep);
+				  TypeSet l = (TypeSet)labelToReachingTypes.get(lhsRep);
                                   if (!l.contains(RefType.v("java.lang.Object")))
                                       l.add(RefType.v("java.lang.Object"));
                                   arrayNodes.add(lhsRep);
@@ -481,7 +481,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
 				}
 			      else if (rhs instanceof NewMultiArrayExpr)
 				{
-                                  TypeSet l = (TypeSet)nodeToReachingTypes.get(lhsRep);
+                                  TypeSet l = (TypeSet)labelToReachingTypes.get(lhsRep);
                                   if (!l.contains(RefType.v("java.lang.Object")))
                                       l.add(RefType.v("java.lang.Object"));
                                   arrayNodes.add(lhsRep);
@@ -527,9 +527,11 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
         Date start = new Date();
 
         // Adjust for native methods.
-        if (Main.isVerbose) {
+	//        if (Main.isVerbose) 
+	{
             System.out.println("[vta] Adjust for native methods");
         }
+
         {
             Hierarchy h = Scene.v().getActiveHierarchy();
             
@@ -538,7 +540,8 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
         }
 
         Date finish = new Date();
-        if (Main.isVerbose) {
+	//        if (Main.isVerbose) 
+	{
             System.out.println("[vta] Done adjusting for native methods.");
             long runtime = finish.getTime()-start.getTime();
             System.out.println("[vta] Native adjustments took "+

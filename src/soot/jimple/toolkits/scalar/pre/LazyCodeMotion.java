@@ -33,6 +33,7 @@ import soot.toolkits.graph.*;
 import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
+import soot.jimple.toolkits.pointer.PASideEffectTester;
 
 /** 
  * Performs a partial redundancy elimination (= code motion). This is done, by
@@ -59,7 +60,7 @@ public class LazyCodeMotion extends BodyTransformer {
   public static LazyCodeMotion v() { return instance; }
 
   public String getDeclaredOptions() {
-    return super.getDeclaredOptions() + " safe unroll";
+    return super.getDeclaredOptions() + " safe unroll naive-side-effect ";
   }
 
   // safe is one out of "safe" "medium" "unsafe"
@@ -106,7 +107,14 @@ public class LazyCodeMotion extends BodyTransformer {
     BoundedFlowSet set = new BoundedArraySparseSet(universe);
 
     /* if a more precise sideeffect-tester comes out, please change it here! */
-    SideEffectTester sideEffect = new NaiveSideEffectTester();
+    SideEffectTester sideEffect;
+    if( Scene.v().hasActiveInvokeGraph() 
+    && !Options.getBoolean(options, "naive-side-effect") ) {
+        sideEffect = new PASideEffectTester();
+    } else {
+        sideEffect = new NaiveSideEffectTester();
+    }
+    sideEffect.newMethod( b.getMethod() );
     UpSafetyAnalysis upSafe;
     DownSafetyAnalysis downSafe; 
     EarliestnessComputation earliest;

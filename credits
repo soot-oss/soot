@@ -34,6 +34,7 @@ Patrick Lam (plam@sable.mcgill.ca)
 
 Ondrej Lhotak (olhota@sable.mcgill.ca)
     - General bug-fixes, soot hacker
+    - Spark
 
 Florian Loitsch (florian@loitsch.net)
     - PRE re-implementation
@@ -78,6 +79,8 @@ Funding support provided by:
     - Natural Sciences and Engineering Research Council of 
       Canada (NSERC)
       http://www.nserc.ca
+
+    - Richard H. Tomlinson Fellowship
 
 
 ------------------------- Special Thanks -----------------------

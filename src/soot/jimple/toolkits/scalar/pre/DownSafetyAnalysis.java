@@ -59,19 +59,6 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
    * this constructor automaticly performs the DownSafety-analysis.<br>
    * the result of the analysis is as usual in FlowBefore (getFlowBefore())
    * and FlowAfter (getFlowAfter()).<br>
-   * the naive side-effect tester will be used to perform kills.
-   *
-   * @param dg a CompleteUnitGraph
-   * @param unitToGen the equivalentValue of each unit.
-   */
-  public DownSafetyAnalysis(DirectedGraph dg, Map unitToGen) {
-    this(dg, unitToGen, new NaiveSideEffectTester());
-  }
-
-  /**
-   * this constructor automaticly performs the DownSafety-analysis.<br>
-   * the result of the analysis is as usual in FlowBefore (getFlowBefore())
-   * and FlowAfter (getFlowAfter()).<br>
    *
    * @param dg a CompleteUnitGraph.
    * @param unitToGen the equivalentValue of each unit.

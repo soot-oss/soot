@@ -9,6 +9,7 @@ soot.grimp.toolkits.base
 soot.jimple
 soot.jimple.internal
 soot.jimple.parser
+soot.jimple.toolkits.pointer.rinard
 soot.jimple.toolkits.annotation.tags
 soot.jimple.toolkits.annotation.arraycheck
 soot.jimple.toolkits.annotation.nullcheck
@@ -22,3 +23,9 @@ soot.tagkit
 soot.toolkits.graph
 soot.toolkits.scalar
 soot.util
+soot.jimple.spark
+soot.jimple.spark.builder
+soot.jimple.spark.pag
+soot.jimple.spark.solver
+soot.jimple.spark.internal
+soot.jimple.spark.sets

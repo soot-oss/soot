@@ -29,6 +29,7 @@ import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;
+import soot.jimple.toolkits.pointer.*;
 import java.util.*;
 import soot.util.*;
 
@@ -38,7 +39,7 @@ import soot.util.*;
  * the kill rule would be computed on-the-fly for each statement. */
 class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 {
-    NaiveSideEffectTester st = new NaiveSideEffectTester();
+    SideEffectTester st;
 
     Map unitToGenerateSet;
     Map unitToPreserveSet;
@@ -49,9 +50,11 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
     private static final Boolean FALSE = new Boolean(false);
     private static final Boolean TRUE = new Boolean(true);
     
-    public FastAvailableExpressionsAnalysis(DirectedGraph dg)
+    public FastAvailableExpressionsAnalysis(DirectedGraph dg, SootMethod m,
+            SideEffectTester st )
     {
         super(dg);
+        this.st = st;
 
         CompleteUnitGraph g = (CompleteUnitGraph)dg;
         LocalDefs ld = new SimpleLocalDefs(g);
@@ -150,8 +153,9 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                 Value avail = (Value) it.next();
                 if (avail instanceof FieldRef)
                 {
-                    if (st.unitCanWriteTo(u, avail))
+                    if (st.unitCanWriteTo(u, avail)) {
                         out.remove(avail, out);
+		    }
                 }
                 else
                 {
@@ -162,8 +166,9 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                     {
                         Value use = ((ValueBox)usesIt.next()).getValue();
                         
-                        if (st.unitCanWriteTo(u, use))
+                        if (st.unitCanWriteTo(u, use)) {
                             out.remove(avail, out);
+			}
                     }
                 }
 	    }

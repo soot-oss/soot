@@ -36,7 +36,7 @@ import java.util.*;
  *   Two ArrayType are 'equal' if they are parametrized equally.
  *
  */
-public class ArrayType extends Type
+public class ArrayType extends Type implements RefLikeType
 {
     /** baseType can be any type except for an array type, null and void 
      *  @see BaseType 
@@ -117,6 +117,17 @@ public class ArrayType extends Type
     public void apply(Switch sw)
     {
         ((TypeSwitch) sw).caseArrayType(this);
+    }
+
+    public Type getArrayElementType() {
+	return getElementType();
+    }
+    public Type getElementType() {
+	if( numDimensions > 1 ) {
+	    return ArrayType.v( baseType, numDimensions-1 );
+	} else {
+	    return baseType;
+	}
     }
 }
 

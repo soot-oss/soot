@@ -50,6 +50,9 @@ import java.util.*;
 
 public class NaiveSideEffectTester implements SideEffectTester
 {
+    public void newMethod( SootMethod m ) {
+    }
+
     /** Returns true if the unit can read from v.
      * Does not deal with expressions; deals with Refs. */
     public boolean unitCanReadFrom(Unit u, Value v)

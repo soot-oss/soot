@@ -73,11 +73,15 @@ public class StaticInliner extends SceneTransformer
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 
         DirectedGraph mg;
-        VariableTypeAnalysis vta = null;
+
+	//        VariableTypeAnalysis vta = null;
+	VariableTypeAnalysis2 vta = null;
 
         for (int i = 0; i < VTApasses; i++)
         {
-            vta = new VariableTypeAnalysis(graph);
+	  //            vta = new VariableTypeAnalysis(graph);
+	  vta = new VariableTypeAnalysis2(graph);
+
             vta.trimActiveInvokeGraph();
             graph.refreshReachableMethods();
         }

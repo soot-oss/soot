@@ -37,7 +37,7 @@ import java.util.*;
  *   Soot representation of the Java type 'null'. Implemented as
  *   a singleton.
  */
-public class NullType extends Type
+public class NullType extends Type implements RefLikeType
 {
     private static NullType constant = new NullType();
 
@@ -70,5 +70,9 @@ public class NullType extends Type
     public void apply(Switch sw)
     {
         ((TypeSwitch) sw).caseNullType(this);
+    }
+
+    public Type getArrayElementType() {
+	throw new RuntimeException( "Attempt to get array base type of a non-array" );
     }
 }

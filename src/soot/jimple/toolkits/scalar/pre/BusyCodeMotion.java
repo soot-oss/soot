@@ -33,6 +33,7 @@ import soot.toolkits.graph.*;
 import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
+import soot.jimple.toolkits.pointer.PASideEffectTester;
 
 /** 
  * Performs a partial redundancy elimination (= code motion). This is
@@ -58,7 +59,8 @@ public class BusyCodeMotion extends BodyTransformer {
 
   public static BusyCodeMotion v() { return instance; }
 
-  public String getDeclaredOptions() { return super.getDeclaredOptions(); }
+  public String getDeclaredOptions() { return super.getDeclaredOptions()+
+      " naive-side-effect "; }
 
   public String getDefaultOptions() { return ""; }
 
@@ -97,11 +99,21 @@ public class BusyCodeMotion extends BodyTransformer {
 	}
       };
 
-    UpSafetyAnalysis upSafe = new UpSafetyAnalysis(graph, unitToEquivRhs);
+    /* if a more precise sideeffect-tester comes out, please change it here! */
+    SideEffectTester sideEffect;
+    if( Scene.v().hasActiveInvokeGraph() 
+    && !Options.getBoolean( options, "naive-side-effect" ) ) {
+        sideEffect = new PASideEffectTester();
+    } else {
+        sideEffect = new NaiveSideEffectTester();
+    }
+    sideEffect.newMethod( b.getMethod() );
+    UpSafetyAnalysis upSafe = new UpSafetyAnalysis(graph, unitToEquivRhs,
+            sideEffect );
     DownSafetyAnalysis downSafe = new DownSafetyAnalysis(graph,
-        unitToNoExceptionEquivRhs);
+        unitToNoExceptionEquivRhs, sideEffect );
     EarliestnessComputation earliest = new EarliestnessComputation(graph,
-        upSafe, downSafe);
+        upSafe, downSafe, sideEffect );
 
     LocalCreation localCreation = new LocalCreation(b.getLocals(), PREFIX);
 

@@ -37,7 +37,7 @@ import java.util.*;
  *   Two RefType are equal iff they are parametrized by the same class name as a String.
  */
 
-public class RefType extends BaseType implements ToBriefString, Comparable
+public class RefType extends BaseType implements ToBriefString, Comparable, RefLikeType
 {
     /** the class name that parametrizes this RefType */
     public final String className;
@@ -204,4 +204,13 @@ public class RefType extends BaseType implements ToBriefString, Comparable
         
     }
 
+    public Type getArrayElementType() {
+	if( className.equals( "java.lang.Object" )
+	    || className.equals( "java.io.Serializable" )
+	    || className.equals( "java.lang.Cloneable" ) ) {
+	    return RefType.v( "java.lang.Object" );
+	}
+	throw new RuntimeException( "Attempt to get array base type of a non-array" );
+
+    }
 }

@@ -31,6 +31,7 @@ import soot.toolkits.graph.*;
 import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
+import soot.jimple.toolkits.pointer.PASideEffectTester;
 
 /** Runs an available expressions analysis on a body, then
  * eliminates common subexpressions.
@@ -54,7 +55,8 @@ public class CommonSubexpressionEliminator extends BodyTransformer
 
     public static CommonSubexpressionEliminator v() { return instance; }
 
-    public String getDeclaredOptions() { return super.getDeclaredOptions(); }
+    public String getDeclaredOptions() { return super.getDeclaredOptions()+
+        "naive-side-effect"; }
 
     public String getDefaultOptions() { return ""; }
 
@@ -73,12 +75,21 @@ public class CommonSubexpressionEliminator extends BodyTransformer
             localNames.add(((Local)localsIt.next()).getName());
         }
 
+        SideEffectTester sideEffect;
+        if( Scene.v().hasActiveInvokeGraph()
+        && !Options.getBoolean( options, "naive-side-effect" ) ) {
+            sideEffect = new PASideEffectTester();
+        } else {
+            sideEffect = new NaiveSideEffectTester();
+        }
+        sideEffect.newMethod( b.getMethod() );
+
         if(Main.isVerbose)
             System.out.println("[" + b.getMethod().getName() +
                 "]     Eliminating common subexpressions (naively)...");
 
         AvailableExpressions ae = // new SlowAvailableExpressions(b);
-	     new FastAvailableExpressions(b);
+	     new FastAvailableExpressions(b, sideEffect);
 
         Chain units = b.getUnits();
         Iterator unitsIt = units.snapshotIterator();

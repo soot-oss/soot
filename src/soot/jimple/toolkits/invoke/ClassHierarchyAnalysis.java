@@ -28,6 +28,7 @@ package soot.jimple.toolkits.invoke;
 import java.util.*;
 import soot.*;
 import soot.jimple.*;
+import soot.util.*;
 
 /** Implementation of Class Hierarchy Analysis. */
 public class ClassHierarchyAnalysis
@@ -49,13 +50,7 @@ public class ClassHierarchyAnalysis
     appAndLibClasses.addAll(Scene.v().getApplicationClasses());
     appAndLibClasses.addAll(Scene.v().getLibraryClasses());
 
-    Hierarchy h = null;
-
-    if (!Scene.v().hasActiveHierarchy()) {
-      h = new Hierarchy();
-      Scene.v().setActiveHierarchy(h);
-    } else
-      h = Scene.v().getActiveHierarchy();
+    FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
 
     InvokeGraph g = new InvokeGraph();
 
@@ -88,7 +83,7 @@ public class ClassHierarchyAnalysis
 	      if(receiverType instanceof RefType) {   
 		// since Type might be Null
 		Iterator targetsIt = 
-		  h.resolveAbstractDispatch(((RefType)receiverType).getSootClass(), 
+		  fh.resolveAbstractDispatch(((RefType)receiverType).getSootClass(), 
 					    ie.getMethod()).iterator();
                             
 		while (targetsIt.hasNext())
@@ -99,7 +94,7 @@ public class ClassHierarchyAnalysis
 	      g.addTarget(s, ie.getMethod());
 	    } else if (ie instanceof SpecialInvokeExpr) {
 	      g.addSite(s, m);
-	      g.addTarget(s, h.resolveSpecialDispatch((SpecialInvokeExpr)ie, m));
+	      g.addTarget(s, fh.resolveSpecialDispatch((SpecialInvokeExpr)ie, m));
 	    }
 	  }
 	}
@@ -130,14 +125,7 @@ public class ClassHierarchyAnalysis
    */
   public static InvokeGraph newPreciseInvokeGraph(boolean buildCallGraph) {
 
-    Hierarchy h = null;
-
-    if (!Scene.v().hasActiveHierarchy()) {
-      h = new Hierarchy();
-      Scene.v().setActiveHierarchy(h);
-    }
-    else
-      h = Scene.v().getActiveHierarchy();
+    FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
 
     InvokeGraph g = new InvokeGraph();
 
@@ -190,7 +178,7 @@ public class ClassHierarchyAnalysis
 	    if(receiverType instanceof RefType) {   
 	      // since Type might be Null
 	      Iterator targetsIt = 
-		h.resolveAbstractDispatch(((RefType)receiverType).getSootClass(), 
+		fh.resolveAbstractDispatch(((RefType)receiverType).getSootClass(), 
 					  ie.getMethod()).iterator();
 	        
 	      while (targetsIt.hasNext()) {
@@ -215,7 +203,7 @@ public class ClassHierarchyAnalysis
 	    
 	  } else if (ie instanceof SpecialInvokeExpr) {
 	    g.addSite(s, m);
-	    SootMethod target = h.resolveSpecialDispatch((SpecialInvokeExpr)ie, m); 
+	    SootMethod target = fh.resolveSpecialDispatch((SpecialInvokeExpr)ie, m); 
 	    g.addTarget(s, target);
 	    
 	    if (!visitedMethods.contains(target)) {
