@@ -248,9 +248,10 @@ public class SiteInliner
             }
         }
 
-        // Copy & backpatch the traps.
+        // Copy & backpatch the traps; preserve their same order.
         {
             Iterator trapsIt = inlineeB.getTraps().iterator();
+            Trap prevTrap = null;
 
             while (trapsIt.hasNext())
             {
@@ -262,9 +263,13 @@ public class SiteInliner
                 if (newBegin == null || newEnd == null || newHandler == null)
                     throw new RuntimeException("couldn't map trap!");
 
-                containerB.getTraps().addFirst(Jimple.v().newTrap
-                                               (t.getException(),
-                                                newBegin, newEnd, newHandler));
+                Trap trap = Jimple.v().newTrap(t.getException(),
+                                               newBegin, newEnd, newHandler);
+                if (prevTrap == null)
+                    containerB.getTraps().addFirst(trap);
+                else
+                    containerB.getTraps().insertAfter(trap, prevTrap);
+                prevTrap = trap;
             }
         }
 
