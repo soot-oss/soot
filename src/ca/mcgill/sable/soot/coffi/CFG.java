@@ -147,7 +147,7 @@ public class CFG {
    private int bbcount;        // statistics, number of BBs processed
 
    StmtList stmtList;
-   StmtBody listBody;
+   JimpleBody listBody;
    
    Map instructionToFirstStmt;
    Map instructionToLastStmt;
@@ -397,7 +397,7 @@ public class CFG {
     * @see Stmt
     * @see BasicBlock#jhead
     */
-    public boolean jimplify(cp_info constant_pool[],int this_class, StmtBody listBody)
+    public boolean jimplify(cp_info constant_pool[],int this_class, JimpleBody listBody)
    {
         Util.setClassNameToAbbreviation(new HashMap());
         
@@ -838,8 +838,6 @@ public class CFG {
       
         // Insert beginCatch/endCatch statements for exception handling
         {
-            StmtTrapTable trapTable = listBody.getTrapTable();
-            
               for(int i = 0; i < codeAttribute.exception_table_length; i++)
               {
                     Instruction startIns = codeAttribute.exception_table[i].start_inst;
@@ -910,7 +908,7 @@ public class CFG {
                         Stmt afterEndStmt = (Stmt) stmtList.get(endIndex + 1);
                         
                         StmtTrap trap = new StmtTrap(exception, firstStmt, afterEndStmt, newTarget); 
-                        trapTable.addTrap(trap);    
+                        listBody.addTrap(trap);    
                     }
                     
                     /*

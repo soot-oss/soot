@@ -334,7 +334,7 @@ class JasminClass
         
     void emitMethod(SootMethod method)
     {
-        StmtBody body = (StmtBody) method.getBody(Jimple.v());
+        JimpleBody body = (JimpleBody) method.getBody(Jimple.v());
         StmtList stmtList = body.getStmtList();
         
         // Emit prologue
@@ -364,7 +364,7 @@ class JasminClass
    
         // Emit the exceptions
         {
-            Iterator trapIt = body.getTrapTable().getTraps().iterator();
+            Iterator trapIt = body.getTraps().iterator();
             
             while(trapIt.hasNext())
             {

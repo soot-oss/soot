@@ -62,6 +62,9 @@
 
  B) Changes:
 
+ - Modified on 23-Jul-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+   Renamed the uses of Hashtable to HashMap.
+
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
@@ -71,135 +74,147 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class StmtList extends ArrayList
+public class SimpleLiveLocals implements LiveLocals
 {
-    JimpleBody body;
+    Map stmtToLocals;
+    //Map stmtToLocalsBefore;
     
-    public StmtList(JimpleBody body)
+    public SimpleLiveLocals(CompleteStmtGraph graph)
     {
-        super();
+        LiveLocalsAnalysis analysis = new LiveLocalsAnalysis(graph);  
         
-        this.body = body;
-    }
-     
-    public JimpleBody getBody()
-    {
-        return body;
-    }
-       
-    public boolean remove(Object obj)
-    {
-        boolean toReturn = false;
-        
-        if(contains(obj))
+        // Build stmtToLocals map
         {
-            int index = indexOf(obj);
-            Stmt successor;
+            stmtToLocals = new HashMap(graph.size() * 2 + 1, 0.7f);
             
-            if(index + 1 < size())
-                successor = (Stmt) get(index + 1);
-            else if(size() >= 2)
-                successor = (Stmt) get(index - 1);
-            else
-                successor = null;
+            Iterator stmtIt = graph.iterator();
+            
+            while(stmtIt.hasNext())
+            {
+                Stmt s = (Stmt) stmtIt.next();
+                
+                FlowSet set = (FlowSet) analysis.getFlowBeforeStmt(s);
+                stmtToLocals.put(s, Collections.unmodifiableList(set.toList()));
+                
+            }        
+        }  
+        
+    }
+    
+    /*
+    public List getLiveLocalsBefore(Stmt s)
+    {
+        FSet set = (FSet) analysis.getValueBeforeStmt(s);
 
-            toReturn = super.remove(obj);
-            body.redirectJumps((Stmt) obj, successor);
-            body.eliminateBackPointersTo((Stmt) obj);            
-        }
-        
-        return toReturn;
+        return set.toList();
     }
-    
-    public Object remove(int index)
-    {
-        Object obj = get(index);
-        Object toReturn = null;
-                
-        if(contains(obj))
-        {
-            Stmt successor;
-            
-            if(index + 1 < size())
-                successor = (Stmt) get(index + 1);
-            else if(size() >= 2)
-                successor = (Stmt) get(index - 1);
-            else
-                successor = null;
-            
-            toReturn = super.remove(index);
-            
-            body.redirectJumps((Stmt) obj, successor);
-            body.eliminateBackPointersTo((Stmt) obj);
-            
-        }
+      */
         
-        return toReturn;
+    public List getLiveLocalsAfter(Stmt s)
+    {
+        return (List) stmtToLocals.get(s);
     }
-    
-    public boolean removeAll(Collection c)
-    {
-        throw new UnsupportedOperationException();
-    }
-    
-    void testIntegrity(String message)
-    {
-        Iterator stmtIt = iterator();
-         
-        while(stmtIt.hasNext())
-        {
-            Stmt s = (Stmt) stmtIt.next();
-            Iterator boxIt = s.getStmtBoxes().iterator();
-            
-            while(boxIt.hasNext())
-            {
-                StmtBox box = (StmtBox) boxIt.next();
-                Stmt pointed = box.getStmt();
-                
-                if(!contains(pointed))
-                    throw new RuntimeException(message + "Statement no longer contained");
-                     
-                if(!pointed.getBoxesPointingToThis().contains(box))
-                    throw new RuntimeException(message + "back pointer not set");
-            }
-        }
-        
-        stmtIt = iterator();
-        
-        while(stmtIt.hasNext())
-        {
-            Stmt s = (Stmt) stmtIt.next();
-            List boxes = s.getBoxesPointingToThis();
-            
-            Iterator it = boxes.iterator();
-            
-            while(it.hasNext())
-            {
-                StmtBox box = (StmtBox) it.next();
-                
-                if(box.getStmt() != s)
-                    throw new RuntimeException(message + "back pointer still set");
-            }
-        }
-        
-        stmtIt = iterator();
-        
-        while(stmtIt.hasNext())
-        {
-            Stmt s = (Stmt) stmtIt.next();
-            Iterator boxIt = s.getStmtBoxes().iterator();
-            
-            while(boxIt.hasNext())
-            {
-                StmtBox box = (StmtBox) boxIt.next();
-                
-                if(indexOf(box.getStmt()) == -1)
-                {
-                    System.out.println("looking for: " + box.getStmt());
-                    throw new RuntimeException(message + "[failed integrity test for: " + s + "]");
-                }
-            }
-        }
-    }            
 }
 
+class LiveLocalsAnalysis extends BackwardFlowAnalysis
+{
+    FlowSet emptySet;
+    Map stmtToGenerateSet;
+    Map stmtToPreserveSet;
+    
+    LiveLocalsAnalysis(StmtGraph g)
+    {
+        super(g);
+        
+        
+        // Generate list of locals and empty set
+        {
+            List locals = g.getBody().getLocals();
+            FlowUniverse localUniverse = new FlowUniverse(locals.toArray());
+            
+            emptySet = PackSet.v(localUniverse);
+        }
+                   
+        // Create preserve sets.
+        {
+            stmtToPreserveSet = new HashMap(g.size() * 2 + 1, 0.7f);
+            
+            Iterator stmtIt = g.iterator();
+            
+            while(stmtIt.hasNext())
+            {
+                Stmt s = (Stmt) stmtIt.next();
+                
+                FlowSet killSet = (FlowSet) emptySet.clone();
+                
+                Iterator boxIt = s.getDefBoxes().iterator();
+                
+                while(boxIt.hasNext())
+                {
+                    ValueBox box = (ValueBox) boxIt.next();
+                    
+                    if(box.getValue() instanceof Local)
+                        killSet.add(box.getValue(), killSet);
+                }
+                
+                // Store complement           
+                    killSet.complement(killSet);       
+                    stmtToPreserveSet.put(s, killSet);
+            }
+        }
+            
+        // Create generate sets
+        {
+            stmtToGenerateSet = new HashMap(g.size() * 2 + 1, 0.7f);
+            
+            Iterator stmtIt = g.iterator();
+            
+            while(stmtIt.hasNext())
+            {
+                Stmt s = (Stmt) stmtIt.next();
+                
+                FlowSet genSet = (FlowSet) emptySet.clone();
+                
+                Iterator boxIt = s.getUseBoxes().iterator();
+                
+                while(boxIt.hasNext())
+                {
+                    ValueBox box = (ValueBox) boxIt.next();
+                    
+                    if(box.getValue() instanceof Local)
+                        genSet.add(box.getValue(), genSet);
+                }
+                        
+                stmtToGenerateSet.put(s, genSet);
+            }
+        }
+        
+        doAnalysis();
+    }
+    
+    protected Flow getInitialFlow()
+    {
+        return emptySet;
+    }
+    
+    protected void flowThrough(Flow inValue, Stmt stmt, Flow outValue)
+    {
+        FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
+
+        // Perform kill
+            in.intersection((FlowSet) stmtToPreserveSet.get(stmt), out);
+        
+        // Perform generation
+            out.union((FlowSet) stmtToGenerateSet.get(stmt), out);        
+    }
+    
+    protected void merge(Flow in1, Flow in2, Flow out)
+    {
+        FlowSet inSet1 = (FlowSet) in1,
+            inSet2 = (FlowSet) in2;
+            
+        FlowSet outSet = (FlowSet) out;
+        
+        inSet1.union(inSet2, outSet);
+    }
+}

@@ -104,7 +104,7 @@ public class Jimple implements BodyRepresentation
     
     public Body getBodyOf(SootMethod m)
     {
-        return new StmtBody(m);
+        return new JimpleBody(m);
    
     }
         
@@ -122,12 +122,12 @@ public class Jimple implements BodyRepresentation
         Main.noLocalPacking = !flag;
     }
     
-    static void printStmtBody(StmtBody stmtBody, java.io.PrintWriter out, boolean isPrecise)
+    static void printJimpleBody(JimpleBody stmtBody, java.io.PrintWriter out, boolean isPrecise)
     {
         StmtList stmtList = stmtBody.getStmtList();
         
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
-        StmtGraph stmtGraph = new StmtGraph(stmtList, false);
+        StmtGraph stmtGraph = new BriefStmtGraph(stmtList);
         
         // Create statement name table
         {
@@ -204,8 +204,7 @@ public class Jimple implements BodyRepresentation
 
         // Print out exceptions
         {
-            StmtTrapTable trapTable = stmtBody.getTrapTable();
-            Iterator trapIt = trapTable.getTraps().iterator();
+            Iterator trapIt = stmtBody.getTraps().iterator();
             
             if(trapIt.hasNext())
                 out.println();
@@ -221,13 +220,13 @@ public class Jimple implements BodyRepresentation
         }
     }
 
-    static void printStmtBody_debug(StmtBody stmtBody, java.io.PrintWriter out)
+    static void printJimpleBody_debug(JimpleBody stmtBody, java.io.PrintWriter out)
     {
         StmtList stmtList = stmtBody.getStmtList();
         
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
         
-        StmtGraph stmtGraph = new StmtGraph(stmtList, false);
+        StmtGraph stmtGraph = new BriefStmtGraph(stmtList);
         
         /*        
         System.out.println("Constructing LocalDefs of " + stmtBody.getMethod().getName() + "...");
@@ -239,11 +238,11 @@ public class Jimple implements BodyRepresentation
         LocalUses localUses = new LocalUses(stmtGraph, localDefs);       
         
         LocalCopies localCopies = new LocalCopies(stmtGraph);
-        */
                 
         System.out.println("Constructing LiveLocals of " + stmtBody.getMethod().getName() + " ...");
         LiveLocals liveLocals = new LiveLocals(stmtGraph);
-
+        */
+        
         // Create statement name table
         {
            int labelCount = 0;
@@ -266,7 +265,8 @@ public class Jimple implements BodyRepresentation
                         
             printStmtPrecisely(s, stmtToName, "        ", out);
             out.print(";");
-
+        /*
+        
             // Print info about live locals
             {
                 Iterator localIt = liveLocals.getLiveLocalsAfter(s).iterator();
@@ -284,7 +284,7 @@ public class Jimple implements BodyRepresentation
             
                 out.print("]");
             }
-            
+        */    
             
 
              /*                
@@ -379,8 +379,7 @@ public class Jimple implements BodyRepresentation
 
         // Print out exceptions
         {
-            StmtTrapTable stmtTrapTable = stmtBody.getTrapTable();
-            Iterator trapIt = stmtTrapTable.getTraps().iterator();
+            Iterator trapIt = stmtBody.getTraps().iterator();
             
             while(trapIt.hasNext())
             {
@@ -396,7 +395,7 @@ public class Jimple implements BodyRepresentation
      static void printMethodBody(SootMethod method, java.io.PrintWriter out, boolean isPrecise)
     {         
         //System.out.println("Constructing the graph of " + getName() + "...");
-        StmtBody stmtBody = (StmtBody) method.getBody(Jimple.v());
+        JimpleBody stmtBody = (JimpleBody) method.getBody(Jimple.v());
         StmtList stmtList = stmtBody.getStmtList();
         
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);        
@@ -505,7 +504,7 @@ public class Jimple implements BodyRepresentation
         }
             
         // Print out statements
-            printStmtBody(stmtBody, out, isPrecise);
+            printJimpleBody(stmtBody, out, isPrecise);
                                                 
         out.println("    }");
     }

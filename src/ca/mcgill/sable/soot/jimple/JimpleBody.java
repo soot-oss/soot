@@ -92,31 +92,30 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.baf.*;
 
-public class StmtBody implements Body
+public class JimpleBody implements Body
 {
     List locals = new ArrayList();
     SootMethod method;
         
     Local thisLocal;
-    StmtTrapTable stmtTrapTable;
     StmtList stmtList;
-
+    List traps = new ArrayList();
+    
     /** 
-     * Builds the StmtBody for this method from the Baf InstList.
+     * Builds the JimpleBody for this method from the Baf InstList.
      */
      
-    StmtBody(SootMethod m)
+    JimpleBody(SootMethod m)
     {
         this((InstBody) Baf.v().getBodyOf(m));
     }
                 
-    StmtBody(InstBody instBody)
+    JimpleBody(InstBody instBody)
     {
         super();
         
         this.method = instBody.getMethod();
         this.stmtList = new StmtList(this);
-        this.stmtTrapTable = new StmtTrapTable();
                 
         ca.mcgill.sable.soot.coffi.ClassFile coffiClass = instBody.coffiClass;
         ca.mcgill.sable.soot.coffi.method_info coffiMethod = instBody.coffiMethod;
@@ -392,19 +391,31 @@ public class StmtBody implements Body
         
         // Put in all statement boxes from the trap table
         {
-            stmtBoxes.addAll(getTrapTable().getStmtBoxes());
+            Iterator trapIt = traps.iterator();
+            
+            while(trapIt.hasNext())
+            {
+                StmtTrap trap = (StmtTrap) trapIt.next();
+                stmtBoxes.addAll(trap.getStmtBoxes());
+            }
         }
 
         return stmtBoxes;        
     }
 
-    public StmtTrapTable getTrapTable()
+    public List getTraps()
     {
-        return stmtTrapTable;
-    }    
-    
-    public void setTrapTable(StmtTrapTable table)
-    {
-        this.stmtTrapTable = table;
+        return traps;
     }
-}
+    
+    public void addTrap(StmtTrap t)
+    {
+        traps.add(t);
+    }
+    
+    public void removeTrap(StmtTrap t)
+    {
+        traps.remove(t);
+    }
+}    
+    

@@ -89,12 +89,12 @@ public class StmtGraph
     int size;
     StmtList stmtList;
     
-    public StmtBody getBody()
+    public JimpleBody getBody()
     {  
         return stmtList.getBody();
     }
      
-    protected StmtGraph(StmtList stmtList, boolean addExceptionEdges)
+    StmtGraph(StmtList stmtList, boolean addExceptionEdges)
     {
         this.stmtList = stmtList;
         this.method = getBody().getMethod();
@@ -217,7 +217,7 @@ public class StmtGraph
             // Add exception based successors            
                 if(addExceptionEdges)
                 {
-                    Iterator trapIt = getBody().getTrapTable().getTraps().
+                    Iterator trapIt = getBody().getTraps().
                         iterator();
                         
                     while(trapIt.hasNext())

@@ -86,7 +86,7 @@ import ca.mcgill.sable.util.*;
 
 class Transformations
 {    
-    public static void assignTypesToLocals(StmtBody listBody)
+    public static void assignTypesToLocals(JimpleBody listBody)
     {
         if(Main.isVerbose)
             System.out.println("[" + listBody.getMethod().getName() + "] assigning types to locals...");
@@ -160,7 +160,7 @@ class Transformations
         }
     }
     
-    public static void splitLocals(StmtBody listBody)
+    public static void splitLocals(JimpleBody listBody)
     {
         StmtList stmtList = listBody.getStmtList();
            
@@ -176,7 +176,7 @@ class Transformations
             if(Main.isProfilingOptimization)
                 Main.graphTimer.start();
         
-            StmtGraph graph = new StmtGraph(stmtList, true);
+            CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
             
             if(Main.isProfilingOptimization)
                 Main.graphTimer.end();
@@ -184,7 +184,7 @@ class Transformations
             if(Main.isProfilingOptimization)
                 Main.defsTimer.start();
         
-            LocalDefs localDefs = new LocalDefs(graph);
+            LocalDefs localDefs = new SimpleLocalDefs(graph);
             
             if(Main.isProfilingOptimization)
                 Main.defsTimer.end();
@@ -192,7 +192,7 @@ class Transformations
             if(Main.isProfilingOptimization)
                 Main.usesTimer.start();
         
-            LocalUses localUses = new LocalUses(graph, localDefs); 
+            LocalUses localUses = new SimpleLocalUses(graph, localDefs); 
    
             if(Main.isProfilingOptimization)
                 Main.usesTimer.end();
@@ -321,7 +321,7 @@ class Transformations
         }
     }     
     
-    public static void removeUnusedLocals(StmtBody listBody)
+    public static void removeUnusedLocals(JimpleBody listBody)
     {
         StmtList stmtList = listBody.getStmtList();
         Set unusedLocals = new HashSet();
@@ -379,7 +379,7 @@ class Transformations
         }    
     }
     
-    public static void packLocals(StmtBody body)
+    public static void packLocals(JimpleBody body)
     {
         StmtList stmtList = body.getStmtList();
         
@@ -391,7 +391,7 @@ class Transformations
             
         // Jimple.printStmtListBody_debug(body, new java.io.PrintWriter(System.out));
         
-        StmtGraph stmtGraph = new StmtGraph(stmtList, true);
+        CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
         
         if(Main.isProfilingOptimization)
             Main.graphTimer.end();
@@ -399,7 +399,7 @@ class Transformations
         if(Main.isProfilingOptimization)
             Main.liveTimer.start();
             
-        LiveLocals liveLocals = new LiveLocals(stmtGraph);
+        LiveLocals liveLocals = new SimpleLiveLocals(stmtGraph);
         
         if(Main.isProfilingOptimization)
             Main.liveTimer.end();
@@ -583,7 +583,7 @@ class Transformations
         
     }
     
-    public static void cleanupCode(StmtBody stmtBody)
+    public static void cleanupCode(JimpleBody stmtBody)
     {
         StmtList stmtList = stmtBody.getStmtList();
         int numPropagations = 0;
@@ -608,7 +608,7 @@ class Transformations
             if(Main.isProfilingOptimization)
                 Main.graphTimer.start();
                             
-            StmtGraph graph = new StmtGraph(stmtList, true);
+            CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
             
             if(Main.isProfilingOptimization)
                 Main.graphTimer.end();
@@ -620,7 +620,7 @@ class Transformations
             if(Main.isProfilingOptimization)
                 Main.defsTimer.start();
                         
-            LocalDefs localDefs = new LocalDefs(graph);
+            LocalDefs localDefs = new SimpleLocalDefs(graph);
             
             if(Main.isProfilingOptimization)
                 Main.defsTimer.end();
@@ -631,7 +631,7 @@ class Transformations
             if(Main.isProfilingOptimization)
                 Main.usesTimer.start();
             
-            LocalUses localUses = new LocalUses(graph, localDefs);
+            LocalUses localUses = new SimpleLocalUses(graph, localDefs);
             
             if(Main.isProfilingOptimization)
                 Main.usesTimer.end();
@@ -642,7 +642,7 @@ class Transformations
             if(Main.isProfilingOptimization)
                 Main.copiesTimer.start();
             
-            LocalCopies localCopies = new LocalCopies(graph);
+            LocalCopies localCopies = new SimpleLocalCopies(graph);
             
             if(Main.isProfilingOptimization)
                 Main.copiesTimer.end();
@@ -754,7 +754,7 @@ class Transformations
 
     }
 
-    public static void renameLocals(StmtBody body)
+    public static void renameLocals(JimpleBody body)
     { 
         StmtList stmtList = body.getStmtList();
         

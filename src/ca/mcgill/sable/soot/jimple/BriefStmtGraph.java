@@ -1,4 +1,5 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Jimple, a 3-address code Java(TM) bytecode representation.        *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
@@ -61,11 +62,8 @@
  *                                                                   *
 
  B) Changes:
-
- - Modified on 23-Jul-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   Renamed the uses of Hashtable to HashMap.
-
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ 
+ - Modified on October 24, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
  
@@ -74,7 +72,16 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public interface LocalUses
+public class BriefStmtGraph extends StmtGraph
 {
-    public List getUsesOf(DefinitionStmt s);
+    public BriefStmtGraph(StmtList stmtList)
+    {
+        super(stmtList, false);
+    }
 }
+
+
+
+
+
+

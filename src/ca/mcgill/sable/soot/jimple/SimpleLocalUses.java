@@ -62,6 +62,9 @@
 
  B) Changes:
 
+ - Modified on 23-Jul-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+   Renamed the uses of Hashtable to HashMap.
+
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
@@ -71,135 +74,77 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class StmtList extends ArrayList
+public class SimpleLocalUses implements LocalUses
 {
-    JimpleBody body;
+    Map stmtToUses;
     
-    public StmtList(JimpleBody body)
+    public SimpleLocalUses(CompleteStmtGraph graph, LocalDefs localDefs)
     {
-        super();
+        Map stmtToUseList = new HashMap(graph.size() * 2 + 1, 0.7f);
         
-        this.body = body;
-    }
-     
-    public JimpleBody getBody()
-    {
-        return body;
-    }
-       
-    public boolean remove(Object obj)
-    {
-        boolean toReturn = false;
-        
-        if(contains(obj))
+        // Initialize this map to empty sets
         {
-            int index = indexOf(obj);
-            Stmt successor;
-            
-            if(index + 1 < size())
-                successor = (Stmt) get(index + 1);
-            else if(size() >= 2)
-                successor = (Stmt) get(index - 1);
-            else
-                successor = null;
-
-            toReturn = super.remove(obj);
-            body.redirectJumps((Stmt) obj, successor);
-            body.eliminateBackPointersTo((Stmt) obj);            
-        }
-        
-        return toReturn;
-    }
-    
-    public Object remove(int index)
-    {
-        Object obj = get(index);
-        Object toReturn = null;
-                
-        if(contains(obj))
-        {
-            Stmt successor;
-            
-            if(index + 1 < size())
-                successor = (Stmt) get(index + 1);
-            else if(size() >= 2)
-                successor = (Stmt) get(index - 1);
-            else
-                successor = null;
-            
-            toReturn = super.remove(index);
-            
-            body.redirectJumps((Stmt) obj, successor);
-            body.eliminateBackPointersTo((Stmt) obj);
-            
-        }
-        
-        return toReturn;
-    }
-    
-    public boolean removeAll(Collection c)
-    {
-        throw new UnsupportedOperationException();
-    }
-    
-    void testIntegrity(String message)
-    {
-        Iterator stmtIt = iterator();
-         
-        while(stmtIt.hasNext())
-        {
-            Stmt s = (Stmt) stmtIt.next();
-            Iterator boxIt = s.getStmtBoxes().iterator();
-            
-            while(boxIt.hasNext())
-            {
-                StmtBox box = (StmtBox) boxIt.next();
-                Stmt pointed = box.getStmt();
-                
-                if(!contains(pointed))
-                    throw new RuntimeException(message + "Statement no longer contained");
-                     
-                if(!pointed.getBoxesPointingToThis().contains(box))
-                    throw new RuntimeException(message + "back pointer not set");
-            }
-        }
-        
-        stmtIt = iterator();
-        
-        while(stmtIt.hasNext())
-        {
-            Stmt s = (Stmt) stmtIt.next();
-            List boxes = s.getBoxesPointingToThis();
-            
-            Iterator it = boxes.iterator();
+            Iterator it = graph.iterator();
             
             while(it.hasNext())
             {
-                StmtBox box = (StmtBox) it.next();
+                Stmt s = (Stmt) it.next();
                 
-                if(box.getStmt() != s)
-                    throw new RuntimeException(message + "back pointer still set");
+                stmtToUseList.put(s, new ArrayList());
             }
         }
         
-        stmtIt = iterator();
-        
-        while(stmtIt.hasNext())
+        // Traverse stmts and associate uses with definitions
         {
-            Stmt s = (Stmt) stmtIt.next();
-            Iterator boxIt = s.getStmtBoxes().iterator();
-            
-            while(boxIt.hasNext())
+            Iterator it = graph.iterator();
+                        
+            while(it.hasNext())
             {
-                StmtBox box = (StmtBox) boxIt.next();
+                Stmt s = (Stmt) it.next();
                 
-                if(indexOf(box.getStmt()) == -1)
+                Iterator boxIt = s.getUseBoxes().iterator();
+                
+                while(boxIt.hasNext())
                 {
-                    System.out.println("looking for: " + box.getStmt());
-                    throw new RuntimeException(message + "[failed integrity test for: " + s + "]");
+                    ValueBox useBox = (ValueBox) boxIt.next();
+                    
+                    if(useBox.getValue() instanceof Local)
+                    {
+                        // Add this statement to the uses of the definition of the local
+                        
+                        Local l = (Local) useBox.getValue();
+                        
+                        List possibleDefs = localDefs.getDefsOfAt(l, s);
+                        Iterator defIt = possibleDefs.iterator();
+                        
+                        while(defIt.hasNext())
+                        {
+                            List useList = (List) stmtToUseList.get(defIt.next());
+                            
+                            useList.add(new StmtValueBoxPair(s, useBox));
+                        }
+                    }
                 }
             }
         }
-    }            
-}
+        
+        // Store the map as a bunch of unmodifiable lists.
+        {
+            stmtToUses = new HashMap(graph.size() * 2 + 1, 0.7f);
+            
+            Iterator it = graph.iterator();
+            
+            while(it.hasNext())
+            {
+                Stmt s = (Stmt) it.next();
 
+                stmtToUses.put(s, Collections.unmodifiableList(((List) stmtToUseList.get(s))));
+            }
+        }
+    }
+    
+    public List getUsesOf(DefinitionStmt s)
+    {
+        return (List) stmtToUses.get(s);
+    }
+}

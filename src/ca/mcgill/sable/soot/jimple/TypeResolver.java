@@ -124,7 +124,7 @@ class TypeResolver
     
     /** This constructor triggers the type resolution of 
         local variables of the given statement list body. **/
-    private TypeResolver(StmtBody stmtBody)
+    private TypeResolver(JimpleBody stmtBody)
     {
         try {
         
@@ -415,7 +415,7 @@ class TypeResolver
     }
 
     /** Assign types to local variables. **/
-    public static void assignTypesToLocals(StmtBody stmtBody)
+    public static void assignTypesToLocals(JimpleBody stmtBody)
     {
         new TypeResolver(stmtBody);
     }

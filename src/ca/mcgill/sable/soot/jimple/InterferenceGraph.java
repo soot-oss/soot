@@ -87,7 +87,7 @@ public class InterferenceGraph
     {
     }
         
-    public InterferenceGraph(StmtBody body, Type type, LiveLocals liveLocals)
+    public InterferenceGraph(JimpleBody body, Type type, LiveLocals liveLocals)
     {
         StmtList stmtList = body.getStmtList();
         

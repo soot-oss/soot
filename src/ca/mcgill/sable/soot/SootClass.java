@@ -81,7 +81,12 @@ import java.io.PrintStream;
  * notifyOfNameChange() method, and register fields which belong to classes, because the hashtable
  * will need to be updated.  I will do this later. - kor  16-Sep-97
  */
-
+/**
+    Instances of this class represent Java classes.  They are usually created by a SootClassManager, 
+    but can also be constructed manually through the given constructors.
+    
+*/
+ 
 public class SootClass
 {
     String name;
@@ -95,14 +100,22 @@ public class SootClass
     
     SootClass superClass;
     boolean isResolved;
-                
+
+    /**
+        Constructs an empty SootClass with the given name and modifiers.
+    */
+                    
     public SootClass(String name, int modifiers)
     {
         this.name = name;
         this.modifiers = modifiers;
         isResolved = false;
     }
-
+    
+    /**
+        Constructs an empty SootClass with the given name and no modifiers.
+    */
+    
     public SootClass(String name)
     {
         this.name = name;
@@ -127,15 +140,29 @@ public class SootClass
     }
     */
     
+    /**
+        Have the methods and fields for this class been loaded? False indicates that the class has been referred
+        to but is not resolved in this sense.
+    */
+    
     public boolean isResolved()
     {
         return isResolved;
     }
     
+    /**
+        Establishes the resolution state of the class (see isResolved()).  This is useful when
+        constructing the class such as with Coffi.
+    */
+    
     public void setResolved(boolean flag)
     {
         isResolved = flag;   
     }
+    
+    /**
+        Resolves the class by loading the fields and methods from the original class file.  This creates SootFields and SootMethods.
+    */
     
     public void resolve()
     {
@@ -156,21 +183,37 @@ public class SootClass
             Main.resolveTimer.end(); */
     }
     
+    /**
+        Resolves the class if it has not been resolved yet.
+    */
+    
     public void resolveIfNecessary()
     {
         if(!isResolved)
             resolve();
     }
     
+    /**
+        Is this class being managed by a SootClassManager? A class may be unmanaged  while it is being constructed.
+    */
+    
     public boolean isManaged()
     {
         return isManaged;
     }
-
+    
+    /**
+        Returns the SootClassManager of this class.
+    */
+        
     public SootClassManager getManager() throws NotManagedException
     {
         return manager;
     }
+    
+    /**
+        Returns the number of fields in this class.
+    */
             
     public int getFieldCount()
     {
@@ -195,6 +238,10 @@ public class SootClass
     }
     */
     
+    /**
+        Adds the given field to this class.
+    */
+    
     public void addField(SootField f) throws AlreadyDeclaredException, DuplicateNameException
     {
         resolveIfNecessary();
@@ -210,7 +257,11 @@ public class SootClass
         f.isDeclared = true;
         f.declaringClass = this;
     }
-
+    
+    /**
+        Removes the given field from this class.
+    */
+    
     public void removeField(SootField f) throws IncorrectDeclarerException
     {
         resolveIfNecessary();
@@ -221,6 +272,10 @@ public class SootClass
         fields.remove(f);
         f.isDeclared = false;
     }
+    
+    /**
+        Returns the field of this class with the given name.
+    */
     
     public SootField getField(String name) throws ca.mcgill.sable.soot.NoSuchFieldException
     {
@@ -239,6 +294,10 @@ public class SootClass
         throw new ca.mcgill.sable.soot.NoSuchFieldException("No field " + name + " in class " + getName());
     }
     
+    /**
+        Does this class declare a field with the given name?
+    */
+    
     public boolean declaresField(String name) 
     {   
         resolveIfNecessary();
@@ -256,6 +315,10 @@ public class SootClass
         return false;
     }
     
+    /**
+        Returns the number of methods in this class.
+    */
+    
     public int getMethodCount()
     {
         return methods.size();
@@ -271,6 +334,11 @@ public class SootClass
         
         return methods;
     }
+    
+    /**
+        Returns the method of this class with the given signature.  The signature consists of a name
+        and a list of parameter types.
+    */
     
     public SootMethod getMethod(String name, List parameterTypes) throws 
         ca.mcgill.sable.soot.NoSuchMethodException
@@ -291,6 +359,10 @@ public class SootClass
            
         throw new ca.mcgill.sable.soot.NoSuchMethodException();
     }
+    
+    /**
+        Does this class declare a method with the given signature? (see getMethod(String, List))
+    */
     
     public boolean declaresMethod(String name, List parameterTypes) 
     {
@@ -317,6 +389,10 @@ public class SootClass
     } 
     */
     
+    /**
+        Adds the given method to this class.
+    */
+    
     public void addMethod(SootMethod m) throws AlreadyDeclaredException, DuplicateNameException
     {
         resolveIfNecessary();
@@ -332,6 +408,10 @@ public class SootClass
         m.declaringClass = this;
     }
     
+    /**
+        Removes the given method from this class.
+    */
+    
     public void removeMethod(SootMethod m) throws IncorrectDeclarerException
     {
         resolveIfNecessary();
@@ -343,11 +423,19 @@ public class SootClass
         m.isDeclared = false;
     }
     
+    /**
+        Returns the modifiers of this class.
+    */
+    
     public int getModifiers() 
     {
         resolveIfNecessary();
         return modifiers;
     }
+    
+    /**
+        Sets the modifiers for this class.
+    */
     
     public void setModifiers(int modifiers) 
     {
@@ -355,13 +443,20 @@ public class SootClass
         this.modifiers = modifiers;
     }
     
+    /**
+        Returns the number of interfaces being directly implemented by this class.  Note that direct
+        implementation corresponds to an "implements" keyword in the Java class file and that this class may
+        still be implementing additional interfaces in the usual sense by being a subclass of a class
+        which directly implements some interfaces.
+    */
+    
     public int getInterfaceCount()
     {
         return interfaces.size();
     }
     
     /**
-     * Returns a backed list of interfaces.
+     * Returns a backed list of the  interfaces that are direclty implemented by this class. (see getInterfaceCount())
      */
      
     public List getInterfaces() 
@@ -370,6 +465,10 @@ public class SootClass
         
         return interfaces;
     }
+    
+    /**
+        Does this class directly implement the given interface? (see getInterfaceCount())
+    */
     
     public boolean implementsInterface(String name)
     {
@@ -389,8 +488,8 @@ public class SootClass
     }
     
     /**
-     * @exception DuplicateNameException    if this class already implements the given interface
-     */
+        Add the given class to the list of interfaces which are directly implemented by this class. 
+    */
      
     public void addInterface(SootClass interfaceClass) throws DuplicateNameException
     {
@@ -400,6 +499,10 @@ public class SootClass
             
         interfaces.add(interfaceClass);
     }
+    
+    /**
+        Removes the given class from the list of interfaces which are direclty implemented by this class.
+    */
     
     public void removeInterface(SootClass interfaceClass) throws NoSuchInterfaceException 
     {
@@ -416,12 +519,22 @@ public class SootClass
     }
     */
     
+    /**
+        Does this class have a superclass? False implies that this is the java.lang.Object class.  Note that interfaces are subclasses
+        of the java.lang.Object class.
+    */
+    
+        
     public boolean hasSuperClass()
     {
         resolveIfNecessary();
         
         return superClass != null;
     }
+    
+    /**
+        Returns the superclass of this class. (see hasSuperClass())
+    */
     
     public SootClass getSuperClass() throws NoSuperClassException 
     {
@@ -432,9 +545,9 @@ public class SootClass
             return superClass;
     }
     
-    /** 
-     * Pass this function a null to unset the super class.
-     */
+    /**
+        Sets the superclass of this class.  Note that passing a null will cause the class to have no superclass. 
+    */
          
     public void setSuperClass(SootClass c) 
     {
@@ -442,10 +555,18 @@ public class SootClass
         superClass = c;
     }
     
+    /**
+        Returns the name of this class.
+    */
+    
     public String getName()
     {
         return name;
     }   
+    
+    /**
+        Sets the name of this class.
+    */
     
     public void setName(String name) throws DuplicateNameException
     {

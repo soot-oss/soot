@@ -480,7 +480,7 @@ public class Util
         classNameToAbbreviation = map;
     }
     
-    static Local getLocalForStackOp(StmtBody listBody, TypeStack typeStack,
+    static Local getLocalForStackOp(JimpleBody listBody, TypeStack typeStack,
         int index)
     {
         if(typeStack.get(index).equals(Double2ndHalfType.v()) || 
@@ -542,7 +542,7 @@ public class Util
     }
 
      static Local 
-        getLocalCreatingIfNecessary(StmtBody listBody, String name, Type type)
+        getLocalCreatingIfNecessary(JimpleBody listBody, String name, Type type)
     {        
         if(listBody.declaresLocal(name))
         {
@@ -556,7 +556,7 @@ public class Util
         }
     } 
         
-    static Local getLocalForIndex(StmtBody listBody, int index)
+    static Local getLocalForIndex(JimpleBody listBody, int index)
     {
         String name = "l" + index;
         
