@@ -1576,7 +1576,6 @@ public class CFG {
 			newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef());
 			
 			units.insertBefore(newTarget, firstTargetStmt);
-                        instructionToFirstStmt.put(targetIns, newTarget);
 			targetToHandler.put(firstTargetStmt, newTarget);
 		    }
 		}
@@ -1650,6 +1649,21 @@ public class CFG {
 		    }
 		}
 	    }
+
+	    /* if the predecessor of a statement is a caughtexcetionref,
+             * give it the tag of its successor */
+            for( Iterator stmtIt = new ArrayList(stmtstags.keySet()).iterator(); stmtIt.hasNext(); ) {
+                final Stmt stmt = (Stmt) stmtIt.next();
+                Stmt pred = stmt;
+                Tag tag = (Tag) stmtstags.get(stmt);
+                while(true) {
+                    pred = (Stmt)units.getPredOf(pred);
+                    if( pred == null ) break;
+                    if(!(pred instanceof IdentityStmt)) break;
+                    stmtstags.put(pred, tag);
+                    pred.addTag(tag);
+                }
+            }
 
 	    /* attach line number tag to each statement. */
 	    for (int i=0; i<startstmts.size(); i++)
