@@ -8275,7 +8275,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setProcessing_Optionsomit_excepting_unit_edges_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Omit Excepting Unit Edges", "", "","omit-excepting-unit-edges", "\nWhen constructing ExceptionalUnitGraph and \nExceptionalBlockGraph include edges to an exception handler only \nfrom the predecessors of an instruction which may throw an \nexceptions to the handler, and not from the excepting \ninstruction itself, unless the excepting instruction has \npotential side effects. Omitting edges from excepting units \nallows more accurate flow analyses (since if an instruction \nwithout side effects throws an exception, it has not changed the \nstate of the computation). This accuracy, though, could lead \noptimizations to generate unverifiable code, since the dataflow \nanalyses performed by bytecode verifiers might include paths to \nexception handlers from all protected instructions, regardless \nof whether the instructions have side effects. (In practice, \nthe pedantic throw analysis suffices to pass verification in all \nVMs tested with Soot to date, but the JVM specification does \nallow for less discriminating verifiers which would reject some \ncode that could be generated using the pedantic throw analysis \nwithout also adding edges from all excepting units.)", defaultBool)));
+		setProcessing_Optionsomit_excepting_unit_edges_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Omit Excepting Unit Edges", "", "","omit-excepting-unit-edges", "\nWhen constructing an ExceptionalUnitGraph or \nExceptionalBlockGraph, include edges to an exception handler \nonly from the predecessors of an instruction which may throw an \nexceptions to the handler, and not from the excepting \ninstruction itself, unless the excepting instruction has \npotential side effects. Omitting edges from excepting units \nallows more accurate flow analyses (since if an instruction \nwithout side effects throws an exception, it has not changed the \nstate of the computation). This accuracy, though, could lead \noptimizations to generate unverifiable code, since the dataflow \nanalyses performed by bytecode verifiers might include paths to \nexception handlers from all protected instructions, regardless \nof whether the instructions have side effects. (In practice, \nthe pedantic throw analysis suffices to pass verification in all \nVMs tested with Soot to date, but the JVM specification does \nallow for less discriminating verifiers which would reject some \ncode that might be generated using the pedantic throw analysis \nwithout also adding edges from all excepting units.)", defaultBool)));
 		
 		
 		
@@ -8291,7 +8291,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setProcessing_Optionstrim_cfgs_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Trim CFGs", "", "","trim-cfgs", "\nWhen constructing CFGs which include exceptional edges, do not \ninclude assume that every instruction protected by an exception \nhandler has the potential to throw an exception to the handler. \nInstead, minimize the number of edges to the handler by \nanalyzing which instructions may actually throw instructions to \nit.-trim-cfgs is shorthand for -throw-analysis unit \n-omit-excepting-unit-edges -p jb.tt enabled:true.", defaultBool)));
+		setProcessing_Optionstrim_cfgs_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Trim CFGs", "", "","trim-cfgs", "\nWhen constructing CFGs which include exceptional edges, \nminimize the number of edges leading to exception handlers by \nanalyzing which instructions might actually be executed before \nan exception is thrown, instead of assuming that every \ninstruction protected by a handler has the potential to throw an \nexception the handler catches. -trim-cfgs is shorthand for \n-throw-analysis unit -omit-excepting-unit-edges -p jb.tt \nenabled:true.", defaultBool)));
 		
 		
 		
@@ -8299,7 +8299,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Pedantic",
 		"pedantic",
-		"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, because the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread. ",
+		"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, since the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread. ",
 		
 		true),
 		
