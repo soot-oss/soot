@@ -24,9 +24,6 @@
  */
 
 
-
-
-
 package soot.jimple;
 
 import soot.*;
@@ -49,6 +46,11 @@ public class ThisRef implements IdentityRef, ToBriefString
             return thisType.equals(((ThisRef)o).thisType);
         }
         return false;
+    }
+
+    public int equivHashCode()
+    {
+        return thisType.hashCode();
     }
     
     public String toString()

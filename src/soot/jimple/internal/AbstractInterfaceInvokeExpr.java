@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
@@ -62,6 +58,12 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
             return true;
         }
         return false;
+    }
+
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return baseBox.getValue().equivHashCode() * 101 + method.equivHashCode() * 17;
     }
 
     public abstract Object clone();

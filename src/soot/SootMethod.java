@@ -100,6 +100,12 @@ public class SootMethod extends AbstractHost implements ClassMember
         return false;
     }
 
+    /** Returns a hash code for this method consistent with structural equality. */
+    public int equivHashCode()
+    {
+        return returnType.hashCode() * 101 + modifiers * 17 + name.hashCode();
+    }
+
     /** Constructs a SootMethod with the given name, parameter types and return type. */
     public SootMethod(String name, List parameterTypes, Type returnType)
     {

@@ -13,12 +13,12 @@ public class PartialRedundancyEliminator extends BodyTransformer
 
     public static PartialRedundancyEliminator v() { return instance; }
 
-    class StructurallyEqualValue
+    class EquivalentValue
     {
         Value e;
-        public StructurallyEqualValue(Value e) { this.e = e; }
-        public boolean equals(Object o) { return e.equivTo(((StructurallyEqualValue)o).e); }
-        public int hashCode() { return 5; }
+        public EquivalentValue(Value e) { this.e = e; }
+        public boolean equals(Object o) { return e.equivTo(((EquivalentValue)o).e); }
+        public int hashCode() { return e.equivHashCode(); }
     }
 
     protected void internalTransform(Body b, String phaseName, Map options)
@@ -30,7 +30,7 @@ public class PartialRedundancyEliminator extends BodyTransformer
         ArrayList exprs = new ArrayList();
         HashSet exprSet = new HashSet();
 
-                StructurallyEqualValue l = null;
+        EquivalentValue l = null;
 
         while (unitsIt.hasNext())
         {
@@ -39,7 +39,7 @@ public class PartialRedundancyEliminator extends BodyTransformer
             if (s instanceof AssignStmt)
             {
                 Value v = ((AssignStmt)s).getRightOp();
-                StructurallyEqualValue ev = new StructurallyEqualValue(v);
+                EquivalentValue ev = new EquivalentValue(v);
 
                 if (l != null)
                     System.out.println("got value "+v+" last was "+l+" equality "+ev.equals(l));

@@ -90,6 +90,13 @@ public abstract class AbstractBinopExpr implements Expr, ToBriefString
         return false;
     }
 
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return op1Box.getValue().equivHashCode() * 101 + op2Box.getValue().equivHashCode() + 17
+            ^ getSymbol().hashCode();
+    }
+
     /** Returns the unique symbol for an operator. */
     abstract protected String getSymbol();
     abstract public Object clone();

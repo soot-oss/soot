@@ -59,7 +59,6 @@ public class JArrayRef implements ArrayRef, ConvertToBaf, EquivTo
         return new JArrayRef(Jimple.cloneIfNecessary(getBase()), Jimple.cloneIfNecessary(getIndex()));
     }
 
-
     public boolean equivTo(Object o)
     {
         if (o instanceof ArrayRef)
@@ -68,6 +67,12 @@ public class JArrayRef implements ArrayRef, ConvertToBaf, EquivTo
                     && getIndex().equivTo(((ArrayRef)o).getIndex()));
           }
         return false;
+    }
+
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return getBase().equivHashCode() * 101 + getIndex().equivHashCode() + 17;
     }
 
     public String toString()

@@ -45,6 +45,12 @@ public abstract class AbstractNewExpr implements NewExpr
         return false;
     }
 
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return type.hashCode();
+    }
+
     public abstract Object clone(); 
 
     public String toString()

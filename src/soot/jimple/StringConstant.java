@@ -53,6 +53,12 @@ public class StringConstant extends Constant implements Switchable, ToBriefStrin
         return (c instanceof StringConstant && ((StringConstant) c).value.equals(this.value));
     }
 
+    /** Returns a hash code for this StringConstant object. */
+    public int hashCode()
+    {
+        return value.hashCode();
+    }
+
     public String toString()
     {
         return StringTools.getQuotedStringOf(value);

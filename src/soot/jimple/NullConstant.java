@@ -51,6 +51,11 @@ public class NullConstant extends Constant implements Switchable, ToBriefString
         return c == constant;
     }
 
+    public int hashCode() 
+    {
+        return 982;
+    }
+
     public String toString()
     {
         return Jimple.NULL;

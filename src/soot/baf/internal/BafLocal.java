@@ -55,6 +55,12 @@ public class BafLocal implements Local
         return false;
     }
 
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return name.hashCode() * 101 + type.hashCode() * 17;
+    }
+
     public Object clone()
     {
         return new BafLocal(name, type);

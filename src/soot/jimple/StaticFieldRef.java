@@ -91,6 +91,11 @@ public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf, Eq
         return false;
     }
 
+    public int equivHashCode()
+    {
+        return field.equivHashCode();
+    }
+
     public void convertToBaf(JimpleToBafContext context, List out)
     {
         out.add(Baf.v().newStaticGetInst(field));

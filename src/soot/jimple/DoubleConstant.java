@@ -52,6 +52,13 @@ public class DoubleConstant extends RealConstant implements Switchable, ToBriefS
         return (c instanceof DoubleConstant && ((DoubleConstant) c).value == this.value);
     }
 
+    /** Returns a hash code for this DoubleConstant object. */
+    public int hashCode()
+    {
+        long v = Double.doubleToLongBits(value);
+        return (int)(v^(v>>>32));
+    }
+
     // PTC 1999/06/28
     public NumericConstant add(NumericConstant c)
     {

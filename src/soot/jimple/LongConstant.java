@@ -52,6 +52,12 @@ public class LongConstant extends ArithmeticConstant implements Switchable, ToBr
         return c instanceof IntConstant && ((IntConstant) c).value == this.value;
     }
 
+    /** Returns a hash code for this DoubleConstant object. */
+    public int hashCode()
+    {
+        return (int)(value^(value>>>32));
+    }
+
     // PTC 1999/06/28
     public NumericConstant add(NumericConstant c)
     {

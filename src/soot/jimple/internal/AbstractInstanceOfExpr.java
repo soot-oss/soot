@@ -52,6 +52,12 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr
         return false;
     }
 
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return opBox.getValue().equivHashCode() * 101 + checkType.hashCode() * 17;
+    }
+
     public abstract Object clone();
     
     public String toString()

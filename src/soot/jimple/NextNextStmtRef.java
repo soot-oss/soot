@@ -24,9 +24,6 @@
  */
 
 
-
-
-
 package soot.jimple;
 
 import soot.*;
@@ -42,6 +39,12 @@ public class NextNextStmtRef implements ConcreteRef, ToBriefString
     public boolean equivTo(Object c)
     {
         return c instanceof NextNextStmtRef;
+    }
+
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return 513;
     }
 
     public Object clone() 

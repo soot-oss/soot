@@ -24,9 +24,6 @@
  */
 
 
-
-
-
 package soot.jimple;
 
 import soot.*;
@@ -47,10 +44,15 @@ public class FloatConstant extends RealConstant implements Switchable, ToBriefSt
         return new FloatConstant(value);
     }
 
-
     public boolean equals(Object c)
     {
         return c instanceof FloatConstant && ((FloatConstant) c).value == value;
+    }
+
+    /** Returns a hash code for this FloatConstant object. */
+    public int hashCode()
+    {
+        return Float.floatToIntBits(value);
     }
 
     // PTC 1999/06/28

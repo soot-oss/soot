@@ -24,9 +24,6 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.jimple.*;
@@ -65,6 +62,11 @@ public class SootField extends AbstractHost implements ClassMember, EquivTo
                 name.equals(sf.name);
         }
         return false;
+    }
+
+    public int equivHashCode()
+    {
+        return type.hashCode() * 101 + modifiers * 17 + name.hashCode();
     }
 
     public String getName()

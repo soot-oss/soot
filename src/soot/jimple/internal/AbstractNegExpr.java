@@ -49,6 +49,12 @@ public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExp
         return false;
     }
 
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return opBox.getValue().equivHashCode();
+    }
+
     public abstract Object clone();
 
     public String toString()

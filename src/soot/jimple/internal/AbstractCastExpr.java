@@ -61,6 +61,12 @@ abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
         return false;
     }
 
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return opBox.getValue().equivHashCode() * 101 + type.hashCode() + 17;
+    }
+
     public String toString()
     {
       if(Jimple.isJavaKeywordType(type))

@@ -52,6 +52,11 @@ public class IntConstant extends ArithmeticConstant implements Switchable, ToBri
         return c instanceof IntConstant && ((IntConstant) c).value == value;
     }
 
+    public int hashCode()
+    {
+        return value;
+    }
+
     // PTC 1999/06/28
     public NumericConstant add(NumericConstant c)
     {

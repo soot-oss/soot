@@ -59,4 +59,11 @@ public abstract class Constant implements Value, ConvertToBaf
     {
         return equals(c);
     }
+
+    /** Returns a hash code consistent with structural equality for this object.
+     * For Constants, equality is structural equality; we hope that each subclass defines hashCode() correctly. */
+    public int equivHashCode()
+    {
+        return hashCode();
+    }
 }

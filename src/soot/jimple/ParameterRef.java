@@ -59,6 +59,11 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
         }
         return false;
     }
+
+    public int equivHashCode()
+    {
+        return n * 101 + paramType.hashCode() * 17;
+    }
     
     /** Create a new ParameterRef object with the same paramType and number. */
     public Object clone() 

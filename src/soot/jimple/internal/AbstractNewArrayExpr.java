@@ -54,6 +54,12 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
         return false;
     }
 
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return sizeBox.getValue().equivHashCode() * 101 + baseType.hashCode() * 17;
+    }
+
     public abstract Object clone();
     
     public String toString()

@@ -42,11 +42,16 @@ public class JCaughtExceptionRef implements CaughtExceptionRef
         return c instanceof CaughtExceptionRef;
     }
 
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return 1729;
+    }
+
     public Object clone() 
     {
         return new JCaughtExceptionRef();
     }
-
 
     public String toString()
     {

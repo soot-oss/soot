@@ -39,13 +39,15 @@ public class JimpleLocal implements Local, ConvertToBaf
 
     int fixedHashCode;
     boolean isHashCodeChosen;
-        
+
+    /** Constructs a JimpleLocal of the given name and type. */
     public JimpleLocal(String name, Type t)
     {
         this.name = name;
         this.type = t;
     }
 
+    /** Returns true if the given object is structurally equal to this one. */
     public boolean equivTo(Object o)
     {
         if (o instanceof JimpleLocal)
@@ -56,21 +58,31 @@ public class JimpleLocal implements Local, ConvertToBaf
         return false;
     }
 
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return name.hashCode() * 101 + type.hashCode() * 17;
+    }
+
+    /** Returns a clone of the current JimpleLocal. */
     public Object clone()
     {
         return new JimpleLocal(name, type);
     }
 
+    /** Returns the name of this object. */
     public String getName()
     {
         return name;
     }
 
+    /** Sets the name of this object as given. */
     public void setName(String name)
     {
         this.name = name;
     }
 
+    /** Returns a hashCode consistent with object equality. */
     public int hashCode()
     {
         if(!isHashCodeChosen)
@@ -92,11 +104,13 @@ public class JimpleLocal implements Local, ConvertToBaf
         return fixedHashCode;
     }
     
+    /** Returns the type of this local. */
     public Type getType()
     {
         return type;
     }
 
+    /** Sets the type of this local. */
     public void setType(Type t)
     {
         this.type = t;

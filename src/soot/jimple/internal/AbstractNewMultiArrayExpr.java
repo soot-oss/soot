@@ -65,6 +65,12 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
         return false;
     }
 
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode() 
+    {
+        return baseType.hashCode();
+    }
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();
