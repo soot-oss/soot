@@ -37,7 +37,8 @@ import java.io.*;
 public class PrintJimpleBodyOption
 {
     public static final int USE_ABBREVIATIONS = 0x0001,
-                            DEBUG_MODE        = 0x0002;
+                            DEBUG_MODE        = 0x0002,
+                            NUMBERED          = 0x0004;
 
     protected PrintJimpleBodyOption()
     {
@@ -46,6 +47,11 @@ public class PrintJimpleBodyOption
     public static boolean useAbbreviations(int m)
     {
         return (m & USE_ABBREVIATIONS) != 0;
+    }
+
+    public static boolean numbered(int m)
+    {
+        return (m & NUMBERED) != 0;
     }
     
     public static boolean debugMode(int m)

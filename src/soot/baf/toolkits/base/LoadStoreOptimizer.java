@@ -64,7 +64,8 @@ public class LoadStoreOptimizer extends BodyTransformer
     private Map mUnitToBlockMap;     // maps a unit it's containing block
 
     private Map gOptions;
-       
+    private boolean gPass2 = false;
+
     private LoadStoreOptimizer()
     {
     }
@@ -125,7 +126,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 
   public String getDefaultOptions() 
   {
-    return "optimize-1 optimize-2 optimize-3 s-elimination sl-elimination sll-elimination case-2.1";
+    return "sl sll inter sl2 sll2";
   }
  
 
@@ -155,27 +156,29 @@ public class LoadStoreOptimizer extends BodyTransformer
         buildUnitToBlockMap();
         computeLocalDefsAndLocalUsesInfo(); 
         
-	if(Options.getBoolean(options, "optimize-1")) {
-	    optimizeLoadStores();    if(debug)  System.out.println("pass 1"); 
-	}
+
+	optimizeLoadStores(); 
+	if(debug)  System.out.println("pass 1"); 
+
 	  
-	if(Options.getBoolean(options, "optimize-2") ) {
+	if(Options.getBoolean(options, "inter") ) {
 	    doInterBlockOptimizations();  
 	    if(debug)  System.out.println("pass 2"); 
+		  
+	    computeLocalDefsAndLocalUsesInfo();
+	  
+	    //propagateLoadsBackwards();         if(debug)     System.out.println("pass 3");         
+	    //optimizeLoadStores();      if(debug)   System.out.println("pass 4"); 
+	    //propagateLoadsForward();   if(debug)   System.out.println("pass 5"); 
+	    //propagateBackwardsIndependentHunk(); if(debug)  System.out.println("pass 6"); 		       
 	}
-	  
-	computeLocalDefsAndLocalUsesInfo();
-	  
-	//propagateLoadsBackwards();         if(debug)     System.out.println("pass 3");         
-        //optimizeLoadStores();      if(debug)   System.out.println("pass 4"); 
-        //propagateLoadsForward();   if(debug)   System.out.println("pass 5"); 
-        //propagateBackwardsIndependentHunk(); if(debug)  System.out.println("pass 6"); 
-		
-	if(Options.getBoolean(options, "optimize-3")) {
+
+	if(Options.getBoolean(options, "sl2") || Options.getBoolean(options, "sll2")  ) {	
+	    gPass2 = true;
 	    optimizeLoadStores();    if(debug)             System.out.println("pass 7"); 
 	}
     }
-
+    
 
     // For each LoadInst in the method body, call propagateLoadBackwards to
     // try to relocate the load as close to the start of it's basic block as possible. 
@@ -314,18 +317,19 @@ public class LoadStoreOptimizer extends BodyTransformer
                         {
                             Block block;
                             switch(uses.size()) {
-                            case 0:        
-				if(Options.getBoolean(gOptions, "s-elimination")) {
+                            case 0:        /*
+					     if(Options.getBoolean(gOptions, "s-elimination")) {
                                 // replace store by a pop and remove store from store list
-				    replaceUnit(unit, Baf.v().newPopInst(((StoreInst)unit).getOpType()));
-				    unitIt.remove();
+				replaceUnit(unit, Baf.v().newPopInst(((StoreInst)unit).getOpType()));
+				unitIt.remove();
 				    
-				    hasChanged = true;        hasChangedFlag = false;
-				}
+				hasChanged = true;        hasChangedFlag = false;
+				}*/
                                 break;
                                     
                             case 1:
-			      if(Options.getBoolean(gOptions, "sl-elimination")) {
+			      if(Options.getBoolean(gOptions, "sl")) {
+				  if(!gPass2 || Options.getBoolean(gOptions, "sl2")) {
                                 // try to eliminate store/load pair
                                 Unit loadUnit = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                 block =  (Block) mUnitToBlockMap.get(unit);
@@ -349,11 +353,13 @@ public class LoadStoreOptimizer extends BodyTransformer
 				    hasChanged = true;
 				    } 
 				    }*/
+				  }
 			      }
 			      break;
                                 
                             case 2:
-			      if(Options.getBoolean(gOptions, "sll-elimination")) {
+				if(Options.getBoolean(gOptions, "sll")) {
+				    if(!gPass2 || Options.getBoolean(gOptions, "sll2")) {
                                 // try to replace store/load/load trio by a flavor of the dup unit
                                 Unit firstLoad = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                 Unit secondLoad = ((UnitValueBoxPair)uses.get(1)).getUnit();
@@ -375,7 +381,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                                     block.remove(firstLoad);
                                     block.insertAfter(firstLoad, unit);                                
                                     
-                                    if(Options.getBoolean(gOptions, "case-2.1")) {
+                                 
 				      int res = stackIndependent(unit, secondLoad, block, STORE_LOAD_LOAD_ELIMINATION);
 				      if(res == MAKE_DUP) {                                        
                                         // replace store by dup, drop both loads                                                                        
@@ -387,10 +393,10 @@ public class LoadStoreOptimizer extends BodyTransformer
 
                                         hasChanged = true;         hasChangedFlag = false;
                                         
-				      }  else if(res == MAKE_DUP1_X1) {
-                                                      
-                                        // replace store/load/load by a dup1_x1
-                                        Unit stackUnit = getStackItemAt2(unit, block, -2); 
+				      }  /* else if(res == MAKE_DUP1_X1) {
+					  
+					  // replace store/load/load by a dup1_x1
+					  Unit stackUnit = getStackItemAt2(unit, block, -2); 
                                         
                                         if(stackUnit instanceof PushInst)
                                             break;
@@ -409,18 +415,19 @@ public class LoadStoreOptimizer extends BodyTransformer
                                         
                                         hasChanged = true;          hasChangedFlag = false;                                      
                                         break;                                        
-                                        }
-				    }
+					
+					} */
 				    
+				
                                 } else if(result == SPECIAL_SUCCESS || result == HAS_CHANGED || result == SPECIAL_SUCCESS2){
 				    if(!hasChangedFlag) {
 					hasChangedFlag = true;
 					hasChanged = true;
 				    } 
 				}
-				
-				
-			      }
+				    }
+				    
+				}
 			    }                   
 			}
 		    }

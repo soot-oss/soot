@@ -262,8 +262,8 @@ public abstract class Body
     public void printTo(PrintWriter out, int printBodyOptions)
     {
         boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
- 
-
+        boolean isNumbered = PrintJimpleBodyOption.numbered(printBodyOptions);
+        
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
 
         out.println("    " + getMethod().getDeclaration());        
@@ -329,12 +329,12 @@ public abstract class Body
         }
 
         // Print out statements
-            printStatementsInBody(out, isPrecise);
+            printStatementsInBody(out, isPrecise, isNumbered);
 
         out.println("    }");
     }
 
-    void printStatementsInBody(java.io.PrintWriter out, boolean isPrecise)
+    void printStatementsInBody(java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
     {
         
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
@@ -348,13 +348,17 @@ public abstract class Body
 
             // Build labelStmts
             {
-                while(boxIt.hasNext())
-                {
-                    UnitBox box = (UnitBox) boxIt.next();
-                    Unit stmt = (Unit) box.getUnit();
+                if(!isNumbered)
+                    while(boxIt.hasNext())
+                    {
+                        UnitBox box = (UnitBox) boxIt.next();
+                        Unit stmt = (Unit) box.getUnit();
+    
+                        labelStmts.add(stmt);
+                    }
+                else
+                    labelStmts.addAll(unitChain);
 
-                    labelStmts.add(stmt);
-                }
             }
 
             // Traverse the stmts and assign a label if necessary
@@ -368,7 +372,12 @@ public abstract class Body
                     Unit s = (Unit) stmtIt.next();
 
                     if(labelStmts.contains(s))
-                        stmtToName.put(s, "label" + (labelCount++));
+                    {
+                        if(isNumbered)
+                            stmtToName.put(s, new Integer(labelCount++).toString());
+                        else
+                            stmtToName.put(s, "label" + (labelCount++));
+                    }
                 }
             }
         }
@@ -376,40 +385,47 @@ public abstract class Body
         
         Iterator unitIt = unitChain.iterator();
         Unit currentStmt = null, previousStmt;
-
+        String indent = (isNumbered) ? "    " : "        ";
+        
         while(unitIt.hasNext()) {
             
             previousStmt = currentStmt;
             currentStmt = (Unit) unitIt.next();
             
-            // Put an empty line if the previous node was a branch node, the current node is a join node
-            //   or the previous statement does not have this statement as a successor, or if
-            //   this statement has a label on it
-            
-            if(currentStmt != unitChain.getFirst()) {
-                
+            // Print appropriate header.
+                if(isNumbered)
+                    out.print("  " + stmtToName.get(currentStmt) + ":");
+                else            
+                {
+                    // Put an empty line if the previous node was a branch node, the current node is a join node
+                    //   or the previous statement does not have this statement as a successor, or if
+                    //   this statement has a label on it
 
-                if(unitGraph.getSuccsOf(previousStmt).size() != 1 ||
-                   unitGraph.getPredsOf(currentStmt).size() != 1 ||
-                   stmtToName.containsKey(currentStmt))
-                    out.println();
-                else {
-                    // Or if the previous node does not have this statement as a successor.
+                        if(currentStmt != unitChain.getFirst()) 
+                        {       
+                            if(unitGraph.getSuccsOf(previousStmt).size() != 1 ||
+                               unitGraph.getPredsOf(currentStmt).size() != 1 ||
+                               stmtToName.containsKey(currentStmt))
+                                out.println();
+                            else {
+                                // Or if the previous node does not have this statement as a successor.
+                                
+                                List succs = unitGraph.getSuccsOf(previousStmt);
+                                
+                                if(succs.get(0) != currentStmt)
+                                    out.println();
+                            }
+                        }
                     
-                    List succs = unitGraph.getSuccsOf(previousStmt);
-                    
-                    if(succs.get(0) != currentStmt)
-                        out.println();
+                     if(stmtToName.containsKey(currentStmt))
+                        out.println("     " + stmtToName.get(currentStmt) + ":");
                 }
-            }
-             
-            if(stmtToName.containsKey(currentStmt))
-                out.println("     " + stmtToName.get(currentStmt) + ":");
-
+                   
+              
             if(isPrecise)
-                out.print(currentStmt.toString(stmtToName, "        "));
+                out.print(currentStmt.toString(stmtToName, indent));
             else
-                out.print(currentStmt.toBriefString(stmtToName, "        "));
+                out.print(currentStmt.toBriefString(stmtToName, indent));
 
             out.print(";"); 
             out.println();

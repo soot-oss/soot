@@ -176,7 +176,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.49");
+            System.out.println("Soot version 1.beta.5.dev.50");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -256,6 +256,8 @@ public class Main
                 
                 if(arg.equals("-j") || arg.equals("--jimp"))
                     targetExtension = ".jimp";
+                else if(arg.equals("--njimple"))
+                    targetExtension = ".njimple";
                 else if(arg.equals("-s") || arg.equals("--jasmin"))
                     targetExtension = ".jasmin";
                 else if(arg.equals("-J") || arg.equals("--jimple"))
@@ -710,7 +712,7 @@ public class Main
         {
             String endResult;
             
-            if(targetExtension.startsWith(".jimp"))
+            if(targetExtension.startsWith(".jimp") || targetExtension.startsWith(".njimple"))
                 endResult = "jimple";
             else if(targetExtension.startsWith(".grimp"))
                 endResult = "grimp";
@@ -799,6 +801,8 @@ public class Main
         }
         else if(targetExtension.equals(".jimp"))
             c.printTo(writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
+        else if(targetExtension.equals(".njimple"))
+            c.printTo(writerOut, PrintJimpleBodyOption.NUMBERED);
         else if(targetExtension.equals(".b"))
             c.printTo(writerOut, soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
         else if(targetExtension.equals(".baf") || targetExtension.equals(".jimple") || targetExtension.equals(".grimple"))
