@@ -297,9 +297,9 @@ public class GrimpBody implements StmtBody
     {
         //printTo(new PrintWriter(System.out, true));
         
-        Aggregator.conservativelyAggregate(this);
+        Aggregator.aggregateStackVariables(this);
 	    GrimpTransformations.foldConstructors(this);
-        Aggregator.conservativelyAggregate(this);
+        Aggregator.aggregateStackVariables(this);
 	    
         //printTo(new PrintWriter(System.out, true));
         

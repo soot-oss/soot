@@ -263,7 +263,7 @@ public class JimpleBody implements StmtBody
 
 	    if(!BuildJimpleBodyOption.noAggregating(buildOptions))
 	    {
- 	        Aggregator.conservativelyAggregate(this);
+ 	        Aggregator.aggregateStackVariables(this);
  	        Transformations.removeUnusedLocals(this);            
 	    }
 
@@ -271,7 +271,7 @@ public class JimpleBody implements StmtBody
             Transformations.standardizeLocalNames(this);
         else
         {   
-            LocalPacker.conservativelyPackLocals(this);
+            LocalPacker.unsplitOriginalLocals(this);
             Transformations.standardizeStackLocalNames(this);
         }
         

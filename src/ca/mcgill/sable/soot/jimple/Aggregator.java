@@ -142,7 +142,7 @@ public class Aggregator
       Only aggregate stack variables (those which start with $)
     */
     
-    public static void conservativelyAggregate(StmtBody body)
+    public static void aggregateStackVariables(StmtBody body)
     {
         aggregate_facade(body, true);
     } 

@@ -1,4 +1,3 @@
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Jimple, a 3-address code Java(TM) bytecode representation.        *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
@@ -102,6 +101,9 @@
 
  B) Changes:
 
+ - Modified on April 23, by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+   Unreachable code is transformed into Nop's.
+   
  - Modified on March 22, by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Fixed a problem with exception handling.
    Added an explicit check for unreachable code.
@@ -1783,57 +1785,55 @@ public class CFG {
             }
         }
 
-        // Check for unreachable code.  This causes problems later on.
+        Set reachableInstructions = new HashSet();
+        
+        // Mark all the reachable instructions
         {
-            Set markedInstructions = new HashSet();
-
-            // Mark all the reachable instructions
-            {
-                LinkedList instructionsToVisit = new LinkedList();
-                
-                markedInstructions.add(firstInstruction);
-                instructionsToVisit.addLast(firstInstruction);
-                
-                while(!instructionsToVisit.isEmpty())
-                {
-                    Instruction ins = (Instruction) instructionsToVisit.removeLast();
-                    
-                    Iterator succIt = ((Set) instructionToSuccessors.get(ins)).iterator();
-                    
-                    while(succIt.hasNext())
-                    {
-                        Instruction succ = (Instruction) succIt.next();
-                        
-                        if(!markedInstructions.contains(succ))
-                        {
-                            markedInstructions.add(succ);
-                            instructionsToVisit.addLast(succ);
-                        }
-                    }
-                }
-            }
+            LinkedList instructionsToVisit = new LinkedList();
             
-            // Check to see if any instruction is unmarked.
+            reachableInstructions.add(firstInstruction);
+            instructionsToVisit.addLast(firstInstruction);
+            
+            while(!instructionsToVisit.isEmpty())
             {
-                BasicBlock b = cfg;
-
-                while(b != null)
+                Instruction ins = (Instruction) instructionsToVisit.removeLast();
+                
+                Iterator succIt = ((Set) instructionToSuccessors.get(ins)).iterator();
+                
+                while(succIt.hasNext())
                 {
-                    Instruction ins = b.head;
-
-                    while(ins != null)
+                    Instruction succ = (Instruction) succIt.next();
+                    
+                    if(!reachableInstructions.contains(succ))
                     {
-                        if(!markedInstructions.contains(ins))
-                            throw new RuntimeException("Method to jimplify contains unreachable code!  (not handled for now)");
-
-                        ins = ins.next;
+                        reachableInstructions.add(succ);
+                        instructionsToVisit.addLast(succ);
                     }
-
-                    b = b.next;
                 }
             }
-                        
         }
+            
+        /*
+        // Check to see if any instruction is unmarked.
+        {
+            BasicBlock b = cfg;
+
+             while(b != null)
+            {
+                Instruction ins = b.head;
+
+                 while(ins != null)
+                {
+                    if(!reachableInstructions.contains(ins))
+                        throw new RuntimeException("Method to jimplify contains unreachable code!  (not handled for now)");
+
+                     ins = ins.next;
+                }
+
+                 b = b.next;
+            }
+        }
+        */
         
         // Perform the flow analysis, and build up instructionToTypeStack and instructionToLocalArray
         {
@@ -2008,19 +2008,22 @@ public class CFG {
             while(b != null)
             {
                 Instruction ins = b.head;
-                b.statements = new VectorList();
+                b.statements = new ArrayList();
 
                 List blockStatements = b.statements;
 
                 while(ins != null)
                 {
-                    List statementsForIns = new VectorList();
+                    List statementsForIns = new ArrayList();
 
 //                    System.out.println ( ins ); 
 
-                    generateJimple(ins, (TypeStack) instructionToTypeStack.get(ins),
-                        (TypeStack) instructionToPostTypeStack.get(ins), constant_pool,
-                        statementsForIns, b);
+                    if(reachableInstructions.contains(ins))
+                        generateJimple(ins, (TypeStack) instructionToTypeStack.get(ins),
+                            (TypeStack) instructionToPostTypeStack.get(ins), constant_pool,
+                            statementsForIns, b);
+                    else
+                        statementsForIns.add(Jimple.v().newNopStmt()); 
 
                     if(!statementsForIns.isEmpty())
                     {

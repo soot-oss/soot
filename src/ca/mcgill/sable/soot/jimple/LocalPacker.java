@@ -69,7 +69,7 @@
  B) Changes:
 
  - Modified on April 20, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*) 
-   Added a conservativelyPackLocal method which packs only those non-stack
+   Added a unsplitOriginalLocals method which packs only those non-stack
    variables which have been split.
    Split off from Transformations.java
 */
@@ -81,14 +81,14 @@ import ca.mcgill.sable.util.*;
 
 public class LocalPacker
 {
-    public static void conservativelyPackLocals(StmtBody body)
-    {
-        packLocals_internal(body, true);        
-    }
-    
     public static void packLocals(StmtBody body)
     {
-        packLocals_internal(body, false);    
+        packLocals_internal(body, false);        
+    }
+    
+    public static void unsplitOriginalLocals(StmtBody body)
+    {
+        packLocals_internal(body, true);    
     }
     
     private static void packLocals_internal(StmtBody body, boolean isConservative)
@@ -144,7 +144,7 @@ public class LocalPacker
         
         // Call the graph colorer.
             if(isConservative)
-                FastColorer.conservativelyAssignColorsToLocals(body, localToGroup,
+                FastColorer.unsplitAssignColorsToLocals(body, localToGroup,
                     localToColor, groupToColorCount);
             else
                 FastColorer.assignColorsToLocals(body, localToGroup,

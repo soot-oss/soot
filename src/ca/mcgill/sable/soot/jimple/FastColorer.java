@@ -78,11 +78,12 @@ import ca.mcgill.sable.util.*;
 
 public class FastColorer
 {   
-    public static void conservativelyAssignColorsToLocals(StmtBody stmtBody, Map localToGroup, 
+    public static void unsplitAssignColorsToLocals(StmtBody stmtBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
     {
         StmtList stmtList = stmtBody.getStmtList();
 
+        
         CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
 
         LiveLocals liveLocals;
@@ -94,6 +95,32 @@ public class FastColorer
 
         InterferenceGraph intGraph = new InterferenceGraph(stmtBody, localToGroup, liveLocals);
 
+        Map localToOriginalName = new HashMap();
+        
+        // Map each local variable to its original name
+        {
+            Iterator localIt = intGraph.getLocals().iterator();
+            
+            while(localIt.hasNext())
+            {
+                Local local = (Local) localIt.next();
+                
+                int signIndex;
+                
+                signIndex = local.getName().indexOf("#");
+                
+                if(signIndex != -1)
+                {
+                    localToOriginalName.put(local, local.getName().substring(0, signIndex));
+                }
+                else
+                    localToOriginalName.put(local, local.getName());
+            }
+        }
+        
+        Map originalNameToColors = new HashMap();
+            // maps an original name to the colors being used for it
+                    
         // Assign a color for each local.
         {
             int[] freeColors = new int[10];
@@ -138,20 +165,40 @@ public class FastColorer
                 
                 // Assign a color to this local.
                 {
+                    String originalName = (String) localToOriginalName.get(local);
+                    List originalNameColors = (List) originalNameToColors.get(originalName);
+                    
+                    if(originalNameColors == null)
+                    {
+                        originalNameColors = new ArrayList();
+                        originalNameToColors.put(originalName, originalNameColors);
+                        
+                    }
+                    
                     boolean found = false;
                     int assignedColor = 0;
                     
-                    for(int i = 0; i < colorCount; i++)
-                        if(freeColors[i] == 1)
+                    // Check if the colors assigned to this original name is already free
+                    {
+                        Iterator colorIt = originalNameColors.iterator();
+                        
+                        while(colorIt.hasNext())
                         {
-                            found = true;
-                            assignedColor = i;
+                            Integer color = (Integer) colorIt.next();
+                            
+                            if(freeColors[color.intValue()] == 1)
+                            {
+                                found = true;
+                                assignedColor = color.intValue();
+                            }
                         }
+                    }
                     
                     if(!found)
                     {
                         assignedColor = colorCount++;
                         groupToColorCount.put(group, new Integer(colorCount));
+                        originalNameColors.add(new Integer(assignedColor));
                     }   
                     
                     localToColor.put(local, new Integer(assignedColor));
