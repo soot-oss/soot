@@ -11,6 +11,8 @@ public class DumbPointerAnalysis implements PointerAnalysis {
 
     /** Returns the set of objects reaching variable l before stmt in method. */
     public PointsToSet reachingObjects( Local l ) {
+        Type t = l.getType();
+        if( t instanceof RefType ) return FullObjectSet.v((RefType) t);
 	return FullObjectSet.v();
     }
 }

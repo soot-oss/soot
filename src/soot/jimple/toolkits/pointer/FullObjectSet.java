@@ -4,8 +4,23 @@ import java.util.*;
 import soot.*;
 
 public class FullObjectSet extends Union implements PointsToSet {
-    public FullObjectSet( Singletons.Global g ) {}
+    public FullObjectSet( Singletons.Global g ) {
+        this( RefType.v( "java.lang.Object" ) );
+    }
     public static FullObjectSet v() { return G.v().FullObjectSet(); }
+    public static FullObjectSet v( RefType t ) { 
+        if( t.getClassName().equals( "java.lang.Object" ) ) {
+            return v();
+        }
+        return new FullObjectSet( t );
+    }
+    private final Set types;
+    private FullObjectSet( RefType declaredType ) {
+        AnySubType type = AnySubType.v( declaredType );
+        types = Collections.singleton( type );
+    }
+
+    public AnySubType type() { return (AnySubType) types.iterator().next(); }
 
     /** Returns true if this set contains no run-time objects. */
     public boolean isEmpty() {
@@ -15,8 +30,6 @@ public class FullObjectSet extends Union implements PointsToSet {
     public boolean hasNonEmptyIntersection( PointsToSet other ) {
 	return other != null;
     }
-    private final Set types = 
-        Collections.singleton( AnySubType.v( RefType.v( "java.lang.Object" ) ) );
     /** Set of all possible run-time types of objects in the set. */
     public Set possibleTypes() {
         return types;
