@@ -221,12 +221,12 @@ public class LazyCodeMotion extends BodyTransformer {
 	    try {
 	      ((AssignStmt)currentUnit).setRightOp(helper);
 	    } catch (RuntimeException e){
-	      System.err.println("Error on "+b.getMethod().getName());
-	      System.err.println(currentUnit.toString());
+	      System.out.println("Error on "+b.getMethod().getName());
+	      System.out.println(currentUnit.toString());
 
-	      System.err.println(latestSet);
+	      System.out.println(latestSet);
 	      
-	      System.err.println(notIsolatedSet);
+	      System.out.println(notIsolatedSet);
 
 	      throw e;
 	    }

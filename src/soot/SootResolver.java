@@ -100,11 +100,11 @@ public class SootResolver
             Set s = null;
             if(is instanceof ClassInputStream) {
                 if(soot.Main.opts.verbose())
-                    System.err.println("resolving [from .class]: " + className );
+                    System.out.println("resolving [from .class]: " + className );
                 soot.coffi.Util.resolveFromClassFile(sc, is, this, Scene.v());
             } else if(is instanceof JimpleInputStream) {
                 if(soot.Main.opts.verbose())
-                    System.err.println("resolving [from .jimple]: " + className );
+                    System.out.println("resolving [from .jimple]: " + className );
                 if(sc == null) throw new RuntimeException("sc is null!!");
                 
                 soot.jimple.parser.JimpleAST jimpAST = new soot.jimple.parser.JimpleAST((JimpleInputStream) is, this);                

@@ -20,7 +20,7 @@ public abstract class NativeMethodClass {
 				   ReferenceVariable returnVar,
 				   ReferenceVariable params[]){
     if (DEBUG) {
-      System.err.println("No side effects : "+method.toString());
+      System.out.println("No side effects : "+method.toString());
     }
   }
 

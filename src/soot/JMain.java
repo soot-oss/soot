@@ -407,7 +407,7 @@ public class JMain
         count = 0;
         while(st.hasMoreTokens()) {
             cmdLine[count++] = st.nextToken();
-            System.err.print(cmdLine[count-1] + " ");
+            System.out.print(cmdLine[count-1] + " ");
         }
         
         return cmdLine;                    

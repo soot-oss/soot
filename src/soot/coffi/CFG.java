@@ -517,7 +517,7 @@ public class CFG {
 
 	if (unusual)
 	{
-	    System.err.println("Sorry, I cannot handle this method.");
+	    System.out.println("Sorry, I cannot handle this method.");
 	    return false;
 	}
 	
@@ -2782,9 +2782,9 @@ public class CFG {
                     else
                         ((GotoStmt)s).setTarget(((BasicBlock) b.succ.firstElement()).getHeadJStmt());	
 		    */
-		    System.err.println("Error :");
+		    System.out.println("Error :");
 		    for (int i=0; i<b.statements.size(); i++)
-			System.err.println(b.statements.get(i));
+			System.out.println(b.statements.get(i));
 		    
 		    throw new RuntimeException(b +" has "+b.succ.size()+" successors.");		    
                 }

@@ -158,7 +158,7 @@ public class LoadStoreOptimizer extends BodyTransformer
         if(soot.Main.opts.verbose())
             System.out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
 
-        if(debug) { System.err.println("\n\nOptimizing Method: " + body.getMethod().getName());}
+        if(debug) { System.out.println("\n\nOptimizing Method: " + body.getMethod().getName());}
         if(debug) { mBody.printTo(new java.io.PrintWriter(System.out, true), 0);}
         
         if(!mUnits.isEmpty()) {                    
@@ -167,11 +167,11 @@ public class LoadStoreOptimizer extends BodyTransformer
            
             
            
-            if(debug){System.err.println("Calling optimizeLoadStore(1)\n");}
+            if(debug){System.out.println("Calling optimizeLoadStore(1)\n");}
             optimizeLoadStores(); 
         
             if(PackManager.getBoolean(gOptions, "inter") ) {
-                if(debug){System.err.println("Calling doInterBlockOptimizations");}
+                if(debug){System.out.println("Calling doInterBlockOptimizations");}
                 doInterBlockOptimizations(); 
                              
                 //computeLocalDefsAndLocalUsesInfo();          
@@ -183,7 +183,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 
             if(PackManager.getBoolean(gOptions, "sl2") || PackManager.getBoolean(gOptions, "sll2")  ) {        
                 gPass2 = true;
-                if(debug){System.err.println("Calling optimizeLoadStore(2)");}
+                if(debug){System.out.println("Calling optimizeLoadStore(2)");}
                 optimizeLoadStores();   
             }
         }        
@@ -509,8 +509,8 @@ public class LoadStoreOptimizer extends BodyTransformer
     private  int stackIndependent(Unit from, Unit to, Block block, int aContext) 
     {                
         if(debug) { 
-            System.err.println("Trying: " + from + "/" + to +  " in block  " + block.getIndexInMethod()+":" );
-            System.err.println("context:" + (aContext == STORE_LOAD_ELIMINATION ? 
+            System.out.println("Trying: " + from + "/" + to +  " in block  " + block.getIndexInMethod()+":" );
+            System.out.println("context:" + (aContext == STORE_LOAD_ELIMINATION ? 
                                              "STORE_LOAD_ELIMINATION" :
                                              "STORE_LOAD_LOAD_ELIMINATION"));
         }
@@ -544,8 +544,8 @@ public class LoadStoreOptimizer extends BodyTransformer
         
         
         if(debug) { 
-            System.err.println("nshv = " + stackHeight);
-            System.err.println("mshv = " + minStackHeightAttained);
+            System.out.println("nshv = " + stackHeight);
+            System.out.println("mshv = " + minStackHeightAttained);
         }
         
         

@@ -60,7 +60,7 @@ public class LineNumberTag implements Tag
 	    throw new RuntimeException();
 	} catch (RuntimeException re)
 	{
-	    System.err.println("I, at line "+line_number+", dead here.");
+	    System.out.println("I, at line "+line_number+", dead here.");
 	    re.printStackTrace();
 	}
     }

@@ -88,14 +88,14 @@ public class CFGViewer {
   }
 
   private static void usage(){
-      System.err.println("Usage:");
-      System.err.println("   java soot.util.CFGViewer [options] class[:method]");
-      System.err.println("   options:");
-      System.err.println("       --unit|block|array : produces the unit(default)/block graph.");
-      System.err.println("       --brief : uses the unit/block index as the label.");
-      System.err.println("       --soot-classpath PATHs : specifies the soot class pathes.");
-      System.err.println("       --multipages : produces the dot file sets multi pages (8.5x11).");
-      System.err.println("                      By default, the graph is in one page.");
+      System.out.println("Usage:");
+      System.out.println("   java soot.util.CFGViewer [options] class[:method]");
+      System.out.println("   options:");
+      System.out.println("       --unit|block|array : produces the unit(default)/block graph.");
+      System.out.println("       --brief : uses the unit/block index as the label.");
+      System.out.println("       --soot-classpath PATHs : specifies the soot class pathes.");
+      System.out.println("       --multipages : produces the dot file sets multi pages (8.5x11).");
+      System.out.println("                      By default, the graph is in one page.");
   }
 
 

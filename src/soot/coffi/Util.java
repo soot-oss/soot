@@ -416,7 +416,7 @@ public class Util
 		
 		
 		if( (coffiClass.constant_pool[methodInfo.name_index]) == null) {
-		    System.err.println("method index: " + methodInfo.toName(coffiClass.constant_pool));
+		    System.out.println("method index: " + methodInfo.toName(coffiClass.constant_pool));
 		    throw new RuntimeException("method has no name");
 		}
 

@@ -146,7 +146,7 @@ public class Main implements Runnable
 		    dir.mkdirs();
 		}
 		catch( SecurityException se) {
-		    System.err.println( "Unable to create " + classPath);
+		    System.out.println( "Unable to create " + classPath);
 		    System.exit(0);
 		}
 	}
@@ -169,7 +169,7 @@ public class Main implements Runnable
 		    dir.mkdirs();
 		}
 		catch( SecurityException se) {
-		    System.err.println( "Unable to create " + path);
+		    System.out.println( "Unable to create " + path);
 		    System.exit(0);
 		}
 	}

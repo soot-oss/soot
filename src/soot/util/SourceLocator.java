@@ -235,7 +235,7 @@ public class SourceLocator
 				
                         return inputRep.createInputStream(bugFreeInputStream);
                     } catch(IOException e) {
-                        System.err.println("error reading file:" + zip.getName() + e.toString());
+                        System.out.println("error reading file:" + zip.getName() + e.toString());
                         System.exit(1);
                     }
                 }
@@ -252,7 +252,7 @@ public class SourceLocator
 	    if(path.endsWith("zip") || path.endsWith("jar")) {
 		return true;
 	    } else {
-		System.err.println("Warning: the following soot-classpath entry is not a supported archive file (must be .zip or .jar): " + path);
+		System.out.println("Warning: the following soot-classpath entry is not a supported archive file (must be .zip or .jar): " + path);
 	    }
 	}  
 	return false;
@@ -263,7 +263,7 @@ public class SourceLocator
 	    ZipFile zipFile = new ZipFile(fileName);
 	    zipFileList.add(zipFile);	
 	} catch (IOException e) {
-	    System.err.println("error loading file:" + fileName + e.toString());
+	    System.out.println("error loading file:" + fileName + e.toString());
 	}
     }    
     

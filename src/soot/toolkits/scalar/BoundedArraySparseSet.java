@@ -161,9 +161,9 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
     int last = elements[0];
     for (int i = 1; i < numElements; i++) {
       if (last > elements[i]) {
-        System.err.println("ERROR: flowSet is not sorted");
-        System.err.print("elements: ");
-        for (int j = 0; j < numElements; j++) System.err.print(elements[j]);
+        System.out.println("ERROR: flowSet is not sorted");
+        System.out.print("elements: ");
+        for (int j = 0; j < numElements; j++) System.out.print(elements[j]);
         System.exit(-1);
       }
       last = elements[i];
