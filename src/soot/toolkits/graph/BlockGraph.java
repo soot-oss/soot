@@ -43,8 +43,8 @@ import soot.util.Chain;
      *  {@link BlockGraph}, where the variants differ in how they
      *  analyze the control flow between individual units (represented
      *  by passing different variants of {@link UnitGraph} to the
-     *  <tt>BlockGraph</tt> constructor) and in how they identify
-     *  block leaders (represented by overriding <tt>BlockGraph</tt>'s
+     *  <code>BlockGraph</code> constructor) and in how they identify
+     *  block leaders (represented by overriding <code>BlockGraph</code>'s
      *  definition of {@link computeLeaders()}.
      */
 public abstract class BlockGraph implements DirectedGraph 
@@ -57,8 +57,8 @@ public abstract class BlockGraph implements DirectedGraph
 
    
     /**
-     *  Create a <tt>BlockGraph</tt> representing at the basic block
-     *  level the control flow specified, at the <tt>Unit</tt> level,
+     *  Create a <code>BlockGraph</code> representing at the basic block
+     *  level the control flow specified, at the <code>Unit</code> level,
      *  by a given {@link UnitGraph}.
      *
      *   @param unitGraph  A representation of the control flow at
@@ -82,38 +82,38 @@ public abstract class BlockGraph implements DirectedGraph
      *
      * <ul>
      *
-     * <li>Any <tt>Unit</tt> which has zero predecessors (e.g. the
-     * <tt>Unit</tt> following a return or unconditional branch) or
+     * <li>Any <code>Unit</code> which has zero predecessors (e.g. the
+     * <code>Unit</code> following a return or unconditional branch) or
      * more than one predecessor (e.g. a merge point).</li>
      *
-     * <li><tt>Unit</tt>s which are the target of any branch (even if
+     * <li><code>Unit</code>s which are the target of any branch (even if
      * they have no other predecessors and the branch has no other
      * successors, which is possible for the targets of unconditional
      * branches or degenerate conditional branches which both branch
-     * and fall through to the same <tt>Unit</tt>).</li>
+     * and fall through to the same <code>Unit</code>).</li>
      *
-     * <li>All successors of any <tt>Unit</tt> which has more than one
-     * successor (this includes the successors of <tt>Unit</tt>s which
+     * <li>All successors of any <code>Unit</code> which has more than one
+     * successor (this includes the successors of <code>Unit</code>s which
      * may throw an exception that gets caught within the
-     * <tt>Body</tt>, as well the successors of conditional
+     * <code>Body</code>, as well the successors of conditional
      * branches).</li>
      *
-     * <li>The first <tt>Unit</tt> in any <tt>Trap</tt> handler.
-     * (Strictly speaking, if <tt>unitGraph</tt> were a
-     * <tt>CompleteUnitGraph</tt> that included only a single
-     * unexceptional predecessor for some handler---because no trapped
+     * <li>The first <code>Unit</code> in any <code>Trap</code> handler.
+     * (Strictly speaking, if <code>unitGraph</code> were a
+     * <code>ExceptionalUnitGraph</code> that included only a single
+     * unexceptional predecessor for some handler&mdash;because no trapped
      * unit could possibly throw the exception that the handler
      * catches, while the code preceding the handler fell through to
-     * the handler's code---then you could merge the handler into the
+     * the handler's code&mdash;then you could merge the handler into the
      * predecessor's basic block; but such situations occur only in
      * carefully contrived bytecode.)
      *
      * </ul></p>
      *
-     * @param unitGraph is the <tt>Unit</tt>-level CFG which is to be split
+     * @param unitGraph is the <code>Unit</code>-level CFG which is to be split
      * into basic blocks.
      *
-     * @return the {@link Set} of {@link Unit}s in <tt>unitGraph</tt> which
+     * @return the {@link Set} of {@link Unit}s in <code>unitGraph</code> which
      * are block leaders.
      */
     protected Set computeLeaders(UnitGraph unitGraph) {
@@ -154,21 +154,22 @@ public abstract class BlockGraph implements DirectedGraph
     /**
      * A utility method that does most of the work of constructing
      * basic blocks, once the set of block leaders has been
-     * determined.  It splits the {@link Unit}s in the <tt>Body</tt>
-     * so that each <tt>Unit</tt> in the passed set of block leaders
+     * determined.  It splits the {@link Unit}s in <code>unitGraph</code>
+     * so that each <code>Unit</code> in the passed set of block leaders
      * is the first unit in a block.
      *
-     * @param leaders Contains {@link Unit}s which are
+     * @param leaders Contains <code>Unit</code>s which are
      *                to be block leaders.
      *
      * @param unitGraph   Provides information about the predecessors and
-     *                successors of each <tt>Unit</tt> in the <tt>Body</tt>,
+     *                successors of each <code>Unit</code> in the <code>Body</code>,
      *                for determining the predecessors and successors of
      *                each created {@link Block}.
      *
-     * @return a {@link List} of {@link Block}s.
+     * @return a {@link Map} from {@link Unit}s which begin or end a block
+     *           to the block which contains them.
      */
-    protected void buildBlocks(Set leaders, UnitGraph unitGraph) {
+    protected Map buildBlocks(Set leaders, UnitGraph unitGraph) {
 	List blockList = new ArrayList(leaders.size());
 	Map unitToBlock = new HashMap(); // Maps head and tail units to 
 					 // their blocks, for building
@@ -288,6 +289,7 @@ public abstract class BlockGraph implements DirectedGraph
 	} else {
 	    mTails = Collections.unmodifiableList(mTails);
 	}
+	return unitToBlock;
     }
 
     /**
@@ -298,10 +300,10 @@ public abstract class BlockGraph implements DirectedGraph
      * @param tail The last unit in the block.
      * @param index The index of this block this {@link Body}.
      * @param length The number of units in this block.
-     * @param blockList The list of blocks for this method. <tt>addBlock()</tt>
+     * @param blockList The list of blocks for this method. <code>addBlock()</code>
      *                  will add the newly created block to this list.
-     * @param unitToBlock A map from units to blocks. <tt>addBlock()</tt> will
-     *                    add mappings from <tt>head</tt> and <tt>tail</tt>
+     * @param unitToBlock A map from units to blocks. <code>addBlock()</code> will
+     *                    add mappings from <code>head</code> and <code>tail</code>
      *                    to the new block
      */
     private void addBlock(Unit head, Unit tail, int index, int length, 

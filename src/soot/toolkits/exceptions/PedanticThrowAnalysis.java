@@ -23,6 +23,8 @@ import soot.Unit;
 import soot.Singletons;
 import soot.G;
 import soot.toolkits.exceptions.*;
+import soot.baf.ThrowInst;
+import soot.jimple.ThrowStmt;
 
 /**
  * A {@link ThrowAnalysis} which says that every unit can throw every
@@ -63,6 +65,26 @@ public class PedanticThrowAnalysis implements ThrowAnalysis {
      * @return {@link ThrowableSet.Manager.ALL_THROWABLES}.
      */
     public ThrowableSet mightThrow(Unit u) {
+	return ThrowableSet.Manager.v().ALL_THROWABLES;
+    }
+
+
+    public ThrowableSet mightThrowExplicitly(ThrowInst t) {
+	return ThrowableSet.Manager.v().ALL_THROWABLES;
+    }
+
+
+    public ThrowableSet mightThrowImplicitly(ThrowInst t) {
+	return ThrowableSet.Manager.v().ALL_THROWABLES;
+    }
+	
+    
+    public ThrowableSet mightThrowExplicitly(ThrowStmt t) {
+	return ThrowableSet.Manager.v().ALL_THROWABLES;
+    }
+
+
+    public ThrowableSet mightThrowImplicitly(ThrowStmt t) {
 	return ThrowableSet.Manager.v().ALL_THROWABLES;
     }
 }

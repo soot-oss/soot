@@ -70,7 +70,7 @@ import soot.jimple.NewExpr;
  *  whether or not there is an edge from the excepting
  *  <code>Unit</code> itself to the handler <code>Unit</code>.</p>
  */
-public class ExceptionalUnitGraph extends UnitGraph
+public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 {
     protected Map unitToUnexceptionalSuccs; // If there are no Traps within
     protected Map unitToUnexceptionalPreds; // the method, these will be the
@@ -174,10 +174,10 @@ public class ExceptionalUnitGraph extends UnitGraph
      *  processing before actually creating the graph edges (because,
      *  for example, the subclass overrides a utility method like
      *  {@link #buildExceptionDests(ThrowAnalysis)} or {@link
-     *  #buildExceptionalEdges(Map, Map, Map, boolean)} with a
-     *  replacement method that depends on additional parameters
-     *  passed to the subclass's constructor).  The subclass
-     *  constructor is responsible for calling {@link
+     *  #buildExceptionalEdges(ThrowAnalysis, Map, Map, Map, boolean)}
+     *  with a replacement method that depends on additional
+     *  parameters passed to the subclass's constructor).  The
+     *  subclass constructor is responsible for calling {@link
      *  #initialize(ThrowAnalysis, boolean)}, or otherwise performing
      *  the initialization required to implement
      *  <code>ExceptionalUnitGraph</code>'s interface.</p>
@@ -249,7 +249,8 @@ public class ExceptionalUnitGraph extends UnitGraph
 		new HashMap(unitToExceptionDests.size() * 2 + 1, 0.7f);
 	    unitToExceptionalPreds = 
 		new HashMap(body.getTraps().size() * 2 + 1, 0.7f);
-	    trapsThatAreHeads = buildExceptionalEdges(unitToExceptionDests,
+	    trapsThatAreHeads = buildExceptionalEdges(throwAnalysis,
+						      unitToExceptionDests,
 						      unitToExceptionalSuccs, 
 						      unitToExceptionalPreds,
 						      omitExceptingUnitEdges);
@@ -478,6 +479,9 @@ public class ExceptionalUnitGraph extends UnitGraph
      * Method to compute the edges corresponding to exceptional
      * control flow.
      *
+     * @param throwAnalysis the source of information about the exceptions
+     *                     which each {@link Unit} may throw.
+     *
      * @param unitToDests A <code>Map</code> from {@link Unit}s to 
      *                    {@link Collection}s of {@link
      *                    ExceptionalUnitGraph.ExceptionDest
@@ -518,44 +522,86 @@ public class ExceptionalUnitGraph extends UnitGraph
      *         <code>Unit</code> in the <code>Body</code> which
      *         actually completes execution.
      */
-    protected Set buildExceptionalEdges(Map unitToDests, 
+    protected Set buildExceptionalEdges(ThrowAnalysis throwAnalysis,
+					Map unitToDests, 
 					Map unitToSuccs, Map unitToPreds,
 					boolean omitExceptingUnitEdges) {
 	Set trapsThatAreHeads = new ArraySet();
 	Unit entryPoint = (Unit) unitChain.getFirst();
 
-	// Add exceptional edges from each predecessor of units that
-	// throw exceptions to the handler that catches them.  Add an
-	// additional edge from the thrower itself to the catcher if
-	// the thrower may have side effects.
 	for (Iterator it = unitToDests.entrySet().iterator();
 	     it.hasNext(); ) {
 	    Map.Entry entry = (Map.Entry) it.next();
 	    Unit thrower = (Unit) entry.getKey();
+	    List throwersPreds = getUnexceptionalPredsOf(thrower);
 	    Collection dests = (Collection) entry.getValue();
+
+	    // We need to recognize:
+	    // - caught exceptions for which we need to add edges from the 
+	    //   thrower's predecessors to the catcher:
+	    //     - all exceptions of non-throw instructions;
+	    //     - implicit exceptions of throw instructions.
+	    //
+	    // - caught exceptions where we need to add edges from the 
+	    //   thrower itself to the catcher:
+	    //     - any exception of non-throw instructions if
+	    //       omitExceptingUnitEdges is not set.
+	    //     - any exception of non-throw instructions with side effects.
+	    //     - explicit exceptions of throw instructions
+	    //     - implicit exceptions of throw instructions if 
+	    //       omitExceptingUnitEdges is not set.
+	    //     - implicit exceptions of throw instructions with possible
+	    //       side effects (this is only possible for the grimp
+	    //       IR, where the throw's argument may be an
+	    //       expression---probably a NewInvokeExpr---which
+	    //       might have executed partially before the
+	    //       exception arose).
+	    //
+	    // Note that a throw instruction may be capable of throwing a given
+	    // Throwable type both implicitly and explicitly.
+	    //
+	    // We track these situations using predThrowables and
+	    // selfThrowables.  Essentially predThrowables is the set
+	    // of Throwable types to whose catchers there should be
+	    // edges from predecessors of the thrower, while
+	    // selfThrowables is the set of Throwable types to whose
+	    // catchers there should be edges from the thrower itself,
+	    // but we we take some short cuts to avoid calling
+	    // ThrowableSet.catchableAs() when we can avoid it.
+
+	    boolean alwaysAddSelfEdges = ((! omitExceptingUnitEdges) || 
+					  mightHaveSideEffects(thrower));
+	    ThrowableSet predThrowables = null;
+	    ThrowableSet selfThrowables = null;
+	    if (thrower instanceof ThrowInst) {
+		ThrowInst throwInst = (ThrowInst) thrower;
+		predThrowables = throwAnalysis.mightThrowImplicitly(throwInst);
+		selfThrowables = throwAnalysis.mightThrowExplicitly(throwInst);
+	    } else if (thrower instanceof ThrowStmt) {
+		ThrowStmt throwStmt = (ThrowStmt) thrower;
+		predThrowables = throwAnalysis.mightThrowImplicitly(throwStmt);
+		selfThrowables = throwAnalysis.mightThrowExplicitly(throwStmt);
+	    }
+
 	    for (Iterator destIt = dests.iterator(); destIt.hasNext(); ) {
 		ExceptionDest dest = (ExceptionDest) destIt.next();
 		if (dest.trap() != null) {
 		    Unit catcher = dest.trap().getHandlerUnit();
-		    List throwersPreds = getUnexceptionalPredsOf(thrower);
-		    if (thrower == entryPoint) {
-			trapsThatAreHeads.add(catcher);
-		    } else {
-			for (Iterator j = throwersPreds.iterator(); 
-			     j.hasNext(); ) {
-			    Unit pred = (Unit) j.next();
+		    RefType trapsType = dest.trap().getException().getType();
+		    if (predThrowables == null ||
+			predThrowables.catchableAs(trapsType)) {
+			// Add edges from the thrower's predecessors to the catcher.
+			if (thrower == entryPoint) {
+			    trapsThatAreHeads.add(catcher);
+			}
+			for (Iterator p = throwersPreds.iterator(); p.hasNext(); ) {
+			    Unit pred = (Unit) p.next();
 			    addEdge(unitToSuccs, unitToPreds, pred, catcher);
 			}
 		    }
-		    if ((! omitExceptingUnitEdges) ||
-			thrower instanceof ThrowInst ||
-			thrower instanceof ThrowStmt || 
-			mightHaveSideEffects(thrower)) {
-			// An athrow instruction actually completes when
-			// it throws its argument exception, so we
-			// need to include an edge from it to avoid
-			// the throw being removed by dead code
-			// elimination.
+		    if (alwaysAddSelfEdges ||
+			(selfThrowables != null &&
+			 selfThrowables.catchableAs(trapsType))) {
 			addEdge(unitToSuccs, unitToPreds, thrower, catcher);
 		    }
 		}
@@ -773,18 +819,21 @@ public class ExceptionalUnitGraph extends UnitGraph
      * unit will be handled.
      *
      * @param u The unit for which to provide exception information.
+     *          (<code>u</code> must be a <code>Unit</code>, though the parameter is
+     *          declared as an <code>Object</code> to satisfy the interface of 
+     *          {@link ExceptionalGraph}.
      *
      * @return a collection of <code>ExceptionDest</code> objects describing
      *	       the traps, if any, which catch the exceptions
      *	       which may be thrown by <code>u</code>.
      */
-    public Collection getExceptionDests(Unit u) {
+    public Collection getExceptionDests(Object u) {
 	Collection result = null;
 	if (unitToExceptionDests == null) {
 	    // There are no traps in the method; all exceptions
 	    // that the unit throws will escape the method.
 	    result = new LinkedList();
-	    result.add(new ExceptionDest(null, throwAnalysis.mightThrow(u)));
+	    result.add(new ExceptionDest(null, throwAnalysis.mightThrow((Unit) u)));
 	} else {
 	    result = (Collection) unitToExceptionDests.get(u);
 	    if(result == null) 
@@ -794,24 +843,7 @@ public class ExceptionalUnitGraph extends UnitGraph
     }
 
     
-    /**
-     * <p>Data structure to represent the fact that
-     * a given {@link Trap} will catch some subset of the exceptions
-     * which may be thrown by a given {@link Unit}.</p>
-     *
-     * <p>Note that these ``destinations'' are different from the
-     * edges in the CFG proper which are returned by
-     * <code>getSuccsOf()</code> and <code>getPredsOf()</code>. An
-     * edge from <code>a</code> to <code>b</code> in the CFG
-     * represents the fact that after unit <code>a</code> executes
-     * (perhaps only partially, if it throws an exception after
-     * possibly producing a side effect), execution may proceed to
-     * unit <code>b</code>.  An ExceptionDest from <code>a</code> to
-     * <code>b</code>, on the other hand, says that when
-     * <code>a</code> fails to complete at all, execution may proceed
-     * to unit <code>b</code> instead.</p>
-     */
-    public static class ExceptionDest {
+    public static class ExceptionDest implements ExceptionalGraph.ExceptionDest {
 	private Trap trap;
 	private ThrowableSet throwables;
 
@@ -820,35 +852,22 @@ public class ExceptionalUnitGraph extends UnitGraph
 	    this.throwables = throwables;
 	}
 	
-	/**
-	 * Returns the trap corresponding to this destination.
-	 *
-	 * @return either a {@link Trap} representing the handler that
-	 * catches the exceptions, if there is such a handler within
-	 * the method, or <code>null</code> if there is no such
-	 * handler and the exceptions cause the method to terminate
-	 * abruptly.
-	 */
 	public Trap trap() {
 	    return trap;
 	}
 
-	/**
-	 * Returns the exceptions thrown to this destination.
-	 *
-	 * @return a {@link ThrowableSet} representing
-	 * the exceptions which may be caught by this {@link
-	 * ExceptionalUnitGraph.ExceptionDest ExceptionDest}'s trap.
-	 */
 	public ThrowableSet throwables() {
 	    return throwables;
 	}
 
-	/**
-	 * Returns a string representation of this destination.
-	 *
-	 * @return a {@link String} representing this destination.
-	 */
+	public Object getHandlerNode() {
+	    if (trap == null) {
+		return null;
+	    } else {
+		return trap.getHandlerUnit();
+	    }
+	}
+
 	public String toString() {
 	    StringBuffer buf = new StringBuffer();
 	    buf.append(throwables.toString());
@@ -863,7 +882,7 @@ public class ExceptionalUnitGraph extends UnitGraph
     }
 
 
-    public List getUnexceptionalPredsOf(Unit u) {
+    public List getUnexceptionalPredsOf(Object u) {
 	if (!unitToUnexceptionalPreds.containsKey(u))
 	    throw new RuntimeException("Invalid unit " + u);
 
@@ -871,7 +890,7 @@ public class ExceptionalUnitGraph extends UnitGraph
     }
 
 
-    public List getUnexceptionalSuccsOf(Unit u) {
+    public List getUnexceptionalSuccsOf(Object u) {
 	if (!unitToUnexceptionalSuccs.containsKey(u))
 	    throw new RuntimeException("Invalid unit " + u);
 
@@ -879,7 +898,7 @@ public class ExceptionalUnitGraph extends UnitGraph
     }
 
 
-    public List getExceptionalPredsOf(Unit u) {
+    public List getExceptionalPredsOf(Object  u) {
 	if (unitToExceptionalPreds == null ||
 	    (!unitToExceptionalPreds.containsKey(u))) {
 	    return Collections.EMPTY_LIST;
@@ -889,13 +908,35 @@ public class ExceptionalUnitGraph extends UnitGraph
     }
 
 
-    public List getExceptionalSuccsOf(Unit u) {
+    public List getExceptionalSuccsOf(Object u) {
 	if (unitToExceptionalSuccs == null ||
 	    (!unitToExceptionalSuccs.containsKey(u))) {
 	    return Collections.EMPTY_LIST;
 	} else {
 	    return (List) unitToExceptionalSuccs.get(u);
 	}
+    }
+
+
+    /**
+     * <p>Return the {@link ThrowAnalysis} used to construct this
+     * graph, if the graph contains no {@link Trap}s, or <code>null</code>
+     * if the graph does contain <code>Traph</code>s. A reference to the <code>ThrowAnalysis</code>
+     * is kept when there are no <code>Trap</code>s so that the graph can 
+     * generate responses to {@link getExceptionDest} on the fly, rather than
+     * precomputing information that may never be needed.</p>
+     *
+     * <p>This method is package-private because it exposes a detail of
+     * the implementation of <code>ExceptionalUnitGraph</code> so that
+     * the {@link ExceptionalBlockGraph} constructor can cache the
+     * same <code>ThrowAnalysis</code> for the same purpose.
+     *
+     * @return the {@ link ThrowAnalysis} used to generate this graph if the
+     *         graph contains no {@link Trap}s, or <code>null</code> if the graph 
+     *	       contains one or more {@link Trap}s.
+     */
+    ThrowAnalysis getThrowAnalysis() {
+	return throwAnalysis;
     }
 
 

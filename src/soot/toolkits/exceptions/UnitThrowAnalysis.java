@@ -45,6 +45,12 @@ import soot.toolkits.exceptions.*;
  */
 public class UnitThrowAnalysis implements ThrowAnalysis {
 
+    // Cache the response to mightThrowImplicitly():
+    private final ThrowableSet implicitThrowExceptions 
+	= ThrowableSet.Manager.v().VM_ERRORS
+	.add(ThrowableSet.Manager.v().NULL_POINTER_EXCEPTION)
+	.add(ThrowableSet.Manager.v().ILLEGAL_MONITOR_STATE_EXCEPTION);
+
     /**
      * Constructs a <code>UnitThrowAnalysis</code> for inclusion in 
      * Soot's global variable manager, {@link G}.
@@ -66,40 +72,60 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
      */
     public static UnitThrowAnalysis v() { return G.v().soot_toolkits_exceptions_UnitThrowAnalysis(); }
 
-    /**
-     * Returns the set of types that the specified unit
-     * might throw.
-     *
-     * @param u {@link Unit} whose exceptions are to be returned.
-     *
-     * @return a representation of the set of {@link
-     * java.lang.Throwable Throwable} types that <code>u</code> might
-     * throw.
-     */
+
     public ThrowableSet mightThrow(Unit u) {
 	UnitSwitch sw = new UnitSwitch();
 	u.apply(sw);
 	return sw.getResult();
     }
 
+    
 
-    /**
-     * Returns the set of types that might be thrown in the course of
-     * evaluating the specified value.
-     *
-     * @param v {@link Value} whose exceptions are to be returned.
-     *
-     * @return a representation of the set of {@link
-     * java.lang.Throwable Throwable} types that <code>v</code> might
-     * throw.
-     */
+    public ThrowableSet mightThrowExplicitly(ThrowInst t) {
+	// Deducing the type at the top of the Baf stack is beyond me, so...
+	return ThrowableSet.Manager.v().ALL_THROWABLES;
+    }
+
+
+    public ThrowableSet mightThrowImplicitly(ThrowInst t) {
+	return implicitThrowExceptions;
+    }
+	
+    
+    public ThrowableSet mightThrowExplicitly(ThrowStmt t) {
+	Value thrownExpression = t.getOp();
+	Type thrownType = thrownExpression.getType();
+	if (thrownType == null || thrownType instanceof UnknownType) {
+	    // We can't identify the type of thrownExpression, so...
+	    return ThrowableSet.Manager.v().ALL_THROWABLES;
+	} else if (! (thrownType instanceof RefType)) {
+	    throw new IllegalStateException("UnitThrowAnalysis StmtSwitch: type of throw argument is not a RefType!");
+	} else {
+	    ThrowableSet result = ThrowableSet.Manager.v().EMPTY;
+	    if (thrownExpression instanceof NewInvokeExpr) {
+		// In this case, we know the exact type of the 
+		// argument exception.
+		result = result.add((RefType) thrownType);
+	    } else {
+		result = result.add(AnySubType.v((RefType) thrownType));
+	    }
+	    return result;
+	}
+    }
+
+
+    public ThrowableSet mightThrowImplicitly(ThrowStmt t) {
+	return implicitThrowExceptions;
+    }
+	
+    
     ThrowableSet mightThrow(Value v) {
 	ValueSwitch sw = new ValueSwitch();
 	v.apply(sw);
 	return sw.getResult();
     }
 
-    
+
     /**
      * Returns the set of types that might be thrown as a result of
      * calling the specified method.
@@ -270,13 +296,8 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	public void caseThrowInst(ThrowInst i) {
-	    // These two are possible regardless of the 
-	    // argument being thrown.
-	    result = result.add(mgr.NULL_POINTER_EXCEPTION);
-	    result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
-	    // Though of course they are subsumed by our conservative
-	    // assumption about the argument type:
-	    result = result.add(mgr.ALL_THROWABLES);
+	    result = mightThrowImplicitly(i);
+	    result = result.add(mightThrowExplicitly(i));
 	}
 
 	public void caseAddInst(AddInst i) {
@@ -455,24 +476,8 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	public void caseThrowStmt(ThrowStmt s) {
-	    result = result.add(mgr.NULL_POINTER_EXCEPTION);
-	    result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
-	    Value thrownExpression = s.getOp();
-	    Type thrownType = thrownExpression.getType();
-	    if (thrownType == null || thrownType instanceof UnknownType) {
-		// We can't identify the type of thrownExpression, so...
-		result = result.add(mgr.ALL_THROWABLES);
-	    } else if (! (thrownType instanceof RefType)) {
-		throw new RuntimeException("UnitThrowAnalysis StmtSwitch: type of throw argument is not a RefType!");
-	    } else {
-		if (thrownExpression instanceof NewInvokeExpr) {
-		    // In this case, we know the exact type of the 
-		    // argument exception.
-		    result = result.add((RefType) thrownType);
-		} else {
-		    result = result.add(AnySubType.v((RefType) thrownType));
-		}
-	    }
+	    result = mightThrowImplicitly(s);
+	    result = result.add(mightThrowExplicitly(s));
 	}
 
 	public void defaultCase(Object obj) {
@@ -766,6 +771,3 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
     }
 }
-
-
-	
