@@ -108,10 +108,10 @@
 			</value>
 			<value>
 				<name>Shimp File</name>
-				<!-- <alias>s</alias> CONFLICTS with jasmin -->
+				<alias>s</alias>
 				<alias>shimp</alias>
 				<short_desc>produce .shimp (abbreviated .shimple) files</short_desc>
-                                <long_desc>Produces .shimp files. These contain an abbreviated textual form for soot's Shimple internal representation. Can contain ambiguous references.</long_desc>
+                                <long_desc>Produces .shimp files. These contain an abbreviated textual form for Soot's Shimple internal representation. Can contain ambiguous references.</long_desc>
 			</value>
 			<value>
 				<name>Shimple File</name>
@@ -164,7 +164,6 @@
 			</value>
 			<value>
 				<name>Jasmin File</name>
-				<alias>s</alias>
 				<alias>jasmin</alias>
 				<short_desc>Produce .jasmin Files</short_desc>
                 <long_desc>Produces .jasmin files as output. These can be understood by the jasmin bytecode assembler tool.</long_desc>
@@ -185,7 +184,7 @@
 				<long_desc>Produces dava decompiled .java files.</long_desc>
 			</value>
 			<short_desc>Sets Output Format for Soot</short_desc>
-			<long_desc>This option sets the ouptut format of files Soot will produce or no output.</long_desc>
+			<long_desc>This option sets the output format of files Soot will produce or no output.</long_desc>
 		</multiopt>
 		<boolopt>
 			<name>Via Grimp</name>
@@ -320,7 +319,7 @@ inverse of the Local Splitter.
 						<short_desc/>
 						<long_desc>
 Use the variable names in the original source as a guide when
-determining how to share local variables across noninterfering
+determining how to share local variables across non-interfering
 variable usages. This recombines named locals which were split by
 the Local Splitter.
 </long_desc>
@@ -460,7 +459,7 @@ Local Splitter.
                                                 <default>false</default>
 						<long_desc>
 Use the variable names in the original source as a guide when
-determining how to share local variables across noninterfering
+determining how to share local variables across non-interfering
 variable usages. This recombines named locals which were split by
 the Local Splitter. SHOULD WE ENSURE THAT IF jb.ulp IS ALSO
 ENABLED, THEN ITS unsplit-original-locals MATCHES THIS ONE?
@@ -629,7 +628,7 @@ elements more precisely.
 							<default>false</default>
                                                         <short_desc>Emulate Rapid Type Analysis</short_desc>
 							<long_desc>
-Setting RTA to true sets typesForSites to true, and causes Spark to use
+Setting RTA to true sets types-for-sites to true, and causes Spark to use
 a single points-to set for all variables, giving <a href="http://doi.acm.org/10.1145/236337.236371">Rapid Type
 Analysis</a>.
         </long_desc>
@@ -824,7 +823,7 @@ simplified. This is useful if an external solver is being used to perform the
 propagation.
 </long_desc>
 							</value>
-                                                        <short_desc>Select algorihm to use for propagation</short_desc>
+                                                        <short_desc>Select algorithm to use for propagation</short_desc>
 							<long_desc>
 This option tells Spark which propagation algorithm to use.
         </long_desc>
@@ -1364,7 +1363,7 @@ then it will not be inlined into other methods.
 					<alias>enabled</alias>
                     <default>true</default>
 					<long_desc>
-Some analyses donot transform Jimple body directly, but annotate
+Some analyses do not transform Jimple body directly, but annotate
 statements or values with tags. Whole-Jimple annotation pack provides
 a place for annotation-oriented analysis in a whole program mode.
 					</long_desc>
@@ -1376,14 +1375,14 @@ a place for annotation-oriented analysis in a whole program mode.
 						<name>Enabled</name>
 						<alias>enabled</alias>
 						<default>false</default>
-						<short_desc> Find array variables always pointing to rectangular two-dimentional array objects. </short_desc>
+						<short_desc> Find array variables always pointing to rectangular two-dimensional array objects. </short_desc>
 						<long_desc> 
-In Java, a multi-dimentional array is an array of arrays, which means
+In Java, a multi-dimensional array is an array of arrays, which means
 the shape of the array can be ragged. However, many applications use
 rectangular arrays. Such information is very helpful in proving 
 safe array bounds checks. Rectangular array finder traverses Jimple
 statements based on static call graph, and finds array variables 
-always holding rectangular two-dimentional array objects. 
+always holding rectangular two-dimensional array objects. 
 The analysis results are used by array bounds check elimination (jap.abc).
 This phase does not change the program.
 						</long_desc>
@@ -1647,7 +1646,7 @@ transformation.
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Copy Propogator</name>
+					<name>Copy Propagator</name>
 					<class>CPOptions</class>
 					<alias>jop.cp</alias>
 					<long_desc>
@@ -2313,7 +2312,7 @@ Local Splitter.
 						<alias>unsplit-original-locals</alias>
 						<long_desc>
 Use the variable names in the original source as a guide when
-determining how to share local variables across noninterfering
+determining how to share local variables across non-interfering
 variable usages. This recombines named locals which were split by
 the Local Splitter. SHOULD WE ENSURE THAT IF jb.ulp IS ALSO
 ENABLED, THEN ITS unsplit-original-locals MATCHES THIS ONE?
