@@ -198,8 +198,6 @@ public class ClassFile {
       
       try
       {   
-          SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_CLASS);
-
           if(!soot.Scene.v().getSootClassPath().equals("<external-class-path>"))
           {   classFileStream = SourceLocator.getInputStreamOf(soot.Scene.v().getSootClassPath(), fn);
           }

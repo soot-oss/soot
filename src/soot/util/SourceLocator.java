@@ -68,6 +68,7 @@ public class SourceLocator
     /** Sets the source precedence. */
     public static void setSrcPrecedence(int precedence)
     {
+	if(precedence == PRECEDENCE_CLASS) throw new RuntimeException();
         srcPrecedence = precedence;
     }    
 
@@ -154,7 +155,7 @@ public class SourceLocator
             reps.add(ClassInputRep.v());
             reps.add(JimpleInputRep.v());
 
-            if(srcPrecedence == PRECEDENCE_CLASS || srcPrecedence == PRECEDENCE_NONE) {
+            if(srcPrecedence == PRECEDENCE_CLASS || srcPrecedence == PRECEDENCE_NONE) {		
                 List lst = new LinkedList();
                 lst.add(ClassInputRep.v());
                 if( (res = getFileInputStream(locations, lst, className)) != null)
@@ -208,7 +209,6 @@ public class SourceLocator
                 String fullPath = adjustedClassName + inputRep.getFileExtension();
                                      
                 File f = new File(fullPath);
-
                 InputStream in;
 
                 if (f.canRead()) {

@@ -64,7 +64,7 @@ public class FloatType extends BaseType
     }
     
     public String toString()
-    {
+    {       
         return "float";
     }
 

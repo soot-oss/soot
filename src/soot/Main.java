@@ -49,8 +49,7 @@ public class Main implements Runnable, ICompilationListener
     
 
     static {
-        Set rn = Scene.v().getReservedNames();
-        
+        Set rn = Scene.v().getReservedNames();        
         rn.add("newarray");
         rn.add("newmultiarray");
         rn.add("nop");
@@ -106,7 +105,8 @@ public class Main implements Runnable, ICompilationListener
         rn.add("throw");
         rn.add("throws");
         rn.add("null");
-        
+        rm.add("from");
+	rm.add("to");
     }
 
      //------> this used to be in Main
@@ -510,7 +510,7 @@ public class Main implements Runnable, ICompilationListener
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.47");
+            System.out.println("Soot version 1.beta.6.dev.48");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");

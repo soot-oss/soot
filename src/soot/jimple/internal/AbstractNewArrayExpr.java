@@ -86,10 +86,7 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
   
     private String getBaseTypeString()
     {
-        if(Jimple.isJavaKeywordType(baseType))
-            return "." + baseType;
-        else
-            return baseType.toString();
+	return baseType.toString();
     }
 
     public Type getBaseType()
