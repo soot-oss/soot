@@ -236,7 +236,7 @@ public class SourceLocator
                         return inputRep.createInputStream(bugFreeInputStream);
                     } catch(IOException e) {
                         G.v().out.println("error reading file:" + zip.getName() + e.toString());
-                        System.exit(1);
+                        throw new CompilationDeathException(Main.COMPILATION_ABORTED);
                     }
                 }
             }

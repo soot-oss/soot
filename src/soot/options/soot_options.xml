@@ -1018,7 +1018,6 @@ listed at <a href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.
 				<boolopt>
 					<name>Disabled</name>
 					<alias>disabled</alias>
-					<default>true</default>
 					<short_desc/>
 					<long_desc/>
 				</boolopt>

@@ -88,9 +88,8 @@ class LocalVariableTable_attribute extends attribute_info {
 		   return null;
 	    }
             else {
-               G.v().out.println("What? A local variable table name_index isn't" +
-                                  " a UTF8 entry?");
-               System.exit(1);
+               throw new RuntimeException( "What? A local variable table "
+                       +"name_index isn't a UTF8 entry?");
             }
          }
       }

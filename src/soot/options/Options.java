@@ -1191,8 +1191,7 @@ public class Options extends OptionsBase {
               +"disabled:true ";
     
         if( phaseName.equals( "wjtp" ) )
-            return ""
-              +"disabled:true ";
+            return "";
     
         if( phaseName.equals( "wjop" ) )
             return ""

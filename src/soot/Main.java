@@ -112,7 +112,7 @@ public class Main {
                 dir.mkdirs();
             } catch (SecurityException se) {
                 G.v().out.println("Unable to create " + ret);
-                System.exit(0);
+                throw new CompilationDeathException(COMPILATION_ABORTED);
             }
         }
         return ret;
@@ -148,7 +148,7 @@ public class Main {
                     dir.mkdirs();
                 } catch (SecurityException se) {
                     G.v().out.println("Unable to create " + classPath);
-                    System.exit(0);
+                    throw new CompilationDeathException(COMPILATION_ABORTED);
                 }
         }
 
@@ -170,7 +170,7 @@ public class Main {
                     dir.mkdirs();
                 } catch (SecurityException se) {
                     G.v().out.println("Unable to create " + path);
-                    System.exit(0);
+                    throw new CompilationDeathException(COMPILATION_ABORTED);
                 }
         }
 

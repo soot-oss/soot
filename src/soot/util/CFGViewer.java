@@ -66,7 +66,7 @@ public class CFGViewer {
     /* check the arguments */
     if (args.length ==0) {
       usage();
-      System.exit(0);
+      return;
     }
 
     /* process options */
