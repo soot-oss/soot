@@ -223,7 +223,7 @@ Note: \texttt{on} is a short form for \texttt{enabled:true}.
 \begin{slide}{Command-line: a more complex example}
 
 \begin{small}
-\textbf{\texttt{java soot.Main \red{-W} --app -f jimple}}
+\textbf{\texttt{java soot.Main {\red -W} --app -f jimple}}
 
 \textbf{\texttt{     -p jb use-original-names:true }}
 
@@ -238,11 +238,11 @@ Note: \texttt{on} is a short form for \texttt{enabled:true}.
 \textbf{\texttt{     Foo }}
 \end{small}
 
-\vspace{.2in}
+\vspace{.1in}
 
 \begin{footnotesize}
 Turn on 
-the intraprocedural optimization and interprocedural optimizations phases (-W). 
+the intra and interprocedural optimizations phases (-W). 
 
 Enable \textit{common sub-expression elimination} (cse).
 
