@@ -175,7 +175,7 @@ public class JasminClass
         return s.replace('.', '/');
     }
 
-    static int sizeOfType(Type t)
+    public static int sizeOfType(Type t)
     {
         if(t instanceof DoubleWordType || t instanceof LongType || t instanceof DoubleType)
             return 2;
@@ -2089,7 +2089,7 @@ public class JasminClass
 	int blockHeight =  ((Integer)blockToStackHeight.get(aBlock)).intValue();
 	
 	while(it.hasNext()) {
-	    blockHeight += ((AbstractInst)it.next()).getNetMachineCount();
+	    blockHeight += ((Inst)it.next()).getNetMachineCount();
 	    if( blockHeight > maxStackHeight) {
 		maxStackHeight = blockHeight;
 	    }

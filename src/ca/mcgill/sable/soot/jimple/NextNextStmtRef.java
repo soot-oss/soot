@@ -85,7 +85,7 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-class NextNextStmtRef implements ConcreteRef, ToBriefString
+public class NextNextStmtRef implements ConcreteRef, ToBriefString
 {
     NextNextStmtRef()
     {

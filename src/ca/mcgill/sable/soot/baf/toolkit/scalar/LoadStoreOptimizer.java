@@ -11,17 +11,18 @@ import ca.mcgill.sable.soot.toolkit.scalar.*;
 
 public class LoadStoreOptimizer 
 {
-    int gCounter = 0;
+
     final static protected int FAILURE = 0;
     final static protected int SUCCESS = 1;
     final static protected  int MAKE_DUP = 2;
     final static protected int MAKE_DUP1_X1 = 3;
     final static protected int SPECIAL_SUCCESS = 4;
     final static protected int HAS_CHANGED = 5;
+    final static protected int  SPECIAL_SUCCESS_2 = 6;
 
-  final static  boolean debug = false;
-    
-    Unit global = null;
+    final static  boolean debug = false;
+    final static boolean printStats = false;
+
     private static LoadStoreOptimizer mSingleton = new LoadStoreOptimizer();
 
     public static LoadStoreOptimizer v()
@@ -35,7 +36,7 @@ public class LoadStoreOptimizer
     }
     
 
-
+    
     protected Chain mUnits;
     protected Body mBody;
     protected CompleteUnitGraph mCompleteUnitGraph;
@@ -43,7 +44,8 @@ public class LoadStoreOptimizer
     protected LocalUses mLocalUses;
     protected Map mUnitToBlockMap;
     protected Map mUnitToStackSlotMap;
-
+    
+    private statistics stats = new statistics();
 
     /*
      *  Compute a map binding each unit in the method to the unique basic block    
@@ -53,7 +55,7 @@ public class LoadStoreOptimizer
      */
     protected  List  buildStoreListAndUnitToBlockMap()
     {
-            BlockGraph blockGraph = new BriefBlockGraph(mBody);
+	BlockGraph blockGraph = new BriefBlockGraph(mBody);
         if(debug) { System.out.println(blockGraph);}
         List blocks = blockGraph.getBlocks();
         List storeList = new ArrayList();
@@ -89,28 +91,36 @@ public class LoadStoreOptimizer
 
     public void optimize(Body body) 
     {
+
+	
         mBody = body;        
         mUnits =  mBody.getUnits();
+	
+	// if the method contains no code or has 4 or less instructions, then return 
         if(mUnits.isEmpty()) {
             return;
-        }
+        } else if (mUnits.size() <= 4)
+	    return;
 
         
-
         //delme[
         if(debug) { System.out.println("Optimizing: " + body.getMethod().toString());}
         //delme] 
+
+	stats.setMethodName(body.getMethod().toString());
         buildStoreListAndUnitToBlockMap();
 
-        optimizeLoadStores();        
-        doInterBlockOptimizations();         
-        optimizeLoadStores();        
-        pushLoadsUp();
-        optimizeLoadStores();
-        propagateLoadsForward();
-	propagateBackwardsIndependentHunk(); 
-	optimizeLoadStores();
+        optimizeLoadStores();         if(printStats) {System.out.println("Pass 1" + stats); } 
+	doInterBlockOptimizations(); if(printStats) {System.out.println("Pass 2" + stats); }
+	optimizeLoadStores();         if(printStats) { System.out.println("Pass 3" + stats);}    
+	pushLoadsUp();                 if(printStats) { System.out.println("Pass 4" + stats); }
+	optimizeLoadStores();          if(printStats) { System.out.println("Pass 5" + stats); }
+	propagateLoadsForward();         if(printStats) { System.out.println("Pass 6" + stats); }
+	propagateBackwardsIndependentHunk(); if(printStats) { System.out.println("Pass 7" + stats); }
+	optimizeLoadStores();       if(printStats) { System.out.println("Pass 8" + stats); } 
 	//	pushLoadsUp();
+	if(printStats) {	System.out.println(stats);}
+	stats.reset();
 	//	superDuper();
     }
 
@@ -191,11 +201,11 @@ public class LoadStoreOptimizer
             else if(currentUnit instanceof EnterMonitorInst  || currentUnit instanceof ExitMonitorInst)
                 break;
 
-            h -= ((AbstractInst)currentUnit).getOutCount();                
+            h -= ((Inst)currentUnit).getOutCount();                
             if(h < 0){
                 break;
             }            
-            h += ((AbstractInst)currentUnit).getInCount();
+            h += ((Inst)currentUnit).getInCount();
             if(h == 0) {
                 candidate = currentUnit;
             }
@@ -293,12 +303,13 @@ public class LoadStoreOptimizer
                                 Unit loadUnit = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                 block =  (Block) mUnitToBlockMap.get(unit);
                                 int test = stackIndependent(unit, loadUnit , block, 0);
-                                if(test == SUCCESS || test == SPECIAL_SUCCESS ){
+                                if(test == SUCCESS || test == SPECIAL_SUCCESS || test == SPECIAL_SUCCESS_2 ){
                                     
                                     block.remove(unit);
                                     block.remove(loadUnit);
                                     unitIt.remove();
                                     hasChanged = true;
+				    stats.madeSL();
                                 //delme[
                                     if(debug) { System.out.println("Store/Load elimination occurred.");}
                                 //delme]
@@ -328,7 +339,7 @@ public class LoadStoreOptimizer
                                     
                         
                                      int res = stackIndependent(unit, secondLoad, block, -1);
-                                    
+				     
                                      if(res == MAKE_DUP) {
                                          // replace store by dup, drop both loads                                
                                          
@@ -337,7 +348,7 @@ public class LoadStoreOptimizer
 
                                          block.remove(firstLoad); 
                                          block.remove(secondLoad);
-                                        
+					 stats.madeSLL();
                                          hasChanged = true;
                                          //delme[
                                          if(debug) { System.out.println("MAKE_DUP case invoked");}
@@ -361,7 +372,7 @@ public class LoadStoreOptimizer
                                         
                                         block.remove(firstLoad); 
                                         block.remove(secondLoad);
-                                        
+                                        stats.madeSLL();
                                         hasChanged = true;
                                         //delme[
                                         if(debug) { System.out.println("dup_x1 occurred.");}
@@ -401,12 +412,12 @@ public class LoadStoreOptimizer
                     if(!(to instanceof DupInst))
                         break;
 
-                stackHeight -= ((AbstractInst)currentInst).getInCount();
+                stackHeight -= ((Inst)currentInst).getInCount();
                 if(stackHeight < 0 ) {
                     res = true;
                     break;
                 }
-                stackHeight += ((AbstractInst)currentInst).getOutCount();
+                stackHeight += ((Inst)currentInst).getOutCount();
             }
         }
         return res;
@@ -420,22 +431,22 @@ public class LoadStoreOptimizer
     {
         Unit storePred =  (Unit) block.getPredOf(from);
         if(storePred != null) {
-            if(((AbstractInst)storePred).getOutCount() == 1){
+            if(((Inst)storePred).getOutCount() == 1){
                 Set unitsToMove = new HashSet();
                 unitsToMove.add(storePred);
                 unitsToMove.add(from);
-                int h = ((AbstractInst)storePred).getInCount();
+                int h = ((Inst)storePred).getInCount();
                 Unit currentUnit = storePred;
                 if(h != 0) {           
                     currentUnit = (Unit)block.getPredOf(storePred);
                     while(currentUnit != null) {
                         
-                        h-= ((AbstractInst)currentUnit).getOutCount();
+                        h-= ((Inst)currentUnit).getOutCount();
                         if(h<0){ // xxx could be more flexible here?
                             if(debug) { System.out.println("xxx: negative");}
                             return FAILURE;
                         }
-                        h+= ((AbstractInst)currentUnit).getInCount();
+                        h+= ((Inst)currentUnit).getInCount();
                         unitsToMove.add(currentUnit);
                         if(h == 0)
                             break;
@@ -512,14 +523,14 @@ public class LoadStoreOptimizer
         } 
         
         while(currentInst != to) {
-            stackHeight -= ((AbstractInst)currentInst).getInCount();
+            stackHeight -= ((Inst)currentInst).getInCount();
             if(stackHeight < minStackHeightAttained)
                 minStackHeightAttained = stackHeight;
             
             
-            stackHeight += ((AbstractInst)currentInst).getOutCount();                
+            stackHeight += ((Inst)currentInst).getOutCount();                
             
-            if(debug) { System.out.println(currentInst + " " + ((AbstractInst)currentInst).getNetCount());}
+            if(debug) { System.out.println(currentInst + " " + ((Inst)currentInst).getNetCount());}
             currentInst = (Unit) it.next();
         }
         
@@ -584,7 +595,7 @@ public class LoadStoreOptimizer
             // find a candidate to move before the store/load/(load)  group 
             while( u != to) {        
                 
-                if(((AbstractInst)u).getNetCount() == 1) {
+                if(((Inst)u).getNetCount() == 1) {
                     // xxx remove this check
                     if(u instanceof LoadInst || u instanceof PushInst || u instanceof NewInst || u instanceof StaticGetInst) {
                         
@@ -620,42 +631,28 @@ public class LoadStoreOptimizer
                     }
                 }
                
-                currentH += ((AbstractInst)u).getNetCount();                
+                currentH += ((Inst)u).getNetCount();                
                 unitToMove = null;
                 u =  (Unit) it.next();
             }
         }
-        
-        /*
-        if(aThreshold == 0 && stackHeight == 1 && minStackHeightAttained == 0) {
-            Unit succ = (Unit) block.getSuccOf(to);
-            if(succ != null) {
-                if(isCommutativeBinOp(succ)) {
-                    if(debug) { System.out.println("xxx: commutative ");}
-                    return SUCCESS;
-                }
-            }
-            } 
-        
-        else if (aThreshold == 0)
-            return   pushStoreToLoad(from , to, block);
-        */
 
         if(isCommutativeBinOp((Unit) block.getSuccOf(to))) {
 	    if(aThreshold == 0 && stackHeight == 1 && minStackHeightAttained == 0) {
 		if(debug) { System.out.println("xxx: commutative ");}
-		return SPECIAL_SUCCESS;
+		return SPECIAL_SUCCESS_2;
 	    }
-	    else if( ((AbstractInst) to).getOutCount()  == 1 &&
-		     ((AbstractInst) to).getInCount() == 0  &&
-		     ((AbstractInst) mUnits.getPredOf(to)).getOutCount() == 1 &&
-		     ((AbstractInst) mUnits.getPredOf(to)).getInCount() == 0) {
+	    else if( ((Inst) to).getOutCount()  == 1 &&
+		     ((Inst) to).getInCount() == 0  &&
+		     ((Inst) mUnits.getPredOf(to)).getOutCount() == 1 &&
+		     ((Inst) mUnits.getPredOf(to)).getInCount() == 0) {
                 
 		Object toPred =  mUnits.getPredOf(to);
 		block.remove(toPred);
 		block.insertAfter(toPred, to);
 		return HAS_CHANGED; // return has changed
-	    }
+		} 
+	    else return FAILURE;
         }
         if (aThreshold == 0)
 	    return   pushStoreToLoad(from , to, block);
@@ -787,12 +784,12 @@ public class LoadStoreOptimizer
                 reachedStore = true;
                 
         
-            h -= ((AbstractInst)current).getOutCount();                
+            h -= ((Inst)current).getOutCount();                
             if(h < 0 ){
                 if(debug) { System.out.println("1006:(LoadStoreOptimizer@stackIndependent): Stack went negative while trying to reorder code.");}
                 return false;
             }
-            h += ((AbstractInst)current).getInCount();
+            h += ((Inst)current).getInCount();
             
             
             if(h == 0 && reachedStore == true) {
@@ -819,15 +816,19 @@ public class LoadStoreOptimizer
     
 
 
-    protected void replaceUnit(Unit aToReplace1,Unit aToReplace2,  Unit aReplacement) 
+    protected void replaceUnit(Unit aToReplace1, Unit aToReplace2,  Unit aReplacement) 
     {
         Block block = (Block) mUnitToBlockMap.get(aToReplace1);
-                    
-        block.insertAfter(aReplacement, aToReplace2);
-        block.remove(aToReplace1);
-        block.remove(aToReplace2);
-                
-                                        
+                 
+	if(aToReplace2 != null) {
+	    block.insertAfter(aReplacement, aToReplace2);
+	    block.remove(aToReplace2);
+	} else {
+	    block.insertAfter(aReplacement, aToReplace1);	    
+	}
+
+	block.remove(aToReplace1);
+                                                        
         // add the new unit the block map
         mUnitToBlockMap.put(aReplacement, block);        
     }
@@ -837,36 +838,19 @@ public class LoadStoreOptimizer
 
     protected void replaceUnit(Unit aToReplace, Unit aReplacement) 
     {
-        Block block = (Block) mUnitToBlockMap.get(aToReplace);
+
+	replaceUnit(aToReplace, null, aReplacement);
+	/* Block block = (Block) mUnitToBlockMap.get(aToReplace);
                     
         block.insertAfter(aReplacement, aToReplace);
         block.remove(aToReplace);
         
                                 
         // add the new unit the block map
-        mUnitToBlockMap.put(aReplacement, block);        
+        mUnitToBlockMap.put(aReplacement, block);        */
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-    
-    protected boolean isMethodInvocationUnit(Unit aUnit)
-    {
-        if(aUnit instanceof  MethodArgInst) 
-            return true;
-        else 
-            return false;
-    }
 
     protected Type type(Unit aUnit)
     {
@@ -910,12 +894,12 @@ public class LoadStoreOptimizer
             }
             
             
-            h -= ((AbstractInst)currentUnit).getOutCount();
+            h -= ((Inst)currentUnit).getOutCount();
             if(h <= aDeltaHeight) {
                 candidate = currentUnit;
                 break;
             }            
-            h += ((AbstractInst)currentUnit).getInCount();            
+            h += ((Inst)currentUnit).getInCount();            
         }        
         return candidate;
     }
@@ -926,36 +910,7 @@ public class LoadStoreOptimizer
 
 
     
-    // Inter-block optimization code  22/07/99 patrice@cs
 
-    protected boolean assertPositiveStackHeightBetween(Unit first, Unit second)
-    {
-        Block currentBlock = (Block) mUnitToBlockMap.get(first);
-        boolean res = true;
-        int h = 0;
-
-        if(mUnitToBlockMap.get(second) != currentBlock)
-            throw new RuntimeException();
-        
-        Unit currentUnit = first;
-        
-        while(currentUnit != second){
-            currentUnit = (Unit) currentBlock.getSuccOf(currentUnit);
-
-            if(debug) { System.out.println(currentUnit + "   " + second );}
-            h -= ((AbstractInst)currentUnit).getInCount();                
-            if(h < 0){
-                return false;
-            }            
-            h += ((AbstractInst)currentUnit).getOutCount();
-                      
-        }        
-        
-        if(h == 0) 
-            return true;
-        else
-            return false;
-    }
 
 
     // not a save function :: goes over block boundries
@@ -965,7 +920,7 @@ public class LoadStoreOptimizer
         int h = 0;
         
         while(it.hasNext()) {
-            h += ((AbstractInst)it.next()).getNetCount();
+            h += ((Inst)it.next()).getNetCount();
         }
         
         return h;
@@ -1084,34 +1039,6 @@ public class LoadStoreOptimizer
 
 
 
-    // for the time being this means that all paths exiting the there block must eventually lead 
-    // to the here block in a linear fashion either directly or through a single other block
-    /*  protected boolean canOnlyGetHereFromThere(Block aHereBlock, Block  aThereBlock)
-    {
-        boolean res = true;
-
-        Iterator it = aThereBlock.getSuccessors().iterator();
-        while(it.hasNext()) {
-            Block b = (Block)  it.next();
-            if(b == aHereBlock);
-            else if(b == aThereBlock) {
-                res = false;
-                break;
-            } else {
-                Iterator it2 = b.getSuccessors().iterator();
-                while(it2.hasNext()) {
-                    if(it2.next() != aHereBlock) {
-                        res =false;
-                        break;
-                    }
-                }
-            }
-        }        
-        return res;
-        }*/
-
-
-
     protected boolean propagateStoreForward(Unit aInst, Unit aUnitToReach, Unit aCurrentUnit, int aStackHeight) 
     {
         boolean res = false;
@@ -1132,12 +1059,12 @@ public class LoadStoreOptimizer
                 break;
             }
             
-            aStackHeight -= ((AbstractInst)currentUnit).getInCount();                
+            aStackHeight -= ((Inst)currentUnit).getInCount();                
             if(aStackHeight < 0){
                 res = false;
                 break;
             }            
-            aStackHeight += ((AbstractInst)currentUnit).getOutCount();
+            aStackHeight += ((Inst)currentUnit).getOutCount();
             
             currentUnit = (Unit) block.getSuccOf(currentUnit);
         }        
@@ -1192,11 +1119,11 @@ public class LoadStoreOptimizer
                 break;}
             
 
-            h -= ((AbstractInst)currentUnit).getInCount();                
+            h -= ((Inst)currentUnit).getInCount();                
             if(h < 0){ if(debug) { System.out.println("breaking at: " + currentUnit);}
                 break;
             }            
-            h += ((AbstractInst)currentUnit).getOutCount();
+            h += ((Inst)currentUnit).getOutCount();
             
             if(h == 0){
                 candidate = currentUnit; // don't stop now; try to go still forward.
@@ -1368,8 +1295,20 @@ public class LoadStoreOptimizer
 	    }
 	}
     }
-
     
+
+    class statistics {
+	
+	private int mSLL = 0;
+	private int mSL = 0;
+	private String methodName;
+	
+	void setMethodName(String aMethodName){methodName = aMethodName;}
+	void madeSL(){mSL++;};
+	void madeSLL(){mSLL++;};
+	void reset(){mSLL = 0; mSL = 0; }
+	public String toString(){return "Statistics: for "+ methodName + "\n"  + mSL + " " + mSLL ; }
+    }
     
 }   
 

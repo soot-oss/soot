@@ -71,6 +71,7 @@ package ca.mcgill.sable.soot.baf;
 import ca.mcgill.sable.soot.*;
 
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.baf.internal.*;
 import java.util.*;
 import java.io.*;
 
@@ -78,7 +79,7 @@ public class PlaceholderInst extends AbstractInst
 {
     private Unit source;
 
-    final String getName() { return "<placeholder>"; }
+    public final String getName() { return "<placeholder>"; }
 
     protected String toString(boolean isBrief, Map unitToName, String indentation)
     {

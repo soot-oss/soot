@@ -117,7 +117,7 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.*;
 
-class FutureStmt extends ca.mcgill.sable.soot.jimple.AbstractStmt
+class FutureStmt extends ca.mcgill.sable.soot.jimple.internal.AbstractStmt
 {
     public Object object;
 

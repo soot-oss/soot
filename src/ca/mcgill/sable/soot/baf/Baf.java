@@ -73,6 +73,8 @@ package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.jimple.*;
+import ca.mcgill.sable.soot.jimple.internal.*;
+import ca.mcgill.sable.soot.baf.internal.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -81,7 +83,7 @@ public class Baf implements BodyRepresentation
     private static Baf bafRepresentation = new Baf();
 
 
-    static Type getDescriptorTypeOf(Type opType) 
+    public static Type getDescriptorTypeOf(Type opType) 
     {        
         if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
             opType = RefType.v();

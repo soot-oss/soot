@@ -99,6 +99,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.jimple.internal.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 import java.io.*;
@@ -117,7 +118,7 @@ public class Jimple implements BodyRepresentation
 {
     private static Jimple jimpleRepresentation = new Jimple();
 
-    static Value cloneIfNecessary(Value val) 
+    public static Value cloneIfNecessary(Value val) 
     {
         if( val instanceof Local || val instanceof Constant )
             return val;
