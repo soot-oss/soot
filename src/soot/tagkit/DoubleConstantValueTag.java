@@ -69,5 +69,8 @@ public class DoubleConstantValueTag extends ConstantValueTag
     public DoubleConstantValueTag(double val){
         this.value = val;
     }
+    public String toString() {
+        return "ConstantValue: "+Double.toString(value);
+    }
 }
 

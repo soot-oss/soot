@@ -46,5 +46,8 @@ public class LongConstantValueTag extends ConstantValueTag
     public long getLongValue() {
 	return value;
     }
+    public String toString() {
+        return "ConstantValue: "+Long.toString(value);
+    }
 }
 

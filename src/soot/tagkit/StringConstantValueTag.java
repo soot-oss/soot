@@ -39,5 +39,8 @@ public class StringConstantValueTag extends ConstantValueTag
     public String getStringValue() {
 	return value;
     }
+    public String toString() {
+        return "ConstantValue: "+value;
+    }
 }
 

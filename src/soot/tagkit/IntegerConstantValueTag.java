@@ -42,5 +42,8 @@ public class IntegerConstantValueTag extends ConstantValueTag
     public int getIntValue() {
 	return value;
     }
+    public String toString() {
+        return "ConstantValue: "+Integer.toString(value);
+    }
 }
 

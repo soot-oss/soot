@@ -61,5 +61,8 @@ public class FloatConstantValueTag extends ConstantValueTag
     /*public int getRawBits() {
 	return value;
     }*/
+    public String toString() {
+        return "ConstantValue: "+Float.toString(value);
+    }
 }
 
