@@ -4221,7 +4221,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      */
     private soot.Local getSpecialLocal(polyglot.ast.Special specialExpr) {
       
-        System.out.println(specialExpr);
+        //System.out.println(specialExpr);
         if (specialExpr.kind() == polyglot.ast.Special.SUPER) {
             if (specialExpr.qualifier() == null){
                 return specialThisLocal;
