@@ -584,7 +584,8 @@ public class LoadStoreOptimizer extends BodyTransformer
                     if(debug) { System.out.println("xxx: success due: 0, SUCCESS ");}
                     return SUCCESS;
                 }
-                else if (minStackHeightAttained == -1 && stackHeight == -1) { // try to make it more generic
+                /* xxx broken data depensie problem.
+		  else if (minStackHeightAttained == -1 && stackHeight == -1) { // try to make it more generic
                     Unit u = (Unit) block.getPredOf(from);
                     if(u instanceof FieldGetInst)
                         if(block.getPredOf(u) instanceof Dup1Inst) {
@@ -595,7 +596,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                             if(debug) { System.out.println("xxx: success due to 1, SPECIAL_SUCCESS2");}
                             return SPECIAL_SUCCESS2;
                         }                    
-                }
+			}*/
                 else if (minStackHeightAttained < 0){
                     return   pushStoreToLoad(from , to, block);
                 }                  
