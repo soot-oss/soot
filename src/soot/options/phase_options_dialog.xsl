@@ -240,44 +240,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		</xsl:for-each>
 		</xsl:for-each>
 
-<!--
-		<xsl:apply-templates mode="compInit" select="/options/section"/>
-		<xsl:for-each select="section">
-		
-		<xsl:for-each select="phaseopt">
-		
-		<xsl:apply-templates mode="compInit" select="phase">
-		<xsl:with-param name="parentAlias" select="alias"/>
-		</xsl:apply-templates>
-		
-		<xsl:variable name="phaseAlias" select="alias"/>
-		
-		<xsl:for-each select="phase">
-		
-		<xsl:apply-templates mode="compInit" select="sub_phase">
-		<xsl:with-param name="parent" select="translate(alias[last()],'-. ','___')"/>
-		<xsl:with-param name="parentAlias" select="$phaseAlias"/>
-		<xsl:with-param name="subAlias" select="alias"/>
-		</xsl:apply-templates>
-		
-		<xsl:variable name="sectionParent" select="translate(alias[last()],'-. ','___')"/>
-		<xsl:variable name="sectionParentAlias" select="$phaseAlias"/>
-		
-		
-		<xsl:for-each select="sub_phase">
-		<xsl:apply-templates mode="compInit" select="section">
-		<xsl:with-param name="parent" select="$sectionParent"/>
-		<xsl:with-param name="parentAlias" select="$sectionParentAlias"/>
-		<xsl:with-param name="subAlias" select="alias"/>
-		</xsl:apply-templates>
-		
-		</xsl:for-each>
-		
-		
-		</xsl:for-each>
-		</xsl:for-each>
-		</xsl:for-each>
--->		
 
 }
 
@@ -328,17 +290,12 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 <xsl:param name="subParentAlias"/>
 
 <xsl:param name="name"/>
-<!--
-<xsl:variable name="subParent" select="translate((alias|name)[last()],'-. ','___')"/>
-<xsl:variable name="name" select="name"/>
-<xsl:param name="parentAlias"/>
-<xsl:param name="subAlias"/>
-<xsl:variable name="subParentAlias" select="alias"/>
-
-<xsl:value-of select="$parentAlias"/>
-<xsl:value-of select="$subAlias"/>-->
 
 	private Composite <xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/>Create(Composite parent) {
+		String defKey;
+		String defaulString;
+		boolean defaultBool = false;
+		
 		Group editGroup = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroup.setLayout(layout);
@@ -348,7 +305,22 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 		
 <!--Boolean and Macro Widget-->		
 		<xsl:for-each select="boolopt|macroopt">
-		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="string-replace"><xsl:with-param name="text" select="(short_desc|long_desc)"/><xsl:with-param name="from" select="'&#10;'"/><xsl:with-param name="to" select="'&#92;n'"/></xsl:call-template>", <xsl:if test="default"><xsl:value-of select="default"/></xsl:if><xsl:if test="not(default)">false</xsl:if>)));
+		
+		defKey = "<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>";
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			<xsl:if test="default">
+			defaultBool = <xsl:value-of select="default"/>;
+			</xsl:if>
+			<xsl:if test="not(default)">
+			defaultBool = false;
+			</xsl:if>
+		}
+
+		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="string-replace"><xsl:with-param name="text" select="(short_desc|long_desc)"/><xsl:with-param name="from" select="'&#10;'"/><xsl:with-param name="to" select="'&#92;n'"/></xsl:call-template>", defaultBool)));
+		
 		</xsl:for-each>
 		
 <!--Multi Widget-->
