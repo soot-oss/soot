@@ -31,7 +31,7 @@ public class SparkNativeHelper extends NativeHelper {
 	this.pag = pag;
     }
     protected void assignImpl(ReferenceVariable lhs, ReferenceVariable rhs) {
-        pag.addEdge( (Node) lhs, (Node) rhs );
+        pag.addEdge( (Node) rhs, (Node) lhs );
     }
     protected void assignObjectToImpl(ReferenceVariable lhs, AbstractObject obj) {
 	AllocNode objNode = pag.makeAllocNode( 

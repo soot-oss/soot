@@ -35,11 +35,11 @@ public class SparkOptions {
 
 
 /*********************************************************************
-*** General options
+*** General Options
 *********************************************************************/
 
     /**
-     * If set to true, Spark prints detailed information.
+     * When this option is set to true, Spark prints detailed information.
      * Default value is false
      */
     public boolean verbose() {
@@ -47,8 +47,8 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, all parts of Spark completely ignore declared types of
-     * variables and casts.
+     * When this option is set to true, all parts of Spark completely ignore
+     * declared types of variables and casts.
      * Default value is false
      */
     public boolean ignoreTypesEntirely() {
@@ -56,8 +56,8 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, calls to System.gc() will be done at various points to
-     * allow memory usage to be measured.
+     * When this option is set to true, calls to System.gc() will be made at
+     * various points to allow memory usage to be measured.
      * Default value is false
      */
     public boolean forceGCs() {
@@ -66,17 +66,16 @@ public class SparkOptions {
 
 
 /*********************************************************************
-*** Pointer assignment graph building options
+*** Pointer Assignment Graph Building Options
 *********************************************************************/
 
     /**
      * Setting VTA to true has the effect of setting ignoreBaseObjects,
-     * typesForSites, and collapseSCCs to true to simulate Variable
-     * Type Analysis, described in Sundaresan et al., OOPSLA 2000.
-     * Note that the algorithm differs from the original VTA in that it
-     * handles array elements more precisely. To use the results of
-     * the analysis to trim the invoke graph, set
-     * the trimInvokeGraph option to true as well.
+     * typesForSites, and simplifySCCs to true to simulate Variable Type
+     * Analysis, described in~\cite{sund.hend.ea00}. Note that the
+     * algorithm differs from the original VTA in that it handles array
+     * elements more precisely. To use the results of the analysis to trim the
+     * invoke graph, set the trimInvokeGraph option to true as well.
      * Default value is false
      */
     public boolean VTA() {
@@ -84,11 +83,11 @@ public class SparkOptions {
     }
 
     /**
-     * Setting RTA to true sets typesForSites, and causes Spark to use a single
-     * points-to set for all variables, giving Rapid Type Analysis.
-     * To use the results of
-     * the analysis to trim the invoke graph, set
-     * the trimInvokeGraph option to true as well.
+     * Setting RTA to true sets typesForSites to true, and causes Spark to use
+     * a single points-to set for all variables, giving Rapid Type
+     * Analysis~\cite{baco.swee96}.
+     * To use the results of the analysis to trim the invoke graph, set the
+     * trimInvokeGraph option to true as well.
      * Default value is false
      */
     public boolean RTA() {
@@ -96,10 +95,11 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, fields are represented by variable (Green) nodes, and
-     * the object that the field belongs to is ignored (all fields are lumped
-     * together). Otherwise, fields are represented by field reference (Red)
-     * nodes, and the objects that they belong to are distinguished.
+     * When this option is set to true, fields are represented by variable
+     * (Green) nodes, and the object that the field belongs to is ignored
+     * (all fields are lumped together). Otherwise, fields are represented by
+     * field reference (Red) nodes, and the objects that they belong to are
+     * distinguished.
      * Default value is false
      */
     public boolean ignoreBaseObjects() {
@@ -107,8 +107,8 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, types rather than allocation sites are used as the
-     * elements of the points-to sets.
+     * When this option is set to true, types rather than allocation sites are
+     * used as the elements of the points-to sets.
      * Default value is false
      */
     public boolean typesForSites() {
@@ -116,8 +116,9 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, all allocation sites creating java.lang.StringBuffer
-     * objects are grouped together as a single allocation site.
+     * When this option is set to true, all allocation sites creating
+     * {\tt java.lang.StringBuffer} objects are grouped together as a single
+     * allocation site.
      * Default value is true
      */
     public boolean mergeStringBuffer() {
@@ -125,7 +126,7 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, effects of native methods are simulated.
+     * When this option is set to true, effects of native methods are simulated.
      * Default value is false
      */
     public boolean simulateNatives() {
@@ -133,8 +134,8 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, all edges connecting variable (Green) nodes are made
-     * bidirectional, as in Steensgaard's analysis.
+     * When this option is set to true, all edges connecting variable (Green)
+     * nodes are made bidirectional, as in Steensgaard's analysis~\cite{stee96*1}.
      * Default value is false
      */
     public boolean simpleEdgesBidirectional() {
@@ -142,9 +143,9 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, the call graph is computed on-the-fly as points-to
-     * information is computed. Otherwise, an initial approximation
-     * to the call graph is used.
+     * When this option is set to true, the call graph is computed on-the-fly
+     * as points-to information is computed. Otherwise, an initial
+     * approximation to the call graph is used.
      * Default value is false
      */
     public boolean onFlyCallGraph() {
@@ -152,9 +153,9 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, parameters to methods are represented as fields (Red
-     * nodes) of the 'this' object; otherwise, parameters are represented as
-     * variable (Green) nodes.
+     * When this option is set to true, parameters to methods are represented
+     * as fields (Red nodes) of the this object; otherwise, parameters are
+     * represented as variable (Green) nodes.
      * Default value is false
      */
     public boolean parmsAsFields() {
@@ -162,9 +163,9 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, return values from methods are represented as fields
-     * (Red nodes) of the 'this' object; otherwise, return values are
-     * represented as variable (Green) nodes.
+     * When this option is set to true, return values from methods are
+     * represented as fields (Red nodes) of the this object; otherwise,
+     * return values are represented as variable (Green) nodes.
      * Default value is false
      */
     public boolean returnsAsFields() {
@@ -173,12 +174,13 @@ public class SparkOptions {
 
 
 /*********************************************************************
-*** Pointer assignment graph simplification options
+*** Pointer Assignment Graph Simplification Options
 *********************************************************************/
 
     /**
-     * If set to true, variable (Green) nodes which are connected by simple paths
-     * (so they must have the same points-to set) are merged together.
+     * When this option is set to true, variable (Green) nodes which are
+     * connected by simple paths (so they must have the same points-to set) are
+     * merged together.
      * Default value is false
      */
     public boolean simplifyOffline() {
@@ -186,9 +188,9 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, variable (Green) nodes which form strongly-connected
-     * components (so they must have the same points-to set) are merged
-     * together.
+     * When this option is set to true, variable (Green) nodes which form
+     * strongly-connected components (so they must have the same points-to set)
+     * are merged together.
      * Default value is false
      */
     public boolean simplifySCCs() {
@@ -196,16 +198,16 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, when collapsing strongly-connected components, nodes
-     * forming SCCs are collapsed regardless of their type. The collapsed SCC
-     * is given the most general type of all the nodes in the component. If no
-     * node has the most general type, then the SCC is given no type, and may
-     * point to objects of any type.
+     * When this option is set to true, when collapsing strongly-connected
+     * components, nodes forming SCCs are collapsed regardless of their type.
+     * The collapsed SCC is given the most general type of all the nodes in the
+     * component. If no node has the most general type, then the SCC is given
+     * no type, and may point to objects of any type.
      * 
-     * If set to false, only edges connecting nodes of the same type are
-     * considered when detecting SCCs.
+     * When this option is set to false, only edges connecting nodes of the
+     * same type are considered when detecting SCCs.
      * 
-     * This option has no effect unless collapseSCCs is true.
+     * This option has no effect unless simplifySCCs is true.
      * Default value is false
      */
     public boolean ignoreTypesForSCCs() {
@@ -214,13 +216,13 @@ public class SparkOptions {
 
 
 /*********************************************************************
-*** Points-to set flowing options
+*** Points-To Set Flowing Options
 *********************************************************************/
 
     /**
-     * Tells Spark which propagation algorithm to use.
+     * This option tells Spark which propagation algorithm to use.
      * 
-     * Iter is a dumb, iterative algorithm, that propagates everything until the
+     * Iter is a simple, iterative algorithm, which propagates everything until the
      * graph does not change.
      * 
      * Worklist is a worklist-based algorithm that tries
@@ -345,13 +347,13 @@ public class SparkOptions {
 
 
 /*********************************************************************
-*** Output options
+*** Output Options
 *********************************************************************/
 
     /**
-     * If set to true, a browseable HTML representation of the pointer assignment
-     * graph is output after the analysis completes. Note that this representation
-     * is typically very large.
+     * When this option is set to true, a browseable HTML representation of the
+     * pointer assignment graph is output after the analysis completes. Note
+     * that this representation is typically very large.
      * Default value is false
      */
     public boolean dumpHTML() {
@@ -359,7 +361,7 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, a representation of the pointer assignment graph
+     * When this option is set to true, a representation of the pointer assignment graph
      * suitable for processing with other solvers (such as the BDD-based solver) is
      * output before the analysis begins.
      * Default value is false
@@ -369,7 +371,7 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, a representation of the resulting points-to
+     * When this option is set to true, a representation of the resulting points-to
      * sets is dumped. The format is similar to that of the dumpPAG
      * option, and is therefore suitable for comparison with the results of other
      * solvers.
@@ -380,7 +382,7 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, the representation dumped by the dumpPAG option
+     * When this option is set to true, the representation dumped by the dumpPAG option
      * is dumped with the green nodes in (pseudo-)topological order.
      * 
      * This option has no effect unless dumpPAG is true.
@@ -391,7 +393,7 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, the representation dumped by the dumpPAG option
+     * When this option is set to true, the representation dumped by the dumpPAG option
      * includes type information for all nodes.
      * 
      * This option has no effect unless dumpPAG is true.
@@ -402,7 +404,7 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, the representation dumped by the dumpPAG option
+     * When this option is set to true, the representation dumped by the dumpPAG option
      * represents nodes by numbering each class, method, and variable within
      * the method separately, rather than assigning a single integer to each
      * node.
@@ -416,7 +418,7 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, the computed reaching types for each variable are
+     * When this option is set to true, the computed reaching types for each variable are
      * dumped to a file, so that they can be compared with the results of
      * other analyses (such as the old VTA).
      * Default value is false
@@ -426,7 +428,7 @@ public class SparkOptions {
     }
 
     /**
-     * If set to true, the results of the analysis are used to make the invoke graph
+     * When this option is set to true, the results of the analysis are used to make the invoke graph
      * more precise after the analysis completes.
      * Default value is false
      */

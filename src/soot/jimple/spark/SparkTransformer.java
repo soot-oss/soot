@@ -132,7 +132,7 @@ public class SparkTransformer extends SceneTransformer
         if( opts.forceGCs() ) doGC();
         reportTime( "Solution found", startSimplify, endProp );
 
-        //findSetMass( pag );
+        findSetMass( pag );
 
         /*
         if( propagator[0] instanceof PropMerge ) {
@@ -153,8 +153,13 @@ public class SparkTransformer extends SceneTransformer
             Scene.v().setActivePointsToAnalysis( pag );
         }
         if( opts.trimInvokeGraph() ) {
+            if( opts.verbose() ) System.out.println( Scene.v()
+                    .getActiveInvokeGraph().computeStats() );
             new InvokeGraphTrimmer( pag, ig ).trimInvokeGraph();
+            if( opts.verbose() ) System.out.println( Scene.v()
+                    .getActiveInvokeGraph().computeStats() );
         }
+        System.out.println( Scene.v().getActiveInvokeGraph().computeStats() );
     }
     protected void findSetMass( PAG pag ) {
         int mass = 0;

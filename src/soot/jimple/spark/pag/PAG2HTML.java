@@ -170,11 +170,9 @@ public class PAG2HTML {
         StringBuffer ret = new StringBuffer();
         for( int i = 0; i < s.length(); i++ ) {
             char c = s.charAt( i );
-            if( Character.isLetterOrDigit( c ) ) {
-                ret.append( c );
-            } else {
-                ret.append( "__array__" );
-            }
+            if( c == '<' ) ret.append( '{' );
+            else if( c == '>' ) ret.append( '}' );
+            else ret.append( c );
         }
         return ret.toString();
     }

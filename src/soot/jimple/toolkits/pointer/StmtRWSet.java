@@ -51,11 +51,12 @@ public class StmtRWSet extends RWSet {
 	    StmtRWSet o = (StmtRWSet) other;
 	    if( !field.equals( o.field ) ) return false;
 	    if( base == null ) return o.base == null;
-	    return base.hasNonEmptyIntersection( o.base );
+	    return Union.hasNonEmptyIntersection( base, o.base );
 	} else if( other instanceof MethodRWSet ) {
 	    MethodRWSet o = (MethodRWSet) other;
 	    if( base == null ) return other.getGlobals().contains( field );
-	    return base.hasNonEmptyIntersection( other.getBaseForField( field ) );
+	    return Union.hasNonEmptyIntersection( base,
+                    other.getBaseForField( field ) );
 	} else {
 	    return other.hasNonEmptyIntersection( this );
 	}

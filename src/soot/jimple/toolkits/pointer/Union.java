@@ -7,6 +7,13 @@ public abstract class Union implements PointsToSet {
      * union was changed. */
     public abstract boolean addAll( PointsToSet s );
 
+    public static boolean hasNonEmptyIntersection( PointsToSet s1, PointsToSet s2 ) {
+        if( s1 == null ) return false;
+        if( s1 instanceof  Union ) return s1.hasNonEmptyIntersection( s2 );
+        if( s2 == null ) return false;
+        return s2.hasNonEmptyIntersection( s1 );
+    }
+
     public static UnionFactory factory = null;
 }
 

@@ -71,7 +71,8 @@ public class MethodRWSet extends RWSet {
 	    for( Iterator fieldIt = other.fields.keySet().iterator(); fieldIt.hasNext(); ) {
 	        final Object field = (Object) fieldIt.next();
 		if( fields.containsKey( field ) ) {
-		    if( getBaseForField( field ).hasNonEmptyIntersection(
+		    if( Union.hasNonEmptyIntersection(
+                                getBaseForField( field ),
 				other.getBaseForField( field ) ) ) {
 			return true;
 		    }

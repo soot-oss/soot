@@ -26,7 +26,7 @@ BEGIN {
     print "\\author{Ond\\v{r}ej Lhot\'ak}"
     print "\\begin{document}"
     print "\\maketitle"
-    print "This documents describes the command-line options to Spark."
+    print "This document describes the command-line options to Spark."
     print "Values for options are specified on the Soot command-line, following"
     print "the switch \\texttt{-p wjtp.Spark}. For example:"
     print ""
