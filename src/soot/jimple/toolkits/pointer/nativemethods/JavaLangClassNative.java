@@ -98,11 +98,11 @@ public class JavaLangClassNative extends NativeMethodClass {
       java_lang_Class_getPrimitiveClass(method, thisVar, returnVar, params);
       return;
 
-    } else if (subSignature.equals("java.lang.reflect.Field[] getFields0()")){
+    } else if (subSignature.equals("java.lang.reflect.Field[] getFields0(int)")){
       java_lang_Class_getFields0(method, thisVar, returnVar, params);
       return;
 
-    } else if (subSignature.equals("java.lang.reflect.Method[] getMethods0()")){
+    } else if (subSignature.equals("java.lang.reflect.Method[] getMethods0(int)")){
       java_lang_Class_getMethods0(method, thisVar, returnVar, params);
       return;
 
