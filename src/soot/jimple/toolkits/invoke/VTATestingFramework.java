@@ -54,7 +54,7 @@ public class VTATestingFramework extends SceneTransformer
     protected void internalTransform(String phaseName, Map options)
     {
         Date start = new Date();
-        if(Main.isVerbose) {
+        if(Main.opts.verbose()) {
             System.out.println("[] Starting VTA...");
             System.out.println("[vta] Invoke graph builder started on "+start);
         }
@@ -62,7 +62,7 @@ public class VTATestingFramework extends SceneTransformer
         InvokeGraphBuilder.v().transform(phaseName + ".igb");
 
         Date finish = new Date();
-        if (Main.isVerbose) {
+        if (Main.opts.verbose()) {
             System.out.println("[vta] Done building invoke graph.");
             long runtime = finish.getTime() - start.getTime();
             System.out.println("[stb] This took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
@@ -163,7 +163,7 @@ public class VTATestingFramework extends SceneTransformer
                     continue;
 
                 if (excludeSet.contains(container)) {
-                    if (Main.isVerbose)
+                    if (Main.opts.verbose())
                         excludeCount++;
                         System.out.println(container+" is excluded from profiling.");
                     continue;
@@ -212,8 +212,8 @@ public class VTATestingFramework extends SceneTransformer
                     unitChain.insertBefore(assign, s);
 
                     if (types!=null) {
-                        for (Iterator typesIt = types.iterator(); typesIt.hasNext(); ) {
-                            Type t = (Type)typesIt.next();
+                        for( Iterator tIt = types.iterator(); tIt.hasNext(); ) {
+                            final Type t = (Type) tIt.next();
                             assign = j.newAssignStmt(__vtaclass, j.newStaticInvokeExpr(m1, StringConstant.v(t.toString())));
                             unitChain.insertBefore(assign, s);
                             invoke = j.newInvokeStmt(j.newVirtualInvokeExpr(__typeList, m2, __vtaclass));
@@ -252,7 +252,7 @@ public class VTATestingFramework extends SceneTransformer
             }
         }
   
-        if (Main.isVerbose) {
+        if (Main.opts.verbose()) {
             System.out.println(excludeCount+" methods have been excluded from profiling.");
         }
         Scene.v().releaseActiveInvokeGraph();

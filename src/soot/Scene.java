@@ -138,6 +138,12 @@ public class Scene  //extends AbstractHost
     {
         Pack p;
 
+        // Shimple transformation pack
+        packNameToPack.put("stp", p = new Pack());
+
+        // Shimple optimization pack (-O)
+        packNameToPack.put("sop", p = new Pack());
+
         // Jimple transformation pack
         packNameToPack.put("jtp", p = new Pack());
 
@@ -157,14 +163,19 @@ public class Scene  //extends AbstractHost
             p.add(new Transform("jop.uce2", UnreachableCodeEliminator.v()));
             p.add(new Transform("jop.ubf2", UnconditionalBranchFolder.v()));
             p.add(new Transform("jop.ule",  UnusedLocalEliminator.v()));
-//              p.add(new Transform("jop.pre", PartialRedundancyEliminator.v()));
+        }
+
+        // Jimple annotation pack
+        packNameToPack.put("jap", p = new Pack());
+
+        // Call graph pack
+        packNameToPack.put("cg", p = new Pack());
+        {
+            p.add(new Transform("cg.Spark", SparkTransformer.v(), "disabled"));
         }
 
         // Whole-Jimple transformation pack (--app)
         packNameToPack.put("wjtp", p = new Pack());
-        {
-            p.add(new Transform("wjtp.Spark", SparkTransformer.v(), "disabled"));
-        }
 
         // Whole-Jimple Optimization pack (--app -W)
         packNameToPack.put("wjop", p = new Pack());
@@ -172,6 +183,12 @@ public class Scene  //extends AbstractHost
             p.add(new Transform("wjop.smb", StaticMethodBinder.v(), "disabled"));
             p.add(new Transform("wjop.si", StaticInliner.v()));
         }
+
+        // Whole-Shimple transformation pack (--app)
+        packNameToPack.put("wstp", p = new Pack());
+
+        // Whole-Shimple Optimization pack (--app -W)
+        packNameToPack.put("wsop", p = new Pack());
 
 	// Give another chance to do Whole-Jimple transformation
 	// The RectangularArrayFinder will be put into this package.
@@ -182,6 +199,9 @@ public class Scene  //extends AbstractHost
 
         // Grimp optimization pack
         packNameToPack.put("gop", p = new Pack());
+
+        // Code attribute tag aggregation pack
+        packNameToPack.put("cat", p = new Pack());
 
         // load soot.class.path system property, if defined
         String scp = System.getProperty("soot.class.path");
@@ -400,7 +420,7 @@ public class Scene  //extends AbstractHost
     public SootClass loadClassAndSupport(String className) 
     {   
         /*
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.resolveTimer.start();
         */
         
@@ -412,7 +432,7 @@ public class Scene  //extends AbstractHost
         return toReturn;
         
         /*
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.resolveTimer.end(); */
     }
     
@@ -691,7 +711,7 @@ public class Scene  //extends AbstractHost
     
     public boolean getPhantomRefs()
     {
-        if( soot.Main.definitelyForbidPhantomRefs ) return false;
+        if( !soot.Main.opts.allowPhantoms() ) return false;
         return allowsPhantomRefs;
     }
 

@@ -57,11 +57,11 @@ public class DeadAssignmentEliminator extends BodyTransformer
     {
         boolean eliminateOnlyStackLocals = Options.getBoolean(options, "only-stack-locals");
 
-        if(Main.isVerbose)
+        if(Main.opts.verbose())
             System.out.println("[" + b.getMethod().getName() +
                 "] Eliminating dead code...");
         
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.deadCodeTimer.start();
 
         Set essentialStmts = new HashSet();
@@ -244,7 +244,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
             }
         }
         
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.deadCodeTimer.end();
 
     }

@@ -67,7 +67,7 @@ public class GrimpBody extends StmtBody
         boolean aggregateAllLocals = Options.getBoolean(options, "aggregate-all-locals");
         boolean noAggregating = Options.getBoolean(options, "no-aggregating");
 
-        if(soot.Main.isVerbose)
+        if(soot.Main.opts.verbose())
             System.out.println("[" + getMethod().getName() + "] Constructing GrimpBody...");
         
         JimpleBody jBody = null;

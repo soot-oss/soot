@@ -41,16 +41,13 @@ public class ConditionalBranchFolder  extends BodyTransformer
 
     public static ConditionalBranchFolder v() { return instance; }
 
-    static boolean debug = soot.Main.isInDebugMode;
-    static boolean verbose = soot.Main.isVerbose;
-
     protected void internalTransform(Body body, String phaseName, Map options)
     {
         StmtBody stmtBody = (StmtBody)body;
 
         int numTrue = 0, numFalse = 0;
 
-        if (soot.Main.isVerbose)
+        if (soot.Main.opts.verbose())
             System.out.println("[" + stmtBody.getMethod().getName() +
                                "] Folding conditional branches...");
 
@@ -84,7 +81,7 @@ public class ConditionalBranchFolder  extends BodyTransformer
             }
         }
 
-       if (soot.Main.isVerbose)
+       if (soot.Main.opts.verbose())
             System.out.println("[" + stmtBody.getMethod().getName() +
                 "]     Folded " + numTrue + " true, " + numFalse +
                                " conditional branches");

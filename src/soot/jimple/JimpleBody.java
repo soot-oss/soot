@@ -90,12 +90,12 @@ public class JimpleBody extends StmtBody implements Serializable
 
         if(!noSplitting)
         {
-            if(Main.isProfilingOptimization)
+            if(Main.opts.time())
                 Main.splitTimer.start();
 
             LocalSplitter.v().transform(this, "jb.ls");
 
-            if(Main.isProfilingOptimization)
+            if(Main.opts.time())
                 Main.splitTimer.end();
 
             if(!noTyping)
@@ -111,12 +111,12 @@ public class JimpleBody extends StmtBody implements Serializable
 		    UnusedLocalEliminator.v().transform(this, "jb.ule");
 		}
 
-                if(Main.isProfilingOptimization)
+                if(Main.opts.time())
                     Main.assignTimer.start();
 
                 TypeAssigner.v().transform(this, "jb.tr");
 		
-                if(Main.isProfilingOptimization)
+                if(Main.opts.time())
                     Main.assignTimer.end();
 
 		if(typingFailed())
@@ -164,7 +164,7 @@ public class JimpleBody extends StmtBody implements Serializable
         if (!noUcElimination)
             UnreachableCodeEliminator.v().transform(this, "jb.uce");
                     
-        if(soot.Main.isProfilingOptimization)
+        if(soot.Main.opts.time())
             soot.Main.stmtCount += getUnits().size();
     }
 

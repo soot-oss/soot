@@ -53,7 +53,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
         int numFolded = 0;
         int numPropagated = 0;
 
-        if (soot.Main.isVerbose)
+        if (soot.Main.opts.verbose())
             System.out.println("[" + stmtBody.getMethod().getName() +
                                "] Propagating and folding constants...");
 
@@ -111,7 +111,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
             }
         }
 
-       if (soot.Main.isVerbose)
+       if (soot.Main.opts.verbose())
             System.out.println("[" + stmtBody.getMethod().getName() +
                 "]     Propagated: " + numPropagated + ", Folded:  " + numFolded);
 

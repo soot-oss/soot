@@ -89,7 +89,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 
 	    Date start = new Date();
 
-	    if (soot.Main.isVerbose)
+	    if (soot.Main.opts.verbose())
 	    {
 		System.out.println("[abc] Analyzing array bounds information for "+m.getName());
 		System.out.println("[abc] Started on "+start);
@@ -230,7 +230,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 	    }
 
 	    Date finish = new Date();
-	    if (soot.Main.isVerbose) 
+	    if (soot.Main.opts.verbose()) 
 	    {
 		long runtime = finish.getTime() - start.getTime();
 		System.out.println("[abc] ended on "+finish

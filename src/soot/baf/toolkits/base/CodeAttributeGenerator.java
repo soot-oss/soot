@@ -54,7 +54,7 @@ public class  CodeAttributeGenerator extends BodyTransformer
     {
         BafBody body = (BafBody) b;
        
-        if (soot.Main.isVerbose) 
+        if (soot.Main.opts.verbose()) 
             System.out.println("[" + body.getMethod().getName() + "] Aggregating Unit Tags...");
 
 	/* different tag aggregator can be added to here */

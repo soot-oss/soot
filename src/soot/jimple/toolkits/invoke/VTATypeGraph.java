@@ -527,7 +527,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
         Date start = new Date();
 
         // Adjust for native methods.
-	//        if (Main.isVerbose) 
+	//        if (Main.opts.verbose()) 
 	{
             System.out.println("[vta] Adjust for native methods");
         }
@@ -540,7 +540,7 @@ public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
         }
 
         Date finish = new Date();
-	//        if (Main.isVerbose) 
+	//        if (Main.opts.verbose()) 
 	{
             System.out.println("[vta] Done adjusting for native methods.");
             long runtime = finish.getTime()-start.getTime();

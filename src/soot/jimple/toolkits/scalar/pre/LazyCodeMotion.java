@@ -75,7 +75,7 @@ public class LazyCodeMotion extends BodyTransformer {
     String safe = Options.getString(options, "safe");
     boolean unroll = Options.getBoolean(options, "unroll");
 
-    if(Main.isVerbose) System.out.println("[" + b.getMethod().getName() +
+    if(Main.opts.verbose()) System.out.println("[" + b.getMethod().getName() +
                                           "] Performing Lazy Code Motion...");
 
     if (unroll) new LoopConditionUnroller().transform(b, phaseName + ".lcu");
@@ -236,7 +236,7 @@ public class LazyCodeMotion extends BodyTransformer {
         }
       }
     }
-    if(Main.isVerbose)
+    if(Main.opts.verbose())
       System.out.println("[" + b.getMethod().getName() +
                          "]     Lazy Code Motion done.");
   }

@@ -1310,7 +1310,7 @@ public class SootClass extends AbstractHost implements Numberable
 
             writerOut.close();
 
-            if(soot.Main.isProfilingOptimization)
+            if(soot.Main.opts.time())
                 soot.Main.assembleJasminTimer.start(); 
 
             // Invoke jasmin
@@ -1337,7 +1337,7 @@ public class SootClass extends AbstractHost implements Numberable
             
             tempFile.delete();
             
-            if(soot.Main.isProfilingOptimization)
+            if(soot.Main.opts.time())
                 soot.Main.assembleJasminTimer.end(); 
             
         } catch(IOException e)

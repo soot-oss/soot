@@ -101,7 +101,7 @@ public class StronglyConnectedComponents
         }
         componentList = Collections.unmodifiableList(componentList);
 
-        if (Main.isVerbose) 
+        if (Main.opts.verbose()) 
         {
             System.out.println("Done computing scc components");
             System.out.println("number of nodes in underlying graph: "+g.size());

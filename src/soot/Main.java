@@ -23,10 +23,6 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot;
 
 import soot.util.*;
@@ -49,11 +45,10 @@ import soot.jimple.toolkits.invoke.*;
 import soot.tagkit.*;
 import soot.dava.toolkits.base.misc.*;
 
+import soot.options.Options;
+
 import java.io.*;
 import java.text.*;
-
-import gnu.getopt.*;
-
 
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main implements Runnable
@@ -61,22 +56,12 @@ public class Main implements Runnable
     // TODO: the following string should be updated by the source control
     // No it shouldn't. Prcs is horribly borken in this respect, and causes
     // the code to not compile all the time.
-    public static final String versionString = "1.2.5";
+    public static final String versionString = "2.0";
 
-
+    public static Options opts;
     
     public Date start;
     public Date finish;
-
-    //------> this used to be in Main
-    // DEBUG
-    static boolean isAnalyzingLibraries = false;
-
-    public static boolean keepLineNumberAttribute = false;
-    public static boolean definitelyForbidPhantomRefs = true;
- 
-  // should soot keep approximated bytecode offset for each jimple instruction?
-    public static boolean keepBytecodeOffsetInfo = false;
 
     private static List compilationListeners = new ArrayList(1);
     public static void addCompilationListener(ICompilationListener l)
@@ -93,70 +78,42 @@ public class Main implements Runnable
     static List packageInclusionMasks = new ArrayList();
 
     static List dynamicClasses = new ArrayList();
-    static List processClasses = new ArrayList();
     
-    static Chain cmdLineClasses = new HashChain();
-    // <-------------
-
-    // for POINTS-TO analysis
-    public static final int NO_OUTPUT = -1;
-
-    public static final int BAF = 0;
-    public static final int B = 1;
-
-    public static final int JIMPLE = 2;
-    public static final int JIMP = 3;
-    
-    public static final int NJIMPLE = 4;
-    public static final int GRIMP = 5;
-
-    public static final int GRIMPLE = 6;
-    public static final int CLASS = 7;
-    
-    public static final int DAVA = 8;
-    public static final int JASMIN = 9;
-
-    public static final int XML = 10;
-
     public static String getExtensionFor(int rep)
     {
         String str = null;
 
         switch(rep) {
-        case BAF:
+        case Options.outputFormat_baf:
             str = ".baf";
             break;
-        case B:
+        case Options.outputFormat_b:
             str = ".b";
             break;
             
-        case JIMPLE: 
+        case Options.outputFormat_jimple:
             str = ".jimple";
             break;                        
-        case JIMP:    
+        case Options.outputFormat_jimp:
             str = ".jimp";
             break;
-        case NJIMPLE:
-            str = ".njimple";
-            break;
-        case GRIMP:
+        case Options.outputFormat_grimp:
             str = ".grimp";
             break;
-        case GRIMPLE:
+        case Options.outputFormat_grimple:
             str = ".grimple";
             break;
-            
-        case CLASS:
+        case Options.outputFormat_classFile:
             str = ".class";
             break;
-        case DAVA:
+        case Options.outputFormat_dava:
 	    str = ".java";
             break;
-        case JASMIN:
+        case Options.outputFormat_jasmin:
             str = ".jasmin";
             break;
              
-        case XML:
+        case Options.outputFormat_xml:
             str = ".xml";
             break;
 
@@ -169,7 +126,7 @@ public class Main implements Runnable
     public static String getFileNameFor( SootClass c, int rep)
     {
 	// add an option for no output
-	if (rep == NO_OUTPUT) return null;
+	if (rep == Options.outputFormat_none) return null;
 
 	StringBuffer b = new StringBuffer();
 
@@ -179,7 +136,7 @@ public class Main implements Runnable
 	if ((b.length() > 0) && (b.charAt( b.length() - 1) != fileSeparator))
 	    b.append( fileSeparator);
 	
-	if (rep != DAVA) {
+	if (rep != Options.outputFormat_dava) {
 	    b.append( c.getName());
 	    b.append( getExtensionFor( rep));
 
@@ -234,21 +191,8 @@ public class Main implements Runnable
 
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
 
-    //FD: Unused variables.
-    //  static boolean naiveJimplification;
-    //  static boolean onlyJimpleOutput;
-    //  static boolean onlyJasminOutput;
-    //  static public boolean oldTyping;
-    //  static public boolean usePackedLive;
-    //  static public boolean usePackedDefs = true;
-    //  static boolean isTestingPerformance;
-
-    public static boolean isVerbose;
-    public static boolean isProfilingOptimization;
     public static boolean isInDebugMode;
-    static boolean isSubtractingGC;
    
-    static private int targetExtension = CLASS;
     static private boolean withCache = false;
     static private String cacheDir = null;
     static private boolean useJavaStyle = false;
@@ -311,9 +255,6 @@ public class Main implements Runnable
 
     static private boolean isOptimizing;
     static private boolean isOptimizingWhole;
-    static private boolean isUsingVTA;
-    static private boolean isUsingRTA;
-    static private boolean isApplication = false;
 
   // hack for J2ME, patch provided by Stephen Chen
   // by default, this is set as false, to use SOOT with J2ME library
@@ -333,8 +274,6 @@ public class Main implements Runnable
     static private SootClass mainClass = null;        
     
     static public long stmtCount;
-    static int finalRep = BAF;
-    // The final rep to be used is Baf; conclusion of our CC2000 paper!
 
     private static List sTagFileList = new ArrayList(); 
 
@@ -376,17 +315,6 @@ public class Main implements Runnable
         return fileNames;
     }
 
-    public static void setTargetRep(int rep)
-    {
-        targetExtension = rep;
-    }
-
-    public static int getTargetRep()
-    {
-        return targetExtension;
-    }
-
-
     public static void setOptimizing(boolean val)
     {
         isOptimizing = val;
@@ -401,7 +329,7 @@ public class Main implements Runnable
     public static void setOptimizingWhole(boolean val)
 	throws CompilationDeathException
     {
-        if (!isApplication && val){            
+        if (!opts.appMode() && val){            
             throw new CompilationDeathException(COMPILATION_ABORTED, "Can only whole-program optimize in application mode!");
         }
   
@@ -412,26 +340,6 @@ public class Main implements Runnable
     public static boolean isOptimizingWhole()
     {
         return isOptimizingWhole;
-    }
-
-    public static void setProfiling(boolean val)
-    {
-        isProfilingOptimization = val;
-    }
-
-    public static boolean isProfiling()
-    {
-        return isProfilingOptimization;
-    }
-
-
-    public static void setVerbose(boolean val)
-    {
-        isVerbose = val;
-    }
-    public static boolean isVerbose()
-    {
-        return isVerbose;
     }
 
     public static void setWithCache(boolean val)
@@ -454,28 +362,10 @@ public class Main implements Runnable
     }
     
 
-    public static void setAppMode(boolean val)
-    {
-        isApplication = val;
-    }
-
-    public static boolean isAppMode()
-    {
-        return isApplication;
-    }
-
   /* hack for J2ME */
   public static boolean isJ2ME(){
     return isJ2ME;
   }
-
-    /* for POINTs-TO analysis */
-    public static void setLazyInvocation(boolean val) {
-	isLazyInvocation = val;
-	if (val) {
-	  targetExtension = NO_OUTPUT;
-	}
-    }
 
     public static void setJavaStyle( boolean val)
     {
@@ -491,7 +381,7 @@ public class Main implements Runnable
     public static void addExclude(String str)
         throws CompilationDeathException
     {
-        if (!isApplication) {    
+        if (!opts.appMode()) {    
             throw new CompilationDeathException(COMPILATION_ABORTED, "Exclude flag only valid in application mode!");
         }
   
@@ -503,7 +393,7 @@ public class Main implements Runnable
     public static void addInclude(String str)
         throws CompilationDeathException
     {
-        if (!isApplication) {
+        if (!opts.appMode()) {
             throw new CompilationDeathException(COMPILATION_ABORTED, "Include flag only valid in application mode!");
         }
         packageInclusionFlags.add(new Boolean(true));
@@ -513,7 +403,7 @@ public class Main implements Runnable
     public static void addDynamicClasses(String path)
         throws CompilationDeathException
     {
-        if (!isApplication)
+        if (!opts.appMode())
             {
                 throw new CompilationDeathException(COMPILATION_ABORTED, "Dynamic-classes flag only valid in application mode!");
             }
@@ -526,7 +416,7 @@ public class Main implements Runnable
     public static void addDynamicPath(String path)
         throws CompilationDeathException
     {
-        if (!isApplication)
+        if (!opts.appMode())
             {
                 throw new CompilationDeathException(COMPILATION_ABORTED, "Dynamic-path flag only valid in application mode!");
             }
@@ -539,7 +429,7 @@ public class Main implements Runnable
     public static void addDynamicPackage(String str)
 	throws CompilationDeathException
     {
-        if (!isApplication) {
+        if (!opts.appMode()) {
             throw new CompilationDeathException(COMPILATION_ABORTED, "Dynamic-package flag only valid in application mode!");
         }
         
@@ -579,19 +469,6 @@ public class Main implements Runnable
         }
     }
 
-    public static void addProcessPath(String path)
-        throws CompilationDeathException
-    {
-        if (isApplication)
-            {
-                throw new CompilationDeathException(COMPILATION_ABORTED, "Process-path flag only valid in single-file mode!");
-            }
-
-        StringTokenizer tokenizer = new StringTokenizer(path, ":");
-        while(tokenizer.hasMoreTokens())
-            processClasses.addAll(getClassesUnder(tokenizer.nextToken()));
-    }
-
     public static void setDebug(boolean val)
     {
         isInDebugMode = val;
@@ -627,49 +504,6 @@ public class Main implements Runnable
         }
     }
 
-    public static void setFinalRep(String rep)
-        throws CompilationDeathException
-    {
-        if(rep.equals("jimple"))
-            finalRep = JIMPLE;
-        else if(rep.equals("grimp"))
-            finalRep = GRIMP;
-        else if(rep.equals("baf"))
-            finalRep = BAF;
-        else {                    
-            throw new CompilationDeathException(COMPILATION_ABORTED, 
-						"Illegal argument \"" + rep + "\" for final-rep option"
-						+ "\nvalid args are: [baf|grimp|jimple]" );
-        }
-    }
-
-    public static int getFinalRep() 
-    {
-        return finalRep;
-    }
-
-
-    public static void setAnalyzingLibraries(boolean val)
-    {
-        isAnalyzingLibraries = val;
-    }
-
-    public static boolean isAnalyzingLibraries()
-    {
-        return isAnalyzingLibraries;
-    }
-
-
-    public static void setSubstractingGC(boolean val)
-    {
-        isSubtractingGC = val;
-    }
-
-    public static boolean isSubstractingGC()
-    {
-        return isSubtractingGC;
-    }
-
     public static void setAnnotationPhases(String opt)
     {
 	if (opt.equals("both")) 
@@ -687,13 +521,8 @@ public class Main implements Runnable
 	    }
 	else if (opt.equals("LineNumber"))
 	    {
-		soot.Main.keepLineNumberAttribute = true;
 		CodeAttributeGenerator.v().registerAggregator(new LineNumberTagAggregator(true));
 	    }
-	else if (opt.equals("BytecodeOffset")) 
-	  {
-	    soot.Main.keepBytecodeOffsetInfo = true;
-	  }
 	else
 	    System.out.println("Annotation phase \"" + opt + "\" is not valid.");
 				
@@ -718,7 +547,7 @@ public class Main implements Runnable
 
     private static void printVersion()
     {
-	System.out.println("Soot version 1.2.5");
+	System.out.println("Soot version "+versionString);
 
 	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
@@ -736,712 +565,22 @@ public class Main implements Runnable
 
     private static void printHelp()
     {
-	System.out.println("Syntax:");
-	System.out.println("        (single-file mode) soot [option]* classname ...  ");
-	System.out.println("        (application mode) soot --app [option]* mainClassName");
-	System.out.println("");
-	System.out.println("General options:");
-	System.out.println("  --version                    output version information and exit");
-	System.out.println("  -h, --help                   display this help and exit");
-	System.out.println("");
-	System.out.println("Output options:");
-	System.out.println("  -b, --b                      produce .b (abbreviated .baf) files");
-	System.out.println("  -B, --baf                    produce .baf code");
-	System.out.println("  -j, --jimp                   produce .jimp (abbreviated .jimple) files");
-	System.out.println("  -J, --jimple                 produce .jimple code");
-	System.out.println("  -g, --grimp                  produce .grimp (abbreviated .grimple) files");
-	System.out.println("  -G, --grimple                produce .grimple files");
-	System.out.println("  -s, --jasmin                 produce .jasmin files");
-	System.out.println("  -c, --class                  produce .class files");
-	System.out.println("  -X, --xml                    produce .xml files");
-	System.out.println("  -d PATH                      store produced files in PATH");
-	System.out.println("");
-	System.out.println("Application mode options:");
-	System.out.println("  -x, --exclude PACKAGE        marks classfiles in PACKAGE (e.g. java.)"); 
-	System.out.println("                               as context classes");
-	System.out.println("  -i, --include PACKAGE        marks classfiles in PACKAGE (e.g. java.util.)");
-	System.out.println("                               as application classes");
-	System.out.println("  -a, --analyze-context        label context classes as library");
-	System.out.println("  --dynamic-path PATH          marks all class files in PATH as ");
-	System.out.println("                               potentially dynamic classes");
-	System.out.println("  --dynamic-packages PACKAGES  marks classfiles in PACKAGES (separated by");
-	System.out.println("                               commas) as potentially dynamic classes");
-	System.out.println("  --dynamic-classes CLASSES    marks CLASSES (separated by");
-	System.out.println("                               colons) as potentially dynamic classes");
-	System.out.println("");
-	System.out.println("Single-file mode options:");
-	System.out.println("  --process-path PATH          process all classes on the PATH");
-	System.out.println("");
-	System.out.println("Construction options:");
-	System.out.println("  --final-rep REP              produce classfile/jasmin from REP ");
-	System.out.println("                               (jimple, grimp, or baf)");
-	System.out.println("");
-	System.out.println("Optimization options:");
-	System.out.println("  -O  --optimize               perform scalar optimizations on the classfiles");
-	System.out.println("  -W  --whole-optimize         perform whole program optimizations on the ");
-	System.out.println("                               classfiles");
-	System.out.println("");
-	System.out.println("Miscellaneous options:");
-	System.out.println("  --soot-classpath PATH        uses PATH as the classpath for finding classes");
-	System.out.println("  --src-prec [jimple|class]    sets the source precedence for Soot");
-	System.out.println("  -t, --time                   print out time statistics about tranformations");
-	System.out.println("  --subtract-gc                attempt to subtract the gc from the time stats");
-	System.out.println("  -v, --verbose                verbose mode");
-	System.out.println("  --allow-phantom-refs         allow unresolved classes; may cause errors");
-	System.out.println("  -p, --phase-option PHASE-NAME KEY1[:VALUE1],KEY2[:VALUE2],...,KEYn[:VALUEn]");
-	System.out.println("                               set run-time option KEY to VALUE for PHASE-NAME");
-	System.out.println("                               (default for VALUE is true)");
-	System.out.println("  -A  --annotation [both|nullpointer|arraybounds]");
-	System.out.println("                               turn on the annotation for null pointer and/or ");
-	System.out.println("                               array bounds check. ");
-	System.out.println("                               more options are in the document. ");
-	System.out.println("  -A LineNumber                keep line number tables.");
-	System.out.println("  -A BytecodeOffset            attach bytecode offset to jimple statement.");
-	System.out.println("");
-	System.out.println("Examples:");
-	System.out.println("");
-	System.out.println("  soot --app -d newClasses Simulator");
-	System.out.println("         Transforms all classes starting with Simulator, ");
-	System.out.println("         and stores them in newClasses. ");                           
+        System.out.println( opts.getUsage() );
     }
 
 
     private static void processCmdLine(String[] args)
         throws CompilationDeathException
     {
-				// check --new-cmdline-parser option 
-        for(int i = 0; i < args.length; i++) {
-            String arg = args[i];
-            if(arg.equals("--use-CommandLine")) {
-		processCmdLine_CommandLine(args);
-		return;
-            }
-            if(arg.equals("--use-Getopt")) {
-		processCmdLine_Getopt(args);
-		return;
-            }
-	}
-	processCmdLine_classic(args);
-    }
-
-    private static void processCmdLine_CommandLine(String[] args)
-        throws CompilationDeathException
-    {
-        if(args.length == 0) {
-	    printHelp();
-	    throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
-	}
-				
-	CommandLine cl = new CommandLine(args);
-				
-				// handle --app option first
-	while (cl.contains("app")) {
-	    setAppMode(true);
-	}
-				
-				// Handle all the options
-	while (cl.contains("j") || cl.contains("jimp"))
-	    setTargetRep(JIMP);
-				
-	while (cl.contains("njimple"))
-	    setTargetRep(NJIMPLE);
-				
-	while (cl.contains("s") || cl.contains("jasmin"))
-	    setTargetRep(JASMIN);
-
-	while (cl.contains("J") || cl.contains("jimple"))
-	    setTargetRep(JIMPLE);
-
-	while (cl.contains("B") || cl.contains("baf"))
-	    setTargetRep(BAF);
-				
-	while (cl.contains("b"))
-	    setTargetRep(B);
-				
-	while (cl.contains("g") || cl.contains("grimp"))
-	    setTargetRep(GRIMP);
-				
-	while (cl.contains("G") || cl.contains("grimple"))
-	    setTargetRep(GRIMPLE);
-				
-	while (cl.contains("c") || cl.contains("class"))
-	    setTargetRep(CLASS);
-				
-	while (cl.contains("dava")) {
-	    Scene.v().setJimpleStmtPrinter( soot.dava.DavaStmtPrinter.v());
-	    Scene.v().setLocalPrinter( soot.dava.DavaLocalPrinter.v());
-	    setTargetRep(DAVA);
-	}
-				
-	while (cl.contains("X") || cl.contains("xml")) {
-	    Scene.v().setJimpleStmtPrinter( soot.jimple.XMLStmtPrinter.v());
-	    setTargetRep(XML);
-	}
-				
-	while (cl.contains("O") || cl.contains("optimize"))
-	    setOptimizing(true);
-				
-	while (cl.contains("W") || cl.contains("whole-optimize"))
-	    setOptimizingWhole(true);
-				
-	while (cl.contains("t") || cl.contains("time"))
-	    setProfiling(true);
-
-	while (cl.contains("subtract-gc"))
-	    setSubstractingGC(true);
-				
-	while (cl.contains( "with-cache"))
-	    setWithCache( true);
-
-	while (cl.contains( "k") || cl.contains( "cache-dir")) {
-	    String s = cl.getValue();
-	    if (s.equals( "")) {
-		System.err.println( "Warning: -k option without argument");
-		System.err.println( "         Using default cache directory");
-		setWithCache( true);
-	    }
-	    else
-		setCacheDir( s);
-	}
-	    
-
-	while (cl.contains("v") || cl.contains("verbose"))
-	    setVerbose(true);
-				
-	while (cl.contains("soot-class-path") 
-	       || cl.contains("soot-classpath")) {
-	    Scene.v().setSootClassPath(cl.getValue());
-	}
-				
-	while (cl.contains("d")) {
-	    String s = cl.getValueOf("d");
-	    if (s.equals("")) {
-		System.err.println ("Warning: -d option used without argument");
-		System.err.println ("         Using default output directory");
-	    }
-	    outputDir = s;
-	}
-				
-	while (cl.contains("x") || cl.contains("exclude")) {
-	    String s = cl.getValue();
-	    if (s.equals("")) {
-		System.err.println ("Warning: exclude-package option used without argument");
-	    } else {
-		addExclude(s);
-	    }
-	}
-				
-	while (cl.contains("i") || cl.contains("include")) {
-	    String s = cl.getValue();
-	    if (s.equals("")) {
-		System.err.println ("Warning: include-package option used without argument");
-	    } else {
-		addInclude(s);
-	    }
-	}
-				
-	while (cl.contains("a") || cl.contains("analyze-context")) {
-	    setAnalyzingLibraries(true);
-	}
-				
-	while (cl.contains("final-rep")) {
-	    String s = cl.getValueOf("final-rep");
-	    if (s.equals("")) {
-		throw new CompilationDeathException(COMPILATION_ABORTED,
-						    "final-rep requires an argument\n"
-						    + "valid args are: [baf|grimp|jimple]");
-	    } else {
-		setFinalRep(s);
-	    }
-	}
-				
-	while (cl.contains("p") || cl.contains("phase-option")) {
-	    String s = cl.getValue();
-	    if (s.equals("")) {
-		System.err.println ("Warning: phase-option option used without argument");
-	    } else {
-		processPhaseOptions(s);
-	    }
-	}
-				
-	while (cl.contains("debug"))
-	    setDebug(true);
-				
-	while (cl.contains("dynamic-classes")) {
-	    addDynamicClasses(cl.getValueOf("dynamic-classes"));
-	}
-				
-	while (cl.contains("dynamic-path")) {
-	    addDynamicPath(cl.getValueOf("dynamic-path"));
-	}
-				
-	while (cl.contains("dynamic-packages")) {
-	    addDynamicPackage(cl.getValueOf("dynamic-packages"));
-	}
-				
-	while (cl.contains("process-path")) {
-	    addProcessPath(cl.getValueOf("process-path"));                    
-	}
-				
-	while (cl.contains("src-prec")) {
-	    setSrcPrecedence(cl.getValueOf("src-prec"));
-	}
-				
-	while (cl.contains("tag-file")) {
-	    sTagFileList.add(cl.getValueOf("tag-file"));
-	}
-				
-	while (cl.contains("A") || cl.contains("annotation")) {
-	    setAnnotationPhases(cl.getValue());
-	}
-				
-	while (cl.contains("version")) {
-	    printVersion();
-	    throw new CompilationDeathException(COMPILATION_SUCCEDED);
-	}
-				
-	while (cl.contains("h") || cl.contains("help")) {
-	    printHelp();
-	    throw new CompilationDeathException(COMPILATION_SUCCEDED);
-	}
-				
-	while (cl.contains("use-Getopt") || cl.contains("use-CommandLine")
-	       || cl.contains("classic")) {
-	    // already handled: ignore
-	}
-				
-	cl.completeOptionsCheck();
-				
-	Iterator argIt = cl.getNonOptionArguments().iterator();
-	while (argIt.hasNext())
-	    cmdLineClasses.add((String)argIt.next());
-				
-        postCmdLineCheck();
-    }
-		
-
-    private static void processCmdLine_Getopt(String[] args)
-        throws CompilationDeathException
-    {
-        if(args.length == 0)
-	    {
-		printHelp();
-		throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
-	    }
-
-	// handle --app option first
-        for(int i = 0; i < args.length; i++) {
-            String arg = args[i];
-            if(arg.equals("--app")) {
-                setAppMode(true);
-            }
-	}
-
-        // Initialize the options for getOpt
-	addGetoptOption('j', "jimp", LongOpt.NO_ARGUMENT);
-	addGetoptOption(-10, "njimple", LongOpt.NO_ARGUMENT);
-	addGetoptOption('s', "jasmin", LongOpt.NO_ARGUMENT);
-	addGetoptOption('J', "jimple", LongOpt.NO_ARGUMENT);
-	addGetoptOption('B', "baf", LongOpt.NO_ARGUMENT);
-	addGetoptOption('b', "b", LongOpt.NO_ARGUMENT);
-	addGetoptOption('g', "grimp", LongOpt.NO_ARGUMENT);
-	addGetoptOption('G', "grimple", LongOpt.NO_ARGUMENT);
-	addGetoptOption('c', "class", LongOpt.NO_ARGUMENT);
-	addGetoptOption(-11, "dava", LongOpt.NO_ARGUMENT);
-	addGetoptOption('X', "xml", LongOpt.NO_ARGUMENT);
-	addGetoptOption('O', "optimize", LongOpt.NO_ARGUMENT);
-	addGetoptOption('W', "whole-optimize", LongOpt.NO_ARGUMENT);
-	addGetoptOption('t', "time", LongOpt.NO_ARGUMENT);
-	addGetoptOption(-12, "substract-gc", LongOpt.NO_ARGUMENT);
-	addGetoptOption('v', "verbose", LongOpt.NO_ARGUMENT);
-	addGetoptOption(-13, "soot-class-path", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption(-13, "soot-classpath", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption('d', "output-dir", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption('x', "exclude", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption('i', "include", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption('a', "analyze-context", LongOpt.NO_ARGUMENT);
-	addGetoptOption(-14, "final-rep", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption('p', "phase-option", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption(-15, "debug", LongOpt.NO_ARGUMENT);
-	addGetoptOption(-16, "dynamic-path", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption(-17, "dynamic-packages", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption(-18, "process-path", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption(-19, "src-prec", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption(-20, "tag-file", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption('A', "annotation", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption(-21, "version", LongOpt.NO_ARGUMENT);
-	addGetoptOption('h', "help", LongOpt.NO_ARGUMENT);
-	addGetoptOption(-22, "with-cache", LongOpt.NO_ARGUMENT);
-	addGetoptOption('k', "cache-dir", LongOpt.REQUIRED_ARGUMENT);
-	addGetoptOption(-23, "dynamic-classes", LongOpt.REQUIRED_ARGUMENT);
-        
-	// options handled elsewhere
-	addGetoptOption('-', "use-Getopt", LongOpt.NO_ARGUMENT);
-	addGetoptOption('-', "use-CommandLine", LongOpt.NO_ARGUMENT);
-	addGetoptOption('-', "classic", LongOpt.NO_ARGUMENT);
-
-        // initialize getopt
-	Object[] objArray = longOpts.toArray();
-	LongOpt[] longOptsArray = new LongOpt[objArray.length];
-	for (int i=0; i<objArray.length; i++) {
-	    longOptsArray[i] = (LongOpt)objArray[i];
-	}
-	// I sometimes have ClassCastException with the following line
-	// so I use the ugly thing above, which seems to work
-	// LongOpt[] longOptsArray = (LongOpt[])longOpts.toArray();
-	Getopt g = new Getopt("Soot", args, shortOpts, longOptsArray);
-	g.setOpterr(false); // We'll do our own error handling
-
-	// Handle all the options
-	int c;
-	while ((c = g.getopt()) != -1) {
-	    switch (c) {
-	    case 0:
-				// should never reached that point, due to the way
-				// the LongOption are created
-		System.err.println("000000000000");
-		break;
-	    case 1:
-				// non-option argument
-				// behaviour triggered by the - at the beginning of shortOpts
-		cmdLineClasses.add(g.getOptarg());
-		break;
-	    case 'j':
-		setTargetRep(JIMP);
-		break;
-	    case -10:
-		setTargetRep(NJIMPLE);
-		break;
-	    case 's':
-		setTargetRep(JASMIN);
-		break;
-	    case 'J':
-		setTargetRep(JIMPLE);
-		break;
-	    case 'B':
-		setTargetRep(BAF);
-		break;
-	    case 'b':
-		setTargetRep(B);
-		break;
-	    case 'g':
-		setTargetRep(GRIMP);
-		break;
-	    case 'G':
-		setTargetRep(GRIMPLE);
-		break;
-	    case 'c':
-		setTargetRep(CLASS);
-		break;
-	    case -11: 
-		Scene.v().setJimpleStmtPrinter( soot.dava.DavaStmtPrinter.v());
-		Scene.v().setLocalPrinter( soot.dava.DavaLocalPrinter.v());
-		setTargetRep(DAVA);
-		break;
-	    case 'X':
-		Scene.v().setJimpleStmtPrinter( soot.jimple.XMLStmtPrinter.v());
-		setTargetRep(XML);
-		break;
-	    case 'O':
-		setOptimizing(true);
-		break;
-	    case 'W':
-		setOptimizingWhole(true);
-		break;
-	    case 't':
-		setProfiling(true);
-		break;
-	    case -12:
-		setSubstractingGC(true);
-		break;
-	    case 'v':
-		setVerbose(true);
-		break;
-	    case -13:
-		Scene.v().setSootClassPath(g.getOptarg());
-		break;
-	    case 'd':
-		outputDir = g.getOptarg();
-		break;
-	    case 'x':
-		addExclude(g.getOptarg());
-		break;
-	    case 'i':
-		addInclude(g.getOptarg());
-		break;
-	    case 'a':
-		setAnalyzingLibraries(true);
-		break;
-	    case -14:
-		setFinalRep(g.getOptarg());
-		break;
-	    case 'p':
-		processPhaseOptions(g.getOptarg());
-		break;
-	    case -15:
-		setDebug(true);
-		break;
-	    case -16:
-		addDynamicPath(g.getOptarg());
-		break;
-	    case -17:
-		addDynamicPackage(g.getOptarg());
-		break;
-	    case -18:
-		addProcessPath(g.getOptarg());
-		break;
-	    case -19:
-		setSrcPrecedence(g.getOptarg());
-		break;
-	    case -20:
-		sTagFileList.add(g.getOptarg());
-	    case 'A':
-		setAnnotationPhases(g.getOptarg());
-		break;
-	    case -21:
-		printVersion();
-		throw new CompilationDeathException(COMPILATION_SUCCEDED);
-	    case -22:
-		setWithCache( true);
-		break;
-	    case 'k':
-		setCacheDir( g.getOptarg());
-		break;
-	    case 'h':
-		printHelp();
-		throw new CompilationDeathException(COMPILATION_SUCCEDED);
-	    case ':':
-				// option that needs an argument and did not get one
-				// this behaviour is triggered by the : in shortOpts[1]
-		String optName;
-				// This technic is the best to get the value of the option
-				// (which is difficult when you use a long option because
-				// getopt will by default give you the id of the option.
-				// It fails when the user uses the option with different
-				// syntaxes in succession.
-		if (g.getOptopt() < 0 
-		    || longOptsArray[g.getLongind()].getVal() != g.getOptopt() ) {
-		    // this is definitely a short option
-		    optName = String.valueOf((char)g.getOptopt());
-		} else {
-		    optName = longOptsArray[g.getLongind()].getName();
-		}
-		throw new CompilationDeathException(COMPILATION_ABORTED,
-						    "Option " + optName
-						    + "requires an argument!");
-	    case '?':
-				// invalid option
-		throw new 
-		    CompilationDeathException(COMPILATION_ABORTED,
-					      "Option " 
-					      + (g.getOptopt() == 0 ? 
-						 args[g.getOptind()-1].substring(2)
-						 : String.valueOf((char)g.getOptopt()) )
-					      + " is not valid");
-	    default:
-				// we should only get here for the unhandled options
-	    }
-	}
-
-	// get trailing non options ( after '--' )
-	for (int i = g.getOptind(); i < args.length ; i++)
-	    cmdLineClasses.add(args[i]);
+        opts = new Options( args );
+        if( !opts.parse() ) 
+            throw new CompilationDeathException(COMPILATION_ABORTED,
+                    "Option parse error" );
 
         postCmdLineCheck();
     }
-
 		
-    private static String shortOpts = "-:";
-    private static ArrayList longOpts = new ArrayList();
-	
-    private static void addGetoptOption(int id, String name, int has_arg) {
-		
-	if (id > 0 && shortOpts.indexOf((char)id) == -1) {
-	    StringBuffer opts = new StringBuffer(shortOpts);
-	    opts.append((char)id);
-	    if (has_arg == LongOpt.REQUIRED_ARGUMENT)
-		opts.append(':');
-	    // supported but discouraged
-	    if (has_arg == LongOpt.OPTIONAL_ARGUMENT)
-		opts.append("::");
-	    shortOpts = opts.toString();
-	}
 
-	longOpts.add(new LongOpt(name, has_arg, null, id));
-		
-    }
-
-
-    private static void processCmdLine_classic(String[] args)
-        throws CompilationDeathException
-    {
-        if(args.length == 0) {
-	    printHelp();
-	    throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
-	}
-
-	// handle --app option first
-        for(int i = 0; i < args.length; i++) {
-            String arg = args[i];
-            if(arg.equals("--app")) {
-                setAppMode(true);
-            }
-	}
-
-        // Handle all the options
-        for(int i = 0; i < args.length; i++) {
-	    String arg = args[i];
-	    if(arg.equals("--app"))
-		continue; // ignore
-
-	    else if(arg.equals("--allow-phantom-refs")) 
-                definitelyForbidPhantomRefs = false;
-	    else if(arg.equals("--lazy")) 
-		setLazyInvocation(true);
-	    else if(arg.equals("--nooutput"))
-		setTargetRep(NO_OUTPUT);
-	    else if(arg.equals("-j") || arg.equals("--jimp"))
-		setTargetRep(JIMP);
-	    else if(arg.equals("--njimple"))
-		setTargetRep(NJIMPLE);
-	    else if(arg.equals("-s") || arg.equals("--jasmin"))
-		setTargetRep(JASMIN);
-	    else if(arg.equals("-J") || arg.equals("--jimple"))
-		setTargetRep(JIMPLE);
-	    else if(arg.equals("-B") || arg.equals("--baf"))
-		setTargetRep(BAF);
-	    else if(arg.equals("-b") || arg.equals("--b"))
-		setTargetRep(B);
-	    else if(arg.equals("-g") || arg.equals("--grimp"))
-		setTargetRep(GRIMP);
-	    else if(arg.equals("-G") || arg.equals("--grimple"))
-		setTargetRep(GRIMPLE);
-	    else if(arg.equals("-c") || arg.equals("--class"))
-		setTargetRep(CLASS);
-	    else if(arg.equals("--dava")) {
-		Scene.v().setJimpleStmtPrinter( soot.dava.DavaStmtPrinter.v());
-		Scene.v().setLocalPrinter( soot.dava.DavaLocalPrinter.v());
-		setTargetRep(DAVA);
-	    }
-	    else if(arg.equals("-X") || arg.equals("--xml")) {
-		Scene.v().setJimpleStmtPrinter( soot.jimple.XMLStmtPrinter.v());
-		setTargetRep(XML);
-	    }
-	    else if(arg.equals("-O") || arg.equals("--optimize"))
-		setOptimizing(true);
-	    else if(arg.equals("-W") || arg.equals("--whole-optimize"))
-		setOptimizingWhole(true);
-	    else if(arg.equals("-t") || arg.equals("--time"))
-		setProfiling(true);
-	    else if (arg.equals( "--with-cache"))
-		setWithCache( true);
-	    else if ((arg.equals( "--cache-dir")) || (arg.equals( "-k"))) {
-		if (++i < args.length)
-		    setCacheDir( args[i]);
-	    }
-	    else if(arg.equals("--subtract-gc"))
-		setSubstractingGC(true);
-	    else if(arg.equals("-v") || arg.equals("--verbose"))
-		setVerbose(true);
-	    else if(arg.equals("--soot-class-path") 
-		    || arg.equals("--soot-classpath")) {
-		if(++i < args.length)
-		    Scene.v().setSootClassPath(args[i]);
-	    }
-	    else if(arg.equals("-d")) {
-		if(++i < args.length)
-		    outputDir = args[i];
-	    }
-	    else if(arg.equals("-x") || arg.equals("--exclude")) {
-		if(++i < args.length)
-		    addExclude(args[i]);
-	    }
-	    else if(arg.equals("-i") || arg.equals("--include")) {
-		if(++i < args.length)
-		    addInclude(args[i]);
-	    }
-	    else if(arg.equals("-a") || arg.equals("--analyze-context"))
-		setAnalyzingLibraries(true);
-	    else if(arg.equals("--final-rep")) {
-		if(++i < args.length)
-		    setFinalRep(args[i]);
-	    }
-	    else if (arg.equals("-p") || arg.equals("--phase-option")) {
-		if(i+2 < args.length)
-		    processPhaseOptions(args[++i], args[++i]);                
-				//syntax -p phase-name:phase-options
-				//if(++i < args.length) 
-				//    processPhaseOption(args[i]);                
-	    }
-	    else if (arg.equals("--debug"))
-		setDebug(true);
-	    else if (arg.equals("--dynamic-classes")) {
-		if(++i < args.length) 
-		    addDynamicClasses(args[i]);
-	    }
-	    else if (arg.equals("--dynamic-path")) {
-		if(++i < args.length) 
-		    addDynamicPath(args[i]);
-	    }
-	    else if (arg.equals("--dynamic-packages")) {
-		if(++i < args.length)
-		    addDynamicPackage(args[i]);
-	    }
-	    else if (arg.equals("--process-path")) {
-		if(++i < args.length)
-		    addProcessPath(args[i]);                    
-	    }
-	    else if(arg.equals("--src-prec")) {
-		if(++i < args.length)                    
-		    setSrcPrecedence(args[i]);
-	    }
-	    else if(arg.equals("--tag-file")) {
-		if(++i < args.length)
-		    sTagFileList.add(args[i]);
-	    }
-	    else if(arg.equals("-A") || arg.equals("--annotation")) {
-		if (++i < args.length)
-		    setAnnotationPhases(args[i]);
-	    }
-	    else if(arg.equals("--version")) {
-		printVersion();
-		throw new CompilationDeathException(COMPILATION_SUCCEDED);            
-	    }
-	    else if(arg.equals("-h") || arg.equals("--help")) {
-		printHelp();
-		throw new CompilationDeathException(COMPILATION_SUCCEDED);            
-	    }
-
-	    else if (arg.equals("--classic") || arg.equals("--use-Getop")
-		     || arg.equals("--use-CommandLine")) {
-				// handled elsewhere
-	    }
-	    else if(arg.startsWith("-")) {
-		System.out.println("Unrecognized option: " + arg);
-		printHelp();
-		throw new CompilationDeathException(COMPILATION_ABORTED);
-	    }
-	    else if(arg.startsWith("@")) {
-		try {
-		    File fn = new File(arg.substring(1));
-		    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fn)));
-		    List argsList = new LinkedList();
-		    while (br.ready())
-			argsList.add(br.readLine());
-		    br.close();
-		    processCmdLine_classic((String[])argsList.toArray(new String[argsList.size()]));
-		} catch (IOException e) {
-		    throw new CompilationDeathException(COMPILATION_ABORTED,
-							"Error reading file "+arg.substring(1));
-		}
-	    }
-	    else {                    
-		cmdLineClasses.add(arg);
-	    }
-	}
-        postCmdLineCheck();
-    }
-    
     private static void exitCompilation(int status)
     {
         exitCompilation(status, "") ;
@@ -1473,7 +612,7 @@ public class Main implements Runnable
     }
 	
     // called by the "classic" command-line parser
-    static void processPhaseOptions(String phaseName, String option) {
+    public static void processPhaseOptions(String phaseName, String option) {
 	StringTokenizer st = new StringTokenizer(option, ",");
 	while (st.hasMoreTokens()) {
 	    processPhaseOption(phaseName, st.nextToken(), ':');
@@ -1503,12 +642,12 @@ public class Main implements Runnable
     private static void postCmdLineCheck()
         throws CompilationDeathException
     {
-	if(cmdLineClasses.isEmpty() && processClasses.isEmpty())
+	if(opts.classes().isEmpty() && opts.processPath().isEmpty())
             {
                 throw new CompilationDeathException(COMPILATION_ABORTED, "Nothing to do!"); 
             }
 	// Command line classes
-	if (isApplication && cmdLineClasses.size() > 1)
+	if (opts.appMode() && opts.classes().size() > 1)
             {
 
                 throw new CompilationDeathException(COMPILATION_ABORTED,
@@ -1646,8 +785,6 @@ public class Main implements Runnable
     try {
       totalTimer.start();
 
-      cmdLineClasses = new HashChain();
-
       initApp();
 
       processCmdLine(cmdLineArgs);
@@ -1688,7 +825,7 @@ public class Main implements Runnable
       totalTimer.end();            
 				
       // Print out time stats.				
-      if(isProfilingOptimization)
+      if(opts.time())
 	printProfilingInformation();
         
     } catch (CompilationDeathException e) {
@@ -1710,7 +847,7 @@ public class Main implements Runnable
 
   /* preprocess classes for DAVA */
   private static void preProcessDAVA() {
-    if ((targetExtension == DAVA) || (finalRep == DAVA)) {
+    if (opts.outputFormat() == Options.outputFormat_dava) {
       ThrowFinder.v().find();
       PackageNamer.v().fixNames();
 
@@ -1723,10 +860,7 @@ public class Main implements Runnable
      
     Date start = new Date();
 
-//    if (Main.isVerbose) 
-	{
-      System.out.println("[] Start building the invoke graph ... ");
-    }
+    System.out.println("[] Start building the invoke graph ... ");
 
     InvokeGraph invokeGraph = 
       ClassHierarchyAnalysis.newPreciseInvokeGraph(true);
@@ -1734,8 +868,7 @@ public class Main implements Runnable
 
     Date finish = new Date();
 
-//    if (Main.isVerbose) 
-	{
+    {
       System.out.println("[] Finished building the invoke graph ...");
       long runtime = finish.getTime() - start.getTime();
       System.out.println("[] Building invoke graph takes "
@@ -1764,10 +897,11 @@ public class Main implements Runnable
     while(classIt.hasNext()) {
       SootClass s = (SootClass) classIt.next();
 				
-      if ((targetExtension == DAVA) || (finalRep == DAVA))
+      if (opts.outputFormat() == Options.outputFormat_dava) {
 	System.out.print( "Decompiling ");
-      else
+      } else {
 	System.out.print( "Transforming ");
+      }
       System.out.print( s.getName() + "... " );
       System.out.flush();
 							
@@ -1778,7 +912,7 @@ public class Main implements Runnable
 
   /* post process for DAVA */
   private static void postProcessDAVA() {
-    if ((targetExtension == DAVA) || (finalRep == DAVA)) {
+    if (opts.outputFormat() == Options.outputFormat_dava) {
 
       // ThrowFinder.v().find();
       // PackageNamer.v().fixNames();
@@ -1793,7 +927,7 @@ public class Main implements Runnable
 	
 	FileOutputStream streamOut = null;
 	PrintWriter writerOut = null;
-	String fileName = getFileNameFor( s, targetExtension);
+	String fileName = getFileNameFor( s, opts.outputFormat());
 		    
 	try {
 	  streamOut = new FileOutputStream(fileName);
@@ -1838,7 +972,7 @@ public class Main implements Runnable
     /* load necessary classes
      */
     private static void loadNecessaryClasses() {
-	Iterator it = cmdLineClasses.iterator();
+	Iterator it = opts.classes().iterator();
         
 	while(it.hasNext()) {
 	    String name = (String) it.next();
@@ -1867,12 +1001,13 @@ public class Main implements Runnable
 	    Scene.v().loadClassAndSupport((String) o);
         }
 
-	it = processClasses.iterator();
-            
-	while(it.hasNext()) {
-	    String s = (String)it.next();
-	    Scene.v().loadClassAndSupport(s);
-	    Scene.v().getSootClass(s).setApplicationClass();
+        for( Iterator pathIt = opts.processPath().iterator(); pathIt.hasNext(); ) {
+
+            final String path = (String) pathIt.next();
+            for( Iterator clIt = getClassesUnder(path).iterator(); clIt.hasNext(); ) {
+                final String cl = (String) clIt.next();
+                Scene.v().loadClassAndSupport(cl).setApplicationClass();
+            }
 	}
     }
 
@@ -1881,7 +1016,7 @@ public class Main implements Runnable
    */
   private static void prepareClasses() {
       
-    if(isApplication) {
+    if(opts.appMode()) {
       Iterator contextClassesIt = 
 	Scene.v().getContextClasses().snapshotIterator();
       while (contextClassesIt.hasNext())
@@ -1899,7 +1034,7 @@ public class Main implements Runnable
     while(classIt.hasNext()) {
       SootClass s = (SootClass) classIt.next();
                     
-      if(cmdLineClasses.contains(s.getName()))
+      if(opts.classes().contains(s.getName()))
 	continue;
 	    
       Iterator packageCmdIt = packageInclusionFlags.iterator();
@@ -1922,7 +1057,7 @@ public class Main implements Runnable
       }
     }
 
-    if (isAnalyzingLibraries) {
+    if (opts.analyzeContext()) {
       Iterator contextClassesIt = 
 	Scene.v().getContextClasses().snapshotIterator();
       while (contextClassesIt.hasNext())
@@ -2030,7 +1165,7 @@ public class Main implements Runnable
             
             System.out.println("totalTime:" + toTimeString(totalTimer, totalTime));
             
-            if(isSubtractingGC)
+            if(opts.subGC())
 		{
 		    System.out.println("Garbage collection was subtracted from these numbers.");
 		    System.out.println("           forcedGC:" + 
@@ -2119,43 +1254,37 @@ public class Main implements Runnable
       produceGrimp = false,
       produceDava  = false;
         
-    switch( targetExtension) {	
-    case NO_OUTPUT:
+    switch( opts.outputFormat() ) {	
+    case Options.outputFormat_none:
       break;
-    case JIMPLE:
-    case NJIMPLE:
-    case JIMP:                   
+    case Options.outputFormat_jimple:
+    case Options.outputFormat_jimp:
       break;
-    case DAVA:
+    case Options.outputFormat_dava:
       produceDava = true;
-    case GRIMP:
-    case GRIMPLE:
+    case Options.outputFormat_grimp:
+    case Options.outputFormat_grimple:
       produceGrimp = true;
       break;
-    case BAF:
-    case B:
+    case Options.outputFormat_baf:
+    case Options.outputFormat_b:
       produceBaf = true;
       break;
-    case XML:
+    case Options.outputFormat_xml:
+      break;
+    case Options.outputFormat_jasmin:
+    case Options.outputFormat_classFile:
+      produceGrimp = opts.viaGrimp();
+      produceBaf = !produceGrimp;
       break;
     default:
-      switch( finalRep) {
-      case DAVA:
-	produceDava = true;
-      case GRIMP:
-      case GRIMPLE:
-	produceGrimp = true;
-	break;
-      case BAF:
-	produceBaf = true;
-      default:
-      }
+      throw new RuntimeException();
     }
    
-    String fileName = getFileNameFor( c, targetExtension);
+    String fileName = getFileNameFor( c, opts.outputFormat());
 	
-    // add an option for no output
-    if ((targetExtension != NO_OUTPUT) && (targetExtension != CLASS)) {
+    if( opts.outputFormat() != Options.outputFormat_none
+    &&  opts.outputFormat() != Options.outputFormat_classFile ) {
       try {
 	streamOut = new FileOutputStream(fileName);
 	writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
@@ -2229,41 +1358,37 @@ public class Main implements Runnable
       }
     }
 
-    switch(targetExtension) {
-      // add an option for no output
-    case NO_OUTPUT:
+    switch(opts.outputFormat()) {
+    case Options.outputFormat_none:
       break;
-    case JASMIN:
+    case Options.outputFormat_jasmin:
       if(c.containsBafBody())
 	new soot.baf.JasminClass(c).print(writerOut);            
       else
 	new soot.jimple.JasminClass(c).print(writerOut);
       break;
-    case JIMP:            
+    case Options.outputFormat_jimp:            
       c.printTo(writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
       break;
-    case NJIMPLE:
-      c.printTo(writerOut, PrintJimpleBodyOption.NUMBERED);
-      break;
-    case B:
+    case Options.outputFormat_b:
       c.printTo(writerOut, soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
       break;
-    case BAF:
-    case JIMPLE:
-    case GRIMPLE:
+    case Options.outputFormat_grimp:
+      c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+      break;
+    case Options.outputFormat_baf:
+    case Options.outputFormat_jimple:
+    case Options.outputFormat_grimple:
       writerOut = 
 	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
       c.printJimpleStyleTo(writerOut, 0);
       break;
-    case DAVA:
+    case Options.outputFormat_dava:
       break;
-    case GRIMP:
-      c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
-      break;
-    case CLASS:
+    case Options.outputFormat_classFile:
       c.write(outputDir);
       break;    
-    case XML:
+    case Options.outputFormat_xml:
       writerOut = 
 	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
       c.printJimpleStyleTo(writerOut, PrintJimpleBodyOption.XML_OUTPUT);
@@ -2272,7 +1397,8 @@ public class Main implements Runnable
       throw new RuntimeException();
     }
     
-    if ((targetExtension != NO_OUTPUT) && (targetExtension != CLASS)) {
+    if( opts.outputFormat() != Options.outputFormat_none
+    &&  opts.outputFormat() != Options.outputFormat_classFile ) {
       try {
 	writerOut.flush();
 	streamOut.close();

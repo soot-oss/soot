@@ -96,11 +96,11 @@ public class UnitGraph implements DirectedGraph
 	int size = unitChain.size();
         method = getBody().getMethod();
         
-        if(Main.isVerbose)
+        if(Main.opts.verbose())
             System.out.println("[" + method.getName() + 
                                "]     Constructing UnitGraph...");
       
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.graphTimer.start();
       
         
@@ -302,7 +302,7 @@ public class UnitGraph implements DirectedGraph
             heads = Collections.unmodifiableList(headList);
         }
 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.graphTimer.end();        
     }
 

@@ -59,7 +59,7 @@ public class Aggregator extends BodyTransformer
 
         int aggregateCount = 1;
 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.aggregationTimer.start();
          boolean changed = false;
 
@@ -93,7 +93,7 @@ public class Aggregator extends BodyTransformer
         
                      
         do {
-            if(Main.isVerbose)
+            if(Main.opts.verbose())
                 System.out.println("[" + body.getMethod().getName() + "] Aggregating iteration " + aggregateCount + "...");
         
             // body.printTo(new java.io.PrintWriter(System.out, true));
@@ -103,7 +103,7 @@ public class Aggregator extends BodyTransformer
             aggregateCount++;
         } while(changed);
         
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.aggregationTimer.end();
             
     }
@@ -323,7 +323,7 @@ public class Aggregator extends BodyTransformer
             }
           else
             {/*
-            if(Main.isVerbose)
+            if(Main.opts.verbose())
             {
                 System.out.println("[debug] failed aggregation");
                   System.out.println("[debug] tried to put "+aggregatee+

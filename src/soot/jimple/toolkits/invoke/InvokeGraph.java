@@ -93,7 +93,7 @@ public class InvokeGraph
                     if (isBench) {
                         stats.benchPolyCS++;
                         stats.benchPolyEdges += numOfEdges;
-                        if (Main.isVerbose) {
+                        if (Main.opts.verbose()) {
                             System.out.println("Polymorphic site: "+s);
                             System.out.println("in method: "+m);
                             System.out.println("Targets: "+siteToTargetMethods.get(s));

@@ -52,13 +52,13 @@ public class TypeAssigner extends BodyTransformer
 
     Date start = new Date();
     
-    if (soot.Main.isVerbose)
+    if (soot.Main.opts.verbose())
       System.out.println("[TypeAssigner] typing system started on "+start);
 
     TypeResolver.resolve((JimpleBody)b, Scene.v());
 
     Date finish = new Date();
-    if (soot.Main.isVerbose)
+    if (soot.Main.opts.verbose())
       {
 	long runtime = finish.getTime()-start.getTime();
 	long mins = runtime/60000;

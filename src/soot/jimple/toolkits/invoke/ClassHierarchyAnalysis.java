@@ -113,7 +113,7 @@ public class ClassHierarchyAnalysis
       g.mcg = (MethodCallGraph)g.newMethodGraph();
     }
 
-    if (Main.isVerbose) {
+    if (Main.opts.verbose()) {
       System.out.println("  processed "+appAndLibClasses.size()+" classes");
       System.out.println("  processed "+visitedMethods.size()+" methods");
     }
@@ -234,7 +234,7 @@ public class ClassHierarchyAnalysis
       g.mcg = (MethodCallGraph)g.newMethodGraph();
     }
 
-//    if (Main.isVerbose) 
+//    if (Main.opts.verbose()) 
     {
       System.out.println("  processed "+visitedClasses.size()+" classes");
       System.out.println("  processed "+visitedMethods.size()+" methods");

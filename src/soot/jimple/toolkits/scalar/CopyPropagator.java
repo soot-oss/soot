@@ -68,11 +68,11 @@ public class CopyPropagator extends BodyTransformer
         int fastCopyPropagationCount = 0;
         int slowCopyPropagationCount = 0;
         
-        if(Main.isVerbose)
+        if(Main.opts.verbose())
             System.out.println("[" + stmtBody.getMethod().getName() +
                 "] Propagating copies...");
 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.propagatorTimer.start();                
                 
         Chain units = stmtBody.getUnits();
@@ -217,13 +217,13 @@ public class CopyPropagator extends BodyTransformer
         }
 
 
-        if(Main.isVerbose)
+        if(Main.opts.verbose())
             System.out.println("[" + stmtBody.getMethod().getName() +
                 "]     Propagated: " +
                 fastCopyPropagationCount + " fast copies  " +
                 slowCopyPropagationCount + " slow copies");
      
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.propagatorTimer.end();
     
     }

@@ -66,7 +66,7 @@ class ClassFieldAnalysis
      
 	/* Summerize class information here. */
 	Date start = new Date();
- 	if (soot.Main.isVerbose) 
+ 	if (soot.Main.opts.verbose()) 
 	    System.out.println("[] ClassFieldAnalysis started on : "
 			       +start+" for "
 			       +c.getPackageName()+c.getName());
@@ -103,7 +103,7 @@ class ClassFieldAnalysis
 
 	if (arrayTypeFieldNum == 0)
 	{
-	    if (Main.isVerbose) 
+	    if (Main.opts.verbose()) 
 		System.out.println("[] ClassFieldAnalysis finished with nothing");
 	    return;
 	}
@@ -128,7 +128,7 @@ class ClassFieldAnalysis
 	}
 
 	Date finish = new Date();
-	if (Main.isVerbose) 
+	if (Main.opts.verbose()) 
 	{
 	    long runtime=finish.getTime()-start.getTime();
 	    long mins=runtime/60000;
@@ -231,7 +231,7 @@ class ClassFieldAnalysis
 	}
 
 
-	if (soot.Main.isVerbose)
+	if (soot.Main.opts.verbose())
 	{
 	    System.out.println("[] ScanMethod for field started.");
 	}
@@ -351,7 +351,7 @@ class ClassFieldAnalysis
 	    }
 	}	
 	
-	if (soot.Main.isVerbose)
+	if (soot.Main.opts.verbose())
 	{
 	    System.out.println("[] ScanMethod finished.");
 	}

@@ -44,7 +44,7 @@ public class FastAvailableExpressions implements AvailableExpressions
     /** Wrapper for AvailableExpressionsAnalysis. */ 
     public FastAvailableExpressions(Body b, SideEffectTester st)
     {
-        if(Main.isVerbose)
+        if(Main.opts.verbose())
             System.out.println("[" + b.getMethod().getName() +
                 "] Finding available expressions...");
 
@@ -116,7 +116,7 @@ public class FastAvailableExpressions implements AvailableExpressions
             }  
         }
 
-        if(Main.isVerbose)
+        if(Main.opts.verbose())
             System.out.println("[" + b.getMethod().getName() +
                 "]     Found available expressions...");
     }

@@ -67,13 +67,13 @@ public class SimpleLocalUses implements LocalUses
      */
     public SimpleLocalUses(Body body, LocalDefs localDefs)
     {
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
            Main.usesTimer.start();
     
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
            Main.usePhase1Timer.start();
         
-        if(Main.isVerbose)
+        if(Main.opts.verbose())
             System.out.println("[" + body.getMethod().getName() +
                 "]     Constructing SimpleLocalUses...");
     
@@ -92,10 +92,10 @@ public class SimpleLocalUses implements LocalUses
             }
         }
 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
            Main.usePhase1Timer.end();
     
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
            Main.usePhase2Timer.start();
     
         // Traverse units and associate uses with definitions
@@ -131,10 +131,10 @@ public class SimpleLocalUses implements LocalUses
             }
         }
 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
            Main.usePhase2Timer.end();
     
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
            Main.usePhase3Timer.start();
     
         // Store the map as a bunch of unmodifiable lists.
@@ -150,10 +150,10 @@ public class SimpleLocalUses implements LocalUses
             
         }
         
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
            Main.usePhase3Timer.end();
     
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.usesTimer.end();
     }
 

@@ -223,10 +223,10 @@ public class JasminClass
     {
         Map options = new HashMap();
 
-        if(soot.Main.isProfilingOptimization)
+        if(soot.Main.opts.time())
             soot.Main.buildJasminTimer.start();
 
-        if(soot.Main.isVerbose)
+        if(soot.Main.opts.verbose())
             System.out.println("[" + SootClass.getName() + "] Constructing jimple.JasminClass...");
         
         code = new LinkedList();
@@ -294,17 +294,17 @@ public class JasminClass
             }
         }
         
-        if(soot.Main.isProfilingOptimization)
+        if(soot.Main.opts.time())
             soot.Main.buildJasminTimer.end();
     }
 
     void assignColorsToLocals(StmtBody body)
     {
-        if(Main.isVerbose)
+        if(Main.opts.verbose())
             System.out.println("[" + body.getMethod().getName() +
                 "] Assigning colors to locals...");
         
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.packTimer.start();
 
         localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
@@ -363,7 +363,7 @@ public class JasminClass
             FastColorer.assignColorsToLocals(body, localToGroup,
                 localToColor, groupToColorCount);
 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.packTimer.end();
                     
     }
@@ -391,7 +391,7 @@ public class JasminClass
     
     void emitMethodBody(SootMethod method, Map options)
     {
-        if(soot.Main.isProfilingOptimization)
+        if(soot.Main.opts.time())
             soot.Main.buildJasminTimer.end();
                     
      
@@ -406,7 +406,7 @@ public class JasminClass
             
         if(body == null)
             
-        if(soot.Main.isProfilingOptimization)
+        if(soot.Main.opts.time())
             soot.Main.buildJasminTimer.start();
         
         Chain units = body.getUnits();
@@ -418,7 +418,7 @@ public class JasminClass
         
         // let's create a u-d web for the ++ peephole optimization.
 
-        if(Main.isVerbose)
+        if(Main.opts.verbose())
             System.out.println("[" + body.getMethod().getName() +
                 "] Performing peephole optimizations...");
 

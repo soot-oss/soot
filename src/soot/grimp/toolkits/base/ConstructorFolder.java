@@ -50,7 +50,7 @@ public class ConstructorFolder extends BodyTransformer
     {
         GrimpBody body = (GrimpBody)b;
 
-        if(soot.Main.isVerbose)
+        if(soot.Main.opts.verbose())
             System.out.println("[" + body.getMethod().getName() +
                 "] Folding constructors...");
 

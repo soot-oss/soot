@@ -81,7 +81,7 @@ public class NullPointerChecker extends BodyTransformer
 	{
 	    Date start = new Date();
 
-	    if (soot.Main.isVerbose)
+	    if (soot.Main.opts.verbose())
 		System.out.println("[npc] Null pointer check for "+body.getMethod().getName()
 				   +" started on "+start);
 		
@@ -217,7 +217,7 @@ public class NullPointerChecker extends BodyTransformer
 	    }
 
 	    Date finish = new Date();
-	    if (soot.Main.isVerbose)
+	    if (soot.Main.opts.verbose())
 	    {
 		long runtime = finish.getTime()-start.getTime();
 		long mins = runtime/60000;

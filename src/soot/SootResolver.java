@@ -99,11 +99,11 @@ public class SootResolver
                 
             Set s = null;
             if(is instanceof ClassInputStream) {
-                if(soot.Main.isVerbose)
+                if(soot.Main.opts.verbose())
                     System.err.println("resolving [from .class]: " + className );
                 soot.coffi.Util.resolveFromClassFile(sc, is, this, Scene.v());
             } else if(is instanceof JimpleInputStream) {
-                if(soot.Main.isVerbose)
+                if(soot.Main.opts.verbose())
                     System.err.println("resolving [from .jimple]: " + className );
                 if(sc == null) throw new RuntimeException("sc is null!!");
                 

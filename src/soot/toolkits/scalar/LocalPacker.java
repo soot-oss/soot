@@ -75,7 +75,7 @@ public class LocalPacker extends BodyTransformer
     {
         boolean isUnsplit = Options.getBoolean(options, "unsplit-original-locals");
         
-        if(soot.Main.isVerbose)
+        if(soot.Main.opts.verbose())
             System.out.println("[" + body.getMethod().getName() + "] Packing locals...");
     
         Map localToGroup = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);

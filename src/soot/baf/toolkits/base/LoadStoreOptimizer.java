@@ -155,7 +155,7 @@ public class LoadStoreOptimizer extends BodyTransformer
             debug = true;
         }
         
-        if(soot.Main.isVerbose)
+        if(soot.Main.opts.verbose())
             System.out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
 
         if(debug) { System.err.println("\n\nOptimizing Method: " + body.getMethod().getName());}

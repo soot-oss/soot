@@ -72,7 +72,7 @@ public class BusyCodeMotion extends BodyTransformer {
     HashMap expToHelper = new HashMap();
     Chain unitChain = b.getUnits();
 
-    if(Main.isVerbose)
+    if(Main.opts.verbose())
       System.out.println("[" + b.getMethod().getName() +
           "]     performing Busy Code Motion...");
 
@@ -154,7 +154,7 @@ public class BusyCodeMotion extends BodyTransformer {
         }
       }
     }
-    if(Main.isVerbose)
+    if(Main.opts.verbose())
       System.out.println("[" + b.getMethod().getName() +
           "]     Busy Code Motion done!");
   }

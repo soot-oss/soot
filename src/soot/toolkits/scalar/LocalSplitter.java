@@ -66,12 +66,12 @@ public class LocalSplitter extends BodyTransformer
         Chain units = body.getUnits();
         List webs = new ArrayList();
 
-        if(Main.isVerbose)
+        if(Main.opts.verbose())
             System.out.println("[" + body.getMethod().getName() + "] Splitting locals...");
 
         Map boxToSet = new HashMap(units.size() * 2 + 1, 0.7f);
 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
                 Main.splitPhase1Timer.start();
 
         // Go through the definitions, building the webs
@@ -84,10 +84,10 @@ public class LocalSplitter extends BodyTransformer
 
             LocalUses localUses = new SimpleLocalUses(graph, localDefs);
             
-            if(Main.isProfilingOptimization)
+            if(Main.opts.time())
                 Main.splitPhase1Timer.end();
     
-            if(Main.isProfilingOptimization)
+            if(Main.opts.time())
                 Main.splitPhase2Timer.start();
 
             Set markedBoxes = new HashSet();
@@ -224,7 +224,7 @@ public class LocalSplitter extends BodyTransformer
             }
         }
         
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.splitPhase2Timer.end();
 
     }   

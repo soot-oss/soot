@@ -57,7 +57,7 @@ public class StaticMethodBinder extends SceneTransformer
         InvokeGraphBuilder.v().transform(phaseName + ".igb");
 
         Date finish = new Date();
-        if (Main.isVerbose) {
+        if (Main.opts.verbose()) {
             System.out.println("[stb] Done building invoke graph.");
             long runtime = finish.getTime() - start.getTime();
             System.out.println("[stb] Invoke graph building took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
@@ -78,14 +78,14 @@ public class StaticMethodBinder extends SceneTransformer
 
         for (int i = 0; i < VTApasses; i++)
         {
-            if (Main.isVerbose)
+            if (Main.opts.verbose())
                 System.out.println(graph.computeStats());
             vta = new VariableTypeAnalysis(graph);
             vta.trimActiveInvokeGraph();
             graph.refreshReachableMethods();
         }
                 
-        if (Main.isVerbose)
+        if (Main.opts.verbose())
             System.out.println(graph.computeStats());
 
         Iterator classesIt = Scene.v().getApplicationClasses().iterator();

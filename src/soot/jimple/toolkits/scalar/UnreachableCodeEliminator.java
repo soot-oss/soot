@@ -51,7 +51,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
     {
         StmtBody body = (StmtBody)b;
         
-        if (soot.Main.isVerbose) 
+        if (soot.Main.opts.verbose()) 
             System.out.println("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
 
         numPruned = 0;
@@ -77,7 +77,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
                 numPruned++;
             }
         }
-        if (soot.Main.isVerbose)
+        if (soot.Main.opts.verbose())
             System.out.println("[" + body.getMethod().getName() + "]     Removed " + numPruned + " statements...");
             
         // Now eliminate empty traps.

@@ -133,7 +133,7 @@ public class Util
         className = bclass.getName();
             
             
-        if(soot.Main.isVerbose)
+        if(soot.Main.opts.verbose())
             System.out.println("Resolving " + className + "...");
     
         ClassFile coffiClass = new ClassFile(className);
@@ -533,7 +533,7 @@ public class Util
             
             timer.start();
             
-            if(soot.Main.isVerbose)
+            if(soot.Main.opts.verbose())
                 System.out.println("Resolving " + className + "...");
     
             ClassFile coffiClass = new ClassFile(className);

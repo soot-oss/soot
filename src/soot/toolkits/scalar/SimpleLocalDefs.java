@@ -57,16 +57,16 @@ public class SimpleLocalDefs implements LocalDefs
      */
     public SimpleLocalDefs(CompleteUnitGraph g)
     {
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.defsTimer.start();
         
-        if(Main.isVerbose)
+        if(Main.opts.verbose())
             System.out.println("[" + g.getBody().getMethod().getName() +
                                "]     Constructing SimpleLocalDefs...");
     
         LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(g);
         
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.defsPostTimer.start();
 
         // Build localUnitPairToDefs map
@@ -105,13 +105,13 @@ public class SimpleLocalDefs implements LocalDefs
                 }
         }
 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.defsPostTimer.end();
                 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.defsTimer.end();
 
-	if(Main.isVerbose)
+	if(Main.opts.verbose())
 	    System.out.println("[" + g.getBody().getMethod().getName() +
                                "]     SimpleLocalDefs finished.");
     }
@@ -249,7 +249,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
         Object[] defs;
         FlowUniverse defUniverse;
 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.defsSetupTimer.start();
 
         // Create a list of all the definitions and group defs of the same local together
@@ -388,15 +388,15 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
             }
         }
 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.defsSetupTimer.end();
 
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.defsAnalysisTimer.start();
 
         doAnalysis();
         
-        if(Main.isProfilingOptimization)
+        if(Main.opts.time())
             Main.defsAnalysisTimer.end();
     }
     

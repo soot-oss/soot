@@ -79,7 +79,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	if (!sc.hasActiveInvokeGraph())
 	{
 	    Date start = new Date();
-	    if (soot.Main.isVerbose)
+	    if (soot.Main.opts.verbose())
 		System.out.println("[ra] Building InvokeGraph, start on "+start);
 
 	    InvokeGraphBuilder.v().transform(phaseName+".ra");
@@ -88,13 +88,13 @@ public class RectangularArrayFinder extends SceneTransformer
 	    long runtime = finish.getTime()-start.getTime();
 	    long mins = runtime/60000;
 	    long secs = (runtime%60000)/1000;
-	    if (soot.Main.isVerbose)
+	    if (soot.Main.opts.verbose())
 		System.out.println("[ra] Finished InvokeGraph building."
 				   +" It took "+mins+" mins and "+secs+" secs.");
 	}
 
 	Date start = new Date();
-	if (soot.Main.isVerbose)
+	if (soot.Main.opts.verbose())
 	    System.out.println("[ra] Finding rectangular arrays, start on "+start);
 
 	ig = sc.getActiveInvokeGraph();
@@ -262,7 +262,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	ig = null;
 
 	Date finish = new Date();
-	if (soot.Main.isVerbose) 
+	if (soot.Main.opts.verbose()) 
 	{
 	    long runtime = finish.getTime() - start.getTime();
 	    long mins = runtime/60000;
@@ -274,7 +274,7 @@ public class RectangularArrayFinder extends SceneTransformer
 
     private void addInfoFromMethod(SootMethod method)
     {
-	if (soot.Main.isVerbose) 
+	if (soot.Main.opts.verbose()) 
 	    System.out.println("[ra] Operating "+method.getSignature());
 
 	boolean needTransfer = true;
