@@ -349,4 +349,10 @@ i:      for( int i = 0; i < domains.length; i++ ) {
             return numberer.get(sats[cur++]);
         }
     }
+    public void makeFull() {
+        bdd = JBuddy.bdd_true();
+    }
+    public boolean isFull() { 
+        return bdd == JBuddy.bdd_true();
+    }
 }

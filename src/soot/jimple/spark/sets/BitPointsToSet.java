@@ -47,7 +47,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
 
     private final boolean nativeAddAll( BitPointsToSet other, BitPointsToSet exclude ) {
         BitVector mask = null;
-        TypeManager typeManager = pag.getTypeManager();
+        TypeManager typeManager = (TypeManager) pag.getTypeManager();
         if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
             mask = typeManager.get( this.getType() );
         }

@@ -30,7 +30,7 @@ import soot.options.SparkOptions;
 /** A map of bit-vectors representing subtype relationships.
  * @author Ondrej Lhotak
  */
-public final class TypeManager {
+public final class TypeManager extends AbstractTypeManager {
     final public BitVector get( Type type ) {
         if( type == null ) return null;
         while(true) {
@@ -63,21 +63,9 @@ public final class TypeManager {
     final public void clearTypeMask() {
         typeMask = null;
     }
-    final public boolean castNeverFails( Type src, Type dst ) {
-        if( fh == null ) return true;
-        if( dst == null ) return true;
-        if( dst == src ) return true;
-        if( src == null ) return false;
-        if( dst.equals( src ) ) return true;
-        if( src instanceof NullType ) return true;
-        if( src instanceof AnySubType ) return true;
-        if( dst instanceof NullType ) return false;
-        if( dst instanceof AnySubType ) throw new RuntimeException( "oops src="+src+" dst="+dst );
-        return fh.canStoreType( src, dst );
-    }
-    final public void makeTypeMask( PAG pag ) {
+    final public void makeTypeMask( AbstractPAG pag ) {
         RefType.v( "java.lang.Class" );
-        this.pag = pag;
+        this.pag = (PAG) pag;
         typeMask = new LargeNumberedMap( Scene.v().getTypeNumberer() );
         if( fh == null ) return;
 
@@ -103,12 +91,6 @@ public final class TypeManager {
         allocNodeListener = pag.allocNodeListener();
     }
 
-    public void setFastHierarchy( FastHierarchy fh ) { this.fh = fh; }
-    public FastHierarchy getFastHierarchy() { return fh; }
-
     private LargeNumberedMap typeMask = null;
-    private FastHierarchy fh = null;
-    private QueueReader allocNodeListener = null;
-    private PAG pag;
 }
 

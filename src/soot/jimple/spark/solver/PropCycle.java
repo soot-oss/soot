@@ -36,7 +36,7 @@ import soot.util.*;
 public final class PropCycle extends Propagator {
     public PropCycle( PAG pag ) {
         this.pag = pag;
-        typeManager = pag.getTypeManager();
+        typeManager = (TypeManager) pag.getTypeManager();
         varNodeToIteration = new LargeNumberedMap( pag.getVarNodeNumberer() );
     }
 

@@ -263,7 +263,7 @@ public abstract class AbstractPAG implements PointsToAnalysis {
     public int getNumAllocNodes() {
         return allocNodeNumberer.size();
     }
-    public TypeManager getTypeManager() {
+    public AbstractTypeManager getTypeManager() {
         return typeManager;
     }
 
@@ -372,7 +372,7 @@ public abstract class AbstractPAG implements PointsToAnalysis {
     private Map valToAllocNode = new HashMap(1000);
     private OnFlyCallGraph ofcg;
     private ArrayList dereferences = new ArrayList();
-    protected TypeManager typeManager;
+    private AbstractTypeManager typeManager;
     private LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
     public int maxFinishNumber = 0;
     private Map nodeToTag;

@@ -78,7 +78,7 @@ public class EBBCollapser {
     }
     protected void collapseSimple() {
         final boolean ofcg = (pag.getOnFlyCallGraph() != null);
-        final TypeManager typeManager = pag.getTypeManager();
+        final TypeManager typeManager = (TypeManager) pag.getTypeManager();
         boolean change;
         do {
             change = false;
@@ -104,7 +104,7 @@ public class EBBCollapser {
     }
     protected void collapseLoad() {
         final boolean ofcg = (pag.getOnFlyCallGraph() != null);
-        final TypeManager typeManager = pag.getTypeManager();
+        final TypeManager typeManager = (TypeManager) pag.getTypeManager();
         for( Iterator nIt = new ArrayList( pag.loadSources() ).iterator(); nIt.hasNext(); ) {
             final FieldRefNode n = (FieldRefNode) nIt.next();
             Type nType = n.getType();
