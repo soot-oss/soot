@@ -8,12 +8,12 @@ public final class TInterfaceinvoke extends Token
 {
     public TInterfaceinvoke()
     {
-        super.setText("interfaceinvoke");
+        super.setText(".interfaceinvoke");
     }
 
     public TInterfaceinvoke(int line, int pos)
     {
-        super.setText("interfaceinvoke");
+        super.setText(".interfaceinvoke");
         setLine(line);
         setPos(pos);
     }

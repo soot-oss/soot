@@ -107,7 +107,6 @@ public class Modifier
     /**
      * Converts the given modifiers to their string representation, in canonical form.
      */
-
     public static String toString(int m)
     {
         StringBuffer buffer = new StringBuffer();
@@ -145,6 +144,7 @@ public class Modifier
 
         return (buffer.toString()).trim();
     }
+
 }
 
 

@@ -51,7 +51,7 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return indentation + "return";
+        return indentation + Jimple.v().RETURN;
     }
     
     public void apply(Switch sw)

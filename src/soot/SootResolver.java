@@ -11,7 +11,7 @@ public class SootResolver
     private Scene mScene;
     private Set markedClasses;
     private LinkedList classesToResolve;
-    private boolean debug = false;
+    private boolean debug = true;
 
     //        SootClass toReturn = soot.coffi.Util.resolveClassAndSupportClasses(className, this);
     public SootResolver(Scene aScene)
@@ -33,6 +33,7 @@ public class SootResolver
         
 	
 	markedClasses.add(newClass);
+		    if(className.equals("int")) throw new RuntimeException();
         classesToResolve.addLast(newClass);
 	
 	return newClass;
@@ -53,7 +54,7 @@ public class SootResolver
 	    try {
 		is = SourceLocator.getInputStreamOf(className);
 	    } catch(ClassNotFoundException e) {
-		throw new RuntimeException("couldn't find type: " + className);
+		throw new RuntimeException("couldn't find type: ##" + className + "###");
 	    }
 		
 	    Set s = null;
@@ -115,6 +116,7 @@ public class SootResolver
             newClass.setContextClass();
             
             markedClasses.add(newClass);
+	    if(className.equals("int")) throw new RuntimeException();
             classesToResolve.addLast(newClass);
         }
     }

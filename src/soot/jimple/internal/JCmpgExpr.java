@@ -40,7 +40,7 @@ import java.util.*;
 public class JCmpgExpr extends AbstractJimpleIntBinopExpr implements CmpgExpr
 {
     public JCmpgExpr(Value op1, Value op2) { super(op1, op2); }
-    public final String getSymbol() { return " cmpg "; }
+    public final String getSymbol() { return " " + Jimple.v().CMPG + " " ; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseCmpgExpr(this); }
     Object makeBafInst(Type opType) { return Baf.v().newCmpgInst(this.getOp1().getType()); }
     

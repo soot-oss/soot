@@ -96,8 +96,7 @@ public class SkeletonExtractorWalker extends Walker
 	}
 	classType = (String) mProductions.pop();
 		
-	int  modifierCount = node.getModifier().size();
-	int modifierFlags = processModifiers(modifierCount);
+	int modifierFlags = processModifiers(node.getModifier());
 
 	
 	if(classType.equals("interface"))
@@ -201,7 +200,7 @@ public class SkeletonExtractorWalker extends Walker
 
 	name = (String) o;
 	type = (Type) mProductions.pop();
-	modifier = processModifiers(node.getModifier().size());
+	modifier = processModifiers(node.getModifier());
 
 	SootMethod method;
 

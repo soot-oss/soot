@@ -36,7 +36,10 @@ import soot.toolkits.scalar.*;
 public class Scene extends AbstractHost
 {
     private static Scene constant = new Scene();
-    
+
+    public final int OUTPUT_JIMPLE = 1;
+    private int outputMode = OUTPUT_JIMPLE;
+
     Chain classes = new HashChain();
     Chain applicationClasses = new HashChain();
     Chain libraryClasses = new HashChain();
@@ -62,6 +65,15 @@ public class Scene extends AbstractHost
 
 
     private Vector classesToResolve = new Vector();
+
+
+
+
+  public int getOutputMode()
+  {
+    return outputMode;
+  }
+
 
     public void addClassToResolve(String c) 
     {

@@ -50,7 +50,7 @@ public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf
 
     public String toString()
     {
-        return field.getSignature();
+        return field.getJimpleStyleSignature();
     }
 
     public String toBriefString()

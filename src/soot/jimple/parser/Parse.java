@@ -33,11 +33,10 @@ public class Parse
 	Start tree = null;
 	
 	
-	Parser p =
+	Parser p = 
 		new Parser(new Lexer(
 		      new PushbackReader(new EscapedReader(
-			      new InputStreamReader(istream)), 1024)));
-	
+			      new InputStreamReader(istream)), 1024)));	
 	
 	try {
 	    tree = p.parse();

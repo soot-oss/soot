@@ -8,12 +8,12 @@ public final class TVirtualinvoke extends Token
 {
     public TVirtualinvoke()
     {
-        super.setText("virtualinvoke");
+        super.setText(".virtualinvoke");
     }
 
     public TVirtualinvoke(int line, int pos)
     {
-        super.setText("virtualinvoke");
+        super.setText(".virtualinvoke");
         setLine(line);
         setPos(pos);
     }

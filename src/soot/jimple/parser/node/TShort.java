@@ -8,12 +8,12 @@ public final class TShort extends Token
 {
     public TShort()
     {
-        super.setText("short");
+        super.setText(".short");
     }
 
     public TShort(int line, int pos)
     {
-        super.setText("short");
+        super.setText(".short");
         setLine(line);
         setPos(pos);
     }

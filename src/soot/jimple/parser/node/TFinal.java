@@ -8,12 +8,12 @@ public final class TFinal extends Token
 {
     public TFinal()
     {
-        super.setText("final");
+        super.setText(".final");
     }
 
     public TFinal(int line, int pos)
     {
-        super.setText("final");
+        super.setText(".final");
         setLine(line);
         setPos(pos);
     }

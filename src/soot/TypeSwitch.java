@@ -27,9 +27,9 @@
 
 
 
- package soot;
+package soot;
 
-public class TypeSwitch implements soot.util.Switch
+public class TypeSwitch implements ITypeSwitch 
 {
     Object result;
 

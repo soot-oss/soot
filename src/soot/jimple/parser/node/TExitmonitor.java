@@ -8,12 +8,12 @@ public final class TExitmonitor extends Token
 {
     public TExitmonitor()
     {
-        super.setText("exitmonitor");
+        super.setText(".exitmonitor");
     }
 
     public TExitmonitor(int line, int pos)
     {
-        super.setText("exitmonitor");
+        super.setText(".exitmonitor");
         setLine(line);
         setPos(pos);
     }

@@ -8,12 +8,12 @@ public final class TBoolean extends Token
 {
     public TBoolean()
     {
-        super.setText("boolean");
+        super.setText(".boolean");
     }
 
     public TBoolean(int line, int pos)
     {
-        super.setText("boolean");
+        super.setText(".boolean");
         setLine(line);
         setPos(pos);
     }

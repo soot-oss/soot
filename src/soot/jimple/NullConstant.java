@@ -53,7 +53,7 @@ public class NullConstant extends Constant implements Switchable, ToBriefString
 
     public String toString()
     {
-        return "null";
+        return Jimple.NULL;
     }
 
     public String toBriefString()

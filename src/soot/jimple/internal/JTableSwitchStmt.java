@@ -123,17 +123,22 @@ public class JTableSwitchStmt extends AbstractStmt
         StringBuffer buffer = new StringBuffer();
         String endOfLine = (indentation.equals("")) ? " " : StringTools.lineSeparator;
         
-        buffer.append(indentation + "tableswitch(" + ((isBrief) ? ((ToBriefString) keyBox.getValue()).toBriefString() :
+        buffer.append(indentation + Jimple.v().TABLESWITCH + "(" + ((isBrief) ? ((ToBriefString) keyBox.getValue()).toBriefString() :
             keyBox.getValue().toString()) + ")" + endOfLine);
             
         buffer.append(indentation + "{" + endOfLine);
         
         for(int i = lowIndex; i <= highIndex; i++)
         {
-            buffer.append(indentation + "    case " + i + ": goto " + (String) stmtToName.get(getTarget(i - lowIndex)) + ";" + endOfLine);
+            buffer.append(indentation +
+			  "    " + Jimple.v().CASE + " " + i + ": " + Jimple.v().GOTO + 
+			  " " + (String) stmtToName.get(getTarget(i - lowIndex)) + ";" + endOfLine);
         }
 
-        buffer.append(indentation + "    default: goto " + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
+        buffer.append(indentation + "    " +  Jimple.v().DEFAULT + 
+		      ": " +  Jimple.v().GOTO + "  " 
+		      + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
+	
         buffer.append(indentation + "}");
 
         return buffer.toString();

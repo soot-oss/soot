@@ -125,7 +125,8 @@ public class BodyExtractorWalker extends Walker
 	type = (Type) mProductions.pop(); // type
 	SootMethod sm = null;
 	try {	
-	    sm = mSootClass.getMethod(SootMethod.getSubSignature(name, parameterList, type));
+	  sm = mSootClass.getMethod(SootMethod.getSubSignature(name, parameterList, type));
+	  System.out.println(" << " + SootMethod.getSubSignature(name, parameterList, type));
 	} catch (soot.NoSuchMethodException e) {
 	    System.out.println(" >> " + SootMethod.getSubSignature(name, parameterList, type));
 	    Iterator it = mSootClass.getMethods().iterator();
@@ -137,7 +138,8 @@ public class BodyExtractorWalker extends Walker
 	}
 
 	if(sm.isConcrete()) {
-	    methodBody.setMethod(sm);
+	  System.out.println(sm.getDeclaration());
+	  methodBody.setMethod(sm);
 
 	    sm.setActiveBody(methodBody);
 	} else if(node.getMethodBody() instanceof AFullMethodBody) {

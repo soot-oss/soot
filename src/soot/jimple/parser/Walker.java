@@ -138,8 +138,12 @@ public class Walker extends DepthFirstAdapter
 
 	
 	int  modifierCount = node.getModifier().size();
-	int modifierFlags = processModifiers(modifierCount);
+
 	    
+
+	int modifierFlags = processModifiers(node.getModifier());
+
+
 	if(classType.equals("interface"))
 	    modifierFlags |= Modifier.INTERFACE;	
 
@@ -173,7 +177,8 @@ public class Walker extends DepthFirstAdapter
 
 	name = (String) mProductions.pop();
 	type = (Type) mProductions.pop();
-	modifier = processModifiers(node.getModifier().size());
+
+	modifier = processModifiers(node.getModifier());
 
 	SootField f = new SootField(name, type, modifier);	
 	mSootClass.addField(f);
@@ -206,12 +211,13 @@ public class Walker extends DepthFirstAdapter
 
 	name = (String) o;
 	type = (Type) mProductions.pop();
-	modifier = processModifiers(node.getModifier().size());
+
+	modifier = processModifiers(node.getModifier());
 
 	SootMethod method;
 
 	if(throwsClause != null)
-	    method =  new SootMethod(name, parameterList, type, modifier, throwsClause);
+	  method =  new SootMethod(name, parameterList, type, modifier, throwsClause);
 	else 	    
 	    method =  new SootMethod(name, parameterList, type, modifier);
 
@@ -259,15 +265,18 @@ public class Walker extends DepthFirstAdapter
     public void outAQuotedNonvoidType(AQuotedNonvoidType node)
     {	
 	String typeName = (String) mProductions.pop();
+	if(typeName.equals("int")) throw new RuntimeException();
 	Type t = RefType.v(typeName);
 	int dim = node.getArrayBrackets().size();
 	if(dim > 0) 
 	    t = ArrayType.v((BaseType) t, dim);
 	mProductions.push(t);
     }
+
     public void outAIdentNonvoidType(AIdentNonvoidType node)
     {	
 	String typeName = (String) mProductions.pop();
+	if(typeName.equals("int")) throw new RuntimeException();
 	Type t = RefType.v(typeName);
 	int dim = node.getArrayBrackets().size();
 	if(dim > 0)
@@ -279,6 +288,7 @@ public class Walker extends DepthFirstAdapter
     public void outAFullIdentNonvoidType(AFullIdentNonvoidType node)
     {		
 	String typeName = (String) mProductions.pop();
+	if(typeName.equals("int")) throw new RuntimeException();
 	Type t = RefType.v(typeName);
 	Scene.v().addClassToResolve(typeName);
 	
@@ -421,6 +431,7 @@ public class Walker extends DepthFirstAdapter
     public void outAClassNameBaseType(AClassNameBaseType node)
     {
 	String type = (String) mProductions.pop();
+	if(type.equals("int"))throw new RuntimeException();
 	mProductions.push(RefType.v(type));
 	Scene.v().addClassToResolve(type);
     }
@@ -1049,14 +1060,17 @@ public class Walker extends DepthFirstAdapter
     public void outAStringConstant(AStringConstant node)
     {
 	String s = (String) mProductions.pop();
-	try {
+	mProductions.push(StringConstant.v(s));
+	/*
+	  try {
 	  String t = StringTools.getUnEscapedStringOf(s);
 	
 	  mProductions.push(StringConstant.v(t));
-	} catch(RuntimeException e) {
+	  } catch(RuntimeException e) {
 	  System.out.println(s);
 	  throw e;
-	}
+	  }
+	*/
     }
 
 
@@ -1558,13 +1572,13 @@ public class Walker extends DepthFirstAdapter
 	LinkedList arrayDesc =  node.getArrayDescriptor();
 
 	int descCnt = arrayDesc.size();
-	List sizes = new ArrayList(); 
+	List sizes = new LinkedList(); 
 	
 	Iterator it = arrayDesc.iterator();
 	while(it.hasNext()) {
 	    AArrayDescriptor o = (AArrayDescriptor) it.next();
 	    if(o.getImmediate() != null)
-		sizes.add((Value) mProductions.pop());
+		sizes.add(0,(Value) mProductions.pop());
 	    else 
 		break;
 	}
@@ -1580,28 +1594,29 @@ public class Walker extends DepthFirstAdapter
 	if(node instanceof TQuotedName ||
 	   node instanceof TFullIdentifier ||
 	   node instanceof TIdentifier ||
-	   node instanceof TAbstract ||
-	   node instanceof TFinal ||
-	   node instanceof TNative ||
-	   node instanceof TPublic ||
-	   node instanceof TProtected ||
-	   node instanceof TPrivate ||
-	   node instanceof TStatic ||
-	   node instanceof TSynchronized ||
-	   node instanceof TTransient ||
-	   node instanceof TVolatile || 
+	   node instanceof TStringConstant ||
+
 	   node instanceof TIntegerConstant ||
 	   node instanceof TFloatConstant ||
-	   node instanceof TStringConstant ||
 	   node instanceof TAtIdentifier
 
 	   ) {
 	    if(debug) 
 		System.out.println("Default case -pushing token:" + ((Token) node).getText());
 	    String tokenString = ((Token) node).getText();
-	    if(node instanceof TStringConstant) {
+	    if(node instanceof TStringConstant || node instanceof TQuotedName) {
 		tokenString = tokenString.substring(1, tokenString.length() -1 );		
 	    } 
+	    
+	    if(node instanceof TIdentifier || node instanceof TFullIdentifier || node instanceof TQuotedName || node instanceof TStringConstant) {
+	      try {
+		tokenString = StringTools.getUnEscapedStringOf(tokenString);
+
+	      } catch(RuntimeException e) {
+		System.out.println(tokenString);
+		throw e;
+	      }
+	    }
 	    mProductions.push(tokenString);
 	} 
     }
@@ -1609,45 +1624,39 @@ public class Walker extends DepthFirstAdapter
 
 
 
+  protected int processModifiers(List l)
+  {
+    int modifier = 0;
+    Iterator it = l.iterator();
    
-    
-
-
-    
-    // auxiliary fcts
-
-    protected int processModifiers(int aModifierCount)
-    {
-	int modifier = 0;	
-	String str;
-	for( int i = 0; i < aModifierCount; i++) {
-	    str = (String) mProductions.pop();
-
-	    if(str.equals("abstract"))
-		modifier |= Modifier.ABSTRACT;
-	    else if (str.equals("final")) {
-		modifier |= Modifier.FINAL;
-	    }
-	    else if (str.equals("native"))
-		modifier |= Modifier.NATIVE;
-	    else if (str.equals("public"))
-		modifier |= Modifier.PUBLIC;
-	    else if (str.equals("protected"))
-		modifier |= Modifier.PROTECTED;
-	    else if (str.equals("private"))
-		modifier |= Modifier.PRIVATE;
-	    else if (str.equals("static"))
-		modifier |= Modifier.STATIC;
-	    else if (str.equals("synchronized"))
-		modifier |= Modifier.SYNCHRONIZED;
-	    else if (str.equals("transient"))
-		modifier |= Modifier.TRANSIENT;
-	    else if (str.equals("volitile"))
-		modifier |= Modifier.VOLATILE;
-	}	
+    while(it.hasNext()) {
+      Object  t = it.next();
+      if(t instanceof AAbstractModifier)
+	modifier |= Modifier.ABSTRACT;
+      else if(t instanceof AFinalModifier)
+	modifier |= Modifier.FINAL;
+      else if(t instanceof ANativeModifier)
+	modifier |= Modifier.NATIVE;
+      else if(t instanceof APublicModifier)
+	modifier |= Modifier.PUBLIC;
+      else if(t instanceof AProtectedModifier)
+	modifier |= Modifier.PROTECTED;
+      else if(t instanceof APrivateModifier)
+	modifier |= Modifier.PRIVATE;
+      else if(t instanceof AStaticModifier)
+	modifier |= Modifier.STATIC;
+      else if(t instanceof ASynchronizedModifier)
+	modifier |= Modifier.SYNCHRONIZED;
+      else if(t instanceof ATransientModifier)
+	modifier |= Modifier.TRANSIENT;
+      else if(t instanceof AVolatileModifier)
+	modifier |= Modifier.VOLATILE;
+      else
+	throw new RuntimeException("Impossible");
+    }	
     
 	return modifier;
-    }
+  }
 
     
     private void addBoxToPatch(String aLabelName, UnitBox aUnitBox)
@@ -1663,3 +1672,5 @@ public class Walker extends DepthFirstAdapter
 
 
 }
+
+

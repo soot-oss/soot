@@ -8,12 +8,12 @@ public final class TNull extends Token
 {
     public TNull()
     {
-        super.setText("null");
+        super.setText(".null");
     }
 
     public TNull(int line, int pos)
     {
-        super.setText("null");
+        super.setText(".null");
         setLine(line);
         setPos(pos);
     }

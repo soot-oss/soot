@@ -8,12 +8,12 @@ public final class TNew extends Token
 {
     public TNew()
     {
-        super.setText("new");
+        super.setText(".new");
     }
 
     public TNew(int line, int pos)
     {
-        super.setText("new");
+        super.setText(".new");
         setLine(line);
         setPos(pos);
     }

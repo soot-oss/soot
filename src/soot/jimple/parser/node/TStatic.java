@@ -8,12 +8,12 @@ public final class TStatic extends Token
 {
     public TStatic()
     {
-        super.setText("static");
+        super.setText(".static");
     }
 
     public TStatic(int line, int pos)
     {
-        super.setText("static");
+        super.setText(".static");
         setLine(line);
         setPos(pos);
     }

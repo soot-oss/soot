@@ -32,6 +32,7 @@ package soot;
 import soot.util.*;
 import java.util.*;
 import soot.baf.*;
+import soot.jimple.*;
 
 public class SootMethod extends AbstractHost implements ClassMember
 {
@@ -49,6 +50,7 @@ public class SootMethod extends AbstractHost implements ClassMember
 
     Body activeBody;
     
+
 
     /** Tells this method how to find out where its body lives. */
     protected MethodSource ms;
@@ -84,7 +86,7 @@ public class SootMethod extends AbstractHost implements ClassMember
         this.parameterTypes.addAll(parameterTypes);
 
         this.returnType = returnType;
-        this.modifiers = modifiers;
+        this.modifiers = modifiers;	
     }
 
     public SootMethod(String name, List parameterTypes, Type returnType, int modifiers,
@@ -320,9 +322,12 @@ public class SootMethod extends AbstractHost implements ClassMember
     /**
         Returns the Soot signature of this method.  Used to refer to methods unambiguously.
      */
-
     public String getSignature()
     {
+      if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
+	return getJimpleStyleSignature();
+
+
         StringBuffer buffer = new StringBuffer();
 
         buffer.append("<" + getDeclaringClass().getName() + ": ");
@@ -348,6 +353,50 @@ public class SootMethod extends AbstractHost implements ClassMember
     }
 
     
+    	
+  public String getJimpleStyleSignature()
+  {
+    StringBuffer buffer = new StringBuffer();
+    
+    buffer.append("<" + getDeclaringClass().getName() + ": ");
+    Type t = getReturnType();
+    if(Jimple.isJavaKeywordType(t))
+      buffer.append(".");
+
+    buffer.append(t.toString() + " " + getName());
+    buffer.append("(");
+	    
+	    Iterator typeIt = getParameterTypes().iterator();
+	
+	    if(typeIt.hasNext())
+		{
+		  t = (Type) typeIt.next();
+		  if(Jimple.isJavaKeywordType(t))
+		    buffer.append(".");    		  
+		  buffer.append(t);
+		
+		    while(typeIt.hasNext())
+			{
+			    buffer.append(",");
+			    t = (Type) typeIt.next();
+			    if(Jimple.isJavaKeywordType(t))
+			      buffer.append(".");    		  
+			    buffer.append(t);
+
+			}
+		}
+	
+	    buffer.append(")>");
+	    
+	    return buffer.toString();
+	}
+
+
+
+
+
+
+    
     /**
         Returns the Soot subsignature of this method.  Used to refer to methods unambiguously.
      */
@@ -356,19 +405,33 @@ public class SootMethod extends AbstractHost implements ClassMember
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(getReturnType().toString() + " " + getName());
+	Type t = getReturnType();
+	if(Jimple.isJavaKeywordType(t))
+	  buffer.append("." + t.toString() + " " + getName());
+	else
+	  buffer.append(t.toString() + " " + getName());
+
         buffer.append("(");
 
         Iterator typeIt = getParameterTypes().iterator();
 
         if(typeIt.hasNext())
         {
-            buffer.append(typeIt.next());
+	  t = (Type) typeIt.next();
+	  if(Jimple.isJavaKeywordType(t))
+            buffer.append("." + t);
+	  else
+            buffer.append(t);
 
             while(typeIt.hasNext())
             {
-                buffer.append(",");
-                buffer.append(typeIt.next());
+	      buffer.append(",");
+	      t = (Type ) typeIt.next();
+	      if(Jimple.isJavaKeywordType(t))
+		buffer.append("." + t);
+	      else
+		buffer.append(t);
+	 
             }
         }
 
@@ -383,20 +446,40 @@ public class SootMethod extends AbstractHost implements ClassMember
     public static String getSubSignature(String name, List params, Type returnType)
     {
         StringBuffer buffer = new StringBuffer();
+	
+	
+	Type t = returnType;
+	if(Jimple.isJavaKeywordType(t))
+	  buffer.append("." + t.toString() + " " + name);
+	else
+	  buffer.append(t.toString() + " " + name);
 
-        buffer.append(returnType.toString() + " " + name);
+
+
         buffer.append("(");
 
         Iterator typeIt = params.iterator();
 
         if(typeIt.hasNext())
         {
-            buffer.append(typeIt.next());
+
+	  t = (Type) typeIt.next();
+	  if(Jimple.isJavaKeywordType(t))
+	    buffer.append("." + t);
+	  else
+	    buffer.append(t);
 
             while(typeIt.hasNext())
             {
                 buffer.append(",");
-                buffer.append(typeIt.next());
+		
+	  t = (Type) typeIt.next();
+	  if(Jimple.isJavaKeywordType(t))
+	    buffer.append("." + t);
+	  else
+	    buffer.append(t);
+
+
             }
         }
 
@@ -422,60 +505,155 @@ public class SootMethod extends AbstractHost implements ClassMember
         for representation.)
      */
 
+
+
+  private String getJimpleStyleDeclaration()
+  {
+          
+    StringBuffer buffer = new StringBuffer();
+
+    
+    StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
+	    
+    while(st.hasMoreTokens())
+      buffer.append(" " + "." + st.nextToken());
+
+    if(buffer.length() != 0)
+      buffer.append(" ");
+
+    Type t = this.getReturnType();
+    if(Jimple.isJavaKeywordType(t))
+       buffer.append(".");
+    buffer.append(t);
+
+
+	buffer.append(" " + this.getName() + ""
+			  );
+	buffer.append("(");
+	    
+
+	    Iterator typeIt = this.getParameterTypes().iterator();
+
+	    if(typeIt.hasNext())
+		{
+		    t = (Type) typeIt.next();
+		    if(Jimple.isJavaKeywordType(t))
+		      buffer.append(".");
+		    buffer.append(t);
+		       
+		    while(typeIt.hasNext())
+			{
+			    buffer.append(", ");
+			    t = (Type) typeIt.next();
+			    if(Jimple.isJavaKeywordType(t))
+			      buffer.append(".");
+			    buffer.append(t);
+			}
+		}
+
+	    buffer.append(")");
+
+	    // Print exceptions
+	    {
+		Iterator exceptionIt = this.getExceptions().iterator();
+
+		if(exceptionIt.hasNext())
+		    {
+			buffer.append(" .throws ");
+			buffer.append("" + ((SootClass) exceptionIt.next()).getName() + " ");
+
+			while(exceptionIt.hasNext())
+			    {
+				buffer.append(", ");
+				buffer.append("" + ((SootClass) exceptionIt.next()).getName()
+					      + "");
+			    }
+		    }
+
+	    }
+
+	    return buffer.toString();
+  }
+
+
+
+
     public String getDeclaration()
     {
-        StringBuffer buffer = new StringBuffer();
+	if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
+	  return getJimpleStyleDeclaration();
 
-        buffer.append(Modifier.toString(this.getModifiers()));
 
-        if(buffer.length() != 0)
-            buffer.append(" ");
+      
+	StringBuffer buffer = new StringBuffer();
 
-        buffer.append(this.getReturnType().toString() + " " + this.getName() + "");
-        buffer.append("(");
+	
+	buffer.append(Modifier.toString(this.getModifiers()));
+	    
+	if(buffer.length() != 0)
+	  buffer.append(" ");
 
-        Iterator typeIt = this.getParameterTypes().iterator();
+	Type t = this.getReturnType();
+	buffer.append(t);
 
-        if(typeIt.hasNext())
-        {
-            buffer.append(typeIt.next());
+	buffer.append(" " + this.getName() + ""
+			  );
+	buffer.append("(");
+	    
 
-            while(typeIt.hasNext())
-            {
-                buffer.append(", ");
-                buffer.append(typeIt.next());
-            }
-        }
+	    Iterator typeIt = this.getParameterTypes().iterator();
 
-        buffer.append(")");
+	    if(typeIt.hasNext())
+		{
+		    t = (Type) typeIt.next();
+		    buffer.append(t);
+		       
+		    while(typeIt.hasNext())
+			{
+			    buffer.append(", ");
+			    t = (Type) typeIt.next();
+			    buffer.append(t);
+			}
+		}
 
-        // Print exceptions
-        {
-            Iterator exceptionIt = this.getExceptions().iterator();
+	    buffer.append(")");
 
-            if(exceptionIt.hasNext())
-            {
-                buffer.append(" throws ");
-                buffer.append("" + ((SootClass) exceptionIt.next()).getName() + "");
+	    // Print exceptions
+	    {
+		Iterator exceptionIt = this.getExceptions().iterator();
 
-                while(exceptionIt.hasNext())
-                {
-                    buffer.append(", ");
-                    buffer.append("" + ((SootClass) exceptionIt.next()).getName() + "");
-                }
-            }
+		if(exceptionIt.hasNext())
+		    {
+			buffer.append(" .throws ");
+			buffer.append("" + ((SootClass) exceptionIt.next()).getName() + " ");
 
-        }
+			while(exceptionIt.hasNext())
+			    {
+				buffer.append(", ");
+				buffer.append("" + ((SootClass) exceptionIt.next()).getName()
+					      + "");
+			    }
+		    }
 
-        return buffer.toString();
+	    }
+
+	    return buffer.toString();
     }
-    
-    
+
+        
     public String getXML() 
     {
 	return XMLManager.getXML(this);
     }
 
+
 }
+
+
+
+
+
+
+
 
 

@@ -29,6 +29,9 @@
 
 package soot;
 
+import soot.jimple.*;
+import java.util.*;
+
 public class SootField extends AbstractHost implements ClassMember
 {
     String name;
@@ -64,6 +67,22 @@ public class SootField extends AbstractHost implements ClassMember
 
         buffer.append("<" + getDeclaringClass().getName() + ": ");
         buffer.append(getType() + " " + getName() + ">");
+
+        return buffer.toString();
+
+    }
+  
+    public String getJimpleStyleSignature()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("<" + getDeclaringClass().getName() + ": ");
+	Type t = getType();
+
+	if(Jimple.isJavaKeywordType(t))
+	  buffer.append("." + t  + " " + getName() + ">");
+	else
+	  buffer.append(getType() + " " + getName() + ">");
 
         return buffer.toString();
 
@@ -147,15 +166,45 @@ public class SootField extends AbstractHost implements ClassMember
         return getSignature();
     }
 
-    public String getDeclaration()
-    {
-        String qualifiers = Modifier.toString(modifiers) + " " + type.toString();
+
+  private String getJimpleStyleDeclaration()
+  {
+    StringBuffer buf = new StringBuffer();
+    StringTokenizer st = new StringTokenizer(Modifier.toString(modifiers));
+    while(st.hasMoreTokens()){
+      buf.append("." + st.nextToken()+ " ");      
+    }
+    if(Jimple.isJavaKeywordType(type))
+      buf.append(".");
+
+    buf.append(type);
+
+    buf.append(" " + name);
+    return buf.toString();
+  }
+
+
+
+  private String getOriginalStyleDeclaration()
+  {
+         String qualifiers = Modifier.toString(modifiers) + " " + type.toString();
         qualifiers = qualifiers.trim();
 
         if(qualifiers.equals(""))
             return name;
         else
             return qualifiers + " " + name + "";
+
+  }
+
+
+  public String getDeclaration()
+    {
+      int outputMode = Scene.v().getOutputMode();
+      if(outputMode == Scene.v().OUTPUT_JIMPLE)
+	return getJimpleStyleDeclaration();
+      else
+	return getOriginalStyleDeclaration();
     }
 
 

@@ -8,12 +8,12 @@ public final class TPrivate extends Token
 {
     public TPrivate()
     {
-        super.setText("private");
+        super.setText(".private");
     }
 
     public TPrivate(int line, int pos)
     {
-        super.setText("private");
+        super.setText(".private");
         setLine(line);
         setPos(pos);
     }

@@ -23,6 +23,7 @@ Helpers
   not_cr_lf = [all - [10 + 13]];
   not_star = [all - '*'];
   not_star_slash = [not_star - '/'];
+  
 
   alpha_char = ['a' .. 'z'] | ['A' .. 'Z']; 
   
@@ -34,42 +35,79 @@ Helpers
   quotable_char = [not_cr_lf - '''];
 
   // string_char = [not_cr_lf - '"'];
+<<<<<<< 1.beta.5.dev.63(w)/src/jimple.scc Mon, 24 Jan 2000 17:41:46 -0500 plam (soot/v/b/46_jimple.scc 1.1 644)
+  // FIX THIS -- all unicode chars can be in strings!
+
+  string_char = escape_char |  [0 .. 33] | [35 .. 91] | [93 ..127] ;  // escapes and any char except '\' (92) or '"' (34). 
+=======
   // FIX THIS -- all unicode chars can be in strings!
   string_char = escape_char | 9 | [35 .. 91] | [93 ..126] | [32 + 33] | [10 + 13] ;
+>>>>>>> 1.beta.5.dev.65/src/jimple.scc Thu, 13 Jan 2000 15:13:21 -0500 plam (soot/v/b/46_jimple.scc 1.2 644)
 
   line_comment = '//' not_cr_lf*;
   long_comment = '/*' not_star* '*'+ (not_star_slash not_star* '*'+)* '/';
  
 Tokens
-  abstract = 'abstract';
-  final = 'final';
-  native = 'native';
-  public = 'public';
-  protected = 'protected';
-  private = 'private';
-  static = 'static';
-  synchronized = 'synchronized';
-  transient = 'transient';
-  volatile = 'volatile';
+  abstract = '.abstract';
+  final = '.final';
+  native = '.native';
+  public = '.public';
+  protected = '.protected';
+  private = '.private';
+  static = '.static';
+  synchronized = '.synchronized';
+  transient = '.transient';
+  volatile = '.volatile';
   
-  class = 'class';
-  interface = 'interface';
+  class = '.class';
+  interface = '.interface';
 
-  void = 'void';
-  boolean = 'boolean';
-  byte = 'byte';
-  short = 'short';
-  char = 'char';
-  int = 'int';
-  long = 'long';
-  float = 'float';
-  double = 'double';
-  null_type = 'null_type';
-  unknown = 'unknown';
+  void = '.void';
+  boolean = '.boolean';
+  byte = '.byte';
+  short = '.short';
+  char = '.char';
+  int = '.int';
+  long = '.long';
+  float = '.float';
+  double = '.double';
+  null_type = '.null_type';
+  unknown = '.unknown';
 
-  extends = 'extends';
-  implements = 'implements';
+  extends = '.extends';
+  implements = '.implements';
  
+<<<<<<< 1.beta.5.dev.63(w)/src/jimple.scc Mon, 24 Jan 2000 17:41:46 -0500 plam (soot/v/b/46_jimple.scc 1.1 644)
+  breakpoint = '.breakpoint';
+  case = '.case';
+  catch = '.catch';
+  cmp = '.cmp';
+  cmpg = '.cmpg';
+  cmpl = '.cmpl';
+  default = '.default';
+  entermonitor = '.entermonitor';
+  exitmonitor = '.exitmonitor';
+  goto = '.goto';
+  if = '.if';
+  instanceof = '.instanceof';
+  interfaceinvoke = '.interfaceinvoke';
+  lengthof = '.lengthof';
+  lookupswitch = '.lookupswitch';
+  neg = '.neg';
+  new = '.new';
+  newarray = '.newarray';
+  newmultiarray = '.newmultiarray';
+  nop = '.nop';
+  ret = '.ret';
+  return = '.return';
+  specialinvoke = '.specialinvoke';
+  staticinvoke = '.staticinvoke';
+  tableswitch = '.tableswitch';
+  throw = '.throw';
+  throws = '.throws';
+  virtualinvoke = '.virtualinvoke';
+  null = '.null';
+=======
   breakpoint = 'breakpoint';
   case = 'case';
   catch = 'catch';
@@ -99,6 +137,7 @@ Tokens
   throws = 'throws';
   virtualinvoke = 'virtualinvoke';
   null = 'null';
+>>>>>>> 1.beta.5.dev.65/src/jimple.scc Thu, 13 Jan 2000 15:13:21 -0500 plam (soot/v/b/46_jimple.scc 1.2 644)
 
   comma = ',';
   l_brace = '{';
@@ -131,9 +170,12 @@ Tokens
   mult = '*';
   div = '/';
 
-full_identifier = (first_id_char simple_id_char+ '.')+  first_id_char simple_id_char+;
-quoted_name = quote quotable_char+ quote;  
-identifier = first_id_char simple_id_char* | '<clinit>' | '<init>';
+
+full_identifier = ((first_id_char | escape_char) (simple_id_char | escape_char)* '.')+  (first_id_char | escape_char) (simple_id_char | escape_char)*; 
+quoted_name = quote quotable_char+ quote;
+identifier = (first_id_char | escape_char) (simple_id_char | escape_char)* | '<clinit>' | '<init>';
+
+
 
  
   at_identifier = '@' (('parameter' dec_digit+ ':') | 'this' ':' | 'caughtexception');
@@ -233,7 +275,6 @@ class_name_list =
     {double}  double |
     {null}    null_type | 
     {class_name}    class_name;
-  
   nonvoid_type =
     {base}   base_type_no_name array_brackets* |
     {quoted} quoted_name array_brackets* |

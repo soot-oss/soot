@@ -8,12 +8,12 @@ public final class TStaticinvoke extends Token
 {
     public TStaticinvoke()
     {
-        super.setText("staticinvoke");
+        super.setText(".staticinvoke");
     }
 
     public TStaticinvoke(int line, int pos)
     {
-        super.setText("staticinvoke");
+        super.setText(".staticinvoke");
         setLine(line);
         setPos(pos);
     }

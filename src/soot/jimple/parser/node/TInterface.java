@@ -8,12 +8,12 @@ public final class TInterface extends Token
 {
     public TInterface()
     {
-        super.setText("interface");
+        super.setText(".interface");
     }
 
     public TInterface(int line, int pos)
     {
-        super.setText("interface");
+        super.setText(".interface");
         setLine(line);
         setPos(pos);
     }

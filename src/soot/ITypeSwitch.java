@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 1997-1999 Raja Vallee-Rai
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -25,48 +25,24 @@
 
 
 
+package soot;
 
-
-
-package soot.jimple.internal;
-
-import soot.baf.*;
-import soot.jimple.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
-
-public class JNopStmt extends AbstractStmt implements NopStmt
+interface ITypeSwitch extends soot.util.Switch
 {
-    public JNopStmt()
-    {
-    }
-    
-
-    public Object clone() 
-    {
-        return new JNopStmt();
-    }
-
-
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
-    {
-        return indentation +  Jimple.v().NOP;
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseNopStmt(this);
-    }    
-    
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-        out.add(Baf.v().newNopInst());
-    }
-
-
-    public boolean fallsThrough(){return true;}        
-    public boolean branches(){return false;}
-
+    void caseArrayType(ArrayType t);
+    void caseBooleanType(BooleanType t);
+    void caseByteType(ByteType t);
+    void caseCharType(CharType t);
+    void caseDoubleType(DoubleType t);
+    void caseFloatType(FloatType t);
+    void caseIntType(IntType t);
+    void caseLongType(LongType t);
+    void caseRefType(RefType t);
+    void caseShortType(ShortType t);
+    void caseStmtAddressType(StmtAddressType t);
+    void caseUnknownType(UnknownType t);
+    void caseVoidType(VoidType t);
+    void caseNullType(NullType t);
+    void caseErroneousType(ErroneousType t);
+    void caseDefault(Type t);
 }

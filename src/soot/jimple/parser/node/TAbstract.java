@@ -8,12 +8,12 @@ public final class TAbstract extends Token
 {
     public TAbstract()
     {
-        super.setText("abstract");
+        super.setText(".abstract");
     }
 
     public TAbstract(int line, int pos)
     {
-        super.setText("abstract");
+        super.setText(".abstract");
         setLine(line);
         setPos(pos);
     }

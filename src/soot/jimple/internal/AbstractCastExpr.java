@@ -57,13 +57,20 @@ abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
 
     public String toString()
     {
-        return "(" + type.toString() + ") " + opBox.getValue().toString();
+      if(Jimple.isJavaKeywordType(type))
+        return "(" + "." + type.toString() + ") " + opBox.getValue().toString();
+      else
+	return "("  + type.toString() + ") " + opBox.getValue().toString();
     }
 
     public String toBriefString()
     {
-        return "(" + type.toString() + ") " + 
+      if(Jimple.isJavaKeywordType(type))
+        return "(" + "." +type.toString() + ") " + 
             ((ToBriefString) opBox.getValue()).toBriefString();
+      else
+	return "(" + type.toString() + ") " + 
+		  ((ToBriefString) opBox.getValue()).toBriefString();
     }
     
     public Value getOp()

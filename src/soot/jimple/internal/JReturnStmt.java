@@ -59,9 +59,9 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
-            return indentation + "return " + ((ToBriefString) returnValueBox.getValue()).toBriefString();
+            return indentation + Jimple.v().RETURN + " "  + ((ToBriefString) returnValueBox.getValue()).toBriefString();
         else
-            return indentation + "return " + returnValueBox.getValue().toString();
+            return indentation + Jimple.v().RETURN + " "  + returnValueBox.getValue().toString();
     }
     
     public ValueBox getOpBox()

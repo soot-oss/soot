@@ -8,12 +8,12 @@ public final class TTransient extends Token
 {
     public TTransient()
     {
-        super.setText("transient");
+        super.setText(".transient");
     }
 
     public TTransient(int line, int pos)
     {
-        super.setText("transient");
+        super.setText(".transient");
         setLine(line);
         setPos(pos);
     }

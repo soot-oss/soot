@@ -8,12 +8,12 @@ public final class TRet extends Token
 {
     public TRet()
     {
-        super.setText("ret");
+        super.setText(".ret");
     }
 
     public TRet(int line, int pos)
     {
-        super.setText("ret");
+        super.setText(".ret");
         setLine(line);
         setPos(pos);
     }

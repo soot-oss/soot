@@ -47,18 +47,20 @@ public class StringTools
         for (int i = 0; i < fromStringArray.length; i++)
         {
             char ch = fromStringArray[i];
-            if (ch == '\\')
+	    {
+	      if (ch == '\\')
                 { toStringBuffer.append("\\\\"); continue;}
-	    if (ch == '\'')
+	      if (ch == '\'')
 		{ toStringBuffer.append("\\\'"); continue; }
-
-            if (ch == '\"')
+	      if (ch == '\"')
                 { toStringBuffer.append("\\\""); continue; }
-
-            if (ch == '\n')
+	      if (ch == '\n')
                 { toStringBuffer.append("\\n"); continue; }
-
-            toStringBuffer.append(ch);
+	      else if((int) ch >= 33 && (int) ch <= 126)
+		{toStringBuffer.append(ch); continue;}
+	    }
+	    
+	    toStringBuffer.append(getUnicodeStringFromChar(ch));
         }
 
         toStringBuffer.append("\"");
@@ -66,6 +68,28 @@ public class StringTools
     }
 
 
+  public static String  getUnicodeStringFromChar(char ch)
+  {
+    String s = Integer.toHexString( (int) ch);
+    String padding = null;
+
+    switch(s.length()) {
+    case 1:
+      padding = "000";
+      break;
+    case 2:
+      padding = "00";
+      break;
+    case 3:
+      padding = "0";
+      break;
+    case 4:
+      padding = "";
+      break;
+    }   
+    
+    return "\\u" + padding + s;
+  }
   
   public static String getUnEscapedStringOf(String str) 
   {
@@ -137,8 +161,6 @@ public class StringTools
     } 
     return res;
   }
-
-
 }
 
 

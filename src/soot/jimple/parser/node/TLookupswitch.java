@@ -8,12 +8,12 @@ public final class TLookupswitch extends Token
 {
     public TLookupswitch()
     {
-        super.setText("lookupswitch");
+        super.setText(".lookupswitch");
     }
 
     public TLookupswitch(int line, int pos)
     {
-        super.setText("lookupswitch");
+        super.setText(".lookupswitch");
         setLine(line);
         setPos(pos);
     }

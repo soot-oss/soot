@@ -43,12 +43,12 @@ public abstract class AbstractNewExpr implements NewExpr
 
     public String toString()
     {
-        return "new " + type.toString();
+        return Jimple.v().NEW + " " + type.toString();
     }
 
     public String toBriefString()
     {
-        return "new " + type.toBriefString();
+        return Jimple.v().NEW + " " + type.toBriefString();
     }
     
     public RefType getBaseType()

@@ -43,13 +43,13 @@ public abstract class AbstractLengthExpr extends AbstractUnopExpr implements Len
 
     public String toString()
     {
-        return "lengthof " + opBox.getValue().toString();
+        return Jimple.v().LENGTHOF + " " + opBox.getValue().toString();
     }
 
     public String toBriefString()
     {
         return ((ToBriefString) opBox.getValue()).toBriefString() + 
-            ".length";
+            "length";
     }
 
     public Type getType()

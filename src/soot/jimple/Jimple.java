@@ -49,6 +49,100 @@ public class Jimple
 {
     private static Jimple jimpleRepresentation = new Jimple();
 
+
+
+    public static String NEWARRAY = ".newarray";
+    public static String NEWMULTIARRAY = ".newmultiarray";
+    public static String NOP = ".nop";
+    public static String RET = ".ret";
+    public static String SPECIALINVOKE = ".specialinvoke";
+    public static String STATICINVOKE = ".staticinvoke";
+    public static String TABLESWITCH = ".tableswitch";
+    public static String VIRTUALINVOKE = ".virtualinvoke";
+    public static String NULL_TYPE = ".null_type";
+    public static String UNKNOWN = ".unknown";
+    public static String CMP = ".cmp";
+    public static String CMPG = ".cmpg";
+    public static String CMPL = ".cmpl";
+    public static String ENTERMONITOR = ".entermonitor";
+    public static String EXITMONITOR = ".exitmonitor";
+    public static String INTERFACEINVOKE = ".interfaceinvoke";
+    public static String LENGTHOF = ".lengthof";
+    public static String LOOKUPSWITCH = ".lookupswitch";
+    public static String NEG = ".neg";    
+    public static String IF = ".if";
+
+
+    public static String ABSTRACT = ".abstract";
+    public static String BOOLEAN = ".boolean";
+    public static String BREAK = ".break";
+    public static String BYTE = ".byte";
+    public static String CASE = ".case";
+    public static String CATCH = ".catch";
+    public static String CHAR = ".char";
+    public static String CLASS = ".class";
+
+
+    public static String FINAL = ".final";
+    public static String NATIVE = ".native";
+    public static String PUBLIC = ".public";
+    public static String PROTECTED = ".protected";
+    public static String PRIVATE = ".private";
+    public static String STATIC = ".static";
+    public static String SYNCHRONIZED = ".synchronized";
+    public static String TRANSIENT = ".transient";
+    public static String VOLATILE = ".volatile";
+
+    public static String INTERFACE = ".interface";
+
+    public static String VOID = ".void";
+
+
+    public static String SHORT = ".short";
+
+    public static String INT = ".int";
+    public static String LONG = ".long";
+    public static String FLOAT = ".float";
+    public static String DOUBLE = ".double";
+
+
+    public static String EXTENDS = ".extends";
+    public static String IMPLEMENTS = ".implements";
+ 
+    public static String BREAKPOINT = ".breakpoint";
+
+
+    public static String DEFAULT = ".default";
+
+    public static String GOTO = ".goto";
+
+    public static String INSTANCEOF = ".instanceof";
+
+    public static String NEW = ".new";
+    
+    public static String RETURN = ".return";
+   
+   
+
+    public static String THROW = ".throw";
+    public static String THROWS = ".throws";
+
+    public static String NULL = ".null";
+
+
+  
+  
+  public static boolean isJavaKeywordType(Type t)
+  {
+    return !(t instanceof StmtAddressType ||
+	     t instanceof UnknownType ||
+		 t instanceof RefType ||
+		 (t instanceof ArrayType && (!isJavaKeywordType(((ArrayType)t).baseType))) ||
+		 t instanceof ErroneousType );
+  }
+
+
+
     public static Value cloneIfNecessary(Value val) 
     {
         if( val instanceof Local || val instanceof Constant )

@@ -8,12 +8,12 @@ public final class TNative extends Token
 {
     public TNative()
     {
-        super.setText("native");
+        super.setText(".native");
     }
 
     public TNative(int line, int pos)
     {
-        super.setText("native");
+        super.setText(".native");
         setLine(line);
         setPos(pos);
     }

@@ -8,12 +8,12 @@ public final class TChar extends Token
 {
     public TChar()
     {
-        super.setText("char");
+        super.setText(".char");
     }
 
     public TChar(int line, int pos)
     {
-        super.setText("char");
+        super.setText(".char");
         setLine(line);
         setPos(pos);
     }

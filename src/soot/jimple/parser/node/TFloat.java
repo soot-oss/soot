@@ -8,12 +8,12 @@ public final class TFloat extends Token
 {
     public TFloat()
     {
-        super.setText("float");
+        super.setText(".float");
     }
 
     public TFloat(int line, int pos)
     {
-        super.setText("float");
+        super.setText(".float");
         setLine(line);
         setPos(pos);
     }

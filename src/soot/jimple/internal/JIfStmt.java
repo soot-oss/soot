@@ -77,15 +77,15 @@ public class JIfStmt extends AbstractStmt implements IfStmt
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
-            return indentation + "if " + 
-                ((ToBriefString) getCondition()).toBriefString() + " goto " + (String) stmtToName.get(getTarget());
+            return indentation + Jimple.v().IF + " "  + 
+                ((ToBriefString) getCondition()).toBriefString() + " " + Jimple.v().GOTO + " "  + (String) stmtToName.get(getTarget());
         else
-            return indentation + "if " + getCondition().toString() + " goto " + (String) stmtToName.get(getTarget());
+            return indentation + Jimple.v().IF + " "  + getCondition().toString() + " " + Jimple.v().GOTO + " "  + (String) stmtToName.get(getTarget());
     }
     
     public String toString()
     {
-        return "if " + conditionBox.getValue().toString() + " goto ?";
+        return Jimple.v().IF + " "  + conditionBox.getValue().toString() + " " + Jimple.v().GOTO + " ?";
     }
 
     public Value getCondition()

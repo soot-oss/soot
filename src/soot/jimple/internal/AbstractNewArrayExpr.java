@@ -44,7 +44,7 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
 
     protected AbstractNewArrayExpr(Type type, ValueBox sizeBox)
     {
-        this.baseType = type; this.sizeBox = sizeBox;
+      this.baseType = type; this.sizeBox = sizeBox;
     }
 
     public abstract Object clone();
@@ -53,7 +53,7 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("newarray (" + baseType.toString() + ")");
+        buffer.append(Jimple.v().NEWARRAY + " (" + getBaseTypeString() + ")");
         buffer.append("[" + sizeBox.getValue().toString() + "]");
 
         return buffer.toString();
@@ -64,11 +64,20 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("newarray " + "(" + baseType.toBriefString() + ")");
+        buffer.append(Jimple.v().NEWARRAY + " (" + getBaseTypeString() + ")");
         buffer.append("[" + ((ToBriefString) sizeBox.getValue()).toBriefString() + "]");
 
         return buffer.toString();
     }
+
+  
+  private  String getBaseTypeString()
+  {
+    if(Jimple.isJavaKeywordType(baseType))
+      return "." + baseType;
+    else
+      return baseType.toString();
+  }
 
     public Type getBaseType()
     {

@@ -639,7 +639,7 @@ public class SootClass extends AbstractHost
         of the java.lang.Object class.
     */
 
-
+    
     public boolean hasSuperclass()
     {
         return superClass != null;
@@ -713,115 +713,234 @@ public class SootClass extends AbstractHost
         printTo(out, 0);
     }
 
-    public void printTo(PrintWriter out, int printBodyOptions)
+    
+
+  public void printJimpleStyleTo(PrintWriter out, int printBodyOptions)
+  {
+    // Print class name + modifiers
     {
-        // Print class name + modifiers
-        {
-            String classPrefix = "";
 
-            classPrefix = classPrefix + " " + Modifier.toString(this.getModifiers());
-            classPrefix = classPrefix.trim();
+      StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
+      while(st.hasMoreTokens())
+	out.print("." + st.nextToken() + " ");
+	  
+      String classPrefix = "";
 
-            if(!isInterface())
-            {
-                classPrefix = classPrefix + " class";
-                classPrefix = classPrefix.trim();
-            }
 
-            out.print(classPrefix + " " + this.getName() + "");
-        }
 
-        // Print extension
-        {
-            if(this.hasSuperclass())
-                out.print(" extends " + this.getSuperclass().getName() + "");
-        }
+      if(!isInterface())
+	{
+	  classPrefix = classPrefix + " .class";
+	  classPrefix = classPrefix.trim();
+	}
 
-        // Print interfaces
-        {
-            Iterator interfaceIt = this.getInterfaces().iterator();
+      out.print(classPrefix + " " + this.getName() + "");
+    }
 
-            if(interfaceIt.hasNext())
-            {
-                out.print(" implements ");
+    // Print extension
+    {
+      if(this.hasSuperclass())
+	out.print(" .extends " + this.getSuperclass().getName() + "");
+    }
 
-                out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
+    // Print interfaces
+    {
+      Iterator interfaceIt = this.getInterfaces().iterator();
 
-                while(interfaceIt.hasNext())
-                {
-                    out.print(",");
-                    out.print(" " + ((SootClass) interfaceIt.next()).getName() + "");
-                }
-            }
-        }
+      if(interfaceIt.hasNext())
+	{
+	  out.print(" .implements ");
 
-        out.println();
-        out.println("{");
+	  out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
 
-        // Print fields
-        {
-            Iterator fieldIt = this.getFields().iterator();
+	  while(interfaceIt.hasNext())
+	    {
+	      out.print(",");
+	      out.print(" " + ((SootClass) interfaceIt.next()).getName() + "");
+	    }
+	}
+    }
 
-            if(fieldIt.hasNext())
-            {
-                while(fieldIt.hasNext())
-                {
-                    SootField f = (SootField) fieldIt.next();
+    out.println();
+    out.println("{");
+
+    // Print fields
+    {
+      Iterator fieldIt = this.getFields().iterator();
+
+      if(fieldIt.hasNext())
+	{
+	  while(fieldIt.hasNext())
+	    {
+	      SootField f = (SootField) fieldIt.next();
                     
-                    if(f.isPhantom())
-                        continue;
+	      if(f.isPhantom())
+		continue;
                         
-                    out.println("    " + f.getDeclaration() + ";");
-                }
-            }
-        }
+	      out.println("    " + f.getDeclaration() + ";");
+	    }
+	}
+    }
 
-        // Print methods
-        {
-            Iterator methodIt = this.getMethods().iterator();
+    // Print methods
+    {
+      Iterator methodIt = this.getMethods().iterator();
 
-            if(methodIt.hasNext())
-            {
-                if(this.getMethods().size() != 0)
-                    out.println();
+      if(methodIt.hasNext())
+	{
+	  if(this.getMethods().size() != 0)
+	    out.println();
 
-                while(methodIt.hasNext())
-                {
-                    SootMethod method = (SootMethod) methodIt.next();
+	  while(methodIt.hasNext())
+	    {
+	      SootMethod method = (SootMethod) methodIt.next();
 
-                    if(method.isPhantom())
-                        continue;
+	      if(method.isPhantom())
+		continue;
 		    
-                    if(!Modifier.isAbstract(method.getModifiers()) &&
-		       !Modifier.isNative(method.getModifiers()))								       
-			{
+	      if(!Modifier.isAbstract(method.getModifiers()) &&
+		 !Modifier.isNative(method.getModifiers()))								       
+		{
 			    
-                        if(!method.hasActiveBody())
-                            throw new RuntimeException("method " + method.getName() + " has no active body!");
-                        else
-                            method.getActiveBody().printTo(out, printBodyOptions);
-                            // ((soot.jimple.GrimpBody) method.getActiveBody()).printDebugTo(out);
+		  if(!method.hasActiveBody())
+		    throw new RuntimeException("method " + method.getName() + " has no active body!");
+		  else
+		    method.getActiveBody().printTo(out, printBodyOptions);
+		  // ((soot.jimple.GrimpBody) method.getActiveBody()).printDebugTo(out);
 			    
                             
 
-                        if(methodIt.hasNext())
-                            out.println();
-                    }
-                    else {
-                        out.print("    ");
-                        out.print(method.getDeclaration());
-                        out.println(";");
+		  if(methodIt.hasNext())
+		    out.println();
+		}
+	      else {
+		out.print("    ");
+		out.print(method.getDeclaration());
+		out.println(";");
 
-                        if(methodIt.hasNext())
-                            out.println();
-		    }
-                }
-            }
-        }
-        out.println("}");
+		if(methodIt.hasNext())
+		  out.println();
+	      }
+	    }
+	}
+    }
+    out.println("}");
 
+  }
+
+
+
+  public void printTo(PrintWriter out, int printBodyOptions)
+  {
+    // Print class name + modifiers
+    {
+      String classPrefix = "";
+
+      classPrefix = classPrefix + " " + Modifier.toString(this.getModifiers());
+      classPrefix = classPrefix.trim();
+
+      if(!isInterface())
+	{
+	  classPrefix = classPrefix + " class";
+	  classPrefix = classPrefix.trim();
+	}
+
+      out.print(classPrefix + " " + this.getName() + "");
     }
 
+    // Print extension
+    {
+      if(this.hasSuperclass())
+	out.print(" extends " + this.getSuperclass().getName() + "");
+    }
+
+    // Print interfaces
+    {
+      Iterator interfaceIt = this.getInterfaces().iterator();
+
+      if(interfaceIt.hasNext())
+	{
+	  out.print(" implements ");
+
+	  out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
+
+	  while(interfaceIt.hasNext())
+	    {
+	      out.print(",");
+	      out.print(" " + ((SootClass) interfaceIt.next()).getName() + "");
+	    }
+	}
+    }
+
+    out.println();
+    out.println("{");
+
+    // Print fields
+    {
+      Iterator fieldIt = this.getFields().iterator();
+
+      if(fieldIt.hasNext())
+	{
+	  while(fieldIt.hasNext())
+	    {
+	      SootField f = (SootField) fieldIt.next();
+                    
+	      if(f.isPhantom())
+		continue;
+                        
+	      out.println("    " + f.getDeclaration() + ";");
+	    }
+	}
+    }
+
+    // Print methods
+    {
+      Iterator methodIt = this.getMethods().iterator();
+
+      if(methodIt.hasNext())
+	{
+	  if(this.getMethods().size() != 0)
+	    out.println();
+
+	  while(methodIt.hasNext())
+	    {
+	      SootMethod method = (SootMethod) methodIt.next();
+
+	      if(method.isPhantom())
+		continue;
+		    
+	      if(!Modifier.isAbstract(method.getModifiers()) &&
+		 !Modifier.isNative(method.getModifiers()))								       
+		{
+			    
+		  if(!method.hasActiveBody())
+		    throw new RuntimeException("method " + method.getName() + " has no active body!");
+		  else
+		    method.getActiveBody().printTo(out, printBodyOptions);
+		  // ((soot.jimple.GrimpBody) method.getActiveBody()).printDebugTo(out);
+			    
+                            
+
+		  if(methodIt.hasNext())
+		    out.println();
+		}
+	      else {
+		out.print("    ");
+		out.print(method.getDeclaration());
+		out.println(";");
+
+		if(methodIt.hasNext())
+		  out.println();
+	      }
+	    }
+	}
+    }
+    out.println("}");
+
+  }
+
+
+   
     /**
         Writes the class out to a file.
      */

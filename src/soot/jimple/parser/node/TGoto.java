@@ -8,12 +8,12 @@ public final class TGoto extends Token
 {
     public TGoto()
     {
-        super.setText("goto");
+        super.setText(".goto");
     }
 
     public TGoto(int line, int pos)
     {
-        super.setText("goto");
+        super.setText(".goto");
         setLine(line);
         setPos(pos);
     }

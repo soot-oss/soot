@@ -8,12 +8,12 @@ public final class TByte extends Token
 {
     public TByte()
     {
-        super.setText("byte");
+        super.setText(".byte");
     }
 
     public TByte(int line, int pos)
     {
-        super.setText("byte");
+        super.setText(".byte");
         setLine(line);
         setPos(pos);
     }

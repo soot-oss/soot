@@ -8,12 +8,12 @@ public final class TSpecialinvoke extends Token
 {
     public TSpecialinvoke()
     {
-        super.setText("specialinvoke");
+        super.setText(".specialinvoke");
     }
 
     public TSpecialinvoke(int line, int pos)
     {
-        super.setText("specialinvoke");
+        super.setText(".specialinvoke");
         setLine(line);
         setPos(pos);
     }

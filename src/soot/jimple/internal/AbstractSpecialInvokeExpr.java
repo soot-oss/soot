@@ -54,8 +54,8 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("specialinvoke " + baseBox.getValue().toString() +
-            "." + method.getSignature() + "(");
+        buffer.append(Jimple.v().SPECIALINVOKE + " " + baseBox.getValue().toString() +
+            "." + method.getJimpleStyleSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
@@ -77,7 +77,7 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("specialinvoke " + ((ToBriefString) baseBox.getValue()).toBriefString() +
+        buffer.append(Jimple.v().SPECIALINVOKE + " " + ((ToBriefString) baseBox.getValue()).toBriefString() +
             "." + method.getName() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)

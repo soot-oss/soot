@@ -5,6 +5,8 @@ import java.util.*;
 import soot.grimp.*;
 import soot.dava.internal.*;
 import soot.dava.toolkits.base.*;
+import soot.jimple.*;
+import soot.jimple.internal.*;
 
 public class DavaBody extends Body
 {
@@ -37,20 +39,7 @@ public class DavaBody extends Body
         
         GrimpBody grimpBody = (GrimpBody) body;
             
-        // Convert all locals
-        {
-            Iterator localIt = grimpBody.getLocals().iterator();
-            
-            while(localIt.hasNext())
-            {
-                Local l = (Local) localIt.next();
-                Local newLocal;
-                
-                newLocal = Grimp.v().newLocal(l.getName(), l.getType());
-                getLocals().add(newLocal);
-            }
-        }
-
+    
         // Import body contents from Grimp.
         {        
             HashMap bindings = new HashMap();
@@ -60,7 +49,16 @@ public class DavaBody extends Body
             // Clone units in body's statement list 
             while(it.hasNext()) {
                 Unit original = (Unit) it.next();
-                                
+                
+
+		if(original instanceof IdentityStmt)
+		    System.out.println("found identity stmt: " + original);
+		else
+		    System.out.println("not found identity stmt: " + original);
+		
+
+
+                
                 Unit copy = (Unit) original.clone();
                 
                 // Add cloned unit to our unitChain.
@@ -86,11 +84,15 @@ public class DavaBody extends Body
             
     
             // Patch up references within units using our (old <-> new) map.
+	    
             it = getUnitBoxes().iterator();
             while(it.hasNext()) {
                 UnitBox box = (UnitBox) it.next();
                 Unit newObject, oldObject = box.getUnit();
                 
+		
+
+		
                 // if we have a reference to an old object, replace it 
                 // it's clone.
                 if( (newObject = (Unit)  bindings.get(oldObject)) != null )
@@ -109,8 +111,8 @@ public class DavaBody extends Body
     
         // Call transformers to recover structure
         {
-            BlockStructurer.v().transform(this, "db.bs");
-            IfThenElseMatcher.v().transform(this, "db.item");
+            //BlockStructurer.v().transform(this, "db.bs");
+            //IfThenElseMatcher.v().transform(this, "db.item");
         }
     }
 }

@@ -8,12 +8,12 @@ public final class TReturn extends Token
 {
     public TReturn()
     {
-        super.setText("return");
+        super.setText(".return");
     }
 
     public TReturn(int line, int pos)
     {
-        super.setText("return");
+        super.setText(".return");
         setLine(line);
         setPos(pos);
     }

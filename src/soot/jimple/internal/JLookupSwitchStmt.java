@@ -125,18 +125,19 @@ public class JLookupSwitchStmt extends AbstractStmt
         StringBuffer buffer = new StringBuffer();
         String endOfLine = (indentation.equals("")) ? " " : StringTools.lineSeparator;
         
-        buffer.append(indentation + "lookupswitch(" + ((isBrief) ? ((ToBriefString) keyBox.getValue()).toBriefString() :
+        buffer.append(indentation + Jimple.v().LOOKUPSWITCH + "(" + ((isBrief) ? ((ToBriefString) keyBox.getValue()).toBriefString() :
             keyBox.getValue().toString()) + ")" + endOfLine);
             
         buffer.append(indentation + "{" + endOfLine);
         
         for(int i = 0; i < lookupValues.size(); i++)
         {
-            buffer.append(indentation + "    case " + lookupValues.get(i) + ": goto " + 
+            buffer.append(indentation + "    " +  Jimple.v().CASE + " " + lookupValues.get(i) + ": " +  Jimple.v().GOTO + " " + 
                 (String) stmtToName.get(getTarget(i)) + ";" + endOfLine);
         }
 
-        buffer.append(indentation + "    default: goto " + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
+        buffer.append(indentation + "    " +  Jimple.v().DEFAULT + ": " +  Jimple.v().GOTO +
+		      " " + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
         buffer.append(indentation + "}");
 
         return buffer.toString();

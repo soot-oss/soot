@@ -43,7 +43,7 @@ public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return indentation + "breakpoint";
+        return indentation + Jimple.v().BREAKPOINT;
     }
     
     public void apply(Switch sw)

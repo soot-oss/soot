@@ -51,7 +51,11 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
     
     public String toString()
     {
-        return "@parameter" + n + ": " + paramType;
+      if(Jimple.isJavaKeywordType(paramType))
+        return "@parameter" + n + ": " + "." + paramType;
+      else
+	return "@parameter" + n + ": " + paramType;
+							   
     }
 
     public String toBriefString()

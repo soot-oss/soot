@@ -8,12 +8,12 @@ public final class TBreakpoint extends Token
 {
     public TBreakpoint()
     {
-        super.setText("breakpoint");
+        super.setText(".breakpoint");
     }
 
     public TBreakpoint(int line, int pos)
     {
-        super.setText("breakpoint");
+        super.setText(".breakpoint");
         setLine(line);
         setPos(pos);
     }

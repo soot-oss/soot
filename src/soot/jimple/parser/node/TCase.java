@@ -8,12 +8,12 @@ public final class TCase extends Token
 {
     public TCase()
     {
-        super.setText("case");
+        super.setText(".case");
     }
 
     public TCase(int line, int pos)
     {
-        super.setText("case");
+        super.setText(".case");
         setLine(line);
         setPos(pos);
     }

@@ -42,6 +42,8 @@ public class EscapedReader extends FilterReader
 
     public int read() throws IOException
     {
+
+      /* if you already read the char , just return it */
         if (nextF)
         {
             nextF = false;
@@ -50,25 +52,31 @@ public class EscapedReader extends FilterReader
 
         int ch = super.read();
 
+
+	
         if (ch != '\\')
             return ch;
 
-        mini.setLength(0);
+
+	/* we may have an escape sequence here ..*/
+        mini = new StringBuffer();
 
         ch = super.read();
         if (ch != 'u')
-            {
-                nextF = true; nextch = ch;
-                return '\\';
-            }
-
-        while (mini.length() < 4)
+	  {
+	    nextF = true; nextch = ch;
+	    return '\\';
+	  }
+	
+	mini.append("\\u");
+        while (mini.length() < 6)
         {
             ch = super.read();
             mini.append((char)ch);
         }
 
-        ch = Integer.parseInt(mini.toString(), 16);
+	//	System.out.println(mini.toString());
+        ch = Integer.parseInt(mini.substring(2).toString(), 16);
 
         return ch;
     }

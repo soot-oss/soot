@@ -54,7 +54,7 @@ public class StringConstant extends Constant implements Switchable, ToBriefStrin
 
     public String toString()
     {
-        return StringTools.getQuotedStringOf(value);
+      return StringTools.getQuotedStringOf(value);
     }
 
     public String toBriefString()

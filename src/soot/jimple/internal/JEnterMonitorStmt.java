@@ -60,9 +60,9 @@ public class JEnterMonitorStmt extends AbstractStmt
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
-            return indentation + "entermonitor " + ((ToBriefString) opBox.getValue()).toBriefString();
+            return indentation + Jimple.v().ENTERMONITOR + " "  + ((ToBriefString) opBox.getValue()).toBriefString();
         else
-            return indentation + "entermonitor " + opBox.getValue().toString();
+            return indentation + Jimple.v().ENTERMONITOR + " "  + opBox.getValue().toString();
     }
     
     public Value getOp()

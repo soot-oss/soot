@@ -152,9 +152,6 @@ public class BlockGraph implements DirectedGraph
                     } 
                 }
                 
-
-                
-
                
                 if(currentUnit.branches()) {
 

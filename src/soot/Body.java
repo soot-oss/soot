@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+
+
 /*
  * Modified by the Sable Research Group and others 1997-1999.  
  * See the 'credits' file distributed with Soot for the complete list of
@@ -36,11 +38,11 @@ import soot.toolkits.scalar.*;
 
 public abstract class Body
 {
-    SootMethod method = null;
+    protected SootMethod method = null;
 
-    Chain localChain =  new HashChain();
-    Chain  trapChain = new HashChain();
-    PatchingChain unitChain = new PatchingChain(new HashChain());
+    protected Chain localChain =  new HashChain();
+    protected Chain  trapChain = new HashChain();
+    protected PatchingChain unitChain = new PatchingChain(new HashChain());
 
     abstract public Object clone();
 
@@ -262,14 +264,22 @@ public abstract class Body
         printTo(out, 0);
     }
 
+
     public void printTo(PrintWriter out, int printBodyOptions)
     {
+      	
         boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
         boolean isNumbered = PrintJimpleBodyOption.numbered(printBodyOptions);
         
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
 
-        out.println("    " + getMethod().getDeclaration());        
+
+	String decl = getMethod().getDeclaration();
+
+
+        out.println("    " + decl);        
+	
+	
         out.println("    {");
 
 
@@ -311,9 +321,9 @@ public abstract class Body
 
                     List localList = (List) typeToLocals.get(type);
                     Object[] locals = localList.toArray();
-
-                    out.print("        " + type + " ");
-
+		    System.out.println("type: " + type);
+                    out.print("        "  + type + " ");
+		    
                     for(int k = 0; k < locals.length; k++)
                     {
                         if(k != 0)
@@ -330,18 +340,20 @@ public abstract class Body
             if(!typeToLocals.isEmpty())
                 out.println();
         }
+
         // Print out statements
 	printStatementsInBody(out, isPrecise, isNumbered);
 
 	
         out.println("    }");
     }
+    
 
     void printStatementsInBody(java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
     {
-        
+
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
-        UnitGraph unitGraph = new BriefUnitGraph(this);
+        soot.toolkits.graph.UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph(this);
 
 
         // Create statement name table
@@ -450,7 +462,7 @@ public abstract class Body
             {
                 Trap trap = (Trap) trapIt.next();
 
-                out.println("        catch " + trap.getException().getName() + " from " +
+                out.println("        .catch " + trap.getException().getName() + " from " +
                     stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
                     " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
             }

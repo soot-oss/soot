@@ -8,12 +8,12 @@ public final class TIf extends Token
 {
     public TIf()
     {
-        super.setText("if");
+        super.setText(".if");
     }
 
     public TIf(int line, int pos)
     {
-        super.setText("if");
+        super.setText(".if");
         setLine(line);
         setPos(pos);
     }

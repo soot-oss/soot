@@ -68,7 +68,7 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return indentation + "goto " + (String) stmtToName.get(getTarget());
+        return indentation + Jimple.v().GOTO + " " + (String) stmtToName.get(getTarget());
     }
     
     public Unit getTarget()
