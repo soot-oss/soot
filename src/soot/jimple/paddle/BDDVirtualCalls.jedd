@@ -30,7 +30,7 @@ import java.util.*;
 public class BDDVirtualCalls extends AbsVirtualCalls
 { 
     BDDVirtualCalls( Rvarc_var_objc_obj pt,
-            Rvar_srcm_stmt_signature_kind receivers,
+            Rvar_srcm_stmt_dtp_signature_kind receivers,
             Rvar_srcm_stmt_tgtm specials,
             Qctxt_var_obj_srcm_stmt_kind_tgtm out,
             Qsrcc_srcm_stmt_kind_tgtc_tgtm statics
@@ -112,8 +112,8 @@ public class BDDVirtualCalls extends AbsVirtualCalls
 
     private <ctxt, var, obj> newPt = 0B;
     private <ctxt, var, obj> allPt = 0B;
-    private <var, srcm, stmt, signature, kind> newRcv = 0B;
-    private <var, srcm, stmt, signature, kind> allRcv = 0B;
+    private <var, srcm, stmt, dtp, signature, kind> newRcv = 0B;
+    private <var, srcm, stmt, dtp, signature, kind> allRcv = 0B;
     private <var, srcm, stmt, tgtm> newSpc = 0B;
     private <var, srcm, stmt, tgtm> allSpc = 0B;
 
@@ -143,7 +143,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls
 
     private <var, srcm, stmt, kind> clinits;
     private void updateClinits() {
-        clinits |= (signature=>) newRcv{kind} >< new{Kind.CLINIT=>kind}{kind};
+        clinits |= (dtp=>, signature=>) newRcv{kind} >< new{Kind.CLINIT=>kind}{kind};
 
         <obj, tgtm> clinitTargets =
             stringConstants | (nonStringConstants{} >< dynamicClinits{});
@@ -170,22 +170,22 @@ public class BDDVirtualCalls extends AbsVirtualCalls
     }
 
     private <var, srcm, stmt, type, kind, tgtm> callSiteTargets = 0B;
-    private <var, signature> rcvSigs = 0B;
-    private <var, signature> threadRcvSigs = 0B;
-    private <var, srcm, stmt, signature, kind> rcv = 0B;
+    private <var, dtp, signature> rcvSigs = 0B;
+    private <var, dtp, signature> threadRcvSigs = 0B;
+    private <var, srcm, stmt, dtp, signature, kind> rcv = 0B;
     private void updateVirtuals() {
-        <var, srcm, stmt, signature, kind> newVirtRcv = 
+        <var, srcm, stmt, dtp, signature, kind> newVirtRcv = 
             newRcv{kind} >< (virtual|new{Kind.THREAD=>kind}){kind};
         rcv |= newVirtRcv;
 
-        <var, signature, kind> sigs = (srcm=>, stmt=>) newVirtRcv;
+        <var, dtp, signature, kind> sigs = (srcm=>, stmt=>) newVirtRcv;
         rcvSigs |= sigs{kind} <> virtual{kind};
         threadRcvSigs |= sigs{kind} <> new{Kind.THREAD=>kind}{kind};
 
         // resolve new points-to sets
         <var, type> ptTypes = allocNodes{obj} <> (ctxt=>) newPt{obj}; 
 
-        <type, signature> newTypes = ptTypes{var} <> rcvSigs{var};
+        <type, dtp, signature> newTypes = ptTypes{var} <> rcvSigs{var};
 
         newTypes |= (ptTypes{type} >< threads{type}){var} <> threadRcvSigs{var};
 
@@ -198,10 +198,9 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         newTypes = newTypes{type} >< hier.concrete(){type};
 
         // if we've resolved them already, don't resolve them again
-        newTypes -= (method=>) targets;
-
         // for each tuple [t, s], make it [t, s, t].
-        <subt, signature, supt> toResolve = (type=>subt, type=>supt) newTypes;
+        <subt, signature, supt> toResolve = (type=>subt, type=>supt) 
+            ( ((dtp=>)newTypes) - ((method=>)targets) );
 
         <type, signature, method> newTargets = 0B;
 
@@ -231,20 +230,27 @@ public class BDDVirtualCalls extends AbsVirtualCalls
 
         // Weed out types coming from AnySubType that are not compatible
         // with the declared type of the variable.
-        varCtxtPt =     varCtxtPt{type, dtp} 
+        varCtxtPt =         varCtxtPt{type, dtp} 
             >< hier.subtypeRelation(){subt, supt};
 
         // Weed out non-concrete actual types.
         varCtxtPt = varCtxtPt{type} >< hier.concrete(){type};
 
-        callSiteTargets |= 
-            newVirtRcv{signature} <> (method=>tgtm) targets{signature};
-        callSiteTargets |= rcv{signature} <> (method=>tgtm) newTargets{signature};
+        <var, srcm, stmt, dtp, type, kind, tgtm> newCallSiteTargets =
+            newVirtRcv{signature} <> (method=>tgtm) targets{signature}
+            | rcv{signature} <> (method=>tgtm) newTargets{signature};
+
+        callSiteTargets |= (dtp=>) (
+                           newCallSiteTargets{type, dtp}
+                    >< hier.subtypeRelation(){subt, supt});
+
+        // If the dtp is null, it means we don't know it, so allow anything
+        callSiteTargets |= newCallSiteTargets{dtp} <> new{null=>dtp}{dtp};
 
         <ctxt, var, obj, srcm, stmt, kind, tgtm> newVirtuals =
             (type=>) (
-                      (dtp=>) varCtxtPt{type, var}
-                    >< callSiteTargets {type, var} );
+                             (dtp=>) varCtxtPt{type, var}
+                            >< callSiteTargets{type, var} );
         out.add( newVirtuals );
         if( newVirtuals != 0B ) change = true;
     }

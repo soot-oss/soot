@@ -31,7 +31,7 @@ import java.util.*;
  */
 public class TradStaticCallBuilder extends AbsStaticCallBuilder
 { 
-    TradStaticCallBuilder( Rctxt_method in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out, Qvar_srcm_stmt_signature_kind receivers, Qvar_srcm_stmt_tgtm specials ) {
+    TradStaticCallBuilder( Rctxt_method in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out, Qvar_srcm_stmt_dtp_signature_kind receivers, Qvar_srcm_stmt_tgtm specials ) {
         super( in, out, receivers, specials );
     }
     private boolean change;
@@ -49,7 +49,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
     protected void processNativeMethod( SootMethod source ) {
         if( source.getSignature().equals( "<java.lang.ref.Finalizer: void invokeFinalizeMethod(java.lang.Object)>" )) {
             VarNode receiver = (VarNode) new MethodNodeFactory(source).caseParm(0);
-            receivers.add( receiver, source, null, sigFinalize, Kind.INVOKE_FINALIZE );
+            receivers.add( receiver, source, null, null, sigFinalize, Kind.INVOKE_FINALIZE );
         }
     }
     protected void processMethod( SootMethod source ) {
@@ -81,10 +81,10 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                         NumberedString subSig = 
                             iie.getMethodRef().getSubSignature();
 
-                        receivers.add( receiver, source, s, subSig, Edge.ieToKind(iie) );
+                        receivers.add( receiver, source, s, iie.getMethodRef().declaringClass().getType(), subSig, Edge.ieToKind(iie) );
                         change = true;
                         if( subSig == sigStart ) {
-                            receivers.add( receiver, source, s, sigRun, Kind.THREAD ); 
+                            receivers.add( receiver, source, s, iie.getMethodRef().declaringClass().getType(), sigRun, Kind.THREAD ); 
                             change = true;
                         }
                     }
@@ -94,12 +94,16 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                     SootMethod tgt = ((StaticInvokeExpr) ie).getMethod();
                     addEdge(source, s, tgt);
                     if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
-                    ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
-                    ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>" )
+                    ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>" ) ) {
+                        VarNode receiver = (VarNode) mnf.getNode(ie.getArg(0));
+                        receivers.add( receiver, source, s, RefType.v("java.security.PrivilegedAction"), sigObjRun, Kind.PRIVILEGED );
+                        change = true;
+                    }
+                    if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
                     ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>" ) ) {
 
                         VarNode receiver = (VarNode) mnf.getNode(ie.getArg(0));
-                        receivers.add( receiver, source, s, sigObjRun, Kind.PRIVILEGED );
+                        receivers.add( receiver, source, s, RefType.v("java.security.PrivilegedExceptionAction"), sigObjRun, Kind.PRIVILEGED );
                         change = true;
                     }
                 }
@@ -162,7 +166,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                                 addEdge( source, s, tgt, Kind.CLINIT );
                             }
                         } else {
-                            receivers.add( constant, source, s, null, Kind.CLINIT );
+                            receivers.add( constant, source, s, null, null, Kind.CLINIT );
                             change = true;
                         }
                     }

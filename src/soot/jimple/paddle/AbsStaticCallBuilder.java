@@ -32,10 +32,10 @@ public abstract class AbsStaticCallBuilder implements DepItem
 { 
     protected Rctxt_method in;
     protected Qsrcc_srcm_stmt_kind_tgtc_tgtm out;
-    protected Qvar_srcm_stmt_signature_kind receivers;
+    protected Qvar_srcm_stmt_dtp_signature_kind receivers;
     protected Qvar_srcm_stmt_tgtm specials;
     protected CGOptions options;
-    AbsStaticCallBuilder( Rctxt_method in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out, Qvar_srcm_stmt_signature_kind receivers, Qvar_srcm_stmt_tgtm specials ) {
+    AbsStaticCallBuilder( Rctxt_method in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out, Qvar_srcm_stmt_dtp_signature_kind receivers, Qvar_srcm_stmt_tgtm specials ) {
         this.in = in;
         this.out = out;
         this.receivers = receivers;

@@ -29,7 +29,7 @@ public class TestVirtualCalls extends AbsVirtualCalls
 { 
     TradVirtualCalls tradcalls;
     Qvarc_var_objc_obj tradpt = new Qvarc_var_objc_objTrad("tradpt");
-    Qvar_srcm_stmt_signature_kind tradrcv = new Qvar_srcm_stmt_signature_kindTrad("tradrcv");
+    Qvar_srcm_stmt_dtp_signature_kind tradrcv = new Qvar_srcm_stmt_dtp_signature_kindTrad("tradrcv");
     Qvar_srcm_stmt_tgtm tradspc = new Qvar_srcm_stmt_tgtmTrad("tradspc");
     Rctxt_var_obj_srcm_stmt_kind_tgtm tradoutrdr;
     Rsrcc_srcm_stmt_kind_tgtc_tgtm tradstatrdr;
@@ -37,7 +37,7 @@ public class TestVirtualCalls extends AbsVirtualCalls
 
     BDDVirtualCalls bddcalls;
     Qvarc_var_objc_obj bddpt = new Qvarc_var_objc_objTrad("bddpt");
-    Qvar_srcm_stmt_signature_kind bddrcv = new Qvar_srcm_stmt_signature_kindTrad("bddrcv");
+    Qvar_srcm_stmt_dtp_signature_kind bddrcv = new Qvar_srcm_stmt_dtp_signature_kindTrad("bddrcv");
     Qvar_srcm_stmt_tgtm bddspc = new Qvar_srcm_stmt_tgtmTrad("bddspc");
     Qctxt_var_obj_srcm_stmt_kind_tgtm bddout = new Qctxt_var_obj_srcm_stmt_kind_tgtmTrad("bddout");
     Qsrcc_srcm_stmt_kind_tgtc_tgtm bddstat = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("bddstat");
@@ -46,7 +46,7 @@ public class TestVirtualCalls extends AbsVirtualCalls
 
 
     TestVirtualCalls( Rvarc_var_objc_obj pt,
-            Rvar_srcm_stmt_signature_kind receivers,
+            Rvar_srcm_stmt_dtp_signature_kind receivers,
             Rvar_srcm_stmt_tgtm specials,
             Qctxt_var_obj_srcm_stmt_kind_tgtm out,
             Qsrcc_srcm_stmt_kind_tgtc_tgtm statics
@@ -65,9 +65,9 @@ public class TestVirtualCalls extends AbsVirtualCalls
     public boolean update() {
         boolean change = false;
         for( Iterator tupleIt = receivers.iterator(); tupleIt.hasNext(); ) {
-            final Rvar_srcm_stmt_signature_kind.Tuple tuple = (Rvar_srcm_stmt_signature_kind.Tuple) tupleIt.next();
-            tradrcv.add( tuple.var(), tuple.srcm(), tuple.stmt(), tuple.signature(), tuple.kind() );
-            bddrcv.add( tuple.var(), tuple.srcm(), tuple.stmt(), tuple.signature(), tuple.kind() );
+            final Rvar_srcm_stmt_dtp_signature_kind.Tuple tuple = (Rvar_srcm_stmt_dtp_signature_kind.Tuple) tupleIt.next();
+            tradrcv.add( tuple.var(), tuple.srcm(), tuple.stmt(), tuple.dtp(), tuple.signature(), tuple.kind() );
+            bddrcv.add( tuple.var(), tuple.srcm(), tuple.stmt(), tuple.dtp(), tuple.signature(), tuple.kind() );
         }
 
         for( Iterator tupleIt = specials.iterator(); tupleIt.hasNext(); ) {

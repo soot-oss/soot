@@ -80,8 +80,15 @@ public final class VirtualCalls
     private Map baseToSubTypes = new HashMap();
 
     public void resolve( Type t, Type declaredType, NumberedString subSig, SootMethod container, ChunkedQueue targets ) {
+        resolve(t, declaredType, null, subSig, container, targets);
+    }
+    public void resolve( Type t, Type declaredType, Type sigType, NumberedString subSig, SootMethod container, ChunkedQueue targets ) {
         if( declaredType != null && !Scene.v().getOrMakeFastHierarchy()
                 .canStoreType( t, declaredType ) ) {
+            return;
+        }
+        if( sigType != null && !Scene.v().getOrMakeFastHierarchy()
+                .canStoreType( t, sigType ) ) {
             return;
         }
         if( t instanceof ArrayType ) t = RefType.v( "java.lang.Object" );
@@ -95,7 +102,7 @@ public final class VirtualCalls
             if( subTypes != null ) {
                 for( Iterator stIt = subTypes.iterator(); stIt.hasNext(); ) {
                     final Type st = (Type) stIt.next();
-                    resolve( st, declaredType, subSig, container, targets );
+                    resolve( st, declaredType, sigType, subSig, container, targets );
                 }
                 return;
             }
@@ -119,7 +126,7 @@ public final class VirtualCalls
                     }
                 } else {
                     if( cl.isConcrete() ) {
-                        resolve( cl.getType(), declaredType, subSig, container, targets );
+                        resolve( cl.getType(), declaredType, sigType, subSig, container, targets );
                         subTypes.add(cl.getType());
                     }
                     for( Iterator cIt = fh.getSubclassesOf( cl ).iterator(); cIt.hasNext(); ) {

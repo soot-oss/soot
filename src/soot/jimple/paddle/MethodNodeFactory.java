@@ -125,7 +125,7 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
 	setResult( gnf.caseThrow() );
     }
     final public void caseInstanceFieldRef( InstanceFieldRef ifr ) {
-	if( PaddleScene.v().options().field_based() || PaddleScene.v().options().vta() ) {
+	if( PaddleScene.v().options().field_based() || PaddleScene.v().options().vta() || PaddleScene.v().options().rta() ) {
 	    setResult( nm.makeGlobalVarNode( 
 			ifr.getField(), 
 			ifr.getField().getType() ) );

@@ -66,7 +66,7 @@ public class PaddleScene
 
     public Qctxt_method rmout;
     public Qsrcc_srcm_stmt_kind_tgtc_tgtm scgbout;
-    public Qvar_srcm_stmt_signature_kind receivers;
+    public Qvar_srcm_stmt_dtp_signature_kind receivers;
     public Qvar_srcm_stmt_tgtm specials;
     public Qsrcc_srcm_stmt_kind_tgtc_tgtm cicgout;
     public Qsrcc_srcm_stmt_kind_tgtc_tgtm staticcalls;
@@ -356,7 +356,7 @@ public class PaddleScene
     private void buildQueuesSet() {
         rmout = new Qctxt_methodSet("rmout");
         scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("scgbout");
-        receivers = new Qvar_srcm_stmt_signature_kindSet("receivers");
+        receivers = new Qvar_srcm_stmt_dtp_signature_kindSet("receivers");
         specials = new Qvar_srcm_stmt_tgtmSet("specials");
         cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("cicgout");
         staticcalls = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("staticcalls");
@@ -394,7 +394,7 @@ public class PaddleScene
         rmout = new Qctxt_methodBDD("rmout");
         scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("scgbout");
 
-        receivers = new Qvar_srcm_stmt_signature_kindBDD("receivers");
+        receivers = new Qvar_srcm_stmt_dtp_signature_kindBDD("receivers");
         specials = new Qvar_srcm_stmt_tgtmBDD("specials");
 
         cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("cicgout");
@@ -504,7 +504,7 @@ public class PaddleScene
     private void buildQueuesTrad() {
         rmout = new Qctxt_methodTrad("rmout");
         scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("scgbout");
-        receivers = new Qvar_srcm_stmt_signature_kindTrad("receivers");
+        receivers = new Qvar_srcm_stmt_dtp_signature_kindTrad("receivers");
         specials = new Qvar_srcm_stmt_tgtmTrad("specials");
         cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("cicgout");
         staticcalls = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("staticcalls");
@@ -541,7 +541,7 @@ public class PaddleScene
         rmout = new Qctxt_methodDebug("rmout");
         scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("scgbout");
 
-        receivers = new Qvar_srcm_stmt_signature_kindDebug("receivers");
+        receivers = new Qvar_srcm_stmt_dtp_signature_kindDebug("receivers");
         specials = new Qvar_srcm_stmt_tgtmDebug("specials");
 
         cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("cicgout");
@@ -578,7 +578,7 @@ public class PaddleScene
     private void buildQueuesTrace() {
         rmout = new Qctxt_methodTrace("rmout");
         scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("scgbout");
-        receivers = new Qvar_srcm_stmt_signature_kindTrace("receivers");
+        receivers = new Qvar_srcm_stmt_dtp_signature_kindTrace("receivers");
         specials = new Qvar_srcm_stmt_tgtmTrace("specials");
         cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("cicgout");
         staticcalls = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("staticcalls");
@@ -615,7 +615,7 @@ public class PaddleScene
     private void buildQueuesNumTrace() {
         rmout = new Qctxt_methodNumTrace("rmout");
         scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("scgbout");
-        receivers = new Qvar_srcm_stmt_signature_kindNumTrace("receivers");
+        receivers = new Qvar_srcm_stmt_dtp_signature_kindNumTrace("receivers");
         specials = new Qvar_srcm_stmt_tgtmNumTrace("specials");
         cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("cicgout");
         staticcalls = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("staticcalls");

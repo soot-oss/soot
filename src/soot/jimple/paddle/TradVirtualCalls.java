@@ -30,7 +30,7 @@ import soot.util.queue.*;
 public class TradVirtualCalls extends AbsVirtualCalls
 { 
     TradVirtualCalls( Rvarc_var_objc_obj pt,
-            Rvar_srcm_stmt_signature_kind receivers,
+            Rvar_srcm_stmt_dtp_signature_kind receivers,
             Rvar_srcm_stmt_tgtm specials,
             Qctxt_var_obj_srcm_stmt_kind_tgtm out,
             Qsrcc_srcm_stmt_kind_tgtc_tgtm statics
@@ -59,7 +59,7 @@ public class TradVirtualCalls extends AbsVirtualCalls
 
         for( Iterator receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {
 
-            final Rvar_srcm_stmt_signature_kind.Tuple receiver = (Rvar_srcm_stmt_signature_kind.Tuple) receiverIt.next();
+            final Rvar_srcm_stmt_dtp_signature_kind.Tuple receiver = (Rvar_srcm_stmt_dtp_signature_kind.Tuple) receiverIt.next();
             LinkedList l = (LinkedList) receiverMapGet( receiver.var() );
             if( l == null ) {
                 l = new LinkedList();
@@ -89,7 +89,7 @@ public class TradVirtualCalls extends AbsVirtualCalls
                 receiverMapGet(ptpair.var());
             if( sites != null ) {
                 for( Iterator siteIt = sites.iterator(); siteIt.hasNext(); ) {
-                    final Rvar_srcm_stmt_signature_kind.Tuple site = (Rvar_srcm_stmt_signature_kind.Tuple) siteIt.next();
+                    final Rvar_srcm_stmt_dtp_signature_kind.Tuple site = (Rvar_srcm_stmt_dtp_signature_kind.Tuple) siteIt.next();
                     if( site.kind() == Kind.CLINIT ) {
                         handleStringConstants( ptpair, site );
                         continue;
@@ -101,7 +101,7 @@ public class TradVirtualCalls extends AbsVirtualCalls
                     && !fh.canStoreType( type, clRunnable ) )
                         continue;
 
-                    VirtualCalls.v().resolve( type, site.var().getType(), site.signature(), site.srcm(), targetsQueue );
+                    VirtualCalls.v().resolve( type, site.var().getType(), site.dtp(), site.signature(), site.srcm(), targetsQueue );
                     while( targets.hasNext() ) {
                         SootMethod target = (SootMethod) targets.next();
                         change = true;
@@ -134,7 +134,7 @@ public class TradVirtualCalls extends AbsVirtualCalls
     }
 
     private void handleStringConstants( Rvarc_var_objc_obj.Tuple ptpair,
-            Rvar_srcm_stmt_signature_kind.Tuple site ) {
+            Rvar_srcm_stmt_dtp_signature_kind.Tuple site ) {
         AllocNode obj = ptpair.obj();
         if( !( obj instanceof StringConstantNode ) ) {
             for( Iterator clsIt = Scene.v().dynamicClasses().iterator(); clsIt.hasNext(); ) {

@@ -1,6 +1,7 @@
 $HOME/makeq Context ctxt C1 SootMethod method MS
 $HOME/makeq Context srcc C1 SootMethod srcm MS Unit stmt ST Kind kind KD Context tgtc C2 SootMethod tgtm MT
-$HOME/makeq VarNode var V1 SootMethod srcm MS Unit stmt ST NumberedString signature SG Kind kind KD
+$HOME/makeq VarNode var V1 SootMethod srcm MS Unit stmt ST Type dtp T1 NumberedString signature SG Kind kind KD
+#$HOME/makeq VarNode var V1 SootMethod srcm MS Unit stmt ST NumberedString signature SG Kind kind KD
 $HOME/makeq VarNode var V1 SootMethod srcm MS Unit stmt ST SootMethod tgtm MT
 $HOME/makeq VarNode src V1 VarNode dst V2
 $HOME/makeq VarNode src V1 PaddleField fld FD VarNode dst V2

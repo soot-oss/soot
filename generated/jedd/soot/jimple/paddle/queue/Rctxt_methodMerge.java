@@ -39,11 +39,11 @@ public final class Rctxt_methodMerge extends Rctxt_method {
     }
     
     public jedd.internal.RelationContainer get() {
-        return new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
-                                                   new PhysicalDomain[] { C1.v(), MS.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { method.v(), ctxt.v() },
+                                                   new PhysicalDomain[] { MS.v(), C1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /tmp/soot-trunk-saved/src/soo" +
-                                                    "t/jimple/paddle/queue/Rctxt_methodMerge.jedd:52,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /tmp/olhotak/soot-trunk/src/s" +
+                                                    "oot/jimple/paddle/queue/Rctxt_methodMerge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

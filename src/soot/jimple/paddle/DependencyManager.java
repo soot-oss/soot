@@ -29,7 +29,7 @@ import soot.util.*;
  */
 public class DependencyManager 
 { 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private Map countMap = new HashMap();
     private Heap worklist = new Heap(new Heap.Keys() {
         public int key(Object o) {

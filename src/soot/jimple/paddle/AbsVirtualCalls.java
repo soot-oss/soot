@@ -27,13 +27,13 @@ import soot.jimple.paddle.queue.*;
 public abstract class AbsVirtualCalls implements DepItem
 { 
     protected Rvarc_var_objc_obj pt;
-    protected Rvar_srcm_stmt_signature_kind receivers;
+    protected Rvar_srcm_stmt_dtp_signature_kind receivers;
     protected Rvar_srcm_stmt_tgtm specials;
     protected Qctxt_var_obj_srcm_stmt_kind_tgtm out;
     protected Qsrcc_srcm_stmt_kind_tgtc_tgtm statics;
 
     AbsVirtualCalls( Rvarc_var_objc_obj pt,
-            Rvar_srcm_stmt_signature_kind receivers,
+            Rvar_srcm_stmt_dtp_signature_kind receivers,
             Rvar_srcm_stmt_tgtm specials,
             Qctxt_var_obj_srcm_stmt_kind_tgtm out,
             Qsrcc_srcm_stmt_kind_tgtc_tgtm statics
