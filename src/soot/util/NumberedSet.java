@@ -180,6 +180,7 @@ public final class NumberedSet {
             return ret;
         }
     }
+    public final int size() { return size; }
 
     private Numberable[] array = new Numberable[8];
     private long[] bits;

@@ -66,7 +66,7 @@ public class SparkTransformer extends SceneTransformer
 
         // Build pointer assignment graph
         Builder b = new ContextInsensitiveBuilder();
-        //b.preJimplify();
+        if( opts.preJimplify() ) b.preJimplify();
         if( opts.forceGCs() ) doGC();
         Date startBuild = new Date();
         final PAG pag = b.setup( opts );
@@ -85,9 +85,11 @@ public class SparkTransformer extends SceneTransformer
         reportTime( "Type masks", startTM, endTM );
         if( opts.forceGCs() ) doGC();
 
-        System.out.println( "VarNodes: "+pag.getVarNodeNumberer().size() );
-        System.out.println( "FieldRefNodes: "+pag.getFieldRefNodeNumberer().size() );
-        System.out.println( "AllocNodes: "+pag.getAllocNodeNumberer().size() );
+        if( opts.verbose() ) {
+            System.out.println( "VarNodes: "+pag.getVarNodeNumberer().size() );
+            System.out.println( "FieldRefNodes: "+pag.getFieldRefNodeNumberer().size() );
+            System.out.println( "AllocNodes: "+pag.getAllocNodeNumberer().size() );
+        }
 
         // Simplify pag
         Date startSimplify = new Date();
@@ -134,6 +136,78 @@ public class SparkTransformer extends SceneTransformer
         if( opts.forceGCs() ) doGC();
         reportTime( "Solution found", startSimplify, endProp );
 
+
+        if( opts.verbose() ) {
+            System.out.println( "[Spark] Number of reachable methods: "
+                    +b.getCallGraph().numReachableMethods() );
+        }
+
+        //findSetMass( pag, b );
+
+        /*
+        if( propagator[0] instanceof PropMerge ) {
+            new MergeChecker( pag ).check();
+        } else if( propagator[0] != null ) {
+            new Checker( pag ).check();
+        }
+        */
+
+        if( opts.dumpAnswer() ) new ReachingTypeDumper( pag ).dump();
+        if( opts.dumpSolution() ) dumper.dumpPointsToSets();
+        if( opts.dumpHTML() ) new PAG2HTML( pag ).dump();
+        Scene.v().setActivePointsToAnalysis( pag );
+        if( opts.trimInvokeGraph() ) {
+            Scene.v().setActiveInvokeGraph( b.getCallGraph().getInvokeGraph() );
+        }
+        if( opts.addTags() ) {
+            addTags( pag );
+        }
+    }
+
+    protected void addTags( PAG pag ) {
+        for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
+            final SootClass c = (SootClass) cIt.next();
+            for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
+                SootMethod m = (SootMethod) mIt.next();
+                if( !m.isConcrete() ) continue;
+                if( !m.hasActiveBody() ) continue;
+                for( Iterator sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
+                    final Stmt s = (Stmt) sIt.next();
+                    if( s instanceof DefinitionStmt ) {
+                        Value lhs = ((DefinitionStmt) s).getLeftOp();
+                        VarNode v = null;
+                        if( lhs instanceof Local ) {
+                            v = pag.findVarNode( (Local) lhs );
+                        } else if( lhs instanceof FieldRef ) {
+                            v = pag.findVarNode( ((FieldRef) lhs).getField() );
+                        }
+                        if( false && v != null ) {
+                            PointsToSetInternal p2set = v.getP2Set();
+                            p2set.forall( new P2SetVisitor() {
+                            public final void visit( Node n ) {
+                                s.addTag( new soot.tagkit.StringTag( n.toString() ) );
+                            }} );
+                            s.addTag( new soot.tagkit.StringTag( v.toString() ) );
+                            Node[] simpleSources = pag.simpleInvLookup(v);
+                            for( int i=0; i < simpleSources.length; i++ ) {
+                                s.addTag( new soot.tagkit.StringTag( simpleSources[i].toString() ) );
+                            }
+                            simpleSources = pag.allocInvLookup(v);
+                            for( int i=0; i < simpleSources.length; i++ ) {
+                                s.addTag( new soot.tagkit.StringTag( simpleSources[i].toString() ) );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    protected void findSetMass( PAG pag, Builder b ) {
+        int mass = 0;
+        int varMass = 0;
+        int adfs = 0;
+        int scalars = 0;
         HashMultiMap graph = b.getCallGraph().graph;
         if( false ) {
             for( Iterator srcIt = graph.keySet().iterator(); srcIt.hasNext(); ) {
@@ -158,7 +232,7 @@ public class SparkTransformer extends SceneTransformer
                 }
             } while( change );
         }
-        if( true ) {
+        if( false ) {
             for( Iterator it = b.getCallGraph().reachableMethods(); it.hasNext(); ) {
                 SootMethod m = (SootMethod) it.next();
                 System.out.println( m.getBytecodeSignature() );
@@ -166,69 +240,9 @@ public class SparkTransformer extends SceneTransformer
         }
 
 
-        //findSetMass( pag );
-
-        /*
-        if( propagator[0] instanceof PropMerge ) {
-            new MergeChecker( pag ).check();
-        } else if( propagator[0] != null ) {
-            new Checker( pag ).check();
-        }
-        */
-
-        if( opts.dumpAnswer() ) new ReachingTypeDumper( pag ).dump();
-        if( opts.dumpSolution() ) dumper.dumpPointsToSets();
-        if( opts.dumpHTML() ) new PAG2HTML( pag ).dump();
-        if( true ) {
-            for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
-                final SootClass c = (SootClass) cIt.next();
-                for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
-                    SootMethod m = (SootMethod) mIt.next();
-                    if( !m.isConcrete() ) continue;
-                    if( !m.hasActiveBody() ) continue;
-                    for( Iterator sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
-                        final Stmt s = (Stmt) sIt.next();
-                        if( s instanceof DefinitionStmt ) {
-                            Value lhs = ((DefinitionStmt) s).getLeftOp();
-                            VarNode v = null;
-                            if( lhs instanceof Local ) {
-                                v = pag.findVarNode( (Local) lhs );
-                            } else if( lhs instanceof FieldRef ) {
-                                v = pag.findVarNode( ((FieldRef) lhs).getField() );
-                            }
-                            if( false && v != null ) {
-                                PointsToSetInternal p2set = v.getP2Set();
-                                p2set.forall( new P2SetVisitor() {
-                                public final void visit( Node n ) {
-                                    s.addTag( new soot.tagkit.StringTag( n.toString() ) );
-                                }} );
-                                s.addTag( new soot.tagkit.StringTag( v.toString() ) );
-                                Node[] simpleSources = pag.simpleInvLookup(v);
-                                for( int i=0; i < simpleSources.length; i++ ) {
-                                    s.addTag( new soot.tagkit.StringTag( simpleSources[i].toString() ) );
-                                }
-                                simpleSources = pag.allocInvLookup(v);
-                                for( int i=0; i < simpleSources.length; i++ ) {
-                                    s.addTag( new soot.tagkit.StringTag( simpleSources[i].toString() ) );
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        Scene.v().setActivePointsToAnalysis( pag );
-        if( opts.trimInvokeGraph() ) {
-            Scene.v().setActiveInvokeGraph( b.getCallGraph().getInvokeGraph() );
-        }
-    }
-    /*
-    protected void findSetMass( PAG pag ) {
-        int mass = 0;
-        int varMass = 0;
-        int adfs = 0;
-        int scalars = 0;
         for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
+
+
             final VarNode v = (VarNode) vIt.next();
                 scalars++;
             PointsToSetInternal set = v.getP2Set();
@@ -303,6 +317,7 @@ public class SparkTransformer extends SceneTransformer
                 }
             }
         }
+        /*
         deRefCounts = new int[30001];
         for( Iterator siteIt = ig.getAllSites().iterator(); siteIt.hasNext(); ) {
             final Stmt site = (Stmt) siteIt.next();
@@ -331,8 +346,8 @@ public class SparkTransformer extends SceneTransformer
                 System.out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
             }
         }
+        */
     }
-    */
 }
 
 

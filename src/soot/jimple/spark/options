@@ -18,6 +18,14 @@ When this option is set to true, calls to System.gc() will be made at
 various points to allow memory usage to be measured.
 END
 
+BOPT preJimplify
+false
+When this option is set to true, convert all available methods to Jimple
+before starting the points-to analysis. This allows the Jimplification
+time to be separated from the points-to time. However, it increases the
+total time and memory requirement, because all methods are Jimplified,
+rather than only those deemed reachable by the points-to analysis.
+END
 
 SECTION Pointer Assignment Graph Building Options
 #################################################
@@ -254,5 +262,11 @@ BOPT trimInvokeGraph
 false
 When this option is set to true, the results of the analysis are used to make the invoke graph
 more precise after the analysis completes.
+END
+
+BOPT addTags
+false
+When this option is set to true, the results of the analysis are encoded inside
+tags, and printed with the resulting Jimple code.
 END
 

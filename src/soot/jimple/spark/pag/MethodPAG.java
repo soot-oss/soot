@@ -64,6 +64,7 @@ public final class MethodPAG {
             }
         }
         addMiscEdges();
+        //method.releaseActiveBody();
     }
     public SootMethod getMethod() { return method; }
     public void addToPAG() {

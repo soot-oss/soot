@@ -66,6 +66,9 @@ public final class CallGraph
     public Iterator reachableMethods() {
         return reachable.iterator();
     }
+    public int numReachableMethods() {
+        return reachable.size();
+    }
     public void build() {
         for( Iterator mIt = ImplicitMethodInvocation.v().getEntryPoints().iterator(); mIt.hasNext(); ) {
             final SootMethod m = (SootMethod) mIt.next();

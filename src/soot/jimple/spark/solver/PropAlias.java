@@ -36,8 +36,13 @@ public final class PropAlias extends Propagator {
     protected final Set varNodeWorkList = new TreeSet();
     protected Set aliasWorkList;
     protected Set fieldRefWorkList = new HashSet();
+    protected Set outFieldRefWorkList = new HashSet();
 
-    public PropAlias( PAG pag ) { this.pag = pag; }
+    public PropAlias( PAG pag ) {
+        this.pag = pag;
+        loadSets = new LargeNumberedMap( pag.getFieldRefNodeNumberer() );
+    }
+
     /** Actually does the propagation. */
     public final void propagate() {
         ofcg = pag.getOnFlyCallGraph();
@@ -86,50 +91,30 @@ public final class PropAlias extends Propagator {
                             aliasEdges.put( dstFr, srcFr );
                             fieldRefWorkList.add( srcFr );
                             fieldRefWorkList.add( dstFr );
-                            makeP2Set( dstFr ).addAll( 
-                                    srcFr.getP2Set().getOldSet(), null );
-                            makeP2Set( srcFr ).addAll( 
-                                    dstFr.getP2Set().getOldSet(), null );
-                        }
-                    }
-                }
-            }
-            /*
-            for( Iterator fieldIt = fieldToBase.keySet().iterator(); fieldIt.hasNext(); ) {
-                final SparkField field = (SparkField) fieldIt.next();
-                Set baseSet = fieldToBase.get( field );
-                for( Iterator srcIt = baseSet.iterator(); srcIt.hasNext(); ) {
-                    final VarNode src = (VarNode) srcIt.next();
-                    FieldRefNode srcFr = src.dot( field );
-                    Set aliasDests = aliasEdges.get( srcFr );
-                    for( Iterator dstIt = baseSet.iterator(); dstIt.hasNext(); ) {
-                        final VarNode dst = (VarNode) dstIt.next();
-                        FieldRefNode dstFr = dst.dot( field );
-                        if( !aliasDests.contains( dstFr ) ) {
-                            if( src.getP2Set().hasNonEmptyIntersection( dst.getP2Set() ) ) {
-                                aliasEdges.put( srcFr, dstFr );
-                                aliasEdges.put( dstFr, srcFr );
-                                makeP2Set( dstFr ).addAll( 
-                                        srcFr.getP2Set().getOldSet(), null );
-                                makeP2Set( srcFr ).addAll( 
-                                        dstFr.getP2Set().getOldSet(), null );
+                            if( makeP2Set( dstFr ).addAll( 
+                                    srcFr.getP2Set().getOldSet(), null ) ) {
+                                outFieldRefWorkList.add( dstFr );
+                            }
+                            if( makeP2Set( srcFr ).addAll( 
+                                    dstFr.getP2Set().getOldSet(), null ) ) {
+                                outFieldRefWorkList.add( srcFr );
                             }
                         }
-                        if( dst == src ) break;
                     }
                 }
             }
-            */
             for( Iterator srcIt = fieldRefWorkList.iterator(); srcIt.hasNext(); ) {
                 final FieldRefNode src = (FieldRefNode) srcIt.next();
                 for( Iterator dstIt = aliasEdges.get( src ).iterator(); dstIt.hasNext(); ) {
                     final FieldRefNode dst = (FieldRefNode) dstIt.next();
-                    makeP2Set( dst ).addAll( src.getP2Set().getNewSet(), null );
+                    if( makeP2Set( dst ).addAll( src.getP2Set().getNewSet(), null ) ) {
+                        outFieldRefWorkList.add( dst );
+                    }
                 }
                 src.getP2Set().flushNew();
             }
             fieldRefWorkList = new HashSet();
-            for( Iterator srcIt = pag.loadSources().iterator(); srcIt.hasNext(); ) {
+            for( Iterator srcIt = outFieldRefWorkList.iterator(); srcIt.hasNext(); ) {
                 final FieldRefNode src = (FieldRefNode) srcIt.next();
                 PointsToSetInternal set = getP2Set( src ).getNewSet();
                 if( set.isEmpty() ) continue;
@@ -142,6 +127,7 @@ public final class PropAlias extends Propagator {
                 }
                 getP2Set( src ).flushNew();
             }
+            outFieldRefWorkList = new HashSet();
 	} while( !varNodeWorkList.isEmpty() );
     }
 
@@ -262,7 +248,7 @@ public final class PropAlias extends Propagator {
     protected PAG pag;
     protected MultiMap fieldToBase = new HashMultiMap();
     protected MultiMap aliasEdges = new HashMultiMap();
-    protected Map loadSets = new HashMap();
+    protected LargeNumberedMap loadSets;
     protected OnFlyCallGraph ofcg;
 }
 

@@ -30,6 +30,7 @@ import soot.jimple.spark.internal.*;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.jimple.spark.callgraph.*;
+import soot.util.queue.*;
 
 /** A context insensitive pointer assignment graph builder.
  * @author Ondrej Lhotak
@@ -59,28 +60,40 @@ public class ContextInsensitiveBuilder implements Builder {
             cg = ofcg.getCallGraph();
         } else {
             cg = new CallGraph( DumbPointerAnalysis.v(), opts.verbose() );
-            cg.build();
         }
         return pag;
     }
     public CallGraph getCallGraph() { return cg; }
     /** Fills in the pointer assignment graph returned by setup. */
     public void build() {
+        QueueReader callEdges = cg.callEdges();
         OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
+        if( ofcg != null ) {
+            ofcg.build();
+        } else {
+            cg.build();
+        }
         for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
             final SootClass c = (SootClass) cIt.next();
 	    handleClass( c );
 	}
-        if( ofcg != null ) ofcg.build();
-        if( pag.getOpts().verbose() ) {
-            System.out.println( "Statements analyzed: "+stmts );
-            System.out.println( "Total methods: "+totalMethods );
-            System.out.println( "Analyzed (CHA reachable) methods: "+analyzedMethods );
-            System.out.println( "Classes with at least one analyzed method: "+classes );
+        Stmt s = null;
+        while(true) {
+            Object o = callEdges.next();
+            if( o == null ) break;
+            if( o instanceof SootMethod ) {
+                SootMethod target = (SootMethod) o;
+                parms.addCallTarget( s, target );
+            } else if( o instanceof VirtualCallSite )
+                s = ((VirtualCallSite) o).getStmt();
+            else if( o instanceof Stmt ) s = (Stmt) o;
+            else throw new RuntimeException( "oops" );
         }
-        // deregister NativeHelper
-        if( pag.getOpts().simulateNatives() ) {
-    //        NativeHelper.register( null );
+
+        if( pag.getOpts().verbose() ) {
+            System.out.println( "Total methods: "+totalMethods );
+            System.out.println( "Initially reachable methods: "+analyzedMethods );
+            System.out.println( "Classes with at least one reachable method: "+classes );
         }
     }
 

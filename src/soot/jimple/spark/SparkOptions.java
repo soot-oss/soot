@@ -64,6 +64,18 @@ public class SparkOptions {
         return Options.getBoolean( options, "forceGCs" );
     }
 
+    /**
+     * When this option is set to true, convert all available methods to Jimple
+     * before starting the points-to analysis. This allows the Jimplification
+     * time to be separated from the points-to time. However, it increases the
+     * total time and memory requirement, because all methods are Jimplified,
+     * rather than only those deemed reachable by the points-to analysis.
+     * Default value is false
+     */
+    public boolean preJimplify() {
+        return Options.getBoolean( options, "preJimplify" );
+    }
+
 
 /*********************************************************************
 *** Pointer Assignment Graph Building Options
@@ -435,13 +447,22 @@ public class SparkOptions {
         return Options.getBoolean( options, "trimInvokeGraph" );
     }
 
+    /**
+     * When this option is set to true, the results of the analysis are encoded inside
+     * tags, and printed with the resulting Jimple code.
+     * Default value is false
+     */
+    public boolean addTags() {
+        return Options.getBoolean( options, "addTags" );
+    }
+
     public static String getDeclaredOptions() {
         return
-        " verbose ignoreTypesEntirely forceGCs VTA RTA ignoreBaseObjects typesForSites mergeStringBuffer simulateNatives simpleEdgesBidirectional onFlyCallGraph parmsAsFields returnsAsFields simplifyOffline simplifySCCs ignoreTypesForSCCs propagator setImpl doubleSetOld doubleSetNew dumpHTML dumpPAG dumpSolution topoSort dumpTypes classMethodVar dumpAnswer trimInvokeGraph";
+        " verbose ignoreTypesEntirely forceGCs preJimplify VTA RTA ignoreBaseObjects typesForSites mergeStringBuffer simulateNatives simpleEdgesBidirectional onFlyCallGraph parmsAsFields returnsAsFields simplifyOffline simplifySCCs ignoreTypesForSCCs propagator setImpl doubleSetOld doubleSetNew dumpHTML dumpPAG dumpSolution topoSort dumpTypes classMethodVar dumpAnswer trimInvokeGraph addTags";
     }
     public static String getDefaultOptions() {
         return
-        " verbose:false ignoreTypesEntirely:false forceGCs:false VTA:false RTA:false ignoreBaseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false parmsAsFields:false returnsAsFields:false simplifyOffline:false simplifySCCs:false ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true classMethodVar:true dumpAnswer:false trimInvokeGraph:false";
+        " verbose:false ignoreTypesEntirely:false forceGCs:false preJimplify:false VTA:false RTA:false ignoreBaseObjects:false typesForSites:false mergeStringBuffer:true simulateNatives:false simpleEdgesBidirectional:false onFlyCallGraph:false parmsAsFields:false returnsAsFields:false simplifyOffline:false simplifySCCs:false ignoreTypesForSCCs:false propagator:worklist setImpl:double doubleSetOld:hybrid doubleSetNew:hybrid dumpHTML:false dumpPAG:false dumpSolution:false topoSort:false dumpTypes:true classMethodVar:true dumpAnswer:false trimInvokeGraph:false addTags:false";
     }
 
     protected Map options;
