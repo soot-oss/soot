@@ -563,7 +563,7 @@ graph. Exactly one phase in this pack may be enabled; Soot will raise an error o
                                 <boolopt>
                                         <name>Safe forName</name>
                                         <alias>safe-forname</alias>
-                                        <default>false</default>
+                                        <default>true</default>
                                         <short_desc>Handle Class.forName() calls conservatively</short_desc>
                                         <long_desc>When a program calls
 Class.forName(), the named class is resolved, and its static initializer
@@ -579,7 +579,7 @@ static initializers.
                                 <boolopt>
                                         <name>Safe newInstance</name>
                                         <alias>safe-newinstance</alias>
-                                        <default>false</default>
+                                        <default>true</default>
                                         <short_desc>Handle Class.newInstance() calls conservatively</short_desc>
                                         <long_desc>When a program calls
 Class.newInstance(), a new object is created and its constructor

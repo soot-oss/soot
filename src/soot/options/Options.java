@@ -1021,8 +1021,8 @@ public class Options extends OptionsBase {
                 "\nThe purpose of this pack is to compute a call graph. When this \npack finishes, a call graph is available in the Scene. The \ndifferent phases in this pack are different ways to construct \nthe call graph. Exactly one phase in this pack may be enabled; \nSoot will raise an error otherwise. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "safe-forname (false)", "Handle Class.forName() calls conservatively" )
-                +padOpt( "safe-newinstance (false)", "Handle Class.newInstance() calls conservatively" )
+                +padOpt( "safe-forname (true)", "Handle Class.forName() calls conservatively" )
+                +padOpt( "safe-newinstance (true)", "Handle Class.newInstance() calls conservatively" )
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" );
     
         if( phaseName.equals( "cg.cha" ) )
@@ -1894,8 +1894,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg" ) )
             return ""
               +"enabled:true "
-              +"safe-forname:false "
-              +"safe-newinstance:false "
+              +"safe-forname:true "
+              +"safe-newinstance:true "
               +"verbose:false ";
     
         if( phaseName.equals( "cg.cha" ) )
