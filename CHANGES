@@ -1,4 +1,19 @@
-Improvements in current version
+Improvements in version 1.2.4 (Fri, 14 Jun 2002)
+
+1. main change is the inclusion of development version of Spark: Soot Pointer
+   Analysis Research Kit. Available documentation for Spark includes the
+   Spark poster (http://www.sable.mcgill.ca/publications/#poster-2002-1)
+   and the Spark options 
+   (http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps).
+   More detailed documentation in the form of a master's thesis is being
+   written. (olhotak)
+2. new FastHierarchy class designed to eventually replace inefficient and
+   confusing Hierarchy class (olhotak)
+3. fix for missing control-flow graph edges from predecessors of statements
+   in nested try blocks to some exception handlers (jjorge1)
+4. make virtual call resolution respect access modifiers (olhotak)
+
+Improvements in version 1.2.3 (Wed, 08 May 2002)
 
 1. fix to SourceLocator for the case where there are no actual
      paths in the soot classpath. (plam)

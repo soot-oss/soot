@@ -58,7 +58,7 @@ public class PropIter extends Propagator {
 	    }
             if( ofcg != null ) {
                 for( Iterator it = ofcg.allReceivers().iterator(); it.hasNext(); ) {
-                    final VarNode rec = pag.findVarNode( it.next() );
+                    final VarNode rec = (VarNode) it.next();
                     PointsToSetInternal recSet = rec.getP2Set();
                     if( recSet != null ) {
                         change = rec.getP2Set().forall( new P2SetVisitor() {

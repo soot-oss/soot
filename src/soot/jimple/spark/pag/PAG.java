@@ -280,7 +280,7 @@ public class PAG implements PointsToAnalysis {
     protected Map storeInv = new HashMap();
     protected Map allocInv = new HashMap();
 
-    protected boolean addToMap( Map m, Object key, Object value ) {
+    protected boolean addToMap( Map m, Node key, Node value ) {
 	boolean ret = false;
 	Object valueList = m.get( key );
 
@@ -289,8 +289,7 @@ public class PAG implements PointsToAnalysis {
 	} else if( !(valueList instanceof Set) ) {
 	    Node[] ar = (Node[]) valueList;
 	    m.put( key, valueList = new HashSet( ar.length ) );
-	    for( int i = 0; i < ar.length; i++ ) ( (Set) valueList ).add( ar );
-
+	    for( int i = 0; i < ar.length; i++ ) ( (Set) valueList ).add( ar[i] );
 	}
 	return ((Set) valueList).add( value );
     }
@@ -302,8 +301,15 @@ public class PAG implements PointsToAnalysis {
 	    return EMPTY_NODE_ARRAY;
 	}
 	if( valueList instanceof Set ) {
+            try {
 	    m.put( key, valueList = 
 		    (Node[]) ( (Set) valueList ).toArray( EMPTY_NODE_ARRAY ) );
+            } catch( Exception e ) {
+                for( Iterator it = ((Set)valueList).iterator(); it.hasNext(); ) {
+                    System.out.println( ""+it.next() );
+                }
+                throw new RuntimeException( ""+valueList+e );
+            }
 	}
 	Node[] ret = (Node[]) valueList;
 	for( int i = 0; i < ret.length; i++ ) {

@@ -308,10 +308,12 @@ public class VariableTypeAnalysis implements PointsToAnalysis
 							  (VTATypeGraph.getVTALabel(m, base)));
 
                             List targets = h.resolveConcreteDispatch(validReachingTypes, ie.getMethod());
+                            /*
 			    if( targets.isEmpty() ) {
 				System.out.println( "Couldn't resolve dispatch "+s+" in method "+m );
 				System.out.println( "reaching types: "+validReachingTypes );
 			    }
+                            */
                             Iterator targetsIt = targets.iterator();
                             
                             while (targetsIt.hasNext())
@@ -378,8 +380,9 @@ public class VariableTypeAnalysis implements PointsToAnalysis
         { throw new RuntimeException( "NYI" ); }
     }
     public PointsToSet reachingObjects( SootMethod m, Stmt stmt, Local l ) {
-        return new VTAP2Set(
-                new HashSet(getReachingTypesOf(VTATypeGraph.getVTALabel(m, l))));
+        Collection c = getReachingTypesOf(VTATypeGraph.getVTALabel(m, l));
+        if( c == null ) return new VTAP2Set( Collections.EMPTY_SET );
+        return new VTAP2Set( new HashSet( c ) );
     }
 }
 

@@ -53,6 +53,7 @@ class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             if( !( arg.getType() instanceof RefLikeType ) ) continue;
             arg.apply( this );
             Node argNode = getNode();
+            if( argNode == null ) continue;
             if( target != null ) {
                 Node parm = caseParm( target, i );
                 addEdge( argNode, parm );

@@ -59,8 +59,8 @@ import gnu.getopt.*;
 public class Main implements Runnable
 {   
     // TODO: the following string should be updated by the source control
-    //   $Format: "            public static final String versionString = \"1.2.3 (build $ProjectVersion$)\";"$
-            public static final String versionString = "1.2.3 (build 1.2.3.dev.11)";
+    //   $Format: "            public static final String versionString = \"1.2.4 (build $ProjectVersion$)\";"$
+            public static final String versionString = "1.2.4 (build 1.2.3.dev.12)";
 
     public Date start;
     public Date finish;
@@ -694,8 +694,8 @@ public class Main implements Runnable
 
     private static void printVersion()
     {
-	// $Format: "            System.out.println(\"Soot version 1.2.3 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.3 (build 1.2.3.dev.11)");
+	// $Format: "            System.out.println(\"Soot version 1.2.4 (build $ProjectVersion$)\");"$
+            System.out.println("Soot version 1.2.4 (build 1.2.3.dev.12)");
 	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");

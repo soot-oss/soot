@@ -34,7 +34,7 @@
 <center>
 <a name="top"><b><font face="helvetica,arial" size="+2">Soot: a Java Optimization Framework</font></b></center></a> <br>
 <center>
-<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 1.2.3 (May 8, 2002)</font></b></center></a> <br><br>
+<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 1.2.4 (Jun 14, 2002)</font></b></center></a> <br><br>
 
 Need help using Soot?  See the Soot <a href="tutorial"> tutorials</a>.<br><br>
 
@@ -83,8 +83,21 @@ License</a>.
 <p>The Soot Framework is an evolving research project. Our goal is to produce a
 highly robust research framework for optimizing Java which is easy to use.  
 
+<!-- Release 1.2.4 --> <p>
+The latest release is version 1.2.4. The main change is the
+inclusion of development version of Spark: Soot Pointer Analysis
+Research Kit. Available documentation for Spark includes the
+<a href="http://www.sable.mcgill.ca/publications/#poster-2002-1">Spark
+poster</a> 
+and the
+<a href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps">
+Spark options
+</a>.
+More detailed documentation in the form of a master's thesis is being
+written. A few bugs were also fixed.
+
 <!-- Release 1.2.3 --> <p>
-The latest release is version 1.2.3, which fixes a few bugs from release 1.2.2 and incorporates
+The release 1.2.3 fixes a few bugs from release 1.2.2 and incorporates
 some improvements of memory usage. Some other enhancements are an option for preserving line
 number tables, re-implementation of partial redundency elimination, some utility classes for 
 viewing CFGs, and XML output of Jimple bodies. 
@@ -116,7 +129,6 @@ bugs reported against version 1.0.0.<p>
 We plan the following <b>releases</b> for the near future:
 <ul>
 <li>The Dava decompiler is planned to have separate releases. 
-<li>A points-to analysis package is in our release schedule. 
 <li>Several new features will be included in our next major release, 1.3.0, 
     which is scheduled for the end of the summer.
 </ul>
@@ -135,10 +147,27 @@ We will also develop more transformations for use with Soot.
 <!--ProjectStatus-->
 <a name="projectStatus"> 
 
+<!-- status of 1.2.4 -->
 <table width=100%> 
 <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Improvements in version 1.2.3</b></font></td>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Improvements in version 1.2.4</b></font></td>
 <td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</tr>
+</table>
+<blockquote>
+Major improvements in version 1.2.4 are:
+<ul>
+<li> Inclusion of development version of Spark: Soot Pointer
+   Analysis Research Kit.
+<li> Bug fixes.
+</ul>
+A complete list of changes is in the <a href="CHANGES">CHANGES</a> file.
+</blockquote>
+<p>
+<!-- status of 1.2.3 -->
+<table width=100%> 
+<tr>
+<td width=97% align=left><b>Major improvements in version 1.2.3</b></td>
 </tr>
 </table>
 <blockquote>
@@ -150,7 +179,7 @@ Major improvements in version 1.2.3 are:
 <li> An option (-A LineNumber) to preserve line number tables.
 </ul>
 Jasmin sable-1.2 allows the length of a token more than 64K.
-A complete list of changes is in the <a href="CHANGES.1.2.3">CHANGES</a> file.
+A complete list of changes is in the <a href="CHANGES">CHANGES</a> file.
 </blockquote>
 <p>
 <!-- status of 1.2.2 -->
@@ -241,6 +270,8 @@ java soot.Main
 
 Note that Soot requires at least JDK 1.2 (Java 2), as it uses Java Collections.
 Release 1.2.3 has been tested on Sun's JDK 1.3.1_01 for Linux.
+Soot is currently known not to work with JDK 1.4; we plan to fix this
+in release 1.3.0.
 <!-- old story
 We have experienced some problems with the sunwjit JIT compiler; we do
 not recommend the use of this JIT.  In particular, common subexpression 

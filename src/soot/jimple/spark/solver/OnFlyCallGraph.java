@@ -52,7 +52,8 @@ public class OnFlyCallGraph {
         InstanceInvokeExpr iie = (InstanceInvokeExpr) site.getInvokeExpr();
         if( iie instanceof SpecialInvokeExpr ) 
             throw new RuntimeException( "Can't handle that" );
-        return receiverToSite.put( iie.getBase(), site );
+        parms.addCallTarget( site, null, null );
+        return receiverToSite.put( pag.findVarNode( iie.getBase() ), site );
     }
 
     public boolean addReachingType( VarNode receiver, Type type, Collection touchedNodes ) {
@@ -62,12 +63,28 @@ public class OnFlyCallGraph {
                     it.hasNext(); ) {
                 Stmt site = (Stmt) it.next();
                 InstanceInvokeExpr ie = (InstanceInvokeExpr) site.getInvokeExpr();
-                RefType declaredTypeOfBase = (RefType) ie.getBase().getType();
-                Collection targets = fh.resolveConcreteDispatch(
-                        Collections.singletonList( type ), ie.getMethod(),
-                        declaredTypeOfBase );
+                Type baseType = ie.getBase().getType();
+                RefType declaredTypeOfBase = null;
+                if( baseType instanceof RefType ) {
+                    declaredTypeOfBase = (RefType) baseType;
+                } else if( baseType instanceof ArrayType ) {
+                    declaredTypeOfBase = RefType.v("java.lang.Object");
+                } else {
+                    throw new RuntimeException( "Weird declared type: "+baseType );
+                }
+                Collection targets = null;
+                try {
+                    targets = fh.resolveConcreteDispatch(
+                            Collections.singletonList( type ), ie.getMethod(),
+                            declaredTypeOfBase );
+                } catch( RuntimeException e ) {
+                    // failed to resolve because pointer analysis is too
+                    // conservative, and came up with a reaching type that
+                    // doesn't actually reach.
+                    targets = Collections.EMPTY_SET;
+                }
                 for( Iterator targetIt = targets.iterator(); targetIt.hasNext(); ) {
-                    SootMethod target = (SootMethod) it.next();
+                    SootMethod target = (SootMethod) targetIt.next();
                     if( ig.addTarget( site, target ) ) {
                         parms.addCallTarget( site, target, touchedNodes );
                         ret = true;

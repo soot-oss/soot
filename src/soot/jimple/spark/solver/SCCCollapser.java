@@ -76,23 +76,31 @@ public class SCCCollapser {
             }
         }
         if( v != rootOfSCC ) {
-            if( !ignoreTypes || 
-                PointsToSetInternal.castNeverFails( v.getType(), rootOfSCC.getType() ) ) {
-                    
-                rootOfSCC.mergeWith( v );
-            } else if( 
-                PointsToSetInternal.castNeverFails( rootOfSCC.getType(), v.getType() ) ) {
-
-                v.mergeWith( rootOfSCC );
-            } else {
-                rootOfSCC.getReplacement().setType( null );
-                PointsToSetInternal set = rootOfSCC.getP2Set();
-                if( set != null ) {
-                    set.setType( null );
+            if( !ignoreTypes ) {
+                if( PointsToSetInternal.castNeverFails(
+                            v.getType(), rootOfSCC.getType() )
+                 && PointsToSetInternal.castNeverFails(
+                            rootOfSCC.getType(), v.getType() ) ) {
+                    rootOfSCC.mergeWith( v );
+                    numCollapsed++;
                 }
-                rootOfSCC.mergeWith( v );
+            } else /* ignoreTypes */ {
+                if( PointsToSetInternal.castNeverFails(
+                            v.getType(), rootOfSCC.getType() ) ) {
+                    rootOfSCC.mergeWith( v );
+                } else if( PointsToSetInternal.castNeverFails(
+                            rootOfSCC.getType(), v.getType() ) ) {
+                    v.mergeWith( rootOfSCC );
+                } else {
+                    rootOfSCC.getReplacement().setType( null );
+                    PointsToSetInternal set = rootOfSCC.getP2Set();
+                    if( set != null ) {
+                        set.setType( null );
+                    }
+                    rootOfSCC.mergeWith( v );
+                }
+                numCollapsed++;
             }
-            numCollapsed++;
         }
     }
 }
