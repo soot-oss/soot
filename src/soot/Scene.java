@@ -99,8 +99,10 @@ public class Scene extends AbstractHost
             p.add(new Transform("jop.cbf",  ConditionalBranchFolder.v()));
             p.add(new Transform("jop.dae",  DeadAssignmentEliminator.v()));
             p.add(new Transform("jop.uce1", UnreachableCodeEliminator.v()));
-            p.add(new Transform("jop.ubf",  UnconditionalBranchFolder.v()));
+            p.add(new Transform("jop.ubf1", UnconditionalBranchFolder.v()));
             p.add(new Transform("jop.uce2", UnreachableCodeEliminator.v()));
+            p.add(new Transform("jop.ubf2", UnconditionalBranchFolder.v()));
+
             p.add(new Transform("jop.ule",  UnusedLocalEliminator.v()));
         }
 

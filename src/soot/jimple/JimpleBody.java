@@ -205,6 +205,29 @@ public class JimpleBody extends StmtBody
             soot.Main.stmtCount += getUnits().size();
     }
 
+    /** Make sure that the JimpleBody is well formed.  If not, throw an exception.
+        Right now, performs only a handful of checks.
+      */
+      
+    public void assertStaticConstraints()
+    {
+        // Check validity of traps.
+        {
+            Iterator it = getTraps().iterator();
+            
+            while(it.hasNext())
+            {
+                Trap t = (Trap) it.next();
+                
+                Stmt s = (Stmt) t.getHandlerUnit();
+                
+                if(!(s instanceof IdentityStmt) || !(((IdentityStmt) s).getRightOp() instanceof CaughtExceptionRef))
+                    throw new RuntimeException("Trap handler is not of the form x := caughtexceptionref");
+            }
+        }
+    }
+    
+    
     /** Temporary patch to get the typing algorithm working.
       */
       

@@ -402,6 +402,9 @@ public class JasminClass
         
         StmtBody body = (StmtBody) activeBody;
         
+        if(body instanceof JimpleBody)
+            ((JimpleBody) body).assertStaticConstraints();
+            
         if(body == null)
             
         if(soot.Main.isProfilingOptimization)

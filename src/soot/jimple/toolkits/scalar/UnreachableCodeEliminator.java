@@ -58,23 +58,39 @@ public class UnreachableCodeEliminator extends BodyTransformer
         stmtGraph = new CompleteUnitGraph(body);
         visited = new HashSet();
             
-
         // mark first statement and all its successors, recursively
         if (!body.getUnits().isEmpty())
             visitStmt((Stmt)body.getUnits().getFirst());
 
-        Iterator stmtIt = body.getUnits().iterator();
-        while (stmtIt.hasNext()) {
+        
+        Iterator stmtIt = body.getUnits().snapshotIterator();
+        while (stmtIt.hasNext()) 
+        {
             // find unmarked nodes
             Stmt stmt = (Stmt)stmtIt.next();
-            if (!visited.contains(stmt)) {
-                stmtIt.remove();
+            
+            if (!visited.contains(stmt)) 
+            {
+                body.getUnits().remove(stmt);
                 numPruned++;
             }
         }
         if (soot.Main.isVerbose)
             System.out.println("[" + body.getMethod().getName() + "]     Removed " + numPruned + " statements...");
             
+        // Now eliminate empty traps.
+        {
+            Iterator trapIt = b.getTraps().iterator();
+            
+            while(trapIt.hasNext())
+            {
+                Trap t = (Trap) trapIt.next();
+                
+                if(t.getBeginUnit() == t.getEndUnit())
+                    trapIt.remove();
+            }
+        }
+        
   } // pruneUnreachables
 
     private static void visitStmt(Stmt stmt) {
