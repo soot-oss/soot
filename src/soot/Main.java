@@ -102,6 +102,22 @@ public class Main {
         return str;
     }
 
+    public String getOutputDir() {
+        String ret = opts.output_dir();
+        if( ret.length() == 0 ) ret = "sootOutput";
+        File dir = new File(ret);
+
+        if (!dir.exists()) {
+            try {
+                dir.mkdirs();
+            } catch (SecurityException se) {
+                G.v().out.println("Unable to create " + ret);
+                System.exit(0);
+            }
+        }
+        return ret;
+    }
+
     public String getFileNameFor(SootClass c, int rep) {
         // add an option for no output
         if (rep == Options.output_format_none)
@@ -109,8 +125,7 @@ public class Main {
 
         StringBuffer b = new StringBuffer();
 
-        if (opts.output_dir() != null)
-            b.append(opts.output_dir());
+        b.append(getOutputDir());
 
         if ((b.length() > 0) && (b.charAt(b.length() - 1) != fileSeparator))
             b.append(fileSeparator);
@@ -818,7 +833,7 @@ public class Main {
             case Options.output_format_dava :
                 break;
             case Options.output_format_class :
-                Printer.v().write(c, opts.output_dir());
+                Printer.v().write(c, getOutputDir());
                 break;
             case Options.output_format_xml :
                 writerOut =

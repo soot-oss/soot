@@ -69,6 +69,9 @@ public class Transform implements HasPhaseOptions
         defaultOpts = options;
     }
 
+    public void apply() {
+        ((SceneTransformer) t).transform( phaseName, PackManager.v().getPhaseOptions( phaseName ) );
+    }
     public void apply(Body b) {
         ((BodyTransformer) t).transform( b, phaseName, PackManager.v().getPhaseOptions( phaseName ) );
     }

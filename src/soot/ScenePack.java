@@ -43,8 +43,7 @@ public class ScenePack extends Pack
         while (it.hasNext())
         {
             Transform t = (Transform)it.next();
-            ((SceneTransformer)(t.getTransformer())).transform
-                (t.getPhaseName());
+            t.apply();
         }
     }
 }

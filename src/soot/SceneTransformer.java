@@ -31,15 +31,21 @@ import java.util.*;
 public abstract class SceneTransformer extends Transformer
 {
     /** Performs the transformation on the Scene, under the given phaseName. */
-    public final void transform(String phaseName)
+    public final void transform(String phaseName, Map options)
     {
-        Map options = PackManager.v().getPhaseOptions(phaseName);
-
         if (PackManager.getBoolean(options, "disabled"))
             return;
 
         internalTransform(phaseName, options);
     }
+    public final void transform(String phaseName)
+    {
+        HashMap dummyOptions = new HashMap();
+        dummyOptions.put( "disabled", "false" );
+        transform(phaseName, dummyOptions);
+    }
+
+
 
     /** Performs the transformation on the Scene, under the given phaseName and with the given Options. */
     protected abstract void internalTransform(String phaseName, Map options);
