@@ -86,7 +86,7 @@ public class BaseJimpleOptimizer
         
 //        ConstantOptimizer.optimizeConstants(body);
 //          BranchFolder.foldBranches(body);
-//          DeadCodeEliminator.eliminateDeadCode(body);
+            DeadCodeEliminator.eliminateDeadCode(body);
 //          UnreachablePruner.pruneUnreachables(body);
 //          JumpOptimizer.optimizeJumps(body);
 //        UnreachablePruner.pruneUnreachables(body);
