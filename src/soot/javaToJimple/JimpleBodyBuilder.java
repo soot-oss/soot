@@ -360,9 +360,9 @@ public class JimpleBodyBuilder {
             if (litValue) return soot.jimple.IntConstant.v(1);
             else return soot.jimple.IntConstant.v(0);
 		}
-        /*else if (lit instanceof polyglot.ast.ClassLit){
-            return getSpecialClassLitLocal(lit);
-        }*/
+        else if (lit instanceof polyglot.ast.ClassLit){
+            return getSpecialClassLitLocal((polyglot.ast.ClassLit)lit);
+        }
         else {
             throw new RuntimeException("Unknown Literal - Unhandled: "+lit.getClass());
         }
@@ -1732,7 +1732,8 @@ public class JimpleBodyBuilder {
             return getSpecialArrayLengthLocal(field);
         }
         else if (field.name().equals("class")){
-            return getSpecialClassLitLocal(field);
+            throw new RuntimeException("Should go through ClassLit");
+            //return getSpecialClassLitLocal(field);
         }
         else if ((ms.getPrivateAccessMap() != null) && (ms.getPrivateAccessMap().containsKey(field.fieldInstance()))){
         
@@ -1795,21 +1796,15 @@ public class JimpleBodyBuilder {
     /**
      * To get the local for the special .class literal
      */
-    private soot.Local getSpecialClassLitLocal(polyglot.ast.Field field) {
+    private soot.Local getSpecialClassLitLocal(polyglot.ast.ClassLit lit) {
         
         // this class
         soot.SootClass thisClass = body.getMethod().getDeclaringClass();
         String fieldName = "class$";
-        String typeName = null;
-        if (field.target() instanceof polyglot.ast.TypeNode) {
-            String type = ((polyglot.ast.TypeNode)field.target()).type().toString();
-            typeName = type;
-            type = type.replace('.', '$');
-            fieldName = fieldName+type;
-        }
-        else {
-            throw new RuntimeException("class literal only valid on type nodes");
-        }
+        String type = Util.getSootType(lit.typeNode().type()).toString();
+        String typeName = type;
+        type = soot.util.StringTools.replaceAll(type, ".", "$");
+        fieldName = fieldName+type;
         soot.Type fieldType = soot.RefType.v("java.lang.Class");
         soot.Local fieldLocal = lg.generateLocal(soot.RefType.v("java.lang.Class"));
         soot.jimple.StaticFieldRef fieldRef = soot.jimple.Jimple.v().newStaticFieldRef(thisClass.getField(fieldName, fieldType));

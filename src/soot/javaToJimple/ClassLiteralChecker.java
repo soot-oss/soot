@@ -15,10 +15,8 @@ public class ClassLiteralChecker extends polyglot.visit.NodeVisitor {
 
     public polyglot.ast.Node leave(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {
     
-        if (n instanceof polyglot.ast.Field) {
-            if (((polyglot.ast.Field)n).name().equals("class")){
-                list.add(n);
-            }
+        if (n instanceof polyglot.ast.ClassLit) {
+            list.add(n);
         }
         return n;
     }

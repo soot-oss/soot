@@ -209,18 +209,12 @@ public class InitialResolver {
         }
         Iterator classLitIt = classLitList.iterator();
         while (classLitIt.hasNext()) {
-            polyglot.ast.Field classLitField = (polyglot.ast.Field)classLitIt.next();
+            polyglot.ast.ClassLit classLit = (polyglot.ast.ClassLit)classLitIt.next();
             // field
-            polyglot.ast.Receiver receiver = classLitField.target();
             String fieldName = "class$";
-            if (receiver instanceof polyglot.ast.TypeNode) {
-                String type = ((polyglot.ast.TypeNode)receiver).type().toString();
-                type = type.replace('.', '$');
-                fieldName = fieldName+type;
-            }
-            else {
-                throw new RuntimeException("class literal only valid on type nodes");
-            }
+            String type = Util.getSootType(classLit.typeNode().type()).toString();
+            type = soot.util.StringTools.replaceAll(type, ".", "$");
+            fieldName = fieldName+type;
             soot.Type fieldType = soot.RefType.v("java.lang.Class");
             if (!sc.declaresField(fieldName, fieldType)){
                 soot.SootField sootField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
@@ -906,7 +900,7 @@ public class InitialResolver {
         MethodFinalsChecker mfc = new MethodFinalsChecker();
         procedure.visit(mfc);
         AnonLocalClassInfo alci = new AnonLocalClassInfo();
-        alci.finalLocals(mfc.finalLocals());
+        alci.finalLocals(getFinalLocalsAvail(procedure));
         //System.out.println("alci creation: "+mfc.finalLocals());
         if (soot.Modifier.isStatic(sootMethod.getModifiers())){
             alci.inStaticMethod(true);
@@ -932,6 +926,32 @@ public class InitialResolver {
         
 	}
 
+    private ArrayList getFinalLocalsAvail(polyglot.ast.ProcedureDecl proc){
+        ArrayList finalsAvail = new ArrayList();
+        if (proc.formals() != null){
+            Iterator formalsIt = proc.formals().iterator();
+            while (formalsIt.hasNext()){
+                polyglot.ast.Formal formal = (polyglot.ast.Formal)formalsIt.next();
+                if (formal.localInstance().flags().isFinal()){
+                    finalsAvail.add(new polyglot.util.IdentityKey(formal.localInstance()));
+                }
+            }
+        }
+        if ((proc.body() != null) && (proc.body().statements() != null)){
+            Iterator stmtsIt = proc.body().statements().iterator();
+            while (stmtsIt.hasNext()){
+                Object next = stmtsIt.next();
+                if (next instanceof polyglot.ast.LocalDecl){
+                    polyglot.ast.LocalDecl decl = (polyglot.ast.LocalDecl)next;
+                    if (decl.localInstance().flags().isFinal()){
+                        finalsAvail.add(new polyglot.util.IdentityKey(decl.localInstance()));
+                    }
+                }
+            }
+        }
+        return finalsAvail;
+    }
+    
     private void addProcedureToClass(soot.SootMethod method) {
         sootClass.addMethod(method);
     }
