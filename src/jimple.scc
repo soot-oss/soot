@@ -35,14 +35,8 @@ Helpers
   quotable_char = [not_cr_lf - '''];
 
   // string_char = [not_cr_lf - '"'];
-<<<<<<< 1.beta.5.dev.63(w)/src/jimple.scc Mon, 24 Jan 2000 17:41:46 -0500 plam (soot/v/b/46_jimple.scc 1.1 644)
-  // FIX THIS -- all unicode chars can be in strings!
 
   string_char = escape_char |  [0 .. 33] | [35 .. 91] | [93 ..127] ;  // escapes and any char except '\' (92) or '"' (34). 
-=======
-  // FIX THIS -- all unicode chars can be in strings!
-  string_char = escape_char | 9 | [35 .. 91] | [93 ..126] | [32 + 33] | [10 + 13] ;
->>>>>>> 1.beta.5.dev.65/src/jimple.scc Thu, 13 Jan 2000 15:13:21 -0500 plam (soot/v/b/46_jimple.scc 1.2 644)
 
   line_comment = '//' not_cr_lf*;
   long_comment = '/*' not_star* '*'+ (not_star_slash not_star* '*'+)* '/';
@@ -77,7 +71,6 @@ Tokens
   extends = '.extends';
   implements = '.implements';
  
-<<<<<<< 1.beta.5.dev.63(w)/src/jimple.scc Mon, 24 Jan 2000 17:41:46 -0500 plam (soot/v/b/46_jimple.scc 1.1 644)
   breakpoint = '.breakpoint';
   case = '.case';
   catch = '.catch';
@@ -107,37 +100,6 @@ Tokens
   throws = '.throws';
   virtualinvoke = '.virtualinvoke';
   null = '.null';
-=======
-  breakpoint = 'breakpoint';
-  case = 'case';
-  catch = 'catch';
-  cmp = 'cmp';
-  cmpg = 'cmpg';
-  cmpl = 'cmpl';
-  default = 'default';
-  entermonitor = 'entermonitor';
-  exitmonitor = 'exitmonitor';
-  goto = 'goto';
-  if = 'if';
-  instanceof = 'instanceof';
-  interfaceinvoke = 'interfaceinvoke';
-  lengthof = 'lengthof';
-  lookupswitch = 'lookupswitch';
-  neg = 'neg';
-  new = 'new';
-  newarray = 'newarray';
-  newmultiarray = 'newmultiarray';
-  nop = 'nop';
-  ret = 'ret';
-  return = 'return';
-  specialinvoke = 'specialinvoke';
-  staticinvoke = 'staticinvoke';
-  tableswitch = 'tableswitch';
-  throw = 'throw';
-  throws = 'throws';
-  virtualinvoke = 'virtualinvoke';
-  null = 'null';
->>>>>>> 1.beta.5.dev.65/src/jimple.scc Thu, 13 Jan 2000 15:13:21 -0500 plam (soot/v/b/46_jimple.scc 1.2 644)
 
   comma = ',';
   l_brace = '{';
