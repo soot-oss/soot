@@ -11,22 +11,22 @@ import soot.dava.toolkits.base.finders.*;
 
 public abstract class SETNode
 {
-    private IteratorableSet body;
+    private IterableSet body;
     private SETNodeLabel label;
 
     protected SETNode parent;
     protected AugmentedStmt entryStmt;
-    protected IteratorableSet predecessors, successors;
+    protected IterableSet predecessors, successors;
     protected LinkedList subBodies;
     protected Map body2childChain;
 
-    public abstract IteratorableSet get_NaturalExits();
+    public abstract IterableSet get_NaturalExits();
     public abstract ASTNode emit_AST();
     public abstract AugmentedStmt get_EntryStmt();
     protected abstract boolean resolve( SETNode parent);
 
 
-    public SETNode( IteratorableSet body)
+    public SETNode( IterableSet body)
     {
 	this.body = body;
 
@@ -34,14 +34,14 @@ public abstract class SETNode
 	label = new SETNodeLabel();
 	subBodies = new LinkedList();
 	body2childChain = new HashMap();
-	predecessors = new IteratorableSet();
-	successors = new IteratorableSet();
+	predecessors = new IterableSet();
+	successors = new IterableSet();
     }
 
-    public void add_SubBody( IteratorableSet body)
+    public void add_SubBody( IterableSet body)
     {
 	subBodies.add( body);
-	body2childChain.put( body, new IteratorableSet());
+	body2childChain.put( body, new IterableSet());
     }
 
     public Map get_Body2ChildChain()
@@ -54,7 +54,7 @@ public abstract class SETNode
 	return subBodies;
     }
 
-    public IteratorableSet get_Body()
+    public IterableSet get_Body()
     {
 	return body;
     }
@@ -75,17 +75,17 @@ public abstract class SETNode
     }
 
 
-    public IteratorableSet get_Successors()
+    public IterableSet get_Successors()
     {
 	return successors;
     }
 
-    public IteratorableSet get_Predecessors()
+    public IterableSet get_Predecessors()
     {
 	return predecessors;
     }
 
-    public boolean add_Child( SETNode child, IteratorableSet children)
+    public boolean add_Child( SETNode child, IterableSet children)
     {
 	if ((this == child) || (children.contains( child))) 
 	    return false;
@@ -95,7 +95,7 @@ public abstract class SETNode
 	return true;
     }
 
-    public boolean remove_Child( SETNode child, IteratorableSet children)
+    public boolean remove_Child( SETNode child, IterableSet children)
     {
 	if ((this == child) || (children.contains( child) == false))
 	    return false;
@@ -105,7 +105,7 @@ public abstract class SETNode
 	return true;
     }
 
-    public boolean insert_ChildBefore( SETNode child, SETNode point, IteratorableSet children )
+    public boolean insert_ChildBefore( SETNode child, SETNode point, IterableSet children )
     {
 	if ((this == child) || (this == point) || (children.contains( point) == false))
 	    return false;
@@ -115,7 +115,7 @@ public abstract class SETNode
 	return true;
     }
 
-    public List emit_ASTBody( IteratorableSet children)
+    public List emit_ASTBody( IterableSet children)
     {
 	LinkedList l = new LinkedList();
 
@@ -135,7 +135,7 @@ public abstract class SETNode
      *  Basic inter-SETNode utilities.
      */
 
-    public IteratorableSet get_IntersectionWith( SETNode other)
+    public IterableSet get_IntersectionWith( SETNode other)
     {
 	return body.intersection( other.get_Body());
     }
@@ -170,7 +170,7 @@ public abstract class SETNode
     {
 	Iterator sbit = subBodies.iterator();
 	while (sbit.hasNext()) {
-	    Iterator it = ((IteratorableSet) body2childChain.get( sbit.next())).iterator();
+	    Iterator it = ((IterableSet) body2childChain.get( sbit.next())).iterator();
 	    while (it.hasNext()) {
 		SETNode child = (SETNode) it.next();
 		
@@ -188,7 +188,7 @@ public abstract class SETNode
     {
 	Iterator sbit = subBodies.iterator();
 	while (sbit.hasNext()) {
-	    Iterator cit = ((IteratorableSet) body2childChain.get( sbit.next())).iterator();
+	    Iterator cit = ((IterableSet) body2childChain.get( sbit.next())).iterator();
 	    while (cit.hasNext())
 		((SETNode) cit.next()).find_LabeledBlocks( lbf);
 	}
@@ -202,8 +202,8 @@ public abstract class SETNode
 	Iterator sbit = subBodies.iterator();
 	while (sbit.hasNext()) {
 
-	    IteratorableSet body = (IteratorableSet) sbit.next();
-	    IteratorableSet children = (IteratorableSet) body2childChain.get( body);
+	    IterableSet body = (IterableSet) sbit.next();
+	    IterableSet children = (IterableSet) body2childChain.get( body);
 	    HashSet childUnion = new HashSet();
 
 	    Iterator cit = children.iterator();
@@ -222,8 +222,8 @@ public abstract class SETNode
     {
 	Iterator sbit = subBodies.iterator();
 	while (sbit.hasNext()) {
-	    IteratorableSet body = (IteratorableSet) sbit.next();
-	    IteratorableSet children = (IteratorableSet) body2childChain.get( body);
+	    IterableSet body = (IterableSet) sbit.next();
+	    IterableSet children = (IterableSet) body2childChain.get( body);
 	    
 	    Iterator cit = children.iterator();
 	    while (cit.hasNext())
@@ -234,7 +234,7 @@ public abstract class SETNode
 
 	sbit = subBodies.iterator();
 	while (sbit.hasNext()) {
-	    IteratorableSet children = (IteratorableSet) body2childChain.get( sbit.next());
+	    IterableSet children = (IterableSet) body2childChain.get( sbit.next());
 	    
 	    Iterator cit = children.iterator();
 	    if (cit.hasNext()) {
@@ -260,7 +260,7 @@ public abstract class SETNode
 
 	Iterator it = subBodies.iterator();
 	while (it.hasNext()) {
-	    IteratorableSet subBody = (IteratorableSet) it.next();
+	    IterableSet subBody = (IterableSet) it.next();
 
 	    if (subBody.contains( as)) {
 		subBody.remove( as);
@@ -276,20 +276,20 @@ public abstract class SETNode
 	if (other.resolve( this) == false)
 	    return false;
 
-	IteratorableSet otherBody = other.get_Body();
+	IterableSet otherBody = other.get_Body();
 	
 	Iterator sbit = subBodies.iterator();
 	while (sbit.hasNext()) {
-	    IteratorableSet subBody = (IteratorableSet) sbit.next();
+	    IterableSet subBody = (IterableSet) sbit.next();
 	    
 	    if (subBody.intersects( otherBody)) {
-		IteratorableSet childChain = (IteratorableSet) body2childChain.get( subBody);
+		IterableSet childChain = (IterableSet) body2childChain.get( subBody);
 		
 		Iterator ccit = childChain.snapshotIterator();
 		while (ccit.hasNext()) {
 		    SETNode curChild = (SETNode) ccit.next();
 		    
-		    IteratorableSet childBody = curChild.get_Body();
+		    IterableSet childBody = curChild.get_Body();
 		    
 		    if (childBody.intersects( otherBody)) {
 			
@@ -302,10 +302,10 @@ public abstract class SETNode
 			    
 			    Iterator osbit = other.subBodies.iterator();
 			    while (osbit.hasNext()) {
-				IteratorableSet otherSubBody = (IteratorableSet) osbit.next();
+				IterableSet otherSubBody = (IterableSet) osbit.next();
 				
 				if (otherSubBody.isSupersetOf( childBody)) {
-				    other.add_Child( curChild, (IteratorableSet) other.get_Body2ChildChain().get( otherSubBody));
+				    other.add_Child( curChild, (IterableSet) other.get_Body2ChildChain().get( otherSubBody));
 				    break;
 				}
 			    }
@@ -354,7 +354,7 @@ public abstract class SETNode
 
 	Iterator sbit = subBodies.iterator();
 	while (sbit.hasNext()) {
-	    IteratorableSet subBody = (IteratorableSet) sbit.next();
+	    IterableSet subBody = (IterableSet) sbit.next();
 
 	    out.println( indentation + MID);
 	    Iterator bit = subBody.iterator();
@@ -363,7 +363,7 @@ public abstract class SETNode
 
 	    out.println( indentation + TAB);
 
-	    Iterator cit = ((IteratorableSet) body2childChain.get( subBody)).iterator();
+	    Iterator cit = ((IterableSet) body2childChain.get( subBody)).iterator();
 	    while (cit.hasNext())
 		((SETNode) cit.next()).dump( out, TAB + indentation);
 	}
@@ -374,14 +374,14 @@ public abstract class SETNode
     {
 	Iterator sbit = subBodies.iterator();
 	while (sbit.hasNext()) {
-	    IteratorableSet body = (IteratorableSet) sbit.next();
+	    IterableSet body = (IterableSet) sbit.next();
 	    
 	    Iterator bit = body.iterator();
 	    while (bit.hasNext())
 		if ((bit.next() instanceof AugmentedStmt) == false)
 		    System.out.println( "Error in body: " + getClass());
 
-	    Iterator cit = ((IteratorableSet) body2childChain.get( body)).iterator();
+	    Iterator cit = ((IterableSet) body2childChain.get( body)).iterator();
 	    while (cit.hasNext())
 		((SETNode) cit.next()).verify();
 	}

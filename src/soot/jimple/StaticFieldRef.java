@@ -39,7 +39,7 @@ public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf, Eq
 {
     SootField field;
 
-    public StaticFieldRef(SootField field)
+    protected StaticFieldRef(SootField field)
     {
         this.field = field;
     }

@@ -18,12 +18,6 @@ public class ASTMethodNode extends ASTNode
 
     public String toString( Map stmtToName, String indentation)
     {
-	String s = body_toString( stmtToName, indentation, body);
-	String suffix = ";" + ASTNode.NEWLINE;
-
-	if (s.endsWith( suffix))
-	    s = s.substring( 0, s.length() - suffix.length());
-	
-	return s;
+	return body_toString( stmtToName, indentation, body);
     }
 }

@@ -2,13 +2,14 @@ package soot.dava.internal.SET;
 
 import java.util.*;
 import soot.util.*;
+import soot.jimple.*;
 import soot.dava.internal.asg.*;
 
 public abstract class SETControlFlowNode extends SETNode
 {
     private AugmentedStmt characterizingStmt;
 
-    public SETControlFlowNode( AugmentedStmt characterizingStmt, IteratorableSet body)
+    public SETControlFlowNode( AugmentedStmt characterizingStmt, IterableSet body)
     {
 	super( body);
 	this.characterizingStmt = characterizingStmt;
@@ -23,17 +24,19 @@ public abstract class SETControlFlowNode extends SETNode
     {
 	Iterator sbit = parent.get_SubBodies().iterator();
 	while (sbit.hasNext()) {
-	    IteratorableSet subBody = (IteratorableSet) sbit.next();
+	    IterableSet subBody = (IterableSet) sbit.next();
 	    
 	    if (subBody.contains( get_EntryStmt()) == false)
 		continue;
 
-	    IteratorableSet childChain = (IteratorableSet) parent.get_Body2ChildChain().get( subBody);
+	    IterableSet childChain = (IterableSet) parent.get_Body2ChildChain().get( subBody);
 	    HashSet childUnion = new HashSet();
 
 	    Iterator ccit = childChain.iterator();
 	    while (ccit.hasNext()) {
-		IteratorableSet childBody = ((SETNode) ccit.next()).get_Body();
+		
+		SETNode child = (SETNode) ccit.next();
+		IterableSet childBody = child.get_Body();
 		childUnion.addAll( childBody);
 
 		if (childBody.contains( characterizingStmt)) {
@@ -44,7 +47,18 @@ public abstract class SETControlFlowNode extends SETNode
 
 			if (childBody.contains( as) == false) 
 			    remove_AugmentedStmt( as);
+
+			else if (child instanceof SETControlFlowNode) {
+			    SETControlFlowNode scfn = (SETControlFlowNode) child;
+
+			    if ((scfn.get_CharacterizingStmt() == as) ||
+				((as.cpreds.size() == 1) && (as.get_Stmt() instanceof GotoStmt) && (scfn.get_CharacterizingStmt() == as.cpreds.get(0))))
+
+				remove_AugmentedStmt( as);
+			}
 		    }
+
+		    return true;
 		}
 	    }
 	}

@@ -2,17 +2,17 @@ package soot.util;
 
 import java.util.*;
 
-public class IteratorableSet extends HashChain implements Set
+public class IterableSet extends HashChain implements Set
 {
     public boolean equals( Object o)
     {
 	if (this == o)
 	    return true;
 
-	if ((o instanceof IteratorableSet) == false)
+	if ((o instanceof IterableSet) == false)
 	    return false;
 
-	IteratorableSet other = (IteratorableSet) o;
+	IterableSet other = (IterableSet) o;
 
 	if (size() != other.size())
 	    return false;
@@ -27,12 +27,12 @@ public class IteratorableSet extends HashChain implements Set
     
     public Object clone()
     {
-	IteratorableSet s = new IteratorableSet();
+	IterableSet s = new IterableSet();
 	s.addAll( this);
 	return s;
     }    
 
-    public boolean isSubsetOf( IteratorableSet other)
+    public boolean isSubsetOf( IterableSet other)
     {
 	if (size() > other.size())
 	    return false;
@@ -45,7 +45,7 @@ public class IteratorableSet extends HashChain implements Set
 	return true;
     }
     
-    public boolean isSupersetOf( IteratorableSet other)
+    public boolean isSupersetOf( IterableSet other)
     {
 	if (size() < other.size())
 	    return false;
@@ -58,7 +58,7 @@ public class IteratorableSet extends HashChain implements Set
 	return true;
     }
 
-    public boolean isStrictSubsetOf( IteratorableSet other)
+    public boolean isStrictSubsetOf( IterableSet other)
     {
 	if (size() >= other.size())
 	    return false;
@@ -66,7 +66,7 @@ public class IteratorableSet extends HashChain implements Set
 	return isSubsetOf( other);
     }
     
-    public boolean isStrictSupersetOf( IteratorableSet other)
+    public boolean isStrictSupersetOf( IterableSet other)
     {
 	if (size() <= other.size())
 	    return false;
@@ -75,7 +75,7 @@ public class IteratorableSet extends HashChain implements Set
     }
 
 
-    public boolean intersects( IteratorableSet other)
+    public boolean intersects( IterableSet other)
     {
 	if (other.size() < size()) {
 	    Iterator it = other.iterator();
@@ -92,9 +92,9 @@ public class IteratorableSet extends HashChain implements Set
 	return false;
     }
 
-    public IteratorableSet intersection( IteratorableSet other)
+    public IterableSet intersection( IterableSet other)
     {
-	IteratorableSet c = new IteratorableSet();
+	IterableSet c = new IterableSet();
 
 	if (other.size() < size()) {
 	    Iterator it = other.iterator();
@@ -117,9 +117,9 @@ public class IteratorableSet extends HashChain implements Set
 	return c;
     }
 
-    public IteratorableSet union( IteratorableSet other)
+    public IterableSet union( IterableSet other)
     {
-	IteratorableSet c = new IteratorableSet();
+	IterableSet c = new IterableSet();
 	c.addAll( this);
 
 	Iterator it = other.iterator();
@@ -131,5 +131,18 @@ public class IteratorableSet extends HashChain implements Set
 	}
 
 	return c;
+    }
+
+    public String toString()
+    {
+	StringBuffer b = new StringBuffer();
+
+	Iterator it = iterator();
+	while (it.hasNext()) {
+	    b.append( it.next().toString());
+	    b.append( "\n");
+	}
+
+	return b.toString();
     }
 }

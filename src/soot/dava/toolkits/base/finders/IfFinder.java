@@ -21,6 +21,8 @@ public class IfFinder implements FactFinder
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {
+	Dava.v().log( "IfFinder::find()");
+
 	Iterator asgit = asg.iterator();
 	while (asgit.hasNext()) {
 	    AugmentedStmt as = (AugmentedStmt) asgit.next();
@@ -46,23 +48,47 @@ public class IfFinder implements FactFinder
 		asg.calculate_Reachability( succIf, succElse, as);
 		asg.calculate_Reachability( succElse, succIf, as);
 
-		IteratorableSet
+		IterableSet
+		    fullBody = new IterableSet(),
 		    ifBody   = find_Body( succIf, succElse),
 		    elseBody = find_Body( succElse, succIf);
 
-		IteratorableSet fullBody = new IteratorableSet();
 		fullBody.add( as);
 		fullBody.addAll( ifBody);
 		fullBody.addAll( elseBody);
 		
+		Iterator enlit = body.get_ExceptionFacts().iterator();
+		while (enlit.hasNext()) {
+		    ExceptionNode en = (ExceptionNode) enlit.next();
+		    IterableSet tryBody = en.get_TryBody();
+
+		    if (tryBody.contains( as)) {
+			Iterator fbit = fullBody.snapshotIterator();
+			
+			while (fbit.hasNext()) {
+			    AugmentedStmt fbas = (AugmentedStmt) fbit.next();
+
+			    if (tryBody.contains( fbas) == false) {
+				fullBody.remove( fbas);
+
+				if (ifBody.contains( fbas))
+				    ifBody.remove( fbas);
+
+				if (elseBody.contains( fbas))
+				    elseBody.remove( fbas);
+			    }
+			}
+		    }
+		}
+
 		SET.nest( new SETIfElseNode( as, fullBody, ifBody, elseBody));
 	    }
 	}
     }
 
-    private IteratorableSet find_Body( AugmentedStmt targetBranch, AugmentedStmt otherBranch)
+    private IterableSet find_Body( AugmentedStmt targetBranch, AugmentedStmt otherBranch)
     {
-	IteratorableSet body = new IteratorableSet();
+	IterableSet body = new IterableSet();
 
 	if (targetBranch.get_Reachers().contains( otherBranch))
 	    return body;

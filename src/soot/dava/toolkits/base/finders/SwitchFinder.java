@@ -16,7 +16,7 @@ public class SwitchFinder implements FactFinder
     private static SwitchFinder instance = new SwitchFinder();
 
 
-    private IteratorableSet junkBody;
+    private IterableSet junkBody;
     private HashSet targetSet;
     private LinkedList 	targetList, snTargetList, tSuccList;
     private HashMap index2target, tSucc2indexSet, tSucc2target, tSucc2Body;
@@ -29,6 +29,8 @@ public class SwitchFinder implements FactFinder
 
     public void find( DavaBody davaBody, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {
+	Dava.v().log( "SwitchFinder::find()");
+
 	final String defaultStr = "default";
 
 	Iterator asgit = asg.iterator();
@@ -43,7 +45,7 @@ public class SwitchFinder implements FactFinder
 
 	    Value key = null;
 
-	    junkBody  = new IteratorableSet();
+	    junkBody  = new IterableSet();
 	    targetSet = new HashSet();
 
 	    targetList   = new LinkedList();
@@ -82,7 +84,7 @@ public class SwitchFinder implements FactFinder
 		AugmentedStmt tSucc = (AugmentedStmt) tsit.next();
 		AugmentedStmt target = (AugmentedStmt) tSucc2target.get( tSucc);
 
-		snTargetList.addLast( new SwitchNode( target, (TreeSet) tSucc2indexSet.get( tSucc), (IteratorableSet) tSucc2Body.get( tSucc)));
+		snTargetList.addLast( new SwitchNode( target, (TreeSet) tSucc2indexSet.get( tSucc), (IterableSet) tSucc2Body.get( tSucc)));
 	    }
 	    
 	    TreeSet 
@@ -126,7 +128,7 @@ public class SwitchFinder implements FactFinder
 		while (kit.hasNext()) {
 		    SwitchNode sn = (SwitchNode) kit.next();
 
-		    IteratorableSet snBody = sn.get_Body();
+		    IterableSet snBody = sn.get_Body();
 		    snBody.clear();
 		    snBody.add( sn.get_AugStmt());
 		}
@@ -166,7 +168,7 @@ public class SwitchFinder implements FactFinder
 		}
 	    }
 
-	    IteratorableSet body = new IteratorableSet();
+	    IterableSet body = new IterableSet();
 	    body.add( as);
 	    Iterator snlit = switchNodeList.iterator();
 	    while (snlit.hasNext()) {
@@ -181,13 +183,41 @@ public class SwitchFinder implements FactFinder
 
 	    body.addAll( junkBody);
 
+	    Iterator enlit = davaBody.get_ExceptionFacts().iterator();
+	    while (enlit.hasNext()) {
+		ExceptionNode en = (ExceptionNode) enlit.next();
+		IterableSet tryBody = en.get_TryBody();
+		
+		if (tryBody.contains( as)) {
+		    Iterator fbit = body.snapshotIterator();
+		    
+		    while (fbit.hasNext()) {
+			AugmentedStmt fbas = (AugmentedStmt) fbit.next();
+			
+			if (tryBody.contains( fbas) == false) {
+			    body.remove( fbas);
+			    
+			    snlit = switchNodeList.iterator();
+			    while (snlit.hasNext()) {
+				IterableSet switchBody = ((SwitchNode) snlit.next()).get_Body();
+
+				if (switchBody.contains( fbas)) {
+				    switchBody.remove( fbas);
+				    break;
+				}
+			    }
+			}
+		    }
+		}
+	    }
+
 	    SET.nest( new SETSwitchNode( as, key, body, switchNodeList, junkBody));
 	}
     }    
 
-    private IteratorableSet find_SubBody( AugmentedStmt switchAS, AugmentedStmt branchS)
+    private IterableSet find_SubBody( AugmentedStmt switchAS, AugmentedStmt branchS)
     {
-	IteratorableSet subBody = new IteratorableSet();
+	IterableSet subBody = new IterableSet();
 	LinkedList worklist = new LinkedList();
 
 	subBody.add( branchS);

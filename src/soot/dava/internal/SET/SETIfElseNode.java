@@ -10,9 +10,9 @@ import soot.dava.toolkits.base.misc.*;
 
 public class SETIfElseNode extends SETDagNode
 {
-    private IteratorableSet ifBody, elseBody;
+    private IterableSet ifBody, elseBody;
 
-    public SETIfElseNode( AugmentedStmt characterizingStmt, IteratorableSet body, IteratorableSet ifBody, IteratorableSet elseBody) 
+    public SETIfElseNode( AugmentedStmt characterizingStmt, IterableSet body, IterableSet ifBody, IterableSet elseBody) 
     {
 	super( characterizingStmt, body);
 
@@ -23,15 +23,15 @@ public class SETIfElseNode extends SETDagNode
 	add_SubBody( elseBody);
     }
 
-    public IteratorableSet get_NaturalExits()
+    public IterableSet get_NaturalExits()
     {
-	IteratorableSet c = new IteratorableSet();
+	IterableSet c = new IterableSet();
 
-	IteratorableSet ifChain = (IteratorableSet) body2childChain.get( ifBody);
+	IterableSet ifChain = (IterableSet) body2childChain.get( ifBody);
 	if (ifChain.isEmpty() == false)
 	    c.addAll( ((SETNode) ifChain.getLast()).get_NaturalExits());
 
-	IteratorableSet elseChain = (IteratorableSet) body2childChain.get( elseBody);
+	IterableSet elseChain = (IterableSet) body2childChain.get( elseBody);
 	if (elseChain.isEmpty() == false)
 	    c.addAll( ((SETNode) elseChain.getLast()).get_NaturalExits());
 
@@ -41,8 +41,8 @@ public class SETIfElseNode extends SETDagNode
     public ASTNode emit_AST()
     {
 	List
-	    astBody0 = emit_ASTBody( (IteratorableSet) body2childChain.get( ifBody)),
-	    astBody1 = emit_ASTBody( (IteratorableSet) body2childChain.get( elseBody));
+	    astBody0 = emit_ASTBody( (IterableSet) body2childChain.get( ifBody)),
+	    astBody1 = emit_ASTBody( (IterableSet) body2childChain.get( elseBody));
 
 	ConditionExpr ce = (ConditionExpr) ((IfStmt) get_CharacterizingStmt().get_Stmt()).getCondition();
 

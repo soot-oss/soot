@@ -7,25 +7,25 @@ import soot.dava.internal.AST.*;
 
 public class SETLabeledBlockNode extends SETNode
 {
-    public SETLabeledBlockNode( IteratorableSet body)
+    public SETLabeledBlockNode( IterableSet body)
     {
 	super( body);
 	add_SubBody( body);
     }
 
-    public IteratorableSet get_NaturalExits()
+    public IterableSet get_NaturalExits()
     {
-	return ((SETNode) ((IteratorableSet) body2childChain.get( subBodies.get(0))).getLast()).get_NaturalExits();
+	return ((SETNode) ((IterableSet) body2childChain.get( subBodies.get(0))).getLast()).get_NaturalExits();
     }
 
     public ASTNode emit_AST()
     {
-        return new ASTLabeledBlockNode( get_Label(), emit_ASTBody( (IteratorableSet) body2childChain.get( subBodies.get(0))));
+        return new ASTLabeledBlockNode( get_Label(), emit_ASTBody( (IterableSet) body2childChain.get( subBodies.get(0))));
     }
 
     public AugmentedStmt get_EntryStmt()
     {
-	return ((SETNode) ((IteratorableSet) body2childChain.get( subBodies.get(0))).getFirst()).get_EntryStmt();
+	return ((SETNode) ((IterableSet) body2childChain.get( subBodies.get(0))).getFirst()).get_EntryStmt();
     }
 
     protected boolean resolve( SETNode parent)

@@ -815,8 +815,34 @@ public class SootClass extends AbstractHost
         out.println("}");
     }
     
-    public void printTo(PrintWriter out, int printBodyOptions)
+    public void printTo(PrintWriter out, int printBodyOptions) 
     {
+	printTo( out, printBodyOptions, false);
+    }
+
+    public void printTo( PrintWriter out, int printBodyOptions, boolean packageRelativeClassNames)
+    {
+	String tmpClassName = null;
+
+	// Optionally print the package info for Dava files.
+	if (Main.getWithPackages() && (packageRelativeClassNames)) {
+
+	    String name = this.getName();
+	    int index = name.lastIndexOf( '.');
+	    
+	    if (index == (name.length() - 1))
+		throw new RuntimeException( "Malformed class name for packaging: " + name);
+	    
+	    if (index > 0) {
+		out.println( "package " + name.substring( 0, index) + ";");
+		out.println();
+	    }
+	    
+	    if (index != -1)
+		tmpClassName = name.substring( index + 1);
+	}
+
+
         // Print class name + modifiers
         {
             String classPrefix = "";
@@ -830,7 +856,12 @@ public class SootClass extends AbstractHost
                 classPrefix = classPrefix.trim();
             }
 
-            out.print(classPrefix + " " + this.getName() + "");
+            out.print(classPrefix + " ");
+
+	    if (tmpClassName != null)
+		out.print( tmpClassName + "");
+	    else
+		out.print( this.getName() + "");
         }
 
         // Print extension

@@ -14,7 +14,7 @@ public class SETStatementSequenceNode extends SETNode
     private DavaBody davaBody;
     private boolean hasContinue;
 
-    public SETStatementSequenceNode( IteratorableSet body, DavaBody davaBody)
+    public SETStatementSequenceNode( IterableSet body, DavaBody davaBody)
     {
 	super( body);
 	add_SubBody( body);
@@ -24,7 +24,7 @@ public class SETStatementSequenceNode extends SETNode
 	hasContinue = false;
     }
 
-    public SETStatementSequenceNode( IteratorableSet body)
+    public SETStatementSequenceNode( IterableSet body)
     {
 	this( body, null);
     }
@@ -34,9 +34,9 @@ public class SETStatementSequenceNode extends SETNode
 	return hasContinue;
     }
 
-    public IteratorableSet get_NaturalExits()
+    public IterableSet get_NaturalExits()
     {
-	IteratorableSet c = new IteratorableSet();
+	IterableSet c = new IterableSet();
 	AugmentedStmt last = (AugmentedStmt) get_Body().getLast();
 	
 	if ((last.csuccs != null) && (last.csuccs.isEmpty() == false))

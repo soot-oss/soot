@@ -28,7 +28,7 @@ public class SynchronizedBlockFinder implements FactFinder
     private static SynchronizedBlockFinder instance = new SynchronizedBlockFinder();
 
     private HashMap as2ml;
-    private IteratorableSet monitorLocalSet, monitorEnterSet;
+    private IterableSet monitorLocalSet, monitorEnterSet;
 
     private Integer WHITE, GRAY, BLACK, VARIABLE_INCR;
     private int UNKNOWN;
@@ -42,15 +42,17 @@ public class SynchronizedBlockFinder implements FactFinder
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {
+	Dava.v().log( "SynchronizedBlockFinder::find()");
+
 	as2ml = new HashMap();
 
-	IteratorableSet synchronizedBlockFacts = body.get_SynchronizedBlockFacts();
+	IterableSet synchronizedBlockFacts = body.get_SynchronizedBlockFacts();
 	synchronizedBlockFacts.clear();
 
 	set_MonitorLevels( asg);
 	Map as2synchSet = build_SynchSets();
 
-	IteratorableSet usedMonitors = new IteratorableSet();
+	IterableSet usedMonitors = new IterableSet();
 
 	Iterator asgit = asg.iterator();
 	while (asgit.hasNext()) {
@@ -58,10 +60,10 @@ public class SynchronizedBlockFinder implements FactFinder
 	    AugmentedStmt as = (AugmentedStmt) asgit.next();
 	    if (as.get_Stmt() instanceof EnterMonitorStmt) {
 
-		IteratorableSet synchSet = (IteratorableSet) as2synchSet.get( as);
+		IterableSet synchSet = (IterableSet) as2synchSet.get( as);
 		if (synchSet != null) {
 
-		    IteratorableSet synchBody = get_BodyApproximation( as, synchSet);		    
+		    IterableSet synchBody = get_BodyApproximation( as, synchSet);		    
 		    Value local = ((EnterMonitorStmt) as.get_Stmt()).getOp();
 		    Integer level = (Integer) ((HashMap) as2ml.get( as)).get( local);
 
@@ -71,7 +73,7 @@ public class SynchronizedBlockFinder implements FactFinder
 
 			if (verify_CatchBody( en, synchBody, local)) {
 			    if (SET.nest( new SETSynchronizedBlockNode( en, local))) {
-				
+
 				Iterator ssit = synchSet.iterator();
 				while (ssit.hasNext()) {
 				    AugmentedStmt ssas = (AugmentedStmt) ssit.next();
@@ -95,7 +97,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    }
 	}
 
-	IteratorableSet monitorFacts = body.get_MonitorFacts();
+	IterableSet monitorFacts = body.get_MonitorFacts();
 	monitorFacts.clear();
 
 	asgit = asg.iterator();
@@ -111,7 +113,7 @@ public class SynchronizedBlockFinder implements FactFinder
     private void find_VariableIncreasing( AugmentedStmtGraph asg, HashMap local2level_template, LinkedList viAugStmts, HashMap as2locals) 
     {
     	StronglyConnectedComponents scc = new StronglyConnectedComponents( asg);
-	IteratorableSet viSeeds = new IteratorableSet();
+	IterableSet viSeeds = new IterableSet();
 	HashMap 
 	    as2color = new HashMap(),
 	    as2rml   = new HashMap();	
@@ -129,7 +131,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    if (componentList.size() < 2)
 		continue;
 
-	    IteratorableSet component = new IteratorableSet();
+	    IterableSet component = new IterableSet();
 	    component.addAll( componentList);
 
 	    Iterator cit = component.iterator();
@@ -141,7 +143,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    DFS_Scc( seedStmt, component, as2rml, as2color, seedStmt, viSeeds);
 	}
 
-	IteratorableSet worklist = new IteratorableSet();
+	IterableSet worklist = new IterableSet();
 	worklist.addAll( viSeeds);
 
 	// Propegate the variable increasing property.
@@ -198,7 +200,7 @@ public class SynchronizedBlockFinder implements FactFinder
     }
 
 
-    private void DFS_Scc( AugmentedStmt as, IteratorableSet component, HashMap as2rml, HashMap as2color, AugmentedStmt seedStmt, IteratorableSet viSeeds)
+    private void DFS_Scc( AugmentedStmt as, IterableSet component, HashMap as2rml, HashMap as2color, AugmentedStmt seedStmt, IterableSet viSeeds)
     {
 	as2color.put( as, GRAY);
 
@@ -264,10 +266,10 @@ public class SynchronizedBlockFinder implements FactFinder
 	while (mesit.hasNext()) {
 	    AugmentedStmt headAs = (AugmentedStmt) mesit.next();
 	    Value local = ((EnterMonitorStmt) headAs.get_Stmt()).getOp();
-	    IteratorableSet synchSet = new IteratorableSet();
+	    IterableSet synchSet = new IterableSet();
 
 	    int monitorLevel = ((Integer) ((HashMap) as2ml.get( headAs)).get( local)).intValue();
-	    IteratorableSet worklist = new IteratorableSet();
+	    IterableSet worklist = new IterableSet();
 	    worklist.add( headAs);
 
 	    while (worklist.isEmpty() == false) {
@@ -300,8 +302,8 @@ public class SynchronizedBlockFinder implements FactFinder
 
     private void set_MonitorLevels( AugmentedStmtGraph asg)
     {
-	monitorLocalSet = new IteratorableSet();
-	monitorEnterSet = new IteratorableSet();
+	monitorLocalSet = new IterableSet();
+	monitorEnterSet = new IterableSet();
 
 	// Identify the locals that are used in monitor statements, and all the monitor enters.
 	Iterator asgit = asg.iterator();
@@ -346,7 +348,7 @@ public class SynchronizedBlockFinder implements FactFinder
 		local2level.put( lit.next(), VARIABLE_INCR);
 	}
 
-	IteratorableSet worklist = new IteratorableSet();
+	IterableSet worklist = new IterableSet();
 	worklist.addAll( monitorEnterSet);
 
 	// Flow monitor lock levels.
@@ -405,7 +407,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	}
     }
 
-    private boolean verify_CatchBody( ExceptionNode en, IteratorableSet synchBody, Value monitorVariable)
+    private boolean verify_CatchBody( ExceptionNode en, IterableSet synchBody, Value monitorVariable)
     {
 	if ((en.get_Body().equals( synchBody) == false) ||
 	    (en.get_Exception().getName().equals( THROWABLE) == false) || 
@@ -413,7 +415,7 @@ public class SynchronizedBlockFinder implements FactFinder
 
 	    return false;
 
-	IteratorableSet catchBody = en.get_CatchBody();
+	IterableSet catchBody = en.get_CatchBody();
 	AugmentedStmt 
 	    entryPoint = null;
 
@@ -461,7 +463,7 @@ public class SynchronizedBlockFinder implements FactFinder
 
 	Value throwlocal = ds.getLeftOp();
 
-	IteratorableSet esuccs = new IteratorableSet();
+	IterableSet esuccs = new IterableSet();
 	esuccs.addAll( as.csuccs);
 	esuccs.removeAll( as.bsuccs);
 
@@ -486,9 +488,9 @@ public class SynchronizedBlockFinder implements FactFinder
 	return true;
     }
 
-    private boolean verify_ESuccs( AugmentedStmt as, IteratorableSet ref)
+    private boolean verify_ESuccs( AugmentedStmt as, IterableSet ref)
     {
-	IteratorableSet esuccs = new IteratorableSet();
+	IterableSet esuccs = new IterableSet();
 
 	esuccs.addAll( as.csuccs);
 	esuccs.removeAll( as.bsuccs);
@@ -496,9 +498,9 @@ public class SynchronizedBlockFinder implements FactFinder
 	return esuccs.equals( ref);
     }
 
-    private IteratorableSet get_BodyApproximation( AugmentedStmt head, IteratorableSet synchSet) 
+    private IterableSet get_BodyApproximation( AugmentedStmt head, IterableSet synchSet) 
     {
-	IteratorableSet body = (IteratorableSet) synchSet.clone();
+	IterableSet body = (IterableSet) synchSet.clone();
 	Value local = ((EnterMonitorStmt) head.get_Stmt()).getOp();
 	Integer level = (Integer) ((HashMap) as2ml.get( head)).get( local);
 

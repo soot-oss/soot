@@ -11,7 +11,7 @@ public class AugmentedStmt
     public List bpreds, bsuccs, cpreds, csuccs;
     public SETNode myNode;
 
-    private IteratorableSet dominators, reachers;
+    private IterableSet dominators, reachers;
     private Stmt s;
 
 
@@ -19,8 +19,8 @@ public class AugmentedStmt
     {
 	this.s = s;
 
-	dominators = new IteratorableSet();
-	reachers   = new IteratorableSet();
+	dominators = new IterableSet();
+	reachers   = new IterableSet();
 
 	reset_PredsSuccs();
     }
@@ -131,17 +131,17 @@ public class AugmentedStmt
 	return s;
     }
 
-    public IteratorableSet get_Dominators()
+    public IterableSet get_Dominators()
     {
 	return dominators;
     }
 
-    public IteratorableSet get_Reachers()
+    public IterableSet get_Reachers()
     {
 	return reachers;
     }
 
-    public void set_Reachability( IteratorableSet reachers)
+    public void set_Reachability( IterableSet reachers)
     {
 	this.reachers = reachers;
     }

@@ -19,12 +19,11 @@ public class DavaBody extends Body
 {
     private Map pMap;
     private HashSet consumedConditions, thisLocals;
-    private IteratorableSet synchronizedBlockFacts, exceptionFacts, monitorFacts;
+    private IterableSet synchronizedBlockFacts, exceptionFacts, monitorFacts;
     private Local controlLocal;
     private InstanceInvokeExpr constructorExpr;
     private Unit constructorUnit;
     private List caughtrefs;
-
     
     /**
      *  Construct an empty DavaBody 
@@ -37,15 +36,14 @@ public class DavaBody extends Body
 	pMap = new HashMap();
 	consumedConditions = new HashSet();
 	thisLocals = new HashSet();
-	synchronizedBlockFacts = new IteratorableSet();
-	exceptionFacts = new IteratorableSet();
-	monitorFacts = new IteratorableSet();
+	synchronizedBlockFacts = new IterableSet();
+	exceptionFacts = new IterableSet();
+	monitorFacts = new IterableSet();
 	caughtrefs = new LinkedList();
 
 	controlLocal = null;
 	constructorExpr = null;
     }
-
 
     public Unit get_ConstructorUnit()
     {
@@ -99,17 +97,17 @@ public class DavaBody extends Body
         return b;
     }
 
-    public IteratorableSet get_SynchronizedBlockFacts()
+    public IterableSet get_SynchronizedBlockFacts()
     {
 	return synchronizedBlockFacts;
     }
 
-    public IteratorableSet get_ExceptionFacts()
+    public IterableSet get_ExceptionFacts()
     {
 	return exceptionFacts;
     }
 
-    public IteratorableSet get_MonitorFacts()
+    public IterableSet get_MonitorFacts()
     {
 	return monitorFacts;
     }
@@ -123,9 +121,11 @@ public class DavaBody extends Body
     {
         this( body.getMethod());
 
+	Dava.v().log( "\nstart method " + body.getMethod().toString());
+
 	// copy and "convert" the grimp representation
 	copy_Body( body);
-
+	
 	// prime the analysis
         AugmentedStmtGraph asg = new AugmentedStmtGraph( new BriefUnitGraph( this), new CompleteUnitGraph( this, true));
 
@@ -151,13 +151,17 @@ public class DavaBody extends Body
 	}
 
 	MonitorConverter.v().convert( this);
+
+	ASTNode AST = SET.emit_AST();
 	
 	// get rid of the grimp representation
 	getTraps().clear();
 	getUnits().clear();
 	
 	// put in a new AST representation
-	getUnits().addLast( SET.emit_AST());
+	getUnits().addLast( AST);
+
+	Dava.v().log( "end method " + body.getMethod().toString());
     }
 
 
@@ -360,6 +364,15 @@ public class DavaBody extends Body
 		if (s instanceof IfStmt)
 		    javafy( ((IfStmt) s).getConditionBox());
 
+		else if (s instanceof TableSwitchStmt)
+		    javafy( ((TableSwitchStmt) s).getKeyBox());
+
+		else if (s instanceof LookupSwitchStmt)
+		    javafy( ((LookupSwitchStmt) s).getKeyBox());
+
+		else if (s instanceof MonitorStmt)
+		    javafy( ((MonitorStmt) s).getOpBox());
+
 		else if (s instanceof DefinitionStmt) {
 		    DefinitionStmt ds = (DefinitionStmt) s;
 
@@ -422,7 +435,7 @@ public class DavaBody extends Body
 
 
 	/*
-	 *  Fix up the calls to other constructors.  Note, this is seriously underbuilt. :-)
+	 *  Fix up the calls to other constructors.  Note, this is seriously underbuilt.
 	 */
 
 	{
@@ -445,9 +458,12 @@ public class DavaBody extends Body
 			    String name = m.getName();
 
 			    if ((name.equals( DavaMethod.constructorName)) || (name.equals( DavaMethod.staticInitializerName))) {
+
+				if (constructorUnit != null)
+				    throw new RuntimeException( "More than one candidate for constructor found.");
+
 				constructorExpr = iie;
 				constructorUnit = (Unit) s;
-				break;
 			    }
 			}
 		    }

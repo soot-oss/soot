@@ -2,22 +2,22 @@ package soot.util;
 
 import java.util.*;
 
-public class IteratorableMap implements Map
+public class IterableMap implements Map
 {
     private HashMap content_map, back_map;
     private HashChain key_chain, value_chain;
 
-    public IteratorableMap()
+    public IterableMap()
     {
 	this( 7, 0.7f);
     }
 
-    public IteratorableMap( int initialCapacity)
+    public IterableMap( int initialCapacity)
     {
 	this( initialCapacity, 0.7f);
     }
 
-    public IteratorableMap( int initialCapacity, float loadFactor)
+    public IterableMap( int initialCapacity, float loadFactor)
     {
 	content_map = new HashMap( initialCapacity, loadFactor);
 	back_map    = new HashMap( initialCapacity, loadFactor);
@@ -64,10 +64,10 @@ public class IteratorableMap implements Map
 	if (o == this)
 	    return true;
 
-	if ((o instanceof IteratorableMap) == false)
+	if ((o instanceof IterableMap) == false)
 	    return false;
 	
-	IteratorableMap other = (IteratorableMap) o;
+	IterableMap other = (IterableMap) o;
 
 	if (key_chain.equals( other.key_chain) == false)
 	    return false;
@@ -121,15 +121,15 @@ public class IteratorableMap implements Map
 			return false;
 		    }
 
-		    if (IteratorableMap.this.content_map.get( o) == null) {
-			IteratorableMap.this.remove(o);
+		    if (IterableMap.this.content_map.get( o) == null) {
+			IterableMap.this.remove(o);
 			return true;
 		    }
 
-                    return (IteratorableMap.this.remove(o) != null);
+                    return (IterableMap.this.remove(o) != null);
                 }
                 public void clear() {
-		    IteratorableMap.this.clear();
+		    IterableMap.this.clear();
                 }
             };
         }
@@ -155,22 +155,22 @@ public class IteratorableMap implements Map
 			return false;
 		    }
 
-		    HashChain c = (HashChain) IteratorableMap.this.back_map.get( o);
+		    HashChain c = (HashChain) IterableMap.this.back_map.get( o);
 		    Iterator it = c.snapshotIterator();
 		    while (it.hasNext()) {
 			Object ko = it.next();
 
-			if (IteratorableMap.this.content_map.get( o) == null) {
-			    IteratorableMap.this.remove(ko);
+			if (IterableMap.this.content_map.get( o) == null) {
+			    IterableMap.this.remove(ko);
 			}
-			else if (IteratorableMap.this.remove( ko) == null) {
+			else if (IterableMap.this.remove( ko) == null) {
 			    return false;
 			}
 		    }
 		    return true;
                 }
                 public void clear() {
-		    IteratorableMap.this.clear();
+		    IterableMap.this.clear();
                 }
             };
         }
@@ -224,7 +224,7 @@ public class IteratorableMap implements Map
 
     public void putAll( Map t)
     {
-	Iterator kit = (t instanceof IteratorableMap) ? ((IteratorableMap) t).key_chain.iterator() : t.keySet().iterator();
+	Iterator kit = (t instanceof IterableMap) ? ((IterableMap) t).key_chain.iterator() : t.keySet().iterator();
 
 	while (kit.hasNext()) {
 	    Object key = kit.next();
@@ -258,7 +258,7 @@ public class IteratorableMap implements Map
         if (values==null) {
             values = new AbstractCollection() {
                 public Iterator iterator() {
-		    return new Mapping_Iterator( IteratorableMap.this.key_chain, IteratorableMap.this.content_map);
+		    return new Mapping_Iterator( IterableMap.this.key_chain, IterableMap.this.content_map);
                 }
                 public int size() {
                     return key_chain.size();
@@ -267,7 +267,7 @@ public class IteratorableMap implements Map
                     return value_chain.contains(o);
                 }
                 public void clear() {
-		    IteratorableMap.this.clear();
+		    IterableMap.this.clear();
                 }
             };
         }
@@ -297,7 +297,7 @@ public class IteratorableMap implements Map
 
         public void remove() throws UnsupportedOperationException 
         {
-	    throw new UnsupportedOperationException("You cannot remove from an Iterator on the values() for an IteratorableMap.");
+	    throw new UnsupportedOperationException("You cannot remove from an Iterator on the values() for an IterableMap.");
         }
     }
 

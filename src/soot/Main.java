@@ -133,7 +133,10 @@ public class Main implements Runnable
             str = ".class";
             break;
         case DAVA:
-            str = ".dava";
+	    if (withPackages)
+		str = ".java";
+	    else
+		str = ".dava";
             break;
         case JASMIN:
             str = ".jasmin";
@@ -142,6 +145,118 @@ public class Main implements Runnable
             throw new RuntimeException();
         }
 	return str;
+    }
+
+    public static String getFileNameFor( String name, int rep)
+    {
+	StringBuffer 
+	    path  = new StringBuffer(),
+	    fname = new StringBuffer();
+
+        String pathStr = null;
+
+	if (outputDir != null)
+	    path.append( outputDir);
+
+	if ((path.length() > 0) && (path.charAt( path.length() - 1) != fileSeparator))
+	    path.append( fileSeparator);
+	
+	if (getWithPackages()) {
+
+	    int index = name.lastIndexOf( '.');
+	    
+	    if (index == (name.length() - 1))
+		throw new RuntimeException( "Malformed class name for packaging: " + name);
+
+	    switch(rep) {
+	    case BAF:
+	    case B:
+		path.append( "baf");
+		break;
+		
+	    case JIMPLE: 
+	    case JIMP:
+	    case NJIMPLE:
+		path.append( "jimple");
+		break;                        
+		
+	    case GRIMP:
+	    case GRIMPLE:
+		path.append( "grimp");
+		break;
+		
+	    case CLASS:
+		path.append( "sootclasses");
+		break;
+		
+	    case DAVA:
+		path.append( "dava");
+		path.append( fileSeparator);
+		{
+		    String classPath = path.toString() + "classes";
+		    File dir = new File( classPath);
+		    
+		    if (!dir.exists())
+			try {
+			    dir.mkdirs();
+			}
+			catch( SecurityException se) {
+			    System.err.println( "Unable to create " + classPath);
+			    se.printStackTrace();
+			    System.exit(0);
+			}
+		}
+		path.append( "src");
+		break;
+		
+	    case JASMIN:
+		path.append( "jasmin");
+		break;
+		
+	    default:
+		throw new RuntimeException();
+	    }
+
+	    path.append( fileSeparator);
+
+	    if (index > 0) {
+		path.append( name.substring( 0, index).replace( '.', fileSeparator));
+		path.append( fileSeparator);
+	    }
+
+	    pathStr = path.toString();
+
+	    fname.append( pathStr);
+
+	    if (index == -1)
+		fname.append( name);
+	    else 
+		fname.append( name.substring( index + 1));
+	}
+	else {
+	    pathStr = path.toString();
+
+	    fname.append( pathStr);
+	    fname.append( name);
+	}
+
+	fname.append( getExtensionFor( targetExtension));
+
+	if (path.length() > 0) {
+	    File dir = new File( pathStr);
+
+	    if (!dir.exists())
+		try {
+		    dir.mkdirs();
+		}
+		catch( SecurityException se) {
+		    System.err.println( "Unable to create " + pathStr);
+		    se.printStackTrace();
+		    System.exit(0);
+		}
+	}
+
+	return fname.toString();
     }
 
 
@@ -164,6 +279,8 @@ public class Main implements Runnable
     static private int targetExtension = CLASS;
     static private String xmlInputFile = null;
     static private boolean produceXmlOutput = false;
+    static private boolean withPackages = false;
+    static private boolean usedPackageSwitch = false;
 
     static public int totalFlowNodes, totalFlowComputations;
 
@@ -329,6 +446,16 @@ public class Main implements Runnable
     {
         return isVerbose;
     }
+
+    public static void setWithPackages(boolean val)
+    {
+	withPackages = val;
+    }
+    public static boolean getWithPackages()
+    {
+	return withPackages;
+    }
+    
 
     public static void setAppMode(boolean val)
     {
@@ -554,7 +681,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.30)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.31)");
 	System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -694,8 +821,11 @@ public class Main implements Runnable
 	while (cl.contains("c") || cl.contains("class"))
 	    setTargetRep(CLASS);
 				
-	while (cl.contains("dava"))
+	while (cl.contains("dava")) {
+	    Scene.v().setJimpleStmtPrinter( soot.dava.DavaStmtPrinter.v());
+	    Scene.v().setLocalPrinter( soot.dava.DavaLocalPrinter.v());
 	    setTargetRep(DAVA);
+	}
 				
 	while (cl.contains("X") || cl.contains("xml"))
 	    produceXmlOutput = true;
@@ -708,7 +838,17 @@ public class Main implements Runnable
 				
 	while (cl.contains("t") || cl.contains("time"))
 	    setProfiling(true);
-				
+
+	while (cl.contains("no-packages")) {
+	    setWithPackages(false);
+	    usedPackageSwitch = true;
+	}
+
+	while (cl.contains("with-packages")) {
+	    setWithPackages(true);
+	    usedPackageSwitch = true;
+	}
+
 	while (cl.contains("subtract-gc"))
 	    setSubstractingGC(true);
 				
@@ -874,6 +1014,8 @@ public class Main implements Runnable
 	addGetoptOption('A', "annotation", LongOpt.REQUIRED_ARGUMENT);
 	addGetoptOption(-21, "version", LongOpt.NO_ARGUMENT);
 	addGetoptOption('h', "help", LongOpt.NO_ARGUMENT);
+	addGetoptOption(-22, "no-packages", LongOpt.NO_ARGUMENT);
+	addGetoptOption(-23, "with-packages", LongOpt.NO_ARGUMENT);
 
 	// options handled elsewhere
 	addGetoptOption('-', "use-Getopt", LongOpt.NO_ARGUMENT);
@@ -933,7 +1075,9 @@ public class Main implements Runnable
 	    case 'c':
 		setTargetRep(CLASS);
 		break;
-	    case -11:
+	    case -11: 
+		Scene.v().setJimpleStmtPrinter( soot.dava.DavaStmtPrinter.v());
+		Scene.v().setLocalPrinter( soot.dava.DavaLocalPrinter.v());
 		setTargetRep(DAVA);
 		break;
 	    case 'X':
@@ -1102,8 +1246,11 @@ public class Main implements Runnable
 		setTargetRep(GRIMPLE);
 	    else if(arg.equals("-c") || arg.equals("--class"))
 		setTargetRep(CLASS);
-	    else if(arg.equals("--dava"))
+	    else if(arg.equals("--dava")) {
+		Scene.v().setJimpleStmtPrinter( soot.dava.DavaStmtPrinter.v());
+		Scene.v().setLocalPrinter( soot.dava.DavaLocalPrinter.v());
 		setTargetRep(DAVA);
+	    }
 	    else if(arg.equals("-X") || arg.equals("--xml"))
 		produceXmlOutput = true;
 	    else if(arg.equals("-O") || arg.equals("--optimize"))
@@ -1112,6 +1259,14 @@ public class Main implements Runnable
 		setOptimizingWhole(true);
 	    else if(arg.equals("-t") || arg.equals("--time"))
 		setProfiling(true);
+	    else if(arg.equals("--no-packages")) {
+		setWithPackages( false); 
+		usedPackageSwitch = true;
+	    }
+	    else if(arg.equals("--with-packages")) {
+		setWithPackages( true);
+		usedPackageSwitch = true;
+	    }
 	    else if(arg.equals("--subtract-gc"))
 		setSubstractingGC(true);
 	    else if(arg.equals("-v") || arg.equals("--verbose"))
@@ -1717,15 +1872,31 @@ public class Main implements Runnable
         FileOutputStream streamOut = null;
         PrintWriter writerOut = null;
         
-        String fileName;
+        boolean 
+	    produceBaf   = false,
+	    produceGrimp = false,
+	    produceDava  = false;
         
-        if(!outputDir.equals(""))
-            fileName = outputDir + fileSeparator;
-        else
-            fileName = "";
-        
-        fileName += c.getName() + getExtensionFor(targetExtension);
-        
+	switch( targetExtension) {	    
+	case DAVA:
+	    produceDava = true;
+	case GRIMP:
+	case GRIMPLE:
+	    produceGrimp = true;
+	    break;
+	case BAF:
+	case B:
+	    produceBaf = true;
+	    break;
+	default:
+	    break;
+	}
+	
+	boolean buildPackages = getWithPackages();
+	if ((produceDava) && (!usedPackageSwitch))
+	    setWithPackages( true);
+
+        String fileName = getFileNameFor( c.getName(), targetExtension);
       
         if(targetExtension != CLASS)
 	    {   
@@ -1735,59 +1906,29 @@ public class Main implements Runnable
 		}
 		catch (IOException e)
 		    {
-			System.out.println("Cannot output file " + c.getName() + getExtensionFor(targetExtension));
+			System.out.println("Cannot output file " + fileName);
 		    }
 	    }
-
-        boolean produceBaf = false;
-        boolean produceGrimp = false;
-        boolean produceDava = false;
-        
-        // Determine paths
-        
-        {
-            String endResult;
-                               
-            switch(targetExtension) {
-            case JIMPLE:
-            case NJIMPLE:
-            case JIMP:                   
-                endResult = "jimple";
-                break;
-            case GRIMP:
-            case GRIMPLE:
-                endResult = "grimp";
-                break;
-            case DAVA:
-                endResult = "dava";
-                break;
-            case BAF:
-            case B:
-                endResult = "baf";
-                break;
-            default:
-                endResult = getExtensionFor(finalRep).substring(1);
-            }
-        
-            if(endResult.equals("baf"))
-		{
-		    produceBaf = true; 
-		}
-            else if(endResult.equals("grimp"))
-		{
-		    produceGrimp = true;
-		}
-            else if(endResult.equals("dava"))
-		{
-		    produceGrimp = true;
-		    produceDava = true;
-		}
-        }
 
 	HashChain newMethods = new HashChain();
 	
         // Build all necessary bodies
         {
+	    if (produceDava) {
+		Iterator methodIt = c.getMethods().snapshotIterator();
+
+		while (methodIt.hasNext()) {
+		    SootMethod m = (SootMethod) methodIt.next();
+		    DavaMethod dm = new DavaMethod( m.getName(), m.getParameterTypes(), m.getReturnType());
+
+		    dm.copy( m);
+		    dm.setClassName( c.getName());
+
+		    c.removeMethod( m);
+		    c.addMethod( dm);
+		}
+	    }
+
             Iterator methodIt = c.getMethods().iterator();
            
             while(methodIt.hasNext())
@@ -1799,12 +1940,18 @@ public class Main implements Runnable
                                 
 		    // Build Jimple body and transform it.
 		    {
+			boolean wasOptimizing = isOptimizing;
+			if (produceDava)
+			    isOptimizing = true;
+
 			JimpleBody body = (JimpleBody) m.retrieveActiveBody();
 		    
 			Scene.v().getPack("jtp").apply(body);
                     
 			if(isOptimizing) 
 			    Scene.v().getPack("jop").apply(body);
+
+			isOptimizing = wasOptimizing;
 		    }
                 
 		    if(produceGrimp)
@@ -1830,32 +1977,20 @@ public class Main implements Runnable
 			    if(isOptimizing) 
 				Scene.v().getPack("bop").apply(m.getActiveBody());
 			} 
-                
-		    if(produceDava)
-			{
-			    DavaMethod dm = new DavaMethod( m.getName(), m.getParameterTypes(), m.getReturnType());
-			    dm.copy( m);
-			    dm.setClassName( c.getName());
-			    newMethods.add( dm);
-			}    
 		}
-            
-	    if (produceDava) 
-		{
-		    c.getMethods().clear();
-		    c.getMethods().addAll( newMethods);
+
+	    if (produceDava) {
+		methodIt = c.getMethods().iterator();
+		
+		while (methodIt.hasNext()) {
+		    DavaMethod dm = (DavaMethod) methodIt.next();
 		    
-		    methodIt = newMethods.iterator();
-		    while (methodIt.hasNext()) {
-			
-			DavaMethod m = (DavaMethod) methodIt.next();
-			
-			if(!m.isConcrete())
-			    continue;
-			
-			m.setActiveBody(Dava.v().newBody(m.getActiveBody(), "db"));
-		    }
+		    if (!dm.isConcrete())
+			continue;
+
+		    dm.setActiveBody( Dava.v().newBody( dm.getActiveBody(), "db"));
 		}
+	    }
         }
 
         switch(targetExtension) {
@@ -1881,8 +2016,7 @@ public class Main implements Runnable
             c.printJimpleStyleTo(writerOut, 0);
             break;
         case DAVA:
-	    Scene.v().setLocalPrinter( soot.dava.DavaLocalPrinter.v());
-            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS, true);
             break;
         case GRIMP:
             c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
@@ -1918,6 +2052,7 @@ public class Main implements Runnable
 			m.releaseActiveBody();
 		}
         }
+	setWithPackages( buildPackages);
     }
     
     public static double truncatedOf(double d, int numDigits)
@@ -1945,6 +2080,3 @@ public class Main implements Runnable
         }    
     }
 }
-
-
-

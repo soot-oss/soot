@@ -19,10 +19,12 @@ public class SequenceFinder implements FactFinder
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {
+	Dava.v().log( "SequenceFinder::find()");
+
 	SET.find_StatementSequences( this, body);
     }
 
-    public void find_StatementSequences( SETNode SETParent, IteratorableSet body, HashSet childUnion, DavaBody davaBody)
+    public void find_StatementSequences( SETNode SETParent, IterableSet body, HashSet childUnion, DavaBody davaBody)
     {
 	Iterator bit = body.iterator();
 	while (bit.hasNext()) {
@@ -31,7 +33,7 @@ public class SequenceFinder implements FactFinder
 	    if (childUnion.contains( as))
 		continue;
 	    
-	    IteratorableSet sequenceBody = new IteratorableSet();
+	    IterableSet sequenceBody = new IterableSet();
 
 	    while (as.bpreds.size() == 1) {
 		AugmentedStmt pas = (AugmentedStmt) as.bpreds.get(0);
@@ -53,7 +55,7 @@ public class SequenceFinder implements FactFinder
 		    break;
 	    }
 
-	    SETParent.add_Child( new SETStatementSequenceNode( sequenceBody, davaBody), (IteratorableSet) SETParent.get_Body2ChildChain().get( body));
+	    SETParent.add_Child( new SETStatementSequenceNode( sequenceBody, davaBody), (IterableSet) SETParent.get_Body2ChildChain().get( body));
 	}
     }
 }

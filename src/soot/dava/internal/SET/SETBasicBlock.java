@@ -8,15 +8,15 @@ public class SETBasicBlock implements Comparable
     private static final HashMap binding = new HashMap();
     
     private SETNode entryNode, exitNode;
-    private IteratorableSet predecessors, successors, body;
+    private IterableSet predecessors, successors, body;
     private int priority;
 
     
     public SETBasicBlock()
     {
-	predecessors = new IteratorableSet();
-	successors = new IteratorableSet();
-	body = new IteratorableSet();
+	predecessors = new IterableSet();
+	successors = new IterableSet();
+	body = new IterableSet();
 
 	entryNode = exitNode = null;
 	priority = -1;
@@ -84,17 +84,17 @@ public class SETBasicBlock implements Comparable
 	return exitNode;
     }
     
-    public IteratorableSet get_Predecessors()
+    public IterableSet get_Predecessors()
     {
 	return predecessors;
     }
     
-    public IteratorableSet get_Successors()
+    public IterableSet get_Successors()
     {
 	return successors;
     }
     
-    public IteratorableSet get_Body()
+    public IterableSet get_Body()
     {
 	return body;
     }

@@ -21,6 +21,8 @@ public class ExceptionFinder implements FactFinder
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {
+	Dava.v().log( "ExceptionFinder::find()");
+
 	Iterator it = body.get_ExceptionFacts().iterator();
 	while (it.hasNext()) {
 	    ExceptionNode en = (ExceptionNode) it.next();
@@ -28,12 +30,12 @@ public class ExceptionFinder implements FactFinder
 	    if (body.get_SynchronizedBlockFacts().contains( en))
 		continue;
 
-	    IteratorableSet fullBody = new IteratorableSet();
+	    IterableSet fullBody = new IterableSet();
 
 	    Iterator cit = en.get_CatchList().iterator();
 	    while (cit.hasNext()) 
-		fullBody.addAll( (IteratorableSet) cit.next());
-
+		fullBody.addAll( (IterableSet) cit.next());
+	    
 	    fullBody.addAll( en.get_TryBody());
 
 	    if (SET.nest( new SETTryNode( fullBody, en, asg, body)) == false)
@@ -43,7 +45,9 @@ public class ExceptionFinder implements FactFinder
 
     public void preprocess( DavaBody body, AugmentedStmtGraph asg)
     {
-	IteratorableSet enlist = new IteratorableSet();
+	Dava.v().log( "ExceptionFinder::preprocess()");
+
+	IterableSet enlist = new IterableSet();
 
 	// Find the first approximation for all the try catch bodies.
 	{
@@ -53,7 +57,7 @@ public class ExceptionFinder implements FactFinder
 		Unit endUnit = trap.getEndUnit();
 
 		// get the body of the try block as a raw read of the area of protection
-		IteratorableSet tryBody = new IteratorableSet();
+		IterableSet tryBody = new IterableSet();
 		
 		Iterator btit = body.getUnits().iterator( trap.getBeginUnit());
 		for (Unit u = (Unit) btit.next(); u != endUnit; u = (Unit) btit.next())
@@ -68,7 +72,7 @@ public class ExceptionFinder implements FactFinder
 	    Iterator enlit = enlist.iterator();
 	    while (enlit.hasNext()) {
 		ExceptionNode en = (ExceptionNode) enlit.next();
-		IteratorableSet try_body = en.get_TryBody();
+		IterableSet try_body = en.get_TryBody();
 		
 		Iterator tryIt = try_body.snapshotIterator();
 		while (tryIt.hasNext()) {
@@ -118,7 +122,7 @@ public class ExceptionFinder implements FactFinder
 		    for (int j=i+1; j<ena.length; j++) {
 			ExceptionNode enj = ena[j];
 			
-			IteratorableSet 
+			IterableSet 
 			    eniTryBody = eni.get_TryBody(),
 			    enjTryBody = enj.get_TryBody();
 
@@ -129,7 +133,7 @@ public class ExceptionFinder implements FactFinder
 
 				continue;
 
-			    IteratorableSet newTryBody = eniTryBody.intersection( enjTryBody);
+			    IterableSet newTryBody = eniTryBody.intersection( enjTryBody);
 
 			    if (newTryBody.equals( enjTryBody))
 				eni.splitOff_ExceptionNode( newTryBody, asg, enlist);
@@ -149,11 +153,16 @@ public class ExceptionFinder implements FactFinder
 		    ExceptionNode en = (ExceptionNode) enlit.next();
 
 		    // Get the try block entry points
-		    IteratorableSet tryBody = en.get_TryBody();
+		    IterableSet tryBody = en.get_TryBody();
 		    LinkedList heads = new LinkedList();
 		    Iterator trIt = tryBody.iterator();
 		    while (trIt.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) trIt.next();
+
+			if (as.cpreds.isEmpty()) {
+			    heads.add( as);
+			    continue;
+			}
 
 			Iterator pit = as.cpreds.iterator();
 			while (pit.hasNext()) 
@@ -168,7 +177,7 @@ public class ExceptionFinder implements FactFinder
 
 		    // Break up the try block for all the so-far detectable parts.
 		    AugmentedStmt head = (AugmentedStmt) heads.removeFirst();
-		    IteratorableSet subTryBlock = new IteratorableSet();
+		    IterableSet subTryBlock = new IterableSet();
 		    LinkedList worklist = new LinkedList();
 		    
 		    worklist.add( head);
@@ -215,7 +224,7 @@ public class ExceptionFinder implements FactFinder
 		ExceptionNode en = (ExceptionNode) enlit.next();
 
 		int hashCode = 0;
-		IteratorableSet curTryBody = en.get_TryBody();
+		IterableSet curTryBody = en.get_TryBody();
 
 		Iterator trit = curTryBody.iterator();
 		while (trit.hasNext()) 
@@ -232,7 +241,7 @@ public class ExceptionFinder implements FactFinder
 
 		Iterator bit = bucket.iterator();
 		while (bit.hasNext()) {
-		    IteratorableSet bucketTryBody = (IteratorableSet) bit.next();
+		    IterableSet bucketTryBody = (IterableSet) bit.next();
 			
 		    if (bucketTryBody.equals( curTryBody)) {
 			repExceptionNode = (ExceptionNode) tryBody2exceptionNode.get( bucketTryBody);
@@ -257,9 +266,9 @@ public class ExceptionFinder implements FactFinder
 	body.get_ExceptionFacts().addAll( enlist);
     }
 
-    public IteratorableSet get_CatchBody( AugmentedStmt handlerAugmentedStmt) 
+    public IterableSet get_CatchBody( AugmentedStmt handlerAugmentedStmt) 
     {
-	IteratorableSet catchBody = new IteratorableSet();
+	IterableSet catchBody = new IterableSet();
 	LinkedList catchQueue = new LinkedList();
 	
 	catchBody.add( handlerAugmentedStmt);	    

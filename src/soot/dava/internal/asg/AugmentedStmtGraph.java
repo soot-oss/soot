@@ -10,7 +10,7 @@ import soot.dava.toolkits.base.finders.*;
 public class AugmentedStmtGraph implements DirectedGraph
 {
     private HashMap binding, original2clone;
-    private IteratorableSet aug_list, stmt_list;
+    private IterableSet aug_list, stmt_list;
     private List bheads, btails, cheads, ctails;
 
 
@@ -102,8 +102,8 @@ public class AugmentedStmtGraph implements DirectedGraph
     {
         binding  = new HashMap();
 	original2clone = new HashMap();
-	aug_list = new IteratorableSet();
-	stmt_list = new IteratorableSet();
+	aug_list = new IterableSet();
+	stmt_list = new IterableSet();
 
 	bheads = new LinkedList();
 	btails = new LinkedList();
@@ -186,7 +186,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 		
 		touchSet.add( sas);
 		
-		IteratorableSet reachers = sas.get_Reachers();
+		IterableSet reachers = sas.get_Reachers();
 		
 		if (reachers.contains( source) == false)
 		    reachers.add( source);
@@ -311,9 +311,9 @@ public class AugmentedStmtGraph implements DirectedGraph
 	return btails;
     }
 
-    public IteratorableSet get_ChainView()
+    public IterableSet get_ChainView()
     {
-	IteratorableSet c = new IteratorableSet();
+	IterableSet c = new IterableSet();
 
 	c.addAll( aug_list);
 	return c;
@@ -459,13 +459,13 @@ public class AugmentedStmtGraph implements DirectedGraph
     }
 
 
-    public IteratorableSet clone_Body( IteratorableSet oldBody)
+    public IterableSet clone_Body( IterableSet oldBody)
     {
 	HashMap 
 	    old2new = new HashMap(),
 	    new2old = new HashMap();
 	
-	IteratorableSet newBody = new IteratorableSet();
+	IterableSet newBody = new IterableSet();
 
 	Iterator it = oldBody.iterator();
 	while (it.hasNext()) {
@@ -640,7 +640,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 	}
 
 	// build the worklist
-	IteratorableSet worklist = new IteratorableSet();
+	IterableSet worklist = new IterableSet();
 	worklist.addAll( aug_list);
 
 	// keep going until the worklist is empty
@@ -648,7 +648,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 	    AugmentedStmt as = (AugmentedStmt) worklist.getFirst();
 	    worklist.removeFirst();
 	    
-	    IteratorableSet pred_intersection = new IteratorableSet();
+	    IterableSet pred_intersection = new IterableSet();
 	    boolean first_pred = true;
 
 	    // run through all the predecessors and get their dominance intersection

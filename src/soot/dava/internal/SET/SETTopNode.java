@@ -7,20 +7,20 @@ import soot.dava.internal.AST.*;
 
 public class SETTopNode extends SETNode
 {
-    public SETTopNode( IteratorableSet body)
+    public SETTopNode( IterableSet body)
     {
 	super( body);
 	add_SubBody( body);
     }
 
-    public IteratorableSet get_NaturalExits()
+    public IterableSet get_NaturalExits()
     {
-	return new IteratorableSet();
+	return new IterableSet();
     }
 
     public ASTNode emit_AST()
     {
-	return new ASTMethodNode( emit_ASTBody( (IteratorableSet) body2childChain.get( subBodies.get(0))));
+	return new ASTMethodNode( emit_ASTBody( (IterableSet) body2childChain.get( subBodies.get(0))));
     }
 
     public AugmentedStmt get_EntryStmt()

@@ -5,7 +5,7 @@ import soot.dava.internal.asg.*;
 
 public abstract class SETDagNode extends SETControlFlowNode
 {
-    public SETDagNode( AugmentedStmt characterizingStmt, IteratorableSet body)
+    public SETDagNode( AugmentedStmt characterizingStmt, IterableSet body)
     {
 	super( characterizingStmt, body);
     }

@@ -145,12 +145,6 @@ public class SootMethod extends AbstractHost implements ClassMember
         return name;
     }
 
-    public void setDeclaringClass( SootClass declaringClass)
-    {
-	this.declaringClass = declaringClass;
-	setDeclared( true);
-    }
-
     /** Returns the class which declares the current <code>SootMethod</code>. */
     public SootClass getDeclaringClass() 
     {
@@ -183,7 +177,7 @@ public class SootMethod extends AbstractHost implements ClassMember
      
     public boolean isConcrete()
     {
-        if (declaringClass.isContextClass())
+        if ((declaringClass != null) && (declaringClass.isContextClass()))
 	    return false;
 
         return !isPhantom() && !isAbstract() && !isNative();
@@ -212,7 +206,7 @@ public class SootMethod extends AbstractHost implements ClassMember
      * @see soot.Modifier */
     public void setModifiers(int modifiers)
     {
-        if (!declaringClass.isApplicationClass())
+        if ((declaringClass != null) && (!declaringClass.isApplicationClass()))
             throw new RuntimeException("Cannot set modifiers of a method from a non-app class!");
         this.modifiers = modifiers;
     }
@@ -297,7 +291,7 @@ public class SootMethod extends AbstractHost implements ClassMember
      */
     public void setActiveBody(Body body)
     {
-        if (declaringClass.isContextClass() || declaringClass.isPhantomClass())
+        if ((declaringClass != null) && (declaringClass.isContextClass() || declaringClass.isPhantomClass()))
             throw new RuntimeException("cannot set active body for context or phantom class!");
 
         if(!isConcrete())

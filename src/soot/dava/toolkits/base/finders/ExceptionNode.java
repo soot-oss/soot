@@ -8,21 +8,21 @@ import soot.dava.internal.asg.*;
 
 public class ExceptionNode
 {
-    private IteratorableSet body, tryBody, catchBody;
+    private IterableSet body, tryBody, catchBody;
     private boolean dirty;
     private LinkedList exitList, catchList;
     private SootClass exception;
     private HashMap catch2except;
     private AugmentedStmt handlerAugmentedStmt;
 
-    public ExceptionNode( IteratorableSet tryBody, SootClass exception, AugmentedStmt handlerAugmentedStmt)
+    public ExceptionNode( IterableSet tryBody, SootClass exception, AugmentedStmt handlerAugmentedStmt)
     {
 	this.tryBody = tryBody;
 	this.catchBody = null;
 	this.exception = exception;
 	this.handlerAugmentedStmt = handlerAugmentedStmt;
 
-	body = new IteratorableSet();
+	body = new IterableSet();
 	body.addAll( tryBody);
 
 	dirty = true;
@@ -63,17 +63,17 @@ public class ExceptionNode
     }
 
 
-    public IteratorableSet get_Body()
+    public IterableSet get_Body()
     {
 	return body;
     }
     
-    public IteratorableSet get_TryBody()
+    public IterableSet get_TryBody()
     {
 	return tryBody;
     }
 
-    public IteratorableSet get_CatchBody()
+    public IterableSet get_CatchBody()
     {
 	return catchBody;
     }
@@ -122,18 +122,19 @@ public class ExceptionNode
 	return exitList;
     }
 
-    public void splitOff_ExceptionNode( IteratorableSet newTryBody, AugmentedStmtGraph asg, IteratorableSet enlist)
+    public void splitOff_ExceptionNode( IterableSet newTryBody, AugmentedStmtGraph asg, IterableSet enlist)
     {
-	IteratorableSet oldTryBody = new IteratorableSet();
+	IterableSet oldTryBody = new IterableSet();
 	oldTryBody.addAll( tryBody);
 
-	IteratorableSet oldBody = new IteratorableSet();
+	IterableSet oldBody = new IterableSet();
 	oldBody.addAll( body);
 
 	Iterator it = newTryBody.iterator();
 	while (it.hasNext()) {
 	    AugmentedStmt as = (AugmentedStmt) it.next();
 	    if (remove( as) == false) {
+
 		StringBuffer b = new StringBuffer();
 		it = newTryBody.iterator();
 		while (it.hasNext())
@@ -149,10 +150,8 @@ public class ExceptionNode
 		while (it.hasNext())
 		    b.append( "\n" + ((AugmentedStmt) it.next()).toString());
 		b.append( "\n-");
-
-	
 		
-		throw new RuntimeException( "Tried to split off a new try body that isn't in the old one.\n"+ as+"\n - " + b.toString());
+		throw new RuntimeException( "Tried to split off a new try body that isn't in the old one.\n"+ as +"\n - " + b.toString());
 	    }
 	}
 
@@ -187,7 +186,7 @@ public class ExceptionNode
 	    
 	    if (catchBody.isSupersetOf( en.get_Body())) {
 		
-		IteratorableSet clonedTryBody = new IteratorableSet();
+		IterableSet clonedTryBody = new IterableSet();
 		
 		Iterator trit = en.get_TryBody().iterator();
 		while (trit.hasNext())
@@ -199,6 +198,10 @@ public class ExceptionNode
 
 	enlist.addLast( new ExceptionNode( newTryBody, exception, asg.get_CloneOf( handlerAugmentedStmt)));
 
+	enlit = enlist.iterator();
+	while (enlit.hasNext())
+	    ((ExceptionNode) enlit.next()).refresh_CatchBody( ExceptionFinder.v());
+	
 	asg.find_Dominators();
     }
 
@@ -211,13 +214,13 @@ public class ExceptionNode
 
 	Iterator it = other.get_CatchList().iterator();
 	while (it.hasNext()) {
-	    IteratorableSet c = (IteratorableSet) it.next();
+	    IterableSet c = (IterableSet) it.next();
 
 	    add_CatchBody( c, other.get_Exception( c));
 	}
     }
 
-    public void add_CatchBody( IteratorableSet newCatchBody, SootClass except)
+    public void add_CatchBody( IterableSet newCatchBody, SootClass except)
     {
 	if (catchList == null) {
 	    catchList = new LinkedList();
@@ -261,7 +264,7 @@ public class ExceptionNode
 	return exception;
     }
 
-    public SootClass get_Exception( IteratorableSet catchBody)
+    public SootClass get_Exception( IterableSet catchBody)
     {
 	if (catch2except == null)
 	    return exception;
@@ -279,7 +282,7 @@ public class ExceptionNode
 	
 	Iterator cit = get_CatchList().iterator();
 	while (cit.hasNext()) {
-	    IteratorableSet catchBody = (IteratorableSet) cit.next();
+	    IterableSet catchBody = (IterableSet) cit.next();
 	    
 	    System.out.println( "catch " + get_ExceptionMap().get( catchBody) + " {");
 	    Iterator cbit = catchBody.iterator();

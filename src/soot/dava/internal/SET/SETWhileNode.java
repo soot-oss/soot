@@ -10,18 +10,18 @@ import soot.dava.toolkits.base.misc.*;
 
 public class SETWhileNode extends SETCycleNode
 {
-    public SETWhileNode( AugmentedStmt characterizingStmt, IteratorableSet body)
+    public SETWhileNode( AugmentedStmt characterizingStmt, IterableSet body)
     {
 	super( characterizingStmt, body);
 
-	IteratorableSet subBody = (IteratorableSet) body.clone();
+	IterableSet subBody = (IterableSet) body.clone();
 	subBody.remove( characterizingStmt);
 	add_SubBody( subBody);
     }
 
-    public IteratorableSet get_NaturalExits()
+    public IterableSet get_NaturalExits()
     {
-	IteratorableSet c = new IteratorableSet();
+	IterableSet c = new IterableSet();
 
 	c.add( get_CharacterizingStmt());
 	
@@ -32,7 +32,7 @@ public class SETWhileNode extends SETCycleNode
     {
 	return new ASTWhileNode( get_Label(), 
 				 (ConditionExpr) ((IfStmt) get_CharacterizingStmt().get_Stmt()).getCondition(), 
-				 emit_ASTBody( (IteratorableSet) body2childChain.get( subBodies.get(0))));
+				 emit_ASTBody( (IterableSet) body2childChain.get( subBodies.get(0))));
     }
     
     public AugmentedStmt get_EntryStmt()

@@ -20,18 +20,27 @@ public class DavaMethod extends SootMethod
 	setName( other.getName());
 	setParameterTypes( other.getParameterTypes());
 	setReturnType( other.getReturnType());
-	setDeclared( other.isDeclared());
-	setDeclaringClass( other.getDeclaringClass());
 	setModifiers( other.getModifiers());
 	setPhantom( other.isPhantom());
 	setExceptions( other.getExceptions());
-	setActiveBody( other.getActiveBody());
+	if (other.hasActiveBody())
+	    setActiveBody( other.getActiveBody());
 	setSource( other.getSource());
     }
 
     public void setClassName( String className)
     {
 	this.className = className;
+
+	if (Main.getWithPackages()) {
+	    int index = className.lastIndexOf( '.');
+	    
+	    if (index == (className.length() - 1))
+		throw new RuntimeException( "Malformed class name for packaging: " + className);
+	    
+	    if (index != -1)
+		this.className = className.substring( index + 1);
+	}	
     }
 
     public String getClassName()
@@ -79,33 +88,48 @@ public class DavaMethod extends SootMethod
 	    buffer.append( "(");
 
 	    // parameters
+
 	    Iterator typeIt = this.getParameterTypes().iterator();
-	    
-	    if(typeIt.hasNext())
-		{
-		    Type t = (Type) typeIt.next();
-		    
-		    buffer.append(t);
-		    
-		    Body body = getActiveBody();
-		    int count = 0;
-		    
-		    if (body instanceof DavaBody)
-			buffer.append( " " + ((DavaBody) body).get_ParamMap().get( new Integer( count++)));
-		    
-		    
-		    while(typeIt.hasNext())
-			{
-			    buffer.append(", ");
-			    t = (Type) typeIt.next();
-			    
-			    buffer.append(t);
-			    
-			    if (body instanceof DavaBody)
-				buffer.append( " " + ((DavaBody) body).get_ParamMap().get( new Integer( count++)));
-			    
-			}
+	    int count = 0;
+	    while (typeIt.hasNext()) {
+		Type t = (Type) typeIt.next();
+
+		buffer.append( t);
+		buffer.append( " ");
+
+		if (hasActiveBody()) 
+		    buffer.append( ((DavaBody) getActiveBody()).get_ParamMap().get( new Integer( count++)));
+
+		else {
+		    if (t ==BooleanType.v())
+			buffer.append( "z" + count++);
+		    else if (t == ByteType.v())
+			buffer.append( "b" + count++);
+		    else if (t == ShortType.v())
+			buffer.append( "s" + count++);
+		    else if (t == CharType.v())
+			buffer.append( "c" + count++);
+		    else if (t == IntType.v())
+			buffer.append( "i" + count++);
+		    else if (t == LongType.v())
+			buffer.append( "l" + count++);
+		    else if (t == DoubleType.v())
+			buffer.append( "d" + count++);
+		    else if (t == FloatType.v())
+			buffer.append( "f" + count++);
+		    else if (t == StmtAddressType.v())
+			buffer.append( "a" + count++);
+		    else if (t == ErroneousType.v())
+			buffer.append( "e" + count++);
+		    else if (t == NullType.v())
+			buffer.append( "n" + count++);
+		    else 
+			buffer.append( "r" + count++);
 		}
+
+		if (typeIt.hasNext())
+		    buffer.append( ", ");
+	    }
 	    
 	    buffer.append(")");
 	    

@@ -10,9 +10,9 @@ public class SwitchNode implements Comparable
     private AugmentedStmt as;
     private int score;
     private TreeSet indexSet;
-    private IteratorableSet body;
+    private IterableSet body;
 
-    public SwitchNode( AugmentedStmt as, TreeSet indexSet, IteratorableSet body)
+    public SwitchNode( AugmentedStmt as, TreeSet indexSet, IterableSet body)
     {
 	this.as = as;
 	this.indexSet = indexSet;
@@ -67,7 +67,7 @@ public class SwitchNode implements Comparable
 	return indexSet;
     }
 
-    public IteratorableSet get_Body()
+    public IterableSet get_Body()
     {
 	return body;
     }

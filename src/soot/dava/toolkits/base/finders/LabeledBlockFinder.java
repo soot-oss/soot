@@ -21,6 +21,8 @@ public class LabeledBlockFinder implements FactFinder
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {
+	Dava.v().log( "LabeledBlockFinder::find()");
+
 	Iterator bit = SET.get_Body().iterator();
 	while (bit.hasNext()) 
 	    SET.find_SmallestSETNode((AugmentedStmt) bit.next());
@@ -30,17 +32,19 @@ public class LabeledBlockFinder implements FactFinder
 
     public void perform_ChildOrder( SETNode SETParent)
     {
+	Dava.v().log( "LabeledBlockFinder::perform_ChildOrder()");
+
 	if (SETParent instanceof SETStatementSequenceNode)
 	    return;
 
 	Iterator sbit = SETParent.get_SubBodies().iterator();
 	while (sbit.hasNext()) {
 
-	    IteratorableSet body = (IteratorableSet) sbit.next();
-	    IteratorableSet children = (IteratorableSet) SETParent.get_Body2ChildChain().get( body);
+	    IterableSet body = (IterableSet) sbit.next();
+	    IterableSet children = (IterableSet) SETParent.get_Body2ChildChain().get( body);
 
 	    HashSet touchSet  = new HashSet();
-	    IteratorableSet childOrdering = new IteratorableSet();
+	    IterableSet childOrdering = new IterableSet();
 	    LinkedList worklist = new LinkedList();
 	    List SETBasicBlocks = null;
 	    
@@ -122,9 +126,11 @@ public class LabeledBlockFinder implements FactFinder
 	// SETParent.dump();
     }
     
-    private List build_Connectivity( SETNode SETParent, IteratorableSet body, SETNode startSETNode)
+    private List build_Connectivity( SETNode SETParent, IterableSet body, SETNode startSETNode)
     {
-	IteratorableSet children = (IteratorableSet) SETParent.get_Body2ChildChain().get( body);
+	Dava.v().log( "LabeledBlockFinder::build_Connectivity()");
+
+	IterableSet children = (IterableSet) SETParent.get_Body2ChildChain().get( body);
 	
 	/* 
 	 *  First task: establish the connectivity between the children of the current node.
@@ -164,6 +170,8 @@ public class LabeledBlockFinder implements FactFinder
 		}
 	    }
 	}
+
+	Dava.v().log( "LabeledBlockFinder::build_Connectivity() - built connectivity");
 
 
 	/*
@@ -228,26 +236,19 @@ public class LabeledBlockFinder implements FactFinder
 	    }
 	}
 
-	/*
-	if (basicBlockList.size() > 1) {
-	    Iterator sbbit = basicBlockList.iterator();
-	    while (sbbit.hasNext()) {
-		System.out.println( "^^^");
-		((SETBasicBlock) sbbit.next()).dump();
-		System.out.println( "***");
-	    }
-	}
-	*/
+	Dava.v().log( "LabeledBlockFinder::build_Connectivity() - done");
 
 	return basicBlockList;
     }
 
     public void find_LabeledBlocks( SETNode SETParent)
     {
+	Dava.v().log( "LabeledBlockFinder::find_LabeledBlocks()");
+
 	Iterator sbit = SETParent.get_SubBodies().iterator();
 	while (sbit.hasNext()) {
-	    IteratorableSet curBody = (IteratorableSet) sbit.next();
-	    IteratorableSet children = (IteratorableSet) SETParent.get_Body2ChildChain().get( curBody);
+	    IterableSet curBody = (IterableSet) sbit.next();
+	    IterableSet children = (IterableSet) SETParent.get_Body2ChildChain().get( curBody);
 	    
 	    Iterator it = children.snapshotIterator();
 	    if (it.hasNext()) {
@@ -289,7 +290,7 @@ public class LabeledBlockFinder implements FactFinder
 		    }
 		    
 		    if (build) {
-			IteratorableSet labeledBlockBody = new IteratorableSet();
+			IterableSet labeledBlockBody = new IterableSet();
 			
 			Iterator cit = children.iterator( minNode);
 			while (cit.hasNext()) {
@@ -310,7 +311,7 @@ public class LabeledBlockFinder implements FactFinder
 				break;
 			    
 			    SETParent.remove_Child( child, children );
-			    slbn.add_Child( child, (IteratorableSet) slbn.get_Body2ChildChain().get( slbn.get_SubBodies().get(0)));
+			    slbn.add_Child( child, (IterableSet) slbn.get_Body2ChildChain().get( slbn.get_SubBodies().get(0)));
 			}
 			
 			SETParent.insert_ChildBefore( slbn, curNode, children);

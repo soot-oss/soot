@@ -16,8 +16,9 @@ public class SETTryNode extends SETNode
     private ExceptionNode en;
     private DavaBody davaBody;
     private AugmentedStmtGraph asg;
+    private HashMap cb2clone;
 
-    public SETTryNode( IteratorableSet body, ExceptionNode en, AugmentedStmtGraph asg, DavaBody davaBody) 
+    public SETTryNode( IterableSet body, ExceptionNode en, AugmentedStmtGraph asg, DavaBody davaBody) 
     {
 	super( body);
 	this.en = en;
@@ -26,24 +27,31 @@ public class SETTryNode extends SETNode
 
 	add_SubBody( en.get_TryBody());
 
+	cb2clone = new HashMap();
+
 	Iterator it = en.get_CatchList().iterator();
-	while (it.hasNext()) 
-	    add_SubBody( (IteratorableSet) it.next());
+	while (it.hasNext()) {
+	    IterableSet catchBody = (IterableSet) it.next();
+	    IterableSet clone     = (IterableSet) catchBody.clone();
+
+	    cb2clone.put( catchBody, clone);
+	    add_SubBody( clone);
+	}
     }
 
     public AugmentedStmt get_EntryStmt()
     {
-	return ((SETNode) ((IteratorableSet) body2childChain.get( en.get_TryBody())).getFirst()).get_EntryStmt();
+	return ((SETNode) ((IterableSet) body2childChain.get( en.get_TryBody())).getFirst()).get_EntryStmt();
     }
 
-    public IteratorableSet get_NaturalExits()
+    public IterableSet get_NaturalExits()
     {
-	IteratorableSet c = new IteratorableSet();
+	IterableSet c = new IterableSet();
 	
 	Iterator it = subBodies.iterator();
 	while (it.hasNext()) {
 
-	    Iterator eit = ((SETNode) ((IteratorableSet) body2childChain.get( it.next())).getLast()).get_NaturalExits().iterator();
+	    Iterator eit = ((SETNode) ((IterableSet) body2childChain.get( it.next())).getLast()).get_NaturalExits().iterator();
 	    while (eit.hasNext()) {
 		Object o = eit.next();
 
@@ -64,10 +72,11 @@ public class SETTryNode extends SETNode
 
 	Iterator it = en.get_CatchList().iterator();
 	while (it.hasNext()) {
-	    IteratorableSet catchBody = (IteratorableSet) it.next();
+	    IterableSet originalCatchBody = (IterableSet) it.next();
+	    IterableSet catchBody = (IterableSet) cb2clone.get( originalCatchBody);
 
-	    List astBody = emit_ASTBody( (IteratorableSet) body2childChain.get( catchBody));
-	    exceptionMap.put( astBody, en.get_Exception( catchBody));
+	    List astBody = emit_ASTBody( (IterableSet) body2childChain.get( catchBody));
+	    exceptionMap.put( astBody, en.get_Exception( originalCatchBody));
 	    catchList.addLast( astBody);
 
 	    Iterator bit = catchBody.iterator();
@@ -89,35 +98,61 @@ public class SETTryNode extends SETNode
 	    }
 	}
 
-	return new ASTTryNode( get_Label(), emit_ASTBody( (IteratorableSet) body2childChain.get( en.get_TryBody())), catchList, exceptionMap, paramMap);
+	return new ASTTryNode( get_Label(), emit_ASTBody( (IterableSet) body2childChain.get( en.get_TryBody())), catchList, exceptionMap, paramMap);
     }
 
     protected boolean resolve( SETNode parent)
     {
 	Iterator sbit = parent.get_SubBodies().iterator();
-
-    subBody_Loop:
 	while (sbit.hasNext()) {
-	    IteratorableSet subBody = (IteratorableSet) sbit.next();
-	    
-	    if (subBody.intersects( get_Body())) {
 
-		if (subBody.isSupersetOf( get_Body()))
-		    continue subBody_Loop;
+	    IterableSet subBody = (IterableSet) sbit.next();
+	    if (subBody.intersects( en.get_TryBody())) {
 
-		Iterator it = subBodies.iterator();
-		while (it.hasNext())
-		    if (subBody.isSubsetOf( (IteratorableSet) it.next()))
-			continue subBody_Loop;
+		IterableSet childChain = (IterableSet) parent.get_Body2ChildChain().get( subBody);
+		Iterator ccit = childChain.iterator();
+		while (ccit.hasNext()) {
 
-		IteratorableSet newTryBody = subBody.intersection( en.get_TryBody());
-		if (newTryBody.isStrictSubsetOf( en.get_TryBody())) {
-		    en.splitOff_ExceptionNode( newTryBody, asg, davaBody.get_ExceptionFacts());
-		    return false;
+		    SETNode child = (SETNode) ccit.next();
+		    IterableSet childBody = child.get_Body();
+
+		    if ((childBody.intersects( en.get_TryBody()) == false) || (childBody.isSubsetOf( en.get_TryBody())))
+			continue;
+
+		    if (childBody.isSupersetOf( get_Body()))
+			return true;
+
+		    IterableSet newTryBody = childBody.intersection( en.get_TryBody());
+		    if (newTryBody.isStrictSubsetOf( en.get_TryBody())) {
+			en.splitOff_ExceptionNode( newTryBody, asg, davaBody.get_ExceptionFacts());
+			return false;
+		    }
+
+		    Iterator cit = en.get_CatchList().iterator();
+		    while (cit.hasNext()) {
+
+			Iterator bit = ((IterableSet) cb2clone.get( cit.next())).snapshotIterator();
+			while (bit.hasNext()) {
+			    AugmentedStmt as = (AugmentedStmt) bit.next();
+			    
+			    if (childBody.contains( as) == false) 
+				remove_AugmentedStmt( as);
+			    
+			    else if (child instanceof SETControlFlowNode) {
+				SETControlFlowNode scfn = (SETControlFlowNode) child;
+				
+				if ((scfn.get_CharacterizingStmt() == as) ||
+				    ((as.cpreds.size() == 1) && (as.get_Stmt() instanceof GotoStmt) && (scfn.get_CharacterizingStmt() == as.cpreds.get(0))))
+				    
+				    remove_AugmentedStmt( as);
+			    }
+			}
+		    }
+
+		    return true;
 		}
 	    }
 	}
-
 	return true;
     }
 }

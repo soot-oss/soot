@@ -20,29 +20,31 @@ public class AbruptEdgeFinder implements FactFinder
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {
+	Dava.v().log( "AbruptEdgeFinder::find()");
+
 	SET.find_AbruptEdges( this);
     }
 
-    public void find_Continues( SETNode SETParent, IteratorableSet body, IteratorableSet children)
+    public void find_Continues( SETNode SETParent, IterableSet body, IterableSet children)
     {
 	if ((SETParent instanceof SETCycleNode) == false)
 	    return;
 
 	SETCycleNode scn = (SETCycleNode) SETParent;
-	IteratorableSet naturalPreds = ((SETNode) children.getLast()).get_NaturalExits();
+	IterableSet naturalPreds = ((SETNode) children.getLast()).get_NaturalExits();
 
 	Iterator pit = scn.get_CharacterizingStmt().bpreds.iterator();
 	while (pit.hasNext()) {
 	    AugmentedStmt pas = (AugmentedStmt) pit.next();
 	    
-	    if ((body.contains( pas)) && (naturalPreds.contains( pas) == false)) 
+	    if ((body.contains( pas)) && (naturalPreds.contains( pas) == false))
 		((SETStatementSequenceNode) pas.myNode).insert_AbruptStmt( new DAbruptStmt( "continue", scn.get_Label()));
 	}
     }
 
     public void find_Breaks( SETNode prev, SETNode cur)
     {
-	IteratorableSet naturalPreds = prev.get_NaturalExits();
+	IterableSet naturalPreds = prev.get_NaturalExits();
 
 	Iterator pit = cur.get_EntryStmt().bpreds.iterator();
 	while (pit.hasNext()) {

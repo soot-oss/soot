@@ -13,9 +13,9 @@ public class SETSwitchNode extends SETDagNode
 {
     private List switchNodeList;
     private Value key;
-    private IteratorableSet junkBody;
+    private IterableSet junkBody;
 
-    public SETSwitchNode( AugmentedStmt characterizingStmt, Value key, IteratorableSet body, List switchNodeList, IteratorableSet junkBody)
+    public SETSwitchNode( AugmentedStmt characterizingStmt, Value key, IterableSet body, List switchNodeList, IterableSet junkBody)
     {
 	super( characterizingStmt, body);
 
@@ -31,9 +31,9 @@ public class SETSwitchNode extends SETDagNode
     }
     
 
-    public IteratorableSet get_NaturalExits()
+    public IterableSet get_NaturalExits()
     {
-	return new IteratorableSet();
+	return new IterableSet();
     }
 
     public ASTNode emit_AST()
@@ -55,7 +55,7 @@ public class SETSwitchNode extends SETDagNode
 		if (index != lastIndex) 
 		    index2ASTBody.put( index, null);
 		else
-		    index2ASTBody.put( index, emit_ASTBody( (IteratorableSet) get_Body2ChildChain().get( sn.get_Body())));
+		    index2ASTBody.put( index, emit_ASTBody( (IterableSet) get_Body2ChildChain().get( sn.get_Body())));
 	    }
 	}
 
