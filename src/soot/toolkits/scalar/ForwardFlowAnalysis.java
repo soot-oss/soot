@@ -139,22 +139,12 @@ next());
                         
                         Object savedInfo = newInitialFlow();
                         if (filterUnitToBeforeFlow != null){
-                            //System.out.println("unit: "+s);
                             savedInfo = filterUnitToBeforeFlow.get(s);
-                            //System.out.println("copying filtered: "+filterUnitToBeforeFlow.get(s));
                             copy(filterUnitToBeforeFlow.get(s), savedInfo);
                         }
                         else {
-                            //System.out.println("copying unfiltered");
                             copy(beforeFlow, savedInfo);
                         }
-                        //System.out.println("beforeFlow: "+beforeFlow);
-                        //System.out.println("unitToBeforeFlow: "+unitToBeforeFlow.get(s));
-                        //System.out.println("flow before: "+getFlowBefore(s));
-                        if (filterUnitToBeforeFlow != null){
-                            //System.out.println("filtered info before: "+filterUnitToBeforeFlow);
-                        }
-                        //System.out.println("saved info: "+savedInfo);
                         FlowInfo fi = new FlowInfo(savedInfo, s, true);
                         if (InteractionHandler.v().getStopUnitList() != null && InteractionHandler.v().getStopUnitList().contains(s)){
                             InteractionHandler.v().handleStopAtNodeEvent(s);
@@ -165,7 +155,6 @@ next());
                     if (Options.v().interactive_mode()){
                         Object aSavedInfo = newInitialFlow();
                         if (filterUnitToAfterFlow != null){
-                            //System.out.println("getting filter info for: "+s);
                             aSavedInfo = filterUnitToAfterFlow.get(s);
                             copy(filterUnitToAfterFlow.get(s), aSavedInfo);
                         }

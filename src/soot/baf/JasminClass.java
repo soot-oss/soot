@@ -37,404 +37,24 @@ import soot.util.*;
 import java.util.*;
 import java.io.*;
 
-public class JasminClass
+public class JasminClass extends AbstractJasminClass
 {
-    Map instToLabel;
-    Map localToSlot;
-    Map subroutineToReturnAddressSlot;
-
-    List code;
-
-    boolean isEmittingMethodCode;
-    int labelCount;
-
-    boolean isNextGotoAJsr;
-    int returnAddressSlot;
-    int currentStackHeight = 0;
-    int maxStackHeight = 0;
-
-    Map localToGroup;
-    Map groupToColorCount;
-    Map localToColor; 
-
-
-    Map blockToStackHeight = new HashMap(); // maps a block to the stack height upon entering it
-    Map blockToLogicalStackHeight = new HashMap(); // maps a block to the logical stack height upon entering it
-    
-
-    String slashify(String s)
-    {
-        return s.replace('.', '/');
-    }
-
-    public static int sizeOfType(Type t)
-    {
-        if(t instanceof DoubleWordType || t instanceof LongType || t instanceof DoubleType)
-            return 2;
-        else if(t instanceof VoidType)
-            return 0;
-        else
-            return 1;
-    }
-
-    int argCountOf(SootMethod m)
-    {
-        int argCount = 0;
-        Iterator typeIt = m.getParameterTypes().iterator();
-
-        while(typeIt.hasNext())
-        {
-            Type t = (Type) typeIt.next();
-
-            argCount += sizeOfType(t);
-        }
-
-        return argCount;
-    }
-
-    String jasminDescriptorOf(Type type)
-    {
-        TypeSwitch sw;
-
-        type.apply(sw = new TypeSwitch()
-        {
-            public void caseBooleanType(BooleanType t)
-            {
-                setResult("Z");
-            }
-
-            public void caseByteType(ByteType t)
-            {
-                setResult("B");
-            }
-
-            public void caseCharType(CharType t)
-            {
-                setResult("C");
-            }
-
-            public void caseDoubleType(DoubleType t)
-            {
-                setResult("D");
-            }
-
-            public void caseFloatType(FloatType t)
-            {
-                setResult("F");
-            }
-
-            public void caseIntType(IntType t)
-            {
-                setResult("I");
-            }
-
-            public void caseLongType(LongType t)
-            {
-                setResult("J");
-            }
-
-            public void caseShortType(ShortType t)
-            {
-                setResult("S");
-            }
-
-            public void defaultCase(Type t)
-            {
-                throw new RuntimeException("Invalid type: " + t);
-            }
-
-            public void caseArrayType(ArrayType t)
-            {
-                StringBuffer buffer = new StringBuffer();
-
-                for(int i = 0; i < t.numDimensions; i++)
-                    buffer.append("[");
-
-                setResult(buffer.toString() + jasminDescriptorOf(t.baseType));
-            }
-
-            public void caseRefType(RefType t)
-            {
-                setResult("L" + t.getClassName().replace('.', '/') + ";");
-            }
-
-            public void caseVoidType(VoidType t)
-            {
-                setResult("V");
-            }
-        });
-
-        return (String) sw.getResult();
-
-    }
-
-    String jasminDescriptorOf(SootMethod m)
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("(");
-
-        // Add methods parameters
-        {
-            Iterator typeIt = m.getParameterTypes().iterator();
-
-            while(typeIt.hasNext())
-            {
-                Type t = (Type) typeIt.next();
-
-                buffer.append(jasminDescriptorOf(t));
-            }
-        }
-
-        buffer.append(")");
-
-        buffer.append(jasminDescriptorOf(m.getReturnType()));
-
-        return buffer.toString();
-    }
-
-    void emit(String s)
-    {
-        okayEmit(s);
-    }
-    
-    void okayEmit(String s)
-    {
-        if(isEmittingMethodCode && !s.endsWith(":"))
-            code.add("    " + s);
-        else
-            code.add(s);
-    }
     
     public JasminClass(SootClass sootClass)
     {
-        if(Options.v().time())
-            Timers.v().buildJasminTimer.start();
-        
-        if(Options.v().verbose())
-            G.v().out.println("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
-
-        code = new LinkedList();
-
-        // Emit the header
-        {
-            int modifiers = sootClass.getModifiers();
-
-            
-            if ((sootClass.getTag("SourceFileTag") != null) && (!Options.v().no_output_source_file_attribute())){
-                String srcName = ((SourceFileTag)sootClass.getTag("SourceFileTag")).getSourceFile();
-                emit(".source "+srcName);
-            }
-            if(Modifier.isInterface(modifiers))
-            {
-                modifiers -= Modifier.INTERFACE;
-
-                emit(".interface " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
-            }
-            else
-                emit(".class " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
-
-            if(sootClass.hasSuperclass())
-                emit(".super " + slashify(sootClass.getSuperclass().getName()));
-            else
-                emit(".no_super");
-
-            emit("");
-        }
-
-        // Emit the interfaces
-        {
-            Iterator interfaceIt = sootClass.getInterfaces().iterator();
-
-            while(interfaceIt.hasNext())
-            {
-                SootClass inter = (SootClass) interfaceIt.next();
-
-                emit(".implements " + slashify(inter.getName()));
-            }
-
-            if(sootClass.getInterfaceCount() != 0)
-                emit("");
-        }
-
-
-
-
-
-    
-	// emit class attributes.
-	Iterator it =  sootClass.getTags().iterator(); 
-	while(it.hasNext()) {
-	    Tag tag = (Tag) it.next();
-	    if(tag instanceof Attribute)
-		emit(".class_attribute "  + tag.getName() + " \"" + new String(Base64.encode(((Attribute)tag).getValue()))+"\"");
-        else if (tag instanceof InnerClassAttribute){
-            if (!Options.v().no_output_inner_classes_attribute()){
-                emit(".inner_class_attr ");
-                Iterator innersIt = ((InnerClassAttribute)tag).getSpecs().iterator();
-                while (innersIt.hasNext()){
-                    InnerClassTag ict = (InnerClassTag)innersIt.next();
-                    //System.out.println("inner class tag: "+ict);
-                    emit(".inner_class_spec_attr "+
-                        "\""+ict.getInnerClass()+"\" "+
-                    
-                        "\""+ict.getOuterClass()+"\" "+
-                    
-                        "\""+ict.getShortName()+"\" "+
-                        Modifier.toString(ict.getAccessFlags())+" "+
-
-                    ".end .inner_class_spec_attr");
-                }
-                emit(".end .inner_class_attr\n");
-            }
-        }
-        else {
-            emit("");
-        }
-	}
-
-
-
-
-        // Emit the fields
-        {
-            Iterator fieldIt = sootClass.getFields().iterator();
-
-            while(fieldIt.hasNext())
-            {
-                SootField field = (SootField) fieldIt.next();
-
-                emit(".field " + Modifier.toString(field.getModifiers()) + " " +
-                     "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType()));
-
-
-		Iterator attributeIt =  field.getTags().iterator(); 
-		while(attributeIt.hasNext()) {
-		    Tag tag = (Tag) attributeIt.next();
-		    if(tag instanceof Attribute)
-			emit(".field_attribute " + tag.getName() + " \"" + new String(Base64.encode(((Attribute)tag).getValue())) +"\"");
-		}
-
-            }
-
-            if(sootClass.getFieldCount() != 0)
-                emit("");
-        }
-
-        // Emit the methods
-        {
-            Iterator methodIt = sootClass.methodIterator();
-
-            while(methodIt.hasNext())
-            {
-                emitMethod((SootMethod) methodIt.next());
-                emit("");
-            }
-        }
-        
-        if(Options.v().time())
-            Timers.v().buildJasminTimer.end();
+        super(sootClass);
     }
 
-    void assignColorsToLocals(BafBody body)
+    protected void assignColorsToLocals(Body body)
     {
-        if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
-                "] Assigning colors to locals...");
+        super.assignColorsToLocals(body);
         
-        if(Options.v().time())
-            Timers.v().packTimer.start();
-
-        localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        
-        // Assign each local to a group, and set that group's color count to 0.
-        {
-            Iterator localIt = body.getLocals().iterator();
-
-            while(localIt.hasNext())
-            {
-                Local l = (Local) localIt.next();
-                Object g;
-                
-                if(sizeOfType(l.getType()) == 1)
-                    g = IntType.v();
-                else
-                    g = LongType.v();
-                
-                localToGroup.put(l, g);
-                
-                if(!groupToColorCount.containsKey(g))
-                {
-                    groupToColorCount.put(g, new Integer(0));
-                }
-            }
-        }
-
-        // Assign colors to the parameter locals.
-        {
-            Iterator codeIt = body.getUnits().iterator();
-
-            while(codeIt.hasNext())
-            {
-                Stmt s = (Stmt) codeIt.next();
-
-                if(s instanceof IdentityStmt &&
-                    ((IdentityStmt) s).getLeftOp() instanceof Local)
-                {
-                    Local l = (Local) ((IdentityStmt) s).getLeftOp();
-                    
-                    Object group = localToGroup.get(l);
-                    int count = ((Integer) groupToColorCount.get(group)).intValue();
-                    
-                    localToColor.put(l, new Integer(count));
-                    
-                    count++;
-                    
-                    groupToColorCount.put(group, new Integer(count));
-                }
-            }
-        }
-        
-        // Call the graph colorer.
-//              FastColorer.assignColorsToLocals(body, localToGroup,
-//                  localToColor, groupToColorCount);
-
         if(Options.v().time())
             Timers.v().packTimer.end();
                     
     }
 
-    void emitMethod(SootMethod method)
-    {
-       if (method.isPhantom())
-           return;
-
-       // Emit prologue
-            emit(".method " + Modifier.toString(method.getModifiers()) + " " +
-                 method.getName() + jasminDescriptorOf(method));
-
-       if(method.isConcrete())
-       {
-            if(!method.hasActiveBody())
-                throw new RuntimeException("method: " + method.getName() + " has no active body!");
-            else
-                emitMethodBody(method);
-       }
-       
-       // Emit epilogue
-            emit(".end method");
-
-	    Iterator it =  method.getTags().iterator();
-	    while(it.hasNext()) {
-		Tag tag = (Tag) it.next();
-		if(tag instanceof Attribute)
-		    emit(".method_attribute "  + tag.getName() + " \"" + new String(Base64.encode(tag.getValue())) +"\"");
-	    }	    
-    }
-    
-    void emitMethodBody(SootMethod method)
+    protected void emitMethodBody(SootMethod method)
     {
         if(Options.v().time())
             Timers.v().buildJasminTimer.end();
@@ -459,11 +79,11 @@ public class JasminClass
 
         subroutineToReturnAddressSlot = new HashMap(10, 0.7f);
 
-        // Determine the instToLabel map
+        // Determine the unitToLabel map
         {
             Iterator boxIt = body.getUnitBoxes(true).iterator();
 
-            instToLabel = new HashMap(instList.size() * 2 + 1, 0.7f);
+            unitToLabel = new HashMap(instList.size() * 2 + 1, 0.7f);
             labelCount = 0;
 
             while(boxIt.hasNext())
@@ -472,8 +92,8 @@ public class JasminClass
                 {
                     InstBox box = (InstBox) boxIt.next();
 
-                    if(!instToLabel.containsKey(box.getUnit()))
-                        instToLabel.put(box.getUnit(), "label" + labelCount++);
+                    if(!unitToLabel.containsKey(box.getUnit()))
+                        unitToLabel.put(box.getUnit(), "label" + labelCount++);
                 }
             }
         }
@@ -494,8 +114,8 @@ public class JasminClass
 
                 if(trap.getBeginUnit() != trap.getEndUnit()) {
                     emit(".catch " + slashify(trap.getException().getName()) + " from " +
-                        instToLabel.get(trap.getBeginUnit()) + " to " + instToLabel.get(trap.getEndUnit()) +
-                        " using " + instToLabel.get(trap.getHandlerUnit()));
+                        unitToLabel.get(trap.getBeginUnit()) + " to " + unitToLabel.get(trap.getEndUnit()) +
+                        " using " + unitToLabel.get(trap.getHandlerUnit()));
 		    handlerUnits.add(trap.getHandlerUnit());
 		}
             }
@@ -605,8 +225,8 @@ public class JasminClass
             {
                 Inst s = (Inst) codeIt.next();
 
-                if(instToLabel.containsKey(s))
-                    emit(instToLabel.get(s) + ":");
+                if(unitToLabel.containsKey(s))
+                    emit(unitToLabel.get(s) + ":");
 
                 // emit this statement
                 {
@@ -638,7 +258,13 @@ public class JasminClass
                             } else {
                                 initialHeight = new Integer(0);
                             }                                                
+                            if (blockToStackHeight == null){
+                                blockToStackHeight = new HashMap();
+                            }
                             blockToStackHeight.put(entryBlock, initialHeight);
+                            if (blockToLogicalStackHeight == null){
+                                blockToLogicalStackHeight = new HashMap();
+                            }
                             blockToLogicalStackHeight.put(entryBlock, initialHeight); 
                         }                
                                     
@@ -663,19 +289,12 @@ public class JasminClass
 	    while(it.hasNext()) {
 		Tag t = (Tag) it.next();
 		if(t instanceof JasminAttribute) {
-		    emit(".code_attribute " + t.getName() +" \"" + ((JasminAttribute) t).getJasminValue(instToLabel) +"\"");
+		    emit(".code_attribute " + t.getName() +" \"" + ((JasminAttribute) t).getJasminValue(unitToLabel) +"\"");
 		}		
 	    }
 	}
     }
 
-    public void print(PrintWriter out)
-    {
-        Iterator it = code.iterator();
-
-        while(it.hasNext())
-            out.println(it.next());
-    }
 
     void emitInst(Inst inst)
     {
@@ -777,7 +396,7 @@ public class JasminClass
 
             public void caseGotoInst(GotoInst i)
             { 
-                emit("goto " + instToLabel.get(i.getTarget()));
+                emit("goto " + unitToLabel.get(i.getTarget()));
             }
 
             public void casePushInst(PushInst i)
@@ -1226,42 +845,42 @@ public class JasminClass
 
             public void caseIfNullInst(IfNullInst i)
             {
-                emit("ifnull " + instToLabel.get(i.getTarget()));
+                emit("ifnull " + unitToLabel.get(i.getTarget()));
             }
 
             public void caseIfNonNullInst(IfNonNullInst i)
             {
-                emit("ifnonnull " + instToLabel.get(i.getTarget()));
+                emit("ifnonnull " + unitToLabel.get(i.getTarget()));
             }
 
             public void caseIfEqInst(IfEqInst i)
             {
-                emit("ifeq " + instToLabel.get(i.getTarget()));
+                emit("ifeq " + unitToLabel.get(i.getTarget()));
             }
 
             public void caseIfNeInst(IfNeInst i)
             {
-                emit("ifne " + instToLabel.get(i.getTarget()));
+                emit("ifne " + unitToLabel.get(i.getTarget()));
             }
 
             public void caseIfGtInst(IfGtInst i)
             {
-                emit("ifgt " + instToLabel.get(i.getTarget()));
+                emit("ifgt " + unitToLabel.get(i.getTarget()));
             }
 
             public void caseIfGeInst(IfGeInst i)
             {
-                emit("ifge " + instToLabel.get(i.getTarget()));
+                emit("ifge " + unitToLabel.get(i.getTarget()));
             }
 
             public void caseIfLtInst(IfLtInst i)
             {
-                emit("iflt " + instToLabel.get(i.getTarget()));
+                emit("iflt " + unitToLabel.get(i.getTarget()));
             }
 
             public void caseIfLeInst(IfLeInst i)
             {
-                emit("ifle " + instToLabel.get(i.getTarget()));
+                emit("ifle " + unitToLabel.get(i.getTarget()));
             }
 
             public void caseIfCmpEqInst(final IfCmpEqInst i)
@@ -1271,70 +890,70 @@ public class JasminClass
                     public void caseIntType(IntType t)
                     {
                         emit("if_icmpeq " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseBooleanType(BooleanType t)
                     {
                         emit("if_icmpeq " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseShortType(ShortType t)
                     {
                         emit("if_icmpeq " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseCharType(CharType t)
                     {
                         emit("if_icmpeq " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseByteType(ByteType t)
                     {
                         emit("if_icmpeq " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
                         emit("dcmpg");
                         emit("ifeq " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseLongType(LongType t)
                     {
                         emit("lcmp");
                         emit("ifeq " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseFloatType(FloatType t)
                     {
                         emit("fcmpg");
                         emit("ifeq " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseArrayType(ArrayType t)
                     {
                         emit("if_acmpeq " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseRefType(RefType t)
                     {
                         emit("if_acmpeq " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseNullType(NullType t)
                     {
                         emit("if_acmpeq " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void defaultCase(Type t)
@@ -1351,70 +970,70 @@ public class JasminClass
                     public void caseIntType(IntType t)
                     {
                         emit("if_icmpne " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseBooleanType(BooleanType t)
                     {
                         emit("if_icmpne " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseShortType(ShortType t)
                     {
                         emit("if_icmpne " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseCharType(CharType t)
                     {
                         emit("if_icmpne " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseByteType(ByteType t)
                     {
                         emit("if_icmpne " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
                         emit("dcmpg");
                         emit("ifne " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseLongType(LongType t)
                     {
                         emit("lcmp");
                         emit("ifne " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseFloatType(FloatType t)
                     {
                         emit("fcmpg");
                         emit("ifne " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseArrayType(ArrayType t)
                     {
                         emit("if_acmpne " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseRefType(RefType t)
                     {
                         emit("if_acmpne " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseNullType(NullType t)
                     {
                         emit("if_acmpne " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void defaultCase(Type t)
@@ -1431,70 +1050,70 @@ public class JasminClass
                     public void caseIntType(IntType t)
                     {
                         emit("if_icmpgt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseBooleanType(BooleanType t)
                     {
                         emit("if_icmpgt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseShortType(ShortType t)
                     {
                         emit("if_icmpgt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseCharType(CharType t)
                     {
                         emit("if_icmpgt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseByteType(ByteType t)
                     {
                         emit("if_icmpgt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
                         emit("dcmpg");
                         emit("ifgt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseLongType(LongType t)
                     {
                         emit("lcmp");
                         emit("ifgt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseFloatType(FloatType t)
                     {
                         emit("fcmpg");
                         emit("ifgt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseArrayType(ArrayType t)
                     {
                         emit("if_acmpgt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseRefType(RefType t)
                     {
                         emit("if_acmpgt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseNullType(NullType t)
                     {
                         emit("if_acmpgt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void defaultCase(Type t)
@@ -1511,70 +1130,70 @@ public class JasminClass
                     public void caseIntType(IntType t)
                     {
                         emit("if_icmpge " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseBooleanType(BooleanType t)
                     {
                         emit("if_icmpge " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseShortType(ShortType t)
                     {
                         emit("if_icmpge " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseCharType(CharType t)
                     {
                         emit("if_icmpge " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseByteType(ByteType t)
                     {
                         emit("if_icmpge " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
                         emit("dcmpg");
                         emit("ifge " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseLongType(LongType t)
                     {
                         emit("lcmp");
                         emit("ifge " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseFloatType(FloatType t)
                     {
                         emit("fcmpg");
                         emit("ifge " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseArrayType(ArrayType t)
                     {
                         emit("if_acmpge " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseRefType(RefType t)
                     {
                         emit("if_acmpge " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseNullType(NullType t)
                     {
                         emit("if_acmpge " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void defaultCase(Type t)
@@ -1591,70 +1210,70 @@ public class JasminClass
                     public void caseIntType(IntType t)
                     {
                         emit("if_icmplt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseBooleanType(BooleanType t)
                     {
                         emit("if_icmplt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseShortType(ShortType t)
                     {
                         emit("if_icmplt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseCharType(CharType t)
                     {
                         emit("if_icmplt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseByteType(ByteType t)
                     {
                         emit("if_icmplt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
                         emit("dcmpg");
                         emit("iflt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseLongType(LongType t)
                     {
                         emit("lcmp");
                         emit("iflt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseFloatType(FloatType t)
                     {
                         emit("fcmpg");
                         emit("iflt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseArrayType(ArrayType t)
                     {
                         emit("if_acmplt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseRefType(RefType t)
                     {
                         emit("if_acmplt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseNullType(NullType t)
                     {
                         emit("if_acmplt " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void defaultCase(Type t)
@@ -1671,70 +1290,70 @@ public class JasminClass
                     public void caseIntType(IntType t)
                     {
                         emit("if_icmple " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseBooleanType(BooleanType t)
                     {
                         emit("if_icmple " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseShortType(ShortType t)
                     {
                         emit("if_icmple " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseCharType(CharType t)
                     {
                         emit("if_icmple " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseByteType(ByteType t)
                     {
                         emit("if_icmple " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
                         emit("dcmpg");
                         emit("ifle " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseLongType(LongType t)
                     {
                         emit("lcmp");
                         emit("ifle " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseFloatType(FloatType t)
                     {
                         emit("fcmpg");
                         emit("ifle " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseArrayType(ArrayType t)
                     {
                         emit("if_acmple " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseRefType(RefType t)
                     {
                         emit("if_acmple " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void caseNullType(NullType t)
                     {
                         emit("if_acmple " + 
-                             instToLabel.get(i.getTarget()));
+                             unitToLabel.get(i.getTarget()));
                     }
 
                     public void defaultCase(Type t)
@@ -2000,9 +1619,9 @@ public class JasminClass
 
                 for(int j = 0; j < lookupValues.size(); j++)
                     emit("  " + lookupValues.get(j) + " : " + 
-                         instToLabel.get(targets.get(j)));
+                         unitToLabel.get(targets.get(j)));
 
-                emit("  default : " + instToLabel.get(i.getDefaultTarget()));
+                emit("  default : " + unitToLabel.get(i.getDefaultTarget()));
             }
 
             public void caseTableSwitchInst(TableSwitchInst i)
@@ -2012,9 +1631,9 @@ public class JasminClass
                 List targets = i.getTargets();
 
                 for(int j = 0; j < targets.size(); j++)
-                    emit("  " + instToLabel.get(targets.get(j)));
+                    emit("  " + unitToLabel.get(targets.get(j)));
 
-                emit("default : " + instToLabel.get(i.getDefaultTarget()));
+                emit("default : " + unitToLabel.get(i.getDefaultTarget()));
             }
 
             private boolean isDwordType(Type t)

@@ -36,172 +36,8 @@ import java.io.*;
 import soot.grimp.*;
 
 /** Methods for producing Jasmin code from Jimple. */
-public class JasminClass
+public class JasminClass extends AbstractJasminClass
 {
-    Map stmtToLabel;
-    Map localToSlot;
-    Map subroutineToReturnAddressSlot;
-
-    List code;
-
-    boolean isEmittingMethodCode;
-    int labelCount;
-
-    boolean isNextGotoAJsr;
-    int returnAddressSlot;
-    int currentStackHeight = 0;
-    int maxStackHeight = 0;
-
-    Map localToGroup;
-    Map groupToColorCount;
-    Map localToColor; 
-            
-    static String slashify(String s)
-    {
-        return s.replace('.', '/');
-    }
-
-    static int sizeOfType(Type t)
-    {
-        if(t instanceof DoubleType || t instanceof LongType)
-            return 2;
-        else if(t instanceof VoidType)
-            return 0;
-        else
-            return 1;
-    }
-
-    static int argCountOf(SootMethod m)
-    {
-        int argCount = 0;
-        Iterator typeIt = m.getParameterTypes().iterator();
-
-        while(typeIt.hasNext())
-        {
-            Type t = (Type) typeIt.next();
-
-            argCount += sizeOfType(t);
-        }
-
-        return argCount;
-    }
-
-    public static String jasminDescriptorOf(Type type)
-    {
-        TypeSwitch sw;
-
-        type.apply(sw = new TypeSwitch()
-        {
-            public void caseBooleanType(BooleanType t)
-            {
-                setResult("Z");
-            }
-
-            public void caseByteType(ByteType t)
-            {
-                setResult("B");
-            }
-
-            public void caseCharType(CharType t)
-            {
-                setResult("C");
-            }
-
-            public void caseDoubleType(DoubleType t)
-            {
-                setResult("D");
-            }
-
-            public void caseFloatType(FloatType t)
-            {
-                setResult("F");
-            }
-
-            public void caseIntType(IntType t)
-            {
-                setResult("I");
-            }
-
-            public void caseLongType(LongType t)
-            {
-                setResult("J");
-            }
-
-            public void caseShortType(ShortType t)
-            {
-                setResult("S");
-            }
-
-            public void defaultCase(Type t)
-            {
-                throw new RuntimeException("Invalid type: " + t);
-            }
-
-            public void caseArrayType(ArrayType t)
-            {
-                StringBuffer buffer = new StringBuffer();
-
-                for(int i = 0; i < t.numDimensions; i++)
-                    buffer.append("[");
-
-                setResult(buffer.toString() + jasminDescriptorOf(t.baseType));
-            }
-
-            public void caseRefType(RefType t)
-            {
-                setResult("L" + t.getClassName().replace('.', '/') + ";");
-            }
-
-            public void caseVoidType(VoidType t)
-            {
-                setResult("V");
-            }
-        });
-
-        return (String) sw.getResult();
-
-    }
-
-    public static String jasminDescriptorOf(SootMethod m)
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("(");
-
-        // Add methods parameters
-        {
-            Iterator typeIt = m.getParameterTypes().iterator();
-
-            while(typeIt.hasNext())
-            {
-                Type t = (Type) typeIt.next();
-
-                buffer.append(jasminDescriptorOf(t));
-            }
-        }
-
-        buffer.append(")");
-
-        buffer.append(jasminDescriptorOf(m.getReturnType()));
-
-        return buffer.toString();
-    }
-
-    void emit(String s)
-    {
-        okayEmit(s);
-    }
-    
-    void okayEmit(String s)
-    {
-        if(isEmittingMethodCode && !s.endsWith(":"))
-            code.add("    " + s);
-        else
-            code.add(s);
-
-//          G.v().out.println(s);
-    }
-
     void emit(String s, int stackChange)
     {
         modifyStackHeight(stackChange);        
@@ -221,143 +57,12 @@ public class JasminClass
     
     public JasminClass(SootClass sootClass)
     {
-        Map options = new HashMap();
-
-        if(Options.v().time())
-            Timers.v().buildJasminTimer.start();
-
-        if(Options.v().verbose())
-            G.v().out.println("[" + sootClass.getName() + "] Constructing jimple.JasminClass...");
-        
-        code = new LinkedList();
-
-        // Emit the header
-        {
-            int modifiers = sootClass.getModifiers();
-
-            if(Modifier.isInterface(modifiers))
-            {
-                modifiers -= Modifier.INTERFACE;
-
-                emit(".interface " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
-            }
-            else
-                emit(".class " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
-
-            if(sootClass.hasSuperclass())
-                emit(".super " + slashify(sootClass.getSuperclass().getName()));
-            else
-                emit(".no_super");
-
-            emit("");
-        }
-
-        // Emit the interfaces
-        {
-            Iterator interfaceIt = sootClass.getInterfaces().iterator();
-
-            while(interfaceIt.hasNext())
-            {
-                SootClass inter = (SootClass) interfaceIt.next();
-
-                emit(".implements " + slashify(inter.getName()));
-            }
-
-            if(sootClass.getInterfaceCount() != 0)
-                emit("");
-        }
-
-        // Emit the fields
-        {
-            Iterator fieldIt = sootClass.getFields().iterator();
-
-            while(fieldIt.hasNext())
-            {
-                SootField field = (SootField) fieldIt.next();
-
-                emit(".field " + Modifier.toString(field.getModifiers()) + " " +
-                     "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType()));
-            }
-
-            if(sootClass.getFieldCount() != 0)
-                emit("");
-        }
-
-        // Emit the methods
-        {
-            Iterator methodIt = sootClass.methodIterator();
-
-            while(methodIt.hasNext())
-            {
-                emitMethod((SootMethod) methodIt.next(), options);
-                emit("");
-            }
-        }
-        
-        if(Options.v().time())
-            Timers.v().buildJasminTimer.end();
+        super(sootClass);
     }
 
-    void assignColorsToLocals(StmtBody body)
+    protected void assignColorsToLocals(Body body)
     {
-        if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
-                "] Assigning colors to locals...");
-        
-        if(Options.v().time())
-            Timers.v().packTimer.start();
-
-        localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        
-        // Assign each local to a group, and set that group's color count to 0.
-        {
-            Iterator localIt = body.getLocals().iterator();
-
-            while(localIt.hasNext())
-            {
-                Local l = (Local) localIt.next();
-                Object g;
-                
-                if(sizeOfType(l.getType()) == 1)
-                    g = IntType.v();
-                else
-                    g = LongType.v();
-                
-                localToGroup.put(l, g);
-                
-                if(!groupToColorCount.containsKey(g))
-                {
-                    groupToColorCount.put(g, new Integer(0));
-                }
-            }
-        }
-
-        // Assign colors to the parameter locals.
-        {
-            Iterator codeIt = body.getUnits().iterator();
-
-            while(codeIt.hasNext())
-            {
-                Stmt s = (Stmt) codeIt.next();
-
-                if(s instanceof IdentityStmt &&
-                    ((IdentityStmt) s).getLeftOp() instanceof Local)
-                {
-                    Local l = (Local) ((IdentityStmt) s).getLeftOp();
-                    
-                    Object group = localToGroup.get(l);
-                    int count = ((Integer) groupToColorCount.get(group)).intValue();
-                    
-                    localToColor.put(l, new Integer(count));
-                    
-                    count++;
-                    
-                    groupToColorCount.put(group, new Integer(count));
-                }
-            }
-        }
+        super.assignColorsToLocals(body);
         
         // Call the graph colorer.
             FastColorer.assignColorsToLocals(body, localToGroup,
@@ -368,28 +73,8 @@ public class JasminClass
                     
     }
     
-    void emitMethod(SootMethod method, Map options)
-    {
-       if (method.isPhantom())
-           return;
-
-       // Emit prologue
-            emit(".method " + Modifier.toString(method.getModifiers()) + " " +
-                 method.getName() + jasminDescriptorOf(method));
-
-       if(method.isConcrete())
-       {
-            if(!method.hasActiveBody())
-                throw new RuntimeException("method: " + method.getName() + " has no active body!");
-            else
-                emitMethodBody(method, options);
-       }
-       
-       // Emit epilogue
-            emit(".end method");
-    }
     
-    void emitMethodBody(SootMethod method, Map options)
+    protected void emitMethodBody(SootMethod method)//, Map options)
     {
         if(Options.v().time())
             Timers.v().buildJasminTimer.end();
@@ -422,8 +107,8 @@ public class JasminClass
             G.v().out.println("[" + body.getMethod().getName() +
                 "] Performing peephole optimizations...");
 
-        boolean disablePeephole = PhaseOptions.getBoolean(options, "no-peephole");
-        disablePeephole = true;
+        //boolean disablePeephole = PhaseOptions.getBoolean(options, "no-peephole");
+        boolean disablePeephole = true;
 
         if (!disablePeephole)
         {
@@ -436,11 +121,11 @@ public class JasminClass
         
         subroutineToReturnAddressSlot = new HashMap(10, 0.7f);
 
-        // Determine the stmtToLabel map
+        // Determine the unitToLabel map
         {
             Iterator boxIt = body.getUnitBoxes(true).iterator();
 
-            stmtToLabel = new HashMap(units.size() * 2 + 1, 0.7f);
+            unitToLabel = new HashMap(units.size() * 2 + 1, 0.7f);
             labelCount = 0;
 
             while(boxIt.hasNext())
@@ -449,8 +134,8 @@ public class JasminClass
                 {
                     StmtBox box = (StmtBox) boxIt.next();
 
-                    if(!stmtToLabel.containsKey(box.getUnit()))
-                        stmtToLabel.put(box.getUnit(), "label" + labelCount++);
+                    if(!unitToLabel.containsKey(box.getUnit()))
+                        unitToLabel.put(box.getUnit(), "label" + labelCount++);
                 }
             }
         }
@@ -465,8 +150,8 @@ public class JasminClass
 
                 if(trap.getBeginUnit() != trap.getEndUnit())
                     emit(".catch " + slashify(trap.getException().getName()) + " from " +
-                        stmtToLabel.get(trap.getBeginUnit()) + " to " + stmtToLabel.get(trap.getEndUnit()) +
-                        " using " + stmtToLabel.get(trap.getHandlerUnit()));
+                        unitToLabel.get(trap.getBeginUnit()) + " to " + unitToLabel.get(trap.getEndUnit()) +
+                        " using " + unitToLabel.get(trap.getHandlerUnit()));
             }
         }
 
@@ -602,8 +287,8 @@ public class JasminClass
             {
                 Stmt s = (Stmt) codeIt.next();
 
-                if(stmtToLabel.containsKey(s))
-                    emit(stmtToLabel.get(s) + ":");
+                if(unitToLabel.containsKey(s))
+                    emit(unitToLabel.get(s) + ":");
 
                 if(subroutineToReturnAddressSlot.containsKey(s))
                 {
@@ -811,13 +496,6 @@ public class JasminClass
         }
     }
 
-    public void print(PrintWriter out)
-    {
-        Iterator it = code.iterator();
-
-        while(it.hasNext())
-            out.println(it.next());
-    }
 
     void emitAssignStmt(AssignStmt stmt)
     {
@@ -1092,7 +770,7 @@ public class JasminClass
 
         final Value op1 = ((BinopExpr) cond).getOp1();
         final Value op2 = ((BinopExpr) cond).getOp2();
-        final String label = (String) stmtToLabel.get(stmt.getTarget());
+        final String label = (String) unitToLabel.get(stmt.getTarget());
 
         // Handle simple subcase where op1 is null
             if(op2 instanceof NullConstant || op1 instanceof NullConstant)
@@ -1640,13 +1318,13 @@ public class JasminClass
             {
                 if(isNextGotoAJsr)
                 {
-                    emit("jsr " + stmtToLabel.get(s.getTarget()));
+                    emit("jsr " + unitToLabel.get(s.getTarget()));
                     isNextGotoAJsr = false;
 
                     subroutineToReturnAddressSlot.put(s.getTarget(), new Integer(returnAddressSlot));
                 }
                 else
-                    emit("goto " + stmtToLabel.get(s.getTarget()));
+                    emit("goto " + unitToLabel.get(s.getTarget()));
             }
 
 
@@ -1664,9 +1342,9 @@ public class JasminClass
                 List targets = s.getTargets();
 
                 for(int i = 0; i < lookupValues.size(); i++)
-                    emit("  " + lookupValues.get(i) + " : " + stmtToLabel.get(targets.get(i)));
+                    emit("  " + lookupValues.get(i) + " : " + unitToLabel.get(targets.get(i)));
 
-                emit("  default : " + stmtToLabel.get(s.getDefaultTarget()));
+                emit("  default : " + unitToLabel.get(s.getDefaultTarget()));
             }
 
             public void caseNopStmt(NopStmt s)
@@ -1763,9 +1441,9 @@ public class JasminClass
                 List targets = s.getTargets();
 
                 for(int i = 0; i < targets.size(); i++)
-                    emit("  " + stmtToLabel.get(targets.get(i)));
+                    emit("  " + unitToLabel.get(targets.get(i)));
 
-                emit("default : " + stmtToLabel.get(s.getDefaultTarget()));
+                emit("default : " + unitToLabel.get(s.getDefaultTarget()));
             }
 
             public void caseThrowStmt(ThrowStmt s)
@@ -3124,8 +2802,3 @@ public class JasminClass
     }
 
 }
-
-
-
-
-
