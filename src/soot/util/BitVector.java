@@ -87,7 +87,7 @@ public class BitVector
             if( bits[i] != other.bits[i] ) return false;
         }
         for( ; i < longer.length; i++ ) {
-            if( bits[i] != 0L ) return false;
+            if( longer[i] != 0L ) return false;
         }
         return true;
     }
@@ -104,7 +104,7 @@ public class BitVector
     }
     public int length() {
         int i;
-        for( i = bits.length-1; i >= 0; i++ ) {
+        for( i = bits.length-1; i >= 0; i-- ) {
             if( bits[i] != 0L ) break;
         }
         if( i < 0 ) return 0;
@@ -158,7 +158,7 @@ public class BitVector
     public String toString() {
         StringBuffer ret = new StringBuffer();
         ret.append('{');
-        boolean start = false;
+        boolean start = true;
         BitSetIterator it = new BitSetIterator( bits );
         while( it.hasNext() ) {
             int bit = it.next();
@@ -169,6 +169,20 @@ public class BitVector
         ret.append('}');
         return ret.toString();
     }
+    /*
+    public boolean orAndAndNotCheck(BitVector orset, BitVector andset, BitVector andnotset) {
+        BitVector orAndAnd = (BitVector) orset.clone();
+        if( andset != null ) orAndAnd.and( andset );
+        if( andnotset != null ) orAndAnd.andNot( andnotset );
+        orAndAnd.or( this );
+        boolean ret = !orAndAnd.equals(this);
+        orAndAndNotOld( orset, andset, andnotset );
+        if( !this.equals( orAndAnd ) ) {
+            throw new RuntimeException( "orset is "+orset+"\nandset is "+andset+"\nandnotset is "+andnotset+"\nthis is "+this+"\ncorrect is "+orAndAnd );
+        }
+        return ret;
+    }
+    */
     /**
      * Computes this = this OR ((orset AND andset ) AND (NOT andnotset))
      * Returns true iff this is modified.
@@ -213,78 +227,61 @@ public class BitVector
         int i = 0;
         long l;
 
-        if( bl <= cl && bl <= dl ) {
+        if( c == null ) {
+            if( dl <= bl ) {
+                while( i < dl ) {
+                    l = b[i] & ~d[i];
+                    if( (l & ~e[i]) != 0 ) ret = true;
+                    e[i] |= l;
+                    i++;
+                }
+                while( i < bl ) {
+                    l = b[i];
+                    if( (l & ~e[i]) != 0 ) ret = true;
+                    e[i] |= l;
+                    i++;
+                }
+            } else {
+                while( i < bl ) {
+                    l = b[i] & ~d[i];
+                    if( (l & ~e[i]) != 0 ) ret = true;
+                    e[i] |= l;
+                    i++;
+                }
+            }
+        } else if( bl <= cl && bl <= dl ) {
+            // bl is the shortest
             while( i < bl ) {
                 l = b[i] & c[i] & ~d[i];
                 if( (l & ~e[i]) != 0 ) ret = true;
                 e[i] |= l;
                 i++;
             }
-        } else if( cl <= dl && dl <= bl ) {
+        } else if( cl <= bl && cl <= dl ) {
+            // cl is the shortest
             while( i < cl ) {
                 l = b[i] & c[i] & ~d[i];
                 if( (l & ~e[i]) != 0 ) ret = true;
                 e[i] |= l;
                 i++;
             }
-            while( i < dl ) {
-                l = b[i] & ~d[i];
-                if( (l & ~e[i]) != 0 ) ret = true;
-                e[i] |= l;
-                i++;
-            }
-            while( i < bl ) {
-                l = b[i];
-                if( (l & ~e[i]) != 0 ) ret = true;
-                e[i] |= l;
-                i++;
-            }
-        } else if( dl <= cl && cl <= bl ) {
+        } else {
+            // dl is the shortest
             while( i < dl ) {
                 l = b[i] & c[i] & ~d[i];
                 if( (l & ~e[i]) != 0 ) ret = true;
                 e[i] |= l;
                 i++;
             }
-            while( i < cl ) {
+            int shorter = cl;
+            if( bl < shorter ) shorter = bl;
+            while( i < shorter ) {
                 l = b[i] & c[i];
                 if( (l & ~e[i]) != 0 ) ret = true;
                 e[i] |= l;
                 i++;
             }
-            while( i < bl ) {
-                l = b[i];
-                if( (l & ~e[i]) != 0 ) ret = true;
-                e[i] |= l;
-                i++;
-            }
-        } else if( dl <= bl && bl <= cl ) {
-            while( i < dl ) {
-                l = b[i] & c[i] & ~d[i];
-                if( (l & ~e[i]) != 0 ) ret = true;
-                e[i] |= l;
-                i++;
-            }
-            while( i < bl ) {
-                l = b[i] & c[i];
-                if( (l & ~e[i]) != 0 ) ret = true;
-                e[i] |= l;
-                i++;
-            }
-        } else if( cl <= bl && bl <= dl ) {
-            while( i < cl ) {
-                l = b[i] & c[i] & ~d[i];
-                if( (l & ~e[i]) != 0 ) ret = true;
-                e[i] |= l;
-                i++;
-            }
-            while( i < bl ) {
-                l = b[i] & ~d[i];
-                if( (l & ~e[i]) != 0 ) ret = true;
-                e[i] |= l;
-                i++;
-            }
-        } else throw new RuntimeException( "oops bl="+bl+" cl="+cl+" dl="+dl );
+        }
 
         return ret;
     }
