@@ -69,6 +69,9 @@
 
  B) Changes:
 
+ - Modified on February 17, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Added the emitting of stack height.
+   
  - Modified on February 15, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Fixed bug with booleans, chars, bytes and shorts and if_cmpxx.
    Fixed bug with type casts of bytes/chars/booleans/shorts to ints.
@@ -139,7 +142,9 @@ public class JasminClass
 
     boolean isNextGotoAJsr;
     int returnAddressSlot;
-
+    int currentStackHeight = 0;
+    int maxStackHeight = 0;
+    
     String slashify(String s)
     {
         return s.replace('.', '/');
@@ -149,6 +154,8 @@ public class JasminClass
     {
         if(t instanceof DoubleType || t instanceof LongType)
             return 2;
+        else if(t instanceof VoidType)
+            return 0;
         else
             return 1;
     }
@@ -271,15 +278,36 @@ public class JasminClass
 
     void emit(String s)
     {
+        okayEmit(s);
+    }
+    
+    void okayEmit(String s)
+    {
         if(isEmittingMethodCode && !s.endsWith(":"))
             code.add("    " + s);
         else
             code.add(s);
 
-        if(Main.isVerbose)
-            System.out.println(s);
+        //System.out.println(s);
     }
 
+    void emit(String s, int stackChange)
+    {
+        modifyStackHeight(stackChange);        
+        okayEmit(s);
+    }
+    
+    void modifyStackHeight(int stackChange)
+    {
+        currentStackHeight += stackChange;
+        
+        if(currentStackHeight < 0)
+            throw new RuntimeException("Stack height is negative!");
+            
+        if(currentStackHeight > maxStackHeight)
+            maxStackHeight = currentStackHeight;
+    }
+    
     public JasminClass(SootClass SootClass, BodyExpr bodyExpr)
     {
         code = new LinkedList();
@@ -351,9 +379,10 @@ public class JasminClass
     void emitMethod(SootMethod method, BodyExpr bodyExpr)
     {
         StmtBody body = (StmtBody) bodyExpr.resolveFor(method);
-
         StmtList stmtList = body.getStmtList();
 
+        int stackLimitIndex;
+        
         // Emit prologue
             emit(".method " + Modifier.toString(method.getModifiers()) + " " +
                  method.getName() + jasminDescriptorOf(method));
@@ -467,7 +496,9 @@ public class JasminClass
                     }
                 }
 
-                emit("    .limit stack 20");
+                emit("    .limit stack ?");
+                stackLimitIndex = code.size() - 1;
+                
                 emit("    .limit locals " + localCount);
             }
         }
@@ -477,13 +508,13 @@ public class JasminClass
             Iterator codeIt = stmtList.iterator();
 
             isEmittingMethodCode = true;
+            maxStackHeight = 0; 
             isNextGotoAJsr = false;
 
             while(codeIt.hasNext())
             {
                 Stmt s = (Stmt) codeIt.next();
 
-                
                 if(stmtToLabel.containsKey(s))
                     emit(stmtToLabel.get(s) + ":");
 
@@ -491,18 +522,27 @@ public class JasminClass
                 {
                     AssignStmt assignStmt = (AssignStmt) s;
 
-                    emit("astore " + localToSlot.get(assignStmt.getLeftOp()));
+                    modifyStackHeight(1); // simulate the pushing of address onto the stack by the jsr
+
+                    emit("astore " + localToSlot.get(assignStmt.getLeftOp()), -1);
 
                     //emit("astore " + ( ( Integer ) subroutineToReturnAddressSlot.get( s ) ).intValue() );
 
                 }   
 
-//               else 
-
-                   emitStmt(s);
+                // emit this statement
+                {
+                    currentStackHeight = 0;
+                    emitStmt(s);
+                        
+                    if(currentStackHeight != 0)
+                        throw new RuntimeException("Stack has height " + currentStackHeight + " after execution of stmt: " + s);
+                }
             }
 
             isEmittingMethodCode = false;
+            
+            code.set(stackLimitIndex, "    .limit stack " + maxStackHeight);
         }
 
         // Emit epilogue
@@ -535,52 +575,52 @@ public class JasminClass
                 {
                     public void caseArrayType(ArrayType t)
                     {
-                        emit("aastore");
+                        emit("aastore", -3);
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dastore");
+                        emit("dastore", -4);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fastore");
+                        emit("fastore", -3);
                     }
 
                     public void caseIntType(IntType t)
                     {
-                        emit("iastore");
+                        emit("iastore", -3);
                     }
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lastore");
+                        emit("lastore", -4);
                     }
 
                     public void caseRefType(RefType t)
                     {
-                        emit("aastore");
+                        emit("aastore", -3);
                     }
 
                     public void caseByteType(ByteType t)
                     {
-                        emit("bastore");
+                        emit("bastore", -3);
                     }
 
                     public void caseBooleanType(BooleanType t)
                     {
-                        emit("bastore");
+                        emit("bastore", -3);
                     }
 
                     public void caseCharType(CharType t)
                     {
-                        emit("castore");
+                        emit("castore", -3);
                     }
 
                     public void caseShortType(ShortType t)
                     {
-                        emit("sastore");
+                        emit("sastore", -3);
                     }
 
                     public void defaultCase(Type t)
@@ -601,7 +641,8 @@ public class JasminClass
                 emitValue(rvalue);
 
                 emit("putfield " + slashify(v.getField().getDeclaringClass().getName()) + "/" +
-                    v.getField().getName() + " " + jasminDescriptorOf(v.getField().getType()));
+                    v.getField().getName() + " " + jasminDescriptorOf(v.getField().getType()), 
+                    -1 + -sizeOfType(v.getField().getType()));
             }
 
             public void caseLocal(final Local v)
@@ -615,9 +656,9 @@ public class JasminClass
                         emitValue(rvalue);
 
                         if(slot >= 0 && slot <= 3)
-                            emit("astore_" + slot);
+                            emit("astore_" + slot, -1);
                         else
-                            emit("astore " + slot);
+                            emit("astore " + slot, -1);
                     }
 
                     public void caseDoubleType(DoubleType t)
@@ -625,9 +666,9 @@ public class JasminClass
                         emitValue(rvalue);
 
                         if(slot >= 0 && slot <= 3)
-                            emit("dstore_" + slot);
+                            emit("dstore_" + slot, -2);
                         else
-                            emit("dstore " + slot);
+                            emit("dstore " + slot, -2);
                     }
 
                     public void caseFloatType(FloatType t)
@@ -635,9 +676,9 @@ public class JasminClass
                         emitValue(rvalue);
 
                         if(slot >= 0 && slot <= 3)
-                            emit("fstore_" + slot);
+                            emit("fstore_" + slot, -1);
                         else
-                            emit("fstore " + slot);
+                            emit("fstore " + slot, -1);
                     }
 
                     public void caseIntType(IntType t)
@@ -645,9 +686,9 @@ public class JasminClass
                         emitValue(rvalue);
 
                         if(slot >= 0 && slot <= 3)
-                            emit("istore_" + slot);
+                            emit("istore_" + slot, -1);
                         else
-                            emit("istore " + slot);
+                            emit("istore " + slot, -1);
                     }
 
                     public void caseLongType(LongType t)
@@ -655,9 +696,9 @@ public class JasminClass
                         emitValue(rvalue);
 
                         if(slot >= 0 && slot <= 3)
-                            emit("lstore_" + slot);
+                            emit("lstore_" + slot, -2);
                         else
-                            emit("lstore " + slot);
+                            emit("lstore " + slot, -2);
                     }
 
                     public void caseRefType(RefType t)
@@ -665,9 +706,9 @@ public class JasminClass
                         emitValue(rvalue);
 
                         if(slot >= 0 && slot <= 3)
-                            emit("astore_" + slot);
+                            emit("astore_" + slot, -1);
                         else
-                            emit("astore " + slot);
+                            emit("astore " + slot, -1);
                     }
 
                     public void caseStmtAddressType(StmtAddressType t)
@@ -677,9 +718,9 @@ public class JasminClass
 
 /*
                         if ( slot >= 0 && slot <= 3)
-                             emit("astore_" + slot );
+                             emit("astore_" + slot,  );
                         else
-                             emit("astore " + slot );
+                             emit("astore " + slot,  );
 
 */
                          
@@ -690,9 +731,9 @@ public class JasminClass
                         emitValue(rvalue);
 
                         if(slot >= 0 && slot <= 3)
-                            emit("astore_" + slot);
+                            emit("astore_" + slot, -1);
                         else
-                            emit("astore " + slot);
+                            emit("astore " + slot, -1);
                     }
 
                     public void defaultCase(Type t)
@@ -708,7 +749,8 @@ public class JasminClass
 
                 emitValue(rvalue);
                 emit("putstatic " + slashify(field.getDeclaringClass().getName()) + "/" +
-                    field.getName() + " " + jasminDescriptorOf(field.getType()));
+                    field.getName() + " " + jasminDescriptorOf(field.getType()),
+                    -sizeOfType(v.getField().getType()));
             }
         });
     }
@@ -733,60 +775,60 @@ public class JasminClass
                 {
                     public void caseIntType(IntType t)
                     {
-                        emit("if_icmpeq " + label);
+                        emit("if_icmpeq " + label, -2);
                     }
 
 		    public void caseBooleanType(BooleanType t)
 		    {
-		        emit("if_icmpeq " + label);
+		        emit("if_icmpeq " + label, -2);
 		    }
 
 		    public void caseShortType(ShortType t)
 		    {
-		        emit("if_icmpeq " + label);
+		        emit("if_icmpeq " + label, -2);
 		    }
 
 		    public void caseCharType(CharType t)
 		    {
-		        emit("if_icmpeq " + label);
+		        emit("if_icmpeq " + label, -2);
 		    }
 
 		    public void caseByteType(ByteType t)
 		    {
-		        emit("if_icmpeq " + label);
+		        emit("if_icmpeq " + label, -2);
 		    }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
-                        emit("ifeq " + label);
+                        emit("dcmpg", -3);
+                        emit("ifeq " + label, -1);
                     }
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
-                        emit("ifeq " + label);
+                        emit("lcmp", -3);
+                        emit("ifeq " + label, -1);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
-                        emit("ifeq " + label);
+                        emit("fcmpg", -1);
+                        emit("ifeq " + label, -1);
                     }
 
                     public void caseArrayType(ArrayType t)
                     {
-                        emit("if_acmpeq " + label);
+                        emit("if_acmpeq " + label, -2);
                     }
 
                     public void caseRefType(RefType t)
                     {
-                        emit("if_acmpeq " + label);
+                        emit("if_acmpeq " + label, -2);
                     }
 
                     public void caseNullType(NullType t)
                     {
-                        emit("if_acmpeq " + label);
+                        emit("if_acmpeq " + label, -2);
                     }
 
                     public void defaultCase(Type t)
@@ -802,60 +844,60 @@ public class JasminClass
                 {
                     public void caseIntType(IntType t)
                     {
-                        emit("if_icmpne " + label);
+                        emit("if_icmpne " + label, -2);
                     }
 
 		    public void caseBooleanType(BooleanType t)
 		    {
-		        emit("if_icmpne " + label);
+		        emit("if_icmpne " + label, -2);
 		    }
 
 		    public void caseShortType(ShortType t)
 		    {
-		        emit("if_icmpne " + label);
+		        emit("if_icmpne " + label, -2);
 		    }
 
 		    public void caseCharType(CharType t)
 		    {
-		        emit("if_icmpne " + label);
+		        emit("if_icmpne " + label, -2);
 		    }
 
 		    public void caseByteType(ByteType t)
 		    {
-		        emit("if_icmpne " + label);
+		        emit("if_icmpne " + label, -2);
 		    }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
-                        emit("ifne " + label);
+                        emit("dcmpg", -3);
+                        emit("ifne " + label, -1);
                     }
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
-                        emit("ifne " + label);
+                        emit("lcmp", -3);
+                        emit("ifne " + label, -1);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
-                        emit("ifne " + label);
+                        emit("fcmpg", -1);
+                        emit("ifne " + label, -1);
                     }
 
                     public void caseArrayType(ArrayType t)
                     {
-                        emit("if_acmpne " + label);
+                        emit("if_acmpne " + label, -2);
                     }
 
                     public void caseRefType(RefType t)
                     {
-                        emit("if_acmpne " + label);
+                        emit("if_acmpne " + label, -2);
                     }
 
                     public void caseNullType(NullType t)
                     {
-                        emit("if_acmpne " + label);
+                        emit("if_acmpne " + label, -2);
                     }
 
                     public void defaultCase(Type t)
@@ -871,46 +913,46 @@ public class JasminClass
                 {
                     public void caseIntType(IntType t)
                     {
-                        emit("if_icmplt " + label);
+                        emit("if_icmplt " + label, -2);
                     }
 
 		    public void caseBooleanType(BooleanType t)
 		    {
-		        emit("if_icmplt " + label);
+		        emit("if_icmplt " + label, -2);
 		    }
 
 		    public void caseShortType(ShortType t)
 		    {
-		        emit("if_icmplt " + label);
+		        emit("if_icmplt " + label, -2);
 		    }
 
 		    public void caseCharType(CharType t)
 		    {
-		        emit("if_icmplt " + label);
+		        emit("if_icmplt " + label, -2);
 		    }
 
 		    public void caseByteType(ByteType t)
 		    {
-		        emit("if_icmplt " + label);
+		        emit("if_icmplt " + label, -2);
 		    }
 
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
-                        emit("iflt " + label);
+                        emit("dcmpg", -3);
+                        emit("iflt " + label, -1);
                     }
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
-                        emit("iflt " + label);
+                        emit("lcmp", -3);
+                        emit("iflt " + label, -1);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
-                        emit("iflt " + label);
+                        emit("fcmpg", -1);
+                        emit("iflt " + label, -1);
                     }
 
                     public void defaultCase(Type t)
@@ -926,45 +968,45 @@ public class JasminClass
                 {
                     public void caseIntType(IntType t)
                     {
-                        emit("if_icmple " + label);
+                        emit("if_icmple " + label, -2);
                     }
 
 		    public void caseBooleanType(BooleanType t)
 		    {
-		        emit("if_icmple " + label);
+		        emit("if_icmple " + label, -2);
 		    }
 
 		    public void caseShortType(ShortType t)
 		    {
-		        emit("if_icmple " + label);
+		        emit("if_icmple " + label, -2);
 		    }
 
 		    public void caseCharType(CharType t)
 		    {
-		        emit("if_icmple " + label);
+		        emit("if_icmple " + label, -2);
 		    }
 
 		    public void caseByteType(ByteType t)
 		    {
-		        emit("if_icmple " + label);
+		        emit("if_icmple " + label, -2);
 		    }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
-                        emit("ifle " + label);
+                        emit("dcmpg", -3);
+                        emit("ifle " + label, -1);
                     }
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
-                        emit("ifle " + label);
+                        emit("lcmp", -3);
+                        emit("ifle " + label, -1);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
-                        emit("ifle " + label);
+                        emit("fcmpg", -1);
+                        emit("ifle " + label, -1);
                     }
 
                     public void defaultCase(Type t)
@@ -980,45 +1022,45 @@ public class JasminClass
                 {
                     public void caseIntType(IntType t)
                     {
-                        emit("if_icmpgt " + label);
+                        emit("if_icmpgt " + label, -2);
                     }
 
 		    public void caseBooleanType(BooleanType t)
 		    {
-		        emit("if_icmpgt " + label);
+		        emit("if_icmpgt " + label, -2);
 		    }
 
 		    public void caseShortType(ShortType t)
 		    {
-		        emit("if_icmpgt " + label);
+		        emit("if_icmpgt " + label, -2);
 		    }
 
 		    public void caseCharType(CharType t)
 		    {
-		        emit("if_icmpgt " + label);
+		        emit("if_icmpgt " + label, -2);
 		    }
 
 		    public void caseByteType(ByteType t)
 		    {
-		        emit("if_icmpgt " + label);
+		        emit("if_icmpgt " + label, -2);
 		    }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
-                        emit("ifgt " + label);
+                        emit("dcmpg", -3);
+                        emit("ifgt " + label, -1);
                     }
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
-                        emit("ifgt " + label);
+                        emit("lcmp", -3);
+                        emit("ifgt " + label, -1);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
-                        emit("ifgt " + label);
+                        emit("fcmpg", -1);
+                        emit("ifgt " + label, -1);
                     }
 
                     public void defaultCase(Type t)
@@ -1034,45 +1076,45 @@ public class JasminClass
                 {
                     public void caseIntType(IntType t)
                     {
-                        emit("if_icmpge " + label);
+                        emit("if_icmpge " + label, -2);
                     }
 
 		    public void caseBooleanType(BooleanType t)
 		    {
-		        emit("if_icmpge " + label);
+		        emit("if_icmpge " + label, -2);
 		    }
 
 		    public void caseShortType(ShortType t)
 		    {
-		        emit("if_icmpge " + label);
+		        emit("if_icmpge " + label, -2);
 		    }
 
 		    public void caseCharType(CharType t)
 		    {
-		        emit("if_icmpge " + label);
+		        emit("if_icmpge " + label, -2);
 		    }
 
 		    public void caseByteType(ByteType t)
 		    {
-		        emit("if_icmpge " + label);
+		        emit("if_icmpge " + label, -2);
 		    }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
-                        emit("ifge " + label);
+                        emit("dcmpg", -3);
+                        emit("ifge " + label, -1);
                     }
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
-                        emit("ifge " + label);
+                        emit("lcmp", -3);
+                        emit("ifge " + label, -1);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
-                        emit("ifge " + label);
+                        emit("fcmpg", -1);
+                        emit("ifge " + label, -1);
                     }
 
                     public void defaultCase(Type t)
@@ -1105,13 +1147,15 @@ public class JasminClass
                 {
                     int slot = ((Integer) localToSlot.get(s.getLeftOp())).intValue();
 
-                    emit("astore " + slot);
+                    modifyStackHeight(1); // simulate the pushing of the exception onto the 
+                                          // stack by the jvm
+                    emit("astore " + slot, -1);
                 }
             }
 
             public void caseBreakpointStmt(BreakpointStmt s)
             {
-                emit("breakpoint");
+                emit("breakpoint", 0);
             }
 
             public void caseInvokeStmt(InvokeStmt s)
@@ -1125,9 +1169,9 @@ public class JasminClass
                     // Need to do some cleanup because this value is not used.
 
                     if(sizeOfType(returnType) == 1)
-                        emit("pop");
+                        emit("pop", -1);
                     else
-                        emit("pop2");
+                        emit("pop2", -2);
                 }
             }
 
@@ -1139,13 +1183,13 @@ public class JasminClass
             public void caseEnterMonitorStmt(EnterMonitorStmt s)
             {
                 emitValue(s.getOp());
-                emit("monitorenter");
+                emit("monitorenter", -1);
             }
 
             public void caseExitMonitorStmt(ExitMonitorStmt s)
             {
                 emitValue(s.getOp());
-                emit("monitorexit");
+                emit("monitorexit", -1);
             }
 
             public void caseGotoStmt(GotoStmt s)
@@ -1170,7 +1214,7 @@ public class JasminClass
             public void caseLookupSwitchStmt(LookupSwitchStmt s)
             {
                 emitValue(s.getKey());
-                emit("lookupswitch");
+                emit("lookupswitch", -1);
 
                 List lookupValues = s.getLookupValues();
                 List targets = s.getTargets();
@@ -1183,12 +1227,12 @@ public class JasminClass
 
             public void caseNopStmt(NopStmt s)
             {
-                emit("nop");
+                emit("nop", 0);
             }
 
             public void caseRetStmt(RetStmt s)
             {
-                emit("ret " + localToSlot.get(s.getStmtAddress()));
+                emit("ret " + localToSlot.get(s.getStmtAddress()), 0);
             }
 
             public void caseReturnStmt(ReturnStmt s)
@@ -1206,57 +1250,57 @@ public class JasminClass
 
                      public void caseDoubleType(DoubleType t)
                      {
-                        emit("dreturn");
+                        emit("dreturn", -2);
                      }
 
                      public void caseFloatType(FloatType t)
                      {
-                        emit("freturn");
+                        emit("freturn", -1);
                      }
 
                      public void caseIntType(IntType t)
                      {
-                        emit("ireturn");
+                        emit("ireturn", -1);
                      }
 
                      public void caseByteType(ByteType t)
                      {
-                        emit("ireturn");
+                        emit("ireturn", -1);
                      }
 
                      public void caseShortType(ShortType t)
                      {
-                        emit("ireturn");
+                        emit("ireturn", -1);
                      }
 
                      public void caseCharType(CharType t)
                      {
-                        emit("ireturn");
+                        emit("ireturn", -1);
                      }
 
                      public void caseBooleanType(BooleanType t)
                      {
-                        emit("ireturn");
+                        emit("ireturn", -1);
                      }
 
                      public void caseLongType(LongType t)
                      {
-                        emit("lreturn");
+                        emit("lreturn", -2);
                      }
 
                      public void caseArrayType(ArrayType t)
                      {
-                        emit("areturn");
+                        emit("areturn", -1);
                      }
 
                      public void caseRefType(RefType t)
                      {
-                        emit("areturn");
+                        emit("areturn", -1);
                      }
 
                      public void caseNullType(NullType t)
                      {
-                        emit("areturn");
+                        emit("areturn", -1);
                      }
 
                 });
@@ -1264,13 +1308,13 @@ public class JasminClass
 
             public void caseReturnVoidStmt(ReturnVoidStmt s)
             {
-                emit("return");
+                emit("return", 0);
             }
 
             public void caseTableSwitchStmt(TableSwitchStmt s)
             {
                 emitValue(s.getKey());
-                emit("tableswitch " + s.getLowIndex() + " ; high = " + s.getHighIndex());
+                emit("tableswitch " + s.getLowIndex() + " ; high = " + s.getHighIndex(), -1);
 
                 List targets = s.getTargets();
 
@@ -1283,7 +1327,7 @@ public class JasminClass
             public void caseThrowStmt(ThrowStmt s)
             {
                 emitValue(s.getOp());
-                emit("athrow");
+                emit("athrow", -1);
             }
         });
     }
@@ -1301,7 +1345,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("iadd");
+                        emit("iadd", -1);
                     }
 		    
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -1312,17 +1356,17 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("ladd");
+                        emit("ladd", -2);
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dadd");
+                        emit("dadd", -2);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fadd");
+                        emit("fadd", -1);
                     }
 
                     public void defaultCase(Type t)
@@ -1342,7 +1386,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("iand");
+                        emit("iand", -1);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -1353,7 +1397,7 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("land");
+                        emit("land", -2);
                     }
 
                     public void defaultCase(Type t)
@@ -1374,22 +1418,22 @@ public class JasminClass
                 {
                     public void caseArrayType(ArrayType ty)
                     {
-                        emit("aaload");
+                        emit("aaload", -1);
                     }
 
                     public void caseBooleanType(BooleanType ty)
                     {
-                        emit("baload");
+                        emit("baload", -1);
                     }
 
                     public void caseByteType(ByteType ty)
                     {
-                        emit("baload");
+                        emit("baload", -1);
                     }
 
                     public void caseCharType(CharType ty)
                     {
-                        emit("caload");
+                        emit("caload", -1);
                     }
 
                     public void defaultCase(Type ty)
@@ -1399,32 +1443,32 @@ public class JasminClass
 
                     public void caseDoubleType(DoubleType ty)
                     {
-                        emit("daload");
+                        emit("daload", 0);
                     }
 
                     public void caseFloatType(FloatType ty)
                     {
-                        emit("faload");
+                        emit("faload", -1);
                     }
 
                     public void caseIntType(IntType ty)
                     {
-                        emit("iaload");
+                        emit("iaload", -1);
                     }
 
                     public void caseLongType(LongType ty)
                     {
-                        emit("laload");
+                        emit("laload", 0);
                     }
 
                     public void caseRefType(RefType ty)
                     {
-                        emit("aaload");
+                        emit("aaload", -1);
                     }
 
                     public void caseShortType(ShortType ty)
                     {
-                        emit("saload");
+                        emit("saload", -1);
                     }
                 });
             }
@@ -1437,9 +1481,9 @@ public class JasminClass
                 emitValue(v.getOp());
 
                 if(toType instanceof RefType)
-                    emit("checkcast " + slashify(toType.toString()));
+                    emit("checkcast " + slashify(toType.toString()), 0);
                 else if(toType instanceof ArrayType)
-                    emit("checkcast " + jasminDescriptorOf(toType));
+                    emit("checkcast " + jasminDescriptorOf(toType), 0);
                 else {
                     fromType.apply(new TypeSwitch()
                     {
@@ -1451,11 +1495,11 @@ public class JasminClass
                         public void caseDoubleType(DoubleType ty)
                         {
                             if(toType.equals(IntType.v()))
-                                emit("d2i");
+                                emit("d2i", -1);
                             else if(toType.equals(LongType.v()))
-                                emit("d2l");
+                                emit("d2l", 0);
                             else if(toType.equals(FloatType.v()))
-                                emit("d2f");
+                                emit("d2f", -1);
                             else
                                 throw new RuntimeException("invalid toType from double: " + toType);
                         }
@@ -1463,11 +1507,11 @@ public class JasminClass
                         public void caseFloatType(FloatType ty)
                         {
                             if(toType.equals(IntType.v()))
-                                emit("f2i");
+                                emit("f2i", 0);
                             else if(toType.equals(LongType.v()))
-                                emit("f2l");
+                                emit("f2l", 1);
                             else if(toType.equals(DoubleType.v()))
-                                emit("f2d");
+                                emit("f2d", 1);
                             else
                                 throw new RuntimeException("invalid toType from float: " + toType);
                         }
@@ -1500,17 +1544,17 @@ public class JasminClass
 			private void emitIntToTypeCast()
 			{
                             if(toType.equals(ByteType.v()))
-                                emit("i2b");
+                                emit("i2b", 0);
                             else if(toType.equals(CharType.v()))
-                                emit("i2c");
+                                emit("i2c", 0);
                             else if(toType.equals(ShortType.v()))
-                                emit("i2s");
+                                emit("i2s", 0);
                             else if(toType.equals(FloatType.v()))
-                                emit("i2f");
+                                emit("i2f", 0);
                             else if(toType.equals(LongType.v()))
-                                emit("i2l");
+                                emit("i2l", 1);
                             else if(toType.equals(DoubleType.v()))
-                                emit("i2d");
+                                emit("i2d", 1);
 			    else if(toType.equals(IntType.v()))
 			        ;  // this shouldn't happen?
                             else
@@ -1521,19 +1565,19 @@ public class JasminClass
                         public void caseLongType(LongType ty)
                         {
                             if(toType.equals(IntType.v()))
-                                emit("l2i");
+                                emit("l2i", -1);
                             else if(toType.equals(FloatType.v()))
-                                emit("l2f");
+                                emit("l2f", -1);
                             else if(toType.equals(DoubleType.v()))
-                                emit("l2d");
+                                emit("l2d", 0);
 			    else if(toType.equals(ByteType.v()))
-			      { emit("l2i"); emitIntToTypeCast(); }
+			      { emit("l2i", -1); emitIntToTypeCast(); }
 			    else if(toType.equals(ShortType.v()))
-			      { emit("l2i"); emitIntToTypeCast(); }
+			      { emit("l2i", -1); emitIntToTypeCast(); }
 			    else if(toType.equals(CharType.v()))
-			      { emit("l2i"); emitIntToTypeCast(); }
+			      { emit("l2i", -1); emitIntToTypeCast(); }
 			    else if(toType.equals(BooleanType.v()))
-			      { emit("l2i"); emitIntToTypeCast(); }
+			      { emit("l2i", -1); emitIntToTypeCast(); }
                             else
                                 throw new RuntimeException("invalid toType from long: " + toType);
                         }
@@ -1545,7 +1589,7 @@ public class JasminClass
             {
                 emitValue(v.getOp1());
                 emitValue(v.getOp2());
-                emit("lcmp");
+                emit("lcmp", -3);
             }
 
             public void caseCmpgExpr(CmpgExpr v)
@@ -1554,9 +1598,9 @@ public class JasminClass
                 emitValue(v.getOp2());
 
                 if(v.getOp1().getType().equals(FloatType.v()))
-                    emit("fcmpg");
+                    emit("fcmpg", -1);
                 else
-                    emit("dcmpg");
+                    emit("dcmpg", -3);
             }
 
             public void caseCmplExpr(CmplExpr v)
@@ -1565,9 +1609,9 @@ public class JasminClass
                 emitValue(v.getOp2());
 
                 if(v.getOp1().getType().equals(FloatType.v()))
-                    emit("fcmpl");
+                    emit("fcmpl", -1);
                 else
-                    emit("dcmpl");
+                    emit("dcmpl", -3);
             }
 
             public void defaultCase(Value v)
@@ -1584,7 +1628,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("idiv");
+                        emit("idiv", -1);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -1595,17 +1639,17 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("ldiv");
+                        emit("ldiv", -2);
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("ddiv");
+                        emit("ddiv", -2);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fdiv");
+                        emit("fdiv", -1);
                     }
 
                     public void defaultCase(Type t)
@@ -1619,23 +1663,23 @@ public class JasminClass
             public void caseDoubleConstant(DoubleConstant v)
             {
                 if(v.value == 0)
-                    emit("dconst_0");
+                    emit("dconst_0", 2);
                 else if(v.value == 1)
-                    emit("dconst_1");
+                    emit("dconst_1", 2);
                 else
-                    emit("ldc2_w " + v.toString());
+                    emit("ldc2_w " + v.toString(), 2);
             }
 
             public void caseFloatConstant(FloatConstant v)
             {
                 if(v.value == 0)
-                    emit("fconst_0");
+                    emit("fconst_0", 1);
                 else if(v.value == 1)
-                    emit("fconst_1");
+                    emit("fconst_1", 1);
                 else if(v.value == 2)
-                    emit("fconst_2");
+                    emit("fconst_2", 1);
                 else
-                    emit("ldc " + v.toString());
+                    emit("ldc " + v.toString(), 1);
             }
 
 
@@ -1644,24 +1688,25 @@ public class JasminClass
                 emitValue(v.getBase());
 
                 emit("getfield " + slashify(v.getField().getDeclaringClass().getName()) + "/" +
-                    v.getField().getName() + " " + jasminDescriptorOf(v.getField().getType()));
+                    v.getField().getName() + " " + jasminDescriptorOf(v.getField().getType()), 
+                    -1 + sizeOfType(v.getField().getType()));
             }
 
             public void caseInstanceOfExpr(InstanceOfExpr v)
             {
                 emitValue(v.getOp());
 
-                emit("instanceof " + slashify(v.getCheckType().toString()));
+                emit("instanceof " + slashify(v.getCheckType().toString()), 0);
             }
 
             public void caseIntConstant(IntConstant v)
             {
                 if(v.value == -1)
-                    emit("iconst_m1");
+                    emit("iconst_m1", 1);
                 else if(v.value >= 0 && v.value <= 5)
-                    emit("iconst_" + v.value);
+                    emit("iconst_" + v.value, 1);
                 else
-                    emit("ldc " + v.toString());
+                    emit("ldc " + v.toString(), 1);
             }
 
             public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v)
@@ -1674,13 +1719,14 @@ public class JasminClass
                     emitValue(v.getArg(i));
 
                 emit("invokeinterface " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m) + " " + (argCountOf(m) + 1));
+                    m.getName() + jasminDescriptorOf(m) + " " + (argCountOf(m) + 1),
+                    -(argCountOf(m) + 1) + sizeOfType(m.getReturnType()));
             }
 
             public void caseLengthExpr(LengthExpr v)
             {
                 emitValue(v.getOp());
-                emit("arraylength");
+                emit("arraylength", 0);
             }
 
             public void caseLocal(Local v)
@@ -1692,9 +1738,9 @@ public class JasminClass
                     public void caseArrayType(ArrayType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("aload_" + slot);
+                            emit("aload_" + slot, 1);
                         else
-                            emit("aload " + slot);
+                            emit("aload " + slot, 1);
                     }
 
                     public void defaultCase(Type t)
@@ -1705,49 +1751,49 @@ public class JasminClass
                     public void caseDoubleType(DoubleType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("dload_" + slot);
+                            emit("dload_" + slot, 2);
                         else
-                            emit("dload " + slot);
+                            emit("dload " + slot, 2);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("fload_" + slot);
+                            emit("fload_" + slot, 1);
                         else
-                            emit("fload " + slot);
+                            emit("fload " + slot, 1);
                     }
 
                     public void caseIntType(IntType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("iload_" + slot);
+                            emit("iload_" + slot, 1);
                         else
-                            emit("iload " + slot);
+                            emit("iload " + slot, 1);
                     }
 
                     public void caseLongType(LongType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("lload_" + slot);
+                            emit("lload_" + slot, 2);
                         else
-                            emit("lload " + slot);
+                            emit("lload " + slot, 2);
                     }
 
                     public void caseRefType(RefType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("aload_" + slot);
+                            emit("aload_" + slot, 1);
                         else
-                            emit("aload " + slot);
+                            emit("aload " + slot, 1);
                     }
 
                     public void caseNullType(NullType t)
                     {
                         if(slot >= 0 && slot <= 3)
-                            emit("aload_" + slot);
+                            emit("aload_" + slot, 1);
                         else
-                            emit("aload " + slot);
+                            emit("aload " + slot, 1);
                     }
                 });
 
@@ -1756,11 +1802,11 @@ public class JasminClass
             public void caseLongConstant(LongConstant v)
             {
                 if(v.value == 0)
-                    emit("lconst_0");
+                    emit("lconst_0", 2);
                 else if(v.value == 1)
-                    emit("lconst_1");
+                    emit("lconst_1", 2);
                 else
-                    emit("ldc2_w " + v.toString());
+                    emit("ldc2_w " + v.toString(), 2);
             }
 
 
@@ -1773,7 +1819,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("imul");
+                        emit("imul", -1);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -1784,17 +1830,17 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lmul");
+                        emit("lmul", -2);
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dmul");
+                        emit("dmul", -2);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fmul");
+                        emit("fmul", -1);
                     }
 
                     public void defaultCase(Type t)
@@ -1813,19 +1859,19 @@ public class JasminClass
                 {
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
+                        emit("dcmpg", -3);
                         emitBooleanBranch("iflt");
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
+                        emit("fcmpg", -1);
                         emitBooleanBranch("iflt");
                     }
 
                     private void handleIntCase()
                     {
-                        emit("if_icmplt");
+                        emit("if_icmplt", -2);
                     }
 
 
@@ -1837,7 +1883,7 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
+                        emit("lcmp", -3);
                         emitBooleanBranch("iflt");
                     }
 
@@ -1857,19 +1903,19 @@ public class JasminClass
                 {
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
+                        emit("dcmpg", -3);
                         emitBooleanBranch("ifle");
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
+                        emit("fcmpg", -1);
                         emitBooleanBranch("ifle");
                     }
 
                     private void handleIntCase()
                     {
-                        emit("if_icmple");
+                        emit("if_icmple", -2);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -1880,7 +1926,7 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
+                        emit("lcmp", -3);
                         emitBooleanBranch("ifle");
                     }
 
@@ -1900,19 +1946,19 @@ public class JasminClass
                 {
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
+                        emit("dcmpg", -3);
                         emitBooleanBranch("ifgt");
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
+                        emit("fcmpg", -1);
                         emitBooleanBranch("ifgt");
                     }
 
                     private void handleIntCase()
                     {
-                        emit("if_icmpgt");
+                        emit("if_icmpgt", -2);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -1923,7 +1969,7 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
+                        emit("lcmp", -3);
                         emitBooleanBranch("ifgt");
                     }
 
@@ -1943,19 +1989,19 @@ public class JasminClass
                 {
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
+                        emit("dcmpg", -3);
                         emitBooleanBranch("ifge");
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
+                        emit("fcmpg", -1);
                         emitBooleanBranch("ifge");
                     }
 
                     private void handleIntCase()
                     {
-                        emit("if_icmpge");
+                        emit("if_icmpge", -2);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -1966,7 +2012,7 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
+                        emit("lcmp", -3);
                         emitBooleanBranch("ifge");
                     }
 
@@ -1986,21 +2032,21 @@ public class JasminClass
                 {
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
-                        emit("iconst_0");
+                        emit("dcmpg", -3);
+                        emit("iconst_0", 1);
                         emitBooleanBranch("if_icmpne");
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
-                        emit("iconst_0");
+                        emit("fcmpg", -1);
+                        emit("iconst_0", 1);
                         emitBooleanBranch("if_icmpne");
                     }
 
                     private void handleIntCase()
                     {
-                        emit("if_icmpne");
+                        emit("if_icmpne", -2);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -2011,8 +2057,8 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
-                        emit("iconst_0");
+                        emit("lcmp", -3);
+                        emit("iconst_0", 1);
                         emitBooleanBranch("if_icmpne");
                     }
 
@@ -2042,21 +2088,21 @@ public class JasminClass
                 {
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dcmpg");
-                        emit("iconst_0");
+                        emit("dcmpg", -3);
+                        emit("iconst_0", 1);
                         emitBooleanBranch("if_icmpeq");
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fcmpg");
-                        emit("iconst_0");
+                        emit("fcmpg", -3);
+                        emit("iconst_0", 1);
                         emitBooleanBranch("if_icmpeq");
                     }
 
                     private void handleIntCase()
                     {
-                        emit("if_icmpeq");
+                        emit("if_icmpeq", -2);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -2067,8 +2113,8 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lcmp");
-                        emit("iconst_0");
+                        emit("lcmp", -3);
+                        emit("iconst_0", 1);
                         emitBooleanBranch("if_icmpeq");
                     }
 
@@ -2097,7 +2143,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("ineg");
+                        emit("ineg", 0);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -2108,17 +2154,17 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lneg");
+                        emit("lneg", 0);
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dneg");
+                        emit("dneg", 0);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fneg");
+                        emit("fneg", 0);
                     }
 
                     public void defaultCase(Type t)
@@ -2136,11 +2182,11 @@ public class JasminClass
                 emitValue(size);
 
                 if(v.getBaseType() instanceof RefType)
-                    emit("anewarray " + slashify(v.getBaseType().toString()));
+                    emit("anewarray " + slashify(v.getBaseType().toString()), 0);
                 else if(v.getBaseType() instanceof ArrayType)
-                    emit("anewarray " + jasminDescriptorOf(v.getBaseType()));
+                    emit("anewarray " + jasminDescriptorOf(v.getBaseType()), 0);
                 else
-                    emit("newarray " + v.getBaseType().toString());
+                    emit("newarray " + v.getBaseType().toString(), 0);
             }
 
             public void caseNewMultiArrayExpr(NewMultiArrayExpr v)
@@ -2150,18 +2196,18 @@ public class JasminClass
                 for(int i = 0; i < sizes.size(); i++)
                     emitValue((Value) sizes.get(i));
 
-                emit("multianewarray " + jasminDescriptorOf(v.getBaseType()) + " " + sizes.size());
+                emit("multianewarray " + jasminDescriptorOf(v.getBaseType()) + " " + sizes.size(), -sizes.size() + 1);
             }
 
             public void caseNewExpr(NewExpr v)
             {
-                emit("new " + slashify(v.getBaseType().toString()));
+                emit("new " + slashify(v.getBaseType().toString()), 1);
             }
 
 
             public void caseNullConstant(NullConstant v)
             {
-                emit("aconst_null");
+                emit("aconst_null", 1);
             }
 
             public void caseOrExpr(OrExpr v)
@@ -2173,7 +2219,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("ior");
+                        emit("ior", -1);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -2184,7 +2230,7 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lor");
+                        emit("lor", -2);
                     }
 
                     public void defaultCase(Type t)
@@ -2203,7 +2249,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("irem");
+                        emit("irem", -1);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -2214,17 +2260,17 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lrem");
+                        emit("lrem", -2);
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("drem");
+                        emit("drem", -2);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("frem");
+                        emit("frem", -1);
                     }
 
                     public void defaultCase(Type t)
@@ -2243,7 +2289,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("ishl");
+                        emit("ishl", -1);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -2254,7 +2300,7 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lshl");
+                        emit("lshl", -1);
                     }
 
                     public void defaultCase(Type t)
@@ -2273,7 +2319,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("ishr");
+                        emit("ishr", -1);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -2284,7 +2330,7 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lshr");
+                        emit("lshr", -1);
                     }
 
                     public void defaultCase(Type t)
@@ -2304,7 +2350,8 @@ public class JasminClass
                     emitValue(v.getArg(i));
 
                 emit("invokespecial " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m));
+                    m.getName() + jasminDescriptorOf(m),
+                    -(argCountOf(m) + 1) + sizeOfType(m.getReturnType()));
             }
 
             public void caseStaticInvokeExpr(StaticInvokeExpr v)
@@ -2315,13 +2362,15 @@ public class JasminClass
                     emitValue(v.getArg(i));
 
                 emit("invokestatic " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m));
+                    m.getName() + jasminDescriptorOf(m),
+                    -(argCountOf(m)) + sizeOfType(m.getReturnType()));
             }
 
             public void caseStaticFieldRef(StaticFieldRef v)
             {
                 emit("getstatic " + slashify(v.getField().getDeclaringClass().getName()) + "/" +
-                    v.getField().getName() + " " + jasminDescriptorOf(v.getField().getType()));
+                    v.getField().getName() + " " + jasminDescriptorOf(v.getField().getType()),
+                    sizeOfType(v.getField().getType()));
             }
 
             public void caseStringConstant(StringConstant v)
@@ -2337,7 +2386,7 @@ public class JasminClass
                         dest.append(src.charAt(i));
                 }
 
-                emit("ldc " + '"' + dest.toString() + '"');
+                emit("ldc " + '"' + dest.toString() + '"', 1);
             }
 
             public void caseSubExpr(SubExpr v)
@@ -2349,7 +2398,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("isub");
+                        emit("isub", -1);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -2360,17 +2409,17 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lsub");
+                        emit("lsub", -2);
                     }
 
                     public void caseDoubleType(DoubleType t)
                     {
-                        emit("dsub");
+                        emit("dsub", -2);
                     }
 
                     public void caseFloatType(FloatType t)
                     {
-                        emit("fsub");
+                        emit("fsub", -1);
                     }
 
                     public void defaultCase(Type t)
@@ -2390,7 +2439,7 @@ public class JasminClass
                 {
                     private void handleIntCase()
                     {
-                        emit("iushr");
+                        emit("iushr", -1);
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -2401,7 +2450,7 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lushr");
+                        emit("lushr", -1);
                     }
 
                     public void defaultCase(Type t)
@@ -2421,7 +2470,8 @@ public class JasminClass
                     emitValue(v.getArg(i));
 
                 emit("invokevirtual " + slashify(m.getDeclaringClass().getName()) + "/" +
-                    m.getName() + jasminDescriptorOf(m));
+                    m.getName() + jasminDescriptorOf(m),
+                    -(argCountOf(m) + 1) + sizeOfType(m.getReturnType()));
             }
 
             public void caseXorExpr(XorExpr v)
@@ -2433,7 +2483,7 @@ public class JasminClass
                 {
 		    private void handleIntCase() 
                     { 
-		        emit ("ixor"); 
+		        emit ("ixor", -1); 
                     }
 
                     public void caseIntType(IntType t) { handleIntCase(); }
@@ -2444,7 +2494,7 @@ public class JasminClass
 
                     public void caseLongType(LongType t)
                     {
-                        emit("lxor");
+                        emit("lxor", -2);
                     }
 
                     public void defaultCase(Type t)
@@ -2458,11 +2508,18 @@ public class JasminClass
 
     public void emitBooleanBranch(String s)
     {
-        emit(s + " label" + labelCount);
-        emit("iconst_0");
-        emit("goto label" + labelCount+1);
+        int count;
+        
+        if(s.indexOf("icmp") != -1 || s.indexOf("acmp") != -1)
+            count = -2;
+        else
+            count = -1;
+            
+        emit(s + " label" + labelCount, count);
+        emit("iconst_0", 1);
+        emit("goto label" + labelCount+1, 0);
         emit("label" + labelCount++ + ":");
-        emit("iconst_1");
+        emit("iconst_1", 1);
         emit("label" + labelCount++ + ":");
     }
 
