@@ -68,7 +68,10 @@ public class EntryPoints
     public List application() {
         List ret = new ArrayList();
         addMethod( ret, Scene.v().getMainClass(), sigMain );
-        addMethod( ret, Scene.v().getMainClass(), sigClinit );
+        for( Iterator clinitIt = clinitsOf(Scene.v().getMainClass() ).iterator(); clinitIt.hasNext(); ) {
+            final SootMethod clinit = (SootMethod) clinitIt.next();
+            ret.add(clinit);
+        }
         return ret;
     }
     /** Returns only the entry points invoked implicitly by the VM. */
@@ -124,6 +127,17 @@ public class EntryPoints
                 final SootMethod m = (SootMethod) mIt.next();
                 if( m.isConcrete() ) ret.add( m );
             }
+        }
+        return ret;
+    }
+
+    /** Returns a list of all clinits of class cl and its superclasses. */
+    public List clinitsOf( SootClass cl ) {
+        List ret = new ArrayList();
+        while(true) {
+            addMethod( ret, cl, sigClinit );
+            if( !cl.hasSuperclass() ) break;
+            cl = cl.getSuperclass();
         }
         return ret;
     }

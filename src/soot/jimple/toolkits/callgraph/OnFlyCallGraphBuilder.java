@@ -170,11 +170,12 @@ public final class OnFlyCallGraphBuilder
                     if( !sootcls.isApplicationClass() ) {
                         sootcls.setLibraryClass();
                     }
-                    if( sootcls.declaresMethod( sigClinit ) ) {
+                    for( Iterator clinitIt = EntryPoints.v().clinitsOf(sootcls).iterator(); clinitIt.hasNext(); ) {
+                        final SootMethod clinit = (SootMethod) clinitIt.next();
                         cm.addStaticEdge(
                                 MethodContext.v( site.getContainer(), srcContext ),
                                 site.getStmt(),
-                                sootcls.getMethod(sigClinit),
+                                clinit,
                                 Edge.CLINIT );
                     }
                 }
@@ -275,8 +276,11 @@ public final class OnFlyCallGraphBuilder
                     } 
                 }
                 if( ie instanceof StaticInvokeExpr ) {
-                    addEdge( source, s, ie.getMethod().getDeclaringClass(),
-                        sigClinit, Edge.CLINIT );
+                    SootClass cl = ie.getMethod().getDeclaringClass();
+                    for( Iterator clinitIt = EntryPoints.v().clinitsOf(cl).iterator(); clinitIt.hasNext(); ) {
+                        final SootMethod clinit = (SootMethod) clinitIt.next();
+                        cicg.addEdge( new Edge( source, s, clinit, Edge.CLINIT ) );
+                    }
                 }
                 if( ie.getMethod().getNumberedSubSignature() == sigForName ) {
                     Value className = ie.getArg(0);
@@ -306,21 +310,30 @@ public final class OnFlyCallGraphBuilder
                 FieldRef fr = (FieldRef) s.getFieldRef();
                 if( fr instanceof StaticFieldRef ) {
                     SootClass cl = fr.getField().getDeclaringClass();
-                    addEdge( source, s, cl, sigClinit, Edge.CLINIT );
+                    for( Iterator clinitIt = EntryPoints.v().clinitsOf(cl).iterator(); clinitIt.hasNext(); ) {
+                        final SootMethod clinit = (SootMethod) clinitIt.next();
+                        cicg.addEdge( new Edge( source, s, clinit, Edge.CLINIT ) );
+                    }
                 }
             }
             if( s instanceof AssignStmt ) {
                 Value rhs = ((AssignStmt)s).getRightOp();
                 if( rhs instanceof NewExpr ) {
                     NewExpr r = (NewExpr) rhs;
-                    addEdge( source, s, r.getBaseType().getSootClass(),
-                            sigClinit, Edge.CLINIT );
+                    SootClass cl = r.getBaseType().getSootClass();
+                    for( Iterator clinitIt = EntryPoints.v().clinitsOf(cl).iterator(); clinitIt.hasNext(); ) {
+                        final SootMethod clinit = (SootMethod) clinitIt.next();
+                        cicg.addEdge( new Edge( source, s, clinit, Edge.CLINIT ) );
+                    }
                 } else if( rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr ) {
                     Type t = rhs.getType();
                     if( t instanceof ArrayType ) t = ((ArrayType)t).baseType;
                     if( t instanceof RefType ) {
-                        addEdge( source, s, ((RefType) t).getSootClass(),
-                                sigClinit, Edge.CLINIT );
+                        SootClass cl = ((RefType) t).getSootClass();
+                        for( Iterator clinitIt = EntryPoints.v().clinitsOf(cl).iterator(); clinitIt.hasNext(); ) {
+                            final SootMethod clinit = (SootMethod) clinitIt.next();
+                            cicg.addEdge( new Edge( source, s, clinit, Edge.CLINIT ) );
+                        }
                     }
                 }
             }
@@ -365,7 +378,10 @@ public final class OnFlyCallGraphBuilder
                 if( !sootcls.isApplicationClass() ) {
                     sootcls.setLibraryClass();
                 }
-                addEdge( src, srcUnit, sootcls, sigClinit, Edge.CLINIT );
+                for( Iterator clinitIt = EntryPoints.v().clinitsOf(sootcls).iterator(); clinitIt.hasNext(); ) {
+                    final SootMethod clinit = (SootMethod) clinitIt.next();
+                    cicg.addEdge( new Edge( src, srcUnit, clinit, Edge.CLINIT ) );
+                }
             }
         }
     }
@@ -392,8 +408,6 @@ public final class OnFlyCallGraphBuilder
         findOrAdd( "void finalize()" );
     private final NumberedString sigExit = Scene.v().getSubSigNumberer().
         findOrAdd( "void exit()" );
-    private final NumberedString sigClinit = Scene.v().getSubSigNumberer().
-        findOrAdd( "void <clinit>()" );
     private final NumberedString sigStart = Scene.v().getSubSigNumberer().
         findOrAdd( "void start()" );
     private final NumberedString sigRun = Scene.v().getSubSigNumberer().

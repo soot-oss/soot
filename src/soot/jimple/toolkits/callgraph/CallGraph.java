@@ -51,6 +51,10 @@ public class CallGraph
                 if( position == null ) {
                     srcMethodToEdge.put( e.getSrc(), e );
                     position = dummy;
+                } else {
+                    while( position.nextBySrc().getSrc() == e.getSrc() ) {
+                        position = position.nextBySrc();
+                    }
                 }
             }
         } else {
@@ -58,6 +62,10 @@ public class CallGraph
             if( position == null ) {
                 srcMethodToEdge.put( e.getSrc(), e );
                 position = dummy;
+            } else {
+                while( position.nextBySrc().getSrc() == e.getSrc() ) {
+                    position = position.nextBySrc();
+                }
             }
         }
         e.insertAfterBySrc( position );

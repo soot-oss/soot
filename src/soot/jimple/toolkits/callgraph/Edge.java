@@ -195,6 +195,12 @@ public final class Edge
     Edge nextByTgt() {
         return nextByTgt;
     }
+    Edge prevBySrc() {
+        return prevBySrc;
+    }
+    Edge prevByTgt() {
+        return prevByTgt;
+    }
 }
 
 
