@@ -77,7 +77,7 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                     SootField f = (SootField)fieldsIt.next();
 
                     if (getBaseType(f.getType()) instanceof RefType)
-                        addNode(f.getSignature());
+                        addNode(getVTALabel(f));
                 }
 
                 // Add nodes for method contents.
@@ -90,13 +90,13 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                     if (!m.isConcrete())
                         continue;
 
-                    String methodSig = m.getSignature();
+                    // For instance methods, add "this" node.
+                    if (!m.isStatic())
+                        addNode(getVTALabel(m, "this"));
 
                     // Add return node, if appropriate.
-                    if (!m.isStatic())
-                        addNode(methodSig + "$this");
                     if (getBaseType(m.getReturnType()) instanceof RefType)
-                        addNode(methodSig + "$return");
+                        addNode(getVTALabel(m, "return"));
 
                     // Add the parameters.
                     Iterator paramIt = m.getParameterTypes().iterator();
@@ -105,7 +105,7 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                     {
                         Type t = (Type)paramIt.next();
                         if (getBaseType(t) instanceof RefType)
-                            addNode(methodSig + "$p"+paramCount);
+                            addNode(getVTALabel(m, "p"+paramCount));
                         paramCount++;
                     }
 
@@ -277,7 +277,14 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
         }
     }
 
-    private String getVTALabel(SootMethod m, Value v)
+    /** Returns the name of the VTA node corresponding to the given field. */
+    static String getVTALabel(SootField f)
+    {
+        return f.getSignature();
+    }
+
+    /** Returns the name of the VTA node corresponding to the given method/value pair. */
+    static String getVTALabel(SootMethod m, Value v)
     {
         // In Jimple, ArrayRef must have a Local base, so this is fine.
         if (v instanceof ArrayRef)
@@ -288,6 +295,12 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
             return ((FieldRef)v).getField().getSignature();
         
         return null;
+    }
+
+    /** Returns the name of the VTA node corresponding to the given method, and flagged with <code>id</code>. */
+    static String getVTALabel(SootMethod m, String id)
+    {
+        return m.getSignature() + "$" + id;
     }
 
     private void checkState()

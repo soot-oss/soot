@@ -58,6 +58,9 @@ public class VariableTypeAnalysis
         return retList;
     }
 
+    /** Constructs a VariableTypeAnalysis object for the given InvokeGraph.
+     * Calling trimInvokeGraph will modify the associated invokeGraph according
+     * to this VTA's results. */
     public VariableTypeAnalysis(InvokeGraph ig)
     {
         this.ig = ig;
@@ -124,7 +127,7 @@ public class VariableTypeAnalysis
 
                     InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
                     
-                    List ieSites = ig.getTargetsOf(s);
+                     List ieSites = ig.getTargetsOf(s);
 
                     if (ie instanceof VirtualInvokeExpr ||
                         ie instanceof InterfaceInvokeExpr)
@@ -134,7 +137,8 @@ public class VariableTypeAnalysis
                         if(receiverType instanceof RefType)
                         {
                             // we have, now, a set of reaching types for receiver.
-                            // remove extra targets.
+                            // remove extra targets (by clearing targets and re-adding
+                            // the ones that VTA doesn't rule out.)
                             ig.removeAllTargets(s);
 
                             Iterator targetsIt = h.resolveConcreteDispatch

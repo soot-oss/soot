@@ -177,23 +177,12 @@ public class Main
         return fileNames;
     }
 
-
-
-
-
-
-
-
-
-
-
-
     private static void processCmdLine(String[] args)
     {
         if(args.length == 0)
         {
             // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.6");
+            System.out.println("Soot version 1.beta.6.dev.7");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -473,8 +462,26 @@ public class Main
                 else if(arg.startsWith("-"))
                 {
                     System.out.println("Unrecognized option: " + arg);
-                    System.exit(0);
-                } 
+                    System.exit(1);
+                }
+                else if(arg.startsWith("@"))
+                {
+                    try
+                    {
+                        File fn = new File(arg.substring(1));
+                        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fn)));
+                        List argsList = new LinkedList();
+                        while (br.ready())
+                            argsList.add(br.readLine());
+                        br.close();
+                        processCmdLine((String[])argsList.toArray(new String[argsList.size()]));
+                    }
+                    catch (IOException e)
+                        {
+                            System.out.println("Error reaing file "+arg.substring(1));
+                            System.exit(1);
+                        }
+                }
                 else
                 {
                     cmdLineClasses.add(arg);

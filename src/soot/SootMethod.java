@@ -52,11 +52,16 @@ public class SootMethod extends AbstractHost implements ClassMember
     /** Holds the class which declares this <code>SootClass</code> method. */
     SootClass declaringClass;
 
+    /** Modifiers associated with this SootMethod (e.g. private, protected, etc.) */
     int modifiers;
+
+    /** Is this method a phantom method? */
     boolean isPhantom = false;
     
+    /** Declared exceptions thrown by this method. */
     List exceptions = new ArrayList();
 
+    /** Active body associated with this method. */
     Body activeBody;
 
     /** Tells this method how to find out where its body lives. */
@@ -130,7 +135,7 @@ public class SootMethod extends AbstractHost implements ClassMember
         this.exceptions.addAll(thrownExceptions);
     }   
 
-    /** Returns the name of the current method. */
+    /** Returns the name of this method. */
     public String getName()
     {
         return name;
@@ -145,41 +150,47 @@ public class SootMethod extends AbstractHost implements ClassMember
         return declaringClass;
     }
 
+    /** Returns true when some <code>SootClass</code> object declares this <code>SootMethod</code> object. */    
     public boolean isDeclared()
     {
         return isDeclared;
     }
 
+    /** Returns true when this <code>SootMethod</code> object is phantom. */
     public boolean isPhantom()
     {
         return isPhantom;
     }
     
     /**
-        Not phantom, abstract or native.
+     *  Returns true if this method is not phantom, abstract or native.
      */
-     
     public boolean isConcrete()
     {
         return !isPhantom() && !isAbstract() && !isNative();
     }
-    
+
+    /** Sets the phantom flag on this method. */
     public void setPhantom(boolean value)
     {
-	//	ThreaddumpStack();
         isPhantom = value;
     }
-    
+
+    /** Sets the name of this method. */
     public void setName(String name)
     {
         this.name = name;
     }
 
+    /** Gets the modifiers of this method.
+     * @see soot.Modifier */
     public int getModifiers()
     {
         return modifiers;
     }
 
+    /** Sets the modifiers of this method.
+     * @see soot.Modifier */
     public void setModifiers(int modifiers)
     {
         if (!declaringClass.isApplicationClass())
@@ -187,21 +198,25 @@ public class SootMethod extends AbstractHost implements ClassMember
         this.modifiers = modifiers;
     }
 
+    /** Returns the return type of this method. */
     public Type getReturnType()
     {
         return returnType;
     }
 
+    /** Sets the return type of this method. */
     public void setReturnType(Type t)
     {
         returnType = t;
     }
 
+    /** Returns the number of parameters taken by this method. */
     public int getParameterCount()
     {
         return parameterTypes.size();
     }
 
+    /** Gets the type of the <i>n</i>th parameter of this method. */
     public Type getParameterType(int n)
     {
         return (Type) parameterTypes.get(n);
@@ -210,7 +225,6 @@ public class SootMethod extends AbstractHost implements ClassMember
     /**
      * Returns a backed list of the parameter types of this method.
      */
-
     public List getParameterTypes()
     {
         return parameterTypes;
@@ -219,7 +233,6 @@ public class SootMethod extends AbstractHost implements ClassMember
     /**
         Retrieves the active body for this method.
      */
-
     public Body getActiveBody() 
     {
         if (declaringClass.isContextClass() || declaringClass.isPhantomClass())
@@ -234,7 +247,6 @@ public class SootMethod extends AbstractHost implements ClassMember
     /**
         Sets the active body for this method. 
      */
-     
     public void setActiveBody(Body body)
     {
         if (declaringClass.isContextClass() || declaringClass.isPhantomClass())
@@ -249,30 +261,37 @@ public class SootMethod extends AbstractHost implements ClassMember
         activeBody = body;
     }
 
+    /** Returns true if this method has an active body. */
     public boolean hasActiveBody()
     {
         return activeBody != null;
     }
     
+    /** Releases the active body associated with this method. */
     public void releaseActiveBody()
     {
         activeBody = null;
     }
-    
-    public void addException(SootClass e) throws AlreadyThrowsException
+
+    /** Adds the given exception to the list of exceptions thrown by this method. */
+    public void addException(SootClass e) 
     {
         if(exceptions.contains(e))
-            throw new AlreadyThrowsException(e.getName());
+            throw new RuntimeException("already throws exception "+e.getName());
 
         exceptions.add(e);
     }
 
-    public void removeException(SootClass e) throws DoesNotThrowException
+    /** Removes the given exception from the list of exceptions thrown by this method. */
+    public void removeException(SootClass e) 
     {
         if(!exceptions.contains(e))
-            throw new DoesNotThrowException(e.getName());
+            throw new RuntimeException("does not throw exception "+e.getName());
+
+        exceptions.remove(e);
     }
 
+    /** Returns true if this method throws exception <code>e</code>. */
     public boolean throwsException(SootClass e)
     {
         return exceptions.contains(e);
@@ -287,52 +306,64 @@ public class SootMethod extends AbstractHost implements ClassMember
         return exceptions;
     }
 
+    /** Sets the list of parameter types for this method as given. 
+     * This method makes a copy of the given list. */
     public void setParameterTypes(List parameterTypes)
     {
         this.parameterTypes = new ArrayList();
         this.parameterTypes.addAll(parameterTypes);
     }
 
-
     /**
-     * For convenience.
+     * Convenience method returning true if this method is static.
      */
-
     public boolean isStatic()
     {
         return Modifier.isStatic(this.getModifiers());
     }
 
     /**
-     * For more convenience.
+     * Convenience method returning true if this method is private.
      */
     public boolean isPrivate()
     {
         return Modifier.isPrivate(this.getModifiers());
     }
 
+    /**
+     * Convenience method returning true if this method is public.
+     */
     public boolean isPublic()
     {
         return Modifier.isPublic(this.getModifiers());
     }
 
+    /**
+     * Convenience method returning true if this method is protected.
+     */
     public boolean isProtected()
     {
         return Modifier.isProtected(this.getModifiers());
     }
 
+    /**
+     * Convenience method returning true if this method is abstract.
+     */
     public boolean isAbstract()
     {
         return Modifier.isAbstract(this.getModifiers());
     }
 
+    /**
+     * Convenience method returning true if this method is native.
+     */
     public boolean isNative()
     {
         return Modifier.isNative(this.getModifiers());
     }
 
     /**
-     * Returns true if this method is synchronized.
+     * Convenience method returning true if this method is synchronized.
      */
     public boolean isSynchronized()
     {
@@ -344,9 +375,8 @@ public class SootMethod extends AbstractHost implements ClassMember
      */
     public String getSignature()
     {
-      if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
-	return getJimpleStyleSignature();
-
+        if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
+            return getJimpleStyleSignature();
 
         StringBuffer buffer = new StringBuffer();
 
@@ -372,50 +402,43 @@ public class SootMethod extends AbstractHost implements ClassMember
         return buffer.toString();
     }
 
-    
-    	
-  public String getJimpleStyleSignature()
-  {
-    StringBuffer buffer = new StringBuffer();
-    
-    buffer.append("<" + getDeclaringClass().getName() + ": ");
-    Type t = getReturnType();
-    if(Jimple.isJavaKeywordType(t))
-      buffer.append(".");
-
-    buffer.append(t.toString() + " " + getName());
-    buffer.append("(");
-	    
-	    Iterator typeIt = getParameterTypes().iterator();
+    /** Returns the Jimple-style signature of this method (for Jimple output). */
+    public String getJimpleStyleSignature()
+    {
+        StringBuffer buffer = new StringBuffer();
+        
+        buffer.append("<" + getDeclaringClass().getName() + ": ");
+        Type t = getReturnType();
+        if(Jimple.isJavaKeywordType(t))
+            buffer.append(".");
+        
+        buffer.append(t.toString() + " " + getName());
+        buffer.append("(");
+        
+        Iterator typeIt = getParameterTypes().iterator();
 	
-	    if(typeIt.hasNext())
-		{
-		  t = (Type) typeIt.next();
-		  if(Jimple.isJavaKeywordType(t))
-		    buffer.append(".");    		  
-		  buffer.append(t);
-		
-		    while(typeIt.hasNext())
-			{
-			    buffer.append(",");
-			    t = (Type) typeIt.next();
-			    if(Jimple.isJavaKeywordType(t))
-			      buffer.append(".");    		  
-			    buffer.append(t);
-
-			}
-		}
+        if(typeIt.hasNext())
+        {
+            t = (Type) typeIt.next();
+            if(Jimple.isJavaKeywordType(t))
+                buffer.append(".");    		  
+            buffer.append(t);
+            
+            while(typeIt.hasNext())
+            {
+                buffer.append(",");
+                t = (Type) typeIt.next();
+                if(Jimple.isJavaKeywordType(t))
+                    buffer.append(".");    		  
+                buffer.append(t);
+                
+            }
+        }
 	
-	    buffer.append(")>");
-	    
-	    return buffer.toString();
-	}
-
-
-
-
-
-
+        buffer.append(")>");
+        
+        return buffer.toString();
+    }
     
     /**
         Returns the Soot subsignature of this method.  Used to refer to methods unambiguously.
@@ -460,21 +483,16 @@ public class SootMethod extends AbstractHost implements ClassMember
         return buffer.toString();
     }
 
-
-
-
+    /** Given a name, parameter list and return type, gives the corresponding signature. */
     public static String getSubSignature(String name, List params, Type returnType)
     {
         StringBuffer buffer = new StringBuffer();
 	
-	
 	Type t = returnType;
 	if(Jimple.isJavaKeywordType(t))
-	  buffer.append("." + t.toString() + " " + name);
+            buffer.append("." + t.toString() + " " + name);
 	else
-	  buffer.append(t.toString() + " " + name);
-
-
+            buffer.append(t.toString() + " " + name);
 
         buffer.append("(");
 
@@ -482,198 +500,164 @@ public class SootMethod extends AbstractHost implements ClassMember
 
         if(typeIt.hasNext())
         {
-
-	  t = (Type) typeIt.next();
-	  if(Jimple.isJavaKeywordType(t))
-	    buffer.append("." + t);
-	  else
-	    buffer.append(t);
-
+            t = (Type) typeIt.next();
+            if(Jimple.isJavaKeywordType(t))
+                buffer.append("." + t);
+            else
+                buffer.append(t);
+            
             while(typeIt.hasNext())
             {
                 buffer.append(",");
 		
-	  t = (Type) typeIt.next();
-	  if(Jimple.isJavaKeywordType(t))
-	    buffer.append("." + t);
-	  else
-	    buffer.append(t);
-
-
+                t = (Type) typeIt.next();
+                if(Jimple.isJavaKeywordType(t))
+                    buffer.append("." + t);
+                else
+                    buffer.append(t);
             }
         }
-
         buffer.append(")");
 
         return buffer.toString();
     }
 
-
-
-
-
-
-
-
+    /** Returns the signature of this method. */
     public String toString()
     {
         return getSignature();
     }
 
     /**
-        Returns the declaration of this method.  Used at the tops of textual body representations (before the {}'s containing the code
-        for representation.)
+     * Returns the declaration of this method, as used at the top of textual body representations 
+     *  (before the {}'s containing the code for representation.)
      */
 
+    private String getJimpleStyleDeclaration()
+    {
+        StringBuffer buffer = new StringBuffer();
 
+        // modifiers
+        StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
+        if (st.hasMoreTokens())
+            buffer.append("." + st.nextToken());
 
-  private String getJimpleStyleDeclaration()
-  {
-          
-    StringBuffer buffer = new StringBuffer();
+        while(st.hasMoreTokens())
+            buffer.append(" ." + st.nextToken());
 
-    
-    StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
-	    
-    while(st.hasMoreTokens())
-      buffer.append(" " + "." + st.nextToken());
+        if(buffer.length() != 0)
+            buffer.append(" ");
 
-    if(buffer.length() != 0)
-      buffer.append(" ");
+        // return type
+        Type t = this.getReturnType();
+        if(Jimple.isJavaKeywordType(t))
+            buffer.append(".");
+        buffer.append(t);
 
-    Type t = this.getReturnType();
-    if(Jimple.isJavaKeywordType(t))
-       buffer.append(".");
-    buffer.append(t);
+        // name
+	buffer.append(" " + this.getName() + "(");	    
 
+        // parameters
+        Iterator typeIt = this.getParameterTypes().iterator();
 
-	buffer.append(" " + this.getName() + ""
-			  );
-	buffer.append("(");
-	    
-
-	    Iterator typeIt = this.getParameterTypes().iterator();
-
-	    if(typeIt.hasNext())
-		{
-		    t = (Type) typeIt.next();
-		    if(Jimple.isJavaKeywordType(t))
-		      buffer.append(".");
-		    buffer.append(t);
+        if(typeIt.hasNext())
+        {
+            t = (Type) typeIt.next();
+            if(Jimple.isJavaKeywordType(t))
+                buffer.append(".");
+            buffer.append(t);
 		       
-		    while(typeIt.hasNext())
-			{
-			    buffer.append(", ");
-			    t = (Type) typeIt.next();
-			    if(Jimple.isJavaKeywordType(t))
-			      buffer.append(".");
-			    buffer.append(t);
-			}
-		}
+            while(typeIt.hasNext())
+            {
+                buffer.append(", ");
+                t = (Type) typeIt.next();
+                if(Jimple.isJavaKeywordType(t))
+                    buffer.append(".");
+                buffer.append(t);
+            }
+        }
 
-	    buffer.append(")");
+        buffer.append(")");
 
-	    // Print exceptions
-	    {
-		Iterator exceptionIt = this.getExceptions().iterator();
+        // Print exceptions
+        {
+            Iterator exceptionIt = this.getExceptions().iterator();
+            
+            if(exceptionIt.hasNext())
+            {
+                buffer.append(" .throws "+((SootClass) exceptionIt.next()).getName() + " ");
 
-		if(exceptionIt.hasNext())
-		    {
-			buffer.append(" .throws ");
-			buffer.append("" + ((SootClass) exceptionIt.next()).getName() + " ");
+                while(exceptionIt.hasNext())
+                {
+                    buffer.append(", " + ((SootClass) exceptionIt.next()).getName());
+                }
+            }
+        }
 
-			while(exceptionIt.hasNext())
-			    {
-				buffer.append(", ");
-				buffer.append("" + ((SootClass) exceptionIt.next()).getName()
-					      + "");
-			    }
-		    }
+        return buffer.toString();
+    }
 
-	    }
-
-	    return buffer.toString();
-  }
-
-
-
-
+    /**
+     * Returns the declaration of this method.
+     */
     public String getDeclaration()
     {
 	if(Scene.v().getOutputMode() == Scene.v().OUTPUT_JIMPLE)
-	  return getJimpleStyleDeclaration();
-
-
+            return getJimpleStyleDeclaration();
       
 	StringBuffer buffer = new StringBuffer();
 
-	
-	buffer.append(Modifier.toString(this.getModifiers()));
-	    
-	if(buffer.length() != 0)
-	  buffer.append(" ");
+        // modifiers
+      	buffer.append(Modifier.toString(this.getModifiers()));
+        if(buffer.length() != 0)
+            buffer.append(" ");
 
+        // return type
 	Type t = this.getReturnType();
 	buffer.append(t);
 
-	buffer.append(" " + this.getName() + ""
-			  );
-	buffer.append("(");
-	    
+        // name
+	buffer.append(" " + this.getName() + "(");
 
-	    Iterator typeIt = this.getParameterTypes().iterator();
+        // parameters
+        Iterator typeIt = this.getParameterTypes().iterator();
 
-	    if(typeIt.hasNext())
-		{
-		    t = (Type) typeIt.next();
-		    buffer.append(t);
+        if(typeIt.hasNext())
+        {
+            t = (Type) typeIt.next();
+            buffer.append(t);
 		       
-		    while(typeIt.hasNext())
-			{
-			    buffer.append(", ");
-			    t = (Type) typeIt.next();
-			    buffer.append(t);
-			}
-		}
+            while(typeIt.hasNext())
+            {
+                buffer.append(", ");
+                t = (Type) typeIt.next();
+                buffer.append(t);
+            }
+        }
 
-	    buffer.append(")");
+        buffer.append(")");
 
-	    // Print exceptions
-	    {
-		Iterator exceptionIt = this.getExceptions().iterator();
+        // Print exceptions
+        {
+            Iterator exceptionIt = this.getExceptions().iterator();
 
-		if(exceptionIt.hasNext())
-		    {
-			buffer.append(" .throws ");
-			buffer.append("" + ((SootClass) exceptionIt.next()).getName() + " ");
+            if(exceptionIt.hasNext())
+            {
+                buffer.append(" .throws " + ((SootClass) exceptionIt.next()).getName() + " ");
 
-			while(exceptionIt.hasNext())
-			    {
-				buffer.append(", ");
-				buffer.append("" + ((SootClass) exceptionIt.next()).getName()
-					      + "");
-			    }
-		    }
+                while(exceptionIt.hasNext())
+                {
+                    buffer.append(", " + ((SootClass) exceptionIt.next()).getName());
+                }
+            }
+        }
 
-	    }
-
-	    return buffer.toString();
+        return buffer.toString();
     }
 
-        
+    /** Returns an XML string representing this method's signature. */
     public String getXML() 
     {
 	return XMLManager.getXML(this);
     }
-
-
 }
-
-
-
-
-
-
-
-
-
