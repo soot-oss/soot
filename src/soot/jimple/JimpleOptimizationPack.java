@@ -42,19 +42,40 @@ public class JimpleOptimizationPack extends BodyTransformer
     protected void internalTransform(Body b, Map options)
     {
         JimpleBody body = (JimpleBody)b;
+
         if(Main.isVerbose)
             System.out.println("[" + body.getMethod().getName() +
                 "] Starting base jimple optimizations...");
 
         // This order is important.  Don't mess with it.
         // Examples to demonstrate this are left as an exercise for the reader.
-        CopyPropagator.v().transform(body, "jop.cp", "ignore-stack-locals");
         
-//        ConstantPropagatorAndFolder.v().transform(body, "jop.cpf");
-//        ConditionalBranchFolder.v().transform(body, "jop.cbf");
-        DeadAssignmentEliminator.v().transform(body, "jop.dae");
-//        UnreachableCodeEliminator.v().transform(body, "jop.uce1");
-//        UnconditionalBranchFolder.v().transform(body, "jop.ubf");
-//        UnreachableCodeEliminator.v().transform(body, "jop.uce2");
+        if(Options.getBoolean(options, "propagate-copies"))
+            CopyPropagator.v().transform(body, "jop.cp", "ignore-stack-locals");
+
+        if(Options.getBoolean(options, "propagate-and-fold-constants"))
+            ConstantPropagatorAndFolder.v().transform(body, "jop.cpf");
+            
+        if(Options.getBoolean(options, "fold-conditional-branches"))
+            ConditionalBranchFolder.v().transform(body, "jop.cbf");
+            
+        if(Options.getBoolean(options, "eliminate-dead-assignments"))
+            DeadAssignmentEliminator.v().transform(body, "jop.dae");
+            
+        if(Options.getBoolean(options, "eliminate-unreachable-code-1") ||
+           Options.getBoolean(options, "eliminate-unreachable-code"))
+        {         
+            UnreachableCodeEliminator.v().transform(body, "jop.uce1");
+        }
+        
+        if(Options.getBoolean(options, "fold-unconditional-branches"))
+            UnconditionalBranchFolder.v().transform(body, "jop.ubf");
+
+        if(Options.getBoolean(options, "eliminate-unreachable-code-2") ||
+           Options.getBoolean(options, "eliminate-unreachable-code"))
+        {         
+            UnreachableCodeEliminator.v().transform(body, "jop.uce2");
+        }
     }
 }
+

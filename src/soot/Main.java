@@ -179,7 +179,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.7");
+            System.out.println("Soot version 1.beta.5.dev.8");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -745,7 +745,8 @@ public class Main
                         m.setActiveBody(Jimple.v().newBody(new ClassFileBody(m), "jb"));
     
                     if(isOptimizing) 
-                        JimpleOptimizationPack.v().transform((JimpleBody) m.getActiveBody(), "jop");
+                        JimpleOptimizationPack.v().transform((JimpleBody) m.getActiveBody(), "jop", 
+                            "eliminate-dead-assignments  propagate-copies");
                 }
                 
                 if(produceGrimp)

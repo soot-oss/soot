@@ -34,7 +34,7 @@ import java.io.*;
 import java.util.*;
 
 
-public class UnconditionalBranchFolder
+public class UnconditionalBranchFolder extends BodyTransformer
 {
     private static UnconditionalBranchFolder instance = new UnconditionalBranchFolder();
     private UnconditionalBranchFolder() {}

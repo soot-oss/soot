@@ -34,7 +34,7 @@ import java.io.*;
 import java.util.*;
 
 
-public class ConditionalBranchFolder 
+public class ConditionalBranchFolder  extends BodyTransformer
 {
     private static ConditionalBranchFolder instance = new ConditionalBranchFolder();
     private ConditionalBranchFolder() {}
