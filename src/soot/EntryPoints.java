@@ -78,7 +78,7 @@ public class EntryPoints
         //addMethod( ret, "<java.lang.ThreadGroup: void remove(java.lang.Thread)>");
         addMethod( ret, "<java.lang.Thread: void exit()>");
         addMethod( ret, "<java.lang.ThreadGroup: void uncaughtException(java.lang.Thread,java.lang.Throwable)>");
-        addMethod( ret, "<java.lang.System: void loadLibrary(java.lang.String)>");
+        //addMethod( ret, "<java.lang.System: void loadLibrary(java.lang.String)>");
         addMethod( ret, "<java.lang.ClassLoader: void <init>()>");
         addMethod( ret, "<java.lang.ClassLoader: java.lang.Class loadClassInternal(java.lang.String)>");
         addMethod( ret, "<java.lang.ClassLoader: void checkPackageAccess(java.lang.Class,java.security.ProtectionDomain)>");
