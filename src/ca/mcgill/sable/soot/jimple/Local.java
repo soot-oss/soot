@@ -117,6 +117,14 @@ public class Local implements Value, ToBriefString
         this.name = name;
     }
 
+    public boolean equals(Object o)
+    {
+        if (o instanceof Local)
+            return (((Local)o).name).equals(name)
+		        && (((Local)o).type).equals(type);
+	    return false;
+    }
+
     public int hashCode()
     {
         if(!isHashCodeChosen)

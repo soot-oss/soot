@@ -793,7 +793,7 @@ public class Transformations
             aggregateCount++;
         }
         
-        if(Main.isVerbose)
+        if(Main.isVerbose || ca.mcgill.sable.soot.grimp.Main.isVerbose)
             System.out.println(aggregateCount + " aggregation(s) performed.");
             
     }

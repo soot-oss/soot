@@ -108,6 +108,16 @@ public class JArrayRef implements ArrayRef
         this.indexBox = indexBox;
     }
 
+    public boolean equals(Object o)
+    {
+        if (o instanceof ArrayRef)
+          {
+            return (getBase().equals(((ArrayRef)o).getBase())
+                    && getIndex().equals(((ArrayRef)o).getIndex()));
+          }
+        return false;
+    }
+
     public String toString()
     {
         return baseBox.getValue().toString() + "[" + indexBox.getValue().toString() + "]";
