@@ -66,118 +66,56 @@ public class StaticInliner extends SceneTransformer
         DirectedGraph mg = graph.newMethodGraph();
         ArrayList sitesToInline = new ArrayList();
 
-        Iterator it = ReversePseudoTopologicalOrderer.v().newList(mg).iterator();
-
-        while (it.hasNext())
+        // Visit each potential site in reverse pseudo topological order.
         {
-            SootMethod container = (SootMethod)it.next();
-
-            if (!container.isConcrete())
-                continue;
-
-            if (graph.getSitesOf(container).size() == 0)
-                continue;
-
-            JimpleBody b = (JimpleBody)container.getActiveBody();
-                
-            List unitList = new ArrayList(); unitList.addAll(b.getUnits());
-            Iterator unitIt = unitList.iterator();
-
-            nextSite:
-            while (unitIt.hasNext())
+            Iterator it = ReversePseudoTopologicalOrderer.v().newList(mg).iterator();
+    
+            while (it.hasNext())
             {
-                Stmt s = (Stmt)unitIt.next();
-                if (!s.containsInvokeExpr())
+                SootMethod container = (SootMethod)it.next();
+    
+                if (!container.isConcrete())
                     continue;
-                
-                InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
-
-                
-                List targets = graph.getTargetsOf(ie);
-
-                if (targets.size() != 1)
+    
+                if (graph.getSitesOf(container).size() == 0)
                     continue;
-
-                SootMethod target = (SootMethod)targets.get(0);
-
-                if (!InlinerSafetyManager.canSafelyInlineInto(target, s, container, graph))
-                    continue;
-
-                if (!AccessManager.ensureAccess(container, target, modifierOptions))
-                    continue;
-
-                if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete())
-                    continue;
-
-                // Check the body of the method to inline for specialinvoke's or
-                //   method or field access restrictions
-                {
-                    Body inlineeBody = (JimpleBody) target.getActiveBody();
+    
+                JimpleBody b = (JimpleBody)container.getActiveBody();
                     
-                    Iterator unitsIt = inlineeBody.getUnits().iterator();
-                    while (unitsIt.hasNext())
-                    {
-                        Stmt st = (Stmt)unitsIt.next();
-                        if (st.containsInvokeExpr())
-                        {
-                            InvokeExpr ie1 = (InvokeExpr)st.getInvokeExpr();
-                            
-                            if (ie1 instanceof SpecialInvokeExpr) 
-                            {
-                                if((InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, container.getDeclaringClass()) ||
-                                  InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, target.getDeclaringClass())))
-                                {
-                                    continue nextSite;
-                                }
-                             
-                                SootMethod specialTarget = ie1.getMethod();
-                                
-                                if(specialTarget.isPrivate())
-                                {
-                                    if(specialTarget.getDeclaringClass() != container.getDeclaringClass())
-                                    {
-                                        // Do not inline a call which contains a specialinvoke call to a private method outside
-                                        // the current class.  This avoids a verifier error and we assume will not have a big
-                                        // impact because we are inlining methods bottom-up, so such a call will be rare
-                                        
-                                        continue nextSite;   
-                                    }
-                                }
-                            }
-                            
-                            if (!AccessManager.ensureAccess(container, ie1.getMethod(), modifierOptions))
-                                continue nextSite;
-
-                        }
-
-                        if (st instanceof AssignStmt)
-                        {
-                            Value lhs = ((AssignStmt)st).getLeftOp();
-                            Value rhs = ((AssignStmt)st).getRightOp();
-
-                            if (lhs instanceof FieldRef && 
-                                !AccessManager.ensureAccess(container, ((FieldRef)lhs).getField(), 
-                                                            modifierOptions))
-                                continue nextSite;
-                                                                                       
-                            if (rhs instanceof FieldRef &&
-                                !AccessManager.ensureAccess(container, ((FieldRef)rhs).getField(), 
-                                                            modifierOptions))
-                                continue nextSite;
-                        }
-                    }
+                List unitList = new ArrayList(); unitList.addAll(b.getUnits());
+                Iterator unitIt = unitList.iterator();
+    
+                while (unitIt.hasNext())
+                {
+                    Stmt s = (Stmt)unitIt.next();
+                    if (!s.containsInvokeExpr())
+                        continue;
+                    
+                    InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
+    
+                    List targets = graph.getTargetsOf(ie);
+    
+                    if (targets.size() != 1)
+                        continue;
+    
+                    SootMethod target = (SootMethod)targets.get(0);
+    
+                    if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete())
+                        continue;
+    
+                    if(!InlinerSafetyManager.ensureInlinability(target, s, container, modifierOptions))
+                        continue;
+                        
+                    List l = new ArrayList();
+                    l.add(target); l.add(s); l.add(container);
+                    
+                    sitesToInline.add(l);
                 }
-
-                List l = new ArrayList();
-                l.add(target); l.add(s); l.add(container);
-                
-                //System.out.println("Recorded: inlining the call: " + container + "/" + ie + " with " + target);
-
-                sitesToInline.add(l);
             }
         }
-
-        // Proceed to inline the sites.
+        
+        // Proceed to inline the sites, one at a time, keeping track of
+        // expansion rates.
         {
             computeAverageMethodSizeAndSaveOriginalSizes();
 
@@ -187,13 +125,12 @@ public class StaticInliner extends SceneTransformer
                 List l = (List)sitesIt.next();
                 SootMethod inlinee = (SootMethod)l.get(0);
                 int inlineeSize = ((JimpleBody)(inlinee.getActiveBody())).getUnits().size();
-                Stmt toInline = (Stmt)l.get(1);
+
+                Stmt invokeStmt = (Stmt)l.get(1);
+
                 SootMethod container = (SootMethod)l.get(2);
                 int containerSize = ((JimpleBody)(container.getActiveBody())).getUnits().size();
                 
-
-//                if (inlineeSize > avgSize * inlineeFactor)
-//                    continue;
 
                 if (inlineeSize + containerSize > maxContainerSize)
                     continue;
@@ -202,7 +139,12 @@ public class StaticInliner extends SceneTransformer
                          expansionFactor * ((Integer)methodToOriginalSize.get(container)).intValue())
                     continue;
 
-                SiteInliner.inlineSite(inlinee, toInline, container, options);
+                if(InlinerSafetyManager.ensureInlinability(inlinee, invokeStmt, container, modifierOptions))
+                {
+                    // Not that it is important to check right before inlining if the site is still valid.
+                    
+                    SiteInliner.inlineSite(inlinee, invokeStmt, container, options);
+                }
             }
         }
     }

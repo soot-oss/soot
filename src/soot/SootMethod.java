@@ -149,6 +149,8 @@ public class SootMethod extends AbstractHost implements ClassMember
 
     public void setModifiers(int modifiers)
     {
+        if (!declaringClass.isApplicationClass())
+            throw new RuntimeException("Cannot set modifiers of a method from a non-app class!");
         this.modifiers = modifiers;
     }
 

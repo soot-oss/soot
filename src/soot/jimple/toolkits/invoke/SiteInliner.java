@@ -63,15 +63,18 @@ public class SiteInliner
         inlineSite(inlinee, toInline, container, new HashMap());
     }
 
+    /**
+        Inlines the given site.  Note that this method does
+        not actually check if it's safe (with respect to access modifiers and special invokes)
+        for it to be inlined.  That functionality is handled by the InlinerSafetyManager.
+         
+     */
     public static void inlineSite(SootMethod inlinee, Stmt toInline, 
                                     SootMethod container, Map options)
     {
-        // DEBUG
-//          System.out.println("inlining: "+inlinee + " into "+container);
 
         boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
-        String modifierOptions = Options.getString(options, "allowed-modifier-changes");
 
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 

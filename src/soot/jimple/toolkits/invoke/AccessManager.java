@@ -77,8 +77,13 @@ public class AccessManager
         if (!allowChanges)
             return false;
 
-        target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
-        return true;
+        if (target.getDeclaringClass().isApplicationClass())
+        {
+            target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
+            return true;
+        }
+        else
+            return false;
     }
 
     public static boolean ensureAccess(SootMethod container, SootClass target, String options)
@@ -95,8 +100,13 @@ public class AccessManager
         if (!allowChanges)
             return false;
 
-        target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
-        return true;
+        if (target.isApplicationClass())
+        {
+            target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
+            return true;
+        }
+        else
+            return false;
     }
 
 }
