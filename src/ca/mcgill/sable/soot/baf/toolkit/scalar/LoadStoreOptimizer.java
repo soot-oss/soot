@@ -624,26 +624,15 @@ public class LoadStoreOptimizer
             }
         }
         
-        /*
-        if(aThreshold == 0 && stackHeight == 1 && minStackHeightAttained == 0) {
-            Unit succ = (Unit) block.getSuccOf(to);
-            if(succ != null) {
-                if(isCommutativeBinOp(succ)) {
-                    if(debug) { System.out.println("xxx: commutative ");}
-                    return SUCCESS;
-                }
-            }
-            } 
         
-        else if (aThreshold == 0)
-            return   pushStoreToLoad(from , to, block);
-        */
-        /*
+        
         if(isCommutativeBinOp((Unit) block.getSuccOf(to))) {
             if(aThreshold == 0 && stackHeight == 1 && minStackHeightAttained == 0) {
                 if(debug) { System.out.println("xxx: commutative ");}
                 return SUCCESS;
-            } else if( ((AbstractInst) to).getOutCount()  == 1 &&
+            } 
+            
+            /*else if( ((AbstractInst) to).getOutCount()  == 1 &&
                        ((AbstractInst) to).getInCount() == 0  &&
                        ((AbstractInst) mUnits.getPredOf(to)).getOutCount() == 1 &&
                        ((AbstractInst) mUnits.getPredOf(to)).getInCount() == 0) {
@@ -652,11 +641,11 @@ public class LoadStoreOptimizer
                 block.remove(toPred);
                 block.insertAfter(toPred, to);
                 return FAILURE; // return has changed
-            }
+            }*/
+            
         }
-        if (aThreshold == 0)
-            return   pushStoreToLoad(from , to, block);
-        */
+//        if (aThreshold == 0)
+//            return   pushStoreToLoad(from , to, block);
 
         
     if(debug) { System.out.println("xxx: end of method faillure ");}
