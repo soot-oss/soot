@@ -32,6 +32,7 @@ soot.jimple.spark.solver
 soot.jimple.spark.fieldrw
 soot.jimple.toolkits.annotation.arraycheck
 soot.jimple.toolkits.annotation.nullcheck
+soot.jimple.toolkits.annotation.callgraph
 soot.jimple.toolkits.annotation.profiling
 soot.jimple.toolkits.annotation.tags
 soot.jimple.toolkits.base

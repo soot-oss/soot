@@ -6,9 +6,9 @@ import java.util.Iterator;
 
 //import org.eclipse.jface.text.*;
 //import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.custom.StyleRange;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
+//import org.eclipse.swt.custom.StyleRange;
+//import org.eclipse.swt.graphics.RGB;
+//import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.MarkerUtilities;
@@ -18,7 +18,7 @@ import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.text.TextPresentation;
+//import org.eclipse.jface.text.TextPresentation;
 //import org.eclipse.jdt.ui.text.java.hover.*;
 //import org.eclipse.jdt.core.*;
 import ca.mcgill.sable.soot.*;
@@ -118,6 +118,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 			markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJimple_ln()));
 			try {
 				MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
+				
 				//
 				//System.out.println("made attributes marker");
 				//MarkerUtilities.createMarker(getRec(), markerAttr, "org.eclipse.core.resources.bookmark");		

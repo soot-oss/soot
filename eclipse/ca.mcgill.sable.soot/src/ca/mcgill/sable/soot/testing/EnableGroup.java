@@ -21,18 +21,22 @@ package ca.mcgill.sable.soot.testing;
 import java.util.*;
 
 import org.eclipse.swt.widgets.*;
+import ca.mcgill.sable.soot.ui.*;
 
 
 public class EnableGroup {
 
-	private Button leader;
+	private String phaseAlias;
+	private String subPhaseAlias; 
+	private BooleanOptionWidget leader;
 	private ArrayList controls;
+	private boolean phaseOptType;
 	
 	public EnableGroup(){
 		
 	}
 	
-	public void addControl(Control c){
+	public void addControl(ISootOptionWidget c){
 		if (getControls() == null){
 			setControls(new ArrayList());
 		}
@@ -46,7 +50,7 @@ public class EnableGroup {
 		getControls().addAll(c);
 	}
 	
-	public boolean isLeader(Button l){
+	public boolean isLeader(BooleanOptionWidget l){
 		if (l.equals(getLeader())) return true;
 		return false;
 	}
@@ -55,21 +59,30 @@ public class EnableGroup {
 		if (getControls() == null) return;
 		Iterator it = getControls().iterator();
 		while (it.hasNext()){
-			((Control)it.next()).setEnabled(enabled);
+			ISootOptionWidget control = (ISootOptionWidget)it.next();
+			if (control.getControls() == null) continue;
+			Iterator conIt = control.getControls().iterator();
+			while (conIt.hasNext()){
+				//System.out.println("changing control state: "+control.getId()+ " enabled: "+enabled);
+				Object obj = conIt.next();
+				//System.out.println(obj.getClass().toString());
+				((Control)obj).setEnabled(enabled);
+			}
+			
 		}
 	}
 	
 	/**
 	 * @return
 	 */
-	private ArrayList getControls() {
+	public ArrayList getControls() {
 		return controls;
 	}
 
 	/**
 	 * @return
 	 */
-	public Button getLeader() {
+	public BooleanOptionWidget getLeader() {
 		return leader;
 	}
 
@@ -83,8 +96,67 @@ public class EnableGroup {
 	/**
 	 * @param button
 	 */
-	public void setLeader(Button button) {
+	public void setLeader(BooleanOptionWidget button) {
 		leader = button;
+	}
+	
+	public String toString(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("Phase: "+getPhaseAlias()+" SubPhase: "+getSubPhaseAlias());
+		sb.append("Leader: "+getLeader().getAlias()+" sel: "+getLeader().getButton().getSelection()+" enabled: "+getLeader().getButton().isEnabled()+"\n");
+		if (getControls() != null){
+			Iterator it = getControls().iterator();
+			while (it.hasNext()){
+				ISootOptionWidget next = (ISootOptionWidget)it.next();
+				sb.append("control: "+next.getId()+"\n");
+				if (next instanceof BooleanOptionWidget){
+					sb.append("control is boolean and enable state: "+((BooleanOptionWidget)next).getButton().isEnabled()+"\n");
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * @return
+	 */
+	public String getPhaseAlias() {
+		return phaseAlias;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getSubPhaseAlias() {
+		return subPhaseAlias;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setPhaseAlias(String string) {
+		phaseAlias = string;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setSubPhaseAlias(String string) {
+		subPhaseAlias = string;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isPhaseOptType() {
+		return phaseOptType;
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setPhaseOptType(boolean b) {
+		phaseOptType = b;
 	}
 
 }

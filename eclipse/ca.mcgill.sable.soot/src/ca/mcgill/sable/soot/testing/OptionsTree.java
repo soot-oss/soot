@@ -40,14 +40,14 @@ public class OptionsTree extends ViewPart {
 	}
 	
 	private SootOption getInitialInput(){
-		SootOption root = new SootOption("");
+		//SootOption root = new SootOption("");
 		
-		SootOption page1 = new SootOption("Output");
-		root.addChild(page1);
-		SootOption page2 = new SootOption("Input");
-		root.addChild(page2);
+		//SootOption page1 = new SootOption("Output");
+		//root.addChild(page1);
+		//SootOption page2 = new SootOption("Input");
+		//root.addChild(page2);
 		
-		return root;
+		return null;
 	}
 	
 	public void setFocus() {

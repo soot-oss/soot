@@ -107,25 +107,56 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	public void handleWidgetSelected(SelectionEvent e){
 		
 		System.out.println(e.getSource().getClass().toString());
-		if (getRadioGroups() == null) return;
-		System.out.println("radioGroups not null");
-		Iterator it = getRadioGroups().keySet().iterator();
-		while (it.hasNext()){
-			Integer key = (Integer)it.next();
-			System.out.println("Key is: "+key);
-			if (getRadioGroups().get(key) == null) break;
-			ArrayList buttons = (ArrayList)getRadioGroups().get(key);
-			Iterator itButtons = buttons.iterator();
-			System.out.println(buttons.size());
-			while (itButtons.hasNext()){
-				System.out.println("Testing Button");
-				if (((BooleanOptionWidget)itButtons.next()).getButton().equals(e.getSource())) {
-					System.out.println("radio phase button changed");
-					switchButtons(buttons, (Button)e.getSource());
+		if (getRadioGroups() != null) {
+			System.out.println("radioGroups not null");
+			Iterator it = getRadioGroups().keySet().iterator();
+			while (it.hasNext()){
+				Integer key = (Integer)it.next();
+				System.out.println("Key is: "+key);
+				if (getRadioGroups().get(key) == null) break;
+				ArrayList buttons = (ArrayList)getRadioGroups().get(key);
+				Iterator itButtons = buttons.iterator();
+				System.out.println(buttons.size());
+				while (itButtons.hasNext()){
+					System.out.println("Testing Button");
+					if (((BooleanOptionWidget)itButtons.next()).getButton().equals(e.getSource())) {
+						System.out.println("radio phase button changed");
+						switchButtons(buttons, (Button)e.getSource());
+					}
 				}
 			}
 		}
 		
+		//updateEnableGroup((Button)e.getSource());
+		updateAllEnableGroups();
+		
+	}
+	
+	public void updateEnableGroup(Button button){
+		if (getEnableGroups() == null) return;
+		Iterator it = getEnableGroups().iterator();
+		while (it.hasNext()){
+			EnableGroup eGroup = (EnableGroup)it.next();
+			if (eGroup.getLeader().getButton().equals(button)){
+				// group found
+				//if (eGroup.getLeader().getButton().getSelection()){
+					// enable control list
+					eGroup.changeControlState(eGroup.getLeader().getButton().getSelection());
+					if (eGroup.getControls() != null){
+						Iterator itCon = eGroup.getControls().iterator();
+						while (itCon.hasNext()){
+							Object obj = itCon.next();
+							if (obj instanceof BooleanOptionWidget){
+								updateEnableGroup(((BooleanOptionWidget)obj).getButton());
+							}
+						}
+					}
+				//}
+				//else {
+					// disable control list
+				//}
+			}
+		}
 	}
 	
 	public void switchButtons(ArrayList buttons, Button change){
@@ -133,12 +164,12 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 			Iterator it = buttons.iterator();
 			while (it.hasNext()){
 				BooleanOptionWidget nextWidget = (BooleanOptionWidget)it.next();
-				System.out.println(nextWidget.getButton()+" and change button: "+change); 
-				if (!nextWidget.getButton().equals(change)){
-					nextWidget.getButton().setSelection(false);
+				//System.out.println(nextWidget.getButton()+" and change button: "+change); 
+				if (nextWidget.getButton().equals(change)){
+					nextWidget.getButton().setSelection(true);
 				}
 				else {
-					nextWidget.getButton().setSelection(true);
+					nextWidget.getButton().setSelection(false);
 				}
 			}
 		}
@@ -153,6 +184,148 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 					defWidget.getButton().setSelection(false);
 				}
 			}
+		}
+	}
+	
+	protected void makeNewEnableGroup(String phaseAlias){
+		if (getEnableGroups() == null){
+			setEnableGroups(new ArrayList());
+		}
+		
+		EnableGroup eGroup = new EnableGroup();
+		eGroup.setPhaseAlias(phaseAlias);
+		
+		getEnableGroups().add(eGroup);
+		//System.out.println("Made new enable group for: "+phaseAlias);
+	}
+	
+	protected void makeNewEnableGroup(String phaseAlias, String subPhaseAlias){
+		if (getEnableGroups() == null){
+			setEnableGroups(new ArrayList());
+		}
+		
+		EnableGroup eGroup = new EnableGroup();
+		eGroup.setPhaseAlias(phaseAlias);
+		eGroup.setSubPhaseAlias(subPhaseAlias);
+		
+		getEnableGroups().add(eGroup);
+		//System.out.println("Made new enable group for: "+phaseAlias+" and: "+subPhaseAlias);
+	}
+	
+	protected void addToEnableGroup(String phaseAlias, ISootOptionWidget widget, String alias){
+		EnableGroup eGroup = findEnableGroup(phaseAlias);
+		if (eGroup == null){
+			System.out.println("Exception generating option dialog (phase).");
+		}
+		if (widget instanceof BooleanOptionWidget){
+			// could be leader
+			if (isEnableButton(alias)){
+				eGroup.setLeader(((BooleanOptionWidget)widget));
+				//System.out.println("Phase enable group leader: "+eGroup.getLeader().getAlias());
+			}
+			else {
+				eGroup.addControl(widget);
+			}
+		}
+		else {
+			eGroup.addControl(widget);
+		}
+	}
+	
+	private EnableGroup findEnableGroup(String phaseAlias){
+		//System.out.println("Trying to find group for: "+phaseAlias);
+		Iterator it = getEnableGroups().iterator();
+		while (it.hasNext()){
+			EnableGroup next = (EnableGroup)it.next();
+			if (next.getPhaseAlias().equals(phaseAlias) &&
+				(next.getSubPhaseAlias() == null)) return next;
+		}
+		return null;
+	}
+	
+	protected void addToEnableGroup(String phaseAlias, String subPhaseAlias, ISootOptionWidget widget, String alias){
+		EnableGroup eGroup = findEnableGroup(phaseAlias, subPhaseAlias);
+		if (eGroup == null){
+			System.out.println("Exception generating option dialog (subphase).");
+		}
+		if (widget instanceof BooleanOptionWidget){
+			// could be leader
+			//System.out.println("Adding boolean widget to enable group: "+alias);
+			
+			if (isEnableButton(alias)){
+				eGroup.setLeader(((BooleanOptionWidget)widget));
+				addToEnableGroup(phaseAlias, widget, "");
+			}
+			else {
+				eGroup.addControl(widget);
+			}
+		}
+		else {
+			eGroup.addControl(widget);
+		}
+	}
+
+	private EnableGroup findEnableGroup(String phaseAlias, String subPhaseAlias){
+		//System.out.println("Trying to find group for: "+phaseAlias+" and: "+subPhaseAlias);
+		Iterator it = getEnableGroups().iterator();
+		while (it.hasNext()){
+			EnableGroup next = (EnableGroup)it.next();
+			if (next.getSubPhaseAlias() == null) continue;
+			if (next.getPhaseAlias().equals(phaseAlias) && 
+				next.getSubPhaseAlias().equals(subPhaseAlias)) return next;
+		}
+		return null;
+	}
+	
+	protected void updateAllEnableGroups(){
+		if (getEnableGroups() == null) return;
+		System.out.println("Updating All Enable Groups");
+		Iterator it = getEnableGroups().iterator();
+		
+		while (it.hasNext()){
+			EnableGroup eGroup = (EnableGroup)it.next();
+			if (eGroup.isPhaseOptType()){
+				if (eGroup.getLeader() == null){
+					System.out.println("This enable Group has no leader.");
+					continue;
+				}
+				if (eGroup.getLeader().getButton().getSelection() && eGroup.getLeader().getButton().isEnabled()){
+					eGroup.changeControlState(true);
+				}
+				else {
+					eGroup.changeControlState(false);
+				}
+			}
+		}
+		
+		it = getEnableGroups().iterator();
+		
+		while (it.hasNext()){
+			EnableGroup eGroup = (EnableGroup)it.next();
+			if (!eGroup.isPhaseOptType()){
+				if (eGroup.getLeader() == null){
+					System.out.println("This enable Group has no leader.");
+					continue;
+				}
+				if (eGroup.getLeader().getButton().getSelection() && eGroup.getLeader().getButton().isEnabled()){
+					eGroup.changeControlState(true);
+				}
+				else {
+					eGroup.changeControlState(false);
+				}
+			}
+		}
+		//printEnableGroups();
+	}
+	
+	private void printEnableGroups(){
+		if (getEnableGroups() == null) return;
+		System.out.println("EGroups:");
+		Iterator it = getEnableGroups().iterator();
+		while (it.hasNext()){
+			EnableGroup eGroup = (EnableGroup)it.next();
+			System.out.println(eGroup);
+		
 		}
 	}
 	
@@ -430,17 +603,17 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 			Object elem = selection.getFirstElement();
 			if (elem instanceof SootOption) {
 				SootOption sel = (SootOption)elem;
-				System.out.println(sel.getLabel());
+				//System.out.println(sel.getLabel());
 				Control [] children = getPageContainer().getChildren();
 				String childTitle = null;
 				for (int i = 0; i < children.length; i++) {
 
 					if( children[i] instanceof Composite) {
 						if (children[i] instanceof Group) {
-							childTitle = ((Group)children[i]).getText();
+							childTitle = (String)((Group)children[i]).getData("id");
 							
 						}
-						if (childTitle.compareTo(sel.getLabel()) == 0) {
+						if (childTitle.compareTo(sel.getAlias()) == 0) {
 						  	((StackLayout)getPageContainer().getLayout()).topControl = children[i];
 							getPageContainer().layout();
 							

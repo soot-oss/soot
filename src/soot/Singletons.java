@@ -55,6 +55,7 @@ import soot.jimple.spark.solver.*;
 import soot.jimple.spark.fieldrw.*;
 import soot.jimple.toolkits.annotation.arraycheck.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
+import soot.jimple.toolkits.annotation.callgraph.*;
 import soot.jimple.toolkits.annotation.profiling.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.base.*;
@@ -962,6 +963,12 @@ public class Singletons {
     public EntryPoints EntryPoints() {
         if( instanceEntryPoints == null ) instanceEntryPoints = new EntryPoints( g );
         return instanceEntryPoints;
+    }
+
+    private CallGraphTagger instanceCallGraphTagger;
+    public CallGraphTagger CallGraphTagger() {
+        if( instanceCallGraphTagger == null ) instanceCallGraphTagger = new CallGraphTagger( g );
+        return instanceCallGraphTagger;
     }
 
 }

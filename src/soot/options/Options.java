@@ -1028,6 +1028,10 @@ public class Options extends OptionsBase {
                 +"enabled "
                 +"threshold ";
     
+        if( phaseName.equals( "jap.cgtagger" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "gb" ) )
             return ""
                 +"enabled ";
@@ -1354,6 +1358,10 @@ public class Options extends OptionsBase {
               +"enabled:false "
               +"threshold:100 ";
     
+        if( phaseName.equals( "jap.cgtagger" ) )
+            return ""
+              +"enabled:false ";
+    
         if( phaseName.equals( "gb" ) )
             return ""
               +"enabled:true ";
@@ -1480,6 +1488,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jap.profiling" ) ) return;
         if( phaseName.equals( "jap.sea" ) ) return;
         if( phaseName.equals( "jap.fieldrw" ) ) return;
+        if( phaseName.equals( "jap.cgtagger" ) ) return;
         if( phaseName.equals( "gb" ) ) return;
         if( phaseName.equals( "gb.a1" ) ) return;
         if( phaseName.equals( "gb.cf" ) ) return;
@@ -1598,6 +1607,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jap.sea" );
         if( !PackManager.v().hasPhase( "jap.fieldrw" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jap.fieldrw" );
+        if( !PackManager.v().hasPhase( "jap.cgtagger" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jap.cgtagger" );
         if( !PackManager.v().hasPhase( "gb" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase gb" );
         if( !PackManager.v().hasPhase( "gb.a1" ) )

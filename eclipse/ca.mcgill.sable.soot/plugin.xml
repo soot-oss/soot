@@ -48,9 +48,17 @@
          enabled="true">
       </filter>
    </extension> -->
+   
+   <extension point="org.eclipse.ui.markerImageProviders">
+    <imageprovider id="ca.mcgill.sable.soot.sootAttributeProvider"
+        markertype="ca.mcgill.sable.soot.sootattributemarker"
+        icon="icons/soot_attribute.png">
+    </imageprovider>
+   </extension>
+   
    <extension
          id="sootattributemarker"
-         name="Soot attribute Marker"
+         name="Soot Attribute Marker"
          point="org.eclipse.core.resources.markers">
       <persistent
             value="false">
@@ -59,9 +67,23 @@
             type="org.eclipse.core.resources.bookmark">
       </super>
       <super
+            type="org.eclipse.core.resources.taskmarker">
+      </super>
+      <super
             type="org.eclipse.core.resources.textmarker">
       </super>
    </extension>
+   
+   <extension point="org.eclipse.ui.markerResolution"> 
+   	<markerResolutionGenerator 
+      class="ca.mcgill.sable.soot.attributes.SootAttributeResolutionGenerator" 
+      markerType="ca.mcgill.sable.soot.sootattributemarker"> 
+       
+   </markerResolutionGenerator> 
+   
+   </extension> 
+
+   
    <extension
          point="org.eclipse.jdt.ui.javaEditorTextHovers">
       <hover
@@ -73,7 +95,7 @@
          point="org.eclipse.ui.editors">
       <editor
             name="Jimple Editor"
-            icon="icons/soot.jpg"
+            icon="icons/soot.png"
             extensions="jimple,grimp"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="ca.mcgill.sable.soot.editors.JimpleEditor"
@@ -143,6 +165,13 @@
                   name="slot1">
             </separator>
          </menu>
+         <action
+               label="Test"
+               class="ca.mcgill.sable.soot.launching.Test"
+               menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.launchingactiontest">
+         </action>
          <action
                label="%PopupMenus.action11"
                class="ca.mcgill.sable.soot.launching.SootConfigProjectLauncher"

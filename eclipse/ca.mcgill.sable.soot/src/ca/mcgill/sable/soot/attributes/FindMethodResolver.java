@@ -16,13 +16,34 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package ca.mcgill.sable.soot.ui;
+package ca.mcgill.sable.soot.attributes;
 
-import java.util.ArrayList;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.ui.IMarkerResolution;
 
+/**
+ * @author jlhotak
+ *
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
+ */
+public class FindMethodResolver implements IMarkerResolution {
 
-public interface ISootOptionWidget {
-	
-	public ArrayList getControls();
-	public String getId();
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IMarkerResolution#getLabel()
+	 */
+	public String getLabel() {
+		// TODO Auto-generated method stub
+		System.out.println("in get resolution label");
+		return "Find method marker resolver";
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IMarkerResolution#run(org.eclipse.core.resources.IMarker)
+	 */
+	public void run(IMarker marker) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

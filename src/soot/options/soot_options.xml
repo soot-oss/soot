@@ -366,10 +366,10 @@ The default behaviour in this phase is to propagate only on the
 				<sub_phase>
 					<name>Dead Assignment Eliminator</name>
 					<alias>jb.dae</alias>
-					<boolopt>
-						<long_desc>
+					<long_desc>
 This phase eliminates assignment statements (to locals) with no uses.
                         </long_desc>
+					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
                                                 <default>true</default>
@@ -1748,6 +1748,17 @@ If a statement reads/writes more than this number of fields, no tag will be
 produced for it, in order to keep the size of the tags reasonable.
                         </long_desc>
 					</intopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Call Graph Tagger</name>
+					<alias>jap.cgtagger</alias>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
 				</sub_phase>
 			</phase>
 			<phase>

@@ -28,6 +28,7 @@ import soot.jimple.toolkits.scalar.*;
 import soot.jimple.toolkits.scalar.pre.*;
 import soot.jimple.toolkits.annotation.arraycheck.*;
 import soot.jimple.toolkits.annotation.profiling.*;
+import soot.jimple.toolkits.annotation.callgraph.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.pointer.*;
@@ -129,6 +130,8 @@ public class PackManager {
             p.add(new Transform("jap.profiling", ProfilingGenerator.v()));
             p.add(new Transform("jap.sea", SideEffectTagger.v()));
             p.add(new Transform("jap.fieldrw", FieldTagger.v()));
+            p.add(new Transform("jap.cgtagger", CallGraphTagger.v()));
+	    
         }
 
         // Grimp body creation

@@ -75,6 +75,10 @@ public class BooleanOptionWidget implements ISootOptionWidget {//extends Composi
 		return controls;
 	}
 	
+	public String getId(){
+		return getAlias();
+	}
+	
 	public void getWidget() {
 		//setButton(newButton(parent
 	}

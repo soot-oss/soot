@@ -145,3 +145,4 @@ FieldReadTagAggregator
 FieldWriteTagAggregator
 FieldTagAggregator
 EntryPoints
+CallGraphTagger

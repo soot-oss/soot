@@ -53,12 +53,39 @@ public class XMLAttributesPrinter {
 			if (!sm.hasActiveBody()) {
 				continue;
 			}
+			Iterator mTags = sm.getTags().iterator();
+			int jimple_ln = -1;
+			int java_ln = -1;				
+			Vector attrs = new Vector();
+			while (mTags.hasNext()){
+				Tag t = (Tag)mTags.next();
+				if (t instanceof LineNumberTag) {
+					java_ln = (new Integer(((LineNumberTag)t).toString())).intValue();
+				}
+				else if (t instanceof JimpleLineNumberTag) {
+					  jimple_ln = (new Integer(((JimpleLineNumberTag)t).toString())).intValue();
+				}
+				else if (t instanceof StringTag) {
+					  
+					  attrs.add(formatForXML(((StringTag)t).toString()));
+				}
+				else {
+					if (!t.toString().equals("[Unknown]")){
+				    	attrs.add(t.toString());
+				  	}
+					
+				}
+				
+			}
+
+			printAttribute(java_ln, jimple_ln, attrs);
+			
 			Body b = sm.getActiveBody();
 			Iterator itUnits = b.getUnits().iterator();
 			while (itUnits.hasNext()) {
-				int jimple_ln = -1;
-				int java_ln = -1;
-				Vector attrs = new Vector();
+				jimple_ln = -1;
+				java_ln = -1;
+				attrs = new Vector();
 				Unit u = (Unit)itUnits.next();
 				Iterator itTags = u.getTags().iterator();
 				while (itTags.hasNext()) {
@@ -70,7 +97,8 @@ public class XMLAttributesPrinter {
 					  jimple_ln = (new Integer(((JimpleLineNumberTag)t).toString())).intValue();
 					}
 					else if (t instanceof StringTag) {
-					  attrs.add(((StringTag)t).toString());
+					  
+					  attrs.add(formatForXML(((StringTag)t).toString()));
 					}
 					else {
 					  if (!t.toString().equals("[Unknown]")){
@@ -85,6 +113,7 @@ public class XMLAttributesPrinter {
 		finishFile();
 	}
 
+	
 	FileOutputStream streamOut = null;
 	PrintWriter writerOut = null;
 
@@ -121,6 +150,12 @@ public class XMLAttributesPrinter {
 		        }
 		}
 				
+	}
+
+	private String  formatForXML(String in) {
+		in = in.replaceAll("<", "&lt;");
+		in = in.replaceAll(">", "&gt;");
+		return in;
 	}
 
 	private void createUseFilename() {

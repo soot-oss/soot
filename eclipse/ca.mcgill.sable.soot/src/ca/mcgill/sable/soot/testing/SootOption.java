@@ -25,6 +25,7 @@ public class SootOption {
 	private Vector children;
 	private String label;
 	private SootOption parent;
+	private String alias;
 	
 	public SootOption() {
 	
@@ -33,9 +34,10 @@ public class SootOption {
 	/**
 	 * Constructor for TreeOption.
 	 */
-	public SootOption(String label) {
+	public SootOption(String label, String alias) {
 		//super();
 		setLabel(label);
+		setAlias(alias);
 	}
 	
 	public void addChild(SootOption t) {
@@ -45,7 +47,6 @@ public class SootOption {
 		t.setParent(this);
 		getChildren().add(t);
 	}
-	
 	
 
 	/**
@@ -94,6 +95,20 @@ public class SootOption {
 	 */
 	public void setParent(SootOption parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getAlias() {
+		return alias;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setAlias(String string) {
+		alias = string;
 	}
 
 }

@@ -85,13 +85,20 @@ public class DavaHandler {
 			for (int i = 0; i < elems.length; i++) {
 				if (getBeforeList() == null){
 					newMembers.add(elems[i]);
-					SootPlugin.getDefault().getManager().setToFalseRemove((IFile)elems[i]);
+					if (elems[i] instanceof IFile){
+					
+						SootPlugin.getDefault().getManager().setToFalseRemove((IFile)elems[i]);
+					}
 				}
 				else if (getBeforeList().contains(elems[i])) {
-					if (SootPlugin.getDefault().getManager().isFileMarkersRemove((IFile)elems[i])){
-						newMembers.add(elems[i]);
-						// this sets changed bit to 0 - so file doesn't stay on list indefinitely
-						SootPlugin.getDefault().getManager().setToFalseRemove((IFile)elems[i]);
+					if (elems[i] instanceof IFile){
+					
+						if (SootPlugin.getDefault().getManager().isFileMarkersRemove((IFile)elems[i])){
+							newMembers.add(elems[i]);
+							// this sets changed bit to 0 - so file doesn't stay on list indefinitely
+											
+							SootPlugin.getDefault().getManager().setToFalseRemove((IFile)elems[i]);
+						}
 					}
 					
 				}
@@ -101,7 +108,10 @@ public class DavaHandler {
 					else if (SootPlugin.getDefault().getManager().getChangedResources().containsKey(elems[i])){
 						newMembers.add(elems[i]);
 						// this sets changed bit to 0 - so file doesn't stay on list indefinitely
-						SootPlugin.getDefault().getManager().setToFalseRemove((IFile)elems[i]);
+						if (elems[i] instanceof IFile){
+					
+							SootPlugin.getDefault().getManager().setToFalseRemove((IFile)elems[i]);
+						}
 					}
 				}
 			}
@@ -239,6 +249,7 @@ public class DavaHandler {
 			catch (CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				
 			}
 		}
 	

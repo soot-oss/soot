@@ -106,6 +106,10 @@ public class StringOptionWidget implements ISootOptionWidget {//extends Composit
 		return controls;
 	}
 	
+	public String getId(){
+		return getAlias();
+	}
+	
 	public void setLabelText(String text) {
 		getLabel().setText(text);
 	}

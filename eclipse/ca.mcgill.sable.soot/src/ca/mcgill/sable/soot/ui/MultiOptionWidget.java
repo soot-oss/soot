@@ -87,7 +87,7 @@ public class MultiOptionWidget implements ISootOptionWidget {//extends Composite
 			buttons[i] = new Button(multi, SWT.RADIO);
 			buttons[i].setText(dataVals[i].getText());
 			buttons[i].setToolTipText(dataVals[i].getTooltip());
-			buttons[i].setEnabled(false);
+			//buttons[i].setEnabled(false);
 			//System.out.println(defaultVal);
 			if (dataVals[i].isDefaultVal()) {
 				buttons[i].setSelection(true);
@@ -116,6 +116,11 @@ public class MultiOptionWidget implements ISootOptionWidget {//extends Composite
 		}
 		return controls;
 	}
+	
+	public String getId(){
+		return getAlias();
+	}
+		
 	public void setDef(String id) {
 		for (int i = 0; i < buttons.length; i++) {
 			if (dataVals[i].getAlias().equals(id)) {
