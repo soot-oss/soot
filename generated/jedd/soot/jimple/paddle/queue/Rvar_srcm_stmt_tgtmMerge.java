@@ -39,8 +39,8 @@ public final class Rvar_srcm_stmt_tgtmMerge extends Rvar_srcm_stmt_tgtm {
     }
     
     public jedd.internal.RelationContainer get() {
-        return new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), stmt.v(), var.v(), srcm.v() },
-                                                   new PhysicalDomain[] { T2.v(), ST.v(), V1.v(), T1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), tgtm.v(), stmt.v(), srcm.v() },
+                                                   new PhysicalDomain[] { V1.v(), T2.v(), ST.v(), T1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
                                                     "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk/src/" +
                                                     "soot/jimple/paddle/queue/Rvar_srcm_stmt_tgtmMerge.jedd:52,8-" +

@@ -29,8 +29,8 @@ public final class Qobj_method_typeBDD extends Qobj_method_type {
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Robj_method_typeBDD reader = (Robj_method_typeBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), method.v(), type.v() },
-                                                           new PhysicalDomain[] { H1.v(), T1.v(), T2.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { type.v(), obj.v(), method.v() },
+                                                           new PhysicalDomain[] { T2.v(), H1.v(), T1.v() },
                                                            ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
                                                             "addle/queue/Qobj_method_typeBDD.jedd:39,12-18"),
                                                            in));

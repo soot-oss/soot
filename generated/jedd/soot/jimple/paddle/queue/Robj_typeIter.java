@@ -45,8 +45,8 @@ public class Robj_typeIter extends Robj_type {
                                                        new Attribute[] { obj.v(), type.v() },
                                                        new PhysicalDomain[] { H1.v(), T2.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
-                                                   new PhysicalDomain[] { H1.v(), T2.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { type.v(), obj.v() },
+                                                   new PhysicalDomain[] { T2.v(), H1.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
                                                     "le/queue/Robj_typeIter.jedd:50,8-14"),
                                                    ret);

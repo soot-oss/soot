@@ -22,8 +22,8 @@ public final class Rvar_objBDD extends Rvar_obj {
     
     public Rvar_objBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        this.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                     new PhysicalDomain[] { H1.v(), V1.v() },
+        this.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                     new PhysicalDomain[] { V1.v(), H1.v() },
                                                      ("this.add(bdd) at /home/olhotak/soot-trunk/src/soot/jimple/pa" +
                                                       "ddle/queue/Rvar_objBDD.jedd:33,74-77"),
                                                      bdd));
@@ -49,8 +49,8 @@ public final class Rvar_objBDD extends Rvar_obj {
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                          new PhysicalDomain[] { H1.v(), V1.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                          new PhysicalDomain[] { V1.v(), H1.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
                                                            "trunk/src/soot/jimple/paddle/queue/Rvar_objBDD.jedd:45,25-28"),
                                                           bdd).iterator(new Attribute[] { var.v(), obj.v() });
@@ -74,8 +74,8 @@ public final class Rvar_objBDD extends Rvar_obj {
                                                "soot/jimple/paddle/queue/Rvar_objBDD.jedd:55,25-28"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                   new PhysicalDomain[] { H1.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                   new PhysicalDomain[] { V1.v(), H1.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
                                                     "le/queue/Rvar_objBDD.jedd:57,8-14"),
                                                    ret);

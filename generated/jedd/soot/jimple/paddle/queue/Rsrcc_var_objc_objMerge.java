@@ -39,8 +39,8 @@ public final class Rsrcc_var_objc_objMerge extends Rsrcc_var_objc_obj {
     }
     
     public jedd.internal.RelationContainer get() {
-        return new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v(), var.v(), srcc.v() },
-                                                   new PhysicalDomain[] { C2.v(), H1.v(), V1.v(), C1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), objc.v(), obj.v(), srcc.v() },
+                                                   new PhysicalDomain[] { V1.v(), C2.v(), H1.v(), C1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
                                                     "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk/src/" +
                                                     "soot/jimple/paddle/queue/Rsrcc_var_objc_objMerge.jedd:52,8-1" +

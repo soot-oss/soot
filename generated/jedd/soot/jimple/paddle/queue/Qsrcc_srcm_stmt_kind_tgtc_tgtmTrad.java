@@ -25,8 +25,8 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad extends Qsrcc_srcm_stmt_kind_tgt
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { tgtc.v(), tgtm.v(), kind.v(), stmt.v(), srcc.v(), srcm.v() },
-                                              new PhysicalDomain[] { V2.v(), T2.v(), FD.v(), ST.v(), V1.v(), T1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { kind.v(), tgtm.v(), stmt.v(), tgtc.v(), srcm.v(), srcc.v() },
+                                              new PhysicalDomain[] { FD.v(), T2.v(), ST.v(), V2.v(), T1.v(), V1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/queue/Qsrcc_srcm_stmt_kind_tgtc_" +
                                                "tgtmTrad.jedd:42,22-24"),

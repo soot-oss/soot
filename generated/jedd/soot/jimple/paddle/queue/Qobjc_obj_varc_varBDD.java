@@ -29,8 +29,8 @@ public final class Qobjc_obj_varc_varBDD extends Qobjc_obj_varc_var {
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Robjc_obj_varc_varBDD reader = (Robjc_obj_varc_varBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { objc.v(), varc.v(), obj.v(), var.v() },
-                                                           new PhysicalDomain[] { C2.v(), C1.v(), H1.v(), V1.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), objc.v(), obj.v(), varc.v() },
+                                                           new PhysicalDomain[] { V1.v(), C2.v(), H1.v(), C1.v() },
                                                            ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
                                                             "addle/queue/Qobjc_obj_varc_varBDD.jedd:39,12-18"),
                                                            in));

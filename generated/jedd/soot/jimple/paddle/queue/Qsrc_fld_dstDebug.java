@@ -23,8 +23,8 @@ public class Qsrc_fld_dstDebug extends Qsrc_fld_dst {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { dst.v(), fld.v(), src.v() },
-                                              new PhysicalDomain[] { V2.v(), FD.v(), V1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v(), fld.v() },
+                                              new PhysicalDomain[] { V2.v(), V1.v(), FD.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/queue/Qsrc_fld_dstDebug.jedd:39," +
                                                "22-24"),

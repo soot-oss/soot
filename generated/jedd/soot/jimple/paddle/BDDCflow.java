@@ -15,7 +15,7 @@ public class BDDCflow {
     
     private final jedd.internal.RelationContainer entryPoints =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v() },
-                                          new jedd.PhysicalDomain[] { T1.v() },
+                                          new jedd.PhysicalDomain[] { T2.v() },
                                           ("private <soot.jimple.paddle.bdddomains.method> entryPoints =" +
                                            " jedd.internal.Jedd.v().falseBDD() at /home/olhotak/soot-tru" +
                                            "nk/src/soot/jimple/paddle/BDDCflow.jedd:36,12-20"),
@@ -31,7 +31,7 @@ public class BDDCflow {
     public void addEntryPoint(MethodOrMethodContext m) {
         entryPoints.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { m.method() },
                                                            new jedd.Attribute[] { method.v() },
-                                                           new jedd.PhysicalDomain[] { T1.v() }));
+                                                           new jedd.PhysicalDomain[] { T2.v() }));
     }
     
     private final jedd.internal.RelationContainer mayCflow =
@@ -101,7 +101,7 @@ public class BDDCflow {
                                                "edd.PhysicalDomain[...]); at /home/olhotak/soot-trunk/src/so" +
                                                "ot/jimple/paddle/BDDCflow.jedd:61,27-38"),
                                               jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(edges,
-                                                                                                                                        new jedd.PhysicalDomain[] { V2.v(), ST.v(), V1.v() })),
+                                                                                                                                        new jedd.PhysicalDomain[] { ST.v(), V2.v(), V1.v() })),
                                                                              wantedKinds,
                                                                              new jedd.PhysicalDomain[] { FD.v() }));
         final jedd.internal.RelationContainer edgeClosure =
@@ -146,11 +146,11 @@ public class BDDCflow {
                                                                     "jimple/paddle/BDDCflow.jedd:72,58-69"),
                                                                    edgeClosure).numNodes());
         }
-        mayCflow.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(edgeClosure,
-                                                                                                                new jedd.PhysicalDomain[] { T3.v(), T2.v() },
-                                                                                                                new jedd.PhysicalDomain[] { T2.v(), T1.v() })),
-                                                     entryPoints,
-                                                     new jedd.PhysicalDomain[] { T1.v() }));
+        mayCflow.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(edgeClosure),
+                                                                                    entryPoints,
+                                                                                    new jedd.PhysicalDomain[] { T2.v() }),
+                                                        new jedd.PhysicalDomain[] { T3.v(), T2.v() },
+                                                        new jedd.PhysicalDomain[] { T2.v(), T1.v() }));
         while (true) {
             final jedd.internal.RelationContainer oldMayCflow =
               new jedd.internal.RelationContainer(new jedd.Attribute[] { srcm.v(), tgtm.v() },
@@ -204,9 +204,7 @@ public class BDDCflow {
                                               jedd.internal.Jedd.v().copy(allSources,
                                                                           new jedd.PhysicalDomain[] { T1.v() },
                                                                           new jedd.PhysicalDomain[] { T2.v() }));
-        notMustPreds.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(entryPoints,
-                                                                                                                    new jedd.PhysicalDomain[] { T1.v() },
-                                                                                                                    new jedd.PhysicalDomain[] { T2.v() })),
+        notMustPreds.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(entryPoints),
                                                          allSources,
                                                          new jedd.PhysicalDomain[] {  }));
         while (true) {

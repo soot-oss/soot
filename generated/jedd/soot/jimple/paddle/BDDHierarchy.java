@@ -80,8 +80,8 @@ public final class BDDHierarchy {
                                           jedd.internal.Jedd.v().falseBDD());
     
     public jedd.internal.RelationContainer anySub() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { anyst.v(), type.v() },
-                                                   new jedd.PhysicalDomain[] { T1.v(), T2.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { type.v(), anyst.v() },
+                                                   new jedd.PhysicalDomain[] { T2.v(), T1.v() },
                                                    ("return anySub; at /home/olhotak/soot-trunk/src/soot/jimple/p" +
                                                     "addle/BDDHierarchy.jedd:78,36-42"),
                                                    anySub);
