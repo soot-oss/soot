@@ -201,7 +201,7 @@ public class JasminClass
         else
             code.add(s);
 
-        System.out.println(s);
+//          System.out.println(s);
     }
 
     void emit(String s, int stackChange)
@@ -223,6 +223,8 @@ public class JasminClass
     
     public JasminClass(SootClass SootClass)
     {
+        Map options = new HashMap();
+
         if(soot.Main.isProfilingOptimization)
             soot.Main.buildJasminTimer.start();
 
@@ -289,7 +291,7 @@ public class JasminClass
 
             while(methodIt.hasNext())
             {
-                emitMethod((SootMethod) methodIt.next());
+                emitMethod((SootMethod) methodIt.next(), options);
                 emit("");
             }
         }
@@ -368,7 +370,7 @@ public class JasminClass
                     
     }
     
-    void emitMethod(SootMethod method)
+    void emitMethod(SootMethod method, Map options)
     {
        if (method.isPhantom())
            return;
@@ -382,14 +384,14 @@ public class JasminClass
             if(!method.hasActiveBody())
                 throw new RuntimeException("method: " + method.getName() + " has no active body!");
             else
-                emitMethodBody(method);
+                emitMethodBody(method, options);
        }
        
        // Emit epilogue
             emit(".end method");
     }
     
-    void emitMethodBody(SootMethod method)    
+    void emitMethodBody(SootMethod method, Map options)
     {
         if(soot.Main.isProfilingOptimization)
             soot.Main.buildJasminTimer.end();
@@ -411,16 +413,26 @@ public class JasminClass
         
         Chain units = body.getUnits();
 
+        CompleteUnitGraph stmtGraph = null;
+        LocalDefs ld = null;
+        LocalUses lu = null;
+
+        
         // let's create a u-d web for the ++ peephole optimization.
 
         if(Main.isVerbose)
             System.out.println("[" + body.getMethod().getName() +
                 "] Performing peephole optimizations...");
 
-        CompleteUnitGraph stmtGraph = new CompleteUnitGraph(body);
+        boolean disablePeephole = Options.getBoolean(options, "no-peephole");
+        disablePeephole = true;
 
-        LocalDefs ld = new SimpleLocalDefs(stmtGraph);
-        LocalUses lu = new SimpleLocalUses(stmtGraph, ld);
+        if (!disablePeephole)
+        {
+            stmtGraph = new CompleteUnitGraph(body);
+            ld = new SimpleLocalDefs(stmtGraph);
+            lu = new SimpleLocalUses(stmtGraph, ld);
+        }
 
         int stackLimitIndex = -1;
         
@@ -612,14 +624,16 @@ public class JasminClass
 
                 }
 
-
                 // Test for postincrement operators ++ and --
                 // We can optimize them further.
 
                 boolean contFlag = false;
                 // this is a fake do, to give us break;
                 do
-                  {     
+                {
+                    if (disablePeephole)
+                      break;
+
                     if (!(s instanceof AssignStmt))
                       break;
 
@@ -686,6 +700,29 @@ public class JasminClass
                             break;
                     }
                     
+                    // Specifically exclude the case where rvalue is on the lhs
+                    // of nextNextStmt (what a mess!)
+                    // this takes care of the extremely pathological case where
+                    // the thing being incremented is also on the lhs of nns (!)
+                    {
+                        Iterator boxIt = nextNextStmt.getDefBoxes().iterator();
+                        
+                        boolean found = false;
+                        
+                        while(boxIt.hasNext())
+                        {
+                            ValueBox box = (ValueBox) boxIt.next();
+                            
+                            if(box.getValue().equals(rvalue))
+                            {
+                                found = true;
+                            }
+                        }    
+                        
+                        if(found)
+                            break;
+                    }                    
+
                     AddExpr addexp = (AddExpr)nextStmt.getRightOp();
                     if (!addexp.getOp1().equals(lvalue) && !addexp.getOp1().equals(rvalue))
                       break;
@@ -756,6 +793,8 @@ public class JasminClass
                 if (contFlag) 
                     continue;
 
+                // end of peephole opts.
+
                 // emit this statement
                 {
                     currentStackHeight = 0;
@@ -795,12 +834,14 @@ public class JasminClass
                 Value op1 = expr.getOp1();
                 Value op2 = expr.getOp2();
 
+                // more peephole stuff.
                 if (lvalue == plusPlusHolder)
                 {
                     emitValue(lvalue);
                     plusPlusHolder = null;
                     plusPlusState = 0;
                 }
+                // end of peephole
 
                 if(l.getType().equals(IntType.v()))
                 {
@@ -1721,6 +1762,7 @@ public class JasminClass
     int plusPlusPlace;
     int plusPlusHeight;
     Stmt plusPlusIncrementer;
+    /* end of plusplus stuff. */
 
     void emitLocal(Local v)
     {
@@ -1758,6 +1800,7 @@ public class JasminClass
                     emit("fload " + slot, 1);
             }
             
+            // peephole stuff appears here.
             public void caseIntType(IntType t)
             {
                 if (vAlias.equals(plusPlusHolder))
@@ -1801,9 +1844,9 @@ public class JasminClass
                         // this time we have ppi of the form ppv = ppv + 1
                         plusPlusState = 11;
 
-                        System.out.println("ppV "+plusPlusValue);
-                        System.out.println("ppH "+plusPlusHolder);
-                        System.out.println("ppI "+plusPlusIncrementer);
+//                          System.out.println("ppV "+plusPlusValue);
+//                          System.out.println("ppH "+plusPlusHolder);
+//                          System.out.println("ppI "+plusPlusIncrementer);
 
                         plusPlusHolder = (Local)plusPlusValue;
                         emitStmt(plusPlusIncrementer);
@@ -1833,6 +1876,7 @@ public class JasminClass
                 else
                     emit("iload " + slot, 1);
             }
+            // end of peephole stuff.
 
             public void caseLongType(LongType t)
             {
