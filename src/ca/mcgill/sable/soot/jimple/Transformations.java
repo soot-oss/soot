@@ -636,7 +636,9 @@ public class Transformations
                 if(groupIntToLocal.containsKey(pair))
                     newLocal = (Local) groupIntToLocal.get(pair);
                 else {
-                    newLocal = new Local(original.getName(), (Type) group);
+                    newLocal = (Local) original.clone();
+                    newLocal.setType((Type) group);
+                    
                     groupIntToLocal.put(pair, newLocal);
                     body.getLocals().add(newLocal);
                 }

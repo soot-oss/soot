@@ -219,9 +219,10 @@ public class LocalSplitter
 
                     int useCount = ((Integer) localToUseCount.get(desiredLocal)).intValue() + 1;
                     localToUseCount.put(desiredLocal, new Integer(useCount));
-
-                    Local local = new Local(desiredLocal.getName() + "$" + useCount, desiredLocal.getType());
-
+        
+                    Local local = (Local) desiredLocal.clone();
+                    local.setName(desiredLocal.getName() + "$" + useCount);
+                    
                     listBody.addLocal(local);
 
                     // Change all boxes to point to this new local

@@ -602,7 +602,7 @@ public class Jimple implements BodyRepresentation
 
     public Local newLocal(String name, Type t)
     {
-        return new Local(name, t);
+        return new JimpleLocal(name, t);
     }
 
     /**

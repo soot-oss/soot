@@ -305,8 +305,15 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
                         DefinitionStmt d = (DefinitionStmt) s;
 
                         if(d.getLeftOp() instanceof Local)
-                            ((List) localToDefList.get(d.getLeftOp())).add(d);
-
+                        {
+                            List l = (List) localToDefList.get(d.getLeftOp());
+                            
+                            if(l == null)
+                                throw new RuntimeException("local " + d.getLeftOp() + " is used but not declared!");
+                            else
+                                l.add(d);
+                        }
+                        
                     }
                 }
             }

@@ -471,7 +471,7 @@ public class JimpleBody implements StmtBody
         {
             Local local = (Local) localIt.next();
 
-            if(local.name.equals(name))
+            if(local.getName().equals(name))
                 return local;
         }
 
@@ -487,7 +487,7 @@ public class JimpleBody implements StmtBody
         {
             Local local = (Local) localIt.next();
 
-            if(local.name.equals(localName))
+            if(local.getName().equals(localName))
                 return true;
         }
 
@@ -788,6 +788,7 @@ public class JimpleBody implements StmtBody
         /*
         LocalUses localUses = new LocalUses(stmtGraph, localDefs);
 */
+        
         //LocalCopies localCopies = new SimpleLocalCopies(stmtGraph);
         LiveLocals liveLocals = new SimpleLiveLocals(stmtGraph);
         //EqualLocals equalLocals = new SimpleEqualLocals(stmtGraph);

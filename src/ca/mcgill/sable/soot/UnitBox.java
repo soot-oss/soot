@@ -1,4 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Soot, a Java(TM) classfile optimization framework.                *
  * Jimple, a 3-address code Java(TM) bytecode representation.        *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
@@ -69,13 +70,12 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
-import ca.mcgill.sable.soot.*;
 
-public interface Value extends Switchable
+public interface UnitBox
 {
-    public abstract List getUseBoxes();
-    public abstract Type getType();
+    public void setUnit(Unit u);
+    public Unit getUnit();
 }

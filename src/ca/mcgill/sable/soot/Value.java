@@ -1,10 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
+ * Soot, a Java(TM) classfile optimization framework.                *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
- *                                                                   *
- * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
- * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -64,10 +61,6 @@
 
  B) Changes:
 
- - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
-   Added changes in support of the Grimp intermediate
-   representation (with aggregated-expressions).
-
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -76,23 +69,13 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot;
 
-import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.*;
 
-public interface Trap
+public interface Value extends Switchable
 {
-    public Unit getBeginUnit();
-    public Unit getEndUnit();
-    public Unit getHandlerUnit();
-    public UnitBox getHandlerUnitBox();
-    public UnitBox getBeginUnitBox();
-    public UnitBox getEndUnitBox();
-    public List getUnitBoxes();
-    public SootClass getException();
-    public void setBeginUnit(Unit beginUnit);
-    public void setEndUnit(Unit endUnit);
-    public void setHandlerUnit(Unit handlerUnit);
-    public void setException(SootClass exception);
+    public List getUseBoxes();
+    public Type getType();
 }

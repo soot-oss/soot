@@ -1,11 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
+ * Soot, a Java(TM) classfile optimization framework.                *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
- *                                                                   *
- * Modifications by Madeleine Mony are                               *
- * Copyright (C) 1998 Madeleine Mony.  All                           *
- * rights reserved.                                                  *
  *                                                                   *
  * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
  * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
@@ -72,9 +68,6 @@
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
 
- - Modified on November 13, 1998 by Madeleine Mony
-   Implemented fixed hash code idea.
-   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -83,98 +76,22 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot;
 
-import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class Local implements Value, ToBriefString
+public interface Trap
 {
-    String name;
-    Type type;
-
-    int fixedHashCode;
-    boolean isHashCodeChosen;
-        
-    Local(String name, Type t)
-    {
-        this.name = name;
-        this.type = t;
-    }
-
-    public Object clone()
-    {
-        return new Local(name, type);
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public boolean equals(Object o)
-    {
-        if (o instanceof Local)
-            return (((Local)o).name).equals(name)
-		        && (((Local)o).type).equals(type);
-	    return false;
-    }
-
-    public int hashCode()
-    {
-        if(!isHashCodeChosen)
-        {
-            // Set the hash code for this object
-            
-            if(name != null & type != null)
-                fixedHashCode = name.hashCode() + 19 * type.hashCode();
-            else if(name != null)
-                fixedHashCode = name.hashCode();
-            else if(type != null)
-                fixedHashCode = type.hashCode();
-            else
-                fixedHashCode = 1;
-                
-            isHashCodeChosen = true;
-        }
-        
-        return fixedHashCode;
-    }
-    
-    public Type getType()
-    {
-        return type;
-    }
-
-    public void setType(Type t)
-    {
-        this.type = t;
-    }
-
-    public String toString()
-    {
-        return getName();
-    }
-
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
-    public List getUseBoxes()
-    {
-        return AbstractStmt.emptyList;
-    }
-
-    public void apply(Switch sw)
-    {
-        ((JimpleValueSwitch) sw).caseLocal(this);
-    }
-
+    public Unit getBeginUnit();
+    public Unit getEndUnit();
+    public Unit getHandlerUnit();
+    public UnitBox getHandlerUnitBox();
+    public UnitBox getBeginUnitBox();
+    public UnitBox getEndUnitBox();
+    public List getUnitBoxes();
+    public SootClass getException();
+    public void setBeginUnit(Unit beginUnit);
+    public void setEndUnit(Unit endUnit);
+    public void setHandlerUnit(Unit handlerUnit);
+    public void setException(SootClass exception);
 }
-
