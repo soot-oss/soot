@@ -75,7 +75,7 @@ public class BitSetIterator {
         if (index >= bits.length)
             throw new NoSuchElementException();
 
-        long k = (save & (save-1)); // Clears the last non-zero bit. k is guaranteed non-zero.
+        long k = (save & (save-1)); // Clears the last non-zero bit. save is guaranteed non-zero.
         long diff = save ^ k;       // Finds out which bit it is. diff has exactly one bit set.
         save = k;
 
