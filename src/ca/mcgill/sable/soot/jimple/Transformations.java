@@ -68,6 +68,10 @@
 
  B) Changes:
 
+ - Modified on March 25, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Changed the aggregator to proceed in pseudo topological order.  Failure
+   to do this introduces possible bugs.
+   
  - Modified on March 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Modified removeUnusedLocals to not use an iterator for HashSet (which is non-deterministic).
  
@@ -361,7 +365,7 @@ public class Transformations
       localDefs = new SimpleLocalDefs(graph);
       localUses = new SimpleLocalUses(graph, localDefs);
           
-      stmtIt = stmtList.iterator();
+      stmtIt = stmtList.pseudoTopologicalOrderIterator();
       
       while (stmtIt.hasNext())
         {
@@ -510,7 +514,7 @@ public class Transformations
             {
               usepair.valueBox.setValue(aggregatee);
               body.eliminateBackPointersTo(s);
-              stmtIt.remove();
+              stmtList.remove(s);
               hadAggregation = true;
               aggrCount++;
             }
