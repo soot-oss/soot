@@ -38,4 +38,6 @@ public interface FieldRef extends ConcreteRef
     public SootField getField();
     public SootField XgetField();
     public void setField(SootField field);
+    // temporary stub
+    public SootFieldRef getFieldRef();
 }

@@ -149,4 +149,6 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
 	}
     }
     public SootField XgetField() { return getField(); }
+    // temporary stub
+    public SootFieldRef getFieldRef() { return getField().makeRef(); }
 }
