@@ -97,6 +97,9 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 			System.out.println("done event has occured");
 			waitForContinue();
 		}
+		else if (getEvent().type() == IInteractionConstants.STOP_AT_NODE){
+			handleStopAtNodeEvent(getEvent().info());
+		}
 		else if (getEvent().type() == IInteractionConstants.CLEARTO){
 			handleClearEvent(getEvent().info());
 		}
@@ -233,6 +236,19 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 	
 	private void handleAfterFlowEventAuto(Object fi){
 		handleAfterEvent(fi);
+	}
+	
+	private void handleStopAtNodeEvent(Object info){
+		// highlight box being waited on 
+		final soot.Unit stopUnit = (soot.Unit)info;
+		final ModelCreator mc = getMc();
+		getDisplay().syncExec(new Runnable() {
+			public void run(){
+				mc.highlightNode(stopUnit);
+			};
+		});
+		// then wait
+		waitForContinue();
 	}
 	
 	private void handleClearEvent(Object info){

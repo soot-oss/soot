@@ -102,8 +102,6 @@ Composite jopChild = jopCreate(getPageContainer());
 
 Composite japChild = japCreate(getPageContainer());
 
-Composite cfgChild = cfgCreate(getPageContainer());
-
 Composite gbChild = gbCreate(getPageContainer());
 
 Composite gopChild = gopCreate(getPageContainer());
@@ -253,8 +251,6 @@ Composite japjap_lvtaggerChild = japjap_lvtaggerCreate(getPageContainer());
 Composite japjap_rdtaggerChild = japjap_rdtaggerCreate(getPageContainer());
 
 Composite japjap_cheChild = japjap_cheCreate(getPageContainer());
-
-Composite cfgcfg_outputChild = cfgcfg_outputCreate(getPageContainer());
 
 Composite gbgb_a1Child = gbgb_a1Create(getPageContainer());
 
@@ -1381,27 +1377,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getjapjap_cheenabled_widget().getButton().addSelectionListener(this);
 		
 		
-		makeNewEnableGroup("cfg");
-		
-		
-		addToEnableGroup("cfg", getcfgenabled_widget(), "enabled");
-		
-		
-		getcfgenabled_widget().getButton().addSelectionListener(this);
-		
-		
-		makeNewEnableGroup("cfg", "cfg.output");
-		
-		
-		addToEnableGroup("cfg", "cfg.output", getcfgcfg_outputenabled_widget(), "enabled");
-		
-		addToEnableGroup("cfg", "cfg.output", getcfgcfg_outputgraph_type_widget(), "graph-type");
-		
-		addToEnableGroup("cfg", "cfg.output", getcfgcfg_outputoutput_type_widget(), "output-type");
-		
-		getcfgcfg_outputenabled_widget().getButton().addSelectionListener(this);
-		
-		
 		makeNewEnableGroup("gb");
 		
 		
@@ -1766,20 +1741,20 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getOutput_Optionsprint_tags_in_output_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getOutput_Optionsoutput_source_file_attribute_widget().getButton().getSelection();
+		boolRes = getOutput_Optionsno_output_source_file_attribute_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getOutput_Optionsoutput_source_file_attribute_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getOutput_Optionsno_output_source_file_attribute_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getOutput_Optionsno_output_inner_classes_attribute_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
@@ -3928,44 +3903,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_cheenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcfgenabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcfgenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcfgcfg_outputenabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcfgcfg_outputenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		 
-		stringRes = getcfgcfg_outputgraph_type_widget().getSelectedAlias();
-
-		
-		defStringRes = "complete-unit-graph";
-		
-
-		if (!stringRes.equals(defStringRes)) {
-			getConfig().put(getcfgcfg_outputgraph_type_widget().getAlias(), stringRes);
-		}
-		 
-		stringRes = getcfgcfg_outputoutput_type_widget().getSelectedAlias();
-
-		
-
-		if (!stringRes.equals(defStringRes)) {
-			getConfig().put(getcfgcfg_outputoutput_type_widget().getAlias(), stringRes);
-		}
-		
 		boolRes = getgbenabled_widget().getButton().getSelection();
 		
 		
@@ -5149,23 +5086,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jap_jap_che_branch;
 			
 			
-			//CFG Viewer
-			SootOption cfg_branch = new SootOption("CFG Viewer", "cfg");
-			parent.addChild(cfg_branch);
-			subParent = cfg_branch;
-
-
-			
-			SootOption cfg_cfg_output_branch = new SootOption("CFG Output Options", "cfgcfg_output");
-			subParent.addChild(cfg_cfg_output_branch);
-
-
-			
-
-			
-			subSectParent = cfg_cfg_output_branch;
-			
-			
 			//Grimp Body Creation
 			SootOption gb_branch = new SootOption("Grimp Body Creation", "gb");
 			parent.addChild(gb_branch);
@@ -5514,14 +5434,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return Output_Optionsprint_tags_in_output_widget;
 	}	
 	
-	private BooleanOptionWidget Output_Optionsoutput_source_file_attribute_widget;
+	private BooleanOptionWidget Output_Optionsno_output_source_file_attribute_widget;
 	
-	private void setOutput_Optionsoutput_source_file_attribute_widget(BooleanOptionWidget widget) {
-		Output_Optionsoutput_source_file_attribute_widget = widget;
+	private void setOutput_Optionsno_output_source_file_attribute_widget(BooleanOptionWidget widget) {
+		Output_Optionsno_output_source_file_attribute_widget = widget;
 	}
 	
-	public BooleanOptionWidget getOutput_Optionsoutput_source_file_attribute_widget() {
-		return Output_Optionsoutput_source_file_attribute_widget;
+	public BooleanOptionWidget getOutput_Optionsno_output_source_file_attribute_widget() {
+		return Output_Optionsno_output_source_file_attribute_widget;
 	}	
 	
 	private BooleanOptionWidget Output_Optionsno_output_inner_classes_attribute_widget;
@@ -7732,50 +7652,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return japjap_cheenabled_widget;
 	}	
 	
-	private BooleanOptionWidget cfgenabled_widget;
-	
-	private void setcfgenabled_widget(BooleanOptionWidget widget) {
-		cfgenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcfgenabled_widget() {
-		return cfgenabled_widget;
-	}	
-	
-	private BooleanOptionWidget cfgcfg_outputenabled_widget;
-	
-	private void setcfgcfg_outputenabled_widget(BooleanOptionWidget widget) {
-		cfgcfg_outputenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcfgcfg_outputenabled_widget() {
-		return cfgcfg_outputenabled_widget;
-	}	
-	
-	
-	private MultiOptionWidget cfgcfg_outputgraph_type_widget;
-	
-	private void setcfgcfg_outputgraph_type_widget(MultiOptionWidget widget) {
-		cfgcfg_outputgraph_type_widget = widget;
-	}
-	
-	public MultiOptionWidget getcfgcfg_outputgraph_type_widget() {
-		return cfgcfg_outputgraph_type_widget;
-	}	
-	
-	
-	
-	private MultiOptionWidget cfgcfg_outputoutput_type_widget;
-	
-	private void setcfgcfg_outputoutput_type_widget(MultiOptionWidget widget) {
-		cfgcfg_outputoutput_type_widget = widget;
-	}
-	
-	public MultiOptionWidget getcfgcfg_outputoutput_type_widget() {
-		return cfgcfg_outputoutput_type_widget;
-	}	
-	
-	
 	private BooleanOptionWidget gbenabled_widget;
 	
 	private void setgbenabled_widget(BooleanOptionWidget widget) {
@@ -8544,7 +8420,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
-		defKey = ""+" "+""+" "+"output-source-file-attribute";
+		defKey = ""+" "+""+" "+"no-output-source-file-attribute";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8552,11 +8428,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setOutput_Optionsoutput_source_file_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Source File Attribute", "", "","output-source-file-attribute", "\nOutput Source File Attribute in class files. ", defaultBool)));
+		setOutput_Optionsno_output_source_file_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Don't Output Source File Attribute", "", "","no-output-source-file-attribute", "\nDon't output Source File Attribute when producing class files. ", defaultBool)));
 		
 		
 		
@@ -8568,11 +8444,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setOutput_Optionsno_output_inner_classes_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Inner Classes Attribute", "", "","no-output-inner-classes-attribute", "\nOutput inner classes attribute in class files. ", defaultBool)));
+		setOutput_Optionsno_output_inner_classes_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Don't Output Inner Classes Attribute", "", "","no-output-inner-classes-attribute", "\nDon't output inner classes attribute in class \nfiles. ", defaultBool)));
 		
 		
 		
@@ -15090,176 +14966,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupjapjap_che;
-	}
-
-
-
-	private Composite cfgCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupcfg = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupcfg.setLayout(layout);
-	
-	 	editGroupcfg.setText("CFG Viewer");
-	 	
-		editGroupcfg.setData("id", "cfg");
-		
-		String desccfg = "Produces CFGs for viewing purposes";	
-		if (desccfg.length() > 0) {
-			Label descLabelcfg = new Label(editGroupcfg, SWT.WRAP);
-			descLabelcfg.setText(desccfg);
-		}
-		OptionData [] data;	
-		
-		
-		
-		
-		defKey = "p"+" "+"cfg"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcfgenabled_widget(new BooleanOptionWidget(editGroupcfg, SWT.NONE, new OptionData("Enabled", "p", "cfg","enabled", "\n", defaultBool)));
-		
-		
-
-		
-		return editGroupcfg;
-	}
-
-
-
-	private Composite cfgcfg_outputCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupcfgcfg_output = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupcfgcfg_output.setLayout(layout);
-	
-	 	editGroupcfgcfg_output.setText("CFG Output Options");
-	 	
-		editGroupcfgcfg_output.setData("id", "cfgcfg_output");
-		
-		String desccfgcfg_output = "Determines the type of graphs to output";	
-		if (desccfgcfg_output.length() > 0) {
-			Label descLabelcfgcfg_output = new Label(editGroupcfgcfg_output, SWT.WRAP);
-			descLabelcfgcfg_output.setText(desccfgcfg_output);
-		}
-		OptionData [] data;	
-		
-		
-		
-		
-		defKey = "p"+" "+"cfg.output"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcfgcfg_outputenabled_widget(new BooleanOptionWidget(editGroupcfgcfg_output, SWT.NONE, new OptionData("Enabled", "p", "cfg.output","enabled", "\n", defaultBool)));
-		
-		
-		
-		data = new OptionData [] {
-		
-		new OptionData("Complete Unit Graph",
-		"complete-unit-graph",
-		"\nOutput a complete Unit Graph, where nodes are units and control \nflow associated with Exceptions is taken into account.",
-		
-		true),
-		
-		new OptionData("Unit Graph",
-		"unit-graph",
-		"\nOutput a Unit Graph, where nodes are units and control flow \nassociated with Exceptions is not taken into account.",
-		
-		false),
-		
-		new OptionData("Complete Block Graph",
-		"complete-block-graph",
-		"\nOutput a complete Block Graph, where nodes are blocks and \ncontrol flow associated with Exceptions is taken into account.",
-		
-		false),
-		
-		new OptionData("Brief Block Graph",
-		"brief-block-graph",
-		"\nOutput a brief Block Graph, where nodes are blocks and control \nflow associated with Exceptions is ignored.",
-		
-		false),
-		
-		new OptionData("Array Block Graph",
-		"array-block-graph",
-		"\nOutput an array Block Graph",
-		
-		false),
-		
-		};
-		
-										
-		setcfgcfg_outputgraph_type_widget(new MultiOptionWidget(editGroupcfgcfg_output, SWT.NONE, data, new OptionData("Graph Type", "p", "cfg.output","graph-type", "\nDetermines which type of graph to output based on whether nodes \nare units or blocks and whether control flow associated with \nExceptions is taken into consideration or not.")));
-		
-		defKey = "p"+" "+"cfg.output"+" "+"graph-type";
-		defKey = defKey.trim();
-		
-		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);
-		
-			getcfgcfg_outputgraph_type_widget().setDef(defaultString);
-		}
-		
-		
-		
-		data = new OptionData [] {
-		
-		new OptionData("Dot Files",
-		"dot-files",
-		"\nGenerate graphs as dot files that can be then be converted to \npost-script for viewing.",
-		
-		false),
-		
-		new OptionData("Eclipse Graphs",
-		"eclipse-graphs",
-		"\nGenerate graphs that can be manipulated within Eclipse.",
-		
-		false),
-		
-		};
-		
-										
-		setcfgcfg_outputoutput_type_widget(new MultiOptionWidget(editGroupcfgcfg_output, SWT.NONE, data, new OptionData("Output Type", "p", "cfg.output","output-type", "\nDetermines which type of files to generate")));
-		
-		defKey = "p"+" "+"cfg.output"+" "+"output-type";
-		defKey = defKey.trim();
-		
-		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);
-		
-			getcfgcfg_outputoutput_type_widget().setDef(defaultString);
-		}
-		
-		
-
-		
-		return editGroupcfgcfg_output;
 	}
 
 

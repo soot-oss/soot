@@ -14,6 +14,7 @@ import ca.mcgill.sable.soot.*;
 import org.eclipse.draw2d.text.*;
 import ca.mcgill.sable.soot.editors.*;
 import org.eclipse.draw2d.geometry.*;
+import org.eclipse.jface.resource.*;
 
 /**
  * @author jlhotak
@@ -41,7 +42,7 @@ public class CFGNodeDataFigure extends Figure {
 	
 		this.add(getRect());
 		
-	
+		getRect().setBackgroundColor(SootPlugin.getDefault().getColorManager().getColor(new RGB(255, 255 ,255)));
 		ToolbarLayout layout = new ToolbarLayout();
 		layout.setMinorAlignment(ToolbarLayout.ALIGN_CENTER);
 	
@@ -56,6 +57,7 @@ public class CFGNodeDataFigure extends Figure {
 	}
 	
 
+	private soot.Unit unit;
 	
 	public void updateFigure(){
 		if (getData() == null) return;
@@ -64,7 +66,9 @@ public class CFGNodeDataFigure extends Figure {
 		int width = 0;
 		Iterator it = getData().iterator();
 		while (it.hasNext()){
-			String next = (String)it.next();
+			//String next = (String)it.next();
+			unit = (soot.Unit)it.next();
+			String next = unit.toString();
 			
 			Label l = new Label(next);
 			l.setFont(f);
@@ -94,7 +98,21 @@ public class CFGNodeDataFigure extends Figure {
 		return rect;
 	}
 
+	Image stopImage = null;
 	
+	public void addStopIcon(){
+		if (stopImage == null){
+			ImageDescriptor desc = SootPlugin.getImageDescriptor("stop_icon.gif");
+			stopImage = desc.createImage();
+		}
+		//Label l = new Label(stopImage);
+		
+		((Label)getRect().getChildren().get(0)).setIcon(stopImage);
+	}
+	
+	public void removeStopIcon(){
+		((Label)getRect().getChildren().get(0)).setIcon(null);
+	}
 	
 	
 
@@ -121,4 +139,18 @@ public class CFGNodeDataFigure extends Figure {
 	}
 
 	
+	/**
+	 * @return
+	 */
+	public soot.Unit getUnit() {
+		return unit;
+	}
+
+	/**
+	 * @param unit
+	 */
+	public void setUnit(soot.Unit unit) {
+		this.unit = unit;
+	}
+
 }

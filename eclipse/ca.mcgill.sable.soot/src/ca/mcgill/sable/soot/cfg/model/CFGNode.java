@@ -147,4 +147,8 @@ public class CFGNode extends CFGElement {
 	public void handleClickEvent(Object evt){
 		firePropertyChange(REVEAL, this);
 	}
+	
+	public void handleHighlightEvent(Object evt){
+		firePropertyChange(HIGHLIGHT, this);
+	}
 }

@@ -91,8 +91,13 @@ public class CFGNodeEditPart
 			if (next instanceof FlowDataEditPart){
 				((FlowDataEditPart)next).resetChildColors();
 			}
+			else if (next instanceof NodeDataEditPart){
+				((NodeDataEditPart)next).resetColors();
+				
+			}
 		}
-		//((CFGNodeFigure)getFigure()).resetColors();
+		
+		((CFGNodeFigure)getFigure()).removeIndicator();
 	}
 	
 	public CFGNode getNode(){
@@ -251,16 +256,12 @@ public class CFGNodeEditPart
 		}*/
 		else if (event.getPropertyName().equals(CFGElement.REVEAL)){
 			
-			//((CFGNodeFigure)getFigure()).setBefore(getNode().getBefore());
-			//((CFGNodeFigure)getFigure()).addBeforeFigure();
-			final EditPartViewer viewer = getViewer();
-			final CFGNodeEditPart thisPart = this;
-			Display.getDefault().syncExec(new Runnable(){
-				public void run(){
-					viewer.reveal(thisPart);
-					viewer.select(thisPart);
-				};
-			});
+			revealThis();
+			resetColors();
+		}
+		else if (event.getPropertyName().equals(CFGElement.HIGHLIGHT)){
+			highlightThis();
+			revealThis();
 		}
 		/*else if (event.getPropertyName().equals(CFGElement.AFTER_INFO)){
 			//((CFGNodeFigure)getFigure()).setAfter(getNode().getAfter());
@@ -275,6 +276,21 @@ public class CFGNodeEditPart
 			
 		}*/
 		//this.getFigure().revalidate();
+	}
+	
+	private void revealThis(){
+		final EditPartViewer viewer = getViewer();
+		final CFGNodeEditPart thisPart = this;
+		Display.getDefault().syncExec(new Runnable(){
+			public void run(){
+				viewer.reveal(thisPart);
+				viewer.select(thisPart);
+			};
+		});
+	}
+	
+	protected void highlightThis(){
+		((CFGNodeFigure)getFigure()).addIndicator();
 	}
 	
 	protected void refreshVisuals(){
@@ -329,6 +345,8 @@ public class CFGNodeEditPart
 	public void handleClickEvent(Object evt){
 		((CFGGraphEditPart)getParent()).handleClickEvent(evt);
 	}
+	
+	
 
 
 }

@@ -269,6 +269,7 @@ public class SootSavedConfiguration {
 			else if ((bits.get(counter+3)) || ((counter+3) >= getSaveArray().size())){
 				// phase opt
 				String key = getSaveArray().get(counter)+SPACE+getSaveArray().get(counter+1);
+				System.out.println("tokenizing: "+(String)getSaveArray().get(counter+2));
 				StringTokenizer valTemp = new StringTokenizer((String)getSaveArray().get(counter+2), ":");
 				key = key+SPACE+valTemp.nextToken();
 				String val = valTemp.nextToken();

@@ -9,8 +9,11 @@
    <runtime>
       <library name="soot-plugin.jar"/>
       <library name="sootclasses-2.1.0-custom.jar"/>
+      <library name="soot/classes/"/>
       <library name="jasminclasses-sable-1.2.jar"/>
+      <library name="jasmin/classes/"/>
       <library name="polyglot-1.2.0.jar"/>
+      <library name="polyglot_latest.jar"/>
       <library name="myclasses/"/>
    </runtime>
    <requires>
@@ -391,6 +394,28 @@
          </action>
       </actionSet>
    </extension>
+   <extension
+   		point="org.eclipse.ui.popupMenus">
+   		<viewerContribution
+   			targetID="#CompilationUnitEditorContext"
+   			id="ca.mcgill.sable.soot.interaction.select">
+   		<menu
+   			label="Soot"
+   			path="additions"
+   			id="ca.mcgill.sable.soot.interaction.popupMenu">
+   			<separator
+   				name="slot1">
+   			</separator>
+   			</menu>
+   			<action
+   				label="Soot Select"
+   				class="ca.mcgill.sable.soot.interaction.LoopTests1"
+   				menubarPath="ca.mcgill.sable.soot.interaction.popupMenu/slot1"
+   				enablesFor="*"
+   				id="ca.mcgill.sable.soot.popup1">
+   			</action>
+   			</viewerContribution>
+   		</extension>
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution

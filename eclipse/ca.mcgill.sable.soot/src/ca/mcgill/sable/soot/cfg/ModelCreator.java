@@ -103,6 +103,17 @@ public class ModelCreator {
 		return false;
 	}
 	
+	public void highlightNode(soot.Unit u){
+		Iterator it = getNodeMap().keySet().iterator();
+		while (it.hasNext()){
+			Object next = it.next();
+			if (next.equals(u)){
+				CFGNode node = (CFGNode)getNodeMap().get(next);
+				node.handleHighlightEvent(next);
+			}
+		}
+	}
+	
 	public void updateNode(FlowInfo fi){
 		Iterator it = getNodeMap().keySet().iterator();
 		while (it.hasNext()){
@@ -202,11 +213,13 @@ public class ModelCreator {
 				if (width < u.toString().length()){
 					width = u.toString().length();
 				}
-				textList.add(u.toString());
+				//textList.add(u.toString());
+				textList.add(u);
 			}
 		}
 		else {
-			textList.add(sootNode.toString());
+			//textList.add(sootNode.toString());
+			textList.add(sootNode);
 			width = sootNode.toString().length();
 		}
 		
@@ -230,6 +243,7 @@ public class ModelCreator {
 			IEditorPart part = page.openEditor(cfgGraph, "ca.mcgill.sable.soot.cfg.CFGEditor");
 			((CFGEditor)part).setTitle(getEdName());
 			((CFGEditor)part).setTitleTooltip(getEdName());
+			
 			buildModel(cfgGraph);
 		}
 		catch (CoreException e){

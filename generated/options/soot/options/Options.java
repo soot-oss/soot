@@ -442,9 +442,9 @@ public class Options extends OptionsBase {
                 print_tags_in_output = true;
   
             else if( false 
-            || option.equals( "output-source-file-attribute" )
+            || option.equals( "no-output-source-file-attribute" )
             )
-                output_source_file_attribute = true;
+                no_output_source_file_attribute = true;
   
             else if( false 
             || option.equals( "no-output-inner-classes-attribute" )
@@ -873,9 +873,9 @@ public class Options extends OptionsBase {
     private boolean print_tags_in_output = false;
     public void set_print_tags_in_output( boolean setting ) { print_tags_in_output = setting; }
   
-    public boolean output_source_file_attribute() { return output_source_file_attribute; }
-    private boolean output_source_file_attribute = false;
-    public void set_output_source_file_attribute( boolean setting ) { output_source_file_attribute = setting; }
+    public boolean no_output_source_file_attribute() { return no_output_source_file_attribute; }
+    private boolean no_output_source_file_attribute = false;
+    public void set_no_output_source_file_attribute( boolean setting ) { no_output_source_file_attribute = setting; }
   
     public boolean no_output_inner_classes_attribute() { return no_output_inner_classes_attribute; }
     private boolean no_output_inner_classes_attribute = false;
@@ -1023,8 +1023,8 @@ public class Options extends OptionsBase {
 +padVal(" d dava", "Produce dava-decompiled .java files" )
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +padOpt(" -print-tags -print-tags-in-output", "Print tags in output files after stmt" )
-+padOpt(" -output-source-file-attribute", "Outputs Source File Attribute in class files" )
-+padOpt(" -no-output-inner-classes-attribute", "Output inner classes attribute in class files" )
++padOpt(" -no-output-source-file-attribute", "Don't output Source File Attribute when producing class files" )
++padOpt(" -no-output-inner-classes-attribute", "Don't output inner classes attribute in class files" )
 +padOpt(" -dump-body PHASENAME", "Dump the internal representation of each method before and after phase PHASENAME" )
 +padOpt(" -dump-cfg PHASENAME", "Dump the internal representation of each CFG constructed during phase PHASENAME" )
 +padOpt(" -show-exception-dests", "Include exception destination edges as well as CFG edges in dumped CFGs" )
@@ -1142,8 +1142,6 @@ public class Options extends OptionsBase {
         +padVal("jap.lvtagger", "Creates color tags for live variables")
         +padVal("jap.rdtagger", "Creates link tags for reaching defs")
         +padVal("jap.che", "Indicates whether cast checks can be eliminated")
-        +padOpt("cfg", "Produces CFGs for viewing purposes")
-        +padVal("cfg.output", "Determines the type of graphs to output")
         +padOpt("gb", "Creates a GrimpBody for each method")
         +padVal("gb.a1", "Aggregator: removes some copies, pre-folding")
         +padVal("gb.cf", "Constructor folder")
@@ -1874,34 +1872,6 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
-        if( phaseName.equals( "cfg" ) )
-            return "Phase "+phaseName+":\n"+
-                "\nProduces CFGs in the form of dot files when run from the command \nline runs or graphs when run from within Eclipse."
-                +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "" );
-    
-        if( phaseName.equals( "cfg.output" ) )
-            return "Phase "+phaseName+":\n"+
-                "\nDetermines the type of graphs to output"
-                +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "" )
-                +padOpt( "graph-type", "Determines which type of graph to output" )
-                +padVal( "complete-unit-graph (default)", "Output a complete Unit Graph" )
-                
-                +padVal( "unit-graph", "Output a Unit Graph" )
-                
-                +padVal( "complete-block-graph", "Output a complete Block Graph" )
-                
-                +padVal( "brief-block-graph", "Output a brief Block Graph" )
-                
-                +padVal( "array-block-graph", "Output an array Block Graph" )
-                
-                +padOpt( "output-type", "Determines which type of files to generate" )
-                +padVal( "dot-files", "Generate graphs as dot files" )
-                
-                +padVal( "eclipse-graphs", "Generate graphs that can be manipulated within Eclipse" )
-                ;
-    
         if( phaseName.equals( "gb" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThe Grimp Body Creation phase creates a GrimpBody for each \nsource method. It is run only if the output format is grimp or \ngrimple, or if class files are being output and the Via Grimp \noption has been specified. "
@@ -2444,16 +2414,6 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
-        if( phaseName.equals( "cfg" ) )
-            return ""
-                +"enabled ";
-    
-        if( phaseName.equals( "cfg.output" ) )
-            return ""
-                +"enabled "
-                +"graph-type "
-                +"output-type ";
-    
         if( phaseName.equals( "gb" ) )
             return ""
                 +"enabled ";
@@ -2962,15 +2922,6 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:false ";
     
-        if( phaseName.equals( "cfg" ) )
-            return ""
-              +"enabled:false ";
-    
-        if( phaseName.equals( "cfg.output" ) )
-            return ""
-              +"enabled:false "
-              +"graph-type:complete-unit-graph ";
-    
         if( phaseName.equals( "gb" ) )
             return ""
               +"enabled:true ";
@@ -3128,8 +3079,6 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jap.lvtagger" ) ) return;
         if( phaseName.equals( "jap.rdtagger" ) ) return;
         if( phaseName.equals( "jap.che" ) ) return;
-        if( phaseName.equals( "cfg" ) ) return;
-        if( phaseName.equals( "cfg.output" ) ) return;
         if( phaseName.equals( "gb" ) ) return;
         if( phaseName.equals( "gb.a1" ) ) return;
         if( phaseName.equals( "gb.cf" ) ) return;
@@ -3300,10 +3249,6 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jap.rdtagger" );
         if( !PackManager.v().hasPhase( "jap.che" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jap.che" );
-        if( !PackManager.v().hasPhase( "cfg" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase cfg" );
-        if( !PackManager.v().hasPhase( "cfg.output" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase cfg.output" );
         if( !PackManager.v().hasPhase( "gb" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase gb" );
         if( !PackManager.v().hasPhase( "gb.a1" ) )

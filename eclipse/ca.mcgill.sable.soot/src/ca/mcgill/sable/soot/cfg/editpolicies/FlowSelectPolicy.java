@@ -42,7 +42,7 @@ public class FlowSelectPolicy extends SelectionEditPolicy {
 	 */
 	protected void showSelection() {
 		// TODO Auto-generated method stub
-		((FlowInfoEditPart)getHost()).handleClickEvent(((Label)getHostFigure()).getText());
+		//((FlowInfoEditPart)getHost()).handleClickEvent(((Label)getHostFigure()).getText());
 		
 	}
 	

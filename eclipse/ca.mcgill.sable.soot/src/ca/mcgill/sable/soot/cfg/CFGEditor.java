@@ -76,6 +76,14 @@ public class CFGEditor extends GraphicalEditor {
 		getGraphicalViewer().setEditPartFactory(new CFGPartFactory());
 		getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()));
 		
+		StopAction stop = new StopAction(this);
+		getActionRegistry().registerAction(stop);
+	 	this.getSelectionActions().add(stop.getId());
+		
+		CFGMenuProvider menuProvider = new CFGMenuProvider(getGraphicalViewer(), getActionRegistry(), this);
+		getGraphicalViewer().setContextMenu(menuProvider);
+		getSite().registerContextMenu(menuProvider, getGraphicalViewer());
+	
 	}
 	
 	// this is for zoom

@@ -97,4 +97,16 @@ public class NodeDataEditPart
 		getNodeData().removePropertyChangeListener(this);
 	}
 
+	public void markStop(){
+		System.out.println(getNodeData().getText());
+		ArrayList list = getNodeData().getText();
+		System.out.println("list class type: "+list.get(0).getClass());
+		((CFGNodeDataFigure)getFigure()).addStopIcon();
+		// send event marking this unit
+		soot.toolkits.graph.interaction.InteractionHandler.v().addToStopUnitList(((CFGNodeDataFigure)getFigure()).getUnit());
+	}
+	
+	public void resetColors(){
+		//((CFGNodeDataFigure)getFigure()).setBackgroundColor(SootPlugin.getDefault().getColorManager().getColor(new RGB(255, 255 ,255)));
+	}
 }

@@ -505,21 +505,19 @@ be printed on the line succeeding the stmt that they are attached to.
 </long_desc>
 		</boolopt>
 		<boolopt>
-			<name>Output Source File Attribute</name>
-			<alias>output-source-file-attribute</alias>
-			<default>true</default>
-			<short_desc>Outputs Source File Attribute in class files</short_desc>
+			<name>Don't Output Source File Attribute</name>
+			<alias>no-output-source-file-attribute</alias>
+			<short_desc>Don't output Source File Attribute when producing class files</short_desc>
 			<long_desc>
-Output Source File Attribute in class files.
+Don't output Source File Attribute when producing class files.
 </long_desc>
 		</boolopt>
 		<boolopt>
-			<name>Output Inner Classes Attribute</name>
+			<name>Don't Output Inner Classes Attribute</name>
 			<alias>no-output-inner-classes-attribute</alias>
-			<default>true</default>
-            <short_desc>Output inner classes attribute in class files</short_desc>
+            <short_desc>Don't output inner classes attribute in class files</short_desc>
 			<long_desc>
-            Output inner classes attribute in class files.
+            Don't output inner classes attribute in class files.
 </long_desc>
 		</boolopt>
 	<listopt>
@@ -4080,7 +4078,7 @@ information in these tags.  For example, even variables (such as
 					</boolopt>
                 </sub_phase>
 			</phase>
-            <phase>
+            <!--<phase>
                 <name>CFG Viewer</name>
                 <alias>cfg</alias>
                 <short_desc>Produces CFGs for viewing purposes</short_desc>
@@ -4162,7 +4160,7 @@ information in these tags.  For example, even variables (such as
                            </value>
                            </multiopt>
                </sub_phase>
-            </phase>
+            </phase>-->
 			<phase>
 				<name>Grimp Body Creation</name>
 				<alias>gb</alias>

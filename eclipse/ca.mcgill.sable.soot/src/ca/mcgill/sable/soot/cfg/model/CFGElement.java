@@ -35,6 +35,7 @@ public class CFGElement implements IPropertySource {
 	public static final String NODE_DATA = "node_data";
 	
 	public static final String REVEAL = "reveal";
+	public static final String HIGHLIGHT = "highlight";
 	
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	
