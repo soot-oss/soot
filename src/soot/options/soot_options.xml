@@ -4190,6 +4190,17 @@ information in these tags.  For example, even variables (such as
 						<default>false</default>
 					</boolopt>
                 </sub_phase>
+                <sub_phase>
+					<name>Unreachable Method Transformer</name>
+					<alias>jap.umt</alias>
+					<short_desc>Inserts assertions into unreachable methods</short_desc>
+					<long_desc>When the whole-program analysis determines a method to be unreachable, this transformer inserts an assertion into the method to check that it is indeed unreachable.</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+                </sub_phase>
 			</phase>
             <!--<phase>
                 <name>CFG Viewer</name>

@@ -1224,6 +1224,7 @@ public class Options extends OptionsBase {
         +padVal("jap.lvtagger", "Creates color tags for live variables")
         +padVal("jap.rdtagger", "Creates link tags for reaching defs")
         +padVal("jap.che", "Indicates whether cast checks can be eliminated")
+        +padVal("jap.umt", "Inserts assertions into unreachable methods")
         +padOpt("gb", "Creates a GrimpBody for each method")
         +padVal("gb.a1", "Aggregator: removes some copies, pre-folding")
         +padVal("gb.cf", "Constructor folder")
@@ -1958,6 +1959,12 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
+        if( phaseName.equals( "jap.umt" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nWhen the whole-program analysis determines a method to be \nunreachable, this transformer inserts an assertion into the \nmethod to check that it is indeed unreachable."
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" );
+    
         if( phaseName.equals( "gb" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThe Grimp Body Creation phase creates a GrimpBody for each \nsource method. It is run only if the output format is grimp or \ngrimple, or if class files are being output and the Via Grimp \noption has been specified. "
@@ -2502,6 +2509,10 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
+        if( phaseName.equals( "jap.umt" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "gb" ) )
             return ""
                 +"enabled ";
@@ -3012,6 +3023,10 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:false ";
     
+        if( phaseName.equals( "jap.umt" ) )
+            return ""
+              +"enabled:false ";
+    
         if( phaseName.equals( "gb" ) )
             return ""
               +"enabled:true ";
@@ -3169,6 +3184,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jap.lvtagger" ) ) return;
         if( phaseName.equals( "jap.rdtagger" ) ) return;
         if( phaseName.equals( "jap.che" ) ) return;
+        if( phaseName.equals( "jap.umt" ) ) return;
         if( phaseName.equals( "gb" ) ) return;
         if( phaseName.equals( "gb.a1" ) ) return;
         if( phaseName.equals( "gb.cf" ) ) return;
@@ -3339,6 +3355,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jap.rdtagger" );
         if( !PackManager.v().hasPhase( "jap.che" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jap.che" );
+        if( !PackManager.v().hasPhase( "jap.umt" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jap.umt" );
         if( !PackManager.v().hasPhase( "gb" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase gb" );
         if( !PackManager.v().hasPhase( "gb.a1" ) )

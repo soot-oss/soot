@@ -2330,6 +2330,21 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_jap_umt() {
+            Object ret = new PhaseOptjap_umt();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjap_umt {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jap.umt");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
         public Object createp_gb() {
             Object ret = new PhaseOptgb();
             phaseopts.add(ret);

@@ -196,6 +196,7 @@ public class PackManager {
             p.add(new Transform("jap.rdtagger", ReachingDefsTagger.v()));
             p.add(new Transform("jap.lvtagger", LiveVarsTagger.v()));
             p.add(new Transform("jap.che", CastCheckEliminatorDumper.v()));
+            p.add(new Transform("jap.umt", new UnreachableMethodTransformer()));
 	       
         }
 
