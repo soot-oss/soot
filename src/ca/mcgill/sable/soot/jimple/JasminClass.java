@@ -69,6 +69,11 @@
 
  B) Changes:
 
+ - Modified on March 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Added a correction to the peephole optimizer.
+   Fixed a bug with the instanceof code generation.
+   Fixed a bug with floating point infinities.
+         
  - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Re-organized the timers.
 
@@ -707,6 +712,32 @@ public class JasminClass
                         || !(nextStmt.getRightOp() instanceof AddExpr))
                       break;
 
+                    // make sure that nextNextStmt uses the local exactly once
+                    {
+                        Iterator boxIt = nextNextStmt.getUseBoxes().iterator();
+                        
+                        boolean foundExactlyOnce = false;
+                        
+                        while(boxIt.hasNext())
+                        {
+                            ValueBox box = (ValueBox) boxIt.next();
+                            
+                            if(box.getValue() == lvalue)
+                            {
+                                if(!foundExactlyOnce)
+                                    foundExactlyOnce = true;
+                                else
+                                {
+                                    foundExactlyOnce = false;
+                                    break;
+                                }
+                            }
+                        }    
+                        
+                        if(!foundExactlyOnce)
+                            break;
+                    }
+                    
                     AddExpr addexp = (AddExpr)nextStmt.getRightOp();
                     if (!addexp.getOp1().equals(lvalue))
                       break;
@@ -2187,9 +2218,9 @@ public class JasminClass
                 else {
                     String s = v.toString();
                     
-                    if(s.equals("Infinity"))
+                    if(s.equals("InfinityF"))
                         s="+FloatInfinity";
-                    if(s.equals("-Infinity"))
+                    if(s.equals("-InfinityF"))
                         s="-FloatInfinity";
                         
                     emit("ldc " + s, 1);
@@ -2208,9 +2239,16 @@ public class JasminClass
 
             public void caseInstanceOfExpr(InstanceOfExpr v)
             {
+                final Type checkType;
+                
                 emitValue(v.getOp());
 
-                emit("instanceof " + slashify(v.getCheckType().toString()), 0);
+                checkType = v.getCheckType();
+                
+                if(checkType instanceof RefType)
+                    emit("instanceof " + slashify(checkType.toString()), 0);
+                else if(checkType instanceof ArrayType)
+                    emit("instanceof " + jasminDescriptorOf(checkType), 0);
             }
 
             public void caseIntConstant(IntConstant v)

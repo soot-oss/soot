@@ -61,6 +61,10 @@
 
  B) Changes:
 
+ - Modified on March 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Some divisions by zero used to get propagated away which is illegal since
+   it may be caught by an exception handler.
+   
  - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    First release.
 */
@@ -74,8 +78,12 @@ public class DeadCodeEliminator
 {
     /** Eliminates dead code in a linear fashion.  Complexity is linear 
         with respect to the statements.
+        
+        Does not work on grimp code because of the check on the right hand
+        side for side effects. 
     */
-    public static void eliminateDeadCode(StmtBody body)
+    
+    public static void eliminateDeadCode(JimpleBody body)
     {
         if(Main.isVerbose)
             System.out.println("[" + body.getMethod().getName() +
@@ -105,15 +113,35 @@ public class DeadCodeEliminator
                 {
                     AssignStmt as = (AssignStmt) s;
                     
-                    if(as.getLeftOp() instanceof Local &&
-                        !(as.getRightOp() instanceof InvokeExpr) && 
-                        !(as.getRightOp() instanceof InstanceFieldRef) &&
-                        !(as.getRightOp() instanceof ArrayRef)) 
+                    if(as.getLeftOp() instanceof Local)
                     {
-                        // Note that InstanceFieldRef, ArrayRef, InvokeExpr all can
-                        // have side effects (like throwing a null pointer exception)
+                        Value rhs = as.getRightOp();
                     
                         isEssential = false;
+
+                        if(rhs instanceof InvokeExpr ||
+                           rhs instanceof InstanceFieldRef ||
+                           rhs instanceof ArrayRef)
+                        {
+                           // Note that InstanceFieldRef, ArrayRef, InvokeExpr all can
+                           // have side effects (like throwing a null pointer exception)
+                    
+                            isEssential = true;
+                        }
+                        else if(rhs instanceof DivExpr || 
+                            rhs instanceof RemExpr)
+                        {
+                            BinopExpr expr = (BinopExpr) rhs;
+                            
+                            if(expr.getOp1().getType().equals(IntType.v()) ||
+                                expr.getOp2().getType().equals(IntType.v()) ||
+                               expr.getOp1().getType().equals(LongType.v()) ||
+                                expr.getOp2().getType().equals(LongType.v()))
+                            {
+                                // Can trigger a division by zero   
+                                isEssential = true;    
+                            }        
+                        }
                     }
                 }
                 
