@@ -25,19 +25,24 @@ Select Window -- Open Perspective -- Java
 This isn't actually necessary to use Soot, but it is if you want to demonstrat that your Java class runs<br><p>
 
 <p>
-As Soot runs on java classes you must create or import some
+As Soot runs on java classes, you must create or import some.
 Follow the Eclipse guidelines on creating a Java Project found at www.eclipse.org (look for Online Help section)
-<br>
-One note, currently there are problems with the soot plugin in you don't make a src folder in your Java project and instead use the project as the source folder. So don't do this.
-<p>
+
+<h4>Caveat: source folders</h4> 
+
+<p>Currently, there are problems with the
+soot plugin if you don't make a <code>src</code> folder in your Java
+project and put your source files there.  You cannot use the project
+as the source folder yet.
+</p>
 
 <h4>
 Running Soot on all the classes in your project:
 </h4>
 
 <ul>
-<li>First build the classes.<li>
-<li>Then select any java file in the project.<li>
+<li>First build the classes.</li>
+<li>Then select any java file in the project.</li>
 <li>Then select Project -- Soot and any menu item under</li>
 
 
