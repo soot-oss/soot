@@ -1135,7 +1135,7 @@ public class SootClass extends AbstractHost
     /** Convenience method returning true if this class is phantom. */
     public boolean isPhantom()
     {
-        return isPhantom();
+        return isPhantom;
     }
     
     /** Marks this class as phantom, without notifying the Scene. */
@@ -1144,3 +1144,4 @@ public class SootClass extends AbstractHost
         isPhantom = value;
     }
 }
+

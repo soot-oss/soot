@@ -452,7 +452,7 @@ public class Main implements Runnable, ICompilationListener
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version 1.0.0 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.1)");
+            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.2)");
             System.out.println("Copyright (C) 1997-2000 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -595,7 +595,7 @@ public class Main implements Runnable, ICompilationListener
                 if(++i < args.length)
                     addInclude(args[i]);
             }
-            else if(arg.equals("-A") || arg.equals("--analyze-context"))
+            else if(arg.equals("-a") || arg.equals("--analyze-context"))
                 setAnalyzingLibraries(true);
             else if(arg.equals("--final-rep"))
             {
@@ -921,7 +921,7 @@ public class Main implements Runnable, ICompilationListener
 
             if (isAnalyzingLibraries)
             {
-                Iterator contextClassesIt = Scene.v().getContextClasses().iterator();
+                Iterator contextClassesIt = Scene.v().getContextClasses().snapshotIterator();
                 while (contextClassesIt.hasNext())
                     ((SootClass)contextClassesIt.next()).setLibraryClass();
             }
