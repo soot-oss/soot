@@ -456,9 +456,9 @@ public class Main implements Runnable
     start = new Date();
 
     try {
+      Timers.v().totalTimer.start();
 
       processCmdLine(cmdLineArgs);
-      Timers.v().totalTimer.start();
 
       G.v().out.println("Soot started on "+start);
 
