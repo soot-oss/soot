@@ -32,6 +32,12 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
     public void thisOuterType(soot.Type t){
         thisOuterType = t;
     }
+
+    public void fieldInits(ArrayList list){
+        fieldInits = list;
+    }
+    
+    private ArrayList fieldInits;
     
     public soot.Body getBody(soot.SootMethod sootMethod, String phaseName){
         //System.out.println("getting method: "+sootMethod.getName()+" for class: "+sootMethod.getDeclaringClass());            
@@ -103,11 +109,14 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
         //System.out.println("super class of anon meths: "+sootMethod.getDeclaringClass().getSuperclass().getMethods());
         //System.out.println("invoke type list: "+invokeTypeList);
         SootClass superClass = sootMethod.getDeclaringClass().getSuperclass();
-        if ((superClass.getName().indexOf("$") != -1) && !soot.Modifier.isStatic(superClass.getModifiers())){
+        ArrayList needsRef = soot.javaToJimple.InitialResolver.v().getHasOuterRefInInit();
+        //if ((superClass.getName().indexOf("$") != -1) && !soot.Modifier.isStatic(superClass.getModifiers())){
+        if ((needsRef != null) && (needsRef.contains(superClass.getType()))){
             invokeTypeList.add(0, superOuterType);
         }
         SootMethod callMethod = sootMethod.getDeclaringClass().getSuperclass().getMethod("<init>",  invokeTypeList, VoidType.v());
-        if ((superClass.getName().indexOf("$") != -1) && !soot.Modifier.isStatic(superClass.getModifiers())){
+        //if ((superClass.getName().indexOf("$") != -1) && !soot.Modifier.isStatic(superClass.getModifiers())){
+        if ((needsRef != null) && (needsRef.contains(superClass.getType()))){
             //if (superOuterType.equals(thisOuterType)){
             if (isSubType){
                 invokeList.add(0, outerLocal);
@@ -146,6 +155,16 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
  
             }
         }
+
+        // need to be able to handle any kind of field inits -> make this class
+        // extend JimpleBodyBuilder to have access to everything
+        /*if (fieldInits != null) {
+            Iterator fIt = fieldInits.iterator();
+            while (fIt.hasNext()){
+                polyglot.ast.Fie
+            }
+        }*/
+        
         // return
         soot.jimple.ReturnVoidStmt retStmt = soot.jimple.Jimple.v().newReturnVoidStmt();
         body.getUnits().add(retStmt);

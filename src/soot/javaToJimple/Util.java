@@ -93,6 +93,14 @@ public class Util {
             getThisMap.put(sootType, specialThisLocal);
             return specialThisLocal;
         }
+       
+        // check to see if this method has a local of the correct type (it will
+        // if its an initializer - then ust use it)
+        if (bodyHasLocal(body, sootType)){
+            soot.Local l = getLocalOfType(body, sootType);
+            getThisMap.put(sootType, l);
+            return l;
+        }
         
         // otherwise get this$0 for one level up
         soot.SootClass classToInvoke = ((soot.RefType)specialThisLocal.getType()).getSootClass();
@@ -116,6 +124,28 @@ public class Util {
         return getThisGivenOuter(sootType, getThisMap, body, lg, t2);
     }
 
+    private static soot.Local getLocalOfType(soot.Body body, soot.Type type) {
+        Iterator it = body.getLocals().iterator();
+        while (it.hasNext()){
+            soot.Local l = (soot.Local)it.next();
+            if (l.getType().equals(type)){
+                return l;
+            }
+        }
+        return null;
+    }
+    
+    private static boolean bodyHasLocal(soot.Body body, soot.Type type) {
+        Iterator it = body.getLocals().iterator();
+        while (it.hasNext()){
+            soot.Local l = (soot.Local)it.next();
+            if (l.getType().equals(type)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public static soot.Local getThisGivenOuter(soot.Type sootType, HashMap getThisMap, soot.Body body, LocalGenerator lg, soot.Local t2){
         
         while (!t2.getType().equals(sootType)){
@@ -154,6 +184,7 @@ public class Util {
         PrivateFieldAccMethodSource src = new PrivateFieldAccMethodSource();
         src.fieldName("this$0");
         src.fieldType(classToInvoke.getFieldByName("this$0").getType());
+        src.classToInvoke(classToInvoke);
         meth.setActiveBody(src.getBody(meth, null));
         return meth;
     }

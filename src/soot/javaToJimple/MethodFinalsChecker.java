@@ -75,12 +75,13 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
             //System.out.println("in mfc and n is: "+n);
             //System.out.println("current outer class name is: "+currentSootClass);
             if (((polyglot.ast.New)n).anonType() != null){
-                inners.add(n);
+                //inners.add(n);
+                inners.add(new polyglot.util.IdentityKey(((polyglot.ast.New)n).anonType()));
             }
         }
 
         if (n instanceof polyglot.ast.LocalClassDecl){
-            inners.add(((polyglot.ast.LocalClassDecl)n).decl());
+            inners.add(new polyglot.util.IdentityKey(((polyglot.ast.LocalClassDecl)n).decl().type()));
         }
           /*      polyglot.types.ClassType outerType = ((polyglot.ast.New)n).anonType().outer();
                 while (outerType.isNested()) {

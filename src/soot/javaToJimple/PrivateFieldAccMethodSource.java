@@ -6,6 +6,7 @@ public class PrivateFieldAccMethodSource implements soot.MethodSource {
     private polyglot.types.FieldInstance fieldInst;
     private soot.Type fieldType;
     private String fieldName;
+    private soot.SootClass classToInvoke;
     
     public void fieldName(String n){
         fieldName = n;
@@ -13,6 +14,10 @@ public class PrivateFieldAccMethodSource implements soot.MethodSource {
     
     public void fieldType(soot.Type type){
         fieldType = type;
+    }
+
+    public void classToInvoke(soot.SootClass sc){
+        classToInvoke = sc;
     }
         
     public void setFieldInst(polyglot.types.FieldInstance fi) {
@@ -39,50 +44,8 @@ public class PrivateFieldAccMethodSource implements soot.MethodSource {
         
         // create field type local
         soot.Local fieldLocal = lg.generateLocal(fieldType);
-        /*soot.Type type = Util.getSootType(fieldInst.type());
-        String name = "";
-        
-		if (type instanceof soot.IntType) {
-			name = "$i0";
-		}
-        else if (type instanceof soot.ByteType) {
-			name = "$b0";
-		}
-        else if (type instanceof soot.ShortType) {
-			name = "$s0";
-		}
-        else if (type instanceof soot.BooleanType) {
-			name = "$z0";
-		}
-        else if (type instanceof soot.VoidType) {
-			name = "$v0";
-		}
-        else if (type instanceof soot.CharType) {
-            name = "$i0";
-            type = soot.IntType.v();
-        }
-		else if (type instanceof soot.DoubleType) {
-			name = "$d0";
-		}
-		else if (type instanceof soot.FloatType) {
-			name = "$f0";
-		}
-		else if (type instanceof soot.LongType) {
-			name = "$l0";
-		}
-        else if (type instanceof soot.RefLikeType) {
-            name = "$r1";
-        }
-        else {
-            throw new RuntimeException("Unhandled type");
-        }
-        
-        soot.Local fieldLocal = soot.jimple.Jimple.v().newLocal(name, type);
-       
-        body.getLocals().add(fieldLocal);
-*/
         // assign local to fieldRef
-        soot.SootField field = sootMethod.getDeclaringClass().getField(fieldName, fieldType);
+        soot.SootField field = classToInvoke.getField(fieldName, fieldType);
 
         soot.jimple.FieldRef fieldRef = null;
         if (field.isStatic()) {
