@@ -1,25 +1,29 @@
-//////////////////////license & copyright header///////////////////////
-//                                                                   //
-//                Copyright (c) 1998 by Kevin Kelley                 //
-//                                                                   //
-// This program is free software; you can redistribute it and/or     //
-// modify it under the terms of the GNU General Public License as    //
-// published by the Free Software Foundation; either version 2 of    //
-// the License, or (at your option) any later version.               //
-//                                                                   //
-// This program is distributed in the hope that it will be useful,   //
-// but WITHOUT ANY WARRANTY; without even the implied warranty of    //
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     //
-// GNU General Public License for more details.                      //
-//                                                                   //
-// You should have received a copy of the GNU General Public License //
-// along with this program in the file 'gpl.html'; if not, write to  //
-// the Free Software Foundation, Inc., 59 Temple Place - Suite 330,  //
-// Boston, MA 02111-1307, USA, or contact the author:                //
-//                                                                   //
-//                              Kevin Kelley  <kelley@ruralnet.net>  //
-//                                                                   //
-////////////////////end license & copyright header/////////////////////
+//////////////////////license & copyright header/////////////////////////
+//                                                                     //
+//    Base64 - encode/decode data using the Base64 encoding scheme     //
+//                                                                     //
+//                Copyright (c) 1998 by Kevin Kelley                   //
+//                                                                     //
+// This library is free software; you can redistribute it and/or       //
+// modify it under the terms of the GNU Lesser General Public          //
+// License as published by the Free Software Foundation; either        //
+// version 2.1 of the License, or (at your option) any later version.  //
+//                                                                     //
+// This library is distributed in the hope that it will be useful,     //
+// but WITHOUT ANY WARRANTY; without even the implied warranty of      //
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the       //
+// GNU Lesser General Public License for more details.                 //
+//                                                                     //
+// You should have received a copy of the GNU Lesser General Public    //
+// License along with this library; if not, write to the Free Software //
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA           //
+// 02111-1307, USA, or contact the author:                             //
+//                                                                     //
+// Kevin Kelley <kelley@ruralnet.net> - 30718 Rd. 28, La Junta, CO,    //
+// 81050  USA.                                                         //
+//                                                                     //
+////////////////////end license & copyright header///////////////////////
+
 package soot.tagkit;
 
 /**
@@ -27,14 +31,15 @@ package soot.tagkit;
 *  decoding of base64 characters to raw bytes.
 *
 * @author Kevin Kelley (kelley@ruralnet.net)
-* @version 1.2
+* @version 1.3
 * @date 06 August 1998
 * @modified 14 February 2000
+* @modified 22 September 2000
 */
 public class Base64 {
 
 /**
-* Returns an array of base64-encoded characters to represent the
+* returns an array of base64-encoded characters to represent the
 * passed data array.
 *
 * @param data the array of bytes to encode
@@ -87,24 +92,28 @@ static public char[] encode(byte[] data)
    **/
 static public byte[] decode(char[] data)
 {
-    // as our input could contain non-BASE64 data (newlines
-    // and other silly human-prettifications) we must first
-    // adjust our count of USABLE data so that...
-    // (a) we don't misallocate the output array, and (b)
-    // think that we miscalculated our data length just
-    // because of extraneous throw-away junk
-    int tempLen = data.length;        // start with everything we've got
+    // as our input could contain non-BASE64 data (newlines,
+    // whitespace of any sort, whatever) we must first adjust
+    // our count of USABLE data so that...
+    // (a) we don't misallocate the output array, and
+    // (b) think that we miscalculated our data length
+    //     just because of extraneous throw-away junk
+
+    int tempLen = data.length;
     for( int ix=0; ix<data.length; ix++ )
     {
-        int value = codes[ data[ix] & 0xFF ]; // ignore
-        if( (value < 0) && (data[ix] != 61) ) // 61 is the '=' symbol (a padding null byte)
-        {
-            --tempLen;        // aha, found some useless stuff to ignore!
-        }
+        if( (data[ix] > 255) || codes[ data[ix] ] < 0 )
+            --tempLen;  // ignore non-valid chars and padding
     }
-    int len = ((tempLen + 3) / 4) * 3;        // calculate length based on what remains!
-    if( tempLen>0 && data[tempLen-1] == '=') --len;
-    if( tempLen>1 && data[tempLen-2] == '=') --len;
+    // calculate required length:
+    //  -- 3 bytes for every 4 valid base64 chars
+    //  -- plus 2 bytes if there are 3 extra base64 chars,
+    //     or plus 1 byte if there are 2 extra.
+
+    int len = (tempLen / 4) * 3;
+    if ((tempLen % 4) == 3) len += 2;
+    if ((tempLen % 4) == 2) len += 1;
+
     byte[] out = new byte[len];
 
 
@@ -116,8 +125,9 @@ static public byte[] decode(char[] data)
     // we now go through the entire array (NOT using the 'tempLen' value)
     for (int ix=0; ix<data.length; ix++)
     {
-        int value = codes[ data[ix] & 0xFF ];   // ignore high byte of char
-        if ( value >= 0 )                       // skip over non-code
+        int value = (data[ix]>255)? -1: codes[ data[ix] ];
+
+        if ( value >= 0 )           // skip over non-code
         {
             accum <<= 6;            // bits shift up by 6 each time thru
             shift += 6;             // loop, with new bits being put in

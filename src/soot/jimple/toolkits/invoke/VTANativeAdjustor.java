@@ -1,3 +1,28 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2000 Felix Kwok
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+/*
+ * Modified by the Sable Research Group and others 1997-1999.  
+ * See the 'credits' file distributed with Soot for the complete list of
+ * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ */
+
 package soot.jimple.toolkits.invoke;
 
 import java.util.*;
@@ -7,22 +32,23 @@ import soot.jimple.*;
 import soot.toolkits.graph.*;
 
 /** Adjusts the VTA type graph to take into account the effects of native methods. */
-
-public class VTANativeAdjustor {
-
+public class VTANativeAdjustor 
+{
     private VTATypeGraph vtagraph;
     private HashMap nodeToReachingTypes;
     private Hierarchy h;
     private Set arrayNodes;
     
-    public VTANativeAdjustor(Hierarchy h, VTATypeGraph g) {
+    public VTANativeAdjustor(Hierarchy h, VTATypeGraph g) 
+    {
         vtagraph = g;
         this.h = h;
         arrayNodes = g.arrayNodes;
         nodeToReachingTypes = g.nodeToReachingTypes;
     }
 
-    void includeType(String node, String type) {
+    void includeType(String node, String type) 
+    {
         TypeSet types = (TypeSet)nodeToReachingTypes.get(node);
         if (types !=null) {
             RefType t = RefType.v(type);
@@ -33,8 +59,8 @@ public class VTANativeAdjustor {
         }
     }
 
-    void includeSubtypesOf(String node, String type) {
-        
+    void includeSubtypesOf(String node, String type) 
+    {
         TypeSet types = (TypeSet)nodeToReachingTypes.get(node);
         if (types!=null) {
             for (Iterator clsIt = h.getSubclassesOfIncluding(RefType.v(type).getSootClass()).iterator(); 
@@ -47,8 +73,8 @@ public class VTANativeAdjustor {
 
     /** Adds edges to and from native method nodes on a case-by-case basis. */
 
-    public void adjustForNativeMethods() {
-
+    public void adjustForNativeMethods() 
+    {
         String s1, s2;
         TypeSet l;
 
