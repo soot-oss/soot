@@ -356,7 +356,13 @@ public class AccessManager
     	
 		InvokeExpr expr=stmt.getInvokeExpr();
 		SootMethod method=expr.getMethod();
+		//System.out.println("method: " + method);
+	
 		SootClass target=method.getDeclaringClass();
+		//System.out.println("target: " + target);
+		
+		//System.out.println("method ref: " + expr.getMethodRef());
+		
 		SootMethod accessor;
 		
 		String name=createAccessorName(method, true);
@@ -377,23 +383,26 @@ public class AccessManager
 			for (java.util.Iterator it=parameterTypes.iterator(); it.hasNext();) {
 				Type type=(Type)it.next();
 				Local l=lg.generateLocal(type);
+				//System.out.println("local type: " + type);
 				accStmts.add(
 						Jimple.v().newIdentityStmt(l, 
 						Jimple.v().newParameterRef(type, paramID)));
 				arguments.add(l);
 				paramID++;
 			}
+			
 			InvokeExpr accExpr;
+			
 			if (expr instanceof StaticInvokeExpr) {
-				accExpr=Jimple.v().newStaticInvokeExpr(expr.getMethodRef(), arguments);
+				accExpr=Jimple.v().newStaticInvokeExpr(method.makeRef(), arguments);
 			} else if (expr instanceof VirtualInvokeExpr) {
 				Local thisLocal=(Local)arguments.get(0);
 				arguments.remove(0);
-				accExpr=Jimple.v().newVirtualInvokeExpr(thisLocal, expr.getMethodRef(), arguments);
+				accExpr=Jimple.v().newVirtualInvokeExpr(thisLocal, method.makeRef(), arguments);
 			} else if (expr instanceof SpecialInvokeExpr) {
 				Local thisLocal=(Local)arguments.get(0);
 				arguments.remove(0);
-				accExpr=Jimple.v().newSpecialInvokeExpr(thisLocal, expr.getMethodRef(), arguments);
+				accExpr=Jimple.v().newSpecialInvokeExpr(thisLocal, method.makeRef(), arguments);
 			} else
 				throw new RuntimeException("");
 			
