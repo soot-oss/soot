@@ -370,8 +370,6 @@ public class JimpleBody implements StmtBody
             }
         }
         
-        printTo(new PrintWriter(System.out, true));
-        System.out.println("found " + localCount + " replacements");
     }
     
     private boolean typingFailed()
