@@ -46,6 +46,7 @@ public class JimpleLocal implements Local, ConvertToBaf
     {
         this.name = name;
         this.type = t;
+        Scene.v().getLocalNumberer().add( this );
     }
 
     /** Returns true if the given object is structurally equal to this one. */
