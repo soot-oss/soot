@@ -151,13 +151,14 @@ public class FastHierarchy
         if( interfaceToAllImplementers.containsKey( parent ) ) {
             subs = interfaceToAllImplementers.get( parent );
         } else {
-            subs = interfaceToAllImplementers.get( parent );
+	    subs = new HashSet();
             for( Iterator subinterfaceIt = getAllSubinterfaces( parent ).iterator(); subinterfaceIt.hasNext(); ) {
                 final SootClass subinterface = (SootClass) subinterfaceIt.next();
                 if( subinterface == parent ) continue;
                 subs.addAll( getAllImplementersOfInterface( subinterface ) );
             }
             subs.addAll( interfaceToImplementers.get( parent ) );
+	    interfaceToAllImplementers.putAll(parent, subs);
         }
         return subs;
     }
@@ -170,11 +171,12 @@ public class FastHierarchy
         if( interfaceToAllSubinterfaces.containsKey( parent ) ) {
             subs = interfaceToAllSubinterfaces.get( parent );
         } else {
-            subs = interfaceToAllSubinterfaces.get( parent );
+            subs = new HashSet();
             subs.add( parent );
             for( Iterator it = interfaceToSubinterfaces.get( parent ).iterator(); it.hasNext(); ) {
                 subs.addAll( getAllSubinterfaces( (SootClass) it.next() ) );
             }
+	    interfaceToAllSubinterfaces.putAll(parent, subs);
         }
         return subs;
     }

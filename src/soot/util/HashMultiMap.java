@@ -71,6 +71,7 @@ public class HashMultiMap implements MultiMap {
 	return findSet( key ).add( value );
     }
     public boolean putAll( Object key, Set values ) {
+	if (values.isEmpty()) return false;
 	return findSet( key ).addAll( values );
     }
     public boolean remove( Object key, Object value ) {
@@ -96,8 +97,8 @@ public class HashMultiMap implements MultiMap {
     }
     public Set get( Object o ) {
 	Set ret = (Set) m.get( o );
-	if( ret == null ) m.put( o, ret = newSet() );
-	return ret;
+	if( ret == null ) return Collections.EMPTY_SET;
+	return Collections.unmodifiableSet(ret);
     }
     public Set keySet() {
 	return m.keySet();

@@ -55,9 +55,9 @@ public class SlowCallGraph extends CallGraph
     public boolean removeEdge( Edge e ) {
         if( !edges.remove( e ) ) return false;
 
-        srcMap.get(e.getSrc()).remove(e);
-        tgtMap.get(e.getTgt()).remove(e);
-        unitMap.get(e.srcUnit()).remove(e);
+        srcMap.remove(e.getSrc(), e);
+        tgtMap.remove(e.getTgt(), e);
+        unitMap.remove(e.srcUnit(), e);
 
         return true;
     }
