@@ -121,7 +121,7 @@ public class Transformations
     public static void assignTypesToLocals(JimpleBody listBody)
     {
         if(Main.isVerbose)
-            System.out.println("[" + listBody.getMethod().getName() + "] assigning types to locals...");
+            System.out.println("[" + listBody.getMethod().getName() + "] Assigning types to locals...");
 
         //Jimple.printStmtListBody(listBody, System.out, false);
 
@@ -435,19 +435,10 @@ public class Transformations
      
     public static void cleanupCode(JimpleBody stmtBody)
     {
-        CompleteStmtGraph graph = new CompleteStmtGraph(stmtBody.getStmtList());
-        
-        Iterator it = graph.pseudoTopologicalOrderIterator();
-        
-        while(it.hasNext())
-            System.out.println(it.next());
-            
-        splitLocals(stmtBody);
-        renameLocals(stmtBody);
         ConstantAndCopyPropagator.propagateConstantsAndCopies(stmtBody);
         DeadCodeEliminator.eliminateDeadCode(stmtBody);
         
-        stmtBody.printDebugTo(new java.io.PrintWriter(System.out, true));
+        //stmtBody.printDebugTo(new java.io.PrintWriter(System.out, true));
     }
 
     public static void renameLocals(JimpleBody body)
@@ -497,67 +488,6 @@ public class Transformations
   public static int nodeCount = 0;
   public static int aggrCount = 0;
 
-  /** Look for a path, in g, from def to use. 
-   * This path has to lie inside an extended basic block 
-   * (and this property implies uniqueness.) */
-  /* This path does not include the use */
-  private static List getPath(StmtGraph g, Stmt def, Stmt use)
-    {
-      // if this holds, we're doomed to failure!!!
-      if (g.getPredsOf(use).size() > 1)
-        return null;
-
-      // pathStack := list of succs lists
-      // pathStackIndex := last visited index in pathStack
-      LinkedList pathStack = new LinkedList();
-      LinkedList pathStackIndex = new LinkedList();
-
-      pathStack.add(def);
-      pathStackIndex.add(new Integer(0));
-
-      int psiMax = (g.getSuccsOf((Stmt)pathStack.get(0))).size();
-      int level = 0;
-      while (((Integer)pathStackIndex.get(0)).intValue() != psiMax)
-        {
-          int p = ((Integer)(pathStackIndex.get(level))).intValue();
-
-          List succs = g.getSuccsOf((Stmt)(pathStack.get(level)));
-          if (p >= succs.size())
-            {
-              // no more succs - backtrack to previous level.
-
-              pathStack.remove(level);
-              pathStackIndex.remove(level);
-
-              level--;
-              int q = ((Integer)pathStackIndex.get(level)).intValue();
-              pathStackIndex.set(level, new Integer(q+1));
-              continue;
-            }
-
-          Stmt betweenStmt = (Stmt)(succs.get(p));
-
-          // we win!
-          if (betweenStmt == use)
-            {
-              return pathStack;
-            }
-
-          // check preds of betweenStmt to see if we should visit its kids.
-          if (g.getPredsOf(betweenStmt).size() > 1)
-            {
-              pathStackIndex.set(level, new Integer(p+1));
-              continue;
-            }
-
-          // visit kids of betweenStmt.
-          nodeCount++;
-          level++;
-          pathStackIndex.add(new Integer(0));
-          pathStack.add(betweenStmt);
-        }
-      return null;
-    }  
 
 
   /** Traverse the statements in the given body, looking for
@@ -567,14 +497,22 @@ public class Transformations
     public static void aggregate(StmtBody body)
     {
         int aggregateCount = 1;
+
+        if(Main.isProfilingOptimization)
+            Main.aggregationTimer.start();
+         boolean changed = false;
+             
+        do {
+            if(Main.isVerbose)
+                System.out.println("[" + body.getMethod().getName() + "] Aggregating iteration " + aggregateCount + "...");
         
-        while(internalAggregate(body))
-        {
+            changed = internalAggregate(body);
+            
             aggregateCount++;
-        }
+        } while(changed);
         
-        if(Main.isVerbose || ca.mcgill.sable.soot.grimp.Main.isVerbose)
-            System.out.println(aggregateCount + " aggregation(s) performed.");
+        if(Main.isProfilingOptimization)
+            Main.aggregationTimer.end();
             
     }
   
@@ -587,8 +525,6 @@ public class Transformations
       boolean hadAggregation = false;
       StmtList stmtList = body.getStmtList();
       
-      if(Main.isVerbose)
-        System.out.println("[" + body.getMethod().getName() + "] Aggregating...");
 
       graph = new CompleteStmtGraph(stmtList);
       localDefs = new SimpleLocalDefs(graph);
@@ -652,7 +588,8 @@ public class Transformations
 	  // look for a path from s to use in graph.
 	  // only look in an extended basic block, though.
 
-	  List path = getPath(graph, s, use);
+	  List path = graph.getExtendedBasicBlockPathBetween(s, use);
+      
 	  if (path == null)
 	    continue;
 
@@ -726,7 +663,7 @@ public class Transformations
               aggrCount++;
 	    }
 	  else
-	    {
+	    {/*
             if(Main.isVerbose)
             {
 	        System.out.println("[debug] failed aggregation");
@@ -735,7 +672,7 @@ public class Transformations
 		    		 ": in particular, "+usepair.valueBox);
 	          System.out.println("[debug] aggregatee instanceof Expr: "
 		    		 +(aggregatee instanceof Expr));
-            }
+            }*/
 	    }
 	}
       return hadAggregation;

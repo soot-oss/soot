@@ -154,77 +154,43 @@ public class JimpleBody implements StmtBody
             System.out.println("[" + method.getName() + "] Jimplifying...");
 
         if(Modifier.isAbstract(method.getModifiers()) || Modifier.isNative(method.getModifiers()))
-        {
             return;
-        }
-        else {
-            if(Main.isProfilingOptimization)
-                Main.conversionTimer.start();
-
-            if(coffiMethod.cfg == null)
-            {
-                if(Main.isVerbose)
-                    System.out.println("[" + method.getName() +
-                        "]     Building Coffi CFG...");
-
-                new ca.mcgill.sable.soot.coffi.CFG(coffiMethod);
-
-                if(Main.isVerbose)
-                    System.out.println("[" + method.getName() +
-                        "]     Coffi CFG complete.");
-
-            }
-
+            
+        if(Main.isProfilingOptimization)
+            Main.conversionTimer.start();
+        
+        if(coffiMethod.cfg == null)
+        {
             if(Main.isVerbose)
                 System.out.println("[" + method.getName() +
-                    "]      Producing naive Jimple...");
+                    "]     Building Coffi CFG...");
 
-            coffiMethod.cfg.jimplify(coffiClass.constant_pool,
-                coffiClass.this_class, this);
-
-            if(Main.isProfilingOptimization)
-            {
-                Main.conversionTimer.end();
-                Main.conversionLocalCount += getLocalCount();
-                Main.conversionStmtCount += stmtList.size();
-            }
+             new ca.mcgill.sable.soot.coffi.CFG(coffiMethod);
 
              if(Main.isVerbose)
                 System.out.println("[" + method.getName() +
-                    "]      Naive typeless Jimple produced.");
-        }
+                    "]     Coffi CFG complete.");
+
+         }
+
+         if(Main.isVerbose)
+             System.out.println("[" + method.getName() +
+                "]      Producing naive Jimple...");
+         coffiMethod.cfg.jimplify(coffiClass.constant_pool,
+             coffiClass.this_class, this);
+        
+         if(Main.isProfilingOptimization)
+         {
+             Main.conversionTimer.end();
+             Main.conversionLocalCount += getLocalCount();
+             Main.conversionStmtCount += stmtList.size();
+         }
+
+         if(Main.isVerbose)
+             System.out.println("[" + method.getName() +
+                "]      Naive typeless Jimple produced.");
 
         // Jimple.printStmtList_debug(this, System.out);
-
-        if(!BuildJimpleBodyOption.noCleanup(buildOptions))
-        {
-            if(Main.isProfilingOptimization)
-                Main.cleanup1Timer.start();
-
-            Transformations.cleanupCode(this);
-            Transformations.removeUnusedLocals(this);
-
-            if(Main.isProfilingOptimization)
-            {
-                Main.cleanup1Timer.end();
-                Main.cleanup1LocalCount += getLocalCount();
-                Main.cleanup1StmtCount += stmtList.size();
-            }
-        }
-
-	if(!BuildJimpleBodyOption.noAggregating(buildOptions))
-	{
-            if(Main.isProfilingOptimization)
-              Main.jimpleAggregationTimer.start();
-
-//          printTo(new PrintWriter(System.out, true), PrintJimpleBodyOption.USE_ABBREVIATIONS);              
- 	        //Transformations.aggregate(this);
- 	        //Transformations.removeUnusedLocals(this);
-//            printTo(new PrintWriter(System.out, true), PrintJimpleBodyOption.USE_ABBREVIATIONS);
-            
-            if(Main.isProfilingOptimization)
-              Main.jimpleAggregationTimer.end();
-	}
 
         if(!BuildJimpleBodyOption.noSplitting(buildOptions))
         {
@@ -272,6 +238,25 @@ public class JimpleBody implements StmtBody
                     Main.assignTimer.end();
                 }
             }
+        }
+
+        if(!BuildJimpleBodyOption.noCleanup(buildOptions))
+        {
+            Transformations.cleanupCode(this);
+            Transformations.removeUnusedLocals(this);
+
+            if(Main.isProfilingOptimization)
+            {
+                Main.cleanup1LocalCount += getLocalCount();
+                Main.cleanup1StmtCount += stmtList.size();
+            }
+        }
+
+	    if(!BuildJimpleBodyOption.noAggregating(buildOptions))
+	    {
+ 	        Transformations.aggregate(this);
+ 	        Transformations.removeUnusedLocals(this);            
+	    }
 
             Transformations.renameLocals(this);
 /*
@@ -314,8 +299,6 @@ public class JimpleBody implements StmtBody
             }
             */
 
-            Transformations.renameLocals(this);
-         }
     }
 
     public StmtList getStmtList()
@@ -705,7 +688,8 @@ public class JimpleBody implements StmtBody
 */
         LocalCopies localCopies = new SimpleLocalCopies(stmtGraph);
         LiveLocals liveLocals = new SimpleLiveLocals(stmtGraph);
-
+        EqualLocals equalLocals = new SimpleEqualLocals(stmtGraph);
+        
         // Create statement name table
         {
            int labelCount = 0;
@@ -734,12 +718,18 @@ public class JimpleBody implements StmtBody
             {
                 out.print(liveLocals.getLiveLocalsAfter(s));
             }*/
-            
+            /*
             // Print info about local copies
             {
                 out.print(localCopies.getCopiesBefore(s));
             }
-
+            */
+            /*
+            // Print info about local equalities
+            {
+                out.print(equalLocals.getCopiesAt(s));
+            }
+*/
 
              /*
              // Print info about uses
@@ -760,7 +750,7 @@ public class JimpleBody implements StmtBody
                     out.print(")");
                 }
             */
-        
+        /*
             // Print info about defs
             {
                 Iterator boxIt = s.getUseBoxes().iterator();
@@ -787,7 +777,7 @@ public class JimpleBody implements StmtBody
                     }
                 }
             } 
-          
+          */
             
             /*
             // Print info about successors

@@ -393,6 +393,13 @@ public class JasminClass
 
     void assignColorsToLocals(StmtBody body)
     {
+        if(Main.isVerbose)
+            System.out.println("[" + body.getMethod().getName() +
+                "] Assigning colors to locals...");
+        
+        if(Main.isProfilingOptimization)
+            Main.packTimer.start();
+
         localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
         groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
         localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
@@ -448,6 +455,9 @@ public class JasminClass
         // Call the graph colorer.
             FastColorer.assignColorsToLocals(body, localToGroup,
                 localToColor, groupToColorCount);
+
+        if(Main.isProfilingOptimization)
+            Main.packTimer.end();
                     
     }
     
@@ -594,8 +604,7 @@ public class JasminClass
                                 ((Integer) localToColor.get(local)).intValue());
                             
                         int slot;
-                        
-                        /*
+
                         if(groupColorPairToSlot.containsKey(pair))
                         {
                             // This local should share the same slot as the previous local with
@@ -603,12 +612,12 @@ public class JasminClass
                             
                             slot = ((Integer) groupColorPairToSlot.get(pair)).intValue();
                         }
-                        else { */
+                        else { 
                             slot = localCount;           
                             localCount += sizeOfType(local.getType());
                     
                             groupColorPairToSlot.put(pair, new Integer(slot));
-                        /* }*/
+                         }
                             
                         localToSlot.put(local, new Integer(slot));
                         assignedLocals.add(local);
@@ -715,10 +724,11 @@ public class JasminClass
 
 		    /* emit dup slot */
 
+            /*
                     System.out.println("found ++ instance:");
                     System.out.println(s); System.out.println(nextStmt);
                     System.out.println(nextNextStmt);
-
+                */
 		    /* this should be redundant, but we do it */
 		    /* just in case. */
 		    if (lvalue.getType() != IntType.v())
@@ -2154,9 +2164,9 @@ public class JasminClass
                     String s = v.toString();
                     
                     if(s.equals("Infinity"))
-                        s="Inf";
+                        s="+DoubleInfinity";
                     if(s.equals("-Infinity"))
-                        s="-Inf";
+                        s="-DoubleInfinity";
                         
                     emit("ldc2_w " + s, 2);
                 }
@@ -2174,9 +2184,9 @@ public class JasminClass
                     String s = v.toString();
                     
                     if(s.equals("Infinity"))
-                        s="Inf";
+                        s="+FloatInfinity";
                     if(s.equals("-Infinity"))
-                        s="-Inf";
+                        s="-FloatInfinity";
                         
                     emit("ldc " + s, 1);
                 }

@@ -66,7 +66,8 @@
 
  - Modified on March 15, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Added a pseudo topological order iterator (and its reverse).
-
+   Moved in Patrick's getPath code.
+   
  - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Re-organized the timers.
 
@@ -500,6 +501,71 @@ public class StmtGraph
         else
             order.addFirst(s); 
     }
+
+  /** Look for a path, in g, from def to use. 
+   * This path has to lie inside an extended basic block 
+   * (and this property implies uniqueness.) */
+  /* This path does not include the to
+     returns null if there is no such path */
+  
+  public List getExtendedBasicBlockPathBetween(Stmt from, Stmt to)
+    {
+        StmtGraph g = this;
+        
+      // if this holds, we're doomed to failure!!!
+      if (g.getPredsOf(to).size() > 1)
+        return null;
+
+      // pathStack := list of succs lists
+      // pathStackIndex := last visited index in pathStack
+      LinkedList pathStack = new LinkedList();
+      LinkedList pathStackIndex = new LinkedList();
+
+      pathStack.add(from);
+      pathStackIndex.add(new Integer(0));
+
+      int psiMax = (g.getSuccsOf((Stmt)pathStack.get(0))).size();
+      int level = 0;
+      while (((Integer)pathStackIndex.get(0)).intValue() != psiMax)
+        {
+          int p = ((Integer)(pathStackIndex.get(level))).intValue();
+
+          List succs = g.getSuccsOf((Stmt)(pathStack.get(level)));
+          if (p >= succs.size())
+            {
+              // no more succs - backtrack to previous level.
+
+              pathStack.remove(level);
+              pathStackIndex.remove(level);
+
+              level--;
+              int q = ((Integer)pathStackIndex.get(level)).intValue();
+              pathStackIndex.set(level, new Integer(q+1));
+              continue;
+            }
+
+          Stmt betweenStmt = (Stmt)(succs.get(p));
+
+          // we win!
+          if (betweenStmt == to)
+            {
+              return pathStack;
+            }
+
+          // check preds of betweenStmt to see if we should visit its kids.
+          if (g.getPredsOf(betweenStmt).size() > 1)
+            {
+              pathStackIndex.set(level, new Integer(p+1));
+              continue;
+            }
+
+          // visit kids of betweenStmt.
+          level++;
+          pathStackIndex.add(new Integer(0));
+          pathStack.add(betweenStmt);
+        }
+      return null;
+    }  
      
 }
 

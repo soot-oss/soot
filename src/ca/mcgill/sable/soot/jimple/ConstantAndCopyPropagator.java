@@ -72,7 +72,7 @@ import ca.mcgill.sable.util.*;
 
 public class ConstantAndCopyPropagator
 {
-    /** Propagates constants and copies using a cascaded transformation technique. */
+    /** Propagates constants and copies in extended basic blocks. */
     
     public static void propagateConstantsAndCopies(StmtBody stmtBody)
     {
@@ -84,116 +84,117 @@ public class ConstantAndCopyPropagator
             Main.propagatorTimer.start();                
                 
         StmtList stmtList = stmtBody.getStmtList();
-        int numPropagations = 0;
-        int numIterations = 0;
-        int numEliminations = 0;
+            
+//            ((JimpleBody) stmtBody).printDebugTo(new java.io.PrintWriter(System.out, true));
+            
+        CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
+
+        LocalDefs localDefs;
         
-        for(;;)
+        if(Main.usePackedDefs) 
         {
-            boolean hadPropagation = false;
-            boolean hadElimination = false;
-            
-            ((JimpleBody) stmtBody).printDebugTo(new java.io.PrintWriter(System.out, true));
-            
-            numIterations++;
+            localDefs = new SimpleLocalDefs(graph);
+        }
+        else {
+            LiveLocals liveLocals;
+        
+            if(Main.usePackedLive) 
+                liveLocals = new SimpleLiveLocals(graph);
+            else
+                liveLocals = new SparseLiveLocals(graph);    
 
-            if(Main.isVerbose)
-                System.out.println("[" + stmtList.getBody().getMethod().getName() + 
-                    "] Propagation iteration " + numIterations);
+            localDefs = new SparseLocalDefs(graph, liveLocals);                
+        }           
 
-            //System.out.println("Before optimization:");
-            CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
 
-            LocalDefs localDefs;
-            
-            if(Main.usePackedDefs) 
+        LocalUses localUses = new SimpleLocalUses(graph, localDefs);
+
+        // Perform a constant/local propagation pass.
+        {
+            Iterator stmtIt = graph.pseudoTopologicalOrderIterator();
+
+            while(stmtIt.hasNext())
             {
-                localDefs = new SimpleLocalDefs(graph);
-            }
-            else {
-                LiveLocals liveLocals;
-            
-                if(Main.usePackedLive) 
-                    liveLocals = new SimpleLiveLocals(graph);
-                else
-                    liveLocals = new SparseLiveLocals(graph);    
+                Stmt stmt = (Stmt) stmtIt.next();
+                Iterator useBoxIt = stmt.getUseBoxes().iterator();
 
-                localDefs = new SparseLocalDefs(graph, liveLocals);                
-            }           
-
-
-            LocalUses localUses = new SimpleLocalUses(graph, localDefs);
-            LocalCopies localCopies = new SimpleLocalCopies(graph);
-
-            if(Main.isProfilingOptimization)
-                Main.cleanupAlgorithmTimer.start();
-
-            // Perform a constant/local propagation pass.
-            {
-                Iterator stmtIt = stmtList.iterator();
-
-                while(stmtIt.hasNext())
+                while(useBoxIt.hasNext())
                 {
-                    Stmt stmt = (Stmt) stmtIt.next();
-                    Iterator useBoxIt = stmt.getUseBoxes().iterator();
+                    ValueBox useBox = (ValueBox) useBoxIt.next();
 
-                    while(useBoxIt.hasNext())
+                    if(useBox.getValue() instanceof Local)
                     {
-                        ValueBox useBox = (ValueBox) useBoxIt.next();
+                        Local l = (Local) useBox.getValue();
 
-                        if(useBox.getValue() instanceof Local)
+                        List defsOfUse = localDefs.getDefsOfAt(l, stmt);
+
+                        if(defsOfUse.size() == 1)
                         {
-                            Local l = (Local) useBox.getValue();
+                            DefinitionStmt def = (DefinitionStmt) defsOfUse.get(0);
 
-                            List defsOfUse = localDefs.getDefsOfAt(l, stmt);
-
-                            if(defsOfUse.size() == 1)
+                            if(def.getRightOp() instanceof Constant)
                             {
-                                DefinitionStmt def = (DefinitionStmt) defsOfUse.get(0);
-
-                                if(def.getRightOp() instanceof Constant)
+                                if(useBox.canContainValue(def.getRightOp()))
                                 {
-                                    if(useBox.canContainValue(def.getRightOp()))
-                                    {
-                                        // Check to see if this box can actually contain
-                                        // a constant.  (bases can't)
+                                    // Check to see if this box can actually contain
+                                    // a constant.  (bases can't)
 
-                                        useBox.setValue(def.getRightOp());
-                                        numPropagations++;
-                                        hadPropagation = true;
-                                    }
+                                     useBox.setValue(def.getRightOp());
                                 }
-                                else if(def.getRightOp() instanceof Local)
-                                {
-                                    Local m = (Local) def.getRightOp();
+                            }
+                            else if(def.getRightOp() instanceof Local)
+                            {
+                                Local m = (Local) def.getRightOp();
 
-                                    if(localCopies.isLocalCopyOfBefore((Local) l, (Local) m,
-                                        stmt) && l != m)
+                                if(l != m)
+                                {
+                                    List path = graph.getExtendedBasicBlockPathBetween(def, stmt);
+                                    
+                                    if(path == null)
                                     {
-                                        // Check to see if the local copy is available
-                                        // and that we're not propagated l == m
-                                        
-                                        useBox.setValue(m);
-                                        numPropagations++;
-                                        hadPropagation = true;
+                                        // no path in the extended basic block
+                                        continue;
                                     }
+                                     
+                                    Iterator pathIt = path.iterator();
+                                    
+                                    // Skip first node
+                                        pathIt.next();
+                                        
+                                    // Make sure that m is not redefined along path
+                                    {
+                                        boolean isRedefined = false;
+                                        
+                                        while(pathIt.hasNext())
+                                        {
+                                            Stmt s = (Stmt) pathIt.next();
+                                            
+                                            if(s instanceof DefinitionStmt)
+                                            {
+                                                if(((DefinitionStmt) s).getLeftOp() == m)
+                                                {
+                                                    isRedefined = true;
+                                                    break;
+                                                }        
+                                            }
+                                        }
+                                        
+                                        if(isRedefined)
+                                            continue;
+                                            
+                                    }
+                                    
+                                    useBox.setValue(m);
                                 }
                             }
                         }
-
                     }
-                }
+
+                 }
             }
-
-            //JimpleBody.printStmtList_debug((StmtBody) stmtBody, new java.io.PrintWriter(System.out, true));
-
-            if(Main.isProfilingOptimization)
-                Main.cleanupAlgorithmTimer.end();
-                
-            if(!hadPropagation && !hadElimination)
-                break;
         }
-        
+
+     
         if(Main.isProfilingOptimization)
             Main.propagatorTimer.end();
     

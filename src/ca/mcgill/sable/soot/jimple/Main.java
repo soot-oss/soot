@@ -158,7 +158,7 @@ public class Main
         liveSetupTimer = new Timer(),
         liveAnalysisTimer = new Timer(),
         livePostTimer = new Timer(),
-        jimpleAggregationTimer = new Timer(),
+        aggregationTimer = new Timer(),
         grimpAggregationTimer = new Timer(),
         deadCodeTimer = new Timer(),
         propagatorTimer = new Timer();
@@ -191,7 +191,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.3.dev.22");
+            System.out.println("Jimple version 1.beta.3.dev.23");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -418,7 +418,6 @@ public class Main
                 System.out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
                 System.out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
 //                System.out.println("                setup: " + toTimeString(liveSetupTimer, totalTime));
-                System.out.println("          aggregation: " + toTimeString(jimpleAggregationTimer, totalTime));
 //                System.out.println("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
 //                System.out.println("                 post: " + toTimeString(livePostTimer, totalTime));
                 
@@ -437,6 +436,8 @@ public class Main
 //                    System.out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
 //                        "\t" + cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
                     
+                    System.out.println("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
+
                     System.out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
                     System.out.println("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
                        
@@ -449,8 +450,7 @@ public class Main
                     System.out.println("            Assigning types: " + toTimeString(assignTimer, totalTime) +
                         "\t" + assignLocalCount + " locals  " + assignStmtCount + " stmts");
                         
-                    System.out.println("             Packing locals: " + toTimeString(packTimer, totalTime) + 
-                        "\t" + packLocalCount + " locals  " + packStmtCount + " stmts");
+                    System.out.println("            Coloring locals: " + toTimeString(packTimer, totalTime));
                 
                         /*
                     System.out.println("cleanup2Timer:   " + cleanup2Time +
