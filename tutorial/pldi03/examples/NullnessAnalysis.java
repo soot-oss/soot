@@ -40,6 +40,7 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
         FlowSet src  = (FlowSet) srcValue;
         Unit    s    = (Unit)    unit;
 
+        // Create working set.
         dest = (FlowSet)src.clone();
 
         // Perform gen.
@@ -63,11 +64,11 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
 
             Value ro = as.getRightOp();
 
-            // ignore casting
+            // extract cast argument
             if (ro instanceof CastExpr)
                 ro = ((CastExpr) ro).getOp();
         
-            if (src.contains(as.getRightOp()) &&
+            if (src.contains(ro) &&
                   as.getLeftOp() instanceof Local)
                 dest.add(as.getLeftOp());
         }
@@ -100,7 +101,7 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
             Value toGen = null;
 
             // case 1: opN is a local and opM is NullConstant
-            //          => opN nonlocal on ne branch.
+            //          => opN nonnull on ne branch.
             if (op1 instanceof Local && op2 instanceof NullConstant)
                 toGen = op1;
 
@@ -123,7 +124,7 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
                 }
             }
 
-            // case 2: both ops are local
+            // case 2: both ops are local and one op is non-null and testing equality
             if (op1 instanceof Local && op2 instanceof Local && 
                 cond instanceof EqExpr)
             {

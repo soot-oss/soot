@@ -26,14 +26,14 @@ A checklist of your obligations:
 \item Subclass \verb+*FlowAnalysis+
 \item Implement abstraction: {\tt merge()}, {\tt copy()}
 \item Implement flow function {\tt flowThrough()}
-\item Implement initial values: {\tt entryInitialFlow()} and {\tt
-newInitialFlow()}
+\item Implement initial values: {\tt newInitialFlow()} and {\tt
+entryInitialFlow()}
 \item Implement constructor \\ \quad (it must call {\tt doAnalysis()})
 \end{enumerate}
 \end{slide}
 
 \begin{slide}{HOWTO: Soot Flow Analysis II}
-Soot rewards you with:
+Soot provides you with:
 \begin{itemize}
 \item impls of abstraction domains (flow sets)
 \begin{itemize}
@@ -48,6 +48,22 @@ CFG using a worklist algorithm.
 \end{itemize}
 \end{slide}
 
+\begin{slide}{Flow Analysis Hierarchy}
+\Tree [.AbstractFlowAnalysis [.FlowAnalysis Forward- Backward- ] [.BranchedFlowAnalysis Forward- ] ]
+
+\end{slide}
+
+\begin{slide}{Soot Flow Analyses}
+\begin{center}
+{\small 
+\Tree [.AbstractFlowAnalysis 
+[.FlowAnalysis [.Forward- {PRE analy's\\Avail. Expr.\\Array Bds} ] [.Backward- { PRE analy's \\ Liveness }  ] ] 
+[.BranchedFlowAnalysis [.Forward- Casts Nullness ] ] 
+]
+}
+\end{center}
+\end{slide}
+
 
 \begin{slide}{Outline: Soot Flow Analysis Examples}
 Will describe how to implement a flow analysis in Soot and present examples:
@@ -57,21 +73,6 @@ Will describe how to implement a flow analysis in Soot and present examples:
 \end{itemize}
 \end{slide}
 
-\begin{slide}{Flow Analysis Hierarchy}
-\Tree [.AbstractFlowAnalysis [.BranchedFlowAnalysis Forward ] [.FlowAnalysis Forward Backward ] ]
-
-\end{slide}
-
-\begin{slide}{Soot Flow Analyses}
-\begin{center}
-{\small 
-\Tree [.AbstractFlowAnalysis 
-[.BranchedFlowAnalysis [.Forward Casts Nullness ] ] 
-[.FlowAnalysis [.Forward {PRE analy's\\Avail. Expr.\\Array Bds} ] [.Backward { PRE analy's \\ Liveness }  ] ] 
-]
-}
-\end{center}
-\end{slide}
 
 \begin{slide}{Running Example 1: Live Variables}
 \vspace*{-0.2in} 
@@ -86,26 +87,14 @@ of definitions of {\tt v}.
 \end{center}
 \end{slide}
 
-\begin{slide}{Another Example of Live Locals}
-A local variable {\tt v} is {\red live} at $s$ if there exists some
-statement $s'$ using {\tt v} and a control-flow path from $s$ to $s'$ free
-of definitions of {\tt v}.
-
-\quad
-
-\begin{center}
-\input{lv-example-specific.eepic}
-\end{center}
-\end{slide}
-
 \begin{slide}{Steps to a Flow Analysis}
 As we've seen before:
 \begin{enumerate}
 \item Subclass \verb+*FlowAnalysis+
 \item Implement abstraction: {\tt merge()}, {\tt copy()}
 \item Implement flow function {\tt flowThrough()}
-\item Implement initial values: {\tt entryInitialFlow()} and {\tt
-newInitialFlow()}
+\item Implement initial values: {\tt newInitialFlow()} and {\tt
+entryInitialFlow()}
 \item Implement constructor \\ \quad (it must call {\tt doAnalysis()})
 \end{enumerate}
 \end{slide}
@@ -124,34 +113,50 @@ In Soot, we subclass {\tt \red BackwardFlowAnalysis}.
 {\red \tt class LiveVariablesAnalysis \\ \qquad extends BackwardFlowAnalysis}
 \end{slide}
 
+\begin{slide}{Backward vs. Forward Analyses}
+\vspace*{-0.24in}
+A forward analysis computes {\sf OUT} from {\sf IN}:
+
+\vspace*{-0.05in}
+\begin{center}
+\input{flow-fwd.eepic}
+\end{center}
+
+\vspace*{-0.05in}
+A backward analysis computes {\sf IN} from {\sf OUT}:
+
+\begin{center}
+\input{flow-bkwd.eepic}
+\end{center}
+
+\end{slide}
+
 \begin{slide}{Step 2: Abstraction domain}
 \vspace*{-0.2in}
 
-Domain for Live Variables: sets of {\tt Local}s\\
-Partial order is subset inclusion
+Domain for Live Variables: sets of {\tt Local}s
 
-\begin{center}
-\scalebox{0.95}{
-\input{lv.eepic}}
-\mbox{\qquad }
-\end{center}
-\vspace*{-0.1in}
+\qquad e.g. {\tt  \{x, y, z\}}
 
-In Soot, we use a {\tt BoundedFlowSet}:
-\begin{center}
-{\tt soot.toolkits.scalar.ArraySparseSet} 
-\end{center}
+\begin{itemize}
+
+\item Partial order is subset inclusion
+
+\item Merge operator is union 
+
+\end{itemize} 
+
+In Soot, we use the provided {\tt ArraySparseSet} implementation of {\tt
+FlowSet}.
 \end{slide}
 
 \begin{slide}{Implementing an Abstraction}
-\vspace*{-0.1in}
+\vspace*{-0.2in}
 Need to implement {\tt copy()}, {\tt merge()} methods:
 \begin{center}
 \input{copy-bkwd.eepic}
 \end{center}
 {\tt copy()} brings IN set to predecessor's OUT set.
-
-$\qquad$
 
 \begin{center}
 \input{merge-bkwd.eepic}
@@ -207,9 +212,8 @@ d.add(v);
 
 \quad
 
-\begin{center}
-Read the JavaDoc!
-\end{center}
+\sablefootnote{www.sable.mcgill.ca/soot/doc/soot/toolkits/scalar/FlowSet.html}
+
 % why flow universes?
 %  * efficient encoding 
 %  * we sometimes want to go a \cup \not b.
@@ -221,7 +225,7 @@ Which {\tt FlowSet} do you want?
 \begin{itemize}
 %\item {\tt ArraySparseSet}: represents as simple array; 
 %can't be complemented, needs no initial universe
-\item {\tt ArraySparseSet}:
+\item {\tt ArraySparseSet}: simple list
 
 \qquad \begin{tabular}{|c|c|c|c|c|} \hline
 foo & bar & z & \\ \hline
@@ -232,7 +236,7 @@ foo & bar & z & \\ \hline
 %% \item {\tt ArrayPackedSet}: represents as bitvector array;
 %% can be complemented, needs initial universe
 
-\item {\tt ArrayPackedSet}:
+\item {\tt ArrayPackedSet}: bitvector w/ map
 
 \qquad \begin{tabular}{|c|c|c|} \hline
 00100101 & 10101111 & 10000000 \\ \hline
@@ -242,7 +246,7 @@ foo & bar & z & \\ \hline
 
 \item {\tt ToppedSet}: 
 
-\qquad {\tt FlowSet \& \fbox{0/1} }
+\qquad {\tt FlowSet \& {\tt isTop()} }
 
 (adjoins a $\top$ to another {\tt FlowSet})
 
@@ -294,9 +298,9 @@ One might also use {\tt intersection()}, or implement a more exotic merge.
 \begin{slide}{Step 3: Flow equations}
 \vspace*{-0.1in}
 
-Goal: At a stmt like {\tt x = y * z}:\\
-\qquad \qquad {\red -- } def {\tt x};\\
-\qquad \qquad {\red + } uses {\tt y}, {\tt z}.
+Goal: At a unit like {\tt x = y * z}:\\
+\qquad \qquad {\red kill \quad } def {\tt x};\\
+\qquad \qquad {\red gen $\- \- \- $ } uses {\tt y}, {\tt z}.
 
 \vspace*{0.1in}
 
@@ -309,14 +313,17 @@ How? Implement this method:
 \end{verbatim}
 \end{slide}
 
-\begin{slide}{Step 3: Casting \& Copying}
+\begin{slide}{Step 3: Casting}
+Soot's flow analysis framework is polymorphic.
+Need to cast to do useful work.
+
+$\quad$
+
 Start by:
 \begin{itemize}
 \item casting {\tt srcValue}, {\tt destValue} to {\tt FlowSet}.
 
 \item casting {\tt u} to {\tt Unit ut}.
-
-\item copying {\tt src} to {\tt dest}.
 \end{itemize}
 
 In code:
@@ -325,13 +332,28 @@ In code:
    FlowSet src = (FlowSet)srcValue,
            dest = (FlowSet)destValue;
    Unit ut = (Unit)u;
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Step 3: Copying}
+Need to copy {\tt src} to {\tt dest} to allow manipulation.
+
+\begin{center}
+\input{copy-bkwd.eepic}
+\end{center}
+
+\begin{verbatim}
    src.copy (dest);
 \end{verbatim}
+
+$\quad$
+
+Use {\tt FlowSet} methods.
 \end{slide}
 
 \begin{slide}{Step 3: Implementing {\tt flowThrough}}
 Must decide what happens at each statement (in general, need to switch
-on stmt type):
+on unit type):
 \begin{center}
 \scalebox{1.3}{
 \input{flowthrough-bkwd.eepic}}
@@ -348,8 +370,8 @@ of def'ns of {\tt v}.
 
 $\quad$
 
-Don't care about the type of stmt we're analyzing, because Soot
-provides abstract accessors to values used and defined in a stmt.
+Don't care about the type of unit we're analyzing: Soot provides
+abstract accessors to values used and defined in a unit.
 
 \end{slide}
 
@@ -357,7 +379,7 @@ provides abstract accessors to values used and defined in a stmt.
 \begin{verbatim}
 // Take out kill set:
 //  for each local v def'd in 
-//  this stmt, remove v from dest
+//  this unit, remove v from dest
 Iterator boxIt = ut.getDefBoxes()
                      .iterator();
 while( boxIt.hasNext() ) {
@@ -370,59 +392,12 @@ while( boxIt.hasNext() ) {
 \end{verbatim}
 \end{slide}
 
-\begin{slide}{What is a {\tt DefBox}?}
-\vspace*{-0.1in}
-{\tt List defBoxes = ut.getDefBoxes();}
-
-\vspace*{-0.05in}
-\begin{itemize}
-\item method {\red \tt ut.getDefBoxes()} returns a list of {\tt
-ValueBox}es, corresponding to all {\tt Value}s which get defined
-in {\tt ut}, a {\tt Unit}. 
-
-\item non-empty for {\tt IdentityStmt} and {\tt AssignStmt}.
-\end{itemize}
-
-\vspace*{-0.08in}
-\begin{center}
-\fbox{\tt ut: \fbox{x} = \fbox{y} op \fbox{z};}
-\end{center}
-
-\vspace*{0.05in}
-{\tt getDefBoxes(ut) = \{\fbox{x}\}}\\
-\qquad \qquad \begin{minipage}{0.7\textwidth} 
-({\tt List} containing a {\tt ValueBox} containing a {\tt Local})
-\end{minipage}
-
-\end{slide}
-
-\begin{slide}{On {\tt Value}s and {\tt Box}es}
-%% \vspace*{-0.1in}
-%% \verb+Iterator boxIt = +\\
-%% \verb+       ut.getDefBoxes().iterator();+\\
-%% \verb+while (boxIt.hasNext()) {+\\
-%% \verb+    ValueBox box = +\\
-%% \verb+        (ValueBox) boxIt.next();+\\
-{\red \verb+    Value value = defBox.getValue();+}
-
-\begin{itemize}
-\item {\tt getValue()}: Dereferencing a pointer.\\
-\qquad \qquad \qquad \qquad \fbox{\tt x} $\to$ {\tt x}
-\end{itemize}
-
-{\red \verb+    if (value instanceof Local) {+}
-
-\begin{itemize}
-\item Only care about defs of {\tt Local}s here.
-\end{itemize}
-\end{slide}
-
 \begin{slide}{Step 3: Implementing {\tt flowThrough}: adding gens}
 \vspace*{-0.2in}
 \begin{verbatim}
 // Add gen set
 //  for each local v used in 
-//  this stmt, add v to dest
+//  this unit, add v to dest
 boxIt = ut.getUseBoxes().iterator();
 while (boxIt.hasNext()) {
     ValueBox box = 
@@ -438,51 +413,23 @@ while (boxIt.hasNext()) {
 N.B. our analysis is generic, not restricted to Jimple.
 \end{slide}
 
-\begin{slide}{On {\tt UseBoxes}}
-\vspace*{-0.1in}
-Opposite of defBoxes.
-
-{\tt List useBoxes = ut.getUseBoxes();}
-
-\vspace*{-0.05in}
-\begin{itemize}
-\item method {\red \tt ut.getUseBoxes()} returns a list of {\tt
-ValueBox}es, corresponding to all {\tt Value}s which get used
-in {\tt ut}, a {\tt Unit}. 
-
-\item non-empty for most Soot {\tt Stmt}s.
-\end{itemize}
-
-\vspace*{-0.08in}
-\begin{center}
-\fbox{\tt ut: \fbox{x} = \fbox{y} op \fbox{z};}
-\end{center}
-
-\vspace*{0.05in}
-{\tt getUseBoxes(ut) = \{\fbox{y}, \fbox{z}, \fbox{y op z}\}}\\
-\qquad \qquad \begin{minipage}{0.8\textwidth} 
-({\tt List} containing two {\tt ValueBox}es, each containing a {\tt Local})
-\end{minipage}
-
-\end{slide}
-
 \begin{slide}{Step 4: Initial values}
 \vspace*{-0.15in}
 $\bullet$ Soundly initialize IN, OUT sets prior to analysis.
 
 \vspace*{-0.1in}
 \begin{itemize}
-\item Create initial sets for exit nodes\\
-{\tt Object entryInitialFlow() \\ 
-\qquad \{return new ArraySparseSet();\} }
-
 \item Create initial sets\\
 {\tt Object newInitialFlow()}\\
 \qquad {\tt \{return new ArraySparseSet();\} }
 
+\item Create initial sets for exit nodes\\
+{\tt Object entryInitialFlow() \\ 
+\qquad \{return new ArraySparseSet();\} }
+
 \end{itemize}
 
-Want conservative initial value at entry points, optimistic
+Want conservative initial value at exit nodes, optimistic
 value at all other nodes.
 \end{slide}
 
@@ -517,26 +464,14 @@ assigned a value different from {\tt null}.
 \end{center}
 \end{slide}
 
-\begin{slide}{Example: Branched nullness}
-
-A local variable {\tt v} is {\red non-null} at $s$ if all control-flow
-paths from a method's start node to $s$ result in {\tt v} being
-assigned a value different from {\tt null} at $s$.
-
-\begin{center}
-\input{lv-example-specific.eepic}
-\end{center}
-
-\end{slide}
-
-\begin{slide}{HOWTO: Soot Flow Analysis (bis)}
+\begin{slide}{HOWTO: Soot Flow Analysis}
 Again, here's what to do:
 \begin{enumerate}
 \item Subclass \verb+*FlowAnalysis+
 \item Implement abstraction: {\tt merge()}, {\tt copy()}
 \item Implement flow function {\tt flowThrough()}
-\item Implement initial values: {\tt entryInitialFlow()} and {\tt
-newInitialFlow()}
+\item Implement initial values: {\tt newInitialFlow()} and {\tt
+entryInitialFlow()}
 \item Implement constructor \\ \quad (it must call {\tt doAnalysis()})
 \end{enumerate}
 \end{slide}
@@ -564,13 +499,15 @@ Domain: sets of {\tt Local}s known to be non-null\\
 Partial order is subset inclusion.
 
 \quad
+\vspace*{-0.05in}
 
-(More complicated abstractions possible for this problem; e.g. 
+(More complicated abstractions possible$^{*}$ for this problem; e.g. 
 $\perp, \top, \mbox{\tt null}, \mbox{non-{\tt null}}$ per-local.)
 
 \quad
+\vspace*{-0.05in}
 
-Again, use {\tt ArraySparseSet}, which we use to implement:
+Again use {\tt ArraySparseSet} to implement:
 {\small 
 \[ \mbox{\tt \begin{tabular}{r@{}l}
                  void merge(&Object in1, Object in2,\\
@@ -578,6 +515,22 @@ Again, use {\tt ArraySparseSet}, which we use to implement:
                  void copy(&Object src, Object dest);
 \end{tabular}}\]
 }
+
+\sablefootnote{$^*$ BranchedRefVarsAnalysis}
+\end{slide}
+
+\begin{slide}{Implementing an Abstraction}
+\vspace*{-0.2in}
+For a forward analysis, {\tt copy} and {\tt merge} mean:
+\begin{center}
+\input{copy-fwd.eepic}
+\end{center}
+{\tt copy()} brings OUT set to predecessor's IN set.
+
+\begin{center}
+\input{merge-fwd.eepic}
+\end{center}
+{\tt merge()} joins two OUT sets to make an IN set.
 \end{slide}
 
 \begin{slide}{Step 2: {\tt copy()} for nullness}
@@ -620,11 +573,24 @@ Like {\tt copy()}, use {\tt FlowSet} method -- here, {\tt intersection()}:
 
 \end{slide}
 
+\newcounter{plamfoo}
 
+\overlays{6}{
 \begin{slide}{Step 3: Flow equations}
 \vspace*{-0.1in}
-Lots of stuff goes here.
-\end{slide}
+We do the following things in our flow function:
+
+\begin{itemstep}
+\item Create clone of src set.
+\item Add gen set.\\
+\qquad \qquad {\tt x} in {\tt x.foo()};
+\item Remove kill set (defined {\tt Local}s).\\
+\qquad \qquad {\tt y} in {\tt y = y.next};
+\item Handle copy statements.
+\item Copy to branch and fallthrough lists.
+\item Patch sets for {\tt if} statements.
+\end{itemstep}
+\end{slide}}
 
 \begin{slide}{Step 4: Initial values}
 \vspace*{-0.1in}
@@ -647,59 +613,49 @@ Initialize IN, OUT sets.
 
 \begin{slide}{Step 5: Constructor: Prologue}
 \vspace*{-0.1in}
-Create objects.
+Create auxiliary objects.
 \vspace*{0.05in}
 \begin{verbatim}
-    public NullnessAnalysis(UnitGraph g)
-    {
-        super(g);
+public NullnessAnalysis(UnitGraph g)
+{
+   super(g);
 
-        unitToGenerateSet = new HashMap();
-        Body b = g.getBody();
-        List refLocals = new LinkedList();
+   unitToGenerateSet = new HashMap();
+   Body b = g.getBody();
+   List refLocals = new LinkedList();
 \end{verbatim}
 \end{slide}
 
 \begin{slide}{Step 5: Constructor: Finding All Locals}
-\vspace*{-0.1in}
-Find all locals in body.
+\vspace*{-0.2in}
+Find all locals in body \& create flowsets:
 
-\vspace*{-0.1in}
+\vspace*{-0.05in}
 \begin{verbatim}
+emptySet = new ArraySparseSet();
+fullSet = new ArraySparseSet();
 
 Iterator localIt = 
   b.getLocals().iterator();
 
-while (localIt.hasNext())
-{
+while (localIt.hasNext()) {
     Local l = (Local)localIt.next();
     if (l.getType() 
              instanceof RefType)
-        refLocals.add(l);
+        fullSet.add(l);
 }
 \end{verbatim}
 \end{slide}
 
-\begin{slide}{Step 5: Creating initial sets}
-\vspace*{-0.1in}
-Create {\tt FlowUniverse}, etc.
-
-\vspace*{0.05in}
-\begin{verbatim}
-allRefLocals = 
-       new ArrayFlowUniverse
-             (refLocals.toArray());
-
-emptySet = new ArrayPackedSet
-             (allRefLocals);
-
-fullSet = (ArrayPackedSet)emptySet.clone();
-((ArrayPackedSet)fullSet).complement();
-\end{verbatim}
-\end{slide}
-
 \begin{slide}{Step 5: Creating gen sets}
-Big hairy mess here, hopefully becoming less hairy
+Precompute, for each statement, which locals become non-null after execution of that stmt.
+
+\begin{itemize}
+\item {\tt x} gets non-null value:\\
+{\tt x = *}, where {\tt *} is {\tt NewExpr}, {\tt ThisRef}, etc.
+\item successful use of {\tt x}:\\
+{\tt x.f}, {\tt x.m()}, {\tt entermonitor x}, etc.
+\end{itemize}
 \end{slide}
 
 \begin{slide}{Step 5: Constructor: Doing work}

@@ -1,0 +1,37 @@
+From olhotak@sable.mcgill.ca Sat May 31 00:29:20 2003
+Date: Mon, 26 May 2003 14:54:45 -0400
+From: Ondrej LHOTAK <olhotak@sable.mcgill.ca>
+To: Laurie Hendren <hendren@CS.McGill.CA>, Feng QIAN <fqian@sable.mcgill.ca>,
+     Patrick LAM <plam@sable.mcgill.ca>,
+     Jennifer Lhotak <jlhotak@sable.mcgill.ca>,
+     John Jorgensen <jjorge1@CS.McGill.CA>,
+     Navindra Umanee <navindra@CS.McGill.CA>
+Subject: longer tutorial outline
+
+What is Soot?
+Why did we build it?
+IRs: Baf, Jimple, Shimp, Grimp?, Dava?
+Jimple,etc. textual representations
+Bytecode to Jimple (reference papers)
+Jimple to Bytecode or Dava
+Soot as end-user tool (using cmd line or eclipse)
+
+
+intra-proc
+
+scene
+boxes and stuff
+flow analysis framework
+example: live var
+example: nullness
+Soot phases
+
+inter-proc
+
+(30 mins) cg, spark
+
+attributes
+
+Conclusion
+Further reading
+
