@@ -203,11 +203,15 @@ public class Main
 
     static private boolean isOptimizing;
     static private boolean isOptimizingWhole;
-            
+    static private boolean isUsingVTA;
+    static private boolean isUsingRTA;
+    
+    static public long stmtCount;
+                
     public static void main(String[] args) throws RuntimeException
     {
         int firstNonOption = 0;
-        long stmtCount = 0;
+    
         boolean isRecursing = false;
         List excludingPackages = new ArrayList();
         List classesToProcess;
@@ -218,7 +222,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.46");
+            System.out.println("Soot version 1.beta.4.dev.47");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -300,7 +304,16 @@ public class Main
                     isOptimizing = true;
                 else if(arg.equals("-W") || arg.equals("--whole-optimize"))
                     isOptimizingWhole = true;
-                            
+                else if(arg.equals("--use-vta"))
+                {
+                    isUsingVTA = true;
+                    Jimplifier.NOLIB = false;
+                }
+                else if(arg.equals("--use-rta"))
+                {
+                    isUsingRTA = true;
+                    Jimplifier.NOLIB = false;
+                }
                 else if(arg.equals("--no-typing"))
                     buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_TYPING;
                 else if(arg.equals("--no-jimple-aggregating"))
@@ -400,6 +413,15 @@ public class Main
             System.out.print("Building InvokeGraph...");
             System.out.flush();
             InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph(mainClass); 
+            
+            if(isUsingVTA)
+            {
+                VariableTypeAnalysis.pruneInvokeGraph(invokeGraph);
+                VariableTypeAnalysis.pruneInvokeGraph(invokeGraph);
+            }   
+            else if(isUsingRTA)
+                RapidTypeAnalysis.pruneInvokeGraph(invokeGraph);
+                                
             System.out.println();
             
             System.out.print("Inlining invokes...");
@@ -514,17 +536,8 @@ public class Main
                         System.out.println("           forcedGC:" + 
                             toTimeString(Timer.forcedGarbageCollectionTimer, totalTime));
                     }
-                    System.out.println("totalMemory:" + memoryUsed + "k  ");
 
-                    if(isTestingPerformance)
-                    {
-                        System.out.println("Time/Space performance");
-                        System.out.println();
-                        
-                        System.out.println(toFormattedString(stmtCount / timeInSecs) + " stmt/s");
-                        System.out.println(toFormattedString((float) memoryUsed / stmtCount) + " k/stmt");
-                        
-                    }
+                    System.out.println("stmtCount: " + stmtCount + "(" + toFormattedString(stmtCount / timeInSecs) + " stmt/s)");
                     
                     System.out.println("totalFlowNodes: " + totalFlowNodes + 
                         " totalFlowComputations: " + totalFlowComputations + " avg: " + 

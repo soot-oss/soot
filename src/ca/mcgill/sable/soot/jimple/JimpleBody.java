@@ -281,6 +281,9 @@ public class JimpleBody extends AbstractBody implements StmtBody
             LocalPacker.packLocals(this);
         }
 
+        if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
+            ca.mcgill.sable.soot.Main.stmtCount += getStmtList().size();
+            
     }
 
     /** Temporary patch to get the typing algorithm working.

@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on June 8, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Fixed a bug with getLiveLocalsBefore().  Thanks James!
+   
  - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Re-organized the timers.
 
@@ -97,7 +100,8 @@ public class SimpleLiveLocals implements LiveLocals
         if(Main.isVerbose)
             System.out.println("[" + graph.getBody().getMethod().getName() +
                 "]     Constructing SimpleLiveLocals...");
-        
+
+                        
         SimpleLiveLocalsAnalysis analysis = new SimpleLiveLocalsAnalysis(graph);
 
         if(Main.isProfilingOptimization)
@@ -136,7 +140,7 @@ public class SimpleLiveLocals implements LiveLocals
     
     public List getLiveLocalsBefore(Stmt s)
     {
-        return (List) stmtToLocalsAfter.get(s);
+        return (List) stmtToLocalsBefore.get(s);
     }
 }
 
