@@ -56,7 +56,7 @@ public class PrivateFieldSetMethodSource implements soot.MethodSource {
         else {
             fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(fieldBase, field);
         }
-        System.out.println("fieldRef: "+fieldRef+" assignLocal: "+assignLocal);
+        //System.out.println("fieldRef: "+fieldRef+" assignLocal: "+assignLocal);
         soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(fieldRef, assignLocal);
         body.getUnits().add(assign);
 

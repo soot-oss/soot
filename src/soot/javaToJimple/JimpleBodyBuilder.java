@@ -1564,8 +1564,17 @@ public class JimpleBodyBuilder {
         //if (assign.operator() != polyglot.ast.Assign.ASSIGN){
         // in this cas can cast to local (never a string const here
         // as it has to be a lhs
-        soot.Local leftLocal = (soot.Local)getFieldLocal(fLeft);
-        soot.Value right = getAssignRightLocal(assign, leftLocal);
+        soot.Value right;
+        if (assign.operator() == polyglot.ast.Assign.ASSIGN){
+            right = getSimpleAssignRightLocal(assign);
+        }
+        else if ((assign.operator() == polyglot.ast.Assign.ADD_ASSIGN) && assign.type().toString().equals("java.lang.String")){
+            right = getStringConcatAssignRightLocal(assign);
+        }
+        else {
+            soot.Local leftLocal = (soot.Local)getFieldLocal(fLeft);
+            right = getAssignRightLocal(assign, leftLocal);
+        }
         //}
         //else {
         //    right = createExpr(assign.right());
@@ -1686,17 +1695,69 @@ public class JimpleBodyBuilder {
         
         return retLocal;
     }
+
+    private soot.Value getSimpleAssignLocal(polyglot.ast.Assign assign){
+        soot.jimple.AssignStmt stmt;
+        soot.Value left = createLHS(assign.left());
+        
+        soot.Value right = getSimpleAssignRightLocal(assign);
+        stmt = soot.jimple.Jimple.v().newAssignStmt(left, right);
+        body.getUnits().add(stmt);
+        Util.addLnPosTags(stmt, assign.position());
+	    Util.addLnPosTags(stmt.getRightOpBox(), assign.right().position());
+        Util.addLnPosTags(stmt.getLeftOpBox(), assign.left().position());
+        if (left instanceof soot.Local){
+            return left;
+        }
+        else {
+            return right;
+        }
+    
+    }
+    
+    private soot.Value getStrConAssignLocal(polyglot.ast.Assign assign){
+        soot.jimple.AssignStmt stmt;
+        soot.Value left = createLHS(assign.left());
+        
+        soot.Value right = getStringConcatAssignRightLocal(assign);
+        stmt = soot.jimple.Jimple.v().newAssignStmt(left, right);
+        body.getUnits().add(stmt);
+        Util.addLnPosTags(stmt, assign.position());
+	    Util.addLnPosTags(stmt.getRightOpBox(), assign.right().position());
+        Util.addLnPosTags(stmt.getLeftOpBox(), assign.left().position());
+        if (left instanceof soot.Local){
+            return left;
+        }
+        else {
+            return right;
+        }
+    
+    }
     
     /**
      * Assign Expression Creation
      */
-    private soot.Local getAssignLocal(polyglot.ast.Assign assign) {
+    private soot.Value getAssignLocal(polyglot.ast.Assign assign) {
+        
+        // handle private access field assigns
+        HashMap accessMap = ((PolyglotMethodSource)body.getMethod().getSource()).getPrivateAccessMap();
+        if ((assign.left() instanceof polyglot.ast.Field) && (accessMap != null) && accessMap.containsKey(((polyglot.ast.Field)assign.left()).fieldInstance())){
+            return handlePrivateFieldSet(assign);    
+        }
+
+        if (assign.operator() == polyglot.ast.Assign.ASSIGN){
+            return getSimpleAssignLocal(assign);
+        }
+       
+        if ((assign.operator() == polyglot.ast.Assign.ADD_ASSIGN) && assign.type().toString().equals("java.lang.String")){
+            return getStrConAssignLocal(assign);
+        }
         
         soot.jimple.AssignStmt stmt;
         soot.Value left = createLHS(assign.left());
         
         soot.Local leftLocal;
-        if (left instanceof soot.Local) {
+        if (left instanceof soot.Local){
             leftLocal = (soot.Local)left;
         }
         else {
@@ -1706,10 +1767,6 @@ public class JimpleBodyBuilder {
             Util.addLnPosTags(stmt, assign.position());
         }
         
-        HashMap accessMap = ((PolyglotMethodSource)body.getMethod().getSource()).getPrivateAccessMap();
-        if ((assign.left() instanceof polyglot.ast.Field) &&(accessMap != null) && accessMap.containsKey(((polyglot.ast.Field)assign.left()).fieldInstance())){
-            return handlePrivateFieldSet(assign);    
-        }
         
         soot.Value right = getAssignRightLocal(assign, leftLocal);
         stmt = soot.jimple.Jimple.v().newAssignStmt(leftLocal, right);
@@ -3026,11 +3083,11 @@ public class JimpleBodyBuilder {
     /**
      * Cast Expression Creation
      */
-    private soot.Local getCastLocal(polyglot.ast.Cast castExpr){
+    private soot.Value getCastLocal(polyglot.ast.Cast castExpr){
   
         // if its already the right type
         if (castExpr.expr().type().equals(castExpr.type())) {
-            return (soot.Local)createExpr(castExpr.expr());
+            return createExpr(castExpr.expr());
         }
 
         //else

@@ -200,7 +200,8 @@ public class Util {
         //System.out.println("special this local type: "+specialThisLocal.getType());
         soot.Local specialThisLocal = body.getThisLocal();
         // if need this just return it
-        if (fh.canStoreType(specialThisLocal.getType(), sootType)) {
+        //if (fh.canStoreType(specialThisLocal.getType(), sootType)) {
+        if (specialThisLocal.getType().equals(sootType)) {
             //System.out.println("can just return this");
             getThisMap.put(sootType, specialThisLocal);
             return specialThisLocal;
@@ -208,6 +209,7 @@ public class Util {
        
         // check to see if this method has a local of the correct type (it will
         // if its an initializer - then ust use it)
+        // here we need an exact type I think
         if (bodyHasLocal(body, sootType)){
             soot.Local l = getLocalOfType(body, sootType);
             getThisMap.put(sootType, l);
@@ -241,7 +243,8 @@ public class Util {
         Iterator it = body.getLocals().iterator();
         while (it.hasNext()){
             soot.Local l = (soot.Local)it.next();
-            if (!(l.getType() instanceof soot.PrimType) && fh.canStoreType(l.getType(), type)){
+            if (l.getType().equals(type)){
+            //if (!(l.getType() instanceof soot.PrimType) && fh.canStoreType(l.getType(), type)){
                 return l;
             }
         }
@@ -253,8 +256,9 @@ public class Util {
         Iterator it = body.getLocals().iterator();
         while (it.hasNext()){
             soot.Local l = (soot.Local)it.next();
-            System.out.println("l type: "+l.getType()+" type: "+type);
-            if (!(l.getType() instanceof soot.PrimType) && fh.canStoreType(l.getType(), type)){
+            //System.out.println("l type: "+l.getType()+" type: "+type);
+            if (l.getType().equals(type)){
+            //if (!(l.getType() instanceof soot.PrimType) && fh.canStoreType(l.getType(), type)){
                 return true;
             }
         }
