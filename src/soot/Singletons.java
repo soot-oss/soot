@@ -81,6 +81,12 @@ public class Singletons {
     }
     private Global g = new Global();
 
+    private FieldTagger instanceFieldTagger;
+    public FieldTagger FieldTagger() {
+        if( instanceFieldTagger == null ) instanceFieldTagger = new FieldTagger( g );
+        return instanceFieldTagger;
+    }
+
     private SharedBitSetCache instanceSharedBitSetCache;
     public SharedBitSetCache SharedBitSetCache() {
         if( instanceSharedBitSetCache == null ) instanceSharedBitSetCache = new SharedBitSetCache( g );

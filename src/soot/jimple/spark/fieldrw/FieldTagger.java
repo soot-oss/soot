@@ -10,14 +10,12 @@ import java.io.*;
 
 public class FieldTagger extends BodyTransformer
 { 
-    private static FieldTagger instance = new FieldTagger();
-    private FieldTagger() {}
+    public FieldTagger( Singletons.Global g ) {}
+    public static FieldTagger v() { return G.v().FieldTagger(); }
 
-    public static FieldTagger v() { return instance; }
-
-    private static HashSet processedMethods = new HashSet();
-    private static HashMultiMap methodToWrite = new HashMultiMap();
-    private static HashMultiMap methodToRead = new HashMultiMap();
+    private HashSet processedMethods = new HashSet();
+    private HashMultiMap methodToWrite = new HashMultiMap();
+    private HashMultiMap methodToRead = new HashMultiMap();
 
     protected void ensureProcessed( SootMethod m ) {
         if( processedMethods.contains(m) ) return;

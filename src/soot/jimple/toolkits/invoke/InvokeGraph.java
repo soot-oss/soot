@@ -304,7 +304,7 @@ public class InvokeGraph
 
 
   /* used for point to analysis */
-  HashSet reachableMethods;
+  HashSet reachableMethods = new HashSet();
   
   public HashSet getReachableMethods() {
     return reachableMethods;
