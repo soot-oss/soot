@@ -74,7 +74,6 @@ public class CFGViewer extends BodyTransformer {
 
 
   protected void internalTransform(Body b, String phaseName, Map options) {
-    G.v().out.println("jtp.printcfg called\n");
     initialize(options);
     SootMethod meth = b.getMethod();
     
@@ -108,8 +107,6 @@ public class CFGViewer extends BodyTransformer {
       usage();
     } else {
 for (int i = 0; i < args.length; i++) G.v().out.print(args[i] + ' ');
-G.v().out.println("DeclaredOptions == " + printTransform.getDeclaredOptions());
-G.v().out.println("DefaultOptions == " + printTransform.getDefaultOptions());
       soot.Main.main(args);
     }
   }
