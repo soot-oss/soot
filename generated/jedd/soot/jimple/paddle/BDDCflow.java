@@ -86,8 +86,8 @@ public class BDDCflow {
                                            "ta/soot-trunk/src/soot/jimple/paddle/BDDCflow.jedd:59,12-26"));
     
     jedd.internal.RelationContainer stmtMethod() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), stmt.v() },
-                                                   new jedd.PhysicalDomain[] { MT.v(), ST.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), method.v() },
+                                                   new jedd.PhysicalDomain[] { ST.v(), MT.v() },
                                                    ("return stmtMethod; at /home/research/ccl/olhota/soot-trunk/s" +
                                                     "rc/soot/jimple/paddle/BDDCflow.jedd:60,34-40"),
                                                    stmtMethod);
@@ -102,8 +102,8 @@ public class BDDCflow {
                                            "le/paddle/BDDCflow.jedd:61,12-30"));
     
     jedd.internal.RelationContainer callGraph() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), srcm.v(), tgtm.v() },
-                                                   new jedd.PhysicalDomain[] { ST.v(), MS.v(), MT.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), stmt.v(), srcm.v() },
+                                                   new jedd.PhysicalDomain[] { MT.v(), ST.v(), MS.v() },
                                                    ("return callGraph; at /home/research/ccl/olhota/soot-trunk/sr" +
                                                     "c/soot/jimple/paddle/BDDCflow.jedd:62,37-43"),
                                                    callGraph);

@@ -24,8 +24,8 @@ public class Qsrcc_src_fld_dstc_dstTrad extends Qsrcc_src_fld_dstc_dst {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { fld.v(), srcc.v(), dst.v(), src.v(), dstc.v() },
-                                              new PhysicalDomain[] { FD.v(), C1.v(), V2.v(), V1.v(), C2.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), fld.v(), src.v(), dstc.v(), dst.v() },
+                                              new PhysicalDomain[] { C1.v(), FD.v(), V1.v(), C2.v(), V2.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qsrcc_src_fld_" +
                                                "dstc_dstTrad.jedd:41,22-24"),

@@ -37,7 +37,7 @@ public class BDDTypeManager extends AbsTypeManager {
     
     final jedd.internal.RelationContainer allObjs =
       new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
-                                          new PhysicalDomain[] { H1.v(), T1.v() },
+                                          new PhysicalDomain[] { H1.v(), T2.v() },
                                           ("<soot.jimple.paddle.bdddomains.obj, soot.jimple.paddle.bdddo" +
                                            "mains.type> allObjs = jedd.internal.Jedd.v().falseBDD() at /" +
                                            "home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle/B" +
@@ -61,37 +61,38 @@ public class BDDTypeManager extends AbsTypeManager {
         allVars.eqUnion(newVars);
         final jedd.internal.RelationContainer newObjs =
           new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
-                                              new PhysicalDomain[] { H1.v(), T1.v() },
+                                              new PhysicalDomain[] { H1.v(), T2.v() },
                                               ("<soot.jimple.paddle.bdddomains.obj:soot.jimple.paddle.bdddom" +
                                                "ains.H1, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
-                                               "le.bdddomains.T1> newObjs; at /home/research/ccl/olhota/soot" +
+                                               "le.bdddomains.T2> newObjs; at /home/research/ccl/olhota/soot" +
                                                "-trunk/src/soot/jimple/paddle/BDDTypeManager.jedd:51,20-27"));
-        newObjs.eq(jedd.internal.Jedd.v().project(localallocs.get(), new PhysicalDomain[] { MS.v() }));
-        newObjs.eqUnion(globalallocs.get());
+        newObjs.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(localallocs.get(),
+                                                                                 new PhysicalDomain[] { MS.v() }),
+                                                  new PhysicalDomain[] { T1.v() },
+                                                  new PhysicalDomain[] { T2.v() }));
+        newObjs.eqUnion(jedd.internal.Jedd.v().replace(globalallocs.get(),
+                                                       new PhysicalDomain[] { T1.v() },
+                                                       new PhysicalDomain[] { T2.v() }));
         allObjs.eqUnion(newObjs);
         final jedd.internal.RelationContainer subtypeRelation =
           new jedd.internal.RelationContainer(new Attribute[] { subt.v(), supt.v() },
-                                              new PhysicalDomain[] { T1.v(), T2.v() },
+                                              new PhysicalDomain[] { T2.v(), T1.v() },
                                               ("<soot.jimple.paddle.bdddomains.subt:soot.jimple.paddle.bdddo" +
-                                               "mains.T1, soot.jimple.paddle.bdddomains.supt:soot.jimple.pad" +
-                                               "dle.bdddomains.T2> subtypeRelation = fh.subtypeRelation(); a" +
+                                               "mains.T2, soot.jimple.paddle.bdddomains.supt:soot.jimple.pad" +
+                                               "dle.bdddomains.T1> subtypeRelation = fh.subtypeRelation(); a" +
                                                "t /home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddl" +
                                                "e/BDDTypeManager.jedd:56,21-36"),
                                               fh.subtypeRelation());
         result.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(subtypeRelation),
-                                                                                                                 jedd.internal.Jedd.v().replace(newVars,
-                                                                                                                                                new PhysicalDomain[] { T1.v() },
-                                                                                                                                                new PhysicalDomain[] { T2.v() }),
-                                                                                                                 new PhysicalDomain[] { T2.v() })),
+                                                                                                                 newVars,
+                                                                                                                 new PhysicalDomain[] { T1.v() })),
                                                       allObjs,
-                                                      new PhysicalDomain[] { T1.v() }));
+                                                      new PhysicalDomain[] { T2.v() }));
         result.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(subtypeRelation),
-                                                                                                                 jedd.internal.Jedd.v().replace(allVars,
-                                                                                                                                                new PhysicalDomain[] { T1.v() },
-                                                                                                                                                new PhysicalDomain[] { T2.v() }),
-                                                                                                                 new PhysicalDomain[] { T2.v() })),
+                                                                                                                 allVars,
+                                                                                                                 new PhysicalDomain[] { T1.v() })),
                                                       newObjs,
-                                                      new PhysicalDomain[] { T1.v() }));
+                                                      new PhysicalDomain[] { T2.v() }));
     }
     
     public BitVector get(Type type) { throw new RuntimeException("Not implemented"); }
@@ -99,14 +100,10 @@ public class BDDTypeManager extends AbsTypeManager {
     public jedd.internal.RelationContainer get() {
         this.update();
         return new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
-                                                   new PhysicalDomain[] { V2.v(), H1.v() },
-                                                   ("return jedd.internal.Jedd.v().replace(result, new jedd.Physi" +
-                                                    "calDomain[...], new jedd.PhysicalDomain[...]); at /home/rese" +
-                                                    "arch/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDTypeMan" +
-                                                    "ager.jedd:65,8-14"),
-                                                   jedd.internal.Jedd.v().replace(result,
-                                                                                  new PhysicalDomain[] { V1.v() },
-                                                                                  new PhysicalDomain[] { V2.v() }));
+                                                   new PhysicalDomain[] { V1.v(), H1.v() },
+                                                   ("return result; at /home/research/ccl/olhota/soot-trunk/src/s" +
+                                                    "oot/jimple/paddle/BDDTypeManager.jedd:65,8-14"),
+                                                   result);
     }
     
     public boolean castNeverFails(Type from, Type to) {
@@ -120,7 +117,7 @@ public class BDDTypeManager extends AbsTypeManager {
                                               jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(fh.subtypeRelation()),
                                                                                jedd.internal.Jedd.v().literal(new Object[] { from, to },
                                                                                                               new Attribute[] { subt.v(), supt.v() },
-                                                                                                              new PhysicalDomain[] { T1.v(), T2.v() })));
+                                                                                                              new PhysicalDomain[] { T2.v(), T1.v() })));
     }
     
     private BDDHierarchy fh;

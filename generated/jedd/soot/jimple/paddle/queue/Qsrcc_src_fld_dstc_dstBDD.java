@@ -29,8 +29,8 @@ public final class Qsrcc_src_fld_dstc_dstBDD extends Qsrcc_src_fld_dstc_dst {
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rsrcc_src_fld_dstc_dstBDD reader = (Rsrcc_src_fld_dstc_dstBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { fld.v(), srcc.v(), dst.v(), src.v(), dstc.v() },
-                                                           new PhysicalDomain[] { FD.v(), C1.v(), V2.v(), V1.v(), C2.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), fld.v(), src.v(), dstc.v(), dst.v() },
+                                                           new PhysicalDomain[] { C1.v(), FD.v(), V1.v(), C2.v(), V2.v() },
                                                            ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
                                                             "oot/jimple/paddle/queue/Qsrcc_src_fld_dstc_dstBDD.jedd:39,12" +
                                                             "-18"),

@@ -32,7 +32,9 @@ public class TradTypeManager extends AbsTypeManager
     TradTypeManager( Rvar_method_type locals, Rvar_type globals, Robj_method_type localallocs, Robj_type globalallocs, FastHierarchy fh ) {
         super( locals, globals, localallocs, globalallocs );
         this.fh = fh;
+        newContextAllocNodes = PaddleNumberers.v().contextAllocNodeNumberer().iterator();
     }
+    private Iterator newContextAllocNodes;
     private void handleVarType( Type type ) {
         if( typeMask.get(type) != null ) return;
         BitVector bv = new BitVector( PaddleNumberers.v().contextAllocNodeNumberer().size() );
@@ -40,12 +42,13 @@ public class TradTypeManager extends AbsTypeManager
         for( Iterator canIt = PaddleNumberers.v().contextAllocNodeNumberer().iterator(); canIt.hasNext(); ) {
             final ContextAllocNode can = (ContextAllocNode) canIt.next();
             if( castNeverFails( can.getType(), type ) ) {
+                //BitPointsToSet.validate(can);
                 bv.set( can.getNumber() );
                 change = true;
             }
         }
     }
-    private void handleAllocNode( AllocNode an, Type antype ) {
+    private void handleAllocNode( ContextAllocNode an, Type antype ) {
         for( Iterator typeIt = Scene.v().getTypeNumberer().iterator(); typeIt.hasNext(); ) {
             final Type type = (Type) typeIt.next();
             if( !( type instanceof RefLikeType ) ) continue;
@@ -67,13 +70,9 @@ public class TradTypeManager extends AbsTypeManager
             final Rvar_type.Tuple t = (Rvar_type.Tuple) tIt.next();
             handleVarType( t.type() );
         }
-        for( Iterator tIt = localallocs.iterator(); tIt.hasNext(); ) {
-            final Robj_method_type.Tuple t = (Robj_method_type.Tuple) tIt.next();
-            handleAllocNode( t.obj(), t.type() );
-        }
-        for( Iterator tIt = globalallocs.iterator(); tIt.hasNext(); ) {
-            final Robj_type.Tuple t = (Robj_type.Tuple) tIt.next();
-            handleAllocNode( t.obj(), t.type() );
+        while( newContextAllocNodes.hasNext() ) {
+            ContextAllocNode can = (ContextAllocNode) newContextAllocNodes.next();
+            handleAllocNode( can, can.getType() );
         }
     }
     public BitVector get( Type type ) {

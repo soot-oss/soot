@@ -25,8 +25,8 @@ public final class Rsrcc_src_dstc_dstBDD extends Rsrcc_src_dstc_dst {
     
     public Rsrcc_src_dstc_dstBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        this.add(new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), dst.v(), src.v(), dstc.v() },
-                                                     new PhysicalDomain[] { C1.v(), V2.v(), V1.v(), C2.v() },
+        this.add(new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), src.v(), dstc.v(), dst.v() },
+                                                     new PhysicalDomain[] { C1.v(), V1.v(), C2.v(), V2.v() },
                                                      ("this.add(bdd) at /home/research/ccl/olhota/soot-trunk/src/so" +
                                                       "ot/jimple/paddle/queue/Rsrcc_src_dstc_dstBDD.jedd:33,102-105"),
                                                      bdd));
@@ -52,8 +52,8 @@ public final class Rsrcc_src_dstc_dstBDD extends Rsrcc_src_dstc_dst {
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), dst.v(), src.v(), dstc.v() },
-                                                          new PhysicalDomain[] { C1.v(), V2.v(), V1.v(), C2.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), src.v(), dstc.v(), dst.v() },
+                                                          new PhysicalDomain[] { C1.v(), V1.v(), C2.v(), V2.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /home/research/ccl/" +
                                                            "olhota/soot-trunk/src/soot/jimple/paddle/queue/Rsrcc_src_dst" +
                                                            "c_dstBDD.jedd:45,25-28"),
@@ -84,8 +84,8 @@ public final class Rsrcc_src_dstc_dstBDD extends Rsrcc_src_dstc_dst {
                                                "_src_dstc_dstBDD.jedd:55,43-46"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), dst.v(), src.v(), dstc.v() },
-                                                   new PhysicalDomain[] { C1.v(), V2.v(), V1.v(), C2.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), src.v(), dstc.v(), dst.v() },
+                                                   new PhysicalDomain[] { C1.v(), V1.v(), C2.v(), V2.v() },
                                                    ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
                                                     "/jimple/paddle/queue/Rsrcc_src_dstc_dstBDD.jedd:57,8-14"),
                                                    ret);

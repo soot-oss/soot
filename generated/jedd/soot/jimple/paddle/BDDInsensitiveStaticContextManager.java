@@ -23,8 +23,8 @@ public class BDDInsensitiveStaticContextManager extends AbsStaticContextManager 
                                                "ot/jimple/paddle/BDDInsensitiveStaticContextManager.jedd:34," +
                                                "45-51"),
                                               in.get());
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { kind.v(), stmt.v(), srcm.v(), tgtm.v(), srcc.v(), tgtc.v() },
-                                                    new jedd.PhysicalDomain[] { KD.v(), ST.v(), MS.v(), MT.v(), C1.v(), C2.v() },
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), stmt.v(), srcm.v(), srcc.v(), tgtc.v(), kind.v() },
+                                                    new jedd.PhysicalDomain[] { MT.v(), ST.v(), MS.v(), C1.v(), C2.v(), KD.v() },
                                                     ("out.add(newOut) at /home/research/ccl/olhota/soot-trunk/src/" +
                                                      "soot/jimple/paddle/BDDInsensitiveStaticContextManager.jedd:3" +
                                                      "5,8-11"),

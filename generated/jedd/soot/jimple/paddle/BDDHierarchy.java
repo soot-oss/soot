@@ -8,13 +8,17 @@ import java.util.*;
 public final class BDDHierarchy {
     public jedd.internal.RelationContainer subtypeRelation() {
         this.update();
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { supt.v(), subt.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { subt.v(), supt.v() },
                                                    new jedd.PhysicalDomain[] { T2.v(), T1.v() },
-                                                   ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(closure), anySub); at /home/research/ccl/olhota/soot-tru" +
-                                                    "nk/src/soot/jimple/paddle/BDDHierarchy.jedd:36,8-14"),
-                                                   jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(closure),
-                                                                                anySub));
+                                                   ("return jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v()" +
+                                                    ".union(jedd.internal.Jedd.v().read(closure), anySub), new je" +
+                                                    "dd.PhysicalDomain[...], new jedd.PhysicalDomain[...]); at /h" +
+                                                    "ome/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BD" +
+                                                    "DHierarchy.jedd:36,8-14"),
+                                                   jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(closure),
+                                                                                                               anySub),
+                                                                                  new jedd.PhysicalDomain[] { T1.v(), T2.v() },
+                                                                                  new jedd.PhysicalDomain[] { T2.v(), T1.v() }));
     }
     
     public void update() {
@@ -48,8 +52,8 @@ public final class BDDHierarchy {
                                           jedd.internal.Jedd.v().falseBDD());
     
     public jedd.internal.RelationContainer extend() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { supt.v(), subt.v() },
-                                                   new jedd.PhysicalDomain[] { T2.v(), T1.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { subt.v(), supt.v() },
+                                                   new jedd.PhysicalDomain[] { T1.v(), T2.v() },
                                                    ("return extend; at /home/research/ccl/olhota/soot-trunk/src/s" +
                                                     "oot/jimple/paddle/BDDHierarchy.jedd:63,35-41"),
                                                    extend);
@@ -76,8 +80,8 @@ public final class BDDHierarchy {
                                           jedd.internal.Jedd.v().falseBDD());
     
     public jedd.internal.RelationContainer array() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { supt.v(), subt.v() },
-                                                   new jedd.PhysicalDomain[] { T2.v(), T1.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { subt.v(), supt.v() },
+                                                   new jedd.PhysicalDomain[] { T1.v(), T2.v() },
                                                    ("return array; at /home/research/ccl/olhota/soot-trunk/src/so" +
                                                     "ot/jimple/paddle/BDDHierarchy.jedd:77,34-40"),
                                                    array);
@@ -94,8 +98,8 @@ public final class BDDHierarchy {
                                           jedd.internal.Jedd.v().falseBDD());
     
     public jedd.internal.RelationContainer anySub() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { anyst.v(), type.v() },
-                                                   new jedd.PhysicalDomain[] { T1.v(), T2.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { type.v(), anyst.v() },
+                                                   new jedd.PhysicalDomain[] { T2.v(), T1.v() },
                                                    ("return anySub; at /home/research/ccl/olhota/soot-trunk/src/s" +
                                                     "oot/jimple/paddle/BDDHierarchy.jedd:83,36-42"),
                                                    anySub);
@@ -240,8 +244,8 @@ public final class BDDHierarchy {
                                                                                                                      new jedd.PhysicalDomain[] { T2.v() },
                                                                                                                      new jedd.PhysicalDomain[] { T3.v() })),
                                                           jedd.internal.Jedd.v().replace(closure,
-                                                                                         new jedd.PhysicalDomain[] { T2.v(), T1.v() },
-                                                                                         new jedd.PhysicalDomain[] { T3.v(), T2.v() }),
+                                                                                         new jedd.PhysicalDomain[] { T1.v(), T2.v() },
+                                                                                         new jedd.PhysicalDomain[] { T2.v(), T3.v() }),
                                                           new jedd.PhysicalDomain[] { T3.v() }));
             anySub.eq(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(anySub),
                                                   concrete,

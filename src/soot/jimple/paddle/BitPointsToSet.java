@@ -79,6 +79,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
     }
     /** Returns true iff the set contains n. */
     public final boolean contains( ContextAllocNode n ) {
+        //validate(n);
         return bits.get( n.getNumber() );
     }
     public static P2SetFactory getFactory() {
@@ -93,6 +94,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
     /* End of package methods. */
 
     private boolean fastAdd( ContextAllocNode n ) {
+        //validate(n);
         boolean ret = bits.set( n.getNumber() );
         if( ret ) empty = false;
         return ret;
@@ -100,5 +102,13 @@ public final class BitPointsToSet extends PointsToSetInternal {
 
     private BitVector bits = null;
     private boolean empty = true;
+
+    /*
+    public static void validate(ContextAllocNode n) {
+        ArrayNumberer an = PaddleNumberers.v().contextAllocNodeNumberer();
+        if( n.getNumber() != an.get(n) ) throw new RuntimeException();
+        if( an.get(n.getNumber()) != n ) throw new RuntimeException();
+    }
+    */
 }
 

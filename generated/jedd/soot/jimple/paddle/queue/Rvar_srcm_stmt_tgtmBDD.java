@@ -25,8 +25,8 @@ public final class Rvar_srcm_stmt_tgtmBDD extends Rvar_srcm_stmt_tgtm {
     
     public Rvar_srcm_stmt_tgtmBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        this.add(new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), tgtm.v(), var.v() },
-                                                     new PhysicalDomain[] { ST.v(), MS.v(), MT.v(), V1.v() },
+        this.add(new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), stmt.v(), srcm.v(), var.v() },
+                                                     new PhysicalDomain[] { MT.v(), ST.v(), MS.v(), V1.v() },
                                                      ("this.add(bdd) at /home/research/ccl/olhota/soot-trunk/src/so" +
                                                       "ot/jimple/paddle/queue/Rvar_srcm_stmt_tgtmBDD.jedd:33,104-10" +
                                                       "7"),
@@ -53,8 +53,8 @@ public final class Rvar_srcm_stmt_tgtmBDD extends Rvar_srcm_stmt_tgtm {
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), tgtm.v(), var.v() },
-                                                          new PhysicalDomain[] { ST.v(), MS.v(), MT.v(), V1.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), stmt.v(), srcm.v(), var.v() },
+                                                          new PhysicalDomain[] { MT.v(), ST.v(), MS.v(), V1.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /home/research/ccl/" +
                                                            "olhota/soot-trunk/src/soot/jimple/paddle/queue/Rvar_srcm_stm" +
                                                            "t_tgtmBDD.jedd:45,25-28"),
@@ -85,8 +85,8 @@ public final class Rvar_srcm_stmt_tgtmBDD extends Rvar_srcm_stmt_tgtm {
                                                "_srcm_stmt_tgtmBDD.jedd:55,44-47"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), tgtm.v(), var.v() },
-                                                   new PhysicalDomain[] { ST.v(), MS.v(), MT.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), stmt.v(), srcm.v(), var.v() },
+                                                   new PhysicalDomain[] { MT.v(), ST.v(), MS.v(), V1.v() },
                                                    ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
                                                     "/jimple/paddle/queue/Rvar_srcm_stmt_tgtmBDD.jedd:57,8-14"),
                                                    ret);
