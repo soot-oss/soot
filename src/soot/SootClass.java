@@ -781,8 +781,10 @@ public class SootClass extends AbstractHost
 
 	    // add history node
 	    // TODO: grab the software version and command line
+	    String dateStr = new Date().toString();
 	    xmlHistoryNode = xmlRootNode.addChild("history");
-	    xmlHistoryNode.addChild("soot",new String[] {"version", "command", "timestamp"},new String[] {"1.2.2", "unknown", new Date().toString()});
+	    xmlHistoryNode.addAttribute("created", dateStr );
+	    xmlHistoryNode.addChild("soot",new String[] {"version", "command", "timestamp"},new String[] {"1.2.2", "unknown", dateStr});
             
 	    // add class root node
             xmlClassNode = xmlRootNode.addChild("class",new String[] {"name"},new String[] {Scene.v().quotedNameOf(this.getName()).toString()});

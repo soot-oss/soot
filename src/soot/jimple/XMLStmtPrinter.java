@@ -103,9 +103,7 @@ public class XMLStmtPrinter implements StmtPrinter{
         }        
 
 	// iterate through each statement
-        String cleanMethodName = body.getMethod().getName();        
-	cleanMethodName = cleanMethodName.replace( '<', '_' );
-        cleanMethodName = cleanMethodName.replace( '>', '_' );		        
+        String cleanMethodName = cleanMethod( body.getMethod().getName() );
 	Iterator unitIt = units.iterator();
         Unit currentStmt = null, previousStmt;
         String indent = ( isNumbered ) ? "    " : "        ";
@@ -126,7 +124,8 @@ public class XMLStmtPrinter implements StmtPrinter{
 	
         // add method node
         XMLNode methodNode = xmlNode.addChild( "method", new String[] { "name", "returntype", "class" }, new String[] { cleanMethodName, body.getMethod().getReturnType().toString(), body.getMethod().getDeclaringClass().getName().toString() } );
-        methodNode.addChild( "declaration", "<![CDATA[" + body.getMethod().getDeclaration().toString().trim() + "]]>" );
+	String declarationStr = body.getMethod().getDeclaration().toString().trim();
+        methodNode.addChild( "declaration", toCDATA( declarationStr ), new String[] { "length" }, new String[] { declarationStr.length()+"" } );
 
         // create references to parameters, locals, labels, stmts nodes
         XMLNode parametersNode = methodNode.addChild( "parameters", new String[] { "method" }, new String[] { cleanMethodName } );
@@ -183,7 +182,7 @@ public class XMLStmtPrinter implements StmtPrinter{
                 ValueBox box = ( ValueBox )boxIt.next();
                 if( box.getValue() instanceof Local )
                 {
-                    String local = ( ( Local )box.getValue() ).toBriefString();
+                    String local = cleanLocal( ( ( Local )box.getValue() ).toBriefString() );
                     sootstmtNode.addChild( "uses", new String[] { "id", "local", "method" }, new String[] { j+"", local, cleanMethodName } );
                     j++;
 
@@ -217,7 +216,7 @@ public class XMLStmtPrinter implements StmtPrinter{
                 ValueBox box = ( ValueBox )boxIt.next();
                 if( box.getValue() instanceof Local )
                 {
-                    String local = ( ( Local )box.getValue() ).toBriefString();
+                    String local = cleanLocal( ( ( Local )box.getValue() ).toBriefString() );
                     sootstmtNode.addChild( "defines", new String[] { "id", "local", "method" }, new String[] { j+"", local, cleanMethodName } );
                     j++;
 					
@@ -226,7 +225,8 @@ public class XMLStmtPrinter implements StmtPrinter{
                     if( defIndex == -1 )                    
                     {                        
                         defDataList.addElement( tempVector );
-                        defList.addElement( local );							                        defIndex = defList.indexOf( local );						
+                        defList.addElement( local );
+			defIndex = defList.indexOf( local );						
                     }								
 
                     if( defDataList.size() > defIndex )
@@ -267,11 +267,11 @@ public class XMLStmtPrinter implements StmtPrinter{
             XMLNode livevarsNode = sootstmtNode.addChild( "livevariables", new String[] { "incount", "outcount" }, new String[] { liveLocalsIn.size()+"", liveLocalsOut.size()+"" } );
             for( int i = 0; i < liveLocalsIn.size(); i++ )
             {
-                livevarsNode.addChild( "in", new String[] { "id", "local", "method" }, new String[] { i+"", liveLocalsIn.get( i ).toString(), cleanMethodName } );
+                livevarsNode.addChild( "in", new String[] { "id", "local", "method" }, new String[] { i+"", cleanLocal( liveLocalsIn.get( i ).toString() ), cleanMethodName } );
             }            
             for( int i = 0; i < liveLocalsOut.size(); i++ )            
             {
-                livevarsNode.addChild( "out", new String[] { "id", "local", "method" }, new String[] { i+"", liveLocalsOut.get( i ).toString(), cleanMethodName } );
+                livevarsNode.addChild( "out", new String[] { "id", "local", "method" }, new String[] { i+"", cleanLocal( liveLocalsOut.get( i ).toString() ), cleanMethodName } );
             }
 			
             // parameters            
@@ -299,7 +299,7 @@ public class XMLStmtPrinter implements StmtPrinter{
             }
 			
             // add plain jimple representation of each statement
-            sootstmtNode.addChild( "jimple", "<![CDATA[" + jimpleStr + ";]]>", new String[] { "length" }, new String[] { (jimpleStr.length()+1)+"" } );
+            sootstmtNode.addChild( "jimple", toCDATA( jimpleStr ), new String[] { "length" }, new String[] { (jimpleStr.length()+1)+"" } );
             
             // increment statement counters
             labelID++;
@@ -354,8 +354,7 @@ public class XMLStmtPrinter implements StmtPrinter{
             int useCount = 0;
             int defineCount = 0;
             Local localData = ( Local )localsIterator.next();			
-            String local = ( String )localData.toString().trim();
-	    local = local.replace( '$', '_' );
+            String local = cleanLocal( ( String )localData.toString() );
             String localType = localData.getType().toBriefString();
 
             // collect the local types			
@@ -491,8 +490,27 @@ public class XMLStmtPrinter implements StmtPrinter{
     // moved here from body ; should be factorized with the above
     public void printDebugStatementsInBody( Body b, java.io.PrintWriter out, boolean isPrecise )
     {
+	// TODO: implement this?
     }		
     
+    private String cleanMethod( String str )
+    {
+	// method names can be filtered here, for example replacing < and > with _ to comply with XML name tokens
+	return str.trim().replace( '<', '_' ).replace( '>', '_' );
+    }
+    
+    private String cleanLocal( String str )
+    {
+    	// local names can be filtered here, for example replacing $ with _ to comply with XML name tokens
+	return str.trim(); //.replace( '$', '_' );
+    }
+
+    private String toCDATA( String str )
+    {   
+	// wrap a string in CDATA markup - str can contain anything and will pass XML validation
+	return "<![CDATA[" + str + "]]>";
+    }
+
     private String boolToString( boolean bool )	
     {
 	if( bool )
