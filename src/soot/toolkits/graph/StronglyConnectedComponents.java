@@ -39,17 +39,17 @@ import java.util.*;
 
 public class StronglyConnectedComponents
 {
-    private HashMap nodeToColor = new HashMap();
-    private static final int 
-        WHITE = 0,
-        GRAY = 1,
-        BLACK = 2;
-    Chain finishingOrder = new HashChain();
-
+    private HashMap nodeToColor;
+    private static Object Visited=new Object();
+    private static Object Black=new Object();
+    private LinkedList finishingOrder;
     private List componentList = new ArrayList();
     private HashMap nodeToComponent = new HashMap();
     MutableDirectedGraph sccGraph = new HashMutableDirectedGraph();
-
+    private int[] indexStack;
+    private Object[] nodeStack;
+    private int last;
+    
     /**
      *  @param g a graph for which we want to compute the strongly
      *           connected components. 
@@ -57,12 +57,17 @@ public class StronglyConnectedComponents
      */
     public StronglyConnectedComponents(DirectedGraph g)
     {
-        // Color all nodes white
-        {
-            Iterator nodeIt = g.iterator();
-            while(nodeIt.hasNext())
-                nodeToColor.put(nodeIt.next(), new Integer(WHITE));
-        }
+	nodeToColor = new HashMap((3*g.size())/2,0.7f);
+	indexStack = new int[g.size()];
+	nodeStack = new Object[g.size()];        
+	finishingOrder = new LinkedList();
+	
+	//        // Color all nodes white
+        //{
+        //    Iterator nodeIt = g.iterator();
+        //    while(nodeIt.hasNext())
+        //        nodeToColor.put(nodeIt.next(), new Integer(WHITE));
+        //}
         
         // Visit each node
         {
@@ -72,17 +77,19 @@ public class StronglyConnectedComponents
             {
                 Object s = nodeIt.next();
                
-                if(((Integer) nodeToColor.get(s)).intValue() == WHITE)
+                if(nodeToColor.get(s) == null)
                     visitNode(g, s); 
             }
         }
 
+	
         // Re-color all nodes white
-        {
-            Iterator nodeIt = g.iterator();
-            while(nodeIt.hasNext())
-                nodeToColor.put(nodeIt.next(), new Integer(WHITE));
-        }
+        nodeToColor = new HashMap((3*g.size()),0.7f);
+	/*{
+	  Iterator nodeIt = g.iterator();
+	  while(nodeIt.hasNext())
+	  nodeToColor.put(nodeIt.next(), new Integer(WHITE));
+	  }*/
 
         // Visit each node via transpose edges
         {
@@ -91,22 +98,22 @@ public class StronglyConnectedComponents
             {
                 Object s = revNodeIt.next();
 
-                if(((Integer) nodeToColor.get(s)).intValue() == WHITE)
+                if(nodeToColor.get(s) == null)
                 {
                     List currentComponent = null;
 
-                    if (nodeToComponent.get(s) == null)
-                    {
-                        currentComponent = new StationaryArrayList();
-                        nodeToComponent.put(s, currentComponent);
-                        sccGraph.addNode(currentComponent);
-                        componentList.add(currentComponent);
-                    }
-                    else
-                    {
-                        System.out.println("huh, this shouldn't happen");
-                        currentComponent = (List)nodeToComponent.get(s);
-                    }
+                    //if (nodeToComponent.get(s) == null)
+                    //{
+		    currentComponent = new StationaryArrayList();
+		    nodeToComponent.put(s, currentComponent);
+		    sccGraph.addNode(currentComponent);
+		    componentList.add(currentComponent);
+		    /*}
+		      else
+		      {
+		      System.out.println("huh, this shouldn't happen");
+		      currentComponent = (List)nodeToComponent.get(s);
+		      }*/
 
                     visitRevNode(g, s, currentComponent); 
                 }
@@ -114,52 +121,60 @@ public class StronglyConnectedComponents
         }
         componentList = Collections.unmodifiableList(componentList);
 
-        System.out.println("Done computing scc components");
-        System.out.println("number of nodes in underlying graph: "+g.size());
-        System.out.println("number of components: "+sccGraph.size());
+        if (Main.isVerbose) {
+            System.out.println("Done computing scc components");
+            System.out.println("number of nodes in underlying graph: "+g.size());
+            System.out.println("number of components: "+sccGraph.size());
+        }
     }
 
     private void visitNode(DirectedGraph graph, Object startNode)
     {
-        LinkedList nodeStack = new LinkedList();
-        LinkedList indexStack = new LinkedList();
+        //LinkedList nodeStack = new Linked
+        //LinkedList indexStack = new LinkedList();
+        last=0;
+        nodeToColor.put(startNode, Visited);
         
-        nodeToColor.put(startNode, new Integer(GRAY));
-        
-        nodeStack.addLast(startNode);
-        indexStack.addLast(new Integer(-1));
-        
-        while(!nodeStack.isEmpty())
+        //nodeStack.addLast(startNode);
+        //indexStack.addLast(new Integer(-1));
+        nodeStack[last]=startNode;
+        indexStack[last++]= -1;
+        //while(!nodeStack.isEmpty())
+	while(last>0)
         {
-            int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Object toVisitNode = nodeStack.getLast();
-            
-            toVisitIndex++;
-            
-            indexStack.addLast(new Integer(toVisitIndex));
-            
-            if(toVisitIndex >= graph.getSuccsOf(toVisitNode).size())
+            /*int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
+	      Object toVisitNode = nodeStack.getLast();
+	      toVisitIndex++;
+              indexStack.addLast(new Integer(toVisitIndex));*/
+         
+	    int toVisitIndex = ++indexStack[last-1];
+            Object toVisitNode = nodeStack[last-1];
+           
+	    if(toVisitIndex >= graph.getSuccsOf(toVisitNode).size())
             {
                 // Visit this node now that we ran out of children 
                     finishingOrder.addFirst(toVisitNode);
 
-                    nodeToColor.put(toVisitNode, new Integer(BLACK));                
+		    //nodeToColor.put(toVisitNode, nBLACK));                
                 
                 // Pop this node off
-                    nodeStack.removeLast();
-                    indexStack.removeLast();
+		    //nodeStack.removeLast();
+                    //indexStack.removeLast();
+		    last--;
             }
             else
             {
                 Object childNode = graph.getSuccsOf(toVisitNode).get(toVisitIndex);
                 
                 // Visit this child next if not already visited (or on stack)
-                    if(((Integer) nodeToColor.get(childNode)).intValue() == WHITE)
+                    if(nodeToColor.get(childNode) == null)
                     {
-                        nodeToColor.put(childNode, new Integer(GRAY));
+                        nodeToColor.put(childNode, Visited);
                         
-                        nodeStack.addLast(childNode);
-                        indexStack.addLast(new Integer(-1));
+                        //nodeStack.addLast(childNode);
+                        //indexStack.addLast(new Integer(-1));
+			nodeStack[last]=childNode;
+			indexStack[last++]=-1;
                     }
             }
         }
@@ -167,54 +182,61 @@ public class StronglyConnectedComponents
 
     private void visitRevNode(DirectedGraph graph, Object startNode, List currentComponent)
     {
-        LinkedList nodeStack = new LinkedList();
-        LinkedList indexStack = new LinkedList();
+        /*LinkedList nodeStack = new LinkedList();
+	  LinkedList indexStack = new LinkedList();*/
+	last=0;
         
-        nodeToColor.put(startNode, new Integer(GRAY));
+        nodeToColor.put(startNode, Visited);
         
-        nodeStack.addLast(startNode);
-        indexStack.addLast(new Integer(-1));
-        
-        while(!nodeStack.isEmpty())
+        /*nodeStack.addLast(startNode);
+	  indexStack.addLast(new Integer(-1));*/
+	nodeStack[last]=startNode;
+        indexStack[last++]= -1;
+	//        while(!nodeStack.isEmpty())
+	while(last>0)
         {
-            int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Object toVisitNode = nodeStack.getLast();
-            
-            toVisitIndex++;
-            
-            indexStack.addLast(new Integer(toVisitIndex));
+            /*int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
+	      Object toVisitNode = nodeStack.getLast();
+	      toVisitIndex++;
+	      indexStack.addLast(new Integer(toVisitIndex));*/
+	    
+	    int toVisitIndex = ++indexStack[last-1];
+            Object toVisitNode = nodeStack[last-1];
             
             if(toVisitIndex >= graph.getPredsOf(toVisitNode).size())
             {
                 // No more nodes.  Add toVisitNode to current component.
-                    currentComponent.add(toVisitNode);
-                    nodeToComponent.put(toVisitNode, currentComponent);
-                    nodeToColor.put(toVisitNode, new Integer(BLACK));
-
+		currentComponent.add(toVisitNode);
+		nodeToComponent.put(toVisitNode, currentComponent);
+		// nodeToColor.put(toVisitNode, new Integer(BLACK));
+		nodeToColor.put(toVisitNode, Black);
                 // Pop this node off
-                    nodeStack.removeLast();
-                    indexStack.removeLast();
+		//nodeStack.removeLast();
+		//indexStack.removeLast();
+		last--;
             }
             else
             {
                 Object childNode = graph.getPredsOf(toVisitNode).get(toVisitIndex);
                 
                 // Visit this child next if not already visited (or on stack)
-                    if(((Integer) nodeToColor.get(childNode)).intValue() == WHITE)
-                    {
-                        nodeToColor.put(childNode, new Integer(GRAY));
-                        
-                        nodeStack.addLast(childNode);
-                        indexStack.addLast(new Integer(-1));
-                    }
-                    else if (((Integer)nodeToColor.get(childNode)).intValue() == GRAY)
-                        /* we just stumbled on a back edge, in the same component. Ignore. */;
-                    else
-                    {
-                        /* we may be visiting a node in another component.  if so, add edge to sccGraph. */
-                        if (nodeToComponent.get(childNode) != currentComponent)
-                            sccGraph.addEdge(nodeToComponent.get(childNode), currentComponent);
-                    }
+		if(nodeToColor.get(childNode) == null)
+                {
+		    nodeToColor.put(childNode, Visited);
+		    
+		    /*nodeStack.addLast(childNode);
+		      indexStack.addLast(new Integer(-1));*/
+		    nodeStack[last]=childNode;
+		    indexStack[last++]=-1;
+		}
+		/*else if (((Integer)nodeToColor.get(childNode)).intValue() == GRAY)*/
+		/* we just stumbled on a back edge, in the same component. Ignore. */
+		else if (nodeToColor.get(childNode) == Black)
+		{
+		    /* we may be visiting a node in another component.  if so, add edge to sccGraph. */
+		    if (nodeToComponent.get(childNode) != currentComponent)
+			sccGraph.addEdge(nodeToComponent.get(childNode), currentComponent);
+		}
             }
         }
     }

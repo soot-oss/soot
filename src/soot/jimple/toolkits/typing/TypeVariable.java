@@ -31,6 +31,7 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 import java.util.*;
+import soot.util.BitSet;
 
 /** Represents a type variable. **/
 class TypeVariable implements Comparable

@@ -30,6 +30,7 @@ import soot.util.*;
 import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
+import soot.util.BitSet;
 
 /** A bit-vector implementation for flow sets with types as its elements. */
 
@@ -174,12 +175,8 @@ public class TypeSet implements Set
 
     private List toList() { 
         LinkedList l = new LinkedList();
-        int N = types.length();
-        for (int i = 0; i < N; i++) {
-            Object o = numberToType[i];
-            if (types.get(i))
-                l.add(o);
-        }
+	for (BitSetIterator it = types.iterator(); it.hasNext(); )
+	    l.add(numberToType[it.next()]);
         return l;
     }
 

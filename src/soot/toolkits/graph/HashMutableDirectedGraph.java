@@ -206,6 +206,25 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
         if (tails.contains(node))
             tails.remove(node);
     }
+
+    public void printGraph() {
+
+	for (Iterator it = iterator(); it.hasNext(); ) {
+	    Object node = it.next();
+	    System.out.println("Node = "+node);
+	    System.out.println("Preds:");
+	    for (Iterator predsIt = getPredsOf(node).iterator(); predsIt.hasNext(); ) {
+		System.out.print("     ");
+		System.out.println(predsIt.next());
+	    }
+	    System.out.println("Succs:");
+	    for (Iterator succsIt = getSuccsOf(node).iterator(); succsIt.hasNext(); ) {
+		System.out.print("     ");
+		System.out.println(succsIt.next());
+	    }
+	}
+    }
+
 }
 
  

@@ -33,7 +33,7 @@ import soot.toolkits.graph.*;
 
 /** A graph where the nodes are types in the analysed program;
  * edges indicate that there is assignment between two types. */
-public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
+public class VTATypeGraph extends MemoryEfficientGraph implements TypeGraph
 {
     int state;
     int edges;
@@ -487,7 +487,9 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                                   arrayNodes.add(lhsRep);
 				}
 			      
-			      // check that we have the right form.
+			      // check that we have the right form: by right form we
+                              // mean that it's actually an rvalue (not a NewExpr, a StringConstant,
+                              // or something similar.
 			      if (rhsRep == null)
                                 continue;			      
 			      addEdge(rhsRep, lhsRep);

@@ -30,6 +30,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
+import soot.util.BitSet;
 
 /**
  * Each instance of this class represents one type in the class hierarchy (or basic types).

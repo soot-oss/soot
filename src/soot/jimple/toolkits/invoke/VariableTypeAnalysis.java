@@ -337,6 +337,7 @@ public class VariableTypeAnalysis
             outTypes.put(node, set);
         }
         
+        /* The next piece seems to be totally useless...
         for (Iterator nodeIt = nodelist.iterator(); nodeIt.hasNext(); ) {
             Object node = nodeIt.next();
             set = (TypeSet)outTypes.get(node);
@@ -347,6 +348,7 @@ public class VariableTypeAnalysis
                 outTypes.put(node, set);
             }
         }
+        */
         
         superNodesToReachingTypes = outTypes;
     }
