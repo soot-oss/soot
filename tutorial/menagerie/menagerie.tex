@@ -59,22 +59,22 @@ Consider the following Java method:
 After Jimplification, we have the following abbreviated jimple code:
 
 \begin{verbatim}
-    public static void main(java.lang.String[]) throws java.lang.Exception 
+public static void main(java.lang.String[]) throws java.lang.Exception
     {
         java.lang.String[] r0;
         int i0, i1, i2, $i3, $i4;
-        java.lang.Exception r1, $r4;
-        java.io.PrintStream $r2, $r3;
+        java.io.PrintStream $r1, $r2;
+        java.lang.Exception $r3, r4;
 
         r0 := @parameter0;
         i0 = 2;
         i1 = 6;
+        $r1 = java.lang.System.out;
+        $r1.println(``Hi!'');
         $r2 = java.lang.System.out;
-        $r2.println("Hi!");
-        $r3 = java.lang.System.out;
         $i3 = i0 * i1;
         $i4 = $i3 + i1;
-        $r3.println($i4);
+        $r2.println($i4);
 
      label0:
         i2 = i1 * i0;
@@ -83,9 +83,9 @@ After Jimplification, we have the following abbreviated jimple code:
         goto label3;
 
      label2:
-        $r4 := @caughtexception;
-        r1 = $r4;
-        throw  r1;
+        $r3 := @caughtexception;
+        r4 = $r3;
+        throw r4;
 
      label3:
         return;
@@ -101,8 +101,8 @@ The locals in this method are seen at the top of the method:
 \begin{verbatim}
         java.lang.String[] r0;
         int i0, i1, i2, $i3, $i4;
-        java.lang.Exception r1, $r4;
-        java.io.PrintStream $r2, $r3;
+        java.io.PrintStream $r1, $r2;
+        java.lang.Exception $r3, r4;
 \end{verbatim}
 %$
 
@@ -334,6 +334,7 @@ jumps to this {\tt Unit}, pointing them instead at {\tt newLocation}.
 \begin{itemize}
 \item March 1, 2000: Initial version.
 \item September 1, 2000: Fixed typo.
+\item January 7, 2005: Made .jimp example match actual Soot output
 \end{itemize}
 
 \end{document}
