@@ -1422,12 +1422,10 @@ public class Walker extends DepthFirstAdapter
 
     public void outACastExpression(ACastExpression node)
     {
-	String local = (String) mProductions.pop();
+	Value val = (Value) mProductions.pop();
 	
-	Local l = (Local) mLocals.get(local);
-	if(l == null) throw new RuntimeException("did not find local: " + local);
         Type type = (Type) mProductions.pop();
-	mProductions.push(Jimple.v().newCastExpr(l, type));
+	mProductions.push(Jimple.v().newCastExpr(val, type));
     }
 
 

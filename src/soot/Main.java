@@ -160,15 +160,16 @@ public class Main
                 }                    
             } else {                
                 String fileName = files[i].getName();        
-                int index = fileName.indexOf(".class");
-                if (index != -1)
+                
+                if (fileName.endsWith(".class"))
                 {
+                    int index = fileName.lastIndexOf(".class");
                     fileNames.add(fileName.substring(0, index));
                 }
-
-                index = fileName.indexOf(".jimple");
-                if (index != -1)
+                
+                if (fileName.endsWith(".jimple"))
                 {
+                    int index = fileName.lastIndexOf(".jimple");
                     fileNames.add(fileName.substring(0, index));
                 }
             }
@@ -176,12 +177,23 @@ public class Main
         return fileNames;
     }
 
+
+
+
+
+
+
+
+
+
+
+
     private static void processCmdLine(String[] args)
     {
         if(args.length == 0)
         {
             // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.69");
+            System.out.println("Soot version 1.beta.5.dev.70");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
