@@ -145,7 +145,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Grimp version $ProjectVersion$\");"$
-            System.out.println("Grimp version 1.beta.3.dev.10");
+            System.out.println("Grimp version 1.beta.3.dev.11");
             System.out.println("Copyright (C) 1999 Patrick Lam (plam@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("Portions copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
@@ -333,6 +333,10 @@ public class Main
                     else {
                         handleClass(c, postFix, writerOut, buildBodyOptions);
                     }
+                    System.out.println("node count: "+
+                                       ca.mcgill.sable.soot.jimple.Transformations.nodeCount);
+                    System.out.println("aggregation count: "+
+                                       ca.mcgill.sable.soot.jimple.Transformations.aggrCount);
 
                     try {
                         writerOut.flush();

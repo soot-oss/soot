@@ -69,6 +69,11 @@
 
  B) Changes:
 
+ - Modified on February 15, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Uses bipush & sipush instead of ldc
+   More efficient branch generation.
+   Uses the iinc bytecode instruction to generate more efficient code.
+   
  - Modified on February 17, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Added the emitting of stack height.
    
@@ -563,6 +568,39 @@ public class JasminClass
         final Value lvalue = stmt.getLeftOp();
         final Value rvalue = stmt.getRightOp();
 
+        // Handle simple subcase where you can use the efficient iinc bytecode
+            if(lvalue instanceof Local && (rvalue instanceof AddExpr || rvalue instanceof SubExpr))
+            {
+                Local l = (Local) lvalue;
+                BinopExpr expr = (BinopExpr) rvalue;
+                Value op1 = expr.getOp1();
+                Value op2 = expr.getOp2();
+                                
+                if(l.getType().equals(IntType.v()))
+                {
+                    boolean isValidCase = false;
+                    int x = 0;
+                    
+                    if(op1 == l && op2 instanceof IntConstant) 
+                    {
+                        x = ((IntConstant) op2).value;
+                        isValidCase = true;
+                    }
+                    else if(op2 == l && op1 instanceof IntConstant)
+                    {
+                        x = ((IntConstant) op1).value;
+                        isValidCase = true;
+                    }
+                    
+                    if(isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE)
+                    {
+                        emit("iinc " + ((Integer) localToSlot.get(l)).intValue() + " " +  
+                            ((expr instanceof AddExpr) ? x : -x), 0);
+                        return;
+                    }        
+                }
+            }
+            
         lvalue.apply(new AbstractJimpleValueSwitch()
         {
             public void caseArrayRef(ArrayRef v)
@@ -763,9 +801,116 @@ public class JasminClass
         final Value op2 = ((BinopExpr) cond).getOp2();
         final String label = (String) stmtToLabel.get(stmt.getTarget());
 
+        // Handle simple subcase where op1 is null
+            if(op2 instanceof NullConstant || op1 instanceof NullConstant)
+            {
+                if(op2 instanceof NullConstant)
+                    emitValue(op1);
+                else
+                    emitValue(op2);
+                    
+                if(cond instanceof EqExpr)
+                    emit("ifnull " + label, -1);
+                else if(cond instanceof NeExpr)  
+                    emit("ifnonnull "+ label, -1);
+                else
+                    throw new RuntimeException("invalid condition");
+            }
+
+        // Handle simple subcase where op2 is 0  
+            if(op2 instanceof IntConstant && ((IntConstant) op2).value == 0)
+            {
+                emitValue(op1);
+                
+                cond.apply(new AbstractJimpleValueSwitch()
+                {
+                    public void caseEqExpr(EqExpr expr)
+                    {
+                        emit("ifeq " + label, -1);
+                    }
+        
+                    public void caseNeExpr(NeExpr expr)
+                    {
+                        emit("ifne " + label, -1);
+                    }
+        
+                    public void caseLtExpr(LtExpr expr)
+                    {
+                        emit("iflt " + label, -1); 
+                    }
+                    
+                    public void caseLeExpr(LeExpr expr)
+                    {
+                        emit("ifle " + label, -1);
+                    }
+        
+                    public void caseGtExpr(GtExpr expr)
+                    {
+                        emit("ifgt " + label, -1);
+                    }
+        
+                    public void caseGeExpr(GeExpr expr)
+                    {
+                        emit("ifge " + label, -1);
+                    }
+        
+                    public void defaultCase(Value v)
+                    {
+                        throw new RuntimeException("invalid condition " + v);
+                    }
+                });               
+                 
+                return;
+            }
+        
+        // Handle simple subcase where op1 is 0  (flip directions)
+            if(op1 instanceof IntConstant && ((IntConstant) op1).value == 0)
+            {
+                emitValue(op2);
+                
+                cond.apply(new AbstractJimpleValueSwitch()
+                {
+                    public void caseEqExpr(EqExpr expr)
+                    {
+                        emit("ifeq " + label, -1);
+                    }
+        
+                    public void caseNeExpr(NeExpr expr)
+                    {
+                        emit("ifne " + label, -1);
+                    }
+        
+                    public void caseLtExpr(LtExpr expr)
+                    {
+                        emit("ifgt " + label, -1); 
+                    }
+                    
+                    public void caseLeExpr(LeExpr expr)
+                    {
+                        emit("ifge " + label, -1);
+                    }
+        
+                    public void caseGtExpr(GtExpr expr)
+                    {
+                        emit("iflt " + label, -1);
+                    }
+        
+                    public void caseGeExpr(GeExpr expr)
+                    {
+                        emit("ifle " + label, -1);
+                    }
+        
+                    public void defaultCase(Value v)
+                    {
+                        throw new RuntimeException("invalid condition " + v);
+                    }
+                });               
+                 
+                return;
+            }
+        
         emitValue(op1);
         emitValue(op2);
-
 
         cond.apply(new AbstractJimpleValueSwitch()
         {
@@ -1721,6 +1866,10 @@ public class JasminClass
                     emit("iconst_m1", 1);
                 else if(v.value >= 0 && v.value <= 5)
                     emit("iconst_" + v.value, 1);
+                else if(v.value >= Byte.MIN_VALUE && v.value <= Byte.MAX_VALUE)
+                    emit("bipush " + v.value, 1);
+                else if(v.value >= Short.MIN_VALUE && v.value <= Short.MAX_VALUE)
+                    emit("sipush " + v.value, 1);
                 else
                     emit("ldc " + v.toString(), 1);
             }

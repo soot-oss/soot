@@ -157,7 +157,9 @@ public class Main
         defsPostTimer = new Timer(),
         liveSetupTimer = new Timer(),
         liveAnalysisTimer = new Timer(),
-        livePostTimer = new Timer();
+        livePostTimer = new Timer(),
+        jimpleAggregationTimer = new Timer(),
+        grimpAggregationTimer = new Timer();
         
 
     static int conversionLocalCount,
@@ -188,7 +190,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.3.dev.10");
+            System.out.println("Jimple version 1.beta.3.dev.11");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -415,6 +417,7 @@ public class Main
                 System.out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
                 System.out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
                 System.out.println("                setup: " + toTimeString(liveSetupTimer, totalTime));
+                System.out.println("          aggregation: " + toTimeString(jimpleAggregationTimer, totalTime));
                 System.out.println("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
                 System.out.println("                 post: " + toTimeString(livePostTimer, totalTime));
                 
@@ -491,7 +494,7 @@ public class Main
     private static void handleClass(SootClass c, String postFix, PrintWriter writerOut, int buildBodyOptions)
     {
         if(postFix.equals(".jasmin"))
-            new JasminClass(c, new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()))).print(writerOut);
+            new JasminClass(c, new BuildBody(Grimp.v(), new StoredBody(ClassFile.v()))).print(writerOut);
         else if(postFix.equals(".jimp"))
         {
             c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions),
