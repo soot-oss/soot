@@ -147,6 +147,12 @@ public class DavaBody extends Body
 		SET = new SETTopNode( asg.get_ChainView());
 		continue;
 	    }
+	    catch (RuntimeException re) {
+		// System.out.println( asg);
+		// SET.dump();
+		re.printStackTrace();
+		System.exit(0);
+	    }
 	    break;
 	}
 

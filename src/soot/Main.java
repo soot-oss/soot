@@ -186,7 +186,7 @@ public class Main implements Runnable
 		break;
 		
 	    case CLASS:
-		path.append( "sootclasses");
+		path.append( "sootclass");
 		break;
 		
 	    case DAVA:
@@ -681,7 +681,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.32)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.33)");
 	System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -1878,6 +1878,10 @@ public class Main implements Runnable
 	    produceDava  = false;
         
 	switch( targetExtension) {	    
+	case JIMPLE:
+	case NJIMPLE:
+	case JIMP:                   
+	    break;
 	case DAVA:
 	    produceDava = true;
 	case GRIMP:
@@ -1889,16 +1893,17 @@ public class Main implements Runnable
 	    produceBaf = true;
 	    break;
 	default:
-	    String endResult = getExtensionFor(finalRep).substring(1);
-	    if (endResult.equals( "baf"))
+	    switch( finalRep) {
+	    case DAVA:
+		produceDava = true;
+	    case GRIMP:
+	    case GRIMPLE:
+		produceGrimp = true;
+		break;
+	    case BAF:
 		produceBaf = true;
-	    else if (endResult.equals( "grimp"))
-		produceGrimp = true;
-	    else if (endResult.equals( "dava")) {
-		produceGrimp = true;
-		produceDava  = true;
+	    default:
 	    }
-	    break;
 	}
 	
 	boolean buildPackages = getWithPackagedOutput();
@@ -1908,7 +1913,7 @@ public class Main implements Runnable
         String fileName = getFileNameFor( c.getName(), targetExtension);
       
         if(targetExtension != CLASS)
-	    {   
+	    {
 		try {
 		    streamOut = new FileOutputStream(fileName);
 		    writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
@@ -1918,6 +1923,9 @@ public class Main implements Runnable
 			System.out.println("Cannot output file " + fileName);
 		    }
 	    }
+	else if ((getWithPackagedOutput()) && (outputDir.equals( "")))
+	    outputDir = "sootified";
+
 
 	HashChain newMethods = new HashChain();
 	

@@ -50,8 +50,10 @@ public class Dava
 
     public void log( String s)
     {
-	if (LOG_TO_SCREEN)
-	    System.err.println( s);
+	if (LOG_TO_SCREEN) {
+	    System.out.println( s);
+	    System.out.flush();
+	}
 
 	if (LOG_TO_FILE != null) {
 	    if (iOut == null) 

@@ -274,10 +274,24 @@ public class LabeledBlockFinder implements FactFinder
 			    continue;
 
 			SETNode srcNode = pas.myNode;
-
-			while (children.contains( srcNode) == false)
-			    srcNode = srcNode.get_Parent();
 			
+			try {
+			
+			    while (children.contains( srcNode) == false)
+				srcNode = srcNode.get_Parent();
+			
+			}
+			catch (RuntimeException re) {
+			    System.out.println( pas);
+			    pas.myNode.dump();
+
+			    System.out.println( entryStmt);
+			    curNode.dump();
+
+			    throw re;
+			}
+
+
 			if (srcNode == curNode)
 			    continue;
 

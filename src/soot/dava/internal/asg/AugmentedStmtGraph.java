@@ -3,6 +3,7 @@ package soot.dava.internal.asg;
 import soot.*;
 import java.util.*;
 import soot.util.*;
+import soot.dava.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.dava.toolkits.base.finders.*;
@@ -70,6 +71,8 @@ public class AugmentedStmtGraph implements DirectedGraph
     public AugmentedStmtGraph( BriefUnitGraph bug, CompleteUnitGraph cug)
     {
 	this();
+
+	Dava.v().log( "AugmentedStmtGraph::AugmentedStmtGraph() - cug.size() = " + cug.size());
 
 	// make the augmented statements
 	Iterator it = cug.iterator();
@@ -146,6 +149,11 @@ public class AugmentedStmtGraph implements DirectedGraph
     public AugmentedStmt get_CloneOf( AugmentedStmt as)
     {
 	return (AugmentedStmt) original2clone.get( as);
+    }
+
+    public int size()
+    {
+	return aug_list.size();
     }
 
     private void check_List( List psList, List htList)
@@ -272,11 +280,6 @@ public class AugmentedStmtGraph implements DirectedGraph
     public Iterator iterator()
     {
 	return aug_list.iterator();
-    }
-
-    public int size()
-    {
-	return aug_list.size();
     }
 
     public List getPredsOf( Object s)
