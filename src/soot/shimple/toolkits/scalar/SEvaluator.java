@@ -93,8 +93,18 @@ public class SEvaluator
      * @see SEvaluator.TopConstant
      * @see SEvaluator.BottomConstant
      **/
-    public static Constant getFuzzyConstantValueOf(Expr expr)
+    public static Constant getFuzzyConstantValueOf(Value v)
     {
+        if(v instanceof Constant)
+            return (Constant) v;
+
+        if(v instanceof Local)
+            return BottomConstant.v();
+
+        if(!(v instanceof Expr))
+            return BottomConstant.v();
+
+        Expr expr = (Expr) v;
         Constant constant = null;
 
         if(expr instanceof PhiExpr){
@@ -153,11 +163,20 @@ public class SEvaluator
      * @see SEvaluator.TopConstant
      * @see SEvaluator.BottomConstant
      **/
-    public static Constant getFuzzyConstantValueOf(Expr e, Map localToConstant)
+    public static Constant getFuzzyConstantValueOf(Value v, Map localToConstant)
     {
+        if(v instanceof Constant)
+            return (Constant) v;
+
+        if(v instanceof Local)
+            return (Constant) localToConstant.get(v);
+
+        if(!(v instanceof Expr))
+            return BottomConstant.v();
+
         /* clone expr and update the clone with our assumptions */
 
-        Expr expr = (Expr) e.clone();
+        Expr expr = (Expr) v.clone();
         Iterator useBoxIt = expr.getUseBoxes().iterator();
 
         while(useBoxIt.hasNext()){

@@ -127,7 +127,6 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
 
             while(localsIt.hasNext()){
                 Local local = (Local) localsIt.next();
-                Type localType = local.getType();
                 localToConstant.put(local, TopConstant.v());
             }
         }
@@ -199,73 +198,26 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         IFSTMT:
         {
         if(s instanceof IfStmt){
-            Value condValue = ((IfStmt) s).getCondition();
-            if(!(condValue instanceof ConditionExpr))
-                break IFSTMT;
-            ConditionExpr ce = (ConditionExpr) condValue;
+            Value cond = ((IfStmt) s).getCondition();
+            Constant constant =
+                SEvaluator.getFuzzyConstantValueOf(cond, localToConstant);
             
-            Constant op1, op2;
-            
-            {
-                Value op1Value = ce.getOp1();
-                if(op1Value instanceof Constant)
-                    op1 = (Constant) op1Value;
-                else
-                    op1 = (Constant) localToConstant.get(op1Value);
-
-                Value op2Value = ce.getOp2();
-                if(op2Value instanceof Constant)
-                    op2= (Constant) op2Value;
-                else
-                    op2 = (Constant) localToConstant.get(op2Value);
-            }
-
             // flow both ways
-            if(op1 instanceof BottomConstant || op2 instanceof BottomConstant)
+            if(constant instanceof BottomConstant)
                 break IFSTMT;
 
             // no flow
-            if(op1 instanceof TopConstant || op2 instanceof TopConstant)
+            if(constant instanceof TopConstant)
                 return;
-
-            if(ce instanceof EqExpr || ce instanceof GeExpr || ce instanceof LeExpr){
-                if(op1.equals(op2))
-                    branch = true;
-                else
-                    fall = true;
-            }
-
-            if(ce instanceof NeExpr){
-                if(op1.equals(op2))
-                    fall = true;
-                else
-                    branch = true;
-            }
 
             Constant trueC = IntConstant.v(1);
             Constant falseC = IntConstant.v(0);
-            
-            if(ce instanceof GeExpr || ce instanceof GtExpr){
-                NumericConstant nop1 = (NumericConstant) op1;
-                NumericConstant nop2 = (NumericConstant) op2;
-                
-                Constant retC = nop1.greaterThan(nop2);
-                if(retC.equals(trueC))
-                    branch = true;
-                else
-                    fall = true;
-            }
 
-            if(ce instanceof LeExpr || ce instanceof LtExpr){
-                NumericConstant nop1 = (NumericConstant) op1;
-                NumericConstant nop2 = (NumericConstant) op2;
-                
-                Constant retC = nop1.lessThan(nop2);
-                if(retC.equals(trueC))
-                    branch = true;
-                else
-                    fall = true;
-            }
+            if(constant.equals(trueC))
+                branch = true;
+
+            if(constant.equals(falseC))
+                fall = true;
             
             if(fall == branch)
                 throw new RuntimeException("Assertion failed.");
@@ -317,15 +269,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         /* update assumptions */
 
         Value rightOp = dStmt.getRightOp();
-        Constant constant = BottomConstant.v();
-
-        if(rightOp instanceof Constant)
-            constant = (Constant) rightOp;
-        else if(rightOp instanceof Local)
-            constant = (Constant) localToConstant.get(rightOp); 
-        else if(rightOp instanceof Expr)
-            constant = SEvaluator.getFuzzyConstantValueOf((Expr)rightOp,
-                                                          localToConstant);
+        Constant constant =
+            SEvaluator.getFuzzyConstantValueOf(rightOp, localToConstant);
         
         if(!merge(local, constant))
             return null;
