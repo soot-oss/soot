@@ -75,7 +75,7 @@ public class SootMethod
      * to be the active body.
      *
      * @param phaseName       Phase name for body loading. */
-    public Body getBodyFromMethodSource(String phaseName) {
+    private Body getBodyFromMethodSource(String phaseName) {
         return ms.getBody(this, phaseName);
     }
 

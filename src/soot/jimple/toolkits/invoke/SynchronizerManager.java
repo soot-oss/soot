@@ -136,10 +136,7 @@ public class SynchronizerManager
                 continue;
 
             Body b = null;
-            if (m.hasActiveBody())
-                b = m.getActiveBody();
-            else
-                b = m.getBodyFromMethodSource("jb");
+            b = m.retrieveActiveBody();
 
             Iterator unitsIt = b.getUnits().iterator();
             

@@ -253,10 +253,7 @@ public class VariableTypeAnalysis implements PointsToAnalysis
 
                 Body b = null;
 
-                if (!m.hasActiveBody())
-                    b = m.getBodyFromMethodSource("vta.jb");
-                else
-                    b = m.getActiveBody();
+                b = m.retrieveActiveBody();
 
                 Iterator unitsIt = b.getUnits().iterator();
                 while (unitsIt.hasNext())
