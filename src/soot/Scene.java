@@ -174,11 +174,13 @@ public class Scene  //extends AbstractHost
         // Call graph pack
         packNameToPack.put("cg", p = new ScenePack());
         {
-            p.add(new Transform("cg.Spark", SparkTransformer.v(), "disabled"));
         }
 
         // Whole-Jimple transformation pack (--app)
         packNameToPack.put("wjtp", p = new ScenePack());
+        {
+            p.add(new Transform("wjtp.Spark", SparkTransformer.v(), "disabled"));
+        }
 
         // Whole-Jimple Optimization pack (--app -W)
         packNameToPack.put("wjop", p = new ScenePack());

@@ -58,14 +58,14 @@
 		<section_java_name>inputOpts</section_java_name>
 		
 
-		<path_option>
+		<string_option>
 			<name>Soot Classpath</name>
 			<java_name>classpath</java_name>
 			<alias_name>cp</alias_name>
 			<alias_name>soot-classpath</alias_name>
 			<short_desc>uses given PATH as the classpath for finding classes for Soot processing</short_desc>
 			<long_desc>This option ...</long_desc>
-		</path_option>
+		</string_option>
 		
 		<multi_option>
 			<name>Input Source Precedence</name>

@@ -98,9 +98,11 @@ public class Options extends OptionsBase {
                 String value = nextOption();
     
                 if( classpath == null )
-                    classpath = new LinkedList();
-
-                classpath.add( value );
+                    classpath = value;
+                else {
+                    System.out.println( "Duplicate values "+classpath+" and "+value+" for option -"+option );
+                    return false;
+                }
             }
   
             else if( false
@@ -514,13 +516,8 @@ public class Options extends OptionsBase {
     private boolean verbose = false;
     public boolean appMode() { return appMode; }
     private boolean appMode = false;
-    public List classpath() { 
-        if( classpath == null )
-            return java.util.Collections.EMPTY_LIST;
-        else
-            return classpath;
-    }
-    private List classpath = null;
+    public String classpath() { return classpath; }
+    private String classpath = null;
     public int srcPrec() {
         if( srcPrec == 0 ) return srcPrec_classFile;
         return srcPrec; 

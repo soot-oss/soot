@@ -433,20 +433,6 @@ public class Main implements Runnable
             }
     }
 
-    /** Initializes various Soot data and calls the PackAdjuster.
-     * Must be called! */
-    public static void initApp()
-    { 
-        opts.excPackage().add("java.");
-        opts.excPackage().add("sun.");
-        opts.excPackage().add("javax.");
-        opts.excPackage().add("com.sun.");
-        opts.excPackage().add("com.ibm.");
-        opts.excPackage().add("org.xml.");
-        opts.excPackage().add("org.w3c.");
-        opts.excPackage().add("org.apache.");
-    }
-
     public static String[] cmdLineArgs;
     /**
      *   Entry point for cmd line invocation of soot.
@@ -472,11 +458,13 @@ public class Main implements Runnable
     try {
       Timers.totalTimer.start();
 
-      initApp();
-
       processCmdLine(cmdLineArgs);
 
       System.out.println("Soot started on "+start);
+
+      if( opts.classpath() != null ) {
+          Scene.v().setSootClassPath( opts.classpath() );
+      }
       
       loadNecessaryClasses();
 
@@ -663,6 +651,19 @@ public class Main implements Runnable
    */
   private static void prepareClasses() {
       
+      LinkedList excludedPackages = new LinkedList();
+      if( opts.excPackage() != null )
+          excludedPackages.addAll( opts.excPackage() );
+
+        excludedPackages.add("java.");
+        excludedPackages.add("sun.");
+        excludedPackages.add("javax.");
+        excludedPackages.add("com.sun.");
+        excludedPackages.add("com.ibm.");
+        excludedPackages.add("org.xml.");
+        excludedPackages.add("org.w3c.");
+        excludedPackages.add("org.apache.");
+
     if(opts.appMode()) {
       Iterator contextClassesIt = 
 	Scene.v().getContextClasses().snapshotIterator();
@@ -684,7 +685,7 @@ public class Main implements Runnable
       if(opts.classes().contains(s.getName()))
 	continue;
 	    
-      for( Iterator pkgIt = opts.excPackage().iterator(); pkgIt.hasNext(); ) {
+      for( Iterator pkgIt = excludedPackages.iterator(); pkgIt.hasNext(); ) {
 	    
           final String pkg = (String) pkgIt.next();
 	  if (s.isApplicationClass() 
