@@ -1,0 +1,10 @@
+[ SootMethod ] isConcrete returns false if it is in a context class.
+
+[ VTARunner ] was moved to VTATestingFramework.
+
+[ VTATypeGraph ] throw an exception warning the '-a' switch.
+
+Feng
+----------- Sun Sep 10 22:28:00 EDT 2000
+
+

@@ -134,7 +134,7 @@ public class Scene  //extends AbstractHost
         // Jimple optimization pack (-O)
         packNameToPack.put("jop", p = new Pack());
         {
-	  //            p.add(new Transform("jop.cse",  CommonSubexpressionEliminator.v()));
+//	    p.add(new Transform("jop.cse",  CommonSubexpressionEliminator.v()));
             p.add(new Transform("jop.cp",   CopyPropagator.v()));
             p.add(new Transform("jop.cpf",  ConstantPropagatorAndFolder.v()));
             p.add(new Transform("jop.cbf",  ConditionalBranchFolder.v()));

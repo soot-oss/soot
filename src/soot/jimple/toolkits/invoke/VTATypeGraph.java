@@ -218,6 +218,12 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                 if (c.isInterface())
                     continue;
 
+		/* solution, report to user that needs -a switch */
+		if (c.isContextClass())
+		{
+		    throw new RuntimeException("VTA needs '-a' or '--analyze-context' switch to run correctly.");
+		}
+
                 // The following are entry points that have to be treated specially
                 SootMethod finalizer = null;
                 if (c.declaresMethod("void finalize()"))

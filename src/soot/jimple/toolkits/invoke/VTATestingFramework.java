@@ -34,12 +34,12 @@ import java.util.*;
 import soot.util.*;
 
 /** Tests whether VTA detects all runtime types. */
-public class VTARunner extends SceneTransformer
+public class VTATestingFramework extends SceneTransformer
 {
-    private static VTARunner instance = new VTARunner();
-    private VTARunner() {}
+    private static VTATestingFramework instance = new VTATestingFramework();
+    private VTATestingFramework() {}
 
-    public static VTARunner v() { return instance; }
+    public static VTATestingFramework v() { return instance; }
 
     public String getDefaultOptions() 
     {

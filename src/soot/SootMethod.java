@@ -168,6 +168,9 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
      
     public boolean isConcrete()
     {
+        if (declaringClass.isContextClass())
+	    return false;
+
         return !isPhantom() && !isAbstract() && !isNative();
     }
 
