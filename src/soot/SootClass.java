@@ -822,6 +822,11 @@ public class SootClass extends AbstractHost implements Numberable
         return Modifier.isInterface(this.getModifiers());
     }
 
+    /** Returns true if this class is not an interface and not abstract. */
+    public boolean isConcrete() {
+        return !isInterface() && !isAbstract();
+    }
+
     /** Convenience method; returns true if this class is public. */
     public boolean isPublic()
     {

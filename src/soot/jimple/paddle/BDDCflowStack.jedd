@@ -1,0 +1,110 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2004 Ondrej Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.jimple.paddle;
+import soot.*;
+import soot.jimple.*;
+import soot.jimple.paddle.queue.*;
+import soot.jimple.paddle.bdddomains.*;
+import java.util.*;
+
+/** Analysis for AspectJ cflow optimization. This class does the analysis for
+ * a single cflow stack.
+ * @author Ondrej Lhotak
+ */
+public class BDDCflowStack
+{ 
+    List/*Shadow*/ shadows;
+    BDDCflow cflow;
+
+    BDDCflowStack( BDDCflow cflow, List/*Shadow*/ shadows ) {
+        this.shadows = shadows;
+        this.cflow = cflow;
+    }
+
+    private <stmt> within(Shadow sh) {
+        <stmt> ret = 0B;
+        boolean inShadow = false;
+        for( Iterator sIt = sh.method().getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
+            final Stmt s = (Stmt) sIt.next();
+            if( s == sh.popStmt() ) inShadow = false;
+            if( inShadow ) { ret |= new{s=>stmt}; }
+            if( s == sh.pushStmt() ) inShadow = true;
+        }
+        return ret;
+    }
+
+    private <method> targetsOf(<stmt> calls) {
+        return (srcm=>, tgtm=>method) cflow.callGraph(){stmt} <> calls{stmt};
+    }
+
+    private <stmt> stmtsIn(<method> methods) {
+        return cflow.stmtMethod(){method} <> methods{method};
+    }
+
+    private <stmt> mayCflow() {
+        <stmt> ret = 0B;
+        for( Iterator shIt = shadows.iterator(); shIt.hasNext(); ) {
+            final Shadow sh = (Shadow) shIt.next();
+            ret |= within(sh);
+        }
+        while(true) {
+            <method> targets = targetsOf(ret);
+            if( targets == 0B ) break;
+            ret |= stmtsIn(targets);
+        }
+        return ret;
+    }
+
+    private <stmt> mustCflow() {
+        <stmt> ret = 0B;
+        for( Iterator shIt = shadows.iterator(); shIt.hasNext(); ) {
+            final Shadow sh = (Shadow) shIt.next();
+            if( sh.unconditional() ) {
+                ret |= within(sh);
+            }
+        }
+        while(true) {
+            <method> methods = targetsOf(ret) - targetsOf(1B - ret);
+            if( methods == 0B ) break;
+            ret |= stmtsIn(methods);
+        }
+        return ret;
+    }
+
+    private <stmt> mustCflow = 1B;
+    private <stmt> mayCflow = 1B;
+
+    /** Returns true if the call to isValid() in statement s always returns
+     * false.
+     */
+    public boolean mayNotBeValid( Stmt s ) {
+        if( mayCflow == 1B ) mayCflow = mayCflow();
+        return new{s=>stmt}{stmt} >< mayCflow{stmt} == 0B;
+    }
+
+    /** Returns true if the call to isValid() in statement s always returns
+     * true.
+     */
+    public boolean mustBeValid( Stmt s ) {
+        if( mustCflow == 1B ) mustCflow = mustCflow();
+        return new{s=>stmt}{stmt} >< mustCflow{stmt} != 0B;
+    }
+}
+

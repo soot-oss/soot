@@ -102,7 +102,6 @@ public final class VirtualCalls
 
             baseToSubTypes.put(base, subTypes = new ArrayList() );
 
-            resolve( base, declaredType, subSig, container, targets );
             subTypes.add(base);
 
             LinkedList worklist = new LinkedList();
@@ -119,8 +118,10 @@ public final class VirtualCalls
                         if( workset.add( c ) ) worklist.add( c );
                     }
                 } else {
-                    resolve( cl.getType(), declaredType, subSig, container, targets );
-                    subTypes.add(cl.getType());
+                    if( cl.isConcrete() ) {
+                        resolve( cl.getType(), declaredType, subSig, container, targets );
+                        subTypes.add(cl.getType());
+                    }
                     for( Iterator cIt = fh.getSubclassesOf( cl ).iterator(); cIt.hasNext(); ) {
                         final SootClass c = (SootClass) cIt.next();
                         if( workset.add( c ) ) worklist.add( c );

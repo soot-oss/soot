@@ -33,18 +33,22 @@ public final class BDDHierarchy {
      */
     public <subt, supt> subtypeRelation() { 
         update();
-        return closure;
+        return closure | (anyst=>subt, type=>supt) anySub;
     }
 
     /** Update hierarchy for any types that have been newly added since it was
      *  built.
      */
     public void update() {
+        updateTypes();
+        updateClosure();
+    }
+
+    private void updateTypes() {
         ArrayNumberer tn = Scene.v().getTypeNumberer();
         for( int i = maxType+1; i < tn.size(); i++ ) {
             processNewType( (Type) tn.get(i) );
         }
-        updateClosure();
     }
 
     /* End of public methods. */
@@ -83,6 +87,12 @@ public final class BDDHierarchy {
      */
     private <subt:T1, supt:T2> closure = 0B;
 
+    private <type> concrete = 0B;
+    public <type> concrete() {
+        updateTypes();
+        return concrete;
+    }
+
 
     private RefType jlo = RefType.v("java.lang.Object");
     /** Return the array of Object with dimensions dimensions, or Object if
@@ -111,6 +121,7 @@ public final class BDDHierarchy {
                 final SootClass iface = (SootClass) ifaceIt.next();
                 implement |= new{ rt=>subt, iface.getType()=>supt };
             }
+            if( sc.isConcrete() ) concrete |= new{rt=>type};
         } else if( t instanceof ArrayType ) {
             identity |= new{ t=>subt, t=>supt };
             ArrayType at = (ArrayType) t;
@@ -127,6 +138,7 @@ public final class BDDHierarchy {
                                      jloArray(at.numDimensions)=>supt };
                 }
             } else throw new RuntimeException( "unhandled: "+at.baseType );
+            concrete |= new{at=>type};
         } else if( t instanceof AnySubType ) {
             AnySubType as = (AnySubType) t;
             anySub |= new{ as=>anyst, as.getBase()=>type };
@@ -150,6 +162,7 @@ public final class BDDHierarchy {
         // u is a subtype of t, s could be u, so add s:anyst, u:type
         // to anySub.
         anySub |= anySub {type} <> (supt=>T3)(subt=>type) closure {supt};
+        anySub = anySub{type} >< concrete{type};
 
         // Add anySub into closure, closing it with closure first.
         closure |= (anyst=>subt) anySub {type} <> (supt=>T3) closure {subt};

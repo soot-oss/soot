@@ -604,6 +604,16 @@ well as control flow edges in
 dumps of exceptional control flow graphs.
 </long_desc>
 	</boolopt>
+	<boolopt>
+	  <name>GZipped IR output</name>
+	  <alias>gzip</alias>
+	  <default>false</default>
+	  <short_desc>GZip IR output files</short_desc>
+	  <long_desc>
+This option causes Soot to compress output files of intermediate representations
+with GZip. It does not apply to class files output by Soot.
+</long_desc>
+	</boolopt>
 	</section>
 	<section>
 		<name>Processing Options</name>

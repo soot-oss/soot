@@ -47,6 +47,7 @@ public class PaddleScene
 
     public AbsMethodPAGBuilder mpb;
     public AbsMethodPAGContextifier mpc;
+    public AbsEdgeContextStripper ecs;
     public AbsCallEdgeHandler ceh;
 
     public AbsPAG pag;
@@ -67,6 +68,7 @@ public class PaddleScene
     public Qsrcc_srcm_stmt_kind_tgtc_tgtm staticcalls;
     public Qsrcc_srcm_stmt_kind_tgtc_tgtm scmout;
     public Qsrcc_srcm_stmt_kind_tgtc_tgtm cgout;
+    public Qsrcc_srcm_stmt_kind_tgtc_tgtm ecsout;
     public Qctxt_method rcout;
     public Qctxt_method csout;
     public Qsrcm_stmt_kind_tgtm_src_dst parms;
@@ -239,6 +241,7 @@ public class PaddleScene
         staticcalls = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("staticcalls");
         scmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("scmout");
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("cgout");
+        ecsout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("ecsout");
         rcout = new Qctxt_methodSet("rcout");
         csout = new Qctxt_methodSet("csout");
         parms = new Qsrcm_stmt_kind_tgtm_src_dstSet("parms");
@@ -269,12 +272,15 @@ public class PaddleScene
     private void buildQueuesBDD() {
         rmout = new Qctxt_methodBDD("rmout");
         scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("scgbout");
+
         receivers = new Qvar_srcm_stmt_signature_kindBDD("receivers");
         specials = new Qvar_srcm_stmt_tgtmBDD("specials");
+
         cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("cicgout");
         staticcalls = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("staticcalls");
         scmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("scmout");
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("cgout");
+        ecsout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("ecsout");
         rcout = new Qctxt_methodBDD("rcout");
         csout = new Qctxt_methodBDD("csout");
         parms = new Qsrcm_stmt_kind_tgtm_src_dstBDD("parms");
@@ -298,6 +304,7 @@ public class PaddleScene
         paout = new Qvarc_var_objc_objBDD("paout");
 
         virtualcalls = new Qctxt_var_obj_srcm_stmt_kind_tgtmBDD("virtualcalls");
+
         vcmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("vcmout");
     }
 
@@ -332,7 +339,8 @@ public class PaddleScene
                 rets.reader("mpc"),
                 cgout.reader("mpc"),
                 csimple, cstore, cload, calloc );
-        ceh = new TradCallEdgeHandler( cgout.reader("ceh"), parms, rets );
+        ecs = new BDDEdgeContextStripper( cgout.reader("ecs"), ecsout );
+        ceh = new TradCallEdgeHandler( ecsout.reader("ceh"), parms, rets );
 
         pag = new BDDPAG( csimple.reader("pag"), cload.reader("pag"),
                 cstore.reader("pag"), calloc.reader("pag") );
@@ -383,6 +391,7 @@ public class PaddleScene
         staticcalls = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("staticcalls");
         scmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("scmout");
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("cgout");
+        ecsout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("ecsout");
         rcout = new Qctxt_methodTrad("rcout");
         csout = new Qctxt_methodTrad("csout");
         parms = new Qsrcm_stmt_kind_tgtm_src_dstTrad("parms");
@@ -420,6 +429,7 @@ public class PaddleScene
         staticcalls = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("staticcalls");
         scmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("scmout");
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("cgout");
+        ecsout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("ecsout");
         rcout = new Qctxt_methodDebug("rcout");
         csout = new Qctxt_methodDebug("csout");
         parms = new Qsrcm_stmt_kind_tgtm_src_dstDebug("parms");
@@ -455,6 +465,7 @@ public class PaddleScene
         staticcalls = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("staticcalls");
         scmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("scmout");
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("cgout");
+        ecsout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("ecsout");
         rcout = new Qctxt_methodTrace("rcout");
         csout = new Qctxt_methodTrace("csout");
         parms = new Qsrcm_stmt_kind_tgtm_src_dstTrace("parms");
@@ -491,6 +502,7 @@ public class PaddleScene
         staticcalls = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("staticcalls");
         scmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("scmout");
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("cgout");
+        ecsout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("ecsout");
         rcout = new Qctxt_methodNumTrace("rcout");
         csout = new Qctxt_methodNumTrace("csout");
         parms = new Qsrcm_stmt_kind_tgtm_src_dstNumTrace("parms");
@@ -556,7 +568,8 @@ public class PaddleScene
                 rets.reader("mpc"),
                 cgout.reader("mpc"),
                 csimple, cstore, cload, calloc );
-        ceh = new TradCallEdgeHandler( cgout.reader("ceh"), parms, rets );
+        ecs = new TradEdgeContextStripper( cgout.reader("ecs"), ecsout );
+        ceh = new TradCallEdgeHandler( ecsout.reader("ceh"), parms, rets );
 
         pag = new TradPAG( csimple.reader("pag"), cload.reader("pag"),
                 cstore.reader("pag"), calloc.reader("pag") );
@@ -640,6 +653,7 @@ public class PaddleScene
             change = change | cg.update();
         } while( change );
         mpb.update();
+        ecs.update();
         ceh.update();
         mpc.update();
         pag.update();

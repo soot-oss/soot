@@ -22,17 +22,17 @@ public class BDDTypeManager extends AbsTypeManager {
                                           new PhysicalDomain[] { V2.v(), H1.v() },
                                           ("<soot.jimple.paddle.bdddomains.var, soot.jimple.paddle.bdddo" +
                                            "mains.obj> result = jedd.internal.Jedd.v().falseBDD() at /ho" +
-                                           "me/olhotak/soot-trunk2/src/soot/jimple/paddle/BDDTypeManager" +
-                                           ".jedd:37,4-14"),
+                                           "me/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDD" +
+                                           "TypeManager.jedd:37,4-14"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     final jedd.internal.RelationContainer allVars =
       new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v() },
-                                          new PhysicalDomain[] { V1.v(), T2.v() },
+                                          new PhysicalDomain[] { V2.v(), T2.v() },
                                           ("<soot.jimple.paddle.bdddomains.var, soot.jimple.paddle.bdddo" +
                                            "mains.type> allVars = jedd.internal.Jedd.v().falseBDD() at /" +
-                                           "home/olhotak/soot-trunk2/src/soot/jimple/paddle/BDDTypeManag" +
-                                           "er.jedd:38,4-15"),
+                                           "home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle/B" +
+                                           "DDTypeManager.jedd:38,4-15"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     final jedd.internal.RelationContainer allObjs =
@@ -40,8 +40,8 @@ public class BDDTypeManager extends AbsTypeManager {
                                           new PhysicalDomain[] { H1.v(), T1.v() },
                                           ("<soot.jimple.paddle.bdddomains.obj, soot.jimple.paddle.bdddo" +
                                            "mains.type> allObjs = jedd.internal.Jedd.v().falseBDD() at /" +
-                                           "home/olhotak/soot-trunk2/src/soot/jimple/paddle/BDDTypeManag" +
-                                           "er.jedd:39,4-15"),
+                                           "home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle/B" +
+                                           "DDTypeManager.jedd:39,4-15"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     public void update() {
@@ -51,21 +51,26 @@ public class BDDTypeManager extends AbsTypeManager {
         }
         final jedd.internal.RelationContainer newVars =
           new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v() },
-                                              new PhysicalDomain[] { V1.v(), T2.v() },
+                                              new PhysicalDomain[] { V2.v(), T2.v() },
                                               ("<soot.jimple.paddle.bdddomains.var:soot.jimple.paddle.bdddom" +
-                                               "ains.V1, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
-                                               "le.bdddomains.T2> newVars; at /home/olhotak/soot-trunk2/src/" +
-                                               "soot/jimple/paddle/BDDTypeManager.jedd:46,20-27"));
-        newVars.eq(jedd.internal.Jedd.v().project(locals.get(), new PhysicalDomain[] { T1.v() }));
-        newVars.eqUnion(globals.get());
+                                               "ains.V2, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
+                                               "le.bdddomains.T2> newVars; at /home/research/ccl/olhota/soot" +
+                                               "-trunk/src/soot/jimple/paddle/BDDTypeManager.jedd:46,20-27"));
+        newVars.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(locals.get(),
+                                                                                 new PhysicalDomain[] { T1.v() }),
+                                                  new PhysicalDomain[] { V1.v() },
+                                                  new PhysicalDomain[] { V2.v() }));
+        newVars.eqUnion(jedd.internal.Jedd.v().replace(globals.get(),
+                                                       new PhysicalDomain[] { V1.v() },
+                                                       new PhysicalDomain[] { V2.v() }));
         allVars.eqUnion(newVars);
         final jedd.internal.RelationContainer newObjs =
           new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
                                               new PhysicalDomain[] { H1.v(), T1.v() },
                                               ("<soot.jimple.paddle.bdddomains.obj:soot.jimple.paddle.bdddom" +
                                                "ains.H1, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
-                                               "le.bdddomains.T1> newObjs; at /home/olhotak/soot-trunk2/src/" +
-                                               "soot/jimple/paddle/BDDTypeManager.jedd:51,20-27"));
+                                               "le.bdddomains.T1> newObjs; at /home/research/ccl/olhota/soot" +
+                                               "-trunk/src/soot/jimple/paddle/BDDTypeManager.jedd:51,20-27"));
         newObjs.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(localallocs.get(),
                                                                                  new PhysicalDomain[] { T1.v() }),
                                                   new PhysicalDomain[] { T2.v() },
@@ -80,21 +85,17 @@ public class BDDTypeManager extends AbsTypeManager {
                                               ("<soot.jimple.paddle.bdddomains.subt:soot.jimple.paddle.bdddo" +
                                                "mains.T1, soot.jimple.paddle.bdddomains.supt:soot.jimple.pad" +
                                                "dle.bdddomains.T2> subtypeRelation = fh.subtypeRelation(); a" +
-                                               "t /home/olhotak/soot-trunk2/src/soot/jimple/paddle/BDDTypeMa" +
-                                               "nager.jedd:56,21-36"),
+                                               "t /home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddl" +
+                                               "e/BDDTypeManager.jedd:56,21-36"),
                                               fh.subtypeRelation());
-        result.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(subtypeRelation),
-                                                                                                                                                newVars,
-                                                                                                                                                new PhysicalDomain[] { T2.v() }),
-                                                                                                                 new PhysicalDomain[] { V1.v() },
-                                                                                                                 new PhysicalDomain[] { V2.v() })),
+        result.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(subtypeRelation),
+                                                                                                                 newVars,
+                                                                                                                 new PhysicalDomain[] { T2.v() })),
                                                       allObjs,
                                                       new PhysicalDomain[] { T1.v() }));
-        result.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(subtypeRelation),
-                                                                                                                                                allVars,
-                                                                                                                                                new PhysicalDomain[] { T2.v() }),
-                                                                                                                 new PhysicalDomain[] { V1.v() },
-                                                                                                                 new PhysicalDomain[] { V2.v() })),
+        result.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(subtypeRelation),
+                                                                                                                 allVars,
+                                                                                                                 new PhysicalDomain[] { T2.v() })),
                                                       newObjs,
                                                       new PhysicalDomain[] { T1.v() }));
     }
@@ -103,10 +104,10 @@ public class BDDTypeManager extends AbsTypeManager {
     
     public jedd.internal.RelationContainer get() {
         this.update();
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                   new PhysicalDomain[] { H1.v(), V2.v() },
-                                                   ("return result; at /home/olhotak/soot-trunk2/src/soot/jimple/" +
-                                                    "paddle/BDDTypeManager.jedd:65,8-14"),
+        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                   new PhysicalDomain[] { V2.v(), H1.v() },
+                                                   ("return result; at /home/research/ccl/olhota/soot-trunk/src/s" +
+                                                    "oot/jimple/paddle/BDDTypeManager.jedd:65,8-14"),
                                                    result);
     }
     

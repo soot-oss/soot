@@ -24,19 +24,20 @@ public class BDDInsensitiveVirtualContextManager extends AbsVirtualContextManage
                                                "jedd.internal.Jedd.v().project(in.get(), new jedd.PhysicalDo" +
                                                "main[...])), jedd.internal.Jedd.v().literal(new java.lang.Ob" +
                                                "ject[...], new jedd.Attribute[...], new jedd.PhysicalDomain[" +
-                                               "...]), new jedd.PhysicalDomain[...]); at /home/olhotak/soot-" +
-                                               "trunk2/src/soot/jimple/paddle/BDDInsensitiveVirtualContextMa" +
-                                               "nager.jedd:35,45-51"),
+                                               "...]), new jedd.PhysicalDomain[...]); at /home/research/ccl/" +
+                                               "olhota/soot-trunk/src/soot/jimple/paddle/BDDInsensitiveVirtu" +
+                                               "alContextManager.jedd:35,45-51"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(in.get(),
-                                                                                                                                     new jedd.PhysicalDomain[] { H1.v(), V2.v(), V1.v() })),
+                                                                                                                                     new jedd.PhysicalDomain[] { V1.v(), V2.v(), H1.v() })),
                                                                           jedd.internal.Jedd.v().literal(new Object[] { null, null },
                                                                                                          new jedd.Attribute[] { srcc.v(), tgtc.v() },
                                                                                                          new jedd.PhysicalDomain[] { V1.v(), V2.v() }),
                                                                           new jedd.PhysicalDomain[] {  }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), kind.v(), srcc.v(), srcm.v(), tgtc.v(), stmt.v() },
-                                                    new jedd.PhysicalDomain[] { T2.v(), FD.v(), V1.v(), T1.v(), V2.v(), ST.v() },
-                                                    ("out.add(newOut) at /home/olhotak/soot-trunk2/src/soot/jimple" +
-                                                     "/paddle/BDDInsensitiveVirtualContextManager.jedd:38,8-11"),
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), srcm.v(), tgtc.v(), tgtm.v(), srcc.v(), kind.v() },
+                                                    new jedd.PhysicalDomain[] { ST.v(), T1.v(), V2.v(), T2.v(), V1.v(), FD.v() },
+                                                    ("out.add(newOut) at /home/research/ccl/olhota/soot-trunk/src/" +
+                                                     "soot/jimple/paddle/BDDInsensitiveVirtualContextManager.jedd:" +
+                                                     "38,8-11"),
                                                     newOut));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newOut), jedd.internal.Jedd.v().falseBDD());
     }

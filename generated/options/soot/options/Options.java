@@ -496,6 +496,11 @@ public class Options extends OptionsBase {
             )
                 show_exception_dests = true;
   
+            else if( false 
+            || option.equals( "gzip" )
+            )
+                gzip = true;
+  
             else if( false
             || option.equals( "p" )
             || option.equals( "phase-option" )
@@ -919,6 +924,10 @@ public class Options extends OptionsBase {
     private boolean show_exception_dests = false;
     public void set_show_exception_dests( boolean setting ) { show_exception_dests = setting; }
   
+    public boolean gzip() { return gzip; }
+    private boolean gzip = false;
+    public void set_gzip( boolean setting ) { gzip = setting; }
+  
     public boolean via_grimp() { return via_grimp; }
     private boolean via_grimp = false;
     public void set_via_grimp( boolean setting ) { via_grimp = setting; }
@@ -1048,6 +1057,7 @@ public class Options extends OptionsBase {
 +padOpt(" -dump-body PHASENAME", "Dump the internal representation of each method before and after phase PHASENAME" )
 +padOpt(" -dump-cfg PHASENAME", "Dump the internal representation of each CFG constructed during phase PHASENAME" )
 +padOpt(" -show-exception-dests", "Include exception destination edges as well as CFG edges in dumped CFGs" )
++padOpt(" -gzip", "GZip IR output files" )
 +"\nProcessing Options:\n"
       
 +padOpt(" -p PHASE OPT:VAL -phase-option PHASE OPT:VAL", "Set PHASE's OPT option to VALUE" )

@@ -19,119 +19,44 @@
 
 package soot.jimple.paddle;
 import soot.*;
+import soot.jimple.*;
 import soot.jimple.paddle.queue.*;
 import soot.jimple.paddle.bdddomains.*;
 import java.util.*;
 
-/** Keeps track of call edges.
+/** Analysis for AspectJ cflow optimization.
  * @author Ondrej Lhotak
  */
 public class BDDCflow
 { 
-    private AbsCallGraph cg;
-    BDDCflow( AbsCallGraph cg ) {
-        this.cg = cg;
-    }
-
-    private <method> entryPoints = 0B;
-
-    public void addEntryPoints( Collection c ) {
-        for( Iterator mIt = c.iterator(); mIt.hasNext(); ) {
-            final MethodOrMethodContext m = (MethodOrMethodContext) mIt.next();
-            addEntryPoint(m);
+    BDDCflow() {
+        stmtMethod = 0B;
+        for( Iterator scIt = Scene.v().getApplicationClasses().iterator(); scIt.hasNext(); ) {
+            final SootClass sc = (SootClass) scIt.next();
+            for( Iterator mIt = sc.getMethods().iterator(); mIt.hasNext(); ) {
+                final SootMethod m = (SootMethod) mIt.next();
+                if( m.hasActiveBody() ) {
+                    for( Iterator sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
+                        final Stmt s = (Stmt) sIt.next();
+                        stmtMethod |= new{s=>stmt, m=>method};
+                    }
+                }
+            }
         }
+        <kind> wantedKinds =
+              new{Kind.STATIC=>kind} 
+            | new{Kind.VIRTUAL=>kind}
+            | new{Kind.INTERFACE=>kind}
+            | new{Kind.SPECIAL=>kind}
+            | new{Kind.CLINIT=>kind}
+            | new{Kind.PRIVILEGED=>kind}
+            | new{Kind.NEWINSTANCE=>kind};
+
+        callGraph = (srcc=>, tgtc=>) PaddleScene.v().cg.edges().get(){kind}
+                                                       <> wantedKinds{kind};
     }
-    public void addEntryPoint( MethodOrMethodContext m ) {
-        entryPoints |= new{ m.method()=>method };
-    }
-
-    // tgtm MAY be in cflow of srcm
-    private <srcm:T1, tgtm:T2> mayCflow = 0B;
-    // tgtm MUST be in cflow of srcm
-    private <srcm:T1, tgtm:T2> mustCflow = 1B;
-    private <srcm:T1, tgtm:T2> notMustPreds = 0B;
-
-    public void update() {
-        cg.update();
-        <srcc, srcm, stmt, kind, tgtc, tgtm> edges = cg.edges().get();
-
-        <kind> wantedKinds = 1B;
-        wantedKinds -= new{ Kind.THREAD=>kind };
-
-        <srcm:T1, tgtm:T2> wantedEdges = (srcc=>, stmt=>, tgtc=>) edges{kind}
-                                <> wantedKinds{kind};
-
-        <srcm:T2, tgtm:T3> edgeClosure = wantedEdges;
-
-        // find transitive closure of call graph
-        while(true) {
-            <srcm, tgtm> oldClosure = edgeClosure;
-            edgeClosure |= edgeClosure{tgtm} <> (srcm=>T1)edgeClosure{srcm};
-            if( edgeClosure == oldClosure ) break;
-            System.out.println( "edgeClosure has size: "+edgeClosure.size() );
-            System.out.println( "edgeClosure has nodes: "+edgeClosure.numNodes() );
-        }
-
-        // find part of call graph reachable from entry points
-        mayCflow |= edgeClosure{srcm} >< entryPoints{method};
-        while(true) {
-            <srcm, tgtm> oldMayCflow = mayCflow;
-            mayCflow |= edgeClosure{srcm} >< (srcm=>)mayCflow{tgtm};
-            if( mayCflow == oldMayCflow ) break;
-            System.out.println( "mayCflow has size: "+mayCflow.size() );
-            System.out.println( "mayCflow has nodes: "+mayCflow.numNodes() );
-        }
-
-        /*
-         * Finding mustCflow:
-         *
-         * mustCflow(srcm, tgtm) is the set of methods such that in every
-         * call stack with tgtm on its top, srcm appears on the call stack
-         * not on the top.
-         * 
-         * Define mustPreds(tgtm) = { srcm | mustCflow(srcm, tgtm) }
-         *
-         * We can compute mustPreds(m) recursively as follows:
-         * mustPreds(m) = {} if m is an entry point
-         * mustPreds(m) = \cap_{p \in pred(m)} p \cup mustPreds(p) otherwise
-         *
-         * (where pred(m) is the set of methods calling m)
-         *
-         * Since \cap is a pain to implement in BDDs, use DeMorgan's law a
-         * couple times:
-         *
-         * ~mustPreds(m) = \cup_{p \in pred(m)} ~(mustPreds(p) \cup {p})
-         *
-         * ~mustPreds(m) = \cup_{p \in pred(m)} ~mustPreds(p) \cap ~{p}
-         *
-         * ~mustPreds(m) = \cup_{p \in pred(m)} ~mustPreds(p) - p
-         *
-         */
-
-
-        <srcm> allSources = 1B;
-        <srcm, tgtm> identity = (srcm=>srcm, srcm=>tgtm) allSources;
-
-        notMustPreds |= (method=>tgtm) entryPoints{} >< allSources{};
-        while(true) {
-            <srcm, tgtm> oldNotMustPreds = notMustPreds;
-            notMustPreds |= wantedEdges{srcm} <> (tgtm=>T3)(notMustPreds-identity){tgtm};
-            if( oldNotMustPreds == notMustPreds ) break;
-            System.out.println( "notMustPreds has size: "+notMustPreds.size() );
-            System.out.println( "notMustPreds has nodes: "+notMustPreds.numNodes() );
-        }
-
-        mustCflow = 1B - notMustPreds;
-        System.out.println( "mustCflow has size: "+mustCflow.size() );
-        System.out.println( "mustCflow has nodes: "+mustCflow.numNodes() );
-
-    }
-
-    public boolean mustCflow( SootMethod src, SootMethod tgt ) {
-        return (new{src=>srcm, tgt=>tgtm} & mustCflow) != 0B;
-    }
-    public boolean mayCflow( SootMethod src, SootMethod tgt ) {
-        return (new{src=>srcm, tgt=>tgtm} & mayCflow) != 0B;
-    }
+    private <stmt, method> stmtMethod;
+    <stmt, method> stmtMethod() { return stmtMethod; }
+    private <srcm, stmt, tgtm> callGraph;
+    <srcm, stmt, tgtm> callGraph() { return callGraph; }
 }
-

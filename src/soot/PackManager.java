@@ -20,6 +20,7 @@
 package soot;
 import java.util.*;
 import java.io.*;
+import java.util.zip.*;
 import soot.util.*;
 import soot.util.queue.*;
 import soot.jimple.*;
@@ -399,12 +400,15 @@ public class PackManager {
         while (classIt.hasNext()) {
             SootClass s = (SootClass) classIt.next();
 
-            FileOutputStream streamOut = null;
+            OutputStream streamOut = null;
             PrintWriter writerOut = null;
             String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
+            if( Options.v().gzip() ) fileName = fileName+".gz";
 
             try {
                 streamOut = new FileOutputStream(fileName);
+                if( Options.v().gzip() ) 
+                    streamOut = new GZIPOutputStream(streamOut);
                 writerOut =
                     new PrintWriter(new OutputStreamWriter(streamOut));
             } catch (IOException e) {
@@ -558,15 +562,18 @@ public class PackManager {
         if( format == Options.output_format_none ) return;
         if( format == Options.output_format_dava ) return;
 
-        FileOutputStream streamOut = null;
+        OutputStream streamOut = null;
         PrintWriter writerOut = null;
         boolean noOutputFile = false;
 
         String fileName = SourceLocator.v().getFileNameFor(c, format);
+        if( Options.v().gzip() ) fileName = fileName+".gz";
 
         if (format != Options.output_format_class) {
             try {
                 streamOut = new FileOutputStream(fileName);
+                if( Options.v().gzip() ) 
+                    streamOut = new GZIPOutputStream(streamOut);
                 writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
                 G.v().out.println( "Writing to "+fileName );
             } catch (IOException e) {

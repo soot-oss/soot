@@ -5,42 +5,43 @@ digraph overview {
     node [shape=box];
 
 
-    rmout [label="rmout\n:M"];
-    scgbout [label="scgbout\n:MSKM"];
-    receivers [label="receivers\n:LMSIK"];
-    specials [label="specials\n:LMSM"];
-    cicgout [label="cicgout\n:MSKM"];
+    rmout [label="rmout\nM"];
+    scgbout [label="scgbout\nMSKM"];
+    receivers [label="receivers\nLMSIK"];
+    specials [label="specials\nLMSM"];
+    cicgout [label="cicgout\nMSKM"];
 
-    staticcalls [label="staticcalls\n:CMSKCM"];
-    scmout [label="scmout\n:CMSKCM"];
-    cgout [label="cgout\n:CMSKCM"];
-    rcout [label="rcout\n:CM"];
-    csout [label="csout\n:M"];
-    parms [label="parms\n:MSKMVV"];
-    rets [label="rets\n:MSKMVV"];
+    staticcalls [label="staticcalls\nCMSKCM"];
+    scmout [label="scmout\nCMSKCM"];
+    cgout [label="cgout\nCMSKCM"];
+    ecsout [label="ecsout\nMSKM"];
+    rcout [label="rcout\nCM"];
+    csout [label="csout\nM"];
+    parms [label="parms\nMSKMVV"];
+    rets [label="rets\nMSKMVV"];
 
-    merge [label="merge\n:CMSKCM"];
+    merge [label="merge\nCMSKCM"];
 
-    locals [label="locals\n:LMT"];
-    globals [label="globals\n:LT"];
-    localallocs [label="allocs\n:AMT"];
-    globalallocs [label="allocs\n:AT"];
+    locals [label="locals\nLMT"];
+    globals [label="globals\nLT"];
+    localallocs [label="allocs\nAMT"];
+    globalallocs [label="allocs\nAT"];
 
-    simple [label="simple\n:LL"];
-    store [label="store\n:LFL"];
-    load [label="load\n:LFL"];
-    alloc [label="alloc\n:AL"];
+    simple [label="simple\nLL"];
+    store [label="store\nLFL"];
+    load [label="load\nLFL"];
+    alloc [label="alloc\nAL"];
 
-    csimple [label="csimple\n:CLCL"];
-    cstore [label="cstore\n:CLFCL"];
-    cload [label="cload\n:CLFCL"];
-    calloc [label="calloc\n:CACL"];
+    csimple [label="csimple\nCLCL"];
+    cstore [label="cstore\nCLFCL"];
+    cload [label="cload\nCLFCL"];
+    calloc [label="calloc\nCACL"];
 
-    paout [label="paout\n:CACL"];
+    paout [label="paout\nCACL"];
 
-    virtualcalls [label="virtualcalls\n:CLAMSKM"];
+    virtualcalls [label="virtualcalls\nCLAMSKM"];
 
-    vcmout [label="vcmout\n:CMSKCM"];
+    vcmout [label="vcmout\nCMSKCM"];
 
     node [shape=ellipse];
 
@@ -117,7 +118,9 @@ digraph overview {
 
     staticcalls -> SCM -> scmout;
 
-    cgout -> CEH -> parms;
+    cgout -> ECS -> ecsout;
+
+    ecsout -> CEH -> parms;
     CEH -> rets;
 
     NF -> simple;
