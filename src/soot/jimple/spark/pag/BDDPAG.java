@@ -173,9 +173,9 @@ public class BDDPAG extends AbstractPAG {
       int[] vars = new int[vnum];
       JBuddy.fdd_getvars(vars, var.var());
       for (int i=0; i<vnum; i++) {
-        System.out.print(""+JBuddy.bdd_var2level(vars[i])+" ");
+        G.v().out.print(""+JBuddy.bdd_var2level(vars[i])+" ");
       }
-      System.out.println("");
+      G.v().out.println("");
     }
 }
 

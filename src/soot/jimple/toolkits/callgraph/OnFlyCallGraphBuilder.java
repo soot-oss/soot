@@ -34,11 +34,13 @@ public final class OnFlyCallGraphBuilder
     private CallGraph cicg = new CallGraph();
     private HashSet analyzedMethods = new HashSet();
 
-    private ChunkedQueue receivers = new ChunkedQueue();
     private LargeNumberedMap receiverToSites = new LargeNumberedMap( Scene.v().getLocalNumberer() );
+    private LargeNumberedMap methodToReceivers = new LargeNumberedMap( Scene.v().getMethodNumberer() );
+    public LargeNumberedMap methodToReceivers() { return methodToReceivers; }
 
-    private ChunkedQueue stringConstants = new ChunkedQueue();
     private SmallNumberedMap stringConstToSites = new SmallNumberedMap( Scene.v().getLocalNumberer() );
+    private LargeNumberedMap methodToStringConstants = new LargeNumberedMap( Scene.v().getMethodNumberer() );
+    public LargeNumberedMap methodToStringConstants() { return methodToStringConstants; }
 
     private CGOptions options;
 
@@ -67,8 +69,6 @@ public final class OnFlyCallGraphBuilder
         this( cm, rm );
         this.appOnly = appOnly;
     }
-    public QueueReader receivers() { return receivers.reader(); }
-    public QueueReader stringConstants() { return stringConstants.reader(); }
     public void processReachables() {
         while(true) {
             MethodOrMethodContext momc = (MethodOrMethodContext) worklist.next();
@@ -79,7 +79,7 @@ public final class OnFlyCallGraphBuilder
             }
             SootMethod m = momc.method();
             if( appOnly && !m.getDeclaringClass().isApplicationClass() ) continue;
-            if( analyzedMethods.add( m.method() ) ) processNewMethod( m );
+            if( analyzedMethods.add( m ) ) processNewMethod( m );
             processNewMethodContext( momc );
         }
     }
@@ -178,6 +178,9 @@ public final class OnFlyCallGraphBuilder
         findReceivers(m, b);
     }
     private void findReceivers(SootMethod m, Body b) {
+        List receivers = (List) methodToReceivers.get(m);
+        if( receivers == null )
+            methodToReceivers.put(m, receivers = new ArrayList());
         for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if (s.containsInvokeExpr()) {
@@ -203,6 +206,9 @@ public final class OnFlyCallGraphBuilder
     }
     
     private void getImplicitTargets( SootMethod source ) {
+        List stringConstants = (List) methodToStringConstants.get(source);
+        if( stringConstants == null )
+            methodToStringConstants.put(source, stringConstants = new ArrayList());
         final SootClass scl = source.getDeclaringClass();
         if( source.isNative() || source.isPhantom() ) return;
         if( source.getSubSignature().indexOf( "<init>" ) >= 0 ) {

@@ -30,11 +30,15 @@ public class CallGraphTagger extends BodyTransformer {
     public CallGraphTagger( Singletons.Global g ) {}
     public static CallGraphTagger v() { return G.v().CallGraphTagger(); }
     
+    private MethodToContexts methodToContexts;
     protected void internalTransform(
             Body b, String phaseName, Map options)
     {
         
         CallGraph cg = Scene.v().getCallGraph();
+        if( methodToContexts == null ) {
+            methodToContexts = new MethodToContexts( Scene.v().getReachableMethods().listener() );
+        }
     
         Iterator stmtIt = b.getUnits().iterator();
 
@@ -47,25 +51,28 @@ public class CallGraphTagger extends BodyTransformer {
             while (edges.hasNext()){
                 Edge e = (Edge)edges.next();
                 SootMethod m = e.tgt();
-                s.addTag(new LinkTag("CallGraph: Type: "+e.kindToString(e.kind())+" Target Method: "+m.toString(), m, m.getDeclaringClass().getName()));
+                s.addTag(new LinkTag("CallGraph: Type: "+e.kindToString(e.kind())+" Target Method/Context: "+e.getTgt().toString(), m, m.getDeclaringClass().getName()));
                 
             }
         }
 
         SootMethod m = b.getMethod();
-        Iterator callerEdges = cg.edgesInto(m);
-        while (callerEdges.hasNext()){
-            Edge callEdge = (Edge)callerEdges.next();
-            SootMethod methodCaller = callEdge.src();            
-            Host src = methodCaller;
-            if( callEdge.srcUnit() != null ) {
-                src = callEdge.srcUnit();
+        for( Iterator momcIt = methodToContexts.get(m).iterator(); momcIt.hasNext(); ) {
+            final MethodOrMethodContext momc = (MethodOrMethodContext) momcIt.next();
+        Iterator callerEdges = cg.edgesInto(momc);
+            while (callerEdges.hasNext()){
+                Edge callEdge = (Edge)callerEdges.next();
+                SootMethod methodCaller = callEdge.src();            
+                Host src = methodCaller;
+                if( callEdge.srcUnit() != null ) {
+                    src = callEdge.srcUnit();
+                }
+                m.addTag(
+                        new LinkTag(
+                            "CallGraph: Source Type: "+callEdge.kindToString(callEdge.kind())+" Source Method/Context: "+callEdge.getSrc().toString(),
+                            src,
+                            methodCaller.getDeclaringClass().getName()));
             }
-            m.addTag(
-                    new LinkTag(
-                        "CallGraph: Source Type: "+callEdge.kindToString(callEdge.kind())+" Source Method: "+methodCaller.toString(),
-                        src,
-                        methodCaller.getDeclaringClass().getName()));
         }
     }
 

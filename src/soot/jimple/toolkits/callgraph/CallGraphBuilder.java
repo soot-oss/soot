@@ -33,14 +33,23 @@ public final class CallGraphBuilder
     private PointsToAnalysis pa;
     private CGOptions options;
     private ReachableMethods reachables;
-    private QueueReader receivers;
-    private QueueReader stringConstants;
     private boolean appOnly = false;
     private OnFlyCallGraphBuilder ofcgb;
     private CallGraph cg;
 
     public CallGraph getCallGraph() { return cg; }
     public ReachableMethods reachables() { return reachables; }
+
+    public static ContextManager makeContextManager( CallGraph cg ) {
+        CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
+        if( options.context() == options.context_insens ) {
+            return new ContextInsensitiveContextManager( cg );
+        } else if( options.context() == options.context_1cfa ) {
+            return new OneCFAContextManager( cg );
+        } else if( options.context() == options.context_objsens ) {
+            return new ObjSensContextManager( cg );
+        } else throw new RuntimeException( "Unhandled context-sensitivity level." );
+    }
 
     /** This constructor builds a complete call graph using the given
      * PointsToAnalysis to resolve virtual calls. */
@@ -56,10 +65,8 @@ public final class CallGraphBuilder
         cg = new CallGraph();
         Scene.v().setCallGraph( cg );
         reachables = Scene.v().getReachableMethods();
-        ContextManager cm = new ContextInsensitiveContextManager( cg );
+        ContextManager cm = makeContextManager(cg);
         ofcgb = new OnFlyCallGraphBuilder( cm, reachables );
-        receivers = ofcgb.receivers();
-        stringConstants = ofcgb.stringConstants();
    }
     /** This constructor builds the incomplete hack call graph for the
      * Dava ThrowFinder.
@@ -80,36 +87,31 @@ public final class CallGraphBuilder
         appOnly = true;
         ContextManager cm = new ContextInsensitiveContextManager( cg );
         ofcgb = new OnFlyCallGraphBuilder( cm, reachables, true );
-        receivers = ofcgb.receivers();
-        stringConstants = ofcgb.stringConstants();
     }
     public void build() {
-        Local receiver = null;
-        Local stringConstant = null;
-        do {
-            while( receiver != null || stringConstant != null ) {
-                if( receiver != null ) {
-                    PointsToSet p2set = pa.reachingObjects( receiver );
-                    for( Iterator typeIt = p2set.possibleTypes().iterator(); typeIt.hasNext(); ) {
-                        final Type type = (Type) typeIt.next();
-                        ofcgb.addType( receiver, null, type, null );
-                    }
-                    receiver = (Local) receivers.next();
-                }
-                if( stringConstant != null ) {
-                    PointsToSet p2set = pa.reachingObjects( stringConstant );
-                    for( Iterator constantIt = p2set.possibleStringConstants().iterator(); constantIt.hasNext(); ) {
-                        final String constant = (String) constantIt.next();
-                        ofcgb.addStringConstant( stringConstant, null, constant, null );
-                    }
-                    stringConstant = (Local) stringConstants.next();
+        QueueReader worklist = reachables.listener();
+        while(true) {
+            ofcgb.processReachables();
+            reachables.update();
+            MethodOrMethodContext momc = (MethodOrMethodContext) worklist.next();
+            if( momc == null ) break;
+            List receivers = (List) ofcgb.methodToReceivers().get(momc.method());
+            if( receivers != null) for( Iterator receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {     final Local receiver = (Local) receiverIt.next();
+                PointsToSet p2set = pa.reachingObjects( receiver );
+                for( Iterator typeIt = p2set.possibleTypes().iterator(); typeIt.hasNext(); ) {
+                    final Type type = (Type) typeIt.next();
+                    ofcgb.addType( receiver, momc.context(), type, null );
                 }
             }
-            ofcgb.processReachables();
-            if( receiver == null ) receiver = (Local) receivers.next();
-            if( stringConstant == null ) 
-                stringConstant = (Local) stringConstants.next();
-        } while( receiver != null || stringConstant != null );
+            List stringConstants = (List) ofcgb.methodToStringConstants().get(momc.method());
+            if( stringConstants != null ) for( Iterator stringConstantIt = stringConstants.iterator(); stringConstantIt.hasNext(); ) {     final Local stringConstant = (Local) stringConstantIt.next();
+                PointsToSet p2set = pa.reachingObjects( stringConstant );
+                for( Iterator constantIt = p2set.possibleStringConstants().iterator(); constantIt.hasNext(); ) {
+                    final String constant = (String) constantIt.next();
+                    ofcgb.addStringConstant( stringConstant, momc.context(), constant, null );
+                }
+            }
+        }
     }
 }
 

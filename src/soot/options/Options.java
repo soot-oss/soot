@@ -1035,7 +1035,14 @@ public class Options extends OptionsBase {
                 +padOpt( "safe-newinstance (true)", "Handle Class.newInstance() calls conservatively" )
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" )
                 +padOpt( "all-reachable (false)", "Assume all methods of application classes are reachable." )
-                +padOpt( "trim-clinit (true)", "Removes redundant static initializer calls" );
+                +padOpt( "trim-clinit (true)", "Removes redundant static initializer calls" )
+                +padOpt( "context", "Select context-sensitivity level" )
+                +padVal( "insens (default)", "Builds a context-insensitive call graph" )
+                
+                +padVal( "1cfa", "Builds a 1-CFA call graph" )
+                
+                +padVal( "objsens", "Builds an object-sensitive call graph" )
+                ;
     
         if( phaseName.equals( "cg.cha" ) )
             return "Phase "+phaseName+":\n"+
@@ -1597,7 +1604,8 @@ public class Options extends OptionsBase {
                 +"safe-newinstance "
                 +"verbose "
                 +"all-reachable "
-                +"trim-clinit ";
+                +"trim-clinit "
+                +"context ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
@@ -1983,7 +1991,8 @@ public class Options extends OptionsBase {
               +"safe-newinstance:true "
               +"verbose:false "
               +"all-reachable:false "
-              +"trim-clinit:true ";
+              +"trim-clinit:true "
+              +"context:insens ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""

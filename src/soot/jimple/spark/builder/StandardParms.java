@@ -64,14 +64,16 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     final public void addCallTarget( Edge e ) {
         if( !e.passesParameters() ) return;
         if( e.isExplicit() ) {
-            addCallTarget( (Stmt) e.srcUnit(), e.tgt(), null );
+            addCallTarget( (Stmt) e.srcUnit(), e.tgt(), e.tgtCtxt() );
         } else {
             switch( e.kind() ) {
                 case Edge.THREAD:
-                    addCallTarget( (Stmt) e.srcUnit(), e.tgt(), null );
+                    addCallTarget( (Stmt) e.srcUnit(), e.tgt(), e.tgtCtxt() );
                     break;
                 case Edge.PRIVILEGED:
-                    Node ret = caseRet( e.tgt() ).getReplacement();
+                    Node ret = AbstractMethodPAG.v(pag, e.tgt()).parameterize(
+                            caseRet( e.tgt() ).getReplacement(),
+                            e.tgtCtxt() );
                     SootClass accessController = RefType.v( "java.security.AccessController" ).getSootClass();
                     final String[] methods = {
                         "java.lang.Object doPrivileged(java.security.PrivilegedAction)",
@@ -88,8 +90,12 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
                     // FALL THROUGH
                 case Edge.EXIT:
                 case Edge.FINALIZE:
-                    Node srcThis = caseThis( e.src() ).getReplacement();
-                    Node tgtThis = caseThis( e.tgt() ).getReplacement();
+                    Node srcThis = AbstractMethodPAG.v(pag, e.src())
+                        .parameterize( caseThis( e.src() ).getReplacement(),
+                                e.srcCtxt() );
+                    Node tgtThis = AbstractMethodPAG.v(pag, e.tgt())
+                        .parameterize( caseThis( e.tgt() ).getReplacement(),
+                                e.tgtCtxt() );
                     addEdge( srcThis, tgtThis );
                     break;
                 case Edge.NEWINSTANCE:

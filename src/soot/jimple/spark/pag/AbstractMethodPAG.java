@@ -69,6 +69,7 @@ public abstract class AbstractMethodPAG {
     }
 
     protected VarNode parameterize( VarNode vn, Object varNodeParameter ) {
+        if( varNodeParameter == null ) return vn;
         SootMethod m = vn.getMethod();
         if( m == null ) return vn;
         if( m != method ) G.v().out.println( "Warning: "+vn+" in method "+method+" has method "+m );

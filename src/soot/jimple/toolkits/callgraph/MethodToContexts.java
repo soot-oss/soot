@@ -19,31 +19,27 @@
 
 package soot.jimple.toolkits.callgraph;
 import soot.*;
-import soot.options.*;
 import soot.jimple.*;
 import java.util.*;
-import soot.util.*;
-import soot.util.queue.*;
 
-/** A context manager which adds no context-sensitivity to the call graph.
+/** Keeps track of the various contexts associated with each method.
  * @author Ondrej Lhotak
  */
-public class ContextInsensitiveContextManager implements ContextManager 
+public final class MethodToContexts
 { 
-    private CallGraph cg;
-
-    public ContextInsensitiveContextManager( CallGraph cg ) {
-        this.cg = cg;
+    private Map map = new HashMap();
+    public MethodToContexts( Iterator it ) {
+        while( it.hasNext() ) {
+            MethodOrMethodContext momc = (MethodOrMethodContext) it.next();
+            SootMethod m = momc.method();
+            List l = (List) map.get(m);
+            if( l == null ) map.put(m, l = new ArrayList() );
+            l.add(momc);
+        }
     }
-
-    public void addStaticEdge( MethodOrMethodContext momc, Edge e ) {
-        cg.addEdge( new Edge( e.getSrc(), e.srcUnit(), e.getTgt(), e.kind() ) );
+    public List get( SootMethod m ) {
+        List ret = (List) map.get(m);
+        if( ret == null ) ret = new ArrayList();
+        return ret;
     }
-
-    public void addVirtualEdge( MethodOrMethodContext momc, Edge e, Object typeContext ) {
-        cg.addEdge( new Edge( e.getSrc(), e.srcUnit(), e.getTgt(), e.kind() ) );
-    }
-
-    public CallGraph callGraph() { return cg; }
 }
-

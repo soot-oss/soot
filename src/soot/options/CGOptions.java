@@ -129,5 +129,30 @@ public class CGOptions
         return soot.PhaseOptions.getBoolean( options, "trim-clinit" );
     }
     
+    public static final int context_insens = 1;
+    public static final int context_1cfa = 2;
+    public static final int context_objsens = 3;
+    /** Context sensitivity --
+    
+     * Select context-sensitivity level.
+    
+     * This option tells Spark which level of context-sensitivity to 
+     * use in constructing the call graph. 
+     */
+    public int context() {
+        String s = soot.PhaseOptions.getString( options, "context" );
+        
+        if( s.equalsIgnoreCase( "insens" ) )
+            return context_insens;
+        
+        if( s.equalsIgnoreCase( "1cfa" ) )
+            return context_1cfa;
+        
+        if( s.equalsIgnoreCase( "objsens" ) )
+            return context_objsens;
+        
+        throw new RuntimeException( "Invalid value "+s+" of phase option context" );
+    }
+    
 }
         

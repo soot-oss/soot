@@ -25,23 +25,23 @@ import java.util.*;
 import soot.util.*;
 import soot.util.queue.*;
 
-/** A context manager which adds no context-sensitivity to the call graph.
+/** A context manager which creates a 1-CFA call graph.
  * @author Ondrej Lhotak
  */
-public class ContextInsensitiveContextManager implements ContextManager 
+public class OneCFAContextManager implements ContextManager 
 { 
     private CallGraph cg;
 
-    public ContextInsensitiveContextManager( CallGraph cg ) {
+    public OneCFAContextManager( CallGraph cg ) {
         this.cg = cg;
     }
 
     public void addStaticEdge( MethodOrMethodContext momc, Edge e ) {
-        cg.addEdge( new Edge( e.getSrc(), e.srcUnit(), e.getTgt(), e.kind() ) );
+        cg.addEdge( new Edge( momc, e.srcUnit(), MethodContext.v( e.tgt(), e.srcUnit() ), e.kind() ) );
     }
 
     public void addVirtualEdge( MethodOrMethodContext momc, Edge e, Object typeContext ) {
-        cg.addEdge( new Edge( e.getSrc(), e.srcUnit(), e.getTgt(), e.kind() ) );
+        cg.addEdge( new Edge( momc, e.srcUnit(), MethodContext.v( e.tgt(), e.srcUnit() ), e.kind() ) );
     }
 
     public CallGraph callGraph() { return cg; }

@@ -36,7 +36,7 @@ public final class MethodContext implements MethodOrMethodContext
         this.context = context;
     }
     public int hashCode() {
-        return method.hashCode() ^ context.hashCode();
+        return method.hashCode() + context.hashCode();
     }
     public boolean equals( Object o ) {
         if( o instanceof MethodContext ) {
@@ -55,5 +55,8 @@ public final class MethodContext implements MethodOrMethodContext
             return probe;
         }
         return ret;
+    }
+    public String toString() {
+        return "Method "+method+" in context "+context;
     }
 }

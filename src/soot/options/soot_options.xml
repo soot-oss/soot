@@ -863,6 +863,41 @@ that must have already been executed. Since these static initializers cannot be
 executed again, the corresponding call graph edges are removed from the call graph.
 </long_desc>
                                 </boolopt>
+                                <multiopt>
+                                        <name>Context sensitivity</name>
+                                        <alias>context</alias>
+                                        <value>
+                                                <name>Context-insensitive</name>
+                                                <alias>insens</alias>
+                                                <default/>
+<short_desc>Builds a context-insensitive call graph</short_desc>
+<long_desc>
+Builds a context-insensitive call graph.
+</long_desc>
+                                        </value>
+                                        <value>
+                                                <name>1-CFA</name>
+                                                <alias>1cfa</alias>
+<short_desc>Builds a 1-CFA call graph</short_desc>
+<long_desc>
+Builds a 1-CFA call graph.
+</long_desc>
+
+                                        </value>
+                                        <value>
+                                                <name>Object Sensitive</name>
+                                                <alias>objsens</alias>
+<short_desc>Builds an object-sensitive call graph</short_desc>
+<long_desc>
+Builds an object-sensitive call graph.
+</long_desc>
+
+                                        </value>
+                                        <short_desc>Select context-sensitivity level</short_desc>
+                                        <long_desc>
+This option tells Spark which level of context-sensitivity to use in constructing the call graph.
+</long_desc>
+                                </multiopt>
 				<sub_phase>
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>

@@ -47,23 +47,23 @@ public class CallGraph
             position = (Edge) srcUnitToEdge.get( e.srcUnit() );
             if( position == null ) {
                 srcUnitToEdge.put( e.srcUnit(), e );
-                position = (Edge) srcMethodToEdge.get( e.src() );
+                position = (Edge) srcMethodToEdge.get( e.getSrc() );
                 if( position == null ) {
-                    srcMethodToEdge.put( e.src(), e );
+                    srcMethodToEdge.put( e.getSrc(), e );
                     position = dummy;
                 }
             }
         } else {
-            position = (Edge) srcMethodToEdge.get( e.src() );
+            position = (Edge) srcMethodToEdge.get( e.getSrc() );
             if( position == null ) {
-                srcMethodToEdge.put( e.src(), e );
+                srcMethodToEdge.put( e.getSrc(), e );
                 position = dummy;
             }
         }
         e.insertAfterBySrc( position );
-        position = (Edge) tgtToEdge.get( e.tgt() );
+        position = (Edge) tgtToEdge.get( e.getTgt() );
         if( position == null ) {
-            tgtToEdge.put( e.tgt(), e );
+            tgtToEdge.put( e.getTgt(), e );
             position = dummy;
         }
         e.insertAfterByTgt( position );
@@ -74,11 +74,11 @@ public class CallGraph
     public boolean removeEdge( Edge e ) {
         if( !edges.remove( e ) ) return false;
         e.remove();
-        if( srcMethodToEdge.get(e.src()) == e ) {
-            if( e.nextBySrc().src() == e.src() ) {
-                srcMethodToEdge.put(e.src(), e.nextBySrc() );
+        if( srcMethodToEdge.get(e.getSrc()) == e ) {
+            if( e.nextBySrc().getSrc() == e.getSrc() ) {
+                srcMethodToEdge.put(e.getSrc(), e.nextBySrc() );
             } else {
-                srcMethodToEdge.put(e.src(), null);
+                srcMethodToEdge.put(e.getSrc(), null);
             }
         }
         if( srcUnitToEdge.get(e.srcUnit()) == e ) {
@@ -88,11 +88,11 @@ public class CallGraph
                 srcUnitToEdge.put(e.srcUnit(), null);
             }
         }
-        if( tgtToEdge.get(e.tgt()) == e ) {
-            if( e.nextByTgt().tgt() == e.tgt() ) {
-                tgtToEdge.put(e.tgt(), e.nextByTgt() );
+        if( tgtToEdge.get(e.getTgt()) == e ) {
+            if( e.nextByTgt().getTgt() == e.getTgt() ) {
+                tgtToEdge.put(e.getTgt(), e.nextByTgt() );
             } else {
-                tgtToEdge.put(e.tgt(), null);
+                tgtToEdge.put(e.getTgt(), null);
             }
         }
         return true;
@@ -144,7 +144,7 @@ public class CallGraph
             if( position == null ) position = dummy;
         }
         public boolean hasNext() {
-            if( position.src() != m ) return false;
+            if( position.getSrc() != m ) return false;
             if( position.kind() == Edge.INVALID ) return false;
             return true;
         }
@@ -171,7 +171,7 @@ public class CallGraph
             if( position == null ) position = dummy;
         }
         public boolean hasNext() {
-            if( position.tgt() != m ) return false;
+            if( position.getTgt() != m ) return false;
             if( position.kind() == Edge.INVALID ) return false;
             return true;
         }
