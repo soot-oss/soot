@@ -16,6 +16,8 @@
 <p>
 <a href="#introduction"><font face="helvetica,arial" size="+0">Introduction</font></a><br>
 <a href="#status"><font face="helvetica,arial" size="+0">Release Status</font></a><br>
+<a href="#svn"><font face="helvetica,arial" size="+0">Repository Access</font></a><br>
+<a href="#eclipse"><font face="helvetica,arial" size="+0">Eclipse Plugin</font></a><br>
 <a href="/sootbugs"><font face="helvetica,arial" size="+0">Soot Bug Tracking</font></a><br>
 <a href="#download"><font face="helvetica,arial" size="+0">Download</font></a><br>
 <a href="#compilation"><font face="helvetica,arial" size="+0">Compilation</font></a><br>
@@ -33,7 +35,7 @@
 <center>
 <a name="top"><b><font face="helvetica,arial" size="+2">Soot: a Java Optimization Framework</font></b></center></a> <br>
 <center>
-<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 1.2.5 (Feb 14, 2003)</font></b></center></a> <br><br>
+<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 2.0 (Jun 6, 2003)</font></b></center></a> <br><br>
 
 Need help using Soot?  See the Soot <a href="tutorial"> tutorials</a>.<br><br>
 
@@ -45,7 +47,7 @@ Need help using Soot?  See the Soot <a href="tutorial"> tutorials</a>.<br><br>
 
 <blockquote>
 
-Soot is a Java optimization framework.  It provides three intermediate
+Soot is a Java optimization framework.  It provides four intermediate
 representations for analyzing and transforming Java bytecode:
 
 <ol> 
@@ -54,6 +56,8 @@ manipulate.
 
 <li><b>Jimple</b>: a typed 3-address intermediate representation suitable for
 optimization.
+
+<li><b>Shimple</b>: an SSA variation of Jimple.
 
 <li><b>Grimp</b>: an aggregated version of Jimple suitable for decompilation and
 code inspection.
@@ -82,10 +86,17 @@ License</a>.
 <p>The Soot Framework is an evolving research project. Our goal is to produce a
 robust, easy-to-use research framework for optimizing Java bytecode.  
 
-<!-- Release 1.2.5 --> <p>
+<!-- Release 2.0 --> <p>
+The latest release is version 2.0. 
+The 2.0 version number indicates that some things may have changed, and
+code written to work with earlier versions of Soot may need some
+tweaking, but such changes should be minor.
+
+<!-- Release 1.2.5  <p>
 The latest release is version 1.2.5. This release contains mainly bug fixes
 and improvements to Spark, the Soot Pointer Analysis Research Kit,
 and bug fixes in general.
+-->
 
 <!-- Release 1.2.4 <p>
 The latest release is version 1.2.4. The main change is the
@@ -162,6 +173,40 @@ We will also develop more transformations for use with Soot.
 
 <br>
 
+<!--Repository access-->
+<a name="svn"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Repository Access</b></font></td></a>
+<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</table>
+
+<blockquote>
+<p>We are using <a href="http://subversion.tigris.org/">Subversion</a> for
+revision control.</p>
+
+<p>With a Subversion client, you can obtain a copy of the
+development version of Soot, as well as any old versions. To obtain the
+latest development version of Soot, use the command:<br>
+<tt>svn export https://svn.sable.mcgill.ca/soot/soot/trunk soot-dev</tt></p>
+
+<p>You can also browse our latest version, as well as a ViewCVS history, using
+just a web browser. For further instructions, please see
+<a href="http://svn.sable.mcgill.ca/">http://svn.sable.mcgill.ca/</a>.</p>
+</blockquote>
+
+<!--Eclipse-->
+<a name="eclipse"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Eclipse Plugin</b></font></td></a>
+<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</table>
+
+<blockquote>
+Version 2.0 includes our initial release of a plugin that makes it
+possible to use Soot from Eclipse. <a href="eclipse">You can see our progress here.</a>
+</blockquote>
+
+<br>
+
+
 <!--Download-->
 
 <a name="download"> <table width=100%> <tr>
@@ -175,14 +220,14 @@ href="http://www.sable.mcgill.ca/software">http://www.sable.mcgill.ca/software</
 
 <p>
 To install it you must unjar(untar) it, and add the classes directories
-<tt>soot-1.2.5/soot/classes</tt> and
-<tt>soot-1.2.5/jasmin/classes</tt> to your CLASSPATH.  
+<tt>soot-2.0/soot/classes</tt> and
+<tt>soot-2.0/jasmin/classes</tt> to your CLASSPATH.  
 
 To test your installation of Soot, try:
 
 <p>
 <tt>
-java soot.Main
+java soot.Main --help
 </tt>
 
 <p>for some options on processing classfiles.  They are documented in more detail in the
@@ -208,9 +253,7 @@ elimination has triggered JIT problems with sunwjit.
 
 Soot is already compiled in the distribution. To recompile Soot, we
 use <tt>make</tt> using the <tt>Makefile</tt> in the main
-<tt>soot</tt> directory.  The second choice is to use the
-<tt>SootCompiler</tt> class in the main <tt>soot/src</tt> directory.
-Note that in either case, <tt>jasmin</tt> must be in your <tt>classpath</tt>
+<tt>soot</tt> directory. Jasmin must be in your <tt>classpath</tt>
 to compile Soot. Jasmin can be recompiled by using the script <tt>./bin/compile_all.sh</tt> 
 in the main Jasmin directory (you may need to type <tt>sh ./bin/compile_all.sh</tt>). 
 
@@ -234,8 +277,8 @@ NOTE: The Jimple parser is generated by <a href="http://www.sable.mcgill.ca/sabl
 It requires <tt>lexer.dat</tt> and <tt>parser.dat</tt> files to be in the classes directory;
 they are provided in the src directory. Also, Soot uses peephole optimization to improve the
 generated bytecode. This requires that the <tt>peephole.dat</tt> file be copied to 
-the classes directory.  Both the provided <tt>Makefile</tt> and <tt>SootCompiler</tt>
-automatically copy these files as needed.
+the classes directory.  The provided <tt>Makefile</tt>
+automatically copies these files as needed.
 
 <p>
 <!--If you have jams correctly set up, the `foo' target will copy these <tt>.dat</tt>
@@ -319,7 +362,7 @@ The official Soot maintainers are
 <!-- Raja Vallee-Rai, -->
 Patrick Lam,
 Feng Qian, and
-Ondrej Lhotak.  For Soot support, write to the Soot mailing list at
+Ond&#345;ej Lhot&aacute;k.  For Soot support, write to the Soot mailing list at
 <A href="mailto:soot-list@sable.mcgill.ca">soot-list@sable.mcgill.ca</A>.
 
 <br>

@@ -21,6 +21,10 @@ Etienne Gagnon (gagnon@sable.mcgill.ca)
       
 Laurie Hendren (hendren@sable.mcgill.ca)
     - project advisor
+
+John Jorgensen (jjorge1@sable.mcgill.ca)
+    - bug fixes
+    - documentation
        
 Felix Kwok (wkwok@sable.mcgill.ca)
     - VTA re-implementation
@@ -38,6 +42,7 @@ Jennifer Lhotak (jlhotak@sable.mcgill.ca)
 Ondrej Lhotak (olhota@sable.mcgill.ca)
     - General bug-fixes, soot hacker
     - Spark
+    - call graph re-implementation
 
 Florian Loitsch (florian@loitsch.net)
     - PRE re-implementation

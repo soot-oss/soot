@@ -1,3 +1,19 @@
+Improvements in version 2.0 (Fri, 6 Jun 2003)
+1. a true whole-program mode
+2. rewrite of the call graph code to provide more information (particularly
+   about implicit calls) with a cleaner interface
+3. first release of Eclipse plugin
+4. first release of Shimple (SSA-Jimple)
+5. refactoring of tag aggregators to make it easier to introduce new
+   annotations for use by JITs
+6. new, better organized option parsing code, accessible to other code
+   (so you can set an option with a method call, rather than having to
+   pass in a command line string)
+7. elimination of most global variables; the remaining ones have been
+   isolated so that Soot is restartable, and could be easily modified to
+   allow concurrent Soot sessions on different threads.
+8. bug fixes
+
 Improvements in version 1.2.5 (Fri, 14 Feb 2003)
 1. Spark improvements:
  a) now supports truly on-the-fly call graph construction, resulting
