@@ -26,8 +26,6 @@
 
 package soot;
 
-
-
 import soot.util.*;
 import soot.gui.*;
 import java.util.*;
@@ -50,7 +48,7 @@ import java.text.*;
 
 
 /** Main class for Soot; provides Soot's command-line user interface. */
-public class Main implements Runnable, ICompilationListener
+public class Main implements Runnable
 {        
     public Date start;
     public Date finish;
@@ -546,7 +544,7 @@ public class Main implements Runnable, ICompilationListener
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version 1.0.0 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.39)");
+            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.40)");
             System.out.println("Copyright (C) 1997-2000 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -624,7 +622,7 @@ public class Main implements Runnable, ICompilationListener
         if(args.length == 0)
         {
             printHelp();
-            throw new CompilationDeathException(COMPILATION_ABORTED);            
+            throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
         }
 
         // Handle all the options
@@ -743,7 +741,7 @@ public class Main implements Runnable, ICompilationListener
              {
                  System.out.println("Unrecognized option: " + arg);
                  printHelp();
-                 throw new CompilationDeathException(COMPILATION_ABORTED);            
+                 throw new CompilationDeathException(COMPILATION_ABORTED);
              }  
              else if(arg.startsWith("@"))
              {
@@ -853,7 +851,8 @@ public class Main implements Runnable, ICompilationListener
         setReservedNames();
         setCmdLineArgs(args);
         Main m = new Main();
-        addCompilationListener(m);
+        ConsoleCompilationListener ccl = new ConsoleCompilationListener();
+        addCompilationListener(ccl);
         (new Thread(m)).start();
     }
 
@@ -918,18 +917,6 @@ public class Main implements Runnable, ICompilationListener
         rn.add("from");
 	    rn.add("to");
     }
-
-    /** Implementation of ICompilationListener */
-    public  void compilationTerminated(int status, String msg) 
-    {
-        if(status == COMPILATION_ABORTED) { 	 
-	    return;
-        }
-        else if(status == COMPILATION_SUCCEDED) {
-            return;
-        }
-    }
-
 
     /** 
      *  Entry point to the soot's compilation process. Be sure to call
@@ -1123,14 +1110,12 @@ public class Main implements Runnable, ICompilationListener
     
     totalTimer.end();            
 
-        // Print out time stats.
+    // Print out time stats.
 
-       
-        if(isProfilingOptimization)
-            printProfilingInformation();
-   
+    if(isProfilingOptimization)
+        printProfilingInformation();
         
-        } catch (CompilationDeathException e) {
+    } catch (CompilationDeathException e) {
             totalTimer.end();            
             exitCompilation(e.getStatus(), e.getMessage());
             return;
@@ -1468,37 +1453,6 @@ public class Main implements Runnable, ICompilationListener
         }    
     }
 }
-
-
-
-
-class CompilationDeathException extends RuntimeException
-{
-    private String mMsg;
-    private int mStatus;
-
-    CompilationDeathException(int status, String msg)
-    {
-        mMsg = msg;
-        mStatus = status;
-    }
-        
-    CompilationDeathException(int status)
-    {
-        mStatus = status;
-    }
-
-    public int getStatus()
-    {
-        return mStatus;
-    }
-    public String getMsg()
-    {
-        return mMsg;
-    }
-}
-
-
 
 
 
