@@ -61,7 +61,9 @@ public class NormalUnitPrinter implements UnitPrinter {
     }
     public void type( Type t ) { 
         handleIndent();
-        output.append( Scene.v().quotedNameOf(t.toString()) );
+        String s = t.toString();
+        if( t instanceof RefType ) s = Scene.v().quotedNameOf(s);
+        output.append( s );
     }
     public void method( SootMethod m ) {
         handleIndent();
