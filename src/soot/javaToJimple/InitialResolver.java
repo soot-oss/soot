@@ -29,6 +29,8 @@ public class InitialResolver {
    
     private HashMap classToSourceMap;
     private HashMap specialAnonMap;
+   
+    private FastHierarchy hierarchy;
     
     /**
      * returns true if there is an AST avail for given soot class
@@ -1412,5 +1414,13 @@ public class InitialResolver {
 
     public HashMap specialAnonMap(){
         return specialAnonMap;
+    }
+
+    public void hierarchy(soot.FastHierarchy fh){
+        hierarchy = fh;
+    }
+    
+    public soot.FastHierarchy hierarchy(){
+        return hierarchy;
     }
 }

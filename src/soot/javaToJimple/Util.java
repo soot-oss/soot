@@ -182,8 +182,16 @@ public class Util {
                     
     }
     
+    
+    
     public static soot.Local getThis(soot.Type sootType, soot.Body body, HashMap getThisMap, LocalGenerator lg){
 
+        if (InitialResolver.v().hierarchy() == null){
+            InitialResolver.v().hierarchy(new soot.FastHierarchy());
+        }
+        
+        soot.FastHierarchy fh = InitialResolver.v().hierarchy();
+        
         // if this for type already created return it from map
         if (getThisMap.containsKey(sootType)){
             return (soot.Local)getThisMap.get(sootType);
@@ -192,7 +200,7 @@ public class Util {
         //System.out.println("special this local type: "+specialThisLocal.getType());
         soot.Local specialThisLocal = body.getThisLocal();
         // if need this just return it
-        if (specialThisLocal.getType().equals(sootType)) {
+        if (fh.canStoreType(specialThisLocal.getType(), sootType)) {
             //System.out.println("can just return this");
             getThisMap.put(sootType, specialThisLocal);
             return specialThisLocal;
@@ -216,7 +224,7 @@ public class Util {
         soot.jimple.AssignStmt fieldAssignStmt = soot.jimple.Jimple.v().newAssignStmt(t1, fieldRef);
         body.getUnits().add(fieldAssignStmt);
         
-        if (t1.getType().equals(sootType)){
+        if (fh.canStoreType(t1.getType(), sootType)){
             //System.out.println("can just return this$0 field");
             getThisMap.put(sootType, t1);
             return t1;            
@@ -229,10 +237,11 @@ public class Util {
     }
 
     private static soot.Local getLocalOfType(soot.Body body, soot.Type type) {
+        soot.FastHierarchy fh = InitialResolver.v().hierarchy();
         Iterator it = body.getLocals().iterator();
         while (it.hasNext()){
             soot.Local l = (soot.Local)it.next();
-            if (l.getType().equals(type)){
+            if (fh.canStoreType(l.getType(), type)){
                 return l;
             }
         }
@@ -240,19 +249,33 @@ public class Util {
     }
     
     private static boolean bodyHasLocal(soot.Body body, soot.Type type) {
+        soot.FastHierarchy fh = InitialResolver.v().hierarchy();
         Iterator it = body.getLocals().iterator();
         while (it.hasNext()){
             soot.Local l = (soot.Local)it.next();
-            if (l.getType().equals(type)){
+            if (fh.canStoreType(l.getType(), type)){
                 return true;
             }
         }
         return false;
     }
+
+    /*private static boolean bodyHasSubType(soot.Body body, soot.Type subType){
+        Iterator it = fs.getAllSubclassesOf(((soot.RefType)type).getSootClass()).iterator();
+        while (it.hasNext()){
+            
+        }
+    }*/
     
     public static soot.Local getThisGivenOuter(soot.Type sootType, HashMap getThisMap, soot.Body body, LocalGenerator lg, soot.Local t2){
         
-        while (!t2.getType().equals(sootType)){
+        if (InitialResolver.v().hierarchy() == null){
+            InitialResolver.v().hierarchy(new soot.FastHierarchy());
+        }
+        
+        soot.FastHierarchy fh = InitialResolver.v().hierarchy();
+        
+        while (!fh.canStoreType(t2.getType(),sootType)){
             //System.out.println("t2 type: "+t2.getType());
             soot.SootClass classToInvoke = ((soot.RefType)t2.getType()).getSootClass();
             // make an access method and add it to that class for accessing 

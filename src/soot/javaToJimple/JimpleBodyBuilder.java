@@ -3147,7 +3147,7 @@ public class JimpleBodyBuilder {
         //if (soot.Modifier.isStatic(outerClass.getModifiers())) return;
         ArrayList needsRef = soot.javaToJimple.InitialResolver.v().getHasOuterRefInInit();
 
-            //System.out.println("type to invoke: "+Util.getSootType(typeToInvoke));
+         //System.out.println("type to invoke: "+Util.getSootType(typeToInvoke));
             //System.out.println("type to invoke outer: "+Util.getSootType(typeToInvoke.outer()));
         //System.out.println("needsRef: "+needsRef);
         if ((needsRef != null) && (needsRef.contains(Util.getSootType(typeToInvoke)))){
