@@ -70,6 +70,7 @@
             link="${javaapi.url}"
             windowtitle="Soot API"
             verbose="true"
+            use="true"
         >
             <fileset dir="src" includes="**/*.java"/>
         </javadoc>
