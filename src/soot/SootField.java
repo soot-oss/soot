@@ -31,7 +31,6 @@ import soot.tagkit.*;
 import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
-//import soot.jimple.spark.SparkField;
 import soot.jimple.paddle.PaddleField;
 import soot.jimple.spark.pag.SparkField;
 

@@ -19,7 +19,6 @@ soot.dava.toolkits.base.finders.AbruptEdgeFinder
 soot.jimple.toolkits.base.Aggregator
 soot.jimple.toolkits.annotation.arraycheck.ArrayBoundsChecker
 soot.jimple.spark.pag.ArrayElement
-soot.jimple.paddle.ArrayElement
 soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator
 soot.dava.toolkits.base.AST.ASTWalker
 soot.baf.Baf
@@ -47,7 +46,6 @@ soot.DoubleType
 soot.baf.DoubleWordType
 soot.jimple.toolkits.pointer.DumbPointerAnalysis
 soot.jimple.spark.sets.EmptyPointsToSet
-soot.jimple.paddle.EmptyPointsToSet
 soot.ErroneousType
 soot.dava.toolkits.base.finders.ExceptionFinder
 soot.jimple.toolkits.pointer.FieldRWTagger
@@ -124,7 +122,6 @@ soot.shimple.toolkits.scalar.SConstantPropagatorAndFolder
 soot.ShortType
 soot.jimple.toolkits.pointer.SideEffectTagger
 soot.jimple.spark.SparkTransformer
-soot.jimple.paddle.PaddleTransformer
 soot.jimple.toolkits.invoke.StaticInliner
 soot.jimple.toolkits.invoke.StaticMethodBinder
 soot.StmtAddressType
@@ -167,10 +164,5 @@ soot.toolkits.exceptions.PedanticThrowAnalysis
 soot.toolkits.exceptions.TrapTightener
 soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher
 soot.SootResolver
-soot.jimple.paddle.PaddleNumberers
-soot.jimple.paddle.PaddleScene
 soot.javaToJimple.InitialResolver
-soot.jimple.paddle.queue.Readers
-soot.jimple.paddle.ShadowNumberer
-soot.jimple.paddle.Results
-soot.jimple.paddle.ExecutesManyAnalysis
+soot.jimple.paddle.PaddleHook
