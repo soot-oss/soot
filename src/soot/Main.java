@@ -61,7 +61,7 @@ public class Main implements Runnable
 {   
     // TODO: the following string should be updated by the source control
     //   $Format: "            public static final String versionString = \"1.2.4 (build $ProjectVersion$)\";"$
-            public static final String versionString = "1.2.4 (build 1.2.4.dev.41)";
+            public static final String versionString = "1.2.4 (build 1.2.4.dev.42)";
     
     public Date start;
     public Date finish;
@@ -731,7 +731,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.4 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.41)");
+            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.42)");
 	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -787,7 +787,9 @@ public class Main implements Runnable
 	System.out.println("  --process-path PATH          process all classes on the PATH");
 	System.out.println("");
 	System.out.println("Construction options:");
-        System.out.println("  --via-shimple                add Shimple to the transformation and optimisation process (...->Jimple->Shimple->Jimple->...)");
+        System.out.println("  --via-shimple                add Shimple (SSA Jimple) to the transformation");
+	System.out.println("                               and optimisation path."); 
+	System.out.println("                               (...-->Jimple-->Shimple-->Jimple-->...)");
 	System.out.println("  --final-rep REP              produce classfile/jasmin from REP ");
 	System.out.println("                               (jimple, grimp, or baf)");
 	System.out.println("");
