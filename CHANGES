@@ -64,6 +64,8 @@ Improvements in current version
 	Has not benn tested on J2ME. But when the flag is set to false, 
 	original function is not affected.
 	Patch provided by Stephen Cheng.                (fqian)
+20. Fixed some obvious bugs in CFGViewer, added simple options. (fqian)
+
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 

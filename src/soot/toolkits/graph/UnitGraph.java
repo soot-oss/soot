@@ -460,46 +460,4 @@ public class UnitGraph implements DirectedGraph
         
         return buf.toString();
     }
-
-  /* generating dot format for plotting */
-  public void toDotFile() {
-    // file name is the method name + .dot
-    String filename = method.getName();
-
-    DotGraph canvas = new DotGraph(filename);
-
-    canvas.setNodeShape(DotGraphConstants.NODE_SHAPE_BOX);
-
-    Iterator nodesIt = iterator();
-    while (nodesIt.hasNext()) {
-      Object node = nodesIt.next();
-
-      Iterator succsIt = getSuccsOf(node).iterator();
-      while (succsIt.hasNext()) {
-        Object succ = succsIt.next();
-
-        canvas.drawEdge(node.toString(), succ.toString());
-      }
-    }
-
-    // make the entry and exit node filled.
-    Iterator headsIt = getHeads().iterator();
-    while (headsIt.hasNext()) {
-      Object head = headsIt.next();
-      DotGraphNode headNode = canvas.getNode(head.toString());
-      headNode.setStyle(DotGraphConstants.NODE_STYLE_FILLED);
-    }
-
-    Iterator tailsIt = getTails().iterator();
-    while (tailsIt.hasNext()) {
-      Object tail = tailsIt.next();
-      DotGraphNode tailNode = canvas.getNode(tail.toString());
-      tailNode.setStyle(DotGraphConstants.NODE_STYLE_FILLED);
-    }
-
-    SootClass sclass = method.getDeclaringClass();
-    canvas.setGraphLabel(sclass.getName()+"."+method.getName());
-
-    canvas.plot();
-  } 
 }

@@ -560,7 +560,8 @@ public class BlockGraph implements DirectedGraph
 
     public List getTails()
     {
-        throw new RuntimeException("not yet implemented");
+      return new LinkedList();
+      //        throw new RuntimeException("not yet implemented");
     }
 
     public List getPredsOf(Object s)
@@ -584,57 +585,6 @@ public class BlockGraph implements DirectedGraph
     {
         return mBlocks.iterator();
     }
-
-  /* generating dot format for plotting */
-  public void toDotFile() {
-    SootMethod method = mBody.getMethod();
-
-    // file name is the method name + .dot
-    String filename = method.getName();
-
-    DotGraph canvas = new DotGraph(filename);
-
-    canvas.setNodeShape(DotGraphConstants.NODE_SHAPE_BOX);
-
-    Iterator nodesIt = iterator();
-    while (nodesIt.hasNext()) {
-      Block node = (Block)nodesIt.next();
-
-      Iterator succsIt = getSuccsOf(node).iterator();
-      while (succsIt.hasNext()) {
-        Block succ = (Block)succsIt.next();
-
-        canvas.drawEdge(node.toShortString(), succ.toShortString());
-      }
-
-      /* set label for the block */
-      DotGraphNode gnode = canvas.getNode(node.toShortString());
-      gnode.setLabel(node.toString());
-    }
-
-    // make the entry and exit node filled.
-    Iterator headsIt = getHeads().iterator();
-    while (headsIt.hasNext()) {
-      Object head = headsIt.next();
-      DotGraphNode headNode = canvas.getNode(head.toString());
-      headNode.setStyle(DotGraphConstants.NODE_STYLE_FILLED);
-    }
-
-    /* getTails is not implemented for BlockGraph */
-    /* 
-    Iterator tailsIt = getTails().iterator();
-    while (tailsIt.hasNext()) {
-      Object tail = tailsIt.next();
-      DotGraphNode tailNode = canvas.getNode(tail.toString());
-      tailNode.setStyle(DotGraphConstants.NODE_STYLE_FILLED);
-    }
-    */
-
-    SootClass sclass = method.getDeclaringClass();
-    canvas.setGraphLabel(sclass.getName()+"."+method.getName());
-
-    canvas.plot();
-  } 
 }
 
     
