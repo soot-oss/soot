@@ -42,9 +42,35 @@ import soot.jimple.internal.*;
  * executed on the path through the second predecessor of A or throught the
  * second successor of B.<br>
  * Our critical edge-remover overcomes this problem by introducing synthetic
- * nodes on this critical edges.
+ * nodes on this critical edges.<br>
+ * Exceptions will be ignored.
  */
-public class CriticalEdgeRemover {
+public class CriticalEdgeRemover extends BodyTransformer {
+
+  private static CriticalEdgeRemover instance = new CriticalEdgeRemover();
+  private CriticalEdgeRemover() {}
+
+  public static CriticalEdgeRemover v() { return instance; }
+
+  public String getDeclaredOptions() {
+    return super.getDeclaredOptions();
+  }
+
+  public String getDefaultOptions() { return ""; }
+        
+  /**
+   * performs critical edge-removing.
+   */
+  protected void internalTransform(Body b, String phaseName, Map options) {
+    if(Main.isVerbose)
+      System.out.println("[" + b.getMethod().getName() +
+                         "]     Removing Critical Edges...");
+    removeCriticalEdges(b);
+    if(Main.isVerbose)
+      System.out.println("[" + b.getMethod().getName() +
+                         "]     Removing Critical Edges done.");
+
+  }
 
   /**
    * inserts a Jimple<code>Goto</code> to <code> target, directly after
@@ -114,7 +140,7 @@ public class CriticalEdgeRemover {
   /* note, that critical edges can only appear on edges between blocks!.
      Our algorithm will *not* take into account exceptions. (this is nearly
      impossible anyways) */
-  public static void removeCriticalEdges(Body b) {
+  private void removeCriticalEdges(Body b) {
     Chain unitChain = b.getUnits();
     int size = unitChain.size();
     Map predecessors = new HashMap(2 * size + 1, 0.7f);

@@ -42,11 +42,16 @@ import soot.jimple.internal.*;
  * back-edge of the while-loop to the new block.<br>
  * After this transformation the edge between the original condition-block and
  * the loop-body is only executed once (and hence suitable for LCM) and we can
- * be sure, that the loop-body will get executed.
+ * be sure, that the loop-body will get executed.<br>
+ * Exceptions are ignored (the transformation is done on a
+ * <code>BriefUnitGraph</code>.
  */
-public class LoopConditionUnroller {
-  public int counterUnrolledConditions = 0;
-  public static int counterGlobalUnrolledConditions = 0;
+public class LoopConditionUnroller extends BodyTransformer {
+  public String getDeclaredOptions() {
+    return super.getDeclaredOptions() + " maxSize";
+  }
+
+  public String getDefaultOptions() { return "maxSize:15"; }
 
   /**
    * contained blocks are currently visiting successors. We need this to find
@@ -62,24 +67,28 @@ public class LoopConditionUnroller {
   private Map unitsToTraps;
 
   /**
-   * modifies the given blockGraph physicly, so that (some) while-loops have their
-   * condition-block unrolled.
-   *
-   * @param bg the Jimple-block-graph.
-   * @param maxSize the maximum size of a conditionblock to get cloned.
+   * unrolls conditions.
    */
   /* this implementation still fails in finding all possible while-loops, but
    * does a good job. */
-  public LoopConditionUnroller(BlockGraph bg, int maxSize) {
+  protected void internalTransform(Body body, String phaseName, Map options) {
+    if(Main.isVerbose)
+      System.out.println("[" + body.getMethod().getName() +
+                         "]     Unrolling Loop Conditions...");
+
     visitingSuccs = new HashSet();
     visitedBlocks = new HashSet();
-    this.body = bg.getBody();
-    this.maxSize = maxSize;
+    this.body = body;
+    this.maxSize = Options.getInt(options, "maxSize");
     
+    BlockGraph bg = new BriefBlockGraph(body);
     Iterator headIter = bg.getHeads().iterator();
     while (headIter.hasNext())
       unrollConditions((Block)headIter.next());
-    counterGlobalUnrolledConditions += counterUnrolledConditions;
+
+    if(Main.isVerbose)
+      System.out.println("[" + body.getMethod().getName() +
+                         "]     Unrolling Loop Conditions done.");
   }
     
   /**
@@ -296,7 +305,6 @@ public class LoopConditionUnroller {
             Block loopTailBlock = block; //just renaming for clearer code
 
             if (getSize(condition) <= maxSize) {
-              counterUnrolledConditions++;
               Unit copiedHead = copyBlock(condition);
               /* now just redirect the tail of the loop-body */
               Unit loopTail = loopTailBlock.getTail();

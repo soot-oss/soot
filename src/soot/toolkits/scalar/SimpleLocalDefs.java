@@ -94,7 +94,7 @@ public class SimpleLocalDefs implements LocalDefs
                                         {
                                             IntPair intPair = (IntPair) analysis.localToIntPair.get(l);
 					    
-                                            BoundedFlowSet value = (BoundedFlowSet) analysis.getFlowBefore(s);
+                                            ArrayPackedSet value = (ArrayPackedSet) analysis.getFlowBefore(s);
 
                                             List unitLocalDefs = value.toList(intPair.op1, intPair.op2);
 
@@ -329,7 +329,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
                 }
 
                 defs = defList.toArray();
-                defUniverse = new FlowUniverse(defs);
+                defUniverse = new ArrayFlowUniverse(defs);
             }
         }
 
@@ -403,7 +403,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
     protected Object newInitialFlow()
     {
         return emptySet.clone();
-}
+    }
 
     protected void flowThrough(Object inValue, Object d, Object outValue)
     {

@@ -39,15 +39,16 @@ import soot.util.*;
  * to calculate it).
  * A computation is isolated, if it can only be used at the current
  * computation-point. In other words: if the result of the computation will not
- * be used later on (modification of an operand, or not the only path to the
- * next computation point) the computation is isolated.<br>
- * The Earliest-analysis helps us in finding isolated computations, as they
- * show us points, where a precedent computation can't be used anymore.
+ * be used later on the computation is isolated.<br>
+ * The Latest-analysis helps us in finding isolated computations, as they
+ * show us points, where a precedent computation can't be used anymore.<br>
+ * In completely other words: we search the interval "latest"-"computation". a
+ * computation in this interval would not be isolated.
  */
 public class NotIsolatedAnalysis extends BackwardFlowAnalysis {
-  private EarliestnessComputation unitToEarliest;
+  private LatestComputation unitToLatest;
   private Map unitToGen;
-  private FlowSet emptySet;
+  private FlowSet set;
 
   /**
    * this constructor should not be used, and will throw a runtime-exception!
@@ -60,30 +61,50 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis {
 
   /**
    * automaticly performs the Isolation-analysis on the graph
-   * <code>dg</code> using the Earliest-computation <code>earliest</code>.<br>
+   * <code>dg</code> using the Latest-computation <code>latest</code>.<br>
    * the <code>equivRhsMap</code> is only here to avoid doing these things
    * again...
    *
    * @param dg a CompleteUnitGraph
-   * @param earliest the earliest-computation of the same graph.
+   * @param latest the latest-computation of the same graph.
    * @param equivRhsMap the rhs of each unit (if assignment-stmt).
    */
-  public NotIsolatedAnalysis(DirectedGraph dg, EarliestnessComputation earliest,
+  public NotIsolatedAnalysis(DirectedGraph dg, LatestComputation latest,
       Map equivRhsMap) {
+    this(dg, latest, equivRhsMap, new
+      BoundedArraySparseSet(new CollectionFlowUniverse(equivRhsMap.values())));
+  }
+
+  /**
+   * automaticly performs the Isolation-analysis on the graph
+   * <code>dg</code> using the Latest-computation <code>latest</code>.<br>
+   * the <code>equivRhsMap</code> is only here to avoid doing these things
+   * again...<br>
+   * the shared set allows more efficient set-operations, when this analysis is
+   * joined with other analyses/computations.
+   *
+   * @param dg a CompleteUnitGraph
+   * @param latest the latest-computation of the same graph.
+   * @param equivRhsMap the rhs of each unit (if assignment-stmt).
+   * @param set the shared set.
+   */
+  public NotIsolatedAnalysis(DirectedGraph dg, LatestComputation latest,
+      Map equivRhsMap, BoundedFlowSet set) {
     super(dg);
     UnitGraph g = (UnitGraph)dg;
-    emptySet = new ToppedSet(new ArraySparseSet());
+    this.set = set;
     unitToGen = equivRhsMap;
-    unitToEarliest = earliest;
+    unitToLatest = latest;
     doAnalysis();
   }
 
   protected Object newInitialFlow() {
-    Object newSet = emptySet.clone();
+    Object newSet = set.emptySet();
     return newSet;
   }
 
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
+
     FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
     in.copy(out);
@@ -91,11 +112,11 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis {
     // Perform generation
     EquivalentValue rhs = (EquivalentValue)unitToGen.get(unit);
     if (rhs != null)
-      out.add(rhs, out);
+      out.add(rhs);
 
-    Iterator earliestIt = unitToEarliest.getEarliestBefore((Unit)unit).iterator();
-    while (earliestIt.hasNext())
-      out.remove(earliestIt.next(), out);
+    // perform kill
+    FlowSet latest = (FlowSet)unitToLatest.getFlowBefore(unit);
+    out.difference(latest);
   }
 
   protected void merge(Object in1, Object in2, Object out) {

@@ -95,7 +95,7 @@ public class SootFilter {
    *
    * @param val the Value to test for.
    * @return the <code>val</code> if it was a concrete reference. otherwise
-   * <code>null</null>.
+   * <code>null</code>.
    */
   public static Value concreteRef(Value val) {
     if (val == null) return null;

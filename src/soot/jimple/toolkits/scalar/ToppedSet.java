@@ -36,7 +36,7 @@ import java.util.*;
  * If add, remove, size, isEmpty, toList and contains are implemented, the lattice must be the powerset of some set.
  *
  */
-public class ToppedSet implements FlowSet
+public class ToppedSet extends AbstractFlowSet
 {
     FlowSet underlyingSet;
     boolean isTop;
@@ -69,6 +69,11 @@ public class ToppedSet implements FlowSet
         dest.setTop(true);
     }
 
+    public Object emptySet()
+    {
+        return new ToppedSet((FlowSet)underlyingSet.emptySet());
+    }
+
     public void clear()
     {
         isTop = false;
@@ -77,6 +82,8 @@ public class ToppedSet implements FlowSet
 
     public void union(FlowSet o, FlowSet d)
     {
+      if (o instanceof ToppedSet &&
+          d instanceof ToppedSet) {
         ToppedSet other = (ToppedSet)o;
         ToppedSet dest = (ToppedSet)d;
 
@@ -94,6 +101,8 @@ public class ToppedSet implements FlowSet
                                 dest.underlyingSet);
             dest.setTop(false);
         }
+      } else
+        super.union(o, d);
     }
 
     public void intersection(FlowSet o, FlowSet d)
@@ -165,22 +174,16 @@ public class ToppedSet implements FlowSet
         return underlyingSet.size();
     }
 
-    public void add(Object obj, FlowSet d)
+    public void add(Object obj)
     {
-        ToppedSet dest = (ToppedSet)d;
-
-        if (isTop()) { copy(dest); return; }
-        dest.underlyingSet.add(obj, 
-                      dest.underlyingSet);
+        if (isTop()) return;
+        underlyingSet.add(obj);
     }
 
-    public void remove(Object obj, FlowSet d)
+    public void remove(Object obj)
     {
-        ToppedSet dest = (ToppedSet)d;
-
-        if (isTop()) { copy(dest); return; }
-        dest.underlyingSet.remove(obj, 
-                                  dest.underlyingSet);
+        if (isTop()) return;
+        underlyingSet.remove(obj);
     }
 
     public boolean contains(Object obj)

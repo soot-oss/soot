@@ -45,21 +45,40 @@ import soot.util.*;
 public class LatestComputation {
   private Map unitToLatest;
 
+
   /**
-   * given a DelayabilityAnalysis, the EarliestnessComputation and the
-   * computations of each unit, calculates the latest computation-point for each
-   * expression.<br>
+   * given a DelayabilityAnalysis and the computations of each unit, calculates
+   * the latest computation-point for each expression.<br>
    * the <code>equivRhsMap</code> could be calculated on the fly, but it is
    * <b>very</b> likely that it already exists (as similar maps are used for
    * calculating Earliestness, Delayed,...
    *
    * @param dg a CompleteUnitGraph
-   * @param earliest the earliest-computation of the same graph.
    * @param delayed the delayability-analysis of the same graph.
    * @param equivRhsMap all computations of the graph
    */
-  public LatestComputation(UnitGraph unitGraph, EarliestnessComputation
-      earliest, DelayabilityAnalysis delayed, Map equivRhsMap) {
+  public LatestComputation(UnitGraph unitGraph, DelayabilityAnalysis delayed,
+                           Map equivRhsMap) {
+    this(unitGraph, delayed, equivRhsMap, new
+      BoundedArraySparseSet(new CollectionFlowUniverse(equivRhsMap.values())));
+  }
+
+  /**
+   * given a DelayabilityAnalysis and the computations of each unit, calculates
+   * the latest computation-point for each expression.<br>
+   * the <code>equivRhsMap</code> could be calculated on the fly, but it is
+   * <b>very</b> likely that it already exists (as similar maps are used for
+   * calculating Earliestness, Delayed,...<br>
+   * the shared set allows more efficient set-operations, when they the
+   * computation is merged with other analyses/computations.
+   *
+   * @param dg a CompleteUnitGraph
+   * @param delayed the delayability-analysis of the same graph.
+   * @param equivRhsMap all computations of the graph
+   * @param set the shared flowSet
+   */
+  public LatestComputation(UnitGraph unitGraph, DelayabilityAnalysis delayed,
+                           Map equivRhsMap, BoundedFlowSet set) {
     unitToLatest = new HashMap(unitGraph.size() + 1, 0.7f);
 
     Iterator unitIt = unitGraph.iterator();
@@ -68,18 +87,15 @@ public class LatestComputation {
       Unit currentUnit = (Unit)unitIt.next();
 
       /* basically the latest-set is: 
-       *  (delayed) * (computation + (SUM successors -Delayed))
+       * (delayed) INTERSECT (comp UNION (UNION_successors ~Delayed)) =
+       * (delayed) MINUS ~((INTERSECTION_successors Delayed) MINUS comp).
+       */
 
-      /* make a copy of the delayedSet */
-      FlowSet delaySet =
-        (FlowSet)((FlowSet)delayed.getFlowBefore(currentUnit)).clone();
+      FlowSet delaySet = (FlowSet)delayed.getFlowBefore(currentUnit);
 
-      /* We'll calculate (SUM successors -Delayed) by 
-       * -(INTER successors Delayed) */
-      /* TODO we can't be sure, that we have a ArraySparseSet here! */
-      /* FlowSet succSet = delayEarliestSet.emptySet() would be better */
-      ToppedSet succCompSet = new ToppedSet(new ArraySparseSet());
-      succCompSet.setTop(true);
+      /* We'll calculate (UNION_successors ~Delayed) by 
+       * ~(INTERSECTION_successors Delayed) */
+      FlowSet succCompSet = (FlowSet)set.topSet();
       List succList = unitGraph.getSuccsOf(currentUnit);
       Iterator succIt = succList.iterator();
       while(succIt.hasNext()) {
@@ -88,12 +104,12 @@ public class LatestComputation {
             succCompSet);
       }
       /* remove the computation of this set: succCompSet is then:
-       * -((Intersection successors Delayed) - comp) */
+       * ~((INTERSECTION_successors Delayed) MINUS comp) */
       if (equivRhsMap.get(currentUnit) != null)
-        succCompSet.remove(equivRhsMap.get(currentUnit), succCompSet);
+        succCompSet.remove(equivRhsMap.get(currentUnit));
 
       /* make the difference: */
-      FlowSet latest = delaySet; //just to have a nicer name:)
+      FlowSet latest = (FlowSet)delaySet.emptySet();
       delaySet.difference(succCompSet, latest);
 
       unitToLatest.put(currentUnit, latest);
@@ -104,10 +120,10 @@ public class LatestComputation {
    * returns the set of expressions, that have their latest computation just
    * before <code>node</code>.
    *
-   * @param node a Unit of the flow-graph.
+   * @param node an Object of the flow-graph (in our case always a unit).
    * @return a FlowSet containing the expressions.
    */
-  public FlowSet getLatestBefore(Unit node) {
-    return (FlowSet)unitToLatest.get(node);
+  public Object getFlowBefore(Object node) {
+    return unitToLatest.get(node);
   }
 }

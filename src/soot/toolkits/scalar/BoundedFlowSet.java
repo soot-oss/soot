@@ -30,7 +30,8 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-/** Represents bounded information for flow analysis.  
+/** 
+ * Represents bounded information for flow analysis.  
  * Just like FlowSet, but also provides complementation.
  * Some implementations of BoundedFlowSet may require a FlowUniverse for construction.
  *
@@ -38,9 +39,26 @@ import java.util.*;
  */
 public interface BoundedFlowSet extends FlowSet
 {
-    /** Complements this BoundedFlowSet, putting the result into <code>dest</code>. */
+    /**
+     * Complements <code>this</code>.
+     */
+    public void complement();
+
+    /** 
+     * Complements this BoundedFlowSet, putting the result into
+     * <code>dest</code>. <code>dest</code> and <code>this</code> may be the
+     * same object.
+     */
     public void complement(FlowSet dest);
 
-    /** Returns elements [low..high] of this BoundedFlowSet. (optional operation) */
+    /**
+     * returns the topped set.
+     */
+    public Object topSet();
+
+    /** Returns elements [low..high] of this BoundedFlowSet. (optional
+     * operation) */
+  /*
     public List toList(int low, int high) throws UnsupportedOperationException;
+  */
 }

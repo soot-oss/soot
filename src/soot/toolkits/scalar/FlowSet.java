@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1997-1999 Raja Vallee-Rai
+ *      modified 2002 Florian Loitsch
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -30,51 +31,123 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-/** Represents information for flow analysis.  
- * A FlowSet is an element of a lattice; this lattice might be described by a FlowUniverse.
- * If add, remove, size, isEmpty, toList and contains are implemented, the lattice must be the powerset of some set.
+/**
+ * Represents information for flow analysis.  
+ * A FlowSet is an element of a lattice; this lattice might be described by a
+ * FlowUniverse.
+ * If add, remove, size, isEmpty, toList and contains are implemented, the
+ * lattice must be the powerset of some set.
  *
  * @see: FlowUniverse
  */
-public interface FlowSet 
-{
-    /** Clones the current FlowSet. */
-    public Object clone();
+public interface FlowSet {
+  /**
+   * Clones the current FlowSet.
+   */
+  public Object clone();
 
-    /** Copies the current FlowSet into dest. */
-    public void copy(FlowSet dest);
+  /** 
+   * returns an empty set, most often more efficient than:
+   * <code>((FlowSet)clone()).clear()</code>
+   */
+  public Object emptySet();
 
-    /** Sets this FlowSet to the empty set (more generally, the bottom element of the lattice.) */
-    public void clear();
+  /**
+   * Copies the current FlowSet into dest.
+   */
+  public void copy(FlowSet dest);
 
-    /** Returns the union (join) of this FlowSet and <code>other</code>, putting result into <code>dest</code>. */
-    public void union(FlowSet other, FlowSet dest);
+  /** 
+   * Sets this FlowSet to the empty set (more generally, the bottom element
+   * of the lattice.) */
+  public void clear();
 
-    /** Returns the intersection (meet) of this FlowSet and <code>other</code>, putting result into <code>dest</code>. */
-    public void intersection(FlowSet other, FlowSet dest);
+  /**
+   * Returns the union (join) of this FlowSet and <code>other</code>, putting
+   * result into <code>this</code>. */
+  public void union(FlowSet other);
 
-    /** Returns the set difference (this join ~other) of this FlowSet and 
-        <code>other</code>, putting result into <code>dest</code>. */
-    public void difference(FlowSet other, FlowSet dest);
+  /** 
+   * Returns the union (join) of this FlowSet and <code>other</code>, putting
+   * result into <code>dest</code>. <code>dest</code>, <code>other</code> and
+   * <code>this</code> could be the same object.
+   */
+  public void union(FlowSet other, FlowSet dest);
 
-    /** Returns true if this FlowSet is the empty set. */
-    public boolean isEmpty();
+  /**
+   * Returns the intersection (meet) of this FlowSet and <code>other</code>,
+   * putting result into <code>this</code>.
+   */
+  public void intersection(FlowSet other);
 
-    /* The following methods force the FlowSet to be a powerset. */
+  /**
+   * Returns the intersection (meet) of this FlowSet and <code>other</code>,
+   * putting result into <code>dest</code>. <code>dest</code>,
+   * <code>other</code> and <code>this</code> could be the same object.
+   */
+  public void intersection(FlowSet other, FlowSet dest);
 
-    /** Returns the size of the current FlowSet. (optional operation) */
-    public int size() throws UnsupportedOperationException;
+  /** 
+   * Returns the set difference (this join ~other) of this FlowSet and
+   * <code>other</code>, putting result into <code>this</code>.
+   */
+  public void difference(FlowSet other);
 
-    /** Adds <code>obj</code> to <code>dest</code>. (optional operation) */
-    public void add(Object obj, FlowSet dest) throws UnsupportedOperationException;
+  /**
+   * Returns the set difference (this join ~other) of this FlowSet and 
+   * <code>other</code>, putting result into <code>dest</code>.
+   * <code>dest</code>, <code>other</code> and <code>this</code> could be the
+   * same object.
+   */
+  public void difference(FlowSet other, FlowSet dest);
 
-    /** Removes <code>obj</code> from <code>dest</code>. (optional operation) */
-    public void remove(Object obj, FlowSet dest) throws UnsupportedOperationException;
+  /**
+   * Returns true if this FlowSet is the empty set.
+   */
+  public boolean isEmpty();
 
-    /** Returns true if this FlowSet contains <code>obj</code>. (optional operation) */
-    public boolean contains(Object obj) throws UnsupportedOperationException;
+  /* The following methods force the FlowSet to be a powerset. */
 
-    /** Returns an unbacked list of contained objects for this FlowSet. (optional operation) */
-    public List toList() throws UnsupportedOperationException;
+  /**
+   * Returns the size of the current FlowSet.
+   */
+  public int size();
+
+  /**
+   * Adds <code>obj</code> to <code>this</code>.
+   */
+  public void add(Object obj);
+
+  /**
+   * puts <code>this</code> union <code>obj</code> into <code>dest</code>.
+   */
+  public void add(Object obj, FlowSet dest);
+
+  /**
+   * Removes <code>obj</code> from <code>this</code>.
+   */
+  public void remove(Object obj);
+
+  /**
+   * Puts <code>this</code> minus <code>obj</code> into <code>dest</code>.
+   */
+  public void remove(Object obj, FlowSet dest);
+
+  /**
+   * Returns true if this FlowSet contains <code>obj</code>.
+   */
+  public boolean contains(Object obj);
+
+  /**
+   * returns an iterator over the elements of the flowSet. Note that the
+   * iterator might be backed, and hence be faster in the creation, than doing
+   * <code>toList().iterator()</code>.
+   */
+  public Iterator iterator();
+
+  /**
+   * Returns an unbacked list of contained objects for this FlowSet.
+   */
+  public List toList();
 }
 

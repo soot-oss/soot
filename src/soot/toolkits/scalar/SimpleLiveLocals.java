@@ -121,7 +121,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
         // Generate list of locals and empty set
         {
             Chain locals = g.getBody().getLocals();
-            FlowUniverse localUniverse = new FlowUniverse(locals.toArray());
+            FlowUniverse localUniverse = new CollectionFlowUniverse(locals);
 
             emptySet = new ArrayPackedSet(localUniverse);
             

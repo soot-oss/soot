@@ -26,6 +26,7 @@
 
 package soot.jimple.toolkits.scalar.pre;
 import soot.jimple.toolkits.graph.*;
+import soot.jimple.toolkits.scalar.*;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -73,24 +74,28 @@ public class BusyCodeMotion extends BodyTransformer {
       System.out.println("[" + b.getMethod().getName() +
           "]     performing Busy Code Motion...");
 
-    CriticalEdgeRemover.removeCriticalEdges(b);
+    CriticalEdgeRemover.v().transform(b, phaseName + ".cer");
 
     UnitGraph graph = new BriefUnitGraph(b);
 
+    /* map each unit to its RHS. only take binary expressions */
     Map unitToEquivRhs = new UnitMap(b, graph.size() + 1, 0.7f) {
-      protected Object mapTo(Unit unit) {
-        Value tmp = SootFilter.noInvokeRhs(unit);
-        return SootFilter.equiVal(SootFilter.noLocal(tmp));
-      }
-    };
-      //new UnitEquivRHSMap(b, graph.size() + 1, 0.7f);
+	protected Object mapTo(Unit unit) {
+	  Value tmp = SootFilter.noInvokeRhs(unit);
+	  Value tmp2 = SootFilter.binop(tmp);
+	  if (tmp2 == null) tmp2 = SootFilter.concreteRef(tmp);
+	  return SootFilter.equiVal(tmp2);
+	}
+      };
 
+    /* same as before, but without exception-throwing expressions */
     Map unitToNoExceptionEquivRhs = new UnitMap(b, graph.size() + 1, 0.7f) {
-      protected Object mapTo(Unit unit) {
-        Value tmp = SootFilter.noExceptionThrowingRhs(unit);
-        return SootFilter.equiVal(SootFilter.noLocal(tmp));
-      }
-    };
+	protected Object mapTo(Unit unit) {
+	  Value tmp = SootFilter.binopRhs(unit);
+	  tmp = SootFilter.noExceptionThrowing(tmp);
+	  return SootFilter.equiVal(tmp);
+	}
+      };
 
     UpSafetyAnalysis upSafe = new UpSafetyAnalysis(graph, unitToEquivRhs);
     DownSafetyAnalysis downSafe = new DownSafetyAnalysis(graph,
@@ -98,28 +103,28 @@ public class BusyCodeMotion extends BodyTransformer {
     EarliestnessComputation earliest = new EarliestnessComputation(graph,
         upSafe, downSafe);
 
+    LocalCreation localCreation = new LocalCreation(b.getLocals(), PREFIX);
+
     Iterator unitIt = unitChain.snapshotIterator();
 
     { /* insert the computations at the earliest positions */
       while (unitIt.hasNext()) {
         Unit currentUnit = (Unit)unitIt.next();
         Iterator earliestIt =
-          ((List)earliest.getEarliestBefore(currentUnit)).iterator();
+          ((FlowSet)earliest.getFlowBefore(currentUnit)).iterator();
         while (earliestIt.hasNext()) {
           EquivalentValue equiVal = (EquivalentValue)earliestIt.next();
           Value exp = equiVal.getValue();
           /* get the unic helper-name for this expression */
           Local helper = (Local)expToHelper.get(equiVal);
           if (helper == null) {
-            String helperName = PREFIX + counter++;
-            helper = Jimple.v().newLocal(helperName,
-                Type.toMachineType(exp.getType()));
-            b.getLocals().add(helper);
+            helper = localCreation.newLocal(equiVal.getType());
             expToHelper.put(equiVal, helper);
           }
 
           /* insert a new Assignment-stmt before the currentUnit */
-          Unit firstComp = Jimple.v().newAssignStmt(helper, equiVal.getValue());
+          Value insertValue = Jimple.cloneIfNecessary(equiVal.getValue());
+          Unit firstComp = Jimple.v().newAssignStmt(helper, insertValue);
           unitChain.insertBefore(firstComp, currentUnit);
         }
       }

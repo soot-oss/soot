@@ -44,7 +44,7 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
 
   private Map unitToGenerateMap;
 
-  private FlowSet emptySet;
+  private BoundedFlowSet set;
 
   /**
    * this constructor should not be used, and will throw a runtime-exception!
@@ -72,25 +72,42 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
    * this constructor automaticly performs the UpSafety-analysis.<br>
    * the result of the analysis is as usual in FlowBefore (getFlowBefore())
    * and FlowAfter (getFlowAfter()).<br>
+   * As default, BoundedArraySparseSets will be used.
    *
    * @param dg a CompleteUnitGraph
    * @param unitToGen the EquivalentValue of each unit.
    * @param sideEffect the SideEffectTester that will be used to perform kills.
    */
   public UpSafetyAnalysis(DirectedGraph dg, Map unitToGen, SideEffectTester
-			  sideEffect) {
+                          sideEffect) {
+    this(dg, unitToGen, sideEffect, new
+      BoundedArraySparseSet(new CollectionFlowUniverse(unitToGen.values())));
+  }
+
+  /**
+   * this constructor automaticly performs the UpSafety-analysis.<br>
+   * the result of the analysis is as usual in FlowBefore (getFlowBefore())
+   * and FlowAfter (getFlowAfter()).<br>
+   * As usually flowset-operations are more efficient if shared, this allows to
+   * share sets over several analyses.
+   *
+   * @param dg a CompleteUnitGraph
+   * @param unitToGen the EquivalentValue of each unit.
+   * @param sideEffect the SideEffectTester that will be used to perform kills.
+   * @param set a bounded flow-set.
+   */
+  public UpSafetyAnalysis(DirectedGraph dg, Map unitToGen, SideEffectTester
+			  sideEffect, BoundedFlowSet set) {
     super(dg);
     this.sideEffect = sideEffect;
     UnitGraph g = (UnitGraph)dg;
-    emptySet = new ToppedSet(new ArraySparseSet());
+    this.set = set;
     unitToGenerateMap = unitToGen;
     doAnalysis();
   }
 
   protected Object newInitialFlow() {
-    Object newSet = emptySet.clone();
-    ((ToppedSet)newSet).setTop(true);
-    return newSet;
+    return set.topSet();
   }
 
   protected void customizeInitialFlowGraph() {
@@ -98,7 +115,7 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
     Iterator headIt = graph.getHeads().iterator();
     while (headIt.hasNext()) {
       Object newSet = unitToBeforeFlow.get(headIt.next());
-      ((ToppedSet)newSet).setTop(false);
+      ((BoundedFlowSet)newSet).complement();
     }
   }
 
@@ -106,26 +123,16 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
     FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
     in.copy(out);
-    if (((ToppedSet)in).isTop())
-      return;
 
     // Perform generation
     Value add = (Value)unitToGenerateMap.get(unit);
     if (add != null)
       out.add(add, out);
 
-    /* should not be possible */
-    if (((ToppedSet)out).isTop()) {
-      throw new RuntimeException("trying to kill on topped set!");
-    }
-
     { /* Perform kill */
       Unit u = (Unit)unit;
 
-      /* simulate a snapshotIterator, as we modify the underlying set */
-      List outList = new LinkedList();
-      outList.addAll(((FlowSet)out).toList());
-      Iterator outIt = outList.iterator();
+      Iterator outIt = ((FlowSet)out).iterator();
 
       // iterate over things (avail) in out set.
       while (outIt.hasNext()) {
@@ -133,16 +140,17 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
         Value avail = equiVal.getValue();
         if (avail instanceof FieldRef) {
           if (sideEffect.unitCanWriteTo(u, avail))
-            out.remove(equiVal, out);
+            outIt.remove();
         } else {
           Iterator usesIt = avail.getUseBoxes().iterator();
 
           // iterate over uses in each avail.
           while (usesIt.hasNext()) {
             Value use = ((ValueBox)usesIt.next()).getValue();
-
-            if (sideEffect.unitCanWriteTo(u, use))
-              out.remove(equiVal, out);
+            if (sideEffect.unitCanWriteTo(u, use)) {
+              outIt.remove();
+              break;
+            }
           }
         }
       }

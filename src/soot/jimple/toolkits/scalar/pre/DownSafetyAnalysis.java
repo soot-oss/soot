@@ -44,7 +44,7 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
 
   private Map unitToGenerateMap;
 
-  private FlowSet emptySet;
+  private BoundedFlowSet set;
 
   /**
    * this constructor should not be used, and will throw a runtime-exception!
@@ -79,72 +79,70 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
    */
   public DownSafetyAnalysis(DirectedGraph dg, Map unitToGen, SideEffectTester
 			    sideEffect) {
+    this(dg, unitToGen, sideEffect, new
+      BoundedArraySparseSet(new CollectionFlowUniverse(unitToGen.values())));
+  }
+
+  /**
+   * this constructor automaticly performs the DownSafety-analysis.<br>
+   * the result of the analysis is as usual in FlowBefore (getFlowBefore())
+   * and FlowAfter (getFlowAfter()).<br>
+   * as sets-operations are usually more efficient, if the original set comes
+   * from the same source, this allows to share sets.
+   *
+   * @param dg a CompleteUnitGraph.
+   * @param unitToGen the equivalentValue of each unit.
+   * @param sideEffect the SideEffectTester that performs kills.
+   * @param BoundedFlowSet the shared set.
+   */
+  public DownSafetyAnalysis(DirectedGraph dg, Map unitToGen, SideEffectTester
+			    sideEffect, BoundedFlowSet set) {
     super(dg);
     this.sideEffect = sideEffect;
     UnitGraph g = (UnitGraph)dg;
-    emptySet = new ToppedSet(new ArraySparseSet());
+    this.set = set;
     unitToGenerateMap = unitToGen;
     doAnalysis();
-    /* some parts of the body may not have tails, and hence this parts are still
-     * topped. This is clearly not safe at all...
-     * Therefore change these sets into empty sets.
-     */
-    Iterator unitIt = dg.iterator();
-    while (unitIt.hasNext())
-      ((ToppedSet)getFlowBefore(unitIt.next())).setTop(false);
   }
 
   protected Object newInitialFlow() {
-    Object newSet = emptySet.clone();
-    ((ToppedSet)newSet).setTop(true);
-    return newSet;
+    return set.topSet();
   }
 
   protected void customizeInitialFlowGraph() {
     // Initialize tails to {}
     Iterator tailIt = graph.getTails().iterator();
     while (tailIt.hasNext()) {
-      Object newSet = unitToAfterFlow.get(tailIt.next());
-      ((ToppedSet)newSet).setTop(false);
+      unitToAfterFlow.put(tailIt.next(), set.emptySet());
     }
   }
 
-  /* exactly the same as for up-safety */
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
     FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
     in.copy(out);
-    if (((ToppedSet)in).isTop())
-      return;
-
-    /* should not be possible */
-    if (((ToppedSet)out).isTop()) {
-      throw new RuntimeException("trying to kill on topped set!");
-    }
 
     { /* Perform kill */
       Unit u = (Unit)unit;
 
-      /* simulate a snapshotIterator, as we modify the underlying set */
-      List outList = new LinkedList();
-      outList.addAll(((FlowSet)out).toList());
-      Iterator outIt = outList.iterator();
-
+      Iterator outIt = ((FlowSet)out).iterator();
       // iterate over things (avail) in out set.
       while (outIt.hasNext()) {
         EquivalentValue equiVal = (EquivalentValue)outIt.next();
         Value avail = equiVal.getValue();
         if (avail instanceof FieldRef) {
           if (sideEffect.unitCanWriteTo(u, avail))
-            out.remove(equiVal, out);
+            outIt.remove();
         } else {
           Iterator usesIt = avail.getUseBoxes().iterator();
 
           // iterate over uses in each avail.
           while (usesIt.hasNext()) {
             Value use = ((ValueBox)usesIt.next()).getValue();
-            if (sideEffect.unitCanWriteTo(u, use))
-              out.remove(equiVal, out);
+            if (sideEffect.unitCanWriteTo(u, use)) {
+              outIt.remove();
+              break;
+            }
           }
         }
       }
@@ -156,7 +154,6 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
       out.add(add, out);
   }
 
-  /* exactly the same as for up-safety */
   protected void merge(Object in1, Object in2, Object out) {
     FlowSet inSet1 = (FlowSet) in1;
     FlowSet inSet2 = (FlowSet) in2;
@@ -166,7 +163,6 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
     inSet1.intersection(inSet2, outSet);
   }
 
-  /* exactly the same as for up-safety */
   protected void copy(Object source, Object dest) {
     FlowSet sourceSet = (FlowSet) source;
     FlowSet destSet = (FlowSet) dest;

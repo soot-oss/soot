@@ -24,7 +24,7 @@
  */
 
 
-package soot.jimple.toolkits.scalar.pre;
+package soot.util;
 import soot.jimple.toolkits.graph.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;

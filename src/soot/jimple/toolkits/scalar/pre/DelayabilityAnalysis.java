@@ -42,9 +42,9 @@ import soot.util.*;
  * variables and produces only one temporary).
  */
 public class DelayabilityAnalysis extends ForwardFlowAnalysis {
-  private HashMap unitToGenerateSet;
+  private EarliestnessComputation earliest;
   private Map unitToKillValue;
-  private FlowSet emptySet;
+  private BoundedFlowSet set;
 
   /**
    * this constructor should not be used, and will throw a runtime-exception!
@@ -67,48 +67,52 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis {
    */
   public DelayabilityAnalysis(DirectedGraph dg, EarliestnessComputation
       earliest, Map equivRhsMap) {
+    this(dg, earliest, equivRhsMap, new
+      BoundedArraySparseSet(new CollectionFlowUniverse(equivRhsMap.values())));
+  }
+
+  /**
+   * automaticly performs the Delayability-analysis on the graph
+   * <code>dg</code> and the Earliest-computation <code>earliest</code>.<br>
+   * the <code>equivRhsMap</code> is only here to avoid doing these things
+   * again...<br>
+   * as set-operations are usually more efficient, if the sets come from one
+   * source, sets should be shared around analyses, if the analyses are to be
+   * combined.
+   *
+   * @param dg a CompleteUnitGraph
+   * @param earliest the earliest-computation of the <b>same</b> graph.
+   * @param equivRhsMap the rhs of each unit (if assignment-stmt).
+   * @param set the shared set.
+   */
+  public DelayabilityAnalysis(DirectedGraph dg, EarliestnessComputation
+      earliest, Map equivRhsMap, BoundedFlowSet set) {
     super(dg);
     UnitGraph g = (UnitGraph)dg;
-    emptySet = new ToppedSet(new ArraySparseSet());
+    this.set = set;
     unitToKillValue = equivRhsMap;
+    this.earliest = earliest;
 
-    /* Create generate sets */
-    {
-      unitToGenerateSet = new HashMap(g.size() * 2 + 1, 0.7f);
-
-      Iterator unitIt = g.iterator();
-      while (unitIt.hasNext()) {
-        Unit currentUnit = (Unit)unitIt.next();
-        FlowSet genSet = (FlowSet)emptySet.clone();
-        Iterator genIt = earliest.getEarliestBefore(currentUnit).iterator();
-        while (genIt.hasNext())
-          genSet.add(genIt.next(), genSet);
-        unitToGenerateSet.put(currentUnit, genSet);
-      }
-    }
     doAnalysis();
     { // finally add the genSet to each BeforeFlow
       Iterator unitIt = g.iterator();
       while (unitIt.hasNext()) {
         Unit currentUnit = (Unit)unitIt.next();
         FlowSet beforeSet = (FlowSet)getFlowBefore(currentUnit);
-        beforeSet.union((FlowSet)unitToGenerateSet.get(currentUnit), beforeSet);
+        beforeSet.union((FlowSet)earliest.getFlowBefore(currentUnit));
       }
     }
   }
 
   protected Object newInitialFlow() {
-    Object newSet = emptySet.clone();
-    ((ToppedSet)newSet).setTop(true);
-    return newSet;
+    return set.topSet();
   }
 
   protected void customizeInitialFlowGraph() {
     // Initialize heads to {}
     Iterator headIt = graph.getHeads().iterator();
     while (headIt.hasNext()) {
-      Object newSet = unitToBeforeFlow.get(headIt.next());
-      ((ToppedSet)newSet).setTop(false);
+      unitToBeforeFlow.put(headIt.next(), set.emptySet());
     }
   }
 
@@ -116,22 +120,15 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis {
     FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
     in.copy(out);
-    if (((ToppedSet)in).isTop())
-      return;
 
     // Perform generation
-    out.union((FlowSet) unitToGenerateSet.get(unit), out);
-
-    /* should not be possible */
-    if (((ToppedSet)out).isTop()) {
-      throw new RuntimeException("trying to kill on topped set!");
-    }
+    out.union((FlowSet)earliest.getFlowBefore((Unit)unit));
 
     { /* Perform kill */
       Unit u = (Unit)unit;
       EquivalentValue equiVal = (EquivalentValue)unitToKillValue.get(u);
       if (equiVal != null)
-        out.remove(equiVal, out);
+        out.remove(equiVal);
     }
   }
 

@@ -38,7 +38,7 @@ import java.util.*;
 /**
  *   Reference implementation for a FlowSet. Items are stored in an Array.  
  */
-public class ArraySparseSet implements FlowSet
+public class ArraySparseSet extends AbstractFlowSet
 {
     static final int DEFAULT_SIZE = 8; 
     
@@ -60,9 +60,20 @@ public class ArraySparseSet implements FlowSet
         elements = (Object[]) other.elements.clone();
     }
     
+    /** Returns true if flowSet is the same type of flow set as this. */
+    private boolean sameType(Object flowSet)
+    {
+        return (flowSet instanceof ArraySparseSet);
+    }
+
     public Object clone()
     {
         return new ArraySparseSet(this);
+    }
+
+    public Object emptySet()
+    {
+        return new ArraySparseSet();
     }
 
     public void clear()
@@ -80,10 +91,12 @@ public class ArraySparseSet implements FlowSet
         return numElements == 0;
     }
 
-    /** Returns a backed list of elements in this set. */
+    /** Returns a unbacked list of elements in this set. */
     public List toList()
     {
-        return new SparseArrayList(elements, numElements);
+        Object[] copiedElements = new Object[numElements];
+        System.arraycopy(elements, 0, copiedElements, 0, numElements);
+        return Arrays.asList(copiedElements);
     }
 
   /* Expand array only when necessary, pointed out by Florian Loitsch
@@ -101,16 +114,6 @@ public class ArraySparseSet implements FlowSet
             }
     }
 
-    public void add(Object obj, FlowSet destFlow)
-    {
-        ArraySparseSet dest = (ArraySparseSet) destFlow;
-
-        if(this != dest)
-            copy(dest);
-
-        dest.add(obj);
-    }
-
     private void doubleCapacity()
     {        
         int newSize = maxElements * 2;
@@ -122,28 +125,17 @@ public class ArraySparseSet implements FlowSet
         maxElements = newSize;
     }    
 
-    public void remove(Object obj, FlowSet destFlow)
+    public void remove(Object obj)
     {
-        ArraySparseSet dest = (ArraySparseSet) destFlow;
-
-        if(this != dest)
-            copy(dest);
-
         int i = 0;
         while (i < this.numElements) {
-          if (dest.elements[i].equals(obj))
-            elements[i]=elements[--numElements];
-          else
-            i++;
-        }
-        /* would not find multiple occurances
-        for(int i = 0; i < this.numElements; i++)
-            if(dest.elements[i].equals(obj))
+            if (elements[i].equals(obj))
             {
-                dest.removeElementAt(i);
-                break;
-            }
-         */
+                elements[i] = elements[--numElements];
+                return;
+            } else
+                i++;
+        }
     }
 
   /* copy last element to the position of deleted element, and
@@ -154,9 +146,11 @@ public class ArraySparseSet implements FlowSet
     {
       elements[index] = elements[--numElements];
     }
-    
+
     public void union(FlowSet otherFlow, FlowSet destFlow)
     {
+      if (sameType(otherFlow) &&
+          sameType(destFlow)) {
         ArraySparseSet other = (ArraySparseSet) otherFlow;
         ArraySparseSet dest = (ArraySparseSet) destFlow;
 
@@ -175,10 +169,14 @@ public class ArraySparseSet implements FlowSet
             for(int i = 0; i < other.numElements; i++)
                 dest.add(other.elements[i]);
         }
+      } else
+        super.union(otherFlow, destFlow);
     }
 
     public void intersection(FlowSet otherFlow, FlowSet destFlow)
     {
+      if (sameType(otherFlow) &&
+          sameType(destFlow)) {
         ArraySparseSet other = (ArraySparseSet) otherFlow;
         ArraySparseSet dest = (ArraySparseSet) destFlow;
         ArraySparseSet workingSet;
@@ -198,10 +196,14 @@ public class ArraySparseSet implements FlowSet
         
         if(workingSet != dest)
             workingSet.copy(dest);
+      } else
+        super.intersection(otherFlow, destFlow);
     }
 
     public void difference(FlowSet otherFlow, FlowSet destFlow)
     {
+      if (sameType(otherFlow) &&
+          sameType(destFlow)) {
         ArraySparseSet other = (ArraySparseSet) otherFlow;
         ArraySparseSet dest = (ArraySparseSet) destFlow;
         ArraySparseSet workingSet;
@@ -221,6 +223,8 @@ public class ArraySparseSet implements FlowSet
         
         if(workingSet != dest)
             workingSet.copy(dest);
+      } else
+        super.difference(otherFlow, destFlow);
     }
     
     public boolean contains(Object obj)
@@ -233,7 +237,8 @@ public class ArraySparseSet implements FlowSet
     }
 
     public boolean equals(Object otherFlow)
-    {       
+    {
+      if (sameType(otherFlow)) {
         ArraySparseSet other = (ArraySparseSet) otherFlow;
          
         if(other.numElements != this.numElements)
@@ -256,30 +261,13 @@ public class ArraySparseSet implements FlowSet
              */
         
         return true;
-    }
-
-    public String toString()
-    {
-        StringBuffer buffer = new StringBuffer("{");
-        Iterator it = toList().iterator();
-
-        if(it.hasNext())
-        {
-            buffer.append(it.next());
-
-            while(it.hasNext())
-            {
-                buffer.append(", " + it.next());
-            }
-        }
-
-        buffer.append("}");
-
-        return buffer.toString();
+      } else
+        return super.equals(otherFlow);
     }
 
     public void copy(FlowSet destFlow)
     {
+      if (sameType(destFlow)) {
         ArraySparseSet dest = (ArraySparseSet) destFlow;
 
         while(dest.maxElements < this.maxElements)
@@ -289,6 +277,8 @@ public class ArraySparseSet implements FlowSet
         
         System.arraycopy(this.elements, 0,
             dest.elements, 0, this.numElements);
+      } else
+        super.copy(destFlow);
     }
 
     private static class SparseArrayList extends AbstractList 

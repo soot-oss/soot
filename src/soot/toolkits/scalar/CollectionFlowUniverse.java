@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Patrick Lam
+ * Copyright (C) 2002 Florian Loitsch
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,32 +23,32 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.toolkits.scalar.obsoletepre;
+
+package soot.toolkits.scalar;
 
 import soot.*;
-import soot.jimple.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
+import soot.util.*;
 import java.util.*;
 
-class RedundantExprs
-{
-    LatestExprs lat;
-    IsolatedExprs iso;
-    FlowUniverse uni;
+/** 
+ * Provides an implementation of a flow universe, wrapping collections.
+ */
+public class CollectionFlowUniverse implements FlowUniverse {
+  Set elements;
 
-    public RedundantExprs(BlockGraph g, LatestExprs lat, IsolatedExprs iso,
-                                FlowUniverse uni)
-    {
-        this.lat = lat; this.iso = iso; this.uni = uni;
-    }
+  public CollectionFlowUniverse(Collection elements) {
+    this.elements = new HashSet(elements);
+  }
 
-    public BoundedFlowSet getRedundantExprsOf(Block b)
-    {
-        BoundedFlowSet res = iso.getIsolatedExprsAfter(b);
-        res.union(lat.getLatestExprsBefore(b), res);
-        res.complement(res);
-        res.intersection(LocallyAnticipatableExprs.getAntLocExprsOf(b, uni), res);
-        return res;
-    }
+  public int size() {
+    return elements.size();
+  }
+
+  public Iterator iterator() {
+    return elements.iterator();
+  }
+
+  public Object[] toArray() {
+    return elements.toArray();
+  }
 }

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Patrick Lam
+ * Copyright (C) 2002 Florian Loitsch
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,32 +23,32 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.jimple.toolkits.scalar.obsoletepre;
+
+package soot.toolkits.scalar;
 
 import soot.*;
-import soot.jimple.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
+import soot.util.*;
 import java.util.*;
 
-class AnticipEarliestExprs
-{
-    AnticipatableExprs ant;
-    EarliestnessAnalysis earl;
+/** 
+ * Provides an implementation of a flow universe, wrapping arrays.
+ */
+public class ArrayFlowUniverse implements FlowUniverse {
+  Object[] elements;
 
-    public AnticipEarliestExprs(BlockGraph g, AnticipatableExprs a, 
-                                FlowUniverse uni)
-    {
-        this.ant = a;
-        this.earl = new EarliestnessAnalysis(g, a, uni);
-    }
+  public ArrayFlowUniverse(Object[] elements) {
+    this.elements = elements;
+  }
 
-    /* universe is all expressions in the program. */
-    public BoundedFlowSet getAnticipEarliestExprsBefore(Block b)
-    {
-        BoundedFlowSet res = (BoundedFlowSet)ant.getAnticipatableExprsBefore(b).clone();
-        res.intersection((FlowSet)earl.getFlowAfter(b), res);
+  public int size() {
+    return elements.length;
+  }
 
-        return res;
-    }
+  public Iterator iterator() {
+    return Arrays.asList(elements).iterator();
+  }
+
+  public Object[] toArray() {
+    return elements;
+  }
 }

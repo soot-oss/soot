@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2002 Florian Loitsch
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -30,45 +30,32 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-/** Provides an implementation of a flow universe, used by an implementation 
- * of BoundedFlowSet to do complementation. */
-public class FlowUniverse
-{
-    Object[] indexToObject;
-    Map objectToIndex;
+/** 
+ * Provides an interface of a flow universe, used by an implementation 
+ * of BoundedFlowSet to do complementation.
+ */
+public interface FlowUniverse {
 
-    public FlowUniverse(Object[] objects)
-    {
-        objectToIndex = new HashMap(objects.length * 2 + 1, 0.7f);
+  /**
+   * returns the number of elements of the universe.
+   *
+   * @return the size of the universe.
+   */
+  public int size();
 
-        indexToObject = (Object[]) objects.clone();
+  /**
+   * returns an iterator over the elements of the universe.
+   *
+   * @return an Iterator over the elements.
+   */
+  public Iterator iterator();
 
-        for(int i = 0; i < objects.length; i++)
-            objectToIndex.put(objects[i], new Integer(i));
-    }
-
-    public int getSize()
-    {
-        return indexToObject.length;
-    }
-
-    public Object getObjectOf(int index)
-    {
-        return indexToObject[index];
-    }
-
-    public int getIndexOf(Object obj)
-    {
-        Integer index = (Integer) objectToIndex.get(obj);
-
-        if(index == null)
-            throw new RuntimeException("object not in universe");
-        else
-            return index.intValue();
-    }
-
-    public boolean contains(Object obj)
-    {
-        return objectToIndex.get(obj) != null;
-    }
+  /**
+   * returns the elements of the universe in form of an array.<br>
+   * The returned array could be backed or not. If you want to be sure
+   * that it is unbacked, clone() it.
+   *
+   * @return the elements of the universe.
+   */
+  public Object[] toArray();
 }

@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1997-1999 Raja Vallee-Rai
+ *       updated 2002 Florian Loitsch
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -33,29 +34,45 @@ import java.util.*;
 /**
  *   Reference implementation for a BoundedFlowSet. Items are stored in an Array.  
  */
-public class ArrayPackedSet implements BoundedFlowSet
+public class ArrayPackedSet extends AbstractBoundedFlowSet implements BoundedFlowSet
 {
-    FlowUniverse map;
+    ObjectIntMapper map;
     int[] bits;
 
-    public ArrayPackedSet(FlowUniverse universe)
+    public ArrayPackedSet(FlowUniverse universe) {
+        this(new ObjectIntMapper(universe));
+    }
+
+    ArrayPackedSet(ObjectIntMapper map)
     {
         //int size = universe.getSize();
 
         //int numWords = size / 32 + (((size % 32) != 0) ? 1 : 0);
 
-        this(universe, new int[universe.getSize() / 32 + (((universe.getSize() % 32) != 0) ? 1 : 0)]);        
+        this(map, new int[map.size() / 32 + (((map.size() % 32) != 0) ? 1 : 0)]);
     }
     
-    ArrayPackedSet(FlowUniverse map, int[] bits)
+    ArrayPackedSet(ObjectIntMapper map, int[] bits)
     {
         this.map = map;
         this.bits = (int[]) bits.clone();
     }
 
+    /** Returns true if flowSet is the same type of flow set as this. */
+    private boolean sameType(Object flowSet)
+    {
+        return (flowSet instanceof ArrayPackedSet &&
+                ((ArrayPackedSet)flowSet).map == map);
+    }
+
     public Object clone()
     {
         return new ArrayPackedSet(map, bits);
+    }
+
+    public Object emptySet()
+    {
+        return new ArrayPackedSet(map);
     }
 
     public int size()
@@ -82,6 +99,7 @@ public class ArrayPackedSet implements BoundedFlowSet
 
         return true;
     }
+
 
     public void clear()
     {
@@ -113,7 +131,7 @@ public class ArrayPackedSet implements BoundedFlowSet
             for(int j = startBit; j < lastBit; j++)
             {
                 if((word & (1 << j)) != 0)
-                    elements.add(map.getObjectOf(offset + j));
+                    elements.add(map.getObject(offset + j));
             }
         }
 
@@ -128,7 +146,7 @@ public class ArrayPackedSet implements BoundedFlowSet
                     for(int j = 0; j < 32; j++)
                     {
                         if((word & (1 << j)) != 0)
-                            elements.add(map.getObjectOf(offset + j));
+                            elements.add(map.getObject(offset + j));
                     }
                 }
             }
@@ -143,7 +161,7 @@ public class ArrayPackedSet implements BoundedFlowSet
                 for(int j = 0; j < lastBit; j++)
                 {
                     if((word & (1 << j)) != 0)
-                        elements.add(map.getObjectOf(offset + j));
+                        elements.add(map.getObject(offset + j));
                 }
             }
 
@@ -162,26 +180,22 @@ public class ArrayPackedSet implements BoundedFlowSet
 
             for(int j = 0; j < 32; j++)
                 if((word & (1 << j)) != 0)
-                    elements.add(map.getObjectOf(offset + j));
+                    elements.add(map.getObject(offset + j));
         }
 
         return elements;
     }
 
-    public void add(Object obj, FlowSet destFlow)
+    public void add(Object obj)
     {
-        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
+        int bitNum = map.getInt(obj);
 
-        if(this != dest)
-            copy(dest);
-
-        int bitNum = map.getIndexOf(obj);
-
-        dest.bits[bitNum / 32] |= 1 << (bitNum % 32);
+        bits[bitNum / 32] |= 1 << (bitNum % 32);
     }
 
     public void complement(FlowSet destFlow)
     {
+      if (sameType(destFlow)) {
         ArrayPackedSet dest = (ArrayPackedSet) destFlow;
 
         for(int i = 0; i < bits.length; i++)
@@ -190,27 +204,26 @@ public class ArrayPackedSet implements BoundedFlowSet
         // Clear the bits which are outside of this universe
             if(bits.length >= 1)
             {
-                int lastValidBitCount = map.getSize() % 32;
+                int lastValidBitCount = map.size() % 32;
                 
                 if(lastValidBitCount != 0)
                     dest.bits[bits.length - 1] &= ~(0xFFFFFFFF << lastValidBitCount);  
             }
+      } else
+        super.complement(destFlow);
     }
 
-    public void remove(Object obj, FlowSet destFlow)
+    public void remove(Object obj)
     {
-        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
+        int bitNum = map.getInt(obj);
 
-        if(this != dest)
-            copy(dest);
-
-        int bitNum = map.getIndexOf(obj);
-
-        dest.bits[bitNum / 32] &= ~(1 << (bitNum % 32));
+        bits[bitNum / 32] &= ~(1 << (bitNum % 32));
     }
 
     public void union(FlowSet otherFlow, FlowSet destFlow)
     {
+      if (sameType(otherFlow) &&
+          sameType(destFlow)) {
         ArrayPackedSet other = (ArrayPackedSet) otherFlow;
         ArrayPackedSet dest = (ArrayPackedSet) destFlow;
 
@@ -219,10 +232,14 @@ public class ArrayPackedSet implements BoundedFlowSet
 
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i] | other.bits[i];
+      } else
+        super.union(otherFlow, destFlow);
     }
 
     public void difference(FlowSet otherFlow, FlowSet destFlow)
     {
+      if (sameType(otherFlow) &&
+          sameType(destFlow)) {
         ArrayPackedSet other = (ArrayPackedSet) otherFlow;
         ArrayPackedSet dest = (ArrayPackedSet) destFlow;
 
@@ -231,10 +248,14 @@ public class ArrayPackedSet implements BoundedFlowSet
             
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i] & ~other.bits[i];
+      } else
+        super.difference(otherFlow, destFlow);
     }
     
     public void intersection(FlowSet otherFlow, FlowSet destFlow)
     {
+      if (sameType(otherFlow) &&
+          sameType(destFlow)) {
         ArrayPackedSet other = (ArrayPackedSet) otherFlow;
         ArrayPackedSet dest = (ArrayPackedSet) destFlow;
 
@@ -243,17 +264,20 @@ public class ArrayPackedSet implements BoundedFlowSet
 
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i] & other.bits[i];
+      } else
+        super.intersection(otherFlow, destFlow);
     }
 
     public boolean contains(Object obj)
     {
-        int bitNum = map.getIndexOf(obj);
+        int bitNum = map.getInt(obj);
 
         return (bits[bitNum / 32] & (1 << (bitNum % 32))) != 0;
     }
 
     public boolean equals(Object otherFlow)
     {
+      if (sameType(otherFlow)) {
         ArrayPackedSet other = (ArrayPackedSet) otherFlow;
 
         for(int i = 0; i < bits.length; i++)
@@ -261,35 +285,19 @@ public class ArrayPackedSet implements BoundedFlowSet
                 return false;
 
         return true;
-    }
-
-    public String toString()
-    {
-        StringBuffer buffer = new StringBuffer("{");
-        Iterator it = toList().iterator();
-
-
-        if(it.hasNext())
-        {
-            buffer.append(it.next());
-
-            while(it.hasNext())
-            {
-                buffer.append(", " + it.next());
-            }
-        }
-
-        buffer.append("}");
-
-        return buffer.toString();
+      } else
+        return super.equals(otherFlow);
     }
 
     public void copy(FlowSet destFlow)
     {
+      if (sameType(destFlow)) {
         ArrayPackedSet dest = (ArrayPackedSet) destFlow;
 
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i];
+      } else
+        super.copy(destFlow);
     }
 
 }

@@ -133,7 +133,7 @@ class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
             }
         }
 
-        FlowUniverse exprUniv = new FlowUniverse(exprs.toArray());
+        FlowUniverse exprUniv = new ArrayFlowUniverse(exprs.toArray());
         emptySet = new ArrayPackedSet(exprUniv);
 
         // Create preserve sets.

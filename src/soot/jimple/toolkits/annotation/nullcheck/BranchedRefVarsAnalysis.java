@@ -506,7 +506,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 	    universeArray[j+1] = getKRefIntPair(r,  kNonNull);
 	}
 
-	localUniverse = new FlowUniverse(universeArray);
+	localUniverse = new ArrayFlowUniverse(universeArray);
 
 	emptySet = new ArrayPackedSet(localUniverse);   
 	fullSet = (FlowSet) emptySet.clone();
