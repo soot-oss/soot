@@ -43,8 +43,9 @@ import soot.jimple.toolkits.annotation.profiling.*;
 import soot.jimple.toolkits.annotation.tags.*;
 
 import java.io.*;
-
 import java.text.*;
+
+import gnu.getopt.*;
 
 
 /** Main class for Soot; provides Soot's command-line user interface. */
@@ -470,8 +471,9 @@ public class Main implements Runnable
         else if(rep.equals("baf"))
             finalRep = BAF;
         else {                    
-            throw new CompilationDeathException(COMPILATION_ABORTED, "Illegal --final-rep arg: " + rep +           
-                            "\nvalid args are: [baf|grimp|jimple]" );
+            throw new CompilationDeathException(COMPILATION_ABORTED, 
+					 "Illegal argument \"" + rep + "\" for final-rep option"
+					 + "\nvalid args are: [baf|grimp|jimple]" );
         }
     }
 
@@ -521,7 +523,7 @@ public class Main implements Runnable
 	    doNullPointerCheck = true;
 	}
 	else
-	    System.out.println("Annotation phase \""+opt+"\" is not valid.");
+	    System.out.println("Annotation phase \"" + opt + "\" is not valid.");
 
 	// put null pointer check before bounds check for profiling purpose
 	if (doNullPointerCheck)
@@ -546,7 +548,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
          // $Format: "            System.out.println(\"Soot version 1.2.0 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.0 (build 1.2.0.dev.15)");
+            System.out.println("Soot version 1.2.0 (build 1.2.0.dev.16)");
             System.out.println("Copyright (C) 1997-2000 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -612,10 +614,10 @@ public class Main implements Runnable
             System.out.println("  -p, --phase-option PHASE-NAME KEY1[:VALUE1],KEY2[:VALUE2],...,KEYn[:VALUEn]");
             System.out.println("                               set run-time option KEY to VALUE for PHASE-NAME");
             System.out.println("                               (default for VALUE is true)");
-	    System.out.println("  -A  --annotation [both|nullpointer|arraybounds]");
-	    System.out.println("                               turn on the annotation for null pointer and/or ");
-	    System.out.println("                               array bounds check. ");
-	    System.out.println("                               more options are in the document. ");
+			System.out.println("  -A  --annotation [both|nullpointer|arraybounds]");
+			System.out.println("                               turn on the annotation for null pointer and/or ");
+			System.out.println("                               array bounds check. ");
+			System.out.println("                               more options are in the document. ");
             System.out.println("");
             System.out.println("Examples:");
             System.out.println("");
@@ -625,152 +627,589 @@ public class Main implements Runnable
     }
 
 
-
     private static void processCmdLine(String[] args)
         throws CompilationDeathException
     {
-        if(args.length == 0)
-	    {
-		printHelp();
-		throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
-	    }
+		// check --new-cmdline-parser option 
+        for(int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            if(arg.equals("--use-CommandLine")) {
+				processCmdLine_CommandLine(args);
+				return;
+            }
+            if(arg.equals("--use-Getopt")) {
+				processCmdLine_Getopt(args);
+				return;
+            }
+		}
+		processCmdLine_classic(args);
+	}
 
-	// handle --app option first
+    private static void processCmdLine_CommandLine(String[] args)
+        throws CompilationDeathException
+    {
+        if(args.length == 0) {
+			printHelp();
+			throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
+		}
+		
+		CommandLine cl = new CommandLine(args);
+
+		// handle --app option first
+		while (cl.contains("app")) {
+			setAppMode(true);
+		}
+		
+		// Handle all the options
+		while (cl.contains("j") || cl.contains("jimp"))
+			setTargetRep(JIMP);
+		
+	    while (cl.contains("njimple"))
+		   setTargetRep(NJIMPLE);
+
+	    while (cl.contains("s") || cl.contains("jasmin"))
+		    setTargetRep(JASMIN);
+
+		while (cl.contains("J") || cl.contains("jimple"))
+		    setTargetRep(JIMPLE);
+
+		while (cl.contains("B") || cl.contains("baf"))
+			setTargetRep(BAF);
+		
+		while (cl.contains("b"))
+		    setTargetRep(B);
+
+		while (cl.contains("g") || cl.contains("grimp"))
+		    setTargetRep(GRIMP);
+
+		while (cl.contains("G") || cl.contains("grimple"))
+		    setTargetRep(GRIMPLE);
+
+		while (cl.contains("c") || cl.contains("class"))
+		    setTargetRep(CLASS);
+
+		while (cl.contains("dava"))
+		    setTargetRep(DAVA);
+
+		while (cl.contains("X") || cl.contains("xml"))
+		    produceXmlOutput = true;
+
+		while (cl.contains("O") || cl.contains("optimize"))
+		    setOptimizing(true);
+
+		while (cl.contains("W") || cl.contains("whole-optimize"))
+		    setOptimizingWhole(true);
+
+		while (cl.contains("t") || cl.contains("time"))
+			setProfiling(true);
+		
+		while (cl.contains("subtract-gc"))
+			setSubstractingGC(true);
+
+		while (cl.contains("v") || cl.contains("verbose"))
+		    setVerbose(true);
+		
+		while (cl.contains("soot-class-path") 
+			   || cl.contains("soot-classpath")) {
+			Scene.v().setSootClassPath(cl.getValue());
+		}
+
+		while (cl.contains("d")) {
+			String s = cl.getValueOf("d");
+			 if (s.equals("")) {
+				 System.err.println ("Warning: -d option used without argument");
+				 System.err.println ("         Using default output directory");
+			 }
+			 outputDir = s;
+		}
+		
+		while (cl.contains("x") || cl.contains("exclude")) {
+			String s = cl.getValue();
+			if (s.equals("")) {
+				System.err.println ("Warning: exclude-package option used without argument");
+			} else {
+				addExclude(s);
+			}
+		}
+		
+		while (cl.contains("i") || cl.contains("include")) {
+			String s = cl.getValue();
+			if (s.equals("")) {
+				System.err.println ("Warning: include-package option used without argument");
+			} else {
+				addInclude(s);
+			}
+		}
+
+		while (cl.contains("a") || cl.contains("analyze-context")) {
+		    setAnalyzingLibraries(true);
+		}
+
+	    while (cl.contains("final-rep")) {
+			String s = cl.getValueOf("final-rep");
+			if (s.equals("")) {
+				throw new CompilationDeathException(COMPILATION_ABORTED,
+													"final-rep requires an argument\n"
+													+ "valid args are: [baf|grimp|jimple]");
+			} else {
+				setFinalRep(s);
+			}
+		}
+
+	    while (cl.contains("p") || cl.contains("phase-option")) {
+			String s = cl.getValue();
+			if (s.equals("")) {
+				 System.err.println ("Warning: phase-option option used without argument");
+			} else {
+				processPhaseOptions(s);
+			}
+		}
+
+		while (cl.contains("debug"))
+		    setDebug(true);
+
+		while (cl.contains("dynamic-path")) {
+			addDynamicPath(cl.getValueOf("dynamic-path"));
+		}
+
+		while (cl.contains("dynamic-packages")) {
+			addDynamicPackage(cl.getValueOf("dynamic-packages"));
+		}
+		
+		while (cl.contains("process-path")) {
+			addProcessPath(cl.getValueOf("process-path"));                    
+		}
+
+		while (cl.contains("src-prec")) {
+			setSrcPrecedence(cl.getValueOf("src-prec"));
+		}
+
+		while (cl.contains("tag-file")) {
+			sTagFileList.add(cl.getValueOf("tag-file"));
+		}
+
+		while (cl.contains("A") || cl.contains("annotation")) {
+			setAnnotationPhases(cl.getValue());
+		}
+
+		while (cl.contains("version")) {
+		    printVersion();
+		    throw new CompilationDeathException(COMPILATION_SUCCEDED);
+		}
+		
+		while (cl.contains("h") || cl.contains("help")) {
+		    printHelp();
+		    throw new CompilationDeathException(COMPILATION_SUCCEDED);
+		}
+
+		while (cl.contains("use-Getopt") || cl.contains("use-CommandLine")
+			   || cl.contains("classic")) {
+			// already handled: ignore
+		}
+
+		cl.completeOptionsCheck();
+		
+		Iterator argIt = cl.getNonOptionArguments().iterator();
+		while (argIt.hasNext())
+			cmdLineClasses.add((String)argIt.next());
+		
+        postCmdLineCheck();
+    }
+
+
+    private static void processCmdLine_Getopt(String[] args)
+        throws CompilationDeathException
+    {
+        if(args.length == 0)
+			{
+				printHelp();
+				throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
+			}
+
+		// handle --app option first
         for(int i = 0; i < args.length; i++) {
             String arg = args[i];
             if(arg.equals("--app")) {
                 if (i != 0) {
                     throw new CompilationDeathException(COMPILATION_ABORTED, 
-							"Application mode (--app) must be set as first argument to Soot!" +
-							"\neg. java soot.Main --app Simulator");           
+														"Application mode (--app) must be set as first argument to Soot!" +
+														"\neg. java soot.Main --app Simulator");           
                 }
                 setAppMode(true);
             }
+		}
+
+        // Initialize the options for getOpt
+		addGetoptOption('j', "jimp", LongOpt.NO_ARGUMENT);
+		addGetoptOption(-10, "njimple", LongOpt.NO_ARGUMENT);
+		addGetoptOption('s', "jasmin", LongOpt.NO_ARGUMENT);
+		addGetoptOption('J', "jimple", LongOpt.NO_ARGUMENT);
+		addGetoptOption('B', "baf", LongOpt.NO_ARGUMENT);
+		addGetoptOption('b', "b", LongOpt.NO_ARGUMENT);
+		addGetoptOption('g', "grimp", LongOpt.NO_ARGUMENT);
+		addGetoptOption('G', "grimple", LongOpt.NO_ARGUMENT);
+		addGetoptOption('c', "class", LongOpt.NO_ARGUMENT);
+		addGetoptOption(-11, "dava", LongOpt.NO_ARGUMENT);
+		addGetoptOption('X', "xml", LongOpt.NO_ARGUMENT);
+		addGetoptOption('O', "optimize", LongOpt.NO_ARGUMENT);
+		addGetoptOption('W', "whole-optimize", LongOpt.NO_ARGUMENT);
+		addGetoptOption('t', "time", LongOpt.NO_ARGUMENT);
+		addGetoptOption(-12, "substract-gc", LongOpt.NO_ARGUMENT);
+		addGetoptOption('v', "verbose", LongOpt.NO_ARGUMENT);
+		addGetoptOption(-13, "soot-class-path", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption(-13, "soot-classpath", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption('d', "output-dir", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption('x', "exclude", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption('i', "include", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption('a', "analyze-context", LongOpt.NO_ARGUMENT);
+		addGetoptOption(-14, "final-rep", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption('p', "phase-option", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption(-15, "debug", LongOpt.NO_ARGUMENT);
+		addGetoptOption(-16, "dynamic-path", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption(-17, "dynamic-packages", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption(-18, "process-path", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption(-19, "src-prec", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption(-20, "tag-file", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption('A', "annotation", LongOpt.REQUIRED_ARGUMENT);
+		addGetoptOption(-21, "version", LongOpt.NO_ARGUMENT);
+		addGetoptOption('h', "help", LongOpt.NO_ARGUMENT);
+
+		// options handled elsewhere
+		addGetoptOption('-', "use-Getopt", LongOpt.NO_ARGUMENT);
+		addGetoptOption('-', "use-CommandLine", LongOpt.NO_ARGUMENT);
+		addGetoptOption('-', "classic", LongOpt.NO_ARGUMENT);
+
+        // initialize getopt
+		Object[] objArray = longOpts.toArray();
+		LongOpt[] longOptsArray = new LongOpt[objArray.length];
+		for (int i=0; i<objArray.length; i++) {
+			longOptsArray[i] = (LongOpt)objArray[i];
+		}
+		// I sometimes have ClassCastException with the following line
+		// so I use the ugly thing above, which seems to work
+		// LongOpt[] longOptsArray = (LongOpt[])longOpts.toArray();
+		Getopt g = new Getopt("Soot", args, shortOpts, longOptsArray);
+		g.setOpterr(false); // We'll do our own error handling
+
+		// Handle all the options
+		int c;
+		while ((c = g.getopt()) != -1) {
+			switch (c) {
+			case 0:
+				// should never reached that point, due to the way
+				// the LongOption are created
+				System.err.println("000000000000");
+				break;
+			case 1:
+				// non-option argument
+				// behaviour triggered by the - at the beginning of shortOpts
+				cmdLineClasses.add(g.getOptarg());
+				break;
+			case 'j':
+				setTargetRep(JIMP);
+				break;
+			case -10:
+			    setTargetRep(NJIMPLE);
+				break;
+			case 's':
+				setTargetRep(JASMIN);
+				break;
+			case 'J':
+				setTargetRep(JIMPLE);
+				break;
+			case 'B':
+				setTargetRep(BAF);
+				break;
+			case 'b':
+				setTargetRep(B);
+				break;
+			case 'g':
+				setTargetRep(GRIMP);
+				break;
+			case 'G':
+				setTargetRep(GRIMPLE);
+				break;
+			case 'c':
+				setTargetRep(CLASS);
+				break;
+			case -11:
+				setTargetRep(DAVA);
+				break;
+			case 'X':
+				produceXmlOutput = true;
+				break;
+			case 'O':
+				setOptimizing(true);
+				break;
+			case 'W':
+				setOptimizingWhole(true);
+				break;
+			case 't':
+				setProfiling(true);
+				break;
+			case -12:
+				setSubstractingGC(true);
+				break;
+			case 'v':
+				setVerbose(true);
+				break;
+			case -13:
+				Scene.v().setSootClassPath(g.getOptarg());
+				break;
+			case 'd':
+				outputDir = g.getOptarg();
+				break;
+			case 'x':
+				addExclude(g.getOptarg());
+				break;
+			case 'i':
+				addInclude(g.getOptarg());
+				break;
+			case 'a':
+				setAnalyzingLibraries(true);
+				break;
+			case -14:
+				setFinalRep(g.getOptarg());
+				break;
+			case 'p':
+				processPhaseOptions(g.getOptarg());
+				break;
+			case -15:
+				setDebug(true);
+				break;
+			case -16:
+				addDynamicPath(g.getOptarg());
+				break;
+			case -17:
+				addDynamicPackage(g.getOptarg());
+				break;
+			case -18:
+				addProcessPath(g.getOptarg());
+				break;
+			case -19:
+				setSrcPrecedence(g.getOptarg());
+				break;
+			case -20:
+				sTagFileList.add(g.getOptarg());
+			case 'A':
+				setAnnotationPhases(g.getOptarg());
+				break;
+			case -21:
+				printVersion();
+				throw new CompilationDeathException(COMPILATION_SUCCEDED);
+			case 'h':
+				printHelp();
+				throw new CompilationDeathException(COMPILATION_SUCCEDED);
+			case ':':
+				// option that needs an argument and did not get one
+				// this behaviour is triggered by the : in shortOpts[1]
+				String optName;
+				// This technic is the best to get the value of the option
+				// (which is difficult when you use a long option because
+				// getopt will by default give you the id of the option.
+				// It fails when the user uses the option with different
+				// syntaxes in succession.
+				if (g.getOptopt() < 0 
+					|| longOptsArray[g.getLongind()].getVal() != g.getOptopt() ) {
+					// this is definitely a short option
+					optName = String.valueOf((char)g.getOptopt());
+				} else {
+					optName = longOptsArray[g.getLongind()].getName();
+				}
+				throw new CompilationDeathException(COMPILATION_ABORTED,
+													"Option " + optName
+													+ "requires an argument!");
+			case '?':
+				// invalid option
+				throw new 
+					CompilationDeathException(COMPILATION_ABORTED,
+											  "Option " 
+											  + (g.getOptopt() == 0 ? 
+												 args[g.getOptind()-1].substring(2)
+												 : String.valueOf((char)g.getOptopt()) )
+											  + " is not valid");
+			default:
+				// we should only get here for the unhandled options
+			}
 	}
 
-        // Handle all the options
-        for(int i = 0; i < args.length; i++)
-	    {
-		String arg = args[i];
-		if(arg.equals("-j") || arg.equals("--jimp"))
-		    setTargetRep(JIMP);
-		else if(arg.equals("--njimple"))
-		    setTargetRep(NJIMPLE);
-		else if(arg.equals("-s") || arg.equals("--jasmin"))
-		    setTargetRep(JASMIN);
-		else if(arg.equals("-J") || arg.equals("--jimple"))
-		    setTargetRep(JIMPLE);
-		else if(arg.equals("-B") || arg.equals("--baf"))
-		    setTargetRep(BAF);
-		else if(arg.equals("-b") || arg.equals("--b"))
-		    setTargetRep(B);
-		else if(arg.equals("-g") || arg.equals("--grimp"))
-		    setTargetRep(GRIMP);
-		else if(arg.equals("-G") || arg.equals("--grimple"))
-		    setTargetRep(GRIMPLE);
-		else if(arg.equals("-c") || arg.equals("--class"))
-		    setTargetRep(CLASS);
-		else if(arg.equals("--dava"))
-		    setTargetRep(DAVA);
-		else if(arg.equals("-X") || arg.equals("--xml"))
-		    produceXmlOutput = true;
-		else if(arg.equals("-O") || arg.equals("--optimize"))
-		    setOptimizing(true);
-		else if(arg.equals("-W") || arg.equals("--whole-optimize"))
-		    setOptimizingWhole(true);
-		else if(arg.equals("-t") || arg.equals("--time"))
-		    setProfiling(true);
-		else if(arg.equals("--subtract-gc"))
-		    setSubstractingGC(true);
-		else if(arg.equals("-v") || arg.equals("--verbose"))
-		    setVerbose(true);
-		else if(arg.equals("--soot-class-path") 
-			|| arg.equals("--soot-classpath")) {
-		    if(++i < args.length)
-			Scene.v().setSootClassPath(args[i]);
+		// get trailing non options ( after '--' )
+		for (int i = g.getOptind(); i < args.length ; i++)
+			cmdLineClasses.add(args[i]);
+
+        postCmdLineCheck();
+	}
+
+		
+	private static String shortOpts = "-:";
+	private static ArrayList longOpts = new ArrayList();
+	
+	private static void addGetoptOption(int id, String name, int has_arg) {
+		
+		if (id > 0 && shortOpts.indexOf((char)id) == -1) {
+			StringBuffer opts = new StringBuffer(shortOpts);
+			opts.append((char)id);
+			if (has_arg == LongOpt.REQUIRED_ARGUMENT)
+				opts.append(':');
+			// supported but discouraged
+			if (has_arg == LongOpt.OPTIONAL_ARGUMENT)
+				opts.append("::");
+			shortOpts = opts.toString();
 		}
-		else if(arg.equals("-d")) {
-		    if(++i < args.length)
-			outputDir = args[i];
-		}
-		else if(arg.equals("-x") || arg.equals("--exclude")) {
-		    if(++i < args.length)
-			addExclude(args[i]);
-		}
-		else if(arg.equals("-i") || arg.equals("--include")) {
-		    if(++i < args.length)
-			addInclude(args[i]);
-		}
-		else if(arg.equals("-a") || arg.equals("--analyze-context"))
-		    setAnalyzingLibraries(true);
-		else if(arg.equals("--final-rep")) {
-		    if(++i < args.length)
-			setFinalRep(args[i]);
-		}
-		else if (arg.equals("-p") || arg.equals("--phase-option")) {
-		    if(i+2 < args.length)
-			processPhaseOptions(args[++i], args[++i]);                
-		    //syntax -p phase-name:phase-options
-		    //if(++i < args.length) 
-		    //    processPhaseOption(args[i]);                
-		}
-		else if (arg.equals("--debug"))
-		    setDebug(true);
-		else if (arg.equals("--dynamic-path")) {
-		    if(++i < args.length) 
-			addDynamicPath(args[i]);
-		}
-		else if (arg.equals("--dynamic-packages")) {
-		    if(++i < args.length)
-			addDynamicPackage(args[i]);
-		}
-		else if (arg.equals("--process-path")) {
-		    if(++i < args.length)
-			addProcessPath(args[i]);                    
-		}
-		else if(arg.equals("--src-prec")) {
-		    if(++i < args.length)                    
-			setSrcPrecedence(args[i]);
-		}
-		else if(arg.equals("--tag-file")) {
-		    if(++i < args.length)
-			sTagFileList.add(args[i]);
-		}
-		else if(arg.equals("-A") || arg.equals("--annotation")) {
-		    if (++i < args.length)
-			setAnnotationPhases(args[i]);
-		}
-		else if(arg.equals("--version")) {
-		    printVersion();
-		    throw new CompilationDeathException(COMPILATION_SUCCEDED);            
-		}
-		else if(arg.equals("-h") || arg.equals("--help")) {
-		    printHelp();
-		    throw new CompilationDeathException(COMPILATION_SUCCEDED);            
-		}
-		else if(arg.startsWith("-")) {
-		    System.out.println("Unrecognized option: " + arg);
-		    printHelp();
-		    throw new CompilationDeathException(COMPILATION_ABORTED);
-		}  
-		else if(arg.startsWith("@")) {
-		    try {
-			File fn = new File(arg.substring(1));
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fn)));
-			List argsList = new LinkedList();
-			while (br.ready())
-			    argsList.add(br.readLine());
-			br.close();
-			processCmdLine((String[])argsList.toArray(new String[argsList.size()]));
-		    } catch (IOException e) {
-			throw new CompilationDeathException(COMPILATION_ABORTED,
-							    "Error reading file "+arg.substring(1));
-		    }
-		}
-		else {                    
-		    cmdLineClasses.add(arg);
-		}
+
+		longOpts.add(new LongOpt(name, has_arg, null, id));
+		
+	}
+
+
+    private static void processCmdLine_classic(String[] args)
+        throws CompilationDeathException
+    {
+        if(args.length == 0) {
+			printHelp();
+			throw new CompilationDeathException(COMPILATION_ABORTED, "don't know what to do!");
 	    }
+
+		// handle --app option first
+        for(int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            if(arg.equals("--app")) {
+                if (i != 0) {
+                    throw new CompilationDeathException(COMPILATION_ABORTED, 
+														"Application mode (--app) must be set as first argument to Soot!" +
+														"\neg. java soot.Main --app Simulator");           
+                }
+                setAppMode(true);
+            }
+		}
+
+        // Handle all the options
+        for(int i = 0; i < args.length; i++) {
+			String arg = args[i];
+			if(arg.equals("-j") || arg.equals("--jimp"))
+				setTargetRep(JIMP);
+			else if(arg.equals("--njimple"))
+				setTargetRep(NJIMPLE);
+			else if(arg.equals("-s") || arg.equals("--jasmin"))
+				setTargetRep(JASMIN);
+			else if(arg.equals("-J") || arg.equals("--jimple"))
+				setTargetRep(JIMPLE);
+			else if(arg.equals("-B") || arg.equals("--baf"))
+				setTargetRep(BAF);
+			else if(arg.equals("-b") || arg.equals("--b"))
+				setTargetRep(B);
+			else if(arg.equals("-g") || arg.equals("--grimp"))
+				setTargetRep(GRIMP);
+			else if(arg.equals("-G") || arg.equals("--grimple"))
+				setTargetRep(GRIMPLE);
+			else if(arg.equals("-c") || arg.equals("--class"))
+				setTargetRep(CLASS);
+			else if(arg.equals("--dava"))
+				setTargetRep(DAVA);
+			else if(arg.equals("-X") || arg.equals("--xml"))
+				produceXmlOutput = true;
+			else if(arg.equals("-O") || arg.equals("--optimize"))
+				setOptimizing(true);
+			else if(arg.equals("-W") || arg.equals("--whole-optimize"))
+				setOptimizingWhole(true);
+			else if(arg.equals("-t") || arg.equals("--time"))
+				setProfiling(true);
+			else if(arg.equals("--subtract-gc"))
+				setSubstractingGC(true);
+			else if(arg.equals("-v") || arg.equals("--verbose"))
+				setVerbose(true);
+			else if(arg.equals("--soot-class-path") 
+					|| arg.equals("--soot-classpath")) {
+				if(++i < args.length)
+					Scene.v().setSootClassPath(args[i]);
+			}
+			else if(arg.equals("-d")) {
+				if(++i < args.length)
+					outputDir = args[i];
+			}
+			else if(arg.equals("-x") || arg.equals("--exclude")) {
+				if(++i < args.length)
+					addExclude(args[i]);
+			}
+			else if(arg.equals("-i") || arg.equals("--include")) {
+				if(++i < args.length)
+					addInclude(args[i]);
+			}
+			else if(arg.equals("-a") || arg.equals("--analyze-context"))
+				setAnalyzingLibraries(true);
+			else if(arg.equals("--final-rep")) {
+				if(++i < args.length)
+					setFinalRep(args[i]);
+			}
+			else if (arg.equals("-p") || arg.equals("--phase-option")) {
+				if(i+2 < args.length)
+					processPhaseOptions(args[++i], args[++i]);                
+				//syntax -p phase-name:phase-options
+				//if(++i < args.length) 
+				//    processPhaseOption(args[i]);                
+			}
+			else if (arg.equals("--debug"))
+				setDebug(true);
+			else if (arg.equals("--dynamic-path")) {
+				if(++i < args.length) 
+					addDynamicPath(args[i]);
+			}
+			else if (arg.equals("--dynamic-packages")) {
+				if(++i < args.length)
+					addDynamicPackage(args[i]);
+			}
+			else if (arg.equals("--process-path")) {
+				if(++i < args.length)
+					addProcessPath(args[i]);                    
+			}
+			else if(arg.equals("--src-prec")) {
+				if(++i < args.length)                    
+					setSrcPrecedence(args[i]);
+			}
+			else if(arg.equals("--tag-file")) {
+				if(++i < args.length)
+					sTagFileList.add(args[i]);
+			}
+			else if(arg.equals("-A") || arg.equals("--annotation")) {
+				if (++i < args.length)
+					setAnnotationPhases(args[i]);
+			}
+			else if(arg.equals("--version")) {
+				printVersion();
+				throw new CompilationDeathException(COMPILATION_SUCCEDED);            
+			}
+			else if(arg.equals("-h") || arg.equals("--help")) {
+				printHelp();
+				throw new CompilationDeathException(COMPILATION_SUCCEDED);            
+			}
+
+			else if (arg.equals("--classic") || arg.equals("--use-Getop")
+						 || arg.equals("--use-CommandLine")) {
+				// handled elsewhere
+			}
+			else if(arg.startsWith("-")) {
+				System.out.println("Unrecognized option: " + arg);
+				printHelp();
+				throw new CompilationDeathException(COMPILATION_ABORTED);
+			}
+			else if(arg.startsWith("@")) {
+				try {
+					File fn = new File(arg.substring(1));
+					BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fn)));
+					List argsList = new LinkedList();
+					while (br.ready())
+						argsList.add(br.readLine());
+					br.close();
+					processCmdLine_classic((String[])argsList.toArray(new String[argsList.size()]));
+				} catch (IOException e) {
+					throw new CompilationDeathException(COMPILATION_ABORTED,
+														"Error reading file "+arg.substring(1));
+				}
+			}
+			else {                    
+				cmdLineClasses.add(arg);
+			}
+		}
         postCmdLineCheck();
     }
     
@@ -789,27 +1228,44 @@ public class Main implements Runnable
 	    
     }
 
+	// called by the new command-line parser
+	private static void processPhaseOptions(String phaseOptions) {
+		int idx = phaseOptions.indexOf(':');
+		if (idx == -1) {
+			throw new CompilationDeathException(COMPILATION_ABORTED,
+												"Invalid phase option: " 
+												+ phaseOptions);
+		}
+		String phaseName = phaseOptions.substring(0, idx);		
+		StringTokenizer st = new StringTokenizer(phaseOptions.substring(idx+1), ",");
+		while (st.hasMoreTokens()) {
+			processPhaseOption(phaseName, st.nextToken(), '=');
+		}
+    }
+	
+	// called by the "classic" command-line parser
     private static void processPhaseOptions(String phaseName, String option) {
-	StringTokenizer st = new StringTokenizer(option, ",");
-	while (st.hasMoreTokens()) {
-	    processPhaseOption(phaseName, st.nextToken());
-	}
+		StringTokenizer st = new StringTokenizer(option, ",");
+		while (st.hasMoreTokens()) {
+			processPhaseOption(phaseName, st.nextToken(), ':');
+		}
     }
 
-    private static void processPhaseOption(String phaseName, String option)
+    private static void processPhaseOption(String phaseName, String option,
+										   char delimiter)
     {
-        int colonLoc = option.indexOf(':');
+        int delimLoc = option.indexOf(delimiter);
         String key = null, value = null;
 	
-        if (colonLoc == -1)
+        if (delimLoc == -1)
             {
                 key = option;
                 value = "true";
             }
         else 
             {
-                key = option.substring(0, option.indexOf(':'));
-                value = option.substring(option.indexOf(':')+1);
+                key = option.substring(0, delimLoc);
+                value = option.substring(delimLoc+1);
             }
 
         Scene.v().getPhaseOptions(phaseName).put(key, value);

@@ -31,13 +31,13 @@ public class CompilationDeathException extends RuntimeException
     private String mMsg;
     private int mStatus;
 
-    CompilationDeathException(int status, String msg)
+    public CompilationDeathException(int status, String msg)
     {
         mMsg = msg;
         mStatus = status;
     }
         
-    CompilationDeathException(int status)
+    public CompilationDeathException(int status)
     {
         mStatus = status;
     }
