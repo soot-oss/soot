@@ -3,6 +3,9 @@ package ca.mcgill.sable.soot;
 import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
+import org.eclipse.jface.resource.ImageDescriptor;
+
+import java.net.*;
 import java.util.*;
 
 //import ca.mcgill.sable.soot.attributes.SootAttributeFilesReader;
@@ -98,6 +101,18 @@ public class SootPlugin extends AbstractUIPlugin {
 		setManager(new SootResourceManager());
 		getManager().initialize();
 		
+	}
+	
+	public static ImageDescriptor getImageDescriptor(String name){
+		String iconPath = "icons/";
+		try {
+			URL installURL = getDefault().getDescriptor().getInstallURL();
+			URL iconURL = new URL(installURL, iconPath + name);
+			return ImageDescriptor.createFromURL(iconURL);
+		}
+		catch (MalformedURLException e){
+			return ImageDescriptor.getMissingImageDescriptor();
+		}
 	}
 	
 	private SootResourceManager manager;

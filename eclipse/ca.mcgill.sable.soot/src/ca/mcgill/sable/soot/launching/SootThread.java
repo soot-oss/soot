@@ -5,7 +5,7 @@ import java.io.PrintStream;
 
 import org.eclipse.swt.widgets.Display;
 
-import ca.mcgill.sable.soot.SootPlugin;
+//import ca.mcgill.sable.soot.SootPlugin;
 
 import soot.*;
 /**
@@ -117,15 +117,8 @@ public class SootThread extends Thread {
 			Main.main(cmdFinal, sootOutFinal);
 		}
 		catch (Exception e) {
-			SootOutputEvent se = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);
-       		se.setTextToAppend(e.getLocalizedMessage());
-       		final SootOutputEvent toSend = se;
-       		getDisplay().asyncExec(new Runnable(){
-       			public void run() {
-       				SootPlugin.getDefault().fireSootOutputEvent(toSend);
-       				};
-       			});
-		}
+			e.printStackTrace(sootOutFinal);
+       	}
 	}
 	/**
 	 * Returns the cmd.

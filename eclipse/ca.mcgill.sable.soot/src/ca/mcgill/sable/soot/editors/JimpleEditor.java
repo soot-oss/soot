@@ -32,7 +32,7 @@ public class JimpleEditor extends TextEditor {
 		if (key.equals(IContentOutlinePage.class)) {
 			IEditorInput input = getEditorInput();
 			if (input instanceof IFileEditorInput) {
-				page = new JimpleContentOutlinePage(((IFileEditorInput)input).getFile());
+				page = new JimpleContentOutlinePage(((IFileEditorInput)input).getFile(), this);
 				return page;
 			}
 		}

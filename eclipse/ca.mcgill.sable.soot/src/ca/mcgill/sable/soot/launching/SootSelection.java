@@ -23,6 +23,7 @@ public class SootSelection {
 	private IFolder folder;
 	private IFile file;
 	private IClassFile classFile;
+	private ICompilationUnit javaFile;
 	private IPackageFragmentRoot packageFragmentRoot;
 	private int type;
 	
@@ -30,6 +31,7 @@ public class SootSelection {
 	public static final int FOLDER_SELECTED_TYPE = 2;
 	public static final int PACKAGEROOT_SELECTED_TYPE = 3;
 	public static final int CLASSFILE_SELECTED_TYPE = 1;
+	public static final int CU_SELECTED_TYPE = 4;
 	
 	public SootSelection(IStructuredSelection struct) {
 		setStructured(struct);			
@@ -64,6 +66,10 @@ public class SootSelection {
 		else if (temp instanceof IPackageFragmentRoot) {
 			setPackageFragmentRoot((IPackageFragmentRoot)temp);
 			setType(PACKAGEROOT_SELECTED_TYPE);
+		}
+		else if (temp instanceof ICompilationUnit){
+			setJavaFile((ICompilationUnit)temp);
+			setType(CU_SELECTED_TYPE);
 		}
 		
 		
@@ -212,6 +218,20 @@ public class SootSelection {
 	 */
 	public void setPackageFragmentRoot(IPackageFragmentRoot packageFragmentRoot) {
 		this.packageFragmentRoot = packageFragmentRoot;
+	}
+
+	/**
+	 * @return
+	 */
+	public ICompilationUnit getJavaFile() {
+		return javaFile;
+	}
+
+	/**
+	 * @param unit
+	 */
+	public void setJavaFile(ICompilationUnit unit) {
+		javaFile = unit;
 	}
 
 }

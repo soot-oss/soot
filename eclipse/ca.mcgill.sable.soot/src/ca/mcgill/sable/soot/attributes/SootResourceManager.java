@@ -148,6 +148,7 @@ public class SootResourceManager implements IResourceChangeListener {
 			 	(file.getFileExtension() == JIMPLE_FILE_EXT)){
 						
 				((HashMap)getProjects().get(proj)).put(file, new BitSet(2));
+			 		System.out.println("added file: "+file.getFullPath().toOSString());
 			 	}
 		}
 	}

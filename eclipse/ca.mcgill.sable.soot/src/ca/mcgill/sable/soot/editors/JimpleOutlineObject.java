@@ -31,9 +31,30 @@ public class JimpleOutlineObject {
 	private Vector children;
 	private String label;
 	private JimpleOutlineObject parent;
+	private int type;
+	private BitSet decorators;
 	
-	public JimpleOutlineObject(String label){
+	public static final int NONE = 100;
+	public static final int CLASS = 10;
+	public static final int INTERFACE = 11;
+	public static final int METHOD = 1;
+	public static final int PUBLIC_METHOD = 2;
+	public static final int PRIVATE_METHOD = 3;
+	public static final int PROTECTED_METHOD = 4;
+	public static final int FIELD = 5;
+	public static final int PUBLIC_FIELD = 6;
+	public static final int PRIVATE_FIELD = 7;
+	public static final int PROTECTED_FIELD = 8;
+	
+	public static final int FINAL_DEC = 20;
+	public static final int STATIC_DEC = 21;
+	public static final int SYNCHRONIZED_DEC = 22;
+	public static final int ABSTRACT_DEC = 23;
+	
+	public JimpleOutlineObject(String label, int type, BitSet dec){
 		setLabel(label);	
+		setType(type);
+		setDecorators(dec);
 	}
 	
 	public void addChild(JimpleOutlineObject t) {
@@ -84,6 +105,36 @@ public class JimpleOutlineObject {
 	 */
 	public void setParent(JimpleOutlineObject object) {
 		parent = object;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getType() {
+		return type;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setType(int i) {
+		type = i;
+	}
+
+
+
+	/**
+	 * @return
+	 */
+	public BitSet getDecorators() {
+		return decorators;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setDecorators(BitSet list) {
+		decorators = list;
 	}
 
 }

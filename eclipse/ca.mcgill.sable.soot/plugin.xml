@@ -20,7 +20,17 @@
       <import plugin="org.eclipse.jdt.ui"/>
    </requires>
 
-	
+	<!--<extension point="org.eclipse.jdt.ui.javaElementFilters">
+      <filter
+         id="org.eclipse.jdt.ui.PackageExplorer.showclasses"
+         name="ca.mcgill.sable.soot.ui.showclasses"
+         description="Show Classes"
+         viewId="org.eclipse.jdt.ui.PackageExplorer"
+         class="ca.mcgill.sable.soot.ui.SootFileFilter"
+         enabled="true">
+      </filter>
+   </extension> -->
+   
 	<extension id="sootattributemarker" point="org.eclipse.core.resources.markers" name="Soot attribute Marker">
       <persistent value="false"/>
       <super type="org.eclipse.core.resources.bookmark"/>
@@ -352,6 +362,39 @@
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction5">
          </action>-->
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.jdt.core.ICompilationUnit"
+            id="ca.mcgill.sable.soot.launching.soot.oc3">
+         <menu
+               label="Soot"
+               path="additions"
+               id="ca.mcgill.sable.soot.launching.soot.sootPopupMenu">
+            <separator
+                  name="slot1">
+            </separator>
+         </menu>
+         <action
+               label="%PopupMenus.action21"
+               class="ca.mcgill.sable.soot.launching.SootConfigFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction10">
+         </action>
+         <action
+               label="%PopupMenus.action22"
+               class="ca.mcgill.sable.soot.launching.SootOptionsFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction4">
+         </action>
+         <action
+               label="%PopupMenus.action23"
+               class="ca.mcgill.sable.soot.launching.DavaDecompileAppFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction8">
+         </action>
       </objectContribution>
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"

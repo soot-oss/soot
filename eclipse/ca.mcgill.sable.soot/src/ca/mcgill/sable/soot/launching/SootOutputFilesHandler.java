@@ -38,6 +38,8 @@ public class SootOutputFilesHandler {
 	private ArrayList oldFilelist;
 	private ArrayList newFilelist;
 	private IWorkbenchWindow window;
+	private ArrayList beforeFileList;
+	
 	
 	/**
 	 * Constructor for SootOutputFilesHandler.
@@ -46,7 +48,9 @@ public class SootOutputFilesHandler {
 		super();
 		setWindow(window);
 	}
-
+	
+	
+		
 	public void resetSootOutputFolder(IProject project) {
 		try {
 			setSootOutputFolder(project.getFolder("sootOutput"));

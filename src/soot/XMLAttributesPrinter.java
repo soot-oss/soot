@@ -50,6 +50,9 @@ public class XMLAttributesPrinter {
 		Iterator it = c.getMethods().iterator();
 		while (it.hasNext()) {
 			SootMethod sm = (SootMethod)it.next();
+			if (!sm.hasActiveBody()) {
+				continue;
+			}
 			Body b = sm.getActiveBody();
 			Iterator itUnits = b.getUnits().iterator();
 			while (itUnits.hasNext()) {

@@ -1,8 +1,13 @@
 package ca.mcgill.sable.soot.editors;
 
+import java.util.*;
+
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
+//import org.eclipse.jface.viewers.ILightweightLabelDecorator;
+import ca.mcgill.sable.soot.SootPlugin;
 
 //import ca.mcgill.sable.soot.launching.SootConfiguration;
 
@@ -26,6 +31,8 @@ import org.eclipse.swt.graphics.Image;
  */
 public class JimpleOutlineLabelProvider implements ILabelProvider {
 
+	private HashMap imageCache;
+	
 	/**
 	 * Constructor for OptionsTreeLabelProvider.
 	 */
@@ -37,7 +44,85 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(Object)
 	 */
 	public Image getImage(Object element) {
-		return null;
+		//System.out.println("getting image");
+		ImageDescriptor descriptor = null;
+		if (element instanceof JimpleOutlineObject){
+			//System.out.println("is JimpleOutlineObject");
+			//System.out.println(((JimpleOutlineObject)element).getType());
+			switch (((JimpleOutlineObject)element).getType()){
+				case JimpleOutlineObject.CLASS: {
+					descriptor = SootPlugin.getImageDescriptor("class_obj.gif");
+					break;
+				}
+				case JimpleOutlineObject.INTERFACE: {
+					descriptor = SootPlugin.getImageDescriptor("int_obj.gif");
+					break;
+				}
+				case JimpleOutlineObject.PUBLIC_METHOD:{
+					//System.out.println("is method type");
+					descriptor = SootPlugin.getImageDescriptor("public_co.gif");
+					//System.out.println("found descriptor for method image");
+					break;
+				}
+				case JimpleOutlineObject.PROTECTED_METHOD:{
+					//System.out.println("is method type");
+					descriptor = SootPlugin.getImageDescriptor("protected_co.gif");
+					//System.out.println("found descriptor for method image");
+					break;
+				}
+				case JimpleOutlineObject.PRIVATE_METHOD:{
+					//System.out.println("is method type");
+					descriptor = SootPlugin.getImageDescriptor("private_co.gif");
+					//System.out.println("found descriptor for method image");
+					break;
+				}
+				case JimpleOutlineObject.PUBLIC_FIELD: {
+					//System.out.println("is field type");
+					descriptor = SootPlugin.getImageDescriptor("field_public_obj.gif");
+					break;
+				}
+				case JimpleOutlineObject.PROTECTED_FIELD: {
+					//System.out.println("is field type");
+					descriptor = SootPlugin.getImageDescriptor("field_protected_obj.gif");
+					break;
+				}
+				case JimpleOutlineObject.PRIVATE_FIELD: {
+					//System.out.println("is field type");
+					descriptor = SootPlugin.getImageDescriptor("field_private_obj.gif");
+					break;
+				}				
+				default:{
+					return null;
+					
+				}
+			}
+		}
+		if (getImageCache() == null){
+			setImageCache(new HashMap());
+			
+		}
+		Image image = (Image)getImageCache().get(descriptor);
+		if (image == null) {
+		 	//System.out.println("image was null");
+		  	image = descriptor.createImage();
+		  	//System.out.println("created image");
+		   	getImageCache().put(descriptor, image);
+		}
+		
+		/*if (element instanceof JimpleOutlineObject){
+			BitSet bits = ((JimpleOutlineObject)element).getDecorators();
+			if (bits != null){
+				if (bits.get(JimpleOutlineObject.FINAL_DEC)){
+					descriptor = SootPlugin.getImageDescriptor("final_co.gif");
+					// add this descriptor image to image as decoration ??
+					image = descriptor.createImage();
+				}
+			}
+		}*/
+		return image;
+		
+		
+		
 	}
 
 	/**
@@ -57,6 +142,13 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
 	public void dispose() {
+		if (getImageCache() != null){
+			Iterator it = getImageCache().values().iterator();
+			while (it.hasNext()){
+				((Image)it.next()).dispose();	
+			}
+			getImageCache().clear();
+		}
 	}
 
 	/**
@@ -70,6 +162,20 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(ILabelProviderListener)
 	 */
 	public void removeListener(ILabelProviderListener listener) {
+	}
+
+	/**
+	 * @return
+	 */
+	public HashMap getImageCache() {
+		return imageCache;
+	}
+
+	/**
+	 * @param map
+	 */
+	public void setImageCache(HashMap map) {
+		imageCache = map;
 	}
 
 }

@@ -16,7 +16,7 @@ import java.util.HashSet;
  */
 public class JimpleModifier {
 
-		
+	 
 	public static boolean isModifier(String token) {
 		HashSet modifiers = new HashSet();
 		modifiers.add("abstract");

@@ -28,6 +28,7 @@ public class DavaDecompileAppFileLauncher extends SootFileLauncher {
 	public void run(IAction action) {
 		super.run(action);
 
+		if (isDoNotContinue()) return;
 		setCmd();
 		runSootDirectly();
 		runFinish();

@@ -21,6 +21,7 @@ public class SootOptionsFileLauncher extends SootFileLauncher {
 		
 		super.run(action);
 		
+		if (isDoNotContinue()) return;
 		// sometimes window needs to be reset (not sure why)
 		window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		if (window == null) {

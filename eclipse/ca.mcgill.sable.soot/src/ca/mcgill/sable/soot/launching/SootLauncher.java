@@ -45,13 +45,18 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	private String outputLocation;
 	private SootDefaultCommands sdc;
 	private SootOutputFilesHandler fileHandler;
-
+	private DavaHandler davaHandler;
+	
 	public void run(IAction action) {
 		
 		setSootSelection(new SootSelection(structured));		
  		getSootSelection().initialize(); 		
 		setFileHandler(new SootOutputFilesHandler(window));
 		getFileHandler().resetSootOutputFolder(getSootSelection().getProject());		
+		
+		setDavaHandler(new DavaHandler());
+		getDavaHandler().setSootOutputFolder(getFileHandler().getSootOutputFolder());
+		getDavaHandler().handleBefore();
 		initPaths();
 		initCommandList();
 
@@ -188,6 +193,7 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		getFileHandler().refreshFolder();
 		//for updating markers
 		SootPlugin.getDefault().getManager().updateSootRanFlag();
+		//getDavaHandler().handleAfter();
 		//getFileHandler().handleFilesChanged();
 		/*SootAttributesHandler temp = new SootAttributesHandler();
 		SootPlugin.getDefault().setSootAttributesHandler(temp); 	
@@ -338,6 +344,20 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	 */
 	public void setFileHandler(SootOutputFilesHandler fileHandler) {
 		this.fileHandler = fileHandler;
+	}
+
+	/**
+	 * @return
+	 */
+	public DavaHandler getDavaHandler() {
+		return davaHandler;
+	}
+
+	/**
+	 * @param handler
+	 */
+	public void setDavaHandler(DavaHandler handler) {
+		davaHandler = handler;
 	}
 
 }

@@ -8,6 +8,8 @@ package ca.mcgill.sable.soot.editors.parser;
 
 import java.util.*;
 
+//import ca.mcgill.sable.soot.editors.JimpleOutlineObject;
+
 /**
  * @author jlhotak
  *
@@ -17,9 +19,14 @@ import java.util.*;
 public class JimpleBody {
 
 	private String text;
+	private ArrayList textArr;
+	private ArrayList methods;
+	private ArrayList fields;
 	
-	public JimpleBody(String text){
+	
+	public JimpleBody(String text, ArrayList textArr){
 		setText(text); 
+		setTextArr(textArr);
 	}
 	
 	public boolean isJimpleBody() {
@@ -27,63 +34,46 @@ public class JimpleBody {
 		return true;
 	}
 	
-	public ArrayList getMethods() {
+	
+	public void parseBody(){
 		
-		System.out.println("About to find Jimple body methods");
-		//System.out.println(getText());
-		// remove first and last braces
-		setText(getText().substring(1));
-		System.out.println("removed first {");	
-		StringBuffer sb = new StringBuffer(getText());	
-		// remove method bodies
+		// getTextArr().get(1) -> class line
+		// ignore empty lines, first line with { and last
+		// line with }
+		setFields(new ArrayList());
+		setMethods(new ArrayList());
 		
-		//System.out.println(sb.toString());
-		while (true){
-			//System.out.println(sb.toString());
-			if ((sb.indexOf(JimpleFile.LEFT_BRACE) == -1) ||
-				(sb.indexOf(JimpleFile.RIGHT_BRACE) == -1)) break;
-				
-			int leftpos = sb.indexOf(JimpleFile.LEFT_BRACE);
-			int rightpos = sb.indexOf(JimpleFile.RIGHT_BRACE);
-			System.out.println("Braces Pos: "+leftpos+" "+rightpos);
-			sb.replace(leftpos, rightpos+1, "METHODBODY");	
-		}
-		
-		StringTokenizer st = new StringTokenizer(sb.toString());
-		while (st.hasMoreTokens()){
-			String next = st.nextToken();
-			System.out.println(next);
-			
-		}
-		
-		//ArrayList fields = new ArrayList();
-		ArrayList methods = new ArrayList();
-		//StringBuffer allFields = new StringBuffer(sb.substring(0, sb.lastIndexOf(";")));
-		StringBuffer allMethods;
-		if (sb.lastIndexOf(";") != -1) {
-			allMethods = new StringBuffer(sb.substring(sb.lastIndexOf(";")+1, sb.length()));
-		}
-		else {
-			allMethods = sb;
-		}
-		System.out.println(allMethods);
-		//StringTokenizer removeFields = new StringTokenizer(sb.toString(), ";");
-		StringTokenizer findMethods = new StringTokenizer(allMethods.toString());
-		StringBuffer method = new StringBuffer();
-		while (findMethods.hasMoreTokens()) {
-		
-			
-			String next = findMethods.nextToken();
-			if (next.equals("METHODBODY")) {
-				System.out.println(method);
-				methods.add(method);
-				method = new StringBuffer();
-				continue;
+		Iterator it = getTextArr().iterator();
+		int counter = 0;
+		boolean inMethod = false;
+		while (it.hasNext()){
+			String temp = (String)it.next();
+			//System.out.println("temp: "+temp);
+			if ((temp.trim().equals("}")) && (inMethod)){
+				inMethod = false;
 			}
-			method.append(next+" ");
+			if (!inMethod){
+				if (counter < 2){
+				}
+				else if (JimpleField.isField(temp)){
+					getFields().add(temp);
+					//System.out.println("is field");	
+				}
+				else if (JimpleMethod.isMethod(temp)){
+					getMethods().add(temp);
+					if (temp.indexOf(";") != -1){
+					}
+					else{
+						inMethod = true;
+					}
+					//System.out.println("is method");
+				}
+			}
+			counter++;
 		}
-		return methods;
+		
 	}
+	
 	/**
 	 * @return String
 	 */
@@ -97,6 +87,48 @@ public class JimpleBody {
 	 */
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getTextArr() {
+		return textArr;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setTextArr(ArrayList list) {
+		textArr = list;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setFields(ArrayList list) {
+		fields = list;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setMethods(ArrayList list) {
+		methods = list;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getFields() {
+		return fields;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getMethods() {
+		return methods;
 	}
 
 }

@@ -33,6 +33,7 @@ public class SootConfigFileLauncher extends SootFileLauncher {
 	public void run(IAction action) {
 		
 		super.run(action);
+		if (isDoNotContinue()) return;
 		window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		
 		SootConfigManagerDialog manager = new SootConfigManagerDialog(window.getShell());
