@@ -61,5 +61,11 @@ public abstract class TagAggregator extends BodyTransformer {
             b.addTag( new CodeAttribute(aggregatedName(), 
                  new LinkedList(units), new LinkedList(tags)) );
         }
+        fini();
     }
+
+    /** Called after all tags for a method have been aggregated. */
+    public void fini() {}
+
+
 }

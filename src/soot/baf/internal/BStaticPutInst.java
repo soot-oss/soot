@@ -89,4 +89,5 @@ public class BStaticPutInst extends AbstractInst implements StaticPutInst
     {
         ((InstSwitch) sw).caseStaticPutInst(this);
     }   
+    public boolean containsFieldRef() { return true; }
 }

@@ -48,5 +48,9 @@ public interface Inst extends Unit
     public String toString(Map stmtToName);
     public String toString(String indentation);
     public String toString(Map stmtToName, String indentation);
+
+    public boolean containsInvokeExpr();
+    public boolean containsFieldRef();
+    public boolean containsArrayRef();
 }
 

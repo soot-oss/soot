@@ -77,4 +77,5 @@ public class BArrayWriteInst extends AbstractOpTypeInst
     {
         ((InstSwitch) sw).caseArrayWriteInst(this);
     }   
+    public boolean containsArrayRef() { return true; }
 }

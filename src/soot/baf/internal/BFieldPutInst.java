@@ -87,4 +87,5 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst
     {
         ((InstSwitch) sw).caseFieldPutInst(this);
     }   
+    public boolean containsFieldRef() { return true; }
 }

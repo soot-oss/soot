@@ -100,4 +100,6 @@ abstract class AbstractInvokeInst extends AbstractInst
       return JasminClass.sizeOfType(getMethod().getReturnType());
   } 
 
+  public boolean containsInvokeExpr() { return true; }
+
 }

@@ -84,4 +84,5 @@ public class BStaticGetInst extends AbstractInst implements StaticGetInst
     {
         ((InstSwitch) sw).caseStaticGetInst(this);
     }   
+    public boolean containsFieldRef() { return true; }
 }

@@ -73,4 +73,5 @@ public class BArrayReadInst extends AbstractOpTypeInst implements ArrayReadInst
     {
         ((InstSwitch) sw).caseArrayReadInst(this);
     }   
+    public boolean containsArrayRef() { return true; }
 }

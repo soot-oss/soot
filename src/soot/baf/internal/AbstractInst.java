@@ -96,4 +96,8 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
     
     public abstract String getName();
     String getParameters(boolean isBrief, Map unitToName) { return ""; }    
+
+    public boolean containsInvokeExpr() { return false; }
+    public boolean containsArrayRef() { return false; }
+    public boolean containsFieldRef() { return false; }
 }
