@@ -58,7 +58,7 @@ public class EscapedWriter extends FilterWriter
   
     public void write(int ch) throws IOException
     {
-        if (ch >= 32 && ch <= 126 || ch == cr || ch == lf)
+        if (ch >= 32 && ch <= 126 || ch == cr || ch == lf || ch == ' ')
             { super.write(ch); return; }
 	
         StringBuffer mini = (StringBuffer)miniTL.get();

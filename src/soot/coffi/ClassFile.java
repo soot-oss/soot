@@ -204,7 +204,6 @@ public class ClassFile {
           else
           {   classFileStream = ClassLocator.getInputStreamOf(fn);
           }
-          
       }
       catch(ClassNotFoundException e)
       {   

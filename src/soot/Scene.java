@@ -61,18 +61,13 @@ public class Scene extends AbstractHost
     Map packNameToPack = new HashMap();
     SootClass mainClass;
     String sootClassPath = "<external-class-path>";
-    
-
 
     private Vector classesToResolve = new Vector();
 
-
-
-
-  public int getOutputMode()
-  {
-    return outputMode;
-  }
+    public int getOutputMode()
+    {
+        return outputMode;
+    }
 
 
     public void addClassToResolve(String c) 

@@ -11,16 +11,13 @@ public class SootResolver
     private Scene mScene;
     private Set markedClasses;
     private LinkedList classesToResolve;
-    private boolean debug = true;
 
-    //        SootClass toReturn = soot.coffi.Util.resolveClassAndSupportClasses(className, this);
     public SootResolver(Scene aScene)
     {
 	mScene = aScene;
 	markedClasses = new HashSet();
 	classesToResolve = new LinkedList();
     }
-   
 
     public  SootClass getResolvedClass(String className)
     {
@@ -59,11 +56,11 @@ public class SootResolver
 		
 	    Set s = null;
 	    if(is instanceof ClassInputStream) {
-		if(debug)
+		if(soot.Main.isVerbose)
 		    System.err.println("resolving [from .class]: " + className );
 		soot.coffi.Util.resolveFromClassFile(sc, this, mScene);
 	    } else if(is instanceof JimpleInputStream) {
-		if(debug)
+		if(soot.Main.isVerbose)
 		    System.err.println("resolving [from .jimple]: " + className );
 		if(sc == null) throw new RuntimeException("sc is null!!");
 
@@ -83,12 +80,10 @@ public class SootResolver
 		while(it.hasNext()) {
 		    String nclass = (String) it.next();
 		    assertResolvedClass(nclass);
-//  		    if(debug)
-//  			System.out.println(nclass);
 		}
 	    } 
 	    else {
-		throw new RuntimeException("This is Utterly Impossible: " + is);
+		throw new RuntimeException("could not resolve class: " + is+" (is your soot-class-path correct?)");
 	    }
             try
             {

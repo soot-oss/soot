@@ -1,0 +1,36 @@
+Improvements in 1.beta.6
+
+1. A Jimple parser has been added to the Soot framework.  Soot can
+now read both .class files and .jimple files (produced by the
+"--jimple" option).  Parsing .jimple files is faster than
+reading .class files, and these files can be modified easily in a text
+editor.
+
+2. Different phases of Sootification can now be passed command-line
+options.  For instance, the static inliner (si) in the
+whole-jimple optimization pack (wjop) can told that it is to
+expand code by no more than a factor of 5, by giving the following
+command-line option:  -p wjop.si expansion-factor:5.
+
+3. Some whole-program (excluding library) optimizations are
+included, namely a static method binder and a static inliner.  The
+inliner is enabled by default when the -W option is given.
+It can be disabled with the option  -p wjop.si disabled:true -p
+wjop.smb disabled:false.
+
+Improvements in 1.beta.5
+
+1. Baf, a streamlined form of bytecode has been added to Soot.  This is
+useful for performing low level bytecode optimizations.  We can produce code
+which is as good as javac now with the option "--final-rep baf".
+Unfortunately this option creates bytecode which is different than what the Java
+Virtual Machine is used to and so causes the JVM to crash.  For this reason, the
+option is not enabled by default.
+
+2. Major restructuring of the API has taken place.
+
+3. The entire SpecJVM98 suite can be processed by Soot correctly, as well as
+numerous other Java programs.
+
+4. Process times are reasonable: a program can be usually put through Soot
+within 2.5 times the execution time of javac on the original program.

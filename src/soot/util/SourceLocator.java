@@ -45,9 +45,6 @@ public class SourceLocator
     private static char pathSeparator = System.getProperty("path.separator").charAt(0);
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
 
-    private static final boolean debug = false;
-
-
     public static final int PRECEDENCE_NONE = 0;
     public static final int PRECEDENCE_CLASS = 1;
     public static final int PRECEDENCE_JIMPLE = 2;
@@ -69,7 +66,6 @@ public class SourceLocator
 
     public static InputStream getInputStreamOf(String className) throws ClassNotFoundException
     {
-
         return getInputStreamOf(Scene.v().getSootClassPath(), className);
     }
 
@@ -83,8 +79,8 @@ public class SourceLocator
     {
 
         List locations = null;
-	if(debug)
-	    System.err.println("classpath is:  " + classPath);
+	if(soot.Main.isInDebugMode)
+	    System.err.println("classpath is: " + classPath);
 
         if (classPath.hashCode() == previousCPHashCode)
         {
@@ -96,7 +92,10 @@ public class SourceLocator
             locations = new ArrayList();
             int sepIndex;
 	    boolean absolutePath;
-	    
+
+            if(classPath.equals("<external-class-path>"))
+                classPath = System.getProperty("java.class.path");
+
 	    String userDir = System.getProperty("user.dir");
             for(;;)
             {
@@ -107,8 +106,6 @@ public class SourceLocator
 		    absolutePath = true;
 		
                 sepIndex = classPath.indexOf(pathSeparator);
-		
-		
 		
                 if(sepIndex == -1)
 		{
@@ -131,12 +128,9 @@ public class SourceLocator
 
 	InputStream res = null;
 	{ // for now types are found on the filesystem.
-
-
 	    List reps = new ArrayList(4);
 	    reps.add(ClassInputRep.v());
 	    reps.add(JimpleInputRep.v());
-
 
 	    if(srcPrecedence == PRECEDENCE_NONE) {
 		return getFileInputStream(locations, reps, className);
@@ -144,7 +138,7 @@ public class SourceLocator
 	    else if(srcPrecedence == PRECEDENCE_CLASS) {
 		List lst = new LinkedList();
 		lst.add(ClassInputRep.v());
-		if( (res = getFileInputStream(locations,lst, className)) != null)
+		if( (res = getFileInputStream(locations, lst, className)) != null)
 		    return res;
 		if( (res = getFileInputStream(locations, reps, className)) != null)
 		    return res;
@@ -152,7 +146,7 @@ public class SourceLocator
 	    else if (srcPrecedence == PRECEDENCE_JIMPLE) {
 		List lst = new LinkedList();
 		lst.add(JimpleInputRep.v());
-		if( (res = getFileInputStream(locations,lst, className)) != null)
+		if( (res = getFileInputStream(locations, lst, className)) != null)
 		    return res;
 		if( (res = getFileInputStream(locations, reps, className)) != null)
 		    return res;
@@ -173,8 +167,8 @@ public class SourceLocator
 	String className2 = className.replace('.', '/');
 
 	
-	while(it.hasNext()) {	
-
+	while(it.hasNext()) 
+        {
 	    StringBuffer locationBuf = new StringBuffer();
 	    String locationPath = (String)it.next();
 	    locationBuf.append(locationPath);
@@ -185,9 +179,8 @@ public class SourceLocator
 	    String path = locationBuf.toString();
 		
 	    Iterator repsIt = reps.iterator();    
-	    while(repsIt.hasNext()) { 
-
-		
+	    while(repsIt.hasNext()) 
+            { 
 		SootInputRepresentation inputRep = (SootInputRepresentation) repsIt.next();
 
 		String adjustedClassName = path + className;
@@ -199,7 +192,7 @@ public class SourceLocator
 	      
 		                     
 		File f = new File(fullPath);
-		if(debug)
+		if(soot.Main.isInDebugMode)
 		    System.err.println("looking for: " + fullPath);
 	    
 
