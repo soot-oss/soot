@@ -102,6 +102,10 @@
 
  B) Changes:
 
+ - Modified on March 22, by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+   Fixed a problem with exception handling.
+   Added an explicit check for unreachable code.
+
  - Modified on March 17, 1999 by Vijay Sundaresan (vijay@sable.mcgill.ca) (*)
    Fixed the JSR code duplicator.
  
@@ -1770,6 +1774,58 @@ public class CFG {
             }
         }
 
+        // Check for unreachable code.  This causes problems later on.
+        {
+            Set markedInstructions = new HashSet();
+
+            // Mark all the reachable instructions
+            {
+                LinkedList instructionsToVisit = new LinkedList();
+                
+                markedInstructions.add(firstInstruction);
+                instructionsToVisit.addLast(firstInstruction);
+                
+                while(!instructionsToVisit.isEmpty())
+                {
+                    Instruction ins = (Instruction) instructionsToVisit.removeLast();
+                    
+                    Iterator succIt = ((Set) instructionToSuccessors.get(ins)).iterator();
+                    
+                    while(succIt.hasNext())
+                    {
+                        Instruction succ = (Instruction) succIt.next();
+                        
+                        if(!markedInstructions.contains(succ))
+                        {
+                            markedInstructions.add(succ);
+                            instructionsToVisit.addLast(succ);
+                        }
+                    }
+                }
+            }
+            
+            // Check to see if any instruction is unmarked.
+            {
+                BasicBlock b = cfg;
+
+                while(b != null)
+                {
+                    Instruction ins = b.head;
+
+                    while(ins != null)
+                    {
+                        if(!markedInstructions.contains(ins))
+                            throw new RuntimeException("Method to jimplify contains unreachable code!  (not handled for now)");
+
+                        ins = ins.next;
+                    }
+
+                    b = b.next;
+                }
+            }
+                        
+        }
+        
         // Perform the flow analysis, and build up instructionToTypeStack and instructionToLocalArray
         {
             instructionToTypeStack = new HashMap();
@@ -2004,6 +2060,8 @@ public class CFG {
 
         // Insert beginCatch/endCatch statements for exception handling
         {
+            Map targetToHandler = new HashMap();
+            
               for(int i = 0; i < codeAttribute.exception_table_length; i++)
               {
                     Instruction startIns = codeAttribute.exception_table[i].start_inst;
@@ -2058,14 +2116,23 @@ public class CFG {
 
                     // Insert assignment of exception
                     {
-                        int targetIndex = stmtList.indexOf(instructionToFirstStmt.get(targetIns));
-
-                        Local local = Util.getLocalCreatingIfNecessary(listBody, "op0",
-                            UnknownType.v());
-
-                        newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef(listBody));
-
-                        stmtList.add(targetIndex, newTarget);
+                        Stmt firstTargetStmt = (Stmt) instructionToFirstStmt.get(targetIns);
+                        
+                        if(targetToHandler.containsKey(firstTargetStmt))
+                            newTarget = (Stmt) targetToHandler.get(firstTargetStmt);
+                        else
+                        {
+                            int targetIndex = stmtList.indexOf(firstTargetStmt);
+    
+                            Local local = Util.getLocalCreatingIfNecessary(listBody, "op0",
+                                UnknownType.v());
+    
+                            newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef(listBody));
+    
+                            stmtList.add(targetIndex, newTarget);
+                            
+                            targetToHandler.put(firstTargetStmt, newTarget);
+                        }
                     }
 
                     // Insert trap

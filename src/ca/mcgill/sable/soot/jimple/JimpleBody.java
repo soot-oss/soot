@@ -243,11 +243,6 @@ public class JimpleBody implements StmtBody
             Transformations.cleanupCode(this);
             Transformations.removeUnusedLocals(this);
 
-            if(Main.isProfilingOptimization)
-            {
-                Main.cleanup1LocalCount += getLocalCount();
-                Main.cleanup1StmtCount += stmtList.size();
-            }
         }
 
 	    if(!BuildJimpleBodyOption.noAggregating(buildOptions))
@@ -307,6 +302,7 @@ public class JimpleBody implements StmtBody
         int localCount = 0;
         ListIterator stmtIt = stmtList.listIterator();
         Local newObjectLocal = null;
+
         
         Transformations.cleanupCode(this);
         Transformations.removeUnusedLocals(this);
@@ -369,6 +365,7 @@ public class JimpleBody implements StmtBody
                 }
             }
         }
+        
         
     }
     

@@ -146,7 +146,12 @@ public class SimpleLocalDefs implements LocalDefs
     {
         LocalStmtPair pair = new LocalStmtPair(l, s);
 
-        return (List) localStmtPairToDefs.get(pair);
+        List toReturn = (List) localStmtPairToDefs.get(pair);
+        
+        if(toReturn == null)
+            throw new RuntimeException("Illegal LocalDefs query; local " + l + " has no definition at " + s.toBriefString());
+        
+        return toReturn;
     }
 
     /*

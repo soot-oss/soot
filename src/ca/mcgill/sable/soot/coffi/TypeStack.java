@@ -233,8 +233,8 @@ class TypeStack implements ca.mcgill.sable.util.ValueObject
             if(types[i].equals(other.types[i]))
                 newStack.types[i] = types[i];
             else {
-                if(!(types[i] instanceof RefType) || !(other.types[i] instanceof
-                    RefType))
+                if((!(types[i] instanceof ArrayType) && !(types[i] instanceof RefType)) || 
+                    (!(other.types[i] instanceof RefType) && !(other.types[i] instanceof ArrayType)))
                 {
                     throw new RuntimeException("TypeStack merging failed; incompatible types " + types[i] + " and " + other.types[i]);
                 }

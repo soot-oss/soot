@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 19, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Made the timers substract garbage collection time.
+   
  - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Added an assertion to check that end() is always preceeded by a start()
  
@@ -74,35 +77,117 @@
 
 package ca.mcgill.sable.soot;
 
+import ca.mcgill.sable.util.*;
+
 public class Timer
 {
     private long duration;
     private long startTime;
     private boolean hasStarted;
+
+    private String name;
+
+    private static List outstandingTimers = new ArrayList();
+    private static boolean isGarbageCollecting;
+    
+    public static Timer forcedGarbageCollectionTimer = new Timer("gc");
+    private static boolean isSubstractingGC;
+    
+    private static int count;
+    
+    public Timer(String name)
+    {
+        this.name = name;
+        duration = 0;
+    }
     
     public Timer()
     {
-        duration = 0;
+        this("unnamed");
     }
-
+    
+    public static void setSubstractingGC(boolean value)
+    {
+        isSubstractingGC = value;
+    }
+    
     public void start()
     {
+        // Substract garbage collection time
+            if(!isGarbageCollecting && isSubstractingGC && ((count++ % 4) == 0))
+            {
+                // garbage collects only every 4 calls to avoid round off errors
+                
+                isGarbageCollecting = true;
+            
+                forcedGarbageCollectionTimer.start();
+                
+                // Stop all outstanding timers
+                {
+                    Iterator timerIt = outstandingTimers.iterator();
+                    
+                    while(timerIt.hasNext())
+                    {
+                        Timer t = (Timer) timerIt.next();
+                        
+                        t.end();
+                    }
+                }
+                
+                System.gc();
+        
+                // Start all outstanding timers
+                {
+                    Iterator timerIt = outstandingTimers.iterator();
+                    
+                    while(timerIt.hasNext())
+                    {
+                        Timer t = (Timer) timerIt.next();
+                        
+                        t.start();
+                    }
+                }
+                
+                forcedGarbageCollectionTimer.end();
+                
+                isGarbageCollecting = false;
+            }
+                        
+        
         startTime = System.currentTimeMillis();
         
         if(hasStarted)
-            throw new RuntimeException("timer has already been started!");
+            throw new RuntimeException("timer " + name + " has already been started!");
         else
             hasStarted = true;
+        
+        
+        if(!isGarbageCollecting) 
+        {
+            outstandingTimers.add(this);
+        }
+            
     }
 
-    public void end()
+    public String toString()
     {
+        return name;
+    }
+    
+    public void end()
+    {   
         if(!hasStarted)
-            throw new RuntimeException("timer has not been started!");
+            throw new RuntimeException("timer " + name + " has not been started!");
         else
             hasStarted = false;
         
         duration += System.currentTimeMillis() - startTime;
+        
+        
+        if(!isGarbageCollecting)
+        {
+            outstandingTimers.remove(this);
+        }
     }
 
     public long getTime()
@@ -110,3 +195,7 @@ public class Timer
         return duration;
     }
 }
+
+
+
+

@@ -60,7 +60,10 @@
  *                                                                   *
 
  B) Changes:
- 
+
+ - Modified on March 17, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Optimized the code a tad.
+   
  - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Re-organized the timers.
 
@@ -88,14 +91,16 @@ public class SimpleLocalUses implements LocalUses
     {
         if(Main.isProfilingOptimization)
            Main.usesTimer.start();
+    
+        if(Main.isProfilingOptimization)
+           Main.usePhase1Timer.start();
         
         if(Main.isVerbose)
             System.out.println("[" + graph.getBody().getMethod().getName() +
                 "]     Constructing SimpleLocalUses...");
     
+        stmtToUses = new HashMap(graph.size() * 2 + 1, 0.7f);
     
-        Map stmtToUseList = new HashMap(graph.size() * 2 + 1, 0.7f);
-
         // Initialize this map to empty sets
         {
             Iterator it = graph.iterator();
@@ -103,11 +108,16 @@ public class SimpleLocalUses implements LocalUses
             while(it.hasNext())
             {
                 Stmt s = (Stmt) it.next();
-
-                stmtToUseList.put(s, new ArrayList());
+                stmtToUses.put(s, new ArrayList());
             }
         }
 
+        if(Main.isProfilingOptimization)
+           Main.usePhase1Timer.end();
+    
+        if(Main.isProfilingOptimization)
+           Main.usePhase2Timer.start();
+    
         // Traverse stmts and associate uses with definitions
         {
             Iterator it = graph.iterator();
@@ -133,8 +143,7 @@ public class SimpleLocalUses implements LocalUses
 
                         while(defIt.hasNext())
                         {
-                            List useList = (List) stmtToUseList.get(defIt.next());
-
+                            List useList = (List) stmtToUses.get(defIt.next());
                             useList.add(new StmtValueBoxPair(s, useBox));
                         }
                     }
@@ -142,20 +151,28 @@ public class SimpleLocalUses implements LocalUses
             }
         }
 
+        if(Main.isProfilingOptimization)
+           Main.usePhase2Timer.end();
+    
+        if(Main.isProfilingOptimization)
+           Main.usePhase3Timer.start();
+    
         // Store the map as a bunch of unmodifiable lists.
         {
-            stmtToUses = new HashMap(graph.size() * 2 + 1, 0.7f);
-
             Iterator it = graph.iterator();
-
+            
             while(it.hasNext())
             {
                 Stmt s = (Stmt) it.next();
 
-                stmtToUses.put(s, Collections.unmodifiableList(((List) stmtToUseList.get(s))));
+                stmtToUses.put(s, Collections.unmodifiableList(((List) stmtToUses.get(s))));
             }
+            
         }
         
+        if(Main.isProfilingOptimization)
+           Main.usePhase3Timer.end();
+    
         if(Main.isProfilingOptimization)
             Main.usesTimer.end();
     }

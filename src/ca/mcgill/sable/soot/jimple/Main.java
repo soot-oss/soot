@@ -114,6 +114,8 @@ import ca.mcgill.sable.soot.grimp.*;
 
 import java.io.*;
 
+import java.text.*;
+
 public class Main
 {
     static boolean naiveJimplification;
@@ -121,6 +123,7 @@ public class Main
     public static boolean isVerbose;
     static boolean onlyJasminOutput;
     static boolean isProfilingOptimization;
+    static boolean isSubstractingGC;
     static boolean oldTyping;
     static boolean isInDebugMode;
     static boolean usePackedLive;
@@ -136,32 +139,35 @@ public class Main
     static int totalFlowNodes,
            totalFlowComputations;
            
-    static Timer copiesTimer = new Timer(),
-        defsTimer = new Timer(),
-        usesTimer = new Timer(),
-        liveTimer = new Timer(),
-        splitTimer = new Timer(),
-        packTimer = new Timer(),
-        cleanup1Timer = new Timer(),
-        cleanup2Timer = new Timer(),
-        conversionTimer = new Timer(),
-        cleanupAlgorithmTimer = new Timer(),
-        graphTimer = new Timer(),
-        assignTimer = new Timer(),
-        resolveTimer = new Timer(),
-        totalTimer = new Timer(),
-        splitPhase1Timer = new Timer(),
-        splitPhase2Timer = new Timer(),
-        defsSetupTimer = new Timer(),
-        defsAnalysisTimer = new Timer(),
-        defsPostTimer = new Timer(),
-        liveSetupTimer = new Timer(),
-        liveAnalysisTimer = new Timer(),
-        livePostTimer = new Timer(),
-        aggregationTimer = new Timer(),
-        grimpAggregationTimer = new Timer(),
-        deadCodeTimer = new Timer(),
-        propagatorTimer = new Timer();
+    static Timer copiesTimer = new Timer("copies"),
+        defsTimer = new Timer("defs"),
+        usesTimer = new Timer("uses"),
+        liveTimer = new Timer("live"),
+        splitTimer = new Timer("split"),
+        packTimer = new Timer("pack"),
+        cleanup1Timer = new Timer("cleanup1"),
+        cleanup2Timer = new Timer("cleanup2"),
+        conversionTimer = new Timer("conversionm"),
+        cleanupAlgorithmTimer = new Timer("cleanupAlgorithm"),
+        graphTimer = new Timer("graphTimer"),
+        assignTimer = new Timer("assignTimer"),
+        resolveTimer = new Timer("resolveTimer"),
+        totalTimer = new Timer("totalTimer"),
+        splitPhase1Timer = new Timer("splitPhase1"),
+        splitPhase2Timer = new Timer("splitPhase2"),
+        usePhase1Timer = new Timer("usePhase1"),
+        usePhase2Timer = new Timer("usePhase2"),
+        usePhase3Timer = new Timer("usePhase3"),
+        defsSetupTimer = new Timer("defsSetup"),
+        defsAnalysisTimer = new Timer("defsAnalysis"),
+        defsPostTimer = new Timer("defsPost"),
+        liveSetupTimer = new Timer("liveSetup"),
+        liveAnalysisTimer = new Timer("liveAnalysis"),
+        livePostTimer = new Timer("livePost"),
+        aggregationTimer = new Timer("aggregation"),
+        grimpAggregationTimer = new Timer("grimpAggregation"),
+        deadCodeTimer = new Timer("deadCode"),
+        propagatorTimer = new Timer("propagator");
         
     static int conversionLocalCount,
         cleanup1LocalCount,
@@ -191,7 +197,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.4");
+            System.out.println("Jimple version 1.beta.4.dev.1");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -253,6 +259,11 @@ public class Main
                     buildBodyOptions |= BuildJimpleBodyOption.NO_AGGREGATING;
                 else if(args[i].equals("-timetransform"))
                     isProfilingOptimization = true;
+                else if(args[i].equals("-substractgc"))
+                {
+                    Timer.setSubstractingGC(true);
+                    isSubstractingGC = true;
+                }    
                 else if(args[i].equals("-verbose"))
                     isVerbose = true;
                 else if(args[i].equals("-nosplitting"))
@@ -403,8 +414,9 @@ public class Main
                 
                 totalTimer.end();
                     
+                
                 long totalTime = totalTimer.getTime();
-                    
+                
                 System.out.println("Time measurements");
                 System.out.println();
                 
@@ -414,6 +426,10 @@ public class Main
 //                System.out.println("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
 //                System.out.println("                 post: " + toTimeString(defsPostTimer, totalTime));
                 System.out.println("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
+                System.out.println("            Use phase1: " + toTimeString(usePhase1Timer, totalTime));
+                System.out.println("            Use phase2: " + toTimeString(usePhase2Timer, totalTime));
+                System.out.println("            Use phase3: " + toTimeString(usePhase3Timer, totalTime));
+
                 System.out.println("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
                 System.out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
                 System.out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
@@ -460,6 +476,13 @@ public class Main
                     float memoryUsed = (float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
 
                     System.out.println("totalTime:" + toTimeString(totalTimer, totalTime));
+                    
+                    if(isSubstractingGC)
+                    {
+                        System.out.println("Garbage collection was substracted from these numbers.");
+                        System.out.println("           forcedGC:" + 
+                            toTimeString(Timer.forcedGarbageCollectionTimer, totalTime));
+                    }
                     System.out.println("totalMemory:" + memoryUsed + "k  ");
 
                     if(isTestingPerformance)
@@ -483,10 +506,14 @@ public class Main
 
     private static String toTimeString(Timer timer, long totalTime)
     {
-        long time = timer.getTime();
-        String timeString = paddedLeftOf(new Double(truncatedOf(time / 1000.0, 1)).toString(), 5);
+        DecimalFormat format = new DecimalFormat("0.000");
+        DecimalFormat percFormat = new DecimalFormat("0.0");
         
-        return (timeString + "s" + paddedLeftOf(" (" + (time * 100 / totalTime) + "%" + ")", 5));   
+        long time = timer.getTime();
+        
+        String timeString = format.format(time / 1000.0); // paddedLeftOf(new Double(truncatedOf(time / 1000.0, 1)).toString(), 5);
+        
+        return (timeString + "s" + " (" + percFormat.format(time * 100.0 / totalTime) + "%" + ")");   
     }
     
     private static String toFormattedString(double value)
