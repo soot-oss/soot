@@ -124,11 +124,11 @@ class TypeResolver
     
     /** This constructor triggers the type resolution of 
         local variables of the given statement list body. **/
-    private TypeResolver(StmtListBody listBody)
+    private TypeResolver(StmtBody stmtBody)
     {
         try {
         
-        currentMethod = listBody.getMethod();
+        currentMethod = stmtBody.getMethod();
         if(!currentMethod.getDeclaringClass().getName().equals(lastClass))
         {
             System.out.println();
@@ -148,7 +148,7 @@ class TypeResolver
         long st = System.currentTimeMillis();
 
         // Collect constraints
-        for(Iterator i = listBody.getStmtList().iterator(); i.hasNext();)
+        for(Iterator i = stmtBody.getStmtList().iterator(); i.hasNext();)
         {
             Stmt stmt = (Stmt) i.next();
             if(DEBUG)
@@ -169,7 +169,7 @@ class TypeResolver
             
 //            System.out.println();
 //            System.out.print(currentMethod.getDeclaringClass().getName() + "." + currentMethod.getName() + ":");
-            System.out.print("\t" + listBody.getStmtList().size());
+            System.out.print("\t" + stmtBody.getStmtList().size());
             
             for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
             {
@@ -314,7 +314,7 @@ class TypeResolver
         
 /**/    System.out.println();
 
-        for(Iterator i = listBody.getLocals().iterator(); i.hasNext(); )
+        for(Iterator i = stmtBody.getLocals().iterator(); i.hasNext(); )
         {
             Local local = (Local) i.next();
 
@@ -415,9 +415,9 @@ class TypeResolver
     }
 
     /** Assign types to local variables. **/
-    public static void assignTypesToLocals(StmtListBody listBody)
+    public static void assignTypesToLocals(StmtBody stmtBody)
     {
-        new TypeResolver(listBody);
+        new TypeResolver(stmtBody);
     }
 
     /** Get type variable for the given local. **/

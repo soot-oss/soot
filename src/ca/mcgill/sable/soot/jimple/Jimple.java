@@ -89,12 +89,25 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.io.*;
 
-public class Jimple
+public class Jimple implements BodyRepresentation
 {
-    /**
-     * Not guaranteed to stay in the API.  Use at your own risk!
-     */
+    private static Jimple jimpleRepresentation = new Jimple();
+        
+    private Jimple()
+    {
+    }
     
+    public static Jimple v()
+    {
+        return jimpleRepresentation;
+    }
+    
+    public Body getBodyOf(SootMethod m)
+    {
+        return new StmtBody(m);
+   
+    }
+        
     public static void setVerbose(boolean flag)
     {
         Main.isVerbose = flag;
@@ -109,17 +122,16 @@ public class Jimple
         Main.noLocalPacking = !flag;
     }
     
-    static void printStmtListBody(StmtListBody listBody, java.io.PrintWriter out, boolean isPrecise)
+    static void printStmtBody(StmtBody stmtBody, java.io.PrintWriter out, boolean isPrecise)
     {
-        StmtList stmtList = listBody.getStmtList();
+        StmtList stmtList = stmtBody.getStmtList();
         
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
-        StmtGraphBody graphBody = new StmtGraphBody(listBody, false);
-        StmtGraph stmtGraph = graphBody.getStmtGraph();
+        StmtGraph stmtGraph = new StmtGraph(stmtList, false);
         
         // Create statement name table
         {
-            Iterator boxIt = listBody.getStmtBoxes().iterator();
+            Iterator boxIt = stmtBody.getStmtBoxes().iterator();
             
             Set labelStmts = new HashSet();
             
@@ -192,7 +204,7 @@ public class Jimple
 
         // Print out exceptions
         {
-            StmtTrapTable trapTable = listBody.getTrapTable();
+            StmtTrapTable trapTable = stmtBody.getTrapTable();
             Iterator trapIt = trapTable.getTraps().iterator();
             
             if(trapIt.hasNext())
@@ -209,17 +221,16 @@ public class Jimple
         }
     }
 
-    static void printStmtListBody_debug(StmtListBody listBody, java.io.PrintWriter out)
+    static void printStmtBody_debug(StmtBody stmtBody, java.io.PrintWriter out)
     {
-        StmtList stmtList = listBody.getStmtList();
+        StmtList stmtList = stmtBody.getStmtList();
         
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
         
-        StmtGraphBody graphBody = new StmtGraphBody(listBody, false);
-        StmtGraph stmtGraph = graphBody.getStmtGraph(); 
+        StmtGraph stmtGraph = new StmtGraph(stmtList, false);
         
         /*        
-        System.out.println("Constructing LocalDefs of " + listBody.getMethod().getName() + "...");
+        System.out.println("Constructing LocalDefs of " + stmtBody.getMethod().getName() + "...");
         
         LocalDefs localDefs = new LocalDefs(graphBody);
 
@@ -230,8 +241,8 @@ public class Jimple
         LocalCopies localCopies = new LocalCopies(stmtGraph);
         */
                 
-        System.out.println("Constructing LiveLocals of " + listBody.getMethod().getName() + " ...");
-        LiveLocals liveLocals = new LiveLocals(graphBody);
+        System.out.println("Constructing LiveLocals of " + stmtBody.getMethod().getName() + " ...");
+        LiveLocals liveLocals = new LiveLocals(stmtGraph);
 
         // Create statement name table
         {
@@ -368,7 +379,7 @@ public class Jimple
 
         // Print out exceptions
         {
-            StmtTrapTable stmtTrapTable = listBody.getTrapTable();
+            StmtTrapTable stmtTrapTable = stmtBody.getTrapTable();
             Iterator trapIt = stmtTrapTable.getTraps().iterator();
             
             while(trapIt.hasNext())
@@ -385,9 +396,8 @@ public class Jimple
      static void printMethodBody(SootMethod method, java.io.PrintWriter out, boolean isPrecise)
     {         
         //System.out.println("Constructing the graph of " + getName() + "...");
-        ca.mcgill.sable.soot.baf.InstListBody instListBody = method.getInstListBody();
-        StmtListBody listBody = new StmtListBody(instListBody);
-        StmtList stmtList = listBody.getStmtList();
+        StmtBody stmtBody = (StmtBody) method.getBody(Jimple.v());
+        StmtList stmtList = stmtBody.getStmtList();
         
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);        
                   
@@ -438,11 +448,11 @@ public class Jimple
         
         // Print out local variables
         {
-            Map typeToLocalSet = new HashMap(listBody.getLocalCount() * 2 + 1, 0.7f);
+            Map typeToLocalSet = new HashMap(stmtBody.getLocalCount() * 2 + 1, 0.7f);
             
             // Collect locals
             {
-                Iterator localIt = listBody.getLocals().iterator();
+                Iterator localIt = stmtBody.getLocals().iterator();
             
                 while(localIt.hasNext())
                 {
@@ -495,7 +505,7 @@ public class Jimple
         }
             
         // Print out statements
-            printStmtListBody(listBody, out, isPrecise);
+            printStmtBody(stmtBody, out, isPrecise);
                                                 
         out.println("    }");
     }
@@ -610,7 +620,7 @@ public class Jimple
             if(fieldIt.hasNext())
             {
                 while(fieldIt.hasNext())
-                    out.println("    " + ((Field) fieldIt.next()).toString() + ";");
+                    out.println("    " + ((SootField) fieldIt.next()).toString() + ";");
             }
         }
 

@@ -110,10 +110,9 @@ public class LocalDefs
 {
     Map localStmtPairToDefs;
     
-    public LocalDefs(StmtGraphBody body)
+    public LocalDefs(StmtGraph g)
     {
-        StmtGraph g = body.getStmtGraph();
-        LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(body);    
+        LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(g);    
         
         // Built localStmtPairToDefs map
         {
@@ -271,21 +270,20 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
     Map localToPreserveSet;
     Map localToIntPair;
     
-    public LocalDefsFlowAnalysis(StmtGraphBody graphBody)
+    public LocalDefsFlowAnalysis(StmtGraph g)
     {
-        super(graphBody.getStmtGraph());
-        StmtGraph g = graphBody.getStmtGraph();
+        super(g);
         
         Object[] defs;
         FlowUniverse defUniverse;
         
         // Create a list of all the definitions and group defs of the same local together
         {
-            Map localToDefList = new HashMap(graphBody.getLocalCount() * 2 + 1, 0.7f);
+            Map localToDefList = new HashMap(g.getBody().getLocalCount() * 2 + 1, 0.7f);
             
             // Initialize the set of defs for each local to empty
             {
-                Iterator localIt = graphBody.getLocals().iterator();
+                Iterator localIt = g.getBody().getLocals().iterator();
                 
                 while(localIt.hasNext())
                 {
@@ -321,7 +319,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
                 
                 int startPos = 0;
                 
-                localToIntPair = new HashMap(graphBody.getLocalCount() * 2 + 1, 0.7f);
+                localToIntPair = new HashMap(g.getBody().getLocalCount() * 2 + 1, 0.7f);
                 
                 // For every local, add all its defs
                 {
@@ -355,10 +353,10 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
         
         // Create the preserve sets for each local.
         {
-            Map localToKillSet = new HashMap(graphBody.getLocalCount() * 2 + 1, 0.7f);
-            localToPreserveSet = new HashMap(graphBody.getLocalCount() * 2 + 1, 0.7f);
+            Map localToKillSet = new HashMap(g.getBody().getLocalCount() * 2 + 1, 0.7f);
+            localToPreserveSet = new HashMap(g.getBody().getLocalCount() * 2 + 1, 0.7f);
             
-            List locals = graphBody.getLocals();
+            List locals = g.getBody().getLocals();
             
             // Initialize to empty set
             {

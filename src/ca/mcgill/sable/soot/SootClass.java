@@ -177,11 +177,15 @@ public class SootClass
         return fields.size();
     }
     
+    /**
+     * Returns a backed list of fields.
+     */
+
     public List getFields()
     {
         resolveIfNecessary();
 
-        return Collections.unmodifiableList(fields);
+        return fields;
     }
 
     /*    
@@ -257,11 +261,15 @@ public class SootClass
         return methods.size();
     }
     
+    /**
+     * Returns a backed list of methods.
+     */
+     
     public List getMethods()
     {
         resolveIfNecessary();
         
-        return Collections.unmodifiableList(methods);
+        return methods;
     }
     
     public SootMethod getMethod(String name, List parameterTypes) throws 
@@ -352,11 +360,15 @@ public class SootClass
         return interfaces.size();
     }
     
+    /**
+     * Returns a backed list of interfaces.
+     */
+     
     public List getInterfaces() 
     {
         resolveIfNecessary();
         
-        return Collections.unmodifiableList(interfaces);
+        return interfaces;
     }
     
     public boolean implementsInterface(String name)

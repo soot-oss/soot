@@ -86,7 +86,7 @@ import ca.mcgill.sable.util.*;
 
 class Transformations
 {    
-    public static void assignTypesToLocals(StmtListBody listBody)
+    public static void assignTypesToLocals(StmtBody listBody)
     {
         if(Main.isVerbose)
             System.out.println("[" + listBody.getMethod().getName() + "] assigning types to locals...");
@@ -160,7 +160,7 @@ class Transformations
         }
     }
     
-    public static void splitLocals(StmtListBody listBody)
+    public static void splitLocals(StmtBody listBody)
     {
         StmtList stmtList = listBody.getStmtList();
            
@@ -176,8 +176,7 @@ class Transformations
             if(Main.isProfilingOptimization)
                 Main.graphTimer.start();
         
-            StmtGraphBody graphBody = new StmtGraphBody(listBody);
-            StmtGraph graph = graphBody.getStmtGraph();
+            StmtGraph graph = new StmtGraph(stmtList, true);
             
             if(Main.isProfilingOptimization)
                 Main.graphTimer.end();
@@ -185,7 +184,7 @@ class Transformations
             if(Main.isProfilingOptimization)
                 Main.defsTimer.start();
         
-            LocalDefs localDefs = new LocalDefs(graphBody);
+            LocalDefs localDefs = new LocalDefs(graph);
             
             if(Main.isProfilingOptimization)
                 Main.defsTimer.end();
@@ -193,7 +192,7 @@ class Transformations
             if(Main.isProfilingOptimization)
                 Main.usesTimer.start();
         
-            LocalUses localUses = new LocalUses(graphBody, localDefs); 
+            LocalUses localUses = new LocalUses(graph, localDefs); 
    
             if(Main.isProfilingOptimization)
                 Main.usesTimer.end();
@@ -322,7 +321,7 @@ class Transformations
         }
     }     
     
-    public static void removeUnusedLocals(StmtListBody listBody)
+    public static void removeUnusedLocals(StmtBody listBody)
     {
         StmtList stmtList = listBody.getStmtList();
         Set unusedLocals = new HashSet();
@@ -380,20 +379,19 @@ class Transformations
         }    
     }
     
-    public static void packLocals(StmtListBody listBody)
+    public static void packLocals(StmtBody body)
     {
-        StmtList stmtList = listBody.getStmtList();
+        StmtList stmtList = body.getStmtList();
         
         if(Main.isVerbose)
-            System.out.println("[" + listBody.getMethod().getName() + "] Packing locals...");
+            System.out.println("[" + body.getMethod().getName() + "] Packing locals...");
         
         if(Main.isProfilingOptimization)
             Main.graphTimer.start();
             
-        // Jimple.printStmtListBody_debug(listBody, new java.io.PrintWriter(System.out));
+        // Jimple.printStmtListBody_debug(body, new java.io.PrintWriter(System.out));
         
-        StmtGraphBody graphBody = new StmtGraphBody(listBody);
-        StmtGraph stmtGraph = graphBody.getStmtGraph();
+        StmtGraph stmtGraph = new StmtGraph(stmtList, true);
         
         if(Main.isProfilingOptimization)
             Main.graphTimer.end();
@@ -401,7 +399,7 @@ class Transformations
         if(Main.isProfilingOptimization)
             Main.liveTimer.start();
             
-        LiveLocals liveLocals = new LiveLocals(graphBody);
+        LiveLocals liveLocals = new LiveLocals(stmtGraph);
         
         if(Main.isProfilingOptimization)
             Main.liveTimer.end();
@@ -410,7 +408,7 @@ class Transformations
         
         // Construct different types available
         {
-            Iterator localIt = listBody.getLocals().iterator();
+            Iterator localIt = body.getLocals().iterator();
             
             types = new ArraySet();
             
@@ -429,12 +427,12 @@ class Transformations
                 InterferenceGraph originalGraph;
                 InterferenceGraph workingGraph;
                 LinkedList localQueue;
-                Map localToColor = new HashMap(listBody.getLocalCount() * 2 + 1, 0.7f);
+                Map localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
                 Set usedColors = new HashSet();
                 
                 // Build graphs
-                    originalGraph = new InterferenceGraph(listBody, type, liveLocals);
-                    workingGraph = new InterferenceGraph(listBody, type, liveLocals);
+                    originalGraph = new InterferenceGraph(body, type, liveLocals);
+                    workingGraph = new InterferenceGraph(body, type, liveLocals);
                         // should really be a clone
                 
                 // Color parameter locals first
@@ -519,7 +517,7 @@ class Transformations
                     
                     // Remove all locals with this type.
                     {
-                        Iterator localIt = listBody.getLocals().iterator();
+                        Iterator localIt = body.getLocals().iterator();
                         
                         while(localIt.hasNext())
                         {
@@ -527,7 +525,7 @@ class Transformations
                             
                             if(l.getType().equals(type))
                             {
-                                listBody.removeLocal(l);
+                                body.removeLocal(l);
                                 originalLocals.add(l);
                             }
                         }
@@ -552,7 +550,7 @@ class Transformations
                         Iterator itr = usedColors.iterator();
                         
                         while(itr.hasNext())
-                            listBody.addLocal((Local) itr.next());
+                            body.addLocal((Local) itr.next());
                     }
                     
                     // Go through all valueBoxes of this method and perform changes
@@ -585,10 +583,9 @@ class Transformations
         
     }
     
-    public static void cleanupCode(StmtListBody listBody)
+    public static void cleanupCode(StmtBody stmtBody)
     {
-        StmtList stmtList = listBody.getStmtList();
-            
+        StmtList stmtList = stmtBody.getStmtList();
         int numPropagations = 0;
         int numIterations = 0;
         int numEliminations = 0;
@@ -600,53 +597,52 @@ class Transformations
             numIterations++;
             
             if(Main.isVerbose)
-                System.out.println("[" + listBody.getMethod().getName() + "] Cleanup Iteration " + numIterations);
+                System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Cleanup Iteration " + numIterations);
 
             //System.out.println("Before optimization:");
-            //Jimple.printStmtListBody_debug(listBody, new java.io.PrintWriter(System.out, true));
+            //Jimple.printStmtListBody_debug(stmtList.getBody(), new java.io.PrintWriter(System.out, true));
             
             if(Main.isVerbose)
-             System.out.println("[" + listBody.getMethod().getName() + "] Constructing StmtGraph...");
+             System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Constructing StmtGraph...");
 
             if(Main.isProfilingOptimization)
                 Main.graphTimer.start();
                             
-            StmtGraphBody graphBody = new StmtGraphBody(listBody);
-            StmtGraph graph = graphBody.getStmtGraph();
+            StmtGraph graph = new StmtGraph(stmtList, true);
             
             if(Main.isProfilingOptimization)
                 Main.graphTimer.end();
                 
             if(Main.isVerbose)
-                System.out.println("[" + listBody.getMethod().getName() + "] Constructing LocalDefs...");
+                System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Constructing LocalDefs...");
 
             
             if(Main.isProfilingOptimization)
                 Main.defsTimer.start();
                         
-            LocalDefs localDefs = new LocalDefs(graphBody);
+            LocalDefs localDefs = new LocalDefs(graph);
             
             if(Main.isProfilingOptimization)
                 Main.defsTimer.end();
             
             if(Main.isVerbose)
-                System.out.println("[" + listBody.getMethod().getName() + "] Constructing LocalUses...");
+                System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Constructing LocalUses...");
             
             if(Main.isProfilingOptimization)
                 Main.usesTimer.start();
             
-            LocalUses localUses = new LocalUses(graphBody, localDefs);
+            LocalUses localUses = new LocalUses(graph, localDefs);
             
             if(Main.isProfilingOptimization)
                 Main.usesTimer.end();
             
             if(Main.isVerbose)
-                System.out.println("[" + listBody.getMethod().getName() + "] Constructing LocalCopies...");
+                System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Constructing LocalCopies...");
             
             if(Main.isProfilingOptimization)
                 Main.copiesTimer.start();
             
-            LocalCopies localCopies = new LocalCopies(graphBody);
+            LocalCopies localCopies = new LocalCopies(graph);
             
             if(Main.isProfilingOptimization)
                 Main.copiesTimer.end();
@@ -754,12 +750,14 @@ class Transformations
         }
         
         //System.out.println("That's all folks:");
-        //Jimple.printStmtListBody_debug(listBody, new java.io.PrintWriter(System.out, true));
+        //Jimple.printStmtListBody_debug(stmtList.getBody(), new java.io.PrintWriter(System.out, true));
 
     }
 
-    public static void renameLocals(StmtListBody listBody)
+    public static void renameLocals(StmtBody body)
     { 
+        StmtList stmtList = body.getStmtList();
+        
         // Change the names to the standard forms now.
         {
             int objectCount = 0;
@@ -771,7 +769,7 @@ class Transformations
             int errorCount = 0;
             int nullCount = 0;
             
-            Iterator localIt = listBody.getLocals().iterator();
+            Iterator localIt = body.getLocals().iterator();
             
             while(localIt.hasNext())
             {

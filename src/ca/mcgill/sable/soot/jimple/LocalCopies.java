@@ -78,10 +78,9 @@ public class LocalCopies
 {
     Map stmtToCopies;
     
-    public LocalCopies(StmtGraphBody graphBody)
+    public LocalCopies(StmtGraph g)
     {
-        CopiesFlowAnalysis analysis = new CopiesFlowAnalysis(graphBody);
-        StmtGraph g = graphBody.getStmtGraph();
+        CopiesFlowAnalysis analysis = new CopiesFlowAnalysis(g);
         
         // Build up stmtToCopies map
         {
@@ -118,10 +117,9 @@ class CopiesFlowAnalysis extends ForwardFlowAnalysis
     FlowSet emptySet;
     Map localToPreserveSet;
         
-    CopiesFlowAnalysis(StmtGraphBody graphBody)
+    CopiesFlowAnalysis(StmtGraph g)
     {
-        super(graphBody.getStmtGraph());
-        StmtGraph g = graphBody.getStmtGraph();
+        super(g);
         
         List copiesList;
         
@@ -154,11 +152,11 @@ class CopiesFlowAnalysis extends ForwardFlowAnalysis
 
         // Create preserve sets for each local.
         {
-            localToPreserveSet = new HashMap(graphBody.getLocalCount() * 2 + 1, 0.7f);
+            localToPreserveSet = new HashMap(g.getBody().getLocalCount() * 2 + 1, 0.7f);
             
             // Initialize each set to empty
             {
-                Iterator localIt = graphBody.getLocals().iterator();
+                Iterator localIt = g.getBody().getLocals().iterator();
                 
                 while(localIt.hasNext())
                     localToPreserveSet.put(localIt.next(), emptySet.clone());
@@ -183,7 +181,7 @@ class CopiesFlowAnalysis extends ForwardFlowAnalysis
             
             // Flip all the kill sets to really become preserve sets
             {
-                Iterator localIt = graphBody.getLocals().iterator();
+                Iterator localIt = g.getBody().getLocals().iterator();
                 
                 while(localIt.hasNext())
                 {

@@ -83,11 +83,20 @@ public class SootMethod
     int modifiers;
 
     List exceptions = new ArrayList();
-    
-    InstListBody instListBody;
 
-    ca.mcgill.sable.soot.coffi.ClassFile coffiClass;
-    ca.mcgill.sable.soot.coffi.method_info coffiMethod;
+    Map repToBody = new HashMap();
+        
+    /**
+     * Hooks for coffi.  Do not use!
+     */
+     
+    public ca.mcgill.sable.soot.coffi.ClassFile coffiClass;
+    
+    /**
+     * Hooks for coffi.  Do not use!
+     */
+     
+    public ca.mcgill.sable.soot.coffi.method_info coffiMethod;
             
     public SootMethod(String name, List parameterTypes, Type returnType)
     {
@@ -107,6 +116,7 @@ public class SootMethod
         this.modifiers = modifiers;
     }
     
+    /*
     public SootMethod(String name, List parameterTypes, Type returnType, int modifiers, 
         InstListBody instListBody)
     {
@@ -118,7 +128,9 @@ public class SootMethod
         
         this.instListBody = instListBody;
     }
-    
+    */
+      
+    /*
     public SootMethod(String name, List parameterTypes, Type returnType, InstListBody instListBody)
     {
         this.name = name;
@@ -127,6 +139,7 @@ public class SootMethod
         this.returnType = returnType;
         this.instListBody = instListBody;
     }
+ */
     
     public void setSource(ca.mcgill.sable.soot.coffi.ClassFile coffiClass, 
         ca.mcgill.sable.soot.coffi.method_info coffiMethod)
@@ -189,11 +202,30 @@ public class SootMethod
         return (Type) parameterTypes.get(n);
     }
     
+    /**
+     * Returns a backed list of the parameter types of this method.
+     */
+     
     public List getParameterTypes()
     {
-        return Collections.unmodifiableList(parameterTypes);
+        return parameterTypes;
     }
 
+    public Body getBody(BodyRepresentation rep)
+    {
+        if(repToBody.containsKey(rep))
+            return (Body) repToBody.get(rep);
+        else {
+            return rep.getBodyOf(this);
+        }
+    }
+    
+    public void setBody(BodyRepresentation r, Body b)
+    {
+        repToBody.put(r, b);
+    }
+    
+    /*
     public void setInstListBody(InstListBody instListBody)
     {
         this.instListBody = instListBody;
@@ -210,7 +242,7 @@ public class SootMethod
         
         return instListBody;
     }
-
+*/
     public void addException(SootClass e) throws AlreadyThrowsException
     {
         if(exceptions.contains(e))
@@ -230,9 +262,13 @@ public class SootMethod
         return exceptions.contains(e);
     }
     
+    /**
+     * Returns a backed list of the exceptions thrown by this method.
+     */
+     
     public List getExceptions()
     {
-        return Collections.unmodifiableList(exceptions);
+        return exceptions;
     }
     
     public void setParameterTypes(List parameterTypes)
@@ -280,4 +316,5 @@ public class SootMethod
         return buffer.toString();
     }
 }
+
 

@@ -87,15 +87,15 @@ public class InterferenceGraph
     {
     }
         
-    public InterferenceGraph(StmtListBody listBody, Type type, LiveLocals liveLocals)
+    public InterferenceGraph(StmtBody body, Type type, LiveLocals liveLocals)
     {
-        StmtList stmtList = listBody.getStmtList();
+        StmtList stmtList = body.getStmtList();
         
         // Initialize localToLocals
         {
-            localToLocals = new HashMap(listBody.getLocalCount() * 2 + 1, 0.7f);
+            localToLocals = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
             
-            Iterator localIt = listBody.getLocals().iterator();
+            Iterator localIt = body.getLocals().iterator();
             
             while(localIt.hasNext())
             {

@@ -65,7 +65,7 @@
  *                                                                   *
 
  B) Changes:
-
+   
  - Modified on October 4, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Errors in type inference now throws an exception (disabled with -debug).
    
@@ -81,18 +81,18 @@
  - Modified on 23-Jul-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Added a constructor for StmtListBody.
    And other misc. changes. 
-   
+
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.baf.*;
 
-public class StmtListBody implements MethodBody
+public class StmtBody implements Body
 {
     List locals = new ArrayList();
     SootMethod method;
@@ -102,27 +102,27 @@ public class StmtListBody implements MethodBody
     StmtList stmtList;
 
     /** 
-     * Builds the StmtListBody for this method from the Baf InstList.
+     * Builds the StmtBody for this method from the Baf InstList.
      */
      
-    public StmtListBody(SootMethod m)
+    StmtBody(SootMethod m)
     {
-        this(m.getInstListBody());
+        this((InstBody) Baf.v().getBodyOf(m));
     }
                 
-    public StmtListBody(InstListBody instListBody)
+    StmtBody(InstBody instBody)
     {
         super();
         
-        this.method = instListBody.getMethod();
+        this.method = instBody.getMethod();
         this.stmtList = new StmtList(this);
         this.stmtTrapTable = new StmtTrapTable();
                 
-        ca.mcgill.sable.soot.coffi.ClassFile coffiClass = instListBody.coffiClass;
-        ca.mcgill.sable.soot.coffi.method_info coffiMethod = instListBody.coffiMethod;
+        ca.mcgill.sable.soot.coffi.ClassFile coffiClass = instBody.coffiClass;
+        ca.mcgill.sable.soot.coffi.method_info coffiMethod = instBody.coffiMethod;
         
-        instListBody.coffiClass = null;
-        instListBody.coffiMethod = null;
+        instBody.coffiClass = null;
+        instBody.coffiMethod = null;
         
         if(Main.isVerbose)
             System.out.println("[" + method.getName() + "] Jimplifying...");
@@ -317,10 +317,14 @@ public class StmtListBody implements MethodBody
     {
         return locals.size();
     }
-    
+
+    /**
+     * Returns a backed list of locals.
+     */
+         
     public List getLocals()
     {
-        return Collections.unmodifiableList(locals);
+        return locals;
     }
     
     public void addLocal(Local l) throws AlreadyDeclaredException
@@ -404,4 +408,3 @@ public class StmtListBody implements MethodBody
         this.stmtTrapTable = table;
     }
 }
-

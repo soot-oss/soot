@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
+ * Baf, a Java(TM) bytecode analyzer framework.                      *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
@@ -35,7 +35,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $JimpleVersion: 0.5 $
+ The reference version is: $BafVersion: 0.4 $
 
  Change History
  --------------
@@ -62,84 +62,34 @@
 
  B) Changes:
 
- - Modified on September 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   Added support for exception edge inclusion.
-
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
  
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class StmtGraphBody implements MethodBody
+public class InstBody implements Body
 {
-    SootMethod method;
-    List locals;
-    StmtGraph stmtGraph;
-    boolean isComplete;
+    SootMethod method; 
     
-    public int getLocalCount()
-    {
-        return locals.size();
-    }
-    
-    public List getLocals()
-    {
-        return Collections.unmodifiableList(locals);
-    }
+    public ca.mcgill.sable.soot.coffi.ClassFile coffiClass;
+    public ca.mcgill.sable.soot.coffi.method_info coffiMethod;
 
-    /**
-     * Are the exception edges included?
-     */    
-     
-    public boolean isComplete()
+    InstBody(SootMethod method)
     {
-        return isComplete;
-    }
-
-    /**
-     * Creates a StmtGraphBody with all exception edges included.
-     
-     */
-    public StmtGraphBody(StmtListBody listBody)
-    {
-        this(listBody, true);
+        this.method = method;
+        this.coffiClass = method.coffiClass;
+        this.coffiMethod = method.coffiMethod;
     }
     
-        
-    public StmtGraphBody(StmtListBody listBody, 
-        boolean isComplete)
-    {
-        StmtList stmtList = listBody.getStmtList();
-        
-        this.method = listBody.getMethod();
-        
-        // Record locals
-        {
-            List listLocals = listBody.getLocals();
-            
-            locals = new ArrayList();
-            locals.addAll(listLocals);
-        }
-        
-        this.stmtGraph = new StmtGraph(this, listBody, isComplete);
-    }        
-        
     public SootMethod getMethod()
     {
         return method;
     }
-    
-    public StmtGraph getStmtGraph()
-    {
-        return this.stmtGraph;
-    }
 }
-
-
 
 
 

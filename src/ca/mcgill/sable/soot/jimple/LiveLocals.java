@@ -79,10 +79,9 @@ public class LiveLocals
     Map stmtToLocals;
     //Map stmtToLocalsBefore;
     
-    public LiveLocals(StmtGraphBody graphBody)
+    public LiveLocals(StmtGraph graph)
     {
-        LiveLocalsAnalysis analysis = new LiveLocalsAnalysis(graphBody);  
-        StmtGraph graph = graphBody.getStmtGraph(); 
+        LiveLocalsAnalysis analysis = new LiveLocalsAnalysis(graph);  
         
         // Build stmtToLocals map
         {
@@ -123,15 +122,14 @@ class LiveLocalsAnalysis extends BackwardFlowAnalysis
     Map stmtToGenerateSet;
     Map stmtToPreserveSet;
     
-    LiveLocalsAnalysis(StmtGraphBody graphBody)
+    LiveLocalsAnalysis(StmtGraph g)
     {
-        super(graphBody.getStmtGraph());
+        super(g);
         
-        StmtGraph g = graphBody.getStmtGraph();
         
         // Generate list of locals and empty set
         {
-            List locals = graphBody.getLocals();
+            List locals = g.getBody().getLocals();
             FlowUniverse localUniverse = new FlowUniverse(locals.toArray());
             
             emptySet = PackSet.v(localUniverse);

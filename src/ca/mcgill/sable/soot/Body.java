@@ -70,8 +70,9 @@ package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
 
-public interface MethodBody
+public interface Body
 {
+    public SootMethod getMethod();
 }
 
 

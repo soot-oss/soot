@@ -73,15 +73,20 @@ import ca.mcgill.sable.util.*;
 
 public class StmtList extends ArrayList
 {
-    StmtListBody body;
+    StmtBody body;
     
-    public StmtList(StmtListBody body)
+    public StmtList(StmtBody body)
     {
         super();
         
         this.body = body;
     }
-        
+     
+    public StmtBody getBody()
+    {
+        return body;
+    }
+       
     public boolean remove(Object obj)
     {
         boolean toReturn = false;

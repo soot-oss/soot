@@ -147,7 +147,7 @@ public class CFG {
    private int bbcount;        // statistics, number of BBs processed
 
    StmtList stmtList;
-   StmtListBody listBody;
+   StmtBody listBody;
    
    Map instructionToFirstStmt;
    Map instructionToLastStmt;
@@ -397,7 +397,7 @@ public class CFG {
     * @see Stmt
     * @see BasicBlock#jhead
     */
-    public boolean jimplify(cp_info constant_pool[],int this_class, StmtListBody listBody)
+    public boolean jimplify(cp_info constant_pool[],int this_class, StmtBody listBody)
    {
         Util.setClassNameToAbbreviation(new HashMap());
         

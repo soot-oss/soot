@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
+ * Baf, a Java(TM) bytecode analyzer framework.                      *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
@@ -35,7 +35,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $JimpleVersion: 0.5 $
+ The reference version is: $BafVersion: 0.4 $
 
  Change History
  --------------
@@ -62,89 +62,32 @@
 
  B) Changes:
 
- - Modified on 23-Jul-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   Renamed the uses of Hashtable to HashMap.
-
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
-package ca.mcgill.sable.soot.jimple;
+
+package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class LocalUses
+public class Baf implements BodyRepresentation
 {
-    Map stmtToUses;
+    private static Baf bafRepresentation = new Baf();
     
-    public LocalUses(StmtGraph graph, LocalDefs localDefs)
+    private Baf()
     {
-        Map stmtToUseList = new HashMap(graph.size() * 2 + 1, 0.7f);
-        
-        // Initialize this map to empty sets
-        {
-            Iterator it = graph.iterator();
-            
-            while(it.hasNext())
-            {
-                Stmt s = (Stmt) it.next();
-                
-                stmtToUseList.put(s, new ArrayList());
-            }
-        }
-        
-        // Traverse stmts and associate uses with definitions
-        {
-            Iterator it = graph.iterator();
-                        
-            while(it.hasNext())
-            {
-                Stmt s = (Stmt) it.next();
-                
-                Iterator boxIt = s.getUseBoxes().iterator();
-                
-                while(boxIt.hasNext())
-                {
-                    ValueBox useBox = (ValueBox) boxIt.next();
-                    
-                    if(useBox.getValue() instanceof Local)
-                    {
-                        // Add this statement to the uses of the definition of the local
-                        
-                        Local l = (Local) useBox.getValue();
-                        
-                        List possibleDefs = localDefs.getDefsOfAt(l, s);
-                        Iterator defIt = possibleDefs.iterator();
-                        
-                        while(defIt.hasNext())
-                        {
-                            List useList = (List) stmtToUseList.get(defIt.next());
-                            
-                            useList.add(new StmtValueBoxPair(s, useBox));
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Store the map as a bunch of unmodifiable lists.
-        {
-            stmtToUses = new HashMap(graph.size() * 2 + 1, 0.7f);
-            
-            Iterator it = graph.iterator();
-            
-            while(it.hasNext())
-            {
-                Stmt s = (Stmt) it.next();
-
-                stmtToUses.put(s, Collections.unmodifiableList(((List) stmtToUseList.get(s))));
-            }
-        }
     }
     
-    public List getUsesOf(DefinitionStmt s)
+    public static Baf v()
     {
-        return (List) stmtToUses.get(s);
+        return bafRepresentation;
+    }
+    
+    public Body getBodyOf(SootMethod m)
+    {
+        return new InstBody(m);
     }
 }
+
+

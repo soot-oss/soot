@@ -87,15 +87,17 @@ public class StmtGraph
     SootMethod method;
     List stmts;
     int size;
-    StmtGraphBody body;
+    StmtList stmtList;
     
-    StmtGraph(StmtGraphBody body, StmtListBody listBody, boolean
-        addExceptionEdges)
+    public StmtBody getBody()
+    {  
+        return stmtList.getBody();
+    }
+     
+    protected StmtGraph(StmtList stmtList, boolean addExceptionEdges)
     {
-        StmtList stmtList = listBody.getStmtList();
-        
-        this.body = body;    
-        this.method = listBody.getMethod();
+        this.stmtList = stmtList;
+        this.method = getBody().getMethod();
 
         // Build stmts (for iterator)
         {
@@ -215,7 +217,7 @@ public class StmtGraph
             // Add exception based successors            
                 if(addExceptionEdges)
                 {
-                    Iterator trapIt = listBody.getTrapTable().getTraps().
+                    Iterator trapIt = getBody().getTrapTable().getTraps().
                         iterator();
                         
                     while(trapIt.hasNext())

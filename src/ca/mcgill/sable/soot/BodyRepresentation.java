@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Baf, a Java(TM) bytecode analyzer framework.                      *
+ * Soot, a Java(TM) classfile optimization framework.                *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
@@ -66,34 +66,9 @@
    First internal release (Version 0.1).
 */
  
-package ca.mcgill.sable.soot.baf;
+package ca.mcgill.sable.soot;
 
-import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.util.*;
-
-public class InstListBody implements MethodBody
+public interface BodyRepresentation
 {
-    SootMethod method; 
-    
-    public    ca.mcgill.sable.soot.coffi.ClassFile coffiClass;
-    public ca.mcgill.sable.soot.coffi.method_info coffiMethod;
-
-    public InstListBody(SootMethod method,
-            ca.mcgill.sable.soot.coffi.ClassFile coffiClass,
-            ca.mcgill.sable.soot.coffi.method_info coffiMethod)
-    {
-        this.method = method;
-        this.coffiClass = coffiClass;
-        this.coffiMethod = coffiMethod;
-    }
-    
-    public SootMethod getMethod()
-    {
-        return method;
-    }
+    public Body getBodyOf(SootMethod m);
 }
-
-
-
-
-

@@ -334,8 +334,8 @@ class JasminClass
         
     void emitMethod(SootMethod method)
     {
-        StmtListBody listBody = new StmtListBody(method.getInstListBody());
-        StmtList stmtList = listBody.getStmtList();
+        StmtBody body = (StmtBody) method.getBody(Jimple.v());
+        StmtList stmtList = body.getStmtList();
         
         // Emit prologue
             emit(".method " + Modifier.toString(method.getModifiers()) + " " + 
@@ -345,7 +345,7 @@ class JasminClass
         
         // Determine the stmtToLabel map
         {
-            Iterator boxIt = listBody.getStmtBoxes().iterator();
+            Iterator boxIt = body.getStmtBoxes().iterator();
                         
             stmtToLabel = new HashMap(stmtList.size() * 2 + 1, 0.7f);
             labelCount = 0;
@@ -364,7 +364,7 @@ class JasminClass
    
         // Emit the exceptions
         {
-            Iterator trapIt = listBody.getTrapTable().getTraps().iterator();
+            Iterator trapIt = body.getTrapTable().getTraps().iterator();
             
             while(trapIt.hasNext())
             {
@@ -425,7 +425,7 @@ class JasminClass
             int thisSlot = 0;
             Set assignedLocals = new HashSet();
             
-            localToSlot = new HashMap(listBody.getLocalCount() * 2 + 1, 0.7f);
+            localToSlot = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
             
             // Determine slots for 'this' and parameters
             {
@@ -477,7 +477,7 @@ class JasminClass
             
             // Assign the rest of the locals
             {
-                Iterator localIt = listBody.getLocals().iterator();
+                Iterator localIt = body.getLocals().iterator();
                 
                 while(localIt.hasNext())
                 {
