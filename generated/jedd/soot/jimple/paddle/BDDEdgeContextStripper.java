@@ -16,7 +16,7 @@ public class BDDEdgeContextStripper extends AbsEdgeContextStripper {
                                            "ot/jimple/paddle/BDDEdgeContextStripper.jedd:33,12-36"),
                                           jedd.internal.Jedd.v().falseBDD());
     
-    boolean update() {
+    public boolean update() {
         final jedd.internal.RelationContainer newEdges =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { srcm.v(), stmt.v(), kind.v(), tgtm.v() },
                                               new jedd.PhysicalDomain[] { MS.v(), ST.v(), KD.v(), MT.v() },

@@ -17,6 +17,7 @@ public class QvarDebug extends Qvar {
     private QvarSet trad = new QvarSet(name + "set");
     
     public void add(VarNode _var) {
+        invalidate();
         bdd.add(_var);
         trad.add(_var);
     }
@@ -27,7 +28,7 @@ public class QvarDebug extends Qvar {
                                               new PhysicalDomain[] { V1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/QvarDebug.jedd" +
-                                               ":39,22-24"),
+                                               ":40,22-24"),
                                               in).iterator(new Attribute[] { var.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

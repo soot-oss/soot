@@ -33,6 +33,7 @@ public class Qobj_typeTrad extends Qobj_type {
     public void add( AllocNode _obj, Type _type ) {
         q.add( _obj );
         q.add( _type );
+        invalidate();
     }
     public void add( <obj:H1, type:T1> in ) {
         Iterator it = in.iterator( new Attribute[] { obj.v(), type.v() } );

@@ -36,7 +36,7 @@ public final class PropBDDInc extends PropBDD {
         super( simple, load, store, alloc, propout, pag );
     }
 
-    public final void update() {
+    public final boolean update() {
         <varc, var, objc, obj> ptFromLoad = 0B;
         // start solving 
         while(true) {
@@ -67,6 +67,7 @@ public final class PropBDDInc extends PropBDD {
 
             if( pt == veryOldPt ) break;
         }
+        return true;
     }
 
     /* End of public methods. */

@@ -38,7 +38,7 @@ public final class PropAlias extends AbsPropagator {
 
     private AbsP2Sets p2sets;
     /** Actually does the propagation. */
-    public final void update() {
+    public final boolean update() {
         p2sets = PaddleScene.v().p2sets;
         new TopoSorter( pag, false ).sort();
         for( Iterator frIt = pag.loadSources(); frIt.hasNext(); ) {
@@ -52,6 +52,7 @@ public final class PropAlias extends AbsPropagator {
 	for( Iterator it = pag.allocSources(); it.hasNext(); ) {
 	    handleContextAllocNode( (ContextAllocNode) it.next() );
 	}
+        newEdges();
 
         boolean verbose = PaddleScene.v().options().verbose();
 	do {
@@ -122,6 +123,7 @@ public final class PropAlias extends AbsPropagator {
             }
             outFieldRefWorkList = new HashSet();
 	} while( !varNodeWorkList.isEmpty() );
+        return true;
     }
 
     /* End of public methods. */
@@ -140,22 +142,8 @@ public final class PropAlias extends AbsPropagator {
 	}
 	return ret;
     }
-    /** Propagates new points-to information of node src to all its
-     * successors. */
-    protected final boolean handleContextVarNode( final ContextVarNode src ) {
-	boolean ret = false;
-
-	final PointsToSetReadOnly newP2Set = p2setsGet(src).getNewSet();
-	if( newP2Set.isEmpty() ) return false;
-	p2setsMake(src).flushNew();
-
-        newP2Set.forall( new P2SetVisitor() {
-
-        public final void visit( ContextAllocNode n ) {
-        	ContextAllocNode can = (ContextAllocNode) n;
-            ptout.add( src.ctxt(), src.var(), can.ctxt(), can.obj() );
-        }} );
-        PaddleScene.v().updateCallGraph();
+    private boolean newEdges() {
+        boolean ret = false;
         for( Iterator tIt = newSimple.iterator(); tIt.hasNext(); ) {
             final Rsrcc_src_dstc_dst.Tuple t = (Rsrcc_src_dstc_dst.Tuple) tIt.next();
             ret = true;
@@ -185,6 +173,26 @@ public final class PropAlias extends AbsPropagator {
                 addToAliasWorkList( dstcvn );
             }
         }
+        return ret;
+    }
+
+    /** Propagates new points-to information of node src to all its
+     * successors. */
+    protected final boolean handleContextVarNode( final ContextVarNode src ) {
+	boolean ret = false;
+
+	final PointsToSetReadOnly newP2Set = p2setsGet(src).getNewSet();
+	if( newP2Set.isEmpty() ) return false;
+	p2setsMake(src).flushNew();
+
+        newP2Set.forall( new P2SetVisitor() {
+
+        public final void visit( ContextAllocNode n ) {
+        	ContextAllocNode can = (ContextAllocNode) n;
+            ptout.add( src.ctxt(), src.var(), can.ctxt(), can.obj() );
+        }} );
+        PaddleScene.v().updateCallGraph();
+        if( newEdges() ) ret = true;
 
         for( Iterator simpleTargetIt = pag.simpleLookup(src); simpleTargetIt.hasNext(); ) {
 

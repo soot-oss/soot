@@ -32,6 +32,7 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug extends Qsrcc_srcm_stmt_kind_tg
     private Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD bdd = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD(name+"bdd");
     private Qsrcc_srcm_stmt_kind_tgtc_tgtmSet trad = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet(name+"set");
     public void add( Context _srcc, SootMethod _srcm, Unit _stmt, Kind _kind, Context _tgtc, SootMethod _tgtm ) {
+        invalidate();
         bdd.add( _srcc, _srcm, _stmt, _kind, _tgtc, _tgtm );
         trad.add( _srcc, _srcm, _stmt, _kind, _tgtc, _tgtm );
     }

@@ -15,6 +15,7 @@ public final class Qsrc_dstSet extends Qsrc_dst {
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _src, VarNode _dst) {
+        invalidate();
         Rsrc_dst.Tuple in = new Rsrc_dst.Tuple(_src, _dst);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rsrc_dstSet reader = (Rsrc_dstSet) it.next();

@@ -33,6 +33,7 @@ public class Qctxt_methodTrad extends Qctxt_method {
     public void add( Context _ctxt, SootMethod _method ) {
         q.add( _ctxt );
         q.add( _method );
+        invalidate();
     }
     public void add( <ctxt:C1, method:MS> in ) {
         Iterator it = in.iterator( new Attribute[] { ctxt.v(), method.v() } );

@@ -15,6 +15,7 @@ public final class QobjSet extends Qobj {
     private LinkedList readers = new LinkedList();
     
     public void add(AllocNode _obj) {
+        invalidate();
         Robj.Tuple in = new Robj.Tuple(_obj);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             RobjSet reader = (RobjSet) it.next();

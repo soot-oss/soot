@@ -17,6 +17,7 @@ public class Qvar_method_typeDebug extends Qvar_method_type {
     private Qvar_method_typeSet trad = new Qvar_method_typeSet(name + "set");
     
     public void add(VarNode _var, SootMethod _method, Type _type) {
+        invalidate();
         bdd.add(_var, _method, _type);
         trad.add(_var, _method, _type);
     }
@@ -27,7 +28,7 @@ public class Qvar_method_typeDebug extends Qvar_method_type {
                                               new PhysicalDomain[] { V1.v(), MS.v(), T1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvar_method_ty" +
-                                               "peDebug.jedd:39,22-24"),
+                                               "peDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { var.v(), method.v(), type.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

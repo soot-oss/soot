@@ -24,7 +24,7 @@ import soot.jimple.paddle.queue.*;
 /** Creates intra-procedural pointer assignment edges.
  * @author Ondrej Lhotak
  */
-public abstract class AbsMethodPAGBuilder
+public abstract class AbsMethodPAGBuilder implements DepItem
 { 
     protected Rctxt_method in;
     protected Qsrc_dst simple;
@@ -44,7 +44,7 @@ public abstract class AbsMethodPAGBuilder
         this.store = store;
         this.alloc = alloc;
     }
-    public abstract void update();
+    public abstract boolean update();
 }
 
 

@@ -15,6 +15,7 @@ public final class QvarSet extends Qvar {
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _var) {
+        invalidate();
         Rvar.Tuple in = new Rvar.Tuple(_var);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             RvarSet reader = (RvarSet) it.next();

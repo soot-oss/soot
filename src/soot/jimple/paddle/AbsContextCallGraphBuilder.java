@@ -24,7 +24,7 @@ import soot.jimple.paddle.queue.*;
  * for each reachable method context.
  * @author Ondrej Lhotak
  */
-public abstract class AbsContextCallGraphBuilder 
+public abstract class AbsContextCallGraphBuilder implements DepItem
 { 
     protected Rctxt_method methodsIn;
     protected Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesIn;

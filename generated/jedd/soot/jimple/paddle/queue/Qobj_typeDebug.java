@@ -17,6 +17,7 @@ public class Qobj_typeDebug extends Qobj_type {
     private Qobj_typeSet trad = new Qobj_typeSet(name + "set");
     
     public void add(AllocNode _obj, Type _type) {
+        invalidate();
         bdd.add(_obj, _type);
         trad.add(_obj, _type);
     }
@@ -27,7 +28,7 @@ public class Qobj_typeDebug extends Qobj_type {
                                               new PhysicalDomain[] { T1.v(), H1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qobj_typeDebug" +
-                                               ".jedd:39,22-24"),
+                                               ".jedd:40,22-24"),
                                               in).iterator(new Attribute[] { obj.v(), type.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

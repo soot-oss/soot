@@ -9,7 +9,7 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Qvar_srcm_stmt_signature_kind {
+public abstract class Qvar_srcm_stmt_signature_kind implements DepItem {
     public Qvar_srcm_stmt_signature_kind(String name) {
         super();
         this.name = name;
@@ -29,5 +29,19 @@ public abstract class Qvar_srcm_stmt_signature_kind {
     
     public void add(Rvar_srcm_stmt_signature_kind.Tuple in) {
         add(in.var(), in.srcm(), in.stmt(), in.signature(), in.kind());
+    }
+    
+    private boolean valid = true;
+    
+    public boolean update() {
+        boolean ret = !valid;
+        valid = true;
+        return true;
+    }
+    
+    public void invalidate() {
+        if (!valid) return;
+        valid = false;
+        PaddleScene.v().depMan.invalidate(this);
     }
 }

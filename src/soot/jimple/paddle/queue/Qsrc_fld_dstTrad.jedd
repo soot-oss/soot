@@ -34,6 +34,7 @@ public class Qsrc_fld_dstTrad extends Qsrc_fld_dst {
         q.add( _src );
         q.add( _fld );
         q.add( _dst );
+        invalidate();
     }
     public void add( <src:V1, fld:FD, dst:V2> in ) {
         Iterator it = in.iterator( new Attribute[] { src.v(), fld.v(), dst.v() } );

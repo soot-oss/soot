@@ -17,17 +17,18 @@ public class Qvar_srcm_stmt_signature_kindDebug extends Qvar_srcm_stmt_signature
     private Qvar_srcm_stmt_signature_kindSet trad = new Qvar_srcm_stmt_signature_kindSet(name + "set");
     
     public void add(VarNode _var, SootMethod _srcm, Unit _stmt, NumberedString _signature, Kind _kind) {
+        invalidate();
         bdd.add(_var, _srcm, _stmt, _signature, _kind);
         trad.add(_var, _srcm, _stmt, _signature, _kind);
     }
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { signature.v(), var.v(), kind.v(), srcm.v(), stmt.v() },
-                                              new PhysicalDomain[] { SG.v(), V1.v(), KD.v(), MS.v(), ST.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { var.v(), kind.v(), srcm.v(), stmt.v(), signature.v() },
+                                              new PhysicalDomain[] { V1.v(), KD.v(), MS.v(), ST.v(), SG.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvar_srcm_stmt" +
-                                               "_signature_kindDebug.jedd:39,22-24"),
+                                               "_signature_kindDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { var.v(), srcm.v(), stmt.v(), signature.v(), kind.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

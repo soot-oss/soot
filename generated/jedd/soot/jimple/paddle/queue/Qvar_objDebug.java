@@ -17,6 +17,7 @@ public class Qvar_objDebug extends Qvar_obj {
     private Qvar_objSet trad = new Qvar_objSet(name + "set");
     
     public void add(VarNode _var, AllocNode _obj) {
+        invalidate();
         bdd.add(_var, _obj);
         trad.add(_var, _obj);
     }
@@ -27,7 +28,7 @@ public class Qvar_objDebug extends Qvar_obj {
                                               new PhysicalDomain[] { V1.v(), H1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvar_objDebug." +
-                                               "jedd:39,22-24"),
+                                               "jedd:40,22-24"),
                                               in).iterator(new Attribute[] { var.v(), obj.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

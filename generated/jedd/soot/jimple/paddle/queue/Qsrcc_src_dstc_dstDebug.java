@@ -17,17 +17,18 @@ public class Qsrcc_src_dstc_dstDebug extends Qsrcc_src_dstc_dst {
     private Qsrcc_src_dstc_dstSet trad = new Qsrcc_src_dstc_dstSet(name + "set");
     
     public void add(Context _srcc, VarNode _src, Context _dstc, VarNode _dst) {
+        invalidate();
         bdd.add(_srcc, _src, _dstc, _dst);
         trad.add(_srcc, _src, _dstc, _dst);
     }
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { dstc.v(), dst.v(), srcc.v(), src.v() },
-                                              new PhysicalDomain[] { C2.v(), V2.v(), C1.v(), V1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { src.v(), srcc.v(), dstc.v(), dst.v() },
+                                              new PhysicalDomain[] { V1.v(), C1.v(), C2.v(), V2.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qsrcc_src_dstc" +
-                                               "_dstDebug.jedd:39,22-24"),
+                                               "_dstDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { srcc.v(), src.v(), dstc.v(), dst.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

@@ -15,6 +15,7 @@ public final class Qvar_objNumTrace extends Qvar_obj {
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _var, AllocNode _obj) {
+        invalidate();
         Rvar_obj.Tuple in = new Rvar_obj.Tuple(_var, _obj);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_objNumTrace reader = (Rvar_objNumTrace) it.next();

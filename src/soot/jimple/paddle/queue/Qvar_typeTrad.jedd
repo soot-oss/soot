@@ -33,6 +33,7 @@ public class Qvar_typeTrad extends Qvar_type {
     public void add( VarNode _var, Type _type ) {
         q.add( _var );
         q.add( _type );
+        invalidate();
     }
     public void add( <var:V1, type:T1> in ) {
         Iterator it = in.iterator( new Attribute[] { var.v(), type.v() } );

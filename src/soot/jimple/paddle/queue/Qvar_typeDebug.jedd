@@ -32,6 +32,7 @@ public class Qvar_typeDebug extends Qvar_type {
     private Qvar_typeBDD bdd = new Qvar_typeBDD(name+"bdd");
     private Qvar_typeSet trad = new Qvar_typeSet(name+"set");
     public void add( VarNode _var, Type _type ) {
+        invalidate();
         bdd.add( _var, _type );
         trad.add( _var, _type );
     }

@@ -32,6 +32,7 @@ public class QobjTrad extends Qobj {
     private ChunkedQueue q = new ChunkedQueue();
     public void add( AllocNode _obj ) {
         q.add( _obj );
+        invalidate();
     }
     public void add( <obj:H1> in ) {
         Iterator it = in.iterator( new Attribute[] { obj.v() } );

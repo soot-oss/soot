@@ -32,6 +32,7 @@ public class Qobjc_obj_varc_varDebug extends Qobjc_obj_varc_var {
     private Qobjc_obj_varc_varBDD bdd = new Qobjc_obj_varc_varBDD(name+"bdd");
     private Qobjc_obj_varc_varSet trad = new Qobjc_obj_varc_varSet(name+"set");
     public void add( Context _objc, AllocNode _obj, Context _varc, VarNode _var ) {
+        invalidate();
         bdd.add( _objc, _obj, _varc, _var );
         trad.add( _objc, _obj, _varc, _var );
     }

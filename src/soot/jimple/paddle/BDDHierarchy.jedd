@@ -39,16 +39,21 @@ public final class BDDHierarchy {
     /** Update hierarchy for any types that have been newly added since it was
      *  built.
      */
-    public void update() {
-        updateTypes();
-        updateClosure();
+    public boolean update() {
+        boolean ret = false;
+        ret = updateTypes() | ret;
+        ret = updateClosure() | ret;
+        return ret;
     }
 
-    private void updateTypes() {
+    private boolean updateTypes() {
+        boolean ret = false;
         ArrayNumberer tn = Scene.v().getTypeNumberer();
         for( int i = maxType+1; i <= tn.size(); i++ ) {
             processNewType( (Type) tn.get(i) );
+            ret = true;
         }
+        return ret;
     }
 
     /* End of public methods. */
@@ -168,20 +173,24 @@ public final class BDDHierarchy {
     }
     
     /** Compute transitive closure to get subtype relationship. */
-    private void updateClosure() {
+    private boolean updateClosure() {
+        boolean ret = false;
         // Add all base subtype relations into closure. 
         boolean closureChanged = (closure != 
             (closure |= extend | implement | array | identity | nullType));
 
         // Close closure.
-        if( closureChanged )
+        if( closureChanged ) {
             while( closure != ( closure |=
                 closure {subt} <> (subt=>T3) closure {supt} ) );
+            ret = true;
+        }
 
         // Close anySub. That is, whenever s is AnySubType(t), and
         // u is a subtype of t, s could be u, so add s:anyst, u:type
         // to anySub.
         if( anySub != oldAnySub || closureChanged ) {
+            ret = true;
             anySub |= anySub {type} <> (supt=>T3)(subt=>type) closure {supt};
             anySub = anySub{type} >< concreteNonArray{type};
 
@@ -193,6 +202,8 @@ public final class BDDHierarchy {
             closure |=            (closure{subt}
                  <>(arrayt=>subt)arrayElem{elemt}){supt}
                          <>(arrayt=>supt)arrayElem{elemt}));
+
+        return ret;
     }
 }
 

@@ -18,21 +18,14 @@
  */
 
 package soot.jimple.paddle;
-import soot.jimple.paddle.queue.*;
 
-/** Turns call graph edges with context into the same edges with source and
- * target context removed.
+/** A Paddle module or queue that can have dependencies on other DepItems.
  * @author Ondrej Lhotak
  */
-public abstract class AbsEdgeContextStripper implements DepItem
+public interface DepItem 
 { 
-    protected Rsrcc_srcm_stmt_kind_tgtc_tgtm in;
-    protected Qsrcc_srcm_stmt_kind_tgtc_tgtm out;
-    AbsEdgeContextStripper( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qsrcc_srcm_stmt_kind_tgtc_tgtm out ) {
-        this.in = in;
-        this.out = out;
-    }
-    public abstract boolean update();
+    /** Process whatever input is available to be processed.
+     * @return true if something was done (dependencies need to be invalidated)
+     */
+    boolean update();
 }
-
-

@@ -15,6 +15,7 @@ public final class Qvar_method_typeSet extends Qvar_method_type {
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _var, SootMethod _method, Type _type) {
+        invalidate();
         Rvar_method_type.Tuple in = new Rvar_method_type.Tuple(_var, _method, _type);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_method_typeSet reader = (Rvar_method_typeSet) it.next();

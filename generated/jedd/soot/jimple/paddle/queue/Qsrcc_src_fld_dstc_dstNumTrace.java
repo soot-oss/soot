@@ -15,6 +15,7 @@ public final class Qsrcc_src_fld_dstc_dstNumTrace extends Qsrcc_src_fld_dstc_dst
     private LinkedList readers = new LinkedList();
     
     public void add(Context _srcc, VarNode _src, PaddleField _fld, Context _dstc, VarNode _dst) {
+        invalidate();
         Rsrcc_src_fld_dstc_dst.Tuple in = new Rsrcc_src_fld_dstc_dst.Tuple(_srcc, _src, _fld, _dstc, _dst);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rsrcc_src_fld_dstc_dstNumTrace reader = (Rsrcc_src_fld_dstc_dstNumTrace) it.next();

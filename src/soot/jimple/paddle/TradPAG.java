@@ -31,23 +31,25 @@ public class TradPAG extends AbsPAG
             Rsrcc_src_fld_dstc_dst store, Robjc_obj_varc_var alloc ) {
         super( simple, load, store, alloc);
     }
-    public void update() {
+    public boolean update() {
+        boolean ret = false;
         for( Iterator tIt = simple.iterator(); tIt.hasNext(); ) {
             final Rsrcc_src_dstc_dst.Tuple t = (Rsrcc_src_dstc_dst.Tuple) tIt.next();
-            add( t.srcc(), t.src(), t.dstc(), t.dst(), simpleMap );
+            if( add( t.srcc(), t.src(), t.dstc(), t.dst(), simpleMap ) ) ret = true;
         }
         for( Iterator tIt = load.iterator(); tIt.hasNext(); ) {
             final Rsrcc_src_fld_dstc_dst.Tuple t = (Rsrcc_src_fld_dstc_dst.Tuple) tIt.next();
-            add( t.srcc(), t.src().dot( t.fld() ), t.dstc(), t.dst(), loadMap );
+            if( add( t.srcc(), t.src().dot( t.fld() ), t.dstc(), t.dst(), loadMap ) ) ret = true;
         }
         for( Iterator tIt = store.iterator(); tIt.hasNext(); ) {
             final Rsrcc_src_fld_dstc_dst.Tuple t = (Rsrcc_src_fld_dstc_dst.Tuple) tIt.next();
-            add( t.srcc(), t.src(), t.dstc(), t.dst().dot( t.fld() ), storeMap );
+            if( add( t.srcc(), t.src(), t.dstc(), t.dst().dot( t.fld() ), storeMap ) ) ret = true;
         }
         for( Iterator tIt = alloc.iterator(); tIt.hasNext(); ) {
             final Robjc_obj_varc_var.Tuple t = (Robjc_obj_varc_var.Tuple) tIt.next();
-            add( t.objc(), t.obj(), t.varc(), t.var(), allocMap );
+            if( add( t.objc(), t.obj(), t.varc(), t.var(), allocMap ) ) ret = true;
         }
+        return ret;
     }
 
     public Iterator simpleSources() {

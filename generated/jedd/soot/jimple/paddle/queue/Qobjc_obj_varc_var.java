@@ -9,7 +9,7 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Qobjc_obj_varc_var {
+public abstract class Qobjc_obj_varc_var implements DepItem {
     public Qobjc_obj_varc_var(String name) {
         super();
         this.name = name;
@@ -28,4 +28,18 @@ public abstract class Qobjc_obj_varc_var {
     public Robjc_obj_varc_var revreader(String rname) { return reader(rname); }
     
     public void add(Robjc_obj_varc_var.Tuple in) { add(in.objc(), in.obj(), in.varc(), in.var()); }
+    
+    private boolean valid = true;
+    
+    public boolean update() {
+        boolean ret = !valid;
+        valid = true;
+        return true;
+    }
+    
+    public void invalidate() {
+        if (!valid) return;
+        valid = false;
+        PaddleScene.v().depMan.invalidate(this);
+    }
 }

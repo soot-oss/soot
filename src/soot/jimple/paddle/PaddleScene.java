@@ -33,6 +33,8 @@ import jedd.*;
  */
 public class PaddleScene 
 { 
+    private static final boolean USE_DEP_MAN = true;
+
     public PaddleScene( Singletons.Global g ) {}
     public static PaddleScene v() { return G.v().soot_jimple_paddle_PaddleScene(); }
 
@@ -105,6 +107,8 @@ public class PaddleScene
     public P2SetFactory newSetFactory;
     public P2SetFactory oldSetFactory;
 
+    public DependencyManager depMan = new DependencyManager();
+
     public NodeFactory nodeFactory() { return nodeFactory; }
     public NodeManager nodeManager() { return nodeManager; }
     public PaddleOptions options() { return options; }
@@ -150,6 +154,95 @@ public class PaddleScene
         }
 
         makeSetFactories();
+
+        depMan.addDep(scgbout, cicg);
+
+        depMan.addDep(cicgout, rm);
+        depMan.addDep(csout, rm);
+
+        depMan.addDep(rmout, scgb);
+
+        depMan.addDep(scmout, cg);
+        depMan.addDep(vcmout, cg);
+        depMan.addDep(cgout, cg);
+
+        depMan.addDep(rcout, cscgb);
+        depMan.addDep(cicgout, cscgb);
+
+        depMan.addDep(rmout, mpb);
+
+        depMan.addDep(simple, mpc);
+        depMan.addDep(store, mpc);
+        depMan.addDep(load, mpc);
+        depMan.addDep(alloc, mpc);
+        depMan.addDep(locals, mpc);
+        depMan.addDep(globals, mpc);
+        depMan.addDep(localallocs, mpc);
+        depMan.addDep(globalallocs, mpc);
+        depMan.addDep(rcout, mpc);
+        depMan.addDep(parms, mpc);
+        depMan.addDep(rets, mpc);
+        depMan.addDep(cgout, mpc);
+
+        depMan.addDep(cgout, ecs);
+
+        depMan.addDep(ecsout, ceh);
+
+        depMan.addDep(csimple, pag);
+        depMan.addDep(cload, pag);
+        depMan.addDep(cstore, pag);
+        depMan.addDep(calloc, pag);
+
+        depMan.addDep(csimple, prop);
+        depMan.addDep(cload, prop);
+        depMan.addDep(cstore, prop);
+        depMan.addDep(calloc, prop);
+
+        depMan.addDep(paout, vcr);
+        depMan.addDep(receivers, vcr);
+        depMan.addDep(specials, vcr);
+
+        depMan.addDep(rcout, cs);
+
+        depMan.addDep(locals, tm);
+        depMan.addDep(globals, tm);
+        depMan.addDep(localallocs, tm);
+        depMan.addDep(globalallocs, tm);
+
+        depMan.addDep(staticcalls, scm);
+
+        depMan.addDep(virtualcalls, vcm);
+
+        depMan.addDep(cicg, cscgb);
+        depMan.addDep(cicg, cg);
+        depMan.addDep(cicg, rm);
+        depMan.addDep(tm, prop);
+        depMan.addDep(pag, prop);
+        depMan.addDep(cg, rc);
+
+        depMan.addPrec(mpc, parms);
+        depMan.addPrec(mpc, rets);
+        depMan.addPrec(mpc, ceh);
+        depMan.addPrec(mpc, ecsout);
+        depMan.addPrec(mpc, ecs);
+        depMan.addPrec(mpc, cgout);
+        depMan.addPrec(mpc, simple);
+        depMan.addPrec(mpc, store);
+        depMan.addPrec(mpc, load);
+        depMan.addPrec(mpc, alloc);
+        depMan.addPrec(mpc, mpb);
+        depMan.addPrec(mpc, rmout);
+        depMan.addPrec(mpc, rcout);
+        depMan.addPrec(mpc, rc);
+        depMan.addPrec(mpc, cs);
+        depMan.addPrec(mpc, csout);
+        depMan.addPrec(mpc, rm);
+
+        depMan.addPrec(prop, cstore);
+        depMan.addPrec(prop, csimple);
+        depMan.addPrec(prop, calloc);
+        depMan.addPrec(prop, cload);
+        depMan.addPrec(prop, pag);
     }
     private void makeSetFactories() {
         switch( options.set_impl() ) {
@@ -220,8 +313,12 @@ public class PaddleScene
             rm.add( m );
             rc.add( m );
         }
-        updateFrontEnd();
-        prop.update();
+        if(!USE_DEP_MAN) {
+            updateFrontEnd();
+            prop.update();
+        } else {
+            depMan.update();
+        }
         if( options.profile() ) {
             try {
                 Jedd.v().outputProfile( new PrintStream( new GZIPOutputStream(
@@ -643,25 +740,29 @@ public class PaddleScene
     }
 
     private void updateFrontEnd() {
-        boolean change;
-        do {
-            change = false;
-            change = change | rm.update();
-            change = change | rc.update();
-            change = change | cs.update();
-            change = change | scgb.update();
-            change = change | cicg.update();
-            change = change | cscgb.update();
-            change = change | vcr.update();
-            change = change | vcm.update();
-            change = change | scm.update();
-            change = change | cg.update();
-        } while( change );
-        mpb.update();
-        ecs.update();
-        ceh.update();
-        mpc.update();
-        pag.update();
+        if(!USE_DEP_MAN) {
+            boolean change;
+            do {
+                change = false;
+                change = change | rm.update();
+                change = change | rc.update();
+                change = change | cs.update();
+                change = change | scgb.update();
+                change = change | cicg.update();
+                change = change | cscgb.update();
+                change = change | vcr.update();
+                change = change | vcm.update();
+                change = change | scm.update();
+                change = change | cg.update();
+            } while( change );
+            mpb.update();
+            ecs.update();
+            ceh.update();
+            mpc.update();
+            pag.update();
+        } else {
+            depMan.update();
+        }
     }
 
     void updateCallGraph() {

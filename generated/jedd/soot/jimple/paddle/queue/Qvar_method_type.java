@@ -9,7 +9,7 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Qvar_method_type {
+public abstract class Qvar_method_type implements DepItem {
     public Qvar_method_type(String name) {
         super();
         this.name = name;
@@ -28,4 +28,18 @@ public abstract class Qvar_method_type {
     public Rvar_method_type revreader(String rname) { return reader(rname); }
     
     public void add(Rvar_method_type.Tuple in) { add(in.var(), in.method(), in.type()); }
+    
+    private boolean valid = true;
+    
+    public boolean update() {
+        boolean ret = !valid;
+        valid = true;
+        return true;
+    }
+    
+    public void invalidate() {
+        if (!valid) return;
+        valid = false;
+        PaddleScene.v().depMan.invalidate(this);
+    }
 }

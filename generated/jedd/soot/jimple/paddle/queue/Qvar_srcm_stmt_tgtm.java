@@ -9,7 +9,7 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Qvar_srcm_stmt_tgtm {
+public abstract class Qvar_srcm_stmt_tgtm implements DepItem {
     public Qvar_srcm_stmt_tgtm(String name) {
         super();
         this.name = name;
@@ -28,4 +28,18 @@ public abstract class Qvar_srcm_stmt_tgtm {
     public Rvar_srcm_stmt_tgtm revreader(String rname) { return reader(rname); }
     
     public void add(Rvar_srcm_stmt_tgtm.Tuple in) { add(in.var(), in.srcm(), in.stmt(), in.tgtm()); }
+    
+    private boolean valid = true;
+    
+    public boolean update() {
+        boolean ret = !valid;
+        valid = true;
+        return true;
+    }
+    
+    public void invalidate() {
+        if (!valid) return;
+        valid = false;
+        PaddleScene.v().depMan.invalidate(this);
+    }
 }

@@ -32,6 +32,7 @@ public class Qobj_typeDebug extends Qobj_type {
     private Qobj_typeBDD bdd = new Qobj_typeBDD(name+"bdd");
     private Qobj_typeSet trad = new Qobj_typeSet(name+"set");
     public void add( AllocNode _obj, Type _type ) {
+        invalidate();
         bdd.add( _obj, _type );
         trad.add( _obj, _type );
     }

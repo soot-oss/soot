@@ -9,7 +9,7 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Qsrcc_srcm_stmt_kind_tgtc_tgtm {
+public abstract class Qsrcc_srcm_stmt_kind_tgtc_tgtm implements DepItem {
     public Qsrcc_srcm_stmt_kind_tgtc_tgtm(String name) {
         super();
         this.name = name;
@@ -29,5 +29,19 @@ public abstract class Qsrcc_srcm_stmt_kind_tgtc_tgtm {
     
     public void add(Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple in) {
         add(in.srcc(), in.srcm(), in.stmt(), in.kind(), in.tgtc(), in.tgtm());
+    }
+    
+    private boolean valid = true;
+    
+    public boolean update() {
+        boolean ret = !valid;
+        valid = true;
+        return true;
+    }
+    
+    public void invalidate() {
+        if (!valid) return;
+        valid = false;
+        PaddleScene.v().depMan.invalidate(this);
     }
 }

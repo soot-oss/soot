@@ -17,17 +17,18 @@ public class Qsrc_fld_dstDebug extends Qsrc_fld_dst {
     private Qsrc_fld_dstSet trad = new Qsrc_fld_dstSet(name + "set");
     
     public void add(VarNode _src, PaddleField _fld, VarNode _dst) {
+        invalidate();
         bdd.add(_src, _fld, _dst);
         trad.add(_src, _fld, _dst);
     }
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { fld.v(), dst.v(), src.v() },
-                                              new PhysicalDomain[] { FD.v(), V2.v(), V1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { src.v(), dst.v(), fld.v() },
+                                              new PhysicalDomain[] { V1.v(), V2.v(), FD.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qsrc_fld_dstDe" +
-                                               "bug.jedd:39,22-24"),
+                                               "bug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { src.v(), fld.v(), dst.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

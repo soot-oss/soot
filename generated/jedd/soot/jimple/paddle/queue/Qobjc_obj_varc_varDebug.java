@@ -17,6 +17,7 @@ public class Qobjc_obj_varc_varDebug extends Qobjc_obj_varc_var {
     private Qobjc_obj_varc_varSet trad = new Qobjc_obj_varc_varSet(name + "set");
     
     public void add(Context _objc, AllocNode _obj, Context _varc, VarNode _var) {
+        invalidate();
         bdd.add(_objc, _obj, _varc, _var);
         trad.add(_objc, _obj, _varc, _var);
     }
@@ -27,7 +28,7 @@ public class Qobjc_obj_varc_varDebug extends Qobjc_obj_varc_var {
                                               new PhysicalDomain[] { V1.v(), C2.v(), C1.v(), H1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qobjc_obj_varc" +
-                                               "_varDebug.jedd:39,22-24"),
+                                               "_varDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { objc.v(), obj.v(), varc.v(), var.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

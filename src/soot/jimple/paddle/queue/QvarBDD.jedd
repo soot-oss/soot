@@ -34,6 +34,7 @@ public final class QvarBDD extends Qvar {
         add( new { _var=>var } );
     }
     public void add( <var:V1> in ) {
+        if( in != 0B ) invalidate();
         for( Iterator it = readers.iterator(); it.hasNext(); ) {
             RvarBDD reader = (RvarBDD) it.next();
             reader.add( in );

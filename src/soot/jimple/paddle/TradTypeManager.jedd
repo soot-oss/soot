@@ -61,19 +61,24 @@ public class TradTypeManager extends AbsTypeManager
             }
         }
     }
-    public void update() {
+    public boolean update() {
+        boolean ret = false;
         for( Iterator tIt = locals.iterator(); tIt.hasNext(); ) {
             final Rvar_method_type.Tuple t = (Rvar_method_type.Tuple) tIt.next();
             handleVarType( t.type() );
+            ret = true;
         }
         for( Iterator tIt = globals.iterator(); tIt.hasNext(); ) {
             final Rvar_type.Tuple t = (Rvar_type.Tuple) tIt.next();
             handleVarType( t.type() );
+            ret = true;
         }
         while( newContextAllocNodes.hasNext() ) {
             ContextAllocNode can = (ContextAllocNode) newContextAllocNodes.next();
             handleAllocNode( can, can.getType() );
+            ret = true;
         }
+        return ret;
     }
     public BitVector get( Type type ) {
         if( type == null ) return null;

@@ -37,6 +37,7 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad extends Qsrcc_srcm_stmt_kind_tgt
         q.add( _kind );
         q.add( _tgtc );
         q.add( _tgtm );
+        invalidate();
     }
     public void add( <srcc:C1, srcm:MS, stmt:ST, kind:KD, tgtc:C2, tgtm:MT> in ) {
         Iterator it = in.iterator( new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() } );

@@ -39,12 +39,13 @@ public final class PropIter extends AbsPropagator {
     }
     private AbsP2Sets p2sets;
     /** Actually does the propagation. */
-    public final void update() {
+    public final boolean update() {
         p2sets = PaddleScene.v().p2sets;
         new TopoSorter( pag, false ).sort();
         for( Iterator it = pag.allocSources(); it.hasNext(); ) {
             handleContextAllocNode( (ContextAllocNode) it.next() );
         }
+        newEdges();
         int iteration = 1;
 	boolean change;
 	do {
@@ -70,33 +71,8 @@ public final class PropIter extends AbsPropagator {
                 }} );
             }
             PaddleScene.v().updateCallGraph();
+            if( newEdges() ) change = true;
 
-            for( Iterator tIt = newSimple.iterator(); tIt.hasNext(); ) {
-
-                final Rsrcc_src_dstc_dst.Tuple t = (Rsrcc_src_dstc_dst.Tuple) tIt.next();
-                change = true;
-                PointsToSetReadOnly p2set = p2sets.get(t.srcc(), t.src());
-                if( p2set instanceof PointsToSetInternal ) {
-                    ((PointsToSetInternal)p2set).unFlushNew();
-                }
-            }
-            for( Iterator tIt = newLoad.iterator(); tIt.hasNext(); ) {
-                final Rsrcc_src_fld_dstc_dst.Tuple t = (Rsrcc_src_fld_dstc_dst.Tuple) tIt.next();
-                change = true;
-            }
-            for( Iterator tIt = newStore.iterator(); tIt.hasNext(); ) {
-                final Rsrcc_src_fld_dstc_dst.Tuple t = (Rsrcc_src_fld_dstc_dst.Tuple) tIt.next();
-                change = true;
-                PointsToSetReadOnly p2set = p2sets.get(t.srcc(), t.src());
-                if( p2set instanceof PointsToSetInternal ) {
-                    ((PointsToSetInternal)p2set).unFlushNew();
-                }
-            }
-            for( Iterator tIt = newAlloc.iterator(); tIt.hasNext(); ) {
-                final Robjc_obj_varc_var.Tuple t = (Robjc_obj_varc_var.Tuple) tIt.next();
-                change = true;
-                p2sets.make(t.varc(), t.var()).add( t.objc(), t.obj() );
-            }
             if( change ) {
                 new TopoSorter( pag, false ).sort();
             }
@@ -107,6 +83,36 @@ public final class PropIter extends AbsPropagator {
                 change = handleStores( (ContextVarNode) it.next() ) | change;
 	    }
 	} while( change );
+        return true;
+    }
+    private boolean newEdges() {
+        boolean change = false;
+        for( Iterator tIt = newSimple.iterator(); tIt.hasNext(); ) {
+            final Rsrcc_src_dstc_dst.Tuple t = (Rsrcc_src_dstc_dst.Tuple) tIt.next();
+            change = true;
+            PointsToSetReadOnly p2set = p2sets.get(t.srcc(), t.src());
+            if( p2set instanceof PointsToSetInternal ) {
+                ((PointsToSetInternal)p2set).unFlushNew();
+            }
+        }
+        for( Iterator tIt = newLoad.iterator(); tIt.hasNext(); ) {
+            final Rsrcc_src_fld_dstc_dst.Tuple t = (Rsrcc_src_fld_dstc_dst.Tuple) tIt.next();
+            change = true;
+        }
+        for( Iterator tIt = newStore.iterator(); tIt.hasNext(); ) {
+            final Rsrcc_src_fld_dstc_dst.Tuple t = (Rsrcc_src_fld_dstc_dst.Tuple) tIt.next();
+            change = true;
+            PointsToSetReadOnly p2set = p2sets.get(t.srcc(), t.src());
+            if( p2set instanceof PointsToSetInternal ) {
+                ((PointsToSetInternal)p2set).unFlushNew();
+            }
+        }
+        for( Iterator tIt = newAlloc.iterator(); tIt.hasNext(); ) {
+            final Robjc_obj_varc_var.Tuple t = (Robjc_obj_varc_var.Tuple) tIt.next();
+            change = true;
+            p2sets.make(t.varc(), t.var()).add( t.objc(), t.obj() );
+        }
+        return change;
     }
 
     /* End of public methods. */

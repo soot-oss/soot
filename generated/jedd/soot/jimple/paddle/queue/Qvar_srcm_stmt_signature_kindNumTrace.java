@@ -15,6 +15,7 @@ public final class Qvar_srcm_stmt_signature_kindNumTrace extends Qvar_srcm_stmt_
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _var, SootMethod _srcm, Unit _stmt, NumberedString _signature, Kind _kind) {
+        invalidate();
         Rvar_srcm_stmt_signature_kind.Tuple in =
           new Rvar_srcm_stmt_signature_kind.Tuple(_var, _srcm, _stmt, _signature, _kind);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {

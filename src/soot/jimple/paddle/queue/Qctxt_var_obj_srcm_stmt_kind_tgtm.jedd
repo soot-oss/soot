@@ -27,7 +27,7 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Qctxt_var_obj_srcm_stmt_kind_tgtm {
+public abstract class Qctxt_var_obj_srcm_stmt_kind_tgtm implements soot.jimple.paddle.DepItem {
     public Qctxt_var_obj_srcm_stmt_kind_tgtm( String name ) { this.name = name; }
     protected String name;
     public final String toString() { return name; }
@@ -45,5 +45,16 @@ public abstract class Qctxt_var_obj_srcm_stmt_kind_tgtm {
             in.kind(),
             in.tgtm() 
         );
+    }
+    private boolean valid = true;
+    public boolean update() {
+        boolean ret = !valid;
+        valid = true;
+        return true;
+    }
+    public void invalidate() {
+        if(!valid) return;
+        valid = false;
+        PaddleScene.v().depMan.invalidate(this);
     }
 }

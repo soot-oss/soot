@@ -36,6 +36,7 @@ public class Qvar_srcm_stmt_signature_kindTrad extends Qvar_srcm_stmt_signature_
         q.add( _stmt );
         q.add( _signature );
         q.add( _kind );
+        invalidate();
     }
     public void add( <var:V1, srcm:MS, stmt:ST, signature:SG, kind:KD> in ) {
         Iterator it = in.iterator( new Attribute[] { var.v(), srcm.v(), stmt.v(), signature.v(), kind.v() } );

@@ -39,11 +39,12 @@ public class TradMethodPAGBuilder extends AbsMethodPAGBuilder
         super(in, simple, load, store, alloc);
     }
     protected NodeManager nm = PaddleScene.v().nodeManager();
-    public void update() {
+    public boolean update() {
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rctxt_method.Tuple t = (Rctxt_method.Tuple) tIt.next();
             build(t.method());
         }
+        return true;
     }
     protected void build(SootMethod method) {
         MethodNodeFactory nf = new MethodNodeFactory(method);

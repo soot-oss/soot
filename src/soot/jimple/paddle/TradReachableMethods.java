@@ -39,7 +39,7 @@ public class TradReachableMethods extends AbsReachableMethods
         if( !reachables.contains( MethodContext.v( t.srcm(), t.srcc() ) ) ) return false;
         return add( MethodContext.v( t.tgtm(), t.tgtc() ) );
     }
-    boolean update() {
+    public boolean update() {
         boolean change = false;
 
         if( methodsIn != null ) {

@@ -31,7 +31,7 @@ public class BDDContextStripper extends AbsContextStripper
     BDDContextStripper( Rctxt_method in, Qctxt_method out ) {
         super(in, out);
     }
-    boolean update() {
+    public boolean update() {
         <ctxt, method> answer = (ctxt=>) in.get() {} >< new{null=>ctxt}{};
         out.add( answer );
         return answer != 0B;

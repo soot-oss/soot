@@ -24,7 +24,7 @@ import soot.jimple.paddle.queue.*;
  * target context removed.
  * @author Ondrej Lhotak
  */
-public abstract class AbsContextStripper 
+public abstract class AbsContextStripper implements DepItem
 { 
     protected Rctxt_method in;
     protected Qctxt_method out;
@@ -32,7 +32,7 @@ public abstract class AbsContextStripper
         this.in = in;
         this.out = out;
     }
-    abstract boolean update();
+    public abstract boolean update();
 }
 
 

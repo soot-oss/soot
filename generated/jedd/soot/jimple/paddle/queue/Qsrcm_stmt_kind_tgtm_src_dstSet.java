@@ -15,6 +15,7 @@ public final class Qsrcm_stmt_kind_tgtm_src_dstSet extends Qsrcm_stmt_kind_tgtm_
     private LinkedList readers = new LinkedList();
     
     public void add(SootMethod _srcm, Unit _stmt, Kind _kind, SootMethod _tgtm, VarNode _src, VarNode _dst) {
+        invalidate();
         Rsrcm_stmt_kind_tgtm_src_dst.Tuple in =
           new Rsrcm_stmt_kind_tgtm_src_dst.Tuple(_srcm, _stmt, _kind, _tgtm, _src, _dst);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {

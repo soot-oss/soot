@@ -31,9 +31,9 @@ public class JoinPointAnalysis
 { 
     private final Type joinPointInterfaceType;
     private final SootClass joinPointImplementationClass;
-    private final List dynamicMethods = new ArrayList();
-    private final Set processedStmts = new HashSet();
-    private Set joinPoints = null;
+    private final List/*SootMethod*/ dynamicMethods = new ArrayList();
+    private final Set/*Local*/ processedLocals = new HashSet();
+    private Set/*Local*/ joinPoints = null;
 
     public JoinPointAnalysis(Type joinPointInterfaceType, SootClass joinPointImplementationClass ) {
         this.joinPointInterfaceType = joinPointInterfaceType;
@@ -63,78 +63,65 @@ public class JoinPointAnalysis
     }
 
     /** Sets up the analysis.
-     * @param joinPoints A set of statements that call the join point
-     * factory method that could be replaced with calls to the static
-     * part factory method. */
-    public void setup( final Set/*AssignStmt*/ joinPoints ) {
+     * @param joinPoints A set of locals, each corresponding to a use
+     * of thisJoinPoint in the code.
+     */
+    public void setup( final Set/*Local*/ joinPoints ) {
         this.joinPoints = joinPoints;
         System.out.println("join points are: "+joinPoints);
 
-        PaddleScene.v().ceh = new TradCallEdgeHandler(
-            PaddleScene.v().ecsout.reader("ceh"),
-            PaddleScene.v().parms,
-            PaddleScene.v().rets) {
-            protected void processEdge( Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t ) {
-                // if it's not a join point, let the superclass handle it
-                if( !joinPoints.contains(t.stmt()) ) {
-                    super.processEdge(t);
-                    return;
+        DepItem joinPointModeller = new DepItem() {
+            Rvar_method_type locals = PaddleScene.v().locals.reader("jpm");
+            public boolean update() {
+                boolean ret = false;
+                for( Iterator tIt = locals.iterator(); tIt.hasNext(); ) {
+                    final Rvar_method_type.Tuple t = (Rvar_method_type.Tuple) tIt.next();
+                    if( !joinPoints.contains(t.var().getVariable()) )
+                        continue;
+                    System.out.println("jpa cares about "+t );
+                    processedLocals.add(t.var().getVariable());
+                    PaddleScene.v().alloc.add(
+                        PaddleScene.v().nodeManager().makeGlobalAllocNode(
+                            t.var().getVariable(), 
+                            joinPointImplementationClass.getType(),
+                            t.method() ),
+                        t.var() );
+                    ret = true;
                 }
-                System.out.println( "found a JP in method "+t.srcm() );
-                processedStmts.add(t.stmt());
-
-                if(t.kind() != Kind.STATIC) throw new RuntimeException("unexpected edge kind "+t.kind());
-
-                // handle the normal parameters to the method
-                MethodNodeFactory srcnf = new MethodNodeFactory(t.srcm());
-                MethodNodeFactory tgtnf = new MethodNodeFactory(t.tgtm());
-                StaticInvokeExpr ie = (StaticInvokeExpr) ((Stmt) t.stmt()).getInvokeExpr();
-                int numArgs = ie.getArgCount();
-                for( int i = 0; i < numArgs; i++ ) {
-                    Value arg = ie.getArg( i );
-                    if( !( arg.getType() instanceof RefLikeType ) ) continue;
-                    if( arg instanceof NullConstant ) continue;
-
-                    addParmEdge( t, srcnf.getNode(arg), tgtnf.caseParm(i) );
-                }
-
-                // create an object node for the join point info
-                AllocNode an = PaddleScene.v().nodeManager().makeGlobalAllocNode(
-                    t.stmt(), joinPointImplementationClass.getType(), t.srcm());
-                AssignStmt as = (AssignStmt) t.stmt();
-                VarNode vn = PaddleScene.v().nodeManager().makeLocalVarNode(
-                    as.getLeftOp(), as.getLeftOp().getType(), t.srcm());
-                PaddleScene.v().alloc.add( an, vn );
+                return ret;
             }
         };
+
+        PaddleScene.v().depMan.addDep( PaddleScene.v().locals, joinPointModeller );
+        PaddleScene.v().depMan.addPrec( PaddleScene.v().mpc, joinPointModeller );
     }
 
     /** Returns the result of the analysis, in the form a subset of
      * the set provided in the call to setup, containing only those
-     * AssignStmts that can be replaced with creations of the static
+     * Locals that can be replaced with creations of the static
      * part. */
-    public Set/*AssignStmt*/ getResult() {
-        Set ret = new HashSet(processedStmts);
+    public Set/*Local*/ getResult() {
+        Set ret = new HashSet(processedLocals);
         for( Iterator mIt = dynamicMethods.iterator(); mIt.hasNext(); ) {
             final SootMethod m = (SootMethod) mIt.next();
             VarNode vn = (VarNode) new MethodNodeFactory(m).caseThis();
             for( Iterator cvnIt = vn.contexts(); cvnIt.hasNext(); ) {
                 final ContextVarNode cvn = (ContextVarNode) cvnIt.next();
                 PointsToSetReadOnly ptset = PaddleScene.v().p2sets.get( cvn );
-                for( Iterator sIt = processedStmts.iterator(); sIt.hasNext(); ) {
-                    final Stmt s = (Stmt) sIt.next();
-                    GlobalAllocNode an = PaddleScene.v().nodeManager().findGlobalAllocNode(s);
+                for( Iterator lIt = processedLocals.iterator(); lIt.hasNext(); ) {
+                    final Local l = (Local) lIt.next();
+                    GlobalAllocNode an = PaddleScene.v().nodeManager().findGlobalAllocNode(l);
                     for( Iterator canIt = an.contexts(); canIt.hasNext(); ) {
                         final ContextAllocNode can = (ContextAllocNode) canIt.next();
                         if( ptset.contains(can) ) {
-                            ret.remove(s);
+                            ret.remove(l);
                         }
                     }
                 }
             }
         }
         System.out.println("Out of "+joinPoints.size()+" dynamic join points, "+ret.size()+" can be made static.");
-        System.out.println("Number of join points found reachable: "+processedStmts.size());
+        System.out.println("Number of join points found reachable: "+processedLocals.size());
         return ret;
     }
 }

@@ -5,7 +5,7 @@ import soot.util.*;
 import soot.jimple.paddle.queue.*;
 import soot.jimple.paddle.bdddomains.*;
 
-public abstract class AbsTypeManager {
+public abstract class AbsTypeManager implements DepItem {
     protected Rvar_method_type locals;
     
     protected Rvar_type globals;
@@ -22,7 +22,7 @@ public abstract class AbsTypeManager {
         this.globalallocs = globalallocs;
     }
     
-    public abstract void update();
+    public abstract boolean update();
     
     public abstract BitVector get(Type type);
     

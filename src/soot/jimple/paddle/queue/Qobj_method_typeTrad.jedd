@@ -34,6 +34,7 @@ public class Qobj_method_typeTrad extends Qobj_method_type {
         q.add( _obj );
         q.add( _method );
         q.add( _type );
+        invalidate();
     }
     public void add( <obj:H1, method:MS, type:T1> in ) {
         Iterator it = in.iterator( new Attribute[] { obj.v(), method.v(), type.v() } );

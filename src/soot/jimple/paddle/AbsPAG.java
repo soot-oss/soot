@@ -25,7 +25,7 @@ import java.util.*;
 /** Stores the pointer assignment graph.
  * @author Ondrej Lhotak
  */
-public abstract class AbsPAG
+public abstract class AbsPAG implements DepItem
 { 
     protected Rsrcc_src_dstc_dst simple;
     protected Rsrcc_src_fld_dstc_dst load;
@@ -39,7 +39,7 @@ public abstract class AbsPAG
         this.store = store;
         this.alloc = alloc;
     }
-    public abstract void update();
+    public abstract boolean update();
 
     public abstract Iterator simpleSources();
     public abstract Iterator loadSources();

@@ -38,6 +38,7 @@ public class Qctxt_var_obj_srcm_stmt_kind_tgtmTrad extends Qctxt_var_obj_srcm_st
         q.add( _stmt );
         q.add( _kind );
         q.add( _tgtm );
+        invalidate();
     }
     public void add( <ctxt:C2, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> in ) {
         Iterator it = in.iterator( new Attribute[] { ctxt.v(), var.v(), obj.v(), srcm.v(), stmt.v(), kind.v(), tgtm.v() } );

@@ -33,11 +33,13 @@ public class BDDPAG extends AbsPAG
             Rsrcc_src_fld_dstc_dst store, Robjc_obj_varc_var alloc ) {
         super( simple, load, store, alloc );
     }
-    public void update() {
-        simpleBDD |= simple.get();
-        allocBDD |= alloc.get();
-        loadBDD |= load.get();
-        storeBDD |= store.get();
+    public boolean update() {
+        boolean ret = false;
+        if( simpleBDD != (simpleBDD |= simple.get()) ) ret = true;
+        if( allocBDD != (allocBDD |= alloc.get()) ) ret = true;
+        if( loadBDD != (loadBDD |= load.get()) ) ret = true;
+        if( storeBDD != (storeBDD |= store.get()) ) ret = true;
+        return ret;
     }
 
     public Iterator simpleSources() {

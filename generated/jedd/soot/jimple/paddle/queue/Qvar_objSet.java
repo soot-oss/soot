@@ -15,6 +15,7 @@ public final class Qvar_objSet extends Qvar_obj {
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _var, AllocNode _obj) {
+        invalidate();
         Rvar_obj.Tuple in = new Rvar_obj.Tuple(_var, _obj);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_objSet reader = (Rvar_objSet) it.next();

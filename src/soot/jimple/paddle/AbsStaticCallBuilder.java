@@ -28,7 +28,7 @@ import java.util.*;
 /** Keeps track of which methods are reachable.
  * @author Ondrej Lhotak
  */
-public abstract class AbsStaticCallBuilder 
+public abstract class AbsStaticCallBuilder implements DepItem
 { 
     protected Rctxt_method in;
     protected Qsrcc_srcm_stmt_kind_tgtc_tgtm out;

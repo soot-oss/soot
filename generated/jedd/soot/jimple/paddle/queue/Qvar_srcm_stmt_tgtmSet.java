@@ -15,6 +15,7 @@ public final class Qvar_srcm_stmt_tgtmSet extends Qvar_srcm_stmt_tgtm {
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _var, SootMethod _srcm, Unit _stmt, SootMethod _tgtm) {
+        invalidate();
         Rvar_srcm_stmt_tgtm.Tuple in = new Rvar_srcm_stmt_tgtm.Tuple(_var, _srcm, _stmt, _tgtm);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_srcm_stmt_tgtmSet reader = (Rvar_srcm_stmt_tgtmSet) it.next();

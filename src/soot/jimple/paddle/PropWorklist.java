@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
+ * Copyright (C) 2002, 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,13 +40,30 @@ public final class PropWorklist extends AbsPropagator {
         super( simple, load, store, alloc, propout, pag );
     }
     private AbsP2Sets p2sets;
+    private boolean newEdges() {
+        boolean ret = false;
+        for( Iterator tIt = newSimple.iterator(); tIt.hasNext(); ) {
+            final Rsrcc_src_dstc_dst.Tuple t = (Rsrcc_src_dstc_dst.Tuple) tIt.next();
+            if( p2sets.make(t.dstc(), t.dst()).addAll( p2sets.get(t.srcc(), t.src()), null ) ) {
+                varNodeWorkList.add( ContextVarNode.make(t.dstc(), t.dst()) );
+            }
+        }
+        for( Iterator tIt = newAlloc.iterator(); tIt.hasNext(); ) {
+            final Robjc_obj_varc_var.Tuple t = (Robjc_obj_varc_var.Tuple) tIt.next();
+            if( p2sets.make(t.varc(), t.var()).add( ContextAllocNode.make(t.objc(), t.obj()) ) )
+                varNodeWorkList.add( ContextVarNode.make(t.varc(), t.var() ) );
+        }
+        return ret;
+    }
     /** Actually does the propagation. */
-    public final void update() {
+    public final boolean update() {
         p2sets = PaddleScene.v().p2sets;
         new TopoSorter( pag, false ).sort();
 	for( Iterator it = pag.allocSources(); it.hasNext(); ) {
 	    handleContextAllocNode( (ContextAllocNode) it.next() );
 	}
+
+        newEdges();
 
         boolean verbose = PaddleScene.v().options().verbose();
 	do {
@@ -95,6 +112,7 @@ public final class PropWorklist extends AbsPropagator {
                 nDotF.flushNew();
             }
 	} while( !varNodeWorkList.isEmpty() );
+        return true;
     }
 
     /* End of public methods. */
@@ -130,19 +148,7 @@ public final class PropWorklist extends AbsPropagator {
             ptout.add( src.ctxt(), src.var(), can.ctxt(), can.obj() );
         }} );
         PaddleScene.v().updateCallGraph();
-        for( Iterator tIt = newSimple.iterator(); tIt.hasNext(); ) {
-            final Rsrcc_src_dstc_dst.Tuple t = (Rsrcc_src_dstc_dst.Tuple) tIt.next();
-            ret = true;
-            if( p2sets.make(t.dstc(), t.dst()).addAll( p2sets.get(t.srcc(), t.src()), null ) ) {
-                varNodeWorkList.add( ContextVarNode.make(t.dstc(), t.dst()) );
-            }
-        }
-        for( Iterator tIt = newAlloc.iterator(); tIt.hasNext(); ) {
-            final Robjc_obj_varc_var.Tuple t = (Robjc_obj_varc_var.Tuple) tIt.next();
-            ret = true;
-            if( p2sets.make(t.varc(), t.var()).add( ContextAllocNode.make(t.objc(), t.obj()) ) )
-                varNodeWorkList.add( ContextVarNode.make(t.varc(), t.var() ) );
-        }
+        if( newEdges() ) ret = true;
 
         for( Iterator simpleTargetIt = pag.simpleLookup(src); simpleTargetIt.hasNext(); ) {
 

@@ -35,7 +35,7 @@ public class BDDReachableMethods extends AbsReachableMethods
         this.cg = cg;
         newMethods = out.reader("bddrm");
     }
-    boolean update() {
+    public boolean update() {
         boolean change = false;
 
         if( methodsIn != null ) {

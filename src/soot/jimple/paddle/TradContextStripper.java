@@ -31,7 +31,7 @@ public class TradContextStripper extends AbsContextStripper
     TradContextStripper( Rctxt_method in, Qctxt_method out ) {
         super(in, out);
     }
-    boolean update() {
+    public boolean update() {
         boolean change = false;
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rctxt_method.Tuple t = (Rctxt_method.Tuple) tIt.next();

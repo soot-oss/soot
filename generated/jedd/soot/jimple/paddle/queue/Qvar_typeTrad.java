@@ -17,6 +17,7 @@ public class Qvar_typeTrad extends Qvar_type {
     public void add(VarNode _var, Type _type) {
         q.add(_var);
         q.add(_type);
+        invalidate();
     }
     
     public void add(final jedd.internal.RelationContainer in) {
@@ -25,7 +26,7 @@ public class Qvar_typeTrad extends Qvar_type {
                                               new PhysicalDomain[] { V1.v(), T1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvar_typeTrad." +
-                                               "jedd:38,22-24"),
+                                               "jedd:39,22-24"),
                                               in).iterator(new Attribute[] { var.v(), type.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

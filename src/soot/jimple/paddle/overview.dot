@@ -25,7 +25,7 @@ digraph overview {
     locals [label="locals\nLMT"];
     globals [label="globals\nLT"];
     localallocs [label="allocs\nAMT"];
-    globalallocs [label="allocs\nAT"];
+    globalallocs [label="globalallocs\nAT"];
 
     simple [label="simple\nLL"];
     store [label="store\nLFL"];

@@ -32,6 +32,7 @@ public class Qvarc_var_objc_objDebug extends Qvarc_var_objc_obj {
     private Qvarc_var_objc_objBDD bdd = new Qvarc_var_objc_objBDD(name+"bdd");
     private Qvarc_var_objc_objSet trad = new Qvarc_var_objc_objSet(name+"set");
     public void add( Context _varc, VarNode _var, Context _objc, AllocNode _obj ) {
+        invalidate();
         bdd.add( _varc, _var, _objc, _obj );
         trad.add( _varc, _var, _objc, _obj );
     }

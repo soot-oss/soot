@@ -9,7 +9,7 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Qsrcc_src_dstc_dst {
+public abstract class Qsrcc_src_dstc_dst implements DepItem {
     public Qsrcc_src_dstc_dst(String name) {
         super();
         this.name = name;
@@ -28,4 +28,18 @@ public abstract class Qsrcc_src_dstc_dst {
     public Rsrcc_src_dstc_dst revreader(String rname) { return reader(rname); }
     
     public void add(Rsrcc_src_dstc_dst.Tuple in) { add(in.srcc(), in.src(), in.dstc(), in.dst()); }
+    
+    private boolean valid = true;
+    
+    public boolean update() {
+        boolean ret = !valid;
+        valid = true;
+        return true;
+    }
+    
+    public void invalidate() {
+        if (!valid) return;
+        valid = false;
+        PaddleScene.v().depMan.invalidate(this);
+    }
 }

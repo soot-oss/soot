@@ -33,8 +33,8 @@ public class BDDInsensitiveVirtualContextManager extends AbsVirtualContextManage
                                                                                                          new jedd.Attribute[] { srcc.v(), tgtc.v() },
                                                                                                          new jedd.PhysicalDomain[] { C1.v(), C2.v() }),
                                                                           new jedd.PhysicalDomain[] {  }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { kind.v(), srcm.v(), srcc.v(), tgtc.v(), stmt.v(), tgtm.v() },
-                                                    new jedd.PhysicalDomain[] { KD.v(), MS.v(), C1.v(), C2.v(), ST.v(), MT.v() },
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), tgtc.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v() },
+                                                    new jedd.PhysicalDomain[] { C1.v(), C2.v(), KD.v(), MS.v(), ST.v(), MT.v() },
                                                     ("out.add(newOut) at /home/research/ccl/olhota/soot-trunk/src/" +
                                                      "soot/jimple/paddle/BDDInsensitiveVirtualContextManager.jedd:" +
                                                      "38,8-11"),

@@ -24,7 +24,7 @@ import soot.jimple.paddle.queue.*;
 /** Keeps track of call edges.
  * @author Ondrej Lhotak
  */
-public abstract class AbsCallGraph
+public abstract class AbsCallGraph implements DepItem
 { 
     protected Rsrcc_srcm_stmt_kind_tgtc_tgtm in;
     protected Qsrcc_srcm_stmt_kind_tgtc_tgtm out;

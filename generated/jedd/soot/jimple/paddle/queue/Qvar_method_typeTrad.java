@@ -18,6 +18,7 @@ public class Qvar_method_typeTrad extends Qvar_method_type {
         q.add(_var);
         q.add(_method);
         q.add(_type);
+        invalidate();
     }
     
     public void add(final jedd.internal.RelationContainer in) {
@@ -26,7 +27,7 @@ public class Qvar_method_typeTrad extends Qvar_method_type {
                                               new PhysicalDomain[] { V1.v(), MS.v(), T1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvar_method_ty" +
-                                               "peTrad.jedd:39,22-24"),
+                                               "peTrad.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { var.v(), method.v(), type.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

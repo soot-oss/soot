@@ -27,12 +27,14 @@ public final class Qobj_typeBDD extends Qobj_type {
     }
     
     public void add(final jedd.internal.RelationContainer in) {
+        if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(in), jedd.internal.Jedd.v().falseBDD()))
+            invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Robj_typeBDD reader = (Robj_typeBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { type.v(), obj.v() },
                                                            new PhysicalDomain[] { T1.v(), H1.v() },
                                                            ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
-                                                            "oot/jimple/paddle/queue/Qobj_typeBDD.jedd:39,12-18"),
+                                                            "oot/jimple/paddle/queue/Qobj_typeBDD.jedd:40,12-18"),
                                                            in));
         }
     }

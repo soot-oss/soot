@@ -17,6 +17,7 @@ public class Qvar_srcm_stmt_tgtmDebug extends Qvar_srcm_stmt_tgtm {
     private Qvar_srcm_stmt_tgtmSet trad = new Qvar_srcm_stmt_tgtmSet(name + "set");
     
     public void add(VarNode _var, SootMethod _srcm, Unit _stmt, SootMethod _tgtm) {
+        invalidate();
         bdd.add(_var, _srcm, _stmt, _tgtm);
         trad.add(_var, _srcm, _stmt, _tgtm);
     }
@@ -27,7 +28,7 @@ public class Qvar_srcm_stmt_tgtmDebug extends Qvar_srcm_stmt_tgtm {
                                               new PhysicalDomain[] { V1.v(), MS.v(), ST.v(), MT.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvar_srcm_stmt" +
-                                               "_tgtmDebug.jedd:39,22-24"),
+                                               "_tgtmDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { var.v(), srcm.v(), stmt.v(), tgtm.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

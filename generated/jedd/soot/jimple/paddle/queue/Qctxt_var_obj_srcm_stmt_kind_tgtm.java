@@ -9,7 +9,7 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Qctxt_var_obj_srcm_stmt_kind_tgtm {
+public abstract class Qctxt_var_obj_srcm_stmt_kind_tgtm implements DepItem {
     public Qctxt_var_obj_srcm_stmt_kind_tgtm(String name) {
         super();
         this.name = name;
@@ -35,5 +35,19 @@ public abstract class Qctxt_var_obj_srcm_stmt_kind_tgtm {
     
     public void add(Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple in) {
         add(in.ctxt(), in.var(), in.obj(), in.srcm(), in.stmt(), in.kind(), in.tgtm());
+    }
+    
+    private boolean valid = true;
+    
+    public boolean update() {
+        boolean ret = !valid;
+        valid = true;
+        return true;
+    }
+    
+    public void invalidate() {
+        if (!valid) return;
+        valid = false;
+        PaddleScene.v().depMan.invalidate(this);
     }
 }

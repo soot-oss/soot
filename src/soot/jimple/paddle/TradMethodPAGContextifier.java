@@ -56,7 +56,8 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
             csimple, cload, cstore, calloc );
     }
 
-    public void update() {
+    public boolean update() {
+        if( !PaddleScene.v().depMan.checkPrec(this) ) throw new RuntimeException();
         for( Iterator tIt = locals.iterator(); tIt.hasNext(); ) {
             final Rvar_method_type.Tuple t = (Rvar_method_type.Tuple) tIt.next();
             localMap.put(t.var(), t.method());
@@ -202,6 +203,7 @@ public class TradMethodPAGContextifier extends AbsMethodPAGContextifier
                 }
             }
         }
+        return true;
     }
 
     private void addSimple( Context srcc, VarNode src, Context dstc, VarNode dst ) {

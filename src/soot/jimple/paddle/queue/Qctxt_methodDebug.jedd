@@ -32,6 +32,7 @@ public class Qctxt_methodDebug extends Qctxt_method {
     private Qctxt_methodBDD bdd = new Qctxt_methodBDD(name+"bdd");
     private Qctxt_methodSet trad = new Qctxt_methodSet(name+"set");
     public void add( Context _ctxt, SootMethod _method ) {
+        invalidate();
         bdd.add( _ctxt, _method );
         trad.add( _ctxt, _method );
     }

@@ -100,7 +100,7 @@ public class PropBDD extends AbsPropagator {
     }
 
 
-    public void update() {
+    public boolean update() {
         // start solving 
         while(true) {
             <varc, var, objc, obj> veryOldPt = pt;
@@ -120,6 +120,7 @@ public class PropBDD extends AbsPropagator {
 
             if( pt == veryOldPt ) break;
         }
+        return true;
     }
 
     /* End of public methods. */

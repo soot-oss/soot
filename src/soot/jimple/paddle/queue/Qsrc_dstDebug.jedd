@@ -32,6 +32,7 @@ public class Qsrc_dstDebug extends Qsrc_dst {
     private Qsrc_dstBDD bdd = new Qsrc_dstBDD(name+"bdd");
     private Qsrc_dstSet trad = new Qsrc_dstSet(name+"set");
     public void add( VarNode _src, VarNode _dst ) {
+        invalidate();
         bdd.add( _src, _dst );
         trad.add( _src, _dst );
     }

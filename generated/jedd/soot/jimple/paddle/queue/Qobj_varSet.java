@@ -15,6 +15,7 @@ public final class Qobj_varSet extends Qobj_var {
     private LinkedList readers = new LinkedList();
     
     public void add(AllocNode _obj, VarNode _var) {
+        invalidate();
         Robj_var.Tuple in = new Robj_var.Tuple(_obj, _var);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Robj_varSet reader = (Robj_varSet) it.next();

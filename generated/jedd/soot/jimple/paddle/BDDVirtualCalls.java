@@ -20,7 +20,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
                 if (m.isAbstract()) continue;
                 declaresMethod.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { m.getDeclaringClass().getType(), m.getNumberedSubSignature(), m },
                                                                       new jedd.Attribute[] { type.v(), signature.v(), method.v() },
-                                                                      new jedd.PhysicalDomain[] { T1.v(), SG.v(), MT.v() }));
+                                                                      new jedd.PhysicalDomain[] { T3.v(), SG.v(), MT.v() }));
             }
         }
         for (Iterator clsIt = Scene.v().dynamicClasses().iterator(); clsIt.hasNext(); ) {
@@ -48,7 +48,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
     
     private final jedd.internal.RelationContainer allocNodes =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), type.v() },
-                                          new jedd.PhysicalDomain[] { H1.v(), T2.v() },
+                                          new jedd.PhysicalDomain[] { H1.v(), T1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.obj, soot.jimple.padd" +
                                            "le.bdddomains.type> allocNodes at /home/research/ccl/olhota/" +
                                            "soot-trunk/src/soot/jimple/paddle/BDDVirtualCalls.jedd:62,12" +
@@ -103,7 +103,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
             AllocNode an = (AllocNode) PaddleNumberers.v().allocNodeNumberer().get(lastAllocNode);
             allocNodes.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { an, an.getType() },
                                                               new jedd.Attribute[] { obj.v(), type.v() },
-                                                              new jedd.PhysicalDomain[] { H1.v(), T2.v() }));
+                                                              new jedd.PhysicalDomain[] { H1.v(), T1.v() }));
             if (an instanceof StringConstantNode) {
                 StringConstantNode scn = (StringConstantNode) an;
                 String constant = scn.getString();
@@ -169,7 +169,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
     
     private final jedd.internal.RelationContainer targets =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { type.v(), signature.v(), method.v() },
-                                          new jedd.PhysicalDomain[] { T1.v(), SG.v(), MT.v() },
+                                          new jedd.PhysicalDomain[] { T2.v(), SG.v(), MT.v() },
                                           ("private <soot.jimple.paddle.bdddomains.type, soot.jimple.pad" +
                                            "dle.bdddomains.signature, soot.jimple.paddle.bdddomains.meth" +
                                            "od> targets = jedd.internal.Jedd.v().falseBDD() at /home/res" +
@@ -179,7 +179,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
     
     private final jedd.internal.RelationContainer declaresMethod =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { type.v(), signature.v(), method.v() },
-                                          new jedd.PhysicalDomain[] { T1.v(), SG.v(), MT.v() },
+                                          new jedd.PhysicalDomain[] { T3.v(), SG.v(), MT.v() },
                                           ("private <soot.jimple.paddle.bdddomains.type, soot.jimple.pad" +
                                            "dle.bdddomains.signature, soot.jimple.paddle.bdddomains.meth" +
                                            "od> declaresMethod = jedd.internal.Jedd.v().falseBDD() at /h" +
@@ -191,7 +191,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
     
     private final jedd.internal.RelationContainer newPt =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), var.v(), obj.v() },
-                                          new jedd.PhysicalDomain[] { C1.v(), V1.v(), H1.v() },
+                                          new jedd.PhysicalDomain[] { C2.v(), V1.v(), H1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.ctxt, soot.jimple.pad" +
                                            "dle.bdddomains.var, soot.jimple.paddle.bdddomains.obj> newPt" +
                                            " = jedd.internal.Jedd.v().falseBDD() at /home/research/ccl/o" +
@@ -201,7 +201,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
     
     private final jedd.internal.RelationContainer allPt =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), var.v(), obj.v() },
-                                          new jedd.PhysicalDomain[] { C1.v(), V1.v(), H1.v() },
+                                          new jedd.PhysicalDomain[] { C2.v(), V1.v(), H1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.ctxt, soot.jimple.pad" +
                                            "dle.bdddomains.var, soot.jimple.paddle.bdddomains.obj> allPt" +
                                            " = jedd.internal.Jedd.v().falseBDD() at /home/research/ccl/o" +
@@ -256,7 +256,10 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
     public boolean update() {
         change = false;
         updateNodes();
-        newPt.eq(jedd.internal.Jedd.v().project(pt.get(), new jedd.PhysicalDomain[] { C2.v() }));
+        newPt.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(pt.get(),
+                                                                               new jedd.PhysicalDomain[] { C2.v() }),
+                                                new jedd.PhysicalDomain[] { C1.v() },
+                                                new jedd.PhysicalDomain[] { C2.v() }));
         allPt.eqUnion(newPt);
         newRcv.eq(receivers.get());
         allRcv.eqUnion(newRcv);
@@ -301,9 +304,9 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
                                                                                                        new jedd.PhysicalDomain[] {  })));
         final jedd.internal.RelationContainer tgtMethods =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), var.v(), tgtm.v() },
-                                              new jedd.PhysicalDomain[] { C1.v(), V1.v(), MT.v() },
+                                              new jedd.PhysicalDomain[] { C2.v(), V1.v(), MT.v() },
                                               ("<soot.jimple.paddle.bdddomains.srcc:soot.jimple.paddle.bdddo" +
-                                               "mains.C1, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
+                                               "mains.C2, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.tgtm:soot.ji" +
                                                "mple.paddle.bdddomains.MT> tgtMethods = jedd.internal.Jedd.v" +
                                                "().compose(jedd.internal.Jedd.v().read(newPt), clinitTargets" +
@@ -325,20 +328,24 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
                                                "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.MT> newSt" +
                                                "atics = jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().r" +
                                                "ead(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().re" +
-                                               "ad(tgtMethods), clinits, new jedd.PhysicalDomain[...])), jed" +
-                                               "d.internal.Jedd.v().literal(new java.lang.Object[...], new j" +
-                                               "edd.Attribute[...], new jedd.PhysicalDomain[...]), new jedd." +
-                                               "PhysicalDomain[...]); at /home/research/ccl/olhota/soot-trun" +
-                                               "k/src/soot/jimple/paddle/BDDVirtualCalls.jedd:153,45-55"),
-                                              jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(tgtMethods),
+                                               "ad(jedd.internal.Jedd.v().replace(tgtMethods, new jedd.Physi" +
+                                               "calDomain[...], new jedd.PhysicalDomain[...])), clinits, new" +
+                                               " jedd.PhysicalDomain[...])), jedd.internal.Jedd.v().literal(" +
+                                               "new java.lang.Object[...], new jedd.Attribute[...], new jedd" +
+                                               ".PhysicalDomain[...]), new jedd.PhysicalDomain[...]); at /ho" +
+                                               "me/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDD" +
+                                               "VirtualCalls.jedd:153,45-55"),
+                                              jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(tgtMethods,
+                                                                                                                                                                                                new jedd.PhysicalDomain[] { C2.v() },
+                                                                                                                                                                                                new jedd.PhysicalDomain[] { C1.v() })),
                                                                                                                                      clinits,
                                                                                                                                      new jedd.PhysicalDomain[] { V1.v() })),
                                                                           jedd.internal.Jedd.v().literal(new Object[] { null },
                                                                                                          new jedd.Attribute[] { tgtc.v() },
                                                                                                          new jedd.PhysicalDomain[] { C2.v() }),
                                                                           new jedd.PhysicalDomain[] {  }));
-        statics.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { kind.v(), srcm.v(), srcc.v(), tgtc.v(), stmt.v(), tgtm.v() },
-                                                        new jedd.PhysicalDomain[] { KD.v(), MS.v(), C1.v(), C2.v(), ST.v(), MT.v() },
+        statics.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), tgtc.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v() },
+                                                        new jedd.PhysicalDomain[] { C1.v(), C2.v(), KD.v(), MS.v(), ST.v(), MT.v() },
                                                         ("statics.add(newStatics) at /home/research/ccl/olhota/soot-tr" +
                                                          "unk/src/soot/jimple/paddle/BDDVirtualCalls.jedd:156,8-15"),
                                                         newStatics));
@@ -348,7 +355,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
     
     private final jedd.internal.RelationContainer resolvedSpecials =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), var.v(), obj.v(), srcm.v(), stmt.v(), tgtm.v() },
-                                          new jedd.PhysicalDomain[] { C1.v(), V1.v(), H1.v(), MS.v(), ST.v(), MT.v() },
+                                          new jedd.PhysicalDomain[] { C2.v(), V1.v(), H1.v(), MS.v(), ST.v(), MT.v() },
                                           ("private <soot.jimple.paddle.bdddomains.ctxt, soot.jimple.pad" +
                                            "dle.bdddomains.var, soot.jimple.paddle.bdddomains.obj, soot." +
                                            "jimple.paddle.bdddomains.srcm, soot.jimple.paddle.bdddomains" +
@@ -361,9 +368,9 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
     private void updateSpecials() {
         final jedd.internal.RelationContainer newSpecials =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), var.v(), obj.v(), srcm.v(), stmt.v(), tgtm.v() },
-                                              new jedd.PhysicalDomain[] { C1.v(), V1.v(), H1.v(), MS.v(), ST.v(), MT.v() },
+                                              new jedd.PhysicalDomain[] { C2.v(), V1.v(), H1.v(), MS.v(), ST.v(), MT.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
-                                               "mains.C1, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
+                                               "mains.C2, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.obj:soot.jim" +
                                                "ple.paddle.bdddomains.H1, soot.jimple.paddle.bdddomains.srcm" +
                                                ":soot.jimple.paddle.bdddomains.MS, soot.jimple.paddle.bdddom" +
@@ -378,22 +385,19 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
                                                                           new jedd.PhysicalDomain[] { V1.v() }));
         newSpecials.eqMinus(resolvedSpecials);
         resolvedSpecials.eqUnion(newSpecials);
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), ctxt.v(), srcm.v(), stmt.v(), tgtm.v(), obj.v(), kind.v() },
-                                                    new jedd.PhysicalDomain[] { V1.v(), C2.v(), MS.v(), ST.v(), MT.v(), H1.v(), KD.v() },
-                                                    ("out.add(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v(" +
-                                                     ").join(jedd.internal.Jedd.v().read(newSpecials), jedd.intern" +
-                                                     "al.Jedd.v().literal(new java.lang.Object[...], new jedd.Attr" +
-                                                     "ibute[...], new jedd.PhysicalDomain[...]), new jedd.Physical" +
-                                                     "Domain[...]), new jedd.PhysicalDomain[...], new jedd.Physica" +
-                                                     "lDomain[...])) at /home/research/ccl/olhota/soot-trunk/src/s" +
-                                                     "oot/jimple/paddle/BDDVirtualCalls.jedd:168,8-11"),
-                                                    jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newSpecials),
-                                                                                                               jedd.internal.Jedd.v().literal(new Object[] { Kind.SPECIAL },
-                                                                                                                                              new jedd.Attribute[] { kind.v() },
-                                                                                                                                              new jedd.PhysicalDomain[] { KD.v() }),
-                                                                                                               new jedd.PhysicalDomain[] {  }),
-                                                                                   new jedd.PhysicalDomain[] { C1.v() },
-                                                                                   new jedd.PhysicalDomain[] { C2.v() })));
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), srcm.v(), ctxt.v(), obj.v(), stmt.v(), tgtm.v(), kind.v() },
+                                                    new jedd.PhysicalDomain[] { V1.v(), MS.v(), C2.v(), H1.v(), ST.v(), MT.v(), KD.v() },
+                                                    ("out.add(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().r" +
+                                                     "ead(newSpecials), jedd.internal.Jedd.v().literal(new java.la" +
+                                                     "ng.Object[...], new jedd.Attribute[...], new jedd.PhysicalDo" +
+                                                     "main[...]), new jedd.PhysicalDomain[...])) at /home/research" +
+                                                     "/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDVirtualCall" +
+                                                     "s.jedd:168,8-11"),
+                                                    jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newSpecials),
+                                                                                jedd.internal.Jedd.v().literal(new Object[] { Kind.SPECIAL },
+                                                                                                               new jedd.Attribute[] { kind.v() },
+                                                                                                               new jedd.PhysicalDomain[] { KD.v() }),
+                                                                                new jedd.PhysicalDomain[] {  })));
         if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newSpecials), jedd.internal.Jedd.v().falseBDD()))
             change = true;
     }
@@ -485,23 +489,23 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
                                                              new jedd.PhysicalDomain[] { KD.v() }));
         final jedd.internal.RelationContainer ptTypes =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), type.v() },
-                                              new jedd.PhysicalDomain[] { V1.v(), T2.v() },
+                                              new jedd.PhysicalDomain[] { V1.v(), T1.v() },
                                               ("<soot.jimple.paddle.bdddomains.var:soot.jimple.paddle.bdddom" +
                                                "ains.V1, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
-                                               "le.bdddomains.T2> ptTypes = jedd.internal.Jedd.v().compose(j" +
+                                               "le.bdddomains.T1> ptTypes = jedd.internal.Jedd.v().compose(j" +
                                                "edd.internal.Jedd.v().read(allocNodes), jedd.internal.Jedd.v" +
                                                "().project(newPt, new jedd.PhysicalDomain[...]), new jedd.Ph" +
                                                "ysicalDomain[...]); at /home/research/ccl/olhota/soot-trunk/" +
                                                "src/soot/jimple/paddle/BDDVirtualCalls.jedd:186,20-27"),
                                               jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(allocNodes),
                                                                              jedd.internal.Jedd.v().project(newPt,
-                                                                                                            new jedd.PhysicalDomain[] { C1.v() }),
+                                                                                                            new jedd.PhysicalDomain[] { C2.v() }),
                                                                              new jedd.PhysicalDomain[] { H1.v() }));
         final jedd.internal.RelationContainer newTypes =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { type.v(), signature.v() },
-                                              new jedd.PhysicalDomain[] { T1.v(), SG.v() },
+                                              new jedd.PhysicalDomain[] { T2.v(), SG.v() },
                                               ("<soot.jimple.paddle.bdddomains.type:soot.jimple.paddle.bdddo" +
-                                               "mains.T1, soot.jimple.paddle.bdddomains.signature:soot.jimpl" +
+                                               "mains.T2, soot.jimple.paddle.bdddomains.signature:soot.jimpl" +
                                                "e.paddle.bdddomains.SG> newTypes = jedd.internal.Jedd.v().co" +
                                                "mpose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().rep" +
                                                "lace(ptTypes, new jedd.PhysicalDomain[...], new jedd.Physica" +
@@ -509,40 +513,40 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
                                                "home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle/B" +
                                                "DDVirtualCalls.jedd:188,26-34"),
                                               jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(ptTypes,
-                                                                                                                                        new jedd.PhysicalDomain[] { T2.v() },
-                                                                                                                                        new jedd.PhysicalDomain[] { T1.v() })),
+                                                                                                                                        new jedd.PhysicalDomain[] { T1.v() },
+                                                                                                                                        new jedd.PhysicalDomain[] { T2.v() })),
                                                                              rcvSigs,
                                                                              new jedd.PhysicalDomain[] { V1.v() }));
-        newTypes.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(ptTypes),
-                                                                                                                                               threads,
-                                                                                                                                               new jedd.PhysicalDomain[] { T2.v() })),
-                                                                                       threadRcvSigs,
-                                                                                       new jedd.PhysicalDomain[] { V1.v() }),
-                                                        new jedd.PhysicalDomain[] { T2.v() },
-                                                        new jedd.PhysicalDomain[] { T1.v() }));
+        newTypes.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(ptTypes,
+                                                                                                                                                                           new jedd.PhysicalDomain[] { T1.v() },
+                                                                                                                                                                           new jedd.PhysicalDomain[] { T2.v() })),
+                                                                                                                threads,
+                                                                                                                new jedd.PhysicalDomain[] { T2.v() })),
+                                                        threadRcvSigs,
+                                                        new jedd.PhysicalDomain[] { V1.v() }));
         hier.update();
-        newTypes.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(newTypes),
-                                                                                       hier.anySub(),
-                                                                                       new jedd.PhysicalDomain[] { T1.v() }),
-                                                        new jedd.PhysicalDomain[] { T2.v() },
+        newTypes.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(newTypes,
+                                                                                                                   new jedd.PhysicalDomain[] { T2.v() },
+                                                                                                                   new jedd.PhysicalDomain[] { T1.v() })),
+                                                        hier.anySub(),
                                                         new jedd.PhysicalDomain[] { T1.v() }));
         newTypes.eq(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newTypes),
                                                 hier.concrete(),
-                                                new jedd.PhysicalDomain[] { T1.v() }));
+                                                new jedd.PhysicalDomain[] { T2.v() }));
         newTypes.eqMinus(jedd.internal.Jedd.v().project(targets, new jedd.PhysicalDomain[] { MT.v() }));
         final jedd.internal.RelationContainer toResolve =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { subt.v(), signature.v(), supt.v() },
-                                              new jedd.PhysicalDomain[] { T2.v(), SG.v(), T1.v() },
+                                              new jedd.PhysicalDomain[] { T2.v(), SG.v(), T3.v() },
                                               ("<soot.jimple.paddle.bdddomains.subt:soot.jimple.paddle.bdddo" +
                                                "mains.T2, soot.jimple.paddle.bdddomains.signature:soot.jimpl" +
                                                "e.paddle.bdddomains.SG, soot.jimple.paddle.bdddomains.supt:s" +
-                                               "oot.jimple.paddle.bdddomains.T1> toResolve = jedd.internal.J" +
+                                               "oot.jimple.paddle.bdddomains.T3> toResolve = jedd.internal.J" +
                                                "edd.v().copy(newTypes, new jedd.PhysicalDomain[...], new jed" +
                                                "d.PhysicalDomain[...]); at /home/research/ccl/olhota/soot-tr" +
                                                "unk/src/soot/jimple/paddle/BDDVirtualCalls.jedd:204,32-41"),
                                               jedd.internal.Jedd.v().copy(newTypes,
-                                                                          new jedd.PhysicalDomain[] { T1.v() },
-                                                                          new jedd.PhysicalDomain[] { T2.v() }));
+                                                                          new jedd.PhysicalDomain[] { T2.v() },
+                                                                          new jedd.PhysicalDomain[] { T3.v() }));
         final jedd.internal.RelationContainer newTargets =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { type.v(), signature.v(), method.v() },
                                               new jedd.PhysicalDomain[] { T2.v(), SG.v(), MT.v() },
@@ -556,11 +560,11 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
         do  {
             final jedd.internal.RelationContainer resolved =
               new jedd.internal.RelationContainer(new jedd.Attribute[] { subt.v(), signature.v(), supt.v(), method.v() },
-                                                  new jedd.PhysicalDomain[] { T2.v(), SG.v(), T1.v(), MT.v() },
+                                                  new jedd.PhysicalDomain[] { T2.v(), SG.v(), T3.v(), MT.v() },
                                                   ("<soot.jimple.paddle.bdddomains.subt:soot.jimple.paddle.bdddo" +
                                                    "mains.T2, soot.jimple.paddle.bdddomains.signature:soot.jimpl" +
                                                    "e.paddle.bdddomains.SG, soot.jimple.paddle.bdddomains.supt:s" +
-                                                   "oot.jimple.paddle.bdddomains.T1, soot.jimple.paddle.bdddomai" +
+                                                   "oot.jimple.paddle.bdddomains.T3, soot.jimple.paddle.bdddomai" +
                                                    "ns.method:soot.jimple.paddle.bdddomains.MT> resolved = jedd." +
                                                    "internal.Jedd.v().join(jedd.internal.Jedd.v().read(toResolve" +
                                                    "), declaresMethod, new jedd.PhysicalDomain[...]); at /home/r" +
@@ -568,29 +572,25 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
                                                    "ualCalls.jedd:211,44-52"),
                                                   jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(toResolve),
                                                                               declaresMethod,
-                                                                              new jedd.PhysicalDomain[] { T1.v(), SG.v() }));
+                                                                              new jedd.PhysicalDomain[] { T3.v(), SG.v() }));
             toResolve.eqMinus(jedd.internal.Jedd.v().project(resolved, new jedd.PhysicalDomain[] { MT.v() }));
-            newTargets.eqUnion(jedd.internal.Jedd.v().project(resolved, new jedd.PhysicalDomain[] { T1.v() }));
-            toResolve.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(toResolve),
-                                                                                       jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(hier.extend(),
-                                                                                                                                                                               new jedd.PhysicalDomain[] { T2.v() },
-                                                                                                                                                                               new jedd.PhysicalDomain[] { T3.v() })),
-                                                                                                                    jedd.internal.Jedd.v().replace(hier.array(),
-                                                                                                                                                   new jedd.PhysicalDomain[] { T2.v() },
-                                                                                                                                                   new jedd.PhysicalDomain[] { T3.v() })),
-                                                                                       new jedd.PhysicalDomain[] { T1.v() }),
-                                                        new jedd.PhysicalDomain[] { T3.v() },
+            newTargets.eqUnion(jedd.internal.Jedd.v().project(resolved, new jedd.PhysicalDomain[] { T3.v() }));
+            toResolve.eq(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(toResolve,
+                                                                                                                   new jedd.PhysicalDomain[] { T3.v() },
+                                                                                                                   new jedd.PhysicalDomain[] { T1.v() })),
+                                                        jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(hier.extend()),
+                                                                                     hier.array()),
                                                         new jedd.PhysicalDomain[] { T1.v() }));
         }while(!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(toResolve),
                                               jedd.internal.Jedd.v().falseBDD())); 
         final jedd.internal.RelationContainer typedPt =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), obj.v(), type.v(), ctxt.v() },
-                                              new jedd.PhysicalDomain[] { V1.v(), H1.v(), T2.v(), C1.v() },
+                                              new jedd.PhysicalDomain[] { V1.v(), H1.v(), T1.v(), C2.v() },
                                               ("<soot.jimple.paddle.bdddomains.var:soot.jimple.paddle.bdddom" +
                                                "ains.V1, soot.jimple.paddle.bdddomains.obj:soot.jimple.paddl" +
                                                "e.bdddomains.H1, soot.jimple.paddle.bdddomains.type:soot.jim" +
-                                               "ple.paddle.bdddomains.T2, soot.jimple.paddle.bdddomains.ctxt" +
-                                               ":soot.jimple.paddle.bdddomains.C1> typedPt = jedd.internal.J" +
+                                               "ple.paddle.bdddomains.T1, soot.jimple.paddle.bdddomains.ctxt" +
+                                               ":soot.jimple.paddle.bdddomains.C2> typedPt = jedd.internal.J" +
                                                "edd.v().join(jedd.internal.Jedd.v().read(allocNodes), newPt," +
                                                " new jedd.PhysicalDomain[...]); at /home/research/ccl/olhota" +
                                                "/soot-trunk/src/soot/jimple/paddle/BDDVirtualCalls.jedd:225," +
@@ -598,48 +598,47 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(allocNodes),
                                                                           newPt,
                                                                           new jedd.PhysicalDomain[] { H1.v() }));
-        typedPt.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(typedPt,
-                                                                                                                  new jedd.PhysicalDomain[] { T2.v() },
-                                                                                                                  new jedd.PhysicalDomain[] { T1.v() })),
-                                                       hier.anySub(),
+        typedPt.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(typedPt),
+                                                                                      hier.anySub(),
+                                                                                      new jedd.PhysicalDomain[] { T1.v() }),
+                                                       new jedd.PhysicalDomain[] { T2.v() },
                                                        new jedd.PhysicalDomain[] { T1.v() }));
         final jedd.internal.RelationContainer varCtxtPt =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), var.v(), dtp.v(), obj.v(), type.v() },
-                                              new jedd.PhysicalDomain[] { C1.v(), V1.v(), T1.v(), H1.v(), T2.v() },
+                                              new jedd.PhysicalDomain[] { C2.v(), V1.v(), T1.v(), H1.v(), T2.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
-                                               "mains.C1, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
+                                               "mains.C2, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.dtp:soot.jim" +
                                                "ple.paddle.bdddomains.T1, soot.jimple.paddle.bdddomains.obj:" +
                                                "soot.jimple.paddle.bdddomains.H1, soot.jimple.paddle.bdddoma" +
                                                "ins.type:soot.jimple.paddle.bdddomains.T2> varCtxtPt = jedd." +
-                                               "internal.Jedd.v().join(jedd.internal.Jedd.v().read(typedPt)," +
-                                               " varNodes, new jedd.PhysicalDomain[...]); at /home/research/" +
-                                               "ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDVirtualCalls" +
-                                               ".jedd:229,36-45"),
-                                              jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(typedPt),
+                                               "internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.inte" +
+                                               "rnal.Jedd.v().replace(typedPt, new jedd.PhysicalDomain[...]," +
+                                               " new jedd.PhysicalDomain[...])), varNodes, new jedd.Physical" +
+                                               "Domain[...]); at /home/research/ccl/olhota/soot-trunk/src/so" +
+                                               "ot/jimple/paddle/BDDVirtualCalls.jedd:229,36-45"),
+                                              jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(typedPt,
+                                                                                                                                     new jedd.PhysicalDomain[] { T1.v() },
+                                                                                                                                     new jedd.PhysicalDomain[] { T2.v() })),
                                                                           varNodes,
                                                                           new jedd.PhysicalDomain[] { V1.v() }));
         varCtxtPt.eq(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(varCtxtPt),
                                                  hier.subtypeRelation(),
                                                  new jedd.PhysicalDomain[] { T2.v(), T1.v() }));
         varCtxtPt.eq(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(varCtxtPt),
-                                                 jedd.internal.Jedd.v().replace(hier.concrete(),
-                                                                                new jedd.PhysicalDomain[] { T1.v() },
-                                                                                new jedd.PhysicalDomain[] { T2.v() }),
+                                                 hier.concrete(),
                                                  new jedd.PhysicalDomain[] { T2.v() }));
         callSiteTargets.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(newVirtRcv),
-                                                               jedd.internal.Jedd.v().replace(targets,
-                                                                                              new jedd.PhysicalDomain[] { T1.v() },
-                                                                                              new jedd.PhysicalDomain[] { T2.v() }),
+                                                               targets,
                                                                new jedd.PhysicalDomain[] { SG.v() }));
         callSiteTargets.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(rcv),
                                                                newTargets,
                                                                new jedd.PhysicalDomain[] { SG.v() }));
         final jedd.internal.RelationContainer newVirtuals =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), var.v(), obj.v(), srcm.v(), stmt.v(), kind.v(), tgtm.v() },
-                                              new jedd.PhysicalDomain[] { C1.v(), V1.v(), H1.v(), MS.v(), ST.v(), KD.v(), MT.v() },
+                                              new jedd.PhysicalDomain[] { C2.v(), V1.v(), H1.v(), MS.v(), ST.v(), KD.v(), MT.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
-                                               "mains.C1, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
+                                               "mains.C2, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.obj:soot.jim" +
                                                "ple.paddle.bdddomains.H1, soot.jimple.paddle.bdddomains.srcm" +
                                                ":soot.jimple.paddle.bdddomains.MS, soot.jimple.paddle.bdddom" +
@@ -657,15 +656,11 @@ public class BDDVirtualCalls extends AbsVirtualCalls {
                                                                                                          callSiteTargets,
                                                                                                          new jedd.PhysicalDomain[] { T2.v(), V1.v() }),
                                                                              new jedd.PhysicalDomain[] { T2.v() }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), ctxt.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v(), obj.v() },
-                                                    new jedd.PhysicalDomain[] { V1.v(), C2.v(), KD.v(), MS.v(), ST.v(), MT.v(), H1.v() },
-                                                    ("out.add(jedd.internal.Jedd.v().replace(newVirtuals, new jedd" +
-                                                     ".PhysicalDomain[...], new jedd.PhysicalDomain[...])) at /hom" +
-                                                     "e/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDV" +
-                                                     "irtualCalls.jedd:248,8-11"),
-                                                    jedd.internal.Jedd.v().replace(newVirtuals,
-                                                                                   new jedd.PhysicalDomain[] { C1.v() },
-                                                                                   new jedd.PhysicalDomain[] { C2.v() })));
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), kind.v(), srcm.v(), ctxt.v(), stmt.v(), obj.v(), tgtm.v() },
+                                                    new jedd.PhysicalDomain[] { V1.v(), KD.v(), MS.v(), C2.v(), ST.v(), H1.v(), MT.v() },
+                                                    ("out.add(newVirtuals) at /home/research/ccl/olhota/soot-trunk" +
+                                                     "/src/soot/jimple/paddle/BDDVirtualCalls.jedd:248,8-11"),
+                                                    newVirtuals));
         if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newVirtuals), jedd.internal.Jedd.v().falseBDD()))
             change = true;
     }

@@ -32,6 +32,7 @@ public class Qsrc_fld_dstDebug extends Qsrc_fld_dst {
     private Qsrc_fld_dstBDD bdd = new Qsrc_fld_dstBDD(name+"bdd");
     private Qsrc_fld_dstSet trad = new Qsrc_fld_dstSet(name+"set");
     public void add( VarNode _src, PaddleField _fld, VarNode _dst ) {
+        invalidate();
         bdd.add( _src, _fld, _dst );
         trad.add( _src, _fld, _dst );
     }

@@ -34,6 +34,7 @@ public final class Qsrc_fld_dstBDD extends Qsrc_fld_dst {
         add( new { _src=>src, _fld=>fld, _dst=>dst } );
     }
     public void add( <src:V1, fld:FD, dst:V2> in ) {
+        if( in != 0B ) invalidate();
         for( Iterator it = readers.iterator(); it.hasNext(); ) {
             Rsrc_fld_dstBDD reader = (Rsrc_fld_dstBDD) it.next();
             reader.add( in );

@@ -32,6 +32,7 @@ public class Qsrcm_stmt_kind_tgtm_src_dstDebug extends Qsrcm_stmt_kind_tgtm_src_
     private Qsrcm_stmt_kind_tgtm_src_dstBDD bdd = new Qsrcm_stmt_kind_tgtm_src_dstBDD(name+"bdd");
     private Qsrcm_stmt_kind_tgtm_src_dstSet trad = new Qsrcm_stmt_kind_tgtm_src_dstSet(name+"set");
     public void add( SootMethod _srcm, Unit _stmt, Kind _kind, SootMethod _tgtm, VarNode _src, VarNode _dst ) {
+        invalidate();
         bdd.add( _srcm, _stmt, _kind, _tgtm, _src, _dst );
         trad.add( _srcm, _stmt, _kind, _tgtm, _src, _dst );
     }

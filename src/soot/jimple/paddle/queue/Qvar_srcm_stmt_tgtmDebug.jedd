@@ -32,6 +32,7 @@ public class Qvar_srcm_stmt_tgtmDebug extends Qvar_srcm_stmt_tgtm {
     private Qvar_srcm_stmt_tgtmBDD bdd = new Qvar_srcm_stmt_tgtmBDD(name+"bdd");
     private Qvar_srcm_stmt_tgtmSet trad = new Qvar_srcm_stmt_tgtmSet(name+"set");
     public void add( VarNode _var, SootMethod _srcm, Unit _stmt, SootMethod _tgtm ) {
+        invalidate();
         bdd.add( _var, _srcm, _stmt, _tgtm );
         trad.add( _var, _srcm, _stmt, _tgtm );
     }

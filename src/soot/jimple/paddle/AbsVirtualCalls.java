@@ -24,7 +24,7 @@ import soot.jimple.paddle.queue.*;
 /** Resolves virtual calls based on the actual type of the receiver.
  * @author Ondrej Lhotak
  */
-public abstract class AbsVirtualCalls
+public abstract class AbsVirtualCalls implements DepItem
 { 
     protected Rvarc_var_objc_obj pt;
     protected Rvar_srcm_stmt_signature_kind receivers;

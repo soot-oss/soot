@@ -37,10 +37,10 @@ public class BDDTypeManager extends AbsTypeManager
     <var, obj> result = 0B;
     <var, type> allVars = 0B;
     <obj, type> allObjs = 0B;
-    public void update() {
+    public boolean update() {
         if( fh == null ) {
             result = 1B;
-            return;
+            return true;
         }
 
         <var, type> newVars;
@@ -56,6 +56,7 @@ public class BDDTypeManager extends AbsTypeManager
         <subt, supt> subtypeRelation = fh.subtypeRelation();
         result |= (subtypeRelation{supt} <> newVars{type}){subt} <> allObjs{type};
         result |= (subtypeRelation{supt} <> allVars{type}){subt} <> newObjs{type};
+        return true;
     }
     public BitVector get( Type type ) {
         throw new RuntimeException( "Not implemented" );

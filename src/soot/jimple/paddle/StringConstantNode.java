@@ -25,7 +25,11 @@ import soot.*;
  */
 public class StringConstantNode extends GlobalAllocNode {
     public String toString() {
-	return "StringConstantNode "+getNumber()+" "+newExpr;
+        if( PaddleScene.v().options().number_nodes() ) {
+            return "StringConstantNode "+getNumber()+" "+newExpr;
+        } else {
+            return "StringConstantNode "+newExpr;
+        }
     }
 
     public String getString() {

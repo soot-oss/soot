@@ -57,7 +57,7 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier
             csimple, cload, cstore, calloc );
     }
 
-    public void update() {
+    public boolean update() {
         <srcc, src, dstc, dst> simpleOut = 0B;
         <srcc, src, fld, dstc, dst> loadOut = 0B;
         <srcc, src, fld, dstc, dst> storeOut = 0B;
@@ -158,6 +158,7 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier
         allocOut -= globalAllocSrcs;
         allocOut |= ((objc=>) globalAllocSrcs){} >< new{null=>objc}{};
         calloc.add(allocOut);
+        return false;
     }
 
     private <var, method> localMap = 0B;

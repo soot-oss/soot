@@ -9,7 +9,7 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Qobj_var {
+public abstract class Qobj_var implements DepItem {
     public Qobj_var(String name) {
         super();
         this.name = name;
@@ -28,4 +28,18 @@ public abstract class Qobj_var {
     public Robj_var revreader(String rname) { return reader(rname); }
     
     public void add(Robj_var.Tuple in) { add(in.obj(), in.var()); }
+    
+    private boolean valid = true;
+    
+    public boolean update() {
+        boolean ret = !valid;
+        valid = true;
+        return true;
+    }
+    
+    public void invalidate() {
+        if (!valid) return;
+        valid = false;
+        PaddleScene.v().depMan.invalidate(this);
+    }
 }

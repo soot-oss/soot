@@ -31,7 +31,7 @@ public class TradEdgeContextStripper extends AbsEdgeContextStripper
         super(in, out);
     }
     private Set seen = new HashSet();
-    boolean update() {
+    public boolean update() {
         boolean change = false;
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();

@@ -21,15 +21,16 @@ public class Qsrcm_stmt_kind_tgtm_src_dstTrad extends Qsrcm_stmt_kind_tgtm_src_d
         q.add(_tgtm);
         q.add(_src);
         q.add(_dst);
+        invalidate();
     }
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { kind.v(), srcm.v(), dst.v(), stmt.v(), tgtm.v(), src.v() },
-                                              new PhysicalDomain[] { KD.v(), MS.v(), V2.v(), ST.v(), MT.v(), V1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { src.v(), dst.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v() },
+                                              new PhysicalDomain[] { V1.v(), V2.v(), KD.v(), MS.v(), ST.v(), MT.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qsrcm_stmt_kin" +
-                                               "d_tgtm_src_dstTrad.jedd:42,22-24"),
+                                               "d_tgtm_src_dstTrad.jedd:43,22-24"),
                                               in).iterator(new Attribute[] { srcm.v(), stmt.v(), kind.v(), tgtm.v(), src.v(), dst.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

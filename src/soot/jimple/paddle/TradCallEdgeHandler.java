@@ -37,7 +37,8 @@ public class TradCallEdgeHandler extends AbsCallEdgeHandler
     }
 
     Set seenEdges = new HashSet();
-    public void update() {
+    public boolean update() {
+        boolean ret = false;
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
             if( !t.kind().passesParameters() ) continue;
@@ -45,8 +46,10 @@ public class TradCallEdgeHandler extends AbsCallEdgeHandler
             if( !seenEdges.add( new Cons(new Cons(t.srcm(), t.stmt()),
                                         new Cons(t.kind(), t.tgtm())))) continue;
 
+            ret = true;
             processEdge( t );
         }
+        return ret;
     }
 
     protected void processEdge( Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t ) {

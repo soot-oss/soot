@@ -24,7 +24,7 @@ import soot.*;
 /** Keeps track of which methods are reachable.
  * @author Ondrej Lhotak
  */
-public abstract class AbsReachableMethods 
+public abstract class AbsReachableMethods implements DepItem
 { 
     protected Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesIn;
     protected Rctxt_method methodsIn;
@@ -34,7 +34,7 @@ public abstract class AbsReachableMethods
         this.methodsIn = methodsIn;
         this.out = out;
     }
-    abstract boolean update();
+    public abstract boolean update();
     abstract boolean add( MethodOrMethodContext m );
     abstract int size();
     abstract boolean contains( MethodOrMethodContext m );

@@ -17,17 +17,18 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug extends Qsrcc_srcm_stmt_kind_tg
     private Qsrcc_srcm_stmt_kind_tgtc_tgtmSet trad = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet(name + "set");
     
     public void add(Context _srcc, SootMethod _srcm, Unit _stmt, Kind _kind, Context _tgtc, SootMethod _tgtm) {
+        invalidate();
         bdd.add(_srcc, _srcm, _stmt, _kind, _tgtc, _tgtm);
         trad.add(_srcc, _srcm, _stmt, _kind, _tgtc, _tgtm);
     }
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { kind.v(), srcm.v(), srcc.v(), tgtc.v(), stmt.v(), tgtm.v() },
-                                              new PhysicalDomain[] { KD.v(), MS.v(), C1.v(), C2.v(), ST.v(), MT.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), tgtc.v(), kind.v(), srcm.v(), stmt.v(), tgtm.v() },
+                                              new PhysicalDomain[] { C1.v(), C2.v(), KD.v(), MS.v(), ST.v(), MT.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qsrcc_srcm_stm" +
-                                               "t_kind_tgtc_tgtmDebug.jedd:39,22-24"),
+                                               "t_kind_tgtc_tgtmDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

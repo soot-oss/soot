@@ -26,7 +26,7 @@ import soot.jimple.paddle.bdddomains.*;
 /** Keeps track of subtype relationships between PAG nodes.
  * @author Ondrej Lhotak
  */
-public abstract class AbsTypeManager
+public abstract class AbsTypeManager implements DepItem
 { 
     protected Rvar_method_type locals;
     protected Rvar_type globals;
@@ -38,7 +38,7 @@ public abstract class AbsTypeManager
         this.localallocs = localallocs;
         this.globalallocs = globalallocs;
     }
-    public abstract void update();
+    public abstract boolean update();
     public abstract BitVector get( Type type );
     public abstract <var, obj> get();
 

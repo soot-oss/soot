@@ -15,6 +15,7 @@ public final class Qctxt_methodNumTrace extends Qctxt_method {
     private LinkedList readers = new LinkedList();
     
     public void add(Context _ctxt, SootMethod _method) {
+        invalidate();
         Rctxt_method.Tuple in = new Rctxt_method.Tuple(_ctxt, _method);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rctxt_methodNumTrace reader = (Rctxt_methodNumTrace) it.next();

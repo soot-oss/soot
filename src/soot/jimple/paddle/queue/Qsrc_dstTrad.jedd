@@ -33,6 +33,7 @@ public class Qsrc_dstTrad extends Qsrc_dst {
     public void add( VarNode _src, VarNode _dst ) {
         q.add( _src );
         q.add( _dst );
+        invalidate();
     }
     public void add( <src:V1, dst:V2> in ) {
         Iterator it = in.iterator( new Attribute[] { src.v(), dst.v() } );

@@ -27,12 +27,14 @@ public final class Qvar_srcm_stmt_tgtmBDD extends Qvar_srcm_stmt_tgtm {
     }
     
     public void add(final jedd.internal.RelationContainer in) {
+        if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(in), jedd.internal.Jedd.v().falseBDD()))
+            invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_srcm_stmt_tgtmBDD reader = (Rvar_srcm_stmt_tgtmBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), srcm.v(), stmt.v(), tgtm.v() },
                                                            new PhysicalDomain[] { V1.v(), MS.v(), ST.v(), MT.v() },
                                                            ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
-                                                            "oot/jimple/paddle/queue/Qvar_srcm_stmt_tgtmBDD.jedd:39,12-18"),
+                                                            "oot/jimple/paddle/queue/Qvar_srcm_stmt_tgtmBDD.jedd:40,12-18"),
                                                            in));
         }
     }

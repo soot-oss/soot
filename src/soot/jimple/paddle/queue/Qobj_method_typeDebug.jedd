@@ -32,6 +32,7 @@ public class Qobj_method_typeDebug extends Qobj_method_type {
     private Qobj_method_typeBDD bdd = new Qobj_method_typeBDD(name+"bdd");
     private Qobj_method_typeSet trad = new Qobj_method_typeSet(name+"set");
     public void add( AllocNode _obj, SootMethod _method, Type _type ) {
+        invalidate();
         bdd.add( _obj, _method, _type );
         trad.add( _obj, _method, _type );
     }

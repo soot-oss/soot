@@ -24,7 +24,7 @@ import soot.jimple.paddle.queue.*;
  * context.
  * @author Ondrej Lhotak
  */
-public abstract class AbsVirtualContextManager 
+public abstract class AbsVirtualContextManager implements DepItem
 { 
     protected Rctxt_var_obj_srcm_stmt_kind_tgtm in;
     protected Qsrcc_srcm_stmt_kind_tgtc_tgtm out;
@@ -32,7 +32,7 @@ public abstract class AbsVirtualContextManager
         this.in = in;
         this.out = out;
     }
-    abstract boolean update();
+    public abstract boolean update();
 }
 
 

@@ -15,6 +15,7 @@ public final class Qobjc_obj_varc_varSet extends Qobjc_obj_varc_var {
     private LinkedList readers = new LinkedList();
     
     public void add(Context _objc, AllocNode _obj, Context _varc, VarNode _var) {
+        invalidate();
         Robjc_obj_varc_var.Tuple in = new Robjc_obj_varc_var.Tuple(_objc, _obj, _varc, _var);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Robjc_obj_varc_varSet reader = (Robjc_obj_varc_varSet) it.next();

@@ -14,7 +14,10 @@ public class QobjTrad extends Qobj {
     
     private ChunkedQueue q = new ChunkedQueue();
     
-    public void add(AllocNode _obj) { q.add(_obj); }
+    public void add(AllocNode _obj) {
+        q.add(_obj);
+        invalidate();
+    }
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
@@ -22,7 +25,7 @@ public class QobjTrad extends Qobj {
                                               new PhysicalDomain[] { H1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/QobjTrad.jedd:" +
-                                               "37,22-24"),
+                                               "38,22-24"),
                                               in).iterator(new Attribute[] { obj.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

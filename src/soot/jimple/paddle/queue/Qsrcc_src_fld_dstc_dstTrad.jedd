@@ -36,6 +36,7 @@ public class Qsrcc_src_fld_dstc_dstTrad extends Qsrcc_src_fld_dstc_dst {
         q.add( _fld );
         q.add( _dstc );
         q.add( _dst );
+        invalidate();
     }
     public void add( <srcc:C1, src:V1, fld:FD, dstc:C2, dst:V2> in ) {
         Iterator it = in.iterator( new Attribute[] { srcc.v(), src.v(), fld.v(), dstc.v(), dst.v() } );

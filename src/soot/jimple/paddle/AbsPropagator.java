@@ -24,7 +24,7 @@ import soot.jimple.paddle.queue.*;
 /** Propagates points-to sets along the pointer assignment graph.
  * @author Ondrej Lhotak
  */
-public abstract class AbsPropagator
+public abstract class AbsPropagator implements DepItem
 { 
     protected Rsrcc_src_dstc_dst newSimple;
     protected Rsrcc_src_fld_dstc_dst newLoad;
@@ -47,7 +47,7 @@ public abstract class AbsPropagator
         this.ptout = ptout;
         this.pag = pag;
     }
-    public abstract void update();
+    public abstract boolean update();
 }
 
 

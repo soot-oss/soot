@@ -31,7 +31,7 @@ public class BDDEdgeContextStripper extends AbsEdgeContextStripper
         super(in, out);
     }
     private <srcm, stmt, kind, tgtm> seen = 0B;
-    boolean update() {
+    public boolean update() {
         <srcm, stmt, kind, tgtm> newEdges = (srcc=>, tgtc=>) in.get();
         newEdges -= seen;
         seen |= newEdges;

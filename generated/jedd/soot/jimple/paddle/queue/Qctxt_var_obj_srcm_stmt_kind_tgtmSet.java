@@ -21,6 +21,7 @@ public final class Qctxt_var_obj_srcm_stmt_kind_tgtmSet extends Qctxt_var_obj_sr
                     Unit _stmt,
                     Kind _kind,
                     SootMethod _tgtm) {
+        invalidate();
         Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple in =
           new Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple(_ctxt, _var, _obj, _srcm, _stmt, _kind, _tgtm);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {

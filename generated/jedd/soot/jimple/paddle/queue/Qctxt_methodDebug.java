@@ -17,17 +17,18 @@ public class Qctxt_methodDebug extends Qctxt_method {
     private Qctxt_methodSet trad = new Qctxt_methodSet(name + "set");
     
     public void add(Context _ctxt, SootMethod _method) {
+        invalidate();
         bdd.add(_ctxt, _method);
         trad.add(_ctxt, _method);
     }
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
-                                              new PhysicalDomain[] { C1.v(), MS.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { method.v(), ctxt.v() },
+                                              new PhysicalDomain[] { MS.v(), C1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qctxt_methodDe" +
-                                               "bug.jedd:39,22-24"),
+                                               "bug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { ctxt.v(), method.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

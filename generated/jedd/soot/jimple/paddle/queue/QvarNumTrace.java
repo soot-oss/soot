@@ -15,6 +15,7 @@ public final class QvarNumTrace extends Qvar {
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _var) {
+        invalidate();
         Rvar.Tuple in = new Rvar.Tuple(_var);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             RvarNumTrace reader = (RvarNumTrace) it.next();

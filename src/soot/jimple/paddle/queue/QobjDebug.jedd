@@ -32,6 +32,7 @@ public class QobjDebug extends Qobj {
     private QobjBDD bdd = new QobjBDD(name+"bdd");
     private QobjSet trad = new QobjSet(name+"set");
     public void add( AllocNode _obj ) {
+        invalidate();
         bdd.add( _obj );
         trad.add( _obj );
     }

@@ -32,6 +32,7 @@ public class Qvar_objDebug extends Qvar_obj {
     private Qvar_objBDD bdd = new Qvar_objBDD(name+"bdd");
     private Qvar_objSet trad = new Qvar_objSet(name+"set");
     public void add( VarNode _var, AllocNode _obj ) {
+        invalidate();
         bdd.add( _var, _obj );
         trad.add( _var, _obj );
     }

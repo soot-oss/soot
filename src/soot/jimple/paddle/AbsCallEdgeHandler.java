@@ -27,7 +27,7 @@ import soot.util.*;
 /** Creates inter-procedural pointer assignment edges.
  * @author Ondrej Lhotak
  */
-public abstract class AbsCallEdgeHandler
+public abstract class AbsCallEdgeHandler implements DepItem
 { 
     AbsCallEdgeHandler( 
         Rsrcc_srcm_stmt_kind_tgtc_tgtm in,
@@ -42,7 +42,7 @@ public abstract class AbsCallEdgeHandler
     protected Qsrcm_stmt_kind_tgtm_src_dst parms;
     protected Qsrcm_stmt_kind_tgtm_src_dst rets;
     
-    abstract void update();
+    public abstract boolean update();
 }
 
 

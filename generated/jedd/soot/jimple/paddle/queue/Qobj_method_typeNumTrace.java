@@ -15,6 +15,7 @@ public final class Qobj_method_typeNumTrace extends Qobj_method_type {
     private LinkedList readers = new LinkedList();
     
     public void add(AllocNode _obj, SootMethod _method, Type _type) {
+        invalidate();
         Robj_method_type.Tuple in = new Robj_method_type.Tuple(_obj, _method, _type);
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Robj_method_typeNumTrace reader = (Robj_method_typeNumTrace) it.next();

@@ -19,6 +19,7 @@ public class Qvarc_var_objc_objTrad extends Qvarc_var_objc_obj {
         q.add(_var);
         q.add(_objc);
         q.add(_obj);
+        invalidate();
     }
     
     public void add(final jedd.internal.RelationContainer in) {
@@ -27,7 +28,7 @@ public class Qvarc_var_objc_objTrad extends Qvarc_var_objc_obj {
                                               new PhysicalDomain[] { V1.v(), C2.v(), C1.v(), H1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvarc_var_objc" +
-                                               "_objTrad.jedd:40,22-24"),
+                                               "_objTrad.jedd:41,22-24"),
                                               in).iterator(new Attribute[] { varc.v(), var.v(), objc.v(), obj.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

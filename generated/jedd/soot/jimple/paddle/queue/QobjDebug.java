@@ -17,6 +17,7 @@ public class QobjDebug extends Qobj {
     private QobjSet trad = new QobjSet(name + "set");
     
     public void add(AllocNode _obj) {
+        invalidate();
         bdd.add(_obj);
         trad.add(_obj);
     }
@@ -27,7 +28,7 @@ public class QobjDebug extends Qobj {
                                               new PhysicalDomain[] { H1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/QobjDebug.jedd" +
-                                               ":39,22-24"),
+                                               ":40,22-24"),
                                               in).iterator(new Attribute[] { obj.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

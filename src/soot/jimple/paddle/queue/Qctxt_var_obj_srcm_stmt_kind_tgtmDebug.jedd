@@ -32,6 +32,7 @@ public class Qctxt_var_obj_srcm_stmt_kind_tgtmDebug extends Qctxt_var_obj_srcm_s
     private Qctxt_var_obj_srcm_stmt_kind_tgtmBDD bdd = new Qctxt_var_obj_srcm_stmt_kind_tgtmBDD(name+"bdd");
     private Qctxt_var_obj_srcm_stmt_kind_tgtmSet trad = new Qctxt_var_obj_srcm_stmt_kind_tgtmSet(name+"set");
     public void add( Context _ctxt, VarNode _var, AllocNode _obj, SootMethod _srcm, Unit _stmt, Kind _kind, SootMethod _tgtm ) {
+        invalidate();
         bdd.add( _ctxt, _var, _obj, _srcm, _stmt, _kind, _tgtm );
         trad.add( _ctxt, _var, _obj, _srcm, _stmt, _kind, _tgtm );
     }
