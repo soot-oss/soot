@@ -210,7 +210,7 @@ public final class ThrowableSet {
 	    // UnsupportedClassVersionError, explicitly.  This is a
 	    // hack to allow Soot to analyze older class libraries 
 	    // (UnsupportedClassVersionError was added in JDK 1.2).
-	    allThrowablesSet.add(AnySubType.v(Scene.v().getRefType("java.lang.ClassFormatError")));
+	    resolveClassErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.ClassFormatError")));
 	    Scene.v().loadClassAndSupport("java.lang.IllegalAccessError");
 	    resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IllegalAccessError"));
 	    Scene.v().loadClassAndSupport("java.lang.IncompatibleClassChangeError");

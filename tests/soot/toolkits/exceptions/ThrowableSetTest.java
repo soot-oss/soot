@@ -19,7 +19,6 @@ public class ThrowableSetTest extends TestCase {
     // We need to keep expectedSizeToSets and expectedMemoizations
     // static so that JUnit won't clear it out between the execution
     // of individual tests.
-    private static ExceptionTestUtility util = new ExceptionTestUtility(jdkLocation);
     private static ExpectedSizeToSets expectedSizeToSets = new ExpectedSizeToSets();
     static {
 	// The empty set.
@@ -31,7 +30,7 @@ public class ThrowableSetTest extends TestCase {
 	temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Throwable")));
 	expectedSizeToSets.add(temp);
 	
-	// Async errors set.
+	// VM errors set.
 	temp = new ExceptionHashSet();
 	temp.add(Scene.v().getRefType("java.lang.InternalError"));
 	temp.add(Scene.v().getRefType("java.lang.OutOfMemoryError"));
@@ -39,8 +38,31 @@ public class ThrowableSetTest extends TestCase {
 	temp.add(Scene.v().getRefType("java.lang.UnknownError"));
 	temp.add(Scene.v().getRefType("java.lang.ThreadDeath"));
 	expectedSizeToSets.add(temp);
-	
-	// Linkage errors set.
+
+	// Resolve Class errors set.
+	Set classErrors = new ExceptionHashSet();
+	classErrors.add(Scene.v().getRefType("java.lang.ClassCircularityError"));
+	classErrors.add(AnySubType.v(Scene.v().getRefType("java.lang.ClassFormatError")));
+	classErrors.add(Scene.v().getRefType("java.lang.IllegalAccessError"));
+	classErrors.add(Scene.v().getRefType("java.lang.IncompatibleClassChangeError"));
+	classErrors.add(Scene.v().getRefType("java.lang.LinkageError"));
+	classErrors.add(Scene.v().getRefType("java.lang.NoClassDefFoundError"));
+	classErrors.add(Scene.v().getRefType("java.lang.VerifyError"));
+	expectedSizeToSets.add(classErrors);
+
+	// Resolve Field errors set.
+	temp = new ExceptionHashSet(classErrors);
+	temp.add(Scene.v().getRefType("java.lang.NoSuchFieldError"));
+	expectedSizeToSets.add(temp);
+
+	// Resolve method errors set.
+	temp = new ExceptionHashSet(classErrors);
+	temp.add(Scene.v().getRefType("java.lang.AbstractMethodError"));
+	temp.add(Scene.v().getRefType("java.lang.NoSuchMethodError"));
+	temp.add(Scene.v().getRefType("java.lang.UnsatisfiedLinkError"));
+	expectedSizeToSets.add(temp);
+
+	// Initialization errors set.
 	temp = new ExceptionHashSet();
 	temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
 	expectedSizeToSets.add(temp);
@@ -151,6 +173,8 @@ public class ThrowableSetTest extends TestCase {
 	return actualResult;
     }
 
+
+    private ExceptionTestUtility util = new ExceptionTestUtility(jdkLocation);
 
     private ThrowableSet add(ThrowableSet lhs, ThrowableSet rhs, 
 			     Set expectedResult) {
@@ -330,14 +354,14 @@ public class ThrowableSetTest extends TestCase {
 	if (DUMP_INTERNALS) {
 	    System.err.println("\n\ntestAddingSets1()");
 	}
-	Set expected = new ExceptionHashSet(util.ASYNC_ERRORS);
+	Set expected = new ExceptionHashSet(util.VM_ERRORS);
 	expected.add(util.UNDECLARED_THROWABLE_EXCEPTION);
-	ThrowableSet set0 = add(mgr.ASYNC_ERRORS,
+	ThrowableSet set0 = add(mgr.VM_ERRORS,
 				util.UNDECLARED_THROWABLE_EXCEPTION, expected);
 	expected.add(util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION);
 	set0 = add(set0, util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION, expected);
     
-	ThrowableSet set1 = mgr.LINKAGE_ERRORS;
+	ThrowableSet set1 = mgr.INITIALIZATION_ERRORS;
 	expected = new ExceptionHashSet();
 	expected.add(AnySubType.v(util.ERROR));
 	assertTrue(util.sameMembers(expected, set1));

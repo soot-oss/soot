@@ -50,25 +50,34 @@ public class ExceptionTestUtility {
     // The universe of all Throwable types for our tests:
     final Set ALL_TEST_THROWABLES;
 
-    // Representation of all Throwables that matches that used internally
-    // by ThrowableSet:
-    final Set ALL_THROWABLES_REPRESENTATION;
+    // Set that matches the representation of all Throwables used
+    // internally by ThrowableSet:
+    final Set ALL_THROWABLES_REP;
 
-    // Some useful subsets of the universe:
-    final Set ASYNC_ERRORS;
-    final Set ASYNC_ERRORS_PLUS_SUPERTYPES;
-    final Set ASYNC_AND_LINKAGE_ERRORS;
+    // Some useful subsets of our Throwable universe:
+    final Set VM_ERRORS;
+    final Set VM_ERRORS_PLUS_SUPERTYPES;
+    final Set VM_AND_RESOLVE_CLASS_ERRORS;
+    final Set VM_AND_RESOLVE_CLASS_ERRORS_PLUS_SUPERTYPES;
+    final Set VM_AND_RESOLVE_FIELD_ERRORS;
+    final Set VM_AND_RESOLVE_FIELD_ERRORS_PLUS_SUPERTYPES;
+    final Set VM_AND_RESOLVE_METHOD_ERRORS;
+    final Set VM_AND_RESOLVE_METHOD_ERRORS_PLUS_SUPERTYPES;
     final Set ALL_TEST_ERRORS;
     final Set ALL_TEST_ERRORS_PLUS_SUPERTYPES;
-    final Set ALL_ERRORS_REPRESENTATION; // Representation of all subtypes of
-					 // Error used internally by
-					 // ThrowableSet.
     final Set PERENNIAL_THROW_EXCEPTIONS;
     final Set PERENNIAL_THROW_EXCEPTIONS_PLUS_SUPERTYPES;
     final Set THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE;
     final Set THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUPERTYPES;
     final Set THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUBTYPES;
     final Set THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE_PLUS_SUBTYPES_PLUS_SUPERTYPES;
+
+    // Sets that match the representations of subsets of Errors used
+    // internally by ThrowableSet:
+    final Set VM_AND_RESOLVE_CLASS_ERRORS_REP;
+    final Set VM_AND_RESOLVE_FIELD_ERRORS_REP;
+    final Set VM_AND_RESOLVE_METHOD_ERRORS_REP;
+    final Set ALL_ERRORS_REP;
 
     ExceptionTestUtility(String pathToJavaLib) {
 	Scene.v().setSootClassPath(pathToJavaLib);
@@ -137,7 +146,7 @@ public class ExceptionTestUtility {
 
 	Scene.v().loadClassAndSupport("java.lang.UnsupportedClassVersionError");
 	UNSUPPORTED_CLASS_VERSION_ERROR
-	    = Scene.v().getRefType("java.lang.UnsupportedClassVersionError");
+    	    = Scene.v().getRefType("java.lang.UnsupportedClassVersionError");
 
 	Scene.v().loadClassAndSupport("java.lang.ExceptionInInitializerError");
 	EXCEPTION_IN_INITIALIZER_ERROR
@@ -180,21 +189,13 @@ public class ExceptionTestUtility {
 	    = Scene.v().getRefType("java.lang.VerifyError");
 
 	// Token non-linkage Error (in the sense that it is not among
-	// Errors that the VM might throw itself during linkage--- any
+	// Errors that the VM might throw itself during linkage---any
 	// error could be generated during linking by a static
 	// initializer).
 	Scene.v().loadClassAndSupport("java.awt.AWTError");
 	AWT_ERROR = Scene.v().getRefType("java.awt.AWTError");
 
-	// async errors:
-	Scene.v().loadClassAndSupport("java.lang.ThreadDeath");
-	THREAD_DEATH
-	    = Scene.v().getRefType("java.lang.ThreadDeath");
-
-	Scene.v().loadClassAndSupport("java.lang.VirtualMachineError");
-	VIRTUAL_MACHINE_ERROR
-	    = Scene.v().getRefType("java.lang.VirtualMachineError");
-
+	// VM errors:
 	Scene.v().loadClassAndSupport("java.lang.InternalError");
 	INTERNAL_ERROR
 	    = Scene.v().getRefType("java.lang.InternalError");
@@ -211,9 +212,17 @@ public class ExceptionTestUtility {
 	UNKNOWN_ERROR
 	    = Scene.v().getRefType("java.lang.UnknownError");
 
+	Scene.v().loadClassAndSupport("java.lang.ThreadDeath");
+	THREAD_DEATH
+	    = Scene.v().getRefType("java.lang.ThreadDeath");
+
+	Scene.v().loadClassAndSupport("java.lang.VirtualMachineError");
+	VIRTUAL_MACHINE_ERROR
+	    = Scene.v().getRefType("java.lang.VirtualMachineError");
+
 	// Two Throwables that our test statements will never throw (except
-	// for invoke statements in the absence of interprocedural analysis--
-	// they can throw anything).
+	// for invoke statements--in the absence of interprocedural analysis,
+	// we have to assume they can throw anything).
 	Scene.v().loadClassAndSupport("java.lang.reflect.UndeclaredThrowableException");
 	UNDECLARED_THROWABLE_EXCEPTION
 	    = Scene.v().getRefType("java.lang.reflect.UndeclaredThrowableException");
@@ -222,7 +231,7 @@ public class ExceptionTestUtility {
 	UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION
 	    = Scene.v().getRefType("javax.swing.UnsupportedLookAndFeelException");
 	
-	ASYNC_ERRORS = Collections.unmodifiableSet(
+	VM_ERRORS = Collections.unmodifiableSet(
 	    new ExceptionHashSet(Arrays.asList(new RefType[] {
 		THREAD_DEATH,
 		INTERNAL_ERROR,
@@ -231,54 +240,86 @@ public class ExceptionTestUtility {
 		UNKNOWN_ERROR,
 	    })));
 
-	Set temp = new ExceptionHashSet(ASYNC_ERRORS);
+	Set temp = new ExceptionHashSet(VM_ERRORS);
 	temp.add(VIRTUAL_MACHINE_ERROR);
 	temp.add(ERROR);
 	temp.add(THROWABLE);
-	ASYNC_ERRORS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
+	VM_ERRORS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
 
-	temp = new ExceptionHashSet(ASYNC_ERRORS);
-	temp.add(LINKAGE_ERROR);
+	temp = new ExceptionHashSet(VM_ERRORS);
 	temp.add(CLASS_CIRCULARITY_ERROR);
+	temp.add(ILLEGAL_ACCESS_ERROR);
+	temp.add(INCOMPATIBLE_CLASS_CHANGE_ERROR);
+	temp.add(LINKAGE_ERROR);
+	temp.add(NO_CLASS_DEF_FOUND_ERROR);
+	temp.add(VERIFY_ERROR);
+	Set tempForRep = new ExceptionHashSet(temp);
+	tempForRep.add(AnySubType.v(CLASS_FORMAT_ERROR));
+	VM_AND_RESOLVE_CLASS_ERRORS_REP = Collections.unmodifiableSet(tempForRep);
+
 	temp.add(CLASS_FORMAT_ERROR);
 	temp.add(UNSUPPORTED_CLASS_VERSION_ERROR);
-	temp.add(EXCEPTION_IN_INITIALIZER_ERROR);
-	temp.add(INCOMPATIBLE_CLASS_CHANGE_ERROR);
-	temp.add(ABSTRACT_METHOD_ERROR);
-	temp.add(ILLEGAL_ACCESS_ERROR);
-	temp.add(INSTANTIATION_ERROR);
-	temp.add(NO_SUCH_FIELD_ERROR);
-	temp.add(NO_SUCH_METHOD_ERROR);
-	temp.add(NO_CLASS_DEF_FOUND_ERROR);
-	temp.add(UNSATISFIED_LINK_ERROR);
-	temp.add(VERIFY_ERROR);
-	ASYNC_AND_LINKAGE_ERRORS = Collections.unmodifiableSet(temp);
-
-	temp = new ExceptionHashSet(ASYNC_AND_LINKAGE_ERRORS);
+	VM_AND_RESOLVE_CLASS_ERRORS = Collections.unmodifiableSet(temp);
 	temp.add(VIRTUAL_MACHINE_ERROR);
+	temp.add(ERROR);
+	temp.add(THROWABLE);
+	VM_AND_RESOLVE_CLASS_ERRORS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
+
+	temp = new ExceptionHashSet(VM_AND_RESOLVE_CLASS_ERRORS_REP);
+	temp.add(NO_SUCH_FIELD_ERROR);
+	VM_AND_RESOLVE_FIELD_ERRORS_REP = Collections.unmodifiableSet(temp);
+
+	temp = new ExceptionHashSet(VM_AND_RESOLVE_CLASS_ERRORS);
+	temp.add(NO_SUCH_FIELD_ERROR);
+	VM_AND_RESOLVE_FIELD_ERRORS = Collections.unmodifiableSet(temp);
+	temp.add(VIRTUAL_MACHINE_ERROR);
+	temp.add(ERROR);
+	temp.add(THROWABLE);
+	VM_AND_RESOLVE_FIELD_ERRORS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
+	
+	temp = new ExceptionHashSet(VM_AND_RESOLVE_CLASS_ERRORS_REP);
+	temp.add(ABSTRACT_METHOD_ERROR);
+	temp.add(NO_SUCH_METHOD_ERROR);
+	temp.add(UNSATISFIED_LINK_ERROR);
+	VM_AND_RESOLVE_METHOD_ERRORS_REP = Collections.unmodifiableSet(temp);
+
+	temp = new ExceptionHashSet(VM_AND_RESOLVE_CLASS_ERRORS);
+	temp.add(ABSTRACT_METHOD_ERROR);
+	temp.add(NO_SUCH_METHOD_ERROR);
+	temp.add(UNSATISFIED_LINK_ERROR);
+	VM_AND_RESOLVE_METHOD_ERRORS = Collections.unmodifiableSet(temp);
+	temp.add(VIRTUAL_MACHINE_ERROR);
+	temp.add(ERROR);
+	temp.add(THROWABLE);
+	VM_AND_RESOLVE_METHOD_ERRORS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
+
+	temp = new ExceptionHashSet();
+	temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
+	ALL_ERRORS_REP = Collections.unmodifiableSet(temp);
+
+	temp = new ExceptionHashSet(VM_AND_RESOLVE_METHOD_ERRORS);
+	temp.add(NO_SUCH_FIELD_ERROR);
+	temp.add(EXCEPTION_IN_INITIALIZER_ERROR);
+	temp.add(INSTANTIATION_ERROR);
 	temp.add(AWT_ERROR);
 	ALL_TEST_ERRORS = Collections.unmodifiableSet(temp);
 	
-	temp = new ExceptionHashSet();
-	temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
-	ALL_ERRORS_REPRESENTATION = Collections.unmodifiableSet(temp);
-
 	temp = new ExceptionHashSet(ALL_TEST_ERRORS);
+	temp.add(VIRTUAL_MACHINE_ERROR);
 	temp.add(ERROR);
 	temp.add(THROWABLE);
 	ALL_TEST_ERRORS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
 
-	temp = new ExceptionHashSet(ASYNC_ERRORS);
+	temp = new ExceptionHashSet(VM_ERRORS);
 	temp.add(ILLEGAL_MONITOR_STATE_EXCEPTION);
 	temp.add(NULL_POINTER_EXCEPTION);
 	PERENNIAL_THROW_EXCEPTIONS = Collections.unmodifiableSet(temp);
 
-	temp = new ExceptionHashSet(ASYNC_ERRORS_PLUS_SUPERTYPES);
+	temp = new ExceptionHashSet(VM_ERRORS_PLUS_SUPERTYPES);
 	temp.add(ILLEGAL_MONITOR_STATE_EXCEPTION);
 	temp.add(NULL_POINTER_EXCEPTION);
 	temp.add(RUNTIME_EXCEPTION);
 	temp.add(EXCEPTION);
-	temp.add(THROWABLE);
 	PERENNIAL_THROW_EXCEPTIONS_PLUS_SUPERTYPES = Collections.unmodifiableSet(temp);
 
 	temp = new ExceptionHashSet(PERENNIAL_THROW_EXCEPTIONS);
@@ -310,26 +351,47 @@ public class ExceptionTestUtility {
 	
 	temp = new ExceptionHashSet(Arrays.asList(new RefType[] {
 	    THROWABLE,
-	    ERROR,
 	    EXCEPTION,
 	    RUNTIME_EXCEPTION,
 	    ARITHMETIC_EXCEPTION,
 	    ARRAY_STORE_EXCEPTION,
 	    CLASS_CAST_EXCEPTION ,
+	    ILLEGAL_MONITOR_STATE_EXCEPTION,
 	    INDEX_OUT_OF_BOUNDS_EXCEPTION,
 	    ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION,
 	    STRING_INDEX_OUT_OF_BOUNDS_EXCEPTION,
 	    NEGATIVE_ARRAY_SIZE_EXCEPTION,
+	    NULL_POINTER_EXCEPTION,
+	    ERROR,
+	    LINKAGE_ERROR,
+	    CLASS_CIRCULARITY_ERROR,
+	    CLASS_FORMAT_ERROR,
+	    UNSUPPORTED_CLASS_VERSION_ERROR,
+	    EXCEPTION_IN_INITIALIZER_ERROR,
+	    INCOMPATIBLE_CLASS_CHANGE_ERROR,
+	    ABSTRACT_METHOD_ERROR,
+	    ILLEGAL_ACCESS_ERROR,
+	    INSTANTIATION_ERROR,
+	    NO_SUCH_FIELD_ERROR,
+	    NO_SUCH_METHOD_ERROR,
+	    NO_CLASS_DEF_FOUND_ERROR,
+	    UNSATISFIED_LINK_ERROR,
+	    VERIFY_ERROR,
+	    THREAD_DEATH,
+	    VIRTUAL_MACHINE_ERROR,
+	    INTERNAL_ERROR,
+	    OUT_OF_MEMORY_ERROR,
+	    STACK_OVERFLOW_ERROR,
+	    UNKNOWN_ERROR,
+	    AWT_ERROR, 
 	    UNDECLARED_THROWABLE_EXCEPTION,
 	    UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION,
 	}));
-	temp.addAll(ALL_TEST_ERRORS);
-	temp.addAll(THROW_PLUS_INCOMPATIBLE_CLASS_CHANGE);
 	ALL_TEST_THROWABLES = Collections.unmodifiableSet(temp);
 
 	temp = new ExceptionHashSet();
 	temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Throwable")));
-	ALL_THROWABLES_REPRESENTATION = Collections.unmodifiableSet(temp);
+	ALL_THROWABLES_REP = Collections.unmodifiableSet(temp);
     }
 
 
