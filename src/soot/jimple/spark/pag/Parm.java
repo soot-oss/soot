@@ -32,6 +32,7 @@ public class Parm implements SparkField {
     private Parm( SootMethod m, int i ) {
         index = i;
         method = m;
+        Scene.v().getFieldNumberer().add(this);
     }
     public static Parm v( SootMethod m, int index ) {
         Pair p = new Pair( m, new Integer(index) );
@@ -47,4 +48,13 @@ public class Parm implements SparkField {
     public String toString() {
         return "Parm "+index+" to "+method;
     }
+
+    public final int getNumber() {
+        return number;
+    }
+    public final void setNumber(int number) {
+        this.number = number;
+    }
+    private int number = 0;
+
 }

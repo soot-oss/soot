@@ -43,7 +43,7 @@ public class AllocNode extends Node {
 
     /* End of public methods. */
 
-    AllocNode( PAG pag, Object newExpr, Type t, SootMethod m ) {
+    AllocNode( AbstractPAG pag, Object newExpr, Type t, SootMethod m ) {
 	super( pag, t );
         this.method = m;
         if( t instanceof RefType ) {

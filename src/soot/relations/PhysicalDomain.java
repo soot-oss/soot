@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
+ * Copyright (C) 2003 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,21 +17,33 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.jimple.spark.builder;
-import soot.jimple.spark.*;
-import soot.jimple.spark.pag.PAG;
-import soot.jimple.toolkits.callgraph.CallGraphBuilder;
-import soot.options.SparkOptions;
+package soot.relations;
+import soot.jbuddy.*;
 
-/** Generic interface to a pointer assignment graph builder.
- * @author Ondrej Lhotak
- */
-public interface Builder {
-    public void preJimplify();
-    /** Creates an empty pointer assignment graph. */
-    public PAG setup( SparkOptions opts );
-    /** Fills in the pointer assignment graph returned by setup. */
-    public void build();
-    public CallGraphBuilder getCallGraphBuilder();
+public class PhysicalDomain
+{ 
+    static {
+        System.loadLibrary("jbuddy");
+        JBuddy.bdd_init( 10000, 10000 );
+    }
+    public PhysicalDomain( int bits ) {
+        this.bits = bits;
+        int[] sizes = { 1<<bits };
+        var = JBuddy.fdd_extdomain( sizes, 1 );
+    }
+    public PhysicalDomain( int bits, String name ) {
+        this(bits);
+        this.name = name;
+    }
+    private int bits;
+    private int var;
+    private String name;
+    public String toString() {
+        if( name == null ) return super.toString();
+        return name;
+    }
+    public int var() { return var; }
+    public int ithvar( int value ) {
+        return JBuddy.fdd_ithvar( var, value );
+    }
 }
-

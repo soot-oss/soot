@@ -33,34 +33,21 @@ import soot.tagkit.*;
 /** Main entry point for Spark.
  * @author Ondrej Lhotak
  */
-public class SparkTransformer extends SceneTransformer
+public class SparkTransformer extends AbstractSparkTransformer
 { 
     public SparkTransformer( Singletons.Global g ) {}
     public static SparkTransformer v() { return G.v().SparkTransformer(); }
 
-    private static void reportTime( String desc, Date start, Date end ) {
-        long time = end.getTime()-start.getTime();
-        G.v().out.println( "[Spark] "+desc+" in "+time/1000+"."+(time/100)%10+" seconds." );
-    }
-    private static void doGC() {
-        // Do 5 times because the garbage collector doesn't seem to always collect
-        // everything on the first try.
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
-    }
     protected void internalTransform( String phaseName, Map options )
     {
         SparkOptions opts = new SparkOptions( options );
 
         // Build pointer assignment graph
-        Builder b = new ContextInsensitiveBuilder();
+        ContextInsensitiveBuilder b = new ContextInsensitiveBuilder();
         if( opts.pre_jimplify() ) b.preJimplify();
         if( opts.force_gc() ) doGC();
         Date startBuild = new Date();
-        final PAG pag = b.setup( opts );
+        final PAG pag = (PAG) b.setup( opts );
         b.build();
         Date endBuild = new Date();
         reportTime( "Pointer Assignment Graph", startBuild, endBuild );
@@ -132,8 +119,8 @@ public class SparkTransformer extends SceneTransformer
         if( propagator[0] != null ) propagator[0].propagate();
         Date endProp = new Date();
         reportTime( "Propagation", startProp, endProp );
-        if( opts.force_gc() ) doGC();
         reportTime( "Solution found", startSimplify, endProp );
+        if( opts.force_gc() ) doGC();
         
         if( !opts.on_fly_cg() || opts.vta() ) {
             CallGraphBuilder cgb = new CallGraphBuilder( pag );
@@ -145,7 +132,7 @@ public class SparkTransformer extends SceneTransformer
                     +Scene.v().getReachableMethods().size() );
         }
 
-        if( opts.set_mass() ) findSetMass( pag, b );
+        if( opts.set_mass() ) findSetMass( pag );
 
         /*
         if( propagator[0] instanceof PropMerge ) {
@@ -162,11 +149,6 @@ public class SparkTransformer extends SceneTransformer
         if( opts.add_tags() ) {
             addTags( pag );
         }
-    }
-
-    protected void addTag( Host h, Node n, Map nodeToTag, Tag unknown ) {
-        if( nodeToTag.containsKey( n ) ) h.addTag( (Tag) nodeToTag.get(n) );
-        else h.addTag( unknown );
     }
     protected void addTags( PAG pag ) {
         final Tag unknown = new StringTag( "Untagged Spark node" );
@@ -210,128 +192,6 @@ public class SparkTransformer extends SceneTransformer
                 }
             }
         }
-    }
-
-    protected void findSetMass( PAG pag, Builder b ) {
-        int mass = 0;
-        int varMass = 0;
-        int adfs = 0;
-        int scalars = 0;
-        if( false ) {
-            for( Iterator it = Scene.v().getReachableMethods().listener(); it.hasNext(); ) {
-                SootMethod m = (SootMethod) it.next();
-                G.v().out.println( m.getBytecodeSignature() );
-            }
-        }
-
-
-        for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
-
-
-            final VarNode v = (VarNode) vIt.next();
-                scalars++;
-            PointsToSetInternal set = v.getP2Set();
-            if( set != null ) mass += set.size();
-            if( set != null ) varMass += set.size();
-            if( set != null && set.size() > 0 ) {
-                //G.v().out.println( "V "+v.getVariable()+" "+set.size() );
-            //    G.v().out.println( ""+v.getVariable()+" "+v.getMethod()+" "+set.size() );
-            }
-        }
-        for( Iterator anIt = pag.allocSources().iterator(); anIt.hasNext(); ) {
-            final AllocNode an = (AllocNode) anIt.next();
-            for( Iterator adfIt = an.getFields().iterator(); adfIt.hasNext(); ) {
-                final AllocDotField adf = (AllocDotField) adfIt.next();
-                PointsToSetInternal set = adf.getP2Set();
-                if( set != null ) mass += set.size();
-                if( set != null && set.size() > 0 ) {
-                    adfs++;
-            //        G.v().out.println( ""+adf.getBase().getNewExpr()+"."+adf.getField()+" "+set.size() );
-                }
-            }
-        }
-        G.v().out.println( "Set mass: " + mass );
-        G.v().out.println( "Variable mass: " + varMass );
-        G.v().out.println( "Scalars: "+scalars );
-        G.v().out.println( "adfs: "+adfs );
-        // Compute points-to set sizes of dereference sites BEFORE
-        // trimming sets by declared type
-        int[] deRefCounts = new int[30001];
-        for( Iterator vIt = pag.getDereferences().iterator(); vIt.hasNext(); ) {
-            final VarNode v = (VarNode) vIt.next();
-            PointsToSetInternal set = v.getP2Set();
-            int size = 0;
-            if( set != null ) size = set.size();
-            deRefCounts[size]++;
-        }
-        int total = 0;
-        for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
-        G.v().out.println( "Dereference counts BEFORE trimming (total = "+total+"):" );
-        for( int i=0; i < deRefCounts.length; i++ ) {
-            if( deRefCounts[i] > 0 ) {
-                G.v().out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
-            }
-        }
-        // Compute points-to set sizes of dereference sites AFTER
-        // trimming sets by declared type
-        if( pag.getTypeManager().getFastHierarchy() == null ) {
-            pag.getTypeManager().clearTypeMask();
-            pag.getTypeManager().setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
-            pag.getTypeManager().makeTypeMask( pag );
-            deRefCounts = new int[30001];
-            for( Iterator vIt = pag.getDereferences().iterator(); vIt.hasNext(); ) {
-                final VarNode v = (VarNode) vIt.next();
-                PointsToSetInternal set = 
-                    pag.getSetFactory().newSet( v.getType(), pag );
-                int size = 0;
-                if( set != null ) {
-                    v.getP2Set().setType( null );
-                    v.getP2Set().getNewSet().setType( null );
-                    v.getP2Set().getOldSet().setType( null );
-                    set.addAll( v.getP2Set(), null );
-                    size = set.size();
-                }
-                deRefCounts[size]++;
-            }
-            total = 0;
-            for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
-            G.v().out.println( "Dereference counts AFTER trimming (total = "+total+"):" );
-            for( int i=0; i < deRefCounts.length; i++ ) {
-                if( deRefCounts[i] > 0 ) {
-                    G.v().out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
-                }
-            }
-        }
-        /*
-        deRefCounts = new int[30001];
-        for( Iterator siteIt = ig.getAllSites().iterator(); siteIt.hasNext(); ) {
-            final Stmt site = (Stmt) siteIt.next();
-            SootMethod method = ig.getDeclaringMethod( site );
-            Value ie = site.getInvokeExpr();
-            if( !(ie instanceof VirtualInvokeExpr) 
-                    && !(ie instanceof InterfaceInvokeExpr) ) continue;
-            InstanceInvokeExpr expr = (InstanceInvokeExpr) site.getInvokeExpr();
-            Local receiver = (Local) expr.getBase();
-            Collection types = pag.reachingObjects( method, site, receiver )
-                .possibleTypes();
-            Type receiverType = receiver.getType();
-            if( receiverType instanceof ArrayType ) {
-                receiverType = RefType.v( "java.lang.Object" );
-            }
-            Collection targets =
-                Scene.v().getOrMakeFastHierarchy().resolveConcreteDispatchWithoutFailing(
-                        types, expr.getMethod(), (RefType) receiverType );
-            deRefCounts[targets.size()]++;
-        }
-        total = 0;
-        for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
-        G.v().out.println( "Virtual invoke target counts (total = "+total+"):" );
-        for( int i=0; i < deRefCounts.length; i++ ) {
-            if( deRefCounts[i] > 0 ) {
-                G.v().out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
-            }
-        }
-        */
     }
 }
 

@@ -6,6 +6,7 @@
             srcdir="src"
             destdir="classes"
             classpath="classes:${java.class.path}"
+            debug="true"
         >
         </javac>
     </target>
@@ -58,6 +59,7 @@
             srcdir="tests"
             destdir="testclasses"
             classpath="classes:${java.class.path}"
+            debug="true"
             />
     </target>
 

@@ -29,4 +29,15 @@ public class ArrayElement implements SparkField {
     public ArrayElement( Singletons.Global g ) {}
     public static ArrayElement v() { return G.v().ArrayElement(); }
 
+    public ArrayElement() {
+        Scene.v().getFieldNumberer().add(this);
+    }
+
+    public final int getNumber() {
+        return number;
+    }
+    public final void setNumber(int number) {
+        this.number = number;
+    }
+    private int number = 0;
 }

@@ -29,12 +29,13 @@ package soot;
 import soot.tagkit.*;
 import soot.jimple.*;
 import java.util.*;
+import soot.util.*;
 import soot.jimple.spark.pag.SparkField;
 
 /**
     Soot representation of a Java field.  Can be declared to belong to a SootClass.
 */
-public class SootField extends AbstractHost implements ClassMember, SparkField
+public class SootField extends AbstractHost implements ClassMember, SparkField, Numberable
 {
     String name;
     Type type;
@@ -50,6 +51,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField
         this.name = name;
         this.type = type;
         this.modifiers = modifiers;
+        if( type instanceof RefLikeType ) Scene.v().getFieldNumberer().add(this);
     }
 
     /** Constructs a Soot field with the given name, type and no modifiers. */
@@ -58,6 +60,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField
         this.name = name;
         this.type = type;
         this.modifiers = 0;
+        if( type instanceof RefLikeType ) Scene.v().getFieldNumberer().add(this);
     }
 
     public int equivHashCode()
@@ -213,6 +216,13 @@ public class SootField extends AbstractHost implements ClassMember, SparkField
     {
         return getOriginalStyleDeclaration();
     }
+    public final int getNumber() {
+        return number;
+    }
+    public final void setNumber(int number) {
+        this.number = number;
+    }
+    private int number = 0;
 }
 
 

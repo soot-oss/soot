@@ -46,6 +46,7 @@ import soot.tagkit.*;
 import soot.options.Options;
 import soot.toolkits.scalar.*;
 import soot.jimple.spark.SparkTransformer;
+import soot.jimple.spark.BDDSparkTransformer;
 import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.jimple.spark.fieldrw.*;
 import soot.dava.*;
@@ -82,6 +83,7 @@ public class PackManager {
         {
             p.add(new Transform("cg.cha", CHATransformer.v()));
             p.add(new Transform("cg.spark", SparkTransformer.v()));
+            p.add(new Transform("cg.bdd", BDDSparkTransformer.v()));
         }
 
         // Whole-Shimple transformation pack (DISABLED)

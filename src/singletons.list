@@ -120,6 +120,7 @@ SequenceFinder
 ShortType
 SideEffectTagger
 SparkTransformer
+BDDSparkTransformer
 StaticInliner
 StaticMethodBinder
 StmtAddressType

@@ -33,7 +33,7 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
-    public StandardParms( PAG pag, MethodPAG mpag ) {
+    public StandardParms( AbstractPAG pag, AbstractMethodPAG mpag ) {
 	this.pag = pag;
 	this.mpag = mpag;
         setCurrentMethod( mpag==null ? null : mpag.getMethod() );
@@ -120,8 +120,8 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
      * null if the caller does not need this information. */
     final public void addCallTarget( Stmt s, SootMethod target,
             Object varNodeParameter ) {
-        MethodPAG mpag = null;
-        if( target != null ) mpag = MethodPAG.v( pag, target );
+        AbstractMethodPAG mpag = null;
+        if( target != null ) mpag = AbstractMethodPAG.v( pag, target );
         InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
         int numArgs = ie.getArgCount();
         for( int i = 0; i < numArgs; i++ ) {
@@ -423,8 +423,8 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
         ret.setInterProcSource();
         return ret;
     }
-    protected PAG pag;
-    protected MethodPAG mpag;
+    protected AbstractPAG pag;
+    protected AbstractMethodPAG mpag;
     protected SootMethod currentMethod;
 }
 

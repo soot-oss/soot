@@ -744,18 +744,6 @@ public class Singletons {
         if( instanceNullPointerChecker == null ) instanceNullPointerChecker = new NullPointerChecker( g );
         return instanceNullPointerChecker;
     }
-    
-	private NullPointerColorer instanceNullPointerColorer;
-    public NullPointerColorer NullPointerColorer() {
-        if( instanceNullPointerColorer == null ) instanceNullPointerColorer = new NullPointerColorer( g );
-        return instanceNullPointerColorer;
-    }
-	
-	private ParityTagger instanceParityTagger;
-    public ParityTagger ParityTagger() {
-        if( instanceParityTagger == null ) instanceParityTagger = new ParityTagger( g );
-        return instanceParityTagger;
-    }
 
     private NullType instanceNullType;
     public NullType NullType() {
@@ -827,6 +815,12 @@ public class Singletons {
     public SparkTransformer SparkTransformer() {
         if( instanceSparkTransformer == null ) instanceSparkTransformer = new SparkTransformer( g );
         return instanceSparkTransformer;
+    }
+
+    private BDDSparkTransformer instanceBDDSparkTransformer;
+    public BDDSparkTransformer BDDSparkTransformer() {
+        if( instanceBDDSparkTransformer == null ) instanceBDDSparkTransformer = new BDDSparkTransformer( g );
+        return instanceBDDSparkTransformer;
     }
 
     private StaticInliner instanceStaticInliner;
@@ -989,6 +983,18 @@ public class Singletons {
     public SConstantPropagatorAndFolder SConstantPropagatorAndFolder() {
         if( instanceSConstantPropagatorAndFolder == null ) instanceSConstantPropagatorAndFolder = new SConstantPropagatorAndFolder( g );
         return instanceSConstantPropagatorAndFolder;
+    }
+
+    private NullPointerColorer instanceNullPointerColorer;
+    public NullPointerColorer NullPointerColorer() {
+        if( instanceNullPointerColorer == null ) instanceNullPointerColorer = new NullPointerColorer( g );
+        return instanceNullPointerColorer;
+    }
+
+    private ParityTagger instanceParityTagger;
+    public ParityTagger ParityTagger() {
+        if( instanceParityTagger == null ) instanceParityTagger = new ParityTagger( g );
+        return instanceParityTagger;
     }
 
 }

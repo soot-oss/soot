@@ -34,18 +34,10 @@ import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 /** Part of a pointer assignment graph for a single method.
  * @author Ondrej Lhotak
  */
-public final class MethodPAG {
-    SootMethod method;
-    PAG pag;
-    Parms parms;
-    public static MethodPAG v( PAG pag, SootMethod m ) {
-        MethodPAG ret = (MethodPAG) G.v().MethodPAG_methodToPag.get( m );
-        if( ret == null ) { 
-            ret = new MethodPAG( pag, m );
-            G.v().MethodPAG_methodToPag.put( m, ret );
-        }
-        return ret;
-    }
+public final class MethodPAG extends AbstractMethodPAG {
+    private PAG pag;
+    public AbstractPAG pag() { return pag; }
+
     protected MethodPAG( PAG pag, SootMethod m ) {
         this.pag = pag;
         this.method = m;
@@ -53,43 +45,7 @@ public final class MethodPAG {
         edgeQueue = new ChunkedQueue();
         edgeReader = edgeQueue.reader();
     }
-    public void build() {
-        if( hasBeenBuilt ) return;
-        hasBeenBuilt = true;
-        if( method.isNative() ) {
-            if( pag.getOpts().simulate_natives() ) {
-                buildNative();
-            }
-        } else {
-            if( method.isConcrete() && !method.isPhantom() ) {
-                buildNormal();
-            }
-        }
-        addMiscEdges();
-    }
-    public SootMethod getMethod() { return method; }
-    private VarNode parameterize( VarNode vn, Object varNodeParameter ) {
-        SootMethod m = vn.getMethod();
-        if( m == null ) return vn;
-        if( m != method ) G.v().out.println( "Warning: "+vn+" in method "+method+" has method "+m );
-        return pag.makeVarNode(
-                new Pair( varNodeParameter, vn.getVariable() ),
-                vn.getType(),
-                vn.getMethod() );
-    }
-    private FieldRefNode parameterize( FieldRefNode frn, Object varNodeParameter ) {
-        return pag.makeFieldRefNode(
-                parameterize( (VarNode) frn.getBase(), varNodeParameter ),
-                frn.getField() );
-    }
-    public Node parameterize( Node n, Object varNodeParameter ) {
-        if( varNodeParameter == null ) return n;
-        if( n instanceof VarNode ) 
-            return parameterize( (VarNode) n, varNodeParameter);
-        if( n instanceof FieldRefNode )
-            return parameterize( (FieldRefNode) n, varNodeParameter);
-        return n;
-    }
+
     /** Adds this method to the main PAG, with all VarNodes parameterized by
      * varNodeParameter. */
     public void addToPAG( Object varNodeParameter ) {
@@ -111,103 +67,8 @@ public final class MethodPAG {
         edgeQueue.add( src );
         edgeQueue.add( dst );
     }
-    private boolean hasBeenAdded = false;
-    private boolean hasBeenBuilt = false;
     private ChunkedQueue edgeQueue;
     private QueueReader edgeReader;
 
-    protected void buildNormal() {
-        Body b = method.retrieveActiveBody();
-        Iterator unitsIt = b.getUnits().iterator();
-        while( unitsIt.hasNext() )
-        {
-            parms.handleStmt( (Stmt) unitsIt.next() );
-        }
-    }
-    protected void buildNative() {
-        ValNode thisNode = null;
-        ValNode retNode = null; 
-        if( !method.isStatic() ) { 
-	    thisNode = (ValNode) parms.caseThis( method );
-        }
-        if( method.getReturnType() instanceof RefLikeType ) {
-	    retNode = (ValNode) parms.caseRet( method );
-	}
-        ValNode[] args = new ValNode[ method.getParameterCount() ];
-        for( int i = 0; i < method.getParameterCount(); i++ ) {
-            if( !( method.getParameterType(i) instanceof RefLikeType ) ) continue;
-	    args[i] = (ValNode) parms.caseParm( method, i );
-        }
-        NativeMethodDriver.v().process( method, thisNode, retNode, args );
-    }
-
-    protected void addMiscEdges() {
-        // Add node for parameter (String[]) in main method
-        if( method.getSubSignature().equals( SootMethod.getSubSignature( "main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() ) ) ) {
-            parms.addEdge( parms.caseArgv(), parms.caseParm( method, 0 ) );
-        }
-
-        // Add objects reaching this of finalize() methods
-        if( method.getName().equals( "<init>" ) ) {
-            SootClass c = method.getDeclaringClass();
-outer:      do {
-                while( !c.declaresMethod( SootMethod.getSubSignature( "finalize", Collections.EMPTY_LIST, VoidType.v() ) ) ) {
-                    if( !c.hasSuperclass() ) {
-                        break outer;
-                    }
-                    c = c.getSuperclass();
-                }
-                parms.addEdge( parms.caseThis( method ),
-                        parms.caseThis( c.getMethod( SootMethod.getSubSignature( "finalize", Collections.EMPTY_LIST, VoidType.v() ) ) ) );
-            } while( false );
-        }
-
-        if( method.getSignature().equals(
-                    "<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.String)>" ) ) {
-            parms.addEdge( parms.caseMainThread(), parms.caseThis( method ) );
-            parms.addEdge( parms.caseMainThreadGroup(), parms.caseParm( method, 0 ) );
-        }
-
-        if( method.getSubSignature().equals(
-            "java.lang.Class loadClass(java.lang.String)" ) ) {
-            SootClass c = method.getDeclaringClass();
-outer:      do {
-                while( !c.getName().equals( "java.lang.ClassLoader" ) ) {
-                    if( !c.hasSuperclass() ) {
-                        break outer;
-                    }
-                    c = c.getSuperclass();
-                }
-                parms.addEdge( parms.caseDefaultClassLoader(),
-                        parms.caseThis( method ) );
-                parms.addEdge( parms.caseMainClassNameString(),
-                        parms.caseParm( method, 0 ) );
-            } while( false );
-        }
-
-        if( method.getSubSignature().equals(
-            "java.lang.Object run()" ) ) {
-            SootClass c = method.getDeclaringClass();
-outer:      do {
-                while( !c.implementsInterface( "java.security.PrivilegedAction" )
-                && !c.implementsInterface( "java.security.PrivilegedExceptionAction" ) ) {
-
-                    if( !c.hasSuperclass() ) {
-                        break outer;
-                    }
-                    c = c.getSuperclass();
-                }
-                SootClass controller = RefType.v("java.security.AccessController").getSootClass();
-                for( Iterator it = controller.methodIterator(); it.hasNext(); ) {
-                    SootMethod m = (SootMethod) it.next();
-                    if( !m.getName().equals( "doPrivileged" ) ) continue;
-                    parms.addEdge( parms.caseParm( m, 0 ),
-                            parms.caseThis( method ) );
-                    parms.addEdge( parms.caseRet( method ),
-                            parms.caseRet( m ) );
-                }
-            } while( false );
-        }
-    }
 }
 

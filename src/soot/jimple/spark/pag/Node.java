@@ -93,17 +93,17 @@ public class Node implements ReferenceVariable, Numberable {
         }
         Node rep = getReplacement();
         if( rep == this ) {
-            p2set = pag.getSetFactory().newSet( type, pag );
+            p2set = pag.getSetFactory().newSet( type, (PAG) pag );
         }
         return rep.makeP2Set();
     }
     /** Returns the pointer assignment graph that this node is a part of. */
-    public PAG getPag() { return pag; }
+    public AbstractPAG getPag() { return pag; }
 
     /* End of public methods. */
 
     /** Creates a new node of pointer assignment graph pag, with type type. */
-    Node( PAG pag, Type type ) {
+    Node( AbstractPAG pag, Type type ) {
 	this.type = type;
 	this.pag = pag;
         replacement = this;
@@ -118,6 +118,6 @@ public class Node implements ReferenceVariable, Numberable {
 
     protected Type type;
     protected Node replacement;
-    protected PAG pag;
+    protected AbstractPAG pag;
     protected PointsToSetInternal p2set;
 }

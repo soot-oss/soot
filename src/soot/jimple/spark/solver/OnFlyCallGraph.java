@@ -59,7 +59,7 @@ public class OnFlyCallGraph {
         while(true) {
             SootMethod m = (SootMethod) reachables.next();
             if( m == null ) return;
-            MethodPAG mpag = MethodPAG.v( pag, m );
+            AbstractMethodPAG mpag = AbstractMethodPAG.v( pag, m );
             mpag.build();
             mpag.addToPAG(null);
         }

@@ -19,9 +19,10 @@
 
 package soot.jimple.spark.pag;
 import soot.Type;
+import soot.util.*;
 
 /** Represents a field.
  * @author Ondrej Lhotak
  */
-public interface SparkField {
+public interface SparkField extends Numberable {
 }

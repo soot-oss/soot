@@ -31,12 +31,12 @@ import soot.jimple.spark.internal.*;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.util.queue.*;
-import soot.options.SparkOptions;
+import soot.options.*;
 
 /** A context insensitive pointer assignment graph builder.
  * @author Ondrej Lhotak
  */
-public class ContextInsensitiveBuilder implements Builder {
+public class ContextInsensitiveBuilder {
     public void preJimplify() {
         for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
             final SootClass c = (SootClass) cIt.next();
@@ -50,14 +50,18 @@ public class ContextInsensitiveBuilder implements Builder {
         }
     }
     /** Creates an empty pointer assignment graph. */
-    public PAG setup( SparkOptions opts ) {
-	pag = new PAG( opts );
+    public AbstractPAG setup( AbstractSparkOptions opts ) {
+        if( opts instanceof SparkOptions ) {
+            pag = new PAG( (SparkOptions) opts );
+        } else if( opts instanceof BDDSparkOptions ) {
+            pag = new BDDPAG( (BDDSparkOptions) opts );
+        } else throw new RuntimeException();
         if( opts.simulate_natives() ) {
             NativeHelper.register( new SparkNativeHelper( pag ) );
         }
 	parms = new StandardParms( pag, null );
         if( opts.on_fly_cg() && !opts.vta() ) {
-            OnFlyCallGraph ofcg = new OnFlyCallGraph( pag,
+            OnFlyCallGraph ofcg = new OnFlyCallGraph( (PAG) pag,
                         Scene.v().getOrMakeFastHierarchy(), parms );
             pag.setOnFlyCallGraph( ofcg );
             cgb = ofcg.getCallGraph();
@@ -84,7 +88,7 @@ public class ContextInsensitiveBuilder implements Builder {
         while(true) {
             Edge e = (Edge) callEdges.next();
             if( e == null ) break;
-            MethodPAG.v( pag, e.tgt() ).addToPAG(null);
+            AbstractMethodPAG.v( pag, e.tgt() ).addToPAG(null);
             parms.addCallTarget( e );
         }
 
@@ -106,7 +110,7 @@ public class ContextInsensitiveBuilder implements Builder {
 	    if( !m.isConcrete() && !m.isNative() ) continue;
             totalMethods++;
             if( cgb.reachables().contains( m ) ) {
-                MethodPAG mpag = MethodPAG.v( pag, m );
+                AbstractMethodPAG mpag = AbstractMethodPAG.v( pag, m );
                 mpag.build();
                 mpag.addToPAG(null);
                 analyzedMethods++;
@@ -119,7 +123,7 @@ public class ContextInsensitiveBuilder implements Builder {
     }
 
 
-    private PAG pag;
+    private AbstractPAG pag;
     private Parms parms;
     private CallGraphBuilder cgb;
     int classes = 0;

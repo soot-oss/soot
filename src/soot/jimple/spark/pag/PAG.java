@@ -33,13 +33,9 @@ import soot.tagkit.*;
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
  */
-public class PAG implements PointsToAnalysis {
+public class PAG extends AbstractPAG {
     public PAG( final SparkOptions opts ) {
-	this.opts = opts;
-        typeManager = new TypeManager();
-        if( !opts.ignore_types() ) {
-            typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
-        }
+        super( opts );
         switch( opts.set_impl() ) {
             case SparkOptions.set_impl_hash:
                 setFactory = HashPointsToSet.getFactory();
@@ -102,10 +98,8 @@ public class PAG implements PointsToAnalysis {
             default:
                 throw new RuntimeException();
         }
-        if( opts.add_tags() ) {
-            nodeToTag = new HashMap();
-        }
     }
+
 
     /** Returns the set of objects pointed to by variable l. */
     public PointsToSet reachingObjects( Local l ) {
@@ -139,7 +133,7 @@ public class PAG implements PointsToAnalysis {
             }
             return n.getP2Set();
         }
-        if( getOpts().propagator() == SparkOptions.propagator_alias ) {
+        if( ((SparkOptions)getOpts()).propagator() == SparkOptions.propagator_alias ) {
             throw new RuntimeException( "The alias edge propagator does not compute points-to information for instance fields! Use a different propagator." );
         }
         PointsToSetInternal bases = (PointsToSetInternal) s;
@@ -151,256 +145,9 @@ public class PAG implements PointsToAnalysis {
         return ret;
     }
 
-    /** Returns the set of objects pointed to by instance field f
-     * of the objects pointed to by l. */
-    public PointsToSet reachingObjects( Local l, SootField f ) {
-        return reachingObjects( reachingObjects(l), f );
-    }
-
-    /** Returns SparkOptions for this graph. */
-    public SparkOptions getOpts() { return opts; }
-    /** Finds or creates the AllocNode for the new expression newExpr,
-     * of type type. */
-    private void addNodeTag( Node node, SootMethod m ) {
-        if( nodeToTag != null ) {
-            Tag tag;
-            if( m == null ) {
-                tag = new StringTag( node.toString() );
-            } else {
-                tag = new LinkTag( node.toString(), m, m.getDeclaringClass().getName() );
-            }
-            nodeToTag.put( node, tag );
-        }
-    }
-    public AllocNode makeAllocNode( Object newExpr, Type type, SootMethod m ) {
-        if( opts.types_for_sites() || opts.vta() ) newExpr = type;
-	AllocNode ret = (AllocNode) valToAllocNode.get( newExpr );
-	if( ret == null ) {
-	    valToAllocNode.put( newExpr, ret = new AllocNode( this, newExpr, type, m ) );
-            newAllocNodes.add( ret );
-            addNodeTag( ret, m );
-	} else if( !( ret.getType().equals( type ) ) ) {
-	    throw new RuntimeException( "NewExpr "+newExpr+" of type "+type+
-		    " previously had type "+ret.getType() );
-	}
-	return ret;
-    }
-    public AllocNode makeStringConstantNode( String s ) {
-        if( opts.types_for_sites() || opts.vta() )
-            return makeAllocNode( RefType.v( "java.lang.String" ),
-                    RefType.v( "java.lang.String" ), null );
-        StringConstantNode ret = (StringConstantNode) valToAllocNode.get( s );
-	if( ret == null ) {
-	    valToAllocNode.put( s, ret = new StringConstantNode( this, s ) );
-            newAllocNodes.add( ret );
-            addNodeTag( ret, null );
-	}
-	return ret;
-    }
-    public AllocNode makeClassConstantNode( String s ) {
-        if( opts.types_for_sites() || opts.vta() )
-            return makeAllocNode( RefType.v( "java.lang.Class" ),
-                    RefType.v( "java.lang.Class" ), null );
-        ClassConstantNode ret = (ClassConstantNode) valToAllocNode.get( "$$"+s );
-	if( ret == null ) {
-	    valToAllocNode.put( "$$"+s, ret = new ClassConstantNode( this, s ) );
-            newAllocNodes.add( ret );
-            addNodeTag( ret, null );
-	}
-	return ret;
-    }
-
-    ChunkedQueue newAllocNodes = new ChunkedQueue();
-    public QueueReader allocNodeListener() { return newAllocNodes.reader(); }
-
-    /** Finds the VarNode for the variable value, or returns null. */
-    public VarNode findVarNode( Object value ) {
-        if( opts.rta() ) {
-            value = null;
-        } else if( value instanceof Local ) {
-            return (VarNode) localToNodeMap.get( (Local) value );
-        }
-	return (VarNode) valToVarNode.get( value );
-    }
-    /** Finds or creates the VarNode for the variable value, of type type. */
-    public VarNode makeVarNode( Object value, Type type, SootMethod method ) {
-        if( opts.rta() ) {
-            value = null;
-            type = RefType.v("java.lang.Object");
-            method = null;
-        } else if( value instanceof Local ) {
-            Local val = (Local) value;
-            if( val.getNumber() == 0 ) Scene.v().getLocalNumberer().add(val);
-            VarNode ret = (VarNode) localToNodeMap.get( val );
-            if( ret == null ) {
-                localToNodeMap.put( (Local) value,
-                    ret = new VarNode( this, value, type, method ) );
-                addNodeTag( ret, method );
-            } else if( !( ret.getType().equals( type ) ) ) {
-                throw new RuntimeException( "Value "+value+" of type "+type+
-                        " previously had type "+ret.getType() );
-            }
-            return ret;
-        }
-        VarNode ret = (VarNode) valToVarNode.get( value );
-        if( ret == null ) {
-            valToVarNode.put( value, 
-                    ret = new VarNode( this, value, type, method ) );
-            addNodeTag( ret, method );
-        } else if( !( ret.getType().equals( type ) ) ) {
-            throw new RuntimeException( "Value "+value+" of type "+type+
-                    " previously had type "+ret.getType() );
-        }
-	return ret;
-    }
-    /** Finds the FieldRefNode for base variable value and field
-     * field, or returns null. */
-    public FieldRefNode findFieldRefNode( Object baseValue, SparkField field ) {
-	VarNode base = findVarNode( baseValue );
-	if( base == null ) return null;
-	return base.dot( field );
-    }
-    /** Finds or creates the FieldRefNode for base variable baseValue and field
-     * field, of type type. */
-    public FieldRefNode makeFieldRefNode( Object baseValue, Type baseType,
-	    SparkField field, SootMethod method ) {
-	VarNode base = makeVarNode( baseValue, baseType, method );
-        return makeFieldRefNode( base, field );
-    }
-    /** Finds or creates the FieldRefNode for base variable base and field
-     * field, of type type. */
-    public FieldRefNode makeFieldRefNode( VarNode base,
-	    SparkField field ) {
-	FieldRefNode ret = base.dot( field );
-	if( ret == null ) {
-	    ret = new FieldRefNode( this, base, field );
-            addNodeTag( ret, base.getMethod() );
-	}
-	return ret;
-    }
-    /** Finds the AllocDotField for base AllocNode an and field
-     * field, or returns null. */
-    public AllocDotField findAllocDotField( AllocNode an, SparkField field ) {
-	return an.dot( field );
-    }
-    /** Finds or creates the AllocDotField for base variable baseValue and field
-     * field, of type t. */
-    public AllocDotField makeAllocDotField( AllocNode an, SparkField field ) {
-	AllocDotField ret = an.dot( field );
-	if( ret == null ) {
-	    ret = new AllocDotField( this, an, field );
-	}
-	return ret;
-    }
-    /** Adds an edge to the graph, returning false if it was already there. */
-    public boolean addEdge( Node from, Node to ) {
-        FastHierarchy fh = typeManager.getFastHierarchy();
-	boolean ret = false;
-        from = from.getReplacement();
-        to = to.getReplacement();
-	if( from instanceof VarNode ) {
-	    if( to instanceof VarNode ) {
-		boolean ret1 = addToMap( simple, from, to );
-		ret1 = addToMap( simpleInv, to, from ) | ret1;
-                if( ret1 ) {
-                    edgeQueue.add( from );
-                    edgeQueue.add( to );
-                    ret = true;
-                }
-                if( opts.simple_edges_bidirectional() ) {
-                    boolean ret2 = addToMap( simple, to, from );
-                    ret2 = addToMap( simpleInv, from, to ) | ret2;
-                    if( ret2 ) {
-                        edgeQueue.add( to );
-                        edgeQueue.add( from );
-                        ret = true;
-                    }
-                }
-	    } else {
-                if( !( to instanceof FieldRefNode ) ) {
-                    throw new RuntimeException( "Attempt to add edge from "+
-                        from+" to "+to );
-                }
-                if( !opts.rta() ) {
-                    ret = addToMap( store, from, (FieldRefNode) to ) | ret;
-                    ret = addToMap( storeInv, to, from ) | ret;
-                    if( ret ) {
-                        edgeQueue.add( from );
-                        edgeQueue.add( to );
-                    }
-                }
-	    }
-	} else if( from instanceof FieldRefNode ) {
-            if( !opts.rta() ) {
-                if( !( to instanceof VarNode ) ) {
-                    throw new RuntimeException( "Attempt to add edge from "+
-                        from+" to "+to );
-                }
-                ret = addToMap( load, from, to ) | ret;
-                ret = addToMap( loadInv, to, from ) | ret;
-                if( ret ) {
-                    edgeQueue.add( from );
-                    edgeQueue.add( to );
-                }
-            }
-	} else {
-            if( !( from instanceof AllocNode ) 
-            || !( to instanceof VarNode ) ) {
-                throw new RuntimeException( "Attempt to add edge from "+
-                    from+" to "+to );
-            }
-            if( fh == null || to.getType() == null 
-            || fh.canStoreType( from.getType(), to.getType() ) ) {
-                ret = addToMap( alloc, from, to ) | ret;
-                ret = addToMap( allocInv, to, from ) | ret;
-                if( ret ) {
-                    edgeQueue.add( from );
-                    edgeQueue.add( to );
-                }
-            }
-	}
-	return ret;
-    }
-    private ChunkedQueue edgeQueue = new ChunkedQueue();
-    public QueueReader edgeReader() { return edgeQueue.reader(); }
-
-    public Node[] simpleLookup( VarNode key ) 
-    { return lookup( simple, key ); }
-    public Node[] simpleInvLookup( VarNode key ) 
-    { return lookup( simpleInv, key ); }
-    public Node[] loadLookup( FieldRefNode key ) 
-    { return lookup( load, key ); }
-    public Node[] loadInvLookup( VarNode key ) 
-    { return lookup( loadInv, key ); }
-    public Node[] storeLookup( VarNode key ) 
-    { return lookup( store, key ); }
-    public Node[] storeInvLookup( FieldRefNode key ) 
-    { return lookup( storeInv, key ); }
-    public Node[] allocLookup( AllocNode key ) 
-    { return lookup( alloc, key ); }
-    public Node[] allocInvLookup( VarNode key ) 
-    { return lookup( allocInv, key ); }
-    public Set simpleSources() { return simple.keySet(); }
-    public Set allocSources() { return alloc.keySet(); }
-    public Set storeSources() { return store.keySet(); }
-    public Set loadSources() { return load.keySet(); }
-    public Set simpleInvSources() { return simpleInv.keySet(); }
-    public Set allocInvSources() { return allocInv.keySet(); }
-    public Set storeInvSources() { return storeInv.keySet(); }
-    public Set loadInvSources() { return loadInv.keySet(); }
-
     public P2SetFactory getSetFactory() {
         return setFactory;
     }
-    public int getNumAllocNodes() {
-        return allocNodeNumberer.size();
-    }
-    public TypeManager getTypeManager() {
-        return typeManager;
-    }
-
-    public void setOnFlyCallGraph( OnFlyCallGraph ofcg ) { this.ofcg = ofcg; }
-    public OnFlyCallGraph getOnFlyCallGraph() { return ofcg; }
     public void cleanUpMerges() {
         if( opts.verbose() ) {
             G.v().out.println( "Cleaning up graph for merged nodes" );
@@ -418,52 +165,28 @@ public class PAG implements PointsToAnalysis {
             G.v().out.println( "Done cleaning up graph for merged nodes" );
         }
     }
-
-    /** Adds the base of a dereference to the list of dereferenced 
-     * variables. */
-    public void addDereference( VarNode base ) {
-        dereferences.add( base );
+    public boolean doAddSimpleEdge( VarNode from, VarNode to ) {
+        return addToMap( simple, from, to ) | addToMap( simpleInv, to, from );
     }
 
-    /** Returns list of dereferences variables. */
-    public List getDereferences() {
-        return dereferences;
+    public boolean doAddStoreEdge( VarNode from, FieldRefNode to ) {
+        return addToMap( store, from, to ) | addToMap( storeInv, to, from );
     }
 
-    public Map getNodeTags() {
-        return nodeToTag;
+    public boolean doAddLoadEdge( FieldRefNode from, VarNode to ) {
+        return addToMap( load, from, to ) | addToMap( loadInv, to, from );
     }
 
-    /*
-    public void dumpNumbersOfEdges() {
-        Map[] maps = { simple, alloc, store, load,
-            simpleInv, allocInv, storeInv, loadInv };
-        String[] names = { "simple", "alloc", "store", "load",
-            "simpleInv", "allocInv", "storeInv", "loadInv" };
-        for( int i = 0; i < maps.length; i++ ) {
-            Map m = maps[i];
-            int size = 0;
-            for( Iterator it = m.keySet().iterator(); it.hasNext(); ) {
-                size += lookup( m, it.next() ).length;
-            }
-            G.v().out.println( ""+names[i]+" "+size );
-        }
-        G.v().out.println( "valToVarNodeSize: "+valToVarNode.size() );
+    public boolean doAddAllocEdge( AllocNode from, VarNode to ) {
+        return addToMap( alloc, from, to ) | addToMap( allocInv, to, from );
     }
-    */
-    /* End of public methods. */
 
-    static private int getSize( Object set ) {
-        if( set instanceof Set ) return ((Set) set).size();
-        else if( set == null ) return 0;
-        else return ((Object[]) set).length;
-    }
     /** Node uses this to notify PAG that n2 has been merged into n1. */
     void mergedWith( Node n1, Node n2 ) {
         if( n1.equals( n2 ) ) throw new RuntimeException( "oops" );
 
         somethingMerged = true;
-        if( ofcg != null ) ofcg.mergedWith( n1, n2 );
+        if( ofcg() != null ) ofcg().mergedWith( n1, n2 );
 
         Map[] maps = { simple, alloc, store, load,
             simpleInv, allocInv, storeInv, loadInv };
@@ -527,49 +250,6 @@ public class PAG implements PointsToAnalysis {
             m.remove( n2 );
         }
     }
-    private Numberer allocNodeNumberer = new Numberer();
-    public Numberer getAllocNodeNumberer() { return allocNodeNumberer; }
-    private Numberer varNodeNumberer = new Numberer();
-    public Numberer getVarNodeNumberer() { return varNodeNumberer; }
-    private Numberer fieldRefNodeNumberer = new Numberer();
-    public Numberer getFieldRefNodeNumberer() { return fieldRefNodeNumberer; }
-    private Numberer allocDotFieldNodeNumberer = new Numberer();
-    public Numberer getAllocDotFieldNodeNumberer() { return allocDotFieldNodeNumberer; }
-
-    /* End of package methods. */
-
-    protected SparkOptions opts;
-
-    protected Map simple = new HashMap();
-    protected Map load = new HashMap();
-    protected Map store = new HashMap();
-    protected Map alloc = new HashMap();
-
-    protected Map simpleInv = new HashMap();
-    protected Map loadInv = new HashMap();
-    protected Map storeInv = new HashMap();
-    protected Map allocInv = new HashMap();
-
-    protected boolean addToMap( Map m, Node key, Node value ) {
-	Object valueList = m.get( key );
-
-	if( valueList == null ) {
-	    m.put( key, valueList = new HashSet(4) );
-	} else if( !(valueList instanceof Set) ) {
-	    Node[] ar = (Node[]) valueList;
-            Node[] newar = new Node[ar.length+1];
-            for( int i = 0; i < ar.length; i++ ) {
-                Node n = ar[i];
-                if( n == value ) return false;
-                newar[i] = n;
-            }
-            newar[ar.length] = value;
-            m.put( key, newar );
-            return true;
-	}
-	return ((Set) valueList).add( value );
-    }
-
     protected final static Node[] EMPTY_NODE_ARRAY = new Node[0];
     protected Node[] lookup( Map m, Object key ) {
 	Object valueList = m.get( key );
@@ -624,15 +304,49 @@ public class PAG implements PointsToAnalysis {
         }
 	return ret;
     }
-    private Map valToVarNode = new HashMap(1000);
-    private Map valToAllocNode = new HashMap(1000);
-    private P2SetFactory setFactory;
-    private OnFlyCallGraph ofcg;
-    private boolean somethingMerged = false;
-    private ArrayList dereferences = new ArrayList();
-    private TypeManager typeManager;
-    private LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
-    public int maxFinishNumber = 0;
-    private Map nodeToTag;
+
+    public Node[] simpleLookup( VarNode key ) 
+    { return lookup( simple, key ); }
+    public Node[] simpleInvLookup( VarNode key ) 
+    { return lookup( simpleInv, key ); }
+    public Node[] loadLookup( FieldRefNode key ) 
+    { return lookup( load, key ); }
+    public Node[] loadInvLookup( VarNode key ) 
+    { return lookup( loadInv, key ); }
+    public Node[] storeLookup( VarNode key ) 
+    { return lookup( store, key ); }
+    public Node[] storeInvLookup( FieldRefNode key ) 
+    { return lookup( storeInv, key ); }
+    public Node[] allocLookup( AllocNode key ) 
+    { return lookup( alloc, key ); }
+    public Node[] allocInvLookup( VarNode key ) 
+    { return lookup( allocInv, key ); }
+    public Set simpleSources() { return simple.keySet(); }
+    public Set allocSources() { return alloc.keySet(); }
+    public Set storeSources() { return store.keySet(); }
+    public Set loadSources() { return load.keySet(); }
+    public Set simpleInvSources() { return simpleInv.keySet(); }
+    public Set allocInvSources() { return allocInv.keySet(); }
+    public Set storeInvSources() { return storeInv.keySet(); }
+    public Set loadInvSources() { return loadInv.keySet(); }
+
+    public Iterator simpleSourcesIterator() { return simple.keySet().iterator(); }
+    public Iterator allocSourcesIterator() { return alloc.keySet().iterator(); }
+    public Iterator storeSourcesIterator() { return store.keySet().iterator(); }
+    public Iterator loadSourcesIterator() { return load.keySet().iterator(); }
+    public Iterator simpleInvSourcesIterator() { return simpleInv.keySet().iterator(); }
+    public Iterator allocInvSourcesIterator() { return allocInv.keySet().iterator(); }
+    public Iterator storeInvSourcesIterator() { return storeInv.keySet().iterator(); }
+    public Iterator loadInvSourcesIterator() { return loadInv.keySet().iterator(); }
+
+    static private int getSize( Object set ) {
+        if( set instanceof Set ) return ((Set) set).size();
+        else if( set == null ) return 0;
+        else return ((Object[]) set).length;
+    }
+
+
+    protected P2SetFactory setFactory;
+    protected boolean somethingMerged = false;
 }
 

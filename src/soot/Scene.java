@@ -59,6 +59,7 @@ public class Scene  //extends AbstractHost
 
     Numberer typeNumberer = new Numberer();
     Numberer methodNumberer = new Numberer();
+    Numberer fieldNumberer = new Numberer();
     Numberer classNumberer = new Numberer();
     StringNumberer subSigNumberer = new StringNumberer();
     Numberer localNumberer = new Numberer();
@@ -568,6 +569,7 @@ public class Scene  //extends AbstractHost
     }
     public Numberer getTypeNumberer() { return typeNumberer; }
     public Numberer getMethodNumberer() { return methodNumberer; }
+    public Numberer getFieldNumberer() { return fieldNumberer; }
     public Numberer getClassNumberer() { return classNumberer; }
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
     public Numberer getLocalNumberer() { return localNumberer; }

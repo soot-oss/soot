@@ -387,7 +387,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for <xsl:value-of select="name|name"/>. */
-public class <xsl:copy-of select="$filename"/>
+public class <xsl:copy-of select="$filename"/><xsl:if test="extends"> extends <xsl:copy-of select="extends"/></xsl:if>
 {
     private Map options;
 

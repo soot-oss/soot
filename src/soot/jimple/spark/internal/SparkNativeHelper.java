@@ -26,9 +26,9 @@ import soot.toolkits.scalar.Pair;
 import soot.*;
 
 public class SparkNativeHelper extends NativeHelper {
-    protected PAG pag;
+    protected AbstractPAG pag;
 
-    public SparkNativeHelper( PAG pag ) {
+    public SparkNativeHelper( AbstractPAG pag ) {
 	this.pag = pag;
     }
     protected void assignImpl(ReferenceVariable lhs, ReferenceVariable rhs) {

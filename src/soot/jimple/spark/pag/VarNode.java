@@ -90,7 +90,7 @@ public class VarNode extends ValNode implements Comparable {
 
     /* End of public methods. */
 
-    VarNode( PAG pag, Object variable, Type t, SootMethod m ) {
+    VarNode( AbstractPAG pag, Object variable, Type t, SootMethod m ) {
 	super( pag, t );
 	if( !(t instanceof RefLikeType) || t instanceof AnySubType ) {
 	    throw new RuntimeException( "Attempt to create VarNode of type "+t );

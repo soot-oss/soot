@@ -37,7 +37,7 @@ public class ClassConstantNode extends AllocNode {
 
     /* End of public methods. */
 
-    ClassConstantNode( PAG pag, String sc ) {
+    ClassConstantNode( AbstractPAG pag, String sc ) {
         super( pag, "$$"+sc, RefType.v( "java.lang.Class" ), null );
     }
 }

@@ -885,9 +885,586 @@ executed again, the corresponding call graph edges are removed from the call gra
 				<sub_phase>
 					<name>Spark</name>
 					<class>SparkOptions</class>
+                                        <extends>AbstractSparkOptions</extends>
 					<alias>cg.spark</alias>
                                         <short_desc>Spark points-to analysis framework</short_desc>
                                         <long_desc>Spark is a flexible points-to analysis framework. Aside from building a call graph, it also generates information about the targets of pointers. For details about Spark, please see <a href="http://www.sable.mcgill.ca/publications/thesis/#olhotakMastersThesis">Ondrej Lhotak's M.Sc. thesis</a>.</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<section>
+						<name>Spark General Options</name>
+						<boolopt>
+							<name>Verbose</name>
+							<alias>verbose</alias>
+							<default>false</default>
+                                                        <short_desc>Print detailed information about the execution of Spark</short_desc>
+							<long_desc>
+When this option is set to true, Spark prints detailed information about its execution.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Ignore Types Entirely</name>
+							<alias>ignore-types</alias>
+							<default>false</default>
+                                                        <short_desc>Make Spark completely ignore declared types of variables</short_desc>
+							<long_desc>
+When this option is set to true, all parts of Spark completely ignore
+declared types of variables and casts.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Force Garbage Collections</name>
+							<alias>force-gc</alias>
+							<default>false</default>
+                                                        <short_desc>Force garbage collection for measuring memory usage</short_desc>
+							<long_desc>
+When this option is set to true, calls to System.gc() will be made at
+various points to allow memory usage to be measured.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Pre Jimplify</name>
+							<alias>pre-jimplify</alias>
+							<default>false</default>
+                                                        <short_desc>Jimplify all methods before starting Spark</short_desc>
+							<long_desc>
+When this option is set to true, Spark converts all available methods to Jimple
+before starting the points-to analysis. This allows the Jimplification
+time to be separated from the points-to time. However, it increases the
+total time and memory requirement, because all methods are Jimplified,
+rather than only those deemed reachable by the points-to analysis.
+        </long_desc>
+						</boolopt>
+					</section>
+					<section>
+						<name>Spark Pointer Assignment Graph Building Options</name>
+						<boolopt>
+							<name>VTA</name>
+							<alias>vta</alias>
+							<default>false</default>
+                                                        <short_desc>Emulate Variable Type Analysis</short_desc>
+							<long_desc>
+Setting VTA to true has the effect of setting field-based,
+types-for-sites, and simplify-sccs to true, and on-fly-cg to false,
+to simulate Variable Type
+Analysis, described in <a href="http://www.sable.mcgill.ca/publications/papers/#oopsla2000">our OOPSLA 2000 paper</a>. Note that the
+algorithm differs from the original VTA in that it handles array
+elements more precisely.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>RTA</name>
+							<alias>rta</alias>
+							<default>false</default>
+                                                        <short_desc>Emulate Rapid Type Analysis</short_desc>
+							<long_desc>
+Setting RTA to true sets types-for-sites to true, and causes Spark to use
+a single points-to set for all variables, giving <a href="http://doi.acm.org/10.1145/236337.236371">Rapid Type
+Analysis</a>.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Field Based</name>
+							<alias>field-based</alias>
+							<default>false</default>
+                                                        <short_desc>Use a field-based rather than field-sensitive representation</short_desc>
+							<long_desc>
+When this option is set to true, fields are represented by variable
+(Green) nodes, and the object that the field belongs to is ignored
+(all objects are lumped together), giving a field-based analysis. Otherwise, fields are represented by
+field reference (Red) nodes, and the objects that they belong to are
+distinguished, giving a field-sensitive analysis.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Types For Sites</name>
+							<alias>types-for-sites</alias>
+							<default>false</default>
+                                                        <short_desc>Represent objects by their actual type rather than allocation site</short_desc>
+							<long_desc>
+When this option is set to true, types rather than allocation sites are
+used as the elements of the points-to sets.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Merge String Buffer</name>
+							<alias>merge-stringbuffer</alias>
+							<default>true</default>
+                                                        <short_desc>Represent all StringBuffers as one object</short_desc>
+							<long_desc>
+When this option is set to true, all allocation sites creating
+<tt>java.lang.StringBuffer</tt> objects are grouped together as a single
+allocation site.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Simulate Natives</name>
+							<alias>simulate-natives</alias>
+							<default>true</default>
+                                                        <short_desc>Simulate effects of native methods in standard class library</short_desc>
+							<long_desc>
+When this option is set to true, the effects of native methods in the standard Java class library are simulated.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Simple Edges Bidirectional</name>
+							<alias>simple-edges-bidirectional</alias>
+							<default>false</default>
+                                                        <short_desc>Equality-based analysis between variable nodes</short_desc>
+							<long_desc>
+When this option is set to true, all edges connecting variable (Green)
+nodes are made bidirectional, as in <a href="http://doi.acm.org/10.1145/237721.237727">Steensgaard&apos;s analysis</a>.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>On Fly Call Graph</name>
+							<alias>on-fly-cg</alias>
+							<default>true</default>
+                                                        <short_desc>Build call graph as receiver types become known</short_desc>
+							<long_desc>
+When this option is set to true, the call graph is computed on-the-fly
+as points-to information is computed. Otherwise, an initial
+CHA approximation to the call graph is used.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Parms As Fields</name>
+							<alias>parms-as-fields</alias>
+							<default>false</default>
+                                                        <short_desc>Represent method parameters as fields of <tt>this</tt></short_desc>
+							<long_desc>
+When this option is set to true, parameters to methods are represented
+as fields (Red nodes) of the <tt>this</tt> object; otherwise, parameters are
+represented as variable (Green) nodes.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Returns As Fields</name>
+							<alias>returns-as-fields</alias>
+							<default>false</default>
+                                                        <short_desc>Represent method return values as fields of <tt>this</tt></short_desc>
+							<long_desc>
+When this option is set to true, return values from methods are
+represented as fields (Red nodes) of the <tt>this</tt> object; otherwise,
+return values are represented as variable (Green) nodes.
+        </long_desc>
+						</boolopt>
+					</section>
+					<section>
+						<name>Spark Pointer Assignment Graph Simplification Options</name>
+						<boolopt>
+							<name>Simplify Offline</name>
+							<alias>simplify-offline</alias>
+							<default>false</default>
+                                                        <short_desc>Collapse single-entry subgraphs of the PAG</short_desc>
+							<long_desc>
+When this option is set to true, variable (Green) nodes which form
+single-entry subgraphs (so they must have the same points-to set) are
+merged before propagation begins.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Simplify SCCs</name>
+							<alias>simplify-sccs</alias>
+							<default>false</default>
+                                                        <short_desc>Collapse strongly-connected components of the PAG</short_desc>
+							<long_desc>
+When this option is set to true, variable (Green) nodes which form
+strongly-connected components (so they must have the same points-to set)
+are merged before propagation begins.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Ignore Types For SCCs</name>
+							<alias>ignore-types-for-sccs</alias>
+							<default>false</default>
+                                                        <short_desc>Ignore declared types when determining node equivalence for SCCs</short_desc>
+							<long_desc>
+When this option is set to true, when collapsing strongly-connected
+components, nodes forming SCCs are collapsed regardless of their declared type.
+The collapsed SCC is given the most general type of all the nodes in the
+component.
+
+When this option is set to false, only edges connecting nodes of the
+same type are considered when detecting SCCs.
+
+This option has no effect unless <tt>simplify-sccs</tt> is true.
+        </long_desc>
+						</boolopt>
+					</section>
+					<section>
+						<name>Spark Points-To Set Flowing Options</name>
+						<multiopt>
+							<name>Propagator</name>
+							<alias>propagator</alias>
+							<value>
+								<name>Iter</name>
+								<alias>iter</alias>
+<short_desc>Simple iterative algorithm</short_desc>
+<long_desc>
+Iter is a simple, iterative algorithm, which propagates everything until the
+graph does not change.
+</long_desc>
+							</value>
+							<value>
+								<name>Worklist</name>
+								<alias>worklist</alias>
+								<default/>
+<short_desc>Fast, worklist-based algorithm</short_desc>
+<long_desc>
+Worklist is a worklist-based algorithm that tries
+to do as little work as possible. This is currently the fastest algorithm.
+</long_desc>
+
+							</value>
+							<value>
+								<name>Cycle</name>
+								<alias>cycle</alias>
+                                                                <short_desc>Unfinished on-the-fly cycle detection algorithm</short_desc>
+                                                                <long_desc>This algorithm finds cycles in the PAG on-the-fly. It is not yet finished.</long_desc>
+							</value>
+							<value>
+								<name>Merge</name>
+								<alias>merge</alias>
+<short_desc>Unfinished field reference merging algorithms</short_desc>
+<long_desc>
+Merge is an algorithm that merges all concrete field (yellow) nodes with their corresponding
+field reference (red) nodes. This algorithm is not yet finished.
+</long_desc>
+							</value>
+							<value>
+								<name>Alias</name>
+								<alias>alias</alias>
+<short_desc>Alias-edge based algorithm</short_desc>
+<long_desc>
+Alias is an alias-edge based algorithm. This algorithm tends to take
+the least memory for very large problems, because it does not represent
+explicitly points-to sets of fields of heap objects.
+</long_desc>
+
+							</value>
+							<value>
+								<name>None</name>
+								<alias>none</alias>
+                                                                <short_desc>Disable propagation</short_desc>
+<long_desc>
+None means that propagation is not done; the graph is only built and
+simplified. This is useful if an external solver is being used to perform the
+propagation.
+</long_desc>
+							</value>
+                                                        <short_desc>Select propagation algorithm</short_desc>
+							<long_desc>
+This option tells Spark which propagation algorithm to use.
+        </long_desc>
+						</multiopt>
+						<multiopt>
+							<name>Set Implementation</name>
+							<alias>set-impl</alias>
+							<value>
+								<name>Hash set</name>
+								<alias>hash</alias>
+                                                                <short_desc>Use Java HashSet</short_desc>
+
+<long_desc>
+Hash is an implementation based on Java&apos;s built-in hash-set.
+</long_desc>
+							</value>
+							<value>
+								<name>Bit-vector</name>
+								<alias>bit</alias>
+<short_desc>Bit vector</short_desc>
+<long_desc>
+Bit is an implementation using a bit vector.
+</long_desc>
+							</value>
+							<value>
+								<name>Hybrid</name>
+								<alias>hybrid</alias>
+<short_desc>Hybrid representation using bit vector for large sets</short_desc>
+<long_desc>
+Hybrid is an implementation that keeps an explicit list of up to
+16 elements, and switches to a bit-vector when the set gets
+larger than this.
+</long_desc>
+							</value>
+							<value>
+								<name>Sorted array</name>
+								<alias>array</alias>
+                                                                <short_desc>Sorted array representation</short_desc>
+                                                                <long_desc>
+Array is an implementation that keeps the elements of the
+points-to set in a sorted array. Set membership is tested using
+binary search, and set union and intersection are computed using
+an algorithm based on the merge step from merge sort.
+</long_desc>
+							</value>
+							<value>
+								<name>Double</name>
+								<alias>double</alias>
+								<default/>
+<short_desc>Double set representation for incremental propagation</short_desc>
+<long_desc>
+Double is an implementation that itself uses a pair of sets for
+each points-to set. The first set in the pair stores new pointed-to
+objects that have not yet been propagated, while the second set stores
+old pointed-to objects that have been propagated and need not be
+reconsidered. This allows the propagation algorithms to be incremental,
+often speeding them up significantly.
+</long_desc>
+							</value>
+							<value>
+								<name>Shared bit-vector</name>
+								<alias>shared</alias>
+                                                                <short_desc>Shared bit-vector representation</short_desc>
+                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
+
+							</value>
+                                                        <short_desc>Select points-to set implementation</short_desc>
+							<long_desc>
+Select an implementation of points-to sets for Spark to use.
+</long_desc>
+						</multiopt>
+						<multiopt>
+							<name>Double Set Old</name>
+							<alias>double-set-old</alias>
+							<value>
+								<name>Hash set</name>
+								<alias>hash</alias>
+                                                                <short_desc>Use Java HashSet</short_desc>
+
+<long_desc>
+Hash is an implementation based on Java&apos;s built-in hash-set.
+</long_desc>
+							</value>
+							<value>
+								<name>Bit-vector</name>
+								<alias>bit</alias>
+<short_desc>Bit vector</short_desc>
+<long_desc>
+Bit is an implementation using a bit vector.
+</long_desc>
+							</value>
+							<value>
+								<name>Hybrid</name>
+								<alias>hybrid</alias>
+                                                                <default/>
+<short_desc>Hybrid representation using bit vector for large sets</short_desc>
+<long_desc>
+Hybrid is an implementation that keeps an explicit list of up to
+16 elements, and switches to a bit-vector when the set gets
+larger than this.
+</long_desc>
+							</value>
+							<value>
+								<name>Sorted array</name>
+								<alias>array</alias>
+                                                                <short_desc>Sorted array representation</short_desc>
+                                                                <long_desc>
+Array is an implementation that keeps the elements of the
+points-to set in a sorted array. Set membership is tested using
+binary search, and set union and intersection are computed using
+an algorithm based on the merge step from merge sort.
+</long_desc>
+							</value>
+							<value>
+								<name>Shared bit-vector</name>
+								<alias>shared</alias>
+                                                                <short_desc>Shared bit-vector representation</short_desc>
+                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
+
+							</value>
+                                                        <short_desc>Select implementation of points-to set for old part of double set</short_desc>
+							<long_desc>
+Select an implementation for sets of old objects in the double
+points-to set implementation.
+
+This option has no effect unless Set Implementation is set to double.
+        </long_desc>
+						</multiopt>
+						<multiopt>
+							<name>Double Set New</name>
+							<alias>double-set-new</alias>
+							<value>
+								<name>Hash set</name>
+								<alias>hash</alias>
+                                                                <short_desc>Use Java HashSet</short_desc>
+
+<long_desc>
+Hash is an implementation based on Java&apos;s built-in hash-set.
+</long_desc>
+							</value>
+							<value>
+								<name>Bit-vector</name>
+								<alias>bit</alias>
+<short_desc>Bit vector</short_desc>
+<long_desc>
+Bit is an implementation using a bit vector.
+</long_desc>
+							</value>
+							<value>
+								<name>Hybrid</name>
+								<alias>hybrid</alias>
+                                                                <default/>
+<short_desc>Hybrid representation using bit vector for large sets</short_desc>
+<long_desc>
+Hybrid is an implementation that keeps an explicit list of up to
+16 elements, and switches to a bit-vector when the set gets
+larger than this.
+</long_desc>
+							</value>
+							<value>
+								<name>Sorted array</name>
+								<alias>array</alias>
+                                                                <short_desc>Sorted array representation</short_desc>
+                                                                <long_desc>
+Array is an implementation that keeps the elements of the
+points-to set in a sorted array. Set membership is tested using
+binary search, and set union and intersection are computed using
+an algorithm based on the merge step from merge sort.
+</long_desc>
+							</value>
+							<value>
+								<name>Shared bit-vector</name>
+								<alias>shared</alias>
+                                                                <short_desc>Shared bit-vector representation</short_desc>
+                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
+
+							</value>
+                                                        <short_desc>Select implementation of points-to set for new part of double set</short_desc>
+							<long_desc>
+Select an implementation for sets of new objects in the double
+points-to set implementation.
+
+This option has no effect unless Set Implementation is set to double.
+        </long_desc>
+						</multiopt>
+					</section>
+					<section>
+						<name>Spark Output Options</name>
+						<boolopt>
+							<name>Dump HTML</name>
+							<alias>dump-html</alias>
+							<default>false</default>
+                                                        <short_desc>Dump pointer assignment graph to HTML for debugging</short_desc>
+							<long_desc>
+When this option is set to true, a browseable HTML representation of the
+pointer assignment graph is output to a file called <tt>pag.jar</tt> after the analysis completes. Note
+that this representation is typically very large.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Dump PAG</name>
+							<alias>dump-pag</alias>
+							<default>false</default>
+                                                        <short_desc>Dump pointer assignment graph for other solvers</short_desc>
+							<long_desc>
+When this option is set to true, a representation of the pointer assignment graph
+suitable for processing with other solvers (such as the BDD-based solver) is
+output before the analysis begins.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Dump Solution</name>
+							<alias>dump-solution</alias>
+							<default>false</default>
+                                                        <short_desc>Dump final solution for comparison with other solvers</short_desc>
+							<long_desc>
+When this option is set to true, a representation of the resulting points-to
+sets is dumped. The format is similar to that of the Dump PAG
+option, and is therefore suitable for comparison with the results of other
+solvers.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Topological Sort</name>
+							<alias>topo-sort</alias>
+							<default>false</default>
+                                                        <short_desc>Sort variable nodes in dump</short_desc>
+							<long_desc>
+When this option is set to true, the representation dumped by the
+Dump PAG option
+is dumped with the variable (green) nodes in (pseudo-)topological order.
+
+This option has no effect unless Dump PAG is true.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Dump Types</name>
+							<alias>dump-types</alias>
+							<default>true</default>
+                                                        <short_desc>Include declared types in dump</short_desc>
+							<long_desc>
+When this option is set to true, the representation dumped by the
+Dump PAG option
+includes type information for all nodes.
+
+This option has no effect unless Dump PAG is true.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Class Method Var</name>
+							<alias>class-method-var</alias>
+							<default>true</default>
+                                                        <short_desc>In dump, label variables by class and method</short_desc>
+							<long_desc>
+When this option is set to true, the representation dumped by the
+Dump PAG option
+represents nodes by numbering each class, method, and variable within
+the method separately, rather than assigning a single integer to each
+node.
+
+This option has no effect unless Dump PAG is true.  Setting Class
+Method Var to true has the effect of setting Topological Sort to
+false.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Dump Answer</name>
+							<alias>dump-answer</alias>
+							<default>false</default>
+                                                        <short_desc>Dump computed reaching types for comparison with other solvers</short_desc>
+							<long_desc>
+When this option is set to true, the computed reaching types for each variable are
+dumped to a file, so that they can be compared with the results of
+other analyses (such as the old VTA).
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Add Tags</name>
+							<alias>add-tags</alias>
+							<default>false</default>
+                                                        <short_desc>Output points-to results in tags for viewing with the Jimple</short_desc>
+							<long_desc>
+        When this option is set to true, the results of the analysis are encoded within
+tags and printed with the resulting Jimple code.
+
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Calculate Set Mass</name>
+							<alias>set-mass</alias>
+							<default>false</default>
+                                                        <short_desc>Calculate statistics about points-to set sizes</short_desc>
+							<long_desc>
+When this option is set to true, Spark computes and prints various
+cryptic statistics about the size of the points-to sets computed.
+        </long_desc>
+						</boolopt>
+					</section>
+				</sub_phase>
+				<sub_phase>
+					<name>Spark</name>
+					<class>BDDSparkOptions</class>
+                                        <extends>AbstractSparkOptions</extends>
+					<alias>cg.bdd</alias>
+                                        <short_desc>BDD Spark points-to analysis framework</short_desc>
+                                        <long_desc>Spark is a flexible points-to analysis framework. Aside from building a call graph, it also generates information about the targets of pointers. For details about Spark, please see <a href="http://www.sable.mcgill.ca/publications/thesis/#olhotakMastersThesis">Ondrej Lhotak's M.Sc. thesis</a>. This phase is the new BDD-based version of Spark.</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
