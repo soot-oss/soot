@@ -107,108 +107,108 @@ public class FloatConstant extends RealConstant implements Switchable, ToBriefSt
     // PTC 1999/06/28
      public NumericConstant add(NumericConstant c)
     {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	return FloatConstant.v(this.value + ((FloatConstant)c).value);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        return FloatConstant.v(this.value + ((FloatConstant)c).value);
     }
 
     public NumericConstant subtract(NumericConstant c)
     {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	return FloatConstant.v(this.value - ((FloatConstant)c).value);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        return FloatConstant.v(this.value - ((FloatConstant)c).value);
     }
 
     public NumericConstant multiply(NumericConstant c)
     {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	return FloatConstant.v(this.value * ((FloatConstant)c).value);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        return FloatConstant.v(this.value * ((FloatConstant)c).value);
     }
 
     public NumericConstant divide(NumericConstant c)
     {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	return FloatConstant.v(this.value / ((FloatConstant)c).value);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        return FloatConstant.v(this.value / ((FloatConstant)c).value);
     }
 
     public NumericConstant remainder(NumericConstant c)
     {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	return FloatConstant.v(this.value % ((FloatConstant)c).value);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        return FloatConstant.v(this.value % ((FloatConstant)c).value);
     }
 
     public NumericConstant equalEqual(NumericConstant c)
     {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	return IntConstant.v((this.value == ((FloatConstant)c).value) ? 1 : 0);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        return IntConstant.v((this.value == ((FloatConstant)c).value) ? 1 : 0);
     }
 
     public NumericConstant notEqual(NumericConstant c)
     {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	return IntConstant.v((this.value != ((FloatConstant)c).value) ? 1 : 0);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        return IntConstant.v((this.value != ((FloatConstant)c).value) ? 1 : 0);
     }
 
     public NumericConstant lessThan(NumericConstant c)
     {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	return IntConstant.v((this.value < ((FloatConstant)c).value) ? 1 : 0);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        return IntConstant.v((this.value < ((FloatConstant)c).value) ? 1 : 0);
     }
 
     public NumericConstant lessThanOrEqual(NumericConstant c)
     {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	return IntConstant.v((this.value <= ((FloatConstant)c).value) ? 1 : 0);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        return IntConstant.v((this.value <= ((FloatConstant)c).value) ? 1 : 0);
     }
 
     public NumericConstant greaterThan(NumericConstant c)
     {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	return IntConstant.v((this.value > ((FloatConstant)c).value) ? 1 : 0);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        return IntConstant.v((this.value > ((FloatConstant)c).value) ? 1 : 0);
     }
 
     public NumericConstant greaterThanOrEqual(NumericConstant c)
     {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	return IntConstant.v((this.value >= ((FloatConstant)c).value) ? 1 : 0);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        return IntConstant.v((this.value >= ((FloatConstant)c).value) ? 1 : 0);
     }
 
     public IntConstant cmpg(RealConstant c) {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	float cValue = ((FloatConstant) c).value;
-	if (this.value < cValue)
-	    return IntConstant.v(-1);
-	else if (this.value == cValue)
-	    return IntConstant.v(0);
-	else /* this or c could be NaN */
-	    return IntConstant.v(1);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        float cValue = ((FloatConstant) c).value;
+        if (this.value < cValue)
+            return IntConstant.v(-1);
+        else if (this.value == cValue)
+            return IntConstant.v(0);
+        else /* this or c could be NaN */
+            return IntConstant.v(1);
     }
     
     public IntConstant cmpl(RealConstant c) {
-	if (!(c instanceof FloatConstant))
-	    throw new IllegalArgumentException("FloatConstant expected");
-	float cValue = ((FloatConstant) c).value;
-	if (this.value > cValue)
-	    return IntConstant.v(1);
-	else if (this.value == cValue)
-	    return IntConstant.v(0);
-	else /* this or c could be NaN */
-	    return IntConstant.v(-1);
+        if (!(c instanceof FloatConstant))
+            throw new IllegalArgumentException("FloatConstant expected");
+        float cValue = ((FloatConstant) c).value;
+        if (this.value > cValue)
+            return IntConstant.v(1);
+        else if (this.value == cValue)
+            return IntConstant.v(0);
+        else /* this or c could be NaN */
+            return IntConstant.v(-1);
     }
     
     public NumericConstant negate()
     {
-	return FloatConstant.v(-(this.value));
+        return FloatConstant.v(-(this.value));
     }
 
    public String toString()

@@ -18,54 +18,54 @@ public class UnreachablePruner {
     static int numPruned;
 
     public static void pruneUnreachables(StmtBody body) {
-	numPruned = 0;
-	stmtGraph = new CompleteUnitGraph(body);
-	visited = new HashSet();
+        numPruned = 0;
+        stmtGraph = new CompleteUnitGraph(body);
+        visited = new HashSet();
 
-	if (verbose) 
+        if (verbose) 
             System.out.println("[" + body.getMethod().getName() + "] Starting unreachable pruner...");
 
-	// mark first statement and all its successors, recursively
-	if (!body.getUnits().isEmpty())
-	    visitStmt((Stmt)body.getUnits().getFirst());
+        // mark first statement and all its successors, recursively
+        if (!body.getUnits().isEmpty())
+            visitStmt((Stmt)body.getUnits().getFirst());
 
-	Iterator stmtIt = body.getUnits().iterator();
-	while (stmtIt.hasNext()) {
-	    // find unmarked nodes
-	    Stmt stmt = (Stmt)stmtIt.next();
-	    if (!visited.contains(stmt)) {
-		stmtIt.remove();
-		numPruned++;
-	    }
-	}
-	if (numPruned == 0) {
-	    if (verbose)
-		System.out.println("    --- no unreachable blocks ---");
-	}
-	else {
-	    if (verbose) {
-		System.out.println("    --- removed " + numPruned +
-				   " unreachable blocks, " +
-				   " optimizing jumps again ---");
-		JumpOptimizer.optimizeJumps(body);
-	    }
-	}
+        Iterator stmtIt = body.getUnits().iterator();
+        while (stmtIt.hasNext()) {
+            // find unmarked nodes
+            Stmt stmt = (Stmt)stmtIt.next();
+            if (!visited.contains(stmt)) {
+                stmtIt.remove();
+                numPruned++;
+            }
+        }
+        if (numPruned == 0) {
+            if (verbose)
+                System.out.println("    --- no unreachable blocks ---");
+        }
+        else {
+            if (verbose) {
+                System.out.println("    --- removed " + numPruned +
+                                   " unreachable blocks, " +
+                                   " optimizing jumps again ---");
+                JumpOptimizer.optimizeJumps(body);
+            }
+        }
   } // pruneUnreachables
 
     private static void visitStmt(Stmt stmt) {
-	//ignore if already seen
-	if (visited.contains(stmt)) {
-	    return;
-	}
+        //ignore if already seen
+        if (visited.contains(stmt)) {
+            return;
+        }
 
-	// add to list of visited nodes
-	visited.add(stmt);
+        // add to list of visited nodes
+        visited.add(stmt);
 
-	// visit all successors recursively
-	Iterator succIt = stmtGraph.getSuccsOf(stmt).iterator();
+        // visit all successors recursively
+        Iterator succIt = stmtGraph.getSuccsOf(stmt).iterator();
 
-	while (succIt.hasNext())
-	    visitStmt((Stmt)succIt.next());
+        while (succIt.hasNext())
+            visitStmt((Stmt)succIt.next());
     } // visitStmt
 } // UnreachablePruner
     

@@ -42,7 +42,7 @@ public class BVirtualInvokeInst extends AbstractInvokeInst implements VirtualInv
         if(getMethod().getReturnType() instanceof VoidType) 
             return 0;
         else
-	    return JasminClass.sizeOfType(getMethod().getReturnType());
+            return JasminClass.sizeOfType(getMethod().getReturnType());
     } 
 
     

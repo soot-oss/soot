@@ -209,11 +209,38 @@ public class Main
     
     static public long stmtCount;
     static String jasminSource = "grimp";
+
+    private static List getClassesUnder(String aPath) 
+    {
+        File file = new File(aPath);
+        List fileNames = new ArrayList();
+
+        File[] files = file.listFiles();
+        
+
+        for(int i = 0; i < files.length; i++) {            
+            if(files[i].isDirectory()) {               
+                List l  = getClassesUnder( aPath + File.separator + files[i].getName());
+                Iterator it = l.iterator();
+                while(it.hasNext()) {
+                    String s = (String) it.next();
+                    fileNames.add(files[i].getName() +  "." + s);
+                }                    
+            } else {                
+                String fileName = files[i].getName();        
+                int index = fileName.indexOf(".class");
+                if( index != -1) {
+                    fileNames.add(fileName.substring(0, index));
+                }
+            }
+        }
+        return fileNames;
+    }
+
+
     
     public static void main(String[] args) throws RuntimeException
     {
-        int firstNonOption = 0;
-    
         boolean isRecursing = false;
         boolean isAnalyzingLibraries = false;
 
@@ -221,6 +248,8 @@ public class Main
         List packageInclusionFlags = new ArrayList();
         List packageInclusionMasks = new ArrayList();
 
+        List forcedClasses = new ArrayList();
+        Chain cmdLineClasses = new HashChain();
         packageInclusionFlags.add(new Boolean(false));
         packageInclusionMasks.add("java");
 
@@ -232,7 +261,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.101");
+            System.out.println("Soot version 1.beta.4.dev.102");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -280,6 +309,7 @@ public class Main
             System.out.println("");
             System.out.println("Misc. options:");
             System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
+            System.out.println("  --force-include PATH       include all class files in PATH for processing");
             System.out.println("  -t, --time                 print out time statistics about tranformations");
             System.out.println("  --subtract-gc              attempt to subtract the gc from the time stats");
             System.out.println("  -v, --verbose              verbose mode");
@@ -291,7 +321,7 @@ public class Main
             System.out.println("         Transforms all classes starting with Simulator, excluding ");
             System.out.println("         those in java.*, sun.*, and stores them in newClasses. ");
                
-
+            
             System.exit(0);
         }
 
@@ -400,35 +430,63 @@ public class Main
                 
                 else if(arg.equals("--debug"))
                     isInDebugMode = true;
+               
+                else if (arg.equals("--force-include")) {
+                    if(++i < args.length) {                        
+                        StringTokenizer tokenizer = new StringTokenizer(args[i], ":");
+                        while(tokenizer.hasMoreTokens()) {
+                            forcedClasses.addAll(getClassesUnder(tokenizer.nextToken()));
+                        }                        
+                    }                    
+                }
                 else if(arg.startsWith("-"))
                 {
                     System.out.println("Unrecognized option: " + arg);
                     System.exit(0);
-                }
+                } 
                 else
-                    break;
-
-                firstNonOption = i + 1;
+                {
+                    cmdLineClasses.add(arg);
+                }
             }
 
-        Scene cm = Scene.v();
         SootClass mainClass = null;
         
+        if(cmdLineClasses.isEmpty())
+        {
+            System.out.println("Nothing to do!");
+            System.exit(0);
+        }
+
+        // Load necessary classes.
+        {
+            
+            // Command line classes
+                Iterator it = cmdLineClasses.iterator();
+                    
+                while(it.hasNext())
+                {
+                    String name = (String) it.next();
+                    SootClass c = Scene.v().loadClassAndSupport(name);
+                    
+                    if(mainClass == null)
+                        mainClass = c;
+                        
+                    c.setApplicationClass();
+                }
+                
+            // Forced classes
+                it = forcedClasses.iterator();
+                
+                while(it.hasNext())
+                    Scene.v().loadClassAndSupport((String) it.next());                 
+        }
+
         // Generate classes to process
         {
-            for(int i = firstNonOption; i < args.length; i++)
-            {
-                SootClass c = cm.loadClassAndSupport(args[i]);
-                
-                if(mainClass == null)
-                    mainClass = c;
-
-                c.setApplicationClass();
-            }
-            
             if(isRecursing)
             {
-                List cc = new ArrayList(); cc.addAll(cm.getContextClasses());
+                List cc = new ArrayList(); cc.addAll(Scene.v().getContextClasses());
                 Iterator contextClassesIt = cc.iterator();
                 while (contextClassesIt.hasNext())
                     ((SootClass)contextClassesIt.next()).setApplicationClass();
@@ -437,8 +495,8 @@ public class Main
             // Remove/add all classes from packageInclusionMask as per piFlag
             {
                 List applicationPlusContextClasses = new ArrayList();
-                applicationPlusContextClasses.addAll(cm.getApplicationClasses());
-                applicationPlusContextClasses.addAll(cm.getContextClasses());
+                applicationPlusContextClasses.addAll(Scene.v().getApplicationClasses());
+                applicationPlusContextClasses.addAll(Scene.v().getContextClasses());
 
                 Iterator classIt = applicationPlusContextClasses.iterator();
                 
@@ -446,6 +504,9 @@ public class Main
                 {
                     SootClass s = (SootClass) classIt.next();
                     
+                    if(cmdLineClasses.contains(s.getName()))
+                        continue;
+                        
                     Iterator packageCmdIt = packageInclusionFlags.iterator();
                     Iterator packageMaskIt = packageInclusionMasks.iterator();
                     
@@ -470,7 +531,7 @@ public class Main
 
             if (isAnalyzingLibraries)
             {
-                Iterator contextClassesIt = cm.getContextClasses().iterator();
+                Iterator contextClassesIt = Scene.v().getContextClasses().iterator();
                 while (contextClassesIt.hasNext())
                     ((SootClass)contextClassesIt.next()).setLibraryClass();
             }
@@ -494,7 +555,7 @@ public class Main
         
         // Handle each class individually
         {
-            Iterator classIt = cm.getApplicationClasses().iterator();
+            Iterator classIt = Scene.v().getApplicationClasses().iterator();
             
             while(classIt.hasNext())
             {

@@ -205,9 +205,9 @@ public class UnitGraph implements DirectedGraph
                             u = (Unit) unitIt.next();
                             
                             ((List) unitToSuccs.get(u)).add(handlerUnit);
-			    
+                            
                         } while(u != endUnit);
-			
+                        
                         
                     }
 

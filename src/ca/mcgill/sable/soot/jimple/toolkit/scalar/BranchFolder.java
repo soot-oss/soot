@@ -15,41 +15,41 @@ public class BranchFolder {
 
     public static void foldBranches(StmtBody stmtBody)
     {
-	int numTrue = 0, numFalse = 0;
+        int numTrue = 0, numFalse = 0;
 
         if (verbose)
             System.out.println("[" + stmtBody.getMethod().getName() +
-			       "] Folding branches...");
+                               "] Folding branches...");
 
-	Chain units = stmtBody.getUnits();
+        Chain units = stmtBody.getUnits();
         ArrayList unitList = new ArrayList(); unitList.addAll(units);
 
-	Iterator stmtIt = unitList.iterator();
-	while (stmtIt.hasNext()) {
-	    Stmt stmt = (Stmt)stmtIt.next();
-	    if (stmt instanceof IfStmt) {
-		// check for constant-valued conditions
-		Value cond = ((IfStmt) stmt).getCondition();
-		if (Evaluator.isValueConstantValued(cond)) {
-		    cond = Evaluator.getConstantValueOf(cond);
+        Iterator stmtIt = unitList.iterator();
+        while (stmtIt.hasNext()) {
+            Stmt stmt = (Stmt)stmtIt.next();
+            if (stmt instanceof IfStmt) {
+                // check for constant-valued conditions
+                Value cond = ((IfStmt) stmt).getCondition();
+                if (Evaluator.isValueConstantValued(cond)) {
+                    cond = Evaluator.getConstantValueOf(cond);
 
-		    if (((IntConstant) cond).value == 1) {
-			// if condition always true, convert if to goto
-			Stmt newStmt =
-			    Jimple.v().newGotoStmt(((IfStmt)stmt).getTarget());
-			
+                    if (((IntConstant) cond).value == 1) {
+                        // if condition always true, convert if to goto
+                        Stmt newStmt =
+                            Jimple.v().newGotoStmt(((IfStmt)stmt).getTarget());
+                        
                         units.insertAfter(newStmt, stmt);
-		    }
-		    // remove if
+                    }
+                    // remove if
                     units.remove(stmt);
-		}
-	    }
-	}
+                }
+            }
+        }
 
        if (verbose)
             System.out.println("[" + stmtBody.getMethod().getName() +
                 "] Folded " + numTrue + " true, " + numFalse +
-			       " false branches");
+                               " false branches");
 
     } // foldBranches
 

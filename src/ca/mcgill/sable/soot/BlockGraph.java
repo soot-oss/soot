@@ -64,7 +64,7 @@ public class BlockGraph implements DirectedGraph
         while(trapIt.hasNext()) {
             Trap someTrap = (Trap) trapIt.next();
             Unit firstUnit = someTrap.getBeginUnit();
-	    
+            
 
                     
             List trapList = (List) trapBeginUnits.get(firstUnit);
@@ -295,12 +295,12 @@ public class BlockGraph implements DirectedGraph
                     blockLength = 1;
                     blockDeltaHeight = 0;
                 }
-		
+                
                 
                 blockDeltaHeight += ((Inst)unit).getNetCount();
                 
             }
-	    
+            
             
             block = new Block(blockHead, (Unit) mUnits.getLast(),mBody, indexInMethod++, blockLength, this);
             block.setPreds((List) leaders.get(blockHead));
@@ -420,33 +420,33 @@ public class BlockGraph implements DirectedGraph
             
             mBlocks = basicBlockList;
             
-	    // build head list
-	    {
-		List handlerList = new ArrayList();
-		Iterator trapIt2 = mBody.getTraps().iterator();
-		while(trapIt2.hasNext()) {
-		    Trap trap = (Trap) trapIt2.next();
-		    handlerList.add(trap.getHandlerUnit());    
-		}
-		
-		//		System.out.println("unit first " + mUnits.getFirst());
-		Iterator blockIt =  mBlocks.iterator();
-		while(blockIt.hasNext()) {
-		    Block b = (Block) blockIt.next();
-		    if(b.getHead() == mUnits.getFirst() || handlerList.contains(b.getHead())) {
-			mHeads.add(b);
-		    }
-		}
-		/*
-		Iterator ittt = mHeads.iterator();
-		System.out.println("Heads are:");
-		while(ittt.hasNext()) {
-		    System.out.println("next head: ");
-		    System.out.println(ittt.next());
-		}
-		System.out.println("done heads");
-		*/
-	    }
+            // build head list
+            {
+                List handlerList = new ArrayList();
+                Iterator trapIt2 = mBody.getTraps().iterator();
+                while(trapIt2.hasNext()) {
+                    Trap trap = (Trap) trapIt2.next();
+                    handlerList.add(trap.getHandlerUnit());    
+                }
+                
+                //                System.out.println("unit first " + mUnits.getFirst());
+                Iterator blockIt =  mBlocks.iterator();
+                while(blockIt.hasNext()) {
+                    Block b = (Block) blockIt.next();
+                    if(b.getHead() == mUnits.getFirst() || handlerList.contains(b.getHead())) {
+                        mHeads.add(b);
+                    }
+                }
+                /*
+                Iterator ittt = mHeads.iterator();
+                System.out.println("Heads are:");
+                while(ittt.hasNext()) {
+                    System.out.println("next head: ");
+                    System.out.println(ittt.next());
+                }
+                System.out.println("done heads");
+                */
+            }
         }
     }   
     
@@ -469,27 +469,27 @@ public class BlockGraph implements DirectedGraph
     // Directed graph implementation
     public List getHeads()
     {
-	return mHeads;
+        return mHeads;
     }
     public List getTails()
     {
-	throw new RuntimeException("not yet implemented");
+        throw new RuntimeException("not yet implemented");
     }
     public List getPredsOf(Unit s)
     {
-	throw new RuntimeException("not yet implemented");
+        throw new RuntimeException("not yet implemented");
     }
     public List getSuccsOf(Unit s)
     {
-	throw new RuntimeException("not yet implemented");
+        throw new RuntimeException("not yet implemented");
     }
     public int size()
     {
-	return mBlocks.size();
+        return mBlocks.size();
     }
     public Iterator iterator()
     {
-	return mBlocks.iterator();
+        return mBlocks.iterator();
     }
 }
 

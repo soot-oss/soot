@@ -637,44 +637,44 @@ public class JasminClass
 
             isEmittingMethodCode = false;
             
-	    // calcualte max stack height
-	    {
-		maxStackHeight = 0;
-		if(activeBody.getUnits().size() !=  0 ) {
-		    BlockGraph blockGraph = new BriefBlockGraph(activeBody);
+            // calcualte max stack height
+            {
+                maxStackHeight = 0;
+                if(activeBody.getUnits().size() !=  0 ) {
+                    BlockGraph blockGraph = new BriefBlockGraph(activeBody);
 
-		
-		    List blocks = blockGraph.getBlocks();
-		
+                
+                    List blocks = blockGraph.getBlocks();
+                
 
-		    if(blocks.size() != 0) {
-			Block b = (Block) blocks.get(0);		
-		    
-			// set the stack height of the entyr points
-			List entryPoints = ((DirectedGraph)blockGraph).getHeads();		
-			Iterator entryIt = entryPoints.iterator();
-			while(entryIt.hasNext()) {
-			    Block entryBlock = (Block) entryIt.next();
-			    Integer initialHeight;
-			    if(entryBlock == b) {
-				initialHeight = new Integer(0);
-			    } else {
-				initialHeight = new Integer(1);
-			    }						
-			    blockToStackHeight.put(entryBlock, initialHeight);
-			}		
-				    
-			// dfs the block graph using the blocks in the entryPoints list  as roots 
-			entryIt = entryPoints.iterator();
-			while(entryIt.hasNext()) {
-			    calculateStackHeight((Block) entryIt.next());
-			}		
-		    }
-		}
-	    }
+                    if(blocks.size() != 0) {
+                        Block b = (Block) blocks.get(0);                
+                    
+                        // set the stack height of the entyr points
+                        List entryPoints = ((DirectedGraph)blockGraph).getHeads();                
+                        Iterator entryIt = entryPoints.iterator();
+                        while(entryIt.hasNext()) {
+                            Block entryBlock = (Block) entryIt.next();
+                            Integer initialHeight;
+                            if(entryBlock == b) {
+                                initialHeight = new Integer(0);
+                            } else {
+                                initialHeight = new Integer(1);
+                            }                                                
+                            blockToStackHeight.put(entryBlock, initialHeight);
+                        }                
+                                    
+                        // dfs the block graph using the blocks in the entryPoints list  as roots 
+                        entryIt = entryPoints.iterator();
+                        while(entryIt.hasNext()) {
+                            calculateStackHeight((Block) entryIt.next());
+                        }                
+                    }
+                }
+            }
             if (!Modifier.isNative(method.getModifiers())
                 && !Modifier.isAbstract(method.getModifiers()))
-		code.set(stackLimitIndex, "    .limit stack " + maxStackHeight);
+                code.set(stackLimitIndex, "    .limit stack " + maxStackHeight);
         }
 
         // Emit epilogue
@@ -2057,30 +2057,30 @@ public class JasminClass
     
     private void calculateStackHeight(Block aBlock)
     {
-	Iterator it = aBlock.iterator();
-	int blockHeight =  ((Integer)blockToStackHeight.get(aBlock)).intValue();
-	
-	while(it.hasNext()) {
-	    blockHeight += ((Inst)it.next()).getNetMachineCount();
-	    if( blockHeight > maxStackHeight) {
-		maxStackHeight = blockHeight;
-	    }
-	}
-	
-	Iterator succs = aBlock.getSuccessors().iterator();
-	while(succs.hasNext()) {
-	    Block b = (Block) succs.next();
-	    Integer i = (Integer) blockToStackHeight.get(b);
-	    if(i != null) {
-		if(i.intValue() != blockHeight) {
-		    new RuntimeException("incoherent stack height at block merge point " + b + aBlock);
-		}
-		
-	    } else {
-		blockToStackHeight.put(b, new Integer(blockHeight));
-		calculateStackHeight(b);
-	    }	    
-	}	
+        Iterator it = aBlock.iterator();
+        int blockHeight =  ((Integer)blockToStackHeight.get(aBlock)).intValue();
+        
+        while(it.hasNext()) {
+            blockHeight += ((Inst)it.next()).getNetMachineCount();
+            if( blockHeight > maxStackHeight) {
+                maxStackHeight = blockHeight;
+            }
+        }
+        
+        Iterator succs = aBlock.getSuccessors().iterator();
+        while(succs.hasNext()) {
+            Block b = (Block) succs.next();
+            Integer i = (Integer) blockToStackHeight.get(b);
+            if(i != null) {
+                if(i.intValue() != blockHeight) {
+                    new RuntimeException("incoherent stack height at block merge point " + b + aBlock);
+                }
+                
+            } else {
+                blockToStackHeight.put(b, new Integer(blockHeight));
+                calculateStackHeight(b);
+            }            
+        }        
     }
 
 

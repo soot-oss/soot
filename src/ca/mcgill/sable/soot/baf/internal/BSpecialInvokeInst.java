@@ -12,13 +12,13 @@ public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInv
     public int getInCount()
     {
         
-	return getMethod().getParameterCount() +1;
+        return getMethod().getParameterCount() +1;
     }
 
 
     public int getInMachineCount()
     {
-	return super.getInMachineCount() +1;        
+        return super.getInMachineCount() +1;        
     }
 
 

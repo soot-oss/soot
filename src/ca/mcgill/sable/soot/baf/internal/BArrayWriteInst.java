@@ -107,7 +107,7 @@ public class BArrayWriteInst extends AbstractOpTypeInst
     
     public int getInMachineCount()
     {
-        return 2 +  JasminClass.sizeOfType(getOpType());	  
+        return 2 +  JasminClass.sizeOfType(getOpType());          
     }
     
     public int getOutCount()

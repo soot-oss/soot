@@ -16,66 +16,66 @@ public class ConstantOptimizer {
 
     public static void optimizeConstants(StmtBody stmtBody)
     {
-	int numFolded = 0;
-	int numPropagated = 0;
+        int numFolded = 0;
+        int numPropagated = 0;
 
         if (verbose)
             System.out.println("[" + stmtBody.getMethod().getName() +
-			       "] Propagating and folding constants...");
+                               "] Propagating and folding constants...");
 
-	Chain units = stmtBody.getUnits();
-	CompleteUnitGraph stmtGraph = new CompleteUnitGraph(stmtBody);
+        Chain units = stmtBody.getUnits();
+        CompleteUnitGraph stmtGraph = new CompleteUnitGraph(stmtBody);
         LocalDefs localDefs;
         
         localDefs = new SimpleLocalDefs(stmtGraph);
 
         // Perform a constant/local propagation pass.
-	Iterator stmtIt = stmtGraph.pseudoTopologicalOrderIterator();
+        Iterator stmtIt = stmtGraph.pseudoTopologicalOrderIterator();
 
-	// go through each use box in each statement
-	while (stmtIt.hasNext()) {
-	    Stmt stmt = (Stmt) stmtIt.next();
+        // go through each use box in each statement
+        while (stmtIt.hasNext()) {
+            Stmt stmt = (Stmt) stmtIt.next();
 
-	    // propagation pass
-	    Iterator useBoxIt = stmt.getUseBoxes().iterator();
-	    ValueBox useBox;
+            // propagation pass
+            Iterator useBoxIt = stmt.getUseBoxes().iterator();
+            ValueBox useBox;
 
-	    while (useBoxIt.hasNext()) {
-		useBox = (ValueBox) useBoxIt.next();
-		if (useBox.getValue() instanceof Local) {
-		    Local local = (Local) useBox.getValue();
-		    List defsOfUse = localDefs.getDefsOfAt(local, stmt);
-		    if (defsOfUse.size() == 1) {
-			DefinitionStmt defStmt =
-			    (DefinitionStmt) defsOfUse.get(0);
-			if (defStmt.getRightOp() instanceof NumericConstant) {
-			    if (useBox.canContainValue(defStmt.getRightOp())) {
-				useBox.setValue(defStmt.getRightOp());
-				numPropagated++;
-			    }
-			}
-		    }
-		}
-	    }
-		
-	    // folding pass
-	    useBoxIt = stmt.getUseBoxes().iterator();
+            while (useBoxIt.hasNext()) {
+                useBox = (ValueBox) useBoxIt.next();
+                if (useBox.getValue() instanceof Local) {
+                    Local local = (Local) useBox.getValue();
+                    List defsOfUse = localDefs.getDefsOfAt(local, stmt);
+                    if (defsOfUse.size() == 1) {
+                        DefinitionStmt defStmt =
+                            (DefinitionStmt) defsOfUse.get(0);
+                        if (defStmt.getRightOp() instanceof NumericConstant) {
+                            if (useBox.canContainValue(defStmt.getRightOp())) {
+                                useBox.setValue(defStmt.getRightOp());
+                                numPropagated++;
+                            }
+                        }
+                    }
+                }
+            }
+                
+            // folding pass
+            useBoxIt = stmt.getUseBoxes().iterator();
 
-	    while (useBoxIt.hasNext()) {
-		useBox = (ValueBox) useBoxIt.next();
-		Value value = useBox.getValue();
-		if (!(value instanceof Constant)) {
-		    if (Evaluator.isValueConstantValued(value)) {
-			Value constValue =
-			    Evaluator.getConstantValueOf(value);
-			if (useBox.canContainValue(constValue)) {
-			    useBox.setValue(constValue);
-			    numFolded++;
-			}
-		    }
-		}
-	    }
-	}
+            while (useBoxIt.hasNext()) {
+                useBox = (ValueBox) useBoxIt.next();
+                Value value = useBox.getValue();
+                if (!(value instanceof Constant)) {
+                    if (Evaluator.isValueConstantValued(value)) {
+                        Value constValue =
+                            Evaluator.getConstantValueOf(value);
+                        if (useBox.canContainValue(constValue)) {
+                            useBox.setValue(constValue);
+                            numFolded++;
+                        }
+                    }
+                }
+            }
+        }
 
        if (verbose)
             System.out.println("[" + stmtBody.getMethod().getName() +
