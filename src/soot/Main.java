@@ -218,8 +218,7 @@ public class Main implements Runnable, ICompilationListener
     static int finalRep = BAF;
       // The final rep to be used is Baf; conclusion of our CC2000 paper!
 
-    private static List sTagFileList = new ArrayList();
- 
+    private static List sTagFileList = new ArrayList(); 
 
     private static List getClassesUnder(String aPath) 
     {
@@ -227,8 +226,11 @@ public class Main implements Runnable, ICompilationListener
         List fileNames = new ArrayList();
 
         File[] files = file.listFiles();
+        if (files == null)
+        {
+            files = new File[1]; files[0] = file;
+        }
         
-
         for(int i = 0; i < files.length; i++) {            
             if(files[i].isDirectory()) {               
                 List l  = getClassesUnder( aPath + File.separator + files[i].getName());
@@ -236,7 +238,7 @@ public class Main implements Runnable, ICompilationListener
                 while(it.hasNext()) {
                     String s = (String) it.next();
                     fileNames.add(files[i].getName() +  "." + s);
-                }                    
+                }    
             } else {                
                 String fileName = files[i].getName();        
                 
@@ -452,7 +454,7 @@ public class Main implements Runnable, ICompilationListener
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version 1.0.0 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.10)");
+            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.11)");
             System.out.println("Copyright (C) 1997-2000 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -650,7 +652,7 @@ public class Main implements Runnable, ICompilationListener
                     catch (IOException e)
                         {
                             throw new CompilationDeathException(COMPILATION_ABORTED,
-                                            "Error reaing file "+arg.substring(1));
+                                            "Error reading file "+arg.substring(1));
                         }
                 }
                 else
@@ -658,7 +660,7 @@ public class Main implements Runnable, ICompilationListener
                     cmdLineClasses.add(arg);
                 }
         }
-        postCmdLineCheck();           
+        postCmdLineCheck();
     }
     
     private static void exitCompilation(int status)
@@ -698,7 +700,7 @@ public class Main implements Runnable, ICompilationListener
     private static void postCmdLineCheck()
         throws CompilationDeathException
     {
-            if(cmdLineClasses.isEmpty())
+            if(cmdLineClasses.isEmpty() && processClasses.isEmpty())
             {
                 throw new CompilationDeathException(COMPILATION_ABORTED, "Nothing to do!"); 
             }
@@ -835,7 +837,6 @@ public class Main implements Runnable, ICompilationListener
         initApp();
         processCmdLine(cmdLineArgs);
 
-        
         // Load necessary classes.
         {            
             Iterator it = cmdLineClasses.iterator();

@@ -93,21 +93,6 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
         return ms;
     }
 
-    /** Compares the specified object with this one for structural equality.  Does <i>not</i> 
-     * consider method bodies. */
-    public boolean equivTo(Object o)
-    {
-        if (o instanceof SootMethod)
-        {
-            SootMethod sf = (SootMethod)o;
-            /* relies on the fact that equals is the same as equivTo for parameterTypes and thrown exceptions */
-            return returnType.equals(sf.returnType) && modifiers == sf.modifiers &&
-                parameterTypes.equals(sf.parameterTypes) && exceptions.equals(sf.exceptions) 
-                && name.equals(sf.name);
-        }
-        return false;
-    }
-
     /** Returns a hash code for this method consistent with structural equality. */
     public int equivHashCode()
     {

@@ -46,6 +46,8 @@ import soot.util.*;
 
 public class NaiveCommonSubexpressionEliminator extends BodyTransformer
 { 
+    public static int cseCounter = 0;
+
     private static NaiveCommonSubexpressionEliminator instance = 
         new NaiveCommonSubexpressionEliminator();
     private NaiveCommonSubexpressionEliminator() {}
@@ -109,10 +111,14 @@ public class NaiveCommonSubexpressionEliminator extends BodyTransformer
                             units.insertAfter(copier, origCalc);
 
                             ((AssignStmt)s).setRightOp(l);
+                            cseCounter++;
                         }
                     }
                 }
             }
         }
+        if(Main.isVerbose)
+            System.out.println("[" + b.getMethod().getName() +
+                     "]     Eliminating common subexpressions done!");
     }
 }

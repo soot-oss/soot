@@ -32,29 +32,34 @@ import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
 
-// future work: fieldrefs.
-
 /** Implements an available expressions analysis on local variables. 
  * The current implementation is slow but correct.
  * A better implementation would use an implicit universe and
  * the kill rule would be computed on-the-fly for each statement. */
 class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 {
+    NaiveSideEffectTester st = new NaiveSideEffectTester();
+
     Map unitToGenerateSet;
     Map unitToPreserveSet;
     Map rhsToContainingStmt;
-    private HashMap valueToEquivValue;
 
     FlowSet emptySet;
+
+    private static final Boolean FALSE = new Boolean(false);
+    private static final Boolean TRUE = new Boolean(true);
     
     public FastAvailableExpressionsAnalysis(DirectedGraph dg)
     {
         super(dg);
 
-        UnitGraph g = (UnitGraph)dg;
+        CompleteUnitGraph g = (CompleteUnitGraph)dg;
+        LocalDefs ld = new SimpleLocalDefs(g);
 
-        /* we need a universe of all of the expressions. */
-        emptySet = new ArraySparseSet();
+        // maps an rhs to its containing stmt.  object equality in rhs.
+        rhsToContainingStmt = new HashMap();
+
+        emptySet = new ToppedSet(new ArraySparseSet());
 
         // Create generate sets
         {
@@ -66,22 +71,23 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
             {
                 Unit s = (Unit) unitIt.next();
 
-                FlowSet genSet = new ArraySparseSet();
+                FlowSet genSet = (FlowSet)emptySet.clone();
                 // In Jimple, expressions only occur as the RHS of an AssignStmt.
                 if (s instanceof AssignStmt)
-
                 {
                     AssignStmt as = (AssignStmt)s;
-                    if (as.getRightOp() instanceof Expr)
+                    if (as.getRightOp() instanceof Expr ||
+                        as.getRightOp() instanceof FieldRef)
                     {
                         Value gen = as.getRightOp();
+                        rhsToContainingStmt.put(gen, s);
 
                         boolean cantAdd = false;
                         if (gen instanceof NewExpr || 
                                gen instanceof NewArrayExpr || 
                                gen instanceof NewMultiArrayExpr)
                             cantAdd = true;
-                        if (gen instanceof InvokeExpr || gen instanceof FieldRef)
+                        if (gen instanceof InvokeExpr)
                             cantAdd = true;
 
                         // Whee, double negative!
@@ -99,9 +105,9 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 
     protected Object newInitialFlow()
     {
-        BoundedFlowSet out = (BoundedFlowSet)emptySet.clone();
-        out.complement(out);
-        return out;
+        Object newSet = emptySet.clone();
+        ((ToppedSet)newSet).setTop(true);
+        return newSet;
     }
 
     protected void customizeInitialFlowGraph()
@@ -110,8 +116,8 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
         Iterator it = graph.getHeads().iterator();
         while (it.hasNext())
         {
-            Object head = it.next();
-            unitToBeforeFlow.put(head, emptySet.clone());
+            Object newSet = unitToBeforeFlow.get(it.next());
+            ((ToppedSet)newSet).setTop(false);
         }
     }
 
@@ -119,40 +125,47 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
+        in.copy(out);
+        if (((ToppedSet)in).isTop())
+            return;
+
         // Perform generation
             out.union((FlowSet) unitToGenerateSet.get(unit), out);
 
         // Perform kill.
 	    Unit u = (Unit)unit;
-	    Iterator defIt = u.getDefBoxes().iterator();
 	    List toRemove = new ArrayList();
 
-	    List l = ((FlowSet)out).toList();
-	    while (defIt.hasNext())
+            if (((ToppedSet)out).isTop())
+            {
+                throw new RuntimeException("trying to kill on topped set!");
+            }
+	    List l = new LinkedList();
+            l.addAll(((FlowSet)out).toList());
+            Iterator it = l.iterator();
+
+            // iterate over things (avail) in out set.
+            while (it.hasNext())
 	    {
-		Value def = (Value)defIt.next();
-		ListIterator it = l.listIterator();
+                Value avail = (Value)it.next();
+                if (avail instanceof FieldRef)
+                {
+                    if (st.unitCanWriteTo(u, avail))
+                        out.remove(avail, out);
+                }
+                else
+                {
+                    Iterator usesIt = avail.getUseBoxes().iterator();
 
-		// iterate over things in out set.
-	    availIteration:
-		while (it.hasNext())
-		{
-		    Expr avail = (Expr)it.next();
-		    Iterator usesIt = avail.getUseBoxes().iterator();
-
-		    while (usesIt.hasNext())
-		    {
-			Value use = (Value)usesIt.next();
-			if (use.equals(def))
-			{
-			    out.remove(avail, out);
-
-			    // prevent re-iterating over this guy.
-			    it.remove();
-			    break availIteration;
-			}
-		    }
-		}
+                    // iterate over uses in each avail.
+                    while (usesIt.hasNext())
+                    {
+                        Value use = ((ValueBox)usesIt.next()).getValue();
+                        
+                        if (st.unitCanWriteTo(u, use))
+                            out.remove(avail, out);
+                    }
+                }
 	    }
     }
 

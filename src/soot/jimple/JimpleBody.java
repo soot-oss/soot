@@ -81,6 +81,7 @@ public class JimpleBody extends StmtBody
         boolean noCopyPropagating = Options.getBoolean(options, "no-cp");
         
         boolean noNopElimination = Options.getBoolean(options, "no-nop-elimination");
+        boolean noUcElimination = Options.getBoolean(options, "no-unreachable-code-elimination");
 
         boolean verbatim = Options.getBoolean(options, "verbatim");
 
@@ -148,9 +149,11 @@ public class JimpleBody extends StmtBody
             LocalPacker.v().transform(this, "jb.lp");
         }
 
-
         if(!noNopElimination)
             NopEliminator.v().transform(this, "jb.ne");
+
+        if (!noUcElimination)
+            UnreachableCodeEliminator.v().transform(this, "jb.uce");
                     
         if(soot.Main.isProfilingOptimization)
             soot.Main.stmtCount += getUnits().size();

@@ -42,9 +42,6 @@ public class NopEliminator extends BodyTransformer
 
     /** Eliminates dead code in a linear fashion.  Complexity is linear 
         with respect to the statements.
-        
-        Does not work on grimp code because of the check on the right hand
-        side for side effects. 
     */
     
     protected void internalTransform(Body b, String phaseName, Map options)

@@ -48,7 +48,7 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
         if (o instanceof AbstractStaticInvokeExpr)
         {
             AbstractStaticInvokeExpr ie = (AbstractStaticInvokeExpr)o;
-            if (!(method.equivTo(ie.method) && 
+            if (!(method.equals(ie.method) && 
                   argBoxes.length == ie.argBoxes.length))
                 return false;
             for (int i = 0; i < argBoxes.length; i++)

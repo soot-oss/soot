@@ -32,7 +32,7 @@ import java.util.*;
 /**
     Soot representation of a Java field.  Can be declared to belong to a SootClass.
 */
-public class SootField extends AbstractHost implements ClassMember, EquivTo
+public class SootField extends AbstractHost implements ClassMember
 {
     String name;
     Type type;
@@ -56,17 +56,6 @@ public class SootField extends AbstractHost implements ClassMember, EquivTo
         this.name = name;
         this.type = type;
         this.modifiers = 0;
-    }
-
-    public boolean equivTo(Object o)
-    {
-        if (o instanceof SootField)
-        {
-            SootField sf = (SootField)o;
-            return type.equals(sf.type) && modifiers == sf.modifiers &&
-                name.equals(sf.name);
-        }
-        return false;
     }
 
     public int equivHashCode()

@@ -106,7 +106,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
         if (o instanceof AbstractInstanceFieldRef)
         {
             AbstractInstanceFieldRef fr = (AbstractInstanceFieldRef)o;
-            return fr.field.equivTo(field) &&
+            return fr.field.equals(field) &&
                 fr.baseBox.getValue().equivTo(baseBox.getValue());
         }
         return false;

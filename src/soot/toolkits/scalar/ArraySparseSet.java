@@ -80,6 +80,7 @@ public class ArraySparseSet implements FlowSet
         return numElements == 0;
     }
 
+    /** Returns a backed list of elements in this set. */
     public List toList()
     {
         return new SparseArrayList(elements, numElements);

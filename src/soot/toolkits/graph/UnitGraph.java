@@ -247,7 +247,6 @@ public class UnitGraph implements DirectedGraph
                 }
             }
 
-
             // Convert pred lists to arrays
             {
                 Iterator unitIt = body.getUnits().iterator();

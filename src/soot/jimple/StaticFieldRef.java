@@ -86,7 +86,7 @@ public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf, Eq
     public boolean equivTo(Object o)
     {
         if (o instanceof StaticFieldRef)
-            return ((StaticFieldRef)o).field.equivTo(field);
+            return ((StaticFieldRef)o).field.equals(field);
         
         return false;
     }

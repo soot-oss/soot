@@ -38,13 +38,16 @@ public class FastAvailableExpressions implements AvailableExpressions
 {
     Map unitToPairsAfter;
     Map unitToPairsBefore;
-
     Map unitToEquivsAfter;
     Map unitToEquivsBefore;
 
     /** Wrapper for AvailableExpressionsAnalysis. */ 
     public FastAvailableExpressions(Body b)
     {
+        if(Main.isVerbose)
+            System.out.println("[" + b.getMethod().getName() +
+                "] Finding available expressions...");
+
         FastAvailableExpressionsAnalysis analysis = 
             new FastAvailableExpressionsAnalysis(new CompleteUnitGraph(b));
 
@@ -66,8 +69,12 @@ public class FastAvailableExpressions implements AvailableExpressions
                 List pairsBefore = new ArrayList();
                 List pairsAfter = new ArrayList();
 
-                HashChain equivsBefore = new HashChain();
-                HashChain equivsAfter = new HashChain();
+                Chain equivsBefore = new HashChain();
+                Chain equivsAfter = new HashChain();
+
+                if (set instanceof ToppedSet &&
+                            ((ToppedSet)set).isTop())
+                    throw new RuntimeException("top! on "+s);
 
                 List setAsList = set.toList();
                 Iterator si = setAsList.iterator();
@@ -77,15 +84,16 @@ public class FastAvailableExpressions implements AvailableExpressions
                     Stmt containingStmt = (Stmt)analysis.rhsToContainingStmt.get(v);
                     UnitValueBoxPair p = new UnitValueBoxPair
                         (containingStmt, ((AssignStmt)containingStmt).getRightOpBox());
-                    EquivalentValue ev = new EquivalentValue(v);
                     pairsBefore.add(p);
+
+                    EquivalentValue ev = new EquivalentValue(v);
                     if (!equivsBefore.contains(ev))
                         equivsBefore.add(ev);
                 }
 
                 unitToPairsBefore.put(s, pairsBefore);
                 unitToEquivsBefore.put(s, equivsBefore);
-                
+ 
                 set = (FlowSet) analysis.getFlowAfter(s);
                 setAsList = set.toList();
                 si = setAsList.iterator();
@@ -95,8 +103,9 @@ public class FastAvailableExpressions implements AvailableExpressions
                     Stmt containingStmt = (Stmt)analysis.rhsToContainingStmt.get(v);
                     UnitValueBoxPair p = new UnitValueBoxPair
                         (containingStmt, ((AssignStmt)containingStmt).getRightOpBox());
-                    EquivalentValue ev = new EquivalentValue(v);
                     pairsAfter.add(p);
+
+                    EquivalentValue ev = new EquivalentValue(v);
                     if (!equivsAfter.contains(ev))
                         equivsAfter.add(ev);
                 }
@@ -105,6 +114,10 @@ public class FastAvailableExpressions implements AvailableExpressions
                 unitToEquivsAfter.put(s, equivsAfter);
             }  
         }
+
+        if(Main.isVerbose)
+            System.out.println("[" + b.getMethod().getName() +
+                "]     Found available expressions...");
     }
 
     /** Returns a List containing the UnitValueBox pairs corresponding to expressions available before u. */
@@ -113,21 +126,22 @@ public class FastAvailableExpressions implements AvailableExpressions
         return (List)unitToPairsBefore.get(u);
     }
 
-    /** Returns a List containing the UnitValueBox pairs corresponding to expressions available after u. */
-    public List getAvailablePairsAfter(Unit u)
-    {
-        return (List)unitToPairsAfter.get(u);
-    }
-
     /** Returns a Chain containing the EquivalentValue objects corresponding to expressions available before u. */
     public Chain getAvailableEquivsBefore(Unit u)
     {
         return (Chain)unitToEquivsBefore.get(u);
     }
 
-    /** Returns a Chain containing the EquivalentValue objects corresponding to expressions available after u. */
+    /** Returns a List containing the EquivalentValue corresponding to expressions available after u. */
+    public List getAvailablePairsAfter(Unit u)
+    {
+        return (List)unitToPairsAfter.get(u);
+    }
+
+    /** Returns a List containing the UnitValueBox pairs corresponding to expressions available after u. */
     public Chain getAvailableEquivsAfter(Unit u)
     {
         return (Chain)unitToEquivsAfter.get(u);
     }
 }
+
