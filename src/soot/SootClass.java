@@ -279,7 +279,7 @@ public class SootClass extends AbstractHost implements Numberable
 
     public SootMethod getMethod(NumberedString subsignature)
     {
-        SootMethod ret = (SootMethod) getMethods().get( subsignature );
+        SootMethod ret = (SootMethod) subSigToMethods.get( subsignature );
         if(ret == null)
             throw new RuntimeException("No method " + subsignature + " in class " + getName());
         else
@@ -292,7 +292,7 @@ public class SootClass extends AbstractHost implements Numberable
 
     public boolean declaresMethod(NumberedString subsignature)
     {
-        SootMethod ret = (SootMethod) getMethods().get( subsignature );
+        SootMethod ret = (SootMethod) subSigToMethods.get( subsignature );
         return ret != null;
     }
     
@@ -362,16 +362,7 @@ public class SootClass extends AbstractHost implements Numberable
 
     public int getMethodCount()
     {
-        return getMethods().nonNullSize();
-    }
-
-    /**
-     * Returns a backed SmallNumberedMap of methods.
-     */
-
-    private SmallNumberedMap getMethods()
-    {
-        return subSigToMethods;
+        return subSigToMethods.nonNullSize();
     }
 
     /**
@@ -381,6 +372,13 @@ public class SootClass extends AbstractHost implements Numberable
     public Iterator methodIterator()
     {
         return subSigToMethods.iterator();
+    }
+
+    public List getMethods() {
+        ArrayList ret = new ArrayList();
+        for( Iterator it = methodIterator(); it.hasNext(); )
+            ret.add( it.next() );
+        return ret;
     }
 
     private SootMethod findMethodInClass( String name, List parameterTypes,

@@ -125,7 +125,9 @@ public class ImplicitMethodInvocation
                                 }
                             } else {
                                 SootClass sootcls = Scene.v().getSootClass( cls );
-                                sootcls.setApplicationClass();
+                                if( !sootcls.isApplicationClass() ) {
+                                    sootcls.setLibraryClass();
+                                }
                                 addMethod( ret, sootcls, sigClinit );
                             }
                         }
