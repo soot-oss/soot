@@ -103,7 +103,7 @@ public class RefType extends BaseType implements ToBriefString
 
     public String toBriefString()
     {
-	    return className;
+            return className;
     }
 
     public int hashCode()

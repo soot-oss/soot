@@ -6,7 +6,7 @@ class EscapedPrintWriter extends PrintWriter
 {
     public EscapedPrintWriter(FileOutputStream fos)
     {
-	super(fos);
+        super(fos);
     }
 
     public void write(String out)

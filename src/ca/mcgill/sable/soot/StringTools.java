@@ -11,35 +11,36 @@ public class StringTools
         char[] fromStringArray;
         int cr, lf, ch;
 
-	whole.setLength(0);
-	mini.setLength(0);
+        whole.setLength(0);
+        mini.setLength(0);
 
         fromStringArray = fromString.toCharArray();
 
-        cr = StringTools.lineSeparator.charAt(0);
+        cr = lineSeparator.charAt(0);
         lf = -1;
 
         if (lineSeparator.length() == 2)
-	    lf = ca.mcgill.sable.soot.StringTools.lineSeparator.charAt(1);
+            lf = lineSeparator.charAt(1);
 
-	for (int i = 0; i < fromStringArray.length; i++)
-	{
-	    ch = fromStringArray[i];
-	    if (ch >= 32 && ch <= 126 || ch == cr || ch == lf)
-	    {
-		ca.mcgill.sable.soot.StringTools.whole.append((char) ch);
-		continue;
-	    }
-	    
-	    mini.setLength(0);
-	    mini.append(java.lang.Integer.toHexString(ch));
+        for (int i = 0; i < fromStringArray.length; i++)
+        {
+            ch = (int) fromStringArray[i];
+            if (ch >= 32 && ch <= 126 || ch == cr || ch == lf)
+            {
+                whole.append((char) ch);
+ 
+                continue;
+            }
+            
+            mini.setLength(0);
+            mini.append(Integer.toHexString(ch));
 
-	    while (mini.length() < 4)
-		mini.insert(0, "0");
+            while (mini.length() < 4)
+                mini.insert(0, "0");
 
-	    mini.insert(0, "\\u");
-	    whole.append(mini.toString());
-	}
+            mini.insert(0, "\\u");
+            whole.append(mini.toString());
+        }
 
         return whole.toString();
     }
@@ -52,22 +53,22 @@ public class StringTools
         toStringBuffer = new java.lang.StringBuffer();
         fromStringArray = fromString.toCharArray();
 
-	toStringBuffer.append("\"");
+        toStringBuffer.append("\"");
 
-	for (int i = 0; i < fromStringArray.length; i++)
-	{
-	    int ch = fromStringArray[i];
-	    if (ch == 92)
-		{ toStringBuffer.append("\\\\"); continue; }
+        for (int i = 0; i < fromStringArray.length; i++)
+        {
+            char ch = fromStringArray[i];
+            if (ch == '\\')
+                { toStringBuffer.append("\\\\"); continue; }
 
-	    if (ch == 39)
-		{ toStringBuffer.append("\\\'"); continue; }
+            if (ch == '\'')
+                { toStringBuffer.append("\\\'"); continue; }
 
-	    if (ch == 34)
-		{ toStringBuffer.append("\\\""); continue; }
+            if (ch == '\"')
+                { toStringBuffer.append("\\\""); continue; }
 
-	    toStringBuffer.append(ch);
-	}
+            toStringBuffer.append(ch);
+        }
 
         toStringBuffer.append("\"");
         return toStringBuffer.toString();
