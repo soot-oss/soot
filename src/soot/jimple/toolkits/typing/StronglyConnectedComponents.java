@@ -113,7 +113,7 @@ class StronglyConnectedComponents
 		  {
 		    if(DEBUG)
 		      {
-			System.out.println(s);
+			G.v().out.println(s);
 		      }
 		    throw e;
 		  }

@@ -34,7 +34,7 @@ public class G extends Singletons
     public static G v() { return instance; }
     public static void reset() { instance = new G(); }
 
-    public PrintStream out = System.out;
+    public PrintStream out = G.v().out;
 
     public class Global {
     }

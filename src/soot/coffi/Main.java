@@ -25,6 +25,7 @@
 
 
 package soot.coffi;
+import soot.*;
 import soot.util.*;
 
 class Main
@@ -33,7 +34,7 @@ class Main
     {
         if(args.length == 0)
         {
-            System.out.println("Usage: java soot.coffi.Main class1 class2 ...");
+            G.v().out.println("Usage: java soot.coffi.Main class1 class2 ...");
             System.exit(0);
         }
 
@@ -95,7 +96,7 @@ class Main
             }
 
         // Print info
-            System.out.println(name + ": " + totalLocals + " locals  " + totalInstructions +
+            G.v().out.println(name + ": " + totalLocals + " locals  " + totalInstructions +
                 " bytecode instructions  " + totalCodeSize + " bytes of code");
     }
 }

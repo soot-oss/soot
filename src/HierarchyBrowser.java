@@ -33,10 +33,10 @@ public class HierarchyBrowser
 {
     public static void usage()
     {
-        System.out.println("Usage: java HierarchyBrowser <command> <class> [context-class1] [context-class2] ...");
-        System.out.println("    where command is one of: [d]subc[_i], [d]subi[_i], [d]imp\n");
-        System.out.println("OR:    java HierarchyBrowser interactive <context-class1> [context-class2] ...");
-        System.out.println("\nExample: java HierarchyBrowser subi soot.Unit soot.Main");
+        G.v().out.println("Usage: java HierarchyBrowser <command> <class> [context-class1] [context-class2] ...");
+        G.v().out.println("    where command is one of: [d]subc[_i], [d]subi[_i], [d]imp\n");
+        G.v().out.println("OR:    java HierarchyBrowser interactive <context-class1> [context-class2] ...");
+        G.v().out.println("\nExample: java HierarchyBrowser subi soot.Unit soot.Main");
     }
 
     public static void doCommand(Hierarchy h, String command, String className)
@@ -70,7 +70,7 @@ public class HierarchyBrowser
         ArrayList al = new ArrayList(); 
         if (target != null) 
             al.addAll(target);
-        System.out.println(command + " on "+className+" gives: "+al);
+        G.v().out.println(command + " on "+className+" gives: "+al);
     }
 
     public static void main(String[] argv)
@@ -83,13 +83,13 @@ public class HierarchyBrowser
 
         for (int i = 1; i < argv.length; i++)
         {
-            System.out.println("Resolving "+argv[i]+"...");
+            G.v().out.println("Resolving "+argv[i]+"...");
             Scene.v().loadClassAndSupport(argv[i]);
         }
 
-        System.out.print("Building hierarchy... ");
+        G.v().out.print("Building hierarchy... ");
         Hierarchy h = new Hierarchy();
-        System.out.println("done!");
+        G.v().out.println("done!");
 
         if (command.equals("interactive"))
         {
@@ -100,7 +100,7 @@ public class HierarchyBrowser
                     InputStreamReader isr=new InputStreamReader(System.in);
                     BufferedReader stdin=new BufferedReader(isr);
                 
-                    System.out.print("[Command]: ");
+                    G.v().out.print("[Command]: ");
                     command = stdin.readLine();
                     if (command.equals("quit"))
                         break;

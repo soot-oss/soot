@@ -212,7 +212,7 @@ public class JasminClass
             Timers.v().buildJasminTimer.start();
         
         if(soot.Main.opts.verbose())
-            System.out.println("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
+            G.v().out.println("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
 
         code = new LinkedList();
 
@@ -311,7 +311,7 @@ public class JasminClass
     void assignColorsToLocals(BafBody body)
     {
         if(Main.opts.verbose())
-            System.out.println("[" + body.getMethod().getName() +
+            G.v().out.println("[" + body.getMethod().getName() +
                 "] Assigning colors to locals...");
         
         if(Main.opts.time())
@@ -2013,7 +2013,7 @@ public class JasminClass
                     emit("dup2");
                 } else {
                     //delme[
-                    System.out.println("3000:(JasminClass): dup2 created");
+                    G.v().out.println("3000:(JasminClass): dup2 created");
                     //delme
                     emit("dup2");
                 }
@@ -2093,7 +2093,7 @@ public class JasminClass
           if( blockHeight > maxStackHeight) {
             maxStackHeight = blockHeight;
           }
-          //System.out.println(">>> " + nInst + " " + blockHeight);            
+          //G.v().out.println(">>> " + nInst + " " + blockHeight);            
         }
         
         
@@ -2136,7 +2136,7 @@ public class JasminClass
 
             blockHeight += nInst.getOutCount();
             
-            //System.out.println(">>> " + nInst + " " + blockHeight);            
+            //G.v().out.println(">>> " + nInst + " " + blockHeight);            
         }
         
         

@@ -48,7 +48,7 @@ class TypeNode
 
     if(DEBUG)
       {
-	System.out.println("creating node " + this);
+	G.v().out.println("creating node " + this);
       }
   }
   
