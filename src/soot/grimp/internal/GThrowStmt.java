@@ -39,7 +39,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GThrowStmt extends JThrowStmt implements ThrowStmt
+public class GThrowStmt extends JThrowStmt
 {
     public GThrowStmt(Value op)
     {

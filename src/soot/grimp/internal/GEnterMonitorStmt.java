@@ -40,7 +40,6 @@ import soot.util.*;
 import java.util.*;
 
 public class GEnterMonitorStmt extends JEnterMonitorStmt 
-    implements EnterMonitorStmt
 {
     public GEnterMonitorStmt(Value op)
     {

@@ -34,7 +34,7 @@ import java.util.*;
 /**
  *   Reference implementation for a BoundedFlowSet. Items are stored in an Array.  
  */
-public class ArrayPackedSet extends AbstractBoundedFlowSet implements BoundedFlowSet
+public class ArrayPackedSet extends AbstractBoundedFlowSet
 {
     ObjectIntMapper map;
     int[] bits;

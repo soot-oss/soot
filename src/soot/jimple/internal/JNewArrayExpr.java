@@ -36,7 +36,6 @@ import soot.util.*;
 import java.util.*;
 
 public class JNewArrayExpr extends AbstractNewArrayExpr
-  implements NewArrayExpr
 {
     public JNewArrayExpr(Type type, Value size)
     {

@@ -32,7 +32,7 @@ import java.util.*;
 import java.io.*;
 
 /** Implementation of the Body class for the Jimple IR. */
-public class JimpleBody extends StmtBody implements Serializable
+public class JimpleBody extends StmtBody
 {
     /**
         Construct an empty JimpleBody 

@@ -39,8 +39,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GNewArrayExpr extends AbstractNewArrayExpr implements NewArrayExpr,
-                                                            Precedence
+public class GNewArrayExpr extends AbstractNewArrayExpr implements Precedence
 {
   public GNewArrayExpr(Type type, Value size)
     {

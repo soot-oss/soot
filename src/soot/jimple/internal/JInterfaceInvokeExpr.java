@@ -35,7 +35,7 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
-public class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr implements InterfaceInvokeExpr
+public class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
 {
     public JInterfaceInvokeExpr(Value base, SootMethod method, List args)
     {

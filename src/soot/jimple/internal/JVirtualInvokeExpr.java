@@ -36,7 +36,6 @@ import soot.util.*;
 import java.util.*;
 
 public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr 
-  implements VirtualInvokeExpr
 {
     public JVirtualInvokeExpr(Value base, SootMethod method, List args)
     {

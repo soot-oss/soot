@@ -38,7 +38,7 @@ import java.util.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
 
-public class GArrayRef extends JArrayRef implements ArrayRef, Precedence
+public class GArrayRef extends JArrayRef implements Precedence
 {
   public GArrayRef(Value base, Value index)
     {

@@ -37,7 +37,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GCastExpr extends AbstractCastExpr implements CastExpr, Precedence
+public class GCastExpr extends AbstractCastExpr implements Precedence
 {
     public GCastExpr(Value op, Type type)
     {

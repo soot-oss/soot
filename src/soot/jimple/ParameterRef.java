@@ -38,7 +38,7 @@ import java.util.*;
  *
  * For instance, in an instance method, the first statement will
  * often be <code> this := @parameter0; </code> */
-public class ParameterRef implements IdentityRef, Switchable
+public class ParameterRef implements IdentityRef
 {
     int n;
     Type paramType;

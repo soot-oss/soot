@@ -39,7 +39,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GInvokeStmt extends JInvokeStmt implements InvokeStmt
+public class GInvokeStmt extends JInvokeStmt
 {
     public GInvokeStmt(Value c)
     {

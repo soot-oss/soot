@@ -26,7 +26,7 @@ import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
  * assignment graph.
  * @author Ondrej Lhotak
  */
-public class ValNode extends Node implements ReferenceVariable
+public class ValNode extends Node
 {
     protected ValNode( PAG pag, Type t ) {
 	super( pag, t );

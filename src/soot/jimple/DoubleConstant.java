@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class DoubleConstant extends RealConstant implements Switchable
+public class DoubleConstant extends RealConstant
 {
     public final double value;
 

@@ -38,7 +38,7 @@ import soot.baf.*;
 import soot.jimple.*;
 import java.util.*;
 
-public class JNewExpr extends AbstractNewExpr implements NewExpr, ConvertToBaf
+public class JNewExpr extends AbstractNewExpr implements ConvertToBaf
 {
     public JNewExpr(RefType type) { this.type = type; }
 

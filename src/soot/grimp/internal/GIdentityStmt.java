@@ -39,7 +39,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GIdentityStmt extends JIdentityStmt implements IdentityStmt
+public class GIdentityStmt extends JIdentityStmt
 {
     public GIdentityStmt(Value local, Value identityValue)
     {

@@ -38,7 +38,7 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
-public class JArrayRef implements ArrayRef, ConvertToBaf, EquivTo
+public class JArrayRef implements ArrayRef, ConvertToBaf
 {
     protected ValueBox baseBox;
     protected ValueBox indexBox;

@@ -37,7 +37,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GLengthExpr extends AbstractLengthExpr implements LengthExpr
+public class GLengthExpr extends AbstractLengthExpr
 {
     public GLengthExpr(Value op)
     {

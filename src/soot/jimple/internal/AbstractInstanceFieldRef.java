@@ -35,7 +35,7 @@ import java.util.*;
 import java.io.*;
 import soot.grimp.PrecedenceTest;
 
-public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf, EquivTo, Serializable
+public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf
 {
     transient SootField field;
     ValueBox baseBox;

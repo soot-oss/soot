@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class StringConstant extends Constant implements Switchable
+public class StringConstant extends Constant
 {
     public final String value;
 

@@ -39,7 +39,7 @@ import soot.util.*;
 import java.util.*;
 
 public class JInstanceOfExpr extends AbstractInstanceOfExpr
-  implements InstanceOfExpr, ConvertToBaf
+  implements ConvertToBaf
 {
     public JInstanceOfExpr(Value op, Type checkType)
     {

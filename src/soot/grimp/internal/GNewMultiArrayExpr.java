@@ -40,7 +40,6 @@ import soot.util.*;
 import java.util.*;
 
 public class GNewMultiArrayExpr extends AbstractNewMultiArrayExpr 
-    implements NewMultiArrayExpr
 {
     public GNewMultiArrayExpr(ArrayType type, List sizes)
     {

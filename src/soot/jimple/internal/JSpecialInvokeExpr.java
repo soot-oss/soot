@@ -36,7 +36,6 @@ import soot.util.*;
 import java.util.*;
 
 public class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr 
-  implements SpecialInvokeExpr
 {
     public JSpecialInvokeExpr(Local base, SootMethod method, List args)
     {

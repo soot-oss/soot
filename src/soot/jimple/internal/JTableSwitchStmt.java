@@ -39,7 +39,7 @@ import soot.util.*;
 import java.util.*;
 
 public class JTableSwitchStmt extends AbstractStmt 
-    implements TableSwitchStmt, ConvertToBaf
+    implements TableSwitchStmt
 {
     UnitBox defaultTargetBox;
     ValueBox keyBox;

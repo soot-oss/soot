@@ -37,7 +37,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GAssignStmt extends JAssignStmt implements AssignStmt
+public class GAssignStmt extends JAssignStmt
 {
     public GAssignStmt(Value variable, Value rvalue)
     {

@@ -40,7 +40,6 @@ import soot.util.*;
 import java.util.*;
 
 public class GLookupSwitchStmt extends JLookupSwitchStmt 
-    implements LookupSwitchStmt
 {
     // This method is necessary to deal with constructor-must-be-first-ism.
     private static UnitBox[] getTargetBoxesArray(List targets)

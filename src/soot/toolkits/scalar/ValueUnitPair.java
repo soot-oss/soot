@@ -26,7 +26,7 @@ import soot.*;
  * 
  * @author Navindra Umanee
  **/
-public class ValueUnitPair extends AbstractValueBox implements ValueBox, UnitBox
+public class ValueUnitPair extends AbstractValueBox implements UnitBox
 {
     protected OurUnitBox oub;
         

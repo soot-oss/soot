@@ -36,7 +36,7 @@ import soot.util.*;
 import java.util.*;
 import java.io.*;
 
-public class StaticFieldRef implements FieldRef, ConvertToBaf, EquivTo, Serializable
+public class StaticFieldRef implements FieldRef, ConvertToBaf
 {
     SootField field;
 

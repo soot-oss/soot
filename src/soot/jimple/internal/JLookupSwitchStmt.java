@@ -38,7 +38,7 @@ import soot.util.*;
 import java.util.*;
 
 public class JLookupSwitchStmt extends AbstractStmt 
-    implements LookupSwitchStmt, ConvertToBaf
+    implements LookupSwitchStmt
 {
     UnitBox defaultTargetBox;
     ValueBox keyBox;

@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class LongConstant extends ArithmeticConstant implements Switchable 
+public class LongConstant extends ArithmeticConstant
 {
     public final long value;
 

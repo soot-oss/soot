@@ -40,7 +40,7 @@ import soot.util.*;
 import java.util.*;
 
 public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
-    implements SpecialInvokeExpr, Precedence
+    implements Precedence
 {
     public GSpecialInvokeExpr(Value base, SootMethod method, List args)
     {

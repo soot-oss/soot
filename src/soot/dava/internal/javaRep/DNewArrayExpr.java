@@ -5,7 +5,7 @@ import soot.grimp.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
 
-public class DNewArrayExpr extends AbstractNewArrayExpr implements NewArrayExpr, Precedence
+public class DNewArrayExpr extends AbstractNewArrayExpr implements Precedence
 {
     public DNewArrayExpr(Type type, Value size)
     {

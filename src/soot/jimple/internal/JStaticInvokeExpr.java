@@ -36,7 +36,6 @@ import soot.util.*;
 import java.util.*;
 
 public class JStaticInvokeExpr extends AbstractStaticInvokeExpr 
-  implements StaticInvokeExpr
 {
     public JStaticInvokeExpr(SootMethod method, List args)
     {

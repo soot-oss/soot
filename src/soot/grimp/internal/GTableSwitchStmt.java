@@ -39,7 +39,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GTableSwitchStmt extends JTableSwitchStmt implements TableSwitchStmt
+public class GTableSwitchStmt extends JTableSwitchStmt
 {
     // This method is necessary to deal with constructor-must-be-first-ism.
     private static UnitBox[] getTargetBoxesArray(List targets)

@@ -35,7 +35,7 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
-public class JCastExpr extends AbstractCastExpr implements CastExpr
+public class JCastExpr extends AbstractCastExpr
 {
     public JCastExpr(Value op, Type type)
     {

@@ -39,7 +39,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GReturnStmt extends JReturnStmt implements ReturnStmt
+public class GReturnStmt extends JReturnStmt
 {
     public GReturnStmt(Value returnValue)
     {

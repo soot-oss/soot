@@ -40,7 +40,7 @@ import soot.baf.*;
 import soot.jimple.*;
 
 public class JExitMonitorStmt extends AbstractStmt 
-    implements ExitMonitorStmt, ConvertToBaf
+    implements ExitMonitorStmt
 {
     ValueBox opBox;
 

@@ -38,7 +38,7 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
-public class JNegExpr extends AbstractNegExpr implements NegExpr, ConvertToBaf
+public class JNegExpr extends AbstractNegExpr implements ConvertToBaf
 {
     public JNegExpr(Value op)
     {

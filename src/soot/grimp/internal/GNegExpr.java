@@ -38,7 +38,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GNegExpr extends AbstractNegExpr implements NegExpr
+public class GNegExpr extends AbstractNegExpr
 {
     public GNegExpr(Value op) { super(Grimp.v().newExprBox(op)); }
         

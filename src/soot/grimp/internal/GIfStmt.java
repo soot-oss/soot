@@ -39,7 +39,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GIfStmt extends JIfStmt implements IfStmt
+public class GIfStmt extends JIfStmt
 {
     public GIfStmt(Value condition, Unit target)
     {

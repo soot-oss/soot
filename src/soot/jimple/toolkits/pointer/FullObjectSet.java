@@ -2,7 +2,7 @@ package soot.jimple.toolkits.pointer;
 import java.util.*;
 import soot.*;
 
-public class FullObjectSet extends Union implements PointsToSet {
+public class FullObjectSet extends Union {
     public FullObjectSet( Singletons.Global g ) {
         this( RefType.v( "java.lang.Object" ) );
     }

@@ -39,7 +39,7 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
-public class JLengthExpr extends AbstractLengthExpr implements LengthExpr, ConvertToBaf
+public class JLengthExpr extends AbstractLengthExpr implements ConvertToBaf
 {
     public JLengthExpr(Value op) { super(Jimple.v().newImmediateBox(op)); }
 

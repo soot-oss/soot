@@ -40,7 +40,7 @@ import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GInstanceFieldRef extends AbstractInstanceFieldRef
-    implements InstanceFieldRef, Precedence
+    implements Precedence
 {
     public GInstanceFieldRef(Value base, SootField field)
     {

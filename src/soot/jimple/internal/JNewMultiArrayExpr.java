@@ -36,7 +36,6 @@ import soot.util.*;
 import java.util.*;
 
 public class JNewMultiArrayExpr extends AbstractNewMultiArrayExpr
-  implements NewMultiArrayExpr
 {
     public JNewMultiArrayExpr(ArrayType type, List sizes)
     {

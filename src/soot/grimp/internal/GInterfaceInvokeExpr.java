@@ -40,7 +40,7 @@ import soot.util.*;
 import java.util.*;
 
 public class GInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
-    implements InterfaceInvokeExpr, Precedence
+    implements Precedence
 {
     public GInterfaceInvokeExpr(Value base, SootMethod method, List args)
     {

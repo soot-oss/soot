@@ -30,7 +30,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class FloatConstant extends RealConstant implements Switchable
+public class FloatConstant extends RealConstant
 {
     public final float value;
 

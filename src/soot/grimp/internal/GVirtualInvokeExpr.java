@@ -40,7 +40,7 @@ import soot.util.*;
 import java.util.*;
 
 public class GVirtualInvokeExpr extends AbstractVirtualInvokeExpr
-    implements VirtualInvokeExpr, Precedence
+    implements Precedence
 {
     public GVirtualInvokeExpr(Value base, SootMethod method, List args)
     {

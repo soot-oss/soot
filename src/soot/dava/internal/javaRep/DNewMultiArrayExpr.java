@@ -6,7 +6,7 @@ import soot.grimp.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
 
-public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr implements NewMultiArrayExpr
+public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr
 {
     public DNewMultiArrayExpr(ArrayType type, List sizes)
     {

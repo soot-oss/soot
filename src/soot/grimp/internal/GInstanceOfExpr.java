@@ -37,7 +37,7 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GInstanceOfExpr extends AbstractInstanceOfExpr implements InstanceOfExpr
+public class GInstanceOfExpr extends AbstractInstanceOfExpr
 {
     public GInstanceOfExpr(Value op, Type checkType)
     {

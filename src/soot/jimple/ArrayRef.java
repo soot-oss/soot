@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public interface ArrayRef extends ConcreteRef, Switchable
+public interface ArrayRef extends ConcreteRef
 {
     public Value getBase();
     public void setBase(Local base);

@@ -39,7 +39,7 @@ import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
-public class GExitMonitorStmt extends JExitMonitorStmt implements ExitMonitorStmt
+public class GExitMonitorStmt extends JExitMonitorStmt
 {
     public GExitMonitorStmt(Value op)
     {

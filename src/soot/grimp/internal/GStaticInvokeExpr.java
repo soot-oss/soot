@@ -40,7 +40,6 @@ import soot.util.*;
 import java.util.*;
 
 public class GStaticInvokeExpr extends AbstractStaticInvokeExpr 
-    implements StaticInvokeExpr
 {
     public GStaticInvokeExpr(SootMethod method, List args)
     {

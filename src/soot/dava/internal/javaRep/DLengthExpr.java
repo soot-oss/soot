@@ -5,7 +5,7 @@ import soot.grimp.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
 
-public class DLengthExpr extends AbstractLengthExpr implements LengthExpr
+public class DLengthExpr extends AbstractLengthExpr
 {
     public DLengthExpr(Value op)
     {

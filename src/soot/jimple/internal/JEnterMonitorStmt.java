@@ -40,7 +40,7 @@ import soot.util.*;
 import java.util.*;
 
 public class JEnterMonitorStmt extends AbstractStmt 
-    implements EnterMonitorStmt, ConvertToBaf
+    implements EnterMonitorStmt
 {
     ValueBox opBox;
 

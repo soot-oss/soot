@@ -32,7 +32,6 @@ import soot.util.*;
 import java.util.*;
 
 public class JInstanceFieldRef extends AbstractInstanceFieldRef
-  implements InstanceFieldRef
 {
     public JInstanceFieldRef(Value base, SootField field)
     {

@@ -35,7 +35,7 @@ import soot.jimple.*;
 import java.util.*;
 import java.io.*;
 
-abstract public class AbstractInvokeExpr implements InvokeExpr, Serializable
+abstract public class AbstractInvokeExpr implements InvokeExpr
 {
     transient SootMethod method;
     protected ValueBox[] argBoxes;

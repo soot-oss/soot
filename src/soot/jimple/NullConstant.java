@@ -33,7 +33,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class NullConstant extends Constant implements Switchable
+public class NullConstant extends Constant
 {
     public NullConstant( Singletons.Global g ) {}
     public static NullConstant v() { return G.v().NullConstant(); }
