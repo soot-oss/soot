@@ -25,7 +25,7 @@ import java.util.*;
 * UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
 */
 public class BriefUnitPrinter extends LabeledUnitPrinter {
-    BriefUnitPrinter( Body body ) {
+    public BriefUnitPrinter( Body body ) {
         super(body);
     }
 
