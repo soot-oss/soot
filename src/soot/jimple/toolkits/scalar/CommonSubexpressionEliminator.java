@@ -65,6 +65,14 @@ public class CommonSubexpressionEliminator extends BodyTransformer
 
         Options.checkOptions(options, phaseName, getDeclaredOptions());
 
+        // Sigh.  check for name collisions.
+        Iterator localsIt = b.getLocals().iterator();
+        HashSet localNames = new HashSet(b.getLocals().size());
+        while (localsIt.hasNext())
+        {
+            localNames.add(((Local)localsIt.next()).getName());
+        }
+
         if(Main.isVerbose)
             System.out.println("[" + b.getMethod().getName() +
                 "]     Eliminating common subexpressions (naively)...");
@@ -97,8 +105,16 @@ public class CommonSubexpressionEliminator extends BodyTransformer
                         {
                             // create a local for temp storage.
                             // (we could check to see that the def must-reach, I guess...)
-                            Local l = Jimple.v().newLocal("$cseTmp"+counter, Type.toMachineType(v.getType()));
+                            String newName = "$cseTmp"+counter;
                             counter++;
+
+                            while (localNames.contains(newName))
+                            {
+                                newName = "$cseTmp"+counter;
+                                counter++;
+                            }
+
+                            Local l = Jimple.v().newLocal(newName, Type.toMachineType(v.getType()));
 
                             b.getLocals().add(l);
 

@@ -8,6 +8,9 @@ Improvements in current version
      Formerly, this crashed in charAt(1).  (plam, reported by Mary Payne)
 4. add an option '-A LineNumber' to keep line number attributes in
    source class files. (feng)
+5. make SootClass.containsBafBody() public (requested by David Airapetyan);
+     avoid creating duplicate names in CommonSubexpressionEliminator
+         (requested by Florian Mateoc).  Both changes by plam.
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 

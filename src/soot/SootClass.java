@@ -929,7 +929,7 @@ public class SootClass extends AbstractHost
     }
 
     /** Returns true if some method in this class has an active Baf body. */
-    boolean containsBafBody()
+    public boolean containsBafBody()
     {
         Iterator methodIt = getMethods().iterator();
         
