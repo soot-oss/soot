@@ -848,7 +848,7 @@ names based on their types.
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
-                                                <default>true</default>
+                                                <default>false</default>
 					</boolopt>
 					<short_desc>Local splitter: one local per DU-UD web</short_desc>
 					<long_desc>
