@@ -89,9 +89,12 @@ public final class VirtualCalls
             SootMethod target = resolveRefType( (RefType) t, iie, subSig, container );
             if( target != null ) targets.add( target );
         } else if( t instanceof AnySubType ) {
+            if( iie instanceof SpecialInvokeExpr ) {
+                targets.add( resolveRefType( null, iie, subSig, container ) );
+                return;
+            }
             RefType base = ((AnySubType)t).getBase();
             resolve( base, iie, subSig, container, targets );
-            if( iie instanceof SpecialInvokeExpr ) return;
 
             LinkedList worklist = new LinkedList();
             HashSet workset = new HashSet();
