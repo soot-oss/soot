@@ -77,7 +77,7 @@ public class Printer {
 
     public void printTo(SootClass cl, PrintWriter out) {
         // add jimple line number tags
-        setJimpleLnNum(0);
+        setJimpleLnNum(1);
 
         // Print class name + modifiers
         {

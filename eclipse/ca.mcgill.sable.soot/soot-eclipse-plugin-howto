@@ -54,3 +54,7 @@ Running this configuration causes a bunch of attribute tags to be generated.
 After running open a generated Jimple File and there should be markers in the file indicating attributes.
 Mouse over the line in the editor with a marker and you should see a tooltip with the attribute.
 Also these attributes tooltips should appear in the original Java source file.
+
+One other note: For long-running memory intensive Soot configurations Eclipse may run out of memory. To handle this start Eclipse with:
+
+eclipse -vmargs -Xmx300M 
