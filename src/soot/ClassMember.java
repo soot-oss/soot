@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 1997-1999 Raja Vallee-Rai
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,26 +23,22 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot;
 
 import java.util.*;
 
-public class Options
-{
-    /** This method returns true iff key "name" is in options 
-        and maps to "true". */
-    public static boolean getBoolean(Map options, String name)
-    {
-        return options.containsKey(name) &&
-            options.get(name).equals("true");
-    }
+// implemented by SootField, SootMethod
 
-    /** This method returns the value of "name" in options 
-        or "" if "name" is not found. */
-    public static String getString(Map options, String name)
-    {
-        return options.containsKey(name) ?
-            (String)options.get(name) : "";
-    }
+public interface ClassMember
+{
+    public SootClass getDeclaringClass();
+    public boolean isProtected();
+    public boolean isPrivate();
+    public boolean isPublic();
+    public void setModifiers(int modifiers);
+    public int getModifiers();
 }
+
+
+
+

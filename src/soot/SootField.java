@@ -29,7 +29,7 @@
 
 package soot;
 
-public class SootField extends AbstractHost
+public class SootField extends AbstractHost implements ClassMember
 {
     String name;
     Type type;
@@ -112,6 +112,21 @@ public class SootField extends AbstractHost
     public void setType(Type t)
     {
         this.type = t;
+    }
+
+    public boolean isPublic()
+    {
+        return Modifier.isPublic(this.getModifiers());
+    }
+
+    public boolean isProtected()
+    {
+        return Modifier.isProtected(this.getModifiers());
+    }
+
+    public boolean isPrivate()
+    {
+        return Modifier.isPrivate(this.getModifiers());
     }
 
     public void setModifiers(int modifiers)

@@ -697,6 +697,11 @@ public class SootClass extends AbstractHost
         return Modifier.isInterface(this.getModifiers());
     }
 
+    public boolean isPublic()
+    {
+        return Modifier.isPublic(this.getModifiers());
+    }
+
     public void printTo(PrintWriter out)
     {
         printTo(out, 0);

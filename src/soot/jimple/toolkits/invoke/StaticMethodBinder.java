@@ -42,7 +42,7 @@ public class StaticMethodBinder extends SceneTransformer
 
     public String getDefaultOptions() 
     {
-        return "insert-null-checks insert-redundant-casts";
+        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe";
     }
     
     protected void internalTransform(String phaseName, Map options)
@@ -51,6 +51,7 @@ public class StaticMethodBinder extends SceneTransformer
 
         boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
+        String modifierOptions = Options.getString(options, "allowed-modifier-changes");
 
         HashMap instanceToStaticMap = new HashMap();
 
@@ -101,6 +102,9 @@ public class StaticMethodBinder extends SceneTransformer
                     // Ok, we have an Interface or VirtualInvoke going to 1.
 
                     SootMethod target = (SootMethod)targets.get(0);
+
+                    if (!AccessManager.ensureAccess(container, target, modifierOptions))
+                        continue;
                     
                     if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete())
                         continue;

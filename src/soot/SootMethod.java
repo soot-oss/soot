@@ -33,7 +33,7 @@ import soot.util.*;
 import java.util.*;
 import soot.baf.*;
 
-public class SootMethod extends AbstractHost
+public class SootMethod extends AbstractHost implements ClassMember
 {
     String name;
     List parameterTypes;
