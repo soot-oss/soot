@@ -204,6 +204,18 @@ public class Block
             return null;        
     }
 
+    /**
+     *  Set the index of this Block in the list of Blocks that partition
+     *  its enclosing Body instance.
+     *
+     *   @param aIndexInMethod The index of this Block in the list of
+     *                         Blocks that partition it's enclosing
+     *                         Body instance.
+     **/
+    public void setIndexInMethod(int aIndexInMethod)
+    {
+        mIndexInMethod = aIndexInMethod;
+    }
 
     /**
      *  Returns the index of this Block in the list of Blocks that partition it's
@@ -214,7 +226,6 @@ public class Block
     {
         return mIndexInMethod;
     }
-    
 
     /**
      * Returns the first unit in this block.
@@ -241,7 +252,7 @@ public class Block
      *
      *   @see BlockGraph
      */ 
-    void setPreds(List preds)
+    public void setPreds(List preds)
     {
         mPreds = preds;
         return;
@@ -266,7 +277,7 @@ public class Block
      *
      *   @see BlockGraph
      */
-    void setSuccs(List succs)
+    public void setSuccs(List succs)
     {
         mSuccessors = succs;
     }

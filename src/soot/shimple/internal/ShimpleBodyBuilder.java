@@ -94,6 +94,8 @@ public class ShimpleBodyBuilder
             eliminatePhiNodes(body);
         
         cfg = new CompleteBlockGraph(body);
+        OneHeadBlockGraph.convert(cfg);
+
         dt = new DominatorTree(cfg, true);
         gd = new GuaranteedDefs(new CompleteUnitGraph(body));
         origLocals = new ArrayList(body.getLocals());
@@ -340,7 +342,7 @@ public class ShimpleBodyBuilder
             return;
 
         if(heads.size() != 1)
-            throw new RuntimeException("This version of Shimple was built against versions of CompleteBlockGraph and CompleteUnitGraph where only one head is possible.  If this has changed, then Shimple requires an update.");
+            throw new RuntimeException("Assertion failed:  Only one head expected.");
         
         Block entry = (Block) heads.get(0);
         renameLocalsSearch(entry);

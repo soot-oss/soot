@@ -139,11 +139,8 @@ class DominatorsAnalysis extends ForwardFlowAnalysis
     {
         List heads = graph.getHeads();
 
-        if(heads.size() == 0)
-            throw new RuntimeException("heads is empty, but entryInitalFlow() called!");
-
         if(heads.size() != 1)
-            throw new RuntimeException("This version of Shimple was built against versions of CompleteBlockGraph and CompleteUnitGraph where only one head is possible.  If this has changed, then Shimple requires an update.");
+            throw new RuntimeException("Assertion failed:  Only one head expected.");
 
         BoundedFlowSet initSet = (BoundedFlowSet) emptySet.clone();
         initSet.add((Block)heads.get(0));
