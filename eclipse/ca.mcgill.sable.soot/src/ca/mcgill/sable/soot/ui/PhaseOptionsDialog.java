@@ -640,6 +640,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", getcgverbose_widget(), "verbose");
 		
 		
+		addToEnableGroup("cg", getcgjdkver_widget(), "jdkver");
+		
+		
 		addToEnableGroup("cg", getcgall_reachable_widget(), "all-reachable");
 		
 		
@@ -2497,6 +2500,15 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgtrim_clinit_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		stringRes = getcgjdkver_widget().getText().getText();
+		
+		defStringRes = "3";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getcgjdkver_widget().getAlias(), stringRes);
 		}
 		
 		stringRes = getcgk_widget().getText().getText();
@@ -6396,6 +6408,18 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	public BooleanOptionWidget getcgtrim_clinit_widget() {
 		return cgtrim_clinit_widget;
 	}	
+	
+	
+	private StringOptionWidget cgjdkver_widget;
+	
+	private void setcgjdkver_widget(StringOptionWidget widget) {
+		cgjdkver_widget = widget;
+	}
+	
+	public StringOptionWidget getcgjdkver_widget() {
+		return cgjdkver_widget;
+	}
+	
 	
 	
 	private StringOptionWidget cgk_widget;
@@ -10957,6 +10981,21 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getcgcontext_widget().setDef(defaultString);
 		}
 		
+		
+		
+		defKey = "p"+" "+"cg"+" "+"jdkver";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "3";
+			
+		}
+
+		setcgjdkver_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("JDK version",  "p", "cg","jdkver", "\nThis option sets the JDK version of the standard library being \nanalyzed so that Soot can simulate the native methods in the \nspecific version of the library. The default, 3, refers to Java \n1.3.x.", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg"+" "+"k";

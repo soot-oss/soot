@@ -287,12 +287,15 @@ public class ModelCreator {
 		try{
 			CFGGraph cfgGraph = new CFGGraph();
 			part = page.openEditor(cfgGraph, "ca.mcgill.sable.soot.cfg.CFGEditor");
+                        System.out.println("part kind: "+part.getClass());
 			((CFGEditor)part).setTitle(getEdName());
 			((CFGEditor)part).setTitleTooltip(getEdName());
 			
 			buildModel(cfgGraph);
 		}
+    
 		catch (CoreException e){
+			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
 	}
