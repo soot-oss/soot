@@ -89,9 +89,6 @@ public class BAddInst extends AbstractOpTypeInst implements AddInst
         super(opType);
     }
     
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
-    {
-        return indentation + "nop";
-    }
+    public final String getName() { return "add"; }
 }
 

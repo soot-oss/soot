@@ -79,10 +79,11 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements StaticInvokeExpr
+public class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements StaticInvokeExpr, ConvertToBaf
 {
     AbstractStaticInvokeExpr(SootMethod method, List args)
     {
@@ -152,6 +153,14 @@ public class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements Stat
     {
         ((ExprSwitch) sw).caseStaticInvokeExpr(this);
     }
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+       for(int i = 0; i < argBoxes.length; i++)
+        {
+            ((ConvertToBaf)(argBoxes[i].getValue())).convertToBaf(context, out);
+        }
+
+        out.add(Baf.v().newStaticInvokeInst(method));
+    }
 }
-
-

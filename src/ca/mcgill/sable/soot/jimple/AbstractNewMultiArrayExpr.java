@@ -79,10 +79,11 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractNewMultiArrayExpr implements NewMultiArrayExpr
+public class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, ConvertToBaf
 {
     ArrayType baseType;
     protected ValueBox[] sizeBoxes;
@@ -183,5 +184,15 @@ public class AbstractNewMultiArrayExpr implements NewMultiArrayExpr
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseNewMultiArrayExpr(this);
+    }
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        List sizes = getSizes();
+
+        for(int i = 0; i < sizes.size(); i++)
+            ((ConvertToBaf)(sizes.get(i))).convertToBaf(context, out);
+
+        out.add(Baf.v().newNewMultiArrayInst(getBaseType(), sizes.size()));
     }
 }

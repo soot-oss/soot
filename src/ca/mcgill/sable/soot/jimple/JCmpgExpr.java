@@ -79,6 +79,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -87,4 +88,5 @@ class JCmpgExpr extends AbstractJimpleIntBinopExpr implements CmpgExpr
     JCmpgExpr(Value op1, Value op2) { super(op1, op2); }
     public final String getSymbol() { return " cmpg "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseCmpgExpr(this); }
+    Object makeBafInst(Type opType) { return Baf.v().newCmpgInst(this.getOp1().getType()); }
 }

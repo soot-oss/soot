@@ -79,6 +79,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -87,4 +88,6 @@ class JEqExpr extends AbstractJimpleIntBinopExpr implements EqExpr
     JEqExpr(Value op1, Value op2) { super(op1, op2); }
     public final String getSymbol() { return " == "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseEqExpr(this); }
+    Object makeBafInst(Type opType) { throw new RuntimeException("unsupported conversion: "+this); }
+    //return Baf.v().newEqInst(this.getOp1().getType()); }
 }

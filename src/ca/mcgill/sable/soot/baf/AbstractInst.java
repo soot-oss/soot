@@ -84,5 +84,11 @@ import java.util.*;
 
 public abstract class AbstractInst extends AbstractUnit implements Inst
 {
-    
+    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    {
+        return indentation + getName() + getParameters(isBrief, unitToName);
+    }
+
+    abstract String getName();
+    String getParameters(boolean isBrief, Map unitToName) { return ""; }    
 }

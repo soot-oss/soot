@@ -83,10 +83,11 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class StaticFieldRef implements FieldRef, ToBriefString
+public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf
 {
     SootField field;
 
@@ -140,5 +141,11 @@ public class StaticFieldRef implements FieldRef, ToBriefString
             }
         
             return false;
+    }
+
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        out.add(Baf.v().newStaticGetInst(field));
     }
 }

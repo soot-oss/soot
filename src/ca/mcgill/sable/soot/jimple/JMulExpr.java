@@ -79,6 +79,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -87,4 +88,5 @@ class JMulExpr extends AbstractJimpleFloatBinopExpr implements MulExpr
     JMulExpr(Value op1, Value op2) { super(op1, op2); }
     public final String getSymbol() { return " * "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseMulExpr(this); }
+    Object makeBafInst(Type opType) { return Baf.v().newMulInst(this.getOp1().getType()); }
 }

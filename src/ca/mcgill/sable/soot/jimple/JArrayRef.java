@@ -88,10 +88,11 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class JArrayRef implements ArrayRef
+public class JArrayRef implements ArrayRef, ConvertToBaf
 {
     ValueBox baseBox;
     ValueBox indexBox;
@@ -196,6 +197,14 @@ public class JArrayRef implements ArrayRef
     public void apply(Switch sw)
     {
         ((RefSwitch) sw).caseArrayRef(this);
+    }
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ((ConvertToBaf)getBase()).convertToBaf(context, out);
+        ((ConvertToBaf)getIndex()).convertToBaf(context, out);
+
+        out.add(Baf.v().newArrayReadInst(getType()));
     }
 }
 

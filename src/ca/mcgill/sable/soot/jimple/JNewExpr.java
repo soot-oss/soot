@@ -80,12 +80,15 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.baf.*;
 import java.util.*;
 
-class JNewExpr extends AbstractNewExpr implements NewExpr
+class JNewExpr extends AbstractNewExpr implements NewExpr, ConvertToBaf
 {
-    public JNewExpr(RefType type)
+    public JNewExpr(RefType type) { this.type = type; }
+
+    public void convertToBaf(JimpleToBafContext context, List out)
     {
-        this.type = type;
+        out.add(Baf.v().newNewInst(getBaseType()));
     }
 }

@@ -92,9 +92,10 @@ public class BPushInst extends AbstractInst implements PushInst
         this.constant = c;
     }
 
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    final String getName() { return "push"; }
+    final String getParameters(boolean isBrief, Map unitToName) 
     {
-        return indentation + "push " + constant.toString();
+        return " "+constant.toString(); 
     }
     
     public void apply(Switch sw)

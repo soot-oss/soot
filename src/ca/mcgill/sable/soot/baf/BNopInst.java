@@ -88,18 +88,10 @@ public class BNopInst extends AbstractInst implements NopInst
     {
     }
 
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
-    {
-        return indentation + "nop";
-    }
-    
+    final String getName() { return "nop"; }
+
     public void apply(Switch sw)
     {
         ((InstSwitch) sw).caseNopInst(this);
     }   
 }
-
-
-
-
-

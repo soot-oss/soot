@@ -94,10 +94,9 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst
         this.local = local;
     }
 
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
-    {
-        return indentation + "load " + local.toString();
-    }
+    final String getName() { return "load"; }
+    final String getParameters(boolean isBrief, Map unitToName) 
+        { return " "+local.toString(); }
     
     public void apply(Switch sw)
     {

@@ -88,10 +88,7 @@ public class BReturnVoidInst extends AbstractInst implements ReturnVoidInst
     {
     }
 
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
-    {
-        return indentation + "return";
-    }
+    final String getName() { return "return"; }
     
     public void apply(Switch sw)
     {

@@ -130,8 +130,6 @@ public class JAssignStmt extends AbstractDefinitionStmt
 
     public void convertToBaf(final JimpleToBafContext context, final List out)
     {
-        out.add(Baf.v().newNopInst());
-        
         final Value lvalue = this.getLeftOp();
         final Value rvalue = this.getRightOp();
 
@@ -179,7 +177,11 @@ public class JAssignStmt extends AbstractDefinitionStmt
             {
                 public void caseArrayRef(ArrayRef v)
                 {
-                    throw new RuntimeException("missing conversion");
+                    ((ConvertToBaf)(v.getBase())).convertToBaf(context, out);
+                    ((ConvertToBaf)(v.getIndex())).convertToBaf(context, out);
+                    ((ConvertToBaf) rvalue).convertToBaf(context, out);
+                    
+                    out.add(Baf.v().newArrayWriteInst(v.getBase().getType()));
                 }
                 
                 public void defaultCase(Value v)
@@ -189,7 +191,10 @@ public class JAssignStmt extends AbstractDefinitionStmt
                 
                 public void caseInstanceFieldRef(InstanceFieldRef v)
                 {
-                    throw new RuntimeException("missing conversion");
+                    ((ConvertToBaf)(v.getBase())).convertToBaf(context, out);
+                    ((ConvertToBaf) rvalue).convertToBaf(context, out);
+
+                    out.add(Baf.v().newFieldPutInst(v.getField()));
                 }
                 
                 public void caseLocal(final Local v)
@@ -202,7 +207,9 @@ public class JAssignStmt extends AbstractDefinitionStmt
                 
                 public void caseStaticFieldRef(StaticFieldRef v)
                 {
-                    throw new RuntimeException("missing conversion ");
+                    ((ConvertToBaf) rvalue).convertToBaf(context, out);
+
+                    out.add(Baf.v().newStaticPutInst(v.getField()));
                 }
             }); 
     }    

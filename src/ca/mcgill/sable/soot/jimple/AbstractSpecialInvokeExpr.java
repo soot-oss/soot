@@ -83,9 +83,11 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.baf.*;
 import java.util.*;
 
-public class AbstractSpecialInvokeExpr extends AbstractNonStaticInvokeExpr implements SpecialInvokeExpr
+public class AbstractSpecialInvokeExpr extends AbstractNonStaticInvokeExpr 
+           implements SpecialInvokeExpr, ConvertToBaf
 {
     protected AbstractSpecialInvokeExpr(ValueBox baseBox, SootMethod method,
                                 ValueBox[] argBoxes)
@@ -139,5 +141,18 @@ public class AbstractSpecialInvokeExpr extends AbstractNonStaticInvokeExpr imple
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseSpecialInvokeExpr(this);
+    }
+
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+       ((ConvertToBaf)(getBase())).convertToBaf(context, out);
+
+       for(int i = 0; i < argBoxes.length; i++)
+        {
+            ((ConvertToBaf)(argBoxes[i].getValue())).convertToBaf(context, out);
+        }
+
+        out.add(Baf.v().newSpecialInvokeInst(method));
     }
 }

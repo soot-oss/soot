@@ -82,10 +82,11 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractNewArrayExpr implements NewArrayExpr
+public class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
 {
     Type baseType;
     ValueBox sizeBox;
@@ -163,5 +164,12 @@ public class AbstractNewArrayExpr implements NewArrayExpr
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseNewArrayExpr(this);
+    }
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+       ((ConvertToBaf)(getSize())).convertToBaf(context, out);
+
+        out.add(Baf.v().newNewArrayInst(getBaseType()));
     }
 }

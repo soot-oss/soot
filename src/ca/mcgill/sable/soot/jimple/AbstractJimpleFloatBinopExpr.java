@@ -83,7 +83,7 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 
 abstract public class AbstractJimpleFloatBinopExpr
-    extends AbstractFloatBinopExpr
+    extends AbstractFloatBinopExpr implements ConvertToBaf
 {
     AbstractJimpleFloatBinopExpr(Value op1, Value op2)
     {
@@ -96,4 +96,14 @@ abstract public class AbstractJimpleFloatBinopExpr
         this.op1Box = op1Box;
         this.op2Box = op2Box;
     }
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ((ConvertToBaf) this.getOp1()).convertToBaf(context, out);
+        ((ConvertToBaf) this.getOp2()).convertToBaf(context, out);
+        
+        out.add(makeBafInst(this.getOp1().getType()));
+    }
+
+    abstract Object makeBafInst(Type opType);
 }

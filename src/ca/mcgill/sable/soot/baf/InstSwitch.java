@@ -86,11 +86,31 @@ import ca.mcgill.sable.soot.*;
 public interface InstSwitch 
 {
     public void caseReturnVoidInst(ReturnVoidInst i);
+    public void caseReturnInst(ReturnInst i);
     public void caseNopInst(NopInst i);
     public void caseGotoInst(GotoInst i);
     public void casePushInst(PushInst i);
     public void caseIdentityInst(IdentityInst i);
     public void caseStoreInst(StoreInst i);
     public void caseLoadInst(LoadInst i);
-    
+    public void caseArrayWriteInst(ArrayWriteInst i);
+    public void caseArrayReadInst(ArrayReadInst i);
+    public void caseIfNullInst(IfNullInst i);
+    public void caseIfNonNullInst(IfNonNullInst i);
+    public void caseIfEqInst(IfEqInst i);
+    public void caseIfNeInst(IfNeInst i);
+    public void caseIfGtInst(IfGtInst i);
+    public void caseIfGeInst(IfGeInst i);
+    public void caseIfLtInst(IfLtInst i);
+    public void caseIfLeInst(IfLeInst i);
+    public void caseIfCmpEqInst(IfCmpEqInst i);
+    public void caseIfCmpNeInst(IfCmpNeInst i);
+    public void caseIfCmpGtInst(IfCmpGtInst i);
+    public void caseIfCmpGeInst(IfCmpGeInst i);
+    public void caseIfCmpLtInst(IfCmpLtInst i);
+    public void caseIfCmpLeInst(IfCmpLeInst i);
+    public void caseStaticGetInst(StaticGetInst i);
+    public void caseStaticPutInst(StaticPutInst i);
+    public void caseFieldGetInst(FieldGetInst i);
+    public void caseFieldPutInst(FieldPutInst i);
 }

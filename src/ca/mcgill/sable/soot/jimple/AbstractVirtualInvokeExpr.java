@@ -85,12 +85,12 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
 public class AbstractVirtualInvokeExpr extends AbstractNonStaticInvokeExpr
-  implements VirtualInvokeExpr
-                                               
+  implements VirtualInvokeExpr, ConvertToBaf                                               
 {
     protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethod method,
                                 ValueBox[] argBoxes)
@@ -144,4 +144,16 @@ public class AbstractVirtualInvokeExpr extends AbstractNonStaticInvokeExpr
         return buffer.toString();
     }
 
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+       ((ConvertToBaf)(getBase())).convertToBaf(context, out);
+
+       for(int i = 0; i < argBoxes.length; i++)
+        {
+            ((ConvertToBaf)(argBoxes[i].getValue())).convertToBaf(context, out);
+        }
+
+        out.add(Baf.v().newVirtualInvokeInst(method));
+    }
 }

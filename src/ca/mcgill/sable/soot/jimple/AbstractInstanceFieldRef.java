@@ -85,10 +85,11 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractInstanceFieldRef implements InstanceFieldRef
+public class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf
 {
     SootField field;
     ValueBox baseBox;
@@ -163,5 +164,11 @@ public class AbstractInstanceFieldRef implements InstanceFieldRef
                         fr.baseBox.getValue().equals(baseBox.getValue());
             }
             return false;
+    }
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ((ConvertToBaf)getBase()).convertToBaf(context, out);
+        out.add(Baf.v().newFieldGetInst(field));
     }
 }

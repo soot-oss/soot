@@ -94,10 +94,9 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
         this.local = local;
     }
 
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
-    {
-        return indentation + "store " + local.toString();
-    }
+    final String getName() { return "store"; }
+    final String getParameters(boolean isBrief, Map unitToName)
+        { return " " + local.toString(); }
     
     public void apply(Switch sw)
     {

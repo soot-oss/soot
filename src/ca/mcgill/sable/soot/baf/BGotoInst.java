@@ -82,45 +82,14 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class BGotoInst extends AbstractInst implements GotoInst
+public class BGotoInst extends AbstractBranchInst implements GotoInst
 {
-    UnitBox targetBox;
-
-    List targetBoxes;
-
     BGotoInst(Unit target)
     {
-        this.targetBox = Baf.v().newInstBox(target);
-
-        targetBoxes = new ArrayList();
-        targetBoxes.add(this.targetBox);
-        targetBoxes = Collections.unmodifiableList(targetBoxes);
+        super(Baf.v().newInstBox(target));
     }
 
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
-    {
-        return indentation + "goto " + (String) unitToName.get(getTarget());
-    }
-    
-    public Unit getTarget()
-    {
-        return targetBox.getUnit();
-    }
-
-    public void setTarget(Unit target)
-    {
-        targetBox.setUnit(target);
-    }
-
-    public UnitBox getTargetBox()
-    {
-        return targetBox;
-    }
-
-    public List getUnitBoxes()
-    {
-        return targetBoxes;
-    }
+    String getName() { return "goto"; }
 
     public void apply(Switch sw)
     {

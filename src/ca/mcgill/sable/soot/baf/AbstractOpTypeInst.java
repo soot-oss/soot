@@ -100,4 +100,82 @@ public abstract class AbstractOpTypeInst extends AbstractInst
     {
         opType = t;
     }
+
+    private static String bafDescriptorOf(Type type)
+    {
+        TypeSwitch sw;
+
+        type.apply(sw = new TypeSwitch()
+        {
+            public void caseBooleanType(BooleanType t)
+            {
+                setResult("b");
+            }
+
+            public void caseByteType(ByteType t)
+            {
+                setResult("b");
+            }
+
+            public void caseCharType(CharType t)
+            {
+                setResult("c");
+            }
+
+            public void caseDoubleType(DoubleType t)
+            {
+                setResult("d");
+            }
+
+            public void caseFloatType(FloatType t)
+            {
+                setResult("f");
+            }
+
+            public void caseIntType(IntType t)
+            {
+                setResult("i");
+            }
+
+            public void caseLongType(LongType t)
+            {
+                setResult("l");
+            }
+
+            public void caseShortType(ShortType t)
+            {
+                setResult("s");
+            }
+
+            public void caseArrayType(ArrayType t)
+            {
+                setResult("r"); 
+            }
+
+            public void defaultCase(Type t)
+            {
+                throw new RuntimeException("Invalid type: " + t);
+            }
+
+            public void caseRefType(RefType t)
+            {
+                setResult("r");
+            }
+
+            public void caseNullType(NullType t)
+            {
+                setResult("r");
+            }
+        });
+
+        return (String) sw.getResult();
+
+    }
+
+    /* override AbstractInst's toString with our own, including types */
+    protected String toString(boolean isBrief, Map unitToName, String indentation)
+    {
+        return indentation + getName() + "." + 
+          bafDescriptorOf(opType) + getParameters(isBrief, unitToName);
+    }
 }

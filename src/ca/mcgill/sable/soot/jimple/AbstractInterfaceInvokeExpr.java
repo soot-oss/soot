@@ -85,10 +85,12 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractInterfaceInvokeExpr extends AbstractNonStaticInvokeExpr implements InterfaceInvokeExpr
+public class AbstractInterfaceInvokeExpr extends AbstractNonStaticInvokeExpr 
+                             implements InterfaceInvokeExpr, ConvertToBaf
 {
     protected AbstractInterfaceInvokeExpr(ValueBox baseBox, SootMethod method,
                                   ValueBox[] argBoxes)
@@ -142,6 +144,42 @@ public class AbstractInterfaceInvokeExpr extends AbstractNonStaticInvokeExpr imp
     {
         ((ExprSwitch) sw).caseInterfaceInvokeExpr(this);
     }
-}
 
+    int sizeOfType(Type t)
+    {
+        if(t instanceof DoubleType || t instanceof LongType)
+            return 2;
+        else if(t instanceof VoidType)
+            return 0;
+        else
+            return 1;
+    }
+
+    int argCountOf(SootMethod m)
+    {
+        int argCount = 0;
+        Iterator typeIt = m.getParameterTypes().iterator();
+
+        while(typeIt.hasNext())
+        {
+            Type t = (Type) typeIt.next();
+
+            argCount += sizeOfType(t);
+        }
+
+        return argCount;
+    }
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ((ConvertToBaf)getBase()).convertToBaf(context, out);;
+
+       for(int i = 0; i < argBoxes.length; i++)
+        {
+            ((ConvertToBaf)(argBoxes[i].getValue())).convertToBaf(context, out);
+        }
+
+        out.add(Baf.v().newInterfaceInvokeInst(method, argCountOf(method)));
+    }
+}
 

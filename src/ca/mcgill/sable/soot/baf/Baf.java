@@ -181,12 +181,236 @@ public class Baf implements BodyRepresentation
     {
         return new BLoadInst(opType, l);
     }
+
+    public ArrayWriteInst newArrayWriteInst(Type opType)
+    {
+        return new BArrayWriteInst(opType);
+    }
+    
+    public ArrayReadInst newArrayReadInst(Type opType)
+    {
+        return new BArrayReadInst(opType);
+    }
+
+    public StaticGetInst newStaticGetInst(SootField field)
+    {
+        return new BStaticGetInst(field);
+    }
+    
+    public StaticPutInst newStaticPutInst(SootField field)
+    {
+        return new BStaticPutInst(field);
+    }
+
+    public FieldGetInst newFieldGetInst(SootField field)
+    {
+        return new BFieldGetInst(field);
+    }
+    
+    public FieldPutInst newFieldPutInst(SootField field)
+    {
+        return new BFieldPutInst(field);
+    }
     
     public AddInst newAddInst(Type opType)
     {
         return new BAddInst(opType);
     }
-    
+
+    public SubInst newSubInst(Type opType)
+    {
+        return new BSubInst(opType);
+    }
+
+    public MulInst newMulInst(Type opType)
+    {
+        return new BMulInst(opType);
+    }
+
+    public DivInst newDivInst(Type opType)
+    {
+        return new BDivInst(opType);
+    }
+
+    public AndInst newAndInst(Type opType)
+    {
+        return new BAndInst(opType);
+    }
+
+    public LengthInst newLengthInst(Type opType)
+    {
+        return new BLengthInst(opType);
+    }
+
+    public NegInst newNegInst(Type opType)
+    {
+        return new BNegInst(opType);
+    }
+
+    public OrInst newOrInst(Type opType)
+    {
+        return new BOrInst(opType);
+    }
+
+    public RemInst newRemInst(Type opType)
+    {
+        return new BRemInst(opType);
+    }
+
+    public ShlInst newShlInst(Type opType)
+    {
+        return new BShlInst(opType);
+    }
+
+    public ShrInst newShrInst(Type opType)
+    {
+        return new BShrInst(opType);
+    }
+
+    public UshrInst newUshrInst(Type opType)
+    {
+        return new BUshrInst(opType);
+    }
+
+    public XorInst newXorInst(Type opType)
+    {
+        return new BXorInst(opType);
+    }
+
+    public InstanceCastInst newInstanceCastInst(Type opType)
+    {
+        return new BInstanceCastInst(opType);
+    }
+
+    public PrimitiveCastInst newPrimitiveCastInst(Type fromType, Type toType)
+    {
+        return new BPrimitiveCastInst(fromType, toType);
+    }
+
+    public NewInst newNewInst(RefType opType)
+    {
+        return new BNewInst(opType);
+    }
+
+    public NewArrayInst newNewArrayInst(Type opType)
+    {
+        return new BNewArrayInst(opType);
+    }
+
+    public NewMultiArrayInst newNewMultiArrayInst(ArrayType opType, int dimensions)
+    {
+        return new BNewMultiArrayInst(opType, dimensions);
+    }
+
+    public StaticInvokeInst newStaticInvokeInst(SootMethod method)
+    {
+        return new BStaticInvokeInst(method);
+    }
+
+    public SpecialInvokeInst newSpecialInvokeInst(SootMethod method)
+    {
+        return new BSpecialInvokeInst(method);
+    }
+
+    public VirtualInvokeInst newVirtualInvokeInst(SootMethod method)
+    {
+        return new BVirtualInvokeInst(method);
+    }
+
+    public InterfaceInvokeInst newInterfaceInvokeInst(SootMethod method, int argCount)
+    {
+        return new BInterfaceInvokeInst(method, argCount);
+    }
+
+    public ReturnInst newReturnInst(Type opType)
+    {
+        return new BReturnInst(opType);
+    }
+
+    public IfCmpEqInst newIfCmpEqInst(Type opType, Unit unit)
+    {
+        return new BIfCmpEqInst(opType, unit);
+    }
+
+    public IfCmpGeInst newIfCmpGeInst(Type opType, Unit unit)
+    {
+        return new BIfCmpGeInst(opType, unit);
+    }
+
+    public IfCmpGtInst newIfCmpGtInst(Type opType, Unit unit)
+    {
+        return new BIfCmpGtInst(opType, unit);
+    }
+
+    public IfCmpLeInst newIfCmpLeInst(Type opType, Unit unit)
+    {
+        return new BIfCmpLeInst(opType, unit);
+    }
+
+    public IfCmpLtInst newIfCmpLtInst(Type opType, Unit unit)
+    {
+        return new BIfCmpLtInst(opType, unit);
+    }
+
+    public IfCmpNeInst newIfCmpNeInst(Type opType, Unit unit)
+    {
+        return new BIfCmpNeInst(opType, unit);
+    }
+
+    public CmpInst newCmpInst(Type opType)
+    {
+        return new BCmpInst(opType);
+    }
+
+    public CmpgInst newCmpgInst(Type opType)
+    {
+        return new BCmpgInst(opType);
+    }
+
+    public CmplInst newCmplInst(Type opType)
+    {
+        return new BCmplInst(opType);
+    }
+
+    public IfEqInst newIfEqInst(Unit unit)
+    {
+        return new BIfEqInst(unit);
+    }
+
+    public IfGeInst newIfGeInst(Unit unit)
+    {
+        return new BIfGeInst(unit);
+    }
+
+    public IfGtInst newIfGtInst(Unit unit)
+    {
+        return new BIfGtInst(unit);
+    }
+
+    public IfLeInst newIfLeInst(Unit unit)
+    {
+        return new BIfLeInst(unit);
+    }
+
+    public IfLtInst newIfLtInst(Unit unit)
+    {
+        return new BIfLtInst(unit);
+    }
+
+    public IfNeInst newIfNeInst(Unit unit)
+    {
+        return new BIfNeInst(unit);
+    }
+
+    public IfNullInst newIfNullInst(Unit unit)
+    {
+        return new BIfNullInst(unit);
+    }
+
+    public IfNonNullInst newIfNonNullInst(Unit unit)
+    {
+        return new BIfNonNullInst(unit);
+    }
 }
 
 

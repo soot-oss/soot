@@ -78,6 +78,8 @@ public class PlaceholderInst extends AbstractInst
 {
     private Unit source;
 
+    final String getName() { return "<placeholder>"; }
+
     protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
         return indentation + "<placeholder: " + ((ToBriefString) source).toBriefString() + ">";

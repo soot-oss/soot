@@ -79,10 +79,11 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class AbstractCastExpr implements CastExpr
+public class AbstractCastExpr implements CastExpr, ConvertToBaf
 {
     ValueBox opBox;
     Type type;
@@ -151,5 +152,18 @@ public class AbstractCastExpr implements CastExpr
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseCastExpr(this);
+    }
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        final Type toType = getCastType();
+        final Type fromType = getOp().getType();
+
+        ((ConvertToBaf)getOp()).convertToBaf(context, out);
+
+        if (toType instanceof ArrayType || toType instanceof RefType)
+            out.add(Baf.v().newInstanceCastInst(toType));
+        else
+            out.add(Baf.v().newPrimitiveCastInst(fromType, toType));
     }
 }

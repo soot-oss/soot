@@ -152,6 +152,8 @@ public class BIdentityInst extends AbstractInst
             return indentation + leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
     }
 
+    final String getName() { return ":="; }
+
     public void setLeftOp(Value local)
     {
         leftBox.setValue(local);

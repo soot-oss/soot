@@ -79,6 +79,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -87,4 +88,5 @@ class JCmpExpr extends AbstractJimpleIntBinopExpr implements CmpExpr
     JCmpExpr(Value op1, Value op2) { super(op1, op2); }
     public final String getSymbol() { return " cmp "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseCmpExpr(this); }
+    Object makeBafInst(Type opType) { return Baf.v().newCmpInst(this.getOp1().getType()); }
 }
