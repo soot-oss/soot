@@ -384,7 +384,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 	StringBuffer b = new StringBuffer();
 	String cr = "\n";
 
-	b.append( "AugmentedStmtGraph" + cr);
+	b.append( "AugmentedStmtGraph (size: " + size() + " stmts)" + cr);
 
 	Iterator it = aug_list.iterator();
 	while (it.hasNext()) {
@@ -405,6 +405,14 @@ public class AugmentedStmtGraph implements DirectedGraph
 		AugmentedStmt sas = (AugmentedStmt) sit.next();
 
 		b.append( " " + sas.toString());
+	    }
+
+	    b.append( cr + "| |" + cr + "| |  doms:");
+	    Iterator dit = as.get_Dominators().iterator();
+	    while (dit.hasNext()) {
+		AugmentedStmt das = (AugmentedStmt) dit.next();
+
+		b.append( " " + das.toString());
 	    }
 
 	    b.append( cr + "| `---" + cr);
@@ -587,7 +595,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 		nlss.setLookupValues( olss.getLookupValues());
 	    }
 	}
-
+	
 	return newBody;
     }
 
@@ -673,7 +681,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 		    while (piit.hasNext()) {
 			AugmentedStmt pid = (AugmentedStmt) piit.next();
 
-			if (pas.get_Dominators().contains( pid) == false)
+			if ((pas.get_Dominators().contains( pid) == false) && (pas != pid))
 			    pred_intersection.remove( pid);
 		    }
 		}

@@ -83,13 +83,28 @@ public class CycleFinder implements FactFinder
 		SETCycleNode newNode = null;
 
 		if (characterizing_stmt != null) {
-		    IterableSet checkExceptionNodes = new IterableSet();
-
 		    Iterator enlit = body.get_ExceptionFacts().iterator();
+
+		checkExceptionLoop:
 		    while (enlit.hasNext()) {
 			ExceptionNode en = (ExceptionNode) enlit.next();
 			IterableSet tryBody = en.get_TryBody();
-			
+
+			if (tryBody.contains( asg.get_AugStmt( characterizing_stmt.get_Stmt()))) {
+			    Iterator cbit = cycle_body.iterator();
+			    while (cbit.hasNext()) {
+				AugmentedStmt cbas = (AugmentedStmt) cbit.next();
+				
+				if (tryBody.contains( cbas) == false) {
+				    characterizing_stmt = null;
+				    break checkExceptionLoop;
+				}
+			    }
+			}
+		    }
+		}
+			    
+		/*												   
 			if (tryBody.contains( asg.get_AugStmt( characterizing_stmt.get_Stmt()))) {
 					    
 			    if (checkExceptionNodes.contains( en) == false)
@@ -121,6 +136,7 @@ public class CycleFinder implements FactFinder
 			}
 		    }
 		}
+		*/
 
 		// unconditional loop
 		if (characterizing_stmt == null) {
@@ -317,9 +333,10 @@ public class CycleFinder implements FactFinder
     {
 	IterableSet cycle_body = new IterableSet();
 	LinkedList worklist = new LinkedList();
+	AugmentedStmt asg_ep = asg.get_AugStmt( entry_point.get_Stmt());
 
 	worklist.add( entry_point);
-	cycle_body.add( asg.get_AugStmt( entry_point.get_Stmt()));
+	cycle_body.add( asg_ep);
 
 	while (worklist.isEmpty() == false) {
 	    AugmentedStmt as = (AugmentedStmt) worklist.removeFirst();
@@ -328,11 +345,34 @@ public class CycleFinder implements FactFinder
 	    while (sit.hasNext()) {
 		AugmentedStmt wsas = (AugmentedStmt) sit.next();
 		AugmentedStmt sas = asg.get_AugStmt( wsas.get_Stmt());
-		
-		if ((cycle_body.contains( sas) == false) && 
-		    (wsas.get_Dominators().contains( entry_point)) && 
-		    ((boundary_stmt == null) || ((wsas.get_Reachers().contains( boundary_stmt) == false) &&
-						 (wsas != boundary_stmt)))) {
+
+
+
+		if (cycle_body.contains( sas))
+		    continue;
+
+		/*
+		if (sas.get_Dominators().contains( asg_ep) == false) {
+		    System.out.println( wsas + " not dominated by " + asg_ep);
+		    System.out.println( "doms");
+		    Iterator dit = sas.get_Dominators().iterator();
+		    while (dit.hasNext()) 
+			System.out.println( "    " + dit.next());
+		    System.out.println("preds");
+		    dit = sas.cpreds.iterator();
+		    while (dit.hasNext())
+			System.out.println( "    " + dit.next());
+		}
+		*/
+
+		if ((cycle_body.contains( sas) == false) && (sas.get_Dominators().contains( asg_ep))) {
+
+		    if ((boundary_stmt != null) && 
+			((wsas.get_Reachers().contains( boundary_stmt)) || (wsas == boundary_stmt)))
+			
+			continue;
+
+		    // System.out.println( sas);
 		    
 		    worklist.add( wsas);
 		    cycle_body.add( sas);

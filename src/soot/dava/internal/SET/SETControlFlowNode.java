@@ -48,7 +48,7 @@ public abstract class SETControlFlowNode extends SETNode
 			if (childBody.contains( as) == false) 
 			    remove_AugmentedStmt( as);
 
-			else if (child instanceof SETControlFlowNode) {
+			else if ((child instanceof SETControlFlowNode) && ((child instanceof SETUnconditionalWhileNode) == false)) {
 			    SETControlFlowNode scfn = (SETControlFlowNode) child;
 
 			    if ((scfn.get_CharacterizingStmt() == as) ||

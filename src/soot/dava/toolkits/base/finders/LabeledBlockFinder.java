@@ -49,15 +49,40 @@ public class LabeledBlockFinder implements FactFinder
 	    List SETBasicBlocks = null;
 	    
 	    if (SETParent instanceof SETUnconditionalWhileNode) {
-		
 		SETNode startSETNode = ((SETUnconditionalWhileNode) SETParent).get_CharacterizingStmt().myNode;
+
 		while (children.contains( startSETNode) == false)
 		    startSETNode = startSETNode.get_Parent();
-		
-		SETBasicBlocks = build_Connectivity( SETParent, body, startSETNode);
 
+		SETBasicBlocks = build_Connectivity( SETParent, body, startSETNode);
 		worklist.add( SETBasicBlock.get_SETBasicBlock( startSETNode));
 	    }
+
+	    else if (SETParent instanceof SETTryNode) {
+		SETNode startSETNode = null;
+
+		Iterator bit = body.iterator();
+	    find_entry_loop:
+		while (bit.hasNext()) {
+		    AugmentedStmt as = (AugmentedStmt) bit.next();
+
+		    Iterator pbit = as.cpreds.iterator();
+		    while (pbit.hasNext()) 
+			if (body.contains( pbit.next()) == false) {
+			    startSETNode = as.myNode;
+			    break find_entry_loop;
+			}
+		}
+		if (startSETNode == null)
+		    startSETNode = ((SETTryNode) SETParent).get_EntryStmt().myNode;
+
+		while (children.contains( startSETNode) == false)
+		    startSETNode = startSETNode.get_Parent();
+
+		SETBasicBlocks = build_Connectivity( SETParent, body, startSETNode);
+		worklist.add( SETBasicBlock.get_SETBasicBlock( startSETNode));
+	    }
+
 	    else {
 		SETBasicBlocks = build_Connectivity( SETParent, body, null);
 
@@ -114,7 +139,6 @@ public class LabeledBlockFinder implements FactFinder
 	    }
 	    
 	    int count = 0;
-	    orderNumber = new HashMap();
 	    
 	    Iterator it = childOrdering.iterator();
 	    while (it.hasNext())
@@ -123,7 +147,6 @@ public class LabeledBlockFinder implements FactFinder
 	    children.clear();
 	    children.addAll( childOrdering);
 	}
-	// SETParent.dump();
     }
     
     private List build_Connectivity( SETNode SETParent, IterableSet body, SETNode startSETNode)
@@ -192,7 +215,7 @@ public class LabeledBlockFinder implements FactFinder
 	    SETBasicBlock basicBlock = new SETBasicBlock();
 	    while (child.get_Predecessors().size() == 1) {
 
-		if ((SETParent instanceof SETUnconditionalWhileNode) && (child == startSETNode))
+		if ((startSETNode != null) && (child == startSETNode))
 		    break;
 
 		SETNode prev = (SETNode) child.get_Predecessors().getFirst();
@@ -215,6 +238,9 @@ public class LabeledBlockFinder implements FactFinder
 
 	    basicBlockList.add( basicBlock);
 	}
+
+
+	Dava.v().log( "LabeledBlockFinder::build_Connectivity() - created basic blocks");
 
 	// next build the connectivity between the nodes of the basic block graph
 	Iterator bblit = basicBlockList.iterator();
@@ -275,22 +301,8 @@ public class LabeledBlockFinder implements FactFinder
 
 			SETNode srcNode = pas.myNode;
 			
-			try {
-			
-			    while (children.contains( srcNode) == false)
-				srcNode = srcNode.get_Parent();
-			
-			}
-			catch (RuntimeException re) {
-			    System.out.println( pas);
-			    pas.myNode.dump();
-
-			    System.out.println( entryStmt);
-			    curNode.dump();
-
-			    throw re;
-			}
-
+			while (children.contains( srcNode) == false)
+			    srcNode = srcNode.get_Parent();
 
 			if (srcNode == curNode)
 			    continue;

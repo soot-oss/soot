@@ -135,23 +135,46 @@ public class DavaBody extends Body
 	while (true) {
 	    try {
 		CycleFinder.v().find( this, asg, SET);
+
+		/*
+		if (getMethod().getName().equals("foo"))
+		    System.out.println( "-----------------------------------");
+		// SET.dump();
+		*/
+
 		IfFinder.v().find( this, asg, SET);
 		SwitchFinder.v().find( this, asg, SET);
 		SynchronizedBlockFinder.v().find( this, asg, SET);
 		ExceptionFinder.v().find( this, asg, SET);
 		SequenceFinder.v().find( this, asg, SET);
+
+		/*
+		if (getMethod().getName().equals("foo"))
+		    System.out.println( "===================================");
+		// SET.dump();
+		*/
+
+		/*
+		if (getMethod().getName().equals("foo")) {
+		    
+		    System.out.println( asg);
+		    SET.dump( System.err);
+
+		    // Iterator it = get_ExceptionFacts().iterator();
+		    // while (it.hasNext())
+		    // ((ExceptionNode) it.next()).dump();
+
+		    System.exit(0);
+		}
+		*/
+
 		LabeledBlockFinder.v().find( this, asg, SET);
 		AbruptEdgeFinder.v().find( this, asg, SET);
 	    }
 	    catch (RetriggerAnalysisException rae) {
 		SET = new SETTopNode( asg.get_ChainView());
+		consumedConditions = new HashSet();
 		continue;
-	    }
-	    catch (RuntimeException re) {
-		// System.out.println( asg);
-		// SET.dump();
-		re.printStackTrace();
-		System.exit(0);
 	    }
 	    break;
 	}
@@ -599,6 +622,8 @@ public class DavaBody extends Body
 
 	if (uoe instanceof LengthExpr)
 	    vb.setValue( new DLengthExpr( ((LengthExpr) uoe).getOp()));
+	else if (uoe instanceof NegExpr)
+	    vb.setValue( new DNegExpr( ((NegExpr) uoe).getOp()));
     }
 
     private void javafy_cast_expr( ValueBox vb)

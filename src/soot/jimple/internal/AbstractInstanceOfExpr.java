@@ -97,7 +97,7 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr
 
     public Type getType()
     {
-        return IntType.v();
+        return BooleanType.v();
     }
 
     public Type getCheckType()

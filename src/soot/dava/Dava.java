@@ -9,7 +9,7 @@ import soot.jimple.*;
 public class Dava
 {
     private static final String LOG_TO_FILE = null;
-    private static final boolean LOG_TO_SCREEN = false;
+    private static final PrintStream LOG_TO_SCREEN = null;
 
     private static final Dava instance = new Dava();
     private Writer iOut;
@@ -50,9 +50,9 @@ public class Dava
 
     public void log( String s)
     {
-	if (LOG_TO_SCREEN) {
-	    System.out.println( s);
-	    System.out.flush();
+	if (LOG_TO_SCREEN != null) {
+	    LOG_TO_SCREEN.println( s);
+	    LOG_TO_SCREEN.flush();
 	}
 
 	if (LOG_TO_FILE != null) {

@@ -17,6 +17,7 @@ public class SETTryNode extends SETNode
     private DavaBody davaBody;
     private AugmentedStmtGraph asg;
     private HashMap cb2clone;
+    private AugmentedStmt entgryStmt;
 
     public SETTryNode( IterableSet body, ExceptionNode en, AugmentedStmtGraph asg, DavaBody davaBody) 
     {
@@ -37,11 +38,33 @@ public class SETTryNode extends SETNode
 	    cb2clone.put( catchBody, clone);
 	    add_SubBody( clone);
 	}
+
+    getEntryStmt:
+	{
+	    entryStmt = null;
+
+	    it = body.iterator();
+	    while (it.hasNext()) {
+		AugmentedStmt as = (AugmentedStmt) it.next();
+		
+		Iterator pit = as.cpreds.iterator();
+		while (pit.hasNext())
+		    if (body.contains( pit.next()) == false) {
+			entryStmt = as;
+			break getEntryStmt;
+		    }
+	    }
+	}
     }
 
     public AugmentedStmt get_EntryStmt()
     {
-	return ((SETNode) ((IterableSet) body2childChain.get( en.get_TryBody())).getFirst()).get_EntryStmt();
+	if (entryStmt != null)
+	    return entryStmt;
+	else 
+	    return (AugmentedStmt) ((IterableSet) en.get_TryBody()).getFirst();
+
+	// return ((SETNode) ((IterableSet) body2childChain.get( en.get_TryBody())).getFirst()).get_EntryStmt();
     }
 
     public IterableSet get_NaturalExits()
@@ -125,6 +148,11 @@ public class SETTryNode extends SETNode
 		    IterableSet newTryBody = childBody.intersection( en.get_TryBody());
 		    if (newTryBody.isStrictSubsetOf( en.get_TryBody())) {
 			en.splitOff_ExceptionNode( newTryBody, asg, davaBody.get_ExceptionFacts());
+
+			Iterator enlit = davaBody.get_ExceptionFacts().iterator();
+			while (enlit.hasNext())
+			    ((ExceptionNode) enlit.next()).refresh_CatchBody( ExceptionFinder.v());
+
 			return false;
 		    }
 
@@ -138,7 +166,7 @@ public class SETTryNode extends SETNode
 			    if (childBody.contains( as) == false) 
 				remove_AugmentedStmt( as);
 			    
-			    else if (child instanceof SETControlFlowNode) {
+			    else if ((child instanceof SETControlFlowNode) && ((child instanceof SETUnconditionalWhileNode) == false)) {
 				SETControlFlowNode scfn = (SETControlFlowNode) child;
 				
 				if ((scfn.get_CharacterizingStmt() == as) ||
