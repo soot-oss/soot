@@ -41,6 +41,10 @@ abstract public class AbstractInvokeExpr implements InvokeExpr
     protected SootMethodRef methodRef;
     protected ValueBox[] argBoxes;
 
+	public void setMethodRef(SootMethodRef methodRef) {
+		this.methodRef = methodRef;
+	}
+	
     public SootMethodRef getMethodRef()
     {
         return methodRef;

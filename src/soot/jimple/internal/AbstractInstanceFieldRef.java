@@ -41,7 +41,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
     protected SootFieldRef fieldRef;
     ValueBox baseBox;
 
-    protected AbstractInstanceFieldRef(ValueBox baseBox, SootFieldRef fieldRef)
+	protected AbstractInstanceFieldRef(ValueBox baseBox, SootFieldRef fieldRef)
     {
         if( fieldRef.isStatic() ) throw new RuntimeException("wrong static-ness");
         this.baseBox = baseBox;
@@ -82,6 +82,9 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
     {
         return fieldRef;
     }
+	public void setFieldRef(SootFieldRef fieldRef) {
+		this.fieldRef = fieldRef;
+	}
 
     public SootField getField()
     {

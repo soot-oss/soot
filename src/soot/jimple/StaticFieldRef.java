@@ -39,7 +39,9 @@ import java.io.*;
 
 public class StaticFieldRef implements FieldRef, ConvertToBaf
 {
-    protected SootFieldRef fieldRef;
+
+
+	protected SootFieldRef fieldRef;
 
     protected StaticFieldRef(SootFieldRef fieldRef)
     {
@@ -65,6 +67,10 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf
     {
         return fieldRef;
     }
+
+	public void setFieldRef(SootFieldRef fieldRef) {
+		this.fieldRef = fieldRef;
+	}
     public SootField getField()
     {
         return fieldRef.resolve();
