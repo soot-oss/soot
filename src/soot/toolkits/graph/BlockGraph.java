@@ -403,7 +403,7 @@ public class BlockGraph implements DirectedGraph
             // Can be deleted in time.
 
 
-	    //xxx
+	    /*
 	    it = basicBlockList.iterator();
 	    while(it.hasNext()) {
 		Block currentBlock = (Block) it.next();
@@ -458,7 +458,7 @@ public class BlockGraph implements DirectedGraph
                     }
                     }
                     }
-	    //xxx
+	    */
             
             mBlocks = basicBlockList;
             
