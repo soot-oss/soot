@@ -11,7 +11,7 @@ public class SootResolver
     private Scene mScene;
     private Set markedClasses;
     private LinkedList classesToResolve;
-    private boolean debug = true;
+    private boolean debug = false;
 
     //        SootClass toReturn = soot.coffi.Util.resolveClassAndSupportClasses(className, this);
     public SootResolver(Scene aScene)
@@ -67,9 +67,9 @@ public class SootResolver
 		if(sc == null) throw new RuntimeException("sc is null!!");
 
 		
-		soot.jimple.parser.JimpleAst jimpAst = new soot.jimple.parser.JimpleAst((JimpleInputStream) is);		
-		jimpAst.getSqueleton(sc, this);		
-		JimpleMethodSource mtdSrc = new JimpleMethodSource(jimpAst);
+		soot.jimple.parser.JimpleAST jimpAST = new soot.jimple.parser.JimpleAST((JimpleInputStream) is);		
+		jimpAST.getSkeleton(sc, this);
+		JimpleMethodSource mtdSrc = new JimpleMethodSource(jimpAST);
 
 		Iterator mtdIt = sc.getMethods().iterator();
 		while(mtdIt.hasNext()) {
@@ -77,13 +77,13 @@ public class SootResolver
 		    sm.setSource(mtdSrc);
 		}
 		
-		Iterator it = jimpAst.getCstPool().iterator();
+		Iterator it = jimpAST.getCstPool().iterator();
 		
 		while(it.hasNext()) {
 		    String nclass = (String) it.next();
 		    assertResolvedClass(nclass);
-		    if(debug)
-			System.out.println(nclass);
+//  		    if(debug)
+//  			System.out.println(nclass);
 		}
 	    } 
 	    else {

@@ -19,7 +19,7 @@ import soot.*;
 */
 
 
-public class JimpleAst 
+public class JimpleAST
 {
     private static final String EXT = ".jimple";
     private static boolean debug = false;
@@ -29,7 +29,7 @@ public class JimpleAst
     private InputStream mInputStream = null;
     boolean hasInputStream = false;
     
-    private static final String USAGE = "usage: java JimpleAst [options] " +
+    private static final String USAGE = "usage: java JimpleAST [options] " +
         "jimple_file [jimple_file ...]";
 
 
@@ -37,16 +37,16 @@ public class JimpleAst
      * @param aInputStream The JimpleInputStream
      */
 
-    public JimpleAst(JimpleInputStream aJIS)
+    public JimpleAST(JimpleInputStream aJIS)
     {
 	mInputStream = aJIS;
 	generateParseTree(mInputStream);
     }
 
 
-    public SootClass getSqueleton(SootClass sc, SootResolver resolver)
+    public SootClass getSkeleton(SootClass sc, SootResolver resolver)
     {
-	Walker w = new SqueletonExtractorWalker(resolver, sc);	
+	Walker w = new SkeletonExtractorWalker(resolver, sc);	
 	mTree.apply(w);  	
 	return w.getSootClass();	
     }
@@ -56,7 +56,7 @@ public class JimpleAst
     /*
       Parses a jimple input stream.
       If you just want to get the method bodies for a SootClass, pass as the second
-      argument the SootClass you want fill it's method bodies.
+      argument the SootClass you want method bodies for.
       If you want to create a SootClass for the inputStream set the 2nd arg to null.
     */
     public SootClass getMethodsForClass(SootClass sc) 
@@ -68,8 +68,12 @@ public class JimpleAst
 	else {
 	    w = new BodyExtractorWalker(sc);
 	} 
-	
+
+        boolean oldPhantomValue = Scene.v().getPhantomRefs();
+
+        Scene.v().setPhantomRefs(true);
 	mTree.apply(w);  	
+        Scene.v().setPhantomRefs(oldPhantomValue);
        	
 	return w.getSootClass();	
     }

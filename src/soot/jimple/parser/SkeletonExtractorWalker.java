@@ -18,13 +18,13 @@ import java.util.*;
    a new squeleton SootClass instance.   
 */
    
-public class SqueletonExtractorWalker extends Walker
+public class SkeletonExtractorWalker extends Walker
 {
            
     private SootResolver mResolver;
 
 
-    public SqueletonExtractorWalker(SootResolver aResolver, SootClass aSootClass) 
+    public SkeletonExtractorWalker(SootResolver aResolver, SootClass aSootClass) 
     {	
 	mResolver = aResolver;
 	mSootClass = aSootClass;

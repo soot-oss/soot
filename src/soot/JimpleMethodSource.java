@@ -35,11 +35,11 @@ import soot.jimple.parser.*;
 public class JimpleMethodSource implements MethodSource
 {
 
-    JimpleAst mJimpleAst;
+    JimpleAST mJimpleAST;
 
-    JimpleMethodSource(JimpleAst aJimpleAst)
+    JimpleMethodSource(JimpleAST aJimpleAST)
     {
-	mJimpleAst = aJimpleAst;
+	mJimpleAST = aJimpleAST;
     }
 
     public void getBody(SootMethod m, Map options)
@@ -50,7 +50,7 @@ public class JimpleMethodSource implements MethodSource
         // in fact we probably want to allow different
         // phase options depending on app vs. lib.
 
-	mJimpleAst.getMethodsForClass( m.getDeclaringClass());
+	mJimpleAST.getMethodsForClass(m.getDeclaringClass());
     }
 }
 

@@ -90,11 +90,13 @@ public class CoffiMethodSource implements MethodSource
          if(soot.Main.isVerbose)
              System.out.println("[" + m.getName() +
                     "]     Producing naive Jimple...");
-                    
+
+         boolean oldPhantomValue = Scene.v().getPhantomRefs();
+
          Scene.v().setPhantomRefs(true);
          coffiMethod.cfg.jimplify(coffiClass.constant_pool,
              coffiClass.this_class, jb);
-         Scene.v().setPhantomRefs(false);
+         Scene.v().setPhantomRefs(oldPhantomValue);
 
          coffiMethod.instructions = null;
          coffiMethod.cfg = null;

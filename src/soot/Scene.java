@@ -443,6 +443,11 @@ public class Scene extends AbstractHost
         activeInvokeGraph = null;
     }
     
+    public boolean getPhantomRefs()
+    {
+        return allowsPhantomRefs;
+    }
+
     public void setPhantomRefs(boolean value)
     {
         allowsPhantomRefs = value;
