@@ -587,6 +587,10 @@ public class SootClass extends AbstractHost implements Numberable
             throw new RuntimeException("duplicate signature for: " + m.getName());
         */
         
+        if(subSigToMethods.get(m.getNumberedSubSignature()) != null ) {
+            throw new RuntimeException(
+                    "Attempting to add method "+m.getSubSignature()+" to class "+this+", but the class already has a method with that signature.");
+        }
         subSigToMethods.put(m.getNumberedSubSignature(),m);
         methodList.add(m);
         m.isDeclared = true;
@@ -604,6 +608,10 @@ public class SootClass extends AbstractHost implements Numberable
         if(!m.isDeclared() || m.getDeclaringClass() != this)
             throw new RuntimeException("incorrect declarer for remove: "+m.getName());
 
+        if(subSigToMethods.get(m.getNumberedSubSignature()) == null) {
+            throw new RuntimeException(
+                    "Attempt to remove method "+m.getSubSignature()+" which is not in class "+this);
+        }
         subSigToMethods.put(m.getNumberedSubSignature(),null);
         methodList.remove(m);
         m.isDeclared = false;
