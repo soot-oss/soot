@@ -251,17 +251,17 @@ public class Main
         List forcedClasses = new ArrayList();
         Chain cmdLineClasses = new HashChain();
         packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("java");
+        packageInclusionMasks.add("java.");
 
         packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("sun");
+        packageInclusionMasks.add("sun.");
 
         totalTimer.start();
 
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.104");
+            System.out.println("Soot version 1.beta.4.dev.105");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");

@@ -81,7 +81,7 @@ import java.util.*;
 public class GDivExpr extends AbstractGrimpFloatBinopExpr implements DivExpr
 {
     public GDivExpr(Value op1, Value op2) { super(op1, op2); }
-    public final String getSymbol() { return " * "; }
+    public final String getSymbol() { return " / "; }
     public final int getPrecedence() { return 800; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseDivExpr(this); }
     public Object clone() { return new RuntimeException();}}
