@@ -214,8 +214,8 @@ public class Main implements Runnable, ICompilationListener
     static private SootClass mainClass = null;        
     
     static public long stmtCount;
-    static int finalRep = GRIMP;
-
+    static int finalRep = BAF;
+      // The final rep to be used is Baf; conclusion of our CC2000 paper!
 
     private static List sTagFileList = new ArrayList();
  
@@ -450,7 +450,7 @@ public class Main implements Runnable, ICompilationListener
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.57");
+            System.out.println("Soot version 1.beta.6.dev.58");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
