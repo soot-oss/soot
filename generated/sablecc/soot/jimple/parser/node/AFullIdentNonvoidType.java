@@ -5,36 +5,33 @@ package soot.jimple.parser.node;
 import java.util.*;
 import soot.jimple.parser.analysis.*;
 
-public final class AQuotedNonvoidType extends PNonvoidType
+public final class AFullIdentNonvoidType extends PNonvoidType
 {
-    private TQuotedName _quotedName_;
+    private TFullIdentifier _fullIdentifier_;
     private final LinkedList _arrayBrackets_ = new TypedLinkedList(new ArrayBrackets_Cast());
 
-    public AQuotedNonvoidType()
+    public AFullIdentNonvoidType()
     {
     }
 
-    public AQuotedNonvoidType(
-        TQuotedName _quotedName_,
+    public AFullIdentNonvoidType(
+        TFullIdentifier _fullIdentifier_,
         List _arrayBrackets_)
     {
-        setQuotedName(_quotedName_);
+        setFullIdentifier(_fullIdentifier_);
 
         {
-            Object temp[] = _arrayBrackets_.toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                this._arrayBrackets_.add(temp[i]);
-            }
+            this._arrayBrackets_.clear();
+            this._arrayBrackets_.addAll(_arrayBrackets_);
         }
 
     }
 
-    public AQuotedNonvoidType(
-        TQuotedName _quotedName_,
+    public AFullIdentNonvoidType(
+        TFullIdentifier _fullIdentifier_,
         XPArrayBrackets _arrayBrackets_)
     {
-        setQuotedName(_quotedName_);
+        setFullIdentifier(_fullIdentifier_);
 
         if(_arrayBrackets_ != null)
         {
@@ -49,26 +46,26 @@ public final class AQuotedNonvoidType extends PNonvoidType
     }
     public Object clone()
     {
-        return new AQuotedNonvoidType(
-            (TQuotedName) cloneNode(_quotedName_),
+        return new AFullIdentNonvoidType(
+            (TFullIdentifier) cloneNode(_fullIdentifier_),
             cloneList(_arrayBrackets_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAQuotedNonvoidType(this);
+        ((Analysis) sw).caseAFullIdentNonvoidType(this);
     }
 
-    public TQuotedName getQuotedName()
+    public TFullIdentifier getFullIdentifier()
     {
-        return _quotedName_;
+        return _fullIdentifier_;
     }
 
-    public void setQuotedName(TQuotedName node)
+    public void setFullIdentifier(TFullIdentifier node)
     {
-        if(_quotedName_ != null)
+        if(_fullIdentifier_ != null)
         {
-            _quotedName_.parent(null);
+            _fullIdentifier_.parent(null);
         }
 
         if(node != null)
@@ -81,7 +78,7 @@ public final class AQuotedNonvoidType extends PNonvoidType
             node.parent(this);
         }
 
-        _quotedName_ = node;
+        _fullIdentifier_ = node;
     }
 
     public LinkedList getArrayBrackets()
@@ -91,25 +88,22 @@ public final class AQuotedNonvoidType extends PNonvoidType
 
     public void setArrayBrackets(List list)
     {
-        Object temp[] = list.toArray();
-        for(int i = 0; i < temp.length; i++)
-        {
-            _arrayBrackets_.add(temp[i]);
-        }
+        _arrayBrackets_.clear();
+        _arrayBrackets_.addAll(list);
     }
 
     public String toString()
     {
         return ""
-            + toString(_quotedName_)
+            + toString(_fullIdentifier_)
             + toString(_arrayBrackets_);
     }
 
     void removeChild(Node child)
     {
-        if(_quotedName_ == child)
+        if(_fullIdentifier_ == child)
         {
-            _quotedName_ = null;
+            _fullIdentifier_ = null;
             return;
         }
 
@@ -122,9 +116,9 @@ public final class AQuotedNonvoidType extends PNonvoidType
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_quotedName_ == oldChild)
+        if(_fullIdentifier_ == oldChild)
         {
-            setQuotedName((TQuotedName) newChild);
+            setFullIdentifier((TFullIdentifier) newChild);
             return;
         }
 
@@ -154,15 +148,15 @@ public final class AQuotedNonvoidType extends PNonvoidType
             PArrayBrackets node = (PArrayBrackets) o;
 
             if((node.parent() != null) &&
-                (node.parent() != AQuotedNonvoidType.this))
+                (node.parent() != AFullIdentNonvoidType.this))
             {
                 node.parent().removeChild(node);
             }
 
             if((node.parent() == null) ||
-                (node.parent() != AQuotedNonvoidType.this))
+                (node.parent() != AFullIdentNonvoidType.this))
             {
-                node.parent(AQuotedNonvoidType.this);
+                node.parent(AFullIdentNonvoidType.this);
             }
 
             return node;

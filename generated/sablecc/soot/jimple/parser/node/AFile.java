@@ -27,11 +27,8 @@ public final class AFile extends PFile
         PFileBody _fileBody_)
     {
         {
-            Object temp[] = _modifier_.toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                this._modifier_.add(temp[i]);
-            }
+            this._modifier_.clear();
+            this._modifier_.addAll(_modifier_);
         }
 
         setFileType(_fileType_);
@@ -98,11 +95,8 @@ public final class AFile extends PFile
 
     public void setModifier(List list)
     {
-        Object temp[] = list.toArray();
-        for(int i = 0; i < temp.length; i++)
-        {
-            _modifier_.add(temp[i]);
-        }
+        _modifier_.clear();
+        _modifier_.addAll(list);
     }
 
     public PFileType getFileType()

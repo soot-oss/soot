@@ -23,11 +23,8 @@ public final class AFileBody extends PFileBody
         setLBrace(_lBrace_);
 
         {
-            Object temp[] = _member_.toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                this._member_.add(temp[i]);
-            }
+            this._member_.clear();
+            this._member_.addAll(_member_);
         }
 
         setRBrace(_rBrace_);
@@ -99,11 +96,8 @@ public final class AFileBody extends PFileBody
 
     public void setMember(List list)
     {
-        Object temp[] = list.toArray();
-        for(int i = 0; i < temp.length; i++)
-        {
-            _member_.add(temp[i]);
-        }
+        _member_.clear();
+        _member_.addAll(list);
     }
 
     public TRBrace getRBrace()

@@ -5,9 +5,9 @@ package soot.jimple.parser.node;
 import java.util.*;
 import soot.jimple.parser.analysis.*;
 
-public final class ATableswitchStatement extends PStatement
+public final class ALookupswitchStatement extends PStatement
 {
-    private TTableswitch _tableswitch_;
+    private TLookupswitch _lookupswitch_;
     private TLParen _lParen_;
     private PImmediate _immediate_;
     private TRParen _rParen_;
@@ -16,12 +16,12 @@ public final class ATableswitchStatement extends PStatement
     private TRBrace _rBrace_;
     private TSemicolon _semicolon_;
 
-    public ATableswitchStatement()
+    public ALookupswitchStatement()
     {
     }
 
-    public ATableswitchStatement(
-        TTableswitch _tableswitch_,
+    public ALookupswitchStatement(
+        TLookupswitch _lookupswitch_,
         TLParen _lParen_,
         PImmediate _immediate_,
         TRParen _rParen_,
@@ -30,7 +30,7 @@ public final class ATableswitchStatement extends PStatement
         TRBrace _rBrace_,
         TSemicolon _semicolon_)
     {
-        setTableswitch(_tableswitch_);
+        setLookupswitch(_lookupswitch_);
 
         setLParen(_lParen_);
 
@@ -41,11 +41,8 @@ public final class ATableswitchStatement extends PStatement
         setLBrace(_lBrace_);
 
         {
-            Object temp[] = _caseStmt_.toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                this._caseStmt_.add(temp[i]);
-            }
+            this._caseStmt_.clear();
+            this._caseStmt_.addAll(_caseStmt_);
         }
 
         setRBrace(_rBrace_);
@@ -54,8 +51,8 @@ public final class ATableswitchStatement extends PStatement
 
     }
 
-    public ATableswitchStatement(
-        TTableswitch _tableswitch_,
+    public ALookupswitchStatement(
+        TLookupswitch _lookupswitch_,
         TLParen _lParen_,
         PImmediate _immediate_,
         TRParen _rParen_,
@@ -64,7 +61,7 @@ public final class ATableswitchStatement extends PStatement
         TRBrace _rBrace_,
         TSemicolon _semicolon_)
     {
-        setTableswitch(_tableswitch_);
+        setLookupswitch(_lookupswitch_);
 
         setLParen(_lParen_);
 
@@ -91,8 +88,8 @@ public final class ATableswitchStatement extends PStatement
     }
     public Object clone()
     {
-        return new ATableswitchStatement(
-            (TTableswitch) cloneNode(_tableswitch_),
+        return new ALookupswitchStatement(
+            (TLookupswitch) cloneNode(_lookupswitch_),
             (TLParen) cloneNode(_lParen_),
             (PImmediate) cloneNode(_immediate_),
             (TRParen) cloneNode(_rParen_),
@@ -104,19 +101,19 @@ public final class ATableswitchStatement extends PStatement
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseATableswitchStatement(this);
+        ((Analysis) sw).caseALookupswitchStatement(this);
     }
 
-    public TTableswitch getTableswitch()
+    public TLookupswitch getLookupswitch()
     {
-        return _tableswitch_;
+        return _lookupswitch_;
     }
 
-    public void setTableswitch(TTableswitch node)
+    public void setLookupswitch(TLookupswitch node)
     {
-        if(_tableswitch_ != null)
+        if(_lookupswitch_ != null)
         {
-            _tableswitch_.parent(null);
+            _lookupswitch_.parent(null);
         }
 
         if(node != null)
@@ -129,7 +126,7 @@ public final class ATableswitchStatement extends PStatement
             node.parent(this);
         }
 
-        _tableswitch_ = node;
+        _lookupswitch_ = node;
     }
 
     public TLParen getLParen()
@@ -239,11 +236,8 @@ public final class ATableswitchStatement extends PStatement
 
     public void setCaseStmt(List list)
     {
-        Object temp[] = list.toArray();
-        for(int i = 0; i < temp.length; i++)
-        {
-            _caseStmt_.add(temp[i]);
-        }
+        _caseStmt_.clear();
+        _caseStmt_.addAll(list);
     }
 
     public TRBrace getRBrace()
@@ -299,7 +293,7 @@ public final class ATableswitchStatement extends PStatement
     public String toString()
     {
         return ""
-            + toString(_tableswitch_)
+            + toString(_lookupswitch_)
             + toString(_lParen_)
             + toString(_immediate_)
             + toString(_rParen_)
@@ -311,9 +305,9 @@ public final class ATableswitchStatement extends PStatement
 
     void removeChild(Node child)
     {
-        if(_tableswitch_ == child)
+        if(_lookupswitch_ == child)
         {
-            _tableswitch_ = null;
+            _lookupswitch_ = null;
             return;
         }
 
@@ -362,9 +356,9 @@ public final class ATableswitchStatement extends PStatement
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_tableswitch_ == oldChild)
+        if(_lookupswitch_ == oldChild)
         {
-            setTableswitch((TTableswitch) newChild);
+            setLookupswitch((TLookupswitch) newChild);
             return;
         }
 
@@ -430,15 +424,15 @@ public final class ATableswitchStatement extends PStatement
             PCaseStmt node = (PCaseStmt) o;
 
             if((node.parent() != null) &&
-                (node.parent() != ATableswitchStatement.this))
+                (node.parent() != ALookupswitchStatement.this))
             {
                 node.parent().removeChild(node);
             }
 
             if((node.parent() == null) ||
-                (node.parent() != ATableswitchStatement.this))
+                (node.parent() != ALookupswitchStatement.this))
             {
-                node.parent(ATableswitchStatement.this);
+                node.parent(ALookupswitchStatement.this);
             }
 
             return node;

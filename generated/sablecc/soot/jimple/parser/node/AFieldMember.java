@@ -23,11 +23,8 @@ public final class AFieldMember extends PMember
         TSemicolon _semicolon_)
     {
         {
-            Object temp[] = _modifier_.toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                this._modifier_.add(temp[i]);
-            }
+            this._modifier_.clear();
+            this._modifier_.addAll(_modifier_);
         }
 
         setType(_type_);
@@ -82,11 +79,8 @@ public final class AFieldMember extends PMember
 
     public void setModifier(List list)
     {
-        Object temp[] = list.toArray();
-        for(int i = 0; i < temp.length; i++)
-        {
-            _modifier_.add(temp[i]);
-        }
+        _modifier_.clear();
+        _modifier_.addAll(list);
     }
 
     public PType getType()

@@ -27,27 +27,18 @@ public final class AFullMethodBody extends PMethodBody
         setLBrace(_lBrace_);
 
         {
-            Object temp[] = _declaration_.toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                this._declaration_.add(temp[i]);
-            }
+            this._declaration_.clear();
+            this._declaration_.addAll(_declaration_);
         }
 
         {
-            Object temp[] = _statement_.toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                this._statement_.add(temp[i]);
-            }
+            this._statement_.clear();
+            this._statement_.addAll(_statement_);
         }
 
         {
-            Object temp[] = _catchClause_.toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                this._catchClause_.add(temp[i]);
-            }
+            this._catchClause_.clear();
+            this._catchClause_.addAll(_catchClause_);
         }
 
         setRBrace(_rBrace_);
@@ -143,11 +134,8 @@ public final class AFullMethodBody extends PMethodBody
 
     public void setDeclaration(List list)
     {
-        Object temp[] = list.toArray();
-        for(int i = 0; i < temp.length; i++)
-        {
-            _declaration_.add(temp[i]);
-        }
+        _declaration_.clear();
+        _declaration_.addAll(list);
     }
 
     public LinkedList getStatement()
@@ -157,11 +145,8 @@ public final class AFullMethodBody extends PMethodBody
 
     public void setStatement(List list)
     {
-        Object temp[] = list.toArray();
-        for(int i = 0; i < temp.length; i++)
-        {
-            _statement_.add(temp[i]);
-        }
+        _statement_.clear();
+        _statement_.addAll(list);
     }
 
     public LinkedList getCatchClause()
@@ -171,11 +156,8 @@ public final class AFullMethodBody extends PMethodBody
 
     public void setCatchClause(List list)
     {
-        Object temp[] = list.toArray();
-        for(int i = 0; i < temp.length; i++)
-        {
-            _catchClause_.add(temp[i]);
-        }
+        _catchClause_.clear();
+        _catchClause_.addAll(list);
     }
 
     public TRBrace getRBrace()

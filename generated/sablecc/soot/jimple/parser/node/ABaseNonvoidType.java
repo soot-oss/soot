@@ -5,36 +5,33 @@ package soot.jimple.parser.node;
 import java.util.*;
 import soot.jimple.parser.analysis.*;
 
-public final class AIdentNonvoidType extends PNonvoidType
+public final class ABaseNonvoidType extends PNonvoidType
 {
-    private TIdentifier _identifier_;
+    private PBaseTypeNoName _baseTypeNoName_;
     private final LinkedList _arrayBrackets_ = new TypedLinkedList(new ArrayBrackets_Cast());
 
-    public AIdentNonvoidType()
+    public ABaseNonvoidType()
     {
     }
 
-    public AIdentNonvoidType(
-        TIdentifier _identifier_,
+    public ABaseNonvoidType(
+        PBaseTypeNoName _baseTypeNoName_,
         List _arrayBrackets_)
     {
-        setIdentifier(_identifier_);
+        setBaseTypeNoName(_baseTypeNoName_);
 
         {
-            Object temp[] = _arrayBrackets_.toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                this._arrayBrackets_.add(temp[i]);
-            }
+            this._arrayBrackets_.clear();
+            this._arrayBrackets_.addAll(_arrayBrackets_);
         }
 
     }
 
-    public AIdentNonvoidType(
-        TIdentifier _identifier_,
+    public ABaseNonvoidType(
+        PBaseTypeNoName _baseTypeNoName_,
         XPArrayBrackets _arrayBrackets_)
     {
-        setIdentifier(_identifier_);
+        setBaseTypeNoName(_baseTypeNoName_);
 
         if(_arrayBrackets_ != null)
         {
@@ -49,26 +46,26 @@ public final class AIdentNonvoidType extends PNonvoidType
     }
     public Object clone()
     {
-        return new AIdentNonvoidType(
-            (TIdentifier) cloneNode(_identifier_),
+        return new ABaseNonvoidType(
+            (PBaseTypeNoName) cloneNode(_baseTypeNoName_),
             cloneList(_arrayBrackets_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAIdentNonvoidType(this);
+        ((Analysis) sw).caseABaseNonvoidType(this);
     }
 
-    public TIdentifier getIdentifier()
+    public PBaseTypeNoName getBaseTypeNoName()
     {
-        return _identifier_;
+        return _baseTypeNoName_;
     }
 
-    public void setIdentifier(TIdentifier node)
+    public void setBaseTypeNoName(PBaseTypeNoName node)
     {
-        if(_identifier_ != null)
+        if(_baseTypeNoName_ != null)
         {
-            _identifier_.parent(null);
+            _baseTypeNoName_.parent(null);
         }
 
         if(node != null)
@@ -81,7 +78,7 @@ public final class AIdentNonvoidType extends PNonvoidType
             node.parent(this);
         }
 
-        _identifier_ = node;
+        _baseTypeNoName_ = node;
     }
 
     public LinkedList getArrayBrackets()
@@ -91,25 +88,22 @@ public final class AIdentNonvoidType extends PNonvoidType
 
     public void setArrayBrackets(List list)
     {
-        Object temp[] = list.toArray();
-        for(int i = 0; i < temp.length; i++)
-        {
-            _arrayBrackets_.add(temp[i]);
-        }
+        _arrayBrackets_.clear();
+        _arrayBrackets_.addAll(list);
     }
 
     public String toString()
     {
         return ""
-            + toString(_identifier_)
+            + toString(_baseTypeNoName_)
             + toString(_arrayBrackets_);
     }
 
     void removeChild(Node child)
     {
-        if(_identifier_ == child)
+        if(_baseTypeNoName_ == child)
         {
-            _identifier_ = null;
+            _baseTypeNoName_ = null;
             return;
         }
 
@@ -122,9 +116,9 @@ public final class AIdentNonvoidType extends PNonvoidType
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_identifier_ == oldChild)
+        if(_baseTypeNoName_ == oldChild)
         {
-            setIdentifier((TIdentifier) newChild);
+            setBaseTypeNoName((PBaseTypeNoName) newChild);
             return;
         }
 
@@ -154,15 +148,15 @@ public final class AIdentNonvoidType extends PNonvoidType
             PArrayBrackets node = (PArrayBrackets) o;
 
             if((node.parent() != null) &&
-                (node.parent() != AIdentNonvoidType.this))
+                (node.parent() != ABaseNonvoidType.this))
             {
                 node.parent().removeChild(node);
             }
 
             if((node.parent() == null) ||
-                (node.parent() != AIdentNonvoidType.this))
+                (node.parent() != ABaseNonvoidType.this))
             {
-                node.parent(AIdentNonvoidType.this);
+                node.parent(ABaseNonvoidType.this);
             }
 
             return node;

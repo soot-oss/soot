@@ -33,11 +33,8 @@ public final class AMultiNewExpr extends PNewExpr
         setRParen(_rParen_);
 
         {
-            Object temp[] = _arrayDescriptor_.toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                this._arrayDescriptor_.add(temp[i]);
-            }
+            this._arrayDescriptor_.clear();
+            this._arrayDescriptor_.addAll(_arrayDescriptor_);
         }
 
     }
@@ -190,11 +187,8 @@ public final class AMultiNewExpr extends PNewExpr
 
     public void setArrayDescriptor(List list)
     {
-        Object temp[] = list.toArray();
-        for(int i = 0; i < temp.length; i++)
-        {
-            _arrayDescriptor_.add(temp[i]);
-        }
+        _arrayDescriptor_.clear();
+        _arrayDescriptor_.addAll(list);
     }
 
     public String toString()

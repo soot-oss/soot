@@ -17,9 +17,9 @@ public class TypedLinkedList extends LinkedList
 
     public TypedLinkedList(Collection c)
     {
-        super(c);
-
+        super();
         cast = NoCast.instance;
+        this.addAll(c);
     }
 
     public TypedLinkedList(Cast cast)
@@ -31,9 +31,9 @@ public class TypedLinkedList extends LinkedList
 
     public TypedLinkedList(Collection c, Cast cast)
     {
-        super(c);
-
+        super();
         this.cast = cast;
+        this.addAll(c);
     }
 
     public Cast getCast()

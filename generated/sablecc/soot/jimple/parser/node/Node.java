@@ -32,7 +32,7 @@ public abstract class Node implements Switchable, Cloneable
         }
     }
 
-    public String toString(Node node)
+    protected String toString(Node node)
     {
         if(node != null)
         {
