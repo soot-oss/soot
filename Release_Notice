@@ -1,0 +1,35 @@
+Dear Soot Users,
+
+We are pleased to announce that Soot version 2.2.0 is now available at: http://www.sable.mcgill.ca/soot/
+
+This release contains:
+
+1. major changes to class resolution see: http://svn.sable.mcgill.ca/wiki/index.php/ClassResolver
+2. major reorganization of control flow graphs and extended support for exception control flow see: http://svn.sable.mcgill.ca/wiki/index.php/CFG%20Reorganization
+3. complete and stable JavaToJimple module
+4. Java 1.4 style handling of method and field references see: http://svn.sable.mcgill.ca/wiki/index.php/MethodAndFieldReferences
+5. minor fixes and cleanup of Shimple   
+    * made dominator analysis and structure classes public
+    * Shimple factory added for finer grained control
+6. updates to Soot - Eclipse Plugin
+    * improved visual attributes in source
+    * attributes legend
+    * attribute management (for turning sets of attributes on/off)
+    * interactive cfgs
+    * growable graphical callgraph (experimental)
+7. Jimple validator does partial type checking (-validate switch)
+8. testsuite
+9. minor bug fixes
+10. extended set of options
+
+We would also like to announce a new bugzilla database for Soot at: http://svn.sable.mcgill.ca/bugzilla/. We encourage you to add any Soot bugs there.
+
+We would also like to announce the new Soot wiki at: http://svn.sable.mcgill.ca/wiki/index.php/SootProject. The Soot team will be using this site for discussing upcoming work, so if you would like to know what's going on look there.
+
+We will also be providing nightly builds of Soot and its dependencies see:
+
+Regards,
+
+Jennifer Lhotak 
+Sable Research Group, McGill University
+                                                                                                               
