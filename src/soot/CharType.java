@@ -32,6 +32,10 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+/**
+ *   Soot representation of the Java built-in type 'char'. Implemented as
+ *   a singleton.
+ */
 public class CharType extends BaseType
 {
     private static CharType constant = new CharType();
@@ -40,6 +44,7 @@ public class CharType extends BaseType
     {
     }
 
+    /** @return this class's singleton object */
     public static CharType v()
     {
         return constant;

@@ -32,8 +32,15 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+
+/**
+ *   A class that models Java's reference types. RefTypes are parametrized by a class name.
+ *   Two RefType are equal iff they are parametrized by the same class name as a String.
+ */
+
 public class RefType extends BaseType implements ToBriefString
 {
+    /** the class name that parametrizes this RefType */
     public final String className;
 
     private static RefType singleton = new RefType("");
@@ -43,26 +50,50 @@ public class RefType extends BaseType implements ToBriefString
         this.className = className;
     }
 
+    /** 
+     *  Create a RefType for a class. 
+     *  @param className The name of the class used to parametrize the created RefType.
+     *  @return a RefType for the given class name.
+     */
     public static RefType v(String className)
     {
         return new RefType(className);
     }
-
+    
+    /** 
+     *  Create a RefType for a class. 
+     *  @param c A SootClass for which to create a RefType.
+     *  @return a RefType for the given SootClass..
+     */
     public static RefType v(SootClass c)
     {
         return v(c.getName());
     }
-
+    
+    /** 
+     *  Get the default RefType. It is parametrized by an empty class name string.Implemented as
+     *  a singleton.
+     *  @return a default RefType
+     */
     public static RefType v()
     {
         return singleton;
     }
-
+    
+     /** 
+      *  Get the SootClass object corresponding to this RefType.
+      *  @return the corresponding SootClass
+      */    
     public SootClass getSootClass()
     {
         return Scene.v().getSootClass(className);
     }
 
+    /** 
+     *  2 RefTypes are considered equal if they are parametrized by the same class name String.
+     *  @param t an object to test for equality.
+     *  @ return true if t is a RefType parametrized by the same name as this.
+     */
     public boolean equals(Object t)
     {
         return ((t instanceof RefType) && className.equals(((RefType) t).className));

@@ -32,6 +32,11 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+
+/**
+ *   Soot representation of the Java built-in type 'byte'. Implemented as
+ *   a singleton.
+ */
 public class ByteType extends BaseType
 {
     private static final ByteType constant = new ByteType();
@@ -40,6 +45,7 @@ public class ByteType extends BaseType
     {
     }
 
+    /** @return this class's singleton object */
     public static ByteType v()
     {
         return constant;

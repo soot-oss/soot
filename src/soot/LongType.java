@@ -32,6 +32,10 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+/**
+ *   Soot representation of the Java built-in type 'long'. Implemented as
+ *   a singleton.
+ */
 public class LongType extends BaseType
 {
     private static final LongType constant = new LongType();
@@ -41,6 +45,7 @@ public class LongType extends BaseType
         // no constructor allowed
     }
 
+    /** @return this class's singleton object */
     public static LongType v()
     {
         return constant;

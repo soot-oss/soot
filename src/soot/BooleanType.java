@@ -32,6 +32,11 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+
+/**
+ *   Soot representation of the Java built-in type 'boolean'. Implemented as
+ *   a singleton.
+ */
 public class BooleanType extends BaseType
 {
     private static final BooleanType constant = new BooleanType();
@@ -40,6 +45,7 @@ public class BooleanType extends BaseType
     {
     }
 
+    /** @return this class's singleton object */
     public static BooleanType v()
     {
         return constant;

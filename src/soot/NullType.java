@@ -32,6 +32,11 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+
+/**
+ *   Soot representation of the Java type 'null'. Implemented as
+ *   a singleton.
+ */
 public class NullType extends Type
 {
     private static NullType constant = new NullType();
@@ -39,7 +44,8 @@ public class NullType extends Type
     private NullType()
     {
     }
-
+    
+    /** @return this class's singleton object */
     public static NullType v()
     {
         return constant;

@@ -32,6 +32,15 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+
+
+
+
+
+/**
+ *   Soot representation of the Java built-in type 'int'. Implemented as
+ *   a singleton.
+ */
 public class IntType extends BaseType
 {
     private static final IntType constant = new IntType();
@@ -40,7 +49,8 @@ public class IntType extends BaseType
     {
         // no constructor allowed
     }
-
+    
+    /** @return this class's singleton object */
     public static IntType v()
     {
         return constant;

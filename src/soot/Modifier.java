@@ -26,11 +26,20 @@
 
 
 
+// Incomplete class
 
 package soot;
 
-// Incomplete class
 
+
+
+/**
+ *   A class that provides static methods and constants to represent and
+ *   work with with Java modifiers (ie public, final,...)
+ *   Represents Java modifiers as int constants that can be packed and
+ *   combined by bitwise operations; and method to query these.
+ *   
+ */
 public class Modifier
 {
     public static final int ABSTRACT =     0x0400;
@@ -105,7 +114,9 @@ public class Modifier
     }
 
     /**
-     * Converts the given modifiers to their string representation, in canonical form.
+     *  Converts the given modifiers to their string representation, in canonical form.
+     *   @param m  a modifier set
+     *   @return a textual representation of the modifiers.
      */
     public static String toString(int m)
     {

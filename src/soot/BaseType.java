@@ -29,8 +29,14 @@
 
 package soot;
 
+
+/**
+ *   Abstract base class for Soot classes that that model Java programming types 
+ *   that are not arrays. (ie all types except void, null, and array types)
+ */
 public
 abstract class BaseType extends Type 
 {
+    /** @return the base type's name as a string*/
     public abstract String toString();
 }

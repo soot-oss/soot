@@ -29,26 +29,49 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+
+/**
+ *   A class that models Java's array types. ArrayTypes are parametrized by a BaseType and 
+ *   and an integer representing the array's dimension count..
+ *   Two ArrayType are 'equal' if they are parametrized equally.
+ *
+ */
 public class ArrayType extends Type
 {
-    /**
-     * baseType can be any type except for an array type and void
+    /** baseType can be any type except for an array type, null and void 
+     *  @see BaseType 
      */
-
     public final BaseType baseType;
+    
+    /** dimension count for the array type*/
     public final int numDimensions;
 
+   
     private ArrayType(BaseType baseType, int numDimensions)
     {
         this.baseType = baseType;
         this.numDimensions = numDimensions;
     }
 
+     /** 
+     *  Creates an ArrayType  parametrized by a given BaseType and dimension count.
+     *  @param baseType a BaseType to parametrize the ArrayType
+     *  @param numDimensions the dimension count to parametrize the ArrayType.
+     *  @return an ArrayType parametrized accrodingly.
+     */
     public static ArrayType v(BaseType baseType, int numDimensions)
     {
         return new ArrayType(baseType, numDimensions);
     }
 
+
+
+    /**
+     *  Two ArrayType are 'equal' if they are parametrized identically.
+     * (ie have same BaseType and dimension count.
+     * @param t object to test for equality
+     * @return true if t is an ArrayType and is parametrized identically to this.
+     */
     public boolean equals(Object t)
     {
         if(t instanceof ArrayType)

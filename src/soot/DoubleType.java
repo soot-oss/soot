@@ -32,6 +32,10 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+/**
+ *   Soot representation of the Java built-in type 'double'. Implemented as
+ *   a singleton.
+ */
 public class DoubleType extends BaseType
 {
     private static final DoubleType constant = new DoubleType();
@@ -39,7 +43,8 @@ public class DoubleType extends BaseType
     private DoubleType()
     {
     }
-
+    
+    /** @return this class's singleton object */
     public static DoubleType v()
     {
         return constant;

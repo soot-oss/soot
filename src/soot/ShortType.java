@@ -32,6 +32,10 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+/**
+ *   Soot representation of the Java built-in type 'short'. Implemented as
+ *   a singleton.
+ */
 public class ShortType extends BaseType
 {
     private static final ShortType constant = new ShortType();
@@ -40,6 +44,7 @@ public class ShortType extends BaseType
     {
     }
 
+    /** @return this class's singleton object */
     public static ShortType v()
     {
         return constant;
