@@ -40,5 +40,9 @@ public abstract class ConstantValueTag implements Tag
     public byte[] getValue() {
 	return bytes;
     }
+
+    public String toString(){
+        return new String(bytes);
+    }
 }
 

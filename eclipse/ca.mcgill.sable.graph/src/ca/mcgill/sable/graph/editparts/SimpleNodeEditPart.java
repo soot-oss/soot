@@ -32,7 +32,7 @@ public class SimpleNodeEditPart
 	extends AbstractGraphicalEditPart
 	implements NodeEditPart, PropertyChangeListener {
 
-	private String data;
+	private Object data;
 	
 	/**
 	 * 
@@ -167,7 +167,7 @@ public class SimpleNodeEditPart
 	public void propertyChange(PropertyChangeEvent event){
 		if (event.getPropertyName().equals(Element.DATA)){
 			//System.out.println("new val: "+event.getNewValue());
-			setData(event.getNewValue().toString());
+			setData(event.getNewValue());
 			refreshVisuals();
 		}
 		else if (event.getPropertyName().equals(Element.INPUTS)){
@@ -193,11 +193,11 @@ public class SimpleNodeEditPart
 		while (it.hasNext()){
 			Object next = it.next();
 			if (next instanceof Label){
-				((Label)next).setText(getData());
+				((Label)next).setText(getData().toString());
 				//System.out.println("data: "+getData());
 				if (getData() != null){
 					//((Label)next).setSize(getData().length()*7, ((Label)next).getBounds().height);
-					getFigure().setSize((getData().length()*7)+10, ((((Label)next).getBounds().height/2)+10));
+					getFigure().setSize((getData().toString().length()*7)+10, ((((Label)next).getBounds().height/2)+10));
 					getFigure().revalidate();
 					((GraphEditPart)getParent()).getFigure().revalidate();
 				}
@@ -217,15 +217,15 @@ public class SimpleNodeEditPart
 	/**
 	 * @return
 	 */
-	public String getData() {
+	public Object getData() {
 		return data;
 	}
 
 	/**
 	 * @param string
 	 */
-	public void setData(String string) {
-		data = string;
+	public void setData(Object obj) {
+		data = obj;
 	}
 	
 	

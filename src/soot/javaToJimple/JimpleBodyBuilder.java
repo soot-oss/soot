@@ -237,6 +237,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
     }
     
+
+    
     /**
      * adds any needed static field inits
      */

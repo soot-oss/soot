@@ -137,7 +137,7 @@ public class CallGraphGenerator {
 	private void makeCons(CallGraphInfo info, CallGraphNode center){
 		Iterator it1 = info.getInputs().iterator();
 		while (it1.hasNext()){
-			SootMethod sm = (SootMethod)it1.next();
+			SootMethod sm = ((MethInfo)it1.next()).method();
 			CallGraphNode inNode = getNodeForMethod(sm);
 			inNode.setGenerator(this);
 			Edge inEdge = new Edge(inNode, center);
@@ -145,7 +145,7 @@ public class CallGraphGenerator {
 		
 		Iterator it2 = info.getOutputs().iterator();
 		while (it2.hasNext()){
-			SootMethod sm = (SootMethod)it2.next();
+			SootMethod sm = ((MethInfo)it2.next()).method();
 			//System.out.println("making target connection for: "+sm);
 			CallGraphNode outNode = getNodeForMethod(sm);
 			outNode.setGenerator(this);

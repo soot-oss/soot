@@ -31,12 +31,27 @@ public class FloatConstantValueTag extends ConstantValueTag
 
     public FloatConstantValueTag(int value) {
 	this.value = value;
-	this.bytes = new byte[] {
+	/*this.bytes = new byte[] {
 	  (byte)((value >> 24) & 0xff),
 	  (byte)((value >> 16) & 0xff),
 	  (byte)((value >>  8) & 0xff),
 	  (byte)((value      ) & 0xff)
-	};
+	};*/
+    makeBytes();
+    }
+
+    public void makeBytes(){
+	    this.bytes = new byte[] {
+	        (byte)((value >> 24) & 0xff),
+	        (byte)((value >> 16) & 0xff),
+	        (byte)((value >>  8) & 0xff),
+	        (byte)((value      ) & 0xff)
+	    };
+    }
+    
+    public FloatConstantValueTag(float value){
+        this.value = (int)value;
+        makeBytes(); 
     }
 
     public float getFloatValue() {

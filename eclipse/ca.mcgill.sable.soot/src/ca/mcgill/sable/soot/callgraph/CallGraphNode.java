@@ -57,7 +57,7 @@ public class CallGraphNode extends SimpleNode {
 	public void setData(Object obj){
 		if (obj instanceof SootMethod){
 			data = obj;
-			firePropertyChange(DATA, ((SootMethod)obj).getSignature());
+			firePropertyChange(DATA, obj);
 		}
 	}
 

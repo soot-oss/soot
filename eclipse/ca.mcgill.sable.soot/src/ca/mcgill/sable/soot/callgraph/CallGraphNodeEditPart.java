@@ -31,6 +31,9 @@ import org.eclipse.draw2d.geometry.*;
 import java.util.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
+import soot.*;
+import org.eclipse.jface.resource.*;
+import ca.mcgill.sable.soot.*;
 
 
 /**
@@ -87,18 +90,49 @@ public class CallGraphNodeEditPart extends SimpleNodeEditPart {
 	Image privateImage = null;
 	Image protectedImage = null;
 	
+	protected void loadImages(){
+		if (publicImage == null){
+			ImageDescriptor desc = SootPlugin.getImageDescriptor("public_co.gif");
+			publicImage = desc.createImage();
+		}
+		if (protectedImage == null){
+			ImageDescriptor desc = SootPlugin.getImageDescriptor("protected_co.gif");
+			protectedImage = desc.createImage();
+		}
+		if (privateImage == null){
+			ImageDescriptor desc = SootPlugin.getImageDescriptor("private_co.gif");
+			privateImage = desc.createImage();
+		}
+	}
 	
 	protected void refreshVisuals(){
+	
 		Label cLabel = (Label)getFigure().getChildren().get(0);
 		Label mLabel = (Label)getFigure().getChildren().get(1);
 		if (getData() != null){
-			String c = getData().substring(0, getData().indexOf(":")+1);
-			String m = getData().substring(getData().indexOf(":")+1);
+			System.out.println("data: "+getData()+" class; "+getData().getClass());
+			SootMethod currMeth = (SootMethod)getData();
+			String c = currMeth.getSignature().substring(0, currMeth.getSignature().indexOf(":")+1);
+			String m = currMeth.getSignature().substring(currMeth.getSignature().indexOf(":")+1);
 			cLabel.setText(c);
 			mLabel.setText(m);
 			int len = m.length() > c.length() ? m.length() : c.length();
-			getFigure().setSize(len*7-6, 32);
+			getFigure().setSize(len*7-6, 38);
+			//getFigure().revalidate();
+			loadImages();
+			Image image = null;
+			if (currMeth.isPublic()){
+				image = publicImage;
+			}
+			else if (currMeth.isProtected()){
+				image = protectedImage;
+			}
+			else {
+				image = privateImage;
+			}
+			((Label)getFigure().getChildren().get(0)).setIcon(image);
 			getFigure().revalidate();
+			
 		}
 		/*Iterator it = getFigure().getChildren().iterator();
 		while (it.hasNext()){

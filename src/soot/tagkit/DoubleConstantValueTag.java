@@ -31,6 +31,20 @@ public class DoubleConstantValueTag extends ConstantValueTag
 
     public DoubleConstantValueTag(long value) {
 	this.value = value;
+	/*this.bytes = new byte[] {
+	  (byte)((value >> 56) & 0xff),
+	  (byte)((value >> 48) & 0xff),
+	  (byte)((value >> 40) & 0xff),
+	  (byte)((value >> 32) & 0xff),
+	  (byte)((value >> 24) & 0xff),
+	  (byte)((value >> 16) & 0xff),
+	  (byte)((value >>  8) & 0xff),
+	  (byte)((value      ) & 0xff)
+	};*/
+    makeBytes();
+    }
+
+    public void makeBytes(){
 	this.bytes = new byte[] {
 	  (byte)((value >> 56) & 0xff),
 	  (byte)((value >> 48) & 0xff),
@@ -43,6 +57,11 @@ public class DoubleConstantValueTag extends ConstantValueTag
 	};
     }
 
+    public DoubleConstantValueTag(double value){
+        this.value = (long)value;
+        makeBytes();
+    }
+    
     public double getDoubleValue() {
 	return Double.longBitsToDouble(value);
     }

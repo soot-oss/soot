@@ -154,6 +154,7 @@ public class ClassResolver {
         Util.addLnPosTags(sootClass, cDecl.position());
     }
 
+    
     private void findReferences(polyglot.ast.Node node) {
         TypeListBuilder typeListBuilder = new TypeListBuilder();
         
@@ -792,6 +793,42 @@ public class ClassResolver {
     private void addProcedureToClass(soot.SootMethod method) {
         sootClass.addMethod(method);
     }
+    
+    private void addConstValTag(polyglot.ast.FieldDecl field, soot.SootField sootField){
+        G.v().out.println("adding constantval tag to field: "+field);
+        if (field.fieldInstance().constantValue() instanceof Integer){
+            sootField.addTag(new soot.tagkit.IntegerConstantValueTag(((Integer)field.fieldInstance().constantValue()).intValue()));
+        }
+        else if (field.fieldInstance().constantValue() instanceof Character){
+            sootField.addTag(new soot.tagkit.IntegerConstantValueTag(((Character)field.fieldInstance().constantValue()).charValue()));
+        }
+        else if (field.fieldInstance().constantValue() instanceof Short){
+            sootField.addTag(new soot.tagkit.IntegerConstantValueTag(((Short)field.fieldInstance().constantValue()).shortValue()));
+        }
+        else if (field.fieldInstance().constantValue() instanceof Byte){
+            sootField.addTag(new soot.tagkit.IntegerConstantValueTag(((Byte)field.fieldInstance().constantValue()).byteValue()));
+        }
+        else if (field.fieldInstance().constantValue() instanceof Boolean){
+            boolean b = ((Boolean)field.fieldInstance().constantValue()).booleanValue();
+            sootField.addTag(new soot.tagkit.IntegerConstantValueTag(b ? 1: 0));
+        }
+        else if (field.fieldInstance().constantValue() instanceof Long){
+            sootField.addTag(new soot.tagkit.LongConstantValueTag(((Long)field.fieldInstance().constantValue()).longValue()));
+        }
+        else if (field.fieldInstance().constantValue() instanceof Double){
+            sootField.addTag(new soot.tagkit.DoubleConstantValueTag(((Double)field.fieldInstance().constantValue()).doubleValue()));
+        }
+        else if (field.fieldInstance().constantValue() instanceof Float){
+            sootField.addTag(new soot.tagkit.FloatConstantValueTag(((Float)field.fieldInstance().constantValue()).floatValue()));
+        }
+        else if (field.fieldInstance().constantValue() instanceof String){
+            sootField.addTag(new soot.tagkit.StringConstantValueTag((String)field.fieldInstance().constantValue()));
+        }
+        else {
+            throw new RuntimeException("Expecting static final field to have a constant value! For field: "+field+" of type: "+field.fieldInstance().constantValue().getClass());
+        }
+    }
+    
     /**
      * Field Declaration Creation
      */
@@ -806,10 +843,15 @@ public class ClassResolver {
         
         if (field.fieldInstance().flags().isStatic()) {
             if (field.init() != null) {
-                if (staticFieldInits == null) {
-                    staticFieldInits = new ArrayList();
+                if (field.flags().isFinal() && (field.type().type().isPrimitive() || (field.type().type().toString().equals("java.lang.String"))) && field.fieldInstance().isConstant()){
+                    addConstValTag(field, sootField);
                 }
-                staticFieldInits.add(field);
+                else {
+                    if (staticFieldInits == null) {
+                        staticFieldInits = new ArrayList();
+                    }
+                    staticFieldInits.add(field);
+                }
             }
         }
         else {

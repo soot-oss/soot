@@ -24,12 +24,22 @@ import soot.*;
 public class MethInfo {
     private SootMethod method;
     private boolean canExpandCollapse;
-       
-    public MethInfo(SootMethod meth, boolean b){
+    private Kind edgeKind;
+    
+    public MethInfo(SootMethod meth, boolean b, Kind kind){
         method(meth);
         canExpandCollapse(b);
+        edgeKind(kind);
     }
         
+    public Kind edgeKind(){
+        return edgeKind;
+    }
+
+    public void edgeKind(Kind kind){
+        edgeKind = kind;
+    }
+    
     public boolean canExpandCollapse(){
         return canExpandCollapse;
     }
