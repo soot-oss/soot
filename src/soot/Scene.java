@@ -422,7 +422,7 @@ public class Scene  //extends AbstractHost
     }
 
     /**
-        Retrieves the active hierarchy for this method.
+        Retrieves the active hierarchy
      */
 
     public Hierarchy getActiveHierarchy() 
@@ -434,7 +434,7 @@ public class Scene  //extends AbstractHost
     }
     
     /**
-        Sets the active hierarchy for this method. 
+        Sets the active hierarchy
      */
      
     public void setActiveHierarchy(Hierarchy hierarchy)
