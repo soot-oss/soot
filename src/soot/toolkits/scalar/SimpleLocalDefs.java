@@ -119,6 +119,10 @@ public class SimpleLocalDefs implements LocalDefs
                                "]     SimpleLocalDefs finished.");
     }
 
+    public boolean hasDefsAt(Local l, Unit s)
+    {
+        return localUnitPairToDefs.containsKey( new LocalUnitPair(l,s) );
+    }
     public List getDefsOfAt(Local l, Unit s)
     {
         LocalUnitPair pair = new LocalUnitPair(l, s);
