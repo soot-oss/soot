@@ -62,7 +62,7 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
 
     public int getInMachineCount()
     {
-        return 1;
+        return JasminClass.sizeOfType(getOpType());
     }
     
     public int getOutCount()
