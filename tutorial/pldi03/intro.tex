@@ -91,7 +91,7 @@ Perform whole program analysis and produce optimized classes for \texttt{Foo.cla
 \begin{slide}{Command-line: a more complex example}
 
 \begin{small}
-\textbf{\texttt{\red java soot.Main -W -f jimple}}
+\textbf{\red\texttt{java soot.Main -W -f jimple}}
 
 \textbf{\texttt{     -p jb use-original-names:true }}
 
@@ -103,11 +103,13 @@ Perform whole program analysis and produce optimized classes for \texttt{Foo.cla
 
 \textbf{\texttt{     -p wjop on  -p wjop.smb on }}
 
-\textbf{\texttt{\red     Foo }}
+\textbf{\red\texttt{     Foo }}
 \end{small}
 
+\vspace{.2in}
+
 Starting at \texttt{Foo.class}, process all reachable classes in an
-interprocedural fashion and produce jimple as output for all application
+interprocedural fashion and produce Jimple as output for all application
 classes.   
 \end{slide}
 
@@ -117,7 +119,7 @@ classes.
 \begin{small}
 \textbf{\texttt{java soot.Main -W -f jimple}}
 
-\textbf{\texttt{\red      -p jb use-original-names:true }}
+\textbf{\red\texttt{     -p jb use-original-names:true }}
 
 \textbf{\texttt{     -p cg.spark on }}
 
@@ -130,10 +132,12 @@ classes.
 \textbf{\texttt{     Foo }}
 \end{small}
 
+\vspace{.2in}
 
 When producing
 the original Jimple from the class files, 
-keep the original variable names, if available in attributes.
+keep the original variable names, if available in the 
+attributes (i.e. class file produced with \texttt{javac -g}).
 
 \end{slide}
 
@@ -145,9 +149,9 @@ keep the original variable names, if available in attributes.
 
 \textbf{\texttt{     -p jb use-original-names:true }}
 
-\textbf{\texttt{\red      -p cg.spark on }}
+\textbf{\red\texttt{     -p cg.spark on }}
 
-\textbf{\texttt{\red      -p cg.spark simplify-offline:true}}
+\textbf{\red\texttt{     -p cg.spark simplify-offline:true}}
 
 \textbf{\texttt{     -p jop on -p jop.cse on   }}
 
@@ -156,8 +160,10 @@ keep the original variable names, if available in attributes.
 \textbf{\texttt{     Foo }}
 \end{small}
 
+\vspace{.2in}
+
 Use Spark for points-to analysis and
-call graph,  with Spark simplifying the problem by collapsing
+call graph,  with Spark simplifying the points-to problem by collapsing
 equivalent variables.  
 
 \end{slide}
@@ -174,12 +180,14 @@ equivalent variables.
 
 \textbf{\texttt{     -p cg.spark simplify-offline:true}}
 
-\textbf{\texttt{\red      -p jop on -p jop.cse on   }}
+\textbf{\red\texttt{     -p jop on -p jop.cse on   }}
 
-\textbf{\texttt{\red      -p wjop on  -p wjop.smb on }}
+\textbf{\red\texttt{     -p wjop on  -p wjop.smb on }}
 
 \textbf{\texttt{     Foo }}
 \end{small}
+
+\vspace{.2in}
 
 \begin{footnotesize}
 Turn on 
@@ -192,13 +200,15 @@ turn on \textit{static method binding} (smb) within that phase.
 
 \end{slide}
 
-\begin{slide}{Soot as an end-user tool:  Eclipse plugin}
+\begin{slide}{Soot as an end-user tool:  Eclipse Plugin}
 \begin{enumerate}
 \item Install Java
 \item Install Eclipse {\tt www.eclipse.org}
 \item Download one .jar file and unjar it into your Eclipse plugin directory 
 \item Start Eclipse 
 \end{enumerate}
+
+\vspace{-.1in}
 
 \begin{itemize}
 \item IDE-based optimization, decompilation and visualization
@@ -209,23 +219,18 @@ turn on \textit{static method binding} (smb) within that phase.
 
 \begin{slide}{Jimple and Soot Implementation Basics}
 \begin{itemize}
-\item Soot vocabulary
+\item
+Soot builds data structures to represent: 
 \begin{itemize}
-\item Map of Soot Classes
-\item Control-flow Units
-\item Jimple Stmts
-\item Getting data from Stmts
+\item a complete environment (\textbf\texttt{Scene}) 
+\item classes (\textbf\texttt{SootClass}) 
+\item Fields and Methods (\textbf\texttt{SootClass}, \textbf\texttt{SootField})
+\item bodies of Methods (come in different flavours, corresponding to 
+         different IR levels, ie. \textbf\texttt{JimpleBody})
 \end{itemize}
-\end{itemize}
-\end{slide}
-
-\begin{slide}{Jimple}
-Jimple is:
-\begin{itemize}
-\item principal Soot Intermediate Representation
-\item 3-address code in a \emph{control-flow graph}
-\item a \emph{typed} intermediate representation
-\item \emph{stackless}
+\item
+These data structures are implemented using OO techniques, and designed 
+to be easy to use and generic where possible.  
 \end{itemize}
 \end{slide}
 
@@ -275,6 +280,17 @@ We create an OO hierarchy of units, allowing generic programming using
 \qquad \qquad ({\tt z = x + y * 2 \% n;})
 \end{itemize}
 \end{slide}
+
+\begin{slide}{Jimple}
+Jimple is:
+\begin{itemize}
+\item principle Soot Intermediate Representation
+\item 3-address code in a \emph{control-flow graph}
+\item a \emph{typed} intermediate representation
+\item \emph{stackless}
+\end{itemize}
+\end{slide}
+
 
 \begin{slide}{Kinds of Jimple Stmts I}
 \vspace*{-0.1in}
