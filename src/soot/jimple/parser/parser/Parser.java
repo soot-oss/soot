@@ -190,7 +190,7 @@ public class Parser
             {
                 if(ign == null)
                 {
-                    ign = new TypedLinkedList(NodeCast.v());
+                    ign = new TypedLinkedList(NodeCast.instance);
                 }
 
                 ign.add(lexer.next());

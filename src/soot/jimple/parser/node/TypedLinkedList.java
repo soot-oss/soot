@@ -12,14 +12,14 @@ public class TypedLinkedList extends LinkedList
     {
         super();
 
-        cast = NoCast.v();
+        cast = NoCast.instance;
     }
 
     public TypedLinkedList(Collection c)
     {
         super(c);
 
-        cast = NoCast.v();
+        cast = NoCast.instance;
     }
 
     public TypedLinkedList(Cast cast)
