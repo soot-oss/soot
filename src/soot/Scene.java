@@ -826,6 +826,15 @@ public class Scene  //extends AbstractHost
                 returnType);
     }
 
+    /** Create an unresolved reference to a constructor. */
+    public SootMethodRef makeConstructorRef( 
+            SootClass declaringClass,
+            List/*Type*/ parameterTypes) {
+        return new AbstractSootMethodRef(declaringClass, SootMethod.constructorName, 
+                                         parameterTypes, VoidType.v());
+    }
+
+
     /** Create an unresolved reference to a field. */
     public SootFieldRef makeFieldRef( 
             SootClass declaringClass,
