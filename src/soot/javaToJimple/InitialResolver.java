@@ -703,7 +703,10 @@ public class InitialResolver {
         while (it.hasNext()){
             soot.SootMethod meth = (soot.SootMethod)it.next();
             if (meth.getName().equals("<init>")){
-                meth.getParameterTypes().add(Util.getSootType(li.type()));
+                List newParams = new ArrayList();
+                newParams.addAll(meth.getParameterTypes());
+                newParams.add(Util.getSootType(li.type()));
+                meth.setParameterTypes(newParams);
             }
         }
                 
@@ -838,7 +841,10 @@ public class InitialResolver {
         while (it.hasNext()){
             soot.SootMethod meth = (soot.SootMethod)it.next();
             if (meth.getName().equals("<init>")){
-                meth.getParameterTypes().add(0, sootType);
+                List newParams = new ArrayList();
+                newParams.add(sootType);
+                newParams.addAll(meth.getParameterTypes());
+                meth.setParameterTypes(newParams);
                 //System.out.println("meth in add qualifier: "+meth);
             }
         }
@@ -850,7 +856,10 @@ public class InitialResolver {
         while (it.hasNext()){
             soot.SootMethod meth = (soot.SootMethod)it.next();
             if (meth.getName().equals("<init>")){
-                meth.getParameterTypes().add(0, outerSootType);
+                List newParams = new ArrayList();
+                newParams.add(outerSootType);
+                newParams.addAll(meth.getParameterTypes());
+                meth.setParameterTypes(newParams);
                 //System.out.println("meth in add outer ref: "+meth);
                 if (hasOuterRefInInit == null){
                     hasOuterRefInInit = new ArrayList();
