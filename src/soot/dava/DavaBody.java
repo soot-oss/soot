@@ -571,10 +571,11 @@ public class DavaBody extends Body
     {
 	Ref r = (Ref) vb.getValue();
 
-	if (r instanceof StaticFieldRef)
-	    vb.setValue( new DStaticFieldRef( ((StaticFieldRef) r).getField(), getMethod().getDeclaringClass().getName()));
-
-	else if (r instanceof ArrayRef) {
+	if (r instanceof StaticFieldRef) {
+            SootField field = ((StaticFieldRef) r).getField();
+            addPackage(field.getDeclaringClass().getJavaPackageName());
+	    vb.setValue( new DStaticFieldRef( field, getMethod().getDeclaringClass().getName()));
+        } else if (r instanceof ArrayRef) {
 	    ArrayRef ar = (ArrayRef) r;
 
 	    javafy( ar.getBaseBox());
@@ -752,8 +753,11 @@ public class DavaBody extends Body
 		vb.setValue( new DNewInvokeExpr( (RefType) nie.getType(), nie.getMethod(), nie.getArgs()));
 	    }
 	    
-	    else
-		vb.setValue( new DStaticInvokeExpr( sie.getMethod(), sie.getArgs()));
+	    else {
+                SootMethod method = sie.getMethod();
+                addPackage(method.getDeclaringClass().getJavaPackageName());
+		vb.setValue( new DStaticInvokeExpr( method, sie.getArgs()));
+            }
 	}
 
 	else 
