@@ -316,6 +316,12 @@ public class Scene  //extends AbstractHost
         throw new RuntimeException("tried to get nonexistent field!");
     }
 
+	public SootMethod forceGetMethod(String methodSignature) {
+		SootMethod m = 
+			(SootMethod)methodSignatureToMethod.get(methodSignature);
+		return m;
+	}
+	
     public SootMethod getMethod(String methodSignature)
     {
         SootMethod m = (SootMethod) methodSignatureToMethod.get(methodSignature);

@@ -297,6 +297,21 @@ public class InvokeGraph
         return new MethodCallGraph(this, methodSet);
     }
 
+
+  /* used for point to analysis */
+  HashSet reachableMethods;
+  
+  public HashSet getReachableMethods() {
+    return reachableMethods;
+  }
+  
+  public void setReachableMethods(HashSet methods) {
+    reachableMethods = methods;
+  }
+
+  public int numOfMethods() {
+    return reachableMethods.size();
+  }
 }
 
 class CallGraphStats 

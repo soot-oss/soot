@@ -41,6 +41,8 @@ import soot.jimple.toolkits.annotation.arraycheck.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.profiling.*;
 import soot.jimple.toolkits.annotation.tags.*;
+import soot.jimple.toolkits.invoke.*;
+
 import soot.tagkit.*;
 import soot.dava.toolkits.base.misc.*;
 
@@ -438,6 +440,9 @@ public class Main implements Runnable
     /* for POINTs-TO analysis */
     public static void setLazyInvocation(boolean val) {
 	isLazyInvocation = val;
+	if (val) {
+	  targetExtension = NO_OUTPUT;
+	}
     }
 
     public static void setJavaStyle( boolean val)
@@ -665,7 +670,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.43)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.44)");
 	System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -1537,307 +1542,360 @@ public class Main implements Runnable
 	rn.add("to");
     }
 
-    /** 
-     *  Entry point to the soot's compilation process. Be sure to call
-     *  setCmdLineArgs before invoking this method.
-     *
-     *  @see #setCmdLineArgs
-     */
-    public void run()
-    {   
+  /** 
+   *  Entry point to the soot's compilation process. Be sure to call
+   *  setCmdLineArgs before invoking this method.
+   *
+   *  @see #setCmdLineArgs
+   */
+  public void run() {   
+    start = new Date();
 
-        start = new Date();
+    try {
+      totalTimer.start();
 
-        try {
+      cmdLineClasses = new HashChain();
 
-	    totalTimer.start();
-	    cmdLineClasses = new HashChain();
-	    initApp();
-	    processCmdLine(cmdLineArgs);
-	    System.out.println("Soot started on "+start);
+      initApp();
 
-	    // Load necessary classes.
-	    {            
-		Iterator it = cmdLineClasses.iterator();
+      processCmdLine(cmdLineArgs);
+
+      System.out.println("Soot started on "+start);
+      
+      loadNecessaryClasses();
+
+      prepareClasses();
+
+      /* process all reachable methods and generate jimple body */
+      if (isLazyInvocation) {
+	lazyPreprocessClasses();
+      }
+
+      processTagFiles();
+
+      // Run the whole-program packs.
+      Scene.v().getPack("wjtp").apply();
+      if(isOptimizingWhole)
+	Scene.v().getPack("wjop").apply();
+				
+      // Give one more chance
+      Scene.v().getPack("wjtp2").apply();
+				
+      // System.gc();
+
+      preProcessDAVA();
+
+      if (isLazyInvocation) {
+	lazyProcessClasses(); 
+      } else {
+	processClasses();
+      }
+
+      postProcessDAVA();
+	    
+      totalTimer.end();            
+				
+      // Print out time stats.				
+      if(isProfilingOptimization)
+	printProfilingInformation();
         
-		while(it.hasNext())
-		    {
-			String name = (String) it.next();
-			SootClass c;
-                            
-			c = Scene.v().loadClassAndSupport(name);
-                
-			if(mainClass == null)
-			    {
-				mainClass = c;
-				Scene.v().setMainClass(c);
-			    }   
-			c.setApplicationClass();
-		    }
-        
-		// Dynamic packages
-		it = dynamicPackages.iterator();
-		while(it.hasNext())
-		    markPackageAsDynamic((String)it.next());
-   
-		// Dynamic & process classes
-		it = dynamicClasses.iterator();
-                
-		while(it.hasNext())
-		    Scene.v().loadClassAndSupport((String) it.next());
-		it = processClasses.iterator();
-            
-		while(it.hasNext())
-		    {
-			String s = (String)it.next();
-			Scene.v().loadClassAndSupport(s);
-			Scene.v().getSootClass(s).setApplicationClass();
-		    }
-	    }
-
-	    // Generate classes to process
-	    { 
-		if(isApplication)
-		    {
-			Iterator contextClassesIt = Scene.v().getContextClasses().snapshotIterator();
-			while (contextClassesIt.hasNext())
-			    ((SootClass)contextClassesIt.next()).setApplicationClass();
-		    }   
-                         
-		// Remove/add all classes from packageInclusionMask as per piFlag
-		{
-		    List applicationPlusContextClasses = new ArrayList();
-		    applicationPlusContextClasses.addAll(Scene.v().getApplicationClasses());
-		    applicationPlusContextClasses.addAll(Scene.v().getContextClasses());
-
-		    Iterator classIt = applicationPlusContextClasses.iterator();
-                
-		    while(classIt.hasNext())
-			{
-			    SootClass s = (SootClass) classIt.next();
-                    
-			    if(cmdLineClasses.contains(s.getName()))
-				continue;
-                        
-			    Iterator packageCmdIt = packageInclusionFlags.iterator();
-			    Iterator packageMaskIt = packageInclusionMasks.iterator();
-                    
-			    while(packageCmdIt.hasNext())
-				{
-				    boolean pkgFlag = ((Boolean) packageCmdIt.next()).booleanValue();
-				    String pkgMask = (String) packageMaskIt.next();
-                        
-				    if (pkgFlag)
-					{
-					    if (s.isContextClass() && s.getPackageName().startsWith(pkgMask))
-						s.setApplicationClass();
-					}
-				    else
-					{
-					    if (s.isApplicationClass() && s.getPackageName().startsWith(pkgMask))
-						s.setContextClass();
-					}
-				}
-			}
-		}
-
-		if (isAnalyzingLibraries)
-		    {
-			Iterator contextClassesIt = Scene.v().getContextClasses().snapshotIterator();
-			while (contextClassesIt.hasNext())
-			    ((SootClass)contextClassesIt.next()).setLibraryClass();
-		    }
-	    }
-
-
-
-				// read in the tag files
-	    Iterator it = sTagFileList.iterator();
-	    while(it.hasNext()) { 
-		try {
-		    File f = new File((String)it.next());
-		    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-								
-		    for(String line = reader.readLine(); line  !=  null;  line = reader.readLine()) {
-			if(line.startsWith("<") ) {
-			    String signature = line.substring(0,line.indexOf('+'));
-			    int offset = Integer.parseInt(line.substring(line.indexOf('+') + 1, line.indexOf('/')));
-												
-			    String name = line.substring(line.indexOf('/')+1, line.lastIndexOf(':'));
-			    String value = line.substring(line.lastIndexOf(':')+1);
-												
-			    //System.out.println(signature + "+" + offset + "/" + name + ":" + value);		       
-			    SootMethod m = Scene.v().getMethod(signature);
-												
-			    JimpleBody body = (JimpleBody) m.retrieveActiveBody();
-			    List unitList = new ArrayList(body.getUnits());
-			    Unit u = (Unit) unitList.get(offset);
-												
-												
-			    if(Long.valueOf(value) == null)
-				System.out.println(value);
-												
-												
-			}
-		    }				
-		} catch (IOException e) {
-								
-		}
-	    }
+    } catch (CompilationDeathException e) {
+      totalTimer.end();            
+      exitCompilation(e.getStatus(), e.getMessage());
+      return;
+    }   
 				
-				
-
-				// Run the whole-program packs.
-	    Scene.v().getPack("wjtp").apply();
-	    if(isOptimizingWhole)
-		Scene.v().getPack("wjop").apply();
-				
-				// Give one more chance
-	    Scene.v().getPack("wjtp2").apply();
-				
-				// System.gc();
-
-	    if ((targetExtension == DAVA) || (finalRep == DAVA)) {
-
-		ThrowFinder.v().find();
-		PackageNamer.v().fixNames();
-
-		System.out.println();
-	    }
-
-	    // Handle each class individually
-	    {
-		Iterator classIt = Scene.v().getApplicationClasses().iterator();
-						
-		while(classIt.hasNext())
-		    {
-			SootClass s = (SootClass) classIt.next();
-				
-			if ((targetExtension == DAVA) || (finalRep == DAVA))
-			    System.out.print( "Decompiling ");
-			else
-			    System.out.print( "Transforming ");
-			System.out.print( s.getName() + "... " );
-			System.out.flush();
-							
-			if(!isInDebugMode)
-			    {
-				try 
-				    {
-					handleClass(s);
-				    }
-				catch(RuntimeException e)
-				    {
-					e.printStackTrace();
-				    }
-			    }
-			else {
-			    handleClass(s);
-			}
-										
-			System.out.println();
-		    }
-	    }
-
-	    if ((targetExtension == DAVA) || (finalRep == DAVA)) {
-
-		// ThrowFinder.v().find();
-		// PackageNamer.v().fixNames();
-
-		System.out.println();
-
-		setJavaStyle( true);
-
-		Iterator classIt = Scene.v().getApplicationClasses().iterator();
-		while (classIt.hasNext()) {
-		    SootClass s = (SootClass) classIt.next();
-
-		    FileOutputStream streamOut = null;
-		    PrintWriter writerOut = null;
-		    String fileName = getFileNameFor( s, targetExtension);
-		    
-		    {
-			try {
-			    streamOut = new FileOutputStream(fileName);
-			    writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-			}
-			catch (IOException e)
-			    {
-				System.out.println("Cannot output file " + fileName);
-			    }
-		    }
-
-
-
-		    System.out.print( "Generating " + fileName + "... ");
-		    System.out.flush();
-
-		    if (!isInDebugMode) {
-			try {
-			   s.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
-			}
-			catch (RuntimeException e) {
-			    e.printStackTrace();
-			}
-		    }
-		    else {
-			s.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
-		    }
-
-		    System.out.println();
-		    System.out.flush();
-
-		    {
-			try {
-			    writerOut.flush();
-			    streamOut.close();
-			}
-			catch(IOException e)
-			    {
-				System.out.println("Cannot close output file " + fileName);
-			    }
-		    }
-
-		    {
-			Iterator methodIt = s.getMethods().iterator();
-			
-			while(methodIt.hasNext())
-			    {   
-				SootMethod m = (SootMethod) methodIt.next();
-				
-				if(m.hasActiveBody())
-				    m.releaseActiveBody();
-			    }
-		    }
-		    
-
-		}
-		System.out.println();
-
-		setJavaStyle( false);
-	    }
-
-				
-	    totalTimer.end();            
-				
-				// Print out time stats.
-				
-	    if(isProfilingOptimization)
-		printProfilingInformation();
-        
-	} catch (CompilationDeathException e) {
-            totalTimer.end();            
-            exitCompilation(e.getStatus(), e.getMessage());
-            return;
-        }   
-				
-        finish = new Date();
-        System.out.println("Soot finished on "+finish);
-        long runtime = finish.getTime() - start.getTime();
-        System.out.println("Soot has run for "+(runtime/60000)+" min. "+((runtime%60000)/1000)+" sec.");
+    finish = new Date();
+    
+    System.out.println("Soot finished on "+finish);
+    long runtime = finish.getTime() - start.getTime();
+    System.out.println("Soot has run for "
+		       +(runtime/60000)+" min. "
+		       +((runtime%60000)/1000)+" sec.");
      
-        exitCompilation(COMPILATION_SUCCEDED);            
-    }        
+    exitCompilation(COMPILATION_SUCCEDED);            
+  }        
+
+  /* preprocess classes for DAVA */
+  private static void preProcessDAVA() {
+    if ((targetExtension == DAVA) || (finalRep == DAVA)) {
+      ThrowFinder.v().find();
+      PackageNamer.v().fixNames();
+
+      System.out.println();
+    }
+  }
+
+  /* lazily preprocess classes, based on invoke graph generated by CHA */
+  private static void lazyPreprocessClasses() {
+     
+    Date start = new Date();
+
+//    if (Main.isVerbose) 
+	{
+      System.out.println("[] Start building the invoke graph ... ");
+    }
+
+    InvokeGraph invokeGraph = 
+      ClassHierarchyAnalysis.newPreciseInvokeGraph(true);
+    Scene.v().setActiveInvokeGraph(invokeGraph);
+
+    Date finish = new Date();
+
+//    if (Main.isVerbose) 
+	{
+      System.out.println("[] Finished building the invoke graph ...");
+      long runtime = finish.getTime() - start.getTime();
+      System.out.println("[] Building invoke graph takes "
+			 +(runtime/60000)+" min. "
+			 +((runtime%60000)/1000)+" sec.");
+    }	
+  }
+
+  /* lazily process classes */
+  private static void lazyProcessClasses() {
+    Iterator classIt = Scene.v().getApplicationClasses().iterator();
+
+    while (classIt.hasNext()) {
+      SootClass s = (SootClass)classIt.next();
+      System.out.println(" Transforming " + s.getName() + "...");
+
+      if (!isInDebugMode) {
+	try {
+	  lazyHandleClass(s);
+	} catch (RuntimeException e) {
+	  e.printStackTrace();
+	}
+      } else {
+	lazyHandleClass(s);
+      }
+    }
+  }
+
+  /* process classes */
+  private static void processClasses() {
+    Iterator classIt = Scene.v().getApplicationClasses().iterator();
+    
+    // process each class 
+    while(classIt.hasNext()) {
+      SootClass s = (SootClass) classIt.next();
+				
+      if ((targetExtension == DAVA) || (finalRep == DAVA))
+	System.out.print( "Decompiling ");
+      else
+	System.out.print( "Transforming ");
+      System.out.print( s.getName() + "... " );
+      System.out.flush();
+							
+      if(!isInDebugMode) {
+	try {
+	  handleClass(s);
+	} catch(RuntimeException e) {
+	  e.printStackTrace();
+	}
+      } else {
+	handleClass(s);
+      }									
+      System.out.println();
+    }
+  }
+
+  /* post process for DAVA */
+  private static void postProcessDAVA() {
+    if ((targetExtension == DAVA) || (finalRep == DAVA)) {
+
+      // ThrowFinder.v().find();
+      // PackageNamer.v().fixNames();
+
+      System.out.println();
+
+      setJavaStyle( true);
+
+      Iterator classIt = Scene.v().getApplicationClasses().iterator();
+      while (classIt.hasNext()) {
+	SootClass s = (SootClass) classIt.next();
+	
+	FileOutputStream streamOut = null;
+	PrintWriter writerOut = null;
+	String fileName = getFileNameFor( s, targetExtension);
+		    
+	try {
+	  streamOut = new FileOutputStream(fileName);
+	  writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+	} catch (IOException e) {
+	  System.out.println("Cannot output file " + fileName);
+	}
+
+	System.out.print( "Generating " + fileName + "... ");
+	System.out.flush();
+
+	if (!isInDebugMode) {
+	  try {
+	    s.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+	  } catch (RuntimeException e) {
+	    e.printStackTrace();
+	  }
+	} else {
+	  s.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+	}
+
+	System.out.println();
+	System.out.flush();
+
+	{
+	  try {
+	    writerOut.flush();
+	    streamOut.close();
+	  } catch(IOException e) {
+	    System.out.println("Cannot close output file " + fileName);
+	  }
+	}
+
+	{
+	  Iterator methodIt = s.getMethods().iterator();
+	  
+	  while(methodIt.hasNext()) {   
+	    SootMethod m = (SootMethod) methodIt.next();
+				
+	    if(m.hasActiveBody())
+	      m.releaseActiveBody();
+	  }
+	}
+      }
+      System.out.println();
+
+      setJavaStyle( false);
+    }
+  }
+    /* load necessary classes
+     */
+    private static void loadNecessaryClasses() {
+	Iterator it = cmdLineClasses.iterator();
+        
+	while(it.hasNext()) {
+	    String name = (String) it.next();
+	    SootClass c;
+                            
+	    c = Scene.v().loadClassAndSupport(name);
+                
+	    if(mainClass == null) {
+		mainClass = c;
+		Scene.v().setMainClass(c);
+	    }   
+	    c.setApplicationClass();
+	}
+        
+	// Dynamic packages
+	it = dynamicPackages.iterator();
+	while(it.hasNext())
+	    markPackageAsDynamic((String)it.next());
+   
+	// Dynamic & process classes
+	it = dynamicClasses.iterator();
+                
+	while(it.hasNext())
+	    Scene.v().loadClassAndSupport((String) it.next());
+
+	it = processClasses.iterator();
+            
+	while(it.hasNext()) {
+	    String s = (String)it.next();
+	    Scene.v().loadClassAndSupport(s);
+	    Scene.v().getSootClass(s).setApplicationClass();
+	}
+    }
+
+  /* Generate classes to process, adding or removing package marked by
+   * command line options.
+   */
+  private static void prepareClasses() {
+      
+    if(isApplication) {
+      Iterator contextClassesIt = 
+	Scene.v().getContextClasses().snapshotIterator();
+      while (contextClassesIt.hasNext())
+	((SootClass)contextClassesIt.next()).setApplicationClass();
+    }   
+                         
+    // Remove/add all classes from packageInclusionMask as per piFlag
+    List applicationPlusContextClasses = new ArrayList();
+
+    applicationPlusContextClasses.addAll(Scene.v().getApplicationClasses());
+    applicationPlusContextClasses.addAll(Scene.v().getContextClasses());
+
+    Iterator classIt = applicationPlusContextClasses.iterator();
+                
+    while(classIt.hasNext()) {
+      SootClass s = (SootClass) classIt.next();
+                    
+      if(cmdLineClasses.contains(s.getName()))
+	continue;
+	    
+      Iterator packageCmdIt = packageInclusionFlags.iterator();
+      Iterator packageMaskIt = packageInclusionMasks.iterator();
+                    
+      while(packageCmdIt.hasNext()) {
+	boolean pkgFlag = 
+	  ((Boolean) packageCmdIt.next()).booleanValue();
+	String pkgMask = (String) packageMaskIt.next();
+                        
+	if (pkgFlag) {
+	  if (s.isContextClass() 
+	      && s.getPackageName().startsWith(pkgMask))
+	    s.setApplicationClass();
+	} else {
+	  if (s.isApplicationClass() 
+	      && s.getPackageName().startsWith(pkgMask))
+	    s.setContextClass();
+	}
+      }
+    }
+
+    if (isAnalyzingLibraries) {
+      Iterator contextClassesIt = 
+	Scene.v().getContextClasses().snapshotIterator();
+      while (contextClassesIt.hasNext())
+	((SootClass)contextClassesIt.next()).setLibraryClass();
+    }
+  }
+
+  /* read in the tag files
+   * Who created this? It calls retrieve jimple body
+   */
+    private static void processTagFiles() {
+      Iterator it = sTagFileList.iterator();
+      while(it.hasNext()) { 
+	try {
+	  File f = new File((String)it.next());
+	  BufferedReader reader = 
+	    new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+								
+	  for(String line = reader.readLine(); 
+	      line  !=  null;  
+	      line = reader.readLine()) {
+	    if(line.startsWith("<") ) {
+	      String signature = line.substring(0,line.indexOf('+'));
+	      int offset = Integer.parseInt(line.substring(line.indexOf('+') 
+					   + 1, line.indexOf('/')));
+	      String name = line.substring(line.indexOf('/')+1, 
+					   line.lastIndexOf(':'));
+	      String value = line.substring(line.lastIndexOf(':')+1);
+
+	      SootMethod m = Scene.v().getMethod(signature);
+	      JimpleBody body = (JimpleBody) m.retrieveActiveBody();
+	      
+	      List unitList = new ArrayList(body.getUnits());
+	      Unit u = (Unit) unitList.get(offset);
+	      
+	      if(Long.valueOf(value) == null)
+		System.out.println(value);
+	    }
+	  }				
+	} catch (IOException e) {
+	  
+	}
+      }
+    }
 
     private static void printProfilingInformation()
     {                                                   
@@ -1933,222 +1991,229 @@ public class Main implements Runnable
         return paddedLeftOf(new Double(truncatedOf(value, 2)).toString(), 5);
     }
 
-    /** Attach JimpleBodies to the methods of c. */
-    private static void attachJimpleBodiesFor(SootClass c)
-    {
-        Iterator methodIt = c.getMethods().iterator();
+  /** Attach JimpleBodies to the methods of c. */
+  private static void attachJimpleBodiesFor(SootClass c) {
+    Iterator methodIt = c.getMethods().iterator();
            
-        while(methodIt.hasNext())
-	    {   
-		SootMethod m = (SootMethod) methodIt.next();
+    while(methodIt.hasNext()) {   
+      SootMethod m = (SootMethod) methodIt.next();
         
-		if(!m.isConcrete())
-		    continue;
+      if(!m.isConcrete())
+	continue;
                                 
-		if(!m.hasActiveBody()) 
-		    {
-			m.setActiveBody(m.getBodyFromMethodSource("jb"));
+      if(!m.hasActiveBody()) {
+	m.setActiveBody(m.getBodyFromMethodSource("jb"));
 
-			Scene.v().getPack("jtp").apply(m.getActiveBody());
-			if(isOptimizing) 
-			    Scene.v().getPack("jop").apply(m.getActiveBody());
-		    }            
-	    }
+	Scene.v().getPack("jtp").apply(m.getActiveBody());
+	if(isOptimizing) 
+	  Scene.v().getPack("jop").apply(m.getActiveBody());
+      }            
     }
+  }
 
-    /* lazyHandleClass only processes methods reachable from the entry points
-     * by the call graph, it does not have any output.
-     */
-    private static void lazyHandleClass(SootClass c) {
-	
-
-    }
-
-    private static void handleClass(SootClass c)
-    {
-        FileOutputStream streamOut = null;
-        PrintWriter writerOut = null;
-        
-        boolean 
-	    produceBaf   = false,
-	    produceGrimp = false,
-	    produceDava  = false;
-
-	switch( targetExtension) {	
-	case NO_OUTPUT:
-	    break;
-	case JIMPLE:
-	case NJIMPLE:
-	case JIMP:                   
-	    break;
-	case DAVA:
-	    produceDava = true;
-	case GRIMP:
-	case GRIMPLE:
-	    produceGrimp = true;
-	    break;
-	case BAF:
-	case B:
-	    produceBaf = true;
-	    break;
-	default:
-	    switch( finalRep) {
-	    case DAVA:
-		produceDava = true;
-	    case GRIMP:
-	    case GRIMPLE:
-		produceGrimp = true;
-		break;
-	    case BAF:
-		produceBaf = true;
-	    default:
-	    }
-	}
-
-       
-        String fileName = getFileNameFor( c, targetExtension);
-	
-	// add an option for no output
-        if ((targetExtension != NO_OUTPUT) && (targetExtension != CLASS)) {
-	    try {
-		streamOut = new FileOutputStream(fileName);
-		writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-	    } catch (IOException e) {
-		    System.out.println("Cannot output file " + fileName);
-	    }
-	}
-
-
-	HashChain newMethods = new HashChain();
-	
-        // Build all necessary bodies
-        {
-            Iterator methodIt = c.getMethods().iterator();
-           
-            while(methodIt.hasNext())
-		{   
-		    SootMethod m = (SootMethod) methodIt.next();
-        
-		    if(!m.isConcrete())
-			continue;
-                                
-		    // Build Jimple body and transform it.
-		    {
-			boolean wasOptimizing = isOptimizing;
-			if (produceDava)
-			    isOptimizing = true;
-
-			JimpleBody body = (JimpleBody) m.retrieveActiveBody();
-		    
-			Scene.v().getPack("jtp").apply(body);
-                    
-			if(isOptimizing) 
-			    Scene.v().getPack("jop").apply(body);
-
-			isOptimizing = wasOptimizing;
-		    }
-                
-		    if(produceGrimp)
-			{
-			    boolean wasOptimizing = isOptimizing;
-			    if (produceDava)
-				isOptimizing = true;
-
-			    if(isOptimizing)
-				m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb", "aggregate-all-locals"));
-			    else
-				m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
-                        
-			    if(isOptimizing)
-				Scene.v().getPack("gop").apply(m.getActiveBody());
-
-			    isOptimizing = wasOptimizing;
-			}
-		    else if(produceBaf)
-			{   
-			    m.setActiveBody(Baf.v().newBody((JimpleBody) m.getActiveBody()));
-
-			    if(isOptimizing) 
-				Scene.v().getPack("bop").apply(m.getActiveBody());
-			} 
-		}
-
-	    if (produceDava) {
-		methodIt = c.getMethods().iterator();
-		
-		while (methodIt.hasNext()) {
-		    SootMethod m = (SootMethod) methodIt.next();
-		    
-		    if (!m.isConcrete())
-			continue;
-
-		    m.setActiveBody( Dava.v().newBody( m.getActiveBody(), "db"));
-		}
-	    }
-        }
-
-	switch(targetExtension) {
-	    // add an option for no output
-	case NO_OUTPUT:
-	    break;
-        case JASMIN:
-            if(c.containsBafBody())
-                new soot.baf.JasminClass(c).print(writerOut);            
-            else
-                new soot.jimple.JasminClass(c).print(writerOut);
-            break;
-        case JIMP:            
-            c.printTo(writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
-            break;
-        case NJIMPLE:
-            c.printTo(writerOut, PrintJimpleBodyOption.NUMBERED);
-            break;
-        case B:
-            c.printTo(writerOut, soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
-            break;
-        case BAF:
-        case JIMPLE:
-        case GRIMPLE:
-            writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
-            c.printJimpleStyleTo(writerOut, 0);
-            break;
-        case DAVA:
-	    break;
-        case GRIMP:
-            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
-            break;
-        case CLASS:
-            c.write(outputDir);
-            break;
-        default:
-            throw new RuntimeException();
-        }
+  /* lazyHandleClass only processes methods reachable from the entry points
+   * by the call graph, it does not have any output.
+   */
+  private static void lazyHandleClass(SootClass c) {
+    Iterator methodIt = c.getMethods().iterator();
     
-	if ((targetExtension != NO_OUTPUT) && (targetExtension != CLASS))
-	    {
-		try {
-		    writerOut.flush();
-		    streamOut.close();
-		}
-		catch(IOException e)
-		    {
-			System.out.println("Cannot close output file " + fileName);
-		    }
-	    }
+    while(methodIt.hasNext()) {   
+      SootMethod m = (SootMethod) methodIt.next();
+        
+      if(!m.isConcrete())
+	continue;
 
-        // Release bodies
-        if (!produceDava) {
-            Iterator methodIt = c.getMethods().iterator();
-                
-            while(methodIt.hasNext())
-		{   
-		    SootMethod m = (SootMethod) methodIt.next();
-                
-		    if(m.hasActiveBody())
-			m.releaseActiveBody();
-		}
-        }
+      if (m.hasActiveBody()) {
+	JimpleBody body = (JimpleBody) m.getActiveBody();
+		    
+	Scene.v().getPack("jtp").apply(body);
+                    
+	if(isOptimizing) 
+	  Scene.v().getPack("jop").apply(body);
+
+	m.releaseActiveBody();
+      }
     }
+  }
+
+  /* normal approach to handle each class by analyzing every method.
+   */
+  private static void handleClass(SootClass c)
+  {
+    FileOutputStream streamOut = null;
+    PrintWriter writerOut = null;
+        
+    boolean 
+      produceBaf   = false,
+      produceGrimp = false,
+      produceDava  = false;
+
+    switch( targetExtension) {	
+    case NO_OUTPUT:
+      break;
+    case JIMPLE:
+    case NJIMPLE:
+    case JIMP:                   
+      break;
+    case DAVA:
+      produceDava = true;
+    case GRIMP:
+    case GRIMPLE:
+      produceGrimp = true;
+      break;
+    case BAF:
+    case B:
+      produceBaf = true;
+      break;
+    default:
+      switch( finalRep) {
+      case DAVA:
+	produceDava = true;
+      case GRIMP:
+      case GRIMPLE:
+	produceGrimp = true;
+	break;
+      case BAF:
+	produceBaf = true;
+      default:
+      }
+    }
+   
+    String fileName = getFileNameFor( c, targetExtension);
+	
+    // add an option for no output
+    if ((targetExtension != NO_OUTPUT) && (targetExtension != CLASS)) {
+      try {
+	streamOut = new FileOutputStream(fileName);
+	writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+      } catch (IOException e) {
+	System.out.println("Cannot output file " + fileName);
+      }
+    }
+
+    HashChain newMethods = new HashChain();
+	
+    // Build all necessary bodies
+    {
+      Iterator methodIt = c.getMethods().iterator();
+      
+      while(methodIt.hasNext()) {   
+	SootMethod m = (SootMethod) methodIt.next();
+        
+	if(!m.isConcrete())
+	  continue;
+                                
+	// Build Jimple body and transform it.
+	{
+	  boolean wasOptimizing = isOptimizing;
+	  if (produceDava)
+	    isOptimizing = true;
+
+	  JimpleBody body = (JimpleBody) m.retrieveActiveBody();
+		    
+	  Scene.v().getPack("jtp").apply(body);
+                    
+	  if(isOptimizing) 
+	    Scene.v().getPack("jop").apply(body);
+
+	  isOptimizing = wasOptimizing;
+	}
+                
+	if(produceGrimp) {
+	  boolean wasOptimizing = isOptimizing;
+	  if (produceDava)
+	    isOptimizing = true;
+
+	  if(isOptimizing)
+	    m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb", "aggregate-all-locals"));
+	  else
+	    m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
+                        
+	  if(isOptimizing)
+	    Scene.v().getPack("gop").apply(m.getActiveBody());
+
+	  isOptimizing = wasOptimizing;
+	} else if(produceBaf) {   
+	  m.setActiveBody(Baf.v().newBody((JimpleBody) m.getActiveBody()));
+
+	  if(isOptimizing) 
+	    Scene.v().getPack("bop").apply(m.getActiveBody());
+	} 
+      }
+
+      if (produceDava) {
+	methodIt = c.getMethods().iterator();
+		
+	while (methodIt.hasNext()) {
+	  SootMethod m = (SootMethod) methodIt.next();
+		    
+	  if (!m.isConcrete())
+	    continue;
+
+	  m.setActiveBody( Dava.v().newBody( m.getActiveBody(), "db"));
+	}
+      }
+    }
+
+    switch(targetExtension) {
+      // add an option for no output
+    case NO_OUTPUT:
+      break;
+    case JASMIN:
+      if(c.containsBafBody())
+	new soot.baf.JasminClass(c).print(writerOut);            
+      else
+	new soot.jimple.JasminClass(c).print(writerOut);
+      break;
+    case JIMP:            
+      c.printTo(writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
+      break;
+    case NJIMPLE:
+      c.printTo(writerOut, PrintJimpleBodyOption.NUMBERED);
+      break;
+    case B:
+      c.printTo(writerOut, soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
+      break;
+    case BAF:
+    case JIMPLE:
+    case GRIMPLE:
+      writerOut = 
+	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
+      c.printJimpleStyleTo(writerOut, 0);
+      break;
+    case DAVA:
+      break;
+    case GRIMP:
+      c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+      break;
+    case CLASS:
+      c.write(outputDir);
+      break;
+    default:
+      throw new RuntimeException();
+    }
+    
+    if ((targetExtension != NO_OUTPUT) && (targetExtension != CLASS)) {
+      try {
+	writerOut.flush();
+	streamOut.close();
+      }	catch(IOException e) {
+	System.out.println("Cannot close output file " + fileName);
+      }
+    }
+
+    // Release bodies
+    if (!produceDava) {
+      Iterator methodIt = c.getMethods().iterator();
+                
+      while(methodIt.hasNext()) {   
+	SootMethod m = (SootMethod) methodIt.next();
+                
+	if(m.hasActiveBody())
+	  m.releaseActiveBody();
+      }
+    }
+  }
     
     public static double truncatedOf(double d, int numDigits)
     {

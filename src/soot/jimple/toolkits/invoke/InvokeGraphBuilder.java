@@ -38,17 +38,18 @@ public class InvokeGraphBuilder extends SceneTransformer
 
     public static InvokeGraphBuilder v() { return instance; }
 
-    protected void internalTransform(String phaseName, Map options)
-    {
-	if (Main.isVerbose)
-	    System.out.println("[] Start building the invoke graph...");
+  protected void internalTransform(String phaseName, Map options) {
+    if (!Scene.v().hasActiveInvokeGraph()) {
+      if (Main.isVerbose)
+	System.out.println("[] Start building the invoke graph...");
 
-        InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph();
-        Scene.v().setActiveInvokeGraph(invokeGraph);
-
-	if (Main.isVerbose)
-	    System.out.println("[] Finished building the invoke graph");
+      InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph();
+      Scene.v().setActiveInvokeGraph(invokeGraph);
+	
+      if (Main.isVerbose)
+	System.out.println("[] Finished building the invoke graph");
     }
+  }
 }
 
 
