@@ -129,7 +129,7 @@ public class Main {
 
     private void exitCompilation(int status, String msg) {
         if(status == CompilationDeathException.COMPILATION_ABORTED) {
-                System.out.println("compilation failed: "+msg);
+                G.v().out.println("compilation failed: "+msg);
         }
     }
 

@@ -15,43 +15,38 @@ public class CallGraphTagger extends BodyTransformer {
             Body b, String phaseName, Map options)
     {
         
-        if (Scene.v().hasCallGraph()) {
-            CallGraph cg = Scene.v().getCallGraph();
+        CallGraph cg = Scene.v().getCallGraph();
+    
+        Iterator stmtIt = b.getUnits().iterator();
+
+        while (stmtIt.hasNext()){
         
-            Iterator stmtIt = b.getUnits().iterator();
+            Stmt s = (Stmt) stmtIt.next();
 
-            while (stmtIt.hasNext()){
+            Iterator edges = cg.targetsOf(s); 
             
-                Stmt s = (Stmt) stmtIt.next();
-
-                Iterator edges = cg.targetsOf(s); 
+            while (edges.hasNext()){
+                Edge e = (Edge)edges.next();
+                SootMethod m = e.tgt();
+                s.addTag(new LinkTag("CallGraph: Type: "+e.kindToString(e.kind())+" Target Method: "+m.toString(), m, m.getDeclaringClass().getName()));
                 
-                while (edges.hasNext()){
-                    Edge e = (Edge)edges.next();
-                    SootMethod m = e.tgt();
-                    s.addTag(new LinkTag("CallGraph: Type: "+e.kindToString(e.kind())+" Target Method: "+m.toString(), m, m.getDeclaringClass().getName()));
-                    
-                }
-            }
-
-            SootMethod m = b.getMethod();
-            Iterator callerEdges = cg.callersOf(m);
-            while (callerEdges.hasNext()){
-                Edge callEdge = (Edge)callerEdges.next();
-                SootMethod methodCaller = callEdge.src();            
-                Host src = methodCaller;
-                if( callEdge.srcUnit() != null ) {
-                    src = callEdge.srcUnit();
-                }
-                m.addTag(
-                        new LinkTag(
-                            "CallGraph: Source Type: "+callEdge.kindToString(callEdge.kind())+" Source Method: "+methodCaller.toString(),
-                            src,
-                            methodCaller.getDeclaringClass().getName()));
             }
         }
-        else {
-            System.out.println("No CallGraph found in Scene.");
+
+        SootMethod m = b.getMethod();
+        Iterator callerEdges = cg.callersOf(m);
+        while (callerEdges.hasNext()){
+            Edge callEdge = (Edge)callerEdges.next();
+            SootMethod methodCaller = callEdge.src();            
+            Host src = methodCaller;
+            if( callEdge.srcUnit() != null ) {
+                src = callEdge.srcUnit();
+            }
+            m.addTag(
+                    new LinkTag(
+                        "CallGraph: Source Type: "+callEdge.kindToString(callEdge.kind())+" Source Method: "+methodCaller.toString(),
+                        src,
+                        methodCaller.getDeclaringClass().getName()));
         }
     }
 
