@@ -93,6 +93,21 @@ public class HashChain extends AbstractCollection
          return true;
     }
     
+    public boolean contains( Object o)
+    {
+        return map.containsKey( o);
+    }
+
+    public boolean containsAll(Collection c)
+    {
+        Iterator it = c.iterator();
+        while (it.hasNext())
+            if (!(map.containsKey( it.next())))
+                return false;
+        
+        return true;
+    }
+    
     public void insertAfter(Object toInsert, Object point)
     {
         if(map.containsKey(toInsert))
