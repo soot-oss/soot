@@ -67,6 +67,7 @@
 
 package ca.mcgill.sable.soot.grimp;
 
+import ca.mcgill.sable.soot.jimple.toolkit.scalar.*;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
@@ -75,5 +76,6 @@ public class BaseGrimpOptimizer
 {
     public static void optimize(GrimpBody body)
     {
+        ConstantFolder.foldConstants(body);
     }
 }
