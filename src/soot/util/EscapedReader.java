@@ -28,15 +28,48 @@ package soot.util;
 
 import java.io.*;
 
-public class EscapedPrintWriter extends PrintWriter
+public class EscapedReader extends FilterReader
 {
-    public EscapedPrintWriter(FileOutputStream fos)
+    public EscapedReader(Reader fos)
     {
         super(fos);
     }
 
-    public void write(String out)
+    private StringBuffer mini = new StringBuffer();
+
+    boolean nextF;
+    int nextch = 0;
+
+    public int read() throws IOException
     {
-        super.write(StringTools.getEscapedStringOf(out));
+        if (nextF)
+        {
+            nextF = false;
+            return nextch;
+        }
+
+        int ch = super.read();
+
+        if (ch != '\\')
+            return ch;
+
+        mini.setLength(0);
+
+        ch = super.read();
+        if (ch != 'u')
+            {
+                nextF = true; nextch = ch;
+                return '\\';
+            }
+
+        while (mini.length() < 4)
+        {
+            ch = super.read();
+            mini.append((char)ch);
+        }
+
+        ch = Integer.parseInt(mini.toString(), 16);
+
+        return ch;
     }
 }

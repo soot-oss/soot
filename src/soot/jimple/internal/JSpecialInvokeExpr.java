@@ -43,8 +43,9 @@ public class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr
         super(Jimple.v().newLocalBox(base), method,
              (ValueBox[]) new ImmediateBox[args.size()]);
 
-        for(int i = 0; i < args.size(); i++)
+        for(int i = 0; i < args.size(); i++) {
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
+	}
     }
     
     JSpecialInvokeExpr(Local base, SootMethod method, ValueBox[] args)
@@ -56,7 +57,7 @@ public class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr
     public Object clone() 
     {
         ArrayList clonedArgs = new ArrayList(getArgCount());
-
+ 
         for(int i = 0; i < getArgCount(); i++) {
             clonedArgs.add(i, getArg(i));
         }

@@ -85,7 +85,6 @@ public class BodyExtractorWalker extends Walker
 	if(node.getExtendsClause() != null) 
 	    mProductions.pop(); // extends_clause
 	
-	mProductions.pop(); // class_name
 	mProductions.pop(); // file_type
 	
 	mProductions.push(mSootClass);

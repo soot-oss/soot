@@ -5,7 +5,7 @@ import soot.jimple.parser.lexer.*;
 import soot.jimple.parser.node.*;
 import soot.jimple.parser.analysis.*;
 import java.io.*;
-
+import soot.util.*;
 
 import soot.*;
 
@@ -34,10 +34,9 @@ public class Parse
 	
 	
 	Parser p =
-		new Parser(
-			   new Lexer(
-				     new PushbackReader(
-							new InputStreamReader(istream), 1024)));	
+		new Parser(new Lexer(
+		      new PushbackReader(new EscapedReader(
+			      new InputStreamReader(istream)), 1024)));
 	
 	
 	try {

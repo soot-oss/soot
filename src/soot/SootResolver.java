@@ -11,7 +11,7 @@ public class SootResolver
     private Scene mScene;
     private Set markedClasses;
     private LinkedList classesToResolve;
-    private boolean debug = false;
+    private boolean debug = true;
 
     //        SootClass toReturn = soot.coffi.Util.resolveClassAndSupportClasses(className, this);
     public SootResolver(Scene aScene)
@@ -87,8 +87,13 @@ public class SootResolver
 		}
 	    } 
 	    else {
-		throw new RuntimeException("This is Utterly Impossible");
-	    }       	    
+		throw new RuntimeException("This is Utterly Impossible: " + is);
+	    }
+            try
+            {
+                is.close();
+            }
+            catch (IOException e) { throw new RuntimeException("!?"); }
 	}	
 	
 	return resolvedClass;

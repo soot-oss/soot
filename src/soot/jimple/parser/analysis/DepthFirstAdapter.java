@@ -2053,25 +2053,25 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getName().apply(this);
         }
-        if(node.getFrom() != null)
+        if(node.getFromId() != null)
         {
-            node.getFrom().apply(this);
+            node.getFromId().apply(this);
         }
         if(node.getFromLabel() != null)
         {
             node.getFromLabel().apply(this);
         }
-        if(node.getTo() != null)
+        if(node.getToId() != null)
         {
-            node.getTo().apply(this);
+            node.getToId().apply(this);
         }
         if(node.getToLabel() != null)
         {
             node.getToLabel().apply(this);
         }
-        if(node.getWith() != null)
+        if(node.getWithId() != null)
         {
-            node.getWith().apply(this);
+            node.getWithId().apply(this);
         }
         if(node.getWithLabel() != null)
         {

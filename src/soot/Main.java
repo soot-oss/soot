@@ -161,7 +161,13 @@ public class Main
             } else {                
                 String fileName = files[i].getName();        
                 int index = fileName.indexOf(".class");
-                if( index != -1)
+                if (index != -1)
+                {
+                    fileNames.add(fileName.substring(0, index));
+                }
+
+                index = fileName.indexOf(".jimple");
+                if (index != -1)
                 {
                     fileNames.add(fileName.substring(0, index));
                 }
@@ -170,15 +176,12 @@ public class Main
         return fileNames;
     }
 
-
-
-
-private static void processCmdLine(String[] args)
-{
- if(args.length == 0)
+    private static void processCmdLine(String[] args)
+    {
+        if(args.length == 0)
         {
-		// $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.63");
+            // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
+            System.out.println("Soot version 1.beta.5.dev.64");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -193,7 +196,7 @@ private static void processCmdLine(String[] args)
             System.out.println("        (application mode) soot --app [option]* mainClassName");
             System.out.println("");
             System.out.println("Output options:");
-            System.out.println("  -X, --XML                  produce a monster .xml skeleton file");
+//              System.out.println("  -X, --XML                  produce a monster .xml skeleton file");
             System.out.println("  -b, --b                    produce .b (abbreviated .baf) files");
             System.out.println("  -B, --baf                  produce .baf code");
             System.out.println("  -j, --jimp                 produce .jimp (abbreviated .jimple) files");
@@ -236,7 +239,7 @@ private static void processCmdLine(String[] args)
             System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
             System.out.println("  -t, --time                 print out time statistics about tranformations");
             System.out.println("  --subtract-gc              attempt to subtract the gc from the time stats");
-	    System.out.println("  -h FILE                    read XML headers from FILE");
+//  	    System.out.println("  -h FILE                    read XML headers from FILE");
             System.out.println("  -v, --verbose              verbose mode");
             System.out.println("  --debug                    avoid catching exceptions");
             System.out.println("  -p, --phase-option PHASE-NAME KEY[:VALUE]");
@@ -254,98 +257,95 @@ private static void processCmdLine(String[] args)
         }
 
         // Handle all the options
- for(int i = 0; i < args.length; i++)
-     {
-        String arg = args[i];
-                
-                if(arg.equals("-j") || arg.equals("--jimp"))
-                    targetExtension = ".jimp";
-                else if(arg.equals("--njimple"))
-                    targetExtension = ".njimple";
-                else if(arg.equals("-s") || arg.equals("--jasmin"))
-                    targetExtension = ".jasmin";
-                else if(arg.equals("-J") || arg.equals("--jimple"))
-                    targetExtension = ".jimple";
-                else if(arg.equals("-B") || arg.equals("--baf"))
-                    targetExtension = ".baf";
-                else if(arg.equals("--lazy"))
-                    Scene.v().setLazyResolving(true);
-                else if(arg.equals("-h")) 
+        for(int i = 0; i < args.length; i++)
+        {
+            String arg = args[i];
+            
+            if(arg.equals("-j") || arg.equals("--jimp"))
+                targetExtension = ".jimp";
+            else if(arg.equals("--njimple"))
+                targetExtension = ".njimple";
+            else if(arg.equals("-s") || arg.equals("--jasmin"))
+                targetExtension = ".jasmin";
+            else if(arg.equals("-J") || arg.equals("--jimple"))
+                targetExtension = ".jimple";
+            else if(arg.equals("-B") || arg.equals("--baf"))
+                targetExtension = ".baf";
+            else if(arg.equals("--lazy"))
+                Scene.v().setLazyResolving(true);
+            else if(arg.equals("-h")) 
+            {
+                Scene.v().setLazyResolving(true);
+                xmlInputFile = args[++i];
+            }
+            else if(arg.equals("-b") || arg.equals("--b"))
+                targetExtension = ".b";
+            else if(arg.equals("-g") || arg.equals("--grimp"))
+                targetExtension = ".grimp";
+            else if(arg.equals("-G") || arg.equals("--grimple"))
+                targetExtension = ".grimple";
+            else if(arg.equals("-c") || arg.equals("--class"))
+                targetExtension = ".class";
+            else if(arg.equals("-X") || arg.equals("--xml"))
+                produceXmlOutput = true;
+            else if(arg.equals("--dava"))
+                targetExtension = ".dava";
+            else if(arg.equals("-O") || arg.equals("--optimize"))
+                isOptimizing = true;
+            else if(arg.equals("-W") || arg.equals("--whole-optimize"))
+            {
+                if (!isApplication)
                 {
-                    Scene.v().setLazyResolving(true);
-                    xmlInputFile = args[++i];
+                    System.out.println("Can only whole-program optimize in application mode!");
+                    System.exit(1);
                 }
-		    
-		
-
-                else if(arg.equals("-b") || arg.equals("--b"))
-                    targetExtension = ".b";
-                else if(arg.equals("-g") || arg.equals("--grimp"))
-                    targetExtension = ".grimp";
-                else if(arg.equals("-G") || arg.equals("--grimple"))
-                    targetExtension = ".grimple";
-                else if(arg.equals("-c") || arg.equals("--class"))
-                    targetExtension = ".class";
-                else if(arg.equals("-X") || arg.equals("--xml"))
-                    produceXmlOutput = true;
-                else if(arg.equals("--dava"))
-                    targetExtension = ".dava";
-                else if(arg.equals("-O") || arg.equals("--optimize"))
-                    isOptimizing = true;
-                else if(arg.equals("-W") || arg.equals("--whole-optimize"))
+                isOptimizingWhole = true;
+                isOptimizing = true;
+            } 
+            /*
+              else if(arg.equals("--use-vta"))
+              {
+              isUsingVTA = true;
+              Jimplifier.NOLIB = false;
+              }
+              else if(arg.equals("--use-rta"))
+              {
+              isUsingRTA = true;
+              Jimplifier.NOLIB = false;
+              } */
+            
+            else if(arg.equals("-t") || arg.equals("--time"))
+                isProfilingOptimization = true;
+            else if(arg.equals("--subtract-gc"))
+            {
+                Timer.setSubtractingGC(true);
+                isSubtractingGC = true;
+            }    
+            else if(arg.equals("-v") || arg.equals("--verbose"))
+                isVerbose = true;
+            else if(arg.equals("--soot-class-path"))
+            {
+                if(++i < args.length)
+                    Scene.v().setSootClassPath(args[i]);
+            }
+            else if(arg.equals("--app"))
+            {
+                if (i != 0)
                 {
-                    if (!isApplication)
-                    {
-                        System.out.println("Can only whole-program optimize in application mode!");
-                        System.exit(1);
-                    }
-                    isOptimizingWhole = true;
-                    isOptimizing = true;
-                } 
-                /*
-                else if(arg.equals("--use-vta"))
-                {
-                    isUsingVTA = true;
-                    Jimplifier.NOLIB = false;
+                    System.out.println("Application mode (--app) must be set as first argument to Soot!");
+                    System.out.println("eg. java soot.Main --app Simulator");
+                    System.exit(1);
                 }
-                else if(arg.equals("--use-rta"))
-                {
-                    isUsingRTA = true;
-                    Jimplifier.NOLIB = false;
-                } */
-                
-                else if(arg.equals("-t") || arg.equals("--time"))
-                    isProfilingOptimization = true;
-                else if(arg.equals("--subtract-gc"))
-                {
-                    Timer.setSubtractingGC(true);
-                    isSubtractingGC = true;
-                }    
-                else if(arg.equals("-v") || arg.equals("--verbose"))
-                    isVerbose = true;
-                else if(arg.equals("--soot-class-path"))
-                {   
-                    if(++i < args.length)
-                        Scene.v().setSootClassPath(args[i]);
-                }
-                else if(arg.equals("--app"))
-                {
-                    if (i != 0)
-                    {
-                        System.out.println("Application mode (--app) must be set as first argument to Soot!");
-                        System.out.println("eg. java soot.Main --app Simulator");
-                        System.exit(1);
-                    }
-                    isApplication=true;
-                }
-                else if(arg.equals("-d"))
-                {
-                    if(++i < args.length)
-                        outputDir = args[i];
-                }
-                else if(arg.equals("-x") || arg.equals("--exclude"))
-                {
-                    if (!isApplication)
+                isApplication = true;
+            }
+            else if(arg.equals("-d"))
+            {
+                if(++i < args.length)
+                    outputDir = args[i];
+            }
+            else if(arg.equals("-x") || arg.equals("--exclude"))
+            {
+                if (!isApplication)
                     {
                         System.out.println("Exclude flag only valid in application mode!");
                         System.exit(1);
@@ -435,6 +435,28 @@ private static void processCmdLine(String[] args)
                         while(tokenizer.hasMoreTokens())
                             processClasses.addAll(getClassesUnder(tokenizer.nextToken()));
                     }                    
+                } // undocumented option 
+                else if(arg.equals("--src-prec"))
+                {
+                    if(++i < args.length)
+                    { 
+                        if(args[i].equals("jimple"))
+                            SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_JIMPLE);
+                        else if(args[i].equals("class"))
+                            SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_CLASS);
+                        else
+                        {
+                            System.out.println("Illegal arg for option --src-prec: " + args[i]);
+                            System.out.println("Valid args are: \"jimple\" or \"class\"");
+                            System.exit(1);
+                        }     
+                    } 
+                    else 
+                    {
+                        System.out.println("Must specify an argument for option --src-prec");
+                        System.out.println("Valid args are: \"jimple\" or \"class\"");
+                        System.exit(1);                        
+                    }
                 }
                 else if(arg.startsWith("-"))
                 {
@@ -495,64 +517,58 @@ private static void processCmdLine(String[] args)
 
     public static void main(String[] args)
     {       
-	totalTimer.start();
+        totalTimer.start();
 	
-	initApp();
-	processCmdLine(args);
+        initApp();
+        processCmdLine(args);
 
         // Load necessary classes.
         {            
-	    if(xmlInputFile != null) {
-		readXMLInFile();		 
-	    }
+            if(xmlInputFile != null) 
+                readXMLInFile();		 
 
-	    Iterator it = cmdLineClasses.iterator();
+            Iterator it = cmdLineClasses.iterator();
 	
-	    while(it.hasNext())
-		{
-			String name = (String) it.next();
-			SootClass c;
+            while(it.hasNext())
+            {
+                String name = (String) it.next();
+                SootClass c;
 			    
-            
-            
-            
-            c = Scene.v().loadClassAndSupport(name);						  
-			
-			if(mainClass == null)
-			    {
-				mainClass = c;
-				Scene.v().setMainClass(c);
+                c = Scene.v().loadClassAndSupport(name);						  
+                
+                if(mainClass == null)
+                {
+                    mainClass = c;
+                    Scene.v().setMainClass(c);
 			    }   
-			c.setApplicationClass();
+                c.setApplicationClass();
 		    }
 	
                
-        // Dynamic & process classes
-                it = dynamicClasses.iterator();
+            // Dynamic & process classes
+            it = dynamicClasses.iterator();
                 
-                while(it.hasNext())
-                    Scene.v().loadClassAndSupport((String) it.next());                 
+            while(it.hasNext())
+                Scene.v().loadClassAndSupport((String) it.next());                 
 
-                it = processClasses.iterator();
-                
-                while(it.hasNext())
-                    {
-                        String s = (String)it.next();
-                        Scene.v().loadClassAndSupport(s);
-                        Scene.v().getSootClass(s).setApplicationClass();
-                    }
+            it = processClasses.iterator();
+            
+            while(it.hasNext())
+            {
+                String s = (String)it.next();
+                Scene.v().loadClassAndSupport(s);
+                Scene.v().getSootClass(s).setApplicationClass();
+            }
         }
-
 
         // Generate classes to process
         { 
             if(isApplication)
             {
-                  List cc = new ArrayList(); cc.addAll(Scene.v().getContextClasses());
+                List cc = new ArrayList(); cc.addAll(Scene.v().getContextClasses());
                 Iterator contextClassesIt = cc.iterator();
-                while (contextClassesIt.hasNext()){
-		    ((SootClass)contextClassesIt.next()).setApplicationClass();
-		}
+                while (contextClassesIt.hasNext())
+                    ((SootClass)contextClassesIt.next()).setApplicationClass();
             }   
                          
             // Remove/add all classes from packageInclusionMask as per piFlag
@@ -605,24 +621,20 @@ private static void processCmdLine(String[] args)
             Scene.v().getPack("wjop").apply();
         
 
-        if (produceXmlOutput) {
-	    produceXMLOutFile();
-        }
-    
-	
-    
+        if (produceXmlOutput)
+            produceXMLOutFile();
     
     // Handle each class individually
-	Iterator classIt = Scene.v().getApplicationClasses().iterator();
+        Iterator classIt = Scene.v().getApplicationClasses().iterator();
 
-	while(classIt.hasNext())
+        while(classIt.hasNext())
 	    {
-                SootClass s = (SootClass) classIt.next();
+            SootClass s = (SootClass) classIt.next();
                 
-                System.out.print("Transforming " + s.getName() + "... " );
-                System.out.flush();
-                
-                if(!isInDebugMode)
+            System.out.print("Transforming " + s.getName() + "... " );
+            System.out.flush();
+            
+            if(!isInDebugMode)
                  {
                     try {
                         handleClass(s);
@@ -653,45 +665,43 @@ private static void processCmdLine(String[] args)
 
     private static void produceXMLOutFile() 
     {
-    
-	// If creating xml file, first remove old file.
+        // If creating xml file, first remove old file.
         String fileName = null;
 
-	if(!outputDir.equals(""))
-	    fileName = outputDir + fileSeparator;
-    else
-        fileName = "";
+        if(!outputDir.equals(""))
+            fileName = outputDir + fileSeparator;
+        else
+            fileName = "";
+        
+        fileName = mainClass.getName() + ".xml";
+        
+        try 
+        {
+            FileOutputStream streamOut = new FileOutputStream(fileName);
+            PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+            writerOut.println("<?xml version=\"1.0\"?>");
+            writerOut.println("<document>");
             
-    fileName = mainClass.getName() + ".xml";
-
+            Iterator it = Scene.v().getContextClasses().iterator();
+            SootClass sc = null;
+            
             try {
-		
-                FileOutputStream streamOut = new FileOutputStream(fileName);
-                PrintWriter writerOut = new EscapedPrintWriter(streamOut);
-                writerOut.println("<?xml version=\"1.0\"?>");
-                writerOut.println("<document>");
-
-		Iterator it = Scene.v().getContextClasses().iterator();
-		SootClass sc = null;
-		
-		try {
-		    while(it.hasNext()) {
-			sc = (SootClass) it.next();
-			writerOut.println(sc.getXML());
-		    }
-		} catch (NoSuperclassException e) {
-		    System.out.println("class " + sc.getName());
-		    throw e;
-		}
-		
-                writerOut.println("</document>");
-                writerOut.flush();
-                streamOut.close();
+                while(it.hasNext()) {
+                    sc = (SootClass) it.next();
+                    writerOut.println(sc.getXML());
+                }
+            } catch (NoSuperclassException e) {
+                System.out.println("class " + sc.getName());
+                throw e;
             }
-            catch (IOException e) {
-		
-                System.out.println("Couldn't write XML output file!");
-                System.exit(1);
+            
+            writerOut.println("</document>");
+            writerOut.flush();
+            streamOut.close();
+        }
+        catch (IOException e) {
+            System.out.println("Couldn't write XML output file!");
+            System.exit(1);
 	    }
     }
 
@@ -822,11 +832,12 @@ private static void processCmdLine(String[] args)
         
         fileName += c.getName() + targetExtension;
         
+      
         if(!targetExtension.equals(".class"))
         {   
             try {
                 streamOut = new FileOutputStream(fileName);
-                writerOut = new EscapedPrintWriter(streamOut);
+                writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
             }
             catch (IOException e)
             {

@@ -195,7 +195,6 @@ public interface Analysis extends Switch
     void caseTDefault(TDefault node);
     void caseTEntermonitor(TEntermonitor node);
     void caseTExitmonitor(TExitmonitor node);
-    void caseTFrom(TFrom node);
     void caseTGoto(TGoto node);
     void caseTIf(TIf node);
     void caseTInstanceof(TInstanceof node);
@@ -214,9 +213,7 @@ public interface Analysis extends Switch
     void caseTTableswitch(TTableswitch node);
     void caseTThrow(TThrow node);
     void caseTThrows(TThrows node);
-    void caseTTo(TTo node);
     void caseTVirtualinvoke(TVirtualinvoke node);
-    void caseTWith(TWith node);
     void caseTNull(TNull node);
     void caseTComma(TComma node);
     void caseTLBrace(TLBrace node);

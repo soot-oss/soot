@@ -978,11 +978,6 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseTFrom(TFrom node)
-    {
-        defaultCase(node);
-    }
-
     public void caseTGoto(TGoto node)
     {
         defaultCase(node);
@@ -1073,17 +1068,7 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseTTo(TTo node)
-    {
-        defaultCase(node);
-    }
-
     public void caseTVirtualinvoke(TVirtualinvoke node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseTWith(TWith node)
     {
         defaultCase(node);
     }

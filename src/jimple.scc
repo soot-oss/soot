@@ -10,10 +10,13 @@ Helpers
   hex_digit = dec_digit | ['a' .. 'f'] | ['A' .. 'F'];
   hex_constant = '0' ('x' | 'X') hex_digit+;
 
+	
   oct_digit = ['0' .. '7'];
   oct_constant = '0' oct_digit+;
+	
+  quote = ''';
 
-  escapable_char = '\' | ' ' | ''' | '.' | '#' | '"';
+  escapable_char = '\' | ' ' | quote | '.' | '#' | '"' | 'n' | 't' | 'r' | 'b' | 'f';
   escape_code = 'u' hex_digit hex_digit hex_digit hex_digit;
   escape_char = '\' (escapable_char | escape_code);  
 
@@ -23,7 +26,7 @@ Helpers
 
   alpha_char = ['a' .. 'z'] | ['A' .. 'Z']; 
   
-  quote = ''';
+
   simple_id_char = alpha_char | dec_digit | '_' | '$';
 
   first_id_char = alpha_char | '_' | '$';
@@ -31,7 +34,8 @@ Helpers
   quotable_char = [not_cr_lf - '''];
 
   // string_char = [not_cr_lf - '"'];
-  string_char = [35 .. 126] | [32 + 33] | [10 + 13] | escape_char;
+  // FIX THIS -- all unicode chars can be in strings!
+  string_char = escape_char | 9 | [35 .. 91] | [93 ..126] | [32 + 33] | [10 + 13] ;
 
   line_comment = '//' not_cr_lf*;
   long_comment = '/*' not_star* '*'+ (not_star_slash not_star* '*'+)* '/';
@@ -75,7 +79,6 @@ Tokens
   default = 'default';
   entermonitor = 'entermonitor';
   exitmonitor = 'exitmonitor';
-  from = 'from';
   goto = 'goto';
   if = 'if';
   instanceof = 'instanceof';
@@ -94,9 +97,7 @@ Tokens
   tableswitch = 'tableswitch';
   throw = 'throw';
   throws = 'throws';
-  to   = 'to';
   virtualinvoke = 'virtualinvoke';
-  with = 'with';
   null = 'null';
 
   comma = ',';
@@ -299,7 +300,7 @@ class_name_list =
     goto label_name semicolon;
 
   catch_clause =
-    catch [name]:class_name from [from_label]:label_name to [to_label]:label_name with [with_label]:label_name semicolon;
+    catch [name]:class_name [from_id]:identifier [from_label]:label_name [to_id]:identifier [to_label]:label_name [with_id]:identifier [with_label]:label_name semicolon;
 
   expression =
     {new}         new_expr |

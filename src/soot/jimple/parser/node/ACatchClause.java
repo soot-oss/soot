@@ -9,11 +9,11 @@ public final class ACatchClause extends PCatchClause
 {
     private TCatch _catch_;
     private PClassName _name_;
-    private TFrom _from_;
+    private TIdentifier _fromId_;
     private PLabelName _fromLabel_;
-    private TTo _to_;
+    private TIdentifier _toId_;
     private PLabelName _toLabel_;
-    private TWith _with_;
+    private TIdentifier _withId_;
     private PLabelName _withLabel_;
     private TSemicolon _semicolon_;
 
@@ -24,11 +24,11 @@ public final class ACatchClause extends PCatchClause
     public ACatchClause(
         TCatch _catch_,
         PClassName _name_,
-        TFrom _from_,
+        TIdentifier _fromId_,
         PLabelName _fromLabel_,
-        TTo _to_,
+        TIdentifier _toId_,
         PLabelName _toLabel_,
-        TWith _with_,
+        TIdentifier _withId_,
         PLabelName _withLabel_,
         TSemicolon _semicolon_)
     {
@@ -36,15 +36,15 @@ public final class ACatchClause extends PCatchClause
 
         setName(_name_);
 
-        setFrom(_from_);
+        setFromId(_fromId_);
 
         setFromLabel(_fromLabel_);
 
-        setTo(_to_);
+        setToId(_toId_);
 
         setToLabel(_toLabel_);
 
-        setWith(_with_);
+        setWithId(_withId_);
 
         setWithLabel(_withLabel_);
 
@@ -56,11 +56,11 @@ public final class ACatchClause extends PCatchClause
         return new ACatchClause(
             (TCatch) cloneNode(_catch_),
             (PClassName) cloneNode(_name_),
-            (TFrom) cloneNode(_from_),
+            (TIdentifier) cloneNode(_fromId_),
             (PLabelName) cloneNode(_fromLabel_),
-            (TTo) cloneNode(_to_),
+            (TIdentifier) cloneNode(_toId_),
             (PLabelName) cloneNode(_toLabel_),
-            (TWith) cloneNode(_with_),
+            (TIdentifier) cloneNode(_withId_),
             (PLabelName) cloneNode(_withLabel_),
             (TSemicolon) cloneNode(_semicolon_));
     }
@@ -120,16 +120,16 @@ public final class ACatchClause extends PCatchClause
         _name_ = node;
     }
 
-    public TFrom getFrom()
+    public TIdentifier getFromId()
     {
-        return _from_;
+        return _fromId_;
     }
 
-    public void setFrom(TFrom node)
+    public void setFromId(TIdentifier node)
     {
-        if(_from_ != null)
+        if(_fromId_ != null)
         {
-            _from_.parent(null);
+            _fromId_.parent(null);
         }
 
         if(node != null)
@@ -142,7 +142,7 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _from_ = node;
+        _fromId_ = node;
     }
 
     public PLabelName getFromLabel()
@@ -170,16 +170,16 @@ public final class ACatchClause extends PCatchClause
         _fromLabel_ = node;
     }
 
-    public TTo getTo()
+    public TIdentifier getToId()
     {
-        return _to_;
+        return _toId_;
     }
 
-    public void setTo(TTo node)
+    public void setToId(TIdentifier node)
     {
-        if(_to_ != null)
+        if(_toId_ != null)
         {
-            _to_.parent(null);
+            _toId_.parent(null);
         }
 
         if(node != null)
@@ -192,7 +192,7 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _to_ = node;
+        _toId_ = node;
     }
 
     public PLabelName getToLabel()
@@ -220,16 +220,16 @@ public final class ACatchClause extends PCatchClause
         _toLabel_ = node;
     }
 
-    public TWith getWith()
+    public TIdentifier getWithId()
     {
-        return _with_;
+        return _withId_;
     }
 
-    public void setWith(TWith node)
+    public void setWithId(TIdentifier node)
     {
-        if(_with_ != null)
+        if(_withId_ != null)
         {
-            _with_.parent(null);
+            _withId_.parent(null);
         }
 
         if(node != null)
@@ -242,7 +242,7 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _with_ = node;
+        _withId_ = node;
     }
 
     public PLabelName getWithLabel()
@@ -300,11 +300,11 @@ public final class ACatchClause extends PCatchClause
         return ""
             + toString(_catch_)
             + toString(_name_)
-            + toString(_from_)
+            + toString(_fromId_)
             + toString(_fromLabel_)
-            + toString(_to_)
+            + toString(_toId_)
             + toString(_toLabel_)
-            + toString(_with_)
+            + toString(_withId_)
             + toString(_withLabel_)
             + toString(_semicolon_);
     }
@@ -323,9 +323,9 @@ public final class ACatchClause extends PCatchClause
             return;
         }
 
-        if(_from_ == child)
+        if(_fromId_ == child)
         {
-            _from_ = null;
+            _fromId_ = null;
             return;
         }
 
@@ -335,9 +335,9 @@ public final class ACatchClause extends PCatchClause
             return;
         }
 
-        if(_to_ == child)
+        if(_toId_ == child)
         {
-            _to_ = null;
+            _toId_ = null;
             return;
         }
 
@@ -347,9 +347,9 @@ public final class ACatchClause extends PCatchClause
             return;
         }
 
-        if(_with_ == child)
+        if(_withId_ == child)
         {
-            _with_ = null;
+            _withId_ = null;
             return;
         }
 
@@ -381,9 +381,9 @@ public final class ACatchClause extends PCatchClause
             return;
         }
 
-        if(_from_ == oldChild)
+        if(_fromId_ == oldChild)
         {
-            setFrom((TFrom) newChild);
+            setFromId((TIdentifier) newChild);
             return;
         }
 
@@ -393,9 +393,9 @@ public final class ACatchClause extends PCatchClause
             return;
         }
 
-        if(_to_ == oldChild)
+        if(_toId_ == oldChild)
         {
-            setTo((TTo) newChild);
+            setToId((TIdentifier) newChild);
             return;
         }
 
@@ -405,9 +405,9 @@ public final class ACatchClause extends PCatchClause
             return;
         }
 
-        if(_with_ == oldChild)
+        if(_withId_ == oldChild)
         {
-            setWith((TWith) newChild);
+            setWithId((TIdentifier) newChild);
             return;
         }
 

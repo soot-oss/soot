@@ -26,53 +26,14 @@
 
 package soot.util;
 
+import java.text.*;
+
+
 public class StringTools
 {
-    public static String lineSeparator = System.getProperty("line.separator");;
-    static StringBuffer whole = new StringBuffer();
-    static StringBuffer mini = new StringBuffer();
+    public final static String lineSeparator = System.getProperty("line.separator");;
 
-    /* This is used by sootClass to generate output. */
-    public static java.lang.String getEscapedStringOf(String fromString)
-    {
-        char[] fromStringArray;
-        int cr, lf, ch;
-
-        whole.setLength(0);
-        mini.setLength(0);
-
-        fromStringArray = fromString.toCharArray();
-
-        cr = lineSeparator.charAt(0);
-        lf = -1;
-
-        if (lineSeparator.length() == 2)
-            lf = lineSeparator.charAt(1);
-
-        for (int i = 0; i < fromStringArray.length; i++)
-        {
-            ch = (int) fromStringArray[i];
-            if (ch >= 32 && ch <= 126 || ch == cr || ch == lf)
-            {
-                whole.append((char) ch);
- 
-                continue;
-            }
-            
-            mini.setLength(0);
-            mini.append(Integer.toHexString(ch));
-
-            while (mini.length() < 4)
-                mini.insert(0, "0");
-
-            mini.insert(0, "\\u");
-            whole.append(mini.toString());
-        }
-
-        return whole.toString();
-    }
-
-    /* This one is used by StringConstant.toString() */
+    /* Used by StringConstant.toString() */
     public static java.lang.String getQuotedStringOf(String fromString)
     {
         StringBuffer toStringBuffer;
@@ -87,10 +48,9 @@ public class StringTools
         {
             char ch = fromStringArray[i];
             if (ch == '\\')
-                { toStringBuffer.append("\\\\"); continue; }
-
-            if (ch == '\'')
-                { toStringBuffer.append("\\\'"); continue; }
+                { toStringBuffer.append("\\\\"); continue;}
+	    if (ch == '\'')
+		{ toStringBuffer.append("\\\'"); continue; }
 
             if (ch == '\"')
                 { toStringBuffer.append("\\\""); continue; }
@@ -104,4 +64,99 @@ public class StringTools
         toStringBuffer.append("\"");
         return toStringBuffer.toString();
     }
+
+
+  
+  public static String getUnEscapedStringOf(String str) 
+  {
+    StringBuffer buf = new StringBuffer();
+    CharacterIterator iter = new StringCharacterIterator(str);
+
+    
+    for(char ch = iter.first(); ch != CharacterIterator.DONE; ch = iter.next()) {
+
+    if (ch != '\\') {
+      buf.append(ch);
+    } else {  // enter escaped mode
+      
+      ch = iter.next();
+      char format;
+
+      if(ch == '\\') {
+	buf.append(ch);
+      } else if ( (format = getCFormatChar(ch)) != '\0') {
+	buf.append(format);
+      } else if(ch == 'u') {  //enter unicode mode
+
+	StringBuffer mini = new StringBuffer(4);
+	for(int i = 0; i <4; i++)
+	  mini.append(iter.next());
+	
+	ch =  (char) Integer.parseInt(mini.toString(), 16);
+	buf.append(ch); 
+	
+      } else {
+	throw new RuntimeException("Unexpected char: " + ch);
+      }      
+    }
+
+    }
+    return buf.toString();
+  }
+
+
+ 	
+  public static char getCFormatChar(char c)
+  {
+    char res;
+
+    switch(c) {
+    case 'n':
+      res = '\n';
+      break;
+    case 't':
+      res = '\t';
+      break;
+    case 'r':
+      res = '\r';
+      break;
+    case 'b':
+      res = '\b';
+      break;
+    case '\"':
+      res = '\"';
+      break;
+    case '\'':
+      res = '\'';
+      break;
+      
+      
+    default:
+      res = '\0';
+      break;
+    } 
+    return res;
+  }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -3,6 +3,7 @@ package soot.jimple.parser;
 import soot.baf.*;
 import soot.*;
 import soot.jimple.*;
+import soot.util.*;
 
 import soot.jimple.parser.parser.*;
 import soot.jimple.parser.lexer.*;
@@ -253,24 +254,28 @@ public class Walker extends DepthFirstAdapter
 	    t = ArrayType.v((BaseType) t, dim);
 	mProductions.push(t);
     }
+
+    
     public void outAQuotedNonvoidType(AQuotedNonvoidType node)
     {	
-	/*String typeName = (String) mProductions.pop();
+	String typeName = (String) mProductions.pop();
 	Type t = RefType.v(typeName);
 	int dim = node.getArrayBrackets().size();
 	if(dim > 0) 
 	    t = ArrayType.v((BaseType) t, dim);
-	    mProductions.push(t);*/
+	mProductions.push(t);
     }
     public void outAIdentNonvoidType(AIdentNonvoidType node)
     {	
-	/*String typeName = (String) mProductions.pop();
+	String typeName = (String) mProductions.pop();
 	Type t = RefType.v(typeName);
 	int dim = node.getArrayBrackets().size();
 	if(dim > 0)
 	    t = ArrayType.v((BaseType) t, dim);
-	    mProductions.push(t);*/
+	    mProductions.push(t);
     }
+
+
     public void outAFullIdentNonvoidType(AFullIdentNonvoidType node)
     {		
 	String typeName = (String) mProductions.pop();
@@ -615,13 +620,19 @@ public class Walker extends DepthFirstAdapter
 	
 	withUnit = Jimple.v().newStmtBox(null);
 	addBoxToPatch((String) mProductions.pop(), withUnit);
+
 	
+	 mProductions.pop(); // pop dummy "with" string (see jimple.scc)
+
 	toUnit = Jimple.v().newStmtBox(null);
 	addBoxToPatch((String) mProductions.pop(), toUnit);
-	
+
+	mProductions.pop();  // pop dummy "to" string (see jimple.scc)
+
 	fromUnit = Jimple.v().newStmtBox(null);
 	addBoxToPatch((String) mProductions.pop(), fromUnit);
 
+	mProductions.pop();   // pop dummy "from" string (see jimple.scc)
 
 	exceptionName = (String) mProductions.pop();
 				
@@ -1022,33 +1033,86 @@ public class Walker extends DepthFirstAdapter
     public void outAIntegerConstant(AIntegerConstant node)
     {
 	String s = (String) mProductions.pop();
-	int sign = 1;
+	
+	StringBuffer buf = new StringBuffer();
 	if(node.getMinus() != null)
-	    sign = -1;
-		    
-	if(s.endsWith("L")) {	    
-	    
-	    mProductions.push(LongConstant.v(sign * Long.parseLong(s.substring(0, s.length()-1))));
+	    buf.append('-');
+	buf.append(s);
+	
+	s = buf.toString();
+	if(s.endsWith("L")) {	    	    
+	    mProductions.push(LongConstant.v(Long.parseLong(s.substring(0, s.length()-1))));
 	} else
-	    mProductions.push(IntConstant.v(sign * Integer.parseInt(s)));
+	    mProductions.push(IntConstant.v(Integer.parseInt(s)));
     }
     
     public void outAStringConstant(AStringConstant node)
     {
 	String s = (String) mProductions.pop();
-	mProductions.push(StringConstant.v(s));
+	try {
+	  String t = StringTools.getUnEscapedStringOf(s);
+	
+	  mProductions.push(StringConstant.v(t));
+	} catch(RuntimeException e) {
+	  System.out.println(s);
+	  throw e;
+	}
     }
 
+
+
+  /* ('#' (('-'? 'Infinity') | 'NaN') ('f' | 'F')? ) ; */
     public void outAFloatConstant(AFloatConstant node)
     {
 	String s = (String) mProductions.pop();
-	int sign = 1;
-	if(node.getMinus() != null)
-	    sign = -1;
+
+	boolean isDouble = true;
+	float value = 0;
+	double dvalue = 0;
+
 	if(s.endsWith("f") || s.endsWith("F")) 
-	    mProductions.push(FloatConstant.v(sign * Float.parseFloat(s)));	
+	  isDouble = false;
+	  
+	if(s.charAt(0) == '#') {
+	  if(s.charAt(1) == '-') {
+	    if(isDouble)
+	      dvalue = Double.NEGATIVE_INFINITY;
+	    else
+	      value = Float.NEGATIVE_INFINITY;
+	  }
+	  else if(s.charAt(1) == 'I') {
+	    if(isDouble)
+              dvalue = Double.POSITIVE_INFINITY;
+            else
+              value = Float.POSITIVE_INFINITY;
+	  }
+	  else {
+	    if(isDouble)
+              dvalue = Double.NaN;
+            else
+              value = Float.NaN;
+	  }
+	}
+	else {
+	  StringBuffer buf = new StringBuffer();	  
+	  if(node.getMinus() != null)
+	    buf.append('-');
+	  buf.append(s);
+	  s = buf.toString();
+	
+	  if(isDouble)
+	    dvalue = Double.parseDouble(s);
+	  else
+	    value =Float.parseFloat(s);	
+	}
+
+	Object res;
+	if(isDouble)
+	  res = DoubleConstant.v(dvalue);
 	else
-	    mProductions.push(DoubleConstant.v(sign * Double.parseDouble(s)));
+	  res = FloatConstant.v(value);
+
+	mProductions.push(res);
     }
 
 
@@ -1490,22 +1554,24 @@ public class Walker extends DepthFirstAdapter
 
     public void outAMultiNewExpr(AMultiNewExpr node)
     {
-	int descCnt =  node.getArrayDescriptor().size();
 	
-	List sizes = new ArrayList(descCnt); 
-	Iterator it = sizes.iterator();
+	LinkedList arrayDesc =  node.getArrayDescriptor();
 
+	int descCnt = arrayDesc.size();
+	List sizes = new ArrayList(); 
 	
-	for(int i = 0; i < descCnt; i++) {
-	    Object o = mProductions.pop();
-	    System.out.println(o);
-	    sizes.add((Value) o);
+	Iterator it = arrayDesc.iterator();
+	while(it.hasNext()) {
+	    AArrayDescriptor o = (AArrayDescriptor) it.next();
+	    if(o.getImmediate() != null)
+		sizes.add((Value) mProductions.pop());
+	    else 
+		break;
 	}
-	
-
+	    		
 	BaseType type = (BaseType) mProductions.pop();
 	ArrayType arrayType = ArrayType.v(type, descCnt);
-
+	
 	mProductions.push(Jimple.v().newNewMultiArrayExpr(arrayType, sizes));	
     }
 

@@ -94,10 +94,9 @@ public class JimpleAst
     private void generateParseTree(InputStream istream)
     {	
 	Parser p =
-	    new Parser(
-		       new Lexer(
-				 new PushbackReader(
-						    new InputStreamReader(istream), 1024)));			
+	    new Parser(new Lexer(
+		    new PushbackReader(new EscapedReader(
+                    new InputStreamReader(istream)), 1024)));			
 	try {
 	    mTree = p.parse();
 	} catch(ParserException e) {

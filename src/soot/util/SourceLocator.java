@@ -34,9 +34,10 @@ import java.io.*;
 import java.util.zip.*;
 import java.util.Enumeration;
 import java.util.*;
+import soot.*;
 
 /**
- * xxx should find a .class .jimple or .baf source for a className... presently justs finds a .jimple source.
+ * xxx should find a .class .jimple or .baf source for a className... presently finds jimple and class
  */
 
 public class SourceLocator
@@ -46,6 +47,20 @@ public class SourceLocator
 
     private static final boolean debug = false;
 
+
+    public static final int PRECEDENCE_NONE = 0;
+    public static final int PRECEDENCE_CLASS = 1;
+    public static final int PRECEDENCE_JIMPLE = 2;
+    public static final int PRECEDENCE_BAF = 3;
+
+    private static int srcPrecedence = PRECEDENCE_NONE;
+
+    public static void setSrcPrecedence(int precedence)
+    {
+	srcPrecedence = precedence;
+    }
+
+
     private SourceLocator() // No instances.
     {
     }
@@ -54,21 +69,19 @@ public class SourceLocator
 
     public static InputStream getInputStreamOf(String className) throws ClassNotFoundException
     {
-        return getInputStreamOf(System.getProperty("java.class.path"), className);
+
+        return getInputStreamOf(Scene.v().getSootClassPath(), className);
     }
 
-
-
-  
-
     public static Map nameToZipFile = new HashMap();
-        // cache of zip files
+    // cache of zip files
 
     private static List previousLocations = null;
     private static int previousCPHashCode = 0;
     
     public static InputStream getInputStreamOf(String classPath, String className) throws ClassNotFoundException
     {
+
         List locations = null;
 	if(debug)
 	    System.err.println("classpath is:  " + classPath);
@@ -82,18 +95,33 @@ public class SourceLocator
         {
             locations = new ArrayList();
             int sepIndex;
-
+	    boolean absolutePath;
+	    
+	    String userDir = System.getProperty("user.dir");
             for(;;)
             {
+		// temporary fix xxxxx fixme .
+		if(classPath.indexOf(fileSeparator) != 0)
+		    absolutePath = false;
+		else
+		    absolutePath = true;
+		
                 sepIndex = classPath.indexOf(pathSeparator);
-
+		
+		
+		
                 if(sepIndex == -1)
-                {
-                    locations.add(classPath);
+		{
+		    if(absolutePath)
+			locations.add(classPath);
+		    else
+			locations.add(userDir + fileSeparator + classPath);
                     break;
                 }
-
-                locations.add(classPath.substring(0, sepIndex));
+		if(absolutePath)
+		    locations.add(classPath.substring(0, sepIndex));
+		else
+		    locations.add(userDir + fileSeparator + classPath.substring(0, sepIndex));
 		
                 classPath = classPath.substring(sepIndex + 1);
             }
@@ -101,83 +129,92 @@ public class SourceLocator
             previousLocations = locations;
         }
 
-        // Go through each location, looking for this class
-        {
-            for(int i = 0; i < locations.size(); i++)
-            {
-                String location = (String) locations.get(i);
-		/*
-                if(location.endsWith(".zip") || location.endsWith(".jar"))
-                {
-                    String fileName = className.replace('.', '/') + ".class";
-                    try {
-                        ZipFile zipFile;
-                        
-                        if(nameToZipFile.containsKey(location))
-                            zipFile = (ZipFile) nameToZipFile.get(location);
-                        else 
-                        {
-                            zipFile = new ZipFile(location);    
-                            nameToZipFile.put(location, zipFile);
-                        }
-                        
-                        ZipEntry entry = zipFile.getEntry(fileName);
+	InputStream res = null;
+	{ // for now types are found on the filesystem.
 
-                        if(entry == null)
-                            continue;
-                        else
-                            return zipFile.getInputStream(entry);
-                    } catch(IOException e)
-                    {
-                        continue;
-                    }
+
+	    List reps = new ArrayList(4);
+	    reps.add(ClassInputRep.v());
+	    reps.add(JimpleInputRep.v());
+
+
+	    if(srcPrecedence == PRECEDENCE_NONE) {
+		return getFileInputStream(locations, reps, className);
+	    }
+	    else if(srcPrecedence == PRECEDENCE_CLASS) {
+		List lst = new LinkedList();
+		lst.add(ClassInputRep.v());
+		if( (res = getFileInputStream(locations,lst, className)) != null)
+		    return res;
+		if( (res = getFileInputStream(locations, reps, className)) != null)
+		    return res;
+	    } 
+	    else if (srcPrecedence == PRECEDENCE_JIMPLE) {
+		List lst = new LinkedList();
+		lst.add(JimpleInputRep.v());
+		if( (res = getFileInputStream(locations,lst, className)) != null)
+		    return res;
+		if( (res = getFileInputStream(locations, reps, className)) != null)
+		    return res;
+
+	    } else
+		throw new RuntimeException("IMPOSSIBLE");
+	    throw new ClassNotFoundException();
+	
+	}
+	
+    }
+
+
+    static private InputStream getFileInputStream(List locations, List reps, String className)
+    {    
+	Iterator it = locations.iterator();
+	className = className.replace('/','.');  // so that you can give for example either spec.bench.main or spec/bench/main
+	String className2 = className.replace('.', '/');
+
+	
+	while(it.hasNext()) {	
+
+	    StringBuffer locationBuf = new StringBuffer();
+	    String locationPath = (String)it.next();
+	    locationBuf.append(locationPath);
+
+	    if(!locationPath.endsWith(new Character(fileSeparator).toString()))
+		locationBuf.append(fileSeparator);
+
+	    String path = locationBuf.toString();
+		
+	    Iterator repsIt = reps.iterator();    
+	    while(repsIt.hasNext()) { 
+
+		
+		SootInputRepresentation inputRep = (SootInputRepresentation) repsIt.next();
+
+		String adjustedClassName = path + className;
+		if(inputRep instanceof ClassInputRep)
+		    adjustedClassName = path + className2;
+
+		String fullPath = adjustedClassName + inputRep.getFileExtension();
+
+	      
+		                     
+		File f = new File(fullPath);
+		if(debug)
+		    System.err.println("looking for: " + fullPath);
+	    
+
+		InputStream in;
+
+		if (f.canRead()) {
+		    try {       
+			return in = inputRep.createInputStream(new FileInputStream(f));		    
+		    } catch(IOException e) { 
+			System.out.println(e); throw new RuntimeException("!"); 
 		    }
-		    else*/ {
-                    // Default: try loading class directly
-
-                    String fileName = className + ".jimple";
-                    String fullPath;
-
-                    if(location.endsWith(new Character(fileSeparator).toString()))
-                        fullPath = location + fileName;
-                    else
-                        fullPath = location + fileSeparator + fileName;
-
-                    try {
-                        File f = new File(fullPath);
-			if(debug)
-			    System.err.println("looking for: " + fullPath);
-                        
-			InputStream in =  new JimpleInputStream(new FileInputStream(f));                        
-			return in;
-		    }  catch(IOException e) {
-		    }
-
-		    fileName = className.replace('.', '/') + ".class";
-                    
-
-		    
-			
-                    if(location.endsWith(new Character(fileSeparator).toString()))
-                        fullPath = location + fileName;
-                    else
-                        fullPath = location + fileSeparator + fileName;
-
-                    try {
-                        File f = new File(fullPath);
-			if(debug)
-			    System.err.println("looking for: " + fullPath);
-                        
-			
-			InputStream in = new ClassInputStream(new FileInputStream(f));                        
-			return in;		      						
-			
-		    } catch(IOException e){
-		    }
-		    
 		}
 	    }
 	}
-        throw new ClassNotFoundException(className);
-    }
+	return null;
+    }    
 }
+
