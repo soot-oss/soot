@@ -586,8 +586,11 @@ public class JasminClass
                         x = ((IntConstant) op2).value;
                         isValidCase = true;
                     }
-                    else if(op2 == l && op1 instanceof IntConstant)
+                    else if(expr instanceof AddExpr && 
+                        op2 == l && op1 instanceof IntConstant)
                     {
+                        // Note expr can't be a SubExpr because that would be x = 3 - x
+                        
                         x = ((IntConstant) op1).value;
                         isValidCase = true;
                     }
