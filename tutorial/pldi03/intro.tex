@@ -35,7 +35,7 @@
 \item a free compiler infrastructure, written in Java (LGPL)
 \item was originally designed to analyze and transform Java bytecode
 \item original motivation was to provide a common infrastructure with
-which we could compare analyses (points-to analyses)
+which researchers could compare analyses (points-to analyses)
 \item has been extended to include decompilation and visualization
 \end{itemize}
 \sablefootnote{www.sable.mcgill.ca/soot/}
@@ -65,16 +65,18 @@ graduate students at McGill and research results have been the topics
 of papers and theses.
 \end{itemize}
 \sablefootnote{www.sable.mcgill.ca/soot/credits}
+\sablefootnote{www.sable.mcgill.ca/publications/}
 \end{slide}
 
 \begin{slide}{Soot: Past and Present (2)}
 
 \begin{itemize}
-\item Soot 1.x versions have been used by many research groups for 
+\item Soot 1.x has been used by many research groups for 
 a wide variety of applications.   Has also been used in several
 compiler courses.  Last version was 1.2.5.
 \item Soot 2.0 and the first version of the Eclipse Plugin have just
 been released - June 2003 - JIT for PLDI 2003.
+\item This tutorial is based on Soot 2.0. 
 \end{itemize}
 \end{slide}
 
@@ -209,6 +211,8 @@ Use Spark for points-to analysis and
 call graph,  with Spark simplifying the points-to problem by collapsing
 equivalent variables.  
 
+Note: \texttt{on} is a short form for \texttt{enabled:true}.
+
 \end{slide}
 
 
@@ -260,6 +264,20 @@ turn on \textit{static method binding} (smb) within that phase.
 \item Eclipse views for Soot IRs
 \end{itemize}
 \end{small}
+\sablefootnote{www.sable.mcgill.ca/software/\#soot}
+\end{slide}
+
+\begin{slide}{Switching Gears ... Let's get dirty}
+Now we want to understand:
+\begin{itemize}
+\item details of Jimple
+\item internal workings of Soot
+\end{itemize}
+
+To work with Soot in this way,  you should download the complete package
+\texttt{soot-2.0.jar} which contains the complete Java source, class files,
+Javadoc documentations, Soot tutorials, source and compiled forms of the plugin,and our modified jasmin assembler. 
+\sablefootnote{www.sable.mcgill.ca/software/\#soot}
 \end{slide}
 
 \begin{slide}{Jimple}
@@ -373,7 +391,7 @@ label0:          // created by Printer
 \begin{itemize}
 \item These transformations are relatively hard to design so that 
 they produce correct, useful and efficient code.
-\item We do want a 3-addr IR.
+\item Worth the price, we do want a 3-addr typed IR.
 \begin{footnotesize}
 \begin{tabular}{ll|ll}
 \multicolumn{2}{l}{raw bytecode \hspace*{.7 in}} & \multicolumn{2}{l}{typed 3-address code (Jimple)}\\
@@ -402,13 +420,20 @@ they produce correct, useful and efficient code.
 \end{slide}
 
 \begin{slide} {Jimple $\rightarrow$ Bytecode}
+\vspace{-0.2in}
 \begin{itemize}
 \item Performed in the \texttt{bb} phase.
 \item A naive translation introduces many spurious stores and loads.
-\item Two approaches,  aggregate expressions and then generate stack
-      code or perform store-load and store-load-load elimination 
-      on the naive stack code. (CC 2000)
+\item Two approaches (CC 2000),  
+\begin{itemize}
+\item aggregate expressions and then generate stack
+      code; or 
+\item perform store-load and store-load-load elimination 
+      on the naive stack code. 
+\end{itemize}
 \item Second approach works better and produces very good bytecode.
+\item Produces bytecode that is different than what {\tt javac} 
+produces,  breaks immature JITs.
 \end{itemize}
 \end{slide}
 
@@ -419,7 +444,7 @@ Soot builds data structures to represent:
 \begin{itemize}
 \item a complete environment (\textbf{\texttt{Scene}}) 
 \item classes (\textbf{\texttt{SootClass}}) 
-\item Fields and Methods (\textbf{\texttt{SootClass}}, \textbf{\texttt{SootField}})
+\item Fields and Methods (\textbf{\texttt{SootMethod}}, \textbf{\texttt{SootField}})
 \item bodies of Methods (come in different flavours, corresponding to 
          different IR levels, ie. \textbf{\texttt{JimpleBody}})
 \end{itemize}
@@ -479,7 +504,7 @@ We create an OO hierarchy of units, allowing generic programming using
 \begin{slide}{Soot Philosophy on {\tt Unit}s}
 \vspace*{-0.1in}
 \begin{center}
-All Accesses should be Abstract!
+Accesses should be \textbf{abstract} whenever possible!
 \end{center}
 
 \vspace*{0.05in}
