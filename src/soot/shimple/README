@@ -12,7 +12,7 @@ Use/Definition and Definition/Use chains for Shimple can be obtained
 with soot.shimple.toolkits.scalar.ShimpleLocalDefs and
 soot.toolkits.scalar.SimpleLocalUses.
 
-Available example analyses with Shimple currently include:
+Available example analyses for Shimple currently include:
 soot.shimple.toolkits.scalar.{ShimpleLocalDefs,SEvaluator,SConstantPropagatorAndFolder}
 
 Suggestions, improvements and bug reports/fixes welcome!  Please send

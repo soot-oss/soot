@@ -40,8 +40,9 @@ import java.util.*;
  *
  * <p> To use this analysis from the command line in Soot, try
  * something like: <code>soot.Main --shimple -p shimple optimize
- * &lt;classname&gt;</code> or <code>soot.Main --shimplejimple -p shimple
- * optimize -p shimple naive-phi-elimination &lt;classname&gt;</code>.
+ * &lt;classname&gt;</code> or <code>soot.Main --jimple --via-shimple
+ * -p shimple optimize -p shimple naive-phi-elimination
+ * &lt;classname&gt;</code>.
  *
  * <p> To compare the results with the non-SSA propagator, you can use
  * (this disables all optimizations but constant propagation and
