@@ -100,9 +100,9 @@ public class ColorTag implements Tag
 				break;
 			}
 			case PURPLE: {
-				red = 255;
-				green = 210;
-				blue = 255;
+				red = 159;
+				green = 34;
+				blue = 193;
 				break;
 			}
 			default: {

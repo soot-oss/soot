@@ -20,6 +20,8 @@
 package ca.mcgill.sable.soot.attributes;
 
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.ui.*;
@@ -55,6 +57,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	private int lineNum;
 	private String fileName;
 	private String packFileName;
+	private ArrayList packFileNames;
 	private boolean editorHasChanged;
 	private String selectedProj;
 	private SootAttributesHandler attrsHandler;
@@ -138,6 +141,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 		computeAttributes();
 		//addSootAttributeMarkers();
 		addColorTags();
+		addSootAttributeMarkers();
 	}
 
 	protected abstract void computeAttributes();
@@ -299,6 +303,20 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	 */
 	public void setViewer(ITextViewer viewer) {
 		this.viewer = viewer;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getPackFileNames() {
+		return packFileNames;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setPackFileNames(ArrayList list) {
+		packFileNames = list;
 	}
 
 }

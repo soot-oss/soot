@@ -3946,12 +3946,15 @@ class CUP$Grm$actions {
           case 298: // unary_expression_not_plus_minus ::= NOT unary_expression 
             {
               Expr RESULT = null;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).right;
+		Token b = (Token)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-1)).value;
 		int aleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
 		Expr a = (Expr)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                           RESULT = parser.nf.Unary(parser.pos(a), Unary.NOT, a); 
-                           
+                             RESULT = parser.nf.Unary(parser.pos(b,a), Unary.NOT, a); 
+                             
               CUP$Grm$result = new java_cup.runtime.Symbol(132/*unary_expression_not_plus_minus*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
             }
           return CUP$Grm$result;
@@ -3960,12 +3963,15 @@ class CUP$Grm$actions {
           case 297: // unary_expression_not_plus_minus ::= COMP unary_expression 
             {
               Expr RESULT = null;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).right;
+		Token b = (Token)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-1)).value;
 		int aleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
 		Expr a = (Expr)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                            RESULT = parser.nf.Unary(parser.pos(a), Unary.BIT_NOT, a); 
-                            
+                              RESULT = parser.nf.Unary(parser.pos(b,a), Unary.BIT_NOT, a); 
+                              
               CUP$Grm$result = new java_cup.runtime.Symbol(132/*unary_expression_not_plus_minus*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
             }
           return CUP$Grm$result;
@@ -3986,12 +3992,15 @@ class CUP$Grm$actions {
           case 295: // predecrement_expression ::= MINUSMINUS unary_expression 
             {
               Unary RESULT = null;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).right;
+		Token b = (Token)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-1)).value;
 		int aleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
 		Expr a = (Expr)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                                  RESULT = parser.nf.Unary(parser.pos(a), Unary.PRE_DEC, a); 
-                                  
+                                    RESULT = parser.nf.Unary(parser.pos(b,a), Unary.PRE_DEC, a); 
+                                    
               CUP$Grm$result = new java_cup.runtime.Symbol(134/*predecrement_expression*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
             }
           return CUP$Grm$result;
@@ -4000,12 +4009,15 @@ class CUP$Grm$actions {
           case 294: // preincrement_expression ::= PLUSPLUS unary_expression 
             {
               Unary RESULT = null;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).right;
+		Token b = (Token)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-1)).value;
 		int aleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
 		Expr a = (Expr)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                                RESULT = parser.nf.Unary(parser.pos(a), Unary.PRE_INC, a); 
-                                
+                                  RESULT = parser.nf.Unary(parser.pos(b,a), Unary.PRE_INC, a); 
+                                  
               CUP$Grm$result = new java_cup.runtime.Symbol(133/*preincrement_expression*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
             }
           return CUP$Grm$result;
@@ -4026,12 +4038,15 @@ class CUP$Grm$actions {
           case 292: // unary_expression ::= MINUS unary_expression 
             {
               Expr RESULT = null;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).right;
+		Token b = (Token)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-1)).value;
 		int aleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
 		Expr a = (Expr)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                             RESULT = parser.nf.Unary(parser.pos(a), Unary.NEG, a); 
-                             
+                               RESULT = parser.nf.Unary(parser.pos(b,a), Unary.NEG, a); 
+                               
               CUP$Grm$result = new java_cup.runtime.Symbol(131/*unary_expression*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
             }
           return CUP$Grm$result;
@@ -4040,12 +4055,15 @@ class CUP$Grm$actions {
           case 291: // unary_expression ::= PLUS unary_expression 
             {
               Expr RESULT = null;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).right;
+		Token b = (Token)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-1)).value;
 		int aleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
 		Expr a = (Expr)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                            RESULT = parser.nf.Unary(parser.pos(a), Unary.POS, a); 
-                            
+                              RESULT = parser.nf.Unary(parser.pos(b,a), Unary.POS, a); 
+                              
               CUP$Grm$result = new java_cup.runtime.Symbol(131/*unary_expression*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
             }
           return CUP$Grm$result;
@@ -4081,9 +4099,12 @@ class CUP$Grm$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).right;
 		Expr a = (Expr)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-1)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
+		Token b = (Token)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                                    RESULT = parser.nf.Unary(parser.pos(a), a, Unary.POST_DEC); 
-                                    
+                                      RESULT = parser.nf.Unary(parser.pos(a,b), a, Unary.POST_DEC); 
+                                      
               CUP$Grm$result = new java_cup.runtime.Symbol(130/*postdecrement_expression*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
             }
           return CUP$Grm$result;
@@ -4095,9 +4116,12 @@ class CUP$Grm$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).right;
 		Expr a = (Expr)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-1)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
+		Token b = (Token)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                                  RESULT = parser.nf.Unary(parser.pos(a), a, Unary.POST_INC); 
-                                  
+                                    RESULT = parser.nf.Unary(parser.pos(a,b), a, Unary.POST_INC); 
+                                    
               CUP$Grm$result = new java_cup.runtime.Symbol(129/*postincrement_expression*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-1)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
             }
           return CUP$Grm$result;
@@ -5681,7 +5705,7 @@ class CUP$Grm$actions {
 		int cright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
 		Stmt c = (Stmt)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                                                                                         RESULT = parser.nf.If(parser.pos(n, b), a, b, c); 
+                                                                                         RESULT = parser.nf.If(parser.pos(n, c), a, b, c); 
                                                                                          
               CUP$Grm$result = new java_cup.runtime.Symbol(86/*if_then_else_statement_no_short_if*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-6)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
             }
@@ -5704,7 +5728,7 @@ class CUP$Grm$actions {
 		int cright = ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right;
 		Stmt c = (Stmt)((java_cup.runtime.Symbol) CUP$Grm$stack.elementAt(CUP$Grm$top-0)).value;
 		
-                                                                             RESULT = parser.nf.If(parser.pos(n, b), a, b, c); 
+                                                                             RESULT = parser.nf.If(parser.pos(n, c), a, b, c); 
                                                                              
               CUP$Grm$result = new java_cup.runtime.Symbol(85/*if_then_else_statement*/, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-6)).left, ((java_cup.runtime.Symbol)CUP$Grm$stack.elementAt(CUP$Grm$top-0)).right, RESULT);
             }

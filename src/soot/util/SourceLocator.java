@@ -164,7 +164,7 @@ public class SourceLocator
                 javaClassName = className.substring(0, className.indexOf("$"));
                 
             }
-            if (sourceToClassMap != null) {
+            else if (sourceToClassMap != null) {
                 if (sourceToClassMap.get(javaClassName) != null) {
                     javaClassName = (String)sourceToClassMap.get(javaClassName);
                 }

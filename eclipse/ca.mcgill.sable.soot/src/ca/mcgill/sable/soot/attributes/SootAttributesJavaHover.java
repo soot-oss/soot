@@ -20,6 +20,7 @@
 package ca.mcgill.sable.soot.attributes;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import org.eclipse.ui.*;
@@ -31,6 +32,7 @@ import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.ui.text.java.hover.*;
 import org.eclipse.jdt.core.*;
 import ca.mcgill.sable.soot.*;
@@ -56,6 +58,7 @@ import ca.mcgill.sable.soot.*;
 
 public class SootAttributesJavaHover extends AbstractSootAttributesHover implements IJavaEditorTextHover {
 
+	private ArrayList fileNames;
 	
 	public IJavaElement getJavaElement(AbstractTextEditor textEditor) {
 		IEditorInput input= textEditor.getEditorInput();
@@ -95,30 +98,43 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 			if (jElem.getElementType() == IJavaElement.COMPILATION_UNIT) {
 			
 				ICompilationUnit cu = (ICompilationUnit)jElem;
-				
+				setPackFileNames(new ArrayList());
 				try {
 					IPackageDeclaration [] pfs = cu.getPackageDeclarations();
-					if (pfs.length == 0) {
+					//if (pfs.length == 0) {
 						
-						setPackFileName(fileToNoExt(cu.getElementName()));
-					}
-					else {
-						for (int i = 0; i < pfs.length; i++) {
+					//	getPackFileNames().add(fileToNoExt(cu.getElementName()));
+					//}
+					//else {
+					//	for (int i = 0; i < pfs.length; i++) {
 							//System.out.println(pfs[i].getElementName());
-						}
+					//	}
 					
-					setPackFileName(fileToNoExt(pfs[0].getElementName()+"."+cu.getElementName()));
+					//    getPackFileNames().add(fileToNoExt(pfs[0].getElementName()+"."+cu.getElementName()));
+					//}
+					
+					IType [] topLevelDecls = cu.getTypes();
+					for (int i = 0; i < topLevelDecls.length; i++){
+						/*System.out.println("top level decl: "+topLevelDecls[i]);
+						System.out.println("top level decl element name: "+topLevelDecls[i].getElementName());
+						System.out.println("top level decl type qualified name: "+topLevelDecls[i].getTypeQualifiedName());
+						String name = topLevelDecls[i].getFullyQualifiedName();
+						name = name.replaceAll("\\.", System.getProperty("file.separator"));
+						System.out.println("top level decl name: "+name);
+						*/
+						getPackFileNames().add(topLevelDecls[i].getFullyQualifiedName());
 					}
 				}
 				catch (Exception e1) {
 					System.out.println(e1.getMessage());
 				}
 				
+				
 			}
 		
 		
-			computeAttributes();
-			addSootAttributeMarkers();
+			//computeAttributes();
+			//addSootAttributeMarkers();
 			
 			//addAction();
 		}
@@ -131,20 +147,51 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 	}
 	}*/
 	protected void computeAttributes() {
+		setAttrsHandler(new SootAttributesHandler());
+		createAttrFileNames();
 		SootAttributeFilesReader safr = new SootAttributeFilesReader();
-		AttributeDomProcessor adp = safr.readFile(createAttrFileName());
-		if (adp != null) {
-			
-			setAttrsHandler(new SootAttributesHandler());
-			getAttrsHandler().setAttrList(adp.getAttributes());
-			
-			SootPlugin.getDefault().getManager().addToFileWithAttributes((IFile)getRec(), getAttrsHandler());
+		Iterator it = fileNames.iterator();
+		while (it.hasNext()){
+			String fileName = ((IPath)it.next()).toOSString();
+			AttributeDomProcessor adp = safr.readFile(fileName);
+			if (adp != null) {
+				
+				getAttrsHandler().setAttrList(adp.getAttributes());
+			}
 		}
+		
+		SootPlugin.getDefault().getManager().addToFileWithAttributes((IFile)getRec(), getAttrsHandler());
+			
+		
 	}
-	private String createAttrFileName() {
+	private String createAttrFileNames() {
+		fileNames = new ArrayList();
 		StringBuffer sb = new StringBuffer();
 		sb.append(SootPlugin.getWorkspace().getRoot().getProject(getSelectedProj()).getLocation().toOSString());
 		sb.append("/sootOutput/attributes/");
+		System.out.println(sb.toString());
+		String dir = sb.toString();
+		IContainer c = (IContainer)SootPlugin.getWorkspace().getRoot().getProject(getSelectedProj()).getFolder("sootOutput/attributes/");
+		try {
+		
+			IResource [] files = c.members();
+			for (int i = 0; i < files.length; i++){
+				Iterator it = getPackFileNames().iterator();
+				while (it.hasNext()){
+					
+					String fileNameToMatch = (String)it.next();
+					System.out.println("file to match: "+fileNameToMatch);
+					System.out.println(files[i].getName());
+					//System.out.println(getPackFileName());
+					if (files[i].getName().matches(fileNameToMatch+"[$].*") || files[i].getName().matches(fileNameToMatch+"\\."+"xml")){
+						System.out.println(files[i]);
+						fileNames.add(files[i].getLocation());
+					}
+				}
+			}
+		}
+		catch(CoreException e){
+		}
 		sb.append(getPackFileName());
 		sb.append(".xml");
 	
@@ -165,7 +212,7 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 			if (((sa.getAllTextAttrs("<br>") == null) || (sa.getAllTextAttrs("<br>").length() == 0)) && 
 				((sa.getAllLinkAttrs() == null) || (sa.getAllLinkAttrs().size() ==0))) continue;
 			
-			markerAttr.put(IMarker.MESSAGE, "Soot Attribute");
+			//markerAttr.put(IMarker.MESSAGE, "Soot Attribute");
 			markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJavaStartLn()));
 		
 			try {

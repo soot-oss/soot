@@ -9,7 +9,14 @@ public class Util {
         if (pos != null) {
             if (pos instanceof soot.javaToJimple.jj.DPosition){
                 soot.javaToJimple.jj.DPosition dpos = (soot.javaToJimple.jj.DPosition)pos;
+                /*if (host instanceof soot.jimple.Stmt) {
+                    System.out.println("host is a stmt and adding SourcePosTag: "+host.toString());
+                }
+                System.out.println("adding pos tag: "+dpos+" to host: "+host.getClass());*/
                 addPosTag(host, dpos.column(), dpos.endCol());
+            }
+            else {
+                System.out.println("not a dpos");
             }
         }
     }
@@ -46,6 +53,15 @@ public class Util {
                 
             }
         }
+    }
+    
+    /**
+     * Line Tag Adder
+     */
+    public static void addLineTag(soot.tagkit.Host host, int sLine, int eLine) {
+
+        host.addTag(new soot.tagkit.SourceLineNumberTag(sLine, eLine));
+                    
     }
     
     /**

@@ -927,12 +927,12 @@ if_then_statement ::=
 
 if_then_else_statement ::=
     IF:n LPAREN expression:a RPAREN statement_no_short_if:b ELSE statement:c {:
-                                                                             RESULT = parser.nf.If(parser.pos(n, b), a, b, c); 
+                                                                             RESULT = parser.nf.If(parser.pos(n, c), a, b, c); 
                                                                              :};
 
 if_then_else_statement_no_short_if ::=
     IF:n LPAREN expression:a RPAREN statement_no_short_if:b ELSE statement_no_short_if:c {:
-                                                                                         RESULT = parser.nf.If(parser.pos(n, b), a, b, c); 
+                                                                                         RESULT = parser.nf.If(parser.pos(n, c), a, b, c); 
                                                                                          :};
 
 switch_statement ::=
@@ -1284,44 +1284,44 @@ postfix_expression ::=
  |  postdecrement_expression:a {:  RESULT = a;  :};
 
 postincrement_expression ::=
-    postfix_expression:a PLUSPLUS {:
-                                  RESULT = parser.nf.Unary(parser.pos(a), a, Unary.POST_INC); 
-                                  :};
+    postfix_expression:a PLUSPLUS:b {:
+                                    RESULT = parser.nf.Unary(parser.pos(a,b), a, Unary.POST_INC); 
+                                    :};
 
 postdecrement_expression ::=
-    postfix_expression:a MINUSMINUS {:
-                                    RESULT = parser.nf.Unary(parser.pos(a), a, Unary.POST_DEC); 
-                                    :};
+    postfix_expression:a MINUSMINUS:b {:
+                                      RESULT = parser.nf.Unary(parser.pos(a,b), a, Unary.POST_DEC); 
+                                      :};
 
 unary_expression ::=
     preincrement_expression:a {:  RESULT = a;  :}
  |  predecrement_expression:a {:  RESULT = a;  :}
- |  PLUS unary_expression:a {:
-                            RESULT = parser.nf.Unary(parser.pos(a), Unary.POS, a); 
-                            :}
- |  MINUS unary_expression:a {:
-                             RESULT = parser.nf.Unary(parser.pos(a), Unary.NEG, a); 
-                             :}
+ |  PLUS:b unary_expression:a {:
+                              RESULT = parser.nf.Unary(parser.pos(b,a), Unary.POS, a); 
+                              :}
+ |  MINUS:b unary_expression:a {:
+                               RESULT = parser.nf.Unary(parser.pos(b,a), Unary.NEG, a); 
+                               :}
  |  unary_expression_not_plus_minus:a {:  RESULT = a;  :};
 
 preincrement_expression ::=
-    PLUSPLUS unary_expression:a {:
-                                RESULT = parser.nf.Unary(parser.pos(a), Unary.PRE_INC, a); 
-                                :};
+    PLUSPLUS:b unary_expression:a {:
+                                  RESULT = parser.nf.Unary(parser.pos(b,a), Unary.PRE_INC, a); 
+                                  :};
 
 predecrement_expression ::=
-    MINUSMINUS unary_expression:a {:
-                                  RESULT = parser.nf.Unary(parser.pos(a), Unary.PRE_DEC, a); 
-                                  :};
+    MINUSMINUS:b unary_expression:a {:
+                                    RESULT = parser.nf.Unary(parser.pos(b,a), Unary.PRE_DEC, a); 
+                                    :};
 
 unary_expression_not_plus_minus ::=
     postfix_expression:a {:  RESULT = a;  :}
- |  COMP unary_expression:a {:
-                            RESULT = parser.nf.Unary(parser.pos(a), Unary.BIT_NOT, a); 
-                            :}
- |  NOT unary_expression:a {:
-                           RESULT = parser.nf.Unary(parser.pos(a), Unary.NOT, a); 
-                           :}
+ |  COMP:b unary_expression:a {:
+                              RESULT = parser.nf.Unary(parser.pos(b,a), Unary.BIT_NOT, a); 
+                              :}
+ |  NOT:b unary_expression:a {:
+                             RESULT = parser.nf.Unary(parser.pos(b,a), Unary.NOT, a); 
+                             :}
  |  cast_expression:a {:  RESULT = a;  :};
 
 cast_expression ::=

@@ -315,7 +315,7 @@ public class Aggregator extends BodyTransformer
               // was a simple copy". This way, when there's a load of a constant
               // followed by an invoke, the invoke gets the tags.
               if( wasSimpleCopy ) {
-                  usepair.unit.removeAllTags();
+                  //usepair.unit.removeAllTags();
                   usepair.unit.addAllTagsOf( s );
               }
             }

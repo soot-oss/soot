@@ -132,7 +132,7 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 							System.out.println("offset: "+getModel().getMarkerPosition(markers[i]).getOffset());
 							int pos = getModel().getMarkerPosition(markers[i]).getOffset();
 							pos = pos / getLineNumber();
-							Rectangle rect = new Rectangle(380, 16, 650, 45 );
+							Rectangle rect = new Rectangle(320, 16, 660, 45 );
 							
 							popup.open(rect);
 
