@@ -1576,7 +1576,7 @@ public class CFG {
 			newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef());
 			
 			units.insertBefore(newTarget, firstTargetStmt);
-                            
+                        instructionToFirstStmt.put(targetIns, newTarget);
 			targetToHandler.put(firstTargetStmt, newTarget);
 		    }
 		}
