@@ -125,7 +125,7 @@ public class Scene extends AbstractHost
     }
 
     private int stateCount;
-    int getState() { return this.stateCount; }
+    public int getState() { return this.stateCount; }
 
     /** Returns the default options map associated with phaseName.
      * Note that this map is special and will not return 'null' 

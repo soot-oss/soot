@@ -201,7 +201,7 @@ public class JasminClass
         else
             code.add(s);
 
-//        System.out.println(s);
+        System.out.println(s);
     }
 
     void emit(String s, int stackChange)
@@ -640,14 +640,17 @@ public class JasminClass
 
                     Stmt nextNextStmt = (Stmt)(l.get(0));
 
-                    final Value lvalue = stmt.getLeftOp();
+                    Value lvalue = stmt.getLeftOp();
                     final Value rvalue = stmt.getRightOp();
 
                     if (!(lvalue instanceof Local))
                       break;
 
                     // we're looking for this pattern: 
-                    // local = <lvalue>; <lvalue> = local +/- 1; use(local);
+                    // a: <lvalue> = <rvalue>; <rvalue> = <rvalue> +/- 1; use(<lvalue>);
+                    // b: <lvalue> = <rvalue>; <rvalue> = <lvalue> +/- 1; use(<lvalue>);
+                    // case a is emitted when rvalue is a local;
+                    // case b when rvalue is, eg. a field ref.
 
                     // we need some notion of equals 
                     // for rvalue & nextStmt.getLeftOp().
@@ -684,7 +687,7 @@ public class JasminClass
                     }
                     
                     AddExpr addexp = (AddExpr)nextStmt.getRightOp();
-                    if (!addexp.getOp1().equals(lvalue))
+                    if (!addexp.getOp1().equals(lvalue) && !addexp.getOp1().equals(rvalue))
                       break;
 
                     Value added /* tax? */ = addexp.getOp2();
@@ -697,18 +700,28 @@ public class JasminClass
                     /* uses live precisely in nextStmt and nextNextStmt */
                     /* LocalDefs tells us this: if there was no use, */
                     /* there would be no corresponding def. */
-                    if (lu.getUsesOf(stmt).size() != 2 ||
-                        ld.getDefsOfAt((Local)lvalue, nextStmt).size() != 1 ||
-                        ld.getDefsOfAt((Local)lvalue, nextNextStmt).size() !=1)
-                      break;
+                    if (addexp.getOp1().equals(lvalue))
+                    {
+                        if (lu.getUsesOf(stmt).size() != 2 ||
+                            ld.getDefsOfAt((Local)lvalue, nextStmt).size() != 1 ||
+                            ld.getDefsOfAt((Local)lvalue, nextNextStmt).size() !=1)
+                            break;
+                        plusPlusState = 0;
+                    }
+                    else
+                    {
+                        if (lu.getUsesOf(stmt).size() != 1 ||
+                            ld.getDefsOfAt((Local)lvalue, nextNextStmt).size() !=1)
+                            break;
+                        plusPlusState = 10;
+                    }
 
                     /* emit dup slot */
 
-            /*
-                    System.out.println("found ++ instance:");
-                    System.out.println(s); System.out.println(nextStmt);
-                    System.out.println(nextNextStmt);
-                */
+//                      System.out.println("found ++ instance:");
+//                      System.out.println(s); System.out.println(nextStmt);
+//                      System.out.println(nextNextStmt);
+
                     /* this should be redundant, but we do it */
                     /* just in case. */
                     if (lvalue.getType() != IntType.v())
@@ -726,7 +739,6 @@ public class JasminClass
                     plusPlusValue = rvalue;
                     plusPlusHolder = (Local)lvalue;
                     plusPlusIncrementer = nextStmt;
-                    plusPlusState = 0;
 
                     /* emit new statement with quickness */
                     emitStmt(nextNextStmt);
@@ -782,7 +794,14 @@ public class JasminClass
                 BinopExpr expr = (BinopExpr) rvalue;
                 Value op1 = expr.getOp1();
                 Value op2 = expr.getOp2();
-                                
+
+                if (lvalue == plusPlusHolder)
+                {
+                    emitValue(lvalue);
+                    plusPlusHolder = null;
+                    plusPlusState = 0;
+                }
+
                 if(l.getType().equals(IntType.v()))
                 {
                     boolean isValidCase = false;
@@ -1746,12 +1765,15 @@ public class JasminClass
                     switch(plusPlusState)
                     {
                     case 0:    
+                    {
                         // ok, we're called upon to emit the
                         // ++ target, whatever it was.
                         
                         // now we need to emit a statement incrementing
                         // the correct value.  
                         // actually, just remember the local to be incremented.
+
+                        // here ppi is of the form ppv = pph + 1
 
                         plusPlusState = 1;
                         
@@ -1763,13 +1785,45 @@ public class JasminClass
 
                         // afterwards we have the value on the stack.
                         return;
+                    }
                     case 1:
                         plusPlusHeight = currentStackHeight;
+                        plusPlusHolder = null;
 
                         emitValue(plusPlusValue);
 
                         plusPlusPlace = code.size();
                         emit("dup", 1);
+
+                        return;
+                    case 10:
+                    {
+                        // this time we have ppi of the form ppv = ppv + 1
+                        plusPlusState = 11;
+
+                        System.out.println("ppV "+plusPlusValue);
+                        System.out.println("ppH "+plusPlusHolder);
+                        System.out.println("ppI "+plusPlusIncrementer);
+
+                        plusPlusHolder = (Local)plusPlusValue;
+                        emitStmt(plusPlusIncrementer);
+                        int diff = plusPlusHeight - currentStackHeight + 1;
+                        if (diff > 0 && plusPlusState == 11)
+                          code.set(plusPlusPlace, "    dup_x"+diff);
+                        plusPlusHolder = null;
+
+                        // afterwards we have the value on the stack.
+                        return;
+                    }
+                    case 11:
+                        plusPlusHeight = currentStackHeight;
+                        plusPlusHolder = null;
+
+                        emitValue(plusPlusValue);
+                        if (plusPlusState != 11)
+                            emit("dup", 1);
+
+                        plusPlusPlace = code.size();
 
                         return;
                     }
