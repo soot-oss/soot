@@ -3859,6 +3859,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 		String name = call.name();
         // handle receiver/target
 		polyglot.ast.Receiver receiver = call.target();
+        //System.out.println("call: "+call+" receiver: "+receiver);
         soot.Local baseLocal;
         if ((receiver instanceof polyglot.ast.Special) && (((polyglot.ast.Special)receiver).kind() == polyglot.ast.Special.SUPER) && (((polyglot.ast.Special)receiver).qualifier() != null)){
             baseLocal = getSpecialSuperQualifierLocal(call);
@@ -3867,6 +3868,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
         baseLocal = (soot.Local)base().getBaseLocal(receiver);
         
+        //System.out.println("base local: "+baseLocal);
         
         ArrayList sootParams = getSootParams(call);
         
@@ -4279,6 +4281,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             }
         }
         else if (specialExpr.kind() == polyglot.ast.Special.THIS) {
+            //System.out.println("this is special this: "+specialExpr);
             if (specialExpr.qualifier() == null) {
                 return specialThisLocal;
             }

@@ -225,7 +225,8 @@ public class Util {
         }
         
         soot.FastHierarchy fh = InitialResolver.v().hierarchy();
-        
+       
+        //System.out.println("getting this for type: "+sootType);
         // if this for type already created return it from map
         if (getThisMap.containsKey(sootType)){
             return (soot.Local)getThisMap.get(sootType);
@@ -282,16 +283,13 @@ public class Util {
         soot.Local correctLocal = null;
         while (stmtsIt.hasNext()){
             soot.jimple.Stmt s = (soot.jimple.Stmt)stmtsIt.next();
-            Iterator it = s.getDefBoxes().iterator();
-            while (it.hasNext()){
-                soot.ValueBox vb = (soot.ValueBox)it.next();
-                if ((vb.getValue() instanceof soot.Local) && (fh.canStoreType(type, vb.getValue().getType()))){//(vb.getValue().getType().equals(type))){
-        //Iterator it = body.getLocals().iterator();
-        //soot.Local correctLocal = null;
-        //while (it.hasNext()){
-            //soot.Local l = (soot.Local)it.next();
-            //if (fh.canStoreType(type, l.getType())){//,l.getType().equals(type)){
-                    correctLocal = (soot.Local)vb.getValue();
+            if (s instanceof soot.jimple.IdentityStmt){
+                Iterator it = s.getDefBoxes().iterator();
+                while (it.hasNext()){
+                    soot.ValueBox vb = (soot.ValueBox)it.next();
+                    if ((vb.getValue() instanceof soot.Local) && (fh.canStoreType(type, vb.getValue().getType()))){//(vb.getValue().getType().equals(type))){
+                        correctLocal = (soot.Local)vb.getValue();
+                    }
                 }
             }
         }
@@ -300,18 +298,26 @@ public class Util {
     
     private static boolean bodyHasLocal(soot.Body body, soot.Type type) {
         soot.FastHierarchy fh = InitialResolver.v().hierarchy();
+        Iterator stmtsIt = body.getUnits().iterator();
+        soot.Local correctLocal = null;
+        while (stmtsIt.hasNext()){
+            soot.jimple.Stmt s = (soot.jimple.Stmt)stmtsIt.next();
+            if (s instanceof soot.jimple.IdentityStmt){
+                Iterator it = s.getDefBoxes().iterator();
+                while (it.hasNext()){
+                    soot.ValueBox vb = (soot.ValueBox)it.next();
+                    if ((vb.getValue() instanceof soot.Local) && (fh.canStoreType(type, vb.getValue().getType()))){//(vb.getValue().getType().equals(type))){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+        /*soot.FastHierarchy fh = InitialResolver.v().hierarchy();
         Iterator it = body.getDefBoxes().iterator();
         while (it.hasNext()){
             soot.ValueBox vb = (soot.ValueBox)it.next();
             if ((vb.getValue() instanceof soot.Local) && (fh.canStoreType(type, vb.getValue().getType()))){//(vb.getValue().getType().equals(type))){
-                return true;
-            }
-        }
-        return false;
-        /*Iterator it = body.getLocals().iterator();
-        while (it.hasNext()){
-            soot.Local l = (soot.Local)it.next();
-            if (l.getType().equals(type)){
                 return true;
             }
         }
