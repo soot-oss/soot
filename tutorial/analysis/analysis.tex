@@ -59,7 +59,7 @@ The {\tt FlowSet} interface requires the following methods:
 
 The first 3 methods are clear.  The {\tt copy()} method
 will put the contents of `this' {\tt FlowSet} into the
-{\tt dest} FlowSet.  
+destination {\tt FlowSet}.  
 
 For the last 3 methods, the following rule is used:
 
@@ -123,32 +123,32 @@ a flow function, merge, copy, and initial flow sets, and we're all set!
 The following abstract methods must be implemented by a {\tt FlowAnalysis}:
 
 \begin{description}
-\item{newInitialFlow():} return the initial value for {\tt FlowSet}s in
+\item{{\tt newInitialFlow()}:} return the initial value for {\tt FlowSet}s in
 the graph.
 
 e.g. ``{\tt return emptySet.clone();}''
 
-\item{customizeInitialFlowGraph():} Overriding {\tt
+\item{{\tt customizeInitialFlowGraph()}:} overriding {\tt
 customizeInitialFlowGraph()} will permit the user to give different
-flowsets to different graph nodes.  This method can adjust anything it
+flow sets to different graph nodes.  This method can adjust anything it
 needs to; it is called at the end of the constructor for {\tt
 Analysis}.  For instance, an all-paths analysis will often make the
 initial objects the full set, except at the start.
 
-\item{merge(inSet1, inSet2, outSet):} combine two {\tt FlowSet}s to produce
+\item{{\tt merge(inSet1, inSet2, outSet)}:} combine two {\tt FlowSet}s to produce
 an out-{\tt FlowSet}.
 
 e.g. ``{\tt inSet1.union(inSet2, outSet);}''
 
-\item{copy(sourceSet, destSet):} put the source into the destionation.
+\item{{\tt copy(sourceSet, destSet)}:} put the source into the destination.
 
 e.g. ``{\tt sourceSet.copy(destSet);}''
 
-\item{flowThrough(inSet, s, outSet):} Given {\tt inSet} and {\tt s}, put
+\item{{\tt flowThrough(inSet, s, outSet)}:} given {\tt inSet} and {\tt s}, put
 the correct OUT value into the {\tt outSet}.
 
 If we have pre-computed the gen and preserve sets, this code could implement
-flowThrough:
+{\tt flowThrough()}:
 \begin{verbatim}
 inSet.intersection(unitToPreserveSet.get(s), outSet);
 outSet.union(unitToGenerateSet.get(s), outSet);
@@ -200,7 +200,7 @@ it is a fairly simple change.
 Typically, we don't want to provide access to the underlying Analysis
 classes.  For instance, we would much rather pass around {\tt List}s of
 live locals, rather than {\tt FlowSet}s; we can make the {\tt List}s
-unmodifiable, whlie we're at it!
+unmodifiable, while we're at it!
 
 In order to do that, we wrap the {\tt Analysis} object.  After running the
 Analysis, we run through the units and map the {\tt Unit}s in question
@@ -261,7 +261,7 @@ options}{http://www.sable.mcgill.ca/soot/tutorial/phase}.
 
 \section{Extending Soot}
 
-The approved way of extending Soot is to provide a {\tt Main} classfile
+The approved way of extending Soot is to provide a {\tt Main} class file
 in a custom package, say {\tt plam.Main}.  This class can make adjustments
 to the {\tt Pack}s contained in the PackManager, for instance adding a
 goto instrumentor:
