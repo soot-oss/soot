@@ -688,7 +688,12 @@ public class JasminClass
 
                     modifyStackHeight(1); // simulate the pushing of address onto the stack by the jsr
 
-                    emit("astore " + localToSlot.get(assignStmt.getLeftOp()), -1);
+                    int slot = ((Integer) localToSlot.get(assignStmt.getLeftOp())).intValue();
+                    
+                    if(slot >= 0 && slot <= 3)
+                        emit("astore_" + slot, -1);
+                    else
+                        emit("astore " + slot, -1);
 
                     //emit("astore " + ( ( Integer ) subroutineToReturnAddressSlot.get( s ) ).intValue() );
 
