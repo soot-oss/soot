@@ -345,7 +345,8 @@ public class PackManager {
     }
 
     private void runBodyPacks(SootClass c) {
-        if (Options.v().output_format() == Options.output_format_dava) {
+        final int format = Options.v().output_format();
+        if (format == Options.output_format_dava) {
             G.v().out.print("Decompiling ");
         } else {
             G.v().out.print("Transforming ");
@@ -355,12 +356,11 @@ public class PackManager {
         boolean produceBaf = false, produceGrimp = false, produceDava = false,
             produceJimple = true, produceShimple = false;
 
-        switch (Options.v().output_format()) {
+        switch (format) {
             case Options.output_format_none :
             case Options.output_format_xml :
             case Options.output_format_jimple :
             case Options.output_format_jimp :
-                produceJimple = true;
                 break;
             case Options.output_format_shimp:
             case Options.output_format_shimple:
@@ -388,20 +388,21 @@ public class PackManager {
                 throw new RuntimeException();
         }
 
+        if( Options.v().via_shimple() ) produceShimple = true;
+
         Iterator methodIt = c.methodIterator();
         while (methodIt.hasNext()) {
             SootMethod m = (SootMethod) methodIt.next();
 
             if (!m.isConcrete()) continue;
 
-            if (produceShimple || Options.v().via_shimple()) {
+            if (produceShimple) {
                 ShimpleBody body = Shimple.v().newBody(m.retrieveActiveBody());
+                m.setActiveBody(body);
                 PackManager.v().getPack("stp").apply(body);
                 PackManager.v().getPack("sop").apply(body);
 
-                if (produceShimple)
-                    m.setActiveBody(body);
-                else
+                if( produceJimple )
                     m.setActiveBody(body.toJimpleBody());
             }
 
