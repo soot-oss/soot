@@ -1084,7 +1084,7 @@ public class Options extends OptionsBase {
             return "Phase "+phaseName+":\n"+
                 "\nThe Local Splitter identifies DU-UD webs for local variables \nand introduces new variables so that each disjoint web is \nassociated with a single local. "
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (true)", "" );
+                +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "jj.a" ) )
             return "Phase "+phaseName+":\n"+
@@ -2254,7 +2254,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jj.ls" ) )
             return ""
-              +"enabled:true ";
+              +"enabled:false ";
     
         if( phaseName.equals( "jj.a" ) )
             return ""

@@ -1916,7 +1916,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getjjjj_lsenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
@@ -8643,7 +8643,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
