@@ -29,8 +29,14 @@ public final class Edge
     /** The method in which the call occurs; may be null for calls not
      * occurring in a specific method (eg. implicit calls by the VM)
      */
-    private SootMethod src;
-    public SootMethod src() { return src; }
+    private MethodOrMethodContext src;
+    public SootMethod src() {
+        if( src == null ) return null; else return src.method();
+    }
+    public Object srcCtxt() {
+        if( src == null ) return null; else return src.context();
+    }
+    public MethodOrMethodContext getSrc() { return src; }
 
     /** The unit at which the call occurs; may be null for calls not
      * occurring at a specific statement (eg. calls in native code)
@@ -40,8 +46,10 @@ public final class Edge
     public Stmt srcStmt() { return (Stmt) srcUnit; }
     
     /** The target method of the call edge. */
-    private SootMethod tgt;
-    public SootMethod tgt() { return tgt; }
+    private MethodOrMethodContext tgt;
+    public SootMethod tgt() { return tgt.method(); }
+    public Object tgtCtxt() { return tgt.context(); }
+    public MethodOrMethodContext getTgt() { return tgt; }
 
     public static final int INVALID = 0;
     /** Due to explicit invokestatic instruction. */
@@ -76,14 +84,14 @@ public final class Edge
     private int kind;
     public int kind() { return kind; }
 
-    public Edge( SootMethod src, Unit srcUnit, SootMethod tgt, int type ) {
+    public Edge( MethodOrMethodContext src, Unit srcUnit, MethodOrMethodContext tgt, int type ) {
         this.src = src;
         this.srcUnit = srcUnit;
         this.tgt = tgt;
         this.kind = type;
     }
 
-    public Edge( SootMethod src, Stmt srcUnit, SootMethod tgt ) {
+    public Edge( MethodOrMethodContext src, Stmt srcUnit, MethodOrMethodContext tgt ) {
         InvokeExpr ie = srcUnit.getInvokeExpr();
         if( ie instanceof VirtualInvokeExpr ) this.kind = VIRTUAL;
         else if( ie instanceof SpecialInvokeExpr ) this.kind = SPECIAL;

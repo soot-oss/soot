@@ -131,13 +131,13 @@ public class CallGraph
         }
     }
     /** Returns an iterator over all edges that have m as their source method. */
-    public Iterator edgesOutOf( SootMethod m ) {
+    public Iterator edgesOutOf( MethodOrMethodContext m ) {
         return new TargetsOfMethodIterator( m );
     }
     class TargetsOfMethodIterator implements Iterator {
         private Edge position = null;
-        private SootMethod m;
-        TargetsOfMethodIterator( SootMethod m ) {
+        private MethodOrMethodContext m;
+        TargetsOfMethodIterator( MethodOrMethodContext m ) {
             this.m = m;
             if( m == null ) throw new RuntimeException();
             position = (Edge) srcMethodToEdge.get( m );
@@ -158,13 +158,13 @@ public class CallGraph
         }
     }
     /** Returns an iterator over all edges that have m as their target method. */
-    public Iterator edgesInto( SootMethod m ) {
+    public Iterator edgesInto( MethodOrMethodContext m ) {
         return new CallersOfMethodIterator( m );
     }
     class CallersOfMethodIterator implements Iterator {
         private Edge position = null;
-        private SootMethod m;
-        CallersOfMethodIterator( SootMethod m ) {
+        private MethodOrMethodContext m;
+        CallersOfMethodIterator( MethodOrMethodContext m ) {
             this.m = m;
             if( m == null ) throw new RuntimeException();
             position = (Edge) tgtToEdge.get( m );

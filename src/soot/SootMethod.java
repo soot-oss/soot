@@ -34,9 +34,9 @@ import soot.dava.*;
     Does not contain the actual code, which belongs to a Body.
     The getActiveBody() method points to the currently-active body.
 */
-public class SootMethod
+public class SootMethod 
     extends AbstractHost
-    implements ClassMember, Numberable {
+    implements ClassMember, Numberable, soot.jimple.toolkits.callgraph.MethodOrMethodContext {
     public static final String constructorName = "<init>";
     public static final String staticInitializerName = "<clinit>";
 
@@ -666,4 +666,6 @@ public class SootMethod
         this.number = number;
     }
     private int number = 0;
+    public SootMethod method() { return this; }
+    public Object context() { return null; }
 }

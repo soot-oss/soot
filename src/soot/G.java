@@ -68,6 +68,7 @@ public class G extends Singletons
     public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
     public int Timer_count;
     public final Map ClassHierarchy_classHierarchyMap = new HashMap();
+    public final Map MethodContext_map = new HashMap();
 
     // hack for J2ME, patch provided by Stephen Chen
     // by default, this is set as false, to use SOOT with J2ME library
