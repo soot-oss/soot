@@ -678,7 +678,7 @@ public class Inliner {
 
        // if ( stmtsAtSite < 60  )
 
-       if ( ( stmtsAtSite < 20  ) && ( ( listBody.getStmtList().size() < ( 8*origSize ) ) && ( listBody.getStmtList().size() < 5000 ) ) )
+       if ( ( stmtsAtSite < 20  ) && ( ( listBody.getStmtList().size() < ( 4*origSize ) ) && ( listBody.getStmtList().size() < 10000 ) ) )
 
        // if ( stmtsAtSite < 10  )
        {
@@ -1347,6 +1347,7 @@ public class Inliner {
 
   Iterator changedit = changedclasses.iterator();
 
+  /*
   //  System.out.println ( "+++++++++ NO. OF CHANGED CLASSES "+changedclasses.size() );
 
   while ( changedit.hasNext () )
@@ -1413,7 +1414,7 @@ public class Inliner {
 
  }
 
- 
+ */
 
  return changedclasses;
 
