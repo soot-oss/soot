@@ -73,7 +73,7 @@ public class ArrayCheckAttribute
 			new String(Base64.encode(ArrayCheckAttribute.getValue( (ArrayCheckTag) tagIt.next()))));
 	}
 	   	
-	return "\"" + buf.toString() + "\"";
+	return buf.toString();
     }
 
     public List getUnitBoxes()
