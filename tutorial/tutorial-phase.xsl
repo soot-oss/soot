@@ -26,7 +26,7 @@ exploit the power of phase options.
 Soot's execution is divided into a number of phases.  For example,
 {\tt JimpleBody}s are built by a phase called {\tt jb}, which is
 itself comprised of subphases, such as the aggregation of local
-variables ({\tt jb.a1}).
+variables ({\tt jb.a}).
 
 Phase options provide a way for you to
 change the behaviour of a phase from the Soot command-line.  They take
