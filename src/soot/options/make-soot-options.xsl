@@ -70,7 +70,7 @@ public class Options extends OptionsBase {
     public String getUsage() {
         return ""
 <xsl:apply-templates mode="usage" select="/options/section"/>
-        ;
+        + getPhaseUsage();
     }
 <xsl:apply-templates mode="declphaseopts" select="/options/section/phaseopt"/>
 <xsl:apply-templates mode="warnforeign" select="/options/section/phaseopt"/>

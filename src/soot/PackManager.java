@@ -168,13 +168,14 @@ public class PackManager {
     public static PackManager v() { return G.v().PackManager(); }
 
     private Map phaseToOptionMap = new HashMap();
-
     private Map packNameToPack = new HashMap();
+    private List packList = new LinkedList();
 
     private void addPack( Pack p ) {
         if( packNameToPack.containsKey( p.getPhaseName() ) )
             throw new RuntimeException( "Duplicate pack "+p.getPhaseName() );
         packNameToPack.put( p.getPhaseName(), p );
+        packList.add( p );
     }
 
     public boolean hasPack(String phaseName) {
@@ -314,5 +315,7 @@ public class PackManager {
         optionMap.put( getKey( option ), getValue( option ) );
     }
 
-    public Collection allPacks() { return packNameToPack.values(); }
+    public Collection allPacks() {
+        return Collections.unmodifiableList( packList );
+    }
 }

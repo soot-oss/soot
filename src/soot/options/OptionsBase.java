@@ -20,7 +20,7 @@
 package soot.options;
 import java.util.*;
 
-import soot.PackManager;
+import soot.*;
 
 /** Soot command-line options parser base class.
  * @author Ondrej Lhotak
@@ -34,8 +34,8 @@ abstract class OptionsBase {
         int i;
         if( tab <= opts.length() ) {
             b.append( "\n" );
-            i = -1;
-        } else i = opts.length();
+            i = 0;
+        } else i = opts.length()+initial;
         for( ; i <= tab; i++ ) {
             b.append(" ");
         }
@@ -44,7 +44,7 @@ abstract class OptionsBase {
             String s = t.nextToken();
             if( i + s.length() > 78 ) {
                 b.append( "\n" );
-                i = -1;
+                i = 0;
                 for( ; i <= tab; i++ ) {
                     b.append(" ");
                 }
@@ -63,6 +63,20 @@ abstract class OptionsBase {
 
     protected String padVal( String vals, String desc ) {
         return pad( 4, vals, 32, desc );
+    }
+
+    protected String getPhaseUsage() {
+        StringBuffer b = new StringBuffer();
+        b.append( "\nPhases and phase options:\n" );
+        for( Iterator pIt = PackManager.v().allPacks().iterator(); pIt.hasNext(); ) {
+            final Pack p = (Pack) pIt.next();
+            b.append( padOpt( p.getPhaseName(), p.getDeclaredOptions() ) );
+            for( Iterator phIt = p.iterator(); phIt.hasNext(); ) {
+                final HasPhaseOptions ph = (HasPhaseOptions) phIt.next();
+                b.append( padVal( ph.getPhaseName(), ph.getDeclaredOptions() ) );
+            }
+        }
+        return b.toString();
     }
 
     private LinkedList options = new LinkedList();

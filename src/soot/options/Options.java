@@ -728,7 +728,7 @@ public class Options extends OptionsBase {
       
 +padOpt(" -time", "print out time statistics about tranformations" )
 +padOpt(" -subtract-gc", "attempt to subtract the gc from the time stats" )
-        ;
+        + getPhaseUsage();
     }
 
     public static String getDeclaredOptionsForPhase( String phaseName ) {
