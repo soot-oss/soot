@@ -12,7 +12,7 @@
 \item implicit calls by {\tt AccessController}
 \item \ldots
 \end{itemize}
-\item {\tt Filter} can be used to select edges of specific type
+\item {\tt Filter} can be used to select specific kinds of edges
 \end{itemize}
 \end{slide}
 
@@ -35,13 +35,13 @@
 \item Source method
 \item Source statement (if applicable)
 \item Target method
-\item Edge type
+\item Kind of edge
 \end{itemize}
 \end{itemize}
 \newcommand{\dott}[1]{\rnode{#1}{$\bullet$}}
 \begin{tabular}{|c|c|c|c|}
 \hline
-source m. & source stmt. & target m. & type\\
+source m. & source stmt. & target m. & kind\\
 \hline
 \dott{src} & \dott{stmt} & \dott{tgt} & VIRTUAL \\
 \hline
@@ -64,7 +64,7 @@ source m. & source stmt. & target m. & type\\
 \arrow{src}{foo}\arrow{tgt}{bar}\arrow{stmt}{foos}\nccurve[arrowsize=.3,linestyle=dashed,angleB=180]{->}{foos}{bar}
 \end{slide}
 
-\begin{slide}{Edge Types}
+\begin{slide}{Edge Kinds}
 {
 \tiny\bf
 \begin{verbatim}
@@ -124,7 +124,7 @@ public static final int PRIVILEGED = 9;
 \end{description}
 \end{itemize}
 \newcommand{\src}[1]{\begin{tabular}{|c|}\hline {\red $src_#1$}\\\hline\end{tabular}}
-\newcommand{\edge}[1]{\begin{tabular}{|c|c|c|c|}\hline {\red $src_#1$}&$stmt_#1$&$tgt_#1$&$type_#1$\\\hline\end{tabular}}
+\newcommand{\edge}[1]{\begin{tabular}{|c|c|c|c|}\hline {\red $src_#1$}&$stmt_#1$&$tgt_#1$&$kind_#1$\\\hline\end{tabular}}
 \begin{minipage}{2.5in}
 \edge{1}\\
 \edge{2}\\

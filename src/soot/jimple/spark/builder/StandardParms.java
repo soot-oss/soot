@@ -66,7 +66,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
         if( e.isExplicit() ) {
             addCallTarget( (Stmt) e.srcUnit(), e.tgt(), null );
         } else {
-            switch( e.type() ) {
+            switch( e.kind() ) {
                 case Edge.THREAD:
                     addCallTarget( (Stmt) e.srcUnit(), e.tgt(), null );
                     break;

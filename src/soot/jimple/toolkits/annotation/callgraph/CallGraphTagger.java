@@ -29,7 +29,7 @@ public class CallGraphTagger extends BodyTransformer {
 				while (edges.hasNext()){
 					Edge e = (Edge)edges.next();
 					SootMethod m = e.tgt();
-					s.addTag(new LinkTag("CallGraph: Type: "+e.typeToString(e.type())+" Target Method: "+m.toString(), m, m.getDeclaringClass().getName()));
+					s.addTag(new LinkTag("CallGraph: Type: "+e.kindToString(e.kind())+" Target Method: "+m.toString(), m, m.getDeclaringClass().getName()));
 					
 				}
 					//s.addTag(new ColorTag(ColorTag.ORANGE));			
@@ -40,7 +40,7 @@ public class CallGraphTagger extends BodyTransformer {
 			while (callerEdges.hasNext()){
 				Edge callEdge = (Edge)callerEdges.next();
 				SootMethod methodCaller = callEdge.src();			
-				m.addTag(new LinkTag("CallGraph: Source Type: "+callEdge.typeToString(callEdge.type())+" Source Method: "+methodCaller.toString(), methodCaller, methodCaller.getDeclaringClass().getName()));
+				m.addTag(new LinkTag("CallGraph: Source Type: "+callEdge.kindToString(callEdge.kind())+" Source Method: "+methodCaller.toString(), methodCaller, methodCaller.getDeclaringClass().getName()));
 			}
 		}
 		else {

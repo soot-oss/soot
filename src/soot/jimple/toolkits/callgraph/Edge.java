@@ -63,29 +63,30 @@ public final class Edge
     /** Implicit call to run() through AccessController.doPrivileged(). */
     public static final int PRIVILEGED = 9;
 
-    public static final String[] types = { "INVALID",
+    public static final String[] kinds = { "INVALID",
         "STATIC", "VIRTUAL", "INTERFACE", "SPECIAL",
         "CLINIT", "THREAD", "EXIT", "FINALIZE", "PRIVILEGED" };
 
-    /** The type of edge. Valid types are given by the static final
-     * fields above. Note: type should not be returned; instead,
-     * accessors such as isExplicit() should be added. */
-    private int type;
-    public int type() { return type; }
+    /** The kind of edge. Valid kinds are given by the static final
+     * fields above. Note: kind should not be tested by other classes;
+     *  instead, accessors such as isExplicit() should be added.
+     **/
+    private int kind;
+    public int kind() { return kind; }
 
     public Edge( SootMethod src, Unit srcUnit, SootMethod tgt, int type ) {
         this.src = src;
         this.srcUnit = srcUnit;
         this.tgt = tgt;
-        this.type = type;
+        this.kind = type;
     }
 
     public Edge( SootMethod src, Stmt srcUnit, SootMethod tgt ) {
         InvokeExpr ie = srcUnit.getInvokeExpr();
-        if( ie instanceof VirtualInvokeExpr ) this.type = VIRTUAL;
-        else if( ie instanceof SpecialInvokeExpr ) this.type = SPECIAL;
-        else if( ie instanceof InterfaceInvokeExpr ) this.type = INTERFACE;
-        else if( ie instanceof StaticInvokeExpr ) this.type = STATIC;
+        if( ie instanceof VirtualInvokeExpr ) this.kind = VIRTUAL;
+        else if( ie instanceof SpecialInvokeExpr ) this.kind = SPECIAL;
+        else if( ie instanceof InterfaceInvokeExpr ) this.kind = INTERFACE;
+        else if( ie instanceof StaticInvokeExpr ) this.kind = STATIC;
         else throw new RuntimeException();
         this.src = src;
         this.srcUnit = srcUnit;
@@ -100,22 +101,22 @@ public final class Edge
     /** Returns true if the call is due to an explicit instance invoke
      * statement. */
     public boolean isInstance() {
-        return type == VIRTUAL || type == INTERFACE || type == SPECIAL;
+        return kind == VIRTUAL || kind == INTERFACE || kind == SPECIAL;
     }
 
     /** Returns true if the call is due to an explicit static invoke
      * statement. */
     public boolean isStatic() {
-        return type == STATIC;
+        return kind == STATIC;
     }
 
     public boolean passesParameters() {
-        return isExplicit() || type == THREAD || type == EXIT ||
-            type == FINALIZE || type == PRIVILEGED;
+        return isExplicit() || kind == THREAD || kind == EXIT ||
+            kind == FINALIZE || kind == PRIVILEGED;
     }
 
     public int hashCode() {
-        int ret = tgt.hashCode() + type;
+        int ret = tgt.hashCode() + kind;
         if( src != null ) ret += src.hashCode();
         if( srcUnit != null ) ret += srcUnit.hashCode();
         return ret;
@@ -125,15 +126,15 @@ public final class Edge
         if( o.src != src ) return false;
         if( o.srcUnit != srcUnit ) return false;
         if( o.tgt != tgt ) return false;
-        if( o.type != type ) return false;
+        if( o.kind != kind ) return false;
         return true;
     }
     
-    public static String typeToString(int type) {
-        return types[type];
+    public static String kindToString(int kind) {
+        return kinds[kind];
     }
     public String toString() {
-        return typeToString(type)+" edge: "+srcUnit+" in "+src+" ==> "+tgt;
+        return kindToString(kind)+" edge: "+srcUnit+" in "+src+" ==> "+tgt;
     }
 
     private Edge nextBySrc = this;

@@ -149,7 +149,7 @@ public class StaticMethodBinder extends SceneTransformer
                                 while( edges.hasNext() ) {
                                     Edge e = (Edge) edges.next();
                                     cg.addEdge( new Edge(
-                                        ct, newStmt, e.tgt(), e.type() ) );
+                                        ct, newStmt, e.tgt(), e.kind() ) );
                                     cg.removeEdge( e );                                        
                                 }
                             }

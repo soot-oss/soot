@@ -96,7 +96,7 @@ public class CallGraph
         }
         public boolean hasNext() {
             if( position.srcUnit() != u ) return false;
-            if( position.type() == Edge.INVALID ) return false;
+            if( position.kind() == Edge.INVALID ) return false;
             return true;
         }
         public Object next() {
@@ -123,7 +123,7 @@ public class CallGraph
         }
         public boolean hasNext() {
             if( position.src() != m ) return false;
-            if( position.type() == Edge.INVALID ) return false;
+            if( position.kind() == Edge.INVALID ) return false;
             return true;
         }
         public Object next() {
@@ -150,7 +150,7 @@ public class CallGraph
         }
         public boolean hasNext() {
             if( position.tgt() != m ) return false;
-            if( position.type() == Edge.INVALID ) return false;
+            if( position.kind() == Edge.INVALID ) return false;
             return true;
         }
         public Object next() {
