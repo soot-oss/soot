@@ -13,6 +13,7 @@ public class SideEffectAnalysis {
     Map methodToNTReadSet = new HashMap();
     Map methodToNTWriteSet = new HashMap();
     int rwsetcount = 0;
+    TransitiveTargets tt;
 
     public void findNTRWSets( SootMethod method ) {
 	if( methodToNTReadSet.containsKey( method )
@@ -22,10 +23,8 @@ public class SideEffectAnalysis {
 	MethodRWSet write = new MethodRWSet();
 	for( Iterator sIt = method.retrieveActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
 	    final Stmt s = (Stmt) sIt.next();
-	    if( !s.containsInvokeExpr() ) {
-		read.union( readSet( method, s ) );
-		write.union( writeSet( method, s ) );
-	    }
+            read.union( ntReadSet( method, s ) );
+            write.union( ntWriteSet( method, s ) );
 	}
 	methodToNTReadSet.put( method, read );
 	methodToNTWriteSet.put( method, write );
@@ -48,11 +47,20 @@ public class SideEffectAnalysis {
     public SideEffectAnalysis( PointsToAnalysis pa, CallGraph cg ) {
 	this.pa = pa;
 	this.cg = cg;
+        this.tt = new TransitiveTargets( cg );
     }
 
+    private RWSet ntReadSet( SootMethod method, Stmt stmt ) {
+	if( stmt instanceof AssignStmt ) {
+	    AssignStmt a = (AssignStmt) stmt;
+	    Value r = a.getRightOp();
+	    return addValue( r, method, stmt );
+	}
+        return null;
+    }
     public RWSet readSet( SootMethod method, Stmt stmt ) {
 	RWSet ret = null;
-        Iterator targets = new Targets( cg.targetsOf( stmt ) );
+        Iterator targets = tt.iterator( stmt );
         while( targets.hasNext() ) {
             SootMethod target = (SootMethod) targets.next();
             if( target.isNative() ) {
@@ -63,17 +71,22 @@ public class SideEffectAnalysis {
                 ret.union( nonTransitiveReadSet( target ) );
             }
         }
-	if( stmt instanceof AssignStmt ) {
-	    AssignStmt a = (AssignStmt) stmt;
-	    Value r = a.getRightOp();
-	    ret = addValue( r, method, stmt );
-	}
-	return ret;
+        if( ret == null ) return ntReadSet( method, stmt );
+        ret.union( ntReadSet( method, stmt ) );
+        return ret;
     }
 
+    private RWSet ntWriteSet( SootMethod method, Stmt stmt ) {
+        if( stmt instanceof AssignStmt ) {
+	    AssignStmt a = (AssignStmt) stmt;
+	    Value l = a.getLeftOp();
+	    return addValue( l, method, stmt );
+	}
+        return null;
+    }
     public RWSet writeSet( SootMethod method, Stmt stmt ) {
 	RWSet ret = null;
-        Iterator targets = new Targets( cg.targetsOf( stmt ) );
+        Iterator targets = tt.iterator( stmt );
         while( targets.hasNext() ) {
             SootMethod target = (SootMethod) targets.next();
             if( target.isNative() ) {
@@ -84,11 +97,8 @@ public class SideEffectAnalysis {
                 ret.union( nonTransitiveWriteSet( target ) );
             }
 	}
-        if( stmt instanceof AssignStmt ) {
-	    AssignStmt a = (AssignStmt) stmt;
-	    Value l = a.getLeftOp();
-	    ret = addValue( l, method, stmt );
-	}
+        if( ret == null ) return ntWriteSet( method, stmt );
+        ret.union( ntWriteSet( method, stmt ) );
 	return ret;
     }
 
