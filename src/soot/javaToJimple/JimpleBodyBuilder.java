@@ -1895,7 +1895,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         // if assigning to a field and the field is private and its not in 
         // this class (then it had better be in some outer class and will
         // be handled as such)
-        if ((assign.left() instanceof polyglot.ast.Field) && ((polyglot.ast.Field)assign.left()).fieldInstance().flags().isPrivate() && !Util.getSootType(((polyglot.ast.Field)assign.left()).fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
+        if ((assign.left() instanceof polyglot.ast.Field) && (needsPrivateAccessor((polyglot.ast.Field)assign.left()) || needsProtectedAccessor((polyglot.ast.Field)assign.left()))){
+                //((polyglot.ast.Field)assign.left()).fieldInstance().flags().isPrivate() && !Util.getSootType(((polyglot.ast.Field)assign.left()).fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
             return handlePrivateFieldSet(assign);    
         }
 
@@ -1971,7 +1972,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         else if (field.name().equals("class")){
             throw new RuntimeException("Should go through ClassLit");
         }
-        else if (field.fieldInstance().flags().isPrivate() && !Util.getSootType(field.fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
+        else if (needsPrivateAccessor(field) || needsProtectedAccessor(field)){
+            //((field.fieldInstance().flags().isPrivate() && !Util.getSootType(field.fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())) ||()){
         
             return getPrivateAccessFieldLocal(field);
         }
@@ -1994,6 +1996,42 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             return baseLocal; 
         }
     }
+
+    /**
+     *  needs a private access method if field is private and in
+     *  some other class
+     */
+    private boolean needsPrivateAccessor(polyglot.ast.Field field){
+        if (field.fieldInstance().flags().isPrivate()){
+            if (!Util.getSootType(field.fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * needs a protected access method if field is protected and in
+     * a super class of the outer class of the innerclass trying to access
+     * the field (ie not in self or in outer of self)
+     */
+    private boolean needsProtectedAccessor(polyglot.ast.Field field){
+        if (field.fieldInstance().flags().isProtected()){
+            if (!Util.getSootType(field.fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
+                soot.SootClass checkClass = body.getMethod().getDeclaringClass();
+                while (checkClass.hasOuterClass()){
+                    checkClass = checkClass.getOuterClass();
+                    if (Util.getSootType(field.fieldInstance().container()).equals(checkClass.getType())){
+                        return false;
+                    }
+                
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+       
 
     private soot.jimple.Constant getReturnConstant(polyglot.ast.Field field){
         if (field.fieldInstance().constantValue() instanceof String){
@@ -2089,8 +2127,32 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     private soot.Local getPrivateAccessFieldLocal(polyglot.ast.Field field) {
     
         // need to add access method
-        soot.SootMethod toInvoke = addGetFieldAccessMeth(((soot.RefType)Util.getSootType(field.fieldInstance().container())).getSootClass(), field);
-
+        // if private add to the containing class
+        // but if its protected then add to outer class - not containing
+        // class because in this case the containing class is the super class
+        
+        soot.SootMethod toInvoke;
+        if (field.fieldInstance().flags().isPrivate()){
+            toInvoke = addGetFieldAccessMeth(((soot.RefType)Util.getSootType(field.fieldInstance().container())).getSootClass(), field);
+        }
+        else {
+            if (InitialResolver.v().hierarchy() == null){
+                InitialResolver.v().hierarchy(new soot.FastHierarchy());
+            }
+            soot.SootClass addToClass = body.getMethod().getDeclaringClass().getOuterClass();
+            soot.SootClass containingClass = ((soot.RefType)Util.getSootType(field.fieldInstance().container())).getSootClass();
+            while (!InitialResolver.v().hierarchy().canStoreType(containingClass.getType(), addToClass.getType())){
+                if (addToClass.hasOuterClass()){
+                    addToClass = addToClass.getOuterClass();
+                }
+                else {
+                    break;
+                }
+            }
+           
+            toInvoke = addGetFieldAccessMeth(addToClass, field);
+        }
+        
         ArrayList params = new ArrayList();
         if (!field.fieldInstance().flags().isStatic()) {
             params.add((soot.Local)getBaseLocal(field.target()));
