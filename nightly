@@ -52,7 +52,7 @@ function getCurrentDate(){
 
 # get current jasmin/soot revision
 function getJasminSootRevision(){
-    rev=`tail -1 jasmin_export | sed s/Exported' 'revision' '// | sed s/\\\.// Rev`;
+    rev=`tail -1 jasmin_export | sed s/Exported' 'revision' '// | sed s/\\\.//`;
     rm jasmin_export;
     echo "Revision $rev";
 }
