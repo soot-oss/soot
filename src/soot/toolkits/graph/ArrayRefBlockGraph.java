@@ -40,7 +40,7 @@ import soot.*;
 public class ArrayRefBlockGraph extends BlockGraph 
 {
     /**
-     *  Constructs a BriefBlockGraph from a given Body instance.
+     *  Constructs a ArrayRefBlockGraph from a given Body instance.
      *  @param the Body instance from which the graph is built.
      */
     public  ArrayRefBlockGraph(Body body)
