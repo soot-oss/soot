@@ -35,7 +35,6 @@ public class CounterClass
             out.println("  specialInvokeCount = " + specialInvokeCount);
             out.println("  virtualInvokeCount = " + virtualInvokeCount);
             out.println("interfaceInvokeCount = " + interfaceInvokeCount);
-            
         }
         
         // Close file

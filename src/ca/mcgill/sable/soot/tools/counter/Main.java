@@ -24,6 +24,7 @@ public class Main
         List excludingPackages = new ArrayList();
         List classesToProcess;
         SootClass entryClass = null;
+        String newSootClassPath = null;
         
         if(args.length == 0)
         {
@@ -57,7 +58,7 @@ public class Main
                 else if(arg.equals("--soot-class-path"))
                 {   
                     if(++i < args.length)
-                        ca.mcgill.sable.soot.Main.sootClassPath = args[i];
+                        newSootClassPath = args[i];
                 }
                 else if(arg.equals("-r") || arg.equals("--recurse"))
                     isRecursing=true;
@@ -82,7 +83,33 @@ public class Main
                 firstNonOption = i + 1;
             }
 
-        // Generate classes to process
+        
+        // Generate counterClass
+        {
+            System.out.println("Locating CounterClass...");
+            counterClass = Scene.v().loadClassAndSupport("ca.mcgill.sable.soot.tools.counter.CounterClass");
+
+            // Enable bodies of counter class.  this needs to be fixed.
+            {
+                Iterator methodIt = counterClass.getMethods().iterator();
+                
+                while(methodIt.hasNext())
+                {
+                    SootMethod m = (SootMethod) methodIt.next();
+            
+                    JimpleBody body = new JimpleBody(new ClassFileBody(m));        
+                    m.setActiveBody(body);
+                }
+            }
+                        
+            System.out.println("Writing CounterClass...");
+            counterClass.write(outputDir);
+
+        }
+        
+        ca.mcgill.sable.soot.Main.sootClassPath = newSootClassPath;
+
+        // make list of classes to process
         {
             classesToProcess = new LinkedList();
             
@@ -122,14 +149,14 @@ public class Main
                 }
             }
         }
-    
+    /*
         // Generate counter class
         {
             System.out.println("Creating CounterClass...");
             
             try 
             {
-                InputStream in = ClassLocator.getInputStreamOf("CounterClass");
+                InputStream in = ClassLocator.getInputStreamOf("ca.mcgill.sable.soot.tools.counter.CounterClass");
             
                 byte[] bytes = new byte[20000];
                 
@@ -167,10 +194,9 @@ public class Main
                 System.out.println("Unable to find CounterClass to copy!");
                 System.exit(1);
             }
-        }
-        // Initialize some fields
-            counterClass = Scene.v().loadClassAndSupport("CounterClass");
-            
+        } */
+        
+        // Initialize some fields                        
             interfaceInvokeCount = counterClass.getField("long interfaceInvokeCount");
             virtualInvokeCount = counterClass.getField("long virtualInvokeCount");
             specialInvokeCount = counterClass.getField("long specialInvokeCount");
