@@ -131,7 +131,7 @@ class StmtPrinter
 			 out.println("     " + stmtToName.get(currentStmt) + ":");
                 }
                    
-              
+
 		if(isPrecise)
                     out.print(currentStmt.toString(stmtToName, indent));
                 else

@@ -30,5 +30,4 @@ package soot;
 public interface ICompilationListener
 {
     public void compilationTerminated(int status, String msg);
-    public void compilationTerminated(int status);    
 }

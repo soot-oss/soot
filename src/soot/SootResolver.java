@@ -37,6 +37,9 @@ public class SootResolver
 {
     private Set markedClasses = new HashSet();
     private LinkedList classesToResolve = new LinkedList();
+    private boolean mIsResolving = false;
+
+
 
     /** Creates a new SootResolver. */
     public SootResolver()
@@ -49,20 +52,28 @@ public class SootResolver
     {
         if(Scene.v().containsClass(className))
             return Scene.v().getSootClass(className);
-            
-        SootClass newClass = new SootClass(className);
-        Scene.v().addClass(newClass);
-        newClass.setContextClass();
+
+	SootClass newClass;
+	if(mIsResolving) {
+	    newClass = new SootClass(className);
+	    Scene.v().addClass(newClass);
+	    newClass.setContextClass();
 	
-	markedClasses.add(newClass);
-        classesToResolve.addLast(newClass);
+	    markedClasses.add(newClass);
+	    classesToResolve.addLast(newClass);
+	} else {
+	    newClass = resolveClassAndSupportClasses(className);
+	}
 	
 	return newClass;
     }
 
+
+
     /** Resolves the given className and all dependent classes. */
     public SootClass resolveClassAndSupportClasses(String className)
     {
+	mIsResolving = true;
 	SootClass resolvedClass = getResolvedClass(className);
 	
 	while(!classesToResolve.isEmpty()) {
@@ -96,8 +107,8 @@ public class SootResolver
 		    System.err.println("resolving [from .jimple]: " + className );
 		if(sc == null) throw new RuntimeException("sc is null!!");
 		
-		soot.jimple.parser.JimpleAST jimpAST = new soot.jimple.parser.JimpleAST((JimpleInputStream) is);		
-		jimpAST.getSkeleton(sc, this);
+		soot.jimple.parser.JimpleAST jimpAST = new soot.jimple.parser.JimpleAST((JimpleInputStream) is, this);		
+		jimpAST.getSkeleton(sc);
 		JimpleMethodSource mtdSrc = new JimpleMethodSource(jimpAST);
 
 		Iterator mtdIt = sc.getMethods().iterator();
@@ -106,12 +117,12 @@ public class SootResolver
 		    sm.setSource(mtdSrc);
 		}
 		
-		Iterator it = jimpAST.getCstPool().iterator();
-		
+		Iterator it = jimpAST.getCstPool().iterator();		
 		while(it.hasNext()) {
 		    String nclass = (String) it.next();
 		    assertResolvedClass(nclass);
 		}
+		
 	    } 
 	    else {
 		throw new RuntimeException("could not resolve class: " + is+" (is your soot-class-path correct?)");
@@ -123,6 +134,7 @@ public class SootResolver
             catch (IOException e) { throw new RuntimeException("!?"); }
 	}	
 	
+	mIsResolving = false;
 	return resolvedClass;
     }
 
@@ -149,3 +161,5 @@ public class SootResolver
         }
     }
 }
+
+

@@ -74,9 +74,9 @@ public class Parse
 	
 	Walker w;
 	if(sc == null)
-	    w = new Walker();
+	    w = new Walker(null);
 	else {
-	    w = new BodyExtractorWalker(sc, new HashMap());
+	    w = new BodyExtractorWalker(sc, null, new HashMap());
 	}
 	
 	tree.apply(w);  	
@@ -140,7 +140,7 @@ public class Parse
 
 		Start tree = p.parse();
                     
-		tree.apply(new Walker());               
+		tree.apply(new Walker(null));               
             }
         }
     } // main

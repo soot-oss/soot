@@ -53,8 +53,13 @@ public class Walker extends DepthFirstAdapter
     Map mLabelToPatchList; // maps a label to the a list of stmts that refer to the label (ie goto lableX)
 
 
-    public Walker() 
+               
+    protected SootResolver mResolver;
+
+
+    public Walker(SootResolver resolver) 
     {	
+	mResolver = resolver;
 	if(debug) {
 	    mProductions = new Stack() {
 		public Object pop(){
@@ -69,9 +74,10 @@ public class Walker extends DepthFirstAdapter
     }
 
 
-    public Walker(SootClass sc) 
+    public Walker(SootClass sc, SootResolver resolver) 
     {
 	mSootClass = sc;		
+	mResolver = resolver;
     }
 
     
@@ -123,7 +129,18 @@ public class Walker extends DepthFirstAdapter
         }
 	
 	String className = (String) mProductions.pop();
-	mSootClass = Scene.v().getSootClass(className);
+
+
+       
+
+	if(mSootClass == null)
+	    mSootClass = new SootClass(className);
+	else {
+	    if(!mSootClass.getName().equals(className))
+		throw new RuntimeException("Invalid SootClass for this JimpleAST. The SootClass provided is of type: >" + mSootClass.getName() + "< whereas this parse tree is for type: >" + className +  "<");	    
+	}
+
+	//Scene.v().getSootClass(className);
 
 
 
@@ -176,13 +193,13 @@ public class Walker extends DepthFirstAdapter
 	mSootClass.setModifiers(modifierFlags);
 		
 	if(superClass != null) {
-	    mSootClass.setSuperclass(Scene.v().getSootClass(superClass));
+	    mSootClass.setSuperclass(mResolver.getResolvedClass(superClass));
 	}
 	
 	if(implementsList != null) {
 	    Iterator implIt = implementsList.iterator();
 	    while(implIt.hasNext()) {
-		SootClass interfaceClass = Scene.v().getSootClass((String) implIt.next());
+		SootClass interfaceClass = mResolver.getResolvedClass((String) implIt.next());
 		mSootClass.addInterface(interfaceClass);
 	    }
 	}
@@ -316,7 +333,7 @@ public class Walker extends DepthFirstAdapter
 	String typeName = (String) mProductions.pop();
 	if(typeName.equals("int")) throw new RuntimeException();
 	Type t = RefType.v(typeName);
-	Scene.v().addClassToResolve(typeName);
+	//	Scene.v().addClassToResolve(typeName);
 	
 	int dim = node.getArrayBrackets().size();
 	if(dim > 0)
@@ -459,7 +476,7 @@ public class Walker extends DepthFirstAdapter
 	String type = (String) mProductions.pop();
 	if(type.equals("int"))throw new RuntimeException();
 	mProductions.push(RefType.v(type));
-	Scene.v().addClassToResolve(type);
+	//	Scene.v().addClassToResolve(type);
     }
 
 
@@ -666,7 +683,7 @@ public class Walker extends DepthFirstAdapter
 
 	exceptionName = (String) mProductions.pop();
 				
-	Trap trap = Jimple.v().newTrap(Scene.v().getSootClass(exceptionName), fromUnit, toUnit, withUnit);	  
+	Trap trap = Jimple.v().newTrap(mResolver.getResolvedClass(exceptionName), fromUnit, toUnit, withUnit);	  
 	mProductions.push(trap);
     }
 
@@ -1319,8 +1336,7 @@ public class Walker extends DepthFirstAdapter
 	while(it.hasNext()) {	 	  
 	    String className = (String) it.next();
 	  
-	    //	  exceptionClasses.add(new SootClass("dummy exception class"));
-	    exceptionClasses.add(Scene.v().getSootClass(className));
+	    exceptionClasses.add(mResolver.getResolvedClass(className));
 	}
 
 	mProductions.push(exceptionClasses);
@@ -1416,7 +1432,7 @@ public class Walker extends DepthFirstAdapter
 	t = (Type) mProductions.pop();
 	className  = (String) mProductions.pop();	
 
-	SootClass cl = Scene.v().getSootClass(className);
+	SootClass cl = mResolver.getResolvedClass(className);
 	SootField field = cl.getField(fieldName, t);
 	
 	mProductions.push(field);
@@ -1557,7 +1573,7 @@ public class Walker extends DepthFirstAdapter
 	Type type = (Type) mProductions.pop();
 	className = (String) mProductions.pop();
 
-	SootClass sootClass =  Scene.v().getSootClass(className);
+	SootClass sootClass =  mResolver.getResolvedClass(className);
 	SootMethod sootMethod = sootClass.getMethod(methodName, parameterList, type);
 
 	mProductions.push(sootMethod);

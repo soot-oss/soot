@@ -39,12 +39,12 @@ import java.util.*;
 
 
 /**
-   Walks a jimple AST and constructs the method bodies for all the methods of 
-   the SootClass associated with this walker (see constructor). 
-   note: Contrary to the plain "Walker", this walker does not create a SootClass,
-   or interact with the scene. It merely adds method bodies for each of the methods of
-   the SootClass it was initialized with.
-*/
+ *  Walks a jimple AST and constructs the method bodies for all the methods of 
+ *  the SootClass associated with this walker (see constructor). 
+ *  note: Contrary to the plain "Walker", this walker does not create a SootClass,
+ *  or interact with the scene. It merely adds method bodies for each of the methods of
+ *  the SootClass it was initialized with.
+ */
    
 public class BodyExtractorWalker extends Walker
 {
@@ -52,20 +52,16 @@ public class BodyExtractorWalker extends Walker
 
     /** Constructs a walker, and attaches it to the given SootClass, sending bodies to
      * the given methodToParsedBodyMap. */
-    public BodyExtractorWalker(SootClass sc, Map methodToParsedBodyMap) 
+    public BodyExtractorWalker(SootClass sc, SootResolver resolver, Map methodToParsedBodyMap) 
     {
-	mSootClass = sc;
+	super(sc, resolver);
         this.methodToParsedBodyMap = methodToParsedBodyMap;
     }
     
     /*
       file = 
       modifier* file_type class_name extends_clause? implements_clause? file_body; 
-    */
-    public void inAFile(AFile node)
-    {
-    } 
-    
+    */       
     public void caseAFile(AFile node)
     {
 	inAFile(node);

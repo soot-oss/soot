@@ -43,7 +43,7 @@ import java.io.*;
 import java.text.*;
 
 /** Main class for Soot; provides Soot's command-line user interface. */
-public class Main
+public class Main implements Runnable, ICompilationListener
 {        
      //------> this used to be in Main
      // DEBUG
@@ -273,9 +273,10 @@ public class Main
 
 
     public static void setOptimizingWhole(boolean val)
+    throws CompilationDeathException
     {
         if (!isApplication && val){            
-	    exitCompilation(COMPILATION_ABORTED, "Can only whole-program optimize in application mode!");
+	    throw new CompilationDeathException(COMPILATION_ABORTED, "Can only whole-program optimize in application mode!");
         }
   
         isOptimizingWhole = val;
@@ -317,9 +318,10 @@ public class Main
 
 
     public static void addExclude(String str)
+        throws CompilationDeathException
     {
         if (!isApplication) {    
-	    exitCompilation(COMPILATION_ABORTED, "Exclude flag only valid in application mode!");
+	    throw new CompilationDeathException(COMPILATION_ABORTED, "Exclude flag only valid in application mode!");
         }
   
         packageInclusionFlags.add(new Boolean(false));
@@ -328,19 +330,21 @@ public class Main
     }
 
     public static void addInclude(String str)
+        throws CompilationDeathException
     {
         if (!isApplication) {
-            exitCompilation(COMPILATION_ABORTED, "Include flag only valid in application mode!");
+            throw new CompilationDeathException(COMPILATION_ABORTED, "Include flag only valid in application mode!");
         }
         packageInclusionFlags.add(new Boolean(true));
         packageInclusionMasks.add(str);
     }
 
     public static void addDynamicPath(String path)
+        throws CompilationDeathException
     {
         if (!isApplication)
             {
-		exitCompilation(COMPILATION_ABORTED, "Dynamic-path flag only valid in application mode!");
+		throw new CompilationDeathException(COMPILATION_ABORTED, "Dynamic-path flag only valid in application mode!");
             }
                      
         StringTokenizer tokenizer = new StringTokenizer(path, ":");
@@ -350,10 +354,11 @@ public class Main
 
 
     public static void addProcessPath(String path)
+        throws CompilationDeathException
     {
         if (isApplication)
             {
-		exitCompilation(COMPILATION_ABORTED, "Process-path flag only valid in single-file mode!");
+		throw new CompilationDeathException(COMPILATION_ABORTED, "Process-path flag only valid in single-file mode!");
             }
 
         StringTokenizer tokenizer = new StringTokenizer(path, ":");
@@ -382,6 +387,7 @@ public class Main
     }
 
     public static void setSrcPrecedence(String prec)
+        throws CompilationDeathException
     {
         if(prec.equals("jimple"))
             SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_JIMPLE);
@@ -389,12 +395,13 @@ public class Main
             SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_CLASS);
         else {                    
 	    
-	    exitCompilation(COMPILATION_ABORTED,"Illegal --src-prec arg: " + prec +
+	    throw new CompilationDeathException(COMPILATION_ABORTED,"Illegal --src-prec arg: " + prec +
 			    ". Valid args are: \"jimple\" or \"class\"");           
         }
     }
 
     public static void setFinalRep(String rep)
+        throws CompilationDeathException
     {
         if(rep.equals("jimple"))
             finalRep = JIMPLE;
@@ -403,7 +410,7 @@ public class Main
         else if(rep.equals("baf"))
             finalRep = BAF;
         else {                    
-	    exitCompilation(COMPILATION_ABORTED, "Illegal --final-rep arg: " + rep +           
+	    throw new CompilationDeathException(COMPILATION_ABORTED, "Illegal --final-rep arg: " + rep +           
 			    "\nvalid args are: [baf|grimp|jimple]" );
         }
     }
@@ -439,7 +446,7 @@ public class Main
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.40");
+            System.out.println("Soot version 1.beta.6.dev.41");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -506,11 +513,12 @@ public class Main
 
 
     private static void processCmdLine(String[] args)
+        throws CompilationDeathException
     {
         if(args.length == 0)
         {
             printHelp();
-	    exitCompilation(COMPILATION_ABORTED);            
+	    throw new CompilationDeathException(COMPILATION_ABORTED);            
         }
 
         // Handle all the options
@@ -560,7 +568,7 @@ public class Main
             {
                 if (i != 0)
                 {
-		    exitCompilation(COMPILATION_ABORTED, 
+		    throw new CompilationDeathException(COMPILATION_ABORTED, 
 				    "Application mode (--app) must be set as first argument to Soot!" +
 				    "\neg. java soot.Main --app Simulator");           
                 }
@@ -615,7 +623,7 @@ public class Main
              {
                  System.out.println("Unrecognized option: " + arg);
                  printHelp();
-		 exitCompilation(COMPILATION_ABORTED);            
+		 throw new CompilationDeathException(COMPILATION_ABORTED);            
              }  
              else if(arg.startsWith("@"))
              {
@@ -631,7 +639,7 @@ public class Main
                     }
                     catch (IOException e)
                         {
-			    exitCompilation(COMPILATION_ABORTED,
+			    throw new CompilationDeathException(COMPILATION_ABORTED,
 					    "Error reaing file "+arg.substring(1));
                         }
                 }
@@ -645,25 +653,18 @@ public class Main
     
     private static void exitCompilation(int status)
     {
-	Iterator it = compilationListeners.iterator();
-	while(it.hasNext()) {
-	    ((ICompilationListener)it.next()).compilationTerminated(status);
-	}	
+	exitCompilation(status, null) ;
     }
 
     private static void exitCompilation(int status, String msg)
     {
 	Iterator it = compilationListeners.iterator();
-	while(it.hasNext()) {
-	    ((ICompilationListener)it.next()).compilationTerminated(status, msg);
-	}
-   
-	if(status == COMPILATION_ABORTED) { 
-	    totalTimer.end();            
-	    System.err.println(msg);
-	}
-	else if(status == COMPILATION_SUCCEDED)
-	    System.out.println(msg);
+
+	if(msg != null) {
+	    while(it.hasNext()) {
+		((ICompilationListener)it.next()).compilationTerminated(status, msg);
+	    }
+	} 
     }
     
 
@@ -690,16 +691,17 @@ public class Main
     }
 
     private static void postCmdLineCheck()
+	throws CompilationDeathException
     {
 	    if(cmdLineClasses.isEmpty())
             {
-		exitCompilation(COMPILATION_ABORTED, "Nothing to do!"); 
+		throw new CompilationDeathException(COMPILATION_ABORTED, "Nothing to do!"); 
             }
 	    // Command line classes
 	    if (isApplication && cmdLineClasses.size() > 1)
             {
 
-		exitCompilation(COMPILATION_ABORTED,
+		throw new CompilationDeathException(COMPILATION_ABORTED,
 				"Can only specify one class in application mode!\n" +
 				"The transitive closure of the specified class gets loaded.\n" +
 				"(Did you mean to use single-file mode?)");
@@ -722,13 +724,53 @@ public class Main
         PackAdjuster.adjustPacks();
     }
 
-    /** main() method for Soot.  It's all here. */
+
+
+    private static String[] cmdLineArgs;
+    public static void setCmdLineArgs(String[] args)
+    {
+	cmdLineArgs = args;
+    }
+    
+    /**
+     *   Entry point for cmd line invocation of soot.
+     */
     public static void main(String[] args)
-    {       
+    {
+	setCmdLineArgs(args);
+	Main m = new Main();
+	addCompilationListener(m);
+	(new Thread(m)).start();
+    }
+
+    /** Implementation of ICompilationListener */
+    public  void compilationTerminated(int status, String msg) 
+    {
+	if(msg != null)
+	    System.out.println(msg);
+
+	if(status == COMPILATION_ABORTED) { 
+	    System.exit(1);
+	}
+	else if(status == COMPILATION_SUCCEDED) {
+	    System.exit(0);	
+	}
+    }
+
+
+    /** 
+     *  Entry point to the soot's compilation process. Be sure to call
+     *  setCmdLineArgs before invoking this method.
+     *
+     *  @see #setCmdLineArgs
+     */
+    public void run()
+    {   
+	try {
         totalTimer.start();
 	cmdLineClasses = new HashChain();
         initApp();
-        processCmdLine(args);
+        processCmdLine(cmdLineArgs);
 
 	
         // Load necessary classes.
@@ -890,9 +932,14 @@ public class Main
        
 	if(isProfilingOptimization)
 	    printProfilingInformation();
-
-
    
+	
+	} catch (CompilationDeathException e) {
+	    totalTimer.end();            
+	    exitCompilation(e.getStatus(), e.getMessage());
+	    return;
+	}	
+	totalTimer.end();            
 	exitCompilation(COMPILATION_SUCCEDED);            
     }        
 
@@ -1209,5 +1256,38 @@ public class Main
             return new String(padding) + s;
         }    
     }
-
 }
+
+
+
+
+class CompilationDeathException extends RuntimeException
+{
+    private String mMsg;
+    private int mStatus;
+
+    CompilationDeathException(int status, String msg)
+    {
+	mMsg = msg;
+	mStatus = status;
+    }
+	
+    CompilationDeathException(int status)
+    {
+	mStatus = status;
+    }
+
+    public int getStatus()
+    {
+	return mStatus;
+    }
+    public String getMsg()
+    {
+	return mMsg;
+    }
+}
+
+
+
+
+

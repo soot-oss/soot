@@ -329,7 +329,7 @@ public class JMain
 			public void run() {
 			    Main.main(cmdLine);
 			}
-		    }).start();
+			}).start();
 		    
 		    System.out.println("started thread");
 		}   

@@ -42,30 +42,21 @@ import java.util.*;
 /* 
    Walks a jimple AST and extracts the fields, and method signatures and produces 
    a new squeleton SootClass instance.   
-*/
-   
+*/   
 public class SkeletonExtractorWalker extends Walker
 {
            
-    private SootResolver mResolver;
-
-
     public SkeletonExtractorWalker(SootResolver aResolver, SootClass aSootClass) 
     {	
-	mResolver = aResolver;
-	mSootClass = aSootClass;
+	super(aSootClass, aResolver);
     }
-    
-    /*
-      file = 
-      modifier* file_type class_name extends_clause? implements_clause? file_body; 
-    */
-    public void inAFile(AFile node)
-    {
-	if(debug)
-	    System.out.println("reading class " + node.getClassName());
-    } 
-    
+
+    public SkeletonExtractorWalker(SootResolver aResolver) 
+    {	
+	super(aResolver);
+    }
+
+
     public void caseAFile(AFile node)
     {
 	inAFile(node);
@@ -86,11 +77,15 @@ public class SkeletonExtractorWalker extends Walker
         }
 	
 
-	mProductions.pop(); // not needed
-
-
-
-
+	String className = (String) mProductions.pop();
+	
+	if(mSootClass == null) {
+	    mSootClass = new SootClass(className);
+	} else {
+	    if(!className.equals(mSootClass.getName()))
+		throw new RuntimeException("expected:  " + className + ", but got: " + mSootClass.getName());
+	}
+	
         if(node.getExtendsClause() != null)
         {
             node.getExtendsClause().apply(this);
@@ -252,11 +247,9 @@ public class SkeletonExtractorWalker extends Walker
 	while(it.hasNext()) {	 	  
 	    String className = (String) it.next();
 	  
-	    //	  exceptionClasses.add(new SootClass("dummy exception class"));
 	    exceptionClasses.add(mResolver.getResolvedClass(className));
 	}
 
 	mProductions.push(exceptionClasses);
     }
-
 } 
