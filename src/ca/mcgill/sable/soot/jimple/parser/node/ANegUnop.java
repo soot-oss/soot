@@ -3,41 +3,41 @@ package ca.mcgill.sable.soot.jimple.parser.node;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class ABoolExpr extends PBoolExpr
+public final class ANegUnop extends PUnop
 {
-    private PExpression _expression_;
+    private TNeg _neg_;
 
-    public ABoolExpr()
+    public ANegUnop()
     {
     }
 
-    public ABoolExpr(
-        PExpression _expression_)
+    public ANegUnop(
+        TNeg _neg_)
     {
-        setExpression(_expression_);
+        setNeg(_neg_);
 
     }
     public Object clone()
     {
-        return new ABoolExpr(
-            (PExpression) cloneNode(_expression_));
+        return new ANegUnop(
+            (TNeg) cloneNode(_neg_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseABoolExpr(this);
+        ((Analysis) sw).caseANegUnop(this);
     }
 
-    public PExpression getExpression()
+    public TNeg getNeg()
     {
-        return _expression_;
+        return _neg_;
     }
 
-    public void setExpression(PExpression node)
+    public void setNeg(TNeg node)
     {
-        if(_expression_ != null)
+        if(_neg_ != null)
         {
-            _expression_.parent(null);
+            _neg_.parent(null);
         }
 
         if(node != null)
@@ -50,20 +50,20 @@ public final class ABoolExpr extends PBoolExpr
             node.parent(this);
         }
 
-        _expression_ = node;
+        _neg_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_expression_);
+            + toString(_neg_);
     }
 
     void removeChild(Node child)
     {
-        if(_expression_ == child)
+        if(_neg_ == child)
         {
-            _expression_ = null;
+            _neg_ = null;
             return;
         }
 
@@ -71,9 +71,9 @@ public final class ABoolExpr extends PBoolExpr
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_expression_ == oldChild)
+        if(_neg_ == oldChild)
         {
-            setExpression((PExpression) newChild);
+            setNeg((TNeg) newChild);
             return;
         }
 

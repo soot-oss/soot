@@ -697,12 +697,7 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseAPlusUnop(APlusUnop node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseAMinusUnop(AMinusUnop node)
+    public void caseANegUnop(ANegUnop node)
     {
         defaultCase(node);
     }
@@ -903,6 +898,11 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseTLookupswitch(TLookupswitch node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTNeg(TNeg node)
     {
         defaultCase(node);
     }

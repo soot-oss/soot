@@ -137,8 +137,7 @@ public interface Analysis extends Switch
     void caseAMultBinop(AMultBinop node);
     void caseADivBinop(ADivBinop node);
     void caseALengthofUnop(ALengthofUnop node);
-    void caseAPlusUnop(APlusUnop node);
-    void caseAMinusUnop(AMinusUnop node);
+    void caseANegUnop(ANegUnop node);
 
     void caseTAbstract(TAbstract node);
     void caseTFinal(TFinal node);
@@ -180,6 +179,7 @@ public interface Analysis extends Switch
     void caseTInterfaceinvoke(TInterfaceinvoke node);
     void caseTLengthof(TLengthof node);
     void caseTLookupswitch(TLookupswitch node);
+    void caseTNeg(TNeg node);
     void caseTNew(TNew node);
     void caseTNewarray(TNewarray node);
     void caseTNewmultiarray(TNewmultiarray node);

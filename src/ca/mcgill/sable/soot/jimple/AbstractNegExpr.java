@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on April 21, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Renamed the symbol from - to neg to resolve ambiguities.
+   
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -87,12 +90,12 @@ public class AbstractNegExpr extends AbstractUnopExpr implements NegExpr
 
     public String toString()
     {
-        return "-" + opBox.getValue().toString();
+        return "neg " + opBox.getValue().toString();
     }
 
     public String toBriefString()
     {
-        return "-" + ((ToBriefString) opBox.getValue()).toBriefString();
+        return "neg " + ((ToBriefString) opBox.getValue()).toBriefString();
     }
 
     

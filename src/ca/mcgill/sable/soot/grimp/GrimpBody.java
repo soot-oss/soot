@@ -295,13 +295,13 @@ public class GrimpBody implements StmtBody
 
 	if (!BuildGrimpBodyOption.noAggregating(buildOptions))
     {
-        printTo(new PrintWriter(System.out, true));
+        //printTo(new PrintWriter(System.out, true));
         
         Aggregator.conservativelyAggregate(this);
 	    GrimpTransformations.foldConstructors(this);
         Aggregator.conservativelyAggregate(this);
 	    
-        printTo(new PrintWriter(System.out, true));
+        //printTo(new PrintWriter(System.out, true));
         
         Transformations.removeUnusedLocals(this);
 	}

@@ -79,6 +79,7 @@ Tokens
   interfaceinvoke = 'interfaceinvoke';
   lengthof = 'lengthof';
   lookupswitch = 'lookupswitch';
+  neg = 'neg';
   new = 'new';
   newarray = 'newarray';
   newmultiarray = 'newmultiarray';
@@ -130,8 +131,8 @@ Tokens
   at_identifier = '@' (('parameter' dec_digit+) | 'this' | 'caughtexception');
 
   bool_constant = 'true' | 'false';
-  integer_constant = '-'? (dec_constant | hex_constant | oct_constant) 'L'?;
-  float_constant = '-'? (dec_constant '.' dec_constant) (('e'|'E') ('+'|'-')? dec_constant)? ('f'|'F')?;
+  integer_constant = (dec_constant | hex_constant | oct_constant) 'L'?;
+  float_constant = (dec_constant '.' dec_constant) (('e'|'E') ('+'|'-')? dec_constant)? ('f'|'F')?;
   string_constant = '"' string_char* '"';
 
   blank = (' ' | 9 | 13 | 10)+;  
@@ -253,7 +254,7 @@ Productions
     case_label colon goto_stmt;
 
   case_label =
-    {constant} case integer_constant |
+    {constant} case minus? integer_constant |
     {default}  default;
 
   goto_stmt =
@@ -332,8 +333,8 @@ Productions
     {constant} constant;
 
   constant =
-    {integer} integer_constant |
-    {float}   float_constant |
+    {integer} minus? integer_constant |
+    {float}   minus? float_constant |
     {string}  string_constant;
 
   binop =
@@ -360,8 +361,7 @@ Productions
 
   unop =
     {lengthof} lengthof |
-    {plus}     plus |
-    {minus}    minus;
+    {neg}      neg;
 
 
 

@@ -6,6 +6,7 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 public final class AConstantCaseLabel extends PCaseLabel
 {
     private TCase _case_;
+    private TMinus _minus_;
     private TIntegerConstant _integerConstant_;
 
     public AConstantCaseLabel()
@@ -14,9 +15,12 @@ public final class AConstantCaseLabel extends PCaseLabel
 
     public AConstantCaseLabel(
         TCase _case_,
+        TMinus _minus_,
         TIntegerConstant _integerConstant_)
     {
         setCase(_case_);
+
+        setMinus(_minus_);
 
         setIntegerConstant(_integerConstant_);
 
@@ -25,6 +29,7 @@ public final class AConstantCaseLabel extends PCaseLabel
     {
         return new AConstantCaseLabel(
             (TCase) cloneNode(_case_),
+            (TMinus) cloneNode(_minus_),
             (TIntegerConstant) cloneNode(_integerConstant_));
     }
 
@@ -58,6 +63,31 @@ public final class AConstantCaseLabel extends PCaseLabel
         _case_ = node;
     }
 
+    public TMinus getMinus()
+    {
+        return _minus_;
+    }
+
+    public void setMinus(TMinus node)
+    {
+        if(_minus_ != null)
+        {
+            _minus_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        _minus_ = node;
+    }
+
     public TIntegerConstant getIntegerConstant()
     {
         return _integerConstant_;
@@ -87,6 +117,7 @@ public final class AConstantCaseLabel extends PCaseLabel
     {
         return ""
             + toString(_case_)
+            + toString(_minus_)
             + toString(_integerConstant_);
     }
 
@@ -95,6 +126,12 @@ public final class AConstantCaseLabel extends PCaseLabel
         if(_case_ == child)
         {
             _case_ = null;
+            return;
+        }
+
+        if(_minus_ == child)
+        {
+            _minus_ = null;
             return;
         }
 
@@ -111,6 +148,12 @@ public final class AConstantCaseLabel extends PCaseLabel
         if(_case_ == oldChild)
         {
             setCase((TCase) newChild);
+            return;
+        }
+
+        if(_minus_ == oldChild)
+        {
+            setMinus((TMinus) newChild);
             return;
         }
 

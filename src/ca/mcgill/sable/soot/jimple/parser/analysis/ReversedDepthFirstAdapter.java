@@ -1457,6 +1457,10 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getIntegerConstant().apply(this);
         }
+        if(node.getMinus() != null)
+        {
+            node.getMinus().apply(this);
+        }
         if(node.getCase() != null)
         {
             node.getCase().apply(this);
@@ -2414,6 +2418,10 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getIntegerConstant().apply(this);
         }
+        if(node.getMinus() != null)
+        {
+            node.getMinus().apply(this);
+        }
         outAIntegerConstant(node);
     }
 
@@ -2431,6 +2439,10 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         if(node.getFloatConstant() != null)
         {
             node.getFloatConstant().apply(this);
+        }
+        if(node.getMinus() != null)
+        {
+            node.getMinus().apply(this);
         }
         outAFloatConstant(node);
     }
@@ -2831,39 +2843,21 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outALengthofUnop(node);
     }
 
-    public void inAPlusUnop(APlusUnop node)
+    public void inANegUnop(ANegUnop node)
     {
     }
 
-    public void outAPlusUnop(APlusUnop node)
+    public void outANegUnop(ANegUnop node)
     {
     }
 
-    public void caseAPlusUnop(APlusUnop node)
+    public void caseANegUnop(ANegUnop node)
     {
-        inAPlusUnop(node);
-        if(node.getPlus() != null)
+        inANegUnop(node);
+        if(node.getNeg() != null)
         {
-            node.getPlus().apply(this);
+            node.getNeg().apply(this);
         }
-        outAPlusUnop(node);
-    }
-
-    public void inAMinusUnop(AMinusUnop node)
-    {
-    }
-
-    public void outAMinusUnop(AMinusUnop node)
-    {
-    }
-
-    public void caseAMinusUnop(AMinusUnop node)
-    {
-        inAMinusUnop(node);
-        if(node.getMinus() != null)
-        {
-            node.getMinus().apply(this);
-        }
-        outAMinusUnop(node);
+        outANegUnop(node);
     }
 }
