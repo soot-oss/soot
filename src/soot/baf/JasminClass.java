@@ -886,6 +886,38 @@ public class JasminClass
                                 emit("istore " + slot);
                         }
 
+			public void caseByteType(ByteType t)
+                        {
+                            if(slot >= 0 && slot <= 3)
+                                emit("istore_" + slot);
+                            else
+                                emit("istore " + slot);
+                        }
+
+			public void caseShortType(ShortType t)
+                        {
+                            if(slot >= 0 && slot <= 3)
+                                emit("istore_" + slot);
+                            else
+                                emit("istore " + slot);
+                        }
+
+			public void caseCharType(CharType t)
+                        {
+                            if(slot >= 0 && slot <= 3)
+                                emit("istore_" + slot);
+                            else
+                                emit("istore " + slot);
+                        }
+
+			public void caseBooleanType(BooleanType t)
+                        {
+                            if(slot >= 0 && slot <= 3)
+                                emit("istore_" + slot);
+                            else
+                                emit("istore " + slot);
+                        }
+
                         public void caseLongType(LongType t)
                         {
                             if(slot >= 0 && slot <= 3)
@@ -970,6 +1002,38 @@ public class JasminClass
                     }
             
                     public void caseIntType(IntType t)
+                    {
+                        if(slot >= 0 && slot <= 3)
+                            emit("iload_" + slot);
+                        else
+                            emit("iload " + slot);
+                    }
+
+		    public void caseByteType(ByteType t)
+                    {
+                        if(slot >= 0 && slot <= 3)
+                            emit("iload_" + slot);
+                        else
+                            emit("iload " + slot);
+                    }
+
+		    public void caseShortType(ShortType t)
+                    {
+                        if(slot >= 0 && slot <= 3)
+                            emit("iload_" + slot);
+                        else
+                            emit("iload " + slot);
+                    }
+
+		    public void caseCharType(CharType t)
+                    {
+                        if(slot >= 0 && slot <= 3)
+                            emit("iload_" + slot);
+                        else
+                            emit("iload " + slot);
+                    }
+
+		    public void caseBooleanType(BooleanType t)
                     {
                         if(slot >= 0 && slot <= 3)
                             emit("iload_" + slot);
