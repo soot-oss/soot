@@ -76,6 +76,7 @@ foo: classes/soot/jimple/parser/parser/parser.dat classes/soot/jimple/parser/lex
 javadoc: document
 
 document: 
+	find src -name '*.java' | xargs grep ^package | sed 's/.*package //' | sed 's/;//' | sort -u > src/packageList
 	javadoc -d doc -sourcepath src -windowtitle "Soot API" @src/packageList
 
 badfields: all
