@@ -34,7 +34,7 @@ package soot.coffi;
 import java.io.*;
 import java.util.Enumeration;
 import java.util.Vector;
-import soot.util.ClassLocator;
+import soot.util.SourceLocator;
 import java.util.*;
 import soot.Main;
 
@@ -198,11 +198,13 @@ public class ClassFile {
       
       try
       {   
+          SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_CLASS);
+
           if(!soot.Scene.v().getSootClassPath().equals("<external-class-path>"))
-          {   classFileStream = ClassLocator.getInputStreamOf(soot.Scene.v().getSootClassPath(), fn);
+          {   classFileStream = SourceLocator.getInputStreamOf(soot.Scene.v().getSootClassPath(), fn);
           }
           else
-          {   classFileStream = ClassLocator.getInputStreamOf(fn);
+          {   classFileStream = SourceLocator.getInputStreamOf(fn);
           }
       }
       catch(ClassNotFoundException e)

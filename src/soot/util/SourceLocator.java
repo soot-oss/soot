@@ -36,48 +36,54 @@ import java.util.Enumeration;
 import java.util.*;
 import soot.*;
 
-/**
+/*
  * xxx should find a .class .jimple or .baf source for a className... presently finds jimple and class
  */
 
+/** Provides utility methods to retrieve an input stream for a class name, given
+ * a classfile, or jimple or baf output files. */
 public class SourceLocator
 {
     private static char pathSeparator = System.getProperty("path.separator").charAt(0);
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
 
+    /** Constant for default source precedence. */
     public static final int PRECEDENCE_NONE = 0;
+
+    /** Constant indicating that classfiles (via Coffi) are preferred input stream. */
     public static final int PRECEDENCE_CLASS = 1;
+
+    /** Constant indicating that Jimple is preferred input stream. */
     public static final int PRECEDENCE_JIMPLE = 2;
+
+    /** Constant indicating that Baf is preferred input stream. */
     public static final int PRECEDENCE_BAF = 3;
 
     private static int srcPrecedence = PRECEDENCE_NONE;
 
-    public static void setSrcPrecedence(int precedence)
-    {
-	srcPrecedence = precedence;
-    }
-
-
     private SourceLocator() // No instances.
     {
     }
-    
 
+    /** Sets the source precedence. */
+    public static void setSrcPrecedence(int precedence)
+    {
+	srcPrecedence = precedence;
+    }    
 
+    /** Given a class name, uses the default soot-class-path to return an input stream for the given class. */
     public static InputStream getInputStreamOf(String className) throws ClassNotFoundException
     {
         return getInputStreamOf(Scene.v().getSootClassPath(), className);
     }
 
-    public static Map nameToZipFile = new HashMap();
-    // cache of zip files
-
+    private static Map nameToZipFile = new HashMap();
     private static List previousLocations = null;
     private static int previousCPHashCode = 0;
     
+    /** Given a class name and class-path, returns an input stream for the given class. */
     public static InputStream getInputStreamOf(String classPath, String className) throws ClassNotFoundException
     {
-
         List locations = null;
 
         if (classPath.hashCode() == previousCPHashCode)

@@ -28,8 +28,13 @@ package soot.util;
 
 import java.io.*;
 
+/** Provides utility methods for debugging, including assertions. */
 public class Debug
 {
+    private Debug()
+    {
+    }
+
     private static String getStackTrace()
     {
 	Throwable t = new Throwable();
@@ -40,7 +45,8 @@ public class Debug
 	return os.toString();
     }
 
-    public static void assert(boolean condition, String message)    
+    /** Asserts that condition is true; otherwise, abort. */
+    public static void assert(boolean condition, String message)
     {
 	if (!condition)
 	    {

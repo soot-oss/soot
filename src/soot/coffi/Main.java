@@ -24,12 +24,8 @@
  */
 
 
-
-
-
-
-
 package soot.coffi;
+import soot.util.*;
 
 class Main
 {
