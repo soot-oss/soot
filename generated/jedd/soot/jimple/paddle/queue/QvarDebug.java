@@ -23,12 +23,12 @@ public class QvarDebug extends Qvar {
         Iterator it =
           new jedd.internal.RelationContainer(new Attribute[] { var.v() },
                                               new PhysicalDomain[] { V1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
-                                               "runk/src/soot/jimple/paddle/queue/QvarDebug.jedd:38,22-24"),
+                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
+                                               "soot/jimple/paddle/queue/QvarDebug.jedd:38,22-24"),
                                               in).iterator(new Attribute[] { var.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
-            for (int i = 0; i < 1; i++) { this.add((VarNode) tuple[0]); }
+            for (int i = 0; i < 1; i++) { add((VarNode) tuple[0]); }
         }
     }
     

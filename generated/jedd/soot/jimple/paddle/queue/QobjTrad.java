@@ -18,12 +18,12 @@ public class QobjTrad extends Qobj {
         Iterator it =
           new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                               new PhysicalDomain[] { H1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
-                                               "runk/src/soot/jimple/paddle/queue/QobjTrad.jedd:36,22-24"),
+                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
+                                               "soot/jimple/paddle/queue/QobjTrad.jedd:36,22-24"),
                                               in).iterator(new Attribute[] { obj.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
-            for (int i = 0; i < 1; i++) { this.add((AllocNode) tuple[0]); }
+            for (int i = 0; i < 1; i++) { add((AllocNode) tuple[0]); }
         }
     }
     

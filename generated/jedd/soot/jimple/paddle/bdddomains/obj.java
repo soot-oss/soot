@@ -4,7 +4,7 @@ import jedd.*;
 import soot.*;
 
 public class obj extends Attribute {
-    public final OBJ domain = (OBJ) OBJ.v();
+    public final ObjDomain domain = (ObjDomain) ObjDomain.v();
     
     public Domain domain() { return domain; }
     

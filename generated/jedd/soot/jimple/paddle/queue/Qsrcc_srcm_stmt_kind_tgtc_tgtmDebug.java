@@ -21,21 +21,21 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug extends Qsrcc_srcm_stmt_kind_tg
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), tgtc.v(), kind.v(), tgtm.v(), srcc.v() },
-                                              new PhysicalDomain[] { ST.v(), T1.v(), V2.v(), FD.v(), T2.v(), V1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
-                                               "runk/src/soot/jimple/paddle/queue/Qsrcc_srcm_stmt_kind_tgtc_" +
-                                               "tgtmDebug.jedd:38,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { kind.v(), tgtc.v(), tgtm.v(), srcm.v(), srcc.v(), stmt.v() },
+                                              new PhysicalDomain[] { FD.v(), V2.v(), T2.v(), T1.v(), V1.v(), ST.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
+                                               "soot/jimple/paddle/queue/Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug" +
+                                               ".jedd:38,22-24"),
                                               in).iterator(new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
             for (int i = 0; i < 6; i++) {
-                this.add((Context) tuple[0],
-                         (SootMethod) tuple[1],
-                         (Unit) tuple[2],
-                         (Kind) tuple[3],
-                         (Context) tuple[4],
-                         (SootMethod) tuple[5]);
+                add((Context) tuple[0],
+                    (SootMethod) tuple[1],
+                    (Unit) tuple[2],
+                    (Kind) tuple[3],
+                    (Context) tuple[4],
+                    (SootMethod) tuple[5]);
             }
         }
     }

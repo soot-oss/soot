@@ -43,9 +43,9 @@ public abstract class Rctxt_method {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.ctxt());
+            ret.append(ctxt());
             ret.append(", ");
-            ret.append(this.method());
+            ret.append(method());
             ret.append(", ");
             return ret.toString();
         }

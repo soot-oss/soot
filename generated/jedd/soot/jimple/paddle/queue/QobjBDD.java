@@ -13,15 +13,15 @@ public final class QobjBDD extends Qobj {
     private LinkedList readers = new LinkedList();
     
     public void add(AllocNode _obj) {
-        this.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
-                                                     new PhysicalDomain[] { H1.v() },
-                                                     ("this.add(jedd.internal.Jedd.v().literal(new java.lang.Object" +
-                                                      "[...], new jedd.Attribute[...], new jedd.PhysicalDomain[...]" +
-                                                      ")) at /home/olhotak/soot-trunk/src/soot/jimple/paddle/queue/" +
-                                                      "QobjBDD.jedd:33,8-11"),
-                                                     jedd.internal.Jedd.v().literal(new Object[] { _obj },
-                                                                                    new Attribute[] { obj.v() },
-                                                                                    new PhysicalDomain[] { H1.v() })));
+        add(new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
+                                                new PhysicalDomain[] { H1.v() },
+                                                ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
+                                                 ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
+                                                 " /tmp/soot-trunk/src/soot/jimple/paddle/queue/QobjBDD.jedd:3" +
+                                                 "3,8-11"),
+                                                jedd.internal.Jedd.v().literal(new Object[] { _obj },
+                                                                               new Attribute[] { obj.v() },
+                                                                               new PhysicalDomain[] { H1.v() })));
     }
     
     public void add(final jedd.internal.RelationContainer in) {
@@ -29,8 +29,8 @@ public final class QobjBDD extends Qobj {
             RobjBDD reader = (RobjBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                                            new PhysicalDomain[] { H1.v() },
-                                                           ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
-                                                            "addle/queue/QobjBDD.jedd:38,12-18"),
+                                                           ("reader.add(in) at /tmp/soot-trunk/src/soot/jimple/paddle/que" +
+                                                            "ue/QobjBDD.jedd:38,12-18"),
                                                            in));
         }
     }

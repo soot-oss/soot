@@ -4,7 +4,7 @@ import jedd.*;
 import soot.*;
 
 public class dtp extends Attribute {
-    public final TYPE domain = (TYPE) TYPE.v();
+    public final TypeDomain domain = (TypeDomain) TypeDomain.v();
     
     public Domain domain() { return domain; }
     

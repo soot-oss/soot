@@ -21,20 +21,20 @@ public class Qlocal_srcm_stmt_signature_kindDebug extends Qlocal_srcm_stmt_signa
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), local.v(), srcm.v(), signature.v(), kind.v() },
-                                              new PhysicalDomain[] { ST.v(), V1.v(), T1.v(), H2.v(), FD.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
-                                               "runk/src/soot/jimple/paddle/queue/Qlocal_srcm_stmt_signature" +
-                                               "_kindDebug.jedd:38,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { kind.v(), local.v(), signature.v(), srcm.v(), stmt.v() },
+                                              new PhysicalDomain[] { FD.v(), V1.v(), H2.v(), T1.v(), ST.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
+                                               "soot/jimple/paddle/queue/Qlocal_srcm_stmt_signature_kindDebu" +
+                                               "g.jedd:38,22-24"),
                                               in).iterator(new Attribute[] { local.v(), srcm.v(), stmt.v(), signature.v(), kind.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
             for (int i = 0; i < 5; i++) {
-                this.add((Local) tuple[0],
-                         (SootMethod) tuple[1],
-                         (Unit) tuple[2],
-                         (NumberedString) tuple[3],
-                         (Kind) tuple[4]);
+                add((Local) tuple[0],
+                    (SootMethod) tuple[1],
+                    (Unit) tuple[2],
+                    (NumberedString) tuple[3],
+                    (Kind) tuple[4]);
             }
         }
     }

@@ -4,7 +4,7 @@ import jedd.*;
 import soot.*;
 
 public class tgtm extends Attribute {
-    public final METHOD domain = (METHOD) METHOD.v();
+    public final MethodDomain domain = (MethodDomain) MethodDomain.v();
     
     public Domain domain() { return domain; }
     

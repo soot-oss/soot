@@ -23,13 +23,12 @@ public class Qvar_objDebug extends Qvar_obj {
         Iterator it =
           new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
                                               new PhysicalDomain[] { H1.v(), V1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
-                                               "runk/src/soot/jimple/paddle/queue/Qvar_objDebug.jedd:38,22-2" +
-                                               "4"),
+                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
+                                               "soot/jimple/paddle/queue/Qvar_objDebug.jedd:38,22-24"),
                                               in).iterator(new Attribute[] { var.v(), obj.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
-            for (int i = 0; i < 2; i++) { this.add((VarNode) tuple[0], (AllocNode) tuple[1]); }
+            for (int i = 0; i < 2; i++) { add((VarNode) tuple[0], (AllocNode) tuple[1]); }
         }
     }
     

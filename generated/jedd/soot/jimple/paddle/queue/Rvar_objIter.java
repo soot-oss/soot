@@ -37,8 +37,8 @@ public class Rvar_objIter extends Rvar_obj {
                                               ("<soot.jimple.paddle.bdddomains.var:soot.jimple.paddle.bdddom" +
                                                "ains.V1, soot.jimple.paddle.bdddomains.obj:soot.jimple.paddl" +
                                                "e.bdddomains.H1> ret = jedd.internal.Jedd.v().falseBDD(); at" +
-                                               " /home/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Rvar_" +
-                                               "objIter.jedd:46,25-28"),
+                                               " /tmp/soot-trunk/src/soot/jimple/paddle/queue/Rvar_objIter.j" +
+                                               "edd:46,25-28"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next() },
@@ -47,8 +47,8 @@ public class Rvar_objIter extends Rvar_obj {
         }
         return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
                                                    new PhysicalDomain[] { H1.v(), V1.v() },
-                                                   ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
-                                                    "le/queue/Rvar_objIter.jedd:50,8-14"),
+                                                   ("return ret; at /tmp/soot-trunk/src/soot/jimple/paddle/queue/" +
+                                                    "Rvar_objIter.jedd:50,8-14"),
                                                    ret);
     }
     

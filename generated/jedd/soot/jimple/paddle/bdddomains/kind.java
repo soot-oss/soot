@@ -4,7 +4,7 @@ import jedd.*;
 import soot.*;
 
 public class kind extends Attribute {
-    public final KIND domain = (KIND) KIND.v();
+    public final KindDomain domain = (KindDomain) KindDomain.v();
     
     public Domain domain() { return domain; }
     

@@ -4,7 +4,7 @@ import jedd.*;
 import soot.*;
 
 public class src extends Attribute {
-    public final VAR domain = (VAR) VAR.v();
+    public final VarDomain domain = (VarDomain) VarDomain.v();
     
     public Domain domain() { return domain; }
     

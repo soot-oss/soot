@@ -2,7 +2,7 @@ package soot.jimple.paddle.bdddomains;
 import jedd.*;
 import soot.*;
 
-public class KIND(4) extends Domain {
+public class KindDomain(4) extends Domain {
     public Numberer numberer() {
         return new soot.util.JeddNumberer( Scene.v().kindNumberer() );
     }

@@ -43,9 +43,9 @@ public abstract class Rsrc_dst {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.src());
+            ret.append(src());
             ret.append(", ");
-            ret.append(this.dst());
+            ret.append(dst());
             ret.append(", ");
             return ret.toString();
         }

@@ -4,7 +4,7 @@ import jedd.*;
 import soot.*;
 
 public class srcc extends Attribute {
-    public final CONTEXT domain = (CONTEXT) CONTEXT.v();
+    public final ContextDomain domain = (ContextDomain) ContextDomain.v();
     
     public Domain domain() { return domain; }
     

@@ -2,5 +2,5 @@ package soot.jimple.paddle.bdddomains;
 import jedd.*;
 import soot.*;
 
-public class ctxt(CONTEXT) extends Attribute {
+public class ctxt(ContextDomain) extends Attribute {
 }

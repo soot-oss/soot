@@ -3,8 +3,8 @@ import jedd.*;
 import soot.jimple.paddle.*;
 import soot.*;
 
-public class LOCAL(20) extends Domain {
+public class ObjDomain(20) extends Domain {
     public Numberer numberer() {
-        return new soot.util.JeddNumberer( Scene.v().getLocalNumberer() );
+        return new soot.util.JeddNumberer( PaddleNumberers.v().allocNodeNumberer() );
     }
 }

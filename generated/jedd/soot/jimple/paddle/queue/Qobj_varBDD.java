@@ -13,24 +13,24 @@ public final class Qobj_varBDD extends Qobj_var {
     private LinkedList readers = new LinkedList();
     
     public void add(AllocNode _obj, VarNode _var) {
-        this.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                     new PhysicalDomain[] { H1.v(), V1.v() },
-                                                     ("this.add(jedd.internal.Jedd.v().literal(new java.lang.Object" +
-                                                      "[...], new jedd.Attribute[...], new jedd.PhysicalDomain[...]" +
-                                                      ")) at /home/olhotak/soot-trunk/src/soot/jimple/paddle/queue/" +
-                                                      "Qobj_varBDD.jedd:33,8-11"),
-                                                     jedd.internal.Jedd.v().literal(new Object[] { _obj, _var },
-                                                                                    new Attribute[] { obj.v(), var.v() },
-                                                                                    new PhysicalDomain[] { H1.v(), V1.v() })));
+        add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
+                                                new PhysicalDomain[] { H1.v(), V1.v() },
+                                                ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
+                                                 ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
+                                                 " /tmp/soot-trunk/src/soot/jimple/paddle/queue/Qobj_varBDD.je" +
+                                                 "dd:33,8-11"),
+                                                jedd.internal.Jedd.v().literal(new Object[] { _obj, _var },
+                                                                               new Attribute[] { obj.v(), var.v() },
+                                                                               new PhysicalDomain[] { H1.v(), V1.v() })));
     }
     
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Robj_varBDD reader = (Robj_varBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
-                                                           new PhysicalDomain[] { V1.v(), H1.v() },
-                                                           ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
-                                                            "addle/queue/Qobj_varBDD.jedd:38,12-18"),
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
+                                                           new PhysicalDomain[] { H1.v(), V1.v() },
+                                                           ("reader.add(in) at /tmp/soot-trunk/src/soot/jimple/paddle/que" +
+                                                            "ue/Qobj_varBDD.jedd:38,12-18"),
                                                            in));
         }
     }

@@ -37,7 +37,7 @@ public abstract class Robj {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.obj());
+            ret.append(obj());
             ret.append(", ");
             return ret.toString();
         }

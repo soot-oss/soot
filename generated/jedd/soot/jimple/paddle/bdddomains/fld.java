@@ -4,7 +4,7 @@ import jedd.*;
 import soot.*;
 
 public class fld extends Attribute {
-    public final FIELD domain = (FIELD) FIELD.v();
+    public final FieldDomain domain = (FieldDomain) FieldDomain.v();
     
     public Domain domain() { return domain; }
     

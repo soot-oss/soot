@@ -4,7 +4,7 @@ import jedd.*;
 import soot.*;
 
 public class signature extends Attribute {
-    public final SIG domain = (SIG) SIG.v();
+    public final SigDomain domain = (SigDomain) SigDomain.v();
     
     public Domain domain() { return domain; }
     

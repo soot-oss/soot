@@ -42,8 +42,8 @@ public final class RvarMerge extends Rvar {
         return new jedd.internal.RelationContainer(new Attribute[] { var.v() },
                                                    new PhysicalDomain[] { V1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk/src/" +
-                                                    "soot/jimple/paddle/queue/RvarMerge.jedd:51,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /tmp/soot-trunk/src/soot/jimp" +
+                                                    "le/paddle/queue/RvarMerge.jedd:51,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

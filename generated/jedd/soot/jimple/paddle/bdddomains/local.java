@@ -4,7 +4,7 @@ import jedd.*;
 import soot.*;
 
 public class local extends Attribute {
-    public final LOCAL domain = (LOCAL) LOCAL.v();
+    public final LocalDomain domain = (LocalDomain) LocalDomain.v();
     
     public Domain domain() { return domain; }
     

@@ -2,5 +2,5 @@ package soot.jimple.paddle.bdddomains;
 import jedd.*;
 import soot.*;
 
-public class srcc(CONTEXT) extends Attribute {
+public class srcc(ContextDomain) extends Attribute {
 }

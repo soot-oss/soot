@@ -55,13 +55,13 @@ public abstract class Rlocal_srcm_stmt_tgtm {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.local());
+            ret.append(local());
             ret.append(", ");
-            ret.append(this.srcm());
+            ret.append(srcm());
             ret.append(", ");
-            ret.append(this.stmt());
+            ret.append(stmt());
             ret.append(", ");
-            ret.append(this.tgtm());
+            ret.append(tgtm());
             ret.append(", ");
             return ret.toString();
         }

@@ -79,19 +79,19 @@ public abstract class Rctxt_local_obj_srcm_stmt_kind_tgtm {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.ctxt());
+            ret.append(ctxt());
             ret.append(", ");
-            ret.append(this.local());
+            ret.append(local());
             ret.append(", ");
-            ret.append(this.obj());
+            ret.append(obj());
             ret.append(", ");
-            ret.append(this.srcm());
+            ret.append(srcm());
             ret.append(", ");
-            ret.append(this.stmt());
+            ret.append(stmt());
             ret.append(", ");
-            ret.append(this.kind());
+            ret.append(kind());
             ret.append(", ");
-            ret.append(this.tgtm());
+            ret.append(tgtm());
             ret.append(", ");
             return ret.toString();
         }

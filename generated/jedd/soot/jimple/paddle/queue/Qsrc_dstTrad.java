@@ -19,14 +19,14 @@ public class Qsrc_dstTrad extends Qsrc_dst {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { src.v(), dst.v() },
-                                              new PhysicalDomain[] { V1.v(), V2.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
-                                               "runk/src/soot/jimple/paddle/queue/Qsrc_dstTrad.jedd:37,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v() },
+                                              new PhysicalDomain[] { V2.v(), V1.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
+                                               "soot/jimple/paddle/queue/Qsrc_dstTrad.jedd:37,22-24"),
                                               in).iterator(new Attribute[] { src.v(), dst.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
-            for (int i = 0; i < 2; i++) { this.add((VarNode) tuple[0], (VarNode) tuple[1]); }
+            for (int i = 0; i < 2; i++) { add((VarNode) tuple[0], (VarNode) tuple[1]); }
         }
     }
     

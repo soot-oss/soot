@@ -43,9 +43,9 @@ public abstract class Rvar_obj {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(this.var());
+            ret.append(var());
             ret.append(", ");
-            ret.append(this.obj());
+            ret.append(obj());
             ret.append(", ");
             return ret.toString();
         }

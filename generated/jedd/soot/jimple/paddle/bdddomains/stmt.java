@@ -4,7 +4,7 @@ import jedd.*;
 import soot.*;
 
 public class stmt extends Attribute {
-    public final STMT domain = (STMT) STMT.v();
+    public final StmtDomain domain = (StmtDomain) StmtDomain.v();
     
     public Domain domain() { return domain; }
     

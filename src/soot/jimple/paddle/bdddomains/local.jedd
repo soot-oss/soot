@@ -2,5 +2,5 @@ package soot.jimple.paddle.bdddomains;
 import jedd.*;
 import soot.*;
 
-public class local(LOCAL) extends Attribute {
+public class local(LocalDomain) extends Attribute {
 }

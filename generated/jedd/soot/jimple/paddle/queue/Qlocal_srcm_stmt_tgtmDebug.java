@@ -21,16 +21,16 @@ public class Qlocal_srcm_stmt_tgtmDebug extends Qlocal_srcm_stmt_tgtm {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), local.v(), srcm.v(), tgtm.v() },
-                                              new PhysicalDomain[] { ST.v(), V1.v(), T1.v(), T2.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
-                                               "runk/src/soot/jimple/paddle/queue/Qlocal_srcm_stmt_tgtmDebug" +
-                                               ".jedd:38,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { local.v(), tgtm.v(), srcm.v(), stmt.v() },
+                                              new PhysicalDomain[] { V1.v(), T2.v(), T1.v(), ST.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
+                                               "soot/jimple/paddle/queue/Qlocal_srcm_stmt_tgtmDebug.jedd:38," +
+                                               "22-24"),
                                               in).iterator(new Attribute[] { local.v(), srcm.v(), stmt.v(), tgtm.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
             for (int i = 0; i < 4; i++) {
-                this.add((Local) tuple[0], (SootMethod) tuple[1], (Unit) tuple[2], (SootMethod) tuple[3]);
+                add((Local) tuple[0], (SootMethod) tuple[1], (Unit) tuple[2], (SootMethod) tuple[3]);
             }
         }
     }
