@@ -50,8 +50,10 @@ public final class BDDMethodPAG extends AbstractMethodPAG {
     protected BDDMethodPAG( BDDPAG pag, SootMethod m ) {
         this.pag = pag;
         this.method = m;
-        this.parms = new StandardParms( pag, this );
-        edgeSet = pag.edgeSet.sameDomains();
+        this.nodeFactory = new MethodNodeFactory( pag, this );
+	internalEdgeSet = pag.edgeSet.sameDomains();
+	inEdgeSet = pag.edgeSet.sameDomains();
+	outEdgeSet = pag.edgeSet.sameDomains();
         stores = pag.stores.sameDomains();
         loads = pag.loads.sameDomains();
         alloc = pag.alloc.sameDomains();
@@ -63,7 +65,9 @@ public final class BDDMethodPAG extends AbstractMethodPAG {
         if( varNodeParameter != null ) throw new RuntimeException( "NYI" );
         if( hasBeenAdded ) return;
         hasBeenAdded = true;
-        pag.edgeSet.eqUnion( pag.edgeSet, edgeSet );
+        pag.edgeSet.eqUnion( pag.edgeSet, internalEdgeSet );
+        pag.edgeSet.eqUnion( pag.edgeSet, inEdgeSet );
+        pag.edgeSet.eqUnion( pag.edgeSet, outEdgeSet );
         pag.stores.eqUnion( pag.stores, stores );
         pag.loads.eqUnion( pag.loads, loads );
         pag.alloc.eqUnion( pag.alloc, alloc );
@@ -76,7 +80,19 @@ public final class BDDMethodPAG extends AbstractMethodPAG {
         Numberable[] ret = { n1, n2, n3 };
         return ret;
     }
-    public void addEdge( Node src, Node dst ) {
+    public void addInternalEdge( Node src, Node dst ) {
+        addEdge( src, dst, internalEdgeSet );
+    }
+
+    public void addInEdge( Node src, Node dst ) {
+        addEdge( src, dst, inEdgeSet );
+    }
+
+    public void addOutEdge( Node src, Node dst ) {
+        addEdge( src, dst, outEdgeSet );
+    }
+
+    private void addEdge( Node src, Node dst, Relation edgeSet ) {
         if( src instanceof VarNode ) {
             if( dst instanceof VarNode ) {
                 edgeSet.add( pag.src, (VarNode) src,
@@ -98,7 +114,9 @@ public final class BDDMethodPAG extends AbstractMethodPAG {
         }
     }
 
-    final public Relation edgeSet;
+    final public Relation internalEdgeSet;
+    final public Relation inEdgeSet;
+    final public Relation outEdgeSet;
     final public Relation stores;
     final public Relation loads;
     final public Relation alloc;

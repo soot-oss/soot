@@ -41,7 +41,7 @@ public class SparkNativeHelper extends NativeHelper {
 
         VarNode var;
         if( lhs instanceof FieldRefNode ) {
-	    var = pag.makeVarNode( objNode, objNode.getType(), null );
+	    var = pag.makeGlobalVarNode( objNode, objNode.getType() );
             pag.addEdge( (Node) lhs, var );
         } else {
             var = (VarNode) lhs;
@@ -55,7 +55,7 @@ public class SparkNativeHelper extends NativeHelper {
 	    l = (VarNode) base;
 	} else {
 	    FieldRefNode b = (FieldRefNode) base;
-	    l = pag.makeVarNode( b, b.getType(), null );
+	    l = pag.makeGlobalVarNode( b, b.getType() );
 	    pag.addEdge( b, l );
 	}
         return pag.makeFieldRefNode( l, ArrayElement.v() );
@@ -64,22 +64,19 @@ public class SparkNativeHelper extends NativeHelper {
 	return source;
     }
     protected ReferenceVariable newInstanceOfImpl(ReferenceVariable cls) {
-	AllocNode site = pag.makeAllocNode( cls, AnySubType.v( RefType.v( "java.lang.Object" ) ), null );
-	VarNode local = pag.makeVarNode( site, RefType.v( "java.lang.Object" ), null );
-	pag.addEdge( site, local );
-	return local;
+        return pag.nodeFactory().caseNewInstance( (VarNode) cls );
     }
     protected ReferenceVariable staticFieldImpl(String className, String fieldName ) {
 	SootClass c = RefType.v( className ).getSootClass();
 	SootField f = c.getFieldByName( fieldName );
-	return pag.makeVarNode( f, f.getType(), null );
+	return pag.makeGlobalVarNode( f, f.getType() );
     }
     protected ReferenceVariable tempFieldImpl(String fieldsig) {
-	return pag.makeVarNode( new Pair( "tempField", fieldsig ),
-            RefType.v( "java.lang.Object" ), null );
+	return pag.makeGlobalVarNode( new Pair( "tempField", fieldsig ),
+            RefType.v( "java.lang.Object" ) );
     }
     protected ReferenceVariable tempVariableImpl() {
-	return pag.makeVarNode( new Pair( "TempVar", new Integer( ++G.v().SparkNativeHelper_tempVar ) ),
-		RefType.v( "java.lang.Object" ), null );
+	return pag.makeGlobalVarNode( new Pair( "TempVar", new Integer( ++G.v().SparkNativeHelper_tempVar ) ),
+		RefType.v( "java.lang.Object" ) );
     }
 }

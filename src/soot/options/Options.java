@@ -1097,8 +1097,6 @@ public class Options extends OptionsBase {
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "on-fly-cg (true)", "Build call graph as receiver types become known" )
-                +padOpt( "parms-as-fields (false)", "Represent method parameters as fields of this" )
-                +padOpt( "returns-as-fields (false)", "Represent method return values as fields of this" )
                 +padOpt( "simplify-offline (false)", "Collapse single-entry subgraphs of the PAG" )
                 +padOpt( "simplify-sccs (false)", "Collapse strongly-connected components of the PAG" )
                 +padOpt( "ignore-types-for-sccs (false)", "Ignore declared types when determining node equivalence for SCCs" )
@@ -1177,8 +1175,6 @@ public class Options extends OptionsBase {
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "on-fly-cg (true)", "Build call graph as receiver types become known" )
-                +padOpt( "parms-as-fields (false)", "Represent method parameters as fields of this" )
-                +padOpt( "returns-as-fields (false)", "Represent method return values as fields of this" )
                 +padOpt( "simplify-offline (false)", "Collapse single-entry subgraphs of the PAG" )
                 +padOpt( "simplify-sccs (false)", "Collapse strongly-connected components of the PAG" )
                 +padOpt( "ignore-types-for-sccs (false)", "Ignore declared types when determining node equivalence for SCCs" )
@@ -1668,8 +1664,6 @@ public class Options extends OptionsBase {
                 +"simulate-natives "
                 +"simple-edges-bidirectional "
                 +"on-fly-cg "
-                +"parms-as-fields "
-                +"returns-as-fields "
                 +"simplify-offline "
                 +"simplify-sccs "
                 +"ignore-types-for-sccs "
@@ -1702,8 +1696,6 @@ public class Options extends OptionsBase {
                 +"simulate-natives "
                 +"simple-edges-bidirectional "
                 +"on-fly-cg "
-                +"parms-as-fields "
-                +"returns-as-fields "
                 +"simplify-offline "
                 +"simplify-sccs "
                 +"ignore-types-for-sccs "
@@ -2063,8 +2055,6 @@ public class Options extends OptionsBase {
               +"simulate-natives:true "
               +"simple-edges-bidirectional:false "
               +"on-fly-cg:true "
-              +"parms-as-fields:false "
-              +"returns-as-fields:false "
               +"simplify-offline:false "
               +"simplify-sccs:false "
               +"ignore-types-for-sccs:false "
@@ -2097,8 +2087,6 @@ public class Options extends OptionsBase {
               +"simulate-natives:true "
               +"simple-edges-bidirectional:false "
               +"on-fly-cg:true "
-              +"parms-as-fields:false "
-              +"returns-as-fields:false "
               +"simplify-offline:false "
               +"simplify-sccs:false "
               +"ignore-types-for-sccs:false "

@@ -232,7 +232,10 @@ public class PAGDumper {
             out.print( " "+fieldToNum( fn.getField() ) );
         } else if( pag.getOpts().class_method_var() && n instanceof VarNode ) {
             VarNode vn = (VarNode) n;
-            SootMethod m = vn.getMethod();
+            SootMethod m = null;
+            if( vn instanceof LocalVarNode ) {
+            	m = ((LocalVarNode)vn).getMethod();
+            }
             SootClass c = null;
             if( m != null ) c = m.getDeclaringClass();
             ObjectNumberer cl = root.findOrAdd( c );

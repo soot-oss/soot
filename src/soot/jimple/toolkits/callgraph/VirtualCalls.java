@@ -79,8 +79,8 @@ public final class VirtualCalls
         return ret;
     }
 
-    private void resolve( Type t, InstanceInvokeExpr iie, NumberedString subSig, SootMethod container, ChunkedQueue targets ) {
-        if( !Scene.v().getOrMakeFastHierarchy()
+    public void resolve( Type t, InstanceInvokeExpr iie, NumberedString subSig, SootMethod container, ChunkedQueue targets ) {
+        if( iie != null && !Scene.v().getOrMakeFastHierarchy()
                 .canStoreType( t, iie.getBase().getType() ) ) {
             return;
         }

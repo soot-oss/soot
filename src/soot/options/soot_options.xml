@@ -1096,28 +1096,6 @@ as points-to information is computed. Otherwise, an initial
 CHA approximation to the call graph is used.
         </long_desc>
 						</boolopt>
-						<boolopt>
-							<name>Parms As Fields</name>
-							<alias>parms-as-fields</alias>
-							<default>false</default>
-                                                        <short_desc>Represent method parameters as fields of <tt>this</tt></short_desc>
-							<long_desc>
-When this option is set to true, parameters to methods are represented
-as fields (Red nodes) of the <tt>this</tt> object; otherwise, parameters are
-represented as variable (Green) nodes.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Returns As Fields</name>
-							<alias>returns-as-fields</alias>
-							<default>false</default>
-                                                        <short_desc>Represent method return values as fields of <tt>this</tt></short_desc>
-							<long_desc>
-When this option is set to true, return values from methods are
-represented as fields (Red nodes) of the <tt>this</tt> object; otherwise,
-return values are represented as variable (Green) nodes.
-        </long_desc>
-						</boolopt>
 					</section>
 					<section>
 						<name>Spark Pointer Assignment Graph Simplification Options</name>
@@ -1670,28 +1648,6 @@ nodes are made bidirectional, as in <a href="http://doi.acm.org/10.1145/237721.2
 When this option is set to true, the call graph is computed on-the-fly
 as points-to information is computed. Otherwise, an initial
 CHA approximation to the call graph is used.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Parms As Fields</name>
-							<alias>parms-as-fields</alias>
-							<default>false</default>
-                                                        <short_desc>Represent method parameters as fields of <tt>this</tt></short_desc>
-							<long_desc>
-When this option is set to true, parameters to methods are represented
-as fields (Red nodes) of the <tt>this</tt> object; otherwise, parameters are
-represented as variable (Green) nodes.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Returns As Fields</name>
-							<alias>returns-as-fields</alias>
-							<default>false</default>
-                                                        <short_desc>Represent method return values as fields of <tt>this</tt></short_desc>
-							<long_desc>
-When this option is set to true, return values from methods are
-represented as fields (Red nodes) of the <tt>this</tt> object; otherwise,
-return values are represented as variable (Green) nodes.
         </long_desc>
 						</boolopt>
 					</section>

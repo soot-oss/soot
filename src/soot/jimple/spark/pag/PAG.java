@@ -107,7 +107,7 @@ public class PAG extends AbstractPAG {
 
     /** Returns the set of objects pointed to by variable l. */
     public PointsToSet reachingObjects( Local l ) {
-        VarNode n = findVarNode( l );
+        VarNode n = findLocalVarNode( l );
         if( n == null ) {
             return EmptyPointsToSet.v();
         }
@@ -118,7 +118,7 @@ public class PAG extends AbstractPAG {
     public PointsToSet reachingObjects( SootField f ) {
         if( !f.isStatic() )
             throw new RuntimeException( "The parameter f must be a *static* field." );
-        VarNode n = findVarNode( f );
+        VarNode n = findGlobalVarNode( f );
         if( n == null ) {
             return EmptyPointsToSet.v();
         }
@@ -131,7 +131,7 @@ public class PAG extends AbstractPAG {
         if( f.isStatic() )
             throw new RuntimeException( "The parameter f must be an *instance* field." );
         if( getOpts().field_based() || getOpts().vta() ) {
-            VarNode n = findVarNode( f );
+            VarNode n = findGlobalVarNode( f );
             if( n == null ) {
                 return EmptyPointsToSet.v();
             }

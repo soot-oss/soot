@@ -52,7 +52,7 @@ public class BDDPAG extends AbstractPAG {
     }
 
     public PointsToSet reachingObjects( Local l ) {
-        VarNode vn = findVarNode( l );
+        VarNode vn = findLocalVarNode( l );
         if( vn == null ) return EmptyPointsToSet.v();
         return new BDDPointsToSet(
                 pointsTo.restrict( var, vn ).projectDownTo( obj ) );

@@ -25,10 +25,12 @@ import soot.*;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.jimple.spark.internal.*;
+import soot.jimple.spark.builder.*;
 import soot.util.*;
 import soot.util.queue.*;
 import soot.options.*;
 import soot.tagkit.*;
+import soot.jimple.toolkits.callgraph.*;
 
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
@@ -99,17 +101,41 @@ public abstract class AbstractPAG implements PointsToAnalysis {
     ChunkedQueue newAllocNodes = new ChunkedQueue();
     public QueueReader allocNodeListener() { return newAllocNodes.reader(); }
 
-    /** Finds the VarNode for the variable value, or returns null. */
-    public VarNode findVarNode( Object value ) {
+    /** Finds the GlobalVarNode for the variable value, or returns null. */
+    public GlobalVarNode findGlobalVarNode( Object value ) {
+        if( opts.rta() ) {
+            value = null;
+        }
+	return (GlobalVarNode) valToGlobalVarNode.get( value );
+    }
+    /** Finds the LocalVarNode for the variable value, or returns null. */
+    public LocalVarNode findLocalVarNode( Object value ) {
         if( opts.rta() ) {
             value = null;
         } else if( value instanceof Local ) {
-            return (VarNode) localToNodeMap.get( (Local) value );
+            return (LocalVarNode) localToNodeMap.get( (Local) value );
         }
-	return (VarNode) valToVarNode.get( value );
+	return (LocalVarNode) valToLocalVarNode.get( value );
     }
-    /** Finds or creates the VarNode for the variable value, of type type. */
-    public VarNode makeVarNode( Object value, Type type, SootMethod method ) {
+    /** Finds or creates the GlobalVarNode for the variable value, of type type. */
+    public GlobalVarNode makeGlobalVarNode( Object value, Type type ) {
+        if( opts.rta() ) {
+            value = null;
+            type = RefType.v("java.lang.Object");
+        }
+        GlobalVarNode ret = (GlobalVarNode) valToGlobalVarNode.get( value );
+        if( ret == null ) {
+            valToGlobalVarNode.put( value, 
+                    ret = new GlobalVarNode( this, value, type ) );
+            addNodeTag( ret, null );
+        } else if( !( ret.getType().equals( type ) ) ) {
+            throw new RuntimeException( "Value "+value+" of type "+type+
+                    " previously had type "+ret.getType() );
+        }
+	return ret;
+    }
+    /** Finds or creates the LocalVarNode for the variable value, of type type. */
+    public LocalVarNode makeLocalVarNode( Object value, Type type, SootMethod method ) {
         if( opts.rta() ) {
             value = null;
             type = RefType.v("java.lang.Object");
@@ -117,10 +143,10 @@ public abstract class AbstractPAG implements PointsToAnalysis {
         } else if( value instanceof Local ) {
             Local val = (Local) value;
             if( val.getNumber() == 0 ) Scene.v().getLocalNumberer().add(val);
-            VarNode ret = (VarNode) localToNodeMap.get( val );
+            LocalVarNode ret = (LocalVarNode) localToNodeMap.get( val );
             if( ret == null ) {
                 localToNodeMap.put( (Local) value,
-                    ret = new VarNode( this, value, type, method ) );
+                    ret = new LocalVarNode( this, value, type, method ) );
                 addNodeTag( ret, method );
             } else if( !( ret.getType().equals( type ) ) ) {
                 throw new RuntimeException( "Value "+value+" of type "+type+
@@ -128,10 +154,10 @@ public abstract class AbstractPAG implements PointsToAnalysis {
             }
             return ret;
         }
-        VarNode ret = (VarNode) valToVarNode.get( value );
+        LocalVarNode ret = (LocalVarNode) valToLocalVarNode.get( value );
         if( ret == null ) {
-            valToVarNode.put( value, 
-                    ret = new VarNode( this, value, type, method ) );
+            valToLocalVarNode.put( value, 
+                    ret = new LocalVarNode( this, value, type, method ) );
             addNodeTag( ret, method );
         } else if( !( ret.getType().equals( type ) ) ) {
             throw new RuntimeException( "Value "+value+" of type "+type+
@@ -139,28 +165,69 @@ public abstract class AbstractPAG implements PointsToAnalysis {
         }
 	return ret;
     }
+    /** Finds the ContextVarNode for base variable value and context
+     * context, or returns null. */
+    public ContextVarNode findContextVarNode( Object baseValue, Object context ) {
+	LocalVarNode base = findLocalVarNode( baseValue );
+	if( base == null ) return null;
+	return base.context( context );
+    }
+    /** Finds or creates the ContextVarNode for base variable baseValue and context
+     * context, of type type. */
+    public ContextVarNode makeContextVarNode( Object baseValue, Type baseType,
+	    Object context, SootMethod method ) {
+	LocalVarNode base = makeLocalVarNode( baseValue, baseType, method );
+        return makeContextVarNode( base, context );
+    }
+    /** Finds or creates the ContextVarNode for base variable base and context
+     * context, of type type. */
+    public ContextVarNode makeContextVarNode( LocalVarNode base, Object context ) {
+	ContextVarNode ret = base.context( context );
+	if( ret == null ) {
+	    ret = new ContextVarNode( this, base, context );
+            addNodeTag( ret, base.getMethod() );
+	}
+	return ret;
+    }
     /** Finds the FieldRefNode for base variable value and field
      * field, or returns null. */
-    public FieldRefNode findFieldRefNode( Object baseValue, SparkField field ) {
-	VarNode base = findVarNode( baseValue );
+    public FieldRefNode findLocalFieldRefNode( Object baseValue, SparkField field ) {
+	VarNode base = findLocalVarNode( baseValue );
+	if( base == null ) return null;
+	return base.dot( field );
+    }
+    /** Finds the FieldRefNode for base variable value and field
+     * field, or returns null. */
+    public FieldRefNode findGlobalFieldRefNode( Object baseValue, SparkField field ) {
+	VarNode base = findGlobalVarNode( baseValue );
 	if( base == null ) return null;
 	return base.dot( field );
     }
     /** Finds or creates the FieldRefNode for base variable baseValue and field
      * field, of type type. */
-    public FieldRefNode makeFieldRefNode( Object baseValue, Type baseType,
+    public FieldRefNode makeLocalFieldRefNode( Object baseValue, Type baseType,
 	    SparkField field, SootMethod method ) {
-	VarNode base = makeVarNode( baseValue, baseType, method );
+	VarNode base = makeLocalVarNode( baseValue, baseType, method );
+        return makeFieldRefNode( base, field );
+    }
+    /** Finds or creates the FieldRefNode for base variable baseValue and field
+     * field, of type type. */
+    public FieldRefNode makeGlobalFieldRefNode( Object baseValue, Type baseType,
+	    SparkField field ) {
+	VarNode base = makeGlobalVarNode( baseValue, baseType );
         return makeFieldRefNode( base, field );
     }
     /** Finds or creates the FieldRefNode for base variable base and field
      * field, of type type. */
-    public FieldRefNode makeFieldRefNode( VarNode base,
-	    SparkField field ) {
+    public FieldRefNode makeFieldRefNode( VarNode base, SparkField field ) {
 	FieldRefNode ret = base.dot( field );
 	if( ret == null ) {
 	    ret = new FieldRefNode( this, base, field );
-            addNodeTag( ret, base.getMethod() );
+	    if( base instanceof LocalVarNode ) {
+	    	addNodeTag( ret, ((LocalVarNode) base).getMethod() );
+	    } else {
+	    	addNodeTag( ret, null );
+	    }
 	}
 	return ret;
     }
@@ -324,6 +391,138 @@ public abstract class AbstractPAG implements PointsToAnalysis {
     /** Returns SparkOptions for this graph. */
     public AbstractSparkOptions getOpts() { return opts; }
 
+    final public void addCallTarget( Edge e ) {
+        if( !e.passesParameters() ) return;
+        AbstractMethodPAG srcmpag = AbstractMethodPAG.v( this, e.src() );
+        AbstractMethodPAG tgtmpag = AbstractMethodPAG.v( this, e.tgt() );
+        if( e.isExplicit() || e.kind() == Edge.THREAD ) {
+            addCallTarget( srcmpag, tgtmpag, (Stmt) e.srcUnit(),
+                           e.srcCtxt(), e.tgtCtxt() );
+        } else {
+            switch( e.kind() ) {
+                case Edge.PRIVILEGED:
+                    // Flow from first parameter of doPrivileged() invocation
+                    // to this of target, and from return of target to the
+                    // return of doPrivileged()
+
+                    InvokeExpr ie = e.srcStmt().getInvokeExpr();
+
+                    Node parm = srcmpag.nodeFactory().getNode( ie.getArg(0) );
+                    parm = srcmpag.parameterize( parm, e.srcCtxt() );
+                    parm = parm.getReplacement();
+
+                    Node thiz = tgtmpag.nodeFactory().caseThis();
+                    thiz = tgtmpag.parameterize( thiz, e.tgtCtxt() );
+                    thiz = thiz.getReplacement();
+
+                    addEdge( parm, thiz );
+
+                    if( e.srcUnit() instanceof AssignStmt ) {
+                        AssignStmt as = (AssignStmt) e.srcUnit();
+
+                        Node ret = tgtmpag.nodeFactory().caseRet();
+                        ret = tgtmpag.parameterize( ret, e.tgtCtxt() );
+                        ret = ret.getReplacement();
+
+                        Node lhs = srcmpag.nodeFactory().getNode(as.getLeftOp());
+                        lhs = srcmpag.parameterize( lhs, e.srcCtxt() );
+                        lhs = lhs.getReplacement();
+
+                        addEdge( ret, lhs );
+                    }
+                    break;
+
+                case Edge.EXIT:
+                case Edge.FINALIZE:
+                    Node srcThis = srcmpag.nodeFactory().caseThis();
+                    srcThis = srcmpag.parameterize( srcThis, e.srcCtxt() );
+                    srcThis = srcThis.getReplacement();
+
+                    Node tgtThis = tgtmpag.nodeFactory().caseThis();
+                    tgtThis = tgtmpag.parameterize( tgtThis, e.tgtCtxt() );
+                    tgtThis = tgtThis.getReplacement();
+
+                    addEdge( srcThis, tgtThis );
+                    break;
+
+                case Edge.NEWINSTANCE:
+                    Stmt s = (Stmt) e.srcUnit();
+                    InstanceInvokeExpr iie = (InstanceInvokeExpr) s.getInvokeExpr();
+
+                    Node cls = srcmpag.nodeFactory().getNode( iie.getBase() );
+                    cls = srcmpag.parameterize( cls, e.srcCtxt() );
+                    cls = cls.getReplacement();
+                    Node newObject = nodeFactory.caseNewInstance( (VarNode) cls );
+
+                    Node initThis = tgtmpag.nodeFactory().caseThis();
+                    initThis = tgtmpag.parameterize( initThis, e.tgtCtxt() );
+                    initThis = initThis.getReplacement();
+
+                    addEdge( newObject, initThis );
+                    break;
+                default:
+                    throw new RuntimeException( "Unhandled edge "+e );
+            }
+        }
+    }
+
+    
+    /** Adds method target as a possible target of the invoke expression in s.
+     * If target is null, only creates the nodes for the call site,
+     * without actually connecting them to any target method.
+     **/
+    final public void addCallTarget( AbstractMethodPAG srcmpag,
+                                     AbstractMethodPAG tgtmpag,
+                                     Stmt s,
+                                     Object srcContext,
+                                     Object tgtContext ) {
+        MethodNodeFactory srcnf = srcmpag.nodeFactory();
+        MethodNodeFactory tgtnf = tgtmpag.nodeFactory();
+        InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
+        int numArgs = ie.getArgCount();
+        for( int i = 0; i < numArgs; i++ ) {
+            Value arg = ie.getArg( i );
+            if( !( arg.getType() instanceof RefLikeType ) ) continue;
+            if( arg instanceof NullConstant ) continue;
+
+            Node argNode = srcnf.getNode( arg );
+            argNode = srcmpag.parameterize( argNode, srcContext );
+            argNode = argNode.getReplacement();
+
+            Node parm = tgtnf.caseParm( i );
+            parm = tgtmpag.parameterize( parm, tgtContext );
+            parm = parm.getReplacement();
+
+            addEdge( argNode, parm );
+        }
+        if( ie instanceof InstanceInvokeExpr ) {
+            InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
+
+            Node baseNode = srcnf.getNode( iie.getBase() );
+            baseNode = srcmpag.parameterize( baseNode, srcContext );
+            baseNode = baseNode.getReplacement();
+
+            Node thisRef = tgtnf.caseThis();
+            thisRef = tgtmpag.parameterize( thisRef, tgtContext );
+            thisRef = thisRef.getReplacement();
+            addEdge( baseNode, thisRef );
+        }
+        if( s instanceof AssignStmt ) {
+            Value dest = ( (AssignStmt) s ).getLeftOp();
+            if( dest.getType() instanceof RefLikeType && !(dest instanceof NullConstant) ) {
+
+                Node destNode = srcnf.getNode( dest );
+                destNode = srcmpag.parameterize( destNode, srcContext );
+                destNode = destNode.getReplacement();
+
+                Node retNode = tgtnf.caseRet();
+                retNode = tgtmpag.parameterize( retNode, tgtContext );
+                retNode = retNode.getReplacement();
+
+                addEdge( retNode, destNode );
+            }
+        }
+    }
     /* End of public methods. */
 
     /** Node uses this to notify PAG that n2 has been merged into n1. */
@@ -364,7 +563,8 @@ public abstract class AbstractPAG implements PointsToAnalysis {
 	}
 	return ((Set) valueList).add( value );
     }
-    private Map valToVarNode = new HashMap(1000);
+    private Map valToLocalVarNode = new HashMap(1000);
+    private Map valToGlobalVarNode = new HashMap(1000);
     private Map valToAllocNode = new HashMap(1000);
     private OnFlyCallGraph ofcg;
     private ArrayList dereferences = new ArrayList();
@@ -372,6 +572,8 @@ public abstract class AbstractPAG implements PointsToAnalysis {
     private LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
     public int maxFinishNumber = 0;
     private Map nodeToTag;
+    private GlobalNodeFactory nodeFactory = new GlobalNodeFactory(this);
+    public GlobalNodeFactory nodeFactory() { return nodeFactory; }
 
 }
 

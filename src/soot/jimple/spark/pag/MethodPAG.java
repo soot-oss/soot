@@ -41,19 +41,18 @@ public final class MethodPAG extends AbstractMethodPAG {
     protected MethodPAG( PAG pag, SootMethod m ) {
         this.pag = pag;
         this.method = m;
-        this.parms = new StandardParms( pag, this );
-        edgeQueue = new ChunkedQueue();
-        edgeReader = edgeQueue.reader();
+        this.nodeFactory = new MethodNodeFactory( pag, this );
     }
 
     /** Adds this method to the main PAG, with all VarNodes parameterized by
      * varNodeParameter. */
     public void addToPAG( Object varNodeParameter ) {
+        if( !hasBeenBuilt ) throw new RuntimeException();
         if( varNodeParameter == null ) {
             if( hasBeenAdded ) return;
             hasBeenAdded = true;
         }
-        QueueReader reader = (QueueReader) edgeReader.clone();
+        QueueReader reader = (QueueReader) internalReader.clone();
         while(true) {
             Node src = (Node) reader.next();
             if( src == null ) break;
@@ -62,13 +61,44 @@ public final class MethodPAG extends AbstractMethodPAG {
             dst = parameterize( dst, varNodeParameter );
             pag.addEdge( src, dst );
         }
+        reader = (QueueReader) inReader.clone();
+        while(true) {
+            Node src = (Node) reader.next();
+            if( src == null ) break;
+            Node dst = (Node) reader.next();
+            dst = parameterize( dst, varNodeParameter );
+            pag.addEdge( src, dst );
+        }
+        reader = (QueueReader) outReader.clone();
+        while(true) {
+            Node src = (Node) reader.next();
+            if( src == null ) break;
+            src = parameterize( src, varNodeParameter );
+            Node dst = (Node) reader.next();
+            pag.addEdge( src, dst );
+        }
     }
-    public void addEdge( Node src, Node dst ) {
-        edgeQueue.add( src );
-        edgeQueue.add( dst );
+    public void addInternalEdge( Node src, Node dst ) {
+        if( src == null ) return;
+        internalEdges.add( src );
+        internalEdges.add( dst );
     }
-    private ChunkedQueue edgeQueue;
-    private QueueReader edgeReader;
+    public void addInEdge( Node src, Node dst ) {
+        if( src == null ) return;
+        inEdges.add( src );
+        inEdges.add( dst );
+    }
+    public void addOutEdge( Node src, Node dst ) {
+        if( src == null ) return;
+        outEdges.add( src );
+        outEdges.add( dst );
+    }
+    private ChunkedQueue internalEdges = new ChunkedQueue();
+    private ChunkedQueue inEdges = new ChunkedQueue();
+    private ChunkedQueue outEdges = new ChunkedQueue();
+    private QueueReader internalReader = internalEdges.reader();
+    private QueueReader inReader = inEdges.reader();
+    private QueueReader outReader = outEdges.reader();
 
 }
 

@@ -53,6 +53,7 @@ public class AllocNode extends Node {
             }
         }
 	this.newExpr = newExpr;
+        if( newExpr instanceof ContextVarNode ) throw new RuntimeException();
         pag.getAllocNodeNumberer().add( this );
     }
     /** Registers a AllocDotField as having this node as its base. */

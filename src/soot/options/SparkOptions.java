@@ -192,31 +192,6 @@ public class SparkOptions extends AbstractSparkOptions
         return soot.PhaseOptions.getBoolean( options, "on-fly-cg" );
     }
     
-    /** Parms As Fields --
-    
-     * Represent method parameters as fields of this.
-    
-     * When this option is set to true, parameters to methods are 
-     * represented as fields (Red nodes) of the this object; otherwise, 
-     * parameters are represented as variable (Green) nodes. 
-     */
-    public boolean parms_as_fields() {
-        return soot.PhaseOptions.getBoolean( options, "parms-as-fields" );
-    }
-    
-    /** Returns As Fields --
-    
-     * Represent method return values as fields of this.
-    
-     * When this option is set to true, return values from methods are 
-     * represented as fields (Red nodes) of the this object; otherwise, 
-     * return values are represented as variable (Green) nodes. 
-     * 
-     */
-    public boolean returns_as_fields() {
-        return soot.PhaseOptions.getBoolean( options, "returns-as-fields" );
-    }
-    
     /** Simplify Offline --
     
      * Collapse single-entry subgraphs of the PAG.

@@ -25,7 +25,8 @@ import java.util.*;
 /** Represents a simple variable node (Green) in the pointer assignment graph.
  * @author Ondrej Lhotak
  */
-public class VarNode extends ValNode implements Comparable {
+public abstract class VarNode extends ValNode implements Comparable {
+    public Object context() { return null; }
     /** Returns all field ref nodes having this node as their base. */
     public Collection getAllFieldRefs() { 
 	if( fields == null ) return Collections.EMPTY_LIST;
@@ -35,9 +36,6 @@ public class VarNode extends ValNode implements Comparable {
      * and field as its field; null if nonexistent. */
     public FieldRefNode dot( SparkField field ) 
     { return fields == null ? null : (FieldRefNode) fields.get( field ); }
-    public String toString() {
-	return "VarNode "+getNumber()+" "+variable+" "+method;
-    }
     public int compareTo( Object o ) {
 	VarNode other = (VarNode) o;
         if( other.finishingNumber == finishingNumber && other != this ) {
@@ -50,12 +48,6 @@ public class VarNode extends ValNode implements Comparable {
     public void setFinishingNumber( int i ) {
         finishingNumber = i;
         if( i > pag.maxFinishNumber ) pag.maxFinishNumber = i;
-    }
-    /** NOTE: The method is here only for dumping the graph; not all VarNodes
-     * will have a method so don't rely on it.
-     */
-    public SootMethod getMethod() {
-        return method;
     }
     /** Returns the underlying variable that this node represents. */
     public Object getVariable() {
@@ -90,13 +82,12 @@ public class VarNode extends ValNode implements Comparable {
 
     /* End of public methods. */
 
-    VarNode( AbstractPAG pag, Object variable, Type t, SootMethod m ) {
+    VarNode( AbstractPAG pag, Object variable, Type t ) {
 	super( pag, t );
 	if( !(t instanceof RefLikeType) || t instanceof AnySubType ) {
 	    throw new RuntimeException( "Attempt to create VarNode of type "+t );
 	}
 	this.variable = variable;
-        this.method = m;
         pag.getVarNodeNumberer().add(this);
         setFinishingNumber( ++pag.maxFinishNumber );
     }
@@ -111,7 +102,6 @@ public class VarNode extends ValNode implements Comparable {
     protected Object variable;
     protected Map fields;
     protected int finishingNumber = 0;
-    protected SootMethod method;
     protected boolean interProcTarget = false;
     protected boolean interProcSource = false;
     protected int numDerefs = 0;

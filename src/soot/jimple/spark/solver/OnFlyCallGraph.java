@@ -47,9 +47,8 @@ public class OnFlyCallGraph {
     public ReachableMethods reachableMethods() { return reachableMethods; }
     public CallGraph callGraph() { return callGraph; }
 
-    public OnFlyCallGraph( PAG pag, Parms parms ) {
+    public OnFlyCallGraph( PAG pag ) {
         this.pag = pag;
-        this.parms = parms;
         callGraph = new CallGraph();
         Scene.v().setCallGraph( callGraph );
         ContextManager cm = CallGraphBuilder.makeContextManager(callGraph);
@@ -79,7 +78,7 @@ public class OnFlyCallGraph {
             Edge e = (Edge) callEdges.next();
             if( e == null ) break;
             MethodPAG.v( pag, e.tgt() ).addToPAG( e.tgtCtxt() );
-            parms.addCallTarget( e );
+            pag.addCallTarget( e );
         }
     }
 
@@ -87,18 +86,9 @@ public class OnFlyCallGraph {
 
     public void updatedNode( VarNode vn ) {
         Object r = vn.getVariable();
-        Local receivernf;
-        Object contextnf = null;
-        if( r instanceof Local ) {
-            receivernf = (Local) r;
-        } else if( r instanceof Pair ) {
-            Pair p = (Pair) r;
-            contextnf = p.getO1();
-            if( !( p.getO2() instanceof Local ) ) return;
-            receivernf = (Local) p.getO2();
-        } else return;
-        final Local receiver = receivernf;
-        final Object context = contextnf;
+        if( !(r instanceof Local) ) return;
+        final Local receiver = (Local) r;
+        final Object context = vn.context();
 
         PointsToSetInternal p2set = vn.getP2Set().getNewSet();
         if( ofcgb.wantTypes( receiver ) ) {
@@ -112,9 +102,9 @@ public class OnFlyCallGraph {
             public final void visit( Node n ) {
                 if( n instanceof StringConstantNode ) {
                     String constant = ((StringConstantNode)n).getString();
-                    ofcgb.addStringConstant( receiver, context, constant, n );
+                    ofcgb.addStringConstant( receiver, context, constant );
                 } else {
-                    ofcgb.addStringConstant( receiver, context, null, n );
+                    ofcgb.addStringConstant( receiver, context, null );
                 }
             }} );
         }
@@ -128,7 +118,6 @@ public class OnFlyCallGraph {
     /* End of package methods. */
 
     private PAG pag;
-    private Parms parms;
 }
 
 

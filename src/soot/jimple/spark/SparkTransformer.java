@@ -167,9 +167,9 @@ public class SparkTransformer extends AbstractSparkTransformer
                         Value lhs = ((DefinitionStmt) s).getLeftOp();
                         VarNode v = null;
                         if( lhs instanceof Local ) {
-                            v = pag.findVarNode( (Local) lhs );
+                            v = pag.findLocalVarNode( (Local) lhs );
                         } else if( lhs instanceof FieldRef ) {
-                            v = pag.findVarNode( ((FieldRef) lhs).getField() );
+                            v = pag.findGlobalVarNode( ((FieldRef) lhs).getField() );
                         }
                         if( v != null ) {
                             PointsToSetInternal p2set = v.getP2Set();

@@ -39,8 +39,8 @@ public class PAG2HTML {
         for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
             final VarNode v = (VarNode) vIt.next();
             mergedNodes.put( v.getReplacement(), v );
-            if( v.getMethod() != null ) {
-                methodToNodes.put( v.getMethod(), v );
+            if( v instanceof LocalVarNode ) {
+                methodToNodes.put( ((LocalVarNode)v).getMethod(), v );
             }
         }
         try {
@@ -121,10 +121,14 @@ public class PAG2HTML {
         ret.append( "<li><a href=\""+dirPrefix+"n"+vv.getNumber()+".html\">" );
         ret.append( ""+htmlify(vv.getVariable().toString()) );
         ret.append( "</a><br>" );
-        if( vv.getMethod() != null ) {
+        ret.append( "<li>Context: " );
+        ret.append( ""+(vv.context() == null ?"null":htmlify(vv.context().toString()) ) );
+        ret.append( "</a><br>" );
+        if( vv instanceof LocalVarNode ) {
+            LocalVarNode lvn = (LocalVarNode) vv;
             ret.append( "<a href=\"../"
-                    +toFileName( vv.getMethod().toString() )+".html\">" );
-            ret.append( htmlify(vv.getMethod().toString())+"</a><br>" );
+                    +toFileName(lvn.getMethod().toString() )+".html\">" );
+            ret.append( htmlify(lvn.getMethod().toString())+"</a><br>" );
         }
         ret.append( htmlify(vv.getType().toString())+"\n" );
         return ret.toString();

@@ -27,7 +27,6 @@ import soot.jimple.spark.builder.*;
 import soot.jimple.spark.internal.*;
 import soot.util.*;
 import soot.util.queue.*;
-import soot.toolkits.scalar.Pair;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 
 
@@ -37,7 +36,8 @@ import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 public abstract class AbstractMethodPAG {
     SootMethod method;
     public SootMethod getMethod() { return method; }
-    Parms parms;
+    protected MethodNodeFactory nodeFactory;
+    public MethodNodeFactory nodeFactory() { return nodeFactory; }
     public abstract AbstractPAG pag();
 
     public static AbstractMethodPAG v( AbstractPAG pag, SootMethod m ) {
@@ -68,25 +68,21 @@ public abstract class AbstractMethodPAG {
         addMiscEdges();
     }
 
-    protected VarNode parameterize( VarNode vn, Object varNodeParameter ) {
-        if( varNodeParameter == null ) return vn;
+    protected VarNode parameterize( LocalVarNode vn, Object varNodeParameter ) {
         SootMethod m = vn.getMethod();
-        if( m == null ) return vn;
-        if( m != method ) G.v().out.println( "Warning: "+vn+" in method "+method+" has method "+m );
-        return pag().makeVarNode(
-                new Pair( varNodeParameter, vn.getVariable() ),
-                vn.getType(),
-                vn.getMethod() );
+        if( m != method && m != null ) throw new RuntimeException( "VarNode "+vn+" with method "+m+" parameterized in method "+method );
+        //System.out.println( "parameterizing "+vn+" with "+varNodeParameter );
+        return pag().makeContextVarNode( vn, varNodeParameter );
     }
     protected FieldRefNode parameterize( FieldRefNode frn, Object varNodeParameter ) {
         return pag().makeFieldRefNode(
-                parameterize( (VarNode) frn.getBase(), varNodeParameter ),
+                (VarNode) parameterize( frn.getBase(), varNodeParameter ),
                 frn.getField() );
     }
     public Node parameterize( Node n, Object varNodeParameter ) {
         if( varNodeParameter == null ) return n;
-        if( n instanceof VarNode ) 
-            return parameterize( (VarNode) n, varNodeParameter);
+        if( n instanceof LocalVarNode ) 
+            return parameterize( (LocalVarNode) n, varNodeParameter);
         if( n instanceof FieldRefNode )
             return parameterize( (FieldRefNode) n, varNodeParameter);
         return n;
@@ -94,7 +90,9 @@ public abstract class AbstractMethodPAG {
     /** Adds this method to the main PAG, with all VarNodes parameterized by
      * varNodeParameter. */
     public abstract void addToPAG( Object varNodeParameter );
-    public abstract void addEdge( Node src, Node dst );
+    public abstract void addInternalEdge( Node src, Node dst );
+    public abstract void addInEdge( Node src, Node dst );
+    public abstract void addOutEdge( Node src, Node dst );
     protected boolean hasBeenAdded = false;
     protected boolean hasBeenBuilt = false;
 
@@ -103,22 +101,23 @@ public abstract class AbstractMethodPAG {
         Iterator unitsIt = b.getUnits().iterator();
         while( unitsIt.hasNext() )
         {
-            parms.handleStmt( (Stmt) unitsIt.next() );
+            Stmt s = (Stmt) unitsIt.next();
+            nodeFactory.handleStmt( s );
         }
     }
     protected void buildNative() {
         ValNode thisNode = null;
         ValNode retNode = null; 
         if( !method.isStatic() ) { 
-	    thisNode = (ValNode) parms.caseThis( method );
+	    thisNode = (ValNode) nodeFactory.caseThis();
         }
         if( method.getReturnType() instanceof RefLikeType ) {
-	    retNode = (ValNode) parms.caseRet( method );
+	    retNode = (ValNode) nodeFactory.caseRet();
 	}
         ValNode[] args = new ValNode[ method.getParameterCount() ];
         for( int i = 0; i < method.getParameterCount(); i++ ) {
             if( !( method.getParameterType(i) instanceof RefLikeType ) ) continue;
-	    args[i] = (ValNode) parms.caseParm( method, i );
+	    args[i] = (ValNode) nodeFactory.caseParm(i);
         }
         NativeMethodDriver.v().process( method, thisNode, retNode, args );
     }
@@ -126,28 +125,13 @@ public abstract class AbstractMethodPAG {
     protected void addMiscEdges() {
         // Add node for parameter (String[]) in main method
         if( method.getSubSignature().equals( SootMethod.getSubSignature( "main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() ) ) ) {
-            parms.addEdge( parms.caseArgv(), parms.caseParm( method, 0 ) );
-        }
-
-        // Add objects reaching this of finalize() methods
-        if( method.getName().equals( "<init>" ) ) {
-            SootClass c = method.getDeclaringClass();
-outer:      do {
-                while( !c.declaresMethod( SootMethod.getSubSignature( "finalize", Collections.EMPTY_LIST, VoidType.v() ) ) ) {
-                    if( !c.hasSuperclass() ) {
-                        break outer;
-                    }
-                    c = c.getSuperclass();
-                }
-                parms.addEdge( parms.caseThis( method ),
-                        parms.caseThis( c.getMethod( SootMethod.getSubSignature( "finalize", Collections.EMPTY_LIST, VoidType.v() ) ) ) );
-            } while( false );
+            addInEdge( pag().nodeFactory().caseArgv(), nodeFactory.caseParm(0) );
         }
 
         if( method.getSignature().equals(
                     "<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.String)>" ) ) {
-            parms.addEdge( parms.caseMainThread(), parms.caseThis( method ) );
-            parms.addEdge( parms.caseMainThreadGroup(), parms.caseParm( method, 0 ) );
+            addInEdge( pag().nodeFactory().caseMainThread(), nodeFactory.caseThis() );
+            addInEdge( pag().nodeFactory().caseMainThreadGroup(), nodeFactory.caseParm( 0 ) );
         }
 
         if( method.getSubSignature().equals(
@@ -160,34 +144,10 @@ outer:      do {
                     }
                     c = c.getSuperclass();
                 }
-                parms.addEdge( parms.caseDefaultClassLoader(),
-                        parms.caseThis( method ) );
-                parms.addEdge( parms.caseMainClassNameString(),
-                        parms.caseParm( method, 0 ) );
-            } while( false );
-        }
-
-        if( method.getSubSignature().equals(
-            "java.lang.Object run()" ) ) {
-            SootClass c = method.getDeclaringClass();
-outer:      do {
-                while( !c.implementsInterface( "java.security.PrivilegedAction" )
-                && !c.implementsInterface( "java.security.PrivilegedExceptionAction" ) ) {
-
-                    if( !c.hasSuperclass() ) {
-                        break outer;
-                    }
-                    c = c.getSuperclass();
-                }
-                SootClass controller = RefType.v("java.security.AccessController").getSootClass();
-                for( Iterator it = controller.methodIterator(); it.hasNext(); ) {
-                    SootMethod m = (SootMethod) it.next();
-                    if( !m.getName().equals( "doPrivileged" ) ) continue;
-                    parms.addEdge( parms.caseParm( m, 0 ),
-                            parms.caseThis( method ) );
-                    parms.addEdge( parms.caseRet( method ),
-                            parms.caseRet( m ) );
-                }
+                addInEdge( pag().nodeFactory().caseDefaultClassLoader(),
+                        nodeFactory.caseThis() );
+                addInEdge( pag().nodeFactory().caseMainClassNameString(),
+                        nodeFactory.caseParm(0) );
             } while( false );
         }
     }

@@ -108,16 +108,13 @@ public final class CallGraphBuilder
             if( stringConstants != null ) for( Iterator stringConstantIt = stringConstants.iterator(); stringConstantIt.hasNext(); ) {     
                 final Local stringConstant = (Local) stringConstantIt.next();
                 PointsToSet p2set = pa.reachingObjects( stringConstant );
-                // p2set_psc is legally allowed to be null according to the
-                // Javadoc in PointsToSet presumably the
-                // (stringConstants != null) test above is supposed to
-                // be redundant with this one, but not in my
-                // experience
-                final Set p2set_psc = p2set.possibleStringConstants();
-                if (p2set_psc != null) {
-                    for( Iterator constantIt = p2set_psc.iterator(); constantIt.hasNext(); ) {
+                Collection possibleStringConstants = p2set.possibleStringConstants();
+                if( possibleStringConstants == null ) {
+                    ofcgb.addStringConstant( stringConstant, momc.context(), null );
+                } else {
+                    for( Iterator constantIt = possibleStringConstants.iterator(); constantIt.hasNext(); ) {
                         final String constant = (String) constantIt.next();
-                        ofcgb.addStringConstant( stringConstant, momc.context(), constant, null );
+                        ofcgb.addStringConstant( stringConstant, momc.context(), constant );
                     }
                 }
             }
