@@ -34,6 +34,7 @@ public class PolyglotMethodSource implements MethodSource {
     private boolean hasAssert = false;
     private ArrayList finalsList;
     private HashMap newToOuterMap;
+    private AbstractJimpleBodyBuilder ajbb;
     
     public PolyglotMethodSource(){
         this.block = null;
@@ -46,11 +47,15 @@ public class PolyglotMethodSource implements MethodSource {
     }
 
     public soot.Body getBody(soot.SootMethod sm, String phaseName) {
-        JimpleBodyBuilder jbb = new JimpleBodyBuilder();
-        soot.jimple.JimpleBody jb = jbb.createJimpleBody(block, formals, sm);
+        //JimpleBodyBuilder jbb = new JimpleBodyBuilder();
+        soot.jimple.JimpleBody jb = ajbb.createJimpleBody(block, formals, sm);
        
         PackManager.v().getPack("jj").apply(jb);
         return jb;
+    }
+
+    public void setJBB(AbstractJimpleBodyBuilder ajbb){
+        this.ajbb = ajbb;
     }
 
     public void setFieldInits(ArrayList fieldInits){

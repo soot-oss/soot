@@ -43,7 +43,7 @@ public class LiveVarsTagger extends BodyTransformer {
             Iterator liveLocalsIt = sll.getLiveLocalsAfter(s).iterator();
             while (liveLocalsIt.hasNext()){
                 Value v = (Value)liveLocalsIt.next();
-                s.addTag(new StringTag("Live Variable: "+v));
+                s.addTag(new StringTag("Live Variable: "+v, "Live Variable"));
 
                 Iterator usesIt = s.getUseBoxes().iterator();
                 while (usesIt.hasNext()){

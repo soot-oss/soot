@@ -25,7 +25,11 @@ import java.util.*;
 
 import soot.SootFieldRef;
 
-public class JimpleBodyBuilder {
+public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
+
+    protected AbstractJimpleBodyBuilder ext(){
+        return this;
+    }
     
     soot.jimple.JimpleBody body;    // body of the method being created
     ArrayList exceptionTable;       // list of exceptions
@@ -516,7 +520,7 @@ public class JimpleBodyBuilder {
     /**
      * Stmt creation
      */
-    private void createStmt(polyglot.ast.Stmt stmt) {
+    protected void createStmt(polyglot.ast.Stmt stmt) {
         if (stmt instanceof polyglot.ast.Eval) {
 			createExpr(((polyglot.ast.Eval)stmt).expr());  
         }
@@ -1594,7 +1598,7 @@ public class JimpleBodyBuilder {
     /**
      * Expression Creation
      */
-    private soot.Value createExpr(polyglot.ast.Expr expr){
+    protected soot.Value createExpr(polyglot.ast.Expr expr){
         if (expr instanceof polyglot.ast.Assign) {
             return getAssignLocal((polyglot.ast.Assign)expr);
         }

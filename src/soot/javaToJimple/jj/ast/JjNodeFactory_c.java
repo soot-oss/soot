@@ -36,6 +36,11 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     // TODO:  Override factory methods for overriden AST nodes.
     // TODO:  Override factory methods for AST nodes with new extension nodes.
 
+    public JjComma_c JjComma(Position pos, Expr first, Expr second){
+        JjComma_c n = new JjComma_c(pos, first, second);
+        return n;
+    }
+    
     public Unary Unary(Position pos, Unary.Operator op, Expr expr) {
         Unary n = new JjUnary_c(pos, op, expr);
         n = (Unary)n.ext(extFactory().extUnary());

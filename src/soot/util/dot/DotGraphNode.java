@@ -53,6 +53,11 @@ public class DotGraphNode implements Renderable{
     this.setAttribute("label", "\""+label+"\"");
   }
 
+  public void setHTMLLabel(String label){
+    label = DotGraphUtility.replaceReturns(label);
+    this.setAttribute("label", label);
+  }
+  
   public void setShape(String shape) {
     this.setAttribute("shape", shape);
   }

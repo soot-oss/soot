@@ -45,6 +45,16 @@ public class InitialResolver {
     private HashMap privateMethodGetAccessMap;
     
     private FastHierarchy hierarchy;
+
+    private AbstractJBBFactory jbbFactory = new JimpleBodyBuilderFactory();
+
+    public void setJBBFactory(AbstractJBBFactory jbbFactory){
+        this.jbbFactory = jbbFactory;
+    }
+    
+    public AbstractJBBFactory getJBBFactory(){
+        return jbbFactory;
+    }
     
     /**
      * returns true if there is an AST avail for given soot class
@@ -85,7 +95,9 @@ public class InitialResolver {
         }
         // build ast
         astNode = jtj.compile(compiler, fullPath, extInfo);
+ 
         resolveAST();
+
 
     }
 

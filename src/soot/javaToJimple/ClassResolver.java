@@ -111,7 +111,9 @@ public class ClassResolver {
                 clinitMethod = new soot.SootMethod("<clinit>", new ArrayList(), soot.VoidType.v(), soot.Modifier.STATIC, new ArrayList());
                 
                 sootClass.addMethod(clinitMethod);
-                clinitMethod.setSource(new soot.javaToJimple.PolyglotMethodSource());
+                PolyglotMethodSource mSource = new PolyglotMethodSource();
+                mSource.setJBB(InitialResolver.v().getJBBFactory().createJimpleBodyBuilder());
+                clinitMethod.setSource(mSource);
             }
             else {
                 clinitMethod = sootClass.getMethod("<clinit>", new ArrayList(), soot.VoidType.v());
@@ -432,6 +434,7 @@ public class ClassResolver {
         if (!sootClass.declaresMethod(methodName, paramTypes, methodRetType)){
             soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
             PolyglotMethodSource mSrc = new PolyglotMethodSource();
+            mSrc.setJBB(InitialResolver.v().getJBBFactory().createJimpleBodyBuilder());
             mSrc.hasAssert(true);
             sootMethod.setSource(mSrc);
             sootClass.addMethod(sootMethod);
@@ -489,7 +492,7 @@ public class ClassResolver {
     
     
         PolyglotMethodSource mSrc = new PolyglotMethodSource(procedure.body(), procedure.formals());
-    
+        mSrc.setJBB(InitialResolver.v().getJBBFactory().createJimpleBodyBuilder()); 
         
         sootMethod.setSource(mSrc);
         
