@@ -2102,7 +2102,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      */
     private soot.jimple.FieldRef getFieldRef(polyglot.ast.Field field) {
        
-        soot.SootClass receiverClass = ((soot.RefType)Util.getSootType(field.fieldInstance().container())).getSootClass();
+        soot.SootClass receiverClass = ((soot.RefType)Util.getSootType(field.target().type())).getSootClass();
         soot.SootFieldRef receiverField = soot.Scene.v().makeFieldRef(receiverClass, field.name(), Util.getSootType(field.type()), field.flags().isStatic());
          
         soot.jimple.FieldRef fieldRef;

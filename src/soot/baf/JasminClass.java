@@ -1365,35 +1365,35 @@ public class JasminClass extends AbstractJasminClass
 
             public void caseStaticGetInst(StaticGetInst i)
             {
-                SootField field = i.getField();
+                SootFieldRef field = i.getFieldRef();
                 emit("getstatic " + 
-                     slashify(field.getDeclaringClass().getName()) + "/" +
-                     field.getName() + " " + 
-                     jasminDescriptorOf(field.getType()));
+                     slashify(field.declaringClass().getName()) + "/" +
+                     field.name() + " " + 
+                     jasminDescriptorOf(field.type()));
             }
 
             public void caseStaticPutInst(StaticPutInst i)
             {
                 emit("putstatic " + 
-                     slashify(i.getField().getDeclaringClass().getName()) + 
-                     "/" + i.getField().getName() + " " + 
-                     jasminDescriptorOf(i.getField().getType()));
+                     slashify(i.getFieldRef().declaringClass().getName()) + 
+                     "/" + i.getFieldRef().name() + " " + 
+                     jasminDescriptorOf(i.getFieldRef().type()));
             }
 
             public void caseFieldGetInst(FieldGetInst i)
             {
                 emit("getfield " + 
-                     slashify(i.getField().getDeclaringClass().getName()) + 
-                     "/" + i.getField().getName() + " " + 
-                     jasminDescriptorOf(i.getField().getType()));
+                     slashify(i.getFieldRef().declaringClass().getName()) + 
+                     "/" + i.getFieldRef().name() + " " + 
+                     jasminDescriptorOf(i.getFieldRef().type()));
             }
 
             public void caseFieldPutInst(FieldPutInst i)
             {
                 emit("putfield " + 
-                     slashify(i.getField().getDeclaringClass().getName()) + 
-                     "/" + i.getField().getName() + " " + 
-                     jasminDescriptorOf(i.getField().getType()));
+                     slashify(i.getFieldRef().declaringClass().getName()) + 
+                     "/" + i.getFieldRef().name() + " " + 
+                     jasminDescriptorOf(i.getFieldRef().type()));
             }
 
             public void caseInstanceCastInst(InstanceCastInst i)
