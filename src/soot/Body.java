@@ -574,14 +574,16 @@ public abstract class Body extends AbstractHost implements Serializable
 
 	    String errorSuffix=" at "+stmt+" in "+getMethod();
 
-	    if(stmt instanceof AssignStmt) {
-		AssignStmt astmt=(AssignStmt) stmt;
-		Type leftType=Type.toMachineType(astmt.getLeftOp().getType());
-		Type rightType=Type.toMachineType(astmt.getRightOp().getType());
+	    if(stmt instanceof DefinitionStmt) {
+		DefinitionStmt astmt=(DefinitionStmt) stmt;
+                if( !(astmt.getRightOp() instanceof CaughtExceptionRef ) ) {
+                    Type leftType=Type.toMachineType(astmt.getLeftOp().getType());
+                    Type rightType=Type.toMachineType(astmt.getRightOp().getType());
 
-		checkCopy(leftType,rightType,errorSuffix);
-		if(astmt.getRightOp() instanceof InvokeExpr) 
-		    iexpr=(InvokeExpr) (astmt.getRightOp());
+                    checkCopy(leftType,rightType,errorSuffix);
+                    if(astmt.getRightOp() instanceof InvokeExpr) 
+                        iexpr=(InvokeExpr) (astmt.getRightOp());
+                }
 	    }
 
 	    if(stmt instanceof InvokeStmt) iexpr=((InvokeStmt) stmt).getInvokeExpr();
