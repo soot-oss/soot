@@ -180,7 +180,7 @@ public class SootMethod
 
     public boolean isPhantom()
     {
-        return isPhantom();
+        return isPhantom;
     }
     
     public void setPhantom(boolean value)

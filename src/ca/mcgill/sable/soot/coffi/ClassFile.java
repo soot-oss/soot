@@ -296,7 +296,11 @@ public class ClassFile {
           
       }
       catch(ClassNotFoundException e)
-      {   throw new RuntimeException("Could not locate class " + fn);
+      {   
+          locatorTimer.end();
+
+          return false;
+      
       }
 
       locatorTimer.end();

@@ -204,12 +204,21 @@ public class Util
                 boolean success = coffiClass.loadClassFile();
     
                 timer.end();
-        
+
+                if(!success)
+                {
+                    if(!Scene.v().allowsPhantomRefs())
+                        throw new RuntimeException("Could not load classfile: " + bclass.getName());
+                    else
+                    {
+                        System.out.println("Warning: " + className + " is a phantom class!");
+                        bclass.setPhantom(true);
+                        continue;
+                    }
+                }
                 buildTimer.start();
                         
-                if(!success)
-                    throw new RuntimeException("Couldn't load class file.");
-    
+                
                 CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.this_class];
     
                 String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();

@@ -181,8 +181,12 @@ public class Scene
             Main.resolveTimer.start();
         */
         
-        return ca.mcgill.sable.soot.coffi.Util.resolveClassAndSupportClasses(className, this);
+        Scene.v().setPhantomRefs(true);
+        SootClass toReturn = ca.mcgill.sable.soot.coffi.Util.resolveClassAndSupportClasses(className, this);
+        Scene.v().setPhantomRefs(false);
 
+        return toReturn;
+        
         /*
         if(Main.isProfilingOptimization)
             Main.resolveTimer.end(); */
